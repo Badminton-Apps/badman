@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.mat-subheading-2 .date {
+  line-height: 0.6em;
+  font-size: 0.6em;
+  padding-bottom: 7px;
+}
+
+.games {
+  display: flex;
+  flex-wrap: wrap;
+
+  app-game-result {
+    flex: 1 auto;
+    width: 350px;
+  }
+}

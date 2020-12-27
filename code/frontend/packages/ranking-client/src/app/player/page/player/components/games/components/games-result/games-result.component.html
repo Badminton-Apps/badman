@@ -1,0 +1,35 @@
+<div class="mat-subheading-1">
+  {{ this.subEvent.event.name }}
+</div>
+
+<ng-container *ngFor="let subEvent of this.subEvents">
+  <div class="mat-subheading-2">
+    <ng-container *ngIf="subEvent.levelType">
+      <span
+        >{{ subEvent.name }} {{ subEvent.levelType }}
+        {{ subEvent.eventType }}</span
+      >
+      <div class="date">
+        {{ subEvent.games[0].playedAt | date }}
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!subEvent.levelType">
+      <span>{{ subEvent.name }}</span>
+      <span>
+        - {{ subEvent.gameType }} {{ subEvent.level | levelToLetter }}</span
+      >
+      <div class="date">
+        {{ subEvent.games[0].playedAt | date }}
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="games">
+    <app-game-result
+      [game]="game"
+      [player]="player"
+      *ngFor="let game of subEvent.games"
+    ></app-game-result>
+  </div>
+</ng-container>

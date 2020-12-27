@@ -1,0 +1,9 @@
+// .sequelizerc
+const path = require('path');
+
+module.exports = {
+  config: path.resolve('../_shared/database/database.config.js'),
+  'models-path': path.resolve('../_shared/models/sequelize'),
+  'seeders-path': path.resolve('../_shared/database/seeders'),
+  'migrations-path': path.resolve('../_shared/database/migrations')
+};

@@ -1,0 +1,105 @@
+@import '../../variables.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.toolbar {
+  background-color: white;
+  display: flex;
+
+  .start {
+    display: flex;
+    mat-icon {
+      color: rgba(0, 0, 0, 0.87);
+    }
+  }
+
+  .middle {
+    flex: 1 1 auto;
+    display: flex;
+  }
+
+  .end {
+    display: flex;
+  }
+
+  .is-mobile & {
+    position: fixed;
+    z-index: 2;
+  }
+}
+
+.app-name {
+  width: 152px;
+  margin-left: 8px;
+  align-items: center;
+  display: flex;
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.87);
+  border-bottom: 1px solid mat-color($client-angular-accent);
+}
+
+.sidenav-container {
+  flex: 1;
+  background-color: white;
+
+  .is-mobile & {
+    flex: 1 0 auto;
+  }
+
+  mat-sidenav-content {
+    padding: 0 25px 0 15px;
+    @media only screen and (min-width: 1400px) {
+      padding-right: 300px;
+    }
+    @media only screen and (max-width: 600px) {
+      padding: 0;
+    }
+  }
+
+  mat-sidenav {
+    background: white;
+    border-right: none;
+
+    .mat-list-item.active {
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: 5px;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+    }
+
+    .pages {
+      min-width: 200px;
+      padding: 0 15px;
+    }
+
+    .app-nav-accordion {
+      .mat-expansion-panel {
+        border-radius: 0px !important;
+        box-shadow: none !important;
+
+        &.mat-expansion-panel-spacing {
+          margin: 0px;
+        }
+
+        .mat-expansion-panel-body {
+          padding: 0px;
+        }
+
+        .mat-expansion-panel-header {
+          height: 40px;
+          padding: 0px 24px 0px 16px;
+        }
+      }
+    }
+  }
+}

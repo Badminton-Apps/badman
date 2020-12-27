@@ -1,0 +1,32 @@
+mutation UpdateRankingSystem($rankingSystem: RankingSystemInput!) {
+  updateRankingSystem(rankingSystem: $rankingSystem) {
+    id
+    name
+    rankingSystem
+    amountOfLevels
+    procentWinning
+    procentWinningPlus1
+    procentLosing
+    latestXGamesToUse
+    minNumberOfGamesUsedForUpgrade
+    maxDiffLevels
+    calculationIntervalUnit
+    caluclationIntervalAmount
+    periodUnit
+    periodAmount
+    updateIntervalUnit
+    updateIntervalAmount
+    differenceForUpgrade
+    differenceForDowngrade
+    startingType
+    maxLevelUpPerChange
+    maxLevelDownPerChange
+    gamesForInactivty
+    inactivityAmount
+    inactivityUnit
+    groups {
+      id
+      name
+    }
+  }
+}

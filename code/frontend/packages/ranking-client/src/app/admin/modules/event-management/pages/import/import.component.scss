@@ -1,0 +1,37 @@
+table {
+  width: 100%;
+}
+
+tr {
+  height: 54px;
+}
+
+tr.event-element-row:hover {
+  background: whitesmoke;
+}
+
+.mat-column-delete {
+  width: 60px;
+}
+
+.mat-column-import {
+  width: 60px;
+  direction: rtl;
+}
+.mat-column-event {
+  min-width: 30%;
+}
+
+.mat-column-name {
+  min-width: 40%;
+}
+
+.mat-column-dates {
+  min-width: 110px;
+}
+
+.progress {
+  position: relative;
+  height: 0;
+  padding-bottom: 3px;
+}

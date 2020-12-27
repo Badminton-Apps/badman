@@ -1,0 +1,42 @@
+<ng-container *ngIf="this.player$ | async as player">
+  <app-profile-header
+    [mobile]="device.mobileQuery.matches"
+    [canClaimAccount]="this.canClaimAccount$ | async"
+    [player]="this.player"
+    (claimAccount)="this.claimAccount($event)"
+  ></app-profile-header>
+
+  <div class="player-details" *ngIf="!device.mobileQuery.matches">
+    <app-games [player]="player"></app-games>
+    <app-ranking-evolution
+      *ngIf="player.rankingPlaces && player.rankingPlaces.length > 0"
+      [player]="player"
+    ></app-ranking-evolution>
+  </div>
+  <div class="player-details-mobile" *ngIf="device.mobileQuery.matches">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Ranking
+          </mat-panel-title>
+          <mat-panel-description> </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <app-ranking-evolution
+          *ngIf="player.rankingPlaces && player.rankingPlaces.length > 0"
+          [player]="player"
+        ></app-ranking-evolution>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Games
+          </mat-panel-title>
+          <mat-panel-description> </mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-games [player]="player"></app-games>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</ng-container>

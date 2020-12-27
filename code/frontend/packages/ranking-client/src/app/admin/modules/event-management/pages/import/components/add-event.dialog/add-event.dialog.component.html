@@ -1,0 +1,117 @@
+<form (ngSubmit)="this.save()" [formGroup]="this.eventForm">
+  <div class="mat-subheading-1">Event</div>
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        alt="name"
+        autocomplete="name"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <mat-checkbox [checked]="this.useSame" (change)="this.useSame = !this.useSame"
+    >Use same group for all sub events</mat-checkbox
+  >
+
+  <mat-form-field appearance="fill">
+    <mat-label>Ranking system group</mat-label>
+    <mat-select multiple [formControl]="selectedGroups">
+      <mat-option *ngFor="let group of this.groups" [value]="group">
+        {{ group.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div *ngIf="this.subEvents && !this.useSame">
+    <!-- <button mat-button type="button" (click)="addColumn()">Add type</button> -->
+
+    <table mat-table [dataSource]="this.subEvents">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="eventType">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let element">{{ element.eventType }}</td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="drawType">
+        <th mat-header-cell *matHeaderCellDef>Draw</th>
+        <td mat-cell *matCellDef="let element">{{ element.drawType }}</td>
+      </ng-container>
+
+      <!-- SubEventGroups Column -->
+
+      <ng-container
+        *ngFor="let subEventGroup of selectedGroups.value"
+        [matColumnDef]="'group-' + subEventGroup.name"
+      >
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="
+              $event ? masterToggle('group-' + subEventGroup.name) : null
+            "
+            [checked]="
+              selection.get('group-' + subEventGroup.name).hasValue() &&
+              isAllSelected('group-' + subEventGroup.name)
+            "
+            [indeterminate]="
+              selection.get('group-' + subEventGroup.name).hasValue() &&
+              !isAllSelected('group-' + subEventGroup.name)
+            "
+            [aria-label]="checkboxLabel('group-' + subEventGroup.name)"
+          >
+            {{ subEventGroup.name }}
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="
+              $event
+                ? selection.get('group-' + subEventGroup.name).toggle(row)
+                : null
+            "
+            [checked]="
+              selection.get('group-' + subEventGroup.name).isSelected(row)
+            "
+            [aria-label]="checkboxLabel('group-' + subEventGroup.name, row)"
+          >
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+
+  <!-- <mat-list *ngIf="this.subEvents && !this.useSame">
+    <mat-list-item *ngFor="let subEvent of this.subEvents">
+      {{ subEvent.name }} {{ subEvent.eventType }} ({{ subEvent.drawType }})
+
+      <mat-form-field>
+        <mat-label>Ranking system group</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let group of this.groups" [value]="group.id">
+            {{ group.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-list-item>
+  </mat-list> -->
+
+  <div class="row">
+    <button mat-raised-button color="primary" type="submit" autofocus>
+      save
+    </button>
+  </div>
+</form>

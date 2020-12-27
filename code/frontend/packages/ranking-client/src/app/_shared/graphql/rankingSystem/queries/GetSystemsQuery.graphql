@@ -1,0 +1,11 @@
+query GetSystemsQuery {
+  systems {
+    id
+    primary
+    runCurrently
+    name
+    procentWinning
+    procentLosing
+    latestXGamesToUse
+  }
+}

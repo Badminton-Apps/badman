@@ -1,0 +1,14 @@
+<div
+  class="results"
+  infiniteScroll
+  (scrolled)="onScroll()"
+  [fromRoot]="true"
+  [infiniteScrollContainer]="'.mat-sidenav-content'"
+>
+  <app-games-result [games]="games" *ngFor="let games of this.games$ | async">
+  </app-games-result>
+
+  <div class="loading" *ngIf="this.request$ !== null">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+</div>

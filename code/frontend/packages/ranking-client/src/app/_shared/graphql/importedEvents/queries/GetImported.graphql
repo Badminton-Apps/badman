@@ -1,0 +1,29 @@
+# Write your query or mutation here
+query GetImported($first: Int, $order: [ImportedOrderBy], $after: String) {
+  imported(orderBy: $order, first: $first, after: $after) {
+    total
+    edges {
+      cursor
+      node {
+        id
+        name
+        dates
+        firstDay
+        uniCode
+        importing
+        type
+        subEvents {
+          id
+          name
+          eventType
+          gameType
+          drawType
+          levelType
+          internalId
+          size
+          level
+        }
+      }
+    }
+  }
+}

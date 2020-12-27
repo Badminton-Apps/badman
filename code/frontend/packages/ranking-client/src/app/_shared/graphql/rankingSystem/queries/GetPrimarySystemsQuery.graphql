@@ -1,0 +1,8 @@
+query GetPrimarySystemsQuery {
+  systems(where:{primary:true}){
+    id
+    primary
+    amountOfLevels
+    runCurrently
+  }
+}

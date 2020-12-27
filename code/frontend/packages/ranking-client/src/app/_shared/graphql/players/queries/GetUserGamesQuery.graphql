@@ -1,0 +1,53 @@
+# Write your query or mutation here
+query GetUserGameQuery(
+  $playerId: ID!
+  $rankingType: ID!
+  $offset: Int!
+  $limit: Int!
+) {
+  player(id: $playerId) {
+    id
+    games(
+      limit: $limit
+      offset: $offset
+      order: "playedAt"
+      direction: "desc"
+    ) {
+      id
+      set1Team1
+      set1Team2
+      set2Team1
+      set2Team2
+      set3Team1
+      set3Team2
+      playedAt
+      winner
+      gameType
+      subEvent {
+        id
+        name
+        level
+        levelType
+        eventType
+        event {
+          type
+          id
+          name
+          firstDay
+        }
+      }
+      players {
+        id
+        firstName
+        lastName
+        team
+        player
+        rankingPlace(where: { SystemId: $rankingType }) {
+          single
+          double
+          mix
+        }
+      }
+    }
+  }
+}

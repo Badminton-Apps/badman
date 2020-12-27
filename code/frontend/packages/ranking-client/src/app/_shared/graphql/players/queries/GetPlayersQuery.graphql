@@ -1,0 +1,8 @@
+query GetPlayers($search: String!) {
+  playerSearch(query: $search) {
+    id
+    memberId
+    firstName
+    lastName
+  }
+}

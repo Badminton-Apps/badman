@@ -1,0 +1,71 @@
+<div class="mat-elevation-z1">
+  <div class="header">
+    <img
+      src="http://demo.geekslabs.com/materialize-v1.0/images/user-profile-bg.jpg"
+      alt="Background image"
+    />
+  </div>
+  <div class="info">
+    <div class="picture" *ngIf="!mobile">
+      {{ this.initials }}
+    </div>
+    <div class="name">
+      <span class="up">
+        {{ this.player.firstName }} {{ this.player.lastName }}</span
+      >
+      <span class="down">
+        {{ this.player.memberId }} - {{ this.player.gender }}
+      </span>
+
+      <mat-menu #userMenu="matMenu">
+        <button
+          mat-menu-item
+          *ngIf="this.canClaimAccount.canClaim"
+          (click)="this.claimAccount.next(player.id)"
+        >
+          Claim
+        </button>
+
+        <button mat-menu-item *ngIf="this.canClaimAccount.isclaimedByUser">
+          You've requested this account
+        </button>
+      </mat-menu>
+    </div>
+
+    <div class="ranking" *ngIf="this.shownRanking">
+      <div class="single" [matTooltip]="singleTooltip">
+        <span class="up">
+          {{ this.shownRanking.single }}
+          <mat-icon
+            *ngIf="this.shownRanking.singleInactive"
+            matTooltip="Player in inactive for single"
+            >warning
+          </mat-icon>
+        </span>
+        <span class="down" translate>systems.single</span>
+      </div>
+      <div class="double" [matTooltip]="doubleTooltip">
+        <span class="up">
+          {{ this.shownRanking.double }}
+          <mat-icon
+            *ngIf="this.shownRanking.doubleInactive"
+            matTooltip="Player in inactive for double"
+            >warning
+          </mat-icon>
+        </span>
+        <span class="down" translate>systems.double</span>
+      </div>
+      <div class="mix" [matTooltip]="mixTooltip">
+        <span class="up">
+          {{ this.shownRanking.mix }}
+          <mat-icon
+            *ngIf="this.shownRanking.mixInactive"
+            matTooltip="Player in inactive for mix"
+            >warning
+          </mat-icon>
+        </span>
+        <span class="down" translate>systems.mix</span>
+      </div>
+    </div>
+  </div>
+</div>

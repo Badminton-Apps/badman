@@ -1,0 +1,18 @@
+<form class="player-search">
+  <input
+    type="text"
+    placeholder="Search"
+    [formControl]="myControl"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    [displayWith]="displayFn"
+    (optionSelected)="selectedPlayer($event)"
+  >
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+      {{ option.firstName }} {{ option.lastName }}
+      <small *ngIf="option.memberId">({{ option.memberId }}) </small>
+    </mat-option>
+  </mat-autocomplete>
+</form>

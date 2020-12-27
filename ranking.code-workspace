@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"name": "frontend",
+			"path": "code\\frontend"
+		},
+		{
+			"name": "backend",
+			"path": "code\\backend"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/charts/": true,
+			"**/coverage/": true,
+			"**/node_modules/": true,
+			"**/pipelines/": true
+		}
+	}
+}
