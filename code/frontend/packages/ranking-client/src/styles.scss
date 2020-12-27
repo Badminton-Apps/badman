@@ -1,0 +1,77 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import 'app/_shared/variables.scss';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Create the theme object (a Sass map containing all of the palettes).
+$client-angular-theme: mat-light-theme(
+  $client-angular-primary,
+  $client-angular-accent,
+  $client-angular-warn
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($client-angular-theme);
+@include covalent-theme($client-angular-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+mat-sidenav-content > ng-component {
+  padding: 25px 0;
+}
+
+.mat-subheading-1,
+.mat-subheading-2 {
+  flex: 1 1 100%;
+}
+
+.mat-subheading-1 {
+  font-size: 20px;
+  padding-bottom: 8px;
+  margin-top: 15px;
+  border-bottom: 1px solid mat-color($client-angular-accent);
+}
+
+.mat-subheading-2 {
+  margin-top: 16px;
+  border-left: 1px solid mat-color($client-angular-primary);
+  padding-left: 10px;
+}
+
+.mat-tooltip {
+  white-space: pre-line;
+}
+
+.mat-select {
+  margin-top: -10px;
+}
+
+.mat-form-field.dense {
+  div.mat-form-field-wrapper {
+    padding: 0;
+
+    .mat-form-field-infix {
+      border-top-width: 0.4em;
+    }
+
+    div.mat-form-field-underline {
+      bottom: 0;
+    }
+  }
+}

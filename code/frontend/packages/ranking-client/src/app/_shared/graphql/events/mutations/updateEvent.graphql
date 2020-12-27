@@ -1,0 +1,12 @@
+mutation UpdateEvent($event: EventInput!) {
+  updateEvent(event: $event) {
+    id
+    toernamentNumber
+    firstDay
+    dates
+    type
+    uniCode
+    name
+    importing
+  }
+}

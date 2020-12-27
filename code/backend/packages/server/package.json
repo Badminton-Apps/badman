@@ -1,0 +1,32 @@
+{
+  "name": "@badvlasim/server",
+  "description": "Ranking simulation server Badminton Vlaanderen",
+  "version": "1.2.15",
+  "private": true,
+  "dependencies": {
+    "@badvlasim/shared": "^1.2.15",
+    "apollo-cache-control": "^0.11.4",
+    "apollo-server-express": "^2.19.0",
+    "global": "^4.4.0",
+    "http-proxy-middleware": "^1.0.5",
+    "rxjs": "^6.6.3",
+    "sequelize-auto-migrations": "^1.0.3",
+    "sequelize-cli": "^6.2.0"
+  },
+  "scripts": {
+    "start": "node -r ts-node/register ./src/server.ts",
+    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "start:inspect": "node --inspect=5858 -r ts-node/register ./src/server.ts",
+    "start:watch": "nodemon",
+    "start:watch:inspect": "nodemon --exec node --inspect=5859 -r ts-node/register ./src/server.ts",
+    "test:local": "jest --colors --watchAll",
+    "test": "jest --config ./jest.config.js --coverage --testFailureExitCode 0 --passWithNoTests",
+    "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "nl": "Nederlands"
+  },
+  "lists": {
+    "name": ""
+  },
+  "management": {
+    "calculate": "",
+    "cleanup": "",
+    "download": "",
+    "end": "",
+    "force": "",
+    "games-to-use": "",
+    "import": "",
+    "new-system": "",
+    "number-short": "",
+    "procent-losing-short": "",
+    "procent-winning-short": "",
+    "ranking": "",
+    "reset": "",
+    "select": "",
+    "start": "",
+    "sync": ""
+  },
+  "systems": {
+    "double": "Double",
+    "double-rank": "Ranking classement",
+    "list": "Ranking joueurs",
+    "mix": "Mixte",
+    "mix-rank": "Ranking classement",
+    "single": "Simple",
+    "single-rank": "Ranking classement"
+  },
+  "faq": {
+    "legend": "Légende",
+    "title": "Comment fonctionne le site internet",
+    "info": {
+      "title": "Infos detaillées",
+      "description": "Informations détaillées sur le nouveau système"
+    },
+    "overview": {
+      "title": "Aperçu par joueur",
+      "description": "Lorsque vous recherchez un joueur dans la barre de recherche, vous accédez à une page où vous pouvez voir toutes sortes d'informations sur les résultats d'un joueur et les classements et rankings associés. Vous trouverez toutes les explications de ces pages ci-dessous.",
+      "levels": "En haut à droite, vous obtenez le classement de la personne que vous recherchez. Si vous déplacez votre curseur sur un classement (ou sur votre téléphone portable en appuyant longuement), vous verrez la position du joueur dans son propre classement, ainsi que sa position dans le ranking belge total.",
+      "evolution-1": "Le graphique d'évolution montre comment un joueur évolue au cours des années simulées. La période indiquée par une ligne pointillée est une période où les simulations se stabilisent, donc cette période est moins précise.",
+      "evolution-2": "De plus, par mois de changement de classement, la moyenne de la montée comme la moyenne de la descente est visible en déplaçant votre curseur sur le cercle correspondant au mois.",
+      "game-result": "Pour un joueur, tous ses résultats sont affichés (tournoi(s) / compétition(s)), quand il a été joué, les scores du match, quel classement les joueurs avaient au moment du match et qui était le vainqueur (indiqué en gras)."
+    },
+    "points": {
+      "title": "Tableau des points",
+      "table": {
+        "level": "Classement",
+        "points-won": "Points en cas de victoire contre ce classement",
+        "points-needed-up": "Palier de montée",
+        "points-needed-down": "Palier de descente"
+      }
+    },
+    "ranking": {
+      "title": "Ranking",
+      "description": "Lorsque vous cliquez sur la catégorie de ranking en haut à gauche, vous verrez le ranking dans votre classement ainsi que votre classement par discipline et par genre, ainsi que le classement du joueur."
+    },
+    "updates": {
+      "title": "Mise à jour",
+      "description-09_07_2020": "Une mise à jour a été faite le 09/07/2020, cela a inclus la suppression de tournois jeunes (ils ne sont plus utilisés pour le calcul des classements). Cette mise à jour peut influencer votre classement et ranking.",
+      "description-02_07_2020": "Une mise à jour a été faite le 02/07/2020, cette mise à jour corrige quelques joueurs et affiche leur noms ou résultats correctement sur ce site internet. Cette mise à jour peut influencer votre classement et ranking."
+    }
+  }
+}

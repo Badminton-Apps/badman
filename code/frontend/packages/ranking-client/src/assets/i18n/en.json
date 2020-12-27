@@ -1,0 +1,71 @@
+{
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "nl": "Nederlands"
+  },
+  "lists": {
+    "name": "Name"
+  },
+  "management": {
+    "calculate": "Calculate",
+    "cleanup": "Cleanup",
+    "download": "Download",
+    "end": "End",
+    "force": "Force",
+    "games-to-use": "Games to use",
+    "import": "Import",
+    "new-system": "New system",
+    "number-short": "No.",
+    "procent-losing-short": "% Lose",
+    "procent-winning-short": "% Win",
+    "ranking": "Ranking",
+    "reset": "Reset",
+    "select": "Select",
+    "start": "Start",
+    "sync": "Sync"
+  },
+  "systems": {
+    "double": "Double",
+    "double-rank": "Ranking level",
+    "list": "Ranking Players",
+    "mix": "Mix",
+    "mix-rank": "Ranking level",
+    "single": "Single",
+    "single-rank": "Ranking level"
+  },
+  "faq": {
+    "legend": "Table of contents",
+    "title": "Info how to use our website",
+    "info": {
+      "title": "Info video",
+      "description": "Via the following link you can find the info video explaining all the details of the new system: "
+    },
+    "overview": {
+      "title": "Overview by player",
+      "description": "When you search for a player in the search bar, you will be taken to a page where you can see all kinds of information about a player's results and his ranking. All sections of this page are explained below.",
+      "levels": "At the top right you will see the rankings of the person you are looking for. If you move your mouse over a ranking (or on your mobile phone when you press and hold) you will see the ranking of the player within his own classification, as well as his position within the national Belgian ranking.",
+      "evolution-1": "The evolution graph on the right shows how a player evolves through the simulated years. The period marked with a dotted line is a period where the simulations are still stabilizing, so this period is less accurate.",
+      "evolution-2": "Each ranking evaluation is marked as a dot on the chart. Each dot shows your personal average ascending and descending points.",
+      "game-result": "For a player, all his results are displayed (tournament/competition), when it was played, the game scores, which ranking the players had at the time of the match and who the winner was (indicated in bold)."
+    },
+    "points": {
+      "title": "Points table",
+      "table": {
+        "level": "Level",
+        "points-won": "Points won against this level",
+        "points-needed-up": "Points needed to go up",
+        "points-needed-down": "Points needed to go down"
+      }
+    },
+    "ranking": {
+      "title": "Ranking",
+      "description": "When you click on the ranking category at the top left, you will see your ranking within your classification, as well as your ranking for each discipline and by gender, together with the player's ranking. Sorting by decreasing total ranking within a discipline is done by clicking on this discipline (or on your mobile phone when press and hold.) By default, the top 15 is given, but you can change this at the bottom of the page. You can also click through to the next page with the next players in the ranking. The discipline itself can also be selected at the bottom."
+    },
+    "updates": {
+      "title": "Updates",
+      "description-09_07_2020": "A update happend on 09/07/2020, this included removing some yought events. Which in turn could result in a small change in your level and ranking",
+      "description-02_07_2020": "A update happend on 02/07/2020, this included fixing some peoples names/matches. Which in turn could result in a small change in your level and ranking"
+    }
+  }
+}

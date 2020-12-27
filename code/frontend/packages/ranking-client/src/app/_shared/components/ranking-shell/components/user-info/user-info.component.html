@@ -1,0 +1,21 @@
+<ng-container *ngIf="!this.auth.loggedIn">
+  <button mat-button color="primary" (click)="this.auth.login()">
+    Log In
+  </button>
+</ng-container>
+
+<ng-container *ngIf="this.auth.loggedIn">
+  <ng-container *ngIf="this.auth.userProfile$ | async as profile">
+    <button mat-icon-button class="avatar" [matMenuTriggerFor]="profileMenu">
+      <img [src]="profile.picture" />
+    </button>
+
+    <mat-menu #profileMenu="matMenu">
+      <a mat-menu-item routerLink="/profile" *ngIf="auth.loggedIn">Profile</a>
+      <button mat-menu-item (click)="this.auth.logout()">
+        Log Out
+      </button>
+    </mat-menu>
+  </ng-container>
+</ng-container>
+

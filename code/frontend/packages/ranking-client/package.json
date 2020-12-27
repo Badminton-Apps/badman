@@ -1,0 +1,16 @@
+{
+  "name": "@badvlasim/client",
+  "description": "Ranking simulation Badminton Vlaanderen",
+  "version": "1.2.15",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:prod": "ng build --prod",
+    "test": "echo 'no tests'",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "generate-icons": "pwa-asset-generator https://static.tournamentsoftware.com/images/style/badmintonvlaanderen/logo.png ./src/assets/icons --manifest ./src/manifest.webmanifest --index ./src/index.html"
+  },
+  "private": true
+}

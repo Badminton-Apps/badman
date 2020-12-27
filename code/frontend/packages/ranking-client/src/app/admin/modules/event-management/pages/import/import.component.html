@@ -1,0 +1,125 @@
+<h1>Import</h1>
+<app-upload-field (fileAdded)="this.fileAdded($event)" [status]="this.eventService.importStatus$"></app-upload-field>
+
+<div layout="row" layout-fill layout-margin layout-align="start center">
+  <div class="progress">
+    <mat-progress-bar
+      *ngIf="!dataSource.data"
+      mode="indeterminate"
+    ></mat-progress-bar>
+  </div>
+  <!-- 
+
+   -->
+  <table
+    mat-table
+    [dataSource]="dataSource"
+    multiTemplateDataRows
+    matSort
+    matSortActive="firstDay"
+    matSortDirection="desc"
+  >
+
+
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dates">
+      <th mat-header-cell *matHeaderCellDef>Date</th>
+      <td mat-cell *matCellDef="let element">
+        <ng-container *ngIf="element.type == 'TOERNAMENT'">
+          {{ element.firstDay | date }}
+        </ng-container>
+        <ng-container *ngIf="element.type == 'COMPETITION_CP'">
+          {{ element.firstDay.getFullYear() }}-{{
+            element.firstDay.getFullYear() + 1
+          }}
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="event">
+      <th mat-header-cell *matHeaderCellDef>Event</th>
+      <td mat-cell *matCellDef="let element">
+        <mat-form-field
+          class="dense"
+          *ngIf="element.type !== 'COMPETITION_XML'"
+        >
+          <mat-label>Select event</mat-label>
+          <mat-select
+            [value]="element.event"
+            (selectionChange)="changedEvent($event, element)"
+          >
+            <mat-option *ngFor="let sug of element.suggestions" [value]="sug">{{
+              sug.name
+            }}</mat-option>
+            <mat-option [value]="{ id: -1 }">Create new</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="element.type == 'COMPETITION_XML'">
+          <ng-container *ngIf="element.event?.name">{{
+            element.event.name
+          }}</ng-container>
+          <ng-container *ngIf="!element.event?.name"
+            ><small>Please import the CP file first</small></ng-container
+          >
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="import">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <button
+          mat-icon-button
+          *ngIf="!element.importing"
+          [disabled]="element.event.id == -1"
+          (click)="import(element)"
+        >
+          <mat-icon>not_started</mat-icon>
+        </button>
+        <mat-spinner diameter="25" *ngIf="element.importing"></mat-spinner>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <button
+          mat-icon-button
+          *ngIf="!element.importing"
+          (click)="deleteImportedEvent(element)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let element; columns: displayedColumns"
+      class="event-element-row"
+    ></tr>
+  </table>
+
+  <mat-paginator
+    [length]="this.resultsLength$ | async"
+    [pageSize]="this.pageSize$ | async"
+    [pageIndex]="this.pageIndex$ | async"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="this.onPaginateChange.next($event)"
+  ></mat-paginator>
+</div>
+
+
+<ng-template #template>
+ <h1>This is a message</h1>
+</ng-template>

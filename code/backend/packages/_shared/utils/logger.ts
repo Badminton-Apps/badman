@@ -1,0 +1,97 @@
+import { createLogger, format, transports } from 'winston';
+const { combine, errors, timestamp, colorize, align } = format;
+import jsonStringify from 'fast-safe-stringify';
+import moment, { HTML5_FMT } from 'moment';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+let lastMesage = moment();
+let lastDiff = '';
+let lastMessageText = '';
+const logLikeFormat = (maxArgLength?: number) => {
+  return {
+    transform: info => {
+      const { timestamp: ts, label, level, message, stack } = info;
+      const args = info[Symbol.for('splat')] || undefined;
+      let strArgs = jsonStringify(args, null, 2);
+      if (maxArgLength && strArgs && strArgs.length > maxArgLength) {
+        strArgs = strArgs.slice(0, maxArgLength / 10);
+        strArgs += '\n...andMore';
+      }
+
+      if (lastMessageText !== message) {
+        const time = moment(ts);
+        const duration = moment.duration(time.diff(lastMesage));
+        lastDiff = moment(duration.asMilliseconds()).format(HTML5_FMT.TIME_MS); // `${hrs}:${mins}:${secs}.${msecs}`;
+        lastMesage = time;
+        lastMessageText = message;
+      }
+
+      info[Symbol.for('message')] = `${ts} ${lastDiff}\t ${
+        label ? `[${label}]` : ''
+      } ${level}: ${message} ${strArgs ? `\n${strArgs}` : ''} ${
+        stack ? `\n${stack}` : ''
+      }`;
+      return info;
+    }
+  };
+};
+
+const tr = [];
+
+if (process.env.LOG_LEVEL === 'None') {
+  tr.push(
+    new transports.Console({
+      level: 'error',
+      silent: true
+    })
+  );
+} else {
+  // eslint-disable-next-line no-console
+  console.log(
+    'LOG LEVEL',
+    process.env.LOG_LEVEL,
+    process.env.production === 'true' ? 'Production' : 'Dev'
+  );
+
+  tr.push(
+    new transports.File({
+      filename: 'error.log',
+      level: 'error',
+      format: logLikeFormat()
+    }),
+    new transports.File({
+      filename: 'info.log',
+      level: 'info',
+      format: logLikeFormat(),
+      options: { flags: 'w' }
+    }),
+    new transports.File({
+      filename: 'debug.log',
+      level: 'debug',
+      format: logLikeFormat(),
+      options: { flags: 'w' }
+    }),
+    new transports.File({
+      filename: 'silly.log',
+      level: 'silly',
+      format: logLikeFormat(),
+      options: { flags: 'w' }
+    })
+  );
+
+  tr.push(
+    new transports.Console({
+      format: combine(colorize(), timestamp(), logLikeFormat(500)),
+      level: process.env.production === 'true' ? 'info' : 'debug'
+    })
+  );
+}
+
+const logger = createLogger({
+  format: combine(errors({ stack: true }), timestamp(), align()),
+  transports: tr
+});
+
+export { logger };

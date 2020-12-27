@@ -1,0 +1,11 @@
+mutation AddEvent($event: EventInput!) {
+  addEvent(event: $event) {
+    id
+    toernamentNumber
+    firstDay
+    dates
+    type
+    uniCode
+    name
+  }
+}

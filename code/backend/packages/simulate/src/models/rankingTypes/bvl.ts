@@ -1,0 +1,361 @@
+import {
+  logger,
+  DataBaseHandler,
+  Game,
+  GameType,
+  Player,
+  RankingPlace,
+  RankingPoint,
+  RankingSystem,
+  splitInChunks
+} from '@badvlasim/shared';
+import moment, { Moment } from 'moment';
+import { Op } from 'sequelize';
+import { PointCalculator } from '../point-calculator';
+import { RankingCalc } from '../rankingCalc';
+
+export class BvlRankingCalc extends RankingCalc {
+  constructor(
+    public rankingType: RankingSystem,
+    protected dataBaseService: DataBaseHandler,
+    protected runningFromStart: boolean
+  ) {
+    super(rankingType, dataBaseService, runningFromStart);
+    this.pointCalculator = new PointCalculator(this.rankingType);
+  }
+
+  showLevel(level: number): string {
+    return `R${level}`;
+  }
+
+  async beforeCalculationAsync(start?: Moment) {
+    await super.beforeCalculationAsync(start);
+
+    if (this.runningFromStart) {
+      logger.debug('Adding initial players');
+      await this.startingRanking.addInitialPlayersAsync(
+        this.rankingType.startingType,
+        this.rankingType.id,
+        this.rankingType.amountOfLevels,
+        this._initialPlayers.bind(this),
+        this.protectRanking.bind(this)
+      );
+      this.rankingType.caluclationIntervalLastUpdate = moment([2017, 8, 1]).toDate();
+      this.rankingType.updateIntervalAmountLastUpdate = moment([2017, 8, 1]).toDate();
+    }
+  }
+
+  private _initialPlayers(player: any, place: RankingPlace, type: string, startPlaces: number[]) {
+    // Set type specific stuff
+    place[`${type}Points`] = parseInt(player['Totaal punten'], 10);
+    place[`${type}Rank`] = parseInt(player.Rank, 10);
+    place[type] = this.getStartRanking(parseInt(player.Rank, 10), startPlaces);
+    return place;
+  }
+
+  async calculatePeriodAsync(
+    start: Date,
+    end: Date,
+    updateRankings: boolean,
+    historicalGames: boolean
+  ) {
+    super.calculatePeriodAsync(start, end, updateRankings, historicalGames);
+    let gamesStartDate = this.rankingType.caluclationIntervalLastUpdate;
+ 
+    // If running from start, we are reimporting evertyhing,
+    // so the game points need to be caculated for those previous period
+    if (historicalGames) {
+      logger.silly('Modifying gamesstart date for historical games');
+      gamesStartDate = moment(end)
+        .subtract(this.rankingType.period.amount, this.rankingType.period.unit)
+        .toDate();
+    }
+
+    // Get all relevant games and players
+    const players = await this.getPlayersAsync(start, end);
+    const games = await this.getGamesAsync(gamesStartDate, end);
+
+    // Calculate new points
+    await this.calculateRankingPointsPerGameAsync(games, players, end);
+
+    // Calculate places for new period
+    await this._calculateRankingPlacesAsync(
+      moment(end)
+        .subtract(this.rankingType.period.amount, this.rankingType.period.unit)
+        .toDate(),
+      end,
+      players,
+      updateRankings
+    );
+  }
+
+  // Testing grounds: https://stackblitz.com/edit/typescript-2yg1po
+  private async _calculateRankingPlacesAsync(
+    startDate: Date,
+    endDate: Date,
+    players: Map<number, Player>,
+    updateRankings: boolean
+  ) {
+    const eligbleForRanking: Map<number, RankingPoint[]> = new Map();
+    logger.debug(
+      `calculateRankingPlacesAsync for preiod ${startDate.toISOString()} - ${endDate.toISOString()}`
+    );
+    (
+      await RankingPoint.findAll({
+        where: {
+          SystemId: this.rankingType.id,
+          points: {
+            [Op.ne]: null
+          }
+        },
+        attributes: ['points', 'PlayerId', 'differenceInLevel'],
+        include: [
+          {
+            model: Game,
+            attributes: ['id', 'gameType', 'playedAt'],
+            where: {
+              playedAt: {
+                [Op.between]: [startDate.toISOString(), endDate.toISOString()]
+              }
+            },
+            required: true
+          }
+        ],
+        order: [[{ model: Game, as: 'game' }, 'playedAt', 'desc']]
+      })
+    ).map((x: RankingPoint) => {
+      const points = eligbleForRanking.get(x.PlayerId) || [];
+      points.push(x);
+      eligbleForRanking.set(x.PlayerId, points);
+    });
+
+    let placesMen = [];
+    let placesWomen = [];
+    let gameCount;
+
+    const amountSinceStart = Math.abs(
+      moment([2016, 8, 1]).diff(endDate, this.rankingType.inactivityUnit)
+    );
+
+    const canBeInactive = amountSinceStart > this.rankingType.inactivityAmount && updateRankings;
+
+    if (canBeInactive) {
+      logger.silly('Checking inactive');
+      gameCount = await this.countGames(players, endDate, this.rankingType);
+    }
+
+    for await (const [key, player] of players) {
+      const rankingPoints = eligbleForRanking.get(player.id) || [];
+      const inactive = { single: false, double: false, mix: false };
+
+      if (canBeInactive) {
+        const playerGameCount = gameCount.get(player.id) || {
+          single: 0,
+          double: 0,
+          mix: 0
+        };
+        inactive.single = playerGameCount.single < this.rankingType.gamesForInactivty;
+        inactive.double = playerGameCount.double < this.rankingType.gamesForInactivty;
+        inactive.mix = playerGameCount.mix < this.rankingType.gamesForInactivty;
+      }
+
+      const lastRanking = player.getLastRanking(
+        this.rankingType.id,
+        this.rankingType.amountOfLevels
+      );
+
+      const newPlace = {
+        ...(await this.findNewPlacePlayer(rankingPoints, lastRanking, inactive, updateRankings)),
+        PlayerId: player.id,
+        SystemId: this.rankingType.id,
+        rankingDate: endDate
+      };
+
+      if (player.gender === 'M') {
+        placesMen.push(newPlace);
+      } else {
+        placesWomen.push(newPlace);
+      }
+    }
+
+    const types = ['single', 'double', 'mix'];
+
+    types.forEach(type => {
+      // Reset ranking per type
+      let rankingLevel = 1;
+      let rankingLevelAcc = 1;
+
+      let totalRanking = 1;
+      let totalRankingAcc = 1;
+
+      const sortFunc = (a, b) => {
+        // First sort by level
+        if (a[`${type}`] > b[`${type}`]) {
+          return 1;
+        } else if (a[`${type}`] < b[`${type}`]) {
+          return -1;
+        } else {
+          // Level are equal, sort by points
+          if (a[`${type}Points`] < b[`${type}Points`]) {
+            return 1;
+          } else if (a[`${type}Points`] > b[`${type}Points`]) {
+            return -1;
+          } else {
+            // points are equal, try sorting on downgrade points
+            return a[`${type}PointsDowngrade`] === b[`${type}PointsDowngrade`]
+              ? // Still the same, so we give them same place
+                0
+              : a[`${type}PointsDowngrade`] < b[`${type}PointsDowngrade`]
+              ? // More downgrade points = higher place
+                1
+              : // Less downgrade points = lower place
+                -1;
+          }
+        }
+      };
+      const mapFunction = (value, index, places, counts) => {
+        // check previous one (except first one)
+        if (index !== 0) {
+          const prev = places[index - 1];
+
+          if (prev[`${type}`] !== value[`${type}`]) {
+            // reset per level
+            rankingLevel = 1;
+            rankingLevelAcc = 1;
+            // Copy When level changes, we need to copy instead of reset
+            totalRanking = totalRankingAcc;
+          } else if (prev[`${type}Points`] !== value[`${type}Points`]) {
+            // put ranking at totalRanking when points change
+            rankingLevel = rankingLevelAcc;
+            totalRanking = totalRankingAcc;
+          }
+        }
+
+        value[`${type}Rank`] = rankingLevel;
+        value[`total${capitalizedType}Ranking`] = totalRanking;
+        value[`totalWithin${capitalizedType}Level`] = counts[value[`${type}`]];
+
+        // Increase totalRanking
+        rankingLevelAcc++;
+        totalRankingAcc++;
+
+        return value;
+      };
+
+      const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+      const countsMale = {};
+      const countsFemale = {};
+
+      // Total counts per level
+      this.rankingType.levelArray.forEach(level => {
+        countsMale[level + 1] = placesMen.filter(place => place[`${type}`] === level + 1).length;
+        countsFemale[level + 1] = placesWomen.filter(
+          place => place[`${type}`] === level + 1
+        ).length;
+      });
+
+      // Sort and map
+      placesMen = placesMen
+        .sort(sortFunc)
+        .map((value, index) => mapFunction(value, index, placesMen, countsMale));
+
+      // Reset for gender switch
+      rankingLevel = 1;
+      rankingLevelAcc = 1;
+
+      totalRanking = 1;
+      totalRankingAcc = 1;
+
+      // Sort and map
+      placesWomen = placesWomen
+        .sort(sortFunc)
+        .map((value, index) => mapFunction(value, index, placesWomen, countsFemale));
+    });
+
+    await this.dataBaseService.addRankingPlaces([...placesMen, ...placesWomen]);
+  }
+
+  getStartRanking(currentPlace: number, startPlaces: number[]): number {
+    const level = startPlaces.indexOf(startPlaces.find(x => x > currentPlace));
+    if (level === -1) {
+      return this.rankingType.amountOfLevels;
+    } else {
+      return level + 1;
+    }
+  }
+  getStartRankingRev(currentPlace: number, startPlaces: number[]): number {
+    const level = startPlaces.indexOf(startPlaces.find(x => x < currentPlace));
+    if (level === -1) {
+      return this.rankingType.amountOfLevels;
+    } else {
+      return level + 1;
+    }
+  }
+
+  async countGames(players: Map<number, Player>, endDate: Date, rankingType: RankingSystem) {
+    const chunks = splitInChunks(Array.from(players.keys()), 3500);
+    let lastWeeks = [];
+
+    const getCount = chunk => {
+      return RankingPoint.count({
+        where: {
+          SystemId: rankingType.id,
+          PlayerId: chunk
+        },
+        include: [
+          {
+            model: Game,
+            attributes: ['gameType'],
+            where: {
+              playedAt: {
+                [Op.between]: [
+                  moment(endDate)
+                    .subtract(rankingType.inactivityAmount, rankingType.inactivityUnit)
+                    .toISOString(),
+                  endDate.toISOString()
+                ]
+              }
+            },
+            required: true
+          }
+        ],
+        group: ['RankingPoint.PlayerId', 'game.gameType']
+      });
+    };
+
+    for await (const chunk of chunks) {
+      lastWeeks = lastWeeks.concat(await getCount(chunk));
+    }
+
+    const results = new Map<
+      number,
+      {
+        single: number;
+        double: number;
+        mix: number;
+      }
+    >();
+    lastWeeks.forEach(result => {
+      const player = results.get(result.PlayerId) || {
+        single: 0,
+        double: 0,
+        mix: 0
+      };
+      switch (result.gameType) {
+        case GameType.S:
+          player.single = parseInt(result.count, 10);
+          break;
+        case GameType.MX:
+          player.mix = parseInt(result.count, 10);
+          break;
+        case GameType.D:
+          player.double = parseInt(result.count, 10);
+          break;
+      }
+
+      results.set(result.PlayerId, player);
+    });
+
+    return results;
+  }
+}

@@ -1,0 +1,73 @@
+<div class="mat-subheading-1" translate="faq.title"></div>
+
+<div class="mat-subheading-2" translate="faq.legend"></div>
+<ul>
+  <li><a [routerLink]="['/changelog']" translate="faq.updates.title"></a></li>
+  <li><a href="#info-filmpje" translate="faq.info.title"></a></li>
+  <li>
+    <a href="#speler-pagina" translate="faq.overview.title"></a>
+  </li>
+  <li><a href="#ranking" translate="faq.ranking.title"></a></li>
+  <li><a href="#punten-tabel" translate="faq.points.title"></a></li>
+</ul>
+<div
+  class="mat-subheading-2"
+  id="updates"
+  translate="faq.updates.title"
+></div>
+
+<div
+  class="mat-subheading-2"
+  id="info-filmpje"
+  translate="faq.info.title"
+></div>
+<p>
+  <span translate="faq.info.description"></span>
+</p>
+<ul>
+  <li>
+    <strong>BVL: </strong
+    ><a
+      href="https://youtu.be/sJYd50_lLos"
+      target="_blank"
+      rel="noopener noreferrer"
+      >https://youtu.be/sJYd50_lLos</a
+    >
+  </li>
+  <li>
+    <strong>LFBB: </strong
+    ><a
+      href="https://lfbb.be/page/classements"
+      target="_blank"
+      rel="noopener noreferrer"
+      >https://lfbb.be/page/classements</a
+    >
+  </li>
+</ul>
+
+<div
+  class="mat-subheading-2"
+  id="speler-pagina"
+  translate="faq.overview.title"
+></div>
+<p translate="faq.overview.description"></p>
+<p translate="faq.overview.levels"></p>
+<img src="../../assets/images/BVL Simulation - Levels.jpg" />
+<p translate="faq.overview.evolution-1"></p>
+<p translate="faq.overview.evolution-2"></p>
+<img src="../../assets/images/BVL Simulation - Evolution.jpg" />
+<p translate="faq.overview.game-result"></p>
+<img src="../../assets/images/BVL Simulation - Game result.jpg" />
+
+<div class="mat-subheading-2" id="ranking" translate="faq.ranking.title"></div>
+<p translate="faq.ranking.description"></p>
+
+<div
+  class="mat-subheading-2"
+  id="punten-tabel"
+  translate="faq.points.title"
+></div>
+
+<ng-container *ngIf="this.caps$ | async as caps">
+  <td-data-table [data]="caps" [columns]="this.capsColumns"> </td-data-table>
+</ng-container>
