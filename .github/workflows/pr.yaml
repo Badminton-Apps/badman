@@ -14,12 +14,9 @@ jobs:
         with:
           node-version: 12
           registry-url: "https://npm.pkg.github.com"
-      - name: Install
-        run: yarn global add lerna
+      - run: npx lerna bootstrap
         working-directory: code/${{ matrix.folder }}
-      - run: lerna bootstrap
+      - run: npx lerna run lint
         working-directory: code/${{ matrix.folder }}
-      - run: lerna run lint
-        working-directory: code/${{ matrix.folder }}
-      - run: lerna run build
+      - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}
