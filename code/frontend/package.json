@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "start": "npx lerna run --parallel start",
-    "release": "lerna version patch --conventional-commits --no-git-tag-version --yes --force-publish"
+    "release": "npx lerna version patch --conventional-commits --no-git-tag-version --yes --force-publish"
   },
   "dependencies": {
     "@angular/animations": "~10.1.3",
