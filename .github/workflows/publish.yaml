@@ -46,17 +46,19 @@ jobs:
         working-directory: code/backend
       - run: cp code/frontend/CHANGELOG.md code/frontend/packages/ranking-client/src/assets/changelogs/CHANGELOG-FE.md
       - run: cp code/backend/CHANGELOG.md code/frontend/packages/ranking-client/src/assets/changelogs/CHANGELOG-BE.md
-      - name: Something
+      - name: Add markdown files
         run: |
           git config --global user.email "glenn.latomme@gmail.com"
           git config --global user.name "Glenn Latomme"
           git add .
           PACKAGE_VERSION=$(node -p -e "require('./code/backend/lerna.json').version")
           git commit -m "release: $PACKAGE_VERSION"
-          git tag -a v$PACKAGE_VERSION  -m "release $PACKAGE_VERSION"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
           tags: true
+      - name: Github Release
+        run: |
+          npx conventional-github-releaser -t {{secrets.GITHUB_TOKEN}} -p angular
