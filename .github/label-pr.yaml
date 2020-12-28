@@ -1,0 +1,24 @@
+- regExp: ".*\\.ts+$"
+  labels: ["typescript"]
+- regExp: ".*\\.sql+$"
+  labels: ["database", "critical"]
+- regExp: ".*\\.md+$"
+  labels: ["documentation"]
+- regExp: "^(pom\\.xml|package\\.json|build\\.gradle)$"
+  labels: ["dependencies"]
+- regExp: ".*\\.(zip|jar|war|ear)+$"
+  labels: ["artifact", "invalid"]
+
+- regExp: "^.*frontend[\/\\].*$"
+  labels: ["frontend"]
+
+- regExp: "^.*backend[\/\\].*$"
+  labels: ["backend"]
+- regExp: "^.*[\/\\]?backend\\packages\\_shared[\/\\].*$"
+  labels: ["_shared"]
+- regExp: "^.*[\/\\]?backend\\packages\\import[\/\\].*$"
+  labels: ["import"]
+- regExp: "^.*[\/\\]?backend\\packages\\server[\/\\].*$"
+  labels: ["server"]
+- regExp: "^.*[\/\\]?backend\\packages\\simulate[\/\\].*$"
+  labels: ["simulate"]
