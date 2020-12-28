@@ -10,7 +10,7 @@
     "test": "npx lerna run test --stream -- --passWithNoTests",
     "test:local": "npx lerna run test:local --stream",
     "migrate": "npx lerna run migrate --scope=@badvlasim\\server",
-    "release": "lerna version patch --conventional-commits --no-git-tag-version --yes --force-publish"
+    "release": "npx lerna version patch --conventional-commits --no-git-tag-version --yes --force-publish"
   },
   "dependencies": {
     "@supercharge/promise-pool": "^1.2.0",

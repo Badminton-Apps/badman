@@ -1,8 +1,8 @@
 name: publish
 on: workflow_dispatch
 jobs:
-  bootstrap:
-    name: Bootstrap
+  build:
+    name: Bootstrap, Build & Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -16,39 +16,18 @@ jobs:
           registry-url: "https://npm.pkg.github.com"
       - run: npx lerna bootstrap
         working-directory: code/${{ matrix.folder }}
-  lint:
-    name: Lint
-    needs: bootstrap
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        folder: ["backend", "frontend"]
-    steps:
-      - uses: actions/checkout@v2
       - run: npx lerna run lint
         working-directory: code/${{ matrix.folder }}
-  test:
-    name: test
-    needs: lint
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        folder: ["backend", "frontend"]
-    steps:
-      - uses: actions/checkout@v2
       - run: npx lerna run test
         working-directory: code/${{ matrix.folder }}
-  build:
-    name: Build
-    needs: test
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        folder: ["backend", "frontend"]
-    steps:
-      - uses: actions/checkout@v2
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}
+
+      # TOOD: 
+      #   - Docker build
+      #   - Docker push
+      #   - Helm package
+      #   - Upgrade helm
 
   publish:
     name: Release
