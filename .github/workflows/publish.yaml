@@ -43,6 +43,8 @@ jobs:
       - run: cp code/backend/CHANGELOG.md code/frontend/packages/ranking-client/src/assets/changelogs/CHANGELOG-BE.md
       - name: Something
         run: |
+          git config --global user.email "glenn.latomme@gmail.com"
+          git config --global user.name "Glenn Latomme"
           git add .
           PACKAGE_VERSION=$(node -p -e "require('./code/backend/lerna.json').version")
           git commit -m "release: $PACKAGE_VERSION"
