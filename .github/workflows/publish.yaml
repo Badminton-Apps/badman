@@ -24,6 +24,7 @@ jobs:
       matrix:
         folder: ["backend", "frontend"]
     steps:
+      - uses: actions/checkout@v2
       - run: npx lerna run lint
         working-directory: code/${{ matrix.folder }}
   test:
@@ -34,6 +35,7 @@ jobs:
       matrix:
         folder: ["backend", "frontend"]
     steps:
+      - uses: actions/checkout@v2
       - run: npx lerna run test
         working-directory: code/${{ matrix.folder }}
   build:
@@ -44,26 +46,20 @@ jobs:
       matrix:
         folder: ["backend", "frontend"]
     steps:
+      - uses: actions/checkout@v2
       - run: npx lerna run build
-        working-directory: code/${{ matrix.folder }}
-
-
-  release:
-    name: Release
-    needs: build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        folder: ["backend", "frontend"]
-    steps:
-      - run: npx lerna run release
         working-directory: code/${{ matrix.folder }}
 
   publish:
     name: Release
-    needs: release
+    needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - run: npx lerna run release
+        working-directory: code/frontend
+      - run: npx lerna run release
+        working-directory: code/backend
       - run: cp code/frontend/CHANGELOG.md code/frontend/packages/ranking-client/src/assets/changelogs/CHANGELOG-FE.md
       - run: cp code/backend/CHANGELOG.md code/frontend/packages/ranking-client/src/assets/changelogs/CHANGELOG-BE.md
       - name: Something
