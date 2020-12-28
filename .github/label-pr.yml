@@ -9,16 +9,16 @@
 - regExp: ".*\\.(zip|jar|war|ear)+$"
   labels: ["artifact", "invalid"]
 
-- regExp: "^.*frontend[\/\\].*$"
+- regExp: "^.*frontend[\\/\\\\].*$"
   labels: ["frontend"]
 
-- regExp: "^.*backend[\/\\].*$"
+- regExp: "^.*backend[\\/\\\\].*$"
   labels: ["backend"]
-- regExp: "^.*[\/\\]?backend\\packages\\_shared[\/\\].*$"
+- regExp: "^.*[\\/\\\\]?backend[\\/\\\\]packages[\\/\\\\]_shared[\\/\\\\].*$"
   labels: ["_shared"]
-- regExp: "^.*[\/\\]?backend\\packages\\import[\/\\].*$"
+- regExp: "^.*[\\/\\\\]?backend[\\/\\\\]packages[\\/\\\\]import[\\/\\\\].*$"
   labels: ["import"]
-- regExp: "^.*[\/\\]?backend\\packages\\server[\/\\].*$"
+- regExp: "^.*[\\/\\\\]?backend[\\/\\\\]packages[\\/\\\\]server[\\/\\\\].*$"
   labels: ["server"]
-- regExp: "^.*[\/\\]?backend\\packages\\simulate[\/\\].*$"
+- regExp: "^.*[\\/\\\\]?backend[\\/\\\\]packages[\\/\\\\]simulate[\\/\\\\].*$"
   labels: ["simulate"]
