@@ -39,8 +39,6 @@ export class RankingController extends BaseController {
     this.router.get(`${this._path}/top`, this._top);
   }
 
-  
-
   private _top = async (request: Request, response: Response) => {
     const where = {
       SystemId: parseInt(request.query.systemId as string, 10),
