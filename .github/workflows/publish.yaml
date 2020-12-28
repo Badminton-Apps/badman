@@ -58,7 +58,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-          tags: true
       - name: Github Release
         run: |
           npx conventional-github-releaser -t {{secrets.GITHUB_TOKEN}} -p angular
