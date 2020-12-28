@@ -35,9 +35,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npx lerna run release
+      - name: Setup Node ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: "https://npm.pkg.github.com"      
+      - run: npm run release
         working-directory: code/frontend
-      - run: npx lerna run release
+      - run: npm run release
         working-directory: code/backend
       - run: cp code/frontend/CHANGELOG.md code/frontend/packages/ranking-client/src/assets/changelogs/CHANGELOG-FE.md
       - run: cp code/backend/CHANGELOG.md code/frontend/packages/ranking-client/src/assets/changelogs/CHANGELOG-BE.md
