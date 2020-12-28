@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/client",
   "description": "Ranking simulation Badminton Vlaanderen",
-  "version": "1.2.19",
+  "version": "1.2.20",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
