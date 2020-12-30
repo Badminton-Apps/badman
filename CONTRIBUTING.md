@@ -1,6 +1,6 @@
-# Contributing to Badvlasim
+# Contributing to Badminton-Apps
 
-We would love for you to contribute to Badvlasim and help make it even better than it is today!
+We would love for you to contribute to Badminton-Apps and help make it even better than it is today!
 As a contributor, here are the guidelines we would like you to follow:
 
  - [Code of Conduct](#coc)
@@ -15,7 +15,7 @@ As a contributor, here are the guidelines we would like you to follow:
 
 ## <a name="coc"></a> Code of Conduct
 
-Help us keep Badvlasim open and inclusive.
+Help us keep Badminton-Apps open and inclusive.
 Please read and follow our [Code of Conduct][coc].
 
 
@@ -32,7 +32,7 @@ Stack Overflow is a much better place to ask questions since:
 
 To save your and our time, we will systematically close all issues that are requests for general support and redirect people to Stack Overflow.
 
-If you would like to chat about the question in real-time, you can reach out via [our Discord server][discord].
+<!-- If you would like to chat about the question in real-time, you can reach out via [our Discord server][discord]. -->
 
 
 ## <a name="issue"></a> Found a Bug?
@@ -72,14 +72,14 @@ We understand that sometimes it might be hard to extract essential bits of code 
 
 Unfortunately, we are not able to investigate / fix bugs without a minimal reproduction, so if we don't hear back from you, we are going to close an issue that doesn't have enough info to be reproduced.
 
-You can file new issues by selecting from our [new issue templates](https://github.com/badvlasim/badvlasim/issues/new/choose) and filling out the issue template.
+You can file new issues by selecting from our [new issue templates](https://github.com/Badminton-Apps/core/issues/new/choose) and filling out the issue template.
 
 
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
 
 Before you submit your Pull Request (PR) consider the following guidelines:
 
-1. Search [GitHub](https://github.com/badvlasim/badvlasim/pulls) for an open or closed PR that relates to your submission.
+1. Search [GitHub](https://github.com/Badminton-Apps/core/pulls) for an open or closed PR that relates to your submission.
    You don't want to duplicate existing efforts.
 
 2. Be sure that an issue describes the problem you're fixing, or documents the design for the feature you'd like to add.
@@ -89,19 +89,19 @@ Before you submit your Pull Request (PR) consider the following guidelines:
    We cannot accept code without a signed CLA.
    Make sure you author all contributed Git commits with email address associated with your CLA signature.
 
-4. Fork the badvlasim/badvlasim repo.
+4. Fork the Badminton-Apps/Badminton-Apps repo.
 
 5. Make your changes in a new git branch:
 
      ```shell
-     git checkout -b my-fix-branch master
+     git checkout -b my-fix-branch main
      ```
 
 6. Create your patch, **including appropriate test cases**.
 
 7. Follow our [Coding Rules](#rules).
 
-8. Run the full Badvlasim test suite, as described in the [developer documentation][dev-doc], and ensure that all tests pass.
+8. Run the full Badminton-Apps test suite, as described in the [developer documentation][dev-doc], and ensure that all tests pass.
 
 9. Commit your changes using a descriptive commit message that follows our [commit message conventions](#commit).
    Adherence to these conventions is necessary because release notes are automatically generated from these messages.
@@ -117,7 +117,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     git push origin my-fix-branch
     ```
 
-11. In GitHub, send a pull request to `Badvlasim:master`.
+11. In GitHub, send a pull request to `Badminton-Apps:core`.
 
 
 #### Addressing review feedback
@@ -126,7 +126,7 @@ If we ask for changes via code reviews then:
 
 1. Make the required updates to the code.
 
-2. Re-run the Badvlasim test suites to ensure tests are still passing.
+2. Re-run the Badminton-Apps test suites to ensure tests are still passing.
 
 3. Create a fixup commit and push to your GitHub repository (this will update your Pull Request):
 
@@ -135,7 +135,7 @@ If we ask for changes via code reviews then:
     git push
     ```
 
-    For more info on working with fixup commits see [here](docs/FIXUP_COMMITS.md).
+    For more info on working with fixup commits see [here](FIXUP_COMMITS.md).
 
 That's it! Thank you for your contribution!
 
@@ -178,10 +178,10 @@ After your pull request is merged, you can safely delete your branch and pull th
     git push origin --delete my-fix-branch
     ```
 
-* Check out the master branch:
+* Check out the main branch:
 
     ```shell
-    git checkout master -f
+    git checkout main -f
     ```
 
 * Delete the local branch:
@@ -190,10 +190,10 @@ After your pull request is merged, you can safely delete your branch and pull th
     git branch -D my-fix-branch
     ```
 
-* Update your master with the latest upstream version:
+* Update your main with the latest upstream version:
 
     ```shell
-    git pull --ff upstream master
+    git pull --ff upstream main
     ```
 
 
@@ -204,12 +204,9 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * All public API methods **must be documented**.
 * We follow [Google's JavaScript Style Guide][js-style-guide], but wrap all code at **100 characters**.
 
-   An automated formatter is available, see [DEVELOPER.md](docs/DEVELOPER.md#clang-format).
-
-
 ## <a name="commit"></a> Commit Message Format
 
-*This specification is inspired by and supersedes the [BadvlasimJS commit message format][commit-message-format].*
+*This specification is inspired by and supersedes the [commit message format][commit-message-format].*
 
 We have very precise rules over how our Git commit messages must be formatted.
 This format leads to **easier to read commit history**.
@@ -339,12 +336,12 @@ The following documents can help you sort out issues with GitHub accounts and mu
 
 
 
-[coc]: https://github.com/Badvlasim/code-of-conduct/blob/master/CODE_OF_CONDUCT.md
+[coc]: https://github.com/Badminton-Apps/code-of-conduct/blob/main/CODE_OF_CONDUCT.md
 [commit-message-format]: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#
 [corporate-cla]: http://code.google.com/legal/corporate-cla-v1.0.html
-[dev-doc]: https://github.com/badvlasim/badvlasim/blob/master/docs/DEVELOPER.md
-[github]: https://github.com/badvlasim/badvlasim
-[discord]: https://discord.gg/Badvlasim
+[dev-doc]: https://github.com/Badminton-Apps/core/blob/main/docs/DEVELOPER.md
+[github]: https://github.com/Badminton-Apps/core
+[discord]: https://discord.gg/Badminton-Apps
 [individual-cla]: http://code.google.com/legal/individual-cla-v1.0.html
 [js-style-guide]: https://google.github.io/styleguide/jsguide.html
 [jsfiddle]: http://jsfiddle.net
