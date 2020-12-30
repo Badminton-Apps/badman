@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.22 (2020-12-30)
+
+
+### Bug Fixes
+
+* now correct message ([e6e1037](https://github.com/Badminton-Apps/core/commit/e6e10372c4613dcfa8bf167a76a049a4f1ed4d70))
+
+
+
+
+
 ## 1.2.21 (2020-12-30)
 
 **Note:** Version bump only for package @badvlasim/import
