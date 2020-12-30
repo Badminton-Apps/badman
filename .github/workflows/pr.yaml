@@ -34,7 +34,9 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          directory: coverage 
-          name: codecov-${{ matrix.folder }}         
+          directory: /**/coverage/**/*
+          name: codecov-${{ matrix.folder }}
+          verbose: true
+          working-directory: ${{ matrix.folder }}
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}
