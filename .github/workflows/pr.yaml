@@ -34,7 +34,7 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          directory: /**/coverage/**/*
+          files: /**/coverage/**/cobertura-coverage.xml
           name: codecov-${{ matrix.folder }}
           verbose: true
           working-directory: ${{ matrix.folder }}
