@@ -64,8 +64,7 @@
     },
     "updates": {
       "title": "Updates",
-      "description-09_07_2020": "A update happend on 09/07/2020, this included removing some yought events. Which in turn could result in a small change in your level and ranking",
-      "description-02_07_2020": "A update happend on 02/07/2020, this included fixing some peoples names/matches. Which in turn could result in a small change in your level and ranking"
+      "description": "View the changelogs"
     }
   }
 }
