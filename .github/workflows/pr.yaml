@@ -34,9 +34,9 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: /**/coverage/**/cobertura-coverage.xml
+          files: packages/**/cobertura-coverage.xml
           name: codecov-${{ matrix.folder }}
           verbose: true
-          working-directory: ${{ matrix.folder }}
+          working-directory: code/${{ matrix.folder }}
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}
