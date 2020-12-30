@@ -1,10 +1,10 @@
 {
   "name": "@badvlasim/simulate",
   "description": "Ranking simulation simulate Badminton Vlaanderen",
-  "version": "1.2.21",
+  "version": "1.2.22",
   "private": true,
   "dependencies": {
-    "@badvlasim/shared": "^1.2.21",
+    "@badvlasim/shared": "^1.2.22",
     "fast-csv": ""
   },
   "scripts": {
