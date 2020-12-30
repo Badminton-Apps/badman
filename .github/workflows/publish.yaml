@@ -55,7 +55,8 @@ jobs:
           git add .
           PACKAGE_VERSION=$(node -p -e "require('./code/backend/lerna.json').version")
           git commit -m "release: $PACKAGE_VERSION"
-          git tag -a v$PACKAGE_VERSION
+          COMMITS=git log --oneline $(git describe --tags --abbrev=0 @^)..@
+          git tag -a v$PACKAGE_VERSION  -m "release: $PACKAGE_VERSION\n$COMMITS"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
