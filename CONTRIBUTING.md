@@ -1,6 +1,6 @@
-# Contributing to Badvlasim
+# Contributing to Badminton-Apps
 
-We would love for you to contribute to Badvlasim and help make it even better than it is today!
+We would love for you to contribute to Badminton-Apps and help make it even better than it is today!
 As a contributor, here are the guidelines we would like you to follow:
 
  - [Code of Conduct](#coc)
@@ -15,7 +15,7 @@ As a contributor, here are the guidelines we would like you to follow:
 
 ## <a name="coc"></a> Code of Conduct
 
-Help us keep Badvlasim open and inclusive.
+Help us keep Badminton-Apps open and inclusive.
 Please read and follow our [Code of Conduct][coc].
 
 
@@ -89,7 +89,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
    We cannot accept code without a signed CLA.
    Make sure you author all contributed Git commits with email address associated with your CLA signature.
 
-4. Fork the badvlasim/badvlasim repo.
+4. Fork the Badminton-Apps/Badminton-Apps repo.
 
 5. Make your changes in a new git branch:
 
@@ -101,7 +101,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 
 7. Follow our [Coding Rules](#rules).
 
-8. Run the full Badvlasim test suite, as described in the [developer documentation][dev-doc], and ensure that all tests pass.
+8. Run the full Badminton-Apps test suite, as described in the [developer documentation][dev-doc], and ensure that all tests pass.
 
 9. Commit your changes using a descriptive commit message that follows our [commit message conventions](#commit).
    Adherence to these conventions is necessary because release notes are automatically generated from these messages.
@@ -126,7 +126,7 @@ If we ask for changes via code reviews then:
 
 1. Make the required updates to the code.
 
-2. Re-run the Badvlasim test suites to ensure tests are still passing.
+2. Re-run the Badminton-Apps test suites to ensure tests are still passing.
 
 3. Create a fixup commit and push to your GitHub repository (this will update your Pull Request):
 
@@ -336,12 +336,12 @@ The following documents can help you sort out issues with GitHub accounts and mu
 
 
 
-[coc]: https://github.com/Badvlasim/code-of-conduct/blob/main/CODE_OF_CONDUCT.md
+[coc]: https://github.com/Badminton-Apps/code-of-conduct/blob/main/CODE_OF_CONDUCT.md
 [commit-message-format]: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#
 [corporate-cla]: http://code.google.com/legal/corporate-cla-v1.0.html
 [dev-doc]: https://github.com/Badminton-Apps/core/blob/main/docs/DEVELOPER.md
 [github]: https://github.com/Badminton-Apps/core
-[discord]: https://discord.gg/Badvlasim
+[discord]: https://discord.gg/Badminton-Apps
 [individual-cla]: http://code.google.com/legal/individual-cla-v1.0.html
 [js-style-guide]: https://google.github.io/styleguide/jsguide.html
 [jsfiddle]: http://jsfiddle.net

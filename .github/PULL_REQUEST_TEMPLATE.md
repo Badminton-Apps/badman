@@ -18,7 +18,7 @@ What kind of change does this PR introduce?
 - [ ] Build related changes
 - [ ] CI related changes
 - [ ] Documentation content changes
-- [ ] Badvlasim application / infrastructure changes
+- [ ] Badminton-Apps application / infrastructure changes
 - [ ] Other... Please describe:
 
 
