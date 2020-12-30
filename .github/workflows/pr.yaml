@@ -37,6 +37,6 @@ jobs:
           file: packages/**/cobertura-coverage.xml
           name: codecov-${{ matrix.folder }}
           verbose: true
-          working-directory: code/${{ matrix.folder }}
+          directory: code/${{ matrix.folder }}
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}
