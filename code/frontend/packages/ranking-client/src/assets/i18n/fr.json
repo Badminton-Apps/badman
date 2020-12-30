@@ -64,8 +64,7 @@
     },
     "updates": {
       "title": "Mise à jour",
-      "description-09_07_2020": "Une mise à jour a été faite le 09/07/2020, cela a inclus la suppression de tournois jeunes (ils ne sont plus utilisés pour le calcul des classements). Cette mise à jour peut influencer votre classement et ranking.",
-      "description-02_07_2020": "Une mise à jour a été faite le 02/07/2020, cette mise à jour corrige quelques joueurs et affiche leur noms ou résultats correctement sur ce site internet. Cette mise à jour peut influencer votre classement et ranking."
+      "description": "Voir les changelogs"
     }
   }
 }
