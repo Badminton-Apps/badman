@@ -1,4 +1,4 @@
-# Updateting master
+# Updateting main
 
 ### <a name="submit-pr"></a> Performing a update
 
@@ -7,7 +7,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 1. Go to root folder and checkout masetr
 
 ```shell
-git checkout master
+git checkout main
 ```
 
 2. Generate changelogs
