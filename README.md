@@ -13,7 +13,7 @@
 <hr>
 
 ## WIP
-Hi, right now most of project is still in prepartion to become publicly available. If you encounter any passwords, secrets, ... Please repor it via a issue.
+Hi, right now most of project is still in prepartion to become publicly available. If you encounter any passwords, secrets, ... Please report it via a issue.
 
 The markdown files are still a draft (and mostly copied from the angular github). However the [Commit guidelines][commit] still apply
 
@@ -21,7 +21,7 @@ The markdown files are still a draft (and mostly copied from the angular github)
 
 ### Prerequisites
 
-- Install [Node.js] which includes [Node Package Manager][npm]
+- [Node.js] which includes [Node Package Manager][npm]
 - Running Postgress instance
 
 
