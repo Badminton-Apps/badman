@@ -40,7 +40,17 @@ jobs:
         with:
           node-version: 12
           registry-url: "https://npm.pkg.github.com"      
-      - run: npm run release
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.github_token }}
+          tag-prefix: 'v'
+          version-file: './code/backend/lerna.json'
+          skip-version-file: true
+          git-message: 'chore(release): {version}'
+          preset: 'angular'          
+      - run: npm run release  ${{ steps.changelog.outputs.tag }}
         name: release Frontend
         working-directory: code/frontend
       - run: npm run release
@@ -60,16 +70,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-      - name: Conventional Changelog Action
-        id: changelog
-        uses: TriPSs/conventional-changelog-action@v3
-        with:
-          github-token: ${{ secrets.github_token }}
-          tag-prefix: 'v'
-          version-file: './code/backend/lerna.json'
-          skip-version-file: true
-          git-message: 'chore(release): {version}'
-          preset: 'angular'
       - name: Create Release
         uses: actions/create-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
