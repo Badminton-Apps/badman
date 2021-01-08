@@ -134,8 +134,11 @@ module.exports = {
       );
 
       // link current SubEvents to the Default group
-      const [subEventIds] = await queryInterface.sequelize.query(
-        'SELECT id FROM public."SubEvents";'
+      const [
+        subEventIds
+      ] = await queryInterface.sequelize.query(
+        'SELECT id FROM public."SubEvents";',
+        { transaction: t }
       );
 
       await queryInterface.bulkInsert(
