@@ -9,7 +9,7 @@ import { TeamMembership } from './team-membership.model';
 })
 export class Team extends Model<Team> {
   @Column
-  lastName: string;
+  name: string;
 
   @BelongsTo(() => SubEvent, 'SubEventId')
   subEvents?: SubEvent;
