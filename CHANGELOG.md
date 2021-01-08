@@ -1,9 +1,14 @@
-## [1.3.1](https://github.com/Badminton-Apps/core/compare/v1.3.0...v1.3.1) (2021-01-08)
+# [1.4.0](https://github.com/Badminton-Apps/core/compare/v1.3.0...v1.4.0) (2021-01-08)
 
 
 ### Bug Fixes
 
 * badges ([4d87a59](https://github.com/Badminton-Apps/core/commit/4d87a59c8263feec31715df48784576693b9d3ef))
+
+
+### Features
+
+* prepping for team assembly ([2c28b1b](https://github.com/Badminton-Apps/core/commit/2c28b1be14e7253a7a456890961f38bfdedbfe20))
 
 
 
