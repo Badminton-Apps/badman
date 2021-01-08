@@ -1,10 +1,11 @@
-# [0.1.0](https://github.com/Badminton-Apps/core/compare/v1.2.24...v0.1.0) (2021-01-08)
+# [1.3.0](https://github.com/Badminton-Apps/core/compare/v1.2.24...v1.3.0) (2021-01-08)
 
 
 ### Bug Fixes
 
 * Added version path ([810fcf2](https://github.com/Badminton-Apps/core/commit/810fcf2a859318f3888a84f2ca0410d0da301297))
 * testing 456 ([6d25124](https://github.com/Badminton-Apps/core/commit/6d25124493790b500398441286270e535f8234b7))
+* Wrong notation ([c68acd8](https://github.com/Badminton-Apps/core/commit/c68acd837f6f5d3ae17fe13197f54975440f59a0))
 
 
 ### Features
