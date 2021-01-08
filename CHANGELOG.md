@@ -1,3 +1,12 @@
+## [1.3.1](https://github.com/Badminton-Apps/core/compare/v1.3.0...v1.3.1) (2021-01-08)
+
+
+### Bug Fixes
+
+* badges ([4d87a59](https://github.com/Badminton-Apps/core/commit/4d87a59c8263feec31715df48784576693b9d3ef))
+
+
+
 # [1.3.0](https://github.com/Badminton-Apps/core/compare/v1.2.24...v1.3.0) (2021-01-08)
 
 
@@ -46,10 +55,6 @@
 * commit message ([715ab68](https://github.com/Badminton-Apps/core/commit/715ab68dfa4069d65a747f434a35f72716471fd1))
 * now correct message ([e6e1037](https://github.com/Badminton-Apps/core/commit/e6e10372c4613dcfa8bf167a76a049a4f1ed4d70))
 * Tetsing ci ([f48b492](https://github.com/Badminton-Apps/core/commit/f48b4928aa3655e11d0f1d84e4a104e965530e6f))
-
-
-
-## [1.2.21](https://github.com/Badminton-Apps/core/compare/v1.2.20...v1.2.21) (2020-12-30)
 
 
 
