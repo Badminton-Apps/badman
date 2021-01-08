@@ -1,0 +1,6 @@
+query GetTeamsQuery($clubId: ID!) {
+  teams(clubId: $clubId) {
+    id
+    name
+  }
+}

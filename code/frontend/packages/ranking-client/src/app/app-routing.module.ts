@@ -31,6 +31,13 @@ const routes: Routes = [
             (m) => m.ToernamentModule
           ),
       },
+      {
+        path: 'competition',
+        loadChildren: () =>
+          import('./competition/competition.module').then(
+            (m) => m.CompetitionModule
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '/' },
