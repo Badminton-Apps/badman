@@ -3,11 +3,13 @@
 
 ### Bug Fixes
 
+* Added version path ([810fcf2](https://github.com/Badminton-Apps/core/commit/810fcf2a859318f3888a84f2ca0410d0da301297))
 * testing 456 ([6d25124](https://github.com/Badminton-Apps/core/commit/6d25124493790b500398441286270e535f8234b7))
 
 
 ### Features
 
+* Empty feature for validating commit messages ([7e0bac4](https://github.com/Badminton-Apps/core/commit/7e0bac489941f941e13a50b08cb5591477a558c8))
 * testing 123 ([03454ca](https://github.com/Badminton-Apps/core/commit/03454ca38b667fb31a732bdd3f9fd5fe8e59834f))
 
 
