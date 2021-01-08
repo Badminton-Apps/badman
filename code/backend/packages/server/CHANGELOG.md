@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.24 (2021-01-08)
+
+
+### Bug Fixes
+
+* testing 456 ([8246661](https://github.com/Badminton-Apps/core/commit/82466611ba4497ebee176c8337ad1fb53bb6f112))
+
+
+
+
+
 ## 1.2.23 (2021-01-08)
 
 **Note:** Version bump only for package @badvlasim/server
