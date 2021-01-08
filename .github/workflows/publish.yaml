@@ -57,14 +57,14 @@ jobs:
           git commit -m "release: $PACKAGE_VERSION"
           COMMITS=$(git log --pretty=tformat:"%s%n" $(git describe --tags --abbrev=0 @^)..@)
           git tag -a v$PACKAGE_VERSION  -m $"release: $PACKAGE_VERSION" -m $"$COMMITS"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-          tags: true
       - name: Github Release
         env:
           TOKEN: ${{ secrets.RELEASER }}
         run: |
           npx conventional-github-releaser@3.1.3 -t "$TOKEN" -p angular
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          tags: true          
