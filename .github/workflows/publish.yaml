@@ -69,7 +69,6 @@ jobs:
           version-path: './code/backend/lerna.json'
           git-message: 'chore(release): {version}'
           preset: 'angular'
-
       - name: Create Release
         uses: actions/create-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
