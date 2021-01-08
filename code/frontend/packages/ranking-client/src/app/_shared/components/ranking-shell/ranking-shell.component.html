@@ -46,6 +46,24 @@
           <a mat-list-item routerLink="player/top" routerLinkActive="active">
             {{ 'systems.list' | translate }}
           </a>
+
+          <mat-accordion class="app-nav-accordion">
+            <mat-expansion-panel class="mat-elevation-z0">
+              <mat-expansion-panel-header>
+                <mat-panel-title>Competition</mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-nav-list>
+                <a
+                  mat-list-item
+                  routerLink="/competition/team-assembly"
+                  routerLinkActive="active"
+                >
+                  Team assembly
+                </a>
+              </mat-nav-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+
           <mat-divider></mat-divider>
 
           <ng-container *ngIf="this.hasAdminItems$ | async">

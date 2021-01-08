@@ -5,8 +5,10 @@ import {
   Table,
   PrimaryKey,
   AutoIncrement,
-  Unique
+  Unique,
+  HasMany
 } from 'sequelize-typescript';
+import { Team } from '../..';
 import { ClubMembership } from './club-membership.model';
 import { Player } from './player.model';
 
@@ -20,6 +22,9 @@ export class Club extends Model<Club> {
 
   @Column
   clubId?: number;
+
+  @HasMany(() => Team, 'ClubId')
+  teams?: Team[];
 
   @BelongsToMany(
     () => Player,
