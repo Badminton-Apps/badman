@@ -66,6 +66,9 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           output-file: "false"
+          tag-prefix: 'v'
+          git-message: 'chore(release): {version}'
+          preset: 'angular'
 
       - name: Create Release
         uses: actions/create-release@v1
