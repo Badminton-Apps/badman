@@ -66,7 +66,8 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           tag-prefix: 'v'
-          version-path: './code/backend/lerna.json'
+          version-file: './code/backend/lerna.json'
+          skip-version-file: true
           git-message: 'chore(release): {version}'
           preset: 'angular'
       - name: Create Release
