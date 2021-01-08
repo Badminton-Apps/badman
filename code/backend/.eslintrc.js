@@ -27,7 +27,7 @@ const noExtraneousOverrides = readdirSync(resolve(__dirname, PACKAGE_DIR))
   )
   // map to override rules pointing to local and root package.json for rule
   .map(entry => ({
-    files: [`${PACKAGE_DIR}${entry}/**/*`],
+    files: [`${PACKAGE_DIR}${entry}/**/*.ts`],
     rules: {
       'import/no-extraneous-dependencies': [
         'error',

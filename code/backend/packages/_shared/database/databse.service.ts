@@ -32,7 +32,7 @@ import { splitInChunks } from '../utils/utils';
 
 export class DataBaseHandler {
   static sequelizeInstance: Sequelize;
-  private _dialect: string;
+  private _dialect: string; 
 
   private get _sequelize(): Sequelize {
     if (!DataBaseHandler.sequelizeInstance) {
