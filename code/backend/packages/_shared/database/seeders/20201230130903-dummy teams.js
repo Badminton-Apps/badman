@@ -41,7 +41,8 @@ module.exports = {
           {
             name: dummyTeamName,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            ClubId: dummyClub[0].id
           }
         ],
         { transaction: t, ignoreDuplicates: true, returning: ['id'] }

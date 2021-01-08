@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.select-game {
+  display: flex;
+  flex-direction: row;
+}
+@media only screen and (max-width: 600px) {
+  .select-game {
+    flex-direction: column;
+  }
+}
