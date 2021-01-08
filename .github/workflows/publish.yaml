@@ -48,7 +48,7 @@ jobs:
           tag-prefix: 'v'
           version-file: './code/backend/lerna.json'
           skip-version-file: true
-          git-message: 'chore(release): {version}'
+          skip-commit: true
           preset: 'angular'          
       - run: npm run release -- ${{ steps.changelog.outputs.version }} --conventional-commits --no-git-tag-version --yes --force-publish
         name: release Frontend
@@ -63,8 +63,7 @@ jobs:
           git config --global user.email "glenn.latomme@gmail.com"
           git config --global user.name "Glenn Latomme"
           git add .
-          PACKAGE_VERSION=$(node -p -e "require('./code/backend/lerna.json').version")
-          git commit -m "release: $PACKAGE_VERSION"
+          git commit -m "chore(release): ${{ steps.changelog.outputs.version }}"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
