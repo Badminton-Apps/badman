@@ -10,6 +10,7 @@ import {
 } from './mutations';
 import {
   clubsQuery,
+  teamsQuery,
   eventQuery,
   eventsQuery,
   gamesQuery,
@@ -34,6 +35,7 @@ export const createSchema = () => {
         events: eventsQuery,
         imported: importedQuery,
         games: gamesQuery,
+        teams: teamsQuery,
         clubs: clubsQuery,
         system: systemQuery,
         systems: systemsQuery,

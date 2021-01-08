@@ -1,0 +1,15 @@
+<div class="select-game">
+  <app-select-club [formGroup]="formGroup"></app-select-club>
+  <app-select-team [formGroup]="formGroup"></app-select-team>
+  <app-select-game [formGroup]="formGroup"></app-select-game>
+</div>
+
+<ng-container
+  *ngIf="
+    this.formGroup.value.club &&
+    this.formGroup.value.team &&
+    this.formGroup.value.game
+  "
+>
+  <app-assembly></app-assembly>
+</ng-container>
