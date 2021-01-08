@@ -1,6 +1,12 @@
 <h1 align="center">Badminton Belgium Simulation</h1>
 
 <p align="center">
+![GitHub](https://img.shields.io/github/license/Badminton-Apps/core)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Badminton-Apps/core)
+![publish](https://github.com/Badminton-Apps/core/workflows/publish/badge.svg?branch=main)
+[![codecov](https://codecov.io/gh/Badminton-Apps/core/branch/main/graph/badge.svg?token=R5LYY78RWC)](https://codecov.io/gh/Badminton-Apps/core)
+</p>
+<p align="center">
   <a href="https://badvlasim.westeurope.cloudapp.azure.com/"><strong>https://badvlasim.westeurope.cloudapp.azure.com/</strong></a>
   <br>
 </p>
