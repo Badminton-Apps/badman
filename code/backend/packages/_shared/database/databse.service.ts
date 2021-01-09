@@ -344,7 +344,8 @@ export class DataBaseHandler {
       });
 
       for await (const membership of existing) {
-        membership.active = false;
+        // TODO: find a way to get this date
+        membership.end = new Date();
         await membership.save();
       }
 
