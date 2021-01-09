@@ -10,7 +10,7 @@ export * from './team.model';
 export * from './team-membership.model';
 export * from './club.model';
 export * from './club-membership.model';
-
+export * from './sub-event-membership.model';
 export * from './ranking';
 export * from './import';
 // end:ng42.barrel

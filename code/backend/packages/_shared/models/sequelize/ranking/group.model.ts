@@ -1,5 +1,5 @@
 import { BelongsToMany, Column, HasMany, Model, Table } from 'sequelize-typescript';
-import { RankingSystem } from '../../..';
+import { RankingSystem } from '../ranking/system.model';
 import { SubEvent } from '../sub-event.model';
 import { GroupSubEvents } from './group_subevent.model';
 import { GroupSystems } from './group_system.model';

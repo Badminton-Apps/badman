@@ -11,17 +11,19 @@ import { GamePlayer } from './game-player.model';
 import { Game } from './game.model';
 import { TeamMembership } from './team-membership.model';
 import { Team } from './team.model';
+import { Club } from './club.model';
+import { ClubMembership } from './club-membership.model';
 
 @Table({
   timestamps: true,
-  schema: "public"
+  schema: 'public'
 })
 export class Player extends Model<Player> {
   @Column
   email: string;
 
   @Column
-  gender: string; 
+  gender: string;
 
   @Column
   birthDate: Date;
@@ -56,6 +58,13 @@ export class Player extends Model<Player> {
   )
   // eslint-disable-next-line @typescript-eslint/naming-convention
   teams: (Team & { TeamMembership: TeamMembership })[];
+
+  @BelongsToMany(
+    () => Club,
+    () => ClubMembership
+  )
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  clubs: (Club & { ClubMembership: ClubMembership })[];
 
   @BelongsToMany(
     () => Game,

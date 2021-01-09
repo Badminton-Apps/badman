@@ -1,7 +1,6 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { RankingSystemGroup } from './group.model';
-import { SubEvent } from '../sub-event.model';
-import { RankingSystem } from '../../..';
+import { RankingSystem } from '../ranking/system.model';
 
 @Table({
   timestamps: false,

@@ -11,6 +11,7 @@ import { DrawType, GameType, LevelType, SubEventType } from '../enums';
 import { Event } from './event.model';
 import { Game } from './game.model';
 import { GroupSubEvents, RankingSystemGroup } from './ranking';
+import { SubEventMembership } from './sub-event-membership.model';
 import { Team } from './team.model';
 
 @Table({
@@ -51,8 +52,12 @@ export class SubEvent extends Model<SubEvent> {
   @HasMany(() => Game, 'SubEventId')
   games: Game[];
 
-  @HasMany(() => Team, 'SubEventId')
-  teams: Team[];
+  @BelongsToMany(
+    () => Team,
+    () => SubEventMembership
+  )
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  teams: (Team & { TeamMembership: SubEventMembership })[];
 
   @BelongsTo(() => Event, 'EventId')
   event?: Event;

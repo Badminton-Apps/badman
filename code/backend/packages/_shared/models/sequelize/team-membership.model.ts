@@ -1,15 +1,16 @@
 import {
-  BelongsTo,
   Column,
+  DataType,
   ForeignKey,
-  Table,
-  Model
+  Model,
+  Table
 } from 'sequelize-typescript';
+import { TeamMembershipType } from '../enums';
 import { Player } from './player.model';
 import { Team } from './team.model';
 
 @Table({
-  schema: "public"
+  schema: 'public'
 })
 export class TeamMembership extends Model<TeamMembership> {
   @ForeignKey(() => Player)
@@ -19,6 +20,9 @@ export class TeamMembership extends Model<TeamMembership> {
   @ForeignKey(() => Team)
   @Column
   teamId: number;
+
+  @Column(DataType.ENUM('BASE', 'NORMAL'))
+  type: TeamMembershipType;
 
   @Column
   start: Date;
