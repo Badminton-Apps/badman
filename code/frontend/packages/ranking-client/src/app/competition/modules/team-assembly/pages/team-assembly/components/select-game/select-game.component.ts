@@ -18,7 +18,7 @@ export class SelectGameComponent implements OnInit {
   @Input()
   formGroup: FormGroup;
   formControl = new FormControl();
-  options: string[] = ['One', 'Two', 'Three'];
+  options: string[] = ['Game 1', 'Game 2', 'Game 3'];
   filteredOptions: Observable<string[]>;
 
   ngOnInit() {

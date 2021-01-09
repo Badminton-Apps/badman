@@ -2,7 +2,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import {
-  SelectClubComponent,
   SelectGameComponent,
   SelectTeamComponent,
   TeamAssemblyComponent,
@@ -18,13 +17,12 @@ const materialModules = [
   MatAutocompleteModule,
   MatFormFieldModule,
   ReactiveFormsModule,
-  MatInputModule
+  MatInputModule 
 ];
 
 @NgModule({
   declarations: [
     TeamAssemblyComponent,
-    SelectClubComponent,
     SelectTeamComponent,
     SelectGameComponent,
     AssemblyComponent,
