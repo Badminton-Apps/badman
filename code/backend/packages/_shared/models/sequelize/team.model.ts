@@ -1,6 +1,7 @@
 import { BelongsTo, BelongsToMany, Model, Table, Column } from 'sequelize-typescript';
-import { Club } from '../..';
+import { Club } from './club.model';
 import { Player } from './player.model';
+import { SubEventMembership } from './sub-event-membership.model';
 import { SubEvent } from './sub-event.model';
 import { TeamMembership } from './team-membership.model';
 
@@ -12,9 +13,6 @@ export class Team extends Model<Team> {
   @Column
   name: string;
 
-  @BelongsTo(() => SubEvent, 'SubEventId')
-  subEvents?: SubEvent;
-
   @BelongsTo(() => Club, 'ClubId')
   club?: Club;
 
@@ -23,5 +21,11 @@ export class Team extends Model<Team> {
     () => TeamMembership
   )
   players: Player[];
+
+  @BelongsToMany(
+    () => SubEvent,
+    () => SubEventMembership
+  )
+  subEvents: SubEvent[];
 }
  
