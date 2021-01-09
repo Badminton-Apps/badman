@@ -5,8 +5,8 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ClubService } from 'app/_shared';
-import { Club } from 'app/_shared/models/club.model';
+import { Club } from 'app/_shared';
+import { ClubService } from 'app/_shared/services';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
