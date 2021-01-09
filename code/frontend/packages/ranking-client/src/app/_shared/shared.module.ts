@@ -25,7 +25,6 @@ import {
   UserInfoComponent,
 } from './components';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
-import { SelectClubComponent } from './components/select-club';
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 
@@ -42,9 +41,6 @@ const materialModules = [
   MatSelectModule,
   MatExpansionModule,
   MatDialogModule,
-
-  MatAutocompleteModule,
-  MatInputModule,
 ];
 
 const exportedComponents = [
@@ -53,7 +49,6 @@ const exportedComponents = [
   LoadingPipe,
   LevelToLetterPipe,
   EnumToArrayPipe,
-  SelectClubComponent,
 ];
 
 @NgModule({
@@ -67,7 +62,6 @@ const exportedComponents = [
     LanguageComponent,
     EnumToArrayPipe,
     ConfirmationDialogComponent,
-    SelectClubComponent,
   ],
   imports: [
     CommonModule,
