@@ -64,6 +64,8 @@
             </mat-expansion-panel>
           </mat-accordion>
 
+         
+
           <mat-divider></mat-divider>
 
           <ng-container *ngIf="this.hasAdminItems$ | async">
@@ -107,6 +109,23 @@
                     *ngIf="this.canImportEvents$ | async"
                   >
                     Import
+                  </a>
+                </mat-nav-list>
+              </mat-expansion-panel>
+            </mat-accordion>
+
+            <mat-accordion class="app-nav-accordion">
+              <mat-expansion-panel class="mat-elevation-z0">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>Club</mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-nav-list>
+                  <a
+                    mat-list-item
+                    routerLink="/admin/club"
+                    routerLinkActive="active"
+                  >
+                    Clubs
                   </a>
                 </mat-nav-list>
               </mat-expansion-panel>

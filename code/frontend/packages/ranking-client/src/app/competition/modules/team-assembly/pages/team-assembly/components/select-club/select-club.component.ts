@@ -29,7 +29,19 @@ export class SelectClubComponent implements OnInit {
     this.formGroup.addControl('club', this.formControl);
 
     // TODO: Convert to observable way
-    this.options = await this.clubService.getClubs().toPromise();
+    this.options = await this.clubService
+      .getClubs(100, null)
+      .pipe(
+        map((data) => {
+          const count = data.clubs?.total || 0;
+          if (count) {
+            return data.clubs.edges.map((x) => x.node);
+          } else {
+            return [];
+          }
+        })
+      )
+      .toPromise();
     this.filteredOptions = this.formControl.valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(value))

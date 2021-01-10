@@ -1,0 +1,50 @@
+<h1>Clubs</h1>
+
+<div layout="row" layout-fill layout-margin layout-align="start center">
+  <mat-form-field flex>
+    <mat-label>Filter</mat-label>
+    <input
+      matInput
+      (keyup)="filterName(input.value)"
+      placeholder="Ex. ium"
+      #input
+    />
+  </mat-form-field>
+</div>
+
+<div *ngIf="isLoadingResults">
+  <mat-progress-bar
+    mode="indeterminate"
+    *ngIf="isLoadingResults"
+  ></mat-progress-bar>
+</div>
+
+<table
+  mat-table
+  [dataSource]="dataSource"
+  multiTemplateDataRows
+  matSort
+  matSortActive="name"
+  matSortDirection="desc"
+>
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    [routerLink]="['/admin/club/', row.id]"
+  ></tr>
+</table>
+
+<mat-paginator
+  [length]="this.resultsLength$ | async"
+  [pageSize]="this.pageSize$ | async"
+  [pageIndex]="this.pageIndex$ | async"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  (page)="this.onPaginateChange.next($event)"
+></mat-paginator>
