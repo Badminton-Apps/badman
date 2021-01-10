@@ -165,7 +165,7 @@ In order to update the commit message of the last commit on your branch:
 
 > NOTE:<br />
 > If you need to update the commit message of an earlier commit, you can use `git rebase` in interactive mode.
-> See the [git docs](https://git-scm.com/docs/git-rebase#_interactive_mode) for more details.
+> See the [git docs](#rebase) for more details.
 
 
 #### After your pull request is merged
@@ -318,31 +318,14 @@ The content of the commit message body should contain:
 
 ## <a name="cla"></a> Signing the CLA
 
-Please sign our Contributor License Agreement (CLA) before sending pull requests. For any code
-changes to be accepted, the CLA must be signed. It's a quick process, we promise!
-
-* For individuals, we have a [simple click-through form][individual-cla].
-* For corporations, we'll need you to
-  [print, sign and one of scan+email, fax or mail the form][corporate-cla].
-
-If you have more than one GitHub accounts, or multiple email addresses associated with a single GitHub account, you must sign the CLA using the primary email address of the GitHub account used to author Git commits and send pull requests.
-
-The following documents can help you sort out issues with GitHub accounts and multiple email addresses:
-
-  * https://help.github.com/articles/setting-your-commit-email-address-in-git/
-  * https://stackoverflow.com/questions/37245303/what-does-usera-committed-with-userb-13-days-ago-on-github-mean
-  * https://help.github.com/articles/about-commit-email-addresses/
-  * https://help.github.com/articles/blocking-command-line-pushes-that-expose-your-personal-email-address/
+Please sign our Contributor License Agreement (CLA). 
+This will be prompted on your first PR 
+For any code changes to be accepted, the CLA must be signed. It's a quick process, we promise!
 
 
 
-[coc]: https://github.com/Badminton-Apps/code-of-conduct/blob/main/CODE_OF_CONDUCT.md
+[coc]: https://github.com/Badminton-Apps/core/blob/main/CODE_OF_CONDUCT.md
 [commit-message-format]: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#
-[corporate-cla]: http://code.google.com/legal/corporate-cla-v1.0.html
-[dev-doc]: https://github.com/Badminton-Apps/core/blob/main/docs/DEVELOPER.md
 [github]: https://github.com/Badminton-Apps/core
-[discord]: https://discord.gg/Badminton-Apps
-[individual-cla]: http://code.google.com/legal/individual-cla-v1.0.html
-[js-style-guide]: https://google.github.io/styleguide/jsguide.html
-[jsfiddle]: http://jsfiddle.net
 [stackoverflow]: http://stackoverflow.com/
+[rebase]: https://git-scm.com/docs/git-rebase#_interactive_mode
