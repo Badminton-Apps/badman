@@ -85,7 +85,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 2. Be sure that an issue describes the problem you're fixing, or documents the design for the feature you'd like to add.
    Discussing the design upfront helps to ensure that we're ready to accept your work.
 
-3. Please sign our [Contributor License Agreement (CLA)](#cla) before sending PRs.
+3. Please sign our [Contributor License Agreement (CLA)](#cla) when doing your first PR.
    We cannot accept code without a signed CLA.
    Make sure you author all contributed Git commits with email address associated with your CLA signature.
 
@@ -117,7 +117,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     git push origin my-fix-branch
     ```
 
-11. In GitHub, send a pull request to `Badminton-Apps:core`.
+11. In GitHub, send a pull request to `core:main`.
 
 
 #### Addressing review feedback
@@ -202,7 +202,6 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 * All features or bug fixes **must be tested** by one or more specs (unit-tests).
 * All public API methods **must be documented**.
-* We follow [Google's JavaScript Style Guide][js-style-guide], but wrap all code at **100 characters**.
 
 ## <a name="commit"></a> Commit Message Format
 
