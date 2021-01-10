@@ -64,11 +64,12 @@ export class OverviewComponent {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+    
+    // Reset when any filter changes
     this.sort.sortChange.subscribe(() => {
       this.pageIndex$.next(0);
       this.cursor = null;
     });
-
     this.filterChange$.subscribe(() => {
       this.pageIndex$.next(0);
       this.cursor = null;

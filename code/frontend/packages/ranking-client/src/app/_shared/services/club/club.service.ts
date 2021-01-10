@@ -19,11 +19,10 @@ const updateClubMutatino = require('graphql-tag/loader!../../graphql/rankingSyst
   providedIn: 'root',
 })
 export class ClubService {
-  constructor( private apollo: Apollo) {}
-
+  constructor(private apollo: Apollo) {}
 
   getClub(systemId: number) {
-    throw new Error("not Implemented")
+    throw new Error('not Implemented');
     return this.apollo
       .query<{ system: Club }>({
         query: clubQuery,
@@ -34,9 +33,8 @@ export class ClubService {
       .pipe(map((x) => new Club(x.data.system)));
   }
 
-
   getClubWithCount(systemId: number, gender?: string) {
-    throw new Error("not Implemented")
+    throw new Error('not Implemented');
     return this.apollo
       .query({
         query: clubsWithCountsQuery,
@@ -49,7 +47,7 @@ export class ClubService {
   }
 
   addClub(rankingSystem: Club) {
-    throw new Error("not Implemented")
+    throw new Error('not Implemented');
     return this.apollo
       .mutate<{ updateClub: Club }>({
         mutation: addClubMutation,
@@ -61,7 +59,7 @@ export class ClubService {
   }
 
   updateClub(rankingSystem: Club) {
-    throw new Error("not Implemented")
+    throw new Error('not Implemented');
     return this.apollo
       .mutate<{ updateClub: Club }>({
         mutation: updateClubMutatino,
@@ -72,18 +70,40 @@ export class ClubService {
       .pipe(map((x) => new Club(x.data.updateClub)));
   }
 
+  getClubs(first: number, after: string, query: any) {
+    let where = undefined;
+    if (query) {
+      where = {
+        name: {
+          $iLike: `%${query}%`,
+        },
+      };
+    }
 
-  getClubs(
-    sort?: string,
-    direction?: SortDirection,
-    page?: number
-  ): Observable<Club[]> {
     return this.apollo
-      .query({
-        query:  clubsQuery,
-        fetchPolicy: 'no-cache',
+      .query<{
+        clubs: {
+          total: number;
+          edges: { cursor: string; node: Club }[];
+        };
+      }>({
+        query: clubsQuery,
+        variables: {
+          first,
+          after,
+          where
+        },
       })
-      .pipe(map((x: any) => x.data?.clubs as Club[]));
+      .pipe(
+        map((x) => {
+          if (x.data.clubs) {
+            x.data.clubs.edges = x.data.clubs.edges.map((x) => {
+              x.node = new Club(x.node);
+              return x;
+            });
+          }
+          return x.data;
+        })
+      );
   }
-
 }

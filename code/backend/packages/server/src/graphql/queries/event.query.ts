@@ -5,7 +5,7 @@ import { EventConnectionType, EventType } from '../types/event.type';
 import { ImportedConnectionType } from '../types/imported.type';
 import { where } from './utils';
 
-const eventQuery = {
+export const eventQuery = {
   type: EventType,
   args: {
     id: {
@@ -16,7 +16,7 @@ const eventQuery = {
   resolve: resolver(Event)
 };
 
-const eventsQuery = {
+export const eventsQuery = {
   type: EventConnectionType.connectionType,
   args: {
     ...EventConnectionType.connectionArgs,
@@ -35,7 +35,9 @@ const eventsQuery = {
     return EventConnectionType.resolve(...args);
   }
 };
-const importedQuery = {
+
+
+export const importedQuery = {
   type: ImportedConnectionType.connectionType,
   args: {
     ...ImportedConnectionType.connectionArgs,
@@ -44,4 +46,3 @@ const importedQuery = {
   resolve: (...args) => ImportedConnectionType.resolve(...args)
 };
 
-export { eventQuery, eventsQuery, importedQuery };
