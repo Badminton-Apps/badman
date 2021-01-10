@@ -19,12 +19,6 @@
 
 <hr>
 
-## WIP!
-
-Hi, right now most of project is still in prepartion to become publicly available. If you encounter any passwords, secrets, ... Please report it via a issue.
-
-The markdown files are still a draft (and mostly copied from the angular github). However the [Commit guidelines][commit] still apply
-
 ## Development Setup
 
 ### Prerequisites
