@@ -40,6 +40,7 @@ const routes: Routes = [
       },
     ],
   },
+  { path: 'club-management', loadChildren: () => import('./admin/modules/club-management/club-management.module').then(m => m.ClubManagementModule) },
   { path: '**', redirectTo: '/' },
 ];
 

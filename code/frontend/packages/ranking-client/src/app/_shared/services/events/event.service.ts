@@ -39,7 +39,6 @@ export class EventService {
           $iLike: `%${query}%`,
         },
       };
-      // where = JSON.stringify(where)
     }
 
     return this.apollo

@@ -8,21 +8,27 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
+          "skipTests": false,
           "spec": false
         },
         "@schematics/angular:directive": {
+          "skipTests": false,
           "spec": false
         },
         "@schematics/angular:modules": {
+          "skipTests": false,
           "spec": false
         },
         "@schematics/angular:pipe": {
+          "skipTests": false,
           "spec": false
         },
         "@schematics/angular:service": {
+          "skipTests": false,
           "spec": false
         },
         "@schematics/angular:class": {
+          "skipTests": false,
           "spec": false
         }
       },
