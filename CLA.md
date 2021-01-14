@@ -1,66 +1,29 @@
-### SAP Individual Contributor License Agreement
+### Glenn Latomme Individuele Contributor Licentie Overeenkomst
 
-Thank you for your interest in contributing to open source software projects (“Projects”) made available by SAP SE or its affiliates (“SAP”). This Individual Contributor License Agreement (“Agreement”) sets out the terms governing any source code, object code, bug fixes, configuration changes, tools, specifications, documentation, data, materials, feedback, information or other works of authorship that you submit or have submitted, in any form and in any manner, to SAP in respect of any of the Projects (collectively “Contributions”). If you have any questions respecting this Agreement, please contact opensource@sap.com.
+Bedankt voor uw interesse om bij te dragen aan de open source projecten (“Projecten”) beschikbaar gesteld door Glenn Latomme (ondernemingsnr. 0760.625.005). Deze individuele Contributor Licentie Overeenkomst (“Overeenkomst”) lijst de voorwaarden op die van toepassing zijn op elke source code, object code, opgeloste foutmelding, aanpassing in de configuratie, hulpmiddelen, specificatie, documentatie, data, materiaal, feedback, informatie of andere auteursrechtelijke werken die u indient of heeft ingediend, in welke vorm en op welke wijze dan ook, aan Glenn Latomme in het kader van elk van de Projecten (allen samen “Bijdragen”). Mocht u vragen hebben met betrekking tot deze overeenkomst, gelieve u dan te wenden tot glenn.latomme@gmail.com.
 
+U gaat akkoord dat de hierna genoemde voorwaarden van toepassing zijn op al uw reeds gemaakte, huidige en toekomstige Bijdragen. Met uitzondering van de licenties toegekend in deze Overeenkomst, behoudt u al uw rechten, titel en belangen in en bij uw Bijdragen.
 
-You agree that the following terms apply to all of your past, present and future Contributions. Except for the licenses granted in this Agreement, you retain all of your right, title and interest in and to your Contributions.
-
-
-**Copyright License.** You hereby grant, and agree to grant, to SAP a non-exclusive, perpetual, irrevocable, worldwide, fully-paid, royalty-free, transferable copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, and distribute your Contributions and such derivative works, with the right to sublicense the foregoing rights through multiple tiers of sublicensees.
+**Auteursrechtelijke Licentie.** U verleent hierbij, en gaat akkoord met het verlenen, aan Glenn Latomme een niet-exclusieve, eeuwigdurende, onherroepbare, wereldwijde, volledig afbetaalde, vrij van auteursrechterlijke bijdragen, ovedraagbare auteursrechtelijke licentie om uw Bijdragen te reproduceren, afgeleide werken tot stand te brengen, publiekelijk beschikbaar te stellen, publiekelijk uit te voeren en te verdelen, alsook voor dergelijke afgeleide werken, met het recht om de voorgaande rechten via een sublicentie te verlenen aan meerdere verdelers of sublicentiehouders.
 
 
-**Patent License.** You hereby grant, and agree to grant, to SAP a non-exclusive, perpetual, irrevocable,
-worldwide, fully-paid, royalty-free, transferable patent license to make, have made, use, offer to sell, sell,
-import, and otherwise transfer your Contributions, where such license applies only to those patent claims
-licensable by you that are necessarily infringed by your Contributions alone or by combination of your
-Contributions with the Project to which such Contributions were submitted, with the right to sublicense the
-foregoing rights through multiple tiers of sublicensees.
+**Octrooi Licentie.** U verleent hierbij, en gaat akkoord met het verlenen, aan Glenn Latomme een niet-exclusieve, eeuwigdurende, onherroepbare, wereldwijde, volledig afbetaalde, vrij van auteursrechterlijke bijdragen, ovedraagbare auteursrechtelijke licentie om uw Bijdragen aan te wenden of te hebben aangewend, aan te bieden voor verkoop, te verkopen, importeren en anders om over te dragen, waarbij dergelijke licentie enkel van toepassing is op de octrooien waarop een licentie genomen kan worden door u en die noodzakelijkerwijs geschonden worden door uw Bijdragen op zich of door een combinatie van uw Bijdragen met het Project waarvoor dergelijke Bijdragen ingediend werden, met het recht om de voorgaande rechten via een sublicentie te verlenen aan meerdere verdelers of sublicentiehouders.
 
 
-**Moral Rights.** To the fullest extent permitted under applicable law, you hereby waive, and agree not to
-assert, all of your “moral rights” in or relating to your Contributions for the benefit of SAP, its assigns, and
-their respective direct and indirect sublicensees.
+**Morele Rechten.** In de volledige mate van wat toegestaan is door het vigerende recht, draagt u hierbij al uw morele rechten over, en gaat u akkoord om deze niet in te roepen, die van toepassing zijn of betrekking hebben tot uw Bijdragen in het voordeel van Glenn Latomme, zijn aangestelde rechthebbenden en zijn respectievelijke directe en indirecte sublicentiehouders.
+
+Third Party Content/Rechten.** Indien uw Bijdrage gebruik maakt van of gebaseerd is op om het even welke vorm dan ook van source code, object code, opgeloste foutmeldingen, aanpassing in de configuratie, hulpmiddelen, specificaties, documentatie, data, materialen, feedback, informatie of andere auteursrechtelijke werken die niet gecreëerd zijn door u als auteur (“Third Party Content”) of indien u zich bewust bent van om het even welk intellectueel eigendom of eigendomsrecht toebehorende aan een derde partij geassocieerd met uw Bijdrage (“Third Party Rechten”), dan gaat u akkoord om bij het indienen van uw Bijdrage alle details te verschaffen en te incorporeren met betrekking tot dergelijke Third Party Content en Third Party Rechten. Hierbij wordt melding gemaakt, deze opsomming is niet-limitatief, van welke aspecten van uw Bijdrage de Third Party Content bevatten of betrekking hebben tot Third Party rechten, van de eigenaar/auteur van de Third Party Content en Third Party Rechten, van waar u toegang gekregen heeft tot de Third Party Content, en van om het even welke licentievoorwaarden gesteld door een derde partij of van beperkingen die van toepassing zijn met betrekking tot de Third Party Content en Third Party Rechten. Bij wijze van volledigheid: de hier genoemde verplichtingen met betrekking tot de identificatie van Third Party Content en Third Party Rechten zijn niet van toepassing op om het even welk deel van een Project dat deel uitmaakt van uw Bijdrage tot datzelfde Project.
 
 
-**Third Party Content/Rights.** If your Contribution includes or is based on any source code, object code, bug
-fixes, configuration changes, tools, specifications, documentation, data, materials, feedback, information or
-other works of authorship that were not authored by you (“Third Party Content”) or if you are aware of any
-third party intellectual property or proprietary rights associated with your Contribution (“Third Party Rights”),
-then you agree to include with the submission of your Contribution full details respecting such Third Party
-Content and Third Party Rights, including, without limitation, identification of which aspects of your
-Contribution contain Third Party Content or are associated with Third Party Rights, the owner/author of the
-Third Party Content and Third Party Rights, where you obtained the Third Party Content, and any applicable
-third party license terms or restrictions respecting the Third Party Content and Third Party Rights. For greater
-certainty, the foregoing obligations respecting the identification of Third Party Content and Third Party Rights
-do not apply to any portion of a Project that is incorporated into your Contribution to that same Project.
+**Verklaringen.** U verklaart dat, met uitzondering van de Third Party Content and Third Party Rechten kenbaar gemaakt door u in overeenstemming met deze Overeenkomst, u de enige auteur bent van uw Bijdragen en dat u juridisch bij machte bent om de hier genoemde licenties en afstandsnemingen met betrekking tot uw Bijdragen toe te kennen. Indien uw Bijdragen gecreëerd werden tijdens de werkstelling bij uw vorige of huidige werkgever, dan verklaart u dat desbetreffende werkgever u toestemming gegeven heeft om uw Bijdragen te creëren namens desbetreffende werkgever of dat desbetreffende werkgever afstand gedaan heeft van al zijn rechten, titel en belangen in en bij uw Bijdragen.
+
+**Disclaimer.** In de volledige mate van wat toegestaan is door het vigerende recht, worden uw Bijdragen aangeleverd op “vrijwillige” basis, zonder enige garanties of voorwaarden, expliciet of impliciet, met betrekking tot, deze opsomming is niet-limitatief, om het even welke garanties of voorwaarden omtrent het niet plegen van inbreuken, verhandelbaarheid of geschiktheid van uw Bijdragen voor een specifiek doel. U bent niet verplicht om (verdere) ondersteuning te bieden bij uw Bijdragen met uitzondering van de mate waarin u wenst om ondersteuning te bieden.
 
 
-**Representations.** You represent that, other than the Third Party Content and Third Party Rights identified by
-you in accordance with this Agreement, you are the sole author of your Contributions and are legally entitled
-to grant the foregoing licenses and waivers in respect of your Contributions. If your Contributions were
-created in the course of your employment with your past or present employer(s), you represent that such
-employer(s) has authorized you to make your Contributions on behalf of such employer(s) or such employer
-(s) has waived all of their right, title or interest in or to your Contributions.
+**Geen verplichting.** U erkent dat Glenn Latomme zonder enige verplichting is om uw Bijdragen te gebruiken of te incorporeren in om het even welk Project. De beslissing om uw Bijdragen te gebruiken of incorporeren in om het even welk Project zal uitsluitend genomen worden naar goeddunken door Glenn Latomme of zijn aangestelde afgevaardigden. 
 
 
-**Disclaimer.** To the fullest extent permitted under applicable law, your Contributions are provided on an "asis"
-basis, without any warranties or conditions, express or implied, including, without limitation, any implied
-warranties or conditions of non-infringement, merchantability or fitness for a particular purpose. You are not
-required to provide support for your Contributions, except to the extent you desire to provide support.
+**Geschillen.** Deze Overeenkomst valt onder en dient geïnterpreteerd te worden volgens de vigerende Belgische en Europese wetgeving. Beide partijen onderwerpen zich hierbij aan en zullen zich wenden tot de jurisdictie van de rechtbanken en hoven gelegen op het Belgische grondgebied voor geschillen met betrekking tot deze Overeenkomst. In het geval dat één of meerdere clausule(s) van deze Overeenkomst voor dienen te komen voor een rechtbank, hof of een ander niet-afdwingbaar rechtsorgaan, dan zullen de overblijvende clausules uit deze Overeenkomst die geen onderdeel uitmaken van de ingespannen rechterlijke procedure volledig van kracht blijven
 
 
-**No Obligation.** You acknowledge that SAP is under no obligation to use or incorporate your Contributions
-into any of the Projects. The decision to use or incorporate your Contributions into any of the Projects will be
-made at the sole discretion of SAP or its authorized delegates ..
-
-
-**Disputes.** This Agreement shall be governed by and construed in accordance with the laws of the State of
-New York, United States of America, without giving effect to its principles or rules regarding conflicts of laws,
-other than such principles directing application of New York law. The parties hereby submit to venue in, and
-jurisdiction of the courts located in New York, New York for purposes relating to this Agreement. In the event
-that any of the provisions of this Agreement shall be held by a court or other tribunal of competent jurisdiction
-to be unenforceable, the remaining portions hereof shall remain in full force and effect.
-
-
-**Assignment.** You agree that SAP may assign this Agreement, and all of its rights, obligations and licenses
-hereunder.
+**Overdracht.** U erkent dat Glenn Latomme deze Overeenkomst mag overdragen en al de rechten, verplichtingen en licenties die hier deel van uitmaken. 
