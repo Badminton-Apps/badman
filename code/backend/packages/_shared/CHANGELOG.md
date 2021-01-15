@@ -11,6 +11,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+
+
+**Note:** Version bump only for package @badvlasim/shared
+
+
+
+
+
 ## 1.2.27 (2021-01-08)
 
 **Note:** Version bump only for package @badvlasim/shared
