@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config()
 
-const retries = 1;
+const retries = 10;
 
 module.exports = {
   host: process.env.DB_IP,

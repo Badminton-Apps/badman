@@ -3,7 +3,9 @@ import {
   DataBaseHandler,
   EventType,
   logger,
-  BaseController
+  BaseController,
+  SubEvent,
+  ImportSubEvents
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import { unlink } from 'fs';
@@ -12,7 +14,6 @@ import { join } from 'path';
 import { Convertor } from '../convert/convertor';
 
 export class ImportController extends BaseController {
-
   private _path = '/import';
 
   private _storage = diskStorage({
@@ -34,7 +35,7 @@ export class ImportController extends BaseController {
 
   private _intializeRoutes() {
     this.authRouter.post(`${this._path}/file`, this._upload.array('upload'), this._import);
-    this.authRouter.put(`${this._path}/start/:id/:eventId`, this._startImport);
+    this.authRouter.put(`${this._path}/start/:id/:eventId?`, this._startImport);
   }
 
   private _import = async (request: AuthenticatedRequest, response: Response) => {
@@ -92,31 +93,60 @@ export class ImportController extends BaseController {
   };
 
   private _startImport = async (request: AuthenticatedRequest, response: Response) => {
-    if (!request.user.hasAnyPermission(['import:event'])) {
+    if (!request.user.hasAnyPermission(['import:event'])) { 
       response.status(401).send('No no no!!');
       return;
     }
 
     try {
-      const imported = await this._databaseService.getImported({
-        where: { id: parseInt(request.params.id, 10) }
-      });
+      let queueImports: { importId: number; eventId: number }[] = [];
 
-      if (!imported) {
-        response.status(404);
-        return;
+      if (request.params.id.indexOf(',') >= 0) {
+        const ids = request.params.id.split(',');
+        const eventIds = request.params.eventId?.split(',') ?? [];
+        queueImports = ids.map((v, i) => {
+          return {
+            importId: parseInt(v, 10),
+            eventId: eventIds[i] && eventIds[i] !== '-1' ? parseInt(eventIds[i], 10) : null
+          };
+        });
+      } else {
+        queueImports = [
+          {
+            importId: parseInt(request.params.id, 10),
+            eventId:
+              request.params.eventId && request.params.eventId !== '-1'
+                ? parseInt(request.params.eventId, 10)
+                : null
+          }
+        ];
       }
 
-      const event = await this._databaseService.getEvent({
-        where: { id: parseInt(request.params.eventId, 10) }
-      });
+      for (const queImport of queueImports) {
+        const imported = await this._databaseService.getImported({
+          where: { id: queImport.importId },
+          include: queImport.eventId ? [] : [{ model: ImportSubEvents }]
+        });
 
-      this._converter.convert(imported, event);
+        if (!imported) {
+          return;
+        }
+
+        let event = null;
+        if (queImport.eventId) {
+          event = await this._databaseService.getEvent({
+            where: { id: queImport.eventId },
+            include: [{ model: SubEvent }]
+          });
+        }
+
+        this._converter.convert(imported, event);
+      }
 
       response.json({});
     } catch (e) {
       response.status(500);
-      response.render('error', { error: e });
+      response.send({ error: e });
       return;
     }
   };
