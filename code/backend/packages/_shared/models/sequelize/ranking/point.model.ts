@@ -5,7 +5,7 @@ import {
   Model,
   Table
 } from 'sequelize-typescript';
-import { Game } from '../game.model';
+import { Game } from '../event/game.model';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
 

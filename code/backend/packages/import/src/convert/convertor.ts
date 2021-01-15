@@ -7,12 +7,10 @@ import { Mdb } from './mdb';
 export class Convertor {
   private _queue = [];
   private _queueRunning = false;
+  private _parallel = 5;
 
   constructor(
     private _importEmitter = new EventEmitter(),
-    private _competitionCpImporter = new CompetitionCpImporter(),
-    private _competitionXmlImporter = new CompetitionXmlImporter(),
-    private _tournamentImporter = new TournamentImporter()
   ) {
     this._setupQueue();
   }
@@ -30,39 +28,57 @@ export class Convertor {
         // Mark queue as running
         this._queueRunning = true;
 
+        // wait a bit, so we can directly process multiple if more then one is started
+        await this._sleep(2000);
+
         // Process items
         while (this._queue.length > 0) {
-          try {
-            const item = this._queue.shift();
-            logger.debug(`Started processing ${item.imported.id}`);
-
-            await this._convertItem(item.imported, item.event);
-
-            await new Promise((res, reject) => {
-              try {
-                // When imported, delete file
-                unlink(item.imported.fileLocation, async () => {
-                  // alright, now we can destroy our db entry
-                  await item.imported.destroy();
-                  logger.debug(`Finished processing ${item.imported.id}`);
-                  res();
-                });
-              } catch (e) {
-                logger.error('Something went deleting the imported stuff', e);
-                reject(e);
-              }
-            });
-          } catch (e) {
-            imported.importing = false;
-            await imported.save();
-            logger.error('Something went wrong', e);
-          }
+          await Promise.all(
+            Array(this._parallel)
+              .fill(_ => null)
+              .map(r => {
+                if (this._queue.length > 0) {
+                  return this._processSingleItem(this._queue.shift());
+                }
+              })
+          );
         }
+        logger.debug(`Finished processing all`);
+
 
         // Mark queue as finshed
         this._queueRunning = false;
       }
     });
+  }
+
+  private async _processSingleItem(item) {
+    try {
+      logger.debug(`Started processing ${item.imported.id}`);
+
+      // Sleep random 500ms for preventing deadlocks on start at the same time
+      await this._sleep(Math.floor(Math.random() * Math.floor(500)));
+      await this._convertItem(item.imported, item.event);
+
+      await new Promise((res, reject) => {
+        try {
+          // When imported, delete file
+          unlink(item.imported.fileLocation, async () => {
+            // alright, now we can destroy our db entry
+            await item.imported.destroy();
+            logger.debug(`Finished processing ${item.imported.id}`);
+            res(null);
+          });
+        } catch (e) {
+          logger.error('Something went deleting the imported stuff', e);
+          reject(e);
+        }
+      });
+    } catch (e) {
+      item.imported.importing = false;
+      await item.imported.save();
+      logger.error('Something went wrong', e);
+    }
   }
 
   convert(imported: ImporterFile, event: Event) {
@@ -74,14 +90,15 @@ export class Convertor {
     switch (imported.type) {
       case EventType.TOERNAMENT:
         mdb = new Mdb(imported.fileLocation);
-        this._tournamentImporter.mdb = mdb;
-        return this._tournamentImporter.addEvent(imported, event);
+        const tournamentImporter = new TournamentImporter(mdb);
+        return tournamentImporter.addEvent(imported, event);
       case EventType.COMPETITION_CP:
         mdb = new Mdb(imported.fileLocation);
-        this._competitionCpImporter.mdb = mdb;
-        return this._competitionCpImporter.addEvent(imported, event);
+        const competitionCpImporter = new CompetitionCpImporter(mdb);
+        return competitionCpImporter.addEvent(imported, event);
       case EventType.COMPETITION_XML:
-        return this._competitionXmlImporter.addEvent(imported, event);
+        const competitionXmlImporter = new CompetitionXmlImporter();
+        return competitionXmlImporter.addEvent(imported, event);
       default:
         logger.warn('Unsupperted type', imported.type);
         return null;
@@ -93,17 +110,23 @@ export class Convertor {
     switch (type) {
       case EventType.TOERNAMENT:
         mdb = new Mdb(fileLocation);
-        this._tournamentImporter.mdb = mdb;
-        return this._tournamentImporter.addImporterfile(fileLocation);
+        const tournamentImporter = new TournamentImporter(mdb);
+        return tournamentImporter.addImporterfile(fileLocation);
       case EventType.COMPETITION_CP:
         mdb = new Mdb(fileLocation);
-        this._competitionCpImporter.mdb = mdb;
-        return this._competitionCpImporter.addImporterfile(fileLocation);
+        const competitionCpImporter = new CompetitionCpImporter(mdb);
+        return competitionCpImporter.addImporterfile(fileLocation);
       case EventType.COMPETITION_XML:
-        return this._competitionXmlImporter.addImporterfile(fileLocation);
+        const competitionXmlImporter = new CompetitionXmlImporter();
+        return competitionXmlImporter.addImporterfile(fileLocation); 
       default:
         logger.warn('Unsupperted type', type);
-        return null;
+        return null; 
     }
+  }
+  private _sleep(ms) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
   }
 }
