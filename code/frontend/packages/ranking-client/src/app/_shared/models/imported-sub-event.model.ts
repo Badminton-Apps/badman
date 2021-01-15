@@ -1,18 +1,23 @@
-import { Game } from './game.model';
-import { Event } from './event.model';
-
 export class ImporterSubEvent {
   id: string;
-  drawType: string;
-  eventType: string;
-  levelType: string;
   name: string;
+  eventType: string;
+  gameType: string;
+  drawType: string;
+  levelType: string;
+  internalId: string;
+  size: string;
+  level: string;
 
   constructor({ ...args }) {
-    this.name = args.name;
     this.id = args.id;
-    this.drawType = args.drawType;
+    this.name = args.name;
     this.eventType = args.eventType;
+    this.gameType = args.gameType;
+    this.drawType = args.drawType;
     this.levelType = args.levelType;
+    this.internalId = args.internalId;
+    this.size = args.size;
+    this.level = args.level;
   }
 }

@@ -7,5 +7,12 @@ mutation AddEvent($event: EventInput!) {
     type
     uniCode
     name
+    subEvents {
+      drawType
+      eventType
+      id
+      levelType
+      name
+    }
   }
 }

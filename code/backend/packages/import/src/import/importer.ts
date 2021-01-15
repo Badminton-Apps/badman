@@ -8,35 +8,93 @@ import {
   GamePlayer,
   ICsvDraw,
   ICsvEvent,
+  ICsvLocation,
+  ICsvCourt,
   ImporterFile,
   logger,
   Player,
   SubEvent,
-  titleCase
+  titleCase,
+  Court,
+  Location
 } from '@badvlasim/shared';
-import { existsSync } from 'fs';
+import { Hash } from 'crypto';
+import { existsSync as dbCours } from 'fs';
 import { FindOrCreateOptions } from 'sequelize/types';
 import { Mdb } from '../convert/mdb';
 import { TpPlayer } from '../models';
 
 export abstract class Importer {
-  private _mdb: Mdb;
+  constructor(protected mdb: Mdb, protected type: EventType) {}
 
-  public get mdb(): Mdb {
-    if (!this._mdb) {
-      throw new Error('MDB not set yet!');
+  async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
+    try {
+      if (event == null) {
+        event = await this.addEventFromImporterFile(importerFile);
+      }
+      const locations = await this.addLocations(event);
+      const courts = await this.addCourts(locations);
+
+      const players = await this.addPlayers();
+
+      if (!players || players?.length === 0) {
+        return event;
+      }
+
+      await this.addGames(event.subEvents, players, courts);
+    } catch (e) {
+      logger.error('FUCK', e);
+      throw e;
     }
-    return this._mdb;
   }
 
-  public set mdb(value) {
-    this._mdb = value;
+  protected async addLocations(event: Event) {
+    const csvLocations = await csvToArray<ICsvLocation[]>(await this.mdb.toCsv('Location'));
+    const l = csvLocations.map(r => { 
+      return {
+        ...r,
+        eventId: event.id,
+        id: undefined
+      };
+    });
+
+    const dbLocations = await Location.bulkCreate(
+      l,
+      { returning: true, ignoreDuplicates: true} // Return ALL comulms
+    );
+
+    const locations = new Map<string, Location>();
+    for (const [i, location] of csvLocations.entries()) {
+      locations.set(location.id, dbLocations[i]);
+    }
+
+    return locations;
   }
 
-  constructor(protected type: EventType) {}
+  protected async addCourts(locations: Map<string, Location>) {
+    const csvCourts = await csvToArray<ICsvCourt[]>(await this.mdb.toCsv('Court'));
+    const c = csvCourts.map(r => {
+      return {
+        ...r,
+        locationId: locations.get(r.location).id,
+        id: undefined
+      };
+    });
+    const dbCourts = await Court.bulkCreate(
+      c,
+      { returning: true, ignoreDuplicates: true } // Return ALL comulms
+    );
+
+    const courts = new Map<string, Court>();
+    for (const [i, court] of csvCourts.entries()) {
+      courts.set(court.id, dbCourts[i]);
+    }
+
+    return courts;
+  }
 
   protected async addImporterfile(fileLocation: string) {
-    if (!existsSync(fileLocation)) {
+    if (!dbCours(fileLocation)) {
       logger.error('File does not exist', fileLocation);
       throw new Error('File does not exist');
     }
@@ -87,13 +145,42 @@ export abstract class Importer {
   }
 
   protected async addEventFromImporterFile(importerFile: ImporterFile) {
-    return Event.build({
+    const foundEvent = await Event.findOne({
+      where: {
+        name: importerFile.name,
+        uniCode: importerFile.uniCode,
+        firstDay: importerFile.firstDay,
+        dates: importerFile.dates,
+        toernamentNumber: importerFile.toernamentNumber,
+        type: this.type
+      },
+      include: [{ model: SubEvent }]
+    });
+
+    if (foundEvent) {
+      return foundEvent;
+    }
+
+    const dbEvent = await Event.build({
       name: importerFile.name,
       uniCode: importerFile.uniCode,
       firstDay: importerFile.firstDay,
       dates: importerFile.dates,
+      toernamentNumber: importerFile.toernamentNumber,
       type: this.type
     }).save();
+
+    const subEvents = importerFile.subEvents.map(subEvent => {
+      return {
+        ...subEvent.toJSON(),
+        id: null,
+        EventId: dbEvent.id
+      };
+    });
+
+    dbEvent.subEvents = await SubEvent.bulkCreate(subEvents, { returning: true });
+
+    return dbEvent;
   }
 
   protected async extractImporterFile() {
@@ -103,6 +190,7 @@ export abstract class Importer {
       linkCode: string;
       webID: string;
       uniCode: string;
+      toernamentNumber: string;
     }>(settingsCsv, {
       onEnd: data => {
         return {
@@ -113,7 +201,10 @@ export abstract class Importer {
           webID: data.find((r: { name: string }) => r.name.toLowerCase() === 'webid')
             ?.value as string,
           uniCode: data.find((r: { name: string }) => r.name.toLowerCase() === 'unicode')
-            ?.value as string
+            ?.value as string,
+          toernamentNumber: data.find(
+            (r: { name: string }) => r.name.toLowerCase() === 'tournamentNr'
+          )?.value as string
         };
       }
     });
@@ -172,21 +263,30 @@ export abstract class Importer {
       (thing, i, arr) => arr.findIndex(t => t.player.memberId === thing.player.memberId) === i
     );
 
+    const p = csvPlayers.map(x => {
+      return { ...x.player };
+    });
     const dbPlayers = await Player.bulkCreate(
-      csvPlayers.map(x => x.player),
-      { returning: true, updateOnDuplicate: ['id'] } // Return ALL comulms
+      p,
+      { returning: true, updateOnDuplicate: ['memberId'] } // Return ALL comulms
     );
 
     return dbPlayers.map(
-      (dbPlayer, i) => new TpPlayer({ player: dbPlayer, playerId: csvPlayers[i].playerId })
+      (dbPlayer, i) => new TpPlayer({ player: dbPlayer, playerId: csvPlayers[i].playerId  })
     );
   }
 
   protected async addGamesCsv(csvGames) {
-    const dbGames = await Game.bulkCreate(
-      csvGames.map(x => x.game),
-      { returning: true, updateOnDuplicate: ['id'] } // Return ALL comulms
-    );
+    const g = csvGames.map(x => x.game);
+    let dbGames;
+    try {
+      dbGames = await Game.bulkCreate(
+        g,
+        { returning: true, ignoreDuplicates: true } // Return ALL comulms
+      );
+    } catch (e) {
+      throw e;
+    }
 
     const gamePlayersWithGameId = dbGames.reduce((acc, cur, idx) => {
       const games = csvGames[idx].gamePlayers.map(x => {
@@ -210,25 +310,11 @@ export abstract class Importer {
     return csvToArray(await this.mdb.toCsv('Club'));
   }
 
-  async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
-    try {
-      if (event == null) {
-        event = await this.addEventFromImporterFile(importerFile);
-      }
-      const players = await this.addPlayers();
-
-      if (!players || players?.length === 0) {
-        return event;
-      }
-
-      await this.addGames(event.subEvents, players);
-    } catch (e) {
-      logger.error('FUCK', e);
-      throw e;
-    }
-  }
-
-  protected abstract addGames(subEvents: SubEvent[], players: TpPlayer[]);
+  protected abstract addGames(
+    subEvents: SubEvent[],
+    players: TpPlayer[],
+    courts: Map<string, Court>
+  );
 
   /// Helper functions
   protected isElkGeslacht(gender) {

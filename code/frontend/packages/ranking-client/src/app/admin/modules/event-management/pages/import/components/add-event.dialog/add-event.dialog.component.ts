@@ -31,6 +31,7 @@ export class AddEventDialogComponent implements OnInit {
       this.data.imported.subEvents
     );
     this.groups = this.data.groups;
+
     this.selectedGroups.valueChanges.subscribe((groups) => {
       const groupNames = groups.map((g) => `group-${g.name}`);
 
@@ -38,15 +39,11 @@ export class AddEventDialogComponent implements OnInit {
       const removed = Object.keys(this.selection).filter(
         (s) => !groupNames.includes(s)
       );
-      removed.forEach((element) => {
-        console.log('Removing', element);
-        this.selection.delete(element);
-      });
+      removed.forEach((element) => this.selection.delete(element));
 
       // Initialize new
       groupNames.forEach((element) => {
         if (!this.selection.has(element)) {
-          console.log('Adding', element);
           this.selection.set(
             element,
             new SelectionModel<ImporterSubEvent>(true, [])
@@ -56,6 +53,9 @@ export class AddEventDialogComponent implements OnInit {
 
       this.displayedColumns = [...this.staticColumns, ...groupNames];
     });
+
+    // setting default to 'Adults'
+    this.selectedGroups.setValue([this.groups.find((r) => r.name == 'Adults')]);
 
     this.eventForm = new FormGroup({
       name: new FormControl(this.data.imported.name, Validators.required),
@@ -77,16 +77,23 @@ export class AddEventDialogComponent implements OnInit {
         ...this.eventForm.value,
         dates: this.eventForm.value.dates.join(','),
         subEvents: this.subEvents.data.map((subEvent, index) => {
-          const groups = [];
-          for (let [key, value] of this.selection) {
-            if (value.isSelected(subEvent)) {
-              const g = this.selectedGroups.value.find(
-                (r) => r.name == key.replace('group-', '')
-              );
-              groups.push({
-                id: g.id,
-                name: g.name,
-              });
+          let groups = [];
+
+          if (this.useSame) {
+            groups = this.selectedGroups.value.map((g) => {
+              return { id: g.id, name: g.name };
+            });
+          } else {
+            for (let [key, value] of this.selection) {
+              if (value.isSelected(subEvent)) {
+                const g = this.selectedGroups.value.find(
+                  (r) => r.name == key.replace('group-', '')
+                );
+                groups.push({
+                  id: g.id,
+                  name: g.name,
+                });
+              }
             }
           }
 
