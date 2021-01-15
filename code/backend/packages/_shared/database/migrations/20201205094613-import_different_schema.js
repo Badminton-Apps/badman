@@ -52,6 +52,10 @@ module.exports = {
         queryInterface.dropTable('import.files', {
           transaction: t,
           schema: 'public'
+        }),
+        queryInterface.dropEnum('enum_import.files_type', {
+          transaction: t,
+          schema: 'public'
         })
       ]);
       promise.catch(err => {

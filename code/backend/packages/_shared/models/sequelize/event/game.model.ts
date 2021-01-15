@@ -1,13 +1,22 @@
-import { BelongsTo, BelongsToMany, Column, DataType, Model, Table, ForeignKey } from 'sequelize-typescript';
-import { GameType } from '../enums/gameType.enum';
-import { GamePlayer } from './game-player.model';
-import { Player } from './player.model';
+import {
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  Model,
+  Table,
+  TableOptions
+} from 'sequelize-typescript';
 import { SubEvent } from './sub-event.model';
+import { GameType } from '../../enums/gameType.enum';
+import { Player } from '../player.model';
+import { Court } from './court.model';
+import { GamePlayer } from './game-player.model';
 
 @Table({
   timestamps: true,
-  schema: "public"
-})
+  schema: 'event'
+} as TableOptions)
 export class Game extends Model<Game> {
   @Column
   playedAt: Date;
@@ -22,7 +31,7 @@ export class Game extends Model<Game> {
   @Column
   set2Team1?: number;
   @Column
-  set2Team2?: number;
+  set2Team2?: number; 
   @Column
   set3Team1?: number;
   @Column
@@ -31,8 +40,11 @@ export class Game extends Model<Game> {
   @Column
   winner?: number;
 
-  @BelongsTo(() => SubEvent, 'SubEventId')
+  @BelongsTo(() => SubEvent, 'subEventId')
   subEvent: SubEvent;
+
+  @BelongsTo(() => Court, 'courtId')
+  court: Court;
 
   @BelongsToMany(
     () => Player,

@@ -300,8 +300,8 @@
       <mat-select
         formControlName="groups"
         alt="group"
-        required
         multiple
+        required
         [compareWith]="this.groupCompare"
       >
         <mat-option [value]="group" *ngFor="let group of this.groups">{{
