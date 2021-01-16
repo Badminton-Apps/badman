@@ -2,7 +2,7 @@ import { BelongsTo, BelongsToMany, Model, Table, Column } from 'sequelize-typesc
 import { Club } from './club.model';
 import { Player } from './player.model';
 import { SubEventMembership } from './sub-event-membership.model';
-import { SubEvent } from './sub-event.model';
+import { SubEvent } from './event';
 import { TeamMembership } from './team-membership.model';
 
 @Table({

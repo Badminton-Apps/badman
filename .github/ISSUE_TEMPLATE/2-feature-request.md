@@ -1,7 +1,8 @@
 ---
 name: "\U0001F680 Feature request"
 about: Suggest a feature for Badvlasim Framework
-
+title: "[FEATURE] "
+labels: enhancement
 ---
 <!--🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅
 
@@ -15,11 +16,6 @@ Existing issues often contain information about workarounds, resolution, or prog
 
 # 🚀 feature request
 
-### Relevant Package
-<!-- Can you pin-point one or more @badvlasim/* (client, shared, import, server, simulate) packages the are relevant for this feature request? -->
-<!-- ✍️edit: --> This feature request is for @badvlasim/....
-
-
 ### Description
 <!-- ✍️--> A clear and concise description of the problem or missing capability...
 
@@ -30,3 +26,7 @@ Existing issues often contain information about workarounds, resolution, or prog
 
 ### Describe alternatives you've considered
 <!-- ✍️--> Have you considered any alternative solutions or workarounds?
+
+### Relevant Package
+<!-- Can you pin-point one or more @badvlasim/* (client, shared, import, server, simulate) packages the are relevant for this feature request? -->
+<!-- ✍️edit: --> This feature request is for @badvlasim/....
