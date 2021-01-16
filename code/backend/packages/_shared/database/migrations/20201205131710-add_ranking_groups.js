@@ -141,36 +141,40 @@ module.exports = {
         { transaction: t }
       );
 
-      await queryInterface.bulkInsert(
-        { tableName: 'GroupSubEvents', schema: 'ranking' },
-        subEventIds.map(subEvent => {
-          return {
-            SubEventId: subEvent.id,
-            GroupId: 1
-          };
-        }),
-        {
-          transaction: t
-        }
-      );
+      if (subEventIds && subEventIds.length > 0) {
+        await queryInterface.bulkInsert(
+          { tableName: 'GroupSubEvents', schema: 'ranking' },
+          subEventIds.map(subEvent => {
+            return {
+              SubEventId: subEvent.id,
+              GroupId: 1
+            };
+          }),
+          {
+            transaction: t
+          }
+        );
+      }
 
       // link current Systems to the Default group
       const [systemsIds] = await queryInterface.sequelize.query(
         'SELECT id FROM ranking."Systems";'
       );
 
-      await queryInterface.bulkInsert(
-        { tableName: 'GroupSystems', schema: 'ranking' },
-        systemsIds.map(system => {
-          return {
-            SystemId: system.id,
-            GroupId: 1
-          };
-        }),
-        {
-          transaction: t
-        }
-      );
+      if (systemsIds && systemsIds.length > 0) {
+        await queryInterface.bulkInsert(
+          { tableName: 'GroupSystems', schema: 'ranking' },
+          systemsIds.map(system => {
+            return {
+              SystemId: system.id,
+              GroupId: 1
+            };
+          }),
+          {
+            transaction: t
+          }
+        );
+      }
     });
   },
 
