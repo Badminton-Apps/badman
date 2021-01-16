@@ -22,15 +22,6 @@ module.exports = {
         { transaction: t }
       );
 
-      await queryInterface.removeColumn(
-        {
-          tableName: 'Teams',
-          schema: 'public'
-        },
-        'SubEventId',
-        { transaction: t }
-      );
-
       await queryInterface.addColumn(
         {
           tableName: 'TeamMemberships',
@@ -47,7 +38,10 @@ module.exports = {
           subEventId: {
             type: sequelize.DataTypes.INTEGER,
             references: {
-              model: 'SubEvents',
+              model: {
+                tableName: 'SubEvents',
+                schema: 'event'
+              },
               key: 'id'
             },
             onUpdate: 'CASCADE',
@@ -91,22 +85,6 @@ module.exports = {
         { transaction: t }
       );
 
-      await queryInterface.addColumn(
-        {
-          tableName: 'Teams',
-          schema: 'public'
-        },
-        'SubEventId',
-        {
-          type: sequelize.DataTypes.INTEGER,
-          references: {
-            model: 'SubEvents',
-            key: 'id'
-          },
-          onUpdate: 'CASCADE',
-          onDelete: 'SET NULL'
-        }
-      );
 
       await queryInterface.removeColumn(
         {

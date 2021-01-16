@@ -3,7 +3,7 @@
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
-    const transaction = queryInterface.sequelize.transaction(async t => {
+    return queryInterface.sequelize.transaction(async t => {
       await queryInterface.createSchema('event', { transaction: t });
       console.log('Getting data');
       const [
@@ -44,10 +44,10 @@ module.exports = {
 
       await queryInterface.removeConstraint(
         {
-          tableName: 'SubEventMemberships',
-          schema: 'ranking'
+          tableName: 'Teams',
+          schema: 'public'
         },
-        'SubEventMemberships_subEventId_fkey',
+        'Teams_SubEventId_fkey',
         { transaction: t }
       );
 
@@ -69,7 +69,6 @@ module.exports = {
         { transaction: t }
       );
 
-      console.log('dropping Games');
       await queryInterface.dropTable(
         {
           tableName: 'Games',
@@ -78,7 +77,6 @@ module.exports = {
         { transaction: t }
       );
 
-      console.log('dropping SubEvents');
       await queryInterface.dropTable(
         {
           tableName: 'SubEvents',
@@ -87,7 +85,6 @@ module.exports = {
         { transaction: t }
       );
 
-      console.log('dropping Events');
       await queryInterface.dropTable(
         {
           tableName: 'Events',
@@ -96,7 +93,6 @@ module.exports = {
         { transaction: t }
       );
 
-      console.log('creating Events');
       await queryInterface.createTable(
         'Events',
         {
@@ -324,7 +320,7 @@ module.exports = {
         { transaction: t, schema: 'event' }
       );
 
-      console.log('dropping enums');
+
 
       await queryInterface.dropEnum('enum_Events_type', {
         transaction: t,
@@ -393,15 +389,16 @@ module.exports = {
       }
 
       console.log('Re-link constrained');
+
       await queryInterface.addConstraint(
         {
-          tableName: 'SubEventMemberships',
-          schema: 'ranking'
+          tableName: 'Teams',
+          schema: 'public'
         },
         {
           type: 'foreign key',
-          name: 'SubEventMemberships_subEventId_fkey',
-          fields: ['subEventId'],
+          name: 'Teams_SubEventId_fkey',
+          fields: ['SubEventId'],
           references: {
             table: {
               tableName: 'SubEvents',
@@ -414,7 +411,6 @@ module.exports = {
           transaction: t
         }
       );
-
 
       await queryInterface.addConstraint(
         {
@@ -460,13 +456,6 @@ module.exports = {
         }
       );
     });
-
-    transaction.catch(r => {
-      console.error('something went wrong', e)
-    })
-
-
-    return transaction;
   },
 
   down: async (queryInterface, sequelize) => {
@@ -509,10 +498,10 @@ module.exports = {
 
       await queryInterface.removeConstraint(
         {
-          tableName: 'SubEventMemberships',
-          schema: 'ranking'
+          tableName: 'Teams',
+          schema: 'public'
         },
-        'SubEventMemberships_subEventId_fkey',
+        'Teams_SubEventId_fkey',
         { transaction: t }
       );
 
@@ -712,13 +701,13 @@ module.exports = {
 
       await queryInterface.addConstraint(
         {
-          tableName: 'SubEventMemberships',
-          schema: 'ranking'
+          tableName: 'Teams',
+          schema: 'public'
         },
         {
           type: 'foreign key',
-          name: 'SubEventMemberships_subEventId_fkey',
-          fields: ['subEventId'],
+          name: 'Teams_SubEventId_fkey',
+          fields: ['SubEventId'],
           references: {
             table: {
               tableName: 'SubEvents',
