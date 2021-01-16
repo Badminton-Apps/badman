@@ -2,26 +2,14 @@
 
 module.exports = {
   up: (queryInterface, sequelize) => {
-    return queryInterface.addColumn(
-      {
-        tableName: 'ClubMemberships',
-        schema: 'public'
-      },
-      'active',
-      {
-        type: sequelize.DataTypes.BOOLEAN,
-        defaultValue: true
-      }
-    );
+    return queryInterface.addColumn('ClubMemberships', 'active', {
+      type: sequelize.DataTypes.BOOLEAN
+    });
+    
   },
 
   down: (queryInterface, sequelize) => {
-    return queryInterface.removeColumn(
-      {
-        tableName: 'ClubMemberships',
-        schema: 'public'
-      },
-      'active'
-    );
+    return queryInterface.removeColumn('ClubMemberships', 'active');
+    
   }
 };
