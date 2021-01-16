@@ -7,15 +7,15 @@ import {
   Model,
   Table
 } from 'sequelize-typescript';
-import { DrawType, GameType, LevelType, SubEventType } from '../enums';
+import { DrawType, GameType, LevelType, SubEventType } from '../../enums';
 import { Event } from './event.model';
 import { Game } from './game.model';
-import { GroupSubEvents, RankingSystemGroup } from './ranking';
-import { Team } from './team.model';
+import { GroupSubEvents, RankingSystemGroup } from '../ranking';
+import { Team } from '../team.model';
 
 @Table({
   timestamps: true,
-  schema: 'public'
+  schema: 'event'
 })
 export class SubEvent extends Model<SubEvent> {
   @Column
@@ -48,7 +48,7 @@ export class SubEvent extends Model<SubEvent> {
   )
   groups: RankingSystemGroup[];
 
-  @HasMany(() => Game, 'SubEventId')
+  @HasMany(() => Game, 'subEventId')
   games: Game[];
 
   @HasMany(() => Team, 'SubEventId')

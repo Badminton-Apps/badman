@@ -25,3 +25,4 @@ jobs:
           allowlist: bot*
           create-file-commit-message: 'chore(docs): Creating file for storing CLA Signatures'
           signed-commit-message: 'chore(docs): $contributorName has signed the CLA in #$pullRequestNo'
+          custom-pr-sign-comment: 'ik heb de Contributor Licentie Overeenkomst gelezen en verklaar mij hiermee akkoord'
