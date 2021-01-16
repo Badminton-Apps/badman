@@ -240,10 +240,12 @@ module.exports = {
     });
 
     console.log('Adding systems back');
-    await queryInterface.bulkInsert(
-      { tableName: 'Systems', schema: 'ranking' },
-      rankingSystems
-    );
+    if (rankingSystems && rankingSystems.length > 0){
+      await queryInterface.bulkInsert(
+        { tableName: 'Systems', schema: 'ranking' },
+        rankingSystems
+      );
+    }
   },
 
   down: async (queryInterface, sequelize) => {
