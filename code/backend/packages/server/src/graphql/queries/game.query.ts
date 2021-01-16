@@ -20,7 +20,7 @@ const gamesQuery = {
             ['id', 'desc']
           ]
         };
-      }
+      } 
       return findOptions;
     }
   })

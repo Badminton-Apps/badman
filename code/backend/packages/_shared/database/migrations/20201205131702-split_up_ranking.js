@@ -3,11 +3,14 @@
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
-    const [rankingSystems] = await queryInterface.sequelize.query(
-      'SELECT * FROM public."RankingSystems";'
-    );
+    return await queryInterface.sequelize.transaction(async t => {
+      const [rankingSystems] = await queryInterface.sequelize.query(
+        'SELECT * FROM public."RankingSystems";',
+        {
+          transaction: t
+        }
+      );
 
-    await queryInterface.sequelize.transaction(async t => {
       console.log('dropping tables');
       await queryInterface.dropTable('RankingPlaces', {
         transaction: t,
@@ -237,13 +240,16 @@ module.exports = {
         name: 'compositeIndex',
         transaction: t
       });
-    });
 
-    console.log('Adding systems back');
-    await queryInterface.bulkInsert(
-      { tableName: 'Systems', schema: 'ranking' },
-      rankingSystems
-    );
+      console.log('Adding systems back');
+      if (rankingSystems && rankingSystems.length > 0) {
+        await queryInterface.bulkInsert(
+          { tableName: 'Systems', schema: 'ranking' },
+          rankingSystems,
+          { transaction: t }
+        );
+      }
+    });
   },
 
   down: async (queryInterface, sequelize) => {
@@ -462,10 +468,12 @@ module.exports = {
       );
 
       console.log('Adding systems back');
-      await queryInterface.bulkInsert('RankingSystems', rankingSystems, {
-        transaction: t,
-        schema: 'public'
-      });
+      if (rankingSystems && rankingSystems.length > 0) {
+        await queryInterface.bulkInsert('RankingSystems', rankingSystems, {
+          transaction: t,
+          schema: 'public'
+        });
+      }
     });
   }
 };

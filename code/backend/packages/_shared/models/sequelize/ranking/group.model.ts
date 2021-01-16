@@ -1,6 +1,12 @@
-import { BelongsToMany, Column, HasMany, Model, Table } from 'sequelize-typescript';
-import { RankingSystem } from '../ranking/system.model';
-import { SubEvent } from '../sub-event.model';
+import {
+  BelongsToMany,
+  Column,
+  HasMany,
+  Model,
+  Table
+} from 'sequelize-typescript';
+import { RankingSystem } from '../ranking';
+import { SubEvent } from '../event';
 import { GroupSubEvents } from './group_subevent.model';
 import { GroupSystems } from './group_system.model';
 
@@ -13,9 +19,15 @@ export class RankingSystemGroup extends Model<RankingSystemGroup> {
   @Column
   name: string;
 
-  @BelongsToMany(() => SubEvent, () => GroupSubEvents)
+  @BelongsToMany(
+    () => SubEvent,
+    () => GroupSubEvents
+  )
   subEvents: SubEvent[];
 
-  @BelongsToMany(() => RankingSystem, () => GroupSystems)
+  @BelongsToMany(
+    () => RankingSystem,
+    () => GroupSystems
+  )
   systems: RankingSystem[];
 }

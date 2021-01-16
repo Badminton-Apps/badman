@@ -40,7 +40,7 @@ export class UserController extends BaseController {
 
       const player = await Player.findOne({
         where: { email: request.user.email }
-      });
+      }); 
 
       if (!player) {
         response.json(null);

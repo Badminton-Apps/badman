@@ -99,7 +99,7 @@ export class RankingSystemFieldsComponent implements OnInit {
       gamesForInactivty: new FormControl(this.system.gamesForInactivty),
       inactivityAmount: new FormControl(this.system.inactivityAmount),
       inactivityUnit: new FormControl(this.system.inactivityUnit),
-      groups: new FormControl(this.system.groups, Validators.required),
+      groups: new FormControl(this.system.groups),
     });
   }
 

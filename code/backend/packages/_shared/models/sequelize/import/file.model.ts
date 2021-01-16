@@ -24,11 +24,11 @@ export class ImporterFile extends Model<ImporterFile> {
 
   @Column
   fileLocation: string;
-
+ 
   @Column
   firstDay: Date;
 
-  @Column
+  @Column 
   dates: string;
 
   @Column
@@ -42,6 +42,9 @@ export class ImporterFile extends Model<ImporterFile> {
 
   @Column
   importing: boolean;
+
+  @Column
+  toernamentNumber: number;
 
   @HasMany(() => ImportSubEvents, 'FileId')
   subEvents: ImportSubEvents[];
