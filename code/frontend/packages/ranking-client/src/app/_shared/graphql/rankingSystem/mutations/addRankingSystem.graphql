@@ -1,6 +1,6 @@
 mutation AddRankingSystem($rankingSystem: RankingSystemInput!) {
   addRankingSystem(rankingSystem: $rankingSystem) {
-     id
+    id
     name
     rankingSystem
     amountOfLevels

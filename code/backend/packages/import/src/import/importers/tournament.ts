@@ -8,14 +8,17 @@ import {
   ImportSubEvents,
   SubEvent,
   logger,
-  LevelType
+  LevelType,
+  Court,
+  ICsvPlayerMatchCp
 } from '@badvlasim/shared';
+import { Mdb } from '../../convert/mdb';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
 
 export class TournamentImporter extends Importer {
-  constructor() {
-    super(EventType.TOERNAMENT);
+  constructor(mdb: Mdb) {
+    super(mdb, EventType.TOERNAMENT);
   }
 
   async addImporterfile(fileLocation: string) {
@@ -53,11 +56,10 @@ export class TournamentImporter extends Importer {
       }
     }
 
-    return ImportSubEvents.bulkCreate(subEvents, { returning: true, updateOnDuplicate: ['id'] });
+    return ImportSubEvents.bulkCreate(subEvents, { returning: true, ignoreDuplicates: true});
   }
 
-
-  protected async addGames(subEvents: SubEvent[], players: TpPlayer[]) {
+  protected async addGames(subEvents: SubEvent[], players: TpPlayer[], courts: Map<string, Court>) {
     let csvPlayerMatches = await csvToArray<ICsvPlayerMatchTp[]>(
       await this.mdb.toCsv('PlayerMatch')
     );
@@ -70,7 +72,7 @@ export class TournamentImporter extends Importer {
         x =>
           x.planning === csvPlayerMatch.van1 &&
           x.event === csvPlayerMatch.event &&
-          x.draw === csvPlayerMatch.draw
+          x.draw === csvPlayerMatch.draw 
       );
       const csvEntryInPlayerMatch2 = csvPlayerMatches.find(
         x =>
@@ -85,7 +87,8 @@ export class TournamentImporter extends Importer {
           players,
           csvPlayerMatch,
           csvEntryInPlayerMatch1,
-          csvEntryInPlayerMatch2
+          csvEntryInPlayerMatch2,
+          courts
         )
       );
     }
@@ -95,9 +98,10 @@ export class TournamentImporter extends Importer {
   private async _gameFromCsv(
     subEvent: SubEvent,
     players: TpPlayer[],
-    csvPlayerMatch,
-    csvEntryInPlayerMatch1,
-    csvEntryInPlayerMatch2
+    csvPlayerMatch: ICsvPlayerMatchTp,
+    csvEntryInPlayerMatch1: ICsvPlayerMatchTp,
+    csvEntryInPlayerMatch2: ICsvPlayerMatchTp,
+    courts: Map<string, Court>
   ) {
     const csvEntries = await csvToArray<ICsvEntry[]>(await this.mdb.toCsv('Entry'));
 
@@ -106,8 +110,8 @@ export class TournamentImporter extends Importer {
       return;
     }
 
-    let csvEntry1 = null;
-    let csvEntry2 = null;
+    let csvEntry1: ICsvEntry = null;
+    let csvEntry2: ICsvEntry = null;
 
     if (csvEntryInPlayerMatch1) {
       csvEntry1 = csvEntries.find(e => e.id === csvEntryInPlayerMatch1.entry);
@@ -179,6 +183,12 @@ export class TournamentImporter extends Importer {
       });
     }
 
+    const court = courts.get(csvPlayerMatch.court);
+
+    if (court == null && csvPlayerMatch.court !== ""){
+      logger.warn("Court not found in db?")
+    }
+
     const data = {
       playedAt: new Date(csvPlayerMatch.plandate),
       gameType: subEvent.gameType, // S, D, MX
@@ -189,7 +199,8 @@ export class TournamentImporter extends Importer {
       set3Team1,
       set3Team2,
       winner: csvPlayerMatch.winner,
-      SubEventId: subEvent.id
+      subEventId: subEvent.id,
+      courtId: court?.id
     };
 
     return { game: data, gamePlayers };
