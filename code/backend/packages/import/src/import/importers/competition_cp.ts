@@ -1,4 +1,5 @@
 import {
+  Court,
   csvToArray,
   Event,
   EventType,
@@ -12,12 +13,13 @@ import {
 } from '@badvlasim/shared';
 import moment from 'moment';
 import { FindOrCreateOptions } from 'sequelize/types';
+import { Mdb } from '../../convert/mdb';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
 
 export class CompetitionCpImporter extends Importer {
-  constructor() {
-    super(EventType.COMPETITION_CP);
+  constructor(mdb: Mdb) {
+    super(mdb, EventType.COMPETITION_CP);
   }
 
   async addImporterfile(fileLocation: string) {
@@ -30,7 +32,7 @@ export class CompetitionCpImporter extends Importer {
     return super.extractImporterFile();
   }
 
-  protected async addGames(subEvents: SubEvent[], players: TpPlayer[]) {
+  protected async addGames(subEvents: SubEvent[], players: TpPlayer[], courts: Map<string, Court>) {
     logger.debug('Adding games', players.length);
 
     const csvPlayerMatches = await csvToArray<ICsvPlayerMatchCp[]>(
@@ -156,6 +158,6 @@ export class CompetitionCpImporter extends Importer {
       }
     }
 
-    return ImportSubEvents.bulkCreate(subEvents,  { returning: true, updateOnDuplicate: ['id'] });
+    return ImportSubEvents.bulkCreate(subEvents,  { returning: true, ignoreDuplicates: true });
   }
 }

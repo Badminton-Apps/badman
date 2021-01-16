@@ -1,5 +1,6 @@
 import {
   correctWrongPlayers,
+  Court,
   Event,
   EventType,
   flatten,
@@ -18,7 +19,7 @@ import { Importer } from '../importer';
 
 export class CompetitionXmlImporter extends Importer {
   constructor() {
-    super(EventType.COMPETITION_XML);
+    super(null, EventType.COMPETITION_XML);
   }
 
   async addImporterfile(fileLocation: string) {
@@ -65,11 +66,11 @@ export class CompetitionXmlImporter extends Importer {
 
     return Player.bulkCreate(xmlPlayers, {
       returning: true,
-      updateOnDuplicate: ['id', 'memberId', 'firstname', 'lastname', 'gender']
+      updateOnDuplicate: ['memberId', 'firstname', 'lastname', 'gender']
     });
   }
 
-  protected addGames(subEvents: SubEvent[], players: TpPlayer[]) {
+  protected addGames(subEvents: SubEvent[], players: TpPlayer[], courts: Map<string, Court>) {
     throw new Error('Nope! use addGamesXML!');
   }
 
@@ -81,7 +82,6 @@ export class CompetitionXmlImporter extends Importer {
         : [xmlEvent.Division];
 
       for (const division of xmlDivisions) {
-
         if (!division) {
           continue;
         }
@@ -208,7 +208,7 @@ export class CompetitionXmlImporter extends Importer {
 
     const dbGames = await Game.bulkCreate(
       xmlGames.map(x => x.game),
-      { returning: true, updateOnDuplicate: ['id'] } // Return ALL comulms
+      { returning: true, ignoreDuplicates: true } // Return ALL comulms
     );
 
     const gamePlayersWithGameId = dbGames.reduce((acc, cur, idx) => {

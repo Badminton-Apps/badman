@@ -1,7 +1,7 @@
 import { BelongsTo, BelongsToMany, Model, Table, Column } from 'sequelize-typescript';
-import { Club } from '../..';
+import { Club } from './club.model';
 import { Player } from './player.model';
-import { SubEvent } from './sub-event.model';
+import { SubEvent } from './event';
 import { TeamMembership } from './team-membership.model';
 
 @Table({

@@ -148,7 +148,10 @@ export class EventService {
       .mutate<{ addEvent: Event }>({
         mutation: addEventMutation,
         variables: {
-          event,
+          event: {
+            ...event,
+            id: -1
+          },
         },
       })
       .pipe(map((x) => new Event(x.data.addEvent)));

@@ -87,7 +87,7 @@ export class RequestLinkController extends BaseController {
               email: x.email
             };
           }),
-          { updateOnDuplicate: ['email', 'id'] }
+          { updateOnDuplicate: ['email'] }
         );
       }
 
