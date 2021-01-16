@@ -1,3 +1,12 @@
+# [1.5.0](https://github.com/Badminton-Apps/core/compare/v1.4.0...v1.5.0) (2021-01-15)
+
+
+### Features
+
+* Locations and Courts ([d36c770](https://github.com/Badminton-Apps/core/commit/d36c770ae988eb1522a47cd26b0dc34bcc0e0899))
+
+
+
 # [1.4.0](https://github.com/Badminton-Apps/core/compare/v1.3.0...v1.4.0) (2021-01-08)
 
 
@@ -49,17 +58,6 @@
 ### Features
 
 * Added dummy seeder for teams/clubs ([f117059](https://github.com/Badminton-Apps/core/commit/f11705920291705be10d9d206dc3ee4139f1afec))
-
-
-
-## [1.2.22](https://github.com/Badminton-Apps/core/compare/v1.2.21...v1.2.22) (2020-12-30)
-
-
-### Bug Fixes
-
-* commit message ([715ab68](https://github.com/Badminton-Apps/core/commit/715ab68dfa4069d65a747f434a35f72716471fd1))
-* now correct message ([e6e1037](https://github.com/Badminton-Apps/core/commit/e6e10372c4613dcfa8bf167a76a049a4f1ed4d70))
-* Tetsing ci ([f48b492](https://github.com/Badminton-Apps/core/commit/f48b4928aa3655e11d0f1d84e4a104e965530e6f))
 
 
 

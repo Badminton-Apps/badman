@@ -1,16 +1,9 @@
-import {
-  BelongsTo,
-  Column,
-  ForeignKey,
-  Table,
-  Model
-} from 'sequelize-typescript';
-import { SubEvent } from '../..';
-import { Player } from './player.model';
+import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { SubEvent } from './event';
 import { Team } from './team.model';
 
 @Table({
-  schema: "public"
+  schema: 'public'
 })
 export class SubEventMembership extends Model<SubEventMembership> {
   @ForeignKey(() => Team)

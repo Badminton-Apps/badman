@@ -21,7 +21,7 @@ import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
 dotenv.config();
-
+ 
 (async () => {
   await startWhenReady(true, db => {
     startServer(db);
@@ -46,7 +46,7 @@ const startServer = (databaseService: DataBaseHandler) => {
       new RequestLinkController(router, authRouter)
     ],
     [
-      {
+      { 
         from: '/api/v1/import',
         to: process.env.IMPORT_SERVICE
       },
@@ -77,7 +77,7 @@ const startServer = (databaseService: DataBaseHandler) => {
     formatError: (err: GraphQLError) => ({
       message: err.originalError?.message || err.message,
       code: err.originalError?.code || 500
-    }),
+    })
   });
 
   apolloServer.applyMiddleware({

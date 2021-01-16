@@ -7,8 +7,7 @@ import {
   Model,
   Table
 } from 'sequelize-typescript';
-import { GamePlayer } from './game-player.model';
-import { Game } from './game.model';
+import { GamePlayer, Game } from './event';
 import { TeamMembership } from './team-membership.model';
 import { Team } from './team.model';
 import { Club } from './club.model';
@@ -88,7 +87,7 @@ export class Player extends Model<Player> {
     return {
       mix: lastRanking?.mix || max,
       double: lastRanking?.double || max,
-      single: lastRanking?.single || max,
+      single: lastRanking?.single || max, 
       singleInactive: lastRanking?.singleInactive || false,
       doubleInactive: lastRanking?.doubleInactive || false,
       mixInactive: lastRanking?.mixInactive || false
