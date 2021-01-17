@@ -1,7 +1,25 @@
 <div class="mat-subheading-1">Edit Club</div>
 
-<app-club-fields
-  *ngIf="this.club$ | async as club"
-  [club]="club"
-  (save)="this.save($event)"
-></app-club-fields>
+<ng-container *ngIf="this.club$ | async as club">
+  <app-club-fields [club]="club" (save)="this.save($event)"></app-club-fields>
+
+  <div class="mat-subheading-1">
+    Teams
+    <button
+      mat-icon-button
+      [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'team', 'add']"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <div class="teams">
+    <app-club-edit-team
+      *ngFor="let team of club.teams"
+      [team]="team"
+      [club]="club"
+      (onPlayerAdded)="this.onPlayerAdded($event, team)"
+      (onPlayerRemoved)="this.onPlayerRemoved($event, team)"
+    >
+    </app-club-edit-team>
+  </div>
+</ng-container>
