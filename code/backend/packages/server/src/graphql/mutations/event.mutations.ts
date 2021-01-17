@@ -81,7 +81,7 @@ const updateEventMutation = {
     }
   },
   resolve: async (findOptions, { id, event }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:club'])) {
+    if (!context.req.user.hasAnyPermission(['edit:event'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
