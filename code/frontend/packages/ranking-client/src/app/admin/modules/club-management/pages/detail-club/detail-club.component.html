@@ -1,1 +1,38 @@
-<p>detail-club works!</p>
+<ng-container *ngIf="this.club$ | async as club">
+  <div class="mat-elevation-z1">
+    <div class="header">
+      <button class="options" mat-icon-button [matMenuTriggerFor]="options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #options="matMenu">
+        <button mat-menu-item [routerLink]="['edit']">Edit</button>
+        <button mat-menu-item>Add team</button>
+        <button mat-menu-item>Add player</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>Delete</button>
+      </mat-menu>
+
+      <img
+        src="http://demo.geekslabs.com/materialize-v1.0/images/user-profile-bg.jpg"
+        alt="Background image"
+      />
+    </div>
+    <div class="info">
+      <div class="picture">
+        {{ this.club.abbreviation }}
+      </div>
+      <div class="name">
+        <span class="up"> {{ club.name }}</span>
+        <span class="down">
+          {{ club.clubId }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <mat-list *ngIf="club.teams">
+    <mat-list-item *ngFor="let team of club.teams">{{
+      team.name
+    }}</mat-list-item>
+  </mat-list>
+</ng-container>

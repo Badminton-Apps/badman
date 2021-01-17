@@ -81,14 +81,25 @@ const updateEventMutation = {
     }
   },
   resolve: async (findOptions, { id, event }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:event'])) {
+    if (!context.req.user.hasAnyPermission(['edit:club'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
       });
     }
-    // return await Event.create(event);
-    return null;
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      await Event.update(event, {
+        where: { id: event.id },
+        transaction
+      });
+      
+      transaction.commit();
+    } catch (e) {
+      logger.warn('rollback');
+      transaction.rollback();
+      throw e;
+    }
   }
 };
 

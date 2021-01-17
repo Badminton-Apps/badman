@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,18 +12,17 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from 'app/_shared';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
 import { ClubManagementRoutingModule } from './club-management-routing.module';
-import { OverviewClubsComponent } from './pages/overview-clubs/overview-clubs.component';
 import { AddClubComponent } from './pages/add-club/add-club.component';
 import { DetailClubComponent } from './pages/detail-club/detail-club.component';
 import { EditClubComponent } from './pages/edit-club/edit-club.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { OverviewClubsComponent } from './pages/overview-clubs/overview-clubs.component';
+import { ClubFieldsComponent } from './components/club-fields/club-fields.component';
 
 const materialModules = [
   FormsModule,
@@ -45,6 +43,7 @@ const materialModules = [
   MatTableModule,
   MatProgressSpinnerModule,
   ReactiveFormsModule,
+  MatIconModule,
 ];
 
 @NgModule({
@@ -53,7 +52,9 @@ const materialModules = [
     AddClubComponent,
     DetailClubComponent,
     EditClubComponent,
+    ClubFieldsComponent,
   ],
   imports: [SharedModule, ...materialModules, ClubManagementRoutingModule],
+  exports: [ClubFieldsComponent],
 })
 export class ClubManagementModule {}
