@@ -7,10 +7,16 @@ import { Club, ClubService } from 'app/_shared';
   styleUrls: ['./add-club.component.scss'],
 })
 export class AddClubComponent {
+  club: Club;
+
   constructor(private clubSerice: ClubService, private router: Router) {}
 
   async add(club: Club) {
-    await this.clubSerice.addClub(club).toPromise();
-    await this.router.navigate(['admin', 'club']);
+    this.club = club;
+  }
+
+  async save() {
+    const newClub = await this.clubSerice.addClub(this.club).toPromise();
+    this.router.navigate(['club', newClub.id]);
   }
 }
