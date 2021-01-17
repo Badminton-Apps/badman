@@ -1,18 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
-import {
-  AddClubComponent,
-  DetailClubComponent,
-  EditClubComponent,
-  OverviewClubsComponent,
-} from './pages';
+import { AddClubComponent, EditClubComponent } from './pages';
+import { AddTeamComponent } from './pages/add-team/add-team.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: OverviewClubsComponent,
-  },
   {
     path: 'add',
     component: AddClubComponent,
@@ -24,27 +16,24 @@ const routes: Routes = [
     },
   },
   {
-    path: ':id',
+    path: ':id/edit',
+    canActivate: [AuthGuard],
+    data: {
+      claims: {
+        all: 'edit:club',
+      },
+    },
     children: [
       {
-        path: '',
-        component: DetailClubComponent,
-        canActivate: [AuthGuard],
-        data: {
-          claims: {
-            all: 'view:club',
-          },
-        },
+        path: 'team',
+        children: [
+          { path: 'add', component: AddTeamComponent },
+          { path: ':teamId', component: EditClubComponent },
+        ],
       },
       {
-        path: 'edit',
+        path: '',
         component: EditClubComponent,
-        canActivate: [AuthGuard],
-        data: {
-          claims: {
-            all: 'edit:club',
-          },
-        },
       },
     ],
   },

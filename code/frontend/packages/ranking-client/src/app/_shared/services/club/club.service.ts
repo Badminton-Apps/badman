@@ -28,7 +28,7 @@ export class ClubService {
 
   addClub(club: Club) {
     return this.apollo
-      .mutate<{ updateClub: Club }>({
+      .mutate<{ addClub: Club }>({
         mutation: addClubMutation,
         variables: {
           club: {
@@ -37,8 +37,10 @@ export class ClubService {
           },
         },
       })
-      .pipe(map((x) => new Club(x.data.updateClub)));
+      .pipe(map((x) => new Club(x.data.addClub)));
   }
+
+
 
   updateClub(club: Club) {
     return this.apollo
