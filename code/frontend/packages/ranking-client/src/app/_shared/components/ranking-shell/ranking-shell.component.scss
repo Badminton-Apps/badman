@@ -24,6 +24,10 @@
   .middle {
     flex: 1 1 auto;
     display: flex;
+
+    app-player-search {
+      padding-left: 30px;
+    }
   }
 
   .end {

@@ -18,6 +18,8 @@ import { EditClubComponent } from './pages/edit-club/edit-club.component';
 import { TeamFieldsComponent } from './components/team-fields/team-fields.component';
 import { AddTeamComponent } from './pages/add-team/add-team.component';
 import { AddPlayerComponent } from './dialogs/add-player/add-player.component';
+import { ClubEditTeamComponent } from './pages/edit-club/components/club-edit-team/club-edit-team.component';
+import { EditTeamComponent } from './pages/edit-team/edit-team.component';
 
 const materialModules = [
   FormsModule,
@@ -39,10 +41,12 @@ const materialModules = [
   declarations: [
     AddClubComponent,
     EditClubComponent,
+    EditTeamComponent,
     ClubFieldsComponent,
     TeamFieldsComponent,
     AddTeamComponent,
-    AddPlayerComponent
+    AddPlayerComponent,
+    ClubEditTeamComponent,
   ],
   imports: [SharedModule, ...materialModules, ClubManagementRoutingModule],
   exports: [ClubFieldsComponent],

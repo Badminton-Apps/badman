@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Club } from 'app/_shared';
+import { debounce, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-club-fields',
@@ -40,6 +41,10 @@ export class ClubFieldsComponent implements OnInit {
         const matches = r.match(/\b(\w)/g);
         abbrControl.setValue(matches.join(''));
       }
+    });
+
+    this.clubForm.valueChanges.pipe(debounceTime(600)).subscribe((r) => {
+      this.update();
     });
   }
 

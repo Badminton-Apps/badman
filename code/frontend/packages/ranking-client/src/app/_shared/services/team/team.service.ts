@@ -3,13 +3,15 @@ import { SortDirection } from '@angular/material/sort';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Team } from './../../models';
+import { Player, Team } from './../../models';
 
 const teamQuery = require('graphql-tag/loader!../../graphql/teams/queries/GetTeamQuery.graphql');
 const teamsQuery = require('graphql-tag/loader!../../graphql/teams/queries/GetTeamsQuery.graphql');
 
 const addTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/addTeam.graphql');
 const updateTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/updateTeam.graphql');
+const addPlayerToTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/addPlayerToTeamMutation.graphql');
+const removePlayerToTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/removePlayerToTeamMutation.graphql');
 
 @Injectable({
   providedIn: 'root',
@@ -19,13 +21,13 @@ export class TeamService {
 
   getTeam(teamId: number) {
     return this.apollo
-      .query<{ system: Team }>({
+      .query<{ team: Team }>({
         query: teamQuery,
         variables: {
           id: teamId,
         },
       })
-      .pipe(map((x) => new Team(x.data.system)));
+      .pipe(map((x) => new Team(x.data.team)));
   }
 
   addTeam(team: Team, clubId: number) {
@@ -38,6 +40,27 @@ export class TeamService {
       })
       .pipe(map((x) => new Team(x.data.addTeam)));
   }
+
+  addPlayer(team: Team, player: Player) {
+    return this.apollo.mutate({
+      mutation: addPlayerToTeamMutation,
+      variables: {
+        playerId: player.id,
+        teamId: team.id,
+      },
+    });
+  }
+
+  removePlayer(team: Team, player: Player) {
+    return this.apollo.mutate({
+      mutation: removePlayerToTeamMutation,
+      variables: {
+        playerId: player.id,
+        teamId: team.id,
+      },
+    });
+  }
+
 
   updateTeam(team: Team) {
     return this.apollo
