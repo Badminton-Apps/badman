@@ -1,0 +1,61 @@
+<div class="mat-elevation-z1">
+  <div class="info">
+    <div class="name">
+      <span class="up"> {{ team.name }}</span>
+      <span class="down">
+        {{ this.team.abbreviation }}
+      </span>
+    </div>
+
+    <ng-container>
+      <button class="options" mat-icon-button [matMenuTriggerFor]="options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #options="matMenu">
+        <button
+          mat-menu-item
+          [routerLink]="[
+            '/',
+            'admin',
+            'club',
+            club.id,
+            'edit',
+            'team',
+            team.id
+          ]"
+        >
+          Edit
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>Delete</button>
+      </mat-menu>
+    </ng-container>
+  </div>
+
+  <div class="content">
+    <mat-list>
+      <ng-container
+        *ngIf="!(this.team.players && this.team.players.length > 0)"
+      >
+        <mat-list-item>
+          <div class="no-players">No players</div>
+        </mat-list-item>
+      </ng-container>
+
+      <ng-container *ngIf="this.team.players && this.team.players.length > 0">
+        <mat-list-item *ngFor="let player of this.team.players">
+          <div mat-line>{{ player.firstName }} {{ player.lastName }}</div>
+          <button mat-icon-button (click)="this.onPlayerRemoved.next(player)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </ng-container>
+      <mat-list-item>
+        <app-player-search
+          (onSelectPlayer)="this.onPlayerAdded.next($event)"
+          label="Add player"
+        ></app-player-search>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>
