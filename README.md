@@ -26,7 +26,6 @@
 - [Node.js] which includes [Node Package Manager][npm]
 - Running Postgress instance
 - `npm install -g lerna`
-- `npm install -g yat`
 
 ### Frontend
 
