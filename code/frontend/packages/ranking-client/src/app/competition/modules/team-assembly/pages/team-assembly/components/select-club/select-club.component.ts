@@ -30,7 +30,7 @@ export class SelectClubComponent implements OnInit {
 
     // TODO: Convert to observable way
     this.options = await this.clubService
-      .getClubs(100, null)
+      .getClubs(100, null, "")
       .pipe(
         map((data) => {
           const count = data.clubs?.total || 0;

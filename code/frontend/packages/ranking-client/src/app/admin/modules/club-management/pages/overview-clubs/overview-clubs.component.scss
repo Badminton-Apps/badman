@@ -5,3 +5,10 @@ table {
 .mat-row {
   cursor: pointer;
 }
+
+.mat-fab {
+  right: 20px;
+  bottom: 20px;
+  left: auto;
+  position: fixed;
+}

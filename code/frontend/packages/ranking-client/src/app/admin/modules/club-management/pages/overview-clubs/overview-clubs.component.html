@@ -37,7 +37,7 @@
   <tr
     mat-row
     *matRowDef="let row; columns: displayedColumns"
-    [routerLink]="['/admin/club/', row.id]"
+    [routerLink]="[row.id]"
   ></tr>
 </table>
 
@@ -48,3 +48,7 @@
   [pageSizeOptions]="[5, 10, 25, 100]"
   (page)="this.onPaginateChange.next($event)"
 ></mat-paginator>
+
+<button mat-fab color="primary" aria-label="Add a club" [routerLink]="['add']">
+  <mat-icon>add</mat-icon>
+</button>

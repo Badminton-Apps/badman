@@ -21,6 +21,9 @@ export class Club extends Model<Club> {
   name: string;
 
   @Column
+  abbreviation: string;
+
+  @Column
   clubId?: number;
 
   @HasMany(() => Team, 'ClubId')
