@@ -51,10 +51,6 @@ export class ProfileHeaderComponent implements OnInit {
       lastNames[lastNames.length - 1][0]
     }`.toUpperCase();
 
-    if (this.player.birthDate) {
-      this.playerAge = moment().diff(this.player.birthDate, 'years');
-    }
-
     if (this.shownRanking) {
       const date = moment(this.shownRanking.rankingDate);
       this.doubleTooltip = `Week: ${date.week()}-${date.weekYear()}\r\nWithin level: ${this.shownRanking.doubleRank} of ${this.shownRanking.totalWithinDoubleLevel}\r\nTotal: ${this.shownRanking.totalDoubleRanking}\r\nUp: ${this.shownRanking.doublePoints}, down: ${this.shownRanking.doublePointsDowngrade}`;

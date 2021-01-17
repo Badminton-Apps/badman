@@ -5,17 +5,38 @@ export class Player {
   id: number;
   memberId: number;
   gender: string;
-  birthDate: Date;
   avatar: string;
   firstName: string;
   lastName: string;
   isClaimed = false;
   rankingPlaces: RankingPlace[];
   games: Game[];
+
+  constructor({ ...args }: Partial<Player>) {
+    this.id = args.id;
+    this.memberId = args.memberId;
+    this.gender = args.gender;
+    this.avatar = args.avatar;
+    this.firstName = args.firstName;
+    this.lastName = args.lastName;
+    this.isClaimed = args.isClaimed;
+    this.rankingPlaces = args.rankingPlaces?.map((r) => new RankingPlace(r));
+    this.games = args.games?.map((g) => new Game(g));
+  }
 }
 
-export interface PlayerGame extends Player {
-  rankingPlace: RankingPlace;
+export class PlayerGame extends Player {
+  rankingPlace: RankingPlace; 
   team: number;
   player: number;
+
+  constructor({ ...args }: Partial<PlayerGame>) {
+    super(args);
+
+    this.rankingPlace = args.rankingPlace
+      ? new RankingPlace(args.rankingPlace)
+      : null;
+    this.team = args.team;
+    this.player = args.player;
+  }
 }

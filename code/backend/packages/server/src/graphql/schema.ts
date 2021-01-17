@@ -6,8 +6,11 @@ import {
   updateEventMutation,
   updateRankingSystemMutation,
   addRankingSystemGroupMutation,
-  updateRankingSystemGroupMutation
+  updateRankingSystemGroupMutation,
+  addClubMutation,
+  updateClubMutation
 } from './mutations';
+import { addTeamMutation, updateTeamMutation } from './mutations/team.mutations';
 import {
   clubsQuery,
   teamsQuery,
@@ -20,7 +23,8 @@ import {
   playersQuery,
   systemQuery,
   systemsGroupsQuery,
-  systemsQuery
+  systemsQuery,
+  clubQuery
 } from './queries';
 
 export const createSchema = () => {
@@ -36,6 +40,7 @@ export const createSchema = () => {
         imported: importedQuery,
         games: gamesQuery,
         teams: teamsQuery,
+        club: clubQuery,
         clubs: clubsQuery,
         system: systemQuery,
         systems: systemsQuery,
@@ -45,6 +50,10 @@ export const createSchema = () => {
     mutation: new GraphQLObjectType({
       name: 'RootMutationType',
       fields: () => ({
+        addClub: addClubMutation,
+        updateClub: updateClubMutation,
+        addTeam: addTeamMutation,
+        updateTeam: updateTeamMutation,
         addEvent: addEventMutation,
         updateEvent: updateEventMutation,
         addRankingSystem: addRankingSystemMutation,
