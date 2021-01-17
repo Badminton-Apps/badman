@@ -39,6 +39,7 @@ export class UserService {
   canAcceptLinks() {
     return this.auth.hasClaim$('link:account');
   }
+
   canViewEvents() {
     return this.auth.hasClaim$('view:event');
   }
@@ -47,5 +48,7 @@ export class UserService {
     return this.auth.hasClaim$('import:event');
   }
 
- 
+  canEditClubs(clubId: number) {
+    return this.auth.hasClaim$('edit:club');
+  }
 }

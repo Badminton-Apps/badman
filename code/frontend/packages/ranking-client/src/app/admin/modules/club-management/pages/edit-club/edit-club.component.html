@@ -1,0 +1,7 @@
+<div class="mat-subheading-1">Edit Club</div>
+
+<app-club-fields
+  *ngIf="this.club$ | async as club"
+  [club]="club"
+  (save)="this.save($event)"
+></app-club-fields>

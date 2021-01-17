@@ -11,6 +11,9 @@ import { TeamMembership } from './team-membership.model';
 export class Team extends Model<Team> {
   @Column
   name: string;
+  
+  @Column
+  abbreviation: string;
 
   @BelongsTo(() => SubEvent, 'SubEventId')
   subEvents?: SubEvent;
