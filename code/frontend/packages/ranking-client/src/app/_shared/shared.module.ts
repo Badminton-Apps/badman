@@ -27,6 +27,7 @@ import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { BetaComponent } from './components/beta/beta.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     LanguageComponent,
     EnumToArrayPipe,
     ConfirmationDialogComponent,
+    BetaComponent,
   ],
   imports: [
     CommonModule,
@@ -73,6 +75,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     LoadingPipe,
     LevelToLetterPipe,
     EnumToArrayPipe,
+    BetaComponent,
+    PlayerSearchComponent
   ],
 })
 export class SharedModule {}

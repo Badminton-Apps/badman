@@ -87,8 +87,19 @@ const updateEventMutation = {
         message: "You don't have permission to do this "
       });
     }
-    // return await Event.create(event);
-    return null;
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      await Event.update(event, {
+        where: { id: event.id },
+        transaction
+      });
+      
+      transaction.commit();
+    } catch (e) {
+      logger.warn('rollback');
+      transaction.rollback();
+      throw e;
+    }
   }
 };
 
