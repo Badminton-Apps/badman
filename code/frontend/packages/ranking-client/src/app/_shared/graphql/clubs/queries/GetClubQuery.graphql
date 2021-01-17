@@ -4,10 +4,15 @@ query GetClubsQuery($id: ID!) {
     name
     abbreviation
     clubId
-    teams {
+    teams(order: "name") {
       id
       name
       abbreviation
+      players {
+        id
+        firstName
+        lastName
+      }
     }
 
     players {

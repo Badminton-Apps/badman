@@ -65,3 +65,13 @@ $config: mat-typography-config();
     color: #aaaaaa;
   }
 }
+
+.teams {
+  display: flex;
+  flex-flow: row wrap;
+
+  app-team-overview {
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+}

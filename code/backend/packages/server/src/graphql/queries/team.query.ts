@@ -21,3 +21,14 @@ export const teamsQuery = {
     }
   })
 };
+
+export const teamQuery = {
+  type: TeamType,
+  args: {
+    id: {
+      description: 'Id of the team',
+      type: new GraphQLNonNull(GraphQLID)
+    }
+  },
+  resolve: resolver(Team)
+};
