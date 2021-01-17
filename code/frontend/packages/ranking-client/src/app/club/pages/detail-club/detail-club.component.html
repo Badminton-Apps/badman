@@ -26,7 +26,7 @@
           >
             Add team
           </button>
-          <button mat-menu-item>Add player</button>
+          <button mat-menu-item (click)="addPlayer(club)">Add player</button>
           <mat-divider></mat-divider>
           <button mat-menu-item>Delete</button>
         </mat-menu>
@@ -49,9 +49,20 @@
     </div>
   </div>
 
-  <mat-list *ngIf="club.teams">
-    <mat-list-item *ngFor="let team of club.teams">{{
-      team.name
-    }}</mat-list-item>
-  </mat-list>
+  <mat-tab-group>
+    <mat-tab label="Teams">
+      <mat-list *ngIf="club.teams">
+        <mat-list-item *ngFor="let team of club.teams">
+          {{ team.name }}
+        </mat-list-item>
+      </mat-list></mat-tab
+    >
+    <mat-tab label="Players">
+      <mat-list *ngIf="club.players">
+        <mat-list-item *ngFor="let player of club.players">
+          {{ player.firstName }} {{ player.lastName }}
+        </mat-list-item>
+      </mat-list>
+    </mat-tab>
+  </mat-tab-group>
 </ng-container>

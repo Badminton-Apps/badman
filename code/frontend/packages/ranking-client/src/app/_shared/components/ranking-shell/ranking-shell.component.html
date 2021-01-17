@@ -9,7 +9,7 @@
       >
     </span>
     <span class="middle">
-      <app-player-search></app-player-search>
+      <app-player-search (onSelectPlayer)="this.playerSearch($event)"></app-player-search>
     </span>
     <span class="end">
       <app-language></app-language>

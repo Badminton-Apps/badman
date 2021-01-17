@@ -10,6 +10,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { SharedModule } from 'app/_shared';
 import { ClubRoutingModule } from './club-routing.module';
 import { DetailClubComponent, OverviewClubsComponent } from './pages';
@@ -28,8 +29,8 @@ const materialModules = [
   MatTableModule,
   ReactiveFormsModule,
   MatIconModule,
+  MatTabsModule,
 ];
-
 
 @NgModule({
   declarations: [OverviewClubsComponent, DetailClubComponent],

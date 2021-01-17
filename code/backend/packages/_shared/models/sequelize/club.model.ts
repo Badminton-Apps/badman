@@ -8,13 +8,19 @@ import {
   Unique,
   HasMany
 } from 'sequelize-typescript';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  HasManyGetAssociationsMixin
+} from 'sequelize/types';
 import { Team } from '../..';
 import { ClubMembership } from './club-membership.model';
 import { Player } from './player.model';
 
 @Table({
   timestamps: true,
-  schema: "public"
+  schema: 'public'
 })
 export class Club extends Model<Club> {
   @Column
@@ -34,5 +40,8 @@ export class Club extends Model<Club> {
     () => ClubMembership
   )
   players: Player[];
+
+  public getPlayers!: BelongsToManyGetAssociationsMixin<Player>; // Note the null assertions!
+  public addPlayer!: BelongsToManyAddAssociationMixin<Player, number>;
+  public hasPlayer!: BelongsToManyHasAssociationMixin<Player, number>;
 }
- 
