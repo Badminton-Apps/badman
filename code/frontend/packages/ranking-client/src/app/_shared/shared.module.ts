@@ -76,6 +76,7 @@ import { BetaComponent } from './components/beta/beta.component';
     LevelToLetterPipe,
     EnumToArrayPipe,
     BetaComponent,
+    PlayerSearchComponent
   ],
 })
 export class SharedModule {}

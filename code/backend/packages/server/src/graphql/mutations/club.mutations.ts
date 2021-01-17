@@ -1,9 +1,9 @@
-import { Club, DataBaseHandler, logger } from '@badvlasim/shared';
-import { GraphQLInt } from 'graphql';
+import { Club, DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import { GraphQLID, GraphQLInt } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { ClubInputType, ClubType } from '../types';
 
-const addClubMutation = {
+export const addClubMutation = {
   type: ClubType,
   args: {
     club: {
@@ -38,12 +38,59 @@ const addClubMutation = {
   }
 };
 
-const updateClubMutation = {
+export const addPlayerToClubMutation = {
+  type: ClubType,
+  args: {
+    clubId: {
+      name: 'clubId',
+      type: GraphQLID
+    },
+    playerId: {
+      name: 'playerId',
+      type: GraphQLID
+    }
+  },
+  resolve: async (findOptions, { clubId, playerId }, context) => {
+    if (!context.req.user.hasAnyPermission(['edit:club'])) {
+      throw new ApiError({
+        code: 401,
+        message: "You don't have permission to do this "
+      });
+    }
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbClub = await Club.findByPk(clubId, {
+        transaction
+      });
+      const dbPlayer = await Player.findByPk(playerId, {
+        transaction
+      });
+
+      const result = await dbClub.addPlayer(dbPlayer, {
+        transaction,
+        through: {
+          start: new Date(),
+          active: true
+        }
+      });
+
+      logger.debug('Linked?', result);
+
+      transaction.commit();
+    } catch (e) {
+      logger.warn('rollback');
+      transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const updateClubMutation = {
   type: ClubType,
   args: {
     id: {
       name: 'Id',
-      type: GraphQLInt
+      type: GraphQLID
     },
     club: {
       name: 'Club',
@@ -72,5 +119,3 @@ const updateClubMutation = {
     }
   }
 };
-
-export { addClubMutation, updateClubMutation };

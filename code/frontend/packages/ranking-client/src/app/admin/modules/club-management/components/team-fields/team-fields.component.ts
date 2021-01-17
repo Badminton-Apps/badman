@@ -23,6 +23,7 @@ export class TeamFieldsComponent implements OnInit {
   club: Club;
 
   @Output() save = new EventEmitter<Team>();
+  
   teamForm: FormGroup;
 
   ngOnInit() {
