@@ -1,0 +1,19 @@
+query GetClubsQuery($id: ID!) {
+  club(id: $id) {
+    id
+    name
+    abbreviation
+    clubId
+    teams {
+      id
+      name
+      abbreviation
+    }
+
+    players {
+      id
+      firstName
+      lastName
+    }
+  }
+}
