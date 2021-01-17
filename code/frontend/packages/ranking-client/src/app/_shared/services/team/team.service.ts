@@ -17,12 +17,12 @@ const updateTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutat
 export class TeamService {
   constructor(private apollo: Apollo) {}
 
-  getTeam(systemId: number) {
+  getTeam(teamId: number) {
     return this.apollo
       .query<{ system: Team }>({
         query: teamQuery,
         variables: {
-          id: systemId,
+          id: teamId,
         },
       })
       .pipe(map((x) => new Team(x.data.system)));
