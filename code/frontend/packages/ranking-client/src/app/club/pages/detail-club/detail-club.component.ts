@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AddPlayerComponent } from 'app/admin/modules/club-management/dialogs/add-player/add-player.component';
 import { UserService } from 'app/player';
 import { Club, ClubService } from 'app/_shared';
 import { Observable } from 'rxjs';
@@ -17,7 +19,8 @@ export class DetailClubComponent {
     private user: UserService,
     private clubService: ClubService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -28,5 +31,16 @@ export class DetailClubComponent {
     );
 
     this.canEditClub$ = this.user.canEditClubs(1);
+  }
+
+  addPlayer(club){
+    const dialogRef = this.dialog.open(AddPlayerComponent)
+
+    dialogRef.afterClosed().subscribe(async player => {
+      console.log(club, player)
+      if (player){
+        await this.clubService.addPlayer(club, player).toPromise()
+      }
+    })
   }
 }

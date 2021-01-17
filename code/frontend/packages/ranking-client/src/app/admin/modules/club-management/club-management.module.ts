@@ -17,6 +17,7 @@ import { AddClubComponent } from './pages/add-club/add-club.component';
 import { EditClubComponent } from './pages/edit-club/edit-club.component';
 import { TeamFieldsComponent } from './components/team-fields/team-fields.component';
 import { AddTeamComponent } from './pages/add-team/add-team.component';
+import { AddPlayerComponent } from './dialogs/add-player/add-player.component';
 
 const materialModules = [
   FormsModule,
@@ -35,7 +36,14 @@ const materialModules = [
 ];
 
 @NgModule({
-  declarations: [AddClubComponent, EditClubComponent, ClubFieldsComponent, TeamFieldsComponent, AddTeamComponent],
+  declarations: [
+    AddClubComponent,
+    EditClubComponent,
+    ClubFieldsComponent,
+    TeamFieldsComponent,
+    AddTeamComponent,
+    AddPlayerComponent
+  ],
   imports: [SharedModule, ...materialModules, ClubManagementRoutingModule],
   exports: [ClubFieldsComponent],
 })

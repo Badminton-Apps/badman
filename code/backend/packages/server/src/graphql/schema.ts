@@ -8,7 +8,8 @@ import {
   addRankingSystemGroupMutation,
   updateRankingSystemGroupMutation,
   addClubMutation,
-  updateClubMutation
+  updateClubMutation,
+  addPlayerToClubMutation
 } from './mutations';
 import { addTeamMutation, updateTeamMutation } from './mutations/team.mutations';
 import {
@@ -52,6 +53,7 @@ export const createSchema = () => {
       fields: () => ({
         addClub: addClubMutation,
         updateClub: updateClubMutation,
+        addPlayerToClub: addPlayerToClubMutation,
         addTeam: addTeamMutation,
         updateTeam: updateTeamMutation,
         addEvent: addEventMutation,
