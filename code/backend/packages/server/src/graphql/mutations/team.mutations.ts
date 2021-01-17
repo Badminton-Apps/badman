@@ -9,9 +9,13 @@ const addTeamMutation = {
     team: {
       name: 'Team',
       type: TeamInputType
+    },
+    clubId: {
+      name: 'clubId',
+      type: GraphQLInt
     }
   },
-  resolve: async (findOptions, { team }, context) => {
+  resolve: async (findOptions, { team, clubId }, context) => {
     if (!context.req.user.hasAnyPermission(['add:team'])) {
       throw new ApiError({
         code: 401,
@@ -23,7 +27,8 @@ const addTeamMutation = {
       const teamDb = await Team.create(
         {
           ...team,
-          id: null
+          id: null,
+          clubId
         },
         { transaction }
       );

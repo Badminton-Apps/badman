@@ -38,9 +38,7 @@ import {
 })
 export class OverviewClubsComponent {
   dataSource = new MatTableDataSource<Club>();
-  displayedColumns: string[] = ['name'];
-  expandedElement: Club | null;
-  selection = new SelectionModel<Club>(true, []);
+  displayedColumns: string[] = ['name', 'abbreviation'];
 
   resultsLength$ = new BehaviorSubject(0);
   pageIndex$ = new BehaviorSubject(0);
@@ -131,7 +129,4 @@ export class OverviewClubsComponent {
     });
   }
 
-  checkboxLabel(row?: Club): string {
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'}`;
-  }
 }
