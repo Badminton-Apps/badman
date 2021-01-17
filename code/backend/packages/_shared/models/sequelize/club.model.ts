@@ -41,7 +41,7 @@ export class Club extends Model<Club> {
   )
   players: Player[];
 
-  public getPlayers!: BelongsToManyGetAssociationsMixin<Player>; // Note the null assertions!
+  public getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
   public addPlayer!: BelongsToManyAddAssociationMixin<Player, number>;
   public hasPlayer!: BelongsToManyHasAssociationMixin<Player, number>;
 }

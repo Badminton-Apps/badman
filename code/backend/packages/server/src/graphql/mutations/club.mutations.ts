@@ -66,7 +66,7 @@ export const addPlayerToClubMutation = {
         transaction
       });
 
-      const result = await dbClub.addPlayer(dbPlayer, {
+      await dbClub.addPlayer(dbPlayer, {
         transaction,
         through: {
           start: new Date(),
@@ -74,9 +74,8 @@ export const addPlayerToClubMutation = {
         }
       });
 
-      logger.debug('Linked?', result);
-
       transaction.commit();
+      return dbClub;
     } catch (e) {
       logger.warn('rollback');
       transaction.rollback();

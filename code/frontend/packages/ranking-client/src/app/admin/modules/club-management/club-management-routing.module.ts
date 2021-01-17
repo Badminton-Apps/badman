@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
 import { AddClubComponent, EditClubComponent } from './pages';
 import { AddTeamComponent } from './pages/add-team/add-team.component';
+import { EditTeamComponent } from './pages/edit-team/edit-team.component';
 
 const routes: Routes = [
   {
@@ -28,7 +29,7 @@ const routes: Routes = [
         path: 'team',
         children: [
           { path: 'add', component: AddTeamComponent },
-          { path: ':teamId', component: EditClubComponent },
+          { path: ':teamId', component: EditTeamComponent },
         ],
       },
       {
