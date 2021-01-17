@@ -20,8 +20,6 @@ export class PlayerSearchComponent implements OnInit {
   constructor(private playerService: PlayerService) {}
 
   ngOnInit() {
-    console.log('Hello?')
-
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
       map(value => (typeof value === 'string' ? value : value.name)),
