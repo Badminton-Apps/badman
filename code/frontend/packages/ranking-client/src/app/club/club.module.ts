@@ -11,12 +11,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from 'app/_shared';
-import { ClubManagementRoutingModule } from './club-management-routing.module';
-import { ClubFieldsComponent } from './components/club-fields/club-fields.component';
-import { AddClubComponent } from './pages/add-club/add-club.component';
-import { EditClubComponent } from './pages/edit-club/edit-club.component';
-import { TeamFieldsComponent } from './components/team-fields/team-fields.component';
-import { AddTeamComponent } from './pages/add-team/add-team.component';
+import { ClubRoutingModule } from './club-routing.module';
+import { DetailClubComponent, OverviewClubsComponent } from './pages';
 
 const materialModules = [
   FormsModule,
@@ -34,9 +30,9 @@ const materialModules = [
   MatIconModule,
 ];
 
+
 @NgModule({
-  declarations: [AddClubComponent, EditClubComponent, ClubFieldsComponent, TeamFieldsComponent, AddTeamComponent],
-  imports: [SharedModule, ...materialModules, ClubManagementRoutingModule],
-  exports: [ClubFieldsComponent],
+  declarations: [OverviewClubsComponent, DetailClubComponent],
+  imports: [SharedModule, ...materialModules, ClubRoutingModule],
 })
-export class ClubManagementModule {}
+export class ClubModule {}

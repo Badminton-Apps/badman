@@ -23,7 +23,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./player/player.module').then((m) => m.PlayerModule),
       },
-
+      {
+        path: 'club',
+        loadChildren: () =>
+          import('./club/club.module').then((m) => m.ClubModule),
+      },
       {
         path: 'toernament',
         loadChildren: () =>
@@ -40,7 +44,6 @@ const routes: Routes = [
       },
     ],
   },
-  { path: 'club-management', loadChildren: () => import('./admin/modules/club-management/club-management.module').then(m => m.ClubManagementModule) },
   { path: '**', redirectTo: '/' },
 ];
 

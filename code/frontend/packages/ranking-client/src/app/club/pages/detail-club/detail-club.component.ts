@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from 'app/player';
 import { Club, ClubService } from 'app/_shared';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -10,8 +11,10 @@ import { map, switchMap, tap } from 'rxjs/operators';
 })
 export class DetailClubComponent {
   club$: Observable<Club>;
+  canEditClub$: Observable<boolean>;
 
   constructor(
+    private user: UserService,
     private clubService: ClubService,
     private route: ActivatedRoute,
     private router: Router
@@ -21,7 +24,9 @@ export class DetailClubComponent {
     this.club$ = this.route.paramMap.pipe(
       map((x) => x.get('id')),
       switchMap((id) => this.clubService.getClub(parseInt(id, 10))),
-      tap(r => console.log(r))
+      tap((r) => console.log(r))
     );
+
+    this.canEditClub$ = this.user.canEditClubs(1);
   }
 }
