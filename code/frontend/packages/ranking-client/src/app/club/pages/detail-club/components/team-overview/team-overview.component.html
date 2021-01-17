@@ -1,0 +1,23 @@
+<div class="mat-elevation-z1">
+  
+    <div class="info">
+      <div class="name">
+        <span class="up"> {{ team.name }}</span>
+        <span class="down">
+          {{ this.team.abbreviation }}
+        </span>
+      </div>
+    </div>
+
+  <div class="content">
+    <ng-container *ngIf="!(this.team.players && this.team.players.length > 0)">
+      <div class="no-players">No players</div>
+    </ng-container>
+
+    <ng-container *ngIf="this.team.players && this.team.players.length > 0">
+      <div *ngFor="let player of this.team.players">
+        {{ player.firstName }} {{ player.lastName }}
+      </div>
+    </ng-container>
+  </div>
+</div>

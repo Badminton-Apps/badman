@@ -1,4 +1,4 @@
-query GetTeamsQuery($id: ID!) {
+query GetTeamQuery($id: ID!) {
   team(id: $id) {
     id
     name

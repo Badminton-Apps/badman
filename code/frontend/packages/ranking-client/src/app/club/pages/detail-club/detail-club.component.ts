@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AddPlayerComponent } from 'app/admin/modules/club-management/dialogs/add-player/add-player.component';
 import { UserService } from 'app/player';
 import { Club, ClubService } from 'app/_shared';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
@@ -15,6 +15,8 @@ export class DetailClubComponent {
   club$: Observable<Club>;
   canEditClub$: Observable<boolean>;
 
+  update$ = new BehaviorSubject(0);
+
   constructor(
     private user: UserService,
     private clubService: ClubService,
@@ -24,23 +26,23 @@ export class DetailClubComponent {
   ) {}
 
   ngOnInit(): void {
-    this.club$ = this.route.paramMap.pipe(
-      map((x) => x.get('id')),
+    this.club$ = combineLatest([this.route.paramMap, this.update$]).pipe(
+      map(([params]) => params.get('id')),
       switchMap((id) => this.clubService.getClub(parseInt(id, 10))),
-      tap((r) => console.log(r))
+      tap((club) => {
+        this.canEditClub$ = this.user.canEditClubs(club.id);
+      })
     );
-
-    this.canEditClub$ = this.user.canEditClubs(1);
   }
 
-  addPlayer(club){
-    const dialogRef = this.dialog.open(AddPlayerComponent)
+  addPlayer(club) {
+    const dialogRef = this.dialog.open(AddPlayerComponent);
 
-    dialogRef.afterClosed().subscribe(async player => {
-      console.log(club, player)
-      if (player){
-        await this.clubService.addPlayer(club, player).toPromise()
+    dialogRef.afterClosed().subscribe(async (player) => {
+      if (player) {
+        await this.clubService.addPlayer(club, player).toPromise();
+        this.update$.next(null);
       }
-    })
+    });
   }
 }

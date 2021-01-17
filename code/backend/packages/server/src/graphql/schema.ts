@@ -9,11 +9,15 @@ import {
   updateRankingSystemGroupMutation,
   addClubMutation,
   updateClubMutation,
-  addPlayerToClubMutation
+  addPlayerToClubMutation,
+  addPlayerToTeamMutation,
+  addTeamMutation,
+  removePlayerToTeamMutation,
+  updateTeamMutation
 } from './mutations';
-import { addTeamMutation, updateTeamMutation } from './mutations/team.mutations';
 import {
   clubsQuery,
+  teamQuery,
   teamsQuery,
   eventQuery,
   eventsQuery,
@@ -40,6 +44,7 @@ export const createSchema = () => {
         events: eventsQuery,
         imported: importedQuery,
         games: gamesQuery,
+        team: teamQuery,
         teams: teamsQuery,
         club: clubQuery,
         clubs: clubsQuery,
@@ -56,6 +61,8 @@ export const createSchema = () => {
         addPlayerToClub: addPlayerToClubMutation,
         addTeam: addTeamMutation,
         updateTeam: updateTeamMutation,
+        addPlayerToTeam: addPlayerToTeamMutation,
+        removePlayerToTeam: removePlayerToTeamMutation,
         addEvent: addEventMutation,
         updateEvent: updateEventMutation,
         addRankingSystem: addRankingSystemMutation,
