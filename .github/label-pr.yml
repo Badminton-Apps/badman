@@ -1,4 +1,3 @@
-
 backend:
   - backend/*
   - backend/**/*
