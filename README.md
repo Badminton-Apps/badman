@@ -47,11 +47,6 @@ _eg: `psql "host=localhost port=5432 dbname=ranking user=ranking password=pass" 
 
 - Start server: `yarn start`
 
-## Changelog
-
-- [Frontend improvements][changelog_fe].
-- [Backend improvements][changelog_be].
-
 ## Contributing
 
 ### Contributing Guidelines
@@ -64,8 +59,6 @@ Help us keep Angular open and inclusive. Please read and follow our [Code of Con
 
 [contributing]: CONTRIBUTING.md
 [commit]: CONTRIBUTING.md#commit
-[changelog_fe]: code/frontend/CHANGELOG.md
-[changelog_be]: code/backend/CHANGELOG.md
 [node.js]: https://nodejs.org/
 [npm]: https://www.npmjs.com/get-npm
 [codeofconduct]: CODE_OF_CONDUCT.md
