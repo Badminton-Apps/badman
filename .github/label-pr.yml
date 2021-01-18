@@ -1,25 +1,25 @@
 backend:
-  - backend/*
-  - backend/**/*
+  - code/backend/*
+  - code/backend/**/*
 frontend:
-  - frontend/*
-  - frontend/**/*
+  - code/frontend/*
+  - code/frontend/**/*
 
 '@badvlasim/shared':
-  - backend/packages/_shared/*
-  - backend/packages/_shared/**/*
+  - code/backend/packages/_shared/*
+  - code/backend/packages/_shared/**/*
 '@badvlasim/import':
-  - backend/packages/import/*
-  - backend/packages/import/**/*
+  - code/backend/packages/import/*
+  - code/backend/packages/import/**/*
 '@badvlasim/server':
-  - backend/packages/server/*
-  - backend/packages/server/**/*
+  - code/backend/packages/server/*
+  - code/backend/packages/server/**/*
 '@badvlasim/simulate':
-  - backend/packages/simulate/*
-  - backend/packages/simulate/**/*
+  - code/backend/packages/simulate/*
+  - code/backend/packages/simulate/**/*
 '@badvlasim/client':
-  - frontend/packages/ranking-client/*
-  - frontend/packages/ranking-client/**/*
+  - code/frontend/packages/ranking-client/*
+  - code/frontend/packages/ranking-client/**/*
 
 database:
   - ./**/*.sql
