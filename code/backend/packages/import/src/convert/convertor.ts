@@ -1,4 +1,4 @@
-import { Event, EventType, ImporterFile, logger } from '@badvlasim/shared';
+import { Event, EventImportType, EventType, ImporterFile, logger } from '@badvlasim/shared';
 import { EventEmitter } from 'events';
 import { unlink } from 'fs';
 import { CompetitionCpImporter, CompetitionXmlImporter, TournamentImporter } from '../import';
@@ -88,15 +88,15 @@ export class Convertor {
   private async _convertItem(imported: ImporterFile, event: Event) {
     let mdb: Mdb;
     switch (imported.type) {
-      case EventType.TOERNAMENT:
+      case EventImportType.TOERNAMENT:
         mdb = new Mdb(imported.fileLocation);
         const tournamentImporter = new TournamentImporter(mdb);
         return tournamentImporter.addEvent(imported, event);
-      case EventType.COMPETITION_CP:
+      case EventImportType.COMPETITION_CP:
         mdb = new Mdb(imported.fileLocation);
         const competitionCpImporter = new CompetitionCpImporter(mdb);
         return competitionCpImporter.addEvent(imported, event);
-      case EventType.COMPETITION_XML:
+      case EventImportType.COMPETITION_XML:
         const competitionXmlImporter = new CompetitionXmlImporter();
         return competitionXmlImporter.addEvent(imported, event);
       default:
@@ -105,18 +105,18 @@ export class Convertor {
     }
   }
 
-  async basicInfo(fileLocation: string, type: EventType) {
+  async basicInfo(fileLocation: string, type: EventImportType) {
     let mdb: Mdb;
     switch (type) {
-      case EventType.TOERNAMENT:
+      case EventImportType.TOERNAMENT:
         mdb = new Mdb(fileLocation);
         const tournamentImporter = new TournamentImporter(mdb);
         return tournamentImporter.addImporterfile(fileLocation);
-      case EventType.COMPETITION_CP:
+      case EventImportType.COMPETITION_CP:
         mdb = new Mdb(fileLocation);
         const competitionCpImporter = new CompetitionCpImporter(mdb);
         return competitionCpImporter.addImporterfile(fileLocation);
-      case EventType.COMPETITION_XML:
+      case EventImportType.COMPETITION_XML:
         const competitionXmlImporter = new CompetitionXmlImporter();
         return competitionXmlImporter.addImporterfile(fileLocation); 
       default:

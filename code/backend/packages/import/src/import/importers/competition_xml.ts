@@ -1,7 +1,10 @@
 import {
+  Club,
+  ClubMembership,
   correctWrongPlayers,
   Court,
   Event,
+  EventImportType,
   EventType,
   flatten,
   Game,
@@ -10,16 +13,20 @@ import {
   logger,
   Player,
   SubEvent,
+  Team,
+  TeamMembership,
   titleCase
 } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
 import { readFileSync } from 'fs';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
+import moment from 'moment';
+import e from 'express';
 
 export class CompetitionXmlImporter extends Importer {
   constructor() {
-    super(null, EventType.COMPETITION_XML);
+    super(null, EventType.COMPETITION, EventImportType.COMPETITION_XML);
   }
 
   async addImporterfile(fileLocation: string) {
@@ -28,18 +35,51 @@ export class CompetitionXmlImporter extends Importer {
     const file = new ImporterFile({
       fileLocation,
       name: xmlData.League.LeagueName,
-      type: this.type
+      type: this.importType
     });
 
     return file.save();
   }
 
-  protected async addPlayersXml(xmlData: any[]): Promise<Player[]> {
+  async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
+    const xmlData = parse(readFileSync(importerFile.fileLocation, 'utf8'));
+    const teams = Array.isArray(xmlData.League.Team)
+      ? [...xmlData.League.Team]
+      : [xmlData.League.Team];
+    const events = Array.isArray(xmlData.League.Event)
+      ? [...xmlData.League.Event]
+      : [xmlData.League.Event];
+
+    const players = await this.addPlayersXml(teams, event);
+
+    await this.addGamesXml(players, event, events);
+
+    await event.save();
+
+    return event;
+  }
+
+  // #region internal
+
+  protected async addPlayersXml(xmlData: any[], event: Event): Promise<Player[]> {
+    const teams = [];
+
     let xmlPlayers = xmlData.reduce((acc: any[], curr) => {
+      let playersForteam = [];
       if (Array.isArray(curr.Member)) {
-        acc = acc.concat(curr.Member);
+        playersForteam = curr.Member;
       } else if (curr.Member != null) {
-        acc.push(curr.Member);
+        playersForteam = [curr.Member];
+      }
+
+      if (playersForteam.length > 0) {
+        teams.push({
+          name: curr.TeamName,
+          clubId: curr.TeamClubSiebelId,
+          players: playersForteam?.map(r => r.MemberLTANo)
+        });
+
+        acc = acc.concat(playersForteam);
       }
 
       return acc;
@@ -64,10 +104,102 @@ export class CompetitionXmlImporter extends Importer {
       (thing, i, arr) => arr.findIndex(t => t.memberId === thing.memberId) === i
     );
 
-    return Player.bulkCreate(xmlPlayers, {
+    const dbPlayers = await Player.bulkCreate(xmlPlayers, {
       returning: true,
+      fields: ['memberId', 'firstName', 'lastName', 'gender'],
       updateOnDuplicate: ['memberId', 'firstname', 'lastname', 'gender']
     });
+
+    const dbClubs = await Club.findAll();
+    const teamsData = [];
+
+    for (const t of teams) {
+      const club = await this._findOrCreateClub(dbClubs, t);
+      teamsData.push({
+        name: t.name,
+        ClubId: club.id
+      });
+    }
+
+    const dbTeams = await Team.bulkCreate(teamsData, {
+      returning: true,
+      fields: ['name', 'ClubId'],
+      updateOnDuplicate: ['name']
+    });
+
+    for await (const team of teams) {
+      const dbTeam = dbTeams.find(dbt => dbt.name === team.name);
+
+      if (team.players && team.players.length > 0) {
+        try {
+          await TeamMembership.bulkCreate(
+            team.players.map(tp => {
+              return {
+                playerId: dbPlayers.find(dbp => dbp.memberId === `${tp}`)?.id,
+                teamId: dbTeam.id,
+                start: moment(event.firstDay).toDate(),
+                end: moment(event.firstDay)
+                  .add('1', 'year')
+                  .toDate()
+              };
+            }),
+            {
+              returning: false,
+              updateOnDuplicate: ['end']
+            }
+          );
+          await ClubMembership.bulkCreate(
+            team.players.map(tp => {
+              return {
+                playerId: dbPlayers.find(dbp => dbp.memberId === `${tp}`)?.id,
+                clubId: dbTeam.ClubId,
+                start: moment(event.firstDay).toDate(),
+                end: moment(event.firstDay)
+                  .add('1', 'year')
+                  .toDate()
+              };
+            }),
+            {
+              returning: false,
+              updateOnDuplicate: ['end']
+            }
+          );
+        } catch (err) {
+          logger.error(`Something went wrong with`, {
+            team,
+            err
+          });
+          throw err;
+        }
+      }
+    }
+    return dbPlayers;
+  }
+
+  private async _findOrCreateClub(clubs: Club[], t: any): Promise<Club> {
+    let club = clubs.find(c => c.clubId === t.clubId);
+    if (club) {
+      return club;
+    }
+
+    // filter out naming convertion
+    const searchString = t.name.replace(/(\ \d+[G|H|D]\ ?)/, '');
+    if (searchString.length <= 0) {
+      throw new Error('No team name?');
+    }
+
+    club = clubs.find(c => c.name === searchString);
+    if (club) {
+      return club;
+    }
+
+    club = await Club.create({
+      name: searchString,
+      clubId: t.clubId
+    });
+    clubs.push(club);
+
+    return club;
   }
 
   protected addGames(subEvents: SubEvent[], players: TpPlayer[], courts: Map<string, Court>) {
@@ -223,24 +355,6 @@ export class CompetitionXmlImporter extends Importer {
     await GamePlayer.bulkCreate(flatten(gamePlayersWithGameId), { ignoreDuplicates: true });
   }
 
-  async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
-    const xmlData = parse(readFileSync(importerFile.fileLocation, 'utf8'));
-    const teams = Array.isArray(xmlData.League.Team)
-      ? [...xmlData.League.Team]
-      : [xmlData.League.Team];
-    const events = Array.isArray(xmlData.League.Event)
-      ? [...xmlData.League.Event]
-      : [xmlData.League.Event];
-
-    const players = await this.addPlayersXml(teams);
-
-    await this.addGamesXml(players, event, events);
-
-    await event.save();
-
-    return event;
-  }
-
   private _getMatchType(type: string | number) {
     switch (type) {
       case 1:
@@ -260,4 +374,5 @@ export class CompetitionXmlImporter extends Importer {
         throw new Error('Unsupported type');
     }
   }
+  // #endregion
 }

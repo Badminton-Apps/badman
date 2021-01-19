@@ -10,6 +10,7 @@ module.exports = {
   password: process.env.DB_PASSWORD,
   dialect: process.env.DB_DIALECT,
   migrationStorageTableSchema: 'public',
+  logging: true,
   retry: {
     max: retries,
     timeout: 30000

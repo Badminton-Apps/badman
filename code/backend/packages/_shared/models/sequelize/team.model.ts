@@ -2,6 +2,7 @@ import {
   BelongsTo,
   BelongsToMany,
   Column,
+  ForeignKey,
   Model,
   Table
 } from 'sequelize-typescript';
@@ -21,7 +22,7 @@ import { TeamMembership } from './team-membership.model';
   schema: 'public'
 })
 export class Team extends Model<Team> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
   @Column
@@ -32,6 +33,10 @@ export class Team extends Model<Team> {
 
   @BelongsTo(() => Club, 'ClubId')
   club?: Club;
+
+  @ForeignKey(() => Club)
+  @Column({ unique: 'unique_constraint' })
+  ClubId: number;
 
   @BelongsToMany(
     () => Player,

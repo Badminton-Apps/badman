@@ -2,6 +2,7 @@ import {
   Court,
   csvToArray,
   Event,
+  EventImportType,
   EventType,
   ICsvEntry,
   ICsvPlayerMatchCp,
@@ -19,7 +20,7 @@ import { Importer } from '../importer';
 
 export class CompetitionCpImporter extends Importer {
   constructor(mdb: Mdb) {
-    super(mdb, EventType.COMPETITION_CP);
+    super(mdb, EventType.COMPETITION, EventImportType.COMPETITION_CP);
   }
 
   async addImporterfile(fileLocation: string) {
@@ -63,8 +64,6 @@ export class CompetitionCpImporter extends Importer {
     players: TpPlayer[],
     csvPlayerMatch: ICsvPlayerMatchCp
   ) {
-    const csvEntries = await csvToArray<ICsvEntry[]>(await this.mdb.toCsv('Entry'));
-
     if (subEvent?.id == null) {
       logger.warn('No subevent found', csvPlayerMatch);
       return;

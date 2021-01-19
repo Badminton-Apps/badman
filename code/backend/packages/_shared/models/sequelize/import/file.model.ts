@@ -8,7 +8,7 @@ import {
   TableOptions
 } from 'sequelize-typescript';
 import { ImportSubEvents } from '.';
-import { EventType } from '../../enums/eventType.enum';
+import { EventImportType } from '../../enums/eventType.enum';
 
 @Table({
   timestamps: true,
@@ -16,19 +16,22 @@ import { EventType } from '../../enums/eventType.enum';
   schema: 'import'
 } as TableOptions)
 export class ImporterFile extends Model<ImporterFile> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
-  @Column(DataType.ENUM('COMPETITION_CP', 'COMPETITION_XML', 'TOERNAMENT'))
-  type: EventType;
+  @Column({
+    unique: 'unique_constraint',
+    type: DataType.ENUM('COMPETITION_CP', 'COMPETITION_XML', 'TOERNAMENT')
+  })
+  type: EventImportType;
 
   @Column
   fileLocation: string;
- 
-  @Column
+
+  @Column({ unique: 'unique_constraint' })
   firstDay: Date;
 
-  @Column 
+  @Column
   dates: string;
 
   @Column

@@ -16,7 +16,8 @@ import {
   SubEvent,
   titleCase,
   Court,
-  Location
+  Location,
+  EventImportType
 } from '@badvlasim/shared';
 import { Hash } from 'crypto';
 import { existsSync as dbCours } from 'fs';
@@ -25,7 +26,7 @@ import { Mdb } from '../convert/mdb';
 import { TpPlayer } from '../models';
 
 export abstract class Importer {
-  constructor(protected mdb: Mdb, protected type: EventType) {}
+  constructor(protected mdb: Mdb, protected type: EventType, protected importType: EventImportType) {}
 
   async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
     try {
@@ -102,7 +103,7 @@ export abstract class Importer {
     this.mdb = new Mdb(fileLocation);
     const file = await this.extractImporterFile();
     file.fileLocation = fileLocation;
-    file.type = this.type;
+    file.type = this.importType;
 
     // Long dates gives issues
     if (file.dates.length > 100) {

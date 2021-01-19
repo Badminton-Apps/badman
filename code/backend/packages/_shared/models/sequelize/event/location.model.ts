@@ -1,6 +1,7 @@
 import {
   BelongsTo,
   Column,
+  ForeignKey,
   HasMany,
   Model,
   Table,
@@ -14,7 +15,7 @@ import { Event } from './event.model';
   schema: 'event'
 } as TableOptions)
 export class Location extends Model<Location> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
  
   @HasMany(() => Court, 'locationId')
@@ -23,6 +24,7 @@ export class Location extends Model<Location> {
   @BelongsTo(() => Event, 'eventId')
   event: Event;
 
-  @Column
-  uniCode: string;
+  @ForeignKey(() => Event)
+  @Column({ unique: 'unique_constraint' })
+  eventId: number;
 }
