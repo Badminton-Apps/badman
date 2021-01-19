@@ -5,28 +5,44 @@ import {
   Model,
   Table,
   TableOptions,
-  BelongsTo
+  BelongsTo,
+  ForeignKey
 } from 'sequelize-typescript';
-import { DrawType, GameType, ImporterFile, LevelType, SubEventType } from '../../../models';
+import {
+  DrawType,
+  GameType,
+  ImporterFile,
+  LevelType,
+  SubEventType
+} from '../../../models';
 
 @Table({
   tableName: 'SubEvents',
   schema: 'import'
 } as TableOptions)
 export class ImportSubEvents extends Model<ImportSubEvents> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
-  @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
+  @Column({
+    unique: 'unique_constraint',
+    type: DataType.ENUM('M', 'F', 'MX', 'MINIBAD')
+  })
   eventType: SubEventType;
 
-  @Column(DataType.ENUM('S', 'D', 'MX'))
+  @Column({ unique: 'unique_constraint', type: DataType.ENUM('S', 'D', 'MX') })
   gameType: GameType;
 
-  @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
+  @Column({
+    unique: 'unique_constraint',
+    type: DataType.ENUM('KO', 'POULE', 'QUALIFICATION')
+  })
   drawType: DrawType;
 
-  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAAL'))
+  @Column({
+    unique: 'unique_constraint',
+    type: DataType.ENUM('PROV', 'LIGA', 'NATIONAAL')
+  })
   levelType: LevelType;
 
   @Column
@@ -40,4 +56,8 @@ export class ImportSubEvents extends Model<ImportSubEvents> {
 
   @BelongsTo(() => ImporterFile, 'FileId')
   file: ImporterFile[];
+
+  @ForeignKey(() => ImporterFile)
+  @Column({ unique: 'unique_constraint' })
+  FileId: number;
 }

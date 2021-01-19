@@ -1,4 +1,12 @@
-import { BelongsTo, Column, HasMany, Model, Table, TableOptions } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+  TableOptions
+} from 'sequelize-typescript';
 import { Game, Location } from '.';
 
 @Table({
@@ -6,7 +14,7 @@ import { Game, Location } from '.';
   schema: 'event'
 } as TableOptions)
 export class Court extends Model<Court> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
   @HasMany(() => Game, 'courtId')
@@ -14,4 +22,8 @@ export class Court extends Model<Court> {
 
   @BelongsTo(() => Location, 'locationId')
   location: Location;
+
+  @ForeignKey(() => Location)
+  @Column({ unique: 'unique_constraint' })
+  locationId: number;
 }

@@ -3,6 +3,7 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  ForeignKey,
   HasMany,
   Model,
   Table
@@ -18,19 +19,31 @@ import { Team } from '../team.model';
   schema: 'event'
 })
 export class SubEvent extends Model<SubEvent> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
-  @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
+  @Column({
+    unique: 'unique_constraint',
+    type: DataType.ENUM('M', 'F', 'MX', 'MINIBAD')
+  })
   eventType: SubEventType;
 
-  @Column(DataType.ENUM('S', 'D', 'MX'))
+  @Column({
+    unique: 'unique_constraint',
+    type: DataType.ENUM('S', 'D', 'MX')
+  })
   gameType: GameType;
 
-  @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
+  @Column({
+    unique: 'unique_constraint',
+    type: DataType.ENUM('KO', 'POULE', 'QUALIFICATION')
+  })
   drawType: DrawType;
 
-  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAAL'))
+  @Column({
+    unique: 'unique_constraint',
+    type: DataType.ENUM('PROV', 'LIGA', 'NATIONAAL')
+  })
   levelType: LevelType;
 
   @Column
@@ -56,4 +69,8 @@ export class SubEvent extends Model<SubEvent> {
 
   @BelongsTo(() => Event, 'EventId')
   event?: Event;
+
+  @ForeignKey(() => Event)
+  @Column({ unique: 'unique_constraint' })
+  EventId: number;
 }

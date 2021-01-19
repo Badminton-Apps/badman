@@ -8,10 +8,10 @@ import { SubEvent } from '../event';
 })
 export class GroupSubEvents extends Model<GroupSubEvents> {
   @ForeignKey(() => SubEvent)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   SubEventId: number;
 
   @ForeignKey(() => RankingSystemGroup)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   GroupId: number;
 }
