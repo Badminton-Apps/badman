@@ -8,11 +8,11 @@ import { Player } from '../player.model';
 })
 export class GamePlayer extends Model<GamePlayer> {
   @ForeignKey(() => Player)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   playerId: number;
 
   @ForeignKey(() => Game)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   gameId: number;
 
   @Column

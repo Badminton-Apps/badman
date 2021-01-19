@@ -13,14 +13,13 @@ import { Team } from './team.model';
 })
 export class TeamMembership extends Model<TeamMembership> {
   @ForeignKey(() => Player)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   playerId: number;
 
   @ForeignKey(() => Team)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   teamId: number;
 
-  @Column
   start: Date;
 
   @Column

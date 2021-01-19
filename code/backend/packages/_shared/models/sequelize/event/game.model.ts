@@ -3,6 +3,7 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  ForeignKey,
   Model,
   Table,
   TableOptions
@@ -18,7 +19,7 @@ import { GamePlayer } from './game-player.model';
   schema: 'event'
 } as TableOptions)
 export class Game extends Model<Game> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   playedAt: Date;
 
   @Column(DataType.ENUM('S', 'D', 'MX'))
@@ -42,6 +43,10 @@ export class Game extends Model<Game> {
 
   @BelongsTo(() => SubEvent, 'subEventId')
   subEvent: SubEvent;
+
+  @ForeignKey(() => SubEvent)
+  @Column({ unique: 'unique_constraint' })
+  subEventId: number;
 
   @BelongsTo(() => Court, 'courtId')
   court: Court;

@@ -8,10 +8,10 @@ import { RankingSystem } from '../../..';
 })
 export class GroupSystems extends Model<GroupSystems> {
   @ForeignKey(() => RankingSystem)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   SystemId: number;
 
   @ForeignKey(() => RankingSystemGroup)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   GroupId: number;
 }

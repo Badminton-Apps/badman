@@ -37,11 +37,14 @@ export class RankingPoint extends Model<RankingPoint> {
   differenceInLevel: number;
 
   @ForeignKey(() => RankingSystem)
+  @Column({ unique: 'unique_constraint' })
   SystemId: number;
 
   @ForeignKey(() => Player)
+  @Column({ unique: 'unique_constraint' })
   PlayerId: number;
 
   @ForeignKey(() => Game)
+  @Column({ unique: 'unique_constraint' })
   GameId: number;
 }

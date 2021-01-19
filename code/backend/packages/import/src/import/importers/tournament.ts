@@ -10,7 +10,8 @@ import {
   logger,
   LevelType,
   Court,
-  ICsvPlayerMatchCp
+  ICsvPlayerMatchCp,
+  EventImportType
 } from '@badvlasim/shared';
 import { Mdb } from '../../convert/mdb';
 import { TpPlayer } from '../../models';
@@ -18,7 +19,7 @@ import { Importer } from '../importer';
 
 export class TournamentImporter extends Importer {
   constructor(mdb: Mdb) {
-    super(mdb, EventType.TOERNAMENT);
+    super(mdb, EventType.TOERNAMENT , EventImportType.TOERNAMENT);
   }
 
   async addImporterfile(fileLocation: string) {
@@ -52,7 +53,7 @@ export class TournamentImporter extends Importer {
         subEvents.push(data);
       } catch (e) {
         logger.error('Something went wrong adding a subEvent', e);
-        throw e;
+        throw e; 
       }
     }
 

@@ -414,7 +414,7 @@ export class DataBaseHandler {
               required: true,
               through: {
                 where: {
-                  GroupId: { [Op.or]: groups }
+                  GroupId: { [Op.in]: groups }
                 }
               }
             }

@@ -21,12 +21,12 @@ import { GroupSystems } from './group_system.model';
   schema: 'ranking'
 })
 export class RankingSystem extends Model<RankingSystem> {
-  constructor(values?: any, options?: BuildOptions) {
+  constructor(values?: Partial<RankingSystem>, options?: BuildOptions) {
     super(values, options);
     this._setupValues();
   }
 
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
   @Column
