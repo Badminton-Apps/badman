@@ -7,11 +7,11 @@ import { Player } from './player.model';
 })
 export class ClubMembership extends Model<ClubMembership> {
   @ForeignKey(() => Player)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   playerId: number;
 
   @ForeignKey(() => Club)
-  @Column
+  @Column({ unique: 'unique_constraint' })
   clubId: number;
 
   @Column

@@ -5,7 +5,8 @@ import {
   logger,
   BaseController,
   SubEvent,
-  ImportSubEvents
+  ImportSubEvents,
+  EventImportType
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import { unlink } from 'fs';
@@ -58,13 +59,13 @@ export class ImportController extends BaseController {
             .pop()
         ) {
           case 'cp':
-            type = EventType.COMPETITION_CP;
+            type = EventImportType.COMPETITION_CP;
             break;
           case 'xml':
-            type = EventType.COMPETITION_XML;
+            type = EventImportType.COMPETITION_XML;
             break;
           case 'tp':
-            type = EventType.TOERNAMENT;
+            type = EventImportType.TOERNAMENT;
             break;
           default:
             logger.warn(`Unsupported file type: ${file.filename.split('.').pop()}`);

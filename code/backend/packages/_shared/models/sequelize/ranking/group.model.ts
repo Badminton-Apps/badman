@@ -10,7 +10,7 @@ import { GroupSystems } from './group_system.model';
   schema: 'ranking'
 })
 export class RankingSystemGroup extends Model<RankingSystemGroup> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
   @BelongsToMany(() => SubEvent, () => GroupSubEvents)

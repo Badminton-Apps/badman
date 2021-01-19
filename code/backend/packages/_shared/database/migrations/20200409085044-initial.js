@@ -154,7 +154,8 @@ module.exports = {
       await queryInterface.addConstraint('Players', {
         fields: ['firstName', 'lastName', 'memberId'],
         type: 'unique',
-        name: 'compositeIndex'
+        name: 'compositeIndex',
+        transaction: t
       });
       await queryInterface.createTable(
         'Games',

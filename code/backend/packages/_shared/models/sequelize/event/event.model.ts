@@ -18,13 +18,13 @@ export class Event extends Model<Event> {
   @Column
   toernamentNumber: number;
 
-  @Column
+  @Column({ unique: 'unique_constraint' })
   firstDay: Date;
 
   @Column
   dates: string;
 
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
   @Column(DataType.ENUM('COMPETITION', 'TOERNAMENT'))

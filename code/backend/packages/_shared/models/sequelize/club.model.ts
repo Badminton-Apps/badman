@@ -23,7 +23,7 @@ import { Player } from './player.model';
   schema: 'public'
 })
 export class Club extends Model<Club> {
-  @Column
+  @Column({ unique: 'unique_constraint' })
   name: string;
 
   @Column
