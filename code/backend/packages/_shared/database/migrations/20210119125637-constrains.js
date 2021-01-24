@@ -189,7 +189,7 @@ module.exports = {
           schema: 'public'
         },
         {
-          fields: ['playerId', 'clubId'],
+          fields: ['playerId', 'clubId', 'start'],
           type: 'unique',
           name: 'clubMemberships_unique_constraint',
           transaction: t
@@ -213,7 +213,7 @@ module.exports = {
           schema: 'public'
         },
         {
-          fields: ['playerId', 'teamId'],
+          fields: ['playerId', 'teamId', 'start'],
           type: 'unique',
           name: 'teamMemberships_unique_constraint',
           transaction: t

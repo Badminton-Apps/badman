@@ -155,7 +155,7 @@ module.exports = {
         fields: ['firstName', 'lastName', 'memberId'],
         type: 'unique',
         name: 'compositeIndex',
-        transaction: t
+        transaction: refrences1
       });
       await queryInterface.createTable(
         'Games',

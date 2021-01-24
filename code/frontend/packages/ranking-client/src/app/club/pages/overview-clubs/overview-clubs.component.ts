@@ -5,13 +5,11 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ClubService, EventType } from 'app/_shared';
+import { ClubService } from 'app/_shared';
 import { Club } from 'app/_shared/models/club.model';
 import { BehaviorSubject, combineLatest, of as observableOf } from 'rxjs';
 import {
@@ -128,5 +126,4 @@ export class OverviewClubsComponent {
       query,
     });
   }
-
 }
