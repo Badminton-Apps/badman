@@ -26,7 +26,11 @@ import { Mdb } from '../convert/mdb';
 import { TpPlayer } from '../models';
 
 export abstract class Importer {
-  constructor(protected mdb: Mdb, protected type: EventType, protected importType: EventImportType) {}
+  constructor(
+    protected mdb: Mdb,
+    protected type: EventType,
+    protected importType: EventImportType
+  ) {}
 
   async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
     try {
@@ -51,7 +55,7 @@ export abstract class Importer {
 
   protected async addLocations(event: Event) {
     const csvLocations = await csvToArray<ICsvLocation[]>(await this.mdb.toCsv('Location'));
-    const l = csvLocations.map(r => { 
+    const l = csvLocations.map(r => {
       return {
         ...r,
         eventId: event.id,
@@ -61,7 +65,7 @@ export abstract class Importer {
 
     const dbLocations = await Location.bulkCreate(
       l,
-      { returning: true, ignoreDuplicates: true} // Return ALL comulms
+      { returning: true, ignoreDuplicates: true } // Return ALL comulms
     );
 
     const locations = new Map<string, Location>();
@@ -191,7 +195,7 @@ export abstract class Importer {
       linkCode: string;
       webID: string;
       uniCode: string;
-      toernamentNumber: string;
+      toernamentNumber: number;
     }>(settingsCsv, {
       onEnd: data => {
         return {
@@ -205,7 +209,7 @@ export abstract class Importer {
             ?.value as string,
           toernamentNumber: data.find(
             (r: { name: string }) => r.name.toLowerCase() === 'tournamentNr'
-          )?.value as string
+          )?.value as number
         };
       }
     });
@@ -273,7 +277,7 @@ export abstract class Importer {
     );
 
     return dbPlayers.map(
-      (dbPlayer, i) => new TpPlayer({ player: dbPlayer, playerId: csvPlayers[i].playerId  })
+      (dbPlayer, i) => new TpPlayer({ player: dbPlayer, playerId: csvPlayers[i].playerId })
     );
   }
 
