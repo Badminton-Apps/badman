@@ -72,7 +72,9 @@ export class ImportComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.rankingGroups = await this.systemsService.getSystemsGroups().toPromise();
+    this.rankingGroups = await this.systemsService
+      .getSystemsGroups()
+      .toPromise();
   }
 
   ngAfterViewInit() {
@@ -113,8 +115,12 @@ export class ImportComponent implements OnInit, OnDestroy {
         debounceTime(300),
         switchMap(([filterChange, sortChange, pageChange, update]) => {
           this.isLoadingResults = true;
+
+          console.log('Sort', this.sort)
           return this.eventService.getImported(
-            `DATE_${this.sort.direction.toUpperCase()}`,
+            this.sort.direction
+              ? `DATE_${this.sort.direction.toUpperCase()}`
+              : 'DATE_ASC',
             this.pageSize$.value,
             this.cursor
           );
