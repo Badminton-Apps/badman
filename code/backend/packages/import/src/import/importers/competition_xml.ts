@@ -18,11 +18,10 @@ import {
   titleCase
 } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
-import { readFileSync } from 'fs';
+import { readFileSync, unlink } from 'fs';
+import moment from 'moment';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
-import moment from 'moment';
-import e from 'express';
 
 export class CompetitionXmlImporter extends Importer {
   constructor() {
@@ -31,10 +30,37 @@ export class CompetitionXmlImporter extends Importer {
 
   async addImporterfile(fileLocation: string) {
     const xmlData = parse(readFileSync(fileLocation, 'utf8'));
+    const yearRegexr = /\b(19|20)\d{2}\b/g;
+    let compYear: Date = null;
+    const matches = yearRegexr.exec(xmlData.League.LeagueName);
+    if (matches != null) {
+      compYear = moment([matches[0], 8, 1]).toDate();
+    }
+
+    const importerFile = await ImporterFile.findOne({
+      where: {
+        name: xmlData.League.LeagueName,
+        firstDay: compYear,
+        type: this.importType
+      }
+    });
+
+    if (importerFile) {
+      // delete old file
+      unlink(importerFile.fileLocation, err => {
+        if (err) {
+          logger.error(`delete file ${importerFile.fileLocation} failed`, err);
+          throw err;
+        }
+        logger.debug('Old file deleted', importerFile.fileLocation);
+      });
+      await importerFile.destroy();
+    }
 
     const file = new ImporterFile({
       fileLocation,
       name: xmlData.League.LeagueName,
+      firstDay: compYear,
       type: this.importType
     });
 
