@@ -116,7 +116,6 @@ export class ImportComponent implements OnInit, OnDestroy {
         switchMap(([filterChange, sortChange, pageChange, update]) => {
           this.isLoadingResults = true;
 
-          console.log('Sort', this.sort)
           return this.eventService.getImported(
             this.sort.direction
               ? `DATE_${this.sort.direction.toUpperCase()}`

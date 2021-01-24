@@ -3,6 +3,7 @@ import {
   ClubMembership,
   correctWrongPlayers,
   Court,
+  DataBaseHandler,
   Event,
   EventImportType,
   EventType,
@@ -19,7 +20,8 @@ import {
 } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
 import { readFileSync, unlink } from 'fs';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
+import { Op, Transaction } from 'sequelize';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
 
@@ -93,17 +95,24 @@ export class CompetitionXmlImporter extends Importer {
     let xmlPlayers = xmlData.reduce((acc: any[], curr) => {
       let playersForteam = [];
       if (Array.isArray(curr.Member)) {
-        playersForteam = curr.Member;
+        playersForteam = curr.Member.map(m => {
+          return {
+            ...m,
+            ClubId: curr.TeamClubSiebelId
+          };
+        });
       } else if (curr.Member != null) {
-        playersForteam = [curr.Member];
+        playersForteam = [{ ...curr.Member, ClubId: curr.TeamClubSiebelId }];
       }
 
       if (playersForteam.length > 0) {
-        teams.push({
-          name: curr.TeamName,
-          clubId: curr.TeamClubSiebelId,
-          players: playersForteam?.map(r => r.MemberLTANo)
-        });
+        if (teams.findIndex(t => t.name === curr.TeamName) === -1) {
+          teams.push({
+            name: curr.TeamName,
+            clubId: curr.TeamClubSiebelId,
+            players: playersForteam?.map(r => r.MemberLTANo)
+          });
+        }
 
         acc = acc.concat(playersForteam);
       }
@@ -117,7 +126,8 @@ export class CompetitionXmlImporter extends Importer {
           memberId: xmlPlayer.MemberLTANo,
           firstName: titleCase(xmlPlayer.MemberFirstName),
           lastName: titleCase(xmlPlayer.MemberLastName),
-          gender: xmlPlayer.MemberGender
+          gender: xmlPlayer.MemberGender,
+          club: xmlPlayer.ClubId
         });
       } catch (error) {
         logger.error("Couldn't parse player", error);
@@ -136,8 +146,59 @@ export class CompetitionXmlImporter extends Importer {
       updateOnDuplicate: ['memberId', 'firstname', 'lastname', 'gender']
     });
 
+    await this._addToTeams(teams, dbPlayers, event.firstDay);
+
+    return dbPlayers;
+  }
+
+  private async _addToClubs(
+    playersIds: number[],
+    start: Date,
+    end: Moment,
+    clubId: number,
+    transaction: Transaction
+  ) {
+    // Get all existing memberships of the players
+    const dbClubMemberships = await ClubMembership.findAll({
+      where: {
+        playerId: {
+          [Op.in]: playersIds.map(r => r)
+        },
+        end: {
+          [Op.gte]: moment(start).toDate()
+        }
+      }
+    });
+
+    for await (const playerId of playersIds) {
+      const dbclubPlayerMemberships = dbClubMemberships.filter(
+        m => m.playerId === playerId && m.clubId === clubId
+      );
+      if (dbclubPlayerMemberships.length > 1) {
+        logger.warn("this shouldn't happen", playerId);
+      }
+      // if same team, add on year
+      if (dbclubPlayerMemberships && dbclubPlayerMemberships.length === 1) {
+        if (end.isAfter(dbclubPlayerMemberships[0].end)) {
+          dbclubPlayerMemberships[0].end = end.toDate();
+          await dbclubPlayerMemberships[0].save({ transaction });
+        }
+      } else {
+        // new membership
+        await new ClubMembership({
+          playerId,
+          clubId,
+          start,
+          end: end.toDate()
+        }).save({ transaction });
+      }
+    }
+  }
+
+  private async _addToTeams(teams, dbPlayers: Player[], start: Date) {
     const dbClubs = await Club.findAll();
     const teamsData = [];
+    const end = moment(start).add(1, 'year');
 
     for (const t of teams) {
       const club = await this._findOrCreateClub(dbClubs, t);
@@ -153,53 +214,88 @@ export class CompetitionXmlImporter extends Importer {
       updateOnDuplicate: ['name']
     });
 
-    for await (const team of teams) {
-      const dbTeam = dbTeams.find(dbt => dbt.name === team.name);
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const playersForClubs = new Map<number, number[]>();
+      for await (const team of teams) {
+        const dbTeam = dbTeams.find(dbt => dbt.name === team.name);
 
-      if (team.players && team.players.length > 0) {
-        try {
-          await TeamMembership.bulkCreate(
-            team.players.map(tp => {
-              return {
-                playerId: dbPlayers.find(dbp => dbp.memberId === `${tp}`)?.id,
-                teamId: dbTeam.id,
-                start: moment(event.firstDay).toDate(),
-                end: moment(event.firstDay)
-                  .add('1', 'year')
-                  .toDate()
-              };
-            }),
-            {
-              returning: false,
-              updateOnDuplicate: ['end']
+        if (team.players && team.players.length > 0) {
+          try {
+            const dbTeamPlayers = team.players.map(tp =>
+              dbPlayers.find(dbp => dbp.memberId === `${tp}`)
+            );
+
+            const playerIds = dbTeamPlayers.map(r => r.id);
+
+            // Get all existing memberships of the players
+            const dbteamMemberships = await TeamMembership.findAll({
+              where: {
+                playerId: {
+                  [Op.in]: playerIds
+                },
+                // New year starts when old year stops
+                end: {
+                  [Op.gte]: moment(start).toDate()
+                }
+              }
+            });
+
+            for await (const player of dbTeamPlayers) {
+              const dbteamPlayerMemberships = dbteamMemberships.filter(
+                m => m.playerId === player.id && m.teamId === dbTeam.id
+              );
+              if (dbteamPlayerMemberships.length > 1) {
+                logger.warn("this shouldn't happen", player);
+              }
+              // if same team, add on year
+              if (dbteamPlayerMemberships && dbteamPlayerMemberships.length === 1) {
+                // if after
+                if (end.isAfter(dbteamPlayerMemberships[0].end)) {
+                  dbteamPlayerMemberships[0].end = end.toDate();
+                  await dbteamPlayerMemberships[0].save({ transaction });
+                }
+              } else {
+                // new membership
+                await new TeamMembership({
+                  playerId: player.id,
+                  teamId: dbTeam.id,
+                  start,
+                  end: end.toDate()
+                }).save({ transaction });
+              }
             }
-          );
-          await ClubMembership.bulkCreate(
-            team.players.map(tp => {
-              return {
-                playerId: dbPlayers.find(dbp => dbp.memberId === `${tp}`)?.id,
-                clubId: dbTeam.ClubId,
-                start: moment(event.firstDay).toDate(),
-                end: moment(event.firstDay)
-                  .add('1', 'year')
-                  .toDate()
-              };
-            }),
-            {
-              returning: false,
-              updateOnDuplicate: ['end']
+
+            let currentPlayersOfClub = playersForClubs.get(dbTeam.ClubId);
+            if (currentPlayersOfClub == null) {
+              currentPlayersOfClub = [];
             }
-          );
-        } catch (err) {
-          logger.error(`Something went wrong with`, {
-            team,
-            err
-          });
-          throw err;
+            currentPlayersOfClub = currentPlayersOfClub.concat(playerIds);
+
+            playersForClubs.set(dbTeam.ClubId, currentPlayersOfClub);
+          } catch (err) {
+            logger.error(`Something went wrong with`, {
+              team,
+              err
+            });
+            throw err;
+          }
         }
       }
+
+      for(const playersForClub of playersForClubs){
+        await this._addToClubs(playersForClub[1].filter((n, i) => playersForClub[1].indexOf(n) === i), start, end, playersForClub[0], transaction);
+      }
+
+
+      transaction.commit();
+    } catch (err) {
+      transaction.rollback();
+      logger.error(`Something went wrong`, {
+        err
+      });
+      throw err;
     }
-    return dbPlayers;
   }
 
   private async _findOrCreateClub(clubs: Club[], t: any): Promise<Club> {
