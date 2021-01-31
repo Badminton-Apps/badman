@@ -13,13 +13,14 @@ import {
   ICsvPlayerMatchCp,
   EventImportType
 } from '@badvlasim/shared';
+import { Transaction } from 'sequelize/types';
 import { Mdb } from '../../convert/mdb';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
 
 export class TournamentImporter extends Importer {
-  constructor(mdb: Mdb) {
-    super(mdb, EventType.TOERNAMENT , EventImportType.TOERNAMENT);
+  constructor(mdb: Mdb, transaction: Transaction) {
+    super(mdb, EventType.TOERNAMENT , EventImportType.TOERNAMENT, transaction);
   }
 
   async addImporterfile(fileLocation: string) {
@@ -36,6 +37,7 @@ export class TournamentImporter extends Importer {
     const { csvEvents, csvDraws } = await super.getSubEventsCsv();
     const leauge = super.getLeague(file);
     const subEvents = [];
+
 
     for await (const csvDraw of csvDraws) {
       const csvEvent = csvEvents.find(e => e.id === csvDraw.event);

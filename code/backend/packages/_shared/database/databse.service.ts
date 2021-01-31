@@ -22,7 +22,7 @@ import {
   RankingSystem,
   RankingSystemGroup,
   RequestLink,
-  SubEvent, 
+  SubEvent,
   Team,
   TeamMembership
 } from '../models';
@@ -32,7 +32,7 @@ import { splitInChunks } from '../utils/utils';
 
 export class DataBaseHandler {
   static sequelizeInstance: Sequelize;
-  private _dialect: string; 
+  private _dialect: string;
 
   private get _sequelize(): Sequelize {
     if (!DataBaseHandler.sequelizeInstance) {
@@ -64,7 +64,9 @@ export class DataBaseHandler {
         },
         models: Object.values(sequelizeModels),
         logging:
-          process.env.LOG_LEVEL === 'silly' ? logger.silly.bind(logger) : false
+          process.env.LOG_LEVEL === 'silly' || config.logging
+            ? logger.silly.bind(logger)
+            : false
       } as SequelizeOptions);
     }
   }
@@ -426,7 +428,7 @@ export class DataBaseHandler {
     return games;
   }
 
-  async getPlayersForGames(games: Game[], systemId: number) {
+  async getPlayersForGames(games: Game[], systemId: string) {
     const include: IncludeOptions = {
       model: RankingPlace,
       attributes: ['single', 'double', 'mix', 'SystemId', 'rankingDate'],
@@ -484,7 +486,7 @@ export class DataBaseHandler {
     return Event.findOne(find);
   }
 
-  async makeSystemPrimary(id: number) {
+  async makeSystemPrimary(id: string) {
     const currentSystems = await RankingSystem.findAll({
       where: { primary: true }
     });
@@ -506,7 +508,7 @@ export class DataBaseHandler {
 
   async addRankingPlaces(rankings) {
     try {
-      logger.silly(`Adding ${rankings.length} places`)
+      logger.silly(`Adding ${rankings.length} places`);
       const transaction = await this._sequelize.transaction();
       const chunks = splitInChunks(rankings, 500);
       for (const chunk of chunks) {
@@ -524,6 +526,8 @@ export class DataBaseHandler {
   }
 
   dbCheck(canMigrate: boolean) {
+    return this._sequelize.sync({ force: true });
+
     return new Promise(async (resolve, reject) => {
       if (canMigrate) {
         logger.info('Running migration');

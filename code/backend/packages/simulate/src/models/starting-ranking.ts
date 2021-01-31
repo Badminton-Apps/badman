@@ -16,7 +16,7 @@ export class StartingRanking {
 
   async addInitialPlayersAsync(
     startingType: StartingType,
-    systemId: number,
+    systemId: string,
     amountOfLevels: number,
     processor: (
       player: any,

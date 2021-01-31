@@ -3,7 +3,12 @@ import {
   Column,
   ForeignKey,
   Table,
-  Model
+  Model,
+  PrimaryKey,
+  IsUUID,
+  Unique,
+  DataType,
+  Default
 } from 'sequelize-typescript';
 import { BuildOptions } from 'sequelize/types';
 import { Player } from './player.model';
@@ -17,15 +22,24 @@ export class TeamMembership extends Model<TeamMembership> {
     super(values, options);
   }
 
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
   @ForeignKey(() => Player)
-  @Column({ unique: 'unique_constraint' })
-  playerId: number;
+  @Unique('unique_constraint')
+  @Column
+  playerId: string;
 
   @ForeignKey(() => Team)
-  @Column({ unique: 'unique_constraint' })
-  teamId: number;
+  @Unique('unique_constraint')
+  @Column
+  teamId: string;
 
-  @Column({ unique: 'unique_constraint' })
+  @Unique('unique_constraint')
+  @Column
   start: Date;
 
   @Column

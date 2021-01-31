@@ -3,8 +3,11 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  Default,
   ForeignKey,
+  IsUUID,
   Model,
+  PrimaryKey,
   Table,
   TableOptions
 } from 'sequelize-typescript';
@@ -19,7 +22,13 @@ import { GamePlayer } from './game-player.model';
   schema: 'event'
 } as TableOptions)
 export class Game extends Model<Game> {
-  @Column({ unique: 'unique_constraint' })
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Column
   playedAt: Date;
 
   @Column(DataType.ENUM('S', 'D', 'MX'))
@@ -32,7 +41,7 @@ export class Game extends Model<Game> {
   @Column
   set2Team1?: number;
   @Column
-  set2Team2?: number; 
+  set2Team2?: number;
   @Column
   set3Team1?: number;
   @Column
@@ -45,8 +54,8 @@ export class Game extends Model<Game> {
   subEvent: SubEvent;
 
   @ForeignKey(() => SubEvent)
-  @Column({ unique: 'unique_constraint' })
-  subEventId: number;
+  @Column
+  subEventId: string;
 
   @BelongsTo(() => Court, 'courtId')
   court: Court;

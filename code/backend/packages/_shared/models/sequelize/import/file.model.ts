@@ -5,7 +5,11 @@ import {
   Model,
   DataType,
   Table,
-  TableOptions
+  TableOptions,
+  PrimaryKey,
+  IsUUID,
+  Unique,
+  Default
 } from 'sequelize-typescript';
 import { ImportSubEvents } from '.';
 import { EventImportType } from '../../enums/eventType.enum';
@@ -16,20 +20,26 @@ import { EventImportType } from '../../enums/eventType.enum';
   schema: 'import'
 } as TableOptions)
 export class ImporterFile extends Model<ImporterFile> {
-  @Column({ unique: 'unique_constraint' })
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique('unique_constraint')
+  @Column
   name: string;
 
-  @Column({
-    unique: 'unique_constraint',
-    type: DataType.ENUM('COMPETITION_CP', 'COMPETITION_XML', 'TOERNAMENT')
-  })
+  @Unique('unique_constraint')
+  @Column(DataType.ENUM('COMPETITION_CP', 'COMPETITION_XML', 'TOERNAMENT'))
   type: EventImportType;
+
+  @Unique('unique_constraint')
+  @Column
+  firstDay: Date;
 
   @Column
   fileLocation: string;
-
-  @Column({ unique: 'unique_constraint' })
-  firstDay: Date;
 
   @Column
   dates: string;

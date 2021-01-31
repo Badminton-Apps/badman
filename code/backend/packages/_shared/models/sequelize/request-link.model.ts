@@ -1,16 +1,32 @@
-import { Column, ForeignKey, Model, Table, BelongsTo } from 'sequelize-typescript';
+import {
+  Column,
+  ForeignKey,
+  Model,
+  Table,
+  BelongsTo,
+  PrimaryKey,
+  IsUUID,
+  Default,
+  DataType
+} from 'sequelize-typescript';
 import { Player } from './player.model';
 
 @Table({
   timestamps: true,
-  schema: "public"
+  schema: 'public'
 })
 export class RequestLink extends Model<RequestLink> {
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
   @BelongsTo(() => Player, 'PlayerId')
   player: Player;
 
   @ForeignKey(() => Player)
-  PlayerId: number;
+  PlayerId: string;
 
   @Column
   email: string;
