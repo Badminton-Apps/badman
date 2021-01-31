@@ -42,18 +42,6 @@ module.exports = {
       );
       await queryInterface.addConstraint(
         {
-          tableName: 'Games',
-          schema: 'event'
-        },
-        {
-          fields: ['playedAt', 'subEventId'],
-          type: 'unique',
-          name: 'games_unique_constraint',
-          transaction: t
-        }
-      );
-      await queryInterface.addConstraint(
-        {
           tableName: 'Locations',
           schema: 'event'
         },

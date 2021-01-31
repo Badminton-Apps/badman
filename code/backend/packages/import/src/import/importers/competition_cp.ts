@@ -13,19 +13,20 @@ import {
   SubEvent
 } from '@badvlasim/shared';
 import moment from 'moment';
-import { FindOrCreateOptions } from 'sequelize/types';
+import { FindOrCreateOptions, Transaction } from 'sequelize/types';
 import { Mdb } from '../../convert/mdb';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
 
 export class CompetitionCpImporter extends Importer {
-  constructor(mdb: Mdb) {
-    super(mdb, EventType.COMPETITION, EventImportType.COMPETITION_CP);
+  constructor(mdb: Mdb, transaction: Transaction) {
+    super(mdb, EventType.COMPETITION, EventImportType.COMPETITION_CP, transaction);
   }
 
   async addImporterfile(fileLocation: string) {
     const file = await super.addImporterfile(fileLocation);
     file.subEvents = await this.addImportedSubEvents(file);
+  
     return file;
   }
 
@@ -147,8 +148,6 @@ export class CompetitionCpImporter extends Importer {
           gameType: this.getGameType(csvEvent.eventtype, parseInt(csvEvent.gender, 10)),
           FileId: file.id,
         };
-
-   
 
         subEvents.push(subEvent);
       } catch (e) {

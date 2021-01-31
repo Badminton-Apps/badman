@@ -1,8 +1,12 @@
 import {
   BelongsTo,
   Column,
+  DataType,
+  Default,
   ForeignKey,
+  IsUUID,
   Model,
+  PrimaryKey,
   Table
 } from 'sequelize-typescript';
 import { Game } from '../event/game.model';
@@ -15,6 +19,12 @@ import { RankingSystem } from './system.model';
   schema: 'ranking'
 })
 export class RankingPoint extends Model<RankingPoint> {
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
   @Column
   points: number;
 
@@ -37,14 +47,14 @@ export class RankingPoint extends Model<RankingPoint> {
   differenceInLevel: number;
 
   @ForeignKey(() => RankingSystem)
-  @Column({ unique: 'unique_constraint' })
-  SystemId: number;
+  @Column
+  SystemId: string;
 
   @ForeignKey(() => Player)
-  @Column({ unique: 'unique_constraint' })
-  PlayerId: number;
+  @Column
+  PlayerId: string;
 
   @ForeignKey(() => Game)
-  @Column({ unique: 'unique_constraint' })
-  GameId: number;
+  @Column
+  GameId: string;
 }

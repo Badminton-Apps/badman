@@ -70,10 +70,15 @@ export class ImportController extends BaseController {
           default:
             logger.warn(`Unsupported file type: ${file.filename.split('.').pop()}`);
         }
-
-        const importedFile = await this._converter.basicInfo(fileLocation, type);
-
-        basicInfo.push(importedFile.toJSON());
+        const t = await DataBaseHandler.sequelizeInstance.transaction();
+        try {
+          const importedFile = await this._converter.basicInfo(fileLocation, type, t);
+          basicInfo.push(importedFile.toJSON());
+          await t.commit();
+        } catch (e) {
+          await t.rollback();
+          throw e;
+        }
       }
 
       response.status(200);
@@ -94,30 +99,30 @@ export class ImportController extends BaseController {
   };
 
   private _startImport = async (request: AuthenticatedRequest, response: Response) => {
-    if (!request.user.hasAnyPermission(['import:event'])) { 
+    if (!request.user.hasAnyPermission(['import:event'])) {
       response.status(401).send('No no no!!');
       return;
     }
 
     try {
-      let queueImports: { importId: number; eventId: number }[] = [];
+      let queueImports: { importId: string; eventId: string }[] = [];
 
       if (request.params.id.indexOf(',') >= 0) {
         const ids = request.params.id.split(',');
         const eventIds = request.params.eventId?.split(',') ?? [];
         queueImports = ids.map((v, i) => {
           return {
-            importId: parseInt(v, 10),
-            eventId: eventIds[i] && eventIds[i] !== '-1' ? parseInt(eventIds[i], 10) : null
+            importId: v,
+            eventId: eventIds[i] && eventIds[i] !== '-1' ? eventIds[i] : null
           };
         });
       } else {
         queueImports = [
           {
-            importId: parseInt(request.params.id, 10),
+            importId: request.params.id,
             eventId:
               request.params.eventId && request.params.eventId !== '-1'
-                ? parseInt(request.params.eventId, 10)
+                ? request.params.eventId
                 : null
           }
         ];

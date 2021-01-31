@@ -4,7 +4,12 @@ import {
   Model,
   DataType,
   Table,
-  TableOptions
+  TableOptions,
+  PrimaryKey,
+  Unique,
+  Index,
+  IsUUID,
+  Default
 } from 'sequelize-typescript';
 import { EventType } from '../../enums';
 import { Location } from './location.model';
@@ -15,17 +20,25 @@ import { SubEvent } from './sub-event.model';
   schema: 'event'
 } as TableOptions)
 export class Event extends Model<Event> {
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
   @Column
   toernamentNumber: number;
 
-  @Column({ unique: 'unique_constraint' })
+  @Unique('unique_constraint')
+  @Column
+  name: string;
+
+  @Unique('unique_constraint')
+  @Column
   firstDay: Date;
 
   @Column
   dates: string;
-
-  @Column({ unique: 'unique_constraint' })
-  name: string;
 
   @Column(DataType.ENUM('COMPETITION', 'TOERNAMENT'))
   type: EventType;
@@ -33,7 +46,7 @@ export class Event extends Model<Event> {
   @HasMany(() => SubEvent, 'EventId')
   subEvents: SubEvent[];
 
-  @HasMany(() => Location, 'EventId')
+  @HasMany(() => Location, 'eventId')
   locations: Location[];
 
   @Column
