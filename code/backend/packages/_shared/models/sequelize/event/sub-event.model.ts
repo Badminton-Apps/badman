@@ -3,10 +3,15 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  Default,
   ForeignKey,
   HasMany,
+  Index,
+  IsUUID,
   Model,
-  Table
+  PrimaryKey,
+  Table,
+  Unique
 } from 'sequelize-typescript';
 import { DrawType, GameType, LevelType, SubEventType } from '../../enums';
 import { Event } from './event.model';
@@ -19,31 +24,31 @@ import { Team } from '../team.model';
   schema: 'event'
 })
 export class SubEvent extends Model<SubEvent> {
-  @Column({ unique: 'unique_constraint' })
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique('unique_constraint')
+  @Index
+  @Column
   name: string;
 
-  @Column({
-    unique: 'unique_constraint',
-    type: DataType.ENUM('M', 'F', 'MX', 'MINIBAD')
-  })
+  @Unique('unique_constraint')
+  @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType: SubEventType;
 
-  @Column({
-    unique: 'unique_constraint',
-    type: DataType.ENUM('S', 'D', 'MX')
-  })
+  @Unique('unique_constraint')
+  @Column(DataType.ENUM('S', 'D', 'MX'))
   gameType: GameType;
 
-  @Column({
-    unique: 'unique_constraint',
-    type: DataType.ENUM('KO', 'POULE', 'QUALIFICATION')
-  })
+  @Unique('unique_constraint')
+  @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
   drawType: DrawType;
 
-  @Column({
-    unique: 'unique_constraint',
-    type: DataType.ENUM('PROV', 'LIGA', 'NATIONAAL')
-  })
+  @Unique('unique_constraint')
+  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAAL'))
   levelType: LevelType;
 
   @Column
@@ -71,6 +76,6 @@ export class SubEvent extends Model<SubEvent> {
   event?: Event;
 
   @ForeignKey(() => Event)
-  @Column({ unique: 'unique_constraint' })
-  EventId: number;
+  @Column
+  EventId: string;
 }

@@ -1,17 +1,26 @@
-import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique
+} from 'sequelize-typescript';
 import { RankingSystemGroup } from './group.model';
 import { SubEvent } from '../event';
 
 @Table({
   timestamps: false,
-  schema: 'ranking',
+  schema: 'ranking'
 })
 export class GroupSubEvents extends Model<GroupSubEvents> {
+  @Unique('unique_constraint')
   @ForeignKey(() => SubEvent)
-  @Column({ unique: 'unique_constraint' })
-  SubEventId: number;
+  @Column
+  SubEventId: string;
 
+  @Unique('unique_constraint')
   @ForeignKey(() => RankingSystemGroup)
-  @Column({ unique: 'unique_constraint' })
-  GroupId: number;
+  @Column
+  GroupId: string;
 }

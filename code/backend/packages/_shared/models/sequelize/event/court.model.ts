@@ -1,11 +1,16 @@
 import {
   BelongsTo,
   Column,
+  DataType,
+  Default,
   ForeignKey,
   HasMany,
+  IsUUID,
   Model,
+  PrimaryKey,
   Table,
-  TableOptions
+  TableOptions,
+  Unique
 } from 'sequelize-typescript';
 import { Game, Location } from '.';
 
@@ -14,7 +19,14 @@ import { Game, Location } from '.';
   schema: 'event'
 } as TableOptions)
 export class Court extends Model<Court> {
-  @Column({ unique: 'unique_constraint' })
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique('unique_constraint')
+  @Column
   name: string;
 
   @HasMany(() => Game, 'courtId')
@@ -24,6 +36,7 @@ export class Court extends Model<Court> {
   location: Location;
 
   @ForeignKey(() => Location)
-  @Column({ unique: 'unique_constraint' })
-  locationId: number;
+  @Unique('unique_constraint')
+  @Column
+  locationId: string;
 }

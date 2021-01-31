@@ -1,4 +1,15 @@
-import { BelongsToMany, Column, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsToMany,
+  Column,
+  DataType,
+  Default,
+  HasMany,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique
+} from 'sequelize-typescript';
 import { RankingSystem } from '../../..';
 import { SubEvent } from '../event';
 import { GroupSubEvents } from './group_subevent.model';
@@ -10,12 +21,25 @@ import { GroupSystems } from './group_system.model';
   schema: 'ranking'
 })
 export class RankingSystemGroup extends Model<RankingSystemGroup> {
-  @Column({ unique: 'unique_constraint' })
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique
+  @Column
   name: string;
 
-  @BelongsToMany(() => SubEvent, () => GroupSubEvents)
+  @BelongsToMany(
+    () => SubEvent,
+    () => GroupSubEvents
+  )
   subEvents: SubEvent[];
 
-  @BelongsToMany(() => RankingSystem, () => GroupSystems)
+  @BelongsToMany(
+    () => RankingSystem,
+    () => GroupSystems
+  )
   systems: RankingSystem[];
 }

@@ -9,7 +9,7 @@ import {
   RankingPoint,
   RankingSystem
 } from '@badvlasim/shared';
-import async from 'async';
+import async from 'async'; 
 import { Request, Response, Router } from 'express';
 import fs, { writeFileSync } from 'fs';
 import moment from 'moment';
@@ -31,7 +31,6 @@ export class RankingController extends BaseController {
   }
 
   private _intializeRoutes() {
-    logger.debug('HELLO?', this);
     this.router.get(`${this._path}/statistics/:system/:player/:gameType`, this._statistics);
     this.router.get(`${this._path}/export`, this._export);
     this.router.get(`${this._path}/exportVisual`, this._exportVisualBvlLfbb);

@@ -1,19 +1,23 @@
 import { join } from 'path';
+import { Transaction } from 'sequelize/types';
 import {
   DataBaseHandler,
   Event,
   Game,
   GamePlayer,
+  ImportSubEvents,
   logger,
   Player,
   SubEvent
 } from '../../../../_shared';
+import { Mdb } from '../../convert/mdb';
 import { TournamentImporter } from '../importers';
 
-describe.only('Tournament', () => {
+describe.skip('Tournament', () => {
   let databaseService: DataBaseHandler;
   let service: TournamentImporter;
   let fileLocation: string;
+  let transaction: Transaction;
 
   beforeAll(async () => {
     fileLocation = join(process.cwd(), 'src/import/__tests__/files/tournament.tp');
@@ -22,8 +26,11 @@ describe.only('Tournament', () => {
       dialect: 'sqlite',
       storage: ':memory:'
     });
-    await databaseService.sync(true);
-    service = new TournamentImporter();
+
+
+    await DataBaseHandler.sequelizeInstance.sync({ force: true });
+
+    service = new TournamentImporter(new Mdb(fileLocation), null);
   });
 
   it('Should have initialized correctly', async () => {
@@ -36,16 +43,15 @@ describe.only('Tournament', () => {
     const importerFile = await databaseService.getImported();
     expect(importerFile.name).toEqual('Flemish Summer Event 2018');
     expect(importerFile.linkCode).toEqual('A8B820C0-2238-42B0-98B6-47167382407D');
-    // expect(importerFile.webID).toEqual('234296');
     expect(importerFile.uniCode).toEqual('201806081635284500');
-    // expect(importerFile.dates).toEqual('2018-08-10T22:00:00.000Z,2018-08-11T22:00:00.000Z');
-    // expect(importerFile.firstDay).toEqual(new Date('2018-08-10T22:00:00.000Z'));
+    expect(importerFile.dates).toEqual('2018-08-10T22:00:00.000Z,2018-08-11T22:00:00.000Z');
+    expect(importerFile.firstDay).toEqual(new Date('2018-08-10T22:00:00.000Z'));
   });
 
   it('Should add tournamnet', async () => {
     // Arrange
-    await service.addImporterfile(fileLocation);
-    const importerFile = await databaseService.getImported();
+    jest.setTimeout(100000);
+    const importerFile = await service.addImporterfile(fileLocation);
 
     // Act
     await service.addEvent(importerFile);
@@ -61,9 +67,6 @@ describe.only('Tournament', () => {
     });
 
     const players = await Player.findAndCountAll();
-    const test = await GamePlayer.findAndCountAll();
-    // logger.debug('Here we are', event.subEvents[0].toJSON());
-    // logger.debug('Here we are', test.rows[0].toJSON());
 
     expect(event.name).toBe('Flemish Summer Event 2018');
     expect(players.count).toBe(449);
