@@ -2,9 +2,14 @@ import {
   BelongsTo,
   BelongsToMany,
   Column,
+  DataType,
+  Default,
   ForeignKey,
+  IsUUID,
   Model,
-  Table
+  PrimaryKey,
+  Table,
+  Unique
 } from 'sequelize-typescript';
 import {
   BelongsToManyAddAssociationMixin,
@@ -22,7 +27,14 @@ import { TeamMembership } from './team-membership.model';
   schema: 'public'
 })
 export class Team extends Model<Team> {
-  @Column({ unique: 'unique_constraint' })
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique('unique_constraint')
+  @Column
   name: string;
 
   @Column
@@ -35,8 +47,9 @@ export class Team extends Model<Team> {
   club?: Club;
 
   @ForeignKey(() => Club)
-  @Column({ unique: 'unique_constraint' })
-  ClubId: number;
+  @Unique('unique_constraint')
+  @Column
+  ClubId: string;
 
   @BelongsToMany(
     () => Player,
@@ -45,7 +58,7 @@ export class Team extends Model<Team> {
   players: Player[];
 
   public getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
-  public addPlayer!: BelongsToManyAddAssociationMixin<Player, number>;
-  public removePlayer!: BelongsToManyRemoveAssociationMixin<Player, number>;
-  public hasPlayer!: BelongsToManyHasAssociationMixin<Player, number>;
+  public addPlayer!: BelongsToManyAddAssociationMixin<Player, string>;
+  public removePlayer!: BelongsToManyRemoveAssociationMixin<Player, string>;
+  public hasPlayer!: BelongsToManyHasAssociationMixin<Player, string>;
 }

@@ -21,7 +21,7 @@ import {
 } from '@badvlasim/shared';
 import { Hash } from 'crypto';
 import { existsSync as dbCours } from 'fs';
-import { FindOrCreateOptions } from 'sequelize/types';
+import { FindOrCreateOptions, Transaction } from 'sequelize/types';
 import { Mdb } from '../convert/mdb';
 import { TpPlayer } from '../models';
 
@@ -29,7 +29,8 @@ export abstract class Importer {
   constructor(
     protected mdb: Mdb,
     protected type: EventType,
-    protected importType: EventImportType
+    protected importType: EventImportType,
+    protected transaction: Transaction
   ) {}
 
   async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
@@ -175,7 +176,7 @@ export abstract class Importer {
       type: this.type
     }).save();
 
-    const subEvents = importerFile.subEvents.map(subEvent => {
+    const subEvents = importerFile?.subEvents.map(subEvent => {
       return {
         ...subEvent.toJSON(),
         id: null,

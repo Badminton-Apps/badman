@@ -65,7 +65,7 @@ export class SystemController extends BaseController {
     }
 
     try {
-      await this._databaseService.makeSystemPrimary(parseInt(request.params.id, 10));
+      await this._databaseService.makeSystemPrimary(request.params.id);
       response.send();
     } catch (error) {
       response.status(500).send(error);

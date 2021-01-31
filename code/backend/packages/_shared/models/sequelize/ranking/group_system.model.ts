@@ -1,4 +1,10 @@
-import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table
+} from 'sequelize-typescript';
 import { RankingSystemGroup } from './group.model';
 import { RankingSystem } from '../../..';
 
@@ -8,10 +14,10 @@ import { RankingSystem } from '../../..';
 })
 export class GroupSystems extends Model<GroupSystems> {
   @ForeignKey(() => RankingSystem)
-  @Column({ unique: 'unique_constraint' })
-  SystemId: number;
+  @Column
+  SystemId: string;
 
   @ForeignKey(() => RankingSystemGroup)
-  @Column({ unique: 'unique_constraint' })
-  GroupId: number;
+  @Column
+  GroupId: string;
 }

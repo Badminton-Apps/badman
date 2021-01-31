@@ -6,9 +6,17 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-  BelongsToMany
+  BelongsToMany,
+  PrimaryKey,
+  IsUUID,
+  Unique,
+  Default
 } from 'sequelize-typescript';
-import { BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin, BuildOptions } from 'sequelize/types';
+import {
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BuildOptions
+} from 'sequelize/types';
 import { RankingPoint } from './point.model';
 import { Player } from '../player.model';
 import { RankingTiming, RankingSystems, StartingType } from '../../enums/';
@@ -26,7 +34,14 @@ export class RankingSystem extends Model<RankingSystem> {
     this._setupValues();
   }
 
-  @Column({ unique: 'unique_constraint' })
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique
+  @Column
   name: string;
 
   @Column
@@ -56,6 +71,7 @@ export class RankingSystem extends Model<RankingSystem> {
 
   @Column
   inactivityAmount: number;
+
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   inactivityUnit: 'months' | 'weeks' | 'days';
 
@@ -78,7 +94,6 @@ export class RankingSystem extends Model<RankingSystem> {
       unit: this.calculationIntervalUnit
     };
   }
-
 
   @Column
   periodAmount: number;
@@ -130,7 +145,7 @@ export class RankingSystem extends Model<RankingSystem> {
   startingType: StartingType;
 
   @ForeignKey(() => Player)
-  runById: number;
+  runById: string;
 
   @BelongsTo(() => Player, {
     foreignKey: 'runById',
@@ -140,7 +155,6 @@ export class RankingSystem extends Model<RankingSystem> {
 
   @HasMany(() => RankingPoint, 'SystemId')
   rankingPoints: RankingPoint;
-
 
   @BelongsToMany(
     () => RankingSystemGroup,

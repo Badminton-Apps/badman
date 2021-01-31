@@ -17,6 +17,9 @@
     "test": "jest --config ./jest.config.js --coverage --testFailureExitCode 0",
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
   },
+  "peerDependencies": {
+    "moment": "^2.24.0"
+  },
   "browserslist": [
     ">0.2%",
     "not dead",

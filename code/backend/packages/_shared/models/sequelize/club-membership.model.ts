@@ -1,25 +1,47 @@
-import { Column, ForeignKey, Model, Table, DataType } from 'sequelize-typescript';
+import {
+  Column,
+  Index,
+  ForeignKey,
+  Model,
+  Table,
+  DataType,
+  Unique,
+  PrimaryKey,
+  AutoIncrement,
+  IsUUID,
+  Default
+} from 'sequelize-typescript';
 import { BuildOptions } from 'sequelize/types';
 import { Club } from './club.model';
 import { Player } from './player.model';
 
 @Table({
-  schema: "public"
+  schema: 'public',
 })
 export class ClubMembership extends Model<ClubMembership> {
   constructor(values?: Partial<ClubMembership>, options?: BuildOptions) {
     super(values, options);
   }
 
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
   @ForeignKey(() => Player)
-  @Column({ unique: 'unique_constraint' })
-  playerId: number;
+  @Unique('unique_constraint')
+  @Column
+  playerId: string;
 
   @ForeignKey(() => Club)
-  @Column({ unique: 'unique_constraint' })
-  clubId: number;
+  @Unique('unique_constraint')
+  @Column
+  clubId: string;
 
-  @Column({ unique: 'unique_constraint' })
+  @Unique('unique_constraint')
+  @PrimaryKey
+  @Column
   start: Date;
 
   @Column
