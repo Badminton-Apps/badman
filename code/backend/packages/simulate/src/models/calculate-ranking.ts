@@ -11,7 +11,7 @@ import { BvlRankingCalc, LfbbRankingCalc, OriginalRankingCalc } from './rankingT
 export class RankingCalculator {
   constructor(private _databaseService: DataBaseHandler) {}
 
-  async calculateRanking(systemIds: number[], stop: Moment, fromStart: boolean, start?: Moment) {
+  async calculateRanking(systemIds: string[], stop: Moment, fromStart: boolean, start?: Moment) {
     const rankingSystems = (
       await RankingSystem.findAll({
         where: {

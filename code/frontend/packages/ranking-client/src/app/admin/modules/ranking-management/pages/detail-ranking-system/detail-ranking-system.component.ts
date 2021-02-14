@@ -52,7 +52,7 @@ export class DetailRankingSystemComponent implements OnInit {
     );
 
     this.caps$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemCaps(parseInt(id, 10))),
+      switchMap((id) => this.systemService.getSystemCaps(id)),
       map((systemCaps) => {
         let level = 12;
         return systemCaps.pointsWhenWinningAgainst.map((winning, index) => {
@@ -72,7 +72,7 @@ export class DetailRankingSystemComponent implements OnInit {
 
     this.allGenders$ = id$.pipe(
       switchMap((id) =>
-        this.systemService.getSystemWithCount(parseInt(id, 10))
+        this.systemService.getSystemWithCount(id)
       ),
       tap(
         (system) =>
@@ -85,13 +85,13 @@ export class DetailRankingSystemComponent implements OnInit {
     );
     this.male$ = id$.pipe(
       switchMap((id) =>
-        this.systemService.getSystemWithCount(parseInt(id, 10), 'M')
+        this.systemService.getSystemWithCount(id, 'M')
       ),
       map((system) => this.getSeriesData(system))
     );
     this.female$ = id$.pipe(
       switchMap((id) =>
-        this.systemService.getSystemWithCount(parseInt(id, 10), 'F')
+        this.systemService.getSystemWithCount(id, 'F')
       ),
       map((system) => this.getSeriesData(system))
     );

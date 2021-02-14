@@ -10,6 +10,7 @@ import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
   ClubMembership,
+  Draw,
   Event,
   Game,
   GamePlayer,
@@ -21,7 +22,9 @@ import {
   RankingPoint,
   RankingSystem,
   RankingSystemGroup,
+  RankingSystems,
   RequestLink,
+  StartingType,
   SubEvent,
   Team,
   TeamMembership
@@ -86,6 +89,7 @@ export class DataBaseHandler {
       Club.getTableName(),
       Game.getTableName(),
       SubEvent.getTableName(),
+      Draw.getTableName(),
       RequestLink.getTableName()
     ];
 
@@ -98,12 +102,16 @@ export class DataBaseHandler {
     await transaction.commit();
   }
 
-  async sync(force = false) {
+  async sync(force = false, alter = false) {
     try {
-      await this._disableForeignKeyCheck();
-      await this._sequelize.sync({ force, alter: force });
+      if (alter) {
+        await this._disableForeignKeyCheck();
+      }
+      await this._sequelize.sync({ force, alter });
+      if (alter) {
+        await this._enableForeignKeyCheck();
+      }
       logger.silly('Synced');
-      await this._enableForeignKeyCheck();
     } catch (err) {
       logger.error('Something went wrong', err);
     }
@@ -146,68 +154,6 @@ export class DataBaseHandler {
     }
   }
 
-  async addUser(user) {
-    return Player.findOrCreate({
-      where: { firstName: user.firstName, lastName: user.lastName },
-      defaults: user
-    });
-  }
-
-  async addEvent(event) {
-    try {
-      const [result, created] = await Event.findOrCreate({
-        where: { type: event.type, name: event.name },
-        defaults: event
-      });
-      return result;
-    } catch (err) {
-      logger.error('Something went wrong adding event', err, event);
-    }
-  }
-
-  async addEvents(events) {
-    logger.silly(`Importing ${events.length} events`);
-    return Event.bulkCreate(events, {
-      ignoreDuplicates: true,
-      returning: ['id']
-    });
-  }
-
-  async addImporterFiles(files: ImporterFile[]) {
-    logger.silly(`Importing ${files.length} events`);
-    return ImporterFile.bulkCreate(
-      files.map(f => f.toJSON()),
-      {
-        updateOnDuplicate: ['fileName', 'dates', 'firstDay', 'name'],
-        returning: ['id']
-      }
-    );
-  }
-  async getImported(find?: FindOptions) {
-    return ImporterFile.findOne(find);
-  }
-
-  async addSubEvent(event) {
-    try {
-      const [result, created] = await SubEvent.findOrCreate({
-        where: {
-          id: event.id ? event.id : null,
-          name: event.name,
-          eventType: event.eventType,
-          drawType: event.drawType,
-          levelType: event.levelType,
-          level: event.level
-        },
-        defaults: event
-      });
-
-      return result;
-    } catch (err) {
-      logger.error('Something went wrong adding subevent', err, event);
-      throw err;
-    }
-  }
-
   async addRankingPointsAsync(rankingPoints) {
     logger.silly(`Importing ${rankingPoints.length} rankingPoints`);
     try {
@@ -246,139 +192,15 @@ export class DataBaseHandler {
     }
   }
 
-  async findClub(club) {
-    try {
-      return await Club.findOrCreate({
-        where: {
-          name: club.name
-        },
-        defaults: club
-      });
-    } catch (err) {
-      logger.error('Something went wrong adding clubs', err);
-      throw err;
-    }
-  }
-
-  async updateClub(club) {
-    try {
-      return await Club.update(club, { where: { name: club.name } });
-    } catch (err) {
-      logger.error('Something went wrong adding clubs', err);
-      throw err;
-    }
-  }
-
-  async findClubs(clubs) {
-    try {
-      return await Club.findAll({
-        where: {
-          name: {
-            [Op.in]: clubs.map(x => x.name)
-          }
-        }
-      });
-    } catch (err) {
-      logger.error('Something went wrong adding clubs', err);
-      throw err;
-    }
-  }
-
-  async addClubs(newClubs) {
-    logger.silly(`Importing ${newClubs.length} clubs`);
-    try {
-      const currentClubs = await this.findClubs(newClubs);
-      const toCreate = newClubs.filter(
-        newClub => currentClubs.find(x => newClub.name === x.name) !== null
-      );
-
-      const created = await Club.bulkCreate(toCreate, {
-        updateOnDuplicate: ['name'],
-        returning: ['id']
-      });
-
-      return [...created, ...currentClubs];
-
-      const withClubid = [];
-      const withoutClubid = [];
-
-      newClubs.forEach(newClub => {
-        const inListWithId = withClubid.findIndex(x => x.name === newClub.name);
-        const inListWithoutId = withoutClubid.findIndex(
-          x => x.name === newClub.name
-        );
-
-        if (inListWithId === -1 && newClub.clubId) {
-          withClubid.push(newClub);
-          if (inListWithoutId >= 0) {
-            withoutClubid.splice(inListWithoutId, 1);
-          }
-        } else if (inListWithoutId === -1) {
-          withoutClubid.push(newClub);
-        }
-      });
-
-      const dbWithClubid = await Club.bulkCreate(withClubid, {
-        updateOnDuplicate: ['clubId'],
-        returning: ['id']
-      });
-      const dbWithoutClubid = await Club.bulkCreate(withoutClubid, {
-        ignoreDuplicates: true,
-        returning: ['id']
-      });
-
-      return [...dbWithClubid, ...dbWithoutClubid];
-    } catch (err) {
-      logger.error('Something went wrong adding clubs', err);
-      throw err;
-    }
-  }
-  async addClubsMemberships(memberships) {
-    logger.silly(`Importing ${memberships.length} club memberships`);
-    try {
-      const playerIds = memberships.map(x => x.playerId);
-      const existing = await ClubMembership.findAll({
-        where: {
-          playerId: {
-            [Op.in]: playerIds
-          }
-        }
-      });
-
-      for await (const membership of existing) {
-        membership.active = false;
-        await membership.save();
-      }
-
-      return await ClubMembership.bulkCreate(memberships, {
-        ignoreDuplicates: true
-      });
-    } catch (err) {
-      logger.error('Something went wrong adding clubmemberships', err);
-      throw err;
-    }
-  }
-
   async addGames(games) {
     logger.silly(`Importing ${games.length} games`);
     try {
       return await Game.bulkCreate(games, {
         ignoreDuplicates: true,
-        returning: true
+        returning: ['*']
       });
     } catch (err) {
       logger.error('Something went wrong adding games', err);
-      throw err;
-    }
-  }
-  async addPlayerGames(gamePlayers) {
-    try {
-      return await GamePlayer.bulkCreate(gamePlayers, {
-        ignoreDuplicates: true,
-        returning: false
-      });
-    } catch (err) {
-      logger.error('Something went wrong adding game players', err);
       throw err;
     }
   }
@@ -386,7 +208,7 @@ export class DataBaseHandler {
   async getGames(
     startDate: Date,
     endDate: Date,
-    groups: number[]
+    groups: string[]
   ): Promise<Game[]> {
     const where = {
       playedAt: {
@@ -428,64 +250,6 @@ export class DataBaseHandler {
     return games;
   }
 
-  async getPlayersForGames(games: Game[], systemId: string) {
-    const include: IncludeOptions = {
-      model: RankingPlace,
-      attributes: ['single', 'double', 'mix', 'SystemId', 'rankingDate'],
-      where: {
-        SystemId: systemId
-      },
-      required: false
-    };
-
-    const attributes = ['id'];
-
-    // Id's
-    const playerIds = games.reduce(
-      (acc, val) => [...acc, ...val.players.map(p => p.id)],
-      []
-    );
-    // distinct players
-    const players = [...new Set(playerIds)];
-
-    return Player.findAll({
-      where: {
-        id: players
-      },
-      attributes,
-      include: [include],
-      order: [
-        [{ model: RankingPlace, as: 'rankingPlaces' }, 'rankingDate', 'desc']
-      ],
-      mapToModel: true
-    });
-  }
-
-  async getUser(find: FindOptions) {
-    return Player.findOne(find);
-  }
-  async getUsers(find: FindOptions) {
-    return Player.findAll(find);
-  }
-
-  async getSystem(find: FindOptions) {
-    return RankingSystem.findOne(find);
-  }
-  async addSystem(system) {
-    return RankingSystem.create(system);
-  }
-
-  async getSystems(find?: FindOptions) {
-    return RankingSystem.findAll(find);
-  }
-  async getSystemsCount(find?: CountOptions) {
-    return RankingSystem.count(find);
-  }
-
-  async getEvent(find?: FindOptions) {
-    return Event.findOne(find);
-  }
-
   async makeSystemPrimary(id: string) {
     const currentSystems = await RankingSystem.findAll({
       where: { primary: true }
@@ -525,14 +289,61 @@ export class DataBaseHandler {
     }
   }
 
-  dbCheck(canMigrate: boolean) {
-    return this._sequelize.sync({ force: true });
-
+  /**
+   * Check if DB is migrated to latest version
+   *
+   * @param canMigrate Allows migration of DB
+   * @param sync Forces DB to recreate every table, this also adds the default Ranking System
+   */
+  dbCheck(canMigrate: boolean, sync: boolean = false) {
     return new Promise(async (resolve, reject) => {
+      logger.debug(`Running dbCheck with`, { canMigrate, sync });
+
       if (canMigrate) {
-        logger.info('Running migration');
-        await this.runCommmand('set NODE_OPTIONS=--max_old_space_size=8192');
-        await this.runCommmand('sequelize db:migrate');
+        if (!sync) {
+          logger.info('Running migration');
+          await this.runCommmand('set NODE_OPTIONS=--max_old_space_size=8192');
+          await this.runCommmand('sequelize db:migrate');
+        } else {
+          logger.info('Syncing');
+          await this._sequelize.sync({ force: true });
+
+          const group = new RankingSystemGroup({
+            name: 'Adults'
+          });
+
+          const system = new RankingSystem({
+            name: 'BV 75/30 FINAL SYSTEM',
+            rankingSystem: RankingSystems.BVL,
+            amountOfLevels: 12,
+            procentWinning: 75,
+            procentWinningPlus1: 50,
+            procentLosing: 30,
+            latestXGamesToUse: null,
+            minNumberOfGamesUsedForUpgrade: 7,
+            maxDiffLevels: 2,
+            updateIntervalAmount: 2,
+            updateIntervalUnit: 'months',
+            periodAmount: 52,
+            periodUnit: 'weeks',
+            caluclationIntervalAmount: 1,
+            calculationIntervalUnit: 'weeks',
+            differenceForUpgrade: 1,
+            differenceForDowngrade: 0,
+            startingType: StartingType.tableLFBB,
+            maxLevelUpPerChange: null,
+            primary: true,
+            maxLevelDownPerChange: 1,
+            gamesForInactivty: 3,
+            inactivityAmount: 103,
+            inactivityUnit: 'weeks'
+          });
+
+          await group.save();
+          await system.save();
+
+          await system.addGroup(group);
+        }
       }
 
       resolve('Good to go');

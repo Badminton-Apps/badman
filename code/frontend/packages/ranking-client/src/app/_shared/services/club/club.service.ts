@@ -16,13 +16,13 @@ const addPlayerToClubMutation = require('graphql-tag/loader!../../graphql/clubs/
 export class ClubService {
   constructor(private apollo: Apollo) {}
 
-  getClub(clubId: number, playersfrom?: Date) {
+  getClub(clubId: string, playersfrom?: Date) {
     return this.apollo
       .query<{ club: Club }>({
         query: clubQuery,
         variables: {
           id: clubId,
-          end: playersfrom.toISOString()
+          end: playersfrom?.toISOString()
         },
       })
       .pipe(map((x) => new Club(x.data.club)));

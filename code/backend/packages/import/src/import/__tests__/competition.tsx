@@ -1,10 +1,10 @@
 import { join } from 'path';
 import { Transaction } from 'sequelize/types';
-import { DataBaseHandler, Event, Game, logger, Player, SubEvent } from '../../../../_shared';
+import { DataBaseHandler, Event, Game, ImporterFile, logger, Player, SubEvent } from '../../../../_shared';
 import { Mdb } from '../../convert/mdb';
 import { CompetitionCpImporter } from '../importers';
 
-describe.skip('Competition', () => {
+describe('Competition', () => {
   let databaseService: DataBaseHandler;
   let service: CompetitionCpImporter;
   let fileLocation: string;
@@ -18,11 +18,14 @@ describe.skip('Competition', () => {
       storage: ':memory:'
     });
 
-    await DataBaseHandler.sequelizeInstance.sync({ force: true });
-
-    service = new CompetitionCpImporter(new Mdb(fileLocation), null);
-
+    service = new CompetitionCpImporter(new Mdb(fileLocation), transaction);
   });
+
+  beforeEach(async () => {
+    // Clear eveything
+    await DataBaseHandler.sequelizeInstance.sync({ force: true });
+  });
+
 
   it('Should have initialized correctly', async () => {
     // Arrange
@@ -31,7 +34,9 @@ describe.skip('Competition', () => {
     await service.addImporterfile(fileLocation);
 
     // Assert
-    const importerFile = await databaseService.getImported();
+    const importerFiles = await ImporterFile.findAll();
+    expect(importerFiles.length).toBe(1);
+    const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('PBO competitie 2020 - 2021');
     expect(importerFile.uniCode).toEqual('202004202326186125');
     expect(importerFile.firstDay).toEqual(new Date('2020-08-31T22:00:00.000Z'));
@@ -46,17 +51,16 @@ describe.skip('Competition', () => {
     await service.addEvent(importerFile);
 
     // Assert
+
     const event = await Event.findOne({
-      include: [
-        {
-          model: SubEvent,
-          include: [{ model: Game, include: [{ model: Player }] }]
-        }
-      ]
+      include: [SubEvent]
     });
+
     const players = await Player.findAndCountAll();
+    const subevents = await SubEvent.findAll();
 
     expect(players.count).toBe(0);
-    expect(event.subEvents.length).toBe(31);
+    expect(event.subEvents.length).toBe(13);
+    expect(subevents.length).toBe(13);
   });
 });

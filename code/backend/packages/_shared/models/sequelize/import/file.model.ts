@@ -11,7 +11,7 @@ import {
   Unique,
   Default
 } from 'sequelize-typescript';
-import { ImportSubEvents } from '.';
+import { ImportSubEvent } from '.';
 import { EventImportType } from '../../enums/eventType.enum';
 
 @Table({
@@ -19,7 +19,7 @@ import { EventImportType } from '../../enums/eventType.enum';
   tableName: 'Files',
   schema: 'import'
 } as TableOptions)
-export class ImporterFile extends Model<ImporterFile> {
+export class ImporterFile extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -53,12 +53,13 @@ export class ImporterFile extends Model<ImporterFile> {
   @Column
   uniCode: string;
 
+  @Default(false)
   @Column
   importing: boolean;
 
   @Column
   toernamentNumber: number;
 
-  @HasMany(() => ImportSubEvents, 'FileId')
-  subEvents: ImportSubEvents[];
+  @HasMany(() => ImportSubEvent, 'FileId')
+  subEvents: ImportSubEvent[];
 }

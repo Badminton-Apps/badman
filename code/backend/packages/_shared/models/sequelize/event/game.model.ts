@@ -16,12 +16,18 @@ import { GameType } from '../../enums/gameType.enum';
 import { Player } from '../player.model';
 import { Court } from './court.model';
 import { GamePlayer } from './game-player.model';
+import { BuildOptions } from 'sequelize';
+import { Draw } from './draw.model';
 
 @Table({
   timestamps: true,
   schema: 'event'
 } as TableOptions)
-export class Game extends Model<Game> {
+export class Game extends Model {
+  constructor(values?: Partial<Game>, options?: BuildOptions) {
+    super(values, options);
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -50,15 +56,19 @@ export class Game extends Model<Game> {
   @Column
   winner?: number;
 
-  @BelongsTo(() => SubEvent, 'subEventId')
-  subEvent: SubEvent;
+  @BelongsTo(() => Draw, 'drawId')
+  draw: Draw;
 
-  @ForeignKey(() => SubEvent)
+  @ForeignKey(() => Draw)
   @Column
-  subEventId: string;
+  drawId: string;
 
   @BelongsTo(() => Court, 'courtId')
   court: Court;
+
+  @ForeignKey(() => Court)
+  @Column
+  courtId: string;
 
   @BelongsToMany(
     () => Player,

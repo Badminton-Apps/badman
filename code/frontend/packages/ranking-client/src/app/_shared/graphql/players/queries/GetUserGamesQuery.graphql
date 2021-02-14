@@ -23,17 +23,21 @@ query GetUserGameQuery(
       playedAt
       winner
       gameType
-      subEvent {
+      draw {
         id
         name
-        level
-        levelType
-        eventType
-        event {
-          type
+        subEvent {
           id
           name
-          firstDay
+          level
+          levelType
+          eventType
+          event {
+            type
+            id
+            name
+            firstDay
+          }
         }
       }
       players {

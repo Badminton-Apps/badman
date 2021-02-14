@@ -93,10 +93,10 @@ export class BvlRankingCalc extends RankingCalc {
   private async _calculateRankingPlacesAsync(
     startDate: Date,
     endDate: Date,
-    players: Map<number, Player>,
+    players: Map<string, Player>,
     updateRankings: boolean
   ) {
-    const eligbleForRanking: Map<number, RankingPoint[]> = new Map();
+    const eligbleForRanking: Map<string, RankingPoint[]> = new Map();
     logger.debug(
       `calculateRankingPlacesAsync for preiod ${startDate.toISOString()} - ${endDate.toISOString()}`
     );
@@ -292,7 +292,7 @@ export class BvlRankingCalc extends RankingCalc {
     }
   }
 
-  async countGames(players: Map<number, Player>, endDate: Date, rankingType: RankingSystem) {
+  async countGames(players: Map<string, Player>, endDate: Date, rankingType: RankingSystem) {
     const chunks = splitInChunks(Array.from(players.keys()), 3500);
     let lastWeeks = [];
 

@@ -174,7 +174,6 @@ export class EventService {
     // process chunked
     while (fileArray.length > 0) {
       var chunk = fileArray.splice(0, 5);
-      console.log(chunk);
 
       let formData = new FormData();
       chunk.forEach((file) => {
@@ -199,7 +198,6 @@ export class EventService {
         this.httpClient.request(req).pipe(
           share(),
           tap((r) => {
-            console.log(this.importStatus$.value, r);
             const finished = this.importStatus$.value.finished + 1;
             this.importStatus$.next({
               total: this.importStatus$.value.total,
@@ -214,7 +212,7 @@ export class EventService {
     return concat(...requests).pipe(toArray());
   }
 
-  deleteImportedEvent(event: { id: number }) {
+  deleteImportedEvent(event: { id: string }) {
     return this.apollo.mutate({
       mutation: deleteEventMutation,
       variables: {

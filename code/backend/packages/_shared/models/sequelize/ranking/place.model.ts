@@ -10,6 +10,7 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
+import { BuildOptions } from 'sequelize/types';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
 
@@ -18,7 +19,11 @@ import { RankingSystem } from './system.model';
   tableName: 'Places',
   schema: 'ranking'
 })
-export class RankingPlace extends Model<RankingPlace> {
+export class RankingPlace extends Model {
+  constructor(values?: Partial<RankingPlace>, options?: BuildOptions){
+    super(values, options);
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -71,10 +76,13 @@ export class RankingPlace extends Model<RankingPlace> {
   @Column
   double: number;
 
+  @Default(false)
   @Column
   singleInactive: boolean;
+  @Default(false)
   @Column
   mixInactive: boolean;
+  @Default(false)
   @Column
   doubleInactive: boolean;
 

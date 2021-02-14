@@ -23,9 +23,8 @@ export class Convertor {
 
   private _setupQueue() {
     this._importEmitter.on('add_to_convert_queue', async (imported: ImporterFile, event: Event) => {
-      // TODO: Revert me
-      // imported.importing = true;
-      // await imported.save();
+      imported.importing = true;
+      await imported.save();
 
       logger.debug(`Added ${imported.id} to queue`);
       this._queue.push({ imported, event });
@@ -133,8 +132,8 @@ export class Convertor {
         const competitionXmlImporter = new CompetitionXmlImporter(transaction);
         return competitionXmlImporter.addImporterfile(fileLocation);
       default:
-        logger.warn('Unsupperted type', type);
-        return null;
+        logger.error('Unsupperted type', type);
+        throw new Error('Unsupperted type')
     }
   }
   private _sleep(ms) {

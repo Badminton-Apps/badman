@@ -1,10 +1,12 @@
 // import { typeDefs } from './schema';
 import { logger } from '@badvlasim/shared';
 import cors from 'cors';
-import morgan from 'morgan';
+import moment from 'moment';
 import express, { Application, json } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { BaseController } from './models';
+
+moment.suppressDeprecationWarnings = true;
 
 export class App {
   public app: Application;

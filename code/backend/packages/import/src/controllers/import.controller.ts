@@ -5,8 +5,12 @@ import {
   logger,
   BaseController,
   SubEvent,
-  ImportSubEvents,
-  EventImportType
+  ImportSubEvent,
+  EventImportType,
+  Event,
+  ImporterFile,
+  ImportDraw,
+  Draw
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import { unlink } from 'fs';
@@ -129,9 +133,9 @@ export class ImportController extends BaseController {
       }
 
       for (const queImport of queueImports) {
-        const imported = await this._databaseService.getImported({
+        const imported = await ImporterFile.findOne({
           where: { id: queImport.importId },
-          include: queImport.eventId ? [] : [{ model: ImportSubEvents }]
+          include: [{ model: ImportSubEvent, include: [{model: ImportDraw}] }]
         });
 
         if (!imported) {
@@ -140,9 +144,9 @@ export class ImportController extends BaseController {
 
         let event = null;
         if (queImport.eventId) {
-          event = await this._databaseService.getEvent({
+          event = await Event.findOne({
             where: { id: queImport.eventId },
-            include: [{ model: SubEvent }]
+            include: [{ model: SubEvent, include: [{model: Draw}] }]
           });
         }
 
