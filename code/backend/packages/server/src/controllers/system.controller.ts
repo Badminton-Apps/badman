@@ -1,4 +1,4 @@
-import { AuthenticatedRequest, BaseController, DataBaseHandler } from '@badvlasim/shared';
+import { AuthenticatedRequest, BaseController, DataBaseHandler, RankingSystem } from '@badvlasim/shared';
 import { Request, Response, Router } from 'express';
 
 export class SystemController extends BaseController {
@@ -20,9 +20,7 @@ export class SystemController extends BaseController {
   }
 
   private _getRankingSystemCaps = async (request: Request, response: Response) => {
-    const system = await this._databaseService.getSystem({
-      where: { id: parseInt(request.params.id, 10) }
-    });
+    const system = await RankingSystem.findByPk(request.params.id);
 
     if (!system) {
       response.status(404);
@@ -42,11 +40,8 @@ export class SystemController extends BaseController {
       response.status(401).send('No no no!!');
       return;
     }
-
-    const system = await this._databaseService.getSystem({
-      where: { id: parseInt(request.params.id, 10) }
-    });
-
+    const system = await RankingSystem.findByPk(request.params.id);
+  
     if (!system) {
       response.status(404);
       return;

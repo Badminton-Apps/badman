@@ -4,16 +4,21 @@ import {
   correctWrongPlayers,
   Court,
   DataBaseHandler,
+  Draw,
+  DrawType,
   Event,
   EventImportType,
   EventType,
   flatten,
   Game,
   GamePlayer,
+  GameType,
   ImporterFile,
+  LevelType,
   logger,
   Player,
   SubEvent,
+  SubEventType,
   Team,
   TeamMembership,
   titleCase
@@ -80,7 +85,7 @@ export class CompetitionXmlImporter extends Importer {
 
     const players = await this.addPlayersXml(teams, event);
 
-    await this.addGamesXml(players, event, events);
+    await this.addGamesXml(players, event, events, importerFile);
 
     await event.save();
 
@@ -89,33 +94,75 @@ export class CompetitionXmlImporter extends Importer {
 
   // #region internal
 
-  protected addGames(subEvents: SubEvent[], players: TpPlayer[], courts: Map<string, Court>) {
+  protected addGames(draws: Draw[], players: TpPlayer[], courts: Map<string, Court>) {
     throw new Error('Nope! use addGamesXML!');
   }
 
-  protected async addGamesXml(players: Player[], event: Event, xmlData: any) {
+  protected async addGamesXml(
+    players: Player[],
+    event: Event,
+    xmlData: any,
+    importerFile: ImporterFile
+  ) {
     const xmlGames = [];
     for (const xmlEvent of xmlData) {
+      const subEventWhere = {
+        EventId: event.id,
+        internalId: xmlEvent.EventSiebelId
+      };
+      let dbSubevent = await SubEvent.findOne({
+        where: subEventWhere,
+        include: [Draw]
+      });
+
       const xmlDivisions = Array.isArray(xmlEvent.Division)
         ? [...xmlEvent.Division]
         : [xmlEvent.Division];
+
+      if (!dbSubevent) {
+        // Slow way, but last option to fix it
+        const matches = xmlDivisions
+          .map(d => (Array.isArray(d.Fixture) ? [...d.Fixture] : [d.Fixture]))
+          .flat()
+          .map(f => (Array.isArray(f.Match) ? [...f.Match] : [f.Match]))
+          .flat();
+
+        // Types:
+        // 1 = Single M
+        // 2 = Single D
+        // 3 = Double M
+        // 4 = Double D
+        // 5 = MIX
+        dbSubevent = await new SubEvent({
+          name: xmlEvent.EventName,
+          internalId: xmlEvent.EventSiebelId,
+          gameType: matches.find(r => r.MatchType === 5) ? GameType.MX : GameType.D,
+          eventType: matches.find(r => r.MatchType === 5)
+            ? SubEventType.MX
+            : matches.find(r => r.MatchType === 1)
+            ? SubEventType.M
+            : SubEventType.F,
+          levelType: this.getLeague(importerFile)
+        }).save();
+        logger.warn('No subevent found', { where: subEventWhere, created: dbSubevent.toJSON() });
+      }
 
       for (const division of xmlDivisions) {
         if (!division) {
           continue;
         }
 
-        const where = {
-          EventId: event.id,
-          internalId: division.DivisionLPId
-        };
-        const dbSubevent = await SubEvent.findOne({
-          where
-        });
+        let dbDraw = dbSubevent.draws.find(r => r.internalId === division.DivisionLPId);
 
-        if (!dbSubevent) {
-          logger.warn('No subevent found', where);
-          continue;
+        if (!dbDraw) {
+          dbDraw = await new Draw({
+            name: division.DivisionName,
+            type: DrawType.POULE,
+            SubEventId: dbSubevent.id,
+            internalId: division.DivisionLPId
+          }).save();
+
+          logger.warn('No draw found', { id: division.DivisionLPId, created: dbDraw.toJSON() });
         }
 
         const xmlFixtures = Array.isArray(division.Fixture)
@@ -141,7 +188,7 @@ export class CompetitionXmlImporter extends Importer {
           for (const match of xmlMatches) {
             const gamePlayers = [];
 
-            const data = {
+            const data = new Game({
               playedAt,
               gameType: this._getMatchType(match.MatchType), // S, D, MX
               set1Team1: match.MatchTeam1Set1,
@@ -151,8 +198,8 @@ export class CompetitionXmlImporter extends Importer {
               set3Team1: match.MatchTeam3Set1,
               set3Team2: match.MatchTeam3Set2,
               winner: match.MatchWinner,
-              SubEventId: dbSubevent.id
-            };
+              drawId: dbDraw.id
+            });
 
             const loserTeam = match.MatchWinner === 1 ? 2 : 1;
 
@@ -219,7 +266,7 @@ export class CompetitionXmlImporter extends Importer {
               }
             }
 
-            xmlGames.push({ game: data, gamePlayers });
+            xmlGames.push({ game: data.toJSON(), gamePlayers });
           }
         }
       }
@@ -227,7 +274,7 @@ export class CompetitionXmlImporter extends Importer {
 
     const dbGames = await Game.bulkCreate(
       xmlGames.map(x => x.game),
-      { returning: true, ignoreDuplicates: true } // Return ALL comulms
+      { returning: ['*'], ignoreDuplicates: true } // Return ALL comulms
     );
 
     const gamePlayersWithGameId = dbGames.reduce((acc, cur, idx) => {
@@ -262,13 +309,19 @@ export class CompetitionXmlImporter extends Importer {
         // Correct wrong id's and such
         playersForteam = playersForteam.map((xmlPlayer: any) => {
           try {
-            return correctWrongPlayers({
+            const corrected = correctWrongPlayers({
               memberId: xmlPlayer.MemberLTANo,
               firstName: titleCase(xmlPlayer.MemberFirstName),
               lastName: titleCase(xmlPlayer.MemberLastName),
               gender: xmlPlayer.MemberGender,
               club: xmlPlayer.ClubId
             });
+
+            // New Player, so all our values are correclty initialized
+            // Also checks properties
+            return new Player({
+              ...corrected
+            }).toJSON();
           } catch (error) {
             logger.error("Couldn't parse player", error);
             throw error;
@@ -303,22 +356,134 @@ export class CompetitionXmlImporter extends Importer {
     );
 
     const dbPlayers = await Player.bulkCreate(xmlPlayers, {
-      returning: true,
-      fields: ['memberId', 'firstName', 'lastName', 'gender'],
+      returning: ['*'],
       updateOnDuplicate: ['firstname', 'lastname', 'gender']
     });
 
-    await this._addToTeams(teams, dbPlayers, event.firstDay);
+    await this._addToTeamsAndClubs(teams, dbPlayers, moment(event.firstDay));
 
     return dbPlayers;
   }
 
-  private async _addToClubs(
-    playersIds: string[],
-    inputStart: Moment,
-    clubId: string,
-    transaction: Transaction
-  ) {
+  private async _addToTeamsAndClubs(teams, dbPlayers: Player[], start: Moment) {
+    const dbClubs = await Club.findAll();
+    const teamsData = [];
+
+    for (const t of teams) {
+      const club = await this._findOrCreateClub(dbClubs, t);
+      teamsData.push(
+        new Team({
+          name: this._cleanedTeamName(t.name),
+          ClubId: club.id
+        }).toJSON()
+      );
+    }
+
+    const dbTeams = await Team.bulkCreate(teamsData, {
+      returning: ['*'],
+      updateOnDuplicate: ['name']
+    });
+
+    const playersForClubs = new Map<string, string[]>();
+    for await (const team of teams) {
+      const dbTeam = dbTeams.find(dbt => dbt.name === this._cleanedTeamName(team.name));
+
+      if (team.players && team.players.length > 0) {
+        try {
+          const dbTeamPlayers = [];
+
+          // get Player id
+          for (const teamPlayer of team.players) {
+            const dbPlayer = dbPlayers.find(dbp => dbp.memberId === `${teamPlayer.memberId}`);
+
+            if (!dbPlayer) {
+              logger.warn('Player not foud!');
+            }
+
+            dbTeamPlayers.push(dbPlayer);
+          }
+
+          await this._addToTeams(
+            dbTeamPlayers.map(r => r.id),
+            start,
+            dbTeam.id
+          );
+
+          let currentPlayersOfClub = playersForClubs.get(dbTeam.ClubId);
+          if (currentPlayersOfClub == null) {
+            currentPlayersOfClub = [];
+          }
+          currentPlayersOfClub = currentPlayersOfClub.concat(dbTeamPlayers.map(r => r.id));
+
+          playersForClubs.set(dbTeam.ClubId, currentPlayersOfClub);
+        } catch (err) {
+          logger.error(`Something went wrong with`, {
+            team,
+            err
+          });
+          throw err;
+        }
+      }
+    }
+
+    for (const playersForClub of playersForClubs) {
+      await this._addToClubs(
+        playersForClub[1].filter((n, i) => playersForClub[1].indexOf(n) === i),
+        start,
+        playersForClub[0]
+      );
+    }
+  }
+
+  private async _addToTeams(playersIds: string[], inputStart: Moment, teamId: string) {
+    // Force start and end to 1 september
+    const start = moment(inputStart)
+      .set('month', 8)
+      .startOf('month');
+    const end = moment(start)
+      .add(1, 'year')
+      .set('month', 8)
+      .startOf('month');
+
+    // Get all existing memberships of the players
+    const dbTeamMemberships = await TeamMembership.findAll({
+      where: {
+        playerId: {
+          [Op.in]: playersIds.map(r => r)
+        },
+        [Op.or]: [{ end: start.toDate() }, { start: start.toDate() }]
+      },
+      transaction: this.transaction
+    });
+
+    for await (const playerId of playersIds) {
+      const dbTeamPlayerMemberships = dbTeamMemberships.filter(
+        m => m.playerId === playerId && m.teamId === teamId
+      );
+      if (dbTeamPlayerMemberships.length > 1) {
+        logger.warn("this shouldn't happen", playerId);
+      }
+
+      // if same team, add on year
+      if (dbTeamPlayerMemberships && dbTeamPlayerMemberships.length === 1) {
+        if (end.isSameOrAfter(dbTeamPlayerMemberships[0].end)) {
+          dbTeamPlayerMemberships[0].end = end.toDate();
+          await dbTeamPlayerMemberships[0].save({ transaction: this.transaction });
+          return;
+        }
+      }
+
+      // new membership
+      await new TeamMembership({
+        playerId,
+        teamId,
+        end: end.toDate(),
+        start: start.toDate()
+      }).save({ transaction: this.transaction });
+    }
+  }
+
+  private async _addToClubs(playersIds: string[], inputStart: Moment, clubId: string) {
     // Force start and end to 1 september
     const start = moment(inputStart)
       .set('month', 8)
@@ -336,7 +501,7 @@ export class CompetitionXmlImporter extends Importer {
         },
         [Op.or]: [{ end: start.toDate() }, { start: start.toDate() }]
       },
-      transaction
+      transaction: this.transaction
     });
 
     for await (const playerId of playersIds) {
@@ -349,166 +514,20 @@ export class CompetitionXmlImporter extends Importer {
 
       // if same team, add on year
       if (dbclubPlayerMemberships && dbclubPlayerMemberships.length === 1) {
-        if (end.isAfter(dbclubPlayerMemberships[0].end)) {
+        if (end.isSameOrAfter(dbclubPlayerMemberships[0].end)) {
           dbclubPlayerMemberships[0].end = end.toDate();
-          await dbclubPlayerMemberships[0].save({ transaction });
-          console.debug('Membership extended');
+          await dbclubPlayerMemberships[0].save({ transaction: this.transaction });
           return;
         }
       }
- 
-      console.debug('New membership', {
+
+      // new membership
+      await new ClubMembership({
         playerId,
         clubId,
         end: end.toDate(),
         start: start.toDate()
-      });
-
-      try {
-        // new membership
-        await new ClubMembership({
-          playerId,
-          clubId,
-          end: end.toDate(),
-          start: start.toDate()
-        }).save({ transaction });
-      } catch (e) {
-        console.error('Nope?', e)
-        throw e;
-      }
-    }
-  }
-
-  private async _addToTeams(teams, dbPlayers: Player[], inputStart: Date) {
-    const dbClubs = await Club.findAll();
-    const teamsData = [];
-    // Force start and end to 1 september
-    const start = moment(inputStart)
-      .set('month', 8)
-      .startOf('month');
-    const end = moment(start)
-      .add(1, 'year')
-      .set('month', 8)
-      .startOf('month');
-
-    for (const t of teams) {
-      const club = await this._findOrCreateClub(dbClubs, t);
-      teamsData.push({
-        name: this._cleanedTeamName(t.name),
-        ClubId: club.id
-      });
-    }
-
-    const dbTeams = await Team.bulkCreate(teamsData, {
-      returning: true,
-      fields: ['name', 'ClubId'],
-      updateOnDuplicate: ['name']
-    });
-
-    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-    try {
-      const playersForClubs = new Map<string, string[]>();
-      for await (const team of teams) {
-        const dbTeam = dbTeams.find(dbt => dbt.name === this._cleanedTeamName(team.name));
-
-        if (team.players && team.players.length > 0) {
-          try {
-            const dbTeamPlayers = [];
-
-            for (const teamPlayer of team.players) {
-              let dbPlayer = dbPlayers.find(dbp => dbp.memberId === `${teamPlayer.memberId}`);
-
-              // if corrected by system we lose our memberid (maybe rewrite to figure out which one it was, if duplicate name is becomming a problem)
-              if (!dbPlayer) {
-                dbPlayer = dbPlayers.find(
-                  dbp =>
-                    dbp.firstName === `${teamPlayer.firstName}` &&
-                    dbp.lastName === `${teamPlayer.lastName}`
-                );
-              }
-
-              if (!dbPlayer) {
-                logger.warn('Player not foud!');
-              }
-
-              dbTeamPlayers.push(dbPlayer);
-            }
-
-            // Get all existing memberships of the players
-            const dbteamMemberships = await TeamMembership.findAll({
-              where: {
-                playerId: {
-                  [Op.in]: dbTeamPlayers.map(r => r.id)
-                },
-                end: {
-                  [Op.or]: [
-                    // New year starts when old year stops
-                    start.toDate(),
-                    // Or current membership (e.g. reimport)
-                    end.toDate()
-                  ]
-                }
-              }
-            });
-
-            for await (const player of dbTeamPlayers) {
-              const dbteamPlayerMemberships = dbteamMemberships.filter(
-                m => m.playerId === player.id && m.teamId === dbTeam.id
-              );
-              if (dbteamPlayerMemberships.length > 1) {
-                logger.warn("this shouldn't happen", player);
-              }
-              // if same team, add on year
-              if (dbteamPlayerMemberships && dbteamPlayerMemberships.length === 1) {
-                // if after
-                if (end.isAfter(dbteamPlayerMemberships[0].end)) {
-                  dbteamPlayerMemberships[0].end = end.toDate();
-                  await dbteamPlayerMemberships[0].save({ transaction });
-                }
-              } else {
-                // new membership
-                await new TeamMembership({
-                  playerId: player.id,
-                  teamId: dbTeam.id,
-                  start: start.toDate(),
-                  end: end.toDate()
-                }).save({ transaction });
-              }
-            }
-
-            let currentPlayersOfClub = playersForClubs.get(dbTeam.ClubId);
-            if (currentPlayersOfClub == null) {
-              currentPlayersOfClub = [];
-            }
-            currentPlayersOfClub = currentPlayersOfClub.concat(dbTeamPlayers.map(r => r.id));
-
-            playersForClubs.set(dbTeam.ClubId, currentPlayersOfClub);
-          } catch (err) {
-            logger.error(`Something went wrong with`, {
-              team,
-              err
-            });
-            throw err;
-          }
-        }
-      }
-
-      for (const playersForClub of playersForClubs) {
-        await this._addToClubs(
-          playersForClub[1].filter((n, i) => playersForClub[1].indexOf(n) === i),
-          start,
-          playersForClub[0],
-          transaction
-        );
-      }
-
-      transaction.commit();
-    } catch (err) {
-      transaction.rollback();
-      logger.error(`Something went wrong`, {
-        err
-      });
-      throw err;
+      }).save({ transaction: this.transaction });
     }
   }
 
@@ -569,15 +588,15 @@ export class CompetitionXmlImporter extends Importer {
       case 2:
       case 'HE':
       case 'DE':
-        return 'S';
+        return GameType.S;
       case 3:
       case 4:
       case 'HD':
       case 'DD':
-        return 'D';
+        return GameType.D;
       case 5:
       case 'GD':
-        return 'MX';
+        return GameType.MX;
       default:
         throw new Error('Unsupported type');
     }

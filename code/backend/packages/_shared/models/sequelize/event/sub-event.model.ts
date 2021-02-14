@@ -18,17 +18,23 @@ import { Event } from './event.model';
 import { Game } from './game.model';
 import { GroupSubEvents, RankingSystemGroup } from '../ranking';
 import { Team } from '../team.model';
+import { BuildOptions } from 'sequelize/types';
+import { Draw } from './draw.model';
 
 @Table({
   timestamps: true,
   schema: 'event'
 })
-export class SubEvent extends Model<SubEvent> {
+export class SubEvent extends Model {
+  constructor(values?: Partial<SubEvent>, options?: BuildOptions){
+    super(values, options);
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column
-  id: string;
+  id: string;  
 
   @Unique('unique_constraint')
   @Index
@@ -44,19 +50,13 @@ export class SubEvent extends Model<SubEvent> {
   gameType: GameType;
 
   @Unique('unique_constraint')
-  @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
-  drawType: DrawType;
-
-  @Unique('unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAAL'))
   levelType: LevelType;
 
   @Column
   level?: number;
 
-  @Column
-  size: number;
-
+  @Unique('unique_constraint')
   @Column
   internalId: number;
 
@@ -66,15 +66,16 @@ export class SubEvent extends Model<SubEvent> {
   )
   groups: RankingSystemGroup[];
 
-  @HasMany(() => Game, 'subEventId')
-  games: Game[];
-
   @HasMany(() => Team, 'SubEventId')
   teams: Team[];
+
+  @HasMany(() => Draw, 'SubEventId')
+  draws: Draw[];
 
   @BelongsTo(() => Event, 'EventId')
   event?: Event;
 
+  @Unique('unique_constraint')
   @ForeignKey(() => Event)
   @Column
   EventId: string;

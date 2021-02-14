@@ -2,7 +2,7 @@ import { GraphQLList, GraphQLObjectType } from 'graphql';
 import { attributeFields, resolver } from 'graphql-sequelize';
 import { Game } from '@badvlasim/shared/models';
 import { GamePlayerType } from './gamePlayer.type';
-import { SubEventType } from './subEvent.type';
+import { DrawType } from './draw.type';
 import { getAttributeFields } from './attributes.type';
 
 const GameType = new GraphQLObjectType({
@@ -25,9 +25,9 @@ const GameType = new GraphQLObjectType({
           }
         })
       },
-      subEvent: {
-        type: SubEventType,
-        resolve: resolver(Game.associations.subEvent, {
+      draw: {
+        type: DrawType,
+        resolve: resolver(Game.associations.draw, {
           before: async (findOptions, args, context, info) => {
             return findOptions;
           }

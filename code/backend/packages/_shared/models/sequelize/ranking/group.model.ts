@@ -10,6 +10,7 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
+import { BuildOptions } from 'sequelize/types';
 import { RankingSystem } from '../../..';
 import { SubEvent } from '../event';
 import { GroupSubEvents } from './group_subevent.model';
@@ -20,7 +21,11 @@ import { GroupSystems } from './group_system.model';
   tableName: 'Groups',
   schema: 'ranking'
 })
-export class RankingSystemGroup extends Model<RankingSystemGroup> {
+export class RankingSystemGroup extends Model {
+  constructor(values ?: Partial<RankingSystemGroup>, options?: BuildOptions){
+    super(values, options)
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey

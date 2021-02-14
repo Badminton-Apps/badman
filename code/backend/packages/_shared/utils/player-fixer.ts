@@ -1,14 +1,21 @@
 
 
 export const correctWrongPlayers = (player: {
-  id?: number;
+  id?: string;
   memberId: string;
   firstName: string;
   lastName: string;
   birthDate?: Date;
   gender?: string;
   club?: number;
-}) => {
+}): {id?: string;
+  memberId: string;
+  firstName: string;
+  lastName: string;
+  birthDate?: Date;
+  gender?: string;
+  club?: number;
+} => {
   // Yaro Van Delsen
   if (
     (player.memberId === '' && player.firstName === 'Yaro' && player.lastName === 'Van Delsen') ||
@@ -1379,7 +1386,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Kilaïm',
-      lastnName: 'Panggih Purwoko'
+      lastName: 'Panggih Purwoko'
     };
   }
   //  Hélène Poncelet
@@ -1538,7 +1545,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: 50057535
+      memberId: '50057535'
     };
   }
   //  Serge Rusak
@@ -1549,7 +1556,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: 30035358
+      memberId: '30035358'
     };
   }
 
@@ -3130,7 +3137,7 @@ export const correctWrongPlayers = (player: {
       ...player,
       firstName: 'Christopher',
       lastName: 'Beron',
-      memberId: 6461219
+      memberId: '6461219'
     };
   }
 

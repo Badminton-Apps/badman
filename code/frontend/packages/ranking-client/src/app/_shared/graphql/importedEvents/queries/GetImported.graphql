@@ -17,11 +17,7 @@ query GetImported($first: Int, $order: [ImportedOrderBy], $after: String) {
           name
           eventType
           gameType
-          drawType
           levelType
-          internalId
-          size
-          level
         }
       }
     }

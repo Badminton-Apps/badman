@@ -19,7 +19,7 @@ import { Event } from './event.model';
   timestamps: true,
   schema: 'event'
 } as TableOptions)
-export class Location extends Model<Location> {
+export class Location extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -29,6 +29,24 @@ export class Location extends Model<Location> {
   @Unique('unique_constraint')
   @Column
   name: string;
+
+  @Column
+  address: string;
+
+  @Column
+  postalcode: string;
+
+  @Column
+  city: string;
+
+  @Column
+  state: string;
+
+  @Column
+  phone: string;
+
+  @Column
+  fax: string;
 
   @HasMany(() => Court, 'locationId')
   courts: Court;

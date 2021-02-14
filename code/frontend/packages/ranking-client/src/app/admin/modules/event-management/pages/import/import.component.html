@@ -60,7 +60,7 @@
             <mat-option *ngFor="let sug of element.suggestions" [value]="sug">{{
               sug.name
             }}</mat-option>
-            <mat-option [value]="{ id: -1 }"
+            <mat-option [value]="{ id: undefined }" 
               >Default (no ranking groups!!)</mat-option
             >
           </mat-select>

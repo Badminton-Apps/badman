@@ -1,4 +1,11 @@
-import { correctWrongPlayers, DataBaseHandler, logger, RankingPlace, StartingType } from '@badvlasim/shared';
+import {
+  correctWrongPlayers,
+  DataBaseHandler,
+  logger,
+  Player,
+  RankingPlace,
+  StartingType
+} from '@badvlasim/shared';
 // eslint-disable-next-line import/no-internal-modules
 import startRanking from '../start-ranking/start-ranking.json';
 
@@ -12,7 +19,7 @@ export class StartingRanking {
     { json: 'GD H-DX M', type: 'mix' }
   ];
 
-  constructor(private _databaseService: DataBaseHandler) { }
+  constructor(private _databaseService: DataBaseHandler) {}
 
   async addInitialPlayersAsync(
     startingType: StartingType,
@@ -29,7 +36,7 @@ export class StartingRanking {
       highestRanking: { single: number; mix: number; double: number }
     ) => RankingPlace
   ) {
-    const playerMap: Map<string, RankingPlace> = new Map(); 
+    const playerMap: Map<string, RankingPlace> = new Map();
 
     for await (const type of this._types) {
       let startPlaces;
@@ -141,7 +148,8 @@ export class StartingRanking {
       }
 
       // Get player id's
-      const players = await this._databaseService.getUsers({
+      
+      const players = await Player.findAll({
         where: {
           memberId: startRanking[type.json].map(x => `${x.Lidnummer}`)
         }
@@ -163,15 +171,19 @@ export class StartingRanking {
             const firstSpace = x.Speler.indexOf(' ');
             const [firstName, lastName] = splitAt(firstSpace)(x.Speler);
 
-            [dbplayer] = await this._databaseService.addUser(
-              correctWrongPlayers({
-                id: null,
-                memberId: `${x.Lidnummer}`,
-                gender: type.json[type.json.length - 1],
-                firstName,
-                lastName
-              })
-            );
+            try {
+              dbplayer = await new Player(
+                correctWrongPlayers({
+                  memberId: `${x.Lidnummer}`,
+                  gender: type.json[type.json.length - 1],
+                  firstName,
+                  lastName
+                })
+              ).save();
+            } catch (e) {
+              logger.error(`Something went wrong adding user ${x.Lidnummer}`, e);
+              throw e;
+            }
           }
 
           if (!dbplayer) {
@@ -186,7 +198,7 @@ export class StartingRanking {
             single: amountOfLevels,
             double: amountOfLevels,
             mix: amountOfLevels,
-            updatePossible: true, // Because techically it was possible :P
+            updatePossible: true // Because techically it was possible :P
           } as RankingPlace;
         }
 

@@ -2,8 +2,8 @@ import { Game } from './game.model';
 import { RankingPlace } from './ranking-place.model';
 
 export class Player {
-  id: number;
-  memberId: number;
+  id: string;
+  memberId: string;
   gender: string;
   avatar: string;
   firstName: string;

@@ -163,7 +163,7 @@ export class ImportComponent implements OnInit, OnDestroy {
           data[index].event =
             data[index].suggestions?.length > 0
               ? data[index]?.suggestions[0]
-              : ({ id: -1 } as Event);
+              : ({ id: undefined } as Event);
         }
 
         this.dataSource.data = data;
@@ -182,7 +182,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     if (event.value.id != -1) {
       this.dataSource.data[dsId].event = event.value;
     } else {
-      this.dataSource.data[dsId].event = { id: -1 } as Event;
+      this.dataSource.data[dsId].event = { id: undefined } as Event;
 
       this.dialog
         .open(AddEventDialogComponent, {

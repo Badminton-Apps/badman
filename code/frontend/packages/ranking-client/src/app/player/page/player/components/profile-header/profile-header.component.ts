@@ -33,12 +33,12 @@ export class ProfileHeaderComponent implements OnInit {
   };
 
   @Output()
-  claimAccount = new EventEmitter<number>();
+  claimAccount = new EventEmitter<string>();
 
   shownRanking: RankingPlace;
   initials: string;
 
-  singleTooltip: string;
+  singleTooltip: string; 
   doubleTooltip: string;
   mixTooltip: string;
 

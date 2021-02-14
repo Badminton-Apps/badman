@@ -26,7 +26,7 @@ import { TeamMembership } from './team-membership.model';
   timestamps: true,
   schema: 'public'
 })
-export class Team extends Model<Team> {
+export class Team extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey

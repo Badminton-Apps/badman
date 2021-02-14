@@ -53,10 +53,11 @@ module.exports = {
           transaction: t,
           schema: 'public'
         }),
-        queryInterface.dropEnum('enum_import.files_type', {
+
+        queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_import.files_type";', {
           transaction: t,
-          schema: 'public'
         })
+   
       ]);
       promise.catch(err => {
         console.error('Failed migration', err);
