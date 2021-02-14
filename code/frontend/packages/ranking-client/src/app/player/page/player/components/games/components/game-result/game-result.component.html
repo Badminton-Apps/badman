@@ -5,11 +5,13 @@
         [player]="this.player1Team1"
         [type]="this.game.gameType"
       ></app-player-info>
+      <div *nngif="rankingPointP1T1">+ {{rankingPointP1T1.points}}</div>
       <app-player-info
         *ngIf="this.player2Team1"
         [player]="this.player2Team1"
         [type]="this.game.gameType"
       ></app-player-info>
+      <div *nngif="rankingPointP2T1">+ {{rankingPointP2T1.points}}</div>
     </div>
     <div class="divider"></div>
     <div class="player" [ngClass]="{ won: this.game.winner === 2 }">
@@ -17,11 +19,13 @@
         [player]="this.player1Team2"
         [type]="this.game.gameType"
       ></app-player-info>
+      <div *nngif="rankingPointP1T2">+ {{rankingPointP1T2.points}}</div>
       <app-player-info
         *ngIf="this.player2Team2"
         [player]="this.player2Team2"
         [type]="this.game.gameType"
       ></app-player-info>
+      <div *nngif="rankingPointP2T2">+ {{rankingPointP2T2.points}}</div>
     </div>
   </div>
 

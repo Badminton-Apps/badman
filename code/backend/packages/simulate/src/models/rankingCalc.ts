@@ -144,7 +144,7 @@ export class RankingCalc {
     historicalGames: boolean
   ) {
     logger.debug(
-      `Started Calcualting for period ${start.toISOString()} untill ${end.toISOString()}${
+      `Started Calculating for period ${start.toISOString()} untill ${end.toISOString()}${
         updateRankings ? ', and updating rankings' : ''
       }`
     );
@@ -306,7 +306,7 @@ export class RankingCalc {
   protected async getPlayersAsync(start: Date, end: Date): Promise<Map<number, Player>> {
     const players = new Map();
 
-    logger.debug(`getPlayersAsync for preiod ${start.toISOString()} - ${end.toISOString()}`);
+    logger.debug(`getPlayersAsync for period ${start.toISOString()} - ${end.toISOString()}`);
 
     // Get all players with relevant info
     (

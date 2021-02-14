@@ -118,3 +118,6 @@ server/results/
 .DS_Store
 .vscode/
 rnd/*.sql
+
+# IntelliJ
+*.idea

@@ -1,5 +1,5 @@
 # Write your query or mutation here
-query GetUserGameQuery(
+query GetUserGamesQuery(
   $playerId: ID!
   $rankingType: ID!
   $offset: Int!
@@ -34,6 +34,14 @@ query GetUserGameQuery(
           id
           name
           firstDay
+        }
+      }
+      rankingPoints {
+        points
+        player {
+          memberId
+          firstName
+          lastName
         }
       }
       players {
