@@ -13,7 +13,10 @@ import {
   Default
 } from 'sequelize-typescript';
 import {
+  BelongsToManyAddAssociationMixin,
   BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyRemoveAssociationMixin,
   BelongsToManySetAssociationsMixin,
   BuildOptions
 } from 'sequelize/types';
@@ -28,7 +31,7 @@ import { GroupSystems } from './group_system.model';
   tableName: 'Systems',
   schema: 'ranking'
 })
-export class RankingSystem extends Model<RankingSystem> {
+export class RankingSystem extends Model {
   constructor(values?: Partial<RankingSystem>, options?: BuildOptions) {
     super(values, options);
     this._setupValues();
@@ -81,6 +84,7 @@ export class RankingSystem extends Model<RankingSystem> {
       unit: this.inactivityUnit
     };
   }
+  @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Column
   caluclationIntervalLastUpdate: Date;
   @Column
@@ -106,6 +110,7 @@ export class RankingSystem extends Model<RankingSystem> {
       unit: this.periodUnit
     };
   }
+  @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Column
   updateIntervalAmountLastUpdate: Date;
   @Column
@@ -161,6 +166,11 @@ export class RankingSystem extends Model<RankingSystem> {
     () => GroupSystems
   )
   groups: RankingSystemGroup[];
+
+  public getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
+  public addGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
+  public removeGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
+  public hasGroup!: BelongsToManyHasAssociationMixin<RankingSystemGroup, string>;
 
   private _pointsToGoUp: number[];
   private _pointsWhenWinningAgainst: number[];

@@ -74,11 +74,11 @@ export class GamesComponent implements OnInit {
       }),
       scan((acc: any, newGames: Game[]) => {
         function sameEvent(game1, game2) {
-          if (game1.subEvent.event.type === 'TOERNAMENT') {
-            return game2.subEvent.event.id === game1.subEvent.event.id;
+          if (game1.draw.subEvent.event.type === 'TOERNAMENT') {
+            return game2.draw.subEvent.event.id === game1.draw.subEvent.event.id;
           } else {
             return (
-              game2.subEvent.event.id === game1.subEvent.event.id &&
+              game2.draw.subEvent.event.id === game1.draw.subEvent.event.id &&
               moment(game2.playedAt).isSame(game1.playedAt, 'day')
             );
           }

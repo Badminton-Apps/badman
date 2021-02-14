@@ -18,7 +18,7 @@ import { RankingSystem } from './system.model';
   tableName: 'Points',
   schema: 'ranking'
 })
-export class RankingPoint extends Model<RankingPoint> {
+export class RankingPoint extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey

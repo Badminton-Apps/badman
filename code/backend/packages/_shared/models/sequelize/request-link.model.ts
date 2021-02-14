@@ -15,7 +15,7 @@ import { Player } from './player.model';
   timestamps: true,
   schema: 'public'
 })
-export class RequestLink extends Model<RequestLink> {
+export class RequestLink extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey

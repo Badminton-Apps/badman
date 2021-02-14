@@ -7,11 +7,11 @@ import {
   TableOptions,
   PrimaryKey,
   Unique,
-  Index,
   IsUUID,
   Default
 } from 'sequelize-typescript';
 import { EventType } from '../../enums';
+import { TypedModel } from '../model';
 import { Location } from './location.model';
 import { SubEvent } from './sub-event.model';
 
@@ -19,7 +19,7 @@ import { SubEvent } from './sub-event.model';
   timestamps: true,
   schema: 'event'
 } as TableOptions)
-export class Event extends Model<Event> {
+export class Event extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -27,7 +27,7 @@ export class Event extends Model<Event> {
   id: string;
 
   @Column
-  toernamentNumber: number;
+  toernamentNumber: string;
 
   @Unique('unique_constraint')
   @Column
