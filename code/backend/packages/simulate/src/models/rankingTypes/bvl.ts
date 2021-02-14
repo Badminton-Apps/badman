@@ -61,7 +61,7 @@ export class BvlRankingCalc extends RankingCalc {
   ) {
     super.calculatePeriodAsync(start, end, updateRankings, historicalGames);
     let gamesStartDate = this.rankingType.caluclationIntervalLastUpdate;
- 
+
     // If running from start, we are reimporting evertyhing,
     // so the game points need to be caculated for those previous period
     if (historicalGames) {
@@ -98,7 +98,7 @@ export class BvlRankingCalc extends RankingCalc {
   ) {
     const eligbleForRanking: Map<number, RankingPoint[]> = new Map();
     logger.debug(
-      `calculateRankingPlacesAsync for preiod ${startDate.toISOString()} - ${endDate.toISOString()}`
+      `calculateRankingPlacesAsync for period ${startDate.toISOString()} - ${endDate.toISOString()}`
     );
     (
       await RankingPoint.findAll({

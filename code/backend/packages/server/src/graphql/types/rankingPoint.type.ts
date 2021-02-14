@@ -3,6 +3,7 @@ import { attributeFields, resolver } from 'graphql-sequelize';
 import { RankingPoint } from '@badvlasim/shared/models';
 import { RankingSystemType } from './rankingSystem.type';
 import { getAttributeFields } from './attributes.type';
+import {PlayerType} from "./player.type";
 
 const RankingPointType = new GraphQLObjectType({
   name: 'RankingPoint',
@@ -12,6 +13,14 @@ const RankingPointType = new GraphQLObjectType({
       rankingSystem: {
         type: RankingSystemType,
         resolve: () => resolver(RankingPoint.associations.rankingSystem)
+      },
+      player: {
+        type: PlayerType,
+        resolve: () => resolver(RankingPoint.associations.player, {
+          before: async (findOptions, args, context, info) => {
+            return findOptions;
+          }
+        })
       }
     })
 });

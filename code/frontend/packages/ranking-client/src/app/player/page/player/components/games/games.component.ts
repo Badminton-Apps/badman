@@ -74,13 +74,25 @@ export class GamesComponent implements OnInit {
       }),
       scan((acc: any, newGames: Game[]) => {
         function sameEvent(game1, game2) {
-          if (game1.subEvent.event.type === 'TOERNAMENT') {
-            return game2.subEvent.event.id === game1.subEvent.event.id;
+          if (game1.subEvent === null && game2.subEvent == null) {
+            return true;
+          } else if (game1.subEvent === null || game2.subEvent == null) {
+            return false;
           } else {
-            return (
-              game2.subEvent.event.id === game1.subEvent.event.id &&
-              moment(game2.playedAt).isSame(game1.playedAt, 'day')
-            );
+            if (game1.subEvent.event === null && game2.subEvent.event == null) {
+              return true;
+            } else if (game1.subEvent.event === null || game2.subEvent.event == null) {
+              return false;
+            } else {
+              if (game1.subEvent.event.type === 'TOERNAMENT') {
+                return game2.subEvent.event.id === game1.subEvent.event.id;
+              } else {
+                return (
+                  game2.subEvent.event.id === game1.subEvent.event.id &&
+                  moment(game2.playedAt).isSame(game1.playedAt, 'day')
+                );
+              }
+            }
           }
         }
         if (newGames.length > 0) {

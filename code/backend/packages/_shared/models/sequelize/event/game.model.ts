@@ -2,16 +2,17 @@ import {
   BelongsTo,
   BelongsToMany,
   Column,
-  DataType,
+  DataType, HasMany,
   Model,
   Table,
   TableOptions
 } from 'sequelize-typescript';
 import { SubEvent } from './sub-event.model';
-import { GameType } from '../../enums/gameType.enum';
+import { GameType } from '../../enums';
 import { Player } from '../player.model';
 import { Court } from './court.model';
 import { GamePlayer } from './game-player.model';
+import { RankingPoint } from '../ranking';
 
 @Table({
   timestamps: true,
@@ -31,7 +32,7 @@ export class Game extends Model<Game> {
   @Column
   set2Team1?: number;
   @Column
-  set2Team2?: number; 
+  set2Team2?: number;
   @Column
   set3Team1?: number;
   @Column
@@ -39,6 +40,9 @@ export class Game extends Model<Game> {
 
   @Column
   winner?: number;
+
+  @HasMany(() => RankingPoint, 'GameId')
+  rankingPoints?: RankingPoint[];
 
   @BelongsTo(() => SubEvent, 'subEventId')
   subEvent: SubEvent;
