@@ -1,8 +1,4 @@
-import {
-  Component,
-  DoCheck,
-  Input
-} from '@angular/core';
+import { Component, DoCheck, Input } from '@angular/core';
 import { Game, GameType, Player, SubEvent } from '../../../../../../../_shared';
 
 @Component({
@@ -19,7 +15,7 @@ export class GamesResultComponent implements DoCheck {
   subEvent: SubEvent;
   gameType: GameType;
 
-  subEvents;
+  subEvents: SubEvent[];
 
   @Input()
   player: Player;
@@ -31,8 +27,8 @@ export class GamesResultComponent implements DoCheck {
       if (this.games.length > 0) {
         this.subEvents = Object.values(
           this.games.reduce((rv, x) => {
-            (rv[x.subEvent.id] = rv[x.subEvent.id] || {
-              ...x.subEvent,
+            (rv[x.draw.subEvent.id] = rv[x.draw.subEvent.id] || {
+              ...x.draw.subEvent,
               games: [],
             }).games.push(x);
             return rv;
@@ -41,7 +37,7 @@ export class GamesResultComponent implements DoCheck {
 
         // This is only once
         if (this.gamesLength === -1) {
-          this.subEvent = this.games[0].subEvent;
+          this.subEvent = this.games[0].draw.subEvent;
 
           this.subEvents.map((x) => {
             x.gameType = GameType[x.games[0].gameType];

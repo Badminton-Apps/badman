@@ -21,7 +21,7 @@ import { BuildOptions } from 'sequelize/types';
   timestamps: true,
   schema: 'public'
 })
-export class Player extends Model<Player> {
+export class Player extends Model {
   constructor(values?: Partial<Player>, options?: BuildOptions) {
     super(values, options);
   }

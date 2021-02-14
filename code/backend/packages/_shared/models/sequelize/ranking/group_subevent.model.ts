@@ -13,7 +13,7 @@ import { SubEvent } from '../event';
   timestamps: false,
   schema: 'ranking'
 })
-export class GroupSubEvents extends Model<GroupSubEvents> {
+export class GroupSubEvents extends Model {
   @Unique('unique_constraint')
   @ForeignKey(() => SubEvent)
   @Column

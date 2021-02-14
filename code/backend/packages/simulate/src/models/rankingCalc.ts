@@ -155,7 +155,7 @@ export class RankingCalc {
     this.rankingType.save();
   }
 
-  public processGame(game: Game, players: Map<number, Player>, rankingDate: Date): RankingPoint[] {
+  public processGame(game: Game, players: Map<string, Player>, rankingDate: Date): RankingPoint[] {
     const rankings: RankingPoint[] = [];
     // ignore these types
     if (game.winner === 0 || game.winner === 7 || game.winner === 6) {
@@ -303,7 +303,7 @@ export class RankingCalc {
       this.rankingType.groups.map(r => r.id)
     );
   }
-  protected async getPlayersAsync(start: Date, end: Date): Promise<Map<number, Player>> {
+  protected async getPlayersAsync(start: Date, end: Date): Promise<Map<string, Player>> {
     const players = new Map();
 
     logger.debug(`getPlayersAsync for preiod ${start.toISOString()} - ${end.toISOString()}`);
@@ -342,7 +342,7 @@ export class RankingCalc {
 
   protected async calculateRankingPointsPerGameAsync(
     games: Game[],
-    players: Map<number, Player>,
+    players: Map<string, Player>,
     rankingDate: Date
   ) {
     logger.debug(`calculateRankingPointsPerGameAsync for date ${rankingDate.toISOString()}`);
@@ -371,7 +371,7 @@ export class RankingCalc {
       mix: boolean;
     },
     updateRankings: boolean
-  ) {
+  ): Promise<RankingPlace> {
     const singleRankingPoints: RankingPoint[] = [];
     const doubleRankingPoints: RankingPoint[] = [];
     const mixRankingPoints: RankingPoint[] = [];
@@ -498,7 +498,7 @@ export class RankingCalc {
     }
 
     if (updateRankings) {
-      const newRanking = {
+      const newRanking = new RankingPlace({
         singlePoints: singlePointsUpgrade,
         mixPoints: mixPointsUpgrade,
         doublePoints: doublePointsUpgrade,
@@ -512,12 +512,12 @@ export class RankingCalc {
         mix: mixLevel,
         double: doubleLevel,
         updatePossible: true
-      } as RankingPlace;
+      });
 
       return this.protectRanking(newRanking);
     }
 
-    return {
+    return new RankingPlace({
       singlePoints: singlePointsUpgrade,
       mixPoints: mixPointsUpgrade,
       doublePoints: doublePointsUpgrade,
@@ -531,7 +531,7 @@ export class RankingCalc {
       mix: lastRanking.mix,
       double: lastRanking.double,
       updatePossible: false
-    };
+    });
   }
 
   public findPointsBetterAverage(rankingPoints: RankingPoint[], limitMinGames: boolean = true) {

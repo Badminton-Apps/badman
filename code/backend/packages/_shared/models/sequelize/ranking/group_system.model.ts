@@ -12,7 +12,7 @@ import { RankingSystem } from '../../..';
   timestamps: false,
   schema: 'ranking'
 })
-export class GroupSystems extends Model<GroupSystems> {
+export class GroupSystems extends Model {
   @ForeignKey(() => RankingSystem)
   @Column
   SystemId: string;

@@ -10,8 +10,11 @@ import {
   PrimaryKey,
   Unique,
   IsUUID,
-  Default
+  Default,
+  Index,
+  HasMany
 } from 'sequelize-typescript';
+import { BuildOptions } from 'sequelize/types';
 import {
   DrawType,
   GameType,
@@ -19,12 +22,17 @@ import {
   LevelType,
   SubEventType
 } from '../../../models';
+import { ImportDraw } from './import-draw.model';
 
 @Table({
   tableName: 'SubEvents',
   schema: 'import'
 } as TableOptions)
-export class ImportSubEvents extends Model<ImportSubEvents> {
+export class ImportSubEvent extends Model {
+  constructor(values?: Partial<ImportSubEvent>, options?: BuildOptions){
+    super(values, options);
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -32,6 +40,7 @@ export class ImportSubEvents extends Model<ImportSubEvents> {
   id: string;
 
   @Unique('unique_constraint')
+  @Index
   @Column
   name: string;
 
@@ -44,25 +53,23 @@ export class ImportSubEvents extends Model<ImportSubEvents> {
   gameType: GameType;
 
   @Unique('unique_constraint')
-  @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
-  drawType: DrawType;
-
-  @Unique('unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAAL'))
   levelType: LevelType;
 
   @Column
   level?: number;
 
-  @Column
-  size: number;
-
+  @Unique('unique_constraint')
   @Column
   internalId: number;
+
+  @HasMany(() => ImportDraw, 'SubEventId')
+  draws: ImportDraw[];
 
   @BelongsTo(() => ImporterFile, 'FileId')
   file: ImporterFile[];
 
+  @Unique('unique_constraint')
   @ForeignKey(() => ImporterFile)
   @Column
   FileId: string;

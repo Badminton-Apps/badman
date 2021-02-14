@@ -42,7 +42,6 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   isRateLimitReached = false;
 
   displayedColumns: string[] = [
-    'id',
     'select',
     'running',
     'primary',
@@ -143,13 +142,13 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
     return numSelected === numRows;
   }
 
-  async makePrimary(systemId: number) {
+  async makePrimary(systemId: string) {
     await this.systemsService
       .makePrimary(systemId)
       .pipe(tap((_) => this.updateHappend.next(true)))
       .toPromise();
   }
-  async deleteSystem(systemId: number) {
+  async deleteSystem(systemId: string) {
     await this.systemsService
       .deleteSystem(systemId)
       .pipe(tap((_) => this.updateHappend.next(true)))

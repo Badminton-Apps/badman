@@ -27,7 +27,7 @@ import { Player } from './player.model';
   timestamps: true,
   schema: 'public'
 })
-export class Club extends Model<Club> {
+export class Club extends Model {
   constructor(values?: Partial<Club>, options?: BuildOptions) {
     super(values, options);
   }

@@ -26,7 +26,7 @@ describe('bvl', () => {
         {
           name: '',
           amountOfLevels: 12,
-          id: 1,
+          id: '1',
           caluclationIntervalAmount: 3,
           calculationIntervalUnit: 'months',
           updateIntervalAmount: 52,
@@ -44,7 +44,8 @@ describe('bvl', () => {
           gamesForInactivty: 3,
           rankingSystem: RankingSystems.BVL
         } as RankingSystem,
-        mockDatabaseService as DataBaseHandler
+        mockDatabaseService as DataBaseHandler,
+        false
       );
     });
 
@@ -471,13 +472,13 @@ describe('bvl', () => {
         };
 
         // Period 1
-        const newRanking1 = await service.findNewPlacePlayer(points, startRanking, inactive);
+        const newRanking1 = await service.findNewPlacePlayer(points, startRanking, inactive, true);
 
         // Period 2 same games (note 2nd value is now result of last)
-        const newRanking2 = await service.findNewPlacePlayer(points, newRanking1, inactive);
+        const newRanking2 = await service.findNewPlacePlayer(points, newRanking1, inactive, true);
 
         // Act
-        const newRanking3 = await service.findNewPlacePlayer(points, newRanking2, inactive);
+        const newRanking3 = await service.findNewPlacePlayer(points, newRanking2, inactive, true);
 
         // Assert
         expect(newRanking3.single).toBe(3);
@@ -499,7 +500,7 @@ describe('bvl', () => {
         };
 
         // Act
-        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive);
+        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive, true);
 
         // Assert
         expect(newRanking.single).toBe(9);
@@ -528,7 +529,7 @@ describe('bvl', () => {
         };
 
         // Act
-        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive);
+        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive, true);
 
         // Assert
         expect(newRanking.single).toBe(8);
@@ -557,7 +558,7 @@ describe('bvl', () => {
         };
 
         // Act
-        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive);
+        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive, true);
 
         // Assert
         expect(newRanking.single).toBe(8);
@@ -586,7 +587,7 @@ describe('bvl', () => {
         };
 
         // Act
-        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive);
+        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive, true);
 
         // Assert
         expect(newRanking.single).toBe(11);
@@ -621,7 +622,7 @@ describe('bvl', () => {
         };
 
         // Act
-        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive);
+        const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive, true);
 
         // Assert
         expect(newRanking.doublePointsDowngrade).toBe(300);
@@ -638,7 +639,7 @@ describe('bvl', () => {
         {
           name: '',
           amountOfLevels: 12,
-          id: 2,
+          id: '2',
           caluclationIntervalAmount: 2,
           calculationIntervalUnit: 'months',
           updateIntervalAmount: 52,
@@ -654,7 +655,8 @@ describe('bvl', () => {
           gamesForInactivty: 3,
           rankingSystem: RankingSystems.BVL
         } as RankingSystem,
-        mockDatabaseService as DataBaseHandler
+        mockDatabaseService as DataBaseHandler,
+        false
       );
     });
 
@@ -685,7 +687,7 @@ describe('bvl', () => {
       };
 
       // Act
-      const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive);
+      const newRanking = await service.findNewPlacePlayer(points, lastRanking, inactive, true);
 
       // Assert
       expect(newRanking.singlePointsDowngrade).toBe(2883);
@@ -704,7 +706,7 @@ describe('bvl', () => {
       // Arrange
       const games = [
         {
-          id: 1,
+          id: '1',
           playedAt: new Date('2020-03-01 14:05:00+00'),
           gameType: GameType.S,
           set1Team1: 21,
@@ -714,13 +716,13 @@ describe('bvl', () => {
           winner: 1,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (key: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1394855,
+              id: '1394855',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
@@ -728,7 +730,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 2,
+          id: '2',
           playedAt: new Date('2020-03-01 13:10:00+00'),
           gameType: GameType.MX,
           set1Team1: 21,
@@ -738,25 +740,25 @@ describe('bvl', () => {
           winner: 1,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1384758,
+              id: '1384758',
               getDataValue: (test: string) => {
                 return { team: 1, player: 2 };
               }
             } as any,
             {
-              id: 1385228,
+              id: '1385228',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
             } as any,
             {
-              id: 1394839,
+              id: '1394839',
               getDataValue: (test: string) => {
                 return { team: 2, player: 2 };
               }
@@ -764,7 +766,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 3,
+          id: '3',
           playedAt: new Date('2020-03-01 12:55:00+00'),
           gameType: GameType.S,
           set1Team1: 21,
@@ -774,13 +776,13 @@ describe('bvl', () => {
           winner: 1,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1460180,
+              id: '1460180',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
@@ -788,7 +790,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 4,
+          id: '4',
           playedAt: new Date('2020-03-01 11:10:00+00'),
           gameType: GameType.MX,
           set1Team1: 16,
@@ -800,25 +802,25 @@ describe('bvl', () => {
           winner: 1,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1384758,
+              id: '1384758',
               getDataValue: (test: string) => {
                 return { team: 1, player: 2 };
               }
             } as any,
             {
-              id: 1385103,
+              id: '1385103',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
             } as any,
             {
-              id: 1491694,
+              id: '1491694',
               getDataValue: (test: string) => {
                 return { team: 2, player: 2 };
               }
@@ -826,7 +828,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 5,
+          id: '5',
           playedAt: new Date('2020-03-01 10:00:00+00'),
           gameType: GameType.MX,
           set1Team1: 21,
@@ -836,25 +838,25 @@ describe('bvl', () => {
           winner: 1,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1384758,
+              id: '1384758',
               getDataValue: (test: string) => {
                 return { team: 1, player: 2 };
               }
             } as any,
             {
-              id: 1548227,
+              id: '1548227',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
             } as any,
             {
-              id: 1548333,
+              id: '1548333',
               getDataValue: (test: string) => {
                 return { team: 2, player: 2 };
               }
@@ -862,7 +864,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 6,
+          id: '6',
           playedAt: new Date('2020-02-29 19:00:00+00'),
           gameType: GameType.D,
           set1Team1: 13,
@@ -874,25 +876,25 @@ describe('bvl', () => {
           winner: 2,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1460255,
+              id: '1460255',
               getDataValue: (test: string) => {
                 return { team: 2, player: 2 };
               }
             } as any,
             {
-              id: 1385229,
+              id: '1385229',
               getDataValue: (test: string) => {
                 return { team: 1, player: 2 };
               }
             } as any,
             {
-              id: 1460312,
+              id: '1460312',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
@@ -900,7 +902,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 7,
+          id: '7',
           playedAt: new Date('2020-02-29 17:35:00+00'),
           gameType: GameType.D,
           set1Team1: 9,
@@ -910,25 +912,25 @@ describe('bvl', () => {
           winner: 2,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
             } as any,
             {
-              id: 1548226,
+              id: '1548226',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1548227,
+              id: '1548227',
               getDataValue: (test: string) => {
                 return { team: 1, player: 2 };
               }
             } as any,
             {
-              id: 1385229,
+              id: '1385229',
               getDataValue: (test: string) => {
                 return { team: 2, player: 2 };
               }
@@ -936,7 +938,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 8,
+          id: '8',
           playedAt: new Date('2020-02-29 16:15:00+00'),
           gameType: GameType.D,
           set1Team1: 19,
@@ -946,25 +948,25 @@ describe('bvl', () => {
           winner: 2,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
             } as any,
             {
-              id: 1456075,
+              id: '1456075',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1549087,
+              id: '1549087',
               getDataValue: (test: string) => {
                 return { team: 1, player: 2 };
               }
             } as any,
             {
-              id: 1385229,
+              id: '1385229',
               getDataValue: (test: string) => {
                 return { team: 2, player: 2 };
               }
@@ -972,7 +974,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 9,
+          id: '9',
           playedAt: new Date('2020-02-29 14:40:00+00'),
           gameType: GameType.D,
           set1Team1: 21,
@@ -984,25 +986,25 @@ describe('bvl', () => {
           winner: 2,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
             } as any,
             {
-              id: 1548371,
+              id: '1548371',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1460229,
+              id: '1460229',
               getDataValue: (test: string) => {
                 return { team: 1, player: 2 };
               }
             } as any,
             {
-              id: 1385229,
+              id: '1385229',
               getDataValue: (test: string) => {
                 return { team: 2, player: 2 };
               }
@@ -1010,7 +1012,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 10,
+          id: '10',
           playedAt: new Date('2020-02-29 12:45:00+00'),
           gameType: GameType.S,
           set1Team1: 14,
@@ -1020,13 +1022,13 @@ describe('bvl', () => {
           winner: 2,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
             } as any,
             {
-              id: 1385103,
+              id: '1385103',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
@@ -1034,7 +1036,7 @@ describe('bvl', () => {
           ]
         } as Game,
         {
-          id: 11,
+          id: '11',
           playedAt: new Date('2020-02-29 10:50:00+00'),
           gameType: GameType.S,
           set1Team1: 21,
@@ -1044,13 +1046,13 @@ describe('bvl', () => {
           winner: 1,
           players: [
             {
-              id: 1488344,
+              id: '1488344',
               getDataValue: (test: string) => {
                 return { team: 1, player: 1 };
               }
             } as any,
             {
-              id: 1462321,
+              id: '1462321',
               getDataValue: (test: string) => {
                 return { team: 2, player: 1 };
               }
@@ -1061,267 +1063,267 @@ describe('bvl', () => {
       const points = [];
       const players = new Map();
       players.set(1488344, {
-        id: 1488344,
-        getLastRanking: (system: number, max: number) => {
+        id: '1488344',
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 12,
             double: 12,
             mix: 12
           };
         }
-      } as Player);
+      } as Partial<Player>);
 
       players.set(1385229, {
-        id: 1385229,
+        id: '1385229',
         firstName: 'Stijn',
         lastName: 'Lenaerts',
         memberId: '50069310',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 1,
             double: 1,
             mix: 1
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1394855, {
-        id: 1394855,
+        id: '1394855',
         firstName: 'Sander',
         lastName: 'Prenen',
         memberId: '50082004',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 3,
             double: 3,
             mix: 3
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1460180, {
-        id: 1460180,
+        id: '1460180',
         firstName: 'Dion',
         lastName: 'Rovers',
         memberId: '840485',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 2,
             double: 2,
             mix: 2
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1385103, {
-        id: 1385103,
+        id: '1385103',
         firstName: 'Tijl',
         lastName: 'Dewit',
         memberId: '50093807',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 2,
             double: 2,
             mix: 2
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1462321, {
-        id: 1462321,
+        id: '1462321',
         firstName: 'Tim',
         lastName: 'Hectors',
         memberId: '763803',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 4,
             double: 4,
             mix: 4
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1456075, {
-        id: 1456075,
+        id: '1456075',
         firstName: 'Jan',
         lastName: 'Hansen',
         memberId: '982018',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 3,
             double: 3,
             mix: 3
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1549087, {
-        id: 1549087,
+        id: '1549087',
         firstName: 'Thijs',
         lastName: 'Van Den Berg',
         memberId: '50095823',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 12,
             double: 12,
             mix: 12
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1385229, {
-        id: 1385229,
+        id: '1385229',
         firstName: 'Stijn',
         lastName: 'Lenaerts',
         memberId: '50069310',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 1,
             double: 1,
             mix: 1
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1548226, {
-        id: 1548226,
+        id: '1548226',
         firstName: 'Matthijs',
         lastName: 'Janz',
         memberId: '875990',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 12,
             double: 12,
             mix: 12
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1548227, {
-        id: 1548227,
+        id: '1548227',
         firstName: 'Marco',
         lastName: 'Oosterhaven',
         memberId: '800170',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 12,
             double: 12,
             mix: 12
           };
         }
-      } as Player);
+      }  as Partial<Player>);
 
       players.set(1548371, {
-        id: 1548371,
+        id: '1548371',
         firstName: 'Rik',
         lastName: 'Hermans',
         memberId: '708170',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 12,
             double: 12,
             mix: 12
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1460229, {
-        id: 1460229,
+        id: '1460229',
         firstName: 'Frank',
         lastName: 'Vermeesch',
         memberId: '816689',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 8,
             double: 8,
             mix: 8
           };
         }
-      } as Player);
+      }  as Partial<Player>);
 
       players.set(1384758, {
-        id: 1384758,
+        id: '1384758',
         firstName: 'Ann',
         lastName: 'Knaepen',
         memberId: '50081509',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 1,
             double: 1,
             mix: 1
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1385228, {
-        id: 1385228,
+        id: '1385228',
         firstName: 'Maarten',
         lastName: 'Lenaerts',
         memberId: '50078931',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 2,
             double: 2,
             mix: 2
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1394839, {
-        id: 1394839,
+        id: '1394839',
         firstName: 'Birthe',
         lastName: 'Van Den Berg',
         memberId: '50078116',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 2,
             double: 2,
             mix: 2
           };
         }
-      } as Player);
+      }  as Partial<Player>);
 
       players.set(1491694, {
-        id: 1491694,
+        id: '1491694',
         firstName: 'Leonie',
         lastName: 'Rovers',
         memberId: '874069',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 7,
             double: 7,
             mix: 7
           };
         }
-      } as Player);
+      }  as Partial<Player>);
 
       players.set(1548333, {
-        id: 1548333,
+        id: '1548333',
         firstName: 'Bianca',
         lastName: 'Oosterhaven',
         memberId: '741538',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 12,
             double: 12,
             mix: 12
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1460312, {
-        id: 1460312,
+        id: '1460312',
         firstName: 'Noah',
         lastName: 'Jongen',
         memberId: '888052',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 12,
             double: 12,
             mix: 12
           };
         }
-      } as Player);
+      }  as Partial<Player>);
       players.set(1460255, {
-        id: 1460255,
+        id: '1460255',
         firstName: 'Rick',
         lastName: 'Steuten',
         memberId: '711988',
-        getLastRanking: (system: number, max: number) => {
+        getLastRanking: (system: string, max: number) => {
           return {
             single: 2,
             double: 2,
             mix: 2
           };
         }
-      } as Player);
+      }  as Partial<Player>);
 
       // Act
       games.forEach(game => {
@@ -1351,7 +1353,7 @@ describe('bvl', () => {
       };
 
       // Act
-      const newRanking = await service.findNewPlacePlayer(adePoints, lastRanking, inactive);
+      const newRanking = await service.findNewPlacePlayer(adePoints, lastRanking, inactive, true);
 
       // Assert
       expect(adePoints.length).toBe(11);

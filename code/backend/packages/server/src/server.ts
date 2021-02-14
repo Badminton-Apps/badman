@@ -22,9 +22,9 @@ import { GraphQLError } from './models/graphql.error';
 
 dotenv.config();
  
-(async () => {
-  await startWhenReady(true, db => {
-    startServer(db);
+(async () => { 
+  await startWhenReady(true, false, db => {
+    startServer(db); 
   });
 })();
 

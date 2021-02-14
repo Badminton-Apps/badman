@@ -1,7 +1,7 @@
 import { RankingSystemGroup } from './group.model';
 
 export class RankingSystem {
-  id: number;
+  id: string;
   name: string;
   amountOfLevels: number;
   procentWinning: number;
