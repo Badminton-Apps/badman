@@ -4,6 +4,7 @@ import {
   Input, OnInit
 } from '@angular/core';
 import { Game, Player } from '../../../../../../../_shared';
+import {RankingPoint} from "../../../../../../../_shared/models/ranking-point.model";
 
 @Component({
   selector: 'app-game-result',
@@ -23,10 +24,21 @@ export class GameResultComponent implements OnInit {
   player1Team2: Player;
   player2Team2: Player;
 
+  rankingPointP1T1: RankingPoint;
+  rankingPointP2T1: RankingPoint;
+  rankingPointP1T2: RankingPoint;
+  rankingPointP2T2: RankingPoint;
+
   getPlayer(player: number, team: number) {
     return this.game.players.find(
       (x) => x.team === team && x.player === player
     );
+  }
+
+  getRankingPoint(player: Player) {
+    return this.game.rankingPoints.find(
+      (rankingPoint) => rankingPoint.player === player
+    )
   }
 
   constructor() { }
@@ -36,5 +48,10 @@ export class GameResultComponent implements OnInit {
     this.player2Team1 = this.getPlayer(2, 1);
     this.player1Team2 = this.getPlayer(1, 2);
     this.player2Team2 = this.getPlayer(2, 2);
+
+    this.rankingPointP1T1 = this.getRankingPoint(this.player1Team1);
+    this.rankingPointP2T1 = this.getRankingPoint(this.player2Team1);
+    this.rankingPointP1T2 = this.getRankingPoint(this.player1Team2);
+    this.rankingPointP2T2 = this.getRankingPoint(this.player2Team2);
   }
 }
