@@ -49,14 +49,15 @@ jobs:
           version-file: './code/backend/lerna.json'
           skip-version-file: true
           skip-commit: true
-          preset: 'angular'          
-      - run: npm run release -- ${{ steps.changelog.outputs.version }} --conventional-commits --no-git-tag-version --yes --force-publish
+          preset: 'angular'    
+          skip-on-empty: false
+      - run: npm run release -- ${{ steps.changelog.outputs.version }} --no-git-tag-version --yes --force-publish
         name: release Frontend
         working-directory: code/frontend
       - run: npm run release -- ${{ steps.changelog.outputs.version }} --no-git-tag-version --yes --force-publish
         name: release Backend
         working-directory: code/backend
-      - run: cp code/CHANGELOG.md code/frontend/packages/ranking-client/src/assets/CHANGELOG.md
+      - run: cp CHANGELOG.md code/frontend/packages/ranking-client/src/assets/CHANGELOG.md
       - name: Add markdown files
         run: |
           git config --global user.email "glenn.latomme@gmail.com"
