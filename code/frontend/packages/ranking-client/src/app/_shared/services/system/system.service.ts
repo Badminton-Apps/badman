@@ -116,7 +116,7 @@ export class SystemService {
         query: primary ? primarySystemsQuery : systemsQuery,
         fetchPolicy: 'no-cache',
       })
-      .pipe(map((x: any) => x.data?.systems as RankingSystem[]));
+      .pipe(map((x: any) => x.data?.systems.map(s => new RankingSystem(s))));
   }
 
   getSystemsGroups(): Observable<RankingSystemGroup[]> {
