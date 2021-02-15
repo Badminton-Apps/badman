@@ -52,7 +52,7 @@ export class TopPlayersComponent implements OnInit {
           x.id,
           this.sortBy,
           this.sortOrder,
-          new Date('2020-03-01T23:00:00.000Z'),
+          x.caluclationIntervalLastUpdate,
           this.pageSize,
           (this.currentPage - 1) * this.pageSize,
           this.gender
