@@ -40,7 +40,6 @@ export class ImportSubEvent extends Model {
   id: string;
 
   @Unique('unique_constraint')
-  @Index
   @Column
   name: string;
 
