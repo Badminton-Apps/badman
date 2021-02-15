@@ -40,7 +40,15 @@ export class TournamentImporter extends Importer {
 
   protected async addGames(draws: Draw[], players: TpPlayer[], courts: Map<string, Court>) {
     const csvPlayerMatches = await csvToArray<ICsvPlayerMatchTp[]>(
-      await this.mdb.toCsv('PlayerMatch')
+      await this.mdb.toCsv('PlayerMatch'),
+      {
+        onError: e => {
+          logger.error('Parsing went wrong', {
+            error: e
+          });
+          throw e;
+        }
+      }
     );
 
     const csvGames = [];
@@ -108,7 +116,14 @@ export class TournamentImporter extends Importer {
     csvEntryInPlayerMatch2: ICsvPlayerMatchTp,
     courts: Map<string, Court>
   ) {
-    const csvEntries = await csvToArray<ICsvEntry[]>(await this.mdb.toCsv('Entry'));
+    const csvEntries = await csvToArray<ICsvEntry[]>(await this.mdb.toCsv('Entry'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
 
     if (draw?.id == null) {
       logger.warn('No subevent found', csvPlayerMatch);

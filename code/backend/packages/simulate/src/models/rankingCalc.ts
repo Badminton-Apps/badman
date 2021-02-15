@@ -211,46 +211,49 @@ export class RankingCalc {
     );
 
     if (player1Team1 && player1Team1.id && player1Team1Points != null) {
-      rankings.push({
-        points: player1Team1Points,
-        SystemId: this.rankingType.id,
-        PlayerId: player1Team1.id,
-        GameId: game.id,
-        rankingDate,
-        differenceInLevel: player1Team1Points === 0 ? differenceInLevel : 0
-      } as RankingPoint);
+
+      rankings.push(
+        new RankingPoint({
+          points: player1Team1Points,
+          SystemId: this.rankingType.id,
+          PlayerId: player1Team1.id,
+          GameId: game.id,
+          rankingDate,
+          differenceInLevel: player1Team1Points === 0 ? differenceInLevel : 0
+        })
+      );
     }
     if (player1Team2 && player1Team2.id && player1Team2Points != null) {
-      rankings.push({
+      rankings.push(new RankingPoint({
         points: player1Team2Points,
         SystemId: this.rankingType.id,
         PlayerId: player1Team2.id,
         GameId: game.id,
         rankingDate,
         differenceInLevel: player1Team2Points === 0 ? differenceInLevel : 0
-      } as RankingPoint);
+      }));
     }
 
     if (player2Team1 && player2Team1.id && player2Team1Points != null) {
-      rankings.push({
+      rankings.push(new RankingPoint({
         points: player2Team1Points,
         SystemId: this.rankingType.id,
         PlayerId: player2Team1.id,
         GameId: game.id,
         rankingDate,
         differenceInLevel: player2Team1Points === 0 ? differenceInLevel : 0
-      } as RankingPoint);
+      }));
     }
 
     if (player2Team2 && player2Team2.id && player2Team2Points != null) {
-      rankings.push({
+      rankings.push(new RankingPoint({
         points: player2Team2Points,
         SystemId: this.rankingType.id,
         PlayerId: player2Team2.id,
         GameId: game.id,
         rankingDate,
         differenceInLevel: player2Team2Points === 0 ? differenceInLevel : 0
-      } as RankingPoint);
+      }));
     }
 
     return rankings;

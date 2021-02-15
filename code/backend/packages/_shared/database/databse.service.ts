@@ -154,13 +154,13 @@ export class DataBaseHandler {
     }
   }
 
-  async addRankingPointsAsync(rankingPoints) {
+  async addRankingPointsAsync(rankingPoints: RankingPoint[]) {
     logger.silly(`Importing ${rankingPoints.length} rankingPoints`);
     try {
       const transaction = await this._sequelize.transaction();
-      const chunks = splitInChunks(rankingPoints, 500);
+      const chunks: RankingPoint[][] = splitInChunks(rankingPoints, 500);
       for (const chunk of chunks) {
-        await RankingPoint.bulkCreate(chunk, {
+        await RankingPoint.bulkCreate(chunk.map(c => c.toJSON()), {
           transaction,
           returning: false
         });
@@ -229,18 +229,23 @@ export class DataBaseHandler {
       include: [
         { model: Player, attributes: ['id'] },
         {
-          model: SubEvent,
-          attributes: [],
+          model: Draw,
           include: [
             {
-              model: RankingSystemGroup,
+              model: SubEvent,
               attributes: [],
-              required: true,
-              through: {
-                where: {
-                  GroupId: { [Op.in]: groups }
+              include: [
+                {
+                  model: RankingSystemGroup,
+                  attributes: [],
+                  required: true,
+                  through: {
+                    where: {
+                      GroupId: { [Op.in]: groups }
+                    }
+                  }
                 }
-              }
+              ]
             }
           ]
         }
@@ -287,7 +292,7 @@ export class DataBaseHandler {
       logger.error('Something went wrong adding ranking places');
       throw err;
     }
-  }
+  } 
 
   /**
    * Check if DB is migrated to latest version

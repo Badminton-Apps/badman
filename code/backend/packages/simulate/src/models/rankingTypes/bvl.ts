@@ -61,7 +61,7 @@ export class BvlRankingCalc extends RankingCalc {
   ) {
     super.calculatePeriodAsync(start, end, updateRankings, historicalGames);
     let gamesStartDate = this.rankingType.caluclationIntervalLastUpdate;
- 
+
     // If running from start, we are reimporting evertyhing,
     // so the game points need to be caculated for those previous period
     if (historicalGames) {
@@ -164,17 +164,20 @@ export class BvlRankingCalc extends RankingCalc {
         this.rankingType.amountOfLevels
       );
 
-      const newPlace = {
-        ...(await this.findNewPlacePlayer(rankingPoints, lastRanking, inactive, updateRankings)),
-        PlayerId: player.id,
-        SystemId: this.rankingType.id,
-        rankingDate: endDate
-      };
+      const newPlace = await this.findNewPlacePlayer(
+        rankingPoints,
+        lastRanking,
+        inactive,
+        updateRankings
+      );
+      newPlace.PlayerId = player.id;
+      newPlace.SystemId = this.rankingType.id;
+      newPlace.rankingDate = endDate;
 
       if (player.gender === 'M') {
-        placesMen.push(newPlace);
+        placesMen.push(newPlace.toJSON());
       } else {
-        placesWomen.push(newPlace);
+        placesWomen.push(newPlace.toJSON());
       }
     }
 
@@ -213,7 +216,7 @@ export class BvlRankingCalc extends RankingCalc {
           }
         }
       };
-      const mapFunction = (value, index, places, counts) => {
+      const mapFunction = (value, index, places: RankingPlace[], counts) => {
         // check previous one (except first one)
         if (index !== 0) {
           const prev = places[index - 1];
