@@ -10,6 +10,7 @@ import {
   IsUUID,
   Default
 } from 'sequelize-typescript';
+import { BuildOptions } from 'sequelize/types';
 import { EventType } from '../../enums';
 import { TypedModel } from '../model';
 import { Location } from './location.model';
@@ -20,6 +21,10 @@ import { SubEvent } from './sub-event.model';
   schema: 'event'
 } as TableOptions)
 export class Event extends Model {
+  constructor(values?: Partial<Event>, options?: BuildOptions) {
+    super(values, options);
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
