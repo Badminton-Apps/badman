@@ -1,3 +1,7 @@
+## [1.6.2](https://github.com/Badminton-Apps/core/compare/v1.6.1...v1.6.2) (2021-02-15)
+
+
+
 ## [1.6.1](https://github.com/Badminton-Apps/core/compare/v1.6.0...v1.6.1) (2021-01-18)
 
 
@@ -30,23 +34,6 @@
 ### Features
 
 * prepping for team assembly ([2c28b1b](https://github.com/Badminton-Apps/core/commit/2c28b1be14e7253a7a456890961f38bfdedbfe20))
-
-
-
-# [1.3.0](https://github.com/Badminton-Apps/core/compare/v1.2.24...v1.3.0) (2021-01-08)
-
-
-### Bug Fixes
-
-* Added version path ([810fcf2](https://github.com/Badminton-Apps/core/commit/810fcf2a859318f3888a84f2ca0410d0da301297))
-* testing 456 ([6d25124](https://github.com/Badminton-Apps/core/commit/6d25124493790b500398441286270e535f8234b7))
-* Wrong notation ([c68acd8](https://github.com/Badminton-Apps/core/commit/c68acd837f6f5d3ae17fe13197f54975440f59a0))
-
-
-### Features
-
-* Empty feature for validating commit messages ([7e0bac4](https://github.com/Badminton-Apps/core/commit/7e0bac489941f941e13a50b08cb5591477a558c8))
-* testing 123 ([03454ca](https://github.com/Badminton-Apps/core/commit/03454ca38b667fb31a732bdd3f9fd5fe8e59834f))
 
 
 
