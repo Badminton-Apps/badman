@@ -2,7 +2,7 @@ import {GraphQLList, GraphQLObjectType, GraphQLString} from 'graphql';
 import { attributeFields, defaultListArgs, resolver } from 'graphql-sequelize';
 import {Game, Player} from '@badvlasim/shared/models';
 import { GamePlayerType } from './gamePlayer.type';
-import { SubEventType } from './subEvent.type';
+import { DrawType } from './draw.type';
 import { getAttributeFields } from './attributes.type';
 import {RankingPointType} from "./rankingPoint.type";
 

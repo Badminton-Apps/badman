@@ -61,9 +61,6 @@ export class Game extends Model {
   @HasMany(() => RankingPoint, 'GameId')
   rankingPoints?: RankingPoint[];
 
-  @BelongsTo(() => SubEvent, 'subEventId')
-  subEvent: SubEvent;
-
   @BelongsTo(() => Draw, 'drawId')
   draw: Draw;
 
