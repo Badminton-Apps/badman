@@ -121,11 +121,15 @@ module.exports = {
         [
           {
             id: 1,
-            name: 'Adults'
+            name: 'Adults',
+            createdAt: new Date(),
+            updatedAt: new Date()
           },
           {
             id: 2,
-            name: 'Yought'
+            name: 'Yought',
+            createdAt: new Date(),
+            updatedAt: new Date()
           }
         ],
         {
@@ -218,22 +222,23 @@ module.exports = {
         }
       );
 
-      await queryInterface.dropEnum('enum_SubEvents_eventType', {
+      
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS import."enum_SubEvents_eventType";', {
         transaction: t,
-        schema: 'import'
       });
-      await queryInterface.dropEnum('enum_SubEvents_gameType', {
+      
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS import."enum_SubEvents_gameType";', {
         transaction: t,
-        schema: 'import'
       });
-      await queryInterface.dropEnum('enum_SubEvents_drawType', {
+      
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS import."enum_SubEvents_drawType";', {
         transaction: t,
-        schema: 'import'
       });
-      await queryInterface.dropEnum('enum_SubEvents_levelType', {
+      
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS import."enum_SubEvents_levelType";', {
         transaction: t,
-        schema: 'import'
       });
+      
       await queryInterface.addColumn('Events', 'usedForRanking', {
         type: sequelize.DataTypes.BOOLEAN,
         schema: 'public'

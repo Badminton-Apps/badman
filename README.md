@@ -41,11 +41,57 @@ Starting from root: `code/backend`
 
 - Install pacakges: `lerna bootstrap`
 - Rename all `.env.example` to `.env` and fill in with your values
-- Populate data from: `rnd/initial_db.zip`
-
-_eg: `psql "host=localhost port=5432 dbname=ranking user=ranking password=pass" < initial_db.sql`_
-
+- extract data from: `rnd/initial_db.zip`
+- Import it via: `psql "host=localhost port=5432 dbname=ranking user=ranking password=pass" < initial_db.sql`_
 - Start server: `yarn start`
+
+### OPTIONAL: Debugging
+Debugging can be done via `yarn start:inspect` from `code/backend`
+
+If using vscode the following `launch.json` can be used
+```js
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "attach",
+        "name": "Import",
+        "port": 5858,
+        "restart": true,
+        "protocol": "auto",
+        "stopOnEntry": false
+      },
+      {
+        "type": "node",
+        "request": "attach",
+        "name": "Server",
+        "port": 5859,
+        "restart": true,
+        "protocol": "auto",
+        "stopOnEntry": false
+      },
+      {
+        "type": "node",
+        "request": "attach",
+        "name": "Simulate",
+        "port": 5860,
+        "restart": true,
+        "protocol": "auto",
+        "stopOnEntry": false
+      }
+    ],
+    "compounds": [
+      {
+        "name": "Full server",
+        "configurations": ["Import", "Server", "Simulate"],
+      }
+    ]
+  }
+```
 
 ## Contributing
 

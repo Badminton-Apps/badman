@@ -1,5 +1,8 @@
 <h1>Import</h1>
-<app-upload-field (fileAdded)="this.fileAdded($event)" [status]="this.eventService.importStatus$"></app-upload-field>
+<app-upload-field
+  (fileAdded)="this.fileAdded($event)"
+  [status]="this.eventService.importStatus$"
+></app-upload-field>
 
 <div layout="row" layout-fill layout-margin layout-align="start center">
   <div class="progress">
@@ -15,23 +18,26 @@
     multiTemplateDataRows
     matSort
     matSortActive="firstDay"
-    matSortDirection="desc"
+    matSortDirection="asc"
+    matSortDisableClear
   >
-
-
-
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
     </ng-container>
 
     <ng-container matColumnDef="dates">
-      <th mat-header-cell *matHeaderCellDef>Date</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="firstDay">Date</th>
       <td mat-cell *matCellDef="let element">
         <ng-container *ngIf="element.type == 'TOERNAMENT'">
           {{ element.firstDay | date }}
         </ng-container>
-        <ng-container *ngIf="element.type == 'COMPETITION_CP'">
+        <ng-container
+          *ngIf="
+            element.type == 'COMPETITION_CP' ||
+            element.type == 'COMPETITION_XML'
+          "
+        >
           {{ element.firstDay.getFullYear() }}-{{
             element.firstDay.getFullYear() + 1
           }}
@@ -54,7 +60,9 @@
             <mat-option *ngFor="let sug of element.suggestions" [value]="sug">{{
               sug.name
             }}</mat-option>
-            <mat-option [value]="{ id: -1 }">Default (no ranking groups!!)</mat-option>
+            <mat-option [value]="{ id: undefined }" 
+              >Default (no ranking groups!!)</mat-option
+            >
           </mat-select>
         </mat-form-field>
 
@@ -96,9 +104,6 @@
       </td>
     </ng-container>
 
-
-
-
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr
       mat-row
@@ -116,7 +121,6 @@
   ></mat-paginator>
 </div>
 
-
 <ng-template #template>
- <h1>This is a message</h1>
+  <h1>This is a message</h1>
 </ng-template>

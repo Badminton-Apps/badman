@@ -13,7 +13,7 @@ import { attributeFields, createConnection, defaultListArgs, resolver } from 'gr
 import { col, fn, Includeable, Op, or, QueryTypes, where } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { SubEvent } from '@badvlasim/shared/models';
-import { GameType } from './game.type';
+import { DrawType } from './draw.type';
 import { EventType } from './event.type';
 import { RankingSystemGroupInputType } from './rankingSystemGroup.type';
 import { getAttributeFields } from './attributes.type';
@@ -23,27 +23,13 @@ const SubEventType = new GraphQLObjectType({
   description: 'A SubEvent',
   fields: () =>
     Object.assign(getAttributeFields(SubEvent), {
-      games: {
-        type: new GraphQLList(GameType),
-        args: Object.assign(defaultListArgs(), {
-          playerId: {
-            description: 'id of the user',
-            type: new GraphQLNonNull(GraphQLID)
-          }
-        }),
-        resolve: resolver(SubEvent.associations.games, {
+      draw: {
+        type: new GraphQLList(DrawType),
+        resolve: resolver(SubEvent.associations.draws, {
           before: async (findOptions, args, context, info) => {
             return findOptions;
           }
         })
-      },
-      gamesCount: {
-        type: GraphQLInt,
-        resolve: async (source: SubEvent, args, context, info) => {
-          return context.models.Game.count({
-            where: { SubEventId: source.id }
-          });
-        }
       },
       event: {
         type: EventType,

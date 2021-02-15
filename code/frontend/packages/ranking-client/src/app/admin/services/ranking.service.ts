@@ -14,7 +14,7 @@ export class RankingService {
  
 
 
-  async downloadRankingAsync(systems: number[], type?: string) {
+  async downloadRankingAsync(systems: string[], type?: string) {
     if (systems.length <= 0) {
       return of();
     }
@@ -78,7 +78,7 @@ export class RankingService {
     // }
   }
 
-  getStatisticUrl(systemId: number, playerId: number) {
+  getStatisticUrl(systemId: string, playerId: string) {
     return `${this.urlBase}/statistics/${systemId}/${playerId}`;
   }
 }

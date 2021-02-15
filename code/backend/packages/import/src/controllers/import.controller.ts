@@ -5,7 +5,12 @@ import {
   logger,
   BaseController,
   SubEvent,
-  ImportSubEvents
+  ImportSubEvent,
+  EventImportType,
+  Event,
+  ImporterFile,
+  ImportDraw,
+  Draw
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import { unlink } from 'fs';
@@ -58,21 +63,26 @@ export class ImportController extends BaseController {
             .pop()
         ) {
           case 'cp':
-            type = EventType.COMPETITION_CP;
+            type = EventImportType.COMPETITION_CP;
             break;
           case 'xml':
-            type = EventType.COMPETITION_XML;
+            type = EventImportType.COMPETITION_XML;
             break;
           case 'tp':
-            type = EventType.TOERNAMENT;
+            type = EventImportType.TOERNAMENT;
             break;
           default:
             logger.warn(`Unsupported file type: ${file.filename.split('.').pop()}`);
         }
-
-        const importedFile = await this._converter.basicInfo(fileLocation, type);
-
-        basicInfo.push(importedFile.toJSON());
+        const t = await DataBaseHandler.sequelizeInstance.transaction();
+        try {
+          const importedFile = await this._converter.basicInfo(fileLocation, type, t);
+          basicInfo.push(importedFile.toJSON());
+          await t.commit();
+        } catch (e) {
+          await t.rollback();
+          throw e;
+        }
       }
 
       response.status(200);
@@ -93,39 +103,39 @@ export class ImportController extends BaseController {
   };
 
   private _startImport = async (request: AuthenticatedRequest, response: Response) => {
-    if (!request.user.hasAnyPermission(['import:event'])) { 
+    if (!request.user.hasAnyPermission(['import:event'])) {
       response.status(401).send('No no no!!');
       return;
     }
 
     try {
-      let queueImports: { importId: number; eventId: number }[] = [];
+      let queueImports: { importId: string; eventId: string }[] = [];
 
       if (request.params.id.indexOf(',') >= 0) {
         const ids = request.params.id.split(',');
         const eventIds = request.params.eventId?.split(',') ?? [];
         queueImports = ids.map((v, i) => {
           return {
-            importId: parseInt(v, 10),
-            eventId: eventIds[i] && eventIds[i] !== '-1' ? parseInt(eventIds[i], 10) : null
+            importId: v,
+            eventId: eventIds[i] && eventIds[i] !== '-1' ? eventIds[i] : null
           };
         });
       } else {
         queueImports = [
           {
-            importId: parseInt(request.params.id, 10),
+            importId: request.params.id,
             eventId:
               request.params.eventId && request.params.eventId !== '-1'
-                ? parseInt(request.params.eventId, 10)
+                ? request.params.eventId
                 : null
           }
         ];
       }
 
       for (const queImport of queueImports) {
-        const imported = await this._databaseService.getImported({
+        const imported = await ImporterFile.findOne({
           where: { id: queImport.importId },
-          include: queImport.eventId ? [] : [{ model: ImportSubEvents }]
+          include: [{ model: ImportSubEvent, include: [{model: ImportDraw}] }]
         });
 
         if (!imported) {
@@ -134,9 +144,9 @@ export class ImportController extends BaseController {
 
         let event = null;
         if (queImport.eventId) {
-          event = await this._databaseService.getEvent({
+          event = await Event.findOne({
             where: { id: queImport.eventId },
-            include: [{ model: SubEvent }]
+            include: [{ model: SubEvent, include: [{model: Draw}] }]
           });
         }
 

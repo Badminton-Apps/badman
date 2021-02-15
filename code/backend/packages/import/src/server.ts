@@ -13,8 +13,8 @@ import { Convertor } from './convert/convertor';
 dotenv.config();
 
 (async () => {
-  await startWhenReady(false, db => {
-    startServer(db);
+  await startWhenReady(false, false, db => {
+    startServer(db); 
   });
 })();
 
