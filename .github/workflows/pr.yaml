@@ -37,5 +37,6 @@ jobs:
           file: packages/**/lcov.info
           name: codecov-${{ matrix.folder }}
           directory: code/${{ matrix.folder }}
+          fail_ci_if_error: true
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}
