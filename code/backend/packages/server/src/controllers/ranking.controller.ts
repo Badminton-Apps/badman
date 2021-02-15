@@ -35,7 +35,7 @@ export class RankingController extends BaseController {
 
   private _top = async (request: Request, response: Response) => {
     const where = {
-      SystemId: parseInt(request.query.systemId as string, 10),
+      SystemId: request.query.systemId,
       rankingDate: new Date(request.query.date as string)
     };
 

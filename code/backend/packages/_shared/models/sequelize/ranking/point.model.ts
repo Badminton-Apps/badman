@@ -9,6 +9,7 @@ import {
   PrimaryKey,
   Table
 } from 'sequelize-typescript';
+import { BuildOptions } from 'sequelize/types';
 import { Game } from '../event/game.model';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
@@ -19,6 +20,10 @@ import { RankingSystem } from './system.model';
   schema: 'ranking'
 })
 export class RankingPoint extends Model {
+  constructor(values?: Partial<RankingPoint>, options?: BuildOptions){
+    super(values, options);
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey

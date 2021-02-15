@@ -43,7 +43,7 @@ const startServer = (databaseService: DataBaseHandler) => {
       new SystemController(router, authRouter, databaseService),
       new TournamentController(router, authRouter),
       new UserController(router, authRouter),
-      new RequestLinkController(router, authRouter)
+      new RequestLinkController(router, authRouter) 
     ],
     [
       { 
