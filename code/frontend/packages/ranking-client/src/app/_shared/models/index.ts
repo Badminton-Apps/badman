@@ -12,5 +12,6 @@ export * from './request-link.model';
 export * from './sub-event.model';
 export * from './team.model';
 export * from './user.model';
+export * from './draw.model';
 // end:ng42.barrel
 

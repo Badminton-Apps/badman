@@ -21,6 +21,8 @@ jobs:
         folder: ["backend", "frontend"]
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Node ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
@@ -32,12 +34,11 @@ jobs:
         working-directory: code/${{ matrix.folder }}
       - run: npx lerna run test
         working-directory: code/${{ matrix.folder }}
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v1.2.1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           file: packages/**/lcov.info
           name: codecov-${{ matrix.folder }}
-          verbose: true
           directory: code/${{ matrix.folder }}
+          fail_ci_if_error: false
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}

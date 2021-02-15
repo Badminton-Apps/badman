@@ -7,7 +7,7 @@ import { RankingCalculator } from './models';
 dotenv.config();
 
 (async () => {
-  await startWhenReady(false, db => {
+  await startWhenReady(false, false, db => {
     startServer(db);
   });
 })();
