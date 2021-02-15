@@ -19,7 +19,6 @@ describe('Tournament 1', () => {
   let databaseService: DataBaseHandler;
   let service: TournamentImporter;
   let fileLocation: string;
-  let transaction: Transaction;
 
   beforeAll(async () => {
     fileLocation = join(process.cwd(), 'src/import/__tests__/files/tournament.tp');
@@ -29,12 +28,16 @@ describe('Tournament 1', () => {
       storage: ':memory:'
     });
 
-    await DataBaseHandler.sequelizeInstance.sync({ force: true });
-
     service = new TournamentImporter(new Mdb(fileLocation), null);
   });
 
-  it('Should have initialized correctly', async () => {
+  beforeEach(async () => {
+    // Clear eveything
+    await DataBaseHandler.sequelizeInstance.sync({ force: true });
+  });
+
+
+  it.only('Should have initialized correctly', async () => {
     // Arrange
 
     // Act
@@ -109,7 +112,7 @@ describe('Tournament 2', () => {
     expect(importerFile.firstDay).toEqual(new Date('2021-02-08T23:00:00.000Z'));
   });
 
-  it.only('Should add tournamnet', async () => {
+  it('Should add tournamnet', async () => {
     // Arrange
     jest.setTimeout(100000);
     const importerFile = await service.addImporterfile(fileLocation);
