@@ -177,10 +177,11 @@ module.exports = {
         'caluclationIntervalAmount',
         { transaction: t }
       );
-      await queryInterface.dropEnum('enum_Systems_calculationIntervalUnit', {
+      
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS import."enum_Systems_calculationIntervalUnit";', {
         transaction: t,
-        schema: 'ranking'
       });
+      
     });
   }
 };

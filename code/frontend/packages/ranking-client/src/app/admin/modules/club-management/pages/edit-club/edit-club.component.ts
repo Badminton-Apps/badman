@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Club, ClubService, Player, Team, TeamService } from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -16,23 +17,26 @@ export class EditClubComponent implements OnInit {
     private teamService: TeamService,
     private clubService: ClubService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.club$ = combineLatest([this.route.paramMap, this.update$]).pipe(
       map(([params]) => params.get('id')),
-      switchMap((id) => this.clubService.getClub(parseInt(id, 10)))
+      switchMap((id) => this.clubService.getClub(id))
     );
   }
 
   async save(club: Club) {
     await this.clubService.updateClub(club).toPromise();
+    this._snackBar.open('Saved', null, { duration: 1000, panelClass: 'success'});
   }
 
   async onPlayerAdded(player: Player, team: Team) {
     if (player && team) {
       await this.teamService.addPlayer(team, player).toPromise();
+      this._snackBar.open('Player added', null, { duration: 1000, panelClass: 'success'});
       this.update$.next(null);
     }
   }
@@ -40,6 +44,7 @@ export class EditClubComponent implements OnInit {
   async onPlayerRemoved(player: Player, team: Team) {
     if (player && team) {
       await this.teamService.removePlayer(team, player).toPromise();
+      this._snackBar.open('Player removed', null, { duration: 1000, panelClass: 'success'});
       this.update$.next(null);
     }
   }

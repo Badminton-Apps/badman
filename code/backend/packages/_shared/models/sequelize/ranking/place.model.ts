@@ -1,4 +1,16 @@
-import { BelongsTo, Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique
+} from 'sequelize-typescript';
+import { BuildOptions } from 'sequelize/types';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
 
@@ -7,8 +19,19 @@ import { RankingSystem } from './system.model';
   tableName: 'Places',
   schema: 'ranking'
 })
-export class RankingPlace extends Model<RankingPlace> {
-  @Column({ unique: 'compositeIndex' })
+export class RankingPlace extends Model {
+  constructor(values?: Partial<RankingPlace>, options?: BuildOptions){
+    super(values, options);
+  }
+
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique('unique_constraint')
+  @Column
   rankingDate: Date;
 
   @Column
@@ -24,7 +47,7 @@ export class RankingPlace extends Model<RankingPlace> {
   mixPointsDowngrade: number;
   @Column
   doublePointsDowngrade: number;
-  
+
   @Column
   singleRank: number;
   @Column
@@ -53,27 +76,35 @@ export class RankingPlace extends Model<RankingPlace> {
   @Column
   double: number;
 
+  @Default(false)
   @Column
   singleInactive: boolean;
+  @Default(false)
   @Column
   mixInactive: boolean;
+  @Default(false)
   @Column
   doubleInactive: boolean;
 
   @Column
   updatePossible: boolean;
 
+  @Unique('unique_constraint')
   @ForeignKey(() => Player)
-  @Column({ unique: 'compositeIndex' })
-  PlayerId: number;
+  @Column
+  PlayerId: string;
 
+  @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
-  @Column({ unique: 'compositeIndex' })
-  SystemId: number;
+  @Column
+  SystemId: string;
 
   @BelongsTo(() => Player, 'PlayerId')
   player: Player;
 
-  @BelongsTo(() => RankingSystem, { foreignKey: 'SystemId', onDelete: 'CASCADE' })
+  @BelongsTo(() => RankingSystem, {
+    foreignKey: 'SystemId',
+    onDelete: 'CASCADE'
+  })
   rankingSystem: RankingSystem;
 }

@@ -1,7 +1,7 @@
 import { RankingSystemGroup } from './group.model';
 
 export class RankingSystem {
-  id: number;
+  id: string;
   name: string;
   amountOfLevels: number;
   procentWinning: number;
@@ -9,25 +9,29 @@ export class RankingSystem {
   procentLosing: number;
   minNumberOfGamesUsedForUpgrade: number;
   maxDiffLevels: number;
+  maxDiffLevelsHighest: number;
   latestXGamesToUse: number;
-  calculationIntervalUnit: 'months' | 'weeks' | 'days';
-  caluclationIntervalAmount: number;
-  periodUnit: 'months' | 'weeks' | 'days';
-  periodAmount: number;
-  updateIntervalUnit: 'months' | 'weeks' | 'days';
-  updateIntervalAmount: number;
-  inactivityAmount: number;
-  inactivityUnit: 'months' | 'weeks' | 'days';
-  gamesForInactivty: number;
-  rankingSystem: RankingSystems;
-  differenceForUpgrade: number;
-  differenceForDowngrade: number;
   maxLevelUpPerChange: number;
   maxLevelDownPerChange: number;
-  startingType: StartingType;
+  gamesForInactivty: number;
+  inactivityAmount: number;
+  inactivityUnit: 'months' | 'weeks' | 'days';
+  caluclationIntervalLastUpdate: Date;
+  caluclationIntervalAmount: number;
+  calculationIntervalUnit: 'months' | 'weeks' | 'days';
+  periodAmount: number;
+  periodUnit: 'months' | 'weeks' | 'days';
+  updateIntervalAmountLastUpdate: Date;
+  updateIntervalAmount: number;
+  updateIntervalUnit: 'months' | 'weeks' | 'days';
+  rankingSystem: RankingSystems;
   primary: boolean;
+  runCurrently: boolean;
+  differenceForUpgrade: number;
+  differenceForDowngrade: number;
+  startingType: StartingType;
+
   groups: RankingSystemGroup[];
-  counts: Counts;
 
   constructor({ ...args }) {
     this.id = args.id;
@@ -38,25 +42,29 @@ export class RankingSystem {
     this.procentLosing = args.procentLosing;
     this.minNumberOfGamesUsedForUpgrade = args.minNumberOfGamesUsedForUpgrade;
     this.maxDiffLevels = args.maxDiffLevels;
+    this.maxDiffLevelsHighest = args.maxDiffLevelsHighest;
     this.latestXGamesToUse = args.latestXGamesToUse;
-    this.calculationIntervalUnit = args.calculationIntervalUnit;
-    this.caluclationIntervalAmount = args.caluclationIntervalAmount;
-    this.periodUnit = args.periodUnit;
-    this.periodAmount = args.periodAmount;
-    this.updateIntervalUnit = args.updateIntervalUnit;
-    this.updateIntervalAmount = args.updateIntervalAmount;
-    this.inactivityAmount = args.inactivityAmount;
-    this.inactivityUnit = args.inactivityUnit;
-    this.gamesForInactivty = args.gamesForInactivty;
-    this.rankingSystem = args.rankingSystem;
-    this.differenceForUpgrade = args.differenceForUpgrade;
-    this.differenceForDowngrade = args.differenceForDowngrade;
     this.maxLevelUpPerChange = args.maxLevelUpPerChange;
     this.maxLevelDownPerChange = args.maxLevelDownPerChange;
-    this.startingType = args.startingType;
+    this.gamesForInactivty = args.gamesForInactivty;
+    this.inactivityAmount = args.inactivityAmount;
+    this.inactivityUnit = args.inactivityUnit;
+    this.caluclationIntervalLastUpdate = new Date(args.caluclationIntervalLastUpdate);
+    this.caluclationIntervalAmount = args.caluclationIntervalAmount;
+    this.calculationIntervalUnit = args.calculationIntervalUnit;
+    this.periodAmount = args.periodAmount;
+    this.periodUnit = args.periodUnit;
+    this.updateIntervalAmountLastUpdate = new Date(args.updateIntervalAmountLastUpdate);
+    this.updateIntervalAmount = args.updateIntervalAmount;
+    this.updateIntervalUnit = args.updateIntervalUnit;
+    this.rankingSystem = args.rankingSystem;
     this.primary = args.primary;
+    this.runCurrently = args.runCurrently;
+    this.differenceForUpgrade = args.differenceForUpgrade;
+    this.differenceForDowngrade = args.differenceForDowngrade;
+    this.startingType = args.startingType;
+
     this.groups = args?.groups?.map((g) => new RankingSystemGroup(g));
-    this.counts = args.counts;
   }
 }
 

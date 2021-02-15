@@ -24,18 +24,18 @@ export class SystemService {
 
   constructor(private httpClient: HttpClient, private apollo: Apollo) {}
 
-  makePrimary(systemId: number) {
+  makePrimary(systemId: string) {
     return this.httpClient.post(
       `${this.urlBase}/${systemId}/make-primary`,
       true
     );
   }
 
-  deleteSystem(systemId: number) {
+  deleteSystem(systemId: string) {
     return this.httpClient.delete(`${this.urlBase}/${systemId}`);
   }
 
-  getSystem(systemId: number) {
+  getSystem(systemId: string) {
     return this.apollo
       .query<{ system: RankingSystem }>({
         query: systemQuery,
@@ -46,7 +46,7 @@ export class SystemService {
       .pipe(map((x) => new RankingSystem(x.data.system)));
   }
 
-  getSystemCaps(systemId: number) {
+  getSystemCaps(systemId: string) {
     return this.httpClient.get<{
       amountOfLevels: number;
       pointsToGoUp: number[];
@@ -55,7 +55,7 @@ export class SystemService {
     }>(`${this.urlBase}/${systemId}/caps`);
   }
 
-  getSystemWithCount(systemId: number, gender?: string) {
+  getSystemWithCount(systemId: string, gender?: string) {
     return this.apollo
       .query({
         query: systemWithCountsQuery,
@@ -116,7 +116,7 @@ export class SystemService {
         query: primary ? primarySystemsQuery : systemsQuery,
         fetchPolicy: 'no-cache',
       })
-      .pipe(map((x: any) => x.data?.systems as RankingSystem[]));
+      .pipe(map((x: any) => x.data?.systems.map(s => new RankingSystem(s))));
   }
 
   getSystemsGroups(): Observable<RankingSystemGroup[]> {

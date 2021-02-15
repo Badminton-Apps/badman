@@ -7,6 +7,7 @@ import {
   AuthenticatedUser,
   AuthenticatedRequest
 } from '@badvlasim/shared';
+import { Op } from 'sequelize';
 import { ApiError } from '../../models/api.error';
 import { RankingSystemInputType, RankingSystemType } from '../types';
 
@@ -18,24 +19,33 @@ export const addRankingSystemMutation = {
       type: RankingSystemInputType
     }
   },
-  resolve: async (findOptions, { rankingSystem }, context) => {
+  resolve: async (findOptions, { rankingSystem: rankingSystemInput }, context) => {
     if (!context.req.user.hasAnyPermission(['add:ranking'])) {
       throw new ApiError({
         code: 401,
-        message: "You don't have permission to do this "
+        message: "You don't have permission to do this " 
       });
     }
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
+      const { groups, ...rankingSystem } = rankingSystemInput;
       const eventDb = await RankingSystem.create(rankingSystem, { transaction });
+      logger.debug('Event', eventDb.toJSON())
+      logger.debug('Got groups', groups.map(r => r.id))
+  
+    
+      for (const group of groups) {
+        const dbGroup = await RankingSystemGroup.findByPk(group.id);
+        await eventDb.addGroup(dbGroup, { transaction });
+      }
 
       logger.debug('Added');
 
       transaction.commit();
       return eventDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.warn('rollback', e);
       transaction.rollback();
       throw e;
     }

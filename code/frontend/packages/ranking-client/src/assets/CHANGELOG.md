@@ -1,3 +1,32 @@
+# [2.0.0](https://github.com/Badminton-Apps/core/compare/v1.6.2...v2.0.0) (2021-02-15)
+
+
+### Bug Fixes
+
+* check if already importing ([9b13c8f](https://github.com/Badminton-Apps/core/commit/9b13c8f5be510372624f20bcdd41219727ad3182))
+* delete file when removing import ([516475b](https://github.com/Badminton-Apps/core/commit/516475b8bc42b75cf6d86949c180b3130bccccac))
+
+
+### Features
+
+* add date extraction for xml and improved sorting ([380138b](https://github.com/Badminton-Apps/core/commit/380138b4492034993e7a97ce233777ebde819f6d))
+* Change to Annotation ([15227f1](https://github.com/Badminton-Apps/core/commit/15227f1dd50ed8242a891d88d40bfdd28e8ace96))
+* import teams for competition ([94a8118](https://github.com/Badminton-Apps/core/commit/94a81184aa1aa0546b3a8ff5615f2d3124704dbe))
+* linking players to club ([a5449fa](https://github.com/Badminton-Apps/core/commit/a5449fabd1410c0c91f675b3ef5a281c3ead7114))
+* Rework DB + imporrt teams ([32a80a7](https://github.com/Badminton-Apps/core/commit/32a80a750bc4dd5f13b824dff715efd7796c615e))
+* simulation / import improvements for new DB ([e13e1bc](https://github.com/Badminton-Apps/core/commit/e13e1bcbd9fedc90a0ebe3a849862bd49ae28367))
+
+
+### BREAKING CHANGES
+
+* - DB was massivly reworked, you can try to migrate it, but in next commit a new import is going to be provided
+
+
+
+## [1.6.2](https://github.com/Badminton-Apps/core/compare/v1.6.1...v1.6.2) (2021-02-15)
+
+
+
 ## [1.6.1](https://github.com/Badminton-Apps/core/compare/v1.6.0...v1.6.1) (2021-01-18)
 
 
@@ -16,37 +45,6 @@
 * add teams to club ([11164ea](https://github.com/Badminton-Apps/core/commit/11164ea5594e0ed57cf61c24bcfa59e51bd00e4c))
 * Changelog was moved to single file ([c6a5418](https://github.com/Badminton-Apps/core/commit/c6a5418753517dc5cf77aa11b4514f256ecb6a24))
 * Locations and Courts ([d36c770](https://github.com/Badminton-Apps/core/commit/d36c770ae988eb1522a47cd26b0dc34bcc0e0899))
-
-
-
-# [1.4.0](https://github.com/Badminton-Apps/core/compare/v1.3.0...v1.4.0) (2021-01-08)
-
-
-### Bug Fixes
-
-* badges ([4d87a59](https://github.com/Badminton-Apps/core/commit/4d87a59c8263feec31715df48784576693b9d3ef))
-
-
-### Features
-
-* prepping for team assembly ([2c28b1b](https://github.com/Badminton-Apps/core/commit/2c28b1be14e7253a7a456890961f38bfdedbfe20))
-
-
-
-# [1.3.0](https://github.com/Badminton-Apps/core/compare/v1.2.24...v1.3.0) (2021-01-08)
-
-
-### Bug Fixes
-
-* Added version path ([810fcf2](https://github.com/Badminton-Apps/core/commit/810fcf2a859318f3888a84f2ca0410d0da301297))
-* testing 456 ([6d25124](https://github.com/Badminton-Apps/core/commit/6d25124493790b500398441286270e535f8234b7))
-* Wrong notation ([c68acd8](https://github.com/Badminton-Apps/core/commit/c68acd837f6f5d3ae17fe13197f54975440f59a0))
-
-
-### Features
-
-* Empty feature for validating commit messages ([7e0bac4](https://github.com/Badminton-Apps/core/commit/7e0bac489941f941e13a50b08cb5591477a558c8))
-* testing 123 ([03454ca](https://github.com/Badminton-Apps/core/commit/03454ca38b667fb31a732bdd3f9fd5fe8e59834f))
 
 
 
