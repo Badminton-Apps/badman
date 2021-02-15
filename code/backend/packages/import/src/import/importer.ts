@@ -39,7 +39,7 @@ export abstract class Importer {
     protected type: EventType,
     protected importType: EventImportType,
     protected transaction: Transaction
-  ) {} 
+  ) {}
 
   async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
     try {
@@ -53,7 +53,7 @@ export abstract class Importer {
           },
           include: [{ model: Draw }]
         });
- 
+
         const draws = subEvents.map(s => s.draws.map(r => r.id)).flat(1);
 
         await Game.destroy({
@@ -88,13 +88,20 @@ export abstract class Importer {
         courts
       );
     } catch (e) {
-      logger.error('FUCK', e); 
+      logger.error('FUCK', e);
       throw e;
     }
   }
 
   protected async addLocations(event: Event) {
-    const csvLocations = await csvToArray<ICsvLocation[]>(await this.mdb.toCsv('Location'));
+    const csvLocations = await csvToArray<ICsvLocation[]>(await this.mdb.toCsv('Location'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
     const locations = new Map<string, Location>();
 
     for (const location of csvLocations) {
@@ -122,7 +129,14 @@ export abstract class Importer {
   }
 
   protected async addCourts(locations: Map<string, Location>) {
-    const csvCourts = await csvToArray<ICsvCourt[]>(await this.mdb.toCsv('Court'));
+    const csvCourts = await csvToArray<ICsvCourt[]>(await this.mdb.toCsv('Court'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
     const courts = new Map<string, Court>();
     for (const court of csvCourts) {
       const locationId = locations.get(court.location).id;
@@ -210,7 +224,7 @@ export abstract class Importer {
           levelType
         })
       );
-    } 
+    }
 
     const dbsubEvents = await ImportSubEvent.bulkCreate(
       subEvents.map(r => r.toJSON()),
@@ -317,6 +331,7 @@ export abstract class Importer {
       await transaction.commit();
       return dbEvent;
     } catch (e) {
+      logger.error('import failed', e);
       await transaction.rollback();
       throw e;
     }
@@ -345,6 +360,12 @@ export abstract class Importer {
             (r: { name: string }) => r.name.toLowerCase() === 'tournamentNr'
           )?.value as number
         };
+      },
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
       }
     });
 
@@ -359,6 +380,12 @@ export abstract class Importer {
                 a.getTime() - b.getTime()
             )
         };
+      },
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
       }
     });
 
@@ -377,8 +404,22 @@ export abstract class Importer {
   }
 
   protected async getSubEventsCsv() {
-    const csvEvents = await csvToArray<ICsvEvent[]>(await this.mdb.toCsv('Event'));
-    const csvDraws = await csvToArray<ICsvDraw[]>(await this.mdb.toCsv('Draw'));
+    const csvEvents = await csvToArray<ICsvEvent[]>(await this.mdb.toCsv('Event'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
+    const csvDraws = await csvToArray<ICsvDraw[]>(await this.mdb.toCsv('Draw'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
     return { csvEvents, csvDraws };
   }
 
@@ -401,6 +442,12 @@ export abstract class Importer {
             }).toJSON(),
             playerId: csvPlayer.id
           };
+        },
+        onError: e => {
+          logger.error('Parsing went wrong', {
+            error: e
+          });
+          throw e;
         }
       })
     ).filter((thing, i, arr) =>
@@ -458,12 +505,17 @@ export abstract class Importer {
   }
 
   protected async getClubs() {
-    return csvToArray(await this.mdb.toCsv('Club'));
+    return csvToArray(await this.mdb.toCsv('Club'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
   }
 
   protected abstract addGames(draw: Draw[], players: TpPlayer[], courts: Map<string, Court>);
-
-  
 
   /// Helper functions
   protected isElkGeslacht(gender) {

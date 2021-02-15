@@ -82,7 +82,7 @@
       <td mat-cell *matCellDef="let element">
         <button
           mat-icon-button
-          *ngIf="!element.importing && !(element.type == 'COMPETITION_XML' && !element.event?.name)"
+          *ngIf="!element.importing"
           (click)="import(element)"
         >
           <mat-icon>not_started</mat-icon>
