@@ -1,4 +1,4 @@
-import { ImporterFile, ImportSubEvents } from '@badvlasim/shared/models';
+import { ImporterFile, ImportSubEvent } from '@badvlasim/shared/models';
 import { GraphQLInt, GraphQLObjectType } from 'graphql';
 import { attributeFields, createConnection } from 'graphql-sequelize';
 import { getAttributeFields } from './attributes.type';
@@ -6,13 +6,13 @@ import { getAttributeFields } from './attributes.type';
 const ImportedSubEventType = new GraphQLObjectType({
   name: 'ImportedSubEvent',
   description: 'A Imported subevent',
-  fields: () => Object.assign(getAttributeFields(ImportSubEvents), {})
+  fields: () => Object.assign(getAttributeFields(ImportSubEvent), {})
 });
 
 const ImportedSubEventConnectionType = createConnection({
   name: 'ImportedSubEvent',
   nodeType: ImportedSubEventType,
-  target: ImporterFile,
+  target: ImportSubEvent,
   connectionFields: {
     total: {
       type: GraphQLInt,

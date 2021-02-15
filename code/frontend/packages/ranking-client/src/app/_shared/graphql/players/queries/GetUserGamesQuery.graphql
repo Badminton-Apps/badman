@@ -23,19 +23,6 @@ query GetUserGamesQuery(
       playedAt
       winner
       gameType
-      subEvent {
-        id
-        name
-        level
-        levelType
-        eventType
-        event {
-          type
-          id
-          name
-          firstDay
-        }
-      }
       rankingPoints {
         points
         player {

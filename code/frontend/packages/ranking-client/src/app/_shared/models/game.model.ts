@@ -1,4 +1,5 @@
 import { PlayerGame } from '../../_shared';
+import { Draw } from './draw.model';
 import { SubEvent } from './sub-event.model';
 import { RankingPoint } from "./ranking-point.model";
 
@@ -6,7 +7,7 @@ export class Game {
   id: string;
   playedAt: Date;
   gameType: GameType | string;
-  players: PlayerGame[];
+  players: PlayerGame[]; 
   set1Team1?: number;
   set1Team2?: number;
   set2Team1?: number;
@@ -14,8 +15,8 @@ export class Game {
   set3Team1?: number;
   set3Team2?: number;
   winner: number;
-  subEvent: SubEvent;
   rankingPoints: RankingPoint[];
+  draw: Draw;
 
   constructor({ ...args }: Partial<Game>) {
     this.id = args.id;
@@ -29,8 +30,8 @@ export class Game {
     this.set3Team1 = args.set3Team1;
     this.set3Team2 = args.set3Team2;
     this.winner = args.winner;
-    this.subEvent = args.subEvent ? new SubEvent(args.subEvent) : null;
     this.rankingPoints = args.rankingPoints;
+    this.draw = args.draw ? new Draw(args.draw) : null;
   }
 }
 

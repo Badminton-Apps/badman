@@ -321,31 +321,26 @@ module.exports = {
       );
 
 
+      
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Events_type";', {
+        transaction: t,
+      });
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_SubEvents_drawType";', {
+        transaction: t,
+      });
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_SubEvents_gameType";', {
+        transaction: t,
+      });
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_SubEvents_levelType";', {
+        transaction: t,
+      });
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_SubEvents_eventType";', {
+        transaction: t,
+      });
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Games_gameType";', {
+        transaction: t,
+      });
 
-      await queryInterface.dropEnum('enum_Events_type', {
-        transaction: t,
-        schema: 'public'
-      });
-      await queryInterface.dropEnum('enum_SubEvents_drawType', {
-        transaction: t,
-        schema: 'public'
-      });
-      await queryInterface.dropEnum('enum_SubEvents_gameType', {
-        transaction: t,
-        schema: 'public'
-      });
-      await queryInterface.dropEnum('enum_SubEvents_levelType', {
-        transaction: t,
-        schema: 'public'
-      });
-      await queryInterface.dropEnum('enum_SubEvents_eventType', {
-        transaction: t,
-        schema: 'public'
-      });
-      await queryInterface.dropEnum('enum_Games_gameType', {
-        transaction: t,
-        schema: 'public'
-      });
 
       console.log('Adding data');
 

@@ -1,7 +1,7 @@
 import { SubEvent } from './sub-event.model';
 export class Event {
   name: string;
-  id: number;
+  id: string;
   type: EventType;
   dates: Date[];
   firstDay: Date;

@@ -45,9 +45,9 @@ const GameType = new GraphQLObjectType({
           }
         })
       },
-      subEvent: {
-        type: SubEventType,
-        resolve: resolver(Game.associations.subEvent, {
+      draw: {
+        type: DrawType,
+        resolve: resolver(Game.associations.draw, {
           before: async (findOptions, args, context, info) => {
             return findOptions;
           }

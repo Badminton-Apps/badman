@@ -22,10 +22,7 @@ const addEventMutation = {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const eventDb = await Event.create(
-        {
-          ...event,
-          id: null
-        },
+        event,
         { transaction }
       );
       const subEvents = event.subEvents.map(subEvent => {
@@ -35,7 +32,6 @@ const addEventMutation = {
           subEventGroup: { internalId: sub.internalId, groups },
           subEvent: {
             ...sub,
-            id: null,
             EventId: eventDb.id
           }
         };

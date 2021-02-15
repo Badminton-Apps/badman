@@ -22,9 +22,9 @@ import { GraphQLError } from './models/graphql.error';
 
 dotenv.config();
  
-(async () => {
-  await startWhenReady(true, db => {
-    startServer(db);
+(async () => { 
+  await startWhenReady(true, false, db => {
+    startServer(db); 
   });
 })();
 
@@ -43,7 +43,7 @@ const startServer = (databaseService: DataBaseHandler) => {
       new SystemController(router, authRouter, databaseService),
       new TournamentController(router, authRouter),
       new UserController(router, authRouter),
-      new RequestLinkController(router, authRouter)
+      new RequestLinkController(router, authRouter) 
     ],
     [
       { 
