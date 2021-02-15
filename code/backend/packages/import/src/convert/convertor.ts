@@ -15,7 +15,7 @@ import { Mdb } from './mdb';
 export class Convertor {
   private _queue = [];
   private _queueRunning = false;
-  private _parallel = 5;
+  private _parallel = 25;
 
   constructor(private _importEmitter = new EventEmitter()) {
     this._setupQueue();
@@ -23,11 +23,12 @@ export class Convertor {
 
   private _setupQueue() {
     this._importEmitter.on('add_to_convert_queue', async (imported: ImporterFile, event: Event) => {
-      imported.importing = true;
-      await imported.save();
-
-      logger.debug(`Added ${imported.id} to queue`);
-      this._queue.push({ imported, event });
+      if (!this._queue.find(r => r.imported.id === imported.id)) {
+        imported.importing = true;
+        await imported.save();
+        logger.debug(`Added ${imported.id} to queue`);
+        this._queue.push({ imported, event });
+      }
 
       // Queuue is not running
       if (!this._queueRunning) {
@@ -133,7 +134,7 @@ export class Convertor {
         return competitionXmlImporter.addImporterfile(fileLocation);
       default:
         logger.error('Unsupperted type', type);
-        throw new Error('Unsupperted type')
+        throw new Error('Unsupperted type');
     }
   }
   private _sleep(ms) {
