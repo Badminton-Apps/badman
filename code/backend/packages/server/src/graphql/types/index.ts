@@ -1,9 +1,13 @@
 // start:ng42.barrel
+export * from './attributes.type';
 export * from './club.type';
+export * from './draw.type';
 export * from './event.type';
 export * from './game.type';
 export * from './gamePlayer.type';
+export * from './importDraw.type';
 export * from './imported.type';
+export * from './importSubEvent.type';
 export * from './player.type';
 export * from './rankingPlace.type';
 export * from './rankingPlayerResult.type';

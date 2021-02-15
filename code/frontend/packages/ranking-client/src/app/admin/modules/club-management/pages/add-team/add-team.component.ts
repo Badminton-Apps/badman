@@ -22,7 +22,7 @@ export class AddTeamComponent implements OnInit {
   ngOnInit(): void {
     this.club$ = this.route.paramMap.pipe(
       map((x) => x.get('id')),
-      switchMap((id) => this.clubService.getClub(parseInt(id, 10)))
+      switchMap((id) => this.clubService.getClub(id))
     );
   }
 

@@ -37,6 +37,7 @@
     "@covalent/echarts": "^3.0.1",
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^5.0.0",
+    "@apollo/client": "^3.3.7",
     "ngx-markdown": "^10.1.1",
     "apollo-angular": "^1.8.0",
     "apollo-angular-link-http": "^1.9.0",

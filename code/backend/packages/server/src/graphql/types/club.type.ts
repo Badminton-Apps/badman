@@ -1,10 +1,18 @@
 import { Club } from '@badvlasim/shared/models';
-import { GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLObjectType } from 'graphql';
+import {
+  GraphQLInputObjectType,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLString
+} from 'graphql';
 import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
 import { getAttributeFields } from './attributes.type';
 import { PlayerType } from './player.type';
 import { TeamType } from './team.type';
+import moment from 'moment';
+import { logger } from '@badvlasim/shared';
 
 export const ClubType = new GraphQLObjectType({
   name: 'Club',
@@ -18,8 +26,26 @@ export const ClubType = new GraphQLObjectType({
       },
       players: {
         type: new GraphQLList(PlayerType),
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Club.associations.players)
+        args: Object.assign(defaultListArgs(), {
+          end: {
+            type: GraphQLString
+          }
+        }),
+        resolve: resolver(Club.associations.players, {
+          before: async (findOptions, args, context, info) => {
+            return findOptions;
+          },
+          after: (result, args, context) => {
+            // Only get after certain period
+            if (args.end) {
+              result = result.filter(player =>
+                moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
+              );
+            }
+
+            return result;
+          }
+        })
       }
     })
 });
