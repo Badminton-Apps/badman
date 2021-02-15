@@ -37,7 +37,6 @@ export class SubEvent extends Model {
   id: string;  
 
   @Unique('unique_constraint')
-  @Index
   @Column
   name: string;
 
