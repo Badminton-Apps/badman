@@ -23,7 +23,6 @@ export class PlayerInfoComponent implements OnInit {
 
   ngOnInit() {
     if (this.player) {
-      this.player.id = parseInt(`${this.player.id}`, 10);
       if (this.player.rankingPlace) {
         this.ranking = this.player.rankingPlace[GameType[this.type]];
       }

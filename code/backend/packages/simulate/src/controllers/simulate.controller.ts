@@ -47,7 +47,7 @@ export class SimulateController extends BaseController {
 
     const systems = (request.query.systems as string)
       .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
+      .map((systemId: string) => systemId);
     const end = moment(request.query.endDate as string);
     const startString = request.query.startDate as string;
     const fromStart = request.query.runningFromStart === 'true';
@@ -66,8 +66,7 @@ export class SimulateController extends BaseController {
   };
   private _test = async (request: AuthenticatedRequest, response: Response) => {
     const groups = (request.query.groups as string)
-      .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
+      .split(',');
 
     const games = await Game.findAll({
       limit: 10,
@@ -109,12 +108,10 @@ export class SimulateController extends BaseController {
 
     const systems = (request.body.systems as string)
       .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
+      .map((systemId: string) => systemId);
 
     for await (const id of systems) {
-      const system = await this._databaseService.getSystem({
-        where: { id }
-      });
+      const system = await RankingSystem.findByPk(id);
 
       if (!system) {
         response.status(404);

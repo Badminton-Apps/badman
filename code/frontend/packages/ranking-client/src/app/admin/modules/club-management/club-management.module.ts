@@ -20,6 +20,7 @@ import { AddTeamComponent } from './pages/add-team/add-team.component';
 import { AddPlayerComponent } from './dialogs/add-player/add-player.component';
 import { ClubEditTeamComponent } from './pages/edit-club/components/club-edit-team/club-edit-team.component';
 import { EditTeamComponent } from './pages/edit-team/edit-team.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const materialModules = [
   FormsModule,
@@ -31,6 +32,7 @@ const materialModules = [
   MatMenuModule,
   MatPaginatorModule,
   MatProgressBarModule,
+  MatSnackBarModule,
   MatSortModule,
   MatTableModule,
   ReactiveFormsModule,

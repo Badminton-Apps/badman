@@ -23,11 +23,11 @@ export class EditTeamComponent implements OnInit {
   ngOnInit(): void {
     this.club$ = this.route.paramMap.pipe(
       map((x) => x.get('id')),
-      switchMap((id) => this.clubSerice.getClub(parseInt(id, 10)))
+      switchMap((id) => this.clubSerice.getClub(id))
     );
     this.team$ = this.route.paramMap.pipe(
       map((x) => x.get('teamId')),
-      switchMap((id) => this.teamSerice.getTeam(parseInt(id, 10)))
+      switchMap((id) => this.teamSerice.getTeam(id))
     );
   }
 

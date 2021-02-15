@@ -1,6 +1,6 @@
 export interface RequestLink {
-  id: number;
-  PlayerId: number;
+  id: string;
+  PlayerId: string;
   email: string;
   updatedAt: Date;
   createdAt: Date;

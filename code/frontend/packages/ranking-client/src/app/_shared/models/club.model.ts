@@ -2,10 +2,10 @@ import { Team } from './team.model';
 import { Player } from './player.model';
 
 export class Club {
-  id: number;
+  id: string;
   name: string;
   abbreviation: string;
-  clubId: number;
+  clubId: string;
 
   teams: Team[];
   players: Player[];
