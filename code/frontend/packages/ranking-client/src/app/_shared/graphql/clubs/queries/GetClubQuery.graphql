@@ -1,4 +1,4 @@
-query GetClubsQuery($id: ID!) {
+query GetClubsQuery($id: ID!, $end: String) {
   club(id: $id) {
     id
     name
@@ -8,14 +8,14 @@ query GetClubsQuery($id: ID!) {
       id
       name
       abbreviation
-      players {
+      players(end: $end) {
         id
         firstName
         lastName
       }
     }
 
-    players {
+    players(end: $end) {
       id
       firstName
       lastName

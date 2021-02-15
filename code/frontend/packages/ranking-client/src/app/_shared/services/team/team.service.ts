@@ -19,7 +19,7 @@ const removePlayerToTeamMutation = require('graphql-tag/loader!../../graphql/tea
 export class TeamService {
   constructor(private apollo: Apollo) {}
 
-  getTeam(teamId: number) {
+  getTeam(teamId: string) {
     return this.apollo
       .query<{ team: Team }>({
         query: teamQuery,
@@ -30,7 +30,7 @@ export class TeamService {
       .pipe(map((x) => new Team(x.data.team)));
   }
 
-  addTeam(team: Team, clubId: number) {
+  addTeam(team: Team, clubId: string) {
     return this.apollo
       .mutate<{ addTeam: Team }>({
         mutation: addTeamMutation,
@@ -74,7 +74,7 @@ export class TeamService {
   }
 
   getTeams(
-    clubId: number,
+    clubId: string,
     sort?: string,
     direction?: SortDirection,
     page?: number

@@ -21,10 +21,7 @@ export const addClubMutation = {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const clubDb = await Club.create(
-        {
-          ...club,
-          id: null
-        },
+        club,
         { transaction }
       );
 

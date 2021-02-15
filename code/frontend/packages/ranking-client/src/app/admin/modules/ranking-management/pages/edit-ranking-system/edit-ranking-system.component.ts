@@ -21,7 +21,7 @@ export class EditRankingSystemComponent implements OnInit {
   ngOnInit(): void {
     this.system$ = this.route.paramMap.pipe(
       map((x) => x.get('id')),
-      switchMap((id) => this.systemService.getSystem(parseInt(id, 10)))
+      switchMap((id) => this.systemService.getSystem(id))
     ); 
     this.rankingGroups$ = this.systemService.getSystemsGroups();
   }

@@ -6,6 +6,7 @@ import { UserService } from 'app/player';
 import { Club, ClubService } from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import * as moment from 'moment';
 
 @Component({
   templateUrl: './detail-club.component.html',
@@ -28,7 +29,9 @@ export class DetailClubComponent {
   ngOnInit(): void {
     this.club$ = combineLatest([this.route.paramMap, this.update$]).pipe(
       map(([params]) => params.get('id')),
-      switchMap((id) => this.clubService.getClub(parseInt(id, 10))),
+      switchMap((id) =>
+        this.clubService.getClub(id, moment().subtract(1, 'year').toDate())
+      ),
       tap((club) => {
         this.canEditClub$ = this.user.canEditClubs(club.id);
       })

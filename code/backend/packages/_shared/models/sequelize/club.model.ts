@@ -6,12 +6,17 @@ import {
   PrimaryKey,
   AutoIncrement,
   Unique,
-  HasMany
+  HasMany,
+  IsUUID,
+  Index,
+  Default,
+  DataType
 } from 'sequelize-typescript';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyHasAssociationMixin,
+  BuildOptions,
   HasManyGetAssociationsMixin
 } from 'sequelize/types';
 import { Team } from '../..';
@@ -22,7 +27,18 @@ import { Player } from './player.model';
   timestamps: true,
   schema: 'public'
 })
-export class Club extends Model<Club> {
+export class Club extends Model {
+  constructor(values?: Partial<Club>, options?: BuildOptions) {
+    super(values, options);
+  }
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique
+  @Index
   @Column
   name: string;
 

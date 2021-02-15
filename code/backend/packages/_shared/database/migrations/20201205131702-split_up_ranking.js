@@ -25,29 +25,26 @@ module.exports = {
 
       console.log('dropping enums on public');
 
-      await queryInterface.dropEnum('enum_RankingSystems_startingType', {
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_RankingSystems_startingType";', {
         transaction: t,
-        schema: 'public'
       });
 
-      await queryInterface.dropEnum('enum_RankingSystems_rankingSystem', {
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_RankingSystems_rankingSystem";', {
         transaction: t,
-        schema: 'public'
       });
 
-      await queryInterface.dropEnum('enum_RankingSystems_intervalUnit', {
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_RankingSystems_intervalUnit";', {
         transaction: t,
-        schema: 'public'
       });
 
-      await queryInterface.dropEnum('enum_RankingSystems_intervalCalcUnit', {
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_RankingSystems_intervalCalcUnit";', {
         transaction: t,
-        schema: 'public'
       });
-      await queryInterface.dropEnum('enum_RankingSystems_inactivityUnit', {
+
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_RankingSystems_inactivityUnit";', {
         transaction: t,
-        schema: 'public'
       });
+    
 
       console.log('Creating schema');
       await queryInterface.createSchema('ranking', { transaction: t });
@@ -282,10 +279,9 @@ module.exports = {
         transaction: t,
         schema: 'public'
       });
-
-      await queryInterface.dropEnum('enum_RankingSystems_startingType', {
+      
+      await queryInterface.sequelize.query('DROP TYPE IF EXISTS ranking."enum_RankingSystems_startingType";', {
         transaction: t,
-        schema: 'ranking'
       });
 
       await queryInterface.createTable(

@@ -129,7 +129,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     return player;
   }
 
-  async claimAccount(playerId: number) {
+  async claimAccount(playerId: string) {
     const result = await this.userService
       .requestLink(playerId)
       .pipe(tap((_) => this.updateHappend.next(true)))

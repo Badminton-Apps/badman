@@ -65,7 +65,7 @@ module.exports = {
           type: sequelize.DataTypes.STRING
         }),
         queryInterface.sequelize.query('DROP Table "import.files"; DROP TYPE IF EXISTS "enum_import.files_type";', {
-          transaction: t, schema: 'public'
+          transaction: t
         })
       ]);
       promise.catch(err => {
