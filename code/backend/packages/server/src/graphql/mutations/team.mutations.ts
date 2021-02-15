@@ -27,7 +27,6 @@ const addTeamMutation = {
       const teamDb = await Team.create(
         {
           ...team,
-          id: null,
           clubId
         },
         { transaction }

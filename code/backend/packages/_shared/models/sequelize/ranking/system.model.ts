@@ -6,9 +6,20 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-  BelongsToMany
+  BelongsToMany,
+  PrimaryKey,
+  IsUUID,
+  Unique,
+  Default
 } from 'sequelize-typescript';
-import { BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin, BuildOptions } from 'sequelize/types';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManySetAssociationsMixin,
+  BuildOptions
+} from 'sequelize/types';
 import { RankingPoint } from './point.model';
 import { Player } from '../player.model';
 import { RankingTiming, RankingSystems, StartingType } from '../../enums/';
@@ -20,12 +31,19 @@ import { GroupSystems } from './group_system.model';
   tableName: 'Systems',
   schema: 'ranking'
 })
-export class RankingSystem extends Model<RankingSystem> {
-  constructor(values?: any, options?: BuildOptions) {
+export class RankingSystem extends Model {
+  constructor(values?: Partial<RankingSystem>, options?: BuildOptions) {
     super(values, options);
     this._setupValues();
   }
 
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique
   @Column
   name: string;
 
@@ -56,6 +74,7 @@ export class RankingSystem extends Model<RankingSystem> {
 
   @Column
   inactivityAmount: number;
+
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   inactivityUnit: 'months' | 'weeks' | 'days';
 
@@ -65,6 +84,7 @@ export class RankingSystem extends Model<RankingSystem> {
       unit: this.inactivityUnit
     };
   }
+  @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Column
   caluclationIntervalLastUpdate: Date;
   @Column
@@ -79,7 +99,6 @@ export class RankingSystem extends Model<RankingSystem> {
     };
   }
 
-
   @Column
   periodAmount: number;
   @Column(DataType.ENUM('months', 'weeks', 'days'))
@@ -91,6 +110,7 @@ export class RankingSystem extends Model<RankingSystem> {
       unit: this.periodUnit
     };
   }
+  @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Column
   updateIntervalAmountLastUpdate: Date;
   @Column
@@ -130,7 +150,7 @@ export class RankingSystem extends Model<RankingSystem> {
   startingType: StartingType;
 
   @ForeignKey(() => Player)
-  runById: number;
+  runById: string;
 
   @BelongsTo(() => Player, {
     foreignKey: 'runById',
@@ -141,12 +161,16 @@ export class RankingSystem extends Model<RankingSystem> {
   @HasMany(() => RankingPoint, 'SystemId')
   rankingPoints: RankingPoint;
 
-
   @BelongsToMany(
     () => RankingSystemGroup,
     () => GroupSystems
   )
   groups: RankingSystemGroup[];
+
+  public getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
+  public addGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
+  public removeGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
+  public hasGroup!: BelongsToManyHasAssociationMixin<RankingSystemGroup, string>;
 
   private _pointsToGoUp: number[];
   private _pointsWhenWinningAgainst: number[];

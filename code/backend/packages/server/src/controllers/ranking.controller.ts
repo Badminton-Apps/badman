@@ -17,21 +17,15 @@ import { Op } from 'sequelize';
 import zipstream from 'zip-stream';
 
 export class RankingController extends BaseController {
-
   private _path = '/ranking';
 
-  constructor(
-    router: Router,
-    authRouter: Router,
-    private _databaseService: DataBaseHandler
-  ) {
+  constructor(router: Router, authRouter: Router, private _databaseService: DataBaseHandler) {
     super(router, authRouter);
 
     this._intializeRoutes();
   }
 
   private _intializeRoutes() {
-    logger.debug('HELLO?', this);
     this.router.get(`${this._path}/statistics/:system/:player/:gameType`, this._statistics);
     this.router.get(`${this._path}/export`, this._export);
     this.router.get(`${this._path}/exportVisual`, this._exportVisualBvlLfbb);
@@ -41,7 +35,7 @@ export class RankingController extends BaseController {
 
   private _top = async (request: Request, response: Response) => {
     const where = {
-      SystemId: parseInt(request.query.systemId as string, 10),
+      SystemId: request.query.systemId,
       rankingDate: new Date(request.query.date as string)
     };
 
@@ -81,8 +75,6 @@ export class RankingController extends BaseController {
 
     response.json({ rankingPlaces: places, total: count });
   };
-
-   
 
   private _statistics = async (request: Request, response: Response) => {
     const systemId = parseInt(request.params.system, 10);
@@ -192,14 +184,12 @@ export class RankingController extends BaseController {
   };
 
   private _export = async (request: Request, response: Response) => {
-    const systemsIds: number[] = (request.query.systems as string)
-      .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
+    const systemsIds: string[] = (request.query.systems as string).split(',');
 
     const files = [];
     for (const system of systemsIds) {
       const fileNameSafe = (
-        await this._databaseService.getSystem({ where: { id: system }, attributes: ['name'] })
+        await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
       const results = await RankingPlace.findAll({
@@ -249,14 +239,12 @@ export class RankingController extends BaseController {
   };
 
   private _exportVisualBvlLfbb = async (request: Request, response: Response) => {
-    const systemsIds: number[] = (request.query.systems as string)
-      .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
+    const systemsIds: string[] = (request.query.systems as string).split(',');
 
     const files = [];
     for (const system of systemsIds) {
       const fileNameSafe = (
-        await this._databaseService.getSystem({ where: { id: system }, attributes: ['name'] })
+        await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
       const rankingDate = moment(
@@ -332,14 +320,12 @@ export class RankingController extends BaseController {
     return this._download(response, files);
   };
   private _exportVisualNonBvlLfbb = async (request: Request, response: Response) => {
-    const systemsIds: number[] = (request.query.systems as string)
-      .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
+    const systemsIds: string[] = (request.query.systems as string).split(',');
 
     const files = [];
     for (const system of systemsIds) {
       const fileNameSafe = (
-        await this._databaseService.getSystem({ where: { id: system }, attributes: ['name'] })
+        await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
       const rankingDate = moment(

@@ -1,7 +1,7 @@
 import { Player } from "./player.model";
 
 export class Team {
-  id: number;
+  id: string;
   name: string;
   abbreviation: string;
   players: Player[];

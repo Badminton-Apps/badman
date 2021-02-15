@@ -2,7 +2,7 @@ import { Event, EventType } from './event.model';
 import { ImporterSubEvent } from './imported-sub-event.model';
 export class Imported {
   name: string;
-  id: number;
+  id: string;
   type: EventType;
   dates: Date[];
   datesString: string;

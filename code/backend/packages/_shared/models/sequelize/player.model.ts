@@ -3,19 +3,34 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  Default,
   HasMany,
+  Index,
+  IsUUID,
   Model,
-  Table
+  PrimaryKey,
+  Table,
+  Unique
 } from 'sequelize-typescript';
 import { GamePlayer, Game } from './event';
 import { TeamMembership } from './team-membership.model';
 import { Team } from './team.model';
+import { BuildOptions } from 'sequelize/types';
 
 @Table({
   timestamps: true,
   schema: 'public'
 })
-export class Player extends Model<Player> {
+export class Player extends Model {
+  constructor(values?: Partial<Player>, options?: BuildOptions) {
+    super(values, options);
+  }
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
   @Column
   email: string;
 
@@ -28,13 +43,19 @@ export class Player extends Model<Player> {
   @Column
   token: string;
 
-  @Column({ unique: 'compositeIndex' })
+  @Unique('unique_constraint')
+  @Index
+  @Column
   firstName: string;
 
-  @Column({ unique: 'compositeIndex' })
+  @Unique('unique_constraint')
+  @Index
+  @Column
   lastName: string;
 
-  @Column({ unique: 'compositeIndex' })
+  @Unique('unique_constraint')
+  @Index
+  @Column
   memberId: string;
 
   @HasMany(() => RankingPoint, 'PlayerId')
@@ -63,7 +84,7 @@ export class Player extends Model<Player> {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   games: (Game & { GamePlayer: GamePlayer })[];
 
-  getLastRanking(system: number, max: number): RankingPlace {
+  getLastRanking(system: string, max: number): RankingPlace {
     if (!this.rankingPlaces) {
       return null;
     }
@@ -78,14 +99,14 @@ export class Player extends Model<Player> {
     return {
       mix: lastRanking?.mix || max,
       double: lastRanking?.double || max,
-      single: lastRanking?.single || max, 
+      single: lastRanking?.single || max,
       singleInactive: lastRanking?.singleInactive || false,
       doubleInactive: lastRanking?.doubleInactive || false,
       mixInactive: lastRanking?.mixInactive || false
     } as RankingPlace;
   }
 
-  getHighsetRanking(system: number, max: number): RankingPlace {
+  getHighsetRanking(system: string, max: number): RankingPlace {
     if (!this.rankingPlaces) {
       return null;
     }
