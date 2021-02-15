@@ -16,7 +16,9 @@
   ],
   "scripts": {
     "start": "npx lerna run --parallel start",
-    "release": "npx lerna version"
+    "release": "npx lerna version",
+    "test": "npx lerna run test --stream",
+    "test:local": "npx lerna run test:local --stream"
   },
   "dependencies": {
     "@angular/animations": "~10.1.3",
