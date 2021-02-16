@@ -93,6 +93,9 @@ If using vscode the following `launch.json` can be used
   }
 ```
 
+### Database
+you can checkout the erd schema [here][erd]
+
 ## Contributing
 
 ### Contributing Guidelines
@@ -108,3 +111,4 @@ Help us keep Angular open and inclusive. Please read and follow our [Code of Con
 [node.js]: https://nodejs.org/
 [npm]: https://www.npmjs.com/get-npm
 [codeofconduct]: CODE_OF_CONDUCT.md
+[erd]: erd.svg
