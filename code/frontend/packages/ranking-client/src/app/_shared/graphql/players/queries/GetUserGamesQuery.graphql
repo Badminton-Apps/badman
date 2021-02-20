@@ -42,10 +42,13 @@ query GetUserGamesQuery(
       }
       rankingPoints {
         points
+        differenceInLevel
+        type {
+          differenceForUpgrade
+          differenceForDowngrade
+        }
         player {
-          memberId
-          firstName
-          lastName
+          id
         }
       }
       players {

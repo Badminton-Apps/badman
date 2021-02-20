@@ -1,6 +1,6 @@
-import { GraphQLObjectType } from 'graphql';
-import { attributeFields, resolver } from 'graphql-sequelize';
-import { RankingPoint } from '@badvlasim/shared/models';
+import {GraphQLNonNull, GraphQLObjectType} from 'graphql';
+import { attributeFields, defaultListArgs, resolver } from 'graphql-sequelize';
+import {RankingPlace, RankingPoint} from '@badvlasim/shared/models';
 import { RankingSystemType } from './rankingSystem.type';
 import { getAttributeFields } from './attributes.type';
 import {PlayerType} from "./player.type";
@@ -10,17 +10,15 @@ const RankingPointType = new GraphQLObjectType({
   description: 'A RankingPoint',
   fields: () =>
     Object.assign(getAttributeFields(RankingPoint), {
-      rankingSystem: {
-        type: RankingSystemType,
-        resolve: () => resolver(RankingPoint.associations.rankingSystem)
+      type: {
+        type: new GraphQLNonNull(RankingSystemType),
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(RankingPoint.associations.type)
       },
       player: {
-        type: PlayerType,
-        resolve: () => resolver(RankingPoint.associations.player, {
-          before: async (findOptions, args, context, info) => {
-            return findOptions;
-          }
-        })
+        type: new GraphQLNonNull(PlayerType),
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(RankingPoint.associations.player)
       }
     })
 });
