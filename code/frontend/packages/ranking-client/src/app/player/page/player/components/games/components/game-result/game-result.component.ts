@@ -36,9 +36,11 @@ export class GameResultComponent implements OnInit {
   }
 
   getRankingPoint(player: Player) {
-    return this.game.rankingPoints.find(
-      (rankingPoint) => rankingPoint.player === player
-    )
+    if(player) {
+      return this.game.rankingPoints.find(
+        (rankingPoint) => rankingPoint.player.id === player.id
+      )
+    }
   }
 
   constructor() { }
