@@ -11,17 +11,15 @@ import {
   Default
 } from 'sequelize-typescript';
 import { BuildOptions } from 'sequelize/types';
-import { EventType } from '../../enums';
-import { TypedModel } from '../model';
-import { Location } from './location.model';
-import { SubEvent } from './sub-event.model';
+import { Location } from '../location.model';
+import { SubEventCompetition } from './sub-event-competition.model';
 
 @Table({
   timestamps: true,
   schema: 'event'
 } as TableOptions)
-export class Event extends Model {
-  constructor(values?: Partial<Event>, options?: BuildOptions) {
+export class EventCompetition extends Model {
+  constructor(values?: Partial<EventCompetition>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -31,8 +29,6 @@ export class Event extends Model {
   @Column
   id: string;
 
-  @Column
-  toernamentNumber: string;
 
   @Unique('unique_constraint')
   @Column
@@ -40,18 +36,18 @@ export class Event extends Model {
 
   @Unique('unique_constraint')
   @Column
-  firstDay: Date;
+  startYear: number;
 
-  @Column
-  dates: string;
+  @HasMany(() => SubEventCompetition, 'EventId')
+  subEvents: SubEventCompetition[];
 
-  @Column(DataType.ENUM('COMPETITION', 'TOERNAMENT'))
-  type: EventType;
-
-  @HasMany(() => SubEvent, 'EventId')
-  subEvents: SubEvent[];
-
-  @HasMany(() => Location, 'eventId')
+  @HasMany(() => Location, {
+    foreignKey: 'eventId',
+    constraints: false,
+    scope: {
+      drawType: 'Tournament'
+    }
+  })
   locations: Location[];
 
   @Column

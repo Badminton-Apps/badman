@@ -2,8 +2,9 @@ import { GraphQLList, GraphQLObjectType } from 'graphql';
 import { attributeFields, resolver } from 'graphql-sequelize';
 import { Game } from '@badvlasim/shared/models';
 import { GamePlayerType } from './gamePlayer.type';
-import { DrawType } from './draw.type';
 import { getAttributeFields } from './attributes.type';
+import { DrawCompetitionType } from './competition';
+import { DrawTournamentType } from './tournaments';
 
 const GameType = new GraphQLObjectType({
   name: 'Game',
@@ -24,14 +25,14 @@ const GameType = new GraphQLObjectType({
             });
           }
         })
+      }, 
+      drawCompetition: {
+        type: DrawCompetitionType,
+        resolve: resolver(Game.associations.drawCompetition)
       },
-      draw: {
-        type: DrawType,
-        resolve: resolver(Game.associations.draw, {
-          before: async (findOptions, args, context, info) => {
-            return findOptions;
-          }
-        })
+      drawTournament: {
+        type: DrawTournamentType,
+        resolve: resolver(Game.associations.drawTournament)
       }
     })
 });

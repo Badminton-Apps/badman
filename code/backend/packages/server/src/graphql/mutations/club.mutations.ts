@@ -25,7 +25,7 @@ export const addClubMutation = {
         { transaction }
       );
 
-      transaction.commit();
+      transaction.commit(); 
       return clubDb;
     } catch (e) {
       logger.warn('rollback');

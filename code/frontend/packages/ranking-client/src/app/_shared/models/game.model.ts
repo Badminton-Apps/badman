@@ -6,7 +6,7 @@ export class Game {
   id: string;
   playedAt: Date;
   gameType: GameType | string;
-  players: PlayerGame[]; 
+  players: PlayerGame[];
   set1Team1?: number;
   set1Team2?: number;
   set2Team1?: number;
@@ -16,7 +16,11 @@ export class Game {
   winner: number;
   draw: Draw;
 
-  constructor({ ...args }: Partial<Game>) {
+  // internal
+  drawCompetition: Draw;
+  drawTournament: Draw;
+
+  constructor(args: Partial<Game>) {
     this.id = args.id;
     this.playedAt = args.playedAt;
     this.gameType = args.gameType;
@@ -28,7 +32,14 @@ export class Game {
     this.set3Team1 = args.set3Team1;
     this.set3Team2 = args.set3Team2;
     this.winner = args.winner;
-    this.draw = args.draw ? new Draw(args.draw) : null;
+
+    // it's usually on or the other
+    // Temporary doing this
+    if (args.drawCompetition) {
+      this.draw = new Draw(args.drawCompetition);
+    } else if (args.drawTournament) {
+      this.draw = new Draw(args.drawTournament);
+    }
   }
 }
 

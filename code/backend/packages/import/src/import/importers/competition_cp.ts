@@ -1,31 +1,35 @@
 import {
   Court,
   csvToArray,
-  Draw,
-  Event,
+  DrawCompetition,
+  EventCompetition,
   EventImportType,
   EventType,
   Game,
   GamePlayer,
-  ICsvEntry,
   ICsvPlayerMatchCp,
   ICsvTeamMatch,
-  ImportDraw,
   ImporterFile,
-  ImportSubEvent,
-  LevelType,
   logger,
-  SubEvent
+  SubEventCompetition
 } from '@badvlasim/shared';
 import moment from 'moment';
-import { FindOrCreateOptions, Transaction } from 'sequelize/types';
+import { Transaction } from 'sequelize/types';
 import { Mdb } from '../../convert/mdb';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
 
 export class CompetitionCpImporter extends Importer {
   constructor(mdb: Mdb, transaction: Transaction) {
-    super(mdb, EventType.COMPETITION, EventImportType.COMPETITION_CP, transaction);
+    super(
+      mdb,
+      EventType.COMPETITION,
+      EventImportType.COMPETITION_CP,
+      transaction,
+      EventCompetition,
+      SubEventCompetition,
+      DrawCompetition
+    );
   }
 
   async addImporterfile(fileLocation: string) {
@@ -39,7 +43,11 @@ export class CompetitionCpImporter extends Importer {
     return super.extractImporterFile();
   }
 
-  protected async addGames(draws: Draw[], players: TpPlayer[], courts: Map<string, Court>) {
+  protected async createGames(
+    draws: DrawCompetition[],
+    players: TpPlayer[],
+    courts: Map<string, Court>
+  ) {
     const csvPlayerMatches = await csvToArray<ICsvPlayerMatchCp[]>(
       await this.mdb.toCsv('PlayerMatch')
     );
@@ -74,7 +82,7 @@ export class CompetitionCpImporter extends Importer {
   }
 
   private async _gameFromCsv(
-    draw: Draw,
+    draw: DrawCompetition,
     players: TpPlayer[],
     csvPlayerMatch: ICsvPlayerMatchCp,
     courts: Map<string, Court>,
@@ -148,7 +156,7 @@ export class CompetitionCpImporter extends Importer {
     const playedAt = momentDate.isValid() ? momentDate.toDate() : plannedAt;
     const data = new Game({
       playedAt,
-      gameType: draw?.subEvent?.gameType, // S, D, MX
+      // gameType: draw?.subEvent?.gameType, // S, D, MX
       set1Team1,
       set1Team2,
       set2Team1,
@@ -157,9 +165,18 @@ export class CompetitionCpImporter extends Importer {
       set3Team2,
       winner: parseInt(csvPlayerMatch.winner, 10),
       drawId: draw.id,
+      drawType: 'competition',
       courtId: court?.id
     });
 
     return { game: data.toJSON(), gamePlayers };
+  }
+
+  protected async createEvent(importerFile: ImporterFile, transaction: Transaction) {
+    return new EventCompetition({
+      name: importerFile.name,
+      uniCode: importerFile.uniCode,
+      startYear: importerFile.firstDay.getFullYear()
+    }).save({ transaction });
   }
 }

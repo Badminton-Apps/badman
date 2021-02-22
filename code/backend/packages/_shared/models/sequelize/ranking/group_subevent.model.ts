@@ -7,20 +7,22 @@ import {
   Unique
 } from 'sequelize-typescript';
 import { RankingSystemGroup } from './group.model';
-import { SubEvent } from '../event';
 
 @Table({
   timestamps: false,
   schema: 'ranking'
 })
 export class GroupSubEvents extends Model {
-  @Unique('unique_constraint')
-  @ForeignKey(() => SubEvent)
+  @PrimaryKey
   @Column
-  SubEventId: string;
+  subEventId: string;
 
-  @Unique('unique_constraint')
+  @PrimaryKey
+  @Column
+  subEventType: string;
+
+  @PrimaryKey
   @ForeignKey(() => RankingSystemGroup)
   @Column
-  GroupId: string;
+  groupId: string;
 }

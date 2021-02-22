@@ -1,17 +1,14 @@
 # Write your query or mutation here
 query GetEvents(
   $first: Int
-  $order: [EventOrderBy]
-  $type: EventType
   $after: String
 	$where: SequelizeJSON
 ) {
-  events(orderBy: $order, first: $first, after: $after, type: $type, where: $where) {
+  eventTournaments(first: $first, after: $after, where: $where) {
     total
     edges {
       cursor
       node {
-        type
         id
         name
         dates

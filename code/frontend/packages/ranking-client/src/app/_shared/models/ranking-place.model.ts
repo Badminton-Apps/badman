@@ -31,7 +31,7 @@ export class RankingPlace {
   primary: boolean;
   player?: Player;
 
-  constructor({ ...args }: Partial<RankingPlace>) {
+  constructor(args: Partial<RankingPlace>) {
     this.singlePointsDowngrade = args.singlePointsDowngrade;
     this.singleRank = args.singleRank;
     this.totalSingleRanking = args.totalSingleRanking;
