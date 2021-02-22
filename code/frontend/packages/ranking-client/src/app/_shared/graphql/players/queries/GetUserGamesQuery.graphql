@@ -23,7 +23,7 @@ query GetUserGameQuery(
       playedAt
       winner
       gameType
-      draw {
+      drawCompetition {
         id
         name
         subEvent {
@@ -33,7 +33,22 @@ query GetUserGameQuery(
           levelType
           eventType
           event {
-            type
+            id
+            name
+            startYear
+          }
+        }
+      }
+      drawTournament {
+        id
+        name
+        subEvent {
+          id
+          name
+          level
+          gameType
+          eventType
+          event {
             id
             name
             firstDay

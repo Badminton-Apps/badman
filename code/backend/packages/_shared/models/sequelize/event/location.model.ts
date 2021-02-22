@@ -12,8 +12,8 @@ import {
   TableOptions,
   Unique
 } from 'sequelize-typescript';
+import { EventCompetition, EventTournament } from '.';
 import { Court } from './court.model';
-import { Event } from './event.model';
 
 @Table({
   timestamps: true,
@@ -51,11 +51,29 @@ export class Location extends Model {
   @HasMany(() => Court, 'locationId')
   courts: Court;
 
-  @BelongsTo(() => Event, 'eventId')
-  event: Event;
+  @BelongsTo(() => EventTournament, {
+    foreignKey: 'eventId',
+    constraints: false,
+    scope: {
+      eventType: 'tournament'
+    }
+  })
+  eventTournament: EventTournament;
 
-  @ForeignKey(() => Event)
+  @BelongsTo(() => EventCompetition, {
+    foreignKey: 'eventId',
+    constraints: false,
+    scope: {
+      eventType: 'competition'
+    }
+  })
+  eventCompetition: EventCompetition;
+
   @Unique('unique_constraint')
   @Column
   eventId: string;
+
+  @Unique('unique_constraint')
+  @Column
+  eventType: string;
 }

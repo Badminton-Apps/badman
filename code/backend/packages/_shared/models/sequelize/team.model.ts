@@ -18,7 +18,7 @@ import {
   BelongsToManyRemoveAssociationMixin
 } from 'sequelize/types';
 import { Club } from './club.model';
-import { SubEvent } from './event';
+import { SubEventCompetition } from './event/copmetition';
 import { Player } from './player.model';
 import { TeamMembership } from './team-membership.model';
 
@@ -40,8 +40,8 @@ export class Team extends Model {
   @Column
   abbreviation: string;
 
-  @BelongsTo(() => SubEvent, 'SubEventId')
-  subEvents?: SubEvent;
+  @BelongsTo(() => SubEventCompetition, 'SubEventId')
+  subEvent?: SubEventCompetition[];
 
   @BelongsTo(() => Club, 'ClubId')
   club?: Club;

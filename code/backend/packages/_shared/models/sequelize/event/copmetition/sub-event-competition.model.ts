@@ -6,27 +6,23 @@ import {
   Default,
   ForeignKey,
   HasMany,
-  Index,
   IsUUID,
   Model,
   PrimaryKey,
   Table,
   Unique
 } from 'sequelize-typescript';
-import { DrawType, GameType, LevelType, SubEventType } from '../../enums';
-import { Event } from './event.model';
-import { Game } from './game.model';
-import { GroupSubEvents, RankingSystemGroup } from '../ranking';
-import { Team } from '../team.model';
 import { BuildOptions } from 'sequelize/types';
-import { Draw } from './draw.model';
+import { DrawCompetition, GroupSubEvents, RankingSystemGroup, Team } from '../..';
+import { LevelType, SubEventType } from '../../..';
+import { EventCompetition } from './event-competition.model';
 
 @Table({
   timestamps: true,
   schema: 'event'
 })
-export class SubEvent extends Model {
-  constructor(values?: Partial<SubEvent>, options?: BuildOptions){
+export class SubEventCompetition extends Model {
+  constructor(values?: Partial<SubEventCompetition>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -34,7 +30,7 @@ export class SubEvent extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Column
-  id: string;  
+  id: string;
 
   @Unique('unique_constraint')
   @Column
@@ -45,37 +41,40 @@ export class SubEvent extends Model {
   eventType: SubEventType;
 
   @Unique('unique_constraint')
-  @Column(DataType.ENUM('S', 'D', 'MX'))
-  gameType: GameType;
-
-  @Unique('unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAAL'))
   levelType: LevelType;
 
   @Column
   level?: number;
 
+  @HasMany(() => Team, 'SubEventId')
+  teams: Team[];
+
   @Unique('unique_constraint')
   @Column
   internalId: number;
 
-  @BelongsToMany(
-    () => RankingSystemGroup,
-    () => GroupSubEvents
-  )
+  @BelongsToMany(() => RankingSystemGroup, {
+    through: {
+      model: () => GroupSubEvents,
+      unique: false,
+      scope: {
+        petType: "competition",
+      },
+    },
+    foreignKey: "subEventId",
+    otherKey: "groupId",
+  })
   groups: RankingSystemGroup[];
 
-  @HasMany(() => Team, 'SubEventId')
-  teams: Team[];
+  @HasMany(() => DrawCompetition, 'SubEventId')
+  draws: DrawCompetition[];
 
-  @HasMany(() => Draw, 'SubEventId')
-  draws: Draw[];
-
-  @BelongsTo(() => Event, 'EventId')
-  event?: Event;
+  @BelongsTo(() => EventCompetition, 'EventId')
+  event?: EventCompetition;
 
   @Unique('unique_constraint')
-  @ForeignKey(() => Event)
+  @ForeignKey(() => EventCompetition)
   @Column
   EventId: string;
 }
