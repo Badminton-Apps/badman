@@ -1,4 +1,4 @@
-import { AuthenticatedRequest, BaseController, DataBaseHandler, logger, Player, RequestLink } from '@badvlasim/shared';
+import { AuthenticatedRequest, BaseController, logger, Player, RequestLink } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 
 export class RequestLinkController extends BaseController {

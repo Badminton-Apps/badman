@@ -118,3 +118,4 @@ server/results/
 .DS_Store
 .vscode/
 rnd/*.sql
+erd.svg
