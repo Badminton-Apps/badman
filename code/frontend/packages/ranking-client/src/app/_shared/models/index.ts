@@ -13,5 +13,6 @@ export * from './sub-event.model';
 export * from './team.model';
 export * from './user.model';
 export * from './draw.model';
+export * from './ranking-point.model';
 // end:ng42.barrel
 

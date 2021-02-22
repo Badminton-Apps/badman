@@ -3,8 +3,7 @@ import {
 
   Input, OnInit
 } from '@angular/core';
-import { Game, Player } from '../../../../../../../_shared';
-import {RankingPoint} from "../../../../../../../_shared/models/ranking-point.model";
+import { Game, Player, RankingPoint } from '../../../../../../../_shared';
 
 @Component({
   selector: 'app-game-result',
