@@ -30,7 +30,7 @@ export class Game {
     this.set3Team1 = args.set3Team1;
     this.set3Team2 = args.set3Team2;
     this.winner = args.winner;
-    this.rankingPoints = args.rankingPoints;
+    this.rankingPoints = args.rankingPoints?.map(r => new RankingPoint(r));
     this.draw = args.draw ? new Draw(args.draw) : null;
   }
 }
