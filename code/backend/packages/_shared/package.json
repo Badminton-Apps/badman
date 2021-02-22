@@ -5,7 +5,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint --fix -c ../../.eslintrc.js ./**/*{.ts,.tsx}"
+    "lint": "eslint --fix -c ../../.eslintrc.js ./**/*{.ts,.tsx}",
+    "gen-erd": "node -r ts-node/register ./utils/generate-erd.ts"
   },
   "dependencies": {
     "@fast-csv/parse": "^4.3.1",
@@ -14,6 +15,9 @@
     "fast-csv": "^4.3.1",
     "http-proxy-middleware": "^1.0.6",
     "promise-callbacks": "^3.8.2"
+  },
+  "devDependencies": {
+    "sequelize-erd": "^1.3.1"
   },
   "peerDependencies": {
     "moment": "^2.24.0"
