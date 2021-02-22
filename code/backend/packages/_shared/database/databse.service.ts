@@ -1,22 +1,13 @@
 import { exec } from 'child_process';
-import {
-  CountOptions,
-  CreateOptions,
-  FindOptions,
-  IncludeOptions,
-  Op
-} from 'sequelize';
+import { CreateOptions, Op } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
   ClubMembership,
-  Draw,
-  Event,
+  DrawCompetition,
+  DrawTournament,
   Game,
   GamePlayer,
-  GroupSubEvents,
-  GroupSystems,
-  ImporterFile,
   Player,
   RankingPlace,
   RankingPoint,
@@ -25,7 +16,8 @@ import {
   RankingSystems,
   RequestLink,
   StartingType,
-  SubEvent,
+  SubEventCompetition,
+  SubEventTournament,
   Team,
   TeamMembership
 } from '../models';
@@ -88,8 +80,10 @@ export class DataBaseHandler {
       Team.getTableName(),
       Club.getTableName(),
       Game.getTableName(),
-      SubEvent.getTableName(),
-      Draw.getTableName(),
+      SubEventCompetition.getTableName(),
+      SubEventTournament.getTableName(),
+      DrawCompetition.getTableName(),
+      DrawTournament.getTableName(),
       RequestLink.getTableName()
     ];
 
@@ -160,10 +154,13 @@ export class DataBaseHandler {
       const transaction = await this._sequelize.transaction();
       const chunks: RankingPoint[][] = splitInChunks(rankingPoints, 500);
       for (const chunk of chunks) {
-        await RankingPoint.bulkCreate(chunk.map(c => c.toJSON()), {
-          transaction,
-          returning: false
-        });
+        await RankingPoint.bulkCreate(
+          chunk.map(c => c.toJSON()),
+          {
+            transaction,
+            returning: false
+          }
+        );
       }
       await transaction.commit();
     } catch (err) {
@@ -192,18 +189,6 @@ export class DataBaseHandler {
     }
   }
 
-  async addGames(games) {
-    logger.silly(`Importing ${games.length} games`);
-    try {
-      return await Game.bulkCreate(games, {
-        ignoreDuplicates: true,
-        returning: ['*']
-      });
-    } catch (err) {
-      logger.error('Something went wrong adding games', err);
-      throw err;
-    }
-  }
 
   async getGames(
     startDate: Date,
@@ -229,10 +214,31 @@ export class DataBaseHandler {
       include: [
         { model: Player, attributes: ['id'] },
         {
-          model: Draw,
+          model: DrawCompetition,
           include: [
             {
-              model: SubEvent,
+              model: SubEventCompetition,
+              attributes: [],
+              include: [
+                {
+                  model: RankingSystemGroup,
+                  attributes: [],
+                  required: true,
+                  through: {
+                    where: {
+                      GroupId: { [Op.in]: groups }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          model: DrawTournament,
+          include: [
+            {
+              model: SubEventTournament,
               attributes: [],
               include: [
                 {
@@ -292,7 +298,7 @@ export class DataBaseHandler {
       logger.error('Something went wrong adding ranking places');
       throw err;
     }
-  } 
+  }
 
   /**
    * Check if DB is migrated to latest version

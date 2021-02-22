@@ -55,7 +55,7 @@ export class PlayerService {
           limit,
         },
       })
-      .pipe(map((x: any) => x.data?.player?.games));
+      .pipe(map((x: any) => x.data?.player?.games?.map(g => new Game(g))));
   }
 
   getPlayerEvolution(

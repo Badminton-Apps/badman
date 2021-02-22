@@ -50,8 +50,6 @@ export class EventService {
       }>({
         query: getEventsQuery,
         variables: {
-          type,
-          order,
           first,
           after,
           where,

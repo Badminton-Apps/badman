@@ -11,13 +11,12 @@ import {
   Table,
   TableOptions
 } from 'sequelize-typescript';
-import { SubEvent } from './sub-event.model';
 import { GameType } from '../../enums/gameType.enum';
 import { Player } from '../player.model';
 import { Court } from './court.model';
 import { GamePlayer } from './game-player.model';
 import { BuildOptions } from 'sequelize';
-import { Draw } from './draw.model';
+import { DrawTournament, DrawCompetition } from '../../..';
 
 @Table({
   timestamps: true,
@@ -56,12 +55,29 @@ export class Game extends Model {
   @Column
   winner?: number;
 
-  @BelongsTo(() => Draw, 'drawId')
-  draw: Draw;
+  @BelongsTo(() => DrawTournament, {
+    foreignKey: 'drawId',
+    constraints: false,
+    scope: {
+      drawType: 'tournament'
+    }
+  })
+  drawTournament: DrawTournament;
 
-  @ForeignKey(() => Draw)
+  @BelongsTo(() => DrawCompetition, {
+    foreignKey: 'drawId',
+    constraints: false,
+    scope: {
+      drawType: 'competition'
+    }
+  })
+  drawCompetition: DrawCompetition;
+
   @Column
   drawId: string;
+
+  @Column
+  drawType: string;
 
   @BelongsTo(() => Court, 'courtId')
   court: Court;

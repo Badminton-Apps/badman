@@ -1,9 +1,11 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import {
-  addEventMutation,
+  addEventCompetitionMutation,
+  addEventTournamentMutation,
   addRankingSystemMutation,
   deleteImportedEventMutation,
-  updateEventMutation,
+  updateEventCompetitionMutation,
+  updateEventTournamentMutation,
   updateRankingSystemMutation,
   addRankingSystemGroupMutation,
   updateRankingSystemGroupMutation,
@@ -19,8 +21,8 @@ import {
   clubsQuery,
   teamQuery,
   teamsQuery,
-  eventQuery,
-  eventsQuery,
+  eventCompetitionQuery,
+  eventCompetitionsQuery,
   gamesQuery,
   importedQuery,
   playerQuery,
@@ -29,7 +31,9 @@ import {
   systemQuery,
   systemsGroupsQuery,
   systemsQuery,
-  clubQuery
+  clubQuery,
+  eventTournamentQuery,
+  eventTournamentsQuery
 } from './queries';
 
 export const createSchema = () => {
@@ -40,8 +44,10 @@ export const createSchema = () => {
         player: playerQuery,
         playerSearch: playerSearchQuery,
         players: playersQuery,
-        event: eventQuery,
-        events: eventsQuery,
+        // eventCompetition: eventCompetitionQuery,
+        // eventCompetitions: eventCompetitionsQuery,
+        eventTournament: eventTournamentQuery,
+        eventTournaments: eventTournamentsQuery,
         imported: importedQuery,
         games: gamesQuery,
         team: teamQuery,
@@ -63,8 +69,10 @@ export const createSchema = () => {
         updateTeam: updateTeamMutation,
         addPlayerToTeam: addPlayerToTeamMutation,
         removePlayerToTeam: removePlayerToTeamMutation,
-        addEvent: addEventMutation,
-        updateEvent: updateEventMutation,
+        // addEventCompetition: addEventCompetitionMutation,
+        addEventTournament: addEventTournamentMutation,
+        // updateEventCompetition: updateEventCompetitionMutation,
+        updateEventTournament: updateEventTournamentMutation,
         addRankingSystem: addRankingSystemMutation,
         updateRankingSystem: updateRankingSystemMutation,
         addRankingSystemGroup: addRankingSystemGroupMutation,

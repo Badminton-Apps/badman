@@ -40,5 +40,8 @@ export const TeamType = new GraphQLObjectType({
 export const TeamInputType = new GraphQLInputObjectType({
   name: 'TeamInput',
   description: 'This represents a TeamnputType',
-  fields: () => Object.assign(getAttributeFields(Team, true))
+  fields: () =>
+    Object.assign(
+      getAttributeFields(Team, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] })
+    )
 });
