@@ -58,7 +58,7 @@ export class ImporterFile extends Model {
   importing: boolean;
 
   @Column
-  toernamentNumber: number;
+  tournamentNumber: number;
 
   @HasMany(() => ImportSubEvent, 'FileId')
   subEvents: ImportSubEvent[];

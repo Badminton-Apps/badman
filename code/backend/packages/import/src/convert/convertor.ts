@@ -1,7 +1,8 @@
 import {
   DataBaseHandler,
-  Event,
+  EventCompetition,
   EventImportType,
+  EventTournament,
   EventType,
   ImporterFile,
   logger
@@ -22,7 +23,7 @@ export class Convertor {
   }
 
   private _setupQueue() {
-    this._importEmitter.on('add_to_convert_queue', async (imported: ImporterFile, event: Event) => {
+    this._importEmitter.on('add_to_convert_queue', async (imported: ImporterFile, event: EventCompetition | EventTournament) => {
       if (!this._queue.find(r => r.imported.id === imported.id)) {
         imported.importing = true;
         await imported.save();
@@ -94,11 +95,11 @@ export class Convertor {
     }
   }
 
-  convert(imported: ImporterFile, event: Event) {
+  convert(imported: ImporterFile, event: EventCompetition | EventTournament) {
     this._importEmitter.emit('add_to_convert_queue', imported, event);
   }
 
-  private async _convertItem(imported: ImporterFile, event: Event, transaction: Transaction) {
+  private async _convertItem(imported: ImporterFile, event: EventCompetition | EventTournament, transaction: Transaction) {
     let mdb: Mdb;
     switch (imported.type) {
       case EventImportType.TOERNAMENT:
@@ -111,7 +112,7 @@ export class Convertor {
         return competitionCpImporter.addEvent(imported, event);
       case EventImportType.COMPETITION_XML:
         const competitionXmlImporter = new CompetitionXmlImporter(transaction);
-        return competitionXmlImporter.addEvent(imported, event);
+        return competitionXmlImporter.addEvent(imported, event as EventCompetition);
       default:
         logger.warn('Unsupperted type', imported.type);
         return null;

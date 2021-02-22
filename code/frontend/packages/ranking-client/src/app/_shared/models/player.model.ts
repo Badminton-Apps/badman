@@ -12,7 +12,7 @@ export class Player {
   rankingPlaces: RankingPlace[];
   games: Game[];
 
-  constructor({ ...args }: Partial<Player>) {
+  constructor(args: Partial<Player>) {
     this.id = args.id;
     this.memberId = args.memberId;
     this.gender = args.gender;
@@ -30,7 +30,7 @@ export class PlayerGame extends Player {
   team: number;
   player: number;
 
-  constructor({ ...args }: Partial<PlayerGame>) {
+  constructor(args: Partial<PlayerGame>) {
     super(args);
 
     this.rankingPlace = args.rankingPlace

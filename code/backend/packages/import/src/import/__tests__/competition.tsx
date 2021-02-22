@@ -1,6 +1,12 @@
 import { join } from 'path';
 import { Transaction } from 'sequelize/types';
-import { DataBaseHandler, Event, Game, ImporterFile, logger, Player, SubEvent } from '../../../../_shared';
+import {
+  DataBaseHandler,
+  EventCompetition,
+  ImporterFile,
+  Player,
+  SubEventCompetition
+} from '../../../../_shared';
 import { Mdb } from '../../convert/mdb';
 import { CompetitionCpImporter } from '../importers';
 
@@ -25,7 +31,6 @@ describe('Competition', () => {
     // Clear eveything
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
-
 
   it('Should have initialized correctly', async () => {
     // Arrange
@@ -52,12 +57,12 @@ describe('Competition', () => {
 
     // Assert
 
-    const event = await Event.findOne({
-      include: [SubEvent]
+    const event = await EventCompetition.findOne({
+      include: [SubEventCompetition]
     });
 
     const players = await Player.findAndCountAll();
-    const subevents = await SubEvent.findAll();
+    const subevents = await SubEventCompetition.findAll();
 
     expect(players.count).toBe(0);
     expect(event.subEvents.length).toBe(13);

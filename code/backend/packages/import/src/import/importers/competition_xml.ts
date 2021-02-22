@@ -4,9 +4,9 @@ import {
   correctWrongPlayers,
   Court,
   DataBaseHandler,
-  Draw,
+  DrawCompetition,
   DrawType,
-  Event,
+  EventCompetition,
   EventImportType,
   EventType,
   flatten,
@@ -17,7 +17,7 @@ import {
   LevelType,
   logger,
   Player,
-  SubEvent,
+  SubEventCompetition,
   SubEventType,
   Team,
   TeamMembership,
@@ -32,7 +32,15 @@ import { Importer } from '../importer';
 
 export class CompetitionXmlImporter extends Importer {
   constructor(transaction: Transaction) {
-    super(null, EventType.COMPETITION, EventImportType.COMPETITION_XML, transaction);
+    super(
+      null,
+      EventType.COMPETITION,
+      EventImportType.COMPETITION_XML,
+      transaction,
+      EventCompetition,
+      SubEventCompetition,
+      DrawCompetition
+    );
   }
 
   async addImporterfile(fileLocation: string) {
@@ -74,7 +82,7 @@ export class CompetitionXmlImporter extends Importer {
     return file.save();
   }
 
-  async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
+  async addEvent(importerFile: ImporterFile, event?: EventCompetition): Promise<EventCompetition> {
     const xmlData = parse(readFileSync(importerFile.fileLocation, 'utf8'));
     const teams = Array.isArray(xmlData.League.Team)
       ? [...xmlData.League.Team]
@@ -86,9 +94,8 @@ export class CompetitionXmlImporter extends Importer {
     if (event == null) {
       logger.warn("This isn't really intended");
 
-      event = await new Event({
-        name: importerFile.name,
-        type: EventType.COMPETITION
+      event = await new EventCompetition({
+        name: importerFile.name
       }).save();
     }
 
@@ -103,13 +110,21 @@ export class CompetitionXmlImporter extends Importer {
 
   // #region internal
 
-  protected addGames(draws: Draw[], players: TpPlayer[], courts: Map<string, Court>) {
+  protected createGames(draws: DrawCompetition[], players: TpPlayer[], courts: Map<string, Court>) {
     throw new Error('Nope! use addGamesXML!');
+  }
+
+  protected async createEvent(importerFile: ImporterFile, transaction: Transaction) {
+    return new EventCompetition({
+      name: importerFile.name,
+      uniCode: importerFile.uniCode,
+      startYear: importerFile.firstDay.getFullYear()
+    }).save({ transaction });
   }
 
   protected async addGamesXml(
     players: Map<string, Player>,
-    event: Event,
+    event: EventCompetition,
     xmlData: any,
     importerFile: ImporterFile
   ) {
@@ -119,9 +134,9 @@ export class CompetitionXmlImporter extends Importer {
         EventId: event.id,
         internalId: xmlEvent.EventSiebelId
       };
-      let dbSubevent = await SubEvent.findOne({
+      let dbSubevent = await SubEventCompetition.findOne({
         where: subEventWhere,
-        include: [Draw]
+        include: [DrawCompetition]
       });
 
       const xmlDivisions = Array.isArray(xmlEvent.Division)
@@ -144,10 +159,9 @@ export class CompetitionXmlImporter extends Importer {
         // 3 = Double M
         // 4 = Double D
         // 5 = MIX
-        dbSubevent = await new SubEvent({
+        dbSubevent = await new SubEventCompetition({
           name: xmlEvent.EventName,
           internalId: xmlEvent.EventSiebelId,
-          gameType: matches.find(r => r.MatchType === 5) ? GameType.MX : GameType.D,
           eventType: matches.find(r => r.MatchType === 5)
             ? SubEventType.MX
             : matches.find(r => r.MatchType === 1)
@@ -167,7 +181,7 @@ export class CompetitionXmlImporter extends Importer {
         let dbDraw = dbSubevent?.draws?.find(r => r.internalId === division.DivisionLPId);
 
         if (!dbDraw) {
-          dbDraw = await new Draw({
+          dbDraw = await new DrawCompetition({
             name: division.DivisionName,
             type: DrawType.POULE,
             SubEventId: dbSubevent.id,
@@ -186,7 +200,10 @@ export class CompetitionXmlImporter extends Importer {
             continue;
           }
 
-          const xmlMatches = (Array.isArray(fixture.Match) ? [...fixture.Match] : [fixture.Match]).filter(m => m);
+          const xmlMatches = (Array.isArray(fixture.Match)
+            ? [...fixture.Match]
+            : [fixture.Match]
+          ).filter(m => m);
 
           const time = fixture.FixtureStartTime.split(':');
           const playedAt = new Date(
@@ -210,7 +227,8 @@ export class CompetitionXmlImporter extends Importer {
               set3Team1: match.MatchTeam3Set1,
               set3Team2: match.MatchTeam3Set2,
               winner: match.MatchWinner,
-              drawId: dbDraw.id
+              drawId: dbDraw.id,
+              drawType: 'competition'
             });
 
             const loserTeam = match.MatchWinner === 1 ? 2 : 1;
@@ -301,7 +319,10 @@ export class CompetitionXmlImporter extends Importer {
     await GamePlayer.bulkCreate(flatten(gamePlayersWithGameId), { ignoreDuplicates: true });
   }
 
-  protected async addPlayersXml(xmlData: any[], event: Event): Promise<Map<string, Player>> {
+  protected async addPlayersXml(
+    xmlData: any[],
+    event: EventCompetition
+  ): Promise<Map<string, Player>> {
     const teams = [];
     const players = new Map<string, Player>();
 
@@ -377,7 +398,7 @@ export class CompetitionXmlImporter extends Importer {
       dbPlayerMap.set(mapVersion[0], dbPlayer);
     }
 
-    await this._addToTeamsAndClubs(teams, dbPlayers, moment(event.firstDay));
+    await this._addToTeamsAndClubs(teams, dbPlayers, moment([event.startYear, 7, 1]));
 
     return dbPlayerMap;
   }

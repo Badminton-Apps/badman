@@ -1,35 +1,38 @@
 import {
   correctWrongPlayers,
+  Court,
   csvToArray,
-  Event,
+  DataBaseHandler,
+  DrawCompetition,
+  DrawTournament,
+  DrawType,
+  EventCompetition,
+  EventImportType,
+  EventTournament,
   EventType,
   flatten,
   Game,
   GamePlayer,
+  GameType,
+  ICsvCourt,
   ICsvDraw,
   ICsvEvent,
   ICsvLocation,
-  ICsvCourt,
+  ImportDraw,
   ImporterFile,
+  ImportSubEvent,
+  LevelType,
+  Location,
   logger,
   Player,
-  SubEvent,
-  titleCase,
-  Court,
-  Location,
-  EventImportType,
-  LevelType,
-  GameType,
-  DrawType,
-  Draw,
-  DataBaseHandler,
+  SubEventCompetition,
+  SubEventTournament,
   SubEventType,
-  ImportSubEvent,
-  ImportDraw
+  titleCase
 } from '@badvlasim/shared';
-import { Hash } from 'crypto';
 import { existsSync as dbCours } from 'fs';
-import { FindOrCreateOptions, Op, Transaction } from 'sequelize';
+import { FindOrCreateOptions, ModelCtor, Op, Transaction } from 'sequelize';
+import { Model } from 'sequelize-typescript';
 import { Mdb } from '../convert/mdb';
 import { TpPlayer } from '../models';
 
@@ -38,23 +41,30 @@ export abstract class Importer {
     protected mdb: Mdb,
     protected type: EventType,
     protected importType: EventImportType,
-    protected transaction: Transaction
+    protected transaction: Transaction,
+
+    protected eventModel: ModelCtor<EventCompetition | EventTournament>,
+    protected subEventModel: ModelCtor<SubEventCompetition | SubEventTournament>,
+    protected drawModel: ModelCtor<DrawCompetition | DrawTournament>
   ) {}
 
-  async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
+  async addEvent(
+    importerFile: ImporterFile,
+    event?: EventCompetition | EventTournament
+  ): Promise<EventCompetition | EventTournament> {
     try {
       if (event == null) {
         event = await this.addEventFromImporterFile(importerFile);
       } else {
         // Cleanup
-        const subEvents = await SubEvent.findAll({
+        const subEvents = await this.subEventModel.findAll({
           where: {
             EventId: event.id
           },
-          include: [{ model: Draw }]
+          include: [{ model: this.drawModel }]
         });
 
-        const draws = subEvents.map(s => s.draws.map(r => r.id)).flat(1);
+        const draws = (subEvents as any).map(s => s.draws.map(r => r.id)).flat(1);
 
         await Game.destroy({
           where: {
@@ -74,8 +84,8 @@ export abstract class Importer {
         return event;
       }
 
-      await this.addGames(
-        event.subEvents
+      await this.createGames(
+        (event.subEvents as any)
           .map(s => {
             s.draws.map(d => {
               d.subEvent = s;
@@ -93,7 +103,7 @@ export abstract class Importer {
     }
   }
 
-  protected async addLocations(event: Event) {
+  protected async addLocations(event: EventCompetition | EventTournament) {
     const csvLocations = await csvToArray<ICsvLocation[]>(await this.mdb.toCsv('Location'), {
       onError: e => {
         logger.error('Parsing went wrong', {
@@ -108,7 +118,8 @@ export abstract class Importer {
       const [dbLocation, created] = await Location.findOrCreate({
         where: {
           name: location.name,
-          eventId: event.id
+          eventId: event.id,
+          eventType: event instanceof EventTournament? 'tournament' : 'competition'
         },
         defaults: {
           name: location.name,
@@ -118,7 +129,8 @@ export abstract class Importer {
           state: location.state || undefined,
           phone: location.phone || undefined,
           fax: location.fax || undefined,
-          eventId: event.id
+          eventId: event.id,
+          eventType: event instanceof EventTournament? 'tournament' : 'competition'
         }
       });
 
@@ -177,8 +189,7 @@ export abstract class Importer {
     const options: FindOrCreateOptions = {
       defaults: file.toJSON(),
       where: {
-        name: file.name,
-        dates: file.dates
+        name: file.name
       }
     };
 
@@ -260,29 +271,22 @@ export abstract class Importer {
     const where: {
       // Required
       name: string;
-      dates: string;
-      type: string;
       // optional
       [key: string]: any;
     } = {
       name: importerFile.name,
-      dates: importerFile.dates,
-      type: this.type
     };
 
     if (importerFile.uniCode) {
       where.uniCode = importerFile.uniCode;
     }
-    if (importerFile.firstDay) {
-      where.firstDay = importerFile.firstDay;
-    }
-    if (importerFile.toernamentNumber) {
-      where.toernamentNumber = importerFile.toernamentNumber;
+    if (importerFile.tournamentNumber) {
+      where.tournamentNumber = importerFile.tournamentNumber;
     }
 
-    const foundEvent = await Event.findOne({
+    const foundEvent = await this.eventModel.findOne({
       where,
-      include: [{ model: SubEvent }]
+      include: [{ model: this.subEventModel }]
     });
 
     if (foundEvent) {
@@ -291,24 +295,17 @@ export abstract class Importer {
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbEvent = await Event.build({
-        name: importerFile.name,
-        uniCode: importerFile.uniCode,
-        firstDay: importerFile.firstDay,
-        dates: importerFile.dates,
-        toernamentNumber: importerFile.toernamentNumber,
-        type: this.type
-      }).save({ transaction });
+      const dbEvent = await this.createEvent(importerFile, transaction);
 
       const subEvents = [];
       for (const subEvent of importerFile.subEvents) {
         // Remove id from importerSubEvent
         const { id: subEventId, ...importSubEvent } = subEvent.toJSON() as any;
 
-        const sub = new SubEvent({
+        const sub = new this.subEventModel({
           ...importSubEvent,
           EventId: dbEvent.id
-        });
+        }) as SubEventCompetition | SubEventTournament;
 
         await sub.save({ transaction });
 
@@ -316,7 +313,7 @@ export abstract class Importer {
         for (const draw of subEvent.draws) {
           // Remove id from importerSubEvent
           const { id: drawId, ...importDraw } = draw.toJSON() as any;
-          const d = await new Draw({
+          const d = await new this.drawModel({
             ...importDraw,
             SubEventId: sub.id
           }).save({ transaction });
@@ -344,7 +341,7 @@ export abstract class Importer {
       linkCode: string;
       webID: string;
       uniCode: string;
-      toernamentNumber: number;
+      tournamentNumber: number;
     }>(settingsCsv, {
       onEnd: data => {
         return {
@@ -356,7 +353,7 @@ export abstract class Importer {
             ?.value as string,
           uniCode: data.find((r: { name: string }) => r.name.toLowerCase() === 'unicode')
             ?.value as string,
-          toernamentNumber: data.find(
+          tournamentNumber: data.find(
             (r: { name: string }) => r.name.toLowerCase() === 'tournamentNr'
           )?.value as number
         };
@@ -515,8 +512,6 @@ export abstract class Importer {
     });
   }
 
-  protected abstract addGames(draw: Draw[], players: TpPlayer[], courts: Map<string, Court>);
-
   /// Helper functions
   protected isElkGeslacht(gender) {
     return gender === 6;
@@ -575,4 +570,16 @@ export abstract class Importer {
         : LevelType.NATIONAAL;
     }
   }
+
+  // #region createTypes
+
+  protected abstract createGames(
+    draw: DrawCompetition[] | DrawTournament[],
+    players: TpPlayer[],
+    courts: Map<string, Court>
+  );
+
+  protected abstract createEvent(importerFile: ImporterFile, transaction: Transaction);
+
+  // #endregion
 }

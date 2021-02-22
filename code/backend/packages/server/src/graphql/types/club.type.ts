@@ -6,13 +6,12 @@ import {
   GraphQLObjectType,
   GraphQLString
 } from 'graphql';
-import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
+import { createConnection, defaultListArgs, resolver, attributeFields } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
-import { getAttributeFields } from './attributes.type';
 import { PlayerType } from './player.type';
 import { TeamType } from './team.type';
 import moment from 'moment';
-import { logger } from '@badvlasim/shared';
+import { getAttributeFields } from './attributes.type';
 
 export const ClubType = new GraphQLObjectType({
   name: 'Club',
@@ -53,7 +52,7 @@ export const ClubType = new GraphQLObjectType({
 export const ClubInputType = new GraphQLInputObjectType({
   name: 'ClubInput',
   description: 'This represents a ClubnputType',
-  fields: () => Object.assign(getAttributeFields(Club, true))
+  fields: () => Object.assign(getAttributeFields(Club, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }))
 });
 
 export const ClubConnectionType = createConnection({

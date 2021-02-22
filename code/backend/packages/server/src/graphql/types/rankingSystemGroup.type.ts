@@ -11,5 +11,5 @@ export const RankingSystemGroupType = new GraphQLObjectType({
 export const RankingSystemGroupInputType = new GraphQLInputObjectType({
   name: 'RankingSystemGroupInput',
   description: 'This represents a RankingSystemGroupInput',
-  fields: () => Object.assign(getAttributeFields(RankingSystemGroup, true), {})
+  fields: () => Object.assign(getAttributeFields(RankingSystemGroup, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }), {})
 });

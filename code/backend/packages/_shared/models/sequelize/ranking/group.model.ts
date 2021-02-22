@@ -12,7 +12,7 @@ import {
 } from 'sequelize-typescript';
 import { BuildOptions } from 'sequelize/types';
 import { RankingSystem } from '../../..';
-import { SubEvent } from '../event';
+import { SubEventCompetition, SubEventTournament } from '../event';
 import { GroupSubEvents } from './group_subevent.model';
 import { GroupSystems } from './group_system.model';
 
@@ -22,8 +22,8 @@ import { GroupSystems } from './group_system.model';
   schema: 'ranking'
 })
 export class RankingSystemGroup extends Model {
-  constructor(values ?: Partial<RankingSystemGroup>, options?: BuildOptions){
-    super(values, options)
+  constructor(values?: Partial<RankingSystemGroup>, options?: BuildOptions) {
+    super(values, options);
   }
 
   @Default(DataType.UUIDV4)
@@ -36,11 +36,31 @@ export class RankingSystemGroup extends Model {
   @Column
   name: string;
 
-  @BelongsToMany(
-    () => SubEvent,
-    () => GroupSubEvents
-  )
-  subEvents: SubEvent[];
+  @BelongsToMany(() => SubEventCompetition, {
+    through: {
+      model: () => GroupSubEvents,
+      unique: false,
+      scope: {
+        subEventType: "competition",
+      },
+    },
+    foreignKey: "groupId",
+    otherKey: "subEventId",
+  })
+  subEventCompetitions: SubEventCompetition[];
+
+  @BelongsToMany(() => SubEventTournament, {
+    through: {
+      model: () => GroupSubEvents,
+      unique: false,
+      scope: {
+        subEventType: "tournament",
+      },
+    },
+    foreignKey: "groupId",
+    otherKey: "subEventId",
+  })
+  subEventTournaments: SubEventTournament[];
 
   @BelongsToMany(
     () => RankingSystem,
