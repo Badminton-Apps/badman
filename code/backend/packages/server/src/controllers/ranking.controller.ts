@@ -19,7 +19,7 @@ import zipstream from 'zip-stream';
 export class RankingController extends BaseController {
   private _path = '/ranking';
 
-  constructor(router: Router, authRouter: Router, private _databaseService: DataBaseHandler) {
+  constructor(router: Router, authRouter: Router) {
     super(router, authRouter);
 
     this._intializeRoutes();
