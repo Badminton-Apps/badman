@@ -2,7 +2,8 @@ import {
   BelongsTo,
   BelongsToMany,
   Column,
-  DataType,
+  DataType, 
+  HasMany,
   Default,
   ForeignKey,
   IsUUID,
@@ -12,10 +13,11 @@ import {
   TableOptions
 } from 'sequelize-typescript';
 import { SubEvent } from './sub-event.model';
-import { GameType } from '../../enums/gameType.enum';
+import { GameType } from '../../enums';
 import { Player } from '../player.model';
 import { Court } from './court.model';
 import { GamePlayer } from './game-player.model';
+import { RankingPoint } from '../ranking';
 import { BuildOptions } from 'sequelize';
 import { Draw } from './draw.model';
 
@@ -55,6 +57,9 @@ export class Game extends Model {
 
   @Column
   winner?: number;
+
+  @HasMany(() => RankingPoint, 'GameId')
+  rankingPoints?: RankingPoint[];
 
   @BelongsTo(() => Draw, 'drawId')
   draw: Draw;
