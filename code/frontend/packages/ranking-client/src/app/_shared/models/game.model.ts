@@ -1,6 +1,7 @@
 import { PlayerGame } from '../../_shared';
 import { Draw } from './draw.model';
 import { SubEvent } from './sub-event.model';
+import { RankingPoint } from "./ranking-point.model";
 
 export class Game {
   id: string;
@@ -14,6 +15,7 @@ export class Game {
   set3Team1?: number;
   set3Team2?: number;
   winner: number;
+  rankingPoints: RankingPoint[];
   draw: Draw;
 
   // internal
@@ -32,6 +34,7 @@ export class Game {
     this.set3Team1 = args.set3Team1;
     this.set3Team2 = args.set3Team2;
     this.winner = args.winner;
+    this.rankingPoints = args.rankingPoints?.map(r => new RankingPoint(r));
 
     // it's usually on or the other
     // Temporary doing this
