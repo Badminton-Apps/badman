@@ -98,7 +98,7 @@ export class BvlRankingCalc extends RankingCalc {
   ) {
     const eligbleForRanking: Map<string, RankingPoint[]> = new Map();
     logger.debug(
-      `calculateRankingPlacesAsync for preiod ${startDate.toISOString()} - ${endDate.toISOString()}`
+      `calculateRankingPlacesAsync for period ${startDate.toISOString()} - ${endDate.toISOString()}`
     );
     (
       await RankingPoint.findAll({
