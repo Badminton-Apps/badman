@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config()
+require('dotenv').config();
 
 const retries = 10;
 
@@ -9,7 +9,7 @@ module.exports = {
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   dialect: process.env.DB_DIALECT,
-migrationStorageTableSchema: 'public',
+  migrationStorageTableSchema: 'public',
   logging: false,
   retry: {
     max: retries,
@@ -21,4 +21,4 @@ migrationStorageTableSchema: 'public',
     acquire: 30000,
     idle: 10000
   }
-}; 
+};
