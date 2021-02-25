@@ -13,7 +13,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/label-pr.yml
   build:
-    name: Bootstrap, Build & Test
+    name: Bootstrap, Build & Test.
     runs-on: ubuntu-latest
     strategy:
       matrix:
