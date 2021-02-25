@@ -34,12 +34,9 @@ jobs:
         working-directory: code/${{ matrix.folder }}
       - run: npx lerna run test
         working-directory: code/${{ matrix.folder }}
-      - uses: codecov/codecov-action@v1
-        with:
-          file: lcov.info
-          name: codecov-${{ matrix.folder }}
-          directory: code/${{ matrix.folder }}/packages/**/coverage/
-          verbose: true
-          fail_ci_if_error: false
+      - name: Upload coverage
+        run: covr::codecov()
+        working-directory: code/${{ matrix.folder }}
+        shell: Rscript {0}
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}
