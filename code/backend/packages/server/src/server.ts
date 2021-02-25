@@ -39,7 +39,7 @@ const startServer = (databaseService: DataBaseHandler) => {
   const app = new App(
     process.env.PORT,
     [
-      new RankingController(router, authRouter, databaseService),
+      new RankingController(router, authRouter),
       new SystemController(router, authRouter, databaseService),
       new TournamentController(router, authRouter),
       new UserController(router, authRouter),

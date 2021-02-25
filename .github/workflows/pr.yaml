@@ -34,7 +34,7 @@ jobs:
         working-directory: code/${{ matrix.folder }}
       - run: npx lerna run test
         working-directory: code/${{ matrix.folder }}
-      - uses: codecov/codecov-action@v1.2.1
+      - uses: codecov/codecov-action@v1
         with:
           file: packages/**/lcov.info
           name: codecov-${{ matrix.folder }}
