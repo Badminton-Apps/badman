@@ -11,7 +11,6 @@ jobs:
         uses: actions/labeler@main
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          # Here we can override the path for the action configuration. If none is provided, default one is `.github/label-pr.yml`
           configuration-path: .github/label-pr.yml
   build:
     name: Bootstrap, Build & Test
