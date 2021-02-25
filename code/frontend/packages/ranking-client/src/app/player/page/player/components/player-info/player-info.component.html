@@ -8,5 +8,6 @@
   <div class="has-user" [routerLink]="['/player', this.player.id]">
     {{ this.player.firstName }} {{ this.player.lastName }}
     <ng-container *ngIf="this.ranking">({{ this.ranking }})</ng-container>
+    <div class="ranking-points" *ngIf="rankingPoint && (isUsedForUpgrade || isUsedForDowngrade)"> +{{rankingPoint.points}}</div>
   </div>
 </ng-container>
