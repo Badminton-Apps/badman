@@ -105,6 +105,9 @@ dist
 # TernJS port file
 .tern-port
 
+# IntelliJ
+*.idea
+
 *.tp
 *.TP
 *.cp
@@ -118,3 +121,5 @@ server/results/
 .DS_Store
 .vscode/
 rnd/*.sql
+erd.svg
+
