@@ -37,5 +37,6 @@ jobs:
         with:
           name: codecov-${{ matrix.folder }}
           directory: code/${{ matrix.folder }}
+          override_pr: ${{ github.event.number }}
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}
