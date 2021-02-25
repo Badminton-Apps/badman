@@ -25,5 +25,5 @@ module.exports = {
     ]
   ],
   testEnvironment: 'node',
-  coverageReporters: ['cobertura', 'text-summary', 'lcov']
+  coverageReporters: ['text-summary', 'lcov']
 };
