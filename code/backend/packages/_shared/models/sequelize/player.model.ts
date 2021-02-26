@@ -1,4 +1,10 @@
-import { RankingPlace, RankingPoint, RankingSystem } from './ranking';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BuildOptions
+} from 'sequelize';
 import {
   BelongsToMany,
   Column,
@@ -12,10 +18,12 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { GamePlayer, Game } from './event';
+import { ClubMembership } from '../..';
+import { Club } from './club.model';
+import { Game, GamePlayer } from './event';
+import { RankingPlace, RankingPoint, RankingSystem } from './ranking';
 import { TeamMembership } from './team-membership.model';
 import { Team } from './team.model';
-import { BuildOptions } from 'sequelize/types';
 
 @Table({
   timestamps: true,
@@ -83,6 +91,17 @@ export class Player extends Model {
   )
   // eslint-disable-next-line @typescript-eslint/naming-convention
   games: (Game & { GamePlayer: GamePlayer })[];
+
+  @BelongsToMany(
+    () => Club,
+    () => ClubMembership
+  )
+  clubs: Club[];
+
+  public getClubs!: BelongsToManyGetAssociationsMixin<Club>;
+  public addClub!: BelongsToManyAddAssociationMixin<Club, string>;
+  public removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
+  public hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
 
   getLastRanking(system: string, max: number): RankingPlace {
     if (!this.rankingPlaces) {

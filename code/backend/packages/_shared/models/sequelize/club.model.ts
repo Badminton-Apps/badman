@@ -19,7 +19,8 @@ import {
   BuildOptions,
   HasManyGetAssociationsMixin
 } from 'sequelize/types';
-import { Team } from '../..';
+import { Location, Team } from '../..';
+import { ClubLocation } from './club-location.model';
 import { ClubMembership } from './club-membership.model';
 import { Player } from './player.model';
 
@@ -60,4 +61,14 @@ export class Club extends Model {
   public getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
   public addPlayer!: BelongsToManyAddAssociationMixin<Player, number>;
   public hasPlayer!: BelongsToManyHasAssociationMixin<Player, number>;
+
+  @BelongsToMany(
+    () => Location,
+    () => ClubLocation
+  )
+  locations: Location[];
+
+  public getLocations!: BelongsToManyGetAssociationsMixin<Location>;
+  public addLocation!: BelongsToManyAddAssociationMixin<Location, number>;
+  public hasLocation!: BelongsToManyHasAssociationMixin<Location, number>;
 }
