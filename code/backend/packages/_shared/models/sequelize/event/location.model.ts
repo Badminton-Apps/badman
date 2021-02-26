@@ -1,9 +1,8 @@
 import {
-  BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   Default,
-  ForeignKey,
   HasMany,
   IsUUID,
   Model,
@@ -12,8 +11,15 @@ import {
   TableOptions,
   Unique
 } from 'sequelize-typescript';
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyRemoveAssociationMixin
+} from 'sequelize';
+import { Club } from '../../..';
+import { ClubLocation } from '../club-location.model';
 import { Court } from './court.model';
-import { Event } from './event.model';
 
 @Table({
   timestamps: true,
@@ -51,11 +57,14 @@ export class Location extends Model {
   @HasMany(() => Court, 'locationId')
   courts: Court;
 
-  @BelongsTo(() => Event, 'eventId')
-  event: Event;
+  @BelongsToMany(
+    () => Club,
+    () => ClubLocation
+  )
+  clubs: Club[];
 
-  @ForeignKey(() => Event)
-  @Unique('unique_constraint')
-  @Column
-  eventId: string;
+  public getClubs!: BelongsToManyGetAssociationsMixin<Club>;
+  public addClub!: BelongsToManyAddAssociationMixin<Club, string>;
+  public removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
+  public hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
 }
