@@ -61,7 +61,7 @@ export class GamesComponent implements OnInit {
           this.request$ = this.playerService
             .getPlayerGames(
               playerId,
-              system.id,
+              system,
               page * this.pageSize,
               this.pageSize
             )
