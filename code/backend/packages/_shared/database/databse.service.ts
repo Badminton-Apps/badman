@@ -41,7 +41,7 @@ export class DataBaseHandler {
     if (!DataBaseHandler.sequelizeInstance) {
       throw new Error("Sequelize isn't initialized yet");
     }
-    return DataBaseHandler.sequelizeInstance;
+    return DataBaseHandler.sequelizeInstance; 
   }
 
   constructor(config: SequelizeOptions) {
@@ -50,8 +50,10 @@ export class DataBaseHandler {
 
   setupDb(config: SequelizeOptions) {
     if (!DataBaseHandler.sequelizeInstance) {
+      const models = Object.values(sequelizeModels);
+
       logger.debug('Connecting with ', {
-        ...config
+        ...config 
       });
 
       this._dialect = config.dialect;
@@ -64,8 +66,8 @@ export class DataBaseHandler {
               logger.warn(message);
             }
           }
-        },
-        models: Object.values(sequelizeModels),
+        }, 
+        models,
         logging:
           process.env.LOG_LEVEL === 'silly' || config.logging
             ? logger.silly.bind(logger)
