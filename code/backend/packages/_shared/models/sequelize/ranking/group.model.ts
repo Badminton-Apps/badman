@@ -10,7 +10,7 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
+import { BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, BuildOptions } from 'sequelize';
 import { RankingSystem } from '../../..';
 import { SubEvent } from '../event';
 import { GroupSubEvents } from './group_subevent.model';
@@ -47,4 +47,26 @@ export class RankingSystemGroup extends Model {
     () => GroupSystems
   )
   systems: RankingSystem[];
+
+  // Belongs to many SubEvent
+  getSubEvents!: BelongsToManyGetAssociationsMixin<SubEvent>;
+  setSubEvent!: BelongsToManySetAssociationsMixin<SubEvent, string>;
+  addSubEvents!: BelongsToManyAddAssociationsMixin<SubEvent, string>;
+  addSubEvent!: BelongsToManyAddAssociationMixin<SubEvent, string>;
+  removeSubEvent!: BelongsToManyRemoveAssociationMixin<SubEvent, string>;
+  removeSubEvents!: BelongsToManyRemoveAssociationsMixin<SubEvent, string>;
+  hasSubEvent!: BelongsToManyHasAssociationMixin<SubEvent, string>;
+  hasSubEvents!: BelongsToManyHasAssociationsMixin<SubEvent, string>;
+  countSubEvent!: BelongsToManyCountAssociationsMixin;
+
+  // Belongs to many System
+  getSystems!: BelongsToManyGetAssociationsMixin<RankingSystem>;
+  setSystem!: BelongsToManySetAssociationsMixin<RankingSystem, string>;
+  addSystems!: BelongsToManyAddAssociationsMixin<RankingSystem, string>;
+  addSystem!: BelongsToManyAddAssociationMixin<RankingSystem, string>;
+  removeSystem!: BelongsToManyRemoveAssociationMixin<RankingSystem, string>;
+  removeSystems!: BelongsToManyRemoveAssociationsMixin<RankingSystem, string>;
+  hasSystem!: BelongsToManyHasAssociationMixin<RankingSystem, string>;
+  hasSystems!: BelongsToManyHasAssociationsMixin<RankingSystem, string>;
+  countSystem!: BelongsToManyCountAssociationsMixin;
 }

@@ -1,19 +1,28 @@
 import {
   Column,
-  HasMany,
-  Model,
   DataType,
+  Default,
+  HasMany,
+  IsUUID,
+  Model,
+  PrimaryKey,
   Table,
   TableOptions,
-  PrimaryKey,
-  Unique,
-  IsUUID,
-  Default
+  Unique
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
+import {
+  BuildOptions,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin
+} from 'sequelize/types';
 import { EventType } from '../../enums';
-import { TypedModel } from '../model';
-import { Location } from './location.model';
 import { SubEvent } from './sub-event.model';
 
 @Table({
@@ -51,9 +60,17 @@ export class Event extends Model {
   @HasMany(() => SubEvent, 'EventId')
   subEvents: SubEvent[];
 
-  @HasMany(() => Location, 'eventId')
-  locations: Location[];
-
   @Column
   uniCode: string;
+
+  // Has many subEvent
+  getSubEvents!: HasManyGetAssociationsMixin<SubEvent>;
+  setSubEvents!: HasManySetAssociationsMixin<SubEvent, string>;
+  addSubEvents!: HasManyAddAssociationsMixin<SubEvent, string>;
+  addsubEvent!: HasManyAddAssociationMixin<SubEvent, string>;
+  removesubEvent!: HasManyRemoveAssociationMixin<SubEvent, string>;
+  removeSubEvents!: HasManyRemoveAssociationsMixin<SubEvent, string>;
+  hassubEvent!: HasManyHasAssociationMixin<SubEvent, string>;
+  hasSubEvents!: HasManyHasAssociationsMixin<SubEvent, string>;
+  countSubEvents!: HasManyCountAssociationsMixin;
 }
