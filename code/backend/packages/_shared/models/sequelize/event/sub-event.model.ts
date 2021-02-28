@@ -18,7 +18,7 @@ import { Event } from './event.model';
 import { Game } from './game.model';
 import { GroupSubEvents, RankingSystemGroup } from '../ranking';
 import { Team } from '../team.model';
-import { BuildOptions } from 'sequelize/types';
+import { BelongsToGetAssociationMixin, BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, BelongsToSetAssociationMixin, BuildOptions, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin } from 'sequelize';
 import { Draw } from './draw.model';
 
 @Table({
@@ -78,4 +78,41 @@ export class SubEvent extends Model {
   @ForeignKey(() => Event)
   @Column
   EventId: string;
+
+  // Belongs to many RankingSystemGroup
+  getRankingSystemGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
+  setRankingSystemGroup!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;
+  addRankingSystemGroups!: BelongsToManyAddAssociationsMixin<RankingSystemGroup, string>;
+  addRankingSystemGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
+  removeRankingSystemGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
+  removeRankingSystemGroups!: BelongsToManyRemoveAssociationsMixin<RankingSystemGroup, string>;
+  hasRankingSystemGroup!: BelongsToManyHasAssociationMixin<RankingSystemGroup, string>;
+  hasRankingSystemGroups!: BelongsToManyHasAssociationsMixin<RankingSystemGroup, string>;
+  countRankingSystemGroup!: BelongsToManyCountAssociationsMixin;
+
+  // Has many Team
+  getTeams!: HasManyGetAssociationsMixin<Team>;
+  setTeams!: HasManySetAssociationsMixin<Team, string>;
+  addTeams!: HasManyAddAssociationsMixin<Team, string>;
+  addTeam!: HasManyAddAssociationMixin<Team, string>;
+  removeTeam!: HasManyRemoveAssociationMixin<Team, string>;
+  removeTeams!: HasManyRemoveAssociationsMixin<Team, string>;
+  hasTeam!: HasManyHasAssociationMixin<Team, string>;
+  hasTeams!: HasManyHasAssociationsMixin<Team, string>;
+  countTeams!: HasManyCountAssociationsMixin;
+
+  // Has many Draw
+  getDraws!: HasManyGetAssociationsMixin<Draw>;
+  setDraws!: HasManySetAssociationsMixin<Draw, string>;
+  addDraws!: HasManyAddAssociationsMixin<Draw, string>;
+  addDraw!: HasManyAddAssociationMixin<Draw, string>;
+  removeDraw!: HasManyRemoveAssociationMixin<Draw, string>;
+  removeDraws!: HasManyRemoveAssociationsMixin<Draw, string>;
+  hasDraw!: HasManyHasAssociationMixin<Draw, string>;
+  hasDraws!: HasManyHasAssociationsMixin<Draw, string>;
+  countDraws!: HasManyCountAssociationsMixin;
+
+  // Belongs to Event
+  getEvent!: BelongsToGetAssociationMixin<Event>;
+  setEvent!: BelongsToSetAssociationMixin<Event, string>;
 }
