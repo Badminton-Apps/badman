@@ -12,16 +12,20 @@ import {
   TableOptions,
   Unique
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
-import { Game, Location } from '.';
+import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions
+} from 'sequelize';
+import { Game } from './game.model';
+import { Location } from './location.model';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event' 
 } as TableOptions)
 export class Court extends Model {
-
-  constructor(values?: Partial<Court>, options?: BuildOptions){
+  constructor(values?: Partial<Court>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -45,4 +49,8 @@ export class Court extends Model {
   @Unique('unique_constraint')
   @Column
   locationId: string;
+
+  // Belongs to Location
+  getLocation!: BelongsToGetAssociationMixin<Location>;
+  setLocation!: BelongsToSetAssociationMixin<Location, string>;
 }
