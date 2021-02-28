@@ -1,9 +1,23 @@
 import {
   BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
   BelongsToManyRemoveAssociationMixin,
-  BuildOptions
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BuildOptions,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin
 } from 'sequelize';
 import {
   BelongsToMany,
@@ -72,12 +86,6 @@ export class Player extends Model {
   @HasMany(() => RankingPlace, 'PlayerId')
   rankingPlaces?: RankingPlace[];
 
-  @HasMany(() => RankingSystem, {
-    foreignKey: 'runById',
-    onDelete: 'SET NULL'
-  })
-  runBy: Player;
-
   @BelongsToMany(
     () => Team,
     () => TeamMembership
@@ -98,10 +106,60 @@ export class Player extends Model {
   )
   clubs: Club[];
 
-  public getClubs!: BelongsToManyGetAssociationsMixin<Club>;
-  public addClub!: BelongsToManyAddAssociationMixin<Club, string>;
-  public removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
-  public hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
+  // Has many RankingPoints
+  getRankingPointss!: HasManyGetAssociationsMixin<RankingPoint>;
+  setRankingPointss!: HasManySetAssociationsMixin<RankingPoint, string>;
+  addRankingPointss!: HasManyAddAssociationsMixin<RankingPoint, string>;
+  addRankingPoints!: HasManyAddAssociationMixin<RankingPoint, string>;
+  removeRankingPoints!: HasManyRemoveAssociationMixin<RankingPoint, string>;
+  removeRankingPointss!: HasManyRemoveAssociationsMixin<RankingPoint, string>;
+  hasRankingPoints!: HasManyHasAssociationMixin<RankingPoint, string>;
+  hasRankingPointss!: HasManyHasAssociationsMixin<RankingPoint, string>;
+  countRankingPointss!: HasManyCountAssociationsMixin;
+
+  // Has many RankingPlace
+  getRankingPlaces!: HasManyGetAssociationsMixin<RankingPlace>;
+  setRankingPlaces!: HasManySetAssociationsMixin<RankingPlace, string>;
+  addRankingPlaces!: HasManyAddAssociationsMixin<RankingPlace, string>;
+  addRankingPlace!: HasManyAddAssociationMixin<RankingPlace, string>;
+  removeRankingPlace!: HasManyRemoveAssociationMixin<RankingPlace, string>;
+  removeRankingPlaces!: HasManyRemoveAssociationsMixin<RankingPlace, string>;
+  hasRankingPlace!: HasManyHasAssociationMixin<RankingPlace, string>;
+  hasRankingPlaces!: HasManyHasAssociationsMixin<RankingPlace, string>;
+  countRankingPlaces!: HasManyCountAssociationsMixin;
+
+  // Belongs to many Team
+  getTeams!: BelongsToManyGetAssociationsMixin<Team>;
+  setTeam!: BelongsToManySetAssociationsMixin<Team, string>;
+  addTeams!: BelongsToManyAddAssociationsMixin<Team, string>;
+  addTeam!: BelongsToManyAddAssociationMixin<Team, string>;
+  removeTeam!: BelongsToManyRemoveAssociationMixin<Team, string>;
+  removeTeams!: BelongsToManyRemoveAssociationsMixin<Team, string>;
+  hasTeam!: BelongsToManyHasAssociationMixin<Team, string>;
+  hasTeams!: BelongsToManyHasAssociationsMixin<Team, string>;
+  countTeam!: BelongsToManyCountAssociationsMixin;
+
+  // Belongs to many Game
+  getGames!: BelongsToManyGetAssociationsMixin<Game>;
+  setGame!: BelongsToManySetAssociationsMixin<Game, string>;
+  addGames!: BelongsToManyAddAssociationsMixin<Game, string>;
+  addGame!: BelongsToManyAddAssociationMixin<Game, string>;
+  removeGame!: BelongsToManyRemoveAssociationMixin<Game, string>;
+  removeGames!: BelongsToManyRemoveAssociationsMixin<Game, string>;
+  hasGame!: BelongsToManyHasAssociationMixin<Game, string>;
+  hasGames!: BelongsToManyHasAssociationsMixin<Game, string>;
+  countGame!: BelongsToManyCountAssociationsMixin;
+
+  // Belongs to many Club
+  getClubs!: BelongsToManyGetAssociationsMixin<Club>;
+  setClub!: BelongsToManySetAssociationsMixin<Club, string>;
+  addClubs!: BelongsToManyAddAssociationsMixin<Club, string>;
+  addClub!: BelongsToManyAddAssociationMixin<Club, string>;
+  removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
+  removeClubs!: BelongsToManyRemoveAssociationsMixin<Club, string>;
+  hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
+  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
+  countClub!: BelongsToManyCountAssociationsMixin;
 
   getLastRanking(system: string, max: number): RankingPlace {
     if (!this.rankingPlaces) {
