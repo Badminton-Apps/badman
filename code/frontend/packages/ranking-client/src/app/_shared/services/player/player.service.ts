@@ -4,7 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Game, Player, RankingPlace } from '../../models';
+import { Game, Player, RankingPlace, RankingSystem } from '../../models';
 
 const searchQuery = require('graphql-tag/loader!../../graphql/players/queries/GetPlayersQuery.graphql');
 const playerQuery = require('graphql-tag/loader!../../graphql/players/queries/GetUserInfoQuery.graphql');
@@ -41,7 +41,7 @@ export class PlayerService {
   }
   getPlayerGames(
     playerId: string,
-    rankingType: string,
+    rankingType: RankingSystem,
     offset: number,
     limit: number
   ): Observable<Game[]> {
@@ -50,12 +50,12 @@ export class PlayerService {
         query: gamesQuery,
         variables: {
           playerId,
-          rankingType,
+          rankingType: rankingType.id,
           offset,
           limit,
         },
       })
-      .pipe(map((x: any) => x.data?.player?.games));
+      .pipe(map((x: any) => x.data?.player?.games.map((g: Partial<Game>) => new Game(g, rankingType))));
   }
 
   getPlayerEvolution(
