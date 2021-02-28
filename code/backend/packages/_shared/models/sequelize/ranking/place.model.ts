@@ -10,7 +10,7 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, BuildOptions } from 'sequelize';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
 
@@ -107,4 +107,12 @@ export class RankingPlace extends Model {
     onDelete: 'CASCADE'
   })
   rankingSystem: RankingSystem;
+
+  // Belongs to Player
+  getPlayer!: BelongsToGetAssociationMixin<Player>;
+  setPlayer!: BelongsToSetAssociationMixin<Player, string>;
+
+  // Belongs to RankingSystem
+  getRankingSystem!: BelongsToGetAssociationMixin<RankingSystem>;
+  setRankingSystem!: BelongsToSetAssociationMixin<RankingSystem, string>;
 }

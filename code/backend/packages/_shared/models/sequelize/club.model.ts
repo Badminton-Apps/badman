@@ -14,12 +14,19 @@ import {
 } from 'sequelize-typescript';
 import {
   BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
   BelongsToManyGetAssociationsMixin,
   BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
   BuildOptions,
   HasManyGetAssociationsMixin
-} from 'sequelize/types';
-import { Team } from '../..';
+} from 'sequelize';
+import { Location, Team } from '../..';
+import { ClubLocation } from './club-location.model';
 import { ClubMembership } from './club-membership.model';
 import { Player } from './player.model';
 
@@ -57,7 +64,31 @@ export class Club extends Model {
   )
   players: Player[];
 
-  public getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
-  public addPlayer!: BelongsToManyAddAssociationMixin<Player, number>;
-  public hasPlayer!: BelongsToManyHasAssociationMixin<Player, number>;
+  @BelongsToMany(
+    () => Location,
+    () => ClubLocation
+  )
+  locations: Location[];
+
+  // Belongs to many Player
+  getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
+  setPlayer!: BelongsToManySetAssociationsMixin<Player, string>;
+  addPlayers!: BelongsToManyAddAssociationsMixin<Player, string>;
+  addPlayer!: BelongsToManyAddAssociationMixin<Player, string>;
+  removePlayer!: BelongsToManyRemoveAssociationMixin<Player, string>;
+  removePlayers!: BelongsToManyRemoveAssociationsMixin<Player, string>;
+  hasPlayer!: BelongsToManyHasAssociationMixin<Player, string>;
+  hasPlayers!: BelongsToManyHasAssociationsMixin<Player, string>;
+  countPlayer!: BelongsToManyCountAssociationsMixin;
+
+  // Belongs to many Location
+  getLocations!: BelongsToManyGetAssociationsMixin<Location>;
+  setLocation!: BelongsToManySetAssociationsMixin<Location, string>;
+  addLocations!: BelongsToManyAddAssociationsMixin<Location, string>;
+  addLocation!: BelongsToManyAddAssociationMixin<Location, string>;
+  removeLocation!: BelongsToManyRemoveAssociationMixin<Location, string>;
+  removeLocations!: BelongsToManyRemoveAssociationsMixin<Location, string>;
+  hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
+  hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
+  countLocation!: BelongsToManyCountAssociationsMixin;
 }

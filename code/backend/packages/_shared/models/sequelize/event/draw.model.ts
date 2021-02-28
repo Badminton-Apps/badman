@@ -1,26 +1,25 @@
 import {
   BelongsTo,
-  BelongsToMany,
   Column,
   DataType,
   Default,
   ForeignKey,
   HasMany,
-  Index,
   IsUUID,
   Model,
   PrimaryKey,
   Table,
   Unique
 } from 'sequelize-typescript';
-import { DrawType, GameType, LevelType, SubEventType } from '../../enums';
-import { Event } from './event.model';
+import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions
+} from 'sequelize';
+import { DrawType } from '../../enums';
 import { Game } from './game.model';
-import { GroupSubEvents, RankingSystemGroup } from '../ranking';
-import { Team } from '../team.model';
 import { SubEvent } from './sub-event.model';
-import { BuildOptions } from 'sequelize/types';
-
+ 
 @Table({
   timestamps: true,
   schema: 'event'
@@ -61,4 +60,8 @@ export class Draw extends Model {
   @ForeignKey(() => SubEvent)
   @Column
   SubEventId: string;
+
+  // Belongs to SubEvent
+  getSubEvent!: BelongsToGetAssociationMixin<SubEvent>;
+  setSubEvent!: BelongsToSetAssociationMixin<SubEvent, string>;
 }

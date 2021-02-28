@@ -107,8 +107,7 @@ export abstract class Importer {
     for (const location of csvLocations) {
       const [dbLocation, created] = await Location.findOrCreate({
         where: {
-          name: location.name,
-          eventId: event.id
+          name: location.name
         },
         defaults: {
           name: location.name,
@@ -117,8 +116,7 @@ export abstract class Importer {
           city: location.city || undefined,
           state: location.state || undefined,
           phone: location.phone || undefined,
-          fax: location.fax || undefined,
-          eventId: event.id
+          fax: location.fax || undefined
         }
       });
 
