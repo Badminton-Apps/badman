@@ -1,12 +1,10 @@
 import {
   BelongsTo,
-  BelongsToMany,
   Column,
   DataType,
   Default,
   ForeignKey,
   HasMany,
-  Index,
   IsUUID,
   Model,
   PrimaryKey,
@@ -14,6 +12,7 @@ import {
   Unique
 } from 'sequelize-typescript';
 import {
+<<<<<<< HEAD:code/backend/packages/_shared/models/sequelize/event/copmetition/draw-competition.model.ts
   BuildOptions,
   HasManyGetAssociationsMixin,
   HasManySetAssociationsMixin
@@ -22,6 +21,16 @@ import { Game } from '..';
 import { DrawType } from '../../..';
 import { SubEventCompetition } from './sub-event-competition.model';
 
+=======
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions
+} from 'sequelize';
+import { DrawType } from '../../enums';
+import { Game } from './game.model';
+import { SubEvent } from './sub-event.model';
+ 
+>>>>>>> main:code/backend/packages/_shared/models/sequelize/event/draw.model.ts
 @Table({
   timestamps: true,
   schema: 'event'
@@ -69,6 +78,12 @@ export class DrawCompetition extends Model {
   @Column
   SubEventId: string;
 
+<<<<<<< HEAD:code/backend/packages/_shared/models/sequelize/event/copmetition/draw-competition.model.ts
   public getGames!: HasManyGetAssociationsMixin<Game>;
   public setGames!: HasManySetAssociationsMixin<Game, string>;
+=======
+  // Belongs to SubEvent
+  getSubEvent!: BelongsToGetAssociationMixin<SubEvent>;
+  setSubEvent!: BelongsToSetAssociationMixin<SubEvent, string>;
+>>>>>>> main:code/backend/packages/_shared/models/sequelize/event/draw.model.ts
 }

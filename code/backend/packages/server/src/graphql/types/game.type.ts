@@ -7,7 +7,7 @@ import { DrawCompetitionType } from './competition';
 import { DrawTournamentType } from './tournaments';
 import {RankingPointType} from "./rankingPoint.type";
 
-const GameType = new GraphQLObjectType({
+export const GameType = new GraphQLObjectType({
   name: 'Game',
   description: 'A Game',
   fields: () =>
@@ -57,4 +57,3 @@ const GameType = new GraphQLObjectType({
     })
 });
 
-export { GameType };

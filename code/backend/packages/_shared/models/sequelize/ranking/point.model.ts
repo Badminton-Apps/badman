@@ -1,4 +1,9 @@
 import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions
+} from 'sequelize';
+import {
   BelongsTo,
   Column,
   DataType,
@@ -9,7 +14,6 @@ import {
   PrimaryKey,
   Table
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
 import { Game } from '../event/game.model';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
@@ -20,7 +24,7 @@ import { RankingSystem } from './system.model';
   schema: 'ranking'
 })
 export class RankingPoint extends Model {
-  constructor(values?: Partial<RankingPoint>, options?: BuildOptions){
+  constructor(values?: Partial<RankingPoint>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -62,4 +66,16 @@ export class RankingPoint extends Model {
   @ForeignKey(() => Game)
   @Column
   GameId: string;
+
+  // Belongs to Player
+  getPlayer!: BelongsToGetAssociationMixin<Player>;
+  setPlayer!: BelongsToSetAssociationMixin<Player, string>;
+
+  // Belongs to Game
+  getGame!: BelongsToGetAssociationMixin<Game>;
+  setGame!: BelongsToSetAssociationMixin<Game, string>;
+
+  // Belongs to Type
+  getType!: BelongsToGetAssociationMixin<RankingSystem>;
+  setType!: BelongsToSetAssociationMixin<RankingSystem, string>;
 }
