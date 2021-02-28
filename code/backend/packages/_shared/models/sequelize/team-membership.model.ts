@@ -12,7 +12,7 @@ import {
   NotNull,
   AllowNull
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
+import { BuildOptions } from 'sequelize';
 import { Player } from './player.model';
 import { Team } from './team.model';
 

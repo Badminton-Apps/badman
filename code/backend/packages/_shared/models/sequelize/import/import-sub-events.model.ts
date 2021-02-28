@@ -14,7 +14,7 @@ import {
   Index,
   HasMany
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, BuildOptions, HasManyAddAssociationMixin, HasManyAddAssociationsMixin, HasManyCountAssociationsMixin, HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyHasAssociationsMixin, HasManyRemoveAssociationMixin, HasManyRemoveAssociationsMixin, HasManySetAssociationsMixin } from 'sequelize';
 import {
   DrawType,
   GameType,
@@ -29,7 +29,7 @@ import { ImportDraw } from './import-draw.model';
   schema: 'import'
 } as TableOptions)
 export class ImportSubEvent extends Model {
-  constructor(values?: Partial<ImportSubEvent>, options?: BuildOptions){
+  constructor(values?: Partial<ImportSubEvent>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -62,14 +62,29 @@ export class ImportSubEvent extends Model {
   @Column
   internalId: number;
 
-  @HasMany(() => ImportDraw, 'SubEventId')
+  @HasMany(() => ImportDraw, { foreignKey: 'SubEventId', onDelete: 'CASCADE' })
   draws: ImportDraw[];
 
-  @BelongsTo(() => ImporterFile, 'FileId')
+  @BelongsTo(() => ImporterFile, { foreignKey: 'FileId', onDelete: 'CASCADE' })
   file: ImporterFile[];
 
   @Unique('unique_constraint')
   @ForeignKey(() => ImporterFile)
   @Column
   FileId: string;
+
+  // Has many Draw
+  getDraws!: HasManyGetAssociationsMixin<ImportDraw>;
+  setDraws!: HasManySetAssociationsMixin<ImportDraw, string>;
+  addDraws!: HasManyAddAssociationsMixin<ImportDraw, string>;
+  addDraw!: HasManyAddAssociationMixin<ImportDraw, string>;
+  removeDraw!: HasManyRemoveAssociationMixin<ImportDraw, string>;
+  removeDraws!: HasManyRemoveAssociationsMixin<ImportDraw, string>;
+  hasDraw!: HasManyHasAssociationMixin<ImportDraw, string>;
+  hasDraws!: HasManyHasAssociationsMixin<ImportDraw, string>;
+  countDraws!: HasManyCountAssociationsMixin;
+
+  // Belongs to File
+  getFile!: BelongsToGetAssociationMixin<ImporterFile>;
+  setFile!: BelongsToSetAssociationMixin<ImporterFile, string>;
 }
