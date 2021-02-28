@@ -11,7 +11,7 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, BuildOptions } from 'sequelize';
 import { DrawType } from '../../enums';
 import { ImportSubEvent } from './import-sub-events.model';
 
@@ -45,12 +45,18 @@ export class ImportDraw extends Model {
   @Column
   internalId: number;
 
-  @BelongsTo(() => ImportSubEvent, 'SubEventId')
+  @BelongsTo(() => ImportSubEvent, {
+    foreignKey: 'SubEventId',
+    onDelete: 'CASCADE'
+  })
   subEvent?: ImportSubEvent;
 
   @Unique('unique_constraint')
   @ForeignKey(() => ImportSubEvent)
   @Column
   SubEventId: string;
+
+  // Belongs to SubEvent
+  getSubEvent!: BelongsToGetAssociationMixin<ImportSubEvent>;
+  setSubEvent!: BelongsToSetAssociationMixin<ImportSubEvent, string>;
 }
- 

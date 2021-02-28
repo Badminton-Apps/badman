@@ -9,6 +9,7 @@ import {
   Default,
   DataType
 } from 'sequelize-typescript';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize/types';
 import { Player } from './player.model';
 
 @Table({
@@ -30,4 +31,8 @@ export class RequestLink extends Model {
 
   @Column
   email: string;
+
+  // Belongs to Player
+  getPlayer!: BelongsToGetAssociationMixin<Player>;
+  setPlayer!: BelongsToSetAssociationMixin<Player, string>;
 }
