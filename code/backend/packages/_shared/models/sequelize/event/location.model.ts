@@ -1,4 +1,24 @@
 import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin,
+} from 'sequelize';
+import {
   BelongsToMany,
   Column,
   DataType,
@@ -11,15 +31,10 @@ import {
   TableOptions,
   Unique
 } from 'sequelize-typescript';
-import {
-  BelongsToManyAddAssociationMixin,
-  BelongsToManyGetAssociationsMixin,
-  BelongsToManyHasAssociationMixin,
-  BelongsToManyRemoveAssociationMixin
-} from 'sequelize';
 import { Club } from '../../..';
 import { ClubLocation } from '../club-location.model';
 import { Court } from './court.model';
+import { Event } from './event.model';
 
 @Table({
   timestamps: true,
@@ -63,8 +78,25 @@ export class Location extends Model {
   )
   clubs: Club[];
 
-  public getClubs!: BelongsToManyGetAssociationsMixin<Club>;
-  public addClub!: BelongsToManyAddAssociationMixin<Club, string>;
-  public removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
-  public hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
+  // Belongs to many Club
+  getClubs!: BelongsToManyGetAssociationsMixin<Club>;
+  setClub!: BelongsToManySetAssociationsMixin<Club, string>;
+  addClubs!: BelongsToManyAddAssociationsMixin<Club, string>;
+  addClub!: BelongsToManyAddAssociationMixin<Club, string>;
+  removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
+  removeClubs!: BelongsToManyRemoveAssociationsMixin<Club, string>;
+  hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
+  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
+  countClub!: BelongsToManyCountAssociationsMixin;
+  
+  // Has many Court
+  getCourts!: HasManyGetAssociationsMixin<Court>;
+  setCourts!: HasManySetAssociationsMixin<Court, string>;
+  addCourts!: HasManyAddAssociationsMixin<Court, string>;
+  addCourt!: HasManyAddAssociationMixin<Court, string>;
+  removeCourt!: HasManyRemoveAssociationMixin<Court, string>;
+  removeCourts!: HasManyRemoveAssociationsMixin<Court, string>;
+  hasCourt!: HasManyHasAssociationMixin<Court, string>;
+  hasCourts!: HasManyHasAssociationsMixin<Court, string>;
+  countCourts!: HasManyCountAssociationsMixin;
 }
