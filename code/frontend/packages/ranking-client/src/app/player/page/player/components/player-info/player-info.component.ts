@@ -2,10 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnInit,
 } from '@angular/core';
-import { GameType, PlayerGame } from '../../../../../_shared';
-import {RankingPoint} from "../../../../../_shared/models/ranking-point.model";
+import { GameType, PlayerGame, RankingPoint } from '../../../../../_shared';
 
 @Component({
   selector: 'app-player-info',
@@ -34,10 +33,19 @@ export class PlayerInfoComponent implements OnInit {
       }
     }
 
-    if(this.rankingPoint) {
-      let hasWon : boolean = this.rankingPoint.points > 0;
-      this.isUsedForUpgrade = hasWon && this.rankingPoint.differenceInLevel <= this.rankingPoint.type.differenceForUpgrade;
-      this.isUsedForDowngrade = !hasWon && this.rankingPoint.differenceInLevel >= this.rankingPoint.type.differenceForDowngrade;
+    console.log('Input', this.rankingPoint)
+
+    if (this.rankingPoint) {
+      let hasWon: boolean = this.rankingPoint.points > 0;
+      this.isUsedForUpgrade =
+        hasWon &&
+        this.rankingPoint.differenceInLevel <=
+          this.rankingPoint.type.differenceForUpgrade;
+          
+      this.isUsedForDowngrade =
+        !hasWon &&
+        this.rankingPoint.differenceInLevel >=
+          this.rankingPoint.type.differenceForDowngrade;
     } else {
       this.isUsedForUpgrade = false;
       this.isUsedForDowngrade = false;
