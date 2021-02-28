@@ -43,10 +43,6 @@ query GetUserGamesQuery(
       rankingPoints {
         points
         differenceInLevel
-        type {
-          differenceForUpgrade
-          differenceForDowngrade
-        }
         player {
           id
         }
