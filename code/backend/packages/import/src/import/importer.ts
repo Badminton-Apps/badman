@@ -280,9 +280,6 @@ export abstract class Importer {
     if (importerFile.uniCode) {
       where.uniCode = importerFile.uniCode;
     }
-    if (importerFile.tournamentNumber) {
-      where.tournamentNumber = importerFile.tournamentNumber;
-    }
 
     const foundEvent = await this.eventModel.findOne({
       where,
