@@ -42,12 +42,14 @@ const PlayerType = new GraphQLObjectType({
         }),
         resolve: resolver(Player.associations.rankingPlaces, {
           before: async (findOptions, args, context, info) => {
-            if (args.order && args.direction) {
-              findOptions = {
-                ...findOptions,
-                order: [[args.order, args.direction]]
-              };
-            }
+            findOptions.where = { 
+              ...findOptions.where
+            };
+            findOptions.order =
+              args.order && args.direction
+                ? [[args.order, args.direction]]
+                : [['rankingDate', 'DESC']];
+            findOptions.limit = args.limit;
             return findOptions;
           }
         })

@@ -5,6 +5,8 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Encounter } from 'app/_shared';
+import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import { Observable } from 'rxjs';
 import { filter, map, startWith } from 'rxjs/operators';
 
@@ -17,34 +19,62 @@ import { filter, map, startWith } from 'rxjs/operators';
 export class SelectGameComponent implements OnInit {
   @Input()
   formGroup: FormGroup;
-  formControl = new FormControl();
-  options: string[] = ['One', 'Two', 'Three'];
-  filteredOptions: Observable<string[]>;
+  @Input()
+  dependsOn: string = 'team';
 
-  ngOnInit() {
+  formControl = new FormControl();
+  options: Encounter[];
+  filteredOptions: Observable<Encounter[]>;
+
+  constructor(private encounterService: EncounterService) {}
+
+  async ngOnInit() {
     this.formControl.disable();
     this.formGroup.addControl('game', this.formControl);
 
-    this.formGroup.get('team').valueChanges.subscribe((r) => {
-      if (r != null) {
-        this.formControl.enable();
-      } else if (this.formControl.enabled) {
-        this.formControl.disable();
-      }
-    });
+    const previous = this.formGroup.get(this.dependsOn);
 
-    this.filteredOptions = this.formControl.valueChanges.pipe(
-      filter((r) => r),
-      startWith(''),
-      map((value) => this._filter(value))
+    if (previous) {
+      previous.valueChanges.subscribe(async (r) => {
+        this.formControl.setValue(null);
+
+        if (r?.id != null) {
+          if (!this.formControl.enabled) {
+            this.formControl.enable();
+          }
+          // TODO: Convert to observable way
+          this.options = await this.encounterService
+            .getEncounters(r.id)
+            .toPromise();
+          if (this.options && this.options.length > 0) {
+            this.formControl.setValue(this.options[0]);
+          }
+          this.filteredOptions = this.formControl.valueChanges.pipe(
+            startWith(null),
+            map((value) => this._filter(value))
+          );
+        } else {
+          this.formControl.disable();
+        }
+      });
+    } else {
+      console.warn('Dependency not found', previous);
+    }
+  }
+
+  private _filter(value?: Encounter): Encounter[] {
+    console.log('options:', this.options);
+    console.log('value:', value);
+
+    if (value == null) {
+      return this.options;
+    }
+    return this.options.filter(
+      (option) => option?.date.toISOString() == value?.date.toISOString()
     );
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.options.filter(
-      (option) => option.toLowerCase().indexOf(filterValue) === 0
-    );
+  getOptionText(option) {
+    return option?.name;
   }
 }
