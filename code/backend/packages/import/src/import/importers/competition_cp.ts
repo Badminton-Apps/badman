@@ -4,6 +4,7 @@ import {
   DrawCompetition,
   EventCompetition,
   EventImportType,
+  EncounterCompetition,
   EventType,
   Game,
   GamePlayer,
@@ -66,9 +67,18 @@ export class CompetitionCpImporter extends Importer {
       const draw = draws.find(s => s.internalId === parseInt(csvTeamMatch.draw, 10));
       const plannedDate = moment(csvTeamMatch.plandate);
 
+      const encountComp = {
+        date: plannedDate,
+        drawId: draw.id
+      };
+      const [dbEncounter] = await EncounterCompetition.findCreateFind({
+        where: encountComp,
+        defaults: encountComp
+      });
+
       csvGames.push(
         await this._gameFromCsv(
-          draw,
+          dbEncounter,
           players,
           csvPlayerMatch,
           courts,
@@ -82,16 +92,18 @@ export class CompetitionCpImporter extends Importer {
   }
 
   private async _gameFromCsv(
-    draw: DrawCompetition,
+    encounter: EncounterCompetition,
     players: TpPlayer[],
     csvPlayerMatch: ICsvPlayerMatchCp,
     courts: Map<string, Court>,
     plannedAt: Date
   ) {
-    if (draw?.id == null) {
+    if (encounter?.id == null) {
       logger.warn('No draw found', csvPlayerMatch);
       return;
     }
+
+    
 
     // TODO: investigate if this works for tournaments
     const team1Player1 = players.find(x => x.playerId === csvPlayerMatch?.sp1)?.player;
@@ -154,6 +166,7 @@ export class CompetitionCpImporter extends Importer {
 
     const momentDate = moment(csvPlayerMatch.endtime);
     const playedAt = momentDate.isValid() ? momentDate.toDate() : plannedAt;
+  
     const data = new Game({
       playedAt,
       // gameType: draw?.subEvent?.gameType, // S, D, MX
@@ -164,8 +177,8 @@ export class CompetitionCpImporter extends Importer {
       set3Team1,
       set3Team2,
       winner: parseInt(csvPlayerMatch.winner, 10),
-      drawId: draw.id,
-      drawType: 'competition',
+      linkId: encounter.id,
+      linkType: 'competition',
       courtId: court?.id
     });
 

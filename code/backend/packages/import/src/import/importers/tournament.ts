@@ -233,8 +233,8 @@ export class TournamentImporter extends Importer {
       set3Team1,
       set3Team2,
       winner: parseInt(csvPlayerMatch.winner, 10),
-      drawId: draw.id,
-      drawType: 'tournament',
+      linkId: draw.id,
+      linkType: 'tournament',
       courtId: court?.id
     }).toJSON();
 

@@ -1,17 +1,15 @@
 import {
   Column,
-  DataType,
-  Default,
   HasMany,
-  IsUUID,
   Model,
-  PrimaryKey,
+  DataType,
   Table,
   TableOptions,
-  Unique
+  PrimaryKey,
+  Unique,
+  IsUUID,
+  Default
 } from 'sequelize-typescript';
-import { Location, SubEventTournament } from '..';
-
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
@@ -23,14 +21,16 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin
-} from 'sequelize';
+} from 'sequelize/types';
+import { Location } from '../location.model';
+import { SubEventCompetition } from './sub-event-competition.model';
 
 @Table({
   timestamps: true,
   schema: 'event'
-})
-export class EventTournament extends Model {
-  constructor(values?: Partial<EventTournament>, options?: BuildOptions) {
+} as TableOptions)
+export class EventCompetition extends Model {
+  constructor(values?: Partial<EventCompetition>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -40,28 +40,22 @@ export class EventTournament extends Model {
   @Column
   id: string;
 
-  @Column
-  tournamentNumber: string;
-
   @Unique('unique_constraint')
   @Column
   name: string;
 
   @Unique('unique_constraint')
   @Column
-  firstDay: Date;
+  startYear: number;
 
-  @Column
-  dates: string; 
-
-  @HasMany(() => SubEventTournament, 'eventId')
-  subEvents: SubEventTournament[];
+  @HasMany(() => SubEventCompetition, 'eventId')
+  subEvents: SubEventCompetition[];
 
   @HasMany(() => Location, {
     foreignKey: 'eventId',
     constraints: false,
     scope: {
-      drawType: 'Tournament'
+      drawType: 'competition'
     }
   })
   locations: Location[];
@@ -69,15 +63,15 @@ export class EventTournament extends Model {
   @Column
   uniCode: string;
 
-  // Has many subEvent
-  getSubEvents!: HasManyGetAssociationsMixin<SubEventTournament>;
-  setSubEvents!: HasManySetAssociationsMixin<SubEventTournament, string>;
-  addSubEvents!: HasManyAddAssociationsMixin<SubEventTournament, string>;
-  addsubEvent!: HasManyAddAssociationMixin<SubEventTournament, string>;
-  removesubEvent!: HasManyRemoveAssociationMixin<SubEventTournament, string>;
-  removeSubEvents!: HasManyRemoveAssociationsMixin<SubEventTournament, string>;
-  hassubEvent!: HasManyHasAssociationMixin<SubEventTournament, string>;
-  hasSubEvents!: HasManyHasAssociationsMixin<SubEventTournament, string>;
+  // Has many SubEvent
+  getSubEvents!: HasManyGetAssociationsMixin<SubEventCompetition>;
+  setSubEvents!: HasManySetAssociationsMixin<SubEventCompetition, string>;
+  addSubEvents!: HasManyAddAssociationsMixin<SubEventCompetition, string>;
+  addSubEvent!: HasManyAddAssociationMixin<SubEventCompetition, string>;
+  removeSubEvent!: HasManyRemoveAssociationMixin<SubEventCompetition, string>;
+  removeSubEvents!: HasManyRemoveAssociationsMixin<SubEventCompetition, string>;
+  hasSubEvent!: HasManyHasAssociationMixin<SubEventCompetition, string>;
+  hasSubEvents!: HasManyHasAssociationsMixin<SubEventCompetition, string>;
   countSubEvents!: HasManyCountAssociationsMixin;
 
   // Has many Location

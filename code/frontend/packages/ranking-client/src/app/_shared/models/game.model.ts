@@ -17,8 +17,8 @@ export class Game {
   set3Team2?: number;
   winner: number;
   rankingPoints: RankingPoint[];
-  drawCompetition: Draw;
-  drawTournament: Draw;
+  competition: {draw: Draw};
+  tournament: Draw;
   draw: Draw;
 
   constructor({ ...args}: Partial<Game>, system?: RankingSystem) {
@@ -35,12 +35,12 @@ export class Game {
     this.winner = args.winner;
     this.rankingPoints = args.rankingPoints?.map(r => new RankingPoint(r));
 
-    // it's usually on or the other
-    // Temporary doing this
-    if (args.drawCompetition) {
-      this.draw = new Draw(args.drawCompetition);
-    } else if (args.drawTournament) {
-      this.draw = new Draw(args.drawTournament);
+    // it's should be one or the other
+    // Temporary doing this before finding a better way
+    if (args.competition) {
+      this.draw = new Draw(args.competition.draw);
+    } else if (args.tournament) {
+      this.draw = new Draw(args.tournament);
     }
   }
 }

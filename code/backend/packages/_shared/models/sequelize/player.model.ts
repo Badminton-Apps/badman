@@ -32,11 +32,10 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { ClubMembership } from '../..';
+import { ClubMembership, TeamPlayerMembership } from '../..';
 import { Club } from './club.model';
 import { Game, GamePlayer } from './event';
 import { RankingPlace, RankingPoint, RankingSystem } from './ranking';
-import { TeamMembership } from './team-membership.model';
 import { Team } from './team.model';
 
 @Table({
@@ -88,10 +87,10 @@ export class Player extends Model {
 
   @BelongsToMany(
     () => Team,
-    () => TeamMembership
+    () => TeamPlayerMembership
   )
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  teams: (Team & { TeamMembership: TeamMembership })[];
+  teams: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
   @BelongsToMany(
     () => Game,

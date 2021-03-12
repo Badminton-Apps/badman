@@ -23,23 +23,25 @@ query GetUserGamesQuery(
       playedAt
       winner
       gameType
-      drawCompetition {
+      competition {
         id
-        name
-        subEvent {
-          id
+        draw {
           name
-          level
-          levelType
-          eventType
-          event {
+          subEvent {
             id
             name
-            startYear
+            level
+            levelType
+            eventType
+            event {
+              id
+              name
+              startYear
+            }
           }
         }
       }
-      drawTournament {
+      tournament {
         id
         name
         subEvent {

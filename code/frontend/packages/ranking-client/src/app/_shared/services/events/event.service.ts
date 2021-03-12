@@ -6,7 +6,8 @@ import { Event, EventType } from 'app/_shared/models';
 import { environment } from 'environments/environment';
 import { BehaviorSubject, concat } from 'rxjs';
 import { map, share, tap, toArray } from 'rxjs/operators';
-const getEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetEvents.graphql');
+const getCompetitionEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetCompetition.graphql');
+const getTournamentEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetTournaments.graphql');
 
 const addEventMutation = require('graphql-tag/loader!../../graphql/events/mutations/addEvent.graphql');
 const deleteEventMutation = require('graphql-tag/loader!../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql');
@@ -48,7 +49,10 @@ export class EventService {
           edges: { cursor: string; node: Event }[];
         };
       }>({
-        query: getEventsQuery,
+        query:
+          type == EventType.TOERNAMENT
+            ? getTournamentEventsQuery
+            : getCompetitionEventsQuery,
         variables: {
           first,
           after,
@@ -104,15 +108,22 @@ export class EventService {
     );
   }
 
-  findEvent(name: string, uniCode: string) {
+  findEvent(name: string, uniCode: string, type: EventType) {
     return this.apollo
       .query<{
-        events: {
+        eventCompetitions?: {
           total: number;
-          edges: { cursor: string; node: Event }[];
+          edges?: { cursor: string; node: Event }[];
+        };
+        eventTournaments?: {
+          total: number;
+          edges?: { cursor: string; node: Event }[];
         };
       }>({
-        query: getEventsQuery,
+        query:
+          type == EventType.TOERNAMENT
+            ? getTournamentEventsQuery
+            : getCompetitionEventsQuery,
         variables: {
           where: {
             $or: [
@@ -128,12 +139,16 @@ export class EventService {
       })
       .pipe(
         map((x) => {
-          if (x.data.events) {
-            x.data.events.edges = x.data.events.edges.map((e) => {
+          if (x.data.eventCompetitions || x.data.eventCompetitions) {
+            const events = [
+              ...(x.data.eventCompetitions?.edges ?? []),
+              ...(x.data.eventTournaments?.edges ?? []),
+            ].map((e) => {
               e.node = new Event(e.node);
               return e;
             });
-            return x.data.events.edges.map((x) => x.node);
+
+            return events.map((x) => x.node);
           } else {
             return null;
           }
@@ -148,7 +163,7 @@ export class EventService {
         variables: {
           event: {
             ...event,
-            id: -1
+            id: -1,
           },
         },
       })

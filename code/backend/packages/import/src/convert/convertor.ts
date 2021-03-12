@@ -59,7 +59,7 @@ export class Convertor {
     });
   }
 
-  private async _processSingleItem(item: { imported: ImporterFile; event: Event }) {
+  private async _processSingleItem(item: { imported: ImporterFile; event: EventCompetition | EventTournament }) {
     try {
       logger.debug(`Started processing ${item.imported.id}`);
 
