@@ -9,12 +9,13 @@
       formControlName="game"
       [matAutocomplete]="auto"
     />
+    
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
       <mat-option
         *ngFor="let option of filteredOptions | async"
         [value]="option"
       >
-        {{ option }}
+        {{ option | date: 'short' }}
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
