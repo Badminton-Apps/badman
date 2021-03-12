@@ -41,6 +41,7 @@ import { RankingPoint } from '../ranking';
 import { DrawTournament, DrawCompetition } from '../../..';
 import { Court } from './court.model';
 import { GamePlayer } from './game-player.model';
+import { EncounterCompetition } from './competition/encounter-competition.model';
 
 @Table({
   timestamps: true,
@@ -80,30 +81,31 @@ export class Game extends Model {
   winner?: number;
 
   @BelongsTo(() => DrawTournament, {
-    foreignKey: 'drawId',
+    foreignKey: 'linkId',
     constraints: false,
     scope: {
-      drawType: 'tournament'
+      linkType: 'tournament'
     }
   })
-  drawTournament: DrawTournament;
-  rankingPoints?: RankingPoint[];
+  tournament: DrawTournament;
+
+  @BelongsTo(() => EncounterCompetition, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'competition'
+    }
+  })
+  competition: EncounterCompetition;
+
   @HasMany(() => RankingPoint, 'GameId')
-
-  @BelongsTo(() => DrawCompetition, {
-    foreignKey: 'drawId',
-    constraints: false,
-    scope: {
-      drawType: 'competition'
-    }
-  })
-  drawCompetition: DrawCompetition;
+  rankingPoints?: RankingPoint[];
 
   @Column
-  drawId: string;
+  linkId: string;
 
   @Column
-  drawType: string;
+  linkType: string;
 
   @BelongsTo(() => Court, 'courtId')
   court: Court;
@@ -130,13 +132,13 @@ export class Game extends Model {
   hasRankingPoints!: HasManyHasAssociationsMixin<RankingPoint, string>;
   countRankingPoints!: HasManyCountAssociationsMixin;
 
-  // Belongs to Draw
-  getDrawTournament!: BelongsToGetAssociationMixin<DrawTournament>;
-  setDrawTournament!: BelongsToSetAssociationMixin<DrawTournament, string>;
+  // Belongs to Tournament
+  getTournament!: BelongsToGetAssociationMixin<DrawTournament>;
+  setTournament!: BelongsToSetAssociationMixin<DrawTournament, string>;
 
-  // Belongs to DrawCompetition
-  getDrawCompetition!: BelongsToGetAssociationMixin<DrawCompetition>;
-  setDrawCompetition!: BelongsToSetAssociationMixin<DrawCompetition, string>;
+  // Belongs to Competition
+  getCompetition!: BelongsToGetAssociationMixin<EncounterCompetition>;
+  setCompetition!: BelongsToSetAssociationMixin<EncounterCompetition, string>;
 
   // Belongs to Court
   getCourt!: BelongsToGetAssociationMixin<Court>;

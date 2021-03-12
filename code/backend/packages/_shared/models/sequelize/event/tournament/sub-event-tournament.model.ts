@@ -13,7 +13,29 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize/types';
+import {
+  BelongsToGetAssociationMixin,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin
+} from 'sequelize';
 import { RankingSystemGroup, GroupSubEvents, DrawTournament } from '../..';
 import { SubEventType, GameType } from '../../..';
 import { EventTournament } from './event-tournament.model';
@@ -60,19 +82,48 @@ export class SubEventTournament extends Model {
         petType: 'tournament'
       }
     },
-    foreignKey: 'subEventId',
+    foreignKey: 'subeventId',
     otherKey: 'groupId'
   })
   groups: RankingSystemGroup[];
 
-  @HasMany(() => DrawTournament, 'SubEventId')
+  @HasMany(() => DrawTournament, 'subeventId')
   draws: DrawTournament[];
 
-  @BelongsTo(() => EventTournament, 'EventId')
+  @BelongsTo(() => EventTournament, 'eventId')
   event?: EventTournament;
 
   @Unique('unique_constraint')
   @ForeignKey(() => EventTournament)
   @Column
-  EventId: string;
+  eventId: string;
+
+  // Belongs to many Group
+  getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
+  setGroup!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;
+  addGroups!: BelongsToManyAddAssociationsMixin<RankingSystemGroup, string>;
+  addGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
+  removeGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
+  removeGroups!: BelongsToManyRemoveAssociationsMixin<
+    RankingSystemGroup,
+    string
+  >;
+  hasGroup!: BelongsToManyHasAssociationMixin<RankingSystemGroup, string>;
+  hasGroups!: BelongsToManyHasAssociationsMixin<RankingSystemGroup, string>;
+  countGroup!: BelongsToManyCountAssociationsMixin;
+
+  // Has many Draw
+  getDraws!: HasManyGetAssociationsMixin<DrawTournament>;
+  setDraws!: HasManySetAssociationsMixin<DrawTournament, string>;
+  addDraws!: HasManyAddAssociationsMixin<DrawTournament, string>;
+  addDraw!: HasManyAddAssociationMixin<DrawTournament, string>;
+  removeDraw!: HasManyRemoveAssociationMixin<DrawTournament, string>;
+  removeDraws!: HasManyRemoveAssociationsMixin<DrawTournament, string>;
+  hasDraw!: HasManyHasAssociationMixin<DrawTournament, string>;
+  hasDraws!: HasManyHasAssociationsMixin<DrawTournament, string>;
+  countDraws!: HasManyCountAssociationsMixin;
+
+  // Belongs to Event
+  getEvent!: BelongsToGetAssociationMixin<EventTournament>;
+  setEvent!: BelongsToSetAssociationMixin<EventTournament, string>;
 }

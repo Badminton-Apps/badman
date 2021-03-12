@@ -1,4 +1,4 @@
-import { EventCompetition, SubEventCompetition } from '@badvlasim/shared';
+import { EventCompetition } from '@badvlasim/shared';
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -6,12 +6,10 @@ import {
   GraphQLList,
   GraphQLObjectType
 } from 'graphql';
-import { createConnection, defaultListArgs, resolver, attributeFields } from 'graphql-sequelize';
-import { QueryTypes } from 'sequelize';
+import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
 import { SubEventCompetitionInputType, SubEventCompetitionType } from './subEvent-competition.type';
-
 
 export const EventCompetitionType = new GraphQLObjectType({
   name: 'EventCompetition',
@@ -30,11 +28,17 @@ export const EventCompetitionInputType = new GraphQLInputObjectType({
   name: 'EventCompetitionInput',
   description: 'This represents a UserInputType',
   fields: () =>
-    Object.assign(getAttributeFields(EventCompetition, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }), {
-      subEvents: {
-        type: new GraphQLList(SubEventCompetitionInputType)
+    Object.assign(
+      getAttributeFields(EventCompetition, {
+        exclude: ['createdAt', 'updatedAt'],
+        optionalString: ['id']
+      }),
+      {
+        subEvents: {
+          type: new GraphQLList(SubEventCompetitionInputType)
+        }
       }
-    })
+    )
 });
 
 export const EventCompetitionConnectionType = createConnection({
@@ -50,8 +54,8 @@ export const EventCompetitionConnectionType = createConnection({
   orderBy: new GraphQLEnumType({
     name: 'EventCompetitionOrderBy',
     values: {
-      DATE_ASC: { value: ['firstDay', 'ASC'] }, // The first ENUM value will be the default order. The direction will be used for `first`, will automatically be inversed for `last` lookups.
-      DATE_DESC: { value: ['firstDay', 'DESC'] }
+      DATE_ASC: { value: ['startYear', 'ASC'] }, // The first ENUM value will be the default order. The direction will be used for `first`, will automatically be inversed for `last` lookups.
+      DATE_DESC: { value: ['startYear', 'DESC'] }
     }
   }),
   where: (key, value, currentWhere) => {

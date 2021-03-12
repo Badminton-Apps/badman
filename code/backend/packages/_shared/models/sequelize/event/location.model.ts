@@ -1,5 +1,5 @@
 import {
- 
+  BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
@@ -9,6 +9,7 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
+  BelongsToSetAssociationMixin,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -105,16 +106,13 @@ export class Location extends Model {
   )
   clubs: Club[];
 
-  // Belongs to many Club
-  getClubs!: BelongsToManyGetAssociationsMixin<Club>;
-  setClub!: BelongsToManySetAssociationsMixin<Club, string>;
-  addClubs!: BelongsToManyAddAssociationsMixin<Club, string>;
-  addClub!: BelongsToManyAddAssociationMixin<Club, string>;
-  removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
-  removeClubs!: BelongsToManyRemoveAssociationsMixin<Club, string>;
-  hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
-  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
-  countClub!: BelongsToManyCountAssociationsMixin;
+  // Belongs to EventTournament
+  getEventTournament!: BelongsToGetAssociationMixin<EventTournament>;
+  setEventTournament!: BelongsToSetAssociationMixin<EventTournament, string>;
+
+  // Belongs to EventCompetition
+  getEventCompetition!: BelongsToGetAssociationMixin<EventCompetition>;
+  setEventCompetition!: BelongsToSetAssociationMixin<EventCompetition, string>;
 
   // Has many Court
   getCourts!: HasManyGetAssociationsMixin<Court>;
@@ -126,4 +124,15 @@ export class Location extends Model {
   hasCourt!: HasManyHasAssociationMixin<Court, string>;
   hasCourts!: HasManyHasAssociationsMixin<Court, string>;
   countCourts!: HasManyCountAssociationsMixin;
+
+  // Belongs to many Club
+  getClubs!: BelongsToManyGetAssociationsMixin<Club>;
+  setClub!: BelongsToManySetAssociationsMixin<Club, string>;
+  addClubs!: BelongsToManyAddAssociationsMixin<Club, string>;
+  addClub!: BelongsToManyAddAssociationMixin<Club, string>;
+  removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
+  removeClubs!: BelongsToManyRemoveAssociationsMixin<Club, string>;
+  hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
+  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
+  countClub!: BelongsToManyCountAssociationsMixin;
 }

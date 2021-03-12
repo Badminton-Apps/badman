@@ -1,11 +1,12 @@
-import {GraphQLList, GraphQLObjectType, GraphQLString} from 'graphql';
+import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 import { attributeFields, defaultListArgs, resolver } from 'graphql-sequelize';
-import {Game, Player} from '@badvlasim/shared/models';
+import { Game, Player } from '@badvlasim/shared/models';
 import { GamePlayerType } from './gamePlayer.type';
 import { getAttributeFields } from './attributes.type';
 import { DrawCompetitionType } from './competition';
 import { DrawTournamentType } from './tournaments';
-import {RankingPointType} from "./rankingPoint.type";
+import { RankingPointType } from './rankingPoint.type';
+import { EncounterCompetitionType } from './competition/encounter-competition.type';
 
 export const GameType = new GraphQLObjectType({
   name: 'Game',
@@ -26,11 +27,8 @@ export const GameType = new GraphQLObjectType({
             });
           }
         })
-      }, 
-      drawCompetition: {
-        type: DrawCompetitionType,
-        resolve: resolver(Game.associations.drawCompetition)
       },
+
       rankingPoints: {
         type: new GraphQLList(RankingPointType),
         args: Object.assign(defaultListArgs(), {
@@ -50,10 +48,13 @@ export const GameType = new GraphQLObjectType({
           }
         })
       },
-      drawTournament: {
+      tournament: {
         type: DrawTournamentType,
-        resolve: resolver(Game.associations.drawTournament)
-      }
+        resolve: resolver(Game.associations.tournament)
+      },
+      competition: {
+        type: EncounterCompetitionType,
+        resolve: resolver(Game.associations.competition)
+      },
     })
 });
-

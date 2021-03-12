@@ -20,9 +20,12 @@ import {
   SubEventCompetition,
   SubEventType,
   Team,
-  TeamMembership,
-  titleCase
+  EncounterCompetition,
+  titleCase,
+  TeamPlayerMembership,
+  TeamSubEventMembership
 } from '@badvlasim/shared';
+import { Hash } from 'crypto';
 import { parse } from 'fast-xml-parser';
 import { readFileSync, unlink } from 'fs';
 import moment, { Moment } from 'moment';
@@ -95,7 +98,8 @@ export class CompetitionXmlImporter extends Importer {
       logger.warn("This isn't really intended");
 
       event = await new EventCompetition({
-        name: importerFile.name
+        name: importerFile.name,
+        startYear: importerFile.firstDay.getFullYear()
       }).save();
     }
 
@@ -131,7 +135,7 @@ export class CompetitionXmlImporter extends Importer {
     const xmlGames = [];
     for (const xmlEvent of xmlData) {
       const subEventWhere = {
-        EventId: event.id,
+        eventId: event.id,
         internalId: xmlEvent.EventSiebelId
       };
       let dbSubevent = await SubEventCompetition.findOne({
@@ -168,10 +172,12 @@ export class CompetitionXmlImporter extends Importer {
             ? SubEventType.M
             : SubEventType.F,
           levelType: this.getLeague(importerFile),
-          EventId: event.id
+          eventId: event.id
         }).save();
         logger.warn('No subevent found', { where: subEventWhere, created: dbSubevent.toJSON() });
       }
+
+      const teams = await Team.findAll();
 
       for (const division of xmlDivisions) {
         if (!division) {
@@ -183,8 +189,7 @@ export class CompetitionXmlImporter extends Importer {
         if (!dbDraw) {
           dbDraw = await new DrawCompetition({
             name: division.DivisionName,
-            type: DrawType.POULE,
-            SubEventId: dbSubevent.id,
+            subeventId: dbSubevent.id,
             internalId: division.DivisionLPId
           }).save();
 
@@ -194,6 +199,22 @@ export class CompetitionXmlImporter extends Importer {
         const xmlFixtures = Array.isArray(division.Fixture)
           ? [...division.Fixture]
           : [division.Fixture];
+
+        const xmlFixturesTeams = [
+          ...new Set([
+            ...xmlFixtures.map(r => r.FixtureTeam1),
+            ...xmlFixtures.map(r => r.FixtureTeam2)
+          ])
+        ];
+        for (const fixtureTeam of xmlFixturesTeams) {
+          const dbTeam = teams.find(r => r.name === this._cleanedTeamName(fixtureTeam));
+          if (dbTeam == null) {
+            logger.warn('Team not found?', fixtureTeam);
+            continue;
+          }
+
+          await dbTeam.addSubEvent(dbSubevent);
+        }
 
         for (const fixture of xmlFixtures) {
           if (!fixture) {
@@ -214,6 +235,15 @@ export class CompetitionXmlImporter extends Importer {
             time[1]
           );
 
+          const encountComp = {
+            date: playedAt,
+            drawId: dbDraw.id
+          };
+          const [dbEncounter] = await EncounterCompetition.findCreateFind({
+            where: encountComp,
+            defaults: encountComp
+          });
+
           for (const match of xmlMatches) {
             const gamePlayers = [];
 
@@ -227,8 +257,8 @@ export class CompetitionXmlImporter extends Importer {
               set3Team1: match.MatchTeam3Set1,
               set3Team2: match.MatchTeam3Set2,
               winner: match.MatchWinner,
-              drawId: dbDraw.id,
-              drawType: 'competition'
+              linkId: dbEncounter.id,
+              linkType: 'competition'
             });
 
             const loserTeam = match.MatchWinner === 1 ? 2 : 1;
@@ -340,49 +370,54 @@ export class CompetitionXmlImporter extends Importer {
         xmlPlayersForteam = [{ ...xmlD.Member, ClubId: xmlD.TeamClubSiebelId }];
       }
 
-      if (xmlPlayersForteam.length > 0) {
-        // Correct wrong id's and such
-        for (const xmlPlayer of xmlPlayersForteam) {
-          try {
-            const corrected = correctWrongPlayers({
-              memberId: xmlPlayer.MemberLTANo,
-              firstName: titleCase(xmlPlayer.MemberFirstName),
-              lastName: titleCase(xmlPlayer.MemberLastName),
-              gender: xmlPlayer.MemberGender,
-              club: xmlPlayer.ClubId
-            });
-
-            // New Player, so all our values are correclty initialized
-            // Also checks properties
-            const player = new Player({
-              ...corrected
-            });
-            // Add to big list
-            players.set(xmlPlayer.MemberLTANo, player);
-
-            // add to team list
-            if (player.memberId && playersForteam.find(p => p.memberId !== player.memberId)) {
-              playersForteam.push(player);
-            }
-          } catch (error) {
-            logger.error("Couldn't parse player", error);
-            throw error;
-          }
-        }
-
-        // Assign players to teams
-        if (teams.findIndex(t => t.name === xmlD.TeamName) === -1) {
-          teams.push({
-            name: xmlD.TeamName,
-            clubId:
-              xmlD.TeamClubSiebelId !== '' && xmlD.TeamClubSiebelId ? xmlD.TeamClubSiebelId : null,
-            players: playersForteam
+      // Correct wrong id's and such
+      for (const xmlPlayer of xmlPlayersForteam || []) {
+        try {
+          const corrected = correctWrongPlayers({
+            memberId: xmlPlayer.MemberLTANo,
+            firstName: titleCase(xmlPlayer.MemberFirstName),
+            lastName: titleCase(xmlPlayer.MemberLastName),
+            gender: xmlPlayer.MemberGender,
+            club: xmlPlayer.ClubId
           });
+
+          // New Player, so all our values are correclty initialized
+          // Also checks properties
+          const player = new Player({
+            ...corrected
+          });
+          // Add to big list
+          players.set(xmlPlayer.MemberLTANo, player);
+
+          // add to team list
+          if (player.memberId && playersForteam.find(p => p.memberId === player.memberId) == null) {
+            playersForteam.push(player);
+          }
+        } catch (error) {
+          logger.error("Couldn't parse player", error);
+          throw error;
         }
+      }
+
+      // Assign players to teams
+      if (teams.findIndex(t => t.name === xmlD.TeamName) === -1) {
+        teams.push({
+          name: xmlD.TeamName,
+          clubId:
+            xmlD.TeamClubSiebelId !== '' && xmlD.TeamClubSiebelId ? xmlD.TeamClubSiebelId : null,
+          players: playersForteam
+        });
       }
     }
 
-    const arrayVersion = [...players];
+    const arrayVersion = [...players].filter((thing, i, arr) =>
+      thing[1].memberId
+        ? arr.findIndex(t => t[1].memberId === thing[1].memberId) === i
+        : // Less accurate
+          arr.findIndex(
+            t => t[1].firstName === thing[1].firstName && t[1].lastName === thing[1].lastName
+          ) === i
+    );
 
     const dbPlayers = await Player.bulkCreate(
       arrayVersion.map(p => p[1].toJSON()),
@@ -484,7 +519,7 @@ export class CompetitionXmlImporter extends Importer {
       .startOf('month');
 
     // Get all existing memberships of the players
-    const dbTeamMemberships = await TeamMembership.findAll({
+    const dbTeamMemberships = await TeamPlayerMembership.findAll({
       where: {
         playerId: {
           [Op.in]: playersIds.map(r => r)
@@ -517,7 +552,7 @@ export class CompetitionXmlImporter extends Importer {
       }
 
       // new membership
-      await new TeamMembership({
+      await new TeamPlayerMembership({
         playerId,
         teamId,
         end: end.toDate(),
