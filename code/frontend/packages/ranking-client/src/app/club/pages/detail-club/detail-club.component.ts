@@ -3,9 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddPlayerComponent } from 'app/admin/modules/club-management/dialogs/add-player/add-player.component';
 import { UserService } from 'app/player';
-import { Club, ClubService } from 'app/_shared';
+import { Club, ClubService, SystemService } from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import * as moment from 'moment';
 
 @Component({
@@ -21,16 +21,23 @@ export class DetailClubComponent {
   constructor(
     private user: UserService,
     private clubService: ClubService,
+    private systemService: SystemService,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.club$ = combineLatest([this.route.paramMap, this.update$]).pipe(
-      map(([params]) => params.get('id')),
-      switchMap((id) =>
-        this.clubService.getClub(id, moment().subtract(1, 'year').toDate())
+    const system$ = this.systemService.getSystems(true).pipe(
+      filter((x) => !!x),
+      filter((x) => x.length > 0),
+      map((x) => x[0])
+    );
+
+
+    this.club$ = combineLatest([this.route.paramMap, system$, this.update$]).pipe(
+      switchMap(([params, system]) =>
+        this.clubService.getClub(params.get('id'), system.id, moment().subtract(1, 'year').toDate())
       ),
       tap((club) => {
         this.canEditClub$ = this.user.canEditClubs(club.id);
