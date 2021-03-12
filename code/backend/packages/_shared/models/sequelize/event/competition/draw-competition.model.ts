@@ -50,7 +50,7 @@ export class DrawCompetition extends Model {
 
   @Column
   size: number;
-
+ 
   @Unique('unique_constraint')
   @Column
   internalId: number;

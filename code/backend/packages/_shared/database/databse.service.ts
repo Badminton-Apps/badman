@@ -6,6 +6,7 @@ import {
   ClubMembership,
   DrawCompetition,
   DrawTournament,
+  EncounterCompetition,
   Game,
   GamePlayer,
   Player,
@@ -217,21 +218,26 @@ export class DataBaseHandler {
       include: [
         { model: Player, attributes: ['id'] },
         {
-          model: DrawCompetition,
+          model: EncounterCompetition,
           include: [
             {
-              model: SubEventCompetition,
-              attributes: [],
+              model: DrawCompetition,
               include: [
                 {
-                  model: RankingSystemGroup,
+                  model: SubEventCompetition,
                   attributes: [],
-                  required: true,
-                  through: {
-                    where: {
-                      GroupId: { [Op.in]: groups }
+                  include: [
+                    {
+                      model: RankingSystemGroup,
+                      attributes: [],
+                      required: true,
+                      through: {
+                        where: {
+                          GroupId: { [Op.in]: groups }
+                        }
+                      }
                     }
-                  }
+                  ]
                 }
               ]
             }
