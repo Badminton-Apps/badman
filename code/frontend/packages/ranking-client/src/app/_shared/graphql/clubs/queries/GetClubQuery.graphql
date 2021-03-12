@@ -12,6 +12,7 @@ query GetClubsQuery($id: ID!, $end: String) {
         id
         firstName
         lastName
+        base
       }
     }
 

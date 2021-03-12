@@ -1,4 +1,5 @@
 import {
+  GraphQLBoolean,
   GraphQLEnumType,
   GraphQLID,
   GraphQLInt,
@@ -8,12 +9,7 @@ import {
   GraphQLSchema,
   GraphQLString
 } from 'graphql';
-import {
-  attributeFields,
-  createConnection,
-  defaultListArgs,
-  resolver
-} from 'graphql-sequelize';
+import { attributeFields, createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { col, fn, Includeable, Op, or, QueryTypes, where } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { Player } from '@badvlasim/shared/models';
@@ -22,6 +18,7 @@ import { RankingPlaceType } from './rankingPlace.type';
 import { RankingPointType } from './rankingPoint.type';
 import { TeamType } from './team.type';
 import { getAttributeFields } from './attributes.type';
+import { logger } from '@badvlasim/shared';
 
 const PlayerType = new GraphQLObjectType({
   name: 'Player',
@@ -95,6 +92,9 @@ const PlayerType = new GraphQLObjectType({
             return findOptions;
           }
         })
+      },
+      base: {
+        type: GraphQLBoolean
       }
     })
 });

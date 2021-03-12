@@ -7,10 +7,11 @@ import {
   GraphQLNonNull,
   GraphQLObjectType
 } from 'graphql';
-import { attributeFields, defaultListArgs, resolver } from 'graphql-sequelize';
+import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { getAttributeFields } from '../attributes.type';
 import { GameType } from '../game.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
+import { EncounterCompetitionType } from './encounter-competition.type';
 import { SubEventCompetitionType } from './subEvent-competition.type';
 
 const DrawCompetitionType = new GraphQLObjectType({
@@ -18,23 +19,9 @@ const DrawCompetitionType = new GraphQLObjectType({
   description: 'A DrawCompetition',
   fields: () =>
     Object.assign(getAttributeFields(DrawCompetition), {
-      games: {
-        type: new GraphQLList(GameType),
-        args: Object.assign(defaultListArgs(), {
-          playerId: {
-            description: 'id of the user',
-            type: new GraphQLNonNull(GraphQLID)
-          }
-        }),
-        resolve: resolver(DrawCompetition.associations.games)
-      },
-      gamesCount: {
-        type: GraphQLInt,
-        resolve: async (source: DrawCompetition, args, context, info) => {
-          return context.models.Game.count({
-            where: { drawId: source.id, drawType: 'competition' }
-          });
-        }
+      encounters: {
+        type: new GraphQLList(EncounterCompetitionType),
+        resolve: resolver(DrawCompetition.associations.encounters)
       },
       subEvent: {
         type: SubEventCompetitionType,

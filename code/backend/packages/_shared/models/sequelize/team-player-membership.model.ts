@@ -1,26 +1,24 @@
+import { BuildOptions } from 'sequelize';
 import {
-  BelongsTo,
+  AllowNull,
   Column,
-  ForeignKey,
-  Table,
-  Model,
-  PrimaryKey,
-  IsUUID,
-  Unique,
   DataType,
   Default,
-  NotNull,
-  AllowNull
+  ForeignKey,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique
 } from 'sequelize-typescript';
-import { BuildOptions } from 'sequelize';
 import { Player } from './player.model';
 import { Team } from './team.model';
 
 @Table({
   schema: 'public'
 })
-export class TeamMembership extends Model {
-  constructor(values?: Partial<TeamMembership>, options?: BuildOptions) {
+export class TeamPlayerMembership extends Model {
+  constructor(values?: Partial<TeamPlayerMembership>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -34,13 +32,17 @@ export class TeamMembership extends Model {
   @Column
   teamId: string;
 
-  
   @Column
   end?: Date;
 
+  @AllowNull(false)
+  @Default(false)
+  @Column
+  base: boolean;
+
   // Below is a hacky way to make the Unique across FK's + start
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
-  @Unique('TeamMemberships_teamId_playerId_unique')
+  @Unique('TeamPlayerMemberships_teamId_playerId_unique')
   @AllowNull(false)
   @Column
   start: Date;
@@ -50,5 +52,4 @@ export class TeamMembership extends Model {
   @PrimaryKey
   @Column
   id: string;
-
 }

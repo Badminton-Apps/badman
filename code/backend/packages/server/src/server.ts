@@ -15,16 +15,16 @@ import { RankingController } from './controllers/ranking.controller';
 import { RequestLinkController } from './controllers/request-link.controller';
 import { SystemController } from './controllers/system.controller';
 // Then  rest
-import { UserController } from './controllers/user.controller';
+import { UserController } from './controllers/user.controller'; 
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
 dotenv.config();
  
 (async () => { 
-  await startWhenReady(true, true, db => {
-    startServer(db); 
-  });
+  await startWhenReady(false, true, db => {
+    startServer(db);  
+  }); 
 })();
 
 const startServer = (databaseService: DataBaseHandler) => {

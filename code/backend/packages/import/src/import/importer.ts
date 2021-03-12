@@ -59,7 +59,7 @@ export abstract class Importer {
         // Cleanup
         const subEvents = await this.subEventModel.findAll({
           where: {
-            EventId: event.id
+            eventId: event.id
           },
           include: [{ model: this.drawModel }]
         });
@@ -68,7 +68,7 @@ export abstract class Importer {
 
         await Game.destroy({
           where: {
-            drawId: {
+            linkId: {
               [Op.in]: draws
             }
           },
@@ -250,7 +250,7 @@ export abstract class Importer {
           name: csvDraw.name,
           internalId: parseInt(csvDraw.id, 10),
           type: this.getDrawType(parseInt(csvDraw.drawtype, 10)),
-          SubEventId: dbSubEvent.id
+          subeventId: dbSubEvent.id
         })
       );
     }
@@ -297,11 +297,11 @@ export abstract class Importer {
       const subEvents = [];
       for (const subEvent of importerFile.subEvents) {
         // Remove id from importerSubEvent
-        const { id: subEventId, ...importSubEvent } = subEvent.toJSON() as any;
+        const { id: subeventId, ...importSubEvent } = subEvent.toJSON() as any;
 
         const sub = new this.subEventModel({
           ...importSubEvent,
-          EventId: dbEvent.id
+          eventId: dbEvent.id
         }) as SubEventCompetition | SubEventTournament;
 
         await sub.save({ transaction });
@@ -312,7 +312,7 @@ export abstract class Importer {
           const { id: drawId, ...importDraw } = draw.toJSON() as any;
           const d = await new this.drawModel({
             ...importDraw,
-            SubEventId: sub.id
+            subeventId: sub.id
           }).save({ transaction });
 
           draws.push(d);

@@ -33,10 +33,7 @@ export class ClubService {
       .mutate<{ addClub: Club }>({
         mutation: addClubMutation,
         variables: {
-          club: {
-            ...club,
-            id: -1,
-          },
+          club,
         },
       })
       .pipe(map((x) => new Club(x.data.addClub)));

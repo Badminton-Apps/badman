@@ -12,6 +12,7 @@ const addTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutation
 const updateTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/updateTeam.graphql');
 const addPlayerToTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/addPlayerToTeamMutation.graphql');
 const removePlayerToTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/removePlayerToTeamMutation.graphql');
+const updatePlayerTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/updatePlayerTeamMutation.graphql');
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,7 @@ export class TeamService {
       .mutate<{ addTeam: Team }>({
         mutation: addTeamMutation,
         variables: {
-          team: { ...team, id: -1, ClubId: clubId },
+          team: { ...team, ClubId: clubId },
         },
       })
       .pipe(map((x) => new Team(x.data.addTeam)));
@@ -57,6 +58,16 @@ export class TeamService {
       variables: {
         playerId: player.id,
         teamId: team.id,
+      },
+    });
+  }
+  updatePlayer(team: Team, player: Player) {
+    return this.apollo.mutate({
+      mutation: updatePlayerTeamMutation,
+      variables: {
+        playerId: player.id,
+        teamId: team.id,
+        base: player.base
       },
     });
   }

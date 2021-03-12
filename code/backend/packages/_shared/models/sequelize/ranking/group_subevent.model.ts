@@ -15,7 +15,7 @@ import { RankingSystemGroup } from './group.model';
 export class GroupSubEvents extends Model {
   @PrimaryKey
   @Column
-  subEventId: string;
+  subeventId: string;
 
   @PrimaryKey
   @Column
