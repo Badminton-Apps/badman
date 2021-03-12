@@ -11,7 +11,20 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { BuildOptions, HasManyGetAssociationsMixin, HasManySetAssociationsMixin } from 'sequelize/types';
+import {
+  BuildOptions,
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin
+} from 'sequelize/types';
 import { Game } from '..';
 import { DrawType } from '../../..';
 import { SubEventTournament } from './sub-event-tournament.model';
@@ -43,10 +56,10 @@ export class DrawTournament extends Model {
   size: number;
 
   @HasMany(() => Game, {
-    foreignKey: 'drawId',
+    foreignKey: 'linkId',
     constraints: false,
     scope: {
-      drawType: 'Tournament'
+      linkType: 'tournament'
     }
   })
   games: Game[];
@@ -55,14 +68,26 @@ export class DrawTournament extends Model {
   @Column
   internalId: number;
 
-  @BelongsTo(() => SubEventTournament, 'SubEventId')
+  @BelongsTo(() => SubEventTournament, 'subeventId')
   subEvent?: SubEventTournament[];
 
   @Unique('unique_constraint')
   @ForeignKey(() => SubEventTournament)
   @Column
-  SubEventId: string;
+  subeventId: string;
 
-  public getGames!: HasManyGetAssociationsMixin<Game>;
-  public setGames!: HasManySetAssociationsMixin<Game, string>;
+  // Has many Game
+  getGames!: HasManyGetAssociationsMixin<Game>;
+  setGames!: HasManySetAssociationsMixin<Game, string>;
+  addGames!: HasManyAddAssociationsMixin<Game, string>;
+  addGame!: HasManyAddAssociationMixin<Game, string>;
+  removeGame!: HasManyRemoveAssociationMixin<Game, string>;
+  removeGames!: HasManyRemoveAssociationsMixin<Game, string>;
+  hasGame!: HasManyHasAssociationMixin<Game, string>;
+  hasGames!: HasManyHasAssociationsMixin<Game, string>;
+  countGames!: HasManyCountAssociationsMixin;
+
+  // Belongs to SubEvent
+  getSubEvent!: BelongsToGetAssociationMixin<SubEventTournament>;
+  setSubEvent!: BelongsToSetAssociationMixin<SubEventTournament, string>;
 }

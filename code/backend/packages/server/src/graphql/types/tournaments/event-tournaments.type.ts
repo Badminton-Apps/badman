@@ -6,7 +6,7 @@ import {
   GraphQLList,
   GraphQLObjectType
 } from 'graphql';
-import { attributeFields, createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
+import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
 import { SubEventTournamentInputType, SubEventTournamentType } from './subEvent-tournaments.type';
@@ -28,11 +28,17 @@ export const EventTournamentInputType = new GraphQLInputObjectType({
   name: 'EventTournamentInput',
   description: 'This represents a UserInputType',
   fields: () =>
-    Object.assign(getAttributeFields(EventTournament, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }), {
-      subEvents: {
-        type: new GraphQLList(SubEventTournamentInputType)
+    Object.assign(
+      getAttributeFields(EventTournament, {
+        exclude: ['createdAt', 'updatedAt'],
+        optionalString: ['id']
+      }),
+      {
+        subEvents: {
+          type: new GraphQLList(SubEventTournamentInputType)
+        }
       }
-    })
+    )
 });
 
 export const EventTournamentConnectionType = createConnection({

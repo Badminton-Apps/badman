@@ -48,4 +48,12 @@ export class EditClubComponent implements OnInit {
       this.update$.next(null);
     }
   }
+
+  async onPlayerUpdated(player: Player, team: Team) {
+    if (player && team) {
+      await this.teamService.updatePlayer(team, player).toPromise();
+      this._snackBar.open('Player updated', null, { duration: 1000, panelClass: 'success'});
+      this.update$.next(null);
+    }
+  }
 }

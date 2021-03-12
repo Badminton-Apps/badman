@@ -70,7 +70,7 @@ const addEventCompetitionMutation = {
 
 const updateEventCompetitionMutation = {
   type: EventCompetitionType,
-  args: {
+  args: { 
     id: {
       name: 'Id',
       type: GraphQLInt

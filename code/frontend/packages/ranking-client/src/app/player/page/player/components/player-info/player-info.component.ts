@@ -33,8 +33,6 @@ export class PlayerInfoComponent implements OnInit {
       }
     }
 
-    console.log('Input', this.rankingPoint)
-
     if (this.rankingPoint) {
       let hasWon: boolean = this.rankingPoint.points > 0;
       this.isUsedForUpgrade =

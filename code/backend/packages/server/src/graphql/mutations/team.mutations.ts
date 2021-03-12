@@ -1,9 +1,9 @@
-import { DataBaseHandler, logger, Player, Team } from '@badvlasim/shared';
-import { GraphQLID, GraphQLInt } from 'graphql';
+import { DataBaseHandler, logger, Player, Team, TeamPlayerMembership } from '@badvlasim/shared';
+import { GraphQLBoolean, GraphQLID, GraphQLInt } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { TeamInputType, TeamType } from '../types';
 
-const addTeamMutation = {
+export const addTeamMutation = {
   type: TeamType,
   args: {
     team: {
@@ -128,18 +128,17 @@ export const removePlayerToTeamMutation = {
       });
 
       if (!dbTeam) {
-        logger.debug('team', dbTeam)
+        logger.debug('team', dbTeam);
         throw new ApiError({
           code: 404,
           message: 'Team not found'
         });
       }
-   
+
       const dbPlayer = await Player.findByPk(playerId, {
         transaction
       });
 
-     
       if (!dbPlayer) {
         throw new ApiError({
           code: 404,
@@ -161,7 +160,74 @@ export const removePlayerToTeamMutation = {
   }
 };
 
-const updateTeamMutation = {
+export const updatePlayerTeamMutation = {
+  type: TeamType,
+  args: {
+    teamId: {
+      name: 'teamId',
+      type: GraphQLID
+    },
+    playerId: {
+      name: 'playerId',
+      type: GraphQLID
+    },
+    base: {
+      name: 'base',
+      type: GraphQLBoolean
+    }
+  },
+  resolve: async (findOptions, { teamId, playerId, base }, context) => {
+    if (!context.req.user.hasAnyPermission(['edit:team'])) {
+      throw new ApiError({
+        code: 401,
+        message: "You don't have permission to do this "
+      });
+    }
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbTeam = await Team.findByPk(teamId, {
+        transaction
+      });
+
+      if (!dbTeam) {
+        logger.debug('team', dbTeam);
+        throw new ApiError({
+          code: 404,
+          message: 'Team not found'
+        });
+      }
+
+      const dbPlayer = await Player.findByPk(playerId, {
+        transaction
+      });
+
+      if (!dbPlayer) {
+        throw new ApiError({
+          code: 404,
+          message: 'Player not found'
+        });
+      }
+
+      await TeamPlayerMembership.update(
+        {
+          teamId: dbTeam.id,
+          playerId: dbPlayer.id,
+          base
+        },
+        { where: { teamId: dbTeam.id, playerId: dbPlayer.id }, transaction }
+      );
+
+      transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      logger.warn('rollback');
+      transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const updateTeamMutation = {
   type: TeamType,
   args: {
     id: {
@@ -196,4 +262,3 @@ const updateTeamMutation = {
   }
 };
 
-export { addTeamMutation, updateTeamMutation };

@@ -1,4 +1,4 @@
-import { DrawTournament } from '@badvlasim/shared';
+import { EncounterCompetition } from '@badvlasim/shared/models';
 import {
   GraphQLID,
   GraphQLInputObjectType,
@@ -11,13 +11,13 @@ import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { getAttributeFields } from '../attributes.type';
 import { GameType } from '../game.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
-import { SubEventTournamentType } from './subEvent-tournaments.type';
+import { DrawCompetitionType } from './draw-competition.type';
 
-const DrawTournamentType = new GraphQLObjectType({
-  name: 'DrawTournament',
-  description: 'A DrawTournament',
+const EncounterCompetitionType = new GraphQLObjectType({
+  name: 'EncounterCompetition',
+  description: 'A EncounterCompetition',
   fields: () =>
-    Object.assign(getAttributeFields(DrawTournament), {
+    Object.assign(getAttributeFields(EncounterCompetition), {
       games: {
         type: new GraphQLList(GameType),
         args: Object.assign(defaultListArgs(), {
@@ -26,29 +26,29 @@ const DrawTournamentType = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLID)
           }
         }),
-        resolve: resolver(DrawTournament.associations.games)
+        resolve: resolver(EncounterCompetition.associations.games)
       },
       gamesCount: {
         type: GraphQLInt,
-        resolve: async (source: DrawTournament, args, context, info) => {
+        resolve: async (source: EncounterCompetition, args, context, info) => {
           return context.models.Game.count({
-            where: { drawId: source.id, drawType: 'tournament' }
+            where: { drawId: source.id, drawType: 'competition' }
           });
         }
       },
-      subEvent: {
-        type: SubEventTournamentType,
-        resolve: resolver(DrawTournament.associations.subEvent)
+      draw: {
+        type: DrawCompetitionType,
+        resolve: resolver(EncounterCompetition.associations.draw)
       }
     })
 });
 
-const DrawTournamentInputType = new GraphQLInputObjectType({
-  name: 'DrawTournamentInput',
+const EncounterCompetitionInputType = new GraphQLInputObjectType({
+  name: 'EncounterCompetitionInput',
   description: 'This represents a UserInputType',
   fields: () =>
     Object.assign(
-      getAttributeFields(DrawTournament, {
+      getAttributeFields(EncounterCompetition, {
         exclude: ['createdAt', 'updatedAt'],
         optionalString: ['id']
       }),
@@ -60,4 +60,4 @@ const DrawTournamentInputType = new GraphQLInputObjectType({
     )
 });
 
-export { DrawTournamentType, DrawTournamentInputType };
+export { EncounterCompetitionType, EncounterCompetitionInputType };

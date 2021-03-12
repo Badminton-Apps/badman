@@ -8,6 +8,7 @@ export class Player {
   avatar: string;
   firstName: string;
   lastName: string;
+  base: boolean;
   isClaimed = false;
   rankingPlaces: RankingPlace[];
   games: Game[];
@@ -22,6 +23,7 @@ export class Player {
     this.isClaimed = args.isClaimed;
     this.rankingPlaces = args.rankingPlaces?.map((r) => new RankingPlace(r));
     this.games = args.games?.map((g) => new Game(g));
+    this.base = args.base;
   }
 }
 

@@ -5,6 +5,7 @@ import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { getAttributeFields } from './attributes.type';
 import { PlayerType } from './player.type';
 import moment from 'moment';
+import { SubEventCompetitionType } from './competition';
 
 export const TeamType = new GraphQLObjectType({
   name: 'Team',
@@ -25,14 +26,27 @@ export const TeamType = new GraphQLObjectType({
           after: (result, args, context) => {
             // Only get after certain period
             if (args.end) {
-              result = result.filter(player =>
-                moment(player.getDataValue('TeamMembership').end).isSameOrAfter(args.end)
-              );
+              result
+                // not empty
+                .filter(p => p != null)
+                .filter(p => p.getDataValue('TeamPlayerMembership') != null)
+                // then filter
+                .filter(player => {
+                  return moment(player.getDataValue('TeamPlayerMembership').end).isSameOrAfter(args.end);
+                });
             }
 
-            return result;
+            return result.map(player => {
+              player.base = player.getDataValue('TeamPlayerMembership')?.base;
+              return player;
+            });
           }
         })
+      },
+      subEvents: {
+        type: new GraphQLList(SubEventCompetitionType),
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(Team.associations.subEvents)
       }
     })
 });

@@ -37,9 +37,13 @@ export const ClubType = new GraphQLObjectType({
           after: (result, args, context) => {
             // Only get after certain period
             if (args.end) {
-              result = result.filter(player =>
-                moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
-              );
+              result = result // not empty
+                .filter(p => p)
+                .filter(p => p.getDataValue('ClubMembership') != null)
+                // then filter
+                .filter(player =>
+                  moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
+                );
             }
 
             return result;
@@ -52,7 +56,10 @@ export const ClubType = new GraphQLObjectType({
 export const ClubInputType = new GraphQLInputObjectType({
   name: 'ClubInput',
   description: 'This represents a ClubnputType',
-  fields: () => Object.assign(getAttributeFields(Club, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }))
+  fields: () =>
+    Object.assign(
+      getAttributeFields(Club, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] })
+    )
 });
 
 export const ClubConnectionType = createConnection({
