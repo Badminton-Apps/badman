@@ -6,6 +6,7 @@ import {
   Table,
   PrimaryKey,
   Unique,
+  HasMany,
   IsUUID,
   Index,
   Default,

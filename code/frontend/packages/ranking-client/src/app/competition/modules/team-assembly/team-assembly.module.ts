@@ -12,7 +12,11 @@ import { CompetitionComponentsModule } from 'app/competition/components';
 import { SharedModule } from 'app/_shared';
 import { TeamAssemblyComponent } from './pages';
 import { AssemblyComponent } from './pages/team-assembly/components/assembly/assembly.component';
-import { TeamAssemblyRoutingModule } from './team-assembly-routing.module';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {
+  MatMomentDateModule,
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+} from '@angular/material-moment-adapter';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -31,6 +35,7 @@ const materialModules = [
     TeamAssemblyRoutingModule,
     CompetitionComponentsModule,
   ],
+  imports: [SharedModule, ...materialModules, TeamAssemblyRoutingModule],
   providers: [
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
   ],
