@@ -1,18 +1,4 @@
 import {
-  BelongsToMany,
-  Column,
-  HasMany,
-  Model,
-  Table,
-  PrimaryKey,
-  Unique,
-  HasMany,
-  IsUUID,
-  Index,
-  Default,
-  DataType
-} from 'sequelize-typescript';
-import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
@@ -22,13 +8,26 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
-  BuildOptions,
-  HasManyGetAssociationsMixin
+  BuildOptions
 } from 'sequelize';
-import { Location, Team } from '../..';
+import {
+  BelongsToMany,
+  Column,
+  DataType,
+  Default,
+  HasMany,
+  Index,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique
+} from 'sequelize-typescript';
 import { ClubLocation } from './club-location.model';
 import { ClubMembership } from './club-membership.model';
+import { Location } from './event';
 import { Player } from './player.model';
+import { Team } from './team.model';
 
 @Table({
   timestamps: true,
