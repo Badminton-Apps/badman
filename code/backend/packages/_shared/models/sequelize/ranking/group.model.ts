@@ -1,18 +1,28 @@
 import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BuildOptions
+} from 'sequelize';
+import {
   BelongsToMany,
   Column,
   DataType,
   Default,
-  HasMany,
   IsUUID,
   Model,
   PrimaryKey,
   Table,
   Unique
 } from 'sequelize-typescript';
-import { BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyHasAssociationsMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, BelongsToManySetAssociationsMixin, BuildOptions } from 'sequelize';
 import { RankingSystem } from '../../..';
-import { SubEvent } from '../event';
+import { SubEventCompetition, SubEventTournament } from '../event';
 import { GroupSubEvents } from './group_subevent.model';
 import { GroupSystems } from './group_system.model';
 
@@ -22,8 +32,8 @@ import { GroupSystems } from './group_system.model';
   schema: 'ranking'
 })
 export class RankingSystemGroup extends Model {
-  constructor(values ?: Partial<RankingSystemGroup>, options?: BuildOptions){
-    super(values, options)
+  constructor(values?: Partial<RankingSystemGroup>, options?: BuildOptions) {
+    super(values, options);
   }
 
   @Default(DataType.UUIDV4)
@@ -36,11 +46,31 @@ export class RankingSystemGroup extends Model {
   @Column
   name: string;
 
-  @BelongsToMany(
-    () => SubEvent,
-    () => GroupSubEvents
-  )
-  subEvents: SubEvent[];
+  @BelongsToMany(() => SubEventCompetition, {
+    through: {
+      model: () => GroupSubEvents,
+      unique: false,
+      scope: {
+        subEventType: 'competition'
+      }
+    },
+    foreignKey: 'groupId',
+    otherKey: 'subeventId'
+  })
+  subEventCompetitions: SubEventCompetition[];
+
+  @BelongsToMany(() => SubEventTournament, {
+    through: {
+      model: () => GroupSubEvents,
+      unique: false,
+      scope: {
+        subEventType: 'tournament'
+      }
+    },
+    foreignKey: 'groupId',
+    otherKey: 'subeventId'
+  })
+  subEventTournaments: SubEventTournament[];
 
   @BelongsToMany(
     () => RankingSystem,
@@ -48,16 +78,73 @@ export class RankingSystemGroup extends Model {
   )
   systems: RankingSystem[];
 
-  // Belongs to many SubEvent
-  getSubEvents!: BelongsToManyGetAssociationsMixin<SubEvent>;
-  setSubEvent!: BelongsToManySetAssociationsMixin<SubEvent, string>;
-  addSubEvents!: BelongsToManyAddAssociationsMixin<SubEvent, string>;
-  addSubEvent!: BelongsToManyAddAssociationMixin<SubEvent, string>;
-  removeSubEvent!: BelongsToManyRemoveAssociationMixin<SubEvent, string>;
-  removeSubEvents!: BelongsToManyRemoveAssociationsMixin<SubEvent, string>;
-  hasSubEvent!: BelongsToManyHasAssociationMixin<SubEvent, string>;
-  hasSubEvents!: BelongsToManyHasAssociationsMixin<SubEvent, string>;
-  countSubEvent!: BelongsToManyCountAssociationsMixin;
+  // Belongs to many SubEventTournament
+  getSubEventTournaments!: BelongsToManyGetAssociationsMixin<
+    SubEventTournament
+  >;
+  setSubEventTournament!: BelongsToManySetAssociationsMixin<
+    SubEventTournament,
+    string
+  >;
+  addSubEventTournaments!: BelongsToManyAddAssociationsMixin<
+    SubEventTournament,
+    string
+  >;
+  addSubEventTournament!: BelongsToManyAddAssociationMixin<
+    SubEventTournament,
+    string
+  >;
+  removeSubEventTournament!: BelongsToManyRemoveAssociationMixin<
+    SubEventTournament,
+    string
+  >;
+  removeSubEventTournaments!: BelongsToManyRemoveAssociationsMixin<
+    SubEventTournament,
+    string
+  >;
+  hasSubEventTournament!: BelongsToManyHasAssociationMixin<
+    SubEventTournament,
+    string
+  >;
+  hasSubEventTournaments!: BelongsToManyHasAssociationsMixin<
+    SubEventTournament,
+    string
+  >;
+  countSubEventTournament!: BelongsToManyCountAssociationsMixin;
+
+  // Belongs to many SubEventCompetition
+  getSubEventCompetitions!: BelongsToManyGetAssociationsMixin<
+    SubEventCompetition
+  >;
+  setSubEventCompetition!: BelongsToManySetAssociationsMixin<
+    SubEventCompetition,
+    string
+  >;
+  addSubEventCompetitions!: BelongsToManyAddAssociationsMixin<
+    SubEventCompetition,
+    string
+  >;
+  addSubEventCompetition!: BelongsToManyAddAssociationMixin<
+    SubEventCompetition,
+    string
+  >;
+  removeSubEventCompetition!: BelongsToManyRemoveAssociationMixin<
+    SubEventCompetition,
+    string
+  >;
+  removeSubEventCompetitions!: BelongsToManyRemoveAssociationsMixin<
+    SubEventCompetition,
+    string
+  >;
+  hasSubEventCompetition!: BelongsToManyHasAssociationMixin<
+    SubEventCompetition,
+    string
+  >;
+  hasSubEventCompetitions!: BelongsToManyHasAssociationsMixin<
+    SubEventCompetition,
+    string
+  >;
+  countSubEventCompetition!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to many System
   getSystems!: BelongsToManyGetAssociationsMixin<RankingSystem>;

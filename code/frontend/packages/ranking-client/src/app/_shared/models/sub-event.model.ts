@@ -14,7 +14,7 @@ export class SubEvent {
   draws: Draw[];
   games: Game[];
 
-  constructor({ ...args }: Partial<SubEvent>) {
+  constructor(args: Partial<SubEvent>) {
     this.id = args.id;
     this.gameType = args.gameType;
     this.eventType = args.eventType;

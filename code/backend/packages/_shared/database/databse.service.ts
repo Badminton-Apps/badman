@@ -1,22 +1,14 @@
 import { exec } from 'child_process';
-import {
-  CountOptions,
-  CreateOptions,
-  FindOptions,
-  IncludeOptions,
-  Op
-} from 'sequelize';
+import { CreateOptions, Op } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
   ClubMembership,
-  Draw,
-  Event,
+  DrawCompetition,
+  DrawTournament,
+  EncounterCompetition,
   Game,
   GamePlayer,
-  GroupSubEvents,
-  GroupSystems,
-  ImporterFile,
   Player,
   RankingPlace,
   RankingPoint,
@@ -25,9 +17,11 @@ import {
   RankingSystems,
   RequestLink,
   StartingType,
-  SubEvent,
+  SubEventCompetition,
+  SubEventTournament,
   Team,
-  TeamMembership
+  TeamPlayerMembership,
+  TeamSubEventMembership
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
@@ -41,7 +35,7 @@ export class DataBaseHandler {
     if (!DataBaseHandler.sequelizeInstance) {
       throw new Error("Sequelize isn't initialized yet");
     }
-    return DataBaseHandler.sequelizeInstance; 
+    return DataBaseHandler.sequelizeInstance;
   }
 
   constructor(config: SequelizeOptions) {
@@ -53,7 +47,7 @@ export class DataBaseHandler {
       const models = Object.values(sequelizeModels);
 
       logger.debug('Connecting with ', {
-        ...config 
+        ...config
       });
 
       this._dialect = config.dialect;
@@ -66,7 +60,7 @@ export class DataBaseHandler {
               logger.warn(message);
             }
           }
-        }, 
+        },
         models,
         logging:
           process.env.LOG_LEVEL === 'silly' || config.logging
@@ -84,14 +78,17 @@ export class DataBaseHandler {
     const tableToTruncate = [
       GamePlayer.getTableName(),
       ClubMembership.getTableName(),
-      TeamMembership.getTableName(),
+      TeamPlayerMembership.getTableName(),
+      TeamSubEventMembership.getTableName(),
       RankingPlace.getTableName(),
       RankingPoint.getTableName(),
       Team.getTableName(),
       Club.getTableName(),
       Game.getTableName(),
-      SubEvent.getTableName(),
-      Draw.getTableName(),
+      SubEventCompetition.getTableName(),
+      SubEventTournament.getTableName(),
+      DrawCompetition.getTableName(),
+      DrawTournament.getTableName(),
       RequestLink.getTableName()
     ];
 
@@ -162,10 +159,13 @@ export class DataBaseHandler {
       const transaction = await this._sequelize.transaction();
       const chunks: RankingPoint[][] = splitInChunks(rankingPoints, 500);
       for (const chunk of chunks) {
-        await RankingPoint.bulkCreate(chunk.map(c => c.toJSON()), {
-          transaction,
-          returning: false
-        });
+        await RankingPoint.bulkCreate(
+          chunk.map(c => c.toJSON()),
+          {
+            transaction,
+            returning: false
+          }
+        );
       }
       await transaction.commit();
     } catch (err) {
@@ -194,19 +194,6 @@ export class DataBaseHandler {
     }
   }
 
-  async addGames(games) {
-    logger.silly(`Importing ${games.length} games`);
-    try {
-      return await Game.bulkCreate(games, {
-        ignoreDuplicates: true,
-        returning: ['*']
-      });
-    } catch (err) {
-      logger.error('Something went wrong adding games', err);
-      throw err;
-    }
-  }
-
   async getGames(
     startDate: Date,
     endDate: Date,
@@ -231,10 +218,36 @@ export class DataBaseHandler {
       include: [
         { model: Player, attributes: ['id'] },
         {
-          model: Draw,
+          model: EncounterCompetition,
           include: [
             {
-              model: SubEvent,
+              model: DrawCompetition,
+              include: [
+                {
+                  model: SubEventCompetition,
+                  attributes: [],
+                  include: [
+                    {
+                      model: RankingSystemGroup,
+                      attributes: [],
+                      required: true,
+                      through: {
+                        where: {
+                          GroupId: { [Op.in]: groups }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          model: DrawTournament,
+          include: [
+            {
+              model: SubEventTournament,
               attributes: [],
               include: [
                 {
@@ -294,7 +307,7 @@ export class DataBaseHandler {
       logger.error('Something went wrong adding ranking places');
       throw err;
     }
-  } 
+  }
 
   /**
    * Check if DB is migrated to latest version

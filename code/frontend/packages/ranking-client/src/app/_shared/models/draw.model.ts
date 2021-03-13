@@ -10,7 +10,7 @@ export class Draw {
   subEvent: SubEvent;
   games: Game[];
 
-  constructor({ ...args }: Partial<Draw>) {
+  constructor(args: Partial<Draw>) {
     this.id = args.id;
     this.name = args.name;
     this.type = args.type;

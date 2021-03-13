@@ -1,16 +1,12 @@
 import { join } from 'path';
-import { Transaction } from 'sequelize/types';
 import {
   DataBaseHandler,
-  Draw,
-  Event,
+  DrawTournament,
+  EventTournament,
   Game,
-  GamePlayer,
   ImporterFile,
-  ImportSubEvent,
-  logger,
   Player,
-  SubEvent
+  SubEventTournament
 } from '../../../../_shared';
 import { Mdb } from '../../convert/mdb';
 import { TournamentImporter } from '../importers';
@@ -35,7 +31,6 @@ describe('Tournament 1', () => {
     // Clear eveything
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
-
 
   it.only('Should have initialized correctly', async () => {
     // Arrange
@@ -63,8 +58,8 @@ describe('Tournament 1', () => {
     await service.addEvent(importerFile);
 
     // Assert
-    const event = await Event.findOne({
-      include: [SubEvent]
+    const event = await EventTournament.findOne({
+      include: [SubEventTournament]
     } as any);
 
     const players = await Player.findAndCountAll();
@@ -121,13 +116,13 @@ describe('Tournament 2', () => {
     await service.addEvent(importerFile);
 
     // Assert
-    const event = await Event.findOne({
+    const event = await EventTournament.findOne({
       include: [
         {
-          model: SubEvent,
+          model: SubEventTournament,
           include: [
             {
-              model: Draw,
+              model: DrawTournament,
               order: ['name']
             }
           ],
@@ -154,19 +149,19 @@ describe('Tournament 2', () => {
     expect(players[0].firstName).toEqual('Speler 1');
     expect(players[0].lastName).toEqual('Test');
     expect(players[0].games.length).toEqual(4);
-    
+
     expect(players[1].firstName).toEqual('Speler 2');
     expect(players[1].lastName).toEqual('Test');
     expect(players[1].games.length).toEqual(4);
-    
+
     expect(players[2].firstName).toEqual('Speler 3');
     expect(players[2].lastName).toEqual('Test');
     expect(players[2].games.length).toEqual(4);
-    
+
     expect(players[3].firstName).toEqual('Speler 4');
     expect(players[3].lastName).toEqual('Test');
     expect(players[3].games.length).toEqual(3);
-    
+
     expect(players[4].firstName).toEqual('Speler 5');
     expect(players[4].lastName).toEqual('Test');
     expect(players[4].games.length).toEqual(3);

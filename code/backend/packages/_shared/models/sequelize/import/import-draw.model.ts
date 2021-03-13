@@ -31,7 +31,7 @@ export class ImportDraw extends Model {
   id: string;
 
   @Unique('unique_constraint')
-  @Column
+  @Column 
   name: string;
 
   @Unique('unique_constraint')
@@ -43,10 +43,10 @@ export class ImportDraw extends Model {
 
   @Unique('unique_constraint')
   @Column
-  internalId: number;
+  internalId: number; 
 
   @BelongsTo(() => ImportSubEvent, {
-    foreignKey: 'SubEventId',
+    foreignKey: 'subeventId',
     onDelete: 'CASCADE'
   })
   subEvent?: ImportSubEvent;
@@ -54,7 +54,7 @@ export class ImportDraw extends Model {
   @Unique('unique_constraint')
   @ForeignKey(() => ImportSubEvent)
   @Column
-  SubEventId: string;
+  subeventId: string;
 
   // Belongs to SubEvent
   getSubEvent!: BelongsToGetAssociationMixin<ImportSubEvent>;

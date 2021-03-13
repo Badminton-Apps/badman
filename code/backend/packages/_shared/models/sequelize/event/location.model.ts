@@ -1,4 +1,5 @@
 import {
+  BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
@@ -8,6 +9,7 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
+  BelongsToSetAssociationMixin,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -16,9 +18,10 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin,
+  HasManySetAssociationsMixin
 } from 'sequelize';
 import {
+  BelongsTo,
   BelongsToMany,
   Column,
   DataType,
@@ -31,10 +34,10 @@ import {
   TableOptions,
   Unique
 } from 'sequelize-typescript';
+import { EventCompetition, EventTournament } from '.';
 import { Club } from '../../..';
 import { ClubLocation } from '../club-location.model';
 import { Court } from './court.model';
-import { Event } from './event.model';
 
 @Table({
   timestamps: true,
@@ -72,11 +75,55 @@ export class Location extends Model {
   @HasMany(() => Court, 'locationId')
   courts: Court;
 
+  @BelongsTo(() => EventTournament, {
+    foreignKey: 'eventId',
+    constraints: false,
+    scope: {
+      eventType: 'tournament'
+    }
+  })
+  eventTournament: EventTournament;
+
+  @BelongsTo(() => EventCompetition, {
+    foreignKey: 'eventId',
+    constraints: false,
+    scope: {
+      eventType: 'competition'
+    }
+  })
+  eventCompetition: EventCompetition;
+
+  @Unique('unique_constraint')
+  @Column
+  eventId: string;
+
+  @Unique('unique_constraint')
+  @Column
+  eventType: string;
   @BelongsToMany(
     () => Club,
     () => ClubLocation
   )
   clubs: Club[];
+
+  // Belongs to EventTournament
+  getEventTournament!: BelongsToGetAssociationMixin<EventTournament>;
+  setEventTournament!: BelongsToSetAssociationMixin<EventTournament, string>;
+
+  // Belongs to EventCompetition
+  getEventCompetition!: BelongsToGetAssociationMixin<EventCompetition>;
+  setEventCompetition!: BelongsToSetAssociationMixin<EventCompetition, string>;
+
+  // Has many Court
+  getCourts!: HasManyGetAssociationsMixin<Court>;
+  setCourts!: HasManySetAssociationsMixin<Court, string>;
+  addCourts!: HasManyAddAssociationsMixin<Court, string>;
+  addCourt!: HasManyAddAssociationMixin<Court, string>;
+  removeCourt!: HasManyRemoveAssociationMixin<Court, string>;
+  removeCourts!: HasManyRemoveAssociationsMixin<Court, string>;
+  hasCourt!: HasManyHasAssociationMixin<Court, string>;
+  hasCourts!: HasManyHasAssociationsMixin<Court, string>;
+  countCourts!: HasManyCountAssociationsMixin;
 
   // Belongs to many Club
   getClubs!: BelongsToManyGetAssociationsMixin<Club>;
@@ -88,15 +135,4 @@ export class Location extends Model {
   hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
   hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
   countClub!: BelongsToManyCountAssociationsMixin;
-  
-  // Has many Court
-  getCourts!: HasManyGetAssociationsMixin<Court>;
-  setCourts!: HasManySetAssociationsMixin<Court, string>;
-  addCourts!: HasManyAddAssociationsMixin<Court, string>;
-  addCourt!: HasManyAddAssociationMixin<Court, string>;
-  removeCourt!: HasManyRemoveAssociationMixin<Court, string>;
-  removeCourts!: HasManyRemoveAssociationsMixin<Court, string>;
-  hasCourt!: HasManyHasAssociationMixin<Court, string>;
-  hasCourts!: HasManyHasAssociationsMixin<Court, string>;
-  countCourts!: HasManyCountAssociationsMixin;
 }
