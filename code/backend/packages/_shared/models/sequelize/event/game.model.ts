@@ -38,9 +38,10 @@ import {
 import { GameType } from '../../enums';
 import { Player } from '../player.model';
 import { RankingPoint } from '../ranking';
+import { DrawTournament, DrawCompetition } from '../../..';
 import { Court } from './court.model';
-import { Draw } from './draw.model';
 import { GamePlayer } from './game-player.model';
+import { EncounterCompetition } from './competition/encounter-competition.model';
 
 @Table({
   timestamps: true,
@@ -79,15 +80,32 @@ export class Game extends Model {
   @Column
   winner?: number;
 
+  @BelongsTo(() => DrawTournament, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'tournament'
+    }
+  })
+  tournament: DrawTournament;
+
+  @BelongsTo(() => EncounterCompetition, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'competition'
+    }
+  })
+  competition: EncounterCompetition;
+
   @HasMany(() => RankingPoint, 'GameId')
   rankingPoints?: RankingPoint[];
 
-  @BelongsTo(() => Draw, 'drawId')
-  draw: Draw;
-
-  @ForeignKey(() => Draw)
   @Column
-  drawId: string;
+  linkId: string;
+
+  @Column
+  linkType: string;
 
   @BelongsTo(() => Court, 'courtId')
   court: Court;
@@ -114,9 +132,13 @@ export class Game extends Model {
   hasRankingPoints!: HasManyHasAssociationsMixin<RankingPoint, string>;
   countRankingPoints!: HasManyCountAssociationsMixin;
 
-  // Belongs to Draw
-  getDraw!: BelongsToGetAssociationMixin<Draw>;
-  setDraw!: BelongsToSetAssociationMixin<Draw, string>;
+  // Belongs to Tournament
+  getTournament!: BelongsToGetAssociationMixin<DrawTournament>;
+  setTournament!: BelongsToSetAssociationMixin<DrawTournament, string>;
+
+  // Belongs to Competition
+  getCompetition!: BelongsToGetAssociationMixin<EncounterCompetition>;
+  setCompetition!: BelongsToSetAssociationMixin<EncounterCompetition, string>;
 
   // Belongs to Court
   getCourt!: BelongsToGetAssociationMixin<Court>;

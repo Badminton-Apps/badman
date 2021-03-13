@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { map } from 'rxjs/operators';
-import { Club, Player } from './../../models';
+import { Club, Player, RankingSystem } from './../../models';
 
 const clubQuery = require('graphql-tag/loader!../../graphql/clubs/queries/GetClubQuery.graphql');
 const clubsQuery = require('graphql-tag/loader!../../graphql/clubs/queries/GetClubsQuery.graphql');
@@ -16,13 +16,14 @@ const addPlayerToClubMutation = require('graphql-tag/loader!../../graphql/clubs/
 export class ClubService {
   constructor(private apollo: Apollo) {}
 
-  getClub(clubId: string, playersfrom?: Date) {
+  getClub(clubId: string, rankingSystem?: string, playersfrom?: Date) {
     return this.apollo
       .query<{ club: Club }>({
         query: clubQuery,
         variables: {
           id: clubId,
-          end: playersfrom?.toISOString()
+          end: playersfrom?.toISOString(),
+          rankingType: rankingSystem
         },
       })
       .pipe(map((x) => new Club(x.data.club)));
@@ -33,10 +34,7 @@ export class ClubService {
       .mutate<{ addClub: Club }>({
         mutation: addClubMutation,
         variables: {
-          club: {
-            ...club,
-            id: -1,
-          },
+          club,
         },
       })
       .pipe(map((x) => new Club(x.data.addClub)));
@@ -45,7 +43,7 @@ export class ClubService {
   addPlayer(club: Club, player: Player) {
     return this.apollo.mutate({
       mutation: addPlayerToClubMutation,
-      variables: {
+      variables: { 
         playerId: player.id,
         clubId: club.id,
       },

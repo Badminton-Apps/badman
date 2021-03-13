@@ -14,5 +14,6 @@ export * from './team.model';
 export * from './user.model';
 export * from './draw.model';
 export * from './ranking-point.model';
+export * from './encounter.model';
 // end:ng42.barrel
 

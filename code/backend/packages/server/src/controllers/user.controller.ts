@@ -33,7 +33,7 @@ export class UserController extends BaseController {
   };
   private _profile = async (request: AuthenticatedRequest, response: Response) => {
     try {
-      if (request?.user?.email === null || request.user === undefined) {
+      if (request?.user?.email === null || request?.user === undefined || request?.user?.email === undefined) {
         response.json(null);
         return;
       }

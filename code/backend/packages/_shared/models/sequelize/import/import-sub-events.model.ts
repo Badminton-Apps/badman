@@ -62,7 +62,7 @@ export class ImportSubEvent extends Model {
   @Column
   internalId: number;
 
-  @HasMany(() => ImportDraw, { foreignKey: 'SubEventId', onDelete: 'CASCADE' })
+  @HasMany(() => ImportDraw, { foreignKey: 'subeventId', onDelete: 'CASCADE' })
   draws: ImportDraw[];
 
   @BelongsTo(() => ImporterFile, { foreignKey: 'FileId', onDelete: 'CASCADE' })

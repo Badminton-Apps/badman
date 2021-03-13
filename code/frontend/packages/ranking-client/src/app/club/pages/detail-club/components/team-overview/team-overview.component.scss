@@ -34,6 +34,13 @@ $config: mat-typography-config();
 
 .content {
   padding: 12px;
+
+  .player {
+    cursor: pointer;
+    &.base {
+      font-weight: bold;
+    }
+  }
 }
 
 .no-players {
