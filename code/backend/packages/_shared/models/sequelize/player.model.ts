@@ -32,9 +32,10 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
+import { ClubMembership, TeamPlayerMembership } from '../..';
 import { Club } from './club.model';
 import { Game, GamePlayer } from './event';
-import { RankingPlace, RankingPoint } from './ranking';
+import { RankingPlace, RankingPoint, RankingSystem } from './ranking';
 import { Team } from './team.model';
 import { ClubMembership } from './club-membership.model';
 import { TeamPlayerMembership } from './team-player-membership.model';
@@ -106,6 +107,12 @@ export class Player extends Model {
   )
   // eslint-disable-next-line @typescript-eslint/naming-convention
   games: (Game & { GamePlayer: GamePlayer })[];
+
+  @BelongsToMany(
+    () => Club,
+    () => ClubMembership
+  )
+  clubs: Club[];
 
   // Has many RankingPoints
   getRankingPointss!: HasManyGetAssociationsMixin<RankingPoint>;

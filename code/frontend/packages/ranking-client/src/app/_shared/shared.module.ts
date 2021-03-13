@@ -27,6 +27,9 @@ import { BetaComponent } from './components/beta/beta.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { BetaComponent } from './components/beta/beta.component';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -86,7 +89,7 @@ const exportedComponents = [
     LevelToLetterPipe,
     EnumToArrayPipe,
     BetaComponent,
-    PlayerSearchComponent,
+    PlayerSearchComponent
   ],
 })
 export class SharedModule {}
