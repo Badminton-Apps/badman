@@ -1,7 +1,10 @@
 import { PlayerGame } from '../../_shared';
+import { Draw } from './draw.model';
 import { SubEvent } from './sub-event.model';
+import { RankingPoint } from "./ranking-point.model";
+import { RankingSystem } from './ranking-system.model';
 
-export interface Game {
+export class Game {
   id: string;
   playedAt: Date;
   gameType: GameType | string;
@@ -13,7 +16,33 @@ export interface Game {
   set3Team1?: number;
   set3Team2?: number;
   winner: number;
-  subEvent: SubEvent;
+  rankingPoints: RankingPoint[];
+  competition: {draw: Draw};
+  tournament: Draw;
+  draw: Draw;
+
+  constructor({ ...args}: Partial<Game>, system?: RankingSystem) {
+    this.id = args.id;
+    this.playedAt = args.playedAt;
+    this.gameType = args.gameType;
+    this.players = args.players;
+    this.set1Team1 = args.set1Team1;
+    this.set1Team2 = args.set1Team2;
+    this.set2Team1 = args.set2Team1;
+    this.set2Team2 = args.set2Team2;
+    this.set3Team1 = args.set3Team1;
+    this.set3Team2 = args.set3Team2;
+    this.winner = args.winner;
+    this.rankingPoints = args.rankingPoints?.map(r => new RankingPoint(r));
+
+    // it's should be one or the other
+    // Temporary doing this before finding a better way
+    if (args.competition) {
+      this.draw = new Draw(args.competition.draw);
+    } else if (args.tournament) {
+      this.draw = new Draw(args.tournament);
+    }
+  }
 }
 
 export enum GameType {

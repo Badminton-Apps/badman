@@ -1,7 +1,18 @@
-query GetClubsQuery {
-  clubs {
-    id
-    name
-    clubId
+# Write your query or mutation here
+query GetClubs(
+  $first: Int
+  $after: String
+	$where: SequelizeJSON
+) {
+  clubs(first: $first, after: $after, where: $where) {
+    total
+    edges {
+      cursor
+      node {
+        id
+        name
+        abbreviation
+      }
+    }
   }
 }

@@ -33,12 +33,12 @@ export class ProfileHeaderComponent implements OnInit {
   };
 
   @Output()
-  claimAccount = new EventEmitter<number>();
+  claimAccount = new EventEmitter<string>();
 
   shownRanking: RankingPlace;
   initials: string;
 
-  singleTooltip: string;
+  singleTooltip: string; 
   doubleTooltip: string;
   mixTooltip: string;
 
@@ -50,10 +50,6 @@ export class ProfileHeaderComponent implements OnInit {
     this.initials = `${this.player.firstName[0]}${
       lastNames[lastNames.length - 1][0]
     }`.toUpperCase();
-
-    if (this.player.birthDate) {
-      this.playerAge = moment().diff(this.player.birthDate, 'years');
-    }
 
     if (this.shownRanking) {
       const date = moment(this.shownRanking.rankingDate);

@@ -1,0 +1,35 @@
+query GetClubsQuery($id: ID!, $end: String, $rankingType: ID) {
+  club(id: $id) {
+    id
+    name
+    abbreviation
+    clubId
+    teams(order: "name") {
+      id
+      name
+      abbreviation
+      players(end: $end) {
+        id
+        firstName
+        lastName
+        base
+        rankingPlaces(where: { SystemId: $rankingType }) {
+          single
+          double
+          mix
+        }
+      }
+    }
+
+    players(end: $end) {
+      id
+      firstName
+      lastName
+      rankingPlaces(where: { SystemId: $rankingType }) {
+        single
+        double
+        mix
+      }
+    }
+  }
+}

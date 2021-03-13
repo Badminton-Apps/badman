@@ -1,31 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { filter, flatMap, map, startWith, debounceTime } from 'rxjs/operators';
+import {
+  debounceTime,
+  filter,
+  flatMap,
+  map,
+  startWith,
+  tap,
+} from 'rxjs/operators';
 import { PlayerService } from '../../../../services/player/player.service';
-import { User } from './../../../../models';
+import { Player, User } from './../../../../models';
 
 @Component({
   selector: 'app-player-search',
   templateUrl: './player-search.component.html',
-  styleUrls: ['./player-search.component.scss']
+  styleUrls: ['./player-search.component.scss'],
 })
 export class PlayerSearchComponent implements OnInit {
-  myControl = new FormControl();
+  @Output() onSelectPlayer = new EventEmitter<Player>();
+
+  @Input()
+  label: string = 'Search';
+
+  formControl = new FormControl();
   filteredOptions: Observable<User[]>;
-  constructor(private playerService: PlayerService, private router: Router) {}
+  constructor(private playerService: PlayerService) {}
 
   ngOnInit() {
-    this.filteredOptions = this.myControl.valueChanges.pipe(
+    this.filteredOptions = this.formControl.valueChanges.pipe(
       startWith(''),
-      map(value => (typeof value === 'string' ? value : value.name)),
-      filter(x => x),
-      filter(x => x.length > 3),
+      filter((x) => x),
+      map((value) =>
+        typeof value === 'string'
+          ? value
+          : `${value.lastName} ${value.firstName}`
+      ),
+      filter((x) => x.length > 3),
       debounceTime(600),
-      flatMap(r => this.playerService.searchPlayers(r)),
-      map(result => (result as any).playerSearch)
+      flatMap((r) => this.playerService.searchPlayers(r)),
+      map((result) => (result as any).playerSearch)
     );
   }
 
@@ -34,8 +57,7 @@ export class PlayerSearchComponent implements OnInit {
   }
 
   selectedPlayer(event: MatAutocompleteSelectedEvent) {
-    if (event.option.value.id) {
-      this.router.navigate(['/player', event.option.value.id]);
-    }
+    this.onSelectPlayer.next(event.option.value);
+    this.formControl.reset();
   }
 }

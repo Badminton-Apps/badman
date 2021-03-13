@@ -29,6 +29,19 @@ const routes: Routes = [
       },
     },
   },
+  {
+    path: 'club',
+    loadChildren: () =>
+      import('./modules/club-management/club-management.module').then(
+        (m) => m.ClubManagementModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      claims: {
+        all: 'view:club',
+      },
+    },
+  },
 ];
 
 @NgModule({

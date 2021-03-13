@@ -6,7 +6,8 @@ import { Event, EventType } from 'app/_shared/models';
 import { environment } from 'environments/environment';
 import { BehaviorSubject, concat } from 'rxjs';
 import { map, share, tap, toArray } from 'rxjs/operators';
-const getEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetEvents.graphql');
+const getCompetitionEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetCompetition.graphql');
+const getTournamentEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetTournaments.graphql');
 
 const addEventMutation = require('graphql-tag/loader!../../graphql/events/mutations/addEvent.graphql');
 const deleteEventMutation = require('graphql-tag/loader!../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql');
@@ -39,7 +40,6 @@ export class EventService {
           $iLike: `%${query}%`,
         },
       };
-      // where = JSON.stringify(where)
     }
 
     return this.apollo
@@ -49,10 +49,11 @@ export class EventService {
           edges: { cursor: string; node: Event }[];
         };
       }>({
-        query: getEventsQuery,
+        query:
+          type == EventType.TOERNAMENT
+            ? getTournamentEventsQuery
+            : getCompetitionEventsQuery,
         variables: {
-          type,
-          order,
           first,
           after,
           where,
@@ -107,15 +108,22 @@ export class EventService {
     );
   }
 
-  findEvent(name: string, uniCode: string) {
+  findEvent(name: string, uniCode: string, type: EventType) {
     return this.apollo
       .query<{
-        events: {
+        eventCompetitions?: {
           total: number;
-          edges: { cursor: string; node: Event }[];
+          edges?: { cursor: string; node: Event }[];
+        };
+        eventTournaments?: {
+          total: number;
+          edges?: { cursor: string; node: Event }[];
         };
       }>({
-        query: getEventsQuery,
+        query:
+          type == EventType.TOERNAMENT
+            ? getTournamentEventsQuery
+            : getCompetitionEventsQuery,
         variables: {
           where: {
             $or: [
@@ -131,12 +139,16 @@ export class EventService {
       })
       .pipe(
         map((x) => {
-          if (x.data.events) {
-            x.data.events.edges = x.data.events.edges.map((e) => {
+          if (x.data.eventCompetitions || x.data.eventCompetitions) {
+            const events = [
+              ...(x.data.eventCompetitions?.edges ?? []),
+              ...(x.data.eventTournaments?.edges ?? []),
+            ].map((e) => {
               e.node = new Event(e.node);
               return e;
             });
-            return x.data.events.edges.map((x) => x.node);
+
+            return events.map((x) => x.node);
           } else {
             return null;
           }
@@ -151,7 +163,7 @@ export class EventService {
         variables: {
           event: {
             ...event,
-            id: -1
+            id: -1,
           },
         },
       })
@@ -175,7 +187,6 @@ export class EventService {
     // process chunked
     while (fileArray.length > 0) {
       var chunk = fileArray.splice(0, 5);
-      console.log(chunk);
 
       let formData = new FormData();
       chunk.forEach((file) => {
@@ -200,7 +211,6 @@ export class EventService {
         this.httpClient.request(req).pipe(
           share(),
           tap((r) => {
-            console.log(this.importStatus$.value, r);
             const finished = this.importStatus$.value.finished + 1;
             this.importStatus$.next({
               total: this.importStatus$.value.total,
@@ -215,7 +225,7 @@ export class EventService {
     return concat(...requests).pipe(toArray());
   }
 
-  deleteImportedEvent(event: { id: number }) {
+  deleteImportedEvent(event: { id: string }) {
     return this.apollo.mutate({
       mutation: deleteEventMutation,
       variables: {

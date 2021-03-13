@@ -72,7 +72,9 @@ export class ImportComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.rankingGroups = await this.systemsService.getSystemsGroups().toPromise();
+    this.rankingGroups = await this.systemsService
+      .getSystemsGroups()
+      .toPromise();
   }
 
   ngAfterViewInit() {
@@ -113,8 +115,11 @@ export class ImportComponent implements OnInit, OnDestroy {
         debounceTime(300),
         switchMap(([filterChange, sortChange, pageChange, update]) => {
           this.isLoadingResults = true;
+
           return this.eventService.getImported(
-            `DATE_${this.sort.direction.toUpperCase()}`,
+            this.sort.direction
+              ? `DATE_${this.sort.direction.toUpperCase()}`
+              : 'DATE_ASC',
             this.pageSize$.value,
             this.cursor
           );
@@ -152,13 +157,13 @@ export class ImportComponent implements OnInit, OnDestroy {
           const element = data[index];
 
           data[index].suggestions = await this.eventService
-            .findEvent(element.name, element.uniCode)
+            .findEvent(element.name, element.uniCode, data[index].type)
             .toPromise();
 
           data[index].event =
             data[index].suggestions?.length > 0
               ? data[index]?.suggestions[0]
-              : ({ id: -1 } as Event);
+              : ({ id: undefined } as Event);
         }
 
         this.dataSource.data = data;
@@ -177,7 +182,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     if (event.value.id != -1) {
       this.dataSource.data[dsId].event = event.value;
     } else {
-      this.dataSource.data[dsId].event = { id: -1 } as Event;
+      this.dataSource.data[dsId].event = { id: undefined } as Event;
 
       this.dialog
         .open(AddEventDialogComponent, {

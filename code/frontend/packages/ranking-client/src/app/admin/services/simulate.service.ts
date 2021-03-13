@@ -12,7 +12,7 @@ export class SimulateService {
   constructor(private httpClient: HttpClient) {}
 
   calculateRanking(
-    systems: number[],
+    systems: string[],
     endDate: Date,
     startDate?: Date,
     startingRankings?: boolean
@@ -36,7 +36,7 @@ export class SimulateService {
     return this.httpClient.get(`${this.urlBase}/calculate`, { params });
   }
 
-  resetRanking(systems: number[]) {
+  resetRanking(systems: string[]) {
     if (systems.length <= 0) {
       return of();
     }

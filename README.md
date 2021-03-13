@@ -25,6 +25,8 @@
 
 - [Node.js] which includes [Node Package Manager][npm]
 - Running Postgress instance
+- `npm install -g lerna`
+- `npm install -g yarn`
 
 ### Frontend
 
@@ -39,16 +41,60 @@ Starting from root: `code/backend`
 
 - Install pacakges: `lerna bootstrap`
 - Rename all `.env.example` to `.env` and fill in with your values
-- Populate data from: `rnd/initial_db.zip`
-
-_eg: `psql "host=localhost port=5432 dbname=ranking user=ranking password=pass" < initial_db.sql`_
-
+- extract data from: `rnd/initial_db.zip`
+- Import it via: `psql "host=localhost port=5432 dbname=ranking user=ranking password=pass" < initial_db.sql`_
 - Start server: `yarn start`
 
-## Changelog
+### OPTIONAL: Debugging
+Debugging can be done via `yarn start:inspect` from `code/backend`
 
-- [Frontend improvements][changelog_fe].
-- [Backend improvements][changelog_be].
+If using vscode the following `launch.json` can be used
+```js
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "attach",
+        "name": "Import",
+        "port": 5858,
+        "restart": true,
+        "protocol": "auto",
+        "stopOnEntry": false
+      },
+      {
+        "type": "node",
+        "request": "attach",
+        "name": "Server",
+        "port": 5859,
+        "restart": true,
+        "protocol": "auto",
+        "stopOnEntry": false
+      },
+      {
+        "type": "node",
+        "request": "attach",
+        "name": "Simulate",
+        "port": 5860,
+        "restart": true,
+        "protocol": "auto",
+        "stopOnEntry": false
+      }
+    ],
+    "compounds": [
+      {
+        "name": "Full server",
+        "configurations": ["Import", "Server", "Simulate"],
+      }
+    ]
+  }
+```
+
+### Database
+you can checkout the erd schema [here][erd]
 
 ## Contributing
 
@@ -62,8 +108,7 @@ Help us keep Angular open and inclusive. Please read and follow our [Code of Con
 
 [contributing]: CONTRIBUTING.md
 [commit]: CONTRIBUTING.md#commit
-[changelog_fe]: code/frontend/CHANGELOG.md
-[changelog_be]: code/backend/CHANGELOG.md
 [node.js]: https://nodejs.org/
 [npm]: https://www.npmjs.com/get-npm
 [codeofconduct]: CODE_OF_CONDUCT.md
+[erd]: erd.svg

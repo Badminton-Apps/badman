@@ -1,4 +1,10 @@
-import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table
+} from 'sequelize-typescript';
 import { RankingSystemGroup } from './group.model';
 import { RankingSystem } from '../ranking/system.model';
 
@@ -6,12 +12,12 @@ import { RankingSystem } from '../ranking/system.model';
   timestamps: false,
   schema: 'ranking'
 })
-export class GroupSystems extends Model<GroupSystems> {
+export class GroupSystems extends Model {
   @ForeignKey(() => RankingSystem)
   @Column
-  SystemId: number;
+  SystemId: string;
 
   @ForeignKey(() => RankingSystemGroup)
   @Column
-  GroupId: number;
+  GroupId: string;
 }

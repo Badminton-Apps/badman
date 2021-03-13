@@ -14,18 +14,17 @@ import { Response, Router } from 'express';
 import { RankingController } from './controllers/ranking.controller';
 import { RequestLinkController } from './controllers/request-link.controller';
 import { SystemController } from './controllers/system.controller';
-import { TournamentController } from './controllers/tournament.controller';
 // Then  rest
-import { UserController } from './controllers/user.controller';
+import { UserController } from './controllers/user.controller'; 
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
 dotenv.config();
  
-(async () => {
-  await startWhenReady(true, db => {
-    startServer(db);
-  });
+(async () => { 
+  await startWhenReady(false, true, db => {
+    startServer(db);  
+  }); 
 })();
 
 const startServer = (databaseService: DataBaseHandler) => {
@@ -39,11 +38,10 @@ const startServer = (databaseService: DataBaseHandler) => {
   const app = new App(
     process.env.PORT,
     [
-      new RankingController(router, authRouter, databaseService),
+      new RankingController(router, authRouter),
       new SystemController(router, authRouter, databaseService),
-      new TournamentController(router, authRouter),
       new UserController(router, authRouter),
-      new RequestLinkController(router, authRouter)
+      new RequestLinkController(router, authRouter) 
     ],
     [
       { 
