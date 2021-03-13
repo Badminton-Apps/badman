@@ -12,22 +12,23 @@ import {
   Unique
 } from 'sequelize-typescript';
 import {
-  BelongsToGetAssociationMixin,
+  BelongsToGetAssociationMixin, 
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
-  BelongsToManyGetAssociationsMixin,
+  BelongsToManyGetAssociationsMixin, 
   BelongsToManyHasAssociationMixin,
   BelongsToManyHasAssociationsMixin,
-  BelongsToManyRemoveAssociationMixin,
-  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin, 
+  BelongsToManyRemoveAssociationsMixin, 
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin
 } from 'sequelize';
 import { Club } from './club.model';
-import { SubEvent } from './event';
+import { SubEventCompetition } from './event';
 import { Player } from './player.model';
-import { TeamMembership } from './team-membership.model';
+import { TeamPlayerMembership } from './team-player-membership.model';
+import { TeamSubEventMembership } from './team-subEvent-membership.model';
 
 @Table({
   timestamps: true,
@@ -42,13 +43,16 @@ export class Team extends Model {
 
   @Unique('unique_constraint')
   @Column
-  name: string;
+  name: string; 
 
   @Column
   abbreviation: string;
 
-  @BelongsTo(() => SubEvent, 'SubEventId')
-  subEvents?: SubEvent;
+  @BelongsToMany(
+    () => SubEventCompetition,
+    () => TeamSubEventMembership
+  )
+  subEvents: SubEventCompetition[];
 
   @BelongsTo(() => Club, 'ClubId')
   club?: Club;
@@ -60,7 +64,7 @@ export class Team extends Model {
 
   @BelongsToMany(
     () => Player,
-    () => TeamMembership
+    () => TeamPlayerMembership
   )
   players: Player[];
 
@@ -78,4 +82,15 @@ export class Team extends Model {
   hasPlayer!: BelongsToManyHasAssociationMixin<Player, string>;
   hasPlayers!: BelongsToManyHasAssociationsMixin<Player, string>;
   countPlayer!: BelongsToManyCountAssociationsMixin;
+
+  // Belongs to many SubEvent
+  getSubEvents!: BelongsToManyGetAssociationsMixin<SubEventCompetition>;
+  setSubEvent!: BelongsToManySetAssociationsMixin<SubEventCompetition, string>;
+  addSubEvents!: BelongsToManyAddAssociationsMixin<SubEventCompetition, string>;
+  addSubEvent!: BelongsToManyAddAssociationMixin<SubEventCompetition, string>;
+  removeSubEvent!: BelongsToManyRemoveAssociationMixin<SubEventCompetition, string>;
+  removeSubEvents!: BelongsToManyRemoveAssociationsMixin<SubEventCompetition, string>;
+  hasSubEvent!: BelongsToManyHasAssociationMixin<SubEventCompetition, string>;
+  hasSubEvents!: BelongsToManyHasAssociationsMixin<SubEventCompetition, string>;
+  countSubEvent!: BelongsToManyCountAssociationsMixin;
 }

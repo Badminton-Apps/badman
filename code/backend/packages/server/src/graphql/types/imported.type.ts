@@ -52,7 +52,7 @@ const ImportedConnectionType = createConnection({
 const ImportInputType = new GraphQLInputObjectType({
   name: 'ImportInput',
   description: 'This represents a UserInputType',
-  fields: () => Object.assign(getAttributeFields(ImporterFile, true), {})
+  fields: () => Object.assign(getAttributeFields(ImporterFile, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }), {})
 });
 
 

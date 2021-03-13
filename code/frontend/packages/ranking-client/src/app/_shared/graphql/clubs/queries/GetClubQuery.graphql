@@ -1,4 +1,4 @@
-query GetClubsQuery($id: ID!, $end: String) {
+query GetClubsQuery($id: ID!, $end: String, $rankingType: ID) {
   club(id: $id) {
     id
     name
@@ -12,6 +12,12 @@ query GetClubsQuery($id: ID!, $end: String) {
         id
         firstName
         lastName
+        base
+        rankingPlaces(where: { SystemId: $rankingType }) {
+          single
+          double
+          mix
+        }
       }
     }
 
@@ -19,6 +25,11 @@ query GetClubsQuery($id: ID!, $end: String) {
       id
       firstName
       lastName
+      rankingPlaces(where: { SystemId: $rankingType }) {
+        single
+        double
+        mix
+      }
     }
   }
 }

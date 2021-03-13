@@ -157,7 +157,7 @@ export class ImportComponent implements OnInit, OnDestroy {
           const element = data[index];
 
           data[index].suggestions = await this.eventService
-            .findEvent(element.name, element.uniCode)
+            .findEvent(element.name, element.uniCode, data[index].type)
             .toPromise();
 
           data[index].event =

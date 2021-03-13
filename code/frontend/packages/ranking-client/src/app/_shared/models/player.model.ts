@@ -8,11 +8,12 @@ export class Player {
   avatar: string;
   firstName: string;
   lastName: string;
+  base: boolean;
   isClaimed = false;
   rankingPlaces: RankingPlace[];
   games: Game[];
 
-  constructor({ ...args }: Partial<Player>) {
+  constructor(args: Partial<Player>) {
     this.id = args.id;
     this.memberId = args.memberId;
     this.gender = args.gender;
@@ -22,6 +23,7 @@ export class Player {
     this.isClaimed = args.isClaimed;
     this.rankingPlaces = args.rankingPlaces?.map((r) => new RankingPlace(r));
     this.games = args.games?.map((g) => new Game(g));
+    this.base = args.base;
   }
 }
 
@@ -30,7 +32,7 @@ export class PlayerGame extends Player {
   team: number;
   player: number;
 
-  constructor({ ...args }: Partial<PlayerGame>) {
+  constructor(args: Partial<PlayerGame>) {
     super(args);
 
     this.rankingPlace = args.rankingPlace
