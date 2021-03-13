@@ -1,0 +1,7 @@
+query GetTeamQuery($id: ID!) {
+  team(id: $id) {
+    id
+    name
+    abbreviation
+  }
+}

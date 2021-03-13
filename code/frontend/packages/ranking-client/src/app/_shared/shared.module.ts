@@ -9,7 +9,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
@@ -24,6 +23,7 @@ import {
   RankingShellComponent,
   UserInfoComponent,
 } from './components';
+import { BetaComponent } from './components/beta/beta.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
@@ -62,6 +62,7 @@ const exportedComponents = [
     LanguageComponent,
     EnumToArrayPipe,
     ConfirmationDialogComponent,
+    BetaComponent,
   ],
   imports: [
     CommonModule,
@@ -78,6 +79,14 @@ const exportedComponents = [
       multi: true,
     },
   ],
-  exports: [...exportedComponents],
+  exports: [
+    TranslateModule,
+    CommonModule,
+    LoadingPipe,
+    LevelToLetterPipe,
+    EnumToArrayPipe,
+    BetaComponent,
+    PlayerSearchComponent,
+  ],
 })
 export class SharedModule {}

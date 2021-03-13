@@ -1,11 +1,14 @@
-import { GraphQLList, GraphQLObjectType } from 'graphql';
-import { attributeFields, resolver } from 'graphql-sequelize';
-import { Game } from '@badvlasim/shared/models';
+import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
+import { attributeFields, defaultListArgs, resolver } from 'graphql-sequelize';
+import { Game, Player } from '@badvlasim/shared/models';
 import { GamePlayerType } from './gamePlayer.type';
-import { SubEventType } from './subEvent.type';
 import { getAttributeFields } from './attributes.type';
+import { DrawCompetitionType } from './competition';
+import { DrawTournamentType } from './tournaments';
+import { RankingPointType } from './rankingPoint.type';
+import { EncounterCompetitionType } from './competition/encounter-competition.type';
 
-const GameType = new GraphQLObjectType({
+export const GameType = new GraphQLObjectType({
   name: 'Game',
   description: 'A Game',
   fields: () =>
@@ -25,15 +28,33 @@ const GameType = new GraphQLObjectType({
           }
         })
       },
-      subEvent: {
-        type: SubEventType,
-        resolve: resolver(Game.associations.subEvent, {
+
+      rankingPoints: {
+        type: new GraphQLList(RankingPointType),
+        args: Object.assign(defaultListArgs(), {
+          direction: {
+            type: GraphQLString
+          }
+        }),
+        resolve: resolver(Game.associations.rankingPoints, {
           before: async (findOptions, args, context, info) => {
+            if (args.order && args.direction) {
+              findOptions = {
+                ...findOptions,
+                order: [[args.order, args.direction]]
+              };
+            }
             return findOptions;
           }
         })
-      }
+      },
+      tournament: {
+        type: DrawTournamentType,
+        resolve: resolver(Game.associations.tournament)
+      },
+      competition: {
+        type: EncounterCompetitionType,
+        resolve: resolver(Game.associations.competition)
+      },
     })
 });
-
-export { GameType };

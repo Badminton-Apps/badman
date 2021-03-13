@@ -1,5 +1,5 @@
 # Write your query or mutation here
-query GetUserGameQuery(
+query GetUserGamesQuery(
   $playerId: ID!
   $rankingType: ID!
   $offset: Int!
@@ -23,17 +23,45 @@ query GetUserGameQuery(
       playedAt
       winner
       gameType
-      subEvent {
+      competition {
+        id
+        draw {
+          name
+          subEvent {
+            id
+            name
+            level
+            levelType
+            eventType
+            event {
+              id
+              name
+              startYear
+            }
+          }
+        }
+      }
+      tournament {
         id
         name
-        level
-        levelType
-        eventType
-        event {
-          type
+        subEvent {
           id
           name
-          firstDay
+          level
+          gameType
+          eventType
+          event {
+            id
+            name
+            firstDay
+          }
+        }
+      }
+      rankingPoints {
+        points
+        differenceInLevel
+        player {
+          id
         }
       }
       players {

@@ -9,7 +9,7 @@
       >
     </span>
     <span class="middle">
-      <app-player-search></app-player-search>
+      <app-player-search (onSelectPlayer)="this.playerSearch($event)"></app-player-search>
     </span>
     <span class="end">
       <app-language></app-language>
@@ -73,6 +73,13 @@
             </mat-expansion-panel>
           </mat-accordion>
 
+          <mat-nav-list>
+            <a mat-list-item routerLink="/club" routerLinkActive="active">
+              Clubs
+              <app-beta></app-beta>
+            </a>
+          </mat-nav-list>
+
           <mat-divider></mat-divider>
 
           <ng-container *ngIf="this.hasAdminItems$ | async">
@@ -91,7 +98,7 @@
               routerLinkActive="active"
               *ngIf="this.canAcceptLinks$ | async"
             >
-              Link accounts
+              Link accounts <app-beta></app-beta>
             </a>
 
             <mat-accordion class="app-nav-accordion">
@@ -106,7 +113,7 @@
                     routerLinkActive="active"
                     *ngIf="this.canViewData$ | async"
                   >
-                    Overview
+                    Overview <app-beta></app-beta>
                   </a>
 
                   <a

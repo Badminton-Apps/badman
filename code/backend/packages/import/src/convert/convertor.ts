@@ -1,27 +1,35 @@
-import { Event, EventType, ImporterFile, logger } from '@badvlasim/shared';
+import {
+  DataBaseHandler,
+  EventCompetition,
+  EventImportType,
+  EventTournament,
+  EventType,
+  ImporterFile,
+  logger
+} from '@badvlasim/shared';
 import { EventEmitter } from 'events';
 import { unlink } from 'fs';
+import { Transaction } from 'sequelize/types';
 import { CompetitionCpImporter, CompetitionXmlImporter, TournamentImporter } from '../import';
 import { Mdb } from './mdb';
 
 export class Convertor {
   private _queue = [];
   private _queueRunning = false;
-  private _parallel = 5;
+  private _parallel = 25;
 
-  constructor(
-    private _importEmitter = new EventEmitter(),
-  ) {
+  constructor(private _importEmitter = new EventEmitter()) {
     this._setupQueue();
   }
 
   private _setupQueue() {
-    this._importEmitter.on('add_to_convert_queue', async (imported: ImporterFile, event: Event) => {
-      imported.importing = true;
-      await imported.save();
-
-      logger.debug(`Added ${imported.id} to queue`);
-      this._queue.push({ imported, event });
+    this._importEmitter.on('add_to_convert_queue', async (imported: ImporterFile, event: EventCompetition | EventTournament) => {
+      if (!this._queue.find(r => r.imported.id === imported.id)) {
+        imported.importing = true;
+        await imported.save();
+        logger.debug(`Added ${imported.id} to queue`);
+        this._queue.push({ imported, event });
+      }
 
       // Queuue is not running
       if (!this._queueRunning) {
@@ -45,20 +53,26 @@ export class Convertor {
         }
         logger.debug(`Finished processing all`);
 
-
         // Mark queue as finshed
         this._queueRunning = false;
       }
     });
   }
 
-  private async _processSingleItem(item) {
+  private async _processSingleItem(item: { imported: ImporterFile; event: EventCompetition | EventTournament }) {
     try {
       logger.debug(`Started processing ${item.imported.id}`);
 
       // Sleep random 500ms for preventing deadlocks on start at the same time
       await this._sleep(Math.floor(Math.random() * Math.floor(500)));
-      await this._convertItem(item.imported, item.event);
+      const t = await DataBaseHandler.sequelizeInstance.transaction();
+      try {
+        await this._convertItem(item.imported, item.event, t);
+        await t.commit();
+      } catch (e) {
+        await t.rollback();
+        throw e;
+      }
 
       await new Promise((res, reject) => {
         try {
@@ -81,47 +95,47 @@ export class Convertor {
     }
   }
 
-  convert(imported: ImporterFile, event: Event) {
+  convert(imported: ImporterFile, event: EventCompetition | EventTournament) {
     this._importEmitter.emit('add_to_convert_queue', imported, event);
   }
 
-  private async _convertItem(imported: ImporterFile, event: Event) {
+  private async _convertItem(imported: ImporterFile, event: EventCompetition | EventTournament, transaction: Transaction) {
     let mdb: Mdb;
     switch (imported.type) {
-      case EventType.TOERNAMENT:
+      case EventImportType.TOERNAMENT:
         mdb = new Mdb(imported.fileLocation);
-        const tournamentImporter = new TournamentImporter(mdb);
+        const tournamentImporter = new TournamentImporter(mdb, transaction);
         return tournamentImporter.addEvent(imported, event);
-      case EventType.COMPETITION_CP:
+      case EventImportType.COMPETITION_CP:
         mdb = new Mdb(imported.fileLocation);
-        const competitionCpImporter = new CompetitionCpImporter(mdb);
+        const competitionCpImporter = new CompetitionCpImporter(mdb, transaction);
         return competitionCpImporter.addEvent(imported, event);
-      case EventType.COMPETITION_XML:
-        const competitionXmlImporter = new CompetitionXmlImporter();
-        return competitionXmlImporter.addEvent(imported, event);
+      case EventImportType.COMPETITION_XML:
+        const competitionXmlImporter = new CompetitionXmlImporter(transaction);
+        return competitionXmlImporter.addEvent(imported, event as EventCompetition);
       default:
         logger.warn('Unsupperted type', imported.type);
         return null;
     }
   }
 
-  async basicInfo(fileLocation: string, type: EventType) {
+  async basicInfo(fileLocation: string, type: EventImportType, transaction: Transaction) {
     let mdb: Mdb;
     switch (type) {
-      case EventType.TOERNAMENT:
+      case EventImportType.TOERNAMENT:
         mdb = new Mdb(fileLocation);
-        const tournamentImporter = new TournamentImporter(mdb);
+        const tournamentImporter = new TournamentImporter(mdb, transaction);
         return tournamentImporter.addImporterfile(fileLocation);
-      case EventType.COMPETITION_CP:
+      case EventImportType.COMPETITION_CP:
         mdb = new Mdb(fileLocation);
-        const competitionCpImporter = new CompetitionCpImporter(mdb);
+        const competitionCpImporter = new CompetitionCpImporter(mdb, transaction);
         return competitionCpImporter.addImporterfile(fileLocation);
-      case EventType.COMPETITION_XML:
-        const competitionXmlImporter = new CompetitionXmlImporter();
-        return competitionXmlImporter.addImporterfile(fileLocation); 
+      case EventImportType.COMPETITION_XML:
+        const competitionXmlImporter = new CompetitionXmlImporter(transaction);
+        return competitionXmlImporter.addImporterfile(fileLocation);
       default:
-        logger.warn('Unsupperted type', type);
-        return null; 
+        logger.error('Unsupperted type', type);
+        throw new Error('Unsupperted type');
     }
   }
   private _sleep(ms) {

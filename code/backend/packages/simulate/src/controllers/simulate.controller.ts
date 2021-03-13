@@ -8,8 +8,7 @@ import {
   logger,
   Player,
   RankingSystem,
-  RankingSystemGroup,
-  SubEvent
+  RankingSystemGroup
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import moment from 'moment';
@@ -32,7 +31,6 @@ export class SimulateController extends BaseController {
   private _intializeRoutes() {
     this.authRouter.post(`${this._path}/reset`, this._resetRunningRankingSystem);
     this.authRouter.get(`${this._path}/calculate`, this._calculateRanking);
-    this.router.get(`${this._path}/test`, this._test);
   }
 
   private _calculateRanking = async (request: AuthenticatedRequest, response: Response) => {
@@ -47,12 +45,11 @@ export class SimulateController extends BaseController {
 
     const systems = (request.query.systems as string)
       .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
+      .map((systemId: string) => systemId);
     const end = moment(request.query.endDate as string);
     const startString = request.query.startDate as string;
     const fromStart = request.query.runningFromStart === 'true';
     let start = null;
-
 
     if (startString && startString.length >= 0) {
       start = moment(startString);
@@ -63,38 +60,6 @@ export class SimulateController extends BaseController {
     this._calculator.calculateRanking(systems, end, fromStart, start).then(_ => {
       logger.info('Processing done');
     });
-  };
-  private _test = async (request: AuthenticatedRequest, response: Response) => {
-    const groups = (request.query.groups as string)
-      .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
-
-    const games = await Game.findAll({
-      limit: 10,
-      attributes: ['id', 'gameType', 'winner', 'playedAt', 'set1Team1', 'set1Team2'],
-      include: [
-        { model: Player, attributes: ['id'] },
-        {
-          model: SubEvent,
-          attributes: ['id'],
-          include: [
-            {
-              model: RankingSystemGroup,
-              attributes: [],
-              required: true,
-              through: {
-                where: {
-                  GroupId: { [Op.or]: groups }
-                }
-              }
-            }
-          ]
-        }
-      ],
-      mapToModel: false
-    });
-
-    response.json(games);
   };
 
   private _resetRunningRankingSystem = async (
@@ -107,14 +72,10 @@ export class SimulateController extends BaseController {
     }
     logger.debug('Resetting systems', request.body.systems);
 
-    const systems = (request.body.systems as string)
-      .split(',')
-      .map((systemId: string) => parseInt(systemId, 10));
+    const systems = (request.body.systems as string).split(',').map((systemId: string) => systemId);
 
     for await (const id of systems) {
-      const system = await this._databaseService.getSystem({
-        where: { id }
-      });
+      const system = await RankingSystem.findByPk(id);
 
       if (!system) {
         response.status(404);

@@ -1,11 +1,20 @@
 import { join } from 'path';
-import { DataBaseHandler, Event, Game, logger, Player, SubEvent } from '../../../../_shared';
+import { Transaction } from 'sequelize/types';
+import {
+  DataBaseHandler,
+  EventCompetition,
+  ImporterFile,
+  Player,
+  SubEventCompetition
+} from '../../../../_shared';
+import { Mdb } from '../../convert/mdb';
 import { CompetitionCpImporter } from '../importers';
 
 describe('Competition', () => {
   let databaseService: DataBaseHandler;
   let service: CompetitionCpImporter;
   let fileLocation: string;
+  let transaction: Transaction;
 
   beforeAll(async () => {
     fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition.cp');
@@ -14,8 +23,13 @@ describe('Competition', () => {
       dialect: 'sqlite',
       storage: ':memory:'
     });
-    await databaseService.sync(true);
-    service = new CompetitionCpImporter();
+
+    service = new CompetitionCpImporter(new Mdb(fileLocation), transaction);
+  });
+
+  beforeEach(async () => {
+    // Clear eveything
+    await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
 
   it('Should have initialized correctly', async () => {
@@ -25,7 +39,9 @@ describe('Competition', () => {
     await service.addImporterfile(fileLocation);
 
     // Assert
-    const importerFile = await databaseService.getImported();
+    const importerFiles = await ImporterFile.findAll();
+    expect(importerFiles.length).toBe(1);
+    const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('PBO competitie 2020 - 2021');
     expect(importerFile.uniCode).toEqual('202004202326186125');
     expect(importerFile.firstDay).toEqual(new Date('2020-08-31T22:00:00.000Z'));
@@ -33,24 +49,23 @@ describe('Competition', () => {
 
   it('Should add competition', async () => {
     // Arrange
-    await service.addImporterfile(fileLocation);
-    const importerFile = await databaseService.getImported();
+    jest.setTimeout(100000);
+    const importerFile = await service.addImporterfile(fileLocation);
 
     // Act
     await service.addEvent(importerFile);
 
     // Assert
-    const event = await Event.findOne({
-      include: [
-        {
-          model: SubEvent,
-          include: [{ model: Game, include: [{ model: Player }] }]
-        }
-      ]
+
+    const event = await EventCompetition.findOne({
+      include: [SubEventCompetition]
     });
+
     const players = await Player.findAndCountAll();
+    const subevents = await SubEventCompetition.findAll();
 
     expect(players.count).toBe(0);
-    expect(event.subEvents.length).toBe(31);
+    expect(event.subEvents.length).toBe(13);
+    expect(subevents.length).toBe(13);
   });
 });

@@ -1,0 +1,21 @@
+# Write your query or mutation here
+query GetEvents(
+  $first: Int
+  $after: String
+	$where: SequelizeJSON
+) {
+  eventCompetitions(first: $first, after: $after, where: $where) {
+    total
+    edges {
+      cursor
+      node {
+        id
+        name
+        startYear
+        subEvents {
+          name
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation AddPlayerToClub($clubId: ID!, $playerId: ID!) {
+  addPlayerToClub(clubId: $clubId, playerId: $playerId) {
+    id
+  }
+}

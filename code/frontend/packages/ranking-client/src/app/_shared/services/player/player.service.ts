@@ -4,7 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Game, Player, RankingPlace } from '../../models';
+import { Game, Player, RankingPlace, RankingSystem } from '../../models';
 
 const searchQuery = require('graphql-tag/loader!../../graphql/players/queries/GetPlayersQuery.graphql');
 const playerQuery = require('graphql-tag/loader!../../graphql/players/queries/GetUserInfoQuery.graphql');
@@ -28,7 +28,7 @@ export class PlayerService {
       .pipe(map((x) => x.data));
   }
 
-  getPlayer(id: string, rankingType: number): Observable<Player> {
+  getPlayer(id: string, rankingType: string): Observable<Player> {
     return this.apollo
       .query({
         query: playerQuery,
@@ -37,20 +37,11 @@ export class PlayerService {
           rankingType,
         },
       })
-      .pipe(
-        map((x) => x.data),
-        map((x: any) => {
-          if (!x?.player) return x.player;
-          return {
-            ...x.player,
-            id: parseInt(x.player.id, 10),
-          };
-        })
-      );
+      .pipe(map((x: any) => x.data?.player));
   }
   getPlayerGames(
     playerId: string,
-    rankingType: number,
+    rankingType: RankingSystem,
     offset: number,
     limit: number
   ): Observable<Game[]> {
@@ -59,17 +50,17 @@ export class PlayerService {
         query: gamesQuery,
         variables: {
           playerId,
-          rankingType,
+          rankingType: rankingType.id,
           offset,
           limit,
         },
       })
-      .pipe(map((x: any) => x.data?.player?.games));
+      .pipe(map((x: any) => x.data?.player?.games.map((g: Partial<Game>) => new Game(g, rankingType))));
   }
 
   getPlayerEvolution(
     playerId: string,
-    rankingType: number
+    rankingType: string
   ): Observable<RankingPlace[]> {
     return this.apollo
       .query({
@@ -83,7 +74,7 @@ export class PlayerService {
   }
 
   getTopPlayers(
-    systemId: number,
+    systemId: string,
     sortBy: string,
     sortOrder: string,
     date: Date,
@@ -92,7 +83,7 @@ export class PlayerService {
     gender: string
   ) {
     const params = new HttpParams()
-      .set('systemId', `${systemId}`)
+      .set('systemId', systemId)
       .set('sortBy', sortBy)
       .set('sortOrder', sortOrder)
       .set('date', date.toISOString())

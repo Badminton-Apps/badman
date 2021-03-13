@@ -1,93 +1,169 @@
 import {
   correctWrongPlayers,
+  Court,
   csvToArray,
-  Event,
+  DataBaseHandler,
+  DrawCompetition,
+  DrawTournament,
+  DrawType,
+  EventCompetition,
+  EventImportType,
+  EventTournament,
   EventType,
   flatten,
   Game,
   GamePlayer,
+  GameType,
+  ICsvCourt,
   ICsvDraw,
   ICsvEvent,
   ICsvLocation,
-  ICsvCourt,
+  ImportDraw,
   ImporterFile,
+  ImportSubEvent,
+  LevelType,
+  Location,
   logger,
   Player,
-  SubEvent,
-  titleCase,
-  Court,
-  Location
+  SubEventCompetition,
+  SubEventTournament,
+  SubEventType,
+  titleCase
 } from '@badvlasim/shared';
-import { Hash } from 'crypto';
 import { existsSync as dbCours } from 'fs';
-import { FindOrCreateOptions } from 'sequelize/types';
+import { FindOrCreateOptions, ModelCtor, Op, Transaction } from 'sequelize';
+import { Model } from 'sequelize-typescript';
 import { Mdb } from '../convert/mdb';
 import { TpPlayer } from '../models';
 
 export abstract class Importer {
-  constructor(protected mdb: Mdb, protected type: EventType) {}
+  constructor(
+    protected mdb: Mdb,
+    protected type: EventType,
+    protected importType: EventImportType,
+    protected transaction: Transaction,
 
-  async addEvent(importerFile: ImporterFile, event?: Event): Promise<Event> {
+    protected eventModel: ModelCtor<EventCompetition | EventTournament>,
+    protected subEventModel: ModelCtor<SubEventCompetition | SubEventTournament>,
+    protected drawModel: ModelCtor<DrawCompetition | DrawTournament>
+  ) {}
+
+  async addEvent(
+    importerFile: ImporterFile,
+    event?: EventCompetition | EventTournament
+  ): Promise<EventCompetition | EventTournament> {
     try {
       if (event == null) {
         event = await this.addEventFromImporterFile(importerFile);
+      } else {
+        // Cleanup
+        const subEvents = await this.subEventModel.findAll({
+          where: {
+            eventId: event.id
+          },
+          include: [{ model: this.drawModel }]
+        });
+
+        const draws = (subEvents as any).map(s => s.draws.map(r => r.id)).flat(1);
+
+        await Game.destroy({
+          where: {
+            linkId: {
+              [Op.in]: draws
+            }
+          },
+          cascade: true
+        });
       }
+
       const locations = await this.addLocations(event);
       const courts = await this.addCourts(locations);
-
       const players = await this.addPlayers();
 
       if (!players || players?.length === 0) {
         return event;
       }
 
-      await this.addGames(event.subEvents, players, courts);
+      await this.createGames(
+        (event.subEvents as any)
+          .map(s => {
+            s.draws.map(d => {
+              d.subEvent = s;
+              return d;
+            });
+            return s.draws;
+          })
+          .flat(1),
+        players,
+        courts
+      );
     } catch (e) {
       logger.error('FUCK', e);
       throw e;
     }
   }
 
-  protected async addLocations(event: Event) {
-    const csvLocations = await csvToArray<ICsvLocation[]>(await this.mdb.toCsv('Location'));
-    const l = csvLocations.map(r => { 
-      return {
-        ...r,
-        eventId: event.id,
-        id: undefined
-      };
+  protected async addLocations(event: EventCompetition | EventTournament) {
+    const csvLocations = await csvToArray<ICsvLocation[]>(await this.mdb.toCsv('Location'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
     });
-
-    const dbLocations = await Location.bulkCreate(
-      l,
-      { returning: true, ignoreDuplicates: true} // Return ALL comulms
-    );
-
     const locations = new Map<string, Location>();
-    for (const [i, location] of csvLocations.entries()) {
-      locations.set(location.id, dbLocations[i]);
+
+    for (const location of csvLocations) {
+      const [dbLocation, created] = await Location.findOrCreate({
+        where: {
+          name: location.name,
+          eventId: event.id,
+          eventType: event instanceof EventTournament? 'tournament' : 'competition'
+        },
+        defaults: {
+          name: location.name,
+          address: location.address || undefined,
+          postalcode: location.postalcode || undefined,
+          city: location.city || undefined,
+          state: location.state || undefined,
+          phone: location.phone || undefined,
+          fax: location.fax || undefined,
+          eventId: event.id,
+          eventType: event instanceof EventTournament? 'tournament' : 'competition'
+        }
+      });
+
+      locations.set(location.id, dbLocation);
     }
 
     return locations;
   }
 
   protected async addCourts(locations: Map<string, Location>) {
-    const csvCourts = await csvToArray<ICsvCourt[]>(await this.mdb.toCsv('Court'));
-    const c = csvCourts.map(r => {
-      return {
-        ...r,
-        locationId: locations.get(r.location).id,
-        id: undefined
-      };
+    const csvCourts = await csvToArray<ICsvCourt[]>(await this.mdb.toCsv('Court'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
     });
-    const dbCourts = await Court.bulkCreate(
-      c,
-      { returning: true, ignoreDuplicates: true } // Return ALL comulms
-    );
-
     const courts = new Map<string, Court>();
-    for (const [i, court] of csvCourts.entries()) {
-      courts.set(court.id, dbCourts[i]);
+    for (const court of csvCourts) {
+      const locationId = locations.get(court.location).id;
+      const [dbCourt, created] = await Court.findOrCreate({
+        where: {
+          name: court.name,
+          locationId
+        },
+        defaults: {
+          name: court.name,
+          locationId
+        }
+      });
+
+      courts.set(court.id, dbCourt);
     }
 
     return courts;
@@ -102,7 +178,7 @@ export abstract class Importer {
     this.mdb = new Mdb(fileLocation);
     const file = await this.extractImporterFile();
     file.fileLocation = fileLocation;
-    file.type = this.type;
+    file.type = this.importType;
 
     // Long dates gives issues
     if (file.dates.length > 100) {
@@ -113,8 +189,7 @@ export abstract class Importer {
     const options: FindOrCreateOptions = {
       defaults: file.toJSON(),
       where: {
-        name: file.name,
-        dates: file.dates
+        name: file.name
       }
     };
 
@@ -144,43 +219,116 @@ export abstract class Importer {
     return result;
   }
 
-  protected async addEventFromImporterFile(importerFile: ImporterFile) {
-    const foundEvent = await Event.findOne({
+  protected async addImportedSubEvents(file: ImporterFile, levelType?: LevelType) {
+    const { csvEvents, csvDraws } = await this.getSubEventsCsv();
+    const subEvents: ImportSubEvent[] = [];
+    const draws: ImportDraw[] = [];
+
+    for (const csvEvent of csvEvents) {
+      subEvents.push(
+        new ImportSubEvent({
+          name: csvEvent.name,
+          internalId: parseInt(csvEvent.id, 10),
+          gameType: this.getGameType(csvEvent.eventtype, parseInt(csvEvent.gender, 10)),
+          FileId: file.id,
+          eventType: this.getEventType(parseInt(csvEvent.gender, 10)),
+          levelType
+        })
+      );
+    }
+
+    const dbsubEvents = await ImportSubEvent.bulkCreate(
+      subEvents.map(r => r.toJSON()),
+      { returning: ['id', 'internalId'] }
+    );
+
+    for (const csvDraw of csvDraws) {
+      const dbSubEvent = dbsubEvents.find(e => e.internalId === parseInt(csvDraw.event, 10));
+
+      draws.push(
+        new ImportDraw({
+          name: csvDraw.name,
+          internalId: parseInt(csvDraw.id, 10),
+          type: this.getDrawType(parseInt(csvDraw.drawtype, 10)),
+          subeventId: dbSubEvent.id
+        })
+      );
+    }
+    await ImportDraw.bulkCreate(
+      draws.map(r => r.toJSON()),
+      { ignoreDuplicates: true }
+    );
+
+    return ImportSubEvent.findAll({
       where: {
-        name: importerFile.name,
-        uniCode: importerFile.uniCode,
-        firstDay: importerFile.firstDay,
-        dates: importerFile.dates,
-        toernamentNumber: importerFile.toernamentNumber,
-        type: this.type
+        FileId: file.id
       },
-      include: [{ model: SubEvent }]
+      include: [{ model: ImportDraw }]
+    });
+  }
+
+  protected async addEventFromImporterFile(importerFile: ImporterFile) {
+    const where: {
+      // Required
+      name: string;
+      // optional
+      [key: string]: any;
+    } = {
+      name: importerFile.name,
+    };
+
+    if (importerFile.uniCode) {
+      where.uniCode = importerFile.uniCode;
+    }
+
+    const foundEvent = await this.eventModel.findOne({
+      where,
+      include: [{ model: this.subEventModel }]
     });
 
     if (foundEvent) {
       return foundEvent;
     }
 
-    const dbEvent = await Event.build({
-      name: importerFile.name,
-      uniCode: importerFile.uniCode,
-      firstDay: importerFile.firstDay,
-      dates: importerFile.dates,
-      toernamentNumber: importerFile.toernamentNumber,
-      type: this.type
-    }).save();
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbEvent = await this.createEvent(importerFile, transaction);
 
-    const subEvents = importerFile.subEvents.map(subEvent => {
-      return {
-        ...subEvent.toJSON(),
-        id: null,
-        EventId: dbEvent.id
-      };
-    });
+      const subEvents = [];
+      for (const subEvent of importerFile.subEvents) {
+        // Remove id from importerSubEvent
+        const { id: subeventId, ...importSubEvent } = subEvent.toJSON() as any;
 
-    dbEvent.subEvents = await SubEvent.bulkCreate(subEvents, { returning: true });
+        const sub = new this.subEventModel({
+          ...importSubEvent,
+          eventId: dbEvent.id
+        }) as SubEventCompetition | SubEventTournament;
 
-    return dbEvent;
+        await sub.save({ transaction });
+
+        const draws = [];
+        for (const draw of subEvent.draws) {
+          // Remove id from importerSubEvent
+          const { id: drawId, ...importDraw } = draw.toJSON() as any;
+          const d = await new this.drawModel({
+            ...importDraw,
+            subeventId: sub.id
+          }).save({ transaction });
+
+          draws.push(d);
+        }
+        sub.draws = draws;
+        subEvents.push(sub);
+      }
+
+      dbEvent.subEvents = subEvents;
+      await transaction.commit();
+      return dbEvent;
+    } catch (e) {
+      logger.error('import failed', e);
+      await transaction.rollback();
+      throw e;
+    }
   }
 
   protected async extractImporterFile() {
@@ -190,7 +338,7 @@ export abstract class Importer {
       linkCode: string;
       webID: string;
       uniCode: string;
-      toernamentNumber: string;
+      tournamentNumber: number;
     }>(settingsCsv, {
       onEnd: data => {
         return {
@@ -202,10 +350,16 @@ export abstract class Importer {
             ?.value as string,
           uniCode: data.find((r: { name: string }) => r.name.toLowerCase() === 'unicode')
             ?.value as string,
-          toernamentNumber: data.find(
+          tournamentNumber: data.find(
             (r: { name: string }) => r.name.toLowerCase() === 'tournamentNr'
-          )?.value as string
+          )?.value as number
         };
+      },
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
       }
     });
 
@@ -220,6 +374,12 @@ export abstract class Importer {
                 a.getTime() - b.getTime()
             )
         };
+      },
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
       }
     });
 
@@ -238,8 +398,22 @@ export abstract class Importer {
   }
 
   protected async getSubEventsCsv() {
-    const csvEvents = await csvToArray<ICsvEvent[]>(await this.mdb.toCsv('Event'));
-    const csvDraws = await csvToArray<ICsvDraw[]>(await this.mdb.toCsv('Draw'));
+    const csvEvents = await csvToArray<ICsvEvent[]>(await this.mdb.toCsv('Event'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
+    const csvDraws = await csvToArray<ICsvDraw[]>(await this.mdb.toCsv('Draw'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
     return { csvEvents, csvDraws };
   }
 
@@ -256,11 +430,29 @@ export abstract class Importer {
             club: csvPlayer.club
           });
 
-          return { player, playerId: csvPlayer.id };
+          return {
+            player: new Player({
+              ...player
+            }).toJSON(),
+            playerId: csvPlayer.id
+          };
+        },
+        onError: e => {
+          logger.error('Parsing went wrong', {
+            error: e
+          });
+          throw e;
         }
       })
-    ).filter(
-      (thing, i, arr) => arr.findIndex(t => t.player.memberId === thing.player.memberId) === i
+    ).filter((thing, i, arr) =>
+      thing.player.memberId
+        ? arr.findIndex(t => t.player.memberId === thing.player.memberId) === i
+        : // Less accurate
+          arr.findIndex(
+            t =>
+              t.player.firstName === thing.player.firstName &&
+              t.player.lastName === thing.player.lastName
+          ) === i
     );
 
     const p = csvPlayers.map(x => {
@@ -268,11 +460,11 @@ export abstract class Importer {
     });
     const dbPlayers = await Player.bulkCreate(
       p,
-      { returning: true, updateOnDuplicate: ['memberId'] } // Return ALL comulms
+      { returning: ['*'], updateOnDuplicate: ['memberId'] } // Return ALL comulms
     );
 
     return dbPlayers.map(
-      (dbPlayer, i) => new TpPlayer({ player: dbPlayer, playerId: csvPlayers[i].playerId  })
+      (dbPlayer, i) => new TpPlayer({ player: dbPlayer, playerId: csvPlayers[i].playerId })
     );
   }
 
@@ -282,7 +474,7 @@ export abstract class Importer {
     try {
       dbGames = await Game.bulkCreate(
         g,
-        { returning: true, ignoreDuplicates: true } // Return ALL comulms
+        { returning: ['*'], ignoreDuplicates: true } // Return ALL comulms
       );
     } catch (e) {
       throw e;
@@ -307,66 +499,84 @@ export abstract class Importer {
   }
 
   protected async getClubs() {
-    return csvToArray(await this.mdb.toCsv('Club'));
+    return csvToArray(await this.mdb.toCsv('Club'), {
+      onError: e => {
+        logger.error('Parsing went wrong', {
+          error: e
+        });
+        throw e;
+      }
+    });
   }
-
-  protected abstract addGames(
-    subEvents: SubEvent[],
-    players: TpPlayer[],
-    courts: Map<string, Court>
-  );
 
   /// Helper functions
   protected isElkGeslacht(gender) {
     return gender === 6;
   }
 
-  protected getEventType(gender) {
+  protected getEventType(gender): SubEventType {
     if (gender === 3 || gender === 6) {
-      return 'MX';
+      return SubEventType.MX;
     } else if (gender === 2 || gender === 5) {
-      return 'F';
+      return SubEventType.F;
     } else if (gender === 1 || gender === 4) {
-      return 'M';
+      return SubEventType.M;
     }
 
     throw new Error(`Got unexpected eventType. Params; gender:${gender}`);
   }
 
-  protected getGameType(eventtype, gender) {
+  protected getGameType(eventtype, gender): GameType {
     if (gender === 3) {
-      return 'MX';
+      return GameType.MX;
     }
 
     switch (eventtype) {
       case '1':
-        return 'S';
+        return GameType.S;
       case '2':
-        return 'D';
+        return GameType.D;
       default:
         logger.warn(`Unsupported gameType ${eventtype}`);
     }
   }
 
-  protected getDrawType(drawtype) {
-    if (drawtype === 1) {
-      return 'KO';
+  protected getDrawType(drawtype): DrawType {
+    // Drawtype: 3 = Uitspeelschema
+    // Drawtype: 5 = Kompass
+    if (drawtype === 1 || drawtype === 3 || drawtype === 5) {
+      return DrawType.KO;
     } else if (drawtype === 2 || drawtype === 4) {
-      return 'POULE';
+      return DrawType.POULE;
     } else if (drawtype === 6) {
-      return 'QUALIFICATION';
+      return DrawType.QUALIFICATION;
     }
-    throw new Error(`Got unexpected drawType. Params; drawtype:${drawtype}`);
+    logger.warn(`Got unexpected drawType. Params; drawtype:${drawtype}`);
+    return null;
   }
 
-  protected getLeague(importedFile: ImporterFile) {
+  protected getLeague(importedFile: ImporterFile): LevelType {
     if (
       importedFile.fileLocation.indexOf('vlaanderen') === -1 &&
       importedFile.fileLocation.indexOf('nationaal') === -1
     ) {
-      return 'PROV';
+      return LevelType.PROV;
     } else {
-      return importedFile.fileLocation.indexOf('vlaanderen') !== -1 ? 'LIGA' : 'NATIONAAL';
+      return importedFile.fileLocation.indexOf('vlaanderen') !== -1
+        ? LevelType.LIGA
+        : LevelType.NATIONAAL;
     }
   }
+
+  // #region createTypes
+
+  protected abstract createGames(
+    draw: DrawCompetition[] | DrawTournament[],
+    players: TpPlayer[],
+    courts: Map<string, Court>
+  );
+
+  protected abstract createEvent(importerFile: ImporterFile, transaction: Transaction);
+
+  // #endregion
 }

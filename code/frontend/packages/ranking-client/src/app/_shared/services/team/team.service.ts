@@ -1,92 +1,103 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from './../../../../environments/environment';
-import { RankingSystem, RankingSystemGroup } from './../../models';
+import { Player, Team } from './../../models';
 
-const teamsWithCountsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql');
-const teamQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemQuery.graphql');
+const teamQuery = require('graphql-tag/loader!../../graphql/teams/queries/GetTeamQuery.graphql');
 const teamsQuery = require('graphql-tag/loader!../../graphql/teams/queries/GetTeamsQuery.graphql');
 
-const addTeamMutation = require('graphql-tag/loader!../../graphql/rankingSystem/mutations/addRankingSystem.graphql');
-const updateTeamMutatino = require('graphql-tag/loader!../../graphql/rankingSystem/mutations/updateRankingSystem.graphql');
+const addTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/addTeam.graphql');
+const updateTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/updateTeam.graphql');
+const addPlayerToTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/addPlayerToTeamMutation.graphql');
+const removePlayerToTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/removePlayerToTeamMutation.graphql');
+const updatePlayerTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/updatePlayerTeamMutation.graphql');
 
 @Injectable({
   providedIn: 'root',
 })
 export class TeamService {
-  constructor( private apollo: Apollo) {}
+  constructor(private apollo: Apollo) {}
 
-
-  getTeam(systemId: number) {
-    throw new Error("not Implemented")
+  getTeam(teamId: string) {
     return this.apollo
-      .query<{ system: RankingSystem }>({
+      .query<{ team: Team }>({
         query: teamQuery,
         variables: {
-          id: systemId,
+          id: teamId,
         },
       })
-      .pipe(map((x) => new RankingSystem(x.data.system)));
+      .pipe(map((x) => new Team(x.data.team)));
   }
 
-
-  getTeamWithCount(systemId: number, gender?: string) {
-    throw new Error("not Implemented")
+  addTeam(team: Team, clubId: string) {
     return this.apollo
-      .query({
-        query: teamsWithCountsQuery,
-        variables: {
-          id: systemId,
-          gender,
-        },
-      })
-      .pipe(map((x: any) => x.data?.system as RankingSystem));
-  }
-
-  addTeam(rankingSystem: RankingSystem) {
-    throw new Error("not Implemented")
-    return this.apollo
-      .mutate<{ updateRankingSystem: RankingSystem }>({
+      .mutate<{ addTeam: Team }>({
         mutation: addTeamMutation,
         variables: {
-          rankingSystem,
+          team: { ...team, ClubId: clubId },
         },
       })
-      .pipe(map((x) => new RankingSystem(x.data.updateRankingSystem)));
+      .pipe(map((x) => new Team(x.data.addTeam)));
   }
 
-  updateTeam(rankingSystem: RankingSystem) {
-    throw new Error("not Implemented")
+  addPlayer(team: Team, player: Player) {
+    return this.apollo.mutate({
+      mutation: addPlayerToTeamMutation,
+      variables: {
+        playerId: player.id,
+        teamId: team.id,
+      },
+    });
+  }
+
+  removePlayer(team: Team, player: Player) {
+    return this.apollo.mutate({
+      mutation: removePlayerToTeamMutation,
+      variables: {
+        playerId: player.id,
+        teamId: team.id,
+      },
+    });
+  }
+  updatePlayer(team: Team, player: Player) {
+    return this.apollo.mutate({
+      mutation: updatePlayerTeamMutation,
+      variables: {
+        playerId: player.id,
+        teamId: team.id,
+        base: player.base
+      },
+    });
+  }
+
+
+  updateTeam(team: Team) {
     return this.apollo
-      .mutate<{ updateRankingSystem: RankingSystem }>({
-        mutation: updateTeamMutatino,
+      .mutate<{ updateTeam: Team }>({
+        mutation: updateTeamMutation,
         variables: {
-          rankingSystem,
+          team,
         },
       })
-      .pipe(map((x) => new RankingSystem(x.data.updateRankingSystem)));
+      .pipe(map((x) => new Team(x.data.updateTeam)));
   }
-
 
   getTeams(
-    clubId: number,
+    clubId: string,
     sort?: string,
     direction?: SortDirection,
     page?: number
-  ): Observable<RankingSystem[]> {
+  ): Observable<Team[]> {
     return this.apollo
       .query({
-        query:  teamsQuery,
+        query: teamsQuery,
         fetchPolicy: 'no-cache',
         variables: {
           clubId,
         },
       })
-      .pipe(map((x: any) => x.data?.teams as RankingSystem[]));
+      .pipe(map((x: any) => x.data?.teams as Team[]));
   }
-
 }

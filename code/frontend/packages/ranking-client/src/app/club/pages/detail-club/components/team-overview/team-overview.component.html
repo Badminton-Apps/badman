@@ -1,0 +1,30 @@
+<div class="mat-elevation-z1">
+  <div class="info">
+    <div class="name">
+      <span class="up"> {{ team.name }}</span>
+      <span class="down">
+        {{ this.team.abbreviation }}
+      </span>
+    </div>
+  </div>
+
+  <div class="content">
+    <ng-container *ngIf="!(this.team.players && this.team.players.length > 0)">
+      <div class="no-players">No players</div>
+    </ng-container>
+
+    <ng-container *ngIf="this.team.players && this.team.players.length > 0">
+      <div
+        class="player"
+        *ngFor="let player of this.team.players"
+        [ngClass]="{ base: player.base }"
+        [routerLink]="['/player', this.player.id]"
+      >
+        {{ player.firstName }} {{ player.lastName }}
+        <small *ngIf="player.rankingPlaces && player.rankingPlaces.length > 0">
+          ({{ player.rankingPlaces[0].single }}-{{ player.rankingPlaces[0].double }}-{{ player.rankingPlaces[0].mix }})
+        </small>
+      </div>
+    </ng-container>
+  </div>
+</div>
