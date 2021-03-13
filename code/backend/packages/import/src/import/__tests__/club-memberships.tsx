@@ -1,19 +1,8 @@
 /* eslint-disable @typescript-eslint/dot-notation */
-import { join } from 'path';
-import { DatabaseError, Sequelize, Transaction } from 'sequelize/types';
-import {
-  Club,
-  ClubMembership,
-  DataBaseHandler,
-  Event,
-  Game,
-  logger,
-  Player,
-  SubEvent
-} from '@badvlasim/shared';
-import { Mdb } from '../../convert/mdb';
-import { CompetitionXmlImporter } from '../importers';
+import { Club, ClubMembership, DataBaseHandler, Player } from '@badvlasim/shared';
 import moment from 'moment';
+import { Transaction } from 'sequelize/types';
+import { CompetitionXmlImporter } from '../importers';
 
 describe('Club Membership', () => {
   let databaseService: DataBaseHandler;
@@ -150,5 +139,35 @@ describe('Club Membership', () => {
     expect(memberships[2].start).toEqual(moment([2002, 8, 1]).toDate());
     expect(memberships[2].playerId).toBe(player1.id);
     expect(memberships[2].clubId).toBe(club1.id);
+  });
+
+  it('Having multiple people in one club', async () => {
+    // Arrange
+    const club1 = await new Club({
+      name: 'TestClub1'
+    }).save();
+    const player1 = await new Player({
+      firstName: 'TestPlayer1'
+    }).save();
+    const player2 = await new Player({
+      firstName: 'TestPlayer2'
+    }).save();
+
+    const playerIds = [player1.id, player2.id];
+
+    service['transaction'] = await DataBaseHandler.sequelizeInstance.transaction();
+
+    // Act
+    await service['_addToClubs'](playerIds, moment([2000, 8, 1]), club1.id);
+    await service['transaction'].commit();
+
+    // Assert
+    const memberships = await ClubMembership.findAll();
+    expect(memberships.length).toBe(2);
+    expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
+    expect(memberships[0].playerId).toBe(player1.id);
+
+    expect(memberships[1].start).toEqual(moment([2000, 8, 1]).toDate());
+    expect(memberships[1].playerId).toBe(player2.id);
   });
 });

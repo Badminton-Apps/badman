@@ -1,31 +1,35 @@
 import {
+  Court,
   csvToArray,
-  Event,
+  DrawTournament,
+  EventImportType,
+  EventTournament,
   EventType,
+  Game,
+  GamePlayer,
   ICsvEntry,
   ICsvPlayerMatchTp,
   ImporterFile,
-  ImportSubEvent,
-  SubEvent,
   logger,
-  LevelType,
-  Court,
-  ICsvPlayerMatchCp,
-  EventImportType,
-  ImportDraw,
-  Draw,
-  Game,
-  GamePlayer
+  SubEventTournament
 } from '@badvlasim/shared';
+import moment from 'moment';
 import { Transaction } from 'sequelize/types';
 import { Mdb } from '../../convert/mdb';
 import { TpPlayer } from '../../models';
 import { Importer } from '../importer';
-import moment from 'moment';
 
 export class TournamentImporter extends Importer {
   constructor(mdb: Mdb, transaction: Transaction) {
-    super(mdb, EventType.TOERNAMENT, EventImportType.TOERNAMENT, transaction);
+    super(
+      mdb,
+      EventType.TOERNAMENT,
+      EventImportType.TOERNAMENT,
+      transaction,
+      EventTournament,
+      SubEventTournament,
+      DrawTournament
+    );
   }
 
   async addImporterfile(fileLocation: string) {
@@ -38,7 +42,7 @@ export class TournamentImporter extends Importer {
     return super.extractImporterFile();
   }
 
-  protected async addGames(draws: Draw[], players: TpPlayer[], courts: Map<string, Court>) {
+  protected async createGames(draws: DrawTournament[], players: TpPlayer[], courts: Map<string, Court>) {
     const csvPlayerMatches = await csvToArray<ICsvPlayerMatchTp[]>(
       await this.mdb.toCsv('PlayerMatch'),
       {
@@ -109,7 +113,7 @@ export class TournamentImporter extends Importer {
   }
 
   private async _gameFromCsv(
-    draw: Draw,
+    draw: DrawTournament,
     players: TpPlayer[],
     csvPlayerMatch: ICsvPlayerMatchTp,
     csvEntryInPlayerMatch1: ICsvPlayerMatchTp,
@@ -204,7 +208,7 @@ export class TournamentImporter extends Importer {
     if (team2Player2) {
       gamePlayers.push(
         new GamePlayer({
-          playerId: team2Player2.id,
+          playerId: team2Player2.id, 
           team: 2,
           player: 2
         }).toJSON()
@@ -221,7 +225,7 @@ export class TournamentImporter extends Importer {
     const playedAt = momentDate.isValid() ? momentDate.toDate() : null;
     const data = new Game({
       playedAt,
-      gameType: draw?.subEvent?.gameType, // S, D, MX
+      // gameType: draw?.subEvent?.gameType, // S, D, MX
       set1Team1,
       set1Team2,
       set2Team1,
@@ -229,10 +233,20 @@ export class TournamentImporter extends Importer {
       set3Team1,
       set3Team2,
       winner: parseInt(csvPlayerMatch.winner, 10),
-      drawId: draw.id,
+      linkId: draw.id,
+      linkType: 'tournament',
       courtId: court?.id
     }).toJSON();
 
     return { game: data, gamePlayers };
+  }
+
+  protected async createEvent(importerFile: ImporterFile, transaction: Transaction) {
+    return new EventTournament({
+      name: importerFile.name,
+      uniCode: importerFile.uniCode,
+      dates: importerFile.dates,
+      firstDay: importerFile.firstDay
+    }).save({ transaction });
   }
 }

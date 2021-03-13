@@ -1,7 +1,6 @@
-import { Event, ImporterFile, logger } from '@badvlasim/shared';
+import { ImporterFile, logger } from '@badvlasim/shared';
 import { unlink } from 'fs';
-import { GraphQLInt } from 'graphql';
-import { ImportInputType, ImportedType } from '../types';
+import { ImportedType, ImportInputType } from '../types';
 
 const deleteImportedEventMutation = {
   type: ImportedType,

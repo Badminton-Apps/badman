@@ -21,6 +21,7 @@ import { AddPlayerComponent } from './dialogs/add-player/add-player.component';
 import { ClubEditTeamComponent } from './pages/edit-club/components/club-edit-team/club-edit-team.component';
 import { EditTeamComponent } from './pages/edit-team/edit-team.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 const materialModules = [
   FormsModule,
@@ -34,6 +35,7 @@ const materialModules = [
   MatProgressBarModule,
   MatSnackBarModule,
   MatSortModule,
+  MatCheckboxModule,
   MatTableModule,
   ReactiveFormsModule,
   MatIconModule,

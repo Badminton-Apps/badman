@@ -69,7 +69,7 @@ export class ImporterFile extends Model {
   importing: boolean;
 
   @Column
-  toernamentNumber: number;
+  tournamentNumber: number;
 
   @HasMany(() => ImportSubEvent, { foreignKey: 'FileId', onDelete: 'CASCADE' })
   subEvents: ImportSubEvent[];

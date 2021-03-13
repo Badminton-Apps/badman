@@ -4,13 +4,16 @@ import {
   EventType,
   logger,
   BaseController,
-  SubEvent,
   ImportSubEvent,
   EventImportType,
-  Event,
   ImporterFile,
   ImportDraw,
-  Draw
+  EventTournament,
+  SubEventTournament,
+  DrawTournament,
+  EventCompetition,
+  SubEventCompetition,
+  DrawCompetition
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import { unlink } from 'fs';
@@ -135,19 +138,26 @@ export class ImportController extends BaseController {
       for (const queImport of queueImports) {
         const imported = await ImporterFile.findOne({
           where: { id: queImport.importId },
-          include: [{ model: ImportSubEvent, include: [{model: ImportDraw}] }]
+          include: [{ model: ImportSubEvent, include: [{ model: ImportDraw }] }]
         });
 
         if (!imported) {
           return;
         }
+        let event: EventTournament | EventCompetition = null;
 
-        let event = null;
         if (queImport.eventId) {
-          event = await Event.findOne({
-            where: { id: queImport.eventId },
-            include: [{ model: SubEvent, include: [{model: Draw}] }]
-          });
+          if (imported.type === EventImportType.TOERNAMENT) {
+            event = await EventTournament.findOne({
+              where: { id: queImport.eventId },
+              include: [{ model: SubEventTournament, include: [{ model: DrawTournament }] }]
+            });
+          } else {
+            event = await EventCompetition.findOne({
+              where: { id: queImport.eventId },
+              include: [{ model: SubEventCompetition, include: [{ model: DrawCompetition }] }]
+            });
+          }
         }
 
         this._converter.convert(imported, event);
