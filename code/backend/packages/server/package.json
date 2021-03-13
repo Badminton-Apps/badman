@@ -1,10 +1,10 @@
 {
   "name": "@badvlasim/server",
   "description": "Ranking simulation server Badminton Vlaanderen",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
-    "@badvlasim/shared": "^1.5.0",
+    "@badvlasim/shared": "^2.0.0",
     "apollo-cache-control": "^0.11.4",
     "apollo-server-express": "^2.19.0",
     "global": "^4.4.0",
@@ -20,7 +20,7 @@
     "start:watch": "nodemon",
     "start:watch:inspect": "nodemon --exec node --inspect=5859 -r ts-node/register ./src/server.ts",
     "test:local": "jest --colors --watchAll",
-    "test": "jest --config ./jest.config.js --coverage --testFailureExitCode 0 --passWithNoTests",
+    "test": "jest --config ./jest.config.js --testFailureExitCode 0",
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
   },
   "browserslist": [

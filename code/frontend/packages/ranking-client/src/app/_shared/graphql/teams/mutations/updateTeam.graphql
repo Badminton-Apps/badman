@@ -1,0 +1,7 @@
+mutation UpdateTeam($team: TeamInput!) {
+  UpdateTeam(team: $team) {
+    id
+    name
+    abbreviation
+  }
+}

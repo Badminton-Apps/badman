@@ -8,21 +8,27 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
+          "skipTests": true,
           "spec": false
         },
         "@schematics/angular:directive": {
+          "skipTests": true,
           "spec": false
         },
         "@schematics/angular:modules": {
+          "skipTests": true,
           "spec": false
         },
         "@schematics/angular:pipe": {
+          "skipTests": true,
           "spec": false
         },
         "@schematics/angular:service": {
+          "skipTests": true,
           "spec": false
         },
         "@schematics/angular:class": {
+          "skipTests": true,
           "spec": false
         }
       },
@@ -45,8 +51,15 @@
               "src/assets",
               "src/manifest.webmanifest"
             ],
-            "styles": ["src/styles.scss"],
-            "scripts": [],
+            "styles": [
+              "src/styles.scss",
+              "../../node_modules/prismjs/themes/prism-okaidia.css"
+            ],
+            "scripts": [
+              "../../node_modules/prismjs/prism.js",
+              "../../node_modules/prismjs/components/prism-markdown.min.js",
+              "../../node_modules/prismjs/components/prism-typescript.min.js"
+            ],
             "allowedCommonJsDependencies": [
               "echarts",
               "zen-observable",
@@ -111,6 +124,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
+            "codeCoverage": true,
+            "sourceMap": true,
             "assets": [
               "src/favicon.ico",
               "src/assets",

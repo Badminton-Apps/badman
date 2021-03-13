@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { UserService } from 'app/player';
 import { Observable, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { User } from '../../models';
+import { Player, User } from '../../models';
 import { DeviceService } from '../../services';
 
 @Component({
@@ -21,7 +22,8 @@ export class RankingShellComponent implements OnDestroy, OnInit {
   constructor(
     private user: UserService,
     public device: DeviceService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -48,5 +50,11 @@ export class RankingShellComponent implements OnDestroy, OnInit {
 
   ngOnDestroy(): void {
     this.device.removeEvent('change', this.mobileQueryListener);
+  }
+
+  playerSearch(player: Player) {
+    if (player.id) {
+      this.router.navigate(['/player', player.id]);
+    }
   }
 }

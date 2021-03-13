@@ -26,7 +26,7 @@ export class UserService {
     );
   }
 
-  requestLink(playerId: number): Observable<RequestLink> {
+  requestLink(playerId: string): Observable<RequestLink> {
     return this.httpClient.post<RequestLink>(
       `${environment.api}/${environment.apiVersion}/request-link/${playerId}`,
       {}
@@ -39,6 +39,7 @@ export class UserService {
   canAcceptLinks() {
     return this.auth.hasClaim$('link:account');
   }
+
   canViewEvents() {
     return this.auth.hasClaim$('view:event');
   }
@@ -47,5 +48,7 @@ export class UserService {
     return this.auth.hasClaim$('import:event');
   }
 
- 
+  canEditClubs(clubId: string) {
+    return this.auth.hasClaim$('edit:club');
+  }
 }

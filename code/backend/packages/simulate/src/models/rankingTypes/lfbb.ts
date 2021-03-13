@@ -140,10 +140,10 @@ export class LfbbRankingCalc extends RankingCalc {
   private async _calculateRankingPlacesAsync(
     startDate: Date,
     endDate: Date,
-    players: Map<number, Player>,
+    players: Map<string, Player>,
     updateRankings: boolean
   ) {
-    const eligbleForRanking: Map<number, RankingPoint[]> = new Map();
+    const eligbleForRanking: Map<string, RankingPoint[]> = new Map();
     (
       await RankingPoint.findAll({
         where: {

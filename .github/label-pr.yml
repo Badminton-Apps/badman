@@ -1,24 +1,28 @@
-- regExp: ".*\\.ts+$"
-  labels: ["typescript"]
-- regExp: ".*\\.sql+$"
-  labels: ["database", "critical"]
-- regExp: ".*\\.md+$"
-  labels: ["documentation"]
-- regExp: "^(pom\\.xml|package\\.json|build\\.gradle)$"
-  labels: ["dependencies"]
-- regExp: ".*\\.(zip|jar|war|ear)+$"
-  labels: ["artifact", "invalid"]
+backend:
+  - code/backend/*
+  - code/backend/**/*
+frontend:
+  - code/frontend/*
+  - code/frontend/**/*
 
-- regExp: "^.*frontend[\\/\\\\].*$"
-  labels: ["frontend"]
+'@badvlasim/shared':
+  - code/backend/packages/_shared/*
+  - code/backend/packages/_shared/**/*
+'@badvlasim/import':
+  - code/backend/packages/import/*
+  - code/backend/packages/import/**/*
+'@badvlasim/server':
+  - code/backend/packages/server/*
+  - code/backend/packages/server/**/*
+'@badvlasim/simulate':
+  - code/backend/packages/simulate/*
+  - code/backend/packages/simulate/**/*
+'@badvlasim/client':
+  - code/frontend/packages/ranking-client/*
+  - code/frontend/packages/ranking-client/**/*
 
-- regExp: "^.*backend[\\/\\\\].*$"
-  labels: ["backend"]
-- regExp: "^.*[\\/\\\\]?backend[\\/\\\\]packages[\\/\\\\]_shared[\\/\\\\].*$"
-  labels: ["_shared"]
-- regExp: "^.*[\\/\\\\]?backend[\\/\\\\]packages[\\/\\\\]import[\\/\\\\].*$"
-  labels: ["import"]
-- regExp: "^.*[\\/\\\\]?backend[\\/\\\\]packages[\\/\\\\]server[\\/\\\\].*$"
-  labels: ["server"]
-- regExp: "^.*[\\/\\\\]?backend[\\/\\\\]packages[\\/\\\\]simulate[\\/\\\\].*$"
-  labels: ["simulate"]
+database:
+  - ./**/*.sql
+
+documentation:
+  - any: ['./**/*.md', '!./**/changelog.md']

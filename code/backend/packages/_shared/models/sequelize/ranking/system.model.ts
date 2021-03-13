@@ -1,31 +1,64 @@
 import {
-  Column,
-  HasMany,
-  Model,
-  Table,
-  DataType,
-  ForeignKey,
+  BelongsToGetAssociationMixin,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin
+} from 'sequelize';
+import {
   BelongsTo,
-  BelongsToMany
+  BelongsToMany,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  HasMany,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique
 } from 'sequelize-typescript';
-import { BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin, BuildOptions } from 'sequelize/types';
-import { RankingPoint } from './point.model';
+import { RankingSystems, RankingTiming, StartingType } from '../../enums/';
 import { Player } from '../player.model';
-import { RankingTiming, RankingSystems, StartingType } from '../../enums/';
 import { RankingSystemGroup } from './group.model';
 import { GroupSystems } from './group_system.model';
+import { RankingPoint } from './point.model';
 
 @Table({
   timestamps: true,
   tableName: 'Systems',
   schema: 'ranking'
 })
-export class RankingSystem extends Model<RankingSystem> {
-  constructor(values?: any, options?: BuildOptions) {
+export class RankingSystem extends Model {
+  constructor(values?: Partial<RankingSystem>, options?: BuildOptions) {
     super(values, options);
     this._setupValues();
   }
 
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique
   @Column
   name: string;
 
@@ -56,6 +89,7 @@ export class RankingSystem extends Model<RankingSystem> {
 
   @Column
   inactivityAmount: number;
+
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   inactivityUnit: 'months' | 'weeks' | 'days';
 
@@ -65,6 +99,7 @@ export class RankingSystem extends Model<RankingSystem> {
       unit: this.inactivityUnit
     };
   }
+  @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Column
   caluclationIntervalLastUpdate: Date;
   @Column
@@ -79,7 +114,6 @@ export class RankingSystem extends Model<RankingSystem> {
     };
   }
 
-
   @Column
   periodAmount: number;
   @Column(DataType.ENUM('months', 'weeks', 'days'))
@@ -91,6 +125,7 @@ export class RankingSystem extends Model<RankingSystem> {
       unit: this.periodUnit
     };
   }
+  @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Column
   updateIntervalAmountLastUpdate: Date;
   @Column
@@ -129,24 +164,40 @@ export class RankingSystem extends Model<RankingSystem> {
   })
   startingType: StartingType;
 
-  @ForeignKey(() => Player)
-  runById: number;
-
-  @BelongsTo(() => Player, {
-    foreignKey: 'runById',
-    onDelete: 'SET NULL'
-  })
-  runBy: Player;
-
   @HasMany(() => RankingPoint, 'SystemId')
   rankingPoints: RankingPoint;
-
 
   @BelongsToMany(
     () => RankingSystemGroup,
     () => GroupSystems
   )
   groups: RankingSystemGroup[];
+
+  // Has many RankingPoint
+  getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;
+  setRankingPoints!: HasManySetAssociationsMixin<RankingPoint, string>;
+  addRankingPoints!: HasManyAddAssociationsMixin<RankingPoint, string>;
+  addRankingPoint!: HasManyAddAssociationMixin<RankingPoint, string>;
+  removeRankingPoint!: HasManyRemoveAssociationMixin<RankingPoint, string>;
+  removeRankingPoints!: HasManyRemoveAssociationsMixin<RankingPoint, string>;
+  hasRankingPoint!: HasManyHasAssociationMixin<RankingPoint, string>;
+  hasRankingPoints!: HasManyHasAssociationsMixin<RankingPoint, string>;
+  countRankingPoints!: HasManyCountAssociationsMixin;
+
+  
+  // Belongs to many Group
+  getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
+  setGroup!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;
+  addGroups!: BelongsToManyAddAssociationsMixin<RankingSystemGroup, string>;
+  addGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
+  removeGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
+  removeGroups!: BelongsToManyRemoveAssociationsMixin<
+    RankingSystemGroup,
+    string
+  >;
+  hasGroup!: BelongsToManyHasAssociationMixin<RankingSystemGroup, string>;
+  hasGroups!: BelongsToManyHasAssociationsMixin<RankingSystemGroup, string>;
+  countGroup!: BelongsToManyCountAssociationsMixin;
 
   private _pointsToGoUp: number[];
   private _pointsWhenWinningAgainst: number[];

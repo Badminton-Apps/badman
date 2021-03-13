@@ -3,7 +3,7 @@ import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { Game } from '@badvlasim/shared/models';
 import { GameType } from '../types/game.type';
 
-const gamesQuery = {
+export const gamesQuery = {
   type: new GraphQLList(GameType),
   args: Object.assign(defaultListArgs(), {
     direction: {
@@ -20,10 +20,8 @@ const gamesQuery = {
             ['id', 'desc']
           ]
         };
-      } 
+      }
       return findOptions;
     }
   })
 };
-
-export { gamesQuery };

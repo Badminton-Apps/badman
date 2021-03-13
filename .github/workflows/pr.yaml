@@ -1,5 +1,6 @@
 name: CI
-on: [pull_request]
+on: 
+  - pull_request_target
 jobs:
   label:
     runs-on: ubuntu-latest
@@ -7,19 +8,20 @@ jobs:
       # We need to checkout the repository to access the configured file (.github/label-pr.yml)
       - uses: actions/checkout@v2
       - name: Labeler
-        uses: docker://decathlon/pull-request-labeler-action:2.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Here we can override the path for the action configuration. If none is provided, default one is `.github/label-pr.yml`
-          CONFIG_PATH: ${{ secrets.GITHUB_WORKSPACE }}/.github/label-pr.yml
+        uses: actions/labeler@main
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/label-pr.yml
   build:
-    name: Bootstrap, Build & Test
+    name: Bootstrap, Build & Test.
     runs-on: ubuntu-latest
     strategy:
       matrix:
         folder: ["backend", "frontend"]
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup Node ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
@@ -33,10 +35,8 @@ jobs:
         working-directory: code/${{ matrix.folder }}
       - uses: codecov/codecov-action@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          file: packages/**/lcov.info
           name: codecov-${{ matrix.folder }}
-          verbose: true
           directory: code/${{ matrix.folder }}
+          override_pr: ${{ github.event.number }}
       - run: npx lerna run build
         working-directory: code/${{ matrix.folder }}

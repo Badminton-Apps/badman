@@ -1,7 +1,7 @@
 import { Player } from './player.model';
 import { RankingSystem } from './ranking-system.model';
 
-export interface RankingPlace {
+export class RankingPlace {
   singlePointsDowngrade: number;
   singleRank: number;
   totalSingleRanking: number;
@@ -30,4 +30,35 @@ export interface RankingPlace {
   statisticUrl?: string;
   primary: boolean;
   player?: Player;
+
+  constructor(args: Partial<RankingPlace>) {
+    this.singlePointsDowngrade = args.singlePointsDowngrade;
+    this.singleRank = args.singleRank;
+    this.totalSingleRanking = args.totalSingleRanking;
+    this.totalWithinSingleLevel = args.totalWithinSingleLevel;
+    this.singlePoints = args.singlePoints;
+    this.single = args.single;
+    this.singleInactive = args.singleInactive;
+    this.mixPointsDowngrade = args.mixPointsDowngrade;
+    this.mixRank = args.mixRank;
+    this.totalMixRanking = args.totalMixRanking;
+    this.totalWithinMixLevel = args.totalWithinMixLevel;
+    this.mixPoints = args.mixPoints;
+    this.mix = args.mix;
+    this.mixInactive = args.mixInactive;
+    this.doublePointsDowngrade = args.doublePointsDowngrade;
+    this.doubleRank = args.doubleRank;
+    this.totalDoubleRanking = args.totalDoubleRanking;
+    this.totalWithinDoubleLevel = args.totalWithinDoubleLevel;
+    this.doublePoints = args.doublePoints;
+    this.double = args.double;
+    this.doubleInactive = args.doubleInactive;
+    this.rankingSystem = args.rankingSystem;
+    this.updatePossible = args.updatePossible;
+    this.rank = args.rank;
+    this.rankingDate = args.rankingDate;
+    this.statisticUrl = args.statisticUrl;
+    this.primary = args.primary;
+    this.player = args.player;
+  }
 }
