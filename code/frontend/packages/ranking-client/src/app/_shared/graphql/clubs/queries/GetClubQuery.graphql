@@ -1,4 +1,9 @@
-query GetClubsQuery($id: ID!, $end: String, $rankingType: ID) {
+query GetClubsQuery(
+  $id: ID!
+  $end: String
+  $rankingType: ID
+  $includePlaces: Boolean!
+) {
   club(id: $id) {
     id
     name
@@ -13,11 +18,24 @@ query GetClubsQuery($id: ID!, $end: String, $rankingType: ID) {
         firstName
         lastName
         base
-        rankingPlaces(where: { SystemId: $rankingType }) {
+
+        rankingPlaces(where: { SystemId: $rankingType })
+          @skip(if: $includePlaces) {
           single
           double
           mix
         }
+      }
+    }
+    
+    roles {
+      id
+      name
+      description
+      players {
+        id
+        firstName
+        lastName
       }
     }
 
@@ -25,7 +43,8 @@ query GetClubsQuery($id: ID!, $end: String, $rankingType: ID) {
       id
       firstName
       lastName
-      rankingPlaces(where: { SystemId: $rankingType }) {
+      rankingPlaces(where: { SystemId: $rankingType })
+        @skip(if: $includePlaces) {
         single
         double
         mix

@@ -6,4 +6,5 @@ export * from './rankingSystemGroup.mutations';
 export * from './importedEvent.mutations';
 export * from './rankingSystem.mutations';
 export * from './team.mutations';
+export * from './role.mutations';
 // end:ng42.barrel

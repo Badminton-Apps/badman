@@ -1,5 +1,5 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { SubEvent } from './event';
+import { SubEventCompetition } from '.';
 import { Team } from './team.model';
 
 @Table({
@@ -10,7 +10,7 @@ export class SubEventMembership extends Model<SubEventMembership> {
   @Column
   teamId: number;
 
-  @ForeignKey(() => SubEvent)
+  @ForeignKey(() => SubEventCompetition)
   @Column
   subEventId: number;
 }

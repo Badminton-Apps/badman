@@ -7,7 +7,7 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, throwError, iif, of } from 'rxjs';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../services/security/auth.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private auth: AuthService) {}

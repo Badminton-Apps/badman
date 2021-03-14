@@ -19,6 +19,7 @@ import { RankingPointType } from './rankingPoint.type';
 import { TeamType } from './team.type';
 import { getAttributeFields } from './attributes.type';
 import { logger } from '@badvlasim/shared';
+import { ClaimType } from './security/claim.type';
 
 const PlayerType = new GraphQLObjectType({
   name: 'Player',
@@ -27,11 +28,11 @@ const PlayerType = new GraphQLObjectType({
     Object.assign(getAttributeFields(Player), {
       teams: {
         type: new GraphQLList(TeamType),
-        resolve: resolver(Player.associations.teams, {
-          before: async (findOptions, args, context, info) => {
-            return findOptions;
-          }
-        })
+        resolve: resolver(Player.associations.teams)
+      },
+      claims: {
+        type: new GraphQLList(ClaimType),
+        resolve: resolver(Player.associations.claims)
       },
       rankingPlaces: {
         type: new GraphQLList(RankingPlaceType),
@@ -42,7 +43,7 @@ const PlayerType = new GraphQLObjectType({
         }),
         resolve: resolver(Player.associations.rankingPlaces, {
           before: async (findOptions, args, context, info) => {
-            findOptions.where = { 
+            findOptions.where = {
               ...findOptions.where
             };
             findOptions.order =

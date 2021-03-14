@@ -1,7 +1,7 @@
 <ng-container *ngIf="this.club$ | async as club">
   <div class="mat-elevation-z1">
     <div class="header">
-      <ng-container *ngIf="this.canEditClub$ | async">
+      <app-has-claim [any]="[club.id + '_edit:club', 'edit-amy:club']">
         <button class="options" mat-icon-button [matMenuTriggerFor]="options">
           <mat-icon>more_vert</mat-icon>
         </button>
@@ -16,7 +16,7 @@
           <mat-divider></mat-divider>
           <button mat-menu-item>Delete</button>
         </mat-menu>
-      </ng-container>
+      </app-has-claim>
       <img
         src="../../assets/images//user-profile-bg.jpg"
         alt="Background image"

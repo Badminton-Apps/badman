@@ -16,6 +16,7 @@ export * from './team.type';
 
 export * from './tournaments'; 
 export * from './competition';
+export * from './security';
 
 // end:ng42.barrel
 

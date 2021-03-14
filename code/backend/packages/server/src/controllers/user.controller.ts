@@ -39,7 +39,7 @@ export class UserController extends BaseController {
       }
 
       const player = await Player.findOne({
-        where: { email: request.user.email }
+        where: { sub: request.user.sub }
       }); 
 
       if (!player) {
@@ -48,7 +48,7 @@ export class UserController extends BaseController {
       }
 
       const requestLink = await RequestLink.findOne({
-        where: { email: request.user.email }
+        where: { PlayerId: player.id }
       });
       response.json({ player, request: requestLink });
     } catch (error) {

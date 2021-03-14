@@ -7,7 +7,7 @@ import {
   ImporterFile,
   Player,
   SubEventTournament
-} from '../../../../_shared';
+} from '@badvlasim/shared';
 import { Mdb } from '../../convert/mdb';
 import { TournamentImporter } from '../importers';
 
