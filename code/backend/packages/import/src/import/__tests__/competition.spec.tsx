@@ -6,7 +6,7 @@ import {
   ImporterFile,
   Player,
   SubEventCompetition
-} from '../../../../_shared';
+} from '@badvlasim/shared';
 import { Mdb } from '../../convert/mdb';
 import { CompetitionCpImporter } from '../importers';
 

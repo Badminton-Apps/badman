@@ -78,18 +78,17 @@ export class RequestLinkController extends BaseController {
         where: { id: request.params.ids.split(',') }
       });
 
-      // Only if accepted response
-      if (request.params.accept === 'true') {
-        await Player.bulkCreate(
-          linkRequests.map(x => {
-            return {
-              id: x.PlayerId,
-              email: x.email
-            };
-          }),
-          { updateOnDuplicate: ['email'] }
-        );
-      }
+      // // Only if accepted response
+      // if (request.params.accept === 'true') {
+      //   await Player.bulkCreate(
+      //     linkRequests.map(x => {
+      //       return {
+      //         id: x.PlayerId,
+      //       };
+      //     }),
+      //     { updateOnDuplicate: ['email'] }
+      //   );
+      // }
 
       await RequestLink.destroy({
         where: { id: linkRequests.map(x => x.id) }

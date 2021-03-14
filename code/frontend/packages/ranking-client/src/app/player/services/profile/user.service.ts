@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { iif, Observable, of } from 'rxjs';
 import { filter, mergeMap, shareReplay, startWith, tap } from 'rxjs/operators';
-import { User, RequestLink, RankingPlace } from '../../../_shared/models';
+import { RequestLink, RankingPlace, Player } from '../../../_shared/models';
 import { AuthService } from '../../../_shared/services';
 import { environment } from '../../../../environments/environment';
 
@@ -11,11 +11,11 @@ import { environment } from '../../../../environments/environment';
 })
 export class UserService {
   private urlBase = `${environment.api}/${environment.apiVersion}/user`;
-  profile$: Observable<{ player: User; request: any }>;
+  profile$: Observable<{ player: Player; request: any }>;
 
   constructor(private httpClient: HttpClient, private auth: AuthService) {
     const whenAuthenticated = this.httpClient
-      .get<{ player: User; request: any }>(`${this.urlBase}/profile`)
+      .get<{ player: Player; request: any }>(`${this.urlBase}/profile`)
       .pipe(
         startWith({ player: null, request: null }),
         filter((user) => user !== null),
@@ -33,22 +33,7 @@ export class UserService {
     );
   }
 
-  canCalculateRanking() {
-    return this.auth.hasClaim$('calculate:ranking');
-  }
-  canAcceptLinks() {
-    return this.auth.hasClaim$('link:account');
-  }
-
-  canViewEvents() {
-    return this.auth.hasClaim$('view:event');
-  }
-
-  canImportEvents() {
-    return this.auth.hasClaim$('import:event');
-  }
-
-  canEditClubs(clubId: string) {
-    return this.auth.hasClaim$('edit:club');
+  permissions(){
+    return this.auth.userPermissions$;
   }
 }

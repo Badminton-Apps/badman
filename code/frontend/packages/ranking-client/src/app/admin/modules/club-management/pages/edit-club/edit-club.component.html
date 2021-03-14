@@ -1,26 +1,67 @@
 <div class="mat-subheading-1">Edit Club</div>
 
 <ng-container *ngIf="this.club$ | async as club">
-  <app-club-fields [club]="club" (save)="this.save($event)"></app-club-fields>
+  <app-has-claim [any]="[club.id + '_edit:club', 'edit-amy:club']">
+    <app-club-fields [club]="club" (save)="this.save($event)"></app-club-fields>
+    <div noPerm>{{ club.name }}</div>
+  </app-has-claim>
 
-  <div class="mat-subheading-1">
-    Teams
-    <button
-      mat-icon-button
-      [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'team', 'add']"
-    >
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
-  <div class="teams">
-    <app-club-edit-team
-      *ngFor="let team of club.teams"
-      [team]="team"
-      [club]="club"
-      (onPlayerAdded)="this.onPlayerAdded($event, team)"
-      (onPlayerRemoved)="this.onPlayerRemoved($event, team)"
-      (onPlayerUpdated)="this.onPlayerUpdated($event, team)"
-    >
-    </app-club-edit-team>
-  </div>
+  <app-has-claim
+    [any]="[club.id + '_edit:team', club.id + '_edit:club', 'edit-amy:club']"
+  >
+    <div class="mat-subheading-1">
+      Teams
+
+      <app-has-claim
+        [any]="[club.id + '_add:team', club.id + '_edit:club', 'edit-amy:club']"
+      >
+        <button
+          mat-icon-button
+          [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'team', 'add']"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </app-has-claim>
+    </div>
+    <div class="teams">
+      <app-club-edit-team
+        *ngFor="let team of club.teams"
+        [team]="team"
+        [club]="club"
+        (onPlayerAdded)="this.onPlayerAddedToTeam($event, team)"
+        (onPlayerRemoved)="this.onPlayerRemovedFromTeam($event, team)"
+        (onPlayerUpdated)="this.onPlayerUpdatedFromTeam($event, team)"
+      >
+      </app-club-edit-team>
+    </div>
+  </app-has-claim>
+
+  <app-has-claim
+    [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-amy:club']"
+  >
+    <div class="mat-subheading-1">
+      Roles
+
+      <app-has-claim
+        [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-amy:club']"
+      >
+        <button
+          mat-icon-button
+          [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'role', 'add']"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </app-has-claim>
+    </div>
+    <div class="roles">
+      <app-club-edit-role
+        *ngFor="let role of club.roles"
+        [role]="role"
+        [club]="club"
+        (onPlayerAdded)="this.onPlayerAddedToRole($event, role)"
+        (onPlayerRemoved)="this.onPlayerRemovedFromRole($event, role)"
+      >
+      </app-club-edit-role>
+    </div>
+  </app-has-claim>
 </ng-container>

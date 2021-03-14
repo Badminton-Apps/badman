@@ -14,16 +14,13 @@ import * as moment from 'moment';
 })
 export class DetailClubComponent {
   club$: Observable<Club>;
-  canEditClub$: Observable<boolean>;
 
   update$ = new BehaviorSubject(0);
 
   constructor(
-    private user: UserService,
     private clubService: ClubService,
     private systemService: SystemService,
     private route: ActivatedRoute,
-    private router: Router,
     private dialog: MatDialog
   ) {}
 
@@ -34,14 +31,10 @@ export class DetailClubComponent {
       map((x) => x[0])
     );
 
-
     this.club$ = combineLatest([this.route.paramMap, system$, this.update$]).pipe(
       switchMap(([params, system]) =>
         this.clubService.getClub(params.get('id'), system.id, moment().subtract(1, 'year').toDate())
-      ),
-      tap((club) => {
-        this.canEditClub$ = this.user.canEditClubs(club.id);
-      })
+      )
     );
   }
 

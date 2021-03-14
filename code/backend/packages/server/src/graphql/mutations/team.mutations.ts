@@ -102,7 +102,7 @@ export const addPlayerToTeamMutation = {
   }
 };
 
-export const removePlayerToTeamMutation = {
+export const removePlayerFromTeamMutation = {
   type: TeamType,
   args: {
     teamId: {

@@ -42,6 +42,19 @@ const routes: Routes = [
       },
     },
   },
+  {
+    path: 'security',
+    loadChildren: () =>
+      import('./modules/security-management/security-management.module').then(
+        (m) => m.SecurityManagementModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      claims: {
+        any: 'edit:claims',
+      },
+    },
+  },
 ];
 
 @NgModule({
