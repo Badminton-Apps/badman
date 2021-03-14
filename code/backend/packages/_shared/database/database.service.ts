@@ -2,6 +2,7 @@ import { exec } from 'child_process';
 import { CreateOptions, Op } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
+  Claim,
   Club,
   ClubMembership,
   DrawCompetition,
@@ -16,6 +17,7 @@ import {
   RankingSystemGroup,
   RankingSystems,
   RequestLink,
+  Role,
   StartingType,
   SubEventCompetition,
   SubEventTournament,
@@ -326,48 +328,167 @@ export class DataBaseHandler {
           await this.runCommmand('sequelize db:migrate');
         } else {
           logger.info('Syncing');
-          await this._sequelize.sync({ force: true });
+          // Create non-existing schemas
+          const mySchemas = ['import', 'ranking', 'event', 'security'];
+          var schemas = ((await this._sequelize.showAllSchemas(
+            {}
+          )) as unknown) as string[];
 
-          const group = new RankingSystemGroup({
-            name: 'Adults'
-          });
+          for (const schema of mySchemas) {
+            if (schemas.indexOf(schema) == -1) {
+              await this._sequelize.createSchema(schema, {});
+            }
+          }
 
-          const system = new RankingSystem({
-            name: 'BV 75/30 FINAL SYSTEM',
-            rankingSystem: RankingSystems.BVL,
-            amountOfLevels: 12,
-            procentWinning: 75,
-            procentWinningPlus1: 50,
-            procentLosing: 30,
-            latestXGamesToUse: null,
-            minNumberOfGamesUsedForUpgrade: 7,
-            maxDiffLevels: 2,
-            updateIntervalAmount: 2,
-            updateIntervalUnit: 'months',
-            periodAmount: 52,
-            periodUnit: 'weeks',
-            caluclationIntervalAmount: 1,
-            calculationIntervalUnit: 'weeks',
-            differenceForUpgrade: 1,
-            differenceForDowngrade: 0,
-            startingType: StartingType.tableLFBB,
-            maxLevelUpPerChange: null,
-            primary: true,
-            maxLevelDownPerChange: 1,
-            gamesForInactivty: 3,
-            inactivityAmount: 103,
-            inactivityUnit: 'weeks'
-          });
-
-          await group.save();
-          await system.save();
-
-          await system.addGroup(group);
+          try {
+            await this._sequelize.sync({ force: true });
+            await this.seedBasicInfo();
+          } catch (e) {
+            logger.error(e);
+            throw e;
+          }
         }
       }
 
       resolve('Good to go');
     });
+  }
+
+  private async seedBasicInfo() {
+    const group = new RankingSystemGroup({
+      name: 'Adults'
+    });
+
+    const system = new RankingSystem({
+      name: 'BV 75/30 FINAL SYSTEM',
+      rankingSystem: RankingSystems.BVL,
+      amountOfLevels: 12,
+      procentWinning: 75,
+      procentWinningPlus1: 50,
+      procentLosing: 30,
+      latestXGamesToUse: null,
+      minNumberOfGamesUsedForUpgrade: 7,
+      maxDiffLevels: 2,
+      updateIntervalAmount: 2,
+      updateIntervalUnit: 'months',
+      periodAmount: 52,
+      periodUnit: 'weeks',
+      caluclationIntervalAmount: 1,
+      calculationIntervalUnit: 'weeks',
+      differenceForUpgrade: 1,
+      differenceForDowngrade: 0,
+      startingType: StartingType.tableLFBB,
+      maxLevelUpPerChange: null,
+      primary: true,
+      maxLevelDownPerChange: 1,
+      gamesForInactivty: 3,
+      inactivityAmount: 103,
+      inactivityUnit: 'weeks'
+    });
+
+    await group.save();
+    await system.save();
+
+    await system.addGroup(group);
+
+    // Claims/permission
+    const dbAdminClaims = [];
+    const adminClaims = [
+      ['view:event', 'View an event', 'events'],
+      ['add:event', 'Add an event', 'events'],
+      ['edit:event', 'Edit an event', 'events'],
+      ['delete:event', 'Delete an event', 'events'],
+      ['import:event', 'Import an event', 'events'],
+      ['view:ranking', 'View ranking system', 'ranking'],
+      ['add:ranking', 'Add ranking system', 'ranking'],
+      ['edit:ranking', 'Edit ranking system', 'ranking'],
+      ['delete:ranking', 'Delete ranking system', 'ranking'],
+      ['calculate:ranking', 'Simulate ranking', 'ranking'],
+      ['make-primary:ranking', 'Make ranking system primary', 'ranking'],
+      ['edit:claims', 'Edit global claims', 'security'],
+      ['link:player', 'Can link players to login', 'player'],
+      ['add:club', 'Create new club', 'clubs'],
+      ['edit-any:club', 'Edit any club', 'clubs']
+    ];
+
+    for (const claimName of adminClaims) {
+      logger.silly(`Creating global claim ${claimName}`);
+      const c = await new Claim({
+        name: claimName[0],
+        description: claimName[1],
+        category: claimName[2],
+        type: 'global'
+      }).save();
+      dbAdminClaims.push(c);
+    }
+
+    const dbClubClaims = [];
+    const clubClaims = [
+      [
+        'edit:club',
+        'Change anything of a club (removing this can potentially remove all access to edit screen)',
+        'club'
+      ],
+      ['add:player', 'Add players to club', 'club'],
+      ['remove:player', 'Remove players to club', 'club'],
+      ['add:location', 'Add location to club', 'club'],
+      ['remove:location', 'Remove location to club', 'club'],
+      ['add:role', 'Creates new roles for club', 'club'],
+      ['edit:role', 'Edit roles for club', 'club']
+    ];
+    for (const claimName of clubClaims) {
+      logger.silly(`Creating club claim ${claimName}`);
+      const c = await new Claim({
+        name: claimName[0],
+        description: claimName[1],
+        category: claimName[2],
+        type: 'club'
+      }).save();
+      dbClubClaims.push(c);
+    }
+
+    const dbTeamClaims = [];
+    const teamClaims = [
+      ['edit:team', 'Edit competition teams', 'team'],
+      ['add:team', 'Add compeition teams', 'team'],
+      ['enter:results', 'Enter results for a team', 'team'],
+      ['enlist:team', 'Enlist a team in to competitoin', 'team']
+    ];
+    for (const claimName of teamClaims) {
+      logger.silly(`Creating team claim ${claimName}`);
+      const c = await new Claim({
+        name: claimName[0],
+        description: claimName[1],
+        category: claimName[2],
+        type: 'team'
+      }).save();
+      dbTeamClaims.push(c);
+    }
+
+    // Test Stuff
+    const club = await new Club({
+      id: '0e3221de-56b6-45fd-a227-f29cfaa7e2b5',
+      name: 'Test Club'
+    }).save();
+
+    const player = await new Player({
+      gender: 'M',
+      firstName: 'Glenn',
+      lastName: 'Latomme',
+      memberId: '50104197',
+      sub: 'auth0|5e81ca9e8755df0c7f7452ea'
+    }).save();
+    await club.addPlayer(player, {
+      through: { start: new Date('2000-01-01') }
+    });
+    await player.addClaims(dbAdminClaims);
+
+    const voorzitter = await new Role({
+      name: 'Voorzitter'
+    }).save();
+    await club.addRole(voorzitter);
+    await voorzitter.addClaims(dbClubClaims);
+    await voorzitter.addPlayer(player);
   }
 
   runCommmand(cmd: string) {

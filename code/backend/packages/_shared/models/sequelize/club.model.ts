@@ -8,9 +8,19 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
-  BuildOptions
+  BuildOptions,
+  HasManyAddAssociationMixin,
+  HasManyAddAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  HasManyHasAssociationsMixin,
+  HasManyRemoveAssociationMixin,
+  HasManyRemoveAssociationsMixin,
+  HasManySetAssociationsMixin
 } from 'sequelize';
 import {
+  AllowNull,
   BelongsToMany,
   Column,
   DataType,
@@ -27,6 +37,7 @@ import { ClubLocation } from './club-location.model';
 import { ClubMembership } from './club-membership.model';
 import { Location } from './event';
 import { Player } from './player.model';
+import { Role } from './security';
 import { Team } from './team.model';
 
 @Table({
@@ -35,6 +46,10 @@ import { Team } from './team.model';
 })
 export class Club extends Model {
   constructor(values?: Partial<Club>, options?: BuildOptions) {
+    if (!values.abbreviation) {
+      values.abbreviation = values?.name?.match(/\b(\w)/g).join('');
+    }
+
     super(values, options);
   }
   @Default(DataType.UUIDV4)
@@ -45,6 +60,7 @@ export class Club extends Model {
 
   @Unique
   @Index
+  @AllowNull(false)
   @Column
   name: string;
 
@@ -56,6 +72,9 @@ export class Club extends Model {
 
   @HasMany(() => Team, 'ClubId')
   teams?: Team[];
+
+  @HasMany(() => Role)
+  roles?: Role[];
 
   @BelongsToMany(
     () => Player,
@@ -90,4 +109,15 @@ export class Club extends Model {
   hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
   hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
   countLocation!: BelongsToManyCountAssociationsMixin;
+
+  // Has many Role
+  getRoles!: HasManyGetAssociationsMixin<Role>;
+  setRoles!: HasManySetAssociationsMixin<Role, string>;
+  addRoles!: HasManyAddAssociationsMixin<Role, string>;
+  addRole!: HasManyAddAssociationMixin<Role, string>;
+  removeRole!: HasManyRemoveAssociationMixin<Role, string>;
+  removeRoles!: HasManyRemoveAssociationsMixin<Role, string>;
+  hasRole!: HasManyHasAssociationMixin<Role, string>;
+  hasRoles!: HasManyHasAssociationsMixin<Role, string>;
+  countRoles!: HasManyCountAssociationsMixin;
 }

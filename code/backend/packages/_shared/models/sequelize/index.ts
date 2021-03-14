@@ -2,6 +2,7 @@
 export * from './event';
 export * from './import';
 export * from './ranking';
+export * from './security'; 
 
 export * from './club-location.model';
 export * from './club-membership.model';

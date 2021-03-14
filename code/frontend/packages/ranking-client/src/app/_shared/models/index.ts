@@ -1,4 +1,6 @@
 // start:ng42.barrel
+export * from './security';
+
 export * from './club.model';
 export * from './event.model';
 export * from './game.model';
@@ -11,7 +13,6 @@ export * from './ranking-system.model';
 export * from './request-link.model';
 export * from './sub-event.model';
 export * from './team.model';
-export * from './user.model';
 export * from './draw.model';
 export * from './ranking-point.model';
 export * from './encounter.model';

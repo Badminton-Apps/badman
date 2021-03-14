@@ -47,7 +47,7 @@ const appModules = [SharedModule, GraphQLModule];
     MarkdownModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
-    }),
+    })
   ],
   providers: [
     {

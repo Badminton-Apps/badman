@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Club, ClubService, Player, Team, TeamService } from 'app/_shared';
+import { Claim, Club, ClubService, Player, Role, RoleService, Team, TeamService } from 'app/_shared';
+import { ClaimService } from 'app/_shared/services/security/claim.service';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -15,9 +16,9 @@ export class EditClubComponent implements OnInit {
 
   constructor(
     private teamService: TeamService,
+    private roleService: RoleService,
     private clubService: ClubService,
     private route: ActivatedRoute,
-    private router: Router,
     private _snackBar: MatSnackBar
   ) {}
 
@@ -33,7 +34,7 @@ export class EditClubComponent implements OnInit {
     this._snackBar.open('Saved', null, { duration: 1000, panelClass: 'success'});
   }
 
-  async onPlayerAdded(player: Player, team: Team) {
+  async onPlayerAddedToTeam(player: Player, team: Team) {
     if (player && team) {
       await this.teamService.addPlayer(team, player).toPromise();
       this._snackBar.open('Player added', null, { duration: 1000, panelClass: 'success'});
@@ -41,7 +42,7 @@ export class EditClubComponent implements OnInit {
     }
   }
 
-  async onPlayerRemoved(player: Player, team: Team) {
+  async onPlayerRemovedFromTeam(player: Player, team: Team) {
     if (player && team) {
       await this.teamService.removePlayer(team, player).toPromise();
       this._snackBar.open('Player removed', null, { duration: 1000, panelClass: 'success'});
@@ -49,10 +50,26 @@ export class EditClubComponent implements OnInit {
     }
   }
 
-  async onPlayerUpdated(player: Player, team: Team) {
+  async onPlayerUpdatedFromTeam(player: Player, team: Team) {
     if (player && team) {
       await this.teamService.updatePlayer(team, player).toPromise();
       this._snackBar.open('Player updated', null, { duration: 1000, panelClass: 'success'});
+      this.update$.next(null);
+    }
+  }
+
+  async onPlayerAddedToRole(player: Player, role: Role) {
+    if (player && role) {
+      await this.roleService.addPlayer(role, player).toPromise();
+      this._snackBar.open('Player added', null, { duration: 1000, panelClass: 'success'});
+      this.update$.next(null);
+    }
+  }
+
+  async onPlayerRemovedFromRole(player: Player, role: Role) {
+    if (player && role) {
+      await this.roleService.removePlayer(role, player).toPromise();
+      this._snackBar.open('Player removed', null, { duration: 1000, panelClass: 'success'});
       this.update$.next(null);
     }
   }

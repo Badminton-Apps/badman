@@ -36,6 +36,12 @@ import { ClubMembership } from './club-membership.model';
 import { Club } from './club.model';
 import { Game, GamePlayer } from './event';
 import { RankingPlace, RankingPoint } from './ranking';
+import {
+  Claim,
+  PlayerClaimMembership,
+  PlayerRoleMembership,
+  Role
+} from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { Team } from './team.model';
 
@@ -64,6 +70,9 @@ export class Player extends Model {
 
   @Column
   token: string;
+
+  @Column
+  sub: string;
 
   @Unique('unique_constraint')
   @Index
@@ -107,6 +116,19 @@ export class Player extends Model {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   games: (Game & { GamePlayer: GamePlayer })[];
 
+  @BelongsToMany(
+    () => Role,
+    () => PlayerRoleMembership
+  )
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  roles: (Role & { PlayerRoleMembership: PlayerRoleMembership })[];
+
+  @BelongsToMany(
+    () => Claim,
+    () => PlayerClaimMembership
+  )
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  claims: (Claim & { PlayerClaimMembership: PlayerClaimMembership })[];
 
   // Has many RankingPoints
   getRankingPointss!: HasManyGetAssociationsMixin<RankingPoint>;
@@ -162,6 +184,42 @@ export class Player extends Model {
   hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
   hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
   countClub!: BelongsToManyCountAssociationsMixin;
+
+  // Belongs to many Claim
+  getClaims!: BelongsToManyGetAssociationsMixin<Claim>;
+  setClaim!: BelongsToManySetAssociationsMixin<Claim, string>;
+  addClaims!: BelongsToManyAddAssociationsMixin<Claim, string>;
+  addClaim!: BelongsToManyAddAssociationMixin<Claim, string>;
+  removeClaim!: BelongsToManyRemoveAssociationMixin<Claim, string>;
+  removeClaims!: BelongsToManyRemoveAssociationsMixin<Claim, string>;
+  hasClaim!: BelongsToManyHasAssociationMixin<Claim, string>;
+  hasClaims!: BelongsToManyHasAssociationsMixin<Claim, string>;
+  countClaim!: BelongsToManyCountAssociationsMixin;
+
+  // Belongs to many Role
+  getRoles!: BelongsToManyGetAssociationsMixin<Role>;
+  setRole!: BelongsToManySetAssociationsMixin<Role, string>;
+  addRoles!: BelongsToManyAddAssociationsMixin<Role, string>;
+  addRole!: BelongsToManyAddAssociationMixin<Role, string>;
+  removeRole!: BelongsToManyRemoveAssociationMixin<Role, string>;
+  removeRoles!: BelongsToManyRemoveAssociationsMixin<Role, string>;
+  hasRole!: BelongsToManyHasAssociationMixin<Role, string>;
+  hasRoles!: BelongsToManyHasAssociationsMixin<Role, string>;
+  countRole!: BelongsToManyCountAssociationsMixin;
+
+  async getUserClaims(): Promise<string[]> {
+    let claims = (await this.getClaims()).map(r => r.name);
+    const roles = await this.getRoles({
+      include: [Claim]
+    });
+    claims = [
+      ...claims,
+      ...roles.map(r => r?.claims.map(c => `${r.clubId}_${c.name}`)).flat()
+    ];
+
+
+    return claims;
+  }
 
   getLastRanking(system: string, max: number): RankingPlace {
     if (!this.rankingPlaces) {

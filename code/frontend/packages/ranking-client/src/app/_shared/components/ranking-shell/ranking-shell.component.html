@@ -9,7 +9,9 @@
       >
     </span>
     <span class="middle">
-      <app-player-search (onSelectPlayer)="this.playerSearch($event)"></app-player-search>
+      <app-player-search
+        (onSelectPlayer)="this.playerSearch($event)"
+      ></app-player-search>
     </span>
     <span class="end">
       <app-language></app-language>
@@ -82,52 +84,57 @@
 
           <mat-divider></mat-divider>
 
-          <ng-container *ngIf="this.hasAdminItems$ | async">
+          <app-has-claim [any]="[]">
             <div mat-subheader>Admin stuff</div>
-            <a
-              mat-list-item
-              routerLink="/admin/ranking"
-              routerLinkActive="active"
-              *ngIf="this.canViewRankingSimulations$ | async"
-            >
-              Ranking
-            </a>
-            <a
-              mat-list-item
-              routerLink="/admin/link-account"
-              routerLinkActive="active"
-              *ngIf="this.canAcceptLinks$ | async"
-            >
-              Link accounts <app-beta></app-beta>
-            </a>
+            <app-has-claim [any]="['view:ranking', 'edit:ranking']">
+              <a
+                mat-list-item
+                routerLink="/admin/ranking"
+                routerLinkActive="active"
+              >
+                Ranking
+              </a>
+            </app-has-claim>
+            <app-has-claim [any]="['link:player']">
+              <a
+                mat-list-item
+                routerLink="/admin/link-account"
+                routerLinkActive="active"
+              >
+                Link accounts <app-beta></app-beta>
+              </a>
+            </app-has-claim>
 
-            <mat-accordion class="app-nav-accordion">
-              <mat-expansion-panel class="mat-elevation-z0">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Events</mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-nav-list>
-                  <a
-                    mat-list-item
-                    routerLink="/admin/event"
-                    routerLinkActive="active"
-                    *ngIf="this.canViewData$ | async"
-                  >
-                    Overview <app-beta></app-beta>
-                  </a>
-
-                  <a
-                    mat-list-item
-                    routerLink="/admin/event/import"
-                    routerLinkActive="active"
-                    *ngIf="this.canImportEvents$ | async"
-                  >
-                    Import
-                  </a>
-                </mat-nav-list>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </ng-container>
+            <app-has-claim [any]="['view:event', 'import:event']">
+              <mat-accordion class="app-nav-accordion">
+                <mat-expansion-panel class="mat-elevation-z0">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>Events</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <mat-nav-list>
+                    <app-has-claim [any]="['view:event']">
+                      <a
+                        mat-list-item
+                        routerLink="/admin/event"
+                        routerLinkActive="active"
+                      >
+                        Overview <app-beta></app-beta>
+                      </a>
+                    </app-has-claim>
+                    <app-has-claim [any]="['import:event']">
+                      <a
+                        mat-list-item
+                        routerLink="/admin/event/import"
+                        routerLinkActive="active"
+                      >
+                        Import
+                      </a>
+                    </app-has-claim>
+                  </mat-nav-list>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </app-has-claim>
+          </app-has-claim>
         </div>
       </mat-nav-list>
     </mat-sidenav>

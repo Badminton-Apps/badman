@@ -1,5 +1,20 @@
 <div class="mat-elevation-z1">
   <div class="header">
+    <app-has-claim [any]="['edit:claims']">
+      <button class="options" mat-icon-button [matMenuTriggerFor]="options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #options="matMenu">
+        <button
+          mat-menu-item
+          [routerLink]="['/', 'admin', 'security', 'user', player.id]"
+        >
+          Edit
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>Delete</button>
+      </mat-menu>
+    </app-has-claim>
     <img
       src="../../assets/images//user-profile-bg.jpg"
       alt="Background image"

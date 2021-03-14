@@ -23,7 +23,8 @@ export class ClubService {
         variables: {
           id: clubId,
           end: playersfrom?.toISOString(),
-          rankingType: rankingSystem
+          rankingType: rankingSystem,
+          includePlaces: rankingSystem !== null
         },
       })
       .pipe(map((x) => new Club(x.data.club)));

@@ -1,19 +1,20 @@
-import { AuthService } from '../../services/auth/auth.service';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   ActivatedRouteSnapshot,
+  CanActivate,
   RouterStateSnapshot,
   UrlTree,
-  CanActivate
 } from '@angular/router';
-import { Observable, merge, combineLatest } from 'rxjs';
-import { tap, combineAll, map } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { AuthService } from '../../services/security/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService, private snackBar: MatSnackBar) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -44,9 +45,10 @@ export class AuthGuard implements CanActivate {
         }
       }
     } else {
+      // not allowed
       canActivateObservables$.push(
         this.auth.isAuthenticated$.pipe(
-          tap(loggedIn => {
+          tap((loggedIn) => {
             if (!loggedIn) {
               this.auth.login(state.url);
             }
@@ -58,6 +60,11 @@ export class AuthGuard implements CanActivate {
     return combineLatest(canActivateObservables$).pipe(
       map((results: boolean[]) => {
         return results.reduce((acc, value) => acc && value, true);
+      }),
+      tap((r) => {
+        if (r == false) {
+          this.snackBar.open("You don't have the permissions for this");
+        }
       })
     );
   }

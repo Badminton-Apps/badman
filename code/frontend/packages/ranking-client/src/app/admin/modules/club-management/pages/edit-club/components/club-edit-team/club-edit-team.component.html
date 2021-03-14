@@ -45,7 +45,7 @@
       <ng-container *ngIf="this.team.players && this.team.players.length > 0">
         <mat-list-item *ngFor="let player of this.team.players">
           <mat-checkbox [checked]="player.base" mat-line (change)="clicked(player, $event.checked)">
-            {{ player.firstName }} {{ player.lastName }}
+            {{ player.fullName }}
           </mat-checkbox>
           <button mat-icon-button (click)="this.onPlayerRemoved.next(player)">
             <mat-icon>delete</mat-icon>

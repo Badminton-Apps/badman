@@ -1,0 +1,14 @@
+<ng-container *ngIf="this.role$ | async as role">
+  <ng-container *ngIf="this.club$ | async as club">
+    <ng-container *ngIf="claims$ | async as claims">
+      <div class="mat-subheading-1">Edit Role</div>
+
+      <app-role-fields
+        [role]="role"
+        [club]="club"
+        [claims]="claims"
+        (save)="this.update($event, club)"
+      ></app-role-fields>
+    </ng-container>
+  </ng-container>
+</ng-container>

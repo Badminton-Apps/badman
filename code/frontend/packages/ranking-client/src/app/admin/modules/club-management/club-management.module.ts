@@ -22,6 +22,10 @@ import { ClubEditTeamComponent } from './pages/edit-club/components/club-edit-te
 import { EditTeamComponent } from './pages/edit-team/edit-team.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ClubEditRoleComponent } from './pages/edit-club/components/club-edit-role/club-edit-role.component';
+import { RoleFieldsComponent } from './components/role-fields/role-fields.component';
+import { AddRoleComponent } from './pages/add-role/add-role.component';
+import { EditRoleComponent } from './pages/edit-role/edit-role.component';
 
 const materialModules = [
   FormsModule,
@@ -46,11 +50,15 @@ const materialModules = [
     AddClubComponent,
     EditClubComponent,
     EditTeamComponent,
+    EditRoleComponent,
     ClubFieldsComponent,
     TeamFieldsComponent,
+    RoleFieldsComponent,
     AddTeamComponent,
     AddPlayerComponent,
+    AddRoleComponent,
     ClubEditTeamComponent,
+    ClubEditRoleComponent,
   ],
   imports: [SharedModule, ...materialModules, ClubManagementRoutingModule],
   exports: [ClubFieldsComponent],

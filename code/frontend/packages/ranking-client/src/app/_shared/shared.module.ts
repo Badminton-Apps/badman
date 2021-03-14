@@ -14,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -27,6 +28,8 @@ import { BetaComponent } from './components/beta/beta.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
+import { ClaimComponent } from './components/claim/claim.component';
+import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -41,6 +44,7 @@ const materialModules = [
   MatSelectModule,
   MatExpansionModule,
   MatDialogModule,
+  MatSlideToggleModule,
 ];
 
 const exportedComponents = [
@@ -49,6 +53,10 @@ const exportedComponents = [
   LoadingPipe,
   LevelToLetterPipe,
   EnumToArrayPipe,
+  BetaComponent,
+  PlayerSearchComponent,
+  ClaimComponent,
+  HasClaimComponent,
 ];
 
 @NgModule({
@@ -63,6 +71,8 @@ const exportedComponents = [
     EnumToArrayPipe,
     ConfirmationDialogComponent,
     BetaComponent,
+    ClaimComponent,
+    HasClaimComponent,
   ],
   imports: [
     CommonModule,
@@ -79,14 +89,6 @@ const exportedComponents = [
       multi: true,
     },
   ],
-  exports: [
-    TranslateModule,
-    CommonModule,
-    LoadingPipe,
-    LevelToLetterPipe,
-    EnumToArrayPipe,
-    BetaComponent,
-    PlayerSearchComponent,
-  ],
+  exports: [...exportedComponents],
 })
 export class SharedModule {}

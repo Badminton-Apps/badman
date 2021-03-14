@@ -1,10 +1,11 @@
 // start:ng42.barrel
-export * from './auth';
+export * from './security';
 export * from './device';
 export * from './events';
 export * from './player';
 export * from './system';
 export * from './club';
 export * from './team';
+export * from './role';
 // end:ng42.barrel
 
