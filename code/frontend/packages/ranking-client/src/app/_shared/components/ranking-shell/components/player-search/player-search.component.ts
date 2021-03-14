@@ -19,7 +19,7 @@ import {
   tap,
 } from 'rxjs/operators';
 import { PlayerService } from '../../../../services/player/player.service';
-import { Player, User } from './../../../../models';
+import { Player } from './../../../../models';
 
 @Component({
   selector: 'app-player-search',
@@ -33,7 +33,7 @@ export class PlayerSearchComponent implements OnInit {
   label: string = 'Search';
 
   formControl = new FormControl();
-  filteredOptions: Observable<User[]>;
+  filteredOptions: Observable<Player[]>;
   constructor(private playerService: PlayerService) {}
 
   ngOnInit() {
@@ -43,17 +43,17 @@ export class PlayerSearchComponent implements OnInit {
       map((value) =>
         typeof value === 'string'
           ? value
-          : `${value.lastName} ${value.firstName}`
+          : value?.fullName
       ),
-      filter((x) => x.length > 3),
+      filter((x) => x?.length > 3),
       debounceTime(600),
       flatMap((r) => this.playerService.searchPlayers(r)),
       map((result) => (result as any).playerSearch)
     );
   }
 
-  displayFn(user: User): string {
-    return user && user.firstName ? `${user.firstName} ${user.lastName}` : '';
+  displayFn(user: Player): string {
+    return user && user.fullName;
   }
 
   selectedPlayer(event: MatAutocompleteSelectedEvent) {

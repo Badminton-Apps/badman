@@ -12,6 +12,7 @@ import { PlayerType } from './player.type';
 import { TeamType } from './team.type';
 import moment from 'moment';
 import { getAttributeFields } from './attributes.type';
+import { RoleType } from './security';
 
 export const ClubType = new GraphQLObjectType({
   name: 'Club',
@@ -22,6 +23,11 @@ export const ClubType = new GraphQLObjectType({
         type: new GraphQLList(TeamType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Club.associations.teams)
+      },
+      roles: {
+        type: new GraphQLList(RoleType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Club.associations.roles)
       },
       players: {
         type: new GraphQLList(PlayerType),
@@ -41,8 +47,12 @@ export const ClubType = new GraphQLObjectType({
                 .filter(p => p)
                 .filter(p => p.getDataValue('ClubMembership') != null)
                 // then filter
-                .filter(player =>
-                  moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
+                .filter(
+                  player =>
+                    // no end
+                    player.getDataValue('ClubMembership').end == null ||
+                    // or in future
+                    moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
                 );
             }
 

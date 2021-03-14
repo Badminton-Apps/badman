@@ -29,8 +29,6 @@ export class RequestLink extends Model {
   @ForeignKey(() => Player)
   PlayerId: string;
 
-  @Column
-  email: string;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;

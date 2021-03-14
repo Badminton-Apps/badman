@@ -1,0 +1,17 @@
+<ng-container *ngIf="this.user$ | async as user"
+  ><h1>
+    Permissions
+
+    {{ user.fullName }}
+  </h1>
+
+  <ng-container *ngFor="let group of this.claims$ | async">
+    <h2>{{ group.category }}</h2>
+    <ng-container *ngFor="let claim of group.claims">
+      <app-claim
+        [claim]="claim"
+        (onChange)="claimChanged(claim, user, $event)"
+      ></app-claim>
+    </ng-container>
+  </ng-container>
+</ng-container>

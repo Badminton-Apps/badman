@@ -25,6 +25,10 @@ export class Player {
     this.games = args.games?.map((g) => new Game(g));
     this.base = args.base;
   }
+
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`
+  }
 }
 
 export class PlayerGame extends Player {

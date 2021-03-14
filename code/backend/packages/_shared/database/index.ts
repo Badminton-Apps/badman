@@ -1,1 +1,1 @@
-export * from './databse.service';
+export * from './database.service';

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/dot-notation */
-import { DataBaseHandler, Player, Team, TeamMembership } from '@badvlasim/shared';
+import { DataBaseHandler, Player, Team, TeamPlayerMembership } from '@badvlasim/shared';
 import moment from 'moment';
 import { Transaction } from 'sequelize/types';
 import { CompetitionXmlImporter } from '../importers';
@@ -41,7 +41,7 @@ describe('Team Membership', () => {
     await service['transaction'].commit();
 
     // Assert
-    const memberships = await TeamMembership.findAll();
+    const memberships = await TeamPlayerMembership.findAll();
     expect(memberships.length).toBe(1);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
     expect(memberships[0].end).toEqual(moment([2001, 8, 1]).toDate());
@@ -68,7 +68,7 @@ describe('Team Membership', () => {
     await service['transaction'].commit();
 
     // Assert
-    const memberships = await TeamMembership.findAll();
+    const memberships = await TeamPlayerMembership.findAll();
     expect(memberships.length).toBe(1);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
     expect(memberships[0].end).toEqual(moment([2002, 8, 1]).toDate());
@@ -95,7 +95,7 @@ describe('Team Membership', () => {
     await service['transaction'].commit();
 
     // Assert
-    const memberships = await TeamMembership.findAll();
+    const memberships = await TeamPlayerMembership.findAll();
     expect(memberships.length).toBe(2);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
     expect(memberships[1].start).toEqual(moment([2002, 8, 1]).toDate());
@@ -127,7 +127,7 @@ describe('Team Membership', () => {
     await service['transaction'].commit();
 
     // Assert
-    const memberships = await TeamMembership.findAll();
+    const memberships = await TeamPlayerMembership.findAll();
     expect(memberships.length).toBe(3);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
     expect(memberships[0].teamId).toBe(team1.id);
@@ -161,7 +161,7 @@ describe('Team Membership', () => {
     await service['transaction'].commit();
 
     // Assert
-    const memberships = await TeamMembership.findAll();
+    const memberships = await TeamPlayerMembership.findAll();
     expect(memberships.length).toBe(2);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
     expect(memberships[0].playerId).toBe(player1.id);

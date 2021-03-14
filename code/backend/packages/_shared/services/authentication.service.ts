@@ -3,6 +3,7 @@ import jwt from 'express-jwt';
 import jwks from 'jwks-rsa';
 import get from 'axios';
 import { logger } from '@badvlasim/shared';
+import { Player } from '../models';
 
 export class AuthenticationSercice {
   cache = new Map();
@@ -12,14 +13,20 @@ export class AuthenticationSercice {
     // Kinda risky, but works
     if (process.env.production === 'false') {
       this.checkAuth = [
-        (
+        async (
           request: AuthenticatedRequest,
           response: Response,
           next: NextFunction
         ) => {
+          const dbUser = await Player.findOne({
+            where: { sub: 'auth0|5e81ca9e8755df0c7f7452ea' }
+          });
+          const permissions = (await dbUser?.getUserClaims()) || [];
+
           request.user = {
             ...request.user,
             nickname: 'Test',
+            permissions,
             hasAnyPermission: (permissions: string[]) => {
               logger.debug(`running in dev, so DO EVERYTHING :)`);
               return true;
@@ -56,18 +63,22 @@ export class AuthenticationSercice {
     next: NextFunction
   ) {
     try {
-      let userinfo = this.cache.get(request.user.sub);
-      if (!this.cache.get(request.user.sub)) {
+      let userinfo = this.cache.get(request.user?.sub);
+      if (!userinfo) {
         userinfo = await get(`${process.env.AUTH0_ISSUER}/userinfo`, {
           headers: { authorization: request.headers.authorization }
         });
         this.cache.set(request.user.sub, userinfo);
       }
 
+      const dbUser = await Player.findOne({ where: { sub: request.user.sub } });
+      const permissions = await dbUser?.getUserClaims();
+
       // extend info
       request.user = {
         ...request.user,
         ...userinfo.data,
+        permissions,
         hasAnyPermission: (permissions: string[]) => {
           if (request?.user?.permissions == null) {
             return false;
@@ -100,20 +111,20 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export interface AuthenticatedUser {
-    sub: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    family_name: string;
-    nickname: string;
-    name: string;
-    picture: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    updated_at: Date;
-    email: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    email_verified: boolean;
-    permissions: string[];
-    hasAnyPermission: (permissions: string[]) => boolean;
-    hasAllPermission: (permissions: string[]) => boolean;
+  sub: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  given_name: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  family_name: string;
+  nickname: string;
+  name: string;
+  picture: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  updated_at: Date;
+  email: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  email_verified: boolean;
+  permissions: string[];
+  hasAnyPermission: (permissions: string[]) => boolean;
+  hasAllPermission: (permissions: string[]) => boolean;
 }

@@ -8,6 +8,7 @@ import { Game, Player, RankingPlace, RankingSystem } from '../../models';
 
 const searchQuery = require('graphql-tag/loader!../../graphql/players/queries/GetPlayersQuery.graphql');
 const playerQuery = require('graphql-tag/loader!../../graphql/players/queries/GetUserInfoQuery.graphql');
+const playerBasicQuery = require('graphql-tag/loader!../../graphql/players/queries/GetUserBasicInfoQuery.graphql');
 const gamesQuery = require('graphql-tag/loader!../../graphql/players/queries/GetUserGamesQuery.graphql');
 const evolutionQuery = require('graphql-tag/loader!../../graphql/players/queries/GetPlayerEvolutionQuery.graphql');
 
@@ -28,16 +29,16 @@ export class PlayerService {
       .pipe(map((x) => x.data));
   }
 
-  getPlayer(id: string, rankingType: string): Observable<Player> {
+  getPlayer(id: string, rankingType?: string): Observable<Player> {
     return this.apollo
       .query({
-        query: playerQuery,
+        query: rankingType ? playerQuery : playerBasicQuery,
         variables: {
           id,
           rankingType,
         },
       })
-      .pipe(map((x: any) => x.data?.player));
+      .pipe(map((x: any) => new Player(x.data?.player)));
   }
   getPlayerGames(
     playerId: string,
