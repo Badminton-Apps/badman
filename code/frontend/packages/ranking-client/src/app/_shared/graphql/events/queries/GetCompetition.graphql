@@ -12,8 +12,10 @@ query GetEvents(
         id
         name
         startYear
-        subEvents {
+        subEvents(order: "name") {
+          id
           name
+          eventType
         }
       }
     }

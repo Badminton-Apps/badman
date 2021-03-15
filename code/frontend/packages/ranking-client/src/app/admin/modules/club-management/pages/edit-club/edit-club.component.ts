@@ -1,10 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Claim, Club, ClubService, Player, Role, RoleService, Team, TeamService } from 'app/_shared';
+import {
+  Claim,
+  Club,
+  ClubService,
+  Player,
+  Role,
+  RoleService,
+  Team,
+  TeamService,
+} from 'app/_shared';
 import { ClaimService } from 'app/_shared/services/security/claim.service';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { bufferTime, debounceTime, map, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './edit-club.component.html',
@@ -23,21 +32,32 @@ export class EditClubComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.club$ = combineLatest([this.route.paramMap, this.update$]).pipe(
+    this.club$ = combineLatest([
+      this.route.paramMap,
+      this.update$.pipe(debounceTime(600)),
+    ]).pipe(
       map(([params]) => params.get('id')),
-      switchMap((id) => this.clubService.getClub(id))
+      switchMap((id) =>
+        this.clubService.getClub(id, { includeTeams: true, includeRoles: true })
+      )
     );
   }
 
   async save(club: Club) {
     await this.clubService.updateClub(club).toPromise();
-    this._snackBar.open('Saved', null, { duration: 1000, panelClass: 'success'});
+    this._snackBar.open('Saved', null, {
+      duration: 1000,
+      panelClass: 'success',
+    });
   }
 
   async onPlayerAddedToTeam(player: Player, team: Team) {
     if (player && team) {
       await this.teamService.addPlayer(team, player).toPromise();
-      this._snackBar.open('Player added', null, { duration: 1000, panelClass: 'success'});
+      this._snackBar.open('Player added', null, {
+        duration: 1000,
+        panelClass: 'success',
+      });
       this.update$.next(null);
     }
   }
@@ -45,7 +65,10 @@ export class EditClubComponent implements OnInit {
   async onPlayerRemovedFromTeam(player: Player, team: Team) {
     if (player && team) {
       await this.teamService.removePlayer(team, player).toPromise();
-      this._snackBar.open('Player removed', null, { duration: 1000, panelClass: 'success'});
+      this._snackBar.open('Player removed', null, {
+        duration: 1000,
+        panelClass: 'success',
+      });
       this.update$.next(null);
     }
   }
@@ -53,7 +76,10 @@ export class EditClubComponent implements OnInit {
   async onPlayerUpdatedFromTeam(player: Player, team: Team) {
     if (player && team) {
       await this.teamService.updatePlayer(team, player).toPromise();
-      this._snackBar.open('Player updated', null, { duration: 1000, panelClass: 'success'});
+      this._snackBar.open('Player updated', null, {
+        duration: 1000,
+        panelClass: 'success',
+      });
       this.update$.next(null);
     }
   }
@@ -61,7 +87,10 @@ export class EditClubComponent implements OnInit {
   async onPlayerAddedToRole(player: Player, role: Role) {
     if (player && role) {
       await this.roleService.addPlayer(role, player).toPromise();
-      this._snackBar.open('Player added', null, { duration: 1000, panelClass: 'success'});
+      this._snackBar.open('Player added', null, {
+        duration: 1000,
+        panelClass: 'success',
+      });
       this.update$.next(null);
     }
   }
@@ -69,7 +98,10 @@ export class EditClubComponent implements OnInit {
   async onPlayerRemovedFromRole(player: Player, role: Role) {
     if (player && role) {
       await this.roleService.removePlayer(role, player).toPromise();
-      this._snackBar.open('Player removed', null, { duration: 1000, panelClass: 'success'});
+      this._snackBar.open('Player removed', null, {
+        duration: 1000,
+        panelClass: 'success',
+      });
       this.update$.next(null);
     }
   }

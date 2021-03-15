@@ -18,15 +18,35 @@ const evolutionQuery = require('graphql-tag/loader!../../graphql/players/queries
 export class PlayerService {
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
-  searchPlayers(query: string) {
+  searchPlayers(args?: { query?: string; where?: any }) {
+    const parts = args.query
+      .toLowerCase()
+      .replace(/[;\\\\/:*?\"<>|&',]/, ' ')
+      .split(' ');
+    const queries = [];
+    for (const part of parts) {
+      queries.push({
+        or: [
+          { firstName: { iLike: `%${part}%` } },
+          { lastName: { iLike: `%${part}%` } },
+          { memberId: { iLike: `%${part}%` } },
+        ],
+      });
+    }
+
+    const where = {
+      and: queries,
+      ...args.where
+    };
+
     return this.apollo
-      .query({
+      .query<{players: Player[]}>({
         query: searchQuery,
         variables: {
-          search: query,
+          where,
         },
       })
-      .pipe(map((x) => x.data));
+      .pipe(map((x) => x.data?.players.map(r => new Player(r))));
   }
 
   getPlayer(id: string, rankingType?: string): Observable<Player> {
@@ -56,7 +76,13 @@ export class PlayerService {
           limit,
         },
       })
-      .pipe(map((x: any) => x.data?.player?.games.map((g: Partial<Game>) => new Game(g, rankingType))));
+      .pipe(
+        map((x: any) =>
+          x.data?.player?.games.map(
+            (g: Partial<Game>) => new Game(g, rankingType)
+          )
+        )
+      );
   }
 
   getPlayerEvolution(

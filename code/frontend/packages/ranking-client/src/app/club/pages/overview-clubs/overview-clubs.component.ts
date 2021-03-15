@@ -91,11 +91,11 @@ export class OverviewClubsComponent {
         debounceTime(300),
         switchMap(([filterChange, sortChange, pageChange]) => {
           this.isLoadingResults = true;
-          return this.eventService.getClubs(
-            this.pageSize$.value,
-            this.cursor,
-            filterChange.query
-          );
+          return this.eventService.getClubs({
+            first: this.pageSize$.value,
+            after: this.cursor,
+            query: filterChange.query,
+          });
         }),
         map((data) => {
           const count = data.clubs?.total || 0;

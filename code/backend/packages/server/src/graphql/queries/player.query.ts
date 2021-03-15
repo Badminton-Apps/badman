@@ -19,52 +19,12 @@ const playerQuery = {
     }
   })
 };
+
 const playersQuery = {
   type: new GraphQLList(PlayerType),
   args: Object.assign(defaultListArgs(), {}),
   resolve: resolver(Player)
 };
-const playerSearchQuery = {
-  type: new GraphQLList(PlayerType),
-  args: {
-    query: {
-      description: 'Fuzzy-matched name of user',
-      type: new GraphQLNonNull(GraphQLString)
-    }
-  },
-  resolve: resolver(Player, {
-    // Custom `where` clause that fuzzy-matches user's name and
-    // alphabetical sort by username
-    before: (findOptions, args) => {
-      const parts = args.query
-        .toLowerCase()
-        .replace(/[;\\\\/:*?\"<>|&',]/, ' ')
-        .split(' ');
-      const queries = [];
-      for (const part of parts) {
-        queries.push(
-          or(
-            where(fn('lower', col('firstName')), {
-              [Op.like]: `%${part}%`
-            }),
 
-            where(fn('lower', col('lastName')), {
-              [Op.like]: `%${part}%`
-            }),
 
-            where(fn('lower', col('memberId')), {
-              [Op.like]: `%${part}%`
-            })
-          )
-        );
-      }
-      findOptions.where = {
-        [Op.and]: queries
-      };
-
-      return findOptions;
-    }
-  })
-};
-
-export { playerQuery, playerSearchQuery, playersQuery };
+export { playerQuery, playersQuery };

@@ -17,10 +17,15 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
+  Op,
+  SaveOptions
 } from 'sequelize';
 import {
+  AfterCreate,
   AllowNull,
+  BeforeCreate,
+  BeforeUpdate,
   BelongsToMany,
   Column,
   DataType,
@@ -37,7 +42,7 @@ import { ClubLocation } from './club-location.model';
 import { ClubMembership } from './club-membership.model';
 import { Location } from './event';
 import { Player } from './player.model';
-import { Role } from './security';
+import { Claim, Role } from './security';
 import { Team } from './team.model';
 
 @Table({
@@ -46,12 +51,35 @@ import { Team } from './team.model';
 })
 export class Club extends Model {
   constructor(values?: Partial<Club>, options?: BuildOptions) {
-    if (!values.abbreviation) {
-      values.abbreviation = values?.name?.match(/\b(\w)/g).join('');
-    }
-
     super(values, options);
   }
+
+  @BeforeUpdate
+  @BeforeCreate
+  static setAbbriviation(instance: Club) {
+    if (!instance.abbreviation) {
+      instance.abbreviation = instance?.name?.match(/\b(\w)/g).join('');
+    }
+  }
+
+  @AfterCreate
+  static async createBaseRoles(instance: Club, options: SaveOptions) {
+    const role = await new Role({
+      name: 'admin'
+    }).save({ transaction: options.transaction });
+
+    const claims = await Claim.findAll({
+      where: {
+        type: {
+          [Op.in]: ['club', 'team']
+        }
+      }
+    });
+
+    await role.setClub(instance, { transaction: options.transaction });
+    await role.setClaims(claims, { transaction: options.transaction });
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey

@@ -16,6 +16,7 @@ import {
   flatMap,
   map,
   startWith,
+  switchMap,
   tap,
 } from 'rxjs/operators';
 import { PlayerService } from '../../../../services/player/player.service';
@@ -40,15 +41,10 @@ export class PlayerSearchComponent implements OnInit {
     this.filteredOptions = this.formControl.valueChanges.pipe(
       startWith(''),
       filter((x) => x),
-      map((value) =>
-        typeof value === 'string'
-          ? value
-          : value?.fullName
-      ),
+      map((value) => (typeof value === 'string' ? value : value?.fullName)),
       filter((x) => x?.length > 3),
       debounceTime(600),
-      flatMap((r) => this.playerService.searchPlayers(r)),
-      map((result) => (result as any).playerSearch)
+      switchMap((r) => this.playerService.searchPlayers({ query: r }))
     );
   }
 
