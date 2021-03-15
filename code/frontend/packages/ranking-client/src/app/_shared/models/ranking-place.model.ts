@@ -7,21 +7,21 @@ export class RankingPlace {
   totalSingleRanking: number;
   totalWithinSingleLevel: number;
   singlePoints: number;
-  single: string;
+  single: number;
   singleInactive: boolean;
   mixPointsDowngrade: number;
   mixRank: number;
   totalMixRanking: number;
   totalWithinMixLevel: number;
   mixPoints: number;
-  mix: string;
+  mix: number;
   mixInactive: boolean;
   doublePointsDowngrade: number;
   doubleRank: number;
   totalDoubleRanking: number;
   totalWithinDoubleLevel: number;
   doublePoints: number;
-  double: string;
+  double: number;
   doubleInactive: boolean;
   rankingSystem: RankingSystem;
   updatePossible: boolean;
@@ -60,5 +60,6 @@ export class RankingPlace {
     this.statisticUrl = args.statisticUrl;
     this.primary = args.primary;
     this.player = args.player;
+
   }
 }

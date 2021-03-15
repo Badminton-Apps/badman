@@ -1,0 +1,995 @@
+schema {
+  query: RootQueryType
+  mutation: RootMutationType
+}
+
+# Exposes a URL that specifies the behaviour of this scalar.
+directive @specifiedBy(
+  # The URL that specifies the behaviour of this scalar.
+  url: String!
+) on SCALAR
+# A Claim
+type Claim {
+  id: String!
+  name: String
+  description: String
+  category: String
+  type: ClaimtypeEnumType
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+# A ClaimInput
+input ClaimInput {
+  id: String
+  name: String
+  description: String
+  category: String
+  type: ClaimtypeEnumType
+}
+
+enum ClaimtypeEnumType {
+  global
+  club
+  team
+}
+
+# A Club
+type Club {
+  id: String!
+  name: String!
+  abbreviation: String
+  clubId: Int
+  createdAt: Date!
+  updatedAt: Date!
+  teams(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Team]
+  roles(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Role]
+  players(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    end: String
+  ): [Player]
+}
+
+# A connection to a list of items.
+type ClubConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+  # A list of edges.
+  edges: [ClubEdge]
+  total: Int
+}
+
+# An edge in a connection.
+type ClubEdge {
+  # The item at the end of the edge
+  node: Club
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+# This represents a ClubnputType
+input ClubInput {
+  id: String
+  name: String!
+  abbreviation: String
+  clubId: Int
+}
+
+type CountsResult {
+  single: [rankingPlacesResultType]
+  double: [rankingPlacesResultType]
+  mix: [rankingPlacesResultType]
+}
+
+# A special custom Scalar type for Dates that converts to a ISO formatted string
+scalar Date
+
+# A DrawCompetition
+type DrawCompetition {
+  id: String!
+  name: String
+  size: Int
+  internalId: Int
+  subeventId: String
+  createdAt: Date!
+  updatedAt: Date!
+  encounters: [EncounterCompetition]
+  subEvent: SubEventCompetition
+}
+
+# A DrawTournament
+type DrawTournament {
+  id: String!
+  name: String
+  type: DrawTournamenttypeEnumType
+  size: Int
+  internalId: Int
+  subeventId: String
+  createdAt: Date!
+  updatedAt: Date!
+  games(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    # id of the user
+    playerId: ID!
+  ): [Game]
+  gamesCount: Int
+  subEvent: SubEventTournament
+}
+
+enum DrawTournamenttypeEnumType {
+  KO
+  POULE
+  QUALIFICATION
+}
+
+# A EncounterCompetition
+type EncounterCompetition {
+  id: String!
+  date: Date
+  drawId: String
+  createdAt: Date!
+  updatedAt: Date!
+  homeTeamId: String
+  awayTeamId: String
+  games(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    # id of the user
+    playerId: ID!
+  ): [Game]
+  gamesCount: Int
+  draw: DrawCompetition
+}
+
+# A EventCompetition
+type EventCompetition {
+  id: String!
+  name: String
+  startYear: Int
+  uniCode: String
+  allowEnlisting: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  subEvents(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [SubEventCompetition]
+}
+
+# A connection to a list of items.
+type EventCompetitionConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+  # A list of edges.
+  edges: [EventCompetitionEdge]
+  total: Int
+}
+
+# An edge in a connection.
+type EventCompetitionEdge {
+  # The item at the end of the edge
+  node: EventCompetition
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+# This represents a UserInputType
+input EventCompetitionInput {
+  id: String
+  name: String
+  startYear: Int
+  uniCode: String
+  allowEnlisting: Boolean
+  subEvents: [SubEventCompetitionInput]
+}
+
+enum EventCompetitionOrderBy {
+  DATE_ASC
+  DATE_DESC
+}
+
+# A EventTournament
+type EventTournament {
+  id: String!
+  tournamentNumber: String
+  name: String
+  firstDay: Date
+  dates: String
+  uniCode: String
+  createdAt: Date!
+  updatedAt: Date!
+  subEvents(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [SubEventTournament]
+}
+
+# A connection to a list of items.
+type EventTournamentConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+  # A list of edges.
+  edges: [EventTournamentEdge]
+  total: Int
+}
+
+# An edge in a connection.
+type EventTournamentEdge {
+  # The item at the end of the edge
+  node: EventTournament
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+# This represents a UserInputType
+input EventTournamentInput {
+  id: String
+  tournamentNumber: String
+  name: String
+  firstDay: Date
+  dates: String
+  uniCode: String
+  subEvents: [SubEventTournamentInput]
+}
+
+enum EventTournamentOrderBy {
+  DATE_ASC
+  DATE_DESC
+}
+
+# A Game
+type Game {
+  id: String!
+  playedAt: Date
+  gameType: GamegameTypeEnumType
+  set1Team1: Int
+  set1Team2: Int
+  set2Team1: Int
+  set2Team2: Int
+  set3Team1: Int
+  set3Team2: Int
+  winner: Int
+  linkId: String
+  linkType: String
+  courtId: String
+  createdAt: Date!
+  updatedAt: Date!
+  players: [GamePlayer]
+  rankingPoints(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [RankingPoint]
+  tournament: DrawTournament
+  competition: EncounterCompetition
+}
+
+enum GamegameTypeEnumType {
+  S
+  D
+  MX
+}
+
+# A Player that is from a game
+type GamePlayer {
+  id: String!
+  email: String
+  gender: String
+  birthDate: Date
+  token: String
+  sub: String
+  firstName: String
+  lastName: String
+  memberId: String
+  createdAt: Date!
+  updatedAt: Date!
+  playerId: String!
+  gameId: String!
+  team: Int
+  player: Int
+  rankingPlace(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): RankingPlace
+}
+
+# A Imported
+type Imported {
+  id: String!
+  name: String
+  type: ImporterFiletypeEnumType
+  firstDay: Date
+  fileLocation: String
+  dates: String
+  linkCode: String
+  webID: String
+  uniCode: String
+  importing: Boolean
+  tournamentNumber: Int
+  createdAt: Date!
+  updatedAt: Date!
+  subEvents(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [ImportedSubEvent]
+}
+
+# A connection to a list of items.
+type ImportedConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+  # A list of edges.
+  edges: [ImportedEdge]
+  total: Int
+}
+
+# An edge in a connection.
+type ImportedEdge {
+  # The item at the end of the edge
+  node: Imported
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+enum ImportedOrderBy {
+  DATE_ASC
+  DATE_DESC
+}
+
+# A Imported subevent
+type ImportedSubEvent {
+  id: String!
+  name: String
+  eventType: ImportSubEventeventTypeEnumType
+  gameType: ImportSubEventgameTypeEnumType
+  levelType: ImportSubEventlevelTypeEnumType
+  level: Int
+  internalId: Int
+  FileId: String
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+enum ImporterFiletypeEnumType {
+  COMPETITION_CP
+  COMPETITION_XML
+  TOERNAMENT
+}
+
+# This represents a UserInputType
+input ImportInput {
+  id: String
+  name: String
+  type: ImporterFiletypeEnumType
+  firstDay: Date
+  fileLocation: String
+  dates: String
+  linkCode: String
+  webID: String
+  uniCode: String
+  importing: Boolean
+  tournamentNumber: Int
+}
+
+enum ImportSubEventeventTypeEnumType {
+  M
+  F
+  MX
+  MINIBAD
+}
+
+enum ImportSubEventgameTypeEnumType {
+  S
+  D
+  MX
+}
+
+enum ImportSubEventlevelTypeEnumType {
+  PROV
+  LIGA
+  NATIONAAL
+}
+
+# Information about pagination in a connection.
+type PageInfo {
+  # When paginating forwards, are there more items?
+  hasNextPage: Boolean!
+  # When paginating backwards, are there more items?
+  hasPreviousPage: Boolean!
+  # When paginating backwards, the cursor to continue.
+  startCursor: String
+  # When paginating forwards, the cursor to continue.
+  endCursor: String
+}
+
+# A Player
+type Player {
+  id: String!
+  email: String
+  gender: String
+  birthDate: Date
+  token: String
+  sub: String
+  firstName: String
+  lastName: String
+  memberId: String
+  createdAt: Date!
+  updatedAt: Date!
+  teams: [Team]
+  claims: [Claim]
+  rankingPlaces(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [RankingPlace]
+  rankingPoints(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [RankingPoint]
+  games(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [Game]
+  base: Boolean
+}
+
+# A RankingPlace
+type RankingPlace {
+  id: String!
+  rankingDate: Date
+  singlePoints: Int
+  mixPoints: Int
+  doublePoints: Int
+  singlePointsDowngrade: Int
+  mixPointsDowngrade: Int
+  doublePointsDowngrade: Int
+  singleRank: Int
+  mixRank: Int
+  doubleRank: Int
+  totalSingleRanking: Int
+  totalMixRanking: Int
+  totalDoubleRanking: Int
+  totalWithinSingleLevel: Int
+  totalWithinMixLevel: Int
+  totalWithinDoubleLevel: Int
+  single: Int
+  mix: Int
+  double: Int
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  updatePossible: Boolean
+  PlayerId: String
+  SystemId: String
+  createdAt: Date!
+  updatedAt: Date!
+  rankingSystem: RankingSystem
+  player(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): Player!
+}
+
+type rankingPlaceResultType {
+  level: Int
+  amount: Int
+}
+
+type rankingPlacesResultType {
+  date: String
+  points: [rankingPlaceResultType]
+}
+
+# A RankingPoint
+type RankingPoint {
+  id: String!
+  points: Int
+  rankingDate: Date
+  differenceInLevel: Int
+  SystemId: String
+  PlayerId: String
+  GameId: String
+  createdAt: Date!
+  updatedAt: Date!
+  type(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): RankingSystem!
+  player(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): Player!
+}
+
+# A RankingSystem
+type RankingSystem {
+  id: String!
+  name: String
+  amountOfLevels: Int
+  procentWinning: Int
+  procentWinningPlus1: Int
+  procentLosing: Int
+  minNumberOfGamesUsedForUpgrade: Int
+  maxDiffLevels: Int
+  maxDiffLevelsHighest: Int
+  latestXGamesToUse: Int
+  maxLevelUpPerChange: Int
+  maxLevelDownPerChange: Int
+  gamesForInactivty: Int
+  inactivityAmount: Int
+  inactivityUnit: RankingSysteminactivityUnitEnumType
+  caluclationIntervalLastUpdate: Date
+  caluclationIntervalAmount: Int
+  calculationIntervalUnit: RankingSystemcalculationIntervalUnitEnumType
+  periodAmount: Int
+  periodUnit: RankingSystemperiodUnitEnumType
+  updateIntervalAmountLastUpdate: Date
+  updateIntervalAmount: Int
+  updateIntervalUnit: RankingSystemupdateIntervalUnitEnumType
+  rankingSystem: RankingSystemrankingSystemEnumType
+  primary: Boolean
+  runCurrently: Boolean
+  runDate: Date
+  differenceForUpgrade: Int
+  differenceForDowngrade: Int
+  startingType: RankingSystemstartingTypeEnumType
+  createdAt: Date!
+  updatedAt: Date!
+  counts(
+    # Gender
+    gender: String
+  ): CountsResult
+  groups: [RankingSystemGroup]
+}
+
+enum RankingSystemcalculationIntervalUnitEnumType {
+  months
+  weeks
+  days
+}
+
+# A RankingSystemGroup
+type RankingSystemGroup {
+  id: String!
+  name: String
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+# This represents a RankingSystemGroupInput
+input RankingSystemGroupInput {
+  id: String
+  name: String
+}
+
+enum RankingSysteminactivityUnitEnumType {
+  months
+  weeks
+  days
+}
+
+# This represents a RankingSystemGroupInput
+input RankingSystemInput {
+  id: String
+  name: String
+  amountOfLevels: Int
+  procentWinning: Int
+  procentWinningPlus1: Int
+  procentLosing: Int
+  minNumberOfGamesUsedForUpgrade: Int
+  maxDiffLevels: Int
+  maxDiffLevelsHighest: Int
+  latestXGamesToUse: Int
+  maxLevelUpPerChange: Int
+  maxLevelDownPerChange: Int
+  gamesForInactivty: Int
+  inactivityAmount: Int
+  inactivityUnit: RankingSysteminactivityUnitEnumType
+  caluclationIntervalLastUpdate: Date
+  caluclationIntervalAmount: Int
+  calculationIntervalUnit: RankingSystemcalculationIntervalUnitEnumType
+  periodAmount: Int
+  periodUnit: RankingSystemperiodUnitEnumType
+  updateIntervalAmountLastUpdate: Date
+  updateIntervalAmount: Int
+  updateIntervalUnit: RankingSystemupdateIntervalUnitEnumType
+  rankingSystem: RankingSystemrankingSystemEnumType
+  primary: Boolean
+  runCurrently: Boolean
+  runDate: Date
+  differenceForUpgrade: Int
+  differenceForDowngrade: Int
+  startingType: RankingSystemstartingTypeEnumType
+  groups: [RankingSystemGroupInput]
+}
+
+enum RankingSystemperiodUnitEnumType {
+  months
+  weeks
+  days
+}
+
+enum RankingSystemrankingSystemEnumType {
+  BVL
+  ORIGINAL
+  LFBB
+}
+
+enum RankingSystemstartingTypeEnumType {
+  formula
+  tableLFBB
+  tableBVL
+}
+
+enum RankingSystemupdateIntervalUnitEnumType {
+  months
+  weeks
+  days
+}
+
+# A Role
+type Role {
+  id: String!
+  name: String
+  description: String
+  clubId: String
+  createdAt: Date!
+  updatedAt: Date!
+  claims(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Claim]
+  players(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Player]
+}
+
+# This represents a RolenputType
+input RoleInput {
+  id: String
+  name: String
+  description: String
+  clubId: String
+  claims: [ClaimInput]
+}
+
+type RootMutationType {
+  addClub(club: ClubInput): Club
+  updateClub(id: ID, club: ClubInput): Club
+  addPlayerToClub(clubId: ID, playerId: ID): Club
+  addTeam(team: TeamInput, clubId: Int): Team
+  updateTeam(id: Int, team: TeamInput): Team
+  updatePlayerTeam(teamId: ID, playerId: ID, base: Boolean): Team
+  addPlayerToTeam(teamId: ID, playerId: ID): Team
+  removePlayerFromTeam(teamId: ID, playerId: ID): Team
+  addRole(role: RoleInput, clubId: Int): Role
+  updateRole(role: RoleInput): Role
+  addPlayerToRole(roleId: ID, playerId: ID): Role
+  removePlayerFromRole(roleId: ID, playerId: ID): Role
+  updateGlobalClaimUser(playerId: ID, claimId: ID, active: Boolean): Role
+  addEventCompetition(eventCompetition: EventCompetitionInput): EventCompetition
+  addEventTournament(eventTournament: EventTournamentInput): EventTournament
+  updateEventCompetition(
+    id: Int
+    eventCompetition: EventCompetitionInput
+  ): EventCompetition
+  updateEventTournament(
+    id: Int
+    eventTournament: EventTournamentInput
+  ): EventTournament
+  addRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
+  updateRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
+  addRankingSystemGroup(
+    rankingSystemGroup: RankingSystemGroupInput
+  ): RankingSystemGroup
+  updateRankingSystemGroup(
+    id: Int
+    rankingSystemGroup: RankingSystemGroupInput
+  ): RankingSystemGroup
+  deleteImportedEvent(event: ImportInput): Imported
+}
+
+type RootQueryType {
+  player(
+    # id of the user
+    id: ID!
+  ): Player
+  players(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Player]
+  eventCompetition(
+    # id of the event competition
+    id: ID!
+  ): EventCompetition
+  eventCompetitions(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    orderBy: [EventCompetitionOrderBy]
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+  ): EventCompetitionConnection
+  eventTournament(
+    # id of the event tournament
+    id: ID!
+  ): EventTournament
+  eventTournaments(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    orderBy: [EventTournamentOrderBy]
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+  ): EventTournamentConnection
+  claims(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Claim]
+  role(
+    # Id of the role
+    id: String!
+  ): Role
+  roles(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Role]
+  imported(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    orderBy: [ImportedOrderBy]
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+  ): ImportedConnection
+  games(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [Game]
+  team(
+    # Id of the team
+    id: ID!
+  ): Team
+  teams(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    # id of the club
+    clubId: ID!
+  ): [Team]
+  club(
+    # id of the club
+    id: ID!
+  ): Club
+  clubs(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+  ): ClubConnection
+  system(
+    # Id of the system
+    id: String!
+  ): RankingSystem
+  systems(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [RankingSystem]
+  rankingSystemGroup(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [RankingSystemGroup]
+}
+
+# The `JSON` scalar type represents raw JSON as values.
+scalar SequelizeJSON
+
+# A SubEventCompetition
+type SubEventCompetition {
+  id: String!
+  name: String
+  eventType: SubEventCompetitioneventTypeEnumType
+  levelType: SubEventCompetitionlevelTypeEnumType
+  level: Int
+  internalId: Int
+  eventId: String
+  createdAt: Date!
+  updatedAt: Date!
+  draws: [DrawCompetition]
+  event: EventCompetition
+}
+
+enum SubEventCompetitioneventTypeEnumType {
+  M
+  F
+  MX
+  MINIBAD
+}
+
+# This represents a UserInputType
+input SubEventCompetitionInput {
+  id: String
+  name: String
+  eventType: SubEventCompetitioneventTypeEnumType
+  levelType: SubEventCompetitionlevelTypeEnumType
+  level: Int
+  internalId: Int
+  eventId: String
+  groups: [RankingSystemGroupInput]
+}
+
+enum SubEventCompetitionlevelTypeEnumType {
+  PROV
+  LIGA
+  NATIONAAL
+}
+
+# A SubEventTournament
+type SubEventTournament {
+  id: String!
+  name: String
+  eventType: SubEventTournamenteventTypeEnumType
+  gameType: SubEventTournamentgameTypeEnumType
+  level: Int
+  internalId: Int
+  eventId: String
+  createdAt: Date!
+  updatedAt: Date!
+  draws: [DrawTournament]
+  event: EventTournament
+}
+
+enum SubEventTournamenteventTypeEnumType {
+  M
+  F
+  MX
+  MINIBAD
+}
+
+enum SubEventTournamentgameTypeEnumType {
+  S
+  D
+  MX
+}
+
+# This represents a UserInputType
+input SubEventTournamentInput {
+  id: String
+  name: String
+  eventType: SubEventTournamenteventTypeEnumType
+  gameType: SubEventTournamentgameTypeEnumType
+  level: Int
+  internalId: Int
+  eventId: String
+  groups: [RankingSystemGroupInput]
+}
+
+# A Team
+type Team {
+  id: String!
+  name: String
+  abbreviation: String
+  ClubId: String
+  type: String
+  createdAt: Date!
+  updatedAt: Date!
+  players(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+    end: String
+  ): [Player]
+  subEvents(
+    limit: Int
+    order: String
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [SubEventCompetition]
+  firstTeam: Boolean
+  baseIndex(systemId: ID): Int
+}
+
+# This represents a TeamnputType
+input TeamInput {
+  id: String
+  name: String
+  abbreviation: String
+  ClubId: String
+  type: String
+}
+

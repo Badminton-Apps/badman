@@ -1,5 +1,5 @@
 import { SubEventCompetition } from '@badvlasim/shared/models';
-import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
+import { GraphQLBoolean, GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { resolver, attributeFields } from 'graphql-sequelize';
 import { getAttributeFields } from '../attributes.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
@@ -27,7 +27,10 @@ const SubEventCompetitionInputType = new GraphQLInputObjectType({
   description: 'This represents a UserInputType',
   fields: () =>
     Object.assign(
-      getAttributeFields(SubEventCompetition, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }),
+      getAttributeFields(SubEventCompetition, {
+        exclude: ['createdAt', 'updatedAt'],
+        optionalString: ['id']
+      }),
       {
         groups: {
           type: new GraphQLList(RankingSystemGroupInputType)

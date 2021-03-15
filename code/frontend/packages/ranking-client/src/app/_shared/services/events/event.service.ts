@@ -26,43 +26,43 @@ export class EventService {
 
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
-  getEvents(
-    order: string,
-    first: number,
-    after: string,
-    type: EventType,
-    query: any
-  ) {
-    let where = undefined;
-    if (query) {
-      where = {
-        name: {
-          $iLike: `%${query}%`,
-        },
-      };
-    }
-
+  getEvents(args?: {
+    first?: number;
+    after?: string;
+    type: EventType;
+    where: { [key: string]: any };
+  }) {
     return this.apollo
       .query<{
-        events: {
+        eventCompetitions?: {
+          total: number;
+          edges: { cursor: string; node: Event }[];
+        },
+        eventTournaments?: {
           total: number;
           edges: { cursor: string; node: Event }[];
         };
       }>({
         query:
-          type == EventType.TOERNAMENT
+          args.type == EventType.TOERNAMENT
             ? getTournamentEventsQuery
             : getCompetitionEventsQuery,
         variables: {
-          first,
-          after,
-          where,
+          first: args.first,
+          after: args.after,
+          where: args.where,
         },
       })
       .pipe(
         map((x) => {
-          if (x.data.events) {
-            x.data.events.edges = x.data.events.edges.map((x) => {
+          if (x.data.eventCompetitions) {
+            x.data.eventCompetitions.edges = x.data.eventCompetitions.edges.map((x) => {
+              x.node = new Event(x.node);
+              return x;
+            });
+          }
+          if (x.data.eventTournaments) {
+            x.data.eventTournaments.edges = x.data.eventTournaments.edges.map((x) => {
               x.node = new Event(x.node);
               return x;
             });

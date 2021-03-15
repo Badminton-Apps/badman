@@ -1,4 +1,4 @@
-import { Club } from '@badvlasim/shared/models';
+import { Club, SubEventType, Team } from '@badvlasim/shared/models';
 import {
   GraphQLInputObjectType,
   GraphQLInt,
@@ -22,7 +22,24 @@ export const ClubType = new GraphQLObjectType({
       teams: {
         type: new GraphQLList(TeamType),
         args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Club.associations.teams)
+        resolve: resolver(Club.associations.teams, {
+          before: async (findOptions, args, context, info) => {
+            findOptions.order =  findOptions.order ?? [['name', 'asc']]
+            return findOptions;
+          },
+          after: (result, args, context) => {
+            // Not really happy about this, but so fare didn't see any other solution
+            result.map(r => {
+              r.firstTeam = false;
+              return r;
+            })
+            for(const type of Object.keys(SubEventType)){
+              result.filter(r => r.type == type)[0].firstTeam = true
+            } 
+
+            return result;
+          }
+        })
       },
       roles: {
         type: new GraphQLList(RoleType),
