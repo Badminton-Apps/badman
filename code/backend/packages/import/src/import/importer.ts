@@ -119,7 +119,7 @@ export abstract class Importer {
         where: {
           name: location.name,
           eventId: event.id,
-          eventType: event instanceof EventTournament? 'tournament' : 'competition'
+          eventType: event instanceof EventTournament ? 'tournament' : 'competition'
         },
         defaults: {
           name: location.name,
@@ -130,7 +130,7 @@ export abstract class Importer {
           phone: location.phone || undefined,
           fax: location.fax || undefined,
           eventId: event.id,
-          eventType: event instanceof EventTournament? 'tournament' : 'competition'
+          eventType: event instanceof EventTournament ? 'tournament' : 'competition'
         }
       });
 
@@ -232,6 +232,7 @@ export abstract class Importer {
           gameType: this.getGameType(csvEvent.eventtype, parseInt(csvEvent.gender, 10)),
           FileId: file.id,
           eventType: this.getEventType(parseInt(csvEvent.gender, 10)),
+          level: this.getLevel(csvEvent.name),
           levelType
         })
       );
@@ -274,7 +275,7 @@ export abstract class Importer {
       // optional
       [key: string]: any;
     } = {
-      name: importerFile.name,
+      name: importerFile.name
     };
 
     if (importerFile.uniCode) {
@@ -557,15 +558,36 @@ export abstract class Importer {
 
   protected getLeague(importedFile: ImporterFile): LevelType {
     if (
-      importedFile.fileLocation.indexOf('vlaanderen') === -1 &&
-      importedFile.fileLocation.indexOf('nationaal') === -1
+      importedFile.name.toLowerCase().indexOf('vlaanderen') === -1 &&
+      importedFile.name.toLowerCase().indexOf('vlaamse') === -1 &&
+      importedFile.name.toLowerCase().indexOf('nationaal') === -1 &&
+      importedFile.name.toLowerCase().indexOf('victor') === -1
     ) {
       return LevelType.PROV;
     } else {
-      return importedFile.fileLocation.indexOf('vlaanderen') !== -1
-        ? LevelType.LIGA
-        : LevelType.NATIONAAL;
+      if (
+        importedFile.name.toLowerCase().indexOf('vlaanderen') !== -1 ||
+        importedFile.name.toLowerCase().indexOf('vlaamse') !== -1
+      ) {
+        return LevelType.LIGA;
+      }
+
+      return LevelType.NATIONAAL;
     }
+  }
+
+  protected getLevel(name: string): number {
+    const matches = name.match(/\d+/g);
+    if (matches.length == 1) {
+      return Number.parseInt(matches[0]);
+    }
+    if (matches.length > 1) {
+      logger.warn('More matches, please investigate');
+      return Number.parseInt(matches[0]);
+    }
+
+    logger.warn('No level found, please investigate');
+    return -1;
   }
 
   // #region createTypes

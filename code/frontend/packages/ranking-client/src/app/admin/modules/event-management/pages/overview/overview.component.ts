@@ -50,7 +50,10 @@ export class OverviewComponent {
   });
   onPaginateChange = new EventEmitter<PageEvent>();
 
-  eventTypes = [{ label: 'competition', value: EventType.COMPETITION_CP }, { label: 'toernament', value: EventType.TOERNAMENT }];
+  eventTypes = [
+    { label: 'competition', value: EventType.COMPETITION_CP },
+    { label: 'toernament', value: EventType.TOERNAMENT },
+  ];
 
   totalItems: number;
   isLoadingResults = true;
@@ -64,7 +67,7 @@ export class OverviewComponent {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
-    
+
     // Reset when any filter changes
     this.sort.sortChange.subscribe(() => {
       this.pageIndex$.next(0);
@@ -97,24 +100,27 @@ export class OverviewComponent {
         debounceTime(300),
         switchMap(([filterChange, sortChange, pageChange]) => {
           this.isLoadingResults = true;
-          return this.eventService.getEvents(
-            `DATE_${this.sort.direction.toUpperCase()}`,
-            this.pageSize$.value,
-            this.cursor,
-            filterChange.eventType,
-            filterChange.query
-          );
+          return this.eventService.getEvents({
+            first: this.pageSize$.value,
+            after: this.cursor,
+            type: filterChange.eventType,
+            where: {
+              name: {
+                $iLike: `%${filterChange.query}%`,
+              },
+            },
+          });
         }),
         map((data) => {
-          const count = data.events?.total || 0;
+          const count = data.eventTournaments?.total || 0;
           this.isLoadingResults = false;
           this.resultsLength$.next(count);
 
           if (count) {
             this.nextCursor =
-              data.events.edges[data.events.edges.length - 1].cursor;
+              data.eventTournaments.edges[data.eventTournaments.edges.length - 1].cursor;
 
-            return data.events.edges.map((x) => x.node);
+            return data.eventTournaments.edges.map((x) => x.node);
           } else {
             return [];
           }

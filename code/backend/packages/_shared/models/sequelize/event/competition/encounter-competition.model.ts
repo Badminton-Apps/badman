@@ -10,7 +10,9 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin
 } from 'sequelize';
 import {
   BelongsTo,
@@ -19,6 +21,7 @@ import {
   Default,
   ForeignKey,
   HasMany,
+  HasOne,
   IsUUID,
   Model,
   PrimaryKey,
@@ -27,6 +30,7 @@ import {
 } from 'sequelize-typescript';
 import { DrawCompetition } from './draw-competition.model';
 import { Game } from '../game.model';
+import { Team } from '../../team.model';
 
 @Table({
   timestamps: true,
@@ -63,6 +67,12 @@ export class EncounterCompetition extends Model {
   @Column
   drawId: string;
 
+  @BelongsTo(() => Team, 'homeTeamId')
+  home: Team;
+
+  @BelongsTo(() => Team, 'awayTeamId')
+  away: Team
+
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;
   setGames!: HasManySetAssociationsMixin<Game, string>;
@@ -77,4 +87,12 @@ export class EncounterCompetition extends Model {
   // Belongs to Draw
   getDraw!: BelongsToGetAssociationMixin<DrawCompetition>;
   setDraw!: BelongsToSetAssociationMixin<DrawCompetition, string>;
+
+  // Belongs to Home
+  getHome!: BelongsToGetAssociationMixin<Team>;
+  setHome!: BelongsToSetAssociationMixin<Team, string>;
+
+  // Belongs to Away
+  getAway!: BelongsToGetAssociationMixin<Team>;
+  setAway!: BelongsToSetAssociationMixin<Team, string>;
 }

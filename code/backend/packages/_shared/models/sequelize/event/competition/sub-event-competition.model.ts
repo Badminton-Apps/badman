@@ -75,6 +75,18 @@ export class SubEventCompetition extends Model {
   @Column
   level?: number;
 
+  @Column
+  minLevel?: number;
+  
+  @Column
+  maxLevel?: number;
+
+  @Column
+  minBaseIndex?: number;
+  
+  @Column
+  maxBaseIndex?: number;
+
   @BelongsToMany(
     () => Team,
     () => TeamSubEventMembership

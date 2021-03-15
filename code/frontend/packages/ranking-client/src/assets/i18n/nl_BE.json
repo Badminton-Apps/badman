@@ -1,8 +1,8 @@
 {
     "languages": {
         "en": "English",
-        "fr": "Français",
-        "nl": "Nederlands"
+        "fr_BE": "Français",
+        "nl_BE": "Nederlands"
     },
     "lists": {
         "name": "Naam"
@@ -69,7 +69,9 @@
     },
     "competition": {
         "types": {
-            "male": "Mannen"
+            "male": "Mannen",
+            "female": "Vrouwen",
+            "mix": "Gemengd"
         }
     }
 }

@@ -16,15 +16,34 @@ const addPlayerToClubMutation = require('graphql-tag/loader!../../graphql/clubs/
 export class ClubService {
   constructor(private apollo: Apollo) {}
 
-  getClub(clubId: string, rankingSystem?: string, playersfrom?: Date) {
+  getClub(
+    clubId: string,
+    args?: {
+      rankingSystem?: string;
+      playersfrom?: Date;
+      includeTeams?: boolean;
+      includePlayers?: boolean;
+      includeRoles?: boolean;
+    }
+  ) {
+    args = {
+      includeTeams: false,
+      includePlayers: false,
+      includeRoles: false,
+      ...args,
+    };
+
     return this.apollo
       .query<{ club: Club }>({
         query: clubQuery,
         variables: {
           id: clubId,
-          end: playersfrom?.toISOString(),
-          rankingType: rankingSystem,
-          includePlaces: rankingSystem !== null
+          end: args.playersfrom?.toISOString(),
+          rankingType: args.rankingSystem,
+          includePlaces: args.rankingSystem !== null,
+          includeTeams: args.includeTeams,
+          includePlayers: args.includePlayers,
+          includeRoles: args.includeRoles,
         },
       })
       .pipe(map((x) => new Club(x.data.club)));
@@ -44,7 +63,7 @@ export class ClubService {
   addPlayer(club: Club, player: Player) {
     return this.apollo.mutate({
       mutation: addPlayerToClubMutation,
-      variables: { 
+      variables: {
         playerId: player.id,
         clubId: club.id,
       },
@@ -62,12 +81,25 @@ export class ClubService {
       .pipe(map((x) => new Club(x.data.updateClub)));
   }
 
-  getClubs(first: number, after: string, query: string) {
+  getClubs(args?: {
+    first?: number;
+    after?: string;
+    query?: string;
+    ids?: string[];
+  }) {
     let where = undefined;
-    if (query) {
+    if (args.query) {
       where = {
         name: {
-          $iLike: `%${query}%`,
+          $iLike: `%${args.query}%`,
+        },
+      };
+    }
+
+    if (args.ids) {
+      where = {
+        id: {
+          in: args.ids,
         },
       };
     }
@@ -81,8 +113,8 @@ export class ClubService {
       }>({
         query: clubsQuery,
         variables: {
-          first,
-          after,
+          first: args.first,
+          after: args.after,
           where,
         },
       })
