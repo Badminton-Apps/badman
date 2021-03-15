@@ -1,6 +1,7 @@
 import { Game } from './game.model';
 import { Event } from './event.model';
 import { Draw } from './draw.model';
+import { Team } from './team.model';
 
 export class SubEvent {
   id: string;
@@ -9,6 +10,7 @@ export class SubEvent {
   gameType: string;
   levelType: string;
   level: number;
+  teams: Team[];
 
   event: Event;
   draws: Draw[];
@@ -23,5 +25,6 @@ export class SubEvent {
     this.event = new Event(args.event);
     this.level = args.level;
     this.draws = args.draws?.map((g) => new Draw(g));
+    this.teams = [];
   }
 }

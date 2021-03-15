@@ -1,5 +1,5 @@
-query GetPlayers($search: String!) {
-  playerSearch(query: $search) {
+query GetPlayers($where: SequelizeJSON) {
+  players(where: $where) {
     id
     memberId
     firstName

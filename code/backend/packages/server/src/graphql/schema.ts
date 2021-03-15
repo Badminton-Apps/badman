@@ -34,7 +34,6 @@ import {
   gamesQuery,
   importedQuery,
   playerQuery,
-  playerSearchQuery,
   playersQuery,
   roleQuery,
   rolesQuery,
@@ -51,7 +50,6 @@ export const createSchema = () => {
       name: 'RootQueryType',
       fields: () => ({
         player: playerQuery,
-        playerSearch: playerSearchQuery,
         players: playersQuery,
         eventCompetition: eventCompetitionQuery,
         eventCompetitions: eventCompetitionsQuery,

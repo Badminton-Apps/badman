@@ -6,6 +6,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SelectClubComponent } from './select-club';
+import { SelectEventComponent } from './select-event/select-event.component';
 import { SelectGameComponent } from './select-game';
 import { SelectTeamComponent } from './select-team';
 
@@ -21,6 +22,7 @@ const components = [
   SelectGameComponent,
   SelectTeamComponent,
   SelectClubComponent,
+  SelectEventComponent,
 ];
 
 @NgModule({

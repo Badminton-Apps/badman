@@ -1,0 +1,37 @@
+<div class="mat-subheading-1">{{ type }}</div>
+
+<div class="team-container">
+  <div>My teams</div>
+  <div
+    class="team-list-todo"
+    id="todo"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    [cdkDropListConnectedTo]="this.ids"
+    [cdkDropListData]="teams"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div class="team-box" *ngFor="let team of teams" cdkDrag>
+      {{ team.name }} <small>({{ team.baseIndex }})</small>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<div *ngFor="let subEvent of subEvents" class="team-container">
+  <div>{{ subEvent.name }}</div>
+
+  <div
+    class="team-list-target"
+    id="{{ subEvent.id }}"
+    cdkDropList
+    [cdkDropListConnectedTo]="ids"
+    [cdkDropListData]="subEvent.teams"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div class="team-box" *ngFor="let team of subEvent.teams" cdkDrag>
+      {{ team.name }} <small>({{ team.baseIndex }})</small>
+    </div>
+  </div>
+</div>

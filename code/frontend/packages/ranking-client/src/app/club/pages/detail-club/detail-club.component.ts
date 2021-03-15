@@ -31,9 +31,18 @@ export class DetailClubComponent {
       map((x) => x[0])
     );
 
-    this.club$ = combineLatest([this.route.paramMap, system$, this.update$]).pipe(
+    this.club$ = combineLatest([
+      this.route.paramMap,
+      system$,
+      this.update$,
+    ]).pipe(
       switchMap(([params, system]) =>
-        this.clubService.getClub(params.get('id'), system.id, moment().subtract(1, 'year').toDate())
+        this.clubService.getClub(params.get('id'), {
+          rankingSystem: system.id,
+          playersfrom: moment().subtract(1, 'year').toDate(),
+          includePlayers: true,
+          includeTeams: true,
+        })
       )
     );
   }

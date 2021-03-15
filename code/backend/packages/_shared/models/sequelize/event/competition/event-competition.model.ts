@@ -55,13 +55,17 @@ export class EventCompetition extends Model {
     foreignKey: 'eventId',
     constraints: false,
     scope: {
-      drawType: 'competition'
+      drawType: 'competition' 
     }
   })
   locations: Location[];
 
   @Column
   uniCode: string;
+
+  @Default(false)
+  @Column
+  allowEnlisting: boolean;
 
   // Has many SubEvent
   getSubEvents!: HasManyGetAssociationsMixin<SubEventCompetition>;

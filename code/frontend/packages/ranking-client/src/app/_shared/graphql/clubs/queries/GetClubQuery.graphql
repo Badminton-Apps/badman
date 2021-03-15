@@ -1,34 +1,32 @@
-query GetClubsQuery(
+query GetClubQuery(
   $id: ID!
   $end: String
   $rankingType: ID
   $includePlaces: Boolean!
+  $includeTeams: Boolean!
+  $includePlayers: Boolean!
+  $includeRoles: Boolean!
 ) {
   club(id: $id) {
     id
     name
     abbreviation
     clubId
-    teams(order: "name") {
+    teams(order: "name") @include(if: $includeTeams) {
       id
       name
       abbreviation
+      type
+      baseIndex(systemId: $rankingType)
       players(end: $end) {
         id
         firstName
         lastName
         base
-
-        rankingPlaces(where: { SystemId: $rankingType })
-          @skip(if: $includePlaces) {
-          single
-          double
-          mix
-        }
       }
     }
-    
-    roles {
+
+    roles @include(if: $includeRoles)  {
       id
       name
       description
@@ -39,12 +37,12 @@ query GetClubsQuery(
       }
     }
 
-    players(end: $end) {
+    players(end: $end) @include(if: $includePlayers) {
       id
       firstName
       lastName
       rankingPlaces(where: { SystemId: $rankingType })
-        @skip(if: $includePlaces) {
+        @include(if: $includePlaces) {
         single
         double
         mix

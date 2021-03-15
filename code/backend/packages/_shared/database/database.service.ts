@@ -26,6 +26,7 @@ import {
   TeamSubEventMembership
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
+import { adminClaims, clubClaims, teamClaims } from '../security';
 import { logger } from '../utils/logger';
 import { splitInChunks } from '../utils/utils';
 
@@ -393,24 +394,6 @@ export class DataBaseHandler {
 
     // Claims/permission
     const dbAdminClaims = [];
-    const adminClaims = [
-      ['view:event', 'View an event', 'events'],
-      ['add:event', 'Add an event', 'events'],
-      ['edit:event', 'Edit an event', 'events'],
-      ['delete:event', 'Delete an event', 'events'],
-      ['import:event', 'Import an event', 'events'],
-      ['view:ranking', 'View ranking system', 'ranking'],
-      ['add:ranking', 'Add ranking system', 'ranking'],
-      ['edit:ranking', 'Edit ranking system', 'ranking'],
-      ['delete:ranking', 'Delete ranking system', 'ranking'],
-      ['calculate:ranking', 'Simulate ranking', 'ranking'],
-      ['make-primary:ranking', 'Make ranking system primary', 'ranking'],
-      ['edit:claims', 'Edit global claims', 'security'],
-      ['link:player', 'Can link players to login', 'player'],
-      ['add:club', 'Create new club', 'clubs'],
-      ['edit-any:club', 'Edit any club', 'clubs']
-    ];
-
     for (const claimName of adminClaims) {
       logger.silly(`Creating global claim ${claimName}`);
       const c = await new Claim({
@@ -422,20 +405,6 @@ export class DataBaseHandler {
       dbAdminClaims.push(c);
     }
 
-    const dbClubClaims = [];
-    const clubClaims = [
-      [
-        'edit:club',
-        'Change anything of a club (removing this can potentially remove all access to edit screen)',
-        'club'
-      ],
-      ['add:player', 'Add players to club', 'club'],
-      ['remove:player', 'Remove players to club', 'club'],
-      ['add:location', 'Add location to club', 'club'],
-      ['remove:location', 'Remove location to club', 'club'],
-      ['add:role', 'Creates new roles for club', 'club'],
-      ['edit:role', 'Edit roles for club', 'club']
-    ];
     for (const claimName of clubClaims) {
       logger.silly(`Creating club claim ${claimName}`);
       const c = await new Claim({
@@ -444,16 +413,8 @@ export class DataBaseHandler {
         category: claimName[2],
         type: 'club'
       }).save();
-      dbClubClaims.push(c);
     }
 
-    const dbTeamClaims = [];
-    const teamClaims = [
-      ['edit:team', 'Edit competition teams', 'team'],
-      ['add:team', 'Add compeition teams', 'team'],
-      ['enter:results', 'Enter results for a team', 'team'],
-      ['enlist:team', 'Enlist a team in to competitoin', 'team']
-    ];
     for (const claimName of teamClaims) {
       logger.silly(`Creating team claim ${claimName}`);
       const c = await new Claim({
@@ -462,7 +423,6 @@ export class DataBaseHandler {
         category: claimName[2],
         type: 'team'
       }).save();
-      dbTeamClaims.push(c);
     }
 
     // Test Stuff
@@ -483,12 +443,11 @@ export class DataBaseHandler {
     });
     await player.addClaims(dbAdminClaims);
 
-    const voorzitter = await new Role({
-      name: 'Voorzitter'
-    }).save();
-    await club.addRole(voorzitter);
-    await voorzitter.addClaims(dbClubClaims);
-    await voorzitter.addPlayer(player);
+    // create Club generates auto admin role
+    var roles = await club.getRoles();
+    for(const role of roles){
+      await role.addPlayer(player);
+    }
   }
 
   runCommmand(cmd: string) {

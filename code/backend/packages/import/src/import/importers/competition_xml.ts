@@ -171,6 +171,7 @@ export class CompetitionXmlImporter extends Importer {
             : matches.find(r => r.MatchType === 1)
             ? SubEventType.M
             : SubEventType.F,
+          level: this.getLevel(xmlEvent.EventName),
           levelType: this.getLeague(importerFile),
           eventId: event.id
         }).save();
@@ -202,8 +203,8 @@ export class CompetitionXmlImporter extends Importer {
 
         const xmlFixturesTeams = [
           ...new Set([
-            ...xmlFixtures.map(r => r.FixtureTeam1),
-            ...xmlFixtures.map(r => r.FixtureTeam2)
+            ...xmlFixtures.map(r => r?.FixtureTeam1),
+            ...xmlFixtures.map(r => r?.FixtureTeam2)
           ])
         ];
         for (const fixtureTeam of xmlFixturesTeams) {
@@ -213,7 +214,9 @@ export class CompetitionXmlImporter extends Importer {
             continue;
           }
 
+          dbTeam.type = dbSubevent.eventType;
           await dbTeam.addSubEvent(dbSubevent);
+          await dbTeam.save();
         }
 
         for (const fixture of xmlFixtures) {
@@ -235,6 +238,9 @@ export class CompetitionXmlImporter extends Importer {
             time[1]
           );
 
+          const home = teams.find(t => t.name == this._cleanedTeamName(fixture.FixtureTeam1))
+          const away = teams.find(t => t.name == this._cleanedTeamName(fixture.FixtureTeam2))
+
           const encountComp = {
             date: playedAt,
             drawId: dbDraw.id
@@ -243,6 +249,9 @@ export class CompetitionXmlImporter extends Importer {
             where: encountComp,
             defaults: encountComp
           });
+
+          await dbEncounter.setHome(home);
+          await dbEncounter.setAway(away);
 
           for (const match of xmlMatches) {
             const gamePlayers = [];
@@ -652,8 +661,8 @@ export class CompetitionXmlImporter extends Importer {
   }
 
   private _cleanedTeamName(name: string) {
-    name = name.replace(/\(\d+\)/, '');
-    name = name.replace('&amp;', '&');
+    name = name?.replace(/\(\d+\)/, '');
+    name = name?.replace('&amp;', '&');
 
     return name;
   }

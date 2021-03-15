@@ -23,7 +23,7 @@ export class TeamFieldsComponent implements OnInit {
   club: Club;
 
   @Output() save = new EventEmitter<Team>();
-  
+
   teamForm: FormGroup;
 
   ngOnInit() {
@@ -43,7 +43,11 @@ export class TeamFieldsComponent implements OnInit {
 
     nameControl.valueChanges.subscribe((r) => {
       if (!abbrControl.touched) {
-        const typeMatch = r.match(/(\d[GHD])/) ?? [];
+        r = r.replace(this.club.name, '');
+        r = r.replace(this.club.abbreviation, '');
+        r = r.replace(/[^0-9a-zA-Z]+/, ' ');
+
+        const typeMatch = r.match(/(\d+[GHD])/) ?? [];
         if (typeMatch) {
           r = r.substr(0, r.lastIndexOf(typeMatch[0]));
         }
