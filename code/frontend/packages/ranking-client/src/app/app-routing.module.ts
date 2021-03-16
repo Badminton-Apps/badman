@@ -42,6 +42,11 @@ const routes: Routes = [
             (m) => m.CompetitionModule
           ),
       },
+      {
+        path: 'event',
+        loadChildren: () =>
+          import('./event/event.module').then((m) => m.EventModule),
+      },
     ],
   },
   { path: '**', redirectTo: '/' },

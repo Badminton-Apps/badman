@@ -38,14 +38,20 @@
   <div class="mat-subheading-1">Teams</div>
 
   <div class="teams" *ngIf="club.teams">
-    <app-team-overview *ngFor="let team of club.teams" [team]="team">
+    <app-team-overview
+      *ngFor="let team of club.teams"
+      [team]="team"
+      [club]="club"
+      (onEdit)="this.editTeam($event, club)"
+      (onDelete)="this.deleteTeam($event)"
+    >
     </app-team-overview>
   </div>
 
   <div class="mat-subheading-1">Players</div>
   <mat-list *ngIf="club.players">
     <mat-list-item *ngFor="let player of club.players">
-      {{ player.firstName }} {{ player.lastName }}
+      {{ player.fullName }}
     </mat-list-item>
   </mat-list>
 </ng-container>

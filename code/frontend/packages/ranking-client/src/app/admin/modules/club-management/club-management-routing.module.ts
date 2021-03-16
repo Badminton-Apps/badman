@@ -3,9 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
 import { AddClubComponent, EditClubComponent } from './pages';
 import { AddRoleComponent } from './pages/add-role/add-role.component';
-import { AddTeamComponent } from './pages/add-team/add-team.component';
 import { EditRoleComponent } from './pages/edit-role/edit-role.component';
-import { EditTeamComponent } from './pages/edit-team/edit-team.component';
 
 const routes: Routes = [
   {
@@ -23,17 +21,10 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       claims: {
-        any: ['edit:club', 'edit:teams', ''],
+        any: ['edit:club', 'edit:teams'],
       },
     },
     children: [
-      {
-        path: 'team',
-        children: [
-          { path: 'add', component: AddTeamComponent },
-          { path: ':teamId', component: EditTeamComponent },
-        ],
-      },
       {
         path: 'role',
         children: [

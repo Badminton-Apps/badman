@@ -30,6 +30,7 @@ export const TeamType = new GraphQLObjectType({
         }),
         resolve: resolver(Team.associations.players, {
           before: async (findOptions, args, context, info) => {
+            findOptions.order = [['lastName', 'asc'], ['firstName', 'asc']]
             return findOptions;
           },
           after: (result, args, context) => {
@@ -59,9 +60,6 @@ export const TeamType = new GraphQLObjectType({
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Team.associations.subEvents)
       },
-      firstTeam: {
-        type: GraphQLBoolean
-      },
       baseIndex: {
         type: GraphQLInt,
         args: Object.assign({
@@ -90,24 +88,28 @@ export const TeamType = new GraphQLObjectType({
               .filter(r => r.rankingPlaces != null && r.rankingPlaces.length > 0);
 
             if (!validBasePlayers) {
-              return -1;
+              return parent.type == 'MX' ? 36 : 24;
             }
+
+            const amountOfPbase = 4 - validBasePlayers.length;
+            const start = amountOfPbase * (parent.type == 'MX' ? 36 : 24);
 
             switch (parent.type) {
               case 'MX':
                 return validBasePlayers.reduce(
                   (acc, cur) =>
                     acc +
-                    cur.rankingPlaces[0].single +
-                    cur.rankingPlaces[0].double +
-                    cur.rankingPlaces[0].mix,
-                  0
+                    (cur.rankingPlaces[0].single ?? 12) +
+                    (cur.rankingPlaces[0].double ?? 12) +
+                    (cur.rankingPlaces[0].mix ?? 12),
+                  start
                 );
               case 'F':
               case 'M':
                 return validBasePlayers.reduce(
-                  (acc, cur) => acc + cur.rankingPlaces[0].single + cur.rankingPlaces[0].double,
-                  0
+                  (acc, cur) =>
+                    acc + (cur.rankingPlaces[0].single ?? 12) + (cur.rankingPlaces[0].double ?? 12),
+                  start
                 );
             }
           }

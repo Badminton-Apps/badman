@@ -15,11 +15,8 @@ import { ClubManagementRoutingModule } from './club-management-routing.module';
 import { ClubFieldsComponent } from './components/club-fields/club-fields.component';
 import { AddClubComponent } from './pages/add-club/add-club.component';
 import { EditClubComponent } from './pages/edit-club/edit-club.component';
-import { TeamFieldsComponent } from './components/team-fields/team-fields.component';
-import { AddTeamComponent } from './pages/add-team/add-team.component';
+// import { AddTeamComponent } from './pages/add-team/add-team.component';
 import { AddPlayerComponent } from './dialogs/add-player/add-player.component';
-import { ClubEditTeamComponent } from './pages/edit-club/components/club-edit-team/club-edit-team.component';
-import { EditTeamComponent } from './pages/edit-team/edit-team.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ClubEditRoleComponent } from './pages/edit-club/components/club-edit-role/club-edit-role.component';
@@ -49,15 +46,12 @@ const materialModules = [
   declarations: [
     AddClubComponent,
     EditClubComponent,
-    EditTeamComponent,
     EditRoleComponent,
     ClubFieldsComponent,
-    TeamFieldsComponent,
     RoleFieldsComponent,
-    AddTeamComponent,
+    // AddTeamComponent,
     AddPlayerComponent,
     AddRoleComponent,
-    ClubEditTeamComponent,
     ClubEditRoleComponent,
   ],
   imports: [SharedModule, ...materialModules, ClubManagementRoutingModule],

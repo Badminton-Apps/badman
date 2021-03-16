@@ -73,5 +73,11 @@
             "female": "Femmes",
             "mix": "Mixte"
         }
+    },
+    "event": {
+      "types": {
+        "competition": "",
+        "tournament": ""
+      }
     }
 }

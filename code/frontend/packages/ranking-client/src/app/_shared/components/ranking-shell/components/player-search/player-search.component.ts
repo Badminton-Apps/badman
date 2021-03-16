@@ -33,18 +33,29 @@ export class PlayerSearchComponent implements OnInit {
   @Input()
   label: string = 'Search';
 
+  @Input()
+  where: {};
+
+  @Input()
+  ignorePlayers: Player[];
+
+  ignorePlayersIds: string[];
+
   formControl = new FormControl();
   filteredOptions: Observable<Player[]>;
   constructor(private playerService: PlayerService) {}
 
   ngOnInit() {
+    this.ignorePlayersIds = this.ignorePlayers?.map((r) => r.id) ?? [];
     this.filteredOptions = this.formControl.valueChanges.pipe(
       startWith(''),
       filter((x) => x),
       map((value) => (typeof value === 'string' ? value : value?.fullName)),
       filter((x) => x?.length > 3),
       debounceTime(600),
-      switchMap((r) => this.playerService.searchPlayers({ query: r }))
+      switchMap((r) =>
+        this.playerService.searchPlayers({ query: r, where: this.where })
+      )
     );
   }
 

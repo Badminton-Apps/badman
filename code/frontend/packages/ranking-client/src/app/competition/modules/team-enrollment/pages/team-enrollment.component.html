@@ -2,27 +2,54 @@
 <app-select-event [formGroup]="formGroup"></app-select-event>
 
 <ng-container *ngIf="this.show$ | async">
-  <ng-container *ngIf="this.teamsM$ | async as teams">
-    <app-assign-team
-      [type]="'competition.types.male' | translate"
-      [teams]="teams"
-      [subEvents]="this.subEventM$ | async"
-    ></app-assign-team>
+  <ng-container
+    *ngIf="{
+      teams: this.teamsM$ | async,
+      subEvent: this.subEventM$ | async
+    } as teamInfo"
+  >
+    <ng-container *ngIf="teamInfo.teams as teams">
+      <ng-container *ngIf="teamInfo.subEvent as subEvent">
+        <app-assign-team
+          [type]="'competition.types.male' | translate"
+          [teams]="teams"
+          [subEvents]="subEvent"
+        ></app-assign-team>
+      </ng-container>
+    </ng-container>
   </ng-container>
 
-  <ng-container *ngIf="this.teamsMX$ | async as teams">
-    <app-assign-team
-      [type]="'competition.types.mix' | translate"
-      [teams]="teams"
-      [subEvents]="this.subEventMX$ | async"
-    ></app-assign-team>
+  <ng-container
+    *ngIf="{
+      teams: this.teamsMX$ | async,
+      subEvent: this.subEventMX$ | async
+    } as teamInfo"
+  >
+    <ng-container *ngIf="teamInfo.teams as teams">
+      <ng-container *ngIf="teamInfo.subEvent as subEvent">
+        <app-assign-team
+          [type]="'competition.types.mix' | translate"
+          [teams]="teams"
+          [subEvents]="subEvent"
+        ></app-assign-team>
+      </ng-container>
+    </ng-container>
   </ng-container>
 
-  <ng-container *ngIf="this.teamsF$ | async as teams">
-    <app-assign-team
-      [type]="'competition.types.female' | translate"
-      [teams]="teams"
-      [subEvents]="this.subEventF$ | async"
-    ></app-assign-team>
+  <ng-container
+    *ngIf="{
+      teams: this.teamsF$ | async,
+      subEvent: this.subEventF$ | async
+    } as teamInfo"
+  >
+    <ng-container *ngIf="teamInfo.teams as teams">
+      <ng-container *ngIf="teamInfo.subEvent as subEvent">
+        <app-assign-team
+          [type]="'competition.types.female' | translate"
+          [teams]="teams"
+          [subEvents]="subEvent"
+        ></app-assign-team>
+      </ng-container>
+    </ng-container>
   </ng-container>
 </ng-container>

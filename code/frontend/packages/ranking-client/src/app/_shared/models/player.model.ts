@@ -12,6 +12,8 @@ export class Player {
   isClaimed = false;
   rankingPlaces: RankingPlace[];
   games: Game[];
+  index: number;
+
 
   constructor(args: Partial<Player>) {
     this.id = args.id;
@@ -24,7 +26,8 @@ export class Player {
     this.rankingPlaces = args.rankingPlaces?.map((r) => new RankingPlace(r));
     this.games = args.games?.map((g) => new Game(g));
     this.base = args.base;
-  }
+    this.index = args.index;
+  } 
 
   get fullName() {
     return `${this.firstName} ${this.lastName}`

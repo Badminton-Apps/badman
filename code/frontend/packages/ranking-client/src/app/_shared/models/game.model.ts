@@ -1,8 +1,6 @@
 import { PlayerGame } from '../../_shared';
 import { Draw } from './draw.model';
-import { SubEvent } from './sub-event.model';
-import { RankingPoint } from "./ranking-point.model";
-import { RankingSystem } from './ranking-system.model';
+import { RankingPoint } from './ranking-point.model';
 
 export class Game {
   id: string;
@@ -17,11 +15,11 @@ export class Game {
   set3Team2?: number;
   winner: number;
   rankingPoints: RankingPoint[];
-  competition: {draw: Draw};
+  competition: { draw: Draw };
   tournament: Draw;
   draw: Draw;
 
-  constructor({ ...args}: Partial<Game>, system?: RankingSystem) {
+  constructor({ ...args }: Partial<Game>) {
     this.id = args.id;
     this.playedAt = args.playedAt;
     this.gameType = args.gameType;
@@ -33,7 +31,7 @@ export class Game {
     this.set3Team1 = args.set3Team1;
     this.set3Team2 = args.set3Team2;
     this.winner = args.winner;
-    this.rankingPoints = args.rankingPoints?.map(r => new RankingPoint(r));
+    this.rankingPoints = args.rankingPoints?.map((r) => new RankingPoint(r));
 
     // it's should be one or the other
     // Temporary doing this before finding a better way
