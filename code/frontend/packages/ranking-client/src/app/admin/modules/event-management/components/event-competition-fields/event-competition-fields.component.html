@@ -1,0 +1,30 @@
+<form [formGroup]="formGroup">
+  <div class="mat-subheading-2">
+    When field isn't required (see '*') leave empty for disable limitation
+  </div>
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        alt="name"
+        autocomplete="name"
+        required
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Year</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="startYear"
+        min="2000" 
+        max="3000" 
+        alt="startYear"
+        required
+      />
+    </mat-form-field>
+  </div>
+</form>

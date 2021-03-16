@@ -5,7 +5,7 @@ import { Claim } from 'app/_shared';
 import { map, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
-const globalClaimsQuery = require('graphql-tag/loader!../../graphql/security/queries/GetGlobalClaims.graphql');
+import globalClaimsQuery from 'graphql-tag/loader!../../graphql/security/queries/GetGlobalClaims.graphql';
 const globalUserClaimsQuery = require('graphql-tag/loader!../../graphql/security/queries/GetGlobalUserClaims.graphql');
 const clubClaimsQuery = require('graphql-tag/loader!../../graphql/security/queries/GetClubClaims.graphql');
 

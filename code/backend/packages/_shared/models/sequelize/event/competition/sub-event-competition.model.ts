@@ -76,9 +76,6 @@ export class SubEventCompetition extends Model {
   level?: number;
 
   @Column
-  minLevel?: number;
-  
-  @Column
   maxLevel?: number;
 
   @Column

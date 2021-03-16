@@ -1,4 +1,7 @@
 import {
+  AllowNull,
+  BeforeBulkCreate,
+  BeforeBulkUpdate,
   BeforeCreate,
   BeforeUpdate,
   BelongsTo,
@@ -48,20 +51,64 @@ import { SubEventType } from '../enums';
   schema: 'public'
 })
 export class Team extends Model {
+  @BeforeBulkUpdate
+  @BeforeBulkCreate
+  static setAbbriviations(instances: Team[]) {
+    for (const instance of instances) {
+      this.setAbbriviation(instance);
+    }
+  }
+
   @BeforeUpdate
   @BeforeCreate
   static setAbbriviation(instance: Team) {
     if (!instance.abbreviation) {
-      const suffix = (instance?.name?.substr(instance?.name?.length - 4).match(/(\d+[GHD])/) ?? [''])[0];
-      let club = instance.name.replace(` ${suffix}`, '')
+      const suffix = (instance?.name
+        ?.substr(instance?.name?.length - 4)
+        .match(/(\d+[GHD])/) ?? [''])[0];
+      let club = instance.name.replace(` ${suffix}`, '');
       club = club.replace(/[^0-9a-zA-Z]+/, ' ');
-      
-      if (club.indexOf(' ') !== -1){
+
+      if (club.indexOf(' ') !== -1) {
         club = club.match(/\b(\w)/g)?.join('');
       }
 
-      if (suffix.length){
-        instance.abbreviation = `${club} ${suffix}`
+      if (suffix.length) {
+        instance.abbreviation = `${club} ${suffix}`;
+      }
+    }
+  }
+
+  @BeforeBulkCreate
+  static extractNumberAndTypes(instances: Team[]) {
+    for (const instance of instances) {
+      this.extractNumberAndType(instance);
+    }
+  }
+
+  @BeforeCreate
+  static extractNumberAndType(instance: Team) {
+    const suffix = (instance?.name
+      ?.substr(instance?.name?.length - 4)
+      .match(/(\d+[GHD])/) ?? [''])[0];
+
+    if (!instance.number) {
+      instance.number = +suffix.replace(/[GHD]/, '');
+    }
+
+    if (!instance.type) {
+      const type = suffix.replace(/\d+/, '');
+
+      switch (type) {
+        case 'G':
+          instance.type = SubEventType.MX;
+          break;
+        case 'H':
+          instance.type = SubEventType.M;
+          break;
+        case 'D':
+          instance.type = SubEventType.F;
+          break;
       }
     }
   }
@@ -75,6 +122,22 @@ export class Team extends Model {
   @Unique('unique_constraint')
   @Column
   name: string;
+
+  @Column(DataType.TIME)
+  preferredTime: Date;
+
+  @Column(
+    DataType.ENUM(
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday'
+    )
+  )
+  preferredDay: string;
 
   @Column
   abbreviation: string;
@@ -101,6 +164,14 @@ export class Team extends Model {
 
   @Column
   type: SubEventType;
+
+  @Unique('unique_constraint')
+  @Column
+  number: number;
+
+  @Default(true)
+  @Column
+  active: boolean;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')
   homeEncounters: EncounterCompetition;

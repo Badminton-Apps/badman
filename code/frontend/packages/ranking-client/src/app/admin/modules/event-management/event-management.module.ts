@@ -12,22 +12,20 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from 'app/_shared';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { EventCompetitionFieldsComponent, EventTournamentFieldsComponent } from './components';
 import { EventManagementRoutingModule } from './event-management-routing.module';
-import {
-  CompetitionDataComponent,
-  ToernamentsDataComponent,
-} from './pages/overview/components';
-import { OverviewComponent } from './pages/overview/overview.component';
-import { DetailComponent } from './pages/detail/detail.component';
-import { ImportComponent } from './pages/import/import.component';
-import { DragOverDirective } from './pages/import/directives/dragover.directive';
-import { UploadFieldComponent } from './pages/import/components/upload-field/upload-field.component';
+import { EditEventCompetitionComponent } from './pages/edit-competition-event';
 import { AddEventDialogComponent } from './pages/import/components/add-event.dialog/add-event.dialog.component';
+import { UploadFieldComponent } from './pages/import/components/upload-field/upload-field.component';
+import { DragOverDirective } from './pages/import/directives/dragover.directive';
+import { ImportComponent } from './pages/import/import.component';
+import { EventCompetitionLevelFieldsComponent } from './components/event-competition-level-fields/event-competition-level-fields.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 const materialModules = [
   FormsModule,
@@ -47,20 +45,21 @@ const materialModules = [
   MatSortModule,
   MatTableModule,
   MatProgressSpinnerModule,
+  MatDatepickerModule,
   ReactiveFormsModule,
 ];
 
 @NgModule({
   declarations: [
-    OverviewComponent,
-    CompetitionDataComponent,
-    ToernamentsDataComponent,
-    DetailComponent,
+    EventCompetitionFieldsComponent,
+    EventTournamentFieldsComponent,
+    EditEventCompetitionComponent,
     ImportComponent,
     DragOverDirective,
     UploadFieldComponent,
     AddEventDialogComponent,
+    EventCompetitionLevelFieldsComponent,
   ],
-  imports: [SharedModule, ...materialModules, EventManagementRoutingModule]
+  imports: [SharedModule, ...materialModules, EventManagementRoutingModule],
 })
 export class EventManagementModule {}

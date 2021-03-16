@@ -1,0 +1,16 @@
+mutation UpdateCompetitionEvent($event: EventCompetitionInput!) {
+  updateEventCompetition(eventCompetition: $event) {
+    id
+    name
+    startYear
+    subEvents {
+      name
+      eventType
+      level
+      levelType
+      maxLevel
+      minBaseIndex
+      maxBaseIndex
+    }
+  }
+}

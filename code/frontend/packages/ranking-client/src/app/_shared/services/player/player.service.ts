@@ -79,7 +79,7 @@ export class PlayerService {
       .pipe(
         map((x: any) =>
           x.data?.player?.games.map(
-            (g: Partial<Game>) => new Game(g, rankingType)
+            (g: Partial<Game>) => new Game(g)
           )
         )
       );

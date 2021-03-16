@@ -9,7 +9,7 @@
   <app-has-claim
     [any]="[club.id + '_edit:team', club.id + '_edit:club', 'edit-amy:club']"
   >
-    <div class="mat-subheading-1">
+    <!-- <div class="mat-subheading-1">
       Teams
 
       <app-has-claim
@@ -22,8 +22,8 @@
           <mat-icon>add</mat-icon>
         </button>
       </app-has-claim>
-    </div>
-    <div class="teams">
+    </div> -->
+    <!-- <div class="teams">
       <app-club-edit-team
         *ngFor="let team of club.teams"
         [team]="team"
@@ -33,7 +33,7 @@
         (onPlayerUpdated)="this.onPlayerUpdatedFromTeam($event, team)"
       >
       </app-club-edit-team>
-    </div>
+    </div> -->
   </app-has-claim>
 
   <app-has-claim

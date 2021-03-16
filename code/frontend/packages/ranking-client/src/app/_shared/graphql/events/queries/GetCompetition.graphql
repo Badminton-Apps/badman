@@ -1,23 +1,19 @@
 # Write your query or mutation here
-query GetEvents(
-  $first: Int
-  $after: String
-	$where: SequelizeJSON
-) {
-  eventCompetitions(first: $first, after: $after, where: $where) {
-    total
-    edges {
-      cursor
-      node {
-        id
-        name
-        startYear
-        subEvents(order: "name") {
-          id
-          name
-          eventType
-        }
-      }
+query GetEvent($id: ID!) {
+  eventCompetition(id: $id) {
+    id
+    name
+    startYear
+    allowEnlisting
+    subEvents(order: "eventType") {
+      id
+      name
+      eventType
+      level
+      levelType
+      maxLevel
+      minBaseIndex
+      maxBaseIndex
     }
   }
 }

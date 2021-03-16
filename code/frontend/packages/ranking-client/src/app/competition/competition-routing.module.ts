@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { DetailCompetitionComponent } from './pages';
 
 const routes: Routes = [
   {
@@ -23,9 +24,13 @@ const routes: Routes = [
     data: {
       claims: {
         all: 'team:enrollment',
-      }, 
+      },
     },
   },
+  {
+    path: ':id',
+    component: DetailCompetitionComponent
+  }
 ];
 
 @NgModule({

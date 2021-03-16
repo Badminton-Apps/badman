@@ -2,16 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ToernamentRoutingModule } from './toernament-routing.module';
-import { ToernamentComponent } from './toernament.component';
-import { TournamentListComponent } from './pages/tournament-list/tournament-list.component';
 import { SharedModule } from '../_shared';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { DetailTournamentComponent } from './pages';
 
+const materialModules = [MatListModule, MatMenuModule, MatIconModule];
 
 @NgModule({
-  declarations: [ToernamentComponent, TournamentListComponent],
-  imports: [
-    SharedModule,
-    ToernamentRoutingModule
-  ]
+  declarations: [DetailTournamentComponent],
+  imports: [SharedModule, ...materialModules, ToernamentRoutingModule],
 })
-export class ToernamentModule { }
+export class ToernamentModule {}

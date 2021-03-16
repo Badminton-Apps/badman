@@ -248,12 +248,20 @@ export const updateTeamMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      await Team.update(team, {
-        where: { id: team.id },
+      const dbTeam = await Team.findByPk(team.id, {
         transaction
       });
 
+      if (!dbTeam) {
+        throw new ApiError({
+          code: 404,
+          message: 'Role not found'
+        });
+      }
+
+      await dbTeam.update(team, { transaction });
       transaction.commit();
+      return dbTeam;
     } catch (e) {
       logger.warn('rollback');
       transaction.rollback();

@@ -29,10 +29,10 @@ export const EventCompetitionType = new GraphQLObjectType({
         }),
         resolve: resolver(EventCompetition.associations.subEvents, {
           before: async (findOptions, args, context, info) => {
-            if (args.order && args.direction) {
+            if (args.order) {
               findOptions = {
                 ...findOptions,
-                order: [[args.order, args.direction]]
+                order: [[args.order, args.direction ?? "asc"], ['level', 'asc']]
               };
             }
             return findOptions;

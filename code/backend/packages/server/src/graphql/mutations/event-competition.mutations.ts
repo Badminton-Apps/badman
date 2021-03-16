@@ -94,6 +94,13 @@ const updateEventCompetitionMutation = {
         transaction
       });
 
+      for(const subEvent of eventCompetition?.subEvents ?? []){
+        await SubEventCompetition.update(subEvent, {
+          where: { id: subEvent.id },
+          transaction
+        });
+      }
+
       transaction.commit();
     } catch (e) {
       logger.warn('rollback');

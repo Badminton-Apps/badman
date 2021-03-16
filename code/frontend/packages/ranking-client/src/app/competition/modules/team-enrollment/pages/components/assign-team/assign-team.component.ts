@@ -1,33 +1,38 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { SubEvent, Team } from 'app/_shared';
 import {
   CdkDrag,
   CdkDragDrop,
-  CdkDropList,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import { CompetitionSubEvent, Team } from 'app/_shared';
 
 @Component({
   selector: 'app-assign-team',
   templateUrl: './assign-team.component.html',
   styleUrls: ['./assign-team.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssignTeamComponent implements OnInit {
   @Input()
-  teams: Team[]
+  teams: Team[];
 
   @Input()
-  subEvents: SubEvent[];
+  subEvents: CompetitionSubEvent[];
 
   @Input()
   type: string;
 
-  ids = []
+  ids = [];
 
   ngOnInit(): void {
-    this.ids = this.subEvents.map(s => s.id);
+    this.ids = this.subEvents.map((s) => s.id);
+    this.initialPlacing();
   }
 
   drop(event: CdkDragDrop<Team[]>): void {
@@ -45,5 +50,23 @@ export class AssignTeamComponent implements OnInit {
         event.currentIndex
       );
     }
+  }
+
+  private initialPlacing() {
+    for (const team of this.teams) {
+      const subEvent = this.subEvents.sort((a, b) => b.level - a.level).find(
+        (subEvent) => team.baseIndex > subEvent.minBaseIndex
+      );
+      {
+        (subEvent as any)?.teams?.push(team);
+        continue;
+      }
+    }
+    this.subEvents = this.subEvents.sort((a, b) => a.level - b.level);
+  }
+
+
+   sortPredicate(index: Team, item: CdkDrag<Team>) {
+    return index.number > item.data.number;
   }
 }

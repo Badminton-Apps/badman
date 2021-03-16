@@ -12,21 +12,29 @@ query GetClubQuery(
     name
     abbreviation
     clubId
-    teams(order: "name") @include(if: $includeTeams) {
+    teams(order: "type") @include(if: $includeTeams) {
       id
       name
       abbreviation
       type
+      preferredTime
+      preferredDay
       baseIndex(systemId: $rankingType)
       players(end: $end) {
         id
         firstName
         lastName
         base
+        rankingPlaces(where: { SystemId: $rankingType })
+          @include(if: $includePlaces) {
+          single
+          double
+          mix
+        }
       }
     }
 
-    roles @include(if: $includeRoles)  {
+    roles @include(if: $includeRoles) {
       id
       name
       description

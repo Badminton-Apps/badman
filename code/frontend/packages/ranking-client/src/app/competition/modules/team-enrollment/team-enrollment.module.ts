@@ -16,7 +16,7 @@ const materialModules = [DragDropModule, MatCardModule];
     SharedModule,
     TeamEnrolmentRoutingModule,
     CompetitionComponentsModule,
-    ...materialModules,
+    materialModules
   ],
 })
 export class TeamEnrolmentModule {}

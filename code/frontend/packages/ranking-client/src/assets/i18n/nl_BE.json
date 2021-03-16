@@ -1,77 +1,83 @@
 {
-    "languages": {
-        "en": "English",
-        "fr_BE": "Français",
-        "nl_BE": "Nederlands"
+  "languages": {
+    "en": "English",
+    "fr_BE": "Français",
+    "nl_BE": "Nederlands"
+  },
+  "lists": {
+    "name": "Naam"
+  },
+  "management": {
+    "calculate": "Bereken",
+    "cleanup": "Opkuisen",
+    "download": "Download",
+    "end": "Einde",
+    "force": "Forceer",
+    "games-to-use": "Matchen te gebruiken",
+    "import": "Importeer",
+    "new-system": "Nieuw Systeem",
+    "number-short": "Nr.",
+    "procent-losing-short": "% Verlies",
+    "procent-winning-short": "% Win",
+    "ranking": "Ranking",
+    "reset": "Reset",
+    "select": "Selecteer",
+    "start": "Start",
+    "sync": "Sync"
+  },
+  "systems": {
+    "double": "Dubbel",
+    "double-rank": "Ranking klassement",
+    "list": "Ranking spelers",
+    "mix": "Gemengd",
+    "mix-rank": "Ranking klassement",
+    "single": "Enkel",
+    "single-rank": "Ranking klassement"
+  },
+  "faq": {
+    "legend": "Legende",
+    "title": "Info hoe website te gebruiken",
+    "info": {
+      "title": "Infofilmpje",
+      "description": "Via de volgende link kan het infofilmpje gevonden worden waarin alle details van het nieuwe systeem worden uitgelegd: "
     },
-    "lists": {
-        "name": "Naam"
+    "overview": {
+      "title": "Overzicht per speler",
+      "description": "Wanneer je in de zoekbalk een speler opzoekt, kom je op een pagina terecht waarin je allerhande informatie kan zien over een speler zijn resultaten en daaraan gekoppelde klassement en ranking. Hieronder worden alle onderdelen van deze pagina uitgelegd.",
+      "levels": "Rechtsboven krijg je de klassementen van de persoon die je aan het opzoeken bent. Als je met je muis over een klassement beweegt (of op je GSM bij lang induwen) dan zie je de rangschikking van de speler binnen zijn eigen klassement, alsook zijn positie binnen de totale Belgische ranking.",
+      "evolution-1": "Op de evolutie grafiek rechts zie je hoe een speler evolueert doorheen de gesimuleerde jaren. De periode aangeduid met een stippenlijn, is een periode waar de simulaties nog aan het stabiliseren zijn, dus deze periode is minder accuraat.",
+      "evolution-2": "Tevens is per maand van klassementswijziging het gemiddelde voor stijgen als het gemiddelde voor dalen zichtbaar door met je muis over het cirkeltje horende bij de maand te bewegen",
+      "game-result": "Voor een speler worden al zijn resultaten weergeven (toernooi/competitie), wanneer deze gespeeld is, wat de setstanden waren, welke klassement de spelers waren op het moment van de wedstrijd en wie de winnaar was (in het vet aangeduid)."
     },
-    "management": {
-        "calculate": "Bereken",
-        "cleanup": "Opkuisen",
-        "download": "Download",
-        "end": "Einde",
-        "force": "Forceer",
-        "games-to-use": "Matchen te gebruiken",
-        "import": "Importeer",
-        "new-system": "Nieuw Systeem",
-        "number-short": "Nr.",
-        "procent-losing-short": "% Verlies",
-        "procent-winning-short": "% Win",
-        "ranking": "Ranking",
-        "reset": "Reset",
-        "select": "Selecteer",
-        "start": "Start",
-        "sync": "Sync"
+    "points": {
+      "title": "Punten tabel",
+      "table": {
+        "level": "Level",
+        "points-won": "Punten gewonnen tegen dit niveau",
+        "points-needed-up": "Grenswaarde voor stijgen",
+        "points-needed-down": "Grenswaarde voor dalen"
+      }
     },
-    "systems": {
-        "double": "Dubbel",
-        "double-rank": "Ranking klassement",
-        "list": "Ranking spelers",
-        "mix": "Gemengd",
-        "mix-rank": "Ranking klassement",
-        "single": "Enkel",
-        "single-rank": "Ranking klassement"
+    "ranking": {
+      "title": "Ranking",
+      "description": "Wanner je linksboven op de categorie ranking klikt, dan krijg je de ranking binnen je klassement samen met je klassement per discipline en per geslacht te zien, samen met het klassement van de speler. Sorteren op aflopende totale ranking binnen een discipline gebeurt door op deze discipline te klikken (of op je GSM bij lang induwen.) Standaard wordt de top 15 gegeven, maar dit kan je onderaan de pagina wijzigen. Je kan ook naar de volgende pagina doorklikken met de volgende spelers binnen de ranking. De discipline zelf kan je ook onderaan selecteren"
     },
-    "faq": {
-        "legend": "Legende",
-        "title": "Info hoe website te gebruiken",
-        "info": {
-            "title": "Infofilmpje",
-            "description": "Via de volgende link kan het infofilmpje gevonden worden waarin alle details van het nieuwe systeem worden uitgelegd: "
-        },
-        "overview": {
-            "title": "Overzicht per speler",
-            "description": "Wanneer je in de zoekbalk een speler opzoekt, kom je op een pagina terecht waarin je allerhande informatie kan zien over een speler zijn resultaten en daaraan gekoppelde klassement en ranking. Hieronder worden alle onderdelen van deze pagina uitgelegd.",
-            "levels": "Rechtsboven krijg je de klassementen van de persoon die je aan het opzoeken bent. Als je met je muis over een klassement beweegt (of op je GSM bij lang induwen) dan zie je de rangschikking van de speler binnen zijn eigen klassement, alsook zijn positie binnen de totale Belgische ranking.",
-            "evolution-1": "Op de evolutie grafiek rechts zie je hoe een speler evolueert doorheen de gesimuleerde jaren. De periode aangeduid met een stippenlijn, is een periode waar de simulaties nog aan het stabiliseren zijn, dus deze periode is minder accuraat.",
-            "evolution-2": "Tevens is per maand van klassementswijziging het gemiddelde voor stijgen als het gemiddelde voor dalen zichtbaar door met je muis over het cirkeltje horende bij de maand te bewegen",
-            "game-result": "Voor een speler worden al zijn resultaten weergeven (toernooi\/competitie), wanneer deze gespeeld is, wat de setstanden waren, welke klassement de spelers waren op het moment van de wedstrijd en wie de winnaar was (in het vet aangeduid)."
-        },
-        "points": {
-            "title": "Punten tabel",
-            "table": {
-                "level": "Level",
-                "points-won": "Punten gewonnen tegen dit niveau",
-                "points-needed-up": "Grenswaarde voor stijgen",
-                "points-needed-down": "Grenswaarde voor dalen"
-            }
-        },
-        "ranking": {
-            "title": "Ranking",
-            "description": "Wanner je linksboven op de categorie ranking klikt, dan krijg je de ranking binnen je klassement samen met je klassement per discipline en per geslacht te zien, samen met het klassement van de speler. Sorteren op aflopende totale ranking binnen een discipline gebeurt door op deze discipline te klikken (of op je GSM bij lang induwen.) Standaard wordt de top 15 gegeven, maar dit kan je onderaan de pagina wijzigen. Je kan ook naar de volgende pagina doorklikken met de volgende spelers binnen de ranking. De discipline zelf kan je ook onderaan selecteren"
-        },
-        "updates": {
-            "title": "Updates",
-            "description": "Bekijk de changelogs"
-        }
-    },
-    "competition": {
-        "types": {
-            "male": "Mannen",
-            "female": "Vrouwen",
-            "mix": "Gemengd"
-        }
+    "updates": {
+      "title": "Updates",
+      "description": "Bekijk de changelogs"
     }
+  },
+  "competition": {
+    "types": {
+      "male": "Heren",
+      "female": "Dames",
+      "mix": "Gemengd"
+    }
+  },
+  "event": {
+    "types": {
+      "competition": "Competitie",
+      "tournament": "Toernooien"
+    }
+  }
 }

@@ -79,7 +79,6 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
         switchMap(() => {
           this.isLoadingResults = true;
           return this.systemsService.getSystems(
-            false,
             this.sort.active,
             this.sort.direction,
             this.paginator.pageIndex

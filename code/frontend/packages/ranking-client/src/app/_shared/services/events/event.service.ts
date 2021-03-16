@@ -2,17 +2,31 @@ import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Imported } from 'app/_shared';
-import { Event, EventType } from 'app/_shared/models';
+import {
+  CompetitionEvent,
+  CompetitionSubEvent,
+  Event,
+  EventType,
+  TournamentEvent,
+} from 'app/_shared/models';
 import { environment } from 'environments/environment';
-import { BehaviorSubject, concat } from 'rxjs';
+import { BehaviorSubject, concat, of } from 'rxjs';
 import { map, share, tap, toArray } from 'rxjs/operators';
-const getCompetitionEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetCompetition.graphql');
+const getCompetitionEventQuery = require('graphql-tag/loader!../../graphql/events/queries/GetCompetition.graphql');
+const getTournamentEventQuery = require('graphql-tag/loader!../../graphql/events/queries/GetTournament.graphql');
+
+const getCompetitionEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetCompetitions.graphql');
 const getTournamentEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetTournaments.graphql');
+
+const importedQuery = require('graphql-tag/loader!../../graphql/importedEvents/queries/GetImported.graphql');
+
 
 const addEventMutation = require('graphql-tag/loader!../../graphql/events/mutations/addEvent.graphql');
 const deleteEventMutation = require('graphql-tag/loader!../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql');
 
-const importedQuery = require('graphql-tag/loader!../../graphql/importedEvents/queries/GetImported.graphql');
+
+const updateCompetitionEvent = require('graphql-tag/loader!../../graphql/events/mutations/UpdateCompetitionEvent.graphql');
+
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +51,7 @@ export class EventService {
         eventCompetitions?: {
           total: number;
           edges: { cursor: string; node: Event }[];
-        },
+        };
         eventTournaments?: {
           total: number;
           edges: { cursor: string; node: Event }[];
@@ -56,21 +70,65 @@ export class EventService {
       .pipe(
         map((x) => {
           if (x.data.eventCompetitions) {
-            x.data.eventCompetitions.edges = x.data.eventCompetitions.edges.map((x) => {
-              x.node = new Event(x.node);
-              return x;
-            });
+            x.data.eventCompetitions.edges = x.data.eventCompetitions.edges.map(
+              (x) => {
+                x.node = new CompetitionEvent(x.node);
+                return x;
+              }
+            );
           }
           if (x.data.eventTournaments) {
-            x.data.eventTournaments.edges = x.data.eventTournaments.edges.map((x) => {
-              x.node = new Event(x.node);
-              return x;
-            });
+            x.data.eventTournaments.edges = x.data.eventTournaments.edges.map(
+              (x) => {
+                x.node = new TournamentEvent(x.node);
+                return x;
+              }
+            );
           }
 
           return x.data;
         })
       );
+  }
+
+  getCompetitionEvent(id: string, args?: {}) {
+    return this.apollo
+      .query<{
+        eventCompetition: CompetitionEvent;
+      }>({
+        query: getCompetitionEventQuery,
+        variables: {
+          id,
+        },
+      })
+      .pipe(map((x) => new CompetitionEvent(x.data.eventCompetition)));
+  }
+
+  getTournamentEvent(id: string, args?: {}) {
+    return this.apollo
+      .query<{
+        eventTournament: TournamentEvent;
+      }>({
+        query: getTournamentEventQuery,
+        variables: {
+          id,
+        },
+      })
+      .pipe(map((x) => new TournamentEvent(x.data.eventTournament)));
+  }
+
+
+  updateCompetitionEvent(event: Partial<CompetitionEvent>) {
+    return this.apollo
+      .mutate<{
+        updateEventCompetition: CompetitionEvent;
+      }>({
+        mutation: updateCompetitionEvent,
+        variables: {
+          event
+        }
+      })
+      .pipe(map((x) => new CompetitionEvent(x.data.updateEventCompetition)));
   }
 
   getImported(order: string, first: number, after: string) {
