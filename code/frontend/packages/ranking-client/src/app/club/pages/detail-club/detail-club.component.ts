@@ -3,10 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddPlayerComponent } from 'app/admin/modules/club-management/dialogs/add-player/add-player.component';
 import { UserService } from 'app/player';
-import { Club, ClubService, SystemService } from 'app/_shared';
+import { Club, ClubService, SystemService, Team } from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import * as moment from 'moment';
+import { TeamDialogComponent } from 'app/club/dialogs';
 
 @Component({
   templateUrl: './detail-club.component.html',
@@ -25,11 +26,9 @@ export class DetailClubComponent {
   ) {}
 
   ngOnInit(): void {
-    const system$ = this.systemService.getSystems(true).pipe(
-      filter((x) => !!x),
-      filter((x) => x.length > 0),
-      map((x) => x[0])
-    );
+    const system$ = this.systemService
+      .getPrimarySystem()
+      .pipe(filter((x) => !!x));
 
     this.club$ = combineLatest([
       this.route.paramMap,
@@ -57,4 +56,16 @@ export class DetailClubComponent {
       }
     });
   }
+
+  editTeam(team: Team, club?: Club) {
+       let dialogRef = this.dialog.open(TeamDialogComponent, {
+      data: { team, club },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.update$.next(0);
+    });
+  }
+
+  deleteTeam(team: Team) {}
 }

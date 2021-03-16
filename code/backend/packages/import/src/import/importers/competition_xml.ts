@@ -214,9 +214,7 @@ export class CompetitionXmlImporter extends Importer {
             continue;
           }
 
-          dbTeam.type = dbSubevent.eventType;
           await dbTeam.addSubEvent(dbSubevent);
-          await dbTeam.save();
         }
 
         for (const fixture of xmlFixtures) {
@@ -238,8 +236,8 @@ export class CompetitionXmlImporter extends Importer {
             time[1]
           );
 
-          const home = teams.find(t => t.name == this._cleanedTeamName(fixture.FixtureTeam1))
-          const away = teams.find(t => t.name == this._cleanedTeamName(fixture.FixtureTeam2))
+          const home = teams.find(t => t.name == this._cleanedTeamName(fixture.FixtureTeam1));
+          const away = teams.find(t => t.name == this._cleanedTeamName(fixture.FixtureTeam2));
 
           const encountComp = {
             date: playedAt,

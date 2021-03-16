@@ -222,6 +222,7 @@ type EventTournament {
   name: String
   firstDay: Date
   dates: String
+  allowEnlisting: Boolean
   uniCode: String
   createdAt: Date!
   updatedAt: Date!
@@ -258,6 +259,7 @@ input EventTournamentInput {
   name: String
   firstDay: Date
   dates: String
+  allowEnlisting: Boolean
   uniCode: String
   subEvents: [SubEventTournamentInput]
 }
@@ -883,6 +885,9 @@ type SubEventCompetition {
   eventType: SubEventCompetitioneventTypeEnumType
   levelType: SubEventCompetitionlevelTypeEnumType
   level: Int
+  maxLevel: Int
+  minBaseIndex: Int
+  maxBaseIndex: Int
   internalId: Int
   eventId: String
   createdAt: Date!
@@ -905,6 +910,9 @@ input SubEventCompetitionInput {
   eventType: SubEventCompetitioneventTypeEnumType
   levelType: SubEventCompetitionlevelTypeEnumType
   level: Int
+  maxLevel: Int
+  minBaseIndex: Int
+  maxBaseIndex: Int
   internalId: Int
   eventId: String
   groups: [RankingSystemGroupInput]
@@ -960,9 +968,13 @@ input SubEventTournamentInput {
 type Team {
   id: String!
   name: String
+  preferredTime: String
+  preferredDay: TeampreferredDayEnumType
   abbreviation: String
   ClubId: String
   type: String
+  number: Int
+  active: Boolean
   createdAt: Date!
   updatedAt: Date!
   players(
@@ -980,7 +992,6 @@ type Team {
     where: SequelizeJSON
     offset: Int
   ): [SubEventCompetition]
-  firstTeam: Boolean
   baseIndex(systemId: ID): Int
 }
 
@@ -988,8 +999,22 @@ type Team {
 input TeamInput {
   id: String
   name: String
+  preferredTime: String
+  preferredDay: TeampreferredDayEnumType
   abbreviation: String
   ClubId: String
   type: String
+  number: Int
+  active: Boolean
+}
+
+enum TeampreferredDayEnumType {
+  sunday
+  monday
+  tuesday
+  wednesday
+  thursday
+  friday
+  saturday
 }
 

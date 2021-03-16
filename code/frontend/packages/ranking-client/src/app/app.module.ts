@@ -17,6 +17,7 @@ import {
 } from '@ngx-translate/core';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { MarkdownModule } from 'ngx-markdown';
+import { NgxNativeDateModule } from '@angular-material-components/datetime-picker';
 
 const baseModules = [
   BrowserModule,
@@ -55,7 +56,7 @@ const appModules = [SharedModule, GraphQLModule];
       useFactory: appInitializerFactory,
       deps: [TranslateService, Injector],
       multi: true,
-    },
+    }
   ],
   bootstrap: [AppComponent],
 })

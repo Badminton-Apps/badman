@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+form {
+  padding-right: 25px;
+  .row {
+    display: flex;
+    .flex {
+      flex: 1;
+    }
+    mat-form-field:not(:first-child) {
+      padding-left: 25px;
+    }
+  }
+}

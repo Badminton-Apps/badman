@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { DetailTournamentComponent } from './pages';
 
-import { ToernamentComponent } from './toernament.component';
+const routes: Routes = [{ path: ':id', component: DetailTournamentComponent }];
 
-const routes: Routes = [{ path: '', component: ToernamentComponent }];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

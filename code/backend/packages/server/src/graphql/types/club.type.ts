@@ -24,20 +24,11 @@ export const ClubType = new GraphQLObjectType({
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Club.associations.teams, {
           before: async (findOptions, args, context, info) => {
-            findOptions.order =  findOptions.order ?? [['name', 'asc']]
+            findOptions.order = [
+              ['type', 'asc'],
+              ['number', 'asc']
+            ];
             return findOptions;
-          },
-          after: (result, args, context) => {
-            // Not really happy about this, but so fare didn't see any other solution
-            result.map(r => {
-              r.firstTeam = false;
-              return r;
-            })
-            for(const type of Object.keys(SubEventType)){
-              result.filter(r => r.type == type)[0].firstTeam = true
-            } 
-
-            return result;
           }
         })
       },

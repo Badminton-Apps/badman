@@ -67,11 +67,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
 
-    const system$ = this.systemService.getSystems(true).pipe(
-      filter((x) => !!x),
-      filter((x) => x.length > 0),
-      map((x) => x[0])
-    );
+    const system$ = this.systemService
+      .getPrimarySystem()
+      .pipe(filter((x) => !!x));
 
     this.player$ = merge<Player>(
       reset$,

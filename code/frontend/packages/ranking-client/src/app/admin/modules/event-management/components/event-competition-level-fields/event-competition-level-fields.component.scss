@@ -1,0 +1,19 @@
+:host {
+  display: block;
+
+  border-bottom: solid 1px #ccc;
+  margin-bottom: 20px;
+}
+
+form {
+  .row {
+    display: flex;
+    .flex {
+      flex: 1;
+    }
+    mat-form-field:not(:first-child) {
+      width: 50px;
+      padding-left: 25px;
+    }
+  }
+}

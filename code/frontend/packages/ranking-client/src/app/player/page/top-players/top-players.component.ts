@@ -37,10 +37,8 @@ export class TopPlayersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const system$ = this.systemService.getSystems(true).pipe(
+    const system$ = this.systemService.getPrimarySystem().pipe(
       filter((x) => !!x),
-      filter((x) => x.length > 0),
-      map((x) => x[0]),
       shareReplay()
     );
 

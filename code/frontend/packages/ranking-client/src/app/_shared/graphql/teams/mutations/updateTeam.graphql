@@ -1,5 +1,5 @@
 mutation UpdateTeam($team: TeamInput!) {
-  UpdateTeam(team: $team) {
+  updateTeam(team: $team) {
     id
     name
     abbreviation

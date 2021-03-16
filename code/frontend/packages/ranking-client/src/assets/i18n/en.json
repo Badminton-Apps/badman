@@ -73,5 +73,11 @@
             "female": "Fenale",
             "mix": "Mix"
         }
+    },
+    "event": {
+      "types": {
+        "competition": "Competition",
+        "tournament": "Tournament"
+      }
     }
 }

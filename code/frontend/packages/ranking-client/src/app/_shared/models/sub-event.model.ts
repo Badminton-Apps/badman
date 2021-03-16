@@ -8,9 +8,7 @@ export class SubEvent {
   name: string;
   eventType: string;
   gameType: string;
-  levelType: string;
   level: number;
-  teams: Team[];
 
   event: Event;
   draws: Draw[];
@@ -20,11 +18,32 @@ export class SubEvent {
     this.id = args.id;
     this.gameType = args.gameType;
     this.eventType = args.eventType;
-    this.levelType = args.levelType;
     this.name = args.name;
-    this.event = new Event(args.event);
+    this.event = args.event ? new Event(args.event) : null;
     this.level = args.level;
     this.draws = args.draws?.map((g) => new Draw(g));
+  }
+}
+
+export class CompetitionSubEvent extends SubEvent {
+  maxLevel: number;
+  minBaseIndex: number;
+  maxBaseIndex: number;
+  levelType: string;
+  teams: Team[];
+
+  constructor({ ...args }: Partial<CompetitionSubEvent>) {
+    super(args);
+    this.levelType = args.levelType;
+    this.maxLevel = args.maxLevel ?? 0;
+    this.minBaseIndex = args.minBaseIndex ?? 0;
+    this.maxBaseIndex = args.maxBaseIndex ?? 0;
     this.teams = [];
+  }
+}
+
+export class TournamentSubEvent extends SubEvent {
+  constructor({ ...args }: Partial<TournamentSubEvent>) {
+    super(args);
   }
 }

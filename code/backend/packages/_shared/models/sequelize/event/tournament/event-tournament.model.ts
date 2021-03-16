@@ -50,7 +50,7 @@ export class EventTournament extends Model {
   @Unique('unique_constraint')
   @Column
   firstDay: Date;
-
+ 
   @Column
   dates: string; 
 
@@ -66,7 +66,12 @@ export class EventTournament extends Model {
   })
   locations: Location[];
 
+  
+  @Default(false)
   @Column
+  allowEnlisting: boolean;
+
+  @Column 
   uniCode: string;
 
   // Has many subEvent
