@@ -25,7 +25,7 @@ dotenv.config();
   await startWhenReady(false, true, db => {
     startServer(db);  
   }); 
-})();
+})(); 
 
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();

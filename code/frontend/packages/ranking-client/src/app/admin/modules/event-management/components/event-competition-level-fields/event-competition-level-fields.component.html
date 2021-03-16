@@ -1,0 +1,58 @@
+<form [formGroup]="this.formGroup">
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" alt="name" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Level</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="level"
+        alt="level"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Level Type</mat-label>
+      <mat-select formControlName="levelType" required>
+        <mat-option value="PROV">Prov</mat-option>
+        <mat-option value="LIGA">Liga</mat-option>
+        <mat-option value="NATIONAAL">National</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>type</mat-label>
+      <mat-select formControlName="eventType" required>
+        <mat-option value="F">F</mat-option>
+        <mat-option value="M">M</mat-option>
+        <mat-option value="MX">MX</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Max level</mat-label>
+      <input matInput type="number" formControlName="maxLevel" alt="maxLevel" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Min base level</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="minBaseIndex"
+        alt="minBaseIndex"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Max base level</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="maxBaseIndex"
+        alt="maxBaseIndex"
+      />
+    </mat-form-field>
+  </div>
+</form>

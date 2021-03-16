@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RankingService } from 'app/admin/services';
 import {
   Claim,
   Club,
@@ -8,6 +9,7 @@ import {
   Player,
   Role,
   RoleService,
+  SystemService,
   Team,
   TeamService,
 } from 'app/_shared';
@@ -27,6 +29,7 @@ export class EditClubComponent implements OnInit {
     private teamService: TeamService,
     private roleService: RoleService,
     private clubService: ClubService,
+    private systemService: SystemService,
     private route: ActivatedRoute,
     private _snackBar: MatSnackBar
   ) {}
@@ -34,11 +37,16 @@ export class EditClubComponent implements OnInit {
   ngOnInit(): void {
     this.club$ = combineLatest([
       this.route.paramMap,
+      this.systemService.getPrimarySystem(),
       this.update$.pipe(debounceTime(600)),
     ]).pipe(
-      map(([params]) => params.get('id')),
-      switchMap((id) =>
-        this.clubService.getClub(id, { includeTeams: true, includeRoles: true })
+      map(([params, systems]) => [params.get('id'), systems.id]),
+      switchMap(([id, systemId]) =>
+        this.clubService.getClub(id, {
+          rankingSystem: systemId,
+          includeTeams: true,
+          includeRoles: true,
+        })
       )
     );
   }

@@ -1,0 +1,51 @@
+<form [formGroup]="teamForm">
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        alt="name"
+        autocomplete="name"
+        required
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Abbreviation</mat-label>
+      <input
+        matInput
+        formControlName="abbreviation"
+        alt="abbreviation"
+        autocomplete="abbreviation"
+        required
+      />
+    </mat-form-field>
+  </div>
+  <div class="row">Preffered encounter moment</div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Day</mat-label>
+      <mat-select formControlName="preferredDay">
+        <mat-option>--select something --</mat-option>
+        <mat-option value="monday">monday</mat-option>
+        <mat-option value="tuesday">tuesday</mat-option>
+        <mat-option value="wednesday">wednesday</mat-option>
+        <mat-option value="thursday">thursday</mat-option>
+        <mat-option value="friday">friday</mat-option>
+        <mat-option value="saturday">saturday</mat-option>
+        <mat-option value="sunday">sunday</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <input
+        matInput
+        type="time"
+        placeholder="Choose a date"
+        formControlName="preferredTime"
+      />
+    </mat-form-field>
+  </div>
+</form>

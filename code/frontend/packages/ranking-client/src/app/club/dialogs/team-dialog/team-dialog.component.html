@@ -1,0 +1,22 @@
+<ng-container *ngIf="this.team$ | async as team">
+  <h2 mat-dialog-title>Edit team</h2>
+  <mat-dialog-content>
+    <app-team-fields
+      [club]="this.data.club"
+      [team]="team"
+      (save)="this.update($event)"
+    ></app-team-fields>
+
+    <app-team-players
+      [team]="team"
+      [disableIds]="this.alreadyUsed"
+      (onPlayerAdded)="this.onPlayerAddedToTeam($event, team)"
+      (onPlayerRemoved)="this.onPlayerRemovedFromTeam($event, team)"
+      (onPlayerUpdated)="this.onPlayerUpdatedFromTeam($event, team)"
+    ></app-team-players>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</ng-container>

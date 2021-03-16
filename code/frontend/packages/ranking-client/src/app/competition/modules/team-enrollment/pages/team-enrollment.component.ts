@@ -12,7 +12,16 @@ import {
   Team,
 } from 'app/_shared';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map, share, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators';
+import {
+  filter,
+  map,
+  share,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'app-team-enrollment',
@@ -35,18 +44,17 @@ export class TeamEnrollmentComponent implements OnInit {
   form$: Observable<any>;
 
   constructor(
+    private eventService: EventService,
     private systemService: SystemService,
     private clubService: ClubService
   ) {}
 
   async ngOnInit() {
     this.form$ = this.formGroup.valueChanges.pipe(shareReplay(1));
-    
+
     this.setTeams();
     this.setSubEvents();
-    this.show$ = this.form$.pipe(
-      map((fg) => fg.club && fg.event)
-    );
+    this.show$ = this.form$.pipe(map((fg) => fg.club && fg.event));
   }
 
   private setTeams() {
@@ -54,14 +62,14 @@ export class TeamEnrollmentComponent implements OnInit {
       this.form$.pipe(
         startWith(this.formGroup.value),
         map((group) => group?.club?.id),
-        filter((id) => !!id),
+        filter((id) => !!id)
       ),
-      this.systemService.getSystems(true),
+      this.systemService.getPrimarySystem(),
     ]).pipe(
       switchMap(([id, primary]) =>
         this.clubService.getClub(id, {
-          rankingSystem: primary[0].id,
-          includeTeams: true,
+          rankingSystem: primary.id,
+        includeTeams: true,
         })
       ),
       shareReplay()
@@ -83,8 +91,9 @@ export class TeamEnrollmentComponent implements OnInit {
   private setSubEvents() {
     const event$ = this.form$.pipe(
       startWith(this.formGroup.value),
-      map((group) => group?.event),
-      filter((event) => !!event),
+      map((group) => group?.event?.id),
+      filter((id) => !!id),
+      switchMap((id) => this.eventService.getCompetitionEvent(id)),
       shareReplay()
     );
 

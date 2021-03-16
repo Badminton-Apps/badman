@@ -2,13 +2,21 @@
   display: block;
 }
 
-
 .team-container {
   min-width: 250px;
   max-width: 100%;
   margin: 0 25px 25px 0;
   display: inline-block;
   vertical-align: top;
+  .title {
+    .name,
+    .min-max {
+      display: inline-block;
+    }
+    .min-max {
+      float: right;
+    }
+  }
 }
 
 .team-list-target,
@@ -37,16 +45,21 @@
 
 .team-box {
   width: 250px;
-  padding: 20px 10px;
+  padding: 15px 10px;
   color: rgba(0, 0, 0, 0.87);
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: space-between;
   box-sizing: border-box;
   cursor: move;
   background: white;
   font-size: 14px;
+
+  .team-encounter {
+    color: rgba(0, 0, 0, 0.60);
+    font-size: 11px;
+  }
 }
 
 h3 {

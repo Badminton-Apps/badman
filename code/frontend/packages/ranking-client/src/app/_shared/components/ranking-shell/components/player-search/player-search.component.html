@@ -10,7 +10,11 @@
     [displayWith]="displayFn"
     (optionSelected)="selectedPlayer($event)"
   >
-    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+    <mat-option
+      *ngFor="let option of filteredOptions | async"
+      [value]="option"
+      [disabled]="this.ignorePlayersIds.indexOf(option.id) >= 0"
+    >
       {{ option.firstName }} {{ option.lastName }}
       <small *ngIf="option.memberId">({{ option.memberId }}) </small>
     </mat-option>

@@ -48,11 +48,9 @@ export class GamesComponent implements OnInit {
       shareReplay(1)
     );
 
-    const system$ = this.systemService.getSystems(true).pipe(
-      filter((x) => !!x),
-      filter((x) => x.length > 0),
-      map((x) => x[0])
-    );
+    const system$ = this.systemService
+      .getPrimarySystem()
+      .pipe(filter((x) => !!x));
     this.games$ = combineLatest([id$, system$, this.currentPage$]).pipe(
       switchMap(([playerId, system, page]) => {
         if (this.request$) {
@@ -75,7 +73,9 @@ export class GamesComponent implements OnInit {
       scan((acc: any, newGames: Game[]) => {
         function sameEvent(game1, game2) {
           if (game1.draw.subEvent.event.type === 'TOERNAMENT') {
-            return game2.draw.subEvent.event.id === game1.draw.subEvent.event.id;
+            return (
+              game2.draw.subEvent.event.id === game1.draw.subEvent.event.id
+            );
           } else {
             return (
               game2.draw.subEvent.event.id === game1.draw.subEvent.event.id &&

@@ -20,12 +20,13 @@ const updatePlayerTeamMutation = require('graphql-tag/loader!../../graphql/teams
 export class TeamService {
   constructor(private apollo: Apollo) {}
 
-  getTeam(teamId: string) {
+  getTeam(teamId: string, rankingType ?: string) {
     return this.apollo
       .query<{ team: Team }>({
         query: teamQuery,
         variables: {
           id: teamId,
+          rankingType
         },
       })
       .pipe(map((x) => new Team(x.data.team)));
