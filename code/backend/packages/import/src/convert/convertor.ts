@@ -22,16 +22,16 @@ export class Convertor {
   private _queue = [];
   private _queueRunning = false;
   private _parallel = 1;
-  private competitionXmlProcessor: CompetitionXmlProcessor;
-  private competitionCpProcessor: CompetitionCpProcessor;
-  private tournamentTpProcessor: TournamentTpProcessor;
+  private _competitionXmlProcessor: CompetitionXmlProcessor;
+  private _competitionCpProcessor: CompetitionCpProcessor;
+  private _tournamentTpProcessor: TournamentTpProcessor;
 
   constructor(private _importEmitter = new EventEmitter()) {
     this._setupQueue();
 
-    this.competitionXmlProcessor = new CompetitionXmlProcessor();
-    this.competitionCpProcessor = new CompetitionCpProcessor();
-    this.tournamentTpProcessor = new TournamentTpProcessor();
+    this._competitionXmlProcessor = new CompetitionXmlProcessor();
+    this._competitionCpProcessor = new CompetitionCpProcessor();
+    this._tournamentTpProcessor = new TournamentTpProcessor();
   }
 
   private _setupQueue() {
@@ -125,19 +125,19 @@ export class Convertor {
   ) {
     switch (imported.type) {
       case EventImportType.TOURNAMENT:
-        return this.tournamentTpProcessor.import(imported, {
+        return this._tournamentTpProcessor.import(imported, {
           transaction,
           event: event as EventTournament
         });
 
       case EventImportType.COMPETITION_CP:
-        return this.competitionCpProcessor.import(imported, {
+        return this._competitionCpProcessor.import(imported, {
           transaction,
           event: event as EventCompetition
         });
 
       case EventImportType.COMPETITION_XML:
-        return this.competitionXmlProcessor.import(imported, {
+        return this._competitionXmlProcessor.import(imported, {
           transaction,
           event: event as EventCompetition
         });
@@ -150,11 +150,11 @@ export class Convertor {
   async basicInfo(fileLocation: string, type: EventImportType, transaction: Transaction) {
     switch (type) {
       case EventImportType.TOURNAMENT:
-        return this.tournamentTpProcessor.importFile(fileLocation, transaction);
+        return this._tournamentTpProcessor.importFile(fileLocation, transaction);
       case EventImportType.COMPETITION_CP:
-        return this.competitionCpProcessor.importFile(fileLocation, transaction);
+        return this._competitionCpProcessor.importFile(fileLocation, transaction);
       case EventImportType.COMPETITION_XML:
-        return this.competitionXmlProcessor.importFile(fileLocation, transaction);
+        return this._competitionXmlProcessor.importFile(fileLocation, transaction);
       default:
         logger.error('Unsupperted type', type);
         // throw new Error('Unsupperted type');

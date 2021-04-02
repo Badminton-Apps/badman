@@ -1,3 +1,4 @@
+import { ImportStep } from './../import-step';
 import {
   Club,
   correctWrongPlayers,
@@ -20,7 +21,6 @@ import { parse } from 'fast-xml-parser';
 import { readFileSync, unlink } from 'fs';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
-import { ImportStep } from '../processor';
 import { CompetitionProcessor } from './competition';
 
 export class CompetitionXmlProcessor extends CompetitionProcessor {
@@ -69,7 +69,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       return {
         name: xmlData.LeagueName,
-        teams: teams.filter(team => team.TeamName != ''),
+        teams: teams.filter(team => team.TeamName !== ''),
         events
       };
     });
@@ -104,7 +104,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
             // fiew, Got it now
             eventType = matches.find(
-              r => r?.MatchType == null || r.MatchType === 5 || r.MatchType === 'GD'
+              r => r?.MatchType === null || r.MatchType === 5 || r.MatchType === 'GD'
             )
               ? SubEventType.MX
               : matches.find(r => r.MatchType === 1 || r.MatchType === 'HD')
@@ -116,11 +116,11 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         const name = this.cleanedSubEventName(subEvent.EventName);
         const level = this.getLevel(name);
         const foundEventIndex = subEvents.findIndex(
-          r => r.name == name && r.level == level && r.eventType == eventType
+          r => r.name === name && r.level === level && r.eventType === eventType
         );
 
         // This is when the the draws are configured as subevents (liga did so...)
-        if (foundEventIndex == -1) {
+        if (foundEventIndex === -1) {
           subEvents.push(
             new SubEventCompetition({
               name,
@@ -170,7 +170,11 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           );
 
           fixtures.push(
-            division.Fixture == null ? [] : Array.isArray(division.Fixture) ? [...division.Fixture] : [division.Fixture]
+            division.Fixture === null
+              ? []
+              : Array.isArray(division.Fixture)
+              ? [...division.Fixture]
+              : [division.Fixture]
           );
         }
       }
@@ -203,7 +207,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         teamClubDistinct.map(team => {
           const clubName = this.cleanedClubName(team.TeamName);
           const clubId = +team.TeamClubSiebelId || null;
-          if (clubName != null) {
+          if (clubName !== null) {
             return new Club({
               name: clubName,
               clubId
@@ -218,7 +222,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           clubId: {
             [Op.in]: teamClubDistinct
               .map(team => +team.TeamClubSiebelId || null)
-              .filter(id => id != null)
+              .filter(id => id !== null)
           }
         },
         transaction: args.transaction
@@ -240,7 +244,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           if (team.TeamName) {
             return new Team({
               name: this.cleanedTeamName(team.TeamName),
-              ClubId: clubs.find(r => r.clubId == +team.TeamClubSiebelId)?.id || null
+              ClubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
             }).toJSON();
           }
         }),
@@ -259,7 +263,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       return data.teams.map((v, i) => {
         const members = (Array.isArray(v.Member) ? [...v.Member] : [v.Member]).filter(r => !!r);
 
-        const dbTeam = dbTeams.find(t => this.cleanedTeamName(v.TeamName) == t.name);
+        const dbTeam = dbTeams.find(t => this.cleanedTeamName(v.TeamName) === t.name);
         return {
           team: dbTeam,
           internalId: v.TeamLPId,
@@ -311,7 +315,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       return players.map((v, i) => {
         return {
-          player: dbPlayers.find(r => r.memberId == `${playersCorrected[i].memberId}`),
+          player: dbPlayers.find(r => r.memberId === `${playersCorrected[i].memberId}`),
           internalId: v
         };
       });
@@ -339,7 +343,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           for (const team of teamSet.values()) {
             teamSubscriptions.push(
               new TeamSubEventMembership({
-                teamId: teams.find(r => r.internalId == team)?.team?.id,
+                teamId: teams.find(r => r.internalId === team)?.team?.id,
                 subEventId: draw?.draw?.subeventId
               }).toJSON()
             );
@@ -368,7 +372,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const team of teams) {
         const playerIds = [];
         for (const teamMember of team.members) {
-          const player = playersData.find(r => r.internalId == teamMember.MemberLTANo)?.player;
+          const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
           if (player) {
             playerIds.push(player.id);
           }
@@ -396,7 +400,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const team of teams) {
         const clubPlayers = playerIds.get(team.team.ClubId) ?? [];
         for (const teamMember of team.members) {
-          const player = playersData.find(r => r.internalId == teamMember.MemberLTANo)?.player;
+          const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
           if (player) {
             clubPlayers.push(player.id);
           }
@@ -405,7 +409,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       }
 
       for (const [id, players] of playerIds) {
-        if (id == null) {
+        if (id === null) {
           logger.warn('Empty club?');
           continue;
         }
@@ -431,13 +435,13 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
             continue;
           }
 
-          if (fixture.FixtureWinnerTeamId == '' || isNaN(+fixture.FixtureWinnerTeamId)) {
+          if (fixture.FixtureWinnerTeamId === '' || isNaN(+fixture.FixtureWinnerTeamId)) {
             continue;
           }
 
           const time = fixture.FixtureStartTime.split(':');
-          const homeTeam = teams.find(r => r.internalId == +fixture.FixtureTeam1Id).team;
-          const awayTeam = teams.find(r => r.internalId == +fixture.FixtureTeam2Id).team;
+          const homeTeam = teams.find(r => r.internalId === +fixture.FixtureTeam1Id).team;
+          const awayTeam = teams.find(r => r.internalId === +fixture.FixtureTeam2Id).team;
           encounters.push(
             new EncounterCompetition({
               date: new Date(
@@ -491,15 +495,15 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       for (const encounter of encounters) {
         for (const xmlMatch of encounter.matches) {
-          const team1Player1 = playersData.find(r => r.internalId == xmlMatch?.MatchWinnerLTANo)
+          const team1Player1 = playersData.find(r => r.internalId === xmlMatch?.MatchWinnerLTANo)
             ?.player;
           const team1Player2 = playersData.find(
-            r => r.internalId == xmlMatch?.MatchWinnerPartnerLTANo
+            r => r.internalId === xmlMatch?.MatchWinnerPartnerLTANo
           )?.player;
-          const team2Player1 = playersData.find(r => r.internalId == xmlMatch?.MatchLoserLTANo)
+          const team2Player1 = playersData.find(r => r.internalId === xmlMatch?.MatchLoserLTANo)
             ?.player;
           const team2Player2 = playersData.find(
-            r => r.internalId == xmlMatch?.MatchLoserPartnerLTANo
+            r => r.internalId === xmlMatch?.MatchLoserPartnerLTANo
           )?.player;
 
           // Set null when both sets are 0 (=set not played)
@@ -589,7 +593,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         const yearRegexr = /\b(19|20)\d{2}\b/g;
         let compYear: Date = null;
         const matches = yearRegexr.exec(xmlData.League.LeagueName);
-        if (matches != null) {
+        if (matches !== null) {
           compYear = moment([matches[0], 8, 1]).toDate();
         }
 
