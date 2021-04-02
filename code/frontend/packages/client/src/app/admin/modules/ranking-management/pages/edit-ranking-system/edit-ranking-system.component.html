@@ -1,0 +1,6 @@
+<app-ranking-system-fields
+  *ngIf="this.system$ | async as system"
+  [system]="system"
+  [groups]="this.rankingGroups$ | async"
+  (save)="this.save($event)"
+></app-ranking-system-fields>

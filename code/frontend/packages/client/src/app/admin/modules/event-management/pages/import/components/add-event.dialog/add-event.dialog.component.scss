@@ -1,0 +1,28 @@
+mat-form-field {
+  width: 100%;
+}
+
+mat-checkbox {
+  display: block;
+  margin-bottom: 16px;
+}
+
+th > mat-checkbox {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+mat-list {
+  display: block;
+  height: 20%;
+  overflow: auto;
+}
+
+th[class^='mat-column-group-'] {
+  width: 15%;
+}
+
+
+table {
+  width: 100%;
+}
