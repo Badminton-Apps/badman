@@ -1,8 +1,7 @@
 // start:ng42.barrel
 export * from './add-club';
-export * from './add-role';
-export * from './add-team';
+export * from '../../../../club/pages/detail-club';
 export * from './edit-club';
-export * from './edit-role';
+export * from '../../../../club/pages/overview-clubs';
 // end:ng42.barrel
 

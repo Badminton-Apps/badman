@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: badvlasim-letsencrypt-prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/acme-challenge-type: http01
+spec:
+  tls:
+  - hosts:
+    - badvlasim.westeurope.cloudapp.azure.com
+    secretName: badvlasim-letsencrypt-crt
+  rules:
+  - host: badvlasim.westeurope.cloudapp.azure.com
+    http:
+      paths:
+      - backend:
+          serviceName: client-client
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: server-server
+          servicePort: 80
+        path: /api
+
+

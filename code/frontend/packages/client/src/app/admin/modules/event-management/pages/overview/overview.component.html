@@ -1,0 +1,121 @@
+<h1>Events <app-beta></app-beta></h1>
+
+<div layout="row" layout-fill layout-margin layout-align="start center">
+  <mat-form-field flex>
+    <mat-label>Filter</mat-label>
+    <input
+      matInput
+      (keyup)="filterName(input.value)"
+      placeholder="Ex. ium"
+      #input
+    />
+  </mat-form-field>
+
+  <mat-form-field flex>
+    <mat-label>Type</mat-label>
+    <mat-select (selectionChange)="filterType($event)">
+      <mat-option [value]="undefined" selected>All</mat-option>
+      <mat-option
+        *ngFor="let eventType of this.eventTypes"
+        [value]="eventType.value"
+        >{{ eventType.label | translate }}</mat-option
+      >
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div *ngIf="isLoadingResults">
+  <mat-progress-bar
+    mode="indeterminate"
+    *ngIf="isLoadingResults"
+  ></mat-progress-bar>
+</div>
+
+<table
+  mat-table
+  [dataSource]="dataSource"
+  multiTemplateDataRows
+  matSort
+  matSortActive="firstDay"
+  matSortDirection="desc"
+>
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox
+        (click)="$event.stopPropagation()"
+        (change)="$event ? selection.toggle(row.id) : null"
+        [checked]="selection.isSelected(row.id)"
+        [aria-label]="checkboxLabel(row.id)"
+      >
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="dates">
+    <th mat-header-cell *matHeaderCellDef>Date</th>
+    <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="element.type == 'TOERNAMENT'">
+        {{ element.firstDay | date }}
+      </ng-container>
+      <ng-container *ngIf="element.type == 'COMPETITION'">
+        {{ element.firstDay.getFullYear() }}-{{
+          element.firstDay.getFullYear() + 1
+        }}
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td
+      mat-cell
+      *matCellDef="let element"
+      [attr.colspan]="displayedColumns.length"
+    >
+      <div
+        class="event-element-detail"
+        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'"
+      >
+        <ng-container *ngIf="element.type == 'TOERNAMENT'">
+          <app-toernaments-data data="element"></app-toernaments-data>
+        </ng-container>
+        <ng-container *ngIf="element.type == 'COMPETITION'">
+          <app-competition-data data="element"></app-competition-data>
+        </ng-container>
+
+        <button mat-button [routerLink]="[element.id]">Details</button>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let element; columns: displayedColumns"
+    class="event-element-row"
+    [class.example-expanded-row]="expandedElement === element"
+    (click)="expandedElement = expandedElement === element ? null : element"
+  >
+    >
+  </tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    class="event-detail-row"
+  ></tr>
+</table>
+
+<mat-paginator
+  [length]="this.resultsLength$ | async"
+  [pageSize]="this.pageSize$ | async"
+  [pageIndex]="this.pageIndex$ | async"
+  [pageSizeOptions]="[5, 10, 25, 100]"
+  (page)="this.onPaginateChange.next($event)"
+></mat-paginator>

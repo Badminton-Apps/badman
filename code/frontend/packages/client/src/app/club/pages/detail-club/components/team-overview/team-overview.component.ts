@@ -1,11 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
-import { Club, Team } from 'app/_shared';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Team } from 'app/_shared';
 
 @Component({
   selector: 'app-team-overview',
@@ -14,13 +8,6 @@ import { Club, Team } from 'app/_shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamOverviewComponent {
-  @Output() onEdit = new EventEmitter<Team>();
-  @Output() onActiveChange = new EventEmitter<{team: Team, active: boolean}>();
-  @Output() onDelete = new EventEmitter<Team>();
-
   @Input()
   team: Team;
-
-  @Input()
-  club: Club;
 }

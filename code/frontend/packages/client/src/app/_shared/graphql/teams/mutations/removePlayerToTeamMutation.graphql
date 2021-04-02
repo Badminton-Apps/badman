@@ -1,5 +1,5 @@
-mutation RemovePlayerFromTeam($teamId: ID!, $playerId: ID!) {
-  removePlayerFromTeam(teamId: $teamId, playerId: $playerId) {
+mutation RemovePlayerToTeam($teamId: ID!, $playerId: ID!) {
+  removePlayerToTeam(teamId: $teamId, playerId: $playerId) {
     id
   }
 }
