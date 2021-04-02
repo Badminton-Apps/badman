@@ -1,10 +1,8 @@
 name: publish-docker
 on:
-  push:
-    branches:
-      - 'main'
+  create:
     tags:
-      - 'v*.*.*'
+      - 'v*'
 jobs:
   docker-backend:
     strategy:
@@ -22,8 +20,8 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            badminton-apps/core/server
-            ghcr.io/badminton-apps/core/server
+            badminton-apps/core-server
+            ghcr.io/badminton-apps/core-server
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
