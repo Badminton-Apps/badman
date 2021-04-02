@@ -1,3 +1,4 @@
+import prettyMilliseconds from 'pretty-ms';
 import { createLogger, format, transports } from 'winston';
 const { combine, errors, timestamp, colorize, align } = format;
 import jsonStringify from 'fast-safe-stringify';
@@ -23,12 +24,12 @@ const logLikeFormat = (maxArgLength?: number) => {
       if (lastMessageText !== message) {
         const time = moment(ts);
         const duration = moment.duration(time.diff(lastMesage));
-        lastDiff = moment(duration.asMilliseconds()).format(HTML5_FMT.TIME_MS); // `${hrs}:${mins}:${secs}.${msecs}`;
+        lastDiff = prettyMilliseconds(duration.asMilliseconds()); // `${hrs}:${mins}:${secs}.${msecs}`;
         lastMesage = time;
         lastMessageText = message;
       }
 
-      info[Symbol.for('message')] = `${ts} ${lastDiff}\t ${
+      info[Symbol.for('message')] = `${moment(ts).format('LTS')}${
         label ? `[${label}]` : ''
       } ${level}: ${message} ${strArgs ? `\n${strArgs}` : ''} ${
         stack ? `\n${stack}` : ''

@@ -1,0 +1,23 @@
+<div class="mat-subheading-1">Edit competition</div>
+<ng-container *ngIf="this.event$ | async as event">
+  <ng-container *ngIf="this.formGroup">
+    <app-has-claim [any]="['edit:competition']">
+      <app-event-competition-fields
+        [event]="event"
+        [formGroup]="this.formGroup"
+      ></app-event-competition-fields>
+      <div noPerm>{{ event.name }}</div>
+    </app-has-claim>
+
+    <div class="mat-subheading-1">Sub events</div>
+
+    <div *ngFor="let subEvent of event.subEvents; index as i">
+      <app-event-competition-level-fields
+        [subEvent]="subEvent"
+        [formGroup]="this.formGroup.get('subEvents')?.at(i)"
+      ></app-event-competition-level-fields>
+    </div>
+
+    <button mat-button disabled>Add new (not yet)</button>
+  </ng-container>
+</ng-container>

@@ -7,5 +7,7 @@ export * from './subEventType.enum';
 export * from './rankingsSystemsType.enum';
 export * from './startingType.enum'
 export * from './rankingTiming.enum'
+export * from './teamMembershipType.enum'
+export * from './clubMembershipType.enum'
 // end:ng42.barrel
 

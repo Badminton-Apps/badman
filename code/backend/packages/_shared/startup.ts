@@ -1,3 +1,4 @@
+import { MailService } from './services/mail/mail.service';
 import { DataBaseHandler } from './database';
 import { logger } from './utils';
 // eslint-disable-next-line import/no-internal-modules
@@ -26,7 +27,7 @@ export const startWhenReady = async (
     logger.warn('DB is not availible yet', error);
     logger.warn('retrying', 1000 * times);
 
-    if (times < 3) { 
+    if (times < 3) {
       setTimeout(startFunction, 1000 * times);
 
       setTimeout(() => {

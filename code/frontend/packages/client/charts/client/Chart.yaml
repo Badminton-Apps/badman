@@ -1,0 +1,5 @@
+apiVersion: v2
+description: Da client
+name: client
+version: 0.3.5
+appVersion: 0.3.5

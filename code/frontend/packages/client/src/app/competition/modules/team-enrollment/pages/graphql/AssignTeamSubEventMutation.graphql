@@ -1,0 +1,13 @@
+mutation AssignTeamSubEvent(
+  $teamId: ID!
+  $newSubEventId: ID!
+  $oldSubEventId: ID!
+) {
+  updateSubEventTeam(
+    teamId: $teamId
+    newSubEventId: $newSubEventId
+    oldSubEventId: $oldSubEventId
+  ) {
+    id
+  }
+}

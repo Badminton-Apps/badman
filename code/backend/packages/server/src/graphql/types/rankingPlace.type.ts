@@ -1,6 +1,7 @@
 import {
   GraphQLEnumType,
   GraphQLID,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
@@ -14,14 +15,12 @@ import {
   defaultListArgs,
   resolver
 } from 'graphql-sequelize';
-import { col, fn, Includeable, Op, or, QueryTypes, where } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
 import { RankingPlace } from '@badvlasim/shared/models';
 import { PlayerType } from './player.type';
 import { RankingSystemType } from './rankingSystem.type';
 import { getAttributeFields } from './attributes.type';
 
-const RankingPlaceType = new GraphQLObjectType({
+export const RankingPlaceType = new GraphQLObjectType({
   name: 'RankingPlace',
   description: 'A RankingPlace',
   fields: () =>
@@ -38,4 +37,13 @@ const RankingPlaceType = new GraphQLObjectType({
     })
 });
 
-export { RankingPlaceType };
+export const RankingPlaceInputType = new GraphQLInputObjectType({
+  name: 'RankingPlaceInput',
+  description: 'This represents a RankingPlaceInputType',
+  fields: () =>
+    Object.assign(
+      getAttributeFields(RankingPlace, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] })
+    )
+});
+
+

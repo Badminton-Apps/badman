@@ -1,0 +1,1006 @@
+schema {
+  query: RootQueryType
+  mutation: RootMutationType
+}
+
+directive @specifiedBy(url: String!) on SCALAR
+type Claim {
+  id: String!
+  name: String
+  description: String
+  category: String
+  type: ClaimtypeEnumType
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+input ClaimInput {
+  id: String
+  name: String
+  description: String
+  category: String
+  type: ClaimtypeEnumType
+}
+
+enum ClaimtypeEnumType {
+  global
+  club
+  team
+}
+
+type Club {
+  id: String!
+  name: String!
+  abbreviation: String
+  clubId: Int
+  createdAt: Date!
+  updatedAt: Date!
+  teams(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Team]
+  roles(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Role]
+  locations(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Location]
+  players(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    end: String
+  ): [Player]
+}
+
+type ClubConnection {
+  pageInfo: PageInfo!
+  edges: [ClubEdge]
+  total: Int
+}
+
+type ClubEdge {
+  node: Club
+  cursor: String!
+}
+
+input ClubInput {
+  id: String
+  name: String!
+  abbreviation: String
+  clubId: Int
+}
+
+type CountsResult {
+  single: [rankingPlacesResultType]
+  double: [rankingPlacesResultType]
+  mix: [rankingPlacesResultType]
+}
+
+scalar Date
+
+type DrawCompetition {
+  id: String!
+  name: String
+  size: Int
+  subeventId: String
+  createdAt: Date!
+  updatedAt: Date!
+  encounters: [EncounterCompetition]
+  subEvent: SubEventCompetition
+}
+
+type DrawTournament {
+  id: String!
+  name: String
+  type: DrawTournamenttypeEnumType
+  size: Int
+  internalId: Int
+  subeventId: String
+  createdAt: Date!
+  updatedAt: Date!
+  games(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    playerId: ID
+  ): [Game]
+  gamesCount: Int
+  subEvent: SubEventTournament
+}
+
+enum DrawTournamenttypeEnumType {
+  KO
+  POULE
+  QUALIFICATION
+}
+
+type EncounterCompetition {
+  id: String!
+  date: Date
+  drawId: String
+  homeTeamId: String
+  awayTeamId: String
+  createdAt: Date!
+  updatedAt: Date!
+  games(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    playerId: ID!
+  ): [Game]
+  gamesCount: Int
+  draw: DrawCompetition
+}
+
+type EventCompetition {
+  id: String!
+  name: String
+  startYear: Int
+  type: EventCompetitiontypeEnumType
+  uniCode: String
+  allowEnlisting: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  subEvents(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [SubEventCompetition]
+  locations(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Location]
+}
+
+type EventCompetitionConnection {
+  pageInfo: PageInfo!
+  edges: [EventCompetitionEdge]
+  total: Int
+}
+
+type EventCompetitionEdge {
+  node: EventCompetition
+  cursor: String!
+}
+
+input EventCompetitionInput {
+  id: String
+  name: String
+  startYear: Int
+  type: EventCompetitiontypeEnumType
+  uniCode: String
+  allowEnlisting: Boolean
+  subEvents: [SubEventCompetitionInput]
+}
+
+enum EventCompetitionOrderBy {
+  DATE_ASC
+  DATE_DESC
+}
+
+enum EventCompetitiontypeEnumType {
+  PROV
+  LIGA
+  NATIONAL
+}
+
+type EventTournament {
+  id: String!
+  tournamentNumber: String
+  name: String
+  firstDay: Date
+  dates: String
+  allowEnlisting: Boolean
+  uniCode: String
+  createdAt: Date!
+  updatedAt: Date!
+  subEvents(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [SubEventTournament]
+  locations(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Location]
+}
+
+type EventTournamentConnection {
+  pageInfo: PageInfo!
+  edges: [EventTournamentEdge]
+  total: Int
+}
+
+type EventTournamentEdge {
+  node: EventTournament
+  cursor: String!
+}
+
+input EventTournamentInput {
+  id: String
+  tournamentNumber: String
+  name: String
+  firstDay: Date
+  dates: String
+  allowEnlisting: Boolean
+  uniCode: String
+  subEvents: [SubEventTournamentInput]
+}
+
+enum EventTournamentOrderBy {
+  DATE_ASC
+  DATE_DESC
+}
+
+type Game {
+  id: String!
+  playedAt: Date
+  gameType: GamegameTypeEnumType
+  set1Team1: Int
+  set1Team2: Int
+  set2Team1: Int
+  set2Team2: Int
+  set3Team1: Int
+  set3Team2: Int
+  winner: Int
+  linkId: String
+  linkType: String
+  courtId: String
+  createdAt: Date!
+  updatedAt: Date!
+  players: [GamePlayer]
+  rankingPoints(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [RankingPoint]
+  tournament: DrawTournament
+  competition: EncounterCompetition
+}
+
+enum GamegameTypeEnumType {
+  S
+  D
+  MX
+}
+
+type GamePlayer {
+  id: String!
+  email: String
+  phone: String
+  gender: String
+  birthDate: Date
+  token: String
+  sub: String
+  firstName: String
+  lastName: String
+  competitionPlayer: Boolean
+  memberId: String
+  createdAt: Date!
+  updatedAt: Date!
+  playerId: String!
+  gameId: String!
+  team: Int
+  player: Int
+  rankingPlace(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): RankingPlace
+}
+
+type Imported {
+  id: String!
+  name: String
+  type: ImporterFiletypeEnumType
+  firstDay: Date
+  fileLocation: String
+  dates: String
+  linkCode: String
+  webID: String
+  uniCode: String
+  importing: Boolean
+  tournamentNumber: Int
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type ImportedConnection {
+  pageInfo: PageInfo!
+  edges: [ImportedEdge]
+  total: Int
+}
+
+type ImportedEdge {
+  node: Imported
+  cursor: String!
+}
+
+enum ImportedOrderBy {
+  DATE_ASC
+  DATE_DESC
+}
+
+enum ImporterFiletypeEnumType {
+  COMPETITION_CP
+  COMPETITION_XML
+  TOURNAMENT
+}
+
+input ImportInput {
+  id: String
+  name: String
+  type: ImporterFiletypeEnumType
+  firstDay: Date
+  fileLocation: String
+  dates: String
+  linkCode: String
+  webID: String
+  uniCode: String
+  importing: Boolean
+  tournamentNumber: Int
+}
+
+type Location {
+  id: String!
+  name: String
+  address: String
+  street: String
+  streetNumber: String
+  postalcode: Int
+  city: String
+  state: String
+  phone: String
+  fax: String
+  clubId: String
+  createdAt: Date!
+  updatedAt: Date!
+  club(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Club]
+  eventCompetitions(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [EventCompetition]
+  eventTournaments(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [EventTournament]
+}
+
+input LocationInput {
+  id: String
+  name: String
+  address: String
+  street: String
+  streetNumber: String
+  postalcode: Int
+  city: String
+  state: String
+  phone: String
+  fax: String
+  clubId: String
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Player {
+  id: String!
+  email: String
+  phone: String
+  gender: String
+  birthDate: Date
+  token: String
+  sub: String
+  firstName: String
+  lastName: String
+  competitionPlayer: Boolean
+  memberId: String
+  createdAt: Date!
+  updatedAt: Date!
+  teams: [Team]
+  claims: [Claim]
+  rankingPlaces(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [RankingPlace]
+  rankingPoints(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [RankingPoint]
+  games(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [Game]
+  base: Boolean
+  clubs(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Club]
+}
+
+input PlayerInput {
+  id: String
+  email: String
+  phone: String
+  gender: String
+  birthDate: Date
+  token: String
+  sub: String
+  firstName: String
+  lastName: String
+  competitionPlayer: Boolean
+  memberId: String
+}
+
+type RankingPlace {
+  id: String!
+  rankingDate: Date
+  singlePoints: Int
+  mixPoints: Int
+  doublePoints: Int
+  singlePointsDowngrade: Int
+  mixPointsDowngrade: Int
+  doublePointsDowngrade: Int
+  singleRank: Int
+  mixRank: Int
+  doubleRank: Int
+  totalSingleRanking: Int
+  totalMixRanking: Int
+  totalDoubleRanking: Int
+  totalWithinSingleLevel: Int
+  totalWithinMixLevel: Int
+  totalWithinDoubleLevel: Int
+  single: Int
+  mix: Int
+  double: Int
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  updatePossible: Boolean
+  PlayerId: String
+  SystemId: String
+  createdAt: Date!
+  updatedAt: Date!
+  rankingSystem: RankingSystem
+  player(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): Player!
+}
+
+input RankingPlaceInput {
+  id: String
+  rankingDate: Date
+  singlePoints: Int
+  mixPoints: Int
+  doublePoints: Int
+  singlePointsDowngrade: Int
+  mixPointsDowngrade: Int
+  doublePointsDowngrade: Int
+  singleRank: Int
+  mixRank: Int
+  doubleRank: Int
+  totalSingleRanking: Int
+  totalMixRanking: Int
+  totalDoubleRanking: Int
+  totalWithinSingleLevel: Int
+  totalWithinMixLevel: Int
+  totalWithinDoubleLevel: Int
+  single: Int
+  mix: Int
+  double: Int
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  updatePossible: Boolean
+  PlayerId: String
+  SystemId: String
+}
+
+type rankingPlaceResultType {
+  level: Int
+  amount: Int
+}
+
+type rankingPlacesResultType {
+  date: String
+  points: [rankingPlaceResultType]
+}
+
+type RankingPoint {
+  id: String!
+  points: Int
+  rankingDate: Date
+  differenceInLevel: Int
+  SystemId: String
+  PlayerId: String
+  GameId: String
+  createdAt: Date!
+  updatedAt: Date!
+  type(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): RankingSystem!
+  player(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): Player!
+}
+
+type RankingSystem {
+  id: String!
+  name: String
+  amountOfLevels: Int
+  procentWinning: Int
+  procentWinningPlus1: Int
+  procentLosing: Int
+  minNumberOfGamesUsedForUpgrade: Int
+  maxDiffLevels: Int
+  maxDiffLevelsHighest: Int
+  latestXGamesToUse: Int
+  maxLevelUpPerChange: Int
+  maxLevelDownPerChange: Int
+  gamesForInactivty: Int
+  inactivityAmount: Int
+  inactivityUnit: RankingSysteminactivityUnitEnumType
+  caluclationIntervalLastUpdate: Date
+  caluclationIntervalAmount: Int
+  calculationIntervalUnit: RankingSystemcalculationIntervalUnitEnumType
+  periodAmount: Int
+  periodUnit: RankingSystemperiodUnitEnumType
+  updateIntervalAmountLastUpdate: Date
+  updateIntervalAmount: Int
+  updateIntervalUnit: RankingSystemupdateIntervalUnitEnumType
+  rankingSystem: RankingSystemrankingSystemEnumType
+  primary: Boolean
+  runCurrently: Boolean
+  runDate: Date
+  differenceForUpgrade: Int
+  differenceForDowngrade: Int
+  startingType: RankingSystemstartingTypeEnumType
+  createdAt: Date!
+  updatedAt: Date!
+  counts(gender: String): CountsResult
+  groups: [RankingSystemGroup]
+}
+
+enum RankingSystemcalculationIntervalUnitEnumType {
+  months
+  weeks
+  days
+}
+
+type RankingSystemGroup {
+  id: String!
+  name: String
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+input RankingSystemGroupInput {
+  id: String
+  name: String
+}
+
+enum RankingSysteminactivityUnitEnumType {
+  months
+  weeks
+  days
+}
+
+input RankingSystemInput {
+  id: String
+  name: String
+  amountOfLevels: Int
+  procentWinning: Int
+  procentWinningPlus1: Int
+  procentLosing: Int
+  minNumberOfGamesUsedForUpgrade: Int
+  maxDiffLevels: Int
+  maxDiffLevelsHighest: Int
+  latestXGamesToUse: Int
+  maxLevelUpPerChange: Int
+  maxLevelDownPerChange: Int
+  gamesForInactivty: Int
+  inactivityAmount: Int
+  inactivityUnit: RankingSysteminactivityUnitEnumType
+  caluclationIntervalLastUpdate: Date
+  caluclationIntervalAmount: Int
+  calculationIntervalUnit: RankingSystemcalculationIntervalUnitEnumType
+  periodAmount: Int
+  periodUnit: RankingSystemperiodUnitEnumType
+  updateIntervalAmountLastUpdate: Date
+  updateIntervalAmount: Int
+  updateIntervalUnit: RankingSystemupdateIntervalUnitEnumType
+  rankingSystem: RankingSystemrankingSystemEnumType
+  primary: Boolean
+  runCurrently: Boolean
+  runDate: Date
+  differenceForUpgrade: Int
+  differenceForDowngrade: Int
+  startingType: RankingSystemstartingTypeEnumType
+  groups: [RankingSystemGroupInput]
+}
+
+enum RankingSystemperiodUnitEnumType {
+  months
+  weeks
+  days
+}
+
+enum RankingSystemrankingSystemEnumType {
+  BVL
+  ORIGINAL
+  LFBB
+}
+
+enum RankingSystemstartingTypeEnumType {
+  formula
+  tableLFBB
+  tableBVL
+}
+
+enum RankingSystemupdateIntervalUnitEnumType {
+  months
+  weeks
+  days
+}
+
+type Role {
+  id: String!
+  name: String
+  description: String
+  clubId: String
+  createdAt: Date!
+  updatedAt: Date!
+  club(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Club]
+  claims(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Claim]
+  players(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Player]
+}
+
+input RoleInput {
+  id: String
+  name: String
+  description: String
+  clubId: String
+  claims: [ClaimInput]
+}
+
+type RootMutationType {
+  addClub(club: ClubInput): Club
+  updateClub(club: ClubInput): Club
+  addPlayerToClub(clubId: ID, playerId: ID): Club
+  addPlayer(player: PlayerInput): Player
+  updatePlayer(player: PlayerInput): Player
+  updatePlayerRanking(rankingPlace: RankingPlaceInput): Player
+  addTeam(team: TeamInput!, clubId: ID!): Team
+  updateTeam(team: TeamInput): Team
+  removeTeam(teamId: ID): Team
+  updatePlayerTeam(teamId: ID, playerId: ID, base: Boolean): Team
+  updateSubEventTeam(teamId: ID, newSubEventId: ID, oldSubEventId: ID): Team
+  addPlayerToTeam(teamId: ID, playerId: ID): Team
+  removePlayerFromTeam(teamId: ID, playerId: ID): Team
+  addLocation(location: LocationInput!, clubId: ID!): Location
+  updateLocation(location: LocationInput): Location
+  removeLocation(locationId: ID): Location
+  updateCompetitionEventLocation(
+    locationId: ID
+    eventId: ID
+    use: Boolean
+  ): Location
+  updateTournamentEventLocation(
+    locationId: ID
+    eventId: ID
+    use: Boolean
+  ): Location
+  addRole(role: RoleInput, clubId: Int): Role
+  updateRole(role: RoleInput): Role
+  addPlayerToRole(roleId: ID, playerId: ID): Role
+  removePlayerFromRole(roleId: ID, playerId: ID): Role
+  updateGlobalClaimUser(playerId: ID, claimId: ID, active: Boolean): Role
+  addEventCompetition(eventCompetition: EventCompetitionInput): EventCompetition
+  addEventTournament(eventTournament: EventTournamentInput): EventTournament
+  updateEventCompetition(
+    eventCompetition: EventCompetitionInput
+  ): EventCompetition
+  updateEventTournament(
+    id: Int
+    eventTournament: EventTournamentInput
+  ): EventTournament
+  setGroupsCompetition(id: ID!, groupIds: [ID]): EventCompetition
+  addRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
+  updateRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
+  addRankingSystemGroup(
+    rankingSystemGroup: RankingSystemGroupInput
+  ): RankingSystemGroup
+  updateRankingSystemGroup(
+    id: Int
+    rankingSystemGroup: RankingSystemGroupInput
+  ): RankingSystemGroup
+  deleteImportedEvent(event: ImportInput): Imported
+}
+
+type RootQueryType {
+  player(id: ID!): Player
+  players(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Player]
+  eventCompetition(id: ID!): EventCompetition
+  eventCompetitions(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    orderBy: [EventCompetitionOrderBy]
+    where: SequelizeJSON
+  ): EventCompetitionConnection
+  eventTournament(id: ID!): EventTournament
+  eventTournaments(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    orderBy: [EventTournamentOrderBy]
+    where: SequelizeJSON
+  ): EventTournamentConnection
+  location(id: ID!): Location
+  claims(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Claim]
+  role(id: String!): Role
+  roles(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Role]
+  imported(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    orderBy: [ImportedOrderBy]
+    where: SequelizeJSON
+  ): ImportedConnection
+  games(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    direction: String
+  ): [Game]
+  team(id: ID!): Team
+  teams(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    clubId: ID!
+  ): [Team]
+  club(id: ID!): Club
+  clubs(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    where: SequelizeJSON
+  ): ClubConnection
+  system(id: String!): RankingSystem
+  systems(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [RankingSystem]
+  rankingSystemGroup(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [RankingSystemGroup]
+}
+
+scalar SequelizeJSON
+
+type SubEventCompetition {
+  id: String!
+  name: String
+  eventType: SubEventCompetitioneventTypeEnumType
+  level: Int
+  maxLevel: Int
+  minBaseIndex: Int
+  maxBaseIndex: Int
+  eventId: String
+  createdAt: Date!
+  updatedAt: Date!
+  draws: [DrawCompetition]
+  event: EventCompetition
+  teams: [SubEventCompetition]
+}
+
+enum SubEventCompetitioneventTypeEnumType {
+  M
+  F
+  MX
+  MINIBAD
+}
+
+input SubEventCompetitionInput {
+  id: String
+  name: String
+  eventType: SubEventCompetitioneventTypeEnumType
+  level: Int
+  maxLevel: Int
+  minBaseIndex: Int
+  maxBaseIndex: Int
+  eventId: String
+  groups: [RankingSystemGroupInput]
+}
+
+type SubEventTournament {
+  id: String!
+  name: String
+  eventType: SubEventTournamenteventTypeEnumType
+  gameType: SubEventTournamentgameTypeEnumType
+  level: Int
+  internalId: Int
+  eventId: String
+  createdAt: Date!
+  updatedAt: Date!
+  draws: [DrawTournament]
+  event: EventTournament
+}
+
+enum SubEventTournamenteventTypeEnumType {
+  M
+  F
+  MX
+  MINIBAD
+}
+
+enum SubEventTournamentgameTypeEnumType {
+  S
+  D
+  MX
+}
+
+input SubEventTournamentInput {
+  id: String
+  name: String
+  eventType: SubEventTournamenteventTypeEnumType
+  gameType: SubEventTournamentgameTypeEnumType
+  level: Int
+  internalId: Int
+  eventId: String
+  groups: [RankingSystemGroupInput]
+}
+
+type Team {
+  id: String!
+  name: String
+  preferredTime: String
+  preferredDay: TeampreferredDayEnumType
+  abbreviation: String
+  ClubId: String
+  type: String
+  number: Int
+  active: Boolean
+  createdAt: Date!
+  updatedAt: Date!
+  club(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [Club]
+  players(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+    end: String
+  ): [Player]
+  subEvents(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): [SubEventCompetition]
+}
+
+input TeamInput {
+  id: String
+  name: String
+  preferredTime: String
+  preferredDay: TeampreferredDayEnumType
+  abbreviation: String
+  ClubId: String
+  type: String
+  number: Int
+  active: Boolean
+  players: PlayerInput
+}
+
+enum TeampreferredDayEnumType {
+  sunday
+  monday
+  tuesday
+  wednesday
+  thursday
+  friday
+  saturday
+}
+

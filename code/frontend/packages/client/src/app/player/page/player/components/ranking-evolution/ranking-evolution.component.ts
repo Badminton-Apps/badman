@@ -1,17 +1,18 @@
 import {
-  ChangeDetectionStrategy, Component,
-
-
-  Input, OnInit
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable, Subject } from 'rxjs';
+import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import {
-  filter, map,
-  shareReplay,
-  switchMap, tap
-} from 'rxjs/operators';
-import { Player, PlayerService, RankingSystem, SystemService } from '../../../../../_shared';
+  Player,
+  PlayerService,
+  RankingSystem,
+  SystemService,
+} from '../../../../../_shared';
 
 @Component({
   selector: 'app-ranking-evolution',
@@ -35,7 +36,7 @@ export class RankingEvolutionComponent implements OnInit {
     private route: ActivatedRoute,
     private playerService: PlayerService,
     private systemService: SystemService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const reset$ = new Subject();
@@ -46,11 +47,9 @@ export class RankingEvolutionComponent implements OnInit {
       shareReplay(1)
     );
 
-    const system$ = this.systemService.getSystems(true).pipe(
-      filter((x) => !!x),
-      filter((x) => x.length > 0),
-      map((x) => x[0])
-    );
+    const system$ = this.systemService
+      .getPrimarySystem()
+      .pipe(filter((x) => !!x));
 
     this.rankingPlaces$ = combineLatest([id$, system$]).pipe(
       tap(([playerId, system]) => (this.rankingSystem = system)),
@@ -68,7 +67,7 @@ export class RankingEvolutionComponent implements OnInit {
                   rankingDate: value.rankingDate,
                   points: value.singlePoints,
                   pointsDowngrade: value.singlePointsDowngrade,
-                  updatePossible: value.updatePossible
+                  updatePossible: value.updatePossible,
                 },
               ],
               double: [
@@ -78,7 +77,7 @@ export class RankingEvolutionComponent implements OnInit {
                   rankingDate: value.rankingDate,
                   points: value.doublePoints,
                   pointsDowngrade: value.doublePointsDowngrade,
-                  updatePossible: value.updatePossible
+                  updatePossible: value.updatePossible,
                 },
               ],
               mix: [
@@ -88,7 +87,7 @@ export class RankingEvolutionComponent implements OnInit {
                   rankingDate: value.rankingDate,
                   points: value.mixPoints,
                   pointsDowngrade: value.mixPointsDowngrade,
-                  updatePossible: value.updatePossible
+                  updatePossible: value.updatePossible,
                 },
               ],
             };

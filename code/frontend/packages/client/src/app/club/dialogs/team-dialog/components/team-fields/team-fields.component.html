@@ -1,0 +1,63 @@
+<form [formGroup]="teamForm">
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type" required>
+        <mat-option>--select something --</mat-option>
+        <mat-option value="M">Heren</mat-option>
+        <mat-option value="F">Dames</mat-option>
+        <mat-option value="MX">Mix</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" alt="name" autocomplete="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Abbreviation</mat-label>
+      <input matInput formControlName="abbreviation" alt="abbreviation" autocomplete="abbreviation" required />
+    </mat-form-field>
+  </div>
+  <div class="row">Preffered encounter moment</div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Day</mat-label>
+      <mat-select formControlName="preferredDay">
+        <mat-option>--select something --</mat-option>
+        <mat-option value="monday">monday</mat-option>
+        <mat-option value="tuesday">tuesday</mat-option>
+        <mat-option value="wednesday">wednesday</mat-option>
+        <mat-option value="thursday">thursday</mat-option>
+        <mat-option value="friday">friday</mat-option>
+        <mat-option value="saturday">saturday</mat-option>
+        <mat-option value="sunday">sunday</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <input matInput type="time" placeholder="Choose a date" formControlName="preferredTime" />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <div class="mat-subheading-2">Captain</div>
+  </div>
+  <div class="row">
+    <app-player-search [player]="this.team.captain" [allowCreation]="true" [club]="this.club" (onSelectPlayer)="this.selectedCaptain($event)" [clearOnSelection]="false"></app-player-search>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" alt="email" autocomplete="email" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" alt="phone" autocomplete="phone" required />
+    </mat-form-field>
+  </div>
+</form>

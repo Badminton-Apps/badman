@@ -1,5 +1,8 @@
 import {
   DataBaseHandler,
+  DrawCompetition,
+  DrawTournament,
+  EncounterCompetition,
   Game,
   GameType,
   GroupSystems,
@@ -7,7 +10,10 @@ import {
   Player,
   RankingPlace,
   RankingPoint,
-  RankingSystem
+  RankingSystem,
+  RankingSystemGroup,
+  SubEventCompetition,
+  SubEventTournament
 } from '@badvlasim/shared';
 import promisePool from '@supercharge/promise-pool';
 import moment, { Moment } from 'moment';
@@ -211,7 +217,6 @@ export class RankingCalc {
     );
 
     if (player1Team1 && player1Team1.id && player1Team1Points != null) {
-
       rankings.push(
         new RankingPoint({
           points: player1Team1Points,
@@ -224,36 +229,42 @@ export class RankingCalc {
       );
     }
     if (player1Team2 && player1Team2.id && player1Team2Points != null) {
-      rankings.push(new RankingPoint({
-        points: player1Team2Points,
-        SystemId: this.rankingType.id,
-        PlayerId: player1Team2.id,
-        GameId: game.id,
-        rankingDate,
-        differenceInLevel: player1Team2Points === 0 ? differenceInLevel : 0
-      }));
+      rankings.push(
+        new RankingPoint({
+          points: player1Team2Points,
+          SystemId: this.rankingType.id,
+          PlayerId: player1Team2.id,
+          GameId: game.id,
+          rankingDate,
+          differenceInLevel: player1Team2Points === 0 ? differenceInLevel : 0
+        })
+      );
     }
 
     if (player2Team1 && player2Team1.id && player2Team1Points != null) {
-      rankings.push(new RankingPoint({
-        points: player2Team1Points,
-        SystemId: this.rankingType.id,
-        PlayerId: player2Team1.id,
-        GameId: game.id,
-        rankingDate,
-        differenceInLevel: player2Team1Points === 0 ? differenceInLevel : 0
-      }));
+      rankings.push(
+        new RankingPoint({
+          points: player2Team1Points,
+          SystemId: this.rankingType.id,
+          PlayerId: player2Team1.id,
+          GameId: game.id,
+          rankingDate,
+          differenceInLevel: player2Team1Points === 0 ? differenceInLevel : 0
+        })
+      );
     }
 
     if (player2Team2 && player2Team2.id && player2Team2Points != null) {
-      rankings.push(new RankingPoint({
-        points: player2Team2Points,
-        SystemId: this.rankingType.id,
-        PlayerId: player2Team2.id,
-        GameId: game.id,
-        rankingDate,
-        differenceInLevel: player2Team2Points === 0 ? differenceInLevel : 0
-      }));
+      rankings.push(
+        new RankingPoint({
+          points: player2Team2Points,
+          SystemId: this.rankingType.id,
+          PlayerId: player2Team2.id,
+          GameId: game.id,
+          rankingDate,
+          differenceInLevel: player2Team2Points === 0 ? differenceInLevel : 0
+        })
+      );
     }
 
     return rankings;
@@ -300,11 +311,74 @@ export class RankingCalc {
 
   protected async getGamesAsync(start: Date, end: Date): Promise<Game[]> {
     logger.debug(`getGamesAsync for period ${start.toISOString()} - ${end.toISOString()}`);
-    return this.dataBaseService.getGames(
-      start,
-      end,
-      this.rankingType.groups.map(r => r.id)
-    );
+
+    const where = {
+      playedAt: {
+        [Op.between]: [start, end] 
+      }
+    };
+
+    const groups = this.rankingType.groups.map(r => r.id);
+
+    const games = await Game.findAll({
+      where,
+      attributes: ['id', 'gameType', 'winner', 'playedAt', 'set1Team1', 'set1Team2'],
+      include: [
+        { model: Player, attributes: ['id'] },
+        {
+          model: EncounterCompetition,
+          attributes: [],
+          include: [
+            {
+              model: DrawCompetition,
+              attributes: [],
+              include: [
+                {
+                  model: SubEventCompetition,
+                  attributes: [],
+                  include: [
+                    {
+                      model: RankingSystemGroup,
+                      attributes: [],
+                      required: true,
+                      through: {
+                        where: {
+                          groupId: { [Op.in]: groups }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          model: DrawTournament,
+          attributes: [],
+          include: [
+            {
+              model: SubEventTournament,
+              attributes: [],
+              include: [
+                {
+                  model: RankingSystemGroup,
+                  attributes: [],
+                  required: true,
+                  through: {
+                    where: {
+                      groupId: { [Op.in]: groups }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    return games; 
   }
   protected async getPlayersAsync(start: Date, end: Date): Promise<Map<string, Player>> {
     const players = new Map();
