@@ -26,7 +26,6 @@ jobs:
       #   - Docker push
       #   - Helm package
       #   - Upgrade helm
-
   publish:
     name: Release
     needs: build
@@ -49,9 +48,9 @@ jobs:
           skip-commit: true
           preset: 'angular'    
           skip-on-empty: false
-      - run: npm run gen-erd
-        name: Generate erd schema
-        working-directory: code/backend/packages/_shared          
+      # - run: npm run gen-erd
+      #   name: Generate erd schema
+      #   working-directory: code/backend/packages/_shared          
       - run: npm run release -- ${{ steps.changelog.outputs.version }} --no-git-tag-version --yes --force-publish
         name: release Frontend
         working-directory: code/frontend
