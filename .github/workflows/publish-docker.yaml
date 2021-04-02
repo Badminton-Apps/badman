@@ -32,4 +32,4 @@ jobs:
           push: true
           context:  code/backend
           file: code/backend/packages/${{ matrix.package }}Dockerfile
-          tags: ${{ steps.gitversion.outputs.fullSemVer }}
+          tags: ${{ steps.gitversion.outputs.semVer }}-{{steps.gitversion.outputs.commitsSinceVersionSource}}
