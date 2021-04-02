@@ -6,7 +6,7 @@ It represents the closest reasonable ESLint configuration to this
 project's original TSLint configuration.
 
 We recommend eventually switching this configuration to extend from
-the recommended rulesets in typescript-eslint. 
+the recommended rulesets in typescript-eslint.
 https://github.com/typescript-eslint/tslint-to-eslint-config/blob/master/docs/FAQs.md
 
 Happy linting! 💖
@@ -219,14 +219,14 @@ module.exports = {
     'no-redeclare': 'error',
     'no-return-await': 'error',
     'no-sequences': 'error',
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"]
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
     'no-sparse-arrays': 'error',
     'no-template-curly-in-string': 'error',
     'no-throw-literal': 'error',
     'no-trailing-spaces': 'off',
     'no-undef-init': 'error',
-    'no-underscore-dangle': ['error', { "allowAfterThis": true }],
+    'no-underscore-dangle': ['error', { allowAfterThis: true }],
     'no-unsafe-finally': 'error',
     'no-unused-labels': 'error',
     'no-var': 'error',
