@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/client",
   "description": "Ranking simulation Badminton Vlaanderen",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "scripts": {
     "ng": "ng",
     "start": "npx kill-port 4200 && ng serve",
@@ -15,6 +15,10 @@
   },
   "private": true,
   "peerDependencies": {
+    "@agm/core": "~3.0.0-beta.0",
+    "@angular-material-components/datetime-picker": "~5.1.0",
+    "@angular-material-components/moment-adapter": "~5.0.0",
+    "@angular-material-extensions/google-maps-autocomplete": "~6.2.0",
     "@angular/animations": "~11.x",
     "@angular/cdk": "~11.2.4",
     "@angular/common": "~11.2.5",
@@ -29,18 +33,15 @@
     "@angular/platform-browser-dynamic": "~11.2.5",
     "@angular/router": "~11.2.5",
     "@angular/service-worker": "~11.2.5",
+    "@apollo/client": "~3.3.7",
     "@auth0/auth0-spa-js": "~1.13.6",
     "@covalent/core": "~3.1.0",
     "@covalent/echarts": "~3.1.0",
+    "@graphql-tools/webpack-loader": "~6.4.0",
     "@ngx-translate/core": "~13.0.0",
     "@ngx-translate/http-loader": "~6.0.0",
-    "@angular-material-components/datetime-picker": "~5.1.0",
-    "@angular-material-components/moment-adapter": "~5.0.0",
-    "@angular-material-extensions/google-maps-autocomplete": "~6.2.0",
-    "@agm/core": "~3.0.0-beta.0",
-    "@apollo/client": "~3.3.7",
-    "@graphql-tools/webpack-loader": "~6.4.0",
-    "ngx-markdown": "~11.1.2",
+    "@types/googlemaps": "3.39.12",
+    "@types/regression": "~2.0.0",
     "apollo-angular": "~1.8.0",
     "apollo-angular-link-http": "~1.9.0",
     "apollo-cache-inmemory": "~1.6.0",
@@ -52,11 +53,10 @@
     "moment": "~2.29.1",
     "moment-timezone": "~0.5.31",
     "ngx-infinite-scroll": "~10.0.1",
+    "ngx-markdown": "~11.1.2",
+    "regression": "~2.0.1",
     "rxjs": "~6.6.3",
     "tslib": "~2.1.0",
-    "zone.js": "~0.11.4",
-    "regression": "~2.0.1",
-    "@types/regression": "~2.0.0",
-    "@types/googlemaps": "3.39.12"
+    "zone.js": "~0.11.4"
   }
 }
