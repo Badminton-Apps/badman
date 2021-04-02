@@ -23,12 +23,8 @@ jobs:
           images: |
             ghcr.io/badminton-apps/core/${{ matrix.pacakge }}
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
+            type=ref,event=tag
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
             type=sha
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
