@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { DataBaseHandler, Player, Team, TeamPlayerMembership } from '@badvlasim/shared';
 import moment from 'moment';
-import { Transaction } from 'sequelize';
 import { CompetitionCpProcessor } from '../processors';
 
 describe('Team Membership', () => {

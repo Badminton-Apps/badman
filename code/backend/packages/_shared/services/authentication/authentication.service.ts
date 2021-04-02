@@ -39,13 +39,13 @@ export class AuthenticationSercice {
       }
 
       const dbUser = await Player.findOne({ where: { sub: request.user.sub } });
-      const permissions = await dbUser?.getUserClaims();
+      const dbPermissions = await dbUser?.getUserClaims();
 
       // extend info
       request.user = {
         ...request.user,
         ...userinfo.data,
-        permissions,
+        permissions: dbPermissions,
         hasAnyPermission: (permissions: string[]) => {
           if (request?.user?.permissions == null) {
             return false;

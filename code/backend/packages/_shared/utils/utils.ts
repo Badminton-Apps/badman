@@ -424,7 +424,7 @@ export const titleCase = str => {
     .toLowerCase()
     .split(' ')
     .map(word => {
-      if (!isNaN(parseInt(word.charAt(0)))) {
+      if (!isNaN(parseInt(word.charAt(0), 10))) {
         return (
           word.charAt(0) + word.charAt(1).toUpperCase() + word.substring(2)
         );
