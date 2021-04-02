@@ -1,5 +1,0 @@
-mutation AddRankingSystemGroup($rankingSystemGroup: RankingSystemGroupInput!) {
-  addRankingSystemGroup(rankingSystemGroup: $rankingSystemGroup) {
-    name
-  }
-}
