@@ -10,11 +10,16 @@
     },
     {
       "path": "rnd"
+    },
+    {
+      "path": "code\\ingress-controller"
+    },
+    {
+      "path": ".github"
     }
   ],
   "settings": {
     "files.exclude": {
-      "**/charts/": true,
       "**/coverage/": true,
       "**/node_modules/": true,
       "**/pipelines/": true

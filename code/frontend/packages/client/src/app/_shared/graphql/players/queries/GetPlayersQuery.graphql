@@ -1,13 +1,8 @@
-query GetPlayers($where: SequelizeJSON, $includeClub: Boolean!) {
-  players(where: $where) {
+query GetPlayers($search: String!) {
+  playerSearch(query: $search) {
     id
     memberId
     firstName
     lastName
-    phone
-    email
-    clubs @include(if: $includeClub) {
-      name
-    }
   }
 }

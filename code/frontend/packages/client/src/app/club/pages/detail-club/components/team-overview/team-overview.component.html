@@ -1,31 +1,11 @@
 <div class="mat-elevation-z1">
   <div class="info">
-    <div class="name" [ngClass]="{ inactive: !this.team.active }">
+    <div class="name">
       <span class="up"> {{ team.name }}</span>
       <span class="down">
-        {{ this.team.abbreviation }} - Index: {{ this.team.baseIndex }}
+        {{ this.team.abbreviation }}
       </span>
     </div>
-    <app-has-claim [any]="[club.id + '_edit:team', club.id + '_edit:club', 'edit-any:club']">
-      <button class="options" mat-icon-button [matMenuTriggerFor]="options">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #options="matMenu">
-        <button mat-menu-item (click)="this.onEdit.next(this.team)">
-          Edit
-        </button>
-        <button mat-menu-item *ngIf="this.team.active" (click)="this.onActiveChange.next({ team: this.team, active: false })">
-          Deactivate
-        </button>
-        <button mat-menu-item *ngIf="!this.team.active" (click)="this.onActiveChange.next({ team: this.team, active: true })">
-          Activate
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="this.onDelete.next(this.team)">
-          Delete
-        </button>
-      </mat-menu>
-    </app-has-claim>
   </div>
 
   <div class="content">
@@ -34,16 +14,16 @@
     </ng-container>
 
     <ng-container *ngIf="this.team.players && this.team.players.length > 0">
-      <div class="player" *ngFor="let player of this.team.players" [ngClass]="{ base: player.base }" [routerLink]="['/player', this.player.id]">
+      <div
+        class="player"
+        *ngFor="let player of this.team.players"
+        [ngClass]="{ base: player.base }"
+        [routerLink]="['/player', this.player.id]"
+      >
         {{ player.firstName }} {{ player.lastName }}
         <small *ngIf="player.rankingPlaces && player.rankingPlaces.length > 0">
-          ({{ player.rankingPlaces[0].single }}&nbsp;-&nbsp;{{ player.rankingPlaces[0].double }}<ng-container *ngIf="this.team.type == 'MX'">&nbsp;-&nbsp;{{
-            player.rankingPlaces[0].mix }}</ng-container>)
+          ({{ player.rankingPlaces[0].single }}-{{ player.rankingPlaces[0].double }}-{{ player.rankingPlaces[0].mix }})
         </small>
-
-        <mat-icon *ngIf="!player.competitionPlayer" matTooltip="Player is not registerd as competition player (note: it takes a couple of days before a new player is registerd)">
-          warning
-        </mat-icon>
       </div>
     </ng-container>
   </div>

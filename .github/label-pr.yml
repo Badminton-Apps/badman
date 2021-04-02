@@ -18,8 +18,8 @@ frontend:
   - code/backend/packages/simulate/*
   - code/backend/packages/simulate/**/*
 '@badvlasim/client':
-  - code/frontend/packages/ranking-client/*
-  - code/frontend/packages/ranking-client/**/*
+  - code/frontend/packages/client/*
+  - code/frontend/packages/client/**/*
 
 database:
   - ./**/*.sql

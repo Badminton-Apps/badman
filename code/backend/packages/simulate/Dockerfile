@@ -1,5 +1,5 @@
 # production environment
-FROM node:12.2.0-alpine
+FROM node:12.22.0-alpine
 RUN apk add --no-cache tzdata
 ENV TZ=Europe/Brussels
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

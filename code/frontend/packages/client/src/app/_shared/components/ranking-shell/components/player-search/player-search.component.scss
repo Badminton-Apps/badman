@@ -2,30 +2,18 @@
   width: 100%;
 }
 
-form{
-  display: flex;
-}
-
 input {
-  flex: 1;
+  flex: 1 auto;
   border: none;
+  border-radius: 5px;
   padding: 15px;
-  background-color: transparent;
-
+  background-color: #f1f3f4;
   &:focus {
     outline: none;
   }
 }
 
-
-.header input {
-  background-color: #f1f3f4;
-  border-radius: 5px;
-}
-
-
-.no-header input {
-  border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  margin-bottom: 15px;
+.player-search {
+  max-width: 750px;
+  display: flex;
 }
