@@ -1,5 +1,5 @@
 # Build environment
-FROM node:12.2.0-alpine as build
+FROM node:12.22.0-alpine
 
 # Work dir
 WORKDIR /usr/src/app
