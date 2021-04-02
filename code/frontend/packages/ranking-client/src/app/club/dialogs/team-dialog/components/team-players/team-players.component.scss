@@ -1,6 +1,15 @@
 @import '~@angular/material/theming';
 $config: mat-typography-config();
 
+.mat-subheading-2 {
+  display: block;
+
+  small {
+    font-size: 10px;
+  }
+}
+
+
 .info {
   padding: 12px 12px 6px 12px;
   border-bottom: 1px solid #aaaaaa;
@@ -18,12 +27,14 @@ $config: mat-typography-config();
   .up {
     @include mat-typography-level-to-styles($config, headline);
     font-size: 20px;
+
     mat-icon {
       font-size: 18px;
       height: auto;
       width: auto;
     }
   }
+
   .down {
     margin-top: 3px;
     font-size: 14px;

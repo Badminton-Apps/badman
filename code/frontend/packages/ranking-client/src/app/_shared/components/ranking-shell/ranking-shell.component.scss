@@ -16,6 +16,7 @@
 
   .start {
     display: flex;
+
     mat-icon {
       color: rgba(0, 0, 0, 0.87);
     }
@@ -26,7 +27,9 @@
     display: flex;
 
     app-player-search {
-      padding-left: 30px;
+      flex: 1 auto;
+      margin: 0 30px;
+      max-width: 750px;
     }
   }
 
@@ -60,9 +63,11 @@
 
   mat-sidenav-content {
     padding: 0 25px 0 15px;
+
     @media only screen and (min-width: 1400px) {
       padding-right: 300px;
     }
+
     @media only screen and (max-width: 600px) {
       padding: 0;
     }

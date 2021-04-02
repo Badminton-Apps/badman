@@ -5,7 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Encounter } from 'app/_shared';
+import { CompetitionEncounter } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -23,8 +23,8 @@ export class SelectGameComponent implements OnInit {
   dependsOn: string = 'team';
 
   formControl = new FormControl();
-  options: Encounter[];
-  filteredOptions: Observable<Encounter[]>;
+  options: CompetitionEncounter[];
+  filteredOptions: Observable<CompetitionEncounter[]>;
 
   constructor(private encounterService: EncounterService) {}
 
@@ -62,7 +62,7 @@ export class SelectGameComponent implements OnInit {
     }
   }
 
-  private _filter(value?: Encounter): Encounter[] {
+  private _filter(value?: CompetitionEncounter): CompetitionEncounter[] {
     console.log('options:', this.options);
     console.log('value:', value);
 

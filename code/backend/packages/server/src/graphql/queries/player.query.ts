@@ -14,7 +14,6 @@ const playerQuery = {
   },
   resolve: resolver(Player, {
     before: async (findOptions, args, context, info) => {
-      // info.cacheControl.setCacheHint({ maxAge: 6000, scope: 'PRIVATE' });
       return findOptions;
     }
   })
@@ -25,6 +24,5 @@ const playersQuery = {
   args: Object.assign(defaultListArgs(), {}),
   resolve: resolver(Player)
 };
-
 
 export { playerQuery, playersQuery };

@@ -9,12 +9,6 @@ const routes: Routes = [
       import('./modules/event-management/event-management.module').then(
         (m) => m.EventManagementModule
       ),
-    canActivate: [AuthGuard],
-    data: {
-      claims: {
-        all: 'view:event',
-      },
-    },
   },
   {
     path: 'ranking',
@@ -35,25 +29,13 @@ const routes: Routes = [
       import('./modules/club-management/club-management.module').then(
         (m) => m.ClubManagementModule
       ),
-    canActivate: [AuthGuard],
-    data: {
-      claims: {
-        all: 'view:club',
-      },
-    },
   },
   {
-    path: 'security',
+    path: 'player',
     loadChildren: () =>
-      import('./modules/security-management/security-management.module').then(
-        (m) => m.SecurityManagementModule
+      import('./modules/player-management/player-management.module').then(
+        (m) => m.PlayerManagementModule
       ),
-    canActivate: [AuthGuard],
-    data: {
-      claims: {
-        any: 'edit:claims',
-      },
-    },
   },
 ];
 

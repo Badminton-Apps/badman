@@ -3,7 +3,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddPlayerComponent } from 'app/admin/modules/club-management/dialogs/add-player/add-player.component';
 import { UserService } from 'app/player';
-import { Club, ClubService, SystemService, Team } from 'app/_shared';
+import {
+  Club,
+  ClubService,
+  SystemService,
+  Team,
+  TeamService,
+} from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import * as moment from 'moment';
@@ -15,12 +21,14 @@ import { TeamDialogComponent } from 'app/club/dialogs';
 })
 export class DetailClubComponent {
   club$: Observable<Club>;
-
   update$ = new BehaviorSubject(0);
+
+  activeTeams$ = new BehaviorSubject(true);
 
   constructor(
     private clubService: ClubService,
     private systemService: SystemService,
+    private teamService: TeamService,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
@@ -33,16 +41,22 @@ export class DetailClubComponent {
     this.club$ = combineLatest([
       this.route.paramMap,
       system$,
+      this.activeTeams$,
+
+      // Triggers refresh
       this.update$,
     ]).pipe(
-      switchMap(([params, system]) =>
-        this.clubService.getClub(params.get('id'), {
+      switchMap(([params, system, activeTeams]) => {
+        return this.clubService.getClub(params.get('id'), {
           rankingSystem: system.id,
           playersfrom: moment().subtract(1, 'year').toDate(),
           includePlayers: true,
           includeTeams: true,
-        })
-      )
+          teamsWhere: {
+            active: activeTeams ? true : undefined,
+          },
+        });
+      })
     );
   }
 
@@ -58,7 +72,7 @@ export class DetailClubComponent {
   }
 
   editTeam(team: Team, club?: Club) {
-       let dialogRef = this.dialog.open(TeamDialogComponent, {
+    let dialogRef = this.dialog.open(TeamDialogComponent, {
       data: { team, club },
     });
 
@@ -67,5 +81,25 @@ export class DetailClubComponent {
     });
   }
 
-  deleteTeam(team: Team) {}
+  addTeam(club?: Club) {
+    let dialogRef = this.dialog.open(TeamDialogComponent, {
+      data: { club },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.update$.next(0);
+    });
+  }
+
+  async setActiveTeam(data: { team: Team; active: boolean }) {
+    await this.teamService
+      .updateTeam({ id: data.team.id, active: data.active })
+      .toPromise();
+    this.update$.next(null);
+  }
+
+  async deleteTeam(team: Team) {
+    await this.teamService.deleteTeam(team.id).toPromise();
+    this.update$.next(null);
+  }
 }

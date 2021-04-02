@@ -7,7 +7,6 @@ mutation UpdateCompetitionEvent($event: EventCompetitionInput!) {
       name
       eventType
       level
-      levelType
       maxLevel
       minBaseIndex
       maxBaseIndex

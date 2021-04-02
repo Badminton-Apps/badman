@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -27,7 +27,7 @@ import {
 export class GamesComponent implements OnInit {
   games$: Observable<Game[]>;
   currentPage$ = new BehaviorSubject<number>(0);
-  pageSize = 20;
+  pageSize = 7;
   request$: Observable<any>;
 
   @Input()
@@ -36,7 +36,8 @@ export class GamesComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private playerService: PlayerService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -71,17 +72,17 @@ export class GamesComponent implements OnInit {
         }
       }),
       scan((acc: any, newGames: Game[]) => {
-        function sameEvent(game1, game2) {
-          if (game1.draw.subEvent.event.type === 'TOERNAMENT') {
+        function sameEvent(game1: Game, game2: Game) {
+          if (game1.tournament && game2.tournament) {
             return (
-              game2.draw.subEvent.event.id === game1.draw.subEvent.event.id
+              game2.tournament.subEvent.event.id ===
+              game1.tournament.subEvent.event.id
             );
-          } else {
-            return (
-              game2.draw.subEvent.event.id === game1.draw.subEvent.event.id &&
-              moment(game2.playedAt).isSame(game1.playedAt, 'day')
-            );
+          } else if (game1.competition && game2.competition) {
+            return game2.competition.id === game1.competition.id;
           }
+
+          return false;
         }
         if (newGames.length > 0) {
           // Find and match same event
@@ -92,7 +93,9 @@ export class GamesComponent implements OnInit {
               prevWasSameEvent = sameEvent(curr, prevGame);
             }
             if (prevWasSameEvent) {
-              all[all.length - 1].push(curr);
+              // Don't use a .push()
+              // That doesn't trigger the change detection
+              all[all.length - 1] = [...all[all.length - 1], curr];
             } else {
               all.push([curr]);
             }

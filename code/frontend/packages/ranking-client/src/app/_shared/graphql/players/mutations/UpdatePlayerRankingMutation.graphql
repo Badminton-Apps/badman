@@ -1,0 +1,5 @@
+mutation UpdatePlayer($rankingPlace: RankingPlaceInput!) {
+  updatePlayerRanking(rankingPlace: $rankingPlace) {
+    id
+  }
+}

@@ -22,8 +22,9 @@ import {
   SaveOptions
 } from 'sequelize';
 import {
-  AfterCreate,
   AllowNull,
+  BeforeBulkCreate,
+  BeforeBulkUpdate,
   BeforeCreate,
   BeforeUpdate,
   BelongsToMany,
@@ -38,7 +39,6 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { ClubLocation } from './club-location.model';
 import { ClubMembership } from './club-membership.model';
 import { Location } from './event';
 import { Player } from './player.model';
@@ -54,32 +54,7 @@ export class Club extends Model {
     super(values, options);
   }
 
-  @BeforeUpdate
-  @BeforeCreate
-  static setAbbriviation(instance: Club) {
-    if (!instance.abbreviation) {
-      instance.abbreviation = instance?.name?.match(/\b(\w)/g).join('');
-    }
-  }
-
-  @AfterCreate
-  static async createBaseRoles(instance: Club, options: SaveOptions) {
-    const role = await new Role({
-      name: 'admin'
-    }).save({ transaction: options.transaction });
-
-    const claims = await Claim.findAll({
-      where: {
-        type: {
-          [Op.in]: ['club', 'team']
-        }
-      }
-    });
-
-    await role.setClub(instance, { transaction: options.transaction });
-    await role.setClaims(claims, { transaction: options.transaction });
-  }
-
+  // #region fields
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -110,11 +85,54 @@ export class Club extends Model {
   )
   players: Player[];
 
-  @BelongsToMany(
-    () => Location,
-    () => ClubLocation
-  )
+  @HasMany(() => Location)
   locations: Location[];
+
+  // #endregion
+
+  // #region hooks
+  @BeforeUpdate
+  @BeforeCreate
+  static setAbbriviation(instance: Club, options: SaveOptions) {
+    if (!instance.abbreviation && instance.isNewRecord) {
+      instance.abbreviation = instance?.name?.match(/\b(\w)/g)?.join('');
+    }
+  }
+
+  @BeforeBulkUpdate
+  @BeforeBulkCreate
+  static setAbbriviations(instances: Club[], options: SaveOptions) {
+    for (const instance of instances) {
+      this.setAbbriviation(instance, options);
+    }
+  }
+
+  static async createBaseRoles(instance: Club, options: SaveOptions) {
+    const role = await new Role({
+      name: 'Admin'
+    }).save({ transaction: options.transaction });
+
+    const claims = await Claim.findAll({
+      where: {
+        type: {
+          [Op.in]: ['club', 'team']
+        }
+      }
+    });
+
+    await role.setClub(instance, { transaction: options.transaction });
+    await role.setClaims(claims, { transaction: options.transaction });
+  }
+
+  static async createBaseRoless(instances: Club[], options: SaveOptions) {
+    for (const club of instances) {
+      await this.createBaseRoles(club, options);
+    }
+  }
+
+  // #endregion
+
+  // #region mixins
 
   // Belongs to many Player
   getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
@@ -127,16 +145,16 @@ export class Club extends Model {
   hasPlayers!: BelongsToManyHasAssociationsMixin<Player, string>;
   countPlayer!: BelongsToManyCountAssociationsMixin;
 
-  // Belongs to many Location
-  getLocations!: BelongsToManyGetAssociationsMixin<Location>;
-  setLocation!: BelongsToManySetAssociationsMixin<Location, string>;
-  addLocations!: BelongsToManyAddAssociationsMixin<Location, string>;
-  addLocation!: BelongsToManyAddAssociationMixin<Location, string>;
-  removeLocation!: BelongsToManyRemoveAssociationMixin<Location, string>;
-  removeLocations!: BelongsToManyRemoveAssociationsMixin<Location, string>;
-  hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
-  hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
-  countLocation!: BelongsToManyCountAssociationsMixin;
+  // Has many Location
+  getLocations!: HasManyGetAssociationsMixin<Location>;
+  setLocations!: HasManySetAssociationsMixin<Location, string>;
+  addLocations!: HasManyAddAssociationsMixin<Location, string>;
+  addLocation!: HasManyAddAssociationMixin<Location, string>;
+  removeLocation!: HasManyRemoveAssociationMixin<Location, string>;
+  removeLocations!: HasManyRemoveAssociationsMixin<Location, string>;
+  hasLocation!: HasManyHasAssociationMixin<Location, string>;
+  hasLocations!: HasManyHasAssociationsMixin<Location, string>;
+  countLocations!: HasManyCountAssociationsMixin;
 
   // Has many Role
   getRoles!: HasManyGetAssociationsMixin<Role>;
@@ -148,4 +166,17 @@ export class Club extends Model {
   hasRole!: HasManyHasAssociationMixin<Role, string>;
   hasRoles!: HasManyHasAssociationsMixin<Role, string>;
   countRoles!: HasManyCountAssociationsMixin;
+
+  // Has many Team
+  getTeams!: HasManyGetAssociationsMixin<Team>;
+  setTeams!: HasManySetAssociationsMixin<Team, string>;
+  addTeams!: HasManyAddAssociationsMixin<Team, string>;
+  addTeam!: HasManyAddAssociationMixin<Team, string>;
+  removeTeam!: HasManyRemoveAssociationMixin<Team, string>;
+  removeTeams!: HasManyRemoveAssociationsMixin<Team, string>;
+  hasTeam!: HasManyHasAssociationMixin<Team, string>;
+  hasTeams!: HasManyHasAssociationsMixin<Team, string>;
+  countTeams!: HasManyCountAssociationsMixin;
+
+  // #endregion
 }

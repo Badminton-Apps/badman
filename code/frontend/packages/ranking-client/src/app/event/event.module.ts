@@ -15,7 +15,7 @@ import { EventRoutingModule } from './event-routing.module';
 import { OverviewComponent } from './pages';
 import {
   CompetitionDataComponent,
-  ToernamentsDataComponent,
+  tournamentsDataComponent,
 } from './pages/overview/components';
 
 const materialModules = [
@@ -37,7 +37,7 @@ const materialModules = [
   declarations: [
     OverviewComponent,
     CompetitionDataComponent,
-    ToernamentsDataComponent,
+    tournamentsDataComponent,
   ],
   imports: [SharedModule, ...materialModules, EventRoutingModule],
 })

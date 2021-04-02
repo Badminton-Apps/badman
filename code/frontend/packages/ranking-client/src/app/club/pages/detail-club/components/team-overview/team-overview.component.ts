@@ -15,7 +15,7 @@ import { Club, Team } from 'app/_shared';
 })
 export class TeamOverviewComponent {
   @Output() onEdit = new EventEmitter<Team>();
-  @Output() onDeactivate = new EventEmitter<Team>();
+  @Output() onActiveChange = new EventEmitter<{team: Team, active: boolean}>();
   @Output() onDelete = new EventEmitter<Team>();
 
   @Input()

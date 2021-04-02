@@ -2,6 +2,7 @@ import { Player } from './player.model';
 import { RankingSystem } from './ranking-system.model';
 
 export class RankingPlace {
+  id: string;
   singlePointsDowngrade: number;
   singleRank: number;
   totalSingleRanking: number;
@@ -32,6 +33,7 @@ export class RankingPlace {
   player?: Player;
 
   constructor(args: Partial<RankingPlace>) {
+    this.id = args.id;
     this.singlePointsDowngrade = args.singlePointsDowngrade;
     this.singleRank = args.singleRank;
     this.totalSingleRanking = args.totalSingleRanking;

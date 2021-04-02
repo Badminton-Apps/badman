@@ -3,12 +3,12 @@ import { Apollo } from 'apollo-angular';
 import { map } from 'rxjs/operators';
 import { Club, Player, RankingSystem } from './../../models';
 
-const clubQuery = require('graphql-tag/loader!../../graphql/clubs/queries/GetClubQuery.graphql');
-const clubsQuery = require('graphql-tag/loader!../../graphql/clubs/queries/GetClubsQuery.graphql');
+import * as clubQuery from '../../graphql/clubs/queries/GetClubQuery.graphql';
+import * as clubsQuery from '../../graphql/clubs/queries/GetClubsQuery.graphql';
 
-const addClubMutation = require('graphql-tag/loader!../../graphql/clubs/mutations/addClub.graphql');
-const updateClubMutation = require('graphql-tag/loader!../../graphql/clubs/mutations/updateClub.graphql');
-const addPlayerToClubMutation = require('graphql-tag/loader!../../graphql/clubs/mutations/addPlayerToClubMutation.graphql');
+import * as addClubMutation from '../../graphql/clubs/mutations/addClub.graphql';
+import * as updateClubMutation from '../../graphql/clubs/mutations/updateClub.graphql';
+import * as addPlayerToClubMutation from '../../graphql/clubs/mutations/addPlayerToClubMutation.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -24,12 +24,16 @@ export class ClubService {
       includeTeams?: boolean;
       includePlayers?: boolean;
       includeRoles?: boolean;
+      includeLocations?: boolean,
+      teamsWhere?: { [key: string]: any };
     }
   ) {
+    // setting default values
     args = {
       includeTeams: false,
       includePlayers: false,
       includeRoles: false,
+      includeLocations: false,
       ...args,
     };
 
@@ -40,10 +44,13 @@ export class ClubService {
           id: clubId,
           end: args.playersfrom?.toISOString(),
           rankingType: args.rankingSystem,
-          includePlaces: args.rankingSystem !== null,
+          includePlaces: false,
+          includePlacesTeams: args.rankingSystem !== null,
           includeTeams: args.includeTeams,
           includePlayers: args.includePlayers,
           includeRoles: args.includeRoles,
+          includeLocations: args.includeLocations,
+          teamsWhere: args.teamsWhere
         },
       })
       .pipe(map((x) => new Club(x.data.club)));

@@ -5,11 +5,11 @@ import { Claim } from 'app/_shared';
 import { map, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
-import globalClaimsQuery from 'graphql-tag/loader!../../graphql/security/queries/GetGlobalClaims.graphql';
-const globalUserClaimsQuery = require('graphql-tag/loader!../../graphql/security/queries/GetGlobalUserClaims.graphql');
-const clubClaimsQuery = require('graphql-tag/loader!../../graphql/security/queries/GetClubClaims.graphql');
+import * as globalClaimsQuery from '../../graphql/security/queries/GetGlobalClaims.graphql';
+import * as globalUserClaimsQuery from '../../graphql/security/queries/GetGlobalUserClaims.graphql';
+import * as clubClaimsQuery from '../../graphql/security/queries/GetClubClaims.graphql';
 
-const updateGlobalUserClaimQuery = require('graphql-tag/loader!../../graphql/security/mutations/UpdateClaimUser.graphql');
+import * as updateGlobalUserClaimQuery from '../../graphql/security/mutations/UpdateClaimUser.graphql';
 
 @Injectable({
   providedIn: 'root',

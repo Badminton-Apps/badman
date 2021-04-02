@@ -16,7 +16,7 @@ export const addRoleMutation = {
     }
   },
   resolve: async (findOptions, { role, clubId }, context) => {
-    if (!context.req.user.hasAnyPermission(['add:role'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:role'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -32,11 +32,11 @@ export const addRoleMutation = {
         { transaction }
       );
 
-      transaction.commit();
+      await  transaction.commit();
       return roleDb;
     } catch (e) {
       logger.warn('rollback', e);
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
@@ -55,7 +55,7 @@ export const addPlayerToRoleMutation = {
     }
   },
   resolve: async (findOptions, { roleId, playerId }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:role'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -89,11 +89,11 @@ export const addPlayerToRoleMutation = {
         transaction
       });
 
-      transaction.commit();
+      await transaction.commit();
       return dbRole;
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
@@ -112,7 +112,7 @@ export const removePlayerFromRoleMutation = {
     }
   },
   resolve: async (findOptions, { roleId, playerId }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:role'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -146,11 +146,11 @@ export const removePlayerFromRoleMutation = {
         transaction
       });
 
-      transaction.commit();
+      await transaction.commit();
       return dbRole;
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
@@ -165,7 +165,7 @@ export const updateRoleMutation = {
     }
   },
   resolve: async (findOptions, { role }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:role'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -191,11 +191,11 @@ export const updateRoleMutation = {
         { transaction }
       );
 
-      transaction.commit();
+      await transaction.commit();
       return dbRole;
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }

@@ -1,0 +1,16 @@
+:host {
+    display: block;
+  }
+  
+  form {
+    .row {
+      display: flex;
+      .flex {
+        flex: 1;
+      }
+      mat-form-field:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+  }
+  

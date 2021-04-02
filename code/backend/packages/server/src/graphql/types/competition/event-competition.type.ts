@@ -1,3 +1,4 @@
+import { LocationType } from './../location.type';
 import { EventCompetition } from '@badvlasim/shared';
 import {
   GraphQLEnumType,
@@ -38,6 +39,11 @@ export const EventCompetitionType = new GraphQLObjectType({
             return findOptions;
           }
         })
+      },
+      locations: {
+        type: new GraphQLList(LocationType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(EventCompetition.associations.locations)
       }
     })
 });

@@ -21,7 +21,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       claims: {
-        any: ['edit:club', 'edit:teams'],
+        any: ['[:id]_edit:club', 'edit-any:club'],
       },
     },
     children: [

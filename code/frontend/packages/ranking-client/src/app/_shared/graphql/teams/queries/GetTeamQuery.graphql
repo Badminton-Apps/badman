@@ -2,15 +2,24 @@ query GetTeamQuery($id: ID!, $rankingType: ID) {
   team(id: $id) {
     id
     name
+    number
     abbreviation
     type
     preferredTime
     preferredDay
-    baseIndex(systemId: $rankingType)
-    players {
-      id 
+    active
+    captain {
+      id
       firstName
       lastName
+      phone
+      email
+    }
+    players {
+      id
+      firstName
+      lastName
+      competitionPlayer
       base
       rankingPlaces(where: { SystemId: $rankingType }) {
         single

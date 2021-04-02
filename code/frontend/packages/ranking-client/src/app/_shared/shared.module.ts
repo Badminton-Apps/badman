@@ -1,3 +1,5 @@
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -30,12 +32,14 @@ import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 import { ClaimComponent } from './components/claim/claim.component';
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
+import { NewPlayerComponent } from './components/ranking-shell/components/new-player/new-player.component';
 
 const materialModules = [
   MatAutocompleteModule,
   MatBadgeModule,
   MatButtonModule,
   MatFormFieldModule,
+  MatInputModule,
   MatIconModule,
   MatListModule,
   MatMenuModule,
@@ -45,6 +49,9 @@ const materialModules = [
   MatExpansionModule,
   MatDialogModule,
   MatSlideToggleModule,
+  ReactiveFormsModule,
+  FormsModule,
+  MatOptionModule
 ];
 
 const exportedComponents = [
@@ -63,7 +70,6 @@ const exportedComponents = [
   declarations: [
     RankingShellComponent,
     PlayerSearchComponent,
-    UserInfoComponent,
     NotificationComponent,
     LoadingPipe,
     LevelToLetterPipe,
@@ -73,12 +79,12 @@ const exportedComponents = [
     BetaComponent,
     ClaimComponent,
     HasClaimComponent,
+    NewPlayerComponent,
+    UserInfoComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
     TranslateModule.forChild(),
     ...materialModules,
   ],
