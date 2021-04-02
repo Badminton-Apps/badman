@@ -7,24 +7,20 @@ jobs:
         pacakge: ['server']
     runs-on: ubuntu-latest
     steps:
-      - name: Determine Version
+      - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
       - name: Determine Version
         uses: gittools/actions/gitversion/execute@v0.9.7
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build container image
+        uses: docker/build-push-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: badvla/${{ matrix.pacakge }}:latest
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: ${{ github.repository }}/${{ matrix.package }}
+          tag_with_sha: true
+          tag_with_ref: true
