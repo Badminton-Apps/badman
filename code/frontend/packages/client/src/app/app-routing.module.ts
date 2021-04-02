@@ -29,10 +29,10 @@ const routes: Routes = [
           import('./club/club.module').then((m) => m.ClubModule),
       },
       {
-        path: 'toernament',
+        path: 'tournament',
         loadChildren: () =>
-          import('./toernament/toernament.module').then(
-            (m) => m.ToernamentModule
+          import('./tournament/tournament.module').then(
+            (m) => m.tournamentModule
           ),
       },
       {
@@ -41,6 +41,11 @@ const routes: Routes = [
           import('./competition/competition.module').then(
             (m) => m.CompetitionModule
           ),
+      },
+      {
+        path: 'event',
+        loadChildren: () =>
+          import('./event/event.module').then((m) => m.EventModule),
       },
     ],
   },

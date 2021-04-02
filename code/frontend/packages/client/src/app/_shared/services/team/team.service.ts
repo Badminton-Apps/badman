@@ -5,14 +5,15 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Player, Team } from './../../models';
 
-const teamQuery = require('graphql-tag/loader!../../graphql/teams/queries/GetTeamQuery.graphql');
-const teamsQuery = require('graphql-tag/loader!../../graphql/teams/queries/GetTeamsQuery.graphql');
+import * as teamQuery from '../../graphql/teams/queries/GetTeamQuery.graphql';
+import * as teamsQuery from '../../graphql/teams/queries/GetTeamsQuery.graphql';
 
-const addTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/addTeam.graphql');
-const updateTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/updateTeam.graphql');
-const addPlayerToTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/addPlayerToTeamMutation.graphql');
-const removePlayerToTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/removePlayerToTeamMutation.graphql');
-const updatePlayerTeamMutation = require('graphql-tag/loader!../../graphql/teams/mutations/updatePlayerTeamMutation.graphql');
+import * as addTeamMutation from '../../graphql/teams/mutations/addTeam.graphql';
+import * as updateTeamMutation from '../../graphql/teams/mutations/updateTeam.graphql';
+import * as addPlayerToTeamMutation from '../../graphql/teams/mutations/addPlayerToTeamMutation.graphql';
+import * as deleteTeamMutation from '../../graphql/teams/mutations/removeTeam.graphql';
+import * as removePlayerToTeamMutation from '../../graphql/teams/mutations/removePlayerToTeamMutation.graphql';
+import * as updatePlayerTeamMutation from '../../graphql/teams/mutations/updatePlayerTeamMutation.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -20,12 +21,13 @@ const updatePlayerTeamMutation = require('graphql-tag/loader!../../graphql/teams
 export class TeamService {
   constructor(private apollo: Apollo) {}
 
-  getTeam(teamId: string) {
+  getTeam(teamId: string, rankingType?: string) {
     return this.apollo
       .query<{ team: Team }>({
         query: teamQuery,
         variables: {
           id: teamId,
+          rankingType,
         },
       })
       .pipe(map((x) => new Team(x.data.team)));
@@ -36,7 +38,8 @@ export class TeamService {
       .mutate<{ addTeam: Team }>({
         mutation: addTeamMutation,
         variables: {
-          team: { ...team, ClubId: clubId },
+          team: { ...team },
+          clubId,
         },
       })
       .pipe(map((x) => new Team(x.data.addTeam)));
@@ -67,13 +70,12 @@ export class TeamService {
       variables: {
         playerId: player.id,
         teamId: team.id,
-        base: player.base
+        base: player.base,
       },
     });
   }
 
-
-  updateTeam(team: Team) {
+  updateTeam(team: Partial<Team>) {
     return this.apollo
       .mutate<{ updateTeam: Team }>({
         mutation: updateTeamMutation,
@@ -82,6 +84,15 @@ export class TeamService {
         },
       })
       .pipe(map((x) => new Team(x.data.updateTeam)));
+  }
+
+  deleteTeam(teamId: string) {
+    return this.apollo.mutate<{ removeTeam: Team }>({
+      mutation: deleteTeamMutation,
+      variables: {
+        teamId,
+      },
+    });
   }
 
   getTeams(

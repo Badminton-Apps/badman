@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { DetailCompetitionComponent } from './pages';
 
 const routes: Routes = [
   {
@@ -10,10 +11,26 @@ const routes: Routes = [
       ),
     data: {
       claims: {
-        all: 'view:event',
+        all: 'team:assembly',
       },
     },
   },
+  {
+    path: 'team-enrollment',
+    loadChildren: () =>
+      import('./modules/team-enrollment/team-enrollment.module').then(
+        (m) => m.TeamEnrolmentModule
+      ),
+    data: {
+      claims: {
+        all: 'team:enrollment',
+      },
+    },
+  },
+  {
+    path: ':id',
+    component: DetailCompetitionComponent
+  }
 ];
 
 @NgModule({

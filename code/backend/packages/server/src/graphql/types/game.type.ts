@@ -34,6 +34,9 @@ export const GameType = new GraphQLObjectType({
         args: Object.assign(defaultListArgs(), {
           direction: {
             type: GraphQLString
+          },
+          order: {
+            type: GraphQLString
           }
         }),
         resolve: resolver(Game.associations.rankingPoints, {

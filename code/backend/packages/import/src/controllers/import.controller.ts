@@ -1,19 +1,16 @@
 import {
   AuthenticatedRequest,
-  DataBaseHandler,
-  EventType,
-  logger,
   BaseController,
-  ImportSubEvent,
-  EventImportType,
-  ImporterFile,
-  ImportDraw,
-  EventTournament,
-  SubEventTournament,
+  DataBaseHandler,
+  DrawCompetition,
   DrawTournament,
   EventCompetition,
+  EventImportType,
+  EventTournament,
+  ImporterFile,
+  logger,
   SubEventCompetition,
-  DrawCompetition
+  SubEventTournament
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import { unlink } from 'fs';
@@ -33,7 +30,6 @@ export class ImportController extends BaseController {
   constructor(
     router: Router,
     authRouter: Router,
-    private _databaseService: DataBaseHandler,
     private _converter: Convertor
   ) {
     super(router, authRouter);
@@ -47,12 +43,10 @@ export class ImportController extends BaseController {
   }
 
   private _import = async (request: AuthenticatedRequest, response: Response) => {
-    if (!request.user.hasAnyPermission(['import:event'])) {
+    if (!request.user.hasAnyPermission(['import:competition', 'import:tournament'])) {
       response.status(401).send('No no no!!');
       return;
     }
-
-    const basicInfo = [];
 
     try {
       for (const file of request.files) {
@@ -72,15 +66,14 @@ export class ImportController extends BaseController {
             type = EventImportType.COMPETITION_XML;
             break;
           case 'tp':
-            type = EventImportType.TOERNAMENT;
+            type = EventImportType.TOURNAMENT;
             break;
           default:
             logger.warn(`Unsupported file type: ${file.filename.split('.').pop()}`);
         }
         const t = await DataBaseHandler.sequelizeInstance.transaction();
         try {
-          const importedFile = await this._converter.basicInfo(fileLocation, type, t);
-          basicInfo.push(importedFile.toJSON());
+          await this._converter.basicInfo(fileLocation, type, t);
           await t.commit();
         } catch (e) {
           await t.rollback();
@@ -89,7 +82,7 @@ export class ImportController extends BaseController {
       }
 
       response.status(200);
-      response.send(basicInfo);
+      response.send();
     } catch (e) {
       logger.error('Error getting basic info', e);
 
@@ -106,7 +99,7 @@ export class ImportController extends BaseController {
   };
 
   private _startImport = async (request: AuthenticatedRequest, response: Response) => {
-    if (!request.user.hasAnyPermission(['import:event'])) {
+    if (!request.user.hasAnyPermission(['import:competition', 'import:tournament'])) {
       response.status(401).send('No no no!!');
       return;
     }
@@ -137,8 +130,7 @@ export class ImportController extends BaseController {
 
       for (const queImport of queueImports) {
         const imported = await ImporterFile.findOne({
-          where: { id: queImport.importId },
-          include: [{ model: ImportSubEvent, include: [{ model: ImportDraw }] }]
+          where: { id: queImport.importId }
         });
 
         if (!imported) {
@@ -147,7 +139,7 @@ export class ImportController extends BaseController {
         let event: EventTournament | EventCompetition = null;
 
         if (queImport.eventId) {
-          if (imported.type === EventImportType.TOERNAMENT) {
+          if (imported.type === EventImportType.TOURNAMENT) {
             event = await EventTournament.findOne({
               where: { id: queImport.eventId },
               include: [{ model: SubEventTournament, include: [{ model: DrawTournament }] }]

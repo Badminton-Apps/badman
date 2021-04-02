@@ -12,7 +12,7 @@ export const addClubMutation = {
     }
   },
   resolve: async (findOptions, { club }, context) => {
-    if (!context.req.user.hasAnyPermission(['add:club'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:club'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -25,11 +25,11 @@ export const addClubMutation = {
         { transaction }
       );
 
-      transaction.commit(); 
+      await transaction.commit(); 
       return clubDb;
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
@@ -48,7 +48,7 @@ export const addPlayerToClubMutation = {
     }
   },
   resolve: async (findOptions, { clubId, playerId }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:club'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission([`${clubId}_edit:club`, 'edit-any:club'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -71,11 +71,11 @@ export const addPlayerToClubMutation = {
         }
       });
 
-      transaction.commit();
+      await transaction.commit();
       return dbClub;
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
@@ -84,17 +84,13 @@ export const addPlayerToClubMutation = {
 export const updateClubMutation = {
   type: ClubType,
   args: {
-    id: {
-      name: 'Id',
-      type: GraphQLID
-    },
     club: {
       name: 'Club',
       type: ClubInputType
     }
   },
-  resolve: async (findOptions, { id, club }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:club'])) {
+  resolve: async (findOptions, { club }, context) => {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission([`${club.id}_edit:club`, 'edit-any:club'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -107,10 +103,10 @@ export const updateClubMutation = {
         transaction
       });
 
-      transaction.commit();
+      await transaction.commit();
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }

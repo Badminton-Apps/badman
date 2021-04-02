@@ -6,7 +6,7 @@ import {
 } from '@covalent/core/data-table';
 import { IPageChangeEvent, TdPagingBarComponent } from '@covalent/core/paging';
 import { TranslateService } from '@ngx-translate/core';
-import { SystemService, PlayerService } from 'app/_shared';
+import { SystemService, PlayerService, Player } from 'app/_shared';
 import { Observable, Subject } from 'rxjs';
 import { filter, flatMap, map, shareReplay, startWith } from 'rxjs/operators';
 
@@ -37,10 +37,8 @@ export class TopPlayersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const system$ = this.systemService.getSystems(true).pipe(
+    const system$ = this.systemService.getPrimarySystem().pipe(
       filter((x) => !!x),
-      filter((x) => x.length > 0),
-      map((x) => x[0]),
       shareReplay()
     );
 
@@ -94,7 +92,7 @@ export class TopPlayersComponent implements OnInit {
         name: 'player',
         label: this.translateService.instant('lists.name'),
         sortable: false,
-        format: (player) => `${player.firstName} ${player.lastName}`,
+        format: (player: Player) => player.fullName,
       },
       {
         name: 'single',

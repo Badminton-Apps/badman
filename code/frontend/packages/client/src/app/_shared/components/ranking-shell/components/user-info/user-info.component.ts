@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../../services/auth/auth.service';
+import { UserService } from 'app/player';
+import { AuthService } from '../../../../services/security/auth.service';
 
 @Component({
   selector: 'app-user-info',
@@ -7,7 +8,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
   styleUrls: ['./user-info.component.scss']
 })
 export class UserInfoComponent implements OnInit {
-  constructor(public auth: AuthService) {}
+  constructor(public auth: AuthService, public user: UserService) {}
 
   ngOnInit(): void {}
 }

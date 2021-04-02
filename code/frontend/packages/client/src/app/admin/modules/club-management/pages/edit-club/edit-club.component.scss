@@ -1,8 +1,8 @@
-.teams {
+.locations, .roles {
   display: flex;
   flex-flow: row wrap;
 
-  app-club-edit-team {
+  app-club-edit-location, app-club-edit-role {
     margin-right: 20px;
     margin-bottom: 20px;
   }

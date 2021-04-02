@@ -2,6 +2,7 @@ import {
   GraphQLBoolean,
   GraphQLEnumType,
   GraphQLID,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
@@ -19,19 +20,21 @@ import { RankingPointType } from './rankingPoint.type';
 import { TeamType } from './team.type';
 import { getAttributeFields } from './attributes.type';
 import { logger } from '@badvlasim/shared';
+import { ClaimType } from './security/claim.type';
+import { ClubType } from './club.type';
 
-const PlayerType = new GraphQLObjectType({
+export const PlayerType = new GraphQLObjectType({
   name: 'Player',
   description: 'A Player',
   fields: () =>
     Object.assign(getAttributeFields(Player), {
       teams: {
         type: new GraphQLList(TeamType),
-        resolve: resolver(Player.associations.teams, {
-          before: async (findOptions, args, context, info) => {
-            return findOptions;
-          }
-        })
+        resolve: resolver(Player.associations.teams)
+      },
+      claims: {
+        type: new GraphQLList(ClaimType),
+        resolve: resolver(Player.associations.claims)
       },
       rankingPlaces: {
         type: new GraphQLList(RankingPlaceType),
@@ -42,7 +45,7 @@ const PlayerType = new GraphQLObjectType({
         }),
         resolve: resolver(Player.associations.rankingPlaces, {
           before: async (findOptions, args, context, info) => {
-            findOptions.where = { 
+            findOptions.where = {
               ...findOptions.where
             };
             findOptions.order =
@@ -97,7 +100,20 @@ const PlayerType = new GraphQLObjectType({
       },
       base: {
         type: GraphQLBoolean
+      },
+      clubs: {
+        type: new GraphQLList(ClubType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Player.associations.clubs)
       }
     })
 });
-export { PlayerType };
+
+export const PlayerInputType = new GraphQLInputObjectType({
+  name: 'PlayerInput',
+  description: 'This represents a PlayerInputType',
+  fields: () =>
+    Object.assign(
+      getAttributeFields(Player, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] })
+    )
+});

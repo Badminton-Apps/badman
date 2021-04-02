@@ -44,8 +44,8 @@ export class LandingComponent implements OnInit {
       },
     ];
 
-    this.caps$ = this.systemService.getSystems(true).pipe(
-      switchMap((systems) => this.systemService.getSystemCaps(systems[0].id)),
+    this.caps$ = this.systemService.getPrimarySystem().pipe(
+      switchMap((systems) => this.systemService.getSystemCaps(systems.id)),
       map((systemCaps: any) => {
         let level = 12;
         return systemCaps.pointsWhenWinningAgainst.map((winning, index) => {

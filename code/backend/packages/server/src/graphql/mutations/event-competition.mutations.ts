@@ -1,15 +1,15 @@
 import {
   DataBaseHandler,
   EventCompetition,
-  GroupSubEvents,
+  GroupSubEventCompetition,
   logger,
   SubEventCompetition
 } from '@badvlasim/shared';
-import { GraphQLInt } from 'graphql';
+import { GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { EventCompetitionInputType, EventCompetitionType } from '../types';
 
-const addEventCompetitionMutation = {
+export const addEventCompetitionMutation = {
   type: EventCompetitionType,
   args: {
     eventCompetition: {
@@ -18,7 +18,7 @@ const addEventCompetitionMutation = {
     }
   },
   resolve: async (findOptions, { eventCompetition }, context) => {
-    if (!context.req.user.hasAnyPermission(['add:eventCompetition'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:competition'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -47,41 +47,37 @@ const addEventCompetitionMutation = {
       );
 
       const groupSubEventCompetitions = [];
-      subEventCompetitions
-        .map(r => r.subEventCompetitionGroup)
-        .forEach(element => {
-          const subDb = subEventCompetitionsDb.find(r => r.internalId === element.internalId);
-          element.groups.forEach(group => {
-            groupSubEventCompetitions.push({ SubEventCompetitionId: subDb.id, GroupId: group.id });
-          });
-        });
+      // subEventCompetitions
+      //   .map(r => r.subEventCompetitionGroup)
+      //   .forEach(element => {
+      //     const subDb = subEventCompetitionsDb.find(r => r.internalId === element.internalId);
+      //     element.groups.forEach(group => {
+      //       groupSubEventCompetitions.push({ subEventId: subDb.id, groupId: group.id });
+      //     });
+      //   });
 
-      await GroupSubEvents.bulkCreate(groupSubEventCompetitions, { transaction });
+      await GroupSubEventCompetition.bulkCreate(groupSubEventCompetitions, { transaction });
 
-      transaction.commit();
+      await transaction.commit();
       return eventCompetitionDb;
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
 };
 
-const updateEventCompetitionMutation = {
+export const updateEventCompetitionMutation = {
   type: EventCompetitionType,
-  args: { 
-    id: {
-      name: 'Id',
-      type: GraphQLInt
-    },
+  args: {
     eventCompetition: {
       name: 'EventCompetition',
       type: EventCompetitionInputType
     }
   },
-  resolve: async (findOptions, { id, eventCompetition }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:eventCompetition'])) {
+  resolve: async (findOptions, { eventCompetition }, context) => {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:competition'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -94,13 +90,61 @@ const updateEventCompetitionMutation = {
         transaction
       });
 
-      transaction.commit();
+      for (const subEvent of eventCompetition?.subEvents ?? []) {
+        await SubEventCompetition.update(subEvent, {
+          where: { id: subEvent.id },
+          transaction
+        });
+      }
+
+      await  transaction.commit();
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
 };
 
-export { addEventCompetitionMutation, updateEventCompetitionMutation };
+export const setGroupsCompetitionMutation = {
+  type: EventCompetitionType,
+  args: {
+    id: {
+      name: 'Id',
+      type: new GraphQLNonNull(GraphQLID)
+    },
+    groupIds: {
+      name: 'groupIds',
+      type: new GraphQLList(GraphQLID)
+    }
+  },
+  resolve: async (findOptions, { id, groupIds }, context) => {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:competition'])) {
+      throw new ApiError({
+        code: 401,
+        message: "You don't have permission to do this "
+      });
+    }
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbComp = await EventCompetition.findByPk(id);
+
+      if (!dbComp) {
+        throw new ApiError({
+          code: 404,
+          message: 'Competition not found'
+        });
+      }
+
+      for (const subEvent of await dbComp.getSubEvents()) {
+        subEvent.setGroups(groupIds);
+      }
+      await  transaction.commit();
+      return dbComp;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};

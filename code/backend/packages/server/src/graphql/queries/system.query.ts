@@ -1,5 +1,5 @@
 import { RankingSystem, RankingSystemGroup } from '@badvlasim/shared/models';
-import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
+import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { RankingSystemGroupType, RankingSystemType } from '../types';
 
@@ -13,7 +13,7 @@ export const systemQuery = {
   args: {
     id: {
       description: 'Id of the system',
-      type: new GraphQLNonNull(GraphQLID)
+      type: new GraphQLNonNull(GraphQLString)
     }
   },
   resolve: resolver(RankingSystem)

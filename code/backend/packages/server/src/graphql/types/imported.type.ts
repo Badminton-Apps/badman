@@ -1,36 +1,23 @@
+import { ImporterFile } from '@badvlasim/shared/models';
 import {
-  GraphQLBoolean,
   GraphQLEnumType,
-  GraphQLID,
+
   GraphQLInputObjectType,
   GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString
+
+
+  GraphQLObjectType
 } from 'graphql';
-import { attributeFields, createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
-import { col, fn, Includeable, Op, or, QueryTypes, where } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { ImporterFile } from '@badvlasim/shared/models';
-import { ImportedSubEventType } from './importSubEvent.type';
+import { createConnection } from 'graphql-sequelize';
 import { getAttributeFields } from './attributes.type';
 
-const ImportedType = new GraphQLObjectType({
+export const ImportedType = new GraphQLObjectType({
   name: 'Imported',
   description: 'A Imported',
-  fields: () =>
-    Object.assign(getAttributeFields(ImporterFile), {
-      subEvents: {
-        type: new GraphQLList(ImportedSubEventType),
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(ImporterFile.associations.subEvents)
-      }
-    })
+  fields: () => Object.assign(getAttributeFields(ImporterFile), {})
 });
 
-const ImportedConnectionType = createConnection({
+export const ImportedConnectionType = createConnection({
   name: 'Imported',
   nodeType: ImportedType,
   target: ImporterFile,
@@ -49,11 +36,15 @@ const ImportedConnectionType = createConnection({
   })
 });
 
-const ImportInputType = new GraphQLInputObjectType({
+export const ImportInputType = new GraphQLInputObjectType({
   name: 'ImportInput',
   description: 'This represents a UserInputType',
-  fields: () => Object.assign(getAttributeFields(ImporterFile, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }), {})
+  fields: () =>
+    Object.assign(
+      getAttributeFields(ImporterFile, {
+        exclude: ['createdAt', 'updatedAt'],
+        optionalString: ['id']
+      }),
+      {}
+    )
 });
-
-
-export { ImportedType, ImportedConnectionType, ImportInputType };

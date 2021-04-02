@@ -1,0 +1,5 @@
+mutation UpdateClaimUser($claimId: ID!, $playerId: ID!, $active: Boolean!) {
+  updateGlobalClaimUser(claimId: $claimId, playerId: $playerId, active: $active) {
+    id
+  }
+}
