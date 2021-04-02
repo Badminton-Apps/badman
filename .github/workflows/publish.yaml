@@ -20,8 +20,6 @@ jobs:
         working-directory: code/${{ matrix.folder }}
       - run: npx lerna run test
         working-directory: code/${{ matrix.folder }}
-      - run: npx lerna run build
-        working-directory: code/${{ matrix.folder }}
 
       # TOOD: 
       #   - Docker build

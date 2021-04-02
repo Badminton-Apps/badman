@@ -20,7 +20,7 @@ jobs:
         uses: crazy-max/ghaction-docker-meta@v2
         with:
           images: |
-            ghcr.io/badminton-apps/core-server
+            ghcr.io/badminton-apps/core/${{ matrix.pacakge }}
           tags: |
             type=schedule
             type=ref,event=branch
