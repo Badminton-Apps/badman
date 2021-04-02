@@ -1,5 +1,8 @@
 name: publish-docker
-on: workflow_dispatch
+on:
+  push:
+    tags:
+      - 'v*.*.*'
 jobs:
   docker-backend:
     strategy:
