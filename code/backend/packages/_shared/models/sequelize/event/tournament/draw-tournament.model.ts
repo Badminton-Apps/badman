@@ -24,7 +24,7 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin
-} from 'sequelize/types';
+} from 'sequelize';
 import { Game } from '..';
 import { DrawType } from '../../..';
 import { SubEventTournament } from './sub-event-tournament.model';
@@ -68,8 +68,11 @@ export class DrawTournament extends Model {
   @Column
   internalId: number;
 
-  @BelongsTo(() => SubEventTournament, 'subeventId')
-  subEvent?: SubEventTournament[];
+  @BelongsTo(() => SubEventTournament, {
+    foreignKey: 'subeventId',
+    onDelete: 'CASCADE'
+  })
+  subEvent?: SubEventTournament;
 
   @Unique('unique_constraint')
   @ForeignKey(() => SubEventTournament)

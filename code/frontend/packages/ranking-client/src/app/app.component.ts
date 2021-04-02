@@ -24,7 +24,5 @@ export class AppComponent {
           });
       });
     });
-
-
   }
 }

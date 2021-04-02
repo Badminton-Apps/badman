@@ -54,6 +54,6 @@ export class TeamPlayersComponent implements OnInit {
   }
 
   private checkIfBaseComplete() {
-    this.baseComplete = this.team.players.filter((p) => p.base).length >= 4;
+    this.baseComplete = this.team?.players?.filter((p) => p.base).length >= 4 ?? false;
   }
 }

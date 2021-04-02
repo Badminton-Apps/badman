@@ -1,0 +1,9 @@
+fragment SubEventsDetails on SubEventCompetition {
+  id
+  name
+  eventType
+  level
+  maxLevel
+  minBaseIndex
+  maxBaseIndex
+}

@@ -1,4 +1,7 @@
 import {
+  AfterConnect,
+  AfterCreate,
+  AfterUpdate,
   AllowNull,
   BeforeBulkCreate,
   BeforeBulkUpdate,
@@ -11,6 +14,7 @@ import {
   Default,
   ForeignKey,
   HasMany,
+  HasOne,
   IsUUID,
   Model,
   PrimaryKey,
@@ -29,6 +33,7 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
+  BuildOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -37,7 +42,9 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin
 } from 'sequelize';
 import { Club } from './club.model';
 import { EncounterCompetition, SubEventCompetition } from './event';
@@ -51,22 +58,24 @@ import { SubEventType } from '../enums';
   schema: 'public'
 })
 export class Team extends Model {
-  @BeforeBulkUpdate
+  constructor(values?: Partial<Team>, options?: BuildOptions) {
+    super(values, options);
+  }
+
   @BeforeBulkCreate
   static setAbbriviations(instances: Team[]) {
-    for (const instance of instances) {
+    for (const instance of instances ?? []) {
       this.setAbbriviation(instance);
     }
   }
 
-  @BeforeUpdate
   @BeforeCreate
   static setAbbriviation(instance: Team) {
-    if (!instance.abbreviation) {
+    if (!instance.abbreviation && instance.isNewRecord && instance.name) {
       const suffix = (instance?.name
         ?.substr(instance?.name?.length - 4)
         .match(/(\d+[GHD])/) ?? [''])[0];
-      let club = instance.name.replace(` ${suffix}`, '');
+      let club = instance.name?.replace(` ${suffix}`, '');
       club = club.replace(/[^0-9a-zA-Z]+/, ' ');
 
       if (club.indexOf(' ') !== -1) {
@@ -81,7 +90,7 @@ export class Team extends Model {
 
   @BeforeBulkCreate
   static extractNumberAndTypes(instances: Team[]) {
-    for (const instance of instances) {
+    for (const instance of instances ?? []) {
       this.extractNumberAndType(instance);
     }
   }
@@ -148,7 +157,7 @@ export class Team extends Model {
   )
   subEvents: SubEventCompetition[];
 
-  @BelongsTo(() => Club, 'ClubId')
+  @BelongsTo(() => Club, 'clubId')
   club?: Club;
 
   @ForeignKey(() => Club)
@@ -164,6 +173,9 @@ export class Team extends Model {
 
   @Column
   type: SubEventType;
+
+  @BelongsTo(() => Player, 'captainId')
+  captain: Player;
 
   @Unique('unique_constraint')
   @Column
@@ -196,7 +208,7 @@ export class Team extends Model {
 
   // Belongs to many SubEvent
   getSubEvents!: BelongsToManyGetAssociationsMixin<SubEventCompetition>;
-  setSubEvent!: BelongsToManySetAssociationsMixin<SubEventCompetition, string>;
+  setSubEvents!: BelongsToManySetAssociationsMixin<SubEventCompetition, string>;
   addSubEvents!: BelongsToManyAddAssociationsMixin<SubEventCompetition, string>;
   addSubEvent!: BelongsToManyAddAssociationMixin<SubEventCompetition, string>;
   removeSubEvent!: BelongsToManyRemoveAssociationMixin<
@@ -244,4 +256,8 @@ export class Team extends Model {
   hasAwayEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
   hasAwayEncounters!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countAwayEncounters!: HasManyCountAssociationsMixin;
+
+  // Belongs to Captain
+  getCaptain!: BelongsToGetAssociationMixin<Player>;
+  setCaptain!: BelongsToSetAssociationMixin<Player, string>;
 }

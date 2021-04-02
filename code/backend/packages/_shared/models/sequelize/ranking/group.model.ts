@@ -21,9 +21,13 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { RankingSystem } from '../../..';
-import { SubEventCompetition, SubEventTournament } from '../event';
-import { GroupSubEvents } from './group_subevent.model';
+import { RankingSystem } from '../../..'; 
+import {
+  GroupSubEventCompetition,
+  GroupSubEventTournament,
+  SubEventCompetition,
+  SubEventTournament
+} from '../event';
 import { GroupSystems } from './group_system.model';
 
 @Table({
@@ -46,30 +50,16 @@ export class RankingSystemGroup extends Model {
   @Column
   name: string;
 
-  @BelongsToMany(() => SubEventCompetition, {
-    through: {
-      model: () => GroupSubEvents,
-      unique: false,
-      scope: {
-        subEventType: 'competition'
-      }
-    },
-    foreignKey: 'groupId',
-    otherKey: 'subeventId'
-  })
+  @BelongsToMany(
+    () => SubEventCompetition,
+    () => GroupSubEventCompetition
+  )
   subEventCompetitions: SubEventCompetition[];
 
-  @BelongsToMany(() => SubEventTournament, {
-    through: {
-      model: () => GroupSubEvents,
-      unique: false,
-      scope: {
-        subEventType: 'tournament'
-      }
-    },
-    foreignKey: 'groupId',
-    otherKey: 'subeventId'
-  })
+  @BelongsToMany(
+    () => SubEventTournament,
+    () => GroupSubEventTournament
+  )
   subEventTournaments: SubEventTournament[];
 
   @BelongsToMany(

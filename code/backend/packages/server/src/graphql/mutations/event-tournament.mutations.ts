@@ -1,7 +1,7 @@
 import {
   DataBaseHandler,
   EventTournament,
-  GroupSubEvents,
+  GroupSubEventTournament,
   logger,
   SubEventTournament
 } from '@badvlasim/shared';
@@ -18,7 +18,7 @@ const addEventTournamentMutation = {
     }
   },
   resolve: async (findOptions, { eventTournament }, context) => {
-    if (!context.req.user.hasAnyPermission(['add:eventTournament'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:tournament', 'add-any:tournament'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -50,17 +50,17 @@ const addEventTournamentMutation = {
         .forEach(element => {
           const subDb = subEventTournamentsDb.find(r => r.internalId === element.internalId);
           element.groups.forEach(group => {
-            groupSubEventTournaments.push({ SubEventTournamentId: subDb.id, GroupId: group.id });
+            groupSubEventTournaments.push({ subEventId: subDb.id, groupId: group.id });
           });
         });
 
-      await GroupSubEvents.bulkCreate(groupSubEventTournaments, { transaction });
+      await GroupSubEventTournament.bulkCreate(groupSubEventTournaments, { transaction });
 
-      transaction.commit();
+      await transaction.commit();
       return eventTournamentDb;
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
@@ -79,7 +79,7 @@ const updateEventTournamentMutation = {
     }
   },
   resolve: async (findOptions, { id, eventTournament }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:eventTournament'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:eventTournament', 'edit-any:tournament'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -92,10 +92,10 @@ const updateEventTournamentMutation = {
         transaction
       });
 
-      transaction.commit();
+      await  transaction.commit();
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }

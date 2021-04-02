@@ -1,3 +1,4 @@
+import { TeamType } from './../team.type';
 import { SubEventCompetition } from '@badvlasim/shared/models';
 import { GraphQLBoolean, GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { resolver, attributeFields } from 'graphql-sequelize';
@@ -18,6 +19,10 @@ const SubEventCompetitionType = new GraphQLObjectType({
       event: {
         type: EventCompetitionType,
         resolve: resolver(SubEventCompetition.associations.event)
+      },
+      teams: {
+        type: new GraphQLList(SubEventCompetitionType),
+        resolve: resolver(SubEventCompetition.associations.teams)
       }
     })
 });

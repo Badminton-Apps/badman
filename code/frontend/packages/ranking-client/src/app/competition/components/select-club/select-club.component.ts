@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Club } from 'app/_shared';
 import { AuthService, ClubService } from 'app/_shared/services';
 import { Observable } from 'rxjs';
@@ -23,7 +23,7 @@ export class SelectClubComponent implements OnInit {
   @Input()
   requiredPermission: string[];
 
-  formControl = new FormControl();
+  formControl = new FormControl(null, [Validators.required]);
   options: Club[];
   filteredOptions: Observable<Club[]>;
 

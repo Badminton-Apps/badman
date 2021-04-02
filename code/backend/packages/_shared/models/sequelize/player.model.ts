@@ -53,6 +53,7 @@ export class Player extends Model {
   constructor(values?: Partial<Player>, options?: BuildOptions) {
     super(values, options);
   }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -63,16 +64,19 @@ export class Player extends Model {
   email: string;
 
   @Column
+  phone: string;
+
+  @Column
   gender: string;
 
   @Column
   birthDate: Date;
 
   @Column
-  token: string;
-
-  @Column
   sub: string;
+
+  @HasMany(() => Team, 'captainId')
+  taems: Team[];
 
   @Unique('unique_constraint')
   @Index
@@ -83,6 +87,14 @@ export class Player extends Model {
   @Index
   @Column
   lastName: string;
+
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`
+  }
+
+  @Default(false)
+  @Column
+  competitionPlayer: boolean;
 
   @Unique('unique_constraint')
   @Index
@@ -206,6 +218,7 @@ export class Player extends Model {
   hasRole!: BelongsToManyHasAssociationMixin<Role, string>;
   hasRoles!: BelongsToManyHasAssociationsMixin<Role, string>;
   countRole!: BelongsToManyCountAssociationsMixin;
+
 
   async getUserClaims(): Promise<string[]> {
     let claims = (await this.getClaims()).map(r => r.name);

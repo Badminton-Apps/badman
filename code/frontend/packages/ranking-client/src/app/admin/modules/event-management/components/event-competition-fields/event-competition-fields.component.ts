@@ -16,22 +16,10 @@ import { debounce, debounceTime } from 'rxjs/operators';
   styleUrls: ['./event-competition-fields.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EventCompetitionFieldsComponent implements OnInit {
+export class EventCompetitionFieldsComponent {
   @Input()
   event: CompetitionEvent = {} as CompetitionEvent;
 
   @Input()
   formGroup: FormGroup;
-
-  ngOnInit() {
-    const nameControl = new FormControl(this.event.name, Validators.required);
-    const yearControl = new FormControl(this.event.startYear, [
-      Validators.required,
-      Validators.min(2000),
-      Validators.max(3000),
-    ]);
-
-    this.formGroup.addControl('name', nameControl);
-    this.formGroup.addControl('startYear', yearControl);
-  }
 }

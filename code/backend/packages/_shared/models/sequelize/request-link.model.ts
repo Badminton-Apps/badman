@@ -7,9 +7,10 @@ import {
   PrimaryKey,
   IsUUID,
   Default,
-  DataType
+  DataType,
+  Index
 } from 'sequelize-typescript';
-import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize/types';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize';
 import { Player } from './player.model';
 
 @Table({
@@ -27,8 +28,9 @@ export class RequestLink extends Model {
   player: Player;
 
   @ForeignKey(() => Player)
+  @Index
+  @Column
   PlayerId: string;
-
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;

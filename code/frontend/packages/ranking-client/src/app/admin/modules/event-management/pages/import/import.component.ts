@@ -10,6 +10,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {
+  CompetitionEvent,
   ConfirmDialogModel,
   Event,
   EventService,
@@ -17,6 +18,7 @@ import {
   Imported,
   RankingSystemGroup,
   SystemService,
+  TournamentEvent,
 } from 'app/_shared';
 import { ConfirmationDialogComponent } from 'app/_shared/components/confirmation-dialog/confirmation-dialog.component';
 import { BehaviorSubject, combineLatest, of, Subject, timer } from 'rxjs';
@@ -60,6 +62,10 @@ export class ImportComponent implements OnInit, OnDestroy {
   cursor: string;
   prevCursor: string;
   nextCursor: string;
+
+  defaultEvent: TournamentEvent | CompetitionEvent = { id: '-1' } as
+    | TournamentEvent
+    | CompetitionEvent;
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -152,18 +158,20 @@ export class ImportComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(async (data: Imported[]) => {
+        // TODO: move this on dropdown open
+
         // only update if all id's are different
         for (let index = 0; index < data.length; index++) {
-          const element = data[index];
+          data[index].event = this.defaultEvent;
 
-          data[index].suggestions = await this.eventService
-            .findEvent(element.name, element.uniCode, data[index].type)
-            .toPromise();
+          // data[index].suggestions = await this.eventService
+          //   .findEvent(element.name, element.uniCode, data[index].type)
+          //   .toPromise();
 
-          data[index].event =
-            data[index].suggestions?.length > 0
-              ? data[index]?.suggestions[0]
-              : ({ id: undefined } as Event);
+          // data[index].event =
+          //   data[index].suggestions?.length > 0
+          //     ? data[index]?.suggestions[0]
+          //     : ({ id: undefined } as TournamentEvent | CompetitionEvent);
         }
 
         this.dataSource.data = data;
@@ -174,6 +182,10 @@ export class ImportComponent implements OnInit, OnDestroy {
     let dsId = this.dataSource.data.findIndex((r) => r.id == imported.id);
     this.dataSource.data[dsId].importing = true;
 
+    if (imported.event == this.defaultEvent) {
+      imported.event = null;
+    }
+
     await this.eventService.startImport(imported).toPromise();
   }
 
@@ -182,25 +194,25 @@ export class ImportComponent implements OnInit, OnDestroy {
     if (event.value.id != -1) {
       this.dataSource.data[dsId].event = event.value;
     } else {
-      this.dataSource.data[dsId].event = { id: undefined } as Event;
+      this.dataSource.data[dsId].event = this.defaultEvent;
 
-      this.dialog
-        .open(AddEventDialogComponent, {
-          minWidth: '60vw',
-          maxHeight: '80vh',
-          data: { imported, groups: this.rankingGroups },
-        })
-        .afterClosed()
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(async (result) => {
-          if (result) {
-            let addedEvent = await this.eventService
-              .addEvent(result)
-              .toPromise();
-            this.dataSource.data[dsId].event = addedEvent;
-            this.dataSource.data[dsId].suggestions.push(addedEvent);
-          }
-        });
+      // this.dialog
+      //   .open(AddEventDialogComponent, {
+      //     minWidth: '60vw',
+      //     maxHeight: '80vh',
+      //     data: { imported, groups: this.rankingGroups },
+      //   })
+      //   .afterClosed()
+      //   .pipe(takeUntil(this.destroyed$))
+      //   .subscribe(async (result) => {
+      //     if (result) {
+      //       let addedEvent = await this.eventService
+      //         .addEvent(result)
+      //         .toPromise();
+      //       this.dataSource.data[dsId].event = addedEvent;
+      //       this.dataSource.data[dsId].suggestions.push(addedEvent);
+      //     }
+      //   });
     }
   }
 

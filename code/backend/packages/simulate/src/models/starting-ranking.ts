@@ -148,65 +148,75 @@ export class StartingRanking {
       }
 
       // Get player id's
-      
-      const players = await Player.findAll({
+
+      const dbPlayers = await Player.findAll({
         where: {
-          memberId: startRanking[type.json].map(x => `${x.Lidnummer}`)
+          memberId: startRanking[type.json].map(
+            x => correctWrongPlayers({ memberId: `${x.Lidnummer}` }).memberId
+          )
         }
       });
 
-      startRanking[type.json].map(async x => {
-        let currentPlayer = playerMap.get(`${x.Lidnummer}`);
+      var types = startRanking[type.json];
+      while (types.length) {
+        const batch = types.splice(0, 250);
+        for (const player of batch) {
+          let currentPlayer = playerMap.get(`${player.Lidnummer}`);
 
-        // Set info if player is nog known
-        if (!currentPlayer) {
-          let dbplayer = players.find(db => `${db.memberId}` === `${x.Lidnummer}`);
+          // Set info if player is nog known
+          if (!currentPlayer) {
+            let dbplayer = dbPlayers.find(
+              db =>
+                `${db.memberId}` ===
+                `${correctWrongPlayers({ memberId: `${player.Lidnummer}` }).memberId}`
+            );
 
-          if (!dbplayer) {
-            // New Player wasn't in any comp or tournaments
-            const splitAt = index => splitIndex => [
-              splitIndex.slice(0, index).trim(),
-              splitIndex.slice(index).trim()
-            ];
-            const firstSpace = x.Speler.indexOf(' ');
-            const [firstName, lastName] = splitAt(firstSpace)(x.Speler);
+            if (!dbplayer) {
+              // New Player wasn't in any comp or tournaments
+              const splitAt = index => splitIndex => [
+                splitIndex.slice(0, index).trim(),
+                splitIndex.slice(index).trim()
+              ];
+              const firstSpace = player.Speler.indexOf(' ');
+              const [firstName, lastName] = splitAt(firstSpace)(player.Speler);
 
-            try {
-              dbplayer = await new Player(
-                correctWrongPlayers({
-                  memberId: `${x.Lidnummer}`,
-                  gender: type.json[type.json.length - 1],
-                  firstName,
-                  lastName
-                })
-              ).save();
-            } catch (e) {
-              logger.error(`Something went wrong adding user ${x.Lidnummer}`, e);
-              throw e;
+              try {
+                dbplayer = await new Player(
+                  correctWrongPlayers({
+                    memberId: `${player.Lidnummer}`,
+                    gender: type.json[type.json.length - 1],
+                    firstName,
+                    lastName
+                  })
+                ).save();
+              } catch (e) {
+                logger.error(`Something went wrong adding user ${player.Lidnummer}`, e);
+                throw e;
+              }
             }
+
+            if (!dbplayer) {
+              logger.warn('Player not found', player.Lidnummer);
+              return;
+            }
+
+            currentPlayer = {
+              PlayerId: dbplayer.id,
+              SystemId: systemId,
+              rankingDate: new Date('2016-08-31T22:00:00Z'),
+              single: amountOfLevels,
+              double: amountOfLevels,
+              mix: amountOfLevels,
+              updatePossible: true // Because techically it was possible :P
+            } as RankingPlace;
           }
 
-          if (!dbplayer) {
-            logger.warn('Player not found', x.Lidnummer);
-            return;
-          }
+          currentPlayer = processor(player, currentPlayer, type.type, startPlaces);
 
-          currentPlayer = {
-            PlayerId: dbplayer.id,
-            SystemId: systemId,
-            rankingDate: new Date('2016-08-31T22:00:00Z'),
-            single: amountOfLevels,
-            double: amountOfLevels,
-            mix: amountOfLevels,
-            updatePossible: true // Because techically it was possible :P
-          } as RankingPlace;
+          // (re)-map the player
+          playerMap.set(`${player.Lidnummer}`, currentPlayer);
         }
-
-        currentPlayer = processor(x, currentPlayer, type.type, startPlaces);
-
-        // (re)-map the player
-        playerMap.set(`${x.Lidnummer}`, currentPlayer);
-      });
+      }
     }
 
     const rankingPlaces = Array.from(playerMap.values()).map(place =>

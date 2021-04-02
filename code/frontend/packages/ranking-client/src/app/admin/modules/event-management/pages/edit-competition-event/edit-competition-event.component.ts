@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { CompetitionEvent, EventService } from 'app/_shared';
@@ -22,7 +22,7 @@ export class EditEventCompetitionComponent implements OnInit {
   update$ = new BehaviorSubject(0);
   saved$ = new BehaviorSubject(0);
 
-  formGroup: FormGroup;
+  formGroup: FormGroup = new FormGroup({});
 
   constructor(
     private eventService: EventService,
@@ -31,49 +31,60 @@ export class EditEventCompetitionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formGroup = new FormGroup({});
     this.event$ = combineLatest([
       this.route.paramMap,
       this.update$.pipe(debounceTime(600)),
     ]).pipe(
       map(([params]) => params.get('id')),
-      switchMap((id) =>
-        this.eventService.getCompetitionEvent(id, {
-          includeTeams: true,
-          includeRoles: true,
-        })
-      ),
-      tap((r) => {
-        const subEvents = new FormArray([]);
-        for (const subEvent of r.subEvents) {
-          subEvents.push(new FormGroup({}));
-        }
-        this.formGroup.addControl('subEvents', subEvents);
-      })
+      switchMap((id) => this.eventService.getCompetitionEvent(id))
     );
 
-    this.saved$.pipe(debounceTime(5000)).subscribe(() => {
+    this.event$.subscribe((event) => {
+      this.setupFormGroup(event);
+      this.formGroup.valueChanges.pipe(debounceTime(600)).subscribe((form) => {
+        const { type, ...newEvent } = { ...event, ...form } as any;
+        this.save(newEvent);
+      });
+    });
+
+    this.saved$.pipe(debounceTime(5000), skip(1)).subscribe(() => {
       this._snackBar.open('Saved', null, {
         duration: 1000,
         panelClass: 'success',
       });
     });
+  }
 
-    combineLatest([this.formGroup.valueChanges, this.event$])
-      .pipe(
-        debounceTime(600),
-        skip(1),
-        filter(() => this.formGroup.valid)
-      )
-      .subscribe(([form, event]) => {
-        const { type, ...newEvent } = { ...event, ...form } as any;
-
-        this.save(newEvent);
-      });
+  private setupFormGroup(event: CompetitionEvent) {
+    this.formGroup = new FormGroup({
+      name: new FormControl(event.name, Validators.required),
+      type: new FormControl(event.type, Validators.required),
+      startYear: new FormControl(event.startYear, [
+        Validators.required,
+        Validators.min(2000),
+        Validators.max(3000),
+      ]),
+      subEvents: new FormArray(
+        event.subEvents.map((subEvent) => {
+          return new FormGroup({
+            id: new FormControl(subEvent.id),
+            name: new FormControl(subEvent.name, Validators.required),
+            level: new FormControl(subEvent.level, Validators.required),
+            eventType: new FormControl(subEvent.eventType, Validators.required),
+            maxLevel: new FormControl(subEvent.maxLevel, Validators.required),
+            minBaseIndex: new FormControl(subEvent.minBaseIndex),
+            maxBaseIndex: new FormControl(subEvent.maxBaseIndex),
+          });
+        })
+      ),
+    });
   }
 
   async save(event: CompetitionEvent) {
-    await this.eventService.updateCompetitionEvent(event).toPromise();
+    // strip eventType because it's not used in BE
+    const {eventType, ...newEvent} = event;
+
+    await this.eventService.updateCompetitionEvent(newEvent).toPromise();
     this.saved$.next(0);
   }
 }

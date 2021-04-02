@@ -9,20 +9,7 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #options="matMenu">
-        <button
-          mat-menu-item
-          [routerLink]="[
-            '/',
-            'admin',
-            'club',
-            club.id,
-            'edit',
-            'role',
-            role.id
-          ]"
-        >
-          Edit
-        </button>
+        <button mat-menu-item (click)="this.onEdit.next(role)">Edit</button>
         <mat-divider></mat-divider>
         <button mat-menu-item>Delete</button>
       </mat-menu>

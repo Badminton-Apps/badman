@@ -5,20 +5,14 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #options="matMenu">
-        <button
-          mat-menu-item
-          [routerLink]="['/', 'admin', 'security', 'user', player.id]"
-        >
+        <button mat-menu-item [routerLink]="['/', 'admin', 'player', player.id, 'edit']">
           Edit
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item>Delete</button>
       </mat-menu>
     </app-has-claim>
-    <img
-      src="../../assets/images//user-profile-bg.jpg"
-      alt="Background image"
-    />
+    <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
   </div>
   <div class="info">
     <div class="picture" *ngIf="!mobile">
@@ -26,18 +20,13 @@
     </div>
     <div class="name">
       <span class="up">
-        {{ this.player.firstName }} {{ this.player.lastName }}</span
-      >
+        {{ this.player.firstName }} {{ this.player.lastName }}</span>
       <span class="down">
         {{ this.player.memberId }} - {{ this.player.gender }}
       </span>
 
       <mat-menu #userMenu="matMenu">
-        <button
-          mat-menu-item
-          *ngIf="this.canClaimAccount.canClaim"
-          (click)="this.claimAccount.next(player.id)"
-        >
+        <button mat-menu-item *ngIf="this.canClaimAccount.canClaim" (click)="this.claimAccount.next(player.id)">
           Claim
         </button>
 
@@ -51,10 +40,7 @@
       <div class="single" [matTooltip]="singleTooltip">
         <span class="up">
           {{ this.shownRanking.single }}
-          <mat-icon
-            *ngIf="this.shownRanking.singleInactive"
-            matTooltip="Player in inactive for single"
-            >warning
+          <mat-icon *ngIf="this.shownRanking.singleInactive" matTooltip="Player in inactive for single">warning
           </mat-icon>
         </span>
         <span class="down" translate>systems.single</span>
@@ -62,10 +48,7 @@
       <div class="double" [matTooltip]="doubleTooltip">
         <span class="up">
           {{ this.shownRanking.double }}
-          <mat-icon
-            *ngIf="this.shownRanking.doubleInactive"
-            matTooltip="Player in inactive for double"
-            >warning
+          <mat-icon *ngIf="this.shownRanking.doubleInactive" matTooltip="Player in inactive for double">warning
           </mat-icon>
         </span>
         <span class="down" translate>systems.double</span>
@@ -73,10 +56,7 @@
       <div class="mix" [matTooltip]="mixTooltip">
         <span class="up">
           {{ this.shownRanking.mix }}
-          <mat-icon
-            *ngIf="this.shownRanking.mixInactive"
-            matTooltip="Player in inactive for mix"
-            >warning
+          <mat-icon *ngIf="this.shownRanking.mixInactive" matTooltip="Player in inactive for mix">warning
           </mat-icon>
         </span>
         <span class="down" translate>systems.mix</span>

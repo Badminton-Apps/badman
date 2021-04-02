@@ -23,7 +23,7 @@ const DrawTournamentType = new GraphQLObjectType({
         args: Object.assign(defaultListArgs(), {
           playerId: {
             description: 'id of the user',
-            type: new GraphQLNonNull(GraphQLID)
+            type: GraphQLID
           }
         }),
         resolve: resolver(DrawTournament.associations.games)

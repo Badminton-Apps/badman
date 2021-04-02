@@ -1,5 +1,5 @@
-mutation AddTeam($team: TeamInput!) {
-  addTeam(team: $team) {
+mutation AddTeam($team: TeamInput!, $clubId: ID!) {
+  addTeam(team: $team, clubId: $clubId) {
     id
     name
     abbreviation

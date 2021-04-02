@@ -1,10 +1,9 @@
 // First config
 import {
   App,
-  AuthenticationSercice,
   AuthenticatedRequest,
+  AuthenticationSercice,
   DataBaseHandler,
-  logger,
   startWhenReady
 } from '@badvlasim/shared';
 import 'apollo-cache-control';
@@ -15,17 +14,17 @@ import { RankingController } from './controllers/ranking.controller';
 import { RequestLinkController } from './controllers/request-link.controller';
 import { SystemController } from './controllers/system.controller';
 // Then  rest
-import { UserController } from './controllers/user.controller'; 
+import { UserController } from './controllers/user.controller';
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
 dotenv.config();
- 
-(async () => { 
-  await startWhenReady(false, true, db => {
-    startServer(db);  
-  }); 
-})(); 
+
+(async () => {
+  await startWhenReady(true, false, db => {
+    startServer(db);
+  });
+})();
 
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
@@ -41,10 +40,10 @@ const startServer = (databaseService: DataBaseHandler) => {
       new RankingController(router, authRouter),
       new SystemController(router, authRouter, databaseService),
       new UserController(router, authRouter),
-      new RequestLinkController(router, authRouter) 
+      new RequestLinkController(router, authRouter)
     ],
     [
-      { 
+      {
         from: '/api/v1/import',
         to: process.env.IMPORT_SERVICE
       },
@@ -58,16 +57,24 @@ const startServer = (databaseService: DataBaseHandler) => {
   const schema = createSchema();
   const apolloServer = new ApolloServer({
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
-      // Running the auth middleware for the permissions
-      for (const check of authService.checkAuth) {
-        await new Promise((resolve, reject) => {
-          check(req, res, () => {
-            resolve(null);
-          });
-        });
+      // When in dev we can allow graph playground to run without permission
+      if (process.env.production === 'false') {
+        const grahpReq = {
+          ...req,
+          user: {
+            ...req.user,
+            hasAnyPermission: (permissions: string[]) => {
+              return true;
+            },
+            hasAllPermission: (permissions: string[]) => {
+              return true;
+            }
+          }
+        };
+        return { req: grahpReq, res };
+      } else {
+        return { req, res };
       }
-
-      return { req, res };
     },
     schema,
     tracing: true,

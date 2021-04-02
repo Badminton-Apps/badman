@@ -4,6 +4,7 @@ import {
   DataType,
   Default,
   ForeignKey,
+  Index,
   IsUUID,
   Model,
   PrimaryKey,
@@ -36,7 +37,7 @@ export class RankingPlace extends Model {
 
   @Column
   singlePoints: number;
-  @Column
+  @Column 
   mixPoints: number;
   @Column
   doublePoints: number;
@@ -63,7 +64,7 @@ export class RankingPlace extends Model {
   totalDoubleRanking: number;
 
   @Column
-  totalWithinSingleLevel: number;
+  totalWithinSingleLevel: number;  
   @Column
   totalWithinMixLevel: number;
   @Column
@@ -91,11 +92,13 @@ export class RankingPlace extends Model {
 
   @Unique('unique_constraint')
   @ForeignKey(() => Player)
+  @Index('ranking_index')
   @Column
   PlayerId: string;
 
   @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
+  @Index('ranking_index')
   @Column
   SystemId: string;
 

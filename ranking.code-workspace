@@ -1,20 +1,23 @@
 {
-	"folders": [
-		{
-			"name": "frontend",
-			"path": "code\\frontend"
-		},
-		{
-			"name": "backend",
-			"path": "code\\backend"
-		}
-	],
-	"settings": {
-		"files.exclude": {
-			"**/charts/": true,
-			"**/coverage/": true,
-			"**/node_modules/": true,
-			"**/pipelines/": true
-		}
-	}
+  "folders": [
+    {
+      "name": "frontend",
+      "path": "code\\frontend"
+    },
+    {
+      "name": "backend",
+      "path": "code\\backend"
+    },
+    {
+      "path": "rnd"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/charts/": true,
+      "**/coverage/": true,
+      "**/node_modules/": true,
+      "**/pipelines/": true
+    }
+  }
 }

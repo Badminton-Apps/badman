@@ -4,12 +4,12 @@ import { map, tap } from 'rxjs/operators';
 import { AuthService } from '../security';
 import { Player, Role } from './../../models';
 
-const roleQuery = require('graphql-tag/loader!../../graphql/roles/queries/GetRoleQuery.graphql');
+import * as roleQuery from '../../graphql/roles/queries/GetRoleQuery.graphql';
 
-const addRoleMutation = require('graphql-tag/loader!../../graphql/roles/mutations/addRole.graphql');
-const updateRoleMutation = require('graphql-tag/loader!../../graphql/roles/mutations/updateRole.graphql');
-const addPlayerToRoleMutation = require('graphql-tag/loader!../../graphql/roles/mutations/addPlayerToRoleMutation.graphql');
-const removePlayerToRoleMutation = require('graphql-tag/loader!../../graphql/roles/mutations/removePlayerFromRoleMutation.graphql');
+import * as addRoleMutation from '../../graphql/roles/mutations/addRole.graphql';
+import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.graphql';
+import * as addPlayerToRoleMutation from '../../graphql/roles/mutations/addPlayerToRoleMutation.graphql';
+import * as removePlayerToRoleMutation from '../../graphql/roles/mutations/removePlayerFromRoleMutation.graphql';
 
 @Injectable({
   providedIn: 'root',
