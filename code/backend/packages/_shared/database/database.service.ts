@@ -1,23 +1,18 @@
 import { exec } from 'child_process';
-import { CreateOptions, Op } from 'sequelize';
+import { CreateOptions } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
-  Claim,
   Club,
   ClubMembership,
   DrawCompetition,
   DrawTournament,
   Game,
   GamePlayer,
-  Location,
   Player,
   RankingPlace,
   RankingPoint,
   RankingSystem,
-  RankingSystemGroup,
-  RankingSystems,
   RequestLink,
-  StartingType,
   SubEventCompetition,
   SubEventTournament,
   Team,
@@ -253,12 +248,12 @@ export class DataBaseHandler {
           logger.info('Syncing');
           // Create non-existing schemas
           const mySchemas = ['import', 'ranking', 'event', 'security'];
-          var schemas = ((await this._sequelize.showAllSchemas(
+          const schemas = ((await this._sequelize.showAllSchemas(
             {}
           )) as unknown) as string[];
 
           for (const schema of mySchemas) {
-            if (schemas.indexOf(schema) == -1) {
+            if (schemas.indexOf(schema) === -1) {
               await this._sequelize.createSchema(schema, {});
             }
           }

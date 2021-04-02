@@ -8,7 +8,8 @@ import {
   SubEventCompetition
 } from '@badvlasim/shared';
 import { Transaction, Op } from 'sequelize';
-import { ImportStep, ProcessImport } from '../processor';
+import { ImportStep } from '../import-step';
+import { ProcessImport } from '../processor';
 
 export abstract class CompetitionProcessor extends ProcessImport {
   protected addEvent(): ImportStep<EventCompetition> {
@@ -64,7 +65,7 @@ export abstract class CompetitionProcessor extends ProcessImport {
           [Op.or]: or
         };
 
-        return await EventCompetition.findOne({ where, transaction: args.transaction });
+        return EventCompetition.findOne({ where, transaction: args.transaction });
       }
     );
   }

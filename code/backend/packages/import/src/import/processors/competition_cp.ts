@@ -31,7 +31,7 @@ import {
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
 import { Mdb } from '../../convert/mdb';
-import { ImportStep } from '../processor';
+import { ImportStep } from '../import-step';
 import { CompetitionProcessor } from './competition';
 import moment from 'moment';
 import { unlink } from 'fs';
@@ -85,7 +85,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       });
 
       if (!event) {
-        throw 'No Event';
+        throw new Error('No Event');
       }
 
       const subEvents = csvEvents.map(subEvent => {
@@ -163,7 +163,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
 
       return csvDraws.map((csvDraw, i) => {
         const dbSubEvent = dbSubEvents[i];
-        const dbDraw = dbDraws.find(d => d.name == csvDraw.name && d.subeventId == dbSubEvent.id);
+        const dbDraw = dbDraws.find(d => d.name === csvDraw.name && d.subeventId === dbSubEvent.id);
         return {
           draw: dbDraw,
           internalId: +csvDraw.id
@@ -182,7 +182,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           if (team.name) {
             return new Team({
               name: this.cleanedTeamName(team.name),
-              ClubId: clubs.find(r => r.internalId == +team.club)?.club?.id || null
+              ClubId: clubs.find(r => r.internalId === +team.club)?.club?.id || null
             }).toJSON();
           }
         }),
@@ -201,7 +201,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       return dbTeams.map((v, i) => {
         return {
           team: v,
-          internalId: +csvTeams.find(team => this.cleanedTeamName(team.name) == v.name).id
+          internalId: +csvTeams.find(team => this.cleanedTeamName(team.name) === v.name).id
         };
       });
     });
@@ -229,7 +229,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         }
       }
 
-      for (let [team, playerIds] of teamPlayers) {
+      for (const [team, playerIds] of teamPlayers) {
         await this.addToTeams(playerIds, moment([event.startYear, 0, 1]), team, {
           transaction: args.transaction
         });
@@ -253,7 +253,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         teamPlayers.set(dbTeam.id, [...playerIds, player.player.id]);
       }
 
-      for (let [team, playerIds] of teamPlayers) {
+      for (const [team, playerIds] of teamPlayers) {
         await this.addToClubs(playerIds, moment([event.startYear, 0, 1]), team, {
           transaction: args.transaction
         });
@@ -291,7 +291,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       });
 
       return csvClubs.map((v, i) => {
-        const dbClub = dbClubs.find(r => this.cleanedClubName(v.name) == r.name);
+        const dbClub = dbClubs.find(r => this.cleanedClubName(v.name) === r.name);
         return {
           club: dbClub,
           internalId: +v.id
@@ -336,7 +336,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       // Return result
       return corrected.map((v, i) => {
         const dbPlayer = dbPlayers.find(
-          p => p.memberId == v.memberId && p.firstName == v.firstName && p.lastName == v.lastName
+          p => p.memberId === v.memberId && p.firstName === v.firstName && p.lastName === v.lastName
         );
 
         return {
@@ -357,27 +357,27 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       const locations = [];
       for await (const csvLocation of csvLocations) {
         let street = '';
-        let number = null;
+        let locNumber = null;
         const groups = csvLocation.address.match(/([^\d]+)\s?(.+)/);
         if (!groups) {
           // No street address, do nothing
-        } else if (groups.length == 2) {
+        } else if (groups.length === 2) {
           street = groups[1];
         } else if (groups.length > 2) {
           street = groups[1];
-          number = groups[2];
+          locNumber = groups[2];
         }
 
         locations.push(
           new Location({
             name: csvLocation.name,
             street,
-            streetNumber: number,
+            streetNumber: locNumber,
             phone: csvLocation.phone,
             fax: csvLocation.fax,
             city: csvLocation.city,
             postalcode: +csvLocation.postalcode,
-            clubId: clubs.find(c => c.internalId == +csvLocation.clubid)?.club?.id
+            clubId: clubs.find(c => c.internalId === +csvLocation.clubid)?.club?.id
           }).toJSON()
         );
       }
@@ -409,7 +409,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       return dbLocations.map((v, i) => {
         return {
           location: v,
-          internalId: +csvLocations.find(c => c.name == v.name).id
+          internalId: +csvLocations.find(c => c.name === v.name).id
         };
       });
     });
@@ -447,7 +447,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       return dbCourts.map((v, i) => {
         return {
           court: v,
-          internalId: +csvCourts.find(c => c.name == v.name).id
+          internalId: +csvCourts.find(c => c.name === v.name).id
         };
       });
     });
@@ -480,7 +480,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       const csvTeamMatchesFiltered = [];
       const csvTeamMatchesReversed = [];
       csvTeamMatchesNonEntries
-        .filter(tm => tm.plandate != '12/30/0/ 00:00:00')
+        .filter(tm => tm.plandate !== '12/30/0/ 00:00:00')
         .forEach(pm1 => {
           if (
             !csvTeamMatchesFiltered.find(
@@ -524,7 +524,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         );
       }
 
-      if (encounters.length == 0) {
+      if (encounters.length === 0) {
         return null;
       }
 
@@ -573,7 +573,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
 
       const games = [];
       const gamePlayers = [];
-      const csvPlayerMatchesFiltered = csvPlayerMatches.filter(r => r.winner != '0');
+      const csvPlayerMatchesFiltered = csvPlayerMatches.filter(r => r.winner !== '0');
 
       for (const csvPlayerMatch of csvPlayerMatchesFiltered) {
         const team1Player1 = players.find(x => x.internalId === +csvPlayerMatch?.sp1)?.player;
@@ -596,7 +596,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const set3Team1 = parseInt(csvPlayerMatch.score3_1, 10) || null;
         const set3Team2 = parseInt(csvPlayerMatch.score3_2, 10) || null;
 
-        if (court == null && !csvPlayerMatch.court && csvPlayerMatch.court !== '') {
+        if (court === null && !csvPlayerMatch.court && csvPlayerMatch.court !== '') {
           logger.warn('Court not found in db?');
         }
 
@@ -661,7 +661,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         games.push(game.toJSON());
       }
 
-      if (games.length != 0) {
+      if (games.length !== 0) {
         await Game.bulkCreate(games, {
           ignoreDuplicates: true,
           transaction: args.transaction
@@ -753,7 +753,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           unlink(importerFile.fileLocation, err => {
             if (err) {
               logger.error(`delete file ${importerFile.fileLocation} failed`, err);
-              // throw err;
+              // throw new Error(err);
               return;
             }
             logger.debug('Old file deleted', importerFile.fileLocation);
