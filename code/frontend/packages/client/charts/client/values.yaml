@@ -1,0 +1,8 @@
+replicaCount: 1
+image:
+  useImagePullSecrets: false
+  pullPolicy: Always
+  repository: badvlasimacr.azurecr.io
+service:
+  internalPort: 80
+  externalPort: 80
