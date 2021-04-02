@@ -1,37 +1,19 @@
-query GetClubQuery(
-  $id: ID!
-  $end: String
-  $rankingType: ID
-  $includePlacesTeams: Boolean!
-  $includePlaces: Boolean!
-  $includeTeams: Boolean!
-  $includePlayers: Boolean!
-  $includeRoles: Boolean!
-  $includeLocations: Boolean!
-  $teamsWhere: SequelizeJSON
-) {
+query GetClubsQuery($id: ID!, $end: String, $rankingType: ID) {
   club(id: $id) {
     id
     name
     abbreviation
     clubId
-    teams(order: "type", where: $teamsWhere) @include(if: $includeTeams) {
+    teams(order: "name") {
       id
       name
       abbreviation
-      type
-      preferredTime
-      preferredDay
-      active
-      number
       players(end: $end) {
         id
         firstName
         lastName
-        competitionPlayer
         base
-        rankingPlaces(where: { SystemId: $rankingType })
-          @include(if: $includePlacesTeams) {
+        rankingPlaces(where: { SystemId: $rankingType }) {
           single
           double
           mix
@@ -39,34 +21,11 @@ query GetClubQuery(
       }
     }
 
-    locations @include(if: $includeLocations) {
-      id
-      name
-      address
-      postalcode
-      city
-      state
-      phone
-      fax
-    }
-
-    roles @include(if: $includeRoles) {
-      id
-      name
-      description
-      players {
-        id
-        firstName
-        lastName
-      }
-    }
-
-    players(end: $end) @include(if: $includePlayers) {
+    players(end: $end) {
       id
       firstName
       lastName
-      rankingPlaces(where: { SystemId: $rankingType })
-        @include(if: $includePlaces) {
+      rankingPlaces(where: { SystemId: $rankingType }) {
         single
         double
         mix

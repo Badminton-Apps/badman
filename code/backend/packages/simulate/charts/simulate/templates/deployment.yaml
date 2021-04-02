@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+{{ if .Values.image.useImagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Chart.Name }}-acr-secret
+{{ end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        env:
+          - name: production
+            value: "true"
+          - name: PORT
+            value: {{ .Values.service.internalPort | quote}}
+          - name: DB_IP
+            value: {{ .Values.database.DB_IP }}
+          - name: DB_DATABASE
+            value: {{ .Values.database.DB_DATABASE }}
+          - name: DB_USER
+            value: {{ .Values.database.DB_USER }}
+          - name: DB_DIALECT
+            value: {{ .Values.database.DB_DIALECT }}
+          - name: AUTH0_ISSUER
+            value: {{ .Values.auth0.issuer }}
+          - name: LOG_LEVEL
+            value: info
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: server-postgresql
+                key: postgresql-password

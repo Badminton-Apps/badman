@@ -1,5 +1,5 @@
 # Build environment
-FROM node:12.2.0-alpine as build
+FROM node:12.22.0-alpine
 
 # Work dir
 WORKDIR /usr/src/app
@@ -14,7 +14,7 @@ COPY lerna.json .
 COPY yarn.lock .
 
 # Copy packages
-COPY packages/ranking-client ./packages/ranking-client
+COPY packages/client ./packages/client
 
 # bootstrap
 RUN yarn global add lerna
@@ -25,8 +25,8 @@ RUN lerna run build:prod --scope=@badvlasim/client
 
 # Run environment
 FROM nginx:1.16.0-alpine
-COPY --from=build /usr/src/app/packages/ranking-client/dist/client /usr/share/nginx/html
-COPY --from=build /usr/src/app/packages/ranking-client/.nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /usr/src/app/packages/client/dist/client /usr/share/nginx/html
+COPY --from=build /usr/src/app/packages/client/.nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

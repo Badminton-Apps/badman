@@ -1,40 +1,14 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from 'app/_shared';
-import { EditEventCompetitionComponent } from './pages/edit-competition-event';
+import { Routes, RouterModule } from '@angular/router';
+
+import { DetailComponent } from './pages/detail/detail.component';
 import { ImportComponent } from './pages/import/import.component';
+import { OverviewComponent } from './pages/overview/overview.component';
 
 const routes: Routes = [
-  {
-    path: 'import',
-    component: ImportComponent,
-    canActivate: [AuthGuard],
-    data: {
-      claims: {
-        any: ['import:competition', 'import:tournament'],
-      },
-    },
-  },
-  {
-    path: 'competition',
-    children: [
-      {
-        path: ':id/edit',
-        children: [
-          {
-            path: '',
-            component: EditEventCompetitionComponent,
-          },
-        ],
-        canActivate: [AuthGuard],
-        data: {
-          claims: {
-            any: 'edit:competition',
-          },
-        },
-      },
-    ],
-  },
+  { path: '', component: OverviewComponent },
+  { path: 'import', component: ImportComponent },
+  { path: ':id', component: DetailComponent },
 ];
 
 @NgModule({
