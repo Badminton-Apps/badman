@@ -1,0 +1,40 @@
+replicaCount: 2
+image:
+  useImagePullSecrets: true
+  pullPolicy: Always
+  repository: badvlasimacr.azurecr.io
+
+service:
+  internalPort: 4000
+  externalPort: 80
+
+mysql:
+  enabled: false
+  mysqlUser: ranking
+  mysqlDatabase: ranking
+  configurationFiles:
+    DB_custom.cnf: |-
+      [server]
+      max_allowed_packet = 100M
+
+postgresql:
+  enabled: true
+  postgresqlUsername: postgres
+  postgresqlDatabase: ranking
+  postgresqlExtendedConf: { 'sharedBuffers': '1500MB', 'maxConnections': 300 }
+  resources:
+    requests:
+      memory: "3Gi"
+
+database:
+  DB_IP: server-postgresql.badvla-simulation
+  DB_DATABASE: ranking
+  DB_USER: postgres
+  DB_DIALECT: postgres
+
+services:
+  simulate: simulate-simulate.badvla-simulation
+  import: import-import.badvla-simulation
+
+auth0:
+  issuer: https://badvlasim.eu.auth0.com
