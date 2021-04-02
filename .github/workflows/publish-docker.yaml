@@ -30,6 +30,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context:  code/backend
+          context: code/backend/.
           file: code/backend/packages/${{ matrix.pacakge }}/Dockerfile
           tags: ${{ steps.gitversion.outputs.semVer }}-${{ steps.gitversion.outputs.commitsSinceVersionSource }}
