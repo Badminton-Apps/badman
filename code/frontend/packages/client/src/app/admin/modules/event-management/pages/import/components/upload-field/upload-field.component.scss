@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+.container {
+  height: 150px;
+  padding: 1rem;
+  text-align: center;
+  border: dashed 1px #979797;
+  position: relative;
+  margin: 0 auto;
+
+  input {
+    cursor: pointer;
+    opacity: 0;
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  label {
+    color: white;
+    width: 183px;
+    height: 44px;
+    border-radius: 21.5px;
+    background-color: #db202f;
+    font-size: 14px;
+    padding: 4px 8px;
+    margin: 2px;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #38424c;
+  }
+}
+
+.fileover {
+  border-color: red;
+  background-color: rgba(255, 0, 0, 0.02);
+}

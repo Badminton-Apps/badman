@@ -1,8 +1,0 @@
-@import '~@angular/material/theming';
-@import '~@covalent/core/theming/all-theme';
-
-$client-angular-primary: mat-palette($mat-blue-gray);
-$client-angular-accent: mat-palette($mat-deep-orange, A200, A100, A400);
-$client-angular-warn: mat-palette($mat-red);
-
-

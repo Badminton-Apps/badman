@@ -1,0 +1,6 @@
+query GetRankingSystemGroups {
+  rankingSystemGroup {
+    id
+    name
+  }
+}

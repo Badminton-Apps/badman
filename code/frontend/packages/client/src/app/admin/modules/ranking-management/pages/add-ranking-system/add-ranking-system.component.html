@@ -1,0 +1,5 @@
+<h1>Add system</h1>
+<app-ranking-system-fields
+  (save)="this.add($event)"
+  [groups]="this.rankingGroups$ | async"
+></app-ranking-system-fields>
