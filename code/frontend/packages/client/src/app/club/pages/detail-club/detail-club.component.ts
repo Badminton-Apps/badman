@@ -3,17 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddPlayerComponent } from 'app/admin/modules/club-management/dialogs/add-player/add-player.component';
 import { UserService } from 'app/player';
-import {
-  Club,
-  ClubService,
-  SystemService,
-  Team,
-  TeamService,
-} from 'app/_shared';
+import { Club, ClubService, SystemService } from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import * as moment from 'moment';
-import { TeamDialogComponent } from 'app/club/dialogs';
 
 @Component({
   templateUrl: './detail-club.component.html',
@@ -21,41 +14,33 @@ import { TeamDialogComponent } from 'app/club/dialogs';
 })
 export class DetailClubComponent {
   club$: Observable<Club>;
+  canEditClub$: Observable<boolean>;
+
   update$ = new BehaviorSubject(0);
 
-  activeTeams$ = new BehaviorSubject(true);
-
   constructor(
+    private user: UserService,
     private clubService: ClubService,
     private systemService: SystemService,
-    private teamService: TeamService,
     private route: ActivatedRoute,
+    private router: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    const system$ = this.systemService
-      .getPrimarySystem()
-      .pipe(filter((x) => !!x));
+    const system$ = this.systemService.getSystems(true).pipe(
+      filter((x) => !!x),
+      filter((x) => x.length > 0),
+      map((x) => x[0])
+    );
 
-    this.club$ = combineLatest([
-      this.route.paramMap,
-      system$,
-      this.activeTeams$,
 
-      // Triggers refresh
-      this.update$,
-    ]).pipe(
-      switchMap(([params, system, activeTeams]) => {
-        return this.clubService.getClub(params.get('id'), {
-          rankingSystem: system.id,
-          playersfrom: moment().subtract(1, 'year').toDate(),
-          includePlayers: true,
-          includeTeams: true,
-          teamsWhere: {
-            active: activeTeams ? true : undefined,
-          },
-        });
+    this.club$ = combineLatest([this.route.paramMap, system$, this.update$]).pipe(
+      switchMap(([params, system]) =>
+        this.clubService.getClub(params.get('id'), system.id, moment().subtract(1, 'year').toDate())
+      ),
+      tap((club) => {
+        this.canEditClub$ = this.user.canEditClubs(club.id);
       })
     );
   }
@@ -69,37 +54,5 @@ export class DetailClubComponent {
         this.update$.next(null);
       }
     });
-  }
-
-  editTeam(team: Team, club?: Club) {
-    let dialogRef = this.dialog.open(TeamDialogComponent, {
-      data: { team, club },
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.update$.next(0);
-    });
-  }
-
-  addTeam(club?: Club) {
-    let dialogRef = this.dialog.open(TeamDialogComponent, {
-      data: { club },
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.update$.next(0);
-    });
-  }
-
-  async setActiveTeam(data: { team: Team; active: boolean }) {
-    await this.teamService
-      .updateTeam({ id: data.team.id, active: data.active })
-      .toPromise();
-    this.update$.next(null);
-  }
-
-  async deleteTeam(team: Team) {
-    await this.teamService.deleteTeam(team.id).toPromise();
-    this.update$.next(null);
   }
 }

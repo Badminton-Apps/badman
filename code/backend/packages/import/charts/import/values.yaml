@@ -1,0 +1,18 @@
+replicaCount: 1
+image:
+  useImagePullSecrets: true
+  pullPolicy: Always
+  repository: badvlasimacr.azurecr.io
+
+service:
+  internalPort: 4001
+  externalPort: 80
+
+database:
+  DB_IP: server-postgresql.badvla-simulation
+  DB_DATABASE: ranking
+  DB_USER: postgres
+  DB_DIALECT: postgres
+
+auth0:
+  issuer: https://badvlasim.eu.auth0.com

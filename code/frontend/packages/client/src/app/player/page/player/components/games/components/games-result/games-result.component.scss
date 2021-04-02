@@ -2,13 +2,10 @@
   display: block;
 }
 
-.mat-subheading-2 {
-  flex-direction: column;
-  .date {
-    line-height: 0.6em;
-    font-size: 0.6em;
-    padding-bottom: 7px;
-  }
+.mat-subheading-2 .date {
+  line-height: 0.6em;
+  font-size: 0.6em;
+  padding-bottom: 7px;
 }
 
 .games {

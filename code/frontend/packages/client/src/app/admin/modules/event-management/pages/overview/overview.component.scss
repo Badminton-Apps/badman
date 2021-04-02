@@ -1,0 +1,32 @@
+table {
+  width: 100%;
+}
+
+tr.event-detail-row {
+  height: 0;
+}
+
+tr.event-element-row:not(.event-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.event-element-row:not(.event-expanded-row):active {
+  background: #efefef;
+}
+
+.event-element-row td {
+  border-bottom-width: 0;
+}
+
+.event-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.mat-column-select {
+  width: 60px;
+}
+
+.mat-column-dates {
+  width: 110px;
+}
