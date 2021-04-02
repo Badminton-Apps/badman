@@ -1,4 +1,6 @@
-<button mat-icon-button [matMenuTriggerFor]="Lang">{{ this.current }}</button>
+<button mat-menu-item [matMenuTriggerFor]="Lang">
+  {{ 'languages.' + this.current | translate }}
+</button>
 <mat-menu #Lang="matMenu">
   <button
     mat-menu-item

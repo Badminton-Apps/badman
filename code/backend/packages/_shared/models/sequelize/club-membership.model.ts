@@ -17,24 +17,26 @@ import { BuildOptions } from 'sequelize';
 import { Club } from './club.model';
 import { Player } from './player.model';
 
-@Table({ 
+@Table({
   schema: 'public',
 })
-export class ClubMembership extends Model { 
+export class ClubMembership extends Model {
   constructor(values?: Partial<ClubMembership>, options?: BuildOptions) {
     super(values, options);
   }
   @ForeignKey(() => Player)
   @AllowNull(false)
+  @Index('player_club_index')
   @Column
   playerId: string;
 
   @ForeignKey(() => Club)
   @AllowNull(false)
+  @Index('player_club_index')
   @Column
   clubId: string;
 
-  
+
   @Column
   end?: Date;
 

@@ -1,0 +1,10 @@
+<ng-container *ngIf="this.club$ | async as club">
+  <ng-container *ngIf="this.claims$ | async as claims">
+    <div class="mat-subheading-1">Add role to {{ club.name }}</div>
+    <app-role-fields
+      [club]="this.club"
+      (save)="this.add($event, club)"
+      [claims]="claims"
+    ></app-role-fields>
+  </ng-container>
+</ng-container>

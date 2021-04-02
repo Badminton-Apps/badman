@@ -423,7 +423,15 @@ export const titleCase = str => {
   return str
     .toLowerCase()
     .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+    .map(word => {
+      if (!isNaN(parseInt(word.charAt(0)))) {
+        return (
+          word.charAt(0) + word.charAt(1).toUpperCase() + word.substring(2)
+        );
+      } else {
+        return word.charAt(0).toUpperCase() + word.substring(1);
+      }
+    })
     .join(' ');
 };
 

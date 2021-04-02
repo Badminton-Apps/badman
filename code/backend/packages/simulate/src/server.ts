@@ -21,7 +21,7 @@ const startServer = (databaseService: DataBaseHandler) => {
   authRouter.use(authService.checkAuth);
 
   const app = new App(process.env.PORT, [
-    new SimulateController(router, authRouter, databaseService, calculator)
+    new SimulateController(router, authRouter, databaseService, calculator) 
   ]);
   app.listen();
 };

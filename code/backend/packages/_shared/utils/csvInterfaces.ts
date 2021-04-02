@@ -126,7 +126,49 @@ export interface ICsvTeamMatch {
   teamnominationendtime_doubles: string;
 }
 
-export interface ICsvEntry {
+export interface ICsvTeam {
+  id: string;
+  name: string;
+  club: string;
+}
+export interface ICsvTeamPlayer {
+  team: string;
+  player: string;
+}
+
+export interface ICsvClub {
+  id: string;
+  name: string;
+  abbriviation: string;
+  clubid: string;
+  address: string;
+  postalcode: string;
+  city: string;
+  state: string;
+  phone: string;
+  fax: string;
+}
+
+export interface ICsvPlayer {
+  id: string;
+  name: string;
+  middlename: string;
+  firstname: string;
+  birthDate: string;
+  gender: string;
+  memberid: string;
+  club: string;
+}
+
+export interface ICsvEntryTp {
+  id: string;
+  event: string;
+  team: string;
+  seed1: string;
+  seed2: string;
+}
+
+export interface ICsvEntryCp {
   id: string;
   event: string;
   player1: string;
@@ -186,4 +228,5 @@ export interface ICsvLocation {
   state: string;
   phone: string;
   fax: string;
+  clubid: string;
 }

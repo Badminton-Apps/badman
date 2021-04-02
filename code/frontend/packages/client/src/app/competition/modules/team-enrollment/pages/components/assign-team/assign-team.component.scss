@@ -1,0 +1,112 @@
+@import 'app/_shared/variables.scss';
+
+:host {
+  display: block;
+}
+
+.team-container {
+  width: 250px;
+  margin: 0 25px 25px 0;
+  display: inline-block;
+  vertical-align: top;
+
+  .title {
+
+    .name,
+    .min-max {
+      display: inline-block;
+    }
+
+    .min-max {
+      float: right;
+    }
+  }
+}
+
+.team-list-target,
+.team-list-todo {
+  border: solid 1px #ccc;
+  min-height: 60px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+}
+
+.team-list-todo {
+  flex-direction: row;
+
+  .team-box:not(:last-child) {
+    border-right: solid 1px #ccc;
+  }
+}
+
+.team-list-target {
+  width: 248px;
+  flex-direction: column;
+
+  .team-box:not(:last-child) {
+    border-bottom: solid 1px #ccc;
+  }
+}
+
+.team-box {
+  width: 250px;
+  padding: 10px;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
+
+  button {
+    visibility: hidden;
+  }
+
+  &:hover button {
+    visibility: visible;
+  }
+
+  &.issues {
+    background: mat-color($client-angular-warn, lighter);
+  }
+
+  .team-encounter {
+    color: rgba(0, 0, 0, 0.60);
+    font-size: 11px;
+  }
+}
+
+h3 {
+  margin: 0;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.team-box:last-child {
+  border: none;
+}
+
+.team-list-target,
+.team-list-todo {
+  &.cdk-drop-list-dragging .team-box:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}

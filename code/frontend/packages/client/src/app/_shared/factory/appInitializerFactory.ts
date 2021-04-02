@@ -9,7 +9,7 @@ export function appInitializerFactory(
   return async () => {
     await injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
 
-    translate.addLangs(['en', 'nl', 'fr']);
+    translate.addLangs(['en', 'nl_BE', 'fr_BE']);
     translate.setDefaultLang('en');
     const savedLang = localStorage.getItem('translation.language');
 

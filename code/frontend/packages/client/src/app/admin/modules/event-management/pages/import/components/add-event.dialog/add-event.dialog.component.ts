@@ -67,7 +67,7 @@ export class AddEventDialogComponent implements OnInit {
       ),
       type: new FormControl(this.data.imported.type, Validators.required),
       uniCode: new FormControl(this.data.imported.uniCode, Validators.required),
-      toernamentNumber: new FormControl(this.data.imported.toernamentNumber),
+      tournamentNumber: new FormControl(this.data.imported.tournamentNumber),
     });
   }
 

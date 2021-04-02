@@ -1,0 +1,16 @@
+query GetClubPlayers($id: ID!, $where: SequelizeJSON) {
+  club(id: $id) {
+    players(where: $where) {
+      id
+      memberId
+      firstName
+      lastName
+      phone
+      email
+      clubs {
+        id
+        name
+      }
+    }
+  }
+}

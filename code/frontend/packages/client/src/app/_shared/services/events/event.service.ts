@@ -2,17 +2,29 @@ import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Imported } from 'app/_shared';
-import { Event, EventType } from 'app/_shared/models';
+import {
+  CompetitionEvent,
+  CompetitionSubEvent,
+  Event,
+  EventType,
+  TournamentEvent,
+  TournamentSubEvent,
+} from 'app/_shared/models';
 import { environment } from 'environments/environment';
-import { BehaviorSubject, concat } from 'rxjs';
+import { BehaviorSubject, concat, of } from 'rxjs';
 import { map, share, tap, toArray } from 'rxjs/operators';
-const getCompetitionEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetCompetition.graphql');
-const getTournamentEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetTournaments.graphql');
+import * as getCompetitionEventQuery from '../../graphql/events/queries/GetCompetition.graphql';
+import * as getTournamentEventQuery from '../../graphql/events/queries/GetTournament.graphql';
 
-const addEventMutation = require('graphql-tag/loader!../../graphql/events/mutations/addEvent.graphql');
-const deleteEventMutation = require('graphql-tag/loader!../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql');
+import * as getCompetitionEventsQuery from '../../graphql/events/queries/GetCompetitions.graphql';
+import * as getTournamentEventsQuery from '../../graphql/events/queries/GetTournaments.graphql';
 
-const importedQuery = require('graphql-tag/loader!../../graphql/importedEvents/queries/GetImported.graphql');
+import * as importedQuery from '../../graphql/importedEvents/queries/GetImported.graphql';
+
+import * as addEventMutation from '../../graphql/events/mutations/addEvent.graphql';
+import * as deleteEventMutation from '../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql';
+
+import * as updateCompetitionEvent from '../../graphql/events/mutations/UpdateCompetitionEvent.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -26,51 +38,101 @@ export class EventService {
 
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
-  getEvents(
-    order: string,
-    first: number,
-    after: string,
-    type: EventType,
-    query: any
-  ) {
-    let where = undefined;
-    if (query) {
-      where = {
-        name: {
-          $iLike: `%${query}%`,
-        },
-      };
-    }
+  getEvents(args?: {
+    type: EventType;
+    first?: number;
+    after?: string;
+    includeSubEvents?: boolean;
+    where?: { [key: string]: any };
+  }) {
+    args = {
+      includeSubEvents: false,
+      ...args,
+    };
 
     return this.apollo
       .query<{
-        events: {
+        eventCompetitions?: {
           total: number;
-          edges: { cursor: string; node: Event }[];
+          edges: { cursor: string; node: CompetitionEvent }[];
+        };
+        eventTournaments?: {
+          total: number;
+          edges: { cursor: string; node: TournamentEvent }[];
         };
       }>({
         query:
-          type == EventType.TOERNAMENT
+          args.type == EventType.TOURNAMENT
             ? getTournamentEventsQuery
             : getCompetitionEventsQuery,
         variables: {
-          first,
-          after,
-          where,
+          first: args.first,
+          after: args.after,
+          where: args.where,
+          includeSubEvents: args.includeSubEvents
         },
       })
       .pipe(
         map((x) => {
-          if (x.data.events) {
-            x.data.events.edges = x.data.events.edges.map((x) => {
-              x.node = new Event(x.node);
-              return x;
-            });
+          if (x.data.eventCompetitions) {
+            x.data.eventCompetitions.edges = x.data.eventCompetitions.edges.map(
+              (x) => {
+                x.node = new CompetitionEvent(x.node);
+                return x;
+              }
+            );
+          }
+          if (x.data.eventTournaments) {
+            x.data.eventTournaments.edges = x.data.eventTournaments.edges.map(
+              (x) => {
+                x.node = new TournamentEvent(x.node);
+                return x;
+              }
+            );
           }
 
           return x.data;
         })
       );
+  }
+
+  getCompetitionEvent(id: string, args?: {}) {
+    return this.apollo
+      .query<{
+        eventCompetition: CompetitionEvent;
+      }>({
+        query: getCompetitionEventQuery,
+        variables: {
+          id,
+        },
+      })
+      .pipe(map((x) => new CompetitionEvent(x.data.eventCompetition)));
+  }
+
+  getTournamentEvent(id: string, args?: {}) {
+    return this.apollo
+      .query<{
+        eventTournament: TournamentEvent;
+      }>({
+        query: getTournamentEventQuery,
+        variables: {
+          id,
+        },
+      })
+      .pipe(map((x) => new TournamentEvent(x.data.eventTournament)));
+  }
+
+  updateCompetitionEvent(event: Partial<CompetitionEvent>) {
+    return this.apollo
+      .mutate<{
+        updateEventCompetition: CompetitionEvent;
+      }>({
+        mutation: updateCompetitionEvent,
+        variables: {
+          event,
+        },
+      })
+      .pipe(map((x) => new CompetitionEvent(x.data.updateEventCompetition)));
   }
 
   getImported(order: string, first: number, after: string) {
@@ -103,7 +165,7 @@ export class EventService {
 
   startImport(imported: Imported) {
     return this.httpClient.put(
-      `${environment.api}/${environment.apiVersion}/import/start/${imported.id}/${imported.event.id}`,
+      `${environment.api}/${environment.apiVersion}/import/start/${imported.id}/${imported.event?.id }`,
       null
     );
   }
@@ -121,10 +183,11 @@ export class EventService {
         };
       }>({
         query:
-          type == EventType.TOERNAMENT
+          type == EventType.TOURNAMENT
             ? getTournamentEventsQuery
             : getCompetitionEventsQuery,
         variables: {
+          includeSubEvents: true,
           where: {
             $or: [
               {
@@ -139,19 +202,24 @@ export class EventService {
       })
       .pipe(
         map((x) => {
-          if (x.data.eventCompetitions || x.data.eventCompetitions) {
-            const events = [
-              ...(x.data.eventCompetitions?.edges ?? []),
-              ...(x.data.eventTournaments?.edges ?? []),
-            ].map((e) => {
-              e.node = new Event(e.node);
-              return e;
-            });
-
-            return events.map((x) => x.node);
-          } else {
-            return null;
+          const events = [];
+          if (x.data.eventCompetitions) {
+            events.push(
+              ...x.data.eventCompetitions?.edges?.map(
+                (e) => new CompetitionEvent(e.node)
+              )
+            );
           }
+
+          if (x.data.eventTournaments) {
+            events.push(
+              ...x.data.eventTournaments?.edges?.map(
+                (e) => new TournamentEvent(e.node)
+              )
+            );
+          }
+
+          return events;
         })
       );
   }

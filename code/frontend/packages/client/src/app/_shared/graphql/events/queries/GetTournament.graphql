@@ -1,0 +1,14 @@
+# Write your query or mutation here
+query GetEvent($id: ID!) {
+  eventTournament(id: $id) {
+    id
+    name
+    dates
+    firstDay
+    subEvents(order: "name") {
+      id
+      name
+      eventType
+    }
+  }
+}

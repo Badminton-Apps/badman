@@ -10,7 +10,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -27,6 +27,7 @@ import {
 } from 'sequelize-typescript';
 import { DrawCompetition } from './draw-competition.model';
 import { Game } from '../game.model';
+import { Team } from '../../team.model';
 
 @Table({
   timestamps: true,
@@ -46,7 +47,6 @@ export class EncounterCompetition extends Model {
   @Column
   date: Date;
 
-
   @HasMany(() => Game, {
     foreignKey: 'linkId',
     constraints: false,
@@ -56,12 +56,29 @@ export class EncounterCompetition extends Model {
   })
   games: Game[];
 
-  @BelongsTo(() => DrawCompetition, 'drawId')
+  @BelongsTo(() => DrawCompetition, {
+    foreignKey: 'drawId',
+    onDelete: 'CASCADE'
+  })
   draw?: DrawCompetition[];
 
   @ForeignKey(() => DrawCompetition)
   @Column
   drawId: string;
+
+  @BelongsTo(() => Team, 'homeTeamId')
+  home: Team;
+
+  @ForeignKey(() => Team)
+  @Column
+  homeTeamId: string;
+
+  @BelongsTo(() => Team, 'awayTeamId')
+  away: Team;
+
+  @ForeignKey(() => Team)
+  @Column
+  awayTeamId: string;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;
@@ -77,4 +94,12 @@ export class EncounterCompetition extends Model {
   // Belongs to Draw
   getDraw!: BelongsToGetAssociationMixin<DrawCompetition>;
   setDraw!: BelongsToSetAssociationMixin<DrawCompetition, string>;
+
+  // Belongs to Home
+  getHome!: BelongsToGetAssociationMixin<Team>;
+  setHome!: BelongsToSetAssociationMixin<Team, string>;
+
+  // Belongs to Away
+  getAway!: BelongsToGetAssociationMixin<Team>;
+  setAway!: BelongsToSetAssociationMixin<Team, string>;
 }

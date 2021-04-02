@@ -8,7 +8,6 @@ import {
   Player,
   PlayerService,
   SystemService,
-  User,
 } from 'app/_shared';
 import {
   BehaviorSubject,
@@ -36,7 +35,7 @@ import {
 export class PlayerComponent implements OnInit, OnDestroy {
   private mobileQueryListener: () => void;
   player$: Observable<Player>;
-  user$: Observable<{ player: User; request: any }>;
+  user$: Observable<{ player: Player; request: any }>;
 
   canClaimAccount$: Observable<{ canClaim: boolean; isclaimedByUser: boolean }>;
 
@@ -68,11 +67,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
 
-    const system$ = this.systemService.getSystems(true).pipe(
-      filter((x) => !!x),
-      filter((x) => x.length > 0),
-      map((x) => x[0])
-    );
+    const system$ = this.systemService
+      .getPrimarySystem()
+      .pipe(filter((x) => !!x));
 
     this.player$ = merge<Player>(
       reset$,

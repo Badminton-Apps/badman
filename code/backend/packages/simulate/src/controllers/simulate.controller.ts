@@ -2,18 +2,12 @@ import {
   AuthenticatedRequest,
   BaseController,
   DataBaseHandler,
-  Game,
-  GroupSubEvents,
-  GroupSystems,
   logger,
-  Player,
-  RankingSystem,
-  RankingSystemGroup
+  RankingSystem
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import moment from 'moment';
 import { RankingCalculator } from '../models';
-import { Op } from 'sequelize';
 
 export class SimulateController extends BaseController {
   private _path = '/simulate';

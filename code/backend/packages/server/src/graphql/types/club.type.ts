@@ -1,4 +1,4 @@
-import { Club } from '@badvlasim/shared/models';
+import { Club, SubEventType, Team } from '@badvlasim/shared/models';
 import {
   GraphQLInputObjectType,
   GraphQLInt,
@@ -12,6 +12,8 @@ import { PlayerType } from './player.type';
 import { TeamType } from './team.type';
 import moment from 'moment';
 import { getAttributeFields } from './attributes.type';
+import { RoleType } from './security';
+import { LocationType } from './location.type';
 
 export const ClubType = new GraphQLObjectType({
   name: 'Club',
@@ -21,7 +23,25 @@ export const ClubType = new GraphQLObjectType({
       teams: {
         type: new GraphQLList(TeamType),
         args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Club.associations.teams)
+        resolve: resolver(Club.associations.teams, {
+          before: async (findOptions, args, context, info) => {
+            findOptions.order = [
+              ['type', 'asc'],
+              ['number', 'asc']
+            ];
+            return findOptions;
+          }
+        })
+      },
+      roles: {
+        type: new GraphQLList(RoleType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Club.associations.roles)
+      },
+      locations: {
+        type: new GraphQLList(LocationType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Club.associations.locations)
       },
       players: {
         type: new GraphQLList(PlayerType),
@@ -41,8 +61,12 @@ export const ClubType = new GraphQLObjectType({
                 .filter(p => p)
                 .filter(p => p.getDataValue('ClubMembership') != null)
                 // then filter
-                .filter(player =>
-                  moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
+                .filter(
+                  player =>
+                    // no end
+                    player.getDataValue('ClubMembership').end == null ||
+                    // or in future
+                    moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
                 );
             }
 

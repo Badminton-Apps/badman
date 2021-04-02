@@ -2,24 +2,25 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Apollo } from 'apollo-angular';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map, share, shareReplay, tap } from 'rxjs/operators';
 import { environment } from './../../../../environments/environment';
 import { RankingSystem, RankingSystemGroup } from './../../models';
 
-const primarySystemsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetPrimarySystemsQuery.graphql');
-const systemWithCountsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql');
-const systemQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemQuery.graphql');
-const systemsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemsQuery.graphql');
-const systemsGroupsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemGroupsQuery.graphql');
+import * as primarySystemsQuery from '../../graphql/rankingSystem/queries/GetPrimarySystemsQuery.graphql';
+import * as systemWithCountsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql';
+import * as systemQuery from '../../graphql/rankingSystem/queries/GetSystemQuery.graphql';
+import * as systemsQuery from '../../graphql/rankingSystem/queries/GetSystemsQuery.graphql';
+import * as systemsGroupsQuery from '../../graphql/rankingSystem/queries/GetSystemGroupsQuery.graphql';
 
-const addRankingSystemMutation = require('graphql-tag/loader!../../graphql/rankingSystem/mutations/addRankingSystem.graphql');
-const updateRankingSysyemMutatino = require('graphql-tag/loader!../../graphql/rankingSystem/mutations/updateRankingSystem.graphql');
+import * as addRankingSystemMutation from '../../graphql/rankingSystem/mutations/addRankingSystem.graphql';
+import * as updateRankingSysyemMutatino from '../../graphql/rankingSystem/mutations/updateRankingSystem.graphql';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SystemService {
+  private primarySystem: RankingSystem;
   private urlBase = `${environment.api}/${environment.apiVersion}/systems`;
 
   constructor(private httpClient: HttpClient, private apollo: Apollo) {}
@@ -105,18 +106,36 @@ export class SystemService {
     );
   }
 
+  getPrimarySystem() {
+    if (this.primarySystem != null) {
+      return of(this.primarySystem);
+    }
+
+    return this.apollo
+      .query<{ systems: RankingSystem[] }>({
+        query: primarySystemsQuery,
+      })
+      .pipe(
+        share(),
+        map((x) =>
+          x.data?.systems?.length > 0
+            ? new RankingSystem(x.data.systems[0])
+            : null
+        ),
+        tap((s) => (this.primarySystem = s))
+      );
+  }
+
   getSystems(
-    primary: boolean = false,
     sort?: string,
     direction?: SortDirection,
     page?: number
   ): Observable<RankingSystem[]> {
     return this.apollo
       .query({
-        query: primary ? primarySystemsQuery : systemsQuery,
-        fetchPolicy: 'no-cache',
+        query: systemsQuery,
       })
-      .pipe(map((x: any) => x.data?.systems.map(s => new RankingSystem(s))));
+      .pipe(map((x: any) => x.data?.systems.map((s) => new RankingSystem(s))));
   }
 
   getSystemsGroups(): Observable<RankingSystemGroup[]> {

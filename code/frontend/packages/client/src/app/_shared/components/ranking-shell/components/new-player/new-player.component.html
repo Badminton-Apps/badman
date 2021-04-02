@@ -1,0 +1,33 @@
+<form (ngSubmit)="this.submit()"  [formGroup]="this.playerForm">
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" alt="firstName" autocomplete="firstName" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Last name</mat-label>
+      <input matInput formControlName="lastName" alt="lastName" autocomplete="lastName" required />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>Gender</mat-label>
+      <mat-select formControlName="gender" required>
+        <mat-option>--select something --</mat-option>
+        <mat-option value="M">Man</mat-option>
+        <mat-option value="F">Vrouw</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>MemberId</mat-label>
+      <input matInput formControlName="memberId" alt="memberId" autocomplete="memberId" required />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <button mat-raised-button color="primary" type="submit">save</button>
+  </div>
+</form>

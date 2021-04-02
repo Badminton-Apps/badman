@@ -1,0 +1,9 @@
+<ng-container *ngIf="this.player$ | async as player">
+  <div class="mat-subheading-1">Ranking</div>
+  <ng-container *ngIf="player.rankingPlaces && player.rankingPlaces.length > 0">
+    <app-edit-ranking [rankingPlace]="player.rankingPlaces[0]" (onRankingPlaceChanged)="this.onRankingPlaceChanged($event)"></app-edit-ranking>
+  </ng-container>
+
+  <div class="mat-subheading-1">Permissions</div>
+  <app-edit-permissions [player]="player" (onClaimChanged)="this.claimChanged($event, player)"></app-edit-permissions>
+</ng-container>

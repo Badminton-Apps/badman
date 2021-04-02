@@ -1,0 +1,27 @@
+<ng-container *ngIf="this.location$ | async as location; else loading">
+  <h2 mat-dialog-title>Edit location</h2>
+  <mat-dialog-content>
+    <app-location-fields
+      [club]="this.data.club"
+      [location]="location"
+      (save)="this.update($event)"
+    ></app-location-fields>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      *ngIf="!location.id"
+      [disabled]="!this.data.location?.name"
+      (click)="this.create()"
+    >
+      Create
+    </button>
+
+    <button mat-button [mat-dialog-close]="location">Close</button>
+  </mat-dialog-actions>
+</ng-container>
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar
+></ng-template>

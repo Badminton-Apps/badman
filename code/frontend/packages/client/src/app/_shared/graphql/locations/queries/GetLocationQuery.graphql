@@ -1,0 +1,14 @@
+query GetLocationQuery($id: ID!) {
+  location(id: $id) {
+    id
+    name
+    address
+    street
+    streetNumber
+    postalcode
+    city
+    state
+    phone
+    fax
+  }
+}
