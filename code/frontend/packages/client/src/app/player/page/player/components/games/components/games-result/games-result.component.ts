@@ -1,43 +1,68 @@
-import { Component, DoCheck, Input } from '@angular/core';
-import { Game, GameType, Player, SubEvent } from '../../../../../../../_shared';
+import { ChangeDetectorRef, Component, DoCheck, Input, OnInit } from '@angular/core';
+import {
+  CompetitionSubEvent,
+  Game,
+  GameType,
+  Player,
+  TournamentSubEvent,
+} from '../../../../../../../_shared';
 
 @Component({
   selector: 'app-games-result',
   templateUrl: './games-result.component.html',
   styleUrls: ['./games-result.component.scss'],
 })
-export class GamesResultComponent implements DoCheck {
+export class GamesResultComponent implements OnInit {
   @Input()
   games: Game[];
 
   gamesLength = -1;
 
-  subEvent: SubEvent;
+  subEvent: CompetitionSubEvent | TournamentSubEvent;
   gameType: GameType;
 
-  subEvents: SubEvent[];
+  subEvents: (CompetitionSubEvent | TournamentSubEvent)[];
 
   @Input()
   player: Player;
 
-  ngDoCheck() {
+  ngOnInit() {
     // This every time the games length changes
     if (this.games.length !== this.gamesLength) {
       // Shouldn't happen, but still :)
       if (this.games.length > 0) {
         this.subEvents = Object.values(
-          this.games.reduce((rv, x) => {
-            (rv[x.draw.subEvent.id] = rv[x.draw.subEvent.id] || {
-              ...x.draw.subEvent,
-              games: [],
-            }).games.push(x);
-            return rv;
+          this.games.reduce((acc, cur) => {
+            if (cur.competition) {
+              (acc[cur.competition.draw.subEvent.id] = acc[
+                cur.competition.draw.subEvent.id
+              ] || {
+                ...cur.competition.draw.subEvent,
+                games: [],
+              }).games.push(cur);
+            }
+            if (cur.tournament) {
+              (acc[cur.tournament.subEvent.id] = acc[
+                cur.tournament.subEvent.id
+              ] || {
+                ...cur.tournament.subEvent,
+                games: [],
+              }).games.push(cur);
+            }
+
+            return acc;
           }, {})
         );
 
         // This is only once
         if (this.gamesLength === -1) {
-          this.subEvent = this.games[0].draw.subEvent;
+          if (this.games[0].competition) {
+            this.subEvent = this.games[0].competition.draw.subEvent;
+          }
+
+          if (this.games[0].tournament) {
+            this.subEvent = this.games[0].tournament.subEvent;
+          }
 
           this.subEvents.map((x) => {
             x.gameType = GameType[x.games[0].gameType];
@@ -47,5 +72,8 @@ export class GamesResultComponent implements DoCheck {
         this.gamesLength = this.games.length;
       }
     }
+
+    console.log(this.subEvent);
+
   }
 }
