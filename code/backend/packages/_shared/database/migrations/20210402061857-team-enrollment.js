@@ -443,7 +443,7 @@ module.exports = {
         ALTER TABLE public."Teams"
         ADD COLUMN "clubId" character varying(255) COLLATE pg_catalog."default";
         ALTER TABLE public."Teams"
-        ADD COLUMN "number" integer;
+        ADD COLUMN "teamNumber" integer;
         ALTER TABLE public."Teams"
         ADD COLUMN "preferredDay" "enum_Teams_preferredDay";
         ALTER TABLE public."Teams"
@@ -451,7 +451,7 @@ module.exports = {
         ALTER TABLE public."Teams"
         ADD COLUMN type character varying(255) COLLATE pg_catalog."default";
         ALTER TABLE public."Teams"
-        ADD CONSTRAINT "Teams_name_ClubId_number_key" UNIQUE (name, "ClubId", "number");
+        ADD CONSTRAINT "Teams_name_ClubId_teamNumber_key" UNIQUE (name, "ClubId", "teamNumber");
         ALTER TABLE public."Teams"
         ADD CONSTRAINT "Teams_captainId_fkey" FOREIGN KEY ("captainId") REFERENCES public."Players" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE
         SET NULL;
@@ -875,7 +875,7 @@ module.exports = {
     ALTER TABLE public."Teams" DROP COLUMN active;
     ALTER TABLE public."Teams" DROP COLUMN "captainId";
     ALTER TABLE public."Teams" DROP COLUMN "clubId";
-    ALTER TABLE public."Teams" DROP COLUMN "number";
+    ALTER TABLE public."Teams" DROP COLUMN "teamNumber";
     ALTER TABLE public."Teams" DROP COLUMN "preferredDay";
     ALTER TABLE public."Teams" DROP COLUMN "preferredTime";
     ALTER TABLE public."Teams" DROP COLUMN type;

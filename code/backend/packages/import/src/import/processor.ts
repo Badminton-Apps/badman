@@ -12,6 +12,7 @@ import {
 import moment, { Moment } from 'moment';
 import prettyMilliseconds from 'pretty-ms';
 import { Op, Transaction } from 'sequelize';
+import { ImportStep } from './import-step';
 
 export abstract class ProcessImport {
   protected importSteps: Map<string, ImportStep<any>>;
@@ -25,7 +26,7 @@ export abstract class ProcessImport {
   async import(args: any) {
     const totalStart = new Date().getTime();
     logger.debug(`Running import`);
-    for (let [name, step] of this.importSteps) {
+    for (const [name, step] of this.importSteps) {
       logger.debug(`Running step: ${name}`);
       const start = new Date().getTime();
 
@@ -47,7 +48,7 @@ export abstract class ProcessImport {
     const totalStart = new Date().getTime();
 
     logger.debug(`Running importFile`);
-    for (let [name, step] of this.importFileSteps) {
+    for (const [name, step] of this.importFileSteps) {
       logger.debug(`Running step: ${name}`);
       const start = new Date().getTime();
 
@@ -74,8 +75,8 @@ export abstract class ProcessImport {
     if (!override && !this.importSteps.has(step.name)) {
       this.importSteps.set(step.name, step);
     } else {
-      console.log(`Steps:`, [...this.importSteps.keys()], 'new Step', step.name);
-      throw 'Step already exists';
+      logger.debug(`Steps:`, [...this.importSteps.keys()], 'new Step', step.name);
+      throw new Error('Step already exists');
     }
   }
 
@@ -83,8 +84,8 @@ export abstract class ProcessImport {
     if (!override && !this.importFileSteps.has(step.name)) {
       this.importFileSteps.set(step.name, step);
     } else {
-      console.log(`Steps:`, [...this.importFileSteps.keys()], 'new Step', step.name);
-      throw 'Step already exists';
+      logger.debug(`Steps:`, [...this.importFileSteps.keys()], 'new Step', step.name);
+      throw new Error('Step already exists');
     }
   }
 
@@ -136,7 +137,7 @@ export abstract class ProcessImport {
       case 'GD':
         return GameType.MX;
       default:
-        console.log(`Unsupported type ${type}`);
+        logger.debug(`Unsupported type ${type}`);
     }
   }
 
@@ -176,12 +177,12 @@ export abstract class ProcessImport {
 
   protected getLevel(name: string): number {
     const matches = name.match(/\d+/g);
-    if (matches.length == 1) {
-      return Number.parseInt(matches[0]);
+    if (matches.length === 1) {
+      return Number.parseInt(matches[0], 10);
     }
     if (matches.length > 1) {
       logger.warn('More matches, please investigate');
-      return Number.parseInt(matches[0]);
+      return Number.parseInt(matches[0], 10);
     }
 
     logger.warn('No level found, please investigate');
@@ -201,7 +202,7 @@ export abstract class ProcessImport {
     name = name?.replace(/( ?BC ?)/, '');
     name = titleCase(name);
 
-    if (!isNaN(parseInt(name[0]))) {
+    if (!isNaN(parseInt(name[0], 10))) {
       name[1]?.toUpperCase();
     }
     return name;
@@ -304,7 +305,7 @@ export abstract class ProcessImport {
         }
       }
 
-      if (dbclubPlayerMemberships.find(r => r.clubId == clubId) == null) {
+      if (dbclubPlayerMemberships.find(r => r.clubId === clubId) == null) {
         // new membership
         newMmemberships.push(
           new ClubMembership({
@@ -327,21 +328,3 @@ export abstract class ProcessImport {
   // #endregion
 }
 
-export class ImportStep<output> {
-  private data: output;
-  private ran: boolean = false;
-
-  constructor(public name: string, public Execute: (args: any) => Promise<output>) {}
-
-  public async executeStep(args: any) {
-    this.data = await this.Execute(args);
-    this.ran = true;
-  }
-
-  getData() {
-    if (!this.ran) {
-      throw 'Step hasn\'t been executed yet';
-    }
-    return this.data;
-  }
-}

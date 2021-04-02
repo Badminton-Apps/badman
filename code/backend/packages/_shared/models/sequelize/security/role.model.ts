@@ -110,5 +110,5 @@ export class Role extends Model {
 
   // Belongs to Club
   getClub!: BelongsToGetAssociationMixin<Club>;
-  setClub!: BelongsToSetAssociationMixin<Club, String>;
+  setClub!: BelongsToSetAssociationMixin<Club, string>;
 }

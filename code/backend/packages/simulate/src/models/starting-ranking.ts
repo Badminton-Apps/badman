@@ -157,7 +157,7 @@ export class StartingRanking {
         }
       });
 
-      var types = startRanking[type.json];
+      const types = startRanking[type.json];
       while (types.length) {
         const batch = types.splice(0, 250);
         for (const player of batch) {

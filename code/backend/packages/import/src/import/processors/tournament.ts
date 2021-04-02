@@ -1,3 +1,4 @@
+import { ImportStep } from './../import-step';
 import { LocationEventTournament } from './../../../../_shared/models/sequelize/event/tournament/location_event.model';
 import {
   Club,
@@ -29,7 +30,7 @@ import { unlink } from 'fs';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { Mdb } from '../../convert/mdb';
-import { ImportStep, ProcessImport } from '../processor';
+import { ProcessImport } from '../processor';
 
 export class TournamentTpProcessor extends ProcessImport {
   constructor() {
@@ -167,7 +168,7 @@ export class TournamentTpProcessor extends ProcessImport {
       });
 
       if (!event) {
-        throw 'No Event';
+        throw new Error('No Event');
       }
 
       const subEvents = csvEvents.map(subEvent => {
@@ -264,7 +265,7 @@ export class TournamentTpProcessor extends ProcessImport {
         teamPlayers.set(dbClubs.id, [...playerIds, player.player.id]);
       }
 
-      for (let [team, playerIds] of teamPlayers) {
+      for (const [team, playerIds] of teamPlayers) {
         await this.addToClubs(playerIds, moment(event.firstDay), team, {
           transaction: args.transaction
         });
@@ -302,7 +303,7 @@ export class TournamentTpProcessor extends ProcessImport {
       });
 
       return csvClubs.map((v, i) => {
-        const dbClub = dbClubs.find(r => this.cleanedClubName(v.name) == r.name);
+        const dbClub = dbClubs.find(r => this.cleanedClubName(v.name) === r.name);
         return {
           club: dbClub,
           internalId: +v.id
@@ -347,7 +348,7 @@ export class TournamentTpProcessor extends ProcessImport {
       // Return result
       return corrected.map((v, i) => {
         const dbPlayer = dbPlayers.find(
-          p => p.memberId == v.memberId && p.firstName == v.firstName && p.lastName == v.lastName
+          p => p.memberId === v.memberId && p.firstName === v.firstName && p.lastName === v.lastName
         );
 
         return {
@@ -367,28 +368,28 @@ export class TournamentTpProcessor extends ProcessImport {
       const locations = [];
       for await (const csvLocation of csvLocations) {
         let street = '';
-        let number = null;
+        let locNumber = null;
         const groups = csvLocation.address.match(/([^\d]+)\s?(.+)/);
         if (!groups) {
           // No street address, do nothing
-        } else if (groups.length == 2) {
+        } else if (groups.length === 2) {
           street = groups[1];
         } else if (groups.length > 2) {
           street = groups[1];
-          number = groups[2];
+          locNumber = groups[2];
         }
 
         const [dbLocation] = await Location.findOrCreate({
           where: {
             street,
-            streetNumber: number,
+            streetNumber: locNumber,
             city: csvLocation.city,
             postalcode: +csvLocation.postalcode || null
           },
           defaults: {
             name: csvLocation.name,
             street,
-            streetNumber: number,
+            streetNumber: locNumber,
             phone: csvLocation.phone,
             fax: csvLocation.fax,
             city: csvLocation.city,
@@ -451,7 +452,7 @@ export class TournamentTpProcessor extends ProcessImport {
       return dbCourts.map((v, i) => {
         return {
           court: v,
-          internalId: +csvCourts.find(c => c.name == v.name).id
+          internalId: +csvCourts.find(c => c.name === v.name).id
         };
       });
     });
@@ -583,7 +584,7 @@ export class TournamentTpProcessor extends ProcessImport {
             : parseInt(csvPlayerMatch.team2set3, 10);
         const court = courts.find(x => x.internalId === +csvPlayerMatch.court)?.court;
 
-        if (court == null && !csvPlayerMatch.court && csvPlayerMatch.court !== '') {
+        if (court === null && !csvPlayerMatch.court && csvPlayerMatch.court !== '') {
           logger.warn('Court not found in db?');
         }
 
@@ -594,31 +595,31 @@ export class TournamentTpProcessor extends ProcessImport {
         // always possible that I didn't find a player so it would be null
         if (team1Player2 || team2Player2) {
           if (team1Player1 && team1Player2) {
-            if (team1Player1.gender != team1Player2.gender) {
+            if (team1Player1.gender !== team1Player2.gender) {
               gameType = GameType.MX;
-            } else if (team1Player1.gender == team1Player2.gender) {
+            } else if (team1Player1.gender === team1Player2.gender) {
               gameType = GameType.D;
             }
           } else if (team2Player1 && team2Player2) {
-            if (team2Player1.gender != team2Player2.gender) {
+            if (team2Player1.gender !== team2Player2.gender) {
               gameType = GameType.MX;
-            } else if (team2Player1.gender == team2Player2.gender) {
+            } else if (team2Player1.gender === team2Player2.gender) {
               gameType = GameType.D;
             }
           } else if (team1Player2 && team2Player1) {
             // So now we know we don't have 2 players on either team,
             // quick check that it just didn't find one on both teams
-            if (team1Player2.gender != team2Player1.gender) {
+            if (team1Player2.gender !== team2Player1.gender) {
               gameType = GameType.MX;
-            } else if (team1Player2.gender == team2Player1.gender) {
+            } else if (team1Player2.gender === team2Player1.gender) {
               gameType = GameType.D;
             }
           } else if (team1Player1 && team2Player2) {
             // So now we know we don't have 2 players on either team,
             // quick check that it just didn't find one on both teams
-            if (team1Player1.gender != team2Player2.gender) {
+            if (team1Player1.gender !== team2Player2.gender) {
               gameType = GameType.MX;
-            } else if (team1Player1.gender == team2Player2.gender) {
+            } else if (team1Player1.gender === team2Player2.gender) {
               gameType = GameType.D;
             }
           }
@@ -772,7 +773,7 @@ export class TournamentTpProcessor extends ProcessImport {
           unlink(importerFile.fileLocation, err => {
             if (err) {
               logger.error(`delete file ${importerFile.fileLocation} failed`, err);
-              // throw err;
+              // throw new Error(err);
               return;
             }
             logger.debug('Old file deleted', importerFile.fileLocation);

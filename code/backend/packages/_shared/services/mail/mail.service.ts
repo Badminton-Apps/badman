@@ -1,15 +1,15 @@
-import { EventCompetition, Team, Club } from '@badvlasim/shared';
-var nodemailer = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
-var exphbs  = require('nodemailer-express-handlebars');
+import { EventCompetition, Team, Club, logger } from '@badvlasim/shared';
+import nodemailer from 'nodemailer';
+import smtpTransport from 'nodemailer-smtp-transport';
+import exphbs from 'nodemailer-express-handlebars';
 import path from 'path';
 import { Player, SubEventCompetition } from '../../models';
 
 export class MailService {
-  private transporter;
+  private _transporter;
 
   constructor() {
-    this.transporter = nodemailer.createTransport(
+    this._transporter = nodemailer.createTransport(
       smtpTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -30,7 +30,7 @@ export class MailService {
       viewPath: path.join(__dirname, './templates'),
     });
 
-    this.transporter.use('compile', hbsOptions);
+    this._transporter.use('compile', hbsOptions);
   }
 
   async sendNewPeopleMail(to: string) {
@@ -80,15 +80,15 @@ export class MailService {
       for (const subEvent of event.subEvents) {
         for (const team of subEvent.teams) {
           // get existing
-          let clubIndex = clubs.findIndex(r => r.name == team.club.name);
-          if (clubIndex == -1) {
+          let clubIndex = clubs.findIndex(r => r.name === team.club.name);
+          if (clubIndex === -1) {
             clubIndex = clubs.push({ ...team.club.toJSON(), players: [] }) - 1;
           }
 
           // Set the players
           for (const player of team.players) {
             if (
-              !clubs[clubIndex].players.find(r => r.memberId == player.memberId)
+              !clubs[clubIndex].players.find(r => r.memberId === player.memberId)
             ) {
               clubs[clubIndex].players.push(player.toJSON());
             }
@@ -99,20 +99,20 @@ export class MailService {
 
     const clientUrl = process.env.CLIENT_URL;
 
-    let options = {
+    const options = {
       from: 'test@gmail.com',
-      to: to,
+      to,
       subject: 'New players',
       template: 'newplayers',
       context: { clubs, clientUrl, title: 'New players' }
     };
 
     try {
-      const info = await this.transporter.sendMail(options);
-      console.log('Message sent: %s', info.messageId);
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      const info = await this._transporter.sendMail(options);
+      logger.debug('Message sent: %s', info.messageId);
+      logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     } catch (e) {
-      console.error('Hello', e);
+      logger.error('Hello', e);
     }
   }
 }

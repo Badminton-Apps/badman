@@ -101,8 +101,8 @@ export class Team extends Model {
       ?.substr(instance?.name?.length - 4)
       .match(/(\d+[GHD])/) ?? [''])[0];
 
-    if (!instance.number) {
-      instance.number = +suffix.replace(/[GHD]/, '');
+    if (!instance.teamNumber) {
+      instance.teamNumber = +suffix.replace(/[GHD]/, '');
     }
 
     if (!instance.type) {
@@ -179,7 +179,7 @@ export class Team extends Model {
 
   @Unique('unique_constraint')
   @Column
-  number: number;
+  teamNumber: number;
 
   @Default(true)
   @Column
