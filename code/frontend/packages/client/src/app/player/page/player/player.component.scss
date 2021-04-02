@@ -1,0 +1,15 @@
+app-profile-header {
+  padding: 0 0 25px 0;
+}
+
+.player-details {
+  display: flex;
+  flex-direction: row;
+  app-games {
+    flex: 1;
+    margin-right: 25px;
+  }
+  app-ranking-evolution {
+    flex: 0.5;
+  }
+}

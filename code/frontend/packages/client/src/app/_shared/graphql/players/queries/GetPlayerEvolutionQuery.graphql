@@ -1,0 +1,27 @@
+# Write your query or mutation here
+query GetPlayerEvolutionQuery($playerId: ID!, $rankingType: ID!) {
+  player(id: $playerId) {
+    id
+    rankingPlaces(
+      order: "rankingDate"
+      where: { SystemId: $rankingType }
+    ) {
+      id
+      rankingDate
+      singlePoints
+      singlePointsDowngrade
+      single
+      mixPoints
+      mixPointsDowngrade
+      mix
+      doublePoints
+      doublePointsDowngrade
+      double
+      updatePossible
+      rankingSystem {
+        id
+        name
+      }
+    }
+  }
+}

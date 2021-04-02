@@ -1,0 +1,5 @@
+mutation DeleteImportedEvent($event: ImportInput!) {
+  deleteImportedEvent(event: $event) {
+    id
+  }
+}
