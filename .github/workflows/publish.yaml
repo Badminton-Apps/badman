@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: ["backend", "frontend"]
+        folder: ['backend', 'frontend']
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: "https://npm.pkg.github.com"
+          registry-url: 'https://npm.pkg.github.com'
       - run: npx lerna bootstrap
         working-directory: code/${{ matrix.folder }}
       - run: npx lerna run lint
@@ -21,7 +21,7 @@ jobs:
       - run: npx lerna run test
         working-directory: code/${{ matrix.folder }}
 
-      # TOOD: 
+      # TOOD:
       #   - Docker build
       #   - Docker push
       #   - Helm package
@@ -36,7 +36,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: "https://npm.pkg.github.com"      
+          registry-url: 'https://npm.pkg.github.com'
       - name: Conventional Changelog Action
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
@@ -46,11 +46,11 @@ jobs:
           version-file: './code/backend/lerna.json'
           skip-version-file: true
           skip-commit: true
-          preset: 'angular'    
+          preset: 'angular'
           skip-on-empty: false
       # - run: npm run gen-erd
       #   name: Generate erd schema
-      #   working-directory: code/backend/packages/_shared          
+      #   working-directory: code/backend/packages/_shared
       - run: npm run release -- ${{ steps.changelog.outputs.version }} --no-git-tag-version --yes --force-publish
         name: release Frontend
         working-directory: code/frontend
@@ -58,6 +58,15 @@ jobs:
         name: release Backend
         working-directory: code/backend
       - run: cp CHANGELOG.md code/frontend/packages/client/src/assets/CHANGELOG.md
+      - name: Create Release
+        uses: actions/create-release@v1
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
       - name: Add markdown files
         run: |
           git config --global user.email "glenn.latomme@gmail.com"
@@ -69,12 +78,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-      - name: Create Release
-        uses: actions/create-release@v1
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          release_name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
