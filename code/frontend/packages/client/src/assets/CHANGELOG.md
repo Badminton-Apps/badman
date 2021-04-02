@@ -1,3 +1,13 @@
+## [3.1.1](https://github.com/Badminton-Apps/core/compare/v3.1.0...v3.1.1) (2021-04-02)
+
+
+### Bug Fixes
+
+* only on push* tag ([3702cea](https://github.com/Badminton-Apps/core/commit/3702cea0b56a35c7ede974dccc8ab4805017278a))
+* tag version? ([08ae4c0](https://github.com/Badminton-Apps/core/commit/08ae4c04921564081e9f6b8675bfc2a2cf440f5c))
+
+
+
 # [3.1.0](https://github.com/Badminton-Apps/core/compare/v3.0.1...v3.1.0) (2021-04-02)
 
 
@@ -79,10 +89,6 @@
 
 * **server:** All should be working as before, but if you want events combined, you can't paginate as you could before
 * - DB was massivly reworked, you can try to migrate it, but in next commit a new import is going to be provided
-
-
-
-## [1.6.2](https://github.com/Badminton-Apps/core/compare/v1.6.1...v1.6.2) (2021-02-15)
 
 
 
