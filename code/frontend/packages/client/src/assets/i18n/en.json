@@ -1,8 +1,8 @@
 {
     "languages": {
         "en": "English",
-        "fr": "Français",
-        "nl": "Nederlands"
+        "fr_BE": "Français",
+        "nl_BE": "Nederlands"
     },
     "lists": {
         "name": "Name"
@@ -69,7 +69,15 @@
     },
     "competition": {
         "types": {
-            "male": "Male"
+            "male": "Male",
+            "female": "Fenale",
+            "mix": "Mix"
         }
+    },
+    "event": {
+      "types": {
+        "competition": "Competition",
+        "tournament": "Tournament"
+      }
     }
 }

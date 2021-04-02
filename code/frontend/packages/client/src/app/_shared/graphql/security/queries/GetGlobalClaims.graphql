@@ -1,0 +1,8 @@
+query GetClaims {
+  claims(where: { type: "global" }) {
+    id
+    name
+    description
+    category
+  }
+}

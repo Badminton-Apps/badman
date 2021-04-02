@@ -1,10 +1,12 @@
+import { LocationType } from './../location.type';
 import { EventCompetition } from '@badvlasim/shared';
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
-  GraphQLObjectType
+  GraphQLObjectType,
+  GraphQLString
 } from 'graphql';
 import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../queryFixer';
@@ -18,8 +20,30 @@ export const EventCompetitionType = new GraphQLObjectType({
     Object.assign(getAttributeFields(EventCompetition), {
       subEvents: {
         type: new GraphQLList(SubEventCompetitionType),
+        args: Object.assign(defaultListArgs(), {
+          direction: {
+            type: GraphQLString
+          },
+          order: {
+            type: GraphQLString
+          }
+        }),
+        resolve: resolver(EventCompetition.associations.subEvents, {
+          before: async (findOptions, args, context, info) => {
+            if (args.order) {
+              findOptions = {
+                ...findOptions,
+                order: [[args.order, args.direction ?? "asc"], ['level', 'asc']]
+              };
+            }
+            return findOptions;
+          }
+        })
+      },
+      locations: {
+        type: new GraphQLList(LocationType),
         args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(EventCompetition.associations.subEvents)
+        resolve: resolver(EventCompetition.associations.locations)
       }
     })
 });

@@ -1,15 +1,9 @@
+import { LocationEventTournament } from './tournament/location_event.model';
+import { EventCompetition } from '@badvlasim/shared';
 import {
   BelongsToGetAssociationMixin,
-  BelongsToManyAddAssociationMixin,
-  BelongsToManyAddAssociationsMixin,
-  BelongsToManyCountAssociationsMixin,
-  BelongsToManyGetAssociationsMixin,
-  BelongsToManyHasAssociationMixin,
-  BelongsToManyHasAssociationsMixin,
-  BelongsToManyRemoveAssociationMixin,
-  BelongsToManyRemoveAssociationsMixin,
-  BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
+  BuildOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -18,7 +12,16 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin
 } from 'sequelize';
 import {
   BelongsTo,
@@ -26,17 +29,18 @@ import {
   Column,
   DataType,
   Default,
+  ForeignKey,
   HasMany,
+  Index,
   IsUUID,
   Model,
   PrimaryKey,
   Table,
-  TableOptions,
-  Unique
+  TableOptions
 } from 'sequelize-typescript';
-import { EventCompetition, EventTournament } from '.';
+import { EventTournament } from '.';
 import { Club } from '../../..';
-import { ClubLocation } from '../club-location.model';
+import { LocationEventCompetition } from './competition/location_event.model';
 import { Court } from './court.model';
 
 @Table({
@@ -44,13 +48,16 @@ import { Court } from './court.model';
   schema: 'event'
 } as TableOptions)
 export class Location extends Model {
+  constructor(values?: Partial<Location>, options?: BuildOptions) {
+    super(values, options);
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column
   id: string;
 
-  @Unique('unique_constraint')
   @Column
   name: string;
 
@@ -58,7 +65,13 @@ export class Location extends Model {
   address: string;
 
   @Column
-  postalcode: string;
+  street: string;
+
+  @Column
+  streetNumber: string;
+
+  @Column
+  postalcode: number;
 
   @Column
   city: string;
@@ -72,47 +85,92 @@ export class Location extends Model {
   @Column
   fax: string;
 
+  @BelongsToMany(
+    () => EventCompetition,
+    () => LocationEventCompetition
+  )
+  eventCompetitions: EventCompetition[];
+
+  @BelongsToMany(
+    () => EventTournament,
+    () => LocationEventTournament
+  )
+  eventTournaments: EventCompetition[];
+
   @HasMany(() => Court, 'locationId')
   courts: Court;
 
-  @BelongsTo(() => EventTournament, {
-    foreignKey: 'eventId',
-    constraints: false,
-    scope: {
-      eventType: 'tournament'
-    }
-  })
-  eventTournament: EventTournament;
+  @BelongsTo(() => Club, 'clubId')
+  club: Club;
 
-  @BelongsTo(() => EventCompetition, {
-    foreignKey: 'eventId',
-    constraints: false,
-    scope: {
-      eventType: 'competition'
-    }
-  })
-  eventCompetition: EventCompetition;
-
-  @Unique('unique_constraint')
+  @ForeignKey(() => Club)
+  @Index
   @Column
-  eventId: string;
+  clubId: string;
 
-  @Unique('unique_constraint')
-  @Column
-  eventType: string;
-  @BelongsToMany(
-    () => Club,
-    () => ClubLocation
-  )
-  clubs: Club[];
+  // Belongs to many EventCompetition
+  getEventCompetitions!: BelongsToManyGetAssociationsMixin<EventCompetition>;
+  setEventCompetitions!: BelongsToManySetAssociationsMixin<
+    EventCompetition,
+    string
+  >;
+  addEventCompetitions!: BelongsToManyAddAssociationsMixin<
+    EventCompetition,
+    string
+  >;
+  addEventCompetition!: BelongsToManyAddAssociationMixin<
+    EventCompetition,
+    string
+  >;
+  removeEventCompetition!: BelongsToManyRemoveAssociationMixin<
+    EventCompetition,
+    string
+  >;
+  removeEventCompetitions!: BelongsToManyRemoveAssociationsMixin<
+    EventCompetition,
+    string
+  >;
+  hasEventCompetition!: BelongsToManyHasAssociationMixin<
+    EventCompetition,
+    string
+  >;
+  hasEventCompetitions!: BelongsToManyHasAssociationsMixin<
+    EventCompetition,
+    string
+  >;
+  countEventCompetition!: BelongsToManyCountAssociationsMixin;
 
-  // Belongs to EventTournament
-  getEventTournament!: BelongsToGetAssociationMixin<EventTournament>;
-  setEventTournament!: BelongsToSetAssociationMixin<EventTournament, string>;
-
-  // Belongs to EventCompetition
-  getEventCompetition!: BelongsToGetAssociationMixin<EventCompetition>;
-  setEventCompetition!: BelongsToSetAssociationMixin<EventCompetition, string>;
+  // Belongs to many EventTournament
+  getEventTournaments!: BelongsToManyGetAssociationsMixin<EventTournament>;
+  setEventTournaments!: BelongsToManySetAssociationsMixin<
+    EventTournament,
+    string
+  >;
+  addEventTournaments!: BelongsToManyAddAssociationsMixin<
+    EventTournament,
+    string
+  >;
+  addEventTournament!: BelongsToManyAddAssociationMixin<
+    EventTournament,
+    string
+  >;
+  removeEventTournament!: BelongsToManyRemoveAssociationMixin<
+    EventTournament,
+    string
+  >;
+  removeEventTournaments!: BelongsToManyRemoveAssociationsMixin<
+    EventTournament,
+    string
+  >;
+  hasEventTournament!: BelongsToManyHasAssociationMixin<
+    EventTournament,
+    string
+  >;
+  hasEventTournaments!: BelongsToManyHasAssociationsMixin<
+    EventTournament,
+    string
+  >;
+  countEventTournament!: BelongsToManyCountAssociationsMixin;
 
   // Has many Court
   getCourts!: HasManyGetAssociationsMixin<Court>;
@@ -125,14 +183,7 @@ export class Location extends Model {
   hasCourts!: HasManyHasAssociationsMixin<Court, string>;
   countCourts!: HasManyCountAssociationsMixin;
 
-  // Belongs to many Club
-  getClubs!: BelongsToManyGetAssociationsMixin<Club>;
-  setClub!: BelongsToManySetAssociationsMixin<Club, string>;
-  addClubs!: BelongsToManyAddAssociationsMixin<Club, string>;
-  addClub!: BelongsToManyAddAssociationMixin<Club, string>;
-  removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
-  removeClubs!: BelongsToManyRemoveAssociationsMixin<Club, string>;
-  hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
-  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
-  countClub!: BelongsToManyCountAssociationsMixin;
+  // Belongs to Club
+  getClub!: BelongsToGetAssociationMixin<Club>;
+  setClub!: BelongsToSetAssociationMixin<Club, string>;
 }

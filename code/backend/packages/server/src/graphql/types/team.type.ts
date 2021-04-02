@@ -1,17 +1,32 @@
 import { logger } from '@badvlasim/shared';
-import { Team } from '@badvlasim/shared/models';
-import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
+import { RankingPlace, Team } from '@badvlasim/shared/models';
+import {
+  GraphQLBoolean,
+  GraphQLID,
+  GraphQLInputObjectType,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLString
+} from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { getAttributeFields } from './attributes.type';
-import { PlayerType } from './player.type';
+import { PlayerInputType, PlayerType } from './player.type';
 import moment from 'moment';
 import { SubEventCompetitionType } from './competition';
+import { ClubType } from './club.type';
 
 export const TeamType = new GraphQLObjectType({
   name: 'Team',
   description: 'A Team',
   fields: () =>
     Object.assign(getAttributeFields(Team), {
+      club: {
+        type: ClubType,
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Team.associations.club)
+      },
       players: {
         type: new GraphQLList(PlayerType),
         args: Object.assign(defaultListArgs(), {
@@ -21,6 +36,10 @@ export const TeamType = new GraphQLObjectType({
         }),
         resolve: resolver(Team.associations.players, {
           before: async (findOptions, args, context, info) => {
+            // findOptions.order = [
+            //   ['lastName', 'asc'],
+            //   ['firstName', 'asc']
+            // ];
             return findOptions;
           },
           after: (result, args, context) => {
@@ -32,7 +51,9 @@ export const TeamType = new GraphQLObjectType({
                 .filter(p => p.getDataValue('TeamPlayerMembership') != null)
                 // then filter
                 .filter(player => {
-                  return moment(player.getDataValue('TeamPlayerMembership').end).isSameOrAfter(args.end);
+                  return moment(player.getDataValue('TeamPlayerMembership').end).isSameOrAfter(
+                    args.end
+                  );
                 });
             }
 
@@ -47,15 +68,25 @@ export const TeamType = new GraphQLObjectType({
         type: new GraphQLList(SubEventCompetitionType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Team.associations.subEvents)
+      },
+      captain: {
+        type: PlayerType,
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(Team.associations.captain)
       }
     })
 });
 
 export const TeamInputType = new GraphQLInputObjectType({
   name: 'TeamInput',
-  description: 'This represents a TeamnputType',
+  description: 'This represents a TeamInputType',
   fields: () =>
     Object.assign(
-      getAttributeFields(Team, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] })
+      getAttributeFields(Team, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }),
+      {
+        players: {
+          type: PlayerInputType
+        }
+      }
     )
 });

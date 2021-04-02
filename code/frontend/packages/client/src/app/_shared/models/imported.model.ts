@@ -1,4 +1,4 @@
-import { Event, EventType } from './event.model';
+import { CompetitionEvent, EventType, TournamentEvent } from './events';
 import { ImporterSubEvent } from './imported-sub-event.model';
 export class Imported {
   name: string;
@@ -12,10 +12,10 @@ export class Imported {
   subEvents: ImporterSubEvent[]
 
   uniCode: string;
-  toernamentNumber: number;
+  tournamentNumber: number;
 
-  suggestions: Event[];
-  event: Event;
+  suggestions: (TournamentEvent | CompetitionEvent)[];
+  event: (TournamentEvent | CompetitionEvent);
 
   constructor({ ...args }) {
     this.name = args.name;
@@ -26,8 +26,8 @@ export class Imported {
     this.datesString = args.dates;
     this.fileName = args.fileName;
     this.uniCode = args.uniCode;
-    this.toernamentNumber = args.toernamentNumber;
+    this.tournamentNumber = args.tournamentNumber;
     this.importing = args.importing;
-    this.subEvents = args.subEvents != null ? args.subEvents.map(r => new ImporterSubEvent(r)) : []
+    this.subEvents = args.subEvents?.map(r => new ImporterSubEvent(r)) ?? []
   }
 }

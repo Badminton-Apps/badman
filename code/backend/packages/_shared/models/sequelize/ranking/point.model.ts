@@ -9,6 +9,7 @@ import {
   DataType,
   Default,
   ForeignKey,
+  Index,
   IsUUID,
   Model,
   PrimaryKey,
@@ -45,7 +46,7 @@ export class RankingPoint extends Model {
 
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'SystemId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   type: RankingSystem;
 
@@ -56,10 +57,12 @@ export class RankingPoint extends Model {
   differenceInLevel: number;
 
   @ForeignKey(() => RankingSystem)
+  @Index('point_system_index')
   @Column
   SystemId: string;
 
   @ForeignKey(() => Player)
+  @Index('point_system_index')
   @Column
   PlayerId: string;
 

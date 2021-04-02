@@ -1,0 +1,6 @@
+query GetRolesQuery($clubId: ID!) {
+  roles(clubId: $clubId) {
+    id
+    name
+  }
+}

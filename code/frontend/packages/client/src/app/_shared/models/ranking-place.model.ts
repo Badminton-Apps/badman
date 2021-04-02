@@ -2,26 +2,27 @@ import { Player } from './player.model';
 import { RankingSystem } from './ranking-system.model';
 
 export class RankingPlace {
+  id: string;
   singlePointsDowngrade: number;
   singleRank: number;
   totalSingleRanking: number;
   totalWithinSingleLevel: number;
   singlePoints: number;
-  single: string;
+  single: number;
   singleInactive: boolean;
   mixPointsDowngrade: number;
   mixRank: number;
   totalMixRanking: number;
   totalWithinMixLevel: number;
   mixPoints: number;
-  mix: string;
+  mix: number;
   mixInactive: boolean;
   doublePointsDowngrade: number;
   doubleRank: number;
   totalDoubleRanking: number;
   totalWithinDoubleLevel: number;
   doublePoints: number;
-  double: string;
+  double: number;
   doubleInactive: boolean;
   rankingSystem: RankingSystem;
   updatePossible: boolean;
@@ -32,6 +33,7 @@ export class RankingPlace {
   player?: Player;
 
   constructor(args: Partial<RankingPlace>) {
+    this.id = args.id;
     this.singlePointsDowngrade = args.singlePointsDowngrade;
     this.singleRank = args.singleRank;
     this.totalSingleRanking = args.totalSingleRanking;
@@ -60,5 +62,6 @@ export class RankingPlace {
     this.statisticUrl = args.statisticUrl;
     this.primary = args.primary;
     this.player = args.player;
+
   }
 }

@@ -6,7 +6,7 @@ import {
   Table
 } from 'sequelize-typescript';
 import { RankingSystemGroup } from './group.model';
-import { RankingSystem } from '../../..';
+import { RankingSystem } from '../ranking/system.model';
 
 @Table({
   timestamps: false,
@@ -15,9 +15,9 @@ import { RankingSystem } from '../../..';
 export class GroupSystems extends Model {
   @ForeignKey(() => RankingSystem)
   @Column
-  SystemId: string;
+  systemId: string;
 
   @ForeignKey(() => RankingSystemGroup)
   @Column
-  GroupId: string;
+  groupId: string;
 }

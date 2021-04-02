@@ -10,10 +10,16 @@
     "emitDecoratorMetadata": false,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
-    "module": "es2020",
+    "target": "es5",
+    "module": "commonjs",
     "allowSyntheticDefaultImports": true,
-    "lib": ["es2018", "dom"]
+    "lib": [
+      "es2019",
+      "es2017",
+      "es7",
+      "es6",
+      "dom"
+    ]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

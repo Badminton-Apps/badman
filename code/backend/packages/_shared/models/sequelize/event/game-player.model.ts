@@ -1,4 +1,4 @@
-import { AutoIncrement, Column, ForeignKey, Model, PrimaryKey, Table, Unique } from 'sequelize-typescript';
+import { AutoIncrement, Column, ForeignKey, Index, Model, PrimaryKey, Table, Unique } from 'sequelize-typescript';
 import { Game } from './game.model';
 import { Player } from '../player.model';
 import { BuildOptions } from 'sequelize';
@@ -13,10 +13,12 @@ export class GamePlayer extends Model {
   }
 
   @ForeignKey(() => Player)
+  @Index
   @Column
   playerId: string;
 
   @ForeignKey(() => Game)
+  @Index
   @Column
   gameId: string;
 

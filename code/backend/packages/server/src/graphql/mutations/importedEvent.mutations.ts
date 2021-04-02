@@ -15,7 +15,6 @@ const deleteImportedEventMutation = {
     unlink(importerFile.fileLocation, err => {
       if (err) {
         logger.error(`delete file ${importerFile.fileLocation} failed`, err);
-        throw err;
       }
       logger.debug('Old file deleted', importerFile.fileLocation);
     });

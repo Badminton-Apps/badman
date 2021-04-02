@@ -1,16 +1,26 @@
 import {
+  BelongsToMany,
   Column,
-  HasMany,
-  Model,
   DataType,
+  Default,
+  HasMany,
+  IsUUID,
+  Model,
+  PrimaryKey,
   Table,
   TableOptions,
-  PrimaryKey,
-  Unique,
-  IsUUID,
-  Default
+  Unique
 } from 'sequelize-typescript';
 import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
   BuildOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
@@ -21,8 +31,10 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin
-} from 'sequelize/types';
+} from 'sequelize';
+import { LevelType } from '../../../enums';
 import { Location } from '../location.model';
+import { LocationEventCompetition } from './location_event.model';
 import { SubEventCompetition } from './sub-event-competition.model';
 
 @Table({
@@ -48,20 +60,28 @@ export class EventCompetition extends Model {
   @Column
   startYear: number;
 
-  @HasMany(() => SubEventCompetition, 'eventId')
+  @HasMany(() => SubEventCompetition, {
+    foreignKey: 'eventId',
+    onDelete: 'CASCADE'
+  })
   subEvents: SubEventCompetition[];
 
-  @HasMany(() => Location, {
-    foreignKey: 'eventId',
-    constraints: false,
-    scope: {
-      drawType: 'competition'
-    }
-  })
+  @BelongsToMany(
+    () => Location,
+    () => LocationEventCompetition
+  )
   locations: Location[];
+
+  @Unique('unique_constraint')
+  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
+  type: LevelType;
 
   @Column
   uniCode: string;
+
+  @Default(false)
+  @Column
+  allowEnlisting: boolean;
 
   // Has many SubEvent
   getSubEvents!: HasManyGetAssociationsMixin<SubEventCompetition>;
@@ -74,14 +94,14 @@ export class EventCompetition extends Model {
   hasSubEvents!: HasManyHasAssociationsMixin<SubEventCompetition, string>;
   countSubEvents!: HasManyCountAssociationsMixin;
 
-  // Has many Location
-  getLocations!: HasManyGetAssociationsMixin<Location>;
-  setLocations!: HasManySetAssociationsMixin<Location, string>;
-  addLocations!: HasManyAddAssociationsMixin<Location, string>;
-  addLocation!: HasManyAddAssociationMixin<Location, string>;
-  removeLocation!: HasManyRemoveAssociationMixin<Location, string>;
-  removeLocations!: HasManyRemoveAssociationsMixin<Location, string>;
-  hasLocation!: HasManyHasAssociationMixin<Location, string>;
-  hasLocations!: HasManyHasAssociationsMixin<Location, string>;
-  countLocations!: HasManyCountAssociationsMixin;
+  // Belongs to many Location
+  getLocations!: BelongsToManyGetAssociationsMixin<Location>;
+  setLocations!: BelongsToManySetAssociationsMixin<Location, string>;
+  addLocations!: BelongsToManyAddAssociationsMixin<Location, string>;
+  addLocation!: BelongsToManyAddAssociationMixin<Location, string>;
+  removeLocation!: BelongsToManyRemoveAssociationMixin<Location, string>;
+  removeLocations!: BelongsToManyRemoveAssociationsMixin<Location, string>;
+  hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
+  hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
+  countLocation!: BelongsToManyCountAssociationsMixin;
 }

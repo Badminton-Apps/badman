@@ -1,0 +1,22 @@
+<form [formGroup]="formGroup">
+  <mat-form-field>
+    <input
+      type="text"
+      placeholder="Pick one"
+      aria-label="Number"
+      matInput
+      formControlName="game"
+      [matAutocomplete]="auto"
+    />
+    
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option
+        *ngFor="let option of filteredOptions | async"
+        [value]="option"
+      >
+        {{ option | date: 'short' }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
+ 
