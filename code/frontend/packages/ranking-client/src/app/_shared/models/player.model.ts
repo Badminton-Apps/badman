@@ -1,8 +1,11 @@
+import { Club } from 'app/_shared';
 import { Game } from './game.model';
 import { RankingPlace } from './ranking-place.model';
 
 export class Player {
   id: string;
+  email: string;
+  phone: string;
   memberId: string;
   gender: string;
   avatar: string;
@@ -13,12 +16,16 @@ export class Player {
   rankingPlaces: RankingPlace[];
   games: Game[];
   index: number;
+  competitionPlayer: boolean;
 
+  clubs?: Club[];
 
-  constructor(args: Partial<Player>) {
+  constructor(args?: Partial<Player>) {
     this.id = args.id;
     this.memberId = args.memberId;
     this.gender = args.gender;
+    this.email = args.email;
+    this.phone = args.phone;
     this.avatar = args.avatar;
     this.firstName = args.firstName;
     this.lastName = args.lastName;
@@ -27,7 +34,9 @@ export class Player {
     this.games = args.games?.map((g) => new Game(g));
     this.base = args.base;
     this.index = args.index;
-  } 
+    this.competitionPlayer = args.competitionPlayer ?? false;
+    this.clubs = args.clubs?.map(club => new Club(club));
+  }
 
   get fullName() {
     return `${this.firstName} ${this.lastName}`
@@ -35,7 +44,7 @@ export class Player {
 }
 
 export class PlayerGame extends Player {
-  rankingPlace: RankingPlace; 
+  rankingPlace: RankingPlace;
   team: number;
   player: number;
 

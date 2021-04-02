@@ -28,7 +28,7 @@ export class HasClaimComponent implements OnInit {
     if (this.any) {
       permissions.push(
         Array.isArray(this.any)
-          ? this.auth.hasAnylaims$(this.any)
+          ? this.auth.hasAnyClaims$(this.any)
           : this.auth.hasClaim$(this.any)
       );
     }

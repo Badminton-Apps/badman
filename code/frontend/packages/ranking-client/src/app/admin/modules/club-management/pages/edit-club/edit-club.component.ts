@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RankingService } from 'app/admin/services';
+import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
 import {
   Claim,
   Club,
@@ -31,6 +33,7 @@ export class EditClubComponent implements OnInit {
     private clubService: ClubService,
     private systemService: SystemService,
     private route: ActivatedRoute,
+    private dialog: MatDialog,
     private _snackBar: MatSnackBar
   ) {}
 
@@ -44,8 +47,9 @@ export class EditClubComponent implements OnInit {
       switchMap(([id, systemId]) =>
         this.clubService.getClub(id, {
           rankingSystem: systemId,
-          includeTeams: true,
+          includeTeams: false,
           includeRoles: true,
+          includeLocations: true,
         })
       )
     );
@@ -59,27 +63,7 @@ export class EditClubComponent implements OnInit {
     });
   }
 
-  async onPlayerAddedToTeam(player: Player, team: Team) {
-    if (player && team) {
-      await this.teamService.addPlayer(team, player).toPromise();
-      this._snackBar.open('Player added', null, {
-        duration: 1000,
-        panelClass: 'success',
-      });
-      this.update$.next(null);
-    }
-  }
 
-  async onPlayerRemovedFromTeam(player: Player, team: Team) {
-    if (player && team) {
-      await this.teamService.removePlayer(team, player).toPromise();
-      this._snackBar.open('Player removed', null, {
-        duration: 1000,
-        panelClass: 'success',
-      });
-      this.update$.next(null);
-    }
-  }
 
   async onPlayerUpdatedFromTeam(player: Player, team: Team) {
     if (player && team) {
@@ -112,5 +96,27 @@ export class EditClubComponent implements OnInit {
       });
       this.update$.next(null);
     }
+  }
+
+  async onEditRole(role: Role, club: Club){
+    // [
+    //   '/',
+    //   'admin',
+    //   'club',
+    //   club.id,
+    //   'edit',
+    //   'role',
+    //   role.id
+    // ]
+  }
+
+  async onEditLocation(location: Location, club: Club){
+    let dialogRef = this.dialog.open(LocationDialogComponent, {
+      data: { location, club },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.update$.next(0);
+    });
   }
 }

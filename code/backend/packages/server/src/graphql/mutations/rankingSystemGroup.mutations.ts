@@ -12,7 +12,7 @@ export const addRankingSystemGroupMutation = {
     }
   },
   resolve: async (findOptions, { rankingSystemGroup }, context) => {
-    if (!context.req.user.hasAnyPermission(['add:ranking-group'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:ranking-group'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -35,7 +35,7 @@ export const updateRankingSystemGroupMutation = {
     }
   },
   resolve: async (findOptions, { id, rankingSystemGroup }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:ranking-group'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:ranking-group'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "

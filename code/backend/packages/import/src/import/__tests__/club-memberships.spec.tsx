@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Club, ClubMembership, DataBaseHandler, Player } from '@badvlasim/shared';
 import moment from 'moment';
-import { Transaction } from 'sequelize/types';
-import { CompetitionXmlImporter } from '../importers';
+import { Transaction } from 'sequelize';
+import { ProcessImport } from '../processor';
+import { CompetitionCpProcessor } from '../processors';
 
 describe('Club Membership', () => {
   let databaseService: DataBaseHandler;
-  let service: CompetitionXmlImporter;
+  let service: ProcessImport;
   let transaction: Transaction;
 
   beforeAll(async () => {
@@ -15,7 +16,7 @@ describe('Club Membership', () => {
       storage: ':memory:'
     });
 
-    service = new CompetitionXmlImporter(transaction);
+    service = new CompetitionCpProcessor();
   });
 
   beforeEach(async () => {
@@ -34,18 +35,18 @@ describe('Club Membership', () => {
 
     const playerIds = [player1.id];
 
-    service['transaction'] = await DataBaseHandler.sequelizeInstance.transaction();
+    transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['_addToClubs'](playerIds, moment([2000, 8, 1]), club1.id);
-    service['transaction'].commit();
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
+    await transaction.commit();
 
     // Assert
     const memberships = await ClubMembership.findAll();
 
     expect(memberships.length).toBe(1);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
-    expect(memberships[0].end).toEqual(moment([2001, 8, 1]).toDate());
+    expect(memberships[0].end).toBeNull();
     expect(memberships[0].playerId).toBe(player1.id);
     expect(memberships[0].clubId).toBe(club1.id);
   });
@@ -61,23 +62,26 @@ describe('Club Membership', () => {
 
     const playerIds = [player1.id];
 
-    service['transaction'] = await DataBaseHandler.sequelizeInstance.transaction();
+    transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['_addToClubs'](playerIds, moment([2000, 8, 1]), club1.id);
-    await service['_addToClubs'](playerIds, moment([2001, 8, 1]), club1.id);
-    await service['transaction'].commit();
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
+    await service['addToClubs'](playerIds, moment([2001, 8, 1]), club1.id, transaction);
+    await transaction.commit();
 
     // Assert
     const memberships = await ClubMembership.findAll();
     expect(memberships.length).toBe(1);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
-    expect(memberships[0].end).toEqual(moment([2002, 8, 1]).toDate());
+    expect(memberships[0].end).toBeNull();
     expect(memberships[0].playerId).toBe(player1.id);
     expect(memberships[0].clubId).toBe(club1.id);
   });
 
-  it('Skipping 1 year membership to club', async () => {
+  it.skip('Skipping 1 year membership to club', async () => {
+    // TODO: This test is now obsolete, because skipping isn't handled by this function,
+    // this is now handled by manually removing someone from the club (maybe automate this?)
+
     // Arrange
     const club1 = await new Club({
       name: 'TestClub1'
@@ -88,17 +92,18 @@ describe('Club Membership', () => {
 
     const playerIds = [player1.id];
 
-    service['transaction'] = await DataBaseHandler.sequelizeInstance.transaction();
+    transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['_addToClubs'](playerIds, moment([2000, 8, 1]), club1.id);
-    await service['_addToClubs'](playerIds, moment([2002, 8, 1]), club1.id);
-    await service['transaction'].commit();
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
+    await service['addToClubs'](playerIds, moment([2002, 8, 1]), club1.id, transaction);
+    await transaction.commit();
 
     // Assert
     const memberships = await ClubMembership.findAll();
     expect(memberships.length).toBe(2);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
+    expect(memberships[0].end).toEqual(moment([2000, 8, 1]).toDate());
     expect(memberships[1].start).toEqual(moment([2002, 8, 1]).toDate());
     expect(memberships[1].end).toEqual(moment([2003, 8, 1]).toDate());
     expect(memberships[1].playerId).toBe(player1.id);
@@ -119,21 +124,23 @@ describe('Club Membership', () => {
 
     const playerIds = [player1.id];
 
-    service['transaction'] = await DataBaseHandler.sequelizeInstance.transaction();
+    transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['_addToClubs'](playerIds, moment([2000, 8, 1]), club1.id);
-    await service['_addToClubs'](playerIds, moment([2001, 8, 1]), club2.id);
-    await service['_addToClubs'](playerIds, moment([2002, 8, 1]), club1.id);
-    await service['transaction'].commit();
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
+    await service['addToClubs'](playerIds, moment([2001, 8, 1]), club2.id, transaction);
+    await service['addToClubs'](playerIds, moment([2002, 8, 1]), club1.id, transaction);
+    await transaction.commit();
 
     // Assert
     const memberships = await ClubMembership.findAll();
     expect(memberships.length).toBe(3);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
+    expect(memberships[0].end).toEqual(moment([2001, 8, 1]).toDate());
     expect(memberships[0].clubId).toBe(club1.id);
 
     expect(memberships[1].start).toEqual(moment([2001, 8, 1]).toDate());
+    expect(memberships[1].end).toEqual(moment([2002, 8, 1]).toDate());
     expect(memberships[1].clubId).toBe(club2.id);
 
     expect(memberships[2].start).toEqual(moment([2002, 8, 1]).toDate());
@@ -155,11 +162,11 @@ describe('Club Membership', () => {
 
     const playerIds = [player1.id, player2.id];
 
-    service['transaction'] = await DataBaseHandler.sequelizeInstance.transaction();
+    transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['_addToClubs'](playerIds, moment([2000, 8, 1]), club1.id);
-    await service['transaction'].commit();
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
+    await transaction.commit();
 
     // Assert
     const memberships = await ClubMembership.findAll();

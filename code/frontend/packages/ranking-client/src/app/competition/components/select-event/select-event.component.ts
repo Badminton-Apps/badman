@@ -2,9 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Event, EventService, EventType } from 'app/_shared';
 import { combineLatest, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -15,14 +16,14 @@ import { map, startWith } from 'rxjs/operators';
   styleUrls: ['./select-event.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectEventComponent implements OnInit {
+export class SelectEventComponent implements OnInit, OnDestroy {
   @Input()
   formGroup: FormGroup;
 
   @Input()
   requiredPermission: string[];
 
-  formControl = new FormControl();
+  formControl = new FormControl(null, [Validators.required]);
   filteredOptions: Observable<Event[]>;
 
   constructor(private eventService: EventService) {}
@@ -35,7 +36,7 @@ export class SelectEventComponent implements OnInit {
         .getEvents({
           first: 100,
           type: EventType.COMPETITION,
-          where: { allowEnlisting: true },
+          where: { allowEnlisting: true, type: 'PROV' },
         })
         .pipe(
           map((data) => {
@@ -49,6 +50,10 @@ export class SelectEventComponent implements OnInit {
         ),
       this.formControl.valueChanges.pipe(startWith('')),
     ]).pipe(map(([list, value]) => this._filter(list, value)));
+  }
+
+  ngOnDestroy() {
+    this.formGroup.removeControl('event');
   }
 
   private _filter(list: Event[], value: string | Event): Event[] {

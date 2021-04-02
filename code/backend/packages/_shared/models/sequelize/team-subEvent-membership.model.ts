@@ -2,22 +2,24 @@ import { BuildOptions } from 'sequelize';
 import {
   AllowNull,
   Column,
-  DataType,
-  Default,
   ForeignKey,
-  IsUUID,
   Model,
-  PrimaryKey,
-  Table,
-  Unique
+  Table
 } from 'sequelize-typescript';
 import { SubEventCompetition } from './event';
 import { Team } from './team.model';
 
 @Table({
-  schema: 'public'
+  schema: 'event'
 })
 export class TeamSubEventMembership extends Model {
+  constructor(
+    values?: Partial<TeamSubEventMembership>,
+    options?: BuildOptions
+  ) {
+    super(values, options);
+  }
+
   @ForeignKey(() => SubEventCompetition)
   @AllowNull(false)
   @Column

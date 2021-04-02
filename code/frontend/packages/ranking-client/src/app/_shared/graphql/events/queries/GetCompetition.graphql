@@ -1,19 +1,14 @@
-# Write your query or mutation here
+#import "./subEventsFragment.graphql"
+
 query GetEvent($id: ID!) {
   eventCompetition(id: $id) {
     id
     name
     startYear
     allowEnlisting
+    type
     subEvents(order: "eventType") {
-      id
-      name
-      eventType
-      level
-      levelType
-      maxLevel
-      minBaseIndex
-      maxBaseIndex
+      ...SubEventsDetails
     }
   }
 }

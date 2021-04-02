@@ -27,7 +27,7 @@ export class App {
     // place this after the proxies!!
     this.app.use(json());
 
-    this._initializeControllers(controllers) ;
+    this._initializeControllers(controllers);
   }
 
   private _initializeMiddlewares() {
@@ -45,7 +45,6 @@ export class App {
         }
       }
     } as cors.CorsOptions;
-
 
     this.app.use(cors(this.corsOptions));
   }
@@ -81,16 +80,6 @@ export class App {
           changeOrigin: true,
           ws: true,
           logLevel: 'debug'
-          // logProvider: provider => {
-          //   const myCustomProvider = {
-          //     log: logger.log,
-          //     debug: logger.debug,
-          //     info: logger.info,
-          //     warn: logger.warn,
-          //     error: logger.error
-          //   };
-          //   return myCustomProvider;
-          // }
         })
       );
     });

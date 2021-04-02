@@ -7,14 +7,14 @@ import { filter, map, share, shareReplay, tap } from 'rxjs/operators';
 import { environment } from './../../../../environments/environment';
 import { RankingSystem, RankingSystemGroup } from './../../models';
 
-const primarySystemsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetPrimarySystemsQuery.graphql');
-const systemWithCountsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql');
-const systemQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemQuery.graphql');
-const systemsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemsQuery.graphql');
-const systemsGroupsQuery = require('graphql-tag/loader!../../graphql/rankingSystem/queries/GetSystemGroupsQuery.graphql');
+import * as primarySystemsQuery from '../../graphql/rankingSystem/queries/GetPrimarySystemsQuery.graphql';
+import * as systemWithCountsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql';
+import * as systemQuery from '../../graphql/rankingSystem/queries/GetSystemQuery.graphql';
+import * as systemsQuery from '../../graphql/rankingSystem/queries/GetSystemsQuery.graphql';
+import * as systemsGroupsQuery from '../../graphql/rankingSystem/queries/GetSystemGroupsQuery.graphql';
 
-const addRankingSystemMutation = require('graphql-tag/loader!../../graphql/rankingSystem/mutations/addRankingSystem.graphql');
-const updateRankingSysyemMutatino = require('graphql-tag/loader!../../graphql/rankingSystem/mutations/updateRankingSystem.graphql');
+import * as addRankingSystemMutation from '../../graphql/rankingSystem/mutations/addRankingSystem.graphql';
+import * as updateRankingSysyemMutatino from '../../graphql/rankingSystem/mutations/updateRankingSystem.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -110,6 +110,7 @@ export class SystemService {
     if (this.primarySystem != null) {
       return of(this.primarySystem);
     }
+
     return this.apollo
       .query<{ systems: RankingSystem[] }>({
         query: primarySystemsQuery,

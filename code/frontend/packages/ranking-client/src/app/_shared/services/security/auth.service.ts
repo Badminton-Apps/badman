@@ -1,4 +1,3 @@
-import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,25 +10,18 @@ import {
   Observable,
   of,
   throwError,
-  iif,
 } from 'rxjs';
 import {
   catchError,
   concatMap,
-  shareReplay,
-  tap,
-  map,
-  filter,
-  startWith,
-  mergeMap,
-  flatMap,
-  switchMap,
-  exhaust,
   exhaustMap,
-  distinctUntilChanged,
-  publishReplay,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  tap,
 } from 'rxjs/operators';
-import { X_OK } from 'constants';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +40,7 @@ export class AuthService {
     catchError((err) => throwError(err))
   );
   update$ = new BehaviorSubject(0);
-  
+
   // Define observables for SDK methods that return promises by default
   // For each Auth0 SDK method, first ensure the client instance is ready
   // concatMap: Using the client instance, call SDK method; SDK returns a promise
@@ -118,7 +110,10 @@ export class AuthService {
     });
   }
   private setupStreams() {
-    this.userPermissions$ = combineLatest([this.userProfile$, this.update$]).pipe(
+    this.userPermissions$ = combineLatest([
+      this.userProfile$,
+      this.update$,
+    ]).pipe(
       filter(([profile]) => profile != null),
       exhaustMap((_) =>
         this.httpClient.get<string[]>(
@@ -136,39 +131,43 @@ export class AuthService {
   }
 
   hasClaim$(claim: string): Observable<boolean> {
-    // if (environment.production == false) {
-    //   return of(true);
-    // }
     return this.userPermissions$.pipe(
-      map((userClaims) => userClaims.includes(claim))
+      map((userClaims) => this.includes(userClaims, claim))
     );
   }
 
   hasAllClaims$(claims: string[]): Observable<boolean> {
-    if (environment.production == false) {
-      return of(true);
-    }
     return this.userPermissions$.pipe(
       map((userClaims) =>
-        claims.reduce((acc, claim) => acc && userClaims.includes(claim), true)
+        claims.reduce(
+          (acc, claim) => acc && this.includes(userClaims, claim),
+          true
+        )
       )
     );
   }
 
-  hasAnylaims$(claims: string[]): Observable<boolean> {
-    if (environment.production == false) {
-      return of(true);
-    }
+  hasAnyClaims$(claims: string[]): Observable<boolean> {
     return this.userPermissions$.pipe(
       map((userClaims) =>
-        claims.reduce((acc, claim) => acc || userClaims.includes(claim), false)
-      ),
-      startWith(false)
+        claims.reduce(
+          (acc, claim) => acc || this.includes(userClaims, claim),
+          false
+        )
+      )
     );
   }
 
-  reloadPermissions(){
+  reloadPermissions() {
     this.update$.next(null);
+  }
+
+  private includes(claims: string[], claim: string) {
+    if (claim.indexOf('*') >= 0) {
+      return claims.find((r) => r.indexOf(claim.replace('*', ''))) !== null;
+    } else {
+      return claims.includes(claim);
+    }
   }
 
   private handleAuthCallback() {

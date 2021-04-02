@@ -15,9 +15,9 @@ import { RankingSystem } from '../ranking/system.model';
 export class GroupSystems extends Model {
   @ForeignKey(() => RankingSystem)
   @Column
-  SystemId: string;
+  systemId: string;
 
   @ForeignKey(() => RankingSystemGroup)
   @Column
-  GroupId: string;
+  groupId: string;
 }

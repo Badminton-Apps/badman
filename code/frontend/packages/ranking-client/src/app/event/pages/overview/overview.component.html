@@ -69,7 +69,7 @@
   <ng-container matColumnDef="dates">
     <th mat-header-cell *matHeaderCellDef>Date</th>
     <td mat-cell *matCellDef="let element">
-      <ng-container *ngIf="element.type == 'TOERNAMENT'">
+      <ng-container *ngIf="element.type == 'TOURNAMENT'">
         {{ element.firstDay | date }}
       </ng-container>
       <ng-container *ngIf="element.type == 'COMPETITION'">
@@ -102,16 +102,16 @@
         class="event-element-detail"
         [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'"
       >
-        <ng-container *ngIf="element.type == 'TOERNAMENT'">
-          <app-toernaments-data data="element"></app-toernaments-data>
+        <ng-container *ngIf="element.eventType == 'TOURNAMENT'">
+          <app-tournaments-data data="element"></app-tournaments-data>
         </ng-container>
-        <ng-container *ngIf="element.type == 'COMPETITION'">
+        <ng-container *ngIf="element.eventType == 'COMPETITION'">
           <app-competition-data data="element"></app-competition-data>
         </ng-container>
 
         <button
           mat-button
-          [routerLink]="['/', element.type.toLowerCase(), element.id]"
+          [routerLink]="['/', element.eventType.toLowerCase(), element.id]"
         >
           Details
         </button>

@@ -11,8 +11,6 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin
 } from 'sequelize';
 import {
   BelongsTo,
@@ -21,7 +19,6 @@ import {
   Default,
   ForeignKey,
   HasMany,
-  HasOne,
   IsUUID,
   Model,
   PrimaryKey,
@@ -50,7 +47,6 @@ export class EncounterCompetition extends Model {
   @Column
   date: Date;
 
-
   @HasMany(() => Game, {
     foreignKey: 'linkId',
     constraints: false,
@@ -60,7 +56,10 @@ export class EncounterCompetition extends Model {
   })
   games: Game[];
 
-  @BelongsTo(() => DrawCompetition, 'drawId')
+  @BelongsTo(() => DrawCompetition, {
+    foreignKey: 'drawId',
+    onDelete: 'CASCADE'
+  })
   draw?: DrawCompetition[];
 
   @ForeignKey(() => DrawCompetition)
@@ -70,8 +69,16 @@ export class EncounterCompetition extends Model {
   @BelongsTo(() => Team, 'homeTeamId')
   home: Team;
 
+  @ForeignKey(() => Team)
+  @Column
+  homeTeamId: string;
+
   @BelongsTo(() => Team, 'awayTeamId')
-  away: Team
+  away: Team;
+
+  @ForeignKey(() => Team)
+  @Column
+  awayTeamId: string;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;

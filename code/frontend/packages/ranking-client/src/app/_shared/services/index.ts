@@ -7,5 +7,6 @@ export * from './system';
 export * from './club';
 export * from './team';
 export * from './role';
+export * from './location';
 // end:ng42.barrel
 

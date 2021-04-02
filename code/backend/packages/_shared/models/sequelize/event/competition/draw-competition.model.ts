@@ -25,7 +25,6 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { Game } from '../game.model';
 import { EncounterCompetition } from './encounter-competition.model';
 import { SubEventCompetition } from './sub-event-competition.model';
 
@@ -51,19 +50,21 @@ export class DrawCompetition extends Model {
   @Column
   size: number;
  
-  @Unique('unique_constraint')
-  @Column
-  internalId: number;
-
-  @BelongsTo(() => SubEventCompetition, 'subeventId')
-  subEvent?: SubEventCompetition[];
+  @BelongsTo(() => SubEventCompetition, {
+    foreignKey: 'subeventId',
+    onDelete: 'CASCADE'
+  })
+  subEvent?: SubEventCompetition;
 
   @Unique('unique_constraint')
   @ForeignKey(() => SubEventCompetition)
   @Column
   subeventId: string;
 
-  @HasMany(() => EncounterCompetition, 'drawId')
+  @HasMany(() => EncounterCompetition, {
+    foreignKey:  'drawId',
+    onDelete: 'CASCADE'
+  })
   encounters: EncounterCompetition[];
 
   // Belongs to SubEvent

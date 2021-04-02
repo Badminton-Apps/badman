@@ -12,13 +12,6 @@ query GetImported($first: Int, $order: [ImportedOrderBy], $after: String) {
         uniCode
         importing
         type
-        subEvents {
-          id
-          name
-          eventType
-          gameType
-          levelType
-        }
       }
     }
   }

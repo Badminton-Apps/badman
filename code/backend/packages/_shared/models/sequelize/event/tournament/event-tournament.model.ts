@@ -1,4 +1,5 @@
 import {
+  BelongsToMany,
   Column,
   DataType,
   Default,
@@ -10,9 +11,17 @@ import {
   TableOptions,
   Unique
 } from 'sequelize-typescript';
-import { Location, SubEventTournament } from '..';
 
 import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
   BuildOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
@@ -24,6 +33,9 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin
 } from 'sequelize';
+import { Location } from '../location.model';
+import { LocationEventTournament } from './location_event.model';
+import { SubEventTournament } from './sub-event-tournament.model';
 
 @Table({
   timestamps: true,
@@ -50,28 +62,33 @@ export class EventTournament extends Model {
   @Unique('unique_constraint')
   @Column
   firstDay: Date;
- 
+
   @Column
-  dates: string; 
+  dates: string;
 
-  @HasMany(() => SubEventTournament, 'eventId')
-  subEvents: SubEventTournament[];
-
-  @HasMany(() => Location, {
-    foreignKey: 'eventId',
-    constraints: false,
-    scope: {
-      drawType: 'Tournament'
-    }
-  })
+  @BelongsToMany(
+    () => Location,
+    () => LocationEventTournament
+  )
   locations: Location[];
 
-  
+  @HasMany(() => SubEventTournament, {
+    foreignKey: 'eventId',
+    onDelete: 'CASCADE'
+  })
+  subEvents: SubEventTournament[];
+
+  @BelongsToMany(
+    () => Location,
+    () => LocationEventTournament
+  )
+  groups: Location[];
+
   @Default(false)
   @Column
   allowEnlisting: boolean;
 
-  @Column 
+  @Column
   uniCode: string;
 
   // Has many subEvent
@@ -85,14 +102,14 @@ export class EventTournament extends Model {
   hasSubEvents!: HasManyHasAssociationsMixin<SubEventTournament, string>;
   countSubEvents!: HasManyCountAssociationsMixin;
 
-  // Has many Location
-  getLocations!: HasManyGetAssociationsMixin<Location>;
-  setLocations!: HasManySetAssociationsMixin<Location, string>;
-  addLocations!: HasManyAddAssociationsMixin<Location, string>;
-  addLocation!: HasManyAddAssociationMixin<Location, string>;
-  removeLocation!: HasManyRemoveAssociationMixin<Location, string>;
-  removeLocations!: HasManyRemoveAssociationsMixin<Location, string>;
-  hasLocation!: HasManyHasAssociationMixin<Location, string>;
-  hasLocations!: HasManyHasAssociationsMixin<Location, string>;
-  countLocations!: HasManyCountAssociationsMixin;
+  // Belongs to many Location
+  getLocations!: BelongsToManyGetAssociationsMixin<Location>;
+  setLocations!: BelongsToManySetAssociationsMixin<Location, string>;
+  addLocations!: BelongsToManyAddAssociationsMixin<Location, string>;
+  addLocation!: BelongsToManyAddAssociationMixin<Location, string>;
+  removeLocation!: BelongsToManyRemoveAssociationMixin<Location, string>;
+  removeLocations!: BelongsToManyRemoveAssociationsMixin<Location, string>;
+  hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
+  hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
+  countLocation!: BelongsToManyCountAssociationsMixin;
 }

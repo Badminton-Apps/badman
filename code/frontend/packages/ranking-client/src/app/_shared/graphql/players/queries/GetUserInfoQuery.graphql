@@ -1,4 +1,3 @@
-# Write your query or mutation here
 query GetUserInfoQuery($id: ID!, $rankingType: ID) {
   player(id: $id) {
     id
@@ -13,6 +12,8 @@ query GetUserInfoQuery($id: ID!, $rankingType: ID) {
       limit: 1
       where: { SystemId: $rankingType }
     ) {
+      id
+
       rankingDate
       single
       singleRank

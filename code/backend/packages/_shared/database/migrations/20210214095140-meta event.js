@@ -60,7 +60,7 @@ module.exports = {
         { transaction: t }
       );
       await queryInterface.addColumn(
-        
+
         {
           tableName: 'Locations',
           schema: 'event'

@@ -7,9 +7,9 @@ import {
   ClubMembership,
   DrawCompetition,
   DrawTournament,
-  EncounterCompetition,
   Game,
   GamePlayer,
+  Location,
   Player,
   RankingPlace,
   RankingPoint,
@@ -17,7 +17,6 @@ import {
   RankingSystemGroup,
   RankingSystems,
   RequestLink,
-  Role,
   StartingType,
   SubEventCompetition,
   SubEventTournament,
@@ -26,7 +25,6 @@ import {
   TeamSubEventMembership
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
-import { adminClaims, clubClaims, teamClaims } from '../security';
 import { logger } from '../utils/logger';
 import { splitInChunks } from '../utils/utils';
 
@@ -197,82 +195,6 @@ export class DataBaseHandler {
     }
   }
 
-  async getGames(
-    startDate: Date,
-    endDate: Date,
-    groups: string[]
-  ): Promise<Game[]> {
-    const where = {
-      playedAt: {
-        [Op.between]: [startDate, endDate]
-      }
-    };
-
-    const games = await Game.findAll({
-      where,
-      attributes: [
-        'id',
-        'gameType',
-        'winner',
-        'playedAt',
-        'set1Team1',
-        'set1Team2'
-      ],
-      include: [
-        { model: Player, attributes: ['id'] },
-        {
-          model: EncounterCompetition,
-          include: [
-            {
-              model: DrawCompetition,
-              include: [
-                {
-                  model: SubEventCompetition,
-                  attributes: [],
-                  include: [
-                    {
-                      model: RankingSystemGroup,
-                      attributes: [],
-                      required: true,
-                      through: {
-                        where: {
-                          GroupId: { [Op.in]: groups }
-                        }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          model: DrawTournament,
-          include: [
-            {
-              model: SubEventTournament,
-              attributes: [],
-              include: [
-                {
-                  model: RankingSystemGroup,
-                  attributes: [],
-                  required: true,
-                  through: {
-                    where: {
-                      GroupId: { [Op.in]: groups }
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      mapToModel: false
-    });
-    return games;
-  }
-
   async makeSystemPrimary(id: string) {
     const currentSystems = await RankingSystem.findAll({
       where: { primary: true }
@@ -343,7 +265,7 @@ export class DataBaseHandler {
 
           try {
             await this._sequelize.sync({ force: true });
-            await this.seedBasicInfo();
+            // await this.seedBasicInfo();
           } catch (e) {
             logger.error(e);
             throw e;
@@ -355,100 +277,108 @@ export class DataBaseHandler {
     });
   }
 
-  private async seedBasicInfo() {
-    const group = new RankingSystemGroup({
-      name: 'Adults'
-    });
+  // private async seedBasicInfo() {
+  //   const group = new RankingSystemGroup({
+  //     name: 'Adults'
+  //   });
 
-    const system = new RankingSystem({
-      name: 'BV 75/30 FINAL SYSTEM',
-      rankingSystem: RankingSystems.BVL,
-      amountOfLevels: 12,
-      procentWinning: 75,
-      procentWinningPlus1: 50,
-      procentLosing: 30,
-      latestXGamesToUse: null,
-      minNumberOfGamesUsedForUpgrade: 7,
-      maxDiffLevels: 2,
-      updateIntervalAmount: 2,
-      updateIntervalUnit: 'months',
-      periodAmount: 52,
-      periodUnit: 'weeks',
-      caluclationIntervalAmount: 1,
-      calculationIntervalUnit: 'weeks',
-      differenceForUpgrade: 1,
-      differenceForDowngrade: 0,
-      startingType: StartingType.tableLFBB,
-      maxLevelUpPerChange: null,
-      primary: true,
-      maxLevelDownPerChange: 1,
-      gamesForInactivty: 3,
-      inactivityAmount: 103,
-      inactivityUnit: 'weeks'
-    });
+  //   const system = new RankingSystem({
+  //     name: 'BV 75/30 FINAL SYSTEM',
+  //     rankingSystem: RankingSystems.BVL,
+  //     amountOfLevels: 12,
+  //     procentWinning: 75,
+  //     procentWinningPlus1: 50,
+  //     procentLosing: 30,
+  //     latestXGamesToUse: null,
+  //     minNumberOfGamesUsedForUpgrade: 7,
+  //     maxDiffLevels: 2,
+  //     updateIntervalAmount: 2,
+  //     updateIntervalUnit: 'months',
+  //     periodAmount: 52,
+  //     periodUnit: 'weeks',
+  //     caluclationIntervalAmount: 1,
+  //     calculationIntervalUnit: 'weeks',
+  //     differenceForUpgrade: 1,
+  //     differenceForDowngrade: 0,
+  //     startingType: StartingType.tableLFBB,
+  //     maxLevelUpPerChange: null,
+  //     primary: true,
+  //     maxLevelDownPerChange: 1,
+  //     gamesForInactivty: 3,
+  //     inactivityAmount: 103,
+  //     inactivityUnit: 'weeks'
+  //   });
 
-    await group.save();
-    await system.save();
+  //   await group.save();
+  //   await system.save();
 
-    await system.addGroup(group);
+  //   await system.addGroup(group);
+  //   // Claims/permission
+  //   const dbAdminClaims = [];
+  //   for (const claimName of adminClaims) {
+  //     logger.silly(`Creating global claim ${claimName}`);
+  //     const c = await new Claim({
+  //       name: claimName[0],
+  //       description: claimName[1],
+  //       category: claimName[2],
+  //       type: 'global'
+  //     }).save();
+  //     dbAdminClaims.push(c);
+  //   }
 
-    // Claims/permission
-    const dbAdminClaims = [];
-    for (const claimName of adminClaims) {
-      logger.silly(`Creating global claim ${claimName}`);
-      const c = await new Claim({
-        name: claimName[0],
-        description: claimName[1],
-        category: claimName[2],
-        type: 'global'
-      }).save();
-      dbAdminClaims.push(c);
-    }
+  //   for (const claimName of clubClaims) {
+  //     logger.silly(`Creating club claim ${claimName}`);
+  //     const c = await new Claim({
+  //       name: claimName[0],
+  //       description: claimName[1],
+  //       category: claimName[2],
+  //       type: 'club'
+  //     }).save();
+  //   }
 
-    for (const claimName of clubClaims) {
-      logger.silly(`Creating club claim ${claimName}`);
-      const c = await new Claim({
-        name: claimName[0],
-        description: claimName[1],
-        category: claimName[2],
-        type: 'club'
-      }).save();
-    }
+  //   for (const claimName of teamClaims) {
+  //     logger.silly(`Creating team claim ${claimName}`);
+  //     const c = await new Claim({
+  //       name: claimName[0],
+  //       description: claimName[1],
+  //       category: claimName[2],
+  //       type: 'team'
+  //     }).save();
+  //   }
 
-    for (const claimName of teamClaims) {
-      logger.silly(`Creating team claim ${claimName}`);
-      const c = await new Claim({
-        name: claimName[0],
-        description: claimName[1],
-        category: claimName[2],
-        type: 'team'
-      }).save();
-    }
+  //   // Test Stuff
+  //   const club = await new Club({
+  //     id: '0e3221de-56b6-45fd-a227-f29cfaa7e2b5',
+  //     name: 'Smash For Fun',
+  //     clubId: 30076
+  //   }).save();
 
-    // Test Stuff
-    const club = await new Club({
-      id: '0e3221de-56b6-45fd-a227-f29cfaa7e2b5',
-      name: 'Test Club'
-    }).save();
+  //   const player = await new Player({
+  //     gender: 'M',
+  //     firstName: 'Glenn',
+  //     lastName: 'Latomme',
+  //     memberId: '50104197',
+  //     sub: 'auth0|5e81ca9e8755df0c7f7452ea'
+  //   }).save();
 
-    const player = await new Player({
-      gender: 'M',
-      firstName: 'Glenn',
-      lastName: 'Latomme',
-      memberId: '50104197',
-      sub: 'auth0|5e81ca9e8755df0c7f7452ea'
-    }).save();
-    await club.addPlayer(player, {
-      through: { start: new Date('2000-01-01') }
-    });
-    await player.addClaims(dbAdminClaims);
+  //   const team = await new Team({
+  //     name: 'Smash For Fun 1H'
+  //   }).save();
 
-    // create Club generates auto admin role
-    var roles = await club.getRoles();
-    for(const role of roles){
-      await role.addPlayer(player);
-    }
-  }
+  //   const location = await new Location({
+  //     name: 'Lembeke'
+  //   }).save();
+
+  //   await club.addTeam(team);
+  //   await club.addLocation(location);
+  //   await player.addClaims(dbAdminClaims);
+
+  //   // create Club generates auto admin role
+  //   var roles = await club.getRoles();
+  //   for (const role of roles) {
+  //     await role.addPlayer(player);
+  //   }
+  // }
 
   runCommmand(cmd: string) {
     return new Promise((res, rej) => {

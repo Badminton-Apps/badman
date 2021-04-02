@@ -16,10 +16,9 @@ import { Club, Player, Role } from 'app/_shared';
 export class ClubEditRoleComponent {
   @Output() onPlayerAdded = new EventEmitter<Player>();
   @Output() onPlayerRemoved = new EventEmitter<Player>();
+  @Output() onEdit = new EventEmitter<Role>();
+  @Output() onDelete = new EventEmitter<Role>();
 
   @Input()
   role: Role;
-
-  @Input()
-  club: Club;
 }

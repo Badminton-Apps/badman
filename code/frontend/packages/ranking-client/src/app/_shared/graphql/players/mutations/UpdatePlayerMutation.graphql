@@ -1,0 +1,9 @@
+mutation UpdatePlayer($player: PlayerInput!) {
+  updatePlayer(player: $player) {
+    id
+    firstName
+    lastName
+    phone
+    email
+  }
+}

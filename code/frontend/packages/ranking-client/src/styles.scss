@@ -9,11 +9,9 @@
 @include mat-core();
 
 // Create the theme object (a Sass map containing all of the palettes).
-$client-angular-theme: mat-light-theme(
-  $client-angular-primary,
+$client-angular-theme: mat-light-theme($client-angular-primary,
   $client-angular-accent,
-  $client-angular-warn
-);
+  $client-angular-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -27,21 +25,31 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-mat-sidenav-content > ng-component {
+mat-sidenav-content>ng-component {
   padding: 25px 0;
 }
 
 .mat-subheading-1,
 .mat-subheading-2 {
   flex: 1 1 100%;
+  display: flex;
+  flex-direction: row;
+
+  >div:first-child {
+    flex: 1;
+    align-items: center;
+    display: flex;
+  }
 }
 
 .mat-subheading-1 {
+  align-items: center;
   font-size: 20px;
   padding-bottom: 8px;
   margin-top: 15px;
@@ -52,6 +60,10 @@ mat-sidenav-content > ng-component {
   margin-top: 16px;
   border-left: 1px solid mat-color($client-angular-primary);
   padding-left: 10px;
+}
+
+.mat-icon {
+  vertical-align: middle;
 }
 
 .mat-tooltip {

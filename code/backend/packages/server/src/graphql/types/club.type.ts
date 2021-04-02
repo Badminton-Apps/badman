@@ -13,6 +13,7 @@ import { TeamType } from './team.type';
 import moment from 'moment';
 import { getAttributeFields } from './attributes.type';
 import { RoleType } from './security';
+import { LocationType } from './location.type';
 
 export const ClubType = new GraphQLObjectType({
   name: 'Club',
@@ -36,6 +37,11 @@ export const ClubType = new GraphQLObjectType({
         type: new GraphQLList(RoleType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Club.associations.roles)
+      },
+      locations: {
+        type: new GraphQLList(LocationType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Club.associations.locations)
       },
       players: {
         type: new GraphQLList(PlayerType),

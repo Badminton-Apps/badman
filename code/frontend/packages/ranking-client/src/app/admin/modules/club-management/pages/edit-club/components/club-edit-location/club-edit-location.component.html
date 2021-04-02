@@ -1,0 +1,41 @@
+<div class="mat-elevation-z1">
+  <div class="info">
+    <div class="name">
+      <span class="up"> {{ location.name }}</span>
+    </div>
+
+    <ng-container>
+      <button class="options" mat-icon-button [matMenuTriggerFor]="options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #options="matMenu">
+        <button mat-menu-item (click)="this.onEdit.next(location)">Edit</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="this.onEdit.next(location)">Delete</button>
+      </mat-menu>
+    </ng-container>
+  </div>
+
+  <div class="content">
+    <mat-list>
+      <mat-list-item *ngIf="this.location">{{
+        this.location.address
+      }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.postalcode">{{
+        this.location.postalcode
+      }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.city">{{
+        this.location.city
+      }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.state">{{
+        this.location.state
+      }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.phone">{{
+        this.location.phone
+      }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.fax">{{
+        this.location.fax
+      }}</mat-list-item>
+    </mat-list>
+  </div>
+</div>

@@ -2,6 +2,7 @@ import {
   GraphQLBoolean,
   GraphQLEnumType,
   GraphQLID,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
@@ -20,8 +21,9 @@ import { TeamType } from './team.type';
 import { getAttributeFields } from './attributes.type';
 import { logger } from '@badvlasim/shared';
 import { ClaimType } from './security/claim.type';
+import { ClubType } from './club.type';
 
-const PlayerType = new GraphQLObjectType({
+export const PlayerType = new GraphQLObjectType({
   name: 'Player',
   description: 'A Player',
   fields: () =>
@@ -98,7 +100,20 @@ const PlayerType = new GraphQLObjectType({
       },
       base: {
         type: GraphQLBoolean
+      },
+      clubs: {
+        type: new GraphQLList(ClubType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Player.associations.clubs)
       }
     })
 });
-export { PlayerType };
+
+export const PlayerInputType = new GraphQLInputObjectType({
+  name: 'PlayerInput',
+  description: 'This represents a PlayerInputType',
+  fields: () =>
+    Object.assign(
+      getAttributeFields(Player, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] })
+    )
+});

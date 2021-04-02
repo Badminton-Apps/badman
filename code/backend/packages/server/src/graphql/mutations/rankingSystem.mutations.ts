@@ -20,7 +20,7 @@ export const addRankingSystemMutation = {
     }
   },
   resolve: async (findOptions, { rankingSystem: rankingSystemInput }, context) => {
-    if (!context.req.user.hasAnyPermission(['add:ranking'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:ranking'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this " 
@@ -42,11 +42,11 @@ export const addRankingSystemMutation = {
 
       logger.debug('Added');
 
-      transaction.commit();
+      await transaction.commit();
       return eventDb;
     } catch (e) {
       logger.warn('rollback', e);
-      transaction.rollback();
+      await  transaction.rollback();
       throw e;
     }
   }
@@ -61,7 +61,7 @@ export const updateRankingSystemMutation = {
     }
   },
   resolve: async (findOptions, { rankingSystem }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:ranking'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:ranking'])) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -81,7 +81,7 @@ export const updateRankingSystemMutation = {
         rankingSystem.groups?.map(g => {
           return {
             SystemId: rankingSystem.id,
-            GroupId: g.id
+            groupId: g.id
           };
         }),
         { transaction }
@@ -92,11 +92,11 @@ export const updateRankingSystemMutation = {
         transaction
       });
 
-      transaction.commit();
+      await transaction.commit();
       return dbEvent;
     } catch (e) {
       logger.warn('rollback');
-      transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
