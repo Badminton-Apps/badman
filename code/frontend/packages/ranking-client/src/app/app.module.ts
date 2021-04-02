@@ -1,23 +1,23 @@
+import { AgmCoreModule } from '@agm/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MarkdownModule } from 'ngx-markdown';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GraphQLModule } from './graphql.module';
-import { SharedModule } from './_shared/shared.module';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import {
-  TranslateModule,
-  TranslateLoader,
-  TranslateService,
-} from '@ngx-translate/core';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
-import { MarkdownModule } from 'ngx-markdown';
-import { NgxNativeDateModule } from '@angular-material-components/datetime-picker';
+import { SharedModule } from './_shared/shared.module';
 
 const baseModules = [
   BrowserModule,
@@ -48,6 +48,10 @@ const appModules = [SharedModule, GraphQLModule];
     MarkdownModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
+    }),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
+      libraries: ['places'],
     })
   ],
   providers: [
@@ -56,7 +60,7 @@ const appModules = [SharedModule, GraphQLModule];
       useFactory: appInitializerFactory,
       deps: [TranslateService, Injector],
       multi: true,
-    }
+    },
   ],
   bootstrap: [AppComponent],
 })

@@ -1,5 +1,12 @@
-import { DataBaseHandler, logger, Player, Team, TeamPlayerMembership } from '@badvlasim/shared';
-import { GraphQLBoolean, GraphQLID, GraphQLInt } from 'graphql';
+import {
+  Club,
+  DataBaseHandler,
+  logger,
+  Player,
+  Team,
+  TeamPlayerMembership
+} from '@badvlasim/shared';
+import { GraphQLBoolean, GraphQLID, GraphQLInt, GraphQLNonNull } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { TeamInputType, TeamType } from '../types';
 
@@ -8,15 +15,18 @@ export const addTeamMutation = {
   args: {
     team: {
       name: 'Team',
-      type: TeamInputType
+      type: new GraphQLNonNull(TeamInputType)
     },
     clubId: {
       name: 'clubId',
-      type: GraphQLInt
+      type: new GraphQLNonNull(GraphQLID)
     }
   },
   resolve: async (findOptions, { team, clubId }, context) => {
-    if (!context.req.user.hasAnyPermission(['add:team'])) {
+    if (
+      context?.req?.user == null ||
+      !context.req.user.hasAnyPermission([`${clubId}_add:team`, 'edit-any:club'])
+    ) {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -24,19 +34,113 @@ export const addTeamMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const teamDb = await Team.create(
-        {
-          ...team,
-          clubId
+      const [teamDb, created] = await Team.findOrCreate({
+        where: {
+          name: team.name,
+          ClubId: clubId
         },
-        { transaction }
-      );
+        defaults: team,
+        transaction
+      });
 
-      transaction.commit();
+      if (created) {
+        teamDb.setClub(clubId);
+      } else {
+        // Re-activate team
+        teamDb.active = true;
+        teamDb.save();
+      }
+
+      await transaction.commit();
       return teamDb;
     } catch (e) {
-      logger.warn('rollback');
-      transaction.rollback();
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const removeTeamMutation = {
+  type: TeamType,
+  args: {
+    teamId: {
+      name: 'teamId',
+      type: GraphQLID
+    }
+  },
+  resolve: async (findOptions, { teamId, playerId }, context) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbTeam = await Team.findByPk(teamId);
+
+      if (!dbTeam) {
+        logger.debug('team', dbTeam);
+        throw new ApiError({
+          code: 404,
+          message: 'Team not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+      ) {
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
+        });
+      }
+
+      await dbTeam.destroy({ transaction });
+
+      await transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const updateTeamMutation = {
+  type: TeamType,
+  args: {
+    team: {
+      name: 'Team',
+      type: TeamInputType
+    }
+  },
+  resolve: async (findOptions, { team }, context) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbTeam = await Team.findByPk(team.id);
+
+      if (!dbTeam) {
+        logger.debug('team', dbTeam);
+        throw new ApiError({
+          code: 404,
+          message: 'Team not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+      ) {
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
+        });
+      }
+
+      await dbTeam.update(team, { transaction });
+      await transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
       throw e;
     }
   }
@@ -55,22 +159,25 @@ export const addPlayerToTeamMutation = {
     }
   },
   resolve: async (findOptions, { teamId, playerId }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:team'])) {
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId, {
-        transaction
-      });
+      const dbTeam = await Team.findByPk(teamId);
 
       if (!dbTeam) {
+        logger.debug('team', dbTeam);
         throw new ApiError({
           code: 404,
           message: 'Team not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+      ) {
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
         });
       }
 
@@ -92,11 +199,11 @@ export const addPlayerToTeamMutation = {
         }
       });
 
-      transaction.commit();
+      await transaction.commit();
       return dbTeam;
     } catch (e) {
-      logger.warn('rollback');
-      transaction.rollback();
+      logger.warn('rollback', e);
+      await transaction.rollback();
       throw e;
     }
   }
@@ -115,23 +222,25 @@ export const removePlayerFromTeamMutation = {
     }
   },
   resolve: async (findOptions, { teamId, playerId }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:team'])) {
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId, {
-        transaction
-      });
+      const dbTeam = await Team.findByPk(teamId);
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
         throw new ApiError({
           code: 404,
           message: 'Team not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+      ) {
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
         });
       }
 
@@ -150,11 +259,64 @@ export const removePlayerFromTeamMutation = {
         transaction
       });
 
-      transaction.commit();
+      await transaction.commit();
       return dbTeam;
     } catch (e) {
-      logger.warn('rollback');
-      transaction.rollback();
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const updateSubEventTeamMutation = {
+  type: TeamType,
+  args: {
+    teamId: {
+      name: 'teamId',
+      type: GraphQLID
+    },
+    newSubEventId: {
+      name: 'newSubEventId',
+      type: GraphQLID
+    },
+    oldSubEventId: {
+      name: 'oldSubEventId',
+      type: GraphQLID
+    }
+  },
+  resolve: async (findOptions, { teamId, newSubEventId, oldSubEventId }, context) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbTeam = await Team.findByPk(teamId);
+
+      if (!dbTeam) {
+        logger.debug('team', dbTeam);
+        throw new ApiError({
+          code: 404,
+          message: 'Team not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+      ) {
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
+        });
+      }
+      if (oldSubEventId != null) {
+        await dbTeam.removeSubEvent(oldSubEventId, { transaction });
+      }
+      await dbTeam.addSubEvent(newSubEventId, { transaction });
+
+      await transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
       throw e;
     }
   }
@@ -177,23 +339,25 @@ export const updatePlayerTeamMutation = {
     }
   },
   resolve: async (findOptions, { teamId, playerId, base }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:team'])) {
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId, {
-        transaction
-      });
+      const dbTeam = await Team.findByPk(teamId);
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
         throw new ApiError({
           code: 404,
           message: 'Team not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+      ) {
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
         });
       }
 
@@ -217,56 +381,12 @@ export const updatePlayerTeamMutation = {
         { where: { teamId: dbTeam.id, playerId: dbPlayer.id }, transaction }
       );
 
-      transaction.commit();
+      await transaction.commit();
       return dbTeam;
     } catch (e) {
-      logger.warn('rollback');
-      transaction.rollback();
+      logger.warn('rollback', e);
+      await transaction.rollback();
       throw e;
     }
   }
 };
-
-export const updateTeamMutation = {
-  type: TeamType,
-  args: {
-    id: {
-      name: 'Id',
-      type: GraphQLInt
-    },
-    team: {
-      name: 'Team',
-      type: TeamInputType
-    }
-  },
-  resolve: async (findOptions, { id, team }, context) => {
-    if (!context.req.user.hasAnyPermission(['edit:team'])) {
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
-    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-    try {
-      const dbTeam = await Team.findByPk(team.id, {
-        transaction
-      });
-
-      if (!dbTeam) {
-        throw new ApiError({
-          code: 404,
-          message: 'Role not found'
-        });
-      }
-
-      await dbTeam.update(team, { transaction });
-      transaction.commit();
-      return dbTeam;
-    } catch (e) {
-      logger.warn('rollback');
-      transaction.rollback();
-      throw e;
-    }
-  }
-};
-

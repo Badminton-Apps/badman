@@ -3,9 +3,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
+  Params,
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
+import { environment } from 'environments/environment';
 import { combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AuthService } from '../../services/security/auth.service';
@@ -25,7 +27,9 @@ export class AuthGuard implements CanActivate {
     if (next.data.claims) {
       if (typeof next.data.claims === 'string') {
         canActivateObservables$.push(
-          this.auth.hasClaim$(next.data.claims as string)
+          this.auth.hasClaim$(
+            this.replaceParams(next.params, [next.data.claims])[0]
+          )
         );
       } else {
         if (next.data.claims.any) {
@@ -33,14 +37,18 @@ export class AuthGuard implements CanActivate {
             next.data.claims.any = [next.data.claims.any];
           }
           canActivateObservables$.push(
-            this.auth.hasAnylaims$(next.data.claims.any)
+            this.auth.hasAnyClaims$(
+              this.replaceParams(next.params, next.data.claims.any)
+            )
           );
         } else if (next.data.claims.all) {
           if (typeof next.data.claims.all === 'string') {
             next.data.claims.all = [next.data.claims.all];
           }
           canActivateObservables$.push(
-            this.auth.hasAllClaims$(next.data.claims.all)
+            this.auth.hasAllClaims$(
+              this.replaceParams(next.params, next.data.claims.all)
+            )
           );
         }
       }
@@ -63,9 +71,22 @@ export class AuthGuard implements CanActivate {
       }),
       tap((r) => {
         if (r == false) {
+          if (environment.production == false) {
+            console.warn('No permissions', next.data.claims);
+          }
+
           this.snackBar.open("You don't have the permissions for this");
         }
       })
     );
+  }
+
+  private replaceParams(params: any, claims: string[]): string[] {
+    // replace with params
+    for (const [key, value] of Object.entries(params)) {
+      claims = claims.map(c => c.replace(`[:${key}]`, value as string));
+    }
+
+    return claims;
   }
 }

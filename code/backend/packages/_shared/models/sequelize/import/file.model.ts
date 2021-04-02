@@ -1,29 +1,16 @@
-import { table } from 'console';
 import {
   Column,
-  HasMany,
-  Model,
   DataType,
+  Default,
+  IsUUID,
+  Model,
+  PrimaryKey,
   Table,
   TableOptions,
-  PrimaryKey,
-  IsUUID,
-  Unique,
-  Default
+  Unique
 } from 'sequelize-typescript';
-import { ImportSubEvent } from './import-sub-events.model';
+import { BuildOptions } from 'sequelize';
 import { EventImportType } from '../../enums/eventType.enum';
-import {
-  HasManyAddAssociationMixin,
-  HasManyAddAssociationsMixin,
-  HasManyCountAssociationsMixin,
-  HasManyGetAssociationsMixin,
-  HasManyHasAssociationMixin,
-  HasManyHasAssociationsMixin,
-  HasManyRemoveAssociationMixin,
-  HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
-} from 'sequelize';
 
 @Table({
   timestamps: true,
@@ -31,6 +18,10 @@ import {
   schema: 'import'
 } as TableOptions)
 export class ImporterFile extends Model {
+  constructor(values?: Partial<ImporterFile>, options ?: BuildOptions){
+    super(values, options);
+  }
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -42,7 +33,7 @@ export class ImporterFile extends Model {
   name: string;
 
   @Unique('unique_constraint')
-  @Column(DataType.ENUM('COMPETITION_CP', 'COMPETITION_XML', 'TOERNAMENT'))
+  @Column(DataType.ENUM('COMPETITION_CP', 'COMPETITION_XML', 'TOURNAMENT'))
   type: EventImportType;
 
   @Unique('unique_constraint')
@@ -70,18 +61,4 @@ export class ImporterFile extends Model {
 
   @Column
   tournamentNumber: number;
-
-  @HasMany(() => ImportSubEvent, { foreignKey: 'FileId', onDelete: 'CASCADE' })
-  subEvents: ImportSubEvent[];
-
-  // Has many SubEvent
-  getSubEvents!: HasManyGetAssociationsMixin<ImportSubEvent>;
-  setSubEvents!: HasManySetAssociationsMixin<ImportSubEvent, string>;
-  addSubEvents!: HasManyAddAssociationsMixin<ImportSubEvent, string>;
-  addSubEvent!: HasManyAddAssociationMixin<ImportSubEvent, string>;
-  removeSubEvent!: HasManyRemoveAssociationMixin<ImportSubEvent, string>;
-  removeSubEvents!: HasManyRemoveAssociationsMixin<ImportSubEvent, string>;
-  hasSubEvent!: HasManyHasAssociationMixin<ImportSubEvent, string>;
-  hasSubEvents!: HasManyHasAssociationsMixin<ImportSubEvent, string>;
-  countSubEvents!: HasManyCountAssociationsMixin;
 }

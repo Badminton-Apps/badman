@@ -29,6 +29,7 @@ import {
   Default,
   ForeignKey,
   HasMany,
+  Index,
   IsUUID,
   Model,
   PrimaryKey,
@@ -83,27 +84,23 @@ export class Game extends Model {
   @BelongsTo(() => DrawTournament, {
     foreignKey: 'linkId',
     constraints: false,
-    scope: {
-      linkType: 'tournament'
-    }
   })
   tournament: DrawTournament;
 
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
-    scope: {
-      linkType: 'competition'
-    }
   })
   competition: EncounterCompetition;
 
   @HasMany(() => RankingPoint, 'GameId')
   rankingPoints?: RankingPoint[];
 
+  @Index('game_parent_index')
   @Column
   linkId: string;
 
+  @Index('game_parent_index')
   @Column
   linkType: string;
 

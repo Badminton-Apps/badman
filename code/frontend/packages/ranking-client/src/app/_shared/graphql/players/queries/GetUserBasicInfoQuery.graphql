@@ -13,6 +13,8 @@ query GetUserInfoQuery($id: ID!, $rankingType: ID) {
       limit: 1
       where: { SystemId: $rankingType }
     ) {
+      id
+
       rankingDate
       single
       singleRank

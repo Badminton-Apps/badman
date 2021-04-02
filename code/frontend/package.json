@@ -29,6 +29,7 @@
     "@angular/forms": "~11.2.5",
     "@angular/localize": "~11.2.5",
     "@angular/material": "~11.2.4",
+    "@angular/flex-layout": "~11.0.0-beta.33",
     "@angular/material-moment-adapter": "~11.2.4",
     "@angular/platform-browser": "~11.2.5",
     "@angular/platform-browser-dynamic": "~11.2.5",
@@ -41,6 +42,8 @@
     "@ngx-translate/http-loader": "~6.0.0",
     "@angular-material-components/datetime-picker": "~5.1.0",
     "@angular-material-components/moment-adapter": "~5.0.0",
+    "@angular-material-extensions/google-maps-autocomplete": "~6.2.0",
+    "@agm/core": "~3.0.0-beta.0",
     "@apollo/client": "~3.3.7",
     "@graphql-tools/webpack-loader": "~6.4.0",
     "ngx-markdown": "~11.1.2",
@@ -58,8 +61,9 @@
     "rxjs": "~6.6.3",
     "tslib": "~2.1.0",
     "zone.js": "~0.11.4",
+    "regression": "~2.0.1",
     "@types/regression": "~2.0.0",
-    "regression": "~2.0.1"
+    "@types/googlemaps": "3.39.12"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "~11.1.1",

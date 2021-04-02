@@ -1,7 +1,7 @@
 <ng-container *ngIf="this.event$ | async as event">
   <div class="mat-elevation-z1">
     <div class="header">
-      <app-has-claim [any]="[event.id + '_edit:event', 'edit-amy:event']">
+      <app-has-claim [any]="['edit:competition', 'edit-any:competition']">
         <button class="options" mat-icon-button [matMenuTriggerFor]="options">
           <mat-icon>more_vert</mat-icon>
         </button>

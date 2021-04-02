@@ -35,15 +35,13 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import {
-  DrawCompetition,
-  EventCompetition,
-  GroupSubEvents,
-  RankingSystemGroup,
-  Team
-} from '../..';
-import { LevelType, SubEventType } from '../../..';
+import { LevelType, SubEventType } from '../../../enums';
+import { RankingSystemGroup } from '../../ranking';
 import { TeamSubEventMembership } from '../../team-subEvent-membership.model';
+import { Team } from '../../team.model';
+import { DrawCompetition } from './draw-competition.model';
+import { EventCompetition } from './event-competition.model';
+import { GroupSubEventCompetition } from './group_subevent.model';
 
 @Table({
   timestamps: true,
@@ -68,10 +66,6 @@ export class SubEventCompetition extends Model {
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType: SubEventType;
 
-  @Unique('unique_constraint')
-  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAAL'))
-  levelType: LevelType;
-
   @Column
   level?: number;
 
@@ -80,38 +74,32 @@ export class SubEventCompetition extends Model {
 
   @Column
   minBaseIndex?: number;
-  
+
   @Column
   maxBaseIndex?: number;
 
   @BelongsToMany(
     () => Team,
-    () => TeamSubEventMembership
+    () => TeamSubEventMembership,
   )
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  teams: (Team & { TeamMembership: TeamSubEventMembership })[];
+  teams: Team[];
 
-  @Unique('unique_constraint')
-  @Column
-  internalId: number;
-
-  @BelongsToMany(() => RankingSystemGroup, {
-    through: {
-      model: () => GroupSubEvents,
-      unique: false,
-      scope: {
-        petType: 'competition'
-      }
-    },
-    foreignKey: 'subeventId',
-    otherKey: 'groupId'
-  })
+  @BelongsToMany(
+    () => RankingSystemGroup,
+    () => GroupSubEventCompetition
+  )
   groups: RankingSystemGroup[];
 
-  @HasMany(() => DrawCompetition, 'subeventId')
+  @HasMany(() => DrawCompetition, {
+    foreignKey: 'subeventId',
+    onDelete: 'CASCADE'
+  })
   draws: DrawCompetition[];
 
-  @BelongsTo(() => EventCompetition, 'eventId')
+  @BelongsTo(() => EventCompetition, {
+    foreignKey: 'eventId',
+    onDelete: 'CASCADE'
+  })
   event?: EventCompetition;
 
   @Unique('unique_constraint')
@@ -119,39 +107,19 @@ export class SubEventCompetition extends Model {
   @Column
   eventId: string;
 
-  // Belongs to many RankingSystemGroup
-  getRankingSystemGroups!: BelongsToManyGetAssociationsMixin<
-    RankingSystemGroup
-  >;
-  setRankingSystemGroup!: BelongsToManySetAssociationsMixin<
+  // Belongs to many Group
+  getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
+  setGroups!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;
+  addGroups!: BelongsToManyAddAssociationsMixin<RankingSystemGroup, string>;
+  addGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
+  removeGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
+  removeGroups!: BelongsToManyRemoveAssociationsMixin<
     RankingSystemGroup,
     string
   >;
-  addRankingSystemGroups!: BelongsToManyAddAssociationsMixin<
-    RankingSystemGroup,
-    string
-  >;
-  addRankingSystemGroup!: BelongsToManyAddAssociationMixin<
-    RankingSystemGroup,
-    string
-  >;
-  removeRankingSystemGroup!: BelongsToManyRemoveAssociationMixin<
-    RankingSystemGroup,
-    string
-  >;
-  removeRankingSystemGroups!: BelongsToManyRemoveAssociationsMixin<
-    RankingSystemGroup,
-    string
-  >;
-  hasRankingSystemGroup!: BelongsToManyHasAssociationMixin<
-    RankingSystemGroup,
-    string
-  >;
-  hasRankingSystemGroups!: BelongsToManyHasAssociationsMixin<
-    RankingSystemGroup,
-    string
-  >;
-  countRankingSystemGroup!: BelongsToManyCountAssociationsMixin;
+  hasGroup!: BelongsToManyHasAssociationMixin<RankingSystemGroup, string>;
+  hasGroups!: BelongsToManyHasAssociationsMixin<RankingSystemGroup, string>;
+  countGroup!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to many Team
   getTeams!: BelongsToManyGetAssociationsMixin<Team>;

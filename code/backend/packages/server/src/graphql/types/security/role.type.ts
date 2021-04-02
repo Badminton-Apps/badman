@@ -2,6 +2,7 @@ import { Role } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { getAttributeFields } from '../attributes.type';
+import { ClubType } from '../club.type';
 import { PlayerType } from '../player.type';
 import { ClaimInputType, ClaimType } from './claim.type';
 
@@ -10,6 +11,11 @@ export const RoleType = new GraphQLObjectType({
   description: 'A Role',
   fields: () =>
     Object.assign(getAttributeFields(Role), {
+      club: {
+        type: new GraphQLList(ClubType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Role.associations.club)
+      },
       claims: {
         type: new GraphQLList(ClaimType),
         args: Object.assign(defaultListArgs(), {}),

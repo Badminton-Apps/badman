@@ -36,9 +36,10 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin
 } from 'sequelize';
-import { RankingSystemGroup, GroupSubEvents, DrawTournament } from '../..';
+import { RankingSystemGroup, DrawTournament } from '../..';
 import { SubEventType, GameType } from '../../..';
 import { EventTournament } from './event-tournament.model';
+import { GroupSubEventTournament } from './group_subevent.model';
 
 @Table({
   timestamps: true,
@@ -74,23 +75,22 @@ export class SubEventTournament extends Model {
   @Column
   internalId: number;
 
-  @BelongsToMany(() => RankingSystemGroup, {
-    through: {
-      model: () => GroupSubEvents,
-      unique: false,
-      scope: {
-        petType: 'tournament'
-      }
-    },
-    foreignKey: 'subeventId',
-    otherKey: 'groupId'
-  })
+  @BelongsToMany(
+    () => RankingSystemGroup,
+    () => GroupSubEventTournament
+  )
   groups: RankingSystemGroup[];
 
-  @HasMany(() => DrawTournament, 'subeventId')
+  @HasMany(() => DrawTournament, {
+    foreignKey: 'subeventId',
+    onDelete: 'CASCADE'
+  })
   draws: DrawTournament[];
 
-  @BelongsTo(() => EventTournament, 'eventId')
+  @BelongsTo(() => EventTournament, {
+    foreignKey: 'eventId',
+    onDelete: 'CASCADE'
+  })
   event?: EventTournament;
 
   @Unique('unique_constraint')

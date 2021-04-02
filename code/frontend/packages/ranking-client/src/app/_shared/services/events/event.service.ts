@@ -8,25 +8,23 @@ import {
   Event,
   EventType,
   TournamentEvent,
+  TournamentSubEvent,
 } from 'app/_shared/models';
 import { environment } from 'environments/environment';
 import { BehaviorSubject, concat, of } from 'rxjs';
 import { map, share, tap, toArray } from 'rxjs/operators';
-const getCompetitionEventQuery = require('graphql-tag/loader!../../graphql/events/queries/GetCompetition.graphql');
-const getTournamentEventQuery = require('graphql-tag/loader!../../graphql/events/queries/GetTournament.graphql');
+import * as getCompetitionEventQuery from '../../graphql/events/queries/GetCompetition.graphql';
+import * as getTournamentEventQuery from '../../graphql/events/queries/GetTournament.graphql';
 
-const getCompetitionEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetCompetitions.graphql');
-const getTournamentEventsQuery = require('graphql-tag/loader!../../graphql/events/queries/GetTournaments.graphql');
+import * as getCompetitionEventsQuery from '../../graphql/events/queries/GetCompetitions.graphql';
+import * as getTournamentEventsQuery from '../../graphql/events/queries/GetTournaments.graphql';
 
-const importedQuery = require('graphql-tag/loader!../../graphql/importedEvents/queries/GetImported.graphql');
+import * as importedQuery from '../../graphql/importedEvents/queries/GetImported.graphql';
 
+import * as addEventMutation from '../../graphql/events/mutations/addEvent.graphql';
+import * as deleteEventMutation from '../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql';
 
-const addEventMutation = require('graphql-tag/loader!../../graphql/events/mutations/addEvent.graphql');
-const deleteEventMutation = require('graphql-tag/loader!../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql');
-
-
-const updateCompetitionEvent = require('graphql-tag/loader!../../graphql/events/mutations/UpdateCompetitionEvent.graphql');
-
+import * as updateCompetitionEvent from '../../graphql/events/mutations/UpdateCompetitionEvent.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -41,30 +39,37 @@ export class EventService {
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
   getEvents(args?: {
+    type: EventType;
     first?: number;
     after?: string;
-    type: EventType;
-    where: { [key: string]: any };
+    includeSubEvents?: boolean;
+    where?: { [key: string]: any };
   }) {
+    args = {
+      includeSubEvents: false,
+      ...args,
+    };
+
     return this.apollo
       .query<{
         eventCompetitions?: {
           total: number;
-          edges: { cursor: string; node: Event }[];
+          edges: { cursor: string; node: CompetitionEvent }[];
         };
         eventTournaments?: {
           total: number;
-          edges: { cursor: string; node: Event }[];
+          edges: { cursor: string; node: TournamentEvent }[];
         };
       }>({
         query:
-          args.type == EventType.TOERNAMENT
+          args.type == EventType.TOURNAMENT
             ? getTournamentEventsQuery
             : getCompetitionEventsQuery,
         variables: {
           first: args.first,
           after: args.after,
           where: args.where,
+          includeSubEvents: args.includeSubEvents
         },
       })
       .pipe(
@@ -117,7 +122,6 @@ export class EventService {
       .pipe(map((x) => new TournamentEvent(x.data.eventTournament)));
   }
 
-
   updateCompetitionEvent(event: Partial<CompetitionEvent>) {
     return this.apollo
       .mutate<{
@@ -125,8 +129,8 @@ export class EventService {
       }>({
         mutation: updateCompetitionEvent,
         variables: {
-          event
-        }
+          event,
+        },
       })
       .pipe(map((x) => new CompetitionEvent(x.data.updateEventCompetition)));
   }
@@ -161,7 +165,7 @@ export class EventService {
 
   startImport(imported: Imported) {
     return this.httpClient.put(
-      `${environment.api}/${environment.apiVersion}/import/start/${imported.id}/${imported.event.id}`,
+      `${environment.api}/${environment.apiVersion}/import/start/${imported.id}/${imported.event?.id }`,
       null
     );
   }
@@ -179,10 +183,11 @@ export class EventService {
         };
       }>({
         query:
-          type == EventType.TOERNAMENT
+          type == EventType.TOURNAMENT
             ? getTournamentEventsQuery
             : getCompetitionEventsQuery,
         variables: {
+          includeSubEvents: true,
           where: {
             $or: [
               {
@@ -197,19 +202,24 @@ export class EventService {
       })
       .pipe(
         map((x) => {
-          if (x.data.eventCompetitions || x.data.eventCompetitions) {
-            const events = [
-              ...(x.data.eventCompetitions?.edges ?? []),
-              ...(x.data.eventTournaments?.edges ?? []),
-            ].map((e) => {
-              e.node = new Event(e.node);
-              return e;
-            });
-
-            return events.map((x) => x.node);
-          } else {
-            return null;
+          const events = [];
+          if (x.data.eventCompetitions) {
+            events.push(
+              ...x.data.eventCompetitions?.edges?.map(
+                (e) => new CompetitionEvent(e.node)
+              )
+            );
           }
+
+          if (x.data.eventTournaments) {
+            events.push(
+              ...x.data.eventTournaments?.edges?.map(
+                (e) => new TournamentEvent(e.node)
+              )
+            );
+          }
+
+          return events;
         })
       );
   }

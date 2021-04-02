@@ -1,13 +1,16 @@
 <ng-container *ngIf="!this.player">
-  <div class="bye">
-    bye
-  </div>
+  <div class="bye">bye</div>
 </ng-container>
 
 <ng-container *ngIf="this.player">
   <div class="has-user" [routerLink]="['/player', this.player.id]">
     {{ this.player.firstName }} {{ this.player.lastName }}
     <ng-container *ngIf="this.ranking">({{ this.ranking }})</ng-container>
-    <div class="ranking-points" *ngIf="rankingPoint && (isUsedForUpgrade || isUsedForDowngrade)"> +{{rankingPoint.points}}</div>
+    <div
+      class="ranking-points"
+      *ngIf="rankingPoint && (isUsedForUpgrade || isUsedForDowngrade)"
+    >
+      +{{ rankingPoint.points }}
+    </div>
   </div>
 </ng-container>

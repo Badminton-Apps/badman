@@ -31,10 +31,10 @@ query GetUserGamesQuery(
             id
             name
             level
-            levelType
             eventType
             event {
               id
+              type
               name
               startYear
             }

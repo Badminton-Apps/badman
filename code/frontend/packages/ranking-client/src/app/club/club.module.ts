@@ -21,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/_shared';
 import { ClubRoutingModule } from './club-routing.module';
 import {
@@ -28,8 +29,12 @@ import {
   TeamFieldsComponent,
   TeamPlayersComponent
 } from './dialogs';
+import { LocationFieldsComponent } from './dialogs/location-dialog/components/location-fields/location-fields.component';
+import { LocationDialogComponent } from './dialogs/location-dialog/location-dialog.component';
 import { DetailClubComponent, OverviewClubsComponent } from './pages';
 import { TeamOverviewComponent } from './pages/detail-club/components/team-overview/team-overview.component';
+import { MatGoogleMapsAutocompleteModule } from '@angular-material-extensions/google-maps-autocomplete';
+import { AgmCoreModule } from '@agm/core';
 
 const materialModules = [
   FormsModule,
@@ -52,9 +57,11 @@ const materialModules = [
   MatDatepickerModule,
   MatOptionModule,
   MatSelectModule,
+  MatTooltipModule,
 
   NgxMatMomentModule,
   NgxMatTimepickerModule,
+  MatGoogleMapsAutocompleteModule
 ];
 
 @NgModule({
@@ -62,6 +69,10 @@ const materialModules = [
     OverviewClubsComponent,
     DetailClubComponent,
     TeamOverviewComponent,
+
+    LocationDialogComponent,
+    LocationFieldsComponent,
+
     TeamDialogComponent,
     TeamFieldsComponent,
     TeamPlayersComponent,

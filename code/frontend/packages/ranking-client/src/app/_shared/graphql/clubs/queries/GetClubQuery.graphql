@@ -2,36 +2,52 @@ query GetClubQuery(
   $id: ID!
   $end: String
   $rankingType: ID
+  $includePlacesTeams: Boolean!
   $includePlaces: Boolean!
   $includeTeams: Boolean!
   $includePlayers: Boolean!
   $includeRoles: Boolean!
+  $includeLocations: Boolean!
+  $teamsWhere: SequelizeJSON
 ) {
   club(id: $id) {
     id
     name
     abbreviation
     clubId
-    teams(order: "type") @include(if: $includeTeams) {
+    teams(order: "type", where: $teamsWhere) @include(if: $includeTeams) {
       id
       name
       abbreviation
       type
       preferredTime
       preferredDay
-      baseIndex(systemId: $rankingType)
+      active
+      number
       players(end: $end) {
         id
         firstName
         lastName
+        competitionPlayer
         base
         rankingPlaces(where: { SystemId: $rankingType })
-          @include(if: $includePlaces) {
+          @include(if: $includePlacesTeams) {
           single
           double
           mix
         }
       }
+    }
+
+    locations @include(if: $includeLocations) {
+      id
+      name
+      address
+      postalcode
+      city
+      state
+      phone
+      fax
     }
 
     roles @include(if: $includeRoles) {

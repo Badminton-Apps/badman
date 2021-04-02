@@ -14,6 +14,10 @@ $config: mat-typography-config();
     justify-content: center;
     flex: 1;
     display: flex;
+
+    &.inactive {
+      color: #ccc;
+    }
   }
 
   .up {
@@ -37,8 +41,9 @@ $config: mat-typography-config();
 
   .player {
     cursor: pointer;
-    &.base {
-      font-weight: bold;
+    &.base::after {
+      content: '*';
+      color: #666;
     }
   }
 }

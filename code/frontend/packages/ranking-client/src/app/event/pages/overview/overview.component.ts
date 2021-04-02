@@ -57,7 +57,7 @@ export class OverviewComponent {
 
   eventTypes = [
     { label: 'competition', value: EventType.COMPETITION_CP },
-    { label: 'tournament', value: EventType.TOERNAMENT },
+    { label: 'tournament', value: EventType.TOURNAMENT },
   ];
 
   totalItems: number;
@@ -127,7 +127,7 @@ export class OverviewComponent {
         }),
         map((data) => {
           const events =
-            data.eventTournaments ?? data.eventCompetitions ?? null;
+            data.eventTournaments ?? data.eventCompetitions ?? (null as any);
 
           const count = events?.total || 0;
           this.isLoadingResults = false;

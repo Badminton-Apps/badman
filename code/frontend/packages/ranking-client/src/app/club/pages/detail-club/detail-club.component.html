@@ -1,7 +1,7 @@
-<ng-container *ngIf="this.club$ | async as club">
+<ng-container *ngIf="this.club$ | async as club; else loading">
   <div class="mat-elevation-z1">
     <div class="header">
-      <app-has-claim [any]="[club.id + '_edit:club', 'edit-amy:club']">
+      <app-has-claim [any]="[club.id + '_edit:club', 'edit-any:club']">
         <button class="options" mat-icon-button [matMenuTriggerFor]="options">
           <mat-icon>more_vert</mat-icon>
         </button>
@@ -35,7 +35,32 @@
     </div>
   </div>
 
-  <div class="mat-subheading-1">Teams</div>
+  <div class="mat-subheading-1">
+    <div>
+      Teams
+      <app-has-claim [any]="[club.id + '_add:club', 'edit-any:club']">
+        <button mat-icon-button (click)="this.addTeam(club)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </app-has-claim>
+    </div>
+    <app-has-claim [any]="[club.id + '_add:club', 'edit-any:club']">
+      <div class="end">
+        <button
+          [matTooltip]="
+            this.activeTeams$.value
+              ? 'Show deactivated teams'
+              : 'Hide deactivated teams'
+          "
+          mat-icon-button
+          (click)="this.activeTeams$.next(!this.activeTeams$.value)"
+        >
+          <mat-icon *ngIf="this.activeTeams$.value">visibility</mat-icon>
+          <mat-icon *ngIf="!this.activeTeams$.value">visibility_off</mat-icon>
+        </button>
+      </div>
+    </app-has-claim>
+  </div>
 
   <div class="teams" *ngIf="club.teams">
     <app-team-overview
@@ -44,6 +69,7 @@
       [club]="club"
       (onEdit)="this.editTeam($event, club)"
       (onDelete)="this.deleteTeam($event)"
+      (onActiveChange)="this.setActiveTeam($event)"
     >
     </app-team-overview>
   </div>
@@ -55,3 +81,7 @@
     </mat-list-item>
   </mat-list>
 </ng-container>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar
+></ng-template>

@@ -1,8 +1,14 @@
+import {
+  updateCompetitionEventLocationMutation,
+  updateTournamentEventLocationMutation
+} from './mutations/locations.mutations';
+import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import {
   addClubMutation,
   addEventCompetitionMutation,
   addEventTournamentMutation,
+  addLocationMutation,
   addPlayerToClubMutation,
   addPlayerToRoleMutation,
   addPlayerToTeamMutation,
@@ -11,18 +17,25 @@ import {
   addRoleMutation,
   addTeamMutation,
   deleteImportedEventMutation,
+  removeLocationMutation,
   removePlayerFromRoleMutation,
   removePlayerFromTeamMutation,
+  removeTeamMutation,
+  setGroupsCompetitionMutation,
   updateClubMutation,
   updateEventCompetitionMutation,
   updateEventTournamentMutation,
+  updateLocationMutation,
   updatePlayerTeamMutation,
+  updateSubEventTeamMutation,
   updateRankingSystemGroupMutation,
   updateRankingSystemMutation,
   updateRoleMutation,
-  updateTeamMutation
+  updateTeamMutation,
+  updateGlobalClaimUserMutation,
+  addPlayerMutation,
+  updatePlayerMutation
 } from './mutations';
-import { updateGlobalClaimUserMutation } from './mutations/claims.mutations';
 import {
   claimsQuery,
   clubQuery,
@@ -33,6 +46,7 @@ import {
   eventTournamentsQuery,
   gamesQuery,
   importedQuery,
+  locationQuery,
   playerQuery,
   playersQuery,
   roleQuery,
@@ -55,6 +69,7 @@ export const createSchema = () => {
         eventCompetitions: eventCompetitionsQuery,
         eventTournament: eventTournamentQuery,
         eventTournaments: eventTournamentsQuery,
+        location: locationQuery,
         claims: claimsQuery,
         role: roleQuery,
         roles: rolesQuery,
@@ -75,11 +90,21 @@ export const createSchema = () => {
         addClub: addClubMutation,
         updateClub: updateClubMutation,
         addPlayerToClub: addPlayerToClubMutation,
+        addPlayer: addPlayerMutation,
+        updatePlayer: updatePlayerMutation,
+        updatePlayerRanking: updatePlayerRankingMutation,
         addTeam: addTeamMutation,
         updateTeam: updateTeamMutation,
+        removeTeam: removeTeamMutation,
         updatePlayerTeam: updatePlayerTeamMutation,
+        updateSubEventTeam: updateSubEventTeamMutation,
         addPlayerToTeam: addPlayerToTeamMutation,
         removePlayerFromTeam: removePlayerFromTeamMutation,
+        addLocation: addLocationMutation,
+        updateLocation: updateLocationMutation,
+        removeLocation: removeLocationMutation,
+        updateCompetitionEventLocation: updateCompetitionEventLocationMutation,
+        updateTournamentEventLocation: updateTournamentEventLocationMutation,
         addRole: addRoleMutation,
         updateRole: updateRoleMutation,
         addPlayerToRole: addPlayerToRoleMutation,
@@ -89,6 +114,7 @@ export const createSchema = () => {
         addEventTournament: addEventTournamentMutation,
         updateEventCompetition: updateEventCompetitionMutation,
         updateEventTournament: updateEventTournamentMutation,
+        setGroupsCompetition: setGroupsCompetitionMutation,
         addRankingSystem: addRankingSystemMutation,
         updateRankingSystem: updateRankingSystemMutation,
         addRankingSystemGroup: addRankingSystemGroupMutation,
