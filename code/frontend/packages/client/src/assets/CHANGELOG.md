@@ -1,4 +1,9 @@
-## [3.1.3](https://github.com/Badminton-Apps/core/compare/v3.1.2...v3.1.3) (2021-04-02)
+## [3.1.4](https://github.com/Badminton-Apps/core/compare/v3.1.3...v3.1.4) (2021-04-02)
+
+
+### Bug Fixes
+
+* on release ([0ea61ac](https://github.com/Badminton-Apps/core/commit/0ea61ac9b267c2c169406cacee7d7c5e4f56619a))
 
 
 
@@ -34,10 +39,6 @@
 * enrrolment ([4679026](https://github.com/Badminton-Apps/core/commit/4679026f4136afc1661acd159341efc414cfe930))
 * Rework permissions ([d9dfa16](https://github.com/Badminton-Apps/core/commit/d9dfa16968bf462792c05c600906e1c13818d879))
 * Team/Club Memberships overhaul ([a440c31](https://github.com/Badminton-Apps/core/commit/a440c31fc1e0824cffd25cf5ef3b097606bf6221))
-
-
-
-## [3.0.1](https://github.com/Badminton-Apps/core/compare/v3.0.0...v3.0.1) (2021-04-02)
 
 
 
