@@ -1,7 +1,7 @@
 name: publish-docker
 on:
   release:
-    types: [released]
+    types: [created]
 
 jobs:
   docker-backend:
