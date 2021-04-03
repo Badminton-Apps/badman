@@ -130,7 +130,7 @@ jobs:
       - name: Upgrade
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm upgrade --namespace badvla --install --wait --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}/${{ matrix.pacakge }}-0.3.5.tgz
+          exec: helm upgrade --namespace badvla --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}/${{ matrix.pacakge }}-0.3.5.tgz
           kubeconfig: '${{ secrets.KUBECONFIG }}'
   docker-frontend:
     needs: publish-github
@@ -179,5 +179,5 @@ jobs:
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm upgrade --namespace badvla --install --wait --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}/${{ matrix.pacakge }}-0.3.5.tgz
+          exec: helm upgrade --namespace badvla --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}/${{ matrix.pacakge }}-0.3.5.tgz
           kubeconfig: '${{ secrets.KUBECONFIG }}'
