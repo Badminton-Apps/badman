@@ -125,12 +125,12 @@ jobs:
       - name: Package
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm package --app-version ${{steps.previoustag.outputs.tag}} code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/ -d ${{ github.workspace }}
+          exec: helm package --app-version  ${{ steps.meta.outputs.version }} code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/ -d ${{ github.workspace }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Upgrade
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm upgrade --namespace badvla --install --wait --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} ${{ github.workspace }}/${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
+          exec: helm upgrade --namespace badvla --install --wait --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} ${{ github.workspace }}/${{ matrix.pacakge }}-${{ steps.meta.outputs.version }}.tgz
           kubeconfig: '${{ secrets.KUBECONFIG }}'
   docker-frontend:
     needs: publish-github
@@ -153,7 +153,7 @@ jobs:
           images: |
             ghcr.io/badminton-apps/core/${{ matrix.pacakge }}
           tags: |
-            type=semver,pattern={{version}},value=${{steps.previoustag.outputs.tag}}
+            type=semver,pattern={{version}},value=${{ steps.meta.outputs.version }}
             type=sha
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -174,7 +174,7 @@ jobs:
       - name: Package
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm package --app-version ${{steps.previoustag.outputs.tag}} code/frontend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/ -d ${{ github.workspace }}
+          exec: helm package --app-version ${{ steps.meta.outputs.version }} code/frontend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/ -d ${{ github.workspace }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
