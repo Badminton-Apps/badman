@@ -2,6 +2,8 @@ name: publish-docker
 on:
   push:
     tags: ['v*']
+  create:
+    tags: ['v*']
 jobs:
   docker-backend:
     strategy:
