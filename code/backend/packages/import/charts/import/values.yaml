@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   useImagePullSecrets: true
   pullPolicy: Always
-  repository: badvlasimacr.azurecr.io
+  repository: ghcr.io/badminton-apps/core/import
 
 service:
   internalPort: 4001
