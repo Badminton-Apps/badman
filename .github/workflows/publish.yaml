@@ -120,26 +120,17 @@ jobs:
       - name: Update
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm dep update \
-            code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/
+          exec: helm dep update code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Package
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm package \
-            --app-version ${{steps.previoustag.outputs.tag}} \
-            code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/
+          exec: helm package --app-version ${{steps.previoustag.outputs.tag}} code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Upgrade
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm upgrade \
-            --namespace badvla \
-            --install \
-            --wait \
-            --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} \
-            --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} \
-            code/backend/packages/${{ matrix.pacakge }}${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
+          exec: helm upgrade --namespace badvla --install --wait --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
           kubeconfig: '${{ secrets.KUBECONFIG }}'
   docker-frontend:
     needs: publish-github
@@ -183,18 +174,10 @@ jobs:
       - name: Package
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm package \
-            --app-version ${{steps.previoustag.outputs.tag}} \
-            code/frontend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/
+          exec: helm package --app-version ${{steps.previoustag.outputs.tag}} code/frontend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm upgrade \
-            --namespace badvla \
-            --install \
-            --wait \
-            --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} \
-            ${{ matrix.pacakge }} \
-            code/frontend/packages/${{ matrix.pacakge }}${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
+          exec: helm upgrade --namespace badvla --install --wait --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} ${{ matrix.pacakge }} code/frontend/packages/${{ matrix.pacakge }}${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
           kubeconfig: '${{ secrets.KUBECONFIG }}'
