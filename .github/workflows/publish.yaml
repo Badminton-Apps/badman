@@ -81,7 +81,6 @@ jobs:
   docker-backend:
     needs: publish-github
     strategy:
-      max-parallel: 10
       matrix:
         pacakge: ['server', 'import', 'simulate']
     runs-on: ubuntu-latest
