@@ -1,10 +1,10 @@
 {
   "name": "@badvlasim/server",
   "description": "Ranking simulation server Badminton Vlaanderen",
-  "version": "3.3.8",
+  "version": "3.3.9",
   "private": true,
   "dependencies": {
-    "@badvlasim/shared": "^3.3.8",
+    "@badvlasim/shared": "^3.3.9",
     "apollo-cache-control": "^0.11.4",
     "apollo-server-express": "^2.19.0",
     "global": "^4.4.0",
