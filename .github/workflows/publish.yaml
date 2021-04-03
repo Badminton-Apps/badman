@@ -153,7 +153,7 @@ jobs:
           images: |
             ghcr.io/badminton-apps/core/${{ matrix.pacakge }}
           tags: |
-            type=semver,pattern={{version}},value=${{ steps.meta.outputs.version }}
+            type=semver,pattern={{version}},value=${{steps.previoustag.outputs.tag}}
             type=sha
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
