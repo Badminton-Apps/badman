@@ -21,10 +21,10 @@ postgresql:
   enabled: true
   postgresqlUsername: postgres
   postgresqlDatabase: ranking
-  postgresqlExtendedConf: { 'sharedBuffers': '1500MB', 'maxConnections': 300 }
+  postgresqlExtendedConf: { 'sharedBuffers': '1000MB', 'maxConnections': 100 }
   resources:
     requests:
-      memory: "3Gi"
+      memory: "1Gi"
 
 database:
   DB_IP: server-postgresql.badvla-simulation
