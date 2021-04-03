@@ -1,4 +1,9 @@
-## [3.3.12](https://github.com/Badminton-Apps/core/compare/v3.3.11...v3.3.12) (2021-04-03)
+## [3.3.13](https://github.com/Badminton-Apps/core/compare/v3.3.12...v3.3.13) (2021-04-03)
+
+
+### Bug Fixes
+
+* should be without 'v' ([b861c10](https://github.com/Badminton-Apps/core/commit/b861c10f431f8af0c3cf4bc5984e35333f65211f))
 
 
 
@@ -7,7 +12,6 @@
 
 ### Bug Fixes
 
-* shouldn't be here twice ([e59392c](https://github.com/Badminton-Apps/core/commit/e59392cd83a5ed045f63582a54e5a1eb0987f107))
 * yeah there should be a '/' there ([e8b1d07](https://github.com/Badminton-Apps/core/commit/e8b1d077f8df16b5cc1e7a22d3489b7c99d3713b))
 
 
