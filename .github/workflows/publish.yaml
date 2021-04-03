@@ -79,6 +79,7 @@ jobs:
           release_name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
   docker-backend:
+    needs: publish-github
     strategy:
       max-parallel: 10
       matrix:
@@ -118,6 +119,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
   docker-frontend:
+    needs: publish-github
     strategy:
       matrix:
         pacakge: ['client']
