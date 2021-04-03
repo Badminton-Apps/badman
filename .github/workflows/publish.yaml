@@ -92,7 +92,7 @@ jobs:
           fetch-depth: 0
       - name: 'Get Previous tag'
         id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"          
+        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
       - name: Docker meta
         id: meta
         uses: crazy-max/ghaction-docker-meta@v2
@@ -121,22 +121,19 @@ jobs:
       - name: Package
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm package \
-            --app-version ${{steps.previoustag.outputs.tag}} \
-            charts/${{ matrix.pacakge }}/
+          exec: helm package --app-version ${{steps.previoustag.outputs.tag}} code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Upgrade
         uses: WyriHaximus/github-action-helm3@v2
         with:
           exec: helm upgrade \
-            --namespace badvla\
+            --namespace badvla \
             --install \
             --wait \
             --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} \
-            --set postgresql.existingSecret=server-postgresql \
-            ${{ matrix.pacakge }} \
-            ${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
-          kubeconfig: '${{ secrets.KUBECONFIG }}'          
+            --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} \
+            code/backend/packages/${{ matrix.pacakge }}${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
+          kubeconfig: '${{ secrets.KUBECONFIG }}'
   docker-frontend:
     needs: publish-github
     strategy:
@@ -150,7 +147,7 @@ jobs:
           fetch-depth: 0
       - name: 'Get Previous tag'
         id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"          
+        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
       - name: Docker meta
         id: meta
         uses: crazy-max/ghaction-docker-meta@v2
@@ -181,16 +178,16 @@ jobs:
         with:
           exec: helm package \
             --app-version ${{steps.previoustag.outputs.tag}} \
-            charts/${{ matrix.pacakge }}/
+            code/frontend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
         with:
           exec: helm upgrade \
-            --namespace badvla\
+            --namespace badvla \
             --install \
             --wait \
             --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} \
             ${{ matrix.pacakge }} \
-            ${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
+            code/frontend/packages/${{ matrix.pacakge }}${{ matrix.pacakge }}-${{steps.previoustag.outputs.tag}}.tgz
           kubeconfig: '${{ secrets.KUBECONFIG }}'
