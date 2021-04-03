@@ -8,10 +8,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - badvlasim.westeurope.cloudapp.azure.com
+    - beta.latomme.org
     secretName: badvlasim-letsencrypt-crt
   rules:
-  - host: badvlasim.westeurope.cloudapp.azure.com
+  - host: beta.latomme.org
     http:
       paths:
       - backend:
