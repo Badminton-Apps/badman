@@ -1,9 +1,10 @@
-## [3.1.7](https://github.com/Badminton-Apps/core/compare/v3.1.6...v3.1.7) (2021-04-03)
+## [3.1.8](https://github.com/Badminton-Apps/core/compare/v3.1.7...v3.1.8) (2021-04-03)
 
 
 ### Bug Fixes
 
 * back to original ([f76f6d9](https://github.com/Badminton-Apps/core/commit/f76f6d9979960797216966f3914805ea3bd76c78))
+* more testing on tagging ([7e257a0](https://github.com/Badminton-Apps/core/commit/7e257a04be3612e9a595f71b644972387a1b572e))
 
 
 
