@@ -1,8 +1,9 @@
-# [3.3.0](https://github.com/Badminton-Apps/core/compare/v3.2.1...v3.3.0) (2021-04-03)
+## [3.3.1](https://github.com/Badminton-Apps/core/compare/v3.3.0...v3.3.1) (2021-04-03)
 
 
 ### Bug Fixes
 
+* helm is run from higher folder ([fcbdd3f](https://github.com/Badminton-Apps/core/commit/fcbdd3f576c021aa7f37790d50d1ab44476b889f))
 * should be this ([0a33b57](https://github.com/Badminton-Apps/core/commit/0a33b57b4409e15d92b90f5ff99da01cd4b72186))
 
 
@@ -31,7 +32,6 @@
 
 ### Bug Fixes
 
-* back to original ([f76f6d9](https://github.com/Badminton-Apps/core/commit/f76f6d9979960797216966f3914805ea3bd76c78))
 * more testing on tagging ([7e257a0](https://github.com/Badminton-Apps/core/commit/7e257a04be3612e9a595f71b644972387a1b572e))
 
 
