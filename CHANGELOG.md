@@ -1,3 +1,13 @@
+## [3.1.6](https://github.com/Badminton-Apps/core/compare/v3.1.5...v3.1.6) (2021-04-03)
+
+
+### Bug Fixes
+
+* maybe both tagging triggers? ([0238e2e](https://github.com/Badminton-Apps/core/commit/0238e2e15d33ef2159f686115536371c26e879ae))
+* tagging? ([0efc2b2](https://github.com/Badminton-Apps/core/commit/0efc2b2fa6af5f4ad73fed17206518d45ffd387b))
+
+
+
 ## [3.1.5](https://github.com/Badminton-Apps/core/compare/v3.1.4...v3.1.5) (2021-04-02)
 
 
@@ -10,16 +20,6 @@
 
 
 ## [3.1.2](https://github.com/Badminton-Apps/core/compare/v3.1.1...v3.1.2) (2021-04-02)
-
-
-
-## [3.1.1](https://github.com/Badminton-Apps/core/compare/v3.1.0...v3.1.1) (2021-04-02)
-
-
-### Bug Fixes
-
-* only on push* tag ([3702cea](https://github.com/Badminton-Apps/core/commit/3702cea0b56a35c7ede974dccc8ab4805017278a))
-* tag version? ([08ae4c0](https://github.com/Badminton-Apps/core/commit/08ae4c04921564081e9f6b8675bfc2a2cf440f5c))
 
 
 
