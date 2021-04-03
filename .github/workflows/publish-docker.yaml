@@ -1,8 +1,7 @@
 name: publish-docker
 on:
-  release:
-    types: [created]
-
+  push:
+    tags: ['v*']
 jobs:
   docker-backend:
     strategy:
