@@ -1,3 +1,12 @@
+## [3.1.7](https://github.com/Badminton-Apps/core/compare/v3.1.6...v3.1.7) (2021-04-03)
+
+
+### Bug Fixes
+
+* back to original ([f76f6d9](https://github.com/Badminton-Apps/core/commit/f76f6d9979960797216966f3914805ea3bd76c78))
+
+
+
 ## [3.1.6](https://github.com/Badminton-Apps/core/compare/v3.1.5...v3.1.6) (2021-04-03)
 
 
@@ -16,10 +25,6 @@
 * move changelog after commit ([c76f007](https://github.com/Badminton-Apps/core/commit/c76f007f2248e09febf275299599821e210da64c))
 * on release ([0ea61ac](https://github.com/Badminton-Apps/core/commit/0ea61ac9b267c2c169406cacee7d7c5e4f56619a))
 * one last time ([7b2bd5f](https://github.com/Badminton-Apps/core/commit/7b2bd5ff85a67c939a816b983b966b0230112114))
-
-
-
-## [3.1.2](https://github.com/Badminton-Apps/core/compare/v3.1.1...v3.1.2) (2021-04-02)
 
 
 
