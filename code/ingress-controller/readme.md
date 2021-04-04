@@ -14,3 +14,11 @@ https://gist.githubusercontent.com/PowerKiKi/02a90c765d7b79e7f64d/raw/353b545094
 ## apply
 `kubectl apply -f certificates.yaml --namespace badvla`
 
+
+# tutorial attempt 2
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --version v1.2.0 \
+  --create-namespace \
+  --set installCRDs=true
