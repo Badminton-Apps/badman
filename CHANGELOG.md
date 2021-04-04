@@ -1,3 +1,7 @@
+## [3.3.31](https://github.com/Badminton-Apps/core/compare/v3.3.30...v3.3.31) (2021-04-04)
+
+
+
 ## [3.3.30](https://github.com/Badminton-Apps/core/compare/v3.3.29...v3.3.30) (2021-04-04)
 
 
@@ -17,7 +21,6 @@
 ### Bug Fixes
 
 * allow add locations ([8504717](https://github.com/Badminton-Apps/core/commit/85047176fbeedd1b9abab45b55f30c75958ca046))
-* owner lines were now error lines ([b37387d](https://github.com/Badminton-Apps/core/commit/b37387d2d1e27d27b8d5c808b9aebbc43c7efec3))
 * should allow alter type ([82031b0](https://github.com/Badminton-Apps/core/commit/82031b0a10f7d74c22c8534f4c37f6d7eb56c3bb))
 
 
