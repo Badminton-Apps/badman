@@ -1,3 +1,12 @@
+## [3.3.23](https://github.com/Badminton-Apps/core/compare/v3.3.22...v3.3.23) (2021-04-04)
+
+
+### Bug Fixes
+
+* more testing on dropping schemas ([26c390d](https://github.com/Badminton-Apps/core/commit/26c390d05765043e4dac2e0b86eca9f61b8c1415))
+
+
+
 ## [3.3.22](https://github.com/Badminton-Apps/core/compare/v3.3.21...v3.3.22) (2021-04-04)
 
 
@@ -21,16 +30,6 @@
 ### Bug Fixes
 
 * upgrade postgresql ([7cdd7b6](https://github.com/Badminton-Apps/core/commit/7cdd7b646d367ec17fa653e2dd94378377531816))
-
-
-
-## [3.3.18](https://github.com/Badminton-Apps/core/compare/v3.3.17...v3.3.18) (2021-04-04)
-
-
-### Bug Fixes
-
-* internal api's ([f96290a](https://github.com/Badminton-Apps/core/commit/f96290a1b4e2f2dc437c44f341f2441af0436d28))
-* moved to new api ([e75f383](https://github.com/Badminton-Apps/core/commit/e75f383c6a269a4038b4379a65fbfd53acbcceaa))
 
 
 
