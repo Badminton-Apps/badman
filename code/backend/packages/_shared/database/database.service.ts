@@ -1,3 +1,5 @@
+import { Court } from './../models/sequelize/event/court.model';
+import { EventCompetition, Location } from '@badvlasim/shared';
 import { exec } from 'child_process';
 import { CreateOptions } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
@@ -242,15 +244,20 @@ export class DataBaseHandler {
       if (canMigrate) {
         if (!sync) {
           logger.info('Running migration');
-          await this._sequelize.dropAllSchemas({});
-          const schemas = ((await this._sequelize.showAllSchemas(
-            {}
-          )) as unknown) as string[];
+
+          const schemas = [
+            'event',
+            'import',
+            'public',
+            'ranking'
+          ];
 
           for (const schema of schemas) {
-            logger.info(`Deleting ${schema}`);
-            await this._sequelize.dropSchema(schema, {});
+            logger.info(`Deleting SCHEMA ${schema}`);
+            await this._sequelize.query(`DROP  SCHEMA IF EXISTS "${schema}" CASCADE;`);
           }
+
+          await this._sequelize.query(`CREATE SCHEMA "public";`);
 
           await this.runCommmand('sequelize db:migrate');
         } else {
