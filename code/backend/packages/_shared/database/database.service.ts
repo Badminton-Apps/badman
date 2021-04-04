@@ -244,21 +244,6 @@ export class DataBaseHandler {
       if (canMigrate) {
         if (!sync) {
           logger.info('Running migration');
-
-          const schemas = [
-            'event',
-            'import',
-            'public',
-            'ranking'
-          ];
-
-          for (const schema of schemas) {
-            logger.info(`Deleting SCHEMA ${schema}`);
-            await this._sequelize.query(`DROP  SCHEMA IF EXISTS "${schema}" CASCADE;`);
-          }
-
-          await this._sequelize.query(`CREATE SCHEMA "public";`);
-
           await this.runCommmand('sequelize db:migrate');
         } else {
           logger.info('Syncing');
