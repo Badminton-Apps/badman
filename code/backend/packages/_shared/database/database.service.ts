@@ -243,8 +243,15 @@ export class DataBaseHandler {
         if (!sync) {
           logger.info('Running migration');
           await this._sequelize.dropAllSchemas({});
+          const schemas = ((await this._sequelize.showAllSchemas(
+            {}
+          )) as unknown) as string[];
 
-          await this.runCommmand('set NODE_OPTIONS=--max_old_space_size=8192');
+          for (const schema of schemas) {
+            logger.info(`Deleting ${schema}`);
+            await this._sequelize.dropSchema(schema, {});
+          }
+
           await this.runCommmand('sequelize db:migrate');
         } else {
           logger.info('Syncing');
@@ -253,7 +260,6 @@ export class DataBaseHandler {
           const schemas = ((await this._sequelize.showAllSchemas(
             {}
           )) as unknown) as string[];
-
 
           for (const schema of mySchemas) {
             if (schemas.indexOf(schema) === -1) {
