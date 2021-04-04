@@ -1875,12 +1875,12 @@ module.exports = {
         ALTER TABLE ranking."GroupSubEvents"
             ADD CONSTRAINT "GroupSubEvents_pkey" PRIMARY KEY ("SubEventId", "GroupId");
 
-        ALTER TABLE ranking."GroupSubEvents" DROP CONSTRAINT "groupSubEvents_unique_constraint";
+        ALTER TABLE ranking."GroupSubEvents" DROP CONSTRAINT IF EXISTS "groupSubEvents_unique_constraint";
 
         ALTER TABLE ranking."GroupSystems"
             ADD CONSTRAINT "GroupSystems_pkey" PRIMARY KEY ("SystemId", "GroupId");
 
-        ALTER TABLE ranking."GroupSystems" DROP CONSTRAINT "groupSystems_unique_constraint";
+        ALTER TABLE ranking."GroupSystems" DROP CONSTRAINT IF EXISTS "groupSystems_unique_constraint";
 
         ALTER TABLE ranking."Groups"
             ALTER COLUMN "createdAt" SET NOT NULL;
@@ -1888,7 +1888,7 @@ module.exports = {
 
         ALTER TABLE ranking."Groups"
             ALTER COLUMN "updatedAt" SET NOT NULL;
-        ALTER TABLE ranking."Groups" DROP CONSTRAINT groups_unique_constraint;
+        ALTER TABLE ranking."Groups" DROP CONSTRAINT IF EXISTS groups_unique_constraint;
 
         ALTER TABLE ranking."Groups"
             ADD CONSTRAINT "Groups_name_key" UNIQUE (name);
@@ -1898,7 +1898,7 @@ module.exports = {
 
         ALTER TABLE ranking."Places"
             ALTER COLUMN "updatedAt" SET NOT NULL;
-        ALTER TABLE ranking."Places" DROP CONSTRAINT "compositeIndex";
+        ALTER TABLE ranking."Places" DROP CONSTRAINT IF EXISTS "compositeIndex";
 
         ALTER TABLE ranking."Places"
             ADD CONSTRAINT "Places_rankingDate_PlayerId_SystemId_key" UNIQUE ("rankingDate", "PlayerId", "SystemId");
@@ -1908,7 +1908,7 @@ module.exports = {
 
         ALTER TABLE ranking."Points"
             ALTER COLUMN "updatedAt" SET NOT NULL;
-        ALTER TABLE ranking."Points" DROP CONSTRAINT points_unique_constraint;
+        ALTER TABLE ranking."Points" DROP CONSTRAINT IF EXISTS points_unique_constraint;
 
         ALTER TABLE ranking."Systems"
             ALTER COLUMN "createdAt" SET NOT NULL;
@@ -1918,7 +1918,7 @@ module.exports = {
 
         ALTER TABLE ranking."Systems"
             ALTER COLUMN "updatedAt" SET NOT NULL;
-        ALTER TABLE ranking."Systems" DROP CONSTRAINT systems_unique_constraint;
+        ALTER TABLE ranking."Systems" DROP CONSTRAINT IF EXISTS systems_unique_constraint;
 
         ALTER TABLE ranking."Systems"
             ADD CONSTRAINT "Systems_name_key" UNIQUE (name);
