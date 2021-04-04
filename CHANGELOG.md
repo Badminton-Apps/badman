@@ -1,3 +1,12 @@
+## [3.3.19](https://github.com/Badminton-Apps/core/compare/v3.3.18...v3.3.19) (2021-04-04)
+
+
+### Bug Fixes
+
+* upgrade postgresql ([7cdd7b6](https://github.com/Badminton-Apps/core/commit/7cdd7b646d367ec17fa653e2dd94378377531816))
+
+
+
 ## [3.3.18](https://github.com/Badminton-Apps/core/compare/v3.3.17...v3.3.18) (2021-04-04)
 
 
@@ -26,7 +35,6 @@
 ### Bug Fixes
 
 * workspace didn't work ([ccbaff1](https://github.com/Badminton-Apps/core/commit/ccbaff1c8ca24ac818bf4beb022cc410ae1e6a32))
-* yeah this is the chart version ([b886a7f](https://github.com/Badminton-Apps/core/commit/b886a7f8577552940a61b9c46aa6a6ef7b8aac80))
 
 
 
