@@ -211,9 +211,6 @@ module.exports = {
         CREATE TYPE event."enum_SubEventCompetitions_eventType" AS ENUM ('M', 'F', 'MX', 'MINIBAD');
         CREATE TYPE event."enum_SubEventTournaments_eventType" AS ENUM ('M', 'F', 'MX', 'MINIBAD');
         CREATE TYPE event."enum_SubEventTournaments_gameType" AS ENUM ('S', 'D', 'MX');
-        ALTER TYPE import."enum_Files_type"
-        ADD VALUE 'TOURNAMENT'
-        AFTER 'TOERNAMENT';
         ALTER TABLE event."Games" DROP CONSTRAINT "Games_drawId_fkey";
         ALTER TABLE public."Teams" DROP CONSTRAINT "Teams_SubEventId_fkey";
         ALTER TABLE ranking."GroupSystems" DROP CONSTRAINT "GroupSystems_GroupId_fkey";
@@ -549,6 +546,17 @@ module.exports = {
         DROP TYPE IF EXISTS import."enum_SubEvents_gameType";
         DROP TYPE IF EXISTS import."enum_SubEvents_levelType";
         END;`,
+        { transaction: t }
+      );
+
+      await queryInterface.sequelize.query(
+        `BEGIN
+        ALTER TABLE "import"."Files" ALTER COLUMN "type" TYPE VARCHAR(255);
+        DROP TYPE IF EXISTS "import"."enum_Files_type";
+        CREATE TYPE "import"."enum_Files_type" AS ENUM ('COMPETITION_CP','COMPETITION_XML','TOERNAMENT','TOURNAMENT');
+        ALTER TABLE "import"."Files" ALTER COLUMN "type" TYPE "import"."enum_Files_type" USING ("type"::"import"."enum_Files_type");
+        END
+        `,
         { transaction: t }
       );
 
