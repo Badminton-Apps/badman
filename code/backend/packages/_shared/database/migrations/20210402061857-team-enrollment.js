@@ -205,8 +205,7 @@ module.exports = {
 
     return queryInterface.sequelize.transaction(async t => {
       await queryInterface.sequelize.query(
-        `BEGIN;
-        CREATE TYPE event."enum_DrawTournaments_type" AS ENUM ('KO', 'POULE', 'QUALIFICATION');
+        `CREATE TYPE event."enum_DrawTournaments_type" AS ENUM ('KO', 'POULE', 'QUALIFICATION');
         CREATE TYPE event."enum_EventCompetitions_type" AS ENUM ('PROV', 'LIGA', 'NATIONAL');
         CREATE TYPE event."enum_SubEventCompetitions_eventType" AS ENUM ('M', 'F', 'MX', 'MINIBAD');
         CREATE TYPE event."enum_SubEventTournaments_eventType" AS ENUM ('M', 'F', 'MX', 'MINIBAD');
@@ -545,17 +544,16 @@ module.exports = {
         DROP TYPE IF EXISTS import."enum_SubEvents_eventType";
         DROP TYPE IF EXISTS import."enum_SubEvents_gameType";
         DROP TYPE IF EXISTS import."enum_SubEvents_levelType";
-        END;`,
+        `,
         { transaction: t }
       );
 
       await queryInterface.sequelize.query(
-        `BEGIN
+        `
         ALTER TABLE "import"."Files" ALTER COLUMN "type" TYPE VARCHAR(255);
         DROP TYPE IF EXISTS "import"."enum_Files_type";
         CREATE TYPE "import"."enum_Files_type" AS ENUM ('COMPETITION_CP','COMPETITION_XML','TOERNAMENT','TOURNAMENT');
         ALTER TABLE "import"."Files" ALTER COLUMN "type" TYPE "import"."enum_Files_type" USING ("type"::"import"."enum_Files_type");
-        END
         `,
         { transaction: t }
       );
@@ -659,7 +657,7 @@ module.exports = {
 
   down: async (queryInterface, sequelize) => {
     await queryInterface.sequelize.query(
-      `BEGIN;
+      `
     CREATE TYPE event."enum_Draws_type" AS ENUM ('KO', 'POULE', 'QUALIFICATION');
     ALTER TYPE event."enum_Draws_type";
     CREATE TYPE event."enum_Events_type" AS ENUM ('COMPETITION', 'TOERNAMENT');
@@ -903,8 +901,7 @@ module.exports = {
     DROP TABLE security."PlayerRoleMemberships" CASCADE;
     DROP TABLE security."RoleClaimMemberships" CASCADE;
     DROP TABLE security."Roles" CASCADE;
-    DROP TYPE security."enum_Claims_type";
-    END;`,
+    DROP TYPE security."enum_Claims_type";`,
       { transaction: t }
     );
   }
