@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/client",
   "description": "Ranking simulation Badminton Vlaanderen",
-  "version": "3.3.32",
+  "version": "3.3.33",
   "scripts": {
     "ng": "ng",
     "start": "npx kill-port 4200 && ng serve",
