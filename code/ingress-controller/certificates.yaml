@@ -1,11 +1,11 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: badvla-selfsigned-cert
+  name: badvla-stating
   namespace: badvla
 spec:
   dnsNames:
     - beta.latomme.org
-  secretName: badvla-selfsigned-cert-tls
+  secretName: badvla-staging-certificate
   issuerRef:
-    name: badvla-selfsigned
+    name: letsencrypt-staging
