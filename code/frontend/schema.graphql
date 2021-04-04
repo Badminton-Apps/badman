@@ -291,7 +291,6 @@ type GamePlayer {
   phone: String
   gender: String
   birthDate: Date
-  token: String
   sub: String
   firstName: String
   lastName: String
@@ -424,7 +423,6 @@ type Player {
   phone: String
   gender: String
   birthDate: Date
-  token: String
   sub: String
   firstName: String
   lastName: String
@@ -470,7 +468,6 @@ input PlayerInput {
   phone: String
   gender: String
   birthDate: Date
-  token: String
   sub: String
   firstName: String
   lastName: String
@@ -956,16 +953,18 @@ type Team {
   abbreviation: String
   ClubId: String
   type: String
-  number: Int
+  teamNumber: Int
   active: Boolean
   createdAt: Date!
   updatedAt: Date!
+  captainId: String
+  clubId: String
   club(
     limit: Int
     order: String
     where: SequelizeJSON
     offset: Int
-  ): [Club]
+  ): Club
   players(
     limit: Int
     order: String
@@ -979,6 +978,12 @@ type Team {
     where: SequelizeJSON
     offset: Int
   ): [SubEventCompetition]
+  captain(
+    limit: Int
+    order: String
+    where: SequelizeJSON
+    offset: Int
+  ): Player
 }
 
 input TeamInput {
@@ -989,8 +994,10 @@ input TeamInput {
   abbreviation: String
   ClubId: String
   type: String
-  number: Int
+  teamNumber: Int
   active: Boolean
+  captainId: String
+  clubId: String
   players: PlayerInput
 }
 

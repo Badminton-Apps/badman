@@ -2,7 +2,7 @@ query GetTeamQuery($id: ID!, $rankingType: ID) {
   team(id: $id) {
     id
     name
-    number
+    teamNumber
     abbreviation
     type
     preferredTime

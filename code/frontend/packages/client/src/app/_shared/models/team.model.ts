@@ -36,8 +36,8 @@ export class Team {
     this.preferredTime = args?.preferredTime;
     this.preferredDay = args?.preferredDay;
     this.subEvents = args?.subEvents?.map((s) => new SubEvent(s));
-    this.captain = args.captain ? new Player(args.captain) : null;
-    this.captainId = args.captain?.id;
+    this.captain = args?.captain != null ? new Player(args?.captain) : null;
+    this.captainId = args?.captain?.id;
 
     this.players =
       args?.players?.map((p) => {
