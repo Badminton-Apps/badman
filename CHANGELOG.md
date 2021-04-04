@@ -1,3 +1,7 @@
+## [3.3.20](https://github.com/Badminton-Apps/core/compare/v3.3.19...v3.3.20) (2021-04-04)
+
+
+
 ## [3.3.19](https://github.com/Badminton-Apps/core/compare/v3.3.18...v3.3.19) (2021-04-04)
 
 
@@ -30,11 +34,6 @@
 
 
 ## [3.3.16](https://github.com/Badminton-Apps/core/compare/v3.3.15...v3.3.16) (2021-04-03)
-
-
-### Bug Fixes
-
-* workspace didn't work ([ccbaff1](https://github.com/Badminton-Apps/core/commit/ccbaff1c8ca24ac818bf4beb022cc410ae1e6a32))
 
 
 
