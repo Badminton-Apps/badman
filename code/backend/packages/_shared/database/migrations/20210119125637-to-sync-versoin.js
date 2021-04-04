@@ -1670,8 +1670,6 @@ module.exports = {
         -- This version does not include dependency resolution, and may require manual changes
         -- to the script to ensure changes are applied in the correct order.
         -- Please report an issue for any failure with the reproduction steps.
-        BEGIN;
-
         ALTER TABLE event."Events"
             ALTER COLUMN "createdAt" SET NOT NULL;
 
@@ -1715,7 +1713,6 @@ module.exports = {
             ON event."SubEvents" USING btree
             (name COLLATE pg_catalog."default" ASC NULLS LAST)
             TABLESPACE pg_default;
-        END;
         `,
         {
           transaction: t
@@ -1730,7 +1727,6 @@ module.exports = {
         -- This version does not include dependency resolution, and may require manual changes
         -- to the script to ensure changes are applied in the correct order.
         -- Please report an issue for any failure with the reproduction steps.
-        BEGIN;
         ALTER TABLE import."Files"
             ALTER COLUMN "createdAt" SET NOT NULL;
 
@@ -1746,8 +1742,6 @@ module.exports = {
 
         ALTER TABLE import."SubEvents"
             ADD CONSTRAINT "SubEvents_name_eventType_gameType_levelType_internalId_File_key" UNIQUE (name, "eventType", "gameType", "levelType", "internalId", "FileId");
-
-        END;
         `,
         {
           transaction: t
@@ -1761,7 +1755,6 @@ module.exports = {
         -- This version does not include dependency resolution, and may require manual changes
         -- to the script to ensure changes are applied in the correct order.
         -- Please report an issue for any failure with the reproduction steps.
-        BEGIN;
         ALTER TABLE public."ClubMemberships"
             ALTER COLUMN "playerId" SET NOT NULL;
 
@@ -1855,9 +1848,7 @@ module.exports = {
         ALTER TABLE public."Teams" DROP CONSTRAINT teams_unique_constraint;
 
         ALTER TABLE public."Teams"
-            ADD CONSTRAINT "Teams_name_ClubId_key" UNIQUE (name, "ClubId");
-
-        END;`,
+            ADD CONSTRAINT "Teams_name_ClubId_key" UNIQUE (name, "ClubId");`,
         {
           transaction: t
         }
@@ -1871,7 +1862,6 @@ module.exports = {
         -- This version does not include dependency resolution, and may require manual changes
         -- to the script to ensure changes are applied in the correct order.
         -- Please report an issue for any failure with the reproduction steps.
-        BEGIN;
         ALTER TABLE ranking."GroupSubEvents"
             ADD CONSTRAINT "GroupSubEvents_pkey" PRIMARY KEY ("SubEventId", "GroupId");
 
@@ -1922,8 +1912,6 @@ module.exports = {
 
         ALTER TABLE ranking."Systems"
             ADD CONSTRAINT "Systems_name_key" UNIQUE (name);
-
-        END;
         `,
         {
           transaction: t
