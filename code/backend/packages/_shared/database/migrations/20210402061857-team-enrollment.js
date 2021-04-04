@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface, sequelize) => {
     const adminClaims = [
       [
         '8c38a508-7f33-407f-ab44-56e029c829d4',
@@ -207,15 +207,15 @@ module.exports = {
       await queryInterface.sequelize.query(
         `BEGIN;
         CREATE TYPE event."enum_DrawTournaments_type" AS ENUM ('KO', 'POULE', 'QUALIFICATION');
-        ALTER TYPE event."enum_DrawTournaments_type" OWNER TO ranking;
+        ALTER TYPE event."enum_DrawTournaments_type";
         CREATE TYPE event."enum_EventCompetitions_type" AS ENUM ('PROV', 'LIGA', 'NATIONAL');
-        ALTER TYPE event."enum_EventCompetitions_type" OWNER TO ranking;
+        ALTER TYPE event."enum_EventCompetitions_type";
         CREATE TYPE event."enum_SubEventCompetitions_eventType" AS ENUM ('M', 'F', 'MX', 'MINIBAD');
-        ALTER TYPE event."enum_SubEventCompetitions_eventType" OWNER TO ranking;
+        ALTER TYPE event."enum_SubEventCompetitions_eventType";
         CREATE TYPE event."enum_SubEventTournaments_eventType" AS ENUM ('M', 'F', 'MX', 'MINIBAD');
-        ALTER TYPE event."enum_SubEventTournaments_eventType" OWNER TO ranking;
+        ALTER TYPE event."enum_SubEventTournaments_eventType";
         CREATE TYPE event."enum_SubEventTournaments_gameType" AS ENUM ('S', 'D', 'MX');
-        ALTER TYPE event."enum_SubEventTournaments_gameType" OWNER TO ranking;
+        ALTER TYPE event."enum_SubEventTournaments_gameType";
         ALTER TYPE import."enum_Files_type"
         ADD VALUE 'TOURNAMENT'
         AFTER 'TOERNAMENT';
@@ -232,10 +232,10 @@ module.exports = {
             'friday',
             'saturday'
         );
-        ALTER TYPE public."enum_Teams_preferredDay" OWNER TO ranking;
+        ALTER TYPE public."enum_Teams_preferredDay";
         CREATE SCHEMA IF NOT EXISTS security;
         CREATE TYPE security."enum_Claims_type" AS ENUM ('global', 'club', 'team');
-        ALTER TYPE security."enum_Claims_type" OWNER TO ranking;
+        ALTER TYPE security."enum_Claims_type";
         CREATE TABLE event."EventCompetitions" (
             id character varying(255) COLLATE pg_catalog."default" NOT NULL,
             name character varying(255) COLLATE pg_catalog."default",
@@ -248,7 +248,7 @@ module.exports = {
             CONSTRAINT "EventCompetitions_pkey" PRIMARY KEY (id),
             CONSTRAINT "EventCompetitions_name_startYear_type_key" UNIQUE (name, "startYear", type)
         ) TABLESPACE pg_default;
-        ALTER TABLE event."EventCompetitions" OWNER to ranking;
+        ALTER TABLE event."EventCompetitions";
         CREATE TABLE event."EventTournaments" (
             id character varying(255) COLLATE pg_catalog."default" NOT NULL,
             "tournamentNumber" character varying(255) COLLATE pg_catalog."default",
@@ -262,7 +262,7 @@ module.exports = {
             CONSTRAINT "EventTournaments_pkey" PRIMARY KEY (id),
             CONSTRAINT "EventTournaments_name_firstDay_key" UNIQUE (name, "firstDay")
         ) TABLESPACE pg_default;
-        ALTER TABLE event."EventTournaments" OWNER to ranking;
+        ALTER TABLE event."EventTournaments";
         CREATE TABLE event."SubEventCompetitions" (
             id character varying(255) COLLATE pg_catalog."default" NOT NULL,
             name character varying(255) COLLATE pg_catalog."default",
@@ -278,7 +278,7 @@ module.exports = {
             CONSTRAINT "SubEventCompetitions_name_eventType_eventId_key" UNIQUE (name, "eventType", "eventId"),
             CONSTRAINT "SubEventCompetitions_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES event."EventCompetitions" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE event."SubEventCompetitions" OWNER to ranking;
+        ALTER TABLE event."SubEventCompetitions";
         CREATE TABLE event."SubEventTournaments" (
             id character varying(255) COLLATE pg_catalog."default" NOT NULL,
             name character varying(255) COLLATE pg_catalog."default",
@@ -299,7 +299,7 @@ module.exports = {
             ),
             CONSTRAINT "SubEventTournaments_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES event."EventTournaments" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE event."SubEventTournaments" OWNER to ranking;
+        ALTER TABLE event."SubEventTournaments";
         CREATE TABLE event."DrawCompetitions" (
             id character varying(255) COLLATE pg_catalog."default" NOT NULL,
             name character varying(255) COLLATE pg_catalog."default",
@@ -311,7 +311,7 @@ module.exports = {
             CONSTRAINT "DrawCompetitions_name_subeventId_key" UNIQUE (name, "subeventId"),
             CONSTRAINT "DrawCompetitions_subeventId_fkey" FOREIGN KEY ("subeventId") REFERENCES event."SubEventCompetitions" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE event."DrawCompetitions" OWNER to ranking;
+        ALTER TABLE event."DrawCompetitions";
         CREATE TABLE event."DrawTournaments" (
             id character varying(255) COLLATE pg_catalog."default" NOT NULL,
             name character varying(255) COLLATE pg_catalog."default",
@@ -325,7 +325,7 @@ module.exports = {
             CONSTRAINT "DrawTournaments_name_type_internalId_subeventId_key" UNIQUE (name, type, "internalId", "subeventId"),
             CONSTRAINT "DrawTournaments_subeventId_fkey" FOREIGN KEY ("subeventId") REFERENCES event."SubEventTournaments" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE event."DrawTournaments" OWNER to ranking;
+        ALTER TABLE event."DrawTournaments";
         CREATE TABLE event."EncounterCompetitions" (
             id character varying(255) COLLATE pg_catalog."default" NOT NULL,
             date timestamp with time zone,
@@ -339,7 +339,7 @@ module.exports = {
             CONSTRAINT "EncounterCompetitions_drawId_fkey" FOREIGN KEY ("drawId") REFERENCES event."DrawCompetitions" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "EncounterCompetitions_homeTeamId_fkey" FOREIGN KEY ("homeTeamId") REFERENCES public."Teams" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION
         ) TABLESPACE pg_default;
-        ALTER TABLE event."EncounterCompetitions" OWNER to ranking;
+        ALTER TABLE event."EncounterCompetitions";
         CREATE INDEX game_players_player_id ON event."GamePlayers" USING btree (
             "playerId" COLLATE pg_catalog."default" ASC NULLS LAST
         ) TABLESPACE pg_default;
@@ -362,7 +362,7 @@ module.exports = {
             CONSTRAINT "LocationEventCompetitions_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES event."EventCompetitions" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "LocationEventCompetitions_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES event."Locations" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE event."LocationEventCompetitions" OWNER to ranking;
+        ALTER TABLE event."LocationEventCompetitions";
         CREATE TABLE event."LocationEventTournaments" (
             "eventId" character varying(255) COLLATE pg_catalog."default" NOT NULL,
             "locationId" character varying(255) COLLATE pg_catalog."default" NOT NULL,
@@ -370,7 +370,7 @@ module.exports = {
             CONSTRAINT "LocationEventTournaments_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES event."EventTournaments" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "LocationEventTournaments_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES event."Locations" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE event."LocationEventTournaments" OWNER to ranking;
+        ALTER TABLE event."LocationEventTournaments";
         ALTER TABLE event."Locations"
         ALTER COLUMN postalcode
         SET STORAGE PLAIN;
@@ -394,7 +394,7 @@ module.exports = {
             CONSTRAINT "TeamSubEventMemberships_subEventId_fkey" FOREIGN KEY ("subEventId") REFERENCES event."SubEventCompetitions" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "TeamSubEventMemberships_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public."Teams" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE event."TeamSubEventMemberships" OWNER to ranking;
+        ALTER TABLE event."TeamSubEventMemberships";
         ALTER TABLE import."Files" DROP COLUMN "toernamentNumber";
         ALTER TABLE import."Files"
         ADD COLUMN "tournamentNumber" integer;
@@ -430,7 +430,7 @@ module.exports = {
             CONSTRAINT "TeamPlayerMemberships_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES public."Players" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "TeamPlayerMemberships_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public."Teams" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE public."TeamPlayerMemberships" OWNER to ranking;
+        ALTER TABLE public."TeamPlayerMemberships";
         CREATE INDEX player_team_index ON public."TeamPlayerMemberships" USING btree (
             "playerId" COLLATE pg_catalog."default" ASC NULLS LAST,
             "teamId" COLLATE pg_catalog."default" ASC NULLS LAST
@@ -465,7 +465,7 @@ module.exports = {
             CONSTRAINT "GroupSubEventCompetitions_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES ranking."Groups" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "GroupSubEventCompetitions_subEventId_fkey" FOREIGN KEY ("subEventId") REFERENCES event."SubEventCompetitions" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE ranking."GroupSubEventCompetitions" OWNER to ranking;
+        ALTER TABLE ranking."GroupSubEventCompetitions";
         CREATE TABLE ranking."GroupSubEventTournaments" (
             "subEventId" character varying(255) COLLATE pg_catalog."default" NOT NULL,
             "groupId" character varying(255) COLLATE pg_catalog."default" NOT NULL,
@@ -473,7 +473,7 @@ module.exports = {
             CONSTRAINT "GroupSubEventTournaments_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES ranking."Groups" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "GroupSubEventTournaments_subEventId_fkey" FOREIGN KEY ("subEventId") REFERENCES event."SubEventTournaments" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE ranking."GroupSubEventTournaments" OWNER to ranking;
+        ALTER TABLE ranking."GroupSubEventTournaments";
         ALTER TABLE ranking."GroupSystems" DROP COLUMN "GroupId";
         ALTER TABLE ranking."GroupSystems" DROP COLUMN "SystemId";
         ALTER TABLE ranking."GroupSystems"
@@ -505,7 +505,7 @@ module.exports = {
             CONSTRAINT "Roles_pkey" PRIMARY KEY (id),
             CONSTRAINT "Roles_clubId_fkey" FOREIGN KEY ("clubId") REFERENCES public."Clubs" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE NO ACTION
         ) TABLESPACE pg_default;
-        ALTER TABLE security."Roles" OWNER to ranking;
+        ALTER TABLE security."Roles";
         CREATE INDEX roles_description ON security."Roles" USING btree (
             description COLLATE pg_catalog."default" ASC NULLS LAST
         ) TABLESPACE pg_default;
@@ -521,7 +521,7 @@ module.exports = {
             CONSTRAINT "Claims_pkey" PRIMARY KEY (id),
             CONSTRAINT "Claims_name_category_key" UNIQUE (name, category)
         ) TABLESPACE pg_default;
-        ALTER TABLE security."Claims" OWNER to ranking;
+        ALTER TABLE security."Claims";
         CREATE INDEX claims_description ON security."Claims" USING btree (
             description COLLATE pg_catalog."default" ASC NULLS LAST
         ) TABLESPACE pg_default;
@@ -535,7 +535,7 @@ module.exports = {
             CONSTRAINT "PlayerClaimMemberships_claimId_fkey" FOREIGN KEY ("claimId") REFERENCES security."Claims" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "PlayerClaimMemberships_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."Players" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE security."PlayerClaimMemberships" OWNER to ranking;
+        ALTER TABLE security."PlayerClaimMemberships";
         CREATE TABLE security."PlayerRoleMemberships" (
             "userId" character varying(255) COLLATE pg_catalog."default" NOT NULL,
             "roleId" character varying(255) COLLATE pg_catalog."default" NOT NULL,
@@ -545,7 +545,7 @@ module.exports = {
             CONSTRAINT "PlayerRoleMemberships_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES security."Roles" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "PlayerRoleMemberships_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."Players" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE security."PlayerRoleMemberships" OWNER to ranking;
+        ALTER TABLE security."PlayerRoleMemberships";
         CREATE TABLE security."RoleClaimMemberships" (
             "roleId" character varying(255) COLLATE pg_catalog."default" NOT NULL,
             "claimId" character varying(255) COLLATE pg_catalog."default" NOT NULL,
@@ -555,7 +555,7 @@ module.exports = {
             CONSTRAINT "RoleClaimMemberships_claimId_fkey" FOREIGN KEY ("claimId") REFERENCES security."Claims" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
             CONSTRAINT "RoleClaimMemberships_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES security."Roles" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
         ) TABLESPACE pg_default;
-        ALTER TABLE security."RoleClaimMemberships" OWNER to ranking;
+        ALTER TABLE security."RoleClaimMemberships";
         DROP TABLE import."Draws" CASCADE;
         DROP TABLE import."SubEvents" CASCADE;
         DROP TABLE public."ClubLocations" CASCADE;
@@ -674,30 +674,30 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface, sequelize) => {
     await queryInterface.sequelize.query(
       `BEGIN;
     CREATE TYPE event."enum_Draws_type" AS ENUM ('KO', 'POULE', 'QUALIFICATION');
-    ALTER TYPE event."enum_Draws_type" OWNER TO ranking;
+    ALTER TYPE event."enum_Draws_type";
     CREATE TYPE event."enum_Events_type" AS ENUM ('COMPETITION', 'TOERNAMENT');
-    ALTER TYPE event."enum_Events_type" OWNER TO ranking;
+    ALTER TYPE event."enum_Events_type";
     CREATE TYPE event."enum_SubEvents_eventType" AS ENUM ('M', 'F', 'MX', 'MINIBAD');
-    ALTER TYPE event."enum_SubEvents_eventType" OWNER TO ranking;
+    ALTER TYPE event."enum_SubEvents_eventType";
     CREATE TYPE event."enum_SubEvents_gameType" AS ENUM ('S', 'D', 'MX');
-    ALTER TYPE event."enum_SubEvents_gameType" OWNER TO ranking;
+    ALTER TYPE event."enum_SubEvents_gameType";
     CREATE TYPE event."enum_SubEvents_levelType" AS ENUM ('PROV', 'LIGA', 'NATIONAAL');
-    ALTER TYPE event."enum_SubEvents_levelType" OWNER TO ranking;
+    ALTER TYPE event."enum_SubEvents_levelType";
     CREATE TYPE import."enum_Draws_type" AS ENUM ('KO', 'POULE', 'QUALIFICATION');
-    ALTER TYPE import."enum_Draws_type" OWNER TO ranking;
+    ALTER TYPE import."enum_Draws_type";
     ALTER TYPE import."enum_Files_type"
     ADD VALUE 'TOERNAMENT'
     AFTER 'TOURNAMENT';
     CREATE TYPE import."enum_SubEvents_eventType" AS ENUM ('M', 'F', 'MX', 'MINIBAD');
-    ALTER TYPE import."enum_SubEvents_eventType" OWNER TO ranking;
+    ALTER TYPE import."enum_SubEvents_eventType";
     CREATE TYPE import."enum_SubEvents_gameType" AS ENUM ('S', 'D', 'MX');
-    ALTER TYPE import."enum_SubEvents_gameType" OWNER TO ranking;
+    ALTER TYPE import."enum_SubEvents_gameType";
     CREATE TYPE import."enum_SubEvents_levelType" AS ENUM ('PROV', 'LIGA', 'NATIONAAL');
-    ALTER TYPE import."enum_SubEvents_levelType" OWNER TO ranking;
+    ALTER TYPE import."enum_SubEvents_levelType";
     DROP TABLE event."DrawCompetitions" CASCADE;
     DROP TABLE event."DrawTournaments" CASCADE;
     CREATE TABLE event."Draws" (
@@ -714,7 +714,7 @@ module.exports = {
         CONSTRAINT "Draws_SubEventId_fkey" FOREIGN KEY ("SubEventId") REFERENCES event."SubEvents" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE
         SET NULL
     ) TABLESPACE pg_default;
-    ALTER TABLE event."Draws" OWNER to ranking;
+    ALTER TABLE event."Draws";
     CREATE INDEX draws_name ON event."Draws" USING btree (name COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
     DROP TABLE event."EncounterCompetitions" CASCADE;
     DROP TABLE event."EventCompetitions" CASCADE;
@@ -732,7 +732,7 @@ module.exports = {
         CONSTRAINT "Events_pkey" PRIMARY KEY (id),
         CONSTRAINT "Events_name_firstDay_key" UNIQUE (name, "firstDay")
     ) TABLESPACE pg_default;
-    ALTER TABLE event."Events" OWNER to ranking;
+    ALTER TABLE event."Events";
     DROP INDEX event.game_players_player_id;
     DROP INDEX event.game_players_game_id;
     ALTER TABLE event."Games" DROP COLUMN "linkId";
@@ -779,7 +779,7 @@ module.exports = {
         ),
         CONSTRAINT "SubEvents_EventId_fkey" FOREIGN KEY ("EventId") REFERENCES event."Events" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
     ) TABLESPACE pg_default;
-    ALTER TABLE event."SubEvents" OWNER to ranking;
+    ALTER TABLE event."SubEvents";
     CREATE INDEX sub_events_name ON event."SubEvents" USING btree (name COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
     DROP TABLE event."TeamSubEventMemberships" CASCADE;
     DROP TYPE event."enum_DrawTournaments_type";
@@ -801,7 +801,7 @@ module.exports = {
         CONSTRAINT "Draws_SubEventId_fkey" FOREIGN KEY ("SubEventId") REFERENCES import."SubEvents" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE
         SET NULL
     ) TABLESPACE pg_default;
-    ALTER TABLE import."Draws" OWNER to ranking;
+    ALTER TABLE import."Draws";
     CREATE INDEX draws_name ON import."Draws" USING btree (name COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
     ALTER TABLE import."Files" DROP COLUMN "tournamentNumber";
     ALTER TABLE import."Files"
@@ -828,7 +828,7 @@ module.exports = {
         ),
         CONSTRAINT "SubEvents_FileId_fkey" FOREIGN KEY ("FileId") REFERENCES import."Files" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
     ) TABLESPACE pg_default;
-    ALTER TABLE import."SubEvents" OWNER to ranking;
+    ALTER TABLE import."SubEvents";
     CREATE INDEX sub_events_name ON import."SubEvents" USING btree (name COLLATE pg_catalog."default" ASC NULLS LAST) TABLESPACE pg_default;
     CREATE TABLE public."ClubLocations" (
         "createdAt" timestamp with time zone NOT NULL,
@@ -840,7 +840,7 @@ module.exports = {
             CONSTRAINT "ClubLocations_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES event."Locations" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE
         SET NULL
     ) TABLESPACE pg_default;
-    ALTER TABLE public."ClubLocations" OWNER to ranking;
+    ALTER TABLE public."ClubLocations";
     DROP INDEX public.player_club_index;
     ALTER TABLE public."Clubs"
     ALTER COLUMN name DROP NOT NULL;
@@ -856,7 +856,7 @@ module.exports = {
         name character varying(255) COLLATE pg_catalog."default" NOT NULL,
         CONSTRAINT "SequelizeMeta_pkey" PRIMARY KEY (name)
     ) TABLESPACE pg_default;
-    ALTER TABLE public."SequelizeMeta" OWNER to ranking;
+    ALTER TABLE public."SequelizeMeta";
     CREATE TABLE public."TeamMemberships" (
         start timestamp with time zone NOT NULL,
         "end" timestamp with time zone,
@@ -870,7 +870,7 @@ module.exports = {
         CONSTRAINT "TeamMemberships_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES public."Players" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT "TeamMemberships_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES public."Teams" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
     ) TABLESPACE pg_default;
-    ALTER TABLE public."TeamMemberships" OWNER to ranking;
+    ALTER TABLE public."TeamMemberships";
     DROP TABLE public."TeamPlayerMemberships" CASCADE;
     ALTER TABLE public."Teams" DROP COLUMN active;
     ALTER TABLE public."Teams" DROP COLUMN "captainId";
@@ -898,7 +898,7 @@ module.exports = {
         CONSTRAINT "GroupSubEvents_GroupId_fkey" FOREIGN KEY ("GroupId") REFERENCES ranking."Groups" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT "GroupSubEvents_SubEventId_fkey" FOREIGN KEY ("SubEventId") REFERENCES event."SubEvents" (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
     ) TABLESPACE pg_default;
-    ALTER TABLE ranking."GroupSubEvents" OWNER to ranking;
+    ALTER TABLE ranking."GroupSubEvents";
     ALTER TABLE ranking."GroupSystems" DROP COLUMN "groupId";
     ALTER TABLE ranking."GroupSystems" DROP COLUMN "systemId";
     ALTER TABLE ranking."GroupSystems"
