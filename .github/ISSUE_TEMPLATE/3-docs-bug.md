@@ -1,6 +1,6 @@
 ---
 name: "📚 Docs or badvlasim issue report"
-about: Report an issue in Badvlasim's documentation or https://badvlasim.westeurope.cloudapp.azure.com/ application
+about: Report an issue in Badvlasim's documentation or https://beta.latomme.org/ application
 
 ---
 <!--🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅🔅
@@ -22,7 +22,7 @@ Existing issues often contain information about workarounds, resolution, or prog
 ## 🔬 Minimal Reproduction
 
 ### What's the affected URL?**
-<!-- ✍️edit:--> https://badvlasim.westeurope.cloudapp.azure.com/...
+<!-- ✍️edit:--> https://beta.latomme.org/...
 
 ### Reproduction Steps**
 <!-- If applicable please list the steps to take to reproduce the issue -->
