@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+  namespace: badvla
+spec:
+  acme:
+    # Staging API
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: glenn@latomme.org
+    privateKeySecretRef:
+      name: account-key-staging
+    solvers:
+    - http01:
+       ingress:
+         class: nginx

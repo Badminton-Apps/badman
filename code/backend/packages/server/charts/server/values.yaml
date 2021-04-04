@@ -27,14 +27,14 @@ postgresql:
       memory: "1Gi"
 
 database:
-  DB_IP: server-postgresql.badvla-simulation
+  DB_IP: server-postgresql.badvla
   DB_DATABASE: ranking
   DB_USER: postgres
   DB_DIALECT: postgres
 
 services:
-  simulate: simulate-simulate.badvla-simulation
-  import: import-import.badvla-simulation
+  simulate: simulate-simulate.badvla
+  import: import-import.badvla
 
 auth0:
   issuer: https://badvlasim.eu.auth0.com

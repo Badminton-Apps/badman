@@ -2,28 +2,32 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: badvla-ingress
+  namespace: badvla
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "badvla-selfsigned"
+    kubernetes.io/ingress.class: 'nginx'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+    cert-manager.io/issuer: 'letsencrypt-staging'
 spec:
   tls:
-  - hosts:
-    - beta.latomme.org
-    secretName: badvla-selfsigned-cert
+    - hosts:
+        - beta.latomme.org
+      secretName: badvla-staging-certificate
   rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: client-client
-            port:
-              number: 80
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: server-server
-            port:
-              number: 80
+    - host: beta.latomme.org
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: client-client
+              port:
+                number: 80
+        - path: /api
+          pathType: Prefix
+          backend:
+            service:
+              name: server-server
+              port:
+                number: 80

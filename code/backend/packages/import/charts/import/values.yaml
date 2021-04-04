@@ -9,7 +9,7 @@ service:
   externalPort: 80
 
 database:
-  DB_IP: server-postgresql.badvla-simulation
+  DB_IP: server-postgresql.badvla
   DB_DATABASE: ranking
   DB_USER: postgres
   DB_DIALECT: postgres
