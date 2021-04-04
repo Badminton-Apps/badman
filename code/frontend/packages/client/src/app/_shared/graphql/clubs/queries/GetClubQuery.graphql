@@ -23,7 +23,7 @@ query GetClubQuery(
       preferredTime
       preferredDay
       active
-      number
+      teamNumber
       players(end: $end) {
         id
         firstName

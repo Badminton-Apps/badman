@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  api: 'https://badvlasim.westeurope.cloudapp.azure.com/api',
+  api: 'https://beta.latomme.org/api',
   apiVersion: 'v1'
 };

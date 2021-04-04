@@ -14,7 +14,7 @@ dotenv.config();
 
 (async () => {
   await startWhenReady(false, false, db => {
-    startServer(db); 
+    startServer(db);
   });
 })();
 

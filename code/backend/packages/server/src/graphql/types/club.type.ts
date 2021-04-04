@@ -27,7 +27,7 @@ export const ClubType = new GraphQLObjectType({
           before: async (findOptions, args, context, info) => {
             findOptions.order = [
               ['type', 'asc'],
-              ['number', 'asc']
+              ['teamNumber', 'asc']
             ];
             return findOptions;
           }
