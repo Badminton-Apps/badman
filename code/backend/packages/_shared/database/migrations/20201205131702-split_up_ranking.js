@@ -8,7 +8,7 @@ module.exports = {
         'SELECT * FROM public."RankingSystems";',
         {transaction: t}
       );
-      
+
       console.log('dropping tables');
       await queryInterface.dropTable('RankingPlaces', {
         transaction: t,
@@ -44,7 +44,7 @@ module.exports = {
       await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_RankingSystems_inactivityUnit";', {
         transaction: t,
       });
-    
+
 
       console.log('Creating schema');
       await queryInterface.createSchema('ranking', { transaction: t });
@@ -228,14 +228,14 @@ module.exports = {
 
       console.log('Adding constrained');
 
-      await queryInterface.addConstraint('Places', {
-        schema: 'ranking',
-        fields: ['rankingDate', 'PlayerId', 'SystemId'],
-        type: 'unique',
-        name: 'compositeIndex',
-        transaction: t
-      });
-    
+      // await queryInterface.addConstraint('Places', {
+      //   schema: 'ranking',
+      //   fields: ['rankingDate', 'PlayerId', 'SystemId'],
+      //   type: 'unique',
+      //   name: 'compositeIndex',
+      //   transaction: t
+      // });
+
 
       console.log('Adding systems back');
       if (rankingSystems && rankingSystems.length > 0){
@@ -279,7 +279,7 @@ module.exports = {
         transaction: t,
         schema: 'public'
       });
-      
+
       await queryInterface.sequelize.query('DROP TYPE IF EXISTS ranking."enum_RankingSystems_startingType";', {
         transaction: t,
       });
