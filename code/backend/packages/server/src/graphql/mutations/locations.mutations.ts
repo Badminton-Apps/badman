@@ -30,7 +30,7 @@ export const addLocationMutation = {
       const [locationDb, created] = await Location.findOrCreate({
         where: {
           name: location.name,
-          ClubId: clubId
+          clubId: clubId
         },
         defaults: location,
         transaction
