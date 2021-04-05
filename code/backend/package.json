@@ -5,8 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "npx kill-port 4000 4001 4002 && npx lerna run --parallel start:watch",
-    "start:inspect": "npx kill-port 4000 4001 4002 && npx lerna run start:watch:inspect --stream",
+    "start": "npx kill-port 4000 4001 4002 4003 && npx lerna run --parallel start:watch",
+    "start:inspect": "npx kill-port 4000 4001 4002 4003 && npx lerna run start:watch:inspect --stream",
     "test": "npx lerna run test --stream -- --passWithNoTests",
     "test:local": "npx lerna run test:local --stream",
     "migrate": "npx lerna run migrate --scope=@badvlasim\\server",

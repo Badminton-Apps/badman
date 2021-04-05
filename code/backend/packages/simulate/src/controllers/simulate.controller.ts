@@ -14,17 +14,17 @@ export class SimulateController extends BaseController {
 
   constructor(
     router: Router,
-    authRouter: Router,
+    private _authMiddleware: any,
     private _databaseService: DataBaseHandler,
     private _calculator: RankingCalculator
   ) {
-    super(router, authRouter);
+    super(router);
     this._intializeRoutes();
   }
 
   private _intializeRoutes() {
-    this.authRouter.post(`${this._path}/reset`, this._resetRunningRankingSystem);
-    this.authRouter.get(`${this._path}/calculate`, this._calculateRanking);
+    this.router.post(`${this._path}/reset`, this._authMiddleware, this._resetRunningRankingSystem);
+    this.router.get(`${this._path}/calculate`, this._authMiddleware, this._calculateRanking);
   }
 
   private _calculateRanking = async (request: AuthenticatedRequest, response: Response) => {

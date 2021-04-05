@@ -1,0 +1,17 @@
+replicaCount: 1
+image:
+  useImagePullSecrets: false
+  pullPolicy: Always
+  repository: ghcr.io/badminton-apps/core/supervisor
+
+service:
+  internalPort: 4000
+  externalPort: 80
+
+auth0:
+  issuer: https://badvlasim.eu.auth0.com
+
+services:
+  simulate: simulate-simulate.badvla
+  import: import-import.badvla
+  server: server-server.badvla

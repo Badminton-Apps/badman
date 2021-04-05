@@ -30,17 +30,14 @@ const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
 
   const router = Router();
-  const authRouter = Router();
-
-  authRouter.use(authService.checkAuth);
 
   const app = new App(
     process.env.PORT,
     [
-      new RankingController(router, authRouter),
-      new SystemController(router, authRouter, databaseService),
-      new UserController(router, authRouter),
-      new RequestLinkController(router, authRouter)
+      new RankingController(router, authService.checkAuth),
+      new SystemController(router, authService.checkAuth, databaseService),
+      new UserController(router, authService.checkAuth),
+      new RequestLinkController(router, authService.checkAuth)
     ],
     [
       {
@@ -49,7 +46,7 @@ const startServer = (databaseService: DataBaseHandler) => {
       },
       {
         from: '/api/v1/simulate',
-        to:  `http://${process.env.SIMULATE_SERVICE}`
+        to: `http://${process.env.SIMULATE_SERVICE}`
       }
     ]
   );
