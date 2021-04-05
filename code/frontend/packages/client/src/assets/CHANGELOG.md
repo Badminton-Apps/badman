@@ -1,3 +1,24 @@
+# [3.6.0](https://github.com/Badminton-Apps/core/compare/v3.5.5...v3.6.0) (2021-04-05)
+
+
+### Bug Fixes
+
+* creating/editing team ([8c4e56d](https://github.com/Badminton-Apps/core/commit/8c4e56d8a67511eb19139df54e84190ce175a9f1))
+* **server:** system query requires id ([c0e6b1f](https://github.com/Badminton-Apps/core/commit/c0e6b1ff936691aad9b900ae995eb35cd5d12b89))
+* redirect to overview after add ([f5ffdc7](https://github.com/Badminton-Apps/core/commit/f5ffdc7cb59b9ba53cd642aa2197b39090adaea6))
+
+
+### Features
+
+* **client:** teams can have up to 8 base players ([5429f14](https://github.com/Badminton-Apps/core/commit/5429f144ccb0fa769ac9ab4d9d995e20d397fd29))
+
+
+### Performance Improvements
+
+* less calculation for team index ([9deedbc](https://github.com/Badminton-Apps/core/commit/9deedbc838bfe39d5fc30c991d033e0eb095f562))
+
+
+
 ## [3.5.5](https://github.com/Badminton-Apps/core/compare/v3.5.4...v3.5.5) (2021-04-05)
 
 
