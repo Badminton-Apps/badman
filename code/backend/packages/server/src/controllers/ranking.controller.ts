@@ -23,8 +23,8 @@ import zipstream from 'zip-stream';
 export class RankingController extends BaseController {
   private _path = '/ranking';
 
-  constructor(router: Router, authRouter: Router) {
-    super(router, authRouter);
+  constructor(router: Router, private _authMiddleware: any) {
+    super(router);
 
     this._intializeRoutes();
   }

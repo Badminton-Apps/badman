@@ -32,20 +32,13 @@ spec:
             value: "true"
           - name: PORT
             value: {{ .Values.service.internalPort | quote}}
-          - name: DB_IP
-            value: {{ .Values.database.DB_IP }}
-          - name: DB_DATABASE
-            value: {{ .Values.database.DB_DATABASE }}
-          - name: DB_USER
-            value: {{ .Values.database.DB_USER }}
-          - name: DB_DIALECT
-            value: {{ .Values.database.DB_DIALECT }}
           - name: AUTH0_ISSUER
             value: {{ .Values.auth0.issuer }}
           - name: LOG_LEVEL
             value: info
-          - name: DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: server-postgresql
-                key: postgresql-password
+          - name: SIMULATE_SERVICE
+            value: {{ .Values.services.simulate }}
+          - name: IMPORT_SERVICE
+            value: {{ .Values.services.import }}
+          - name: SERVER_SERVICE
+            value: {{ .Values.services.server }}

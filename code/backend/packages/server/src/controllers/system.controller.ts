@@ -1,20 +1,21 @@
-import { AuthenticatedRequest, BaseController, DataBaseHandler, RankingSystem } from '@badvlasim/shared';
+import {
+  AuthenticatedRequest,
+  BaseController,
+  DataBaseHandler,
+  RankingSystem
+} from '@badvlasim/shared';
 import { Request, Response, Router } from 'express';
 
 export class SystemController extends BaseController {
   private _path = '/systems';
 
-  constructor(
-    router: Router,
-    authRouter: Router,
-    private _databaseService: DataBaseHandler
-  ) {
-    super(router, authRouter);
+  constructor(router: Router, private _authMiddleware, private _databaseService: DataBaseHandler) {
+    super(router);
     this._intializeRoutes();
   }
 
   private _intializeRoutes() {
-    this.authRouter.post(`${this._path}/:id/make-primary`, this._makePrimary);
+    this.router.post(`${this._path}/:id/make-primary`, this._authMiddleware, this._makePrimary);
 
     this.router.get(`${this._path}/:id/caps`, this._getRankingSystemCaps);
   }
@@ -41,7 +42,7 @@ export class SystemController extends BaseController {
       return;
     }
     const system = await RankingSystem.findByPk(request.params.id);
-  
+
     if (!system) {
       response.status(404);
       return;
@@ -51,7 +52,6 @@ export class SystemController extends BaseController {
 
     response.json(result);
   };
-
 
   private _makePrimary = async (request: AuthenticatedRequest, response: Response) => {
     if (!request.user.hasAnyPermission(['make-primary:ranking'])) {
