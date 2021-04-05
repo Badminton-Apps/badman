@@ -6,7 +6,7 @@ export class Team {
   name: string;
   abbreviation: string;
   type: string;
-  number: number;
+  teamNumber: number;
   active: boolean;
   preferredTime: string;
   preferredDay:
@@ -28,7 +28,7 @@ export class Team {
   constructor(args?: Partial<Team>) {
     this.id = args?.id;
     this.name = args?.name;
-    this.number = args?.number;
+    this.teamNumber = args?.teamNumber;
     this.abbreviation = args?.abbreviation;
     this.type = args?.type;
     this.active = args?.active;

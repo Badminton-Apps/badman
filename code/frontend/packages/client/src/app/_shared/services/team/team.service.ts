@@ -33,7 +33,7 @@ export class TeamService {
       .pipe(map((x) => new Team(x.data.team)));
   }
 
-  addTeam(team: Team, clubId: string) {
+  addTeam(team: Partial<Team>, clubId: string) {
     return this.apollo
       .mutate<{ addTeam: Team }>({
         mutation: addTeamMutation,
