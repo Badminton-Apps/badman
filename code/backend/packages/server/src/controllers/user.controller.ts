@@ -12,14 +12,14 @@ import { Response, Router } from 'express';
 export class UserController extends BaseController {
   private _path = '/user';
 
-  constructor(router: Router, authRouter: Router) {
-    super(router, authRouter);
+  constructor(router: Router, private _authMiddleware) {
+    super(router);
     this._intializeRoutes();
   }
 
   private _intializeRoutes() {
-    this.authRouter.get(`${this._path}/permissions`, this._permissions);
-    this.authRouter.get(`${this._path}/profile`, this._profile);
+    this.router.get(`${this._path}/permissions`, this._authMiddleware, this._permissions);
+    this.router.get(`${this._path}/profile`, this._authMiddleware, this._profile);
     this.router.get(`${this._path}/test`, this._testMail);
   }
 

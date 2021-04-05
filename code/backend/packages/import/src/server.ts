@@ -22,13 +22,11 @@ const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
 
   const router = Router();
-  const authRouter = Router();
   const converter = new Convertor();
 
-  authRouter.use(authService.checkAuth);
 
   const app = new App(process.env.PORT, [
-    new ImportController(router, authRouter, converter)
+    new ImportController(router, authService.checkAuth, converter)
   ]);
   app.listen();
 };
