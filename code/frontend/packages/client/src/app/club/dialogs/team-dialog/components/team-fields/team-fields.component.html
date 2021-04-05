@@ -49,6 +49,9 @@
     <app-player-search [player]="this.team.captain" [allowCreation]="true" [club]="this.club" (onSelectPlayer)="this.selectedCaptain($event)" [clearOnSelection]="false"></app-player-search>
   </div>
 
+
+</form>
+<form [formGroup]="this.captinForm">
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
       <mat-label>Email</mat-label>
@@ -61,3 +64,7 @@
     </mat-form-field>
   </div>
 </form>
+
+<button mat-raised-button color="primary" *ngIf="!this.team.id" [disabled]="!this.teamForm?.valid" (click)="this.teamAdded()">
+  Create
+</button>

@@ -18,17 +18,18 @@ import { merge } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamFieldsComponent implements OnInit {
+  @Output() onTeamAdded = new EventEmitter<Partial<Team>>();
+  @Output() onTeamUpdated = new EventEmitter<Partial<Team>>();
+  @Output() onCaptainUpdated = new EventEmitter<Partial<Player>>();
+
   @Input()
   team: Team = {} as Team;
 
   @Input()
   club: Club;
 
-  @Output() updatedTeam = new EventEmitter<Partial<Team>>();
-
   teamForm: FormGroup;
-
-  constructor(private playerService: PlayerService) {}
+  captinForm: FormGroup;
 
   ngOnInit() {
     const nameControl = new FormControl(
@@ -43,6 +44,19 @@ export class TeamFieldsComponent implements OnInit {
     const typeControl = new FormControl(this.team.type, Validators.required);
     const preferredTimeControl = new FormControl(this.team.preferredTime);
     const preferredDayControl = new FormControl(this.team.preferredDay);
+    const captainIdControl = new FormControl(
+      this.team.captain?.id,
+      Validators.required
+    );
+
+    const phoneControl = new FormControl(
+      this.team.captain?.phone,
+      Validators.required
+    );
+    const emailControl = new FormControl(
+      this.team.captain?.email,
+      Validators.required
+    );
 
     this.teamForm = new FormGroup({
       name: nameControl,
@@ -50,22 +64,34 @@ export class TeamFieldsComponent implements OnInit {
       abbreviation: abbrControl,
       preferredTime: preferredTimeControl,
       preferredDay: preferredDayControl,
-      captainId: new FormControl(this.team.captain?.id, Validators.required),
-      phone: new FormControl(this.team.captain?.phone, Validators.required),
-      email: new FormControl(this.team.captain?.email, Validators.required),
+      captainId: captainIdControl,
     });
 
+    this.captinForm = new FormGroup({
+      id: new FormControl(this.team.captain?.id),
+      phone: phoneControl,
+      email: emailControl,
+    });
+
+    this.captinForm.valueChanges
+      .pipe(debounceTime(600))
+      .subscribe(async (e) => {
+        if (this.captinForm.valid) {
+          if (this.captinForm.dirty) {
+            this.onCaptainUpdated.next(this.captinForm.value);
+          }
+
+          if (this.teamForm.value.captainId != this.captinForm.value.id) {
+            this.teamForm.patchValue({
+              captainId: this.captinForm.value.id,
+            });
+          }
+        }
+      });
+
     this.teamForm.valueChanges.pipe(debounceTime(600)).subscribe(async (e) => {
-      console.log(this.teamForm.valid, this.teamForm.value);
-
-      if (this.teamForm.valid) {
-        await this.playerService.updatePlayer({
-          id: e?.captainId,
-          phone: e?.phone,
-          email: e?.email,
-        }).toPromise();
-
-        this.updatedTeam.next({
+      if (this.teamForm.valid && this.team?.id != null) {
+        this.onTeamUpdated.next({
           id: this.team?.id,
           type: e?.type,
           abbreviation: e?.abbreviation,
@@ -81,7 +107,11 @@ export class TeamFieldsComponent implements OnInit {
         if (typeControl.valid) {
           const number = this.club.teams.reduce(
             (a, b) =>
-              b.type == typeControl.value ? (a > b.number ? a : b.number) : a,
+              b.type == typeControl.value
+                ? a > b.teamNumber
+                  ? a
+                  : b.teamNumber
+                : a,
             0
           );
 
@@ -121,10 +151,14 @@ export class TeamFieldsComponent implements OnInit {
   }
 
   async selectedCaptain(player: Player) {
-    this.teamForm.patchValue({
+    this.captinForm.patchValue({
       phone: player.phone,
       email: player.email,
-      captainId: player.id,
+      id: player.id,
     });
+  }
+
+  teamAdded() {
+    this.onTeamAdded.next(this.teamForm.value);
   }
 }
