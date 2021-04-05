@@ -73,6 +73,13 @@ const startServer = (databaseService: DataBaseHandler) => {
         };
         return { req: grahpReq, res };
       } else {
+        for (const check of authService.checkAuth) {
+          await new Promise((resolve, reject) => {
+            check(req, res, () => {
+              resolve(null);
+            });
+          });
+        }
         return { req, res };
       }
     },
