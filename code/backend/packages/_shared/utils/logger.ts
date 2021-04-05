@@ -84,7 +84,7 @@ if (process.env.LOG_LEVEL === 'None') {
 
   tr.push(
     new transports.Console({
-      format: combine(colorize(), timestamp(), logLikeFormat(500)),
+      format: combine(colorize(), timestamp(), logLikeFormat(1000)),
       level: process.env.production === 'true' ? 'info' : 'debug'
     })
   );
