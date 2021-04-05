@@ -13,7 +13,7 @@ export const systemQuery = {
   args: {
     id: {
       description: 'Id of the system',
-      type: new GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLID)
     }
   },
   resolve: resolver(RankingSystem)
