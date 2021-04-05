@@ -17,6 +17,6 @@ export class AddRankingSystemComponent {
 
   async add(system: RankingSystem) {
     await this.systemSerice.addSystem(system).toPromise();
-    await this.router.navigate(['admin', 'calculate-simulation']);
+    await this.router.navigate(['admin', 'ranking']);
   }
 }
