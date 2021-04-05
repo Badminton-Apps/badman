@@ -61,8 +61,6 @@ export class AssignTeamComponent implements OnInit {
     event: CdkDragDrop<Team[], Team[]>,
     subEvent: CompetitionSubEvent
   ): void {
-    console.log(event.container);
-
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
