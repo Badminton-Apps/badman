@@ -44,6 +44,7 @@ export class AssignTeamComponent implements OnInit {
   }>();
 
   issues = {};
+  warnings = {};
 
   ids = [];
 
@@ -107,31 +108,73 @@ export class AssignTeamComponent implements OnInit {
       base: [],
       hasIssues: false,
       message: '',
+      class: '',
     };
-    for (const player of team.players.filter((p) => p.base)) {
+    const warnings = {
+      base: [],
+      level: [],
+      hasIssues: false,
+    };
+
+
+    for (const player of team.players) {
       if (player?.rankingPlaces && player?.rankingPlaces?.length > 0) {
         const rankingPlace = player?.rankingPlaces[0];
-        if (rankingPlace.single < subEvent.maxLevel) {
-          issues.hasIssues = true;
-          issues.level.push(
-            `${player.fullName} is ${rankingPlace.single} in single while max ${subEvent.maxLevel} is allowed`
-          );
-        }
-        if (rankingPlace.double < subEvent.maxLevel) {
-          issues.hasIssues = true;
-          issues.level.push(
-            `${player.fullName} is ${rankingPlace.double} in double while max ${subEvent.maxLevel} is allowed`
-          );
-        }
-        if (subEvent.gameType == 'MX') {
-          if (rankingPlace.mix < subEvent.maxLevel) {
+        if (player.base) {
+          if (rankingPlace.single < subEvent.maxLevel) {
             issues.hasIssues = true;
             issues.level.push(
-              `${player.fullName} is ${rankingPlace.mix} in mix while max ${subEvent.maxLevel} is allowed`
+              `${player.fullName} not allowed (single: ${rankingPlace.single}, max ${subEvent.maxLevel})`
             );
+          }
+          if (rankingPlace.double < subEvent.maxLevel) {
+            issues.hasIssues = true;
+            issues.level.push(
+              `${player.fullName} not allowed (double: ${rankingPlace.double}, max ${subEvent.maxLevel})`
+            );
+          }
+          if (subEvent.gameType == 'MX') {
+            if (rankingPlace.mix < subEvent.maxLevel) {
+              issues.hasIssues = true;
+              issues.level.push(
+                `${player.fullName} not allowed (mix: ${rankingPlace.mix}, max ${subEvent.maxLevel})`
+              );
+            }
+          }
+        } else {
+          if (rankingPlace.single < subEvent.maxLevel) {
+            warnings.hasIssues = true;
+            warnings.level.push(
+              `${player.fullName} can't play (single: ${rankingPlace.single}, max: ${subEvent.maxLevel})`
+            );
+          }
+          if (rankingPlace.double < subEvent.maxLevel) {
+            warnings.hasIssues = true;
+            warnings.level.push(
+              `${player.fullName} can't play (double: ${rankingPlace.double} max: ${subEvent.maxLevel})`
+            );
+          }
+          if (subEvent.gameType == 'MX') {
+            if (rankingPlace.mix < subEvent.maxLevel) {
+              warnings.hasIssues = true;
+              warnings.level.push(
+                `${player.fullName} can't play (mix: ${rankingPlace.mix} max: ${subEvent.maxLevel})`
+              );
+            }
           }
         }
       }
+    }
+
+    const bestIndex = team.players
+    .map((r) => r.index)
+    .sort((a, b) => a - b)
+    .slice(0, 4)
+    .reduce((a, b) => a + b, 0);
+
+    if (bestIndex < subEvent.minBaseIndex){
+      warnings.hasIssues = true;
+      warnings.base.push('Best 4 players can\'t play together');
     }
 
     if (team.baseIndex < subEvent.minBaseIndex) {
@@ -146,6 +189,24 @@ export class AssignTeamComponent implements OnInit {
       }
       issues.message += issues.level.join('\n\r');
     }
+
+    if (issues.hasIssues && warnings.hasIssues) {
+      issues.message += '\n\r';
+    }
+
+    if (warnings.hasIssues) {
+      issues.message += warnings.base.join('\n\r');
+      if (warnings.base.length > 0 && warnings.level.length > 0) {
+        issues.message += '\n\r';
+      }
+      issues.message += warnings.level.join('\n\r');
+    }
+
+    issues.class = issues.hasIssues
+      ? 'issues'
+      : warnings.hasIssues
+      ? 'warnings'
+      : '';
 
     this.issues[team.id] = issues;
   }
