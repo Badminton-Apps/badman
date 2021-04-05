@@ -38,7 +38,7 @@ describe('Club Membership', () => {
     transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, {transaction});
     await transaction.commit();
 
     // Assert
@@ -65,8 +65,8 @@ describe('Club Membership', () => {
     transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
-    await service['addToClubs'](playerIds, moment([2001, 8, 1]), club1.id, transaction);
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, {transaction});
+    await service['addToClubs'](playerIds, moment([2001, 8, 1]), club1.id, {transaction});
     await transaction.commit();
 
     // Assert
@@ -95,8 +95,8 @@ describe('Club Membership', () => {
     transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
-    await service['addToClubs'](playerIds, moment([2002, 8, 1]), club1.id, transaction);
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, {transaction});
+    await service['addToClubs'](playerIds, moment([2002, 8, 1]), club1.id, {transaction});
     await transaction.commit();
 
     // Assert
@@ -127,9 +127,9 @@ describe('Club Membership', () => {
     transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
-    await service['addToClubs'](playerIds, moment([2001, 8, 1]), club2.id, transaction);
-    await service['addToClubs'](playerIds, moment([2002, 8, 1]), club1.id, transaction);
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, {transaction});
+    await service['addToClubs'](playerIds, moment([2001, 8, 1]), club2.id, {transaction});
+    await service['addToClubs'](playerIds, moment([2002, 8, 1]), club1.id, {transaction});
     await transaction.commit();
 
     // Assert
@@ -165,7 +165,7 @@ describe('Club Membership', () => {
     transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, transaction);
+    await service['addToClubs'](playerIds, moment([2000, 8, 1]), club1.id, {transaction});
     await transaction.commit();
 
     // Assert
