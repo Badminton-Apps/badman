@@ -16,13 +16,20 @@ export const addRoleMutation = {
     }
   },
   resolve: async (findOptions, { role, clubId }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:role'])) {
-      logger.warn('User tried something it should\'t have done', {
+    if (
+      context?.req?.user == null ||
+      !context.req.user.hasAnyPermission([
+        clubId + '_add:role',
+        clubId + '_edit:club',
+        'edit-any:club'
+      ])
+    ) {
+      logger.warn("User tried something it should't have done", {
         required: {
-          anyClaim: ['add:role']
+          anyClaim: [clubId + '_add:role', clubId + '_edit:club', 'edit-any:club']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -32,13 +39,13 @@ export const addRoleMutation = {
     try {
       const roleDb = await new Role(role).save({ transaction });
 
-      await roleDb.setClub(clubId, {transaction});
+      await roleDb.setClub(clubId, { transaction });
       await roleDb.setClaims(
         role?.claims?.map(c => c.id),
         { transaction }
       );
 
-      await  transaction.commit();
+      await transaction.commit();
       return roleDb;
     } catch (e) {
       logger.warn('rollback', e);
@@ -61,28 +68,34 @@ export const addPlayerToRoleMutation = {
     }
   },
   resolve: async (findOptions, { roleId, playerId }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
-      logger.warn('User tried something it should\'t have done', {
-        required: {
-          anyClaim: ['edit:role']
-        },
-        received: context?.req?.user?.permissions
-      })
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbRole = await Role.findByPk(roleId, {
-        transaction
-      });
+      const dbRole = await Role.findByPk(roleId);
 
       if (!dbRole) {
         throw new ApiError({
           code: 404,
           message: 'Role not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([
+          dbRole.clubId + '_edit:role',
+          dbRole.clubId + '_edit:club',
+          'edit-any:club'
+        ])
+      ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [dbRole.clubId + '_edit:role', dbRole.clubId + '_edit:club', 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
         });
       }
 
@@ -124,28 +137,34 @@ export const removePlayerFromRoleMutation = {
     }
   },
   resolve: async (findOptions, { roleId, playerId }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
-      logger.warn('User tried something it should\'t have done', {
-        required: {
-          anyClaim: ['edit:role']
-        },
-        received: context?.req?.user?.permissions
-      })
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbRole = await Role.findByPk(roleId, {
-        transaction
-      });
+      const dbRole = await Role.findByPk(roleId);
 
       if (!dbRole) {
         throw new ApiError({
           code: 404,
           message: 'Role not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([
+          dbRole.clubId + '_edit:role',
+          dbRole.clubId + '_edit:club',
+          'edit-any:club'
+        ])
+      ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [dbRole.clubId + '_edit:role', dbRole.clubId + '_edit:club', 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
         });
       }
 
@@ -183,28 +202,34 @@ export const updateRoleMutation = {
     }
   },
   resolve: async (findOptions, { role }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
-      logger.warn('User tried something it should\'t have done', {
-        required: {
-          anyClaim: ['edit:role']
-        },
-        received: context?.req?.user?.permissions
-      })
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbRole = await Role.findByPk(role.id, {
-        transaction
-      });
+      const dbRole = await Role.findByPk(role.id);
 
       if (!dbRole) {
         throw new ApiError({
           code: 404,
           message: 'Role not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([
+          dbRole.clubId + '_edit:role',
+          dbRole.clubId + '_edit:club',
+          'edit-any:club'
+        ])
+      ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [dbRole.clubId + '_edit:role', dbRole.clubId + '_edit:club', 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
         });
       }
 
