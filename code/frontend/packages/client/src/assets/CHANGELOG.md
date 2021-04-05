@@ -1,3 +1,12 @@
+## [3.7.1](https://github.com/Badminton-Apps/core/compare/v3.7.0...v3.7.1) (2021-04-05)
+
+
+### Bug Fixes
+
+* role permissions ([43d2510](https://github.com/Badminton-Apps/core/commit/43d25107131075175444900a58fa32bbbd5790b0))
+
+
+
 # [3.7.0](https://github.com/Badminton-Apps/core/compare/v3.6.0...v3.7.0) (2021-04-05)
 
 
