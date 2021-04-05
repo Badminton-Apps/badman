@@ -5,29 +5,12 @@
     <div class="name">{{ subEvent.name }}</div>
 
     <div class="min-max">
-      <small>Max {{ subEvent.maxLevel }}</small
-      >&nbsp;
-      <small
-        >Basis: {{ subEvent.minBaseIndex }}-{{ subEvent.maxBaseIndex }}</small
-      >
+      <small>Max {{ subEvent.maxLevel }}</small>&nbsp;
+      <small>Basis: {{ subEvent.minBaseIndex }}-{{ subEvent.maxBaseIndex }}</small>
     </div>
   </div>
-  <div
-    class="team-list-target"
-    id="{{ subEvent.id }}"
-    cdkDropList
-    [cdkDropListConnectedTo]="ids"
-    [cdkDropListData]="subEvent.teams"
-    (cdkDropListDropped)="drop($event, subEvent)"
-  >
-    <div
-      class="team-box"
-      *ngFor="let team of subEvent.teams"
-      cdkDrag
-      [ngClass]="{ issues: issues[team.id]?.hasIssues }"
-      [matTooltip]="issues[team.id]?.message"
-      [matTooltipDisabled]="!issues[team.id]?.hasIssues"
-    >
+  <div class="team-list-target" id="{{ subEvent.id }}" cdkDropList [cdkDropListConnectedTo]="ids" [cdkDropListData]="subEvent.teams" (cdkDropListDropped)="drop($event, subEvent)">
+    <div class="team-box" *ngFor="let team of subEvent.teams" cdkDrag [ngClass]="issues[team.id]?.class" [matTooltip]="issues[team.id]?.message">
       <div>
         <div class="team-description">
           {{ team.name }} <small>({{ team.baseIndex }})</small>
@@ -37,7 +20,9 @@
         </div>
       </div>
 
-      <button mat-icon-button (click)="this.editTeam(team, subEvent)"><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button (click)="this.editTeam(team, subEvent)">
+        <mat-icon>edit</mat-icon>
+      </button>
     </div>
   </div>
 </div>

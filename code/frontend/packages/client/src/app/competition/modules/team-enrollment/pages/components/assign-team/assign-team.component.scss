@@ -72,7 +72,11 @@
   }
 
   &.issues {
-    background: mat-color($client-angular-warn, lighter);
+    background: mat-color($client-angular-warn, A200);
+  }
+
+  &.warnings {
+    background: mat-color($client-angular-accent, 50);
   }
 
   .team-encounter {
