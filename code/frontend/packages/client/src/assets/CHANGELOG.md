@@ -1,3 +1,12 @@
+## [3.5.1](https://github.com/Badminton-Apps/core/compare/v3.5.0...v3.5.1) (2021-04-05)
+
+
+### Bug Fixes
+
+* log logged in user ([a9f9484](https://github.com/Badminton-Apps/core/commit/a9f9484cb44b181a808184352484df0ae2443f0b))
+
+
+
 # 3.5.0 (2021-04-05)
 
 
