@@ -25,7 +25,7 @@ export class LocationFieldsComponent implements OnInit {
   @Input()
   club: Club;
 
-  @Output() save = new EventEmitter<Location>();
+  @Output() onLocationUpdate = new EventEmitter<Location>();
 
   locationForm: FormGroup;
   adressForm: FormControl;
@@ -57,9 +57,8 @@ export class LocationFieldsComponent implements OnInit {
       streetNumber: streetNumberControl,
     });
     this.locationForm.valueChanges.pipe(debounceTime(600)).subscribe((e) => {
-      console.log('Update', e, this.locationForm.valid);
       if (this.locationForm.valid) {
-        this.save.next({ id: this.location?.id, ...e });
+        this.onLocationUpdate.next({ id: this.location?.id, ...e });
       }
     });
 
@@ -73,8 +72,7 @@ export class LocationFieldsComponent implements OnInit {
     });
 
     this.adressForm.valueChanges.subscribe((r) => {
-      console.log(r);
-      this.locationForm.setValue({
+      this.locationForm.patchValue({
         ...this.locationForm.value,
         name: r.name,
         city: r.sublocality,
