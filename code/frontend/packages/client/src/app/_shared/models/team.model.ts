@@ -64,25 +64,9 @@ export class Team {
     const basePlayers = this.players.filter((r) => r.base);
     const missingPlayers = basePlayers.length >= 4 ? 0 : 4 - basePlayers.length;
 
-    if (this.type == 'MX') {
-      this.baseIndex = basePlayers.reduce((acc, cur) => {
-        const rankingPlace = cur.rankingPlaces[0] ?? {
-          single: 12,
-          double: 12,
-          mix: 12,
-        };
-        return (
-          acc + rankingPlace.single + rankingPlace.double + rankingPlace.mix
-        );
-      }, missingPlayers * 36);
-    } else {
-      this.baseIndex = basePlayers.reduce((acc, cur) => {
-        const rankingPlace = cur.rankingPlaces[0] ?? {
-          single: 12,
-          double: 12,
-        };
-        return acc + rankingPlace.single + rankingPlace.double;
-      }, missingPlayers * 24);
-    }
+    const indexes = basePlayers.sort();
+    this.baseIndex = indexes.slice(0, 4).reduce((acc, cur) => {
+      return acc + cur.index;
+    }, missingPlayers * (this.type == 'MX' ? 36 : 24));
   }
 }
