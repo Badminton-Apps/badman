@@ -164,7 +164,6 @@ export class OverviewComponent {
   }
 
   filterYear(year: number) {
-    console.log(year);
     this.filterChange$.next({
       ...this.filterChange$.value,
       startYear: year,

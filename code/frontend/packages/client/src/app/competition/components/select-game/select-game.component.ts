@@ -63,9 +63,6 @@ export class SelectGameComponent implements OnInit {
   }
 
   private _filter(value?: CompetitionEncounter): CompetitionEncounter[] {
-    console.log('options:', this.options);
-    console.log('value:', value);
-
     if (value == null) {
       return this.options;
     }
