@@ -1,22 +1,24 @@
-import { AuthenticatedRequest, BaseController, logger, Player, RequestLink } from '@badvlasim/shared';
+import {
+  AuthenticatedRequest,
+  BaseController,
+  logger,
+  Player,
+  RequestLink
+} from '@badvlasim/shared';
 import { Response, Router } from 'express';
 
 export class RequestLinkController extends BaseController {
-
   private _path = '/request-link';
-  constructor(
-    router: Router,
-    authRouter: Router,
-  ) {
-    super(router, authRouter);
+  constructor(router: Router, private _authMiddleware) {
+    super(router);
 
     this._intializeRoutes();
   }
 
   private _intializeRoutes() {
-    this.authRouter.post(`${this._path}/:playerId`, this._requestLink);
-    this.authRouter.get(`${this._path}`, this._requestedLinks);
-    this.authRouter.put(`${this._path}/:accept/:ids`, this._linkAccount);
+    this.router.get(`${this._path}`, this._authMiddleware, this._requestedLinks);
+    this.router.post(`${this._path}/:playerId`, this._authMiddleware, this._requestLink);
+    this.router.put(`${this._path}/:accept/:ids`, this._authMiddleware, this._linkAccount);
   }
 
   private _requestLink = async (request: AuthenticatedRequest, response: Response) => {

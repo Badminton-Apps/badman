@@ -29,17 +29,17 @@ export class ImportController extends BaseController {
 
   constructor(
     router: Router,
-    authRouter: Router,
+    private _authMiddleware: any,
     private _converter: Convertor
   ) {
-    super(router, authRouter);
+    super(router);
 
     this._intializeRoutes();
   }
 
   private _intializeRoutes() {
-    this.authRouter.post(`${this._path}/file`, this._upload.array('upload'), this._import);
-    this.authRouter.put(`${this._path}/start/:id/:eventId?`, this._startImport);
+    this.router.post(`${this._path}/file`, this._authMiddleware, this._upload.array('upload'), this._import);
+    this.router.put(`${this._path}/start/:id/:eventId?`, this._authMiddleware, this._startImport);
   }
 
   private _import = async (request: AuthenticatedRequest, response: Response) => {

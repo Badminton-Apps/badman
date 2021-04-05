@@ -87,7 +87,7 @@ jobs:
     needs: publish-github
     strategy:
       matrix:
-        pacakge: ['server', 'import', 'simulate']
+        pacakge: ['server', 'import', 'simulate', 'supervisor']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

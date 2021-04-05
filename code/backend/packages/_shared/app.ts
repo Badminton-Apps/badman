@@ -2,9 +2,10 @@
 import { logger } from '@badvlasim/shared';
 import cors from 'cors';
 import moment from 'moment';
-import express, { Application, json } from 'express';
+import express, { Application, json, Router } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { BaseController } from './models';
+import { StatusController } from './controllers';
 
 moment.suppressDeprecationWarnings = true;
 
@@ -50,6 +51,8 @@ export class App {
   }
 
   private _initializeControllers(controllers: BaseController[]) {
+    this.app.use('/api/v1', new StatusController().router);
+
     controllers.forEach(controller => {
       try {
         logger.debug(
@@ -58,16 +61,12 @@ export class App {
           controller.constructor.name
         );
         this.app.use('/api/v1', controller.router);
-
-        // if auth routes get those
-        if (controller.authRouter) {
-          this.app.use('/api/v1', controller.authRouter);
-        }
       } catch (error) {
         logger.error(`Error setting up ${controller.constructor.name}`, error);
         throw error;
       }
     });
+
   }
 
   private _initializeProxies(proxies) {
