@@ -1,3 +1,17 @@
+# [3.8.0](https://github.com/Badminton-Apps/core/compare/v3.7.1...v3.8.0) (2021-04-05)
+
+
+### Bug Fixes
+
+* server tests ([1789323](https://github.com/Badminton-Apps/core/commit/1789323a8a467252f2cc6dfa2ed5f4fe4024f7ec))
+
+
+### Features
+
+* **supervisor:** status controller ([3f2dd23](https://github.com/Badminton-Apps/core/commit/3f2dd23fc92fd415a8cac5484da2e61982a04e12))
+
+
+
 ## [3.7.1](https://github.com/Badminton-Apps/core/compare/v3.7.0...v3.7.1) (2021-04-05)
 
 
