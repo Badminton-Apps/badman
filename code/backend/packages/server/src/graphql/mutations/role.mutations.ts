@@ -17,6 +17,12 @@ export const addRoleMutation = {
   },
   resolve: async (findOptions, { role, clubId }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:role'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['add:role']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -56,6 +62,12 @@ export const addPlayerToRoleMutation = {
   },
   resolve: async (findOptions, { roleId, playerId }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['edit:role']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -113,6 +125,12 @@ export const removePlayerFromRoleMutation = {
   },
   resolve: async (findOptions, { roleId, playerId }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['edit:role']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -166,6 +184,12 @@ export const updateRoleMutation = {
   },
   resolve: async (findOptions, { role }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['edit:role']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "

@@ -14,6 +14,12 @@ export const addPlayerMutation = {
   },
   resolve: async (findOptions, { player }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:player'])) {
+      logger.warn("User tried something it should't have done", {
+        required: {
+          anyClaim: ['add:player']
+        },
+        received: context?.req?.user?.permissions
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -46,6 +52,12 @@ export const updatePlayerMutation = {
       context?.req?.user == null ||
       !context.req.user.hasAnyPermission([`${player.id}_edit:player`, 'edit-any:player'])
     ) {
+      logger.warn("User tried something it should't have done", {
+        required: {
+          anyClaim: [`${player.id}_edit:player`, 'edit-any:player']
+        },
+        received: context?.req?.user?.permissions
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -58,7 +70,7 @@ export const updatePlayerMutation = {
         transaction
       });
 
-      const dbPlayer = await Player.findByPk(player.id, {transaction});
+      const dbPlayer = await Player.findByPk(player.id, { transaction });
       await transaction.commit();
       return dbPlayer;
     } catch (e) {
@@ -79,6 +91,12 @@ export const updatePlayerRankingMutation = {
   },
   resolve: async (findOptions, { rankingPlace }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit-any:player'])) {
+      logger.warn("User tried something it should't have done", {
+        required: {
+          anyClaim: ['edit-any:player']
+        },
+        received: context?.req?.user?.permissions
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "

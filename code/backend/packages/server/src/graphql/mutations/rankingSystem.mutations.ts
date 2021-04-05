@@ -21,9 +21,15 @@ export const addRankingSystemMutation = {
   },
   resolve: async (findOptions, { rankingSystem: rankingSystemInput }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:ranking'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['add:ranking']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
-        message: "You don't have permission to do this " 
+        message: "You don't have permission to do this "
       });
     }
 
@@ -33,8 +39,8 @@ export const addRankingSystemMutation = {
       const eventDb = await RankingSystem.create(rankingSystem, { transaction });
       logger.debug('Event', eventDb.toJSON())
       logger.debug('Got groups', groups.map(r => r.id))
-  
-    
+
+
       for (const group of groups) {
         const dbGroup = await RankingSystemGroup.findByPk(group.id);
         await eventDb.addGroup(dbGroup, { transaction });
@@ -62,6 +68,12 @@ export const updateRankingSystemMutation = {
   },
   resolve: async (findOptions, { rankingSystem }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:ranking'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['edit:ranking']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
