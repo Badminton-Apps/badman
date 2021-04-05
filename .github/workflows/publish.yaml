@@ -74,6 +74,11 @@ jobs:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
           release_name: ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog  }}
+      - name: Set output vars
+        id: sha
+        run: |
+          sha_new=$(git rev-parse HEAD)
+          echo "::set-output name=new_sha::$sha_new"      
   docker-backend:
     needs: publish-github
     strategy:
@@ -84,10 +89,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          ref: ${{ needs.publish-github.outputs.new_sha }}
           fetch-depth: 0
-      - name: 'Get Previous tag'
-        id: previoustag
-        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
       - name: Docker meta
         id: meta
         uses: crazy-max/ghaction-docker-meta@v2
@@ -95,7 +98,7 @@ jobs:
           images: |
             ghcr.io/badminton-apps/core/${{ matrix.pacakge }}
           tags: |
-            type=semver,pattern={{version}},value=${{steps.previoustag.outputs.tag}}
+            type=semver,pattern={{version}},value=${{needs.publish-github.outputs.outputs.new_tag}}
             type=sha
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -121,7 +124,7 @@ jobs:
       - name: Package
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm package --app-version  ${{ steps.meta.outputs.version }} code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/ -d code/backend/packages/${{ matrix.pacakge }}
+          exec: helm package --app-version ${{ needs.publish-github.outputs.new_version }} code/backend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/ -d code/backend/packages/${{ matrix.pacakge }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Upgrade
         uses: WyriHaximus/github-action-helm3@v2
@@ -138,6 +141,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          ref: ${{ needs.publish-github.outputs.new_sha }}
           fetch-depth: 0
       - name: 'Get Previous tag'
         id: previoustag
@@ -149,7 +153,7 @@ jobs:
           images: |
             ghcr.io/badminton-apps/core/${{ matrix.pacakge }}
           tags: |
-            type=semver,pattern={{version}},value=${{steps.previoustag.outputs.tag}}
+            type=semver,pattern={{version}},value=${{needs.publish-github.outputs.outputs.new_tag}}
             type=sha
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -170,7 +174,7 @@ jobs:
       - name: Package
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm package --app-version ${{ steps.meta.outputs.version }} code/frontend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/ -d code/backend/packages/${{ matrix.pacakge }}
+          exec: helm package --app-version ${{ needs.publish-github.outputs.new_version }} code/frontend/packages/${{ matrix.pacakge }}/charts/${{ matrix.pacakge }}/ -d code/backend/packages/${{ matrix.pacakge }}
           kubeconfig: '${{ secrets.KUBECONFIG }}'
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
