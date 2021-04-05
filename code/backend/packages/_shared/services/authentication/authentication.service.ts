@@ -41,11 +41,6 @@ export class AuthenticationSercice {
       const dbUser = await Player.findOne({ where: { sub: request.user.sub } });
       const dbPermissions = await dbUser?.getUserClaims();
 
-      logger.info('Loaded userinfo: ', {
-        user: dbUser.toJSON(),
-        claims: dbPermissions
-      });
-
       // extend info
       request.user = {
         ...request.user,
