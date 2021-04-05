@@ -43,7 +43,7 @@ jobs:
         with:
           node-version: 12
           registry-url: 'https://npm.pkg.github.com'
-      - name: Bump version and push tag
+      - name: Bump version and create changelog
         id: tag_version
         uses: mathieudutour/github-tag-action@v5.4
         with:
