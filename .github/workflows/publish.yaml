@@ -43,24 +43,22 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
-      - run: npm run release -- ${{ steps.tag_version.outputs.new_version  }} --no-git-tag-version --yes --force-publish
-        name: release Frontend
+      - name: Npm release Frontend
+        run: npm run release -- ${{ steps.tag_version.outputs.new_version  }} --no-git-tag-version --yes --force-publish
         working-directory: code/frontend
-      - run: npm run release -- ${{ steps.tag_version.outputs.new_version }} --no-git-tag-version --yes --force-publish
-        name: release Backend
+      - name: Npm release Backend
+        run: npm run release -- ${{ steps.tag_version.outputs.new_version }} --no-git-tag-version --yes --force-publish
         working-directory: code/backend
-      - name: Update markdown file
-        uses: lefherz/action-sed@master
-        with:
-          args: sed -i '1i${{ steps.tag_version.outputs.changelog  }}'1i code/frontend/packages/client/src/assets/CHANGELOG.md
-      - name: Push changes
+      - name: Generate changelog
+        run: npx conventional-changelog-cli -p angular -i code/frontend/packages/client/src/assets/CHANGELOG.md -t v -k code/frontend/packages/client/ -s
+      - name: Commit new files and tag
         run: |
           git config --global user.email "glenn.latomme@gmail.com"
           git config --global user.name "Glenn Latomme"
           git add .
           git commit -m "chore(release): ${{ steps.tag_version.outputs.new_version }}"
           git tag ${{steps.tag_version.outputs.new_tag}} -m "${{ steps.tag_version.outputs.changelog }}"
-      - name: Push changes
+      - name: Push new files
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
