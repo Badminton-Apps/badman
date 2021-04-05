@@ -1,3 +1,18 @@
+# [3.7.0](https://github.com/Badminton-Apps/core/compare/v3.6.0...v3.7.0) (2021-04-05)
+
+
+### Bug Fixes
+
+* **client:** enrollemnt filter player search on club ([febb5b4](https://github.com/Badminton-Apps/core/commit/febb5b401954afb76f5d7e9b90e3e2b1f51e9d22))
+* location sometimes errors ([bb5bc12](https://github.com/Badminton-Apps/core/commit/bb5bc12f1e2a3e5b3ca619f3d2d447869f18d51b))
+
+
+### Features
+
+* Extra warnings ([f459936](https://github.com/Badminton-Apps/core/commit/f45993655102362bbecf0edfa4c14950c448fa9f))
+
+
+
 # [3.6.0](https://github.com/Badminton-Apps/core/compare/v3.5.5...v3.6.0) (2021-04-05)
 
 
