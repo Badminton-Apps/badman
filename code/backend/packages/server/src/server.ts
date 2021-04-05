@@ -45,11 +45,11 @@ const startServer = (databaseService: DataBaseHandler) => {
     [
       {
         from: '/api/v1/import',
-        to: process.env.IMPORT_SERVICE
+        to: `http://${process.env.IMPORT_SERVICE}`
       },
       {
         from: '/api/v1/simulate',
-        to: process.env.SIMULATE_SERVICE
+        to:  `http://${process.env.SIMULATE_SERVICE}`
       }
     ]
   );
