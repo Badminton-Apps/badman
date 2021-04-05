@@ -1,5 +1,6 @@
 query GetClubInfo($id: ID!, $rankingType: ID!) {
   club(id: $id) {
+    id
     teams(where: { active: true }) {
       id
       name

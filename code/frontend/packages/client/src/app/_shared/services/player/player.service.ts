@@ -37,10 +37,7 @@ export class PlayerService {
           includeClub: args.includeClub,
         },
       })
-      .pipe(
-        map((x) => x.data?.players?.map((r) => new Player(r))),
-        tap((x) => console.log(x))
-      );
+      .pipe(map((x) => x.data?.players?.map((r) => new Player(r))));
   }
 
   searchClubPlayers(clubsId: string, args?: { query?: string; where?: any }) {

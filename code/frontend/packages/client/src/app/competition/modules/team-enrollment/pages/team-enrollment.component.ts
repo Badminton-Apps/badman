@@ -1,44 +1,22 @@
-import { Apollo } from 'apollo-angular';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { MatVerticalStepper } from '@angular/material/stepper';
-
+import { Apollo } from 'apollo-angular';
 import {
   Club,
-  ClubService,
   CompetitionEvent,
-  Event,
   EventService,
   EventType,
   SubEvent,
   SystemService,
   Team,
 } from 'app/_shared';
-import {
-  combineLatest,
-  forkJoin,
-  iif,
-  merge,
-  Observable,
-  of,
-  ReplaySubject,
-} from 'rxjs';
-import {
-  filter,
-  map,
-  mergeMap,
-  share,
-  shareReplay,
-  startWith,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
-
-import * as GetClub from './graphql/GetClub.graphql';
-import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
+import { combineLatest, Observable, of, ReplaySubject } from 'rxjs';
+import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
+import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
+import * as GetClub from './graphql/GetClub.graphql';
 
 @Component({
   selector: 'app-team-enrollment',
