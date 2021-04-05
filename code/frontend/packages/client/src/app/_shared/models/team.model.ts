@@ -61,12 +61,12 @@ export class Team {
   }
 
   private calculateBase() {
-    const basePlayers = this.players.filter((r) => r.base);
+    const basePlayers = this.players.filter((r) => r.base).map((r) => r.index);
     const missingPlayers = basePlayers.length >= 4 ? 0 : 4 - basePlayers.length;
+    const indexes = basePlayers.sort((a, b) => a - b);
 
-    const indexes = basePlayers.sort();
     this.baseIndex = indexes.slice(0, 4).reduce((acc, cur) => {
-      return acc + cur.index;
+      return acc + cur;
     }, missingPlayers * (this.type == 'MX' ? 36 : 24));
   }
 }
