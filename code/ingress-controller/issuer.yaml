@@ -1,5 +1,5 @@
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-staging
   namespace: badvla
@@ -11,6 +11,7 @@ spec:
     privateKeySecretRef:
       name: account-key-staging
     solvers:
-    - http01:
+    - selector: {}
+      http01:
        ingress:
          class: nginx
