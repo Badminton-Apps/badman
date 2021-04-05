@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: badvla-stating
+  name: badvla-staging
   namespace: badvla
 spec:
   dnsNames:
@@ -9,3 +9,4 @@ spec:
   secretName: badvla-staging-certificate
   issuerRef:
     name: letsencrypt-staging
+    kind: ClusterIssuer
