@@ -72,8 +72,5 @@ export class GamesResultComponent implements OnInit {
         this.gamesLength = this.games.length;
       }
     }
-
-    console.log(this.subEvent);
-
   }
 }

@@ -84,7 +84,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
           return this.setStaticsUrl(player);
         }),
         catchError((err, caught) => {
-          console.log('error', err);
+          console.error('error', err);
           this.snackbar.open(err.message);
           this.router.navigate(['/']);
           return throwError(err);
