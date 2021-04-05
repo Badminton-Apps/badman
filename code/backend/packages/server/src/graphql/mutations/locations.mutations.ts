@@ -20,6 +20,12 @@ export const addLocationMutation = {
       context?.req?.user == null ||
       !context.req.user.hasAnyPermission([`${clubId}_add:location`, 'edit-any:club'])
     ) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: [`${clubId}_add:location`, 'edit-any:club']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -75,6 +81,12 @@ export const removeLocationMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
       ) {
+        logger.warn('User tried something it should\'t have done', {
+          required: {
+            anyClaim: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        })
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "
@@ -207,6 +219,12 @@ export const updateLocationMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
       ) {
+        logger.warn('User tried something it should\'t have done', {
+          required: {
+            anyClaim: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        })
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "

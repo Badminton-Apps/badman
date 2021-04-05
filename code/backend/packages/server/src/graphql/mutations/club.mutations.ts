@@ -13,6 +13,12 @@ export const addClubMutation = {
   },
   resolve: async (findOptions, { club }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:club'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['add:club']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -25,7 +31,7 @@ export const addClubMutation = {
         { transaction }
       );
 
-      await transaction.commit(); 
+      await transaction.commit();
       return clubDb;
     } catch (e) {
       logger.warn('rollback');
@@ -49,6 +55,12 @@ export const addPlayerToClubMutation = {
   },
   resolve: async (findOptions, { clubId, playerId }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission([`${clubId}_edit:club`, 'edit-any:club'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: [`${clubId}_edit:club`, 'edit-any:club']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -91,6 +103,12 @@ export const updateClubMutation = {
   },
   resolve: async (findOptions, { club }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission([`${club.id}_edit:club`, 'edit-any:club'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: [`${club.id}_edit:club`, 'edit-any:club']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
