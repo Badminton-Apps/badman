@@ -238,7 +238,7 @@ Any line of the commit message cannot be longer than 100 characters.
   │       │             │
   │       │             └─⫸ Summary in present tense. Not capitalized. No period at the end.
   │       │
-  │       └─⫸ Commit Scope: import|server|simulate|client|docs
+  │       └─⫸ Commit Scope: import|server|simulate|supervisor|client|docs
   │
   └─⫸ Commit Type: build|ci|docs|feat|fix|perf|refactor|test
 ```
@@ -268,6 +268,7 @@ The following is the list of supported scopes:
 * `import`
 * `server`
 * `simulate`
+* `supervisor`
 * `client`
 * `docs`
 
