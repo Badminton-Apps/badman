@@ -10,12 +10,12 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: '0'
     nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
     nginx.ingress.kubernetes.io/proxy-send-timeout: '600'
-    cert-manager.io/cluster-issuer: 'letsencrypt-staging'
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
 spec:
   tls:
     - hosts:
         - beta.latomme.org
-      secretName: badvla-staging-certificate
+      secretName: badvla-prod-certificate
   rules:
     - host: beta.latomme.org
       http:
