@@ -37,24 +37,16 @@ jobs:
         with:
           node-version: 12
           registry-url: 'https://npm.pkg.github.com'
-      - name: Conventional Changelog Action
-        id: changelog
-        uses: TriPSs/conventional-changelog-action@v3
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.4
         with:
-          github-token: ${{ secrets.github_token }}
-          tag-prefix: 'v'
-          version-file: './code/backend/lerna.json'
-          skip-version-file: true
-          skip-commit: true
-          preset: 'angular'
-          skip-on-empty: false
-      # - run: npm run gen-erd
-      #   name: Generate erd schema
-      #   working-directory: code/backend/packages/_shared
-      - run: npm run release -- ${{ steps.changelog.outputs.version }} --no-git-tag-version --yes --force-publish
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dry_run: true
+      - run: npm run release -- ${{ steps.tag_version.outputs.new_version  }} --no-git-tag-version --yes --force-publish
         name: release Frontend
         working-directory: code/frontend
-      - run: npm run release -- ${{ steps.changelog.outputs.version }} --no-git-tag-version --yes --force-publish
+      - run: npm run release -- ${{ steps.tag_version.outputs.new_version }} --no-git-tag-version --yes --force-publish
         name: release Backend
         working-directory: code/backend
       - run: cp CHANGELOG.md code/frontend/packages/client/src/assets/CHANGELOG.md
@@ -63,21 +55,23 @@ jobs:
           git config --global user.email "glenn.latomme@gmail.com"
           git config --global user.name "Glenn Latomme"
           git add .
-          git commit -m "chore(release): ${{ steps.changelog.outputs.version }}"
+          git commit -m "chore(release): ${{ steps.tag_version.outputs.new_version }}
+          git tag ${{steps.tag_version.outputs.new_tag}} -m "${{ steps.tag_version.outputs.changelog  }}"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+          tags: true
       - name: Create Release
         uses: actions/create-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          release_name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog  }}
   docker-backend:
     needs: publish-github
     strategy:
