@@ -22,6 +22,12 @@ export const updateGlobalClaimUserMutation = {
   },
   resolve: async (findOptions, { playerId, claimId, active }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['edit:role']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -45,7 +51,7 @@ export const updateGlobalClaimUserMutation = {
       } else{
         await dbPlayer.removeClaim(claimId, {transaction});
       }
-      
+
       await transaction.commit();
       return dbPlayer;
     } catch (e) {

@@ -25,8 +25,14 @@ export const addTeamMutation = {
   resolve: async (findOptions, { team, clubId }, context) => {
     if (
       context?.req?.user == null ||
-      !context.req.user.hasAnyPermission([`${clubId}_add:team`, 'edit-any:club'])
+      !context.req.user.hasAnyPermission([`${clubId}_add:team`, 'add-any:club'])
     ) {
+      logger.warn("User tried something it should't have done", {
+        required: {
+          anyClaim: [`${clubId}_add:team`, 'add-any:club']
+        },
+        received: context?.req?.user?.permissions
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -86,6 +92,12 @@ export const removeTeamMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
       ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "
@@ -129,6 +141,12 @@ export const updateTeamMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
       ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "
@@ -175,6 +193,12 @@ export const addPlayerToTeamMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
       ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "
@@ -238,6 +262,12 @@ export const removePlayerFromTeamMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
       ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "
@@ -302,6 +332,12 @@ export const updateSubEventTeamMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
       ) {
+        logger.warn('User tried something it should\'t have done', {
+          required: {
+            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        })
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "
@@ -355,6 +391,12 @@ export const updatePlayerTeamMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
       ) {
+        logger.warn('User tried something it should\'t have done', {
+          required: {
+            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        })
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "

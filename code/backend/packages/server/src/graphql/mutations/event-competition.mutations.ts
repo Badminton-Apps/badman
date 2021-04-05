@@ -19,6 +19,12 @@ export const addEventCompetitionMutation = {
   },
   resolve: async (findOptions, { eventCompetition }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:competition'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['add:competition']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -78,6 +84,12 @@ export const updateEventCompetitionMutation = {
   },
   resolve: async (findOptions, { eventCompetition }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:competition'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['edit:competition']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -120,6 +132,12 @@ export const setGroupsCompetitionMutation = {
   },
   resolve: async (findOptions, { id, groupIds }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:competition'])) {
+      logger.warn('User tried something it should\'t have done', {
+        required: {
+          anyClaim: ['edit:competition']
+        },
+        received: context?.req?.user?.permissions
+      })
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
