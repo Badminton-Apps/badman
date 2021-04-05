@@ -35,7 +35,7 @@ describe('Team Membership', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, transaction);
+    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, { transaction });
     await transaction.commit();
 
     // Assert
@@ -61,8 +61,8 @@ describe('Team Membership', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, transaction);
-    await service['addToTeams'](playerIds, moment([2001, 8, 1]), team1.id, transaction);
+    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, { transaction });
+    await service['addToTeams'](playerIds, moment([2001, 8, 1]), team1.id, { transaction });
     await transaction.commit();
 
     // Assert
@@ -91,8 +91,8 @@ describe('Team Membership', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, transaction);
-    await service['addToTeams'](playerIds, moment([2002, 8, 1]), team1.id, transaction);
+    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, { transaction });
+    await service['addToTeams'](playerIds, moment([2002, 8, 1]), team1.id, { transaction });
     await transaction.commit();
 
     // Assert
@@ -122,20 +122,20 @@ describe('Team Membership', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, transaction);
-    await service['addToTeams'](playerIds, moment([2001, 8, 1]), team2.id, transaction);
-    await service['addToTeams'](playerIds, moment([2002, 8, 1]), team1.id, transaction);
+    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, { transaction });
+    await service['addToTeams'](playerIds, moment([2001, 8, 1]), team2.id, { transaction });
+    await service['addToTeams'](playerIds, moment([2002, 8, 1]), team1.id, { transaction });
     await transaction.commit();
 
     // Assert
     const memberships = await TeamPlayerMembership.findAll();
     expect(memberships.length).toBe(2);
     expect(memberships[0].start).toEqual(moment([2000, 8, 1]).toDate());
-    expect(memberships[0].end).toBeNull()
+    expect(memberships[0].end).toBeNull();
     expect(memberships[0].teamId).toBe(team1.id);
 
     expect(memberships[1].start).toEqual(moment([2001, 8, 1]).toDate());
-    expect(memberships[1].end).toBeNull()
+    expect(memberships[1].end).toBeNull();
     expect(memberships[1].teamId).toBe(team2.id);
   });
 
@@ -156,7 +156,7 @@ describe('Team Membership', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, transaction);
+    await service['addToTeams'](playerIds, moment([2000, 8, 1]), team1.id, { transaction });
     await transaction.commit();
 
     // Assert
