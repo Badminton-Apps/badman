@@ -1,3 +1,12 @@
+## [3.5.3](https://github.com/Badminton-Apps/core/compare/v3.5.2...v3.5.3) (2021-04-05)
+
+
+### Bug Fixes
+
+* remove debug log ([da11bc8](https://github.com/Badminton-Apps/core/commit/da11bc800d711ea5908dad8f198e0026b8c9195a))
+
+
+
 ## [3.5.2](https://github.com/Badminton-Apps/core/compare/v3.5.0...v3.5.2) (2021-04-05)
 
 
