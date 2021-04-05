@@ -55,7 +55,7 @@ jobs:
           git config --global user.email "glenn.latomme@gmail.com"
           git config --global user.name "Glenn Latomme"
           git add .
-          git commit -m "chore(release): ${{ steps.tag_version.outputs.new_version }}
+          git commit -m "chore(release): ${{ steps.tag_version.outputs.new_version }}"
           git tag ${{steps.tag_version.outputs.new_tag}} -m "${{ steps.tag_version.outputs.changelog  }}"
       - name: Push changes
         uses: ad-m/github-push-action@master
