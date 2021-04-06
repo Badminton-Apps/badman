@@ -1,3 +1,12 @@
+# [3.9.0](https://github.com/Badminton-Apps/core/compare/v3.8.1...v3.9.0) (2021-04-06)
+
+
+### Features
+
+* start supervisor ([af24823](https://github.com/Badminton-Apps/core/commit/af248232cb3a41427814f1e8a2053269fba9498e))
+
+
+
 ## [3.8.1](https://github.com/Badminton-Apps/core/compare/v3.8.0...v3.8.1) (2021-04-05)
 
 
