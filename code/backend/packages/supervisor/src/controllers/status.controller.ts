@@ -1,8 +1,8 @@
-import { BaseController } from '@badvlasim/shared';
-import { Router } from 'express';
+import { BaseController, logger } from '@badvlasim/shared';
+import { Request, Response, Router } from 'express';
 
 export class StatusController extends BaseController {
-  private _path = '/servers';
+  private _path = '/status';
 
   constructor(router: Router) {
     super(router);
@@ -10,6 +10,11 @@ export class StatusController extends BaseController {
   }
 
   private _intializeRoutes() {
-    //
+    this.router.post(`${this._path}/`, this._status);
   }
+
+  private _status = async (request: Request, response: Response) => {
+    const fullUrl = request.protocol + '://' + request.headers.host + request.originalUrl;
+  logger.debug('Registered server', fullUrl);
+  };
 }

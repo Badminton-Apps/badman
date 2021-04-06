@@ -46,10 +46,12 @@ spec:
             value: {{ .Values.services.simulate }}
           - name: IMPORT_SERVICE
             value: {{ .Values.services.import }}
+          - name: SUPERVISOR
+            value: {{ .Values.services.supervisor }}
           - name: LOG_LEVEL
             value: info
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: server-postgresql
-                key: postgresql-password  
+                key: postgresql-password

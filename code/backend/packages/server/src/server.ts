@@ -32,7 +32,6 @@ const startServer = (databaseService: DataBaseHandler) => {
   const router = Router();
 
   const app = new App(
-    process.env.PORT,
     [
       new RankingController(router, authService.checkAuth),
       new SystemController(router, authService.checkAuth, databaseService),
