@@ -1,3 +1,12 @@
+## [3.9.1](https://github.com/Badminton-Apps/core/compare/v3.9.0...v3.9.1) (2021-04-06)
+
+
+### Bug Fixes
+
+* chart version ([95ecae5](https://github.com/Badminton-Apps/core/commit/95ecae5925e8af800d6784b617d5a0877fb9e1f2))
+
+
+
 # [3.9.0](https://github.com/Badminton-Apps/core/compare/v3.8.1...v3.9.0) (2021-04-06)
 
 
