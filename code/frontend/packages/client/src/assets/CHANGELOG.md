@@ -1,3 +1,17 @@
+# [3.10.0](https://github.com/Badminton-Apps/core/compare/v3.9.2...v3.10.0) (2021-04-06)
+
+
+### Bug Fixes
+
+* logger to info ([3e1a054](https://github.com/Badminton-Apps/core/commit/3e1a0549421a9a10fe407287957e7ebc034f7951))
+
+
+### Features
+
+* link players ([185f7b7](https://github.com/Badminton-Apps/core/commit/185f7b7dafdffa6e190baa8210d4d83ceee7d972))
+
+
+
 ## [3.9.2](https://github.com/Badminton-Apps/core/compare/v3.9.1...v3.9.2) (2021-04-06)
 
 
