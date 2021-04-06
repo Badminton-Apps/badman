@@ -15,6 +15,6 @@ export class StatusController extends BaseController {
 
   private _status = async (request: Request, response: Response) => {
     const fullUrl = request.protocol + '://' + request.headers.host + request.originalUrl;
-  logger.debug('Registered server', fullUrl);
+    logger.info('Registered server', fullUrl);
   };
 }
