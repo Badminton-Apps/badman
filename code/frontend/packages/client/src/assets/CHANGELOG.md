@@ -1,3 +1,12 @@
+## [3.9.2](https://github.com/Badminton-Apps/core/compare/v3.9.1...v3.9.2) (2021-04-06)
+
+
+### Bug Fixes
+
+* Supervisor ([2bfb113](https://github.com/Badminton-Apps/core/commit/2bfb11367651015b3cde6f2cba48535f90a29bf2))
+
+
+
 ## [3.9.1](https://github.com/Badminton-Apps/core/compare/v3.9.0...v3.9.1) (2021-04-06)
 
 
