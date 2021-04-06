@@ -126,6 +126,10 @@ export class TeamEnrollmentComponent implements OnInit {
       .toPromise();
   }
 
+  async submit() {
+    // console.log('Most should be done ;P)
+  }
+
   async locationAssigned(event: {
     locationId: string;
     eventId: string;
