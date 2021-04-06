@@ -24,13 +24,16 @@ export class RequestLink extends Model {
   @Column
   id: string;
 
-  @BelongsTo(() => Player, 'PlayerId')
+  @Column
+  sub: string
+
+  @BelongsTo(() => Player, 'playerId')
   player: Player;
 
   @ForeignKey(() => Player)
   @Index
   @Column
-  PlayerId: string;
+  playerId: string;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;
