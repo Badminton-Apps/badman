@@ -8,6 +8,9 @@ service:
   internalPort: 4001
   externalPort: 80
 
+services:
+  supervisor: supervisor-supervisor.badvla
+
 database:
   DB_IP: server-postgresql.badvla
   DB_DATABASE: ranking
