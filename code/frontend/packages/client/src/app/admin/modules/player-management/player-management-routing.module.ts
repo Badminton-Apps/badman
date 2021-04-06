@@ -1,12 +1,15 @@
-import { AuthGuard } from 'app/_shared';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EditPlayerComponent } from './pages/edit-player/edit-player.component';
+import { EditPlayerComponent, LinkAccountComponent } from './pages';
 
 const routes: Routes = [
   {
     path: ':id/edit',
     component: EditPlayerComponent,
+  },
+  {
+    path: 'link-accounts',
+    component: LinkAccountComponent,
   },
 ];
 

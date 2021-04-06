@@ -31,13 +31,13 @@ export class RequestLinkController extends BaseController {
         return;
       }
 
-      if (player.email != null) {
-        response.send(`Player already has player ${player.id}`);
+      if (player.sub != null) {
+        return response.send(`Player already has player ${player.id}`);
       }
 
       const props = {
         PlayerId: player.id,
-        email: request.user.email
+        sub: request.user.sub
       };
 
       const [linkRequest] = await RequestLink.findOrCreate({
@@ -45,7 +45,7 @@ export class RequestLinkController extends BaseController {
         defaults: props
       });
 
-      response.json(linkRequest);
+      response.json(linkRequest.toJSON());
     } catch (error) {
       logger.error(error);
       response.status(400).json(error);
@@ -54,7 +54,7 @@ export class RequestLinkController extends BaseController {
 
   private _requestedLinks = async (request: AuthenticatedRequest, response: Response) => {
     try {
-      if (!request.user.hasAnyPermission(['link:account'])) {
+      if (!request.user.hasAnyPermission(['link:player'])) {
         response.status(401).send('No no no!!');
         return;
       }
@@ -71,7 +71,7 @@ export class RequestLinkController extends BaseController {
 
   private _linkAccount = async (request: AuthenticatedRequest, response: Response) => {
     try {
-      if (!request.user.hasAnyPermission(['link:account'])) {
+      if (!request.user.hasAnyPermission(['link:player'])) {
         response.status(401).send('No no no!!');
         return;
       }
