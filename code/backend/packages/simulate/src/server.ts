@@ -17,7 +17,7 @@ const startServer = (databaseService: DataBaseHandler) => {
   const calculator = new RankingCalculator(databaseService);
   const router = Router();
 
-  const app = new App(process.env.PORT, [
+  const app = new App([
     new SimulateController(router, authService.checkAuth, databaseService, calculator)
   ]);
   app.listen();

@@ -31,7 +31,9 @@ spec:
           - name: production
             value: "true"
           - name: PORT
-            value: {{ .Values.service.internalPort | quote}}          
+            value: {{ .Values.service.internalPort | quote}}
+          - name: SUPERVISOR
+            value: {{ .Values.services.supervisor }}
           - name: DB_IP
             value: {{ .Values.database.DB_IP }}
           - name: DB_DATABASE

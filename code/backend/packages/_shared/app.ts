@@ -2,25 +2,24 @@
 import { logger } from '@badvlasim/shared';
 import cors from 'cors';
 import moment from 'moment';
-import express, { Application, json, Router } from 'express';
+import express, { Application, json } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { BaseController } from './models';
-import { StatusController } from './controllers';
+import { HealthController } from './controllers';
+import { schedule } from 'node-cron';
+import fetch from 'node-fetch';
 
 moment.suppressDeprecationWarnings = true;
 
 export class App {
   public app: Application;
-  public port: number;
   public corsOptions;
 
   constructor(
-    port: string,
     controllers: BaseController[],
     proxies: { from: string; to: string }[] = []
   ) {
     this.app = express();
-    this.port = parseInt(port, 10);
 
     this._initializeMiddlewares();
     this._initializeProxies(proxies);
@@ -29,6 +28,18 @@ export class App {
     this.app.use(json());
 
     this._initializeControllers(controllers);
+  }
+
+  private async _startReportingService() {
+    try {
+      await fetch(`http://${process.env.REPORTING_SERVICE}/api/v1/status`, {
+        method: 'POST',
+        body: JSON.stringify({})
+      });
+    } catch {
+      logger.warn('Scheduling service not online? retrying in 5 second');
+      setTimeout(() => this._startReportingService(), 5000);
+    }
   }
 
   private _initializeMiddlewares() {
@@ -51,7 +62,7 @@ export class App {
   }
 
   private _initializeControllers(controllers: BaseController[]) {
-    this.app.use('/api/v1', new StatusController().router);
+    controllers.push(new HealthController());
 
     controllers.forEach(controller => {
       try {
@@ -66,7 +77,6 @@ export class App {
         throw error;
       }
     });
-
   }
 
   private _initializeProxies(proxies) {
@@ -84,9 +94,13 @@ export class App {
     });
   }
 
-  public listen() {
-    this.app.listen(this.port, () => {
-      logger.info(`🚀 App listening on the port ${this.port}`);
+  public listen(register = true) {
+    this.app.listen(process.env.PORT, () => {
+      logger.info(`🚀 App listening on the port ${process.env.PORT}`);
+
+      if (register) {
+        this._startReportingService();
+      }
     });
   }
 }
