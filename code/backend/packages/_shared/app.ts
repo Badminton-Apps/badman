@@ -32,7 +32,7 @@ export class App {
 
   private async _startReportingService() {
     try {
-      await fetch(`http://${process.env.REPORTING_SERVICE}/api/v1/status`, {
+      await fetch(`http://${process.env.SUPERVISOR}/api/v1/status`, {
         method: 'POST',
         body: JSON.stringify({})
       });
