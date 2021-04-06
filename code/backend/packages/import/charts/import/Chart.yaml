@@ -2,4 +2,4 @@ apiVersion: v2
 description: Import Service
 name: import
 version: 0.3.6
-appVersion: 0.3.5
+appVersion: 0.1.0
