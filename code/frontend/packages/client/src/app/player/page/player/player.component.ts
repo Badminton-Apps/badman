@@ -37,7 +37,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   player$: Observable<Player>;
   user$: Observable<{ player: Player; request: any }>;
 
-  canClaimAccount$: Observable<{ canClaim: boolean; isclaimedByUser: boolean }>;
+  canClaimAccount$: Observable<{ canClaim: boolean; isClaimedByUser: boolean }>;
 
   updateHappend = new BehaviorSubject(true);
 
@@ -99,15 +99,18 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
       map(([player, user]) => {
         if (!player) {
-          return { canClaim: false, isclaimedByUser: false };
+          return { canClaim: false, isUser: false, isClaimedByUser: false };
         }
+
         return {
           canClaim: !player.isClaimed && !user?.player && !user?.request,
-          isclaimedByUser:
-            user && user.request && user.request.PlayerId === player.id,
+          isUser: user?.player?.id === player?.id,
+          isClaimedByUser:
+            user && user.request && user.request.playerId === player.id,
         };
       }),
-      startWith({ canClaim: false, isclaimedByUser: false })
+      startWith({ canClaim: false,  isUser: false, isClaimedByUser: false }),
+      tap(r => console.log(r))
     );
   }
 

@@ -29,7 +29,7 @@ export class ProfileHeaderComponent implements OnInit {
   canClaimAccount: {
     canClaim: boolean;
     isClaimedByUser: boolean;
-    isclaimedByUser: boolean;
+    isUser: boolean;
   };
 
   @Output()
@@ -38,7 +38,7 @@ export class ProfileHeaderComponent implements OnInit {
   shownRanking: RankingPlace;
   initials: string;
 
-  singleTooltip: string; 
+  singleTooltip: string;
   doubleTooltip: string;
   mixTooltip: string;
 
