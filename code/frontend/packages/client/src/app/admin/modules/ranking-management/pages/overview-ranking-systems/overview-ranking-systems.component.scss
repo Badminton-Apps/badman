@@ -2,6 +2,7 @@
   display: block;
   padding-right: 25px;
 }
+
 h2 {
   font-weight: 300;
   font-size: 24px;
@@ -13,7 +14,20 @@ h2 {
 
 table {
   width: 100%;
+
   .mat-column-primary {
     padding-right: 10px;
+  }
+}
+
+
+.options {
+  display: flex;
+  flex-direction: column;
+}
+
+.period {
+  mat-form-field:not(:last-child) {
+    margin-right: 10px;
   }
 }

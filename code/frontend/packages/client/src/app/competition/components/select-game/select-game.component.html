@@ -1,5 +1,5 @@
 <form [formGroup]="formGroup">
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <input
       type="text"
       placeholder="Pick one"
@@ -8,7 +8,7 @@
       formControlName="game"
       [matAutocomplete]="auto"
     />
-    
+
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
       <mat-option
         *ngFor="let option of filteredOptions | async"
@@ -19,4 +19,4 @@
     </mat-autocomplete>
   </mat-form-field>
 </form>
- 
+

@@ -2,14 +2,7 @@
 
 <div class="mat-subheading-2">Ranking</div>
 
-<table
-  mat-table
-  matSort
-  matSortActive="id"
-  matSortDisableClear
-  matSortDirection="asc"
-  [dataSource]="this.dataSource"
->
+<table mat-table matSort matSortActive="id" matSortDisableClear matSortDirection="asc" [dataSource]="this.dataSource">
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
@@ -17,11 +10,7 @@
   <ng-container matColumnDef="select">
     <th mat-header-cell *matHeaderCellDef>Select</th>
     <td mat-cell *matCellDef="let row">
-      <mat-checkbox
-        (click)="$event.stopPropagation()"
-        (change)="$event ? rankingSelection.toggle(row) : null"
-        [checked]="rankingSelection.isSelected(row)"
-      >
+      <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? rankingSelection.toggle(row) : null" [checked]="rankingSelection.isSelected(row)">
       </mat-checkbox>
     </td>
   </ng-container>
@@ -88,26 +77,22 @@
 </table>
 <mat-paginator [length]="resultsLength" [pageSize]="30"> </mat-paginator>
 
-<div>
-  <mat-checkbox
-    [checked]="this.forceStartDate"
-    (change)="this.forceStartDate = !this.forceStartDate"
-    >Force start date</mat-checkbox
-  >
-  <mat-checkbox
-    [checked]="this.startingRankings"
-    (change)="this.startingRankings = !this.startingRankings"
-    >import starting rankings</mat-checkbox
-  >
+<div class="options">
+  <mat-checkbox [checked]="this.forceStartDate" (change)="this.forceStartDate = !this.forceStartDate">
+    Force start date
+  </mat-checkbox>
+  <mat-checkbox [checked]="this.startingRankings" (change)="this.startingRankings = !this.startingRankings">
+    import starting rankings
+  </mat-checkbox>
 </div>
-<div>
-  <mat-form-field *ngIf="this.forceStartDate">
+<div class="period">
+  <mat-form-field appearance="outline" *ngIf="this.forceStartDate">
     <mat-label>Start</mat-label>
     <input matInput [matDatepicker]="start" [formControl]="minDate" />
     <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
     <mat-datepicker #start></mat-datepicker>
   </mat-form-field>
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label>End</mat-label>
     <input matInput [matDatepicker]="stop" [formControl]="maxDate" />
     <mat-datepicker-toggle matSuffix [for]="stop"></mat-datepicker-toggle>
