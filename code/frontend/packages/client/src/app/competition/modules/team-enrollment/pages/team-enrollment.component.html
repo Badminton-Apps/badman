@@ -94,10 +94,15 @@
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
-    You are now done.
+    <mat-form-field appearance="outline" class="comment">
+      <mat-label>Leave a comment</mat-label>
+      <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="10" cdkAutosizeMaxRows="30" placeholder="Any other comments"></textarea>
+    </mat-form-field>
+
+
     <div>
       <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
+      <button mat-button (click)="this.submit()">submit</button>
     </div>
   </mat-step>
 </mat-vertical-stepper>
