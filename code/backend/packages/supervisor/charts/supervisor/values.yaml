@@ -10,8 +10,3 @@ service:
 
 auth0:
   issuer: https://badvlasim.eu.auth0.com
-
-services:
-  simulate: simulate-simulate.badvla
-  import: import-import.badvla
-  server: server-server.badvla

@@ -24,9 +24,6 @@ const startServer = (databaseService: DataBaseHandler) => {
   const router = Router();
   const converter = new Convertor();
 
-
-  const app = new App(process.env.PORT, [
-    new ImportController(router, authService.checkAuth, converter)
-  ]);
+  const app = new App([new ImportController(router, authService.checkAuth, converter)]);
   app.listen();
 };
