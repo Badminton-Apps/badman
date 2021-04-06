@@ -1,0 +1,56 @@
+<div class="mat-subheading-1">Link players<app-beta></app-beta>
+</div>
+
+<div *ngIf="isLoadingResults">
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoadingResults"></mat-progress-bar>
+</div>
+
+<table mat-table [dataSource]="data" matSort matSortActive="name" matSortDisableClear matSortDirection="desc">
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+      Name
+    </th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.player.firstName }} {{ element.player.lastName }}
+    </td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef>Email</th>
+    <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="playerId">
+    <th mat-header-cell *matHeaderCellDef>Player number</th>
+    <td mat-cell *matCellDef="let element">{{ element.PlayerId }}</td>
+  </ng-container>
+
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="9999">
+      No records
+    </td>
+  </tr>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="selection.toggle(row)"></tr>
+</table>
+
+
+
+<button mat-raised-button color="primary" (click)="this.linkAccounts(true)">Accept selected</button>
+<button mat-button (click)="this.linkAccounts(false)">reject selected</button>

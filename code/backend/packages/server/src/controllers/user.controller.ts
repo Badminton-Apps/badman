@@ -46,15 +46,15 @@ export class UserController extends BaseController {
         where: { sub: request.user.sub }
       });
 
-      if (!player) {
-        response.json(null);
+      if (player) {
+        response.json({ player });
         return;
       }
 
       const requestLink = await RequestLink.findOne({
-        where: { PlayerId: player.id }
+        where: { sub: request.user.sub }
       });
-      response.json({ player, request: requestLink });
+      response.json({ request: requestLink });
     } catch (error) {
       logger.error(error);
       response.status(400).json(error);
