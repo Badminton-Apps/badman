@@ -1,3 +1,12 @@
+# [3.11.0](https://github.com/Badminton-Apps/core/compare/v3.10.0...v3.11.0) (2021-04-06)
+
+
+### Features
+
+* prepping for comment ([9a59d8a](https://github.com/Badminton-Apps/core/commit/9a59d8a7a9e97929b8ee0f8cbf2c7a8ed427c78e))
+
+
+
 # [3.10.0](https://github.com/Badminton-Apps/core/compare/v3.9.2...v3.10.0) (2021-04-06)
 
 
