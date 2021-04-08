@@ -98,9 +98,9 @@ export class App {
     this.app.listen(process.env.PORT, () => {
       logger.info(`🚀 App listening on the port ${process.env.PORT}`);
 
-      if (register) {
-        this._startReportingService();
-      }
+      // if (register) {
+      //   this._startReportingService();
+      // }
     });
   }
 }

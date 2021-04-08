@@ -90,10 +90,10 @@ export const updatePlayerRankingMutation = {
     }
   },
   resolve: async (findOptions, { rankingPlace }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit-any:player'])) {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:player-ranking'])) {
       logger.warn("User tried something it should't have done", {
         required: {
-          anyClaim: ['edit-any:player']
+          anyClaim: ['edit:player-ranking']
         },
         received: context?.req?.user?.permissions
       });
