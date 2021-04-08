@@ -1,3 +1,4 @@
+import { Comment } from './../../comment.model';
 import {
   BelongsToMany,
   Column,
@@ -60,6 +61,15 @@ export class EventCompetition extends Model {
   @Column
   startYear: number;
 
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'competition'
+    }
+  })
+  comments: Comment[];
+
   @HasMany(() => SubEventCompetition, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE'
@@ -104,4 +114,15 @@ export class EventCompetition extends Model {
   hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
   hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
   countLocation!: BelongsToManyCountAssociationsMixin;
+
+  // Has many Comment
+  getComments!: HasManyGetAssociationsMixin<Comment>;
+  setComments!: HasManySetAssociationsMixin<Comment, string>;
+  addComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countComments!: HasManyCountAssociationsMixin;
 }

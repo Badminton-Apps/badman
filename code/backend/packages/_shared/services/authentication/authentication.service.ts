@@ -45,6 +45,7 @@ export class AuthenticationSercice {
       request.user = {
         ...request.user,
         ...userinfo.data,
+        player: dbUser,
         permissions: dbPermissions,
         hasAnyPermission: (permissions: string[]) => {
           if (request?.user?.permissions == null) {
