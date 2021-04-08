@@ -1,3 +1,4 @@
+import { CommentType } from './../comment.type';
 import { LocationType } from './../location.type';
 import { EventCompetition } from '@badvlasim/shared';
 import {
@@ -44,6 +45,11 @@ export const EventCompetitionType = new GraphQLObjectType({
         type: new GraphQLList(LocationType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(EventCompetition.associations.locations)
+      },
+      comments: {
+        type: new GraphQLList(CommentType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(EventCompetition.associations.comments)
       }
     })
 });

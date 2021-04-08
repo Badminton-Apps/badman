@@ -1,14 +1,12 @@
-import {
-  updateCompetitionEventLocationMutation,
-  updateTournamentEventLocationMutation
-} from './mutations/locations.mutations';
-import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import {
   addClubMutation,
+  addCommentMutation,
+  updateCommentMutation,
   addEventCompetitionMutation,
   addEventTournamentMutation,
   addLocationMutation,
+  addPlayerMutation,
   addPlayerToClubMutation,
   addPlayerToRoleMutation,
   addPlayerToTeamMutation,
@@ -25,17 +23,21 @@ import {
   updateClubMutation,
   updateEventCompetitionMutation,
   updateEventTournamentMutation,
+  updateGlobalClaimUserMutation,
   updateLocationMutation,
+  updatePlayerMutation,
   updatePlayerTeamMutation,
-  updateSubEventTeamMutation,
   updateRankingSystemGroupMutation,
   updateRankingSystemMutation,
   updateRoleMutation,
-  updateTeamMutation,
-  updateGlobalClaimUserMutation,
-  addPlayerMutation,
-  updatePlayerMutation
+  updateSubEventTeamMutation,
+  updateTeamMutation
 } from './mutations';
+import {
+  updateCompetitionEventLocationMutation,
+  updateTournamentEventLocationMutation
+} from './mutations/locations.mutations';
+import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import {
   claimsQuery,
   clubQuery,
@@ -63,63 +65,65 @@ export const createSchema = () => {
     query: new GraphQLObjectType({
       name: 'RootQueryType',
       fields: () => ({
-        player: playerQuery,
-        players: playersQuery,
+        claims: claimsQuery,
+        club: clubQuery,
+        clubs: clubsQuery,
         eventCompetition: eventCompetitionQuery,
         eventCompetitions: eventCompetitionsQuery,
         eventTournament: eventTournamentQuery,
         eventTournaments: eventTournamentsQuery,
+        games: gamesQuery,
+        imported: importedQuery,
         location: locationQuery,
-        claims: claimsQuery,
+        player: playerQuery,
+        players: playersQuery,
+        rankingSystemGroup: systemsGroupsQuery,
         role: roleQuery,
         roles: rolesQuery,
-        imported: importedQuery,
-        games: gamesQuery,
-        team: teamQuery,
-        teams: teamsQuery,
-        club: clubQuery,
-        clubs: clubsQuery,
         system: systemQuery,
         systems: systemsQuery,
-        rankingSystemGroup: systemsGroupsQuery
+        team: teamQuery,
+        teams: teamsQuery
       })
     }),
     mutation: new GraphQLObjectType({
       name: 'RootMutationType',
       fields: () => ({
         addClub: addClubMutation,
-        updateClub: updateClubMutation,
-        addPlayerToClub: addPlayerToClubMutation,
-        addPlayer: addPlayerMutation,
-        updatePlayer: updatePlayerMutation,
-        updatePlayerRanking: updatePlayerRankingMutation,
-        addTeam: addTeamMutation,
-        updateTeam: updateTeamMutation,
-        removeTeam: removeTeamMutation,
-        updatePlayerTeam: updatePlayerTeamMutation,
-        updateSubEventTeam: updateSubEventTeamMutation,
-        addPlayerToTeam: addPlayerToTeamMutation,
-        removePlayerFromTeam: removePlayerFromTeamMutation,
-        addLocation: addLocationMutation,
-        updateLocation: updateLocationMutation,
-        removeLocation: removeLocationMutation,
-        updateCompetitionEventLocation: updateCompetitionEventLocationMutation,
-        updateTournamentEventLocation: updateTournamentEventLocationMutation,
-        addRole: addRoleMutation,
-        updateRole: updateRoleMutation,
-        addPlayerToRole: addPlayerToRoleMutation,
-        removePlayerFromRole: removePlayerFromRoleMutation,
-        updateGlobalClaimUser: updateGlobalClaimUserMutation,
+        addComment: addCommentMutation,
         addEventCompetition: addEventCompetitionMutation,
         addEventTournament: addEventTournamentMutation,
+        addLocation: addLocationMutation,
+        addPlayer: addPlayerMutation,
+        addPlayerToClub: addPlayerToClubMutation,
+        addPlayerToRole: addPlayerToRoleMutation,
+        addPlayerToTeam: addPlayerToTeamMutation,
+        addRankingSystem: addRankingSystemMutation,
+        addRankingSystemGroup: addRankingSystemGroupMutation,
+        addRole: addRoleMutation,
+        addTeam: addTeamMutation,
+        deleteImportedEvent: deleteImportedEventMutation,
+        removeLocation: removeLocationMutation,
+        removePlayerFromRole: removePlayerFromRoleMutation,
+        removePlayerFromTeam: removePlayerFromTeamMutation,
+        removeTeam: removeTeamMutation,
+        setGroupsCompetition: setGroupsCompetitionMutation,
+        updateClub: updateClubMutation,
+        updateComment: updateCommentMutation,
+        updateCompetitionEventLocation: updateCompetitionEventLocationMutation,
         updateEventCompetition: updateEventCompetitionMutation,
         updateEventTournament: updateEventTournamentMutation,
-        setGroupsCompetition: setGroupsCompetitionMutation,
-        addRankingSystem: addRankingSystemMutation,
+        updateGlobalClaimUser: updateGlobalClaimUserMutation,
+        updateLocation: updateLocationMutation,
+        updatePlayer: updatePlayerMutation,
+        updatePlayerRanking: updatePlayerRankingMutation,
+        updatePlayerTeam: updatePlayerTeamMutation,
         updateRankingSystem: updateRankingSystemMutation,
-        addRankingSystemGroup: addRankingSystemGroupMutation,
         updateRankingSystemGroup: updateRankingSystemGroupMutation,
-        deleteImportedEvent: deleteImportedEventMutation
+        updateRole: updateRoleMutation,
+        updateSubEventTeam: updateSubEventTeamMutation,
+        updateTeam: updateTeamMutation,
+        updateTournamentEventLocation: updateTournamentEventLocationMutation
       })
     })
   });

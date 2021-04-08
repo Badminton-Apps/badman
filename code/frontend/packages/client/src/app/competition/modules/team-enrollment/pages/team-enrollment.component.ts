@@ -1,22 +1,18 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { MatVerticalStepper } from '@angular/material/stepper';
 import { Apollo } from 'apollo-angular';
-import {
-  Club,
-  CompetitionEvent,
-  EventService,
-  EventType,
-  SubEvent,
-  SystemService,
-  Team,
-} from 'app/_shared';
+import { Club, Comment, CompetitionEvent, EventService, EventType, SubEvent, SystemService, Team } from 'app/_shared';
 import { combineLatest, Observable, of, ReplaySubject } from 'rxjs';
-import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, map, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
 import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
 import * as GetClub from './graphql/GetClub.graphql';
+
+import * as updateComment from './graphql/UpdateComment.graphql';
+import * as addComment from './graphql/AddComment.graphql';
 
 @Component({
   selector: 'app-team-enrollment',
@@ -31,8 +27,10 @@ export class TeamEnrollmentComponent implements OnInit {
   enabledProvincialControl: FormControl;
   enabledLigaControl: FormControl;
   enabledNationalControl: FormControl;
+  commentControl: FormControl;
 
   club$: Observable<Club>;
+  comment: Comment;
 
   teamsM$: Observable<Team[]>;
   teamsF$: Observable<Team[]>;
@@ -54,29 +52,31 @@ export class TeamEnrollmentComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private systemService: SystemService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private snackbar: MatSnackBar
   ) {}
 
   async ngOnInit() {
     this.enabledProvincialControl = new FormControl(false);
     this.enabledLigaControl = new FormControl(false);
     this.enabledNationalControl = new FormControl(false);
+    this.commentControl = new FormControl();
 
     this.formGroup = new FormGroup(
       {
         enabledProvincial: this.enabledProvincialControl,
         enabledLiga: this.enabledLigaControl,
         enabledNational: this.enabledNationalControl,
+        comment: this.commentControl,
       },
       { validators: this.hasAnyLevelSelected }
     );
 
-    this.formGroup.valueChanges.subscribe((newValue) => {
+    this.form$ = this.formGroup.valueChanges;
+    this.form$.subscribe((newValue) => {
       // re-intialize subevents when change on the subEvent selection
       this.subEventsInitialized = false;
     });
-
-    this.form$ = this.formGroup.valueChanges;
 
     this.setTeams();
 
@@ -89,33 +89,27 @@ export class TeamEnrollmentComponent implements OnInit {
       this.subEventMX$,
       this.club$,
     ]).pipe(
-      map(
-        ([teamsM, teamsF, teamsMX, subEventM, subEventF, subEventMX, club]) => {
-          return {
-            teamsM,
-            teamsF,
-            teamsMX,
-            subEventM,
-            subEventF,
-            subEventMX,
-            club,
-          };
-        }
-      )
+      map(([teamsM, teamsF, teamsMX, subEventM, subEventF, subEventMX, club]) => {
+        return {
+          teamsM,
+          teamsF,
+          teamsMX,
+          subEventM,
+          subEventF,
+          subEventMX,
+          club,
+        };
+      })
     );
   }
 
   async changStepper(event: StepperSelectionEvent) {
     if (event.selectedIndex == 1 && !this.subEventsInitialized) {
-      await this.initializeSubEvents();
+      await this.initializeEvents();
     }
   }
 
-  async teamsAssigned(event: {
-    teamId: string;
-    oldSubEventId: string;
-    newSubEventId: string;
-  }) {
+  async teamsAssigned(event: { teamId: string; oldSubEventId: string; newSubEventId: string }) {
     await this.apollo
       .mutate({
         mutation: AssignTeamSubEvent,
@@ -127,14 +121,10 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async submit() {
-    // console.log('Most should be done ;P)
+    this.snackbar.open('Submitted', null, { panelClass: 'success', duration: 2000 });
   }
 
-  async locationAssigned(event: {
-    locationId: string;
-    eventId: string;
-    use: boolean;
-  }) {
+  async locationAssigned(event: { locationId: string; eventId: string; use: boolean }) {
     await this.apollo
       .mutate({
         mutation: AssignLocationEvent,
@@ -163,7 +153,8 @@ export class TeamEnrollmentComponent implements OnInit {
       this.form$.pipe(
         startWith(this.formGroup.value),
         map((group) => group?.club?.id),
-        filter((id) => !!id)
+        filter((id) => !!id),
+        take(1)
       ),
       this.systemService.getPrimarySystem(),
     ]).pipe(
@@ -182,23 +173,21 @@ export class TeamEnrollmentComponent implements OnInit {
       shareReplay()
     );
 
-    this.teamsF$ = this.club$.pipe(
-      map((r) => r.teams?.filter((s) => s.type == 'F'))
-    );
+    this.teamsF$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'F')));
 
-    this.teamsM$ = this.club$.pipe(
-      map((r) => r.teams?.filter((s) => s.type == 'M'))
-    );
+    this.teamsM$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'M')));
 
-    this.teamsMX$ = this.club$.pipe(
-      map((r) => r.teams?.filter((s) => s.type == 'MX'))
-    );
+    this.teamsMX$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'MX')));
   }
 
-  private async initializeSubEvents() {
+  private async initializeEvents() {
+    const club = await this.club$.toPromise();
     this.provEvent$ = this.formGroup.get('enabledProvincial').value
       ? this.eventService
-          .getCompetitionEvent(this.formGroup.value.event.id)
+          .getCompetitionEvent(this.formGroup.value.event.id, {
+            clubId: club.id,
+            includeComments: true,
+          })
           .pipe(shareReplay(1))
       : of(null);
 
@@ -214,11 +203,7 @@ export class TeamEnrollmentComponent implements OnInit {
             includeSubEvents: true,
           })
           .pipe(
-            map((events) =>
-              events?.eventCompetitions?.total > 0
-                ? events.eventCompetitions.edges[0].node
-                : null
-            ),
+            map((events) => (events?.eventCompetitions?.total > 0 ? events.eventCompetitions.edges[0].node : null)),
             shareReplay(1)
           )
       : of(null);
@@ -235,58 +220,57 @@ export class TeamEnrollmentComponent implements OnInit {
             includeSubEvents: true,
           })
           .pipe(
-            map((events) =>
-              events?.eventCompetitions?.total > 0
-                ? events.eventCompetitions.edges[0].node
-                : null
-            ),
+            map((events) => (events?.eventCompetitions?.total > 0 ? events.eventCompetitions.edges[0].node : null)),
             shareReplay(1)
           )
       : of(null);
 
     // not really ideal, but I just want it working for now
-    const [prov, liga, nat] = await combineLatest([
-      this.provEvent$,
-      this.ligaEvent$,
-      this.natEvent$,
-    ]).toPromise();
+    const [prov, liga, nat] = await combineLatest([this.provEvent$, this.ligaEvent$, this.natEvent$]).toPromise();
 
     this.subEventF$.next([
-      ...(nat?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'F'
-      ) ?? []),
-      ...(liga?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'F'
-      ) ?? []),
-      ...(prov?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'F'
-      ) ?? []),
+      ...(nat?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'F') ?? []),
+      ...(liga?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'F') ?? []),
+      ...(prov?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'F') ?? []),
     ]);
 
     this.subEventM$.next([
-      ...(nat?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'M'
-      ) ?? []),
-      ...(liga?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'M'
-      ) ?? []),
-      ...(prov?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'M'
-      ) ?? []),
+      ...(nat?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'M') ?? []),
+      ...(liga?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'M') ?? []),
+      ...(prov?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'M') ?? []),
     ]);
 
     this.subEventMX$.next([
-      ...(nat?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'MX'
-      ) ?? []),
-      ...(liga?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'MX'
-      ) ?? []),
-      ...(prov?.subEvents?.filter(
-        (s: { eventType: string }) => s.eventType == 'MX'
-      ) ?? []),
+      ...(nat?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'MX') ?? []),
+      ...(liga?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'MX') ?? []),
+      ...(prov?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'MX') ?? []),
     ]);
 
+    this.comment = prov.comments.length > 0 ? prov.comments[0] : new Comment({ clubId: club.id });
+    this.commentControl.patchValue(this.comment.message);
+    this.commentControl.valueChanges.pipe(debounceTime(600)).subscribe((r) => this._updateComment(r));
     this.subEventsInitialized = true;
+  }
+
+  private async _updateComment(messaga: string) {
+    this.comment.message = messaga;
+
+    // player get's set via authenticated user
+    const { player, ...comment } = this.comment;
+
+    const result = await this.apollo
+      .mutate<any>({
+        mutation: this.comment.id ? updateComment : addComment,
+        variables: {
+          comment,
+          eventId: this.formGroup.value.event.id,
+        },
+      })
+      .toPromise();
+
+    console.log(result.data);
+    if (result.data?.addComment != null) {
+      this.comment.id = result.data?.addComment.id;
+    }
   }
 }

@@ -96,7 +96,7 @@ export class EventService {
       );
   }
 
-  getCompetitionEvent(id: string, args?: {}) {
+  getCompetitionEvent(id: string, args?: {clubId: string, includeComments: boolean}) {
     return this.apollo
       .query<{
         eventCompetition: CompetitionEvent;
@@ -104,6 +104,8 @@ export class EventService {
         query: getCompetitionEventQuery,
         variables: {
           id,
+          includeComments: args.includeComments && args?.clubId != null,
+          clubId: args?.clubId
         },
       })
       .pipe(map((x) => new CompetitionEvent(x.data.eventCompetition)));

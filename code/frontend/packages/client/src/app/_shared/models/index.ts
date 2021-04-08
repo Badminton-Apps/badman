@@ -14,5 +14,6 @@ export * from './request-link.model';
 export * from './team.model';
 export * from './ranking-point.model';
 export * from './location.model';
+export * from './comment.model';
 // end:ng42.barrel
 
