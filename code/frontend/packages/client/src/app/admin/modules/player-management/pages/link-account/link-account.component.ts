@@ -7,12 +7,12 @@ import { AdminService } from 'app/admin/services';
 
 @Component({
   templateUrl: './link-account.component.html',
-  styleUrls: ['./link-account.component.scss']
+  styleUrls: ['./link-account.component.scss'],
 })
 export class LinkAccountComponent implements AfterViewInit {
   displayedColumns: string[] = ['select', 'name', 'email', 'playerId'];
   data = [];
-  selection = new SelectionModel<{ id: number; PlayerId: number }>(true, []);
+  selection = new SelectionModel<{ id: number; playerId: number }>(true, []);
   processed = new Subject();
 
   resultsLength = 0;
@@ -41,7 +41,7 @@ export class LinkAccountComponent implements AfterViewInit {
           return of([]);
         })
       )
-      .subscribe(data => (this.data = data));
+      .subscribe((data) => (this.data = data));
   }
 
   isAllSelected() {
@@ -51,24 +51,18 @@ export class LinkAccountComponent implements AfterViewInit {
   }
 
   masterToggle() {
-    this.isAllSelected()
-      ? this.selection.clear()
-      : this.data.forEach(row => this.selection.select(row));
+    this.isAllSelected() ? this.selection.clear() : this.data.forEach((row) => this.selection.select(row));
   }
 
   checkboxLabel(row?: any): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
-    return `${
-      this.selection.isSelected(row) ? 'deselect' : 'select'
-    } row ${row.position + 1}`;
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
   async linkAccounts(accept: boolean) {
-    await this.adminService
-      .linkAccount(this.selection.selected.map(x => x.id).join(','), accept)
-      .toPromise();
+    await this.adminService.linkAccount(this.selection.selected.map((x) => x.id).join(','), accept).toPromise();
     this.processed.next();
   }
 }

@@ -23,7 +23,7 @@ export const updateGlobalClaimUserMutation = {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
       logger.warn("User tried something it should't have done", {
         required: {
-          anyClaim: ['edit:role']
+          anyClaim: ['edit:claims']
         },
         received: context?.req?.user?.permissions
       });
