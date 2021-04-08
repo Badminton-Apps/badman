@@ -1,3 +1,4 @@
+import { Comment } from './comment.model';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,

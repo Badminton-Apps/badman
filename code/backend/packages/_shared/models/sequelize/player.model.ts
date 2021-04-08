@@ -1,3 +1,4 @@
+import { Comment } from './comment.model';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -106,6 +107,9 @@ export class Player extends Model {
 
   @HasMany(() => RankingPlace, 'PlayerId')
   rankingPlaces?: RankingPlace[];
+
+  @HasMany(() => Comment, 'playerId')
+  comments?: Comment[];
 
   @BelongsToMany(
     () => Team,

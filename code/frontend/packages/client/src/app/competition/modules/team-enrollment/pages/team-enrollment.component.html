@@ -1,7 +1,5 @@
 <div class="mat-subheading-1">Ennroll for competition</div>
-<div>
-  note: Changes are saved directly
-</div>
+<div>note: Changes are saved directly</div>
 
 <mat-vertical-stepper [linear]="true" #stepper (selectionChange)="this.changStepper($event)">
   <mat-step [stepControl]="this.formGroup" *ngIf="this.formGroup">
@@ -11,20 +9,14 @@
       <app-select-club [formGroup]="this.formGroup"></app-select-club>
 
       <div class="row">
-        <mat-checkbox formControlName="enabledNational">
-          National
-        </mat-checkbox>
+        <mat-checkbox formControlName="enabledNational"> National </mat-checkbox>
       </div>
       <div class="row">
-        <mat-checkbox formControlName="enabledLiga">
-          Liga
-        </mat-checkbox>
+        <mat-checkbox formControlName="enabledLiga"> Liga </mat-checkbox>
       </div>
 
       <div class="row">
-        <mat-checkbox formControlName="enabledProvincial">
-          Prov
-        </mat-checkbox>
+        <mat-checkbox formControlName="enabledProvincial"> Prov </mat-checkbox>
       </div>
 
       <div class="row">
@@ -41,12 +33,29 @@
   <mat-step>
     <ng-template matStepLabel>Assign your teams</ng-template>
 
-
     <ng-container *ngIf="this.show$ | async as teamInfo; else loading">
       <ng-container *ngIf="this.subEventsInitialized; else loading">
-        <app-assign-team (onChange)="this.teamsAssigned($event)" [club]="teamInfo.club" [type]="'competition.types.male' | translate" [teams]="teamInfo.teamsM" [subEvents]="teamInfo.subEventM"></app-assign-team>
-        <app-assign-team (onChange)="this.teamsAssigned($event)" [club]="teamInfo.club" [type]="'competition.types.mix' | translate" [teams]="teamInfo.teamsMX" [subEvents]="teamInfo.subEventMX"></app-assign-team>
-        <app-assign-team (onChange)="this.teamsAssigned($event)" [club]="teamInfo.club" [type]="'competition.types.female' | translate" [teams]="teamInfo.teamsF" [subEvents]="teamInfo.subEventF"></app-assign-team>
+        <app-assign-team
+          (onChange)="this.teamsAssigned($event)"
+          [club]="teamInfo.club"
+          [type]="'competition.types.male' | translate"
+          [teams]="teamInfo.teamsM"
+          [subEvents]="teamInfo.subEventM"
+        ></app-assign-team>
+        <app-assign-team
+          (onChange)="this.teamsAssigned($event)"
+          [club]="teamInfo.club"
+          [type]="'competition.types.mix' | translate"
+          [teams]="teamInfo.teamsMX"
+          [subEvents]="teamInfo.subEventMX"
+        ></app-assign-team>
+        <app-assign-team
+          (onChange)="this.teamsAssigned($event)"
+          [club]="teamInfo.club"
+          [type]="'competition.types.female' | translate"
+          [teams]="teamInfo.teamsF"
+          [subEvents]="teamInfo.subEventF"
+        ></app-assign-team>
       </ng-container>
     </ng-container>
 
@@ -63,22 +72,33 @@
   <mat-step>
     <ng-template matStepLabel>Location(s)</ng-template>
 
-
     <ng-container *ngIf="this.club$ | async as club; else loading">
       <p>Select the locations that apply for each event</p>
-      <ng-container *ngIf="this.natEvent$ | async as nat ">
-        <div class="mat-subheading-2">{{ nat.name}}</div>
-        <app-assign-location (onChange)="this.locationAssigned($event)" [locations]="club.locations" [event]="nat"></app-assign-location>
+      <ng-container *ngIf="this.natEvent$ | async as nat">
+        <div class="mat-subheading-2">{{ nat.name }}</div>
+        <app-assign-location
+          (onChange)="this.locationAssigned($event)"
+          [locations]="club.locations"
+          [event]="nat"
+        ></app-assign-location>
       </ng-container>
 
-      <ng-container *ngIf="this.ligaEvent$ | async as liga ">
-        <div class="mat-subheading-2">{{ liga.name}}</div>
-        <app-assign-location (onChange)="this.locationAssigned($event)" [locations]="club.locations" [event]="liga"></app-assign-location>
+      <ng-container *ngIf="this.ligaEvent$ | async as liga">
+        <div class="mat-subheading-2">{{ liga.name }}</div>
+        <app-assign-location
+          (onChange)="this.locationAssigned($event)"
+          [locations]="club.locations"
+          [event]="liga"
+        ></app-assign-location>
       </ng-container>
 
-      <ng-container *ngIf="this.provEvent$ | async as prov ">
-        <div class="mat-subheading-2">{{ prov.name}}</div>
-        <app-assign-location (onChange)="this.locationAssigned($event)" [locations]="club.locations" [event]="prov"></app-assign-location>
+      <ng-container *ngIf="this.provEvent$ | async as prov">
+        <div class="mat-subheading-2">{{ prov.name }}</div>
+        <app-assign-location
+          (onChange)="this.locationAssigned($event)"
+          [locations]="club.locations"
+          [event]="prov"
+        ></app-assign-location>
       </ng-container>
     </ng-container>
 
@@ -94,12 +114,20 @@
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
-    <mat-form-field appearance="outline" class="comment">
-      <mat-label>Leave a comment</mat-label>
-      <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="10" cdkAutosizeMaxRows="30" placeholder="Any other comments"></textarea>
-    </mat-form-field>
-
-
+    <form [formGroup]="this.formGroup">
+      <mat-form-field appearance="outline" class="comment">
+        <mat-label>Leave a comment</mat-label>
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="10"
+          cdkAutosizeMaxRows="30"
+          placeholder="Any other comments"
+          formControlName="comment"
+        ></textarea>
+      </mat-form-field>
+    </form>
     <div>
       <button mat-button matStepperPrevious>Back</button>
       <button mat-button (click)="this.submit()">submit</button>
