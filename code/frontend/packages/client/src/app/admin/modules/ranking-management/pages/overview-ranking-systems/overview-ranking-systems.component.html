@@ -10,7 +10,11 @@
   <ng-container matColumnDef="select">
     <th mat-header-cell *matHeaderCellDef>Select</th>
     <td mat-cell *matCellDef="let row">
-      <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? rankingSelection.toggle(row) : null" [checked]="rankingSelection.isSelected(row)">
+      <mat-checkbox
+        (click)="$event.stopPropagation()"
+        (change)="$event ? rankingSelection.toggle(row) : null"
+        [checked]="rankingSelection.isSelected(row)"
+      >
       </mat-checkbox>
     </td>
   </ng-container>
@@ -62,9 +66,7 @@
       </button>
 
       <mat-menu #rankingSystemMenu="matMenu">
-        <button mat-menu-item (click)="makePrimary(element.id)">
-          Make primary
-        </button>
+        <button mat-menu-item (click)="makePrimary(element.id)">Make primary</button>
         <button mat-menu-item [routerLink]="[element.id, 'edit']">Edit</button>
         <button mat-menu-item [routerLink]="[element.id]">Details</button>
         <button mat-menu-item (click)="deleteSystem(element.id)">Delete</button>
@@ -103,9 +105,7 @@
 <button mat-button (click)="calculate()">Calculate</button>
 <button mat-button (click)="download()">Download</button>
 <button mat-button (click)="download('visual')">Download Visual</button>
-<button mat-button (click)="download('visual-nonBVL_LFBB')">
-  Download Visual (non LFBB/BVL)
-</button>
+<button mat-button (click)="download('visual-nonBVL_LFBB')">Download Visual (non LFBB/BVL)</button>
 <button mat-button (click)="reset(resetTmpl)">Reset</button>
 <button mat-button [routerLink]="['add']">New system</button>
 
@@ -113,15 +113,12 @@
   <h1 mat-dialog-title>Resetting running</h1>
   <div mat-dialog-content>
     <p>
-      This wil only reset the running property allowing you to start it again,
-      however if you reset this and it is still running this can crash the
-      server, use with caution!!!
+      This wil only reset the running property allowing you to start it again, however if you reset this and it is still
+      running this can crash the server, use with caution!!!
     </p>
   </div>
   <div mat-dialog-actions>
     <button mat-button [mat-dialog-close]="true">I know what I'm doing!</button>
-    <button mat-button [mat-dialog-close]="false" cdkFocusInitial>
-      Woops, nope
-    </button>
+    <button mat-button [mat-dialog-close]="false" cdkFocusInitial>Woops, nope</button>
   </div>
 </ng-template>

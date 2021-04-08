@@ -18,24 +18,12 @@
 
   <div class="content">
     <mat-list>
-      <mat-list-item *ngIf="this.location">{{
-        this.location.address
-      }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.postalcode">{{
-        this.location.postalcode
-      }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.city">{{
-        this.location.city
-      }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.state">{{
-        this.location.state
-      }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.phone">{{
-        this.location.phone
-      }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.fax">{{
-        this.location.fax
-      }}</mat-list-item>
+      <mat-list-item *ngIf="this.location">{{ this.location.address }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.postalcode">{{ this.location.postalcode }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.city">{{ this.location.city }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.state">{{ this.location.state }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.phone">{{ this.location.phone }}</mat-list-item>
+      <mat-list-item *ngIf="this.location.fax">{{ this.location.fax }}</mat-list-item>
     </mat-list>
   </div>
 </div>

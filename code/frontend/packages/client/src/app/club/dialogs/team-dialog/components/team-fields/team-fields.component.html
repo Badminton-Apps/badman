@@ -46,10 +46,14 @@
     <div class="mat-subheading-2">Captain</div>
   </div>
   <div class="row">
-    <app-player-search [player]="this.team.captain" [allowCreation]="true" [club]="this.club" (onSelectPlayer)="this.selectedCaptain($event)" [clearOnSelection]="false"></app-player-search>
+    <app-player-search
+      [player]="this.team.captain"
+      [allowCreation]="true"
+      [club]="this.club"
+      (onSelectPlayer)="this.selectedCaptain($event)"
+      [clearOnSelection]="false"
+    ></app-player-search>
   </div>
-
-
 </form>
 <form [formGroup]="this.captinForm">
   <div class="row">
@@ -65,6 +69,12 @@
   </div>
 </form>
 
-<button mat-raised-button color="primary" *ngIf="!this.team.id" [disabled]="!this.teamForm?.valid" (click)="this.teamAdded()">
+<button
+  mat-raised-button
+  color="primary"
+  *ngIf="!this.team.id"
+  [disabled]="!this.teamForm?.valid"
+  (click)="this.teamAdded()"
+>
   Create
 </button>

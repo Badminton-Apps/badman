@@ -6,7 +6,11 @@
         Create new
       </mat-option>
 
-      <mat-option *ngFor="let option of options" [value]="option" [disabled]="this.ignorePlayersIds.indexOf(option.id) >= 0">
+      <mat-option
+        *ngFor="let option of options"
+        [value]="option"
+        [disabled]="this.ignorePlayersIds.indexOf(option.id) >= 0"
+      >
         {{ option.firstName }} {{ option.lastName }}
         <small *ngIf="option.memberId">({{ option.memberId }}) </small>
         <small *ngIf="option.clubs && option.clubs.length > 0 && option.clubs[0]?.id != this.clubId">{{
