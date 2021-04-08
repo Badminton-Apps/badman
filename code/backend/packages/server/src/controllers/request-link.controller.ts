@@ -1,6 +1,7 @@
 import {
   AuthenticatedRequest,
   BaseController,
+  DataBaseHandler,
   logger,
   Player,
   RequestLink
@@ -36,7 +37,7 @@ export class RequestLinkController extends BaseController {
       }
 
       const props = {
-        PlayerId: player.id,
+        playerId: player.id,
         sub: request.user.sub
       };
 
@@ -70,6 +71,7 @@ export class RequestLinkController extends BaseController {
   };
 
   private _linkAccount = async (request: AuthenticatedRequest, response: Response) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       if (!request.user.hasAnyPermission(['link:player'])) {
         response.status(401).send('No no no!!');
@@ -77,29 +79,27 @@ export class RequestLinkController extends BaseController {
       }
 
       const linkRequests = await RequestLink.findAll({
-        where: { id: request.params.ids.split(',') }
+        where: { id: request.params.ids.split(',') },
+        transaction
       });
 
-      // // Only if accepted response
-      // if (request.params.accept === 'true') {
-      //   await Player.bulkCreate(
-      //     linkRequests.map(x => {
-      //       return {
-      //         id: x.PlayerId,
-      //       };
-      //     }),
-      //     { updateOnDuplicate: ['email'] }
-      //   );
-      // }
+      for (const linkrequest of linkRequests) {
+        const dbPlayer = await Player.findByPk(linkrequest.playerId, { transaction });
+        dbPlayer.sub = linkrequest.sub;
+        await dbPlayer.save({ transaction });
+      }
 
       await RequestLink.destroy({
-        where: { id: linkRequests.map(x => x.id) }
+        where: { id: linkRequests.map(x => x.id) },
+        transaction
       });
 
+      await transaction.commit();
       response.json({ message: 'done' });
     } catch (error) {
       logger.error(error);
       response.status(400).json(error);
+      await transaction.rollback();
     }
   };
 }

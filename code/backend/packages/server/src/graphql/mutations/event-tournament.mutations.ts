@@ -18,13 +18,13 @@ const addEventTournamentMutation = {
     }
   },
   resolve: async (findOptions, { eventTournament }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:tournament', 'add-any:tournament'])) {
-      logger.warn('User tried something it should\'t have done', {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:tournament'])) {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['add:tournament', 'add-any:tournament']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -85,13 +85,16 @@ const updateEventTournamentMutation = {
     }
   },
   resolve: async (findOptions, { id, eventTournament }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:eventTournament', 'edit-any:tournament'])) {
-      logger.warn('User tried something it should\'t have done', {
+    if (
+      context?.req?.user == null ||
+      !context.req.user.hasAnyPermission(['edit:eventTournament', 'edit-any:tournament'])
+    ) {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:tournament', 'edit-any:tournament']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -104,7 +107,7 @@ const updateEventTournamentMutation = {
         transaction
       });
 
-      await  transaction.commit();
+      await transaction.commit();
     } catch (e) {
       logger.warn('rollback');
       await transaction.rollback();
