@@ -1,23 +1,14 @@
 <div *ngIf="this.rankingPlaces$ | async as rankingPlaces">
   <div *ngIf="rankingPlaces.single">
     <h3 translate>systems.single</h3>
-    <app-chart
-      [rankingPlaces]="rankingPlaces.single"
-      [maxLevels]="this.rankingSystem.amountOfLevels"
-    ></app-chart>
+    <app-chart [rankingPlaces]="rankingPlaces.single" [maxLevels]="this.rankingSystem.amountOfLevels"></app-chart>
   </div>
   <div *ngIf="rankingPlaces.double">
     <h3 translate>systems.double</h3>
-    <app-chart
-      [rankingPlaces]="rankingPlaces.double"
-      [maxLevels]="this.rankingSystem.amountOfLevels"
-    ></app-chart>
+    <app-chart [rankingPlaces]="rankingPlaces.double" [maxLevels]="this.rankingSystem.amountOfLevels"></app-chart>
   </div>
   <div *ngIf="rankingPlaces.mix">
     <h3 translate>systems.mix</h3>
-    <app-chart
-      [rankingPlaces]="rankingPlaces.mix"
-      [maxLevels]="this.rankingSystem.amountOfLevels"
-    ></app-chart>
+    <app-chart [rankingPlaces]="rankingPlaces.mix" [maxLevels]="this.rankingSystem.amountOfLevels"></app-chart>
   </div>
 </div>

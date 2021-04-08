@@ -1,30 +1,17 @@
 <form (ngSubmit)="this.update()" [formGroup]="rankingSystemForm">
   <div class="mat-subheading-1">System</div>
-  <div class="mat-subheading-2">
-    When field isn't required (see '*') leave empty for disable limitation
-  </div>
+  <div class="mat-subheading-2">When field isn't required (see '*') leave empty for disable limitation</div>
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
       <mat-label>Name</mat-label>
-      <input
-        matInput
-        formControlName="name"
-        alt="name"
-        autocomplete="name"
-        required
-      />
+      <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
 
   <div class="row">
     <mat-form-field appearance="outline">
       <mat-label>Type</mat-label>
-      <mat-select
-        formControlName="rankingSystem"
-        alt="rankingSystem"
-        autocomplete="rankingSystem"
-        required
-      >
+      <mat-select formControlName="rankingSystem" alt="rankingSystem" autocomplete="rankingSystem" required>
         <mat-option value="BVL">BVL</mat-option>
         <mat-option value="LFBB">LFBB</mat-option>
         <mat-option value="Original">Original</mat-option>
@@ -118,7 +105,6 @@
   </div>
 
   <div class="row">
-
     <mat-form-field appearance="outline">
       <mat-label>Point update</mat-label>
       <input
@@ -168,7 +154,6 @@
         <mat-option value="days">Days</mat-option>
       </mat-select>
     </mat-form-field>
-
   </div>
   <div class="row">
     <mat-form-field appearance="outline">
@@ -184,12 +169,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Period games</mat-label>
-      <mat-select
-        formControlName="periodUnit"
-        alt="periodUnit"
-        autocomplete="periodUnit"
-        required
-      >
+      <mat-select formControlName="periodUnit" alt="periodUnit" autocomplete="periodUnit" required>
         <mat-option value="months">Months</mat-option>
         <mat-option value="weeks">Weeks</mat-option>
         <mat-option value="days">Days</mat-option>
@@ -222,12 +202,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Starting Type</mat-label>
-      <mat-select
-        formControlName="startingType"
-        alt="startingType"
-        autocomplete="startingType"
-        required
-      >
+      <mat-select formControlName="startingType" alt="startingType" autocomplete="startingType" required>
         <mat-option value="formula">Formula</mat-option>
         <mat-option value="tableLFBB">Table LFBB</mat-option>
         <mat-option value="tableBVL">Table BVL</mat-option>
@@ -270,12 +245,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Inactivity period</mat-label>
-      <mat-select
-        formControlName="inactivityUnit"
-        alt="inactivityUnit"
-        autocomplete="inactivityUnit"
-        required
-      >
+      <mat-select formControlName="inactivityUnit" alt="inactivityUnit" autocomplete="inactivityUnit" required>
         <mat-option value="months">Months</mat-option>
         <mat-option value="weeks">Weeks</mat-option>
         <mat-option value="days">Days</mat-option>
@@ -297,16 +267,8 @@
   <div class="row">
     <mat-form-field appearance="outline">
       <mat-label>Groups</mat-label>
-      <mat-select
-        formControlName="groups"
-        alt="group"
-        multiple
-        required
-        [compareWith]="this.groupCompare"
-      >
-        <mat-option [value]="group" *ngFor="let group of this.groups">{{
-          group.name
-        }}</mat-option>
+      <mat-select formControlName="groups" alt="group" multiple required [compareWith]="this.groupCompare">
+        <mat-option [value]="group" *ngFor="let group of this.groups">{{ group.name }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

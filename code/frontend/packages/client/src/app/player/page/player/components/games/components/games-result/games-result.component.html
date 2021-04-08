@@ -13,17 +13,13 @@
         {{ subEvent.name }} - {{ subEvent.level }}
       </ng-container>
     </div>
-    
+
     <div class="date">
       {{ subEvent.games[0].playedAt | date }}
     </div>
   </div>
 
   <div class="games">
-    <app-game-result
-      [game]="game"
-      [player]="player"
-      *ngFor="let game of subEvent.games"
-    ></app-game-result>
+    <app-game-result [game]="game" [player]="player" *ngFor="let game of subEvent.games"></app-game-result>
   </div>
 </ng-container>

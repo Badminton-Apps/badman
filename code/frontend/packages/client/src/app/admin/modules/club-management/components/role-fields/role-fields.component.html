@@ -1,27 +1,16 @@
 <form (ngSubmit)="this.update()" [formGroup]="roleForm">
-  <div class="mat-subheading-2">
-    When field isn't required (see '*') leave empty for disable limitation
-  </div>
+  <div class="mat-subheading-2">When field isn't required (see '*') leave empty for disable limitation</div>
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
       <mat-label>Name</mat-label>
-      <input
-        matInput
-        formControlName="name"
-        alt="name"
-        autocomplete="name"
-        required
-      />
+      <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
 
   <ng-container *ngFor="let group of this.claims">
     <h2>{{ group.category }}</h2>
     <ng-container *ngFor="let claim of group.claims">
-      <app-claim
-        [claim]="claim"
-        (onChange)="claimChanged(claim, $event)"
-      ></app-claim>
+      <app-claim [claim]="claim" (onChange)="claimChanged(claim, $event)"></app-claim>
     </ng-container>
   </ng-container>
 
