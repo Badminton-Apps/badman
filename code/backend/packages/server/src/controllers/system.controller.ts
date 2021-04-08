@@ -16,7 +16,6 @@ export class SystemController extends BaseController {
 
   private _intializeRoutes() {
     this.router.post(`${this._path}/:id/make-primary`, this._authMiddleware, this._makePrimary);
-
     this.router.get(`${this._path}/:id/caps`, this._getRankingSystemCaps);
   }
 
