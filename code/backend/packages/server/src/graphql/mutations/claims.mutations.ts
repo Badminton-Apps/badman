@@ -1,8 +1,7 @@
-import { Claim, DataBaseHandler, logger, Player, Role } from '@badvlasim/shared';
-import { GraphQLBoolean, GraphQLID, GraphQLInt } from 'graphql';
+import { DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import { GraphQLBoolean, GraphQLID } from 'graphql';
 import { ApiError } from '../../models/api.error';
-import { ClaimType, RoleInputType, RoleType } from '../types';
-
+import { RoleType } from '../types';
 
 export const updateGlobalClaimUserMutation = {
   type: RoleType,
@@ -22,12 +21,12 @@ export const updateGlobalClaimUserMutation = {
   },
   resolve: async (findOptions, { playerId, claimId, active }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:role'])) {
-      logger.warn('User tried something it should\'t have done', {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:role']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -46,10 +45,10 @@ export const updateGlobalClaimUserMutation = {
         });
       }
 
-      if (active){
-        await dbPlayer.addClaim(claimId, {transaction});
-      } else{
-        await dbPlayer.removeClaim(claimId, {transaction});
+      if (active) {
+        await dbPlayer.addClaim(claimId, { transaction });
+      } else {
+        await dbPlayer.removeClaim(claimId, { transaction });
       }
 
       await transaction.commit();

@@ -4,6 +4,7 @@ import {
   AuthenticatedRequest,
   AuthenticationSercice,
   DataBaseHandler,
+  Player,
   startWhenReady
 } from '@badvlasim/shared';
 import 'apollo-cache-control';
@@ -57,6 +58,7 @@ const startServer = (databaseService: DataBaseHandler) => {
       if (process.env.production === 'false') {
         const grahpReq = {
           ...req,
+          player: await Player.findOne({ where: { memberId: '50104197' } }),
           user: {
             ...req.user,
             hasAnyPermission: (permissions: string[]) => {

@@ -1,5 +1,5 @@
 import { Club, DataBaseHandler, logger, Player } from '@badvlasim/shared';
-import { GraphQLID, GraphQLInt } from 'graphql';
+import { GraphQLID } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { ClubInputType, ClubType } from '../types';
 
@@ -13,12 +13,12 @@ export const addClubMutation = {
   },
   resolve: async (findOptions, { club }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:club'])) {
-      logger.warn('User tried something it should\'t have done', {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['add:club']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -26,10 +26,7 @@ export const addClubMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const clubDb = await Club.create(
-        club,
-        { transaction }
-      );
+      const clubDb = await Club.create(club, { transaction });
 
       await transaction.commit();
       return clubDb;
@@ -54,13 +51,16 @@ export const addPlayerToClubMutation = {
     }
   },
   resolve: async (findOptions, { clubId, playerId }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission([`${clubId}_edit:club`, 'edit-any:club'])) {
-      logger.warn('User tried something it should\'t have done', {
+    if (
+      context?.req?.user == null ||
+      !context.req.user.hasAnyPermission([`${clubId}_edit:club`, 'edit-any:club'])
+    ) {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: [`${clubId}_edit:club`, 'edit-any:club']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -102,13 +102,16 @@ export const updateClubMutation = {
     }
   },
   resolve: async (findOptions, { club }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission([`${club.id}_edit:club`, 'edit-any:club'])) {
-      logger.warn('User tried something it should\'t have done', {
+    if (
+      context?.req?.user == null ||
+      !context.req.user.hasAnyPermission([`${club.id}_edit:club`, 'edit-any:club'])
+    ) {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: [`${club.id}_edit:club`, 'edit-any:club']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "

@@ -36,13 +36,13 @@ import {
   Table,
   TableOptions
 } from 'sequelize-typescript';
+import { DrawTournament } from '../../..';
 import { GameType } from '../../enums';
 import { Player } from '../player.model';
 import { RankingPoint } from '../ranking';
-import { DrawTournament, DrawCompetition } from '../../..';
+import { EncounterCompetition } from './competition/encounter-competition.model';
 import { Court } from './court.model';
 import { GamePlayer } from './game-player.model';
-import { EncounterCompetition } from './competition/encounter-competition.model';
 
 @Table({
   timestamps: true,
@@ -83,13 +83,13 @@ export class Game extends Model {
 
   @BelongsTo(() => DrawTournament, {
     foreignKey: 'linkId',
-    constraints: false,
+    constraints: false
   })
   tournament: DrawTournament;
 
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
-    constraints: false,
+    constraints: false
   })
   competition: EncounterCompetition;
 

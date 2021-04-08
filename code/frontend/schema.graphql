@@ -35,31 +35,10 @@ type Club {
   clubId: Int
   createdAt: Date!
   updatedAt: Date!
-  teams(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Team]
-  roles(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Role]
-  locations(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Location]
-  players(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    end: String
-  ): [Player]
+  teams(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Team]
+  roles(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Role]
+  locations(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Location]
+  players(limit: Int, order: String, where: SequelizeJSON, offset: Int, end: String): [Player]
 }
 
 type ClubConnection {
@@ -78,6 +57,26 @@ input ClubInput {
   name: String!
   abbreviation: String
   clubId: Int
+}
+
+type Comment {
+  id: String!
+  message: String
+  playerId: String
+  clubId: String
+  linkId: String
+  linkType: String
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+input CommentInput {
+  id: String
+  message: String
+  playerId: String
+  clubId: String
+  linkId: String
+  linkType: String
 }
 
 type CountsResult {
@@ -108,13 +107,7 @@ type DrawTournament {
   subeventId: String
   createdAt: Date!
   updatedAt: Date!
-  games(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    playerId: ID
-  ): [Game]
+  games(limit: Int, order: String, where: SequelizeJSON, offset: Int, playerId: ID): [Game]
   gamesCount: Int
   subEvent: SubEventTournament
 }
@@ -133,13 +126,7 @@ type EncounterCompetition {
   awayTeamId: String
   createdAt: Date!
   updatedAt: Date!
-  games(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    playerId: ID!
-  ): [Game]
+  games(limit: Int, order: String, where: SequelizeJSON, offset: Int, playerId: ID!): [Game]
   gamesCount: Int
   draw: DrawCompetition
 }
@@ -153,19 +140,9 @@ type EventCompetition {
   allowEnlisting: Boolean
   createdAt: Date!
   updatedAt: Date!
-  subEvents(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    direction: String
-  ): [SubEventCompetition]
-  locations(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Location]
+  subEvents(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [SubEventCompetition]
+  locations(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Location]
+  comments(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Comment]
 }
 
 type EventCompetitionConnection {
@@ -210,18 +187,8 @@ type EventTournament {
   uniCode: String
   createdAt: Date!
   updatedAt: Date!
-  subEvents(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [SubEventTournament]
-  locations(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Location]
+  subEvents(limit: Int, order: String, where: SequelizeJSON, offset: Int): [SubEventTournament]
+  locations(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Location]
 }
 
 type EventTournamentConnection {
@@ -268,13 +235,7 @@ type Game {
   createdAt: Date!
   updatedAt: Date!
   players: [GamePlayer]
-  rankingPoints(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    direction: String
-  ): [RankingPoint]
+  rankingPoints(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [RankingPoint]
   tournament: DrawTournament
   competition: EncounterCompetition
 }
@@ -302,12 +263,7 @@ type GamePlayer {
   gameId: String!
   team: Int
   player: Int
-  rankingPlace(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): RankingPlace
+  rankingPlace(limit: Int, order: String, where: SequelizeJSON, offset: Int): RankingPlace
 }
 
 type Imported {
@@ -376,24 +332,9 @@ type Location {
   clubId: String
   createdAt: Date!
   updatedAt: Date!
-  club(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Club]
-  eventCompetitions(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [EventCompetition]
-  eventTournaments(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [EventTournament]
+  club(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Club]
+  eventCompetitions(limit: Int, order: String, where: SequelizeJSON, offset: Int): [EventCompetition]
+  eventTournaments(limit: Int, order: String, where: SequelizeJSON, offset: Int): [EventTournament]
 }
 
 input LocationInput {
@@ -432,34 +373,11 @@ type Player {
   updatedAt: Date!
   teams: [Team]
   claims: [Claim]
-  rankingPlaces(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    direction: String
-  ): [RankingPlace]
-  rankingPoints(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    direction: String
-  ): [RankingPoint]
-  games(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    direction: String
-  ): [Game]
+  rankingPlaces(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [RankingPlace]
+  rankingPoints(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [RankingPoint]
+  games(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [Game]
   base: Boolean
-  clubs(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Club]
+  clubs(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Club]
 }
 
 input PlayerInput {
@@ -505,12 +423,7 @@ type RankingPlace {
   createdAt: Date!
   updatedAt: Date!
   rankingSystem: RankingSystem
-  player(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): Player!
+  player(limit: Int, order: String, where: SequelizeJSON, offset: Int): Player!
 }
 
 input RankingPlaceInput {
@@ -562,18 +475,8 @@ type RankingPoint {
   GameId: String
   createdAt: Date!
   updatedAt: Date!
-  type(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): RankingSystem!
-  player(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): Player!
+  type(limit: Int, order: String, where: SequelizeJSON, offset: Int): RankingSystem!
+  player(limit: Int, order: String, where: SequelizeJSON, offset: Int): Player!
 }
 
 type RankingSystem {
@@ -702,24 +605,9 @@ type Role {
   clubId: String
   createdAt: Date!
   updatedAt: Date!
-  club(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Club]
-  claims(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Claim]
-  players(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Player]
+  club(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Club]
+  claims(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Claim]
+  players(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Player]
 }
 
 input RoleInput {
@@ -732,66 +620,46 @@ input RoleInput {
 
 type RootMutationType {
   addClub(club: ClubInput): Club
-  updateClub(club: ClubInput): Club
-  addPlayerToClub(clubId: ID, playerId: ID): Club
-  addPlayer(player: PlayerInput): Player
-  updatePlayer(player: PlayerInput): Player
-  updatePlayerRanking(rankingPlace: RankingPlaceInput): Player
-  addTeam(team: TeamInput!, clubId: ID!): Team
-  updateTeam(team: TeamInput): Team
-  removeTeam(teamId: ID): Team
-  updatePlayerTeam(teamId: ID, playerId: ID, base: Boolean): Team
-  updateSubEventTeam(teamId: ID, newSubEventId: ID, oldSubEventId: ID): Team
-  addPlayerToTeam(teamId: ID, playerId: ID): Team
-  removePlayerFromTeam(teamId: ID, playerId: ID): Team
-  addLocation(location: LocationInput!, clubId: ID!): Location
-  updateLocation(location: LocationInput): Location
-  removeLocation(locationId: ID): Location
-  updateCompetitionEventLocation(
-    locationId: ID
-    eventId: ID
-    use: Boolean
-  ): Location
-  updateTournamentEventLocation(
-    locationId: ID
-    eventId: ID
-    use: Boolean
-  ): Location
-  addRole(role: RoleInput, clubId: Int): Role
-  updateRole(role: RoleInput): Role
-  addPlayerToRole(roleId: ID, playerId: ID): Role
-  removePlayerFromRole(roleId: ID, playerId: ID): Role
-  updateGlobalClaimUser(playerId: ID, claimId: ID, active: Boolean): Role
+  addComment(comment: CommentInput, eventId: ID!): Comment
   addEventCompetition(eventCompetition: EventCompetitionInput): EventCompetition
   addEventTournament(eventTournament: EventTournamentInput): EventTournament
-  updateEventCompetition(
-    eventCompetition: EventCompetitionInput
-  ): EventCompetition
-  updateEventTournament(
-    id: Int
-    eventTournament: EventTournamentInput
-  ): EventTournament
-  setGroupsCompetition(id: ID!, groupIds: [ID]): EventCompetition
+  addLocation(location: LocationInput!, clubId: ID!): Location
+  addPlayer(player: PlayerInput): Player
+  addPlayerToClub(clubId: ID, playerId: ID): Club
+  addPlayerToRole(roleId: ID, playerId: ID): Role
+  addPlayerToTeam(teamId: ID, playerId: ID): Team
   addRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
-  updateRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
-  addRankingSystemGroup(
-    rankingSystemGroup: RankingSystemGroupInput
-  ): RankingSystemGroup
-  updateRankingSystemGroup(
-    id: Int
-    rankingSystemGroup: RankingSystemGroupInput
-  ): RankingSystemGroup
+  addRankingSystemGroup(rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
+  addRole(role: RoleInput, clubId: Int): Role
+  addTeam(team: TeamInput!, clubId: ID!): Team
   deleteImportedEvent(event: ImportInput): Imported
+  removeLocation(locationId: ID): Location
+  removePlayerFromRole(roleId: ID, playerId: ID): Role
+  removePlayerFromTeam(teamId: ID, playerId: ID): Team
+  removeTeam(teamId: ID): Team
+  setGroupsCompetition(id: ID!, groupIds: [ID]): EventCompetition
+  updateClub(club: ClubInput): Club
+  updateComment(comment: CommentInput): Comment
+  updateCompetitionEventLocation(locationId: ID, eventId: ID, use: Boolean): Location
+  updateEventCompetition(eventCompetition: EventCompetitionInput): EventCompetition
+  updateEventTournament(id: Int, eventTournament: EventTournamentInput): EventTournament
+  updateGlobalClaimUser(playerId: ID, claimId: ID, active: Boolean): Role
+  updateLocation(location: LocationInput): Location
+  updatePlayer(player: PlayerInput): Player
+  updatePlayerRanking(rankingPlace: RankingPlaceInput): Player
+  updatePlayerTeam(teamId: ID, playerId: ID, base: Boolean): Team
+  updateRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
+  updateRankingSystemGroup(id: Int, rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
+  updateRole(role: RoleInput): Role
+  updateSubEventTeam(teamId: ID, newSubEventId: ID, oldSubEventId: ID): Team
+  updateTeam(team: TeamInput): Team
+  updateTournamentEventLocation(locationId: ID, eventId: ID, use: Boolean): Location
 }
 
 type RootQueryType {
-  player(id: ID!): Player
-  players(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Player]
+  claims(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Claim]
+  club(id: ID!): Club
+  clubs(after: String, first: Int, before: String, last: Int, where: SequelizeJSON): ClubConnection
   eventCompetition(id: ID!): EventCompetition
   eventCompetitions(
     after: String
@@ -810,20 +678,7 @@ type RootQueryType {
     orderBy: [EventTournamentOrderBy]
     where: SequelizeJSON
   ): EventTournamentConnection
-  location(id: ID!): Location
-  claims(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Claim]
-  role(id: String!): Role
-  roles(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [Role]
+  games(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [Game]
   imported(
     after: String
     first: Int
@@ -832,42 +687,16 @@ type RootQueryType {
     orderBy: [ImportedOrderBy]
     where: SequelizeJSON
   ): ImportedConnection
-  games(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    direction: String
-  ): [Game]
+  location(id: ID!): Location
+  player(id: ID!): Player
+  players(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Player]
+  rankingSystemGroup(limit: Int, order: String, where: SequelizeJSON, offset: Int): [RankingSystemGroup]
+  role(id: String!): Role
+  roles(limit: Int, order: String, where: SequelizeJSON, offset: Int): [Role]
+  system(id: ID!): RankingSystem
+  systems(limit: Int, order: String, where: SequelizeJSON, offset: Int): [RankingSystem]
   team(id: ID!): Team
-  teams(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    clubId: ID!
-  ): [Team]
-  club(id: ID!): Club
-  clubs(
-    after: String
-    first: Int
-    before: String
-    last: Int
-    where: SequelizeJSON
-  ): ClubConnection
-  system(id: String!): RankingSystem
-  systems(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [RankingSystem]
-  rankingSystemGroup(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [RankingSystemGroup]
+  teams(limit: Int, order: String, where: SequelizeJSON, offset: Int, clubId: ID!): [Team]
 }
 
 scalar SequelizeJSON
@@ -959,31 +788,10 @@ type Team {
   updatedAt: Date!
   captainId: String
   clubId: String
-  club(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): Club
-  players(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-    end: String
-  ): [Player]
-  subEvents(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): [SubEventCompetition]
-  captain(
-    limit: Int
-    order: String
-    where: SequelizeJSON
-    offset: Int
-  ): Player
+  club(limit: Int, order: String, where: SequelizeJSON, offset: Int): Club
+  players(limit: Int, order: String, where: SequelizeJSON, offset: Int, end: String): [Player]
+  subEvents(limit: Int, order: String, where: SequelizeJSON, offset: Int): [SubEventCompetition]
+  captain(limit: Int, order: String, where: SequelizeJSON, offset: Int): Player
 }
 
 input TeamInput {
@@ -1010,4 +818,3 @@ enum TeampreferredDayEnumType {
   friday
   saturday
 }
-
