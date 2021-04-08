@@ -6,28 +6,18 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #options="matMenu">
-          <button
-            mat-menu-item
-            [routerLink]="['/', 'admin', 'event', 'competition', event.id, 'edit']"
-          >
-            Edit
-          </button>
+          <button mat-menu-item [routerLink]="['/', 'admin', 'event', 'competition', event.id, 'edit']">Edit</button>
           <mat-divider></mat-divider>
           <button mat-menu-item>Delete</button>
         </mat-menu>
       </app-has-claim>
-      <img
-        src="../../assets/images//user-profile-bg.jpg"
-        alt="Background image"
-      />
+      <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
     </div>
     <div class="info">
       <div class="picture"></div>
       <div class="name">
         <span class="up"> {{ event.name }}</span>
-        <span class="down">
-          {{ event.startYear }} - {{ event.startYear + 1 }}
-        </span>
+        <span class="down"> {{ event.startYear }} - {{ event.startYear + 1 }} </span>
       </div>
     </div>
   </div>

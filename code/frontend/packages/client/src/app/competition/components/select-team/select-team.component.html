@@ -8,15 +8,8 @@
       formControlName="team"
       [matAutocomplete]="auto"
     />
-    <mat-autocomplete
-      autoActiveFirstOption
-      #auto="matAutocomplete"
-      [displayWith]="getOptionText"
-    >
-      <mat-option
-        *ngFor="let option of filteredOptions | async"
-        [value]="option"
-      >
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="getOptionText">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
         {{ option.name }}
       </mat-option>
     </mat-autocomplete>

@@ -7,12 +7,7 @@
     multiple
     (change)="addFiles($event.target.files)"
   />
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="31"
-    height="32"
-    viewBox="0 0 63 64"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="31" height="32" viewBox="0 0 63 64">
     <g fill="#3B454F" fill-rule="nonzero">
       <path
         d="M42.656 15.135a1.953 1.953 0 0 1-1.391-.578L31.5 4.795l-9.765 9.762a1.97 1.97 0 1 1-2.785-2.785L30.106.616a1.97 1.97 0 0 1 2.785 0l11.157 11.156a1.97 1.97 0 0 1-1.392 3.363z"
@@ -28,13 +23,7 @@
 
   <div class="mat-subheading-3">Drag and drop file here</div>
   <div class="mat-subheading-3">or</div>
-  <button
-    mat-raised-button
-    for="fileDropRef"
-    [disabled]="!(canImport$ | async)"
-  >
-    Browse file
-  </button>
+  <button mat-raised-button for="fileDropRef" [disabled]="!(canImport$ | async)">Browse file</button>
 </div>
 
 <ng-container *ngIf="status$ | async as status">

@@ -1,13 +1,7 @@
 <div class="mat-subheading-2">{{ this.title }}</div>
 <td-chart>
-  <td-chart-x-axis [show]="true" [type]="'category'" [data]="this.levels">
-  </td-chart-x-axis>
+  <td-chart-x-axis [show]="true" [type]="'category'" [data]="this.levels"> </td-chart-x-axis>
   <td-chart-y-axis [show]="true"> </td-chart-y-axis>
-  <td-chart-series
-    td-bar
-    *ngFor="let serie of this.seriesData"
-    [name]="serie.date"
-    [data]="serie.points"
-  >
+  <td-chart-series td-bar *ngFor="let serie of this.seriesData" [name]="serie.date" [data]="serie.points">
   </td-chart-series>
 </td-chart>

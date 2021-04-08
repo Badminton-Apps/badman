@@ -31,16 +31,10 @@
 
   <div class="results">
     <div class="result">
-      <div
-        class="set"
-        [ngClass]="{ won: this.game.set1Team1 > this.game.set1Team2 }"
-      >
+      <div class="set" [ngClass]="{ won: this.game.set1Team1 > this.game.set1Team2 }">
         {{ this.game.set1Team1 }}
       </div>
-      <div
-        class="set"
-        [ngClass]="{ won: this.game.set2Team1 > this.game.set2Team2 }"
-      >
+      <div class="set" [ngClass]="{ won: this.game.set2Team1 > this.game.set2Team2 }">
         {{ this.game.set2Team1 }}
       </div>
       <div
@@ -53,16 +47,10 @@
     </div>
     <div class="divider"></div>
     <div class="result">
-      <div
-        class="set"
-        [ngClass]="{ won: this.game.set1Team2 > this.game.set1Team1 }"
-      >
+      <div class="set" [ngClass]="{ won: this.game.set1Team2 > this.game.set1Team1 }">
         {{ this.game.set1Team2 }}
       </div>
-      <div
-        class="set"
-        [ngClass]="{ won: this.game.set2Team2 > this.game.set2Team1 }"
-      >
+      <div class="set" [ngClass]="{ won: this.game.set2Team2 > this.game.set2Team1 }">
         {{ this.game.set2Team2 }}
       </div>
       <div

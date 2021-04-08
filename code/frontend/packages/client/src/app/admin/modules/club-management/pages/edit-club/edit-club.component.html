@@ -6,23 +6,11 @@
     <div noPerm>{{ club.name }}</div>
   </app-has-claim>
 
-  <app-has-claim
-    [any]="[
-      club.id + '_edit:location',
-      club.id + '_edit:club',
-      'edit-any:club'
-    ]"
-  >
+  <app-has-claim [any]="[club.id + '_edit:location', club.id + '_edit:club', 'edit-any:club']">
     <div class="mat-subheading-1">
       Locations
 
-      <app-has-claim
-        [any]="[
-          club.id + '_add:locations',
-          club.id + '_edit:club',
-          'edit-any:club'
-        ]"
-      >
+      <app-has-claim [any]="[club.id + '_add:locations', club.id + '_edit:club', 'edit-any:club']">
         <button mat-icon-button (click)="this.onEditLocation(null, club)">
           <mat-icon>add</mat-icon>
         </button>
@@ -38,18 +26,11 @@
     </div>
   </app-has-claim>
 
-  <app-has-claim
-    [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']"
-  >
+  <app-has-claim [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']">
     <div class="mat-subheading-1">
       Roles
-      <app-has-claim
-        [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']"
-      >
-        <button
-          mat-icon-button
-          [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'role', 'add']"
-        >
+      <app-has-claim [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']">
+        <button mat-icon-button [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'role', 'add']">
           <mat-icon>add</mat-icon>
         </button>
       </app-has-claim>
