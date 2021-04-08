@@ -18,9 +18,7 @@
 
   <div class="content">
     <mat-list>
-      <ng-container
-        *ngIf="!(this.role.players && this.role.players.length > 0)"
-      >
+      <ng-container *ngIf="!(this.role.players && this.role.players.length > 0)">
         <mat-list-item>
           <div class="no-players">No players</div>
         </mat-list-item>
@@ -35,10 +33,7 @@
         </mat-list-item>
       </ng-container>
       <mat-list-item>
-        <app-player-search
-          (onSelectPlayer)="this.onPlayerAdded.next($event)"
-          label="Add player"
-        ></app-player-search>
+        <app-player-search (onSelectPlayer)="this.onPlayerAdded.next($event)" label="Add player"></app-player-search>
       </mat-list-item>
     </mat-list>
   </div>

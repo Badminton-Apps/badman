@@ -3,13 +3,7 @@
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
       <mat-label>Name</mat-label>
-      <input
-        matInput
-        formControlName="name"
-        alt="name"
-        autocomplete="name"
-        required
-      />
+      <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
 
@@ -27,7 +21,6 @@
   </mat-form-field>
 
   <div *ngIf="this.subEvents && !this.useSame">
-
     <table mat-table [dataSource]="this.subEvents">
       <!-- Name Column -->
       <ng-container matColumnDef="name">
@@ -49,22 +42,15 @@
 
       <!-- SubEventGroups Column -->
 
-      <ng-container
-        *ngFor="let subEventGroup of selectedGroups.value"
-        [matColumnDef]="'group-' + subEventGroup.name"
-      >
+      <ng-container *ngFor="let subEventGroup of selectedGroups.value" [matColumnDef]="'group-' + subEventGroup.name">
         <th mat-header-cell *matHeaderCellDef>
           <mat-checkbox
-            (change)="
-              $event ? masterToggle('group-' + subEventGroup.name) : null
-            "
+            (change)="$event ? masterToggle('group-' + subEventGroup.name) : null"
             [checked]="
-              selection.get('group-' + subEventGroup.name).hasValue() &&
-              isAllSelected('group-' + subEventGroup.name)
+              selection.get('group-' + subEventGroup.name).hasValue() && isAllSelected('group-' + subEventGroup.name)
             "
             [indeterminate]="
-              selection.get('group-' + subEventGroup.name).hasValue() &&
-              !isAllSelected('group-' + subEventGroup.name)
+              selection.get('group-' + subEventGroup.name).hasValue() && !isAllSelected('group-' + subEventGroup.name)
             "
             [aria-label]="checkboxLabel('group-' + subEventGroup.name)"
           >
@@ -74,14 +60,8 @@
         <td mat-cell *matCellDef="let row">
           <mat-checkbox
             (click)="$event.stopPropagation()"
-            (change)="
-              $event
-                ? selection.get('group-' + subEventGroup.name).toggle(row)
-                : null
-            "
-            [checked]="
-              selection.get('group-' + subEventGroup.name).isSelected(row)
-            "
+            (change)="$event ? selection.get('group-' + subEventGroup.name).toggle(row) : null"
+            [checked]="selection.get('group-' + subEventGroup.name).isSelected(row)"
             [aria-label]="checkboxLabel('group-' + subEventGroup.name, row)"
           >
           </mat-checkbox>
@@ -109,8 +89,6 @@
   </mat-list> -->
 
   <div class="row">
-    <button mat-raised-button color="primary" type="submit" autofocus>
-      save
-    </button>
+    <button mat-raised-button color="primary" type="submit" autofocus>save</button>
   </div>
 </form>

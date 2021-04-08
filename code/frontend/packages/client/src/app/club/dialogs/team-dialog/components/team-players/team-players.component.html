@@ -1,5 +1,7 @@
 <div class="row">
-  <div class="mat-subheading-2">Players, <small>index: {{ this.team.baseIndex }}</small></div>
+  <div class="mat-subheading-2">
+    Players, <small>index: {{ this.team.baseIndex }}</small>
+  </div>
 </div>
 <mat-list>
   <ng-container *ngIf="!(this.team.players && this.team.players.length > 0)">
@@ -10,16 +12,25 @@
 
   <ng-container *ngIf="this.team.players && this.team.players.length > 0">
     <mat-list-item *ngFor="let player of this.team.players">
-      <mat-checkbox [checked]="player.base" [disabled]="
-          (!player.base && this.baseComplete) ||
-          disableIds.indexOf(player.id) >= 0
-        " mat-line (change)="clicked(player, $event.checked)">
+      <mat-checkbox
+        [checked]="player.base"
+        [disabled]="(!player.base && this.baseComplete) || disableIds.indexOf(player.id) >= 0"
+        mat-line
+        (change)="clicked(player, $event.checked)"
+      >
         {{ player.fullName }}
-        <small>({{ player.index }})
-          <ng-container *ngIf="disableIds.indexOf(player.id) >= 0">&nbsp; (Player base in other team)</ng-container></small>
+        <small
+          >({{ player.index }})
+          <ng-container *ngIf="disableIds.indexOf(player.id) >= 0"
+            >&nbsp; (Player base in other team)</ng-container
+          ></small
+        >
       </mat-checkbox>
 
-      <mat-icon *ngIf="!player.competitionPlayer" matTooltip="Player is not registerd as competition player (note: it takes a couple of days before a new player is registerd)">
+      <mat-icon
+        *ngIf="!player.competitionPlayer"
+        matTooltip="Player is not registerd as competition player (note: it takes a couple of days before a new player is registerd)"
+      >
         warning
       </mat-icon>
 
@@ -29,6 +40,13 @@
     </mat-list-item>
   </ng-container>
   <mat-list-item>
-    <app-player-search (onSelectPlayer)="this.playerAdded($event)" [ignorePlayers]="this.team.players" [allowCreation]="true" [where]="this.where" [club]="this.club" label="Add player"></app-player-search>
+    <app-player-search
+      (onSelectPlayer)="this.playerAdded($event)"
+      [ignorePlayers]="this.team.players"
+      [allowCreation]="true"
+      [where]="this.where"
+      [club]="this.club"
+      label="Add player"
+    ></app-player-search>
   </mat-list-item>
 </mat-list>

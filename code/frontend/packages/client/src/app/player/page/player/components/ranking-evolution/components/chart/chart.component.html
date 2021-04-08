@@ -1,20 +1,7 @@
-<td-chart >
-  <td-chart-x-axis
-    [show]="true"
-    [type]="'time'"
-    [interval]="this.interval"
-    [min]="this.firstDay"
-    [max]="this.lastDay"
-  >
+<td-chart>
+  <td-chart-x-axis [show]="true" [type]="'time'" [interval]="this.interval" [min]="this.firstDay" [max]="this.lastDay">
   </td-chart-x-axis>
-  <td-chart-y-axis
-    [show]="true"
-    [inverse]="true"
-    [min]="maxLevels"
-    [max]="0"
-    [type]="'value'"
-  >
-  </td-chart-y-axis>
+  <td-chart-y-axis [show]="true" [inverse]="true" [min]="maxLevels" [max]="0" [type]="'value'"> </td-chart-y-axis>
   <td-chart-series
     td-line
     [name]="'Level'"
@@ -38,12 +25,7 @@
   >
   </td-chart-series>
   <td-chart-tooltip [trigger]="'item'" [triggerOn]="'mousemove'">
-    <ng-template
-      let-params
-      let-i="index"
-      let-ticket="ticket"
-      tdTooltipFormatter
-    >
+    <ng-template let-params let-i="index" let-ticket="ticket" tdTooltipFormatter>
       <ng-container *ngIf="params">
         <div layout="row" layout-align="start center">
           <span class="mat-caption pad-left-sm">

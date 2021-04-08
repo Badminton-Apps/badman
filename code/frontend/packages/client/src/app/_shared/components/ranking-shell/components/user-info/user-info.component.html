@@ -10,16 +10,12 @@
       </button>
 
       <mat-menu #profileMenu="matMenu">
-        <a
-          mat-menu-item
-          [routerLink]="['/', 'player', user?.player?.id]"
-          *ngIf="auth.loggedIn && user?.player?.id"
+        <a mat-menu-item [routerLink]="['/', 'player', user?.player?.id]" *ngIf="auth.loggedIn && user?.player?.id"
           >Profile</a
         >
         <button mat-menu-item (click)="this.auth.logout()">Log Out</button>
         <app-language></app-language>
       </mat-menu>
-
     </ng-container>
   </ng-container>
 </ng-container>

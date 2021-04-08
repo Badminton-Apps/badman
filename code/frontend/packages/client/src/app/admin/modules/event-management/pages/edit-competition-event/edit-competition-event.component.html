@@ -2,10 +2,7 @@
 <ng-container *ngIf="this.event$ | async as event">
   <ng-container *ngIf="this.formGroup">
     <app-has-claim [any]="['edit:competition']">
-      <app-event-competition-fields
-        [event]="event"
-        [formGroup]="this.formGroup"
-      ></app-event-competition-fields>
+      <app-event-competition-fields [event]="event" [formGroup]="this.formGroup"></app-event-competition-fields>
       <div noPerm>{{ event.name }}</div>
     </app-has-claim>
 
