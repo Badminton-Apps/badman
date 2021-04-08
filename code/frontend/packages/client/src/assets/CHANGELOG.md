@@ -1,3 +1,12 @@
+## [3.12.1](https://github.com/Badminton-Apps/core/compare/v3.12.0...v3.12.1) (2021-04-08)
+
+
+### Bug Fixes
+
+* permissions + linking ([cd0ed52](https://github.com/Badminton-Apps/core/commit/cd0ed524f133685252eb374635a509ed3b414f1a))
+
+
+
 # [3.12.0](https://github.com/Badminton-Apps/core/compare/v3.11.0...v3.12.0) (2021-04-08)
 
 
