@@ -67,17 +67,90 @@
       "description": "Bekijk de changelogs"
     }
   },
+  "team": {
+    "prefferd-encounter": "Voorkeurs speel moment",
+    "day": "Speeldag",
+    "captain": "Kapitein"
+  },
   "competition": {
-    "types": {
-      "male": "Heren",
-      "female": "Dames",
-      "mix": "Gemengd"
-    }
+    "title": "Comeptitie",
+    "subevent": {
+      "max": "Max level",
+      "min-base": "Min basis index",
+      "max-base": "Max basis index"
+    },
+    "enrollment": {
+      "select-location": "Selecteer de locaties voor elk event",
+      "comment": "Geef commentaar",
+      "select-club": "Selecteer club & competition",
+      "assign-team": "Verdeel teams",
+      "max": "Max",
+      "base": "Basis"
+    },
+    "type": "type",
+    "national": "Nationaal",
+    "liga": "Liga",
+    "prov": "Provinciaal"
   },
   "event": {
     "types": {
       "competition": "Competitie",
       "tournament": "Toernooien"
     }
-  }
+  },
+  "players": {
+    "title": "Spelers"
+  },
+  "games": {
+    "title": "Wedstrijden",
+    "bye": "bye"
+  },
+  "gender": {
+    "select": "Selecteer",
+    "title": "Geslacht",
+    "male": "Heren",
+    "female": "Dames",
+    "mix": "Gemengd"
+  },
+  "input": {
+    "type": "Type",
+    "memberId": "Lidnummer",
+    "year": "Jaar",
+    "name": "Naam",
+    "firstname": "Voornaam",
+    "lastname": "Achteraam",
+    "abbreviation": "Afkorting",
+    "email": "email",
+    "phone": "Tel",
+    "fax": "Fax",
+    "required": "Velden met een sterretje (*) zijn verplicht"
+  },
+  "button": {
+    "close": "Sluiten",
+    "delete": "Verwijderen",
+    "create": "Aanmaken",
+    "edit": "Bewerken",
+    "done": "Done",
+    "detail": "Details",
+    "next": "Volgende",
+    "prev": "Vorige",
+    "submit": "Submit",
+    "no": "Nee",
+    "yes": "Ja",
+    "save": "Opslaan"
+  },
+  "days": {
+    "select": "Selecteer",
+    "monday": "Maandag",
+    "tuesday": "Dinsdag",
+    "wednesday": "Woensdag",
+    "thursday": "Donderdag",
+    "friday": "Vrijdag",
+    "saturday": "Zaterdag",
+    "sunday": "Zondag"
+  },
+  "locations": {
+    "title": "Locatie(s)"
+  },
+  "loading": "Aan het laden"
 }

@@ -9,7 +9,7 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #options="matMenu">
-        <button mat-menu-item (click)="this.onEdit.next(this.team)">Edit</button>
+        <button mat-menu-item (click)="this.onEdit.next(this.team)">{{ 'button.edit' | translate }}</button>
         <button
           mat-menu-item
           *ngIf="this.team.active"
@@ -25,7 +25,7 @@
           Activate
         </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="this.onDelete.next(this.team)">Delete</button>
+        <button mat-menu-item (click)="this.onDelete.next(this.team)">{{ 'button.delete' | translate }}</button>
       </mat-menu>
     </app-has-claim>
   </div>
