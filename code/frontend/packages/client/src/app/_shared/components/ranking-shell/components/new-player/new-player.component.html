@@ -1,33 +1,33 @@
 <form (ngSubmit)="this.submit()" [formGroup]="this.playerForm">
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>First Name</mat-label>
+      <mat-label>{{ 'input.firstname' | translate }}</mat-label>
       <input matInput formControlName="firstName" alt="firstName" autocomplete="firstName" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Last name</mat-label>
+      <mat-label>{{ 'input.lastname' | translate }}</mat-label>
       <input matInput formControlName="lastName" alt="lastName" autocomplete="lastName" required />
     </mat-form-field>
   </div>
 
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Gender</mat-label>
+      <mat-label>{{ 'input.gender' | translate }}</mat-label>
       <mat-select formControlName="gender" required>
-        <mat-option>--select something --</mat-option>
-        <mat-option value="M">Man</mat-option>
-        <mat-option value="F">Vrouw</mat-option>
+        <mat-option>-- {{ 'gender.select' | translate }} --</mat-option>
+        <mat-option value="M">{{ 'gender.male' | translate }}</mat-option>
+        <mat-option value="F">{{ 'gender.female' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>MemberId</mat-label>
+      <mat-label>{{ 'input.memberId' | translate }}</mat-label>
       <input matInput formControlName="memberId" alt="memberId" autocomplete="memberId" required />
     </mat-form-field>
   </div>
 
   <div class="row">
-    <button mat-raised-button color="primary" type="submit">save</button>
+    <button mat-raised-button color="primary" type="submit">{{ 'button.save' | translate }}</button>
   </div>
 </form>

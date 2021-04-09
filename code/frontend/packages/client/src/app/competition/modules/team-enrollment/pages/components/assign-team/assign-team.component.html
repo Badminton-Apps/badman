@@ -5,14 +5,16 @@
     <div class="name">{{ subEvent.name }}</div>
 
     <div class="min-max">
-      <small>Max {{ subEvent.maxLevel }}</small
+      <small> {{ 'competition.enrollment.max' | translate }} {{ subEvent.maxLevel }}</small
       >&nbsp;
-      <small>Basis: {{ subEvent.minBaseIndex }}-{{ subEvent.maxBaseIndex }}</small>
+      <small
+        >{{ 'competition.enrollment.base' | translate }}: {{ subEvent.minBaseIndex }}-{{ subEvent.maxBaseIndex }}</small
+      >
     </div>
   </div>
   <div
     class="team-list-target"
-    id="{{ subEvent.id }}"
+    id=">{{ subEvent.id }}"
     cdkDropList
     [cdkDropListConnectedTo]="ids"
     [cdkDropListData]="subEvent.teams"
