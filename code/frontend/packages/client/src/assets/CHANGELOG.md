@@ -1,3 +1,12 @@
+## [3.12.2](https://github.com/Badminton-Apps/core/compare/v3.12.1...v3.12.2) (2021-04-08)
+
+
+### Bug Fixes
+
+* this should also be entered here ([3b4541b](https://github.com/Badminton-Apps/core/commit/3b4541bdc24cdf1af0a0f45170280320f47e6b32))
+
+
+
 ## [3.12.1](https://github.com/Badminton-Apps/core/compare/v3.12.0...v3.12.1) (2021-04-08)
 
 
