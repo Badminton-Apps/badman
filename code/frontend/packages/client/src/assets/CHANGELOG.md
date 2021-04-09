@@ -1,3 +1,12 @@
+## [3.12.6](https://github.com/Badminton-Apps/core/compare/v3.12.5...v3.12.6) (2021-04-09)
+
+
+### Bug Fixes
+
+* should read the errors :P ([b522717](https://github.com/Badminton-Apps/core/commit/b522717f71cec09e89593a46c9c3add51bb79d1b))
+
+
+
 ## [3.12.5](https://github.com/Badminton-Apps/core/compare/v3.12.4...v3.12.5) (2021-04-09)
 
 
