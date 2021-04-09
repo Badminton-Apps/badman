@@ -55,7 +55,7 @@ const startServer = (databaseService: DataBaseHandler) => {
   const apolloServer = new ApolloServer({
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
       // When in dev we can allow graph playground to run without permission
-      if (process.env.production === 'false' || false) {
+      if (process.env.production === 'false') {
         const grahpReq = {
           ...req,
           player: await Player.findOne({ where: { memberId: '50104197' } }),

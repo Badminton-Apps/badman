@@ -79,6 +79,7 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export interface AuthenticatedUser {
+  player: Player;
   sub: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   given_name: string;

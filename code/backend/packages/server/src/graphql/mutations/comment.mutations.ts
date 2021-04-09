@@ -17,14 +17,14 @@ export const addCommentMutation = {
   },
   resolve: async (findOptions, { comment, eventId }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-    try {
-      if (context?.req?.player == null) {
-        throw new ApiError({
-          code: 401,
-          message: 'You are not logged in?'
-        });
-      }
+    if (context?.req?.player == null) {
+      throw new ApiError({
+        code: 401,
+        message: 'You are not logged in?'
+      });
+    }
 
+    try {
       const dbEventComp = await EventCompetition.findByPk(eventId, {
         transaction
       });
