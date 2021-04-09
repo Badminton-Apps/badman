@@ -11,9 +11,11 @@
       <button mat-menu-item *ngIf="this.canClaimAccount.isClaimedByUser">You've requested this account</button>
 
       <app-has-claim [any]="['edit:claims']">
-        <button mat-menu-item [routerLink]="['/', 'admin', 'player', player.id, 'edit']">Edit</button>
+        <button mat-menu-item [routerLink]="['/', 'admin', 'player', player.id, 'edit']">
+          {{ 'button.edit' | translate }}
+        </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item>Delete</button>
+        <button mat-menu-item>{{ 'button.delete' | translate }}</button>
       </app-has-claim>
     </mat-menu>
     <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />

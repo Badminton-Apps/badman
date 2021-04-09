@@ -1,22 +1,22 @@
 <form [formGroup]="formGroup">
-  <div class="mat-subheading-2">When field isn't required (see '*') leave empty for disable limitation</div>
+  <div class="mat-subheading-2">{{ 'input.required' | translate }}</div>
   <div class="row">
     <mat-form-field appearance="outline" class="flex-3">
-      <mat-label>Name</mat-label>
+      <mat-label>{{ 'input.name' | translate }}</mat-label>
       <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Year</mat-label>
+      <mat-label>{{ 'input.year' | translate }}</mat-label>
       <input matInput type="number" formControlName="startYear" min="2000" max="3000" alt="startYear" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Level Type</mat-label>
+      <mat-label>{{ 'competition.type' | translate }}</mat-label>
       <mat-select formControlName="type" required>
-        <mat-option value="PROV">Prov</mat-option>
-        <mat-option value="LIGA">Liga</mat-option>
-        <mat-option value="NATIONAAL">National</mat-option>
+        <mat-option value="PROV">{{ 'competition.prov' | translate }}</mat-option>
+        <mat-option value="LIGA">{{ 'competition.liga' | translate }}</mat-option>
+        <mat-option value="NATIONAAL">{{ 'competition.national' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

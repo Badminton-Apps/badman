@@ -2,7 +2,7 @@
   <div class="mat-subheading-1">Event</div>
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Name</mat-label>
+      <mat-label>{{ 'input.name' | translate }}</mat-label>
       <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
@@ -24,7 +24,7 @@
     <table mat-table [dataSource]="this.subEvents">
       <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'input.name' | translate }}</th>
         <td mat-cell *matCellDef="let element">{{ element.name }}</td>
       </ng-container>
 
@@ -89,6 +89,6 @@
   </mat-list> -->
 
   <div class="row">
-    <button mat-raised-button color="primary" type="submit" autofocus>save</button>
+    <button mat-raised-button color="primary" type="submit" autofocus>{{ 'button.save' | translate }}</button>
   </div>
 </form>

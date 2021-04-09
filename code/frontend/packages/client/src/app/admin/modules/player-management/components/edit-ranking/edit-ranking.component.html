@@ -1,17 +1,17 @@
 <form [formGroup]="this.rankingForm">
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Single</mat-label>
+      <mat-label>{{ 'systems.single' | translate }}</mat-label>
       <input matInput formControlName="single" alt="single" autocomplete="single" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Double</mat-label>
+      <mat-label>{{ 'systems.double' | translate }}</mat-label>
       <input matInput formControlName="double" alt="double" autocomplete="double" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Mix</mat-label>
+      <mat-label>{{ 'systems.mix' | translate }}</mat-label>
       <input matInput formControlName="mix" alt="mix" autocomplete="mix" required />
     </mat-form-field>
   </div>
