@@ -6,10 +6,12 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #options="matMenu">
-          <button mat-menu-item [routerLink]="['/', 'admin', 'club', club.id, 'edit']">Edit</button>
+          <button mat-menu-item [routerLink]="['/', 'admin', 'club', club.id, 'edit']">
+            {{ 'button.edit' | translate }}
+          </button>
           <button mat-menu-item (click)="addPlayer(club)">Add player</button>
           <mat-divider></mat-divider>
-          <button mat-menu-item>Delete</button>
+          <button mat-menu-item>{{ 'button.delete' | translate }}</button>
         </mat-menu>
       </app-has-claim>
       <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
@@ -62,7 +64,7 @@
     </app-team-overview>
   </div>
 
-  <div class="mat-subheading-1">Players</div>
+  <div class="mat-subheading-1">{{ 'players.title' | translate }}</div>
   <mat-list *ngIf="club.players">
     <mat-list-item *ngFor="let player of club.players">
       {{ player.fullName }}
