@@ -4,36 +4,36 @@
       <mat-label>Type</mat-label>
       <mat-select formControlName="type" required>
         <mat-option>--select something --</mat-option>
-        <mat-option value="M">Heren</mat-option>
-        <mat-option value="F">Dames</mat-option>
-        <mat-option value="MX">Mix</mat-option>
+        <mat-option value="M">{{ 'gender.male' | translate }}</mat-option>
+        <mat-option value="F">{{ 'gender.female' | translate }}</mat-option>
+        <mat-option value="MX">{{ 'gender.mix' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Name</mat-label>
+      <mat-label>{{ 'input.name' | translate }}</mat-label>
       <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Abbreviation</mat-label>
+      <mat-label>{{ 'input.abbreviation' | translate }}</mat-label>
       <input matInput formControlName="abbreviation" alt="abbreviation" autocomplete="abbreviation" required />
     </mat-form-field>
   </div>
-  <div class="row">Preffered encounter moment</div>
+  <div class="row">{{ 'team.prefferd-encounter' | translate }}</div>
 
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Day</mat-label>
+      <mat-label>{{ 'team.day' | translate }}</mat-label>
       <mat-select formControlName="preferredDay">
-        <mat-option>--select something --</mat-option>
-        <mat-option value="monday">monday</mat-option>
-        <mat-option value="tuesday">tuesday</mat-option>
-        <mat-option value="wednesday">wednesday</mat-option>
-        <mat-option value="thursday">thursday</mat-option>
-        <mat-option value="friday">friday</mat-option>
-        <mat-option value="saturday">saturday</mat-option>
-        <mat-option value="sunday">sunday</mat-option>
+        <mat-option>-- {{ 'days.select' | translate }} --</mat-option>
+        <mat-option value="monday">{{ 'days.manday' | translate }}</mat-option>
+        <mat-option value="tuesday">{{ 'days.tuesday' | translate }}</mat-option>
+        <mat-option value="wednesday">{{ 'days.wednesday' | translate }}</mat-option>
+        <mat-option value="thursday">{{ 'days.thursday' | translate }}</mat-option>
+        <mat-option value="friday">{{ 'days.friday' | translate }}</mat-option>
+        <mat-option value="saturday">{{ 'days.saturday' | translate }}</mat-option>
+        <mat-option value="sunday">{{ 'days.sunday' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -43,7 +43,7 @@
   </div>
 
   <div class="row">
-    <div class="mat-subheading-2">Captain</div>
+    <div class="mat-subheading-2">{{ 'team.captain' | translate }}</div>
   </div>
   <div class="row">
     <app-player-search
@@ -58,12 +58,12 @@
 <form [formGroup]="this.captainForm">
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Email</mat-label>
+      <mat-label>{{ 'input.email' | translate }}</mat-label>
       <input matInput formControlName="email" alt="email" autocomplete="email" required />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Phone</mat-label>
+      <mat-label>{{ 'input.phone' | translate }}</mat-label>
       <input matInput formControlName="phone" alt="phone" autocomplete="phone" required />
     </mat-form-field>
   </div>
