@@ -3,7 +3,7 @@
   <div class="mat-subheading-2">When field isn't required (see '*') leave empty for disable limitation</div>
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>Name</mat-label>
+      <mat-label>{{ 'input.name' | translate }}</mat-label>
       <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
@@ -273,6 +273,6 @@
     </mat-form-field>
   </div>
   <div class="row">
-    <button mat-raised-button color="primary" type="submit">save</button>
+    <button mat-raised-button color="primary" type="submit">{{ 'button.save' | translate }}</button>
   </div>
 </form>
