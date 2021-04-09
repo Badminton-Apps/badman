@@ -4,17 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RankingService } from 'app/admin/services';
 import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
-import {
-  Claim,
-  Club,
-  ClubService,
-  Player,
-  Role,
-  RoleService,
-  SystemService,
-  Team,
-  TeamService,
-} from 'app/_shared';
+import { Claim, Club, ClubService, Player, Role, RoleService, SystemService, Team, TeamService } from 'app/_shared';
 import { ClaimService } from 'app/_shared/services/security/claim.service';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { bufferTime, debounceTime, map, switchMap } from 'rxjs/operators';
@@ -33,6 +23,7 @@ export class EditClubComponent implements OnInit {
     private clubService: ClubService,
     private systemService: SystemService,
     private route: ActivatedRoute,
+    private router: Router,
     private dialog: MatDialog,
     private _snackBar: MatSnackBar
   ) {}
@@ -62,8 +53,6 @@ export class EditClubComponent implements OnInit {
       panelClass: 'success',
     });
   }
-
-
 
   async onPlayerUpdatedFromTeam(player: Player, team: Team) {
     if (player && team) {
@@ -98,19 +87,11 @@ export class EditClubComponent implements OnInit {
     }
   }
 
-  async onEditRole(role: Role, club: Club){
-    // [
-    //   '/',
-    //   'admin',
-    //   'club',
-    //   club.id,
-    //   'edit',
-    //   'role',
-    //   role.id
-    // ]
+  async onEditRole(role: Role, club: Club) {
+    this.router.navigate(['/', 'admin', 'club', club.id, 'edit', 'role', role.id]);
   }
 
-  async onEditLocation(location: Location, club: Club){
+  async onEditLocation(location: Location, club: Club) {
     let dialogRef = this.dialog.open(LocationDialogComponent, {
       data: { location, club },
     });
