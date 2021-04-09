@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Club, Team, Player, PlayerService } from 'app/_shared';
 import { debounceTime, skip } from 'rxjs/operators';
@@ -29,34 +22,19 @@ export class TeamFieldsComponent implements OnInit {
   club: Club;
 
   teamForm: FormGroup;
-  captinForm: FormGroup;
+  captainForm: FormGroup;
 
   ngOnInit() {
-    const nameControl = new FormControl(
-      this.team.name ?? `${this.club.name} `,
-      Validators.required
-    );
-    const abbrControl = new FormControl(
-      this.team.abbreviation ?? `${this.club.abbreviation} `,
-      Validators.required
-    );
+    const nameControl = new FormControl(this.team.name ?? `${this.club.name} `, Validators.required);
+    const abbrControl = new FormControl(this.team.abbreviation ?? `${this.club.abbreviation} `, Validators.required);
 
     const typeControl = new FormControl(this.team.type, Validators.required);
     const preferredTimeControl = new FormControl(this.team.preferredTime);
     const preferredDayControl = new FormControl(this.team.preferredDay);
-    const captainIdControl = new FormControl(
-      this.team.captain?.id,
-      Validators.required
-    );
+    const captainIdControl = new FormControl(this.team.captain?.id, Validators.required);
 
-    const phoneControl = new FormControl(
-      this.team.captain?.phone,
-      Validators.required
-    );
-    const emailControl = new FormControl(
-      this.team.captain?.email,
-      Validators.required
-    );
+    const phoneControl = new FormControl(this.team.captain?.phone, Validators.required);
+    const emailControl = new FormControl(this.team.captain?.email, Validators.required);
 
     this.teamForm = new FormGroup({
       name: nameControl,
@@ -67,30 +45,28 @@ export class TeamFieldsComponent implements OnInit {
       captainId: captainIdControl,
     });
 
-    this.captinForm = new FormGroup({
+    this.captainForm = new FormGroup({
       id: new FormControl(this.team.captain?.id),
       phone: phoneControl,
       email: emailControl,
     });
 
-    this.captinForm.valueChanges
-      .pipe(debounceTime(600))
-      .subscribe(async (e) => {
-        if (this.captinForm.valid) {
-          if (this.captinForm.dirty) {
-            this.onCaptainUpdated.next(this.captinForm.value);
-          }
-
-          if (this.teamForm.value.captainId != this.captinForm.value.id) {
-            this.teamForm.patchValue({
-              captainId: this.captinForm.value.id,
-            });
-          }
+    this.captainForm.valueChanges.pipe(debounceTime(600)).subscribe(async (e) => {
+      if (this.captainForm.valid) {
+        if (this.captainForm.dirty) {
+          this.onCaptainUpdated.next(this.captainForm.value);
         }
-      });
+
+        if (this.teamForm.value.captainId != this.captainForm.value.id) {
+          this.teamForm.patchValue({
+            captainId: this.captainForm.value.id,
+          });
+        }
+      }
+    });
 
     this.teamForm.valueChanges.pipe(debounceTime(600)).subscribe(async (e) => {
-      if (this.teamForm.valid && this.team?.id != null) {
+      if (this.team?.id != null) {
         this.onTeamUpdated.next({
           id: this.team?.id,
           type: e?.type,
@@ -106,12 +82,7 @@ export class TeamFieldsComponent implements OnInit {
       if (!nameControl.touched) {
         if (typeControl.valid) {
           const number = this.club.teams.reduce(
-            (a, b) =>
-              b.type == typeControl.value
-                ? a > b.teamNumber
-                  ? a
-                  : b.teamNumber
-                : a,
+            (a, b) => (b.type == typeControl.value ? (a > b.teamNumber ? a : b.teamNumber) : a),
             0
           );
 
@@ -143,15 +114,13 @@ export class TeamFieldsComponent implements OnInit {
           abbr = abbr.substr(0, abbr.lastIndexOf(typeMatch[0]));
         }
 
-        abbrControl.setValue(
-          `${this.club?.abbreviation} ${typeMatch[0] ?? ''}`
-        );
+        abbrControl.setValue(`${this.club?.abbreviation} ${typeMatch[0] ?? ''}`);
       }
     });
   }
 
   async selectedCaptain(player: Player) {
-    this.captinForm.patchValue({
+    this.captainForm.patchValue({
       phone: player.phone,
       email: player.email,
       id: player.id,
