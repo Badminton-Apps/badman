@@ -1,3 +1,12 @@
+## [3.12.4](https://github.com/Badminton-Apps/core/compare/v3.12.3...v3.12.4) (2021-04-09)
+
+
+### Bug Fixes
+
+* **client:** we can update even if not valid ([57b045e](https://github.com/Badminton-Apps/core/commit/57b045e4d3423ad9f91f4200425b1dbaac1fefdc))
+
+
+
 ## [3.12.3](https://github.com/Badminton-Apps/core/compare/v3.12.2...v3.12.3) (2021-04-09)
 
 
