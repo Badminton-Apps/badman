@@ -1,1 +1,1 @@
-GET http://localhost:4200
+GET https://beta.latomme.org/api/v1/status/healtz
