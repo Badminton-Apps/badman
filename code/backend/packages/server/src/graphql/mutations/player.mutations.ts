@@ -48,27 +48,30 @@ export const updatePlayerMutation = {
     }
   },
   resolve: async (findOptions, { player }, context) => {
+    // TODO: check if the player is in the club and thbe user is allowed to change values
+
+    let canEditAllFields = false;
     if (
       context?.req?.user == null ||
       !context.req.user.hasAnyPermission([`${player.id}_edit:player`, 'edit-any:player'])
     ) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: [`${player.id}_edit:player`, 'edit-any:player']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
+      canEditAllFields = true;
     }
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      await Player.update(player, {
-        where: { id: player.id },
-        transaction
-      });
+      await Player.update(
+        canEditAllFields
+          ? player
+          : {
+              email: player.email,
+              phone: player.phone
+            },
+        {
+          where: { id: player.id },
+          transaction
+        }
+      );
 
       const dbPlayer = await Player.findByPk(player.id, { transaction });
       await transaction.commit();
