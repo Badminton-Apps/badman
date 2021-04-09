@@ -1,3 +1,12 @@
+## [3.12.5](https://github.com/Badminton-Apps/core/compare/v3.12.4...v3.12.5) (2021-04-09)
+
+
+### Bug Fixes
+
+* empty test ([d06baba](https://github.com/Badminton-Apps/core/commit/d06babaf216b97e0793d3bad67005f6c2386b93f))
+
+
+
 ## [3.12.4](https://github.com/Badminton-Apps/core/compare/v3.12.3...v3.12.4) (2021-04-09)
 
 
