@@ -9,9 +9,9 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #options="matMenu">
-        <button mat-menu-item (click)="this.onEdit.next(role)">Edit</button>
+        <button mat-menu-item (click)="this.onEdit.next(role)">{{ 'button.edit' | translate }}</button>
         <mat-divider></mat-divider>
-        <button mat-menu-item>Delete</button>
+        <button mat-menu-item>{{ 'button.delete' | translate }}</button>
       </mat-menu>
     </ng-container>
   </div>
@@ -28,7 +28,7 @@
         <mat-list-item *ngFor="let player of this.role.players">
           <div mat-line>{{ player.fullName }}</div>
           <button mat-icon-button (click)="this.onPlayerRemoved.next(player)">
-            <mat-icon>delete</mat-icon>
+            <mat-icon>{{ 'button.delete' | translate }}</mat-icon>
           </button>
         </mat-list-item>
       </ng-container>

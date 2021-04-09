@@ -16,7 +16,7 @@
       [disabled]="!this.data.location?.name"
       (click)="this.create()"
     >
-      Create
+      {{ 'button.create' | translate }}
     </button>
 
     <button mat-button [mat-dialog-close]="location">Close</button>
