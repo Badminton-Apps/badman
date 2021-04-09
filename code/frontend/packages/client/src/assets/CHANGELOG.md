@@ -1,3 +1,13 @@
+## [3.12.3](https://github.com/Badminton-Apps/core/compare/v3.12.2...v3.12.3) (2021-04-09)
+
+
+### Bug Fixes
+
+* edit role routing page ([528c7c9](https://github.com/Badminton-Apps/core/commit/528c7c91e6e93d1c2fee75e888f4c4f537983c33))
+* temp fix for allowing to update certain fields ([48f67bf](https://github.com/Badminton-Apps/core/commit/48f67bf2be6fc314bcc29a789d1e6a79cf4a4a3b))
+
+
+
 ## [3.12.2](https://github.com/Badminton-Apps/core/compare/v3.12.1...v3.12.2) (2021-04-08)
 
 
