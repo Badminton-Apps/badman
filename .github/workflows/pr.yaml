@@ -32,8 +32,8 @@ jobs:
         with:
           path: |
             code/${{ matrix.folder }}/node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+            code/${{ matrix.folder }}/*/*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('code/${{ matrix.folder }}/yarn.lock') }}
       - run: npx lerna bootstrap
         working-directory: code/${{ matrix.folder }}
       - run: npx lerna run lint
