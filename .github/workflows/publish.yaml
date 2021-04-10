@@ -27,12 +27,11 @@ jobs:
         working-directory: code/${{ matrix.folder }}
       - run: npx lerna run test
         working-directory: code/${{ matrix.folder }}
+      - uses: codecov/codecov-action@v1
+        with:
+          name: codecov-${{ matrix.folder }}
+          directory: code/${{ matrix.folder }}
 
-      # TOOD:
-      #   - Docker build
-      #   - Docker push
-      #   - Helm package
-      #   - Upgrade helm
   publish-github:
     outputs:
       new_sha: ${{ steps.sha.outputs.new_sha }}
