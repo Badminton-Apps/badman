@@ -244,7 +244,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           if (team.TeamName) {
             return new Team({
               name: this.cleanedTeamName(team.TeamName),
-              ClubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
+              clubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
             }).toJSON();
           }
         }),
@@ -398,14 +398,14 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       const playerIds = new Map<string, string[]>();
       for (const team of teams) {
-        const clubPlayers = playerIds.get(team.team.ClubId) ?? [];
+        const clubPlayers = playerIds.get(team.team.clubId) ?? [];
         for (const teamMember of team.members) {
           const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
           if (player) {
             clubPlayers.push(player.id);
           }
         }
-        playerIds.set(team.team.ClubId, clubPlayers);
+        playerIds.set(team.team.clubId, clubPlayers);
       }
 
       for (const [id, players] of playerIds) {

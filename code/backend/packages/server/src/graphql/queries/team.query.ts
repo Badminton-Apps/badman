@@ -15,7 +15,7 @@ export const teamsQuery = {
     before: async (findOptions, args, context, info) => {
       // info.cacheControl.setCacheHint({ maxAge: 6000, scope: 'PRIVATE' });
       findOptions.where = {
-        ClubId: args.clubId
+        clubId: args.clubId
       };
       return findOptions;
     }
