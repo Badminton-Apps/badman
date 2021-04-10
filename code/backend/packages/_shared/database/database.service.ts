@@ -58,7 +58,10 @@ export class DataBaseHandler {
           }
         },
         models,
-        logging: logger.silly.bind(logger)
+        logging:
+          process.env.LOG_LEVEL === 'silly' || config.logging
+            ? logger.silly.bind(logger)
+            : false
       } as SequelizeOptions);
     }
   }
