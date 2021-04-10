@@ -36,14 +36,14 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('code/${{ matrix.folder }}/yarn.lock') }}
       - run: npx lerna bootstrap
         working-directory: code/${{ matrix.folder }}
-      - run: npx lerna run lint
+      - run: npm run lint
         working-directory: code/${{ matrix.folder }}
-      - run: npx lerna run test
+      - run: npm run test
         working-directory: code/${{ matrix.folder }}
       - uses: codecov/codecov-action@v1
         with:
           name: codecov-${{ matrix.folder }}
           directory: code/${{ matrix.folder }}
           override_pr: ${{ github.event.number }}
-      - run: npx lerna run build
+      - run: npm run build
         working-directory: code/${{ matrix.folder }}
