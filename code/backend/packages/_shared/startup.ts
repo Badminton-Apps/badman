@@ -17,7 +17,11 @@ export const startWhenReady = async (
   sync: boolean,
   startFunction: (...args) => void
 ) => {
-  const databaseService = new DataBaseHandler(dbConfig.default);
+  // const databaseService = new DataBaseHandler(dbConfig.default);
+  const databaseService = new DataBaseHandler({
+    dialect: 'sqlite',
+    storage: 'db.sqlite'
+  });
 
   try {
     logger.debug('Checking Database');
