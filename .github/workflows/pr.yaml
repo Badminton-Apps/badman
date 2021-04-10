@@ -1,5 +1,5 @@
 name: CI
-on: 
+on:
   - pull_request_target
 jobs:
   label:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: ["backend", "frontend"]
+        folder: ['backend', 'frontend']
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,7 +26,14 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: "https://npm.pkg.github.com"
+          registry-url: 'https://npm.pkg.github.com'
+      - name: restore lerna
+        uses: actions/cache@v2
+        with:
+          path: |
+            code/${{ matrix.folder }}/node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - run: npx lerna bootstrap
         working-directory: code/${{ matrix.folder }}
       - run: npx lerna run lint
