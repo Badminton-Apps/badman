@@ -85,7 +85,13 @@
       "select-club": "Selecteer club & competition",
       "assign-team": "Verdeel teams",
       "max": "Max",
-      "base": "Basis"
+      "base": "Basis",
+      "errors": {
+        "not-allowed": "{{player}} niet toegestaan ({{type}}:{{level}}, max {{max}})",
+        "cant-play": "{{player}} mag niet spelen ({{type}}:{{level}}, max {{max}})",
+        "best-players": "Beste 4 spelers mogen niet spelen",
+        "base": "Ploeg index te hoog"
+      }
     },
     "type": "type",
     "national": "Nationaal",
