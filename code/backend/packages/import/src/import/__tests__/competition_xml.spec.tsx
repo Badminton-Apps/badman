@@ -30,6 +30,7 @@ describe('competition xml', () => {
   });
 
   beforeEach(async () => {
+    jest.setTimeout(100000);
     // Clear eveything
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
@@ -50,7 +51,7 @@ describe('competition xml', () => {
     expect(importerFile.firstDay).toEqual(new Date('2020-08-31T22:00:00.000Z'));
   });
 
-  it.skip('should add competition', async () => {
+  it('should add competition', async () => {
     // Arrange
     jest.setTimeout(100000);
     const importFile = await new ImporterFile({
@@ -80,11 +81,11 @@ describe('competition xml', () => {
     const clubs = await Club.findAll({});
 
     expect(draws.length).toEqual(30);
-    expect(encounters.length).toEqual(202);
+    expect(encounters.length).toEqual(180);
     expect(clubs.length).toEqual(29);
     expect(teams.length).toEqual(204);
     expect(players.length).toEqual(803);
-    expect(games.length).toEqual(1616);
+    expect(games.length).toEqual(1440);
 
     expect(player).not.toBeNull();
     expect(player.games.length).toBeGreaterThan(0);
@@ -92,7 +93,6 @@ describe('competition xml', () => {
 
   it('should re-add competition', async () => {
     // Arrange
-    jest.setTimeout(100000);
     const importFile = await new ImporterFile({
       name: 'test',
       fileLocation,
@@ -122,11 +122,11 @@ describe('competition xml', () => {
     const clubs = await Club.findAll({});
 
     expect(draws.length).toEqual(30);
-    expect(encounters.length).toEqual(202);
+    expect(encounters.length).toEqual(180);
     expect(clubs.length).toEqual(29);
     expect(teams.length).toEqual(204);
     expect(players.length).toEqual(803);
-    expect(games.length).toEqual(1616);
+    expect(games.length).toEqual(1440);
 
     expect(player).not.toBeNull();
     expect(player.games.length).toBeGreaterThan(0);
