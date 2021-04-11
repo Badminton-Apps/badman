@@ -708,9 +708,6 @@ export class TournamentTpProcessor extends ProcessImport {
           uniCode: string;
         }>(settingsCsv, {
           onEnd: data => {
-            if (data == null || data == undefined) {
-              throw Error('No data');
-            }
             return {
               name:
                 (data.find((r: { name: string }) => r.name.toLowerCase() === 'tournament')

@@ -1,5 +1,6 @@
 import {
   Court,
+  csvToArray,
   DataBaseHandler,
   EncounterCompetition,
   EventCompetition,
@@ -25,8 +26,9 @@ describe('wrong competition cp', () => {
     service = new CompetitionCpProcessor();
   });
 
-  it('Should import tournamnet', async () => {
+  it('Should throw error on import wrong competition', async () => {
     // Arrange
+    expect.assertions(1);
 
     // Act
     try {
@@ -34,6 +36,19 @@ describe('wrong competition cp', () => {
     } catch (e) {
       // Assert
       expect(e?.message).toEqual("Couldn't find file");
+    }
+  });
+
+  test('should trhow error on empty csv', async () => {
+    // Arrange
+    expect.assertions(1);
+
+    // Act
+    try {
+      await csvToArray('');
+    } catch (e) {
+      // Assert
+      expect(e?.message).toMatch('No data');
     }
   });
 });
@@ -59,7 +74,7 @@ describe('competition cp', () => {
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
 
-  it('Should import tournamnet', async () => {
+  it('Should import competition', async () => {
     // Arrange
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
