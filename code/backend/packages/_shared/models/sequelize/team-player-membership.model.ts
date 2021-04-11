@@ -68,7 +68,9 @@ export class TeamPlayerMembership extends Model {
     instance: TeamPlayerMembership,
     options: SaveOptions
   ) {
-    const team = await Team.findByPk(instance.teamId, { transaction: options.transaction });
+    const team = await Team.findByPk(instance.teamId, {
+      transaction: options.transaction
+    });
     const connection = await ClubMembership.findOne({
       order: [['end', 'desc']],
       where: { playerId: instance.playerId },
@@ -77,12 +79,12 @@ export class TeamPlayerMembership extends Model {
     if (!connection) {
       // create new
       await new ClubMembership({
-        clubId: team.ClubId,
+        clubId: team.clubId,
         playerId: instance.playerId,
         start: new Date()
       }).save({ transaction: options.transaction });
     } else {
-      if (connection.clubId !== team.ClubId) {
+      if (connection.clubId !== team.clubId) {
         // Terminate last
         const now = new Date();
         connection.end = now;
@@ -90,7 +92,7 @@ export class TeamPlayerMembership extends Model {
 
         // Create new
         await new ClubMembership({
-          clubId: team.ClubId,
+          clubId: team.clubId,
           playerId: instance.playerId,
           start: new Date()
         }).save({ transaction: options.transaction });

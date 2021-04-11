@@ -182,7 +182,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           if (team.name) {
             return new Team({
               name: this.cleanedTeamName(team.name),
-              ClubId: clubs.find(r => r.internalId === +team.club)?.club?.id || null
+              clubId: clubs.find(r => r.internalId === +team.club)?.club?.id || null
             }).toJSON();
           }
         }),
