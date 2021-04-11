@@ -10,6 +10,31 @@ import {
 } from '@badvlasim/shared';
 import { join } from 'path';
 import { TournamentTpProcessor } from '../processors';
+import { Readable } from 'stream';
+import { readFileSync } from 'fs';
+
+jest.mock('child_process', () => {
+  return {
+    spawn: (exe: string, args: any[]) => {
+      if (exe == 'mdb-export') {
+        // Basically we write each column to a different file and append the column name to the filename
+        // e.g:
+        //  - file: competition.cp
+        //  - column: Settings
+        //  - outputFile: competition.cp_Settings
+        const file = readFileSync(`${args[0]}_${args[1]}`, { encoding: 'utf-8' });
+
+        const readableStream = Readable.from(file);
+        return {
+          stdout: readableStream,
+          stderr: readableStream
+        };
+      } else {
+        console.log('Got new one', exe);
+      }
+    }
+  };
+});
 
 describe('tournament', () => {
   let databaseService: DataBaseHandler;
