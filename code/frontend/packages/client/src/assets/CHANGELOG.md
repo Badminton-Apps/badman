@@ -1,3 +1,30 @@
+# [3.13.0](https://github.com/Badminton-Apps/core/compare/v3.12.7...v3.13.0) (2021-04-11)
+
+
+### Bug Fixes
+
+* add test files ([d8ec097](https://github.com/Badminton-Apps/core/commit/d8ec097205890b3288f81b4fdf469ee8c962a2c8))
+* dependencies ([c38faeb](https://github.com/Badminton-Apps/core/commit/c38faeb39d56a95bdb70740a4a97bc62e9b28373))
+* don't know if this makes any difference ([02c04ab](https://github.com/Badminton-Apps/core/commit/02c04ab4e32221247c527c97d4d7482d78d65da5))
+* import to belgium timezone ([b08e0cc](https://github.com/Badminton-Apps/core/commit/b08e0cc408fb1df35d15c739503bdc1d3143f6d3))
+* improved error handling for mdb ([ca1ef47](https://github.com/Badminton-Apps/core/commit/ca1ef477bbf71a622fe84c7925ac5183cb6c7ae7))
+* lint ([d7a2d9a](https://github.com/Badminton-Apps/core/commit/d7a2d9ae88457537fd512956031864d00ca08af0))
+* locale ([79d726a](https://github.com/Badminton-Apps/core/commit/79d726af45f0ddb363469e8504ca5b6796f84c3e))
+* more checking for errors ([e904f9c](https://github.com/Badminton-Apps/core/commit/e904f9c89ee64c94ebb61057d1041e30670f1b16))
+* parse xml files ([9b793dd](https://github.com/Badminton-Apps/core/commit/9b793dd1ce4331415e0bc10c8ff142ed119a1896))
+* reject on empty file ([2b6b250](https://github.com/Badminton-Apps/core/commit/2b6b250d0429c6eb5f4f35363d00a85af247d34b))
+* shadow vars ([faa6206](https://github.com/Badminton-Apps/core/commit/faa62063a493b6911c25eeb43d0995125cfba5a6))
+* should be reversed + more checks ([84eea08](https://github.com/Badminton-Apps/core/commit/84eea0809cfdda3f6e83d38aa2b4abae5223dbae))
+* testing ([6ac353e](https://github.com/Badminton-Apps/core/commit/6ac353e6710905494f5b194587025adb074ab776))
+* testing now mocks files ([ec6f2d9](https://github.com/Badminton-Apps/core/commit/ec6f2d9de4775284dc82abbf75f4f7ac3dce82bf))
+
+
+### Features
+
+* Test for empty/wrong files ([488e83a](https://github.com/Badminton-Apps/core/commit/488e83a9390a5ebcc6e8ec67925bcc5280889390))
+
+
+
 ## [3.12.7](https://github.com/Badminton-Apps/core/compare/v3.12.6...v3.12.7) (2021-04-10)
 
 
