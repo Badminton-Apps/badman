@@ -74,7 +74,7 @@ export class Club extends Model {
   @Column
   clubId?: number;
 
-  @HasMany(() => Team, 'ClubId')
+  @HasMany(() => Team, 'clubId')
   teams?: Team[];
 
   @HasMany(() => Role)
