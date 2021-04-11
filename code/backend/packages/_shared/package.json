@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "eslint --fix -c ../../.eslintrc.js ./**/*{.ts,.tsx}",
     "gen-erd": "node -r ts-node/register ./utils/generate-erd.ts",
-    "test": "jest --config ./jest.config.js --testFailureExitCode 0"
+    "test": "jest --config ./jest.config.js --runInBand"
   },
   "dependencies": {
     "@fast-csv/parse": "^4.3.1",

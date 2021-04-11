@@ -8,22 +8,8 @@ module.exports = {
   collectCoverageFrom: ['**/*.{ts,tsx}', '!**/node_modules/**', '!**/vendor/**'],
   collectCoverage: true,
   setupFiles: ['<rootDir>/../../test/env.js'],
-  reporters: [
-    'default',
-    [
-      'jest-junit',
-      {
-        outputDirectory: 'coverage',
-        uniqueOutputName: false,
-        suiteName: 'Test results',
-        classNameTemplate: '{classname}-{title}',
-        titleTemplate: '{classname}-{title}',
-        ancestorSeparator: ' › ',
-        usePathForSuiteName: true,
-        includeConsoleOutput: true
-      }
-    ]
-  ],
+  reporters: ['default', 'jest-github-actions-reporter'],
   testEnvironment: 'node',
-  coverageReporters: ['text-summary', 'lcov']
+  coverageReporters: ['text-summary', 'lcov'],
+  testLocationInResults: true
 };
