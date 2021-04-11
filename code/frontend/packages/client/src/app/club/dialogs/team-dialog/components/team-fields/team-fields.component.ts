@@ -29,6 +29,7 @@ export class TeamFieldsComponent implements OnInit {
     const abbrControl = new FormControl(this.team.abbreviation ?? `${this.club.abbreviation} `, Validators.required);
 
     const typeControl = new FormControl(this.team.type, Validators.required);
+    const locationControl = new FormControl(null, Validators.required);
     const preferredTimeControl = new FormControl(this.team.preferredTime);
     const preferredDayControl = new FormControl(this.team.preferredDay);
     const captainIdControl = new FormControl(this.team.captain?.id, Validators.required);
@@ -43,6 +44,7 @@ export class TeamFieldsComponent implements OnInit {
       preferredTime: preferredTimeControl,
       preferredDay: preferredDayControl,
       captainId: captainIdControl,
+      location: locationControl,
     });
 
     this.captainForm = new FormGroup({

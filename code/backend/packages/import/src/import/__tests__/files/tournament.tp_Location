@@ -1,0 +1,4 @@
+id,name,address,postalcode,city,state,phone,fax,countryid
+2,"A Nieuwe Zaal - houten vloer","Warande laan ","9230","Wetteren ","Oost Vlaanderen ",,,19
+3,"Blauwe Zaal","Warande Laan ","9230","Wetteren","Oost Vlaanderen",,,19
+4,"Hoofd Locatie",,,,,,,

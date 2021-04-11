@@ -1,0 +1,3 @@
+id,name,ms,ws,md,wd,xd,fee,sortorder,gender,eventtype,level,min_age,max_age,foreignid,league,leaguescoringformat,playformat,tiestructure,grading,subgrading,tournamentinformationid
+1,"Division 1",0,0,0,0,0,0.0000,,3,2,,,,,1,,0,0,201,4,
+2,"Division 2",0,0,0,0,0,0.0000,,3,2,,,,,1,,0,0,201,5,
