@@ -19,9 +19,9 @@ import {
 } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
 import { readFileSync, unlink } from 'fs';
-import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { CompetitionProcessor } from './competition';
+import moment from 'moment-timezone';
 
 export class CompetitionXmlProcessor extends CompetitionProcessor {
   constructor() {
@@ -594,7 +594,8 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         let compYear: Date = null;
         const matches = yearRegexr.exec(xmlData.League.LeagueName);
         if (matches !== null) {
-          compYear = moment([matches[0], 8, 1]).toDate();
+          // first of september year
+          compYear = moment.tz(`09/01/${matches[0]}`, 'MM/DD/YYYY', 'Europe/Brussels').toDate();
         }
 
         const importerFile = await ImporterFile.findOne({
