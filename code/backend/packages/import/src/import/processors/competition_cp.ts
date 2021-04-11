@@ -33,7 +33,7 @@ import { Op, Transaction } from 'sequelize';
 import { Mdb } from '../../convert/mdb';
 import { ImportStep } from '../import-step';
 import { CompetitionProcessor } from './competition';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { unlink } from 'fs';
 
 export class CompetitionCpProcessor extends CompetitionProcessor {
@@ -713,11 +713,9 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const daysCsv = await args.mdb.toCsv('TournamentDay');
         const days = await csvToArray<{ dates: Date[] }>(daysCsv, {
           onEnd: data => {
-            moment.locale('nl-be');
-
             const dates = data
-              .map((date: { tournamentday: string | number | Date }) =>
-                moment(date.tournamentday, 'MM/DD/YYYY').toDate()
+              .map((date: { tournamentday: string }) =>
+                moment.tz(date.tournamentday, 'MM/DD/YYYY', 'Europe/Brussels').toDate()
               )
               .sort(
                 (a: { getTime: () => number }, b: { getTime: () => number }) =>
