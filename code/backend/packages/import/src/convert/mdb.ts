@@ -32,7 +32,13 @@ export class Mdb extends Stream {
             reject(error);
           });
         } else {
-          reject("Couldn't find file");
+          reject({
+            message: "Couldn't find file",
+            arguments: {
+              file: this._file,
+              curDir: __dirname
+            }
+          });
         }
       });
     });
@@ -55,7 +61,13 @@ export class Mdb extends Stream {
             reject(data);
           });
         } else {
-          reject("Couldn't find file");
+          reject({
+            message: "Couldn't find file",
+            arguments: {
+              file: this._file,
+              curDir: __dirname
+            }
+          });
         }
       });
     });
