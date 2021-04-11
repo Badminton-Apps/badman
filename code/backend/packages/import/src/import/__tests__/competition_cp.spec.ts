@@ -1,6 +1,5 @@
 import {
   Court,
-  csvToArray,
   DataBaseHandler,
   EncounterCompetition,
   EventCompetition,
@@ -15,43 +14,6 @@ import {
 } from '@badvlasim/shared';
 import { join } from 'path';
 import { CompetitionCpProcessor } from '../processors';
-
-describe('wrong competition cp', () => {
-  let service: CompetitionCpProcessor;
-  let fileLocation: string;
-
-  beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition_wrong_file.cp');
-
-    service = new CompetitionCpProcessor();
-  });
-
-  it('Should throw error on import wrong competition', async () => {
-    // Arrange
-    expect.assertions(1);
-
-    // Act
-    try {
-      await service.importFile(fileLocation);
-    } catch (e) {
-      // Assert
-      expect(e?.message).toEqual("Couldn't find file");
-    }
-  });
-
-  test('should trhow error on empty csv', async () => {
-    // Arrange
-    expect.assertions(1);
-
-    // Act
-    try {
-      await csvToArray('');
-    } catch (e) {
-      // Assert
-      expect(e?.message).toMatch('No data');
-    }
-  });
-});
 
 describe('competition cp', () => {
   let databaseService: DataBaseHandler;
