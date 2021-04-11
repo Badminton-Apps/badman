@@ -20,7 +20,7 @@
     "start:watch": "nodemon",
     "start:watch:inspect": "nodemon --exec node --inspect=5859 -r ts-node/register ./src/server.ts",
     "test:local": "jest --colors --watchAll",
-    "test": "jest --config ./jest.config.js --testFailureExitCode 0",
+    "test": "jest --config ./jest.config.js --runInBand",
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
   },
   "browserslist": [
