@@ -56,7 +56,7 @@ export class Mdb extends Stream {
     return new Promise((resolve, reject) => {
       access(this._file, fileError => {
         if (!fileError) {
-          const cmd = spawn('mdb-tables', ['--delimiter=' + this._tableDelimiter, this._file]);
+          const cmd = spawn('mdb-tables_lol', ['--delimiter=' + this._tableDelimiter, this._file]);
           cmd.stdout.on('data', result => {
             const tables = result
               .toString()
