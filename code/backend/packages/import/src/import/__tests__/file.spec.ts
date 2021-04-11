@@ -6,14 +6,12 @@ import { CompetitionCpProcessor } from '../processors';
 jest.mock('child_process', () => {
   return {
     spawn: (exe: string, args: any[]) => {
-      if (exe == 'mdb-export') {
+      if (exe === 'mdb-export') {
         const readableStream = Readable.from('');
         return {
           stdout: readableStream,
           stderr: readableStream
         };
-      } else {
-        console.log('Got new one', exe);
       }
     }
   };
