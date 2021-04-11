@@ -19,6 +19,7 @@
     "release": "npx lerna version",
     "lint": "npx lerna run lint --stream",
     "test": "npx lerna run test --stream",
+    "build": "npx lerna run build --stream",
     "test:local": "npx lerna run test:local --stream"
   },
   "dependencies": {
