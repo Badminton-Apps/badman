@@ -420,7 +420,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       const locations: { location: Location; internalId: number }[] = this.importSteps
         .get('locations')
         .getData();
-      const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('court'));
+      const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('Court'));
 
       const courts = [];
       for await (const csvCourt of csvCourts) {
@@ -713,15 +713,19 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const daysCsv = await args.mdb.toCsv('TournamentDay');
         const days = await csvToArray<{ dates: Date[] }>(daysCsv, {
           onEnd: data => {
+            moment.locale('nl-be');
+
+            const dates = data
+              .map((date: { tournamentday: string | number | Date }) =>
+                moment(date.tournamentday, 'MM/DD/YYYY').toDate()
+              )
+              .sort(
+                (a: { getTime: () => number }, b: { getTime: () => number }) =>
+                  a.getTime() - b.getTime()
+              );
+
             return {
-              dates: data
-                .map(
-                  (date: { tournamentday: string | number | Date }) => new Date(date.tournamentday)
-                )
-                .sort(
-                  (a: { getTime: () => number }, b: { getTime: () => number }) =>
-                    a.getTime() - b.getTime()
-                )
+              dates
             };
           },
           onError: e => {
