@@ -14,8 +14,8 @@ export class Mdb extends Stream {
 
   toCsv(table: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      access(this._file, error => {
-        if (!error) {
+      access(this._file, fileError => {
+        if (!fileError) {
           const cmd = spawn('mdb-export', [this._file, table]);
 
           let data = '';
@@ -28,8 +28,8 @@ export class Mdb extends Stream {
             resolve(data);
           });
 
-          cmd.stderr.on('error', error => {
-            reject(error);
+          cmd.stderr.on('error', readError => {
+            reject(readError);
           });
         } else {
           reject({
@@ -46,8 +46,8 @@ export class Mdb extends Stream {
 
   tables() {
     return new Promise((resolve, reject) => {
-      access(this._file, error => {
-        if (!error) {
+      access(this._file, fileError => {
+        if (!fileError) {
           const cmd = spawn('mdb-tables', ['--delimiter=' + this._tableDelimiter, this._file]);
           cmd.stdout.on('data', result => {
             const tables = result
@@ -57,8 +57,8 @@ export class Mdb extends Stream {
             resolve(tables);
           });
 
-          cmd.stderr.on('data', data => {
-            reject(data);
+          cmd.stderr.on('data', readError => {
+            reject(readError);
           });
         } else {
           reject({
