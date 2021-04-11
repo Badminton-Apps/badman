@@ -48,7 +48,7 @@ describe('competition xml', () => {
     expect(importerFiles.length).toBe(1);
     const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('PBO competitie 2020 - 2021');
-    expect(importerFile.firstDay).toEqual(new Date('2020-08-31T22:00:00.000Z'));
+    expect(importerFile.firstDay.toISOString()).toEqual('2020-08-31T22:00:00.000Z');
   });
 
   it('should add competition', async () => {

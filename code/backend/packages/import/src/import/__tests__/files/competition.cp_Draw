@@ -1,0 +1,7 @@
+id,name,event,drawtype,drawsize,drawgroup,consolation,consolationplayoffsize,playoff,playoffsize,qualification,position,drawcolumns,header,printmodified,consolationplayoff,lastfeedinround,drawendsize,foreignid,displayorder,location,court,fixture,numentriesup,numentriesdown,itfclassification,itfsubgroup,stage
+43,"Pool",2,2,8,1,0,,0,,1,1,0,0,1,0,,,,,,,,,,0,0,6
+44,"Play Off",2,1,4,2,0,,0,4,0,1,0,0,1,0,,,,,,,,,,0,0,7
+45,"Play Down",2,2,4,3,0,,0,,0,1,0,0,1,0,,,,,,,,,,0,0,8
+47,"Pool",1,2,8,1,0,,0,,1,1,0,0,1,0,,,,,,,,,,0,0,1
+48,"Play Off",1,1,4,2,0,,0,4,0,1,0,0,1,0,,,,,,,,,,0,0,2
+49,"Play Down",1,2,4,3,0,,0,,0,1,0,0,1,0,,,,,,,,,,0,0,3

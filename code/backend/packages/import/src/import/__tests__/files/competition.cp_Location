@@ -1,0 +1,11 @@
+id,name,foreignid,locationid,address,postalcode,city,phone,clubid,locationnr,extrainfo,description,longitude,latitude,contact
+2,"Dijlevallei ",,,"Sportcomplex Kessel_Lo - Stadionlaan 4",,"Kessel -Lo",,,,,,,,
+3,"OLVE",,,"Den Willecom - Terelststraat 2","2650","Edegem",,,,,,,,
+4,"Hoofdlocatie",,,,,,,,,,,,,
+5,"DZ 99",,,"Gaverhal - Vercruysse de Solartstraat 30","8540","Deerlijk",,,,,,,,
+7,"W&L",,,"Ivo Van Damme - Overstraat 21","3020","Veltem",,,,,,,,
+8,"Grace",,,"La Préalle - Rue Emlle Muraille 158","4040","Herstal",,,,,,,,
+9,"BAD 79",,,"Ceria - Dreefpad 16 - Sentier de la Drêve 16","1070","Anderlecht",,,,,,,,
+10,"Pluimplukkers",,,"Lago Rozebroeken - Viktor Braekmanlaan 180","9040","Gent",,,,,,,,
+11,"LEBAD",,,,,,,,,,,,,
+12,"Erpe-Mere",,,,,,,,,,,,,

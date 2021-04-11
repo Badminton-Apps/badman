@@ -40,6 +40,13 @@
     <mat-form-field appearance="outline" class="flex">
       <input matInput type="time" placeholder="Choose a date" formControlName="preferredTime" />
     </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'team.location' | translate }}</mat-label>
+      <mat-select formControlName="location">
+        <mat-option>-- {{ 'days.select' | translate }} --</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <div class="row">
