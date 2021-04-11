@@ -27,7 +27,7 @@ import {
   titleCase
 } from '@badvlasim/shared';
 import { unlink } from 'fs';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Op, Transaction } from 'sequelize';
 import { Mdb } from '../../convert/mdb';
 import { ProcessImport } from '../processor';
@@ -737,8 +737,8 @@ export class TournamentTpProcessor extends ProcessImport {
             moment.locale('nl-be');
 
             const dates = data
-              .map((date: { tournamentday: string | number | Date }) =>
-                moment(date.tournamentday, 'MM/DD/YYYY').toDate()
+              .map((date: { tournamentday: string }) =>
+                moment.tz(date.tournamentday, 'MM/DD/YYYY', 'Europe/Brussels').toDate()
               )
               .sort(
                 (a: { getTime: () => number }, b: { getTime: () => number }) =>
