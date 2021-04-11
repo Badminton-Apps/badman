@@ -687,6 +687,9 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           uniCode: string;
         }>(settingsCsv, {
           onEnd: data => {
+            if (!data) {
+              throw Error('No data');
+            }
             return {
               name:
                 (data.find((r: { name: string }) => r.name.toLowerCase() === 'tournament')
