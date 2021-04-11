@@ -16,7 +16,7 @@ import { readFileSync } from 'fs';
 jest.mock('child_process', () => {
   return {
     spawn: (exe: string, args: any[]) => {
-      if (exe == 'mdb-export') {
+      if (exe === 'mdb-export') {
         // Basically we write each column to a different file and append the column name to the filename
         // e.g:
         //  - file: competition.cp
@@ -29,8 +29,6 @@ jest.mock('child_process', () => {
           stdout: readableStream,
           stderr: readableStream
         };
-      } else {
-        console.log('Got new one', exe);
       }
     }
   };
