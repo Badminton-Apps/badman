@@ -43,9 +43,9 @@ export const csvToArray = <T>(
 
     parser.on('end', async () => {
       if (
-        data == null ||
-        data == undefined ||
-        (data.length == 0 && csv.length == 0)
+        data === null ||
+        data === undefined ||
+        (data.length === 0 && csv.length === 0)
       ) {
         reject({
           message: 'No data',
