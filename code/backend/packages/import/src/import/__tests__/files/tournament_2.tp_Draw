@@ -1,0 +1,6 @@
+id,name,event,drawtype,drawsize,playoff,playoffsize,consolation,consolationsize,consolationplayoffsize,qualification,drawgroup,drawcolumns,position,header,footer,startdate,enddate,printmodified,consolationplayoff,lastfeedinround,qualificationrounds,drawendsize,drawrounds,maxentries,topacc,cutoff,lastdirectacceptance,representative1,representative2,drawdate,topseed,lastseed,revised,location,court,showonttv,fixture,fixturetemplate,grading,stage
+1,"HE 7 - KO",1,1,4,0,,0,,,0,0,64,1,0,,,,1,0,,,,0,0,,,,,,,,,0,,,1,,,0,1
+4,"Poule A",3,2,3,0,,0,,,0,0,64,1,0,,,,1,0,,,,0,0,,,,,,,,,0,,,1,,,0,11
+5,"Poule B",3,2,3,0,,0,,,0,0,64,1,0,,,,1,0,,,,0,0,,,,,,,,,0,,,1,,,0,11
+6,"HE 6 - KO",3,1,2,0,,0,,,0,0,64,1,0,,,,1,0,,,,0,0,,,,,,,,,0,,,1,,,0,8
+7,"HE 7 - TEST",1,4,4,0,,0,,,0,0,64,1,0,,,,0,0,,,,0,0,,,,,,,,,0,,,1,,,0,12

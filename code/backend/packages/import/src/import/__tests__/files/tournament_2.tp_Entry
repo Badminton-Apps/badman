@@ -1,0 +1,11 @@
+id,event,player1,player2,seed1,seed2,status,partnerwanted,exclude,qseed1,qseed2,qstatus,entrytype,entrylist,entered,accepttb,seedtb,signedin,signedinconsolation,accepttype,acceptposition,protectedranking,itforder,protectedranking2,chip,qchip,qseedtb,cseed1,cseed2,cseedtb,lltb,reserve,alternatetb,protectedrankingD,protectedranking2D,withdrawdate,withdrawreason,playup,recentform,onlinepartner,validationstatus,validationmessage
+1,1,2,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+2,1,3,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+3,1,4,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+4,1,5,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+5,1,1,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+6,3,1,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+7,3,2,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+8,3,3,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+9,3,4,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
+10,3,5,0,,,0,0,0,,,,,1,0,,,,,,,0,,0,,,,,,,,0,,0,0,,,0,,,0,
