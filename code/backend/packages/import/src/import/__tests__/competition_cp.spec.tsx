@@ -15,6 +15,29 @@ import {
 import { join } from 'path';
 import { CompetitionCpProcessor } from '../processors';
 
+describe('wrong competition cp', () => {
+  let service: CompetitionCpProcessor;
+  let fileLocation: string;
+
+  beforeAll(async () => {
+    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition_wrong_file.cp');
+
+    service = new CompetitionCpProcessor();
+  });
+
+  it('Should import tournamnet', async () => {
+    // Arrange
+
+    // Act
+    try {
+      await service.importFile(fileLocation);
+    } catch (e) {
+      // Assert
+      expect(e?.message).toEqual("Couldn't find file");
+    }
+  });
+});
+
 describe('competition cp', () => {
   let databaseService: DataBaseHandler;
   let service: CompetitionCpProcessor;
