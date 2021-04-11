@@ -687,7 +687,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           uniCode: string;
         }>(settingsCsv, {
           onEnd: data => {
-            if (!data) {
+            if (data == null || data == undefined) {
               throw Error('No data');
             }
             return {
