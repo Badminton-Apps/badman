@@ -14,6 +14,30 @@ import {
 } from '@badvlasim/shared';
 import { join } from 'path';
 import { CompetitionCpProcessor } from '../processors';
+import { Readable } from 'stream';
+import { readFileSync } from 'fs';
+
+// We can't read settings in
+jest.mock('child_process', () => {
+  return {
+    spawn: (exe: string, args: any[]) => {
+      if (exe === 'mdb-export') {
+        // Basically we write each column to a different file and append the column name to the filename
+        // e.g:
+        //  - file: competition.cp
+        //  - column: Settings
+        //  - outputFile: competition.cp_Settings
+        const file = readFileSync(`${args[0]}_${args[1]}`, { encoding: 'utf-8' });
+
+        const readableStream = Readable.from(file);
+        return {
+          stdout: readableStream,
+          stderr: readableStream
+        };
+      }
+    }
+  };
+});
 
 describe('competition cp', () => {
   let databaseService: DataBaseHandler;
@@ -36,7 +60,7 @@ describe('competition cp', () => {
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
 
-  it('Should import tournamnet', async () => {
+  it('Should import competition', async () => {
     // Arrange
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
@@ -50,7 +74,7 @@ describe('competition cp', () => {
     const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('Victor League 2019-2020');
     expect(importerFile.uniCode).toEqual('201903290920109453');
-    expect(importerFile.firstDay).toEqual(new Date('2019-09-27T22:00:00.000Z'));
+    expect(importerFile.firstDay.toISOString()).toEqual('2019-09-27T22:00:00.000Z');
   });
 
   it('should add competition', async () => {
@@ -125,7 +149,7 @@ describe('competition cp 2', () => {
     const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('PBA competitie 2021-2022');
     expect(importerFile.uniCode).toEqual('202103220037589421');
-    expect(importerFile.firstDay).toEqual(new Date('2021-08-31T22:00:00.000Z'));
+    expect(importerFile.firstDay.toISOString()).toEqual('2021-08-31T22:00:00.000Z');
   });
 
   it.skip('should re-add competition', async () => {
