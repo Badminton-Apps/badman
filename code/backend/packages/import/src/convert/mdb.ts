@@ -24,8 +24,17 @@ export class Mdb extends Stream {
             data += result.toString();
           });
 
-          cmd.stdout.on('end', result => {
-            resolve(data);
+          cmd.stdout.on('end', () => {
+            if (data === null || data === undefined || data.length === 0) {
+              reject({
+                message: 'no data',
+                arguments: {
+                  file: this._file
+                }
+              });
+            } else {
+              resolve(data);
+            }
           });
 
           cmd.stderr.on('error', readError => {
@@ -33,10 +42,9 @@ export class Mdb extends Stream {
           });
         } else {
           reject({
-            message: "Couldn't find file",
+            message: "Couldn't find file.",
             arguments: {
-              file: this._file,
-              curDir: __dirname
+              file: this._file
             }
           });
         }
@@ -62,7 +70,7 @@ export class Mdb extends Stream {
           });
         } else {
           reject({
-            message: "Couldn't find file",
+            message: "Couldn't find file.",
             arguments: {
               file: this._file,
               curDir: __dirname
