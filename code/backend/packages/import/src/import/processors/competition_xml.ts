@@ -19,9 +19,9 @@ import {
 } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
 import { readFileSync, unlink } from 'fs';
-import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { CompetitionProcessor } from './competition';
+import moment from 'moment-timezone';
 
 export class CompetitionXmlProcessor extends CompetitionProcessor {
   constructor() {
@@ -244,7 +244,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           if (team.TeamName) {
             return new Team({
               name: this.cleanedTeamName(team.TeamName),
-              ClubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
+              clubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
             }).toJSON();
           }
         }),
@@ -398,14 +398,14 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       const playerIds = new Map<string, string[]>();
       for (const team of teams) {
-        const clubPlayers = playerIds.get(team.team.ClubId) ?? [];
+        const clubPlayers = playerIds.get(team.team.clubId) ?? [];
         for (const teamMember of team.members) {
           const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
           if (player) {
             clubPlayers.push(player.id);
           }
         }
-        playerIds.set(team.team.ClubId, clubPlayers);
+        playerIds.set(team.team.clubId, clubPlayers);
       }
 
       for (const [id, players] of playerIds) {
@@ -594,7 +594,8 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         let compYear: Date = null;
         const matches = yearRegexr.exec(xmlData.League.LeagueName);
         if (matches !== null) {
-          compYear = moment([matches[0], 8, 1]).toDate();
+          // first of september year
+          compYear = moment.tz(`09/01/${matches[0]}`, 'MM/DD/YYYY', 'Europe/Brussels').toDate();
         }
 
         const importerFile = await ImporterFile.findOne({

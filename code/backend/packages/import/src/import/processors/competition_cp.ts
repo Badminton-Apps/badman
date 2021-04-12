@@ -33,7 +33,7 @@ import { Op, Transaction } from 'sequelize';
 import { Mdb } from '../../convert/mdb';
 import { ImportStep } from '../import-step';
 import { CompetitionProcessor } from './competition';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { unlink } from 'fs';
 
 export class CompetitionCpProcessor extends CompetitionProcessor {
@@ -182,7 +182,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           if (team.name) {
             return new Team({
               name: this.cleanedTeamName(team.name),
-              ClubId: clubs.find(r => r.internalId === +team.club)?.club?.id || null
+              clubId: clubs.find(r => r.internalId === +team.club)?.club?.id || null
             }).toJSON();
           }
         }),
@@ -420,7 +420,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       const locations: { location: Location; internalId: number }[] = this.importSteps
         .get('locations')
         .getData();
-      const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('court'));
+      const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('Court'));
 
       const courts = [];
       for await (const csvCourt of csvCourts) {
@@ -713,15 +713,17 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const daysCsv = await args.mdb.toCsv('TournamentDay');
         const days = await csvToArray<{ dates: Date[] }>(daysCsv, {
           onEnd: data => {
+            const dates = data
+              .map((date: { tournamentday: string }) =>
+                moment.tz(date.tournamentday, 'MM/DD/YYYY', 'Europe/Brussels').toDate()
+              )
+              .sort(
+                (a: { getTime: () => number }, b: { getTime: () => number }) =>
+                  a.getTime() - b.getTime()
+              );
+
             return {
-              dates: data
-                .map(
-                  (date: { tournamentday: string | number | Date }) => new Date(date.tournamentday)
-                )
-                .sort(
-                  (a: { getTime: () => number }, b: { getTime: () => number }) =>
-                    a.getTime() - b.getTime()
-                )
+              dates
             };
           },
           onError: e => {
