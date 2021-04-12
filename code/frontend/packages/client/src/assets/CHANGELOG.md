@@ -1,3 +1,7 @@
+## [3.13.1](https://github.com/Badminton-Apps/core/compare/v3.13.0...v3.13.1) (2021-04-12)
+
+
+
 # [3.13.0](https://github.com/Badminton-Apps/core/compare/v3.12.7...v3.13.0) (2021-04-11)
 
 
