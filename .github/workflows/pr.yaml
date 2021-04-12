@@ -1,5 +1,5 @@
 name: CI
-on: 
+on:
   - pull_request_target
 jobs:
   label:
@@ -17,26 +17,36 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: ["backend", "frontend"]
+        folder: ['backend', 'frontend']
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup Node ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: "https://npm.pkg.github.com"
+          registry-url: 'https://npm.pkg.github.com'
+      - name: restore lerna
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./code/${{ matrix.folder }}/node_modules
+            ./code/${{ matrix.folder }}/*/*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('./code/${{ matrix.folder }}/yarn.lock') }}
       - run: npx lerna bootstrap
         working-directory: code/${{ matrix.folder }}
-      - run: npx lerna run lint
+      - run: npm run lint
         working-directory: code/${{ matrix.folder }}
-      - run: npx lerna run test
+      - run: npm run test
         working-directory: code/${{ matrix.folder }}
+      # - run: npm run e2e --if-present
+      #   working-directory: code/${{ matrix.folder }}
       - uses: codecov/codecov-action@v1
         with:
           name: codecov-${{ matrix.folder }}
           directory: code/${{ matrix.folder }}
           override_pr: ${{ github.event.number }}
-      - run: npx lerna run build
+      - run: npm run build
         working-directory: code/${{ matrix.folder }}

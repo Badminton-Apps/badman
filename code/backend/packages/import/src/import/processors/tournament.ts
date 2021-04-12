@@ -27,7 +27,7 @@ import {
   titleCase
 } from '@badvlasim/shared';
 import { unlink } from 'fs';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Op, Transaction } from 'sequelize';
 import { Mdb } from '../../convert/mdb';
 import { ProcessImport } from '../processor';
@@ -425,7 +425,7 @@ export class TournamentTpProcessor extends ProcessImport {
       const locations: { location: Location; internalId: number }[] = this.importSteps
         .get('locations')
         .getData();
-      const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('court'));
+      const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('Court'));
 
       const courts = [];
       for await (const csvCourt of csvCourts) {
@@ -734,15 +734,19 @@ export class TournamentTpProcessor extends ProcessImport {
         const daysCsv = await args.mdb.toCsv('TournamentDay');
         const days = await csvToArray<{ dates: Date[] }>(daysCsv, {
           onEnd: data => {
+            moment.locale('nl-be');
+
+            const dates = data
+              .map((date: { tournamentday: string }) =>
+                moment.tz(date.tournamentday, 'MM/DD/YYYY', 'Europe/Brussels').toDate()
+              )
+              .sort(
+                (a: { getTime: () => number }, b: { getTime: () => number }) =>
+                  a.getTime() - b.getTime()
+              );
+
             return {
-              dates: data
-                .map(
-                  (date: { tournamentday: string | number | Date }) => new Date(date.tournamentday)
-                )
-                .sort(
-                  (a: { getTime: () => number }, b: { getTime: () => number }) =>
-                    a.getTime() - b.getTime()
-                )
+              dates
             };
           },
           onError: e => {
