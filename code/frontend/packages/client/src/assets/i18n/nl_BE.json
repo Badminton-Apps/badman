@@ -64,36 +64,36 @@
     },
     "updates": {
       "title": "Updates",
-      "description": "Bekijk de changelogs"
+      "description": "Overzicht veranderingen"
     }
   },
   "team": {
     "prefferd-encounter": "Voorkeurs speel moment",
     "day": "Speeldag",
-    "captain": "Kapitein"
+    "captain": "Ploegkapitein"
   },
   "competition": {
-    "title": "Comeptitie",
+    "title": "Competitie",
     "subevent": {
-      "max": "Max level",
-      "min-base": "Min basis index",
-      "max-base": "Max basis index"
+      "max": "Max klassement",
+      "min-base": "Min basis ploegindex",
+      "max-base": "Max basis ploegindex"
     },
     "enrollment": {
-      "select-location": "Selecteer de locaties voor elk event",
-      "comment": "Geef commentaar",
-      "select-club": "Selecteer club & competition",
-      "assign-team": "Verdeel teams",
-      "max": "Max",
-      "base": "Basis",
+      "select-location": "Selecteer locaties voor ontmoetingen",
+      "comment": "Opmerkingen (per ploeg)",
+      "select-club": "Selecteer club & competitie",
+      "assign-team": "Deel ploegen in",
+      "max": "Max klassement",
+      "base": "Grenzen ploegindex",
       "errors": {
-        "not-allowed": "{{player}} niet toegestaan ({{type}}:{{level}}, max {{max}})",
-        "cant-play": "{{player}} mag niet spelen ({{type}}:{{level}}, max {{max}})",
-        "best-players": "Beste 4 spelers mogen niet spelen",
-        "base": "Ploeg index te hoog"
+        "not-allowed": "{{player}} mag niet in basis ({{type}}:{{level}}, max {{max}})",
+        "cant-play": "{{player}} mag nooit spelen ({{type}}:{{level}}, max {{max}})",
+        "best-players": "Sterkste 4 spelers kunnen nooit samen spelen",
+        "base": "Ploegindex te laag voor afdeling"
       }
     },
-    "type": "type",
+    "type": "Type",
     "national": "Nationaal",
     "liga": "Liga",
     "prov": "Provinciaal"
@@ -109,7 +109,7 @@
   },
   "games": {
     "title": "Wedstrijden",
-    "bye": "bye"
+    "bye": "Bedankt"
   },
   "gender": {
     "select": "Selecteer",
@@ -126,8 +126,8 @@
     "firstname": "Voornaam",
     "lastname": "Achteraam",
     "abbreviation": "Afkorting",
-    "email": "email",
-    "phone": "Tel",
+    "email": "e-mail",
+    "phone": "Telefoon",
     "fax": "Fax",
     "required": "Velden met een sterretje (*) zijn verplicht"
   },
@@ -136,11 +136,11 @@
     "delete": "Verwijderen",
     "create": "Aanmaken",
     "edit": "Bewerken",
-    "done": "Done",
+    "done": "Klaar",
     "detail": "Details",
     "next": "Volgende",
     "prev": "Vorige",
-    "submit": "Submit",
+    "submit": "Verzenden",
     "no": "Nee",
     "yes": "Ja",
     "save": "Opslaan"
