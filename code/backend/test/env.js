@@ -1,1 +1,1 @@
-process.env.LOG_LEVEL = 'None'
+process.env.LOG_LEVEL = 'None';
