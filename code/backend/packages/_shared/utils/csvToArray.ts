@@ -33,7 +33,7 @@ export const csvToArray = <T>(
     });
 
     parser.on('error', async error => {
-      logger.error('Error reading csv', error)
+      logger.error('Error reading csv', error);
       if (o.onAdd.constructor.name === 'AsyncFunction') {
         reject(await o.onError(error));
       } else {
@@ -42,6 +42,17 @@ export const csvToArray = <T>(
     });
 
     parser.on('end', async () => {
+      if (
+        data === null ||
+        data === undefined ||
+        (data.length === 0 && csv.length === 0)
+      ) {
+        reject({
+          message: 'No data',
+          arguments: { csv }
+        });
+      }
+
       if (o.onAdd.constructor.name === 'AsyncFunction') {
         resolve(await o.onEnd(data));
       } else {
@@ -49,4 +60,4 @@ export const csvToArray = <T>(
       }
     });
   });
-}
+};

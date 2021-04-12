@@ -14,18 +14,24 @@ jobs:
         with:
           node-version: 12
           registry-url: 'https://npm.pkg.github.com'
+      - name: restore lerna
+        uses: actions/cache@v2
+        with:
+          path: |
+            code/${{ matrix.folder }}/node_modules
+            code/${{ matrix.folder }}/*/*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('code/${{ matrix.folder }}/yarn.lock') }}
       - run: npx lerna bootstrap
         working-directory: code/${{ matrix.folder }}
-      - run: npx lerna run lint
+      - run: npm run lint
         working-directory: code/${{ matrix.folder }}
-      - run: npx lerna run test
+      - run: npm run test
         working-directory: code/${{ matrix.folder }}
+      - uses: codecov/codecov-action@v1
+        with:
+          name: codecov-${{ matrix.folder }}
+          directory: code/${{ matrix.folder }}
 
-      # TOOD:
-      #   - Docker build
-      #   - Docker push
-      #   - Helm package
-      #   - Upgrade helm
   publish-github:
     outputs:
       new_sha: ${{ steps.sha.outputs.new_sha }}

@@ -43,7 +43,7 @@ export const addTeamMutation = {
       const [teamDb, created] = await Team.findOrCreate({
         where: {
           name: team.name,
-          ClubId: clubId
+          clubId: clubId
         },
         defaults: team,
         transaction
@@ -90,11 +90,11 @@ export const removeTeamMutation = {
 
       if (
         context?.req?.user == null ||
-        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+        !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
           required: {
-            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+            anyClaim: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
         });
@@ -139,11 +139,11 @@ export const updateTeamMutation = {
 
       if (
         context?.req?.user == null ||
-        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+        !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
           required: {
-            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+            anyClaim: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
         });
@@ -191,11 +191,11 @@ export const addPlayerToTeamMutation = {
 
       if (
         context?.req?.user == null ||
-        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+        !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
           required: {
-            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+            anyClaim: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
         });
@@ -260,11 +260,11 @@ export const removePlayerFromTeamMutation = {
 
       if (
         context?.req?.user == null ||
-        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+        !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
           required: {
-            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+            anyClaim: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
         });
@@ -330,14 +330,14 @@ export const updateSubEventTeamMutation = {
 
       if (
         context?.req?.user == null ||
-        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+        !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
-        logger.warn('User tried something it should\'t have done', {
+        logger.warn("User tried something it should't have done", {
           required: {
-            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+            anyClaim: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
-        })
+        });
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "
@@ -389,14 +389,14 @@ export const updatePlayerTeamMutation = {
 
       if (
         context?.req?.user == null ||
-        !context.req.user.hasAnyPermission([`${dbTeam.ClubId}_edit:team`, 'edit-any:club'])
+        !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
-        logger.warn('User tried something it should\'t have done', {
+        logger.warn("User tried something it should't have done", {
           required: {
-            anyClaim: [`${dbTeam.ClubId}_edit:team`, 'edit-any:club']
+            anyClaim: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
-        })
+        });
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "

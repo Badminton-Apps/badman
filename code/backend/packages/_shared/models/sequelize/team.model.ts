@@ -163,7 +163,7 @@ export class Team extends Model {
   @ForeignKey(() => Club)
   @Unique('unique_constraint')
   @Column
-  ClubId: string;
+  clubId: string;
 
   @BelongsToMany(
     () => Player,

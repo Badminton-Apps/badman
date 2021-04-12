@@ -1,13 +1,13 @@
 {
   "name": "@badvlasim/shared",
-  "version": "3.12.6",
+  "version": "3.13.0",
   "main": "index.js",
   "license": "MIT",
   "private": true,
   "scripts": {
     "lint": "eslint --fix -c ../../.eslintrc.js ./**/*{.ts,.tsx}",
     "gen-erd": "node -r ts-node/register ./utils/generate-erd.ts",
-    "test": "jest --config ./jest.config.js --testFailureExitCode 0"
+    "test": "jest --config ./jest.config.js --runInBand"
   },
   "dependencies": {
     "@fast-csv/parse": "^4.3.1",
