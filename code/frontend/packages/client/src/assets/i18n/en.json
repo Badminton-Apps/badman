@@ -1,83 +1,162 @@
 {
-    "languages": {
-        "en": "English",
-        "fr_BE": "Français",
-        "nl_BE": "Nederlands"
+  "languages": {
+    "en": "English",
+    "fr_BE": "Français",
+    "nl_BE": "Nederlands"
+  },
+  "lists": {
+    "name": "Name"
+  },
+  "management": {
+    "calculate": "Calculate",
+    "cleanup": "Cleanup",
+    "download": "Download",
+    "end": "End",
+    "force": "Force",
+    "games-to-use": "Games to use",
+    "import": "Import",
+    "new-system": "New system",
+    "number-short": "No.",
+    "procent-losing-short": "% Lose",
+    "procent-winning-short": "% Win",
+    "ranking": "Ranking",
+    "reset": "Reset",
+    "select": "Select",
+    "start": "Start",
+    "sync": "Sync"
+  },
+  "systems": {
+    "double": "Double",
+    "double-rank": "Ranking level",
+    "list": "Ranking Players",
+    "mix": "Mix",
+    "mix-rank": "Ranking level",
+    "single": "Single",
+    "single-rank": "Ranking level"
+  },
+  "faq": {
+    "legend": "Table of contents",
+    "title": "Info how to use our website",
+    "info": {
+      "title": "Info video",
+      "description": "Via the following link you can find the info video explaining all the details of the new system:"
     },
-    "lists": {
-        "name": "Name"
+    "overview": {
+      "title": "Overview by player",
+      "description": "When you search for a player in the search bar, you will be taken to a page where you can see all kinds of information about a player's results and his ranking. All sections of this page are explained below.",
+      "levels": "At the top right you will see the rankings of the person you are looking for. If you move your mouse over a ranking (or on your mobile phone when you press and hold) you will see the ranking of the player within his own classification, as well as his position within the national Belgian ranking.",
+      "evolution-1": "The evolution graph on the right shows how a player evolves through the simulated years. The period marked with a dotted line is a period where the simulations are still stabilizing, so this period is less accurate.",
+      "evolution-2": "Each ranking evaluation is marked as a dot on the chart. Each dot shows your personal average ascending and descending points.",
+      "game-result": "For a player, all his results are displayed (tournament/competition), when it was played, the game scores, which ranking the players had at the time of the match and who the winner was (indicated in bold)."
     },
-    "management": {
-        "calculate": "Calculate",
-        "cleanup": "Cleanup",
-        "download": "Download",
-        "end": "End",
-        "force": "Force",
-        "games-to-use": "Games to use",
-        "import": "Import",
-        "new-system": "New system",
-        "number-short": "No.",
-        "procent-losing-short": "% Lose",
-        "procent-winning-short": "% Win",
-        "ranking": "Ranking",
-        "reset": "Reset",
-        "select": "Select",
-        "start": "Start",
-        "sync": "Sync"
-    },
-    "systems": {
-        "double": "Double",
-        "double-rank": "Ranking level",
-        "list": "Ranking Players",
-        "mix": "Mix",
-        "mix-rank": "Ranking level",
-        "single": "Single",
-        "single-rank": "Ranking level"
-    },
-    "faq": {
-        "legend": "Table of contents",
-        "title": "Info how to use our website",
-        "info": {
-            "title": "Info video",
-            "description": "Via the following link you can find the info video explaining all the details of the new system:"
-        },
-        "overview": {
-            "title": "Overview by player",
-            "description": "When you search for a player in the search bar, you will be taken to a page where you can see all kinds of information about a player's results and his ranking. All sections of this page are explained below.",
-            "levels": "At the top right you will see the rankings of the person you are looking for. If you move your mouse over a ranking (or on your mobile phone when you press and hold) you will see the ranking of the player within his own classification, as well as his position within the national Belgian ranking.",
-            "evolution-1": "The evolution graph on the right shows how a player evolves through the simulated years. The period marked with a dotted line is a period where the simulations are still stabilizing, so this period is less accurate.",
-            "evolution-2": "Each ranking evaluation is marked as a dot on the chart. Each dot shows your personal average ascending and descending points.",
-            "game-result": "For a player, all his results are displayed (tournament\/competition), when it was played, the game scores, which ranking the players had at the time of the match and who the winner was (indicated in bold)."
-        },
-        "points": {
-            "title": "Points table",
-            "table": {
-                "level": "Level",
-                "points-won": "Points won against this level",
-                "points-needed-up": "Points needed to go up",
-                "points-needed-down": "Points needed to go down"
-            }
-        },
-        "ranking": {
-            "title": "Ranking",
-            "description": "When you click on the ranking category at the top left, you will see your ranking within your classification, as well as your ranking for each discipline and by gender, together with the player's ranking. Sorting by decreasing total ranking within a discipline is done by clicking on this discipline (or on your mobile phone when press and hold.) By default, the top 15 is given, but you can change this at the bottom of the page. You can also click through to the next page with the next players in the ranking. The discipline itself can also be selected at the bottom."
-        },
-        "updates": {
-            "title": "Updates",
-            "description": "View the changelogs"
-        }
-    },
-    "competition": {
-        "types": {
-            "male": "Male",
-            "female": "Fenale",
-            "mix": "Mix"
-        }
-    },
-    "event": {
-      "types": {
-        "competition": "Competition",
-        "tournament": "Tournament"
+    "points": {
+      "title": "Points table",
+      "table": {
+        "level": "Level",
+        "points-won": "Points won against this level",
+        "points-needed-up": "Points needed to go up",
+        "points-needed-down": "Points needed to go down"
       }
+    },
+    "ranking": {
+      "title": "Ranking",
+      "description": "When you click on the ranking category at the top left, you will see your ranking within your classification, as well as your ranking for each discipline and by gender, together with the player's ranking. Sorting by decreasing total ranking within a discipline is done by clicking on this discipline (or on your mobile phone when press and hold.) By default, the top 15 is given, but you can change this at the bottom of the page. You can also click through to the next page with the next players in the ranking. The discipline itself can also be selected at the bottom."
+    },
+    "updates": {
+      "title": "Updates",
+      "description": "View changelogs"
     }
+  },
+  "team": {
+    "prefferd-encounter": "Preferred match time",
+    "day": "Matchday",
+    "captain": "Team captain"
+  },
+  "competition": {
+    "title": "Competition",
+    "subevent": {
+      "max": "Max level",
+      "min-base": "Min basis team index",
+      "max-base": "Max basis team index"
+    },
+    "enrollment": {
+      "select-location": "Select locations for team encounters",
+      "comment": "Comments (for each team)",
+      "select-club": "Select club and competition",
+      "assign-team": "Assign teams",
+      "max": "Max level",
+      "base": "Limits team index",
+      "errors": {
+        "not-allowed": "{{player}} is not allowed in basis ({{type}}:{{level}}, max {{max}})",
+        "cant-play": "{{player}} is not allowed to play ({{type}}:{{level}}, max {{max}})",
+        "best-players": "Strongest 4 players can never play together",
+        "base": "Team index too low for division"
+      }
+    },
+    "type": "Type",
+    "national": "National",
+    "liga": "League",
+    "prov": "Provincial"
+  },
+  "event": {
+    "types": {
+      "competition": "Competition",
+      "tournament": "Tournament"
+    }
+  },
+  "players": {
+    "title": "Players"
+  },
+  "games": {
+    "title": "Games",
+    "bye": "Bye"
+  },
+  "gender": {
+    "select": "Select",
+    "title": "Gender",
+    "male": "Men",
+    "female": "Women",
+    "mix": "Mixed"
+  },
+  "input": {
+    "type": "Type",
+    "memberId": "Member id",
+    "year": "Year",
+    "name": "Name",
+    "firstname": "First name",
+    "lastname": "Last name",
+    "abbreviation": "Abbreviation",
+    "email": "Email",
+    "phone": "Phone",
+    "fax": "Fax",
+    "required": "Fields with an asterisk (*) are required"
+  },
+  "button": {
+    "close": "Close",
+    "delete": "Delete",
+    "create": "Create",
+    "edit": "Edit",
+    "done": "Done",
+    "detail": "Details",
+    "next": "Next",
+    "prev": "Previous",
+    "submit": "Submit",
+    "no": "No",
+    "yes": "Yes",
+    "save": "Save"
+  },
+  "days": {
+    "select": "Select",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "locations": {
+    "title": "Location(s)"
+  },
+  "loading": "Loading"
 }
