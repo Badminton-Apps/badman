@@ -1,8 +1,4 @@
-import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -13,6 +9,7 @@ import {
   Output,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { TeamDialogComponent } from 'app/club/dialogs';
 import { Club, CompetitionSubEvent, Team } from 'app/_shared';
 import { filter } from 'rxjs/operators';
@@ -50,7 +47,8 @@ export class AssignTeamComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private translation: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -58,23 +56,11 @@ export class AssignTeamComponent implements OnInit {
     this.initialPlacing();
   }
 
-  drop(
-    event: CdkDragDrop<Team[], Team[]>,
-    subEvent: CompetitionSubEvent
-  ): void {
+  drop(event: CdkDragDrop<Team[], Team[]>, subEvent: CompetitionSubEvent): void {
     if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       const team = subEvent.teams[event.currentIndex];
       this.validate(team, subEvent);
 
@@ -116,7 +102,6 @@ export class AssignTeamComponent implements OnInit {
       hasIssues: false,
     };
 
-
     for (const player of team.players) {
       if (player?.rankingPlaces && player?.rankingPlaces?.length > 0) {
         const rankingPlace = player?.rankingPlaces[0];
@@ -124,20 +109,35 @@ export class AssignTeamComponent implements OnInit {
           if (rankingPlace.single < subEvent.maxLevel) {
             issues.hasIssues = true;
             issues.level.push(
-              `${player.fullName} not allowed (single: ${rankingPlace.single}, max ${subEvent.maxLevel})`
+              this.translation.get('competition.enrollment.errors.not-allowed', {
+                player: player.fullName,
+                type: 'single',
+                level: rankingPlace.single,
+                max: subEvent.maxLevel,
+              })
             );
           }
           if (rankingPlace.double < subEvent.maxLevel) {
             issues.hasIssues = true;
             issues.level.push(
-              `${player.fullName} not allowed (double: ${rankingPlace.double}, max ${subEvent.maxLevel})`
+              this.translation.get('competition.enrollment.errors.not-allowed', {
+                player: player.fullName,
+                type: 'double',
+                level: rankingPlace.double,
+                max: subEvent.maxLevel,
+              })
             );
           }
           if (subEvent.gameType == 'MX') {
             if (rankingPlace.mix < subEvent.maxLevel) {
               issues.hasIssues = true;
               issues.level.push(
-                `${player.fullName} not allowed (mix: ${rankingPlace.mix}, max ${subEvent.maxLevel})`
+                this.translation.get('competition.enrollment.errors.not-allowed', {
+                  player: player.fullName,
+                  type: 'mix',
+                  level: rankingPlace.mix,
+                  max: subEvent.maxLevel,
+                })
               );
             }
           }
@@ -145,20 +145,35 @@ export class AssignTeamComponent implements OnInit {
           if (rankingPlace.single < subEvent.maxLevel) {
             warnings.hasIssues = true;
             warnings.level.push(
-              `${player.fullName} can't play (single: ${rankingPlace.single}, max: ${subEvent.maxLevel})`
+              this.translation.get('competition.enrollment.errors.cant-play', {
+                player: player.fullName,
+                type: 'single',
+                level: rankingPlace.single,
+                max: subEvent.maxLevel,
+              })
             );
           }
           if (rankingPlace.double < subEvent.maxLevel) {
             warnings.hasIssues = true;
             warnings.level.push(
-              `${player.fullName} can't play (double: ${rankingPlace.double} max: ${subEvent.maxLevel})`
+              this.translation.get('competition.enrollment.errors.cant-play', {
+                player: player.fullName,
+                type: 'double',
+                level: rankingPlace.double,
+                max: subEvent.maxLevel,
+              })
             );
           }
           if (subEvent.gameType == 'MX') {
             if (rankingPlace.mix < subEvent.maxLevel) {
               warnings.hasIssues = true;
               warnings.level.push(
-                `${player.fullName} can't play (mix: ${rankingPlace.mix} max: ${subEvent.maxLevel})`
+                this.translation.get('competition.enrollment.errors.cant-play', {
+                  player: player.fullName,
+                  type: 'mix',
+                  level: rankingPlace.mix,
+                  max: subEvent.maxLevel,
+                })
               );
             }
           }
@@ -167,19 +182,19 @@ export class AssignTeamComponent implements OnInit {
     }
 
     const bestIndex = team.players
-    .map((r) => r.index)
-    .sort((a, b) => a - b)
-    .slice(0, 4)
-    .reduce((a, b) => a + b, 0);
+      .map((r) => r.index)
+      .sort((a, b) => a - b)
+      .slice(0, 4)
+      .reduce((a, b) => a + b, 0);
 
-    if (bestIndex < subEvent.minBaseIndex){
+    if (bestIndex < subEvent.minBaseIndex) {
       warnings.hasIssues = true;
-      warnings.base.push('Best 4 players can\'t play together');
+      warnings.base.push(this.translation.get('competition.enrollment.errors.best-players'));
     }
 
     if (team.baseIndex < subEvent.minBaseIndex) {
       issues.hasIssues = true;
-      issues.base.push('Team base index is to strong');
+      issues.base.push(this.translation.get('competition.enrollment.errors.base'));
     }
 
     if (issues.hasIssues) {
@@ -202,11 +217,7 @@ export class AssignTeamComponent implements OnInit {
       issues.message += warnings.level.join('\n\r');
     }
 
-    issues.class = issues.hasIssues
-      ? 'issues'
-      : warnings.hasIssues
-      ? 'warnings'
-      : '';
+    issues.class = issues.hasIssues ? 'issues' : warnings.hasIssues ? 'warnings' : '';
 
     this.issues[team.id] = issues;
   }
@@ -226,9 +237,7 @@ export class AssignTeamComponent implements OnInit {
       }
 
       if (!subEvent) {
-        subEvent = subEventsSorted.find(
-          (subEvent) => team.baseIndex > subEvent.minBaseIndex
-        );
+        subEvent = subEventsSorted.find((subEvent) => team.baseIndex > subEvent.minBaseIndex);
       }
 
       if (!subEvent && subEventsSorted.length > 0) {
@@ -246,15 +255,9 @@ export class AssignTeamComponent implements OnInit {
       this.validate(team, subEvent);
     }
 
-    const natSubEvents = this.subEvents
-      .filter((a) => a.levelType == 'NATIONAL')
-      .sort((a, b) => a.level - b.level);
-    const ligaSubEvents = this.subEvents
-      .filter((a) => a.levelType == 'LIGA')
-      .sort((a, b) => a.level - b.level);
-    const provSubEvents = this.subEvents
-      .filter((a) => a.levelType == 'PROV')
-      .sort((a, b) => a.level - b.level);
+    const natSubEvents = this.subEvents.filter((a) => a.levelType == 'NATIONAL').sort((a, b) => a.level - b.level);
+    const ligaSubEvents = this.subEvents.filter((a) => a.levelType == 'LIGA').sort((a, b) => a.level - b.level);
+    const provSubEvents = this.subEvents.filter((a) => a.levelType == 'PROV').sort((a, b) => a.level - b.level);
 
     this.subEvents = [...natSubEvents, ...ligaSubEvents, ...provSubEvents];
   }
