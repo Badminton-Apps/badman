@@ -109,7 +109,7 @@ export class Club extends Model {
   }
 
   static async createBaseRoles(instance: Club, options: SaveOptions) {
-    const dbRole = Role.findOrCreate({
+    const [dbRole] = await Role.findOrCreate({
       where: {
         name: 'Admin'
       },
