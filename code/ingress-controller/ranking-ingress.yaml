@@ -15,6 +15,7 @@ spec:
   tls:
     - hosts:
         - beta.latomme.org
+        - badman.app
       secretName: badvla-prod-certificate
   rules:
     - host: beta.latomme.org
