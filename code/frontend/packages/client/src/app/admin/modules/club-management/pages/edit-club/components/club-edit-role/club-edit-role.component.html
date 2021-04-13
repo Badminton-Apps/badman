@@ -28,7 +28,7 @@
         <mat-list-item *ngFor="let player of this.role.players">
           <div mat-line>{{ player.fullName }}</div>
           <button mat-icon-button (click)="this.onPlayerRemoved.next(player)">
-            <mat-icon>{{ 'button.delete' | translate }}</mat-icon>
+            <mat-icon>delete</mat-icon>
           </button>
         </mat-list-item>
       </ng-container>
