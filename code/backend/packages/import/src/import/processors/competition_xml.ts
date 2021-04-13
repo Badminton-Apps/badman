@@ -254,7 +254,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       const dbTeams = await Team.findAll({
         where: {
           name: {
-            [Op.in]: teams.map(team => team['name'])
+            [Op.in]: teams.map((team: any) => team.name)
           }
         },
         transaction: args.transaction
