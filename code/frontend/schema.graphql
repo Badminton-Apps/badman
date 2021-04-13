@@ -318,6 +318,38 @@ input ImportInput {
   tournamentNumber: Int
 }
 
+type LastRankingPlace {
+  id: String!
+  rankingDate: Date
+  singlePoints: Int
+  mixPoints: Int
+  doublePoints: Int
+  singlePointsDowngrade: Int
+  mixPointsDowngrade: Int
+  doublePointsDowngrade: Int
+  singleRank: Int
+  mixRank: Int
+  doubleRank: Int
+  totalSingleRanking: Int
+  totalMixRanking: Int
+  totalDoubleRanking: Int
+  totalWithinSingleLevel: Int
+  totalWithinMixLevel: Int
+  totalWithinDoubleLevel: Int
+  single: Int
+  mix: Int
+  double: Int
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  playerId: String
+  systemId: String
+  createdAt: Date!
+  updatedAt: Date!
+  rankingSystem: RankingSystem
+  player(limit: Int, order: String, where: SequelizeJSON, offset: Int): Player!
+}
+
 type Location {
   id: String!
   name: String
@@ -374,6 +406,7 @@ type Player {
   teams: [Team]
   claims: [Claim]
   rankingPlaces(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [RankingPlace]
+  lastRanking(limit: Int, order: String, where: SequelizeJSON, offset: Int): LastRankingPlace
   rankingPoints(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [RankingPoint]
   games(limit: Int, order: String, where: SequelizeJSON, offset: Int, direction: String): [Game]
   base: Boolean
@@ -780,14 +813,13 @@ type Team {
   preferredTime: String
   preferredDay: TeampreferredDayEnumType
   abbreviation: String
-  ClubId: String
+  clubId: String
   type: String
   teamNumber: Int
   active: Boolean
   createdAt: Date!
   updatedAt: Date!
   captainId: String
-  clubId: String
   club(limit: Int, order: String, where: SequelizeJSON, offset: Int): Club
   players(limit: Int, order: String, where: SequelizeJSON, offset: Int, end: String): [Player]
   subEvents(limit: Int, order: String, where: SequelizeJSON, offset: Int): [SubEventCompetition]
@@ -800,12 +832,11 @@ input TeamInput {
   preferredTime: String
   preferredDay: TeampreferredDayEnumType
   abbreviation: String
-  ClubId: String
+  clubId: String
   type: String
   teamNumber: Int
   active: Boolean
   captainId: String
-  clubId: String
   players: PlayerInput
 }
 

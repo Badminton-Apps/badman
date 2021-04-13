@@ -43,13 +43,13 @@ export class RankingCalculator {
       }
 
       // TODO: enable after everything is imported
-      // for (const system of rankingSystems) {
-      //   logger.info(`Calculate for [${system.rankingType.name}] (${system.rankingType.id})`);
-      //   await system.calculateAsync(stop, start);
-      //   logger.info(
-      //     `Calculate finished for [${system.rankingType.name}] (${system.rankingType.id})`
-      //   );
-      // }
+      for (const system of rankingSystems) {
+        logger.info(`Calculate for [${system.rankingType.name}] (${system.rankingType.id})`);
+        await system.calculateAsync(stop, start);
+        logger.info(
+          `Calculate finished for [${system.rankingType.name}] (${system.rankingType.id})`
+        );
+      }
     } catch (e) {
       logger.error(e);
     } finally {

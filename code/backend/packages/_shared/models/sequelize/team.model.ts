@@ -15,6 +15,7 @@ import {
   ForeignKey,
   HasMany,
   HasOne,
+  Index,
   IsUUID,
   Model,
   PrimaryKey,
@@ -61,6 +62,8 @@ export class Team extends Model {
   constructor(values?: Partial<Team>, options?: BuildOptions) {
     super(values, options);
   }
+
+  // #region hooks
 
   @BeforeBulkCreate
   static setAbbriviations(instances: Team[]) {
@@ -122,6 +125,8 @@ export class Team extends Model {
     }
   }
 
+  // #endregion
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -162,6 +167,7 @@ export class Team extends Model {
 
   @ForeignKey(() => Club)
   @Unique('unique_constraint')
+  @Index('club_index')
   @Column
   clubId: string;
 

@@ -21,13 +21,12 @@ import * as updatePlayerTeamMutation from '../../graphql/teams/mutations/updateP
 export class TeamService {
   constructor(private apollo: Apollo) {}
 
-  getTeam(teamId: string, rankingType?: string) {
+  getTeam(teamId: string) {
     return this.apollo
       .query<{ team: Team }>({
         query: teamQuery,
         variables: {
           id: teamId,
-          rankingType,
         },
       })
       .pipe(map((x) => new Team(x.data.team)));
@@ -95,12 +94,7 @@ export class TeamService {
     });
   }
 
-  getTeams(
-    clubId: string,
-    sort?: string,
-    direction?: SortDirection,
-    page?: number
-  ): Observable<Team[]> {
+  getTeams(clubId: string, sort?: string, direction?: SortDirection, page?: number): Observable<Team[]> {
     return this.apollo
       .query({
         query: teamsQuery,
