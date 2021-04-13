@@ -1,3 +1,22 @@
+# [3.14.0](https://github.com/Badminton-Apps/core/compare/v3.13.1...v3.14.0) (2021-04-13)
+
+
+### Bug Fixes
+
+* admin role creation ([27c5766](https://github.com/Badminton-Apps/core/commit/27c5766eac11df6cfd64e520a0e8307ddcee6822))
+* icon was accedently translated ([eea10af](https://github.com/Badminton-Apps/core/commit/eea10aff654421c2ea8bef1a9a03038cbe0775df))
+* linting ([7717a3a](https://github.com/Badminton-Apps/core/commit/7717a3a1d83dcec5c027fc748de20a211b5599ab))
+* name difference vs sync ([4658c3d](https://github.com/Badminton-Apps/core/commit/4658c3dc63eea08948c905df0b3bf4413b45b54b))
+
+
+### Features
+
+* Different table for latest ranking ([57a98cb](https://github.com/Badminton-Apps/core/commit/57a98cbb038e71d71c2c90551cce91d8546c285f))
+* liveness/readiness probes ([e1dc00b](https://github.com/Badminton-Apps/core/commit/e1dc00be61c5033e37164ccfbb954dbe4995606a))
+* more config ([e5e1967](https://github.com/Badminton-Apps/core/commit/e5e1967545a7a2205fe9def613579dca68c2c869))
+
+
+
 ## [3.13.1](https://github.com/Badminton-Apps/core/compare/v3.13.0...v3.13.1) (2021-04-12)
 
 
