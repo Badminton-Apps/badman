@@ -6,6 +6,7 @@ metadata:
 spec:
   dnsNames:
     - beta.latomme.org
+    - badman.app
   secretName: badvla-staging-certificate
   issuerRef:
     name: letsencrypt-staging

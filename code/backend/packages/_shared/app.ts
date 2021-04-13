@@ -46,7 +46,8 @@ export class App {
     const whitelist = [
       'http://localhost:4000',
       'http://localhost:4200',
-      'https://beta.latomme.org'
+      'https://beta.latomme.org',
+      'https://badman.app'
     ];
     this.corsOptions = {
       origin: (origin, callback) => {
