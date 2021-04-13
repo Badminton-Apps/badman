@@ -3,6 +3,34 @@
 module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async t => {
+      await queryInterface.bulkDelete(
+        { tableName: 'Teams', schema: 'public' },
+        null,
+        { transaction: t, truncate: true, cascade: true }
+      );
+
+      await queryInterface.bulkDelete(
+        { tableName: 'Roles', schema: 'security' },
+        null,
+        { transaction: t, truncate: true, cascade: true }
+      );
+
+      await queryInterface.bulkDelete(
+        { tableName: 'EventCompetitions', schema: 'event' },
+        null,
+        { transaction: t, truncate: true, cascade: true }
+      );
+      await queryInterface.bulkDelete(
+        { tableName: 'EventTournaments', schema: 'event' },
+        null,
+        { transaction: t, truncate: true, cascade: true }
+      );
+      await queryInterface.bulkDelete(
+        { tableName: 'Games', schema: 'event' },
+        null,
+        { transaction: t, truncate: true, cascade: true }
+      );
+
       await queryInterface.addConstraint(
         {
           tableName: 'Teams',
