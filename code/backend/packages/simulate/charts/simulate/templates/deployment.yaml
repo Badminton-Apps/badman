@@ -29,7 +29,7 @@ spec:
           - containerPort: {{ .Values.service.externalPort}}
             protocol: TCP
             name: http
-        livenessProbe:
+        startupProbe:
           httpGet:
             path: /api/v1/healthz
             port: http
