@@ -228,7 +228,8 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         transaction: args.transaction
       });
 
-      Club.createBaseRoless(dbClubs, { transaction: args.transaction });
+      // because id's change
+      Club.createBaseRoles(dbClubs, { transaction: args.transaction });
 
       return dbClubs;
     });
@@ -239,22 +240,21 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
       const clubs: Club[] = this.importSteps.get('clubs').getData();
 
-      await Team.bulkCreate(
-        data.teams.map(team => {
-          if (team.TeamName) {
-            return new Team({
-              name: this.cleanedTeamName(team.TeamName),
-              clubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
-            }).toJSON();
-          }
-        }),
-        { ignoreDuplicates: true, transaction: args.transaction }
-      );
+      const teams = data.teams.map(team => {
+        if (team.TeamName) {
+          return new Team({
+            name: this.cleanedTeamName(team.TeamName),
+            clubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
+          }).toJSON();
+        }
+      });
+
+      await Team.bulkCreate(teams, { ignoreDuplicates: true, transaction: args.transaction });
 
       const dbTeams = await Team.findAll({
         where: {
           name: {
-            [Op.in]: data.teams.map(team => this.cleanedTeamName(team.TeamName))
+            [Op.in]: teams.map((team: any) => team.name)
           }
         },
         transaction: args.transaction
