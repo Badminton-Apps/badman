@@ -109,9 +109,15 @@ export class Club extends Model {
   }
 
   static async createBaseRoles(instance: Club, options: SaveOptions) {
-    const role = await new Role({
-      name: 'Admin'
-    }).save({ transaction: options.transaction });
+    const dbRole = Role.findOrCreate({
+      where: {
+        name: 'Admin'
+      },
+      defaults: {
+        name: 'Admin'
+      },
+      transaction: options.transaction
+    });
 
     const claims = await Claim.findAll({
       where: {
@@ -121,8 +127,8 @@ export class Club extends Model {
       }
     });
 
-    await role.setClub(instance, { transaction: options.transaction });
-    await role.setClaims(claims, { transaction: options.transaction });
+    await dbRole.setClub(instance, { transaction: options.transaction });
+    await dbRole.setClaims(claims, { transaction: options.transaction });
   }
 
   static async createBaseRoless(instances: Club[], options: SaveOptions) {
