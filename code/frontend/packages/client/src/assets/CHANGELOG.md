@@ -1,3 +1,12 @@
+## [3.14.10](https://github.com/Badminton-Apps/core/compare/v3.14.9...v3.14.10) (2021-04-13)
+
+
+### Bug Fixes
+
+* increase probe ([cab2fbb](https://github.com/Badminton-Apps/core/commit/cab2fbbf8e74c340ec0bd27dffb81a982e06d6b7))
+
+
+
 ## [3.14.9](https://github.com/Badminton-Apps/core/compare/v3.14.8...v3.14.9) (2021-04-13)
 
 
