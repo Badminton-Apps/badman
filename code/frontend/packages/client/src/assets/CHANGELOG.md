@@ -1,3 +1,13 @@
+## [3.14.1](https://github.com/Badminton-Apps/core/compare/v3.14.0...v3.14.1) (2021-04-13)
+
+
+### Bug Fixes
+
+* deployment? ([3c458b1](https://github.com/Badminton-Apps/core/commit/3c458b1832d0727990f687a676a62087cd178b2b))
+* ports ([7a8f9af](https://github.com/Badminton-Apps/core/commit/7a8f9afd056b88548a503b2fa8a471360df8ba2a))
+
+
+
 # [3.14.0](https://github.com/Badminton-Apps/core/compare/v3.13.1...v3.14.0) (2021-04-13)
 
 
