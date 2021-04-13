@@ -8,7 +8,7 @@
 
 </p>
 <p align="center">
-  <a href="https://badvlasim.westeurope.cloudapp.azure.com/"><strong>https://badvlasim.westeurope.cloudapp.azure.com/</strong></a>
+  <a href="https://badman.app/"><strong>https://badman.app</strong></a>
   <br>
 </p>
 
