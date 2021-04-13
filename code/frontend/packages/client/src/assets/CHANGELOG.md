@@ -1,3 +1,12 @@
+## [3.14.6](https://github.com/Badminton-Apps/core/compare/v3.14.5...v3.14.6) (2021-04-13)
+
+
+### Bug Fixes
+
+* Teams need to be deleted ([bc45282](https://github.com/Badminton-Apps/core/commit/bc45282710a836c0de7f6118e5ead0e3aa24b4d5))
+
+
+
 ## [3.14.5](https://github.com/Badminton-Apps/core/compare/v3.14.4...v3.14.5) (2021-04-13)
 
 
