@@ -1,4 +1,3 @@
-import { Comment } from './comment.model';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -26,6 +25,7 @@ import {
   DataType,
   Default,
   HasMany,
+  HasOne,
   Index,
   IsUUID,
   Model,
@@ -36,7 +36,8 @@ import {
 import { ClubMembership } from './club-membership.model';
 import { Club } from './club.model';
 import { Game, GamePlayer } from './event';
-import { RankingPlace, RankingPoint } from './ranking';
+import { LastRankingPlace, RankingPlace, RankingPoint } from './ranking';
+import { Comment } from './comment.model';
 import {
   Claim,
   PlayerClaimMembership,
@@ -90,7 +91,7 @@ export class Player extends Model {
   lastName: string;
 
   get fullName() {
-    return `${this.firstName} ${this.lastName}`
+    return `${this.firstName} ${this.lastName}`;
   }
 
   @Default(false)
@@ -107,6 +108,9 @@ export class Player extends Model {
 
   @HasMany(() => RankingPlace, 'PlayerId')
   rankingPlaces?: RankingPlace[];
+
+  @HasOne(() => LastRankingPlace, 'playerId')
+  lastRankingPlace?: LastRankingPlace;
 
   @HasMany(() => Comment, 'playerId')
   comments?: Comment[];
@@ -223,7 +227,6 @@ export class Player extends Model {
   hasRoles!: BelongsToManyHasAssociationsMixin<Role, string>;
   countRole!: BelongsToManyCountAssociationsMixin;
 
-
   async getUserClaims(): Promise<string[]> {
     let claims = (await this.getClaims()).map(r => r.name);
     const roles = await this.getRoles({
@@ -233,7 +236,6 @@ export class Player extends Model {
       ...claims,
       ...roles.map(r => r?.claims.map(c => `${r.clubId}_${c.name}`)).flat()
     ];
-
 
     return claims;
   }
