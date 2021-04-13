@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node -r ts-node/register ./src/server.ts ",
-    "start:inspect": "node --inspect=5858 -r ts-node/register ./src/server.ts",
+    "start:inspect": "node --inspect=5860 -r ts-node/register ./src/server.ts",
     "start:watch": "nodemon",
     "start:watch:inspect": "nodemon --exec node --inspect=5860 -r ts-node/register ./src/server.ts",
     "test:local": "jest --colors --watchAll",

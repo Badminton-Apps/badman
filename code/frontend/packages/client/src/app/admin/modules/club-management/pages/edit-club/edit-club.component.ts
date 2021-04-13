@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RankingService } from 'app/admin/services';
 import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
-import { Claim, Club, ClubService, Player, Role, RoleService, SystemService, Team, TeamService } from 'app/_shared';
-import { ClaimService } from 'app/_shared/services/security/claim.service';
+import { Club, ClubService, Player, Role, RoleService, Team, TeamService } from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { bufferTime, debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './edit-club.component.html',
@@ -21,7 +19,6 @@ export class EditClubComponent implements OnInit {
     private teamService: TeamService,
     private roleService: RoleService,
     private clubService: ClubService,
-    private systemService: SystemService,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
@@ -29,15 +26,10 @@ export class EditClubComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.club$ = combineLatest([
-      this.route.paramMap,
-      this.systemService.getPrimarySystem(),
-      this.update$.pipe(debounceTime(600)),
-    ]).pipe(
-      map(([params, systems]) => [params.get('id'), systems.id]),
-      switchMap(([id, systemId]) =>
+    this.club$ = combineLatest([this.route.paramMap, this.update$.pipe(debounceTime(600))]).pipe(
+      map(([params]) => [params.get('id')]),
+      switchMap(([id]) =>
         this.clubService.getClub(id, {
-          rankingSystem: systemId,
           includeTeams: false,
           includeRoles: true,
           includeLocations: true,
