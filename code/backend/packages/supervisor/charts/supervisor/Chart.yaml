@@ -1,5 +1,5 @@
 apiVersion: v2
 description: Supervisor
 name: supervisor
-version: 0.3.6
+version: 0.3.7
 appVersion: 0.1.0

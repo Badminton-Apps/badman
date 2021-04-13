@@ -25,14 +25,19 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - port: {{ .Values.service.externalPort }}
+            protocol: TCP
+            name: http
+            targetPort: {{ .Values.service.internalPort }}
         livenessProbe:
           httpGet:
             path: /api/v1/healthz
-            port: {{ .Values.service.internalPort }}
+            port: http
         readinessProbe:
           httpGet:
             path: /
-            port: {{ .Values.service.internalPort }}        
+            port: http        
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         env:
