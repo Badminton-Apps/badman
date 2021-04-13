@@ -92,7 +92,7 @@ export class LastRankingPlace extends Model {
 
   @Unique('unique_constraint')
   @ForeignKey(() => Player)
-  @Index('ranking_index')
+  @Index('lastPlaces_ranking_index')
   @Column
   playerId: string;
 
