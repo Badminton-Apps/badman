@@ -1,3 +1,13 @@
+## [3.14.8](https://github.com/Badminton-Apps/core/compare/v3.14.7...v3.14.8) (2021-04-13)
+
+
+### Bug Fixes
+
+* change to startupProbe ([8e5f574](https://github.com/Badminton-Apps/core/commit/8e5f5749f8eb5a733ddb23b4e5d2c44e1e13bc07))
+* should be external ([8298ad7](https://github.com/Badminton-Apps/core/commit/8298ad7e1d3c5950f66de88930ea359eb4442a75))
+
+
+
 ## [3.14.7](https://github.com/Badminton-Apps/core/compare/v3.14.6...v3.14.7) (2021-04-13)
 
 
