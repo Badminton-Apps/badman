@@ -26,10 +26,9 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-          - port: {{ .Values.service.externalPort }}
+          - containerPort: {{ .Values.service.externalPort }}
             protocol: TCP
             name: http
-            targetPort: {{ .Values.service.internalPort }}
         livenessProbe:
           httpGet:
             path: /
