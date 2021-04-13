@@ -15,7 +15,7 @@ import { col, fn, Includeable, Op, or, QueryTypes, where } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { Player } from '@badvlasim/shared/models';
 import { GameType } from './game.type';
-import { RankingPlaceType } from './rankingPlace.type';
+import { LastRankingPlaceType, RankingPlaceType } from './rankingPlace.type';
 import { RankingPointType } from './rankingPoint.type';
 import { TeamType } from './team.type';
 import { getAttributeFields } from './attributes.type';
@@ -56,6 +56,11 @@ export const PlayerType = new GraphQLObjectType({
             return findOptions;
           }
         })
+      },
+      lastRanking: {
+        type: LastRankingPlaceType,
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Player.associations.lastRankingPlace, {})
       },
       rankingPoints: {
         type: new GraphQLList(RankingPointType),

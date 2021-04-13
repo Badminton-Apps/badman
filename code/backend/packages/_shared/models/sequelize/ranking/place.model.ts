@@ -1,4 +1,6 @@
 import {
+  AfterBulkCreate,
+  AfterCreate,
   BelongsTo,
   Column,
   DataType,
@@ -11,9 +13,16 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, BuildOptions } from 'sequelize';
+import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions,
+  SaveOptions
+} from 'sequelize';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
+import { LastRankingPlace } from './last-place.model';
+import { logger } from '../../..';
 
 @Table({
   timestamps: true,
@@ -21,7 +30,7 @@ import { RankingSystem } from './system.model';
   schema: 'ranking'
 })
 export class RankingPlace extends Model {
-  constructor(values?: Partial<RankingPlace>, options?: BuildOptions){
+  constructor(values?: Partial<RankingPlace>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -37,7 +46,7 @@ export class RankingPlace extends Model {
 
   @Column
   singlePoints: number;
-  @Column 
+  @Column
   mixPoints: number;
   @Column
   doublePoints: number;
@@ -64,7 +73,7 @@ export class RankingPlace extends Model {
   totalDoubleRanking: number;
 
   @Column
-  totalWithinSingleLevel: number;  
+  totalWithinSingleLevel: number;
   @Column
   totalWithinMixLevel: number;
   @Column
@@ -118,4 +127,80 @@ export class RankingPlace extends Model {
   // Belongs to RankingSystem
   getRankingSystem!: BelongsToGetAssociationMixin<RankingSystem>;
   setRankingSystem!: BelongsToSetAssociationMixin<RankingSystem, string>;
+
+  // #region Hooks
+
+  @AfterBulkCreate
+  static async updateLatestRankings(
+    instances: RankingPlace[],
+    options: SaveOptions
+  ) {
+    const updateInstances = instances.map(r => {
+      return {
+        rankingDate: r.rankingDate,
+        singlePoints: r.singlePoints,
+        mixPoints: r.mixPoints,
+        doublePoints: r.doublePoints,
+        singlePointsDowngrade: r.singlePointsDowngrade,
+        mixPointsDowngrade: r.mixPointsDowngrade,
+        doublePointsDowngrade: r.doublePointsDowngrade,
+        singleRank: r.singleRank,
+        mixRank: r.mixRank,
+        doubleRank: r.doubleRank,
+        totalSingleRanking: r.totalSingleRanking,
+        totalMixRanking: r.totalMixRanking,
+        totalDoubleRanking: r.totalDoubleRanking,
+        totalWithinSingleLevel: r.totalWithinSingleLevel,
+        totalWithinMixLevel: r.totalWithinMixLevel,
+        totalWithinDoubleLevel: r.totalWithinDoubleLevel,
+        single: r.single,
+        mix: r.mix,
+        double: r.double,
+        singleInactive: r.singleInactive,
+        mixInactive: r.mixInactive,
+        doubleInactive: r.doubleInactive,
+        playerId: r.PlayerId,
+        systemId: r.SystemId
+      } as const;
+    });
+
+    await LastRankingPlace.bulkCreate(updateInstances, {
+      updateOnDuplicate: [
+        'rankingDate',
+        'singlePoints',
+        'mixPoints',
+        'doublePoints',
+        'singlePointsDowngrade',
+        'mixPointsDowngrade',
+        'doublePointsDowngrade',
+        'singleRank',
+        'mixRank',
+        'doubleRank',
+        'totalSingleRanking',
+        'totalMixRanking',
+        'totalDoubleRanking',
+        'totalWithinSingleLevel',
+        'totalWithinMixLevel',
+        'totalWithinDoubleLevel',
+        'single',
+        'mix',
+        'double',
+        'singleInactive',
+        'mixInactive',
+        'doubleInactive'
+      ],
+      transaction: options.transaction
+    });
+  }
+
+  @AfterCreate
+  static async updateLatestRanking(
+    instance: RankingPlace,
+    options: SaveOptions
+  ) {
+    logger.debug('This is called?');
+    return this.updateLatestRankings([instance], options);
+  }
+
+  // #endregion
 }

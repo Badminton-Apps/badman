@@ -14,6 +14,7 @@ export class Player {
   base: boolean;
   isClaimed = false;
   rankingPlaces: RankingPlace[];
+  lastRanking: RankingPlace;
   games: Game[];
   index: number;
   competitionPlayer: boolean;
@@ -30,16 +31,21 @@ export class Player {
     this.firstName = args.firstName;
     this.lastName = args.lastName;
     this.isClaimed = args.isClaimed;
-    this.rankingPlaces = args.rankingPlaces?.map((r) => new RankingPlace(r));
+    this.lastRanking = args.lastRanking ? new RankingPlace(args.lastRanking) : null;
     this.games = args.games?.map((g) => new Game(g));
     this.base = args.base;
     this.index = args.index;
     this.competitionPlayer = args.competitionPlayer ?? false;
-    this.clubs = args.clubs?.map(club => new Club(club));
+    this.clubs = args.clubs?.map((club) => new Club(club));
+
+    this.rankingPlaces = args.rankingPlaces?.map((r) => new RankingPlace(r));
+    if (this.lastRanking == null && this.rankingPlaces != null) {
+      this.lastRanking = this.rankingPlaces.sort((a, b) => a.rankingDate.getTime() - b.rankingDate.getTime())[0];
+    }
   }
 
   get fullName() {
-    return `${this.firstName} ${this.lastName}`
+    return `${this.firstName} ${this.lastName}`;
   }
 }
 
@@ -51,9 +57,7 @@ export class PlayerGame extends Player {
   constructor(args: Partial<PlayerGame>) {
     super(args);
 
-    this.rankingPlace = args.rankingPlace
-      ? new RankingPlace(args.rankingPlace)
-      : null;
+    this.rankingPlace = args.rankingPlace ? new RankingPlace(args.rankingPlace) : null;
     this.team = args.team;
     this.player = args.player;
   }

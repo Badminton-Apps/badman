@@ -1,5 +1,4 @@
 import {
-  BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
@@ -9,7 +8,6 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
-  BelongsToSetAssociationMixin,
   BuildOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
@@ -22,12 +20,10 @@ import {
   HasManySetAssociationsMixin
 } from 'sequelize';
 import {
-  BelongsTo,
   BelongsToMany,
   Column,
   DataType,
   Default,
-  ForeignKey,
   HasMany,
   IsUUID,
   Model,
@@ -36,7 +32,6 @@ import {
   Unique
 } from 'sequelize-typescript';
 import { RankingSystems, RankingTiming, StartingType } from '../../enums/';
-import { Player } from '../player.model';
 import { RankingSystemGroup } from './group.model';
 import { GroupSystems } from './group_system.model';
 import { RankingPoint } from './point.model';
@@ -184,7 +179,6 @@ export class RankingSystem extends Model {
   hasRankingPoints!: HasManyHasAssociationsMixin<RankingPoint, string>;
   countRankingPoints!: HasManyCountAssociationsMixin;
 
-  
   // Belongs to many Group
   getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
   setGroup!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;

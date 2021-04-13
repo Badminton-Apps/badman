@@ -1,7 +1,6 @@
 query GetClubQuery(
   $id: ID!
   $end: String
-  $rankingType: ID
   $includePlacesTeams: Boolean!
   $includePlaces: Boolean!
   $includeTeams: Boolean!
@@ -30,8 +29,7 @@ query GetClubQuery(
         lastName
         competitionPlayer
         base
-        rankingPlaces(where: { SystemId: $rankingType })
-          @include(if: $includePlacesTeams) {
+        lastRanking @include(if: $includePlacesTeams) {
           single
           double
           mix
@@ -65,8 +63,7 @@ query GetClubQuery(
       id
       firstName
       lastName
-      rankingPlaces(where: { SystemId: $rankingType })
-        @include(if: $includePlaces) {
+      lastRanking @include(if: $includePlaces) {
         single
         double
         mix

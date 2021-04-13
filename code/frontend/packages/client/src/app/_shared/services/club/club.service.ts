@@ -19,18 +19,21 @@ export class ClubService {
   getClub(
     clubId: string,
     args?: {
-      rankingSystem?: string;
       playersfrom?: Date;
+      includePlaces?: boolean;
       includeTeams?: boolean;
+      includePlacesTeams?: boolean;
       includePlayers?: boolean;
       includeRoles?: boolean;
-      includeLocations?: boolean,
+      includeLocations?: boolean;
       teamsWhere?: { [key: string]: any };
     }
   ) {
     // setting default values
     args = {
+      includePlaces: false,
       includeTeams: false,
+      includePlacesTeams: false,
       includePlayers: false,
       includeRoles: false,
       includeLocations: false,
@@ -43,14 +46,13 @@ export class ClubService {
         variables: {
           id: clubId,
           end: args.playersfrom?.toISOString(),
-          rankingType: args.rankingSystem,
-          includePlaces: false,
-          includePlacesTeams: args.rankingSystem !== null,
+          includePlaces: args.includePlaces,
           includeTeams: args.includeTeams,
+          includePlacesTeams: args.includePlacesTeams,
           includePlayers: args.includePlayers,
           includeRoles: args.includeRoles,
           includeLocations: args.includeLocations,
-          teamsWhere: args.teamsWhere
+          teamsWhere: args.teamsWhere,
         },
       })
       .pipe(map((x) => new Club(x.data.club)));
@@ -88,12 +90,7 @@ export class ClubService {
       .pipe(map((x) => new Club(x.data.updateClub)));
   }
 
-  getClubs(args?: {
-    first?: number;
-    after?: string;
-    query?: string;
-    ids?: string[];
-  }) {
+  getClubs(args?: { first?: number; after?: string; query?: string; ids?: string[] }) {
     let where = undefined;
     if (args.query) {
       where = {

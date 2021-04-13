@@ -1,4 +1,4 @@
-query GetTeamQuery($id: ID!, $rankingType: ID) {
+query GetTeamQuery($id: ID!) {
   team(id: $id) {
     id
     name
@@ -21,7 +21,7 @@ query GetTeamQuery($id: ID!, $rankingType: ID) {
       lastName
       competitionPlayer
       base
-      rankingPlaces(where: { SystemId: $rankingType }) {
+      lastRanking {
         single
         double
         mix
