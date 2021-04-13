@@ -23,6 +23,8 @@ import {
   SaveOptions
 } from 'sequelize';
 import {
+  AfterBulkCreate,
+  AfterCreate,
   AllowNull,
   BeforeBulkCreate,
   BeforeBulkUpdate,
@@ -108,10 +110,11 @@ export class Club extends Model {
     }
   }
 
-  static async createBaseRoles(instance: Club, options: SaveOptions) {
-    const [dbRole] = await Role.findOrCreate({
+  static async createBaseRole(instance: Club, options: SaveOptions) {
+    const [dbRole, created] = await Role.findOrCreate({
       where: {
-        name: 'Admin'
+        name: 'Admin',
+        clubId: instance.id
       },
       defaults: {
         name: 'Admin'
@@ -119,21 +122,24 @@ export class Club extends Model {
       transaction: options.transaction
     });
 
-    const claims = await Claim.findAll({
-      where: {
-        type: {
-          [Op.in]: ['club', 'team']
-        }
-      }
-    });
+    if (created) {
+      const claims = await Claim.findAll({
+        where: {
+          type: {
+            [Op.in]: ['club', 'team']
+          }
+        },
+        transaction: options.transaction
+      });
 
-    await dbRole.setClub(instance, { transaction: options.transaction });
-    await dbRole.setClaims(claims, { transaction: options.transaction });
+      await dbRole.setClub(instance, { transaction: options.transaction });
+      await dbRole.setClaims(claims, { transaction: options.transaction });
+    }
   }
 
-  static async createBaseRoless(instances: Club[], options: SaveOptions) {
+  static async createBaseRoles(instances: Club[], options: SaveOptions) {
     for (const club of instances) {
-      await this.createBaseRoles(club, options);
+      await this.createBaseRole(club, options);
     }
   }
 

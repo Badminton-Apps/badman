@@ -9,14 +9,7 @@ export class Team {
   teamNumber: number;
   active: boolean;
   preferredTime: string;
-  preferredDay:
-    | 'sunday'
-    | 'monday'
-    | 'tuesday'
-    | 'wednesday'
-    | 'thursday'
-    | 'friday'
-    | 'saturday';
+  preferredDay: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
 
   players: Player[];
   subEvents: SubEvent[];
@@ -42,15 +35,13 @@ export class Team {
     this.players =
       args?.players?.map((p) => {
         let index = this.type == 'MX' ? 36 : 24;
+        console.log(p);
 
-        if (p.rankingPlaces && p.rankingPlaces.length > 0) {
+        if (p.lastRanking) {
           if (this.type == 'MX') {
-            index =
-              p.rankingPlaces[0].single +
-              p.rankingPlaces[0].double +
-              p.rankingPlaces[0].mix;
+            index = p.lastRanking.single + p.lastRanking.double + p.lastRanking.mix;
           } else {
-            index = p.rankingPlaces[0].single + p.rankingPlaces[0].double;
+            index = p.lastRanking.single + p.lastRanking.double;
           }
         }
 

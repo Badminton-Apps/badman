@@ -5,8 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "npx kill-port 4000 4001 4002 4003 && npx lerna run --parallel start:watch",
-    "start:inspect": "npx kill-port 4000 4001 4002 4003 && npx lerna run start:watch:inspect --stream",
+    "start": "npx kill-port 4000 4001 4002 4003 4004 && npx lerna run --parallel start:watch",
+    "start:inspect": "npx kill-port 4000 4001 4002 4003 4004 && npx lerna run start:watch:inspect --stream",
     "lint": "npx lerna run lint --stream",
     "test": "npx lerna run test --stream",
     "build": "npx lerna run build --stream",
