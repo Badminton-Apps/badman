@@ -26,17 +26,15 @@ export class TeamDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { team: Team; club: Club },
     private teamService: TeamService,
-    private apollo: Apollo,
-    private systemService: SystemService
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
     this.team$ = this.update$.pipe(
       startWith(0),
-      switchMap(() => this.systemService.getPrimarySystem()),
-      switchMap((system) => {
+      switchMap(() => {
         if (this.data.team?.id) {
-          return this.teamService.getTeam(this.data.team?.id, system.id);
+          return this.teamService.getTeam(this.data.team?.id);
         } else {
           return of(null);
         }
@@ -49,9 +47,7 @@ export class TeamDialogComponent implements OnInit {
         map(
           (team) =>
             this.data.club.teams
-              .filter(
-                (t) => t.type == team?.type && t.id != team?.id && t.active
-              )
+              .filter((t) => t.type == team?.type && t.id != team?.id && t.active)
               ?.map((t) => t.players.filter((p) => p.base).map((p) => p.id))
               ?.flat() ?? []
         ),

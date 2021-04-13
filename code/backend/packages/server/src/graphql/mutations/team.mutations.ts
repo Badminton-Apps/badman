@@ -43,7 +43,7 @@ export const addTeamMutation = {
       const [teamDb, created] = await Team.findOrCreate({
         where: {
           name: team.name,
-          clubId: clubId
+          clubId
         },
         defaults: team,
         transaction

@@ -43,9 +43,9 @@
         [routerLink]="['/player', this.player.id]"
       >
         {{ player.firstName }} {{ player.lastName }}
-        <small *ngIf="player.rankingPlaces && player.rankingPlaces.length > 0">
-          ({{ player.rankingPlaces[0].single }}&nbsp;-&nbsp;{{ player.rankingPlaces[0].double
-          }}<ng-container *ngIf="this.team.type == 'MX'">&nbsp;-&nbsp;{{ player.rankingPlaces[0].mix }}</ng-container
+        <small *ngIf="player.lastRanking">
+          ({{ player.lastRanking.single }}&nbsp;-&nbsp;{{ player.lastRanking.double
+          }}<ng-container *ngIf="this.team.type == 'MX'">&nbsp;-&nbsp;{{ player.lastRanking.mix }}</ng-container
           >)
         </small>
 
