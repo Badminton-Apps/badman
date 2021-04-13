@@ -26,13 +26,13 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         livenessProbe:
-            httpGet:
-              path: /api/v1/healthz
-              port: http
+          httpGet:
+            path: /api/v1/healthz
+            port: {{ .Values.service.internalPort }}
         readinessProbe:
           httpGet:
             path: /
-            port: http
+            port: {{ .Values.service.internalPort }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         env:
