@@ -84,14 +84,15 @@
       "comment": "Opmerkingen (per ploeg)",
       "select-club": "Selecteer club & competitie",
       "assign-team": "Deel ploegen in",
-      "max": "Max klassement",
-      "base": "Grenzen ploegindex",
+      "max": "Max",
+      "base": "Grenzen",
       "errors": {
         "not-allowed": "{{player}} mag niet in basis ({{type}}:{{level}}, max {{max}})",
         "cant-play": "{{player}} mag nooit spelen ({{type}}:{{level}}, max {{max}})",
         "best-players": "Sterkste 4 spelers kunnen nooit samen spelen",
         "base-min": "Ploegindex te laag voor afdeling",
-        "base-max": "Ploegindex te hoog voor afdeling"
+        "base-max": "Ploegindex te hoog voor afdeling",
+        "no-day": "Gelieve een speeldag te kiezen"
       }
     },
     "type": "Type",
