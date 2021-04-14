@@ -79,6 +79,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     return new ImportStep('subEvents', async (args: { transaction: Transaction }) => {
       // get previous step data
       const event: EventCompetition = this.importSteps.get('event').getData();
+      const prevSubEvents: SubEventCompetition[] = this.importSteps.get('cleanup_event')?.getData();
       const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
 
       const subEvents = [];
@@ -121,14 +122,23 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
         // This is when the the draws are configured as subevents (liga did so...)
         if (foundEventIndex === -1) {
-          subEvents.push(
-            new SubEventCompetition({
-              name,
-              level,
-              eventType,
-              eventId: event.id
-            }).toJSON()
+          const prevEvent = prevSubEvents.find(
+            r => r.name == name && r.level == level && r.eventType == eventType
           );
+
+          if (prevEvent) {
+            prevEvent.eventId = event.id;
+            subEvents.push(prevEvent.toJSON())
+          } else {
+            subEvents.push(
+              new SubEventCompetition({
+                name,
+                level,
+                eventType,
+                eventId: event.id
+              }).toJSON()
+            );
+          }
           xmlDivisions.push(divisions);
         } else {
           xmlDivisions[foundEventIndex] = xmlDivisions[foundEventIndex].concat(divisions);
