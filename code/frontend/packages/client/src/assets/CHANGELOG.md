@@ -1,3 +1,12 @@
+## [3.15.1](https://github.com/Badminton-Apps/core/compare/v3.15.0...v3.15.1) (2021-04-14)
+
+
+### Bug Fixes
+
+* **ci:** should have the new version ([14d8518](https://github.com/Badminton-Apps/core/commit/14d8518d514c8b0e62df5b7cef1be663994ba41c))
+
+
+
 # [3.15.0](https://github.com/Badminton-Apps/core/compare/v3.14.10...v3.15.0) (2021-04-14)
 
 
