@@ -35,8 +35,6 @@ export class Team {
     this.players =
       args?.players?.map((p) => {
         let index = this.type == 'MX' ? 36 : 24;
-        console.log(p);
-
         if (p.lastRanking) {
           if (this.type == 'MX') {
             index = p.lastRanking.single + p.lastRanking.double + p.lastRanking.mix;

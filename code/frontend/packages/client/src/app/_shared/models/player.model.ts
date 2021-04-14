@@ -39,8 +39,8 @@ export class Player {
     this.clubs = args.clubs?.map((club) => new Club(club));
 
     this.rankingPlaces = args.rankingPlaces?.map((r) => new RankingPlace(r));
-    if (this.lastRanking == null && this.rankingPlaces != null) {
-      this.lastRanking = this.rankingPlaces.sort((a, b) => a.rankingDate.getTime() - b.rankingDate.getTime())[0];
+    if (this.lastRanking == null && this.rankingPlaces != null && this.rankingPlaces.length > 0) {
+      this.lastRanking = this.rankingPlaces.sort((a, b) => a.rankingDate?.getTime() - b.rankingDate?.getTime())[0];
     }
   }
 
