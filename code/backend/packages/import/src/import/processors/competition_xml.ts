@@ -122,7 +122,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
         // This is when the the draws are configured as subevents (liga did so...)
         if (foundEventIndex === -1) {
-          const prevEvent = prevSubEvents.find(
+          const prevEvent = prevSubEvents?.find(
             r => r.name === name && r.level === level && r.eventType === eventType
           );
 
