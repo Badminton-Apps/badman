@@ -70,7 +70,7 @@ export abstract class CompetitionProcessor extends ProcessImport {
     );
   }
 
-  protected cleanupEvent(): ImportStep<void> {
+  protected cleanupEvent(): ImportStep<SubEventCompetition[]> {
     return new ImportStep(
       'cleanup_event',
       async (args: { event: EventCompetition; transaction: Transaction }) => {
@@ -114,6 +114,13 @@ export abstract class CompetitionProcessor extends ProcessImport {
 
         await Game.destroy({ where: { id: games.map(r => r.id) }, transaction: args.transaction });
 
+        const dbSubEvents = await SubEventCompetition.findAll({
+          where: {
+            eventId: args.event.id
+          },
+          transaction: args.transaction
+        })
+
         await SubEventCompetition.destroy({
           where: {
             eventId: args.event.id
@@ -121,6 +128,8 @@ export abstract class CompetitionProcessor extends ProcessImport {
           cascade: true,
           transaction: args.transaction
         });
+
+        return dbSubEvents;
       }
     );
   }
