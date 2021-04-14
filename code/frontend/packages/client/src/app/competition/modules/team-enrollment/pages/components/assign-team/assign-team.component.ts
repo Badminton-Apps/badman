@@ -194,7 +194,12 @@ export class AssignTeamComponent implements OnInit {
 
     if (team.baseIndex < subEvent.minBaseIndex) {
       issues.hasIssues = true;
-      issues.base.push(this.translation.get('competition.enrollment.errors.base'));
+      issues.base.push(this.translation.get('competition.enrollment.errors.base-min'));
+    }
+
+    if (team.baseIndex > subEvent.maxBaseIndex) {
+      issues.hasIssues = true;
+      issues.base.push(this.translation.get('competition.enrollment.errors.base-max'));
     }
 
     if (issues.hasIssues) {

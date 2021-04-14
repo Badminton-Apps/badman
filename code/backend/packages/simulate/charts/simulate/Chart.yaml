@@ -1,5 +1,5 @@
 apiVersion: v2
 description: Simulation Service
 name: simulate
-version: 0.3.7
+version: 0.3.8
 appVersion: 0.1.0
