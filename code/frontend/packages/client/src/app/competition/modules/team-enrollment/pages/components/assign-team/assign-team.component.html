@@ -14,7 +14,7 @@
   </div>
   <div
     class="team-list-target"
-    id=">{{ subEvent.id }}"
+    id="{{ subEvent.id }}"
     cdkDropList
     [cdkDropListConnectedTo]="ids"
     [cdkDropListData]="subEvent.teams"
@@ -33,7 +33,9 @@
           {{ team.name }} <small>({{ team.baseIndex }})</small>
         </div>
         <div class="team-encounter" *ngIf="team.preferredDay">{{ team.preferredDay }} @ {{ team.preferredTime }}</div>
-        <div class="team-encounter" *ngIf="!team.preferredDay">{{ 'competition.enrollment.errors.no-day' | translate }}</div>
+        <div class="team-encounter" *ngIf="!team.preferredDay">
+          {{ 'competition.enrollment.errors.no-day' | translate }}
+        </div>
       </div>
 
       <button mat-icon-button (click)="this.editTeam(team, subEvent)">
