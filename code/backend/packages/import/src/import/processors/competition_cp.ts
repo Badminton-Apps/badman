@@ -93,7 +93,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const level = +parseInt(subEvent.level, 10) || this.getLevel(subEvent.name);
         const eventType = this.getEventType(+subEvent.gender);
 
-        const prevEvent = prevSubEvents.find(
+        const prevEvent = prevSubEvents?.find(
           r => r.name === subEvent.name && r.level === level && r.eventType === eventType
         );
 
