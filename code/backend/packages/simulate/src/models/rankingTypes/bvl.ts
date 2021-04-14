@@ -7,7 +7,8 @@ import {
   RankingPlace,
   RankingPoint,
   RankingSystem,
-  splitInChunks
+  splitInChunks,
+  LastRankingPlace
 } from '@badvlasim/shared';
 import moment, { Moment } from 'moment';
 import { Op } from 'sequelize';
@@ -159,10 +160,11 @@ export class BvlRankingCalc extends RankingCalc {
         inactive.mix = playerGameCount.mix < this.rankingType.gamesForInactivty;
       }
 
-      const lastRanking = player.getLastRanking(
-        this.rankingType.id,
-        this.rankingType.amountOfLevels
-      );
+      const lastRanking = player.lastRankingPlace ?? {
+        single: this.rankingType.amountOfLevels,
+        mix: this.rankingType.amountOfLevels,
+        double: this.rankingType.amountOfLevels,
+      } as LastRankingPlace;
 
       const newPlace = await this.findNewPlacePlayer(
         rankingPoints,
