@@ -240,28 +240,6 @@ export class Player extends Model {
     return claims;
   }
 
-  getLastRanking(system: string, max: number): RankingPlace {
-    if (!this.rankingPlaces) {
-      return null;
-    }
-    const placesInSystem = this.rankingPlaces.filter(
-      x => x.SystemId === system
-    );
-
-    const lastRanking = placesInSystem.sort(
-      (a, b) => b.rankingDate.getTime() - a.rankingDate.getTime()
-    )[0];
-
-    return {
-      mix: lastRanking?.mix || max,
-      double: lastRanking?.double || max,
-      single: lastRanking?.single || max,
-      singleInactive: lastRanking?.singleInactive || false,
-      doubleInactive: lastRanking?.doubleInactive || false,
-      mixInactive: lastRanking?.mixInactive || false
-    } as RankingPlace;
-  }
-
   getHighsetRanking(system: string, max: number): RankingPlace {
     if (!this.rankingPlaces) {
       return null;
