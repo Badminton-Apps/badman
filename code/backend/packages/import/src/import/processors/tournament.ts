@@ -111,7 +111,7 @@ export class TournamentTpProcessor extends ProcessImport {
     );
   }
 
-  protected cleanupEvent(): ImportStep<void> {
+  protected cleanupEvent(): ImportStep<SubEventTournament[]> {
     return new ImportStep(
       'cleanup_event',
       async (args: { event: EventTournament; transaction: Transaction }) => {
@@ -143,6 +143,13 @@ export class TournamentTpProcessor extends ProcessImport {
 
         await Game.destroy({ where: { id: games.map(r => r.id) }, transaction: args.transaction });
 
+        const dbSubEvents = await SubEventTournament.findAll({
+          where: {
+            eventId: args.event.id
+          },
+          transaction: args.transaction
+        });
+
         await SubEventTournament.destroy({
           where: {
             eventId: args.event.id
@@ -150,6 +157,8 @@ export class TournamentTpProcessor extends ProcessImport {
           cascade: true,
           transaction: args.transaction
         });
+
+        return dbSubEvents;
       }
     );
   }
@@ -158,6 +167,7 @@ export class TournamentTpProcessor extends ProcessImport {
     return new ImportStep('subEvents', async (args: { mdb: Mdb; transaction: Transaction }) => {
       // get previous step data
       const event: EventTournament = this.importSteps.get('event').getData();
+      const prevSubEvents: SubEventTournament[] = this.importSteps.get('cleanup_event')?.getData();
       const csvEvents = await csvToArray<ICsvEvent[]>(await args.mdb.toCsv('Event'), {
         onError: e => {
           logger.error('Parsing went wrong', {
@@ -172,12 +182,23 @@ export class TournamentTpProcessor extends ProcessImport {
       }
 
       const subEvents = csvEvents.map(subEvent => {
-        return new SubEventTournament({
-          name: subEvent.name,
-          eventType: super.getEventType(+subEvent.gender),
-          level: +subEvent.level,
-          eventId: event.id
-        }).toJSON();
+        const eventType = super.getEventType(+subEvent.gender);
+        const level = +subEvent.level;
+        const prevEvent = prevSubEvents?.find(
+          r => r.name === subEvent.name && r.level === level && r.eventType === eventType
+        );
+
+        if (prevEvent) {
+          prevEvent.eventId = event.id;
+          return prevEvent.toJSON();
+        } else {
+          return new SubEventTournament({
+            name: subEvent.name,
+            eventType,
+            level,
+            eventId: event.id
+          }).toJSON();
+        }
       });
 
       const dbSubEvents = await SubEventTournament.bulkCreate(subEvents, {
