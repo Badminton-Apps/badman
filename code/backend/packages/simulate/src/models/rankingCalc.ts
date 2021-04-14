@@ -397,7 +397,7 @@ export class RankingCalc {
               'single',
               'double',
               'mix',
-              'SystemId',
+              'systemId',
               'rankingDate',
               'singleInactive',
               'doubleInactive',
@@ -407,7 +407,7 @@ export class RankingCalc {
         ]
       })
     ).map(x => {
-      players.set(x.id, x);
+      players.set(x.id, x); 
     });
 
     return players;
