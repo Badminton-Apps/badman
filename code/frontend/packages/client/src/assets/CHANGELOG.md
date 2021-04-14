@@ -1,3 +1,18 @@
+# [3.16.0](https://github.com/Badminton-Apps/core/compare/v3.15.1...v3.16.0) (2021-04-14)
+
+
+### Bug Fixes
+
+* **client:** wait for translations ([8744952](https://github.com/Badminton-Apps/core/commit/8744952830fb9f633bfbe8d46198f549297563cd))
+
+
+### Features
+
+* **import:** Remember subEvent config from prev import ([45973fd](https://github.com/Badminton-Apps/core/commit/45973fde04514a32dcc7d790c67974b3ff50136a))
+* **simulate:** use last ranking ([1d0b394](https://github.com/Badminton-Apps/core/commit/1d0b394265ca37f7f98b6abd20272968f177162c))
+
+
+
 ## [3.15.1](https://github.com/Badminton-Apps/core/compare/v3.15.0...v3.15.1) (2021-04-14)
 
 
