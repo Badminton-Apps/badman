@@ -1,3 +1,20 @@
+# [3.15.0](https://github.com/Badminton-Apps/core/compare/v3.14.10...v3.15.0) (2021-04-14)
+
+
+### Bug Fixes
+
+* typo ([b2b0f9e](https://github.com/Badminton-Apps/core/commit/b2b0f9e8e7497ddf6798b1c335cd6b9d014c5e15))
+* when no ranking places ([98feffc](https://github.com/Badminton-Apps/core/commit/98feffc28c1513197626f6b09685b94e38ce805b))
+
+
+### Features
+
+* **client:** add preferred day line ([2555538](https://github.com/Badminton-Apps/core/commit/25555385e09b66f379c91baa2c73200640c13542))
+* **client:** shorten enrollment labels ([c1b52ff](https://github.com/Badminton-Apps/core/commit/c1b52ffa0abd41b0f25976d0f127318b6041054e))
+* added to high checker ([2224e45](https://github.com/Badminton-Apps/core/commit/2224e455630fd3148c0fc0daca979cf70d8e551f))
+
+
+
 ## [3.14.10](https://github.com/Badminton-Apps/core/compare/v3.14.9...v3.14.10) (2021-04-13)
 
 
