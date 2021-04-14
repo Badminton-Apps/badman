@@ -84,11 +84,10 @@ export class AssignTeamComponent implements OnInit {
         const index = subEvent.teams.findIndex((t) => t.id == team.id);
         this.validate(newTeam, subEvent);
         subEvent.teams[index] = newTeam;
-        this.changeDetector.detectChanges();
       });
   }
 
-  private validate(team: Team, subEvent: CompetitionSubEvent) {
+  private async validate(team: Team, subEvent: CompetitionSubEvent) {
     const issues = {
       level: [],
       base: [],
@@ -109,35 +108,41 @@ export class AssignTeamComponent implements OnInit {
           if (rankingPlace.single < subEvent.maxLevel) {
             issues.hasIssues = true;
             issues.level.push(
-              this.translation.get('competition.enrollment.errors.not-allowed', {
-                player: player.fullName,
-                type: 'single',
-                level: rankingPlace.single,
-                max: subEvent.maxLevel,
-              })
+              await this.translation
+                .get('competition.enrollment.errors.not-allowed', {
+                  player: player.fullName,
+                  type: 'single',
+                  level: rankingPlace.single,
+                  max: subEvent.maxLevel,
+                })
+                .toPromise()
             );
           }
           if (rankingPlace.double < subEvent.maxLevel) {
             issues.hasIssues = true;
             issues.level.push(
-              this.translation.get('competition.enrollment.errors.not-allowed', {
-                player: player.fullName,
-                type: 'double',
-                level: rankingPlace.double,
-                max: subEvent.maxLevel,
-              })
+              await this.translation
+                .get('competition.enrollment.errors.not-allowed', {
+                  player: player.fullName,
+                  type: 'double',
+                  level: rankingPlace.double,
+                  max: subEvent.maxLevel,
+                })
+                .toPromise()
             );
           }
           if (subEvent.gameType == 'MX') {
             if (rankingPlace.mix < subEvent.maxLevel) {
               issues.hasIssues = true;
               issues.level.push(
-                this.translation.get('competition.enrollment.errors.not-allowed', {
-                  player: player.fullName,
-                  type: 'mix',
-                  level: rankingPlace.mix,
-                  max: subEvent.maxLevel,
-                })
+                await this.translation
+                  .get('competition.enrollment.errors.not-allowed', {
+                    player: player.fullName,
+                    type: 'mix',
+                    level: rankingPlace.mix,
+                    max: subEvent.maxLevel,
+                  })
+                  .toPromise()
               );
             }
           }
@@ -145,35 +150,41 @@ export class AssignTeamComponent implements OnInit {
           if (rankingPlace.single < subEvent.maxLevel) {
             warnings.hasIssues = true;
             warnings.level.push(
-              this.translation.get('competition.enrollment.errors.cant-play', {
-                player: player.fullName,
-                type: 'single',
-                level: rankingPlace.single,
-                max: subEvent.maxLevel,
-              })
+              await this.translation
+                .get('competition.enrollment.errors.cant-play', {
+                  player: player.fullName,
+                  type: 'single',
+                  level: rankingPlace.single,
+                  max: subEvent.maxLevel,
+                })
+                .toPromise()
             );
           }
           if (rankingPlace.double < subEvent.maxLevel) {
             warnings.hasIssues = true;
             warnings.level.push(
-              this.translation.get('competition.enrollment.errors.cant-play', {
-                player: player.fullName,
-                type: 'double',
-                level: rankingPlace.double,
-                max: subEvent.maxLevel,
-              })
+              await this.translation
+                .get('competition.enrollment.errors.cant-play', {
+                  player: player.fullName,
+                  type: 'double',
+                  level: rankingPlace.double,
+                  max: subEvent.maxLevel,
+                })
+                .toPromise()
             );
           }
           if (subEvent.gameType == 'MX') {
             if (rankingPlace.mix < subEvent.maxLevel) {
               warnings.hasIssues = true;
               warnings.level.push(
-                this.translation.get('competition.enrollment.errors.cant-play', {
-                  player: player.fullName,
-                  type: 'mix',
-                  level: rankingPlace.mix,
-                  max: subEvent.maxLevel,
-                })
+                await this.translation
+                  .get('competition.enrollment.errors.cant-play', {
+                    player: player.fullName,
+                    type: 'mix',
+                    level: rankingPlace.mix,
+                    max: subEvent.maxLevel,
+                  })
+                  .toPromise()
               );
             }
           }
@@ -189,17 +200,17 @@ export class AssignTeamComponent implements OnInit {
 
     if (bestIndex < subEvent.minBaseIndex) {
       warnings.hasIssues = true;
-      warnings.base.push(this.translation.get('competition.enrollment.errors.best-players'));
+      warnings.base.push(await this.translation.get('competition.enrollment.errors.best-players').toPromise());
     }
 
     if (team.baseIndex < subEvent.minBaseIndex) {
       issues.hasIssues = true;
-      issues.base.push(this.translation.get('competition.enrollment.errors.base-min'));
+      issues.base.push(await this.translation.get('competition.enrollment.errors.base-min').toPromise());
     }
 
     if (team.baseIndex > subEvent.maxBaseIndex) {
       issues.hasIssues = true;
-      issues.base.push(this.translation.get('competition.enrollment.errors.base-max'));
+      issues.base.push(await this.translation.get('competition.enrollment.errors.base-max').toPromise());
     }
 
     if (issues.hasIssues) {
@@ -225,6 +236,7 @@ export class AssignTeamComponent implements OnInit {
     issues.class = issues.hasIssues ? 'issues' : warnings.hasIssues ? 'warnings' : '';
 
     this.issues[team.id] = issues;
+    this.changeDetector.detectChanges();
   }
 
   private initialPlacing() {
