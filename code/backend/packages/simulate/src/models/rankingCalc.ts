@@ -6,6 +6,7 @@ import {
   Game,
   GameType,
   GroupSystems,
+  LastRankingPlace,
   logger,
   Player,
   RankingPlace,
@@ -314,7 +315,7 @@ export class RankingCalc {
 
     const where = {
       playedAt: {
-        [Op.between]: [start, end] 
+        [Op.between]: [start, end]
       }
     };
 
@@ -378,7 +379,7 @@ export class RankingCalc {
       ]
     });
 
-    return games; 
+    return games;
   }
   protected async getPlayersAsync(start: Date, end: Date): Promise<Map<string, Player>> {
     const players = new Map();
@@ -391,27 +392,22 @@ export class RankingCalc {
         attributes: ['id', 'gender'],
         include: [
           {
-            model: RankingPlace,
+            model: LastRankingPlace,
             attributes: [
               'single',
               'double',
               'mix',
-              'SystemId',
+              'systemId',
               'rankingDate',
               'singleInactive',
               'doubleInactive',
               'mixInactive'
-            ],
-            where: {
-              SystemId: this.rankingType.id
-            },
-            required: false
+            ]
           }
-        ],
-        order: [[{ model: RankingPlace, as: 'rankingPlaces' }, 'rankingDate', 'desc']]
+        ]
       })
     ).map(x => {
-      players.set(x.id, x);
+      players.set(x.id, x); 
     });
 
     return players;
@@ -441,7 +437,7 @@ export class RankingCalc {
 
   public async findNewPlacePlayer(
     points: RankingPoint[],
-    lastRanking: RankingPlace,
+    lastRanking: LastRankingPlace,
     inactive: {
       single: boolean;
       double: boolean;
