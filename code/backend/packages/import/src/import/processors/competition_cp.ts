@@ -75,6 +75,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
     return new ImportStep('subEvents', async (args: { mdb: Mdb; transaction: Transaction }) => {
       // get previous step data
       const event: EventCompetition = this.importSteps.get('event').getData();
+      const prevSubEvents: SubEventCompetition[] = this.importSteps.get('cleanup_event')?.getData();
       const csvEvents = await csvToArray<ICsvEvent[]>(await args.mdb.toCsv('Event'), {
         onError: e => {
           logger.error('Parsing went wrong', {
@@ -90,13 +91,23 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
 
       const subEvents = csvEvents.map(subEvent => {
         const level = +parseInt(subEvent.level, 10) || this.getLevel(subEvent.name);
+        const eventType = this.getEventType(+subEvent.gender);
 
-        return new SubEventCompetition({
-          name: subEvent.name,
-          eventType: this.getEventType(+subEvent.gender),
-          level,
-          eventId: event.id
-        }).toJSON();
+        const prevEvent = prevSubEvents.find(
+          r => r.name == subEvent.name && r.level == level && r.eventType == eventType
+        );
+
+        if (prevEvent) {
+          prevEvent.eventId = event.id;
+          return prevEvent.toJSON();
+        } else {
+          return new SubEventCompetition({
+            name: subEvent.name,
+            eventType,
+            level,
+            eventId: event.id
+          }).toJSON();
+        }
       });
 
       const dbSubEvents = await SubEventCompetition.bulkCreate(subEvents, {
