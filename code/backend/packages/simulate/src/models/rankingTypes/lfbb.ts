@@ -5,7 +5,8 @@ import {
   Player,
   RankingPlace,
   RankingPoint,
-  RankingSystem
+  RankingSystem,
+  LastRankingPlace
 } from '@badvlasim/shared';
 import moment, { Moment } from 'moment';
 import { Op } from 'sequelize';
@@ -28,7 +29,7 @@ export class LfbbRankingCalc extends RankingCalc {
 
   async beforeCalculationAsync(start?: Moment) {
     await super.beforeCalculationAsync(start);
- 
+
     if (this.runningFromStart) {
       logger.debug('Adding initial players');
       await this.startingRanking.addInitialPlayersAsync(
@@ -39,8 +40,8 @@ export class LfbbRankingCalc extends RankingCalc {
         this.protectRanking.bind(this)
       );
 
-      this.rankingType.caluclationIntervalLastUpdate = moment([2017, 8, 1]).toDate()
-      this.rankingType.updateIntervalAmountLastUpdate = moment([2017, 8, 1]).toDate()
+      this.rankingType.caluclationIntervalLastUpdate = moment([2017, 8, 1]).toDate();
+      this.rankingType.updateIntervalAmountLastUpdate = moment([2017, 8, 1]).toDate();
     }
   }
 
@@ -109,14 +110,13 @@ export class LfbbRankingCalc extends RankingCalc {
     super.calculatePeriodAsync(start, end, updateRankings, historicalGames);
     let gamesStartDate = this.rankingType.caluclationIntervalLastUpdate;
 
-     // If running from start, we are reimporting evertyhing, 
+    // If running from start, we are reimporting evertyhing,
     // so the game points need to be caculated for those previous period
-    if (historicalGames){
-      logger.silly('Modifying gamesstart date for historical games')
-      gamesStartDate =  moment(end).subtract(
-        this.rankingType.period.amount,
-        this.rankingType.period.unit
-      ).toDate();
+    if (historicalGames) {
+      logger.silly('Modifying gamesstart date for historical games');
+      gamesStartDate = moment(end)
+        .subtract(this.rankingType.period.amount, this.rankingType.period.unit)
+        .toDate();
     }
 
     // Get all relevant games and players
@@ -182,10 +182,11 @@ export class LfbbRankingCalc extends RankingCalc {
 
     players.forEach(async player => {
       const points = eligbleForRanking.get(player.id) || [];
-      const lastRanking = player.getLastRanking(
-        this.rankingType.id,
-        this.rankingType.amountOfLevels
-      );
+      const lastRanking = player.lastRankingPlace ?? {
+        single: this.rankingType.amountOfLevels,
+        mix: this.rankingType.amountOfLevels,
+        double: this.rankingType.amountOfLevels,
+      } as LastRankingPlace;
       // const highestRanking = player.getHighsetRanking(
       //   this.rankingType.id,
       //   this.rankingType.amountOfLevels
