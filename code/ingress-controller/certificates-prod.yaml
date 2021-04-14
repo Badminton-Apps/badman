@@ -6,7 +6,7 @@ metadata:
 spec:
   dnsNames:
     - beta.latomme.org
-    - latomme.org
+    - badman.app
   secretName: badvla-prod-certificate
   issuerRef:
     name: letsencrypt-prod
