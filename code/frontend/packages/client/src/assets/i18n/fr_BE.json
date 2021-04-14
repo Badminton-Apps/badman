@@ -90,7 +90,8 @@
         "not-allowed": "",
         "cant-play": "",
         "best-players": "",
-        "base": "",
+        "base-min": "",
+        "base-max": "",
         "no-day": ""
       }
     },
