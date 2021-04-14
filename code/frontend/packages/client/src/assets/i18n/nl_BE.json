@@ -90,7 +90,8 @@
         "not-allowed": "{{player}} mag niet in basis ({{type}}:{{level}}, max {{max}})",
         "cant-play": "{{player}} mag nooit spelen ({{type}}:{{level}}, max {{max}})",
         "best-players": "Sterkste 4 spelers kunnen nooit samen spelen",
-        "base": "Ploegindex te laag voor afdeling"
+        "base-min": "Ploegindex te laag voor afdeling",
+        "base-max": "Ploegindex te hoog voor afdeling"
       }
     },
     "type": "Type",
