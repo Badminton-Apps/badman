@@ -1,3 +1,18 @@
+# [3.17.0](https://github.com/Badminton-Apps/core/compare/v3.16.0...v3.17.0) (2021-04-15)
+
+
+### Bug Fixes
+
+* translations ([ec28073](https://github.com/Badminton-Apps/core/commit/ec28073b321acd82a8ba23070e22dffcbc201be2))
+
+
+### Features
+
+* Select location from team dialog ([2b9b03d](https://github.com/Badminton-Apps/core/commit/2b9b03df85c2bf62f15879f53608bea9923c776c))
+* **import:** copy ranking groups when an existing event is overwritten ([fcbf3fe](https://github.com/Badminton-Apps/core/commit/fcbf3feac227efa6360f1d89c28c9d00e2c3283c))
+
+
+
 # [3.16.0](https://github.com/Badminton-Apps/core/compare/v3.15.1...v3.16.0) (2021-04-14)
 
 
