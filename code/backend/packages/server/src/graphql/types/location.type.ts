@@ -15,11 +15,6 @@ export const LocationType = new GraphQLObjectType({
       args: Object.assign(defaultListArgs(), {}),
       resolve: resolver(Location.associations.club)
     },
-    eventCompetitions: {
-      type: new GraphQLList(EventCompetitionType),
-      args: Object.assign(defaultListArgs(), {}),
-      resolve: resolver(Location.associations.eventCompetitions)
-    },
     eventTournaments: {
       type: new GraphQLList(EventTournamentType),
       args: Object.assign(defaultListArgs(), {}),

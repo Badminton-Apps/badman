@@ -1,7 +1,15 @@
-import { LocationEventTournament } from './tournament/location_event.model';
-import { EventCompetition } from '@badvlasim/shared';
+import { EventCompetition, Team } from '@badvlasim/shared';
 import {
   BelongsToGetAssociationMixin,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyHasAssociationsMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
   HasManyAddAssociationMixin,
@@ -12,16 +20,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin,
-  BelongsToManyAddAssociationMixin,
-  BelongsToManyAddAssociationsMixin,
-  BelongsToManyCountAssociationsMixin,
-  BelongsToManyGetAssociationsMixin,
-  BelongsToManyHasAssociationMixin,
-  BelongsToManyHasAssociationsMixin,
-  BelongsToManyRemoveAssociationMixin,
-  BelongsToManyRemoveAssociationsMixin,
-  BelongsToManySetAssociationsMixin
+  HasManySetAssociationsMixin
 } from 'sequelize';
 import {
   BelongsTo,
@@ -40,8 +39,9 @@ import {
 } from 'sequelize-typescript';
 import { EventTournament } from '.';
 import { Club } from '../../..';
-import { LocationEventCompetition } from './competition/location_event.model';
+import { TeamLocationCompetition } from './competition/team-location-membership.model';
 import { Court } from './court.model';
+import { LocationEventTournament } from './tournament/location_event.model';
 
 @Table({
   timestamps: true,
@@ -86,10 +86,10 @@ export class Location extends Model {
   fax: string;
 
   @BelongsToMany(
-    () => EventCompetition,
-    () => LocationEventCompetition
+    () => Team,
+    () => TeamLocationCompetition
   )
-  eventCompetitions: EventCompetition[];
+  teams: Team[];
 
   @BelongsToMany(
     () => EventTournament,
@@ -108,37 +108,16 @@ export class Location extends Model {
   @Column
   clubId: string;
 
-  // Belongs to many EventCompetition
-  getEventCompetitions!: BelongsToManyGetAssociationsMixin<EventCompetition>;
-  setEventCompetitions!: BelongsToManySetAssociationsMixin<
-    EventCompetition,
-    string
-  >;
-  addEventCompetitions!: BelongsToManyAddAssociationsMixin<
-    EventCompetition,
-    string
-  >;
-  addEventCompetition!: BelongsToManyAddAssociationMixin<
-    EventCompetition,
-    string
-  >;
-  removeEventCompetition!: BelongsToManyRemoveAssociationMixin<
-    EventCompetition,
-    string
-  >;
-  removeEventCompetitions!: BelongsToManyRemoveAssociationsMixin<
-    EventCompetition,
-    string
-  >;
-  hasEventCompetition!: BelongsToManyHasAssociationMixin<
-    EventCompetition,
-    string
-  >;
-  hasEventCompetitions!: BelongsToManyHasAssociationsMixin<
-    EventCompetition,
-    string
-  >;
-  countEventCompetition!: BelongsToManyCountAssociationsMixin;
+  // Belongs to many Team
+  getTeams!: BelongsToManyGetAssociationsMixin<Team>;
+  setTeams!: BelongsToManySetAssociationsMixin<Team, string>;
+  addTeams!: BelongsToManyAddAssociationsMixin<Team, string>;
+  addTeam!: BelongsToManyAddAssociationMixin<Team, string>;
+  removeTeam!: BelongsToManyRemoveAssociationMixin<Team, string>;
+  removeTeams!: BelongsToManyRemoveAssociationsMixin<Team, string>;
+  hasTeam!: BelongsToManyHasAssociationMixin<Team, string>;
+  hasTeams!: BelongsToManyHasAssociationsMixin<Team, string>;
+  countTeam!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to many EventTournament
   getEventTournaments!: BelongsToManyGetAssociationsMixin<EventTournament>;

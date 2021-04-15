@@ -3,13 +3,15 @@ import { PlayerService } from './../../../_shared/services/player/player.service
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Club, Player, SystemService, Team, TeamService } from 'app/_shared';
+import { Club, Location, Player, SystemService, Team, TeamService } from 'app/_shared';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 import * as addTeamMutation from '../../../_shared/graphql/teams/mutations/addTeam.graphql';
 import * as updateTeamMutation from '../../../_shared/graphql/teams/mutations/updateTeam.graphql';
 import * as updatePlayerMutation from '../../../_shared/graphql/players/mutations/UpdatePlayerMutation.graphql';
+import * as updateTeamLocation from './graphql/updateTeamLocation.graphql';
+import * as teamQuery from '../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
 
 @Component({
   templateUrl: './team-dialog.component.html',
@@ -34,7 +36,14 @@ export class TeamDialogComponent implements OnInit {
       startWith(0),
       switchMap(() => {
         if (this.data.team?.id) {
-          return this.teamService.getTeam(this.data.team?.id);
+          return this.apollo
+          .query<{ team: Team }>({
+            query: teamQuery,
+            variables: {
+              id: this.data.team?.id,
+            },
+          })
+          .pipe(map((x) => new Team(x.data.team)));
         } else {
           return of(null);
         }
@@ -121,6 +130,37 @@ export class TeamDialogComponent implements OnInit {
       })
       .pipe(map((r) => new Player(r.data.updatePlayer)))
       .toPromise();
+    this.update$.next(0);
+  }
+
+  async onLocationAdded(location: string, team: Team) {
+
+    await this.apollo
+      .mutate({
+        mutation: updateTeamLocation,
+        variables: {
+          teamId: team.id,
+          locationId: location,
+          use: true
+        },
+      })
+      .toPromise();
+
+    this.update$.next(0);
+  }
+
+  async onLocationRemoved(location: string, team: Team) {
+    await this.apollo
+      .mutate({
+        mutation: updateTeamLocation,
+        variables: {
+          teamId: team.id,
+          locationId: location,
+          use: false
+        },
+      })
+      .toPromise();
+
     this.update$.next(0);
   }
 }

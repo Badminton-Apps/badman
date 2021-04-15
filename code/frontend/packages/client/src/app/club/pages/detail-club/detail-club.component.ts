@@ -40,6 +40,7 @@ export class DetailClubComponent {
           includePlayers: true,
           includeTeams: true,
           includePlacesTeams: true,
+          includeLocations: true,
           teamsWhere: {
             active: activeTeams ? true : undefined,
           },
