@@ -101,15 +101,12 @@ describe('competition cp', () => {
       include: [Game]
     });
     const teams = await Team.findAll({});
-    const courts = await Court.findAll({});
     const encounters = await EncounterCompetition.findAll({});
 
     expect(encounters.length).toEqual(84);
     expect(games.length).toEqual(481);
     expect(players.length).toEqual(144);
     expect(teams.length).toEqual(20);
-    expect(courts.length).toEqual(8);
-
     expect(player).not.toBeNull();
     expect(player.games.length).toBeGreaterThan(0);
   });

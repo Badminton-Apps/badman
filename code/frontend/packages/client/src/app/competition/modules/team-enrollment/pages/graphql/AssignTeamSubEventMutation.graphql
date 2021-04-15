@@ -1,7 +1,7 @@
 mutation AssignTeamSubEvent(
   $teamId: ID!
   $newSubEventId: ID!
-  $oldSubEventId: ID!
+  $oldSubEventId: ID
 ) {
   updateSubEventTeam(
     teamId: $teamId
