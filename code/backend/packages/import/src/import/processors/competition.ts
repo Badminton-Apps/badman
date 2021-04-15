@@ -5,6 +5,7 @@ import {
   Game,
   ImporterFile,
   logger,
+  RankingSystemGroup,
   SubEventCompetition
 } from '@badvlasim/shared';
 import { Transaction, Op } from 'sequelize';
@@ -118,7 +119,8 @@ export abstract class CompetitionProcessor extends ProcessImport {
           where: {
             eventId: args.event.id
           },
-          transaction: args.transaction
+          include: [RankingSystemGroup],
+          transaction: args.transaction,
         })
 
         await SubEventCompetition.destroy({
