@@ -1,4 +1,3 @@
-import { LocationEventCompetition } from './../../../../_shared/models/sequelize/event/competition/location_event.model';
 import {
   ImporterFile,
   SubEventCompetition,
@@ -19,7 +18,6 @@ import {
   ICsvPlayer,
   Location,
   Court,
-  ICsvLocation,
   Game,
   Player,
   correctWrongPlayers,
@@ -48,8 +46,6 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
     this.addImportStep(this.addPlayers());
     this.addImportStep(this.addClubs());
     this.addImportStep(this.addTeams());
-    this.addImportStep(this.addLocations());
-    this.addImportStep(this.addCourts());
     this.addImportStep(this.addEncounters());
     this.addImportStep(this.addPlayersToClubs());
     this.addImportStep(this.addPlayersToTeams());
@@ -116,10 +112,9 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
             eventId: event.id
           }).save({ transaction: args.transaction });
         }
-
         dbSubEvents.push(dbSubEvent);
       }
-      
+    
       return dbSubEvents.map((v, i) => {
         return {
           subEvent: v,
@@ -364,111 +359,6 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addLocations(): ImportStep<{ location: Location; internalId: number }[]> {
-    return new ImportStep('locations', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const csvLocations = await csvToArray<ICsvLocation[]>(await args.mdb.toCsv('Location'));
-      const clubs: { club: Club; internalId: number }[] = this.importSteps.get('clubs').getData();
-      const event: EventCompetition = this.importSteps.get('event').getData();
-
-      const locations = [];
-      for await (const csvLocation of csvLocations) {
-        let street = '';
-        let locNumber = null;
-        const groups = csvLocation.address.match(/([^\d]+)\s?(.+)/);
-        if (!groups) {
-          // No street address, do nothing
-        } else if (groups.length === 2) {
-          street = groups[1];
-        } else if (groups.length > 2) {
-          street = groups[1];
-          locNumber = groups[2];
-        }
-
-        locations.push(
-          new Location({
-            name: csvLocation.name,
-            street,
-            streetNumber: locNumber,
-            phone: csvLocation.phone,
-            fax: csvLocation.fax,
-            city: csvLocation.city,
-            postalcode: +csvLocation.postalcode,
-            clubId: clubs.find(c => c.internalId === +csvLocation.clubid)?.club?.id
-          }).toJSON()
-        );
-      }
-
-      await Location.bulkCreate(locations, {
-        ignoreDuplicates: true,
-        transaction: args.transaction
-      });
-
-      const dbLocations = await Location.findAll({
-        where: {
-          name: {
-            [Op.in]: csvLocations.map(r => r.name)
-          }
-        },
-        transaction: args.transaction
-      });
-
-      const links = dbLocations.map(l => {
-        return {
-          eventId: event.id,
-          locationId: l.id
-        };
-      });
-
-      await LocationEventCompetition.bulkCreate(links, { transaction: args.transaction });
-
-      // Return result
-      return dbLocations.map((v, i) => {
-        return {
-          location: v,
-          internalId: +csvLocations.find(c => c.name === v.name).id
-        };
-      });
-    });
-  }
-
-  protected addCourts(): ImportStep<{ court: Court; internalId: number }[]> {
-    return new ImportStep('courts', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const locations: { location: Location; internalId: number }[] = this.importSteps
-        .get('locations')
-        .getData();
-      const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('Court'));
-
-      const courts = [];
-      for await (const csvCourt of csvCourts) {
-        courts.push(
-          new Court({
-            name: csvCourt.name,
-            locationId: locations.find(x => x.internalId === +csvCourt.location)?.location?.id
-          }).toJSON()
-        );
-      }
-
-      await Court.bulkCreate(courts, { ignoreDuplicates: true, transaction: args.transaction });
-
-      const dbCourts = await Court.findAll({
-        where: {
-          name: {
-            [Op.in]: courts.map(r => r.name)
-          }
-        },
-        transaction: args.transaction
-      });
-
-      // Return result
-      return dbCourts.map((v, i) => {
-        return {
-          court: v,
-          internalId: +csvCourts.find(c => c.name === v.name).id
-        };
-      });
-    });
-  }
-
   protected addEncounters(): ImportStep<
     {
       encounter: EncounterCompetition;
@@ -531,7 +421,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const dbDraw = draws.find(s => s.internalId === parseInt(cvsTeamMatch.draw, 10))?.draw;
 
         encounters.push(
-          new EncounterCompetition({
+          new EncounterCompetition({ 
             date: moment(cvsTeamMatch.plandate).toDate(),
             drawId: dbDraw.id,
             homeTeamId: dbHome?.id,
@@ -574,9 +464,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       const players: { player: Player; internalId: number }[] = this.importSteps
         .get('players')
         .getData();
-      const courts: { court: Court; internalId: number }[] = this.importSteps
-        .get('courts')
-        .getData();
+
       const encounters: {
         encounter: EncounterCompetition;
         internalId: number;
@@ -597,7 +485,6 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const team2Player1 = players.find(x => x.internalId === +csvPlayerMatch?.sp3)?.player;
         const team2Player2 = players.find(x => x.internalId === +csvPlayerMatch?.sp4)?.player;
 
-        const court = courts.find(x => x.internalId === +csvPlayerMatch.court)?.court;
         const encounter = encounters.find(
           x =>
             x.internalId === +csvPlayerMatch.teammatch ||
@@ -612,10 +499,6 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const set3Team1 = parseInt(csvPlayerMatch.score3_1, 10) || null;
         const set3Team2 = parseInt(csvPlayerMatch.score3_2, 10) || null;
 
-        if (court === null && !csvPlayerMatch.court && csvPlayerMatch.court !== '') {
-          logger.warn('Court not found in db?');
-        }
-
         const momentDate = moment(csvPlayerMatch.endtime);
         const playedAt = momentDate.isValid() ? momentDate.toDate() : encounter.date;
         const game = new Game({
@@ -629,8 +512,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           set3Team2,
           winner: parseInt(csvPlayerMatch.winner, 10),
           linkId: encounter.id,
-          linkType: 'competition',
-          courtId: court?.id
+          linkType: 'competition'
         });
 
         if (team1Player1) {

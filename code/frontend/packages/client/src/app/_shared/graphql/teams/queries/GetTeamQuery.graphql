@@ -15,6 +15,10 @@ query GetTeamQuery($id: ID!) {
       phone
       email
     }
+    locations {
+      id
+      name
+    }
     players {
       id
       firstName

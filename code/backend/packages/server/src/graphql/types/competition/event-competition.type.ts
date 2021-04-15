@@ -41,11 +41,6 @@ export const EventCompetitionType = new GraphQLObjectType({
           }
         })
       },
-      locations: {
-        type: new GraphQLList(LocationType),
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(EventCompetition.associations.locations)
-      },
       comments: {
         type: new GraphQLList(CommentType),
         args: Object.assign(defaultListArgs(), {}),

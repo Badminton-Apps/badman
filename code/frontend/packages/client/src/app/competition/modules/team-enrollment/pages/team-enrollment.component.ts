@@ -149,23 +149,17 @@ export class TeamEnrollmentComponent implements OnInit {
   };
 
   private setTeams() {
-    this.club$ = combineLatest([
-      this.form$.pipe(
-        startWith(this.formGroup.value),
-        map((group) => group?.club?.id),
-        filter((id) => !!id),
-        take(1)
-      ),
-      this.systemService.getPrimarySystem(),
-    ]).pipe(
-      switchMap(([id, primary]) =>
+    this.club$ = this.form$.pipe(
+      startWith(this.formGroup.value),
+      map((group) => group?.club?.id),
+      filter((id) => !!id),
+      take(1),
+      switchMap((id) =>
         this.apollo
           .query<{ club: Club }>({
             query: GetClub,
             variables: {
               id,
-              rankingType: primary.id,
-              year: 2020,
             },
           })
           .pipe(map((x) => new Club(x.data.club)))
@@ -246,7 +240,7 @@ export class TeamEnrollmentComponent implements OnInit {
       ...(prov?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'MX') ?? []),
     ]);
 
-    this.comment = prov.comments.length > 0 ? prov.comments[0] : new Comment({ clubId: club.id });
+    this.comment = prov?.comments.length > 0 ? prov.comments[0] : new Comment({ clubId: club.id });
     this.commentControl.patchValue(this.comment.message);
     this.commentControl.valueChanges.pipe(debounceTime(600)).subscribe((r) => this._updateComment(r));
     this.subEventsInitialized = true;
