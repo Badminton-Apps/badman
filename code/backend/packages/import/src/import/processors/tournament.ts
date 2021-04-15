@@ -23,6 +23,7 @@ import {
   Location,
   logger,
   Player,
+  RankingSystemGroup,
   SubEventTournament,
   titleCase
 } from '@badvlasim/shared';
@@ -147,6 +148,7 @@ export class TournamentTpProcessor extends ProcessImport {
           where: {
             eventId: args.event.id
           },
+          include: [RankingSystemGroup],
           transaction: args.transaction
         });
 
@@ -181,30 +183,40 @@ export class TournamentTpProcessor extends ProcessImport {
         throw new Error('No Event');
       }
 
-      const subEvents = csvEvents.map(subEvent => {
+      const dbSubEvents = [];
+
+      for (const subEvent of csvEvents) {
         const eventType = super.getEventType(+subEvent.gender);
         const level = +subEvent.level;
         const prevEvent = prevSubEvents?.find(
           r => r.name === subEvent.name && r.level === level && r.eventType === eventType
         );
 
+        let dbSubEvent: SubEventTournament = null;
+
         if (prevEvent) {
           prevEvent.eventId = event.id;
-          return prevEvent.toJSON();
+          dbSubEvent = await new SubEventTournament(prevEvent.toJSON()).save({
+            transaction: args.transaction
+          });
+          await dbSubEvent.setGroups(prevEvent.groups, {transaction: args.transaction});
+
         } else {
-          return new SubEventTournament({
+          dbSubEvent = await new SubEventTournament({
             name: subEvent.name,
             eventType,
             level,
             eventId: event.id
-          }).toJSON();
+          }).save({ transaction: args.transaction });
         }
-      });
 
-      const dbSubEvents = await SubEventTournament.bulkCreate(subEvents, {
-        transaction: args.transaction,
-        returning: ['*']
-      });
+        dbSubEvents.push(dbSubEvent);
+      };
+
+      // const dbSubEvents = await SubEventTournament.bulkCreate(subEvents, {
+      //   transaction: args.transaction,
+      //   returning: ['*']
+      // });
 
       return dbSubEvents.map((v, i) => {
         return {
