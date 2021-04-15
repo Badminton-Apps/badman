@@ -85,7 +85,9 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         throw new Error('No Event');
       }
 
-      const subEvents = csvEvents.map(subEvent => {
+      const dbSubEvents = [];
+
+      for (const subEvent of csvEvents) {
         const level = +parseInt(subEvent.level, 10) || this.getLevel(subEvent.name);
         const eventType = this.getEventType(+subEvent.gender);
 
@@ -93,24 +95,26 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           r => r.name === subEvent.name && r.level === level && r.eventType === eventType
         );
 
+        let dbSubEvent: SubEventCompetition = null;
+
         if (prevEvent) {
           prevEvent.eventId = event.id;
-          return prevEvent.toJSON();
+          dbSubEvent = await new SubEventCompetition(prevEvent.toJSON()).save({
+            transaction: args.transaction
+          });
+          await dbSubEvent.setGroups(prevEvent.groups, {transaction: args.transaction});
+
         } else {
-          return new SubEventCompetition({
+          dbSubEvent = await new SubEventCompetition({
             name: subEvent.name,
             eventType,
             level,
             eventId: event.id
-          }).toJSON();
+          }).save({ transaction: args.transaction });
         }
-      });
-
-      const dbSubEvents = await SubEventCompetition.bulkCreate(subEvents, {
-        transaction: args.transaction,
-        returning: ['*']
-      });
-      
+        dbSubEvents.push(dbSubEvent);
+      }
+    
       return dbSubEvents.map((v, i) => {
         return {
           subEvent: v,
