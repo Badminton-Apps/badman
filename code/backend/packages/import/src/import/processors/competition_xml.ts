@@ -79,7 +79,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     return new ImportStep('subEvents', async (args: { transaction: Transaction }) => {
       // get previous step data
       const event: EventCompetition = this.importSteps.get('event').getData();
-      const prevSubEvents: SubEventCompetition[] = this.importSteps.get('cleanup_event')?.getData();
+      const prevSubEvents: any[] = this.importSteps.get('cleanup_event')?.getData();
       const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
 
       const subEvents = [];
@@ -130,7 +130,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
   
           if (prevEvent) {
             prevEvent.eventId = event.id;
-            dbSubEvent = await new SubEventCompetition(prevEvent.toJSON()).save({
+            dbSubEvent = await new SubEventCompetition(prevEvent).save({
               transaction: args.transaction
             });
             await dbSubEvent.setGroups(prevEvent.groups, {transaction: args.transaction});
@@ -151,12 +151,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         }
       }
 
-      const dbSubEvents = await SubEventCompetition.bulkCreate(subEvents, {
-        transaction: args.transaction,
-        returning: ['*']
-      });
-
-      return dbSubEvents.map((v, i) => {
+      return subEvents.map((v, i) => {
         return {
           subEvent: v,
           divisions: xmlDivisions[i]
