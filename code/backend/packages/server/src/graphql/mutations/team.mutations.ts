@@ -4,6 +4,7 @@ import {
   logger,
   Player,
   Team,
+  TeamLocationCompetition,
   TeamPlayerMembership
 } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLInt, GraphQLNonNull } from 'graphql';
@@ -422,6 +423,51 @@ export const updatePlayerTeamMutation = {
         },
         { where: { teamId: dbTeam.id, playerId: dbPlayer.id }, transaction }
       );
+
+      await transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const updateTeamLocationMutation = {
+  type: TeamType,
+  args: {
+    locationId: {
+      name: 'locationId',
+      type: GraphQLID
+    },
+    teamId: {
+      name: 'teamId',
+      type: GraphQLID
+    },
+    use: {
+      name: 'use',
+      type: GraphQLBoolean
+    }
+  },
+  resolve: async (findOptions, { locationId, teamId, use }, context) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbTeam = await Team.findByPk(teamId);
+
+      if (!dbTeam) {
+        logger.debug('location', dbTeam);
+        throw new ApiError({
+          code: 404,
+          message: 'location not found'
+        });
+      }
+
+      if (use) {
+        await dbTeam.addLocation(locationId, { transaction });
+      } else {
+        await dbTeam.removeLocation(locationId, { transaction });
+      }
 
       await transaction.commit();
       return dbTeam;

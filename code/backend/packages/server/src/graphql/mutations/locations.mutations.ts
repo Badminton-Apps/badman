@@ -20,12 +20,12 @@ export const addLocationMutation = {
       context?.req?.user == null ||
       !context.req.user.hasAnyPermission([`${clubId}_add:location`, 'edit-any:club'])
     ) {
-      logger.warn('User tried something it should\'t have done', {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: [`${clubId}_add:location`, 'edit-any:club']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -81,12 +81,12 @@ export const removeLocationMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
       ) {
-        logger.warn('User tried something it should\'t have done', {
+        logger.warn("User tried something it should't have done", {
           required: {
             anyClaim: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
-        })
+        });
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "
@@ -105,50 +105,6 @@ export const removeLocationMutation = {
   }
 };
 
-export const updateCompetitionEventLocationMutation = {
-  type: LocationType,
-  args: {
-    locationId: {
-      name: 'locationId',
-      type: GraphQLID
-    },
-    eventId: {
-      name: 'eventId',
-      type: GraphQLID
-    },
-    use: {
-      name: 'use',
-      type: GraphQLBoolean
-    }
-  },
-  resolve: async (findOptions, { locationId, eventId, use }, context) => {
-    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-    try {
-      const dbLocation = await Location.findByPk(locationId);
-
-      if (!dbLocation) {
-        logger.debug('location', dbLocation);
-        throw new ApiError({
-          code: 404,
-          message: 'location not found'
-        });
-      }
-
-      if (use) {
-        await dbLocation.addEventCompetition(eventId, { transaction });
-      } else {
-        await dbLocation.removeEventCompetition(eventId, { transaction });
-      }
-
-      await transaction.commit();
-      return dbLocation;
-    } catch (e) {
-      logger.warn('rollback', e);
-      await transaction.rollback();
-      throw e;
-    }
-  }
-};
 export const updateTournamentEventLocationMutation = {
   type: LocationType,
   args: {
@@ -219,12 +175,12 @@ export const updateLocationMutation = {
         context?.req?.user == null ||
         !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
       ) {
-        logger.warn('User tried something it should\'t have done', {
+        logger.warn("User tried something it should't have done", {
           required: {
             anyClaim: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
-        })
+        });
         throw new ApiError({
           code: 401,
           message: "You don't have permission to do this "

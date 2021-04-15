@@ -10,9 +10,11 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { Apollo } from 'apollo-angular';
 import { TeamDialogComponent } from 'app/club/dialogs';
 import { Club, CompetitionSubEvent, Team } from 'app/_shared';
-import { filter } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
+import * as teamQuery from '../../../../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
 
 @Component({
   selector: 'app-assign-team',
@@ -48,7 +50,8 @@ export class AssignTeamComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
-    private translation: TranslateService
+    private translation: TranslateService,
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
@@ -79,7 +82,17 @@ export class AssignTeamComponent implements OnInit {
 
     dialogRef
       .afterClosed()
-      .pipe(filter((result) => !!result))
+      .pipe(
+        switchMap(() =>
+          this.apollo.query<{ team: Team }>({
+            query: teamQuery,
+            variables: {
+              id: team?.id,
+            },
+          })
+        ),
+        map((x) => new Team(x.data.team))
+      )
       .subscribe((newTeam) => {
         const index = subEvent.teams.findIndex((t) => t.id == team.id);
         this.validate(newTeam, subEvent);

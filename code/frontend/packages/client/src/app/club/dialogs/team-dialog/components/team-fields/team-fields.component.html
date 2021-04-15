@@ -43,9 +43,8 @@
 
     <mat-form-field appearance="outline" class="flex">
       <mat-label>{{ 'team.location' | translate }}</mat-label>
-      <mat-select formControlName="location">
-        <mat-option>-- {{ 'input.select' | translate }} --</mat-option>
-        <mat-option *ngFor="let loc of club.locations" [value]="loc">{{ loc.name }}</mat-option>
+      <mat-select [formControl]="this.locationControl" multiple>
+        <mat-option *ngFor="let loc of club.locations" [value]="loc.id">{{ loc.name }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

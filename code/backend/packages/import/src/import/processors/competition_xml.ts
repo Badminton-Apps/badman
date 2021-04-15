@@ -363,7 +363,9 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         }
       }
 
-      await TeamSubEventMembership.bulkCreate(teamSubscriptions, { transaction: args.transaction });
+      await TeamSubEventMembership.bulkCreate(teamSubscriptions, {
+        transaction: args.transaction
+      });
     });
   }
 
