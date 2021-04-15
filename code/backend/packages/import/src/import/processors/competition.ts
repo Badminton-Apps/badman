@@ -71,7 +71,7 @@ export abstract class CompetitionProcessor extends ProcessImport {
     );
   }
 
-  protected cleanupEvent(): ImportStep<SubEventCompetition[]> {
+  protected cleanupEvent(): ImportStep<any[]> {
     return new ImportStep(
       'cleanup_event',
       async (args: { event: EventCompetition; transaction: Transaction }) => {
@@ -120,8 +120,8 @@ export abstract class CompetitionProcessor extends ProcessImport {
             eventId: args.event.id
           },
           include: [RankingSystemGroup],
-          transaction: args.transaction,
-        })
+          transaction: args.transaction
+        });
 
         await SubEventCompetition.destroy({
           where: {
@@ -131,7 +131,10 @@ export abstract class CompetitionProcessor extends ProcessImport {
           transaction: args.transaction
         });
 
-        return dbSubEvents;
+        return dbSubEvents?.map(r => {
+          const { id, ...event } = r.toJSON() as any;
+          return event;
+        });
       }
     );
   }
