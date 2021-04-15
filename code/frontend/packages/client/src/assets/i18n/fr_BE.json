@@ -121,6 +121,7 @@
     "mix": ""
   },
   "input": {
+    "select": "Sélectionner",
     "type": "",
     "memberId": "",
     "year": "",
@@ -148,7 +149,6 @@
     "save": ""
   },
   "days": {
-    "select": "Sélectionner",
     "monday": "",
     "tuesday": "",
     "wednesday": "",

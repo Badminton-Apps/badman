@@ -70,7 +70,8 @@
   "team": {
     "prefferd-encounter": "Voorkeurs speel moment",
     "day": "Speeldag",
-    "captain": "Ploegkapitein"
+    "captain": "Ploegkapitein",
+    "location": "Locatie"
   },
   "competition": {
     "title": "Competitie",
@@ -121,6 +122,7 @@
     "mix": "Gemengd"
   },
   "input": {
+    "select": "Selecteer",
     "type": "Type",
     "memberId": "Lidnummer",
     "year": "Jaar",
@@ -148,7 +150,6 @@
     "save": "Opslaan"
   },
   "days": {
-    "select": "Selecteer",
     "monday": "Maandag",
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag",
