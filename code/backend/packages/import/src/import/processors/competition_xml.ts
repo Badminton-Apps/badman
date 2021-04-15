@@ -79,7 +79,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     return new ImportStep('subEvents', async (args: { transaction: Transaction }) => {
       // get previous step data
       const event: EventCompetition = this.importSteps.get('event').getData();
-      const prevSubEvents: SubEventCompetition[] = this.importSteps.get('cleanup_event')?.getData();
+      const prevSubEvents: any[] = this.importSteps.get('cleanup_event')?.getData();
       const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
 
       const subEvents = [];
@@ -126,31 +126,32 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
             r => r.name === name && r.level === level && r.eventType === eventType
           );
 
+          let dbSubEvent: SubEventCompetition = null;
+  
           if (prevEvent) {
             prevEvent.eventId = event.id;
-            subEvents.push(prevEvent.toJSON())
+            dbSubEvent = await new SubEventCompetition(prevEvent).save({
+              transaction: args.transaction
+            });
+            await dbSubEvent.setGroups(prevEvent.groups, {transaction: args.transaction});
+  
           } else {
-            subEvents.push(
-              new SubEventCompetition({
-                name,
-                level,
-                eventType,
-                eventId: event.id
-              }).toJSON()
-            );
+            dbSubEvent = await new SubEventCompetition({
+              name,
+              level,
+              eventType,
+              eventId: event.id
+            }).save({ transaction: args.transaction });
           }
+
+          subEvents.push(dbSubEvent);
           xmlDivisions.push(divisions);
         } else {
           xmlDivisions[foundEventIndex] = xmlDivisions[foundEventIndex].concat(divisions);
         }
       }
 
-      const dbSubEvents = await SubEventCompetition.bulkCreate(subEvents, {
-        transaction: args.transaction,
-        returning: ['*']
-      });
-
-      return dbSubEvents.map((v, i) => {
+      return subEvents.map((v, i) => {
         return {
           subEvent: v,
           divisions: xmlDivisions[i]
