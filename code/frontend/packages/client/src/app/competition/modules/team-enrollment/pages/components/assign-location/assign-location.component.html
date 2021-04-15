@@ -1,7 +1,0 @@
-<mat-list>
-  <mat-list-item *ngFor="let location of this.locations">
-    <mat-checkbox (change)="this.check(location, $event.checked)" [checked]="this.checked.get(location.id)">{{
-      location.name
-    }}</mat-checkbox>
-  </mat-list-item>
-</mat-list>

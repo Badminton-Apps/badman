@@ -31,12 +31,10 @@ import {
   updateRankingSystemMutation,
   updateRoleMutation,
   updateSubEventTeamMutation,
-  updateTeamMutation
+  updateTeamMutation,
+  updateTournamentEventLocationMutation,
+  updateTeamLocationMutation
 } from './mutations';
-import {
-  updateCompetitionEventLocationMutation,
-  updateTournamentEventLocationMutation
-} from './mutations/locations.mutations';
 import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import {
   claimsQuery,
@@ -110,7 +108,6 @@ export const createSchema = () => {
         setGroupsCompetition: setGroupsCompetitionMutation,
         updateClub: updateClubMutation,
         updateComment: updateCommentMutation,
-        updateCompetitionEventLocation: updateCompetitionEventLocationMutation,
         updateEventCompetition: updateEventCompetitionMutation,
         updateEventTournament: updateEventTournamentMutation,
         updateGlobalClaimUser: updateGlobalClaimUserMutation,
@@ -123,6 +120,7 @@ export const createSchema = () => {
         updateRole: updateRoleMutation,
         updateSubEventTeam: updateSubEventTeamMutation,
         updateTeam: updateTeamMutation,
+        updateTeamLocation: updateTeamLocationMutation,
         updateTournamentEventLocation: updateTournamentEventLocationMutation
       })
     })
