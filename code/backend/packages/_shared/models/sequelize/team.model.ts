@@ -48,11 +48,12 @@ import {
   HasOneSetAssociationMixin
 } from 'sequelize';
 import { Club } from './club.model';
-import { EncounterCompetition, SubEventCompetition } from './event';
+import { EncounterCompetition, Location, SubEventCompetition } from './event';
 import { Player } from './player.model';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { TeamSubEventMembership } from './team-subEvent-membership.model';
 import { SubEventType } from '../enums';
+import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 
 @Table({
   timestamps: true,
@@ -152,6 +153,12 @@ export class Team extends Model {
     )
   )
   preferredDay: string;
+
+  @BelongsToMany(
+    () => Location,
+    () => TeamLocationCompetition
+  )
+  locations: Location[];
 
   @Column
   abbreviation: string;
@@ -262,6 +269,17 @@ export class Team extends Model {
   hasAwayEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
   hasAwayEncounters!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countAwayEncounters!: HasManyCountAssociationsMixin;
+
+  // Belongs to many Location
+  getLocations!: BelongsToManyGetAssociationsMixin<Location>;
+  setLocations!: BelongsToManySetAssociationsMixin<Location, string>;
+  addLocations!: BelongsToManyAddAssociationsMixin<Location, string>;
+  addLocation!: BelongsToManyAddAssociationMixin<Location, string>;
+  removeLocation!: BelongsToManyRemoveAssociationMixin<Location, string>;
+  removeLocations!: BelongsToManyRemoveAssociationsMixin<Location, string>;
+  hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
+  hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
+  countLocation!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to Captain
   getCaptain!: BelongsToGetAssociationMixin<Player>;

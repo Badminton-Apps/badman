@@ -1,27 +1,4 @@
-import { Comment } from './../../comment.model';
 import {
-  BelongsToMany,
-  Column,
-  DataType,
-  Default,
-  HasMany,
-  IsUUID,
-  Model,
-  PrimaryKey,
-  Table,
-  TableOptions,
-  Unique
-} from 'sequelize-typescript';
-import {
-  BelongsToManyAddAssociationMixin,
-  BelongsToManyAddAssociationsMixin,
-  BelongsToManyCountAssociationsMixin,
-  BelongsToManyGetAssociationsMixin,
-  BelongsToManyHasAssociationMixin,
-  BelongsToManyHasAssociationsMixin,
-  BelongsToManyRemoveAssociationMixin,
-  BelongsToManyRemoveAssociationsMixin,
-  BelongsToManySetAssociationsMixin,
   BuildOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
@@ -33,9 +10,20 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin
 } from 'sequelize';
+import {
+  Column,
+  DataType,
+  Default,
+  HasMany,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  TableOptions,
+  Unique
+} from 'sequelize-typescript';
 import { LevelType } from '../../../enums';
-import { Location } from '../location.model';
-import { LocationEventCompetition } from './location_event.model';
+import { Comment } from './../../comment.model';
 import { SubEventCompetition } from './sub-event-competition.model';
 
 @Table({
@@ -76,12 +64,6 @@ export class EventCompetition extends Model {
   })
   subEvents: SubEventCompetition[];
 
-  @BelongsToMany(
-    () => Location,
-    () => LocationEventCompetition
-  )
-  locations: Location[];
-
   @Unique('unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
   type: LevelType;
@@ -103,17 +85,6 @@ export class EventCompetition extends Model {
   hasSubEvent!: HasManyHasAssociationMixin<SubEventCompetition, string>;
   hasSubEvents!: HasManyHasAssociationsMixin<SubEventCompetition, string>;
   countSubEvents!: HasManyCountAssociationsMixin;
-
-  // Belongs to many Location
-  getLocations!: BelongsToManyGetAssociationsMixin<Location>;
-  setLocations!: BelongsToManySetAssociationsMixin<Location, string>;
-  addLocations!: BelongsToManyAddAssociationsMixin<Location, string>;
-  addLocation!: BelongsToManyAddAssociationMixin<Location, string>;
-  removeLocation!: BelongsToManyRemoveAssociationMixin<Location, string>;
-  removeLocations!: BelongsToManyRemoveAssociationsMixin<Location, string>;
-  hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
-  hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
-  countLocation!: BelongsToManyCountAssociationsMixin;
 
   // Has many Comment
   getComments!: HasManyGetAssociationsMixin<Comment>;
