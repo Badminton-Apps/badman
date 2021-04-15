@@ -10,7 +10,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import * as addTeamMutation from '../../../_shared/graphql/teams/mutations/addTeam.graphql';
 import * as updateTeamMutation from '../../../_shared/graphql/teams/mutations/updateTeam.graphql';
 import * as updatePlayerMutation from '../../../_shared/graphql/players/mutations/UpdatePlayerMutation.graphql';
-import * as updateTeamLocation from './graphql/updateTeamLocation.graphql';
+import * as updateTeamLocation from './graphql/UpdateTeamLocation.graphql';
 import * as teamQuery from '../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
 
 @Component({
