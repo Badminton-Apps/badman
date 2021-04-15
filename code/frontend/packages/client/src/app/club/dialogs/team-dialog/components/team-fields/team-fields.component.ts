@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Club, Team, Player, PlayerService } from 'app/_shared';
-import { debounceTime, skip } from 'rxjs/operators';
+import { Club, Team, Player, PlayerService, Location } from 'app/_shared';
+import { debounceTime, pairwise, skip, startWith } from 'rxjs/operators';
 import { merge } from 'rxjs';
 
 @Component({
@@ -14,6 +14,8 @@ export class TeamFieldsComponent implements OnInit {
   @Output() onTeamAdded = new EventEmitter<Partial<Team>>();
   @Output() onTeamUpdated = new EventEmitter<Partial<Team>>();
   @Output() onCaptainUpdated = new EventEmitter<Partial<Player>>();
+  @Output() onLocationAdded = new EventEmitter<Partial<Location>>();
+  @Output() onLocationRemoved = new EventEmitter<Partial<Location>>();
 
   @Input()
   team: Team = {} as Team;
@@ -23,19 +25,21 @@ export class TeamFieldsComponent implements OnInit {
 
   teamForm: FormGroup;
   captainForm: FormGroup;
+  locationControl: FormControl;
 
   ngOnInit() {
     const nameControl = new FormControl(this.team.name ?? `${this.club.name} `, Validators.required);
     const abbrControl = new FormControl(this.team.abbreviation ?? `${this.club.abbreviation} `, Validators.required);
 
     const typeControl = new FormControl(this.team.type, Validators.required);
-    const locationControl = new FormControl(null, Validators.required);
     const preferredTimeControl = new FormControl(this.team.preferredTime);
     const preferredDayControl = new FormControl(this.team.preferredDay);
     const captainIdControl = new FormControl(this.team.captain?.id, Validators.required);
 
     const phoneControl = new FormControl(this.team.captain?.phone, Validators.required);
     const emailControl = new FormControl(this.team.captain?.email, Validators.required);
+
+    this.locationControl = new FormControl(this.team.locations?.map((r) => r.id) ?? [], Validators.required);
 
     this.teamForm = new FormGroup({
       name: nameControl,
@@ -44,7 +48,6 @@ export class TeamFieldsComponent implements OnInit {
       preferredTime: preferredTimeControl,
       preferredDay: preferredDayControl,
       captainId: captainIdControl,
-      location: locationControl,
     });
 
     this.captainForm = new FormGroup({
@@ -66,6 +69,20 @@ export class TeamFieldsComponent implements OnInit {
         }
       }
     });
+
+    this.locationControl.valueChanges
+      .pipe(debounceTime(600), startWith(this.team.locations?.map((r) => r.id) ?? []), pairwise())
+      .subscribe(async ([prev, next]) => {
+        let removed = prev.filter((item) => next.indexOf(item) < 0);
+        let added = next.filter((item) => prev.indexOf(item) < 0);
+
+        for (const add of added) {
+          this.onLocationAdded.next(add);
+        }
+        for (const remove of removed) {
+          this.onLocationRemoved.next(remove);
+        }
+      });
 
     this.teamForm.valueChanges.pipe(debounceTime(600)).subscribe(async (e) => {
       if (this.team?.id != null) {

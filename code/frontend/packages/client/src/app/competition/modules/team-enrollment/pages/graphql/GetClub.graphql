@@ -1,4 +1,4 @@
-query GetClubInfo($id: ID!, $rankingType: ID!) {
+query GetClubInfo($id: ID!) {
   club(id: $id) {
     id
     teams(where: { active: true }) {
@@ -14,12 +14,16 @@ query GetClubInfo($id: ID!, $rankingType: ID!) {
           name
         }
       }
+      locations {
+        id
+        name
+      }
       players {
         id
         firstName
         lastName
         base
-        rankingPlaces(where: { SystemId: $rankingType }) {
+        lastRanking {
           single
           double
           mix
@@ -30,15 +34,6 @@ query GetClubInfo($id: ID!, $rankingType: ID!) {
     locations {
       id
       name
-      address
-      postalcode
-      city
-      state
-      phone
-      fax
-      eventCompetitions {
-        id
-      }
     }
   }
 }
