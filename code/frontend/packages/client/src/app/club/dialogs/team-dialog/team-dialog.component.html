@@ -7,6 +7,8 @@
       (onTeamAdded)="this.onTeamAdded($event)"
       (onTeamUpdated)="this.onTeamUpdated($event)"
       (onCaptainUpdated)="this.onCaptainUpdated($event)"
+      (onLocationAdded)="this.onLocationAdded($event, team)"
+      (onLocationRemoved)="this.onLocationRemoved($event, team)"
     ></app-team-fields>
     <app-team-players
       *ngIf="team.id"
@@ -21,7 +23,7 @@
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="team">{{ 'button.create' | translate }}</button>
+    <button mat-button [mat-dialog-close]="team">{{ 'button.close' | translate }}</button>
   </mat-dialog-actions>
 </ng-container>
 <ng-template #loading>

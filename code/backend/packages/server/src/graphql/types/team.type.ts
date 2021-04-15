@@ -16,6 +16,7 @@ import { PlayerInputType, PlayerType } from './player.type';
 import moment from 'moment';
 import { SubEventCompetitionType } from './competition';
 import { ClubType } from './club.type';
+import { LocationType } from './location.type';
 
 export const TeamType = new GraphQLObjectType({
   name: 'Team',
@@ -73,6 +74,11 @@ export const TeamType = new GraphQLObjectType({
         type: PlayerType,
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Team.associations.captain)
+      },
+      locations: {
+        type: new GraphQLList(LocationType),
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(Team.associations.locations)
       }
     })
 });

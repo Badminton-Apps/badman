@@ -13,7 +13,6 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CompetitionComponentsModule } from 'app/competition/components';
 import { SharedModule } from 'app/_shared';
-import { AssignLocationComponent } from './pages/components/assign-location/assign-location.component';
 import { AssignTeamComponent } from './pages/components/assign-team/assign-team.component';
 import { TeamEnrollmentComponent } from './pages/team-enrollment.component';
 import { TeamEnrolmentRoutingModule } from './team-enrollment-routing.module';
@@ -35,7 +34,7 @@ const materialModules = [
 ];
 
 @NgModule({
-  declarations: [TeamEnrollmentComponent, AssignTeamComponent, AssignLocationComponent],
+  declarations: [TeamEnrollmentComponent, AssignTeamComponent],
   imports: [
     SharedModule,
     TeamEnrolmentRoutingModule,

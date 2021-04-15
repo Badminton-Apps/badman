@@ -70,49 +70,6 @@
     </div>
   </mat-step>
   <mat-step>
-    <ng-template matStepLabel>{{ 'locations.title' | translate }}</ng-template>
-
-    <ng-container *ngIf="this.club$ | async as club; else loading">
-      <p>{{ 'competition.enrollment.select-location' | translate }}</p>
-      <ng-container *ngIf="this.natEvent$ | async as nat">
-        <div class="mat-subheading-2">{{ nat.name }}</div>
-        <app-assign-location
-          (onChange)="this.locationAssigned($event)"
-          [locations]="club.locations"
-          [event]="nat"
-        ></app-assign-location>
-      </ng-container>
-
-      <ng-container *ngIf="this.ligaEvent$ | async as liga">
-        <div class="mat-subheading-2">{{ liga.name }}</div>
-        <app-assign-location
-          (onChange)="this.locationAssigned($event)"
-          [locations]="club.locations"
-          [event]="liga"
-        ></app-assign-location>
-      </ng-container>
-
-      <ng-container *ngIf="this.provEvent$ | async as prov">
-        <div class="mat-subheading-2">{{ prov.name }}</div>
-        <app-assign-location
-          (onChange)="this.locationAssigned($event)"
-          [locations]="club.locations"
-          [event]="prov"
-        ></app-assign-location>
-      </ng-container>
-    </ng-container>
-
-    <ng-template #loading>
-      {{ 'loading' | translate }} ....
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    </ng-template>
-
-    <div>
-      <button mat-button matStepperPrevious>{{ 'button.prev' | translate }}</button>
-      <button mat-button matStepperNext>{{ 'button.next' | translate }}</button>
-    </div>
-  </mat-step>
-  <mat-step>
     <ng-template matStepLabel>{{ 'button.done' | translate }}</ng-template>
     <form [formGroup]="this.formGroup">
       <mat-form-field appearance="outline" class="comment">
