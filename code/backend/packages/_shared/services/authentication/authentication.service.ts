@@ -29,48 +29,50 @@ export class AuthenticationSercice {
     response: Response,
     next: NextFunction
   ) {
-    try {
-      let userinfo = this.cache.get(request.user?.sub);
-      if (!userinfo) {
-        userinfo = await get(`${process.env.AUTH0_ISSUER}/userinfo`, {
-          headers: { authorization: request.headers.authorization }
-        });
-        this.cache.set(request.user.sub, userinfo);
-      }
+    let player = null;
+    let permissions = [];
 
-      const dbUser = await Player.findOne({ where: { sub: request.user.sub } });
-      const dbPermissions = await dbUser?.getUserClaims();
+    let userinfo = this.cache.get(request.user?.sub);
 
-      // extend info
-      request.user = {
-        ...request.user,
-        ...userinfo.data,
-        player: dbUser,
-        permissions: dbPermissions,
-        hasAnyPermission: (permissions: string[]) => {
-          if (request?.user?.permissions == null) {
-            return false;
-          }
-
-          return permissions.some(perm =>
-            request.user.permissions.includes(perm)
-          );
-        },
-        hasAllPermission: (permissions: string[]) => {
-          if (request?.user?.permissions == null) {
-            return false;
-          }
-
-          return permissions.every(perm =>
-            request.user.permissions.includes(perm)
-          );
-        }
-      };
-
-      next();
-    } catch (e) {
-      logger.error('Something went wrong getting the info from Auh0', e);
+    if (!userinfo && request?.headers?.authorization) {
+      userinfo = await get(`${process.env.AUTH0_ISSUER}/userinfo`, {
+        headers: { authorization: request.headers.authorization }
+      });
+      this.cache.set(request.user.sub, userinfo);
     }
+
+    if (userinfo) {
+      player = await Player.findOne({ where: { sub: request.user.sub } });
+      permissions = await player?.getUserClaims();
+    }
+
+    // extend info
+    request.user = {
+      ...request.user,
+      ...userinfo?.data,
+      player,
+      permissions,
+      hasAnyPermission: (requiredPermissions: string[]) => {
+        if (request?.user?.permissions == null) {
+          return false;
+        }
+
+        return requiredPermissions.some(perm =>
+          request.user.permissions.includes(perm)
+        );
+      },
+      hasAllPermission: (requiredPermissions: string[]) => {
+        if (request?.user?.permissions == null) {
+          return false;
+        }
+
+        return requiredPermissions.every(perm =>
+          request.user.permissions.includes(perm)
+        );
+      }
+    };
+
+    next();
   }
 }
 
