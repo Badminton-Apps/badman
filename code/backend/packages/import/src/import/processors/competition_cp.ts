@@ -99,11 +99,10 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
 
         if (prevEvent) {
           prevEvent.eventId = event.id;
-          dbSubEvent = await new SubEventCompetition(prevEvent.toJSON()).save({
+          dbSubEvent = await new SubEventCompetition(prevEvent).save({
             transaction: args.transaction
           });
-          await dbSubEvent.setGroups(prevEvent.groups, {transaction: args.transaction});
-
+          await dbSubEvent.setGroups(prevEvent.groups, { transaction: args.transaction });
         } else {
           dbSubEvent = await new SubEventCompetition({
             name: subEvent.name,
@@ -114,7 +113,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         }
         dbSubEvents.push(dbSubEvent);
       }
-    
+
       return dbSubEvents.map((v, i) => {
         return {
           subEvent: v,
@@ -242,7 +241,8 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
 
       for (const [team, playerIds] of teamPlayers) {
         await this.addToTeams(playerIds, moment([event.startYear, 0, 1]), team, {
-          transaction: args.transaction
+          transaction: args.transaction,
+          hooks: false
         });
       }
     });
@@ -266,7 +266,8 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
 
       for (const [team, playerIds] of teamPlayers) {
         await this.addToClubs(playerIds, moment([event.startYear, 0, 1]), team, {
-          transaction: args.transaction
+          transaction: args.transaction,
+          hooks: false
         });
       }
     });
@@ -421,7 +422,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const dbDraw = draws.find(s => s.internalId === parseInt(cvsTeamMatch.draw, 10))?.draw;
 
         encounters.push(
-          new EncounterCompetition({ 
+          new EncounterCompetition({
             date: moment(cvsTeamMatch.plandate).toDate(),
             drawId: dbDraw.id,
             homeTeamId: dbHome?.id,

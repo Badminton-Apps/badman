@@ -16,22 +16,16 @@ import {
   CompetitionXmlProcessor,
   TournamentTpProcessor
 } from '../import/processors';
-import { Mdb } from './mdb';
 
 export class Convertor {
   private _queue = [];
-  private _queueRunning = false;
-  private _parallel = 1;
-  private _competitionXmlProcessor: CompetitionXmlProcessor;
-  private _competitionCpProcessor: CompetitionCpProcessor;
-  private _tournamentTpProcessor: TournamentTpProcessor;
+  private _queueRunningCp = false;
+  private _queueRunningTp = false;
+  private _parallelCp = 1;
+  private _parallelTp = 10;
 
   constructor(private _importEmitter = new EventEmitter()) {
     this._setupQueue();
-
-    this._competitionXmlProcessor = new CompetitionXmlProcessor();
-    this._competitionCpProcessor = new CompetitionCpProcessor();
-    this._tournamentTpProcessor = new TournamentTpProcessor();
   }
 
   private _setupQueue() {
@@ -45,30 +39,55 @@ export class Convertor {
           this._queue.push({ imported, event });
         }
 
-        // Queuue is not running
-        if (!this._queueRunning) {
-          // Mark queue as running
-          this._queueRunning = true;
+        if (
+          imported.type == EventImportType.COMPETITION_CP ||
+          imported.type == EventImportType.COMPETITION_XML
+        ) {
+          // Queuue is not running
+          if (!this._queueRunningCp) {
+            // Mark queue as running
+            this._queueRunningCp = true;
 
-          // wait a bit, so we can directly process multiple if more then one is started
-          await this._sleep(Math.floor(Math.random() * Math.floor(500)));
+            // Process items
+            while (this._queue.length > 0) {
+              await Promise.all(
+                Array(this._parallelCp)
+                  .fill(() => null)
+                  .map(() => {
+                    if (this._queue.length > 0) {
+                      return this._processSingleItem(this._queue.shift());
+                    }
+                  })
+              );
+            }
+            logger.info(`Finished processing all`);
 
-          // Process items
-          while (this._queue.length > 0) {
-            await Promise.all(
-              Array(this._parallel)
-                .fill(_ => null)
-                .map(r => {
-                  if (this._queue.length > 0) {
-                    return this._processSingleItem(this._queue.shift());
-                  }
-                })
-            );
+            // Mark queue as finshed
+            this._queueRunningCp = false;
           }
-          logger.debug(`Finished processing all`);
+        } else if (imported.type == EventImportType.TOURNAMENT) {
+          // Queuue is not running
+          if (!this._queueRunningTp) {
+            // Mark queue as running
+            this._queueRunningTp = true;
 
-          // Mark queue as finshed
-          this._queueRunning = false;
+            // Process items
+            while (this._queue.length > 0) {
+              await Promise.all(
+                Array(this._parallelTp)
+                  .fill(() => null)
+                  .map(() => {
+                    if (this._queue.length > 0) {
+                      return this._processSingleItem(this._queue.shift());
+                    }
+                  })
+              );
+            }
+            logger.info(`Finished processing all`);
+
+            // Mark queue as finshed
+            this._queueRunningTp = false;
+          }
         }
       }
     );
@@ -79,15 +98,16 @@ export class Convertor {
     event: EventCompetition | EventTournament;
   }) {
     try {
-      logger.debug(`Started processing ${item.imported.id}`);
+      logger.info(`Started processing ${item.imported.id}`);
 
-      // Sleep random 500ms for preventing deadlocks on start at the same time
-      await this._sleep(Math.floor(Math.random() * Math.floor(500)));
+      // Sleep random time for preventing deadlocks on start at the same time (will still occour but less)
+      await this._sleep(Math.floor(Math.random() * Math.floor(1000)));
       const t = await DataBaseHandler.sequelizeInstance.transaction();
       try {
         await this._convertItem(item.imported, item.event, t);
         await t.commit();
       } catch (e) {
+        logger.warn('convert failed, rolling back')
         await t.rollback();
         throw e;
       }
@@ -98,7 +118,7 @@ export class Convertor {
           unlink(item.imported.fileLocation, async () => {
             // alright, now we can destroy our db entry
             await item.imported.destroy();
-            logger.debug(`Finished processing ${item.imported.id}`);
+            logger.info(`Finished processing ${item.imported.id}`);
             res(null);
           });
         } catch (e) {
@@ -125,19 +145,19 @@ export class Convertor {
   ) {
     switch (imported.type) {
       case EventImportType.TOURNAMENT:
-        return this._tournamentTpProcessor.import(imported, {
+        return new TournamentTpProcessor().import(imported, {
           transaction,
           event: event as EventTournament
         });
 
       case EventImportType.COMPETITION_CP:
-        return this._competitionCpProcessor.import(imported, {
+        return new CompetitionCpProcessor().import(imported, {
           transaction,
           event: event as EventCompetition
         });
 
       case EventImportType.COMPETITION_XML:
-        return this._competitionXmlProcessor.import(imported, {
+        return new CompetitionXmlProcessor().import(imported, {
           transaction,
           event: event as EventCompetition
         });
@@ -150,14 +170,14 @@ export class Convertor {
   async basicInfo(fileLocation: string, type: EventImportType, transaction: Transaction) {
     switch (type) {
       case EventImportType.TOURNAMENT:
-        return this._tournamentTpProcessor.importFile(fileLocation, transaction);
+        return new TournamentTpProcessor().importFile(fileLocation, transaction);
       case EventImportType.COMPETITION_CP:
-        return this._competitionCpProcessor.importFile(fileLocation, transaction);
+        return new CompetitionCpProcessor().importFile(fileLocation, transaction);
       case EventImportType.COMPETITION_XML:
-        return this._competitionXmlProcessor.importFile(fileLocation, transaction);
+        return new CompetitionXmlProcessor().importFile(fileLocation, transaction);
       default:
         logger.error('Unsupperted type', type);
-        // throw new Error('Unsupperted type');
+      // throw new Error('Unsupperted type');
     }
   }
   private _sleep(ms) {
