@@ -127,14 +127,13 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           );
 
           let dbSubEvent: SubEventCompetition = null;
-  
+
           if (prevEvent) {
             prevEvent.eventId = event.id;
             dbSubEvent = await new SubEventCompetition(prevEvent).save({
               transaction: args.transaction
             });
-            await dbSubEvent.setGroups(prevEvent.groups, {transaction: args.transaction});
-  
+            await dbSubEvent.setGroups(prevEvent.groups, { transaction: args.transaction });
           } else {
             dbSubEvent = await new SubEventCompetition({
               name,
@@ -149,7 +148,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         } else {
           xmlDivisions[foundEventIndex] = xmlDivisions[foundEventIndex].concat(divisions);
         }
-      }
+      } 
 
       return subEvents.map((v, i) => {
         return {
@@ -181,7 +180,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           );
 
           fixtures.push(
-            division.Fixture === null
+            division.Fixture === null || division.Fixture === undefined
               ? []
               : Array.isArray(division.Fixture)
               ? [...division.Fixture]
