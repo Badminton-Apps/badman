@@ -40,8 +40,8 @@ export class Convertor {
         }
 
         if (
-          imported.type == EventImportType.COMPETITION_CP ||
-          imported.type == EventImportType.COMPETITION_XML
+          imported.type === EventImportType.COMPETITION_CP ||
+          imported.type === EventImportType.COMPETITION_XML
         ) {
           // Queuue is not running
           if (!this._queueRunningCp) {
@@ -65,7 +65,7 @@ export class Convertor {
             // Mark queue as finshed
             this._queueRunningCp = false;
           }
-        } else if (imported.type == EventImportType.TOURNAMENT) {
+        } else if (imported.type === EventImportType.TOURNAMENT) {
           // Queuue is not running
           if (!this._queueRunningTp) {
             // Mark queue as running
