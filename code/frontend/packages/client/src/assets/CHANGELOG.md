@@ -1,3 +1,18 @@
+# [3.18.0](https://github.com/Badminton-Apps/core/compare/v3.17.1...v3.18.0) (2021-04-16)
+
+
+### Bug Fixes
+
+* **import:** Fix check for fixtures ([d10cc78](https://github.com/Badminton-Apps/core/commit/d10cc789c4ebfb29186b2b2b6d803cfc43e38696))
+* Not being logged in causes most API calls to fail ([7f0eda6](https://github.com/Badminton-Apps/core/commit/7f0eda691390a54b9183d82a6f41708d5ad0b29e)), closes [#70](https://github.com/Badminton-Apps/core/issues/70)
+
+
+### Features
+
+* Add shutdown listeners ([3807e15](https://github.com/Badminton-Apps/core/commit/3807e1584b0f22a10c99c076e8792bca9d8fd850))
+
+
+
 ## [3.17.1](https://github.com/Badminton-Apps/core/compare/v3.17.0...v3.17.1) (2021-04-15)
 
 
