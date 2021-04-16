@@ -2,22 +2,8 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import {
-  filter,
-  finalize,
-  map,
-  scan,
-  share,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
-import {
-  Game,
-  Player,
-  PlayerService,
-  SystemService,
-} from '../../../../../_shared';
+import { filter, finalize, map, scan, share, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { Game, Player, PlayerService, SystemService } from '../../../../../_shared';
 
 @Component({
   selector: 'app-games',
@@ -27,7 +13,7 @@ import {
 export class GamesComponent implements OnInit {
   games$: Observable<Game[]>;
   currentPage$ = new BehaviorSubject<number>(0);
-  pageSize = 7;
+  pageSize = 15;
   request$: Observable<any>;
 
   @Input()
@@ -36,8 +22,7 @@ export class GamesComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private playerService: PlayerService,
-    private systemService: SystemService,
-    private changeDetector: ChangeDetectorRef
+    private systemService: SystemService
   ) {}
 
   ngOnInit(): void {
@@ -49,35 +34,23 @@ export class GamesComponent implements OnInit {
       shareReplay(1)
     );
 
-    const system$ = this.systemService
-      .getPrimarySystem()
-      .pipe(filter((x) => !!x));
+    const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
     this.games$ = combineLatest([id$, system$, this.currentPage$]).pipe(
       switchMap(([playerId, system, page]) => {
         if (this.request$) {
           return this.request$;
         } else {
-          this.request$ = this.playerService
-            .getPlayerGames(
-              playerId,
-              system,
-              page * this.pageSize,
-              this.pageSize
-            )
-            .pipe(
-              share(),
-              finalize(() => this.onFinalize())
-            );
+          this.request$ = this.playerService.getPlayerGames(playerId, system, page * this.pageSize, this.pageSize).pipe(
+            share(),
+            finalize(() => this.onFinalize())
+          );
           return this.request$;
         }
       }),
       scan((acc: any, newGames: Game[]) => {
         function sameEvent(game1: Game, game2: Game) {
           if (game1.tournament && game2.tournament) {
-            return (
-              game2.tournament.subEvent.event.id ===
-              game1.tournament.subEvent.event.id
-            );
+            return game2.tournament.subEvent.event.id === game1.tournament.subEvent.event.id;
           } else if (game1.competition && game2.competition) {
             return game2.competition.id === game1.competition.id;
           }

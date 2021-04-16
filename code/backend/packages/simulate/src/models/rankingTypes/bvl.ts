@@ -105,7 +105,7 @@ export class BvlRankingCalc extends RankingCalc {
       await RankingPoint.findAll({
         where: {
           SystemId: this.rankingType.id,
-          points: {
+          points: { 
             [Op.ne]: null
           }
         },
@@ -120,9 +120,8 @@ export class BvlRankingCalc extends RankingCalc {
               }
             },
             required: true
-          }
-        ],
-        order: [[{ model: Game, as: 'game' }, 'playedAt', 'desc']]
+          } 
+        ]
       })
     ).map((x: RankingPoint) => {
       const points = eligbleForRanking.get(x.PlayerId) || [];

@@ -17,5 +17,6 @@ database:
   DB_USER: postgres
   DB_DIALECT: postgres
 
+
 auth0:
   issuer: https://badvlasim.eu.auth0.com
