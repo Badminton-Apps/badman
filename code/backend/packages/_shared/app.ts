@@ -95,13 +95,28 @@ export class App {
     });
   }
 
-  public listen(register = true) {
-    this.app.listen(process.env.PORT, () => {
+  public listen(register = false) {
+    const httpServer = this.app.listen(process.env.PORT, () => {
       logger.info(`🚀 App listening on the port ${process.env.PORT}`);
 
-      // if (register) {
-      //   this._startReportingService();
-      // }
+      if (register) {
+        this._startReportingService();
+      }
+    });
+
+    [
+      `exit`,
+      `SIGINT`,
+      `SIGUSR1`,
+      `SIGUSR2`,
+      `uncaughtException`,
+      `SIGTERM`
+    ].forEach(event => {
+      process.on(event, () => {
+        logger.info('Process event type: ', event);
+        httpServer.close();
+        process.exit();
+      });
     });
   }
 }
