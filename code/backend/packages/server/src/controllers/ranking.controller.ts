@@ -1,17 +1,22 @@
 import {
+  AuthenticatedRequest,
   BaseController,
   DataBaseHandler,
   DrawCompetition,
   EncounterCompetition,
+  EventCompetition,
+  EventTournament,
   Game,
   GameType,
+  GroupSubEventCompetition,
   logger,
   Player,
   RankingPlace,
   RankingPoint,
   RankingSystem,
   RankingSystemGroup,
-  SubEventCompetition
+  SubEventCompetition,
+  SubEventTournament
 } from '@badvlasim/shared';
 import async from 'async';
 import { Request, Response, Router } from 'express';
@@ -35,9 +40,40 @@ export class RankingController extends BaseController {
     this.router.get(`${this._path}/exportVisual`, this._exportVisualBvlLfbb);
     this.router.get(`${this._path}/exportNotVisual`, this._exportVisualNonBvlLfbb);
     this.router.get(`${this._path}/top`, this._top);
+    this.router.get(`${this._path}/make-all-adult`, this._authMiddleware, this._makeAdult);
   }
 
+  private _makeAdult = async (request: AuthenticatedRequest, response: Response) => {
+      if (!request.user.hasAnyPermission(['calculate:ranking'])) {
+      response.status(401).send('No no no!!');
+      return;
+    }
 
+    const tevents = await EventTournament.findAll({
+      attributes: [],
+      include: [{ attributes: [], model: SubEventTournament }]
+    });
+    const cevents = await EventCompetition.findAll({
+      attributes: [],
+      include: [{ attributes: [], model: SubEventCompetition }]
+    });
+
+
+    const group = await RankingSystemGroup.findOne({where:  {name: 'Adults'}});
+
+    await GroupSubEventCompetition.bulkCreate(cevents.map(r => r.subEvents.map(s => s.id)).flat().map(c => {
+      return {
+        subEventId: c,
+        groupId: group.id
+      }
+    }));
+    await GroupSubEventCompetition.bulkCreate(tevents.map(r => r.subEvents.map(s => s.id)).flat().map(c => {
+      return {
+        subEventId: c,
+        groupId: group.id
+      }
+    }));
+  };
 
   private _top = async (request: Request, response: Response) => {
     const where = {
