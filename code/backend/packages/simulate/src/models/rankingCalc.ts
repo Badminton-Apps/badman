@@ -319,7 +319,7 @@ export class RankingCalc {
       }
     };
 
-    //const groups = this.rankingType.groups.map(r => r.id);
+    // const groups = this.rankingType.groups.map(r => r.id);
 
     const games = await Game.findAll({
       where,
