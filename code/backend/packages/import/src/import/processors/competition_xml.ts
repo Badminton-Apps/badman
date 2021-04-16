@@ -351,7 +351,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           ]);
 
           for (const team of teamSet.values()) {
-            if (team != null || team != undefined) {
+            if (team !== null || team !== undefined) {
               teamSubscriptions.push(
                 new TeamSubEventMembership({
                   teamId: teams.find(r => r.internalId === team)?.team?.id,
@@ -401,10 +401,10 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addPlayersToTClubs(): ImportStep<void> {
     return new ImportStep('players_clubs', async (args: { transaction: Transaction }) => {
-      let playersData: { player: Player; internalId: number }[] = this.importSteps
+      const playersData: { player: Player; internalId: number }[] = this.importSteps
         .get('players')
         .getData();
-      let teams: { team: Team; internalId: number; members: any[] }[] = this.importSteps
+      const teams: { team: Team; internalId: number; members: any[] }[] = this.importSteps
         .get('teams')
         .getData();
       const event: EventCompetition = this.importSteps.get('event').getData();
