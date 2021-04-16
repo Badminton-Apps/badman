@@ -127,14 +127,13 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           );
 
           let dbSubEvent: SubEventCompetition = null;
-  
+
           if (prevEvent) {
             prevEvent.eventId = event.id;
             dbSubEvent = await new SubEventCompetition(prevEvent).save({
               transaction: args.transaction
             });
-            await dbSubEvent.setGroups(prevEvent.groups, {transaction: args.transaction});
-  
+            await dbSubEvent.setGroups(prevEvent.groups, { transaction: args.transaction });
           } else {
             dbSubEvent = await new SubEventCompetition({
               name,
@@ -347,17 +346,19 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const draw of draws) {
         if (draw.fixtures.length > 0) {
           const teamSet = new Set([
-            ...draw.fixtures.map(r => r.FixtureTeam1Id),
-            ...draw.fixtures.map(r => r.FixtureTeam2Id)
+            ...draw.fixtures.map(r => r?.FixtureTeam1Id),
+            ...draw.fixtures.map(r => r?.FixtureTeam2Id)
           ]);
 
           for (const team of teamSet.values()) {
-            teamSubscriptions.push(
-              new TeamSubEventMembership({
-                teamId: teams.find(r => r.internalId === team)?.team?.id,
-                subEventId: draw?.draw?.subeventId
-              }).toJSON()
-            );
+            if (team != null || team != undefined) {
+              teamSubscriptions.push(
+                new TeamSubEventMembership({
+                  teamId: teams.find(r => r.internalId === team)?.team?.id,
+                  subEventId: draw?.draw?.subeventId
+                }).toJSON()
+              );
+            }
           }
         } else {
           logger.warn('No Fixutres??');
@@ -365,7 +366,8 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       }
 
       await TeamSubEventMembership.bulkCreate(teamSubscriptions, {
-        transaction: args.transaction
+        transaction: args.transaction,
+        ignoreDuplicates: true
       });
     });
   }
@@ -382,7 +384,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       const start = moment([event.startYear, 0, 1]);
 
-      for (const team of teams) {
+      for (const team of teams) { 
         const playerIds = [];
         for (const teamMember of team.members) {
           const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
@@ -391,7 +393,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           }
         }
 
-        await this.addToTeams(playerIds, start, team.team.id, { transaction: args.transaction });
+        await this.addToTeams(playerIds, start, team.team.id, { transaction: args.transaction, hooks: false });
         // faster then hooks
       }
     });
@@ -399,10 +401,10 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addPlayersToTClubs(): ImportStep<void> {
     return new ImportStep('players_clubs', async (args: { transaction: Transaction }) => {
-      const playersData: { player: Player; internalId: number }[] = this.importSteps
+      let playersData: { player: Player; internalId: number }[] = this.importSteps
         .get('players')
         .getData();
-      const teams: { team: Team; internalId: number; members: any[] }[] = this.importSteps
+      let teams: { team: Team; internalId: number; members: any[] }[] = this.importSteps
         .get('teams')
         .getData();
       const event: EventCompetition = this.importSteps.get('event').getData();
@@ -410,7 +412,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       const start = moment([event.startYear, 0, 1]);
 
       const playerIds = new Map<string, string[]>();
-      for (const team of teams) {
+      for (const team of teams) { 
         const clubPlayers = playerIds.get(team.team.clubId) ?? [];
         for (const teamMember of team.members) {
           const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
@@ -419,10 +421,11 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           }
         }
         playerIds.set(team.team.clubId, clubPlayers);
-      }
+      }  
 
+      // Add to clubs
       for (const [id, players] of playerIds) {
-        if (id === null) {
+        if (id === null) { 
           logger.warn('Empty club?');
           continue;
         }
@@ -447,7 +450,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           if (!fixture) {
             continue;
           }
-
+ 
           if (fixture.FixtureWinnerTeamId === '' || isNaN(+fixture.FixtureWinnerTeamId)) {
             continue;
           }

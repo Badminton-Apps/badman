@@ -166,12 +166,12 @@ export class RankingCalc {
     const rankings: RankingPoint[] = [];
     // ignore these types
     if (game.winner === 0 || game.winner === 7 || game.winner === 6) {
-      return rankings;
+      return;
     }
 
     // ignore WO's
     if (game.set1Team1 == null && game.set1Team2 == null) {
-      return rankings;
+      return;
     }
 
     const player1Team1 = players.get(
@@ -319,7 +319,7 @@ export class RankingCalc {
       }
     };
 
-    const groups = this.rankingType.groups.map(r => r.id);
+    //const groups = this.rankingType.groups.map(r => r.id);
 
     const games = await Game.findAll({
       where,
@@ -336,19 +336,19 @@ export class RankingCalc {
               include: [
                 {
                   model: SubEventCompetition,
-                  attributes: [],
-                  include: [
-                    {
-                      model: RankingSystemGroup,
-                      attributes: [],
-                      required: true,
-                      through: {
-                        where: {
-                          groupId: { [Op.in]: groups }
-                        }
-                      }
-                    }
-                  ]
+                  attributes: []
+                  // include: [
+                  //   {
+                  //     model: RankingSystemGroup,
+                  //     attributes: [],
+                  //     required: true,
+                  //     through: {
+                  //       where: {
+                  //         groupId: { [Op.in]: groups }
+                  //       }
+                  //     }
+                  //   }
+                  // ]
                 }
               ]
             }
@@ -360,24 +360,26 @@ export class RankingCalc {
           include: [
             {
               model: SubEventTournament,
-              attributes: [],
-              include: [
-                {
-                  model: RankingSystemGroup,
-                  attributes: [],
-                  required: true,
-                  through: {
-                    where: {
-                      groupId: { [Op.in]: groups }
-                    }
-                  }
-                }
-              ]
+              attributes: []
+              // include: [
+              //   {
+              //     model: RankingSystemGroup,
+              //     attributes: [],
+              //     required: true,
+              //     through: {
+              //       where: {
+              //         groupId: { [Op.in]: groups }
+              //       }
+              //     }
+              //   }
+              // ]
             }
           ]
         }
       ]
     });
+
+    logger.debug(`Got ${games.length} games`);
 
     return games;
   }
@@ -407,7 +409,7 @@ export class RankingCalc {
         ]
       })
     ).map(x => {
-      players.set(x.id, x); 
+      players.set(x.id, x);
     });
 
     return players;
@@ -419,26 +421,22 @@ export class RankingCalc {
     rankingDate: Date
   ) {
     logger.debug(`calculateRankingPointsPerGameAsync for date ${rankingDate.toISOString()}`);
-    const {
-      results,
-      errors
-    }: {
-      results: RankingPoint[][];
-      errors: any;
-    } = await promisePool
-      .for(games)
-      .withConcurrency(300)
-      .process(async (game: Game) => this.processGame(game, players, rankingDate));
-    if (errors && errors.length > 0) {
-      throw new Error(errors);
+
+    while (games.length > 0) {
+      const rankings = this.processGame(games.pop(), players, rankingDate) ?? [];
+
+      if (rankings.length > 0) {
+        await RankingPoint.bulkCreate(rankings.map(r => r.toJSON()), {
+          returning: false
+        });
+      }
     }
-    await this.dataBaseService.addRankingPointsAsync(results.flat(1));
   }
 
   public async findNewPlacePlayer(
     points: RankingPoint[],
     lastRanking: LastRankingPlace,
-    inactive: {
+    inactive: { 
       single: boolean;
       double: boolean;
       mix: boolean;
@@ -449,7 +447,7 @@ export class RankingCalc {
     const doubleRankingPoints: RankingPoint[] = [];
     const mixRankingPoints: RankingPoint[] = [];
 
-    // Split games in theire respective gameTypes
+    // Split games in theire respective gameTypes 
     points.forEach(rankingPoint => {
       switch (rankingPoint.game.gameType) {
         case GameType.S:

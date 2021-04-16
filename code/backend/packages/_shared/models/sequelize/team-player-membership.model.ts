@@ -68,6 +68,8 @@ export class TeamPlayerMembership extends Model {
     instance: TeamPlayerMembership,
     options: SaveOptions
   ) {
+    logger.debug('Are the hooks running?')
+
     const team = await Team.findByPk(instance.teamId, {
       transaction: options.transaction
     });
