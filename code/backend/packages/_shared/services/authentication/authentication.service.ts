@@ -52,21 +52,21 @@ export class AuthenticationSercice {
       ...userinfo?.data,
       player,
       permissions,
-      hasAnyPermission: (permissions: string[]) => {
+      hasAnyPermission: (requiredPermissions: string[]) => {
         if (request?.user?.permissions == null) {
           return false;
         }
 
-        return permissions.some(perm =>
+        return requiredPermissions.some(perm =>
           request.user.permissions.includes(perm)
         );
       },
-      hasAllPermission: (permissions: string[]) => {
+      hasAllPermission: (requiredPermissions: string[]) => {
         if (request?.user?.permissions == null) {
           return false;
         }
 
-        return permissions.every(perm =>
+        return requiredPermissions.every(perm =>
           request.user.permissions.includes(perm)
         );
       }
