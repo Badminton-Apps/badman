@@ -455,7 +455,7 @@ export class TournamentTpProcessor extends ProcessImport {
         };
       });
 
-      await LocationEventTournament.bulkCreate(links, { transaction: args.transaction });
+      await LocationEventTournament.bulkCreate(links, { ignoreDuplicates: true, transaction: args.transaction });
 
       // Return result
       return locations.map((v, i) => {
