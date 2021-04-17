@@ -148,7 +148,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         } else {
           xmlDivisions[foundEventIndex] = xmlDivisions[foundEventIndex].concat(divisions);
         }
-      }
+      } 
 
       return subEvents.map((v, i) => {
         return {
@@ -180,7 +180,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           );
 
           fixtures.push(
-            division.Fixture === null
+            division.Fixture === null || division.Fixture === undefined
               ? []
               : Array.isArray(division.Fixture)
               ? [...division.Fixture]
