@@ -3,25 +3,18 @@
   "description": "Ranking simulation simulate Badminton Vlaanderen",
   "version": "3.18.0",
   "private": true,
-  "dependencies": {
-    "@badvlasim/shared": "^3.18.0",
-    "fast-csv": ""
-  },
   "scripts": {
-    "start": "node -r ts-node/register ./src/server.ts ",
-    "start:inspect": "node --inspect=5860 -r ts-node/register ./src/server.ts",
-    "start:watch": "nodemon",
-    "start:watch:inspect": "nodemon --exec node --inspect=5860 -r ts-node/register ./src/server.ts",
+    "start": "node --max-old-space-size=8192 -r ts-node/register ./src/server.ts ",
+    "start:inspect": "node --max-old-space-size=8192 --inspect=5860 -r ts-node/register ./src/server.ts",
+    "start:watch": "nodemon --max-old-space-size=8192",
+    "start:watch:inspect": "nodemon --max-old-space-size=8192 --exec node --inspect=5860 -r ts-node/register ./src/server.ts",
     "test:local": "jest --colors --watchAll",
     "test": "jest --config ./jest.config.js --runInBand",
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "dependencies": {
+    "@badvlasim/shared": "^3.18.0"
+  },
   "peerDependencies": {
     "moment": "^2.24.0"
   }

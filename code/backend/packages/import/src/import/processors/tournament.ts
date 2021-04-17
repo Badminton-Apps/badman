@@ -98,12 +98,13 @@ export class TournamentTpProcessor extends ProcessImport {
         }
 
         try {
-          return new EventTournament({
+          const dbEvent = await new EventTournament({
             name: args.importFile.name,
             uniCode: args.importFile.uniCode,
             firstDay: args.importFile.firstDay,
             dates: args.importFile.dates
           }).save({ transaction: args.transaction });
+          return dbEvent;
         } catch (e) {
           logger.error('import failed', e);
           throw e;
@@ -199,8 +200,7 @@ export class TournamentTpProcessor extends ProcessImport {
           dbSubEvent = await new SubEventTournament(prevEvent.toJSON()).save({
             transaction: args.transaction
           });
-          await dbSubEvent.setGroups(prevEvent.groups, {transaction: args.transaction});
-
+          await dbSubEvent.setGroups(prevEvent.groups, { transaction: args.transaction });
         } else {
           dbSubEvent = await new SubEventTournament({
             name: subEvent.name,
@@ -211,7 +211,7 @@ export class TournamentTpProcessor extends ProcessImport {
         }
 
         dbSubEvents.push(dbSubEvent);
-      };
+      }
 
       // const dbSubEvents = await SubEventTournament.bulkCreate(subEvents, {
       //   transaction: args.transaction,
@@ -399,7 +399,7 @@ export class TournamentTpProcessor extends ProcessImport {
       const event: EventTournament = this.importSteps.get('event').getData();
 
       const locations = [];
-      for await (const csvLocation of csvLocations) {
+      for (const csvLocation of csvLocations) {
         let street = '';
         let locNumber = null;
         const groups = csvLocation.address.match(/([^\d]+)\s?(.+)/);
@@ -412,12 +412,26 @@ export class TournamentTpProcessor extends ProcessImport {
           locNumber = groups[2];
         }
 
+        const sameLoc = locations.find(
+          r =>
+            r.name === csvLocation.name &&
+            r.street === street &&
+            r.streetNumber === locNumber &&
+            r.city === csvLocation.city &&
+            r.postalcode === csvLocation.postalcode
+        );
+
+        if (sameLoc != null) {
+          continue;
+        }
+
         const [dbLocation] = await Location.findOrCreate({
           where: {
+            name: csvLocation.name,
             street,
             streetNumber: locNumber,
             city: csvLocation.city,
-            postalcode: +csvLocation.postalcode || null
+            postalcode: csvLocation.postalcode
           },
           defaults: {
             name: csvLocation.name,
@@ -426,7 +440,7 @@ export class TournamentTpProcessor extends ProcessImport {
             phone: csvLocation.phone,
             fax: csvLocation.fax,
             city: csvLocation.city,
-            postalcode: +csvLocation.postalcode || null
+            postalcode: csvLocation.postalcode
           },
           transaction: args.transaction
         });
@@ -441,7 +455,7 @@ export class TournamentTpProcessor extends ProcessImport {
         };
       });
 
-      await LocationEventTournament.bulkCreate(links, { transaction: args.transaction });
+      await LocationEventTournament.bulkCreate(links, { ignoreDuplicates: true, transaction: args.transaction });
 
       // Return result
       return locations.map((v, i) => {

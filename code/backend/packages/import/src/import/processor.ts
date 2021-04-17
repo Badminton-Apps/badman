@@ -217,7 +217,7 @@ export abstract class ProcessImport {
   // #endregion
 
   // #region sharedMethods
-  protected async addToTeams(
+  protected async   addToTeams(
     playersIds: string[],
     inputStart: Moment,
     teamId: string,
@@ -234,14 +234,14 @@ export abstract class ProcessImport {
         playerId: {
           [Op.in]: playersIds.map(r => r)
         },
-        end: null
+        end: null 
       },
       transaction: args.transaction
     });
 
     const newMmemberships = [];
 
-    for await (const playerId of playersIds) {
+    for (const playerId of playersIds) {
       const dbTeamPlayerMemberships = dbTeamMemberships.filter(
         m => m.playerId === playerId && m.teamId === teamId
       );
@@ -250,7 +250,7 @@ export abstract class ProcessImport {
         logger.warn("this shouldn't happen", playerId);
       }
 
-      // if same team, add on year
+      // if same team, doesn't matter
       if (dbTeamPlayerMemberships && dbTeamPlayerMemberships.length === 1) {
         return;
       }
@@ -286,13 +286,13 @@ export abstract class ProcessImport {
     // Get all existing memberships of the players
     const dbClubMemberships = await ClubMembership.findAll({
       where: {
-        playerId: {
+        playerId: { 
           [Op.in]: playersIds.map(r => r)
         },
         end: null
       },
       transaction: args.transaction
-    });
+    }); 
 
     const newMmemberships = [];
     for await (const playerId of playersIds) {
@@ -312,7 +312,7 @@ export abstract class ProcessImport {
             playerId,
             clubId,
             start: start.toDate()
-          }).toJSON()
+          }).toJSON() 
         );
       }
     }
