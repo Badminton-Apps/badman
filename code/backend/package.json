@@ -13,7 +13,7 @@
     "test:local": "npx lerna run test:local --stream",
     "migrate": "npx lerna run migrate --scope=@badvlasim\\server",
     "release": "npx lerna version",
-    "kill-ports": "npx kill-port 4000 4001 4002 4003 4004"
+    "kill-ports": "npx kill-port 4000 4001 4002 4003 4004 5858 5859 5860 5861"
   },
   "dependencies": {
     "@supercharge/promise-pool": "^1.2.0",

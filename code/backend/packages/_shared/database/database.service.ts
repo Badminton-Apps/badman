@@ -49,7 +49,7 @@ export class DataBaseHandler {
       this._dialect = config.dialect;
 
       DataBaseHandler.sequelizeInstance = new Sequelize({
-        ...config,
+        ...config, 
         retry: {
           report: (message, configObj) => {
             if (configObj.$current > 5) {
@@ -149,26 +149,6 @@ export class DataBaseHandler {
     }
   }
 
-  async addRankingPointsAsync(rankingPoints: RankingPoint[]) {
-    logger.silly(`Importing ${rankingPoints.length} rankingPoints`);
-    try {
-      const transaction = await this._sequelize.transaction();
-      const chunks: RankingPoint[][] = splitInChunks(rankingPoints, 500);
-      for (const chunk of chunks) {
-        await RankingPoint.bulkCreate(
-          chunk.map(c => c.toJSON()),
-          {
-            transaction,
-            returning: false
-          }
-        );
-      }
-      await transaction.commit();
-    } catch (err) {
-      logger.error('Something went wrong adding rankingPoints');
-      throw err;
-    }
-  }
 
   async addPlayers(
     users: {
