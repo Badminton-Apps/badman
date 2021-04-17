@@ -1,3 +1,13 @@
+## [3.18.1](https://github.com/Badminton-Apps/core/compare/v3.18.0...v3.18.1) (2021-04-17)
+
+
+### Bug Fixes
+
+* **import:** double location links ([971a60b](https://github.com/Badminton-Apps/core/commit/971a60b309551a54fa2255547c3b0758881fbbc0))
+* ranking, importing, .... ([18b35fa](https://github.com/Badminton-Apps/core/commit/18b35fa2d9be86d05e513e1f6d5a6e048d39ad35))
+
+
+
 # [3.18.0](https://github.com/Badminton-Apps/core/compare/v3.17.1...v3.18.0) (2021-04-16)
 
 
