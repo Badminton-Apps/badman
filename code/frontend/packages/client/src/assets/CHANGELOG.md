@@ -1,3 +1,14 @@
+## [3.18.2](https://github.com/Badminton-Apps/core/compare/v3.18.1...v3.18.2) (2021-04-18)
+
+
+### Bug Fixes
+
+* [#84](https://github.com/Badminton-Apps/core/issues/84) - Search for location crashes ([cc8fe15](https://github.com/Badminton-Apps/core/commit/cc8fe159f24675db54091b52f030ea0faee34a2c))
+* [#86](https://github.com/Badminton-Apps/core/issues/86) - [BUG] Team edit window incompatible with browser ([d06fb38](https://github.com/Badminton-Apps/core/commit/d06fb3896473486b04074546520c9bb33c14ff7e))
+* [#90](https://github.com/Badminton-Apps/core/issues/90) - [BUG] Importing competition crashes ([35eee4a](https://github.com/Badminton-Apps/core/commit/35eee4a8a86f03e071e3ba5a87265ba113295739))
+
+
+
 ## [3.18.1](https://github.com/Badminton-Apps/core/compare/v3.18.0...v3.18.1) (2021-04-17)
 
 
