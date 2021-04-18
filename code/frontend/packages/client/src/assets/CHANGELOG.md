@@ -1,3 +1,12 @@
+## [3.18.3](https://github.com/Badminton-Apps/core/compare/v3.18.2...v3.18.3) (2021-04-18)
+
+
+### Bug Fixes
+
+* little bit less memory usage ([6fe2f87](https://github.com/Badminton-Apps/core/commit/6fe2f87cac3ecad5d78fa9c010bc5f9096447ecc))
+
+
+
 ## [3.18.2](https://github.com/Badminton-Apps/core/compare/v3.18.1...v3.18.2) (2021-04-18)
 
 
