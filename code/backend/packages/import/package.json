@@ -9,10 +9,10 @@
     "multer": "^1.4.2"
   },
   "scripts": {
-    "start": "node --max-old-space-size=8192 -r ts-node/register ./src/server.ts",
-    "start:inspect": "node --max-old-space-size=8192  --inspect=5858 -r ts-node/register ./src/server.ts",
-    "start:watch": "nodemon --max-old-space-size=8192",
-    "start:watch:inspect": "nodemon --max-old-space-size=8192 --exec node --inspect=5858 -r ts-node/register ./src/server.ts",
+    "start": "node --max-old-space-size=4096 -r ts-node/register ./src/server.ts",
+    "start:inspect": "node --max-old-space-size=4096  --inspect=5858 -r ts-node/register ./src/server.ts",
+    "start:watch": "nodemon --max-old-space-size=4096",
+    "start:watch:inspect": "nodemon --max-old-space-size=4096 --exec node --inspect=5858 -r ts-node/register ./src/server.ts",
     "test:local": "jest --colors --watchAll",
     "test": "jest --runInBand",
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
