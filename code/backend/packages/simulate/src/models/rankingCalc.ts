@@ -323,7 +323,7 @@ export class RankingCalc {
 
     const games = await Game.findAll({
       where,
-      attributes: ['id', 'gameType', 'winner', 'playedAt', 'set1Team1', 'set1Team2'],
+      attributes: ['id', 'gameType', 'winner', 'set1Team1', 'set1Team2'],
       include: [
         { model: Player, attributes: ['id'] },
         {
@@ -399,8 +399,6 @@ export class RankingCalc {
               'single',
               'double',
               'mix',
-              'systemId',
-              'rankingDate',
               'singleInactive',
               'doubleInactive',
               'mixInactive'

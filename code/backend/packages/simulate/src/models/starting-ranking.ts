@@ -38,7 +38,11 @@ export class StartingRanking {
   ) {
     const playerMap: Map<string, RankingPlace> = new Map();
 
-    for await (const type of this._types) {
+    for (const type of this._types) {
+      // once loaded, remove from json to reduce memory usage
+      const jsonType = startRanking[type.json];
+      delete startRanking[type.json];
+
       let startPlaces;
       let percentages;
       let amountOfPlayers;
@@ -46,11 +50,11 @@ export class StartingRanking {
         case StartingType.formula:
           startPlaces = this._createStartingPlaces(
             amountOfLevels,
-            Math.max(...startRanking[type.json].map(x => parseInt(x.Rank, 10)))
+            Math.max(...jsonType.map(x => parseInt(x.Rank, 10)))
           );
           break;
         case StartingType.tableBVL:
-          amountOfPlayers = Math.max(...startRanking[type.json].map(x => parseInt(x.Rank, 10)));
+          amountOfPlayers = Math.max(...jsonType.map(x => parseInt(x.Rank, 10)));
 
           switch (type.type) {
             case 'single':
@@ -116,7 +120,7 @@ export class StartingRanking {
           break;
 
         case StartingType.tableLFBB:
-          amountOfPlayers = Math.max(...startRanking[type.json].map(x => parseInt(x.Rank, 10)));
+          amountOfPlayers = Math.max(...jsonType.map(x => parseInt(x.Rank, 10)));
 
           percentages = [
             0.0058,
@@ -151,13 +155,13 @@ export class StartingRanking {
 
       const dbPlayers = await Player.findAll({
         where: {
-          memberId: startRanking[type.json].map(
+          memberId: jsonType.map(
             x => correctWrongPlayers({ memberId: `${x.Lidnummer}` }).memberId
           )
         }
       });
 
-      const types = startRanking[type.json];
+      const types = jsonType;
       while (types.length) {
         const batch = types.splice(0, 250);
         for (const player of batch) {
