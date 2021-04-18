@@ -2,8 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo } from 'apollo-angular';
 import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
-import { Club, ClubService, Player, Role, RoleService, Team, TeamService } from 'app/_shared';
+import {
+  Club,
+  ClubService,
+  Location,
+  LocationService,
+  Player,
+  Role,
+  RoleService,
+  Team,
+  TeamService,
+} from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 
@@ -19,6 +30,7 @@ export class EditClubComponent implements OnInit {
     private teamService: TeamService,
     private roleService: RoleService,
     private clubService: ClubService,
+    private locationService: LocationService,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
@@ -91,5 +103,10 @@ export class EditClubComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       this.update$.next(0);
     });
+  }
+
+  async onDeleteLocation(location: Location, club: Club) {
+    await this.locationService.deleteLocation(location.id).toPromise();
+    this.update$.next(0);
   }
 }
