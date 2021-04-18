@@ -351,7 +351,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           ]);
 
           for (const team of teamSet.values()) {
-            if (team !== null || team !== undefined) {
+            if (team !== null && team !== undefined) {
               teamSubscriptions.push(
                 new TeamSubEventMembership({
                   teamId: teams.find(r => r.internalId === team)?.team?.id,
