@@ -21,6 +21,7 @@
         *ngFor="let location of club.locations"
         [location]="location"
         (onEdit)="this.onEditLocation($event, club)"
+        (onDelete)="this.onDeleteLocation($event, club)"
       >
       </app-club-edit-location>
     </div>
