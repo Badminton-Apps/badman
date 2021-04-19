@@ -1,3 +1,17 @@
+# [3.19.0](https://github.com/Badminton-Apps/core/compare/v3.18.3...v3.19.0) (2021-04-19)
+
+
+### Bug Fixes
+
+* less memory + prevents double points (or should) ([a05e08d](https://github.com/Badminton-Apps/core/commit/a05e08d9e74bda12543e1c004bbbb94ab8ebfda8))
+
+
+### Features
+
+* split simulation in smaller blocks ([4d6dd11](https://github.com/Badminton-Apps/core/commit/4d6dd1101ca5b25d47f02d1e9b862bbf6f65afc2))
+
+
+
 ## [3.18.3](https://github.com/Badminton-Apps/core/compare/v3.18.2...v3.18.3) (2021-04-18)
 
 
