@@ -125,23 +125,18 @@ export class LfbbRankingCalc extends RankingCalc {
 
     const dateRanges: { start: Date; end: Date }[] = [];
 
-    if (end.getTime() - gamesStartDate.getTime() > this._gameSplitInterval) {
-      while (end >= gamesStartDate) {
-        const slice = {
-          start: new Date(gamesStartDate),
-          end: new Date(gamesStartDate.getTime() + this._gameSplitInterval)
-        };
-        dateRanges.push(slice);
-        // Forward
-        gamesStartDate = slice.end;
-      }
+    while (end > gamesStartDate) {
+      const suggestedEndDate = new Date(gamesStartDate.getTime() + this._gameSplitInterval);
+
+      const slice = {
+        start: new Date(gamesStartDate),
+        end: suggestedEndDate > end ? end : suggestedEndDate
+      };
+
+      dateRanges.push(slice); 
+      // Forward
+      gamesStartDate = slice.end;
     }
-    
-    // at last block
-    dateRanges.push({
-      start: gamesStartDate,
-      end
-    });
 
     for (const { start, end } of dateRanges) {
       // Get all relevant games and players
@@ -179,7 +174,7 @@ export class LfbbRankingCalc extends RankingCalc {
             attributes: ['id', 'gameType'],
             where: {
               playedAt: {
-                [Op.between]: [startDate.toISOString(), endDate.toISOString()]
+                [Op.and]: [{ [Op.gt]: startDate }, { [Op.lte]: endDate }]
               }
             },
             required: true
