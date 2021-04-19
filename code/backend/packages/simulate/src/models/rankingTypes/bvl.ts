@@ -96,13 +96,13 @@ export class BvlRankingCalc extends RankingCalc {
       end
     });
 
-    for (const { start, end } of dateRanges) {
+    for (const range of dateRanges) {
       // Get all relevant games and players
-      const playersLocal = await this.getPlayersAsync(start, end);
-      let games = await this.getGamesAsync(start, end);
+      const playersRange = await this.getPlayersAsync(range.start, range.end);
+      let gamesRange = await this.getGamesAsync(range.start, range.end);
 
       // Calculate new points
-      await this.calculateRankingPointsPerGameAsync(games, playersLocal, end);
+      await this.calculateRankingPointsPerGameAsync(gamesRange, playersRange, range.end);
     }
 
     // Calculate places for new period
