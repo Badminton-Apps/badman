@@ -79,7 +79,7 @@ export class RankingCalc {
       logger.error('Something went wrong clearing the DB', er);
       throw er;
     }
-  }
+  } 
 
   async calculateAsync(stop: Moment, start?: Moment) {
     if (start) {
@@ -122,6 +122,7 @@ export class RankingCalc {
           this.rankingType.updateInterval.unit
         );
       }
+
       this.rankingType.caluclationIntervalLastUpdate = lastPeriod.toDate();
 
       // Forward the period we just did with the calculation interval
@@ -170,7 +171,7 @@ export class RankingCalc {
     }
 
     // ignore WO's
-    if (game.set1Team1 == null && game.set1Team2 == null) {
+    if (game.set1Team1 == null && game.set1Team2 == null) { 
       return;
     }
 
@@ -302,7 +303,7 @@ export class RankingCalc {
     }
     if (newRanking.double > this.rankingType.amountOfLevels) {
       newRanking.double = this.rankingType.amountOfLevels;
-    }
+    } 
     if (newRanking.mix > this.rankingType.amountOfLevels) {
       newRanking.mix = this.rankingType.amountOfLevels;
     }
@@ -315,7 +316,7 @@ export class RankingCalc {
 
     const where = {
       playedAt: {
-        [Op.between]: [start, end]
+        [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }]
       }
     };
 
@@ -403,6 +404,15 @@ export class RankingCalc {
               'doubleInactive',
               'mixInactive'
             ]
+          },
+          {
+            model: Game,
+            required: true,
+            where: {
+              playedAt: {
+                [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }]
+              }
+            }
           }
         ]
       })
@@ -424,17 +434,20 @@ export class RankingCalc {
       const rankings = this.processGame(games.pop(), players, rankingDate) ?? [];
 
       if (rankings.length > 0) {
-        await RankingPoint.bulkCreate(rankings.map(r => r.toJSON()), {
-          returning: false
-        });
+        await RankingPoint.bulkCreate(
+          rankings.map(r => r.toJSON()),
+          {
+            returning: false
+          }
+        );
       }
     }
-  }
+  } 
 
   public async findNewPlacePlayer(
     points: RankingPoint[],
     lastRanking: LastRankingPlace,
-    inactive: { 
+    inactive: {
       single: boolean;
       double: boolean;
       mix: boolean;
@@ -445,7 +458,7 @@ export class RankingCalc {
     const doubleRankingPoints: RankingPoint[] = [];
     const mixRankingPoints: RankingPoint[] = [];
 
-    // Split games in theire respective gameTypes 
+    // Split games in theire respective gameTypes
     points.forEach(rankingPoint => {
       switch (rankingPoint.game.gameType) {
         case GameType.S:
