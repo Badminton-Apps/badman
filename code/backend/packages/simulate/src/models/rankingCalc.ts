@@ -150,7 +150,7 @@ export class RankingCalc {
     updateRankings: boolean,
     historicalGames: boolean
   ) {
-    logger.debug(
+    logger.info(
       `Started Calcualting for period ${start.toISOString()} untill ${end.toISOString()}${
         updateRankings ? ', and updating rankings' : ''
       }`
