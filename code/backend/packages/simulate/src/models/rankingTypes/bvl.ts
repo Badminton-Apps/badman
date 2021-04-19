@@ -16,6 +16,8 @@ import { PointCalculator } from '../point-calculator';
 import { RankingCalc } from '../rankingCalc';
 
 export class BvlRankingCalc extends RankingCalc {
+  private _gameSplitInterval = 30 * 24 * 60 * 60 * 1000; // 30 days max
+
   constructor(
     public rankingType: RankingSystem,
     protected dataBaseService: DataBaseHandler,
@@ -61,6 +63,8 @@ export class BvlRankingCalc extends RankingCalc {
     historicalGames: boolean
   ) {
     super.calculatePeriodAsync(start, end, updateRankings, historicalGames);
+    const originalEnd = new Date(end);
+    const originalStart = new Date(start);
     let gamesStartDate = this.rankingType.caluclationIntervalLastUpdate;
 
     // If running from start, we are reimporting evertyhing,
@@ -72,22 +76,38 @@ export class BvlRankingCalc extends RankingCalc {
         .toDate();
     }
 
-    // Get all relevant games and players
-    const players = await this.getPlayersAsync(start, end);
-    const games = await this.getGamesAsync(gamesStartDate, end);
+    const dateRanges: { start: Date; end: Date }[] = [];
 
-    // Calculate new points
-    await this.calculateRankingPointsPerGameAsync(games, players, end);
+    if (end.getTime() - gamesStartDate.getTime() > this._gameSplitInterval) {
+      while (end >= gamesStartDate) {
+        const slice = {
+          start: new Date(gamesStartDate),
+          end: new Date(gamesStartDate.getTime() + this._gameSplitInterval)
+        };
+        dateRanges.push(slice);
+        // Forward
+        gamesStartDate = slice.end;
+      }
+    }
+
+    // at last block
+    dateRanges.push({
+      start: gamesStartDate,
+      end
+    });
+
+    for (const { start, end } of dateRanges) {
+      // Get all relevant games and players
+      const playersLocal = await this.getPlayersAsync(start, end);
+      let games = await this.getGamesAsync(start, end);
+
+      // Calculate new points
+      await this.calculateRankingPointsPerGameAsync(games, playersLocal, end);
+    }
 
     // Calculate places for new period
-    await this._calculateRankingPlacesAsync(
-      moment(end)
-        .subtract(this.rankingType.period.amount, this.rankingType.period.unit)
-        .toDate(),
-      end,
-      players,
-      updateRankings
-    );
+    const players = await this.getPlayersAsync(originalStart, originalEnd);
+    await this._calculateRankingPlacesAsync(originalStart, originalEnd, players, updateRankings);
   }
 
   // Testing grounds: https://stackblitz.com/edit/typescript-2yg1po
@@ -98,14 +118,14 @@ export class BvlRankingCalc extends RankingCalc {
     updateRankings: boolean
   ) {
     const eligbleForRanking: Map<string, RankingPoint[]> = new Map();
-    logger.debug(
+    logger.info(
       `calculateRankingPlacesAsync for period ${startDate.toISOString()} - ${endDate.toISOString()}`
     );
     (
       await RankingPoint.findAll({
         where: {
           SystemId: this.rankingType.id,
-          points: { 
+          points: {
             [Op.ne]: null
           }
         },
@@ -120,7 +140,7 @@ export class BvlRankingCalc extends RankingCalc {
               }
             },
             required: true
-          } 
+          }
         ]
       })
     ).map((x: RankingPoint) => {
@@ -159,11 +179,13 @@ export class BvlRankingCalc extends RankingCalc {
         inactive.mix = playerGameCount.mix < this.rankingType.gamesForInactivty;
       }
 
-      const lastRanking = player.lastRankingPlace ?? {
-        single: this.rankingType.amountOfLevels,
-        mix: this.rankingType.amountOfLevels,
-        double: this.rankingType.amountOfLevels,
-      } as LastRankingPlace;
+      const lastRanking =
+        player.lastRankingPlace ??
+        ({
+          single: this.rankingType.amountOfLevels,
+          mix: this.rankingType.amountOfLevels,
+          double: this.rankingType.amountOfLevels
+        } as LastRankingPlace);
 
       const newPlace = await this.findNewPlacePlayer(
         rankingPoints,
