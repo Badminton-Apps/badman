@@ -78,23 +78,18 @@ export class BvlRankingCalc extends RankingCalc {
 
     const dateRanges: { start: Date; end: Date }[] = [];
 
-    if (end.getTime() - gamesStartDate.getTime() > this._gameSplitInterval) {
-      while (end >= gamesStartDate) {
-        const slice = {
-          start: new Date(gamesStartDate),
-          end: new Date(gamesStartDate.getTime() + this._gameSplitInterval)
-        };
-        dateRanges.push(slice);
-        // Forward
-        gamesStartDate = slice.end;
-      }
-    }
+    while (end > gamesStartDate) {
+      const suggestedEndDate = new Date(gamesStartDate.getTime() + this._gameSplitInterval);
 
-    // at last block
-    dateRanges.push({
-      start: gamesStartDate,
-      end
-    });
+      const slice = {
+        start: new Date(gamesStartDate),
+        end: suggestedEndDate > end ? end : suggestedEndDate
+      };
+
+      dateRanges.push(slice);
+      // Forward
+      gamesStartDate = slice.end;
+    }
 
     for (const range of dateRanges) {
       // Get all relevant games and players
@@ -136,7 +131,7 @@ export class BvlRankingCalc extends RankingCalc {
             attributes: ['id', 'gameType', 'playedAt'],
             where: {
               playedAt: {
-                [Op.between]: [startDate.toISOString(), endDate.toISOString()]
+                [Op.and]: [{ [Op.gt]: startDate }, { [Op.lte]: endDate }]
               }
             },
             required: true
@@ -334,11 +329,14 @@ export class BvlRankingCalc extends RankingCalc {
             attributes: ['gameType'],
             where: {
               playedAt: {
-                [Op.between]: [
-                  moment(endDate)
-                    .subtract(rankingType.inactivityAmount, rankingType.inactivityUnit)
-                    .toISOString(),
-                  endDate.toISOString()
+                [Op.and]: [
+                  {
+                    [Op.gt]: moment(endDate).subtract(
+                      rankingType.inactivityAmount,
+                      rankingType.inactivityUnit
+                    )
+                  },
+                  { [Op.lte]: endDate }
                 ]
               }
             },
