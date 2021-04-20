@@ -35,6 +35,7 @@ export class Player {
     this.lastRanking = args.lastRanking ? new RankingPlace(args.lastRanking) : null;
     this.games = args.games?.map((g) => new Game(g));
     this.base = args.base;
+    this.sub = args.sub;
     this.index = args.index;
     this.competitionPlayer = args.competitionPlayer ?? false;
     this.clubs = args.clubs?.map((club) => new Club(club));
