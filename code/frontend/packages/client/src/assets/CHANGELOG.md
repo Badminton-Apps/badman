@@ -1,3 +1,12 @@
+## [3.20.3](https://github.com/Badminton-Apps/core/compare/v3.20.2...v3.20.3) (2021-04-20)
+
+
+### Bug Fixes
+
+* removed startupprobe ([591e2aa](https://github.com/Badminton-Apps/core/commit/591e2aa52ec5d88f6c747ea2953445e3b4a88d4b))
+
+
+
 ## [3.20.2](https://github.com/Badminton-Apps/core/compare/v3.20.1...v3.20.2) (2021-04-20)
 
 
