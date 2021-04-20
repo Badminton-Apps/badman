@@ -128,6 +128,7 @@
     "year": "Year",
     "name": "Name",
     "firstname": "First name",
+    "sub": "Subscription",
     "lastname": "Last name",
     "abbreviation": "Abbreviation",
     "email": "Email",
