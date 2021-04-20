@@ -42,4 +42,7 @@ export class EditPlayerComponent implements OnInit {
   async onRankingPlaceChanged(rankingPlace: RankingPlace) {
     await this.playerService.updatePlayerRanking(rankingPlace).toPromise();
   }
+  async onPlayerUpdated(player: Player) {
+    await this.playerService.updatePlayer(player).toPromise();
+  }
 }
