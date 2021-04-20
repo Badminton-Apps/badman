@@ -4,6 +4,7 @@ query GetUserInfoQuery($id: ID!, $rankingType: ID) {
     memberId
     firstName
     lastName
+    sub
     gender
     birthDate
     rankingPlaces(
