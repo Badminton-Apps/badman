@@ -29,12 +29,6 @@ spec:
           - containerPort: {{ .Values.service.internalPort }}
             protocol: TCP
             name: http
-        startupProbe:
-          httpGet:
-            path: /api/v1/healthz
-            port: http
-          initialDelaySeconds: 240
-          periodSeconds: 10   
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         env:
