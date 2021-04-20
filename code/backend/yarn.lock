@@ -1093,36 +1093,11 @@
     lodash.isfunction "^3.0.9"
     lodash.isnil "^4.0.0"
 
-"@fast-csv/format@4.3.5":
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/@fast-csv/format/-/format-4.3.5.tgz#90d83d1b47b6aaf67be70d6118f84f3e12ee1ff3"
-  integrity sha512-8iRn6QF3I8Ak78lNAa+Gdl5MJJBM5vRHivFtMRUWINdevNo00K7OXxS2PshawLKTejVwieIlPmK5YlLu6w4u8A==
-  dependencies:
-    "@types/node" "^14.0.1"
-    lodash.escaperegexp "^4.1.2"
-    lodash.isboolean "^3.0.3"
-    lodash.isequal "^4.5.0"
-    lodash.isfunction "^3.0.9"
-    lodash.isnil "^4.0.0"
-
 "@fast-csv/parse@4.3.2", "@fast-csv/parse@^4.3.1":
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/@fast-csv/parse/-/parse-4.3.2.tgz#55caaee17431b9ba655c0aef7b453305e7b5039d"
   integrity sha512-smFKL1E00zy6SB+MIRL4kJq4ba4Is9mHEf+1kdMH7iLInrKszADyJFGicoRfiFTtAvm+661LJMWjyQHrmx6WeA==
   dependencies:
-    lodash.escaperegexp "^4.1.2"
-    lodash.groupby "^4.6.0"
-    lodash.isfunction "^3.0.9"
-    lodash.isnil "^4.0.0"
-    lodash.isundefined "^3.0.1"
-    lodash.uniq "^4.5.0"
-
-"@fast-csv/parse@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@fast-csv/parse/-/parse-4.3.3.tgz#1ab4443213a63ced960fd618ea476e4e51f0f8df"
-  integrity sha512-mXrCmyyZxbcdW/kZ8tVMrb1DJrJMNGWxHmB4OSuEL96so/X14E1O0w5QFiyodfs+oXoNGwbku8bx2Lq2tiODAA==
-  dependencies:
-    "@types/node" "^14.0.1"
     lodash.escaperegexp "^4.1.2"
     lodash.groupby "^4.6.0"
     lodash.isfunction "^3.0.9"
@@ -6406,14 +6381,6 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-fast-csv@:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/fast-csv/-/fast-csv-4.3.5.tgz#b62d8303fc0d7ccd56f9d8650c1b5144ea5bddad"
-  integrity sha512-7csO4GADMDhVcf8UI5/TPdZbNkeToUx2HaRC1KPxYNWjAZ/SAFBBRJGhzlDWg0vgKm92toH6gR7+tsMcc0Fx8Q==
-  dependencies:
-    "@fast-csv/format" "4.3.5"
-    "@fast-csv/parse" "4.3.3"
-
 fast-csv@^4.3.1:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/fast-csv/-/fast-csv-4.3.2.tgz#855e28d034310f8aae10f959bfea0a60d34540fb"
@@ -9801,6 +9768,13 @@ moment-timezone@^0.5.31:
   version "0.5.32"
   resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.32.tgz#db7677cc3cc680fd30303ebd90b0da1ca0dfecc2"
   integrity sha512-Z8QNyuQHQAmWucp8Knmgei8YNo28aLjJq6Ma+jy1ZSpSk5nyfRT8xgUbSQvD2+2UajISfenndwvFuH3NGS+nvA==
+  dependencies:
+    moment ">= 2.9.0"
+
+moment-timezone@^0.5.33:
+  version "0.5.33"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.33.tgz#b252fd6bb57f341c9b59a5ab61a8e51a73bbd22c"
+  integrity sha512-PTc2vcT8K9J5/9rDEPe5czSIKgLoGsH8UNpA4qZTVw0Vd/Uz19geE9abbIOQKaAQFcnQ3v5YEXrbSc5BpshH+w==
   dependencies:
     moment ">= 2.9.0"
 

@@ -7,6 +7,7 @@ export class Player {
   email: string;
   phone: string;
   memberId: string;
+  sub: string;
   gender: string;
   avatar: string;
   firstName: string;
