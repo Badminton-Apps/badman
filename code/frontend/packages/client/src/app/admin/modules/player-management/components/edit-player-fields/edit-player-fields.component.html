@@ -1,0 +1,25 @@
+<form [formGroup]="this.fg">
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'input.firstname' | translate }}</mat-label>
+      <input matInput formControlName="firstName" alt="firstName" autocomplete="firstName" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'input.lastName' | translate }}</mat-label>
+      <input matInput formControlName="lastName" alt="lastName" autocomplete="lastName" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'input.memberId' | translate }}</mat-label>
+      <input matInput formControlName="memberId" alt="memberId" autocomplete="memberId" required />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'input.sub' | translate }}</mat-label>
+      <input matInput formControlName="sub" alt="sub" autocomplete="sub" required />
+    </mat-form-field>
+  </div>
+</form>

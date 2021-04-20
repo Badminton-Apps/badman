@@ -131,6 +131,7 @@
     "lastname": "Achteraam",
     "abbreviation": "Afkorting",
     "email": "e-mail",
+    "sub": "Subscription",
     "phone": "Telefoon",
     "fax": "Fax",
     "required": "Velden met een sterretje (*) zijn verplicht"
