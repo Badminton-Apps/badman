@@ -1,3 +1,12 @@
+# [3.20.0](https://github.com/Badminton-Apps/core/compare/v3.19.0...v3.20.0) (2021-04-20)
+
+
+### Features
+
+* Add edit player ([0fd2983](https://github.com/Badminton-Apps/core/commit/0fd29834ddaf0d85cafe939b01f16e51d643511d)), closes [#93](https://github.com/Badminton-Apps/core/issues/93)
+
+
+
 # [3.19.0](https://github.com/Badminton-Apps/core/compare/v3.18.3...v3.19.0) (2021-04-19)
 
 
