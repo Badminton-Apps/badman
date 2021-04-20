@@ -1,4 +1,7 @@
 <ng-container *ngIf="this.player$ | async as player">
+  <div class="mat-subheading-1">Player</div>
+  <app-player-fields [player]="player" (onPlayerChanged)="this.onPlayerUpdated($event)"></app-player-fields>
+
   <div class="mat-subheading-1">Ranking</div>
   <ng-container *ngIf="player.rankingPlaces && player.rankingPlaces.length > 0">
     <app-edit-ranking
