@@ -1,3 +1,12 @@
+## [3.20.2](https://github.com/Badminton-Apps/core/compare/v3.20.1...v3.20.2) (2021-04-20)
+
+
+### Bug Fixes
+
+* parsing, required, only update new ([bbe5de4](https://github.com/Badminton-Apps/core/commit/bbe5de441981965589d3c8ae75fb89ed652b3843))
+
+
+
 ## [3.20.1](https://github.com/Badminton-Apps/core/compare/v3.20.0...v3.20.1) (2021-04-20)
 
 
