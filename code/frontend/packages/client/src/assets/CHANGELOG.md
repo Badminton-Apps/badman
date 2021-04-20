@@ -1,3 +1,31 @@
+## [3.20.2](https://github.com/Badminton-Apps/core/compare/v3.20.1...v3.20.2) (2021-04-20)
+
+
+### Bug Fixes
+
+* parsing, required, only update new ([bbe5de4](https://github.com/Badminton-Apps/core/commit/bbe5de441981965589d3c8ae75fb89ed652b3843))
+
+
+
+## [3.20.1](https://github.com/Badminton-Apps/core/compare/v3.20.0...v3.20.1) (2021-04-20)
+
+
+### Bug Fixes
+
+* player fields + query update ([1d8dfa0](https://github.com/Badminton-Apps/core/commit/1d8dfa0fd3e1b805a442074b5cfa092749a56198))
+* translation ([c24883b](https://github.com/Badminton-Apps/core/commit/c24883b9b374d74cd6047f55157f34adf3b4607a))
+
+
+
+# [3.20.0](https://github.com/Badminton-Apps/core/compare/v3.19.0...v3.20.0) (2021-04-20)
+
+
+### Features
+
+* Add edit player ([0fd2983](https://github.com/Badminton-Apps/core/commit/0fd29834ddaf0d85cafe939b01f16e51d643511d)), closes [#93](https://github.com/Badminton-Apps/core/issues/93)
+
+
+
 # [3.19.0](https://github.com/Badminton-Apps/core/compare/v3.18.3...v3.19.0) (2021-04-19)
 
 
