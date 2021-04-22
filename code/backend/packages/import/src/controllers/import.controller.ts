@@ -9,6 +9,10 @@ import {
   EventTournament,
   ImporterFile,
   logger,
+  Player,
+  RankingPlace,
+  RankingPoint,
+  RankingSystem,
   SubEventCompetition,
   SubEventTournament
 } from '@badvlasim/shared';
@@ -17,6 +21,10 @@ import { unlink } from 'fs';
 import multer, { diskStorage } from 'multer';
 import { join } from 'path';
 import { Convertor } from '../convert/convertor';
+import { parseString } from '@fast-csv/parse';
+import { readFile } from 'fs';
+import { Op } from 'sequelize';
+import moment from 'moment';
 
 export class ImportController extends BaseController {
   private _path = '/import';
@@ -27,21 +35,131 @@ export class ImportController extends BaseController {
   });
   private _upload = multer({ storage: this._storage });
 
-  constructor(
-    router: Router,
-    private _authMiddleware: any,
-    private _converter: Convertor
-  ) {
+  constructor(router: Router, private _authMiddleware: any, private _converter: Convertor) {
     super(router);
 
     this._intializeRoutes();
   }
 
   private _intializeRoutes() {
-    this.router.post(`${this._path}/file`, this._authMiddleware, this._upload.array('upload'), this._import);
+    this.router.post(
+      `${this._path}/set-ranking`,
+      this._authMiddleware,
+      this._upload.array('upload'),
+      this._setRanking
+    );
+    this.router.post(
+      `${this._path}/file`,
+      this._authMiddleware,
+      this._upload.array('upload'),
+      this._import
+    );
     this.router.put(`${this._path}/start/:id/:eventId?`, this._authMiddleware, this._startImport);
   }
 
+  private _setRanking = async (request: AuthenticatedRequest, response: Response) => {
+    if (!request.user.hasAnyPermission(['import:competition', 'import:tournament'])) {
+      response.status(401).send('No no no!!');
+      return;
+    }
+
+    try {
+      for (const file of request.files) {
+        const fileLocation = join(process.cwd(), file.path);
+        const date = moment(request.query.date as string).toDate();
+
+        readFile(fileLocation, 'utf8', (err, csv) => {
+          const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true }); 
+          const data = new Map();
+          stream.on('data', row => {
+            if (row.Type == 'Competitiespeler') {
+              data.set(row.Lidnummer, row);
+            }
+          });
+          stream.on('error', error => {
+            logger.error(error);
+          });
+          stream.on('end', async rowCount => {
+            const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+            await Player.bulkCreate(
+              [...data.values()].map(d =>
+                new Player({
+                  memberId: d.Lidnummer,
+                  firstName: d.Voornaam,
+                  lastName: d.Achternaam,
+                  gender: d.Geslacht
+                }).toJSON()
+              ),  
+              {
+                ignoreDuplicates: true,
+                transaction
+              }
+            );
+
+            const players = await Player.findAll({
+              where: {
+                memberId: { [Op.in]: [...data.keys()] }
+              },
+              transaction
+            });
+
+            // Set all players as non-competition players
+            await Player.update(
+              { competitionPlayer: false }, 
+              {
+                where: {},
+                transaction
+              }
+            );
+
+            // Set new players as competition players
+            await Player.update(
+              { competitionPlayer: true },
+              {
+                where: {
+                  [Op.in]: players.map(r => r.id)
+                },
+                transaction
+              }
+            );
+
+            const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
+            await RankingPlace.bulkCreate(
+              players.map(p => {
+                const csvData = data.get(p.memberId);
+                return new RankingPlace({
+                  PlayerId: p.id,
+                  SystemId: system.id,
+                  single: +csvData['Index enkel'],
+                  double: +csvData['Index dubbel'],
+                  mix: +csvData['Index gemengd'],
+                  rankingDate: date
+                }).toJSON();
+              }),
+              { transaction }
+            );
+
+            await transaction.rollback();
+          });
+        });
+      }
+
+      response.status(200);
+      response.send();
+    } catch (e) {
+      logger.error('Error getting basic info', e);
+
+      request.files.forEach(file => {
+        unlink(file.path, err => {
+          if (err) throw new Error('File deletion failed');
+          logger.debug('File delete');
+        });
+      });
+
+      response.status(500);
+      response.render('error', { error: e });
+    }
+  };
   private _import = async (request: AuthenticatedRequest, response: Response) => {
     if (!request.user.hasAnyPermission(['import:competition', 'import:tournament'])) {
       response.status(401).send('No no no!!');
