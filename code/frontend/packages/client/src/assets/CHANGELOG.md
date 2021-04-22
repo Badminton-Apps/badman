@@ -1,3 +1,28 @@
+# [3.21.0](https://github.com/Badminton-Apps/core/compare/v3.20.5...v3.21.0) (2021-04-22)
+
+
+### Bug Fixes
+
+* gender in event edit ([78a92b6](https://github.com/Badminton-Apps/core/commit/78a92b69cec3a58e066759ef050e968522979ccf))
+* linting ([8799aeb](https://github.com/Badminton-Apps/core/commit/8799aeb9030c20e0ee0dbcd96ee7299c2593278e))
+* show "my club(s)" in sidebar ([eb045f5](https://github.com/Badminton-Apps/core/commit/eb045f55a87f402d9697b0f8027ca33c16789d08)), closes [#101](https://github.com/Badminton-Apps/core/issues/101)
+* temporary hiding this button ([192020b](https://github.com/Badminton-Apps/core/commit/192020bcbf8b18dcf0aadd476331451892360102))
+* translation buttons enrollment ([d01f7ae](https://github.com/Badminton-Apps/core/commit/d01f7ae2dab3d14e5f36ff3baf8bb8bfa9ffa0c1))
+* translation gender ([d7394e1](https://github.com/Badminton-Apps/core/commit/d7394e1888892475a36783d114f79ef93866e1d9))
+
+
+### Features
+
+* allow all levels in team "1" ([e28927e](https://github.com/Badminton-Apps/core/commit/e28927e66c0d9c770d5c410f27863959c8ebace1))
+* allow creation in edit club ([fb4c404](https://github.com/Badminton-Apps/core/commit/fb4c404381ff6456f2c6ad5dfb65efa578116aee))
+* Club number ([250aa44](https://github.com/Badminton-Apps/core/commit/250aa4424975a32c4b46bceff0d6ad82240c0a0b))
+* import csv file with players/indexes ([87a06d2](https://github.com/Badminton-Apps/core/commit/87a06d2c2b01357dbd168daca7c2a54d6add9e33))
+* import latest ranking ([0afc3bc](https://github.com/Badminton-Apps/core/commit/0afc3bce8ecf3ac6fca5c31361455332fca2c6aa))
+* temporary hiding WIP items ([531c97e](https://github.com/Badminton-Apps/core/commit/531c97ec21f1bdf9c92eb72fe7fca914d42ab5eb))
+* warning evolution ([6951dd9](https://github.com/Badminton-Apps/core/commit/6951dd92a62298976fdcf7fdb7d62da8e76bfcb6))
+
+
+
 ## [3.20.5](https://github.com/Badminton-Apps/core/compare/v3.20.4...v3.20.5) (2021-04-20)
 
 
