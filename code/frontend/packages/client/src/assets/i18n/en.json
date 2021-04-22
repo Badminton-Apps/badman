@@ -7,6 +7,9 @@
   "lists": {
     "name": "Name"
   },
+  "evolution": {
+    "warning": "Evolution temporary not availible"
+  },
   "management": {
     "calculate": "Calculate",
     "cleanup": "Cleanup",
