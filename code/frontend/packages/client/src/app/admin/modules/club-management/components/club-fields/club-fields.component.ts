@@ -26,6 +26,7 @@ export class ClubFieldsComponent implements OnInit {
 
   ngOnInit() {
     const nameControl = new FormControl(this.club.name, Validators.required);
+    const clubIdControl = new FormControl(this.club.clubId, Validators.required);
     const abbrControl = new FormControl(
       this.club.abbreviation,
       Validators.required
@@ -34,6 +35,7 @@ export class ClubFieldsComponent implements OnInit {
     this.clubForm = new FormGroup({
       name: nameControl,
       abbreviation: abbrControl,
+      clubId: clubIdControl
     });
 
     nameControl.valueChanges.subscribe((r) => {
