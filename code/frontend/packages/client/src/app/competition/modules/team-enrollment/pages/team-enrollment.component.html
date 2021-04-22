@@ -86,8 +86,8 @@
       </mat-form-field>
     </form>
     <div>
-      <button mat-button matStepperPrevious>{{ 'button.back' }}</button>
-      <button mat-button (click)="this.submit()">{{ 'button.submit' }}</button>
+      <button mat-button matStepperPrevious>{{ 'button.prev' | translate }}</button>
+      <button mat-button (click)="this.submit()">{{ 'button.submit' | translate }}</button>
     </div>
   </mat-step>
 </mat-vertical-stepper>
