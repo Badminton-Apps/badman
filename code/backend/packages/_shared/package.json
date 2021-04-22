@@ -1,6 +1,6 @@
 {
   "name": "@badvlasim/shared",
-  "version": "3.20.5",
+  "version": "3.21.0",
   "main": "index.js",
   "license": "MIT",
   "private": true,
