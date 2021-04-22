@@ -192,7 +192,7 @@ export class DataBaseHandler {
 
   async addRankingPlaces(rankings) {
     try {
-      logger.silly(`Adding ${rankings.length} places`);
+      logger.silly(`Adding ${rankings.length} places`); 
       const transaction = await this._sequelize.transaction();
       const chunks = splitInChunks(rankings, 500);
       for (const chunk of chunks) {

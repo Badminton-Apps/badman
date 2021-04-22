@@ -62,6 +62,23 @@ export class RankingCalc {
         );
       }
 
+      const newWhere = {
+        systemId: SystemId,
+        rankingDate: {
+          [Op.gte]: startingDate.toDate()
+        }
+      };
+      const placeLastCount = await LastRankingPlace.count({ where: newWhere });
+
+      if (placeLastCount > 0) {
+        const deleted = await LastRankingPlace.destroy({ where: newWhere });
+        logger.silly(
+          `Truncated ${deleted} LastRankingPlace for system ${
+            where.SystemId
+          } and after ${startingDate.toISOString()}`
+        ); 
+      }
+
       const pointCount = await RankingPoint.count({ where });
       if (pointCount > 0) {
         const deleted = await RankingPoint.destroy({ where });
@@ -70,7 +87,7 @@ export class RankingCalc {
             where.SystemId
           } and after ${startingDate.toISOString()}`
         );
-      }
+      } 
 
       this.rankingType.runCurrently = true;
       this.rankingType.runDate = new Date();
@@ -79,7 +96,7 @@ export class RankingCalc {
       logger.error('Something went wrong clearing the DB', er);
       throw er;
     }
-  } 
+  }
 
   async calculateAsync(stop: Moment, start?: Moment) {
     if (start) {
@@ -171,7 +188,7 @@ export class RankingCalc {
     }
 
     // ignore WO's
-    if (game.set1Team1 == null && game.set1Team2 == null) { 
+    if (game.set1Team1 == null && game.set1Team2 == null) {
       return;
     }
 
@@ -303,7 +320,7 @@ export class RankingCalc {
     }
     if (newRanking.double > this.rankingType.amountOfLevels) {
       newRanking.double = this.rankingType.amountOfLevels;
-    } 
+    }
     if (newRanking.mix > this.rankingType.amountOfLevels) {
       newRanking.mix = this.rankingType.amountOfLevels;
     }
@@ -442,7 +459,7 @@ export class RankingCalc {
         );
       }
     }
-  } 
+  }
 
   public async findNewPlacePlayer(
     points: RankingPoint[],
