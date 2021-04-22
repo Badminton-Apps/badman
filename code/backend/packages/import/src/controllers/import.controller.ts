@@ -8,6 +8,7 @@ import {
   EventImportType,
   EventTournament,
   ImporterFile,
+  LastRankingPlace,
   logger,
   Player,
   RankingPlace,
@@ -69,11 +70,11 @@ export class ImportController extends BaseController {
         const date = moment(request.query.date as string).toDate();
 
         readFile(fileLocation, 'utf8', (err, csv) => {
-          const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true }); 
+          const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true });
           const data = new Map();
           stream.on('data', row => {
-            if (row.Type == 'Competitiespeler') {
-              data.set(row.Lidnummer, row);
+            if (row.TypeName == 'Competitiespeler') {
+              data.set(row.memberid, row);
             }
           });
           stream.on('error', error => {
@@ -81,65 +82,22 @@ export class ImportController extends BaseController {
           });
           stream.on('end', async rowCount => {
             const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-            await Player.bulkCreate(
-              [...data.values()].map(d =>
-                new Player({
-                  memberId: d.Lidnummer,
-                  firstName: d.Voornaam,
-                  lastName: d.Achternaam,
-                  gender: d.Geslacht
-                }).toJSON()
-              ),  
-              {
-                ignoreDuplicates: true,
-                transaction
-              }
-            );
+            try {
+              logger.info('Player indexes import started');
+              await this.addPlayers(data, transaction);
 
-            const players = await Player.findAll({
-              where: {
-                memberId: { [Op.in]: [...data.keys()] }
-              },
-              transaction
-            });
-
-            // Set all players as non-competition players
-            await Player.update(
-              { competitionPlayer: false }, 
-              {
-                where: {},
-                transaction
-              }
-            );
-
-            // Set new players as competition players
-            await Player.update(
-              { competitionPlayer: true },
-              {
-                where: {
-                  [Op.in]: players.map(r => r.id)
-                },
-                transaction
-              }
-            );
-
-            const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
-            await RankingPlace.bulkCreate(
-              players.map(p => {
-                const csvData = data.get(p.memberId);
-                return new RankingPlace({
-                  PlayerId: p.id,
-                  SystemId: system.id,
-                  single: +csvData['Index enkel'],
-                  double: +csvData['Index dubbel'],
-                  mix: +csvData['Index gemengd'],
-                  rankingDate: date
-                }).toJSON();
-              }),
-              { transaction }
-            );
-
-            await transaction.rollback();
+              let memberIds = [...data.keys()];
+              const players = await this.getPlayers(transaction, memberIds);
+              await this.setCompetitionStatus(transaction, memberIds);
+              await this.createRankingPlaces(transaction, players, data, date);
+              await this.createLastRankingPlaces(transaction, players, data, date);
+              await transaction.commit();
+              logger.info('Player indexes imported');
+            } catch (e) {
+              logger.error(e);
+              await transaction.rollback();
+              throw e;
+            }
           });
         });
       }
@@ -280,4 +238,125 @@ export class ImportController extends BaseController {
       return;
     }
   };
+
+  private async getPlayers(transaction, memberIds: any[]) {
+    return await Player.findAll({
+      attributes: ['id', 'memberId'],
+      where: {
+        memberId: memberIds
+      },
+      transaction
+    });
+  }
+
+  private async createRankingPlaces(
+    transaction,
+    players: Player[],
+    data: Map<any, any>,
+    date: Date
+  ) {
+    const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
+    const newPlaces = players.map(p => {
+      const csvData = data.get(p.memberId);
+      if (csvData) {
+        const single = parseInt(csvData.PlayerLevelSingle, 10) ?? null;
+        const double = parseInt(csvData.PlayerLevelDouble, 10) ?? null;
+        const mix = parseInt(csvData.PlayerLevelMixed, 10) ?? null;
+
+        if (single && double && mix) {
+          return new RankingPlace({
+            PlayerId: p.id,
+            SystemId: system.id,
+            single,
+            double,
+            mix,
+            updatePossible: true,
+            rankingDate: date
+          }).toJSON();
+        }
+      }
+    });
+
+    await RankingPlace.bulkCreate(newPlaces, {
+      transaction,
+      updateOnDuplicate: ['single', 'double', 'mix', 'rankingDate'],
+      returning: false
+    });
+  }
+
+  private async createLastRankingPlaces(
+    transaction,
+    players: Player[],
+    data: Map<any, any>,
+    date: Date
+  ) {
+    const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
+    const newPlaces = players.map(p => {
+      const csvData = data.get(p.memberId);
+      if (csvData) { 
+        const single = parseInt(csvData.PlayerLevelSingle, 10) ?? null;
+        const double = parseInt(csvData.PlayerLevelDouble, 10) ?? null;
+        const mix = parseInt(csvData.PlayerLevelMixed, 10) ?? null;
+
+        if (single && double && mix) {
+          return new LastRankingPlace({
+            playerId: p.id,
+            systemId: system.id,
+            single,
+            double,
+            mix,
+            rankingDate: date
+          }).toJSON();
+        }
+      }
+    });
+
+    await RankingPlace.bulkCreate(newPlaces, {
+      transaction,
+      updateOnDuplicate: ['single', 'double', 'mix', 'rankingDate'],
+      returning: false
+    });
+  }
+
+  private async setCompetitionStatus(transaction, memberIds: any[]) {
+    // Set all players as non-competition players
+    await Player.update(
+      { competitionPlayer: false },
+      {
+        where: {},
+        returning: false,
+        transaction
+      }
+    );
+
+    // Set new players as competition players
+    await Player.update(
+      { competitionPlayer: true },
+      {
+        where: {
+          memberId: memberIds
+        },
+        returning: false,
+        transaction
+      }
+    );
+  }
+
+  private async addPlayers(data: Map<any, any>, transaction) {
+    await Player.bulkCreate(
+      [...data.values()].map(d =>
+        new Player({
+          memberId: d.memberid,
+          firstName: d.firstname,
+          lastName: d.lastname,
+          gender: d.gender
+        }).toJSON()
+      ),
+      {
+        ignoreDuplicates: true,
+        returning: false,
+        transaction
+      }
+    );
+  }
 }
