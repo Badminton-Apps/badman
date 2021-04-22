@@ -1,10 +1,4 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -12,31 +6,15 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ClubService } from 'app/_shared';
 import { Club } from 'app/_shared/models/club.model';
 import { BehaviorSubject, combineLatest, of as observableOf } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  map,
-  startWith,
-  switchMap,
-} from 'rxjs/operators';
+import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './overview-clubs.component.html',
   styleUrls: ['./overview-clubs.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
-    ]),
-  ],
 })
 export class OverviewClubsComponent {
   dataSource = new MatTableDataSource<Club>();
-  displayedColumns: string[] = ['name', 'abbreviation'];
+  displayedColumns: string[] = ['name', 'clubId', 'abbreviation'];
 
   resultsLength$ = new BehaviorSubject(0);
   pageIndex$ = new BehaviorSubject(0);
@@ -103,8 +81,7 @@ export class OverviewClubsComponent {
           this.resultsLength$.next(count);
 
           if (count) {
-            this.nextCursor =
-              data.clubs.edges[data.clubs.edges.length - 1].cursor;
+            this.nextCursor = data.clubs.edges[data.clubs.edges.length - 1].cursor;
 
             return data.clubs.edges.map((x) => x.node);
           } else {
