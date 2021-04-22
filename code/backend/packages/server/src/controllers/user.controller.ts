@@ -8,6 +8,7 @@ import {
   RequestLink
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
+import { Club } from '../../../_shared';
 
 export class UserController extends BaseController {
   private _path = '/user';
@@ -43,7 +44,8 @@ export class UserController extends BaseController {
       }
 
       const player = await Player.findOne({
-        where: { sub: request.user.sub }
+        where: { sub: request.user.sub },
+        include: [Club]
       });
 
       if (player) {
