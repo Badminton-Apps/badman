@@ -163,7 +163,7 @@ export class PlayerService {
       );
   }
 
-  addPlayer(player: Player) {
+  addPlayer(player: Partial<Player>) {
     return this.apollo
       .mutate<{ addPlayer: Player }>({
         mutation: addPlayerMutation,

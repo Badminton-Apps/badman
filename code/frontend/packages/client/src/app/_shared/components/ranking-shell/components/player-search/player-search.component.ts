@@ -48,10 +48,7 @@ export class PlayerSearchComponent implements OnInit {
   filteredOptions$: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
 
-  constructor(
-    private playerService: PlayerService,
-    private dialog: MatDialog
-  ) {}
+  constructor(private playerService: PlayerService, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.formControl = new FormControl(this.player);
@@ -63,8 +60,7 @@ export class PlayerSearchComponent implements OnInit {
       filter((x) => x?.length > 3),
       debounceTime(600),
       switchMap(async (r) => {
-        this.clubId =
-          this.club instanceof Club ? this.club?.id : this.club ?? undefined;
+        this.clubId = this.club instanceof Club ? this.club?.id : this.club ?? undefined;
 
         // first try searching for club
         let results = this.clubId
@@ -105,10 +101,15 @@ export class PlayerSearchComponent implements OnInit {
         data: { input: event.option.value },
       });
 
-      dialogRef.afterClosed().subscribe(async (player) => {
+      dialogRef.afterClosed().subscribe(async (player: Partial<Player>) => {
         if (player) {
           const dbPlayer = await this.playerService
-            .addPlayer(player)
+            .addPlayer({
+              memberId: player.memberId,
+              firstName: player.firstName,
+              lastName: player.lastName,
+              gender: player.gender,
+            })
             .toPromise();
           if (!this.clearOnSelection) {
             this.formControl.setValue(player);
