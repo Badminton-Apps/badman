@@ -114,7 +114,7 @@ export class AssignTeamComponent implements OnInit {
       hasIssues: false,
     };
 
-    for (const player of team.players) {
+    for (const player of team.players && team.teamNumber > 1) {
       if (player?.rankingPlaces && player?.rankingPlaces?.length > 0) {
         const rankingPlace = player?.rankingPlaces[0];
         if (player.base) {
