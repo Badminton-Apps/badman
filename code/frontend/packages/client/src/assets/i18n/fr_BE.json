@@ -7,6 +7,9 @@
   "lists": {
     "name": "Nom"
   },
+  "evolution": {
+    "warning": "Evolution temporary not availible"
+  },
   "management": {
     "calculate": "calculer",
     "cleanup": "Nettoyer",

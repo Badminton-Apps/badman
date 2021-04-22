@@ -45,6 +45,7 @@ export class EditPlayerFieldsComponent implements OnInit {
     this.fg.valueChanges.pipe(debounceTime(600)).subscribe((value) => {
       if (this.fg.valid) {
         this.onPlayerChanged.next({
+          id: this.player.id,
           firstName: this.fg.value.firstName,
           lastName: this.fg.value.lastName,
           memberId: this.fg.value.memberId,
