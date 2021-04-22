@@ -12,20 +12,17 @@ import {
   logger,
   Player,
   RankingPlace,
-  RankingPoint,
   RankingSystem,
   SubEventCompetition,
   SubEventTournament
 } from '@badvlasim/shared';
+import { parseString } from '@fast-csv/parse';
 import { Response, Router } from 'express';
-import { unlink } from 'fs';
+import { readFile, unlink } from 'fs';
+import moment from 'moment';
 import multer, { diskStorage } from 'multer';
 import { join } from 'path';
 import { Convertor } from '../convert/convertor';
-import { parseString } from '@fast-csv/parse';
-import { readFile } from 'fs';
-import { Op } from 'sequelize';
-import moment from 'moment';
 
 export class ImportController extends BaseController {
   private _path = '/import';
@@ -73,7 +70,7 @@ export class ImportController extends BaseController {
           const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true });
           const data = new Map();
           stream.on('data', row => {
-            if (row.TypeName == 'Competitiespeler') {
+            if (row.TypeName === 'Competitiespeler') {
               data.set(row.memberid, row);
             }
           });
@@ -84,13 +81,13 @@ export class ImportController extends BaseController {
             const transaction = await DataBaseHandler.sequelizeInstance.transaction();
             try {
               logger.info('Player indexes import started');
-              await this.addPlayers(data, transaction);
+              await this._addPlayers(data, transaction);
 
-              let memberIds = [...data.keys()];
-              const players = await this.getPlayers(transaction, memberIds);
-              await this.setCompetitionStatus(transaction, memberIds);
-              await this.createRankingPlaces(transaction, players, data, date);
-              await this.createLastRankingPlaces(transaction, players, data, date);
+              const memberIds = [...data.keys()];
+              const players = await this._getPlayers(transaction, memberIds);
+              await this._setCompetitionStatus(transaction, memberIds);
+              await this._createRankingPlaces(transaction, players, data, date);
+              await this._createLastRankingPlaces(transaction, players, data, date);
               await transaction.commit();
               logger.info('Player indexes imported');
             } catch (e) {
@@ -239,8 +236,8 @@ export class ImportController extends BaseController {
     }
   };
 
-  private async getPlayers(transaction, memberIds: any[]) {
-    return await Player.findAll({
+  private async _getPlayers(transaction, memberIds: any[]) {
+    return Player.findAll({
       attributes: ['id', 'memberId'],
       where: {
         memberId: memberIds
@@ -249,7 +246,7 @@ export class ImportController extends BaseController {
     });
   }
 
-  private async createRankingPlaces(
+  private async _createRankingPlaces(
     transaction,
     players: Player[],
     data: Map<any, any>,
@@ -284,7 +281,7 @@ export class ImportController extends BaseController {
     });
   }
 
-  private async createLastRankingPlaces(
+  private async _createLastRankingPlaces(
     transaction,
     players: Player[],
     data: Map<any, any>,
@@ -293,7 +290,7 @@ export class ImportController extends BaseController {
     const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
     const newPlaces = players.map(p => {
       const csvData = data.get(p.memberId);
-      if (csvData) { 
+      if (csvData) {
         const single = parseInt(csvData.PlayerLevelSingle, 10) ?? null;
         const double = parseInt(csvData.PlayerLevelDouble, 10) ?? null;
         const mix = parseInt(csvData.PlayerLevelMixed, 10) ?? null;
@@ -318,7 +315,7 @@ export class ImportController extends BaseController {
     });
   }
 
-  private async setCompetitionStatus(transaction, memberIds: any[]) {
+  private async _setCompetitionStatus(transaction, memberIds: any[]) {
     // Set all players as non-competition players
     await Player.update(
       { competitionPlayer: false },
@@ -342,7 +339,7 @@ export class ImportController extends BaseController {
     );
   }
 
-  private async addPlayers(data: Map<any, any>, transaction) {
+  private async _addPlayers(data: Map<any, any>, transaction) {
     await Player.bulkCreate(
       [...data.values()].map(d =>
         new Player({
