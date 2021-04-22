@@ -94,7 +94,7 @@ export class BvlRankingCalc extends RankingCalc {
     for (const range of dateRanges) {
       // Get all relevant games and players
       const playersRange = await this.getPlayersAsync(range.start, range.end);
-      let gamesRange = await this.getGamesAsync(range.start, range.end);
+      const gamesRange = await this.getGamesAsync(range.start, range.end);
 
       // Calculate new points
       await this.calculateRankingPointsPerGameAsync(gamesRange, playersRange, range.end);
