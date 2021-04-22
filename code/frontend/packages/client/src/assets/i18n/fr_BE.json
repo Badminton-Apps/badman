@@ -10,6 +10,9 @@
   "evolution": {
     "warning": "Evolution temporary not availible"
   },
+  "club": {
+    "number": "club nummer"
+  },
   "management": {
     "calculate": "calculer",
     "cleanup": "Nettoyer",
