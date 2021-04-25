@@ -327,7 +327,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
               memberId: csvPlayer.memberid,
               firstName: titleCase(csvPlayer.firstname),
               lastName: titleCase(csvPlayer.name),
-              gender: csvPlayer.gender,
+              gender: this.getGender(csvPlayer.gender),
               birthDate: bod
             })
           ).toJSON()

@@ -20,24 +20,22 @@ module.exports = {
           transaction: t
         }
       );
-
-     
     });
   },
 
   down: async (queryInterface, sequelize) => {
-    await queryInterface.bulkDelete(
-      { tableName: 'Claims', schema: 'security' },
-      [
+    return queryInterface.sequelize.transaction(async t => {
+      await queryInterface.bulkDelete(
+        { tableName: 'Claims', schema: 'security' },
+        [
+          {
+            id: '93000e2a-11bc-4662-aae5-dff8ac4439e6'
+          }
+        ],
         {
-          id: '93000e2a-11bc-4662-aae5-dff8ac4439e6'
+          transaction: t
         }
-      ],
-      {
-        transaction: t
-      }
-    );
-
-    
+      );
+    });
   }
 };
