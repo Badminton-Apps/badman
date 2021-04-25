@@ -10,8 +10,10 @@
       </button>
       <mat-menu #options="matMenu">
         <button mat-menu-item (click)="this.onEdit.next(role)">{{ 'button.edit' | translate }}</button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item>{{ 'button.delete' | translate }}</button>
+        <app-has-claim [any]="[club.id + '_remove:location', 'edit-any:club']">
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="this.onDelete.next(role)">{{ 'button.delete' | translate }}</button>
+        </app-has-claim>
       </mat-menu>
     </ng-container>
   </div>

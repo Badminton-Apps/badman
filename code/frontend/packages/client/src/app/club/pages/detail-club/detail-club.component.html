@@ -10,8 +10,10 @@
             {{ 'button.edit' | translate }}
           </button>
           <button mat-menu-item (click)="addPlayer(club)">Add player</button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item>{{ 'button.delete' | translate }}</button>
+          <app-has-claim [any]="['remove:club']">
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="deleteClub(club)">{{ 'button.delete' | translate }}</button>
+          </app-has-claim>
         </mat-menu>
       </app-has-claim>
       <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
@@ -63,7 +65,7 @@
     >
     </app-team-overview>
   </div>
-<!-- 
+  <!-- 
   <div class="mat-subheading-1">{{ 'players.title' | translate }}</div>
   <mat-list *ngIf="club.players">
     <mat-list-item *ngFor="let player of club.players">
