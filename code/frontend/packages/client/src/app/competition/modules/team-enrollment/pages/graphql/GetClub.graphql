@@ -6,6 +6,7 @@ query GetClubInfo($id: ID!) {
       name
       abbreviation
       active
+      teamNumber
       type
       preferredTime
       preferredDay
