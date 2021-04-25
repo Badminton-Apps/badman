@@ -20,5 +20,8 @@ export class ClubEditRoleComponent {
   @Output() onDelete = new EventEmitter<Role>();
 
   @Input()
+  club: Club;
+
+  @Input()
   role: Role;
 }
