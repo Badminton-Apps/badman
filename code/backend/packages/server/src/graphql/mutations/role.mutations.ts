@@ -249,3 +249,52 @@ export const updateRoleMutation = {
     }
   }
 };
+
+export const removeRoleMutation = {
+  type: RoleType,
+  args: {
+    id: {
+      name: 'id',
+      type: GraphQLID
+    }
+  },
+  resolve: async (findOptions, { id }, context) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbRole = await Role.findByPk(id);
+
+      if (!dbRole) {
+        logger.debug('role', dbRole);
+        throw new ApiError({
+          code: 404,
+          message: 'Role not found'
+        });
+      }
+
+      if (
+        context?.req?.user == null ||
+        !context.req.user.hasAnyPermission([`${dbRole.clubId}_remove:role`, 'edit-any:club'])
+      ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`${dbRole.clubId}_remove:role`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
+        });
+      }
+
+      await dbRole.destroy({ transaction });
+
+      await transaction.commit();
+      return dbRole;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};

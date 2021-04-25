@@ -20,8 +20,9 @@
       <app-club-edit-location
         *ngFor="let location of club.locations"
         [location]="location"
+        [club]="club"
         (onEdit)="this.onEditLocation($event, club)"
-        (onDelete)="this.onDeleteLocation($event, club)"
+        (onDelete)="this.onDeleteLocation($event)"
       >
       </app-club-edit-location>
     </div>
@@ -40,9 +41,11 @@
       <app-club-edit-role
         *ngFor="let role of club.roles"
         [role]="role"
+        [club]="club"
         (onPlayerAdded)="this.onPlayerAddedToRole($event, role)"
         (onPlayerRemoved)="this.onPlayerRemovedFromRole($event, role)"
         (onEdit)="this.onEditRole($event, club)"
+        (onDelete)="this.onDeleteRole($event)"
       >
       </app-club-edit-role>
     </div>
