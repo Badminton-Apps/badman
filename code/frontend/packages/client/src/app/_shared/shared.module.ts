@@ -33,6 +33,7 @@ import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 import { ClaimComponent } from './components/claim/claim.component';
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { NewPlayerComponent } from './components/ranking-shell/components/new-player/new-player.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -55,6 +56,7 @@ const materialModules = [
 ];
 
 const exportedComponents = [
+  FlexLayoutModule,
   TranslateModule,
   CommonModule,
   LoadingPipe,

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 import { tournamentRoutingModule } from './tournament-routing.module';
 import { SharedModule } from '../_shared';
