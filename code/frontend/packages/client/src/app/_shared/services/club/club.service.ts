@@ -7,6 +7,7 @@ import * as clubQuery from '../../graphql/clubs/queries/GetClubQuery.graphql';
 import * as clubsQuery from '../../graphql/clubs/queries/GetClubsQuery.graphql';
 
 import * as addClubMutation from '../../graphql/clubs/mutations/addClub.graphql';
+import * as removeClubMutation from '../../graphql/clubs/mutations/removeClub.graphql';
 import * as updateClubMutation from '../../graphql/clubs/mutations/updateClub.graphql';
 import * as addPlayerToClubMutation from '../../graphql/clubs/mutations/addPlayerToClubMutation.graphql';
 
@@ -67,6 +68,15 @@ export class ClubService {
         },
       })
       .pipe(map((x) => new Club(x.data.addClub)));
+  }
+
+  removeClub(club: Club) {
+    return this.apollo.mutate<{ addClub: Club }>({
+      mutation: removeClubMutation,
+      variables: {
+        id: club.id,
+      },
+    });
   }
 
   addPlayer(club: Club, player: Player) {
