@@ -33,7 +33,8 @@ import {
   updateSubEventTeamMutation,
   updateTeamMutation,
   updateTournamentEventLocationMutation,
-  updateTeamLocationMutation
+  updateTeamLocationMutation,
+  removeClubMutation
 } from './mutations';
 import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import {
@@ -101,6 +102,7 @@ export const createSchema = () => {
         addRole: addRoleMutation,
         addTeam: addTeamMutation,
         deleteImportedEvent: deleteImportedEventMutation,
+        removeClub: removeClubMutation,
         removeLocation: removeLocationMutation,
         removePlayerFromRole: removePlayerFromRoleMutation,
         removePlayerFromTeam: removePlayerFromTeamMutation,
