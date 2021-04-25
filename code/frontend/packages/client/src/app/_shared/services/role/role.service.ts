@@ -10,6 +10,7 @@ import * as addRoleMutation from '../../graphql/roles/mutations/addRole.graphql'
 import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.graphql';
 import * as addPlayerToRoleMutation from '../../graphql/roles/mutations/addPlayerToRoleMutation.graphql';
 import * as removePlayerToRoleMutation from '../../graphql/roles/mutations/removePlayerFromRoleMutation.graphql';
+import * as deleteRoleMutation from '../../graphql/roles/mutations/removeRole.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -81,5 +82,14 @@ export class RoleService {
         map((x) => new Role(x.data.updateRole)),
         tap(() => this.authService.reloadPermissions())
       );
+  }
+
+  deleteRole(id: string) {
+    return this.apollo.mutate<{ removeLocation: Location }>({
+      mutation: deleteRoleMutation,
+      variables: {
+        id,
+      },
+    });
   }
 }
