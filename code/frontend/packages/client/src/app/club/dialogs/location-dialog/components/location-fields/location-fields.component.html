@@ -1,22 +1,47 @@
-<div class="row">
-  <mat-search-google-maps-autocomplete
-    [formControl]="this.adressForm"
-    appearance="outline"
-    searchBarAppearance="outline"
-    [country]="['be']"
-  >
-    ></mat-search-google-maps-autocomplete
-  >
+<div fxLayout="row" fxLayoutGap="10px">
+  <mat-form-field fxFlex="auto" appearance="outline" fxFlex="auto">
+    <mat-label>Search</mat-label>
+    <input (onAutocompleteSelected)="syncAutoComplete($event)" matGoogleMapsAutocomplete matInput required />
+    <mat-icon color="primary" matSuffix>search</mat-icon>
+  </mat-form-field>
 </div>
 
+<mat-divider></mat-divider>
+
 <form [formGroup]="this.locationForm">
-  <div class="row">
-    <mat-form-field appearance="outline" class="flex">
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="auto">
       <mat-label>{{ 'input.name' | translate }}</mat-label>
       <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
-  <div class="row">
+
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="80">
+      <mat-label>{{ 'input.street' | translate }}</mat-label>
+      <input formControlName="street" matInput required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="20">
+      <mat-label>{{ 'input.streetnumber' | translate }}</mat-label>
+      <input formControlName="streetNumber" matInput required />
+    </mat-form-field>
+  </div>
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="20">
+      <mat-label>{{ 'input.postal' | translate }}</mat-label>
+      <input formControlName="postalcode" matInput required type="number" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="40">
+      <mat-label>{{ 'input.city' | translate }}</mat-label>
+      <input formControlName="city" matInput required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="40">
+      <mat-label>{{ 'input.state' | translate }}</mat-label>
+      <input formControlName="state" matInput required />
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="10px">
     <mat-form-field appearance="outline" class="flex">
       <mat-label>{{ 'input.phone' | translate }}</mat-label>
       <input matInput formControlName="phone" alt="phone" autocomplete="phone" />

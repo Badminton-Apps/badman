@@ -23,12 +23,14 @@ $config: mat-typography-config();
   .up {
     @include mat-typography-level-to-styles($config, headline);
     font-size: 20px;
+
     mat-icon {
       font-size: 18px;
       height: auto;
       width: auto;
     }
   }
+
   .down {
     margin-top: 3px;
     font-size: 14px;
@@ -37,7 +39,7 @@ $config: mat-typography-config();
 }
 
 .content {
-  padding: 0 6px 16px;
+  padding: 16px;
 }
 
 .no-players {
