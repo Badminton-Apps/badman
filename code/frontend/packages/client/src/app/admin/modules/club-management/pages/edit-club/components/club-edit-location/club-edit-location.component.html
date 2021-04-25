@@ -17,13 +17,14 @@
   </div>
 
   <div class="content">
-    <mat-list>
-      <mat-list-item *ngIf="this.location">{{ this.location.address }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.postalcode">{{ this.location.postalcode }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.city">{{ this.location.city }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.state">{{ this.location.state }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.phone">{{ this.location.phone }}</mat-list-item>
-      <mat-list-item *ngIf="this.location.fax">{{ this.location.fax }}</mat-list-item>
-    </mat-list>
+    <span *ngIf="this.location.street">{{ this.location.street }} </span>
+    <span *ngIf="this.location.streetNumber">{{ this.location.streetNumber }}</span> <br />
+    <span *ngIf="this.location.postalcode">{{ this.location.postalcode }} </span>
+    <span *ngIf="this.location.city">{{ this.location.city }}</span
+    ><br />
+    <span *ngIf="this.location.state">{{ this.location.state }}</span
+    ><br />
+    <span *ngIf="this.location.phone">{{ this.location.phone }}</span>
+    <span *ngIf="this.location.fax">{{ this.location.fax }}</span>
   </div>
 </div>
