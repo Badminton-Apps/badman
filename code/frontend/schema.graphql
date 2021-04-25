@@ -804,6 +804,7 @@ type RootMutationType {
   addRole(role: RoleInput, clubId: Int): Role
   addTeam(team: TeamInput!, clubId: ID!): Team
   deleteImportedEvent(event: ImportInput): Imported
+  removeClub(id: String): Club
   removeLocation(locationId: ID): Location
   removePlayerFromRole(roleId: ID, playerId: ID): Role
   removePlayerFromTeam(teamId: ID, playerId: ID): Team
@@ -831,12 +832,7 @@ type RootMutationType {
   updateRole(role: RoleInput): Role
   updateSubEventTeam(teamId: ID, newSubEventId: ID, oldSubEventId: ID): Team
   updateTeam(team: TeamInput): Team
-  updateTeamLocation(
-    locationId: ID
-    teamId: ID
-    subEventId: ID
-    use: Boolean
-  ): Team
+  updateTeamLocation(locationId: ID, teamId: ID, use: Boolean): Team
   updateTournamentEventLocation(
     locationId: ID
     eventId: ID
