@@ -1,5 +1,5 @@
 import { Club, DataBaseHandler, logger, Player } from '@badvlasim/shared';
-import { GraphQLID } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLString } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { ClubInputType, ClubType } from '../types';
 
@@ -30,6 +30,41 @@ export const addClubMutation = {
 
       await transaction.commit();
       return clubDb;
+    } catch (e) {
+      logger.warn('rollback');
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const removeClubMutation = {
+  type: GraphQLBoolean,
+  args: {
+    id: {
+      name: 'ClubId',
+      type: GraphQLString
+    }
+  },
+  resolve: async (findOptions, { id }, context) => {
+    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['remove:club'])) {
+      logger.warn("User tried something it should't have done", {
+        required: {
+          anyClaim: ['remove:club']
+        },
+        received: context?.req?.user?.permissions
+      });
+      throw new ApiError({
+        code: 401,
+        message: "You don't have permission to do this "
+      });
+    }
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const clubDb = await Club.destroy({ where: { id: id }, transaction, cascade: true });
+
+      await transaction.commit();
+      return true;
     } catch (e) {
       logger.warn('rollback');
       await transaction.rollback();
