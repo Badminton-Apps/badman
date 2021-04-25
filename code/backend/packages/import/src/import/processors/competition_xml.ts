@@ -303,7 +303,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
               memberId: player.MemberLTANo,
               firstName: titleCase(player.MemberFirstName),
               lastName: titleCase(player.MemberLastName),
-              gender: player.MemberGender
+              gender: this.getGender(player.MemberGender)
             })
           ).toJSON()
         );

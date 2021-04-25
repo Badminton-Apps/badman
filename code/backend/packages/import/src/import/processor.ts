@@ -106,6 +106,16 @@ export abstract class ProcessImport {
     throw new Error(`Got unexpected eventType. Params; gender:${gender}`);
   }
 
+  protected getGender(gender) {
+    if (gender === 'M' || gender === 1 || gender === '1') {
+      return 'M';
+    } else if (gender === 'V' || gender === 'F' || gender === 2 || gender === '2') {
+      return 'F';
+    }
+
+    throw new Error(`Got unexpected gender. Params; gender:${gender}`);
+  }
+
   protected getGameType(eventtype, gender): GameType {
     if (gender === 3) {
       return GameType.MX;
@@ -217,7 +227,7 @@ export abstract class ProcessImport {
   // #endregion
 
   // #region sharedMethods
-  protected async   addToTeams(
+  protected async addToTeams(
     playersIds: string[],
     inputStart: Moment,
     teamId: string,
@@ -234,7 +244,7 @@ export abstract class ProcessImport {
         playerId: {
           [Op.in]: playersIds.map(r => r)
         },
-        end: null 
+        end: null
       },
       transaction: args.transaction
     });
@@ -286,13 +296,13 @@ export abstract class ProcessImport {
     // Get all existing memberships of the players
     const dbClubMemberships = await ClubMembership.findAll({
       where: {
-        playerId: { 
+        playerId: {
           [Op.in]: playersIds.map(r => r)
         },
         end: null
       },
       transaction: args.transaction
-    }); 
+    });
 
     const newMmemberships = [];
     for await (const playerId of playersIds) {
@@ -312,7 +322,7 @@ export abstract class ProcessImport {
             playerId,
             clubId,
             start: start.toDate()
-          }).toJSON() 
+          }).toJSON()
         );
       }
     }
