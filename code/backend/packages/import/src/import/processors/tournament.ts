@@ -360,7 +360,7 @@ export class TournamentTpProcessor extends ProcessImport {
               memberId: csvPlayer.memberid,
               firstName: titleCase(csvPlayer.firstname),
               lastName: titleCase(csvPlayer.name),
-              gender: csvPlayer.gender,
+              gender: this.getGender(csvPlayer.gender),
               birthDate: bod
             })
           ).toJSON()
