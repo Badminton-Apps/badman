@@ -40,8 +40,9 @@ query GetClubQuery(
     locations @include(if: $includeLocations) {
       id
       name
+      address
       postalcode
-      street,
+      street
       streetNumber
       city
       state
