@@ -18,7 +18,7 @@ export class App {
   constructor(
     controllers: BaseController[],
     proxies: { from: string; to: string }[] = []
-  ) {
+  ) { 
     this.app = express();
 
     this._initializeMiddlewares();
@@ -44,6 +44,7 @@ export class App {
 
   private _initializeMiddlewares() {
     const whitelist = [
+      'http://localhost:5000',
       'http://localhost:4000',
       'http://localhost:4200',
       'https://beta.latomme.org',
