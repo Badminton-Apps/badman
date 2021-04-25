@@ -42,6 +42,8 @@ query GetClubQuery(
       name
       address
       postalcode
+      street
+      streetNumber
       city
       state
       phone
