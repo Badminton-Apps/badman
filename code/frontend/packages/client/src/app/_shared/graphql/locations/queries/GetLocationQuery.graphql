@@ -3,9 +3,9 @@ query GetLocationQuery($id: ID!) {
     id
     name
     address
+    postalcode
     street
     streetNumber
-    postalcode
     city
     state
     phone
