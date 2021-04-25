@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Club, Location } from 'app/_shared';
 import { debounceTime, skip, tap } from 'rxjs/operators';
@@ -31,10 +24,7 @@ export class LocationFieldsComponent implements OnInit {
   adressForm: FormControl;
 
   ngOnInit() {
-    const nameControl = new FormControl(
-      this.location.name,
-      Validators.required
-    );
+    const nameControl = new FormControl(this.location.name, Validators.required);
 
     const phoneControl = new FormControl(this.location.phone);
     const faxControl = new FormControl(this.location.fax);
@@ -57,9 +47,7 @@ export class LocationFieldsComponent implements OnInit {
       streetNumber: streetNumberControl,
     });
     this.locationForm.valueChanges.pipe(debounceTime(600)).subscribe((e) => {
-      if (this.locationForm.valid) {
-        this.onLocationUpdate.next({ id: this.location?.id, ...e });
-      }
+      this.onLocationUpdate.next({ id: this.location?.id, ...e });
     });
 
     this.adressForm = new FormControl({
