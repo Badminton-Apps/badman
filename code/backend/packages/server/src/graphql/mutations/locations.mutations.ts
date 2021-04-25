@@ -79,11 +79,11 @@ export const removeLocationMutation = {
 
       if (
         context?.req?.user == null ||
-        !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
+        !context.req.user.hasAnyPermission([`${dbLocation.clubId}_remove:location`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
           required: {
-            anyClaim: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
+            anyClaim: [`${dbLocation.clubId}_remove:location`, 'edit-any:club']
           },
           received: context?.req?.user?.permissions
         });
