@@ -139,7 +139,12 @@
         "required": "Velden met een sterretje (*) zijn verplicht",
         "gender": "Geslacht",
         "select": "Selecteer",
-        "sub": "Subscription"
+        "sub": "Inschrijving",
+        "street": "Straat",
+        "streetnumber": "Huisnummer",
+        "city": "Stad",
+        "postalcode": "Postcode",
+        "state": "Provincie"
     },
     "button": {
         "close": "Sluiten",

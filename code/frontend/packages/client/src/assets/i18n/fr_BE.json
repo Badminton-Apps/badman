@@ -139,7 +139,12 @@
         "required": "",
         "gender": "",
         "select": "Sélectionner",
-        "sub": ""
+        "sub": "",
+        "street": "",
+        "streetnumber": "",
+        "city": "",
+        "postalcode": "",
+        "state": ""
     },
     "button": {
         "close": "",

@@ -17,7 +17,7 @@
         "import": "Import",
         "new-system": "New system",
         "number-short": "No.",
-        "procent-losing-short": "% Lose",
+        "procent-losing-short": "% Loss",
         "procent-winning-short": "% Win",
         "ranking": "Ranking",
         "reset": "Reset",
@@ -94,7 +94,7 @@
                 "base-min": "Team index too low for division",
                 "base-max": "Team index too high for division",
                 "no-day": "Please select an encounter moment",
-                "not-comp": "{{player}} is not registerd as competition player (note: it takes a couple of days before a new player is registerd)"
+                "not-comp": "{{player}} is not registered as CT-player (note: it takes a couple of days before the request for conversion to CT-player is completed)"
             }
         },
         "type": "Type",
@@ -122,8 +122,8 @@
         "male": "Men",
         "female": "Women",
         "mix": "Mixed",
-        "males": "",
-        "females": ""
+        "males": "Male",
+        "females": "Female"
     },
     "input": {
         "type": "Type",
@@ -137,9 +137,14 @@
         "phone": "Phone",
         "fax": "Fax",
         "required": "Fields with an asterisk (*) are required",
-        "gender": "",
+        "gender": "Gender",
         "select": "Select",
-        "sub": "Subscription"
+        "sub": "Subscription",
+        "street": "Street",
+        "streetnumber": "House number",
+        "city": "City",
+        "postalcode": "Postal code",
+        "state": "Province"
     },
     "button": {
         "close": "Close",
@@ -169,7 +174,7 @@
     },
     "loading": "Loading",
     "evolution": {
-        "warning": "Evolution temporary not availible"
+        "warning": "Player evolution temporary not available"
     },
     "club": {
         "number": "club number"
