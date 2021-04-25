@@ -47,7 +47,7 @@ export class LocationFieldsComponent implements OnInit {
       streetNumber: streetNumberControl,
     });
     this.locationForm.valueChanges.pipe(debounceTime(600)).subscribe((e) => {
-      if (!this.location?.id) {
+    if (!this.location?.id) {
         if (this.locationForm.valid) {
           this.onLocationUpdate.next({ id: this.location?.id, ...e });
         }
