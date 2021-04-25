@@ -1,3 +1,23 @@
+# [3.22.0](https://github.com/Badminton-Apps/core/compare/v3.21.0...v3.22.0) (2021-04-25)
+
+
+### Bug Fixes
+
+*  Club admin permissions ([8eefc29](https://github.com/Badminton-Apps/core/commit/8eefc297e53398900d620427cd9438cb47cb9585)), closes [#106](https://github.com/Badminton-Apps/core/issues/106)
+* Cannot remove club ([42ce216](https://github.com/Badminton-Apps/core/commit/42ce216f5fb3be26d1a642380faccc0a32490f21)), closes [#111](https://github.com/Badminton-Apps/core/issues/111)
+* Change locations without searching not saving ([bf3838c](https://github.com/Badminton-Apps/core/commit/bf3838ca300a52976c4886871634760b6ecb1978)), closes [#107](https://github.com/Badminton-Apps/core/issues/107)
+* location translations ([4a819a6](https://github.com/Badminton-Apps/core/commit/4a819a6df7825bad01ceedbd2c90d63ea361565c))
+* Notification/check max level gone (and should not be for 1st team) ([0a1e8fe](https://github.com/Badminton-Apps/core/commit/0a1e8fe0740c4b77d4eccb04837459eadbd0df95)), closes [#112](https://github.com/Badminton-Apps/core/issues/112)
+* player can't be basis player in more than one team not checked in team enrollment ([ef22acb](https://github.com/Badminton-Apps/core/commit/ef22acb0732a995e26e03e768647bca923c99cd7)), closes [#114](https://github.com/Badminton-Apps/core/issues/114)
+* Translation ([24343ca](https://github.com/Badminton-Apps/core/commit/24343ca55a3169f7b9800106f8fc18077cb8356a)), closes [#115](https://github.com/Badminton-Apps/core/issues/115)
+
+
+### Features
+
+*  Improved visualization location ([6873b40](https://github.com/Badminton-Apps/core/commit/6873b40b3c5ef9eb00a14ba3920d7d113f4ffcfd)), closes [#109](https://github.com/Badminton-Apps/core/issues/109)
+
+
+
 # [3.21.0](https://github.com/Badminton-Apps/core/compare/v3.20.5...v3.21.0) (2021-04-22)
 
 
