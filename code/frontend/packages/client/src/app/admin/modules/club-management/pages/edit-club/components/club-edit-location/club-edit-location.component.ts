@@ -18,5 +18,8 @@ export class ClubEditLocationComponent {
   @Output() onDelete = new EventEmitter<Location>();
 
   @Input()
+  club: Club;
+
+  @Input()
   location: Location;
 }

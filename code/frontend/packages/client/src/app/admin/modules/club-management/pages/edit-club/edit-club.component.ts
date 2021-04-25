@@ -104,8 +104,12 @@ export class EditClubComponent implements OnInit {
     });
   }
 
-  async onDeleteLocation(location: Location, club: Club) {
+  async onDeleteLocation(location: Location) {
     await this.locationService.deleteLocation(location.id).toPromise();
+    this.update$.next(0);
+  }
+  async onDeleteRole(role: Role) {
+    await this.roleService.deleteRole(role.id).toPromise();
     this.update$.next(0);
   }
 }
