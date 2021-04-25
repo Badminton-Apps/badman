@@ -29,7 +29,7 @@
 
       <mat-icon
         *ngIf="!player.competitionPlayer"
-        matTooltip="Player is not registerd as competition player (note: it takes a couple of days before a new player is registerd)"
+        matTooltip="{{ 'competition.enrollment.errors.not-comp' | translate: { player: player.fullName } }}"
       >
         warning
       </mat-icon>
