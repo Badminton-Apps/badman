@@ -22,6 +22,7 @@ export class DetailClubComponent {
   constructor(
     private clubService: ClubService,
     private teamService: TeamService,
+    private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
@@ -49,6 +50,10 @@ export class DetailClubComponent {
     );
   }
 
+  async deleteClub(club) {
+    await this.clubService.removeClub(club).toPromise();
+    this.router.navigate(['..']);
+  }
   addPlayer(club) {
     const dialogRef = this.dialog.open(AddPlayerComponent);
 
