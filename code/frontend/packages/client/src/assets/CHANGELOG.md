@@ -1,3 +1,13 @@
+## [3.22.1](https://github.com/Badminton-Apps/core/compare/v3.22.0...v3.22.1) (2021-04-25)
+
+
+### Bug Fixes
+
+* for last ranking ([827e713](https://github.com/Badminton-Apps/core/commit/827e713df99f5c0333fa2ef9d8c4a1887fd6eb6f))
+* genders ([3f96527](https://github.com/Badminton-Apps/core/commit/3f96527e8253ec65806c3e6e428cb623c959ce84))
+
+
+
 # [3.22.0](https://github.com/Badminton-Apps/core/compare/v3.21.0...v3.22.0) (2021-04-25)
 
 
