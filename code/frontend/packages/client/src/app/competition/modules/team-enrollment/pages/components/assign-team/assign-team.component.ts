@@ -116,44 +116,44 @@ export class AssignTeamComponent implements OnInit {
 
     if (team.teamNumber > 1) {
       for (const player of team.players) {
-        if (player?.rankingPlaces && player?.rankingPlaces?.length > 0) {
-          const rankingPlace = player?.rankingPlaces[0];
+        console.log('checking', player)
+        if (player?.lastRanking) {
           if (player.base) {
-            if (rankingPlace.single < subEvent.maxLevel) {
+            if (player.lastRanking.single < subEvent.maxLevel) {
               issues.hasIssues = true;
               issues.level.push(
                 await this.translation
                   .get('competition.enrollment.errors.not-allowed', {
                     player: player.fullName,
                     type: 'single',
-                    level: rankingPlace.single,
+                    level: player.lastRanking.single,
                     max: subEvent.maxLevel,
                   })
                   .toPromise()
               );
             }
-            if (rankingPlace.double < subEvent.maxLevel) {
+            if (player.lastRanking.double < subEvent.maxLevel) {
               issues.hasIssues = true;
               issues.level.push(
                 await this.translation
                   .get('competition.enrollment.errors.not-allowed', {
                     player: player.fullName,
                     type: 'double',
-                    level: rankingPlace.double,
+                    level: player.lastRanking.double,
                     max: subEvent.maxLevel,
                   })
                   .toPromise()
               );
             }
             if (subEvent.gameType == 'MX') {
-              if (rankingPlace.mix < subEvent.maxLevel) {
+              if (player.lastRanking.mix < subEvent.maxLevel) {
                 issues.hasIssues = true;
                 issues.level.push(
                   await this.translation
                     .get('competition.enrollment.errors.not-allowed', {
                       player: player.fullName,
                       type: 'mix',
-                      level: rankingPlace.mix,
+                      level: player.lastRanking.mix,
                       max: subEvent.maxLevel,
                     })
                     .toPromise()
@@ -161,41 +161,41 @@ export class AssignTeamComponent implements OnInit {
               }
             }
           } else {
-            if (rankingPlace.single < subEvent.maxLevel) {
+            if (player.lastRanking.single < subEvent.maxLevel) {
               warnings.hasIssues = true;
               warnings.level.push(
                 await this.translation
                   .get('competition.enrollment.errors.cant-play', {
                     player: player.fullName,
                     type: 'single',
-                    level: rankingPlace.single,
+                    level: player.lastRanking.single,
                     max: subEvent.maxLevel,
                   })
                   .toPromise()
               );
             }
-            if (rankingPlace.double < subEvent.maxLevel) {
+            if (player.lastRanking.double < subEvent.maxLevel) {
               warnings.hasIssues = true;
               warnings.level.push(
                 await this.translation
                   .get('competition.enrollment.errors.cant-play', {
                     player: player.fullName,
                     type: 'double',
-                    level: rankingPlace.double,
+                    level: player.lastRanking.double,
                     max: subEvent.maxLevel,
                   })
                   .toPromise()
               );
             }
             if (subEvent.gameType == 'MX') {
-              if (rankingPlace.mix < subEvent.maxLevel) {
+              if (player.lastRanking.mix < subEvent.maxLevel) {
                 warnings.hasIssues = true;
                 warnings.level.push(
                   await this.translation
                     .get('competition.enrollment.errors.cant-play', {
                       player: player.fullName,
                       type: 'mix',
-                      level: rankingPlace.mix,
+                      level: player.lastRanking.mix,
                       max: subEvent.maxLevel,
                     })
                     .toPromise()
