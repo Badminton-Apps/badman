@@ -262,7 +262,6 @@ export class TeamEnrollmentComponent implements OnInit {
       })
       .toPromise();
 
-    console.log(result.data);
     if (result.data?.addComment != null) {
       this.comment.id = result.data?.addComment.id;
     }
