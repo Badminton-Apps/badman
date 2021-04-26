@@ -1,3 +1,13 @@
+## [3.22.2](https://github.com/Badminton-Apps/core/compare/v3.22.1...v3.22.2) (2021-04-25)
+
+
+### Bug Fixes
+
+* genders pt2 ([99a768c](https://github.com/Badminton-Apps/core/commit/99a768ccc2fe2708649c269747542bf20335a81e))
+* postalcode translation ([460d035](https://github.com/Badminton-Apps/core/commit/460d0353151dc25dffdfc2fb865b37bbbb87ba84))
+
+
+
 ## [3.22.1](https://github.com/Badminton-Apps/core/compare/v3.22.0...v3.22.1) (2021-04-25)
 
 
