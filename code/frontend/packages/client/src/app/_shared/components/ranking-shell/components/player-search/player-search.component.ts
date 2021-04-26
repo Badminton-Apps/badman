@@ -2,8 +2,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { merge, Observable, ReplaySubject } from 'rxjs';
-import { debounceTime, filter, startWith, switchMap } from 'rxjs/operators';
+import { merge, Observable, of, ReplaySubject } from 'rxjs';
+import { debounceTime, distinct, filter, flatMap, map, startWith, switchMap } from 'rxjs/operators';
 import { PlayerService } from '../../../../services/player/player.service';
 import { Club, Player } from './../../../../models';
 import { NewPlayerComponent } from '../new-player/new-player.component';
@@ -59,33 +59,38 @@ export class PlayerSearchComponent implements OnInit {
       filter((x) => typeof x === 'string'),
       filter((x) => x?.length > 3),
       debounceTime(600),
-      switchMap(async (r) => {
+      switchMap((r) => {
         this.clubId = this.club instanceof Club ? this.club?.id : this.club ?? undefined;
 
-        // first try searching for club
-        let results = this.clubId
-          ? await this.playerService
-              .searchClubPlayers(this.clubId, {
-                query: r,
-                where: this.where,
-              })
-              .toPromise()
-          : null ?? [];
+        const obs = this.clubId
+          ? this.playerService.searchClubPlayers(this.clubId, {
+              query: r,
+              where: this.where,
+            })
+          : of([]);
 
-        // Check without club
-        if (results.length == 0) {
-          results =
-            (await this.playerService
-              .searchPlayers({
-                query: r,
-                where: this.where,
-                includeClub: true,
-              })
-              .toPromise()) ?? [];
+        return obs.pipe(
+          map((results) => {
+            return {
+              query: r,
+              results,
+            };
+          })
+        );
+      }),
+      switchMap((response) => {
+        if (response?.results?.length && response?.results?.length > 0) {
+          return of(response.results);
+        } else {
+          return this.playerService.searchPlayers({
+            query: response.query,
+            where: this.where,
+            includeClub: true,
+          });
         }
-
-        return results;
-      })
+      }),
+      // Distinct by id
+      map((result) => result.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index))
     );
 
     this.filteredOptions$ = merge(search$, this.clear$);

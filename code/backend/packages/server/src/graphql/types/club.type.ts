@@ -1,4 +1,4 @@
-import { Club, SubEventType, Team } from '@badvlasim/shared/models';
+import { Club, Player, PlayerRoleMembership, SubEventType, Team } from '@badvlasim/shared/models';
 import {
   GraphQLInputObjectType,
   GraphQLInt,
@@ -14,6 +14,8 @@ import moment from 'moment';
 import { getAttributeFields } from './attributes.type';
 import { RoleType } from './security';
 import { LocationType } from './location.type';
+import { logger } from '@badvlasim/shared';
+import { O_NONBLOCK } from 'constants';
 
 export const ClubType = new GraphQLObjectType({
   name: 'Club',
@@ -50,29 +52,47 @@ export const ClubType = new GraphQLObjectType({
             type: GraphQLString
           }
         }),
-        resolve: resolver(Club.associations.players, {
-          before: async (findOptions, args, context, info) => {
-            return findOptions;
-          },
-          after: (result, args, context) => {
-            // Only get after certain period
-            if (args.end) {
-              result = result // not empty
-                .filter(p => p)
-                .filter(p => p.getDataValue('ClubMembership') != null)
-                // then filter
-                .filter(
-                  player =>
-                    // no end
-                    player.getDataValue('ClubMembership').end == null ||
-                    // or in future
-                    moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
-                );
-            }
+        resolve: async (obj: Club, args, context, info) => {
+          let where = {}
 
-            return result;
+          if (args.where){
+            where = queryFixer(args.where);
           }
-        })
+
+          const club = await Club.findOne({
+            attributes: ['id'],
+            where: { id: obj.id },
+            include: [
+              { model: Player, required: false, where, through: { where: { end: null } } }
+            ]
+          });
+
+          return club?.players;
+        }
+        // resolve: resolver(Club.associations.players, {
+        //   before: async (findOptions, args, context, info) => {
+        //     return findOptions;
+        //   },
+        //   after: (result, args, context) => {
+        //     if (!args.end) {
+        //       result = result // not empty
+        //         .filter((player: Player) => player?.getDataValue('ClubMembership') != null);
+        //     } else {
+        //       result = result // not empty
+        //         .filter((player: Player) => player?.getDataValue('ClubMembership') != null)
+        //         // then filter
+        //         .filter(
+        //           (player: Player) =>
+        //             // no end
+        //             player.getDataValue('ClubMembership').end == null ||
+        //             // or in future
+        //             moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
+        //         );
+        //     }
+
+        //     return result;
+        //   }
+        // })
       }
     })
 });
