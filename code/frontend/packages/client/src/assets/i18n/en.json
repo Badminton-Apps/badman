@@ -95,7 +95,8 @@
                 "base-max": "Team index too high for division",
                 "no-day": "Please select an encounter moment",
                 "not-comp": "{{player}} is not registered as CT-player (note: it takes a couple of days before the request for conversion to CT-player is completed)"
-            }
+            },
+            "player-base": "Player is already basis player of other team"
         },
         "type": "Type",
         "national": "National",

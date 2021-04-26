@@ -22,7 +22,7 @@
         <small
           >({{ player.index }})
           <ng-container *ngIf="disableIds.indexOf(player.id) >= 0"
-            >&nbsp; (Player base in other team)</ng-container
+            >&nbsp; ({{ 'competition.enrollment.player-base' | translate }})</ng-container
           ></small
         >
       </mat-checkbox>
