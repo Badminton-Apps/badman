@@ -1,3 +1,12 @@
+# [3.24.0](https://github.com/Badminton-Apps/core/compare/v3.23.1...v3.24.0) (2021-04-26)
+
+
+### Features
+
+* only show active club ([b4e7529](https://github.com/Badminton-Apps/core/commit/b4e7529ede1765ed5e11ed901c4b6d2beef1a395)), closes [#100](https://github.com/Badminton-Apps/core/issues/100)
+
+
+
 ## [3.23.1](https://github.com/Badminton-Apps/core/compare/v3.23.0...v3.23.1) (2021-04-26)
 
 
