@@ -3,30 +3,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RankingService } from 'app/admin';
 import { UserService } from 'app/player/services';
-import {
-  DeviceService,
-  Player,
-  PlayerService,
-  SystemService,
-} from 'app/_shared';
-import {
-  BehaviorSubject,
-  combineLatest,
-  merge,
-  Observable,
-  Subject,
-  throwError,
-} from 'rxjs';
-import {
-  catchError,
-  delay,
-  filter,
-  map,
-  shareReplay,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
+import { DeviceService, Player, PlayerService, SystemService } from 'app/_shared';
+import { BehaviorSubject, combineLatest, merge, Observable, Subject, throwError } from 'rxjs';
+import { catchError, delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './player.component.html',
@@ -67,16 +46,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
       shareReplay(1)
     );
 
-    const system$ = this.systemService
-      .getPrimarySystem()
-      .pipe(filter((x) => !!x));
+    const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
 
     this.player$ = merge<Player>(
       reset$,
       combineLatest([id$, system$]).pipe(
-        switchMap(([playerId, system]) =>
-          this.playerService.getPlayer(playerId, system.id)
-        ),
+        switchMap(([playerId, system]) => this.playerService.getPlayer(playerId, system.id)),
         map((player) => {
           if (!player) {
             throw new Error('No player found');
@@ -92,9 +67,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       )
     );
 
-    this.user$ = this.updateHappend.pipe(
-      switchMap((_) => this.userService.profile$)
-    );
+    this.user$ = this.updateHappend.pipe(switchMap((_) => this.userService.profile$));
 
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
       map(([player, user]) => {
@@ -105,12 +78,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
         return {
           canClaim: !player.isClaimed && !user?.player && !user?.request,
           isUser: user?.player?.id === player?.id,
-          isClaimedByUser:
-            user && user.request && user.request.playerId === player.id,
+          isClaimedByUser: user && user.request && user.request.playerId === player.id,
         };
       }),
-      startWith({ canClaim: false,  isUser: false, isClaimedByUser: false }),
-      tap(r => console.log(r))
+      startWith({ canClaim: false, isUser: false, isClaimedByUser: false })
     );
   }
 
@@ -120,10 +91,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   private setStaticsUrl(player: Player) {
     player.rankingPlaces = player.rankingPlaces?.map((ranking) => {
-      ranking.statisticUrl = this.rankingService.getStatisticUrl(
-        ranking.rankingSystem.id,
-        player.id
-      );
+      ranking.statisticUrl = this.rankingService.getStatisticUrl(ranking.rankingSystem.id, player.id);
       return ranking;
     });
     return player;
