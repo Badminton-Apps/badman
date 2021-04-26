@@ -1,27 +1,21 @@
+import { Club, Player } from '@badvlasim/shared/models';
 import {
   GraphQLBoolean,
-  GraphQLEnumType,
-  GraphQLID,
   GraphQLInputObjectType,
-  GraphQLInt,
   GraphQLList,
-  GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLSchema,
   GraphQLString
 } from 'graphql';
-import { attributeFields, createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
-import { col, fn, Includeable, Op, or, QueryTypes, where } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { Player } from '@badvlasim/shared/models';
+import { defaultListArgs, resolver } from 'graphql-sequelize';
+import { Op } from 'sequelize';
+import { queryFixer } from '../queryFixer';
+import { getAttributeFields } from './attributes.type';
+import { ClubType } from './club.type';
 import { GameType } from './game.type';
 import { LastRankingPlaceType, RankingPlaceType } from './rankingPlace.type';
 import { RankingPointType } from './rankingPoint.type';
-import { TeamType } from './team.type';
-import { getAttributeFields } from './attributes.type';
-import { logger } from '@badvlasim/shared';
 import { ClaimType } from './security/claim.type';
-import { ClubType } from './club.type';
+import { TeamType } from './team.type';
 
 export const PlayerType = new GraphQLObjectType({
   name: 'Player',
@@ -108,8 +102,32 @@ export const PlayerType = new GraphQLObjectType({
       },
       clubs: {
         type: new GraphQLList(ClubType),
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Player.associations.clubs)
+        args: Object.assign(defaultListArgs(), {
+          end: {
+            type: GraphQLString
+          }
+        }),
+
+        resolve: async (obj: Player, args, context, info) => {
+          const where = {
+            end: undefined
+          };
+
+          if (!args.end) {
+            where.end = null;
+          } else {
+            where.end = {
+              [Op.gte]: args.end
+            };
+          }
+
+          const player = await Player.findOne({
+            attributes: ['id'],
+            where: { id: obj.id },
+            include: [{ model: Club, through: { where } }]
+          });
+          return player?.clubs;
+        }
       }
     })
 });

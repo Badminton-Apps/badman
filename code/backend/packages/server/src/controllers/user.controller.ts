@@ -45,7 +45,7 @@ export class UserController extends BaseController {
 
       const player = await Player.findOne({
         where: { sub: request.user.sub },
-        include: [Club]
+        include: [{ model: Club, through: { where: { end: null } } }]
       });
 
       if (player) {
