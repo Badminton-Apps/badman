@@ -95,7 +95,8 @@
                 "base-max": "Ploegindex te hoog voor afdeling",
                 "no-day": "Gelieve een speeldag te kiezen",
                 "not-comp": "{{player}} is niet geregistreerd als een CT-speler (opmerking: het duurt enkele dagen voor de aanvraag tot CT-statuut verwerkt is)"
-            }
+            },
+            "player-base": "Speler is al basisspeler van andere ploeg"
         },
         "type": "Type",
         "national": "Nationaal",
