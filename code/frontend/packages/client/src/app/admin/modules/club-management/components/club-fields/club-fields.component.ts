@@ -38,6 +38,8 @@ export class ClubFieldsComponent implements OnInit {
       clubId: clubIdControl
     });
 
+    this.clubForm.disable();
+
     nameControl.valueChanges.subscribe((r) => {
       if (!abbrControl.touched) {
         const matches = r.match(/\b(\w)/g);
