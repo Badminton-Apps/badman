@@ -116,7 +116,6 @@ export class AssignTeamComponent implements OnInit {
 
     if (team.teamNumber > 1) {
       for (const player of team.players) {
-        console.log('checking', player)
         if (player?.lastRanking) {
           if (player.base) {
             if (player.lastRanking.single < subEvent.maxLevel) {

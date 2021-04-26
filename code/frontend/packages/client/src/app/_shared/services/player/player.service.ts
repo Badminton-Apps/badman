@@ -61,16 +61,16 @@ export class PlayerService {
     const queries = [];
     for (const part of parts) {
       queries.push({
-        or: [
-          { firstName: { iLike: `%${part}%` } },
-          { lastName: { iLike: `%${part}%` } },
-          { memberId: { iLike: `%${part}%` } },
+        $or: [
+          { firstName: { $iLike: `%${part}%` } },
+          { lastName: { $iLike: `%${part}%` } },
+          { memberId: { $iLike: `%${part}%` } },
         ],
       });
     }
 
     return {
-      and: queries,
+      $and: queries,
       ...args.where,
     };
   }
