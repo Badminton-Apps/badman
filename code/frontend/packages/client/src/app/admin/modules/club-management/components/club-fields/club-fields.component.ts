@@ -1,13 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Club } from 'app/_shared';
+import { AuthService, Club } from 'app/_shared';
 import { debounce, debounceTime } from 'rxjs/operators';
 
 @Component({
@@ -24,21 +17,25 @@ export class ClubFieldsComponent implements OnInit {
 
   clubForm: FormGroup;
 
+  constructor(private auth: AuthService) {}
+
   ngOnInit() {
     const nameControl = new FormControl(this.club.name, Validators.required);
     const clubIdControl = new FormControl(this.club.clubId, Validators.required);
-    const abbrControl = new FormControl(
-      this.club.abbreviation,
-      Validators.required
-    );
+    const abbrControl = new FormControl(this.club.abbreviation, Validators.required);
 
     this.clubForm = new FormGroup({
       name: nameControl,
       abbreviation: abbrControl,
-      clubId: clubIdControl
+      clubId: clubIdControl,
     });
 
     this.clubForm.disable();
+    this.auth.hasAnyClaims$(['edit-any:club']).subscribe((r) => {
+      if (r) {
+        this.clubForm.enable();
+      }
+    });
 
     nameControl.valueChanges.subscribe((r) => {
       if (!abbrControl.touched) {
@@ -49,7 +46,7 @@ export class ClubFieldsComponent implements OnInit {
 
     this.clubForm.valueChanges.pipe(debounceTime(600)).subscribe((r) => {
       if (this.clubForm.valid) {
-        // this.save.next({ id: this.club.id, ...this.clubForm.value });
+        this.save.next({ id: this.club.id, ...this.clubForm.value });
       }
     });
   }
