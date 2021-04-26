@@ -143,7 +143,7 @@ export const updateClubMutation = {
     ) {
       logger.warn("User tried something it should't have done", {
         required: {
-          anyClaim: [`${club.id}_edit:club`, 'edit-any:club']
+          anyClaim: ['edit-any:club'] // `${club.id}_edit:club`
         },
         received: context?.req?.user?.permissions
       });
@@ -154,7 +154,7 @@ export const updateClubMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      await Club.update(club, {
+      await Club.update([club], {
         where: { id: club.id },
         transaction
       });

@@ -1,5 +1,5 @@
-<div class="mat-subheading-1">Ennroll for competition</div>
-<div>note: Changes are saved directly</div>
+<div class="mat-subheading-1">{{ 'competition.enrollment.title' | translate }}</div>
+<div>{{ 'competition.note' | translate}}</div>
 
 <mat-vertical-stepper [linear]="true" #stepper (selectionChange)="this.changStepper($event)">
   <mat-step [stepControl]="this.formGroup" *ngIf="this.formGroup">
