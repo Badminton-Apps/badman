@@ -1,3 +1,12 @@
+# [3.23.0](https://github.com/Badminton-Apps/core/compare/v3.22.2...v3.23.0) (2021-04-26)
+
+
+### Features
+
+* translation of player base ([c56ba4d](https://github.com/Badminton-Apps/core/commit/c56ba4d6517de9ab465979c28dc654ebdfab0f1d))
+
+
+
 ## [3.22.2](https://github.com/Badminton-Apps/core/compare/v3.22.1...v3.22.2) (2021-04-25)
 
 
