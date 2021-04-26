@@ -1,3 +1,13 @@
+## [3.24.1](https://github.com/Badminton-Apps/core/compare/v3.24.0...v3.24.1) (2021-04-26)
+
+
+### Bug Fixes
+
+* player search query ([a53176a](https://github.com/Badminton-Apps/core/commit/a53176a23ae45dbdec10cbb7d17a210da26c64b0))
+* removing console.logs ([226dd09](https://github.com/Badminton-Apps/core/commit/226dd09e4a4d9a16a867d6ecd71f25548d1039a8))
+
+
+
 # [3.24.0](https://github.com/Badminton-Apps/core/compare/v3.23.1...v3.24.0) (2021-04-26)
 
 
