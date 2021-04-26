@@ -7,10 +7,6 @@ query GetClubPlayers($id: ID!, $where: SequelizeJSON) {
       lastName
       phone
       email
-      clubs {
-        id
-        name
-      }
     }
   }
 }
