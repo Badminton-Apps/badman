@@ -1,3 +1,12 @@
+## [3.25.1](https://github.com/Badminton-Apps/core/compare/v3.25.0...v3.25.1) (2021-04-27)
+
+
+### Bug Fixes
+
+* save club ([751fc7e](https://github.com/Badminton-Apps/core/commit/751fc7e869afa7af17713f6a8b7a6cb854869508))
+
+
+
 # [3.25.0](https://github.com/Badminton-Apps/core/compare/v3.24.1...v3.25.0) (2021-04-26)
 
 
