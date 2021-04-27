@@ -1,3 +1,17 @@
+# [3.25.0](https://github.com/Badminton-Apps/core/compare/v3.24.1...v3.25.0) (2021-04-26)
+
+
+### Bug Fixes
+
+* permissions, translations, ... ([5099a42](https://github.com/Badminton-Apps/core/commit/5099a4248b8d9edad959685b23dd5daaf5805fb4))
+
+
+### Features
+
+* disable club edit ([3924149](https://github.com/Badminton-Apps/core/commit/3924149d00c28056bc596f6b6b58d8c03ae6162c))
+
+
+
 ## [3.24.1](https://github.com/Badminton-Apps/core/compare/v3.24.0...v3.24.1) (2021-04-26)
 
 
