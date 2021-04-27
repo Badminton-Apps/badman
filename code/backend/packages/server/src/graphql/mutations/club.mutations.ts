@@ -154,14 +154,23 @@ export const updateClubMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      await Club.update([club], {
-        where: { id: club.id },
+      const dbClub = await Club.findByPk(club.id, { transaction });
+      if (!dbClub) {
+        logger.debug('club', dbClub);
+        throw new ApiError({
+          code: 404,
+          message: 'Club not found'
+        });
+      }
+
+      await dbClub.update(club, {
         transaction
       });
 
       await transaction.commit();
+      return dbClub;
     } catch (e) {
-      logger.warn('rollback');
+      logger.warn('rollback', e);
       await transaction.rollback();
       throw e;
     }
