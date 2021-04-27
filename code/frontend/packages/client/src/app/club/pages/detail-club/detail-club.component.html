@@ -34,13 +34,13 @@
   <div class="mat-subheading-1">
     <div>
       Teams
-      <app-has-claim [any]="[club.id + '_add:club', 'edit-any:club']">
+      <app-has-claim [any]="[club.id + '_add:team', 'edit-any:club']">
         <button mat-icon-button (click)="this.addTeam(club)">
           <mat-icon>add</mat-icon>
         </button>
       </app-has-claim>
     </div>
-    <app-has-claim [any]="[club.id + '_add:club', 'edit-any:club']">
+    <app-has-claim [any]="[club.id + '_edit:team', 'edit-any:club']">
       <div class="end">
         <button
           [matTooltip]="this.activeTeams$.value ? 'Show deactivated teams' : 'Hide deactivated teams'"
