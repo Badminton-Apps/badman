@@ -6,7 +6,9 @@ import { logger } from '@badvlasim/shared';
 import { Player } from '../../models';
 
 export class AuthenticationSercice {
-  cache = new Map();
+  static subCache = new Map();
+  static playerCache = new Map();
+  static permissinoCache = new Map();
   checkAuth = null;
 
   constructor() {
@@ -32,18 +34,28 @@ export class AuthenticationSercice {
     let player = null;
     let permissions = [];
 
-    let userinfo = this.cache.get(request.user?.sub);
+    let userinfo = AuthenticationSercice.subCache.get(request.user?.sub);
 
     if (!userinfo && request?.headers?.authorization) {
       userinfo = await get(`${process.env.AUTH0_ISSUER}/userinfo`, {
         headers: { authorization: request.headers.authorization }
       });
-      this.cache.set(request.user.sub, userinfo);
+      AuthenticationSercice.subCache.set(request.user.sub, userinfo);
     }
 
     if (userinfo) {
-      player = await Player.findOne({ where: { sub: request.user.sub } });
-      permissions = await player?.getUserClaims();
+      player = AuthenticationSercice.playerCache.get(request.user.sub);
+
+      if (!player) {
+        player = await Player.findOne({ where: { sub: request.user.sub } });
+        AuthenticationSercice.playerCache.set(request.user.sub, player);
+      }
+
+      permissions = AuthenticationSercice.permissinoCache.get(player.id);
+      if (!permissions) {
+        permissions = await player?.getUserClaims();
+        AuthenticationSercice.permissinoCache.set(player.id, permissions);
+      }
     }
 
     // extend info
