@@ -1,4 +1,4 @@
-import { DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import { AuthenticationSercice, DataBaseHandler, logger, Player } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { RoleType } from '../types';
@@ -50,6 +50,8 @@ export const updateGlobalClaimUserMutation = {
       } else {
         await dbPlayer.removeClaim(claimId, { transaction });
       }
+
+      AuthenticationSercice.permissinoCache.delete(dbPlayer.id);
 
       await transaction.commit();
       return dbPlayer;
