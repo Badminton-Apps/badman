@@ -1,3 +1,13 @@
+# [3.26.0](https://github.com/Badminton-Apps/core/compare/v3.25.2...v3.26.0) (2021-04-28)
+
+
+### Features
+
+* allowing less connections to DB ([81fd9fe](https://github.com/Badminton-Apps/core/commit/81fd9feeedb5d7dcb1dacd63645a3ef616ed6b50))
+* permissions caching ([393f043](https://github.com/Badminton-Apps/core/commit/393f043719091c6139958e207e69366589d0a17f))
+
+
+
 ## [3.25.2](https://github.com/Badminton-Apps/core/compare/v3.25.1...v3.25.2) (2021-04-27)
 
 
