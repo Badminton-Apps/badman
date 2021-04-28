@@ -1,4 +1,11 @@
-import { Claim, DataBaseHandler, logger, Player, Role } from '@badvlasim/shared';
+import {
+  AuthenticationSercice,
+  Claim,
+  DataBaseHandler,
+  logger,
+  Player,
+  Role
+} from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLInt } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { ClaimType, RoleInputType, RoleType } from '../types';
@@ -114,6 +121,8 @@ export const addPlayerToRoleMutation = {
         transaction
       });
 
+      AuthenticationSercice.permissinoCache.delete(dbPlayer.id);
+
       await transaction.commit();
       return dbRole;
     } catch (e) {
@@ -182,6 +191,7 @@ export const removePlayerFromRoleMutation = {
       await dbRole.removePlayer(dbPlayer, {
         transaction
       });
+      AuthenticationSercice.permissinoCache.delete(dbPlayer.id);
 
       await transaction.commit();
       return dbRole;
@@ -240,6 +250,11 @@ export const updateRoleMutation = {
         { transaction }
       );
 
+      const players = await dbRole.getPlayers({ transaction, attributes: ['id'] });
+      for (const player of players) {
+        AuthenticationSercice.permissinoCache.delete(player.id);
+      }
+
       await transaction.commit();
       return dbRole;
     } catch (e) {
@@ -287,6 +302,11 @@ export const removeRoleMutation = {
         });
       }
 
+
+      const players = await dbRole.getPlayers({ transaction, attributes: ['id'] });
+      for (const player of players) {
+        AuthenticationSercice.permissinoCache.delete(player.id);
+      }
       await dbRole.destroy({ transaction });
 
       await transaction.commit();
