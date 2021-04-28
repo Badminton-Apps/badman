@@ -148,7 +148,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         } else {
           xmlDivisions[foundEventIndex] = xmlDivisions[foundEventIndex].concat(divisions);
         }
-      } 
+      }
 
       return subEvents.map((v, i) => {
         return {
@@ -195,9 +195,15 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       });
 
       // Return result
-      return dbDraws.map((v, i) => {
+      return draws.map((v, i) => {
+        const db = dbDraws.filter(r => r.name === v.name && r.subeventId === v.subeventId);
+
+        if (db.length > 1) {
+          logger.warn('Multiple draws found?');
+        }
+
         return {
-          draw: v,
+          draw: db[0],
           fixtures: fixtures[i]
         };
       });
@@ -285,13 +291,11 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addPlayers(): ImportStep<{ player: Player; internalId: number }[]> {
     return new ImportStep('players', async (args: { transaction: Transaction }) => {
-      const teams: {
-        team: Team;
-        internalId: number;
-        members: any[];
-      }[] = this.importSteps.get('teams').getData();
+      const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
+      const xmlPlayers = data.teams
+        .map(v => (Array.isArray(v.Member) ? [...v.Member] : [v.Member]).filter(r => !!r))
+        .flat();
 
-      const xmlPlayers = teams.map(r => r.members).flat();
       const players = [];
       const playersCorrected = [];
 
@@ -384,7 +388,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       const start = moment([event.startYear, 0, 1]);
 
-      for (const team of teams) { 
+      for (const team of teams) {
         const playerIds = [];
         for (const teamMember of team.members) {
           const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
@@ -393,7 +397,10 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           }
         }
 
-        await this.addToTeams(playerIds, start, team.team.id, { transaction: args.transaction, hooks: false });
+        await this.addToTeams(playerIds, start, team.team.id, {
+          transaction: args.transaction,
+          hooks: false
+        });
         // faster then hooks
       }
     });
@@ -412,7 +419,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       const start = moment([event.startYear, 0, 1]);
 
       const playerIds = new Map<string, string[]>();
-      for (const team of teams) { 
+      for (const team of teams) {
         const clubPlayers = playerIds.get(team.team.clubId) ?? [];
         for (const teamMember of team.members) {
           const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
@@ -421,11 +428,11 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           }
         }
         playerIds.set(team.team.clubId, clubPlayers);
-      }  
+      }
 
       // Add to clubs
       for (const [id, players] of playerIds) {
-        if (id === null) { 
+        if (id === null) {
           logger.warn('Empty club?');
           continue;
         }
@@ -450,7 +457,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           if (!fixture) {
             continue;
           }
- 
+
           if (fixture.FixtureWinnerTeamId === '' || isNaN(+fixture.FixtureWinnerTeamId)) {
             continue;
           }
@@ -487,9 +494,18 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       });
 
       // Return result
-      return dbEncounters.map((v, i) => {
+      return encounters.map((v, i) => {
+        const db = dbEncounters.filter(
+          r =>
+            r.homeTeamId === v.homeTeamId && r.awayTeamId === v.awayTeamId && r.drawId === v.drawId
+        );
+
+        if (db.length > 1) {
+          logger.warn('Multiple encounters found?');
+        }
+
         return {
-          encounter: v,
+          encounter: db[0],
           matches: matches[i]
         };
       });
@@ -511,14 +527,14 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       for (const encounter of encounters) {
         for (const xmlMatch of encounter.matches) {
-          const team1Player1 = playersData.find(r => r.internalId === xmlMatch?.MatchWinnerLTANo)
+          const teamWinnerPlayer1 = playersData.find(r => r.internalId === xmlMatch?.MatchWinnerLTANo)
             ?.player;
-          const team1Player2 = playersData.find(
+          const teamWinnerPlayer2 = playersData.find(
             r => r.internalId === xmlMatch?.MatchWinnerPartnerLTANo
           )?.player;
-          const team2Player1 = playersData.find(r => r.internalId === xmlMatch?.MatchLoserLTANo)
+          const teamLoserPlayer1 = playersData.find(r => r.internalId === xmlMatch?.MatchLoserLTANo)
             ?.player;
-          const team2Player2 = playersData.find(
+          const teamLoserPlayer2 = playersData.find(
             r => r.internalId === xmlMatch?.MatchLoserPartnerLTANo
           )?.player;
 
@@ -529,6 +545,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           const set2Team2 = parseInt(xmlMatch.MatchTeam2Set2, 10) || null;
           const set3Team1 = parseInt(xmlMatch.MatchTeam3Set1, 10) || null;
           const set3Team2 = parseInt(xmlMatch.MatchTeam3Set2, 10) || null;
+          const winner = parseInt(xmlMatch.MatchWinner, 10);
 
           const game = new Game({
             playedAt: encounter.encounter.date,
@@ -539,47 +556,47 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
             set2Team2,
             set3Team1,
             set3Team2,
-            winner: xmlMatch.MatchWinner,
+            winner,
             linkId: encounter.encounter.id,
             linkType: 'competition'
           });
 
-          if (team1Player1) {
+          if (teamWinnerPlayer1) {
             gamePlayers.push(
               new GamePlayer({
                 gameId: game.id,
-                playerId: team1Player1.id,
-                team: 1,
+                playerId: teamWinnerPlayer1.id,
+                team: winner,
                 player: 1
               }).toJSON()
             );
           }
-          if (team1Player2) {
+          if (teamWinnerPlayer2) {
             gamePlayers.push(
               new GamePlayer({
                 gameId: game.id,
-                playerId: team1Player2.id,
-                team: 1,
+                playerId: teamWinnerPlayer2.id,
+                team: winner,
                 player: 2
               }).toJSON()
             );
           }
-          if (team2Player1) {
+          if (teamLoserPlayer1) {
             gamePlayers.push(
               new GamePlayer({
                 gameId: game.id,
-                playerId: team2Player1.id,
-                team: 2,
+                playerId: teamLoserPlayer1.id,
+                team: winner == 1 ? 2 : 1,
                 player: 1
               }).toJSON()
             );
           }
-          if (team2Player2) {
+          if (teamLoserPlayer2) {
             gamePlayers.push(
               new GamePlayer({
                 gameId: game.id,
-                playerId: team2Player2.id,
-                team: 2,
+                playerId: teamLoserPlayer2.id,
+                team: winner == 1 ? 2 : 1,
                 player: 2
               }).toJSON()
             );
