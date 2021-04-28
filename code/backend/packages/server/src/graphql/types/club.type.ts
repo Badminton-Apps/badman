@@ -69,30 +69,7 @@ export const ClubType = new GraphQLObjectType({
 
           return club?.players;
         }
-        // resolve: resolver(Club.associations.players, {
-        //   before: async (findOptions, args, context, info) => {
-        //     return findOptions;
-        //   },
-        //   after: (result, args, context) => {
-        //     if (!args.end) {
-        //       result = result // not empty
-        //         .filter((player: Player) => player?.getDataValue('ClubMembership') != null);
-        //     } else {
-        //       result = result // not empty
-        //         .filter((player: Player) => player?.getDataValue('ClubMembership') != null)
-        //         // then filter
-        //         .filter(
-        //           (player: Player) =>
-        //             // no end
-        //             player.getDataValue('ClubMembership').end == null ||
-        //             // or in future
-        //             moment(player.getDataValue('ClubMembership').end).isSameOrAfter(args.end)
-        //         );
-        //     }
-
-        //     return result;
-        //   }
-        // })
+        
       }
     })
 });

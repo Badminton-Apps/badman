@@ -3,6 +3,7 @@ import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { col, fn, Op, or, where } from 'sequelize';
 import { Player } from '@badvlasim/shared/models';
 import { PlayerType } from '../types/player.type';
+import { queryFixer } from '../queryFixer';
 
 const playerQuery = {
   type: PlayerType,
@@ -14,6 +15,10 @@ const playerQuery = {
   },
   resolve: resolver(Player, {
     before: async (findOptions, args, context, info) => {
+      findOptions = {
+        ...findOptions,
+        where: queryFixer(findOptions.where)
+      };
       return findOptions;
     }
   })
@@ -22,7 +27,15 @@ const playerQuery = {
 const playersQuery = {
   type: new GraphQLList(PlayerType),
   args: Object.assign(defaultListArgs(), {}),
-  resolve: resolver(Player)
+  resolve: resolver(Player, {
+    before: async (findOptions, args, context, info) => {
+      findOptions = {
+        ...findOptions,
+        where: queryFixer(findOptions.where)
+      };
+      return findOptions;
+    }
+  })
 };
 
 export { playerQuery, playersQuery };
