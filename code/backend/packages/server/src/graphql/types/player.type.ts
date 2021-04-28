@@ -8,7 +8,6 @@ import {
 } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { Op } from 'sequelize';
-import { queryFixer } from '../queryFixer';
 import { getAttributeFields } from './attributes.type';
 import { ClubType } from './club.type';
 import { GameType } from './game.type';

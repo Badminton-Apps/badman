@@ -90,7 +90,7 @@ export class PlayerSearchComponent implements OnInit {
         }
       }),
       // Distinct by id
-      map((result) => result.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index))
+      map((result) => result?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index))
     );
 
     this.filteredOptions$ = merge(search$, this.clear$);
