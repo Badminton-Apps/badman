@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/simulate",
   "description": "Ranking simulation simulate Badminton Vlaanderen",
-  "version": "3.25.2",
+  "version": "3.26.0",
   "private": true,
   "scripts": {
     "start": "node --max-old-space-size=3000 -r ts-node/register ./src/server.ts ",
@@ -13,7 +13,7 @@
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
   },
   "dependencies": {
-    "@badvlasim/shared": "^3.25.2"
+    "@badvlasim/shared": "^3.26.0"
   },
   "peerDependencies": {
     "moment": "^2.24.0"
