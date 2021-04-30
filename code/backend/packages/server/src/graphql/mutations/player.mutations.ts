@@ -1,6 +1,5 @@
 import { RankingPlace } from './../../../../_shared/models/sequelize/ranking/place.model';
 import { DataBaseHandler, logger, Player } from '@badvlasim/shared';
-import { GraphQLID, GraphQLInt } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { PlayerInputType, PlayerType, RankingPlaceInputType, RankingPlaceType } from '../types';
 

@@ -121,7 +121,7 @@ export const addPlayerToRoleMutation = {
         transaction
       });
 
-      AuthenticationSercice.permissinoCache.delete(dbPlayer.id);
+      AuthenticationSercice.permissionCache.delete(dbPlayer.id);
 
       await transaction.commit();
       return dbRole;
@@ -191,7 +191,7 @@ export const removePlayerFromRoleMutation = {
       await dbRole.removePlayer(dbPlayer, {
         transaction
       });
-      AuthenticationSercice.permissinoCache.delete(dbPlayer.id);
+      AuthenticationSercice.permissionCache.delete(dbPlayer.id);
 
       await transaction.commit();
       return dbRole;
@@ -252,7 +252,7 @@ export const updateRoleMutation = {
 
       const players = await dbRole.getPlayers({ transaction, attributes: ['id'] });
       for (const player of players) {
-        AuthenticationSercice.permissinoCache.delete(player.id);
+        AuthenticationSercice.permissionCache.delete(player.id);
       }
 
       await transaction.commit();
@@ -305,7 +305,7 @@ export const removeRoleMutation = {
 
       const players = await dbRole.getPlayers({ transaction, attributes: ['id'] });
       for (const player of players) {
-        AuthenticationSercice.permissinoCache.delete(player.id);
+        AuthenticationSercice.permissionCache.delete(player.id);
       }
       await dbRole.destroy({ transaction });
 

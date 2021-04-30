@@ -51,7 +51,7 @@ export const updateGlobalClaimUserMutation = {
         await dbPlayer.removeClaim(claimId, { transaction });
       }
 
-      AuthenticationSercice.permissinoCache.delete(dbPlayer.id);
+      AuthenticationSercice.permissionCache.delete(dbPlayer.id);
 
       await transaction.commit();
       return dbPlayer;
