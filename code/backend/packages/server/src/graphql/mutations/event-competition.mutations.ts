@@ -19,12 +19,12 @@ export const addEventCompetitionMutation = {
   },
   resolve: async (findOptions, { eventCompetition }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:competition'])) {
-      logger.warn('User tried something it should\'t have done', {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['add:competition']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -84,12 +84,12 @@ export const updateEventCompetitionMutation = {
   },
   resolve: async (findOptions, { eventCompetition }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:competition'])) {
-      logger.warn('User tried something it should\'t have done', {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:competition']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -109,7 +109,7 @@ export const updateEventCompetitionMutation = {
         });
       }
 
-      await  transaction.commit();
+      await transaction.commit();
     } catch (e) {
       logger.warn('rollback');
       await transaction.rollback();
@@ -132,12 +132,12 @@ export const setGroupsCompetitionMutation = {
   },
   resolve: async (findOptions, { id, groupIds }, context) => {
     if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:competition'])) {
-      logger.warn('User tried something it should\'t have done', {
+      logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:competition']
         },
         received: context?.req?.user?.permissions
-      })
+      });
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
@@ -145,7 +145,7 @@ export const setGroupsCompetitionMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbComp = await EventCompetition.findByPk(id);
+      const dbComp = await EventCompetition.findByPk(id, { transaction });
 
       if (!dbComp) {
         throw new ApiError({
@@ -154,10 +154,10 @@ export const setGroupsCompetitionMutation = {
         });
       }
 
-      for (const subEvent of await dbComp.getSubEvents()) {
-        subEvent.setGroups(groupIds);
+      for (const subEvent of await dbComp.getSubEvents({ transaction })) {
+        await subEvent.setGroups(groupIds, { transaction });
       }
-      await  transaction.commit();
+      await transaction.commit();
       return dbComp;
     } catch (e) {
       logger.warn('rollback', e);

@@ -43,7 +43,7 @@ export const addLocationMutation = {
       });
 
       if (created) {
-        locationDb.setClub(clubId);
+        await locationDb.setClub(clubId, { transaction });
       }
 
       await transaction.commit();
@@ -67,7 +67,7 @@ export const removeLocationMutation = {
   resolve: async (findOptions, { locationId, playerId }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbLocation = await Location.findByPk(locationId);
+      const dbLocation = await Location.findByPk(locationId, { transaction });
 
       if (!dbLocation) {
         logger.debug('location', dbLocation);
@@ -79,7 +79,10 @@ export const removeLocationMutation = {
 
       if (
         context?.req?.user == null ||
-        !context.req.user.hasAnyPermission([`${dbLocation.clubId}_remove:location`, 'edit-any:club'])
+        !context.req.user.hasAnyPermission([
+          `${dbLocation.clubId}_remove:location`,
+          'edit-any:club'
+        ])
       ) {
         logger.warn("User tried something it should't have done", {
           required: {
@@ -124,7 +127,7 @@ export const updateTournamentEventLocationMutation = {
   resolve: async (findOptions, { locationId, eventId, use }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbLocation = await Location.findByPk(locationId);
+      const dbLocation = await Location.findByPk(locationId, { transaction });
 
       if (!dbLocation) {
         logger.debug('location', dbLocation);
@@ -161,7 +164,7 @@ export const updateLocationMutation = {
   resolve: async (findOptions, { location }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbLocation = await Location.findByPk(location.id);
+      const dbLocation = await Location.findByPk(location.id,{ transaction });
 
       if (!dbLocation) {
         logger.debug('location', dbLocation);
