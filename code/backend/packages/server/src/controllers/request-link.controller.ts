@@ -75,6 +75,7 @@ export class RequestLinkController extends BaseController {
     try {
       if (!request.user.hasAnyPermission(['link:player'])) {
         response.status(401).send('No no no!!');
+        await transaction.rollback();
         return;
       }
 
