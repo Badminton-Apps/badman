@@ -1,3 +1,15 @@
+## [3.26.2](https://github.com/Badminton-Apps/core/compare/v3.26.1...v3.26.2) (2021-04-30)
+
+
+### Bug Fixes
+
+* import for winner/loser xml files ([181d53d](https://github.com/Badminton-Apps/core/commit/181d53de2c7e35bd5ff57a9597524bfec53a9f63))
+* linting ([2ed3727](https://github.com/Badminton-Apps/core/commit/2ed3727e839fccf27c4b9fea11ef1322759f2427))
+* no auth error ([ecea18b](https://github.com/Badminton-Apps/core/commit/ecea18b0265e723e06abe60d683d9cc33e05898b))
+* transaction upgrades ([51fbfe4](https://github.com/Badminton-Apps/core/commit/51fbfe467f27b9831dc379a518c6289d2c41ff27))
+
+
+
 ## [3.26.1](https://github.com/Badminton-Apps/core/compare/v3.26.0...v3.26.1) (2021-04-28)
 
 
