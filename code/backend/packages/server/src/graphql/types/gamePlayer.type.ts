@@ -32,7 +32,7 @@ const GamePlayerType = new GraphQLObjectType({
             findOptions.where = {
               ...findOptions.where,
               rankingDate: { [Op.lte]: game.playedAt }
-              //rankingDate: '2019-12-13 00:00:00+01'
+              // rankingDate: '2019-12-13 00:00:00+01'
             };
             findOptions.order = [['rankingDate', 'DESC']];
             findOptions.limit = 1;
