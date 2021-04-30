@@ -586,7 +586,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
               new GamePlayer({
                 gameId: game.id,
                 playerId: teamLoserPlayer1.id,
-                team: winner == 1 ? 2 : 1,
+                team: winner === 1 ? 2 : 1,
                 player: 1
               }).toJSON()
             );
@@ -596,7 +596,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
               new GamePlayer({
                 gameId: game.id,
                 playerId: teamLoserPlayer2.id,
-                team: winner == 1 ? 2 : 1,
+                team: winner === 1 ? 2 : 1,
                 player: 2
               }).toJSON()
             );
