@@ -51,10 +51,12 @@ export class AuthenticationSercice {
         AuthenticationSercice.playerCache.set(request.user.sub, player);
       }
 
-      permissions = AuthenticationSercice.permissinoCache.get(player.id);
-      if (!permissions) {
-        permissions = await player?.getUserClaims();
-        AuthenticationSercice.permissinoCache.set(player.id, permissions);
+      if (player) {
+        permissions = AuthenticationSercice.permissinoCache.get(player?.id);
+        if (!permissions) {
+          permissions = await player?.getUserClaims();
+          AuthenticationSercice.permissinoCache.set(player.id, permissions);
+        }
       }
     }
 
