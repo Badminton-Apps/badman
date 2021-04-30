@@ -51,11 +51,11 @@ export const addTeamMutation = {
       });
 
       if (created) {
-        teamDb.setClub(clubId);
+        teamDb.setClub(clubId, { transaction });
       } else {
         // Re-activate team
         teamDb.active = true;
-        teamDb.save();
+        teamDb.save({ transaction });
       }
 
       await transaction.commit();
@@ -79,7 +79,7 @@ export const removeTeamMutation = {
   resolve: async (findOptions, { teamId, playerId }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId);
+      const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -128,7 +128,7 @@ export const updateTeamMutation = {
   resolve: async (findOptions, { team }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(team.id);
+      const dbTeam = await Team.findByPk(team.id, { transaction });
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -180,7 +180,7 @@ export const addPlayerToTeamMutation = {
   resolve: async (findOptions, { teamId, playerId }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId);
+      const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -217,7 +217,7 @@ export const addPlayerToTeamMutation = {
         });
       }
 
-      const result = await dbTeam.addPlayer(dbPlayer, {
+      await dbTeam.addPlayer(dbPlayer, {
         transaction,
         through: {
           start: new Date()
@@ -249,7 +249,7 @@ export const removePlayerFromTeamMutation = {
   resolve: async (findOptions, { teamId, playerId }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId);
+      const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -286,7 +286,7 @@ export const removePlayerFromTeamMutation = {
         });
       }
 
-      const result = await dbTeam.removePlayer(dbPlayer, {
+      await dbTeam.removePlayer(dbPlayer, {
         transaction
       });
 
@@ -319,7 +319,7 @@ export const updateSubEventTeamMutation = {
   resolve: async (findOptions, { teamId, newSubEventId, oldSubEventId }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId);
+      const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -378,7 +378,7 @@ export const updatePlayerTeamMutation = {
   resolve: async (findOptions, { teamId, playerId, base }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId);
+      const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -453,7 +453,7 @@ export const updateTeamLocationMutation = {
   resolve: async (findOptions, { locationId, teamId, use }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId);
+      const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
         logger.debug('location', dbTeam);
