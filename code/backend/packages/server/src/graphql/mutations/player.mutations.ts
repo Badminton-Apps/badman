@@ -1,5 +1,5 @@
 import { RankingPlace } from './../../../../_shared/models/sequelize/ranking/place.model';
-import { DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import { DataBaseHandler, LastRankingPlace, logger, Player } from '@badvlasim/shared';
 import { ApiError } from '../../models/api.error';
 import { PlayerInputType, PlayerType, RankingPlaceInputType, RankingPlaceType } from '../types';
 
@@ -106,19 +106,29 @@ export const updatePlayerRankingMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      await RankingPlace.update(
-        {
-          single: rankingPlace.single,
-          double: rankingPlace.double,
-          mix: rankingPlace.mix
+      const dbRankingPlace = await RankingPlace.findByPk(rankingPlace.id, { transaction });
+      dbRankingPlace.single = rankingPlace.single ?? dbRankingPlace.single;
+      dbRankingPlace.double = rankingPlace.double ?? dbRankingPlace.double;
+      dbRankingPlace.mix = rankingPlace.mix ?? dbRankingPlace.mix;
+      await dbRankingPlace.save({ transaction });
+
+      const dbLastRanking = await LastRankingPlace.findOne({
+        where: {
+          playerId: dbRankingPlace.PlayerId,
+          rankingDate: dbRankingPlace.rankingDate,
+          systemId: dbRankingPlace.SystemId
         },
-        {
-          where: {
-            id: rankingPlace.id
-          },
-          transaction
-        }
-      );
+        transaction
+      });
+
+      // Update if it is the last player ranking
+      if (dbLastRanking) {
+        dbLastRanking.single = rankingPlace.single ?? dbLastRanking.single;
+        dbLastRanking.double = rankingPlace.double ?? dbLastRanking.double;
+        dbLastRanking.mix = rankingPlace.mix ?? dbLastRanking.mix;
+        await dbLastRanking.save({ transaction });
+      }
+
 
       await transaction.commit();
     } catch (e) {
