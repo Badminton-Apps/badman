@@ -1,3 +1,12 @@
+## [3.26.1](https://github.com/Badminton-Apps/core/compare/v3.26.0...v3.26.1) (2021-04-28)
+
+
+### Bug Fixes
+
+* player search ([5acafe5](https://github.com/Badminton-Apps/core/commit/5acafe50dcd7858a3e821ba8f22214af8ba28e07))
+
+
+
 # [3.26.0](https://github.com/Badminton-Apps/core/compare/v3.25.2...v3.26.0) (2021-04-28)
 
 
