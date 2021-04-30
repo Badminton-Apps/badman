@@ -61,7 +61,7 @@ export const removeClubMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const clubDb = await Club.destroy({ where: { id }, transaction, cascade: true });
+      await Club.destroy({ where: { id }, transaction, cascade: true });
 
       await transaction.commit();
       return true;
