@@ -8,12 +8,7 @@ import {
   GraphQLSchema,
   GraphQLString
 } from 'graphql';
-import {
-  attributeFields,
-  createConnection,
-  defaultListArgs,
-  resolver
-} from 'graphql-sequelize';
+import { attributeFields, createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { col, fn, Includeable, Op, or, QueryTypes, where } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { Game, GamePlayer, Player } from '@badvlasim/shared/models';
@@ -30,17 +25,17 @@ const GamePlayerType = new GraphQLObjectType({
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Player.associations.rankingPlaces, {
           before: async (findOptions, args, context, info) => {
-            // const game = await Game.findByPk(info.source.GamePlayer.gameId, {
-            //   attributes: ['playedAt']
-            // });
+            const game = await Game.findByPk(info.source.GamePlayer.gameId, {
+              attributes: ['playedAt']
+            });
 
             findOptions.where = {
               ...findOptions.where,
-              // rankingDate: { [Op.lte]: game.playedAt }
-              rankingDate: '2019-12-13 00:00:00+01'
+              rankingDate: { [Op.lte]: game.playedAt }
+              //rankingDate: '2019-12-13 00:00:00+01'
             };
-            // findOptions.order = [['rankingDate', 'DESC']];
-            // findOptions.limit = 1;
+            findOptions.order = [['rankingDate', 'DESC']];
+            findOptions.limit = 1;
             return findOptions;
           },
           after: (results, args) => {

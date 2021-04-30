@@ -49,7 +49,7 @@ export class DataBaseHandler {
       this._dialect = config.dialect;
 
       DataBaseHandler.sequelizeInstance = new Sequelize({
-        ...config, 
+        ...config,
         retry: {
           report: (message, configObj) => {
             if (configObj.$current > 5) {
@@ -68,33 +68,40 @@ export class DataBaseHandler {
 
   async cleanUpImport() {
     const transaction = await this._sequelize.transaction();
+    try {
+      await this._disableForeignKeyCheck(transaction);
 
-    await this._disableForeignKeyCheck(transaction);
+      const tableToTruncate = [
+        GamePlayer.getTableName(),
+        ClubMembership.getTableName(),
+        TeamPlayerMembership.getTableName(),
+        TeamSubEventMembership.getTableName(),
+        RankingPlace.getTableName(),
+        RankingPoint.getTableName(),
+        Team.getTableName(),
+        Club.getTableName(),
+        Game.getTableName(),
+        SubEventCompetition.getTableName(),
+        SubEventTournament.getTableName(),
+        DrawCompetition.getTableName(),
+        DrawTournament.getTableName(),
+        RequestLink.getTableName()
+      ];
 
-    const tableToTruncate = [
-      GamePlayer.getTableName(),
-      ClubMembership.getTableName(),
-      TeamPlayerMembership.getTableName(),
-      TeamSubEventMembership.getTableName(),
-      RankingPlace.getTableName(),
-      RankingPoint.getTableName(),
-      Team.getTableName(),
-      Club.getTableName(),
-      Game.getTableName(),
-      SubEventCompetition.getTableName(),
-      SubEventTournament.getTableName(),
-      DrawCompetition.getTableName(),
-      DrawTournament.getTableName(),
-      RequestLink.getTableName()
-    ];
+      await this._sequelize.query(
+        `TRUNCATE ONLY "${tableToTruncate.join('","')}" RESTART IDENTITY`
+      );
+      await this._sequelize.query(`DELETE FROM "${Player.getTableName()}"`, {
+        transaction
+      });
 
-    await this._sequelize.query(
-      `TRUNCATE ONLY "${tableToTruncate.join('","')}" RESTART IDENTITY`
-    );
-    await this._sequelize.query(`DELETE FROM "${Player.getTableName()}"`);
-
-    await this._enableForeignKeyCheck(transaction);
-    await transaction.commit();
+      await this._enableForeignKeyCheck(transaction);
+      await transaction.commit();
+    } catch (e) {
+      logger.error(e);
+      await transaction.rollback();
+      throw e;
+    }
   }
 
   async sync(force = false, alter = false) {
@@ -149,7 +156,6 @@ export class DataBaseHandler {
     }
   }
 
-
   async addPlayers(
     users: {
       memberId: string;
@@ -191,9 +197,9 @@ export class DataBaseHandler {
   }
 
   async addRankingPlaces(rankings) {
+    const transaction = await this._sequelize.transaction();
     try {
-      logger.silly(`Adding ${rankings.length} places`); 
-      const transaction = await this._sequelize.transaction();
+      logger.silly(`Adding ${rankings.length} places`);
       const chunks = splitInChunks(rankings, 500);
       for (const chunk of chunks) {
         await RankingPlace.bulkCreate(chunk, {
@@ -205,6 +211,7 @@ export class DataBaseHandler {
       await transaction.commit();
     } catch (err) {
       logger.error('Something went wrong adding ranking places');
+      await transaction.rollback();
       throw err;
     }
   }

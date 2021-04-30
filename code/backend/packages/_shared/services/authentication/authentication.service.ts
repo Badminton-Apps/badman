@@ -8,7 +8,7 @@ import { Player } from '../../models';
 export class AuthenticationSercice {
   static subCache = new Map();
   static playerCache = new Map();
-  static permissinoCache = new Map();
+  static permissionCache = new Map();
   checkAuth = null;
 
   constructor() {
@@ -52,10 +52,10 @@ export class AuthenticationSercice {
       }
 
       if (player) {
-        permissions = AuthenticationSercice.permissinoCache.get(player?.id);
+        permissions = AuthenticationSercice.permissionCache.get(player?.id);
         if (!permissions) {
           permissions = await player?.getUserClaims();
-          AuthenticationSercice.permissinoCache.set(player.id, permissions);
+          AuthenticationSercice.permissionCache.set(player.id, permissions);
         }
       }
     }
