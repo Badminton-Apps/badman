@@ -455,7 +455,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const draw of draws) {
         for (const fixture of draw.fixtures) {
           if (!fixture) {
-            continue;
+            continue; 
           }
 
           if (fixture.FixtureWinnerTeamId === '' || isNaN(+fixture.FixtureWinnerTeamId)) {
