@@ -8,7 +8,7 @@
     "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "start:inspect": "node --inspect=6859 -r ts-node/register ./src/server.ts",
     "start:watch": "nodemon",
-    "start:watch:inspect": "nodemon --exec node --inspect=6859 -r ts-node/register ./src/server.ts",
+    "start:watch:inspect": "nodemon --exec node --inspect=6859 -r ts-node/register ./src/server.ts --trace-warnings",
     "test:local": "jest --colors --watchAll",
     "test": "jest --config ./jest.config.js --runInBand",
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"

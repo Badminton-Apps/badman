@@ -1,9 +1,8 @@
 apiVersion: v2
 description: Server
 name: server
-version: 0.3.10
+version: 0.3.14
 appVersion: 0.1.0
-
 
 dependencies:
   - name: postgresql
