@@ -14,10 +14,10 @@
 
 </xml>
 <![endif]-->
-    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>*|MC:SUBJECT|*</title>
+    <title>{{title}}</title>
     <style>
         img {
             -ms-interpolation-mode: bicubic;
@@ -239,7 +239,7 @@
         }
 
         .mceSpacing-24 h3 {
-            margin-bottom: 24px;
+            margin-bottom: 0px;
         }
 
         .mceSpacing-24 .last-child {
@@ -251,7 +251,7 @@
         }
 
         .mceSpacing-24 p {
-            margin-bottom: 24px;
+            margin-bottom: 0px;
         }
 
         .mceSpacing-24 p:last-child {
@@ -341,12 +341,11 @@
 </head>
 
 <body>
-    <!--*|IF:MC_PREVIEW_TEXT|*-->
-    <!--[if !gte mso 9]><!----><span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">*|MC_PREVIEW_TEXT|*
-
-    </span>
+    {{#if preview}}
+    <!--[if !gte mso 9]><!---->
+    <span class="mcnPreviewText" style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;">{{preview}}</span>
     <!--<![endif]-->
-    <!--*|END:IF|*-->
+    {{/if}}
     <center>
         <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="background-color: rgb(255, 255, 255);">
             <tbody>
@@ -390,8 +389,8 @@
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td style="padding-left:48px;padding-right:48px;" class="mceSpacing-24" valign="top">
-                                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:transparent;border-top:2px solid #ff6e40;margin-top:20px">
+                                                                    <td class="mceSpacing-24" valign="top">
+                                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:transparent;border-top:2px solid #ff6e40;margin-bottom:20px">
                                                                             <tbody>
                                                                                 <tr>
                                                                                     <td style="min-width:100%" valign="top">

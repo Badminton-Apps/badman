@@ -1,0 +1,36 @@
+<p>Beste competitieverantwoordelijke, <br/>
+  <br/>
+  Onderstaande ploegen werden ingeschreven voor het volgende competitieseizoen {{years}}. 
+  Zolang je deze niet meer wijzigt, blijft de inschrijving exact zoals hieronder behouden. 
+  Wil je toch nog uitschrijven? Contacteer dan: <a href="mailto:info@badmintonvlaanderen.be">info@badmintonvlaanderen.be</a>. <br/>
+  <br/>
+  Bedankt en tot volgend seizoen!
+</p>
+
+<h2>Teams</h2>
+<tr>
+  <td style="padding-top:12px" class="mceSpacing-24" valign="top">
+    <div class="mceText" style="font-size:16px;width:100%">
+      {{#each club.teams as |team|}}
+        {{#each team.subEvents as |subEvent|}}
+          <p><strong>Team:</strong> {{team.name}}<br/><strong>Reeks:</strong> {{subEvent.event.name}} - {{subEvent.name}} 
+          </p>
+          <strong>Basisspelers: </strong>
+          {{> players/list players=team.players clientUrl=../../clientUrl}}
+        {{/each}}
+      {{/each}}
+    </div>
+  </td>
+</tr>
+
+<h2>Comments</h2>
+<tr>
+  <td style="padding-top:12px" class="mceSpacing-24" valign="top">
+    <div class="mceText" style="font-size:16px;width:100%">
+      {{#each comments as |comment|}}
+         <p><strong>Reeks:</strong>{{comment.competition.name}}<br/>
+        <strong>Message:</strong><br/>{{comment.message}}</p>
+      {{/each}}
+    </div>
+  </td>
+</tr>
