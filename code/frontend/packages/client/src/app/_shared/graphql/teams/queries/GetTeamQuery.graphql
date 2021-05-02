@@ -25,6 +25,7 @@ query GetTeamQuery($id: ID!) {
       lastName
       competitionPlayer
       base
+      gender
       lastRanking {
         single
         double
