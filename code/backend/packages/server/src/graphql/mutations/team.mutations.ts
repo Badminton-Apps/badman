@@ -1,15 +1,13 @@
 import {
-  Club,
   DataBaseHandler,
   EventCompetition,
   logger,
   Player,
   SubEventCompetition,
   Team,
-  TeamLocationCompetition,
   TeamPlayerMembership
 } from '@badvlasim/shared';
-import { GraphQLBoolean, GraphQLID, GraphQLInt, GraphQLNonNull } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { TeamInputType, TeamType } from '../types';
 
@@ -316,7 +314,7 @@ export const updateSubEventTeamMutation = {
   },
   resolve: async (findOptions, { teamId, subEventId }, context) => {
     const dbTeam = await Team.findByPk(teamId);
-  
+
     if (
       context?.req?.user == null ||
       !context.req.user.hasAnyPermission([`${dbTeam.clubId}_enlist:team`, 'edit-any:club'])
@@ -335,7 +333,6 @@ export const updateSubEventTeamMutation = {
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      
       // Find new subevent
       const dbNewSubEvent = await SubEventCompetition.findByPk(subEventId, {
         transaction,
@@ -349,12 +346,16 @@ export const updateSubEventTeamMutation = {
       });
 
       // Find all subEvents from same year
-      const subEvents = (await EventCompetition.findAll({
-        where: { startYear: dbNewSubEvent.event.startYear },
-        attributes: [],
-        include: [{ model: SubEventCompetition, attributes: ['id'] }],
-        transaction
-      })).map(r => r.subEvents?.map(r => r?.id)).flat();
+      const subEvents = (
+        await EventCompetition.findAll({
+          where: { startYear: dbNewSubEvent.event.startYear },
+          attributes: [],
+          include: [{ model: SubEventCompetition, attributes: ['id'] }],
+          transaction
+        })
+      )
+        .map(e => e.subEvents?.map(s => s?.id))
+        .flat();
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -380,7 +381,7 @@ export const updateSubEventTeamMutation = {
         });
       }
 
-      if (subEvents != null && subEvents.length> 0) {
+      if (subEvents != null && subEvents.length > 0) {
         await dbTeam.removeSubEvents(subEvents, { transaction });
       }
       await dbTeam.addSubEvent(dbNewSubEvent.id, { transaction });
