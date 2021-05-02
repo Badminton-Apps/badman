@@ -59,3 +59,13 @@ spec:
               secretKeyRef:
                 name: server-postgresql
                 key: postgresql-password
+          - name: MAIL_PASS
+            valueFrom:
+              secretKeyRef:
+                name: mail-auth
+                key: pass
+          - name: MAIL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mail-auth
+                key: user
