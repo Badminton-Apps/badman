@@ -25,6 +25,7 @@ query GetClubInfo($id: ID!) {
         firstName
         lastName
         base
+        gender
         lastRanking {
           single
           double
