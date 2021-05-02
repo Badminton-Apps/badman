@@ -13,7 +13,8 @@
     <div class="mceText" style="font-size:16px;width:100%">
       {{#each club.teams as |team|}}
         {{#each team.subEvents as |subEvent|}}
-          <p><strong>Team:</strong> {{team.name}}<br/><strong>Reeks:</strong> {{subEvent.event.name}} - {{subEvent.name}} 
+          <p><strong>Team:</strong> {{team.name}} ({{team.abbreviation}})<br/>
+          <strong>Reeks:</strong> {{subEvent.event.name}} - {{subEvent.name}} 
           </p>
           <strong>Basisspelers: </strong>
           {{> players/list players=team.players clientUrl=../../clientUrl}}
