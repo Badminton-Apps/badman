@@ -1,13 +1,12 @@
 import {
   AuthenticatedRequest,
   BaseController,
-  DataBaseHandler,
   logger,
   Player,
   MailService,
   RequestLink
 } from '@badvlasim/shared';
-import { Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { Club } from '../../../_shared';
 
 export class UserController extends BaseController {
@@ -21,7 +20,6 @@ export class UserController extends BaseController {
   private _intializeRoutes() {
     this.router.get(`${this._path}/permissions`, this._authMiddleware, this._permissions);
     this.router.get(`${this._path}/profile`, this._authMiddleware, this._profile);
-    this.router.get(`${this._path}/test`, this._testMail);
   }
 
   private _permissions = async (request: AuthenticatedRequest, response: Response) => {
@@ -63,8 +61,4 @@ export class UserController extends BaseController {
     }
   };
 
-  private _testMail() {
-    const mailService = new MailService();
-    mailService.sendNewPeopleMail('glenn.latomme@gmail.com');
-  }
 }

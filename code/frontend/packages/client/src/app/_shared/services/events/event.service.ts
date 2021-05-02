@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Imported } from 'app/_shared';
 import {
+  Club,
   CompetitionEvent,
   CompetitionSubEvent,
   Event,
@@ -288,5 +289,9 @@ export class EventService {
         event,
       },
     });
+  }
+
+  finishEnrollment(club: Club, year: number) {
+    return this.httpClient.post(`${environment.api}/${environment.apiVersion}/enrollment/finish/${club.id}/${year}`, null);
   }
 }
