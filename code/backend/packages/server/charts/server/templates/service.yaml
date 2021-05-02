@@ -11,9 +11,10 @@ spec:
   ports:
   - port: {{ .Values.service.externalPort }}
     protocol: TCP
+    name: internal
     targetPort: {{ .Values.service.internalPort }}
   - protocol: TCP
-    name: "tcp-smtps"
+    name: tcp-smtps
     port: 465
   selector:
     app: {{ template "fullname" . }}
