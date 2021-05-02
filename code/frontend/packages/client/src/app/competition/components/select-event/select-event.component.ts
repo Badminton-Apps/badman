@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Event, EventService, EventType } from 'app/_shared';
 import { combineLatest, Observable } from 'rxjs';
@@ -20,54 +14,25 @@ export class SelectEventComponent implements OnInit, OnDestroy {
   @Input()
   formGroup: FormGroup;
 
-  @Input()
-  requiredPermission: string[];
-
   formControl = new FormControl(null, [Validators.required]);
-  filteredOptions: Observable<Event[]>;
+
+  events$: Observable<Event[]>;
 
   constructor(private eventService: EventService) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.formGroup.addControl('event', this.formControl);
 
-    this.filteredOptions = combineLatest([
-      this.eventService
-        .getEvents({
-          first: 100,
-          type: EventType.COMPETITION,
-          where: { allowEnlisting: true, type: 'PROV' },
-        })
-        .pipe(
-          map((data) => {
-            const count = data.eventCompetitions?.total || 0;
-            if (count) {
-              return data.eventCompetitions.edges.map((x) => new Event(x.node));
-            } else {
-              return [];
-            }
-          })
-        ),
-      this.formControl.valueChanges.pipe(startWith('')),
-    ]).pipe(map(([list, value]) => this._filter(list, value)));
+    this.events$ = this.eventService
+      .getEvents({
+        first: 100,
+        type: EventType.COMPETITION,
+        where: { allowEnlisting: true, type: 'PROV' },
+      })
+      .pipe(map((r) => r.eventCompetitions.edges.map((r) => r.node)));
   }
 
   ngOnDestroy() {
     this.formGroup.removeControl('event');
-  }
-
-  private _filter(list: Event[], value: string | Event): Event[] {
-    // when selected the filter is with the selected object
-    if (typeof value === 'string') {
-      const filterValue = value.toLowerCase();
-
-      return list.filter(
-        (option) => option.name.toLowerCase().indexOf(filterValue) === 0
-      );
-    }
-  }
-
-  getOptionText(option) {
-    return option?.name;
   }
 }
