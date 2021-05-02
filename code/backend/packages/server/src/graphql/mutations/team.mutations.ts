@@ -315,9 +315,26 @@ export const updateSubEventTeamMutation = {
     }
   },
   resolve: async (findOptions, { teamId, subEventId }, context) => {
+    const dbTeam = await Team.findByPk(teamId);
+  
+    if (
+      context?.req?.user == null ||
+      !context.req.user.hasAnyPermission([`${dbTeam.clubId}_enlist:team`, 'edit-any:club'])
+    ) {
+      logger.warn("User tried something it should't have done", {
+        required: {
+          anyClaim: [`${dbTeam.clubId}_enlist:team`, 'add-any:club']
+        },
+        received: context?.req?.user?.permissions
+      });
+      throw new ApiError({
+        code: 401,
+        message: "You don't have permission to do this "
+      });
+    }
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId, { transaction });
       
       // Find new subevent
       const dbNewSubEvent = await SubEventCompetition.findByPk(subEventId, {
