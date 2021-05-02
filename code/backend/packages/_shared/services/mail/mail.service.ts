@@ -138,7 +138,7 @@ export class MailService {
       },
       include: [
         {
-          attributes: ['name', 'teamNumber', 'type'],
+          attributes: ['name', 'teamNumber', 'type', 'abbreviation'],
           model: Team,
           where: {
             active: true
