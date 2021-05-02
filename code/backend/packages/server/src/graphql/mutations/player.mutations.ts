@@ -12,16 +12,24 @@ export const addPlayerMutation = {
     }
   },
   resolve: async (findOptions, { player }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:player'])) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['add:player']
-        },
-        received: context?.req?.user?.permissions
-      });
+    // || !context.req.user.hasAnyPermission(['add:player'])
+    if (context?.req?.user == null) {
+      // logger.warn("User tried something it should't have done", {
+      //   required: {
+      //     anyClaim: ['add:player']
+      //   },
+      //   received: context?.req?.user?.permissions
+      // });
       throw new ApiError({
         code: 401,
-        message: "You don't have permission to do this "
+        message: 'You need to be logged in '
+      });
+    }
+
+    if (player.memberId === null || player.firstName == null || player.lastName == null) {
+      throw new ApiError({
+        code: 500,
+        message: 'Memberid, firstname and lastname are required'
       });
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
@@ -128,7 +136,6 @@ export const updatePlayerRankingMutation = {
         dbLastRanking.mix = rankingPlace.mix ?? dbLastRanking.mix;
         await dbLastRanking.save({ transaction });
       }
-
 
       await transaction.commit();
     } catch (e) {
