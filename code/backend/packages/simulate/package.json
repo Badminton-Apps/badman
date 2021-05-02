@@ -4,14 +4,21 @@
   "version": "3.26.3",
   "private": true,
   "scripts": {
-    "start": "node  -r ts-node/register ./src/server.ts ",
+    "start": "node -r ts-node/register ./src/server.ts",
+    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "start:inspect": "node --inspect=6860 -r ts-node/register ./src/server.ts",
-    "start:watch": "nodemon --max-old-space-size=3000",
-    "start:watch:inspect": "nodemon --max-old-space-size=3000 --exec node --inspect=6860 -r ts-node/register ./src/server.ts",
+    "start:watch": "nodemon",
+    "start:watch:inspect": "nodemon --exec node --inspect=6860 -r ts-node/register ./src/server.ts",
     "test:local": "jest --colors --watchAll",
     "test": "jest --config ./jest.config.js --runInBand",
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
   },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "dependencies": {
     "@badvlasim/shared": "^3.26.3"
   },
