@@ -1,3 +1,12 @@
+## [3.27.4](https://github.com/Badminton-Apps/core/compare/v3.27.3...v3.27.4) (2021-05-02)
+
+
+### Bug Fixes
+
+* mailing try catch ([84b3253](https://github.com/Badminton-Apps/core/commit/84b32533f68dd0203a56dde0511b623ccee05a3a))
+
+
+
 ## [3.27.3](https://github.com/Badminton-Apps/core/compare/v3.27.2...v3.27.3) (2021-05-02)
 
 
