@@ -1,8 +1,10 @@
 import {
   Club,
   DataBaseHandler,
+  EventCompetition,
   logger,
   Player,
+  SubEventCompetition,
   Team,
   TeamLocationCompetition,
   TeamPlayerMembership
@@ -307,19 +309,35 @@ export const updateSubEventTeamMutation = {
       name: 'teamId',
       type: GraphQLID
     },
-    newSubEventId: {
-      name: 'newSubEventId',
-      type: GraphQLID
-    },
-    oldSubEventId: {
-      name: 'oldSubEventId',
+    subEventId: {
+      name: 'subEventId',
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { teamId, newSubEventId, oldSubEventId }, context) => {
+  resolve: async (findOptions, { teamId, subEventId }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(teamId, { transaction });
+      
+      // Find new subevent
+      const dbNewSubEvent = await SubEventCompetition.findByPk(subEventId, {
+        transaction,
+        attributes: ['id'],
+        include: [
+          {
+            model: EventCompetition,
+            attributes: ['startYear']
+          }
+        ]
+      });
+
+      // Find all subEvents from same year
+      const subEvents = (await EventCompetition.findAll({
+        where: { startYear: dbNewSubEvent.event.startYear },
+        attributes: [],
+        include: [{ model: SubEventCompetition, attributes: ['id'] }],
+        transaction
+      })).map(r => r.subEvents?.map(r => r?.id)).flat();
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -344,10 +362,11 @@ export const updateSubEventTeamMutation = {
           message: "You don't have permission to do this "
         });
       }
-      if (oldSubEventId != null) {
-        await dbTeam.removeSubEvent(oldSubEventId, { transaction });
+
+      if (subEvents != null && subEvents.length> 0) {
+        await dbTeam.removeSubEvents(subEvents, { transaction });
       }
-      await dbTeam.addSubEvent(newSubEventId, { transaction });
+      await dbTeam.addSubEvent(dbNewSubEvent.id, { transaction });
 
       await transaction.commit();
       return dbTeam;
