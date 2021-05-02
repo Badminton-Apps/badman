@@ -84,7 +84,9 @@
     "enrollment": {
       "title": "",
       "select-location": "",
-      "comment": "",
+      "comment-prov": "",
+      "comment-liga": "",
+      "comment-nat": "",
       "select-club": "",
       "assign-team": "",
       "max": "",

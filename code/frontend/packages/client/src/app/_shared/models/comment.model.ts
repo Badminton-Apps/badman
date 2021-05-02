@@ -4,11 +4,13 @@ export class Comment {
   message: string;
   player: Player;
   clubId: string;
+  eventId: string;
 
-  constructor({ ...args }: Partial<Comment>) {
+  constructor(args: Partial<Comment>) {
     this.id = args?.id;
     this.message = args?.message ?? '';
     this.player = args?.player != null ? new Player(args?.player) : null;
     this.clubId = args?.clubId;
+    this.eventId = args?.eventId;
   }
 }
