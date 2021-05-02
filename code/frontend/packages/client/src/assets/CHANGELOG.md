@@ -1,3 +1,12 @@
+## [3.27.2](https://github.com/Badminton-Apps/core/compare/v3.27.1...v3.27.2) (2021-05-02)
+
+
+### Bug Fixes
+
+* temporary disabling playerId untill server issue fixed ([b800e28](https://github.com/Badminton-Apps/core/commit/b800e28edf6399465dcb2e35c512ddad32c1ccd2))
+
+
+
 ## [3.27.1](https://github.com/Badminton-Apps/core/compare/v3.27.0...v3.27.1) (2021-05-02)
 
 
