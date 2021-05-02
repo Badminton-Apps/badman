@@ -109,7 +109,7 @@ export class TeamEnrollmentComponent implements OnInit {
     }
   }
 
-  async teamsAssigned(event: { teamId: string; oldSubEventId: string; newSubEventId: string }) {
+  async teamsAssigned(event: { teamId: string; subEventId: string }) {
     await this.apollo
       .mutate({
         mutation: AssignTeamSubEvent,

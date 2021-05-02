@@ -36,10 +36,9 @@ export class AssignTeamComponent implements OnInit {
   type: string;
 
   @Output()
-  onChange = new EventEmitter<{
+  newSubEvent = new EventEmitter<{
     teamId: string;
-    oldSubEventId: string;
-    newSubEventId: string;
+    subEventId: string;
   }>();
 
   issues = {};
@@ -56,6 +55,7 @@ export class AssignTeamComponent implements OnInit {
 
   ngOnInit(): void {
     this.ids = this.subEvents.map((s) => s.id);
+    this.subEvents = this.subEvents.sort((a, b) => b.level - a.level);
     this.initialPlacing();
   }
 
@@ -67,10 +67,9 @@ export class AssignTeamComponent implements OnInit {
       const team = subEvent.teams[event.currentIndex];
       this.validate(team, subEvent);
 
-      this.onChange.next({
+      this.newSubEvent.next({
         teamId: team.id,
-        oldSubEventId: event.previousContainer.id,
-        newSubEventId: event.container.id,
+        subEventId: event.container.id,
       });
     }
   }
@@ -275,13 +274,10 @@ export class AssignTeamComponent implements OnInit {
         subEventsSorted[0].teams?.push(team);
       } else {
         subEvent?.teams?.push(team);
-        if (!wasAlreadyAssigned) {
-          this.onChange.next({
-            teamId: team.id,
-            oldSubEventId: null,
-            newSubEventId: subEvent.id,
-          });
-        }
+        this.newSubEvent.next({
+          teamId: team.id,
+          subEventId: subEvent.id,
+        });
       }
       this.validate(team, subEvent);
     }

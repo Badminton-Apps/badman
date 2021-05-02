@@ -36,21 +36,21 @@
     <ng-container *ngIf="this.show$ | async as teamInfo; else loading">
       <ng-container *ngIf="this.subEventsInitialized; else loading">
         <app-assign-team
-          (onChange)="this.teamsAssigned($event)"
+          (newSubEvent)="this.teamsAssigned($event)"
           [club]="teamInfo.club"
           [type]="'gender.male' | translate"
           [teams]="teamInfo.teamsM"
           [subEvents]="teamInfo.subEventM"
         ></app-assign-team>
         <app-assign-team
-          (onChange)="this.teamsAssigned($event)"
+          (newSubEvent)="this.teamsAssigned($event)"
           [club]="teamInfo.club"
           [type]="'gender.mix' | translate"
           [teams]="teamInfo.teamsMX"
           [subEvents]="teamInfo.subEventMX"
         ></app-assign-team>
         <app-assign-team
-          (onChange)="this.teamsAssigned($event)"
+          (newSubEvent)="this.teamsAssigned($event)"
           [club]="teamInfo.club"
           [type]="'gender.female' | translate"
           [teams]="teamInfo.teamsF"
