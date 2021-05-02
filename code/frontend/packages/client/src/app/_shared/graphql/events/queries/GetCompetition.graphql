@@ -6,6 +6,7 @@ query GetEvent($id: ID!, $includeComments: Boolean!, $clubId: ID) {
     name
     startYear
     allowEnlisting
+    started
     type
     subEvents(order: "eventType") {
       ...SubEventsDetails

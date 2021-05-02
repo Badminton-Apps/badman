@@ -75,6 +75,10 @@ export class EventCompetition extends Model {
   @Column
   allowEnlisting: boolean;
 
+  @Default(false)
+  @Column
+  started: boolean;
+
   // Has many SubEvent
   getSubEvents!: HasManyGetAssociationsMixin<SubEventCompetition>;
   setSubEvents!: HasManySetAssociationsMixin<SubEventCompetition, string>;
