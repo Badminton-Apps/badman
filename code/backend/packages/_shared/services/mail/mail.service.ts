@@ -10,6 +10,16 @@ export class MailService {
   private _transporter;
 
   constructor() {
+    logger.info('Mail config', {
+      host: 'smtp.gmail.com',
+      port: 465,
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS
+      },
+      secure: true
+    });
+
     this._transporter = nodemailer.createTransport(
       smtpTransport({
         host: 'smtp.gmail.com',
@@ -203,7 +213,7 @@ export class MailService {
         clientUrl,
         title: `${club.name} enrollment`,
         preview: `${club.name} schreef ${club.teams.length} teams in`,
-        years: `${year}-${year+1}`,
+        years: `${year}-${year + 1}`,
         comments: comments
           .filter(c => c.message && c.message.length > 0)
           .map(c => c?.toJSON())
