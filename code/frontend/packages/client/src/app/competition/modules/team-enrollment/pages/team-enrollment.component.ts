@@ -22,15 +22,21 @@ import * as addComment from './graphql/AddComment.graphql';
 export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatVerticalStepper) vert_stepper: MatVerticalStepper;
 
+  competitionYear: number;
+
   formGroup: FormGroup;
 
   enabledProvincialControl: FormControl;
   enabledLigaControl: FormControl;
   enabledNationalControl: FormControl;
-  commentControl: FormControl;
+  commentProvControl: FormControl;
+  commentLigaControl: FormControl;
+  commentNatControl: FormControl;
 
   club$: Observable<Club>;
-  comment: Comment;
+  commentProv: Comment;
+  commentLiga: Comment;
+  commentNat: Comment;
 
   teamsM$: Observable<Team[]>;
   teamsF$: Observable<Team[]>;
@@ -49,25 +55,24 @@ export class TeamEnrollmentComponent implements OnInit {
 
   subEventsInitialized: boolean = false;
 
-  constructor(
-    private eventService: EventService,
-    private systemService: SystemService,
-    private apollo: Apollo,
-    private snackbar: MatSnackBar
-  ) {}
+  constructor(private eventService: EventService, private apollo: Apollo, private snackbar: MatSnackBar) {}
 
   async ngOnInit() {
     this.enabledProvincialControl = new FormControl(false);
     this.enabledLigaControl = new FormControl(false);
     this.enabledNationalControl = new FormControl(false);
-    this.commentControl = new FormControl();
+    this.commentProvControl = new FormControl();
+    this.commentLigaControl = new FormControl();
+    this.commentNatControl = new FormControl();
 
     this.formGroup = new FormGroup(
       {
         enabledProvincial: this.enabledProvincialControl,
         enabledLiga: this.enabledLigaControl,
         enabledNational: this.enabledNationalControl,
-        comment: this.commentControl,
+        commentProv: this.commentProvControl,
+        commentLiga: this.commentLigaControl,
+        commentNat: this.commentNatControl,
       },
       { validators: this.hasAnyLevelSelected }
     );
@@ -121,6 +126,7 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async submit() {
+    this.club$.pipe(switchMap((club) => this.eventService.finishEnrollment(club, this.competitionYear))).toPromise();
     this.snackbar.open('Submitted', null, { panelClass: 'success', duration: 2000 });
   }
 
@@ -194,6 +200,8 @@ export class TeamEnrollmentComponent implements OnInit {
               type: 'LIGA',
               allowEnlisting: true,
             },
+            clubId: club.id,
+            includeComments: true,
             includeSubEvents: true,
           })
           .pipe(
@@ -211,6 +219,8 @@ export class TeamEnrollmentComponent implements OnInit {
               type: 'NATIONAL',
               allowEnlisting: true,
             },
+            clubId: club.id,
+            includeComments: true,
             includeSubEvents: true,
           })
           .pipe(
@@ -221,6 +231,8 @@ export class TeamEnrollmentComponent implements OnInit {
 
     // not really ideal, but I just want it working for now
     const [prov, liga, nat] = await combineLatest([this.provEvent$, this.ligaEvent$, this.natEvent$]).toPromise();
+
+    this.competitionYear = prov.startYear ?? liga.startYear ?? nat.startYear;
 
     this.subEventF$.next([
       ...(nat?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'F') ?? []),
@@ -240,30 +252,68 @@ export class TeamEnrollmentComponent implements OnInit {
       ...(prov?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'MX') ?? []),
     ]);
 
-    this.comment = prov?.comments.length > 0 ? prov.comments[0] : new Comment({ clubId: club.id });
-    this.commentControl.patchValue(this.comment.message);
-    this.commentControl.valueChanges.pipe(debounceTime(600)).subscribe((r) => this._updateComment(r));
+    if (prov) {
+      this.commentProv =
+        prov.comments?.length > 0
+          ? prov.comments[0]
+          : new Comment({
+              clubId: club.id,
+              eventId: prov.id,
+            });
+      this.commentProvControl.patchValue(this.commentProv.message);
+      this.commentProvControl.valueChanges.pipe(debounceTime(600)).subscribe(async (r) => {
+        this.commentProv.message = r;
+        this.commentProv.id = await this._updateComment(this.commentProv);
+      });
+    }
+
+    if (liga) {
+      this.commentLiga =
+        liga.comments?.length > 0
+          ? liga.comments[0]
+          : new Comment({
+              clubId: club.id,
+              eventId: liga.id,
+            });
+      this.commentLigaControl.patchValue(this.commentLiga.message);
+      this.commentLigaControl.valueChanges.pipe(debounceTime(600)).subscribe(async (r) => {
+        this.commentLiga.message = r;
+        this.commentLiga.id = await this._updateComment(this.commentLiga);
+      });
+    }
+
+    if (nat) {
+      this.commentNat =
+        nat.comments?.length > 0
+          ? nat.comments[0]
+          : new Comment({
+              clubId: club.id,
+              eventId: nat.id,
+            });
+      this.commentNatControl.patchValue(this.commentNat.message);
+      this.commentNatControl.valueChanges.pipe(debounceTime(600)).subscribe(async (r) => {
+        this.commentNat.message = r;
+        this.commentNat.id = await this._updateComment(this.commentNat);
+      });
+    }
+
     this.subEventsInitialized = true;
   }
 
-  private async _updateComment(messaga: string) {
-    this.comment.message = messaga;
-
+  private async _updateComment(comment: Comment): Promise<string> {
     // player get's set via authenticated user
-    const { player, ...comment } = this.comment;
+    const { player, eventId, ...commentMessage } = comment;
 
     const result = await this.apollo
       .mutate<any>({
-        mutation: this.comment.id ? updateComment : addComment,
+        mutation: commentMessage.id ? updateComment : addComment,
         variables: {
-          comment,
-          eventId: this.formGroup.value.event.id,
+          comment: commentMessage,
+          eventId
         },
       })
       .toPromise();
 
-    if (result.data?.addComment != null) {
-      this.comment.id = result.data?.addComment.id;
-    }
+    return result.data?.addComment?.id ?? comment.id;
   }
 }

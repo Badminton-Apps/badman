@@ -11,6 +11,7 @@ import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
 import dotenv from 'dotenv';
 import { Response, Router } from 'express';
+import { EnrollmentController } from './controllers/enrollement.controller';
 import { RankingController } from './controllers/ranking.controller';
 import { RequestLinkController } from './controllers/request-link.controller';
 import { SystemController } from './controllers/system.controller';
@@ -34,6 +35,7 @@ const startServer = (databaseService: DataBaseHandler) => {
 
   const app = new App(
     [
+      new EnrollmentController(router, authService.checkAuth),
       new RankingController(router, authService.checkAuth),
       new SystemController(router, authService.checkAuth, databaseService),
       new UserController(router, authService.checkAuth),
