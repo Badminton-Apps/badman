@@ -19,6 +19,24 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+
+  <mat-form-field flex>
+    <mat-label>Open</mat-label>
+    <mat-select (selectionChange)="this.filterOpen($event.value)">
+      <mat-option [value]="undefined"> Both </mat-option>
+      <mat-option [value]="true"> Open </mat-option>
+      <mat-option [value]="false"> Closed </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field flex>
+    <mat-label>Started</mat-label>
+    <mat-select (selectionChange)="filterStarted($event.value)">
+      <mat-option [value]="undefined"> Both </mat-option>
+      <mat-option [value]="true"> Started </mat-option>
+      <mat-option [value]="false"> Not started </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
 <div *ngIf="isLoadingResults">

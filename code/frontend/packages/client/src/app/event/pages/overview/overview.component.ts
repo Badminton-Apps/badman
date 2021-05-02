@@ -1,10 +1,4 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
@@ -13,13 +7,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Event, EventService, EventType } from 'app/_shared';
 import { BehaviorSubject, combineLatest, of as observableOf } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  map,
-  startWith,
-  switchMap,
-} from 'rxjs/operators';
+import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './overview.component.html',
@@ -28,10 +16,7 @@ import {
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
       state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
@@ -48,10 +33,14 @@ export class OverviewComponent {
     query: string;
     eventType: EventType;
     startYear: number;
+    allowEnlisting: boolean;
+    started: boolean;
   }>({
     eventType: undefined,
     query: undefined,
     startYear: undefined,
+    allowEnlisting: undefined,
+    started: undefined,
   });
   onPaginateChange = new EventEmitter<PageEvent>();
 
@@ -108,6 +97,8 @@ export class OverviewComponent {
 
           const where: { [key: string]: any } = {};
 
+          console.log(filterChange);
+
           if (filterChange.query) {
             where.name = {
               $iLike: `%${filterChange.query}%`,
@@ -118,6 +109,14 @@ export class OverviewComponent {
             where.startYear = filterChange.startYear;
           }
 
+          if (filterChange.started != undefined) {
+            where.started = filterChange.started;
+          }
+
+          if (filterChange.allowEnlisting != undefined) {
+            where.allowEnlisting = filterChange.allowEnlisting;
+          }
+
           return this.eventService.getEvents({
             first: this.pageSize$.value,
             after: this.cursor,
@@ -126,8 +125,7 @@ export class OverviewComponent {
           });
         }),
         map((data) => {
-          const events =
-            data.eventTournaments ?? data.eventCompetitions ?? (null as any);
+          const events = data.eventTournaments ?? data.eventCompetitions ?? (null as any);
 
           const count = events?.total || 0;
           this.isLoadingResults = false;
@@ -167,6 +165,20 @@ export class OverviewComponent {
     this.filterChange$.next({
       ...this.filterChange$.value,
       startYear: year,
+    });
+  }
+
+  filterOpen(allowEnlisting: boolean) {
+    this.filterChange$.next({
+      ...this.filterChange$.value,
+      allowEnlisting,
+    });
+  }
+
+  filterStarted(started: boolean) {
+    this.filterChange$.next({
+      ...this.filterChange$.value,
+      started,
     });
   }
 
