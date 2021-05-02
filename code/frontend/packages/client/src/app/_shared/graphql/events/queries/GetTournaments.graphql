@@ -2,7 +2,8 @@
 query GetEvents(
   $first: Int
   $after: String
-	$where: SequelizeJSON
+  $where: SequelizeJSON
+  $includeSubEvents: Boolean!
 ) {
   eventTournaments(first: $first, after: $after, where: $where) {
     total
@@ -13,7 +14,7 @@ query GetEvents(
         name
         dates
         firstDay
-        subEvents {
+        subEvents @include(if: $includeSubEvents) {
           name
         }
       }

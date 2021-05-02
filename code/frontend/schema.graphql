@@ -516,6 +516,7 @@ type Player {
     order: String
     where: SequelizeJSON
     offset: Int
+    end: String
   ): [Club]
 }
 
@@ -804,11 +805,12 @@ type RootMutationType {
   addRole(role: RoleInput, clubId: Int): Role
   addTeam(team: TeamInput!, clubId: ID!): Team
   deleteImportedEvent(event: ImportInput): Imported
-  removeClub(id: String): Club
+  removeClub(id: String): Boolean
   removeLocation(locationId: ID): Location
   removePlayerFromRole(roleId: ID, playerId: ID): Role
   removePlayerFromTeam(teamId: ID, playerId: ID): Team
   removeTeam(teamId: ID): Team
+  removeRole(id: ID): Role
   setGroupsCompetition(id: ID!, groupIds: [ID]): EventCompetition
   updateClub(club: ClubInput): Club
   updateComment(comment: CommentInput): Comment
@@ -830,7 +832,7 @@ type RootMutationType {
     rankingSystemGroup: RankingSystemGroupInput
   ): RankingSystemGroup
   updateRole(role: RoleInput): Role
-  updateSubEventTeam(teamId: ID, newSubEventId: ID, oldSubEventId: ID): Team
+  updateSubEventTeam(teamId: ID, subEventId: ID): Team
   updateTeam(team: TeamInput): Team
   updateTeamLocation(locationId: ID, teamId: ID, use: Boolean): Team
   updateTournamentEventLocation(
