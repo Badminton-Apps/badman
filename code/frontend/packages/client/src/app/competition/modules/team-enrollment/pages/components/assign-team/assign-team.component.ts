@@ -205,29 +205,31 @@ export class AssignTeamComponent implements OnInit {
       }
     }
 
-    let bestIndex;
+    let bestIndex = team.type !== 'MX' ? 4 * 24 : 4 * 36;
 
-    if (team.type == 'MX') {
-      bestIndex = team.players
+    if (team.type !== 'MX') {
+      const bestPlayers = team.players
         .map((r) => r.index)
         .sort((a, b) => a - b)
-        .slice(0, 4)
-        .reduce((a, b) => a + b, 0);
+        .slice(0, 4);
+
+      bestIndex = bestPlayers.reduce((a, b) => a + b, (bestPlayers.length - 4) * 24);
     } else {
-      const male = team.players
-        .filter((p) => p.gender == 'M')
-        .map((r) => r.index)
-        .sort((a, b) => a - b)
-        .slice(0, 2)
-        .reduce((a, b) => a + b, 0);
-      const female = team.players
-        .filter((p) => p.gender == 'M')
-        .map((r) => r.index)
-        .sort((a, b) => a - b)
-        .slice(0, 2)
-        .reduce((a, b) => a + b, 0);
+      const bestPlayers = [
+        ...team.players
+          .filter((p) => p.gender == 'M')
+          .map((r) => r.index)
+          .sort((a, b) => a - b)
+          .slice(0, 2),
 
-      bestIndex = male + female;
+        ...team.players
+          .filter((p) => p.gender == 'M')
+          .map((r) => r.index)
+          .sort((a, b) => a - b)
+          .slice(0, 2),
+      ];
+
+      bestIndex = bestPlayers.reduce((a, b) => a + b, (bestPlayers.length - 4) * 36);
     }
 
     if (bestIndex < subEvent.minBaseIndex && team.teamNumber > 1) {
