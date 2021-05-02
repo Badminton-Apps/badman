@@ -205,13 +205,32 @@ export class AssignTeamComponent implements OnInit {
       }
     }
 
-    const bestIndex = team.players
-      .map((r) => r.index)
-      .sort((a, b) => a - b)
-      .slice(0, 4)
-      .reduce((a, b) => a + b, 0);
+    let bestIndex;
 
-    if (bestIndex < subEvent.minBaseIndex) {
+    if (team.type == 'MX') {
+      bestIndex = team.players
+        .map((r) => r.index)
+        .sort((a, b) => a - b)
+        .slice(0, 4)
+        .reduce((a, b) => a + b, 0);
+    } else {
+      const male = team.players
+        .filter((p) => p.gender == 'M')
+        .map((r) => r.index)
+        .sort((a, b) => a - b)
+        .slice(0, 2)
+        .reduce((a, b) => a + b, 0);
+      const female = team.players
+        .filter((p) => p.gender == 'M')
+        .map((r) => r.index)
+        .sort((a, b) => a - b)
+        .slice(0, 2)
+        .reduce((a, b) => a + b, 0);
+
+      bestIndex = male + female;
+    }
+
+    if (bestIndex < subEvent.minBaseIndex && team.teamNumber > 1) {
       warnings.hasIssues = true;
       warnings.base.push(await this.translation.get('competition.enrollment.errors.best-players').toPromise());
     }
