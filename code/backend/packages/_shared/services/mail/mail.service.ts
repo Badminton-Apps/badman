@@ -10,16 +10,6 @@ export class MailService {
   private _transporter;
 
   constructor() {
-    logger.info('Mail config', {
-      host: 'smtp.gmail.com',
-      port: 465,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
-      },
-      secure: true
-    });
-
     this._transporter = nodemailer.createTransport(
       smtpTransport({
         host: 'smtp.gmail.com',
