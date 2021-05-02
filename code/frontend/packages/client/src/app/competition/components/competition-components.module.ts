@@ -4,6 +4,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { SharedModule } from 'app/_shared';
 import { SelectClubComponent } from './select-club';
 import { SelectEventComponent } from './select-event/select-event.component';
@@ -15,7 +16,8 @@ const materialModules = [
   MatFormFieldModule,
   ReactiveFormsModule,
   MatInputModule,
-  MatOptionModule
+  MatOptionModule,
+  MatSelectModule
 ];
 
 const components = [
