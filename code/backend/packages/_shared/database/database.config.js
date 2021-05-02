@@ -13,7 +13,6 @@ module.exports = {
   migrationStorageTableSchema: 'public',
   logging: false,
   retry: {
-    max: retries,
-    timeout: 30000
+    max: retries
   }
 };
