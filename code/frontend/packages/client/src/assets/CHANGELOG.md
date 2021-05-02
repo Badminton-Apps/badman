@@ -1,3 +1,23 @@
+# [3.27.0](https://github.com/Badminton-Apps/core/compare/v3.26.3...v3.27.0) (2021-05-02)
+
+
+### Bug Fixes
+
+* add edit location role ([59e921e](https://github.com/Badminton-Apps/core/commit/59e921e0e183e2b280c5653bb8a898e5d541e2b2))
+* player add ([4e9fd6e](https://github.com/Badminton-Apps/core/commit/4e9fd6e1a5d16b0b7dadc02ac04892907524b36c))
+* remove other subevents from same year ([53c4685](https://github.com/Badminton-Apps/core/commit/53c4685b372ba4aef426f5abd23998cf50452dd0))
+* translations ([9117c88](https://github.com/Badminton-Apps/core/commit/9117c88cfde4a4fc7764689301972e27b2ef2c30))
+
+
+### Features
+
+* adding abbreviation and secrets ([34f39ac](https://github.com/Badminton-Apps/core/commit/34f39acb8a4ebe08889b142e35004807a34288c7))
+* allow comments / event ([36bf548](https://github.com/Badminton-Apps/core/commit/36bf54842f8db562d131856d4ec4d96e543897d9))
+* change event selection from autocomplete to dropdown ([7016103](https://github.com/Badminton-Apps/core/commit/70161037713fec3d970100053ac27fec2b211f49))
+* Sending mail on submit ([0c9908e](https://github.com/Badminton-Apps/core/commit/0c9908e36daad6ff54462a214b86f7abc6b02b16))
+
+
+
 ## [3.26.3](https://github.com/Badminton-Apps/core/compare/v3.26.2...v3.26.3) (2021-04-30)
 
 
