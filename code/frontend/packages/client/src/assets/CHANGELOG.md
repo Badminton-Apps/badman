@@ -1,3 +1,12 @@
+## [3.27.1](https://github.com/Badminton-Apps/core/compare/v3.27.0...v3.27.1) (2021-05-02)
+
+
+### Bug Fixes
+
+* best-players for first team + gender fix MX ([ca3fed6](https://github.com/Badminton-Apps/core/commit/ca3fed68fc8e851a23abbf1036ca24afd0a84512))
+
+
+
 # [3.27.0](https://github.com/Badminton-Apps/core/compare/v3.26.3...v3.27.0) (2021-05-02)
 
 
