@@ -3,7 +3,8 @@ import nodemailer from 'nodemailer';
 import smtpTransport from 'nodemailer-smtp-transport';
 import exphbs from 'nodemailer-express-handlebars';
 import path from 'path';
-import { Player, SubEventCompetition } from '../../models';
+import { Comment, Player, SubEventCompetition } from '../../models';
+import { Op } from 'sequelize/types';
 
 export class MailService {
   private _transporter;
@@ -14,8 +15,8 @@ export class MailService {
         host: 'smtp.gmail.com',
         port: 465,
         auth: {
-          user: 'glenn.latomme@gmail.com',
-          pass: 'bkxtlkysohswmeoi'
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS
         },
         secure: true
       })
@@ -27,7 +28,7 @@ export class MailService {
         layoutsDir: path.join(__dirname, './templates/layouts'),
         defaultLayout: 'layout.handlebars'
       },
-      viewPath: path.join(__dirname, './templates'),
+      viewPath: path.join(__dirname, './templates')
     });
 
     this._transporter.use('compile', hbsOptions);
@@ -88,7 +89,9 @@ export class MailService {
           // Set the players
           for (const player of team.players) {
             if (
-              !clubs[clubIndex].players.find(r => r.memberId === player.memberId)
+              !clubs[clubIndex].players.find(
+                r => r.memberId === player.memberId
+              )
             ) {
               clubs[clubIndex].players.push(player.toJSON());
             }
@@ -105,6 +108,106 @@ export class MailService {
       subject: 'New players',
       template: 'newplayers',
       context: { clubs, clientUrl, title: 'New players' }
+    };
+
+    try {
+      const info = await this._transporter.sendMail(options);
+      logger.debug('Message sent: %s', info.messageId);
+      logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    } catch (e) {
+      logger.error('Hello', e);
+    }
+  }
+
+  async sendClubMail(to: string, clubId: string, year: number) {
+    const comments = await Comment.findAll({
+      attributes: ['message'],
+      include: [
+        {
+          model: EventCompetition,
+          where: { startYear: year },
+          required: true,
+          attributes: ['name']
+        }
+      ]
+    });
+
+    const club = await Club.findOne({
+      where: {
+        id: clubId
+      },
+      include: [
+        {
+          attributes: ['name', 'teamNumber', 'type'],
+          model: Team,
+          where: {
+            active: true
+          },
+          include: [
+            {
+              model: Player,
+              as: 'players',
+              through: { where: { base: true, end: null } }
+            },
+            {
+              model: SubEventCompetition,
+              attributes: ['id', 'name'],
+              required: true,
+              include: [
+                {
+                  required: true,
+                  model: EventCompetition,
+                  where: {
+                    startYear: year
+                  },
+                  attributes: ['id', 'name'],
+                  include: [
+                    {
+                      model: Comment
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+    // Sort by type, followed by number
+    club.teams = club.teams.sort((a, b) => {
+      if (a.type < b.type) {
+        return -1;
+      }
+      if (a.type > b.type) {
+        return 1;
+      }
+      if (a.teamNumber < b.teamNumber) {
+        return -1;
+      }
+      if (a.teamNumber > b.teamNumber) {
+        return 1;
+      }
+      return 0;
+    });
+
+    const clientUrl = process.env.CLIENT_URL;
+
+    const options = {
+      from: 'no-reply@badman.app',
+      to,
+      subject: `${club.name} inschrijving`,
+      template: 'clubenrollment',
+      context: {
+        club: club.toJSON(),
+        clientUrl,
+        title: `${club.name} enrollment`,
+        preview: `${club.name} schreef ${club.teams.length} teams in`,
+        years: `${year}-${year+1}`,
+        comments: comments
+          .filter(c => c.message && c.message.length > 0)
+          .map(c => c?.toJSON())
+      }
     };
 
     try {

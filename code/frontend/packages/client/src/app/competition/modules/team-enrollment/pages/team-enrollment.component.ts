@@ -22,6 +22,8 @@ import * as addComment from './graphql/AddComment.graphql';
 export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatVerticalStepper) vert_stepper: MatVerticalStepper;
 
+  competitionYear: number;
+
   formGroup: FormGroup;
 
   enabledProvincialControl: FormControl;
@@ -49,12 +51,7 @@ export class TeamEnrollmentComponent implements OnInit {
 
   subEventsInitialized: boolean = false;
 
-  constructor(
-    private eventService: EventService,
-    private systemService: SystemService,
-    private apollo: Apollo,
-    private snackbar: MatSnackBar
-  ) {}
+  constructor(private eventService: EventService, private apollo: Apollo, private snackbar: MatSnackBar) {}
 
   async ngOnInit() {
     this.enabledProvincialControl = new FormControl(false);
@@ -121,6 +118,7 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async submit() {
+    this.club$.pipe(switchMap((club) => this.eventService.finishEnrollment(club, this.competitionYear))).toPromise();
     this.snackbar.open('Submitted', null, { panelClass: 'success', duration: 2000 });
   }
 
@@ -221,6 +219,8 @@ export class TeamEnrollmentComponent implements OnInit {
 
     // not really ideal, but I just want it working for now
     const [prov, liga, nat] = await combineLatest([this.provEvent$, this.ligaEvent$, this.natEvent$]).toPromise();
+
+    this.competitionYear = prov.startYear ?? liga.startYear ?? nat.startYear;
 
     this.subEventF$.next([
       ...(nat?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'F') ?? []),
