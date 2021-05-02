@@ -1,10 +1,9 @@
-import { EventCompetition, Team, Club, logger } from '@badvlasim/shared';
-import nodemailer from 'nodemailer';
-import smtpTransport from 'nodemailer-smtp-transport';
+import { Club, EventCompetition, logger, Team } from '@badvlasim/shared';
+import nodemailer, { Transporter } from 'nodemailer';
 import exphbs from 'nodemailer-express-handlebars';
+import smtpTransport from 'nodemailer-smtp-transport';
 import path from 'path';
 import { Comment, Player, SubEventCompetition } from '../../models';
-import { Transporter } from 'nodemailer';
 
 export class MailService {
   private _transporter: Transporter;
@@ -42,7 +41,7 @@ export class MailService {
   }
 
   async sendNewPeopleMail(to: string) {
-    if (this._mailingEnabled == false) {
+    if (this._mailingEnabled === false) {
       return;
     }
 
@@ -131,7 +130,7 @@ export class MailService {
   }
 
   async sendClubMail(to: string, clubId: string, year: number) {
-    if (this._mailingEnabled == false) {
+    if (this._mailingEnabled === false) {
       return;
     }
 
