@@ -84,7 +84,9 @@
     "enrollment": {
       "title": "Team enrollment",
       "select-location": "Select locations for team encounters",
-      "comment": "Comments (for each team)",
+      "comment-prov": "Comments provincial (for each team)",
+      "comment-liga": "Comments liga (for each team)",
+      "comment-nat": "Comments nat (for each team)",
       "select-club": "Select club and competition",
       "assign-team": "Assign teams",
       "max": "Max",

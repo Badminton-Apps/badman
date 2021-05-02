@@ -84,7 +84,9 @@
     "enrollment": {
       "title": "Ploeginschrijving",
       "select-location": "Selecteer locaties voor ontmoetingen",
-      "comment": "Opmerkingen (per ploeg)",
+      "comment-prov": "Opmerkingen provinciale (per ploeg)",
+      "comment-liga": "Opmerkingen liga (per ploeg)",
+      "comment-nat": "Opmerkingen nationaal (per ploeg)",
       "select-club": "Selecteer club & competitie",
       "assign-team": "Deel ploegen in",
       "max": "Max",
