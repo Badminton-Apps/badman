@@ -1,3 +1,14 @@
+## [3.26.3](https://github.com/Badminton-Apps/core/compare/v3.26.2...v3.26.3) (2021-04-30)
+
+
+### Bug Fixes
+
+* cleanup ([9a56b5b](https://github.com/Badminton-Apps/core/commit/9a56b5ba20af55c3398d94a4ea194c14e54c0010))
+* rollback if invalid ([55f7dc6](https://github.com/Badminton-Apps/core/commit/55f7dc6cf4367b9110f41ec54a789bc19a220bef))
+* update last ranking if needed ([5606de0](https://github.com/Badminton-Apps/core/commit/5606de05def09a8a35fde6162e5e3aa0a3a94962))
+
+
+
 ## [3.26.2](https://github.com/Badminton-Apps/core/compare/v3.26.1...v3.26.2) (2021-04-30)
 
 
