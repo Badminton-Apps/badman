@@ -4,37 +4,48 @@ import smtpTransport from 'nodemailer-smtp-transport';
 import exphbs from 'nodemailer-express-handlebars';
 import path from 'path';
 import { Comment, Player, SubEventCompetition } from '../../models';
-import { Op } from 'sequelize/types';
+import { Transporter } from 'nodemailer';
 
 export class MailService {
-  private _transporter;
+  private _transporter: Transporter;
+  private _mailingEnabled = false;
 
   constructor() {
-    this._transporter = nodemailer.createTransport(
-      smtpTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        auth: {
-          user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASS
+    try {
+      this._transporter = nodemailer.createTransport(
+        smtpTransport({
+          service: 'gmail',
+          auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS
+          }
+        })
+      );
+
+      this._transporter.verify().then(() => {
+        this._mailingEnabled = true;
+      });
+
+      const hbsOptions = exphbs({
+        viewEngine: {
+          partialsDir: path.join(__dirname, './templates/partials'),
+          layoutsDir: path.join(__dirname, './templates/layouts'),
+          defaultLayout: 'layout.handlebars'
         },
-        secure: true
-      })
-    );
+        viewPath: path.join(__dirname, './templates')
+      });
 
-    const hbsOptions = exphbs({
-      viewEngine: {
-        partialsDir: path.join(__dirname, './templates/partials'),
-        layoutsDir: path.join(__dirname, './templates/layouts'),
-        defaultLayout: 'layout.handlebars'
-      },
-      viewPath: path.join(__dirname, './templates')
-    });
-
-    this._transporter.use('compile', hbsOptions);
+      this._transporter.use('compile', hbsOptions);
+    } catch (e) {
+      logger.warn('Mailing disabled', e);
+    }
   }
 
   async sendNewPeopleMail(to: string) {
+    if (this._mailingEnabled == false) {
+      return;
+    }
+
     const events = await EventCompetition.findAll({
       attributes: ['name'],
       where: {
@@ -120,6 +131,10 @@ export class MailService {
   }
 
   async sendClubMail(to: string, clubId: string, year: number) {
+    if (this._mailingEnabled == false) {
+      return;
+    }
+
     const comments = await Comment.findAll({
       attributes: ['message'],
       include: [

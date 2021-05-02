@@ -13,9 +13,6 @@ spec:
     protocol: TCP
     name: internal
     targetPort: {{ .Values.service.internalPort }}
-  - protocol: TCP
-    name: tcp-smtps
-    port: 465
   selector:
     app: {{ template "fullname" . }}
   type: ClusterIP
