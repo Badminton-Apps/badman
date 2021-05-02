@@ -71,6 +71,7 @@ export const updateCommentMutation = {
       });
 
       await transaction.commit();
+      return comment;
     } catch (e) {
       logger.warn('rollback');
       await transaction.rollback();

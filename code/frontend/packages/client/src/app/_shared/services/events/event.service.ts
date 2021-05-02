@@ -44,10 +44,13 @@ export class EventService {
     first?: number;
     after?: string;
     includeSubEvents?: boolean;
+    includeComments?: boolean;
+    clubId?: string;
     where?: { [key: string]: any };
   }) {
     args = {
       includeSubEvents: false,
+      includeComments: false,
       ...args,
     };
 
@@ -67,7 +70,9 @@ export class EventService {
           first: args.first,
           after: args.after,
           where: args.where,
+          clubId: args?.clubId,
           includeSubEvents: args.includeSubEvents,
+          includeComments: args.includeComments,
         },
       })
       .pipe(
