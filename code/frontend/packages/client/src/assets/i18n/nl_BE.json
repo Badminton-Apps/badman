@@ -97,15 +97,15 @@
             },
             "player-base": "Speler is al basisspeler van andere ploeg",
             "title": "Ploeginschrijving",
-            "comment-prov": "Opmerkingen provinciale competitie (per ploeg)",
-            "comment-liga": "Opmerkingen liga competitie (per ploeg)",
-            "comment-nat": "Opmerkingen nationale competitie (per ploeg)"
+            "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
+            "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
+            "comment-nat": "Opmerkingen Nationale competitie (per ploeg)"
         },
         "type": "Type",
         "national": "Nationaal",
         "liga": "Liga",
         "prov": "Provinciaal",
-        "note": "opmerking: wijzigingen worden direct opgeslagen"
+        "note": "opmerking: wijzigingen worden ogenblikkelijk opgeslagen"
     },
     "event": {
         "types": {
