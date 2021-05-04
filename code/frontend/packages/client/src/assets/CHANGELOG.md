@@ -1,3 +1,12 @@
+## [3.27.5](https://github.com/Badminton-Apps/core/compare/v3.27.4...v3.27.5) (2021-05-02)
+
+
+### Bug Fixes
+
+* best index was wronly calculated ([d4a9a36](https://github.com/Badminton-Apps/core/commit/d4a9a3669a92fc801e11663b63f7b0cfa5f2942c))
+
+
+
 ## [3.27.4](https://github.com/Badminton-Apps/core/compare/v3.27.3...v3.27.4) (2021-05-02)
 
 
