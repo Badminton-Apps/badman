@@ -175,11 +175,11 @@ export class MailService {
                     startYear: year
                   },
                   attributes: ['id', 'name'],
-                  include: [
-                    {
-                      model: Comment
-                    }
-                  ]
+                  // include: [
+                  //   {
+                  //     model: Comment
+                  //   }
+                  // ]
                 }
               ]
             }
@@ -218,11 +218,13 @@ export class MailService {
         title: `${club.name} enrollment`,
         preview: `${club.name} schreef ${club.teams.length} teams in`,
         years: `${year}-${year + 1}`,
-        comments: comments
-          .filter(c => c.message && c.message.length > 0)
-          .map(c => c?.toJSON())
+        comments: [] 
       }
     };
+
+    // comments
+    //       .filter(c => c.message && c.message.length > 0)
+    //       .map(c => c?.toJSON())
 
     try {
       const info = await this._transporter.sendMail(options);

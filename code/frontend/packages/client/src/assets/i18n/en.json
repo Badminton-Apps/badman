@@ -97,9 +97,9 @@
             },
             "player-base": "Player is already basis player of other team",
             "title": "Team enrollment",
-            "comment-prov": "Comments provincial competition (for each team)",
-            "comment-liga": "Comments liga competition (for each team)",
-            "comment-nat": "Comments national competition (for each team)"
+            "comment-prov": "Comments Provincial competition (for each team)",
+            "comment-liga": "Comments League competition (for each team)",
+            "comment-nat": "Comments National competition (for each team)"
         },
         "type": "Type",
         "national": "National",
