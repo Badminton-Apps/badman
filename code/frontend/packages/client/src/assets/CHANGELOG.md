@@ -1,3 +1,12 @@
+## [3.27.7](https://github.com/Badminton-Apps/core/compare/v3.27.6...v3.27.7) (2021-05-06)
+
+
+### Bug Fixes
+
+* gender  filter for MIX assignment ([f3f45bd](https://github.com/Badminton-Apps/core/commit/f3f45bde2941f417b8934d09e69620d66a1781f0))
+
+
+
 ## [3.27.6](https://github.com/Badminton-Apps/core/compare/v3.27.5...v3.27.6) (2021-05-04)
 
 
