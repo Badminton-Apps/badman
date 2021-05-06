@@ -224,7 +224,7 @@ export class AssignTeamComponent implements OnInit {
           .slice(0, 2),
         // 2 best female
         ...team.players
-          .filter((p) => p.gender == 'M')
+          .filter((p) => p.gender == 'F')
           .map((r) => r.index)
           .sort((a, b) => a - b)
           .slice(0, 2),
