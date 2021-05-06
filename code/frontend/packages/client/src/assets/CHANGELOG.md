@@ -1,3 +1,12 @@
+## [3.27.9](https://github.com/Badminton-Apps/core/compare/v3.27.8...v3.27.9) (2021-05-06)
+
+
+### Bug Fixes
+
+* only mark competition players as compeition players :) ([3a11968](https://github.com/Badminton-Apps/core/commit/3a11968a3df1c96be8b2e6570fa5af4fd18ad96c))
+
+
+
 ## [3.27.8](https://github.com/Badminton-Apps/core/compare/v3.27.7...v3.27.8) (2021-05-06)
 
 
