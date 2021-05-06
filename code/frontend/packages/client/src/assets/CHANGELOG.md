@@ -1,3 +1,12 @@
+## [3.27.8](https://github.com/Badminton-Apps/core/compare/v3.27.7...v3.27.8) (2021-05-06)
+
+
+### Bug Fixes
+
+* sorting ([45588e8](https://github.com/Badminton-Apps/core/commit/45588e87912ebe8f6b9f13a2e28309c175ed7f59))
+
+
+
 ## [3.27.7](https://github.com/Badminton-Apps/core/compare/v3.27.6...v3.27.7) (2021-05-06)
 
 
