@@ -85,7 +85,7 @@ export class ImportController extends BaseController {
 
               const memberIds = [...data.keys()];
               const players = await this._getPlayers(transaction, memberIds);
-              await this._setCompetitionStatus(transaction, memberIds);
+              await this._setCompetitionStatus(transaction, [...data.values()].filter(r => r.TypeName === "Competitiespeler").map(r => r.memberid));
               await this._createRankingPlaces(transaction, players, data, date);
               await this._createLastRankingPlaces(transaction, players, data, date);
               await transaction.commit();
