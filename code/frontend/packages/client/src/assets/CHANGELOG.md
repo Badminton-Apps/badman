@@ -1,3 +1,12 @@
+## [3.27.6](https://github.com/Badminton-Apps/core/compare/v3.27.5...v3.27.6) (2021-05-04)
+
+
+### Bug Fixes
+
+* remove comments ([27e8fd2](https://github.com/Badminton-Apps/core/commit/27e8fd2f27ae2f6db3c586bd785e363bf0be4ad0))
+
+
+
 ## [3.27.5](https://github.com/Badminton-Apps/core/compare/v3.27.4...v3.27.5) (2021-05-02)
 
 
