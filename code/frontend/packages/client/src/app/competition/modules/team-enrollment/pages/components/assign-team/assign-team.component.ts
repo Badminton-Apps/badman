@@ -55,7 +55,7 @@ export class AssignTeamComponent implements OnInit {
 
   ngOnInit(): void {
     this.ids = this.subEvents.map((s) => s.id);
-    this.subEvents = this.subEvents.sort((a, b) => b.level - a.level);
+    this.subEvents = this.subEvents.sort((a, b) => a.level - b.level);
     this.initialPlacing();
   }
 
