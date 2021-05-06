@@ -70,9 +70,9 @@ export class ImportController extends BaseController {
           const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true });
           const data = new Map();
           stream.on('data', row => {
-            if (row.TypeName === 'Competitiespeler') {
+            // if (row.TypeName === 'Competitiespeler') {
               data.set(row.memberid, row);
-            }
+            // }
           });
           stream.on('error', error => {
             logger.error(error);
