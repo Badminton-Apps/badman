@@ -275,15 +275,15 @@ export class AssignTeamComponent implements OnInit {
   }
 
   private initialPlacing() {
-    const subEventsSorted = this.subEvents.sort((a, b) => b.level - a.level);
+    // Because sort is in place, we create a local copy to not effect the original untill needed
+    const localInstanceSubEvents = [...this.subEvents];
+    const subEventsSorted = localInstanceSubEvents.sort((a, b) => b.level - a.level);
     for (const team of this.teams) {
       let subEvent = null;
-      let wasAlreadyAssigned = false;
 
       for (const tse of team.subEvents) {
         subEvent = subEventsSorted.find((s) => s.id === tse.id);
         if (subEvent) {
-          wasAlreadyAssigned = true;
           break;
         }
       }
@@ -304,9 +304,9 @@ export class AssignTeamComponent implements OnInit {
       this.validate(team, subEvent);
     }
 
-    const natSubEvents = this.subEvents.filter((a) => a.levelType == 'NATIONAL').sort((a, b) => a.level - b.level);
-    const ligaSubEvents = this.subEvents.filter((a) => a.levelType == 'LIGA').sort((a, b) => a.level - b.level);
-    const provSubEvents = this.subEvents.filter((a) => a.levelType == 'PROV').sort((a, b) => a.level - b.level);
+    const natSubEvents = localInstanceSubEvents.filter((a) => a.levelType == 'NATIONAL').sort((a, b) => a.level - b.level);
+    const ligaSubEvents = localInstanceSubEvents.filter((a) => a.levelType == 'LIGA').sort((a, b) => a.level - b.level);
+    const provSubEvents = localInstanceSubEvents.filter((a) => a.levelType == 'PROV').sort((a, b) => a.level - b.level);
 
     this.subEvents = [...natSubEvents, ...ligaSubEvents, ...provSubEvents];
   }
