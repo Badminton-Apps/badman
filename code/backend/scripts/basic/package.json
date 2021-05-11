@@ -1,0 +1,36 @@
+{
+  "name": "@badvlascript/basic",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prep-cp": "node -r ts-node/register ./src/prep-for-cp.ts",
+    "singned-up": "node -r ts-node/register ./src/singned-up.ts"
+  },
+  "dependencies": {
+    "@badvlasim/shared": "^3.27.9",
+    "@fast-csv/parse": "^4.3.1",
+    "@types/concat-stream": "^1.6.0",
+    "@types/nodemailer": "^6.4.1",
+    "@types/nodemailer-direct-transport": "^1.0.31",
+    "@types/nodemailer-smtp-transport": "^2.7.4",
+    "concat-stream": "^2.0.0",
+    "fast-csv": "^4.3.1",
+    "http-proxy-middleware": "^1.0.6",
+    "nodemailer": "^6.5.0",
+    "nodemailer-express-handlebars": "^4.0.0",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "promise-callbacks": "^3.8.2",
+    "node-adodb": "^5.0.3",
+    "got": "^11.8.2"
+  },
+  "peerDependencies": {
+    "dotenv": "^8.2.0",
+    "graphql-sequelize": "^9.4.0",
+    "moment": "^2.24.0"
+  },
+  "devDependencies": {
+    "@types/got": "^9.6.11"
+  }
+}
