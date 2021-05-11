@@ -129,7 +129,7 @@ export class MailService {
     }
   }
 
-  async sendClubMail(to: string, clubId: string, year: number) {
+  async sendClubMail(to: string | string[], clubId: string, year: number, cc?: string | string[]) {
     if (this._mailingEnabled === false) {
       return;
     }
