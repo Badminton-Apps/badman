@@ -90,6 +90,7 @@
                 "not-allowed": "{{player}} is not allowed in basis ({{type}}:{{level}}, max {{max}})",
                 "cant-play": "{{player}} is not allowed to play ({{type}}:{{level}}, max {{max}})",
                 "best-players": "Strongest 4 players can never play together",
+                "best-max": "Strongest 4 players too high for division",
                 "base-min": "Team index too low for division",
                 "base-max": "Team index too high for division",
                 "no-day": "Please select an encounter moment",
