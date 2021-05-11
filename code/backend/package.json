@@ -2,7 +2,8 @@
   "name": "ranking-simulation-backend",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "scripts/*"
   ],
   "scripts": {
     "start": "npx lerna run --parallel start:watch",
