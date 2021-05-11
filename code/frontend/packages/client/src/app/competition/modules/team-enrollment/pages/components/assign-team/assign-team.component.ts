@@ -248,6 +248,11 @@ export class AssignTeamComponent implements OnInit {
       issues.base.push(await this.translation.get('competition.enrollment.errors.base-max').toPromise());
     }
 
+    if (bestIndex > subEvent.maxBaseIndex) {
+      warnings.hasIssues = true;
+      warnings.base.push(await this.translation.get('competition.enrollment.errors.best-max').toPromise());
+    }
+
     if (issues.hasIssues) {
       issues.message += issues.base.join('\n\r');
       if (issues.base.length > 0 && issues.level.length > 0) {
