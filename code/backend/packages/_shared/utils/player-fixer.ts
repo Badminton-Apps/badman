@@ -5420,6 +5420,13 @@ export const correctWrongPlayers = (player: {
     };
   }
 
+  if (player.memberId === '50711059') {
+    return {
+      ...player,
+      memberId: '50090114'
+    };
+  }
+
   // // Fixme
   // if (player.memberId === '') {
   //   return {
