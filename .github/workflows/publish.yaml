@@ -21,11 +21,11 @@ jobs:
             code/${{ matrix.folder }}/node_modules
             code/${{ matrix.folder }}/*/*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('code/${{ matrix.folder }}/yarn.lock') }}
-      - run: npx lerna bootstrap --scope="@badvlasim/*"
+      - run: npx lerna bootstrap --ignore @badvlascript/*
         working-directory: code/${{ matrix.folder }}
-      - run: npm run lint --scope="@badvlasim/*"
+      - run: npm run lint --ignore @badvlascript/*
         working-directory: code/${{ matrix.folder }}
-      - run: npm run test --scope="@badvlasim/*"
+      - run: npm run test --ignore @badvlascript/*
         working-directory: code/${{ matrix.folder }}
       - uses: codecov/codecov-action@v1
         with:
