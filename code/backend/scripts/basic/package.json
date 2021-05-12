@@ -8,6 +8,9 @@
     "prep-cp": "node -r ts-node/register ./src/prep-for-cp.ts",
     "singned-up": "node -r ts-node/register ./src/singned-up.ts"
   },
+  "os": [
+    "win32"
+  ],
   "dependencies": {
     "@badvlasim/shared": "^3.27.9",
     "@fast-csv/parse": "^4.3.1",
