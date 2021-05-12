@@ -129,13 +129,21 @@ export class MailService {
     }
   }
 
-  async sendClubMail(to: string | string[], clubId: string, year: number, cc?: string | string[]) {
+  async sendClubMail(
+    to: string | string[],
+    clubId: string,
+    year: number,
+    cc?: string | string[]
+  ) {
     if (this._mailingEnabled === false) {
       return;
     }
 
     const comments = await Comment.findAll({
       attributes: ['message'],
+      where: {
+        clubId
+      },
       include: [
         {
           model: EventCompetition,
@@ -160,6 +168,10 @@ export class MailService {
           include: [
             {
               model: Player,
+              as: 'captain',
+            },
+            {
+              model: Player,
               as: 'players',
               through: { where: { base: true, end: null } }
             },
@@ -174,12 +186,7 @@ export class MailService {
                   where: {
                     startYear: year
                   },
-                  attributes: ['id', 'name'],
-                  // include: [
-                  //   {
-                  //     model: Comment
-                  //   }
-                  // ]
+                  attributes: ['id', 'name']
                 }
               ]
             }
@@ -218,7 +225,7 @@ export class MailService {
         title: `${club.name} enrollment`,
         preview: `${club.name} schreef ${club.teams.length} teams in`,
         years: `${year}-${year + 1}`,
-        comments: [] 
+        comments: comments.map(c => c.toJSON())
       }
     };
 
