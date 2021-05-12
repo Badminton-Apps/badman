@@ -39,7 +39,7 @@ export const addCommentMutation = {
       // Save comment
       const commentDb = await new Comment({
         ...comment,
-        // playerId: context?.req?.player?.id
+        playerId: context?.req?.player?.id
       }).save({ transaction });
 
       await dbEventComp.addComment(commentDb, { transaction });

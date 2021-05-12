@@ -71,11 +71,7 @@
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>{{ 'button.done' | translate }}</ng-template>
-    <p>
-      Commentaar is tijdelijk niet mogelijk.
-    </p>
-
-    <!-- <form [formGroup]="this.formGroup">
+    <form [formGroup]="this.formGroup">
       <div fxLayout="column">
         <mat-form-field appearance="outline" class="comment" *ngIf="this.enabledNationalControl.value">
           <mat-label>{{ 'competition.enrollment.comment-nat' | translate }}</mat-label>
@@ -114,7 +110,7 @@
           ></textarea>
         </mat-form-field>
       </div>
-    </form> -->
+    </form>
     <div>
       <button mat-button matStepperPrevious>{{ 'button.prev' | translate }}</button>
       <button mat-button (click)="this.submit()">{{ 'button.submit' | translate }}</button>
