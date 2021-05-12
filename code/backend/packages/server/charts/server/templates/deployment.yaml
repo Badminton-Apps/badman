@@ -54,6 +54,8 @@ spec:
             value: {{ .Values.services.supervisor }}
           - name: LOG_LEVEL
             value: info
+          - name: CLIENT_URL
+            value: https://badman.app
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
