@@ -1,9 +1,11 @@
 <ng-container *ngIf="this.team$ | async as team; else loading">
-  <h2 mat-dialog-title>Edit team</h2>
+  <h2 mat-dialog-title>Edit {{ team.name }}</h2>
   <mat-dialog-content>
     <app-team-fields
       [club]="this.data.club"
       [team]="team"
+      [allowEditNumber]="this.data.allowEditNumber"
+      [allowEditType]="this.data.allowEditType"
       (onTeamAdded)="this.onTeamAdded($event)"
       (onTeamUpdated)="this.onTeamUpdated($event)"
       (onCaptainUpdated)="this.onCaptainUpdated($event)"
