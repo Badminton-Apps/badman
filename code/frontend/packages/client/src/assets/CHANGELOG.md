@@ -1,3 +1,20 @@
+# [3.28.0](https://github.com/Badminton-Apps/core/compare/v3.27.9...v3.28.0) (2021-05-12)
+
+
+### Bug Fixes
+
+* member exists twice ([0f32cbb](https://github.com/Badminton-Apps/core/commit/0f32cbbbae009faa875da57e990d97596e688075))
+* sorting ([e45f81d](https://github.com/Badminton-Apps/core/commit/e45f81d987613699f998465b79be167ca3de2592))
+
+
+### Features
+
+* best team not allowed ([8602129](https://github.com/Badminton-Apps/core/commit/8602129c0e3f1d33c125e5b97e692e940f664d7f))
+* captain in mail, fix: comment ([aa5566a](https://github.com/Badminton-Apps/core/commit/aa5566abf87eaa47dd0b785f1e1ed34289ea0d09))
+* export to cp file ([125f7cd](https://github.com/Badminton-Apps/core/commit/125f7cd4c0c87fe570f56cd8c32ae91395965ee1))
+
+
+
 ## [3.27.9](https://github.com/Badminton-Apps/core/compare/v3.27.8...v3.27.9) (2021-05-06)
 
 
