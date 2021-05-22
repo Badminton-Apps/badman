@@ -3,7 +3,6 @@
     <mat-form-field appearance="outline" class="flex">
       <mat-label>Type</mat-label>
       <mat-select formControlName="type" required>
-        <mat-option>--select something --</mat-option>
         <mat-option value="M">{{ 'gender.male' | translate }}</mat-option>
         <mat-option value="F">{{ 'gender.female' | translate }}</mat-option>
         <mat-option value="MX">{{ 'gender.mix' | translate }}</mat-option>
@@ -11,13 +10,10 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>{{ 'input.name' | translate }}</mat-label>
-      <input matInput formControlName="name" alt="name" autocomplete="name" required />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="flex">
-      <mat-label>{{ 'input.abbreviation' | translate }}</mat-label>
-      <input matInput formControlName="abbreviation" alt="abbreviation" autocomplete="abbreviation" required />
+      <mat-label>Number</mat-label>
+      <mat-select formControlName="teamNumber" required>
+        <mat-option *ngFor="let tn of this.teamNumbers" [value]="tn">{{ tn }}</mat-option>
+      </mat-select>
     </mat-form-field>
   </div>
   <div class="row">
