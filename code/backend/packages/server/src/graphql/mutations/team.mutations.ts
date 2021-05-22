@@ -157,9 +157,9 @@ export const updateTeamMutation = {
         });
       }
 
-      const changed_teams = [];
+      const changedTeams = [];
 
-      if (team.teamNumber && team.teamNumber != dbTeam.teamNumber) {
+      if (team.teamNumber && team.teamNumber !== dbTeam.teamNumber) {
         team.name = `${dbTeam.club.name} ${team.teamNumber}${Team.getLetterForRegion(
           dbTeam.type,
           'vl'
@@ -192,7 +192,7 @@ export const updateTeamMutation = {
               dbLteam.teamNumber
             }${Team.getLetterForRegion(dbLteam.type, 'vl')}`;
             await dbLteam.save({ transaction });
-            changed_teams.push(dbLteam);
+            changedTeams.push(dbLteam);
           }
         } else if (team.teamNumber < dbTeam.teamNumber) {
           // number was decreased
@@ -217,14 +217,14 @@ export const updateTeamMutation = {
               dbHteam.teamNumber
             }${Team.getLetterForRegion(dbHteam.type, 'vl')}`;
             await dbHteam.save({ transaction });
-            changed_teams.push(dbHteam);
+            changedTeams.push(dbHteam);
           }
         }
       }
 
       await dbTeam.update(team, { transaction });
       // set impacted teams to final name
-      for (const dbCteam of changed_teams) {
+      for (const dbCteam of changedTeams) {
         dbCteam.name = `${dbTeam.club.name} ${dbCteam.teamNumber}${Team.getLetterForRegion(
           dbCteam.type,
           'vl'
@@ -458,7 +458,7 @@ export const updateSubEventTeamMutation = {
         });
       }
 
-      if (subEvents != null && subEvents.length > 0) {
+      if (subEvents !== null && subEvents.length > 0) {
         await dbTeam.removeSubEvents(subEvents, { transaction });
       }
       await dbTeam.addSubEvent(dbNewSubEvent.id, { transaction });
