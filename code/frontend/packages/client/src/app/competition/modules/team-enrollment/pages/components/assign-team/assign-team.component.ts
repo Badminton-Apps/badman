@@ -248,6 +248,21 @@ export class AssignTeamComponent implements OnInit {
       issues.base.push(await this.translation.get('competition.enrollment.errors.base-max').toPromise());
     }
 
+    if (team.captain == null) {
+      issues.hasIssues = true;
+      issues.base.push(await this.translation.get('competition.enrollment.errors.no-captain').toPromise());
+    }
+
+    if (team.locations == null || team.locations?.length == 0) {
+      issues.hasIssues = true;
+      issues.base.push(await this.translation.get('competition.enrollment.errors.no-location').toPromise());
+    }
+
+    if (team.preferredDay == null || team.preferredTime == null) {
+      issues.hasIssues = true;
+      issues.base.push(await this.translation.get('competition.enrollment.errors.no-prefferd').toPromise());
+    }
+
     if (bestIndex > subEvent.maxBaseIndex) {
       warnings.hasIssues = true;
       warnings.base.push(await this.translation.get('competition.enrollment.errors.best-max').toPromise());
