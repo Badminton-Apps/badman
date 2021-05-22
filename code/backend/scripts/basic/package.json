@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "prep-cp": "node -r ts-node/register ./src/prep-for-cp.ts",
+    "prep-cp:inspect": "node --inspect=6862 -r ts-node/register ./src/prep-for-cp.ts",
     "singned-up": "node -r ts-node/register ./src/singned-up.ts"
   },
   "os": [

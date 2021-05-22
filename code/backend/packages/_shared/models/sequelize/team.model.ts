@@ -1,28 +1,4 @@
 import {
-  AfterConnect,
-  AfterCreate,
-  AfterUpdate,
-  AllowNull,
-  BeforeBulkCreate,
-  BeforeBulkUpdate,
-  BeforeCreate,
-  BeforeUpdate,
-  BelongsTo,
-  BelongsToMany,
-  Column,
-  DataType,
-  Default,
-  ForeignKey,
-  HasMany,
-  HasOne,
-  Index,
-  IsUUID,
-  Model,
-  PrimaryKey,
-  Table,
-  Unique
-} from 'sequelize-typescript';
-import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -43,17 +19,33 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin
+  HasManySetAssociationsMixin
 } from 'sequelize';
+import {
+  BeforeBulkCreate,
+  BeforeCreate,
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  HasMany,
+  Index,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique
+} from 'sequelize-typescript';
+import { logger } from '../../utils';
+import { SubEventType } from '../enums';
 import { Club } from './club.model';
 import { EncounterCompetition, Location, SubEventCompetition } from './event';
+import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player } from './player.model';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { TeamSubEventMembership } from './team-subEvent-membership.model';
-import { SubEventType } from '../enums';
-import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 
 @Table({
   timestamps: true,
@@ -184,6 +176,19 @@ export class Team extends Model {
   )
   players: Player[];
 
+  _basePlayers: Player[];
+  get basePlayers(): Player[] {
+    if (this._basePlayers != null){
+      return this._basePlayers;
+    }
+
+    this._basePlayers = this.players.filter(
+      r => r.getDataValue('TeamPlayerMembership')?.base ?? false
+    );
+
+    return this._basePlayers;
+  }
+
   @Column
   type: SubEventType;
 
@@ -203,6 +208,70 @@ export class Team extends Model {
 
   @HasMany(() => EncounterCompetition, 'awayTeamId')
   awayEncounters: EncounterCompetition;
+
+  private _baseIndex: number = -1;
+
+  get baseIndex(): number {
+    // Only run this once per team
+    if (this._baseIndex != -1){
+      return this._baseIndex;
+    }
+
+    if (this.players?.length == null) {
+      return -1;
+    }
+
+    if (this.type !== 'MX') {
+      const bestPlayers = this.basePlayers
+        .map(
+          r =>
+            (r.lastRankingPlace?.single ?? 12) +
+            (r.lastRankingPlace?.double ?? 12)
+        )
+        .sort((a, b) => a - b)
+        .slice(0, 4);
+
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (bestPlayers.length - 4) * 24;
+      }
+
+      return bestPlayers.reduce((a, b) => a + b, missingIndex);
+    } else {
+      const bestPlayers = [
+        // 2 best male
+        ...this.basePlayers
+          .filter(p => p.gender == 'M')
+          .map(
+            r =>
+              (r.lastRankingPlace?.single ?? 12) +
+              (r.lastRankingPlace?.double ?? 12) +
+              (r.lastRankingPlace?.mix ?? 12)
+          )
+          .sort((a, b) => a - b)
+          .slice(0, 2),
+        // 2 best female
+        ...this.basePlayers
+          .filter(p => p.gender == 'F')
+          .map(
+            r =>
+              (r.lastRankingPlace?.single ?? 12) +
+              (r.lastRankingPlace?.double ?? 12) +
+              (r.lastRankingPlace?.mix ?? 12)
+          )
+          .sort((a, b) => a - b)
+          .slice(0, 2)
+      ];
+
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (bestPlayers.length - 4) * 36;
+      }
+
+      this._baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
+      return this._baseIndex;
+    }
+  }
 
   // Belongs to Club
   getClub!: BelongsToGetAssociationMixin<Club>;
