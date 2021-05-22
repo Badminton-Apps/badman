@@ -53,12 +53,42 @@ export class Team {
   }
 
   private calculateBase() {
-    const basePlayers = this.players.filter((r) => r.base).map((r) => r.index);
-    const missingPlayers = basePlayers.length >= 4 ? 0 : 4 - basePlayers.length;
-    const indexes = basePlayers.sort((a, b) => a - b);
+    const basePlayers = this.players.filter((r) => r.base);
 
-    this.baseIndex = indexes.slice(0, 4).reduce((acc, cur) => {
-      return acc + cur;
-    }, missingPlayers * (this.type == 'MX' ? 36 : 24));
+    if (this.type !== 'MX') {
+      const bestPlayers = basePlayers
+        .map((r) => r.index)
+        .sort((a, b) => a - b)
+        .slice(0, 4);
+
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (bestPlayers.length - 4) * 24
+      }
+
+      this.baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
+    } else {
+      const bestPlayers = [
+        // 2 best male
+        ...basePlayers
+          .filter((p) => p.gender == 'M')
+          .map((r) => r.index)
+          .sort((a, b) => a - b)
+          .slice(0, 2),
+        // 2 best female
+        ...basePlayers
+          .filter((p) => p.gender == 'F')
+          .map((r) => r.index)
+          .sort((a, b) => a - b)
+          .slice(0, 2),
+      ];
+
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (bestPlayers.length - 4) * 36
+      }
+
+      this.baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
+    }
   }
 }
