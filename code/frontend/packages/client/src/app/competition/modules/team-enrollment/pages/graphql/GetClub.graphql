@@ -10,6 +10,9 @@ query GetClubInfo($id: ID!) {
       type
       preferredTime
       preferredDay
+      captain {
+        id
+      }
       subEvents {
         id
         event {
