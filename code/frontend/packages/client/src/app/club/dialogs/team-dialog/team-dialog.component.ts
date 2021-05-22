@@ -1,5 +1,4 @@
 import { FormGroup } from '@angular/forms';
-import { PlayerService } from './../../../_shared/services/player/player.service';
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -26,7 +25,7 @@ export class TeamDialogComponent implements OnInit {
   form: FormGroup;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { team: Team; club: Club },
+    @Inject(MAT_DIALOG_DATA) public data: { team: Team; club: Club; allowEditType: boolean; allowEditNumber: boolean },
     private teamService: TeamService,
     private apollo: Apollo
   ) {}
@@ -37,13 +36,13 @@ export class TeamDialogComponent implements OnInit {
       switchMap(() => {
         if (this.data.team?.id) {
           return this.apollo
-          .query<{ team: Team }>({
-            query: teamQuery,
-            variables: {
-              id: this.data.team?.id,
-            },
-          })
-          .pipe(map((x) => new Team(x.data.team)));
+            .query<{ team: Team }>({
+              query: teamQuery,
+              variables: {
+                id: this.data.team?.id,
+              },
+            })
+            .pipe(map((x) => new Team(x.data.team)));
         } else {
           return of(null);
         }
@@ -134,14 +133,13 @@ export class TeamDialogComponent implements OnInit {
   }
 
   async onLocationAdded(location: string, team: Team) {
-
     await this.apollo
       .mutate({
         mutation: updateTeamLocation,
         variables: {
           teamId: team.id,
           locationId: location,
-          use: true
+          use: true,
         },
       })
       .toPromise();
@@ -156,7 +154,7 @@ export class TeamDialogComponent implements OnInit {
         variables: {
           teamId: team.id,
           locationId: location,
-          use: false
+          use: false,
         },
       })
       .toPromise();

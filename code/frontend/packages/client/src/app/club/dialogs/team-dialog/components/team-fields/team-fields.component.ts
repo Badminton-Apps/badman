@@ -23,37 +23,62 @@ export class TeamFieldsComponent implements OnInit {
   @Input()
   club: Club;
 
+  @Input()
+  allowEditType: boolean;
+  @Input()
+  allowEditNumber: boolean;
+
   teamForm: FormGroup;
   captainForm: FormGroup;
   locationControl: FormControl;
+  teamNumbers: number[];
 
   ngOnInit() {
-    const nameControl = new FormControl(this.team.name ?? `${this.club.name} `, Validators.required);
-    const abbrControl = new FormControl(this.team.abbreviation ?? `${this.club.abbreviation} `, Validators.required);
+    this.allowEditType = this.allowEditType ?? true;
+    this.allowEditNumber = this.allowEditNumber ?? true;
 
+    const numberControl = new FormControl(this.team.teamNumber, Validators.required);
     const typeControl = new FormControl(this.team.type, Validators.required);
     const preferredTimeControl = new FormControl(this.team.preferredTime);
     const preferredDayControl = new FormControl(this.team.preferredDay);
-    const captainIdControl = new FormControl(this.team.captain?.id, Validators.required);
 
-    const phoneControl = new FormControl(this.team.captain?.phone, Validators.required);
-    const emailControl = new FormControl(this.team.captain?.email, Validators.required);
+    const captainIdControl = new FormControl(this.team.captain?.id);
+    const phoneControl = new FormControl(this.team.captain?.phone);
+    const emailControl = new FormControl(this.team.captain?.email);
 
     this.locationControl = new FormControl(this.team.locations?.map((r) => r.id) ?? [], Validators.required);
 
     this.teamForm = new FormGroup({
-      name: nameControl,
+      teamNumber: numberControl,
       type: typeControl,
-      abbreviation: abbrControl,
       preferredTime: preferredTimeControl,
       preferredDay: preferredDayControl,
       captainId: captainIdControl,
     });
 
+    if (this.allowEditNumber) {
+      numberControl.enable();
+    } else {
+      numberControl.disable();
+    }
+    if (this.allowEditType) {
+      typeControl.enable();
+    } else {
+      typeControl.disable();
+    }
+
     this.captainForm = new FormGroup({
       id: new FormControl(this.team.captain?.id),
       phone: phoneControl,
       email: emailControl,
+    });
+
+    if (this.team.id) {
+      this.calcTeamsOfType(this.team.type);
+    }
+
+    typeControl.valueChanges.subscribe((type) => {
+      this.calcTeamsOfType(type);
     });
 
     this.captainForm.valueChanges.pipe(debounceTime(600)).subscribe(async (e) => {
@@ -89,6 +114,7 @@ export class TeamFieldsComponent implements OnInit {
         this.onTeamUpdated.next({
           id: this.team?.id,
           type: e?.type,
+          teamNumber: e?.teamNumber,
           abbreviation: e?.abbreviation,
           preferredTime: e?.preferredTime,
           preferredDay: e?.preferredDay,
@@ -96,46 +122,16 @@ export class TeamFieldsComponent implements OnInit {
         });
       }
     });
+  }
 
-    typeControl.valueChanges.subscribe((r) => {
-      if (!nameControl.touched) {
-        if (typeControl.valid) {
-          const number = this.club.teams.reduce(
-            (a, b) => (b.type == typeControl.value ? (a > b.teamNumber ? a : b.teamNumber) : a),
-            0
-          );
-
-          let suffix = '';
-          switch (typeControl.value) {
-            case 'MX':
-              suffix = 'G';
-              break;
-            case 'F':
-              suffix = 'D';
-              break;
-            case 'M':
-              suffix = 'H';
-              break;
-          }
-
-          nameControl.setValue(`${this.club.name} ${number + 1}${suffix}`);
-        }
-      }
-
-      if (!abbrControl.touched) {
-        let abbr = nameControl.value;
-        abbr = abbr.replace(this.club?.name, '');
-        abbr = abbr.replace(this.club?.abbreviation, '');
-        abbr = abbr.replace(/[^0-9a-zA-Z]+/, ' ');
-
-        const typeMatch = abbr.match(/(\d+[GHD])/) ?? [];
-        if (typeMatch) {
-          abbr = abbr.substr(0, abbr.lastIndexOf(typeMatch[0]));
-        }
-
-        abbrControl.setValue(`${this.club?.abbreviation} ${typeMatch[0] ?? ''}`);
-      }
-    });
+  private calcTeamsOfType(type) {
+    let teamsOfType = this.club.teams.filter((r) => r.type == type).length;
+    console.log('Hello2', teamsOfType)
+    if (this.team.id == null) {
+      teamsOfType++;
+      this.teamForm.patchValue({ teamNumber: teamsOfType });
+    }
+    this.teamNumbers = [...Array(teamsOfType).keys()].map((a) => a + 1);
   }
 
   async selectedCaptain(player: Player) {
@@ -147,6 +143,6 @@ export class TeamFieldsComponent implements OnInit {
   }
 
   teamAdded() {
-    this.onTeamAdded.next(this.teamForm.value);
+    this.onTeamAdded.next(this.teamForm.getRawValue());
   }
 }
