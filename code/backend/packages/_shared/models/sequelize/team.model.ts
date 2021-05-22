@@ -135,9 +135,10 @@ export class Team extends Model {
   )
   players: Player[];
 
-  _basePlayers: Player[];
+  private _basePlayers: Player[];
+  
   get basePlayers(): Player[] {
-    if (this._basePlayers != null) {
+    if (this._basePlayers !== null) {
       return this._basePlayers;
     }
 
@@ -172,11 +173,11 @@ export class Team extends Model {
 
   get baseIndex(): number {
     // Only run this once per team
-    if (this._baseIndex != -1) {
+    if (this._baseIndex !== -1) {
       return this._baseIndex;
     }
 
-    if (this.players?.length == null) {
+    if (this.players?.length === null) {
       return -1;
     }
 
@@ -200,7 +201,7 @@ export class Team extends Model {
       const bestPlayers = [
         // 2 best male
         ...this.basePlayers
-          .filter(p => p.gender == 'M')
+          .filter(p => p.gender === 'M')
           .map(
             r =>
               (r.lastRankingPlace?.single ?? 12) +
@@ -211,7 +212,7 @@ export class Team extends Model {
           .slice(0, 2),
         // 2 best female
         ...this.basePlayers
-          .filter(p => p.gender == 'F')
+          .filter(p => p.gender === 'F')
           .map(
             r =>
               (r.lastRankingPlace?.single ?? 12) +
@@ -316,11 +317,11 @@ export class Team extends Model {
   static getLetterForRegion(type: SubEventType, region: 'vl' | 'wl') {
     switch (type) {
       case SubEventType.F:
-        return region == 'vl' ? 'D' : 'D';
+        return region === 'vl' ? 'D' : 'D';
       case SubEventType.M:
-        return region == 'vl' ? 'H' : 'M';
+        return region === 'vl' ? 'H' : 'M';
       case SubEventType.MX:
-        return region == 'vl' ? 'G' : 'Mx';
+        return region === 'vl' ? 'G' : 'Mx';
     }
   }
 }
