@@ -1,6 +1,6 @@
 <form [formGroup]="teamForm">
   <div class="row">
-    <mat-form-field appearance="outline" class="flex">
+    <mat-form-field appearance="outline" class="flex" *ngIf="this.team.id == null">
       <mat-label>Type</mat-label>
       <mat-select formControlName="type" required>
         <mat-option value="M">{{ 'gender.male' | translate }}</mat-option>
