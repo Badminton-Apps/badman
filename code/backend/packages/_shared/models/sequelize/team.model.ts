@@ -176,7 +176,8 @@ export class Team extends Model {
   )
   players: Player[];
 
-  _basePlayers: Player[];
+  private _basePlayers: Player[] = null;
+
   get basePlayers(): Player[] {
     if (this._basePlayers != null){
       return this._basePlayers;
@@ -185,6 +186,47 @@ export class Team extends Model {
     this._basePlayers = this.players.filter(
       r => r.getDataValue('TeamPlayerMembership')?.base ?? false
     );
+
+    if (this._basePlayers.length > 4) {
+      if (this.type == SubEventType.MX) {
+        this._basePlayers = [
+          ...this._basePlayers
+            .filter(p => p.gender == 'M')
+            .sort(
+              (b, a) =>
+                (b.lastRankingPlace?.single ?? 12) +
+                (b.lastRankingPlace?.double ?? 12) +
+                (b.lastRankingPlace?.mix ?? 12) -
+                ((a.lastRankingPlace?.single ?? 12) +
+                  (a.lastRankingPlace?.double ?? 12) +
+                  (a.lastRankingPlace?.mix ?? 12))
+            )
+            .slice(0, 2),
+          ...this._basePlayers
+            .filter(p => p.gender == 'F')
+            .sort(
+              (b, a) =>
+                (b.lastRankingPlace?.single ?? 12) +
+                (b.lastRankingPlace?.double ?? 12) +
+                (b.lastRankingPlace?.mix ?? 12) -
+                ((a.lastRankingPlace?.single ?? 12) +
+                  (a.lastRankingPlace?.double ?? 12) +
+                  (a.lastRankingPlace?.mix ?? 12))
+            )
+            .slice(0, 2)
+        ];
+      } else {
+        this._basePlayers = this._basePlayers
+          .sort(
+            (b, a) =>
+              (b.lastRankingPlace?.single ?? 12) +
+              (b.lastRankingPlace?.double ?? 12) -
+              ((a.lastRankingPlace?.single ?? 12) +
+                (a.lastRankingPlace?.double ?? 12))
+          )
+          .slice(0, 4);
+      }
+    }
 
     return this._basePlayers;
   }
@@ -222,14 +264,11 @@ export class Team extends Model {
     }
 
     if (this.type !== 'MX') {
-      const bestPlayers = this.basePlayers
-        .map(
-          r =>
-            (r.lastRankingPlace?.single ?? 12) +
-            (r.lastRankingPlace?.double ?? 12)
-        )
-        .sort((a, b) => a - b)
-        .slice(0, 4);
+      const bestPlayers = this.basePlayers.map(
+        r =>
+          (r.lastRankingPlace?.single ?? 12) +
+          (r.lastRankingPlace?.double ?? 12)
+      );
 
       let missingIndex = 0;
       if (bestPlayers.length < 4) {
@@ -238,30 +277,12 @@ export class Team extends Model {
 
       return bestPlayers.reduce((a, b) => a + b, missingIndex);
     } else {
-      const bestPlayers = [
-        // 2 best male
-        ...this.basePlayers
-          .filter(p => p.gender == 'M')
-          .map(
-            r =>
-              (r.lastRankingPlace?.single ?? 12) +
-              (r.lastRankingPlace?.double ?? 12) +
-              (r.lastRankingPlace?.mix ?? 12)
-          )
-          .sort((a, b) => a - b)
-          .slice(0, 2),
-        // 2 best female
-        ...this.basePlayers
-          .filter(p => p.gender == 'F')
-          .map(
-            r =>
-              (r.lastRankingPlace?.single ?? 12) +
-              (r.lastRankingPlace?.double ?? 12) +
-              (r.lastRankingPlace?.mix ?? 12)
-          )
-          .sort((a, b) => a - b)
-          .slice(0, 2)
-      ];
+      const bestPlayers = this.basePlayers.map(
+        r =>
+          (r.lastRankingPlace?.single ?? 12) +
+          (r.lastRankingPlace?.double ?? 12) +
+          (r.lastRankingPlace?.mix ?? 12)
+      );
 
       let missingIndex = 0;
       if (bestPlayers.length < 4) {
