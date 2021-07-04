@@ -11,7 +11,6 @@ import { merge } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamFieldsComponent implements OnInit {
-  @Output() onTeamAdded = new EventEmitter<Partial<Team>>();
   @Output() onTeamUpdated = new EventEmitter<Partial<Team>>();
   @Output() onCaptainUpdated = new EventEmitter<Partial<Player>>();
   @Output() onLocationAdded = new EventEmitter<Partial<Location>>();
@@ -28,8 +27,13 @@ export class TeamFieldsComponent implements OnInit {
   @Input()
   allowEditNumber: boolean;
 
+  @Input()
+  form: FormGroup;
+
   teamForm: FormGroup;
+
   captainForm: FormGroup;
+
   locationControl: FormControl;
   teamNumbers: number[];
 
@@ -47,6 +51,7 @@ export class TeamFieldsComponent implements OnInit {
     const emailControl = new FormControl(this.team.captain?.email);
 
     this.locationControl = new FormControl(this.team.locations?.map((r) => r.id) ?? [], Validators.required);
+
 
     this.teamForm = new FormGroup({
       teamNumber: numberControl,
@@ -72,6 +77,10 @@ export class TeamFieldsComponent implements OnInit {
       phone: phoneControl,
       email: emailControl,
     });
+
+    this.form.addControl('team', this.teamForm);
+    this.form.addControl('captain', this.captainForm);
+
 
     if (this.team.id) {
       this.calcTeamsOfType(this.team.type);
@@ -126,7 +135,6 @@ export class TeamFieldsComponent implements OnInit {
 
   private calcTeamsOfType(type) {
     let teamsOfType = this.club.teams.filter((r) => r.type == type).length;
-    console.log('Hello2', teamsOfType)
     if (this.team.id == null) {
       teamsOfType++;
       this.teamForm.patchValue({ teamNumber: teamsOfType });
@@ -140,9 +148,5 @@ export class TeamFieldsComponent implements OnInit {
       email: player.email,
       id: player.id,
     });
-  }
-
-  teamAdded() {
-    this.onTeamAdded.next(this.teamForm.getRawValue());
   }
 }
