@@ -88,6 +88,9 @@ export class Club extends Model {
   )
   players: Player[];
 
+  @HasMany(() => Comment)
+  comments?: Comment[];
+
   @HasMany(() => Location)
   locations: Location[];
 
@@ -190,6 +193,17 @@ export class Club extends Model {
   hasTeam!: HasManyHasAssociationMixin<Team, string>;
   hasTeams!: HasManyHasAssociationsMixin<Team, string>;
   countTeams!: HasManyCountAssociationsMixin;
+
+  // Has many Comment
+  getComments!: HasManyGetAssociationsMixin<Comment>;
+  setComments!: HasManySetAssociationsMixin<Comment, string>;
+  addComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countComments!: HasManyCountAssociationsMixin;
 
   // #endregion
 }
