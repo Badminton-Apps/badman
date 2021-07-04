@@ -7,7 +7,9 @@
   "scripts": {
     "prep-cp": "node -r ts-node/register ./src/prep-for-cp.ts",
     "prep-cp:inspect": "node --inspect=6862 -r ts-node/register ./src/prep-for-cp.ts",
-    "singned-up": "node -r ts-node/register ./src/singned-up.ts"
+    "singned-up": "node -r ts-node/register ./src/singned-up.ts",
+    "comments": "node -r ts-node/register ./src/comments.ts",
+    "team-export": "node -r ts-node/register ./src/team-export.ts"
   },
   "os": [
     "win32"
@@ -27,7 +29,8 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "promise-callbacks": "^3.8.2",
     "node-adodb": "^5.0.3",
-    "got": "^11.8.2"
+    "got": "^11.8.2",
+    "csv-write-stream": "^2.0.0"
   },
   "peerDependencies": {
     "dotenv": "^8.2.0",
