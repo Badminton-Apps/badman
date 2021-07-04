@@ -305,7 +305,7 @@ export abstract class ProcessImport {
     });
 
     const newMmemberships = [];
-    for await (const playerId of playersIds) {
+    for (const playerId of playersIds) {
       const dbclubPlayerMemberships = dbClubMemberships.filter(m => m.playerId === playerId);
       // cancel all current subscriptions
       for (const club of dbclubPlayerMemberships) {
