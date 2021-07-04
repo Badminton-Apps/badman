@@ -147,10 +147,10 @@ export class Team extends Model {
     );
 
     if (this._basePlayers.length > 4) {
-      if (this.type == SubEventType.MX) {
+      if (this.type === SubEventType.MX) {
         this._basePlayers = [
           ...this._basePlayers
-            .filter(p => p.gender == 'M')
+            .filter(p => p.gender === 'M')
             .sort(
               (b, a) =>
                 (b.lastRankingPlace?.single ?? 12) +
@@ -162,7 +162,7 @@ export class Team extends Model {
             )
             .slice(0, 2),
           ...this._basePlayers
-            .filter(p => p.gender == 'F')
+            .filter(p => p.gender === 'F')
             .sort(
               (b, a) =>
                 (b.lastRankingPlace?.single ?? 12) +
