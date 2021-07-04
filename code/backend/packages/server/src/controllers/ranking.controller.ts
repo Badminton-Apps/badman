@@ -180,7 +180,7 @@ export class RankingController extends BaseController {
     const rankingPoints = [];
 
     if (player.rankingPoints) {
-      for await (const rankingPoint of player.rankingPoints) {
+      for (const rankingPoint of player.rankingPoints) {
         let rankingPlaces = await RankingPlace.findAll({
           where: {
             [Op.and]: [

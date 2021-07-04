@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/dot-notation */
-import { DataBaseHandler, Player, Team, TeamPlayerMembership } from '@badvlasim/shared';
+import { Club, DataBaseHandler, Player, Team, TeamPlayerMembership } from '@badvlasim/shared';
 import moment from 'moment';
 import { CompetitionCpProcessor } from '../processors';
 
@@ -23,8 +23,13 @@ describe('Team Membership', () => {
 
   it('Add membership to team', async () => {
     // Arrange
+    const club1 = await new Club({
+      name: 'Club 1',
+      abbreviation: 'C1'
+    }).save();
     const team1 = await new Team({
-      name: 'TestTeam1'
+      name: 'TestTeam1',
+      clubId: club1.id
     }).save();
     const player1 = await new Player({
       firstName: 'TestPlayer'
@@ -49,11 +54,16 @@ describe('Team Membership', () => {
 
   it('extend membership to team', async () => {
     // Arrange
+    const club1 = await new Club({
+      name: 'Club 1',
+      abbreviation: 'C1'
+    }).save();
     const team1 = await new Team({
-      name: 'TestTeam1'
+      name: 'TestTeam1',
+      clubId: club1.id
     }).save();
     const player1 = await new Player({
-      firstName: 'TestPlayer'
+      firstName: 'TestPlayer',
     }).save();
 
     const playerIds = [player1.id];
@@ -79,8 +89,13 @@ describe('Team Membership', () => {
     // this is now handled by manually removing someone from the club (maybe automate this?)
 
     // Arrange
+ const club1 = await new Club({
+      name: 'Club 1',
+      abbreviation: 'C1'
+    }).save();
     const team1 = await new Team({
-      name: 'TestTeam1'
+      name: 'TestTeam1',
+      clubId: club1.id
     }).save();
     const player1 = await new Player({
       firstName: 'TestPlayer'
@@ -107,11 +122,17 @@ describe('Team Membership', () => {
 
   it('switching and going back membership to team', async () => {
     // Arrange
+ const club1 = await new Club({
+      name: 'Club 1',
+      abbreviation: 'C1'
+    }).save();
     const team1 = await new Team({
-      name: 'TestTeam1'
+      name: 'TestTeam1',
+      clubId: club1.id
     }).save();
     const team2 = await new Team({
-      name: 'TestTeam2'
+      name: 'TestTeam2',
+      clubId: club1.id      
     }).save();
     const player1 = await new Player({
       firstName: 'TestPlayer'
@@ -141,8 +162,13 @@ describe('Team Membership', () => {
 
   it('Having multiple people in one team', async () => {
     // Arrange
+ const club1 = await new Club({
+      name: 'Club 1',
+      abbreviation: 'C1'
+    }).save();
     const team1 = await new Team({
-      name: 'TestTeam1'
+      name: 'TestTeam1',
+      clubId: club1.id
     }).save();
     const player1 = await new Player({
       firstName: 'TestPlayer1'

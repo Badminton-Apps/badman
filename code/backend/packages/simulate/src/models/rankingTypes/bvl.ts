@@ -159,7 +159,7 @@ export class BvlRankingCalc extends RankingCalc {
       gameCount = await this.countGames(players, endDate, this.rankingType);
     }
 
-    for await (const [key, player] of players) {
+    for (const [key, player] of players) {
       const rankingPoints = eligbleForRanking.get(player.id) || [];
       const inactive = { single: false, double: false, mix: false };
 
@@ -347,7 +347,7 @@ export class BvlRankingCalc extends RankingCalc {
       });
     };
 
-    for await (const chunk of chunks) {
+    for (const chunk of chunks) {
       lastWeeks = lastWeeks.concat(await getCount(chunk));
     }
 

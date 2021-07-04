@@ -30,12 +30,13 @@ export abstract class CompetitionProcessor extends ProcessImport {
         }
 
         try {
-          return new EventCompetition({
+          const event = await new EventCompetition({
             name: args.importFile.name,
             uniCode: args.importFile.uniCode,
             startYear: args.importFile.firstDay?.getFullYear(),
             type: this.getLeague(args.importFile)
           }).save({ transaction: args.transaction });
+          return event;
         } catch (e) {
           logger.error('import failed', e);
           throw e;
@@ -66,7 +67,8 @@ export abstract class CompetitionProcessor extends ProcessImport {
           [Op.or]: or
         };
 
-        return EventCompetition.findOne({ where, transaction: args.transaction });
+        const event = await EventCompetition.findOne({ where, transaction: args.transaction });
+        return event;
       }
     );
   }
