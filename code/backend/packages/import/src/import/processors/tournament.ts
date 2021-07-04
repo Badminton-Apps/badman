@@ -350,7 +350,7 @@ export class TournamentTpProcessor extends ProcessImport {
       const csvPlayers = await csvToArray<ICsvPlayer[]>(await args.mdb.toCsv('Player'));
 
       const corrected = [];
-      for await (const csvPlayer of csvPlayers) {
+      for (const csvPlayer of csvPlayers) {
         const momentDate = moment(csvPlayer.birthDate);
         const bod = momentDate.isValid() ? momentDate.toDate() : null;
 
@@ -475,7 +475,7 @@ export class TournamentTpProcessor extends ProcessImport {
       const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('Court'));
 
       const courts = [];
-      for await (const csvCourt of csvCourts) {
+      for (const csvCourt of csvCourts) {
         courts.push(
           new Court({
             name: csvCourt.name,

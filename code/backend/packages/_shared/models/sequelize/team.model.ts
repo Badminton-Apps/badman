@@ -69,6 +69,11 @@ export class Team extends Model {
   static async setAbbriviation(instance: Team) {
     if (instance.isNewRecord) {
       const dbClub = await Club.findByPk(instance.clubId);
+
+      if (dbClub == null) {
+        console.error('No club for ', instance.toJSON());
+      }
+
       instance.name = `${dbClub.name} ${
         instance.teamNumber
       }${this.getLetterForRegion(instance.type, 'vl')}`;

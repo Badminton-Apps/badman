@@ -187,17 +187,23 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       const csvTeams = await csvToArray<ICsvTeam[]>(await args.mdb.toCsv('Team'));
       const clubs: { club: Club; internalId: number }[] = this.importSteps.get('clubs').getData();
 
-      await Team.bulkCreate(
-        csvTeams.map(team => {
-          if (team.name) {
-            return new Team({
-              name: this.cleanedTeamName(team.name),
-              clubId: clubs.find(r => r.internalId === +team.club)?.club?.id || null
-            }).toJSON();
+      const teamns = csvTeams
+        .map(team => {
+          if (team.name && team.name.length > 0) {
+            const club = clubs.find(r => r.internalId === +team.club)?.club || null;
+
+            if (club !== null) {
+              return new Team({
+                name: this.cleanedTeamName(team.name),
+                clubId: club?.id
+              }).toJSON();
+            }
           }
-        }),
-        { ignoreDuplicates: true, transaction: args.transaction }
-      );
+        })
+        // Filter out empty teams
+        .filter(t => !!t);
+
+      await Team.bulkCreate(teamns, { ignoreDuplicates: true, transaction: args.transaction });
 
       const dbTeams = await Team.findAll({
         where: {
@@ -317,7 +323,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       const csvPlayers = await csvToArray<ICsvPlayer[]>(await args.mdb.toCsv('Player'));
 
       const corrected = [];
-      for await (const csvPlayer of csvPlayers) {
+      for (const csvPlayer of csvPlayers) {
         const momentDate = moment(csvPlayer.birthDate);
         const bod = momentDate.isValid() ? momentDate.toDate() : null;
 
@@ -405,7 +411,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         });
 
       const encounters = [];
-      for await (const cvsTeamMatch of csvTeamMatchesFiltered) {
+      for (const cvsTeamMatch of csvTeamMatchesFiltered) {
         const csvEntryInPlayerMatch1 = csvTeamMatchesEntries.find(
           x => x.planning === cvsTeamMatch.van1 && x.draw === cvsTeamMatch.draw
         );
