@@ -1,4 +1,5 @@
 import {
+  Club,
   DataBaseHandler,
   EventCompetition,
   logger,
@@ -8,6 +9,7 @@ import {
   TeamPlayerMembership
 } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
+import { Op } from 'sequelize';
 import { ApiError } from '../../models/api.error';
 import { TeamInputType, TeamType } from '../types';
 
@@ -43,7 +45,8 @@ export const addTeamMutation = {
     try {
       const [teamDb, created] = await Team.findOrCreate({
         where: {
-          name: team.name,
+          type: team.type,
+          teamNumber: team.teamNumber,
           clubId
         },
         defaults: team,
@@ -51,11 +54,11 @@ export const addTeamMutation = {
       });
 
       if (created) {
-        teamDb.setClub(clubId, { transaction });
+        await teamDb.setClub(clubId, { transaction });
       } else {
         // Re-activate team
         teamDb.active = true;
-        teamDb.save({ transaction });
+        await teamDb.save({ transaction });
       }
 
       await transaction.commit();
@@ -125,10 +128,10 @@ export const updateTeamMutation = {
       type: TeamInputType
     }
   },
-  resolve: async (findOptions, { team }, context) => {
+  resolve: async (findOptions, { team }: { team: Partial<Team> }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(team.id, { transaction });
+      const dbTeam = await Team.findByPk(team.id, { transaction, include: [Club] });
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -154,7 +157,81 @@ export const updateTeamMutation = {
         });
       }
 
+      const changedTeams = [];
+
+      if (team.teamNumber && team.teamNumber !== dbTeam.teamNumber) {
+        team.name = `${dbTeam.club.name} ${team.teamNumber}${Team.getLetterForRegion(
+          dbTeam.type,
+          'vl'
+        )}`;
+        team.abbreviation = `${dbTeam.club.abbreviation} ${
+          team.teamNumber
+        }${Team.getLetterForRegion(dbTeam.type, 'vl')}`;
+
+        if (team.teamNumber > dbTeam.teamNumber) {
+          // Number was increased
+          const dbLowerTeams = await Team.findAll({
+            where: {
+              clubId: dbTeam.clubId,
+              teamNumber: {
+                [Op.and]: [{ [Op.gt]: dbTeam.teamNumber }, { [Op.lte]: team.teamNumber }]
+              },
+              type: dbTeam.type
+            },
+            transaction
+          });
+          // unique contraints
+          for (const dbLteam of dbLowerTeams) {
+            dbLteam.teamNumber--;
+            // set teams to temp name for unique constraint
+            dbLteam.name = `${dbTeam.club.name} ${dbLteam.teamNumber}${Team.getLetterForRegion(
+              dbLteam.type,
+              'vl'
+            )}_temp`;
+            dbLteam.abbreviation = `${dbTeam.club.abbreviation} ${
+              dbLteam.teamNumber
+            }${Team.getLetterForRegion(dbLteam.type, 'vl')}`;
+            await dbLteam.save({ transaction });
+            changedTeams.push(dbLteam);
+          }
+        } else if (team.teamNumber < dbTeam.teamNumber) {
+          // number was decreased
+          const dbHigherTeams = await Team.findAll({
+            where: {
+              clubId: dbTeam.clubId,
+              teamNumber: {
+                [Op.and]: [{ [Op.lt]: dbTeam.teamNumber }, { [Op.gte]: team.teamNumber }]
+              },
+              type: dbTeam.type
+            },
+            transaction
+          });
+          for (const dbHteam of dbHigherTeams) {
+            dbHteam.teamNumber++;
+            // set teams to temp name for unique constraint
+            dbHteam.name = `${dbTeam.club.name} ${dbHteam.teamNumber}${Team.getLetterForRegion(
+              dbHteam.type,
+              'vl'
+            )}_temp`;
+            dbHteam.abbreviation = `${dbTeam.club.abbreviation} ${
+              dbHteam.teamNumber
+            }${Team.getLetterForRegion(dbHteam.type, 'vl')}`;
+            await dbHteam.save({ transaction });
+            changedTeams.push(dbHteam);
+          }
+        }
+      }
+
       await dbTeam.update(team, { transaction });
+      // set impacted teams to final name
+      for (const dbCteam of changedTeams) {
+        dbCteam.name = `${dbTeam.club.name} ${dbCteam.teamNumber}${Team.getLetterForRegion(
+          dbCteam.type,
+          'vl'
+        )}`;
+        await dbCteam.save({ transaction });
+      }
+
       await transaction.commit();
       return dbTeam;
     } catch (e) {
@@ -381,7 +458,7 @@ export const updateSubEventTeamMutation = {
         });
       }
 
-      if (subEvents != null && subEvents.length > 0) {
+      if (subEvents !== null && subEvents.length > 0) {
         await dbTeam.removeSubEvents(subEvents, { transaction });
       }
       await dbTeam.addSubEvent(dbNewSubEvent.id, { transaction });
