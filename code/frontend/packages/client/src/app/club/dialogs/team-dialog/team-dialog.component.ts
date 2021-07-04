@@ -64,8 +64,6 @@ export class TeamDialogComponent implements OnInit {
     }
 
     this.form = new FormGroup({});
-
-    this.form.valueChanges.subscribe((r) => {});
   }
 
   async onPlayerAddedToTeam(player: Player, team: Team) {
@@ -90,7 +88,7 @@ export class TeamDialogComponent implements OnInit {
     }
   }
 
-  async onTeamAdded(team: Partial<Team>) {
+  async teamAdded(team: Partial<Team>) {
     const newTeam = await this.apollo
       .mutate<{ addTeam: Team }>({
         mutation: addTeamMutation,
