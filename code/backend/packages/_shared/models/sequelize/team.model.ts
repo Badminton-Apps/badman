@@ -22,6 +22,8 @@ import {
   HasManySetAssociationsMixin
 } from 'sequelize';
 import {
+  AfterBulkUpdate,
+  AfterUpdate,
   BeforeBulkCreate,
   BeforeCreate,
   BelongsTo,
@@ -38,7 +40,6 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { logger } from '../../utils';
 import { SubEventType } from '../enums';
 import { Club } from './club.model';
 import { EncounterCompetition, Location, SubEventCompetition } from './event';
@@ -57,7 +58,6 @@ export class Team extends Model {
   }
 
   // #region hooks
-
   @BeforeBulkCreate
   static setAbbriviations(instances: Team[]) {
     for (const instance of instances ?? []) {
@@ -66,58 +66,17 @@ export class Team extends Model {
   }
 
   @BeforeCreate
-  static setAbbriviation(instance: Team) {
-    if (!instance.abbreviation && instance.isNewRecord && instance.name) {
-      const suffix = (instance?.name
-        ?.substr(instance?.name?.length - 4)
-        .match(/(\d+[GHD])/) ?? [''])[0];
-      let club = instance.name?.replace(` ${suffix}`, '');
-      club = club.replace(/[^0-9a-zA-Z]+/, ' ');
-
-      if (club.indexOf(' ') !== -1) {
-        club = club.match(/\b(\w)/g)?.join('');
-      }
-
-      if (suffix.length) {
-        instance.abbreviation = `${club} ${suffix}`;
-      }
+  static async setAbbriviation(instance: Team) {
+    if (instance.isNewRecord) {
+      const dbClub = await Club.findByPk(instance.clubId);
+      instance.name = `${dbClub.name} ${
+        instance.teamNumber
+      }${this.getLetterForRegion(instance.type, 'vl')}`;
+      instance.abbreviation = `${dbClub.abbreviation} ${
+        instance.teamNumber
+      }${this.getLetterForRegion(instance.type, 'vl')}`;
     }
   }
-
-  @BeforeBulkCreate
-  static extractNumberAndTypes(instances: Team[]) {
-    for (const instance of instances ?? []) {
-      this.extractNumberAndType(instance);
-    }
-  }
-
-  @BeforeCreate
-  static extractNumberAndType(instance: Team) {
-    const suffix = (instance?.name
-      ?.substr(instance?.name?.length - 4)
-      .match(/(\d+[GHD])/) ?? [''])[0];
-
-    if (!instance.teamNumber) {
-      instance.teamNumber = +suffix.replace(/[GHD]/, '');
-    }
-
-    if (!instance.type) {
-      const type = suffix.replace(/\d+/, '');
-
-      switch (type) {
-        case 'G':
-          instance.type = SubEventType.MX;
-          break;
-        case 'H':
-          instance.type = SubEventType.M;
-          break;
-        case 'D':
-          instance.type = SubEventType.F;
-          break;
-      }
-    }
-  }
-
   // #endregion
 
   @Default(DataType.UUIDV4)
@@ -179,7 +138,7 @@ export class Team extends Model {
   private _basePlayers: Player[] = null;
 
   get basePlayers(): Player[] {
-    if (this._basePlayers != null){
+    if (this._basePlayers !== null) {
       return this._basePlayers;
     }
 
@@ -188,10 +147,10 @@ export class Team extends Model {
     );
 
     if (this._basePlayers.length > 4) {
-      if (this.type == SubEventType.MX) {
+      if (this.type === SubEventType.MX) {
         this._basePlayers = [
           ...this._basePlayers
-            .filter(p => p.gender == 'M')
+            .filter(p => p.gender === 'M')
             .sort(
               (b, a) =>
                 (b.lastRankingPlace?.single ?? 12) +
@@ -203,7 +162,7 @@ export class Team extends Model {
             )
             .slice(0, 2),
           ...this._basePlayers
-            .filter(p => p.gender == 'F')
+            .filter(p => p.gender === 'F')
             .sort(
               (b, a) =>
                 (b.lastRankingPlace?.single ?? 12) +
@@ -255,11 +214,11 @@ export class Team extends Model {
 
   get baseIndex(): number {
     // Only run this once per team
-    if (this._baseIndex != -1){
+    if (this._baseIndex !== -1) {
       return this._baseIndex;
     }
 
-    if (this.players?.length == null) {
+    if (this.players?.length === null) {
       return -1;
     }
 
@@ -374,4 +333,15 @@ export class Team extends Model {
   // Belongs to Captain
   getCaptain!: BelongsToGetAssociationMixin<Player>;
   setCaptain!: BelongsToSetAssociationMixin<Player, string>;
+
+  static getLetterForRegion(type: SubEventType, region: 'vl' | 'wl') {
+    switch (type) {
+      case SubEventType.F:
+        return region === 'vl' ? 'D' : 'D';
+      case SubEventType.M:
+        return region === 'vl' ? 'H' : 'M';
+      case SubEventType.MX:
+        return region === 'vl' ? 'G' : 'Mx';
+    }
+  }
 }
