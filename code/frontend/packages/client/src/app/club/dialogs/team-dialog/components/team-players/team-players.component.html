@@ -1,8 +1,14 @@
-<div class="row">
-  <div class="mat-subheading-2">
-    Players, <small>index: {{ this.team.baseIndex }}</small>
+<div fxLayout="column">
+  <div class="mat-subheading-2" fxLayout="column">
+    <div>
+      {{ 'team.title.players' | translate }} <small>index: {{ this.team.baseIndex }}</small>
+    </div>
+    <div class="mat-caption">
+      {{ 'team.check-players' | translate }}
+    </div>
   </div>
 </div>
+
 <mat-list>
   <ng-container *ngIf="!(this.team.players && this.team.players.length > 0)">
     <mat-list-item>

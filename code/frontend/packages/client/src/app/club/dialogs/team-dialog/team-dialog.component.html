@@ -1,32 +1,45 @@
 <ng-container *ngIf="this.team$ | async as team; else loading">
-  <h2 mat-dialog-title>Edit {{ team.name }}</h2>
-  <mat-dialog-content>
-    <app-team-fields
-      [club]="this.data.club"
-      [team]="team"
-      [allowEditNumber]="this.data.allowEditNumber"
-      [allowEditType]="this.data.allowEditType"
-      (onTeamAdded)="this.onTeamAdded($event)"
-      (onTeamUpdated)="this.onTeamUpdated($event)"
-      (onCaptainUpdated)="this.onCaptainUpdated($event)"
-      (onLocationAdded)="this.onLocationAdded($event, team)"
-      (onLocationRemoved)="this.onLocationRemoved($event, team)"
-    ></app-team-fields>
-    <app-team-players
-      *ngIf="team.id"
-      [club]="this.data.club"
-      [team]="team"
-      [disableIds]="this.alreadyUsed$ | async"
-      (onPlayerAdded)="this.onPlayerAddedToTeam($event, team)"
-      (onPlayerRemoved)="this.onPlayerRemovedFromTeam($event, team)"
-      (onPlayerUpdated)="this.onPlayerUpdatedFromTeam($event, team)"
-    >
-    </app-team-players>
-  </mat-dialog-content>
+  <div fxFlex fxLayout="column">
+    <h2 mat-dialog-title>Edit {{ team.name }}</h2>
+    <mat-dialog-content>
+      <app-team-fields
+        [club]="this.data.club"
+        [team]="team"
+        [form]="this.form"
+        [allowEditNumber]="this.data.allowEditNumber"
+        [allowEditType]="this.data.allowEditType"
+        (onTeamUpdated)="this.onTeamUpdated($event)"
+        (onCaptainUpdated)="this.onCaptainUpdated($event)"
+        (onLocationAdded)="this.onLocationAdded($event, team)"
+        (onLocationRemoved)="this.onLocationRemoved($event, team)"
+      ></app-team-fields>
+      <app-team-players
+        fxLayout="column"
+        *ngIf="team.id"
+        [club]="this.data.club"
+        [team]="team"
+        [disableIds]="this.alreadyUsed$ | async"
+        (onPlayerAdded)="this.onPlayerAddedToTeam($event, team)"
+        (onPlayerRemoved)="this.onPlayerRemovedFromTeam($event, team)"
+        (onPlayerUpdated)="this.onPlayerUpdatedFromTeam($event, team)"
+      >
+      </app-team-players>
+    </mat-dialog-content>
 
-  <mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="team">{{ 'button.close' | translate }}</button>
-  </mat-dialog-actions>
+    <mat-dialog-actions>
+      <button mat-button [mat-dialog-close]="team">{{ 'button.close' | translate }}</button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        *ngIf="!this.team.id"
+        [disabled]="!this.form?.valid"
+        (click)="this.teamAdded(this.form?.get('team')?.getRawValue())"
+      >
+        Create
+      </button>
+    </mat-dialog-actions>
+  </div>
 </ng-container>
 <ng-template #loading>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
