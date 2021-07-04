@@ -256,10 +256,24 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
       const clubs: Club[] = this.importSteps.get('clubs').getData();
 
-      const teams = data.teams.map(team => {
+      const teams = data.teams.map((team, i) => {
         if (team.TeamName) {
+          // Filter out team number
+          const regexResult = /.*((\d)[GHD]|[GHD](\d))/gim.exec(team.TeamName);
+
+          // Get team number from regex group
+          const teamNumber =
+            regexResult && regexResult.length > 3
+              ? +regexResult[2]
+                ? +regexResult[2]
+                : +regexResult[3]
+                ? +regexResult[3]
+                : -1
+              : -1;
+
           return new Team({
             name: this.cleanedTeamName(team.TeamName),
+            teamNumber,
             clubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
           }).toJSON();
         }
@@ -455,7 +469,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const draw of draws) {
         for (const fixture of draw.fixtures) {
           if (!fixture) {
-            continue; 
+            continue;
           }
 
           if (fixture.FixtureWinnerTeamId === '' || isNaN(+fixture.FixtureWinnerTeamId)) {
@@ -527,8 +541,9 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       for (const encounter of encounters) {
         for (const xmlMatch of encounter.matches) {
-          const teamWinnerPlayer1 = playersData.find(r => r.internalId === xmlMatch?.MatchWinnerLTANo)
-            ?.player;
+          const teamWinnerPlayer1 = playersData.find(
+            r => r.internalId === xmlMatch?.MatchWinnerLTANo
+          )?.player;
           const teamWinnerPlayer2 = playersData.find(
             r => r.internalId === xmlMatch?.MatchWinnerPartnerLTANo
           )?.player;

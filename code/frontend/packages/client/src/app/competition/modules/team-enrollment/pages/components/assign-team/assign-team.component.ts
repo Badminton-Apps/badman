@@ -76,7 +76,7 @@ export class AssignTeamComponent implements OnInit {
 
   editTeam(team: Team, subEvent: CompetitionSubEvent) {
     let dialogRef = this.dialog.open(TeamDialogComponent, {
-      data: { team, club: this.club },
+      data: { team, club: this.club, allowEditType: false, allowEditNumber: false },
     });
 
     dialogRef
@@ -324,7 +324,9 @@ export class AssignTeamComponent implements OnInit {
       this.validate(team, subEvent);
     }
 
-    const natSubEvents = localInstanceSubEvents.filter((a) => a.levelType == 'NATIONAL').sort((a, b) => a.level - b.level);
+    const natSubEvents = localInstanceSubEvents
+      .filter((a) => a.levelType == 'NATIONAL')
+      .sort((a, b) => a.level - b.level);
     const ligaSubEvents = localInstanceSubEvents.filter((a) => a.levelType == 'LIGA').sort((a, b) => a.level - b.level);
     const provSubEvents = localInstanceSubEvents.filter((a) => a.levelType == 'PROV').sort((a, b) => a.level - b.level);
 
