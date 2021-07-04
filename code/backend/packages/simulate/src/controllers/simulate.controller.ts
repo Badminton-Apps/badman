@@ -68,7 +68,7 @@ export class SimulateController extends BaseController {
 
     const systems = (request.body.systems as string).split(',').map((systemId: string) => systemId);
 
-    for await (const id of systems) {
+    for (const id of systems) {
       const system = await RankingSystem.findByPk(id);
 
       if (!system) {

@@ -1,30 +1,40 @@
 <form [formGroup]="teamForm">
-  <div class="row">
-    <mat-form-field appearance="outline" class="flex">
-      <mat-label>Type</mat-label>
-      <mat-select formControlName="type" required>
-        <mat-option>--select something --</mat-option>
-        <mat-option value="M">{{ 'gender.male' | translate }}</mat-option>
-        <mat-option value="F">{{ 'gender.female' | translate }}</mat-option>
-        <mat-option value="MX">{{ 'gender.mix' | translate }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="flex">
-      <mat-label>{{ 'input.name' | translate }}</mat-label>
-      <input matInput formControlName="name" alt="name" autocomplete="name" required />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="flex">
-      <mat-label>{{ 'input.abbreviation' | translate }}</mat-label>
-      <input matInput formControlName="abbreviation" alt="abbreviation" autocomplete="abbreviation" required />
-    </mat-form-field>
+  <div fxLayout="column">
+    <div class="mat-subheading-2" fxLayout="column">
+      <div>{{ 'team.title.base-fields' | translate }}</div>
+      <div class="mat-caption" *ngIf="this.team.id != null">{{ 'team.change-number' | translate }}</div>
+    </div>
   </div>
-  <div class="row">
-    <div class="mat-subheading-2">{{ 'team.prefferd-encounter' | translate }}</div>
+
+  <div fxLayout="row" fxLayoutGap="10px">
+    <div *ngIf="this.team.id == null">
+      <mat-form-field appearance="outline" fxFlex>
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type" required>
+          <mat-option value="M">{{ 'gender.male' | translate }}</mat-option>
+          <mat-option value="F">{{ 'gender.female' | translate }}</mat-option>
+          <mat-option value="MX">{{ 'gender.mix' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="column">
+      <div fxFlex>
+        <mat-form-field appearance="outline">
+          <mat-label>Number</mat-label>
+          <mat-select formControlName="teamNumber" required>
+            <mat-option *ngFor="let tn of this.teamNumbers" [value]="tn">{{ tn }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
   </div>
-  <div class="row">
-    <mat-form-field appearance="outline" class="flex">
+
+  <div fxLayout="row">
+    <div class="mat-subheading-2">{{ 'team.title.prefferd-encounter' | translate }}</div>
+  </div>
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex>
       <mat-label>{{ 'team.day' | translate }}</mat-label>
       <mat-select formControlName="preferredDay">
         <mat-option>-- {{ 'input.select' | translate }} --</mat-option>
@@ -38,11 +48,11 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="flex">
+    <mat-form-field appearance="outline" fxFlex>
       <input matInput type="time" placeholder="Choose a date" formControlName="preferredTime" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="flex">
+    <mat-form-field appearance="outline" fxFlex>
       <mat-label>{{ 'team.location' | translate }}</mat-label>
       <mat-select [formControl]="this.locationControl" multiple>
         <mat-option *ngFor="let loc of club.locations" [value]="loc.id">{{ loc.name }}</mat-option>
@@ -50,10 +60,10 @@
     </mat-form-field>
   </div>
 
-  <div class="row">
-    <div class="mat-subheading-2">{{ 'team.captain' | translate }}</div>
+  <div fxLayout="row">
+    <div class="mat-subheading-2">{{ 'team.title.captain' | translate }}</div>
   </div>
-  <div class="row">
+  <div fxLayout="row">
     <app-player-search
       [player]="this.team.captain"
       [allowCreation]="true"
@@ -64,25 +74,15 @@
   </div>
 </form>
 <form [formGroup]="this.captainForm">
-  <div class="row">
-    <mat-form-field appearance="outline" class="flex">
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex>
       <mat-label>{{ 'input.email' | translate }}</mat-label>
       <input matInput formControlName="email" alt="email" autocomplete="email" required />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="flex">
+    <mat-form-field appearance="outline" fxFlex>
       <mat-label>{{ 'input.phone' | translate }}</mat-label>
       <input matInput formControlName="phone" alt="phone" autocomplete="phone" required />
     </mat-form-field>
   </div>
 </form>
-
-<button
-  mat-raised-button
-  color="primary"
-  *ngIf="!this.team.id"
-  [disabled]="!this.teamForm?.valid"
-  (click)="this.teamAdded()"
->
-  Create
-</button>

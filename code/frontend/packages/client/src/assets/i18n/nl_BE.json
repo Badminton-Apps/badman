@@ -68,10 +68,16 @@
         }
     },
     "team": {
-        "prefferd-encounter": "Voorkeurs speel moment",
+        "title": {
+            "prefferd-encounter": "Voorkeurs speel moment",
+            "captain": "Ploegkapitein",
+            "players": "Spelers",
+            "base-fields": "Algemene info"
+        },
         "day": "Speeldag",
-        "captain": "Ploegkapitein",
-        "location": "Locatie"
+        "location": "Locatie",
+        "change-number": "Het wijzigen van de nummer, update ook hogere/lagere teams",
+        "check-players": "Vink bij de basis spelers de checkbox aan"
     },
     "competition": {
         "title": "Competitie",

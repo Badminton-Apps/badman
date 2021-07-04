@@ -77,7 +77,7 @@ export class DetailClubComponent {
 
   addTeam(club?: Club) {
     let dialogRef = this.dialog.open(TeamDialogComponent, {
-      data: { club },
+      data: { club, allowEditNumber: false },
     });
 
     dialogRef.afterClosed().subscribe(() => {
