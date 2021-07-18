@@ -3,13 +3,14 @@ import nodemailer, { Transporter } from 'nodemailer';
 import exphbs from 'nodemailer-express-handlebars';
 import smtpTransport from 'nodemailer-smtp-transport';
 import path from 'path';
+import { DataBaseHandler } from '../../database';
 import { Comment, Player, SubEventCompetition } from '../../models';
 
 export class MailService {
   private _transporter: Transporter;
   private _mailingEnabled = false;
 
-  constructor() {
+  constructor(private _databaseService: DataBaseHandler) {
     try {
       this._transporter = nodemailer.createTransport(
         smtpTransport({
@@ -154,46 +155,7 @@ export class MailService {
       ]
     });
 
-    const club = await Club.findOne({
-      where: {
-        id: clubId
-      },
-      include: [
-        {
-          attributes: ['name', 'teamNumber', 'type', 'abbreviation'],
-          model: Team,
-          where: {
-            active: true
-          },
-          include: [
-            {
-              model: Player,
-              as: 'captain',
-            },
-            {
-              model: Player,
-              as: 'players',
-              through: { where: { base: true, end: null } }
-            },
-            {
-              model: SubEventCompetition,
-              attributes: ['id', 'name'],
-              required: true,
-              include: [
-                {
-                  required: true,
-                  model: EventCompetition,
-                  where: {
-                    startYear: year
-                  },
-                  attributes: ['id', 'name']
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    });
+    const club = await this._databaseService.getClubsTeamsForEnrollemnt(clubId, year);
 
     // Sort by type, followed by number
     club.teams = club.teams.sort((a, b) => {

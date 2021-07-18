@@ -41,7 +41,7 @@ import { TeamSubEventMembership } from '../../team-subEvent-membership.model';
 import { Team } from '../../team.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EventCompetition } from './event-competition.model';
-import { GroupSubEventCompetition } from './group_subevent.model';
+import { GroupSubEventCompetition } from './group-subevent.model';
 
 @Table({
   timestamps: true,

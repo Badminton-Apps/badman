@@ -34,7 +34,7 @@ import {
   HasManySetAssociationsMixin
 } from 'sequelize';
 import { Location } from '../location.model';
-import { LocationEventTournament } from './location_event.model';
+import { LocationEventTournament } from './location-event.model';
 import { SubEventTournament } from './sub-event-tournament.model';
 
 @Table({

@@ -6,6 +6,7 @@ import {
   ClubMembership,
   DrawCompetition,
   DrawTournament,
+  EventCompetition,
   Game,
   GamePlayer,
   Player,
@@ -17,7 +18,8 @@ import {
   SubEventTournament,
   Team,
   TeamPlayerMembership,
-  TeamSubEventMembership
+  TeamSubEventMembership,
+  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
@@ -156,6 +158,57 @@ export class DataBaseHandler {
     }
   }
 
+  async addMetaForEnrollment(clubId: string, year: number) {
+    // Get Club, team, base players from database
+    const club = await this.getClubsTeamsForEnrollemnt(clubId, year);
+    const primarySystem = await RankingSystem.findOne({
+      where: { primary: true }
+    });
+    // Store in meta table
+    for (const team of club.teams) {
+      logger.debug(`Team: ${team.name}`);
+      if (team.subEvents.length > 1) {
+        logger.warn('Multiple events?');
+      }
+
+      const membership = team.subEvents[0].getDataValue(
+        'TeamSubEventMembership'
+      ) as TeamSubEventMembership;
+
+      const playerMeta = [];
+      const teamPlayers = [];
+
+      for (const player of team.players) {
+        const rankingPlaceMay = await RankingPlace.findOne({
+          where: {
+            PlayerId: player.id,
+            SystemId: primarySystem.id,
+            rankingDate: `${year}-05-15`
+          }
+        });
+        player.lastRankingPlace = rankingPlaceMay.asLastRankingPlace();
+        teamPlayers.push(player);
+
+        playerMeta.push({
+          playerId: player.id,
+          playerSingleIndex: rankingPlaceMay.single,
+          playerDoubleIndex: rankingPlaceMay.double,
+          playerMixIndex: rankingPlaceMay.mix
+        } as TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta);
+      }
+
+      // update the players with the ranking places, this allows the calculation for baseIndex
+      team.players = teamPlayers;
+
+      membership.meta = {
+        teamIndex: team.baseIndex,
+        players: playerMeta
+      };
+
+      await membership.save();
+    }
+  }
+
   async addPlayers(
     users: {
       memberId: string;
@@ -214,6 +267,49 @@ export class DataBaseHandler {
       await transaction.rollback();
       throw err;
     }
+  }
+
+  async getClubsTeamsForEnrollemnt(clubId: string, year: number) {
+    return Club.findOne({
+      where: {
+        id: clubId
+      },
+      include: [
+        {
+          attributes: ['name', 'teamNumber', 'type', 'abbreviation'],
+          model: Team,
+          where: {
+            active: true
+          },
+          include: [
+            {
+              model: Player,
+              as: 'captain'
+            },
+            {
+              model: Player,
+              as: 'players',
+              through: { where: { base: true, end: null } }
+            },
+            {
+              model: SubEventCompetition,
+              attributes: ['id', 'name'],
+              required: true,
+              include: [
+                {
+                  required: true,
+                  model: EventCompetition,
+                  where: {
+                    startYear: year
+                  },
+                  attributes: ['id', 'name']
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
   }
 
   /**
