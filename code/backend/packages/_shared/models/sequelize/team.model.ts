@@ -190,6 +190,8 @@ export class Team extends Model {
     return this._basePlayers;
   }
 
+  
+
   @Column
   type: SubEventType;
 

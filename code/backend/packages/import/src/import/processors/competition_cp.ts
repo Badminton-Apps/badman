@@ -201,7 +201,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           }
         })
         // Filter out empty teams
-        .filter(t => !!t);
+        .filter(t => !!t); 
 
       await Team.bulkCreate(teamns, { ignoreDuplicates: true, transaction: args.transaction });
 
