@@ -1,13 +1,19 @@
-import { AuthenticatedRequest, BaseController, logger, MailService } from '@badvlasim/shared';
+import {
+  AuthenticatedRequest,
+  BaseController,
+  DataBaseHandler,
+  logger,
+  MailService
+} from '@badvlasim/shared';
 import { Response, Router } from 'express';
 import { ApiError } from '../models/api.error';
 
 export class EnrollmentController extends BaseController {
   private _path = '/enrollment';
   private _mailService: MailService;
-  constructor(router: Router, private _authMiddleware) {
+  constructor(router: Router, private _authMiddleware, private _databaseService: DataBaseHandler) {
     super(router);
-    this._mailService = new MailService();
+    this._mailService = new MailService(_databaseService);
     this._intializeRoutes();
   }
 
@@ -40,11 +46,13 @@ export class EnrollmentController extends BaseController {
         return;
       }
 
-      await this._mailService.sendClubMail(
-        request.user.email,
-        request.params.clubId,
-        parseInt(request.params.year, 10)
-      );
+      const email = request.user.email;
+      const clubId = request.params.clubId;
+      const year = parseInt(request.params.year, 10);
+
+      this._databaseService.addMetaForEnrollment(clubId, year);
+
+      this._mailService.sendClubMail(email, clubId, year);
       response.json({ success: true });
     } catch (error) {
       logger.error(error);
