@@ -14,15 +14,14 @@ export class MailService {
     try {
       this._transporter = nodemailer.createTransport(
         smtpTransport({
-          host: process.env.EMAIL_HOST,
+          host: process.env.MAIL_HOST,
           port: 465,
           auth: {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASS
           }
         })
-      ); 
-    
+      );
 
       this._transporter.verify().then(() => {
         this._mailingEnabled = true;
