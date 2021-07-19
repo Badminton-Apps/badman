@@ -35,7 +35,7 @@ const startServer = (databaseService: DataBaseHandler) => {
 
   const app = new App(
     [
-      new EnrollmentController(router, authService.checkAuth),
+      new EnrollmentController(router, authService.checkAuth, databaseService),
       new RankingController(router, authService.checkAuth),
       new SystemController(router, authService.checkAuth, databaseService),
       new UserController(router, authService.checkAuth),
@@ -80,7 +80,7 @@ const startServer = (databaseService: DataBaseHandler) => {
             });
           });
         }
-        return { req, res };
+        return { req, res }; 
       }
     },
     schema,
