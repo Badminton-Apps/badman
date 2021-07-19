@@ -14,13 +14,15 @@ export class MailService {
     try {
       this._transporter = nodemailer.createTransport(
         smtpTransport({
-          service: 'gmail',
+          host: process.env.EMAIL_HOST,
+          port: 465,
           auth: {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASS
           }
         })
-      );
+      ); 
+    
 
       this._transporter.verify().then(() => {
         this._mailingEnabled = true;
@@ -155,7 +157,10 @@ export class MailService {
       ]
     });
 
-    const club = await this._databaseService.getClubsTeamsForEnrollemnt(clubId, year);
+    const club = await this._databaseService.getClubsTeamsForEnrollemnt(
+      clubId,
+      year
+    );
 
     // Sort by type, followed by number
     club.teams = club.teams.sort((a, b) => {
@@ -177,7 +182,7 @@ export class MailService {
     const clientUrl = process.env.CLIENT_URL;
 
     const options = {
-      from: 'no-reply@badman.app',
+      from: 'info@badman.app',
       to,
       subject: `${club.name} inschrijving`,
       template: 'clubenrollment',
