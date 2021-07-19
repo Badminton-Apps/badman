@@ -1,3 +1,24 @@
+# [3.29.0](https://github.com/Badminton-Apps/core/compare/v3.28.0...v3.29.0) (2021-07-19)
+
+
+### Bug Fixes
+
+* Updated testing for the new numbering ([7783e72](https://github.com/Badminton-Apps/core/commit/7783e723caae2657bf0b5f4e39aabc954f278aff))
+
+
+### Features
+
+* [#130](https://github.com/Badminton-Apps/core/issues/130) - Store team information ([a3e5d83](https://github.com/Badminton-Apps/core/commit/a3e5d83540b545d06bea59a4eee1a3687224c72a))
+* **client:** Added extra configuration ([f5ede8c](https://github.com/Badminton-Apps/core/commit/f5ede8c13ac138c82e57c5ee6b9c97fff2b413f8)), closes [#127](https://github.com/Badminton-Apps/core/issues/127)
+* disable team type edit ([2ea1d29](https://github.com/Badminton-Apps/core/commit/2ea1d293701ba330e6f9541605731fbbe0dc7d18))
+* moved to our new mailing host ([b915543](https://github.com/Badminton-Apps/core/commit/b915543da5aa1b5d9661cbf98d08856d939b2c9b))
+* **scrips:** export for teams ([64052c0](https://github.com/Badminton-Apps/core/commit/64052c0708fd0596509a4dd89e9adfc619c6f520))
+* scripts for cp export ([878ee5d](https://github.com/Badminton-Apps/core/commit/878ee5d02032d9342294e638eb15eac7b035065f))
+* Teams order now fully via dropdown ([7f0cdb5](https://github.com/Badminton-Apps/core/commit/7f0cdb5ca7511d5464ecdb17f6ba965f1e57b395)), closes [#127](https://github.com/Badminton-Apps/core/issues/127)
+* Teams order now fully via dropdown ([da7320d](https://github.com/Badminton-Apps/core/commit/da7320dfa39892271ec22dc240a7de8a0d4c1236))
+
+
+
 # [3.28.0](https://github.com/Badminton-Apps/core/compare/v3.27.9...v3.28.0) (2021-05-12)
 
 
