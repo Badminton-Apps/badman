@@ -39,7 +39,7 @@ import {
 import { RankingSystemGroup, DrawTournament } from '../..';
 import { SubEventType, GameType } from '../../..';
 import { EventTournament } from './event-tournament.model';
-import { GroupSubEventTournament } from './group_subevent.model';
+import { GroupSubEventTournament } from './group-subevent.model';
 
 @Table({
   timestamps: true,

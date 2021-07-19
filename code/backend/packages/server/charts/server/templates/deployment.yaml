@@ -71,3 +71,8 @@ spec:
               secretKeyRef:
                 name: mail-auth
                 key: user
+          - name: MAIL_HOST
+            valueFrom:
+              secretKeyRef:
+                name: mail-auth
+                key: host

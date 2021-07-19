@@ -1,5 +1,4 @@
 import { ImportStep } from './../import-step';
-import { LocationEventTournament } from './../../../../_shared/models/sequelize/event/tournament/location_event.model';
 import {
   Club,
   correctWrongPlayers,
@@ -25,6 +24,7 @@ import {
   Player,
   RankingSystemGroup,
   SubEventTournament,
+  LocationEventTournament,
   titleCase
 } from '@badvlasim/shared';
 import { unlink } from 'fs';

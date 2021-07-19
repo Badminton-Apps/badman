@@ -2,6 +2,7 @@ import { BuildOptions } from 'sequelize';
 import {
   AllowNull,
   Column,
+  DataType,
   ForeignKey,
   Model,
   Table
@@ -29,4 +30,30 @@ export class TeamSubEventMembership extends Model {
   @AllowNull(false)
   @Column
   teamId: string;
+
+  @Column({
+    type: DataType.STRING,
+    field: 'meta'
+  })
+  private _meta!: string;
+
+  get meta(): TeamSubEventMembershipBadmintonBvlMembershipMeta {
+    return JSON.parse(this._meta);
+  }
+
+  set meta(value: TeamSubEventMembershipBadmintonBvlMembershipMeta) {
+    this._meta = JSON.stringify(value);
+  }
+}
+
+export interface TeamSubEventMembershipBadmintonBvlMembershipMeta {
+  teamIndex: number;
+  players: TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta[];
+}
+
+export interface TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta {
+  playerId: string;
+  playerSingleIndex: number;
+  playerDoubleIndex: number;
+  playerMixIndex: number;
 }
