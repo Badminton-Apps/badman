@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { TeamEnrollmentComponent } from './pages/team-enrollment.component';
+import { TeamEnrollmentComponent } from './pages/team-enrollment/team-enrollment.component';
 
 const routes: Routes = [{ path: '', component: TeamEnrollmentComponent }];
 

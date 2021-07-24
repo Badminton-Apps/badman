@@ -53,6 +53,8 @@ export class AuthenticationSercice {
 
       if (player) {
         permissions = AuthenticationSercice.permissionCache.get(player?.id);
+
+
         if (!permissions) {
           permissions = await player?.getUserClaims();
           AuthenticationSercice.permissionCache.set(player.id, permissions);

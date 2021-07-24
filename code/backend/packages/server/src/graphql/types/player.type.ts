@@ -8,6 +8,7 @@ import {
 } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { Op } from 'sequelize';
+import { queryFixer } from '../queryFixer';
 import { getAttributeFields } from './attributes.type';
 import { ClubType } from './club.type';
 import { GameType } from './game.type';
@@ -39,7 +40,7 @@ export const PlayerType = new GraphQLObjectType({
         resolve: resolver(Player.associations.rankingPlaces, {
           before: async (findOptions, args, context, info) => {
             findOptions.where = {
-              ...findOptions.where
+              ...queryFixer(findOptions.where)
             };
             findOptions.order =
               args.order && args.direction
@@ -67,6 +68,7 @@ export const PlayerType = new GraphQLObjectType({
             if (args.order && args.direction) {
               findOptions = {
                 ...findOptions,
+                where: queryFixer(findOptions.where),
                 order: [[args.order, args.direction]]
               };
             }
@@ -86,6 +88,7 @@ export const PlayerType = new GraphQLObjectType({
             if (args.order && args.direction) {
               findOptions = {
                 ...findOptions,
+                where: queryFixer(findOptions.where),
                 order: [
                   [args.order, args.direction],
                   ['id', 'desc']
@@ -119,6 +122,8 @@ export const PlayerType = new GraphQLObjectType({
               [Op.gte]: args.end
             };
           }
+
+          args.where = queryFixer(args.where)
 
           const player = await Player.findOne({
             attributes: ['id'],
