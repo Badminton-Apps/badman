@@ -1,0 +1,27 @@
+<div>
+  <div *ngIf="this.requests$ | async as request">
+    {{ request.accepted }}
+    {{ request.homeComment?.message }}
+    {{ request.awayComment?.message }}
+
+    <div *ngFor="let date of request.dates">
+      {{ date.date | date }}
+
+      <mat-form-field>
+        <mat-label>Home</mat-label>
+        <mat-select [(value)]="date.availabilityHome" required>
+          <mat-option value="POSSIBLE">POSSIBLE</mat-option>
+          <mat-option value="NOT_POSSIBLE">NOT_POSSIBLE</mat-option>
+        </mat-select>
+      </mat-form-field>  
+      
+      <mat-form-field>
+        <mat-label>Away</mat-label>
+        <mat-select [(value)]="date.availabilityAway" required>
+          <mat-option value="POSSIBLE">POSSIBLE</mat-option>
+          <mat-option value="NOT_POSSIBLE">NOT_POSSIBLE</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

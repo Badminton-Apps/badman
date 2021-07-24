@@ -42,6 +42,10 @@ import {
   claimsQuery,
   clubQuery,
   clubsQuery,
+  encounterChangeQuery,
+  encounterChangesQuery,
+  encounterCompetitionQuery,
+  encounterCompetitionsQuery,
   eventCompetitionQuery,
   eventCompetitionsQuery,
   eventTournamentQuery,
@@ -83,7 +87,11 @@ export const createSchema = () => {
         system: systemQuery,
         systems: systemsQuery,
         team: teamQuery,
-        teams: teamsQuery
+        teams: teamsQuery,
+        encounterChange: encounterChangeQuery,
+        encounterChanges: encounterChangesQuery,
+        encounterCompetition: encounterCompetitionQuery,
+        encounterCompetitions: encounterCompetitionsQuery
       })
     }),
     mutation: new GraphQLObjectType({

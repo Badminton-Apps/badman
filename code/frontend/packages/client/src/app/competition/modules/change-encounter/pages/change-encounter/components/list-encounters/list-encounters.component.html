@@ -1,0 +1,9 @@
+<mat-nav-list>
+  <mat-list-item *ngFor="let option of this.options" (click)="this.formControl.setValue(option)">
+    <mat-icon matListIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
+    <h3 matLine>{{ option.home.name }} vs {{ option.away.name }}</h3>
+    <p matLine>
+      <span> {{ option.date | date: 'short' }} </span>
+    </p>
+  </mat-list-item>
+</mat-nav-list>

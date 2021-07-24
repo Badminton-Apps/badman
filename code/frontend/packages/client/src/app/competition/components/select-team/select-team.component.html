@@ -1,17 +1,10 @@
 <ng-container [formGroup]="formGroup">
-  <mat-form-field appearance="outline">
-    <input
-      type="text"
-      placeholder="Pick a team"
-      aria-label="Number"
-      matInput
-      formControlName="team"
-      [matAutocomplete]="auto"
-    />
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="getOptionText">
-      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+  <mat-form-field appearance="outline" class="flex">
+    <mat-label>Pick a team</mat-label>
+    <mat-select formControlName="team" required>
+      <mat-option *ngFor="let option of this.options" [value]="option">
         {{ option.name }}
       </mat-option>
-    </mat-autocomplete>
+    </mat-select>
   </mat-form-field>
 </ng-container>
