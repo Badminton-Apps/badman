@@ -1,0 +1,19 @@
+query GetEncounterChangesQuery($id: ID!) {
+  encounterChange(id: $id){
+    id
+    accepted
+    dates {
+      date
+      availabilityHome
+      availabilityAway
+    }
+
+    homeComment{
+      message
+    }
+
+    awayComment {
+      message
+    }
+  }
+} 

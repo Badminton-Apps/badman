@@ -8,6 +8,7 @@ import {
   GraphQLObjectType
 } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
+import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
 import { GameType } from '../game.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
@@ -21,11 +22,29 @@ const DrawCompetitionType = new GraphQLObjectType({
     Object.assign(getAttributeFields(DrawCompetition), {
       encounters: {
         type: new GraphQLList(EncounterCompetitionType),
-        resolve: resolver(DrawCompetition.associations.encounters)
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(DrawCompetition.associations.encounters, { 
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       subEvent: {
         type: SubEventCompetitionType,
-        resolve: resolver(DrawCompetition.associations.subEvent)
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(DrawCompetition.associations.subEvent, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       }
     })
 });

@@ -12,6 +12,9 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class SelectEventComponent implements OnInit, OnDestroy {
   @Input()
+  controlName = 'event';
+
+  @Input()
   formGroup: FormGroup;
 
   formControl = new FormControl(null, [Validators.required]);
@@ -21,7 +24,7 @@ export class SelectEventComponent implements OnInit, OnDestroy {
   constructor(private eventService: EventService) {}
 
   ngOnInit() {
-    this.formGroup.addControl('event', this.formControl);
+    this.formGroup.addControl(this.controlName, this.formControl);
 
     this.events$ = this.eventService
       .getEvents({
@@ -33,6 +36,6 @@ export class SelectEventComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.formGroup.removeControl('event');
+    this.formGroup.removeControl(this.controlName);
   }
 }

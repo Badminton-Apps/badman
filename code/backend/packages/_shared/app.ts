@@ -18,15 +18,15 @@ export class App {
   constructor(
     controllers: BaseController[],
     proxies: { from: string; to: string }[] = []
-  ) { 
+  ) {
     this.app = express();
 
     this._initializeMiddlewares();
     this._initializeProxies(proxies);
-
+ 
     // place this after the proxies!!
     this.app.use(json());
-
+ 
     this._initializeControllers(controllers);
   }
 
