@@ -80,6 +80,9 @@
             "min-base": "Min basis team index",
             "max-base": "Max basis team index"
         },
+        "change-encounter": {
+            "title": "Change encounter"
+        },
         "enrollment": {
             "select-location": "Select locations for team encounters",
             "select-club": "Select club and competition",

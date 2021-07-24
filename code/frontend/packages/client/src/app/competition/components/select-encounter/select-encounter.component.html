@@ -1,0 +1,10 @@
+<ng-container [formGroup]="formGroup">
+  <mat-form-field appearance="outline" class="flex">
+    <mat-label>Pick an encounter</mat-label>
+    <mat-select formControlName="encounter" required>
+      <mat-option *ngFor="let option of this.options" [value]="option">
+        {{ option.date | date: 'short' }} - {{ option.home.name}} vs {{ option.away.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</ng-container>

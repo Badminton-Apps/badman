@@ -27,6 +27,7 @@ export const ClubType = new GraphQLObjectType({
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Club.associations.teams, {
           before: async (findOptions, args, context, info) => {
+            findOptions.where = queryFixer(findOptions.where);
             findOptions.order = [
               ['type', 'asc'],
               ['teamNumber', 'asc']
@@ -38,12 +39,28 @@ export const ClubType = new GraphQLObjectType({
       roles: {
         type: new GraphQLList(RoleType),
         args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Club.associations.roles)
+        resolve: resolver(Club.associations.roles, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       locations: {
         type: new GraphQLList(LocationType),
         args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Club.associations.locations)
+        resolve: resolver(Club.associations.locations, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       players: {
         type: new GraphQLList(PlayerType),

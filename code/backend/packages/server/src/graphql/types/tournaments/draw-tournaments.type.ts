@@ -8,6 +8,7 @@ import {
   GraphQLObjectType
 } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
+import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
 import { GameType } from '../game.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
@@ -26,7 +27,15 @@ const DrawTournamentType = new GraphQLObjectType({
             type: GraphQLID
           }
         }),
-        resolve: resolver(DrawTournament.associations.games)
+        resolve: resolver(DrawTournament.associations.games, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       gamesCount: {
         type: GraphQLInt,

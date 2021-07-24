@@ -1,5 +1,0 @@
-mutation($comment: CommentInput!) {
-  updateComment(comment: $comment) {
-    id
-  }
-}

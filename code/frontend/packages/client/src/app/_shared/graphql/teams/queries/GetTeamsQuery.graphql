@@ -1,5 +1,5 @@
-query GetTeamsQuery($clubId: ID!) {
-  teams(clubId: $clubId) {
+query GetTeamsQuery($clubId: ID!, $active: Boolean!) {
+  teams(clubId: $clubId, where: {active: $active}) {
     id
     name
     abbreviation

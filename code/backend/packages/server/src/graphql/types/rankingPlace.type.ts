@@ -14,6 +14,7 @@ import { LastRankingPlace, RankingPlace } from '@badvlasim/shared/models';
 import { PlayerType } from './player.type';
 import { RankingSystemType } from './rankingSystem.type';
 import { getAttributeFields } from './attributes.type';
+import { queryFixer } from '../queryFixer';
 
 export const RankingPlaceType = new GraphQLObjectType({
   name: 'RankingPlace',
@@ -27,7 +28,15 @@ export const RankingPlaceType = new GraphQLObjectType({
       player: {
         type: new GraphQLNonNull(PlayerType),
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(RankingPlace.associations.player)
+        resolve: resolver(RankingPlace.associations.player, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       }
     })
 });
@@ -56,7 +65,15 @@ export const LastRankingPlaceType = new GraphQLObjectType({
       player: {
         type: new GraphQLNonNull(PlayerType),
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(LastRankingPlace.associations.player)
+        resolve: resolver(LastRankingPlace.associations.player, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       }
     })
 });

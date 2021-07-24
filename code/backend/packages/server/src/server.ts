@@ -80,7 +80,7 @@ const startServer = (databaseService: DataBaseHandler) => {
             });
           });
         }
-        return { req, res }; 
+        return { req, res };
       }
     },
     schema,

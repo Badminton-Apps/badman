@@ -71,7 +71,7 @@ export class Location extends Model {
   streetNumber: string;
 
   @Column
-  postalcode: number;
+  postalcode: string;
 
   @Column
   city: string;

@@ -1,0 +1,45 @@
+query GetClubInfo($id: ID!) {
+  club(id: $id) {
+    id
+    teams(where: { active: true }) {
+      id
+      name
+      abbreviation
+      active
+      teamNumber
+      type
+      preferredTime
+      preferredDay
+      captain {
+        id
+      }
+      subEvents {
+        id
+        event {
+          name
+        }
+      }
+      locations {
+        id
+        name
+      }
+      players {
+        id
+        firstName
+        lastName
+        base
+        gender
+        lastRanking {
+          single
+          double
+          mix
+        }
+      }
+    }
+
+    locations {
+      id
+      name
+    }
+  }
+}
