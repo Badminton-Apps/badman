@@ -2,17 +2,17 @@
   "folders": [
     {
       "name": "frontend",
-      "path": "code\\frontend"
+      "path": "code/frontend"
     },
     {
       "name": "backend",
-      "path": "code\\backend"
+      "path": "code/backend"
     },
     {
       "path": "rnd"
     },
     {
-      "path": "code\\ingress-controller"
+      "path": "code/ingress-controller"
     },
     {
       "path": ".github"
