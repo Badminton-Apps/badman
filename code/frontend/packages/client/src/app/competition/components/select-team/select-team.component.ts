@@ -22,7 +22,9 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   dependsOn: string = 'club';
 
   formControl = new FormControl();
-  options: Team[];
+  teamsM: Team[];
+  teamsF: Team[];
+  teamsMX: Team[];
 
   constructor(private teamService: TeamService, private router: Router, private activatedRoute: ActivatedRoute) {}
 
@@ -49,19 +51,33 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
             this.formControl.enable();
           }
           // TODO: Convert to observable way
-          this.options = await this.teamService.getTeams(r.id).toPromise();
+          const teams = await this.teamService.getTeams(r.id).toPromise();
+
+          this.teamsF = teams.filter((r) => r.type === 'F').sort((a, b) => a.teamNumber - b.teamNumber);
+          this.teamsM = teams.filter((r) => r.type === 'M').sort((a, b) => a.teamNumber - b.teamNumber);
+          this.teamsMX = teams.filter((r) => r.type === 'MX').sort((a, b) => a.teamNumber - b.teamNumber);
 
           const params = this.activatedRoute.snapshot.queryParams;
-          if (params && params.team && this.options.length > 1) {
-            const foundTeam = this.options.find((r) => r.id == params.team);
-            this.formControl.setValue(foundTeam);
+          if (params && params.team && teams.length > 1) {
+            const foundTeam = teams.find((r) => r.id == params.team);
+          
+          
+            if (foundTeam) {
+              this.formControl.setValue(foundTeam);
+            } else {
+              this.router.navigate([], {
+                relativeTo: this.activatedRoute,
+                queryParams: { team: undefined, encounter: undefined },
+                queryParamsHandling: 'merge',
+              });
+            }
           }
         } else {
           this.formControl.disable();
         }
       });
     } else {
-      console.warn('Dependency not found', previous);
+      console.warn(`Dependency ${this.dependsOn} not found`, previous);
     }
   }
 

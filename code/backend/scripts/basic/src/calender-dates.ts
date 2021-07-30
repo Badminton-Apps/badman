@@ -1,6 +1,7 @@
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 import { parse } from 'fast-xml-parser';
 import got from 'got';
+import { Op } from 'sequelize';
 import {
   Club as DbClub,
   DataBaseHandler,
@@ -8,20 +9,41 @@ import {
   EncounterCompetition,
   EventCompetition,
   logger,
+  Player as DbPlayer,
+  splitInChunks,
   SubEventCompetition,
   SubEventType,
   Team as DbTeam,
-  TeamSubEventMembership
+  TeamPlayerMembership
 } from '../../../packages/_shared';
 
 (async () => {
-  const databaseService = new DataBaseHandler(dbConfig.default);
+  const databaseService = new DataBaseHandler({
+    ...dbConfig.default
+    // logging: (...msg) => logger.debug('Query', msg)
+  });
   const URL_BASE = 'https://api.tournamentsoftware.com/1.0/Tournament/';
 
   const competitions = [
     // '1A358AAD-C446-43B4-9960-9C76DE9E20B1' // Test competition
-    '13C19A72-56DE-41C2-900F-763A2EAB37C3' // PBO
+    '13C19A72-56DE-41C2-900F-763A2EAB37C3', // PBO
+    '39653A34-0315-494B-8634-80CC5A4327A4', // Limburg
+    '343A6D01-7373-405B-9427-CB56B07F8CCD', // PBA
+    '36DA478C-B036-47A6-BAAA-D2F7995F7599', // VVBBC
+    'BD406AC5-DB29-4CD7-B8A6-5EDF9A9BCD37', // Vlaams / liga
+    '9BBF45C4-4826-4D4A-9FCA-18189693800E' // WVBF
   ];
+
+
+  // deactivate all teams
+  await DbTeam.update({ active: false }, { where: { active: true } });
+
+  // Remove all base players
+  await TeamPlayerMembership.update(
+    { base: false },
+    { where: { base: true } }
+  );
+
 
   for (const comp of competitions) {
     // Visual
@@ -178,17 +200,26 @@ import {
 
   async function getdbTeams(id: string, xmlTeams: Team[]) {
     const teams = new Map<string, DbTeam>();
+    const memberships = [];
 
     for (const xmlTeamBasic of xmlTeams) {
       var xmlTeam = await getTeam(id, xmlTeamBasic.Code);
-      const genders = xmlTeam.Players.Player.map(r => r.GenderID);
 
-      const type =
-        genders.includes(1) && genders.includes(2)
-          ? SubEventType.MX
-          : genders.includes(1)
-          ? SubEventType.M
-          : SubEventType.F;
+      const genders = xmlTeam.Players?.Player?.map(r => r.GenderID);
+
+      var type;
+
+      if (xmlTeam.Name == 'Torpedo 1H (74)') {
+        type = SubEventType.M;
+      } else {
+        type =
+          genders.includes(1) && genders.includes(2)
+            ? SubEventType.MX
+            : genders.includes(1)
+            ? SubEventType.M
+            : SubEventType.F;
+      }
+
       const regexResult = /.* ((\d+)[GHD]|[GHD](\d+))/gim.exec(xmlTeam.Name);
 
       // Get team number from regex group
@@ -213,7 +244,11 @@ import {
           clubId: dbClub.id,
           type,
           teamNumber
-        }
+        },
+        include: [
+          { model: DbPlayer, as: 'players', attributes: ['id'] },
+          { model: DbPlayer, as: 'captain' }
+        ]
       });
 
       if (dbTeam == null) {
@@ -226,8 +261,77 @@ import {
         logger.debug('New team', xmlTeam, dbTeam.toJSON());
       }
 
+      if (xmlTeam.Contact) {
+        const parts = xmlTeam.Contact?.toLowerCase()
+          .replace(/[;\\\\/:*?\"<>|&',]/, ' ')
+          .split(' ');
+        const queries = [];
+        for (const part of parts) {
+          queries.push({
+            [Op.or]: [
+              { firstName: { [Op.iLike]: `%${part}%` } },
+              { lastName: { [Op.iLike]: `%${part}%` } }
+            ]
+          });
+        }
+
+        const captain = await DbPlayer.findOne({
+          where: { [Op.or]: queries }
+        });
+
+        if (captain && dbTeam.captain == null) {
+          await dbTeam.setCaptain(captain);
+        }
+      }
+
+      // Copy stuff from xml team to db team
+      dbTeam.phone = xmlTeam.Phone;
+      dbTeam.email = xmlTeam.Email;
+      dbTeam.active = true;
+
+      await dbTeam.save();
+
+      if (xmlTeam.Players?.Player != null) {
+        for (const player of xmlTeam.Players?.Player) {
+          const dbPlayer = await DbPlayer.findOne({
+            where: {
+              memberId: `${player.MemberID}`
+            }
+          });
+
+          if (dbPlayer == null) {
+            logger.warn('No Player?', player);
+            continue;
+          }
+
+          if (!dbTeam.players?.map(p => p.id)?.includes(dbPlayer.id)) {
+            await dbTeam.addPlayer(dbPlayer, {
+              through: { start: new Date() },
+              hooks: false
+            });
+          }
+
+          memberships.push({
+            teamId: dbTeam.id,
+            playerId: dbPlayer.id
+          });
+        }
+      }
+
       teams.set(xmlTeam.Code, dbTeam);
     }
+
+
+    await TeamPlayerMembership.update(
+      { base: true },
+      {
+        where: {
+          [Op.or]: memberships.map(({ teamId, playerId }) => {
+            return { [Op.and]: [{ teamId }, { playerId }] };
+          })
+        }
+      }
+    );
 
     return teams;
   }

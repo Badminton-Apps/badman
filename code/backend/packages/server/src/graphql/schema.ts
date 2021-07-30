@@ -1,4 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { NotificationService } from '../../../_shared';
 import {
   addClubMutation,
   addCommentMutation,
@@ -35,7 +36,8 @@ import {
   updateTeamMutation,
   updateTournamentEventLocationMutation,
   updateTeamLocationMutation,
-  removeClubMutation
+  removeClubMutation,
+  addChangeEncounterMutation
 } from './mutations';
 import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import {
@@ -64,7 +66,7 @@ import {
   teamsQuery
 } from './queries';
 
-export const createSchema = () => {
+export const createSchema = (notificationService: NotificationService) => {
   return new GraphQLSchema({
     query: new GraphQLObjectType({
       name: 'RootQueryType',
@@ -104,12 +106,13 @@ export const createSchema = () => {
         addLocation: addLocationMutation,
         addPlayer: addPlayerMutation,
         addPlayerToClub: addPlayerToClubMutation,
-        addPlayerToRole: addPlayerToRoleMutation,
+        addPlayerToRole: addPlayerToRoleMutation, 
         addPlayerToTeam: addPlayerToTeamMutation,
         addRankingSystem: addRankingSystemMutation,
         addRankingSystemGroup: addRankingSystemGroupMutation,
         addRole: addRoleMutation,
         addTeam: addTeamMutation,
+        addChangeEncounter: addChangeEncounterMutation(notificationService),
         deleteImportedEvent: deleteImportedEventMutation,
         removeClub: removeClubMutation,
         removeLocation: removeLocationMutation,

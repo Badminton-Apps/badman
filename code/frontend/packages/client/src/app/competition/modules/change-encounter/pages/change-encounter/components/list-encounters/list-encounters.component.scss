@@ -1,7 +1,10 @@
-:host {
-  width: 400px;
-}
+@import 'app/_shared/variables.scss';
 
 mat-form-field {
   width: 100%;
+}
+
+.selected {
+  box-sizing: border-box;
+  border-right: 2px solid mat-color($client-angular-accent, 300);
 }
