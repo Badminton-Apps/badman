@@ -19,6 +19,8 @@ export class Team {
   baseIndex: number;
   captain: Player;
   captainId: string;
+  email: string;
+  phone: string;
 
   constructor(args?: Partial<Team>) {
     this.id = args?.id;
@@ -34,6 +36,8 @@ export class Team {
     this.locations = args?.locations?.map((l) => new Location(l));
     this.captain = args?.captain != null ? new Player(args?.captain) : null;
     this.captainId = args?.captain?.id;
+    this.email = args?.email;
+    this.phone = args?.phone;
 
     this.players =
       args?.players?.map((p) => {
