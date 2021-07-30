@@ -1,9 +1,39 @@
-<mat-nav-list>
-  <mat-list-item *ngFor="let option of this.options" (click)="this.formControl.setValue(option)">
+<mat-nav-list *ngIf="this.encountersSem2 && this.encountersSem2.length > 0">
+  <mat-list-item
+    *ngFor="let option of this.encountersSem1"
+    (click)="this.formControl.setValue(option)"
+    [ngClass]="{ selected: this.formControl.value?.id == option?.id }"
+  >
     <mat-icon matListIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
-    <h3 matLine>{{ option.home.name }} vs {{ option.away.name }}</h3>
+    <h3 matLine>{{ option.showingForHomeTeam ? option.away.name : option.home.name }}</h3>
     <p matLine>
-      <span> {{ option.date | date: 'short' }} </span>
+      <span>
+        {{
+          (option.showingForHomeTeam ? 'competition.change-encounter.home' : 'competition.change-encounter.away')
+            | translate
+        }}
+        - {{ option.date | date: 'short' }}
+      </span>
+    </p>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item
+    *ngFor="let option of this.encountersSem2"
+    (click)="this.formControl.setValue(option)"
+    [ngClass]="{ selected: this.formControl.value?.id == option?.id }"
+  >
+    <mat-icon matListIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
+    <h3 matLine>{{ option.showingForHomeTeam ? option.away.name : option.home.name }}</h3>
+    <p matLine>
+      <span>
+        {{
+          (option.showingForHomeTeam ? 'competition.change-encounter.home' : 'competition.change-encounter.away')
+            | translate
+        }}
+        - {{ option.date | date: 'short' }}
+      </span>
     </p>
   </mat-list-item>
 </mat-nav-list>

@@ -57,7 +57,7 @@ export class EncounterChange extends Model {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE'
   })
-  encounter?: EncounterCompetition[];
+  encounter?: EncounterCompetition;
 
   @ForeignKey(() => EncounterCompetition)
   @Column
@@ -90,7 +90,6 @@ export class EncounterChange extends Model {
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;
   setEncounter!: BelongsToSetAssociationMixin<EncounterCompetition, String>;
-
 
   // Has many Date
   getDates!: HasManyGetAssociationsMixin<EncounterChangeDate>;

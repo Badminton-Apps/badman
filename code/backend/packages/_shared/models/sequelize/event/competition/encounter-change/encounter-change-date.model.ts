@@ -54,7 +54,7 @@ export class EncounterChangeDate extends Model {
     foreignKey: 'encounterChangeId',
     onDelete: 'CASCADE'
   })
-  encounterChange?: EncounterChange[];
+  encounterChange?: EncounterChange;
 
   @ForeignKey(() => EncounterChange)
   @Column
