@@ -64,7 +64,7 @@
     <div class="mat-subheading-2">{{ 'team.title.captain' | translate }}</div>
   </div>
   <div fxLayout="row">
-    <app-player-search
+    <app-player-search 
       [player]="this.team.captain"
       [allowCreation]="true"
       [club]="this.club"
@@ -72,8 +72,7 @@
       [clearOnSelection]="false"
     ></app-player-search>
   </div>
-</form>
-<form [formGroup]="this.captainForm">
+
   <div fxLayout="row" fxLayoutGap="10px">
     <mat-form-field appearance="outline" fxFlex>
       <mat-label>{{ 'input.email' | translate }}</mat-label>
