@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { filter, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './change-encounter.component.html',
@@ -8,16 +9,7 @@ import { FormGroup } from '@angular/forms';
 export class ChangeEncounterComponent implements OnInit {
   formGroup: FormGroup = new FormGroup({});
 
-  requests = null;
-
   constructor() {}
 
-  ngOnInit(): void {
-
-    // this.formGroup.valueChanges.subscribe(r => console.log(this.formGroup.getRawValue())); 
-  }
-
-  showRequests(encounter){
-    this.requests = [];
-  }
+  ngOnInit(): void {}
 }

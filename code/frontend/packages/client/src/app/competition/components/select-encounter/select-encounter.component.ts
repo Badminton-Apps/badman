@@ -53,7 +53,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      console.warn('Dependency not found', previous);
+      console.warn(`Dependency ${this.dependsOn} not found`, previous);
     }
   }
 

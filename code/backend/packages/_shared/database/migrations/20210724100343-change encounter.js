@@ -1,16 +1,16 @@
 'use strict';
 
+const newClaims = [
+  [
+    '58e44e85-6439-429c-b71b-7cc1ec326871',
+    'change:encounter',
+    'Change the location of a encounter',
+    'clubs'
+  ]
+];
+
 module.exports = {
   up: async (queryInterface, sequelize) => {
-    const newClaims = [
-      [
-        '58e44e85-6439-429c-b71b-7cc1ec326871',
-        'change:encounter',
-        'Change the location of a encounter',
-        'clubs'
-      ]
-    ];
-
     return queryInterface.sequelize.transaction(async t => {
       try {
         const dbNewClaims = await queryInterface.bulkInsert(
@@ -185,7 +185,6 @@ module.exports = {
           { transaction: t }
         );
 
-       
         await queryInterface.dropTable(
           {
             tableName: 'EncounterChangeDates',
@@ -214,6 +213,11 @@ module.exports = {
           {
             transaction: t
           }
+        );
+        await queryInterface.bulkDelete(
+          { tableName: 'Claims', schema: 'security' },
+          { id: { [Op.in]: newClaims.map(claimName => claimName[0]) } },
+          { transaction: t }
         );
       } catch (err) {
         console.error('We errored with', err);

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { CompetitionEncounter } from 'app/_shared';
-import { EncounterChange } from 'app/_shared/models';
+import { Availability, EncounterChange } from 'app/_shared/models';
 import { map, tap } from 'rxjs/operators';
 import * as encounterQuery from '../../graphql/encounters/queries/GetEncounterQuery.graphql';
 import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.graphql';
+import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -52,5 +53,26 @@ export class EncounterService {
         },
       })
       .pipe(map((x) => new EncounterChange(x.data?.encounterChange)));
+  }
+
+  addEncounterChange(encounterChange: EncounterChange, home: boolean) {
+    return this.apollo
+      .mutate<{
+        addChangeEncounter: EncounterChange;
+      }>({
+        mutation: changeEncounterRequestMutation,
+        variables: {
+          change: {
+            accepted: encounterChange.accepted,
+            encounterId: encounterChange.encounter.id,
+            home,
+            dates: encounterChange.dates,
+            comment: {
+              message: home ? encounterChange.homeComment.message : encounterChange.awayComment.message
+            },
+          },
+        },
+      })
+      .pipe(map((x) => new EncounterChange(x.data?.addChangeEncounter)));
   }
 }

@@ -23,7 +23,8 @@ export class ListEncountersComponent implements OnInit {
 
   formControl = new FormControl();
 
-  options: CompetitionEncounter[];
+  encountersSem1: CompetitionEncounter[];
+  encountersSem2: CompetitionEncounter[];
 
   constructor(
     private encounterService: EncounterService,
@@ -44,33 +45,50 @@ export class ListEncountersComponent implements OnInit {
         });
       });
 
-      previous.valueChanges.subscribe(async (r) => {
+      previous.valueChanges.subscribe(async (team) => {
         this.formControl.setValue(null);
-        if (r?.id != null) {
+        if (team?.id != null) {
           if (!this.formControl.enabled) {
             this.formControl.enable();
           }
 
-          this.options = (
+          const encounters = (
             await this.encounterService
-              .getEncounters(r.id)
+              .getEncounters(team.id)
               .pipe(map((c) => c.encounterCompetitions.edges.map((r) => r.node)))
               .toPromise()
-          ).sort((a, b) => {
-            return a.date.getTime() - b.date.getTime();
-          });
+          )
+            .sort((a, b) => {
+              return a.date.getTime() - b.date.getTime();
+            })
+            .map((r) => {
+              r.showingForHomeTeam = r.home?.id == team.id;
+              return r;
+            });
+
+          this.encountersSem1 = encounters.filter((r) => [8, 9, 10, 11, 12].includes(r.date.getMonth()));
+          this.encountersSem2 = encounters.filter((r) => [0, 1, 2, 3, 4, 5].includes(r.date.getMonth()));
 
           const params = this.activatedRoute.snapshot.queryParams;
-          if (params && params.encounter && this.options.length > 1) {
-            const foundEncounter = this.options.find((r) => r.id == params.encounter);
-            this.formControl.setValue(foundEncounter);
+          if (params && params.encounter && this.encountersSem1.length > 1) {
+            const foundEncounter = this.encountersSem1.find((r) => r.id == params.encounter);
+
+            if (foundEncounter) {
+              this.formControl.setValue(foundEncounter);
+            } else {
+              this.router.navigate([], {
+                relativeTo: this.activatedRoute,
+                queryParams: { encounter: undefined },
+                queryParamsHandling: 'merge',
+              });
+            }
           }
         } else {
           this.formControl.disable();
         }
       });
     } else {
-      console.warn('Dependency not found', previous);
+      console.warn(`Dependency ${this.dependsOn} not found`, previous);
     }
   }
 }

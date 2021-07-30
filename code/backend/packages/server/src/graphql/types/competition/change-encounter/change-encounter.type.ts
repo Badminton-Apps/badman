@@ -1,5 +1,6 @@
 import { EncounterChange, EncounterChangeDate } from '@badvlasim/shared/models';
 import {
+  GraphQLBoolean,
   GraphQLID,
   GraphQLInputObjectType,
   GraphQLInt,
@@ -10,9 +11,9 @@ import {
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../../queryFixer';
 import { getAttributeFields } from '../../attributes.type';
-import { CommentType } from '../../comment.type';
+import { CommentInputType, CommentType } from '../../comment.type';
 import { EncounterCompetitionType } from '../encounter-competition.type';
-import { EncounterChangeDateType } from './change-encounter-date.type';
+import { EncounterChangeDateInputType, EncounterChangeDateType } from './change-encounter-date.type';
 
 const EncounterChangeType = new GraphQLObjectType({
   name: 'EncounterChange',
@@ -31,7 +32,7 @@ const EncounterChangeType = new GraphQLObjectType({
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
-            }; 
+            };
             return findOptions;
           }
         })
@@ -49,13 +50,24 @@ const EncounterChangeType = new GraphQLObjectType({
 
 const EncounterChangeInputType = new GraphQLInputObjectType({
   name: 'EncounterChangeInput',
-  description: 'This represents a UserInputType',
+  description: 'This represents a EncounterChangeInput',
   fields: () =>
     Object.assign(
       getAttributeFields(EncounterChange, {
         exclude: ['createdAt', 'updatedAt'],
         optionalString: ['id']
-      })
+      }),
+      {
+        home: {
+          type: GraphQLBoolean
+        },
+        dates: {
+          type: new GraphQLList(EncounterChangeDateInputType)
+        },
+        comment: {
+          type: CommentInputType
+        }
+      }
     )
 });
 

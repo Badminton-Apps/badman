@@ -1,14 +1,23 @@
 <div fxFlex fxLayout="column" fxLayoutGap="16px">
   <div>
     <div class="mat-subheading-1">{{ 'competition.change-encounter.title' | translate }}</div>
-    <div>{{ 'competition.note' | translate }}</div>
   </div>
 
+  <p>{{'competition.change-encounter.description' | translate}}</p>
+
+  <div div class="mat-subheading-2">{{'competition.change-encounter.choose-date' | translate}}</div>
   <div class="select-encounter" fxFlex fxLayout="row" fxLayoutGap="16px">
     <app-select-club requiredPermission="change:encounter" [formGroup]="formGroup"></app-select-club>
     <app-select-team [formGroup]="formGroup"></app-select-team>
   </div>
 
-  <app-list-encounters [formGroup]="formGroup"></app-list-encounters>
-  <app-show-requests [formGroup]="formGroup"></app-show-requests>
+
+
+  <div [hidden]="!formGroup.get('team').value">
+    <div div class="mat-subheading-2">{{'competition.change-encounter.choose-encounter' | translate}}</div>
+    <div fxLayout="row">
+      <app-list-encounters [formGroup]="formGroup"></app-list-encounters>
+      <app-show-requests fxFlex [formGroup]="formGroup"></app-show-requests>
+    </div>
+  </div>
 </div>

@@ -55,7 +55,7 @@ export class EncounterCompetition extends Model {
   originalDate: Date;
 
   @HasMany(() => Game, {
-    foreignKey: 'linkId',
+    foreignKey: 'linkId', 
     constraints: false,
     scope: {
       linkType: 'competition'
@@ -86,6 +86,9 @@ export class EncounterCompetition extends Model {
   @ForeignKey(() => Team)
   @Column
   awayTeamId: string;
+
+  @Column
+  synced: Date;
 
   @HasOne(() => EncounterChange, {
     foreignKey: 'encounterId',

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Club } from 'app/_shared';
 import { AuthService, ClubService } from 'app/_shared/services';
 import { Observable } from 'rxjs';
-import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-club',
@@ -65,8 +65,15 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     const params = this.activatedRoute.snapshot.queryParams;
     if (params && params.club && this.options.length > 1) {
       const foundClub = this.options.find((r) => r.id == params.club);
-      console.log('club', foundClub);
-      this.formControl.setValue(foundClub);
+      if (foundClub) {
+        this.formControl.setValue(foundClub);
+      } else {
+        this.router.navigate([], {
+          relativeTo: this.activatedRoute,
+          queryParams: { club: undefined, team: undefined, encounter: undefined },
+          queryParamsHandling: 'merge',
+        });
+      }
     }
 
     if (this.options.length == 1) {

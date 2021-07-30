@@ -3,5 +3,7 @@ query GetTeamsQuery($clubId: ID!, $active: Boolean!) {
     id
     name
     abbreviation
+    type
+    teamNumber
   }
 }

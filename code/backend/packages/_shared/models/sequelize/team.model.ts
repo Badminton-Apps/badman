@@ -190,13 +190,17 @@ export class Team extends Model {
     return this._basePlayers;
   }
 
-  
-
   @Column
   type: SubEventType;
 
   @BelongsTo(() => Player, 'captainId')
   captain: Player;
+
+  @Column
+  email: string;
+
+  @Column
+  phone: string;
 
   @Unique('unique_constraint')
   @Column
