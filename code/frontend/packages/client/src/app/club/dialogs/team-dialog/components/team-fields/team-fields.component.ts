@@ -32,8 +32,6 @@ export class TeamFieldsComponent implements OnInit {
 
   teamForm: FormGroup;
 
-  captainForm: FormGroup;
-
   locationControl: FormControl;
   teamNumbers: number[];
 
@@ -47,11 +45,10 @@ export class TeamFieldsComponent implements OnInit {
     const preferredDayControl = new FormControl(this.team.preferredDay);
 
     const captainIdControl = new FormControl(this.team.captain?.id);
-    const phoneControl = new FormControl(this.team.captain?.phone);
-    const emailControl = new FormControl(this.team.captain?.email);
+    const phoneControl = new FormControl(this.team.phone);
+    const emailControl = new FormControl(this.team.email);
 
     this.locationControl = new FormControl(this.team.locations?.map((r) => r.id) ?? [], Validators.required);
-
 
     this.teamForm = new FormGroup({
       teamNumber: numberControl,
@@ -59,6 +56,8 @@ export class TeamFieldsComponent implements OnInit {
       preferredTime: preferredTimeControl,
       preferredDay: preferredDayControl,
       captainId: captainIdControl,
+      phone: phoneControl,
+      email: emailControl,
     });
 
     if (this.allowEditNumber) {
@@ -72,15 +71,7 @@ export class TeamFieldsComponent implements OnInit {
       typeControl.disable();
     }
 
-    this.captainForm = new FormGroup({
-      id: new FormControl(this.team.captain?.id),
-      phone: phoneControl,
-      email: emailControl,
-    });
-
     this.form.addControl('team', this.teamForm);
-    this.form.addControl('captain', this.captainForm);
-
 
     if (this.team.id) {
       this.calcTeamsOfType(this.team.type);
@@ -88,20 +79,6 @@ export class TeamFieldsComponent implements OnInit {
 
     typeControl.valueChanges.subscribe((type) => {
       this.calcTeamsOfType(type);
-    });
-
-    this.captainForm.valueChanges.pipe(debounceTime(600)).subscribe(async (e) => {
-      if (this.captainForm.valid) {
-        if (this.captainForm.dirty) {
-          this.onCaptainUpdated.next(this.captainForm.value);
-        }
-
-        if (this.teamForm.value.captainId != this.captainForm.value.id) {
-          this.teamForm.patchValue({
-            captainId: this.captainForm.value.id,
-          });
-        }
-      }
     });
 
     this.locationControl.valueChanges
@@ -128,6 +105,8 @@ export class TeamFieldsComponent implements OnInit {
           preferredTime: e?.preferredTime,
           preferredDay: e?.preferredDay,
           captainId: e?.captainId,
+          email: e?.email,
+          phone: e?.phone,
         });
       }
     });
@@ -143,7 +122,7 @@ export class TeamFieldsComponent implements OnInit {
   }
 
   async selectedCaptain(player: Player) {
-    this.captainForm.patchValue({
+    this.teamForm.patchValue({
       phone: player.phone,
       email: player.email,
       id: player.id,
