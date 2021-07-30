@@ -2,9 +2,23 @@
   <mat-form-field appearance="outline" class="flex">
     <mat-label>Pick a team</mat-label>
     <mat-select formControlName="team" required>
-      <mat-option *ngFor="let option of this.options" [value]="option">
-        {{ option.name }}
-      </mat-option>
+      <mat-optgroup *ngIf="this.teamsF && this.teamsF.length > 0" label="F">
+        <mat-option *ngFor="let option of this.teamsF" [value]="option">
+          {{ option.name }}
+        </mat-option>
+      </mat-optgroup>
+
+      <mat-optgroup *ngIf="this.teamsM && this.teamsM.length > 0" label="M">
+        <mat-option *ngFor="let option of this.teamsM" [value]="option">
+          {{ option.name }}
+        </mat-option>
+      </mat-optgroup>
+
+      <mat-optgroup *ngIf="this.teamsMX && this.teamsMX.length > 0" label="MX">
+        <mat-option *ngFor="let option of this.teamsMX" [value]="option">
+          {{ option.name }}
+        </mat-option>
+      </mat-optgroup>
     </mat-select>
   </mat-form-field>
 </ng-container>

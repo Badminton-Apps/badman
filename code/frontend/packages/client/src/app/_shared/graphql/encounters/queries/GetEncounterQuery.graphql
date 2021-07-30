@@ -5,9 +5,11 @@ query GetEncounterQuery($id: ID!, $where: SequelizeJSON) {
         id
         date
         home {
+          id
           name
         }
         away {
+          id
           name
         }
         encounterChange {

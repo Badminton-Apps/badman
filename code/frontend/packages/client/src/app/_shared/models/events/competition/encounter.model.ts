@@ -10,6 +10,7 @@ export class CompetitionEncounter {
   games: Game[];
   home: Team;
   away: Team;
+  showingForHomeTeam: boolean;
   encounterChange: EncounterChange;
 
   finished = true;

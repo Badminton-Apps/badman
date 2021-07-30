@@ -15,7 +15,9 @@ import { CompetitionComponentsModule } from 'app/competition/components';
 import { SharedModule } from 'app/_shared';
 import { ChangeEncounterRoutingModule } from './change-encounter-routing.module';
 import { ChangeEncounterComponent, ListEncountersComponent, ShowRequestsComponent } from './pages';
-
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatDatepickerModule } from '@matheo/datepicker';
+import { MatNativeDateModule } from '@matheo/datepicker/core';
 
 const materialModules = [
   DragDropModule,
@@ -31,6 +33,10 @@ const materialModules = [
   ReactiveFormsModule,
   FormsModule,
   MatInputModule,
+  MatDatepickerModule,
+  MatMomentDateModule,
+  MatNativeDateModule,
+  MatDatepickerModule,
 ];
 
 @NgModule({

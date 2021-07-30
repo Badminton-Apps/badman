@@ -240,6 +240,8 @@ type Team {
   abbreviation: String
   clubId: String
   type: String
+  email: String
+  phone: String
   teamNumber: Int
   active: Boolean
   createdAt: Date!
@@ -1161,6 +1163,9 @@ type RootMutationType {
   ): RankingSystemGroup
   addRole(role: RoleInput, clubId: Int): Role
   addTeam(team: TeamInput!, clubId: ID!): Team
+
+  # Add a change to an encounter
+  addChangeEncounter(change: EncounterChangeInput): EncounterChange
   deleteImportedEvent(event: ImportInput): Imported
   removeClub(id: String): Boolean
   removeLocation(locationId: ID): Location
@@ -1360,10 +1365,32 @@ input TeamInput {
   preferredDay: TeampreferredDayEnumType
   clubId: String
   type: String
+  email: String
+  phone: String
   teamNumber: Int
   active: Boolean
   captainId: String
   players: PlayerInput
+}
+
+# This represents a EncounterChangeInput
+input EncounterChangeInput {
+  id: String
+  accepted: Boolean
+  encounterId: String
+  home: Boolean
+  dates: [EncounterChangeDateInput]
+  comment: CommentInput
+}
+
+# This represents a UserInputType
+input EncounterChangeDateInput {
+  id: String
+  selected: Boolean
+  encounterChangeId: String
+  date: Date
+  availabilityHome: EncounterChangeDateavailabilityHomeEnumType
+  availabilityAway: EncounterChangeDateavailabilityAwayEnumType
 }
 
 # This represents a UserInputType
