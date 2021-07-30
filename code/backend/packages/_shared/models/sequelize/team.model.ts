@@ -198,6 +198,12 @@ export class Team extends Model {
   @BelongsTo(() => Player, 'captainId')
   captain: Player;
 
+  @Column
+  email: string;
+
+  @Column
+  phone: string;
+  
   @Unique('unique_constraint')
   @Column
   teamNumber: number;
