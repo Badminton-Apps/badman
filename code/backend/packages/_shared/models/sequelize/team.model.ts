@@ -199,11 +199,11 @@ export class Team extends Model {
   captain: Player;
 
   @Column
-  email: String;
+  email: string;
 
   @Column
-  phone: String;
-
+  phone: string;
+  
   @Unique('unique_constraint')
   @Column
   teamNumber: number;
