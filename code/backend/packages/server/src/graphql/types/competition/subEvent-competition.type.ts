@@ -1,11 +1,12 @@
 import { TeamType } from './../team.type';
 import { SubEventCompetition } from '@badvlasim/shared/models';
 import { GraphQLBoolean, GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
-import { resolver, attributeFields } from 'graphql-sequelize';
+import { resolver, defaultListArgs } from 'graphql-sequelize';
 import { getAttributeFields } from '../attributes.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
 import { DrawCompetitionType } from './draw-competition.type';
 import { EventCompetitionType } from './event-competition.type';
+import { queryFixer } from '../../queryFixer';
 
 const SubEventCompetitionType = new GraphQLObjectType({
   name: 'SubEventCompetition',
@@ -14,15 +15,42 @@ const SubEventCompetitionType = new GraphQLObjectType({
     Object.assign(getAttributeFields(SubEventCompetition), {
       draws: {
         type: new GraphQLList(DrawCompetitionType),
-        resolve: resolver(SubEventCompetition.associations.draws)
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(SubEventCompetition.associations.draws, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       event: {
         type: EventCompetitionType,
-        resolve: resolver(SubEventCompetition.associations.event)
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(SubEventCompetition.associations.event, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       teams: {
         type: new GraphQLList(SubEventCompetitionType),
-        resolve: resolver(SubEventCompetition.associations.teams)
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(SubEventCompetition.associations.teams, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       }
     })
 });

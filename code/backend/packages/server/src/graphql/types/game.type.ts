@@ -7,6 +7,7 @@ import { DrawCompetitionType } from './competition';
 import { DrawTournamentType } from './tournaments';
 import { RankingPointType } from './rankingPoint.type';
 import { EncounterCompetitionType } from './competition/encounter-competition.type';
+import { queryFixer } from '../queryFixer';
 
 export const GameType = new GraphQLObjectType({
   name: 'Game',
@@ -44,6 +45,7 @@ export const GameType = new GraphQLObjectType({
             if (args.order && args.direction) {
               findOptions = {
                 ...findOptions,
+                where: queryFixer(findOptions.where),
                 order: [[args.order, args.direction]]
               };
             }

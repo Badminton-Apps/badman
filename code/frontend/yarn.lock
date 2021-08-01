@@ -2240,6 +2240,13 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
+"@matheo/datepicker@^11.2.15":
+  version "11.2.15"
+  resolved "https://registry.yarnpkg.com/@matheo/datepicker/-/datepicker-11.2.15.tgz#25929fbc980d28abaf6f08a0827128e280b2aa50"
+  integrity sha512-TtTw77bsCNjeWYYZX0QWpRZIIm1RTMpxNl/SWlESO7RhCp9nCwtQlsZBjxm+1Lp3aX3jzDvyU9fI5BcBjxaRQw==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngtools/webpack@11.2.4":
   version "11.2.4"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-11.2.4.tgz#3f90ebced62691aa889b442042191c20a8e7869f"

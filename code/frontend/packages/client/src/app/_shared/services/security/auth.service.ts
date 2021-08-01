@@ -3,24 +3,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import createAuth0Client, { GetUserOptions } from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
-import {
-  BehaviorSubject,
-  combineLatest,
-  from,
-  Observable,
-  of,
-  throwError,
-} from 'rxjs';
-import {
-  catchError,
-  concatMap,
-  exhaustMap,
-  filter,
-  map,
-  shareReplay,
-  startWith,
-  tap,
-} from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, of, throwError } from 'rxjs';
+import { catchError, concatMap, exhaustMap, filter, map, shareReplay, startWith, tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -28,14 +12,16 @@ import { environment } from '../../../../environments/environment';
 })
 export class AuthService {
   // Create an observable of Auth0 instance of client
-  auth0Client$ = (from(
-    createAuth0Client({
-      domain: 'badvlasim.eu.auth0.com',
-      client_id: '2LqkYZMbrTTXEE0OMkQJLmpRrOVQheoF',
-      redirect_uri: `${window.location.origin}`,
-      audience: `ranking-simulation`,
-    })
-  ) as Observable<Auth0Client>).pipe(
+  auth0Client$ = (
+    from(
+      createAuth0Client({
+        domain: 'badvlasim.eu.auth0.com',
+        client_id: '2LqkYZMbrTTXEE0OMkQJLmpRrOVQheoF',
+        redirect_uri: `${window.location.origin}`,
+        audience: `ranking-simulation`,
+      })
+    ) as Observable<Auth0Client>
+  ).pipe(
     shareReplay(1), // Every subscription receives the same shared value
     catchError((err) => throwError(err))
   );
@@ -110,51 +96,32 @@ export class AuthService {
     });
   }
   private setupStreams() {
-    this.userPermissions$ = combineLatest([
-      this.userProfile$,
-      this.update$,
-    ]).pipe(
+    this.userPermissions$ = combineLatest([this.userProfile$, this.update$]).pipe(
       filter(([profile]) => profile != null),
-      exhaustMap((_) =>
-        this.httpClient.get<string[]>(
-          `${environment.api}/${environment.apiVersion}/user/permissions`
-        )
-      ),
+      exhaustMap((_) => this.httpClient.get<string[]>(`${environment.api}/${environment.apiVersion}/user/permissions`)),
       shareReplay(1)
     );
   }
 
   getUserToken$(options?: GetUserOptions): Observable<string> {
-    return this.auth0Client$.pipe(
-      exhaustMap((client: Auth0Client) => client.getTokenSilently(options))
-    );
+    return this.auth0Client$.pipe(exhaustMap((client: Auth0Client) => client.getTokenSilently(options)));
   }
 
   hasClaim$(claim: string): Observable<boolean> {
-    return this.userPermissions$.pipe(
-      map((userClaims) => this.includes(userClaims, claim))
-    );
+    return this.userPermissions$.pipe(map((userClaims) => this.includes(userClaims, claim)));
   }
 
   hasAllClaims$(claims: string[]): Observable<boolean> {
     return this.userPermissions$.pipe(
-      map((userClaims) =>
-        claims.reduce(
-          (acc, claim) => acc && this.includes(userClaims, claim),
-          true
-        )
-      )
+      map((userClaims) => {
+        return claims.reduce((acc, claim) => acc && this.includes(userClaims, claim), true);
+      })
     );
   }
 
   hasAnyClaims$(claims: string[]): Observable<boolean> {
     return this.userPermissions$.pipe(
-      map((userClaims) =>
-        claims.reduce(
-          (acc, claim) => acc || this.includes(userClaims, claim),
-          false
-        )
-      )
+      map((userClaims) => claims.reduce((acc, claim) => acc || this.includes(userClaims, claim), false))
     );
   }
 
@@ -164,7 +131,8 @@ export class AuthService {
 
   private includes(claims: string[], claim: string) {
     if (claim.indexOf('*') >= 0) {
-      return claims.find((r) => r.indexOf(claim.replace('*', ''))) !== null;
+      const found = claims.find((r) => r.indexOf(claim.replace('*', '')) != -1);
+      return found != null && found != undefined;
     } else {
       return claims.includes(claim);
     }
@@ -179,10 +147,7 @@ export class AuthService {
         // Have client, now call method to handle auth callback redirect
         tap((cbRes) => {
           // Get and set target redirect route from callback results
-          targetRoute =
-            cbRes.appState && cbRes.appState.target
-              ? cbRes.appState.target
-              : '/';
+          targetRoute = cbRes.appState && cbRes.appState.target ? cbRes.appState.target : '/';
         }),
         concatMap(() => {
           // Redirect callback complete; get user and login status
