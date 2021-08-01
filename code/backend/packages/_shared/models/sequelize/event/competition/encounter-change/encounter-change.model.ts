@@ -17,23 +17,19 @@ import {
 import {
   BelongsTo,
   Column,
-  HasOne,
   DataType,
   Default,
   ForeignKey,
   HasMany,
+  HasOne,
   IsUUID,
   Model,
   PrimaryKey,
-  Table,
-  Unique
+  Table
 } from 'sequelize-typescript';
-import { DrawCompetition } from '../draw-competition.model';
-import { Game } from '../../game.model';
-import { Team } from '../../../team.model';
+import { Comment } from '../../../comment.model';
 import { EncounterCompetition } from '../encounter-competition.model';
 import { EncounterChangeDate } from './encounter-change-date.model';
-import { Comment } from '../../../comment.model';
 
 @Table({
   timestamps: true,
@@ -64,7 +60,7 @@ export class EncounterChange extends Model {
   encounterId: string;
 
   @HasMany(() => EncounterChangeDate, {
-    foreignKey:  'encounterChangeId',
+    foreignKey: 'encounterChangeId',
     onDelete: 'CASCADE'
   })
   dates: EncounterChangeDate[];
@@ -89,25 +85,24 @@ export class EncounterChange extends Model {
 
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;
-  setEncounter!: BelongsToSetAssociationMixin<EncounterCompetition, String>;
+  setEncounter!: BelongsToSetAssociationMixin<EncounterCompetition, string>;
 
   // Has many Date
   getDates!: HasManyGetAssociationsMixin<EncounterChangeDate>;
-  setDates!: HasManySetAssociationsMixin<EncounterChangeDate, String  >;
-  addDates!: HasManyAddAssociationsMixin<EncounterChangeDate, String>;
-  addDate!: HasManyAddAssociationMixin<EncounterChangeDate, String>;
-  removeDate!: HasManyRemoveAssociationMixin<EncounterChangeDate, String>;
-  removeDates!: HasManyRemoveAssociationsMixin<EncounterChangeDate, String>;
-  hasDate!: HasManyHasAssociationMixin<EncounterChangeDate, String>;
-  hasDates!: HasManyHasAssociationsMixin<EncounterChangeDate, String>;
+  setDates!: HasManySetAssociationsMixin<EncounterChangeDate, string>;
+  addDates!: HasManyAddAssociationsMixin<EncounterChangeDate, string>;
+  addDate!: HasManyAddAssociationMixin<EncounterChangeDate, string>;
+  removeDate!: HasManyRemoveAssociationMixin<EncounterChangeDate, string>;
+  removeDates!: HasManyRemoveAssociationsMixin<EncounterChangeDate, string>;
+  hasDate!: HasManyHasAssociationMixin<EncounterChangeDate, string>;
+  hasDates!: HasManyHasAssociationsMixin<EncounterChangeDate, string>;
   countDates!: HasManyCountAssociationsMixin;
 
   // Has one HomeComment
   getHomeComment!: HasOneGetAssociationMixin<Comment>;
-  setHomeComment!: HasOneSetAssociationMixin<Comment, String>;
+  setHomeComment!: HasOneSetAssociationMixin<Comment, string>;
 
   // Has one AwayComment
   getAwayComment!: HasOneGetAssociationMixin<Comment>;
-  setAwayComment!: HasOneSetAssociationMixin<Comment, String>;
-  
+  setAwayComment!: HasOneSetAssociationMixin<Comment, string>;
 }
