@@ -90,6 +90,7 @@ export class Player extends Model {
   @Column
   lastName: string;
 
+  @Column(DataType.VIRTUAL)
   get fullName() {
     return `${this.firstName} ${this.lastName}`;
   }

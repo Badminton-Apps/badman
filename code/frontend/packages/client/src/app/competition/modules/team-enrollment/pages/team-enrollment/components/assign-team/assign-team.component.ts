@@ -14,7 +14,7 @@ import { Apollo } from 'apollo-angular';
 import { TeamDialogComponent } from 'app/club/dialogs';
 import { Club, CompetitionSubEvent, Team } from 'app/_shared';
 import { map, switchMap } from 'rxjs/operators';
-import * as teamQuery from '../../../../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
+import * as teamQuery from '../../../../../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
 
 @Component({
   selector: 'app-assign-team',

@@ -5,6 +5,7 @@ import { ClubType } from '.';
 import { getAttributeFields } from './attributes.type';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { EventTournamentType } from './tournaments';
+import { queryFixer } from '../queryFixer';
 
 export const LocationType = new GraphQLObjectType({
   name: 'Location',
@@ -13,12 +14,28 @@ export const LocationType = new GraphQLObjectType({
     club: {
       type: new GraphQLList(ClubType),
       args: Object.assign(defaultListArgs(), {}),
-      resolve: resolver(Location.associations.club)
+      resolve: resolver(Location.associations.club, {
+        before: async (findOptions, args, context, info) => {
+          findOptions = {
+            ...findOptions,
+            where: queryFixer(findOptions.where)
+          };
+          return findOptions;
+        }
+      })
     },
     eventTournaments: {
       type: new GraphQLList(EventTournamentType),
       args: Object.assign(defaultListArgs(), {}),
-      resolve: resolver(Location.associations.eventTournaments)
+      resolve: resolver(Location.associations.eventTournaments, {
+        before: async (findOptions, args, context, info) => {
+          findOptions = {
+            ...findOptions,
+            where: queryFixer(findOptions.where)
+          };
+          return findOptions;
+        }
+      })
     }
   })
 });

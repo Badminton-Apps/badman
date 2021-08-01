@@ -11,6 +11,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin
 } from 'sequelize';
 import {
   BelongsTo,
@@ -19,6 +21,7 @@ import {
   Default,
   ForeignKey,
   HasMany,
+  HasOne,
   IsUUID,
   Model,
   PrimaryKey,
@@ -28,6 +31,7 @@ import {
 import { DrawCompetition } from './draw-competition.model';
 import { Game } from '../game.model';
 import { Team } from '../../team.model';
+import { EncounterChange } from './encounter-change';
 
 @Table({
   timestamps: true,
@@ -47,8 +51,11 @@ export class EncounterCompetition extends Model {
   @Column
   date: Date;
 
+  @Column
+  originalDate: Date;
+
   @HasMany(() => Game, {
-    foreignKey: 'linkId',
+    foreignKey: 'linkId', 
     constraints: false,
     scope: {
       linkType: 'competition'
@@ -80,6 +87,15 @@ export class EncounterCompetition extends Model {
   @Column
   awayTeamId: string;
 
+  @Column
+  synced: Date;
+
+  @HasOne(() => EncounterChange, {
+    foreignKey: 'encounterId',
+    onDelete: 'CASCADE'
+  })
+  encounterChange: EncounterChange;
+
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;
   setGames!: HasManySetAssociationsMixin<Game, string>;
@@ -102,4 +118,8 @@ export class EncounterCompetition extends Model {
   // Belongs to Away
   getAway!: BelongsToGetAssociationMixin<Team>;
   setAway!: BelongsToSetAssociationMixin<Team, string>;
+
+  // Has one EncounterChange
+  getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
+  setEncounterChange!: HasOneSetAssociationMixin<EncounterChange, string>;
 }

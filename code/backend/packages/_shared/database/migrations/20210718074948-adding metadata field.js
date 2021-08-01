@@ -17,7 +17,7 @@ module.exports = {
           { transaction: t }
         );
       } catch (err) {
-        console.error(err);
+        console.error('We errored with', err);
         t.rollback();
       }
     });

@@ -41,7 +41,7 @@ const YEAR = 2021;
 (async () => {
   try {
     const databaseService = new DataBaseHandler(dbConfig.default);
-    const mailService = new MailService();
+
 
     let length = -1;
     let page = 0;
@@ -50,7 +50,7 @@ const YEAR = 2021;
     const unverified = [];
 
     while (length != 0) {
-      const response = await got<{ users: Auth0User[]; length }>(
+      const response = await got<{ users: Auth0User[]; length: number }>(
         `${process.env.AUTH0_ISSUER}/api/v2/users`,
         {
           responseType: 'json',

@@ -1,4 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { NotificationService } from '../../../_shared';
 import {
   addClubMutation,
   addCommentMutation,
@@ -35,13 +36,18 @@ import {
   updateTeamMutation,
   updateTournamentEventLocationMutation,
   updateTeamLocationMutation,
-  removeClubMutation
+  removeClubMutation,
+  addChangeEncounterMutation
 } from './mutations';
 import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import {
   claimsQuery,
   clubQuery,
   clubsQuery,
+  encounterChangeQuery,
+  encounterChangesQuery,
+  encounterCompetitionQuery,
+  encounterCompetitionsQuery,
   eventCompetitionQuery,
   eventCompetitionsQuery,
   eventTournamentQuery,
@@ -60,7 +66,7 @@ import {
   teamsQuery
 } from './queries';
 
-export const createSchema = () => {
+export const createSchema = (notificationService: NotificationService) => {
   return new GraphQLSchema({
     query: new GraphQLObjectType({
       name: 'RootQueryType',
@@ -83,7 +89,11 @@ export const createSchema = () => {
         system: systemQuery,
         systems: systemsQuery,
         team: teamQuery,
-        teams: teamsQuery
+        teams: teamsQuery,
+        encounterChange: encounterChangeQuery,
+        encounterChanges: encounterChangesQuery,
+        encounterCompetition: encounterCompetitionQuery,
+        encounterCompetitions: encounterCompetitionsQuery
       })
     }),
     mutation: new GraphQLObjectType({
@@ -96,12 +106,13 @@ export const createSchema = () => {
         addLocation: addLocationMutation,
         addPlayer: addPlayerMutation,
         addPlayerToClub: addPlayerToClubMutation,
-        addPlayerToRole: addPlayerToRoleMutation,
+        addPlayerToRole: addPlayerToRoleMutation, 
         addPlayerToTeam: addPlayerToTeamMutation,
         addRankingSystem: addRankingSystemMutation,
         addRankingSystemGroup: addRankingSystemGroupMutation,
         addRole: addRoleMutation,
         addTeam: addTeamMutation,
+        addChangeEncounter: addChangeEncounterMutation(notificationService),
         deleteImportedEvent: deleteImportedEventMutation,
         removeClub: removeClubMutation,
         removeLocation: removeLocationMutation,
