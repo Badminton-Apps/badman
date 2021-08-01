@@ -26,7 +26,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
     resolve: async (findOptions, { change }, context) => {
       const encounter = await EncounterCompetition.findByPk(change.encounterId);
 
-      if (encounter == null) {
+      if (encounter === null) {
         throw new ApiError({
           code: 404,
           message: "Couldn't find encounter"
@@ -36,7 +36,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
       const team = change.home ? await encounter.getHome() : await encounter.getAway();
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([
           `${team.clubId}_change:encounter`,
           'change-any:encounter'
@@ -54,12 +54,14 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
         });
       }
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+      let encounterChange;
+
       try {
         // Check if encounter has change
-        var encounterChange = await encounter.getEncounterChange({ transaction });
+        encounterChange = await encounter.getEncounterChange({ transaction });
 
         // If not create a new one
-        if (encounterChange == null) {
+        if (encounterChange === null || encounterChange === undefined) {
           encounterChange = new EncounterChange({
             encounterId: encounter.id
           });
@@ -70,8 +72,8 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
 
         // Set the state
         if (change.accepted) {
-          const selectedDates = change.dates.filter(r => r.selected == true);
-          if (selectedDates.length != 1) {
+          const selectedDates = change.dates.filter(r => r.selected === true);
+          if (selectedDates.length !== 1) {
             // Multiple dates were selected
             throw new ApiError({
               code: 500,
@@ -87,7 +89,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
         } else {
           encounterChange.accepted = false;
 
-          var comment: Comment;
+          let comment: Comment;
           if (change.home) {
             if (encounterChange.homeComment != null) {
               comment = encounterChange.homeComment;
@@ -123,8 +125,8 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
               });
             }
             // Check if the encounter has alredy a change for this date
-            var encounterChangeDate = dates.find(
-              r => r.date.getTime() == parsedDate.toDate().getTime()
+            let encounterChangeDate = dates.find(
+              r => r.date.getTime() === parsedDate.toDate().getTime()
             );
 
             // If not create new one
