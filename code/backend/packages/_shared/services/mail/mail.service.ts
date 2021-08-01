@@ -18,10 +18,10 @@ import {
 export class MailService {
   private _transporter: Transporter;
   private _mailingEnabled = false;
-  private clientUrl: string;
+  private _clientUrl: string;
 
   constructor(private _databaseService: DataBaseHandler) {
-    this.clientUrl = process.env.CLIENT_URL;
+    this._clientUrl = process.env.CLIENT_URL;
     try {
       this._transporter = nodemailer.createTransport(
         smtpTransport({
@@ -128,7 +128,7 @@ export class MailService {
       to,
       subject: 'New players',
       template: 'newplayers',
-      context: { clubs, clientUrl: this.clientUrl, title: 'New players' }
+      context: { clubs, clientUrl: this._clientUrl, title: 'New players' }
     };
 
     try {
@@ -226,7 +226,7 @@ export class MailService {
       return;
     }
 
-    var encounter = await changeRequest.getEncounter({
+    const encounter = await changeRequest.getEncounter({
       include: [
         {
           model: Team,
@@ -245,7 +245,7 @@ export class MailService {
 
     const options = {
       from: 'info@badman.app',
-      to: 'glenn.latomme@gmail.com', //team.email,
+      to: clubTeam.email,
       subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name}`,
       template: 'encounterchange',
       context: {
@@ -253,7 +253,7 @@ export class MailService {
         otherTeam: otherTeam.toJSON(),
         clubTeam: clubTeam.toJSON(),
         encounter: encounter.toJSON(),
-        clientUrl: this.clientUrl
+        clientUrl: this._clientUrl
       }
     };
 
@@ -272,7 +272,7 @@ export class MailService {
       return;
     }
 
-    var encounter = await changeRequest.getEncounter({
+    const encounter = await changeRequest.getEncounter({
       include: [
         {
           model: Team,
@@ -287,7 +287,7 @@ export class MailService {
       moment.locale('nl-be');
       const options = {
         from: 'info@badman.app',
-        to: 'glenn.latomme@gmail.com', //team.email,
+        to: team.email,
         subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name} afgewerkt ${test}`,
         template: 'encounterchangefinished',
         context: {
@@ -295,7 +295,7 @@ export class MailService {
           team: team.toJSON(),
           encounter: encounter.toJSON(),
           newDate: moment(encounter.date).format('LLLL'),
-          clientUrl: this.clientUrl
+          clientUrl: this._clientUrl
         }
       };
 

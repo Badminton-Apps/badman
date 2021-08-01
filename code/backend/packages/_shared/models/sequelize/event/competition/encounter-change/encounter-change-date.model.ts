@@ -71,5 +71,5 @@ export class EncounterChangeDate extends Model {
 
   // Belongs to EncounterChange
   getEncounterChange!: BelongsToGetAssociationMixin<EncounterChange>;
-  setEncounterChange!: BelongsToSetAssociationMixin<EncounterChange, String>;
+  setEncounterChange!: BelongsToSetAssociationMixin<EncounterChange, string>;
 }
