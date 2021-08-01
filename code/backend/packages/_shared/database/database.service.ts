@@ -52,6 +52,7 @@ export class DataBaseHandler {
 
       DataBaseHandler.sequelizeInstance = new Sequelize({ 
         ...config,
+        logging: config.logging ?? false,
         retry: {
           report: (message, configObj) => {
             if (configObj.$current > 5) {

@@ -1,20 +1,23 @@
 <ng-container [formGroup]="formGroup">
   <mat-form-field appearance="outline" class="flex">
-    <mat-label>Pick a team</mat-label>
+    <mat-label>{{ 'pickers.select-team' | translate }}</mat-label>
     <mat-select formControlName="team" required>
-      <mat-optgroup *ngIf="this.teamsF && this.teamsF.length > 0" label="F">
+      <mat-optgroup *ngIf="this.teamsF && this.teamsF.length > 0" [label]="'pickers.select-team-groups.F' | translate">
         <mat-option *ngFor="let option of this.teamsF" [value]="option">
           {{ option.name }}
         </mat-option>
       </mat-optgroup>
 
-      <mat-optgroup *ngIf="this.teamsM && this.teamsM.length > 0" label="M">
+      <mat-optgroup *ngIf="this.teamsM && this.teamsM.length > 0" [label]="'pickers.select-team-groups.M' | translate">
         <mat-option *ngFor="let option of this.teamsM" [value]="option">
           {{ option.name }}
         </mat-option>
       </mat-optgroup>
 
-      <mat-optgroup *ngIf="this.teamsMX && this.teamsMX.length > 0" label="MX">
+      <mat-optgroup
+        *ngIf="this.teamsMX && this.teamsMX.length > 0"
+        [label]="'pickers.select-team-groups.MX' | translate"
+      >
         <mat-option *ngFor="let option of this.teamsMX" [value]="option">
           {{ option.name }}
         </mat-option>

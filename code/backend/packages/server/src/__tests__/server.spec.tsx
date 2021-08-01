@@ -38,7 +38,7 @@ describe('calendar changes', () => {
 
     // Act
     const changeRequest = await new EncounterChange().save();
-    await myEncounter.addEncounterChange(changeRequest);
+    await myEncounter.setEncounterChange(changeRequest);
 
     // Assert
     const team = await Team.findOne({ where: { name: 'Awesome Club1 1H' } });
@@ -50,7 +50,7 @@ describe('calendar changes', () => {
     expect(encountersH.length).toEqual(1);
     expect(encountersA.length).toEqual(0);
 
-    const changes = await encountersH[0].getEncounterChanges();
-    expect(changes.length).toEqual(1);
+    const changes = await encountersH[0].getEncounterChange();
+    expect(changes).not.toBeNull();
   });
 });
