@@ -1,3 +1,18 @@
+# [3.30.0](https://github.com/Badminton-Apps/core/compare/v3.29.0...v3.30.0) (2021-08-01)
+
+
+### Bug Fixes
+
+* [#6](https://github.com/Badminton-Apps/core/issues/6) - [FEATURE] Request of calendar changes ([86f931b](https://github.com/Badminton-Apps/core/commit/86f931b1feac17e8cb068342da2c25be39495b2f))
+* Linux workspace ([0bf32d5](https://github.com/Badminton-Apps/core/commit/0bf32d5f62079e71254eb38a853b3da1c210e7bd))
+
+
+### Features
+
+* Store captain information ([185b8e5](https://github.com/Badminton-Apps/core/commit/185b8e5ad02bf624d246ff5e1092a8a73f041fe1)), closes [#131](https://github.com/Badminton-Apps/core/issues/131)
+
+
+
 # [3.29.0](https://github.com/Badminton-Apps/core/compare/v3.28.0...v3.29.0) (2021-07-19)
 
 
