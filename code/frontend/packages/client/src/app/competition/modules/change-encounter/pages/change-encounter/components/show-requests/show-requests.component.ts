@@ -107,8 +107,6 @@ export class ShowRequestsComponent implements OnInit {
       lastDate = dates.sort((a, b) => b.date.getTime() - a.date.getTime())[0].date;
     }
 
-    console.log(lastDate);
-
     const newDate = new EncounterChangeDate({
       date: moment(lastDate).add(1, 'week').toDate(),
     });
