@@ -80,6 +80,9 @@
             "min-base": "",
             "max-base": ""
         },
+        "change-encounter": {
+            "title": "Changer de match"
+        },
         "enrollment": {
             "select-location": "",
             "select-club": "",

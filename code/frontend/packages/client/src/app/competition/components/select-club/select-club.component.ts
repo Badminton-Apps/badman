@@ -1,14 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Club } from 'app/_shared';
 import { AuthService, ClubService } from 'app/_shared/services';
 import { Observable } from 'rxjs';
-import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-club',
@@ -16,12 +12,15 @@ import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
   styleUrls: ['./select-club.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectClubComponent implements OnInit {
+export class SelectClubComponent implements OnInit, OnDestroy {
+  @Input()
+  controlName = 'club';
+
   @Input()
   formGroup: FormGroup;
 
   @Input()
-  requiredPermission: string[];
+  requiredPermission: string;
 
   formControl = new FormControl(null, [Validators.required]);
   options: Club[];
@@ -29,18 +28,20 @@ export class SelectClubComponent implements OnInit {
 
   constructor(
     private clubService: ClubService,
-    private authSerice: AuthService
+    private authSerice: AuthService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   async ngOnInit() {
-    this.formGroup.addControl('club', this.formControl);
+    this.formGroup.addControl(this.controlName, this.formControl);
 
     // Get all where the user has rights
     this.options = await this.authSerice.userPermissions$
       .pipe(
         take(1),
-        map((r) => r.filter((x) => x.indexOf('enlist:team') != -1)),
-        map((r) => r.map((c) => c.replace('_enlist:team', ''))),
+        map((r) => r.filter((x) => x.indexOf(this.requiredPermission) != -1)),
+        map((r) => r.map((c) => c.replace(`_${this.requiredPermission}`, ''))),
         switchMap((ids) => this.clubService.getClubs({ ids, first: 999 })),
         map((data) => {
           const count = data.clubs?.total || 0;
@@ -53,16 +54,32 @@ export class SelectClubComponent implements OnInit {
       )
       .toPromise();
 
-      // When we have exactly 1 club, we might as well set it
+    this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: { club: r.id },
+        queryParamsHandling: 'merge',
+      });
+    });
+
+    const params = this.activatedRoute.snapshot.queryParams;
+    if (params && params.club && this.options.length > 1) {
+      const foundClub = this.options.find((r) => r.id == params.club);
+      if (foundClub) {
+        this.formControl.setValue(foundClub);
+      } else {
+        this.router.navigate([], {
+          relativeTo: this.activatedRoute,
+          queryParams: { club: undefined, team: undefined, encounter: undefined },
+          queryParamsHandling: 'merge',
+        });
+      }
+    }
+
     if (this.options.length == 1) {
       this.formControl.setValue(this.options[0]);
       this.formControl.disable();
     }
-
-    this.filteredOptions = this.formControl.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filter(value))
-    );
   }
 
   private _filter(value: string | Club): Club[] {
@@ -70,13 +87,15 @@ export class SelectClubComponent implements OnInit {
     if (typeof value === 'string') {
       const filterValue = value.toLowerCase();
 
-      return this.options.filter(
-        (option) => option.name.toLowerCase().indexOf(filterValue) === 0
-      );
+      return this.options.filter((option) => option.name.toLowerCase().indexOf(filterValue) === 0);
     }
   }
 
   getOptionText(option) {
     return option?.name;
+  }
+
+  ngOnDestroy() {
+    this.formGroup.removeControl(this.controlName);
   }
 }

@@ -58,7 +58,7 @@
             {{ 'systems.list' | translate }}
           </a>
 
-          <app-has-claim [any]="['*_enlist:team']">
+          <app-has-claim [any]="['*_enlist:team', '*_change:encounter']">
             <mat-accordion class="app-nav-accordion">
               <mat-expansion-panel class="mat-elevation-z0">
                 <mat-expansion-panel-header>
@@ -67,11 +67,21 @@
                 <!-- <mat-nav-list>
                 <a mat-list-item routerLink="/competition/team-assembly" routerLinkActive="active"> Team assembly </a>
               </mat-nav-list> -->
-                <mat-nav-list>
-                  <a mat-list-item routerLink="/competition/team-enrollment" routerLinkActive="active">
-                    {{'competition.enrollment.title' | translate }}
-                  </a>
-                </mat-nav-list>
+                <app-has-claim [all]="'*_enlist:team'">
+                  <mat-nav-list *ngIf="this.canEnroll$ | async">
+                    <a mat-list-item routerLink="/competition/team-enrollment" routerLinkActive="active">
+                      {{ 'competition.enrollment.title' | translate }}
+                    </a>
+                  </mat-nav-list>
+                </app-has-claim>
+
+                <app-has-claim [all]="'*_change:encounter'">
+                  <mat-nav-list>
+                    <a mat-list-item routerLink="/competition/change-encounter" routerLinkActive="active">
+                      {{ 'competition.change-encounter.title' | translate }}
+                    </a>
+                  </mat-nav-list>
+                </app-has-claim>
               </mat-expansion-panel>
             </mat-accordion>
           </app-has-claim>

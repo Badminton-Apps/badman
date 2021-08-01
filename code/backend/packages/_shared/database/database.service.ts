@@ -44,14 +44,15 @@ export class DataBaseHandler {
     if (!DataBaseHandler.sequelizeInstance) {
       const models = Object.values(sequelizeModels);
 
-      logger.debug('Connecting with ', {
+      logger.debug('Connecting with ', { 
         ...config
       });
 
       this._dialect = config.dialect;
 
-      DataBaseHandler.sequelizeInstance = new Sequelize({
+      DataBaseHandler.sequelizeInstance = new Sequelize({ 
         ...config,
+        logging: config.logging ?? false,
         retry: {
           report: (message, configObj) => {
             if (configObj.$current > 5) {
@@ -59,11 +60,7 @@ export class DataBaseHandler {
             }
           }
         },
-        models,
-        logging:
-          process.env.LOG_LEVEL === 'silly' || config.logging
-            ? logger.silly.bind(logger)
-            : false
+        models
       } as SequelizeOptions);
     }
   }
@@ -341,7 +338,7 @@ export class DataBaseHandler {
           }
 
           try {
-            await this._sequelize.sync({ force: true });
+            await this._sequelize.sync({ force: true});
             // await this.seedBasicInfo();
           } catch (e) {
             logger.error(e);

@@ -6,7 +6,7 @@
     <form [formGroup]="this.formGroup">
       <ng-template matStepLabel>{{ 'competition.enrollment.select-club' | translate }}</ng-template>
 
-      <app-select-club [formGroup]="this.formGroup"></app-select-club>
+      <app-select-club requiredPermission="enlist:team" [formGroup]="this.formGroup"></app-select-club>
 
       <div class="row">
         <mat-checkbox formControlName="enabledNational">{{ 'competition.national' | translate }}</mat-checkbox>

@@ -1,0 +1,22 @@
+query GetEncounterQuery($id: ID!, $where: SequelizeJSON) {
+  encounterCompetitions(team: $id, where: $where) {
+    edges {
+      node {
+        id
+        date
+        home {
+          id
+          name
+        }
+        away {
+          id
+          name
+        }
+        encounterChange {
+          id
+          accepted
+        }
+      }
+    }
+  }
+}

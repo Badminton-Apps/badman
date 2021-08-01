@@ -1,0 +1,11 @@
+<ng-container [formGroup]="formGroup">
+  <mat-form-field appearance="outline" class="flex">
+    <mat-label>{{ 'pickers.select-enounter' | translate }}</mat-label>
+    <mat-select formControlName="encounter" required>
+      <mat-option *ngFor="let option of this.options" [value]="option">
+        {{ option.date | date: 'short' }} - {{ option.home.name }} {{ 'competition.change-encounter.vs' | translate }}
+        {{ option.away.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</ng-container>

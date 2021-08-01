@@ -190,8 +190,6 @@ export class Team extends Model {
     return this._basePlayers;
   }
 
-  
-
   @Column
   type: SubEventType;
 
@@ -203,7 +201,7 @@ export class Team extends Model {
 
   @Column
   phone: string;
-  
+
   @Unique('unique_constraint')
   @Column
   teamNumber: number;

@@ -182,6 +182,7 @@ export class TeamEnrollmentComponent implements OnInit {
 
   private async initializeEvents() {
     const club = await this.club$.toPromise();
+    
     this.provEvent$ = this.formGroup.get('enabledProvincial').value
       ? this.eventService
           .getCompetitionEvent(this.formGroup.value.event.id, {
