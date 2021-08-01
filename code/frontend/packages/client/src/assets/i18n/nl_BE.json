@@ -87,26 +87,26 @@
       "max-base": "Max basis ploegindex"
     },
     "change-encounter": {
-        "title": "Speel momenten",
-        "description": "Disclaimer: Dit is nog een eerste versie van de verplaatsings tool!",
-        "vs": "vs.",
-        "home": "Thuis",
-        "away": "Uit",
-        "possible": "Mogelijk",
-        "not-possible": "Niet mogelijk",
-        "choose-date": "Kies datum",
-        "choose-team": "Kies ploeg",
-        "choose-encounter": "Kies ontmoeting",
-        "comments": "Commentaren",
-        "home-comment": "Commentaar thuisploeg",
-        "away-comment": "Commentaar uitploeg",
-        "dates": "dagen",
-        "add-date": "voeg datum toe",
-        "disclaimer-submit": "Eenmaal beide partijen beschikbaar zijn, kan de datum gekozen worden via de checkbox en dan 'verstuur'",
-        "submit": {
-            "title": "Verstuur",
-            "description": "Wanneer je op ja klikt zal de actuele dag vervangen worden met de geselecteerde, weet je het zeker?"
-        }
+      "title": "Speel momenten",
+      "description": "Disclaimer: Dit is nog een eerste versie van de verplaatsings tool!",
+      "vs": "vs.",
+      "home": "Thuis",
+      "away": "Uit",
+      "possible": "Mogelijk",
+      "not-possible": "Niet mogelijk",
+      "choose-date": "Kies datum",
+      "choose-team": "Kies ploeg",
+      "choose-encounter": "Kies ontmoeting",
+      "comments": "Commentaren",
+      "home-comment": "Commentaar thuisploeg",
+      "away-comment": "Commentaar uitploeg",
+      "dates": "dagen",
+      "add-date": "voeg datum toe",
+      "disclaimer-submit": "Eenmaal beide partijen beschikbaar zijn, kan de datum gekozen worden via de checkbox en dan 'verstuur'",
+      "submit": {
+        "title": "Verstuur",
+        "description": "Wanneer je op ja klikt zal de actuele dag vervangen worden met de geselecteerde, weet je het zeker?"
+      }
     },
 
     "enrollment": {
@@ -131,7 +131,7 @@
       "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
       "comment-nat": "Opmerkingen Nationale competitie (per ploeg)"
     },
-    
+
     "type": "Type",
     "national": "Nationaal",
     "liga": "Liga",
@@ -195,6 +195,16 @@
     "no": "Nee",
     "yes": "Ja",
     "save": "Opslaan"
+  },
+  "pickers": {
+    "select-team": "Kies een ploeg",
+    "select-team-groups": {
+      "M": "Heren",
+      "F": "Dames",
+      "MX": "Mix"
+    },
+    "select-club": "Kies een club",
+    "select-encounter": "Kies een ontmoeting"
   },
   "days": {
     "monday": "Maandag",
