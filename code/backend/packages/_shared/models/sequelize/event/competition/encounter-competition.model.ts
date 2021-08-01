@@ -121,5 +121,5 @@ export class EncounterCompetition extends Model {
 
   // Has one EncounterChange
   getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
-  setEncounterChange!: HasOneSetAssociationMixin<EncounterChange, String>;
+  setEncounterChange!: HasOneSetAssociationMixin<EncounterChange, string>;
 }
