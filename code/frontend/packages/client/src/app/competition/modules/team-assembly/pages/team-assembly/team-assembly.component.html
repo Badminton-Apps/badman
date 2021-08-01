@@ -1,9 +1,15 @@
-<div class="select-game">
-  <app-select-club [formGroup]="formGroup"></app-select-club>
-  <app-select-team [formGroup]="formGroup"></app-select-team>
-  <app-select-game [formGroup]="formGroup"></app-select-game>
-</div>
+<div fxFlex fxLayout="column" fxLayoutGap="16px">
+  <div>
+    <div class="mat-subheading-1">{{ 'competition.team-assembly.title' | translate }}</div>
+  </div>
 
-<ng-container *ngIf="this.formGroup.value.club && this.formGroup.value.team && this.formGroup.value.game">
-  <app-assembly></app-assembly>
-</ng-container>
+  <div class="select-encounter" fxFlex fxLayout="row" fxLayoutGap="16px">
+    <app-select-club [formGroup]="formGroup"></app-select-club>
+    <app-select-team [formGroup]="formGroup"></app-select-team>
+    <app-select-encounter [formGroup]="formGroup"></app-select-encounter>
+  </div>
+
+  <ng-container *ngIf="this.formGroup.value.club && this.formGroup.value.team && this.formGroup.value.game">
+    <app-assembly></app-assembly>
+  </ng-container>
+</div>

@@ -1,0 +1,84 @@
+<div *ngIf="this.requests$ | async as request" fxFlex>
+  <ng-container *ngIf="this.encounter != null">
+    <form [formGroup]="this.formGroupRequest" novalidate (ngSubmit)="save()">
+      <div class="mat-subheading-1">{{ encounter.home.name }} {{'competition.change-encounter.vs' | translate }} {{ encounter.away.name }}</div>
+
+      <div div class="mat-subheading-2">{{'competition.change-encounter.comments' | translate }}</div>
+
+      <div fxLayoutGap="16px">
+        <mat-form-field fxFlex>
+          <mat-label>{{'competition.change-encounter.home-comment' | translate }}</mat-label>
+          <textarea matInput formControlName="homeComment" rows="5"></textarea>
+        </mat-form-field>
+        <mat-form-field fxFlex>
+          <mat-label>{{'competition.change-encounter.away-comment' | translate }}</mat-label>
+          <textarea matInput formControlName="awayComment" rows="5"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="mat-subheading-2" fxLayout="column">
+        <div>{{'competition.change-encounter.dates' | translate }}</div>
+        <div class="mat-caption">
+          {{'competition.change-encounter.disclaimer-submit' | translate }}
+        </div>
+      </div>
+
+      <div fxLayout="column">
+        <div formArrayName="dates">
+          <div
+            *ngFor="let date of dateControls.controls; let i = index"
+            fxLayout="row"
+            fxLayoutAlign="center center"
+            fxLayoutGap="8px"
+            [formGroupName]="i"
+          >
+            <div fxFlex="40">
+              <mat-form-field>
+                <mat-label>{{'competition.change-encounter.choose-date' | translate }}</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker type="datetime" #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field fxFlex="25">
+              <mat-label>{{'competition.change-encounter.home' | translate }}</mat-label>
+              <mat-select formControlName="availabilityHome" required>
+                <mat-option value="POSSIBLE">{{'competition.change-encounter.possible' | translate }}</mat-option>
+                <mat-option value="NOT_POSSIBLE">{{'competition.change-encounter.not-possible' | translate }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="25">
+              <mat-label>{{'competition.change-encounter.away' | translate }}</mat-label>
+              <mat-select formControlName="availabilityAway" required>
+                <mat-option value="POSSIBLE">{{'competition.change-encounter.possible' | translate }}</mat-option>
+                <mat-option value="NOT_POSSIBLE">{{'competition.change-encounter.not-possible' | translate }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <div fxFlex="10" fxLayoutAlign="center center">
+              <mat-checkbox formControlName="selected"></mat-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div fxLayoutAlign="space-between">
+        <button mat-button (click)="this.addDate()" type="button">{{'competition.change-encounter.add-date' | translate }}</button>
+        <button mat-raised-button color="primary" type="submit">{{'button.submit' | translate }}</button>
+      </div>
+    </form>
+  </ng-container>
+</div>
+
+<ng-template #confirm>
+  <h2 matDialogTitle>{{'competition.change-encounter.submit.title' | translate }}</h2>
+  <mat-dialog-content>
+    <p>{{'competition.change-encounter.submit.desription' | translate }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button [matDialogClose]="true" color="primary">{{'button.yes' | translate }}</button>
+    <button mat-button [matDialogClose]="false">{{'button.no' | translate }}</button>
+  </mat-dialog-actions>
+</ng-template>

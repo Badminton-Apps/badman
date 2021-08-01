@@ -1,16 +1,27 @@
-import { Club, EventCompetition, logger, Team } from '@badvlasim/shared';
+import { logger } from '@badvlasim/shared';
+import moment from 'moment';
 import nodemailer, { Transporter } from 'nodemailer';
 import exphbs from 'nodemailer-express-handlebars';
 import smtpTransport from 'nodemailer-smtp-transport';
 import path from 'path';
 import { DataBaseHandler } from '../../database';
-import { Comment, Player, SubEventCompetition } from '../../models';
+import {
+  Comment,
+  EncounterChange,
+  Player,
+  SubEventCompetition,
+  Team,
+  Club,
+  EventCompetition
+} from '../../models';
 
 export class MailService {
   private _transporter: Transporter;
   private _mailingEnabled = false;
+  private _clientUrl: string;
 
   constructor(private _databaseService: DataBaseHandler) {
+    this._clientUrl = process.env.CLIENT_URL;
     try {
       this._transporter = nodemailer.createTransport(
         smtpTransport({
@@ -112,14 +123,12 @@ export class MailService {
       }
     }
 
-    const clientUrl = process.env.CLIENT_URL;
-
     const options = {
       from: 'test@gmail.com',
       to,
       subject: 'New players',
       template: 'newplayers',
-      context: { clubs, clientUrl, title: 'New players' }
+      context: { clubs, clientUrl: this._clientUrl, title: 'New players' }
     };
 
     try {
@@ -206,5 +215,100 @@ export class MailService {
     } catch (e) {
       logger.error('Hello', e);
     }
+  }
+
+  async sendRequestMail(
+    changeRequest: EncounterChange,
+    homeTeamRequests: boolean
+  ) {
+    if (this._mailingEnabled === false) {
+      logger.debug('Mailing disabled');
+      return;
+    }
+
+    const encounter = await changeRequest.getEncounter({
+      include: [
+        {
+          model: Team,
+          as: 'home',
+          include: [{ model: Player, as: 'captain' }]
+        },
+        { model: Team, as: 'away', include: [{ model: Player, as: 'captain' }] }
+      ]
+    });
+
+    const otherTeam = homeTeamRequests ? encounter.away : encounter.home;
+    const clubTeam = homeTeamRequests ? encounter.home : encounter.away;
+    const captain = homeTeamRequests
+      ? encounter.away.captain
+      : encounter.home.captain;
+
+    const options = {
+      from: 'info@badman.app',
+      to: clubTeam.email,
+      subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name}`,
+      template: 'encounterchange',
+      context: {
+        captain: captain.toJSON(),
+        otherTeam: otherTeam.toJSON(),
+        clubTeam: clubTeam.toJSON(),
+        encounter: encounter.toJSON(),
+        clientUrl: this._clientUrl
+      }
+    };
+
+    try {
+      const info = await this._transporter.sendMail(options);
+      logger.debug('Message sent: %s', info.messageId);
+      logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    } catch (e) {
+      logger.error('Hello', e);
+    }
+  }
+
+  async sendRequestFinishedMail(changeRequest: EncounterChange) {
+    if (this._mailingEnabled === false) {
+      logger.debug('Mailing disabled');
+      return;
+    }
+
+    const encounter = await changeRequest.getEncounter({
+      include: [
+        {
+          model: Team,
+          as: 'home',
+          include: [{ model: Player, as: 'captain' }]
+        },
+        { model: Team, as: 'away', include: [{ model: Player, as: 'captain' }] }
+      ]
+    });
+
+    const sendMail = async (team: Team, captain: Player, test: string) => {
+      moment.locale('nl-be');
+      const options = {
+        from: 'info@badman.app',
+        to: team.email,
+        subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name} afgewerkt ${test}`,
+        template: 'encounterchangefinished',
+        context: {
+          captain: captain.toJSON(),
+          team: team.toJSON(),
+          encounter: encounter.toJSON(),
+          newDate: moment(encounter.date).format('LLLL'),
+          clientUrl: this._clientUrl
+        }
+      };
+
+      try {
+        const info = await this._transporter.sendMail(options);
+        logger.debug('Message sent: %s', info.messageId);
+        logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      } catch (e) {
+        logger.error('Hello', e);
+      }
+    }
+
+    await sendMail(encounter.home, encounter.away.captain, 'away');
+    await sendMail(encounter.away, encounter.home.captain, 'home');
   }
 }

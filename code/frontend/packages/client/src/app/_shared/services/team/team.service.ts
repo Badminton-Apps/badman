@@ -94,13 +94,14 @@ export class TeamService {
     });
   }
 
-  getTeams(clubId: string, sort?: string, direction?: SortDirection, page?: number): Observable<Team[]> {
+  getTeams(clubId: string, active: boolean = true): Observable<Team[]> {
     return this.apollo
       .query({
         query: teamsQuery,
         fetchPolicy: 'no-cache',
         variables: {
           clubId,
+          active,
         },
       })
       .pipe(map((x: any) => x.data?.teams as Team[]));

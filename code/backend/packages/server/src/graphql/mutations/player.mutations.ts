@@ -57,11 +57,18 @@ export const updatePlayerMutation = {
   resolve: async (findOptions, { player }, context) => {
     // TODO: check if the player is in the club and thbe user is allowed to change values
 
-    let canEditAllFields = false;
     if (
       context?.req?.user == null ||
-      !context.req.user.hasAnyPermission([`${player.id}_edit:player`, 'edit-any:player'])
+      !context.req.user.hasAnyPermission([`${player.id}_edit:player`])
     ) {
+      throw new ApiError({
+        code: 401,
+        message: 'No permissions'
+      });
+    }
+
+    let canEditAllFields = false;
+    if (context.req.user.hasAnyPermission(['edit-any:player'])) {
       canEditAllFields = true;
     }
 

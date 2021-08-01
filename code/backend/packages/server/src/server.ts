@@ -4,6 +4,7 @@ import {
   AuthenticatedRequest,
   AuthenticationSercice,
   DataBaseHandler,
+  NotificationService,
   Player,
   startWhenReady
 } from '@badvlasim/shared';
@@ -30,12 +31,13 @@ dotenv.config();
 
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
+  const notifService = new NotificationService(databaseService);
 
   const router = Router();
 
   const app = new App(
     [
-      new EnrollmentController(router, authService.checkAuth, databaseService),
+      new EnrollmentController(router, authService.checkAuth, databaseService, notifService),
       new RankingController(router, authService.checkAuth),
       new SystemController(router, authService.checkAuth, databaseService),
       new UserController(router, authService.checkAuth),
@@ -53,7 +55,7 @@ const startServer = (databaseService: DataBaseHandler) => {
     ]
   );
 
-  const schema = createSchema();
+  const schema = createSchema(notifService);
   const apolloServer = new ApolloServer({
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
       // When in dev we can allow graph playground to run without permission
@@ -80,7 +82,7 @@ const startServer = (databaseService: DataBaseHandler) => {
             });
           });
         }
-        return { req, res }; 
+        return { req, res };
       }
     },
     schema,

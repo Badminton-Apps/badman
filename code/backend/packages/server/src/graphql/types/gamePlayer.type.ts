@@ -14,6 +14,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Game, GamePlayer, Player } from '@badvlasim/shared/models';
 import { RankingPlaceType } from './rankingPlace.type';
 import { getAttributeFields } from './attributes.type';
+import { queryFixer } from '../queryFixer';
 
 const GamePlayerType = new GraphQLObjectType({
   name: 'GamePlayer',
@@ -30,7 +31,7 @@ const GamePlayerType = new GraphQLObjectType({
             });
 
             findOptions.where = {
-              ...findOptions.where,
+              ...queryFixer(findOptions.where),
               rankingDate: { [Op.lte]: game.playedAt }
               // rankingDate: '2019-12-13 00:00:00+01'
             };

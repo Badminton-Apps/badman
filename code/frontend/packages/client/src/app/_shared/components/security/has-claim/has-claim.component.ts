@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from 'app/_shared/services';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-has-claim',
@@ -26,23 +26,13 @@ export class HasClaimComponent implements OnInit {
     const permissions: Observable<boolean>[] = [];
 
     if (this.any) {
-      permissions.push(
-        Array.isArray(this.any)
-          ? this.auth.hasAnyClaims$(this.any)
-          : this.auth.hasClaim$(this.any)
-      );
+      permissions.push(Array.isArray(this.any) ? this.auth.hasAnyClaims$(this.any) : this.auth.hasClaim$(this.any));
     }
 
     if (this.all) {
-      permissions.push(
-        Array.isArray(this.all)
-          ? this.auth.hasAllClaims$(this.all)
-          : this.auth.hasClaim$(this.all)
-      );
+      permissions.push(Array.isArray(this.all) ? this.auth.hasAllClaims$(this.all) : this.auth.hasClaim$(this.all));
     }
 
-    this.show$ = combineLatest(permissions).pipe(
-      map((claims) => claims.reduce((acc, claim) => acc || claim, false))
-    );
+    this.show$ = combineLatest(permissions).pipe(map((claims) => claims.reduce((acc, claim) => acc || claim, false)));
   }
 }
