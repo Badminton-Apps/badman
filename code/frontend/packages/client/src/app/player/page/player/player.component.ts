@@ -67,15 +67,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
       )
     );
 
-    console.log('hell?');
-
-
     this.user$ = this.updateHappend.pipe(switchMap((_) => this.userService.profile$));
 
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
       map(([player, user]) => {
-        console.log(player, user);
-
         if (!player) {
           return { canClaim: false, isUser: false, isClaimedByUser: false };
         }
