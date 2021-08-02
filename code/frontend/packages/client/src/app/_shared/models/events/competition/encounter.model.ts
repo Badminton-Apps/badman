@@ -6,6 +6,7 @@ import { EncounterChange } from './encounter-change.model';
 export class CompetitionEncounter {
   id: string;
   date: Date;
+  originalDate: Date;
   draw: CompetitionDraw;
   games: Game[];
   home: Team;
@@ -18,6 +19,7 @@ export class CompetitionEncounter {
   constructor(args: Partial<CompetitionEncounter>) {
     this.id = args?.id;
     this.date = args.date != null ? new Date(args.date) : null;
+    this.originalDate = args.originalDate != null ? new Date(args.originalDate) : null;
     this.draw = args?.draw != null ? new CompetitionDraw(args.draw) : null;
     this.games = args?.games?.map((g) => new Game(g));
     this.home = args?.home != null ? new Team(args.home) : null;

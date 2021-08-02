@@ -5,7 +5,10 @@
     [ngClass]="{ selected: this.formControl.value?.id == option?.id }"
   >
     <mat-icon matListIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
-    <h3 matLine>{{ option.showingForHomeTeam ? option.away.name : option.home.name }}</h3>
+    <h3 matLine>
+      {{ option.showingForHomeTeam ? option.away.name : option.home.name }}
+      <span *ngIf="option.originalDate != null">*</span>
+    </h3>
     <p matLine>
       <span>
         {{
@@ -25,7 +28,10 @@
     [ngClass]="{ selected: this.formControl.value?.id == option?.id }"
   >
     <mat-icon matListIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
-    <h3 matLine>{{ option.showingForHomeTeam ? option.away.name : option.home.name }}</h3>
+    <h3 matLine>
+      {{ option.showingForHomeTeam ? option.away.name : option.home.name }}
+      <span *ngIf="option.originalDate != null">*</span>
+    </h3>
     <p matLine>
       <span>
         {{
