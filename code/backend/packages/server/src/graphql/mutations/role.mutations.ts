@@ -126,7 +126,7 @@ export const addPlayerToRoleMutation = {
       await transaction.commit();
       return dbRole;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -196,7 +196,7 @@ export const removePlayerFromRoleMutation = {
       await transaction.commit();
       return dbRole;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -258,7 +258,7 @@ export const updateRoleMutation = {
       await transaction.commit();
       return dbRole;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
