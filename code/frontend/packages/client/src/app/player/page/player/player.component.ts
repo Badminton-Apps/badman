@@ -67,10 +67,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
       )
     );
 
+    console.log('hell?');
+
+
     this.user$ = this.updateHappend.pipe(switchMap((_) => this.userService.profile$));
 
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
       map(([player, user]) => {
+        console.log(player, user);
+
         if (!player) {
           return { canClaim: false, isUser: false, isClaimedByUser: false };
         }
@@ -104,7 +109,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       .toPromise();
 
     if (result && result.id) {
-      this.snackbar.open('Account link requested', 'close', { duration: 5000 });
+      this.snackbar.open('Account linked', 'close', { duration: 5000 });
     } else {
       this.snackbar.open("Wasn't able to link the account", 'close', {
         duration: 5000,
