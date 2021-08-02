@@ -154,7 +154,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
         // find if any date was selected
         await transaction.commit();
       } catch (e) {
-        logger.warn('rollback');
+        logger.warn('rollback', e);
         await transaction.rollback();
         throw e;
       }
