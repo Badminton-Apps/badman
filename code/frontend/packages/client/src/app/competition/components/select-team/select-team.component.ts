@@ -58,10 +58,10 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
           this.teamsMX = teams.filter((r) => r.type === 'MX').sort((a, b) => a.teamNumber - b.teamNumber);
 
           const params = this.activatedRoute.snapshot.queryParams;
-          if (params && params.team && teams.length > 1) {
+
+          if (params && params.team && teams.length > 0) {
             const foundTeam = teams.find((r) => r.id == params.team);
-          
-          
+
             if (foundTeam) {
               this.formControl.setValue(foundTeam);
             } else {
