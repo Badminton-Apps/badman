@@ -283,12 +283,12 @@ export class MailService {
       ]
     });
 
-    const sendMail = async (team: Team, captain: Player, test: string) => {
+    const sendMail = async (team: Team, captain: Player) => {
       moment.locale('nl-be');
       const options = {
         from: 'info@badman.app',
         to: team.email,
-        subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name} afgewerkt ${test}`,
+        subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name} afgewerkt`,
         template: 'encounterchangefinished',
         context: {
           captain: captain.toJSON(),
@@ -308,7 +308,7 @@ export class MailService {
       }
     }
 
-    await sendMail(encounter.home, encounter.away.captain, 'away');
-    await sendMail(encounter.away, encounter.home.captain, 'home');
+    await sendMail(encounter.home, encounter.away.captain);
+    await sendMail(encounter.away, encounter.home.captain);
   }
 }
