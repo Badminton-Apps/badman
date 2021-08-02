@@ -10,7 +10,8 @@
     "singned-up": "node -r ts-node/register ./src/singned-up.ts",
     "comments": "node -r ts-node/register ./src/comments.ts",
     "team-export": "node -r ts-node/register ./src/team-export.ts",
-    "sync": "node --inspect=6862 -r ts-node/register ./src/calender-dates.ts"
+    "sync": "node --inspect=6862 -r ts-node/register ./src/calender-dates.ts",
+    "captains": "node --inspect=6862 -r ts-node/register ./src/add-team-captains.ts"
   },
   "dependencies": {
     "@badvlasim/shared": "^3.27.9",
