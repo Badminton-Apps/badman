@@ -65,7 +65,7 @@ const addEventTournamentMutation = {
       await transaction.commit();
       return eventTournamentDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -109,7 +109,7 @@ const updateEventTournamentMutation = {
 
       await transaction.commit();
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }

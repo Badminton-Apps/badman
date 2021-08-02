@@ -107,7 +107,7 @@ export const updateRankingSystemMutation = {
       await transaction.commit();
       return dbEvent;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }

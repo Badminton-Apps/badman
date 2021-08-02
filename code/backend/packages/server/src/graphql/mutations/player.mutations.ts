@@ -39,7 +39,7 @@ export const addPlayerMutation = {
       await transaction.commit();
       return playerDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -91,7 +91,7 @@ export const updatePlayerMutation = {
       await transaction.commit();
       return dbPlayer;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -146,7 +146,7 @@ export const updatePlayerRankingMutation = {
 
       await transaction.commit();
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
