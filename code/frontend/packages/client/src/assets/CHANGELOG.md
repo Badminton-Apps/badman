@@ -1,3 +1,21 @@
+# [3.32.0](https://github.com/Badminton-Apps/core/compare/v3.31.0...v3.32.0) (2021-08-02)
+
+
+### Bug Fixes
+
+* **client:** Allowes clubs with one team to automatically select ([348e285](https://github.com/Badminton-Apps/core/commit/348e285f8fe59cb5dec1947ec27325dcd9f37ba3))
+* **client:** When having rights for multiple clubs this wouldn't show anything ([bba88b5](https://github.com/Badminton-Apps/core/commit/bba88b5e23e2d8e1126dd272caa409a31abd8f4a))
+* disable placeholder ([7dbc7d3](https://github.com/Badminton-Apps/core/commit/7dbc7d37fd267d10ff1fe92f72adf07d4263dc9d))
+
+
+### Features
+
+* disable mailing on local dev ([3f1ff60](https://github.com/Badminton-Apps/core/commit/3f1ff60b47b1df281ea21ecb318139ec411a5c1d))
+* script for adding a captains ([7843f37](https://github.com/Badminton-Apps/core/commit/7843f37ee07b1e5430028cf705842418590464e9))
+* Switch request to permanently link users ([6543550](https://github.com/Badminton-Apps/core/commit/6543550d19cf99550469c11c2b3d2085a8d387b9))
+
+
+
 # [3.31.0](https://github.com/Badminton-Apps/core/compare/v3.29.0...v3.31.0) (2021-08-01)
 
 
