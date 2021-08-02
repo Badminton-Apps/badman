@@ -10,7 +10,6 @@ import {
   EventCompetition,
   logger,
   Player as DbPlayer,
-  splitInChunks,
   SubEventCompetition,
   SubEventType,
   Team as DbTeam,
