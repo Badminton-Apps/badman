@@ -24,7 +24,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
 
   formControl = new FormControl(null, [Validators.required]);
   options: Club[];
-  filteredOptions: Observable<Club[]>;
 
   constructor(
     private clubService: ClubService,
@@ -80,19 +79,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       this.formControl.setValue(this.options[0]);
       this.formControl.disable();
     }
-  }
-
-  private _filter(value: string | Club): Club[] {
-    // when selected the filter is with the selected object
-    if (typeof value === 'string') {
-      const filterValue = value.toLowerCase();
-
-      return this.options.filter((option) => option.name.toLowerCase().indexOf(filterValue) === 0);
-    }
-  }
-
-  getOptionText(option) {
-    return option?.name;
   }
 
   ngOnDestroy() {
