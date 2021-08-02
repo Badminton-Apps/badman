@@ -68,10 +68,16 @@
         }
     },
     "team": {
-        "prefferd-encounter": "Preferred match time",
         "day": "Matchday",
-        "captain": "Team captain",
-        "location": "Location"
+        "location": "Location",
+        "title": {
+            "prefferd-encounter": "Preferred match time",
+            "captain": "Team captain",
+            "players": "Players",
+            "base-fields": "General info"
+        },
+        "change-number": "Chaging of the team number, also update higher\/lower teams",
+        "check-players": "Tick off the basis players in the checkbox"
     },
     "competition": {
         "title": "Competition",
@@ -79,9 +85,6 @@
             "max": "Max level",
             "min-base": "Min basis team index",
             "max-base": "Max basis team index"
-        },
-        "change-encounter": {
-            "title": "Change encounter"
         },
         "enrollment": {
             "select-location": "Select locations for team encounters",
@@ -93,11 +96,11 @@
                 "not-allowed": "{{player}} is not allowed in basis ({{type}}:{{level}}, max {{max}})",
                 "cant-play": "{{player}} is not allowed to play ({{type}}:{{level}}, max {{max}})",
                 "best-players": "Strongest 4 players can never play together",
-                "best-max": "Strongest 4 players too high for division",
                 "base-min": "Team index too low for division",
                 "base-max": "Team index too high for division",
                 "no-day": "Please select an encounter moment",
-                "not-comp": "{{player}} is not registered as CT-player (note: it takes a couple of days before the request for conversion to CT-player is completed)"
+                "not-comp": "{{player}} is not registered as CT-player (note: it takes a couple of days before the request for conversion to CT-player is completed)",
+                "best-max": "Best 4 players too strong for this division"
             },
             "player-base": "Player is already basis player of other team",
             "title": "Team enrollment",
@@ -109,7 +112,29 @@
         "national": "National",
         "liga": "League",
         "prov": "Provincial",
-        "note": "note: Changes are saved directly"
+        "note": "note: Changes are saved directly",
+        "change-encounter": {
+            "title": "Playtimes",
+            "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied",
+            "vs": "Vs.",
+            "home": "Home",
+            "away": "Away",
+            "possible": "Available",
+            "not-possible": "Not available",
+            "choose-date": "Pick a date",
+            "choose-team": "Pick a team",
+            "choose-encounter": "Pick an encounter",
+            "comments": "Comments",
+            "home-comment": "Comments home team",
+            "away-comment": "Comments visiting team",
+            "dates": "Dates",
+            "add-date": "Add date",
+            "disclaimer-submit": "Once both teams are available, the selected day can be chosen in the checkbox by then clicking on send",
+            "submit": {
+                "title": "Send",
+                "description": "When you click yes, the current day will be replaced by the selected new day, are you sure?"
+            }
+        }
     },
     "event": {
         "types": {
@@ -187,5 +212,15 @@
     },
     "club": {
         "number": "club number"
+    },
+    "pickers": {
+        "select-team": "Pick a team",
+        "select-team-groups": {
+            "M": "Men",
+            "F": "Women",
+            "MX": "Mixed"
+        },
+        "select-club": "Pick a club",
+        "select-encounter": "Pick an encounter"
     }
 }
