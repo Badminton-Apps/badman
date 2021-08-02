@@ -34,6 +34,7 @@ import { ClaimComponent } from './components/claim/claim.component';
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { NewPlayerComponent } from './components/ranking-shell/components/new-player/new-player.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -50,6 +51,7 @@ const materialModules = [
   MatExpansionModule,
   MatDialogModule,
   MatSlideToggleModule,
+  MatMomentDateModule,
   ReactiveFormsModule,
   FormsModule,
   MatOptionModule

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DateAdapter } from '@angular/material/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -10,7 +11,7 @@ export class LanguageComponent implements OnInit {
   current: string;
   langs: string[];
 
-  constructor(public translate: TranslateService) {}
+  constructor(public translate: TranslateService, private _adapter: DateAdapter<any>) {}
 
   ngOnInit(): void {
     this.langs = this.translate.getLangs();
@@ -19,6 +20,7 @@ export class LanguageComponent implements OnInit {
 
   setLang(lang: string) {
     this.translate.use(lang);
+    this._adapter.setLocale(lang);
     this.current = lang;
     localStorage.setItem('translation.language', lang);
   }
