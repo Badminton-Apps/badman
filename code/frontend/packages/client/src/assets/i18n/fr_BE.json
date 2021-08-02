@@ -68,10 +68,16 @@
         }
     },
     "team": {
-        "prefferd-encounter": "",
         "day": "",
-        "captain": "",
-        "location": ""
+        "location": "",
+        "title": {
+            "prefferd-encounter": "",
+            "captain": "",
+            "players": "",
+            "base-fields": ""
+        },
+        "change-number": "",
+        "check-players": ""
     },
     "competition": {
         "title": "",
@@ -79,9 +85,6 @@
             "max": "",
             "min-base": "",
             "max-base": ""
-        },
-        "change-encounter": {
-            "title": "Changer de match"
         },
         "enrollment": {
             "select-location": "",
@@ -96,7 +99,8 @@
                 "base-min": "",
                 "base-max": "",
                 "no-day": "",
-                "not-comp": ""
+                "not-comp": "",
+                "best-max": ""
             },
             "player-base": "",
             "title": "",
@@ -108,7 +112,29 @@
         "national": "",
         "liga": "",
         "prov": "",
-        "note": ""
+        "note": "",
+        "change-encounter": {
+            "title": "",
+            "description": "",
+            "vs": "",
+            "home": "",
+            "away": "",
+            "possible": "",
+            "not-possible": "",
+            "choose-date": "",
+            "choose-team": "",
+            "choose-encounter": "",
+            "comments": "",
+            "home-comment": "",
+            "away-comment": "",
+            "dates": "",
+            "add-date": "",
+            "disclaimer-submit": "",
+            "submit": {
+                "title": "",
+                "description": ""
+            }
+        }
     },
     "event": {
         "types": {
@@ -186,5 +212,15 @@
     },
     "club": {
         "number": ""
+    },
+    "pickers": {
+        "select-team": "",
+        "select-team-groups": {
+            "M": "",
+            "F": "",
+            "MX": ""
+        },
+        "select-club": "",
+        "select-encounter": ""
     }
 }
