@@ -4,6 +4,7 @@ query GetEncounterQuery($id: ID!, $where: SequelizeJSON) {
       node {
         id
         date
+        originalDate
         home {
           id
           name
