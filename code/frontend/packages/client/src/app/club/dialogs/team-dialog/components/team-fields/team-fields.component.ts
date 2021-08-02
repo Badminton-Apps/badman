@@ -122,10 +122,12 @@ export class TeamFieldsComponent implements OnInit {
   }
 
   async selectedCaptain(player: Player) {
+    const current = this.teamForm.value;
     this.teamForm.patchValue({
-      phone: player.phone,
-      email: player.email,
+      phone: current?.phone ?? player.phone,
+      email: current?.email ?? player.email,
       id: player.id,
+      captainId: player.id,
     });
   }
 }
