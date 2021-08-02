@@ -35,7 +35,7 @@ export class MailService {
       );
 
       this._transporter.verify().then(() => {
-        this._mailingEnabled = true;
+        this._mailingEnabled = process.env.production === 'true';
       });
 
       const hbsOptions = exphbs({
