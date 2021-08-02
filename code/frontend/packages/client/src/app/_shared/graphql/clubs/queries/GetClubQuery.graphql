@@ -29,6 +29,7 @@ query GetClubQuery(
         lastName
         competitionPlayer
         base
+        gender
         lastRanking @include(if: $includePlacesTeams) {
           single
           double
