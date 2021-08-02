@@ -67,7 +67,7 @@ export const addEventCompetitionMutation = {
       await transaction.commit();
       return eventCompetitionDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -111,7 +111,7 @@ export const updateEventCompetitionMutation = {
 
       await transaction.commit();
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
