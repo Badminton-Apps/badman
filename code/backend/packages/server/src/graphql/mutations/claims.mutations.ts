@@ -56,7 +56,7 @@ export const updateGlobalClaimUserMutation = {
       await transaction.commit();
       return dbPlayer;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }

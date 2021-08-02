@@ -31,7 +31,7 @@ export const addClubMutation = {
       await transaction.commit();
       return clubDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -66,7 +66,7 @@ export const removeClubMutation = {
       await transaction.commit();
       return true;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -121,7 +121,7 @@ export const addPlayerToClubMutation = {
       await transaction.commit();
       return dbClub;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }

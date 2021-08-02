@@ -47,7 +47,7 @@ export const addCommentMutation = {
       await transaction.commit();
       return commentDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -73,7 +73,7 @@ export const updateCommentMutation = {
       await transaction.commit();
       return comment;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
