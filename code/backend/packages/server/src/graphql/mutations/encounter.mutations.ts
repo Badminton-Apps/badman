@@ -81,7 +81,9 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
             });
           }
 
-          encounter.originalDate = encounter.date;
+          if (encounter.originalDate == null) {
+            encounter.originalDate = encounter.date;
+          }
           encounter.date = selectedDates[0].date;
           encounter.save({ transaction });
 
