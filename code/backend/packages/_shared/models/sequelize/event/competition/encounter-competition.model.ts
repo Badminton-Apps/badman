@@ -88,7 +88,10 @@ export class EncounterCompetition extends Model {
   awayTeamId: string;
 
   @Column
-  synced: Date;
+  synced: Date; 
+
+  @Column
+  visualCode: string;
 
   @HasOne(() => EncounterChange, {
     foreignKey: 'encounterId',
