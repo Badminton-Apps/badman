@@ -70,7 +70,7 @@ export class ListEncountersComponent implements OnInit {
           this.encountersSem2 = encounters.filter((r) => [0, 1, 2, 3, 4, 5].includes(r.date.getMonth()));
 
           const params = this.activatedRoute.snapshot.queryParams;
-          if (params && params.encounter && this.encountersSem1.length > 1) {
+          if (params && params.encounter && this.encountersSem1.length > 0) {
             const foundEncounter = this.encountersSem1.find((r) => r.id == params.encounter);
 
             if (foundEncounter) {
