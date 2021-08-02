@@ -3,7 +3,11 @@
     <button class="options" mat-icon-button [matMenuTriggerFor]="options">
       <mat-icon>more_vert</mat-icon>
     </button>
+
     <mat-menu #options="matMenu">
+      <button mat-menu-item *ngIf="!this.canClaimAccount.isUser">Placeholder for favorite</button>
+      <button mat-menu-item *ngIf="this.canClaimAccount.isUser">Placeholder for profile</button>
+
       <button mat-menu-item *ngIf="this.canClaimAccount.canClaim" (click)="this.claimAccount.next(player.id)">
         Claim
       </button>
