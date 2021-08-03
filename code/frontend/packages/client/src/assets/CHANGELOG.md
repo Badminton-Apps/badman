@@ -1,3 +1,12 @@
+## [3.32.6](https://github.com/Badminton-Apps/core/compare/v3.32.5...v3.32.6) (2021-08-03)
+
+
+### Bug Fixes
+
+* confirm notification & disable multi click ([6dd065b](https://github.com/Badminton-Apps/core/commit/6dd065b2b2235885481f6b60fcd822bdd3cc9417))
+
+
+
 ## [3.32.5](https://github.com/Badminton-Apps/core/compare/v3.32.4...v3.32.5) (2021-08-03)
 
 
