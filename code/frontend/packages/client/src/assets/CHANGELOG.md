@@ -1,3 +1,14 @@
+## [3.32.4](https://github.com/Badminton-Apps/core/compare/v3.32.3...v3.32.4) (2021-08-02)
+
+
+### Bug Fixes
+
+* extra date ([650ccae](https://github.com/Badminton-Apps/core/commit/650ccae8ca27694ff2627915b57bf5e9f3e14a77))
+* logging errors ([7d092c6](https://github.com/Badminton-Apps/core/commit/7d092c64ebe4b9aa6ab4d2f05a19d2b815f2277f))
+* setting captain ([277fe81](https://github.com/Badminton-Apps/core/commit/277fe81c4512b422c919093eca075f2f7dc9dead))
+
+
+
 ## [3.32.3](https://github.com/Badminton-Apps/core/compare/v3.32.2...v3.32.3) (2021-08-02)
 
 
