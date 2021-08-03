@@ -15,6 +15,7 @@ import { filter, switchMap, tap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-requests',
@@ -35,6 +36,7 @@ export class ShowRequestsComponent implements OnInit {
 
   encounter: CompetitionEncounter;
   home: boolean;
+  running: boolean = false;
 
   requests$: Observable<EncounterChange>;
   @ViewChild('confirm', { static: true }) confirmDialog: TemplateRef<any>;
@@ -43,7 +45,8 @@ export class ShowRequestsComponent implements OnInit {
     private _encounterService: EncounterService,
     private _dialog: MatDialog,
     private _snackBar: MatSnackBar,
-    private _cd: ChangeDetectorRef
+    private _cd: ChangeDetectorRef,
+    private _translate: TranslateService
   ) {}
 
   async ngOnInit() {
@@ -53,6 +56,7 @@ export class ShowRequestsComponent implements OnInit {
       this.requests$ = this.previous.valueChanges.pipe(
         tap((encounter) => {
           this.encounter = encounter;
+          this.running = false;
 
           if (encounter == null) {
             this._cd.detectChanges();
@@ -121,6 +125,10 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   async save() {
+    if (this.running){
+      return;
+    }
+    this.running = true;
     const change = new EncounterChange();
     change.encounter = this.encounter;
     change.homeComment = new Comment({ message: this.formGroupRequest.get('homeComment')?.value });
@@ -143,30 +151,43 @@ export class ShowRequestsComponent implements OnInit {
       return;
     }
 
+    const success = async () => {
+      try {
+        await this._encounterService.addEncounterChange(change, this.home).toPromise();
+        const teamControl = this.formGroup.get('team');
+        teamControl.setValue(teamControl.value);
+        this.formGroup.get(this.dependsOn).setValue(null);
+        this._snackBar.open(await this._translate.instant('competition.change-encounter.requested'), 'OK', {
+          duration: 4000,
+        });
+      } catch (error) {
+        console.error(error);
+        this._snackBar.open(await this._translate.instant('competition.change-encounter.requested-failed'), 'OK', {
+          duration: 4000,
+        });
+      } finally {
+        this.running = false;
+      }
+    };
+
     if (change.accepted) {
       const dialog = this._dialog.open(this.confirmDialog);
       dialog.afterClosed().subscribe(async (confirmed) => {
         if (confirmed) {
-          await this._encounterService.addEncounterChange(change, this.home).toPromise();
-          const teamControl = this.formGroup.get('team');
-          teamControl.setValue(teamControl.value);
-          this.formGroup.get(this.dependsOn).setValue(null);
+          await success();
         }
       });
     } else {
-      await this._encounterService.addEncounterChange(change, this.home).toPromise();
-      const teamControl = this.formGroup.get('team');
-      teamControl.setValue(teamControl.value);
-      this.formGroup.get(this.dependsOn).setValue(null);
+      await success();
     }
   }
 
   private _updateSelected() {
-    const selected = this.dateControls.getRawValue().find(r => r.selected == true);
+    const selected = this.dateControls.getRawValue().find((r) => r.selected == true);
 
     for (const control of this.dateControls.controls) {
       control.get('selected').disable({ emitEvent: false });
-      
+
       if (
         (selected == null || selected?.date == control.get('date').value) &&
         control.get('availabilityHome').value == Availability.POSSIBLE &&

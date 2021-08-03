@@ -1,226 +1,228 @@
 {
-    "languages": {
-        "en": "English",
-        "fr_BE": "Français",
-        "nl_BE": "Nederlands"
+  "languages": {
+    "en": "English",
+    "fr_BE": "Français",
+    "nl_BE": "Nederlands"
+  },
+  "lists": {
+    "name": "Name"
+  },
+  "management": {
+    "calculate": "Calculate",
+    "cleanup": "Cleanup",
+    "download": "Download",
+    "end": "End",
+    "force": "Force",
+    "games-to-use": "Games to use",
+    "import": "Import",
+    "new-system": "New system",
+    "number-short": "No.",
+    "procent-losing-short": "% Loss",
+    "procent-winning-short": "% Win",
+    "ranking": "Ranking",
+    "reset": "Reset",
+    "select": "Select",
+    "start": "Start",
+    "sync": "Sync"
+  },
+  "systems": {
+    "double": "Double",
+    "double-rank": "Ranking level",
+    "list": "Ranking Players",
+    "mix": "Mix",
+    "mix-rank": "Ranking level",
+    "single": "Single",
+    "single-rank": "Ranking level"
+  },
+  "faq": {
+    "legend": "Table of contents",
+    "title": "Info how to use our website",
+    "info": {
+      "title": "Info video",
+      "description": "Via the following link you can find the info video explaining all the details of the new system:"
     },
-    "lists": {
-        "name": "Name"
+    "overview": {
+      "title": "Overview by player",
+      "description": "When you search for a player in the search bar, you will be taken to a page where you can see all kinds of information about a player's results and his ranking. All sections of this page are explained below.",
+      "levels": "At the top right you will see the rankings of the person you are looking for. If you move your mouse over a ranking (or on your mobile phone when you press and hold) you will see the ranking of the player within his own classification, as well as his position within the national Belgian ranking.",
+      "evolution-1": "The evolution graph on the right shows how a player evolves through the simulated years. The period marked with a dotted line is a period where the simulations are still stabilizing, so this period is less accurate.",
+      "evolution-2": "Each ranking evaluation is marked as a dot on the chart. Each dot shows your personal average ascending and descending points.",
+      "game-result": "For a player, all his results are displayed (tournament/competition), when it was played, the game scores, which ranking the players had at the time of the match and who the winner was (indicated in bold)."
     },
-    "management": {
-        "calculate": "Calculate",
-        "cleanup": "Cleanup",
-        "download": "Download",
-        "end": "End",
-        "force": "Force",
-        "games-to-use": "Games to use",
-        "import": "Import",
-        "new-system": "New system",
-        "number-short": "No.",
-        "procent-losing-short": "% Loss",
-        "procent-winning-short": "% Win",
-        "ranking": "Ranking",
-        "reset": "Reset",
-        "select": "Select",
-        "start": "Start",
-        "sync": "Sync"
+    "points": {
+      "title": "Points table",
+      "table": {
+        "level": "Level",
+        "points-won": "Points won against this level",
+        "points-needed-up": "Points needed to go up",
+        "points-needed-down": "Points needed to go down"
+      }
     },
-    "systems": {
-        "double": "Double",
-        "double-rank": "Ranking level",
-        "list": "Ranking Players",
-        "mix": "Mix",
-        "mix-rank": "Ranking level",
-        "single": "Single",
-        "single-rank": "Ranking level"
+    "ranking": {
+      "title": "Ranking",
+      "description": "When you click on the ranking category at the top left, you will see your ranking within your classification, as well as your ranking for each discipline and by gender, together with the player's ranking. Sorting by decreasing total ranking within a discipline is done by clicking on this discipline (or on your mobile phone when press and hold.) By default, the top 15 is given, but you can change this at the bottom of the page. You can also click through to the next page with the next players in the ranking. The discipline itself can also be selected at the bottom."
     },
-    "faq": {
-        "legend": "Table of contents",
-        "title": "Info how to use our website",
-        "info": {
-            "title": "Info video",
-            "description": "Via the following link you can find the info video explaining all the details of the new system:"
-        },
-        "overview": {
-            "title": "Overview by player",
-            "description": "When you search for a player in the search bar, you will be taken to a page where you can see all kinds of information about a player's results and his ranking. All sections of this page are explained below.",
-            "levels": "At the top right you will see the rankings of the person you are looking for. If you move your mouse over a ranking (or on your mobile phone when you press and hold) you will see the ranking of the player within his own classification, as well as his position within the national Belgian ranking.",
-            "evolution-1": "The evolution graph on the right shows how a player evolves through the simulated years. The period marked with a dotted line is a period where the simulations are still stabilizing, so this period is less accurate.",
-            "evolution-2": "Each ranking evaluation is marked as a dot on the chart. Each dot shows your personal average ascending and descending points.",
-            "game-result": "For a player, all his results are displayed (tournament\/competition), when it was played, the game scores, which ranking the players had at the time of the match and who the winner was (indicated in bold)."
-        },
-        "points": {
-            "title": "Points table",
-            "table": {
-                "level": "Level",
-                "points-won": "Points won against this level",
-                "points-needed-up": "Points needed to go up",
-                "points-needed-down": "Points needed to go down"
-            }
-        },
-        "ranking": {
-            "title": "Ranking",
-            "description": "When you click on the ranking category at the top left, you will see your ranking within your classification, as well as your ranking for each discipline and by gender, together with the player's ranking. Sorting by decreasing total ranking within a discipline is done by clicking on this discipline (or on your mobile phone when press and hold.) By default, the top 15 is given, but you can change this at the bottom of the page. You can also click through to the next page with the next players in the ranking. The discipline itself can also be selected at the bottom."
-        },
-        "updates": {
-            "title": "Updates",
-            "description": "View changelogs"
-        }
-    },
-    "team": {
-        "day": "Matchday",
-        "location": "Location",
-        "title": {
-            "prefferd-encounter": "Preferred match time",
-            "captain": "Team captain",
-            "players": "Players",
-            "base-fields": "General info"
-        },
-        "change-number": "Chaging of the team number, also update higher\/lower teams",
-        "check-players": "Tick off the basis players in the checkbox"
-    },
-    "competition": {
-        "title": "Competition",
-        "subevent": {
-            "max": "Max level",
-            "min-base": "Min basis team index",
-            "max-base": "Max basis team index"
-        },
-        "enrollment": {
-            "select-location": "Select locations for team encounters",
-            "select-club": "Select club and competition",
-            "assign-team": "Assign teams",
-            "max": "Max",
-            "base": "Limits",
-            "errors": {
-                "not-allowed": "{{player}} is not allowed in basis ({{type}}:{{level}}, max {{max}})",
-                "cant-play": "{{player}} is not allowed to play ({{type}}:{{level}}, max {{max}})",
-                "best-players": "Strongest 4 players can never play together",
-                "base-min": "Team index too low for division",
-                "base-max": "Team index too high for division",
-                "no-day": "Please select an encounter moment",
-                "not-comp": "{{player}} is not registered as CT-player (note: it takes a couple of days before the request for conversion to CT-player is completed)",
-                "best-max": "Best 4 players too strong for this division"
-            },
-            "player-base": "Player is already basis player of other team",
-            "title": "Team enrollment",
-            "comment-prov": "Comments Provincial competition (for each team)",
-            "comment-liga": "Comments League competition (for each team)",
-            "comment-nat": "Comments National competition (for each team)"
-        },
-        "type": "Type",
-        "national": "National",
-        "liga": "League",
-        "prov": "Provincial",
-        "note": "note: Changes are saved directly",
-        "change-encounter": {
-            "title": "Encounters",
-            "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied",
-            "vs": "Vs.",
-            "home": "Home",
-            "away": "Away",
-            "possible": "Available",
-            "not-possible": "Not available",
-            "choose-date": "Pick a date",
-            "choose-team": "Pick a team",
-            "choose-encounter": "Pick an encounter",
-            "comments": "Comments",
-            "home-comment": "Comments home team",
-            "away-comment": "Comments visiting team",
-            "dates": "Dates",
-            "add-date": "Add date",
-            "disclaimer-submit": "Once both teams are available, the selected day can be chosen in the checkbox by then clicking on send",
-            "submit": {
-                "title": "Send",
-                "description": "When you click yes, the current day will be replaced by the selected new day, are you sure?"
-            }
-        }
-    },
-    "event": {
-        "types": {
-            "competition": "Competition",
-            "tournament": "Tournament"
-        }
-    },
-    "players": {
-        "title": "Players",
-        "no-memberid": "Unknown member id"
-    },
-    "games": {
-        "title": "Games",
-        "bye": "Bye"
-    },
-    "gender": {
-        "select": "Select",
-        "title": "Gender",
-        "male": "Men",
-        "female": "Women",
-        "mix": "Mixed",
-        "males": "Male",
-        "females": "Female"
-    },
-    "input": {
-        "type": "Type",
-        "memberId": "Member id",
-        "year": "Year",
-        "name": "Name",
-        "firstname": "First name",
-        "lastname": "Last name",
-        "abbreviation": "Abbreviation",
-        "email": "Email",
-        "phone": "Phone",
-        "fax": "Fax",
-        "required": "Fields with an asterisk (*) are required",
-        "gender": "Gender",
-        "select": "Select",
-        "sub": "Subscription",
-        "street": "Street",
-        "streetnumber": "House number",
-        "city": "City",
-        "postalcode": "Postal code",
-        "state": "Province"
-    },
-    "button": {
-        "close": "Close",
-        "delete": "Delete",
-        "create": "Create",
-        "edit": "Edit",
-        "done": "Done",
-        "detail": "Details",
-        "next": "Next",
-        "prev": "Previous",
-        "submit": "Submit",
-        "no": "No",
-        "yes": "Yes",
-        "save": "Save"
-    },
-    "days": {
-        "monday": "Monday",
-        "tuesday": "Tuesday",
-        "wednesday": "Wednesday",
-        "thursday": "Thursday",
-        "friday": "Friday",
-        "saturday": "Saturday",
-        "sunday": "Sunday"
-    },
-    "locations": {
-        "title": "Location(s)"
-    },
-    "loading": "Loading",
-    "evolution": {
-        "warning": "Player evolution temporary not available"
-    },
-    "club": {
-        "number": "club number"
-    },
-    "pickers": {
-        "select-team": "Pick a team",
-        "select-team-groups": {
-            "M": "Men",
-            "F": "Women",
-            "MX": "Mixed"
-        },
-        "select-club": "Pick a club",
-        "select-encounter": "Pick an encounter"
+    "updates": {
+      "title": "Updates",
+      "description": "View changelogs"
     }
+  },
+  "team": {
+    "day": "Matchday",
+    "location": "Location",
+    "title": {
+      "prefferd-encounter": "Preferred match time",
+      "captain": "Team captain",
+      "players": "Players",
+      "base-fields": "General info"
+    },
+    "change-number": "Chaging of the team number, also update higher/lower teams",
+    "check-players": "Tick off the basis players in the checkbox"
+  },
+  "competition": {
+    "title": "Competition",
+    "subevent": {
+      "max": "Max level",
+      "min-base": "Min basis team index",
+      "max-base": "Max basis team index"
+    },
+    "enrollment": {
+      "select-location": "Select locations for team encounters",
+      "select-club": "Select club and competition",
+      "assign-team": "Assign teams",
+      "max": "Max",
+      "base": "Limits",
+      "errors": {
+        "not-allowed": "{{player}} is not allowed in basis ({{type}}:{{level}}, max {{max}})",
+        "cant-play": "{{player}} is not allowed to play ({{type}}:{{level}}, max {{max}})",
+        "best-players": "Strongest 4 players can never play together",
+        "base-min": "Team index too low for division",
+        "base-max": "Team index too high for division",
+        "no-day": "Please select an encounter moment",
+        "not-comp": "{{player}} is not registered as CT-player (note: it takes a couple of days before the request for conversion to CT-player is completed)",
+        "best-max": "Best 4 players too strong for this division"
+      },
+      "player-base": "Player is already basis player of other team",
+      "title": "Team enrollment",
+      "comment-prov": "Comments Provincial competition (for each team)",
+      "comment-liga": "Comments League competition (for each team)",
+      "comment-nat": "Comments National competition (for each team)"
+    },
+    "type": "Type",
+    "national": "National",
+    "liga": "League",
+    "prov": "Provincial",
+    "note": "note: Changes are saved directly",
+    "change-encounter": {
+      "title": "Encounters",
+      "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied",
+      "vs": "Vs.",
+      "home": "Home",
+      "away": "Away",
+      "possible": "Available",
+      "not-possible": "Not available",
+      "choose-date": "Pick a date",
+      "choose-team": "Pick a team",
+      "choose-encounter": "Pick an encounter",
+      "comments": "Comments",
+      "home-comment": "Comments home team",
+      "away-comment": "Comments visiting team",
+      "dates": "Dates",
+      "add-date": "Add date",
+      "disclaimer-submit": "Once both teams are available, the selected day can be chosen in the checkbox by then clicking on send",
+      "submit": {
+        "title": "Send",
+        "description": "When you click yes, the current day will be replaced by the selected new day, are you sure?"
+      },
+      "requested": "Request send",
+      "requested-failed": "Request failed, contact BVL when the issue remains"
+    }
+  },
+  "event": {
+    "types": {
+      "competition": "Competition",
+      "tournament": "Tournament"
+    }
+  },
+  "players": {
+    "title": "Players",
+    "no-memberid": "Unknown member id"
+  },
+  "games": {
+    "title": "Games",
+    "bye": "Bye"
+  },
+  "gender": {
+    "select": "Select",
+    "title": "Gender",
+    "male": "Men",
+    "female": "Women",
+    "mix": "Mixed",
+    "males": "Male",
+    "females": "Female"
+  },
+  "input": {
+    "type": "Type",
+    "memberId": "Member id",
+    "year": "Year",
+    "name": "Name",
+    "firstname": "First name",
+    "lastname": "Last name",
+    "abbreviation": "Abbreviation",
+    "email": "Email",
+    "phone": "Phone",
+    "fax": "Fax",
+    "required": "Fields with an asterisk (*) are required",
+    "gender": "Gender",
+    "select": "Select",
+    "sub": "Subscription",
+    "street": "Street",
+    "streetnumber": "House number",
+    "city": "City",
+    "postalcode": "Postal code",
+    "state": "Province"
+  },
+  "button": {
+    "close": "Close",
+    "delete": "Delete",
+    "create": "Create",
+    "edit": "Edit",
+    "done": "Done",
+    "detail": "Details",
+    "next": "Next",
+    "prev": "Previous",
+    "submit": "Submit",
+    "no": "No",
+    "yes": "Yes",
+    "save": "Save"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "locations": {
+    "title": "Location(s)"
+  },
+  "loading": "Loading",
+  "evolution": {
+    "warning": "Player evolution temporary not available"
+  },
+  "club": {
+    "number": "club number"
+  },
+  "pickers": {
+    "select-team": "Pick a team",
+    "select-team-groups": {
+      "M": "Men",
+      "F": "Women",
+      "MX": "Mixed"
+    },
+    "select-club": "Pick a club",
+    "select-encounter": "Pick an encounter"
+  }
 }
