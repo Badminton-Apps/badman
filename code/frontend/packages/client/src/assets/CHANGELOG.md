@@ -1,3 +1,12 @@
+## [3.32.5](https://github.com/Badminton-Apps/core/compare/v3.32.4...v3.32.5) (2021-08-03)
+
+
+### Bug Fixes
+
+* commenting user (again) ([ba48709](https://github.com/Badminton-Apps/core/commit/ba48709e8177bec227d718a140e0970e73a51d70))
+
+
+
 ## [3.32.4](https://github.com/Badminton-Apps/core/compare/v3.32.3...v3.32.4) (2021-08-02)
 
 
