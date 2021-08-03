@@ -117,7 +117,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
 
             if (comment == null) {
               comment = new Comment({
-                playerId: context?.req?.player?.id,
+                playerId: context?.req?.user?.player?.id,
                 clubId: team.clubId
               });
 
@@ -127,7 +127,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
             comment = await encounterChange.getAwayComment({ transaction });
             if (comment == null) {
               comment = new Comment({
-                playerId: context?.req?.player.id,
+                playerId: context?.req?.user?.player?.id,
                 clubId: team.clubId
               });
               await encounterChange.setAwayComment(comment, { transaction });
