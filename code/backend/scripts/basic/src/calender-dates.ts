@@ -33,16 +33,11 @@ import {
     '9BBF45C4-4826-4D4A-9FCA-18189693800E' // WVBF
   ];
 
-
   // deactivate all teams
   await DbTeam.update({ active: false }, { where: { active: true } });
 
   // Remove all base players
-  await TeamPlayerMembership.update(
-    { base: false },
-    { where: { base: true } }
-  );
-
+  await TeamPlayerMembership.update({ base: false }, { where: { base: true } });
 
   for (const comp of competitions) {
     // Visual
@@ -320,7 +315,6 @@ import {
       teams.set(xmlTeam.Code, dbTeam);
     }
 
-
     await TeamPlayerMembership.update(
       { base: true },
       {
@@ -346,7 +340,8 @@ import {
           drawId: draw.id,
           homeTeamId: teams.get(match.Team1.Code).id,
           awayTeamId: teams.get(match.Team2.Code).id,
-          date: new Date(match.MatchTime)
+          date: new Date(match.MatchTime),
+          visualCode: match.Code
         }).toJSON()
       )
     );
