@@ -167,6 +167,7 @@ export class ShowRequestsComponent implements OnInit {
         });
       } finally {
         this.running = false;
+        this._cd.detectChanges();
       }
     };
 
