@@ -97,7 +97,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
               comment = encounterChange.homeComment;
             } else {
               comment = new Comment({
-                playerId: context?.req?.player.id,
+                playerId: context?.req?.player?.id,
                 clubId: team.clubId
               });
 
