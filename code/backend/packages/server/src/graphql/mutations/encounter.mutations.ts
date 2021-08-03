@@ -140,11 +140,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
           change.dates = change.dates
             .map(r => {
               const parsedDate = moment(r.date);
-              if (parsedDate.isValid()) {
-                r.date = parsedDate.toDate();
-              } else {
-                r.date = null;
-              }
+              r.date = parsedDate.isValid() ? parsedDate.toDate() : null;
               return r;
             })
             .filter(r => r.date !== null);
