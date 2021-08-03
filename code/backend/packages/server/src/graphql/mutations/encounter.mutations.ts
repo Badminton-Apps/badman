@@ -93,9 +93,9 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
 
           let comment: Comment;
           if (change.home) {
-            if (encounterChange.homeComment != null) {
-              comment = encounterChange.homeComment;
-            } else {
+            comment = await encounterChange.getHomeComment({ transaction });
+
+            if (comment == null) {
               comment = new Comment({
                 playerId: context?.req?.player?.id,
                 clubId: team.clubId
@@ -104,9 +104,8 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
               await encounterChange.setHomeComment(comment, { transaction });
             }
           } else {
-            if (encounterChange.awayComment != null) {
-              comment = encounterChange.awayComment;
-            } else {
+            comment = await encounterChange.getAwayComment({ transaction });
+            if (comment == null) {
               comment = new Comment({
                 playerId: context?.req?.player.id,
                 clubId: team.clubId
