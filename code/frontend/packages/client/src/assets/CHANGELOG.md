@@ -1,3 +1,12 @@
+## [3.32.7](https://github.com/Badminton-Apps/core/compare/v3.32.6...v3.32.7) (2021-08-03)
+
+
+### Bug Fixes
+
+* don't create a new comment each time ([788314d](https://github.com/Badminton-Apps/core/commit/788314dba4508ed398d031d22f060262336f505c))
+
+
+
 ## [3.32.6](https://github.com/Badminton-Apps/core/compare/v3.32.5...v3.32.6) (2021-08-03)
 
 
