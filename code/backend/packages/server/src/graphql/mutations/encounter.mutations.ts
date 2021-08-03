@@ -7,7 +7,8 @@ import {
   Club,
   Comment,
   EncounterChangeDate,
-  NotificationService
+  NotificationService,
+  Availability
 } from '../../../../_shared';
 import { ApiError } from '../../models/api.error';
 import { EncounterChangeInputType, EncounterChangeType } from '../types';
@@ -23,7 +24,26 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
         type: EncounterChangeInputType
       }
     },
-    resolve: async (findOptions, { change }, context) => {
+    resolve: async (
+      findOptions,
+      {
+        change
+      }: {
+        change: {
+          comment: { message: string };
+          encounterId: string;
+          home: boolean;
+          accepted: boolean;
+          dates: {
+            selected: boolean;
+            date: any;
+            availabilityHome: Availability;
+            availabilityAway: Availability;
+          }[];
+        };
+      },
+      context
+    ) => {
       const encounter = await EncounterCompetition.findByPk(change.encounterId);
 
       if (encounter === null) {
@@ -54,7 +74,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
         });
       }
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-      let encounterChange;
+      let encounterChange: EncounterChange;
 
       try {
         // Check if encounter has change
@@ -117,23 +137,27 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
           comment.message = change.comment.message;
           await comment.save({ transaction });
 
+          change.dates = change.dates
+            .map(r => {
+              const parsedDate = moment(r.date);
+              if (parsedDate.isValid()) {
+                r.date = parsedDate.toDate();
+              } else {
+                r.date = null;
+              }
+              return r;
+            })
+            .filter(r => r.date !== null);
+
+          // Add new dates
           for (const date of change.dates) {
-            const parsedDate = moment(date.date);
-            if (!parsedDate.isValid()) {
-              throw new ApiError({
-                code: 500,
-                message: 'Invalid date'
-              });
-            }
             // Check if the encounter has alredy a change for this date
-            let encounterChangeDate = dates.find(
-              r => r.date.getTime() === parsedDate.toDate().getTime()
-            );
+            let encounterChangeDate = dates.find(r => r.date.getTime() === date.date.getTime());
 
             // If not create new one
             if (!encounterChangeDate) {
               encounterChangeDate = new EncounterChangeDate({
-                date: parsedDate.toDate(),
+                date: date.date,
                 encounterChangeId: encounterChange.id
               });
             }
@@ -147,6 +171,13 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
 
             // Save the date
             await encounterChangeDate.save({ transaction });
+          }
+
+          // remove old dates
+          for (const date of dates) {
+            if (change.dates.find(r => r.date.getTime() === date.date.getTime()) == null) {
+              await date.destroy({ transaction });
+            }
           }
         }
 
