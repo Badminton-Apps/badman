@@ -48,7 +48,7 @@ const materialModules = [
   MatSidenavModule,
   MatToolbarModule,
   MatSelectModule,
-  MatExpansionModule,
+  MatExpansionModule, 
   MatDialogModule,
   MatSlideToggleModule,
   MatMomentDateModule,

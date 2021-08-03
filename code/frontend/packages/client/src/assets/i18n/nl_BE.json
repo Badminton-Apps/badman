@@ -133,7 +133,9 @@
             "submit": {
                 "title": "Verzenden",
                 "description": "Wanneer je op ja klikt, zal de huidige dag vervangen worden door de geselecteerde nieuwe dag, weet je het zeker?"
-            }
+            },
+            "requested": "Verzoek ingediend",
+            "requested-failed": "Verzoek mislukt, contacteer BVL indien het probleem aanhoud"
         }
     },
     "event": {
