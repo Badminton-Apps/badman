@@ -60,20 +60,33 @@ const startServer = (databaseService: DataBaseHandler) => {
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
       // When in dev we can allow graph playground to run without permission
       if (process.env.production === 'false') {
-        const grahpReq = {
-          ...req,
-          player: await Player.findOne({ where: { memberId: '50104197' } }),
-          user: {
-            ...req.user,
-            hasAnyPermission: (permissions: string[]) => {
-              return true;
-            },
-            hasAllPermission: (permissions: string[]) => {
-              return true;
-            }
+        // We can try to do the auth
+        try {
+          for (const check of authService.checkAuth) {
+            await new Promise((resolve, reject) => {
+              check(req, res, () => {
+                resolve(null);
+              });
+            });
           }
-        };
-        return { req: grahpReq, res };
+          return { req, res };
+        } catch (err) {
+          // But if we fail we can just return a default setting
+          const grahpReq = {
+            ...req,
+            player: await Player.findOne({ where: { memberId: '50104197' } }),
+            user: {
+              ...req.user,
+              hasAnyPermission: (permissions: string[]) => {
+                return true;
+              },
+              hasAllPermission: (permissions: string[]) => {
+                return true;
+              }
+            }
+          };
+          return { req: grahpReq, res };
+        }
       } else {
         for (const check of authService.checkAuth) {
           await new Promise((resolve, reject) => {
