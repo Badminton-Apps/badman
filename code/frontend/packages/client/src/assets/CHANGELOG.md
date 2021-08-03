@@ -1,3 +1,12 @@
+## [3.32.8](https://github.com/Badminton-Apps/core/compare/v3.32.7...v3.32.8) (2021-08-03)
+
+
+### Bug Fixes
+
+* changing encounter time would duplicate ([f9fa1eb](https://github.com/Badminton-Apps/core/commit/f9fa1eb010ccf4c08754e155aff327a1f412a4fa))
+
+
+
 ## [3.32.7](https://github.com/Badminton-Apps/core/compare/v3.32.6...v3.32.7) (2021-08-03)
 
 
