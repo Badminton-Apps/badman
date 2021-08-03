@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/supervisor",
   "description": "Ranking simulation supervisor Badminton Vlaanderen",
-  "version": "3.32.5",
+  "version": "3.32.6",
   "private": true,
   "scripts": {
     "start": "node -r ts-node/register ./src/server.ts ",
@@ -13,7 +13,7 @@
     "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
   },
   "dependencies": {
-    "@badvlasim/shared": "^3.32.5"
+    "@badvlasim/shared": "^3.32.6"
   },
   "peerDependencies": {
     "moment": "^2.24.0"
