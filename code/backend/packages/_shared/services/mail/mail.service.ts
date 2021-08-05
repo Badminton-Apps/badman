@@ -221,11 +221,6 @@ export class MailService {
     changeRequest: EncounterChange,
     homeTeamRequests: boolean
   ) {
-    if (this._mailingEnabled === false) {
-      logger.debug('Mailing disabled');
-      return;
-    }
-
     const encounter = await changeRequest.getEncounter({
       include: [
         {
@@ -245,7 +240,7 @@ export class MailService {
 
     const options = {
       from: 'info@badman.app',
-      to: clubTeam.email,
+      to: otherTeam.email,
       subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name}`,
       template: 'encounterchange',
       context: {
@@ -258,6 +253,11 @@ export class MailService {
     };
 
     try {
+      if (this._mailingEnabled === false) {
+        logger.debug('Mailing disabled', options);
+        return;
+      }
+
       const info = await this._transporter.sendMail(options);
       logger.debug('Message sent: %s', info.messageId);
       logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
@@ -267,11 +267,6 @@ export class MailService {
   }
 
   async sendRequestFinishedMail(changeRequest: EncounterChange) {
-    if (this._mailingEnabled === false) {
-      logger.debug('Mailing disabled');
-      return;
-    }
-
     const encounter = await changeRequest.getEncounter({
       include: [
         {
@@ -300,13 +295,18 @@ export class MailService {
       };
 
       try {
+        if (this._mailingEnabled === false) {
+          logger.debug('Mailing disabled', options);
+          return;
+        }
+
         const info = await this._transporter.sendMail(options);
         logger.debug('Message sent: %s', info.messageId);
         logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       } catch (e) {
         logger.error('Hello', e);
       }
-    }
+    };
 
     await sendMail(encounter.home, encounter.away.captain);
     await sendMail(encounter.away, encounter.home.captain);
