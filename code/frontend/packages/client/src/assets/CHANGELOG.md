@@ -1,3 +1,13 @@
+## [3.32.9](https://github.com/Badminton-Apps/core/compare/v3.32.8...v3.32.9) (2021-08-03)
+
+
+### Bug Fixes
+
+* comments having no users ([bc4d6c5](https://github.com/Badminton-Apps/core/commit/bc4d6c55fb9fc2129abf0f0050719a010a136404))
+* try/catch for local dev ([f39728e](https://github.com/Badminton-Apps/core/commit/f39728e549ffeb4f683691f665cc87236c2f1727))
+
+
+
 ## [3.32.8](https://github.com/Badminton-Apps/core/compare/v3.32.7...v3.32.8) (2021-08-03)
 
 
