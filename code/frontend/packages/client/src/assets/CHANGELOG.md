@@ -1,3 +1,12 @@
+## [3.32.10](https://github.com/Badminton-Apps/core/compare/v3.32.9...v3.32.10) (2021-08-05)
+
+
+### Bug Fixes
+
+* request mails were send to wrong team ([1f89c7a](https://github.com/Badminton-Apps/core/commit/1f89c7ae07451bdb40549527a0dbf7a6c787ed9e))
+
+
+
 ## [3.32.9](https://github.com/Badminton-Apps/core/compare/v3.32.8...v3.32.9) (2021-08-03)
 
 
