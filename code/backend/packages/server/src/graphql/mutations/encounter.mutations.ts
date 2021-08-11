@@ -139,7 +139,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
     }
   };
 };
-async function changeOrUpdate(
+const changeOrUpdate = async (
   encounterChange: EncounterChange,
   change: {
     comment: {
@@ -159,7 +159,7 @@ async function changeOrUpdate(
   context: any,
   team: Team,
   dates: EncounterChangeDate[]
-) {
+) => {
   encounterChange.accepted = false;
 
   let comment: Comment;
@@ -226,9 +226,9 @@ async function changeOrUpdate(
       await date.destroy({ transaction });
     }
   }
-}
+};
 
-export async function acceptDate(encounter: EncounterCompetition, transaction: Transaction) {
+export const acceptDate = async (encounter: EncounterCompetition, transaction: Transaction) => {
   // Check if visual reality has same date stored
   const draw = await encounter.getDraw({ transaction });
   const subEvent = await draw.getSubEvent({ transaction });
@@ -251,7 +251,7 @@ export async function acceptDate(encounter: EncounterCompetition, transaction: T
   const visualDate = moment(body?.TournamentMatch?.MatchDate, 'YYYY-MM-DDTHH:mm:ss', true);
   if (visualDate.isSame(encounter.originalDate ?? encounter.date)) {
     if (process.env.production === 'true') {
-      const result = await got.put(
+      const resultPut = await got.put(
         `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
         {
           username: `${process.env.VR_API_USER}`,
@@ -265,21 +265,21 @@ export async function acceptDate(encounter: EncounterCompetition, transaction: T
           `
         }
       );
-      const body = parse(result.body).Result as Result;
-      if (body.Error?.Code !== 0 || body.Error.Message !== 'Success.') {
+      const bodyPut = parse(resultPut.body).Result as Result;
+      if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
         throw new ApiError({
           code: 500,
-          message: `Error updating visual reality\n${body.Error.Message}`
+          message: `Error updating visual reality\n${bodyPut.Error.Message}`
         });
       }
     } else {
       logger.debug(
         'Putting the following',
         {
-          TournamentMatch: {
-            TournamentID: event.visualCode,
-            MatchID: encounter.visualCode,
-            MatchDate: encounter.date.toISOString()
+          tournamentMatch: {
+            tournamentID: event.visualCode,
+            matchID: encounter.visualCode,
+            matchDate: encounter.date.toISOString()
           }
         },
         `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`
@@ -299,8 +299,9 @@ export async function acceptDate(encounter: EncounterCompetition, transaction: T
   }
 
   encounter.synced = new Date();
-}
+};
 
+/* eslint-disable @typescript-eslint/naming-convention */
 interface Result {
   TournamentMatch?: TournamentMatch;
   Error?: XmlError;
@@ -315,5 +316,6 @@ interface TournamentMatch {
 
 interface XmlError {
   Code: number;
-  Message: String;
+  Message: string;
 }
+/* eslint-enable @typescript-eslint/naming-convention */
