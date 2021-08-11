@@ -59,7 +59,7 @@ export const updatePlayerMutation = {
 
     if (
       context?.req?.user == null ||
-      !context.req.user.hasAnyPermission([`${player.id}_edit:player`])
+      !context.req.user.hasAnyPermission([`${player.id}_edit:player`, 'edit-any:player'])
     ) {
       throw new ApiError({
         code: 401,
