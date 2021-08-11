@@ -1,3 +1,12 @@
+# [3.33.0](https://github.com/Badminton-Apps/core/compare/v3.32.11...v3.33.0) (2021-08-11)
+
+
+### Features
+
+* push dates to toernooi.nl ([1aa2bbf](https://github.com/Badminton-Apps/core/commit/1aa2bbfa837f7e63bc65549388509eec39cec6d8))
+
+
+
 ## [3.32.11](https://github.com/Badminton-Apps/core/compare/v3.32.10...v3.32.11) (2021-08-11)
 
 
