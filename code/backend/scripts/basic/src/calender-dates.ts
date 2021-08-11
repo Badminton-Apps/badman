@@ -354,6 +354,7 @@ import {
   }
 })();
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export interface Result {
   Tournament?: Tournament;
   TournamentEvent?: TournamentEvent[];
@@ -600,3 +601,4 @@ export enum GameTypeID {
   Doubles = 2,
   Mixed = 3
 }
+/* eslint-enable @typescript-eslint/naming-convention */
