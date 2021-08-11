@@ -125,7 +125,7 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   async save() {
-    if (this.running){
+    if (this.running) {
       return;
     }
     this.running = true;
@@ -148,6 +148,7 @@ export class ShowRequestsComponent implements OnInit {
 
     if (!change.dates || change.dates.length == 0) {
       this._snackBar.open('Please select at least one date.', 'OK', { duration: 4000 });
+      this.running = false;
       return;
     }
 
