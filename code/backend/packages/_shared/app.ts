@@ -19,7 +19,7 @@ export class App {
     proxies: { from: string; to: string }[] = []
   ) {
     this.app = express();
-    this._lightship = createLightship();
+    this._lightship = createLightship(); 
 
     this._initializeMiddlewares();
     this._initializeProxies(proxies);

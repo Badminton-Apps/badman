@@ -4,7 +4,7 @@ const newClaims = [
   [
     '58e44e85-6439-429c-b71b-7cc1ec326871',
     'change:encounter',
-    'Change the location of a encounter',
+    'Change the date/time of a encounter',
     'clubs'
   ]
 ];
