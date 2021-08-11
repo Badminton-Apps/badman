@@ -1,3 +1,13 @@
+## [3.33.1](https://github.com/Badminton-Apps/core/compare/v3.33.0...v3.33.1) (2021-08-11)
+
+
+### Bug Fixes
+
+* changing 2 times wouln't have worked ([3c7b2da](https://github.com/Badminton-Apps/core/commit/3c7b2da9a0732836eca272ccdca277a6baa6fe26))
+* this should have been save ([1d443d7](https://github.com/Badminton-Apps/core/commit/1d443d710963b64eff5b39ad20a23f6306fb1584))
+
+
+
 # [3.33.0](https://github.com/Badminton-Apps/core/compare/v3.32.11...v3.33.0) (2021-08-11)
 
 
