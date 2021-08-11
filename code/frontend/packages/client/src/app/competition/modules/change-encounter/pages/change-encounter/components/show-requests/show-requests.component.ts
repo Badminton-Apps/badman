@@ -158,12 +158,18 @@ export class ShowRequestsComponent implements OnInit {
     if (change.dates == null || (change.dates?.length ?? 0) == 0) {
       if (this.home) {
         // hometeam always needs to add at least one date
-        this._snackBar.open('Please select at least one date.', 'OK', { duration: 4000 });
+        this._snackBar.open(this._translate.instant('competition.change-encounter.errors.select-one-date'), 'OK', {
+          duration: 4000,
+        });
         this.running = false;
         return;
       } else if (change.awayComment == null || (change.awayComment?.message?.length ?? 0) < 15) {
         // away team can have no dates but with a comment of at least to 15 characters
-        this._snackBar.open('Please enter a comment (min 15 char) or add a date.', 'OK', { duration: 4000 });
+        this._snackBar.open(
+          this._translate.instant('competition.change-encounter.errors.select-one-date-or-comment'),
+          'OK',
+          { duration: 4000 }
+        );
         this.running = false;
         return;
       }
