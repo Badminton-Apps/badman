@@ -4,7 +4,6 @@ import {
   logger,
   EncounterChange,
   EncounterCompetition,
-  Club,
   Comment,
   EncounterChangeDate,
   NotificationService,
@@ -13,6 +12,9 @@ import {
 import { ApiError } from '../../models/api.error';
 import { EncounterChangeInputType, EncounterChangeType } from '../types';
 import moment from 'moment';
+import got from 'got';
+import { parse } from 'fast-xml-parser';
+import { Transaction } from 'sequelize/types';
 
 export const addChangeEncounterMutation = (notificationService: NotificationService) => {
   return {
@@ -100,81 +102,23 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
               message: 'Multiple dates were selected? '
             });
           }
-
+          // Copy original date
           if (encounter.originalDate == null) {
             encounter.originalDate = encounter.date;
           }
+          // Set date to the selected date
           encounter.date = selectedDates[0].date;
+
+          // Accept
+          await acceptDate(encounter, transaction);
+
+          // Save cahnges
           encounter.save({ transaction });
 
+          // Destroy the requets
           await encounterChange.destroy({ transaction });
         } else {
-          encounterChange.accepted = false;
-
-          let comment: Comment;
-          if (change.home) {
-            comment = await encounterChange.getHomeComment({ transaction });
-
-            if (comment == null) {
-              comment = new Comment({
-                playerId: context?.req?.user?.player?.id,
-                clubId: team.clubId
-              });
-
-              await encounterChange.setHomeComment(comment, { transaction });
-            }
-          } else {
-            comment = await encounterChange.getAwayComment({ transaction });
-            if (comment == null) {
-              comment = new Comment({
-                playerId: context?.req?.user?.player?.id,
-                clubId: team.clubId
-              });
-              await encounterChange.setAwayComment(comment, { transaction });
-            }
-          }
-
-          comment.message = change.comment.message;
-          await comment.save({ transaction });
-
-          change.dates = change.dates
-            .map(r => {
-              const parsedDate = moment(r.date);
-              r.date = parsedDate.isValid() ? parsedDate.toDate() : null;
-              return r;
-            })
-            .filter(r => r.date !== null);
-
-          // Add new dates
-          for (const date of change.dates) {
-            // Check if the encounter has alredy a change for this date
-            let encounterChangeDate = dates.find(r => r.date.getTime() === date.date.getTime());
-
-            // If not create new one
-            if (!encounterChangeDate) {
-              encounterChangeDate = new EncounterChangeDate({
-                date: date.date,
-                encounterChangeId: encounterChange.id
-              });
-            }
-
-            // Set the availibily to the date
-            if (change.home) {
-              encounterChangeDate.availabilityHome = date.availabilityHome;
-            } else {
-              encounterChangeDate.availabilityAway = date.availabilityAway;
-            }
-
-            // Save the date
-            await encounterChangeDate.save({ transaction });
-          }
-
-          // remove old dates
-          for (const date of dates) {
-            if (change.dates.find(r => r.date.getTime() === date.date.getTime()) == null) {
-              await date.destroy({ transaction });
-            }
-          }
+          await changeOrUpdate(encounterChange, change, transaction, context, team, dates);
         }
 
         // find if any date was selected
@@ -195,3 +139,181 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
     }
   };
 };
+async function changeOrUpdate(
+  encounterChange: EncounterChange,
+  change: {
+    comment: {
+      message: string;
+    };
+    encounterId: string;
+    home: boolean;
+    accepted: boolean;
+    dates: {
+      selected: boolean;
+      date: any;
+      availabilityHome: Availability;
+      availabilityAway: Availability;
+    }[];
+  },
+  transaction,
+  context: any,
+  team: Team,
+  dates: EncounterChangeDate[]
+) {
+  encounterChange.accepted = false;
+
+  let comment: Comment;
+  if (change.home) {
+    comment = await encounterChange.getHomeComment({ transaction });
+
+    if (comment == null) {
+      comment = new Comment({
+        playerId: context?.req?.user?.player?.id,
+        clubId: team.clubId
+      });
+
+      await encounterChange.setHomeComment(comment, { transaction });
+    }
+  } else {
+    comment = await encounterChange.getAwayComment({ transaction });
+    if (comment == null) {
+      comment = new Comment({
+        playerId: context?.req?.user?.player?.id,
+        clubId: team.clubId
+      });
+      await encounterChange.setAwayComment(comment, { transaction });
+    }
+  }
+
+  comment.message = change.comment.message;
+  await comment.save({ transaction });
+
+  change.dates = change.dates
+    .map(r => {
+      const parsedDate = moment(r.date);
+      r.date = parsedDate.isValid() ? parsedDate.toDate() : null;
+      return r;
+    })
+    .filter(r => r.date !== null);
+
+  // Add new dates
+  for (const date of change.dates) {
+    // Check if the encounter has alredy a change for this date
+    let encounterChangeDate = dates.find(r => r.date.getTime() === date.date.getTime());
+
+    // If not create new one
+    if (!encounterChangeDate) {
+      encounterChangeDate = new EncounterChangeDate({
+        date: date.date,
+        encounterChangeId: encounterChange.id
+      });
+    }
+
+    // Set the availibily to the date
+    if (change.home) {
+      encounterChangeDate.availabilityHome = date.availabilityHome;
+    } else {
+      encounterChangeDate.availabilityAway = date.availabilityAway;
+    }
+
+    // Save the date
+    await encounterChangeDate.save({ transaction });
+  }
+
+  // remove old dates
+  for (const date of dates) {
+    if (change.dates.find(r => r.date.getTime() === date.date.getTime()) == null) {
+      await date.destroy({ transaction });
+    }
+  }
+}
+
+export async function acceptDate(encounter: EncounterCompetition, transaction: Transaction) {
+  // Check if visual reality has same date stored
+  const draw = await encounter.getDraw({ transaction });
+  const subEvent = await draw.getSubEvent({ transaction });
+  const event = await subEvent.getEvent({ transaction });
+
+  if (event.visualCode == null) {
+    logger.error(`No visual code found for ${event?.name}`);
+    return;
+  }
+
+  const result = await got.get(
+    `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+    {
+      username: `${process.env.VR_API_USER}`,
+      password: `${process.env.VR_API_PASS}`
+    }
+  );
+
+  const body = parse(result.body).Result as Result;
+  const visualDate = moment(body?.TournamentMatch?.MatchDate, 'YYYY-MM-DDTHH:mm:ss', true);
+  if (visualDate.isSame(encounter.originalDate ?? encounter.date)) {
+    if (process.env.production === 'true') {
+      const result = await got.put(
+        `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+        {
+          username: `${process.env.VR_API_USER}`,
+          password: `${process.env.VR_API_PASS}`,
+          body: `
+            <TournamentMatch>
+                <TournamentID>${event.visualCode}</TournamentID>
+                <MatchID>${encounter.visualCode}</MatchID>
+                <MatchDate>${encounter.date.toISOString()}</MatchDate>
+            </TournamentMatch>
+          `
+        }
+      );
+      const body = parse(result.body).Result as Result;
+      if (body.Error?.Code !== 0 || body.Error.Message !== 'Success.') {
+        throw new ApiError({
+          code: 500,
+          message: `Error updating visual reality\n${body.Error.Message}`
+        });
+      }
+    } else {
+      logger.debug(
+        'Putting the following',
+        {
+          TournamentMatch: {
+            TournamentID: event.visualCode,
+            MatchID: encounter.visualCode,
+            MatchDate: encounter.date.toISOString()
+          }
+        },
+        `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`
+      );
+    }
+  } else {
+    throw new ApiError({
+      code: 500,
+      message: `Visual's date isn't the same, 
+      \tVisual: ${visualDate.toString()} 
+      \tOrignal: ${encounter.originalDate.toString()} 
+      \tDate: ${encounter.date.toString()}
+      \tEvent: ${event.name}
+      \tSubEvent: ${subEvent.name}
+      `
+    });
+  }
+
+  encounter.synced = new Date();
+}
+
+interface Result {
+  TournamentMatch?: TournamentMatch;
+  Error?: XmlError;
+  _Version: string;
+}
+
+interface TournamentMatch {
+  TournamentID: string;
+  MatchID: string;
+  MatchDate: Date;
+}
+
+interface XmlError {
+  Code: number;
+  Message: String;
+}
