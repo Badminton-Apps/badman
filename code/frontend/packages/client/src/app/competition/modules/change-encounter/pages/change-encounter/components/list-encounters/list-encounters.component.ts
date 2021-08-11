@@ -71,7 +71,9 @@ export class ListEncountersComponent implements OnInit {
 
           const params = this.activatedRoute.snapshot.queryParams;
           if (params && params.encounter && this.encountersSem1.length > 0) {
-            const foundEncounter = this.encountersSem1.find((r) => r.id == params.encounter);
+            const foundEncounter = [...this.encountersSem1, ...this.encountersSem2].find(
+              (r) => r.id == params.encounter
+            );
 
             if (foundEncounter) {
               this.formControl.setValue(foundEncounter);
