@@ -249,13 +249,16 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
 
   const body = parse(result.body).Result as Result;
   const visualDate = moment(body?.TournamentMatch?.MatchDate, 'YYYY-MM-DDTHH:mm:ss', true);
-  if (visualDate.isSame(encounter.originalDate ?? encounter.date)) {
+  if (true) {
     if (process.env.production === 'true') {
       const resultPut = await got.put(
         `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
         {
           username: `${process.env.VR_API_USER}`,
           password: `${process.env.VR_API_PASS}`,
+          headers: {
+            'Content-Type': 'application/xml'
+          },
           body: `
             <TournamentMatch>
                 <TournamentID>${event.visualCode}</TournamentID>
@@ -267,6 +270,16 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
       );
       const bodyPut = parse(resultPut.body).Result as Result;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
+        logger.error(
+          `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+          `
+            <TournamentMatch>
+                <TournamentID>${event.visualCode}</TournamentID>
+                <MatchID>${encounter.visualCode}</MatchID>
+                <MatchDate>${encounter.date.toISOString()}</MatchDate>
+            </TournamentMatch>
+          `
+        );
         throw new ApiError({
           code: 500,
           message: `Error updating visual reality\n${bodyPut.Error.Message}`

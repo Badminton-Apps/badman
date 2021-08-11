@@ -26,9 +26,8 @@ import {
       await acceptDate(encounter, transaction);
 
       // Destroy the requets
-      await encounter.destroy({ transaction });
+      await encounter.save({ transaction });
     }
-    throw 'lol';
     await transaction.commit();
   } catch (e) {
     logger.error(e);
