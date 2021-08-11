@@ -135,7 +135,11 @@
                 "description": "Wanneer je op ja klikt, zal de huidige dag vervangen worden door de geselecteerde nieuwe dag, weet je het zeker?"
             },
             "requested": "Verzoek ingediend",
-            "requested-failed": "Verzoek mislukt, contacteer BVL indien het probleem aanhoud"
+            "requested-failed": "Verzoek mislukt, contacteer BVL indien het probleem aanhoud",
+            "errors": {
+                "select-one-date": "Gelieve minsten 1 dag te selecteren",
+                "select-one-date-or-comment": "Gelieve commentaar te geven (minstens 15 karakters) of een datum te kiezen."
+            }
         }
     },
     "event": {

@@ -135,7 +135,11 @@
         "description": "When you click yes, the current day will be replaced by the selected new day, are you sure?"
       },
       "requested": "Request send",
-      "requested-failed": "Request failed, contact BVL when the issue remains"
+      "requested-failed": "Request failed, contact BVL when the issue remains",
+      "errors": {
+        "select-one-date": "Please select a minimum of 1 date",
+        "select-one-date-or-comment": "Please give a comment (minimum 15 characters) or choose at least date."
+      }
     }
   },
   "event": {
