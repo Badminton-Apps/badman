@@ -1,3 +1,12 @@
+## [3.32.11](https://github.com/Badminton-Apps/core/compare/v3.32.10...v3.32.11) (2021-08-11)
+
+
+### Bug Fixes
+
+* admin's weren't allowed to edit players anymore ([b53c73f](https://github.com/Badminton-Apps/core/commit/b53c73f354c8b0a708506e209532df047614302f))
+
+
+
 ## [3.32.10](https://github.com/Badminton-Apps/core/compare/v3.32.9...v3.32.10) (2021-08-05)
 
 
