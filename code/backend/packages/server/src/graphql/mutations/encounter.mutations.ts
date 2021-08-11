@@ -247,6 +247,7 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
         username: `${process.env.VR_API_USER}`,
         password: `${process.env.VR_API_PASS}`,
         headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'Content-Type': 'application/xml'
         },
         body: `
