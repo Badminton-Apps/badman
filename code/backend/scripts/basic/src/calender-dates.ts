@@ -65,7 +65,8 @@ import {
 
   async function getCompetition(id: string): Promise<Tournament> {
     const result = await got.get(`${URL_BASE}/${id}`, {
-      auth: `${process.env.VR_API_USER}:${process.env.VR_API_PASS}`
+      username: `${process.env.VR_API_USER}`,
+      password: `${process.env.VR_API_PASS}`
     });
     const body = parse(result.body).Result as Result;
     return body.Tournament;
@@ -73,7 +74,8 @@ import {
 
   async function getEvents(id: string): Promise<TournamentEvent[]> {
     const result = await got.get(`${URL_BASE}/${id}/Event`, {
-      auth: `${process.env.VR_API_USER}:${process.env.VR_API_PASS}`
+      username: `${process.env.VR_API_USER}`,
+      password: `${process.env.VR_API_PASS}`
     });
     const body = parse(result.body).Result as Result;
     return body.TournamentEvent;
@@ -81,7 +83,8 @@ import {
 
   async function getDraws(id: string): Promise<TournamentDraw[]> {
     const result = await got.get(`${URL_BASE}/${id}/Draw`, {
-      auth: `${process.env.VR_API_USER}:${process.env.VR_API_PASS}`
+      username: `${process.env.VR_API_USER}`,
+      password: `${process.env.VR_API_PASS}`
     });
     const body = parse(result.body).Result as Result;
     return body.TournamentDraw;
@@ -89,7 +92,8 @@ import {
 
   async function getTeams(id: string): Promise<Team[]> {
     const result = await got.get(`${URL_BASE}/${id}/Team`, {
-      auth: `${process.env.VR_API_USER}:${process.env.VR_API_PASS}`
+      username: `${process.env.VR_API_USER}`,
+      password: `${process.env.VR_API_PASS}`
     });
     const body = parse(result.body).Result as Result;
     return body.Team as Team[];
@@ -97,7 +101,8 @@ import {
 
   async function getTeam(id: string, teamId: string): Promise<Team> {
     const result = await got.get(`${URL_BASE}/${id}/Team/${teamId}`, {
-      auth: `${process.env.VR_API_USER}:${process.env.VR_API_PASS}`
+      username: `${process.env.VR_API_USER}`,
+      password: `${process.env.VR_API_PASS}`
     });
     const body = parse(result.body).Result as Result;
     return body.Team as Team;
@@ -105,7 +110,8 @@ import {
 
   async function getMatches(id: string, drawId: string): Promise<TeamMatch[]> {
     const result = await got.get(`${URL_BASE}/${id}/Draw/${drawId}/Match`, {
-      auth: `${process.env.VR_API_USER}:${process.env.VR_API_PASS}`
+      username: `${process.env.VR_API_USER}`,
+      password: `${process.env.VR_API_PASS}`
     });
     const body = parse(result.body).Result as Result;
     return body.TeamMatch;

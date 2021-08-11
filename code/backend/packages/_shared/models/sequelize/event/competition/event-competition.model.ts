@@ -71,6 +71,9 @@ export class EventCompetition extends Model {
   @Column
   uniCode: string;
 
+  @Column
+  visualCode: string;
+
   @Default(false)
   @Column
   allowEnlisting: boolean;
