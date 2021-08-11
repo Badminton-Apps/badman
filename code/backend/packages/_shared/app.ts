@@ -5,41 +5,29 @@ import moment from 'moment';
 import express, { Application, json } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { BaseController } from './models';
-import { HealthController } from './controllers';
-import { schedule } from 'node-cron';
-import fetch from 'node-fetch';
+import { createLightship, Lightship } from 'lightship';
 
 moment.suppressDeprecationWarnings = true;
 
 export class App {
   public app: Application;
   public corsOptions;
+  private _lightship: Lightship;
 
   constructor(
     controllers: BaseController[],
     proxies: { from: string; to: string }[] = []
   ) {
     this.app = express();
+    this._lightship = createLightship();
 
     this._initializeMiddlewares();
     this._initializeProxies(proxies);
- 
+
     // place this after the proxies!!
     this.app.use(json());
- 
-    this._initializeControllers(controllers);
-  }
 
-  private async _startReportingService() {
-    try {
-      await fetch(`http://${process.env.SUPERVISOR}/api/v1/status`, {
-        method: 'POST',
-        body: JSON.stringify({})
-      });
-    } catch {
-      logger.warn('Scheduling service not online? retrying in 5 second');
-      setTimeout(() => this._startReportingService(), 5000);
-    }
+    this._initializeControllers(controllers);
   }
 
   private _initializeMiddlewares() {
@@ -64,8 +52,6 @@ export class App {
   }
 
   private _initializeControllers(controllers: BaseController[]) {
-    controllers.push(new HealthController());
-
     controllers.forEach(controller => {
       try {
         logger.debug(
@@ -96,14 +82,15 @@ export class App {
     });
   }
 
-  public listen(register = false) {
-    const httpServer = this.app.listen(process.env.PORT, () => {
-      logger.info(`🚀 App listening on the port ${process.env.PORT}`);
-
-      if (register) {
-        this._startReportingService();
-      }
-    });
+  public listen() {
+    const httpServer = this.app
+      .listen(process.env.PORT, () => {
+        logger.info(`🚀 App listening on the port ${process.env.PORT}`);
+        this._lightship.signalReady();
+      })
+      .on('error', () => {
+        this._lightship.shutdown();
+      });
 
     [
       `exit`,
@@ -118,6 +105,10 @@ export class App {
         httpServer.close();
         process.exit();
       });
+    });
+
+    this._lightship.registerShutdownHandler(() => {
+      httpServer.close();
     });
   }
 }

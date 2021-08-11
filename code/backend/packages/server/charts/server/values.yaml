@@ -35,7 +35,6 @@ database:
 services:
   simulate: simulate-simulate.badvla
   import: import-import.badvla
-  supervisor: supervisor-supervisor.badvla
 
 auth0:
   issuer: https://badvlasim.eu.auth0.com
