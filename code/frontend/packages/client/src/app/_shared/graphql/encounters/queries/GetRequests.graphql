@@ -3,6 +3,7 @@ query GetEncounterChangesQuery($id: ID!) {
     id
     accepted
     dates {
+      id
       date
       availabilityHome
       availabilityAway

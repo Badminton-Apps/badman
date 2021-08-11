@@ -124,6 +124,10 @@ export class ShowRequestsComponent implements OnInit {
     this._addDateControl(newDate);
   }
 
+  removeDate(index: number) {
+    this.dateControls.removeAt(index);
+  }
+
   async save() {
     if (this.running) {
       return;
@@ -146,10 +150,23 @@ export class ShowRequestsComponent implements OnInit {
     change.dates = dates.filter(({ date }, index) => !ids.includes(date.getTime(), index + 1));
     change.accepted = change.dates.some((r) => r.selected == true);
 
-    if (!change.dates || change.dates.length == 0) {
-      this._snackBar.open('Please select at least one date.', 'OK', { duration: 4000 });
-      this.running = false;
-      return;
+    console.log(
+      change.awayComment == null || (change.awayComment?.message?.length ?? 0) < 15,
+      change.dates == null || (change.dates?.length ?? 0) <= 1
+    );
+
+    if (change.dates == null || (change.dates?.length ?? 0) == 0) {
+      if (this.home) {
+        // hometeam always needs to add at least one date
+        this._snackBar.open('Please select at least one date.', 'OK', { duration: 4000 });
+        this.running = false;
+        return;
+      } else if (change.awayComment == null || (change.awayComment?.message?.length ?? 0) < 15) {
+        // away team can have no dates but with a comment of at least to 15 characters
+        this._snackBar.open('Please enter a comment (min 15 char) or add a date.', 'OK', { duration: 4000 });
+        this.running = false;
+        return;
+      }
     }
 
     const success = async () => {
@@ -201,6 +218,7 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   private _addDateControl(dateChange: EncounterChangeDate) {
+    console.log(dateChange);
     const id = new FormControl(dateChange?.id);
     const availabilityHome = new FormControl(dateChange.availabilityHome);
     const availabilityAway = new FormControl(dateChange.availabilityAway);
