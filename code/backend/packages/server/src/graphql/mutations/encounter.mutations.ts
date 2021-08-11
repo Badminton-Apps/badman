@@ -228,6 +228,7 @@ const changeOrUpdate = async (
   }
 };
 
+const visualFormat = 'YYYY-MM-DDTHH:mm:ss';
 export const acceptDate = async (encounter: EncounterCompetition, transaction: Transaction) => {
   // Check if visual reality has same date stored
   const draw = await encounter.getDraw({ transaction });
@@ -239,76 +240,53 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
     return;
   }
 
-  const result = await got.get(
-    `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
-    {
-      username: `${process.env.VR_API_USER}`,
-      password: `${process.env.VR_API_PASS}`
-    }
-  );
-
-  const body = parse(result.body).Result as Result;
-  const visualDate = moment(body?.TournamentMatch?.MatchDate, 'YYYY-MM-DDTHH:mm:ss', true);
-  if (true) {
-    if (process.env.production === 'true') {
-      const resultPut = await got.put(
-        `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
-        {
-          username: `${process.env.VR_API_USER}`,
-          password: `${process.env.VR_API_PASS}`,
-          headers: {
-            'Content-Type': 'application/xml'
-          },
-          body: `
-            <TournamentMatch>
-                <TournamentID>${event.visualCode}</TournamentID>
-                <MatchID>${encounter.visualCode}</MatchID>
-                <MatchDate>${encounter.date.toISOString()}</MatchDate>
-            </TournamentMatch>
-          `
-        }
-      );
-      const bodyPut = parse(resultPut.body).Result as Result;
-      if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
-        logger.error(
-          `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
-          `
-            <TournamentMatch>
-                <TournamentID>${event.visualCode}</TournamentID>
-                <MatchID>${encounter.visualCode}</MatchID>
-                <MatchDate>${encounter.date.toISOString()}</MatchDate>
-            </TournamentMatch>
-          `
-        );
-        throw new ApiError({
-          code: 500,
-          message: `Error updating visual reality\n${bodyPut.Error.Message}`
-        });
-      }
-    } else {
-      logger.debug(
-        'Putting the following',
-        {
-          tournamentMatch: {
-            tournamentID: event.visualCode,
-            matchID: encounter.visualCode,
-            matchDate: encounter.date.toISOString()
-          }
+  if (process.env.production === 'true') {
+    const resultPut = await got.put(
+      `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+      {
+        username: `${process.env.VR_API_USER}`,
+        password: `${process.env.VR_API_PASS}`,
+        headers: {
+          'Content-Type': 'application/xml'
         },
-        `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`
+        body: `
+            <TournamentMatch>
+                <TournamentID>${event.visualCode}</TournamentID>
+                <MatchID>${encounter.visualCode}</MatchID>
+                <MatchDate>${moment(encounter.date).format(visualFormat)}</MatchDate>
+            </TournamentMatch>
+          `
+      }
+    );
+    const bodyPut = parse(resultPut.body).Result as Result;
+    if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
+      logger.error(
+        `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+        `
+            <TournamentMatch>
+                <TournamentID>${event.visualCode}</TournamentID>
+                <MatchID>${encounter.visualCode}</MatchID>
+                <MatchDate>${moment(encounter.date).format(visualFormat)}</MatchDate>
+            </TournamentMatch>
+          `
       );
+      throw new ApiError({
+        code: 500,
+        message: `Error updating visual reality\n${bodyPut.Error.Message}`
+      });
     }
   } else {
-    throw new ApiError({
-      code: 500,
-      message: `Visual's date isn't the same, 
-      \tVisual: ${visualDate.toString()} 
-      \tOrignal: ${encounter.originalDate.toString()} 
-      \tDate: ${encounter.date.toString()}
-      \tEvent: ${event.name}
-      \tSubEvent: ${subEvent.name}
-      `
-    });
+    logger.debug(
+      'Putting the following',
+      {
+        tournamentMatch: {
+          tournamentID: event.visualCode,
+          matchID: encounter.visualCode,
+          matchDate: moment(encounter.date).format(visualFormat)
+        }
+      },
+      `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`
+    );
   }
 
   encounter.synced = new Date();
