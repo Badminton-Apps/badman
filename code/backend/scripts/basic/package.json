@@ -11,14 +11,14 @@
     "comments": "node -r ts-node/register ./src/comments.ts",
     "team-export": "node -r ts-node/register ./src/team-export.ts",
     "sync": "node --inspect=6862 -r ts-node/register ./src/calender-dates.ts",
-    "captains": "node --inspect=6862 -r ts-node/register ./src/add-team-captains.ts"
+    "captains": "node --inspect=6862 -r ts-node/register ./src/add-team-captains.ts",
+    "sync-accepted": "node --inspect=6862 -r ts-node/register ./src/push-existing-dates.ts"
   },
   "dependencies": {
     "@badvlasim/shared": "^3.27.9",
     "@fast-csv/parse": "^4.3.1",
     "@types/concat-stream": "^1.6.0",
     "@types/nodemailer": "^6.4.1",
-    "@types/got": "^9.6.12",
     "@types/nodemailer-direct-transport": "^1.0.31",
     "@types/nodemailer-smtp-transport": "^2.7.4",
     "concat-stream": "^2.0.0",
@@ -30,15 +30,11 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "promise-callbacks": "^3.8.2",
     "node-adodb": "^5.0.3",
-    "got": "^11.8.2",
     "csv-write-stream": "^2.0.0"
   },
   "peerDependencies": {
     "dotenv": "^8.2.0",
     "graphql-sequelize": "^9.4.0",
     "moment": "^2.24.0"
-  },
-  "devDependencies": {
-    "@types/got": "^9.6.12"
   }
 }
