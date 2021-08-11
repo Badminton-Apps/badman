@@ -1,3 +1,20 @@
+# [3.35.0](https://github.com/Badminton-Apps/core/compare/v3.34.1...v3.35.0) (2021-08-11)
+
+
+### Bug Fixes
+
+* allow encounters second sem to be auto selected ([09d5c7c](https://github.com/Badminton-Apps/core/commit/09d5c7cb3726e3cdffddfeea7c376e37b06e52a5))
+* re-enabling button when no dates error ([8aaef91](https://github.com/Badminton-Apps/core/commit/8aaef9164c0e473dd2450449393707bc5cb5e0d2))
+
+
+### Features
+
+* allow a admin to have all clubs ([7d807b2](https://github.com/Badminton-Apps/core/commit/7d807b26f0fd82fc8d12438e24e7fbf6fca45bd8))
+* liveless probes ([31a621c](https://github.com/Badminton-Apps/core/commit/31a621c9bfcfefbb4af2837371a4ca5d925e34e9))
+* remove not submitted dates ([1fa177b](https://github.com/Badminton-Apps/core/commit/1fa177b2eded5d4438364c775b67e04ddcc8ad4c))
+
+
+
 ## [3.34.1](https://github.com/Badminton-Apps/core/compare/v3.34.0...v3.34.1) (2021-08-11)
 
 
