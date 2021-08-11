@@ -1,3 +1,12 @@
+# [3.34.0](https://github.com/Badminton-Apps/core/compare/v3.33.1...v3.34.0) (2021-08-11)
+
+
+### Features
+
+* redirect to original url after login ([b91e3f2](https://github.com/Badminton-Apps/core/commit/b91e3f28c2bd17bfb2f1e53786d5cea8c20d24c4))
+
+
+
 ## [3.33.1](https://github.com/Badminton-Apps/core/compare/v3.33.0...v3.33.1) (2021-08-11)
 
 
