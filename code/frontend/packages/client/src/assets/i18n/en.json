@@ -228,5 +228,8 @@
     },
     "select-club": "Pick a club",
     "select-encounter": "Pick an encounter"
+  },
+  "permission": {
+      "no-perm": "You don't have the permissions for this."
   }
 }
