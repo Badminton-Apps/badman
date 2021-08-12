@@ -298,7 +298,7 @@ async function updateCpFile(
         });
         if (comments && comments.length > 0 && comments[0].message.length > 0) {
           logger.debug(`[${name}] Logging adding comments`, comments);
-          memo += `\n\nClub commentaar:\n${comments
+          memo += `\n\nClub opmerking:\n${comments
             .map(r => sql_escaped(r.message))
             .join('\n')}`;
         }

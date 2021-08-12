@@ -138,7 +138,7 @@
             "requested-failed": "Verzoek mislukt, contacteer BVL indien het probleem aanhoud",
             "errors": {
                 "select-one-date": "Gelieve minsten 1 dag te selecteren",
-                "select-one-date-or-comment": "Gelieve commentaar te geven (minstens 15 karakters) of een datum te kiezen."
+                "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
             }
         }
     },

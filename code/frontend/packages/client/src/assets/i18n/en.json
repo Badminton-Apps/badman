@@ -138,7 +138,7 @@
       "requested-failed": "Request failed, contact BVL when the issue remains",
       "errors": {
         "select-one-date": "Please select a minimum of 1 date",
-        "select-one-date-or-comment": "Please give a comment (minimum 15 characters) or choose at least date."
+        "select-one-date-or-comment": "Please comment (at least 15 characters) or pick a date."
       }
     }
   },
