@@ -11,7 +11,9 @@ import { environment } from '../../../../environments/environment';
 })
 export class UserService {
   private urlBase = `${environment.api}/${environment.apiVersion}/user`;
+  
   profile$: Observable<{ player: Player; request: any }>;
+  profile: Player;
 
   constructor(private httpClient: HttpClient, private auth: AuthService) {
     const whenAuthenticated = this.httpClient
@@ -19,6 +21,7 @@ export class UserService {
       .pipe(
         startWith({ player: null, request: null }),
         filter((user) => user !== null),
+        tap(({ player }) => this.profile = player),
         shareReplay(1)
       );
     this.profile$ = this.auth.userProfile$.pipe(
