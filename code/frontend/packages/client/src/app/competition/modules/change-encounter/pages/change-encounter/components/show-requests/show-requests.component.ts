@@ -150,11 +150,6 @@ export class ShowRequestsComponent implements OnInit {
     change.dates = dates.filter(({ date }, index) => !ids.includes(date.getTime(), index + 1));
     change.accepted = change.dates.some((r) => r.selected == true);
 
-    console.log(
-      change.awayComment == null || (change.awayComment?.message?.length ?? 0) < 15,
-      change.dates == null || (change.dates?.length ?? 0) <= 1
-    );
-
     if (change.dates == null || (change.dates?.length ?? 0) == 0) {
       if (this.home) {
         // hometeam always needs to add at least one date
@@ -224,7 +219,6 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   private _addDateControl(dateChange: EncounterChangeDate) {
-    console.log(dateChange);
     const id = new FormControl(dateChange?.id);
     const availabilityHome = new FormControl(dateChange.availabilityHome);
     const availabilityAway = new FormControl(dateChange.availabilityAway);
