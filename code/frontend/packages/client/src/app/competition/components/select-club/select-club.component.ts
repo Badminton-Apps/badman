@@ -46,7 +46,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         switchMap(([single, all]) => {
-          console.log(this.singleClubPermission, this.allClubPermission, single, all);
           if (all) {
             return this.clubService.getClubs({ first: 999 });
           } else if (single) {
