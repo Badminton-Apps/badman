@@ -228,5 +228,8 @@
         },
         "select-club": "Kies een club",
         "select-encounter": "Kies een ontmoeting"
+    },
+    "permission": {
+        "no-perm": "Je hebt niet voldoende rechten hiervoor."
     }
 }
