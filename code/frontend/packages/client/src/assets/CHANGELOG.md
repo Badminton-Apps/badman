@@ -1,3 +1,17 @@
+# [3.36.0](https://github.com/Badminton-Apps/core/compare/v3.35.0...v3.36.0) (2021-08-12)
+
+
+### Bug Fixes
+
+* Must be logged-in, if not redirect to login and back ([db04cce](https://github.com/Badminton-Apps/core/commit/db04cce88fa5c5ffd5e53b7f4e25522dffce01e3))
+
+
+### Features
+
+* auto select club and team based on profile ([74dceb3](https://github.com/Badminton-Apps/core/commit/74dceb397830f540c98df7b93680ed93704e7af4))
+
+
+
 # [3.35.0](https://github.com/Badminton-Apps/core/compare/v3.34.1...v3.35.0) (2021-08-11)
 
 
