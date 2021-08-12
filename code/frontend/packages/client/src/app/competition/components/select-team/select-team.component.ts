@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from 'app/player';
 import { TeamService } from 'app/_shared';
 import { Team } from 'app/_shared/models/team.model';
 import { filter } from 'rxjs/operators';
@@ -26,7 +27,12 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   teamsF: Team[];
   teamsMX: Team[];
 
-  constructor(private teamService: TeamService, private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private teamService: TeamService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private user: UserService
+  ) {}
 
   async ngOnInit() {
     this.formControl.disable();
@@ -58,19 +64,24 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
           this.teamsMX = teams.filter((r) => r.type === 'MX').sort((a, b) => a.teamNumber - b.teamNumber);
 
           const params = this.activatedRoute.snapshot.queryParams;
+          var foundTeam = null;
 
           if (params && params.team && teams.length > 0) {
-            const foundTeam = teams.find((r) => r.id == params.team);
+            foundTeam = teams.find((r) => r.id == params.team);
+          }
 
-            if (foundTeam) {
-              this.formControl.setValue(foundTeam);
-            } else {
-              this.router.navigate([], {
-                relativeTo: this.activatedRoute,
-                queryParams: { team: undefined, encounter: undefined },
-                queryParamsHandling: 'merge',
-              });
-            }
+          if (foundTeam == null) {
+            foundTeam = teams.find((r) => r.captainId == this.user.profile.id);
+          }
+
+          if (foundTeam) {
+            this.formControl.setValue(foundTeam);
+          } else {
+            this.router.navigate([], {
+              relativeTo: this.activatedRoute,
+              queryParams: { team: undefined, encounter: undefined },
+              queryParamsHandling: 'merge',
+            });
           }
         } else {
           this.formControl.disable();
