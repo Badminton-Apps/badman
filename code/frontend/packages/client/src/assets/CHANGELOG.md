@@ -1,3 +1,12 @@
+## [3.36.1](https://github.com/Badminton-Apps/core/compare/v3.36.0...v3.36.1) (2021-08-12)
+
+
+### Bug Fixes
+
+* removing some console.logs ([da19670](https://github.com/Badminton-Apps/core/commit/da196707c7af403b3313a567d1e59c6e4313e09e))
+
+
+
 # [3.36.0](https://github.com/Badminton-Apps/core/compare/v3.35.0...v3.36.0) (2021-08-12)
 
 
