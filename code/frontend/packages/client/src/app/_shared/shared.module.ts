@@ -1,22 +1,23 @@
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -27,14 +28,13 @@ import {
   UserInfoComponent,
 } from './components';
 import { BetaComponent } from './components/beta/beta.component';
+import { ClaimComponent } from './components/claim/claim.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { NewPlayerComponent } from './components/ranking-shell/components/new-player/new-player.component';
+import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
-import { ClaimComponent } from './components/claim/claim.component';
-import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
-import { NewPlayerComponent } from './components/ranking-shell/components/new-player/new-player.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MomentModule } from 'ngx-moment';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -48,13 +48,12 @@ const materialModules = [
   MatSidenavModule,
   MatToolbarModule,
   MatSelectModule,
-  MatExpansionModule, 
+  MatExpansionModule,
   MatDialogModule,
   MatSlideToggleModule,
-  MatMomentDateModule,
   ReactiveFormsModule,
   FormsModule,
-  MatOptionModule
+  MatOptionModule,
 ];
 
 const exportedComponents = [
@@ -84,14 +83,9 @@ const exportedComponents = [
     ClaimComponent,
     HasClaimComponent,
     NewPlayerComponent,
-    UserInfoComponent
+    UserInfoComponent,
   ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule.forChild(),
-    ...materialModules,
-  ],
+  imports: [CommonModule, RouterModule, TranslateModule.forChild(), ...materialModules],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
