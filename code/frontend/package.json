@@ -1,5 +1,5 @@
 {
-  "name": "ranking-simulation-frontend",
+  "name": "badman-frontend",
   "private": true,
   "workspaces": [
     "packages/*"

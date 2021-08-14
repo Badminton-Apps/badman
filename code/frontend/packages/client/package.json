@@ -1,6 +1,6 @@
 {
   "name": "@badvlasim/client",
-  "description": "Ranking simulation Badminton Vlaanderen",
+  "description": "Badman client",
   "version": "3.36.3",
   "scripts": {
     "ng": "ng",
