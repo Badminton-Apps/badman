@@ -16,9 +16,9 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       await injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
 
       translate.addLangs([...language_map.keys()]);
-      translate.setDefaultLang('en');
+      translate.setDefaultLang('nl_BE');
       const savedLang = localStorage.getItem('translation.language');
-      const values = language_map.get(savedLang || 'en');
+      const values = language_map.get(savedLang || 'nl_BE');
 
       await translate.use(values.translate).toPromise();
       adapter.setLocale(values.adapter);
