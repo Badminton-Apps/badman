@@ -27,7 +27,7 @@
     >
       <mat-nav-list>
         <div class="pages">
-          <a mat-list-item href="./" *ngIf="device.mobileQuery.matches">Ranking sim</a>
+          <a mat-list-item href="./" *ngIf="device.mobileQuery.matches">Badmann</a>
           <ng-container *ngIf="this.profile$ | async as profile">
             <a mat-list-item [routerLink]="['/player', profile.id]" routerLinkActive="active"> My games </a>
 
