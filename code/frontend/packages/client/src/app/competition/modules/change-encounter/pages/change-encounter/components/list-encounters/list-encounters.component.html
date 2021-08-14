@@ -15,7 +15,7 @@
           (option.showingForHomeTeam ? 'competition.change-encounter.home' : 'competition.change-encounter.away')
             | translate
         }}
-        - {{ option.date | date: 'short' }}
+        - {{ option.date | amDateFormat: 'llll' }}
       </span>
     </p>
   </mat-list-item>
