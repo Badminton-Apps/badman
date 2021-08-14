@@ -1,3 +1,13 @@
+## [3.36.4](https://github.com/Badminton-Apps/core/compare/v3.36.3...v3.36.4) (2021-08-14)
+
+
+### Bug Fixes
+
+* min/max dates for change encounter ([fccfdab](https://github.com/Badminton-Apps/core/commit/fccfdab7307fdb9037960ce96d5540c4639f23bc))
+* some naming updates ([bcced87](https://github.com/Badminton-Apps/core/commit/bcced87077b3655ac02bf0d57295b46228a7441e))
+
+
+
 ## [3.36.3](https://github.com/Badminton-Apps/core/compare/v3.36.2...v3.36.3) (2021-08-14)
 
 
