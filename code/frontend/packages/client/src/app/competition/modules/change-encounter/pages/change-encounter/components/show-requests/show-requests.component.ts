@@ -135,6 +135,11 @@ export class ShowRequestsComponent implements OnInit {
     if (this.running) {
       return;
     }
+
+    if (!this.formGroupRequest.valid) {
+      return;
+    }
+
     this.running = true;
     const change = new EncounterChange();
     change.encounter = this.encounter;
