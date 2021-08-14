@@ -2240,13 +2240,6 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@matheo/datepicker@^11.2.15":
-  version "11.2.15"
-  resolved "https://registry.yarnpkg.com/@matheo/datepicker/-/datepicker-11.2.15.tgz#25929fbc980d28abaf6f08a0827128e280b2aa50"
-  integrity sha512-TtTw77bsCNjeWYYZX0QWpRZIIm1RTMpxNl/SWlESO7RhCp9nCwtQlsZBjxm+1Lp3aX3jzDvyU9fI5BcBjxaRQw==
-  dependencies:
-    tslib "^2.0.0"
-
 "@ngtools/webpack@11.2.4":
   version "11.2.4"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-11.2.4.tgz#3f90ebced62691aa889b442042191c20a8e7869f"
@@ -8709,6 +8702,13 @@ ngx-markdown@~11.1.2:
     katex "^0.13.0"
     marked "^2.0.0"
     prismjs "^1.23.0"
+    tslib "^2.0.0"
+
+ngx-moment@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-moment/-/ngx-moment-5.0.0.tgz#6500432a2fcda75fb236a632850e599db23c8177"
+  integrity sha512-LPpGPo4ccdh8RWnDbJdLTLGGGcwbRYMbn/j4PXM24754J7MZ0tgnBM+ncaVbwefUSSEMme8yMkNIxFiVxgOOvQ==
+  dependencies:
     tslib "^2.0.0"
 
 nice-try@^1.0.4:
