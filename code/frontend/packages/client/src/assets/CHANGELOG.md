@@ -1,3 +1,12 @@
+## [3.36.2](https://github.com/Badminton-Apps/core/compare/v3.36.1...v3.36.2) (2021-08-14)
+
+
+### Bug Fixes
+
+* Date format now in sync with locale ([69614b1](https://github.com/Badminton-Apps/core/commit/69614b14a3176a740af340c6bd46532f16881653)), closes [#139](https://github.com/Badminton-Apps/core/issues/139)
+
+
+
 ## [3.36.1](https://github.com/Badminton-Apps/core/compare/v3.36.0...v3.36.1) (2021-08-12)
 
 
