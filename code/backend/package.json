@@ -1,5 +1,5 @@
 {
-  "name": "ranking-simulation-backend",
+  "name": "badman-backend",
   "private": true,
   "workspaces": [
     "packages/*"
