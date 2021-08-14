@@ -18,15 +18,11 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       translate.addLangs([...language_map.keys()]);
       translate.setDefaultLang('en');
       const savedLang = localStorage.getItem('translation.language');
-
-      var values = language_map.get(savedLang || 'en');
-
+      const values = language_map.get(savedLang || 'en');
 
       await translate.use(values.translate).toPromise();
       adapter.setLocale(values.adapter);
       moment.locale(values.moment);
-
-      console.log(values, adapter);
 
     } catch (err) {
       console.error('Error', err);
