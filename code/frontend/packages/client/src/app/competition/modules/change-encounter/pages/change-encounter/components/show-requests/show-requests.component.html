@@ -34,12 +34,20 @@
             fxLayoutGap="8px"
             [formGroupName]="i"
           >
-            <div fxFlex="40">
+            <!-- <div fxFlex="40">
               <mat-form-field>
                 <mat-label>{{ 'competition.change-encounter.choose-date' | translate }}</mat-label>
                 <input matInput [matDatepicker]="picker" formControlName="date" />
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker type="datetime" #picker></mat-datepicker>
+              </mat-form-field>
+            </div> --> 
+
+            <div fxFlex="40">
+              <mat-form-field>
+                <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date" formControlName="date" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <ngx-mat-datetime-picker #picker> </ngx-mat-datetime-picker>
               </mat-form-field>
             </div>
 

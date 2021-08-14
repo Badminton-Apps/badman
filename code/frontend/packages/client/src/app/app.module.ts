@@ -1,16 +1,20 @@
 import { AgmCoreModule } from '@agm/core';
+import { NgxMatDateAdapter, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
+import {
+  NgxMatMomentAdapter,
+  NgxMatMomentModule,
+  NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  NGX_MAT_MOMENT_FORMATS,
+} from '@angular-material-components/moment-adapter';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
-import { FlexLayoutModule, FlexModule } from '@angular/flex-layout';
+import { MatMomentDateModule, MomentDateModule } from '@angular/material-moment-adapter';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import {
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MarkdownModule } from 'ngx-markdown';
 import { environment } from '../environments/environment';
@@ -19,14 +23,10 @@ import { AppComponent } from './app.component';
 import { GraphQLModule } from './graphql.module';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { SharedModule } from './_shared/shared.module';
+import { MomentModule } from 'ngx-moment';
 
-const baseModules = [
-  BrowserModule,
-  AppRoutingModule,
-  BrowserAnimationsModule,
-  HttpClientModule,
-];
-const materialModules = [MatSnackBarModule];
+const baseModules = [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule];
+const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule, MatSnackBarModule];
 const translateModules = [
   TranslateModule.forRoot({
     defaultLanguage: 'en',
@@ -37,6 +37,7 @@ const translateModules = [
     },
   }),
 ];
+
 const appModules = [SharedModule, GraphQLModule];
 
 @NgModule({
@@ -53,14 +54,20 @@ const appModules = [SharedModule, GraphQLModule];
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
       libraries: ['places'],
-    })
+    }),
   ],
   providers: [
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
-      deps: [TranslateService, Injector],
+      deps: [TranslateService, Injector, NgxMatDateAdapter],
       multi: true,
+    },
+    { provide: NGX_MAT_DATE_FORMATS, useValue: NGX_MAT_MOMENT_FORMATS },
+    {
+      provide: NgxMatDateAdapter,
+      useClass: NgxMatMomentAdapter,
+      deps: [MAT_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
   ],
   bootstrap: [AppComponent],
