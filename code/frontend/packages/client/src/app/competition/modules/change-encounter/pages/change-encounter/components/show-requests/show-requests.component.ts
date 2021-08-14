@@ -38,6 +38,9 @@ export class ShowRequestsComponent implements OnInit {
   home: boolean;
   running: boolean = false;
 
+  minDate: Date = new Date('2021-09-01');
+  maxDate: Date = new Date('2022-04-30');
+
   requests$: Observable<EncounterChange>;
   @ViewChild('confirm', { static: true }) confirmDialog: TemplateRef<any>;
 

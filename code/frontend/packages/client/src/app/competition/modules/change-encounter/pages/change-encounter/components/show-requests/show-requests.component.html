@@ -36,7 +36,14 @@
           >
             <div fxFlex="40">
               <mat-form-field>
-                <input matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date" formControlName="date" />
+                <input
+                  matInput
+                  [ngxMatDatetimePicker]="picker"
+                  placeholder="Choose a date"
+                  formControlName="date"
+                  [min]="this.minDate"
+                  [max]="this.maxDate"
+                />
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <ngx-mat-datetime-picker #picker> </ngx-mat-datetime-picker>
               </mat-form-field>
