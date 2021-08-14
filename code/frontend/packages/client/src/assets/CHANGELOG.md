@@ -1,3 +1,13 @@
+## [3.36.5](https://github.com/Badminton-Apps/core/compare/v3.36.4...v3.36.5) (2021-08-14)
+
+
+### Bug Fixes
+
+* default lang is actually dutch ([2421d4f](https://github.com/Badminton-Apps/core/commit/2421d4f9962315851029ed6cee50bfc136a6fba2))
+* don't submit if not valid ([d8e7c10](https://github.com/Badminton-Apps/core/commit/d8e7c1009912ff85d6201ea5a3a5e2a2d4a3d2d6))
+
+
+
 ## [3.36.4](https://github.com/Badminton-Apps/core/compare/v3.36.3...v3.36.4) (2021-08-14)
 
 
