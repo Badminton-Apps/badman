@@ -1,3 +1,12 @@
+## [3.36.3](https://github.com/Badminton-Apps/core/compare/v3.36.2...v3.36.3) (2021-08-14)
+
+
+### Bug Fixes
+
+* must be on home and away ([d0d9ce2](https://github.com/Badminton-Apps/core/commit/d0d9ce2256ceabdce730ec8a9b802bc414122baa))
+
+
+
 ## [3.36.2](https://github.com/Badminton-Apps/core/compare/v3.36.1...v3.36.2) (2021-08-14)
 
 
