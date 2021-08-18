@@ -1,3 +1,12 @@
+# [3.37.0](https://github.com/Badminton-Apps/core/compare/v3.36.5...v3.37.0) (2021-08-18)
+
+
+### Features
+
+* open date picker on focus input ([62ef948](https://github.com/Badminton-Apps/core/commit/62ef9483e26902db306972756135a59793acce6b))
+
+
+
 ## [3.36.5](https://github.com/Badminton-Apps/core/compare/v3.36.4...v3.36.5) (2021-08-14)
 
 
