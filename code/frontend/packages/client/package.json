@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/client",
   "description": "Badman client",
-  "version": "3.36.5",
+  "version": "3.37.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
