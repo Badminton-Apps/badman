@@ -16,7 +16,7 @@ export const addCommentMutation = {
     }
   },
   resolve: async (findOptions, { comment, eventId }, context) => {
-    // if (context?.req?.player == null) {
+    // if (context?.req?.player === null) {
     //   throw new ApiError({
     //     code: 401,
     //     message: 'You are not logged in?'

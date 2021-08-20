@@ -33,7 +33,7 @@ export class EnrollmentController extends BaseController {
   private _finsihedEnrollemnt = async (request: AuthenticatedRequest, response: Response) => {
     try {
       if (
-        request?.user == null ||
+        request?.user === null ||
         !request?.user.hasAnyPermission([`${request.params.clubId}_enlist:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {

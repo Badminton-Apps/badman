@@ -64,9 +64,9 @@ import { Op } from 'sequelize';
     logger.debug(`Found ${dbClubs.length} clubs`);
 
     const ligaEvent = dbEvents.find(
-      r => r.name == 'Vlaamse interclubcompetitie 2021-2022'
+      r => r.name === 'Vlaamse interclubcompetitie 2021-2022'
     );
-    const natEvent = dbEvents.find(r => r.name == '	Victor League 2021-2022');
+    const natEvent = dbEvents.find(r => r.name === '	Victor League 2021-2022');
 
     for (const club of dbClubs) {
       const commentsClub = await club.getComments();

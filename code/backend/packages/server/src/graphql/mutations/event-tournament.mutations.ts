@@ -18,7 +18,7 @@ const addEventTournamentMutation = {
     }
   },
   resolve: async (findOptions, { eventTournament }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:tournament'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:tournament'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['add:tournament', 'add-any:tournament']
@@ -86,7 +86,7 @@ const updateEventTournamentMutation = {
   },
   resolve: async (findOptions, { id, eventTournament }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission(['edit:eventTournament', 'edit-any:tournament'])
     ) {
       logger.warn("User tried something it should't have done", {

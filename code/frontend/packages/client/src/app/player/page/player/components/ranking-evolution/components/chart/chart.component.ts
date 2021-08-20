@@ -88,9 +88,9 @@ export class ChartComponent implements OnInit {
   }
 
   calcaulteforecast() {
-    var values = this.rankingPlaces.map((item, i) => [i, item.level]) as DataPoint[];
+    let values = this.rankingPlaces.map((item, i) => [i, item.level]) as DataPoint[];
     // console.log('from', values);
-    var result = logarithmic(values);
+    let result = logarithmic(values);
     // console.log('to', result);
   }
 }

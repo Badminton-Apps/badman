@@ -1,4 +1,4 @@
-import { Club, DataBaseHandler, EncounterChange, EncounterCompetition, SubEventType, Team } from '../../../_shared';
+import { Club, DataBaseHandler, EncounterChange, EncounterCompetition, SubEventType, Team } from '@badvlasim/shared';
 
 describe('calendar changes', () => {
   let databaseService: DataBaseHandler;
