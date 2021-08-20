@@ -108,8 +108,8 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   addDate() {
-    var lastDate = this.encounter.date;
-    var dates = this.dateControls.value;
+    let lastDate = this.encounter.date;
+    let dates = this.dateControls.value;
     if (dates && dates.length > 0) {
       lastDate = dates.sort((a, b) => b.date.getTime() - a.date.getTime())[0].date;
     }

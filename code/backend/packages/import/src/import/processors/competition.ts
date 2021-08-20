@@ -6,15 +6,15 @@ import {
   ImporterFile,
   logger,
   RankingSystemGroup,
-  SubEventCompetition
+  SubEventCompetition,
+  ProcessStep
 } from '@badvlasim/shared';
 import { Transaction, Op } from 'sequelize';
-import { ImportStep } from '../import-step';
-import { ProcessImport } from '../processor';
+import { ProcessImport } from '../importProcessor';
 
 export abstract class CompetitionProcessor extends ProcessImport {
-  protected addEvent(): ImportStep<EventCompetition> {
-    return new ImportStep(
+  protected addEvent(): ProcessStep<EventCompetition> {
+    return new ProcessStep(
       'event',
       async (args: {
         importFile: ImporterFile;
@@ -22,7 +22,7 @@ export abstract class CompetitionProcessor extends ProcessImport {
         event?: EventCompetition;
       }) => {
         if (!args.event) {
-          args.event = this.importSteps.get('find_event')?.getData();
+          args.event = this.importProcess.getData('find_event')
         }
 
         if (args.event) {
@@ -45,8 +45,8 @@ export abstract class CompetitionProcessor extends ProcessImport {
     );
   }
 
-  protected findEvent(): ImportStep<EventCompetition> {
-    return new ImportStep(
+  protected findEvent(): ProcessStep<EventCompetition> {
+    return new ProcessStep(
       'find_event',
       async (args: {
         event: EventCompetition;
@@ -73,12 +73,12 @@ export abstract class CompetitionProcessor extends ProcessImport {
     );
   }
 
-  protected cleanupEvent(): ImportStep<any[]> {
-    return new ImportStep(
+  protected cleanupEvent(): ProcessStep<any[]> {
+    return new ProcessStep(
       'cleanup_event',
       async (args: { event: EventCompetition; transaction: Transaction }) => {
         if (!args.event) {
-          const event: EventCompetition = this.importSteps.get('find_event')?.getData();
+          const event: EventCompetition = this.importProcess.getData('find_event');;
           if (!event) {
             return;
           }

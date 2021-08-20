@@ -246,7 +246,7 @@ async function updateCsvFile(
       TypeName: 'nope'
     };
 
-    if (team.type == SubEventType.MX) {
+    if (team.type === SubEventType.MX) {
       outputRow.player1_level = Math.min(
         player1_ranking.PlayerLevelSingle,
         player1_ranking.PlayerLevelDouble,
@@ -322,7 +322,7 @@ async function updateCsvFile(
       outputRow.is_correct = false;
       outputRow.index_correct = false;
     }
-    if (team.captain == null) {
+    if (team.captain === null) {
       outputRow.is_correct = false;
       outputRow.captain_correct = false;
     }

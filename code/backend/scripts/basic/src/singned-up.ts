@@ -71,7 +71,7 @@ const YEAR = 2021;
       for (const user of response.body?.users) {
         users.set(user.user_id, user.email);
 
-        if (user.email_verified == false) {
+        if (user.email_verified === false) {
           unverified.push(user);
         }
       }
@@ -108,17 +108,17 @@ const YEAR = 2021;
     });
 
     for (const club of dbClubs) {
-      if (club.roles.length == 0) {
+      if (club.roles.length === 0) {
         logger.warn('No roles?');
         continue;
       }
 
       let adminRole = club.roles[0];
       if (club.roles.length > 1) {
-        adminRole = club.roles.find(r => r.name == 'Admin') ?? adminRole;
+        adminRole = club.roles.find(r => r.name === 'Admin') ?? adminRole;
       }
 
-      if (adminRole == null) {
+      if (adminRole === null) {
         logger.warn('Admin roles not found');
         continue;
       }
@@ -127,7 +127,7 @@ const YEAR = 2021;
         .map(r => users.get(r.sub))
         .filter(r => !!r);
 
-      if (mails.length == 0) {
+      if (mails.length === 0) {
         logger.warn(
           `Cant send mail to ${club.name}`,
           adminRole.players.map(r => r.toJSON())

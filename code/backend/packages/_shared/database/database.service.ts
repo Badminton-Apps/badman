@@ -323,18 +323,18 @@ export class DataBaseHandler {
 
     try {
       const destination = await Player.findByPk(destinationPlayerId, {
-        transaction: transaction
+        transaction
       });
       const source = await Player.findByPk(sourcePlayerId, {
-        transaction: transaction
+        transaction
       });
 
-      if (destination == null) {
+      if (destination === null) {
         logger.warn('Player 1 does not exist');
         return;
       }
 
-      if (source == null) {
+      if (source === null) {
         logger.warn('Player 2 does not exist');
         return;
       }

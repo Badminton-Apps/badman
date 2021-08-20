@@ -27,11 +27,7 @@
     "http-proxy-middleware": "^1.0.5",
     "rxjs": "^6.6.3",
     "sequelize-auto-migrations": "^1.0.3",
-    "sequelize-cli": "^6.2.0",
-    "node-cron": "^3.0.0"
-  },
-  "devDependencies": {
-    "@types/node-cron": "^2.0.4"
+    "sequelize-cli": "^6.2.0"
   },
   "peerDependencies": {
     "moment": "^2.24.0"

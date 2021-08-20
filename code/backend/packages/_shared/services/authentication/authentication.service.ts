@@ -60,7 +60,7 @@ export class AuthenticationSercice {
           AuthenticationSercice.permissionCache.set(player.id, permissions);
         }
       }
-    }
+    } 
 
     // extend info
     request.user = {
@@ -69,7 +69,7 @@ export class AuthenticationSercice {
       player,
       permissions,
       hasAnyPermission: (requiredPermissions: string[]) => {
-        if (request?.user?.permissions == null) {
+        if (request?.user?.permissions === null) {
           return false;
         }
 
@@ -78,7 +78,7 @@ export class AuthenticationSercice {
         );
       },
       hasAllPermission: (requiredPermissions: string[]) => {
-        if (request?.user?.permissions == null) {
+        if (request?.user?.permissions === null) {
           return false;
         }
 

@@ -1,0 +1,18 @@
+replicaCount: 1
+image:
+  useImagePullSecrets: true
+  pullPolicy: Always
+  repository: ghcr.io/badminton-apps/core/job
+
+service:
+  internalPort: 4000
+  externalPort: 80
+
+database:
+  DB_IP: server-postgresql.badvla
+  DB_DATABASE: ranking
+  DB_USER: postgres
+  DB_DIALECT: postgres
+
+auth0:
+  issuer: https://badvlasim.eu.auth0.com
