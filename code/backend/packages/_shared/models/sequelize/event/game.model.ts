@@ -81,6 +81,12 @@ export class Game extends Model {
   @Column
   winner?: number;
 
+  @Column
+  order?: number;
+
+  @Column
+  round?: string;
+
   @BelongsTo(() => DrawTournament, {
     foreignKey: 'linkId',
     constraints: false
@@ -110,6 +116,9 @@ export class Game extends Model {
   @ForeignKey(() => Court)
   @Column
   courtId: string;
+
+  @Column
+  visualCode: number;
 
   @BelongsToMany(
     () => Player,
