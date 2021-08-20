@@ -330,12 +330,12 @@ export class DataBaseHandler {
       });
 
       if (destination == null) {
-        console.log('Player 1 does not exist');
+        logger.warn('Player 1 does not exist');
         return;
       }
 
       if (source == null) {
-        console.log('Player 2 does not exist');
+        logger.warn('Player 2 does not exist');
         return;
       }
 
