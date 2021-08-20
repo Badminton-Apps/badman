@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 export interface XmlResult {
   Tournament: XmlTournament | XmlTournament[];
   TournamentMatch?: XmlTournamentMatch;
