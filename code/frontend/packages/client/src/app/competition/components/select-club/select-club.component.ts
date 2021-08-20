@@ -79,7 +79,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     });
 
     const params = this.activatedRoute.snapshot.queryParams;
-    var foundClub = null;
+    let foundClub = null;
 
     if (params && params.club && this.options.length > 0) {
       foundClub = this.options.find((r) => r.id == params.club);

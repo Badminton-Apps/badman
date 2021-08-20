@@ -188,7 +188,7 @@ export class RankingCalc {
     }
 
     // ignore WO's
-    if (game.set1Team1 == null && game.set1Team2 == null) {
+    if (game.set1Team1 === null && game.set1Team2 === null) {
       return;
     }
 

@@ -1,0 +1,32 @@
+{
+  "name": "@badvlasim/job",
+  "description": "Ranking simulation job Badminton Vlaanderen",
+  "version": "3.36.4",
+  "private": true,
+  "scripts": {
+    "start": "node -r ts-node/register ./src/server.ts",
+    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "start:inspect": "node --inspect=6861 -r ts-node/register ./src/server.ts",
+    "start:watch": "nodemon",
+    "start:watch:inspect": "nodemon --exec node --inspect=6861 -r ts-node/register ./src/server.ts",
+    "test:local": "jest --colors --watchAll",
+    "test": "jest --config ./jest.config.js --runInBand",
+    "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "@badvlasim/shared": "^3.36.4",
+    "node-cron": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^2.0.4"
+  },
+  "peerDependencies": {
+    "moment": "^2.24.0"
+  }
+}

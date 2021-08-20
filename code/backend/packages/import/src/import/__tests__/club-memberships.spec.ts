@@ -2,7 +2,7 @@
 import { Club, ClubMembership, DataBaseHandler, Player } from '@badvlasim/shared';
 import moment from 'moment';
 import { Transaction } from 'sequelize';
-import { ProcessImport } from '../processor';
+import { ProcessImport } from '../importProcessor';
 import { CompetitionCpProcessor } from '../processors';
 
 describe('Club Membership', () => {

@@ -1,10 +1,8 @@
+import { NotificationService } from '@badvlasim/shared';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { NotificationService } from '../../../_shared';
 import {
-  addClubMutation,
-  addCommentMutation,
-  updateCommentMutation,
-  addEventCompetitionMutation,
+  addChangeEncounterMutation, addClubMutation,
+  addCommentMutation, addEventCompetitionMutation,
   addEventTournamentMutation,
   addLocationMutation,
   addPlayerMutation,
@@ -15,15 +13,10 @@ import {
   addRankingSystemMutation,
   addRoleMutation,
   addTeamMutation,
-  deleteImportedEventMutation,
-  removeLocationMutation,
-  removePlayerFromRoleMutation,
-  removeRoleMutation,
-  removePlayerFromTeamMutation,
-  removeTeamMutation,
+  deleteImportedEventMutation, removeClubMutation, removeLocationMutation,
+  removePlayerFromRoleMutation, removePlayerFromTeamMutation, removeRoleMutation, removeTeamMutation,
   setGroupsCompetitionMutation,
-  updateClubMutation,
-  updateEventCompetitionMutation,
+  updateClubMutation, updateCommentMutation, updateEventCompetitionMutation,
   updateEventTournamentMutation,
   updateGlobalClaimUserMutation,
   updateLocationMutation,
@@ -32,12 +25,8 @@ import {
   updateRankingSystemGroupMutation,
   updateRankingSystemMutation,
   updateRoleMutation,
-  updateSubEventTeamMutation,
-  updateTeamMutation,
-  updateTournamentEventLocationMutation,
-  updateTeamLocationMutation,
-  removeClubMutation,
-  addChangeEncounterMutation
+  updateSubEventTeamMutation, updateTeamLocationMutation, updateTeamMutation,
+  updateTournamentEventLocationMutation
 } from './mutations';
 import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import {

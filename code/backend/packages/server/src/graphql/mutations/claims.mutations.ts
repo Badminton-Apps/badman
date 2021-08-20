@@ -20,7 +20,7 @@ export const updateGlobalClaimUserMutation = {
     }
   },
   resolve: async (findOptions, { playerId, claimId, active }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:claims'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:claims'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:claims']

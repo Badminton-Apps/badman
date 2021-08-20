@@ -56,7 +56,7 @@ const provs: { file: string; event: string }[] = [
   try {
     const players = await readCsvPlayers();
     const promsisse = provs
-      // .filter(r => r.event == 'Limburgse interclubcompetitie 2021-2022')
+      // .filter(r => r.event === 'Limburgse interclubcompetitie 2021-2022')
       .map(prov => processProv(prov, players));
     await Promise.all(promsisse);
   } catch (e) {
@@ -218,7 +218,7 @@ async function updateCpFile(
       if (team.subEvents.length > 1) {
         logger.warn('More events?');
       }
-      if (team.subEvents.length == 0) {
+      if (team.subEvents.length === 0) {
         logger.warn('no events?');
       }
 
@@ -353,7 +353,7 @@ async function updateCpFile(
       const bestPlayers = [
         // 2 best male
         ...basePlayers
-          .filter(p => p.gender == 'M')
+          .filter(p => p.gender === 'M')
           .map(
             r =>
               r.lastRankingPlace?.single +
@@ -364,7 +364,7 @@ async function updateCpFile(
           .slice(0, 2),
         // 2 best female
         ...basePlayers
-          .filter(p => p.gender == 'F')
+          .filter(p => p.gender === 'F')
           .map(
             r =>
               r.lastRankingPlace?.single +
@@ -554,7 +554,7 @@ async function updateCpFile(
               `${player.fullName} mag niet in basis (double: ${double}, max: ${subEvent.maxLevel})`
             );
           }
-          if (subEvent.eventType == 'MX') {
+          if (subEvent.eventType === 'MX') {
             if (mix < subEvent.maxLevel) {
               issues.hasIssues = true;
               issues.level.push(
@@ -576,17 +576,17 @@ async function updateCpFile(
       issues.base.push(`Ploegindex te hoog voor afdeling`);
     }
 
-    if (team.captain == null) {
+    if (team.captain === null) {
       issues.hasIssues = true;
       issues.base.push(`Kapitein ontbreekt`);
     }
 
-    if (team.locations == null || team.locations?.length == 0) {
+    if (team.locations === null || team.locations?.length === 0) {
       issues.hasIssues = true;
       issues.base.push(`Locatie ontbreekt`);
     }
 
-    if (team.preferredDay == null || team.preferredTime == null) {
+    if (team.preferredDay === null || team.preferredTime === null) {
       issues.hasIssues = true;
       issues.base.push(`Voorkeurs speelmoment ontbreekt`);
     }

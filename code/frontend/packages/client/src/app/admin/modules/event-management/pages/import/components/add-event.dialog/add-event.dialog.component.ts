@@ -107,7 +107,7 @@ export class AddEventDialogComponent implements OnInit {
   }
 
   // addColumn() {
-  //   var newRow = { id: 1, name: 'test-' + Math.random() * 10 }
+  //   let newRow = { id: 1, name: 'test-' + Math.random() * 10 }
   //   this.selectedGroups.push(newRow);
   //   this.displayedColumns.push(newRow.name);
   // }
