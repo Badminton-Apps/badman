@@ -1,13 +1,12 @@
 import {
   AuthenticatedRequest,
   BaseController,
+  Club,
   logger,
   Player,
-  MailService,
   RequestLink
 } from '@badvlasim/shared';
-import { Request, Response, Router } from 'express';
-import { Club } from '../../../_shared';
+import { Response, Router } from 'express';
 
 export class UserController extends BaseController {
   private _path = '/user';
@@ -60,5 +59,4 @@ export class UserController extends BaseController {
       response.status(400).json(error);
     }
   };
-
 }

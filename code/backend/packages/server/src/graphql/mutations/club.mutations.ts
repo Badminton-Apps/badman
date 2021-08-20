@@ -12,7 +12,7 @@ export const addClubMutation = {
     }
   },
   resolve: async (findOptions, { club }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:club'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:club'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['add:club']
@@ -47,7 +47,7 @@ export const removeClubMutation = {
     }
   },
   resolve: async (findOptions, { id }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['remove:club'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['remove:club'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['remove:club']
@@ -87,7 +87,7 @@ export const addPlayerToClubMutation = {
   },
   resolve: async (findOptions, { clubId, playerId }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${clubId}_edit:club`, 'edit-any:club'])
     ) {
       logger.warn("User tried something it should't have done", {
@@ -138,7 +138,7 @@ export const updateClubMutation = {
   },
   resolve: async (findOptions, { club }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${club.id}_edit:club`, 'edit-any:club'])
     ) {
       logger.warn("User tried something it should't have done", {

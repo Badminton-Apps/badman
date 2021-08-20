@@ -1,4 +1,3 @@
-import { ImportStep } from './../import-step';
 import {
   Club,
   correctWrongPlayers,
@@ -20,34 +19,35 @@ import {
   ICsvPlayerMatchTp,
   ImporterFile,
   Location,
+  LocationEventTournament,
   logger,
   Player,
+  ProcessStep,
   RankingSystemGroup,
   SubEventTournament,
-  LocationEventTournament,
   titleCase
 } from '@badvlasim/shared';
 import { unlink } from 'fs';
 import moment from 'moment-timezone';
 import { Op, Transaction } from 'sequelize';
 import { Mdb } from '../../convert/mdb';
-import { ProcessImport } from '../processor';
+import { ProcessImport } from '../importProcessor';
 
 export class TournamentTpProcessor extends ProcessImport {
   constructor() {
     super();
-    this.addImportStep(this.cleanupEvent());
-    this.addImportStep(this.addEvent());
-    this.addImportStep(this.addSubEvents());
-    this.addImportStep(this.addDraws());
-    this.addImportStep(this.addPlayers());
-    this.addImportStep(this.addClubs());
-    this.addImportStep(this.addLocations());
-    this.addImportStep(this.addCourts());
-    this.addImportStep(this.addPlayersToClubs());
-    this.addImportStep(this.addGames());
+    this.importProcess.addStep(this.cleanupEvent());
+    this.importProcess.addStep(this.addEvent());
+    this.importProcess.addStep(this.addSubEvents());
+    this.importProcess.addStep(this.addDraws());
+    this.importProcess.addStep(this.addPlayers());
+    this.importProcess.addStep(this.addClubs());
+    this.importProcess.addStep(this.addLocations());
+    this.importProcess.addStep(this.addCourts());
+    this.importProcess.addStep(this.addPlayersToClubs());
+    this.importProcess.addStep(this.addGames());
 
-    this.addImportFileStep(this.addImportFile());
+    this.importFileProcess.addStep(this.addImportFile());
   }
 
   async import(
@@ -63,8 +63,8 @@ export class TournamentTpProcessor extends ProcessImport {
     return super.importFile({ transaction, fileLocation, mdb });
   }
 
-  protected addEvent(): ImportStep<EventTournament> {
-    return new ImportStep(
+  protected addEvent(): ProcessStep<EventTournament> {
+    return new ProcessStep(
       'event',
       async (args: {
         transaction: Transaction;
@@ -113,8 +113,8 @@ export class TournamentTpProcessor extends ProcessImport {
     );
   }
 
-  protected cleanupEvent(): ImportStep<SubEventTournament[]> {
-    return new ImportStep(
+  protected cleanupEvent(): ProcessStep<SubEventTournament[]> {
+    return new ProcessStep(
       'cleanup_event',
       async (args: { event: EventTournament; transaction: Transaction }) => {
         if (!args.event) {
@@ -166,11 +166,11 @@ export class TournamentTpProcessor extends ProcessImport {
     );
   }
 
-  protected addSubEvents(): ImportStep<{ subEvent: SubEventTournament; internalId: number }[]> {
-    return new ImportStep('subEvents', async (args: { mdb: Mdb; transaction: Transaction }) => {
+  protected addSubEvents(): ProcessStep<{ subEvent: SubEventTournament; internalId: number }[]> {
+    return new ProcessStep('subEvents', async (args: { mdb: Mdb; transaction: Transaction }) => {
       // get previous step data
-      const event: EventTournament = this.importSteps.get('event').getData();
-      const prevSubEvents: SubEventTournament[] = this.importSteps.get('cleanup_event')?.getData();
+      const event: EventTournament = this.importProcess.getData('event');
+      const prevSubEvents: SubEventTournament[] = this.importProcess.getData('cleanup_event');
       const csvEvents = await csvToArray<ICsvEvent[]>(await args.mdb.toCsv('Event'), {
         onError: e => {
           logger.error('Parsing went wrong', {
@@ -227,13 +227,13 @@ export class TournamentTpProcessor extends ProcessImport {
     });
   }
 
-  protected addDraws(): ImportStep<{ draw: DrawTournament; internalId: number }[]> {
-    return new ImportStep('draws', async (args: { mdb: Mdb; transaction: Transaction }) => {
+  protected addDraws(): ProcessStep<{ draw: DrawTournament; internalId: number }[]> {
+    return new ProcessStep('draws', async (args: { mdb: Mdb; transaction: Transaction }) => {
       // get previous step data
       const subEvents: {
         subEvent: SubEventTournament;
         internalId: number;
-      }[] = this.importSteps.get('subEvents').getData();
+      }[] = this.importProcess.getData('subEvents');
 
       // Run Current step
       const csvDraws = await csvToArray<ICsvDraw[]>(await args.mdb.toCsv('Draw'), {
@@ -273,41 +273,46 @@ export class TournamentTpProcessor extends ProcessImport {
     });
   }
 
-  protected addPlayersToClubs(): ImportStep<void> {
-    return new ImportStep('players_clubs', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const players: { player: Player; internalId: number; club: string }[] = this.importSteps
-        .get('players')
-        .getData();
-      const clubs: { club: Club; internalId: number }[] = this.importSteps.get('clubs').getData();
-      const event: EventTournament = this.importSteps.get('event').getData();
+  protected addPlayersToClubs(): ProcessStep<void> {
+    return new ProcessStep(
+      'players_clubs',
+      async (args: { mdb: Mdb; transaction: Transaction }) => {
+        const players: {
+          player: Player;
+          internalId: number;
+          club: string;
+        }[] = this.importProcess.getData('players');
+        const clubs: { club: Club; internalId: number }[] = this.importProcess.getData('clubs');
+        const event: EventTournament = this.importProcess.getData('event');
 
-      const teamPlayers = new Map<string, string[]>();
-      for (const player of players) {
-        if (player.club === '') {
-          continue;
+        const teamPlayers = new Map<string, string[]>();
+        for (const player of players) {
+          if (player.club === '') {
+            continue;
+          }
+
+          // No player found (possibly no memberid)
+          if (!player.player) {
+            continue;
+          }
+
+          const dbClubs = clubs.find(e => e.internalId === +player.club)?.club;
+          const playerIds = teamPlayers.get(dbClubs?.id) ?? [];
+
+          teamPlayers.set(dbClubs.id, [...playerIds, player.player.id]);
         }
 
-        // No player found (possibly no memberid)
-        if (!player.player) {
-          continue;
+        for (const [team, playerIds] of teamPlayers) {
+          await this.addToClubs(playerIds, moment(event.firstDay), team, {
+            transaction: args.transaction
+          });
         }
-
-        const dbClubs = clubs.find(e => e.internalId === +player.club)?.club;
-        const playerIds = teamPlayers.get(dbClubs?.id) ?? [];
-
-        teamPlayers.set(dbClubs.id, [...playerIds, player.player.id]);
       }
-
-      for (const [team, playerIds] of teamPlayers) {
-        await this.addToClubs(playerIds, moment(event.firstDay), team, {
-          transaction: args.transaction
-        });
-      }
-    });
+    );
   }
 
-  protected addClubs(): ImportStep<{ club: Club; internalId: number }[]> {
-    return new ImportStep('clubs', async (args: { mdb: Mdb; transaction: Transaction }) => {
+  protected addClubs(): ProcessStep<{ club: Club; internalId: number }[]> {
+    return new ProcessStep('clubs', async (args: { mdb: Mdb; transaction: Transaction }) => {
       const csvClubs = await csvToArray<ICsvClub[]>(await args.mdb.toCsv('Club'));
 
       const teams = [];
@@ -345,8 +350,8 @@ export class TournamentTpProcessor extends ProcessImport {
     });
   }
 
-  protected addPlayers(): ImportStep<{ player: Player; internalId: number; club: string }[]> {
-    return new ImportStep('players', async (args: { mdb: Mdb; transaction: Transaction }) => {
+  protected addPlayers(): ProcessStep<{ player: Player; internalId: number; club: string }[]> {
+    return new ProcessStep('players', async (args: { mdb: Mdb; transaction: Transaction }) => {
       const csvPlayers = await csvToArray<ICsvPlayer[]>(await args.mdb.toCsv('Player'));
 
       const corrected = [];
@@ -393,10 +398,10 @@ export class TournamentTpProcessor extends ProcessImport {
     });
   }
 
-  protected addLocations(): ImportStep<{ location: Location; internalId: number }[]> {
-    return new ImportStep('locations', async (args: { mdb: Mdb; transaction: Transaction }) => {
+  protected addLocations(): ProcessStep<{ location: Location; internalId: number }[]> {
+    return new ProcessStep('locations', async (args: { mdb: Mdb; transaction: Transaction }) => {
       const csvLocations = await csvToArray<ICsvLocation[]>(await args.mdb.toCsv('Location'));
-      const event: EventTournament = this.importSteps.get('event').getData();
+      const event: EventTournament = this.importProcess.getData('event');
 
       const locations = [];
       for (const csvLocation of csvLocations) {
@@ -455,7 +460,10 @@ export class TournamentTpProcessor extends ProcessImport {
         };
       });
 
-      await LocationEventTournament.bulkCreate(links, { ignoreDuplicates: true, transaction: args.transaction });
+      await LocationEventTournament.bulkCreate(links, {
+        ignoreDuplicates: true,
+        transaction: args.transaction
+      });
 
       // Return result
       return locations.map((v, i) => {
@@ -467,11 +475,11 @@ export class TournamentTpProcessor extends ProcessImport {
     });
   }
 
-  protected addCourts(): ImportStep<{ court: Court; internalId: number }[]> {
-    return new ImportStep('courts', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const locations: { location: Location; internalId: number }[] = this.importSteps
-        .get('locations')
-        .getData();
+  protected addCourts(): ProcessStep<{ court: Court; internalId: number }[]> {
+    return new ProcessStep('courts', async (args: { mdb: Mdb; transaction: Transaction }) => {
+      const locations: { location: Location; internalId: number }[] = this.importProcess.getData(
+        'locations'
+      );
       const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('Court'));
 
       const courts = [];
@@ -505,17 +513,15 @@ export class TournamentTpProcessor extends ProcessImport {
     });
   }
 
-  protected addGames(): ImportStep<void> {
-    return new ImportStep('games', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const players: { player: Player; internalId: number }[] = this.importSteps
-        .get('players')
-        .getData();
-      const courts: { court: Court; internalId: number }[] = this.importSteps
-        .get('courts')
-        .getData();
-      const draws: { draw: DrawTournament; internalId: number }[] = this.importSteps
-        .get('draws')
-        .getData();
+  protected addGames(): ProcessStep<void> {
+    return new ProcessStep('games', async (args: { mdb: Mdb; transaction: Transaction }) => {
+      const players: { player: Player; internalId: number }[] = this.importProcess.getData(
+        'players'
+      );
+      const courts: { court: Court; internalId: number }[] = this.importProcess.getData('courts');
+      const draws: { draw: DrawTournament; internalId: number }[] = this.importProcess.getData(
+        'draws'
+      );
 
       const csvPlayerMatches = await csvToArray<ICsvPlayerMatchTp[]>(
         await args.mdb.toCsv('PlayerMatch'),
@@ -743,8 +749,8 @@ export class TournamentTpProcessor extends ProcessImport {
     });
   }
 
-  protected addImportFile(): ImportStep<void> {
-    return new ImportStep(
+  protected addImportFile(): ProcessStep<void> {
+    return new ProcessStep(
       'import file',
       async (args: { fileLocation: string; mdb: Mdb; transaction: Transaction }) => {
         const settingsCsv = await args.mdb.toCsv('Settings');

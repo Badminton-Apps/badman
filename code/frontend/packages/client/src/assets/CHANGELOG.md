@@ -1,3 +1,69 @@
+## [3.38.4](https://github.com/Badminton-Apps/core/compare/v3.38.3...v3.38.4) (2021-08-20)
+
+
+### Bug Fixes
+
+* attribute ([53aad12](https://github.com/Badminton-Apps/core/commit/53aad128ea2d64345d84a55d6fca6db49a60f39b))
+
+
+
+## [3.38.3](https://github.com/Badminton-Apps/core/compare/v3.38.2...v3.38.3) (2021-08-20)
+
+
+### Bug Fixes
+
+* fast-print version is broken. Using fixed version for now ([2909cea](https://github.com/Badminton-Apps/core/commit/2909cea62cc405f99e897dae42364266a4eb876a))
+* still mising modules, adding new project just to be safe ([18613ef](https://github.com/Badminton-Apps/core/commit/18613ef20d054d1ad1dd2b28ae816cd9d9a2de78))
+
+
+
+## [3.38.2](https://github.com/Badminton-Apps/core/compare/v3.38.1...v3.38.2) (2021-08-20)
+
+
+### Bug Fixes
+
+* missing package for future project ([93f313a](https://github.com/Badminton-Apps/core/commit/93f313afafcd02a96be440a59f132084f57ff9a5))
+
+
+
+## [3.38.1](https://github.com/Badminton-Apps/core/compare/v3.38.0...v3.38.1) (2021-08-20)
+
+
+### Bug Fixes
+
+* finish mailing ([9f3fdf1](https://github.com/Badminton-Apps/core/commit/9f3fdf1460dfff1414d29d18e23f402d49a5e984))
+* layout mailing ([5ca73f7](https://github.com/Badminton-Apps/core/commit/5ca73f71aebff9712956953221854b94e3673326))
+
+
+
+# [3.38.0](https://github.com/Badminton-Apps/core/compare/v3.37.0...v3.38.0) (2021-08-20)
+
+
+### Features
+
+* merging accounts ([408333d](https://github.com/Badminton-Apps/core/commit/408333dbdefc759648757c4000e2a3a3bfa79bc4))
+
+
+
+# [3.37.0](https://github.com/Badminton-Apps/core/compare/v3.36.5...v3.37.0) (2021-08-18)
+
+
+### Features
+
+* open date picker on focus input ([62ef948](https://github.com/Badminton-Apps/core/commit/62ef9483e26902db306972756135a59793acce6b))
+
+
+
+## [3.36.5](https://github.com/Badminton-Apps/core/compare/v3.36.4...v3.36.5) (2021-08-14)
+
+
+### Bug Fixes
+
+* default lang is actually dutch ([2421d4f](https://github.com/Badminton-Apps/core/commit/2421d4f9962315851029ed6cee50bfc136a6fba2))
+* don't submit if not valid ([d8e7c10](https://github.com/Badminton-Apps/core/commit/d8e7c1009912ff85d6201ea5a3a5e2a2d4a3d2d6))
+
+
+
 ## [3.36.4](https://github.com/Badminton-Apps/core/compare/v3.36.3...v3.36.4) (2021-08-14)
 
 

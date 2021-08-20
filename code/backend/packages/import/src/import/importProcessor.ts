@@ -5,88 +5,29 @@ import {
   ImporterFile,
   LevelType,
   logger,
+  Processor,
   SubEventType,
   TeamPlayerMembership,
   titleCase
 } from '@badvlasim/shared';
 import moment, { Moment } from 'moment';
-import prettyMilliseconds from 'pretty-ms';
 import { Op, Transaction } from 'sequelize';
-import { ImportStep } from './import-step';
 
 export abstract class ProcessImport {
-  protected importSteps: Map<string, ImportStep<any>>;
-  protected importFileSteps: Map<string, ImportStep<any>>;
+  protected importProcess: Processor;
+  protected importFileProcess: Processor;
 
   constructor() {
-    this.importSteps = new Map();
-    this.importFileSteps = new Map();
+    this.importProcess = new Processor();
+    this.importFileProcess = new Processor();
   }
 
   async import(args: any) {
-    const totalStart = new Date().getTime();
-    logger.debug(`Running import`);
-    for (const [name, step] of this.importSteps) {
-      logger.debug(`Running step: ${name}`);
-      const start = new Date().getTime();
-
-      try {
-        await step.executeStep(args);
-      } catch (e) {
-        logger.error(`Step ${name}, failed`, e);
-        throw e;
-      }
-
-      logger.debug(
-        `Finished step ${name}, time: ${prettyMilliseconds(new Date().getTime() - start)}`
-      );
-    }
-    logger.debug(`Finished import, time: ${prettyMilliseconds(new Date().getTime() - totalStart)}`);
+    return this.importProcess.process(args);
   }
 
   async importFile(args) {
-    const totalStart = new Date().getTime();
-
-    logger.debug(`Running importFile`);
-    for (const [name, step] of this.importFileSteps) {
-      logger.debug(`Running step: ${name}`);
-      const start = new Date().getTime();
-
-      try {
-        await step.executeStep(args);
-      } catch (e) {
-        logger.error(`Step ${name}, failed`, {
-          args,
-          error: e
-        });
-        throw e;
-      }
-
-      logger.debug(
-        `Finished step ${name}, time: ${prettyMilliseconds(new Date().getTime() - start)}`
-      );
-    }
-    logger.debug(
-      `Finished importFile, time: ${prettyMilliseconds(new Date().getTime() - totalStart)}`
-    );
-  }
-
-  protected addImportStep(step: ImportStep<any>, override: boolean = false) {
-    if (!override && !this.importSteps.has(step.name)) {
-      this.importSteps.set(step.name, step);
-    } else {
-      logger.debug(`Steps:`, [...this.importSteps.keys()], 'new Step', step.name);
-      throw new Error('Step already exists');
-    }
-  }
-
-  protected addImportFileStep(step: ImportStep<any>, override: boolean = false) {
-    if (!override && !this.importFileSteps.has(step.name)) {
-      this.importFileSteps.set(step.name, step);
-    } else {
-      logger.debug(`Steps:`, [...this.importFileSteps.keys()], 'new Step', step.name);
-      throw new Error('Step already exists');
-    }
+    return this.importFileProcess.process(args);
   }
 
   // #region Helper functions
@@ -315,7 +256,7 @@ export abstract class ProcessImport {
         }
       }
 
-      if (dbclubPlayerMemberships.find(r => r.clubId === clubId) == null) {
+      if (dbclubPlayerMemberships.find(r => r.clubId === clubId) === null) {
         // new membership
         newMmemberships.push(
           new ClubMembership({

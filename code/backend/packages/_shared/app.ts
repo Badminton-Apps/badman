@@ -88,7 +88,8 @@ export class App {
         logger.info(`🚀 App listening on the port ${process.env.PORT}`);
         this._lightship.signalReady();
       })
-      .on('error', () => {
+      .on('error', (e) => {
+        logger.error('Error', e);
         this._lightship.shutdown();
       });
 

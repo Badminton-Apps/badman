@@ -104,10 +104,10 @@ export class Player extends Model {
   @Column
   memberId: string;
 
-  @HasMany(() => RankingPoint, 'PlayerId')
+  @HasMany(() => RankingPoint, 'playerId')
   rankingPoints?: RankingPoint[];
 
-  @HasMany(() => RankingPlace, 'PlayerId')
+  @HasMany(() => RankingPlace, 'playerId')
   rankingPlaces?: RankingPlace[];
 
   @HasOne(() => LastRankingPlace, 'playerId')
