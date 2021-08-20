@@ -23,11 +23,11 @@ export abstract class ProcessImport {
   }
 
   async import(args: any) {
-    this.importProcess.process(args);
+    return this.importProcess.process(args);
   }
 
   async importFile(args) {
-    this.importFileProcess.process(args);
+    return this.importFileProcess.process(args);
   }
 
   // #region Helper functions
