@@ -23,9 +23,6 @@ export const getAttributeFields = (
 
     if (options?.optionalString) {
       for (const ex of options.optionalString) {
-        if (returnInstance[ex] == undefined || returnInstance[ex] == null) {
-          logger.warn(`returnInstance ${ex} for ${model.name} is empty`, returnInstance);
-        }
         returnInstance[ex].type = GraphQLString;
       }
     }
