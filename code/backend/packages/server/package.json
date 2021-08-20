@@ -25,7 +25,6 @@
     "apollo-server-express": "^2.19.0",
     "global": "^4.4.0",
     "http-proxy-middleware": "^1.0.5",
-    "node-cron": "^3.0.0",
     "rxjs": "^6.6.3",
     "sequelize-auto-migrations": "^1.0.3",
     "sequelize-cli": "^6.2.0"
