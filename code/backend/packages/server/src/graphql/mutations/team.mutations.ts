@@ -27,7 +27,7 @@ export const addTeamMutation = {
   },
   resolve: async (findOptions, { team, clubId }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${clubId}_add:team`, 'add-any:club'])
     ) {
       logger.warn("User tried something it should't have done", {
@@ -93,7 +93,7 @@ export const removeTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -142,7 +142,7 @@ export const updateTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -268,7 +268,7 @@ export const addPlayerToTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -337,7 +337,7 @@ export const removePlayerFromTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -393,7 +393,7 @@ export const updateSubEventTeamMutation = {
     const dbTeam = await Team.findByPk(teamId);
 
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${dbTeam.clubId}_enlist:team`, 'edit-any:club'])
     ) {
       logger.warn("User tried something it should't have done", {
@@ -443,7 +443,7 @@ export const updateSubEventTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -503,7 +503,7 @@ export const updatePlayerTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {

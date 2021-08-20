@@ -248,7 +248,7 @@ export class EventService {
 
     // process chunked
     while (fileArray.length > 0) {
-      var chunk = fileArray.splice(0, 5);
+      let chunk = fileArray.splice(0, 5);
 
       let formData = new FormData();
       chunk.forEach((file) => {

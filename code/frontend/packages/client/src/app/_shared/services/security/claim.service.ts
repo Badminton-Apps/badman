@@ -25,12 +25,12 @@ export class ClaimService {
       .pipe(map((x) => x.data?.claims?.map((c) => new Claim(c))));
   }
 
-  globalUserClaims(userId: string) {
+  globalUserClaims(playerId: string) {
     return this.apollo
       .query<{ player: { claims: Claim[] } }>({
         query: globalUserClaimsQuery,
         variables: {
-          id: userId,
+          id: playerId,
         },
       })
       .pipe(map((x) => x.data?.player?.claims?.map((c) => new Claim(c))));

@@ -1,7 +1,6 @@
-import { RankingPlace } from './../../../../_shared/models/sequelize/ranking/place.model';
-import { DataBaseHandler, LastRankingPlace, logger, Player } from '@badvlasim/shared';
+import { DataBaseHandler, LastRankingPlace, logger, Player, RankingPlace } from '@badvlasim/shared';
 import { ApiError } from '../../models/api.error';
-import { PlayerInputType, PlayerType, RankingPlaceInputType, RankingPlaceType } from '../types';
+import { PlayerInputType, PlayerType, RankingPlaceInputType } from '../types';
 
 export const addPlayerMutation = {
   type: PlayerType,
@@ -13,7 +12,7 @@ export const addPlayerMutation = {
   },
   resolve: async (findOptions, { player }, context) => {
     // || !context.req.user.hasAnyPermission(['add:player'])
-    if (context?.req?.user == null) {
+    if (context?.req?.user === null) {
       // logger.warn("User tried something it should't have done", {
       //   required: {
       //     anyClaim: ['add:player']
@@ -26,7 +25,7 @@ export const addPlayerMutation = {
       });
     }
 
-    if (player.memberId === null || player.firstName == null || player.lastName == null) {
+    if (player.memberId === null || player.firstName === null || player.lastName === null) {
       throw new ApiError({
         code: 500,
         message: 'Memberid, firstname and lastname are required'
@@ -58,7 +57,7 @@ export const updatePlayerMutation = {
     // TODO: check if the player is in the club and thbe user is allowed to change values
 
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${player.id}_edit:player`, 'edit-any:player'])
     ) {
       throw new ApiError({
@@ -107,7 +106,7 @@ export const updatePlayerRankingMutation = {
     }
   },
   resolve: async (findOptions, { rankingPlace }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:player-ranking'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:player-ranking'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:player-ranking']
@@ -129,7 +128,7 @@ export const updatePlayerRankingMutation = {
 
       const dbLastRanking = await LastRankingPlace.findOne({
         where: {
-          playerId: dbRankingPlace.PlayerId,
+          playerId: dbRankingPlace.playerId,
           rankingDate: dbRankingPlace.rankingDate,
           systemId: dbRankingPlace.SystemId
         },

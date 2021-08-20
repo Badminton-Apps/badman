@@ -1,7 +1,7 @@
-import { ImportStep } from './../import-step';
 import {
   Club,
   correctWrongPlayers,
+  ProcessStep,
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
@@ -27,22 +27,22 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
   constructor() {
     super();
 
-    this.addImportStep(this.findEvent());
-    this.addImportStep(this.cleanupEvent());
-    this.addImportStep(this.addEvent());
-    this.addImportStep(this.loadXml());
-    this.addImportStep(this.addSubEvents());
-    this.addImportStep(this.addDraws());
-    this.addImportStep(this.addClubs());
-    this.addImportStep(this.addTeams());
-    this.addImportStep(this.addPlayers());
-    this.addImportStep(this.addTeamsToSubEvents());
-    this.addImportStep(this.addPlayersToTeams());
-    this.addImportStep(this.addPlayersToTClubs());
-    this.addImportStep(this.addEncounters());
-    this.addImportStep(this.addGames());
+    this.importProcess.addStep(this.findEvent());
+    this.importProcess.addStep(this.cleanupEvent());
+    this.importProcess.addStep(this.addEvent());
+    this.importProcess.addStep(this.loadXml());
+    this.importProcess.addStep(this.addSubEvents());
+    this.importProcess.addStep(this.addDraws());
+    this.importProcess.addStep(this.addClubs());
+    this.importProcess.addStep(this.addTeams());
+    this.importProcess.addStep(this.addPlayers());
+    this.importProcess.addStep(this.addTeamsToSubEvents());
+    this.importProcess.addStep(this.addPlayersToTeams());
+    this.importProcess.addStep(this.addPlayersToTClubs());
+    this.importProcess.addStep(this.addEncounters());
+    this.importProcess.addStep(this.addGames());
 
-    this.addImportFileStep(this.addImportFile());
+    this.importFileProcess.addStep(this.addImportFile());
   }
 
   async import(
@@ -56,8 +56,8 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     return super.importFile({ transaction, fileLocation });
   }
 
-  protected loadXml(): ImportStep<{ name: string; teams: any[]; events: any[] }> {
-    return new ImportStep('load', async (args: { importFile: ImporterFile }) => {
+  protected loadXml(): ProcessStep<{ name: string; teams: any[]; events: any[] }> {
+    return new ProcessStep('load', async (args: { importFile: ImporterFile }) => {
       const xmlData = parse(readFileSync(args.importFile.fileLocation, 'utf8'));
 
       const teams = Array.isArray(xmlData.League.Team)
@@ -75,12 +75,12 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addSubEvents(): ImportStep<{ subEvent: SubEventCompetition; divisions: any[] }[]> {
-    return new ImportStep('subEvents', async (args: { transaction: Transaction }) => {
+  protected addSubEvents(): ProcessStep<{ subEvent: SubEventCompetition; divisions: any[] }[]> {
+    return new ProcessStep('subEvents', async (args: { transaction: Transaction }) => {
       // get previous step data
-      const event: EventCompetition = this.importSteps.get('event').getData();
-      const prevSubEvents: any[] = this.importSteps.get('cleanup_event')?.getData();
-      const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
+      const event: EventCompetition = this.importProcess.getData('event');
+      const prevSubEvents: any[] = this.importProcess.getData('cleanup_event');
+      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load');
 
       const subEvents = [];
       const xmlDivisions = [];
@@ -159,12 +159,13 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addDraws(): ImportStep<{ draw: DrawCompetition; fixtures: any[] }[]> {
-    return new ImportStep('draws', async (args: { transaction: Transaction }) => {
+  protected addDraws(): ProcessStep<{ draw: DrawCompetition; fixtures: any[] }[]> {
+    return new ProcessStep('draws', async (args: { transaction: Transaction }) => {
       // get previous step data
-      const subEvents: { subEvent: SubEventCompetition; divisions: any[] }[] = this.importSteps
-        .get('subEvents')
-        .getData();
+      const subEvents: {
+        subEvent: SubEventCompetition;
+        divisions: any[];
+      }[] = this.importProcess.getData('subEvents');
 
       const draws = [];
       const fixtures = [];
@@ -210,9 +211,9 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addClubs(): ImportStep<Club[]> {
-    return new ImportStep('clubs', async (args: { transaction: Transaction }) => {
-      const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
+  protected addClubs(): ProcessStep<Club[]> {
+    return new ProcessStep('clubs', async (args: { transaction: Transaction }) => {
+      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load')
 
       const teamClubDistinct = data.teams.filter(
         (value, index, self) =>
@@ -251,10 +252,10 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addTeams(): ImportStep<{ team: Team; internalId: number; members: any[] }[]> {
-    return new ImportStep('teams', async (args: { transaction: Transaction }) => {
-      const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
-      const clubs: Club[] = this.importSteps.get('clubs').getData();
+  protected addTeams(): ProcessStep<{ team: Team; internalId: number; members: any[] }[]> {
+    return new ProcessStep('teams', async (args: { transaction: Transaction }) => {
+      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load')
+      const clubs: Club[] = this.importProcess.getData('clubs')
 
       const teams = data.teams.map((team, i) => {
         if (team.TeamName) {
@@ -303,9 +304,9 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addPlayers(): ImportStep<{ player: Player; internalId: number }[]> {
-    return new ImportStep('players', async (args: { transaction: Transaction }) => {
-      const data: { teams: any[]; events: any[] } = this.importSteps.get('load').getData();
+  protected addPlayers(): ProcessStep<{ player: Player; internalId: number }[]> {
+    return new ProcessStep('players', async (args: { transaction: Transaction }) => {
+      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load');
       const xmlPlayers = data.teams
         .map(v => (Array.isArray(v.Member) ? [...v.Member] : [v.Member]).filter(r => !!r))
         .flat();
@@ -350,14 +351,16 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addTeamsToSubEvents(): ImportStep<void> {
-    return new ImportStep('teams_subEvents', async (args: { transaction: Transaction }) => {
-      const draws: { draw: DrawCompetition; fixtures: any[] }[] = this.importSteps
-        .get('draws')
-        .getData();
-      const teams: { team: Team; internalId: number; members: any[] }[] = this.importSteps
-        .get('teams')
-        .getData();
+  protected addTeamsToSubEvents(): ProcessStep<void> {
+    return new ProcessStep('teams_subEvents', async (args: { transaction: Transaction }) => {
+      const draws: { draw: DrawCompetition; fixtures: any[] }[] = this.importProcess.getData(
+        'draws'
+      );
+      const teams: {
+        team: Team;
+        internalId: number;
+        members: any[];
+      }[] = this.importProcess.getData('teams');
 
       const teamSubscriptions = [];
 
@@ -390,15 +393,17 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addPlayersToTeams(): ImportStep<void> {
-    return new ImportStep('players_teams', async (args: { transaction: Transaction }) => {
-      const playersData: { player: Player; internalId: number }[] = this.importSteps
-        .get('players')
-        .getData();
-      const teams: { team: Team; internalId: number; members: any[] }[] = this.importSteps
-        .get('teams')
-        .getData();
-      const event: EventCompetition = this.importSteps.get('event').getData();
+  protected addPlayersToTeams(): ProcessStep<void> {
+    return new ProcessStep('players_teams', async (args: { transaction: Transaction }) => {
+      const playersData: { player: Player; internalId: number }[] = this.importProcess.getData(
+        'players'
+      );
+      const teams: {
+        team: Team;
+        internalId: number;
+        members: any[];
+      }[] = this.importProcess.getData('teams');
+      const event: EventCompetition = this.importProcess.getData('event');
 
       const start = moment([event.startYear, 0, 1]);
 
@@ -420,15 +425,17 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addPlayersToTClubs(): ImportStep<void> {
-    return new ImportStep('players_clubs', async (args: { transaction: Transaction }) => {
-      const playersData: { player: Player; internalId: number }[] = this.importSteps
-        .get('players')
-        .getData();
-      const teams: { team: Team; internalId: number; members: any[] }[] = this.importSteps
-        .get('teams')
-        .getData();
-      const event: EventCompetition = this.importSteps.get('event').getData();
+  protected addPlayersToTClubs(): ProcessStep<void> {
+    return new ProcessStep('players_clubs', async (args: { transaction: Transaction }) => {
+      const playersData: { player: Player; internalId: number }[] = this.importProcess.getData(
+        'players'
+      );
+      const teams: {
+        team: Team;
+        internalId: number;
+        members: any[];
+      }[] = this.importProcess.getData('teams');
+      const event: EventCompetition = this.importProcess.getData('event');
 
       const start = moment([event.startYear, 0, 1]);
 
@@ -455,13 +462,13 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addEncounters(): ImportStep<{ encounter: EncounterCompetition; matches: [] }[]> {
-    return new ImportStep('encounters', async (args: { transaction: Transaction }) => {
+  protected addEncounters(): ProcessStep<{ encounter: EncounterCompetition; matches: [] }[]> {
+    return new ProcessStep('encounters', async (args: { transaction: Transaction }) => {
       // get previous step data
-      const draws: { draw: DrawCompetition; fixtures: any[] }[] = this.importSteps
-        .get('draws')
-        .getData();
-      const teams: { team: Team; internalId: number }[] = this.importSteps.get('teams').getData();
+      const draws: { draw: DrawCompetition; fixtures: any[] }[] = this.importProcess.getData(
+        'draws'
+      );
+      const teams: { team: Team; internalId: number }[] = this.importProcess.getData('teams');
 
       // Run Current step
       const encounters = [];
@@ -526,15 +533,15 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addGames(): ImportStep<void> {
-    return new ImportStep('games', async (args: { transaction: Transaction }) => {
-      const playersData: { player: Player; internalId: number }[] = this.importSteps
-        .get('players')
-        .getData();
+  protected addGames(): ProcessStep<void> {
+    return new ProcessStep('games', async (args: { transaction: Transaction }) => {
+      const playersData: { player: Player; internalId: number }[] = this.importProcess.getData(
+        'players'
+      );
       const encounters: {
         encounter: EncounterCompetition;
         matches: any[];
-      }[] = this.importSteps.get('encounters').getData();
+      }[] = this.importProcess.getData('encounters');
 
       const games = [];
       const gamePlayers = [];
@@ -633,8 +640,8 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addImportFile(): ImportStep<void> {
-    return new ImportStep(
+  protected addImportFile(): ProcessStep<void> {
+    return new ProcessStep(
       'import file',
       async (args: { fileLocation: string; transaction: Transaction }) => {
         const xmlData = parse(readFileSync(args.fileLocation, 'utf8'));

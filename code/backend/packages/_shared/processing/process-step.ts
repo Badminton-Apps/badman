@@ -1,4 +1,4 @@
-export class ImportStep<Output> {
+export class ProcessStep<Output> {
   private _data: Output;
   private _ran: boolean = false;
 
