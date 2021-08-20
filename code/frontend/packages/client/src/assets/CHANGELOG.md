@@ -1,3 +1,12 @@
+# [3.38.0](https://github.com/Badminton-Apps/core/compare/v3.37.0...v3.38.0) (2021-08-20)
+
+
+### Features
+
+* merging accounts ([408333d](https://github.com/Badminton-Apps/core/commit/408333dbdefc759648757c4000e2a3a3bfa79bc4))
+
+
+
 # [3.37.0](https://github.com/Badminton-Apps/core/compare/v3.36.5...v3.37.0) (2021-08-18)
 
 
