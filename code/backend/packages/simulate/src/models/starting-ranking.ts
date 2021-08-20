@@ -205,7 +205,7 @@ export class StartingRanking {
             }
 
             currentPlayer = {
-              PlayerId: dbplayer.id,
+              playerId: dbplayer.id,
               SystemId: systemId,
               rankingDate: new Date('2016-08-31T22:00:00Z'),
               single: amountOfLevels,

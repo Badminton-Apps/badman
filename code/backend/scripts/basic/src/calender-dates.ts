@@ -3,18 +3,25 @@ import { parse } from 'fast-xml-parser';
 import got from 'got';
 import { Op } from 'sequelize';
 import {
-  Club as DbClub,
+  Club,
   DataBaseHandler,
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
   logger,
-  Player as DbPlayer,
+  Player,
   SubEventCompetition,
   SubEventType,
-  Team as DbTeam,
-  TeamPlayerMembership
-} from '../../../packages/_shared';
+  Team,
+  TeamPlayerMembership,
+  XmlTournament,
+  XmlResult,
+  XmlTournamentEvent,
+  XmlTournamentDraw,
+  XmlTeam,
+  XmlTeamMatch,
+  XmlGenderID
+} from '@badvlasim/shared';
 
 (async () => {
   const databaseService = new DataBaseHandler({
@@ -34,7 +41,7 @@ import {
   ];
 
   // deactivate all teams
-  await DbTeam.update({ active: false }, { where: { active: true } });
+  await Team.update({ active: false }, { where: { active: true } });
 
   // Remove all base players
   await TeamPlayerMembership.update({ base: false }, { where: { base: true } });
@@ -63,62 +70,69 @@ import {
     logger.debug(dbEvent.name);
   }
 
-  async function getCompetition(id: string): Promise<Tournament> {
+  async function getCompetition(id: string): Promise<XmlTournament> {
     const result = await got.get(`${URL_BASE}/${id}`, {
       username: `${process.env.VR_API_USER}`,
       password: `${process.env.VR_API_PASS}`
     });
-    const body = parse(result.body).Result as Result;
-    return body.Tournament;
+    const body = parse(result.body).Result as XmlResult;
+    return body.Tournament as XmlTournament;
   }
 
-  async function getEvents(id: string): Promise<TournamentEvent[]> {
+  async function getEvents(id: string): Promise<XmlTournamentEvent[]> {
     const result = await got.get(`${URL_BASE}/${id}/Event`, {
       username: `${process.env.VR_API_USER}`,
       password: `${process.env.VR_API_PASS}`
     });
-    const body = parse(result.body).Result as Result;
-    return body.TournamentEvent;
+    const body = parse(result.body).Result as XmlResult;
+    return Array.isArray(body.TournamentEvent)
+      ? body.TournamentEvent
+      : [body.TournamentEvent];
   }
 
-  async function getDraws(id: string): Promise<TournamentDraw[]> {
+  async function getDraws(id: string): Promise<XmlTournamentDraw[]> {
     const result = await got.get(`${URL_BASE}/${id}/Draw`, {
       username: `${process.env.VR_API_USER}`,
       password: `${process.env.VR_API_PASS}`
     });
-    const body = parse(result.body).Result as Result;
-    return body.TournamentDraw;
+    const body = parse(result.body).Result as XmlResult;
+    return Array.isArray(body.TournamentDraw)
+      ? body.TournamentDraw
+      : [body.TournamentDraw];
   }
 
-  async function getTeams(id: string): Promise<Team[]> {
+  async function getTeams(id: string): Promise<XmlTeam[]> {
     const result = await got.get(`${URL_BASE}/${id}/Team`, {
       username: `${process.env.VR_API_USER}`,
       password: `${process.env.VR_API_PASS}`
     });
-    const body = parse(result.body).Result as Result;
-    return body.Team as Team[];
+    const body = parse(result.body).Result as XmlResult;
+    return body.Team as XmlTeam[];
   }
 
-  async function getTeam(id: string, teamId: string): Promise<Team> {
+  async function getTeam(id: string, teamId: string): Promise<XmlTeam> {
     const result = await got.get(`${URL_BASE}/${id}/Team/${teamId}`, {
       username: `${process.env.VR_API_USER}`,
       password: `${process.env.VR_API_PASS}`
     });
-    const body = parse(result.body).Result as Result;
-    return body.Team as Team;
+    const body = parse(result.body).Result as XmlResult;
+    return body.Team as XmlTeam;
   }
 
-  async function getMatches(id: string, drawId: string): Promise<TeamMatch[]> {
+  async function getMatches(
+    id: string,
+    drawId: string
+  ): Promise<XmlTeamMatch[]> {
     const result = await got.get(`${URL_BASE}/${id}/Draw/${drawId}/Match`, {
       username: `${process.env.VR_API_USER}`,
       password: `${process.env.VR_API_PASS}`
     });
-    const body = parse(result.body).Result as Result;
+    const body = parse(result.body).Result as XmlResult;
     return body.TeamMatch;
   }
 
   async function getDbEventForTournamentEvent(
-    event: Tournament
+    event: XmlTournament
   ): Promise<EventCompetition> {
     return EventCompetition.findOne({
       where: { name: event.Name }
@@ -127,22 +141,22 @@ import {
 
   async function getDbSubEventForTournamentEvent(
     event: EventCompetition,
-    xmlEvents: TournamentEvent[]
+    xmlEvents: XmlTournamentEvent[]
   ): Promise<Map<string, SubEventCompetition>> {
     const subEvents = new Map<string, SubEventCompetition>();
 
     for (const xmlEvent of xmlEvents) {
-      var subEventType = null;
+      let subEventType = null;
       switch (xmlEvent.GenderID) {
-        case GenderID.Boy:
-        case GenderID.Male:
+        case XmlGenderID.Boy:
+        case XmlGenderID.Male:
           subEventType = SubEventType.M;
           break;
-        case GenderID.Girl:
-        case GenderID.Female:
+        case XmlGenderID.Girl:
+        case XmlGenderID.Female:
           subEventType = SubEventType.F;
           break;
-        case GenderID.Mixed:
+        case XmlGenderID.Mixed:
           subEventType = SubEventType.MX;
           break;
         default:
@@ -157,7 +171,7 @@ import {
         }
       });
 
-      if (dbSub == null) {
+      if (dbSub === null) {
         logger.warn('No SubEvent found?');
       }
 
@@ -169,7 +183,7 @@ import {
 
   async function getDbDrawForTournamentDraw(
     dbSubEvents: Map<string, SubEventCompetition>,
-    xmlDraws: TournamentDraw[]
+    xmlDraws: XmlTournamentDraw[]
   ): Promise<Map<string, DrawCompetition>> {
     const draws = new Map<string, DrawCompetition>();
 
@@ -188,7 +202,7 @@ import {
         }
       });
 
-      if (dbDraw == null) {
+      if (dbDraw === null) {
         logger.warn('No SubEvent found?');
       }
 
@@ -198,18 +212,18 @@ import {
     return draws;
   }
 
-  async function getdbTeams(id: string, xmlTeams: Team[]) {
-    const teams = new Map<string, DbTeam>();
+  async function getdbTeams(id: string, xmlTeams: XmlTeam[]) {
+    const teams = new Map<string, Team>();
     const memberships = [];
 
     for (const xmlTeamBasic of xmlTeams) {
-      var xmlTeam = await getTeam(id, xmlTeamBasic.Code);
+      let xmlTeam = await getTeam(id, xmlTeamBasic.Code);
 
       const genders = xmlTeam.Players?.Player?.map(r => r.GenderID);
 
-      var type;
+      let type: SubEventType;
 
-      if (xmlTeam.Name == 'Torpedo 1H (74)') {
+      if (xmlTeam.Name === 'Torpedo 1H (74)') {
         type = SubEventType.M;
       } else {
         type =
@@ -232,27 +246,27 @@ import {
             : -1
           : -1;
 
-      const dbClub = await DbClub.findOne({
+      const dbClub = await Club.findOne({
         where: { clubId: xmlTeam.Club.Number }
       });
-      if (dbClub == null) {
+      if (dbClub === null) {
         logger.warn('No Club?', xmlTeam.Club);
         continue;
       }
-      var dbTeam = await DbTeam.findOne({
+      let dbTeam = await Team.findOne({
         where: {
           clubId: dbClub.id,
           type,
           teamNumber
         },
         include: [
-          { model: DbPlayer, as: 'players', attributes: ['id'] },
-          { model: DbPlayer, as: 'captain' }
+          { model: Player, as: 'players', attributes: ['id'] },
+          { model: Player, as: 'captain' }
         ]
       });
 
-      if (dbTeam == null) {
-        dbTeam = await new DbTeam({
+      if (dbTeam === null) {
+        dbTeam = await new Team({
           clubId: dbClub.id,
           type,
           teamNumber
@@ -275,11 +289,11 @@ import {
           });
         }
 
-        const captain = await DbPlayer.findOne({
+        const captain = await Player.findOne({
           where: { [Op.or]: queries }
         });
 
-        if (captain && dbTeam.captain == null) {
+        if (captain && dbTeam.captain === null) {
           await dbTeam.setCaptain(captain);
         }
       }
@@ -293,13 +307,13 @@ import {
 
       if (xmlTeam.Players?.Player != null) {
         for (const player of xmlTeam.Players?.Player) {
-          const dbPlayer = await DbPlayer.findOne({
+          const dbPlayer = await Player.findOne({
             where: {
               memberId: `${player.MemberID}`
             }
           });
 
-          if (dbPlayer == null) {
+          if (dbPlayer === null) {
             logger.warn('No Player?', player);
             continue;
           }
@@ -337,8 +351,8 @@ import {
 
   async function setEncounters(
     draw: DrawCompetition,
-    matches: TeamMatch[],
-    teams: Map<string, DbTeam>
+    matches: XmlTeamMatch[],
+    teams: Map<string, Team>
   ) {
     return EncounterCompetition.bulkCreate(
       matches.map(match =>
@@ -353,252 +367,3 @@ import {
     );
   }
 })();
-
-/* eslint-disable @typescript-eslint/naming-convention */
-export interface Result {
-  Tournament?: Tournament;
-  TournamentEvent?: TournamentEvent[];
-  TournamentDraw?: TournamentDraw[];
-  Team?: Team | Team[];
-  TeamMatch?: TeamMatch[];
-  _Version: string;
-}
-
-export interface Tournament {
-  Code: string;
-  Name: string;
-  TypeID: string;
-  LastUpdated: Date;
-  StartDate: Date;
-  EndDate: Date;
-  OnlineEntryStartDate: Date;
-  OnlineEntryEndDate: Date;
-  TournamentTimezone: string;
-  AcceptanceListPublicationDate: Date;
-  DrawPublicationDate: Date;
-  ProspectusPublicationDate: Date;
-  SeedingPublicationDate: Date;
-  TournamentWeekStartDate: Date;
-  OnlineEntryWithdrawalDeadline: Date;
-  AcceptanceRankingDate: Date;
-  SeedingRankingDate: Date;
-  Category: Category;
-  PrizeMoney: string;
-  Organization: Organization;
-  Contact: Contact;
-  Venue: Venue;
-}
-
-export interface Category {
-  Code: string;
-  Name: string;
-}
-
-export interface Contact {
-  Name: string;
-  Phone: string;
-  Email: string;
-}
-
-export interface Organization {
-  Name: string;
-}
-
-export interface Venue {
-  Name: string;
-  Address1: string;
-  Postalcode: string;
-  City: string;
-  CountryCode: string;
-  Phone: string;
-  Fax: string;
-  Website: string;
-}
-
-export interface TeamMatch {
-  Code: string;
-  Winner: string;
-  ScoreStatus: string;
-  RoundName: string;
-  MatchTime: Date;
-  EventCode: string;
-  EventName: EventName;
-  DrawCode: string;
-  DrawName: DrawName;
-  Team1: Team;
-  Team2: Team;
-  Sets: Sets;
-}
-
-export enum DrawName {
-  The1StProvincialeA = '1st Provinciale - A'
-}
-
-export enum EventName {
-  The1StProvinciale = '1st Provinciale'
-}
-
-export interface Match {
-  Code: string;
-  Winner: string;
-  ScoreStatus: string;
-  TeamMatchWinner: string;
-  TeamMatchScoreStatus: string;
-  OOPTypeID: string;
-  OOPRound: string;
-  OOPText: string;
-  MatchTime: Date;
-  EventCode: string;
-  EventName: string;
-  DrawCode: string;
-  DrawName: string;
-  LocationCode: string;
-  LocationName: string;
-  CourtCode: string;
-  CourtName: string;
-  MatchTypeID: string;
-  MatchTypeNo: string;
-  MatchOrder: string;
-  Team1: Team;
-  Team2: Team;
-  Duration: string;
-  Sets: Sets;
-  Stats: Stats;
-}
-
-export interface TournamentEvent {
-  Code: string;
-  Name: string;
-  GenderID: GenderID;
-  GameTypeID: GameTypeID;
-  ParaClassID: string;
-  Grading: Grading;
-  SubGrading: Grading;
-}
-
-export interface Sets {
-  Set: Set[];
-}
-
-export interface Set {
-  Scores?: Scores;
-  Stats?: Stats;
-  _Team1: string;
-  _Team2: string;
-}
-
-export interface Scores {
-  Score: Score[];
-}
-
-export interface Score {
-  _Team1: string;
-  _Team2: string;
-}
-
-export interface Stats {
-  Stat: Stat[];
-}
-
-export interface Stat {
-  _ID: string;
-  _Value: string;
-}
-
-export interface TournamentDraw {
-  Code: string;
-  EventCode: string;
-  Name: string;
-  TypeID: string;
-  Size: string;
-  EndSize: string;
-  Qualification: string;
-  Structure: Structure;
-  StageCode: string;
-}
-
-export interface Structure {
-  Item: Item;
-}
-
-export interface Item {
-  Col: string;
-  Row: string;
-  Code: string;
-  Winner: string;
-  ScoreStatus: string;
-  Team: TeamClass | string;
-  MatchTime?: Date;
-  Sets?: Sets;
-}
-
-export interface Sets {
-  Set: Set[];
-}
-
-export interface Set {
-  _Team1: string;
-  _Team2: string;
-}
-
-export interface TeamClass {
-  Code: string;
-  Name: string;
-}
-
-export interface Team {
-  Player1?: Player;
-  Player2?: Player;
-  Player3?: Player;
-  Player4?: Player;
-
-  Code: string;
-  Name: string;
-  Contact: string;
-  Address: string;
-  PostalCode: string;
-  City: string;
-  Phone: string;
-  Email: string;
-  Club: Club;
-  Players: Players;
-}
-
-export interface Player {
-  MemberID: string;
-  Firstname: string;
-  Lastname: string;
-  GenderID: GenderID;
-  CountryCode?: string;
-}
-
-export interface Club {
-  Code: string;
-  Number: string;
-  Name: string;
-}
-
-export interface Players {
-  Player: Player[];
-}
-
-export interface Grading {
-  Code: string;
-  Name: string;
-}
-
-export enum GenderID {
-  Male = 1,
-  Female = 2,
-  Mixed = 3,
-  Boy = 4,
-  Girl = 5,
-  Genderless = 6
-}
-
-export enum GameTypeID {
-  Singles = 1,
-  Doubles = 2,
-  Mixed = 3
-}
-/* eslint-enable @typescript-eslint/naming-convention */

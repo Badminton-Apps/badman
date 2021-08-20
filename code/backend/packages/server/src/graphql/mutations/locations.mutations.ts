@@ -17,7 +17,7 @@ export const addLocationMutation = {
   },
   resolve: async (findOptions, { location, clubId }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${clubId}_add:location`, 'edit-any:club'])
     ) {
       logger.warn("User tried something it should't have done", {
@@ -78,7 +78,7 @@ export const removeLocationMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([
           `${dbLocation.clubId}_remove:location`,
           'edit-any:club'
@@ -175,7 +175,7 @@ export const updateLocationMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {

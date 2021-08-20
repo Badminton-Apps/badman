@@ -39,6 +39,7 @@
                 <input
                   matInput
                   [ngxMatDatetimePicker]="picker"
+                  (focus)="picker.open()"
                   placeholder="Choose a date"
                   formControlName="date"
                   [min]="this.minDate"
