@@ -7,7 +7,7 @@ export const updateGlobalClaimUserMutation = {
   type: RoleType,
   args: {
     playerId: {
-      name: 'PlayerId',
+      name: 'playerId',
       type: GraphQLID
     },
     claimId: {
