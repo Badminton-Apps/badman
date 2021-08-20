@@ -1,12 +1,14 @@
 import { logger } from '@badvlasim/shared';
-import { GraphQLNonNull, GraphQLString } from 'graphql';
-import { attributeFields, Model } from 'graphql-sequelize';
-import { Sequelize } from 'sequelize';
+import { GraphQLString } from 'graphql';
+import { attributeFields } from 'graphql-sequelize';
 
 const attributeFieldsCached = {};
 
-export const getAttributeFields = (model, options: { exclude?: string[], optionalString?: string[] } = null) => {
-  if (attributeFieldsCached[model.name] === null) {
+export const getAttributeFields = (
+  model,
+  options: { exclude?: string[]; optionalString?: string[] } = null
+) => {
+  if (attributeFieldsCached[model.name] == null) {
     attributeFieldsCached[model.name] = attributeFields(model);
   }
 
@@ -15,12 +17,15 @@ export const getAttributeFields = (model, options: { exclude?: string[], optiona
   if (options) {
     if (options?.exclude) {
       for (const ex of options.exclude) {
-        delete returnInstance[ex];  
+        delete returnInstance[ex];
       }
     }
- 
+
     if (options?.optionalString) {
       for (const ex of options.optionalString) {
+        if (returnInstance[ex] == undefined || returnInstance[ex] == null) {
+          logger.warn(`returnInstance ${ex} for ${model.name} is empty`, returnInstance);
+        }
         returnInstance[ex].type = GraphQLString;
       }
     }
