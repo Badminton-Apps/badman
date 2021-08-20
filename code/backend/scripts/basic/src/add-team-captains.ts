@@ -40,7 +40,7 @@ import {
         logger.warn(`Club ${club.name} has more than one role`);
         continue;
       }
-      const adminRole = club.roles.find(r => r.name == 'Admin');
+      const adminRole = club.roles.find(r => r.name === 'Admin');
       await adminRole.addClaim(daClaim.id, {
         transaction,
         ignoreDuplicates: true

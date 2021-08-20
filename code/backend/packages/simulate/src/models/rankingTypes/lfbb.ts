@@ -167,7 +167,7 @@ export class LfbbRankingCalc extends RankingCalc {
             [Op.ne]: null
           }
         },
-        attributes: ['points', 'PlayerId', 'differenceInLevel'],
+        attributes: ['points', 'playerId', 'differenceInLevel'],
         include: [
           {
             model: Game,
@@ -182,9 +182,9 @@ export class LfbbRankingCalc extends RankingCalc {
         ]
       })
     ).map((x: RankingPoint) => {
-      const points = eligbleForRanking.get(x.PlayerId) || [];
+      const points = eligbleForRanking.get(x.playerId) || [];
       points.push(x);
-      eligbleForRanking.set(x.PlayerId, points);
+      eligbleForRanking.set(x.playerId, points);
     });
 
     const places = [];
@@ -219,7 +219,7 @@ export class LfbbRankingCalc extends RankingCalc {
 
       places.push({
         ...newPlace,
-        PlayerId: player.id,
+        playerId: player.id,
         SystemId: this.rankingType.id,
         rankingDate: endDate
       });

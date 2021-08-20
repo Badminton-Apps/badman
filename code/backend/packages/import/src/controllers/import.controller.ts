@@ -265,7 +265,7 @@ export class ImportController extends BaseController {
 
         if (single && double && mix) {
           return new RankingPlace({
-            PlayerId: p.id,
+            playerId: p.id,
             SystemId: system.id,
             single,
             double,

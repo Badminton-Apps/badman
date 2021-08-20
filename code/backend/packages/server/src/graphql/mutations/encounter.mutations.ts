@@ -1,20 +1,20 @@
 import {
-  Team,
-  DataBaseHandler,
-  logger,
-  EncounterChange,
-  EncounterCompetition,
+  Availability,
   Comment,
+  DataBaseHandler,
+  EncounterChange,
   EncounterChangeDate,
+  EncounterCompetition,
+  logger,
   NotificationService,
-  Availability
-} from '../../../../_shared';
+  Team
+} from '@badvlasim/shared';
+import { parse } from 'fast-xml-parser';
+import got from 'got';
+import moment from 'moment';
+import { Transaction } from 'sequelize/types';
 import { ApiError } from '../../models/api.error';
 import { EncounterChangeInputType, EncounterChangeType } from '../types';
-import moment from 'moment';
-import got from 'got';
-import { parse } from 'fast-xml-parser';
-import { Transaction } from 'sequelize/types';
 
 export const addChangeEncounterMutation = (notificationService: NotificationService) => {
   return {
@@ -37,7 +37,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
           home: boolean;
           accepted: boolean;
           dates: {
-            selected: boolean; 
+            selected: boolean;
             date: any;
             availabilityHome: Availability;
             availabilityAway: Availability;
@@ -103,7 +103,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
             });
           }
           // Copy original date
-          if (encounter.originalDate == null) {
+          if (encounter.originalDate === null) {
             encounter.originalDate = encounter.date;
           }
           // Set date to the selected date
@@ -166,7 +166,7 @@ const changeOrUpdate = async (
   if (change.home) {
     comment = await encounterChange.getHomeComment({ transaction });
 
-    if (comment == null) {
+    if (comment === null) {
       comment = new Comment({
         playerId: context?.req?.user?.player?.id,
         clubId: team.clubId
@@ -176,7 +176,7 @@ const changeOrUpdate = async (
     }
   } else {
     comment = await encounterChange.getAwayComment({ transaction });
-    if (comment == null) {
+    if (comment === null) {
       comment = new Comment({
         playerId: context?.req?.user?.player?.id,
         clubId: team.clubId
@@ -222,7 +222,7 @@ const changeOrUpdate = async (
 
   // remove old dates
   for (const date of dates) {
-    if (change.dates.find(r => r.date.getTime() === date.date.getTime()) == null) {
+    if (change.dates.find(r => r.date.getTime() === date.date.getTime()) === null) {
       await date.destroy({ transaction });
     }
   }
@@ -235,7 +235,7 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
   const subEvent = await draw.getSubEvent({ transaction });
   const event = await subEvent.getEvent({ transaction });
 
-  if (event.visualCode == null) {
+  if (event.visualCode === null) {
     logger.error(`No visual code found for ${event?.name}`);
     return;
   }
