@@ -240,7 +240,7 @@ export class RankingCalc {
         new RankingPoint({
           points: player1Team1Points,
           SystemId: this.rankingType.id,
-          PlayerId: player1Team1.id,
+          playerId: player1Team1.id,
           GameId: game.id,
           rankingDate,
           differenceInLevel: player1Team1Points === 0 ? differenceInLevel : 0
@@ -252,7 +252,7 @@ export class RankingCalc {
         new RankingPoint({
           points: player1Team2Points,
           SystemId: this.rankingType.id,
-          PlayerId: player1Team2.id,
+          playerId: player1Team2.id,
           GameId: game.id,
           rankingDate,
           differenceInLevel: player1Team2Points === 0 ? differenceInLevel : 0
@@ -265,7 +265,7 @@ export class RankingCalc {
         new RankingPoint({
           points: player2Team1Points,
           SystemId: this.rankingType.id,
-          PlayerId: player2Team1.id,
+          playerId: player2Team1.id,
           GameId: game.id,
           rankingDate,
           differenceInLevel: player2Team1Points === 0 ? differenceInLevel : 0
@@ -278,7 +278,7 @@ export class RankingCalc {
         new RankingPoint({
           points: player2Team2Points,
           SystemId: this.rankingType.id,
-          PlayerId: player2Team2.id,
+          playerId: player2Team2.id,
           GameId: game.id,
           rankingDate,
           differenceInLevel: player2Team2Points === 0 ? differenceInLevel : 0
