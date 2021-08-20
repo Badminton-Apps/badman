@@ -308,7 +308,7 @@ export class MailService {
       }
     };
 
-    await sendMail(encounter.home, encounter.away.captain);
-    await sendMail(encounter.away, encounter.home.captain);
+    await sendMail(encounter.home, encounter.home.captain);
+    await sendMail(encounter.away, encounter.away.captain);
   }
 }
