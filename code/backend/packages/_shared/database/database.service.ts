@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { CreateOptions } from 'sequelize';
+import { CreateOptions, Op } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
@@ -17,9 +17,14 @@ import {
   SubEventCompetition,
   SubEventTournament,
   Team,
+  Comment,
   TeamPlayerMembership,
   TeamSubEventMembership,
-  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta
+  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta,
+  LastRankingPlace,
+  RoleClaimMembership,
+  PlayerClaimMembership,
+  PlayerRoleMembership
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
@@ -44,13 +49,13 @@ export class DataBaseHandler {
     if (!DataBaseHandler.sequelizeInstance) {
       const models = Object.values(sequelizeModels);
 
-      logger.debug('Connecting with ', { 
+      logger.debug('Connecting with ', {
         ...config
       });
 
       this._dialect = config.dialect;
 
-      DataBaseHandler.sequelizeInstance = new Sequelize({ 
+      DataBaseHandler.sequelizeInstance = new Sequelize({
         ...config,
         logging: config.logging ?? false,
         retry: {
@@ -178,7 +183,7 @@ export class DataBaseHandler {
       for (const player of team.players) {
         const rankingPlaceMay = await RankingPlace.findOne({
           where: {
-            PlayerId: player.id,
+            playerId: player.id,
             SystemId: primarySystem.id,
             rankingDate: `${year}-05-15`
           }
@@ -253,7 +258,7 @@ export class DataBaseHandler {
       const chunks = splitInChunks(rankings, 500);
       for (const chunk of chunks) {
         await RankingPlace.bulkCreate(chunk, {
-          ignoreDuplicates: ['PlayerId'] as any,
+          ignoreDuplicates: ['playerId'] as any,
           transaction,
           returning: false
         });
@@ -310,6 +315,187 @@ export class DataBaseHandler {
   }
 
   /**
+   * @param {string} destinationPlayerId The player where all info will be copied to
+   * @param {string} sourcePlayerId The player where the info will be copied from
+   */
+  async mergePlayers(destinationPlayerId: string, sourcePlayerId: string) {
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const destination = await Player.findByPk(destinationPlayerId, {
+        transaction: transaction
+      });
+      const source = await Player.findByPk(sourcePlayerId, {
+        transaction: transaction
+      });
+
+      if (destination == null) {
+        console.log('Player 1 does not exist');
+        return;
+      }
+
+      if (source == null) {
+        console.log('Player 2 does not exist');
+        return;
+      }
+
+      // Move memberships
+      const sourceClubMemberships = await ClubMembership.findAll({
+        where: { playerId: source.id }
+      });
+
+      // We only update if the releation ship doesn't exists already
+      await ClubMembership.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+            clubId: {
+              [Op.notIn]: sourceClubMemberships.map(row => row.clubId)
+            }
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      const sourceTeamMemberships = await TeamPlayerMembership.findAll({
+        where: { playerId: source.id }
+      });
+
+      await TeamPlayerMembership.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+            teamId: {
+              [Op.notIn]: sourceTeamMemberships.map(row => row.teamId)
+            }
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      const sourceRoleMemberships = await PlayerRoleMembership.findAll({
+        where: { playerId: source.id }
+      });
+
+      await PlayerRoleMembership.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+            roleId: {
+              [Op.notIn]: sourceRoleMemberships.map(row => row.roleId)
+            }
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      const sourceClaimMemberships = await PlayerClaimMembership.findAll({
+        where: { playerId: source.id }
+      });
+
+      await PlayerClaimMembership.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+            claimId: {
+              [Op.notIn]: sourceClaimMemberships.map(row => row.claimId)
+            }
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      // Delete reamining memberships
+      await ClubMembership.destroy({
+        where: { playerId: source.id },
+        transaction
+      });
+      await TeamPlayerMembership.destroy({
+        where: { playerId: source.id },
+        transaction
+      });
+      await PlayerRoleMembership.destroy({
+        where: { playerId: source.id },
+        transaction
+      });
+      await PlayerClaimMembership.destroy({
+        where: { playerId: source.id },
+        transaction
+      });
+
+      // Update where the player isn't a unique key
+      await GamePlayer.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id
+          },
+          returning: false,
+          transaction
+        }
+      );
+      await Comment.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      await RankingPoint.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      // Destoy douplicate
+      await LastRankingPlace.destroy({
+        where: {
+          playerId: source.id
+        },
+        transaction
+      });
+
+      await RankingPlace.destroy({
+        where: {
+          playerId: source.id
+        },
+        transaction
+      });
+
+      destination.sub = destination.sub ?? source.sub;
+      destination.memberId = destination.memberId ?? source.memberId;
+      destination.competitionPlayer = destination.competitionPlayer ?? source.competitionPlayer;
+      destination.birthDate = destination.birthDate ?? source.birthDate;
+
+      await destination.save({ transaction });
+      await source.destroy({ transaction });
+
+      await transaction.commit();
+    } catch (err) {
+      logger.error('Something went wrong merging players');
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
+  /**
    * Check if DB is migrated to latest version
    *
    * @param canMigrate Allows migration of DB
@@ -338,7 +524,7 @@ export class DataBaseHandler {
           }
 
           try {
-            await this._sequelize.sync({ force: true});
+            await this._sequelize.sync({ force: true });
             // await this.seedBasicInfo();
           } catch (e) {
             logger.error(e);
