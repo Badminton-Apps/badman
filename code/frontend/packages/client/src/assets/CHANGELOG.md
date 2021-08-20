@@ -1,3 +1,12 @@
+## [3.38.4](https://github.com/Badminton-Apps/core/compare/v3.38.3...v3.38.4) (2021-08-20)
+
+
+### Bug Fixes
+
+* attribute ([53aad12](https://github.com/Badminton-Apps/core/commit/53aad128ea2d64345d84a55d6fca6db49a60f39b))
+
+
+
 ## [3.38.3](https://github.com/Badminton-Apps/core/compare/v3.38.2...v3.38.3) (2021-08-20)
 
 
