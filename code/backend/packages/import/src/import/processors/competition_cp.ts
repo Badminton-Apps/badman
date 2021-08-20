@@ -129,7 +129,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
       const subEvents: {
         subEvent: SubEventCompetition;
         internalId: number;
-      }[] = this.importProcess.getData('subEvents').getData();
+      }[] = this.importProcess.getData('subEvents');
 
       // Run Current step
       const csvDraws = await csvToArray<ICsvDraw[]>(await args.mdb.toCsv('Draw'), {
@@ -185,9 +185,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
   protected addTeams(): ProcessStep<{ team: Team; internalId: number }[]> {
     return new ProcessStep('teams', async (args: { mdb: Mdb; transaction: Transaction }) => {
       const csvTeams = await csvToArray<ICsvTeam[]>(await args.mdb.toCsv('Team'));
-      const clubs: { club: Club; internalId: number }[] = this.importProcess
-        .getData('clubs')
-        .getData();
+      const clubs: { club: Club; internalId: number }[] = this.importProcess.getData('clubs');
 
       const teamns = csvTeams
         .map(team => {
@@ -233,7 +231,7 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
           'players'
         );
         const teams: { team: Team; internalId: number }[] = this.importProcess.getData('teams');
-        const event: EventCompetition = this.importProcess.getData('event').getData();
+        const event: EventCompetition = this.importProcess.getData('event');
 
         const csvTeamPlayers = await csvToArray<ICsvTeamPlayer[]>(
           await args.mdb.toCsv('TeamPlayer')
