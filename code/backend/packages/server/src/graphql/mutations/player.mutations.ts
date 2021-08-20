@@ -129,7 +129,7 @@ export const updatePlayerRankingMutation = {
 
       const dbLastRanking = await LastRankingPlace.findOne({
         where: {
-          playerId: dbRankingPlace.PlayerId,
+          playerId: dbRankingPlace.playerId,
           rankingDate: dbRankingPlace.rankingDate,
           systemId: dbRankingPlace.SystemId
         },

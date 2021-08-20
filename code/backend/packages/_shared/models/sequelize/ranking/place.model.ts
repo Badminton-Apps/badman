@@ -103,7 +103,7 @@ export class RankingPlace extends Model {
   @ForeignKey(() => Player)
   @Index('ranking_index')
   @Column
-  PlayerId: string;
+  playerId: string;
 
   @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
@@ -111,7 +111,7 @@ export class RankingPlace extends Model {
   @Column
   SystemId: string;
 
-  @BelongsTo(() => Player, 'PlayerId')
+  @BelongsTo(() => Player, 'playerId')
   player: Player;
 
   @BelongsTo(() => RankingSystem, {
@@ -199,7 +199,7 @@ export class RankingPlace extends Model {
       singleInactive: this.singleInactive,
       mixInactive: this.mixInactive,
       doubleInactive: this.doubleInactive,
-      playerId: this.PlayerId,
+      playerId: this.playerId,
       systemId: this.SystemId
     } as LastRankingPlace;
   }

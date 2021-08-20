@@ -185,7 +185,7 @@ export class RankingController extends BaseController {
           where: {
             [Op.and]: [
               {
-                PlayerId: {
+                playerId: {
                   [Op.in]: rankingPoint.game.players.map(x => x.id)
                 }
               },
@@ -202,7 +202,7 @@ export class RankingController extends BaseController {
               { SystemId: where.SystemId }
             ]
           },
-          attributes: ['PlayerId', 'single', 'double', 'mix', 'rankingDate', 'SystemId']
+          attributes: ['playerId', 'single', 'double', 'mix', 'rankingDate', 'SystemId']
         });
 
         rankingPlaces = rankingPlaces.sort(
