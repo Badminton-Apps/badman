@@ -1,3 +1,12 @@
+## [3.38.2](https://github.com/Badminton-Apps/core/compare/v3.38.1...v3.38.2) (2021-08-20)
+
+
+### Bug Fixes
+
+* missing package for future project ([93f313a](https://github.com/Badminton-Apps/core/commit/93f313afafcd02a96be440a59f132084f57ff9a5))
+
+
+
 ## [3.38.1](https://github.com/Badminton-Apps/core/compare/v3.38.0...v3.38.1) (2021-08-20)
 
 
