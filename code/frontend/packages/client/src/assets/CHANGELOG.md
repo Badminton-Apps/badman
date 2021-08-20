@@ -1,3 +1,13 @@
+## [3.38.3](https://github.com/Badminton-Apps/core/compare/v3.38.2...v3.38.3) (2021-08-20)
+
+
+### Bug Fixes
+
+* fast-print version is broken. Using fixed version for now ([2909cea](https://github.com/Badminton-Apps/core/commit/2909cea62cc405f99e897dae42364266a4eb876a))
+* still mising modules, adding new project just to be safe ([18613ef](https://github.com/Badminton-Apps/core/commit/18613ef20d054d1ad1dd2b28ae816cd9d9a2de78))
+
+
+
 ## [3.38.2](https://github.com/Badminton-Apps/core/compare/v3.38.1...v3.38.2) (2021-08-20)
 
 
