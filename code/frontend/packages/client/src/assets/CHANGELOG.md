@@ -1,3 +1,13 @@
+## [3.38.1](https://github.com/Badminton-Apps/core/compare/v3.38.0...v3.38.1) (2021-08-20)
+
+
+### Bug Fixes
+
+* finish mailing ([9f3fdf1](https://github.com/Badminton-Apps/core/commit/9f3fdf1460dfff1414d29d18e23f402d49a5e984))
+* layout mailing ([5ca73f7](https://github.com/Badminton-Apps/core/commit/5ca73f71aebff9712956953221854b94e3673326))
+
+
+
 # [3.38.0](https://github.com/Badminton-Apps/core/compare/v3.37.0...v3.38.0) (2021-08-20)
 
 
