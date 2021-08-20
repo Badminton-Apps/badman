@@ -330,13 +330,11 @@ export class DataBaseHandler {
       });
 
       if (destination === null) {
-        logger.warn('Player 1 does not exist');
-        return;
+        throw new Error('destination does not exist');
       }
 
       if (source === null) {
-        logger.warn('Player 2 does not exist');
-        return;
+        throw new Error('source does not exist');
       }
 
       // Move memberships
@@ -359,8 +357,8 @@ export class DataBaseHandler {
         }
       );
 
-      const sourceTeamMemberships = await TeamPlayerMembership.findAll({
-        where: { playerId: source.id }
+      const destinationTeamMemberships = await TeamPlayerMembership.findAll({
+        where: { playerId: destination.id }
       });
 
       await TeamPlayerMembership.update(
@@ -369,7 +367,7 @@ export class DataBaseHandler {
           where: {
             playerId: source.id,
             teamId: {
-              [Op.notIn]: sourceTeamMemberships.map(row => row.teamId)
+              [Op.notIn]: destinationTeamMemberships.map(row => row.teamId)
             }
           },
           returning: false,
@@ -377,8 +375,8 @@ export class DataBaseHandler {
         }
       );
 
-      const sourceRoleMemberships = await PlayerRoleMembership.findAll({
-        where: { playerId: source.id }
+      const destinationRoleMemberships = await PlayerRoleMembership.findAll({
+        where: { playerId: destination.id }
       });
 
       await PlayerRoleMembership.update(
@@ -387,7 +385,7 @@ export class DataBaseHandler {
           where: {
             playerId: source.id,
             roleId: {
-              [Op.notIn]: sourceRoleMemberships.map(row => row.roleId)
+              [Op.notIn]: destinationRoleMemberships.map(row => row.roleId)
             }
           },
           returning: false,
@@ -395,8 +393,8 @@ export class DataBaseHandler {
         }
       );
 
-      const sourceClaimMemberships = await PlayerClaimMembership.findAll({
-        where: { playerId: source.id }
+      const destinationClaimMemberships = await PlayerClaimMembership.findAll({
+        where: { playerId: destination.id }
       });
 
       await PlayerClaimMembership.update(
@@ -405,7 +403,7 @@ export class DataBaseHandler {
           where: {
             playerId: source.id,
             claimId: {
-              [Op.notIn]: sourceClaimMemberships.map(row => row.claimId)
+              [Op.notIn]: destinationClaimMemberships.map(row => row.claimId)
             }
           },
           returning: false,
