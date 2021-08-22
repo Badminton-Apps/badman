@@ -9,6 +9,7 @@ import {
   Output,
 } from '@angular/core';
 import * as moment from 'moment';
+import { Club } from 'app/_shared';
 
 @Component({
   selector: 'app-profile-header',
@@ -42,6 +43,8 @@ export class ProfileHeaderComponent implements OnInit {
   doubleTooltip: string;
   mixTooltip: string;
 
+  playerClub: Club;
+
   constructor() {}
 
   ngOnInit(): void {
@@ -56,6 +59,10 @@ export class ProfileHeaderComponent implements OnInit {
       this.doubleTooltip = `Week: ${date.week()}-${date.weekYear()}\r\nWithin level: ${this.shownRanking.doubleRank} of ${this.shownRanking.totalWithinDoubleLevel}\r\nTotal: ${this.shownRanking.totalDoubleRanking}\r\nUp: ${this.shownRanking.doublePoints}, down: ${this.shownRanking.doublePointsDowngrade}`;
       this.mixTooltip = `Week: ${date.week()}-${date.weekYear()}\r\nWithin level: ${this.shownRanking.mixRank} of ${this.shownRanking.totalWithinMixLevel}\r\nTotal: ${this.shownRanking.totalMixRanking}\r\nUp: ${this.shownRanking.mixPoints}, down: ${this.shownRanking.mixPointsDowngrade}`;
       this.singleTooltip = `Week: ${date.week()}-${date.weekYear()}\r\nWithin level: ${this.shownRanking.singleRank} of ${this.shownRanking.totalWithinSingleLevel}\r\nTotal: ${this.shownRanking.totalSingleRanking}\r\nUp: ${this.shownRanking.singlePoints}, down: ${this.shownRanking.singlePointsDowngrade}`;
+    }
+
+    if (this.player.clubs) {
+      this.playerClub = this.player.clubs[0];
     }
   }
 }

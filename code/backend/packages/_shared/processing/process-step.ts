@@ -1,12 +1,13 @@
-export class ProcessStep<Output> {
-  private _data: Output;
+export class ProcessStep<T> {
+  private _data: any;
   private _ran: boolean = false;
+  constructor(public name: string, public execute: (args: any) => Promise<any>) {}
 
-  constructor(public name: string, public execute: (args: any) => Promise<Output>) {}
-
-  public async executeStep(args: any) {
+  public async executeStep(args: any): Promise<boolean> {
     this._data = await this.execute(args);
     this._ran = true;
+   
+    return this._data?.stop ?? false;
   }
 
   getData() {
