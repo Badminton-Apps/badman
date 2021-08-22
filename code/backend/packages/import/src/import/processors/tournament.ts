@@ -84,8 +84,8 @@ export class TournamentTpProcessor extends ProcessImport {
           name: args.importFile.name
         };
 
-        if (args.importFile.uniCode) {
-          where.uniCode = args.importFile.uniCode;
+        if (args.importFile.visualCode) {
+          where.visualCode = args.importFile.visualCode;
         }
 
         const foundEvent = await EventTournament.findOne({
@@ -100,7 +100,7 @@ export class TournamentTpProcessor extends ProcessImport {
         try {
           const dbEvent = await new EventTournament({
             name: args.importFile.name,
-            uniCode: args.importFile.uniCode,
+            visualCode: args.importFile.visualCode,
             firstDay: args.importFile.firstDay,
             dates: args.importFile.dates
           }).save({ transaction: args.transaction });
