@@ -37,7 +37,7 @@ const addEventTournamentMutation = {
         const { groups, ...sub } = subEventTournament;
 
         return {
-          subEventTournamentGroup: { internalId: sub.internalId, groups },
+          subEventTournamentGroup: { visualCode: sub.visualCode, groups },
           subEventTournament: {
             ...sub,
             EventTournamentId: eventTournamentDb.id
@@ -54,7 +54,7 @@ const addEventTournamentMutation = {
       subEventTournaments
         .map(r => r.subEventTournamentGroup)
         .forEach(element => {
-          const subDb = subEventTournamentsDb.find(r => r.internalId === element.internalId);
+          const subDb = subEventTournamentsDb.find(r => r.visualCode === element.visualCode);
           element.groups.forEach(group => {
             groupSubEventTournaments.push({ subEventId: subDb.id, groupId: group.id });
           });
