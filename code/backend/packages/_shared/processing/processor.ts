@@ -42,7 +42,7 @@ export class Processor {
       try {
         const stop = await step.executeStep(args);
 
-        if (stop == true) {
+        if (stop === true) {
           logger.debug('stop was set');
           break;
         }
