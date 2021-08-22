@@ -56,24 +56,24 @@ export class SubEventTournament extends Model {
   @Column
   id: string;
 
-  @Unique('unique_constraint')
+  @Unique('SubEventTournaments_unique_constraint')
   @Column
   name: string;
 
-  @Unique('unique_constraint')
+  @Unique('SubEventTournaments_unique_constraint')
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType: SubEventType;
 
-  @Unique('unique_constraint')
+  @Unique('SubEventTournaments_unique_constraint')
   @Column(DataType.ENUM('S', 'D', 'MX'))
   gameType: GameType;
 
   @Column
   level?: number;
 
-  @Unique('unique_constraint')
+  @Unique('SubEventTournaments_unique_constraint')
   @Column
-  internalId: number;
+  visualCode: string;
 
   @BelongsToMany(
     () => RankingSystemGroup,
@@ -93,7 +93,7 @@ export class SubEventTournament extends Model {
   })
   event?: EventTournament;
 
-  @Unique('unique_constraint')
+  @Unique('SubEventTournaments_unique_constraint')
   @ForeignKey(() => EventTournament)
   @Column
   eventId: string;

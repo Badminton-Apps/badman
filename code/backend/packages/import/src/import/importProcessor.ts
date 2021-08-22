@@ -256,11 +256,7 @@ export abstract class ProcessImport {
         }
       }
 
-<<<<<<< Updated upstream
-      if (dbclubPlayerMemberships.find(r => r.clubId === clubId) === null) {
-=======
-      if (dbclubPlayerMemberships.find(r => r.clubId === clubId) == null) {
->>>>>>> Stashed changes
+      if (dbclubPlayerMemberships.find(r => r.clubId == clubId) == null) {
         // new membership
         newMmemberships.push(
           new ClubMembership({
