@@ -55,11 +55,11 @@ export class EventTournament extends Model {
   @Column
   tournamentNumber: string;
 
-  @Unique('unique_constraint')
+  @Unique('EventTournaments_unique_constraint')
   @Column
   name: string;
 
-  @Unique('unique_constraint')
+  @Unique('EventTournaments_unique_constraint')
   @Column
   firstDay: Date;
 
@@ -88,8 +88,9 @@ export class EventTournament extends Model {
   @Column
   allowEnlisting: boolean;
 
+  @Unique('EventTournaments_unique_constraint')
   @Column
-  uniCode: string;
+  visualCode: string;
 
   // Has many subEvent
   getSubEvents!: HasManyGetAssociationsMixin<SubEventTournament>;

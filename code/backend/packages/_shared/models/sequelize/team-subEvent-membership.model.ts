@@ -5,7 +5,7 @@ import {
   DataType,
   ForeignKey,
   Model,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { SubEventCompetition } from './event';
 import { Team } from './team.model';

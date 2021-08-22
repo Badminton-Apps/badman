@@ -26,7 +26,7 @@ dotenv.config();
 (async () => {
   await startWhenReady(true, false, db => {
     startServer(db);
-  });
+  }); 
 })();
 
 const startServer = (databaseService: DataBaseHandler) => {
@@ -38,7 +38,7 @@ const startServer = (databaseService: DataBaseHandler) => {
   const app = new App(
     [
       new EnrollmentController(router, authService.checkAuth, databaseService, notifService),
-      new RankingController(router, authService.checkAuth),
+      new RankingController(router, authService.checkAuth), 
       new SystemController(router, authService.checkAuth, databaseService),
       new UserController(router, authService.checkAuth),
       new RequestLinkController(router, authService.checkAuth)
