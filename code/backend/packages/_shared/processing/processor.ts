@@ -34,13 +34,18 @@ export class Processor {
   async process(args) {
     const totalStart = new Date().getTime();
 
-    logger.debug(`Running importFile`);
+    logger.debug(`Running process`);
     for (const [name, step] of this.procesSteps) {
       logger.debug(`Running step: ${name}`);
       const start = new Date().getTime();
 
       try {
-        await step.executeStep(args);
+        const stop = await step.executeStep(args);
+
+        if (stop === true) {
+          logger.debug('stop was set');
+          break;
+        }
       } catch (e) {
         logger.error(`Step ${name}, failed`, {
           args,

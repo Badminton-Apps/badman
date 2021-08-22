@@ -32,6 +32,7 @@ export class Team {
 
     this.preferredTime = args?.preferredTime;
     this.preferredDay = args?.preferredDay;
+
     this.subEvents = args?.subEvents?.map((s) => new SubEvent(s));
     this.locations = args?.locations?.map((l) => new Location(l));
     this.captain = args?.captain != null ? new Player(args?.captain) : null;
@@ -50,7 +51,7 @@ export class Team {
           }
         }
 
-        return new Player({ ...p, index });
+        return new Player({ ...p, index: index });
       }) ?? [];
 
     this.calculateBase();

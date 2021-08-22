@@ -26,6 +26,9 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   @Input()
   allClubPermission: string;
 
+  @Input()
+  needsPermission: boolean = true;
+
   formControl = new FormControl(null, [Validators.required]);
   options: Club[];
 
@@ -43,6 +46,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     this.options = await combineLatest([
       this.authSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
       this.authSerice.hasAllClaims$([`${this.allClubPermission}`]),
+      this.user.profile$.pipe(filter(p => !!p.player))
     ])
       .pipe(
         switchMap(([single, all]) => {
@@ -54,8 +58,10 @@ export class SelectClubComponent implements OnInit, OnDestroy {
               map((r) => r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))),
               switchMap((ids) => this.clubService.getClubs({ ids, first: ids.length }))
             );
-          } else {
+          } else if (this.needsPermission) {
             return of({ clubs: null });
+          } else {
+            return this.clubService.getClubs({ first: 999 });
           }
         }),
         take(1),
@@ -86,8 +92,10 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     }
 
     if (foundClub == null) {
-      const clubIds = this.user.profile.clubs.map((r) => r.id);
-      foundClub = this.options.find((r) => clubIds.includes(r.id));
+      const clubIds = this.user?.profile?.clubs.map((r) => r.id);
+      if (clubIds) {
+        foundClub = this.options.find((r) => clubIds.includes(r.id));
+      }
     }
 
     if (foundClub == null && this.options.length == 1) {

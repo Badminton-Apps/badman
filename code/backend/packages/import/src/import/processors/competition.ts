@@ -32,7 +32,6 @@ export abstract class CompetitionProcessor extends ProcessImport {
         try {
           const event = await new EventCompetition({
             name: args.importFile.name,
-            uniCode: args.importFile.uniCode,
             startYear: args.importFile.firstDay?.getFullYear(),
             type: this.getLeague(args.importFile)
           }).save({ transaction: args.transaction });
@@ -59,8 +58,8 @@ export abstract class CompetitionProcessor extends ProcessImport {
 
         const or: any = [{ name: args.importFile.name }];
 
-        if (args.importFile.uniCode) {
-          or.push({ uniCode: args.importFile.uniCode });
+        if (args.importFile.visualCode) {
+          or.push({ visualCode: args.importFile.visualCode });
         }
         const where: { [key: string]: any } = {
           startYear: args.importFile.firstDay?.getFullYear(),
