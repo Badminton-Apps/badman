@@ -1,0 +1,27 @@
+query GetTeamInfo($teamId: ID!, $subEventId: ID!) {
+  team(id: $teamId) {
+    type
+    subEvents(where: { id: $subEventId }) {
+      id
+      maxLevel
+      minBaseIndex
+      maxBaseIndex
+      meta {
+        teamIndex
+        players {
+          playerId
+        }
+      }
+    }
+    players {
+      id
+      fullName 
+      gender
+      lastRanking {
+        single  
+        double
+        mix
+      }
+    }
+  }
+}

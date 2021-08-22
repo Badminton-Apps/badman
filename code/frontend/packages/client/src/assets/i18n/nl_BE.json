@@ -1,235 +1,256 @@
 {
-    "languages": {
-        "en": "English",
-        "fr_BE": "Français",
-        "nl_BE": "Nederlands"
+  "languages": {
+    "en": "English",
+    "fr_BE": "Français",
+    "nl_BE": "Nederlands"
+  },
+  "lists": {
+    "name": "Naam"
+  },
+  "management": {
+    "calculate": "Bereken",
+    "cleanup": "Opkuisen",
+    "download": "Download",
+    "end": "Einde",
+    "force": "Forceer",
+    "games-to-use": "Matchen te gebruiken",
+    "import": "Importeer",
+    "new-system": "Nieuw Systeem",
+    "number-short": "Nr.",
+    "procent-losing-short": "% Verlies",
+    "procent-winning-short": "% Win",
+    "ranking": "Ranking",
+    "reset": "Reset",
+    "select": "Selecteer",
+    "start": "Start",
+    "sync": "Sync"
+  },
+  "systems": {
+    "double": "Dubbel",
+    "double-rank": "Ranking klassement",
+    "list": "Ranking spelers",
+    "mix": "Gemengd",
+    "mix-rank": "Ranking klassement",
+    "single": "Enkel",
+    "single-rank": "Ranking klassement"
+  },
+  "faq": {
+    "legend": "Legende",
+    "title": "Info hoe website te gebruiken",
+    "info": {
+      "title": "Infofilmpje",
+      "description": "Via de volgende link kan het infofilmpje gevonden worden waarin alle details van het nieuwe systeem worden uitgelegd: "
     },
-    "lists": {
-        "name": "Naam"
+    "overview": {
+      "title": "Overzicht per speler",
+      "description": "Wanneer je in de zoekbalk een speler opzoekt, kom je op een pagina terecht waarin je allerhande informatie kan zien over een speler zijn resultaten en daaraan gekoppelde klassement en ranking. Hieronder worden alle onderdelen van deze pagina uitgelegd.",
+      "levels": "Rechtsboven krijg je de klassementen van de persoon die je aan het opzoeken bent. Als je met je muis over een klassement beweegt (of op je GSM bij lang induwen) dan zie je de rangschikking van de speler binnen zijn eigen klassement, alsook zijn positie binnen de totale Belgische ranking.",
+      "evolution-1": "Op de evolutie grafiek rechts zie je hoe een speler evolueert doorheen de gesimuleerde jaren. De periode aangeduid met een stippenlijn, is een periode waar de simulaties nog aan het stabiliseren zijn, dus deze periode is minder accuraat.",
+      "evolution-2": "Tevens is per maand van klassementswijziging het gemiddelde voor stijgen als het gemiddelde voor dalen zichtbaar door met je muis over het cirkeltje horende bij de maand te bewegen",
+      "game-result": "Voor een speler worden al zijn resultaten weergeven (toernooi/competitie), wanneer deze gespeeld is, wat de setstanden waren, welke klassement de spelers waren op het moment van de wedstrijd en wie de winnaar was (in het vet aangeduid)."
     },
-    "management": {
-        "calculate": "Bereken",
-        "cleanup": "Opkuisen",
-        "download": "Download",
-        "end": "Einde",
-        "force": "Forceer",
-        "games-to-use": "Matchen te gebruiken",
-        "import": "Importeer",
-        "new-system": "Nieuw Systeem",
-        "number-short": "Nr.",
-        "procent-losing-short": "% Verlies",
-        "procent-winning-short": "% Win",
-        "ranking": "Ranking",
-        "reset": "Reset",
-        "select": "Selecteer",
-        "start": "Start",
-        "sync": "Sync"
+    "points": {
+      "title": "Punten tabel",
+      "table": {
+        "level": "Level",
+        "points-won": "Punten gewonnen tegen dit niveau",
+        "points-needed-up": "Grenswaarde voor stijgen",
+        "points-needed-down": "Grenswaarde voor dalen"
+      }
     },
-    "systems": {
-        "double": "Dubbel",
-        "double-rank": "Ranking klassement",
-        "list": "Ranking spelers",
-        "mix": "Gemengd",
-        "mix-rank": "Ranking klassement",
-        "single": "Enkel",
-        "single-rank": "Ranking klassement"
+    "ranking": {
+      "title": "Ranking",
+      "description": "Wanner je linksboven op de categorie ranking klikt, dan krijg je de ranking binnen je klassement samen met je klassement per discipline en per geslacht te zien, samen met het klassement van de speler. Sorteren op aflopende totale ranking binnen een discipline gebeurt door op deze discipline te klikken (of op je GSM bij lang induwen.) Standaard wordt de top 15 gegeven, maar dit kan je onderaan de pagina wijzigen. Je kan ook naar de volgende pagina doorklikken met de volgende spelers binnen de ranking. De discipline zelf kan je ook onderaan selecteren"
     },
-    "faq": {
-        "legend": "Legende",
-        "title": "Info hoe website te gebruiken",
-        "info": {
-            "title": "Infofilmpje",
-            "description": "Via de volgende link kan het infofilmpje gevonden worden waarin alle details van het nieuwe systeem worden uitgelegd: "
-        },
-        "overview": {
-            "title": "Overzicht per speler",
-            "description": "Wanneer je in de zoekbalk een speler opzoekt, kom je op een pagina terecht waarin je allerhande informatie kan zien over een speler zijn resultaten en daaraan gekoppelde klassement en ranking. Hieronder worden alle onderdelen van deze pagina uitgelegd.",
-            "levels": "Rechtsboven krijg je de klassementen van de persoon die je aan het opzoeken bent. Als je met je muis over een klassement beweegt (of op je GSM bij lang induwen) dan zie je de rangschikking van de speler binnen zijn eigen klassement, alsook zijn positie binnen de totale Belgische ranking.",
-            "evolution-1": "Op de evolutie grafiek rechts zie je hoe een speler evolueert doorheen de gesimuleerde jaren. De periode aangeduid met een stippenlijn, is een periode waar de simulaties nog aan het stabiliseren zijn, dus deze periode is minder accuraat.",
-            "evolution-2": "Tevens is per maand van klassementswijziging het gemiddelde voor stijgen als het gemiddelde voor dalen zichtbaar door met je muis over het cirkeltje horende bij de maand te bewegen",
-            "game-result": "Voor een speler worden al zijn resultaten weergeven (toernooi\/competitie), wanneer deze gespeeld is, wat de setstanden waren, welke klassement de spelers waren op het moment van de wedstrijd en wie de winnaar was (in het vet aangeduid)."
-        },
-        "points": {
-            "title": "Punten tabel",
-            "table": {
-                "level": "Level",
-                "points-won": "Punten gewonnen tegen dit niveau",
-                "points-needed-up": "Grenswaarde voor stijgen",
-                "points-needed-down": "Grenswaarde voor dalen"
-            }
-        },
-        "ranking": {
-            "title": "Ranking",
-            "description": "Wanner je linksboven op de categorie ranking klikt, dan krijg je de ranking binnen je klassement samen met je klassement per discipline en per geslacht te zien, samen met het klassement van de speler. Sorteren op aflopende totale ranking binnen een discipline gebeurt door op deze discipline te klikken (of op je GSM bij lang induwen.) Standaard wordt de top 15 gegeven, maar dit kan je onderaan de pagina wijzigen. Je kan ook naar de volgende pagina doorklikken met de volgende spelers binnen de ranking. De discipline zelf kan je ook onderaan selecteren"
-        },
-        "updates": {
-            "title": "Updates",
-            "description": "Overzicht veranderingen"
-        }
-    },
-    "team": {
-        "day": "Speeldag",
-        "location": "Locatie",
-        "title": {
-            "prefferd-encounter": "Voorkeurs speel moment",
-            "captain": "Ploegkapitein",
-            "players": "Spelers",
-            "base-fields": "Algemene info"
-        },
-        "change-number": "Het wijzigen van het ploegnummer, update ook hogere\/lagere teams",
-        "check-players": "Vink bij de basisspelers de checkbox aan"
-    },
-    "competition": {
-        "title": "Competitie",
-        "subevent": {
-            "max": "Max klassement",
-            "min-base": "Min basis ploegindex",
-            "max-base": "Max basis ploegindex"
-        },
-        "enrollment": {
-            "select-location": "Selecteer locaties voor ontmoetingen",
-            "select-club": "Selecteer club & competitie",
-            "assign-team": "Deel ploegen in",
-            "max": "Max",
-            "base": "Grenzen",
-            "errors": {
-                "not-allowed": "{{player}} mag niet in basis ({{type}}:{{level}}, max {{max}})",
-                "cant-play": "{{player}} mag nooit spelen ({{type}}:{{level}}, max {{max}})",
-                "best-players": "Sterkste 4 spelers kunnen nooit samen spelen",
-                "base-min": "Ploegindex te laag voor afdeling",
-                "base-max": "Ploegindex te hoog voor afdeling",
-                "no-day": "Gelieve een speeldag te kiezen",
-                "not-comp": "{{player}} is niet geregistreerd als een CT-speler (opmerking: het duurt enkele dagen voor de aanvraag tot CT-statuut verwerkt is)",
-                "best-max": "Sterkste 4 spelers te hoog voor afdeling"
-            },
-            "player-base": "Speler is al basisspeler van andere ploeg",
-            "title": "Ploeginschrijving",
-            "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
-            "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
-            "comment-nat": "Opmerkingen Nationale competitie (per ploeg)"
-        },
-        "type": "Type",
-        "national": "Nationaal",
-        "liga": "Liga",
-        "prov": "Provinciaal",
-        "note": "opmerking: wijzigingen worden ogenblikkelijk opgeslagen",
-        "change-encounter": {
-            "title": "Speelmomenten",
-            "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
-            "vs": "Vs.",
-            "home": "Thuis",
-            "away": "Uit",
-            "possible": "Beschikbaar",
-            "not-possible": "Niet beschikbaar",
-            "choose-date": "Kies een datum",
-            "choose-team": "Kies een ploeg",
-            "choose-encounter": "Kies een ontmoeting",
-            "comments": "Opmerkingen",
-            "home-comment": "Opmerkingen thuisploeg",
-            "away-comment": "Opmerkingen uitploeg",
-            "dates": "Data",
-            "add-date": "Voeg datum toe",
-            "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
-            "submit": {
-                "title": "Verzenden",
-                "description": "Wanneer je op ja klikt, zal de huidige dag vervangen worden door de geselecteerde nieuwe dag, weet je het zeker?"
-            },
-            "requested": "Verzoek ingediend",
-            "requested-failed": "Verzoek mislukt, contacteer BVL indien het probleem aanhoud",
-            "errors": {
-                "select-one-date": "Gelieve minsten 1 dag te selecteren",
-                "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
-            }
-        }
-    },
-    "event": {
-        "types": {
-            "competition": "Competitie",
-            "tournament": "Toernooien"
-        }
-    },
-    "players": {
-        "title": "Spelers",
-        "no-memberid": "Onbekend lidnummer"
-    },
-    "games": {
-        "title": "Wedstrijden",
-        "bye": "Bedankt"
-    },
-    "gender": {
-        "select": "Selecteer",
-        "title": "Geslacht",
-        "male": "Heren",
-        "female": "Dames",
-        "mix": "Gemengd",
-        "males": "Man",
-        "females": "Vrouw"
-    },
-    "input": {
-        "type": "Type",
-        "memberId": "Lidnummer",
-        "year": "Jaar",
-        "name": "Naam",
-        "firstname": "Voornaam",
-        "lastname": "Achteraam",
-        "abbreviation": "Afkorting",
-        "email": "e-mail",
-        "phone": "Telefoon",
-        "fax": "Fax",
-        "required": "Velden met een sterretje (*) zijn verplicht",
-        "gender": "Geslacht",
-        "select": "Selecteer",
-        "sub": "Inschrijving",
-        "street": "Straat",
-        "streetnumber": "Huisnummer",
-        "city": "Stad",
-        "postalcode": "Postcode",
-        "state": "Provincie"
-    },
-    "button": {
-        "close": "Sluiten",
-        "delete": "Verwijderen",
-        "create": "Aanmaken",
-        "edit": "Bewerken",
-        "done": "Klaar",
-        "detail": "Details",
-        "next": "Volgende",
-        "prev": "Vorige",
-        "submit": "Verzenden",
-        "no": "Nee",
-        "yes": "Ja",
-        "save": "Opslaan"
-    },
-    "days": {
-        "monday": "Maandag",
-        "tuesday": "Dinsdag",
-        "wednesday": "Woensdag",
-        "thursday": "Donderdag",
-        "friday": "Vrijdag",
-        "saturday": "Zaterdag",
-        "sunday": "Zondag"
-    },
-    "locations": {
-        "title": "Locatie(s)"
-    },
-    "loading": "Aan het laden",
-    "evolution": {
-        "warning": "Spelershistorie even niet beschikbaar"
-    },
-    "club": {
-        "number": "club nummer"
-    },
-    "pickers": {
-        "select-team": "Kies een ploeg",
-        "select-team-groups": {
-            "M": "Heren",
-            "F": "Dames",
-            "MX": "Gemengd"
-        },
-        "select-club": "Kies een club",
-        "select-encounter": "Kies een ontmoeting"
-    },
-    "permission": {
-        "no-perm": "Je hebt niet voldoende rechten hiervoor."
+    "updates": {
+      "title": "Updates",
+      "description": "Overzicht veranderingen"
     }
+  },
+  "team": {
+    "day": "Speeldag",
+    "location": "Locatie",
+    "title": {
+      "prefferd-encounter": "Voorkeurs speel moment",
+      "captain": "Ploegkapitein",
+      "players": "Spelers",
+      "base-fields": "Algemene info"
+    },
+    "change-number": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
+    "check-players": "Vink bij de basisspelers de checkbox aan"
+  },
+  "competition": {
+    "title": "Competitie",
+    "subevent": {
+      "max": "Max klassement",
+      "min-base": "Min basis ploegindex",
+      "max-base": "Max basis ploegindex"
+    },
+    "enrollment": {
+      "select-location": "Selecteer locaties voor ontmoetingen",
+      "select-club": "Selecteer club & competitie",
+      "assign-team": "Deel ploegen in",
+      "max": "Max",
+      "base": "Grenzen",
+      "errors": {
+        "not-allowed": "{{player}} mag niet in basis ({{type}}:{{level}}, max {{max}})",
+        "cant-play": "{{player}} mag nooit spelen ({{type}}:{{level}}, max {{max}})",
+        "best-players": "Sterkste 4 spelers kunnen nooit samen spelen",
+        "base-min": "Ploegindex te laag voor afdeling",
+        "base-max": "Ploegindex te hoog voor afdeling",
+        "no-day": "Gelieve een speeldag te kiezen",
+        "not-comp": "{{player}} is niet geregistreerd als een CT-speler (opmerking: het duurt enkele dagen voor de aanvraag tot CT-statuut verwerkt is)",
+        "best-max": "Sterkste 4 spelers te hoog voor afdeling"
+      },
+      "player-base": "Speler is al basisspeler van andere ploeg",
+      "title": "Ploeginschrijving",
+      "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
+      "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
+      "comment-nat": "Opmerkingen Nationale competitie (per ploeg)"
+    },
+    "type": "Type",
+    "national": "Nationaal",
+    "liga": "Liga",
+    "prov": "Provinciaal",
+    "note": "opmerking: wijzigingen worden ogenblikkelijk opgeslagen",
+    "change-encounter": {
+      "title": "Speelmomenten",
+      "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
+      "vs": "Vs.",
+      "home": "Thuis",
+      "away": "Uit",
+      "possible": "Beschikbaar",
+      "not-possible": "Niet beschikbaar",
+      "choose-date": "Kies een datum",
+      "choose-team": "Kies een ploeg",
+      "choose-encounter": "Kies een ontmoeting",
+      "comments": "Opmerkingen",
+      "home-comment": "Opmerkingen thuisploeg",
+      "away-comment": "Opmerkingen uitploeg",
+      "dates": "Data",
+      "add-date": "Voeg datum toe",
+      "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
+      "submit": {
+        "title": "Verzenden",
+        "description": "Wanneer je op ja klikt, zal de huidige dag vervangen worden door de geselecteerde nieuwe dag, weet je het zeker?"
+      },
+      "requested": "Verzoek ingediend",
+      "requested-failed": "Verzoek mislukt, contacteer BVL indien het probleem aanhoud",
+      "errors": {
+        "select-one-date": "Gelieve minsten 1 dag te selecteren",
+        "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
+      }
+    },
+    "team-assembly": {
+      "title": "Ploeg opstelling",
+      "reserve": "Reserve spelers",
+      "double1": "Dubbel 1",
+      "double2": "Dubbel 2",
+      "double3": "Dubbel 3",
+      "double4": "Dubbel 4",
+      "single1": "Enkel 1",
+      "single2": "Enkel 2",
+      "single3": "Enkel 3",
+      "single4": "Enkel 4",
+      "mix1": "Gemengd 1",
+      "mix2": "Gemengd 2",
+      "errors": {
+        "already": "Speler al aanwezig",
+        "to-much": "Speler mag niet meer spelen",
+        "players-above-lower": "Beter duo staat boven dit duo",
+        "player-above-lower": "Betere speler staat boven deze speler"
+      },
+      "team-index-ignored": "Teamindex mag voor de eeste ploeg de grenzen overschrijden"
+    }
+  },
+  "event": {
+    "types": {
+      "competition": "Competitie",
+      "tournament": "Toernooien"
+    }
+  },
+  "players": {
+    "title": "Spelers",
+    "no-memberid": "Onbekend lidnummer"
+  },
+  "games": {
+    "title": "Wedstrijden",
+    "bye": "bye"
+  },
+  "gender": {
+    "select": "Selecteer",
+    "title": "Geslacht",
+    "male": "Heren",
+    "female": "Dames",
+    "mix": "Gemengd",
+    "males": "Man",
+    "females": "Vrouw"
+  },
+  "input": {
+    "type": "Type",
+    "memberId": "Lidnummer",
+    "year": "Jaar",
+    "name": "Naam",
+    "firstname": "Voornaam",
+    "lastname": "Achteraam",
+    "abbreviation": "Afkorting",
+    "email": "e-mail",
+    "phone": "Telefoon",
+    "fax": "Fax",
+    "required": "Velden met een sterretje (*) zijn verplicht",
+    "gender": "Geslacht",
+    "select": "Selecteer",
+    "sub": "Inschrijving",
+    "street": "Straat",
+    "streetnumber": "Huisnummer",
+    "city": "Stad",
+    "postalcode": "Postcode",
+    "state": "Provincie"
+  },
+  "button": {
+    "close": "Sluiten",
+    "delete": "Verwijderen",
+    "create": "Aanmaken",
+    "edit": "Bewerken",
+    "done": "Klaar",
+    "detail": "Details",
+    "next": "Volgende",
+    "prev": "Vorige",
+    "submit": "Verzenden",
+    "no": "Nee",
+    "yes": "Ja",
+    "save": "Opslaan"
+  },
+  "days": {
+    "monday": "Maandag",
+    "tuesday": "Dinsdag",
+    "wednesday": "Woensdag",
+    "thursday": "Donderdag",
+    "friday": "Vrijdag",
+    "saturday": "Zaterdag",
+    "sunday": "Zondag"
+  },
+  "locations": {
+    "title": "Locatie(s)"
+  },
+  "loading": "Aan het laden",
+  "evolution": {
+    "warning": "Spelershistorie even niet beschikbaar"
+  },
+  "club": {
+    "number": "club nummer"
+  },
+  "pickers": {
+    "select-team": "Kies een ploeg",
+    "select-team-groups": {
+      "M": "Heren",
+      "F": "Dames",
+      "MX": "Gemengd"
+    },
+    "select-club": "Kies een club",
+    "select-encounter": "Kies een ontmoeting"
+  },
+  "permission": {
+    "no-perm": "Je hebt niet voldoende rechten hiervoor."
+  }
 }

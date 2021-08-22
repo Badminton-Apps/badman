@@ -118,7 +118,7 @@ export class Game extends Model {
   courtId: string;
 
   @Column
-  visualCode: number;
+  visualCode: string;
 
   @BelongsToMany(
     () => Player,

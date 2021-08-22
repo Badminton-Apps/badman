@@ -19,6 +19,7 @@ $config: mat-typography-config();
     position: absolute;
     right: 10px;
     top: 10px;
+
     .mat-icon {
       color: white;
     }
@@ -29,6 +30,7 @@ $config: mat-typography-config();
   display: flex;
   height: 75px;
   align-items: stretch;
+
   .picture {
     display: block;
     margin: 0 30px 0 40px;
@@ -67,15 +69,22 @@ $config: mat-typography-config();
 
   .up {
     @include mat-typography-level-to-styles($config, headline);
+
     mat-icon {
       font-size: 18px;
       height: auto;
       width: auto;
     }
   }
+
   .down {
-    margin-top: 6px;
-    font-size: 14px;
-    color: #aaaaaa;
+
+    &,
+    a {
+      text-decoration: none;
+      margin-top: 6px;
+      font-size: 14px;
+      color: #aaaaaa;
+    }
   }
 }

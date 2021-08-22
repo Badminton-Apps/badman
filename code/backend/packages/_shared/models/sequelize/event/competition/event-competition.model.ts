@@ -41,11 +41,11 @@ export class EventCompetition extends Model {
   @Column
   id: string;
 
-  @Unique('unique_constraint')
+  @Unique('EventCompetitions_unique_constraint')
   @Column
   name: string;
 
-  @Unique('unique_constraint')
+  @Unique('EventCompetitions_unique_constraint')
   @Column
   startYear: number;
 
@@ -64,13 +64,12 @@ export class EventCompetition extends Model {
   })
   subEvents: SubEventCompetition[];
 
-  @Unique('unique_constraint')
+  @Unique('EventCompetitions_unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
   type: LevelType;
 
-  @Column
-  uniCode: string;
 
+  @Unique('EventCompetitions_unique_constraint')
   @Column
   visualCode: string;
 
