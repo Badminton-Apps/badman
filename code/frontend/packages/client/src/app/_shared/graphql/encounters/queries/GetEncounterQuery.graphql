@@ -17,6 +17,10 @@ query GetEncounterQuery($id: ID!, $where: SequelizeJSON) {
           id
           accepted
         }
+        draw {
+          id
+          subeventId
+        }
       }
     }
   }

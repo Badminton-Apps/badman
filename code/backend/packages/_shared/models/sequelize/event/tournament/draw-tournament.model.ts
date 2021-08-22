@@ -44,11 +44,11 @@ export class DrawTournament extends Model {
   @Column
   id: string;
 
-  @Unique('unique_constraint')
+  @Unique('DrawTournaments_unique_constraint')
   @Column
   name: string;
 
-  @Unique('unique_constraint')
+  @Unique('DrawTournaments_unique_constraint')
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
   type: DrawType;
 
@@ -64,9 +64,9 @@ export class DrawTournament extends Model {
   })
   games: Game[];
 
-  @Unique('unique_constraint')
+  @Unique('DrawTournaments_unique_constraint')
   @Column
-  internalId: number;
+  visualCode: string;
 
   @BelongsTo(() => SubEventTournament, {
     foreignKey: 'subeventId',
@@ -74,7 +74,7 @@ export class DrawTournament extends Model {
   })
   subEvent?: SubEventTournament;
 
-  @Unique('unique_constraint')
+  @Unique('DrawTournaments_unique_constraint')
   @ForeignKey(() => SubEventTournament)
   @Column
   subeventId: string;

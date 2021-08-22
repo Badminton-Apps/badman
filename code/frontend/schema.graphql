@@ -324,6 +324,8 @@ type EncounterCompetition {
   drawId: String
   homeTeamId: String
   awayTeamId: String
+  synced: Date
+  visualCode: String
   createdAt: Date!
   updatedAt: Date!
   games(
@@ -356,9 +358,12 @@ type Game {
   set3Team1: Int
   set3Team2: Int
   winner: Int
+  order: Int
+  round: String
   linkId: String
   linkType: String
   courtId: String
+  visualCode: String
   createdAt: Date!
   updatedAt: Date!
   players: [GamePlayer]
@@ -391,6 +396,7 @@ type GamePlayer {
   sub: String
   firstName: String
   lastName: String
+  fullName: String
   competitionPlayer: Boolean
   memberId: String
   createdAt: Date!
@@ -435,7 +441,7 @@ type RankingPlace {
   mixInactive: Boolean
   doubleInactive: Boolean
   updatePossible: Boolean
-  PlayerId: String
+  playerId: String
   SystemId: String
   createdAt: Date!
   updatedAt: Date!
@@ -561,6 +567,7 @@ type Player {
   sub: String
   firstName: String
   lastName: String
+  fullName: String
   competitionPlayer: Boolean
   memberId: String
   createdAt: Date!
@@ -661,7 +668,7 @@ type RankingPoint {
   rankingDate: Date
   differenceInLevel: Int
   SystemId: String
-  PlayerId: String
+  playerId: String
   GameId: String
   createdAt: Date!
   updatedAt: Date!
@@ -689,7 +696,7 @@ type DrawTournament {
   name: String
   type: DrawTournamenttypeEnumType
   size: Int
-  internalId: Int
+  visualCode: String
   subeventId: String
   createdAt: Date!
   updatedAt: Date!
@@ -721,7 +728,7 @@ type SubEventTournament {
   eventType: SubEventTournamenteventTypeEnumType
   gameType: SubEventTournamentgameTypeEnumType
   level: Int
-  internalId: Int
+  visualCode: String
   eventId: String
   createdAt: Date!
   updatedAt: Date!
@@ -750,7 +757,7 @@ type EventTournament {
   firstDay: Date
   dates: String
   allowEnlisting: Boolean
-  uniCode: String
+  visualCode: String
   createdAt: Date!
   updatedAt: Date!
   subEvents(
@@ -808,6 +815,7 @@ type Location {
 type DrawCompetition {
   id: String!
   name: String
+  visualCode: String
   size: Int
   subeventId: String
   createdAt: Date!
@@ -840,8 +848,10 @@ type SubEventCompetition {
   minBaseIndex: Int
   maxBaseIndex: Int
   eventId: String
+  visualCode: String
   createdAt: Date!
   updatedAt: Date!
+  meta: TeamMeta
   draws(
     limit: Int
     order: String
@@ -875,13 +885,27 @@ enum SubEventCompetitioneventTypeEnumType {
   MINIBAD
 }
 
+# Team meta
+type TeamMeta {
+  teamIndex: String
+  players: [TeamMetaPlayers]
+}
+
+# Team meta Players
+type TeamMetaPlayers {
+  playerId: String
+  playerSingleIndex: Int
+  playerDoubleIndex: Int
+  playerMixIndex: Int
+}
+
 # A EventCompetition
 type EventCompetition {
   id: String!
   name: String
   startYear: Int
   type: EventCompetitiontypeEnumType
-  uniCode: String
+  visualCode: String
   allowEnlisting: Boolean
   createdAt: Date!
   updatedAt: Date!
@@ -1109,8 +1133,7 @@ type Imported {
   fileLocation: String
   dates: String
   linkCode: String
-  webID: String
-  uniCode: String
+  visualCode: String
   importing: Boolean
   tournamentNumber: Int
   createdAt: Date!
@@ -1228,7 +1251,7 @@ input EventCompetitionInput {
   name: String
   startYear: Int
   type: EventCompetitiontypeEnumType
-  uniCode: String
+  visualCode: String
   allowEnlisting: Boolean
   subEvents: [SubEventCompetitionInput]
 }
@@ -1243,6 +1266,7 @@ input SubEventCompetitionInput {
   minBaseIndex: Int
   maxBaseIndex: Int
   eventId: String
+  visualCode: String
   groups: [RankingSystemGroupInput]
 }
 
@@ -1260,7 +1284,7 @@ input EventTournamentInput {
   firstDay: Date
   dates: String
   allowEnlisting: Boolean
-  uniCode: String
+  visualCode: String
   subEvents: [SubEventTournamentInput]
 }
 
@@ -1271,7 +1295,7 @@ input SubEventTournamentInput {
   eventType: SubEventTournamenteventTypeEnumType
   gameType: SubEventTournamentgameTypeEnumType
   level: Int
-  internalId: Int
+  visualCode: String
   eventId: String
   groups: [RankingSystemGroupInput]
 }
@@ -1301,6 +1325,7 @@ input PlayerInput {
   sub: String
   firstName: String
   lastName: String
+  fullName: String
   competitionPlayer: Boolean
   memberId: String
 }
@@ -1402,8 +1427,7 @@ input ImportInput {
   fileLocation: String
   dates: String
   linkCode: String
-  webID: String
-  uniCode: String
+  visualCode: String
   importing: Boolean
   tournamentNumber: Int
 }
@@ -1434,6 +1458,6 @@ input RankingPlaceInput {
   mixInactive: Boolean
   doubleInactive: Boolean
   updatePossible: Boolean
-  PlayerId: String
+  playerId: String
   SystemId: String
 }

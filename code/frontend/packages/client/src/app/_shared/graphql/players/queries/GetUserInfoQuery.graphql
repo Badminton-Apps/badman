@@ -7,12 +7,11 @@ query GetUserInfoQuery($id: ID!, $rankingType: ID) {
     sub
     gender
     birthDate
-    rankingPlaces(
-      order: "rankingDate"
-      direction: "desc"
-      limit: 1
-      where: { SystemId: $rankingType }
-    ) {
+    clubs {
+      id
+      name
+    }
+    rankingPlaces(order: "rankingDate", direction: "desc", limit: 1, where: { SystemId: $rankingType }) {
       id
 
       rankingDate

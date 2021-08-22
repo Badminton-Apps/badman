@@ -37,6 +37,9 @@ export class PlayerSearchComponent implements OnInit {
   @Input()
   club: string | Club;
 
+  @Input()
+  searchOutsideClub = true;
+
   clubId: string;
 
   @Input()
@@ -53,6 +56,7 @@ export class PlayerSearchComponent implements OnInit {
   ngOnInit() {
     this.formControl = new FormControl(this.player);
     this.ignorePlayersIds = this.ignorePlayers?.map((r) => r.id) ?? [];
+
     const search$ = this.formControl.valueChanges.pipe(
       startWith(''),
       filter((x) => !!x),
@@ -81,12 +85,14 @@ export class PlayerSearchComponent implements OnInit {
       switchMap((response) => {
         if (response?.results?.length && response?.results?.length > 0) {
           return of(response.results);
-        } else {
+        } else if (this.searchOutsideClub) {
           return this.playerService.searchPlayers({
             query: response.query,
             where: this.where,
             includeClub: true,
           });
+        } else {
+          return of([]);
         }
       }),
       // Distinct by id

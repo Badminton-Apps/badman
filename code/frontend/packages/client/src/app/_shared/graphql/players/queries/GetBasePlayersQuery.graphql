@@ -1,0 +1,16 @@
+query GetBasePlayers($clubId: ID!, $type: String) {
+  club(id: $clubId) {
+    teams (where: {active: true, type: $type}) {
+      teamNumber
+      players {
+        base
+        id
+        lastRanking {
+          single,
+          double,
+          mix
+        }
+      }
+    }
+  }
+}
