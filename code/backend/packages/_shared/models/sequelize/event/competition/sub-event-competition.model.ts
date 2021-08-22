@@ -58,11 +58,11 @@ export class SubEventCompetition extends Model {
   @Column
   id: string;
 
-  @Unique('unique_constraint')
+  @Unique('SubEventCompetitions_unique_constraint')
   @Column
   name: string;
 
-  @Unique('unique_constraint')
+  @Unique('SubEventCompetitions_unique_constraint')
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType: SubEventType;
 
@@ -80,7 +80,7 @@ export class SubEventCompetition extends Model {
 
   @BelongsToMany(
     () => Team,
-    () => TeamSubEventMembership,
+    () => TeamSubEventMembership
   )
   teams: Team[];
 
@@ -102,10 +102,14 @@ export class SubEventCompetition extends Model {
   })
   event?: EventCompetition;
 
-  @Unique('unique_constraint')
+  @Unique('SubEventCompetitions_unique_constraint')
   @ForeignKey(() => EventCompetition)
   @Column
   eventId: string;
+
+  @Unique('SubEventCompetitions_unique_constraint')
+  @Column
+  visualCode: string;
 
   // Belongs to many Group
   getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
@@ -132,16 +136,16 @@ export class SubEventCompetition extends Model {
   hasTeams!: BelongsToManyHasAssociationsMixin<Team, string>;
   countTeam!: BelongsToManyCountAssociationsMixin;
 
-  // Has many draw
-  getdraws!: HasManyGetAssociationsMixin<DrawCompetition>;
-  setdraws!: HasManySetAssociationsMixin<DrawCompetition, string>;
-  adddraws!: HasManyAddAssociationsMixin<DrawCompetition, string>;
-  adddraw!: HasManyAddAssociationMixin<DrawCompetition, string>;
-  removedraw!: HasManyRemoveAssociationMixin<DrawCompetition, string>;
-  removedraws!: HasManyRemoveAssociationsMixin<DrawCompetition, string>;
-  hasdraw!: HasManyHasAssociationMixin<DrawCompetition, string>;
-  hasdraws!: HasManyHasAssociationsMixin<DrawCompetition, string>;
-  countdraws!: HasManyCountAssociationsMixin;
+  // Has many Draw
+  getDraws!: HasManyGetAssociationsMixin<DrawCompetition>;
+  setDraws!: HasManySetAssociationsMixin<DrawCompetition, string>;
+  addDraws!: HasManyAddAssociationsMixin<DrawCompetition, string>;
+  addDraw!: HasManyAddAssociationMixin<DrawCompetition, string>;
+  removeDraw!: HasManyRemoveAssociationMixin<DrawCompetition, string>;
+  removeDraws!: HasManyRemoveAssociationsMixin<DrawCompetition, string>;
+  hasDraw!: HasManyHasAssociationMixin<DrawCompetition, string>;
+  hasDraws!: HasManyHasAssociationsMixin<DrawCompetition, string>;
+  countDraws!: HasManyCountAssociationsMixin;
 
   // Belongs to Event
   getEvent!: BelongsToGetAssociationMixin<EventCompetition>;

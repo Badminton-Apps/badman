@@ -7,7 +7,7 @@ import { CompetitionSyncer } from './visualSyncer/competition-sync';
 import { TournamentSyncer } from './visualSyncer/tournament-sync';
 
 export class GetScoresVisual extends CronJob {
-  private _pageSize = 100;
+  private _pageSize = 1000;
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
   private _meta: any;
@@ -21,18 +21,27 @@ export class GetScoresVisual extends CronJob {
   }
 
   async run(): Promise<void> {
-    const newDate = moment('2020-08-13');
-    const newEvents = await this._getChangeEvents(newDate);
+    logger.info('Started sync of Visual scores');
+    const newDate = moment('2012-01-01');
+    let newEvents = await this._getChangeEvents(newDate);
 
+    newEvents = newEvents.sort((a, b) => { 
+      return moment(b.StartDate).diff(a.StartDate);
+    }); 
+
+ 
     for (const xmlTournament of newEvents) {
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
       try {
         logger.debug(`Processing ${xmlTournament.Name}`);
+
         if (
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
           xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
         ) {
-          await this._competitionSync.process({ transaction, xmlTournament });
+          if (moment(xmlTournament.StartDate).isBefore(moment('2021-08-01'))) {
+            await this._competitionSync.process({ transaction, xmlTournament });
+          }
         } else {
           await this._tournamentSync.process({ transaction, xmlTournament });
         }
@@ -40,15 +49,17 @@ export class GetScoresVisual extends CronJob {
       } catch (e) {
         logger.error('Rollback', e);
         await transaction.rollback();
+        throw e;
       }
     }
-    logger.debug(`${newEvents.length} tournaments changed`);
+
+    logger.info('Finished sync of Visual scores');
   }
 
   private async _getChangeEvents(date: Moment, page: number = 0) {
     const url = `${process.env.VR_API}?list=1&refdate=${date.format('YYYY-MM-DD')}&pagesize=${
       this._pageSize
-    }&page=${page}`;
+    }&pageno=${page}`;
     const result = await got.get(url, {
       username: `${process.env.VR_API_USER}`,
       password: `${process.env.VR_API_PASS}`,
@@ -69,9 +80,10 @@ export class GetScoresVisual extends CronJob {
     }).Result as XmlResult;
     const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
 
-    if (tournaments.length === this._pageSize) {
-      tournaments.concat(await this._getChangeEvents(date, page + 1));
-    }
+    // TODO: Wait untill Visual fixes this
+    // if (tournaments.length != 0) {
+    //   tournaments.concat(await this._getChangeEvents(date, page + 1));
+    // }
 
     return tournaments;
   }
