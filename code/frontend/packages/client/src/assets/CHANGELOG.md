@@ -1,3 +1,12 @@
+# [3.40.0](https://github.com/Badminton-Apps/core/compare/v3.39.0...v3.40.0) (2021-08-23)
+
+
+### Features
+
+* [#3](https://github.com/Badminton-Apps/core/issues/3) Team assembly (ploegopstellingsformulier) ([81d8136](https://github.com/Badminton-Apps/core/commit/81d8136f3a7a3e5798621ab1f2576514ebdf3786))
+
+
+
 # [3.39.0](https://github.com/Badminton-Apps/core/compare/v3.38.4...v3.39.0) (2021-08-23)
 
 
