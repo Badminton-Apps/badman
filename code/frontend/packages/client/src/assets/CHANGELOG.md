@@ -1,3 +1,19 @@
+# [3.39.0](https://github.com/Badminton-Apps/core/compare/v3.38.4...v3.39.0) (2021-08-23)
+
+
+### Bug Fixes
+
+* Change encounter must include 30-04 ([0d3ea16](https://github.com/Badminton-Apps/core/commit/0d3ea168aafcff026790840244e4862f8f308cfa))
+* small error in claim check ([f1477af](https://github.com/Badminton-Apps/core/commit/f1477af6a7209c0f971734e45059f665f6e78b5e))
+
+
+### Features
+
+* showing club in player profiel ([466df37](https://github.com/Badminton-Apps/core/commit/466df37e7aa3bd896380140508cb94d63b42db04))
+* syncing info from visual ([5dbabb3](https://github.com/Badminton-Apps/core/commit/5dbabb3e1220612a220692b47b6e0d277f544ad1))
+
+
+
 ## [3.38.4](https://github.com/Badminton-Apps/core/compare/v3.38.3...v3.38.4) (2021-08-20)
 
 
