@@ -23,7 +23,7 @@ const SubEventCompetitionType = new GraphQLObjectType({
       getAttributeFields(SubEventCompetition),
       {
         meta: {
-          type: TeamSubEventMeta
+          type: teamSubEventMeta
         }
       },
       {
@@ -87,7 +87,7 @@ const SubEventCompetitionInputType = new GraphQLInputObjectType({
     )
 });
 
-const TeamSubEventMeta = new GraphQLObjectType({
+const teamSubEventMeta = new GraphQLObjectType({
   name: 'TeamMeta',
   description: 'Team meta',
   fields: () => ({
