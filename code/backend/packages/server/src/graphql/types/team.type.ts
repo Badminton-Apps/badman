@@ -104,6 +104,7 @@ export const TeamType = new GraphQLObjectType({
           }
         })
       },
+
       subEvents: {
         type: new GraphQLList(SubEventCompetitionType),
         args: Object.assign(defaultListArgs()),
@@ -114,6 +115,12 @@ export const TeamType = new GraphQLObjectType({
               where: queryFixer(findOptions.where)
             };
             return findOptions;
+          },
+          after: (subEvents, args, context) => {
+            return subEvents.map(subevent => {
+              subevent.meta = subevent.getDataValue('TeamSubEventMembership').meta;
+              return subevent;
+            });
           }
         })
       },
