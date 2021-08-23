@@ -167,7 +167,7 @@ export class DataBaseHandler {
       where: { primary: true }
     });
     // Store in meta table
-    for (const team of club.teams) {
+    for (const team of club?.teams) {
       logger.debug(`Team: ${team.name}`);
       if (team.subEvents.length > 1) {
         logger.warn('Multiple events?');
