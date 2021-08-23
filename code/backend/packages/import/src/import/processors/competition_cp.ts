@@ -597,23 +597,15 @@ export class CompetitionCpProcessor extends CompetitionProcessor {
         const settingsCsv = await args.mdb.toCsv('Settings');
         const settings = await csvToArray<{
           name: string;
-          linkCode: string;
-          webID: string;
-          uniCode: string;
+          visualCode: string;
         }>(settingsCsv, {
           onEnd: data => {
             return {
               name:
                 (data.find((r: { name: string }) => r.name.toLowerCase() === 'tournament')
                   .value as string) ?? null,
-              linkCode:
+              visualCode:
                 (data.find((r: { name: string }) => r.name.toLowerCase() === 'linkcode')
-                  ?.value as string) ?? null,
-              webID:
-                (data.find((r: { name: string }) => r.name.toLowerCase() === 'webid')
-                  ?.value as string) ?? null,
-              uniCode:
-                (data.find((r: { name: string }) => r.name.toLowerCase() === 'unicode')
                   ?.value as string) ?? null
             };
           },
