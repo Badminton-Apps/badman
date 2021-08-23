@@ -67,8 +67,7 @@ describe('tournament', () => {
     expect(importerFiles.length).toBe(1);
     const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('Flemish Summer Event 2018');
-    expect(importerFile.linkCode).toEqual('A8B820C0-2238-42B0-98B6-47167382407D');
-    expect(importerFile.uniCode).toEqual('201806081635284500');
+    expect(importerFile.visualCode).toEqual('A8B820C0-2238-42B0-98B6-47167382407D');
     expect(importerFile.dates).toEqual('2018-08-10T22:00:00.000Z,2018-08-11T22:00:00.000Z');
     expect(importerFile.firstDay.toISOString()).toEqual('2018-08-10T22:00:00.000Z');
   });
@@ -200,7 +199,6 @@ describe('tournament 2', () => {
     expect(importerFiles.length).toBe(1);
     const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('test');
-    expect(importerFile.uniCode).toEqual('202102091127354687');
     expect(importerFile.dates).toEqual('2021-02-08T23:00:00.000Z');
     expect(importerFile.firstDay).toEqual(new Date('2021-02-08T23:00:00.000Z'));
   });
