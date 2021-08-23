@@ -73,7 +73,6 @@ describe('competition cp', () => {
     expect(importerFiles.length).toBe(1);
     const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('Victor League 2019-2020');
-    expect(importerFile.uniCode).toEqual('201903290920109453');
     expect(importerFile.firstDay.toISOString()).toEqual('2019-09-27T22:00:00.000Z');
   });
 
@@ -145,7 +144,6 @@ describe('competition cp 2', () => {
     expect(importerFiles.length).toBe(1);
     const importerFile = importerFiles[0];
     expect(importerFile.name).toEqual('PBA competitie 2021-2022');
-    expect(importerFile.uniCode).toEqual('202103220037589421');
     expect(importerFile.firstDay.toISOString()).toEqual('2021-08-31T22:00:00.000Z');
   });
 
@@ -153,7 +151,6 @@ describe('competition cp 2', () => {
     // Arrange
     const importFile = await new ImporterFile({
       name: 'PBA competitie 2021-2022',
-      uniCode: '202103220037589421',
       fileLocation,
       firstDay: new Date(),
       type: EventImportType.COMPETITION_CP
