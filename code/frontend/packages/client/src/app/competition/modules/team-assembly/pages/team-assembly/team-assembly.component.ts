@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { TeamService } from 'app/_shared';
 
 @Component({
   templateUrl: './team-assembly.component.html',
@@ -7,8 +8,10 @@ import { FormGroup } from '@angular/forms';
 })
 export class TeamAssemblyComponent implements OnInit {
   formGroup: FormGroup = new FormGroup({});
+  constructor(
+  ) {}
 
-  constructor() {}
-
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  
+  }
 }

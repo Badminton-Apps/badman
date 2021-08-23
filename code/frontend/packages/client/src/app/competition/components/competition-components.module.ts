@@ -10,6 +10,7 @@ import { SelectClubComponent } from './select-club';
 import { SelectEventComponent } from './select-event/select-event.component';
 import { SelectEncounterComponent } from './select-encounter';
 import { SelectTeamComponent } from './select-team'; 
+import { MomentModule } from 'ngx-moment';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -17,7 +18,8 @@ const materialModules = [
   ReactiveFormsModule,
   MatInputModule,
   MatOptionModule,
-  MatSelectModule
+  MatSelectModule,
+  MomentModule,
 ];
 
 const components = [

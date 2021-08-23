@@ -4,7 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Game, Player, RankingPlace, RankingSystem } from '../../models';
+import { Club, Game, Player, RankingPlace, RankingSystem } from '../../models';
 
 import * as searchQuery from '../../graphql/players/queries/GetPlayersQuery.graphql';
 import * as searchClubQuery from '../../graphql/players/queries/GetClubPlayersQuery.graphql';
@@ -12,6 +12,7 @@ import * as playerQuery from '../../graphql/players/queries/GetUserInfoQuery.gra
 import * as playerBasicQuery from '../../graphql/players/queries/GetUserBasicInfoQuery.graphql';
 import * as gamesQuery from '../../graphql/players/queries/GetUserGamesQuery.graphql';
 import * as evolutionQuery from '../../graphql/players/queries/GetPlayerEvolutionQuery.graphql';
+import * as getBasePlayers from '../../graphql/players/queries/GetBasePlayersQuery.graphql';
 
 import * as addPlayerMutation from '../../graphql/players/mutations/AddPlayerMutation.graphql';
 import * as updatePlayerMutation from '../../graphql/players/mutations/UpdatePlayerMutation.graphql';
@@ -190,6 +191,16 @@ export class PlayerService {
       mutation: updatePlayerRankingMutation,
       variables: {
         rankingPlace,
+      },
+    });
+  }
+
+  getBasePlayers(clubId: String, type: String){
+    return this.apollo.query<{ club: Club }>({
+      query: getBasePlayers,
+      variables: {
+        type,
+        clubId,
       },
     });
   }

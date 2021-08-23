@@ -7,6 +7,7 @@ import { Player, Team } from './../../models';
 
 import * as teamQuery from '../../graphql/teams/queries/GetTeamQuery.graphql';
 import * as teamsQuery from '../../graphql/teams/queries/GetTeamsQuery.graphql';
+import * as teamAssemblyInfo from '../../graphql/teams/queries/GetTeamAssemblyInfo.graphql';
 
 import * as addTeamMutation from '../../graphql/teams/mutations/addTeam.graphql';
 import * as updateTeamMutation from '../../graphql/teams/mutations/updateTeam.graphql';
@@ -98,12 +99,23 @@ export class TeamService {
     return this.apollo
       .query({
         query: teamsQuery,
-        fetchPolicy: 'no-cache',
         variables: {
           clubId,
           active,
         },
       })
-      .pipe(map((x: any) => x.data?.teams as Team[]));
+      .pipe(map((x: any) => x.data?.teams?.map((t: Partial<Team>) => new Team(t))));
+  }
+
+  getTeamsAndPlayers(teamId: string, subEventId: string): Observable<Team> {
+    return this.apollo
+      .query({
+        query: teamAssemblyInfo,
+        variables: {
+          teamId,
+          subEventId,
+        },
+      })
+      .pipe(map((x: any) => new Team(x.data?.team)));
   }
 }
