@@ -1,6 +1,13 @@
 import { TeamType } from './../team.type';
-import { SubEventCompetition } from '@badvlasim/shared/models';
-import { GraphQLBoolean, GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
+import { SubEventCompetition, TeamSubEventMembership } from '@badvlasim/shared/models';
+import {
+  GraphQLBoolean,
+  GraphQLInputObjectType,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLString
+} from 'graphql';
 import { resolver, defaultListArgs } from 'graphql-sequelize';
 import { getAttributeFields } from '../attributes.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
@@ -12,47 +19,55 @@ const SubEventCompetitionType = new GraphQLObjectType({
   name: 'SubEventCompetition',
   description: 'A SubEventCompetition',
   fields: () =>
-    Object.assign(getAttributeFields(SubEventCompetition), {
-      draws: {
-        type: new GraphQLList(DrawCompetitionType),
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(SubEventCompetition.associations.draws, {
-          before: async (findOptions, args, context, info) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
+    Object.assign(
+      getAttributeFields(SubEventCompetition),
+      {
+        meta: {
+          type: teamSubEventMeta
+        }
       },
-      event: {
-        type: EventCompetitionType,
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(SubEventCompetition.associations.event, {
-          before: async (findOptions, args, context, info) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
-      },
-      teams: {
-        type: new GraphQLList(SubEventCompetitionType),
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(SubEventCompetition.associations.teams, {
-          before: async (findOptions, args, context, info) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
+      {
+        draws: {
+          type: new GraphQLList(DrawCompetitionType),
+          args: Object.assign(defaultListArgs(), {}),
+          resolve: resolver(SubEventCompetition.associations.draws, {
+            before: async (findOptions, args, context, info) => {
+              findOptions = {
+                ...findOptions,
+                where: queryFixer(findOptions.where)
+              };
+              return findOptions;
+            }
+          })
+        },
+        event: {
+          type: EventCompetitionType,
+          args: Object.assign(defaultListArgs(), {}),
+          resolve: resolver(SubEventCompetition.associations.event, {
+            before: async (findOptions, args, context, info) => {
+              findOptions = {
+                ...findOptions,
+                where: queryFixer(findOptions.where)
+              };
+              return findOptions;
+            }
+          })
+        },
+        teams: {
+          type: new GraphQLList(SubEventCompetitionType),
+          args: Object.assign(defaultListArgs(), {}),
+          resolve: resolver(SubEventCompetition.associations.teams, {
+            before: async (findOptions, args, context, info) => {
+              findOptions = {
+                ...findOptions,
+                where: queryFixer(findOptions.where)
+              };
+              return findOptions; 
+            }
+          })
+        }
       }
-    })
+    )
 });
 
 const SubEventCompetitionInputType = new GraphQLInputObjectType({
@@ -70,6 +85,38 @@ const SubEventCompetitionInputType = new GraphQLInputObjectType({
         }
       }
     )
+});
+
+const teamSubEventMeta = new GraphQLObjectType({
+  name: 'TeamMeta',
+  description: 'Team meta',
+  fields: () => ({
+    teamIndex: {
+      type: GraphQLString
+    },
+    players: {
+      type: new GraphQLList(
+        new GraphQLObjectType({
+          name: 'TeamMetaPlayers',
+          description: 'Team meta Players',
+          fields: () => ({
+            playerId: {
+              type: GraphQLString
+            },
+            playerSingleIndex: {
+              type: GraphQLInt
+            },
+            playerDoubleIndex: {
+              type: GraphQLInt
+            },
+            playerMixIndex: {
+              type: GraphQLInt
+            }
+          })
+        })
+      )
+    }
+  })
 });
 
 export { SubEventCompetitionType, SubEventCompetitionInputType };

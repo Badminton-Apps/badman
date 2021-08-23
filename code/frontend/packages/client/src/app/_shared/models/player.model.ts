@@ -4,6 +4,7 @@ import { RankingPlace } from './ranking-place.model';
 
 export class Player {
   id: string;
+  _fullName: string;
   email: string;
   phone: string;
   memberId: string;
@@ -31,12 +32,13 @@ export class Player {
     this.avatar = args.avatar;
     this.firstName = args.firstName;
     this.lastName = args.lastName;
+    this._fullName = args.fullName;
     this.isClaimed = args.isClaimed;
     this.lastRanking = args.lastRanking ? new RankingPlace(args.lastRanking) : null;
     this.games = args.games?.map((g) => new Game(g));
     this.base = args.base;
     this.sub = args.sub;
-    this.index = args.index;
+    this.index = args?.index as any;
     this.competitionPlayer = args.competitionPlayer ?? false;
     this.clubs = args.clubs?.map((club) => new Club(club));
 
@@ -45,9 +47,15 @@ export class Player {
       this.lastRanking = this.rankingPlaces.sort((a, b) => a.rankingDate?.getTime() - b.rankingDate?.getTime())[0];
     }
   }
+  
+  calcIndex(type: string ) {
+    return type == 'MX'
+      ? (this.lastRanking?.single ?? 12) + (this.lastRanking?.double ?? 12) + (this.lastRanking?.mix ?? 12)
+      : (this.lastRanking?.single ?? 12) + (this.lastRanking?.double ?? 12);
+  }
 
   get fullName() {
-    return `${this.firstName} ${this.lastName}`;
+    return this._fullName ?? `${this.firstName} ${this.lastName}`;
   }
 }
 

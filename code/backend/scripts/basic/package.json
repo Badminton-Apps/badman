@@ -13,7 +13,8 @@
     "sync": "node --inspect=6862 -r ts-node/register ./src/calender-dates.ts",
     "captains": "node --inspect=6862 -r ts-node/register ./src/add-team-captains.ts",
     "sync-accepted": "node --inspect=6862 -r ts-node/register ./src/push-existing-dates.ts",
-    "merge-accounts": "node --inspect=6862 -r ts-node/register ./src/merge-accounts.ts"
+    "merge-accounts": "node --inspect=6862 -r ts-node/register ./src/merge-accounts.ts",
+    "set-meta": "node --inspect=6862 -r ts-node/register ./src/set-meta.ts"
   },
   "dependencies": {
     "@badvlasim/shared": "^3.27.9",

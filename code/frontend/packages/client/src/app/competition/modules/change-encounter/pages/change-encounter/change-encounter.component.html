@@ -11,8 +11,9 @@
       singleClubPermission="change:encounter"
       allClubPermission="change-any:encounter"
       [formGroup]="formGroup"
+      fxFlex="50"
     ></app-select-club>
-    <app-select-team [formGroup]="formGroup"></app-select-team>
+    <app-select-team fxFlex="50" [formGroup]="formGroup"></app-select-team>
   </div>
 
   <div [hidden]="!formGroup.get('team').value">
