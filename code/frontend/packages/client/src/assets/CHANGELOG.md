@@ -1,3 +1,17 @@
+# [3.42.0](https://github.com/Badminton-Apps/core/compare/v3.41.1...v3.42.0) (2021-08-24)
+
+
+### Bug Fixes
+
+* drag&drop should have background ([fd7054a](https://github.com/Badminton-Apps/core/commit/fd7054a43ec15183366f09d57d66bc136471c33b))
+
+
+### Features
+
+* split header search vs normal player search ([cf28638](https://github.com/Badminton-Apps/core/commit/cf2863855e266cfec2aa7070b10fbbedc2e050ca))
+
+
+
 ## [3.41.1](https://github.com/Badminton-Apps/core/compare/v3.40.0...v3.41.1) (2021-08-24)
 
 
