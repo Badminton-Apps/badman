@@ -48,6 +48,8 @@ export class AssemblyComponent implements OnInit {
   reserve: Player[] = [];
   players: Player[] = [];
 
+  wherePlayer = {} as any;
+
   captionSingle1Prefix = '';
   captionSingle2Prefix = '';
   captionSingle3Prefix = '';
@@ -88,12 +90,17 @@ export class AssemblyComponent implements OnInit {
   async loadData() {
     const form = this.formGroup.value;
     this.type = form?.team?.type;
+
     this.club = this.formGroup.get('club').value;
     const team = await this.teamService
       .getTeamsAndPlayers(form?.team?.id, form?.encounter?.draw?.subeventId)
       .toPromise();
     this.players = team.players;
     this.subEvent = team.subEvents[0];
+
+    this.wherePlayer = {
+      gender: this.type == 'MX' ? undefined : this.type,
+    };
 
     if (this.type == 'M') {
       this.captionSingle1Prefix = 'gender.male';

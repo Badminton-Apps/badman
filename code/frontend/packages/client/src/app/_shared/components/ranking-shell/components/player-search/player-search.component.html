@@ -6,6 +6,10 @@
         Create new
       </mat-option>
 
+      <mat-option [value]="this.formControl.value" *ngIf="options.length == 0 && !this.allowCreation" [disabled]="true">
+        No players found
+      </mat-option>
+
       <mat-option
         *ngFor="let option of options"
         [value]="option"
