@@ -263,8 +263,12 @@ export class AssemblyComponent implements OnInit {
       } else {
         transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       }
+
+      if (event.container.id !== 'reserveList') {
+        this.reserve = this.reserve.filter((r) => r.id !== movedPlayer.id);
+      }
+      this._doChecks();
     }
-    this._doChecks();
   }
 
   private _doChecks() {
@@ -295,9 +299,8 @@ export class AssemblyComponent implements OnInit {
       }
 
       return playerA - playerB;
-    }
+    };
 
-  
     const sortDouble = (a, b) => {
       const playerA = a.lastRanking?.double ?? 12;
       const playerB = b.lastRanking?.double ?? 12;
