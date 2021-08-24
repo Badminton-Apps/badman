@@ -130,7 +130,7 @@ export class MailService {
       template: 'newplayers',
       context: { clubs, clientUrl: this._clientUrl, title: 'New players' }
     };
-    
+
     await this._sendMail(options);
   }
 
@@ -281,7 +281,7 @@ export class MailService {
         return;
       }
 
-      if (options.to == null || options.to.length == 0) {
+      if (options.to === null || options.to.length === 0) {
         logger.error('no mail adress?', options);
         return;
       }
