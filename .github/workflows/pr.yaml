@@ -35,7 +35,7 @@ jobs:
             ./code/${{ matrix.folder }}/node_modules
             ./code/${{ matrix.folder }}/*/*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('./code/${{ matrix.folder }}/yarn.lock') }}
-      - run: npx lerna bootstrap
+      - run: npx lerna bootstrap --ci
         working-directory: code/${{ matrix.folder }}
       - run: npm run lint
         working-directory: code/${{ matrix.folder }}
