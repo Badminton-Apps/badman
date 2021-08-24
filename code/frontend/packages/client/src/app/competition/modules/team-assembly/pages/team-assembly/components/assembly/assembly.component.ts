@@ -220,6 +220,7 @@ export class AssemblyComponent implements OnInit {
       if (event.container.id == 'playerList' && event.container.data?.map((r) => r.id).includes(movedPlayer.id)) {
         event.previousContainer.data.splice(event.previousIndex, 1);
         this._calculateIndex();
+        this._checkOtherLists();
         return;
       }
       const singles = [...this.single1, ...this.single2, ...this.single3, ...this.single4];
@@ -249,6 +250,9 @@ export class AssemblyComponent implements OnInit {
 
   private _checkOtherLists() {
     this.errors = {};
+
+    console.log('Checking');
+
     const single1 = this.single1[0]?.lastRanking.single ?? 0;
     const single2 = this.single2[0]?.lastRanking.single ?? 0;
     const single3 = this.single3[0]?.lastRanking.single ?? 0;
