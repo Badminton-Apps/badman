@@ -100,6 +100,9 @@ export class AssemblyComponent implements OnInit {
 
     this.wherePlayer = {
       gender: this.type == 'MX' ? undefined : this.type,
+      id: {
+        $notIn: this.players?.map((p) => p.id),
+      },
     };
 
     if (this.type == 'M') {
@@ -162,6 +165,10 @@ export class AssemblyComponent implements OnInit {
 
   addPlayer(player: Player) {
     this.players.push(player);
+
+    this.wherePlayer.id = {
+      $notIn: this.players?.map((p) => p.id),
+    };
   }
 
   canDropPredicate = (item: CdkDrag, drop: CdkDropList) => {
