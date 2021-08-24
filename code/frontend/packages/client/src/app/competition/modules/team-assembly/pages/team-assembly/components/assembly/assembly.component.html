@@ -25,6 +25,7 @@
         [searchOutsideClub]="false"
         [club]="this.formGroup.get('club').value"
         [label]="'Voeg speler toe'"
+        [where]="this.wherePlayer"
         (onSelectPlayer)="addPlayer($event)"
         [ignorePlayers]="this.ignorePlayers"
       ></app-player-search>
