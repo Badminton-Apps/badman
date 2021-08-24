@@ -36,10 +36,18 @@
   }
 
   &.error {
-    background: mat-color($client-angular-warn, 100);
-
-    label {
+    &,
+    label,
+    .drag-item {
       background: mat-color($client-angular-warn, 100);
+    }
+
+    .drag-item {
+      border-bottom: solid 1px mat-color($client-angular-warn, 200);
+
+      &:last-child {
+        border: none;
+      }
     }
   }
 
@@ -51,7 +59,6 @@
     background: white;
     position: absolute;
     padding: 0px 5px;
-
   }
 }
 
@@ -61,6 +68,7 @@
   border-bottom: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
   display: flex;
+  background: white;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
