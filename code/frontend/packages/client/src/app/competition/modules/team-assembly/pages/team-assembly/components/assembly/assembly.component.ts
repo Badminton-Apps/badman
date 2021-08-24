@@ -95,7 +95,29 @@ export class AssemblyComponent implements OnInit {
     const team = await this.teamService
       .getTeamsAndPlayers(form?.team?.id, form?.encounter?.draw?.subeventId)
       .toPromise();
-    this.players = team.players;
+    this.players = team.players.sort((a, b) => {
+      if (a.gender != b.gender) {
+        return a.gender == 'F' ? -1 : 1;
+      }
+
+      const playerA =
+        (a.lastRanking?.single ?? 12) +
+        (a.lastRanking?.double ?? 12) +
+        (this.type == 'MX' ? a.lastRanking?.mix ?? 12 : 0);
+
+      const playerB =
+        (b.lastRanking?.single ?? 12) +
+        (b.lastRanking?.double ?? 12) +
+        (this.type == 'MX' ? b.lastRanking?.mix ?? 12 : 0);
+
+      // If the same return single
+      if (playerA == playerB) {
+        return a.lastRanking?.single ?? 12 - b.lastRanking?.single ?? 12;
+      }
+
+      return playerA - playerB;
+    });
+
     this.subEvent = team.subEvents[0];
 
     this.wherePlayer = {
@@ -219,8 +241,7 @@ export class AssemblyComponent implements OnInit {
 
       if (event.container.id == 'playerList' && event.container.data?.map((r) => r.id).includes(movedPlayer.id)) {
         event.previousContainer.data.splice(event.previousIndex, 1);
-        this._calculateIndex();
-        this._checkOtherLists();
+        this._doChecks();
         return;
       }
       const singles = [...this.single1, ...this.single2, ...this.single3, ...this.single4];
@@ -242,16 +263,69 @@ export class AssemblyComponent implements OnInit {
       } else {
         transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       }
+    }
+    this._doChecks();
+  }
 
-      this._calculateIndex();
-      this._checkOtherLists();
+  private _doChecks() {
+    this._calculateIndex();
+    this._checkOtherLists();
+    this._sortLists();
+  }
+
+  private _sortLists() {
+    const sortList = (a, b) => {
+      if (a.gender != b.gender) {
+        return a.gender == 'F' ? -1 : 1;
+      }
+
+      const playerA =
+        (a.lastRanking?.single ?? 12) +
+        (a.lastRanking?.double ?? 12) +
+        (this.type == 'MX' ? a.lastRanking?.mix ?? 12 : 0);
+
+      const playerB =
+        (b.lastRanking?.single ?? 12) +
+        (b.lastRanking?.double ?? 12) +
+        (this.type == 'MX' ? b.lastRanking?.mix ?? 12 : 0);
+
+      // If the same return single
+      if (playerA == playerB) {
+        return a.lastRanking?.single ?? 12 - b.lastRanking?.single ?? 12;
+      }
+
+      return playerA - playerB;
+    }
+
+  
+    const sortDouble = (a, b) => {
+      const playerA = a.lastRanking?.double ?? 12;
+      const playerB = b.lastRanking?.double ?? 12;
+
+      return playerA - playerB;
+    };
+
+    const sortMix = (a, b) => {
+      return a.gender == 'F' ? -1 : 1;
+    };
+
+    this.players = this.players.sort(sortList);
+    this.reserve = this.reserve.sort(sortList);
+
+    this.double1 = this.double1.sort(sortDouble);
+    this.double2 = this.double2.sort(sortDouble);
+
+    if (this.type == 'MX') {
+      this.double3 = this.double3.sort(sortMix);
+      this.double4 = this.double4.sort(sortMix);
+    } else {
+      this.double3 = this.double3.sort(sortDouble);
+      this.double4 = this.double4.sort(sortDouble);
     }
   }
 
   private _checkOtherLists() {
     this.errors = {};
-
-    console.log('Checking');
 
     const single1 = this.single1[0]?.lastRanking.single ?? 0;
     const single2 = this.single2[0]?.lastRanking.single ?? 0;
