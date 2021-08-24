@@ -139,9 +139,9 @@ export class AssemblyComponent implements OnInit {
         returend.push(
           t.players.filter(
             (p) =>
-              p.lastRanking.single < this.subEvent.maxLevel ||
-              p.lastRanking.double < this.subEvent.maxLevel ||
-              (this.type == 'MX' && p.lastRanking.mix < this.subEvent.maxLevel)
+              (p.lastRanking?.single ?? 12) < this.subEvent.maxLevel ||
+              (p.lastRanking?.double ?? 12) < this.subEvent.maxLevel ||
+              (this.type == 'MX' && (p.lastRanking?.mix ?? 12) < this.subEvent.maxLevel)
           )
         );
 
