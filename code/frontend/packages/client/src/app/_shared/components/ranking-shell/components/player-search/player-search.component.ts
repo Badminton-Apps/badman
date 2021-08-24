@@ -1,5 +1,5 @@
 import { MatDialog } from '@angular/material/dialog';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { merge, Observable, of, ReplaySubject } from 'rxjs';
@@ -11,13 +11,13 @@ import { NewPlayerComponent } from '../new-player/new-player.component';
 @Component({
   selector: 'app-player-search',
   templateUrl: './player-search.component.html',
-  styleUrls: ['./player-search.component.scss'],
+  styleUrls: ['./player-search.component.scss']
 })
 export class PlayerSearchComponent implements OnInit {
   @Output() onSelectPlayer = new EventEmitter<Player>();
 
   @Input()
-  label: string = 'Search';
+  label: string = 'players.search.label';
 
   @Input()
   allowCreation: boolean = false;
@@ -31,8 +31,6 @@ export class PlayerSearchComponent implements OnInit {
   @Input()
   player: Player;
 
-  @Input()
-  style = 'no-header';
 
   @Input()
   club: string | Club;
