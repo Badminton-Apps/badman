@@ -171,7 +171,12 @@
   },
   "players": {
     "title": "Spelers",
-    "no-memberid": "Onbekend lidnummer"
+    "no-memberid": "Onbekend lidnummer",
+    "search": {
+      "label": "Zoek speler",
+      "not-found": "Speler niet gevonden",
+      "create": "Maak nieuwe speler aan"
+    }
   },
   "games": {
     "title": "Wedstrijden",
