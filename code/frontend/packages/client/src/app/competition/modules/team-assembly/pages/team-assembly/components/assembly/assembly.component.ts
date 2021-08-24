@@ -328,6 +328,32 @@ export class AssemblyComponent implements OnInit {
   }
 
   private _checkOtherLists() {
+    const checkDoubles = (list1: Player[], list2: Player[], type: 'double' | 'mix') => {
+      const double1 = (list1[0]?.lastRanking[type] ?? 0) + (list1[1]?.lastRanking[type] ?? 0);
+      const double2 = (list2[0]?.lastRanking[type] ?? 0) + (list2[1]?.lastRanking[type] ?? 0);
+
+      if (list1.length == 2 && list2.length == 2) {
+        if (double1 > double2) {
+          return 'competition.team-assembly.errors.players-above-lower';
+        }
+
+        if (double1 == double2) {
+          const dl1 =
+            (list1[0]?.lastRanking[type] ?? 12) < (list1[1]?.lastRanking[type] ?? 12)
+              ? list1[0]?.lastRanking[type] ?? 12
+              : list1[1]?.lastRanking[type] ?? 12;
+
+          const dl2 =
+            (list2[0]?.lastRanking[type] ?? 12) < (list2[1]?.lastRanking[type] ?? 12)
+              ? list2[0]?.lastRanking[type] ?? 12
+              : list2[1]?.lastRanking[type] ?? 12;
+          if (dl1 > dl2) {
+            return 'competition.team-assembly.errors.players-above-lower';
+          }
+        }
+      }
+    };
+
     this.errors = {};
 
     const single1 = this.single1[0]?.lastRanking.single ?? 0;
@@ -335,13 +361,7 @@ export class AssemblyComponent implements OnInit {
     const single3 = this.single3[0]?.lastRanking.single ?? 0;
     const single4 = this.single4[0]?.lastRanking.single ?? 0;
 
-    const double1 = (this.double1[0]?.lastRanking.double ?? 0) + (this.double1[1]?.lastRanking.double ?? 0);
-    const double2 = (this.double2[0]?.lastRanking.double ?? 0) + (this.double2[1]?.lastRanking.double ?? 0);
-
     if (this.type == 'MX') {
-      const double3 = (this.double3[0]?.lastRanking.mix ?? 0) + (this.double3[1]?.lastRanking.mix ?? 0);
-      const double4 = (this.double4[0]?.lastRanking.mix ?? 0) + (this.double4[1]?.lastRanking.mix ?? 0);
-
       if (single1 != 0 && single2 != 0 && single1 > single2) {
         this.errors.single2 = 'competition.team-assembly.errors.player-above-lower';
       }
@@ -350,13 +370,8 @@ export class AssemblyComponent implements OnInit {
         this.errors.single4 = 'competition.team-assembly.errors.player-above-lower';
       }
 
-      if (this.double3.length == 2 && this.double4.length == 2 && double3 > double4) {
-        this.errors.double4 = 'competition.team-assembly.errors.players-above-lower';
-      }
+      this.errors.double4 = checkDoubles(this.double3, this.double4, 'mix');
     } else {
-      const double3 = (this.double3[0]?.lastRanking.double ?? 0) + (this.double3[1]?.lastRanking.double ?? 0);
-      const double4 = (this.double4[0]?.lastRanking.double ?? 0) + (this.double4[1]?.lastRanking.double ?? 0);
-
       if (single1 != 0 && single2 != 0 && single1 > single2) {
         this.errors.single2 = 'competition.team-assembly.errors.player-above-lower';
       }
@@ -369,17 +384,9 @@ export class AssemblyComponent implements OnInit {
         this.errors.single4 = 'competition.team-assembly.errors.player-above-lower';
       }
 
-      if (this.double1.length == 2 && this.double2.length == 2 && double1 > double2) {
-        this.errors.double2 = 'competition.team-assembly.errors.players-above-lower';
-      }
-
-      if (this.double2.length == 2 && this.double3.length == 2 && double2 > double3) {
-        this.errors.double3 = 'competition.team-assembly.errors.players-above-lower';
-      }
-
-      if (this.double3.length == 2 && this.double4.length == 2 && double3 > double4) {
-        this.errors.double4 = 'competition.team-assembly.errors.players-above-lower';
-      }
+      this.errors.double2 = checkDoubles(this.double1, this.double2, 'double');
+      this.errors.double3 = checkDoubles(this.double2, this.double3, 'double');
+      this.errors.double4 = checkDoubles(this.double3, this.double4, 'double');
     }
   }
 
