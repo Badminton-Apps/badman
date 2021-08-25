@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'app/player';
 import { Club, Player, PlayerService, SubEvent, TeamService } from 'app/_shared';
 import { Observable } from 'rxjs';
-import { debounce, debounceTime, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { debounce, debounceTime, filter, map, single, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-assembly',
@@ -76,6 +76,7 @@ export class AssemblyComponent implements OnInit {
   ignorePlayers: Player[];
   loaded = false;
   errors = {} as { [key: string]: string };
+  totalPlayers = 0;
 
   constructor(
     private teamService: TeamService,
@@ -275,6 +276,18 @@ export class AssemblyComponent implements OnInit {
     this._calculateIndex();
     this._checkOtherLists();
     this._sortLists();
+
+    // Count all players
+    this.totalPlayers =
+      this.single1.length +
+      this.single2.length +
+      this.single3.length +
+      this.single4.length +
+      this.double1.length +
+      this.double2.length +
+      this.double3.length +
+      this.double4.length +
+      this.reserve.length;
   }
 
   private _sortLists() {

@@ -1,277 +1,285 @@
-<div fxLayout="row" *ngIf="loaded; else loading" fxLayoutAlign="space-between" fxLayoutGap="16px">
-  <div fxFlex="33" class="team-info">
-    <div
-      class="drag"
-      cdkDropList
-      id="playerList"
-      [cdkDropListData]="players"
-      [cdkDropListConnectedTo]="this.lists"
-      (cdkDropListDropped)="drop($event)"
-      [cdkDropListSortingDisabled]="true"
-    >
-      <label class="mat-caption">Spelers</label>
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of players"
-        [player]="item"
-        [eventType]="this.type"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-
-    <div class="add-player">
-      <app-player-search
-        [allowCreation]="false"
-        [searchOutsideClub]="false"
-        [club]="this.formGroup.get('club').value"
-        [label]="'Voeg speler toe'"
-        [where]="this.wherePlayer"
-        (onSelectPlayer)="addPlayer($event)"
-        [ignorePlayers]="this.ignorePlayers"
-      ></app-player-search>
-    </div>
-  </div>
-  <div fxFlex="66" fxLayoutGap="16px" fxLayout="column">
-    <div
-      class="drag double"
-      cdkDropList
-      id="double1List"
-      [cdkDropListData]="double1"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      [cdkDropListSortingDisabled]="true"
-      (cdkDropListDropped)="drop($event)"
-      [matTooltip]="this.errors.double1 | translate"
-      [matTooltipDisabled]="!this.errors.double1"
-      [ngClass]="{ error: this.errors.double1 }"
-    >
-      <label class="mat-caption"
-        >{{ this.captionDouble1Prefix | translate }} {{ this.captionDouble1 | translate }}</label
-      >
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of double1"
-        [player]="item"
-        [eventType]="this.type"
-        [showType]="'double1'"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-    <div
-      class="drag double"
-      cdkDropList
-      id="double2List"
-      [cdkDropListData]="double2"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      [cdkDropListSortingDisabled]="true"
-      (cdkDropListDropped)="drop($event)"
-      [matTooltip]="this.errors.double2 | translate"
-      [matTooltipDisabled]="!this.errors.double2"
-      [ngClass]="{ error: this.errors.double2 }"
-    >
-      <label class="mat-caption"
-        >{{ this.captionDouble2Prefix | translate }} {{ this.captionDouble2 | translate }}</label
-      >
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of double2"
-        [player]="item"
-        [eventType]="this.type"
-        [showType]="'double2'"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-    <div
-      class="drag double"
-      cdkDropList
-      id="double3List"
-      [cdkDropListData]="double3"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      [cdkDropListSortingDisabled]="true"
-      (cdkDropListDropped)="drop($event)"
-      [matTooltip]="this.errors.double3 | translate"
-      [matTooltipDisabled]="!this.errors.double3"
-      [ngClass]="{ error: this.errors.double3 }"
-    >
-      <label class="mat-caption"
-        >{{ this.captionDouble3Prefix | translate }} {{ this.captionDouble3 | translate }}</label
-      >
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of double3"
-        [player]="item"
-        [eventType]="this.type"
-        [showType]="'double3'"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-    <div
-      class="drag double"
-      cdkDropList
-      id="double4List"
-      [cdkDropListData]="double4"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      [cdkDropListSortingDisabled]="true"
-      (cdkDropListDropped)="drop($event)"
-      [matTooltip]="this.errors.double4 | translate"
-      [matTooltipDisabled]="!this.errors.double4"
-      [ngClass]="{ error: this.errors.double4 }"
-    >
-      <label class="mat-caption"
-        >{{ this.captionDouble4Prefix | translate }} {{ this.captionDouble4 | translate }}</label
-      >
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of double4"
-        [player]="item"
-        [eventType]="this.type"
-        [showType]="'double4'"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-    <div
-      class="drag single"
-      cdkDropList
-      id="single1List"
-      [cdkDropListData]="single1"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      [cdkDropListSortingDisabled]="true"
-      (cdkDropListDropped)="drop($event)"
-      [matTooltip]="this.errors.single1 | translate"
-      [matTooltipDisabled]="!this.errors.single1"
-      [ngClass]="{ error: this.errors.single1 }"
-    >
-      <label class="mat-caption"
-        >{{ this.captionSingle1Prefix | translate }} {{ this.captionSingle1 | translate }}</label
-      >
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of single1"
-        [player]="item"
-        [eventType]="this.type"
-        [showType]="'single1'"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-    <div
-      class="drag single"
-      cdkDropList
-      id="single2List"
-      [cdkDropListData]="single2"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListSortingDisabled]="true"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      (cdkDropListDropped)="drop($event)"
-      [matTooltip]="this.errors.single2 | translate"
-      [matTooltipDisabled]="!this.errors.single2"
-      [ngClass]="{ error: this.errors.single2 }"
-    >
-      <label class="mat-caption"
-        >{{ this.captionSingle2Prefix | translate }} {{ this.captionSingle2 | translate }}</label
-      >
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of single2"
-        [player]="item"
-        [eventType]="this.type"
-        [showType]="'single2'"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-    <div
-      class="drag single"
-      cdkDropList
-      id="single3List"
-      [cdkDropListData]="single3"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      [cdkDropListSortingDisabled]="true"
-      (cdkDropListDropped)="drop($event)"
-      [matTooltip]="this.errors.single3 | translate"
-      [matTooltipDisabled]="!this.errors.single3"
-      [ngClass]="{ error: this.errors.single3 }"
-    >
-      <label class="mat-caption"
-        >{{ this.captionSingle3Prefix | translate }} {{ this.captionSingle3 | translate }}</label
-      >
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of single3"
-        [player]="item"
-        [eventType]="this.type"
-        [showType]="'single3'"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-    <div
-      class="drag single"
-      cdkDropList
-      id="single4List"
-      [cdkDropListData]="single4"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      [cdkDropListSortingDisabled]="true"
-      (cdkDropListDropped)="drop($event)"
-      [matTooltip]="this.errors.single4 | translate"
-      [matTooltipDisabled]="!this.errors.single4"
-      [ngClass]="{ error: this.errors.single4 }"
-    >
-      <label class="mat-caption"
-        >{{ this.captionSingle4Prefix | translate }} {{ this.captionSingle4 | translate }}</label
-      >
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of single4"
-        [player]="item"
-        [eventType]="this.type"
-        [showType]="'single4'"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-
-    <div><mat-divider></mat-divider></div>
-
-    <div
-      class="drag single"
-      cdkDropList
-      id="reserveList"
-      [cdkDropListData]="reserve"
-      [cdkDropListConnectedTo]="this.lists"
-      [cdkDropListEnterPredicate]="this.canDropPredicate"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <label class="mat-caption">{{ 'competition.team-assembly.reserve' | translate }}</label>
-      <app-team-assembly-player
-        class="drag-item"
-        *ngFor="let item of reserve"
-        [player]="item"
-        [eventType]="this.type"
-        [cdkDragData]="item"
-        cdkDrag
-      ></app-team-assembly-player>
-    </div>
-
-    <div class="info">
+<div *ngIf="loaded; else loading" fxLayout="column" fxLayoutGap="16px">
+  <div class="information">
+    <label class="mat-caption">{{ 'competition.team-assembly.info' | translate }}</label>
+    <div>
       <div
         class="team-index"
         [ngClass]="{ 'team-index-ignored': this.formGroup.value.team.teamNumber == 1 }"
         [matTooltip]="'competition.team-assembly.team-index-ignored' | translate"
         [matTooltipDisabled]="this.formGroup.value.team.teamNumber !== 1"
+        [innerHtml]="
+          'competition.team-assembly.team-index' | translate: { current: teamIndex, team: subEvent.meta.teamIndex }
+        "
+      ></div>
+
+      <div *ngIf="totalPlayers < 12">{{ 'competition.team-assembly.errors.not-enough-players' | translate }}</div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="16px">
+    <div fxFlex="33" class="team-info">
+      <div
+        class="drag"
+        cdkDropList
+        id="playerList"
+        [cdkDropListData]="players"
+        [cdkDropListConnectedTo]="this.lists"
+        (cdkDropListDropped)="drop($event)"
+        [cdkDropListSortingDisabled]="true"
       >
-        Ploegindex is <strong>{{ teamIndex }}</strong> en mag tot <strong>{{ subEvent.meta.teamIndex }}</strong> zakken
+        <label class="mat-caption">Spelers</label>
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of players"
+          [player]="item"
+          [eventType]="this.type"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+
+      <div class="add-player">
+        <app-player-search
+          [allowCreation]="false"
+          [searchOutsideClub]="false"
+          [club]="this.formGroup.get('club').value"
+          [label]="'Voeg speler toe'"
+          [where]="this.wherePlayer"
+          (onSelectPlayer)="addPlayer($event)"
+          [ignorePlayers]="this.ignorePlayers"
+        ></app-player-search>
+      </div>
+    </div>
+    <div fxFlex="66" fxLayoutGap="16px" fxLayout="column">
+      <div
+        class="drag double"
+        cdkDropList
+        id="double1List"
+        [cdkDropListData]="double1"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        [cdkDropListSortingDisabled]="true"
+        (cdkDropListDropped)="drop($event)"
+        [matTooltip]="this.errors.double1 | translate"
+        [matTooltipDisabled]="!this.errors.double1"
+        [ngClass]="{ error: this.errors.double1 }"
+      >
+        <label class="mat-caption"
+          >{{ this.captionDouble1Prefix | translate }} {{ this.captionDouble1 | translate }}</label
+        >
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of double1"
+          [player]="item"
+          [eventType]="this.type"
+          [showType]="'double1'"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+      <div
+        class="drag double"
+        cdkDropList
+        id="double2List"
+        [cdkDropListData]="double2"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        [cdkDropListSortingDisabled]="true"
+        (cdkDropListDropped)="drop($event)"
+        [matTooltip]="this.errors.double2 | translate"
+        [matTooltipDisabled]="!this.errors.double2"
+        [ngClass]="{ error: this.errors.double2 }"
+      >
+        <label class="mat-caption"
+          >{{ this.captionDouble2Prefix | translate }} {{ this.captionDouble2 | translate }}</label
+        >
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of double2"
+          [player]="item"
+          [eventType]="this.type"
+          [showType]="'double2'"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+      <div
+        class="drag double"
+        cdkDropList
+        id="double3List"
+        [cdkDropListData]="double3"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        [cdkDropListSortingDisabled]="true"
+        (cdkDropListDropped)="drop($event)"
+        [matTooltip]="this.errors.double3 | translate"
+        [matTooltipDisabled]="!this.errors.double3"
+        [ngClass]="{ error: this.errors.double3 }"
+      >
+        <label class="mat-caption"
+          >{{ this.captionDouble3Prefix | translate }} {{ this.captionDouble3 | translate }}</label
+        >
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of double3"
+          [player]="item"
+          [eventType]="this.type"
+          [showType]="'double3'"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+      <div
+        class="drag double"
+        cdkDropList
+        id="double4List"
+        [cdkDropListData]="double4"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        [cdkDropListSortingDisabled]="true"
+        (cdkDropListDropped)="drop($event)"
+        [matTooltip]="this.errors.double4 | translate"
+        [matTooltipDisabled]="!this.errors.double4"
+        [ngClass]="{ error: this.errors.double4 }"
+      >
+        <label class="mat-caption"
+          >{{ this.captionDouble4Prefix | translate }} {{ this.captionDouble4 | translate }}</label
+        >
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of double4"
+          [player]="item"
+          [eventType]="this.type"
+          [showType]="'double4'"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+      <div
+        class="drag single"
+        cdkDropList
+        id="single1List"
+        [cdkDropListData]="single1"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        [cdkDropListSortingDisabled]="true"
+        (cdkDropListDropped)="drop($event)"
+        [matTooltip]="this.errors.single1 | translate"
+        [matTooltipDisabled]="!this.errors.single1"
+        [ngClass]="{ error: this.errors.single1 }"
+      >
+        <label class="mat-caption"
+          >{{ this.captionSingle1Prefix | translate }} {{ this.captionSingle1 | translate }}</label
+        >
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of single1"
+          [player]="item"
+          [eventType]="this.type"
+          [showType]="'single1'"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+      <div
+        class="drag single"
+        cdkDropList
+        id="single2List"
+        [cdkDropListData]="single2"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListSortingDisabled]="true"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        (cdkDropListDropped)="drop($event)"
+        [matTooltip]="this.errors.single2 | translate"
+        [matTooltipDisabled]="!this.errors.single2"
+        [ngClass]="{ error: this.errors.single2 }"
+      >
+        <label class="mat-caption"
+          >{{ this.captionSingle2Prefix | translate }} {{ this.captionSingle2 | translate }}</label
+        >
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of single2"
+          [player]="item"
+          [eventType]="this.type"
+          [showType]="'single2'"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+      <div
+        class="drag single"
+        cdkDropList
+        id="single3List"
+        [cdkDropListData]="single3"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        [cdkDropListSortingDisabled]="true"
+        (cdkDropListDropped)="drop($event)"
+        [matTooltip]="this.errors.single3 | translate"
+        [matTooltipDisabled]="!this.errors.single3"
+        [ngClass]="{ error: this.errors.single3 }"
+      >
+        <label class="mat-caption"
+          >{{ this.captionSingle3Prefix | translate }} {{ this.captionSingle3 | translate }}</label
+        >
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of single3"
+          [player]="item"
+          [eventType]="this.type"
+          [showType]="'single3'"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+      <div
+        class="drag single"
+        cdkDropList
+        id="single4List"
+        [cdkDropListData]="single4"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        [cdkDropListSortingDisabled]="true"
+        (cdkDropListDropped)="drop($event)"
+        [matTooltip]="this.errors.single4 | translate"
+        [matTooltipDisabled]="!this.errors.single4"
+        [ngClass]="{ error: this.errors.single4 }"
+      >
+        <label class="mat-caption"
+          >{{ this.captionSingle4Prefix | translate }} {{ this.captionSingle4 | translate }}</label
+        >
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of single4"
+          [player]="item"
+          [eventType]="this.type"
+          [showType]="'single4'"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
+      </div>
+
+      <div><mat-divider></mat-divider></div>
+
+      <div
+        class="drag single"
+        cdkDropList
+        id="reserveList"
+        [cdkDropListData]="reserve"
+        [cdkDropListConnectedTo]="this.lists"
+        [cdkDropListEnterPredicate]="this.canDropPredicate"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <label class="mat-caption">{{ 'competition.team-assembly.reserve' | translate }}</label>
+        <app-team-assembly-player
+          class="drag-item"
+          *ngFor="let item of reserve"
+          [player]="item"
+          [eventType]="this.type"
+          [cdkDragData]="item"
+          cdkDrag
+        ></app-team-assembly-player>
       </div>
     </div>
   </div>
