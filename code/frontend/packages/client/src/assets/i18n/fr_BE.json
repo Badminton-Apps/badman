@@ -133,7 +133,36 @@
             "submit": {
                 "title": "",
                 "description": ""
+            },
+            "requested": "",
+            "requested-failed": "",
+            "errors": {
+                "select-one-date": "",
+                "select-one-date-or-comment": ""
             }
+        },
+        "team-assembly": {
+            "title": "",
+            "reserve": "",
+            "double1": "",
+            "double2": "",
+            "double3": "",
+            "double4": "",
+            "single1": "",
+            "single2": "",
+            "single3": "",
+            "single4": "",
+            "mix1": "",
+            "mix2": "",
+            "errors": {
+                "already": "",
+                "to-much": "",
+                "players-above-lower": "",
+                "player-above-lower": "",
+                "not-enough-players": ""
+            },
+            "team-index": "",
+            "team-index-ignored": ""
         }
     },
     "event": {
@@ -144,7 +173,12 @@
     },
     "players": {
         "title": "",
-        "no-memberid": ""
+        "no-memberid": "",
+        "search": {
+            "label": "",
+            "not-found": "",
+            "create": ""
+        }
     },
     "games": {
         "title": "",
@@ -222,5 +256,8 @@
         },
         "select-club": "",
         "select-encounter": ""
+    },
+    "permission": {
+        "no-perm": ""
     }
 }
