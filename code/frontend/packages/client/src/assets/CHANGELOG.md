@@ -1,3 +1,12 @@
+# [3.43.0](https://github.com/Badminton-Apps/core/compare/v3.42.0...v3.43.0) (2021-08-24)
+
+
+### Features
+
+* when 2 teams are equal the one with the best player should be on top ([8fc7a07](https://github.com/Badminton-Apps/core/commit/8fc7a0757ff7fb7bd3718e02ad5b9cc902918462))
+
+
+
 # [3.42.0](https://github.com/Badminton-Apps/core/compare/v3.41.1...v3.42.0) (2021-08-24)
 
 
