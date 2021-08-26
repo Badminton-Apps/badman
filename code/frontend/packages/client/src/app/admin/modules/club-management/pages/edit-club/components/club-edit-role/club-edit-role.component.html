@@ -34,9 +34,7 @@
           </button>
         </mat-list-item>
       </ng-container>
-      <mat-list-item>
-        <app-player-search (onSelectPlayer)="this.onPlayerAdded.next($event)" label="Add player"></app-player-search>
-      </mat-list-item>
     </mat-list>
+    <app-player-search (onSelectPlayer)="this.onPlayerAdded.next($event)"></app-player-search>
   </div>
 </div>

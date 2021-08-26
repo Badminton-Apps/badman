@@ -22,7 +22,7 @@ COPY packages/job ./packages/job
 
 # bootstrap
 COPY lerna.json .
-RUN lerna bootstrap --scope=@badvlasim/job -- --production=false
+RUN lerna bootstrap --scope=@badvlasim/job  --ci -- --production=false
 
 EXPOSE 4000
 

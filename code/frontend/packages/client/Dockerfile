@@ -18,7 +18,7 @@ COPY packages/client ./packages/client
 
 # bootstrap
 RUN yarn global add lerna
-RUN lerna bootstrap --scope=@badvlasim/client -- --production=false --frozen-lockfile
+RUN lerna bootstrap --scope=@badvlasim/client  --ci -- --production=false --frozen-lockfile
 
 # build
 RUN lerna run build:prod --scope=@badvlasim/client
