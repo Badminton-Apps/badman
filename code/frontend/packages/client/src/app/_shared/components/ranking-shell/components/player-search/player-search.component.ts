@@ -54,6 +54,7 @@ export class PlayerSearchComponent implements OnInit {
   ngOnInit() {
     this.formControl = new FormControl(this.player);
     this.ignorePlayersIds = this.ignorePlayers?.map((r) => r.id) ?? [];
+    this.ignorePlayersIds = this.ignorePlayersIds.filter((v, i, a) => a.indexOf(v) === i);
 
     const search$ = this.formControl.valueChanges.pipe(
       startWith(''),
