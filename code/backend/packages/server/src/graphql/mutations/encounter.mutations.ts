@@ -60,13 +60,13 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
       if (
         context?.req?.user === null ||
         !context.req.user.hasAnyPermission([
-          `${team.clubId}_change:encounter`,
+          // `${team.clubId}_change:encounter`,
           'change-any:encounter'
         ])
       ) {
         logger.warn("User tried something it should't have done", {
           required: {
-            anyClaim: ['change:encounter']
+            anyClaim: [`${team.clubId}_change:encounter`, 'change-any:encounter']
           },
           received: context?.req?.user?.permissions
         });
