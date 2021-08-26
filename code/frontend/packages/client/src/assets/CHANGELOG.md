@@ -1,3 +1,12 @@
+# [3.45.0](https://github.com/Badminton-Apps/core/compare/v3.44.0...v3.45.0) (2021-08-26)
+
+
+### Features
+
+* Closing change encounter ([03df2a1](https://github.com/Badminton-Apps/core/commit/03df2a12827473daf0a897d29db543be877e6463))
+
+
+
 # [3.44.0](https://github.com/Badminton-Apps/core/compare/v3.43.0...v3.44.0) (2021-08-25)
 
 
