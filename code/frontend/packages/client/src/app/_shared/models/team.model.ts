@@ -1,4 +1,4 @@
-import { SubEvent } from './events/sub-event.model';
+import { CompetitionSubEvent } from './events';
 import { Location } from './location.model';
 import { Player } from './player.model';
 
@@ -14,7 +14,7 @@ export class Team {
 
   players: Player[];
   locations: Location[];
-  subEvents: SubEvent[];
+  subEvents: CompetitionSubEvent[];
 
   baseIndex: number;
   captain: Player;
@@ -33,7 +33,7 @@ export class Team {
     this.preferredTime = args?.preferredTime;
     this.preferredDay = args?.preferredDay;
 
-    this.subEvents = args?.subEvents?.map((s) => new SubEvent(s));
+    this.subEvents = args?.subEvents?.map((s) => new CompetitionSubEvent(s));
     this.locations = args?.locations?.map((l) => new Location(l));
     this.captain = args?.captain != null ? new Player(args?.captain) : null;
     this.captainId = args?.captain?.id;

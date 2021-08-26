@@ -107,15 +107,21 @@ export class TeamService {
       .pipe(map((x: any) => x.data?.teams?.map((t: Partial<Team>) => new Team(t))));
   }
 
-  getTeamsAndPlayers(teamId: string, subEventId: string): Observable<Team> {
+  getTeamsAndPlayers(clubId: string, subEventIds: string[]): Observable<Team[]> {
     return this.apollo
-      .query({
+      .query<{
+        club: {
+          teams: Team[]
+        }
+      }>({
         query: teamAssemblyInfo,
         variables: {
-          teamId,
-          subEventId,
+          clubId,
+          subEventWhere : {
+            id: { "$in": subEventIds },
+          },
         },
       })
-      .pipe(map((x: any) => new Team(x.data?.team)));
+      .pipe(map((x: any) => x.data?.club?.teams?.map((t: Partial<Team>) => new Team(t))));
   }
 }
