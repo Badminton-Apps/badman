@@ -162,7 +162,12 @@
                 "not-enough-players": ""
             },
             "team-index": "",
-            "team-index-ignored": ""
+            "team-index-ignored": "",
+            "captain": "",
+            "players": {
+                "title": ""
+            },
+            "info": ""
         }
     },
     "event": {
