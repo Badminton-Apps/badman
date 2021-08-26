@@ -1,18 +1,25 @@
 import {
+  CdkDrag,
   CdkDragDrop,
   CdkDropList,
+  copyArrayItem,
   moveItemInArray,
   transferArrayItem,
-  copyArrayItem,
-  CdkDrag,
 } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserService } from 'app/player';
-import { Club, Player, PlayerService, SubEvent, TeamService } from 'app/_shared';
-import { Observable } from 'rxjs';
-import { debounce, debounceTime, filter, map, single, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  Club,
+  CompetitionSubEvent,
+  EventService,
+  LevelType,
+  Player,
+  PlayerService,
+  SubEvent,
+  TeamService,
+} from 'app/_shared';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-assembly',
@@ -72,13 +79,14 @@ export class AssemblyComponent implements OnInit {
   type: string;
   teamIndex: number = 0;
   club: Club;
-  subEvent: SubEvent;
+  subEvent: CompetitionSubEvent;
   ignorePlayers: Player[];
   loaded = false;
   errors = {} as { [key: string]: string };
   totalPlayers = 0;
 
   constructor(
+    private eventService: EventService,
     private teamService: TeamService,
     private matSnackBar: MatSnackBar,
     private playerService: PlayerService
@@ -93,9 +101,17 @@ export class AssemblyComponent implements OnInit {
     this.type = form?.team?.type;
 
     this.club = this.formGroup.get('club').value;
-    const team = await this.teamService
-      .getTeamsAndPlayers(form?.team?.id, form?.encounter?.draw?.subeventId)
+    const teamId = this.formGroup.get('team').value?.id;
+
+    const today = moment();
+    const year = today.month() >= 6 ? today.year() : today.year() - 1;
+
+    const events = await this.eventService.getSubEventsCompetition(year).toPromise();
+    const teams = await this.teamService
+      .getTeamsAndPlayers(this.club.id, events.map((r) => r.subEvents?.map((y) => y.id)).flat())
       .toPromise();
+    const team = teams.find((r) => r.id === teamId);
+
     this.players = team.players.sort((a, b) => {
       if (a.gender != b.gender) {
         return a.gender == 'F' ? -1 : 1;
@@ -161,26 +177,50 @@ export class AssemblyComponent implements OnInit {
       this.captionDouble4 = `competition.team-assembly.mix2`;
     }
 
-    const players = await this.playerService.getBasePlayers(this.club.id, this.type).toPromise();
+    this.ignorePlayers = [];
+    const ignoredLevels = [];
+    if (this.subEvent.event.type == LevelType.PROV) {
+      ignoredLevels.push(LevelType.LIGA);
+      ignoredLevels.push(LevelType.NATIONAL);
+    } else if (this.subEvent.event.type == LevelType.LIGA) {
+      ignoredLevels.push(LevelType.NATIONAL);
+    }
 
-    this.ignorePlayers = players.data.club?.teams
-      ?.map((t) => {
-        const returend = [];
-        if (t.teamNumber < form?.team?.teamNumber) {
-          returend.push(t.players.filter((p) => p.base));
+    for (const dbTeam of teams) {
+      if (dbTeam.type == team.type && dbTeam.id != teamId) {
+        // Base players
+        if (ignoredLevels.includes(dbTeam.subEvents[0].event.type)) {
+          this.ignorePlayers.push(
+            ...dbTeam.subEvents[0].meta?.players?.map((p) => {
+              return { id: p.playerId };
+            })
+          );
+        } else if (dbTeam.subEvents[0].event.type == team.subEvents[0].event.type) {
+          if (dbTeam.teamNumber < team.teamNumber) {
+            this.ignorePlayers.push(
+              ...dbTeam.subEvents[0].meta?.players?.map((p) => {
+                return { id: p.playerId };
+              })
+            );
+          } else if (dbTeam.subEvents[0].id == team.subEvents[0].id) {
+            this.ignorePlayers.push(
+              ...dbTeam.subEvents[0].meta?.players?.map((p) => {
+                return { id: p.playerId };
+              })
+            );
+          }
         }
-        returend.push(
-          t.players.filter(
+
+        this.ignorePlayers.push(
+          ...dbTeam.players.filter(
             (p) =>
               (p.lastRanking?.single ?? 12) < this.subEvent.maxLevel ||
               (p.lastRanking?.double ?? 12) < this.subEvent.maxLevel ||
               (this.type == 'MX' && (p.lastRanking?.mix ?? 12) < this.subEvent.maxLevel)
           )
         );
-
-        return returend;
-      })
-      .flat(2);
+      }
+    }
 
     this._calculateIndex();
     this.loaded = true;
