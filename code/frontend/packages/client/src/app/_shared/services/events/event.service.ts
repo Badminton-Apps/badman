@@ -8,6 +8,7 @@ import {
   CompetitionSubEvent,
   Event,
   EventType,
+  SubEvent,
   TournamentEvent,
   TournamentSubEvent,
 } from 'app/_shared/models';
@@ -18,6 +19,7 @@ import * as getCompetitionEventQuery from '../../graphql/events/queries/GetCompe
 import * as getTournamentEventQuery from '../../graphql/events/queries/GetTournament.graphql';
 
 import * as getCompetitionEventsQuery from '../../graphql/events/queries/GetCompetitions.graphql';
+import * as getSubEvents from '../../graphql/events/queries/GetSubEventsCompetition.graphql';
 import * as getTournamentEventsQuery from '../../graphql/events/queries/GetTournaments.graphql';
 
 import * as importedQuery from '../../graphql/importedEvents/queries/GetImported.graphql';
@@ -112,6 +114,26 @@ export class EventService {
         },
       })
       .pipe(map((x) => new CompetitionEvent(x.data.eventCompetition)));
+  }
+
+  getSubEventsCompetition(year: number) {
+    return this.apollo
+      .query<{
+        eventCompetitions?: {
+          total: number;
+          edges: { cursor: string; node: CompetitionEvent }[];
+        };
+      }>({
+        query: getSubEvents,
+        variables: {
+          year,
+        },
+      })
+      .pipe(
+        map((x) =>
+          x?.data?.eventCompetitions?.edges.map((x) => new CompetitionEvent(x.node))
+        )
+      );
   }
 
   getTournamentEvent(id: string, args?: {}) {
@@ -297,6 +319,9 @@ export class EventService {
   }
 
   finishEnrollment(club: Club, year: number) {
-    return this.httpClient.post(`${environment.api}/${environment.apiVersion}/enrollment/finish/${club.id}/${year}`, null);
+    return this.httpClient.post(
+      `${environment.api}/${environment.apiVersion}/enrollment/finish/${club.id}/${year}`,
+      null
+    );
   }
 }
