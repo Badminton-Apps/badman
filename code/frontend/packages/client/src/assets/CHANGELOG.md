@@ -1,3 +1,14 @@
+# [3.46.0](https://github.com/Badminton-Apps/core/compare/v3.45.0...v3.46.0) (2021-08-26)
+
+
+### Features
+
+* Baseplayers moved from editible team to subevent meta data ([eb86194](https://github.com/Badminton-Apps/core/commit/eb861943cbd5ff2dcaef9734141c632f5b76965d))
+* team captain ([a22445b](https://github.com/Badminton-Apps/core/commit/a22445b448265de15451aaf11f6ef0509bb91a49))
+* warning when players competition status is inactive ([7bcc8b1](https://github.com/Badminton-Apps/core/commit/7bcc8b1bce1dc26b0c21757941eca074c3722fe6))
+
+
+
 # [3.45.0](https://github.com/Badminton-Apps/core/compare/v3.44.0...v3.45.0) (2021-08-26)
 
 
