@@ -24,6 +24,7 @@ query GetTeamInfo($clubId: ID!, $subEventWhere: SequelizeJSON) {
         id
         fullName
         gender
+        competitionPlayer
         lastRanking {
           single
           double
