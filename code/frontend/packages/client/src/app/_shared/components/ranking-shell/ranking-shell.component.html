@@ -58,7 +58,8 @@
             {{ 'systems.list' | translate }}
           </a>
 
-          <app-has-claim [any]="['*_enlist:team', '*_change:encounter', 'change-any:encounter', 'enlist-any:team']">
+          <!-- <app-has-claim [any]="['*_enlist:team', '*_change:encounter', 'change-any:encounter', 'enlist-any:team']"> -->
+            <app-has-claim [any]="['*_enlist:team', 'change-any:encounter', 'enlist-any:team']">
             <mat-accordion class="app-nav-accordion">
               <mat-expansion-panel class="mat-elevation-z0">
                 <mat-expansion-panel-header>
@@ -78,7 +79,8 @@
                   </mat-nav-list>
                 </app-has-claim>
 
-                <app-has-claim [any]="['*_change:encounter', 'change-any:encounter']">
+                <app-has-claim [any]="['change-any:encounter']">
+                <!-- <app-has-claim [any]="['*_change:encounter', 'change-any:encounter']"> -->
                   <mat-nav-list>
                     <a mat-list-item routerLink="/competition/change-encounter" routerLinkActive="active">
                       {{ 'competition.change-encounter.title' | translate }}
