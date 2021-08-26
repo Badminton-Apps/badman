@@ -1,3 +1,12 @@
+## [3.46.1](https://github.com/Badminton-Apps/core/compare/v3.46.0...v3.46.1) (2021-08-26)
+
+
+### Bug Fixes
+
+* translations ([084b650](https://github.com/Badminton-Apps/core/commit/084b650a2a9ad2cb117e72e5ce262e1ab88f3ec6))
+
+
+
 # [3.46.0](https://github.com/Badminton-Apps/core/compare/v3.45.0...v3.46.0) (2021-08-26)
 
 
