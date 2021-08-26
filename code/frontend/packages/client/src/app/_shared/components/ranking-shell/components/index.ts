@@ -2,6 +2,7 @@
 export * from './language';
 export * from './notifications';
 export * from './player-search';
+export * from './header-search';
 export * from './user-info';
 // end:ng42.barrel
 

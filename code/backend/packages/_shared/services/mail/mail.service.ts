@@ -131,13 +131,7 @@ export class MailService {
       context: { clubs, clientUrl: this._clientUrl, title: 'New players' }
     };
 
-    try {
-      const info = await this._transporter.sendMail(options);
-      logger.debug('Message sent: %s', info.messageId);
-      logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    } catch (e) {
-      logger.error('Hello', e);
-    }
+    await this._sendMail(options);
   }
 
   async sendClubMail(
@@ -204,17 +198,7 @@ export class MailService {
       }
     };
 
-    // comments
-    //       .filter(c => c.message && c.message.length > 0)
-    //       .map(c => c?.toJSON())
-
-    try {
-      const info = await this._transporter.sendMail(options);
-      logger.debug('Message sent: %s', info.messageId);
-      logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    } catch (e) {
-      logger.error('Hello', e);
-    }
+    await this._sendMail(options);
   }
 
   async sendRequestMail(
@@ -252,18 +236,7 @@ export class MailService {
       }
     };
 
-    try {
-      if (this._mailingEnabled === false) {
-        logger.debug('Mailing disabled', options);
-        return;
-      }
-
-      const info = await this._transporter.sendMail(options);
-      logger.debug('Message sent: %s', info.messageId);
-      logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    } catch (e) {
-      logger.error('Hello', e);
-    }
+    await this._sendMail(options);
   }
 
   async sendRequestFinishedMail(changeRequest: EncounterChange) {
@@ -294,21 +267,30 @@ export class MailService {
         }
       };
 
-      try {
-        if (this._mailingEnabled === false) {
-          logger.debug('Mailing disabled', options);
-          return;
-        }
-
-        const info = await this._transporter.sendMail(options);
-        logger.debug('Message sent: %s', info.messageId);
-        logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-      } catch (e) {
-        logger.error('Hello', e);
-      }
+      await this._sendMail(options);
     };
 
     await sendMail(encounter.home, encounter.home.captain);
     await sendMail(encounter.away, encounter.away.captain);
+  }
+
+  private async _sendMail(options: any) {
+    try {
+      if (this._mailingEnabled === false) {
+        logger.debug('Mailing disabled', options);
+        return;
+      }
+
+      if (options.to === null || options.to.length === 0) {
+        logger.error('no mail adress?', options);
+        return;
+      }
+
+      const info = await this._transporter.sendMail(options);
+      logger.debug('Message sent: %s', info.messageId);
+      logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    } catch (e) {
+      logger.error('Hello', e);
+    }
   }
 }

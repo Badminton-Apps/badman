@@ -1,3 +1,73 @@
+# [3.45.0](https://github.com/Badminton-Apps/core/compare/v3.44.0...v3.45.0) (2021-08-26)
+
+
+### Features
+
+* Closing change encounter ([03df2a1](https://github.com/Badminton-Apps/core/commit/03df2a12827473daf0a897d29db543be877e6463))
+
+
+
+# [3.44.0](https://github.com/Badminton-Apps/core/compare/v3.43.0...v3.44.0) (2021-08-25)
+
+
+### Features
+
+* Moved warnings to top ([6be5d1c](https://github.com/Badminton-Apps/core/commit/6be5d1c348a25908af6855c13c0cb691248bbf36))
+
+
+
+# [3.43.0](https://github.com/Badminton-Apps/core/compare/v3.42.0...v3.43.0) (2021-08-24)
+
+
+### Features
+
+* when 2 teams are equal the one with the best player should be on top ([8fc7a07](https://github.com/Badminton-Apps/core/commit/8fc7a0757ff7fb7bd3718e02ad5b9cc902918462))
+
+
+
+# [3.42.0](https://github.com/Badminton-Apps/core/compare/v3.41.1...v3.42.0) (2021-08-24)
+
+
+### Bug Fixes
+
+* drag&drop should have background ([fd7054a](https://github.com/Badminton-Apps/core/commit/fd7054a43ec15183366f09d57d66bc136471c33b))
+
+
+### Features
+
+* split header search vs normal player search ([cf28638](https://github.com/Badminton-Apps/core/commit/cf2863855e266cfec2aa7070b10fbbedc2e050ca))
+
+
+
+## [3.41.1](https://github.com/Badminton-Apps/core/compare/v3.40.0...v3.41.1) (2021-08-24)
+
+
+### Bug Fixes
+
+* Adding locations ([8bd3e79](https://github.com/Badminton-Apps/core/commit/8bd3e79437bbd01aea87a4c31d16a8a9b947540b))
+* players without ranking ([974b4ae](https://github.com/Badminton-Apps/core/commit/974b4ae25ce8de96fec55a2d1fb21d8f37578c29))
+* Removing error box when moving to player list ([d213bac](https://github.com/Badminton-Apps/core/commit/d213bac9ad7996fb3ebeca9c98df24ad671e8e46))
+
+
+### Features
+
+* filter out existing players ([a2d7856](https://github.com/Badminton-Apps/core/commit/a2d78564b59a3d4e2ce00b1d78c233fcd125a24d))
+* merge mailing to single function with checks ([c3220bb](https://github.com/Badminton-Apps/core/commit/c3220bb69506b935fbdf6bb770747bb0eb3cdd62))
+* Only add players of correct gender ([0346ad7](https://github.com/Badminton-Apps/core/commit/0346ad7435ce652a04db3183b398b14199f158eb))
+* remove from reserve list on adding player ([37b6f45](https://github.com/Badminton-Apps/core/commit/37b6f45d1379c73a17c8099e6726c7b5662c4d1d))
+* Sort by gender/level ([1075851](https://github.com/Badminton-Apps/core/commit/1075851e7f4c78dba0feeb32b6f9e884b83cb3f2))
+
+
+
+# [3.40.0](https://github.com/Badminton-Apps/core/compare/v3.39.0...v3.40.0) (2021-08-23)
+
+
+### Features
+
+* [#3](https://github.com/Badminton-Apps/core/issues/3) Team assembly (ploegopstellingsformulier) ([81d8136](https://github.com/Badminton-Apps/core/commit/81d8136f3a7a3e5798621ab1f2576514ebdf3786))
+
+
+
 # [3.39.0](https://github.com/Badminton-Apps/core/compare/v3.38.4...v3.39.0) (2021-08-23)
 
 

@@ -1,0 +1,25 @@
+:host {
+  width: 100%;
+}
+
+form{
+  display: flex;
+}
+
+input {
+  flex: 1;
+  border: none;
+  padding: 15px;
+  background-color: transparent;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+
+.header input {
+  background-color: #f1f3f4;
+  border-radius: 5px;
+}
+
