@@ -11,7 +11,10 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       claims: {
-        any: ['*_change:encounter', 'change-any:encounter'],
+        any: [
+          // '*_change:encounter',
+          'change-any:encounter',
+        ],
       },
     },
   },

@@ -22,17 +22,17 @@ export class TeamAssemblyPlayerComponent implements OnInit {
   ngOnInit() {
     if (!this.showType) {
       if (this.eventType == 'M' || this.eventType == 'F') {
-        this.ranking = `${this.player.lastRanking.single} - ${this.player.lastRanking.double}`;
+        this.ranking = `${this.player.lastRanking?.single ?? 12} - ${this.player.lastRanking?.double ?? 12}`;
       } else {
-        this.ranking = `${this.player.lastRanking.single} - ${this.player.lastRanking.double} - ${this.player.lastRanking.mix}`;
+        this.ranking = `${this.player.lastRanking?.single ?? 12} - ${this.player.lastRanking?.double ?? 12} - ${this.player.lastRanking?.mix ?? 12}`;
       }
     } else {
       if (this.showType.includes('single')) {
-        this.ranking = `${this.player.lastRanking.single}`;
+        this.ranking = `${this.player.lastRanking?.single ?? 12}`;
       } else if (this.eventType == 'MX' && (this.showType == 'double3' || this.showType == 'double4')) {
-        this.ranking = `${this.player.lastRanking.mix}`;
+        this.ranking = `${this.player.lastRanking?.mix ?? 12}`;
       } else {
-        this.ranking = `${this.player.lastRanking.double}`;
+        this.ranking = `${this.player.lastRanking?.double ?? 12}`;
       }
     }
   }
