@@ -129,11 +129,12 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
         throw e;
       }
 
-      if (change.accepted) {
-        await notificationService.requestFinished(encounterChange);
-      } else {
-        await notificationService.requestChange(encounterChange, change.home);
-      }
+      // Notify the user
+      // if (change.accepted) {
+      //   await notificationService.requestFinished(encounterChange);
+      // } else {
+      //   await notificationService.requestChange(encounterChange, change.home);
+      // }
 
       return encounterChange;
     }
