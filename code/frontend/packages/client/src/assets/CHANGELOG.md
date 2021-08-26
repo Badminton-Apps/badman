@@ -1,3 +1,12 @@
+# [3.44.0](https://github.com/Badminton-Apps/core/compare/v3.43.0...v3.44.0) (2021-08-25)
+
+
+### Features
+
+* Moved warnings to top ([6be5d1c](https://github.com/Badminton-Apps/core/commit/6be5d1c348a25908af6855c13c0cb691248bbf36))
+
+
+
 # [3.43.0](https://github.com/Badminton-Apps/core/compare/v3.42.0...v3.43.0) (2021-08-24)
 
 
