@@ -80,6 +80,7 @@ export class AssemblyComponent implements OnInit {
   teamIndex: number = 0;
   club: Club;
   subEvent: CompetitionSubEvent;
+  captain: Player;
   ignorePlayers: Player[];
   loaded = false;
   errors = {} as { [key: string]: string };
@@ -111,6 +112,7 @@ export class AssemblyComponent implements OnInit {
       .getTeamsAndPlayers(this.club.id, events.map((r) => r.subEvents?.map((y) => y.id)).flat())
       .toPromise();
     const team = teams.find((r) => r.id === teamId);
+    this.captain = team.captain
 
     this.players = team.players.sort((a, b) => {
       if (a.gender != b.gender) {
@@ -232,6 +234,10 @@ export class AssemblyComponent implements OnInit {
     this.wherePlayer.id = {
       $notIn: this.players?.map((p) => p.id),
     };
+  }
+
+  selectedCaptain(player: Player) {
+    this.captain = player;
   }
 
   canDropPredicate = (item: CdkDrag, drop: CdkDropList) => {

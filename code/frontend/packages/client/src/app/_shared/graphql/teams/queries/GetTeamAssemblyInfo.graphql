@@ -31,6 +31,10 @@ query GetTeamInfo($clubId: ID!, $subEventWhere: SequelizeJSON) {
           mix
         }
       }
+      captain{
+        id
+        fullName
+      }
     }
   }
 }

@@ -18,6 +18,17 @@
 
   <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="16px">
     <div fxFlex="33" class="team-info">
+      <div class="captain">
+        <app-player-search
+          [player]="this.captain"
+          [allowCreation]="true"
+          [club]="this.club"
+          label="competition.team-assembly.captain"
+          (onSelectPlayer)="this.selectedCaptain($event)"
+          [clearOnSelection]="false"
+        ></app-player-search>
+      </div>
+
       <div
         class="drag"
         cdkDropList
@@ -27,7 +38,7 @@
         (cdkDropListDropped)="drop($event)"
         [cdkDropListSortingDisabled]="true"
       >
-        <label class="mat-caption">Spelers</label>
+        <label class="mat-caption">{{ 'competition.team-assembly.players.title' | translate}}</label>
         <app-team-assembly-player
           class="drag-item"
           *ngFor="let item of players"
