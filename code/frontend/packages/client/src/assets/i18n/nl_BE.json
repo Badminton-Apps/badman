@@ -165,9 +165,9 @@
             "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg",
             "captain": "Ploegkapitein",
             "players": {
-                "title": "Spelers"
+                "title": "Mogelijke titularissen"
             },
-            "info": "Informatie"
+            "info": "Opmerkingen bij opstelling"
         }
     },
     "event": {
