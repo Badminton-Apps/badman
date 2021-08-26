@@ -21,6 +21,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
+  HeaderSearchComponent,
   LanguageComponent,
   NotificationComponent,
   PlayerSearchComponent,
@@ -73,6 +74,7 @@ const exportedComponents = [
   declarations: [
     RankingShellComponent,
     PlayerSearchComponent,
+    HeaderSearchComponent,
     NotificationComponent,
     LoadingPipe,
     LevelToLetterPipe,

@@ -45,14 +45,13 @@
       </button>
     </mat-list-item>
   </ng-container>
-  <mat-list-item>
-    <app-player-search
-      (onSelectPlayer)="this.playerAdded($event)"
-      [ignorePlayers]="this.team.players"
-      [allowCreation]="true"
-      [where]="this.where"
-      [club]="this.club"
-      label="Add player"
-    ></app-player-search>
-  </mat-list-item>
 </mat-list>
+
+<app-player-search
+  (onSelectPlayer)="this.playerAdded($event)"
+  [ignorePlayers]="this.team.players"
+  [allowCreation]="true"
+  [where]="this.where"
+  [club]="this.club"
+  label="Add player"
+></app-player-search>
