@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -28,7 +29,8 @@ const materialModules = [
   DragDropModule,
   MatDividerModule,
   MatTooltipModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatIconModule
 ];
 
 @NgModule({
