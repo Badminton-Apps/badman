@@ -64,11 +64,11 @@
         },
         "updates": {
             "title": "Updates",
-            "description": "View changelogs"
+            "description": "View changelog"
         }
     },
     "team": {
-        "day": "Matchday",
+        "day": "Match day",
         "location": "Location",
         "title": {
             "prefferd-encounter": "Preferred match time",
@@ -76,7 +76,7 @@
             "players": "Players",
             "base-fields": "General info"
         },
-        "change-number": "Chaging of the team number, also update higher\/lower teams",
+        "change-number": "Changing of the team number, also update higher\/lower teams",
         "check-players": "Tick off the basis players in the checkbox"
     },
     "competition": {
@@ -100,7 +100,7 @@
                 "base-max": "Team index too high for division",
                 "no-day": "Please select an encounter moment",
                 "not-comp": "{{player}} is not registered as CT-player (note: it takes a couple of days before the request for conversion to CT-player is completed)",
-                "best-max": "Best 4 players too strong for this division"
+                "best-max": "The Best 4 players too strong for this division"
             },
             "player-base": "Player is already basis player of other team",
             "title": "Team enrollment",
@@ -115,7 +115,7 @@
         "note": "note: Changes are saved directly",
         "change-encounter": {
             "title": "Encounters",
-            "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied",
+            "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",
             "vs": "Vs.",
             "home": "Home",
             "away": "Away",
@@ -142,18 +142,18 @@
             }
         },
         "team-assembly": {
-            "title": "",
+            "title": "Team assembly",
             "reserve": "",
-            "double1": "",
-            "double2": "",
-            "double3": "",
-            "double4": "",
-            "single1": "",
-            "single2": "",
-            "single3": "",
-            "single4": "",
-            "mix1": "",
-            "mix2": "",
+            "double1": "Double 1",
+            "double2": "Double 2",
+            "double3": "Double 3",
+            "double4": "Double 4",
+            "single1": "Single 1",
+            "single2": "Single 2",
+            "single3": "Single 3",
+            "single4": "Single 1",
+            "mix1": "Mixed doubles 1",
+            "mix2": "Mixed doubles 2",
             "errors": {
                 "already": "",
                 "to-much": "",
@@ -162,7 +162,12 @@
                 "not-enough-players": ""
             },
             "team-index": "",
-            "team-index-ignored": ""
+            "team-index-ignored": "",
+            "captain": "",
+            "players": {
+                "title": ""
+            },
+            "info": ""
         }
     },
     "event": {
@@ -175,9 +180,9 @@
         "title": "Players",
         "no-memberid": "Unknown member id",
         "search": {
-            "label": "",
-            "not-found": "",
-            "create": ""
+            "label": "Search player",
+            "not-found": "Player not found",
+            "create": "Add new player"
         }
     },
     "games": {
@@ -258,6 +263,6 @@
         "select-encounter": "Pick an encounter"
     },
     "permission": {
-        "no-perm": ""
+        "no-perm": "You do not have insufficient rights for this"
     }
 }

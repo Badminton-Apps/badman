@@ -39,7 +39,7 @@
         "title": "Info hoe website te gebruiken",
         "info": {
             "title": "Infofilmpje",
-            "description": "Via de volgende link kan het infofilmpje gevonden worden waarin alle details van het nieuwe systeem worden uitgelegd: "
+            "description": "Via de volgende link kan het infofilmpje gevonden worden waarin alle details van het nieuwe systeem worden uitgelegd:"
         },
         "overview": {
             "title": "Overzicht per speler",
@@ -161,8 +161,13 @@
                 "player-above-lower": "Speler met hogere opstellingsindex staat voor deze speler opgesteld",
                 "not-enough-players": "Te weinig titularissen zijn momenteel opgesteld voor de ontmoeting"
             },
-            "team-index": "Ploegindex titularissen is <strong>{{current}}<\/strong> en mag minimaal <strong>{{team}}<\/strong> zijn ",
-            "team-index-ignored": "Ploegindex titularissen mag voor de eeste ploeg ploegindex basisspelers onderschrijden"
+            "team-index": "Ploegindex titularissen is <strong>{{current}}<\/strong> en mag minimaal <strong>{{team}}<\/strong> zijn",
+            "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg",
+            "captain": "Ploegkapitein",
+            "players": {
+                "title": "Spelers"
+            },
+            "info": "Informatie"
         }
     },
     "event": {
