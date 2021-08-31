@@ -1,0 +1,568 @@
+<html><head>
+  <meta charset="UTF-8">
+  <style>
+    .wrapper {
+      display: -ms-grid;
+      display: grid;
+      -ms-grid-columns: 1fr 35px 5fr 1.2fr 2fr 2fr 2fr 2fr 2fr;
+      grid-template-columns: 1fr 35px 5fr 1.2fr 2fr 2fr 2fr 2fr 2fr;
+      border-left: 1px solid black;
+    }
+
+    .wrapper {
+      border-top: 1px solid black;
+    }
+
+
+    .box {
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+      padding: 5px;
+    }
+
+    .players {
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+
+    .title {
+      -ms-grid-row: 1;
+      grid-row: 1;
+    }
+
+    .title.type {
+      grid-column: 1/3;
+
+    }
+
+    .d0.type {
+      -ms-grid-row: 2;
+      -ms-grid-row-span: 2;
+      grid-row: 2 / 4;
+    }
+
+    .d1.type {
+      -ms-grid-row: 4;
+      -ms-grid-row-span: 2;
+      grid-row: 4 / 6;
+    }
+
+    .d2.type {
+      -ms-grid-row: 6;
+      -ms-grid-row-span: 2;
+      grid-row: 6 / 8;
+    }
+
+    .d3.type {
+      -ms-grid-row: 8;
+      -ms-grid-row-span: 2;
+      grid-row: 8 / 10;
+    }
+
+    .s0 {
+      border-top: 2px solid black;
+    }
+
+    .s0.type {
+      -ms-grid-row: 10;
+      grid-row: 10;
+    }
+
+    .s1.type {
+      -ms-grid-row: 11;
+      grid-row: 11;
+    }
+
+    .s2.type {
+      -ms-grid-row: 12;
+      grid-row: 12;
+    }
+
+    .s3.type {
+      -ms-grid-row: 13;
+      grid-row: 13;
+    }
+
+    .type {
+      display: -ms-grid;
+      display: grid;
+      -ms-grid-column: 1;
+      grid-column: 1;
+      justify-items: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    .players {
+      display: -ms-grid;
+      display: grid;
+      -ms-grid-column: 2;
+      grid-column: 2;
+      -ms-grid-row: 2;
+      -ms-grid-row-span: 12;
+      grid-row: 2 / 14;
+      word-break: break-all;
+      padding: 0 10px;
+      text-transform: uppercase;
+      font-size: large;
+      justify-items: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .subtitudes .type {
+      grid-row: 2 / 6;
+      grid-column: 1 / 3;
+    }
+
+    .subtitudes .level {
+      display: flex;
+    }
+
+    .subtitudes .level div {
+      flex: 1;
+    }
+
+    .subtitudes .pre {
+      grid-column: 1 / 4;
+    }
+
+    .subtitudes .post {
+      grid-column: 5 / 10;
+    }
+
+    .name {
+      -ms-grid-column: 3;
+      grid-column: 3;
+    }
+
+    .level {
+      -ms-grid-column: 4;
+      grid-column: 4;
+      text-align: center;
+    }
+
+    .number {
+      -ms-grid-column: 5;
+      grid-column: 5;
+    }
+
+    .sum {
+      -ms-grid-column: 6;
+      grid-column: 6;
+    }
+
+    .highest {
+      -ms-grid-column: 7;
+      grid-column: 7;
+    }
+
+    .team {
+      -ms-grid-column: 8;
+      grid-column: 8;
+    }
+
+    .base {
+      -ms-grid-column: 9;
+      grid-column: 9;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="info">
+    <div class="header">
+      <div class="title">
+        Ploegopstellingsformulier – Interclubcompetitie
+      </div>
+    </div>
+
+    <div>
+
+    </div>
+
+    <div class="info">
+      <div class="draw">1e Prov heren B</div>
+      <div class="date">25/09/2021 19:00</div>
+    </div>
+
+    <div class="indexes">
+      <div class="base-index">Basisspelers: 38</div>
+      <div class="team-index">Titularissen: 37</div>
+    </div>
+
+    <div class="teams">
+      <div class="home">Thuisploeg: Smash For Fun 1H</div>
+      <div class="away">Bezoekers: Gentse 1H</div>
+    </div>
+
+    <div class="captain">
+      Ploegkapitein: Shane Herssens
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div class="box title type"></div>
+    <div class="box title name">
+      name
+    </div>
+    <div class="box title level">
+      level
+    </div>
+    <div class="box title number">
+      number
+    </div>
+    <div class="box title sum">
+      Som Index
+    </div>
+    <div class="box title highest">
+      Hoogste klas
+    </div>
+    <div class="box title team">
+      Ploeg Index
+    </div>
+    <div class="box title base">
+      Basis Speler
+    </div>
+    <div class="players">
+      t i t u l a r i s s e n
+    </div>
+
+
+    <div class="box d0 type">
+      HE 1
+    </div>
+    <div class="box d0 p1 name">
+      Jan Tuerlinckx
+    </div>
+    <div class="box d0 p1 level">
+      4
+    </div>
+    <div class="box d0 p1 number">
+      50085119
+    </div>
+    <div class="box d0 p1 sum">
+      8
+    </div>
+    <div class="box d0 p1 highest">
+      4
+
+    </div>
+    <div class="box d0 p1 team">
+      x
+    </div>
+    <div class="box d0 p1 base">
+      x
+    </div>
+    <div class="box d0 p2 name">
+      Shane Herssens
+    </div>
+    <div class="box d0 p2 level">
+      4
+    </div>
+    <div class="box d0 p2 number">
+      50077516
+    </div>
+    <div class="box d0 p2 sum">
+      10
+
+    </div>
+    <div class="box d0 p2 highest">
+      4
+    </div>
+    <div class="box d0 p2 team">
+      x
+    </div>
+    <div class="box d0 p2 base">
+      x
+    </div>
+    <div class="box d1 type">
+      HE 2
+    </div>
+    <div class="box d1 p1 name">
+      Shane Herssens
+    </div>
+    <div class="box d1 p1 level">
+      4
+    </div>
+    <div class="box d1 p1 number">
+      50077516
+    </div>
+    <div class="box d1 p1 sum">
+      10
+    </div>
+    <div class="box d1 p1 highest">
+      4
+
+    </div>
+    <div class="box d1 p1 team">
+    </div>
+    <div class="box d1 p1 base">
+    </div>
+    <div class="box d1 p2 name">
+      Boris Wauters
+    </div>
+    <div class="box d1 p2 level">
+      7
+    </div>
+    <div class="box d1 p2 number">
+      50112880
+    </div>
+    <div class="box d1 p2 sum">
+      16
+
+    </div>
+    <div class="box d1 p2 highest">
+      7
+    </div>
+    <div class="box d1 p2 team">
+    </div>
+    <div class="box d1 p2 base">
+    </div>
+    <div class="box d2 type">
+      HE 3
+    </div>
+    <div class="box d2 p1 name">
+      Stijn Eloot
+    </div>
+    <div class="box d2 p1 level">
+      5
+    </div>
+    <div class="box d2 p1 number">
+      50095101
+    </div>
+    <div class="box d2 p1 sum">
+      8
+    </div>
+    <div class="box d2 p1 highest">
+      3
+
+    </div>
+    <div class="box d2 p1 team">
+      x
+    </div>
+    <div class="box d2 p1 base">
+      x
+    </div>
+    <div class="box d2 p2 name">
+      Boris Wauters
+    </div>
+    <div class="box d2 p2 level">
+      7
+    </div>
+    <div class="box d2 p2 number">
+      50112880
+    </div>
+    <div class="box d2 p2 sum">
+      16
+
+    </div>
+    <div class="box d2 p2 highest">
+      7
+    </div>
+    <div class="box d2 p2 team">
+    </div>
+    <div class="box d2 p2 base">
+    </div>
+    <div class="box d3 type">
+      HE 4
+    </div>
+    <div class="box d3 p1 name">
+      Boris Wauters
+    </div>
+    <div class="box d3 p1 level">
+      7
+    </div>
+    <div class="box d3 p1 number">
+      50112880
+    </div>
+    <div class="box d3 p1 sum">
+      16
+    </div>
+    <div class="box d3 p1 highest">
+      7
+
+    </div>
+    <div class="box d3 p1 team">
+    </div>
+    <div class="box d3 p1 base">
+    </div>
+    <div class="box d3 p2 name">
+      Glenn Latomme
+    </div>
+    <div class="box d3 p2 level">
+      8
+    </div>
+    <div class="box d3 p2 number">
+      50104197
+    </div>
+    <div class="box d3 p2 sum">
+      17
+
+    </div>
+    <div class="box d3 p2 highest">
+      8
+    </div>
+    <div class="box d3 p2 team">
+    </div>
+    <div class="box d3 p2 base">
+    </div>
+
+    <div class="box s0 type">
+      HE 1
+    </div>
+    <div class="box s0 p1 name">
+      Stijn Eloot
+    </div>
+    <div class="box s0 p1 level">
+      3
+    </div>
+    <div class="box s0 p1 number">
+      50095101
+    </div>
+    <div class="box s0 p1 sum">
+      8
+    </div>
+    <div class="box s0 p1 highest">
+      3
+    </div>
+    <div class="box s0 p1 team">
+    </div>
+    <div class="box s0 p1 base">
+    </div>
+    <div class="box s1 type">
+      HE 2
+    </div>
+    <div class="box s1 p1 name">
+      Jan Tuerlinckx
+    </div>
+    <div class="box s1 p1 level">
+      4
+    </div>
+    <div class="box s1 p1 number">
+      50085119
+    </div>
+    <div class="box s1 p1 sum">
+      8
+    </div>
+    <div class="box s1 p1 highest">
+      4
+    </div>
+    <div class="box s1 p1 team">
+    </div>
+    <div class="box s1 p1 base">
+    </div>
+    <div class="box s2 type">
+      HE 3
+    </div>
+    <div class="box s2 p1 name">
+      Hannes Hugaert
+    </div>
+    <div class="box s2 p1 level">
+      5
+    </div>
+    <div class="box s2 p1 number">
+      50769804
+    </div>
+    <div class="box s2 p1 sum">
+      11
+    </div>
+    <div class="box s2 p1 highest">
+      5
+    </div>
+    <div class="box s2 p1 team">
+      x
+    </div>
+    <div class="box s2 p1 base">
+    </div>
+    <div class="box s3 type">
+      HE 4
+    </div>
+    <div class="box s3 p1 name">
+      Glenn Latomme
+    </div>
+    <div class="box s3 p1 level">
+      9
+    </div>
+    <div class="box s3 p1 number">
+      50104197
+    </div>
+    <div class="box s3 p1 sum">
+      17
+    </div>
+    <div class="box s3 p1 highest">
+      8
+    </div>
+    <div class="box s3 p1 team">
+    </div>
+    <div class="box s3 p1 base">
+    </div>
+  </div>
+
+
+  <div class="wrapper subtitudes">
+    <div class="box pre"></div>
+    <div class="box title level">
+      <div class="single">S</div>
+      <div class="double">D</div>
+      <div class="mix">G</div>
+    </div>
+    <div class="box post"></div>
+
+
+    <div class="box type">
+      invallers
+    </div>
+    <div class="box p0 name">
+      Mario Van Hoyweghen
+    </div>
+    <div class="box p0 level">
+      <div>12</div>
+      <div>10</div>
+      <div>12</div>
+    </div>
+    <div class="box p0 number">
+      50077523
+    </div>
+    <div class="box p0 sum">
+      22
+    </div>
+    <div class="box p0 highest">
+      10
+    </div>
+    <div class="box p0 team">
+    </div>
+    <div class="box p0 base">
+    </div>
+    <div class="box type">
+      invallers
+    </div>
+    <div class="box p1 name">
+      Koen Meyvaert
+    </div>
+    <div class="box p1 level">
+      <div>10</div>
+      <div>9</div>
+      <div>11</div>
+    </div>
+    <div class="box p1 number">
+      50605860
+    </div>
+    <div class="box p1 sum">
+      19
+    </div>
+    <div class="box p1 highest">
+      9
+    </div>
+    <div class="box p1 team">
+    </div>
+    <div class="box p1 base">
+    </div>
+  </div>
+
+
+
+</body></html>
