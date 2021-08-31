@@ -143,7 +143,7 @@
         },
         "team-assembly": {
             "title": "Ploegopstelling",
-            "reserve": "Invallers",
+            "substitude": "Invallers",
             "double1": "Dubbel 1",
             "double2": "Dubbel 2",
             "double3": "Dubbel 3",
