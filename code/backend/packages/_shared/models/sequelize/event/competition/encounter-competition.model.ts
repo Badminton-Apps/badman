@@ -67,7 +67,7 @@ export class EncounterCompetition extends Model {
     foreignKey: 'drawId',
     onDelete: 'CASCADE'
   })
-  draw?: DrawCompetition[];
+  draw?: DrawCompetition;
 
   @ForeignKey(() => DrawCompetition)
   @Column
