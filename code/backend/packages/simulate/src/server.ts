@@ -15,10 +15,9 @@ dotenv.config();
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
   const calculator = new RankingCalculator(databaseService);
-  const router = Router();
 
   const app = new App([
-    new SimulateController(router, authService.checkAuth, databaseService, calculator)
+    new SimulateController(Router(), authService.checkAuth, databaseService, calculator)
   ]);
   app.listen();
 };
