@@ -143,7 +143,7 @@
         },
         "team-assembly": {
             "title": "Team assembly",
-            "reserve": "",
+            "substitude": "",
             "double1": "Double 1",
             "double2": "Double 2",
             "double3": "Double 3",
