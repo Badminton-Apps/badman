@@ -1,3 +1,13 @@
+## [3.47.6](https://github.com/Badminton-Apps/core/compare/v3.47.5...v3.47.6) (2021-09-03)
+
+
+### Bug Fixes
+
+* Labels ([2fc89a7](https://github.com/Badminton-Apps/core/commit/2fc89a7d02f17e7316b9b0a82251eeec6b207570))
+* typo ([669f23a](https://github.com/Badminton-Apps/core/commit/669f23a374e9ca3fa39a1a06d337db20cd2c8447))
+
+
+
 ## [3.47.5](https://github.com/Badminton-Apps/core/compare/v3.47.4...v3.47.5) (2021-09-03)
 
 
