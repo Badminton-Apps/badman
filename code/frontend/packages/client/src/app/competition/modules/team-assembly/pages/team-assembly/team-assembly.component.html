@@ -8,10 +8,14 @@
     <app-select-club fxFlex="25" [needsPermission]="false" [formGroup]="formGroup"></app-select-club>
     <app-select-team fxFlex="25" [formGroup]="formGroup"></app-select-team>
     <app-select-encounter fxFlex="50" [formGroup]="formGroup"></app-select-encounter>
-    <button mat-icon-button (click)="this.download()"><mat-icon>download</mat-icon></button>
+    <div class="download">
+      <button mat-stroked-button (click)="this.download()"><mat-icon>download</mat-icon></button>
+    </div>
   </div>
 
   <ng-container *ngIf="this.formGroup.value.team && this.formGroup.value.encounter">
     <app-assembly [formGroup]="this.formGroup"></app-assembly>
   </ng-container>
 </div>
+
+
