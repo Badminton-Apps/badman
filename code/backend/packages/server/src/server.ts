@@ -5,6 +5,7 @@ import {
   AuthenticationSercice,
   DataBaseHandler,
   NotificationService,
+  PdfService,
   Player,
   startWhenReady
 } from '@badvlasim/shared';
@@ -12,12 +13,14 @@ import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
 import dotenv from 'dotenv';
 import { Response, Router } from 'express';
-import { EnrollmentController } from './controllers/enrollement.controller';
-import { RankingController } from './controllers/ranking.controller';
-import { RequestLinkController } from './controllers/request-link.controller';
-import { SystemController } from './controllers/system.controller';
-// Then  rest
-import { UserController } from './controllers/user.controller';
+import {
+  EnrollmentController,
+  RankingController,
+  RequestLinkController,
+  SystemController,
+  UserController,
+  PdfController
+} from './controllers';
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
@@ -26,22 +29,22 @@ dotenv.config();
 (async () => {
   await startWhenReady(true, false, db => {
     startServer(db);
-  }); 
+  });
 })();
 
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
+  const pdfService = new PdfService(databaseService);
   const notifService = new NotificationService(databaseService);
-
-  const router = Router();
 
   const app = new App(
     [
-      new EnrollmentController(router, authService.checkAuth, databaseService, notifService),
-      new RankingController(router, authService.checkAuth), 
-      new SystemController(router, authService.checkAuth, databaseService),
-      new UserController(router, authService.checkAuth),
-      new RequestLinkController(router, authService.checkAuth)
+      new EnrollmentController(Router(), authService.checkAuth, databaseService, notifService),
+      new RankingController(Router(), authService.checkAuth),
+      new SystemController(Router(), authService.checkAuth, databaseService),
+      new UserController(Router(), authService.checkAuth),
+      new RequestLinkController(Router(), authService.checkAuth),
+      new PdfController(Router(), pdfService)
     ],
     [
       {
