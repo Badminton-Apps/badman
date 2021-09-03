@@ -6,8 +6,19 @@
   display: flex;
   flex-direction: row;
 }
+
 @media only screen and (max-width: 600px) {
   .select-game {
     flex-direction: column;
+  }
+}
+
+
+.download {
+  margin: .25em 0;
+  padding-bottom: 1.34375em;
+
+  button {
+    height: 51px;
   }
 }
