@@ -13,7 +13,6 @@ export class TeamAssemblyComponent {
   constructor(private assemblyService: TeamAssemblyService) {}
 
   async download() {
-    console.log('download', this.formGroup.value);
     const encounter = this.formGroup.get('encounter').value;
 
     const response = await this.assemblyService
