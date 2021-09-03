@@ -1,3 +1,13 @@
+# [3.47.0](https://github.com/Badminton-Apps/core/compare/v3.46.1...v3.47.0) (2021-09-03)
+
+
+### Features
+
+* pdf export part 1 ([c181df6](https://github.com/Badminton-Apps/core/commit/c181df6b4146a880bf31e9fab49311ce84b142fe))
+* pdf export part 1 ([301d5b3](https://github.com/Badminton-Apps/core/commit/301d5b30780b04c8d6ba5ac3ee6a7476d185c114))
+
+
+
 ## [3.46.1](https://github.com/Badminton-Apps/core/compare/v3.46.0...v3.46.1) (2021-08-26)
 
 
