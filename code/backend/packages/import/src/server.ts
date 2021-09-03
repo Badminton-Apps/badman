@@ -21,9 +21,8 @@ dotenv.config();
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
 
-  const router = Router();
   const converter = new Convertor();
 
-  const app = new App([new ImportController(router, authService.checkAuth, converter)]);
+  const app = new App([new ImportController(Router(), authService.checkAuth, converter)]);
   app.listen();
 };
