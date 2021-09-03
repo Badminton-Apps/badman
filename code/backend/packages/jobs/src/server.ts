@@ -12,9 +12,8 @@ dotenv.config();
 })();
 
 const startServer = () => {
-  const router = Router();
   const authService = new AuthenticationSercice();
 
-  const app = new App([new JobController(router, authService.checkAuth)]);
+  const app = new App([new JobController(Router(), authService.checkAuth)]);
   app.listen();
 };

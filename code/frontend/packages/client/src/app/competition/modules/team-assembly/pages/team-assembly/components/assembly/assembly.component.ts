@@ -7,7 +7,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   Club,
@@ -29,9 +29,10 @@ import * as moment from 'moment';
 export class AssemblyComponent implements OnInit {
   @Input()
   formGroup: FormGroup;
+
   lists = [
     'playerList',
-    'reserveList',
+    'substitudeList',
     'single1List',
     'single2List',
     'single3List',
@@ -52,7 +53,7 @@ export class AssemblyComponent implements OnInit {
   double3: Player[] = [];
   double4: Player[] = [];
 
-  reserve: Player[] = [];
+  substitude: Player[] = [];
   players: Player[] = [];
 
   wherePlayer = {} as any;
@@ -80,24 +81,40 @@ export class AssemblyComponent implements OnInit {
   teamIndex: number = 0;
   club: Club;
   subEvent: CompetitionSubEvent;
-  captain: Player;
   ignorePlayers: Player[];
   loaded = false;
   errors = {} as { [key: string]: string };
   totalPlayers = 0;
 
-  constructor(
-    private eventService: EventService,
-    private teamService: TeamService,
-    private matSnackBar: MatSnackBar,
-    private playerService: PlayerService
-  ) {}
+  constructor(private eventService: EventService, private teamService: TeamService) {}
 
   ngOnInit() {
+    this.formGroup.addControl('single1', new FormControl());
+    this.formGroup.addControl('single2', new FormControl());
+    this.formGroup.addControl('single3', new FormControl());
+    this.formGroup.addControl('single4', new FormControl());
+    this.formGroup.addControl('double1', new FormControl());
+    this.formGroup.addControl('double2', new FormControl());
+    this.formGroup.addControl('double3', new FormControl());
+    this.formGroup.addControl('double4', new FormControl());
+    this.formGroup.addControl('substitude', new FormControl());
+    this.formGroup.addControl('captain', new FormControl());
+
     this.loadData();
   }
 
   async loadData() {
+    // Clear everything
+    this.formGroup.get('single1').reset();
+    this.formGroup.get('single2').reset();
+    this.formGroup.get('single3').reset();
+    this.formGroup.get('single4').reset();
+    this.formGroup.get('double1').reset();
+    this.formGroup.get('double2').reset();
+    this.formGroup.get('double3').reset();
+    this.formGroup.get('double4').reset();
+    this.formGroup.get('substitude').reset();
+
     const form = this.formGroup.value;
     this.type = form?.team?.type;
 
@@ -112,7 +129,7 @@ export class AssemblyComponent implements OnInit {
       .getTeamsAndPlayers(this.club.id, events.map((r) => r.subEvents?.map((y) => y.id)).flat())
       .toPromise();
     const team = teams.find((r) => r.id === teamId);
-    this.captain = team.captain
+    this.formGroup.get('captain').setValue(team.captain);
 
     this.players = team.players.sort((a, b) => {
       if (a.gender != b.gender) {
@@ -237,7 +254,7 @@ export class AssemblyComponent implements OnInit {
   }
 
   selectedCaptain(player: Player) {
-    this.captain = player;
+    this.formGroup.get('captain').setValue(player);
   }
 
   canDropPredicate = (item: CdkDrag, drop: CdkDropList) => {
@@ -291,28 +308,32 @@ export class AssemblyComponent implements OnInit {
         this._doChecks();
         return;
       }
-      const singles = [...this.single1, ...this.single2, ...this.single3, ...this.single4];
-      const doubles = [...this.double1, ...this.double2, ...this.double3, ...this.double4];
-
-      const singlesCount = singles.filter((p) => p.id === movedPlayer.id).length;
-      const doublesCount = doubles.filter((p) => p.id === movedPlayer.id).length;
-
-      if (singlesCount > 0 && event.container.id.includes('single') && !event.previousContainer.id.includes('single')) {
-        return;
-      }
-
-      if (doublesCount > 1 && event.container.id.includes('double')) {
-        return;
-      }
-
+  
       if (event.previousContainer.id == 'playerList') {
+        const singles = [...this.single1, ...this.single2, ...this.single3, ...this.single4];
+        const doubles = [...this.double1, ...this.double2, ...this.double3, ...this.double4];
+  
+        const singlesCount = singles.filter((p) => p.id === movedPlayer.id).length;
+        const doublesCount = doubles.filter((p) => p.id === movedPlayer.id).length;
+        if (
+          singlesCount > 0 &&
+          event.container.id.includes('single') &&
+          !event.previousContainer.id.includes('single')
+        ) {
+          return;
+        }
+
+        if (doublesCount > 1 && event.container.id.includes('double')) {
+          return;
+        }
+
         copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       } else {
         transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       }
 
-      if (event.container.id !== 'reserveList') {
-        this.reserve = this.reserve.filter((r) => r.id !== movedPlayer.id);
+      if (event.container.id !== 'substitudeList') {
+        this.substitude = this.substitude.filter((r) => r.id !== movedPlayer.id);
       }
       this._doChecks();
     }
@@ -333,7 +354,17 @@ export class AssemblyComponent implements OnInit {
       this.double2.length +
       this.double3.length +
       this.double4.length +
-      this.reserve.length;
+      this.substitude.length;
+
+    this.formGroup.get('single1').setValue(this.single1[0]);
+    this.formGroup.get('single2').setValue(this.single2[0]);
+    this.formGroup.get('single3').setValue(this.single3[0]);
+    this.formGroup.get('single4').setValue(this.single4[0]);
+    this.formGroup.get('double1').setValue(this.double1);
+    this.formGroup.get('double2').setValue(this.double2);
+    this.formGroup.get('double3').setValue(this.double3);
+    this.formGroup.get('double4').setValue(this.double4);
+    this.formGroup.get('substitude').setValue(this.substitude);
   }
 
   private _sortLists() {
@@ -372,7 +403,7 @@ export class AssemblyComponent implements OnInit {
     };
 
     this.players = this.players.sort(sortList);
-    this.reserve = this.reserve.sort(sortList);
+    this.substitude = this.substitude.sort(sortList);
 
     this.double1 = this.double1.sort(sortDouble);
     this.double2 = this.double2.sort(sortDouble);

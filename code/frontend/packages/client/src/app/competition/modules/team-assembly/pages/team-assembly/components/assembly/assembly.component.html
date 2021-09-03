@@ -20,7 +20,7 @@
     <div fxFlex="33" class="team-info">
       <div class="captain">
         <app-player-search
-          [player]="this.captain"
+          [player]="this.formGroup.get('captain').value"
           [allowCreation]="true"
           [club]="this.club"
           label="competition.team-assembly.captain"
@@ -276,16 +276,16 @@
       <div
         class="drag single"
         cdkDropList
-        id="reserveList"
-        [cdkDropListData]="reserve"
+        id="substitudeList"
+        [cdkDropListData]="substitude"
         [cdkDropListConnectedTo]="this.lists"
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         (cdkDropListDropped)="drop($event)"
       >
-        <label class="mat-caption">{{ 'competition.team-assembly.reserve' | translate }}</label>
+        <label class="mat-caption">{{ 'competition.team-assembly.substitude' | translate }}</label>
         <app-team-assembly-player
           class="drag-item"
-          *ngFor="let item of reserve"
+          *ngFor="let item of substitude"
           [player]="item"
           [eventType]="this.type"
           [cdkDragData]="item"
