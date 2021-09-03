@@ -339,7 +339,7 @@
         <div></div>
         <div class="away">
           <div class="title">
-            Uitploeg
+            Bezoekers
           </div>
           <div class="value">
             {{awayTeam}}
@@ -376,25 +376,38 @@
     <div class="wrapper">
       <div class="box title type"></div>
       <div class="box title name">
-        name
+        Naam
       </div>
       <div class="box title level">
-        level
+        Klas.
+        <small>
+          (huidig)
+        </small>
       </div>
       <div class="box title number">
-        number
+        Lidnr.
       </div>
       <div class="box title sum">
         Som Index
+        <small>
+          (mei vorig seizoen)
+        </small>
       </div>
       <div class="box title highest">
-        Hoogste klas
+        Hoogste klas.
+         <small>
+          (mei vorig seizoen)
+        </small>
       </div>
       <div class="box title team">
         Ploeg Index
+        <small>(titularis telt mee)</small>
       </div>
       <div class="box title base">
         Basis Speler
+         <small>
+          (mei vorig seizoen)
+        </small>
       </div>
       <div class="players">
         t i t u l a r i s s e n
@@ -509,7 +522,7 @@
       <div class="box post"></div>
       {{#each subtitudes as |subtitude|}}
         <div class="box type">
-          invallers
+          Invallers
         </div>
         <div class="box p{{@index}} name">
           {{subtitude.fullName}}
@@ -549,7 +562,7 @@
 
       {{else}}
         <div class="box type">
-          invallers
+          Invallers
         </div>
         <div class="box p-1 name"></div>
         <div class="box p-1 level"></div>
