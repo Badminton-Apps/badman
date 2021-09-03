@@ -1,4 +1,5 @@
-import { readFile, writeFile } from 'fs/promises';
+import { promises } from "fs";
+const { readFile } = promises;
 import { compile, registerHelper } from 'handlebars';
 import path from 'path';
 import puppeteer, { Browser, PDFOptions } from 'puppeteer';
