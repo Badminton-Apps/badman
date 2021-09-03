@@ -1,3 +1,12 @@
+## [3.47.5](https://github.com/Badminton-Apps/core/compare/v3.47.4...v3.47.5) (2021-09-03)
+
+
+### Bug Fixes
+
+* switching to apt-get ([812a079](https://github.com/Badminton-Apps/core/commit/812a07931f3e382617dfd17804f5a909faa71138))
+
+
+
 ## [3.47.4](https://github.com/Badminton-Apps/core/compare/v3.47.3...v3.47.4) (2021-09-03)
 
 
