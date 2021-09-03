@@ -1,3 +1,12 @@
+## [3.47.1](https://github.com/Badminton-Apps/core/compare/v3.47.0...v3.47.1) (2021-09-03)
+
+
+### Bug Fixes
+
+* install chrome ([a7fe762](https://github.com/Badminton-Apps/core/commit/a7fe76284a330b06ea7c6f13a22e90886d8555a6))
+
+
+
 # [3.47.0](https://github.com/Badminton-Apps/core/compare/v3.46.1...v3.47.0) (2021-09-03)
 
 
