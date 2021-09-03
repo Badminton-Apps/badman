@@ -319,10 +319,10 @@ export class PdfService {
         waitUntil: 'networkidle0'
       });
       await page.setContent(content);
-      const html = await page.content();
       const pdf = await page.pdf(options);
 
-      await writeFile('test.html', html, { encoding: 'utf-8', flag: 'w' });
+      // const html = await page.content();
+      // await writeFile('test.html', html, { encoding: 'utf-8', flag: 'w' });
 
       await context.close();
       return pdf;
