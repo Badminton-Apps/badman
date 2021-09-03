@@ -28,41 +28,41 @@ export class PdfService {
       gt: (v1, v2) => v1 > v2,
       lte: (v1, v2) => v1 <= v2,
       gte: (v1, v2) => v1 >= v2,
-      and() {
+      and: () => {
         return Array.prototype.every.call(arguments, Boolean);
       },
-      or() {
+      or: () => {
         return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
       },
       labelSingle: (index, type) => {
-        if (type == 'MX') {
-          if (index == 0) {
+        if (type === 'MX') {
+          if (index === 0) {
             return 'HE 1';
-          } else if (index == 1) {
+          } else if (index === 1) {
             return 'HE 2';
-          } else if (index == 2) {
+          } else if (index === 2) {
             return 'DE 1';
-          } else if (index == 3) {
+          } else if (index === 3) {
             return 'DE 2';
           }
         } else {
-          const prefix = type == 'M' ? 'HE' : 'DE';
+          const prefix = type === 'M' ? 'HE' : 'DE';
           return `${prefix} ${index + 1}`;
         }
       },
       labelDouble: (index, type) => {
-        if (type == 'MX') {
-          if (index == 0) {
+        if (type === 'MX') {
+          if (index === 0) {
             return 'HD';
-          } else if (index == 1) {
+          } else if (index === 1) {
             return 'DD';
-          } else if (index == 2) {
+          } else if (index === 2) {
             return 'GD 1';
-          } else if (index == 3) {
+          } else if (index === 3) {
             return 'GD 2';
           }
         } else {
-          const prefix = type == 'M' ? 'HE' : 'DE';
+          const prefix = type === 'M' ? 'HE' : 'DE';
           return `${prefix} ${index + 1}`;
         }
       }
@@ -151,7 +151,7 @@ export class PdfService {
     const preppedMap = new Map<string, any>();
 
     players.forEach(player => {
-      var mayIndex = player.rankingPlaces[0] ?? {
+      const mayIndex = player.rankingPlaces[0] ?? {
         single: 12,
         double: 12,
         mix: 12
@@ -159,44 +159,44 @@ export class PdfService {
 
       preppedMap.set(player.id, {
         ...player.toJSON(),
-        base: !!meta?.players?.find(p => p?.playerId == player.id)?.playerId,
-        team: !!teamIndex.players.find(p => p?.id == player.id),
+        base: !!meta?.players?.find(p => p?.playerId === player.id)?.playerId,
+        team: !!teamIndex.players.find(p => p?.id === player.id),
         sum:
-          mayIndex.single + mayIndex.double + (type == 'MX' ? mayIndex.mix : 0),
+          mayIndex.single + mayIndex.double + (type === 'MX' ? mayIndex.mix : 0),
         highest: Math.min(
           mayIndex.single,
           mayIndex.double,
-          type == 'MX' ? mayIndex.mix : 12
+          type === 'MX' ? mayIndex.mix : 12
         )
       });
     });
 
-    var based: string[] = [];
-    var teamed: string[] = [];
+    const based: string[] = [];
+    const teamed: string[] = [];
 
     const doubles = [
-      this.add_player(
+      this._addPlayer(
         preppedMap,
         based,
         teamed,
         input.team.double?.[0]?.[0],
         input.team.double?.[0]?.[1]
       ),
-      this.add_player(
+      this._addPlayer(
         preppedMap,
         based,
         teamed,
         input.team.double?.[1]?.[0],
         input.team.double?.[1]?.[1]
       ),
-      this.add_player(
+      this._addPlayer(
         preppedMap,
         based,
         teamed,
         input.team.double?.[2]?.[0],
         input.team.double?.[2]?.[1]
       ),
-      this.add_player(
+      this._addPlayer(
         preppedMap,
         based,
         teamed,
@@ -206,24 +206,24 @@ export class PdfService {
     ];
 
     const singles = [
-      this.add_player(preppedMap, based, teamed, input.team.single?.[0])
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[0])
         .player1,
-      this.add_player(preppedMap, based, teamed, input.team.single?.[1])
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[1])
         .player1,
-      this.add_player(preppedMap, based, teamed, input.team.single?.[2])
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[2])
         .player1,
-      this.add_player(preppedMap, based, teamed, input.team.single?.[3]).player1
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[3]).player1
     ];
 
     const subtitudes = input.team.subtitude.map(
-      r => this.add_player(preppedMap, based, teamed, r)?.player1
+      r => this._addPlayer(preppedMap, based, teamed, r)?.player1
     );
 
-    var logo = await readFile(`${__dirname}/assets/logo.png`, {
+    const logo = await readFile(`${__dirname}/assets/logo.png`, {
       encoding: 'base64'
     });
 
-    let pdf = await this._htmlToPdf(
+    const pdf = await this._htmlToPdf(
       'assembly',
       {
         date: moment(encounter.date).format('DD-MM-YYYY HH:mm'),
@@ -232,14 +232,14 @@ export class PdfService {
         homeTeam: encounter.home.name,
         awayTeam: encounter.away.name,
         captain: captain.fullName,
-        doubles: doubles,
-        singles: singles,
-        subtitudes: subtitudes,
-        type: type,
-        event: `${type == 'M' ? 'Heren' : type == 'F' ? 'Dames' : 'Gemengd'} ${
+        doubles,
+        singles,
+        subtitudes,
+        type,
+        event: `${type === 'M' ? 'Heren' : type === 'F' ? 'Dames' : 'Gemengd'} ${
           encounter.draw.name
         }`,
-        isHomeTeam: encounter.homeTeamId == input.teamId,
+        isHomeTeam: encounter.homeTeamId === input.teamId,
         logo: `data:image/png;base64, ${logo}`
       },
       {
@@ -252,7 +252,7 @@ export class PdfService {
     return pdf;
   }
 
-  private add_player(
+  private _addPlayer(
     preppedMap: Map<string, any>,
     based: string[],
     teamed: string[],
@@ -263,13 +263,13 @@ export class PdfService {
     const player2 = { ...preppedMap.get(player2Id) };
 
     if (player1) {
-      if (player1.base && based.indexOf(player1.id) == -1) {
+      if (player1.base && based.indexOf(player1.id) === -1) {
         based.push(player1.id);
       } else {
         player1.base = false;
       }
 
-      if (player1.team && teamed.indexOf(player1.id) == -1) {
+      if (player1.team && teamed.indexOf(player1.id) === -1) {
         teamed.push(player1.id);
       } else {
         player1.team = false;
@@ -277,13 +277,13 @@ export class PdfService {
     }
 
     if (player2) {
-      if (player2.base && based.indexOf(player2.id) == -1) {
+      if (player2.base && based.indexOf(player2.id) === -1) {
         based.push(player2.id);
       } else {
         player2.base = false;
       }
 
-      if (player2.team && teamed.indexOf(player2.id) == -1) {
+      if (player2.team && teamed.indexOf(player2.id) === -1) {
         teamed.push(player2.id);
       } else {
         player2.team = false;
@@ -385,7 +385,7 @@ export class PdfService {
   }
 
   private _bestPlayers(players: Player[], type: SubEventType) {
-    var bestPlayers = [];
+    let bestPlayers = [];
     if (type === SubEventType.MX) {
       bestPlayers = [
         ...players

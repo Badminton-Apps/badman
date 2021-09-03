@@ -29,7 +29,7 @@ export class App {
     this.app.use(json());
 
     this._initializeControllers(controllers);
-    this.list();
+    this._list();
   }
 
   private _initializeMiddlewares() {
@@ -110,7 +110,7 @@ export class App {
     });
   }
 
-  private list() {
+  private _list() {
     const defaultOptions = {
       prefix: '',
       spacer: 7
@@ -129,10 +129,10 @@ export class App {
     const spacer = x =>
       x > 0 ? [...new Array(x)].map(() => ' ').join('') : '';
 
-    const colorText = (color, string) =>
-      `\u001b[${color}m${string}\u001b[${COLORS.clear}m`;
+    const colorText = (color: number, value: any) =>
+      `\u001b[${color}m${value}\u001b[${COLORS.clear}m`;
 
-    function colorMethod(method) {
+    const colorMethod = (method: any) => {
       switch (method) {
         case 'POST':
           return colorText(COLORS.yellow, method);
@@ -149,7 +149,7 @@ export class App {
       }
     }
 
-    function getPathFromRegex(regexp) {
+    const getPathFromRegex = (regexp) => {
       return regexp
         .toString()
         .replace('/^', '')
@@ -157,18 +157,18 @@ export class App {
         .replace(/\\\//g, '/');
     }
 
-    function combineStacks(acc, stack) {
+    const combineStacks = (acc, stack) => {
       if (stack.handle.stack) {
         const routerPath = getPathFromRegex(stack.regexp);
         return [
           ...acc,
-          ...stack.handle.stack.map(stack => ({ routerPath, ...stack }))
+          ...stack.handle.stack.map(innerStack => ({ routerPath, ...innerStack }))
         ];
       }
       return [...acc, stack];
     }
 
-    function getStacks(app) { 
+    const getStacks = (app) =>  {
       // Express 3
       if (app.routes) {
         // convert to express 4
@@ -177,10 +177,12 @@ export class App {
           .map(route => ({ route: { stack: [route] } }));
       }
 
+      /* eslint-disable no-underscore-dangle */
       // Express 4
       if (app._router && app._router.stack) {
         return app._router.stack.reduce(combineStacks, []);
       }
+      /* eslint-enable no-underscore-dangle */
 
       // Express 4 Router
       if (app.stack) {
@@ -195,7 +197,7 @@ export class App {
       return [];
     }
 
-    function expressListRoutes(app, opts = null) {
+    const expressListRoutes = (app, opts = null) => {
       const stacks = getStacks(app); 
       const options = { ...defaultOptions, ...opts };
 
