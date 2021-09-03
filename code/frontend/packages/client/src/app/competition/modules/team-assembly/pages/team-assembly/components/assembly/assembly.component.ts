@@ -98,7 +98,7 @@ export class AssemblyComponent implements OnInit {
     this.formGroup.addControl('double3', new FormControl());
     this.formGroup.addControl('double4', new FormControl());
     this.formGroup.addControl('substitude', new FormControl());
-    this.formGroup.addControl('captain',  new FormControl());
+    this.formGroup.addControl('captain', new FormControl());
 
     this.loadData();
   }
@@ -308,21 +308,25 @@ export class AssemblyComponent implements OnInit {
         this._doChecks();
         return;
       }
-      const singles = [...this.single1, ...this.single2, ...this.single3, ...this.single4];
-      const doubles = [...this.double1, ...this.double2, ...this.double3, ...this.double4];
-
-      const singlesCount = singles.filter((p) => p.id === movedPlayer.id).length;
-      const doublesCount = doubles.filter((p) => p.id === movedPlayer.id).length;
-
-      if (singlesCount > 0 && event.container.id.includes('single') && !event.previousContainer.id.includes('single')) {
-        return;
-      }
-
-      if (doublesCount > 1 && event.container.id.includes('double')) {
-        return;
-      }
-
+  
       if (event.previousContainer.id == 'playerList') {
+        const singles = [...this.single1, ...this.single2, ...this.single3, ...this.single4];
+        const doubles = [...this.double1, ...this.double2, ...this.double3, ...this.double4];
+  
+        const singlesCount = singles.filter((p) => p.id === movedPlayer.id).length;
+        const doublesCount = doubles.filter((p) => p.id === movedPlayer.id).length;
+        if (
+          singlesCount > 0 &&
+          event.container.id.includes('single') &&
+          !event.previousContainer.id.includes('single')
+        ) {
+          return;
+        }
+
+        if (doublesCount > 1 && event.container.id.includes('double')) {
+          return;
+        }
+
         copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
       } else {
         transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
