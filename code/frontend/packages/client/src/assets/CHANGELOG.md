@@ -1,3 +1,12 @@
+## [3.47.2](https://github.com/Badminton-Apps/core/compare/v3.47.1...v3.47.2) (2021-09-03)
+
+
+### Bug Fixes
+
+* needed normal ([9e90216](https://github.com/Badminton-Apps/core/commit/9e90216c2601b1a1fb27a46d2ad51c03e03fd6db))
+
+
+
 ## [3.47.1](https://github.com/Badminton-Apps/core/compare/v3.47.0...v3.47.1) (2021-09-03)
 
 
