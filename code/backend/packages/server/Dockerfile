@@ -1,5 +1,5 @@
 # production environment
-FROM node:12.22.0
+FROM node:12.22.0-slim
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Brussels
 RUN apt-get install -y tzdata
