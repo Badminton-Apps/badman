@@ -240,7 +240,7 @@ export class Team extends Model {
         missingIndex = (bestPlayers.length - 4) * 24;
       }
 
-      return bestPlayers.reduce((a, b) => a + b, missingIndex);
+      this._baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
     } else {
       const bestPlayers = this.basePlayers.map(
         r =>
@@ -255,8 +255,8 @@ export class Team extends Model {
       }
 
       this._baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
-      return this._baseIndex;
     }
+    return this._baseIndex;
   }
 
   // Belongs to Club
