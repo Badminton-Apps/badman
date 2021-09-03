@@ -1,7 +1,8 @@
 # production environment
 FROM node:12.22.0
-RUN apt-get install -y tzdata
+ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Brussels
+RUN apt-get install -y tzdata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Work dir
