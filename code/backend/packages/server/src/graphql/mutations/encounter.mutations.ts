@@ -241,7 +241,7 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
     return;
   }
 
-  if (process.env.production === 'true') {
+  if (process.env.NODE_ENV === 'production') {
     const resultPut = await got.put(
       `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
       {

@@ -70,6 +70,10 @@ spec:
         env:
           - name: production
             value: "true"
+          - name: SERVICE_NAME
+            value: {{ .Values.services.name }}       
+          - name: APM_SERVER_URL
+            value: {{ .Values.apm.server }}   
           - name: PORT
             value: {{ .Values.service.internalPort | quote}}
           - name: DB_IP
