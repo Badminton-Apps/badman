@@ -1,3 +1,10 @@
+import { start } from 'elastic-apm-node';
+export const apm = start({
+  logLevel: 'info',
+  serviceName: process.env.SERVICE_NAME,
+  serverUrl: process.env.APM_SERVER_URL,
+}); 
+
 // import { typeDefs } from './schema';
 import { logger } from '@badvlasim/shared';
 import cors from 'cors';
@@ -6,7 +13,6 @@ import express, { Application, json } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { BaseController } from './models';
 import { createLightship, Lightship } from 'lightship';
-import path from 'path';
 
 moment.suppressDeprecationWarnings = true;
 
@@ -16,7 +22,7 @@ export class App {
   private _lightship: Lightship;
 
   constructor(
-    controllers: BaseController[],
+    controllers: BaseController[], 
     proxies: { from: string; to: string }[] = []
   ) {
     this.app = express();
@@ -82,7 +88,7 @@ export class App {
   public listen() {
     const httpServer = this.app
       .listen(process.env.PORT, () => {
-        logger.info(`🚀 App listening on the port ${process.env.PORT}`);
+        logger.info(`🚀 ${process.env.SERVICE_NAME} listening on the port ${process.env.PORT}`);
         this._lightship.signalReady();
       })
       .on('error', e => {
@@ -147,28 +153,31 @@ export class App {
         default:
           return method;
       }
-    }
+    };
 
-    const getPathFromRegex = (regexp) => {
+    const getPathFromRegex = regexp => {
       return regexp
         .toString()
         .replace('/^', '')
         .replace('?(?=\\/|$)/i', '')
         .replace(/\\\//g, '/');
-    }
+    };
 
     const combineStacks = (acc, stack) => {
       if (stack.handle.stack) {
         const routerPath = getPathFromRegex(stack.regexp);
         return [
           ...acc,
-          ...stack.handle.stack.map(innerStack => ({ routerPath, ...innerStack }))
+          ...stack.handle.stack.map(innerStack => ({
+            routerPath,
+            ...innerStack
+          }))
         ];
       }
       return [...acc, stack];
-    }
+    };
 
-    const getStacks = (app) =>  {
+    const getStacks = app => {
       // Express 3
       if (app.routes) {
         // convert to express 4
@@ -195,10 +204,10 @@ export class App {
       }
 
       return [];
-    }
+    };
 
     const expressListRoutes = (app, opts = null) => {
-      const stacks = getStacks(app); 
+      const stacks = getStacks(app);
       const options = { ...defaultOptions, ...opts };
 
       if (stacks) {
@@ -210,7 +219,14 @@ export class App {
               if (!routeLogged[method] && method) {
                 const stackMethod = colorMethod(method);
                 const stackSpace = spacer(options.spacer - method.length);
-                const stackPath = [options.prefix, stack.routerPath, stack.route.path, route.path].filter((s) => !!s).join('');
+                const stackPath = [
+                  options.prefix,
+                  stack.routerPath,
+                  stack.route.path,
+                  route.path
+                ]
+                  .filter(s => !!s)
+                  .join('');
 
                 logger.debug(`${stackMethod}${stackSpace}${stackPath}`);
                 routeLogged[method] = true;
@@ -219,7 +235,7 @@ export class App {
           }
         }
       }
-    }
+    };
 
     return expressListRoutes(this.app);
   }

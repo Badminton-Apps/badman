@@ -5,6 +5,7 @@ image:
   repository: ghcr.io/badminton-apps/core/import
 
 service:
+  name: badman-import
   internalPort: 4001
   externalPort: 80
 
@@ -17,3 +18,6 @@ database:
 
 auth0:
   issuer: https://badvlasim.eu.auth0.com
+
+apm:
+  server: elastic-apm-apm-http.elastic
