@@ -22,22 +22,40 @@ import moment from 'moment';
 
 export class PdfService {
   constructor(private _databaseService: DataBaseHandler) {
-    const reduceOp = function(args, reducer) {
+     /* eslint-disable prefer-arrow/prefer-arrow-functions */
+     const reduceOp = function(args, reducer) {
       args = Array.from(args);
       args.pop(); // => options
-      var first = args.shift();
+      const first = args.shift();
       return args.reduce(reducer, first);
     };
 
     registerHelper({
-      eq  : function(){ return reduceOp(arguments, (a,b) => a === b); },
-      ne  : function(){ return reduceOp(arguments, (a,b) => a !== b); },
-      lt  : function(){ return reduceOp(arguments, (a,b) => a  <  b); },
-      gt  : function(){ return reduceOp(arguments, (a,b) => a  >  b); },
-      lte : function(){ return reduceOp(arguments, (a,b) => a  <= b); },
-      gte : function(){ return reduceOp(arguments, (a,b) => a  >= b); },
-      and : function(){ return reduceOp(arguments, (a,b) => a  && b); },
-      or  : function(){ return reduceOp(arguments, (a,b) => a  || b); },
+      eq() {
+        return reduceOp(arguments, (a, b) => a === b);
+      },
+      ne() {
+        return reduceOp(arguments, (a, b) => a !== b);
+      },
+      lt() {
+        return reduceOp(arguments, (a, b) => a < b);
+      },
+      gt() {
+        return reduceOp(arguments, (a, b) => a > b);
+      },
+      lte() {
+        return reduceOp(arguments, (a, b) => a <= b);
+      },
+      gte() {
+        return reduceOp(arguments, (a, b) => a >= b);
+      },
+      and() {
+        return reduceOp(arguments, (a, b) => a && b);
+      },
+      or() {
+        return reduceOp(arguments, (a, b) => a || b);
+      },
+      /* eslint-enable prefer-arrow/prefer-arrow-functions */
       labelSingle: (index, type) => {
         if (type === 'MX') {
           if (index === 0) {

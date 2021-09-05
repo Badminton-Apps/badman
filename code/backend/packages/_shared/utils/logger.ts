@@ -93,7 +93,7 @@ if (process.env.LOG_LEVEL === 'None') {
 }
 
 tr.push(new ElasticsearchTransport({
-  apm: apm,
+  apm,
   clientOpts: {
     node: 'http://127.0.0.1:9200',
   }
