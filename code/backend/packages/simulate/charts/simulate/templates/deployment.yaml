@@ -71,7 +71,7 @@ spec:
           - name: production
             value: "true"
           - name: SERVICE_NAME
-            value: {{ .Values.services.name }}       
+            value: {{ .Values.service.name }}       
           - name: APM_SERVER_URL
             value: {{ .Values.apm.server }}   
           - name: ESC_SERVER_URL
