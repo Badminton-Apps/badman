@@ -1,3 +1,24 @@
+# [3.48.0](https://github.com/Badminton-Apps/core/compare/v3.47.6...v3.48.0) (2021-09-05)
+
+
+### Bug Fixes
+
+* competition not showing ([370feed](https://github.com/Badminton-Apps/core/commit/370feed8ce9b6fdb822666a65ac3138d8e1f1f0a))
+* incorrect level ([d286ae6](https://github.com/Badminton-Apps/core/commit/d286ae6dc15803dc49a43670c03b07e89de62738))
+
+
+### Features
+
+* adding elastic transport via variable ([042faed](https://github.com/Badminton-Apps/core/commit/042faedaa0f1369cc675fef27c2ff2e52766fd20))
+* connecting withelastic ([db7a798](https://github.com/Badminton-Apps/core/commit/db7a7989d08758fc43b0630d387caa75bff2be3b))
+
+
+### Reverts
+
+* Revert "fixup! 042faedaa0f1369cc675fef27c2ff2e52766fd20" ([fdb453d](https://github.com/Badminton-Apps/core/commit/fdb453d0224c4ba0933fa1d801026b1c7202e00d))
+
+
+
 ## [3.47.6](https://github.com/Badminton-Apps/core/compare/v3.47.5...v3.47.6) (2021-09-03)
 
 
