@@ -308,11 +308,11 @@ export class AssemblyComponent implements OnInit {
         this._doChecks();
         return;
       }
-  
+
       if (event.previousContainer.id == 'playerList') {
         const singles = [...this.single1, ...this.single2, ...this.single3, ...this.single4];
         const doubles = [...this.double1, ...this.double2, ...this.double3, ...this.double4];
-  
+
         const singlesCount = singles.filter((p) => p.id === movedPlayer.id).length;
         const doublesCount = doubles.filter((p) => p.id === movedPlayer.id).length;
         if (

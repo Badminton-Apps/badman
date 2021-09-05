@@ -20,6 +20,9 @@ export class TeamAssemblyPlayerComponent implements OnInit {
   ranking: string;
 
   ngOnInit() {
+
+    console.log(this.showType, this.eventType);
+
     if (!this.showType) {
       if (this.eventType == 'M' || this.eventType == 'F') {
         this.ranking = `${this.player.lastRanking?.single ?? 12} - ${this.player.lastRanking?.double ?? 12}`;
