@@ -1,4 +1,7 @@
-// First config
+// We need dontenv before App!!!
+import dotenv from 'dotenv';
+dotenv.config();
+
 import {
   App,
   AuthenticatedRequest,
@@ -9,9 +12,9 @@ import {
   Player,
   startWhenReady
 } from '@badvlasim/shared';
+import { logger } from '@badvlasim/shared/utils/logger';
 import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
-import dotenv from 'dotenv';
 import { Response, Router } from 'express';
 import {
   EnrollmentController,
@@ -24,7 +27,6 @@ import {
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
-dotenv.config();
 
 (async () => {
   await startWhenReady(true, false, db => {
@@ -58,11 +60,12 @@ const startServer = (databaseService: DataBaseHandler) => {
     ]
   );
 
+
   const schema = createSchema(notifService);
   const apolloServer = new ApolloServer({
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
       // When in dev we can allow graph playground to run without permission
-      if (process.env.production === 'false') {
+      if (process.env.NODE_ENV === 'development') {
         // We can try to do the auth
         try {
           for (const check of authService.checkAuth) {

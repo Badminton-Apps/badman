@@ -5,6 +5,7 @@ image:
   repository: ghcr.io/badminton-apps/core/simulate
 
 service:
+  name: badman-simulate
   internalPort: 4000
   externalPort: 80
 
@@ -16,3 +17,6 @@ database:
 
 auth0:
   issuer: https://badvlasim.eu.auth0.com
+  
+apm:
+  server: elastic-apm-apm-http.elastic
