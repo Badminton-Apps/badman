@@ -1,3 +1,12 @@
+## [3.48.2](https://github.com/Badminton-Apps/core/compare/v3.48.1...v3.48.2) (2021-09-05)
+
+
+### Bug Fixes
+
+* ES/APM urls ([23e234f](https://github.com/Badminton-Apps/core/commit/23e234f8f4f4bdd6883a5d9bed33ea1f9dccca15))
+
+
+
 ## [3.48.1](https://github.com/Badminton-Apps/core/compare/v3.48.0...v3.48.1) (2021-09-05)
 
 
