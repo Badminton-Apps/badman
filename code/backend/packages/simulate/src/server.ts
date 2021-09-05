@@ -1,10 +1,12 @@
+// We need dontenv before App!!!
+import dotenv from 'dotenv';
+dotenv.config();
+
 // First config
 import { App, AuthenticationSercice, DataBaseHandler, startWhenReady } from '@badvlasim/shared';
-import dotenv from 'dotenv';
 import { Router } from 'express';
 import { SimulateController } from './controllers/simulate.controller';
 import { RankingCalculator } from './models';
-dotenv.config();
 
 (async () => {
   await startWhenReady(false, false, db => {
