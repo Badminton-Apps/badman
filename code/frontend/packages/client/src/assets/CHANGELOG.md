@@ -1,3 +1,12 @@
+## [3.48.1](https://github.com/Badminton-Apps/core/compare/v3.48.0...v3.48.1) (2021-09-05)
+
+
+### Bug Fixes
+
+* typo in deploy ([2042d87](https://github.com/Badminton-Apps/core/commit/2042d87110e7a5c3bb670b7f525bd63510ac5b81))
+
+
+
 # [3.48.0](https://github.com/Badminton-Apps/core/compare/v3.47.6...v3.48.0) (2021-09-05)
 
 
