@@ -19,7 +19,7 @@ auth0:
   issuer: https://badvlasim.eu.auth0.com
 
 apm:
-  server: elastic-apm-apm-http.elastic
+  server: https://elastic-apm-apm-http.elastic:8200
   
 esc:
-  server: elastic-search-es-http.elastic
+  server: https://elastic-search-es-http.elastic:9200
