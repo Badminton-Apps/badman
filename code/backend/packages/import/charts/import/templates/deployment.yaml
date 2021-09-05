@@ -74,7 +74,9 @@ spec:
           - name: SERVICE_NAME
             value: {{ .Values.services.name }}       
           - name: APM_SERVER_URL
-            value: {{ .Values.apm.server }}          
+            value: {{ .Values.apm.server }}   
+          - name: ESC_SERVER_URL
+            value: {{ .Values.esc.server }}         
           - name: PORT
             value: {{ .Values.service.internalPort | quote}}
           - name: DB_IP
