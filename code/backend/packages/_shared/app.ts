@@ -1,5 +1,5 @@
 import { start } from 'elastic-apm-node';
-export const apm = process.env.NODE_ENV == 'test' ? null : start({
+export const apm = process.env.NODE_ENV === 'test' ? null : start({
   logLevel: 'info',
   serviceName: process.env.SERVICE_NAME,
   serverUrl: process.env.APM_SERVER_URL,
