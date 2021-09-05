@@ -38,7 +38,7 @@
         (cdkDropListDropped)="drop($event)"
         [cdkDropListSortingDisabled]="true"
       >
-        <label class="mat-caption">{{ 'competition.team-assembly.players.title' | translate}}</label>
+        <label class="mat-caption">{{ 'competition.team-assembly.players.title' | translate }}</label>
         <app-team-assembly-player
           class="drag-item"
           *ngFor="let item of players"
@@ -83,7 +83,7 @@
           *ngFor="let item of double1"
           [player]="item"
           [eventType]="this.type"
-          [showType]="'double1'"
+          showType="double1"
           [cdkDragData]="item"
           cdkDrag
         ></app-team-assembly-player>
@@ -109,8 +109,8 @@
           *ngFor="let item of double2"
           [player]="item"
           [eventType]="this.type"
-          [showType]="'double2'"
           [cdkDragData]="item"
+          showType="double2"
           cdkDrag
         ></app-team-assembly-player>
       </div>
@@ -135,7 +135,7 @@
           *ngFor="let item of double3"
           [player]="item"
           [eventType]="this.type"
-          [showType]="'double3'"
+          showType="double3"
           [cdkDragData]="item"
           cdkDrag
         ></app-team-assembly-player>
@@ -161,7 +161,7 @@
           *ngFor="let item of double4"
           [player]="item"
           [eventType]="this.type"
-          [showType]="'double4'"
+          showType="double4"
           [cdkDragData]="item"
           cdkDrag
         ></app-team-assembly-player>
@@ -187,7 +187,7 @@
           *ngFor="let item of single1"
           [player]="item"
           [eventType]="this.type"
-          [showType]="'single1'"
+          showType="single1"
           [cdkDragData]="item"
           cdkDrag
         ></app-team-assembly-player>
@@ -213,7 +213,7 @@
           *ngFor="let item of single2"
           [player]="item"
           [eventType]="this.type"
-          [showType]="'single2'"
+          showType="single2"
           [cdkDragData]="item"
           cdkDrag
         ></app-team-assembly-player>
@@ -239,7 +239,7 @@
           *ngFor="let item of single3"
           [player]="item"
           [eventType]="this.type"
-          [showType]="'single3'"
+          showType="single3"
           [cdkDragData]="item"
           cdkDrag
         ></app-team-assembly-player>
@@ -265,7 +265,7 @@
           *ngFor="let item of single4"
           [player]="item"
           [eventType]="this.type"
-          [showType]="'single4'"
+          showType="single4"
           [cdkDragData]="item"
           cdkDrag
         ></app-team-assembly-player>

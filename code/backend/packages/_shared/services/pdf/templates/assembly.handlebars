@@ -420,7 +420,7 @@
           {{double.player1.fullName}}
         </div>
         <div class="box d{{@index}} p1 level">
-          {{#if (and (eq type 'MX') (gt @index 1))}}
+          {{#if (and (eq @root.type 'MX') (gt @index 1))}}
             {{double.player1.lastRankingPlace.mix}}
           {{else}}
             {{double.player1.lastRankingPlace.double}}
@@ -449,8 +449,8 @@
           {{double.player2.fullName}}
         </div>
         <div class="box d{{@index}} p2 level">
-          {{#if (and (eq type 'MX') (gt @index 1))}}
-            {{double.player2.lastRankingPlace.mix}}
+          {{#if (and (eq @root.type 'MX') (gt @index 1))}}
+            {{double.player2.lastRankingPlace.mix}}            
           {{else}}
             {{double.player2.lastRankingPlace.double}}
           {{/if}}

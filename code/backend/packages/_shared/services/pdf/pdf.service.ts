@@ -1,4 +1,4 @@
-import { promises } from "fs";
+import { promises } from 'fs';
 const { readFile } = promises;
 import { compile, registerHelper } from 'handlebars';
 import path from 'path';
@@ -22,19 +22,22 @@ import moment from 'moment';
 
 export class PdfService {
   constructor(private _databaseService: DataBaseHandler) {
+    const reduceOp = function(args, reducer) {
+      args = Array.from(args);
+      args.pop(); // => options
+      var first = args.shift();
+      return args.reduce(reducer, first);
+    };
+
     registerHelper({
-      eq: (v1, v2) => v1 === v2,
-      ne: (v1, v2) => v1 !== v2,
-      lt: (v1, v2) => v1 < v2,
-      gt: (v1, v2) => v1 > v2,
-      lte: (v1, v2) => v1 <= v2,
-      gte: (v1, v2) => v1 >= v2,
-      and: () => {
-        return Array.prototype.every.call(arguments, Boolean);
-      },
-      or: () => {
-        return Array.prototype.slice.call(arguments, 0, -1).some(Boolean);
-      },
+      eq  : function(){ return reduceOp(arguments, (a,b) => a === b); },
+      ne  : function(){ return reduceOp(arguments, (a,b) => a !== b); },
+      lt  : function(){ return reduceOp(arguments, (a,b) => a  <  b); },
+      gt  : function(){ return reduceOp(arguments, (a,b) => a  >  b); },
+      lte : function(){ return reduceOp(arguments, (a,b) => a  <= b); },
+      gte : function(){ return reduceOp(arguments, (a,b) => a  >= b); },
+      and : function(){ return reduceOp(arguments, (a,b) => a  && b); },
+      or  : function(){ return reduceOp(arguments, (a,b) => a  || b); },
       labelSingle: (index, type) => {
         if (type === 'MX') {
           if (index === 0) {
@@ -80,22 +83,6 @@ export class PdfService {
       subtitude: string[];
     };
   }) {
-    // const captainId = 'c2140fa9-6ea6-4a41-9c7d-c7d27aed14bd';
-    // const ids = [
-    //   '23ceec83-6b4f-4525-9db5-4e77f3876570', // Jan
-    //   'c2140fa9-6ea6-4a41-9c7d-c7d27aed14bd', // Shane
-    //   '38ae9f3a-95cd-48f6-a101-84fdc8a59924', // Stijn
-    //   'de7116a3-1908-4f75-8dd1-c0c01fcba820', // Carlo
-    //   'e8168502-8fdd-4584-9f82-28ae21b55d33', // Boris
-    //   '90fcc155-3952-4f58-85af-f90794165c89', // Glenn
-    //   '06def4fc-6442-4646-a017-f11d7d61eeaf', // Hannes
-    //   '5af81423-acfb-4f2a-9aa6-13b47d296d83', // Mario.
-    //   'def9c355-4625-4499-83a3-4ceb8a2ca6cd', // Koen
-    //   captainId
-    // ];
-    // const teamId = 'fd40028b-8e23-4b57-b724-156d380b49e8';
-    // const encounterId = '59acd6ba-6dc7-4b4a-b4af-75b2ed4aa721';
-
     const ids = [
       ...input.team?.single,
       ...input.team?.double.flat(1),
@@ -163,7 +150,9 @@ export class PdfService {
         base: !!meta?.players?.find(p => p?.playerId === player.id)?.playerId,
         team: !!teamIndex.players.find(p => p?.id === player.id),
         sum:
-          mayIndex.single + mayIndex.double + (type === 'MX' ? mayIndex.mix : 0),
+          mayIndex.single +
+          mayIndex.double +
+          (type === 'MX' ? mayIndex.mix : 0),
         highest: Math.min(
           mayIndex.single,
           mayIndex.double,
@@ -237,9 +226,9 @@ export class PdfService {
         singles,
         subtitudes,
         type,
-        event: `${type === 'M' ? 'Heren' : type === 'F' ? 'Dames' : 'Gemengd'} ${
-          encounter.draw.name
-        }`,
+        event: `${
+          type === 'M' ? 'Heren' : type === 'F' ? 'Dames' : 'Gemengd'
+        } ${encounter.draw.name}`,
         isHomeTeam: encounter.homeTeamId === input.teamId,
         logo: `data:image/png;base64, ${logo}`
       },
