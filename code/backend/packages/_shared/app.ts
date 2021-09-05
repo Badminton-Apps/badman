@@ -6,7 +6,6 @@ export const apm = process.env.NODE_ENV === 'test' ? null : start({
 }); 
 
 
-// import { typeDefs } from './schema';
 import { logger } from '@badvlasim/shared';
 import cors from 'cors';
 import moment from 'moment';
