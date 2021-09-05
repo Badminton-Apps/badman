@@ -1,3 +1,6 @@
+// We need dontenv before App!!!
+import dotenv from 'dotenv';
+dotenv.config();
 // First config
 import {
   App,
@@ -6,11 +9,9 @@ import {
   logger,
   startWhenReady
 } from '@badvlasim/shared';
-import dotenv from 'dotenv';
 import { Router } from 'express';
 import { ImportController } from './controllers/import.controller';
 import { Convertor } from './convert/convertor';
-dotenv.config();
 
 (async () => {
   await startWhenReady(false, false, db => {

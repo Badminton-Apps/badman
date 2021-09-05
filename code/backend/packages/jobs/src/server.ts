@@ -1,9 +1,10 @@
+// We need dontenv before App!!!
+import dotenv from 'dotenv';
+dotenv.config();
 // First config
 import { App, AuthenticationSercice, startWhenReady } from '@badvlasim/shared';
-import dotenv from 'dotenv';
 import { Router } from 'express';
 import { JobController } from './controllers';
-dotenv.config();
 
 (async () => {
   await startWhenReady(false, false, _ => {
