@@ -52,11 +52,7 @@ if (process.env.LOG_LEVEL === 'None') {
   );
 } else {
   // eslint-disable-next-line no-console
-  console.log(
-    'LOG LEVEL',
-    process.env.LOG_LEVEL,
-    process.env.NODE_ENV
-  );
+  console.log('LOG LEVEL', process.env.LOG_LEVEL, process.env.NODE_ENV);
 
   tr.push(
     new transports.File({
@@ -92,12 +88,17 @@ if (process.env.LOG_LEVEL === 'None') {
   );
 }
 
-tr.push(new ElasticsearchTransport({
-  apm,
-  clientOpts: {
-    node: 'http://127.0.0.1:9200',
-  }
-}));
+if (process.env.NODE_ENV != 'test' && process.env.ESC_SERVER_URL != null) {
+  console.log('Adding ES transport'); 
+  tr.push(
+    new ElasticsearchTransport({
+      apm,
+      clientOpts: {
+        node: process.env.ESC_SERVER_URL
+      }
+    })
+  );
+}
 
 const logger = createLogger({
   format: combine(errors({ stack: true }), timestamp(), align()),

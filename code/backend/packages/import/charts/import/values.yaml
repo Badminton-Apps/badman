@@ -21,3 +21,6 @@ auth0:
 
 apm:
   server: elastic-apm-apm-http.elastic
+
+esc:
+  server: elastic-search-es-http.elastic  
