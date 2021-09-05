@@ -4,6 +4,8 @@ import moment from 'moment';
 import prettyMilliseconds from 'pretty-ms';
 import { createLogger, format, transports } from 'winston';
 const { combine, errors, timestamp, colorize, align } = format;
+import { ElasticsearchTransport } from 'winston-elasticsearch';
+import { apm } from '../app';
 
 dotenv.config();
 
@@ -53,7 +55,7 @@ if (process.env.LOG_LEVEL === 'None') {
   console.log(
     'LOG LEVEL',
     process.env.LOG_LEVEL,
-    process.env.production === 'true' ? 'Production' : 'Dev'
+    process.env.NODE_ENV
   );
 
   tr.push(
@@ -85,10 +87,17 @@ if (process.env.LOG_LEVEL === 'None') {
   tr.push(
     new transports.Console({
       format: combine(colorize(), timestamp(), logLikeFormat(1000)),
-      level: process.env.production === 'true' ? 'info' : 'debug'
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
     })
   );
 }
+
+tr.push(new ElasticsearchTransport({
+  apm: apm,
+  clientOpts: {
+    node: 'http://127.0.0.1:9200',
+  }
+}));
 
 const logger = createLogger({
   format: combine(errors({ stack: true }), timestamp(), align()),
