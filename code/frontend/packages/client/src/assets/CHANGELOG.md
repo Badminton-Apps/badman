@@ -1,3 +1,12 @@
+## [3.48.3](https://github.com/Badminton-Apps/core/compare/v3.48.2...v3.48.3) (2021-09-05)
+
+
+### Bug Fixes
+
+* disabeling ssl for internal usage ([e3b3e36](https://github.com/Badminton-Apps/core/commit/e3b3e36699029aa0665bc25afa56567eeec40895))
+
+
+
 ## [3.48.2](https://github.com/Badminton-Apps/core/compare/v3.48.1...v3.48.2) (2021-09-05)
 
 
