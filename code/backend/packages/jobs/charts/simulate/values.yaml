@@ -18,5 +18,8 @@ database:
 auth0:
   issuer: https://badvlasim.eu.auth0.com
 
-  apm:
+apm:
   server: elastic-apm-apm-http.elastic
+  
+esc:
+  server: elastic-search-es-http.elastic
