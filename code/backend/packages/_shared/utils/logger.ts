@@ -88,8 +88,7 @@ if (process.env.LOG_LEVEL === 'None') {
   );
 }
 
-if (process.env.NODE_ENV !== 'test' && process.env.ESC_SERVER_URL != null) {
-  // eslint-disable-next-line no-console
+if (process.env.NODE_ENV != 'test' && process.env.ESC_SERVER_URL != null) {
   console.log('Adding ES transport'); 
   tr.push(
     new ElasticsearchTransport({
