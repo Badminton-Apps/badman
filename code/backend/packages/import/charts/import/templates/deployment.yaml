@@ -96,3 +96,8 @@ spec:
               secretKeyRef:
                 name: server-postgresql
                 key: postgresql-password
+          - name: APM_SERVER_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: apm
+                key: token
