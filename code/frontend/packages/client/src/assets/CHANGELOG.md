@@ -1,3 +1,19 @@
+# [3.50.0](https://github.com/Badminton-Apps/core/compare/v3.49.0...v3.50.0) (2021-09-06)
+
+
+### Bug Fixes
+
+* environment apm ([5702a45](https://github.com/Badminton-Apps/core/commit/5702a459716314f7dfbced8b8918d896f74cf3d2))
+* loading apm faster ([82c971a](https://github.com/Badminton-Apps/core/commit/82c971ae8eb9d4d3f56d98646cdbc696a59c964a))
+* setting user context ([2011588](https://github.com/Badminton-Apps/core/commit/2011588f47c87df4cbd09246136e06cafc246940))
+
+
+### Features
+
+* apm errror handling ([3aa2691](https://github.com/Badminton-Apps/core/commit/3aa269105d274d590fb32481027c6d9e3dc7cf86))
+
+
+
 # [3.49.0](https://github.com/Badminton-Apps/core/compare/v3.48.6...v3.49.0) (2021-09-06)
 
 
