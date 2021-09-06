@@ -36,10 +36,13 @@ spec:
   count: 1
   elasticsearchRef:
     name: elastic-search
+  config:
+    server:
+      publicBaseUrl: "https://kibana.badman.app"
   http:
-    service:
-      spec:
-        type: LoadBalancer
+    tls:
+      selfSignedCertificate:
+        disabled: true        
 EOF
 ```
 
@@ -59,9 +62,9 @@ spec:
   kibanaRef:
     name: elastic-kibana
   http:
-    service:
-      spec:
-        type: LoadBalancer    
+    tls:
+      selfSignedCertificate:
+        disabled: true        
 EOF
 ```
 
