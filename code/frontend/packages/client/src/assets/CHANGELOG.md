@@ -1,3 +1,12 @@
+## [3.50.1](https://github.com/Badminton-Apps/core/compare/v3.50.0...v3.50.1) (2021-09-06)
+
+
+### Bug Fixes
+
+* only show if you have clubs ([6d5a263](https://github.com/Badminton-Apps/core/commit/6d5a2633f8553c7d954f96013d0e7a93643ed42b))
+
+
+
 # [3.50.0](https://github.com/Badminton-Apps/core/compare/v3.49.0...v3.50.0) (2021-09-06)
 
 
