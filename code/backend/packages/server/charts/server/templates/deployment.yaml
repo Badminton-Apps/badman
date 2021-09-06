@@ -132,3 +132,8 @@ spec:
               secretKeyRef:
                 name: mail-auth
                 key: host
+          - name: APM_SERVER_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: apm
+                key: token
