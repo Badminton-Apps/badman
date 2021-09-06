@@ -64,7 +64,11 @@ spec:
   http:
     tls:
       selfSignedCertificate:
-        disabled: true        
+        disabled: true
+  config:
+    apm-server:
+    rum:
+      enabled: true
 EOF
 ```
 
