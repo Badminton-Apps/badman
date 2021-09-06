@@ -7,7 +7,7 @@ import {
   NGX_MAT_MOMENT_FORMATS,
 } from '@angular-material-components/moment-adapter';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, Injector, NgModule } from '@angular/core';
 import { MatMomentDateModule, MomentDateModule } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -24,7 +24,7 @@ import { GraphQLModule } from './graphql.module';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { SharedModule } from './_shared/shared.module';
 import { MomentModule } from 'ngx-moment';
-import { ApmModule, ApmService } from '@elastic/apm-rum-angular'
+import { ApmErrorHandler, ApmModule, ApmService } from '@elastic/apm-rum-angular'
 
 const baseModules = [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule];
 const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule, MatSnackBarModule];
@@ -60,6 +60,10 @@ const appModules = [SharedModule, GraphQLModule];
   ],
   providers: [
     ApmService,
+    {
+      provide: ErrorHandler,
+      useClass: ApmErrorHandler
+    },
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
