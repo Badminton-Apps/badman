@@ -24,6 +24,7 @@ import { GraphQLModule } from './graphql.module';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { SharedModule } from './_shared/shared.module';
 import { MomentModule } from 'ngx-moment';
+import { ApmModule, ApmService } from '@elastic/apm-rum-angular'
 
 const baseModules = [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule];
 const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule, MatSnackBarModule];
@@ -47,6 +48,7 @@ const appModules = [SharedModule, GraphQLModule];
     ...materialModules,
     ...appModules,
     ...translateModules,
+    ApmModule,
     MarkdownModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
@@ -57,6 +59,7 @@ const appModules = [SharedModule, GraphQLModule];
     }),
   ],
   providers: [
+    ApmService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
