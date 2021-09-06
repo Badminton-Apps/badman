@@ -84,7 +84,7 @@ export class PdfService {
             return 'GD 2';
           }
         } else {
-          const prefix = type === 'M' ? 'HE' : 'DE';
+          const prefix = type === 'M' ? 'HD' : 'DD';
           return `${prefix} ${index + 1}`;
         }
       }
