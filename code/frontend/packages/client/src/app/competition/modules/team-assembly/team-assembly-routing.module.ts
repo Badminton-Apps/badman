@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
 import { TeamAssemblyComponent } from './pages';
 
-const routes: Routes = [{ path: '', component: TeamAssemblyComponent, canActivate: [AuthGuard] }];
+const routes: Routes = [{ path: '', component: TeamAssemblyComponent}];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
