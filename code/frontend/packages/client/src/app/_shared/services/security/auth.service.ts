@@ -84,6 +84,7 @@ export class AuthService {
     this.apm = this.apmService.init({
       serviceName: 'badman-client',
       serverUrl: environment.apmServer,
+      environment: environment.production ? 'production' : 'development'
     })
   }
 
