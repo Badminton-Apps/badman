@@ -1,13 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: badvla-prod
-  namespace: badvla
+  name: elastic-prod
+  namespace: elastic
 spec:
   dnsNames:
-    - beta.latomme.org
     - badman.app
-  secretName: badvla-prod-certificate
+    - '*.badman.app'
+  secretName: elastic-prod-certificate
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
