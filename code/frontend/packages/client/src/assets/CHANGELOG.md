@@ -1,3 +1,12 @@
+## [3.48.6](https://github.com/Badminton-Apps/core/compare/v3.48.5...v3.48.6) (2021-09-06)
+
+
+### Bug Fixes
+
+* caching login ([9159791](https://github.com/Badminton-Apps/core/commit/9159791d085923e58ed50687a33de34dbbcf6c5c))
+
+
+
 ## [3.48.5](https://github.com/Badminton-Apps/core/compare/v3.48.4...v3.48.5) (2021-09-06)
 
 
