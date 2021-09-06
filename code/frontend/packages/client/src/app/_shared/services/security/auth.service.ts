@@ -6,11 +6,14 @@ import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { BehaviorSubject, combineLatest, from, Observable, of, throwError } from 'rxjs';
 import { catchError, concatMap, exhaustMap, filter, map, shareReplay, startWith, tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
+import { ApmService } from '@elastic/apm-rum-angular'
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  apm: any;
+
   // Create an observable of Auth0 instance of client
   auth0Client$ = (
     from(
@@ -49,7 +52,9 @@ export class AuthService {
 
   userPermissions$: Observable<string[]>;
 
-  constructor(private router: Router, private httpClient: HttpClient) {
+  constructor(private router: Router, private httpClient: HttpClient, private apmService: ApmService) {
+    this.setupApm();
+
     // On initial load, check authentication state with authorization server
     // Set up local auth streams if user is already authenticated
     this.localAuthSetup();
@@ -66,6 +71,14 @@ export class AuthService {
       exhaustMap((client: Auth0Client) => from(client.getUser(options))),
       tap((user) => this.userProfileSubject$.next(user))
     );
+  }
+
+  private setupApm(){
+     // Agent API is exposed through this apm instance
+     this.apm = this.apmService.init({
+      serviceName: 'badman-client',
+      serverUrl: 'https://apm.badman.app:8200' // TODO: configure url
+    })
   }
 
   private localAuthSetup() {
