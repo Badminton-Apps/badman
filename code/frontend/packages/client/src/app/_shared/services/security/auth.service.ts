@@ -19,6 +19,8 @@ export class AuthService {
         client_id: '2LqkYZMbrTTXEE0OMkQJLmpRrOVQheoF',
         redirect_uri: `${window.location.origin}`,
         audience: `ranking-simulation`,
+        useRefreshTokens: true,
+        cacheLocation: 'localstorage'
       })
     ) as Observable<Auth0Client>
   ).pipe(
