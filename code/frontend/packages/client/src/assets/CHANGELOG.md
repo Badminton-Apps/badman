@@ -1,3 +1,19 @@
+# [3.49.0](https://github.com/Badminton-Apps/core/compare/v3.48.6...v3.49.0) (2021-09-06)
+
+
+### Bug Fixes
+
+* no claims needed ([5a9d04d](https://github.com/Badminton-Apps/core/commit/5a9d04d55cd765b2480d294d65002d50d3e75a07))
+* set APM server via config ([5c6ec11](https://github.com/Badminton-Apps/core/commit/5c6ec11cf46c59899bc53fabe02ea5256278a222))
+* switch to http internally ([e0121ac](https://github.com/Badminton-Apps/core/commit/e0121ac56517cc5bee5acfa601a8407aca96323f))
+
+
+### Features
+
+* apm client ([c107a52](https://github.com/Badminton-Apps/core/commit/c107a52ed4e61a555add2356eb4fa43b54560d98))
+
+
+
 ## [3.48.6](https://github.com/Badminton-Apps/core/compare/v3.48.5...v3.48.6) (2021-09-06)
 
 
