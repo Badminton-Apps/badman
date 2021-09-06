@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import createAuth0Client, { GetUserOptions } from '@auth0/auth0-spa-js';
+import createAuth0Client, { GetUserOptions, User } from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { BehaviorSubject, combineLatest, from, Observable, of, throwError } from 'rxjs';
 import { catchError, concatMap, exhaustMap, filter, map, shareReplay, startWith, tap } from 'rxjs/operators';
@@ -69,7 +69,13 @@ export class AuthService {
   getUser$(options?): Observable<any> {
     return this.auth0Client$.pipe(
       exhaustMap((client: Auth0Client) => from(client.getUser(options))),
-      tap((user) => this.userProfileSubject$.next(user))
+      tap((user: User) => {
+        this.apm.setUserContext({
+          username: user?.name,
+          email: user?.email,
+        });
+        this.userProfileSubject$.next(user);
+      })
     );
   }
 
@@ -78,7 +84,6 @@ export class AuthService {
     this.apm = this.apmService.init({
       serviceName: 'badman-client',
       serverUrl: environment.apmServer,
-      environment: en
     })
   }
 

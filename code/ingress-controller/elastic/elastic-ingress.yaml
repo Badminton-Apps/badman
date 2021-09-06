@@ -18,16 +18,6 @@ spec:
         - kibana.badman.app
       secretName: elastic-prod-certificate
   rules:
-    - host: apm.badman.app
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: elastic-apm-apm-http
-                port:
-                  number: 8200
     - host: kibana.badman.app
       http:
         paths:
@@ -38,3 +28,14 @@ spec:
                 name: elastic-kibana-kb-http
                 port:
                   number: 5601
+  
+    - host: apm.badman.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: elastic-apm-apm-http
+                port:
+                  number: 8200
