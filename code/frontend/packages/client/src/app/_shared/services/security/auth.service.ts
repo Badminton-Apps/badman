@@ -12,8 +12,6 @@ import { ApmService } from '@elastic/apm-rum-angular';
   providedIn: 'root',
 })
 export class AuthService {
-  apm: any;
-
   // Create an observable of Auth0 instance of client
   auth0Client$ = (
     from(
@@ -53,8 +51,6 @@ export class AuthService {
   userPermissions$: Observable<string[]>;
 
   constructor(private router: Router, private httpClient: HttpClient, private apmService: ApmService) {
-    this.setupApm();
-
     // On initial load, check authentication state with authorization server
     // Set up local auth streams if user is already authenticated
     this.localAuthSetup();
@@ -70,22 +66,13 @@ export class AuthService {
     return this.auth0Client$.pipe(
       exhaustMap((client: Auth0Client) => from(client.getUser(options))),
       tap((user: User) => {
-        this.apm.setUserContext({
+        this.apmService.apm.setUserContext({
           username: user?.name,
           email: user?.email,
         });
         this.userProfileSubject$.next(user);
       })
     );
-  }
-
-  private setupApm() {
-    // Agent API is exposed through this apm instance
-    this.apm = this.apmService.init({
-      serviceName: 'badman-client',
-      serverUrl: environment.apmServer,
-      environment: environment.production ? 'production' : 'development'
-    })
   }
 
   private localAuthSetup() {
