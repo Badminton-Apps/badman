@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   api: 'http://localhost:5000/api',
-  apiVersion: 'v1'
+  apiVersion: 'v1',
+  apmServer: 'https://apm.badman.app:8200'
+
 };
 
 /*

@@ -6,7 +6,7 @@ import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { BehaviorSubject, combineLatest, from, Observable, of, throwError } from 'rxjs';
 import { catchError, concatMap, exhaustMap, filter, map, shareReplay, startWith, tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-import { ApmService } from '@elastic/apm-rum-angular'
+import { ApmService } from '@elastic/apm-rum-angular';
 
 @Injectable({
   providedIn: 'root',
@@ -73,11 +73,11 @@ export class AuthService {
     );
   }
 
-  private setupApm(){
-     // Agent API is exposed through this apm instance
-     this.apm = this.apmService.init({
+  private setupApm() {
+    // Agent API is exposed through this apm instance
+    this.apm = this.apmService.init({
       serviceName: 'badman-client',
-      serverUrl: 'https://apm.badman.app:8200' // TODO: configure url
+      serverUrl: environment.apmServer,
     })
   }
 
