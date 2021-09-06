@@ -1,3 +1,12 @@
+## [3.50.2](https://github.com/Badminton-Apps/core/compare/v3.50.1...v3.50.2) (2021-09-06)
+
+
+### Bug Fixes
+
+* profile should be loaded :) ([13def8b](https://github.com/Badminton-Apps/core/commit/13def8bb8a3f914ce65803d100ffd8276d25136c))
+
+
+
 ## [3.50.1](https://github.com/Badminton-Apps/core/compare/v3.50.0...v3.50.1) (2021-09-06)
 
 
