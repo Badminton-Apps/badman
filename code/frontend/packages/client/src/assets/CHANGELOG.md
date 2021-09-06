@@ -1,3 +1,13 @@
+## [3.48.5](https://github.com/Badminton-Apps/core/compare/v3.48.4...v3.48.5) (2021-09-06)
+
+
+### Bug Fixes
+
+* label pdf ([357a4c8](https://github.com/Badminton-Apps/core/commit/357a4c8107321a9f749eb1a1076aa19b64f5949a))
+* labels ([7cc2c91](https://github.com/Badminton-Apps/core/commit/7cc2c91669f5a772a92848172ab94c43d1b54bb7))
+
+
+
 ## [3.48.4](https://github.com/Badminton-Apps/core/compare/v3.48.3...v3.48.4) (2021-09-06)
 
 
