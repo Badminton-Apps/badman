@@ -16,6 +16,10 @@ spec:
     count: 3
     config:
       node.store.allow_mmap: false
+  http:
+    service:
+      spec:
+        type: LoadBalancer
 EOF
 ```
 
@@ -32,6 +36,10 @@ spec:
   count: 1
   elasticsearchRef:
     name: elastic-search
+  http:
+    service:
+      spec:
+        type: LoadBalancer
 EOF
 ```
 
@@ -50,6 +58,10 @@ spec:
     name: elastic-search
   kibanaRef:
     name: elastic-kibana
+  http:
+    service:
+      spec:
+        type: LoadBalancer    
 EOF
 ```
 
