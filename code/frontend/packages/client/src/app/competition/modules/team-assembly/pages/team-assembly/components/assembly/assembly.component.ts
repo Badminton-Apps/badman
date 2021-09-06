@@ -187,13 +187,14 @@ export class AssemblyComponent implements OnInit {
 
       this.captionSingle3Prefix = 'gender.female';
       this.captionSingle4Prefix = 'gender.female';
+      
       this.captionSingle3 = 'competition.team-assembly.single1';
       this.captionSingle4 = 'competition.team-assembly.single2';
 
-      this.captionDouble1Prefix = 'gender.male';
-      this.captionDouble2Prefix = 'gender.female';
-      this.captionDouble3 = `competition.team-assembly.mix1`;
-      this.captionDouble4 = `competition.team-assembly.mix2`;
+      this.captionDouble1 = `competition.team-assembly.mix1`;
+      this.captionDouble2 = `competition.team-assembly.mix2`;
+      this.captionDouble3 = `competition.team-assembly.mix3`;
+      this.captionDouble4 = `competition.team-assembly.mix4`;
     }
 
     this.ignorePlayers = [];

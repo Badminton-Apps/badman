@@ -152,8 +152,10 @@
             "single2": "Enkel 2",
             "single3": "Enkel 3",
             "single4": "Enkel 4",
-            "mix1": "Gemengd dubbel 1",
-            "mix2": "Gemengd dubbel 2",
+            "mix1": "Heren Dubbel",
+            "mix2": "Dames Dubbel",
+            "mix3": "Gemengd dubbel 1",
+            "mix4": "Gemengd dubbel 2",
             "errors": {
                 "already": "Speler al als titualris aanwezig",
                 "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen",
