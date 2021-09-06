@@ -1,3 +1,12 @@
+## [3.48.4](https://github.com/Badminton-Apps/core/compare/v3.48.3...v3.48.4) (2021-09-06)
+
+
+### Bug Fixes
+
+* tokens for APM ([2e112de](https://github.com/Badminton-Apps/core/commit/2e112de37cf57fc24c138357d8891d7b0d687d75))
+
+
+
 ## [3.48.3](https://github.com/Badminton-Apps/core/compare/v3.48.2...v3.48.3) (2021-09-05)
 
 
