@@ -154,6 +154,8 @@
             "single4": "",
             "mix1": "",
             "mix2": "",
+            "mix3": "",
+            "mix4": "",
             "errors": {
                 "already": "",
                 "to-much": "",
@@ -192,11 +194,11 @@
     "gender": {
         "select": "Sélectionner",
         "title": "",
-        "male": "",
-        "female": "",
-        "mix": "",
-        "males": "",
-        "females": ""
+        "male": "Homme",
+        "female": "Femme",
+        "mix": "Mixte",
+        "males": "Hommes",
+        "females": "Femmes"
     },
     "input": {
         "type": "",

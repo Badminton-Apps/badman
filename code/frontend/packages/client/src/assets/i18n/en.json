@@ -154,6 +154,8 @@
             "single4": "Single 1",
             "mix1": "Mixed doubles 1",
             "mix2": "Mixed doubles 2",
+            "mix3": "Mixed doubles 1",
+            "mix4": "Mixed doubles 2",
             "errors": {
                 "already": "",
                 "to-much": "",
