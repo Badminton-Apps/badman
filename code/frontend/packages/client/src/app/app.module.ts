@@ -79,7 +79,17 @@ const appModules = [SharedModule, GraphQLModule];
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(apmService: ApmService) {
+    // Agent API is exposed through this apm instance
+    apmService.init({
+      serviceName: 'badman-client',
+      serverUrl: environment.apmServer,
+      environment: environment.production ? 'production' : 'development'
+    })
+  }
+
+}
 
 // required for AOT compilation
 export function HttpLoaderFactory(http: HttpClient) {
