@@ -1,3 +1,12 @@
+## [3.51.4](https://github.com/Badminton-Apps/core/compare/v3.51.3...v3.51.4) (2021-09-08)
+
+
+### Bug Fixes
+
+* apm server is needed ([7926d2c](https://github.com/Badminton-Apps/core/commit/7926d2c6beb00097549cecb5c45a025f573db3fa))
+
+
+
 ## [3.51.3](https://github.com/Badminton-Apps/core/compare/v3.51.1...v3.51.3) (2021-09-08)
 
 
