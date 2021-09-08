@@ -1,0 +1,32 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: elastic-filebeat
+  namespace: elastic
+spec:
+  type: filebeat
+  version: 7.14.1
+  elasticsearchRef:
+    name: elastic-search
+  kibanaRef:
+    name: elastic-kibana
+  config:
+    filebeat.autodiscover:
+      providers:
+        - type: kubernetes
+          node: ${NODE_NAME}
+          hints.enabled: true
+          hints.default_config:
+            type: container
+            paths:
+              - /var/log/containers/*${data.kubernetes.container.id}.log
+          templates:
+            - condition:
+                equals:
+                  kubernetes.namespace: badvla          
+  deployment:
+    podTemplate:
+      spec:
+        dnsPolicy: ClusterFirstWithHostNet
+        securityContext:
+          runAsUser: 0
