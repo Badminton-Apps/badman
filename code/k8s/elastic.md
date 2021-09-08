@@ -11,15 +11,26 @@ metadata:
 
 spec:
   version: 7.14.1
+  volumeClaimDeletePolicy: DeleteOnScaledownOnly
   nodeSets:
   - name: default
     count: 3
     config:
       node.store.allow_mmap: false
-  http:
-    service:
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
       spec:
-        type: LoadBalancer
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: standard 
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
 EOF
 ```
 
