@@ -1,11 +1,13 @@
-import { start } from 'elastic-apm-node';
-export const apm = process.env.NODE_ENV === 'test' ? null : start({
-  logLevel: 'info',
-  serviceName: process.env.SERVICE_NAME,
-  serverUrl: process.env.APM_SERVER_URL,
-  secretToken: process.env.APM_SERVER_TOKEN,
-  verifyServerCert: false
-}); 
+// import { start } from 'elastic-apm-node';
+// export const apm = start({
+//   serviceName: process.env.SERVICE_NAME,
+//   serverUrl: process.env.APM_SERVER_URL,
+//   secretToken: process.env.APM_SERVER_TOKEN,
+//   verifyServerCert: false,
+//   disableSend: process.env.NODE_ENV !== 'production'
+// }); 
+
+export const apm = {};
 
 
 import { logger } from '@badvlasim/shared';
