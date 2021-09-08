@@ -12,10 +12,10 @@
       "path": "rnd"
     },
     {
-      "path": "code/ingress-controller"
+      "path": ".github"
     },
     {
-      "path": ".github"
+      "path": "code/k8s"
     }
   ],
   "settings": {
