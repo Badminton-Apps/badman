@@ -79,7 +79,11 @@ if (process.env.LOG_LEVEL === 'None') {
 
 
   const outputFormat = process.env.NODE_ENV === 'production' ?
-    ecsFormat() :
+    ecsFormat({
+      apmIntegration: true,
+      convertReqRes: true,
+      convertErr: true
+    }) :
     combine(colorize(), timestamp(), logLikeFormat(1000));
 
 
