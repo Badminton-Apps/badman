@@ -73,6 +73,8 @@ EOF
 ```
 
 ## Beats
+
+### metricbeat
 ```
 cat <<EOF | kubectl apply -f -
 apiVersion: beat.k8s.elastic.co/v1beta1
@@ -100,6 +102,63 @@ spec:
           runAsUser: 0
 EOF
 ```
+
+
+### filebeat
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: elastic-filebeat
+  namespace: elastic
+spec:
+  type: filebeat
+  version: 7.14.1
+  elasticsearchRef:
+    name: elastic-search
+  kibanaRef:
+    name: elastic-kibana   
+  config:
+    filebeat.autodiscover:
+      providers:
+        - type: kubernetes
+          node: ${NODE_NAME}
+          hints.enabled: true
+          hints.default_config:
+            type: container
+            paths:
+              - /var/log/containers/*${data.kubernetes.container.id}.log
+  daemonSet:
+    podTemplate:
+      spec:
+        dnsPolicy: ClusterFirstWithHostNet
+        hostNetwork: true
+        securityContext:
+          runAsUser: 0
+        containers:
+        - name: filebeat
+          volumeMounts:
+          - name: varlogcontainers
+            mountPath: /var/log/containers
+          - name: varlogpods
+            mountPath: /var/log/pods
+          - name: varlibdockercontainers
+            mountPath: /var/lib/docker/containers
+        volumes:
+        - name: varlogcontainers
+          hostPath:
+            path: /var/log/containers
+        - name: varlogpods
+          hostPath:
+            path: /var/log/pods
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+EOF
+```
+
+
 ## elastic user
 ```
 kubectl get secret -n elastic elastic-search-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
