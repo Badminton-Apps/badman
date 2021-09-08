@@ -1,3 +1,17 @@
+## [3.51.1](https://github.com/Badminton-Apps/core/compare/v3.50.2...v3.51.1) (2021-09-08)
+
+
+### Bug Fixes
+
+* translation bug ([bb91324](https://github.com/Badminton-Apps/core/commit/bb91324c20443ac6a57885312c46aa8277281604))
+
+
+### Features
+
+* production logging to filebeat format ([c601e8b](https://github.com/Badminton-Apps/core/commit/c601e8b240ec64fe97389ad6493bfe1057bbc29a))
+
+
+
 ## [3.50.2](https://github.com/Badminton-Apps/core/compare/v3.50.1...v3.50.2) (2021-09-06)
 
 
