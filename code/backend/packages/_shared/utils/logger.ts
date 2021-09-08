@@ -2,10 +2,9 @@ import dotenv from 'dotenv';
 import jsonStringify from 'fast-safe-stringify';
 import moment from 'moment';
 import prettyMilliseconds from 'pretty-ms';
-import { createLogger, format, transports } from 'winston';
+import { createLogger, transports, format } from 'winston';
 const { combine, errors, timestamp, colorize, align } = format;
-import { ElasticsearchTransport } from 'winston-elasticsearch';
-import { apm } from '../app';
+import ecsFormat from '@elastic/ecs-winston-format';
 
 dotenv.config();
 
@@ -31,11 +30,9 @@ const logLikeFormat = (maxArgLength?: number) => {
         lastMessageText = message;
       }
 
-      info[Symbol.for('message')] = `${moment(ts).format('LTS')}${
-        label ? `[${label}]` : ''
-      } ${level}: ${message} ${strArgs ? `\n${strArgs}` : ''} ${
-        stack ? `\n${stack}` : ''
-      }`;
+      info[Symbol.for('message')] = `${moment(ts).format('LTS')}${label ? `[${label}]` : ''
+        } ${level}: ${message} ${strArgs ? `\n${strArgs}` : ''} ${stack ? `\n${stack}` : ''
+        }`;
       return info;
     }
   };
@@ -80,23 +77,16 @@ if (process.env.LOG_LEVEL === 'None') {
     })
   );
 
+
+  const outputFormat = process.env.NODE_ENV === 'production' ?
+    ecsFormat() :
+    combine(colorize(), timestamp(), logLikeFormat(1000));
+
+
   tr.push(
     new transports.Console({
-      format: combine(colorize(), timestamp(), logLikeFormat(1000)),
+      format: outputFormat,
       level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
-    })
-  );
-}
-
-if (process.env.NODE_ENV !== 'test' && process.env.ESC_SERVER_URL != null) {
-  // eslint-disable-next-line no-console
-  console.log('Adding ES transport'); 
-  tr.push(
-    new ElasticsearchTransport({
-      apm,
-      clientOpts: {
-        node: process.env.ESC_SERVER_URL
-      }
     })
   );
 }
@@ -105,5 +95,6 @@ const logger = createLogger({
   format: combine(errors({ stack: true }), timestamp(), align()),
   transports: tr
 });
+
 
 export { logger };
