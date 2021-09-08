@@ -21,6 +21,11 @@ spec:
       imagePullSecrets:
         - name: {{ .Chart.Name }}-acr-secret
 {{ end }}
+      annotations:
+        co.elastic.logs/json.keys_under_root: true
+        co.elastic.logs/json.overwrite_keys: true
+        co.elastic.logs/json.add_error_key: true
+        co.elastic.logs/json.expand_keys: true
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
