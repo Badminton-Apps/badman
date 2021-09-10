@@ -79,19 +79,6 @@ if (process.env.LOG_LEVEL === 'None') {
     })
   );
 
-  tr.push(
-    new transports.File({
-      filename: 'filebeat.log',
-      level: 'silly',
-      format: ecsFormat({
-        apmIntegration: true,
-        convertReqRes: true,
-        convertErr: true
-      }),
-      options: { flags: 'w' }
-    })
-  );
-
   const outputFormat =
     process.env.NODE_ENV === 'production'
       ? ecsFormat({
