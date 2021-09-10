@@ -1,3 +1,13 @@
+## [3.51.9](https://github.com/Badminton-Apps/core/compare/v3.51.8...v3.51.9) (2021-09-10)
+
+
+### Bug Fixes
+
+* adding log output for filebeat ([442c1ac](https://github.com/Badminton-Apps/core/commit/442c1ac380f877151aecbde214a205902131ef8c))
+* omitting name from logs ([256e056](https://github.com/Badminton-Apps/core/commit/256e056b11df0f1a867b0b13c5d08f8f0b817307))
+
+
+
 ## [3.51.8](https://github.com/Badminton-Apps/core/compare/v3.51.7...v3.51.8) (2021-09-10)
 
 
