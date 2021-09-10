@@ -1,3 +1,12 @@
+## [3.51.7](https://github.com/Badminton-Apps/core/compare/v3.51.6...v3.51.7) (2021-09-10)
+
+
+### Bug Fixes
+
+* values should be escaped ([56cab1d](https://github.com/Badminton-Apps/core/commit/56cab1d1b16a14355fd7bbaaa2ce528187446e4f))
+
+
+
 ## [3.51.6](https://github.com/Badminton-Apps/core/compare/v3.51.5...v3.51.6) (2021-09-10)
 
 
