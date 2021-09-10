@@ -43,4 +43,4 @@ RUN lerna bootstrap --scope=@badvlasim/server --ci -- --production=false
 
 EXPOSE 4000
 
-CMD ["lerna", "run", "start", "--scope=@badvlasim/server", "--stream", "--no-prefix"
+CMD ["lerna", "run", "start", "--scope=@badvlasim/server", "--stream", "--no-prefix"]
