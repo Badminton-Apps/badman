@@ -26,4 +26,4 @@ RUN lerna bootstrap --scope=@badvlasim/job  --ci -- --production=false
 
 EXPOSE 4000
 
-CMD ["lerna", "run", "start", "--scope=@badvlasim/job", "--stream"]
+CMD ["lerna", "run", "start", "--scope=@badvlasim/job", "--stream", "--no-prefix"]
