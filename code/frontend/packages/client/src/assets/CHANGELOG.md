@@ -1,3 +1,12 @@
+## [3.51.8](https://github.com/Badminton-Apps/core/compare/v3.51.7...v3.51.8) (2021-09-10)
+
+
+### Bug Fixes
+
+* switching logging config to kubectl ([076e1d3](https://github.com/Badminton-Apps/core/commit/076e1d304039716b3fb7c3248231f9346d69bcfc))
+
+
+
 ## [3.51.7](https://github.com/Badminton-Apps/core/compare/v3.51.6...v3.51.7) (2021-09-10)
 
 
