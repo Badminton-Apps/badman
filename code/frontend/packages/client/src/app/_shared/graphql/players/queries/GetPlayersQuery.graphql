@@ -6,6 +6,7 @@ query GetPlayers($where: SequelizeJSON, $includeClub: Boolean!) {
     lastName
     phone
     email
+    competitionPlayer
     clubs @include(if: $includeClub) {
       name
     }
