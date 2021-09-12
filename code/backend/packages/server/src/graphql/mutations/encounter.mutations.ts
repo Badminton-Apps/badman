@@ -10,7 +10,7 @@ import {
   Team
 } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
-import got from 'got';
+import axios from 'axios';
 import moment from 'moment';
 import { Transaction } from 'sequelize/types';
 import { ApiError } from '../../models/api.error';
@@ -242,11 +242,14 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
   }
 
   if (process.env.NODE_ENV === 'production') {
-    const resultPut = await got.put(
+    const resultPut = await axios.put(
       `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
       {
-        username: `${process.env.VR_API_USER}`,
-        password: `${process.env.VR_API_PASS}`,
+        withCredentials: true,
+        auth: {
+          username: `${process.env.VR_API_USER}`,
+          password: `${process.env.VR_API_PASS}`
+        },
         headers: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           'Content-Type': 'application/xml'
@@ -260,7 +263,7 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
           `
       }
     );
-    const bodyPut = parse(resultPut.body).Result as Result;
+    const bodyPut = parse(resultPut.data).Result as Result;
     if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
       logger.error(
         `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
