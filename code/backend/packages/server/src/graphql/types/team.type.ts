@@ -76,14 +76,17 @@ export const TeamType = new GraphQLObjectType({
         }),
         resolve: resolver(Team.associations.players, {
           before: async (findOptions, args, context, info) => {
-            var where = queryFixer(findOptions.where);
+            const whereFixed = queryFixer(findOptions.where);
+            let where = whereFixed;
+
             if (findOptions.where?.base) {
-              var { base, ...where } = where;
+              const { base, ...filtered } = whereFixed;
+              where = filtered;
             }
 
             findOptions = {
               ...findOptions,
-              where: where
+              where
             };
             return findOptions;
           },
@@ -102,7 +105,7 @@ export const TeamType = new GraphQLObjectType({
                 });
             }
 
-            var players = result.map(player => {
+            let players = result.map(player => {
               player.base = player.getDataValue('TeamPlayerMembership')?.base;
               return player;
             });
