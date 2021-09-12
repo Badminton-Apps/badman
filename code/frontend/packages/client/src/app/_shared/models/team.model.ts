@@ -22,6 +22,8 @@ export class Team {
   email: string;
   phone: string;
 
+  meta: any;
+
   constructor(args?: Partial<Team>) {
     this.id = args?.id;
     this.name = args?.name;
@@ -39,6 +41,8 @@ export class Team {
     this.captainId = args?.captain?.id;
     this.email = args?.email;
     this.phone = args?.phone;
+
+    this.meta = args?.meta;
 
     this.players =
       args?.players?.map((p) => {

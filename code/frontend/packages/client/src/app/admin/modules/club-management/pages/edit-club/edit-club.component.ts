@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
 import {
+  AuthService,
   Club,
   ClubService,
+  EventService,
   Location,
   LocationService,
   Player,
@@ -15,7 +18,7 @@ import {
   TeamService,
 } from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './edit-club.component.html',
@@ -23,12 +26,20 @@ import { debounceTime, map, switchMap } from 'rxjs/operators';
 })
 export class EditClubComponent implements OnInit {
   club$: Observable<Club>;
-  update$ = new BehaviorSubject(0);
+
+  compYears$: Observable<number[]>;
+  teamsForYear$: Observable<Team[]>;
+
+  update$ = new BehaviorSubject(null);
+
+  competitionYear = new FormControl();
 
   constructor(
+    private authService: AuthService,
     private teamService: TeamService,
     private roleService: RoleService,
     private clubService: ClubService,
+    private eventService: EventService,
     private locationService: LocationService,
     private route: ActivatedRoute,
     private router: Router,
@@ -37,13 +48,40 @@ export class EditClubComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.club$ = combineLatest([this.route.paramMap, this.update$.pipe(debounceTime(600))]).pipe(
-      map(([params]) => [params.get('id')]),
+    const clubid$ = this.route.paramMap.pipe(map((params) => params.get('id')));
+
+    this.compYears$ = combineLatest([
+      clubid$,
+      this.authService.userPermissions$,
+      this.update$.pipe(debounceTime(600)),
+    ]).pipe(switchMap(([id]) => this.clubService.getCompetitionYears(id)));
+
+    this.teamsForYear$ = combineLatest([
+      clubid$,
+      this.competitionYear.valueChanges,
+      this.authService.userPermissions$,
+      this.update$.pipe(debounceTime(600)),
+    ]).pipe(
+      switchMap((args: any[]) => {
+        return this.eventService.getSubEventsCompetition(args[1]).pipe(
+          map((subEvents) => {
+            args.push(subEvents.map((subEvent) => subEvent.subEvents.map((subEvent) => subEvent.id)).flat(2));
+            return args;
+          })
+        );
+      }),
+      switchMap(([clubId, year, permissions, update, subEvents]) => {
+        return this.clubService.getTeamsForSubEvents(clubId, subEvents);
+      })
+    );
+
+    this.club$ = combineLatest([clubid$, this.update$.pipe(debounceTime(600))]).pipe(
       switchMap(([id]) =>
         this.clubService.getClub(id, {
           includeTeams: false,
           includeRoles: true,
           includeLocations: true,
+          teamsWhere: { active: true },
         })
       )
     );
@@ -110,6 +148,15 @@ export class EditClubComponent implements OnInit {
   }
   async onDeleteRole(role: Role) {
     await this.roleService.deleteRole(role.id).toPromise();
+    this.update$.next(0);
+  }
+
+  async onAddBasePlayer(player: Player, team: Team) {
+    await this.teamService.addBasePlayer(team.id, player.id, team.subEvents[0].id).toPromise();
+    this.update$.next(0);
+  }
+  async onDeleteBasePlayer(player: Player, team: Team) {
+    await this.teamService.removeBasePlayer(team.id, player.id, team.subEvents[0].id).toPromise();
     this.update$.next(0);
   }
 }
