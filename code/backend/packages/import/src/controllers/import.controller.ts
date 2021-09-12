@@ -46,13 +46,6 @@ export class ImportController extends BaseController {
       this._upload.array('upload'),
       this._setRanking
     );
-    this.router.post(
-      `${this._path}/file`,
-      this._authMiddleware,
-      this._upload.array('upload'),
-      this._import
-    );
-    this.router.put(`${this._path}/start/:id/:eventId?`, this._authMiddleware, this._startImport);
   }
 
   private _setRanking = async (request: AuthenticatedRequest, response: Response) => {
@@ -118,6 +111,7 @@ export class ImportController extends BaseController {
       response.render('error', { error: e });
     }
   };
+
   private _import = async (request: AuthenticatedRequest, response: Response) => {
     if (!request.user.hasAnyPermission(['import:competition', 'import:tournament'])) {
       response.status(401).send('No no no!!');
