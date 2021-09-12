@@ -1,3 +1,14 @@
+## [3.52.3](https://github.com/Badminton-Apps/core/compare/v3.52.2...v3.52.3) (2021-09-12)
+
+
+### Bug Fixes
+
+* assembly not loading ([2befc7a](https://github.com/Badminton-Apps/core/commit/2befc7a41f729732cef5e0cdf2698df86eba2d88))
+* base players assembly form ([c31b690](https://github.com/Badminton-Apps/core/commit/c31b6902255696d2f5fb71b4cc221cb48b19feb3))
+* chart location ([fcd2ad6](https://github.com/Badminton-Apps/core/commit/fcd2ad6dd89f98507e474f9f475355818e263496))
+
+
+
 ## [3.52.2](https://github.com/Badminton-Apps/core/compare/v3.52.1...v3.52.2) (2021-09-12)
 
 
