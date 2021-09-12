@@ -2,10 +2,10 @@ replicaCount: 1
 image:
   useImagePullSecrets: true
   pullPolicy: Always
-  repository: ghcr.io/badminton-apps/core/job
+  repository: ghcr.io/badminton-apps/core/jobs
 
 service:
-  name: badman-job
+  name: badman-jobs
   internalPort: 4000
   externalPort: 80
 
