@@ -15,10 +15,10 @@ import {
 } from '../../../packages/_shared';
 
 (async () => {
-  await merge_accounts();
+  await set_meta();
 })();
 
-async function merge_accounts() {
+async function set_meta() {
   const databaseService = new DataBaseHandler(dbConfig.default);
 
   const teams = await Team.findAll({
@@ -46,7 +46,6 @@ async function merge_accounts() {
       {
         model: SubEventCompetition,
         attributes: ['id', 'name'],
-        required: true,
         include: [
           {
             required: true,
