@@ -18,7 +18,7 @@ RUN npm i lerna -g --loglevel notice
 
 # Copy packages
 COPY packages/_shared ./packages/_shared
-COPY packages/job ./packages/jobs
+COPY packages/jobs ./packages/jobs
 
 # bootstrap
 COPY lerna.json .
