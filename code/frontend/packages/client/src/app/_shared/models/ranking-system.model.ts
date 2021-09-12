@@ -87,6 +87,7 @@ export enum RankingSystems {
   BVL,
   LFBB,
   ORIGINAL,
+  VISUAL
 }
 
 export enum StartingType {
