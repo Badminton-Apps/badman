@@ -643,7 +643,7 @@ export const addPlayerBaseSubEventMutation = {
       const dbMembership = await TeamSubEventMembership.findOne({
         where: {
           teamId: dbTeam.id,
-          subEventId: subEventId
+          subEventId
         },
         transaction
       });
@@ -704,7 +704,7 @@ export const addPlayerBaseSubEventMutation = {
         gender: dbPlayer.gender
       });
 
-      var bestPlayers = meta.players;
+      let bestPlayers = meta.players;
       if (meta.players.length > 4) {
         if (dbTeam.type === SubEventType.MX) {
           bestPlayers = [
@@ -819,7 +819,7 @@ export const removePlayerBaseSubEventMutation = {
       const dbMembership = await TeamSubEventMembership.findOne({
         where: {
           teamId: dbTeam.id,
-          subEventId: subEventId
+          subEventId
         },
         transaction
       });
@@ -831,7 +831,7 @@ export const removePlayerBaseSubEventMutation = {
       }
 
       const meta = dbMembership.meta;
-      const removedPlayer = meta.players.filter(p => p.id == playerId)[0];
+      const removedPlayer = meta.players.filter(p => p.id === playerId)[0];
       if (!removedPlayer) {
         throw new ApiError({
           code: 404,
@@ -839,9 +839,9 @@ export const removePlayerBaseSubEventMutation = {
         });
       }
 
-      meta.players = meta.players.filter(p => p.id != playerId);
+      meta.players = meta.players.filter(p => p.id !== playerId);
 
-      var bestPlayers = meta.players;
+      let bestPlayers = meta.players;
       if (meta.players.length > 4) {
         if (dbTeam.type === SubEventType.MX) {
           bestPlayers = [
