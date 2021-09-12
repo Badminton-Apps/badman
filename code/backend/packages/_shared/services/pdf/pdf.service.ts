@@ -329,9 +329,6 @@ export class PdfService {
       await page.setContent(content);
       const pdf = await page.pdf(options);
 
-      // const html = await page.content();
-      // await writeFile('test.html', html, { encoding: 'utf-8', flag: 'w' });
-
       await context.close();
       return pdf;
     } catch (err) {
