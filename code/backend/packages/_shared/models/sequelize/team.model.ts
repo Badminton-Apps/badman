@@ -228,34 +228,10 @@ export class Team extends Model {
       return -1;
     }
 
-    if (this.type !== 'MX') {
-      const bestPlayers = this.basePlayers.map(
-        r =>
-          (r.lastRankingPlace?.single ?? 12) +
-          (r.lastRankingPlace?.double ?? 12)
-      );
-
-      let missingIndex = 0;
-      if (bestPlayers.length < 4) {
-        missingIndex = (bestPlayers.length - 4) * 24;
-      }
-
-      this._baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
-    } else {
-      const bestPlayers = this.basePlayers.map(
-        r =>
-          (r.lastRankingPlace?.single ?? 12) +
-          (r.lastRankingPlace?.double ?? 12) +
-          (r.lastRankingPlace?.mix ?? 12)
-      );
-
-      let missingIndex = 0;
-      if (bestPlayers.length < 4) {
-        missingIndex = (bestPlayers.length - 4) * 36;
-      }
-
-      this._baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
-    }
+    this._baseIndex = Team.getIndexFromPlayers(
+      this.type,
+      this.basePlayers.map(r => r.lastRankingPlace)
+    );
     return this._baseIndex;
   }
 
@@ -339,6 +315,35 @@ export class Team extends Model {
   // Belongs to Captain
   getCaptain!: BelongsToGetAssociationMixin<Player>;
   setCaptain!: BelongsToSetAssociationMixin<Player, string>;
+
+  static getIndexFromPlayers(
+    type: SubEventType,
+    rankings: { single: number; double: number; mix: number }[]
+  ): number {
+    if (type !== 'MX') {
+      const bestPlayers = rankings.map(
+        r => (r?.single ?? 12) + (r?.double ?? 12)
+      );
+
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (4 - bestPlayers.length) * 24;
+      }
+
+      return bestPlayers.reduce((a, b) => a + b, missingIndex);
+    } else {
+      const bestPlayers = rankings.map(
+        r => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12)
+      );
+
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (4 - bestPlayers.length) * 36;
+      }
+
+      return bestPlayers.reduce((a, b) => a + b, missingIndex);
+    }
+  }
 
   static getLetterForRegion(type: SubEventType, region: 'vl' | 'wl') {
     switch (type) {
