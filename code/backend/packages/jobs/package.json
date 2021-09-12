@@ -21,7 +21,8 @@
   ],
   "dependencies": {
     "@badvlasim/shared": "^3.51.9",
-    "node-cron": "^3.0.0"
+    "node-cron": "^3.0.0",
+    "axios": "^0.21.4"
   },
   "devDependencies": {
     "@types/node-cron": "^2.0.4"
