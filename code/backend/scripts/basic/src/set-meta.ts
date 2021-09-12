@@ -32,7 +32,7 @@ async function merge_accounts() {
         limit: 1,
         where: {
           date: {
-            [Op.gte]: moment('2021-10-01').toDate()
+            [Op.gte]: moment('2021-09-01').toDate()
           }
         },
         include: [
