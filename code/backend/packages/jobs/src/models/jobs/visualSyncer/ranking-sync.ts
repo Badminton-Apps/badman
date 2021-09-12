@@ -112,12 +112,12 @@ export class RankingSyncer {
 
   protected getPublications(): ProcessStep<
     {
-      Code: string;
-      Name: string;
-      Year: string;
-      Week: string;
-      PublicationDate: Date;
-      Visible: string;
+      code: string;
+      name: string;
+      year: string;
+      week: string;
+      publicationDate: Date;
+      visible: string;
       date: Moment;
     }[]
   > {
@@ -147,10 +147,15 @@ export class RankingSyncer {
         parseAttributeValue: true
       }).Result as XmlResult;
 
-      var pubs = bodyTournament.RankingPublication.filter(publication => publication.Visible).map(
+      let pubs = bodyTournament.RankingPublication.filter(publication => publication.Visible).map(
         publication => {
           return {
-            ...publication,
+            code: publication.Code,
+            name: publication.Name,
+            year: publication.Year,
+            week: publication.Week,
+            publicationDate: publication.PublicationDate,
+            visible: publication.Visible,
             date: moment(publication.PublicationDate, 'YYYY-MM-DD')
           };
         }
@@ -167,12 +172,12 @@ export class RankingSyncer {
       );
 
       const publications: {
-        Code: string;
-        Name: string;
-        Year: string;
-        Week: string;
-        PublicationDate: Date;
-        Visible: string;
+        code: string;
+        name: string;
+        year: string;
+        week: string;
+        publicationDate: Date;
+        visible: string;
         date: Moment;
       }[] = this.processor.getData(this.STEP_PUBLICATIONS);
 
