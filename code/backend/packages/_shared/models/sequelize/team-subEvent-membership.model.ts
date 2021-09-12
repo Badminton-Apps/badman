@@ -1,9 +1,11 @@
-import { BuildOptions } from 'sequelize';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, BuildOptions, HasOneGetAssociationMixin, HasOneSetAssociationMixin } from 'sequelize';
 import {
   AllowNull,
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,
+  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -52,8 +54,9 @@ export interface TeamSubEventMembershipBadmintonBvlMembershipMeta {
 }
 
 export interface TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta {
-  playerId: string;
-  playerSingleIndex: number;
-  playerDoubleIndex: number;
-  playerMixIndex: number;
+  id: string;
+  single: number;
+  double: number;
+  mix: number;
+  gender: string;
 }

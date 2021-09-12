@@ -15,6 +15,8 @@ import * as addPlayerToTeamMutation from '../../graphql/teams/mutations/addPlaye
 import * as deleteTeamMutation from '../../graphql/teams/mutations/removeTeam.graphql';
 import * as removePlayerToTeamMutation from '../../graphql/teams/mutations/removePlayerToTeamMutation.graphql';
 import * as updatePlayerTeamMutation from '../../graphql/teams/mutations/updatePlayerTeamMutation.graphql';
+import * as addBasePlayerForSubEvent from '../../graphql/teams/mutations/addBasePlayerForSubEvent.graphql';
+import * as removeBasePlayerForSubEvent from '../../graphql/teams/mutations/removeBasePlayerForSubEvent.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -123,5 +125,28 @@ export class TeamService {
         },
       })
       .pipe(map((x: any) => x.data?.club?.teams?.map((t: Partial<Team>) => new Team(t))));
+  }
+
+
+  addBasePlayer(teamId: string, playerId: string, subEventId: string) {
+    return this.apollo.mutate<{ addPlayerBaseSubEventMutation: Team }>({
+      mutation: addBasePlayerForSubEvent,
+      variables: {
+        teamId,
+        playerId,
+        subEventId
+      },
+    });
+  }
+
+  removeBasePlayer(teamId: string, playerId: string, subEventId: string) {
+    return this.apollo.mutate<{ removePlayerBaseSubEventMutation: Team }>({
+      mutation: removeBasePlayerForSubEvent,
+      variables: {
+        teamId,
+        playerId,
+        subEventId
+      },
+    });
   }
 }

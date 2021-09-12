@@ -27,7 +27,6 @@ import {
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
-
 (async () => {
   await startWhenReady(true, false, db => {
     startServer(db);
@@ -59,7 +58,6 @@ const startServer = (databaseService: DataBaseHandler) => {
       }
     ]
   );
-
 
   const schema = createSchema(notifService);
   const apolloServer = new ApolloServer({

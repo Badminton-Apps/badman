@@ -192,10 +192,11 @@ export class DataBaseHandler {
         teamPlayers.push(player);
 
         playerMeta.push({
-          playerId: player.id,
-          playerSingleIndex: rankingPlaceMay.single,
-          playerDoubleIndex: rankingPlaceMay.double,
-          playerMixIndex: rankingPlaceMay.mix
+          id: player.id,
+          single: rankingPlaceMay.single,
+          double: rankingPlaceMay.double,
+          mix: rankingPlaceMay.mix,
+          gender: player.gender
         } as TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta);
       }
 
@@ -479,7 +480,8 @@ export class DataBaseHandler {
 
       destination.sub = destination.sub ?? source.sub;
       destination.memberId = destination.memberId ?? source.memberId;
-      destination.competitionPlayer = destination.competitionPlayer ?? source.competitionPlayer;
+      destination.competitionPlayer =
+        destination.competitionPlayer ?? source.competitionPlayer;
       destination.birthDate = destination.birthDate ?? source.birthDate;
 
       await destination.save({ transaction });
