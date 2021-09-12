@@ -20,25 +20,28 @@ export class EditPlayerFieldsComponent implements OnInit {
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
+    console.log('player', this.player);
     const firstNameControl = new FormControl(this.player.firstName, Validators.required);
     const lastNameControl = new FormControl(this.player.lastName, Validators.required);
     const memberIdControl = new FormControl(this.player.memberId, Validators.required);
+    const compPlayer = new FormControl(this.player.competitionPlayer);
     const subControl = new FormControl(this.player.sub);
 
     memberIdControl.disable();
     subControl.disable();
 
-    this.auth.hasClaim$('link:player').subscribe(r => {
-      if (r){
+    this.auth.hasClaim$('link:player').subscribe((r) => {
+      if (r) {
         memberIdControl.enable();
         subControl.enable();
       }
-    })
+    });
 
     this.fg = new FormGroup({
       firstName: firstNameControl,
       lastName: lastNameControl,
       memberId: memberIdControl,
+      compPlayer: compPlayer,
       sub: subControl,
     });
 
@@ -49,6 +52,7 @@ export class EditPlayerFieldsComponent implements OnInit {
           firstName: this.fg.value.firstName,
           lastName: this.fg.value.lastName,
           memberId: this.fg.value.memberId,
+          competitionPlayer: this.fg.value.compPlayer,
           sub: this.fg.value.sub,
         });
       }
