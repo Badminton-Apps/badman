@@ -1,3 +1,24 @@
+# [3.52.0](https://github.com/Badminton-Apps/core/compare/v3.51.10...v3.52.0) (2021-09-12)
+
+
+### Bug Fixes
+
+* hide competition block when not logged in ([b96f3e9](https://github.com/Badminton-Apps/core/commit/b96f3e90f06e98a326a2c3c0db21cbc6821d7951))
+* no port needed for endpoint ([e549022](https://github.com/Badminton-Apps/core/commit/e5490221cb192b8f1b52e303035fffcace49a902))
+* saving ranking system ([740a271](https://github.com/Badminton-Apps/core/commit/740a2717e7adcfee7d64f33a56d1b7cde1a50613))
+* switch got to axios (issues with visual api) ([b6fd69a](https://github.com/Badminton-Apps/core/commit/b6fd69a4e0ffeb40320bbc2f193eece3513962f6))
+* teams not visible in team assembly ([19fcecf](https://github.com/Badminton-Apps/core/commit/19fcecfe0266d2dd0fff3e9c90d99bdfa286ca04))
+* Temporary disabling (certificate issues) ([97579b1](https://github.com/Badminton-Apps/core/commit/97579b1923143053df0254aefa2f7cc7137f4031))
+
+
+### Features
+
+* Admin can change base teams ([50ddde0](https://github.com/Badminton-Apps/core/commit/50ddde0a20fd6b3cd58eba067dcc4d193c211d91))
+* Change competition status ([bde694f](https://github.com/Badminton-Apps/core/commit/bde694f572a568230ce7e1f8893fbd06fd80c592))
+* Visual ranking sync job (WIP) ([c1ed8b3](https://github.com/Badminton-Apps/core/commit/c1ed8b3f4dfea9301cadc096d085c17aede84a28))
+
+
+
 ## [3.51.10](https://github.com/Badminton-Apps/core/compare/v3.51.9...v3.51.10) (2021-09-10)
 
 
