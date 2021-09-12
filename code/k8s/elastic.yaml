@@ -92,19 +92,16 @@ spec:
             namespace: badvla
             node: ${NODE_NAME}
             templates:
-              - condition:
-                  contains:
-                    co.elastic.logs/enabled: "true"
-                config:
+              - config:
                   - type: container
-                    json.keys_under_root: true
-                    json.add_error_key: true
-                    json.message_key: msg
-                    json.expand_keys: true
+                    co.elastic.logs/json.keys_under_root: true
+                    co.elastic.logs/json.overwrite_keys: true
+                    co.elastic.logs/json.add_error_key: true
+                    co.elastic.logs/json.expand_keys: true
+                    include_lines: ['^{']
                     paths:
                       - /var/log/containers/*-${data.container.id}.log
     processors:
-      - add_cloud_metadata: {}
       - add_host_metadata: {}
   daemonSet:
     podTemplate:
