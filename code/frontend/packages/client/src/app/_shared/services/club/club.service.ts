@@ -4,6 +4,8 @@ import { map } from 'rxjs/operators';
 import { Club, Player, RankingSystem } from './../../models';
 
 import * as clubQuery from '../../graphql/clubs/queries/GetClubQuery.graphql';
+import * as clubGetBasePlayersQuery from '../../graphql/clubs/queries/GetBasePlayersQuery.graphql';
+import * as clubGetCompYearsQuery from '../../graphql/clubs/queries/GetCompYearsQuery.graphql';
 import * as clubsQuery from '../../graphql/clubs/queries/GetClubsQuery.graphql';
 
 import * as addClubMutation from '../../graphql/clubs/mutations/addClub.graphql';
@@ -28,6 +30,7 @@ export class ClubService {
       includeRoles?: boolean;
       includeLocations?: boolean;
       teamsWhere?: { [key: string]: any };
+      teamPlayersWhere?: { [key: string]: any };
     }
   ) {
     // setting default values
@@ -54,6 +57,7 @@ export class ClubService {
           includeRoles: args.includeRoles,
           includeLocations: args.includeLocations,
           teamsWhere: args.teamsWhere,
+          teamPlayersWhere: args.teamPlayersWhere,
         },
       })
       .pipe(map((x) => new Club(x.data.club)));
@@ -142,6 +146,49 @@ export class ClubService {
           }
           return x.data;
         })
+      );
+  }
+
+  getTeamsForSubEvents(clubId: string, subEvents?: string[]) {
+    var where = {};
+
+    if (subEvents) {
+      where = {
+        id: { ['$in']: subEvents },
+      };
+    }
+
+    return this.apollo
+      .query<{ club: Club }>({
+        query: clubGetBasePlayersQuery,
+        variables: {
+          id: clubId,
+          subEventsWhere: where,
+        },
+      })
+      .pipe(
+        map((x) => {
+          return x.data.club.teams.filter((r) => r.subEvents.length > 0 && r.subEvents[0].meta != null);
+        })
+      );
+  }
+
+  getCompetitionYears(clubId: string) {
+    return this.apollo
+      .query<{ club: Club }>({
+        query: clubGetCompYearsQuery,
+        variables: {
+          id: clubId,
+        },
+      })
+      .pipe(
+        map((x) =>
+          x.data.club.teams
+            .map((r) => r.subEvents.map((r) => r.event.startYear))
+            .flat()
+            .filter((x, i, a) => a.indexOf(x) === i)
+            .sort()
+        )
       );
   }
 }

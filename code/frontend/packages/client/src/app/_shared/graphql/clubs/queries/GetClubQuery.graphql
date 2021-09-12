@@ -8,6 +8,7 @@ query GetClubQuery(
   $includeRoles: Boolean!
   $includeLocations: Boolean!
   $teamsWhere: SequelizeJSON
+  $teamPlayersWhere: SequelizeJSON
 ) {
   club(id: $id) {
     id
@@ -23,7 +24,7 @@ query GetClubQuery(
       preferredDay
       active
       teamNumber
-      players(end: $end) {
+      players(end: $end, where: $teamPlayersWhere) {
         id
         firstName
         lastName

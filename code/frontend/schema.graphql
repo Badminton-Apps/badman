@@ -876,7 +876,7 @@ type SubEventCompetition {
     # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
     where: SequelizeJSON
     offset: Int
-  ): [SubEventCompetition]
+  ): [Team]
 }
 
 enum SubEventCompetitioneventTypeEnumType {
@@ -894,10 +894,11 @@ type TeamMeta {
 
 # Team meta Players
 type TeamMetaPlayers {
-  playerId: String
-  playerSingleIndex: Int
-  playerDoubleIndex: Int
-  playerMixIndex: Int
+  player: Player
+  id: String
+  single: Int
+  double: Int
+  mix: Int
 }
 
 # A EventCompetition
@@ -1226,6 +1227,8 @@ type RootMutationType {
     eventId: ID
     use: Boolean
   ): Location
+  addPlayerBaseSubEvent(teamId: ID, playerId: ID, subEventId: ID): Team
+  removePlayerBaseSubEvent(teamId: ID, playerId: ID, subEventId: ID): Team
 }
 
 # This represents a ClubnputType
