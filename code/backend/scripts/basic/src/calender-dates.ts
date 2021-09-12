@@ -1,6 +1,6 @@
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 import { parse } from 'fast-xml-parser';
-import got from 'got';
+import axios from 'axios';
 import { Op } from 'sequelize';
 import {
   Club,
@@ -71,51 +71,66 @@ import {
   }
 
   async function getCompetition(id: string): Promise<XmlTournament> {
-    const result = await got.get(`${URL_BASE}/${id}`, {
-      username: `${process.env.VR_API_USER}`,
-      password: `${process.env.VR_API_PASS}`
+    const result = await axios.get(`${URL_BASE}/${id}`, {
+      withCredentials: true,
+      auth: {
+        username: `${process.env.VR_API_USER}`,
+        password: `${process.env.VR_API_PASS}`
+      },
     });
-    const body = parse(result.body).Result as XmlResult;
+    const body = parse(result.data).Result as XmlResult;
     return body.Tournament as XmlTournament;
   }
 
   async function getEvents(id: string): Promise<XmlTournamentEvent[]> {
-    const result = await got.get(`${URL_BASE}/${id}/Event`, {
-      username: `${process.env.VR_API_USER}`,
-      password: `${process.env.VR_API_PASS}`
+    const result = await axios.get(`${URL_BASE}/${id}/Event`, {
+      withCredentials: true,
+      auth: {
+        username: `${process.env.VR_API_USER}`,
+        password: `${process.env.VR_API_PASS}`
+      },
     });
-    const body = parse(result.body).Result as XmlResult;
+    const body = parse(result.data).Result as XmlResult;
     return Array.isArray(body.TournamentEvent)
       ? body.TournamentEvent
       : [body.TournamentEvent];
   }
 
   async function getDraws(id: string): Promise<XmlTournamentDraw[]> {
-    const result = await got.get(`${URL_BASE}/${id}/Draw`, {
-      username: `${process.env.VR_API_USER}`,
-      password: `${process.env.VR_API_PASS}`
+    const result = await axios.get(`${URL_BASE}/${id}/Draw`, {
+      withCredentials: true,
+      auth: {
+        username: `${process.env.VR_API_USER}`,
+        password: `${process.env.VR_API_PASS}`
+      },
     });
-    const body = parse(result.body).Result as XmlResult;
+    const body = parse(result.data).Result as XmlResult;
     return Array.isArray(body.TournamentDraw)
       ? body.TournamentDraw
       : [body.TournamentDraw];
   }
 
   async function getTeams(id: string): Promise<XmlTeam[]> {
-    const result = await got.get(`${URL_BASE}/${id}/Team`, {
-      username: `${process.env.VR_API_USER}`,
-      password: `${process.env.VR_API_PASS}`
+    const result = await axios.get(`${URL_BASE}/${id}/Team`, {
+      withCredentials: true,
+      auth: {
+        username: `${process.env.VR_API_USER}`,
+        password: `${process.env.VR_API_PASS}`
+      },
     });
-    const body = parse(result.body).Result as XmlResult;
+    const body = parse(result.data).Result as XmlResult;
     return body.Team as XmlTeam[];
   }
 
   async function getTeam(id: string, teamId: string): Promise<XmlTeam> {
-    const result = await got.get(`${URL_BASE}/${id}/Team/${teamId}`, {
-      username: `${process.env.VR_API_USER}`,
-      password: `${process.env.VR_API_PASS}`
+    const result = await axios.get(`${URL_BASE}/${id}/Team/${teamId}`, {
+      withCredentials: true,
+      auth: {
+        username: `${process.env.VR_API_USER}`,
+        password: `${process.env.VR_API_PASS}`
+      },
     });
-    const body = parse(result.body).Result as XmlResult;
+    const body = parse(result.data).Result as XmlResult;
     return body.Team as XmlTeam;
   }
 
@@ -123,11 +138,14 @@ import {
     id: string,
     drawId: string
   ): Promise<XmlTeamMatch[]> {
-    const result = await got.get(`${URL_BASE}/${id}/Draw/${drawId}/Match`, {
-      username: `${process.env.VR_API_USER}`,
-      password: `${process.env.VR_API_PASS}`
+    const result = await axios.get(`${URL_BASE}/${id}/Draw/${drawId}/Match`, {
+      withCredentials: true,
+      auth: {
+        username: `${process.env.VR_API_USER}`,
+        password: `${process.env.VR_API_PASS}`
+      },
     });
-    const body = parse(result.body).Result as XmlResult;
+    const body = parse(result.data).Result as XmlResult;
     return body.TeamMatch;
   }
 
