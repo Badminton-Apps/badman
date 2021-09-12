@@ -1,14 +1,18 @@
 /* eslint-disable */
 export interface XmlResult {
-  Tournament: XmlTournament | XmlTournament[];
+  Tournament?: XmlTournament | XmlTournament[];
   TournamentMatch?: XmlTournamentMatch;
   Error?: XmlError;
   TournamentEvent?: XmlTournamentEvent | XmlTournamentEvent[];
   TournamentDraw?: XmlTournamentDraw | XmlTournamentDraw[];
   Team?: XmlTeam | XmlTeam[];
   TeamMatch?: XmlTeamMatch[];
-  Match: XmlMatch[];
-  Player: XmlPlayer | XmlPlayer[];
+  Match?: XmlMatch[];
+  Player?: XmlPlayer | XmlPlayer[];
+  Ranking?: XmlRanking;
+  RankingCategory?: XmlRankingCategory[];
+  RankingPublication?: XmlRankingPublication[];
+  RankingPublicationPoints?: XmlRankingPublicationPoint[];
   _Version: string;
 }
 
@@ -16,6 +20,36 @@ interface XmlTournamentMatch {
   TournamentID: string;
   MatchID: string;
   MatchDate: Date;
+}
+
+export interface XmlRanking {
+  Code: string;
+  Name: string;
+}
+
+export interface XmlRankingPublicationPoint {
+  Rank: string;
+  PreviousRank?: string;
+  Player1: {
+    Code: string;
+    MemberID: string;
+    Name: string;
+    CountryCode?: string;
+  };
+}
+
+export interface XmlRankingCategory {
+  Code: string;
+  Name: string;
+}
+
+export interface XmlRankingPublication {
+  Code: string;
+  Name: string;
+  Year: string;
+  Week: string;
+  PublicationDate: Date;
+  Visible: string;
 }
 
 interface XmlError {

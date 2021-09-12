@@ -30,18 +30,18 @@ export abstract class CronJob {
   }
 
   async start() {
-    // this.cronJob.start();
-    // this.dbCron.running = true;
-    // await this.dbCron.save();
+    this._cronJob.start();
+    this.dbCron.running = true;
+    await this.dbCron.save();
+  }
 
-    // TODO: revert
+  async single(){
     this.run();
   }
 
   async stop() {
-    // this.dbCron.running = false;
-    // await this.dbCron.save();
-
+    this.dbCron.running = false;
+    await this.dbCron.save();
     this._cronJob.stop();
   }
 
