@@ -23,7 +23,7 @@ export class JobController extends BaseController {
   private async _initializeJobs() {
     // VisualSync
     const [scoresDb] = await Cron.findOrCreate({
-      where: { type: 'sync-visual' },
+      where: { type: 'sync-visual' }, 
       defaults: GetScoresVisual.dbEntry()
     }); 
     const visual = new GetScoresVisual(scoresDb);
