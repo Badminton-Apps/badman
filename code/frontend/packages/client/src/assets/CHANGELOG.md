@@ -1,3 +1,12 @@
+## [3.52.6](https://github.com/Badminton-Apps/core/compare/v3.52.5...v3.52.6) (2021-09-13)
+
+
+### Bug Fixes
+
+* null value in chart ([be0ffd6](https://github.com/Badminton-Apps/core/commit/be0ffd67cf9ce46e8aa274c9db3e6e76befec5ed))
+
+
+
 ## [3.52.5](https://github.com/Badminton-Apps/core/compare/v3.52.4...v3.52.5) (2021-09-13)
 
 
