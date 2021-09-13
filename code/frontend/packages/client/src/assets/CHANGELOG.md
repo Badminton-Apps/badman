@@ -1,3 +1,12 @@
+## [3.52.5](https://github.com/Badminton-Apps/core/compare/v3.52.4...v3.52.5) (2021-09-13)
+
+
+### Bug Fixes
+
+* ranking places update ([7f528c3](https://github.com/Badminton-Apps/core/commit/7f528c3c100cbe91a6679b6e7fadfd880c401671))
+
+
+
 ## [3.52.4](https://github.com/Badminton-Apps/core/compare/v3.52.3...v3.52.4) (2021-09-12)
 
 
