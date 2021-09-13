@@ -21,7 +21,7 @@ export abstract class CronJob {
     logger.info(`Cron job ${this.dbCron.type} is running`);
   }
 
-  abstract run(): Promise<void>;
+  abstract run(args?: any): Promise<void>;
 
   async postRun() {
     this.dbCron.lastRun = new Date();
@@ -35,8 +35,8 @@ export abstract class CronJob {
     await this.dbCron.save();
   }
 
-  async single(){
-    this.run();
+  async single(args?: any) {
+    this.run(args);
   }
 
   async stop() {
