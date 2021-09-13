@@ -51,7 +51,7 @@ export class JobController extends BaseController {
     const foundJob = this._jobs.find(job => job.dbCron.type === request.query.type);
     
     if (foundJob) {
-      foundJob.single();
+      foundJob.single(request.body);
       response.status(200).send('Job started');
     } else {
       response.status(400).send('Job not found');
