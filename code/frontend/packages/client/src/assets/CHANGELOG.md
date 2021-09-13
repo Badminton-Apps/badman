@@ -1,3 +1,12 @@
+## [3.52.7](https://github.com/Badminton-Apps/core/compare/v3.52.6...v3.52.7) (2021-09-13)
+
+
+### Bug Fixes
+
+* argument for job (defaulting: today) ([a6b5919](https://github.com/Badminton-Apps/core/commit/a6b59199258469df807fe99e9376b2905c67fe8f))
+
+
+
 ## [3.52.6](https://github.com/Badminton-Apps/core/compare/v3.52.5...v3.52.6) (2021-09-13)
 
 
