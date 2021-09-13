@@ -96,7 +96,7 @@ spec:
           - name: IMPORT_SERVICE
             value: {{ .Values.services.import }}
           - name: LOG_LEVEL
-            value: info
+            value: debug
           - name: CLIENT_URL
             value: https://badman.app
           - name: VR_API

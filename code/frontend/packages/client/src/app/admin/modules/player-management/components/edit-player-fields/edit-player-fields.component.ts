@@ -20,7 +20,6 @@ export class EditPlayerFieldsComponent implements OnInit {
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
-    console.log('player', this.player);
     const firstNameControl = new FormControl(this.player.firstName, Validators.required);
     const lastNameControl = new FormControl(this.player.lastName, Validators.required);
     const memberIdControl = new FormControl(this.player.memberId, Validators.required);
