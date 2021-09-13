@@ -20,16 +20,15 @@ export class GetScoresVisual extends CronJob {
     this._tournamentSync = new TournamentSyncer();
   }
 
-  async run(): Promise<void> {
-    logger.info('Started sync of Visual scores');
-    const newDate = moment('2012-01-01');
+  async run(args?: { date: Date }): Promise<void> {
+    const newDate = moment(args?.date ?? null);
+    logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
     let newEvents = await this._getChangeEvents(newDate);
 
-    newEvents = newEvents.sort((a, b) => { 
+    newEvents = newEvents.sort((a, b) => {
       return moment(b.StartDate).diff(a.StartDate);
-    }); 
+    });
 
- 
     for (const xmlTournament of newEvents) {
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
       try {
@@ -39,9 +38,7 @@ export class GetScoresVisual extends CronJob {
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
           xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
         ) {
-          if (moment(xmlTournament.StartDate).isBefore(moment('2021-08-01'))) {
-            await this._competitionSync.process({ transaction, xmlTournament });
-          }
+          await this._competitionSync.process({ transaction, xmlTournament });
         } else {
           await this._tournamentSync.process({ transaction, xmlTournament });
         }
@@ -57,9 +54,9 @@ export class GetScoresVisual extends CronJob {
   }
 
   private async _getChangeEvents(date: Moment, page: number = 0) {
-    const url = `${process.env.VR_API}/Tournament?list=1&refdate=${date.format('YYYY-MM-DD')}&pagesize=${
-      this._pageSize
-    }&pageno=${page}`;
+    const url = `${process.env.VR_API}/Tournament?list=1&refdate=${date.format(
+      'YYYY-MM-DD'
+    )}&pagesize=${this._pageSize}&pageno=${page}`;
     const result = await axios.get(url, {
       withCredentials: true,
       auth: {
