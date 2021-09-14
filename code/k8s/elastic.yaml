@@ -100,7 +100,7 @@ spec:
                     co.elastic.logs/json.expand_keys: true
                     include_lines: ['^{']
                     paths:
-                      - /var/log/containers/*-${data.container.id}.log
+                      - /var/log/containers/*${data.kubernetes.container.id}.log
     processors:
       - add_host_metadata: {}
   daemonSet:
