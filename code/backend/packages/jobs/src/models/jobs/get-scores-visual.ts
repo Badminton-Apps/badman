@@ -51,7 +51,7 @@ export class GetScoresVisual extends CronJob {
     }
 
     logger.info('Finished sync of Visual scores');
-  }
+  } 
 
   private async _getChangeEvents(date: Moment, page: number = 0) {
     const url = `${process.env.VR_API}/Tournament?list=1&refdate=${date.format(
