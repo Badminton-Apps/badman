@@ -94,12 +94,12 @@ spec:
             templates:
               - config:
                   - type: container
-                    co.elastic.logs/json.keys_under_root: true
-                    co.elastic.logs/json.overwrite_keys: true
-                    co.elastic.logs/json.add_error_key: true
-                    co.elastic.logs/json.expand_keys: true
-                    co.elastic.logs/json.message_key: message
                     include_lines: ['^{']
+                    fields_under_root: true
+                    json:
+                      keys_under_root: true
+                      message_key: message
+                      overwrite_keys: true
                     paths:
                       - /var/log/containers/*${data.kubernetes.container.id}.log
     processors:
