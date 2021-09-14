@@ -8,14 +8,17 @@ import { environment } from 'environments/environment';
   styleUrls: ['./banner.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BannerComponent implements AfterViewInit {
+export class BannerComponent implements OnInit,AfterViewInit {
 
   banner: Banner;
   showAd = environment.adsense.show;
-  constructor() {
+  @Input()
+  adSlot: number;
+
+  ngOnInit() {
     this.banner = new Banner(
       environment.adsense.adClient,
-      4690724012,
+      this.adSlot,
       'auto',
       true
     )
