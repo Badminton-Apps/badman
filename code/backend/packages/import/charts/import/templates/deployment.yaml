@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       annotations:
-        co.elastic.logs/enabled: "true"    
+        # co.elastic.logs/enabled: "true"
       labels:
         app: {{ template "fullname" . }}
     spec:
