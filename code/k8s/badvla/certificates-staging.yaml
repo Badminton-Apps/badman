@@ -5,7 +5,6 @@ metadata:
   namespace: badvla
 spec:
   dnsNames:
-    - beta.latomme.org
     - badman.app
     - '*.badman.app'
   secretName: badvla-staging-certificate
