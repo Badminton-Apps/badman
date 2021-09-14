@@ -98,6 +98,7 @@ spec:
                     co.elastic.logs/json.overwrite_keys: true
                     co.elastic.logs/json.add_error_key: true
                     co.elastic.logs/json.expand_keys: true
+                    co.elastic.logs/json.message_key: message
                     include_lines: ['^{']
                     paths:
                       - /var/log/containers/*${data.kubernetes.container.id}.log
