@@ -36,6 +36,7 @@ import { HasClaimComponent } from './components/security/has-claim/has-claim.com
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 import { MomentModule } from 'ngx-moment';
+import { BannerComponent } from './components/banner/banner.component';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -72,6 +73,7 @@ const exportedComponents = [
 
 @NgModule({
   declarations: [
+    BannerComponent,
     RankingShellComponent,
     PlayerSearchComponent,
     HeaderSearchComponent,
