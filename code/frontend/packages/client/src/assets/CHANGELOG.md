@@ -1,3 +1,14 @@
+## [3.53.2](https://github.com/Badminton-Apps/core/compare/v3.53.0...v3.53.2) (2021-09-14)
+
+
+### Bug Fixes
+
+* ads.txt ([62f288c](https://github.com/Badminton-Apps/core/commit/62f288c3d47f98788b355bbe9a13ac4ec604a3b9))
+* environment ([4406fe9](https://github.com/Badminton-Apps/core/commit/4406fe97100cbcdf710aefba012bcd02176543d4))
+* log by level ([8a30909](https://github.com/Badminton-Apps/core/commit/8a30909bdc79084b13b4bf6802d9fa12ec6752a3))
+
+
+
 # [3.53.0](https://github.com/Badminton-Apps/core/compare/v3.52.9...v3.53.0) (2021-09-14)
 
 
