@@ -18,7 +18,7 @@ RUN npm i lerna -g --loglevel notice
 
 # Copy packages
 COPY packages/_shared ./packages/_shared
-COPY packages/job ./packages/job
+COPY packages/jobs ./packages/jobs
 
 # bootstrap
 COPY lerna.json .
@@ -26,4 +26,4 @@ RUN lerna bootstrap --scope=@badvlasim/job  --ci -- --production=false
 
 EXPOSE 4000
 
-CMD ["lerna", "run", "start", "--scope=@badvlasim/job", "--stream"]
+CMD ["lerna", "run", "start", "--scope=@badvlasim/job", "--stream", "--no-prefix"]

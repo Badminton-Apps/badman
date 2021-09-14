@@ -8,10 +8,7 @@
 
   <div class="player-details" *ngIf="!device.mobileQuery.matches">
     <app-games [player]="player"></app-games>
-    <app-ranking-evolution
-      *ngIf="player.rankingPlaces && player.rankingPlaces.length > 0"
-      [player]="player"
-    ></app-ranking-evolution>
+    <app-ranking-evolution [player]="player"></app-ranking-evolution>
   </div>
   <div class="player-details-mobile" *ngIf="device.mobileQuery.matches">
     <mat-accordion>

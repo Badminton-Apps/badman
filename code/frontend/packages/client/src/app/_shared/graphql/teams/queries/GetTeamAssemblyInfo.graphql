@@ -16,7 +16,7 @@ query GetTeamInfo($clubId: ID!, $subEventWhere: SequelizeJSON) {
         meta {
           teamIndex
           players {
-            playerId
+            id
           }
         }
       }

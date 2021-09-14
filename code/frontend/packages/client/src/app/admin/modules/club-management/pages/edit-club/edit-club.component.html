@@ -16,7 +16,7 @@
         </button>
       </app-has-claim>
     </div>
-    <div class="locations">
+    <div class="locations" fxLayout="row wrap" fxLayoutGap="16px grid">
       <app-club-edit-location
         *ngFor="let location of club.locations"
         [location]="location"
@@ -37,7 +37,7 @@
         </button>
       </app-has-claim>
     </div>
-    <div class="roles">
+    <div class="roles" fxLayout="row wrap" fxLayoutGap="16px grid">
       <app-club-edit-role
         *ngFor="let role of club.roles"
         [role]="role"
@@ -48,6 +48,29 @@
         (onDelete)="this.onDeleteRole($event)"
       >
       </app-club-edit-role>
+    </div>
+  </app-has-claim>
+
+  <app-has-claim [any]="['change-base:team']">
+    <div class="mat-subheading-1">Base players</div>
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'pickers.select-year' | translate }}</mat-label>
+      <mat-select [formControl]="this.competitionYear">
+        <mat-option *ngFor="let option of this.compYears$ | async" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="teams" fxLayout="row wrap" fxLayoutGap="16px grid">
+      <app-club-edit-team
+        *ngFor="let team of this.teamsForYear$ | async"
+        [team]="team"
+        [club]="club"
+        (onPlayerAdded)="this.onAddBasePlayer($event, team)"
+        (onPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
+      >
+      </app-club-edit-team>
     </div>
   </app-has-claim>
 </ng-container>
