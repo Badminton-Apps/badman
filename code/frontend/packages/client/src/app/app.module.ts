@@ -81,14 +81,12 @@ const appModules = [SharedModule, GraphQLModule];
 })
 export class AppModule {
   constructor(apmService: ApmService) {
-
-
     // Agent API is exposed through this apm instance
-    // apmService.init({
-    //   serviceName: 'badman-client',
-    //   serverUrl: environment.apmServer,
-    //   environment: environment.production ? 'production' : 'development'
-    // })
+    apmService.init({
+      serviceName: 'badman-client',
+      serverUrl: environment.apmServer,
+      environment: environment.production ? 'production' : 'development'
+    })
   }
 
 }
