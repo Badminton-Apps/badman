@@ -2,7 +2,7 @@ import { Cron, logger } from '@badvlasim/shared';
 import { schedule, ScheduledTask } from 'node-cron';
 
 export abstract class CronJob {
-  private _cronJob: ScheduledTask;
+  protected _cronJob: ScheduledTask;
 
   constructor(public dbCron: Cron) {
     this._cronJob = schedule(
