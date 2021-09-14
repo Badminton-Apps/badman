@@ -1,3 +1,12 @@
+## [3.52.9](https://github.com/Badminton-Apps/core/compare/v3.52.7...v3.52.9) (2021-09-14)
+
+
+### Bug Fixes
+
+* storing last run in DB ([ec5127d](https://github.com/Badminton-Apps/core/commit/ec5127d7dea6c7945987761b583c4a322a117947))
+
+
+
 ## [3.52.7](https://github.com/Badminton-Apps/core/compare/v3.52.6...v3.52.7) (2021-09-13)
 
 
