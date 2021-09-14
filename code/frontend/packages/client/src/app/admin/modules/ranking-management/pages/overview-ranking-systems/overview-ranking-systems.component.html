@@ -11,6 +11,7 @@
     <th mat-header-cell *matHeaderCellDef>Select</th>
     <td mat-cell *matCellDef="let row">
       <mat-checkbox
+        [disabled]="row.rankingSystem == 'VISUAL'"
         (click)="$event.stopPropagation()"
         (change)="$event ? rankingSelection.toggle(row) : null"
         [checked]="rankingSelection.isSelected(row)"

@@ -1,4 +1,4 @@
-query GetUserInfoQuery($id: ID!, $rankingType: ID) {
+query GetUserInfoQuery($id: ID!) {
   player(id: $id) {
     id
     memberId
@@ -7,13 +7,13 @@ query GetUserInfoQuery($id: ID!, $rankingType: ID) {
     sub
     gender
     birthDate
+    competitionPlayer
     clubs {
       id
       name
     }
-    rankingPlaces(order: "rankingDate", direction: "desc", limit: 1, where: { SystemId: $rankingType }) {
+    lastRanking {
       id
-
       rankingDate
       single
       singleRank

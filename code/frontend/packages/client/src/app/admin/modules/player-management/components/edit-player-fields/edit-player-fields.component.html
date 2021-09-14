@@ -22,4 +22,10 @@
       <input matInput formControlName="sub" alt="sub" autocomplete="sub" />
     </mat-form-field>
   </div>
+
+  <app-has-claim [all]="['competition-status:player']">
+    <div class="row">
+      <mat-checkbox formControlName="compPlayer">{{ 'input.competitionplayer' | translate }}</mat-checkbox>
+    </div>
+  </app-has-claim>
 </form>

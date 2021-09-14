@@ -41,7 +41,7 @@
     </div>
 
     <div class="ranking" *ngIf="this.shownRanking">
-      <div class="single" [matTooltip]="singleTooltip">
+      <div class="single" [matTooltip]="singleTooltip" [matTooltipDisabled]="!singleTooltip">
         <span class="up">
           {{ this.shownRanking.single }}
           <mat-icon *ngIf="this.shownRanking.singleInactive" matTooltip="Player in inactive for single"
@@ -50,7 +50,7 @@
         </span>
         <span class="down" translate>systems.single</span>
       </div>
-      <div class="double" [matTooltip]="doubleTooltip">
+      <div class="double" [matTooltip]="doubleTooltip" [matTooltipDisabled]="!doubleTooltip">
         <span class="up">
           {{ this.shownRanking.double }}
           <mat-icon *ngIf="this.shownRanking.doubleInactive" matTooltip="Player in inactive for double"
@@ -59,7 +59,7 @@
         </span>
         <span class="down" translate>systems.double</span>
       </div>
-      <div class="mix" [matTooltip]="mixTooltip">
+      <div class="mix" [matTooltip]="mixTooltip" [matTooltipDisabled]="!mixTooltip">
         <span class="up">
           {{ this.shownRanking.mix }}
           <mat-icon *ngIf="this.shownRanking.mixInactive" matTooltip="Player in inactive for mix">warning </mat-icon>

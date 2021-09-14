@@ -66,7 +66,7 @@ export const TeamType = new GraphQLObjectType({
           }
         })
       },
-      
+
       players: {
         type: new GraphQLList(PlayerType),
         args: Object.assign(defaultListArgs(), {
@@ -76,9 +76,17 @@ export const TeamType = new GraphQLObjectType({
         }),
         resolve: resolver(Team.associations.players, {
           before: async (findOptions, args, context, info) => {
+            const whereFixed = queryFixer(findOptions.where);
+            let where = whereFixed;
+
+            if (findOptions.where?.base) {
+              const { base, ...filtered } = whereFixed;
+              where = filtered;
+            }
+
             findOptions = {
               ...findOptions,
-              where: queryFixer(findOptions.where)
+              where
             };
             return findOptions;
           },
@@ -97,10 +105,15 @@ export const TeamType = new GraphQLObjectType({
                 });
             }
 
-            return result.map(player => {
+            let players = result.map(player => {
               player.base = player.getDataValue('TeamPlayerMembership')?.base;
               return player;
             });
+
+            if (args.where?.base) {
+              players = players.filter(player => player.base === args.where.base);
+            }
+            return players;
           }
         })
       },

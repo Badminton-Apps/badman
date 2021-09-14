@@ -2,7 +2,7 @@ import { Cron, logger } from '@badvlasim/shared';
 import { schedule, ScheduledTask } from 'node-cron';
 
 export abstract class CronJob {
-  private _cronJob: ScheduledTask;
+  protected _cronJob: ScheduledTask;
 
   constructor(public dbCron: Cron) {
     this._cronJob = schedule(
@@ -21,7 +21,7 @@ export abstract class CronJob {
     logger.info(`Cron job ${this.dbCron.type} is running`);
   }
 
-  abstract run(): Promise<void>;
+  abstract run(args?: any): Promise<void>;
 
   async postRun() {
     this.dbCron.lastRun = new Date();
@@ -30,18 +30,18 @@ export abstract class CronJob {
   }
 
   async start() {
-    // this.cronJob.start();
-    // this.dbCron.running = true;
-    // await this.dbCron.save();
+    this._cronJob.start();
+    this.dbCron.running = true;
+    await this.dbCron.save();
+  }
 
-    // TODO: revert
-    this.run();
+  async single(args?: any) {
+    this.run(args);
   }
 
   async stop() {
-    // this.dbCron.running = false;
-    // await this.dbCron.save();
-
+    this.dbCron.running = false;
+    await this.dbCron.save();
     this._cronJob.stop();
   }
 

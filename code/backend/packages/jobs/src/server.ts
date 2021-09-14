@@ -2,13 +2,15 @@
 import dotenv from 'dotenv';
 dotenv.config();
 // First config
-import { App, AuthenticationSercice, startWhenReady } from '@badvlasim/shared';
+import { App, AuthenticationSercice, logger, startWhenReady } from '@badvlasim/shared';
 import { Router } from 'express';
 import { JobController } from './controllers';
 
 (async () => {
+  logger.info('Starting server...');
   await startWhenReady(false, false, _ => {
     startServer();
+    logger.info('Server started!');
   });
 })();
 

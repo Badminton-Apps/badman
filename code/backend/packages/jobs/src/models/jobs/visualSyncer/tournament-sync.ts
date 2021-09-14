@@ -1,5 +1,5 @@
 import { parse } from 'fast-xml-parser';
-import got from 'got';
+import axios from 'axios';
 import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
 import {
@@ -72,18 +72,21 @@ export class TournamentSyncer {
             dates.push(date.clone());
           }
 
-          const resultTournament = await got.get(
-            `${process.env.VR_API}/${args.xmlTournament.Code}`,
+          const resultTournament = await axios.get(
+            `${process.env.VR_API}/Tournament/${args.xmlTournament.Code}`,
             {
-              username: `${process.env.VR_API_USER}`,
-              password: `${process.env.VR_API_PASS}`,
+              withCredentials: true,
+              auth: {
+                username: `${process.env.VR_API_USER}`,
+                password: `${process.env.VR_API_PASS}`
+              },
               headers: {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 'Content-Type': 'application/xml'
               }
             }
           );
-          const bodyTournament = parse(resultTournament.body, {
+          const bodyTournament = parse(resultTournament.data, {
             attributeNamePrefix: '',
             ignoreAttributes: false,
             parseAttributeValue: true
@@ -127,16 +130,19 @@ export class TournamentSyncer {
       }
 
       const subEvents = await event.getSubEvents({ transaction: args.transaction });
-      const resultEvent = await got.get(`${process.env.VR_API}/${internalId}/Event`, {
-        username: `${process.env.VR_API_USER}`,
-        password: `${process.env.VR_API_PASS}`,
+      const resultEvent = await axios.get(`${process.env.VR_API}/Tournament/${internalId}/Event`, {
+        withCredentials: true,
+        auth: {
+          username: `${process.env.VR_API_USER}`,
+          password: `${process.env.VR_API_PASS}`
+        },
         headers: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           'Content-Type': 'application/xml'
         }
       });
 
-      const bodyEvent = parse(resultEvent.body, {
+      const bodyEvent = parse(resultEvent.data, {
         attributeNamePrefix: '',
         ignoreAttributes: false,
         parseAttributeValue: true
@@ -203,18 +209,21 @@ export class TournamentSyncer {
         for (const { subEvent, internalId } of subEvents) {
           const draws = await subEvent.getDraws({ transaction: args.transaction });
 
-          const resultDraw = await got.get(
-            `${process.env.VR_API}/${args.tourneyKey}/Event/${internalId}/Draw`,
+          const resultDraw = await axios.get(
+            `${process.env.VR_API}/Tournament/${args.tourneyKey}/Event/${internalId}/Draw`,
             {
-              username: `${process.env.VR_API_USER}`,
-              password: `${process.env.VR_API_PASS}`,
+              withCredentials: true,
+              auth: {
+                username: `${process.env.VR_API_USER}`,
+                password: `${process.env.VR_API_PASS}`
+              },
               headers: {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 'Content-Type': 'application/xml'
               }
             }
           );
-          const bodyDraw = parse(resultDraw.body, {
+          const bodyDraw = parse(resultDraw.data, {
             attributeNamePrefix: '',
             ignoreAttributes: false,
             parseAttributeValue: true
@@ -266,15 +275,21 @@ export class TournamentSyncer {
       this.STEP_PLAYER,
       async (args: { transaction: Transaction; tourneyKey: string }) => {
         const mapPlayers = new Map<string, Player>();
-        const resultPlayer = await got.get(`${process.env.VR_API}/${args.tourneyKey}/Player`, {
-          username: `${process.env.VR_API_USER}`,
-          password: `${process.env.VR_API_PASS}`,
-          headers: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            'Content-Type': 'application/xml'
+        const resultPlayer = await axios.get(
+          `${process.env.VR_API}/Tournament/${args.tourneyKey}/Player`,
+          {
+            withCredentials: true,
+            auth: {
+              username: `${process.env.VR_API_USER}`,
+              password: `${process.env.VR_API_PASS}`
+            },
+            headers: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              'Content-Type': 'application/xml'
+            }
           }
-        });
-        const bodyPlayer = parse(resultPlayer.body, {
+        );
+        const bodyPlayer = parse(resultPlayer.data, {
           attributeNamePrefix: '',
           ignoreAttributes: false,
           parseAttributeValue: true
@@ -348,18 +363,21 @@ export class TournamentSyncer {
           const dbXmlGames: Game[] = [];
           const games = await draw.getGames({ transaction: args.transaction, include: [Player] });
           const subEvent = subevents.find(sub => draw.subeventId === sub.subEvent.id).subEvent;
-          const resultDraw = await got.get(
-            `${process.env.VR_API}/${args.tourneyKey}/Draw/${internalId}/Match`,
+          const resultDraw = await axios.get(
+            `${process.env.VR_API}/Tournament/${args.tourneyKey}/Draw/${internalId}/Match`,
             {
-              username: `${process.env.VR_API_USER}`,
-              password: `${process.env.VR_API_PASS}`,
+              withCredentials: true,
+              auth: {
+                username: `${process.env.VR_API_USER}`,
+                password: `${process.env.VR_API_PASS}`
+              },
               headers: {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 'Content-Type': 'application/xml'
               }
             }
           );
-          const bodyDraw = parse(resultDraw.body, {
+          const bodyDraw = parse(resultDraw.data, {
             attributeNamePrefix: '',
             ignoreAttributes: false,
             parseAttributeValue: true

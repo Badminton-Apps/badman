@@ -1,8 +1,10 @@
 import { NotificationService } from '@badvlasim/shared';
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import {
-  addChangeEncounterMutation, addClubMutation,
-  addCommentMutation, addEventCompetitionMutation,
+  addChangeEncounterMutation,
+  addClubMutation,
+  addCommentMutation,
+  addEventCompetitionMutation,
   addEventTournamentMutation,
   addLocationMutation,
   addPlayerMutation,
@@ -13,10 +15,17 @@ import {
   addRankingSystemMutation,
   addRoleMutation,
   addTeamMutation,
-  deleteImportedEventMutation, removeClubMutation, removeLocationMutation,
-  removePlayerFromRoleMutation, removePlayerFromTeamMutation, removeRoleMutation, removeTeamMutation,
+  deleteImportedEventMutation,
+  removeClubMutation,
+  removeLocationMutation,
+  removePlayerFromRoleMutation,
+  removePlayerFromTeamMutation,
+  removeRoleMutation,
+  removeTeamMutation,
   setGroupsCompetitionMutation,
-  updateClubMutation, updateCommentMutation, updateEventCompetitionMutation,
+  updateClubMutation,
+  updateCommentMutation,
+  updateEventCompetitionMutation,
   updateEventTournamentMutation,
   updateGlobalClaimUserMutation,
   updateLocationMutation,
@@ -25,7 +34,11 @@ import {
   updateRankingSystemGroupMutation,
   updateRankingSystemMutation,
   updateRoleMutation,
-  updateSubEventTeamMutation, updateTeamLocationMutation, updateTeamMutation,
+  updateSubEventTeamMutation,
+  updateTeamLocationMutation,
+  addPlayerBaseSubEventMutation,
+  removePlayerBaseSubEventMutation,
+  updateTeamMutation,
   updateTournamentEventLocationMutation
 } from './mutations';
 import { updatePlayerRankingMutation } from './mutations/player.mutations';
@@ -95,7 +108,7 @@ export const createSchema = (notificationService: NotificationService) => {
         addLocation: addLocationMutation,
         addPlayer: addPlayerMutation,
         addPlayerToClub: addPlayerToClubMutation,
-        addPlayerToRole: addPlayerToRoleMutation, 
+        addPlayerToRole: addPlayerToRoleMutation,
         addPlayerToTeam: addPlayerToTeamMutation,
         addRankingSystem: addRankingSystemMutation,
         addRankingSystemGroup: addRankingSystemGroupMutation,
@@ -125,7 +138,9 @@ export const createSchema = (notificationService: NotificationService) => {
         updateSubEventTeam: updateSubEventTeamMutation,
         updateTeam: updateTeamMutation,
         updateTeamLocation: updateTeamLocationMutation,
-        updateTournamentEventLocation: updateTournamentEventLocationMutation
+        updateTournamentEventLocation: updateTournamentEventLocationMutation,
+        addPlayerBaseSubEvent: addPlayerBaseSubEventMutation,
+        removePlayerBaseSubEvent: removePlayerBaseSubEventMutation,
       })
     })
   });

@@ -30,9 +30,11 @@ const logLikeFormat = (maxArgLength?: number) => {
         lastMessageText = message;
       }
 
-      info[Symbol.for('message')] = `${moment(ts).format('LTS')}${label ? `[${label}]` : ''
-        } ${level}: ${message} ${strArgs ? `\n${strArgs}` : ''} ${stack ? `\n${stack}` : ''
-        }`;
+      info[Symbol.for('message')] = `${moment(ts).format('LTS')}${
+        label ? `[${label}]` : ''
+      } ${level}: ${message} ${strArgs ? `\n${strArgs}` : ''} ${
+        stack ? `\n${stack}` : ''
+      }`;
       return info;
     }
   };
@@ -77,15 +79,14 @@ if (process.env.LOG_LEVEL === 'None') {
     })
   );
 
-
-  const outputFormat = process.env.NODE_ENV === 'production' ?
-    ecsFormat({
-      apmIntegration: true,
-      convertReqRes: true,
-      convertErr: true
-    }) :
-    combine(colorize(), timestamp(), logLikeFormat(1000));
-
+  const outputFormat =
+    process.env.NODE_ENV === 'production'
+      ? ecsFormat({
+          apmIntegration: true,
+          convertReqRes: true,
+          convertErr: true
+        })
+      : combine(colorize(), timestamp(), logLikeFormat(1000));
 
   tr.push(
     new transports.Console({
@@ -99,6 +100,5 @@ const logger = createLogger({
   format: combine(errors({ stack: true }), timestamp(), align()),
   transports: tr
 });
-
 
 export { logger };

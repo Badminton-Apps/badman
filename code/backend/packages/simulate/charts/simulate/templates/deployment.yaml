@@ -14,6 +14,8 @@ spec:
       app: {{ template "fullname" . }}
   template:
     metadata:
+      annotations:
+        co.elastic.logs/enabled: "true"    
       labels:
         app: {{ template "fullname" . }}
     spec:
@@ -89,7 +91,7 @@ spec:
           - name: AUTH0_ISSUER
             value: {{ .Values.auth0.issuer }}
           - name: LOG_LEVEL
-            value: info
+            value: debug
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:

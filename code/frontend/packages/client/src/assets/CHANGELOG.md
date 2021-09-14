@@ -1,3 +1,128 @@
+## [3.52.7](https://github.com/Badminton-Apps/core/compare/v3.52.6...v3.52.7) (2021-09-13)
+
+
+### Bug Fixes
+
+* argument for job (defaulting: today) ([a6b5919](https://github.com/Badminton-Apps/core/commit/a6b59199258469df807fe99e9376b2905c67fe8f))
+
+
+
+## [3.52.6](https://github.com/Badminton-Apps/core/compare/v3.52.5...v3.52.6) (2021-09-13)
+
+
+### Bug Fixes
+
+* null value in chart ([be0ffd6](https://github.com/Badminton-Apps/core/commit/be0ffd67cf9ce46e8aa274c9db3e6e76befec5ed))
+
+
+
+## [3.52.5](https://github.com/Badminton-Apps/core/compare/v3.52.4...v3.52.5) (2021-09-13)
+
+
+### Bug Fixes
+
+* ranking places update ([7f528c3](https://github.com/Badminton-Apps/core/commit/7f528c3c100cbe91a6679b6e7fadfd880c401671))
+
+
+
+## [3.52.4](https://github.com/Badminton-Apps/core/compare/v3.52.3...v3.52.4) (2021-09-12)
+
+
+
+## [3.52.3](https://github.com/Badminton-Apps/core/compare/v3.52.2...v3.52.3) (2021-09-12)
+
+
+### Bug Fixes
+
+* assembly not loading ([2befc7a](https://github.com/Badminton-Apps/core/commit/2befc7a41f729732cef5e0cdf2698df86eba2d88))
+* base players assembly form ([c31b690](https://github.com/Badminton-Apps/core/commit/c31b6902255696d2f5fb71b4cc221cb48b19feb3))
+* chart location ([fcd2ad6](https://github.com/Badminton-Apps/core/commit/fcd2ad6dd89f98507e474f9f475355818e263496))
+
+
+
+## [3.52.2](https://github.com/Badminton-Apps/core/compare/v3.52.1...v3.52.2) (2021-09-12)
+
+
+
+## [3.52.1](https://github.com/Badminton-Apps/core/compare/v3.52.0...v3.52.1) (2021-09-12)
+
+
+
+# [3.52.0](https://github.com/Badminton-Apps/core/compare/v3.51.10...v3.52.0) (2021-09-12)
+
+
+### Bug Fixes
+
+* hide competition block when not logged in ([b96f3e9](https://github.com/Badminton-Apps/core/commit/b96f3e90f06e98a326a2c3c0db21cbc6821d7951))
+* no port needed for endpoint ([e549022](https://github.com/Badminton-Apps/core/commit/e5490221cb192b8f1b52e303035fffcace49a902))
+* saving ranking system ([740a271](https://github.com/Badminton-Apps/core/commit/740a2717e7adcfee7d64f33a56d1b7cde1a50613))
+* switch got to axios (issues with visual api) ([b6fd69a](https://github.com/Badminton-Apps/core/commit/b6fd69a4e0ffeb40320bbc2f193eece3513962f6))
+* teams not visible in team assembly ([19fcecf](https://github.com/Badminton-Apps/core/commit/19fcecfe0266d2dd0fff3e9c90d99bdfa286ca04))
+* Temporary disabling (certificate issues) ([97579b1](https://github.com/Badminton-Apps/core/commit/97579b1923143053df0254aefa2f7cc7137f4031))
+
+
+### Features
+
+* Admin can change base teams ([50ddde0](https://github.com/Badminton-Apps/core/commit/50ddde0a20fd6b3cd58eba067dcc4d193c211d91))
+* Change competition status ([bde694f](https://github.com/Badminton-Apps/core/commit/bde694f572a568230ce7e1f8893fbd06fd80c592))
+* Visual ranking sync job (WIP) ([c1ed8b3](https://github.com/Badminton-Apps/core/commit/c1ed8b3f4dfea9301cadc096d085c17aede84a28))
+
+
+
+## [3.51.10](https://github.com/Badminton-Apps/core/compare/v3.51.9...v3.51.10) (2021-09-10)
+
+
+
+## [3.51.9](https://github.com/Badminton-Apps/core/compare/v3.51.8...v3.51.9) (2021-09-10)
+
+
+### Bug Fixes
+
+* adding log output for filebeat ([442c1ac](https://github.com/Badminton-Apps/core/commit/442c1ac380f877151aecbde214a205902131ef8c))
+* omitting name from logs ([256e056](https://github.com/Badminton-Apps/core/commit/256e056b11df0f1a867b0b13c5d08f8f0b817307))
+
+
+
+## [3.51.8](https://github.com/Badminton-Apps/core/compare/v3.51.7...v3.51.8) (2021-09-10)
+
+
+### Bug Fixes
+
+* switching logging config to kubectl ([076e1d3](https://github.com/Badminton-Apps/core/commit/076e1d304039716b3fb7c3248231f9346d69bcfc))
+
+
+
+## [3.51.7](https://github.com/Badminton-Apps/core/compare/v3.51.6...v3.51.7) (2021-09-10)
+
+
+### Bug Fixes
+
+* values should be escaped ([56cab1d](https://github.com/Badminton-Apps/core/commit/56cab1d1b16a14355fd7bbaaa2ce528187446e4f))
+
+
+
+## [3.51.6](https://github.com/Badminton-Apps/core/compare/v3.51.5...v3.51.6) (2021-09-10)
+
+
+### Bug Fixes
+
+* hardcodign ([40b611c](https://github.com/Badminton-Apps/core/commit/40b611c0ce2eb53813f999d695e2a7c713c2ea04))
+
+
+
+## [3.51.5](https://github.com/Badminton-Apps/core/compare/v3.51.4...v3.51.5) (2021-09-10)
+
+
+
+## [3.51.4](https://github.com/Badminton-Apps/core/compare/v3.51.3...v3.51.4) (2021-09-08)
+
+
+### Bug Fixes
+
+* apm server is needed ([7926d2c](https://github.com/Badminton-Apps/core/commit/7926d2c6beb00097549cecb5c45a025f573db3fa))
+
+
+
 ## [3.51.3](https://github.com/Badminton-Apps/core/compare/v3.51.1...v3.51.3) (2021-09-08)
 
 
