@@ -182,7 +182,10 @@ So you need to copy it to badvla namespace
 
 ```
 kubectl get secret elastic-apm-apm-token -n elastic -o go-template='{{index .data "secret-token" | base64decode}}'
-kubectl create secret generic apm --from-literal=token=<password> -n badvla
+kubectl delete secret apm -n badvla
+kubectl create secret generic apm -n badvla --from-literal=token=<password> 
+
+kubectl create secret generic apm -n badvla --from-literal=token=<password> 
 ```
 
 
