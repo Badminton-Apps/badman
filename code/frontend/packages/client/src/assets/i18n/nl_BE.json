@@ -219,7 +219,8 @@
         "streetnumber": "Huisnummer",
         "city": "Stad",
         "postalcode": "Postcode",
-        "state": "Provincie"
+        "state": "Provincie",
+        "competitionplayer": "Competitie speler"
     },
     "button": {
         "close": "Sluiten",

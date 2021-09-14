@@ -46,13 +46,6 @@ export class ImportController extends BaseController {
       this._upload.array('upload'),
       this._setRanking
     );
-    this.router.post(
-      `${this._path}/file`,
-      this._authMiddleware,
-      this._upload.array('upload'),
-      this._import
-    );
-    this.router.put(`${this._path}/start/:id/:eventId?`, this._authMiddleware, this._startImport);
   }
 
   private _setRanking = async (request: AuthenticatedRequest, response: Response) => {
@@ -68,7 +61,7 @@ export class ImportController extends BaseController {
 
         const csv = readFileSync(fileLocation, 'utf8');
         const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true });
-        
+
         const data = new Map();
         stream.on('data', row => {
           // if (row.TypeName === 'Competitiespeler') {
@@ -118,6 +111,7 @@ export class ImportController extends BaseController {
       response.render('error', { error: e });
     }
   };
+
   private _import = async (request: AuthenticatedRequest, response: Response) => {
     if (!request.user.hasAnyPermission(['import:competition', 'import:tournament'])) {
       response.status(401).send('No no no!!');
@@ -280,7 +274,8 @@ export class ImportController extends BaseController {
     await RankingPlace.bulkCreate(newPlaces, {
       transaction,
       updateOnDuplicate: ['single', 'double', 'mix', 'rankingDate'],
-      returning: false
+      returning: false,
+      hooks: false
     });
   }
 
@@ -305,16 +300,35 @@ export class ImportController extends BaseController {
             single,
             double,
             mix,
-            rankingDate: date
+            rankingDate: date,
+            totalWithinDoubleLevel: -1,
+            totalWithinMixLevel: -1,
+            totalWithinSingleLevel: -1,
+            totalSingleRanking: -1,
+            totalDoubleRanking: -1,
+            totalMixRanking: -1,
+            doubleRank: -1,
+            singleRank: -1,
+            mixRank: -1,
+            singlePointsDowngrade: -1,
+            mixPointsDowngrade: -1,
+            doublePointsDowngrade: -1,
+            singlePoints: -1,
+            mixPoints: -1,
+            doublePoints: -1,
+            singleInactive: false,
+            doubleInactive: false,
+            mixInactive: false
           }).toJSON();
         }
       }
     });
 
-    await RankingPlace.bulkCreate(newPlaces, {
+    await LastRankingPlace.bulkCreate(newPlaces, {
       transaction,
       updateOnDuplicate: ['single', 'double', 'mix', 'rankingDate'],
-      returning: false
+      returning: false,
+      hooks: false
     });
   }
 

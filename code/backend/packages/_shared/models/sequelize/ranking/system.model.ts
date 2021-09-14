@@ -135,7 +135,7 @@ export class RankingSystem extends Model {
     };
   }
 
-  @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB'))
+  @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
   rankingSystem: RankingSystems;
 
   @Column

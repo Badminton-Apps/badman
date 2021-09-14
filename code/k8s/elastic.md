@@ -129,7 +129,7 @@ spec:
   elasticsearchRef:
     name: elastic-search
   kibanaRef:
-    name: elastic-kibana   
+    name: elastic-kibana
   config:
     filebeat.autodiscover:
       providers:

@@ -87,12 +87,12 @@ export const updateRankingSystemMutation = {
       });
 
       // Destroy existing
-      await GroupSystems.destroy({ where: { SystemId: rankingSystem.id }, transaction });
+      await GroupSystems.destroy({ where: { systemId: rankingSystem.id }, transaction });
       // Create new
       await GroupSystems.bulkCreate(
         rankingSystem.groups?.map(g => {
           return {
-            SystemId: rankingSystem.id,
+            systemId: rankingSystem.id,
             groupId: g.id
           };
         }),

@@ -1,6 +1,6 @@
 import { Cron, DataBaseHandler, logger, XmlResult, XmlTournamentTypeID } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
-import got from 'got';
+import axios from 'axios';
 import moment, { Moment } from 'moment';
 import { CronJob } from '../cronJob';
 import { CompetitionSyncer } from './visualSyncer/competition-sync';
@@ -10,7 +10,9 @@ export class GetScoresVisual extends CronJob {
   private _pageSize = 1000;
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
-  private _meta: any;
+  private _meta: {
+    lastRun: Date
+  };
 
   constructor(cron: Cron) {
     super(cron);
@@ -20,16 +22,15 @@ export class GetScoresVisual extends CronJob {
     this._tournamentSync = new TournamentSyncer();
   }
 
-  async run(): Promise<void> {
-    logger.info('Started sync of Visual scores');
-    const newDate = moment('2012-01-01');
+  async run(args?: { date: Date }): Promise<void> {
+    const newDate = moment(args?.date ?? this._meta.lastRun ?? null);
+    logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
     let newEvents = await this._getChangeEvents(newDate);
 
-    newEvents = newEvents.sort((a, b) => { 
+    newEvents = newEvents.sort((a, b) => {
       return moment(b.StartDate).diff(a.StartDate);
-    }); 
+    });
 
- 
     for (const xmlTournament of newEvents) {
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
       try {
@@ -39,12 +40,11 @@ export class GetScoresVisual extends CronJob {
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
           xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
         ) {
-          if (moment(xmlTournament.StartDate).isBefore(moment('2021-08-01'))) {
-            await this._competitionSync.process({ transaction, xmlTournament });
-          }
+          await this._competitionSync.process({ transaction, xmlTournament });
         } else {
           await this._tournamentSync.process({ transaction, xmlTournament });
         }
+        this.dbCron.save({transaction});
         await transaction.commit();
       } catch (e) {
         logger.error('Rollback', e);
@@ -57,23 +57,26 @@ export class GetScoresVisual extends CronJob {
   }
 
   private async _getChangeEvents(date: Moment, page: number = 0) {
-    const url = `${process.env.VR_API}?list=1&refdate=${date.format('YYYY-MM-DD')}&pagesize=${
-      this._pageSize
-    }&pageno=${page}`;
-    const result = await got.get(url, {
-      username: `${process.env.VR_API_USER}`,
-      password: `${process.env.VR_API_PASS}`,
+    const url = `${process.env.VR_API}/Tournament?list=1&refdate=${date.format(
+      'YYYY-MM-DD'
+    )}&pagesize=${this._pageSize}&pageno=${page}`;
+    const result = await axios.get(url, {
+      withCredentials: true,
+      auth: {
+        username: `${process.env.VR_API_USER}`,
+        password: `${process.env.VR_API_PASS}`
+      },
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/xml'
       }
     });
 
-    if (result.statusCode !== 200) {
-      throw new Error(`Cannot get changed tournaments: ${result.statusCode}`);
+    if (result.status !== 200) {
+      throw new Error(`Cannot get changed tournaments: ${result.status}`);
     }
 
-    const body = parse(result.body, {
+    const body = parse(result.data, {
       attributeNamePrefix: '',
       ignoreAttributes: false,
       parseAttributeValue: true
