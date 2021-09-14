@@ -1,0 +1,14 @@
+query GetCompYearsQuery($id: ID!) {
+  club(id: $id) {
+    teams {
+      name
+      clubId
+      subEvents {
+        id
+        event {
+          startYear
+        }
+      }
+    }
+  }
+}

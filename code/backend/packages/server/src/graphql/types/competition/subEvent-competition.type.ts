@@ -1,5 +1,5 @@
 import { TeamType } from './../team.type';
-import { SubEventCompetition, TeamSubEventMembership } from '@badvlasim/shared/models';
+import { SubEventCompetition, Player } from '@badvlasim/shared/models';
 import {
   GraphQLBoolean,
   GraphQLInputObjectType,
@@ -14,6 +14,7 @@ import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
 import { DrawCompetitionType } from './draw-competition.type';
 import { EventCompetitionType } from './event-competition.type';
 import { queryFixer } from '../../queryFixer';
+import { PlayerType } from '..';
 
 const SubEventCompetitionType = new GraphQLObjectType({
   name: 'SubEventCompetition',
@@ -54,7 +55,7 @@ const SubEventCompetitionType = new GraphQLObjectType({
           })
         },
         teams: {
-          type: new GraphQLList(SubEventCompetitionType),
+          type: new GraphQLList(TeamType),
           args: Object.assign(defaultListArgs(), {}),
           resolve: resolver(SubEventCompetition.associations.teams, {
             before: async (findOptions, args, context, info) => {
@@ -100,16 +101,22 @@ const teamSubEventMeta = new GraphQLObjectType({
           name: 'TeamMetaPlayers',
           description: 'Team meta Players',
           fields: () => ({
-            playerId: {
+            player: {
+              type: PlayerType,
+              resolve: async (...args)=>  {
+                 return Player.findByPk(args[0].id);
+              }
+            },
+            id: {
               type: GraphQLString
             },
-            playerSingleIndex: {
+            single: {
               type: GraphQLInt
             },
-            playerDoubleIndex: {
+            double: {
               type: GraphQLInt
             },
-            playerMixIndex: {
+            mix: {
               type: GraphQLInt
             }
           })

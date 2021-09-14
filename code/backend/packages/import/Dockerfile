@@ -55,4 +55,4 @@ RUN apk --no-cache add --virtual native-deps \
 
 EXPOSE 4000
 
-CMD ["lerna", "run", "start", "--scope=@badvlasim/import", "--stream"]
+CMD ["lerna", "run", "start", "--scope=@badvlasim/import", "--stream", "--no-prefix"]
