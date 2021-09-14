@@ -1,3 +1,13 @@
+# [3.53.0](https://github.com/Badminton-Apps/core/compare/v3.52.9...v3.53.0) (2021-09-14)
+
+
+### Features
+
+* adds (sorry) ([340df96](https://github.com/Badminton-Apps/core/commit/340df9669c98c4f9837c45ddfed36fbd22d5872a))
+* re-enabling apm ( cert is fixed) ([51ef973](https://github.com/Badminton-Apps/core/commit/51ef9733b9df6ab2559412afa68de66561a8a39f))
+
+
+
 ## [3.52.9](https://github.com/Badminton-Apps/core/compare/v3.52.7...v3.52.9) (2021-09-14)
 
 
