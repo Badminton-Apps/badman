@@ -21,8 +21,10 @@ export class GetScoresVisual extends CronJob {
   }
 
   async run(args?: { date: Date }): Promise<void> {
-    const newDate = moment(args?.date ?? null);
+    // Use argument date, else stored date, finally use today
+    const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
     logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
+    
     let newEvents = await this._getChangeEvents(newDate);
 
     newEvents = newEvents.sort((a, b) => {

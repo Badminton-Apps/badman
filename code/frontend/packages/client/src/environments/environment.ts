@@ -6,8 +6,11 @@ export const environment = {
   production: false,
   api: 'http://localhost:5000/api',
   apiVersion: 'v1',
-  apmServer: 'https://apm.badman.app'
-
+  apmServer: 'https://apm.badman.app',
+  adsense: {
+    adClient: 'ca-pub-2426855871474715',
+    show: true
+  }
 };
 
 /*

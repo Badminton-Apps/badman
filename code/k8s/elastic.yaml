@@ -92,15 +92,17 @@ spec:
             namespace: badvla
             node: ${NODE_NAME}
             templates:
-              - config:
+              - condition:
+                  not.contains.container.name: controller
+                config:
                   - type: container
-                    co.elastic.logs/json.keys_under_root: true
-                    co.elastic.logs/json.overwrite_keys: true
-                    co.elastic.logs/json.add_error_key: true
-                    co.elastic.logs/json.expand_keys: true
-                    include_lines: ['^{']
+                    json.keys_under_root: true
+                    json.overwrite_keys: true
+                    json.add_error_key: true
+                    json.expand_keys: true
+                    json.message_key: message
                     paths:
-                      - /var/log/containers/*-${data.container.id}.log
+                      - /var/log/containers/*${data.kubernetes.container.id}.log
     processors:
       - add_host_metadata: {}
   daemonSet:

@@ -1,3 +1,64 @@
+## [3.53.5](https://github.com/Badminton-Apps/core/compare/v3.53.4...v3.53.5) (2021-09-14)
+
+
+
+## [3.53.4](https://github.com/Badminton-Apps/core/compare/v3.53.3...v3.53.4) (2021-09-14)
+
+
+### Bug Fixes
+
+* setting max height ([fb20723](https://github.com/Badminton-Apps/core/commit/fb207236d2674c064efd670c130b89b6876a4d34))
+
+
+
+## [3.53.3](https://github.com/Badminton-Apps/core/compare/v3.53.2...v3.53.3) (2021-09-14)
+
+
+### Bug Fixes
+
+* making ad a little bid smaller ([f0343ec](https://github.com/Badminton-Apps/core/commit/f0343ec7cb197aea68abdd898099aa2fac0a140a))
+
+
+
+## [3.53.2](https://github.com/Badminton-Apps/core/compare/v3.53.0...v3.53.2) (2021-09-14)
+
+
+### Bug Fixes
+
+* ads.txt ([62f288c](https://github.com/Badminton-Apps/core/commit/62f288c3d47f98788b355bbe9a13ac4ec604a3b9))
+* environment ([4406fe9](https://github.com/Badminton-Apps/core/commit/4406fe97100cbcdf710aefba012bcd02176543d4))
+* log by level ([8a30909](https://github.com/Badminton-Apps/core/commit/8a30909bdc79084b13b4bf6802d9fa12ec6752a3))
+
+
+
+# [3.53.0](https://github.com/Badminton-Apps/core/compare/v3.52.9...v3.53.0) (2021-09-14)
+
+
+### Features
+
+* adds (sorry) ([340df96](https://github.com/Badminton-Apps/core/commit/340df9669c98c4f9837c45ddfed36fbd22d5872a))
+* re-enabling apm ( cert is fixed) ([51ef973](https://github.com/Badminton-Apps/core/commit/51ef9733b9df6ab2559412afa68de66561a8a39f))
+
+
+
+## [3.52.9](https://github.com/Badminton-Apps/core/compare/v3.52.7...v3.52.9) (2021-09-14)
+
+
+### Bug Fixes
+
+* storing last run in DB ([ec5127d](https://github.com/Badminton-Apps/core/commit/ec5127d7dea6c7945987761b583c4a322a117947))
+
+
+
+## [3.52.7](https://github.com/Badminton-Apps/core/compare/v3.52.6...v3.52.7) (2021-09-13)
+
+
+### Bug Fixes
+
+* argument for job (defaulting: today) ([a6b5919](https://github.com/Badminton-Apps/core/commit/a6b59199258469df807fe99e9376b2905c67fe8f))
+
+
+
 ## [3.52.6](https://github.com/Badminton-Apps/core/compare/v3.52.5...v3.52.6) (2021-09-13)
 
 
