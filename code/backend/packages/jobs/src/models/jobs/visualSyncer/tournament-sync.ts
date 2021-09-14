@@ -62,7 +62,7 @@ export class TournamentSyncer {
         let existed = true;
 
         if (!event) {
-          existed = false;
+          existed = false; 
           const dates: Moment[] = [];
           for (
             let date = moment(args.xmlTournament.StartDate);
