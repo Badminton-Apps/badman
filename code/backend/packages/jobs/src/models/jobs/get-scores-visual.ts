@@ -10,9 +10,7 @@ export class GetScoresVisual extends CronJob {
   private _pageSize = 1000;
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
-  private _meta: {
-    lastRun: Date
-  };
+  private _meta: any;
 
   constructor(cron: Cron) {
     super(cron);
@@ -23,8 +21,10 @@ export class GetScoresVisual extends CronJob {
   }
 
   async run(args?: { date: Date }): Promise<void> {
-    const newDate = moment(args?.date ?? this._meta.lastRun ?? null);
+    // Use argument date, else stored date, finally use today
+    const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
     logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
+    
     let newEvents = await this._getChangeEvents(newDate);
 
     newEvents = newEvents.sort((a, b) => {
@@ -44,7 +44,6 @@ export class GetScoresVisual extends CronJob {
         } else {
           await this._tournamentSync.process({ transaction, xmlTournament });
         }
-        this.dbCron.save({transaction});
         await transaction.commit();
       } catch (e) {
         logger.error('Rollback', e);
