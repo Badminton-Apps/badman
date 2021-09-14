@@ -1,3 +1,12 @@
+## [3.53.1](https://github.com/Badminton-Apps/core/compare/v3.53.0...v3.53.1) (2021-09-14)
+
+
+### Bug Fixes
+
+* environment ([4406fe9](https://github.com/Badminton-Apps/core/commit/4406fe97100cbcdf710aefba012bcd02176543d4))
+
+
+
 # [3.53.0](https://github.com/Badminton-Apps/core/compare/v3.52.9...v3.53.0) (2021-09-14)
 
 
