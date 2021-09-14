@@ -1,3 +1,12 @@
+## [3.53.6](https://github.com/Badminton-Apps/core/compare/v3.53.5...v3.53.6) (2021-09-14)
+
+
+### Bug Fixes
+
+* maybe port conflict? ([362bafa](https://github.com/Badminton-Apps/core/commit/362bafae1333dd7f285e2f15c8761d2c39c55e63))
+
+
+
 ## [3.53.5](https://github.com/Badminton-Apps/core/compare/v3.53.4...v3.53.5) (2021-09-14)
 
 
