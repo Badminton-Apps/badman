@@ -68,6 +68,7 @@ spec:
           periodSeconds: 30
           successThreshold: 1
           timeoutSeconds: 5
+        resources:
 {{ toYaml .Values.resources | indent 12 }}
         env:
           - name: production
