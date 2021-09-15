@@ -1,3 +1,5 @@
+import { version } from '../../package.json';
+
 export const environment = {
   production: true,
   api: './api',
@@ -6,5 +8,6 @@ export const environment = {
   adsense: {
     adClient: 'ca-pub-2426855871474715',
     show: true
-  }
+  },
+  version
 };
