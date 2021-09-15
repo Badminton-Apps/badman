@@ -24,6 +24,6 @@ COPY packages/jobs ./packages/jobs
 COPY lerna.json .
 RUN lerna bootstrap --scope=@badvlasim/job  --ci -- --production=false
 
-EXPOSE 4000
+EXPOSE 4002
 
 CMD ["lerna", "run", "start", "--scope=@badvlasim/job", "--stream", "--no-prefix"]
