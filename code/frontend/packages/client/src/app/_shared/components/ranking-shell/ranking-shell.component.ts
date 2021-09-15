@@ -5,6 +5,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { combineAll, filter, map, tap } from 'rxjs/operators';
 import { EventType, Player } from '../../models';
 import { DeviceService, EventService } from '../../services';
+import { version } from '../../../../../package.json';
 
 @Component({
   templateUrl: './ranking-shell.component.html',
@@ -14,6 +15,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
   private mobileQueryListener: () => void;
   profile$: Observable<Player>;
   canEnroll$: Observable<boolean>;
+  version: string = version;
 
   constructor(
     private user: UserService,
