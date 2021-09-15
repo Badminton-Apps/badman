@@ -58,12 +58,14 @@
             ],
             "styles": [
               "src/styles.scss",
-              "../../node_modules/prismjs/themes/prism-okaidia.css"
+              "../../node_modules/prismjs/themes/prism-okaidia.css",
+              "../../node_modules/cookieconsent/build/cookieconsent.min.css"
             ],
             "scripts": [
               "../../node_modules/prismjs/prism.js",
               "../../node_modules/prismjs/components/prism-markdown.min.js",
-              "../../node_modules/prismjs/components/prism-typescript.min.js"
+              "../../node_modules/prismjs/components/prism-typescript.min.js",
+              "../../node_modules/cookieconsent/build/cookieconsent.min.js"
             ],
             "allowedCommonJsDependencies": [
               "echarts",
