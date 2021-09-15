@@ -1,3 +1,19 @@
+# [3.54.0](https://github.com/Badminton-Apps/core/compare/v3.53.7...v3.54.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* adslot config ([f0e20b0](https://github.com/Badminton-Apps/core/commit/f0e20b0589a75668922321a1f63ca3d44ed59abb))
+* typo ([36614cd](https://github.com/Badminton-Apps/core/commit/36614cdb16ef30caf96ab893108d2032a7821530))
+
+
+### Features
+
+* cookies ([4b5dc2d](https://github.com/Badminton-Apps/core/commit/4b5dc2da834208b2840e530584d19542969d98fe))
+* version number ([8227803](https://github.com/Badminton-Apps/core/commit/822780371886e75eceb7987f5969c3e48b7abc3d))
+
+
+
 ## [3.53.7](https://github.com/Badminton-Apps/core/compare/v3.53.6...v3.53.7) (2021-09-14)
 
 
