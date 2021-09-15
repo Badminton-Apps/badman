@@ -6,8 +6,11 @@
       </button>
       <a href="./" class="app-name" *ngIf="!device.mobileQuery.matches">
         <h1>Badman</h1>
+        <small>v{{ version }}</small>
       </a>
     </div>
+    
+
     <div class="middle">
       <app-header-search (onSelectPlayer)="this.playerSearch($event)"></app-header-search>
     </div>
@@ -18,16 +21,24 @@
   </mat-toolbar>
 
   <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="device.mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #snav [mode]="device.mobileQuery.matches ? 'over' : 'side'"
-      [fixedInViewport]="device.mobileQuery.matches" [opened]="!device.mobileQuery.matches" fixedTopGap="56">
+    <mat-sidenav
+      #snav
+      [mode]="device.mobileQuery.matches ? 'over' : 'side'"
+      [fixedInViewport]="device.mobileQuery.matches"
+      [opened]="!device.mobileQuery.matches"
+      fixedTopGap="56"
+    >
       <mat-nav-list>
         <div class="pages">
           <a mat-list-item href="./" *ngIf="device.mobileQuery.matches">Badmann</a>
           <ng-container *ngIf="this.profile$ | async as profile">
             <a mat-list-item [routerLink]="['/player', profile.id]" routerLinkActive="active"> My games </a>
 
-            <a mat-list-item *ngIf="profile?.clubs && profile.clubs.length == 1"
-              [routerLink]="['/club', profile.clubs[0].id]">
+            <a
+              mat-list-item
+              *ngIf="profile?.clubs && profile.clubs.length == 1"
+              [routerLink]="['/club', profile.clubs[0].id]"
+            >
               My club
             </a>
 
@@ -59,7 +70,8 @@
                 </mat-expansion-panel-header>
                 <mat-nav-list *ngIf="profile?.clubs && profile.clubs.length == 1">
                   <a mat-list-item routerLink="/competition/team-assembly" routerLinkActive="active">
-                    {{ 'competition.team-assembly.title' | translate }}</a>
+                    {{ 'competition.team-assembly.title' | translate }}</a
+                  >
                 </mat-nav-list>
 
                 <app-has-claim [all]="['*_enlist:team', 'enlist-any:team']">
