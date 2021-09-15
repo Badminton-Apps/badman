@@ -62,8 +62,8 @@ spec:
     name: elastic-kibana
   config:
     apm-server:
-    rum:
-      enabled: true
+      rum:
+        enabled: true
   http:
     tls:
       selfSignedCertificate:
