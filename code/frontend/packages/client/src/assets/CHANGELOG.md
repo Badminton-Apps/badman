@@ -1,3 +1,29 @@
+## [3.53.7](https://github.com/Badminton-Apps/core/compare/v3.53.6...v3.53.7) (2021-09-14)
+
+
+
+## [3.53.6](https://github.com/Badminton-Apps/core/compare/v3.53.5...v3.53.6) (2021-09-14)
+
+
+### Bug Fixes
+
+* maybe port conflict? ([362bafa](https://github.com/Badminton-Apps/core/commit/362bafae1333dd7f285e2f15c8761d2c39c55e63))
+
+
+
+## [3.53.5](https://github.com/Badminton-Apps/core/compare/v3.53.4...v3.53.5) (2021-09-14)
+
+
+
+## [3.53.4](https://github.com/Badminton-Apps/core/compare/v3.53.3...v3.53.4) (2021-09-14)
+
+
+### Bug Fixes
+
+* setting max height ([fb20723](https://github.com/Badminton-Apps/core/commit/fb207236d2674c064efd670c130b89b6876a4d34))
+
+
+
 ## [3.53.3](https://github.com/Badminton-Apps/core/compare/v3.53.2...v3.53.3) (2021-09-14)
 
 
