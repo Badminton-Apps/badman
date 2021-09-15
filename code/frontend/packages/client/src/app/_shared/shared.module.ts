@@ -35,7 +35,6 @@ import { NewPlayerComponent } from './components/ranking-shell/components/new-pl
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
-import { MomentModule } from 'ngx-moment';
 import { BannerComponent } from './components/banner/banner.component';
 import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 
