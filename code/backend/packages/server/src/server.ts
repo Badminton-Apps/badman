@@ -55,6 +55,10 @@ const startServer = (databaseService: DataBaseHandler) => {
       {
         from: '/api/v1/simulate',
         to: `http://${process.env.SIMULATE_SERVICE}`
+      },
+      {
+        from: '/api/v1/job',
+        to: `http://${process.env.JOB_SERVICE}`
       }
     ]
   );
