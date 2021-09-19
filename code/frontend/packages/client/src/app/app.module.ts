@@ -24,7 +24,9 @@ import { GraphQLModule } from './graphql.module';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { SharedModule } from './_shared/shared.module';
 import { MomentModule } from 'ngx-moment';
-import { ApmErrorHandler, ApmModule, ApmService } from '@elastic/apm-rum-angular'
+import { ApmErrorHandler, ApmModule, ApmService } from '@elastic/apm-rum-angular';
+import { NgcCookieConsentModule, NgcCookieConsentConfig } from 'ngx-cookieconsent';
+import { CookieService } from 'ngx-cookie-service';
 
 const baseModules = [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule];
 const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule, MatSnackBarModule];
@@ -41,6 +43,35 @@ const translateModules = [
 
 const appModules = [SharedModule, GraphQLModule];
 
+const cookieConfig: NgcCookieConsentConfig = {
+  cookie: {
+    domain: 'badman.app',
+  },
+  position: 'bottom-left',
+  theme: 'classic',
+  palette: {
+    popup: {
+      background: '#000000',
+      text: '#ffffff',
+      link: '#ffffff',
+    },
+    button: {
+      background: '#f1d600',
+      text: '#000000',
+      border: 'transparent',
+    },
+  },
+  type: 'info',
+  content: {
+    message: 'This website uses cookies to ensure you get the best experience on our website.',
+    dismiss: 'Got it!',
+    deny: 'Refuse cookies',
+    link: 'Learn more',
+    href: 'https://badman.app/cookies',
+    policy: 'Cookie Policy',
+  },
+};
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -48,6 +79,7 @@ const appModules = [SharedModule, GraphQLModule];
     ...materialModules,
     ...appModules,
     ...translateModules,
+    NgcCookieConsentModule.forRoot(cookieConfig),
     ApmModule,
     MarkdownModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
@@ -59,10 +91,11 @@ const appModules = [SharedModule, GraphQLModule];
     }),
   ],
   providers: [
+    CookieService,
     ApmService,
     {
       provide: ErrorHandler,
-      useClass: ApmErrorHandler
+      useClass: ApmErrorHandler,
     },
     {
       provide: APP_INITIALIZER,
@@ -85,10 +118,9 @@ export class AppModule {
     apmService.init({
       serviceName: 'badman-client',
       serverUrl: environment.apmServer,
-      environment: environment.production ? 'production' : 'development'
-    })
+      environment: environment.production ? 'production' : 'development',
+    });
   }
-
 }
 
 // required for AOT compilation

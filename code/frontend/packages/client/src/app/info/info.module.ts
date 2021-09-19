@@ -7,26 +7,14 @@ import { ChangelogComponent } from './pages/changelog/changelog.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { CovalentDataTableModule } from '@covalent/core/data-table';
 import { CovalentPagingModule } from '@covalent/core/paging';
+import { CookiesComponent } from './pages/cookies/cookies.component';
 
+const covalentModules = [CovalentDataTableModule, CovalentPagingModule];
 
-const covalentModules = [
-  CovalentDataTableModule,
-  CovalentPagingModule,
-];
-
-const materialModules = [
-  MatExpansionModule,
-]
+const materialModules = [MatExpansionModule];
 
 @NgModule({
-  declarations: [ChangelogComponent, LandingComponent],
-  imports: [
-    SharedModule,
-    ...materialModules,
-    InfoRoutingModule,
-    ...covalentModules,
-
-    MarkdownModule.forChild(),
-  ],
+  declarations: [ChangelogComponent, LandingComponent, CookiesComponent],
+  imports: [SharedModule, ...materialModules, InfoRoutingModule, ...covalentModules, MarkdownModule.forChild()],
 })
 export class InfoModule {}
