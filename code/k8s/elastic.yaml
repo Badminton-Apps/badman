@@ -62,8 +62,8 @@ spec:
     name: elastic-kibana
   config:
     apm-server:
-    rum:
-      enabled: true
+      rum:
+        enabled: true
   http:
     tls:
       selfSignedCertificate:
@@ -93,7 +93,9 @@ spec:
             node: ${NODE_NAME}
             templates:
               - condition:
-                  not.contains.container.name: controller
+                  and: 
+                    - not.equals.kubernetes.container.name: "controller"
+                    - not.equals.kubernetes.container.name: "client"
                 config:
                   - type: container
                     json.keys_under_root: true

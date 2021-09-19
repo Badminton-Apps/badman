@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/client",
   "description": "Badman client",
-  "version": "3.53.7",
+  "version": "3.54.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -48,11 +48,14 @@
     "apollo-cache-inmemory": "~1.6.0",
     "apollo-client": "~2.6.0",
     "apollo-link": "~1.2.11",
+    "cookieconsent": "^3.1.1",
     "echarts": "~4.7.0",
     "graphql": "~15.0.0",
     "graphql-tag": "~2.11.0",
     "moment": "~2.29.1",
     "moment-timezone": "~0.5.31",
+    "ngx-cookie-service": "^12.0.3",
+    "ngx-cookieconsent": "^2.2.3",
     "ngx-infinite-scroll": "~10.0.1",
     "ngx-markdown": "~11.1.2",
     "regression": "~2.0.1",
