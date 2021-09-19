@@ -24,7 +24,8 @@
     "node-cron": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node-cron": "^2.0.4"
+    "@types/node-cron": "^2.0.4",
+    "mock-fs": "^5.1.0"
   },
   "peerDependencies": {
     "moment": "^2.24.0"
