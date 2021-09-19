@@ -17,7 +17,9 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin
 } from 'sequelize';
 import {
   BelongsToMany,
@@ -227,6 +229,11 @@ export class Player extends Model {
   hasRole!: BelongsToManyHasAssociationMixin<Role, string>;
   hasRoles!: BelongsToManyHasAssociationsMixin<Role, string>;
   countRole!: BelongsToManyCountAssociationsMixin;
+
+
+  // Has one LastRankingPlace
+  getLastRankingPlace!: HasOneGetAssociationMixin<LastRankingPlace>;
+  setLastRankingPlace!: HasOneSetAssociationMixin<LastRankingPlace, string>;
 
   async getUserClaims(): Promise<string[]> {
     let claims = (await this.getClaims()).map(r => r.name);
