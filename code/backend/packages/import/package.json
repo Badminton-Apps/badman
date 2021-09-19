@@ -61,5 +61,8 @@
       "lcov"
     ],
     "testLocationInResults": true
+  },
+  "devDependencies": {
+    "mock-fs": "^5.1.0"
   }
 }

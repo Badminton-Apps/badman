@@ -22,8 +22,8 @@ import moment from 'moment';
 
 export class PdfService {
   constructor(private _databaseService: DataBaseHandler) {
-     /* eslint-disable prefer-arrow/prefer-arrow-functions */
-     const reduceOp = function(args, reducer) {
+    /* eslint-disable prefer-arrow/prefer-arrow-functions */
+    const reduceOp = function(args, reducer) {
       args = Array.from(args);
       args.pop(); // => options
       const first = args.shift();
@@ -132,6 +132,12 @@ export class PdfService {
         }
       })
     )?.meta;
+
+    console.log({
+      teamId: input.teamId,
+      subEventId: encounter?.draw?.subEvent?.id
+    }, meta);
+
     const today = moment();
     const year = today.month() >= 6 ? today.year() : today.year() - 1;
     const players = await Player.findAll({
