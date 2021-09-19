@@ -35,8 +35,8 @@ import { NewPlayerComponent } from './components/ranking-shell/components/new-pl
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
-import { MomentModule } from 'ngx-moment';
 import { BannerComponent } from './components/banner/banner.component';
+import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -89,7 +89,7 @@ const exportedComponents = [
     NewPlayerComponent,
     UserInfoComponent,
   ],
-  imports: [CommonModule, RouterModule, TranslateModule.forChild(), ...materialModules],
+  imports: [CommonModule, RouterModule, NgcCookieConsentModule, TranslateModule.forChild(), ...materialModules],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
