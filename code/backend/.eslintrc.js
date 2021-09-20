@@ -62,6 +62,7 @@ module.exports = {
     '@typescript-eslint/tslint'
   ],
   rules: {
+    '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/adjacent-overload-signatures': 'error',
     '@typescript-eslint/array-type': [
       'error',

@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/dot-notation */
 import mock from 'mock-fs';
 import moment from 'moment';
 import path from 'path';
@@ -16,9 +18,9 @@ import {
   RankingPlace,
   LastRankingPlace
 } from '..';
-var Fakerator = require('fakerator');
+import fakerator from 'fakerator';
 
-const fake = Fakerator();
+const fake = fakerator();
 
 describe('PDF service', () => {
   let databaseService: DataBaseHandler;
@@ -436,5 +438,7 @@ describe('PDF service', () => {
       }),
       expect.anything()
     );
-  }, 30000000);
+  });
 });
+/* eslint-enable no-underscore-dangle*/
+/* eslint-enable @typescript-eslint/dot-notation */
