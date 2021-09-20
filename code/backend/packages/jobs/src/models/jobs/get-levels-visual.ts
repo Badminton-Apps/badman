@@ -18,6 +18,7 @@ export class GetRankingVisual extends CronJob {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       await this._levelSync.process({ transaction });
+      await transaction.commit();
     } catch (e) {
       logger.error('Rollback', e);
       await transaction.rollback();

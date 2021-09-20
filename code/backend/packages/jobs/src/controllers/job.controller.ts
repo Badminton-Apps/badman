@@ -19,7 +19,7 @@ export class JobController extends BaseController {
     this.router.post(`${this._path}/start`, this._authMiddleware, this._startJob);
     this.router.post(`${this._path}/stop`, this._authMiddleware, this._stopJob);
   }
-
+ 
   private async _initializeJobs() {
     // VisualSync
     const [scoresDb] = await Cron.findOrCreate({
