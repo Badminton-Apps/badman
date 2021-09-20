@@ -1,6 +1,7 @@
 import { Club } from 'app/_shared';
 import { Game } from './game.model';
 import { RankingPlace } from './ranking-place.model';
+import * as moment from 'moment';
 
 export class Player {
   id: string;
@@ -47,11 +48,33 @@ export class Player {
       this.lastRanking = this.rankingPlaces.sort((a, b) => a.rankingDate?.getTime() - b.rankingDate?.getTime())[0];
     }
   }
-  
-  calcIndex(type: string ) {
+
+  calcIndex(type: string) {
     return type == 'MX'
       ? (this.lastRanking?.single ?? 12) + (this.lastRanking?.double ?? 12) + (this.lastRanking?.mix ?? 12)
       : (this.lastRanking?.single ?? 12) + (this.lastRanking?.double ?? 12);
+  }
+
+  indexOfDate(type: string, date: Date) {
+    const ranking = this.rankingPlaces?.find((r) => moment(date).isSame(r?.rankingDate));
+
+    console.log({
+      name: this.fullName,
+      lastRanking: {
+        single: this.lastRanking?.single,
+        double: this.lastRanking?.double,
+        mix: this.lastRanking?.mix,
+      },
+      dateRanking: {
+        single: ranking?.single,
+        double: ranking?.double,
+        mix: ranking?.mix,
+      }
+    });
+
+    return type == 'MX'
+      ? (ranking?.single ?? 12) + (ranking?.double ?? 12) + (ranking?.mix ?? 12)
+      : (ranking?.single ?? 12) + (ranking?.double ?? 12);
   }
 
   get fullName() {

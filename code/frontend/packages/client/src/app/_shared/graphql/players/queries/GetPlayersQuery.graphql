@@ -1,4 +1,4 @@
-query GetPlayers($where: SequelizeJSON, $includeClub: Boolean!) {
+query GetPlayers($where: SequelizeJSON, $ranking: Date, $includeRanking: Boolean!, $includeClub: Boolean!) {
   players(where: $where) {
     id
     memberId
@@ -9,6 +9,12 @@ query GetPlayers($where: SequelizeJSON, $includeClub: Boolean!) {
     competitionPlayer
     clubs @include(if: $includeClub) {
       name
+    }
+    rankingPlaces(where: { rankingDate: $ranking }) @include(if: $includeRanking) {
+      rankingDate
+      single
+      double
+      mix
     }
   }
 }

@@ -1,12 +1,12 @@
-import { MatDialog } from '@angular/material/dialog';
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatDialog } from '@angular/material/dialog';
 import { merge, Observable, of, ReplaySubject } from 'rxjs';
-import { debounceTime, distinct, filter, flatMap, map, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
 import { PlayerService } from '../../../../services/player/player.service';
-import { Club, Player } from './../../../../models';
 import { NewPlayerComponent } from '../new-player/new-player.component';
+import { Club, Player } from './../../../../models';
 
 @Component({
   selector: 'app-player-search',
@@ -30,6 +30,9 @@ export class PlayerSearchComponent implements OnInit {
 
   @Input()
   player: Player;
+
+  @Input()
+  ranking: Date;
 
 
   @Input()
@@ -69,6 +72,7 @@ export class PlayerSearchComponent implements OnInit {
           ? this.playerService.searchClubPlayers(this.clubId, {
               query: r,
               where: this.where,
+              ranking: this.ranking
             })
           : of([]);
 
@@ -89,6 +93,7 @@ export class PlayerSearchComponent implements OnInit {
             query: response.query,
             where: this.where,
             includeClub: true,
+            ranking: this.ranking
           });
         } else {
           return of([]);

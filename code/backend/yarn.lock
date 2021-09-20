@@ -6767,6 +6767,11 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
+fakerator@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/fakerator/-/fakerator-0.3.4.tgz#dbd4ee47cf05da45da30d272733ee9ec31f74591"
+  integrity sha512-g5zg8XiBx46jyB+mOzOw32Snqffe32n+n92wn0VHpgHTltgLjgUszQrK8YXZf1yc7c9XvpFbBm8vJmSMEF44uw==
+
 fast-csv@^4.3.1:
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/fast-csv/-/fast-csv-4.3.6.tgz#70349bdd8fe4d66b1130d8c91820b64a21bc4a63"

@@ -124,20 +124,14 @@ export class PdfService {
     });
     const type = encounter.home.type;
 
-    const meta = (
-      await TeamSubEventMembership.findOne({
-        where: {
-          teamId: input.teamId,
-          subEventId: encounter?.draw?.subEvent?.id
-        }
-      })
-    )?.meta;
+    const membership = await TeamSubEventMembership.findOne({
+      where: {
+        teamId: input.teamId,
+        subEventId: encounter?.draw?.subEvent?.id
+      }
+    });
 
-    console.log({
-      teamId: input.teamId,
-      subEventId: encounter?.draw?.subEvent?.id
-    }, meta);
-
+    const meta = membership?.meta;
     const today = moment();
     const year = today.month() >= 6 ? today.year() : today.year() - 1;
     const players = await Player.findAll({
@@ -150,6 +144,7 @@ export class PdfService {
         { model: LastRankingPlace },
         {
           model: RankingPlace,
+          limit: 1,
           where: {
             rankingDate: `${year}-05-15`
           }
@@ -236,32 +231,29 @@ export class PdfService {
     const logo = await readFile(`${__dirname}/assets/logo.png`, {
       encoding: 'base64'
     });
+    const options = {
+      date: moment(encounter.date).format('DD-MM-YYYY HH:mm'),
+      baseIndex: meta?.teamIndex,
+      teamIndex: teamIndex.index,
+      homeTeam: encounter.home.name,
+      awayTeam: encounter.away.name,
+      captain: captain.fullName,
+      doubles,
+      singles,
+      subtitudes,
+      type,
+      event: `${type === 'M' ? 'Heren' : type === 'F' ? 'Dames' : 'Gemengd'} ${
+        encounter.draw.name
+      }`,
+      isHomeTeam: encounter.homeTeamId === input.teamId,
+      logo: `data:image/png;base64, ${logo}`
+    };
 
-    const pdf = await this._htmlToPdf(
-      'assembly',
-      {
-        date: moment(encounter.date).format('DD-MM-YYYY HH:mm'),
-        baseIndex: meta?.teamIndex,
-        teamIndex: teamIndex.index,
-        homeTeam: encounter.home.name,
-        awayTeam: encounter.away.name,
-        captain: captain.fullName,
-        doubles,
-        singles,
-        subtitudes,
-        type,
-        event: `${
-          type === 'M' ? 'Heren' : type === 'F' ? 'Dames' : 'Gemengd'
-        } ${encounter.draw.name}`,
-        isHomeTeam: encounter.homeTeamId === input.teamId,
-        logo: `data:image/png;base64, ${logo}`
-      },
-      {
-        format: 'a4',
-        landscape: true,
-        printBackground: true
-      }
-    );
+    const pdf = await this._htmlToPdf('assembly', options, {
+      format: 'a4',
+      landscape: true,
+      printBackground: true
+    });
 
     return pdf;
   }
@@ -370,8 +362,8 @@ export class PdfService {
         index: bestPlayers.reduce(
           (a, b) =>
             a +
-            (b.lastRankingPlace?.single ?? 12) +
-            (b.lastRankingPlace?.double ?? 12),
+            (b.rankingPlaces[0]?.single ?? 12) +
+            (b.rankingPlaces[0]?.double ?? 12),
           missingIndex
         )
       };
@@ -386,9 +378,9 @@ export class PdfService {
         index: bestPlayers.reduce(
           (a, b) =>
             a +
-            (b.lastRankingPlace?.single ?? 12) +
-            (b.lastRankingPlace?.double ?? 12) +
-            (b.lastRankingPlace?.mix ?? 12),
+            (b.rankingPlaces[0]?.single ?? 12) +
+            (b.rankingPlaces[0]?.double ?? 12) +
+            (b.rankingPlaces[0]?.mix ?? 12),
           missingIndex
         )
       };
@@ -403,24 +395,24 @@ export class PdfService {
           .filter(p => p.gender === 'M')
           .sort(
             (b, a) =>
-              (b.lastRankingPlace?.single ?? 12) +
-              (b.lastRankingPlace?.double ?? 12) +
-              (b.lastRankingPlace?.mix ?? 12) -
-              ((a.lastRankingPlace?.single ?? 12) +
-                (a.lastRankingPlace?.double ?? 12) +
-                (a.lastRankingPlace?.mix ?? 12))
+              (b.rankingPlaces[0]?.single ?? 12) +
+              (b.rankingPlaces[0]?.double ?? 12) +
+              (b.rankingPlaces[0]?.mix ?? 12) -
+              ((a.rankingPlaces[0]?.single ?? 12) +
+                (a.rankingPlaces[0]?.double ?? 12) +
+                (a.rankingPlaces[0]?.mix ?? 12))
           )
           .slice(0, 2),
         ...players
           .filter(p => p.gender === 'F')
           .sort(
             (b, a) =>
-              (b.lastRankingPlace?.single ?? 12) +
-              (b.lastRankingPlace?.double ?? 12) +
-              (b.lastRankingPlace?.mix ?? 12) -
-              ((a.lastRankingPlace?.single ?? 12) +
-                (a.lastRankingPlace?.double ?? 12) +
-                (a.lastRankingPlace?.mix ?? 12))
+              (b.rankingPlaces[0]?.single ?? 12) +
+              (b.rankingPlaces[0]?.double ?? 12) +
+              (b.rankingPlaces[0]?.mix ?? 12) -
+              ((a.rankingPlaces[0]?.single ?? 12) +
+                (a.rankingPlaces[0]?.double ?? 12) +
+                (a.rankingPlaces[0]?.mix ?? 12))
           )
           .slice(0, 2)
       ];
@@ -428,10 +420,10 @@ export class PdfService {
       bestPlayers = players
         .sort(
           (b, a) =>
-            (b.lastRankingPlace?.single ?? 12) +
-            (b.lastRankingPlace?.double ?? 12) -
-            ((a.lastRankingPlace?.single ?? 12) +
-              (a.lastRankingPlace?.double ?? 12))
+            (b.rankingPlaces[0]?.single ?? 12) +
+            (b.rankingPlaces[0]?.double ?? 12) -
+            ((a.rankingPlaces[0]?.single ?? 12) +
+              (a.rankingPlaces[0]?.double ?? 12))
         )
         .slice(0, 4);
     }
