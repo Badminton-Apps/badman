@@ -44,8 +44,6 @@ export class PlayerService {
   }
 
   searchClubPlayers(clubsId: string, args?: { query?: string; where?: any; ranking?: Date }) {
-    console.log(args.ranking !== null, args.ranking);
-   
     return this.apollo
       .query<{ club: { players: Player[] } }>({
         query: searchClubQuery,
