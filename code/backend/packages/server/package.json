@@ -29,9 +29,6 @@
     "sequelize-auto-migrations": "^1.0.3",
     "sequelize-cli": "^6.2.0"
   },
-  "devDependencies": {
-    "mock-fs": "^5.1.0"
-  },
   "peerDependencies": {
     "moment": "^2.24.0"
   }

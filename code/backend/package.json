@@ -9,6 +9,7 @@
     "start:inspect": "npx lerna run start:watch:inspect --stream",
     "lint": "npx lerna run lint --stream",
     "test": "npx lerna run test --stream",
+    "test:inspect": "npx lerna run test:inspect --stream",
     "build": "npx lerna run build --stream",
     "test:local": "npx lerna run test:local --stream",
     "migrate": "npx lerna run migrate --scope=@badvlasim\\server",

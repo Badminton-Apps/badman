@@ -24,7 +24,7 @@ import * as updatePlayerRankingMutation from '../../graphql/players/mutations/Up
 export class PlayerService {
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
-  searchPlayers(args?: { query?: string; where?: any; includeClub?: boolean }) {
+  searchPlayers(args?: { query?: string; where?: any; includeClub?: boolean; ranking?: Date }) {
     args = {
       includeClub: false,
       ...args,
@@ -35,13 +35,17 @@ export class PlayerService {
         query: searchQuery,
         variables: {
           where: this._searchPlayer(args),
+          ranking: args.ranking ?? null,
+          includeRanking: args.ranking !== null,
           includeClub: args.includeClub,
         },
       })
       .pipe(map((x) => x.data?.players?.map((r) => new Player(r))));
   }
 
-  searchClubPlayers(clubsId: string, args?: { query?: string; where?: any }) {
+  searchClubPlayers(clubsId: string, args?: { query?: string; where?: any; ranking?: Date }) {
+    console.log(args.ranking !== null, args.ranking);
+   
     return this.apollo
       .query<{ club: { players: Player[] } }>({
         query: searchClubQuery,
@@ -49,6 +53,8 @@ export class PlayerService {
           where: this._searchPlayer(args),
           id: clubsId,
           includeClub: false,
+          includeRanking: args.ranking !== null,
+          ranking: args.ranking ?? null,
         },
       })
       .pipe(map((x) => x.data?.club?.players?.map((r) => new Player(r))));
@@ -88,12 +94,7 @@ export class PlayerService {
       .pipe(map((x: any) => new Player(x.data?.player)));
   }
 
-  getPlayerGames(
-    playerId: string,
-    rankingType: RankingSystem,
-    offset: number,
-    limit: number
-  ): Observable<Game[]> {
+  getPlayerGames(playerId: string, rankingType: RankingSystem, offset: number, limit: number): Observable<Game[]> {
     return this.apollo
       .query({
         query: gamesQuery,
@@ -104,19 +105,10 @@ export class PlayerService {
           limit,
         },
       })
-      .pipe(
-        map((x: any) =>
-          x.data?.player?.games.map(
-            (g: Partial<Game>) => new Game(g, rankingType)
-          )
-        )
-      );
+      .pipe(map((x: any) => x.data?.player?.games.map((g: Partial<Game>) => new Game(g, rankingType))));
   }
 
-  getPlayerEvolution(
-    playerId: string,
-    rankingType: string
-  ): Observable<RankingPlace[]> {
+  getPlayerEvolution(playerId: string, rankingType: string): Observable<RankingPlace[]> {
     return this.apollo
       .query({
         query: evolutionQuery,
@@ -195,7 +187,7 @@ export class PlayerService {
     });
   }
 
-  getBasePlayers(clubId: String, type: String){
+  getBasePlayers(clubId: String, type: String) {
     return this.apollo.query<{ club: Club }>({
       query: getBasePlayers,
       variables: {
