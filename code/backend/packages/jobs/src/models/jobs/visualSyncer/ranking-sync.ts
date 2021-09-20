@@ -7,6 +7,7 @@ import {
   RankingPoint,
   RankingSystem,
   RankingSystems,
+  splitInChunks,
   XmlRanking,
   XmlResult
 } from '@badvlasim/shared';
@@ -171,7 +172,7 @@ export class RankingSyncer {
         this.STEP_RANKING
       );
 
-      const publications: {
+      interface VisualPublication {
         code: string;
         name: string;
         year: string;
@@ -179,16 +180,23 @@ export class RankingSyncer {
         publicationDate: Date;
         visible: string;
         date: Moment;
-      }[] = this.processor.getData(this.STEP_PUBLICATIONS);
+      }
 
-      const categories: { id: string; name: string }[] = this.processor.getData(
+      const publications: VisualPublication[] = this.processor.getData(this.STEP_PUBLICATIONS);
+
+      const categories: { Code: string; Name: string }[] = this.processor.getData(
         this.STEP_CATEGORIES
       );
 
-
-      const pointsForCategory = async (publication: string, category: string, type: string) => {
+      const pointsForCategory = async (
+        publication: VisualPublication,
+        category: string,
+        places: Map<string, RankingPlace>,
+        type: 'single' | 'double' | 'mix',
+        gender: 'M' | 'F'
+      ) => {
         const resultTournament = await axios.get(
-          `${process.env.VR_API}/Ranking/${ranking.visualCode}/Publication/${publication}/cat/${category}`,
+          `${process.env.VR_API}/Ranking/${ranking.visualCode}/Publication/${publication.code}/Category/${category}`,
           {
             withCredentials: true,
             auth: {
@@ -211,59 +219,115 @@ export class RankingSyncer {
           where: {
             memberId: {
               [Op.in]: bodyTournament.RankingPublicationPoints.map(
-                points => points.Player1.MemberID
+                points => `${points.Player1.MemberID}`
               )
             }
           },
           transaction: args.transaction
         });
 
-       
+        for (const points of bodyTournament.RankingPublicationPoints) {
+          let p = players.find(p => p.memberId == `${points.Player1.MemberID}`);
+
+          if (p == null) {
+            logger.info('New player');
+            const [firstName, ...lastName] = points.Player1.Name.split(' ').filter(Boolean);
+            p = await new Player({
+              memberId: points.Player1.MemberID,
+              firstName,
+              lastName: lastName.join(' '),
+              gender: gender
+            }).save({ transaction: args.transaction });
+          }
+          if (places.has(p.id)) {
+            places.get(p.id)[type] = points.Level;
+            places.get(p.id)[`${type}Points`] = points.Level;
+            places.get(p.id)[`${type}Rank`] = points.Rank;
+          } else {
+            places.set(
+              p.id,
+              new RankingPlace({
+                playerId: p.id,
+                rankingDate: publication.publicationDate,
+                [type]: points.Level,
+                [`${type}Points`]: points.Level,
+                [`${type}Rank`]: points.Rank,
+                SystemId: ranking.system.id
+              })
+            );
+          }
+        }
       };
 
-      // for (const publication of publications) {
-      //   const rankingPlaces = new Map<any>();
+      for (const publication of publications) {
+        const rankingPlaces = new Map<string, RankingPlace>();
 
-      //   if (publication.date.isAfter(ranking.system.caluclationIntervalLastUpdate)) {
-      //     logger.debug('Yap');
+        if (publication.date.isAfter(ranking.system.caluclationIntervalLastUpdate)) {
+          logger.debug(`Getting single levels for ${publication.publicationDate}`);
+          await pointsForCategory(
+            publication,
+            categories.find(category => category.Name === 'HE/SM').Code,
+            rankingPlaces,
+            'single',
+            'M'
+          );
+          await pointsForCategory(
+            publication,
+            categories.find(category => category.Name === 'DE/SD').Code,
+            rankingPlaces,
+            'single',
+            'F'
+          );
 
-      //     const singles = [
-      //       await pointsForCategory(
-      //         publication.Code,
-      //         categories.find(category => category.name === 'HE/SM').id,
-      //       ),
-      //       await pointsForCategory(
-      //         publication.Code,
-      //         categories.find(category => category.name === 'DE/SD').id
-      //       )
-      //     ];
+          logger.debug(`Getting double levels for ${publication.publicationDate}`);
+          await pointsForCategory(
+            publication,
+            categories.find(category => category.Name === 'HD/DM').Code,
+            rankingPlaces,
+            'double',
+            'M'
+          );
+          await pointsForCategory(
+            publication,
+            categories.find(category => category.Name === 'DD').Code,
+            rankingPlaces,
+            'double',
+            'F'
+          );
 
-      //     const doubles = [
-      //       await pointsForCategory(
-      //         publication.Code,
-      //         categories.find(category => category.name === 'HD/DM').id
-      //       ),
-      //       await pointsForCategory(
-      //         publication.Code,
-      //         categories.find(category => category.name === 'DD').id
-      //       )
-      //     ];
+          logger.debug(`Getting mix levels for ${publication.publicationDate}`);
+          await pointsForCategory(
+            publication,
+            categories.find(category => category.Name === 'GD H/DX M').Code,
+            rankingPlaces,
+            'mix',
+            'M'
+          );
+          await pointsForCategory(
+            publication,
+            categories.find(category => category.Name === 'GD D/DX D').Code,
+            rankingPlaces,
+            'mix',
+            'F'
+          );
 
-      //     const mixes = [
-      //       await pointsForCategory(
-      //         publication.Code,
-      //         categories.find(category => category.name === 'GD H/DX M').id
-      //       ),
-      //       await pointsForCategory(
-      //         publication.Code,
-      //         categories.find(category => category.name === 'GD D/DX D').id
-      //       )
-      //     ];
+          var chunks = splitInChunks(
+            Array.from(rankingPlaces).map(([id, place]) => place.toJSON()),
+            20
+          );
 
-      //     ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
-      //     await ranking.system.save({ transaction: args.transaction });
-      //   }
-      // }
+          for (const chunk of chunks) {
+            await RankingPlace.bulkCreate(chunk, {
+              ignoreDuplicates: true,
+              transaction: args.transaction,
+              hooks: false
+            });
+          }
+
+          ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
+          await ranking.system.save({ transaction: args.transaction });
+        }
+      }
     });
   }
 }

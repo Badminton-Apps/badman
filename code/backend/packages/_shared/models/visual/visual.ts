@@ -28,8 +28,10 @@ export interface XmlRanking {
 }
 
 export interface XmlRankingPublicationPoint {
-  Rank: string;
+  Rank: number;
   PreviousRank?: string;
+  Level: number;
+  Totalpoints: number;
   Player1: {
     Code: string;
     MemberID: string;

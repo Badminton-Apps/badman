@@ -243,7 +243,7 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
 
   if (process.env.NODE_ENV === 'production') {
     const resultPut = await axios.put(
-      `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+      `${process.env.VR_API}/Tournament/${event.visualCode}/Match/${encounter.visualCode}/Date`,
       {
         withCredentials: true,
         auth: {
@@ -266,7 +266,7 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
     const bodyPut = parse(resultPut.data).Result as Result;
     if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
       logger.error(
-        `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+        `${process.env.VR_API}/Tournament/${event.visualCode}/Match/${encounter.visualCode}/Date`,
         `<TournamentMatch>
             <TournamentID>${event.visualCode}</TournamentID>
             <MatchID>${encounter.visualCode}</MatchID>
@@ -286,7 +286,7 @@ export const acceptDate = async (encounter: EncounterCompetition, transaction: T
             <MatchID>${encounter.visualCode}</MatchID>
             <MatchDate>${moment(encounter.date).format(visualFormat)}</MatchDate>
         </TournamentMatch>`,
-      `${process.env.VR_API}/${event.visualCode}/Match/${encounter.visualCode}/Date`
+      `${process.env.VR_API}/Tournament/${event.visualCode}/Match/${encounter.visualCode}/Date`
     );
   }
 
