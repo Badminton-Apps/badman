@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "eslint --fix -c ../../.eslintrc.js ./**/*{.ts,.tsx}",
     "gen-erd": "node -r ts-node/register ./utils/generate-erd.ts",
-    "test:inspect": "node --inspect ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand -t \"PDF service\" ",
+    "test:inspect": "node --inspect ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand",
+    "test:inspect:name": "node --inspect ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand  -t \"PDF service\" ",
     "test": "jest --config ./jest.config.js --runInBand -t \"PDF service\" "
   },
   "dependencies": {
