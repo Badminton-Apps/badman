@@ -9,16 +9,7 @@ import {
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  Club,
-  CompetitionSubEvent,
-  EventService,
-  LevelType,
-  Player,
-  PlayerService,
-  SubEvent,
-  TeamService,
-} from 'app/_shared';
+import { Club, CompetitionSubEvent, EventService, LevelType, Player, TeamService } from 'app/_shared';
 import * as moment from 'moment';
 
 @Component({
@@ -78,6 +69,7 @@ export class AssemblyComponent implements OnInit {
   captionDouble4 = 'competition.team-assembly.double4';
 
   type: string;
+  mayRankingDate: Date;
   teamIndex: number = 0;
   club: Club;
   subEvent: CompetitionSubEvent;
@@ -123,10 +115,11 @@ export class AssemblyComponent implements OnInit {
 
     const today = moment();
     const year = today.month() >= 6 ? today.year() : today.year() - 1;
+    this.mayRankingDate = moment(`${year}-05-15`).toDate();
 
     const events = await this.eventService.getSubEventsCompetition(year).toPromise();
     const teams = await this.teamService
-      .getTeamsAndPlayers(this.club.id, events.map((r) => r.subEvents?.map((y) => y.id)).flat())
+      .getTeamsAndPlayers(this.club.id, this.mayRankingDate, events.map((r) => r.subEvents?.map((y) => y.id)).flat())
       .toPromise();
     const team = teams.find((r) => r.id === teamId);
     this.formGroup.get('captain').setValue(team.captain);
@@ -187,7 +180,7 @@ export class AssemblyComponent implements OnInit {
 
       this.captionSingle3Prefix = 'gender.female';
       this.captionSingle4Prefix = 'gender.female';
-      
+
       this.captionSingle3 = 'competition.team-assembly.single1';
       this.captionSingle4 = 'competition.team-assembly.single2';
 
@@ -498,7 +491,7 @@ export class AssemblyComponent implements OnInit {
 
     if (this.type !== 'MX') {
       const bestPlayers = filtered
-        .map((r) => r.calcIndex(this.type))
+        .map((r) => r.indexOfDate(this.type, this.mayRankingDate))
         .sort((a, b) => a - b)
         .slice(0, 4);
 
@@ -513,13 +506,13 @@ export class AssemblyComponent implements OnInit {
         // 2 best male
         ...filtered
           .filter((p) => p.gender == 'M')
-          .map((r) => r.calcIndex(this.type))
+          .map((r) => r.indexOfDate(this.type, this.mayRankingDate))
           .sort((a, b) => a - b)
           .slice(0, 2),
         // 2 best female
         ...filtered
           .filter((p) => p.gender == 'F')
-          .map((r) => r.calcIndex(this.type))
+          .map((r) => r.indexOfDate(this.type, this.mayRankingDate))
           .sort((a, b) => a - b)
           .slice(0, 2),
       ];

@@ -17,6 +17,7 @@ import * as removePlayerToTeamMutation from '../../graphql/teams/mutations/remov
 import * as updatePlayerTeamMutation from '../../graphql/teams/mutations/updatePlayerTeamMutation.graphql';
 import * as addBasePlayerForSubEvent from '../../graphql/teams/mutations/addBasePlayerForSubEvent.graphql';
 import * as removeBasePlayerForSubEvent from '../../graphql/teams/mutations/removeBasePlayerForSubEvent.graphql';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -109,7 +110,7 @@ export class TeamService {
       .pipe(map((x: any) => x.data?.teams?.map((t: Partial<Team>) => new Team(t))));
   }
 
-  getTeamsAndPlayers(clubId: string, subEventIds: string[]): Observable<Team[]> {
+  getTeamsAndPlayers(clubId: string, mayDate: Date, subEventIds: string[]): Observable<Team[]> {
     return this.apollo
       .query<{
         club: {
@@ -119,6 +120,7 @@ export class TeamService {
         query: teamAssemblyInfo,
         variables: {
           clubId,
+          ranking: mayDate,
           subEventWhere : {
             id: { "$in": subEventIds },
           },

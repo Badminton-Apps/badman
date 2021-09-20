@@ -21,7 +21,7 @@
       <div class="captain">
         <app-player-search
           [player]="this.formGroup.get('captain').value"
-          [allowCreation]="true"
+          [allowCreation]="false"
           [club]="this.club"
           label="competition.team-assembly.captain"
           (onSelectPlayer)="this.selectedCaptain($event)"
@@ -56,6 +56,7 @@
           [club]="this.formGroup.get('club').value"
           [label]="'Voeg speler toe'"
           [where]="this.wherePlayer"
+          [ranking]="this.mayRankingDate"
           (onSelectPlayer)="addPlayer($event)"
           [ignorePlayers]="this.ignorePlayers"
         ></app-player-search>
