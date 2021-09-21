@@ -255,6 +255,7 @@
         "number": "club number"
     },
     "pickers": {
+        "select-year": "Pick a competition year",
         "select-team": "Pick a team",
         "select-team-groups": {
             "M": "Men",

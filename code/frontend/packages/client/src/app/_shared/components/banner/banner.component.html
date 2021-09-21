@@ -1,8 +1,13 @@
 <div>
-   <ng-container *ngIf="showAd">
-      <ins class="adsbygoogle adslot_1" style="display:inline-block"
-         [attr.data-ad-client]="banner.adClient" [attr.data-ad-slot]="banner.adSlot"
-         [attr.data-ad-format]="banner.adFormat" [attr.data-full-width-responsive]="banner.fullWidthResponsive">
-      </ins>
-   </ng-container>
+  <ng-container *ngIf="showAd">
+    <ins
+      class="adsbygoogle adslot_1"
+      [attr.data-ad-client]="banner.adClient"
+      [attr.data-ad-slot]="banner.adSlot"
+      [attr.data-ad-format]="banner.adFormat"
+      [attr.data-full-width-responsive]="banner.fullWidthResponsive"
+      [attr.adtest]="dev ? 'on' : 'off'"
+    >
+    </ins>
+  </ng-container>
 </div>
