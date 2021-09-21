@@ -24,7 +24,7 @@ export class GetScoresVisual extends CronJob {
     // Use argument date, else stored date, finally use today
     const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
     logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
-    
+
     let newEvents = await this._getChangeEvents(newDate);
 
     newEvents = newEvents.sort((a, b) => {
@@ -34,7 +34,7 @@ export class GetScoresVisual extends CronJob {
     for (const xmlTournament of newEvents) {
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
       try {
-        logger.debug(`Processing ${xmlTournament.Name}`);
+        logger.info(`Processing ${xmlTournament.Name}`);
 
         if (
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
@@ -45,6 +45,7 @@ export class GetScoresVisual extends CronJob {
           await this._tournamentSync.process({ transaction, xmlTournament });
         }
         await transaction.commit();
+        logger.info(`Finished ${xmlTournament.Name}`);
       } catch (e) {
         logger.error('Rollback', e);
         await transaction.rollback();
@@ -53,7 +54,7 @@ export class GetScoresVisual extends CronJob {
     }
 
     logger.info('Finished sync of Visual scores');
-  } 
+  }
 
   private async _getChangeEvents(date: Moment, page: number = 0) {
     const url = `${process.env.VR_API}/Tournament?list=1&refdate=${date.format(
