@@ -93,11 +93,12 @@ describe('PDF service', () => {
 
     // const systemId = await new RankingSystem({primary: true}).save();
     // Arrange
+    const encounterDate = moment('2021-01-01');
     const event = await new EventCompetition().save();
     const subevent = await new SubEventCompetition().save();
     const draw = await new DrawCompetition().save();
     const encounter = await new EncounterCompetition({
-      date: new Date('2021-01-01')
+      date: encounterDate.toDate()
     }).save();
 
     await subevent.setEvent(event);
@@ -130,28 +131,28 @@ describe('PDF service', () => {
       teamIndex: 80,
       players: [
         {
-          id: 'a19c2aee-4c63-467d-bf4e-4c6fd0d0eb08',
+          id: 'c76f2327-dbf9-4de6-b314-42cb29012724',
           single: 7,
           double: 6,
           mix: 7,
           gender: 'M'
         },
         {
-          id: 'abcba15d-4993-40ae-bf74-ff2646f55b58',
+          id: '990a2e5c-4670-4053-9634-506d276ccc97',
           single: 7,
           double: 6,
           mix: 8,
           gender: 'F'
         },
         {
-          id: '14d0baca-41c7-4001-9cda-f0662053a6eb',
+          id: '8c1c0a6b-d252-4d17-a5f8-e53cdeb4178a',
           single: 7,
           double: 5,
           mix: 7,
           gender: 'M'
         },
         {
-          id: '068ab337-acbe-4ea5-99b8-f56a387ab96a',
+          id: '96df9d4c-be58-4eaa-9d27-62b241b3000a',
           single: 7,
           double: 6,
           mix: 7,
@@ -168,7 +169,7 @@ describe('PDF service', () => {
 
     const playerM1 = await Player.create(
       {
-        id: '14d0baca-41c7-4001-9cda-f0662053a6eb',
+        id: '8c1c0a6b-d252-4d17-a5f8-e53cdeb4178a',
         ...fakeMPerson1,
         rankingPlaces: [
           new RankingPlace({
@@ -190,7 +191,7 @@ describe('PDF service', () => {
 
     const playerM2 = await Player.create(
       {
-        id: 'a19c2aee-4c63-467d-bf4e-4c6fd0d0eb08',
+        id: 'c76f2327-dbf9-4de6-b314-42cb29012724',
         ...fakeMPerson2,
         rankingPlaces: [
           new RankingPlace({
@@ -233,7 +234,7 @@ describe('PDF service', () => {
 
     const playerF1 = await Player.create(
       {
-        id: 'abcba15d-4993-40ae-bf74-ff2646f55b58',
+        id: '990a2e5c-4670-4053-9634-506d276ccc97',
         ...fakeFPerson1,
         rankingPlaces: [
           new RankingPlace({
@@ -333,7 +334,7 @@ describe('PDF service', () => {
         teamIndex: 84,
         baseIndex: 80,
         captain: 'John Doe',
-        date: '01-01-2021 01:00',
+        date: encounterDate.format('DD-MM-YYYY HH:mm'),
         type: 'MX'
       }),
       expect.anything()
