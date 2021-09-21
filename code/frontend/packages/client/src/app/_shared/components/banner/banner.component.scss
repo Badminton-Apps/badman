@@ -8,7 +8,14 @@
   width: 100%;
 }
 
+@media only screen and (max-height: 750px) {
+  :host {
+    display: none;
+  }
+}
+
 .adslot_1 {
+  display: inline-block;
   height: 200px !important;
   width: 280px !important;
 }

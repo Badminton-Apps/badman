@@ -80,7 +80,7 @@ export class RankingSyncer {
     });
   }
 
-  protected getCategories(): ProcessStep<{ id: string; name: string }[]> {
+  protected getCategories(): ProcessStep<{ code: string; name: string }[]> {
     return new ProcessStep(this.STEP_CATEGORIES, async (args: { transaction: Transaction }) => {
       const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
         this.STEP_RANKING
@@ -107,7 +107,12 @@ export class RankingSyncer {
         parseAttributeValue: true
       }).Result as XmlResult;
 
-      return bodyTournament.RankingCategory;
+      return bodyTournament.RankingCategory.map(c => {
+        return {
+          code: c.Code,
+          name: c.Name
+        }
+      });
     });
   }
 
@@ -184,7 +189,7 @@ export class RankingSyncer {
 
       const publications: VisualPublication[] = this.processor.getData(this.STEP_PUBLICATIONS);
 
-      const categories: { Code: string; Name: string }[] = this.processor.getData(
+      const categories: { code: string; name: string }[] = this.processor.getData(
         this.STEP_CATEGORIES
       );
 
@@ -227,27 +232,27 @@ export class RankingSyncer {
         });
 
         for (const points of bodyTournament.RankingPublicationPoints) {
-          let p = players.find(p => p.memberId == `${points.Player1.MemberID}`);
+          let foundPlayer = players.find(p => p.memberId === `${points.Player1.MemberID}`);
 
-          if (p == null) {
+          if (foundPlayer == null) {
             logger.info('New player');
             const [firstName, ...lastName] = points.Player1.Name.split(' ').filter(Boolean);
-            p = await new Player({
+            foundPlayer = await new Player({
               memberId: points.Player1.MemberID,
               firstName,
               lastName: lastName.join(' '),
-              gender: gender
+              gender
             }).save({ transaction: args.transaction });
           }
-          if (places.has(p.id)) {
-            places.get(p.id)[type] = points.Level;
-            places.get(p.id)[`${type}Points`] = points.Level;
-            places.get(p.id)[`${type}Rank`] = points.Rank;
+          if (places.has(foundPlayer.id)) {
+            places.get(foundPlayer.id)[type] = points.Level;
+            places.get(foundPlayer.id)[`${type}Points`] = points.Level;
+            places.get(foundPlayer.id)[`${type}Rank`] = points.Rank;
           } else {
             places.set(
-              p.id,
+              foundPlayer.id,
               new RankingPlace({
-                playerId: p.id,
+                playerId: foundPlayer.id,
                 rankingDate: publication.publicationDate,
                 [type]: points.Level,
                 [`${type}Points`]: points.Level,
@@ -266,14 +271,14 @@ export class RankingSyncer {
           logger.debug(`Getting single levels for ${publication.publicationDate}`);
           await pointsForCategory(
             publication,
-            categories.find(category => category.Name === 'HE/SM').Code,
+            categories.find(category => category.name === 'HE/SM').code,
             rankingPlaces,
             'single',
             'M'
           );
           await pointsForCategory(
             publication,
-            categories.find(category => category.Name === 'DE/SD').Code,
+            categories.find(category => category.name === 'DE/SD').code,
             rankingPlaces,
             'single',
             'F'
@@ -282,14 +287,14 @@ export class RankingSyncer {
           logger.debug(`Getting double levels for ${publication.publicationDate}`);
           await pointsForCategory(
             publication,
-            categories.find(category => category.Name === 'HD/DM').Code,
+            categories.find(category => category.name === 'HD/DM').code,
             rankingPlaces,
             'double',
             'M'
           );
           await pointsForCategory(
             publication,
-            categories.find(category => category.Name === 'DD').Code,
+            categories.find(category => category.name === 'DD').code,
             rankingPlaces,
             'double',
             'F'
@@ -298,20 +303,20 @@ export class RankingSyncer {
           logger.debug(`Getting mix levels for ${publication.publicationDate}`);
           await pointsForCategory(
             publication,
-            categories.find(category => category.Name === 'GD H/DX M').Code,
+            categories.find(category => category.name === 'GD H/DX M').code,
             rankingPlaces,
             'mix',
             'M'
           );
           await pointsForCategory(
             publication,
-            categories.find(category => category.Name === 'GD D/DX D').Code,
+            categories.find(category => category.name === 'GD D/DX D').code,
             rankingPlaces,
             'mix',
             'F'
           );
 
-          var chunks = splitInChunks(
+          const chunks = splitInChunks(
             Array.from(rankingPlaces).map(([id, place]) => place.toJSON()),
             20
           );
