@@ -255,6 +255,7 @@
         "number": ""
     },
     "pickers": {
+        "select-year": "",
         "select-team": "",
         "select-team-groups": {
             "M": "",
