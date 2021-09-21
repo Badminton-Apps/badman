@@ -62,7 +62,7 @@ export class TournamentSyncer {
         let existed = true;
 
         if (!event) {
-          existed = false; 
+          existed = false;
           const dates: Moment[] = [];
           for (
             let date = moment(args.xmlTournament.StartDate);
@@ -103,7 +103,7 @@ export class TournamentSyncer {
           // Later we will change the search function to use the tournament code
           if (event.visualCode === null) {
             event.visualCode = args.xmlTournament.Code;
-            event.save({ transaction: args.transaction });
+            await event.save({ transaction: args.transaction });
           }
         }
         return {
@@ -188,7 +188,36 @@ export class TournamentSyncer {
         i => !dbSubEvents.map(r => r.subEvent.id).includes(i.id)
       );
       for (const removed of removedSubEvents) {
-        removed.destroy({ transaction: args.transaction });
+        const gameIds = (
+          await Game.findAll({
+            attributes: ['id'],
+            include: [
+              {
+                attributes: [],
+                model: DrawTournament,
+                required: true,
+                where: {
+                  subeventId: removed.id
+                }
+              }
+            ],
+            transaction: args.transaction
+          })
+        )
+          ?.map(g => g.id)
+          ?.filter(g => !!g);
+
+        if (gameIds && gameIds.length > 0) {
+          await Game.destroy({
+            where: {
+              id: {
+                [Op.in]: gameIds
+              }
+            },
+            transaction: args.transaction
+          });
+        }
+        await removed.destroy({ transaction: args.transaction });
       }
 
       return dbSubEvents;
@@ -261,7 +290,22 @@ export class TournamentSyncer {
           // Remove draw that are not in the xml
           const removedDraws = draws.filter(i => !dbXmlDraws.map(r => r.id).includes(i.id));
           for (const removed of removedDraws) {
-            removed.destroy({ transaction: args.transaction });
+            const gameIds = (
+              await removed?.getGames({ attributes: ['id'], transaction: args.transaction })
+            )
+              ?.map(g => g?.id)
+              ?.filter(g => !!g);
+            if (gameIds && gameIds.length > 0) {
+              await Game.destroy({
+                where: {
+                  id: {
+                    [Op.in]: gameIds
+                  }
+                },
+                transaction: args.transaction
+              });
+            }
+            await removed.destroy({ transaction: args.transaction });
           }
         }
 
@@ -424,7 +468,7 @@ export class TournamentSyncer {
           // Remove draw that are not in the xml
           const removedGames = games.filter(i => !dbXmlGames.map(r => r.id).includes(i.id));
           for (const removed of removedGames) {
-            removed.destroy({ transaction: args.transaction });
+            await removed.destroy({ transaction: args.transaction });
           }
         }
 
