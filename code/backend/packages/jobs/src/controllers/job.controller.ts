@@ -19,20 +19,20 @@ export class JobController extends BaseController {
     this.router.post(`${this._path}/start`, this._authMiddleware, this._startJob);
     this.router.post(`${this._path}/stop`, this._authMiddleware, this._stopJob);
   }
- 
+
   private async _initializeJobs() {
     // VisualSync
     const [scoresDb] = await Cron.findOrCreate({
-      where: { type: 'sync-visual' }, 
+      where: { type: 'sync-visual' },
       defaults: GetScoresVisual.dbEntry()
-    }); 
+    });
     const visual = new GetScoresVisual(scoresDb);
     this._jobs.push(visual);
 
     const [rankingDb] = await Cron.findOrCreate({
       where: { type: 'ranking-visual' },
       defaults: GetRankingVisual.dbEntry()
-    });  
+    });
     const ranking = new GetRankingVisual(rankingDb);
     this._jobs.push(ranking);
   }
@@ -49,7 +49,7 @@ export class JobController extends BaseController {
     }
 
     const foundJob = this._jobs.find(job => job.dbCron.type === request.query.type);
-    
+
     if (foundJob) {
       foundJob.single(request.body);
       response.status(200).send('Job started');
@@ -70,7 +70,7 @@ export class JobController extends BaseController {
     }
 
     const foundJob = this._jobs.find(job => job.dbCron.type === request.query.type);
-    
+
     if (foundJob) {
       foundJob.start();
       response.status(200).send('Job started');
@@ -91,7 +91,7 @@ export class JobController extends BaseController {
     }
 
     const foundJob = this._jobs.find(job => job.dbCron.type === request.query.type);
-    
+
     if (foundJob) {
       foundJob.stop();
       response.status(200).send('Job stopped');
