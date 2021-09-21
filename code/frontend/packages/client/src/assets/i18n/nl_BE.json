@@ -256,6 +256,7 @@
         "number": "club nummer"
     },
     "pickers": {
+        "select-year": "Kies een competitie jaar",
         "select-team": "Kies een ploeg",
         "select-team-groups": {
             "M": "Heren",
