@@ -1,3 +1,19 @@
+# [3.55.0](https://github.com/Badminton-Apps/core/compare/v3.54.0...v3.55.0) (2021-09-21)
+
+
+### Bug Fixes
+
+* adds being to big ([b3f305e](https://github.com/Badminton-Apps/core/commit/b3f305e0111dafa8aaa962fff5ba882ff27e5f49))
+* using right ranking time ([0723ebf](https://github.com/Badminton-Apps/core/commit/0723ebfd22c89e5739e53fb3095cbe4bea8857a0))
+
+
+### Features
+
+* adding jobs to proxy ([e6ef044](https://github.com/Badminton-Apps/core/commit/e6ef04478913973b7c82540174514bac99c69d7b))
+* syncing visual ranking ([142179e](https://github.com/Badminton-Apps/core/commit/142179e264f7e8987f2c1247b6064d4055b8fc18))
+
+
+
 # [3.54.0](https://github.com/Badminton-Apps/core/compare/v3.53.7...v3.54.0) (2021-09-15)
 
 
