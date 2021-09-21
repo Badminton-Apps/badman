@@ -12,7 +12,7 @@ export class BannerComponent implements OnInit, AfterViewInit {
   banner: Banner;
 
   showAd = environment.adsense.show;
-  dev = environment.production;
+  dev = environment.production == false;
 
   @Input()
   adSlot: number;
