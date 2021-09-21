@@ -3,6 +3,8 @@ import {
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
+  LevelType,
+  Team,
   Game,
   GamePlayer,
   GameType,
@@ -55,8 +57,9 @@ export class CompetitionSyncer {
     return new ProcessStep(
       this.STEP_EVENT,
       async (args: { xmlTournament: XmlTournament; transaction: Transaction }) => {
+        logger.debug(`Searching for ${args.xmlTournament.Name}`);
         let event = await EventCompetition.findOne({
-          where: { name: args.xmlTournament.Name },
+          where: { name: `${args.xmlTournament.Name}` },
           transaction: args.transaction
         });
         let existed = true;
@@ -103,13 +106,14 @@ export class CompetitionSyncer {
           // Later we will change the search function to use the tournament code
           if (event.visualCode === null) {
             event.visualCode = args.xmlTournament.Code;
-            event.save({ transaction: args.transaction });
+            await event.save({ transaction: args.transaction });
           }
         }
 
         return {
           // stop: existed,
-          event,
+          existed,
+          event: event,
           internalId: args.xmlTournament.Code
         };
       }
@@ -119,12 +123,13 @@ export class CompetitionSyncer {
   protected addSubEvents(): ProcessStep<{ subEvent: SubEventCompetition; internalId: number }[]> {
     return new ProcessStep(this.STEP_SUBEVENT, async (args: { transaction: Transaction }) => {
       // get previous step data
-      const test: {
+      const eventData: {
         event: EventCompetition;
         internalId: string;
+        existed: boolean;
       } = this.processor.getData(this.STEP_EVENT);
 
-      const { event, internalId } = test;
+      const { event, internalId } = eventData;
 
       if (!event) {
         throw new Error('No Event');
@@ -162,6 +167,26 @@ export class CompetitionSyncer {
         let dbSubEvent = subEvents.find(r => r.visualCode === `${xmlEvent.Code}`);
 
         if (!dbSubEvent) {
+          let type =
+            xmlEvent.GenderID === XmlGenderID.Mixed
+              ? SubEventType.MX
+              : xmlEvent.GenderID === XmlGenderID.Male || xmlEvent.GenderID === XmlGenderID.Boy
+              ? SubEventType.M
+              : SubEventType.F;
+
+          if (event.type == LevelType.NATIONAL) {
+            type = SubEventType.MX;
+          }
+
+          // Hopefully with this we can link with the correct subEvent so our link isn't lost
+          dbSubEvent = subEvents.find(r => r.name == xmlEvent.Name && r.eventType == type);
+        }
+
+        if (!dbSubEvent) {
+          if (eventData.existed) {
+            logger.warn(`Event ${xmlEvent.Name} for ${event.name} not found, might checking it?`);
+          }
+
           dbSubEvent = await new SubEventCompetition({
             visualCode: xmlEvent.Code,
             name: xmlEvent.Name,
@@ -169,8 +194,8 @@ export class CompetitionSyncer {
               xmlEvent.GenderID === XmlGenderID.Mixed
                 ? SubEventType.MX
                 : xmlEvent.GenderID === XmlGenderID.Male || xmlEvent.GenderID === XmlGenderID.Boy
-                ? SubEventType.F
-                : SubEventType.M,
+                ? SubEventType.M
+                : SubEventType.F,
             eventId: event.id,
             level: xmlEvent.LevelID
           }).save({ transaction: args.transaction });
@@ -184,7 +209,44 @@ export class CompetitionSyncer {
         i => !dbSubEvents.map(r => r.subEvent.id).includes(i.id)
       );
       for (const removed of removedSubEvents) {
-        removed.destroy({ transaction: args.transaction });
+        const gameIds = (
+          await Game.findAll({
+            attributes: ['id'],
+            include: [
+              {
+                attributes: [],
+                model: EncounterCompetition,
+                required: true,
+                include: [
+                  {
+                    attributes: [],
+                    required: true,
+                    model: DrawCompetition,
+                    where: {
+                      subeventId: removed.id
+                    }
+                  }
+                ]
+              }
+            ],
+            transaction: args.transaction
+          })
+        )
+          ?.map(g => g.id)
+          ?.filter(g => !!g);
+
+        if (gameIds && gameIds.length > 0) {
+          await Game.destroy({
+            where: {
+              id: {
+                [Op.in]: gameIds
+              }
+            },
+            transaction: args.transaction
+          });
+        }
+
+        await removed.destroy({ transaction: args.transaction });
       }
 
       return dbSubEvents;
@@ -251,7 +313,36 @@ export class CompetitionSyncer {
           // Remove draw that are not in the xml
           const removedDraws = draws.filter(i => !dbXmlDraws.map(r => r.id).includes(i.id));
           for (const removed of removedDraws) {
-            removed.destroy({ transaction: args.transaction });
+            const gameIds = (
+              await Game.findAll({
+                attributes: ['id'],
+                include: [
+                  {
+                    attributes: [],
+                    model: EncounterCompetition,
+                    required: true,
+                    where: {
+                      drawId: removed.id
+                    }
+                  }
+                ],
+                transaction: args.transaction
+              })
+            )
+              ?.map(g => g.id)
+              ?.filter(g => !!g);
+
+            if (gameIds && gameIds.length > 0) {
+              await Game.destroy({
+                where: {
+                  id: {
+                    [Op.in]: gameIds
+                  }
+                },
+                transaction: args.transaction
+              });
+            }
+            await removed.destroy({ transaction: args.transaction });
           }
         }
         return dbDraws;
@@ -304,15 +395,49 @@ export class CompetitionSyncer {
             if (!xmlTeamMatch) {
               continue;
             }
+            const matchDate = moment(xmlTeamMatch.MatchTime).toDate();
             let dbEncounter = encounters.find(r => r.visualCode === `${xmlTeamMatch.Code}`);
 
-            if (!dbEncounter) {
-              dbEncounter = await new EncounterCompetition({
-                drawId: draw.id,
-                visualCode: xmlTeamMatch.Code,
-                date: moment(xmlTeamMatch.MatchTime).toDate()
-              }).save({ transaction: args.transaction });
+            if (!dbEncounter && xmlTeamMatch.Team1 && xmlTeamMatch.Team2) {
+              const team1 = await Team.findOne({
+                where: {
+                  name: xmlTeamMatch.Team1.Name?.substring(0, xmlTeamMatch.Team1.Name.indexOf('('))
+                },
+                transaction: args.transaction
+              });
+              const team2 = await Team.findOne({
+                where: {
+                  name: xmlTeamMatch.Team1.Name?.substring(0, xmlTeamMatch.Team1.Name.indexOf('('))
+                },
+                transaction: args.transaction
+              });
+
+              // FInd one with same teams
+              dbEncounter = encounters.find(
+                e => e.homeTeamId == team1.id && e.awayTeamId == team2.id && e.drawId === e.drawId
+              );
+
+              if (!dbEncounter) {
+                dbEncounter = await new EncounterCompetition({
+                  drawId: draw.id,
+                  visualCode: xmlTeamMatch.Code,
+                  date: matchDate,
+                  homeTeamId: team1.id,
+                  awayTeamId: team2.id
+                }).save({ transaction: args.transaction });
+              } else {
+                dbEncounter.visualCode = xmlTeamMatch.Code;
+                await dbEncounter.save({ transaction: args.transaction });
+              }
             }
+
+
+            // Update date if needed
+            if (dbEncounter.date != matchDate) {
+              dbEncounter.date = matchDate;
+              await dbEncounter.save({ transaction: args.transaction });
+            }
+
             dbEncounters.push({
               encounter: dbEncounter,
               internalId: parseInt(xmlTeamMatch.Code, 10)
@@ -325,7 +450,26 @@ export class CompetitionSyncer {
             i => !dbXmlEncounters.map(r => r.id).includes(i.id)
           );
           for (const removed of removedEncounters) {
-            removed.destroy({ transaction: args.transaction });
+            const gameIds = (
+              await removed?.getGames({
+                attributes: ['id'],
+                transaction: args.transaction
+              })
+            )
+              ?.map(g => g?.id)
+              ?.filter(g => !!g);
+
+            if (gameIds && gameIds.length > 0) {
+              await Game.destroy({
+                where: {
+                  id: {
+                    [Op.in]: gameIds
+                  }
+                },
+                transaction: args.transaction
+              });
+            }
+            await removed.destroy({ transaction: args.transaction });
           }
         }
         return dbEncounters;
@@ -447,12 +591,12 @@ export class CompetitionSyncer {
             parseAttributeValue: true
           }).Result as XmlResult;
 
-          const xmlMatches = Array.isArray(bodyDraw.Match) ? bodyDraw.Match : [bodyDraw.Match];
+          const xmlMatches = (Array.isArray(bodyDraw.Match)
+            ? bodyDraw.Match
+            : [bodyDraw.Match]
+          ).filter(m => !m || m?.Winner !== 0);
 
           for (const xmlMatch of xmlMatches) {
-            if (!xmlMatch) {
-              continue;
-            }
             let game = games.find(
               r => r.round === xmlMatch.RoundName && r.visualCode === `${xmlMatch.Code}`
             );
@@ -491,7 +635,7 @@ export class CompetitionSyncer {
           // Remove draw that are not in the xml
           const removedGames = games.filter(i => !dbXmlGames.map(r => r.id).includes(i.id));
           for (const removed of removedGames) {
-            removed.destroy({ transaction: args.transaction });
+            await removed.destroy({ transaction: args.transaction });
           }
         }
 
