@@ -68,7 +68,7 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>{{ 'competition.title' | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
-                <mat-nav-list *ngIf="profile?.clubs && profile.clubs.length == 1">
+                <mat-nav-list *ngIf="profile?.clubs && profile.clubs.length > 0">
                   <a mat-list-item routerLink="/competition/team-assembly" routerLinkActive="active">
                     {{ 'competition.team-assembly.title' | translate }}</a
                   >
