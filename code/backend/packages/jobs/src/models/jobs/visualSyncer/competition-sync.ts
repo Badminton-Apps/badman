@@ -114,7 +114,7 @@ export class CompetitionSyncer {
         return {
           // stop: existed,
           existed,
-          event: event,
+          event,
           internalId: args.xmlTournament.Code
         };
       }
@@ -175,12 +175,12 @@ export class CompetitionSyncer {
               ? SubEventType.M
               : SubEventType.F;
 
-          if (event.type == LevelType.NATIONAL) {
+          if (event.type === LevelType.NATIONAL) {
             type = SubEventType.MX;
           }
 
           // Hopefully with this we can link with the correct subEvent so our link isn't lost
-          dbSubEvent = subEvents.find(r => r.name == xmlEvent.Name && r.eventType == type);
+          dbSubEvent = subEvents.find(r => r.name === xmlEvent.Name && r.eventType === type);
         }
 
         if (!dbSubEvent) {
@@ -359,6 +359,41 @@ export class CompetitionSyncer {
     return new ProcessStep(
       this.STEP_ENCOUNTER,
       async (args: { transaction: Transaction; tourneyKey: string }) => {
+
+        const findTeams = async (
+          xmlTeamMatch: XmlTeamMatch,
+          event: EventCompetition,
+          transaction: Transaction
+        ) => {
+          const team1 =
+            (xmlTeamMatch.Team1?.Name?.length ?? 0) > 0
+              ? await Team.findOne({
+                  where: {
+                    name: xmlTeamMatch.Team1?.Name?.replace(/(\(\d+\))/gi, ' ').trim()
+                  },
+                  transaction
+                })
+              : null;
+          const team2 =
+            (xmlTeamMatch.Team2?.Name?.length ?? 0) > 0
+              ? await Team.findOne({
+                  where: {
+                    name: xmlTeamMatch.Team2?.Name?.replace(/(\(\d+\))/gi, ' ').trim()
+                  },
+                  transaction
+                })
+              : null;
+    
+          if (event.startYear > 2021) {
+            if (team1 == null) {
+              logger.warn(`Team ${xmlTeamMatch.Team1?.Name} not found`);
+            } else if (team2 == null) {
+              logger.warn(`Team ${xmlTeamMatch.Team2?.Name} not found`);
+            }
+          }
+          return { team1, team2 };
+        } 
+
         // get previous step data
         const draws: {
           draw: DrawCompetition;
@@ -410,7 +445,7 @@ export class CompetitionSyncer {
 
               // FInd one with same teams
               dbEncounter = encounters.find(
-                e => e.homeTeamId == team1.id && e.awayTeamId == team2.id && e.drawId === e.drawId
+                e => e.homeTeamId === team1.id && e.awayTeamId === team2.id && e.drawId === e.drawId
               );
 
               if (!dbEncounter) {
@@ -428,7 +463,7 @@ export class CompetitionSyncer {
             }
 
             // Update date if needed
-            if (dbEncounter.date != matchDate) {
+            if (dbEncounter.date !== matchDate) {
               dbEncounter.date = matchDate;
               await dbEncounter.save({ transaction: args.transaction });
             }
@@ -479,39 +514,6 @@ export class CompetitionSyncer {
       }
     );
 
-    async function findTeams(
-      xmlTeamMatch: XmlTeamMatch,
-      event: EventCompetition,
-      transaction: Transaction
-    ) {
-      const team1 =
-        (xmlTeamMatch.Team1?.Name?.length ?? 0) > 0
-          ? await Team.findOne({
-              where: {
-                name: xmlTeamMatch.Team1?.Name?.replace(/(\(\d+\))/gi, ' ').trim()
-              },
-              transaction: transaction
-            })
-          : null;
-      const team2 =
-        (xmlTeamMatch.Team2?.Name?.length ?? 0) > 0
-          ? await Team.findOne({
-              where: {
-                name: xmlTeamMatch.Team2?.Name?.replace(/(\(\d+\))/gi, ' ').trim()
-              },
-              transaction: transaction
-            })
-          : null;
-
-      if (event.startYear > 2021) {
-        if (team1 == null) {
-          logger.warn(`Team ${xmlTeamMatch.Team1?.Name} not found`);
-        } else if (team2 == null) {
-          logger.warn(`Team ${xmlTeamMatch.Team2?.Name} not found`);
-        }
-      }
-      return { team1, team2 };
-    }
   }
 
   protected addPlayers(): ProcessStep<Map<string, Player>> {
