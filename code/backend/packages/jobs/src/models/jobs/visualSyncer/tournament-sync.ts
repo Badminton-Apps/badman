@@ -399,6 +399,10 @@ export class TournamentSyncer {
           subEvent: SubEventTournament;
           internalId: number;
         }[] = this.processor.getData(this.STEP_SUBEVENT);
+        const event: {
+          event: EventTournament;
+          internalId: string;
+        } = this.processor.getData(this.STEP_EVENT);
         const players: Map<string, Player> = this.processor.getData(this.STEP_PLAYER);
         const updatedGames = [];
         const updatedgamePlayers = [];
@@ -430,14 +434,15 @@ export class TournamentSyncer {
           const xmlMatches = Array.isArray(bodyDraw.Match) ? bodyDraw.Match : [bodyDraw.Match];
 
           for (const xmlMatch of xmlMatches) {
+
             if (!xmlMatch) {
               continue;
             }
             let game = games.find(r => r.visualCode === `${xmlMatch.Code}`);
-
+            const playedAt = xmlMatch.MatchTime != null ? moment(xmlMatch.MatchTime).toDate() : event.event.firstDay;
+            
             if (!game) {
               game = new Game({
-                playedAt: moment(xmlMatch.MatchTime).toDate(),
                 winner: xmlMatch.Winner,
                 gameType: subEvent.gameType,
                 visualCode: xmlMatch.Code,
@@ -447,6 +452,9 @@ export class TournamentSyncer {
 
               updatedgamePlayers.push(...this._createGamePlayers(xmlMatch, game, players));
             }
+
+            // Set dates (if changed)
+            game.playedAt = playedAt;
 
             // Set winner
             game.winner = xmlMatch.Winner;
@@ -478,6 +486,7 @@ export class TournamentSyncer {
           transaction: args.transaction,
           updateOnDuplicate: [
             'winner',
+            'playedAt',
             'set1Team1',
             'set1Team2',
             'set2Team1',
