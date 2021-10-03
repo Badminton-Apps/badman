@@ -37,6 +37,8 @@ export abstract class CronJob {
 
   async single(args?: any) {
     this.run(args);
+    this.dbCron.lastRun = new Date();
+    await this.dbCron.save();
   }
 
   async stop() {
