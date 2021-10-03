@@ -28,8 +28,12 @@ export class GetScoresVisual extends CronJob {
     let newEvents = await this._getChangeEvents(newDate);
 
     newEvents = newEvents.sort((a, b) => {
-      return moment(b.StartDate).diff(a.StartDate);
+      return moment(a.StartDate).diff(b.StartDate);
     });
+
+    // newEvents = newEvents.filter(event => {
+    //   return event.Name == 'Competitie Badminton Limburg 2016-2017';
+    // });
 
     for (const xmlTournament of newEvents) {
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
