@@ -147,7 +147,7 @@ export class RankingSyncer {
       let pubs = bodyTournament.RankingPublication.filter(publication => publication.Visible).map(
         publication => {
           const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
-          var canUpdate = false;
+          let canUpdate = false;
           if (this.updateMonths.includes(momentDate.month())) {
             const firstMondayOfMonth = momentDate.clone().set('date', 1).isoWeekday(8);
             canUpdate = momentDate.isSame(firstMondayOfMonth);
