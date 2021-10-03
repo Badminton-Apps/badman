@@ -18,7 +18,8 @@ import {
   XmlMatch,
   XmlMatchTypeID,
   XmlResult,
-  XmlTournament
+  XmlTournament,
+  XmlTeamMatch
 } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
 import axios from 'axios';
@@ -184,7 +185,9 @@ export class CompetitionSyncer {
 
         if (!dbSubEvent) {
           if (eventData.existed) {
-            logger.warn(`Event ${xmlEvent.Name} for ${event.name} not found, might checking it?`);
+            logger.warn(
+              `Event ${xmlEvent.Name} for ${event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`
+            );
           }
 
           dbSubEvent = await new SubEventCompetition({
@@ -361,6 +364,10 @@ export class CompetitionSyncer {
           draw: DrawCompetition;
           internalId: number;
         }[] = this.processor.getData(this.STEP_DRAW);
+        const eventData: {
+          event: EventCompetition;
+          internalId: string;
+        } = this.processor.getData(this.STEP_EVENT);
 
         const dbEncounters: { encounter: EncounterCompetition; internalId: number }[] = [];
         for (const { draw, internalId } of draws) {
@@ -398,19 +405,8 @@ export class CompetitionSyncer {
             const matchDate = moment(xmlTeamMatch.MatchTime).toDate();
             let dbEncounter = encounters.find(r => r.visualCode === `${xmlTeamMatch.Code}`);
 
-            if (!dbEncounter && xmlTeamMatch.Team1 && xmlTeamMatch.Team2) {
-              const team1 = await Team.findOne({
-                where: {
-                  name: xmlTeamMatch.Team1.Name?.substring(0, xmlTeamMatch.Team1.Name.indexOf('('))
-                },
-                transaction: args.transaction
-              });
-              const team2 = await Team.findOne({
-                where: {
-                  name: xmlTeamMatch.Team1.Name?.substring(0, xmlTeamMatch.Team1.Name.indexOf('('))
-                },
-                transaction: args.transaction
-              });
+            if (!dbEncounter) {
+              const { team1, team2 } = await findTeams(xmlTeamMatch, eventData.event, args.transaction);
 
               // FInd one with same teams
               dbEncounter = encounters.find(
@@ -422,8 +418,8 @@ export class CompetitionSyncer {
                   drawId: draw.id,
                   visualCode: xmlTeamMatch.Code,
                   date: matchDate,
-                  homeTeamId: team1.id,
-                  awayTeamId: team2.id
+                  homeTeamId: team1?.id,
+                  awayTeamId: team2?.id
                 }).save({ transaction: args.transaction });
               } else {
                 dbEncounter.visualCode = xmlTeamMatch.Code;
@@ -431,10 +427,17 @@ export class CompetitionSyncer {
               }
             }
 
-
             // Update date if needed
             if (dbEncounter.date != matchDate) {
               dbEncounter.date = matchDate;
+              await dbEncounter.save({ transaction: args.transaction });
+            }
+
+            // Set teams if undefined (should not happen)
+            if (dbEncounter.awayTeamId == null || dbEncounter.homeTeamId == null) {
+              const { team1, team2 } = await findTeams(xmlTeamMatch, eventData.event, args.transaction);
+              dbEncounter.homeTeamId = team1?.id;
+              dbEncounter.awayTeamId = team2?.id;
               await dbEncounter.save({ transaction: args.transaction });
             }
 
@@ -475,6 +478,40 @@ export class CompetitionSyncer {
         return dbEncounters;
       }
     );
+
+    async function findTeams(
+      xmlTeamMatch: XmlTeamMatch,
+      event: EventCompetition,
+      transaction: Transaction
+    ) {
+      const team1 =
+        (xmlTeamMatch.Team1?.Name?.length ?? 0) > 0
+          ? await Team.findOne({
+              where: {
+                name: xmlTeamMatch.Team1?.Name?.replace(/(\(\d+\))/gi, ' ').trim()
+              },
+              transaction: transaction
+            })
+          : null;
+      const team2 =
+        (xmlTeamMatch.Team2?.Name?.length ?? 0) > 0
+          ? await Team.findOne({
+              where: {
+                name: xmlTeamMatch.Team2?.Name?.replace(/(\(\d+\))/gi, ' ').trim()
+              },
+              transaction: transaction
+            })
+          : null;
+
+      if (event.startYear > 2021) {
+        if (team1 == null) {
+          logger.warn(`Team ${xmlTeamMatch.Team1?.Name} not found`);
+        } else if (team2 == null) {
+          logger.warn(`Team ${xmlTeamMatch.Team2?.Name} not found`);
+        }
+      }
+      return { team1, team2 };
+    }
   }
 
   protected addPlayers(): ProcessStep<Map<string, Player>> {
