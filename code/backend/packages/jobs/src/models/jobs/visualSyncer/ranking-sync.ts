@@ -18,6 +18,7 @@ import axios from 'axios';
 
 export class RankingSyncer {
   public processor: Processor;
+  readonly updateMonths = [0, 2, 4, 6, 8, 10];
 
   readonly STEP_RANKING = 'ranking';
   readonly STEP_CATEGORIES = 'categories';
@@ -111,22 +112,12 @@ export class RankingSyncer {
         return {
           code: c.Code,
           name: c.Name
-        }
+        };
       });
     });
   }
 
-  protected getPublications(): ProcessStep<
-    {
-      code: string;
-      name: string;
-      year: string;
-      week: string;
-      publicationDate: Date;
-      visible: string;
-      date: Moment;
-    }[]
-  > {
+  protected getPublications(): ProcessStep<VisualPublication[]> {
     return new ProcessStep(this.STEP_PUBLICATIONS, async (args: { transaction: Transaction }) => {
       const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
         this.STEP_RANKING
@@ -155,15 +146,23 @@ export class RankingSyncer {
 
       let pubs = bodyTournament.RankingPublication.filter(publication => publication.Visible).map(
         publication => {
+          const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
+          var canUpdate = false;
+          if (this.updateMonths.includes(momentDate.month())) {
+            const firstMondayOfMonth = momentDate.clone().set('date', 1).isoWeekday(8);
+            canUpdate = momentDate.isSame(firstMondayOfMonth);
+          }
+
           return {
+            usedForUpdate: canUpdate,
             code: publication.Code,
             name: publication.Name,
             year: publication.Year,
             week: publication.Week,
             publicationDate: publication.PublicationDate,
             visible: publication.Visible,
-            date: moment(publication.PublicationDate, 'YYYY-MM-DD')
-          };
+            date: momentDate
+          } as VisualPublication;
         }
       );
       pubs = pubs.sort((a, b) => a.date.diff(b.date));
@@ -176,16 +175,6 @@ export class RankingSyncer {
       const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
         this.STEP_RANKING
       );
-
-      interface VisualPublication {
-        code: string;
-        name: string;
-        year: string;
-        week: string;
-        publicationDate: Date;
-        visible: string;
-        date: Moment;
-      }
 
       const publications: VisualPublication[] = this.processor.getData(this.STEP_PUBLICATIONS);
 
@@ -212,7 +201,7 @@ export class RankingSyncer {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               'Content-Type': 'application/xml'
             }
-          }
+          } 
         );
         const bodyTournament = parse(resultTournament.data, {
           attributeNamePrefix: '',
@@ -246,16 +235,17 @@ export class RankingSyncer {
           }
           if (places.has(foundPlayer.id)) {
             places.get(foundPlayer.id)[type] = points.Level;
-            places.get(foundPlayer.id)[`${type}Points`] = points.Level;
+            places.get(foundPlayer.id)[`${type}Points`] = points.Totalpoints;
             places.get(foundPlayer.id)[`${type}Rank`] = points.Rank;
           } else {
             places.set(
               foundPlayer.id,
               new RankingPlace({
+                updatePossible: publication.usedForUpdate,
                 playerId: foundPlayer.id,
                 rankingDate: publication.publicationDate,
                 [type]: points.Level,
-                [`${type}Points`]: points.Level,
+                [`${type}Points`]: points.Totalpoints,
                 [`${type}Rank`]: points.Rank,
                 SystemId: ranking.system.id
               })
@@ -335,4 +325,15 @@ export class RankingSyncer {
       }
     });
   }
+}
+
+interface VisualPublication {
+  usedForUpdate: boolean;
+  code: string;
+  name: string;
+  year: string;
+  week: string;
+  publicationDate: Date;
+  visible: string;
+  date: Moment;
 }
