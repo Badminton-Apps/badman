@@ -31,7 +31,7 @@ export class GetRankingVisual extends CronJob {
     type: string;
   } {
     return {
-      cron: '0 23 * * *',
+      cron: '0 1 * * *',
       type: 'ranking-visual'
     };
   }

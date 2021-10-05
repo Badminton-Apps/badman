@@ -100,7 +100,7 @@ export class GetScoresVisual extends CronJob {
     type: string;
   } {
     return {
-      cron: '0 23 * * *',
+      cron: '0 2 * * *',
       type: 'sync-visual'
     };
   }
