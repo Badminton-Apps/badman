@@ -315,7 +315,7 @@ export class RankingSyncer {
             await RankingPlace.bulkCreate(chunk, {
               ignoreDuplicates: true,
               transaction: args.transaction,
-              hooks: false
+              hooks: true
             });
           }
 
