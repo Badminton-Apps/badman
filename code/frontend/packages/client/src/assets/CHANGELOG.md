@@ -1,3 +1,19 @@
+# [3.57.0](https://github.com/Badminton-Apps/core/compare/v3.56.0...v3.57.0) (2021-10-05)
+
+
+### Bug Fixes
+
+* last ranking when syncing ([1a06d44](https://github.com/Badminton-Apps/core/commit/1a06d44d799830100fdd83db0ac355cae4912db7))
+* run jobs after midnight ([55d240a](https://github.com/Badminton-Apps/core/commit/55d240a84d3329045cd936191f5b6013dae5bda1))
+
+
+### Features
+
+* evolution is now up-to-date ([83f6201](https://github.com/Badminton-Apps/core/commit/83f62014f2e6ed6c8b406d5601ef0a888d381b54))
+* improving showing of ranking ([933a2f5](https://github.com/Badminton-Apps/core/commit/933a2f5374af6fe0235c3ae007ad63dcd7dc2b1f))
+
+
+
 # [3.56.0](https://github.com/Badminton-Apps/core/compare/v3.55.0...v3.56.0) (2021-10-05)
 
 
