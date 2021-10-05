@@ -1,3 +1,12 @@
+## [3.57.1](https://github.com/Badminton-Apps/core/compare/v3.57.0...v3.57.1) (2021-10-05)
+
+
+### Bug Fixes
+
+* jobs location ([3579381](https://github.com/Badminton-Apps/core/commit/35793813abaf5f11421a91a64ffe650a57ade0d7))
+
+
+
 # [3.57.0](https://github.com/Badminton-Apps/core/compare/v3.56.0...v3.57.0) (2021-10-05)
 
 
