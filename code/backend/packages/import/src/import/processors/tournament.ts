@@ -187,7 +187,7 @@ export class TournamentTpProcessor extends ProcessImport {
       const dbSubEvents = [];
 
       for (const subEvent of csvEvents) {
-        const eventType = super.getEventType(+subEvent.gender);
+        const eventType = this.getEventType(+subEvent.gender);
         const level = +subEvent.level;
         const prevEvent = prevSubEvents?.find(
           r => r.name === subEvent.name && r.level === level && r.eventType === eventType
