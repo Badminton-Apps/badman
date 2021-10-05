@@ -48,27 +48,54 @@ export class ProfileHeaderComponent implements OnInit {
 
     if (this.shownRanking) {
       const date = moment(this.shownRanking.rankingDate);
-      
+
+      var week = `Week: ${date.week()}-${date.weekYear()}`;
+
       if (this.shownRanking.doubleRank != -1) {
-        this.doubleTooltip = `Week: ${date.week()}-${date.weekYear()}\r\nWithin level: ${
-          this.shownRanking.doubleRank
-        } of ${this.shownRanking.totalWithinDoubleLevel}\r\nTotal: ${this.shownRanking.totalDoubleRanking}\r\nUp: ${
-          this.shownRanking.doublePoints
-        }, down: ${this.shownRanking.doublePointsDowngrade}`;
+        this.doubleTooltip = week;
+        if (this.shownRanking.doubleRank && this.shownRanking.totalWithinDoubleLevel) {
+          this.doubleTooltip += `\r\nWithin level: ${this.shownRanking.doubleRank} of ${this.shownRanking.totalWithinDoubleLevel}`;
+        }
+        if (this.shownRanking.totalDoubleRanking) {
+          this.doubleTooltip += `\r\nTotal: ${this.shownRanking.totalDoubleRanking}`;
+        }
+        if (this.shownRanking.doublePoints && this.shownRanking.doublePointsDowngrade) {
+          this.doubleTooltip += `\r\nUp: ${this.shownRanking.doublePoints}, down: ${this.shownRanking.doublePointsDowngrade}`;
+        } else if (this.shownRanking.doublePoints){
+          this.doubleTooltip += `\r\nUp: ${this.shownRanking.doublePoints}`;
+        }
       }
+
+
       if (this.shownRanking.mixRank != -1) {
-        this.mixTooltip = `Week: ${date.week()}-${date.weekYear()}\r\nWithin level: ${this.shownRanking.mixRank} of ${
-          this.shownRanking.totalWithinMixLevel
-        }\r\nTotal: ${this.shownRanking.totalMixRanking}\r\nUp: ${this.shownRanking.mixPoints}, down: ${
-          this.shownRanking.mixPointsDowngrade
-        }`;
+        this.mixTooltip = week;
+        if (this.shownRanking.mixRank && this.shownRanking.totalWithinMixLevel) {
+          this.mixTooltip += `\r\nWithin level: ${this.shownRanking.mixRank} of ${this.shownRanking.totalWithinMixLevel}`;
+        }
+        if (this.shownRanking.totalMixRanking) {
+          this.mixTooltip += `\r\nTotal: ${this.shownRanking.totalMixRanking}`;
+        }
+        if (this.shownRanking.mixPoints && this.shownRanking.mixPointsDowngrade) {
+          this.mixTooltip += `\r\nUp: ${this.shownRanking.mixPoints}, down: ${this.shownRanking.mixPointsDowngrade}`;
+        } else if (this.shownRanking.mixPoints){
+          this.mixTooltip += `\r\nUp: ${this.shownRanking.mixPoints}`;
+        }
       }
+
+      
       if (this.shownRanking.singleRank != -1) {
-        this.singleTooltip = `Week: ${date.week()}-${date.weekYear()}\r\nWithin level: ${
-          this.shownRanking.singleRank
-        } of ${this.shownRanking.totalWithinSingleLevel}\r\nTotal: ${this.shownRanking.totalSingleRanking}\r\nUp: ${
-          this.shownRanking.singlePoints
-        }, down: ${this.shownRanking.singlePointsDowngrade}`;
+        this.singleTooltip = week;
+        if (this.shownRanking.singleRank && this.shownRanking.totalWithinSingleLevel) {
+          this.singleTooltip += `\r\nWithin level: ${this.shownRanking.singleRank} of ${this.shownRanking.totalWithinSingleLevel}`;
+        }
+        if (this.shownRanking.totalSingleRanking) {
+          this.singleTooltip += `\r\nTotal: ${this.shownRanking.totalSingleRanking}`;
+        }
+        if (this.shownRanking.singlePoints && this.shownRanking.singlePointsDowngrade) {
+          this.singleTooltip += `\r\nUp: ${this.shownRanking.singlePoints}, down: ${this.shownRanking.singlePointsDowngrade}`;
+        } else if (this.shownRanking.singlePoints){
+          this.singleTooltip += `\r\nUp: ${this.shownRanking.singlePoints}`;
+        }
       }
     }
 

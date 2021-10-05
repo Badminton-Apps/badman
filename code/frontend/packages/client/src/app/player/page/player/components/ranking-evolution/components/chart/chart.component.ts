@@ -54,20 +54,36 @@ export class ChartComponent implements OnInit {
       .forEach((x) => {
         const rankingDate = moment(x.rankingDate).tz('Europe/Brussels');
 
+        console.log(x);
+
+        var topText = `Level ${x.level} on ${rankingDate.format('DD-MM-Y')}`;
+        var bottomText = ``;
+        if (x.points) {
+          bottomText += `${x.points} upgrade`;
+        }
+        if (x.points && x.pointsDowngrade) {
+          bottomText += `, `;
+        } else {
+          bottomText += ` points`;
+        }
+        if (x.pointsDowngrade) {
+          bottomText += `${x.pointsDowngrade} downgrade points`;
+        }
+
         if (rankingDate.isBefore(this.probablyInacurate)) {
           this.seriesDataInacc.push({
             name: {
-              top: `Level ${x.level} on ${rankingDate.format('DD-MM-Y')}`,
-              bottom: x.points ? `With ${x.points} upgrade, ${x.pointsDowngrade} downgrade points` : '',
+              top: topText,
+              bottom: bottomText,
             },
-            subName: `With ${x.points} upgrade, ${x.pointsDowngrade} downgrade points`,
+            subName: bottomText,
             value: [rankingDate.toDate(), x.level],
           });
         } else {
           this.seriesData.push({
             name: {
-              top: `Level ${x.level} on ${rankingDate.format('DD-MM-Y')}`,
-              bottom: x.points ? `With ${x.points} upgrade, ${x.pointsDowngrade} downgrade points` : '',
+              top: topText,
+              bottom: bottomText,
             },
             value: [rankingDate.toDate(), x.level],
           });
