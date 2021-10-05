@@ -103,3 +103,18 @@ spec:
               secretKeyRef:
                 name: apm
                 key: token
+          - name: VR_API
+            valueFrom:
+              secretKeyRef:
+                name: vr-auth
+                key: host
+          - name: VR_API_USER
+            valueFrom:
+              secretKeyRef:
+                name: vr-auth
+                key: user
+          - name: VR_API_PASS
+            valueFrom:
+              secretKeyRef:
+                name: vr-auth
+                key: pass                  
