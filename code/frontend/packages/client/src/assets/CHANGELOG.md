@@ -1,3 +1,12 @@
+## [3.57.2](https://github.com/Badminton-Apps/core/compare/v3.57.1...v3.57.2) (2021-10-05)
+
+
+### Bug Fixes
+
+* removed unneeded import ([886e618](https://github.com/Badminton-Apps/core/commit/886e618d5e3694db8e2dce20cef8efe6907bc1ce))
+
+
+
 ## [3.57.1](https://github.com/Badminton-Apps/core/compare/v3.57.0...v3.57.1) (2021-10-05)
 
 
