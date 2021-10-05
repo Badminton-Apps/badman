@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/job",
   "description": "Ranking simulation job Badminton Vlaanderen",
-  "version": "3.56.0",
+  "version": "3.57.0",
   "private": true,
   "scripts": {
     "start": "node -r ts-node/register ./src/server.ts",
@@ -20,7 +20,7 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@badvlasim/shared": "^3.56.0",
+    "@badvlasim/shared": "^3.57.0",
     "node-cron": "^3.0.0"
   },
   "devDependencies": {
