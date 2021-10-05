@@ -1,3 +1,18 @@
+# [3.56.0](https://github.com/Badminton-Apps/core/compare/v3.55.0...v3.56.0) (2021-10-05)
+
+
+### Bug Fixes
+
+* **jobs:** ranking sync ([311e8ba](https://github.com/Badminton-Apps/core/commit/311e8ba2191c143136e9357bf6530e8cba839434))
+* players not having access to team-assembly ([6138266](https://github.com/Badminton-Apps/core/commit/613826675f0dab44d9bd1219faf537ce2b1f1aa4))
+
+
+### Features
+
+* **jobs:** sync scores job is now working ([5c1c6e6](https://github.com/Badminton-Apps/core/commit/5c1c6e66c5b347ed3f3d1fa1786ba30456504a5f))
+
+
+
 # [3.55.0](https://github.com/Badminton-Apps/core/compare/v3.54.0...v3.55.0) (2021-09-21)
 
 
