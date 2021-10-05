@@ -12,7 +12,6 @@ import {
   Player,
   startWhenReady
 } from '@badvlasim/shared';
-import { logger } from '@badvlasim/shared/utils/logger';
 import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
 import { Response, Router } from 'express';
