@@ -1,3 +1,12 @@
+## [3.57.3](https://github.com/Badminton-Apps/core/compare/v3.57.2...v3.57.3) (2021-10-05)
+
+
+### Bug Fixes
+
+* adding visual endpoints ([55a0773](https://github.com/Badminton-Apps/core/commit/55a0773be9955b7bb40f7755c189d66c563c5689))
+
+
+
 ## [3.57.2](https://github.com/Badminton-Apps/core/compare/v3.57.1...v3.57.2) (2021-10-05)
 
 
