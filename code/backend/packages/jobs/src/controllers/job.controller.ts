@@ -52,7 +52,7 @@ export class JobController extends BaseController {
 
     if (foundJob) {
       foundJob.single(request.body);
-      response.status(200).send('Job started');
+      response.status(200).send('Running job');
     } else {
       response.status(400).send('Job not found');
     }
