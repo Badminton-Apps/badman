@@ -30,6 +30,7 @@ export abstract class CronJob {
   }
 
   async start() {
+    logger.info(`Starting cron job ${this.dbCron.type} on cron ${this.dbCron.cron}`);
     this._cronJob.start();
     this.dbCron.running = true;
     await this.dbCron.save();
@@ -42,6 +43,7 @@ export abstract class CronJob {
   }
 
   async stop() {
+    logger.info(`Stopped cron job ${this.dbCron.type}`);
     this.dbCron.running = false;
     await this.dbCron.save();
     this._cronJob.stop();
