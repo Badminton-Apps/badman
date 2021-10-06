@@ -31,9 +31,9 @@ export class GetScoresVisual extends CronJob {
       return moment(a.StartDate).diff(b.StartDate);
     });
 
-    newEvents = newEvents.filter(event => {
-      return event.Name == 'Vlaamse interclubcompetitie 2021-2022';
-    });
+    // newEvents = newEvents.filter(event => {
+    //   return event.Name == 'Vlaamse interclubcompetitie 2021-2022';
+    // });
 
     for (const xmlTournament of newEvents) {
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
