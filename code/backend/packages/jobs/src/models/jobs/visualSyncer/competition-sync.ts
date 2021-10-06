@@ -369,7 +369,8 @@ export class CompetitionSyncer {
             (xmlTeamMatch.Team1?.Name?.length ?? 0) > 0
               ? await Team.findOne({
                   where: {
-                    name: xmlTeamMatch.Team1?.Name?.replace(/(\(\d+\))/gi, ' ').trim()
+                    name: xmlTeamMatch.Team1?.Name?.replace(/(\(\d+\))/gi, ' ').trim(),
+                    active: true
                   },
                   transaction
                 })
@@ -378,10 +379,11 @@ export class CompetitionSyncer {
             (xmlTeamMatch.Team2?.Name?.length ?? 0) > 0
               ? await Team.findOne({
                   where: {
-                    name: xmlTeamMatch.Team2?.Name?.replace(/(\(\d+\))/gi, ' ').trim()
+                    name: xmlTeamMatch.Team2?.Name?.replace(/(\(\d+\))/gi, ' ').trim(),
+                    active: true
                   },
                   transaction
-                })
+                }) 
               : null;
     
           if (event.startYear > 2021) {
@@ -410,10 +412,10 @@ export class CompetitionSyncer {
 
           const resultDraw = await axios.get(
             `${process.env.VR_API}/Tournament/${args.tourneyKey}/Draw/${internalId}/Match`,
-            {
+            { 
               withCredentials: true,
               auth: {
-                username: `${process.env.VR_API_USER}`,
+                username: `${process.env.VR_API_USER}`, 
                 password: `${process.env.VR_API_PASS}`
               },
               headers: {
@@ -421,7 +423,7 @@ export class CompetitionSyncer {
                 'Content-Type': 'application/xml'
               }
             }
-          );
+          ); 
           const bodyDraw = parse(resultDraw.data, {
             attributeNamePrefix: '',
             ignoreAttributes: false,
