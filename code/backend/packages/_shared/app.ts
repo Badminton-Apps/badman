@@ -16,7 +16,7 @@ import { BaseController } from './models';
 import { createLightship, Lightship } from 'lightship';
 
 moment.suppressDeprecationWarnings = true;
-
+ 
 export class App {
   public app: Application;
   public corsOptions;
@@ -44,7 +44,6 @@ export class App {
       'http://localhost:5000',
       'http://localhost:4000',
       'http://localhost:4200',
-      'https://beta.latomme.org',
       'https://badman.app'
     ];
     this.corsOptions = {
