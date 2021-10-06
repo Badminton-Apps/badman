@@ -22,6 +22,12 @@ kubectl create secret generic apm -n badvla --from-literal=token=<password>
 kubectl create secret generic apm -n badvla --from-literal=token=<password> 
 ```
 
+## Visual Reality Token
+```
+kubectl delete secret vr-auth -n badvla
+kubectl create secret generic vr-auth -n badvla --from-literal=host=<password> --from-literal=user=<password> --from-literal=pass=<password> 
+```
+
 
 ## Research
 `kubectl apply -f -n elastic https://raw.githubusercontent.com/elastic/cloud-on-k8s/1.7/config/recipes/beats/metricbeat_hosts.yaml`
