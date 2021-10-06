@@ -1,3 +1,18 @@
+# [3.58.0](https://github.com/Badminton-Apps/core/compare/v3.57.3...v3.58.0) (2021-10-06)
+
+
+### Bug Fixes
+
+* inactive teams could be selected ([ab7ce7d](https://github.com/Badminton-Apps/core/commit/ab7ce7d4e5d923321ccb2e63d82c1ad7bdab28ed))
+
+
+### Features
+
+* more info when logging ([1ddafc1](https://github.com/Badminton-Apps/core/commit/1ddafc1558ff14183b4575eb53e3168947d90f57))
+* moved sync to tuesday ([d06ab1c](https://github.com/Badminton-Apps/core/commit/d06ab1c6b7e9ecc29e6bee25116091c1e9710474))
+
+
+
 ## [3.57.3](https://github.com/Badminton-Apps/core/compare/v3.57.2...v3.57.3) (2021-10-05)
 
 
