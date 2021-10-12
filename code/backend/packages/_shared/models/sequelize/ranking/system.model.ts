@@ -228,6 +228,7 @@ export class RankingSystem extends Model {
 
     switch (this.rankingSystem) {
       case RankingSystems.BVL:
+      case RankingSystems.VISUAL:
         this._bvlCaps();
         break;
       case RankingSystems.LFBB:
