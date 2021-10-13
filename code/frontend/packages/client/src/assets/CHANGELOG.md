@@ -1,3 +1,12 @@
+## [3.58.1](https://github.com/Badminton-Apps/core/compare/v3.58.0...v3.58.1) (2021-10-13)
+
+
+### Bug Fixes
+
+* **server:** caps not showing for visual system ([ef0c3f2](https://github.com/Badminton-Apps/core/commit/ef0c3f23c9021f83a5ca6c1851ba170a2cf4f79d))
+
+
+
 # [3.58.0](https://github.com/Badminton-Apps/core/compare/v3.57.3...v3.58.0) (2021-10-06)
 
 
