@@ -1,3 +1,25 @@
+# [3.59.0](https://github.com/Badminton-Apps/core/compare/v3.58.1...v3.59.0) (2021-10-15)
+
+
+### Bug Fixes
+
+* **client:** ad format shouldn't be set for manual sizing ([bca2163](https://github.com/Badminton-Apps/core/commit/bca21635540659d2cacc5bed59c1ad0c40ea248b))
+* **client:** new players ranking ([c812fe2](https://github.com/Badminton-Apps/core/commit/c812fe2b13601ce828ae1d8cd8960314ec9359bf))
+* **client:** Player profile whit no ranking places ([67d5cf9](https://github.com/Badminton-Apps/core/commit/67d5cf98b076406b76d4015ec48c594e6197c009))
+* **client:** Players with unknown ranking ([2f486ea](https://github.com/Badminton-Apps/core/commit/2f486ea1f1b4571e93cee35b61a463e5e9fb795f))
+* **client:** ranking not showing when null ([faa4ce9](https://github.com/Badminton-Apps/core/commit/faa4ce91b1d92031b2c2e04527a200410ca88146))
+* **client:** Shouldn't be here ([8a8bd9b](https://github.com/Badminton-Apps/core/commit/8a8bd9b233db0431539c4dc6a268ef4659c2da42))
+* **client:** translation key ([81f2d26](https://github.com/Badminton-Apps/core/commit/81f2d2622f847f5b70decbf51cfd6b8091fc8a52))
+* **script:** Fill gaps generated from Visual Api ([0c856d6](https://github.com/Badminton-Apps/core/commit/0c856d66932b867696bfce59f9e50b16e7d5a8b0))
+
+
+### Features
+
+* **job:** Check inactivity when updating last place ([4f9b956](https://github.com/Badminton-Apps/core/commit/4f9b9565574d4b5ea3f47345e7c0f47c97091e44))
+* Upgrade ECK + added heartbeat ([e4f629f](https://github.com/Badminton-Apps/core/commit/e4f629f4fd724db1a1cf2a812240ae684ec6ea8a))
+
+
+
 ## [3.58.1](https://github.com/Badminton-Apps/core/compare/v3.58.0...v3.58.1) (2021-10-13)
 
 
