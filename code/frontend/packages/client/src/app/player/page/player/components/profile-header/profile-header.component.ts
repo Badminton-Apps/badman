@@ -41,7 +41,12 @@ export class ProfileHeaderComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.shownRanking = this.player.lastRanking;
+    this.shownRanking = {
+      ...this.player.lastRanking,
+      single: this.player.lastRanking.single ?? 12,
+      double: this.player.lastRanking.double ?? 12,
+      mix: this.player.lastRanking.mix ?? 12
+    };
 
     const lastNames = this.player.lastName.split(' ');
     this.initials = `${this.player.firstName[0]}${lastNames[lastNames.length - 1][0]}`.toUpperCase();
@@ -61,11 +66,10 @@ export class ProfileHeaderComponent implements OnInit {
         }
         if (this.shownRanking.doublePoints && this.shownRanking.doublePointsDowngrade) {
           this.doubleTooltip += `\r\nUp: ${this.shownRanking.doublePoints}, down: ${this.shownRanking.doublePointsDowngrade}`;
-        } else if (this.shownRanking.doublePoints){
+        } else if (this.shownRanking.doublePoints) {
           this.doubleTooltip += `\r\nUp: ${this.shownRanking.doublePoints}`;
         }
       }
-
 
       if (this.shownRanking.mixRank != -1) {
         this.mixTooltip = week;
@@ -77,12 +81,11 @@ export class ProfileHeaderComponent implements OnInit {
         }
         if (this.shownRanking.mixPoints && this.shownRanking.mixPointsDowngrade) {
           this.mixTooltip += `\r\nUp: ${this.shownRanking.mixPoints}, down: ${this.shownRanking.mixPointsDowngrade}`;
-        } else if (this.shownRanking.mixPoints){
+        } else if (this.shownRanking.mixPoints) {
           this.mixTooltip += `\r\nUp: ${this.shownRanking.mixPoints}`;
         }
       }
 
-      
       if (this.shownRanking.singleRank != -1) {
         this.singleTooltip = week;
         if (this.shownRanking.singleRank && this.shownRanking.totalWithinSingleLevel) {
@@ -93,7 +96,7 @@ export class ProfileHeaderComponent implements OnInit {
         }
         if (this.shownRanking.singlePoints && this.shownRanking.singlePointsDowngrade) {
           this.singleTooltip += `\r\nUp: ${this.shownRanking.singlePoints}, down: ${this.shownRanking.singlePointsDowngrade}`;
-        } else if (this.shownRanking.singlePoints){
+        } else if (this.shownRanking.singlePoints) {
           this.singleTooltip += `\r\nUp: ${this.shownRanking.singlePoints}`;
         }
       }
