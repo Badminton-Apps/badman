@@ -1,4 +1,4 @@
-import { promises } from 'fs';
+import { promises, writeFileSync } from 'fs';
 const { readFile } = promises;
 import { compile, registerHelper } from 'handlebars';
 import path from 'path';
@@ -326,6 +326,8 @@ export class PdfService {
       });
       await page.setContent(content);
       const pdf = await page.pdf(options);
+      
+      // writeFileSync("assembly.html", await page.content());
 
       await context.close();
       return pdf;
