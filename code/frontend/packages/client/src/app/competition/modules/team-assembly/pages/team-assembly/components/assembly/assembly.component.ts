@@ -370,12 +370,12 @@ export class AssemblyComponent implements OnInit {
       const playerA =
         (a.lastRanking?.single ?? 12) +
         (a.lastRanking?.double ?? 12) +
-        (this.type == 'MX' ? a.lastRanking?.mix ?? 12 : 0);
+        (this.type == 'MX' ? a.lastRanking?.mix ?? 12 : 12);
 
       const playerB =
         (b.lastRanking?.single ?? 12) +
         (b.lastRanking?.double ?? 12) +
-        (this.type == 'MX' ? b.lastRanking?.mix ?? 12 : 0);
+        (this.type == 'MX' ? b.lastRanking?.mix ?? 12 : 12);
 
       // If the same return single
       if (playerA == playerB) {
@@ -413,8 +413,8 @@ export class AssemblyComponent implements OnInit {
 
   private _checkOtherLists() {
     const checkDoubles = (list1: Player[], list2: Player[], type: 'double' | 'mix') => {
-      const double1 = (list1[0]?.lastRanking[type] ?? 0) + (list1[1]?.lastRanking[type] ?? 0);
-      const double2 = (list2[0]?.lastRanking[type] ?? 0) + (list2[1]?.lastRanking[type] ?? 0);
+      const double1 = (list1[0]?.lastRanking[type] ?? 12) + (list1[1]?.lastRanking[type] ?? 12);
+      const double2 = (list2[0]?.lastRanking[type] ?? 12) + (list2[1]?.lastRanking[type] ?? 12);
 
       if (list1.length == 2 && list2.length == 2) {
         if (double1 > double2) {
@@ -440,31 +440,31 @@ export class AssemblyComponent implements OnInit {
 
     this.errors = {};
 
-    const single1 = this.single1[0]?.lastRanking.single ?? 0;
-    const single2 = this.single2[0]?.lastRanking.single ?? 0;
-    const single3 = this.single3[0]?.lastRanking.single ?? 0;
-    const single4 = this.single4[0]?.lastRanking.single ?? 0;
+    const single1 = this.single1[0]?.lastRanking.single ?? 12;
+    const single2 = this.single2[0]?.lastRanking.single ?? 12;
+    const single3 = this.single3[0]?.lastRanking.single ?? 12;
+    const single4 = this.single4[0]?.lastRanking.single ?? 12;
 
     if (this.type == 'MX') {
-      if (single1 != 0 && single2 != 0 && single1 > single2) {
+      if (single1 > single2) {
         this.errors.single2 = 'competition.team-assembly.errors.player-above-lower';
       }
 
-      if (single3 != 0 && single4 != 0 && single3 > single4) {
+      if (single3 > single4) {
         this.errors.single4 = 'competition.team-assembly.errors.player-above-lower';
       }
 
       this.errors.double4 = checkDoubles(this.double3, this.double4, 'mix');
     } else {
-      if (single1 != 0 && single2 != 0 && single1 > single2) {
+      if (single1 > single2) {
         this.errors.single2 = 'competition.team-assembly.errors.player-above-lower';
       }
 
-      if (single2 != 0 && single3 != 0 && single2 > single3) {
+      if (single2 > single3) {
         this.errors.single3 = 'competition.team-assembly.errors.player-above-lower';
       }
 
-      if (single3 != 0 && single4 != 0 && single3 > single4) {
+      if (single3 > single4) {
         this.errors.single4 = 'competition.team-assembly.errors.player-above-lower';
       }
 
