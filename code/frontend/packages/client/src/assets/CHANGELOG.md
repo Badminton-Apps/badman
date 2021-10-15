@@ -1,3 +1,12 @@
+## [3.59.1](https://github.com/Badminton-Apps/core/compare/v3.59.0...v3.59.1) (2021-10-15)
+
+
+### Bug Fixes
+
+* **server:** Assembly dashed line between double players ([5fc8518](https://github.com/Badminton-Apps/core/commit/5fc8518fd19a4ff0dad9032f0c8b1437d153598d))
+
+
+
 # [3.59.0](https://github.com/Badminton-Apps/core/compare/v3.58.1...v3.59.0) (2021-10-15)
 
 
