@@ -35,7 +35,7 @@ export class Player {
     this.lastName = args.lastName;
     this._fullName = args.fullName;
     this.isClaimed = args.isClaimed;
-    this.lastRanking = args.lastRanking ? new RankingPlace(args.lastRanking) : null;
+    this.lastRanking = new RankingPlace(args.lastRanking);
     this.games = args.games?.map((g) => new Game(g));
     this.base = args.base;
     this.sub = args.sub;
