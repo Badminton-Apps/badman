@@ -54,8 +54,6 @@ export class ChartComponent implements OnInit {
       .forEach((x) => {
         const rankingDate = moment(x.rankingDate).tz('Europe/Brussels');
 
-        console.log(x);
-
         var topText = `Level ${x.level} on ${rankingDate.format('DD-MM-Y')}`;
         var bottomText = ``;
         if (x.points) {
