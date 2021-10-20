@@ -11,6 +11,7 @@ import {
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
+  CreateOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -59,23 +60,29 @@ export class Team extends Model {
 
   // #region hooks
   @BeforeBulkCreate
-  static setAbbriviations(instances: Team[]) {
+  static async setAbbriviations(instances: Team[], options: CreateOptions) {
     for (const instance of instances ?? []) {
-      this.setAbbriviation(instance);
+      await this.setAbbriviation(instance, options);
     }
   }
 
   @BeforeCreate
-  static async setAbbriviation(instance: Team) {
+  static async setAbbriviation(instance: Team, options: CreateOptions) {
     if (instance.isNewRecord) {
-      const dbClub = await Club.findByPk(instance.clubId);
-      instance.name = `${dbClub.name} ${
-        instance.teamNumber
-      }${this.getLetterForRegion(instance.type, 'vl')}`;
-      instance.abbreviation = `${dbClub.abbreviation} ${
-        instance.teamNumber
-      }${this.getLetterForRegion(instance.type, 'vl')}`;
+      await this.generateAbbreviation(instance, options);
     }
+  }
+
+  static async generateAbbreviation(instance: Team, options: CreateOptions) {
+    const dbClub = await Club.findByPk(instance.clubId, {
+      transaction: options.transaction
+    });
+    instance.name = `${dbClub.name} ${
+      instance.teamNumber
+    }${this.getLetterForRegion(instance.type, 'vl')}`;
+    instance.abbreviation = `${dbClub.abbreviation} ${
+      instance.teamNumber
+    }${this.getLetterForRegion(instance.type, 'vl')}`;
   }
   // #endregion
 
