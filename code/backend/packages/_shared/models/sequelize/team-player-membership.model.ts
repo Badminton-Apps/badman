@@ -2,7 +2,6 @@ import { BuildOptions, SaveOptions } from 'sequelize';
 import {
   AfterBulkCreate,
   AfterCreate,
-  AfterUpdate,
   AllowNull,
   Column,
   DataType,
@@ -15,10 +14,8 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { DataBaseHandler } from '../../database';
 import { logger } from '../../utils';
 import { ClubMembership } from './club-membership.model';
-import { Club } from './club.model';
 import { Player } from './player.model';
 import { Team } from './team.model';
 
@@ -68,7 +65,7 @@ export class TeamPlayerMembership extends Model {
     instance: TeamPlayerMembership,
     options: SaveOptions
   ) {
-    logger.debug('Are the hooks running?')
+    logger.debug('Are the hooks running?');
 
     const team = await Team.findByPk(instance.teamId, {
       transaction: options.transaction
