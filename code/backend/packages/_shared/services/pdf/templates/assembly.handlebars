@@ -33,7 +33,7 @@
 
     .info .value {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
     }
 
     .info .captain {
@@ -42,6 +42,13 @@
 
     .info .home {
       text-align: right;
+    }
+    .info .home .value{
+      margin-left: 40px;
+    }
+
+    .info .away .value{
+      margin-right: 40px;
     }
 
     .info .home,
@@ -434,9 +441,9 @@
         </div>
         <div class="box d{{@index}} p1 level">
           {{#if (and (eq @root.type 'MX') (gt @index 1))}}
-            {{double.player1.lastRankingPlace.mix}}
+            {{double.player1.lastRankingPlaces.mix}}
           {{else}}
-            {{double.player1.lastRankingPlace.double}}
+            {{double.player1.lastRankingPlaces.double}}
           {{/if}}
         </div>
         <div class="box d{{@index}} p1 number">
@@ -463,9 +470,9 @@
         </div>
         <div class="box d{{@index}} p2 level">
           {{#if (and (eq @root.type 'MX') (gt @index 1))}}
-            {{double.player2.lastRankingPlace.mix}}
+            {{double.player2.lastRankingPlaces.mix}}
           {{else}}
-            {{double.player2.lastRankingPlace.double}}
+            {{double.player2.lastRankingPlaces.double}}
           {{/if}}
         </div>
         <div class="box d{{@index}} p2 number">
@@ -496,7 +503,7 @@
           {{single.fullName}}
         </div>
         <div class="box s{{@index}} p1 level">
-          {{single.lastRankingPlace.single}}
+          {{single.lastRankingPlaces.single}}
         </div>
         <div class="box s{{@index}} p1 number">
           {{single.memberId}}
@@ -542,13 +549,13 @@
         </div>
         <div class="box p{{@index}} level">
           <div>
-            {{subtitude.lastRankingPlace.single}}
+            {{subtitude.lastRankingPlaces.single}}
           </div>
           <div>
-            {{subtitude.lastRankingPlace.double}}
+            {{subtitude.lastRankingPlaces.double}}
           </div>
           <div>
-            {{subtitude.lastRankingPlace.mix}}
+            {{subtitude.lastRankingPlaces.mix}}
           </div>
         </div>
         <div class="box p{{@index}} number">

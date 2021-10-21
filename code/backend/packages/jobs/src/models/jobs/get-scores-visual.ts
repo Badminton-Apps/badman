@@ -28,11 +28,15 @@ export class GetScoresVisual extends CronJob {
     let newEvents = await this._getChangeEvents(newDate);
 
     newEvents = newEvents.sort((a, b) => {
-      return moment(a.StartDate).diff(b.StartDate);
-    });
+      return moment(b.StartDate).valueOf() - moment(a.StartDate).valueOf();
+    }); 
 
     // newEvents = newEvents.filter(event => {
-    //   return event.Name == 'Vlaamse interclubcompetitie 2021-2022';
+    //   return (
+    //     event.Name == 'VVBBC interclubcompetitie 2021-2022' ||
+    //     event.Name == 'Limburgse interclubcompetitie 2021-2022' ||
+    //     event.Name == 'WVBF Competitie 2021-2022'
+    //   );
     // });
 
     for (const xmlTournament of newEvents) {
@@ -46,7 +50,7 @@ export class GetScoresVisual extends CronJob {
         ) {
           await this._competitionSync.process({ transaction, xmlTournament });
         } else {
-          await this._tournamentSync.process({ transaction, xmlTournament });
+          // await this._tournamentSync.process({ transaction, xmlTournament });
         }
         await transaction.commit();
         logger.info(`Finished ${xmlTournament.Name}`);

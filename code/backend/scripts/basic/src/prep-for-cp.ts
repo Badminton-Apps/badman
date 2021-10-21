@@ -329,7 +329,7 @@ async function updateCpFile(
 
       return {
         ...p.toJSON(),
-        lastRankingPlace: {
+        lastRankingPlaces: {
           single: parseInt(csvPlayer?.PlayerLevelSingle, 10) || 12,
           double: parseInt(csvPlayer?.PlayerLevelDouble, 10) || 12,
           mix: parseInt(csvPlayer?.PlayerLevelMixed, 10) || 12
@@ -339,7 +339,7 @@ async function updateCpFile(
 
     if (team.type !== 'MX') {
       const bestPlayers = basePlayers
-        .map(r => r.lastRankingPlace?.single + r.lastRankingPlace?.double)
+        .map(r => r.lastRankingPlaces?.single + r.lastRankingPlaces?.double)
         .sort((a, b) => a - b)
         .slice(0, 4);
 
@@ -356,9 +356,9 @@ async function updateCpFile(
           .filter(p => p.gender === 'M')
           .map(
             r =>
-              r.lastRankingPlace?.single +
-              r.lastRankingPlace?.double +
-              r.lastRankingPlace?.mix
+              r.lastRankingPlaces?.single +
+              r.lastRankingPlaces?.double +
+              r.lastRankingPlaces?.mix
           )
           .sort((a, b) => a - b)
           .slice(0, 2),
@@ -367,9 +367,9 @@ async function updateCpFile(
           .filter(p => p.gender === 'F')
           .map(
             r =>
-              r.lastRankingPlace?.single +
-              r.lastRankingPlace?.double +
-              r.lastRankingPlace?.mix
+              r.lastRankingPlaces?.single +
+              r.lastRankingPlaces?.double +
+              r.lastRankingPlaces?.mix
           )
           .sort((a, b) => a - b)
           .slice(0, 2)
@@ -442,13 +442,13 @@ async function updateCpFile(
         const dob = csvPlayer?.dob ? `#${csvPlayer?.dob}#` : 'NULL';
         const single =
           parseInt(csvPlayer?.PlayerLevelSingle, 10) ||
-          (player.lastRankingPlace?.single ?? 12);
+          (player.lastRankingPlaces?.single ?? 12);
         const double =
           parseInt(csvPlayer?.PlayerLevelDouble, 10) ||
-          (player.lastRankingPlace?.double ?? 12);
+          (player.lastRankingPlaces?.double ?? 12);
         const mix =
           parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
-          (player.lastRankingPlace?.mix ?? 12);
+          (player.lastRankingPlaces?.mix ?? 12);
 
         let memberid = player?.memberId;
         const gender = getGender(player.gender);
@@ -526,13 +526,13 @@ async function updateCpFile(
       const csvPlayer = code_players.get(player.memberId);
       const single =
         parseInt(csvPlayer?.PlayerLevelSingle, 10) ||
-        (player.lastRankingPlace?.single ?? 12);
+        (player.lastRankingPlaces?.single ?? 12);
       const double =
         parseInt(csvPlayer?.PlayerLevelDouble, 10) ||
-        (player.lastRankingPlace?.double ?? 12);
+        (player.lastRankingPlaces?.double ?? 12);
       const mix =
         parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
-        (player.lastRankingPlace?.mix ?? 12);
+        (player.lastRankingPlaces?.mix ?? 12);
 
       if (csvPlayer?.TypeName != 'Competitiespeler') {
         issues.hasIssues = true;
@@ -541,7 +541,7 @@ async function updateCpFile(
 
       // First team doesn't have any restrictions
       if (team.teamNumber > 1) {
-        if (player?.lastRankingPlace) {
+        if (player?.lastRankingPlaces) {
           if (single < subEvent.maxLevel) {
             issues.hasIssues = true;
             issues.level.push(

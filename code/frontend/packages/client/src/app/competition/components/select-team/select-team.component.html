@@ -22,6 +22,15 @@
           {{ option.name }}
         </mat-option>
       </mat-optgroup>
+
+      <mat-optgroup
+        *ngIf="this.teamsNAT && this.teamsNAT.length > 0"
+        [label]="'pickers.select-team-groups.NATIONAL' | translate"
+      >
+        <mat-option *ngFor="let option of this.teamsNAT" [value]="option">
+          {{ option.name }}
+        </mat-option>
+      </mat-optgroup>
     </mat-select>
   </mat-form-field>
 </ng-container>

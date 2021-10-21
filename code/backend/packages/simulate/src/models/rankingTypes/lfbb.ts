@@ -197,7 +197,7 @@ export class LfbbRankingCalc extends RankingCalc {
 
     players.forEach(async player => {
       const points = eligbleForRanking.get(player.id) || [];
-      const lastRanking = player.lastRankingPlace ?? {
+      const lastRanking = player.lastRankingPlaces.find(p => p.systemId === this.rankingType.id) ?? {
         single: this.rankingType.amountOfLevels,
         mix: this.rankingType.amountOfLevels,
         double: this.rankingType.amountOfLevels,

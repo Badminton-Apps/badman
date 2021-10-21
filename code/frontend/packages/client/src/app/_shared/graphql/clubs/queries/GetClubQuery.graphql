@@ -1,6 +1,7 @@
 query GetClubQuery(
   $id: ID!
   $end: String
+  $systemId: String
   $includePlacesTeams: Boolean!
   $includePlaces: Boolean!
   $includeTeams: Boolean!
@@ -31,7 +32,7 @@ query GetClubQuery(
         competitionPlayer
         base
         gender
-        lastRanking @include(if: $includePlacesTeams) {
+        lastRanking(system: $systemId) @include(if: $includePlacesTeams) {
           single
           double
           mix
