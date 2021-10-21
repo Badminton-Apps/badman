@@ -1,5 +1,6 @@
 import {
   correctWrongPlayers,
+  correctWrongTeams,
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
@@ -180,7 +181,9 @@ export class CompetitionSyncer {
           }
 
           // Hopefully with this we can link with the correct subEvent so our link isn't lost
-          dbSubEvent = subEvents.find(r => r.name === xmlEvent.Name && r.eventType === type);
+          dbSubEvent = subEvents.find(
+            r => r.name === xmlEvent.Name.replace(/[ABCDE]+$/gm, '').trim() && r.eventType === type
+          );
         }
 
         if (!dbSubEvent) {
@@ -359,42 +362,117 @@ export class CompetitionSyncer {
     return new ProcessStep(
       this.STEP_ENCOUNTER,
       async (args: { transaction: Transaction; tourneyKey: string }) => {
-
         const findTeams = async (
           xmlTeamMatch: XmlTeamMatch,
           event: EventCompetition,
           transaction: Transaction
         ) => {
-          const team1 =
-            (xmlTeamMatch.Team1?.Name?.length ?? 0) > 0
-              ? await Team.findOne({
-                  where: {
-                    name: xmlTeamMatch.Team1?.Name?.replace(/(\(\d+\))/gi, ' ').trim(),
-                    active: true
-                  },
-                  transaction
-                })
-              : null;
-          const team2 =
-            (xmlTeamMatch.Team2?.Name?.length ?? 0) > 0
-              ? await Team.findOne({
-                  where: {
-                    name: xmlTeamMatch.Team2?.Name?.replace(/(\(\d+\))/gi, ' ').trim(),
-                    active: true
-                  },
-                  transaction
-                }) 
-              : null;
-    
-          if (event.startYear > 2021) {
+          // We only know about last years teams
+          if (
+            event.startYear >= 2021 &&
+            (event.name == 'PBO competitie 2021-2022' ||
+              event.name == 'PBA competitie 2021-2022' ||
+              event.name == 'VVBBC interclubcompetitie 2021-2022' ||
+              event.name == 'Limburgse interclubcompetitie 2021-2022' ||
+              event.name == 'WVBF Competitie 2021-2022' ||
+              event.name == 'Vlaamse interclubcompetitie 2021-2022' ||
+              event.name == 'Victor League 2021-2022')
+          ) {
+            if (xmlTeamMatch.Team1?.Name == null) {
+              logger.warn(`Team 1 not filled`);
+              return { team1: null, team2: null };
+            }
+            if (xmlTeamMatch.Team2?.Name == null) {
+              logger.warn(`Team 2 not filled`);
+              return { team1: null, team2: null };
+            }
+
+            let team1 = await Team.findOne({
+              where: {
+                name: correctWrongTeams({ name: xmlTeamMatch.Team1?.Name }).name,
+                active: true
+              },
+              transaction
+            });
+
+            let team2 = await Team.findOne({
+              where: {
+                name: correctWrongTeams({ name: xmlTeamMatch.Team2?.Name }).name,
+                active: true
+              },
+              transaction
+            });
+
+            // Try again on naming convention
+            if (team1 == null) {
+              team1 = await findByRegex(xmlTeamMatch.Team1?.Name);
+            }
+            if (team2 == null) {
+              team2 = await findByRegex(xmlTeamMatch.Team2?.Name);
+            }
+
             if (team1 == null) {
               logger.warn(`Team ${xmlTeamMatch.Team1?.Name} not found`);
-            } else if (team2 == null) {
+            }
+            if (team2 == null) {
               logger.warn(`Team ${xmlTeamMatch.Team2?.Name} not found`);
             }
+            return { team1, team2 };
+          } else {
+            return { team1: null, team2: null };
           }
-          return { team1, team2 };
-        } 
+
+          async function findByRegex(name: string) {
+            // remove leading index for PBA
+            // name = name.replace(/\(\d+\)/gim, '');
+
+            const regexResult = /(?<club>.*)\ ((?<teamNumberFront>\d+)(?<teamTypeFront>[GHD]?)|(?<teamTypeBack>[GHD]?)(?<teamNumberBack>\d))/gim.exec(
+              name
+            );
+
+            if (regexResult) {
+              const teamNumber = parseInt(
+                regexResult.groups?.teamNumberFront || regexResult.groups?.teamNumberBack
+              );
+              function getType(type: string) {
+                if (event.type == LevelType.NATIONAL) {
+                  return SubEventType.NATIONAL;
+                }
+                switch (type?.toUpperCase()) {
+                  case 'G':
+                    return SubEventType.MX;
+                  case 'D':
+                    return SubEventType.F;
+                  case 'H':
+                    return SubEventType.M;
+
+                  default:
+                    logger.warn('no type?', name);
+                }
+              }
+
+              const type = getType(
+                regexResult.groups?.teamTypeFront || regexResult.groups?.teamTypeBack
+              );
+
+              return await Team.findOne({
+                where: {
+                  name: {
+                    [Op.iLike]: `%${
+                      correctWrongTeams({ name: regexResult.groups?.club || name }).name
+                    }%`
+                  },
+                  teamNumber,
+                  type,
+                  active: true
+                },
+                transaction
+              });
+            } else {
+              return null;
+            }
+          }
+        };
 
         // get previous step data
         const draws: {
@@ -412,10 +490,10 @@ export class CompetitionSyncer {
 
           const resultDraw = await axios.get(
             `${process.env.VR_API}/Tournament/${args.tourneyKey}/Draw/${internalId}/Match`,
-            { 
+            {
               withCredentials: true,
               auth: {
-                username: `${process.env.VR_API_USER}`, 
+                username: `${process.env.VR_API_USER}`,
                 password: `${process.env.VR_API_PASS}`
               },
               headers: {
@@ -423,7 +501,7 @@ export class CompetitionSyncer {
                 'Content-Type': 'application/xml'
               }
             }
-          ); 
+          );
           const bodyDraw = parse(resultDraw.data, {
             attributeNamePrefix: '',
             ignoreAttributes: false,
@@ -443,11 +521,16 @@ export class CompetitionSyncer {
             let dbEncounter = encounters.find(r => r.visualCode === `${xmlTeamMatch.Code}`);
 
             if (!dbEncounter) {
-              const { team1, team2 } = await findTeams(xmlTeamMatch, eventData.event, args.transaction);
+              const { team1, team2 } = await findTeams(
+                xmlTeamMatch,
+                eventData.event,
+                args.transaction
+              );
 
               // FInd one with same teams
               dbEncounter = encounters.find(
-                e => e.homeTeamId === team1.id && e.awayTeamId === team2.id && e.drawId === e.drawId
+                e =>
+                  e.homeTeamId === team1?.id && e.awayTeamId === team2?.id && e.drawId === e.drawId
               );
 
               if (!dbEncounter) {
@@ -472,7 +555,11 @@ export class CompetitionSyncer {
 
             // Set teams if undefined (should not happen)
             if (dbEncounter.awayTeamId == null || dbEncounter.homeTeamId == null) {
-              const { team1, team2 } = await findTeams(xmlTeamMatch, eventData.event, args.transaction);
+              const { team1, team2 } = await findTeams(
+                xmlTeamMatch,
+                eventData.event,
+                args.transaction
+              );
               dbEncounter.homeTeamId = team1?.id;
               dbEncounter.awayTeamId = team2?.id;
               await dbEncounter.save({ transaction: args.transaction });
@@ -515,7 +602,6 @@ export class CompetitionSyncer {
         return dbEncounters;
       }
     );
-
   }
 
   protected addPlayers(): ProcessStep<Map<string, Player>> {
@@ -553,7 +639,7 @@ export class CompetitionSyncer {
 
           return {
             player: correctWrongPlayers({
-              memberId: `${xmlPlayer?.MemberID}`,
+              memberId: xmlPlayer?.MemberID ? `${xmlPlayer?.MemberID}` : null,
               firstName: xmlPlayer.Firstname,
               lastName: xmlPlayer.Lastname,
               gender:
@@ -579,7 +665,11 @@ export class CompetitionSyncer {
         for (const xmlPlayer of xmlPlayers) {
           let foundPlayer = players.find(r => r.memberId === `${xmlPlayer?.player?.memberId}`);
 
-          if (!foundPlayer && xmlPlayer?.player?.memberId != null) {
+          if (
+            !foundPlayer &&
+            xmlPlayer?.player?.memberId != null &&
+            xmlPlayer?.player?.lastName?.toLowerCase().indexOf('onbekend') == -1
+          ) {
             foundPlayer = await new Player(xmlPlayer?.player).save({
               transaction: args.transaction
             });

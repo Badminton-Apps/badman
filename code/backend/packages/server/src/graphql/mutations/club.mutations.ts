@@ -1,4 +1,4 @@
-import { Club, DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import { Club, DataBaseHandler, logger, Player, Team } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLString } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { ClubInputType, ClubType } from '../types';
@@ -35,7 +35,7 @@ export const addClubMutation = {
       await transaction.rollback();
       throw e;
     }
-  }
+  } 
 };
 
 export const removeClubMutation = {
@@ -129,7 +129,7 @@ export const addPlayerToClubMutation = {
 };
 
 export const updateClubMutation = {
-  type: ClubType,
+  type: ClubType, 
   args: {
     club: {
       name: 'Club',
@@ -150,11 +150,12 @@ export const updateClubMutation = {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
-      });
+      }); 
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbClub = await Club.findByPk(club.id, { transaction });
+      const dbClubCopy = dbClub.get({ plain: true, clone: true });
       if (!dbClub) {
         logger.debug('club', dbClub);
         throw new ApiError({
@@ -166,6 +167,16 @@ export const updateClubMutation = {
       await dbClub.update(club, {
         transaction
       });
+
+      // Update team abbreaviations when club abbreviation changed
+       if (dbClubCopy.abbreviation != club.abbreviation) {
+        const teams = await dbClub.getTeams({ where: {active: true}, transaction });
+        logger.debug(`updating teams ${teams.length}`);
+        for (const team of teams) {
+          await Team.generateAbbreviation(team, { transaction });
+          await team.save({ transaction });
+        }
+      }
 
       await transaction.commit();
       return dbClub;

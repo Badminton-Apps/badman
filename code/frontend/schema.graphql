@@ -591,6 +591,7 @@ type Player {
     # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
     where: SequelizeJSON
     offset: Int
+    system: String
   ): LastRankingPlace
   rankingPoints(
     limit: Int

@@ -1,4 +1,5 @@
-import { Club, Player } from '@badvlasim/shared/models';
+import { logger } from '@badvlasim/shared';
+import { Club, Player, RankingSystem } from '@badvlasim/shared/models';
 import {
   GraphQLBoolean,
   GraphQLInputObjectType,
@@ -53,8 +54,24 @@ export const PlayerType = new GraphQLObjectType({
       },
       lastRanking: {
         type: LastRankingPlaceType,
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Player.associations.lastRankingPlace, {})
+        args: Object.assign(defaultListArgs(), {
+          system: {
+            type: GraphQLString
+          }
+        }),
+        resolve: async (obj: Player, args, context, info) => {
+          let systemId = args.system;
+          if (systemId == null) {
+            systemId = (await RankingSystem.findOne({ where: { primary: true } })).id;
+          }
+
+          if (systemId == null) {
+            return null;
+          }
+
+          const places = await obj.getLastRankingPlaces({ where: { systemId } });
+          return places[0];
+        }
       },
       rankingPoints: {
         type: new GraphQLList(RankingPointType),
@@ -123,7 +140,7 @@ export const PlayerType = new GraphQLObjectType({
             };
           }
 
-          args.where = queryFixer(args.where)
+          args.where = queryFixer(args.where);
 
           const player = await Player.findOne({
             attributes: ['id'],

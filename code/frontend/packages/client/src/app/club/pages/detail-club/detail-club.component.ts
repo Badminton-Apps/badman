@@ -22,6 +22,7 @@ export class DetailClubComponent {
   constructor(
     private clubService: ClubService,
     private teamService: TeamService,
+    private systemService: SystemService,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
@@ -31,17 +32,19 @@ export class DetailClubComponent {
     this.club$ = combineLatest([
       this.route.paramMap,
       this.activeTeams$,
+      this.systemService.getPrimarySystem(),
 
       // Triggers refresh
       this.update$,
     ]).pipe(
-      switchMap(([params, activeTeams]) => {
+      switchMap(([params, activeTeams, primarySystem]) => {
         return this.clubService.getClub(params.get('id'), {
           playersfrom: moment().subtract(1, 'year').toDate(),
           includePlayers: true,
           includeTeams: true,
           includePlacesTeams: true,
           includeLocations: true,
+          systemId: primarySystem.id,
           teamsWhere: {
             active: activeTeams ? true : undefined,
           },
