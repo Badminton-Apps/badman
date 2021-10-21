@@ -143,7 +143,6 @@
         },
         "team-assembly": {
             "title": "Team assembly",
-            "substitude": "",
             "double1": "Double 1",
             "double2": "Double 2",
             "double3": "Double 3",
@@ -151,11 +150,9 @@
             "single1": "Single 1",
             "single2": "Single 2",
             "single3": "Single 3",
-            "single4": "Single 4",
-            "mix1": "Mixed doubles 1",
-            "mix2": "Mixed doubles 2",
-            "mix3": "Mixed doubles 1",
-            "mix4": "Mixed doubles 2",
+            "single4": "Single 1",
+            "mix1": "Men doubles",
+            "mix2": "Women doubles",
             "errors": {
                 "already": "",
                 "to-much": "",
@@ -163,13 +160,18 @@
                 "player-above-lower": "",
                 "not-enough-players": ""
             },
-            "team-index": "",
+            "team-index": "Team index titulars equals <strong>{{current}}<\/strong> and is allowed to mimimally be <strong>{{team}}<\/strong>",
             "team-index-ignored": "",
             "captain": "",
             "players": {
-                "title": ""
+                "title": "Possible titulars"
             },
-            "info": ""
+            "info": "Remarks concerning the team assembly",
+            "substitude": "Substitutes",
+            "mix3": "Mixed doubles 1",
+            "mix4": "Mixed doubles 2",
+            "permanent": "Player permanently in the list?",
+            "permanent-dialog": "If you want a player permanently in this list, you have to add (or let add in case you don't have the access rights) this player in the team via the club overview "
         }
     },
     "event": {
@@ -198,7 +200,8 @@
         "female": "Women",
         "mix": "Mixed",
         "males": "Male",
-        "females": "Female"
+        "females": "Female",
+        "national": "National"
     },
     "input": {
         "type": "Type",
@@ -219,7 +222,8 @@
         "streetnumber": "House number",
         "city": "City",
         "postalcode": "Postal code",
-        "state": "Province"
+        "state": "Province",
+        "competitionplayer": "Competition player"
     },
     "button": {
         "close": "Close",
@@ -255,15 +259,16 @@
         "number": "club number"
     },
     "pickers": {
-        "select-year": "Pick a competition year",
         "select-team": "Pick a team",
         "select-team-groups": {
             "M": "Men",
             "F": "Women",
-            "MX": "Mixed"
+            "MX": "Mixed",
+            "NATIONAL": "National"
         },
         "select-club": "Pick a club",
-        "select-encounter": "Pick an encounter"
+        "select-encounter": "Pick an encounter",
+        "select-year": "Pick a competition season"
     },
     "permission": {
         "no-perm": "You do not have insufficient rights for this"
