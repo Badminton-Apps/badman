@@ -27,7 +27,7 @@ export class ClubEditTeamComponent implements OnInit {
     this.players = this.team.subEvents[0].meta.players.map((p) => new Player(p.player));
 
     this.where = {
-      gender: this.team.type == 'MX' ? undefined : this.team.type,
+      gender: this.team.type == 'MX' || this.team.type == 'NATIONAL' ? undefined : this.team.type,
     };
   }
 }

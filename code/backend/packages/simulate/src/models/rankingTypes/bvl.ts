@@ -175,7 +175,7 @@ export class BvlRankingCalc extends RankingCalc {
       }
 
       const lastRanking =
-        player.lastRankingPlace ??
+        player.lastRankingPlaces.find(p => p.systemId === this.rankingType.id) ??
         ({
           single: this.rankingType.amountOfLevels,
           mix: this.rankingType.amountOfLevels,
@@ -334,7 +334,7 @@ export class BvlRankingCalc extends RankingCalc {
                     [Op.gt]: moment(endDate).subtract(
                       rankingType.inactivityAmount,
                       rankingType.inactivityUnit
-                    )
+                    ).toDate()
                   },
                   { [Op.lte]: endDate }
                 ]

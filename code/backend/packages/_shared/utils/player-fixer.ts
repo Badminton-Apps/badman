@@ -5427,6 +5427,13 @@ export const correctWrongPlayers = (player: {
     };
   }
 
+  if (player.firstName === 'Sarina' && player.lastName === 'Eerdekens') {
+    return {
+      ...player,
+      memberId: '50219812'
+    };
+  }
+
   // // Fixme
   // if (player.memberId === '') {
   //   return {

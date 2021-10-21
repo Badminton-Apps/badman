@@ -188,7 +188,7 @@ export class DataBaseHandler {
             rankingDate: `${year}-05-15`
           }
         });
-        player.lastRankingPlace = rankingPlaceMay.asLastRankingPlace();
+        player.lastRankingPlaces = [rankingPlaceMay.asLastRankingPlace()];
         teamPlayers.push(player);
 
         playerMeta.push({
@@ -204,7 +204,7 @@ export class DataBaseHandler {
       team.players = teamPlayers;
 
       membership.meta = {
-        teamIndex: team.baseIndex,
+        teamIndex: team.baseIndex(primarySystem),
         players: playerMeta
       };
 
@@ -330,6 +330,8 @@ export class DataBaseHandler {
         transaction
       });
 
+      logger.debug(`Merging ${destination.fullName}`);
+
       if (destination === null) {
         throw new Error('destination does not exist');
       }
@@ -423,7 +425,7 @@ export class DataBaseHandler {
       });
       await PlayerRoleMembership.destroy({
         where: { playerId: source.id },
-        transaction
+        transaction 
       });
       await PlayerClaimMembership.destroy({
         where: { playerId: source.id },

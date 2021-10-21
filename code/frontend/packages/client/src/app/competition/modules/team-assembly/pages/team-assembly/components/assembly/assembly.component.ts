@@ -150,7 +150,7 @@ export class AssemblyComponent implements OnInit {
     this.subEvent = team.subEvents[0];
 
     this.wherePlayer = {
-      gender: this.type == 'MX' ? undefined : this.type,
+      gender: this.type == 'MX' || this.type == "NATIONAL" ? undefined : this.type,
       id: {
         $notIn: this.players?.map((p) => p.id),
       },

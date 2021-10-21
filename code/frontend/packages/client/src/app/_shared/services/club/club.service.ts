@@ -31,6 +31,7 @@ export class ClubService {
       includeLocations?: boolean;
       teamsWhere?: { [key: string]: any };
       teamPlayersWhere?: { [key: string]: any };
+      systemId?: string;
     }
   ) {
     // setting default values
@@ -58,6 +59,7 @@ export class ClubService {
           includeLocations: args.includeLocations,
           teamsWhere: args.teamsWhere,
           teamPlayersWhere: args.teamPlayersWhere,
+          systemId: args.systemId,
         },
       })
       .pipe(map((x) => new Club(x.data.club)));
