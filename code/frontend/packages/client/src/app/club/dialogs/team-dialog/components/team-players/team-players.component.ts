@@ -35,7 +35,7 @@ export class TeamPlayersComponent implements OnInit {
   ngOnInit() {
     this.checkIfBaseComplete();
     this.where = {
-      gender: this.team.type == "MX" ? undefined : this.team.type
+      gender: this.team.type == "MX" || this.team.type == "NATIONAL" ? undefined : this.team.type
     }
   }
 

@@ -179,7 +179,7 @@ describe('PDF service', () => {
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlace: new LastRankingPlace({
+        lastRankingPlaces: new LastRankingPlace({
           single: 7,
           double: 5,
           mix: 7,
@@ -201,7 +201,7 @@ describe('PDF service', () => {
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlace: new LastRankingPlace({
+        lastRankingPlaces: new LastRankingPlace({
           single: 7,
           double: 6,
           mix: 7,
@@ -222,7 +222,7 @@ describe('PDF service', () => {
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlace: new LastRankingPlace({
+        lastRankingPlaces: new LastRankingPlace({
           single: 7,
           double: 8,
           mix: 9,
@@ -244,7 +244,7 @@ describe('PDF service', () => {
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlace: new LastRankingPlace({
+        lastRankingPlaces: new LastRankingPlace({
           single: 7,
           double: 6,
           mix: 8,
@@ -265,7 +265,7 @@ describe('PDF service', () => {
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlace: new LastRankingPlace({
+        lastRankingPlaces: new LastRankingPlace({
           single: 8,
           double: 9,
           mix: 8,
@@ -286,7 +286,7 @@ describe('PDF service', () => {
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlace: new LastRankingPlace({
+        lastRankingPlaces: new LastRankingPlace({
           single: 9,
           double: 7,
           mix: 7,

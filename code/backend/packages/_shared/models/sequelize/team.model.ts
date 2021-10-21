@@ -41,6 +41,7 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
+import { RankingSystem } from '.';
 import { SubEventType } from '../enums';
 import { Club } from './club.model';
 import { EncounterCompetition, Location, SubEventCompetition } from './event';
@@ -144,7 +145,7 @@ export class Team extends Model {
 
   private _basePlayers: Player[] = null;
 
-  get basePlayers(): Player[] {
+  basePlayers(system: RankingSystem): Player[] {
     if (this._basePlayers !== null) {
       return this._basePlayers;
     }
@@ -160,24 +161,36 @@ export class Team extends Model {
             .filter(p => p.gender === 'M')
             .sort(
               (b, a) =>
-                (b.lastRankingPlace?.single ?? 12) +
-                (b.lastRankingPlace?.double ?? 12) +
-                (b.lastRankingPlace?.mix ?? 12) -
-                ((a.lastRankingPlace?.single ?? 12) +
-                  (a.lastRankingPlace?.double ?? 12) +
-                  (a.lastRankingPlace?.mix ?? 12))
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.single ?? 12) +
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.double ?? 12) +
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ??
+                  12) -
+                ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.single ?? 12) +
+                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                    ?.double ?? 12) +
+                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                    ?.mix ?? 12))
             )
             .slice(0, 2),
           ...this._basePlayers
             .filter(p => p.gender === 'F')
             .sort(
               (b, a) =>
-                (b.lastRankingPlace?.single ?? 12) +
-                (b.lastRankingPlace?.double ?? 12) +
-                (b.lastRankingPlace?.mix ?? 12) -
-                ((a.lastRankingPlace?.single ?? 12) +
-                  (a.lastRankingPlace?.double ?? 12) +
-                  (a.lastRankingPlace?.mix ?? 12))
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.single ?? 12) +
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.double ?? 12) +
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ??
+                  12) -
+                ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.single ?? 12) +
+                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                    ?.double ?? 12) +
+                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                    ?.mix ?? 12))
             )
             .slice(0, 2)
         ];
@@ -185,10 +198,14 @@ export class Team extends Model {
         this._basePlayers = this._basePlayers
           .sort(
             (b, a) =>
-              (b.lastRankingPlace?.single ?? 12) +
-              (b.lastRankingPlace?.double ?? 12) -
-              ((a.lastRankingPlace?.single ?? 12) +
-                (a.lastRankingPlace?.double ?? 12))
+              (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                ?.single ?? 12) +
+              (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                ?.double ?? 12) -
+              ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                ?.single ?? 12) +
+                (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.double ?? 12))
           )
           .slice(0, 4);
       }
@@ -225,7 +242,7 @@ export class Team extends Model {
 
   private _baseIndex: number = -1;
 
-  get baseIndex(): number {
+  baseIndex(system: RankingSystem): number {
     // Only run this once per team
     if (this._baseIndex !== -1) {
       return this._baseIndex;
@@ -234,10 +251,11 @@ export class Team extends Model {
     if (this.players?.length === null) {
       return -1;
     }
-
     this._baseIndex = Team.getIndexFromPlayers(
       this.type,
-      this.basePlayers.map(r => r.lastRankingPlace)
+      this.basePlayers(system).map(r =>
+        r.lastRankingPlaces.find(r => r.systemId === system.id)
+      )
     );
     return this._baseIndex;
   }
@@ -360,6 +378,8 @@ export class Team extends Model {
         return region === 'vl' ? 'H' : 'M';
       case SubEventType.MX:
         return region === 'vl' ? 'G' : 'Mx';
+      case SubEventType.NATIONAL:
+        return '';
     }
   }
 }

@@ -112,8 +112,8 @@ export class Player extends Model {
   @HasMany(() => RankingPlace, 'playerId')
   rankingPlaces?: RankingPlace[];
 
-  @HasOne(() => LastRankingPlace, 'playerId')
-  lastRankingPlace?: LastRankingPlace;
+  @HasMany(() => LastRankingPlace, 'playerId')
+  lastRankingPlaces?: LastRankingPlace[];
 
   @HasMany(() => Comment, 'playerId')
   comments?: Comment[];
@@ -154,15 +154,15 @@ export class Player extends Model {
   claims: (Claim & { PlayerClaimMembership: PlayerClaimMembership })[];
 
   // Has many RankingPoints
-  getRankingPointss!: HasManyGetAssociationsMixin<RankingPoint>;
-  setRankingPointss!: HasManySetAssociationsMixin<RankingPoint, string>;
-  addRankingPointss!: HasManyAddAssociationsMixin<RankingPoint, string>;
-  addRankingPoints!: HasManyAddAssociationMixin<RankingPoint, string>;
-  removeRankingPoints!: HasManyRemoveAssociationMixin<RankingPoint, string>;
-  removeRankingPointss!: HasManyRemoveAssociationsMixin<RankingPoint, string>;
-  hasRankingPoints!: HasManyHasAssociationMixin<RankingPoint, string>;
-  hasRankingPointss!: HasManyHasAssociationsMixin<RankingPoint, string>;
-  countRankingPointss!: HasManyCountAssociationsMixin;
+  getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;
+  setRankingPoints!: HasManySetAssociationsMixin<RankingPoint, string>;
+  addRankingPoints!: HasManyAddAssociationsMixin<RankingPoint, string>;
+  addRankingPoint!: HasManyAddAssociationMixin<RankingPoint, string>;
+  removeRankingPoint!: HasManyRemoveAssociationMixin<RankingPoint, string>;
+  removeRankingPoints!: HasManyRemoveAssociationsMixin<RankingPoint, string>;
+  hasRankingPoint!: HasManyHasAssociationMixin<RankingPoint, string>;
+  hasRankingPoints!: HasManyHasAssociationsMixin<RankingPoint, string>;
+  countRankingPoints!: HasManyCountAssociationsMixin;
 
   // Has many RankingPlace
   getRankingPlaces!: HasManyGetAssociationsMixin<RankingPlace>;
@@ -230,10 +230,22 @@ export class Player extends Model {
   hasRoles!: BelongsToManyHasAssociationsMixin<Role, string>;
   countRole!: BelongsToManyCountAssociationsMixin;
 
-
-  // Has one LastRankingPlace
-  getLastRankingPlace!: HasOneGetAssociationMixin<LastRankingPlace>;
-  setLastRankingPlace!: HasOneSetAssociationMixin<LastRankingPlace, string>;
+  // Has many LastRankingPlace
+  getLastRankingPlaces!: HasManyGetAssociationsMixin<LastRankingPlace>;
+  setLastRankingPlaces!: HasManySetAssociationsMixin<LastRankingPlace, string>;
+  addLastRankingPlaces!: HasManyAddAssociationsMixin<LastRankingPlace, string>;
+  addLastRankingPlace!: HasManyAddAssociationMixin<LastRankingPlace, string>;
+  removeLastRankingPlace!: HasManyRemoveAssociationMixin<
+    LastRankingPlace,
+    string
+  >;
+  removeLastRankingPlaces!: HasManyRemoveAssociationsMixin<
+    LastRankingPlace,
+    string
+  >;
+  hasLastRankingPlace!: HasManyHasAssociationMixin<LastRankingPlace, string>;
+  hasLastRankingPlaces!: HasManyHasAssociationsMixin<LastRankingPlace, string>;
+  countLastRankingPlaces!: HasManyCountAssociationsMixin;
 
   async getUserClaims(): Promise<string[]> {
     let claims = (await this.getClaims()).map(r => r.name);

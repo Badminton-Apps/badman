@@ -26,6 +26,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   teamsM: Team[];
   teamsF: Team[];
   teamsMX: Team[];
+  teamsNAT: Team[];
 
   constructor(
     private teamService: TeamService,
@@ -62,6 +63,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
           this.teamsF = teams.filter((r) => r.type === 'F').sort((a, b) => a.teamNumber - b.teamNumber);
           this.teamsM = teams.filter((r) => r.type === 'M').sort((a, b) => a.teamNumber - b.teamNumber);
           this.teamsMX = teams.filter((r) => r.type === 'MX').sort((a, b) => a.teamNumber - b.teamNumber);
+          this.teamsNAT = teams.filter((r) => r.type === 'NATIONAL').sort((a, b) => a.teamNumber - b.teamNumber);
 
           const params = this.activatedRoute.snapshot.queryParams;
           let foundTeam = null;
