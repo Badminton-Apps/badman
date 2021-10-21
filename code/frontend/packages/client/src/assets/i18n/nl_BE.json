@@ -143,7 +143,6 @@
         },
         "team-assembly": {
             "title": "Ploegopstelling",
-            "substitude": "Invallers",
             "double1": "Dubbel 1",
             "double2": "Dubbel 2",
             "double3": "Dubbel 3",
@@ -154,8 +153,6 @@
             "single4": "Enkel 4",
             "mix1": "Heren Dubbel",
             "mix2": "Dames Dubbel",
-            "mix3": "Gemengd dubbel 1",
-            "mix4": "Gemengd dubbel 2",
             "errors": {
                 "already": "Speler al als titualris aanwezig",
                 "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen",
@@ -169,7 +166,12 @@
             "players": {
                 "title": "Mogelijke titularissen"
             },
-            "info": "Opmerkingen bij opstelling"
+            "info": "Opmerkingen bij opstelling",
+            "substitude": "Invallers",
+            "mix3": "Gemengd dubbel 1",
+            "mix4": "Gemengd dubbel 2",
+            "permanent": "Permanent speler in de lijst?",
+            "permanent-dialog": "Als je een speler permanent in de lijst wilt hebben, moet je deze  (laten, indien je geen rechten hebt) toevoegen bij het team via het cluboverzicht"
         }
     },
     "event": {
@@ -198,7 +200,8 @@
         "female": "Dames",
         "mix": "Gemengd",
         "males": "Man",
-        "females": "Vrouw"
+        "females": "Vrouw",
+        "national": "Nationale"
     },
     "input": {
         "type": "Type",
@@ -220,7 +223,7 @@
         "city": "Stad",
         "postalcode": "Postcode",
         "state": "Provincie",
-        "competitionplayer": "Competitie speler"
+        "competitionplayer": "Competitiespeler"
     },
     "button": {
         "close": "Sluiten",
@@ -256,15 +259,16 @@
         "number": "club nummer"
     },
     "pickers": {
-        "select-year": "Kies een competitie jaar",
         "select-team": "Kies een ploeg",
         "select-team-groups": {
             "M": "Heren",
             "F": "Dames",
-            "MX": "Gemengd"
+            "MX": "Gemengd",
+            "NATIONAL": "Nationaal"
         },
         "select-club": "Kies een club",
-        "select-encounter": "Kies een ontmoeting"
+        "select-encounter": "Kies een ontmoeting",
+        "select-year": "Kies een competitieseizoen"
     },
     "permission": {
         "no-perm": "Je hebt onvoldoende bewerkingsrechten hiervoor"
