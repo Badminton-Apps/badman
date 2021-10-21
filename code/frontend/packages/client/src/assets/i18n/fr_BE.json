@@ -143,7 +143,6 @@
         },
         "team-assembly": {
             "title": "",
-            "substitude": "",
             "double1": "",
             "double2": "",
             "double3": "",
@@ -154,8 +153,6 @@
             "single4": "",
             "mix1": "",
             "mix2": "",
-            "mix3": "",
-            "mix4": "",
             "errors": {
                 "already": "",
                 "to-much": "",
@@ -169,7 +166,12 @@
             "players": {
                 "title": ""
             },
-            "info": ""
+            "info": "",
+            "substitude": "",
+            "mix3": "",
+            "mix4": "",
+            "permanent": "",
+            "permanent-dialog": ""
         }
     },
     "event": {
@@ -194,11 +196,12 @@
     "gender": {
         "select": "Sélectionner",
         "title": "",
-        "male": "Homme",
-        "female": "Femme",
-        "mix": "Mixte",
-        "males": "Hommes",
-        "females": "Femmes"
+        "male": "",
+        "female": "",
+        "mix": "",
+        "males": "",
+        "females": "",
+        "national": ""
     },
     "input": {
         "type": "",
@@ -219,7 +222,8 @@
         "streetnumber": "",
         "city": "",
         "postalcode": "",
-        "state": ""
+        "state": "",
+        "competitionplayer": ""
     },
     "button": {
         "close": "",
@@ -255,15 +259,16 @@
         "number": ""
     },
     "pickers": {
-        "select-year": "",
         "select-team": "",
         "select-team-groups": {
             "M": "",
             "F": "",
-            "MX": ""
+            "MX": "",
+            "NATIONAL": ""
         },
         "select-club": "",
-        "select-encounter": ""
+        "select-encounter": "",
+        "select-year": ""
     },
     "permission": {
         "no-perm": ""
