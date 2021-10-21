@@ -1,4 +1,5 @@
 import {
+  LastRankingPlace,
   logger,
   Player,
   Processor,
@@ -149,7 +150,10 @@ export class RankingSyncer {
           const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
           let canUpdate = false;
           if (this.updateMonths.includes(momentDate.month())) {
-            const firstMondayOfMonth = momentDate.clone().set('date', 1).isoWeekday(8);
+            const firstMondayOfMonth = momentDate
+              .clone()
+              .set('date', 1)
+              .isoWeekday(8);
             canUpdate = momentDate.isSame(firstMondayOfMonth);
           }
 
@@ -201,7 +205,7 @@ export class RankingSyncer {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               'Content-Type': 'application/xml'
             }
-          } 
+          }
         );
         const bodyTournament = parse(resultTournament.data, {
           attributeNamePrefix: '',
@@ -217,6 +221,7 @@ export class RankingSyncer {
               )
             }
           },
+          include: [LastRankingPlace],
           transaction: args.transaction
         });
 
@@ -250,6 +255,14 @@ export class RankingSyncer {
                 SystemId: ranking.system.id
               })
             );
+
+            if (publication.usedForUpdate == false && foundPlayer.lastRankingPlaces != null) {
+              const place = foundPlayer.lastRankingPlaces.find(r => r.systemId == ranking.system.id);
+              if (place != null && place[type] != null && place[type] != points.Level) {
+                place[type] = points.Level;
+                await place.save({ transaction: args.transaction });
+              }
+            }
           }
         }
       };
@@ -306,18 +319,14 @@ export class RankingSyncer {
             'F'
           );
 
-          const chunks = splitInChunks(
+          await RankingPlace.bulkCreate(
             Array.from(rankingPlaces).map(([id, place]) => place.toJSON()),
-            20
-          );
-
-          for (const chunk of chunks) {
-            await RankingPlace.bulkCreate(chunk, {
+            {
               ignoreDuplicates: true,
               transaction: args.transaction,
               hooks: true
-            });
-          }
+            }
+          );
 
           ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
           await ranking.system.save({ transaction: args.transaction });
