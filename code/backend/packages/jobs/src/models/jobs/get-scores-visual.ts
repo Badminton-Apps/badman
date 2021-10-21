@@ -50,7 +50,7 @@ export class GetScoresVisual extends CronJob {
         ) {
           await this._competitionSync.process({ transaction, xmlTournament });
         } else {
-          // await this._tournamentSync.process({ transaction, xmlTournament });
+          await this._tournamentSync.process({ transaction, xmlTournament });
         }
         await transaction.commit();
         logger.info(`Finished ${xmlTournament.Name}`);
