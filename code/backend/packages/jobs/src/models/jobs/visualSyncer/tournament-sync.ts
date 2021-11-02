@@ -1,5 +1,4 @@
 import { parse } from 'fast-xml-parser';
-import axios from 'axios';
 import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
 import {
@@ -24,9 +23,11 @@ import {
   XmlResult,
   XmlTournament
 } from '@badvlasim/shared';
+import { VisualService } from '../../../utils/visualService';
 
 export class TournamentSyncer {
   public processor: Processor;
+  public visualService: VisualService;
 
   readonly STEP_EVENT = 'event';
   readonly STEP_SUBEVENT = 'subevent';
@@ -36,6 +37,7 @@ export class TournamentSyncer {
 
   constructor() {
     this.processor = new Processor();
+    this.visualService = new VisualService();
 
     this.processor.addStep(this.addEvent());
     this.processor.addStep(this.addSubEvents());
@@ -72,32 +74,14 @@ export class TournamentSyncer {
             dates.push(date.clone());
           }
 
-          const resultTournament = await axios.get(
-            `${process.env.VR_API}/Tournament/${args.xmlTournament.Code}`,
-            {
-              withCredentials: true,
-              auth: {
-                username: `${process.env.VR_API_USER}`,
-                password: `${process.env.VR_API_PASS}`
-              },
-              headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Content-Type': 'application/xml'
-              }
-            }
-          );
-          const bodyTournament = parse(resultTournament.data, {
-            attributeNamePrefix: '',
-            ignoreAttributes: false,
-            parseAttributeValue: true
-          }).Result as XmlResult;
-          const tournamentDetail = bodyTournament.Tournament as XmlTournament;
+          const visualTournament = await this.visualService.getTournament(args.xmlTournament.Code);
+
           event = await new EventTournament({
-            name: tournamentDetail.Name,
-            firstDay: tournamentDetail.StartDate,
-            visualCode: tournamentDetail.Code,
+            name: visualTournament.Name,
+            firstDay: visualTournament.StartDate,
+            visualCode: visualTournament.Code,
             dates: dates.map(r => r.toISOString()).join(','),
-            tournamentNumber: tournamentDetail.Number
+            tournamentNumber: visualTournament.Number
           }).save({ transaction: args.transaction });
         } else {
           // Later we will change the search function to use the tournament code
@@ -118,42 +102,23 @@ export class TournamentSyncer {
   protected addSubEvents(): ProcessStep<{ subEvent: SubEventTournament; internalId: number }[]> {
     return new ProcessStep(this.STEP_SUBEVENT, async (args: { transaction: Transaction }) => {
       // get previous step data
-      const test: {
+      const {
+        event,
+        internalId
+      }: {
         event: EventTournament;
         internalId: string;
       } = this.processor.getData(this.STEP_EVENT);
-
-      const { event, internalId } = test;
 
       if (!event) {
         throw new Error('No Event');
       }
 
       const subEvents = await event.getSubEvents({ transaction: args.transaction });
-      const resultEvent = await axios.get(`${process.env.VR_API}/Tournament/${internalId}/Event`, {
-        withCredentials: true,
-        auth: {
-          username: `${process.env.VR_API_USER}`,
-          password: `${process.env.VR_API_PASS}`
-        },
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          'Content-Type': 'application/xml'
-        }
-      });
-
-      const bodyEvent = parse(resultEvent.data, {
-        attributeNamePrefix: '',
-        ignoreAttributes: false,
-        parseAttributeValue: true
-      }).Result as XmlResult;
-
-      const xmlSubEvents = Array.isArray(bodyEvent.TournamentEvent)
-        ? bodyEvent.TournamentEvent
-        : [bodyEvent.TournamentEvent];
+      const visualEvents = await this.visualService.getEvents(internalId);
       const dbSubEvents: { subEvent: SubEventTournament; internalId: string }[] = [];
       // Add sub events
-      for (const xmlEvent of xmlSubEvents) {
+      for (const xmlEvent of visualEvents) {
         if (!xmlEvent) {
           continue;
         }
@@ -184,9 +149,7 @@ export class TournamentSyncer {
       }
 
       // Remove subEvents that are not in the xml
-      const removedSubEvents = subEvents.filter(
-        i => !dbSubEvents.map(r => r.subEvent.id).includes(i.id)
-      );
+      const removedSubEvents = subEvents.filter(s => s.visualCode == null);
       for (const removed of removedSubEvents) {
         const gameIds = (
           await Game.findAll({
@@ -235,34 +198,12 @@ export class TournamentSyncer {
         }[] = this.processor.getData(this.STEP_SUBEVENT);
 
         const dbDraws = [];
-        for (const { subEvent, internalId } of subEvents) {
+        const processDraws = async ({ subEvent, internalId }) => {
           const draws = await subEvent.getDraws({ transaction: args.transaction });
+          const visualDraws = await this.visualService.getDraws(args.tourneyKey, internalId);
 
-          const resultDraw = await axios.get(
-            `${process.env.VR_API}/Tournament/${args.tourneyKey}/Event/${internalId}/Draw`,
-            {
-              withCredentials: true,
-              auth: {
-                username: `${process.env.VR_API_USER}`,
-                password: `${process.env.VR_API_PASS}`
-              },
-              headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Content-Type': 'application/xml'
-              }
-            }
-          );
-          const bodyDraw = parse(resultDraw.data, {
-            attributeNamePrefix: '',
-            ignoreAttributes: false,
-            parseAttributeValue: true
-          }).Result as XmlResult;
-
-          const xmlDraws = Array.isArray(bodyDraw.TournamentDraw)
-            ? bodyDraw.TournamentDraw
-            : [bodyDraw.TournamentDraw];
           const dbXmlDraws: DrawTournament[] = [];
-          for (const xmlDraw of xmlDraws) {
+          for (const xmlDraw of visualDraws) {
             if (!xmlDraw) {
               continue;
             }
@@ -288,7 +229,7 @@ export class TournamentSyncer {
           }
 
           // Remove draw that are not in the xml
-          const removedDraws = draws.filter(i => !dbXmlDraws.map(r => r.id).includes(i.id));
+          const removedDraws = draws.filter(d => d.visualCode == null);
           for (const removed of removedDraws) {
             const gameIds = (
               await removed?.getGames({ attributes: ['id'], transaction: args.transaction })
@@ -307,8 +248,10 @@ export class TournamentSyncer {
             }
             await removed.destroy({ transaction: args.transaction });
           }
-        }
+        
+        };
 
+        await Promise.all(subEvents.map(e => processDraws(e)));
         return dbDraws;
       }
     );
@@ -319,49 +262,28 @@ export class TournamentSyncer {
       this.STEP_PLAYER,
       async (args: { transaction: Transaction; tourneyKey: string }) => {
         const mapPlayers = new Map<string, Player>();
-        const resultPlayer = await axios.get(
-          `${process.env.VR_API}/Tournament/${args.tourneyKey}/Player`,
-          {
-            withCredentials: true,
-            auth: {
-              username: `${process.env.VR_API_USER}`,
-              password: `${process.env.VR_API_PASS}`
-            },
-            headers: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              'Content-Type': 'application/xml'
+        const visualPlayers = (await this.visualService.getPlayers(args.tourneyKey)).map(
+          xmlPlayer => {
+            if (!xmlPlayer) {
+              return null;
             }
+
+            return {
+              player: correctWrongPlayers({
+                memberId: `${xmlPlayer?.MemberID}`,
+                firstName: xmlPlayer.Firstname,
+                lastName: xmlPlayer.Lastname,
+                gender:
+                  xmlPlayer.GenderID === XmlGenderID.Boy || xmlPlayer.GenderID === XmlGenderID.Male
+                    ? 'M'
+                    : 'F'
+              }),
+              xmlMemberId: xmlPlayer?.MemberID
+            };
           }
         );
-        const bodyPlayer = parse(resultPlayer.data, {
-          attributeNamePrefix: '',
-          ignoreAttributes: false,
-          parseAttributeValue: true
-        }).Result as XmlResult;
 
-        const xmlPlayers = (Array.isArray(bodyPlayer.Player)
-          ? bodyPlayer.Player
-          : [bodyPlayer.Player]
-        ).map(xmlPlayer => {
-          if (!xmlPlayer) {
-            return null;
-          }
-
-          return {
-            player: correctWrongPlayers({
-              memberId: `${xmlPlayer?.MemberID}`,
-              firstName: xmlPlayer.Firstname,
-              lastName: xmlPlayer.Lastname,
-              gender:
-                xmlPlayer.GenderID === XmlGenderID.Boy || xmlPlayer.GenderID === XmlGenderID.Male
-                  ? 'M'
-                  : 'F'
-            }),
-            xmlMemberId: xmlPlayer?.MemberID
-          };
-        });
-
-        const ids = xmlPlayers.map(p => `${p?.player.memberId}`);
+        const ids = visualPlayers.map(p => `${p?.player.memberId}`);
 
         const players = await Player.findAll({
           where: {
@@ -372,7 +294,7 @@ export class TournamentSyncer {
           transaction: args.transaction
         });
 
-        for (const xmlPlayer of xmlPlayers) {
+        for (const xmlPlayer of visualPlayers) {
           let foundPlayer = players.find(r => r.memberId === `${xmlPlayer?.player?.memberId}`);
 
           if (!foundPlayer && xmlPlayer?.player?.memberId != null) {
@@ -407,40 +329,25 @@ export class TournamentSyncer {
         const updatedGames = [];
         const updatedgamePlayers = [];
 
-        for (const { draw, internalId } of draws) {
+        const processGames = async ({ draw, internalId }) => {
           const dbXmlGames: Game[] = [];
           const games = await draw.getGames({ transaction: args.transaction, include: [Player] });
           const subEvent = subevents.find(sub => draw.subeventId === sub.subEvent.id).subEvent;
-          const resultDraw = await axios.get(
-            `${process.env.VR_API}/Tournament/${args.tourneyKey}/Draw/${internalId}/Match`,
-            {
-              withCredentials: true,
-              auth: {
-                username: `${process.env.VR_API_USER}`,
-                password: `${process.env.VR_API_PASS}`
-              },
-              headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Content-Type': 'application/xml'
-              }
-            }
-          );
-          const bodyDraw = parse(resultDraw.data, {
-            attributeNamePrefix: '',
-            ignoreAttributes: false,
-            parseAttributeValue: true
-          }).Result as XmlResult;
 
-          const xmlMatches = Array.isArray(bodyDraw.Match) ? bodyDraw.Match : [bodyDraw.Match];
+          const visualMatch = (
+            await this.visualService.getMatch(args.tourneyKey, internalId)
+          ).filter(m => !m || m?.Winner !== 0);
 
-          for (const xmlMatch of xmlMatches) {
-
+          for (const xmlMatch of visualMatch) {
             if (!xmlMatch) {
               continue;
             }
             let game = games.find(r => r.visualCode === `${xmlMatch.Code}`);
-            const playedAt = xmlMatch.MatchTime != null ? moment(xmlMatch.MatchTime).toDate() : event.event.firstDay;
-            
+            const playedAt =
+              xmlMatch.MatchTime != null
+                ? moment(xmlMatch.MatchTime).toDate()
+                : event.event.firstDay;
+
             if (!game) {
               game = new Game({
                 winner: xmlMatch.Winner,
@@ -474,11 +381,13 @@ export class TournamentSyncer {
           }
 
           // Remove draw that are not in the xml
-          const removedGames = games.filter(i => !dbXmlGames.map(r => r.id).includes(i.id));
+          const removedGames = games.filter(g => g.visualCode == null);
           for (const removed of removedGames) {
             await removed.destroy({ transaction: args.transaction });
           }
-        }
+        };
+
+        await Promise.all(draws.map(e => processGames(e)));
 
         logger.debug(`Creating ${updatedGames.length} games`);
 

@@ -9,7 +9,8 @@ import {
   Location,
   Player,
   LastRankingPlace,
-  Comment
+  Comment,
+  RankingSystem
 } from '@badvlasim/shared';
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 
@@ -170,6 +171,9 @@ async function updateCpFile(
     ]
   });
 
+  const system = await RankingSystem.findOne({where: {primary: true}});
+  
+
   logger.info(`[${name}] cleanup`);
   await connection.execute('DELETE FROM stageentry');
   await connection.execute('DELETE FROM Entry');
@@ -269,7 +273,7 @@ async function updateCpFile(
 
       let query = '';
       try {
-        let memo = `Index: ${team.baseIndex}`;
+        let memo = `Index: ${team.baseIndex(system)}`;
 
         const issues = validate(team, team.subEvents[0], code_players);
 
@@ -324,22 +328,22 @@ async function updateCpFile(
   }
 
   function getCsvBaseIndex(team: Team) {
-    const basePlayers = team.basePlayers.map(p => {
+    const basePlayers = team.basePlayers(system).map(p => {
       const csvPlayer = code_players.get(p.memberId);
 
       return {
         ...p.toJSON(),
-        lastRankingPlaces: {
+        lastRankingPlaces: [{
           single: parseInt(csvPlayer?.PlayerLevelSingle, 10) || 12,
           double: parseInt(csvPlayer?.PlayerLevelDouble, 10) || 12,
           mix: parseInt(csvPlayer?.PlayerLevelMixed, 10) || 12
-        }
+        }]
       } as Partial<Player>;
     });
 
     if (team.type !== 'MX') {
       const bestPlayers = basePlayers
-        .map(r => r.lastRankingPlaces?.single + r.lastRankingPlaces?.double)
+        .map(r => r.lastRankingPlaces?.find(p => p.systemId === system.id)?.single + r.lastRankingPlaces?.find(p => p.systemId === system.id)?.double)
         .sort((a, b) => a - b)
         .slice(0, 4);
 
@@ -356,9 +360,9 @@ async function updateCpFile(
           .filter(p => p.gender === 'M')
           .map(
             r =>
-              r.lastRankingPlaces?.single +
-              r.lastRankingPlaces?.double +
-              r.lastRankingPlaces?.mix
+              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.single +
+              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.double +
+              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix
           )
           .sort((a, b) => a - b)
           .slice(0, 2),
@@ -367,9 +371,9 @@ async function updateCpFile(
           .filter(p => p.gender === 'F')
           .map(
             r =>
-              r.lastRankingPlaces?.single +
-              r.lastRankingPlaces?.double +
-              r.lastRankingPlaces?.mix
+              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.single +
+              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.double +
+              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix
           )
           .sort((a, b) => a - b)
           .slice(0, 2)
@@ -434,7 +438,7 @@ async function updateCpFile(
     interalTeamId: number,
     internalClubId: number
   ) {
-    for (const player of team.basePlayers) {
+    for (const player of team.basePlayers(system)) {
       let playerId = players.get(player.memberId);
       if (!playerId) {
         const csvPlayer = code_players.get(player.memberId);
@@ -442,13 +446,13 @@ async function updateCpFile(
         const dob = csvPlayer?.dob ? `#${csvPlayer?.dob}#` : 'NULL';
         const single =
           parseInt(csvPlayer?.PlayerLevelSingle, 10) ||
-          (player.lastRankingPlaces?.single ?? 12);
+          (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.single ?? 12);
         const double =
           parseInt(csvPlayer?.PlayerLevelDouble, 10) ||
-          (player.lastRankingPlaces?.double ?? 12);
+          (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.double ?? 12);
         const mix =
           parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
-          (player.lastRankingPlaces?.mix ?? 12);
+          (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ?? 12);
 
         let memberid = player?.memberId;
         const gender = getGender(player.gender);
@@ -522,17 +526,17 @@ async function updateCpFile(
       hasIssues: false
     };
 
-    for (const player of team.basePlayers) {
+    for (const player of team.basePlayers(system)) {
       const csvPlayer = code_players.get(player.memberId);
       const single =
         parseInt(csvPlayer?.PlayerLevelSingle, 10) ||
-        (player.lastRankingPlaces?.single ?? 12);
+        (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.single ?? 12);
       const double =
         parseInt(csvPlayer?.PlayerLevelDouble, 10) ||
-        (player.lastRankingPlaces?.double ?? 12);
+        (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.double ?? 12);
       const mix =
         parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
-        (player.lastRankingPlaces?.mix ?? 12);
+        (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ?? 12);
 
       if (csvPlayer?.TypeName != 'Competitiespeler') {
         issues.hasIssues = true;
@@ -566,12 +570,12 @@ async function updateCpFile(
       }
     }
 
-    if (team.baseIndex < subEvent.minBaseIndex) {
+    if (team.baseIndex(system) < subEvent.minBaseIndex) {
       issues.hasIssues = true;
       issues.base.push(`Ploegindex te laag voor afdeling`);
     }
 
-    if (team.baseIndex > subEvent.maxBaseIndex) {
+    if (team.baseIndex(system) > subEvent.maxBaseIndex) {
       issues.hasIssues = true;
       issues.base.push(`Ploegindex te hoog voor afdeling`);
     }
