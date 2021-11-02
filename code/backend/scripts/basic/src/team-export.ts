@@ -6,6 +6,7 @@ import {
   Location,
   logger,
   Player,
+  RankingSystem,
   SubEventCompetition,
   SubEventType,
   Team
@@ -179,6 +180,9 @@ async function updateCsvFile(
     ]
   });
 
+  const system = await RankingSystem.findOne({where: {primary: true}});
+
+
   for (const team of dbTeams) {
     const subEvent = team.subEvents[0];
     logger.debug(`running for team: ${team.name}`);
@@ -310,15 +314,15 @@ async function updateCsvFile(
         player4_ranking.PlayerLevelDouble
       ].reduce((a, b) => a + b, 0);
     }
-    outputRow.team_index = team.baseIndex;
+    outputRow.team_index = team.baseIndex(system);
 
     // #region Team stuff
-    if (team.baseIndex < subEvent.minBaseIndex) {
+    if (team.baseIndex(system) < subEvent.minBaseIndex) {
       outputRow.is_correct = false;
       outputRow.index_correct = false;
     }
 
-    if (team.baseIndex > subEvent.maxBaseIndex) {
+    if (team.baseIndex(system) > subEvent.maxBaseIndex) {
       outputRow.is_correct = false;
       outputRow.index_correct = false;
     }

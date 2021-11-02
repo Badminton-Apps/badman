@@ -31,7 +31,7 @@ export class Processor {
     return this.procesSteps.get(stepName)?.getData();
   }
 
-  async process(args) {
+  async process(args?: any) {
     const totalStart = new Date().getTime();
 
     logger.debug(`Running process`);

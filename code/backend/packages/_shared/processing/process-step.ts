@@ -1,4 +1,4 @@
-export class ProcessStep<T> {
+export class ProcessStep<T = void> {
   private _data: any;
   private _ran: boolean = false;
   constructor(public name: string, public execute: (args: any) => Promise<any>) {}
@@ -17,3 +17,4 @@ export class ProcessStep<T> {
     return this._data;
   }
 }
+
