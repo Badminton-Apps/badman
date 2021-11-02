@@ -150,11 +150,9 @@ export class RankingSyncer {
           const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
           let canUpdate = false;
           if (this.updateMonths.includes(momentDate.month())) {
-            const firstMondayOfMonth = momentDate
-              .clone()
-              .set('date', 1)
-              .isoWeekday(8);
-            canUpdate = momentDate.isSame(firstMondayOfMonth);
+            const firstMondayOfMonth = momentDate.clone().set('date', 1);
+            const endFirstWeek = firstMondayOfMonth.clone().add(1, 'week');
+            canUpdate = momentDate.isBetween(firstMondayOfMonth, endFirstWeek);
           }
 
           return {
@@ -256,9 +254,9 @@ export class RankingSyncer {
               })
             );
 
-            if (publication.usedForUpdate == false && foundPlayer.lastRankingPlaces != null) {
-              const place = foundPlayer.lastRankingPlaces.find(r => r.systemId == ranking.system.id);
-              if (place != null && place[type] != null && place[type] != points.Level) {
+            if (publication.usedForUpdate === false && foundPlayer.lastRankingPlaces != null) {
+              const place = foundPlayer.lastRankingPlaces.find(r => r.systemId === ranking.system.id);
+              if (place != null && place[type] != null && place[type] !== points.Level) {
                 place[type] = points.Level;
                 await place.save({ transaction: args.transaction });
               }
