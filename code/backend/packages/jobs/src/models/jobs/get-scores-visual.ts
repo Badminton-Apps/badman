@@ -1,10 +1,11 @@
 import { Cron, DataBaseHandler, logger, XmlResult, XmlTournamentTypeID } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
-import axios from 'axios';
 import moment, { Moment } from 'moment';
 import { CronJob } from '../cronJob';
-import { CompetitionSyncer } from './visualSyncer/competition-sync';
+import { CompetitionSyncer } from './visualSyncer/competition-sync/competition-sync';
 import { TournamentSyncer } from './visualSyncer/tournament-sync';
+import axios from 'axios';
+import * as rax from 'retry-axios';
 
 export class GetScoresVisual extends CronJob {
   private _pageSize = 1000;
@@ -28,14 +29,14 @@ export class GetScoresVisual extends CronJob {
     let newEvents = await this._getChangeEvents(newDate);
 
     newEvents = newEvents.sort((a, b) => {
-      return moment(b.StartDate).valueOf() - moment(a.StartDate).valueOf();
-    }); 
+      return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
+    });
 
     // newEvents = newEvents.filter(event => {
     //   return (
-    //     event.Name == 'VVBBC interclubcompetitie 2021-2022' ||
-    //     event.Name == 'Limburgse interclubcompetitie 2021-2022' ||
-    //     event.Name == 'WVBF Competitie 2021-2022'
+    //     event.Name == 'PBA competitie 2021-2022'
+    //     // || event.Name == 'Limburgse interclubcompetitie 2021-2022'
+    //     // || event.Name == 'WVBF Competitie 2021-2022'
     //   );
     // });
 
@@ -73,6 +74,13 @@ export class GetScoresVisual extends CronJob {
       auth: {
         username: `${process.env.VR_API_USER}`,
         password: `${process.env.VR_API_PASS}`
+      },
+      raxConfig: {
+        retry: 25,
+        onRetryAttempt: err => {
+          const cfg = rax.getConfig(err);
+          console.log(`Retry attempt #${cfg.currentRetryAttempt}`);
+        }
       },
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -254,7 +254,7 @@ export class Team extends Model {
     this._baseIndex = Team.getIndexFromPlayers(
       this.type,
       this.basePlayers(system).map(r =>
-        r.lastRankingPlaces.find(r => r.systemId === system.id)
+        r.lastRankingPlaces.find(place => place.systemId === system.id)
       )
     );
     return this._baseIndex;

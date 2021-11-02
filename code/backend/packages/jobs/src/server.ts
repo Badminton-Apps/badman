@@ -6,6 +6,7 @@ import { App, AuthenticationSercice, logger, startWhenReady } from '@badvlasim/s
 import { Router } from 'express';
 import { JobController } from './controllers';
 
+
 try {
   (async () => {
     logger.info('Starting server...');

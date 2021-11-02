@@ -169,7 +169,7 @@ export const updateClubMutation = {
       });
 
       // Update team abbreaviations when club abbreviation changed
-       if (dbClubCopy.abbreviation != club.abbreviation) {
+       if (dbClubCopy.abbreviation !== club.abbreviation) {
         const teams = await dbClub.getTeams({ where: {active: true}, transaction });
         logger.debug(`updating teams ${teams.length}`);
         for (const team of teams) {
