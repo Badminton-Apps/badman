@@ -27,6 +27,7 @@ query GetTeamQuery($id: ID!) {
       base
       gender
       lastRanking {
+        id
         single
         double
         mix

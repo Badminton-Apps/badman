@@ -9,7 +9,6 @@ query GetImported($first: Int, $order: [ImportedOrderBy], $after: String) {
         name
         dates
         firstDay
-        uniCode
         importing
         type
       }

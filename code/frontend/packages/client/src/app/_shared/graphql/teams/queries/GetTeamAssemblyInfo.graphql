@@ -1,16 +1,17 @@
-
 query GetTeamInfo($clubId: ID!, $ranking: Date, $subEventWhere: SequelizeJSON) {
   club(id: $clubId) {
-    teams(where: {active: true}) {
+    id
+    teams(where: { active: true }) {
       id
       type
       teamNumber
-      subEvents (where : $subEventWhere) {
+      subEvents(where: $subEventWhere) {
         id
         maxLevel
         minBaseIndex
         maxBaseIndex
-        event{
+        event {
+          id
           type
         }
         meta {
@@ -26,18 +27,20 @@ query GetTeamInfo($clubId: ID!, $ranking: Date, $subEventWhere: SequelizeJSON) {
         gender
         competitionPlayer
         lastRanking {
+          id
           single
           double
           mix
         }
-        rankingPlaces(where: {rankingDate: $ranking}){
+        rankingPlaces(where: { rankingDate: $ranking }) {
+          id
           rankingDate
           single
           double
           mix
         }
       }
-      captain{
+      captain {
         id
         fullName
       }
