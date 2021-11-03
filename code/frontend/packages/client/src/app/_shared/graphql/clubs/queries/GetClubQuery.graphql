@@ -33,6 +33,7 @@ query GetClubQuery(
         base
         gender
         lastRanking(system: $systemId) @include(if: $includePlacesTeams) {
+          id
           single
           double
           mix
@@ -69,6 +70,7 @@ query GetClubQuery(
       firstName
       lastName
       lastRanking @include(if: $includePlaces) {
+        id
         single
         double
         mix

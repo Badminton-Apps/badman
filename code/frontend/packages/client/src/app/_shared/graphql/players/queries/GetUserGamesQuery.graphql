@@ -1,18 +1,8 @@
 # Write your query or mutation here
-query GetUserGamesQuery(
-  $playerId: ID!
-  $rankingType: ID!
-  $offset: Int!
-  $limit: Int!
-) {
+query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit: Int!) {
   player(id: $playerId) {
     id
-    games(
-      limit: $limit
-      offset: $offset
-      order: "playedAt"
-      direction: "desc"
-    ) {
+    games(limit: $limit, offset: $offset, order: "playedAt", direction: "desc") {
       id
       set1Team1
       set1Team2
@@ -26,6 +16,7 @@ query GetUserGamesQuery(
       competition {
         id
         draw {
+          id
           name
           subEvent {
             id
@@ -58,6 +49,7 @@ query GetUserGamesQuery(
         }
       }
       rankingPoints {
+        id
         points
         differenceInLevel
         player {
@@ -71,6 +63,7 @@ query GetUserGamesQuery(
         team
         player
         rankingPlace(where: { SystemId: $rankingType }) {
+          id
           single
           double
           mix
