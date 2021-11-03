@@ -1,3 +1,4 @@
+import {Apollo} from 'apollo-angular';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import {
   ChangeDetectionStrategy,
@@ -10,7 +11,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
+
 import { TeamDialogComponent } from 'app/club/dialogs';
 import { Club, CompetitionSubEvent, Team } from 'app/_shared';
 import { map, switchMap } from 'rxjs/operators';

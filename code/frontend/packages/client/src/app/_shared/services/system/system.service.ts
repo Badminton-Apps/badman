@@ -1,7 +1,8 @@
+import {Apollo} from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { Apollo } from 'apollo-angular';
+
 import { Observable, of } from 'rxjs';
 import { filter, map, share, shareReplay, tap } from 'rxjs/operators';
 import { environment } from './../../../../environments/environment';

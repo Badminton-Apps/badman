@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';

@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { CompetitionEncounter } from 'app/_shared';
 import { Availability, EncounterChange } from 'app/_shared/models';
 import { map, tap } from 'rxjs/operators';

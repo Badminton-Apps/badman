@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { map, tap } from 'rxjs/operators';
 import { AuthService } from '../security';
 import { Player, Role } from './../../models';
