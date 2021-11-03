@@ -79,8 +79,13 @@
         "change-number": "Changing of the team number, also update higher\/lower teams",
         "check-players": "Tick off the basis players in the checkbox"
     },
+    "tournament": {
+        "title": "Tournament",
+        "last-updated": "Modified on"
+    },
     "competition": {
         "title": "Competition",
+        "last-updated": "Modified on",
         "subevent": {
             "max": "Max level",
             "min-base": "Min basis team index",

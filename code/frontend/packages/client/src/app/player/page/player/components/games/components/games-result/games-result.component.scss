@@ -4,11 +4,17 @@
 
 .mat-subheading-2 {
   flex-direction: column;
+
   .date {
     line-height: 0.6em;
     font-size: 0.6em;
     padding-bottom: 7px;
   }
+}
+
+a {
+  color: rgba(0, 0, 0, .87);
+  text-decoration: none;
 }
 
 .games {

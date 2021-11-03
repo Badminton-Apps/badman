@@ -1,16 +1,26 @@
 <div class="mat-subheading-1">
-  {{ this.subEvent?.event?.name }}
+  <ng-container *ngIf="subEvent.event.eventType == 'COMPETITION'">
+    <a [routerLink]="['/competition', this.subEvent?.event?.id]">{{ this.subEvent?.event?.name }}</a>
+  </ng-container>
+
+  <ng-container *ngIf="subEvent.event.eventType == 'TOURNAMENT'">
+    <a [routerLink]="['/competition', this.subEvent?.event?.id]">{{ this.subEvent?.event?.name }}</a>
+  </ng-container>
 </div>
 
 <ng-container *ngFor="let subEvent of this.subEvents">
   <div class="mat-subheading-2">
     <div>
       <ng-container *ngIf="subEvent.event.eventType == 'COMPETITION'">
-        {{ subEvent.name }} {{ subEvent.levelType }} {{ subEvent.eventType }}
+        <a [routerLink]="['/competition', this.subEvent?.event?.id, this.subEvent?.id]"
+          >{{ subEvent.name }} {{ subEvent.levelType }} {{ subEvent.eventType }}</a
+        >
       </ng-container>
 
       <ng-container *ngIf="subEvent.event.eventType == 'TOURNAMENT'">
-        {{ subEvent.name }} - {{ subEvent.level }}
+        <a [routerLink]="['/competition', this.subEvent?.event?.id, this.subEvent?.id]"
+          >{{ subEvent.name }} - {{ subEvent.level }}</a
+        >
       </ng-container>
     </div>
 

@@ -66,6 +66,12 @@ $config: mat-typography-config();
   }
 }
 
+
+a {
+  color: rgba(0, 0, 0, .87);
+  text-decoration: none;
+}
+
 .teams {
   display: flex;
   flex-flow: row wrap;
