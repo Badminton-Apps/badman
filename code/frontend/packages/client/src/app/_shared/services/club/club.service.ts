@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { map } from 'rxjs/operators';
 import { Club, Player, RankingSystem } from './../../models';
 

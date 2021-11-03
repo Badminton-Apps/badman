@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { Claim } from 'app/_shared';
 import { map, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';

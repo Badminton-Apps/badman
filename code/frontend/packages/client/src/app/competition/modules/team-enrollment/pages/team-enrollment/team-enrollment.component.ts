@@ -1,9 +1,10 @@
+import {Apollo} from 'apollo-angular';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { MatVerticalStepper } from '@angular/material/stepper';
-import { Apollo } from 'apollo-angular';
+
 import { Club, Comment, CompetitionEvent, EventService, EventType, SubEvent, SystemService, Team } from 'app/_shared';
 import { combineLatest, Observable, of, ReplaySubject } from 'rxjs';
 import { debounceTime, filter, map, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
