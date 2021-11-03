@@ -79,8 +79,13 @@
         "change-number": "Het wijzigen van het ploegnummer, update ook hogere\/lagere teams",
         "check-players": "Vink bij de basisspelers de checkbox aan"
     },
+    "tournament": {
+        "title": "Toernooi",
+        "last-updated": "Gewijzigd op"
+    },
     "competition": {
         "title": "Competitie",
+        "last-updated": "Gewijzigd op",
         "subevent": {
             "max": "Max klassement",
             "min-base": "Min basis ploegindex",

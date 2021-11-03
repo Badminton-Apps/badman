@@ -5,6 +5,7 @@ export class Event {
   fileName: string;
   uniCode: string;
   allowEnlisting: boolean;
+  updatedAt: Date;
 
   constructor({ ...args }: Partial<Event>) {
     this.name = args.name;
@@ -12,6 +13,7 @@ export class Event {
     this.fileName = args.fileName;
     this.uniCode = args.uniCode;
     this.allowEnlisting = args.allowEnlisting;
+    this.updatedAt = args.updatedAt;
   }
 }
 
