@@ -1,5 +1,5 @@
-query GetRolesQuery($clubId: ID!) {
-  roles(clubId: $clubId) {
+query GetRolesQuery {
+  roles {
     id
     name
   }

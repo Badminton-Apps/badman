@@ -15,6 +15,7 @@ query GetEvents(
         dates
         firstDay
         subEvents @include(if: $includeSubEvents) {
+          id
           name
         }
       }

@@ -8,9 +8,11 @@ query GetPlayers($where: SequelizeJSON, $ranking: Date, $includeRanking: Boolean
     email
     competitionPlayer
     clubs @include(if: $includeClub) {
+      id
       name
     }
     rankingPlaces(where: { rankingDate: $ranking }) @include(if: $includeRanking) {
+      id
       rankingDate
       single
       double
