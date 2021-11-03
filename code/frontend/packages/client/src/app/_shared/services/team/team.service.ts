@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { Apollo } from 'apollo-angular';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Player, Team } from './../../models';
