@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
 import { DetailCompetitionComponent } from './pages';
+import { DetailSubEventCompetitionComponent } from './pages/detail-sub-event-competition/detail-sub-event-competition.component';
 
 const routes: Routes = [
   {
@@ -19,7 +20,16 @@ const routes: Routes = [
   },
   {
     path: ':id',
-    component: DetailCompetitionComponent,
+    children: [
+      {
+        path: '',
+        component: DetailCompetitionComponent,
+      },
+      {
+        path: ':subEvent',
+        component: DetailSubEventCompetitionComponent,
+      },
+    ],
   },
 ];
 
@@ -28,3 +38,4 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class CompetitionRoutingModule {}
+ 

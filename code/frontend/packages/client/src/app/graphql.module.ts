@@ -17,6 +17,8 @@ export function createApollo(httpLink: HttpLink) {
     },
   };
 
+  // const defaultOptions: DefaultOptions = {};
+
   const options = {
     link: httpLink.create({ uri }),
     connectToDevTools: environment.production == false,

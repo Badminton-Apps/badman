@@ -19,7 +19,11 @@
       <div class="picture"></div>
       <div class="name">
         <span class="up"> {{ event.name }}</span>
-        <span class="down"> </span>
+        <span class="down"
+          ><span *ngIf="event.updatedAt"
+            >- {{ 'competition.last-updated' | translate }}: {{ event.updatedAt | date }}</span
+          ></span
+        >
       </div>
     </div>
   </div>

@@ -5,6 +5,7 @@ query GetEvent($id: ID!) {
     name
     dates
     firstDay
+    updatedAt
     subEvents(order: "name") {
       id
       name
