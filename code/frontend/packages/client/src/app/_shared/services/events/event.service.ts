@@ -1,6 +1,7 @@
+import {Apollo} from 'apollo-angular';
 import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { Imported } from 'app/_shared';
 import {
   Club,

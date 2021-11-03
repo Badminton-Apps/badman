@@ -1,35 +1,41 @@
+import { APOLLO_OPTIONS } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
 import { NgModule } from '@angular/core';
 import { InMemoryCache, DefaultOptions } from '@apollo/client/core';
-import { APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
+
 import { environment } from './../environments/environment';
 
 const uri = `${environment.api}/graphql`;
 export function createApollo(httpLink: HttpLink) {
   const defaultOptions: DefaultOptions = {
     watchQuery: {
-      fetchPolicy: 'no-cache',
-      errorPolicy: 'ignore',
+      fetchPolicy: 'cache-and-network',
+      // errorPolicy: 'ignore',
     },
     query: {
-      fetchPolicy: 'no-cache',
-      errorPolicy: 'all',
+      // fetchPolicy: 'no-cache',
+      // errorPolicy: 'all',
     },
   };
 
-  // const defaultOptions: DefaultOptions = {};
 
   const options = {
     link: httpLink.create({ uri }),
     connectToDevTools: environment.production == false,
-    cache: new InMemoryCache({}) as any,
+    cache: new InMemoryCache({
+      typePolicies: {
+        GamePlayer: {
+          keyFields: ['id', 'team', 'player'],
+        },
+      },
+    }),
     defaultOptions,
   };
 
   return options;
 }
 @NgModule({
-  exports: [HttpLinkModule],
+  exports: [],
 
   providers: [
     {

@@ -1,5 +1,6 @@
+import {Apollo} from 'apollo-angular';
 import { FormGroup } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Club, Location, Player, SystemService, Team, TeamService } from 'app/_shared';
