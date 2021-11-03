@@ -1,11 +1,14 @@
 query GetCompYearsQuery($id: ID!) {
   club(id: $id) {
+    id
     teams {
+      id
       name
       clubId
       subEvents {
         id
         event {
+          id
           startYear
         }
       }

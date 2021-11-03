@@ -2,6 +2,7 @@ query GetSubevents($year: Int!) {
   eventCompetitions(where: { startYear: $year }) {
     edges {
       node {
+        id
         subEvents {
           id
         }
