@@ -4,7 +4,7 @@
       <button mat-icon-button (click)="snav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      <a href="./" class="app-name" *ngIf="!device.mobileQuery.matches">
+      <a [routerLink]="['./']" class="app-name" *ngIf="!device.mobileQuery.matches">
         <h1>Badman</h1>
         <small>v{{ version }}</small>
       </a>
@@ -30,7 +30,7 @@
     >
       <mat-nav-list>
         <div class="pages">
-          <a mat-list-item href="./" *ngIf="device.mobileQuery.matches">Badman</a>
+          <a mat-list-item [routerLink]="['./']" *ngIf="device.mobileQuery.matches">Badman</a>
           <ng-container *ngIf="this.profile$ | async as profile">
             <a mat-list-item [routerLink]="['/player', profile.id]" routerLinkActive="active"> My games </a>
 

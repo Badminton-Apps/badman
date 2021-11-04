@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { FormGroup } from '@angular/forms';
 
 import { Component, Inject, OnInit } from '@angular/core';
@@ -90,31 +90,15 @@ export class TeamDialogComponent implements OnInit {
   }
 
   async teamAdded(team: Partial<Team>) {
-    const newTeam = await this.apollo
-      .mutate<{ addTeam: Team }>({
-        mutation: addTeamMutation,
-        variables: {
-          team: { ...team },
-          clubId: this.data.club.id,
-        },
-      })
-      .pipe(map((x) => new Team(x.data.addTeam)))
-      .toPromise();
+    const newTeam = await this.teamService.addTeam(team, this.data.club.id).toPromise();
 
     this.data.team = newTeam;
     this.update$.next(0);
   }
 
   async onTeamUpdated(team: Partial<Team>) {
-    await this.apollo
-      .mutate<{ updateTeam: Team }>({
-        mutation: updateTeamMutation,
-        variables: {
-          team,
-        },
-      })
-      .pipe(map((x) => new Team(x.data.updateTeam)))
-      .toPromise();
+    await this.teamService.updateTeam(team).toPromise();
+   ;
     this.update$.next(0);
   }
 

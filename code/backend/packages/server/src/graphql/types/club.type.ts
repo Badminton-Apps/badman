@@ -1,4 +1,4 @@
-import { Club, Player, PlayerRoleMembership, SubEventType, Team } from '@badvlasim/shared/models';
+import { Club, Player } from '@badvlasim/shared/models';
 import {
   GraphQLInputObjectType,
   GraphQLInt,
@@ -6,16 +6,13 @@ import {
   GraphQLObjectType,
   GraphQLString
 } from 'graphql';
-import { createConnection, defaultListArgs, resolver, attributeFields } from 'graphql-sequelize';
+import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
-import { PlayerType } from './player.type';
-import { TeamType } from './team.type';
-import moment from 'moment';
 import { getAttributeFields } from './attributes.type';
-import { RoleType } from './security';
 import { LocationType } from './location.type';
-import { logger } from '@badvlasim/shared';
-import { O_NONBLOCK } from 'constants';
+import { PlayerType } from './player.type';
+import { RoleType } from './security';
+import { TeamType } from './team.type';
 
 export const ClubType = new GraphQLObjectType({
   name: 'Club',

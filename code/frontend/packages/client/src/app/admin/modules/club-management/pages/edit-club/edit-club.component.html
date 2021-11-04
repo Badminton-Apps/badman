@@ -28,7 +28,7 @@
     </div>
   </app-has-claim>
 
-  <app-has-claim [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']">
+  <!-- <app-has-claim [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']">
     <div class="mat-subheading-1">
       Roles
       <app-has-claim [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']">
@@ -40,6 +40,29 @@
     <div class="roles" fxLayout="row wrap" fxLayoutGap="16px grid">
       <app-club-edit-role
         *ngFor="let role of club.roles"
+        [role]="role"
+        [club]="club"
+        (onPlayerAdded)="this.onPlayerAddedToRole($event, role)"
+        (onPlayerRemoved)="this.onPlayerRemovedFromRole($event, role)"
+        (onEdit)="this.onEditRole($event, club)"
+        (onDelete)="this.onDeleteRole($event)"
+      >
+      </app-club-edit-role>
+    </div>
+  </app-has-claim> -->
+
+  <app-has-claim [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']">
+    <div class="mat-subheading-1">
+      Roles
+      <app-has-claim [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']">
+        <button mat-icon-button [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'role', 'add']">
+          <mat-icon>add</mat-icon>
+        </button>
+      </app-has-claim>
+    </div>
+    <div class="roles" fxLayout="row wrap" fxLayoutGap="16px grid">
+      <app-club-edit-role
+        *ngFor="let role of roles$ | async"
         [role]="role"
         [club]="club"
         (onPlayerAdded)="this.onPlayerAddedToRole($event, role)"
