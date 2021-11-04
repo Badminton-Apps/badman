@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 
 import { map } from 'rxjs/operators';
@@ -89,6 +89,15 @@ export class ClubService {
   addPlayer(club: Club, player: Player) {
     return this.apollo.mutate({
       mutation: addPlayerToClubMutation,
+      awaitRefetchQueries: true,
+      refetchQueries: [
+        {
+          query: clubQuery,
+          variables: {
+            id: club.id,
+          },
+        },
+      ],
       variables: {
         playerId: player.id,
         clubId: club.id,

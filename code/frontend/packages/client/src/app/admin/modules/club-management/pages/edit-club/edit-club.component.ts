@@ -26,11 +26,15 @@ import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 })
 export class EditClubComponent implements OnInit {
   club$: Observable<Club>;
+  roles$: Observable<Role[]>;
+  locations$: Observable<Location[]>;
 
   compYears$: Observable<number[]>;
   teamsForYear$: Observable<Team[]>;
 
-  update$ = new BehaviorSubject(null);
+  updateClub$ = new BehaviorSubject(null);
+  updateLocation$ = new BehaviorSubject(null);
+  updateRoles$ = new BehaviorSubject(null);
 
   competitionYear = new FormControl();
 
@@ -53,14 +57,14 @@ export class EditClubComponent implements OnInit {
     this.compYears$ = combineLatest([
       clubid$,
       this.authService.userPermissions$,
-      this.update$.pipe(debounceTime(600)),
+      this.updateClub$.pipe(debounceTime(600)),
     ]).pipe(switchMap(([id]) => this.clubService.getCompetitionYears(id)));
 
     this.teamsForYear$ = combineLatest([
       clubid$,
       this.competitionYear.valueChanges,
       this.authService.userPermissions$,
-      this.update$.pipe(debounceTime(600)),
+      this.updateClub$.pipe(debounceTime(600)),
     ]).pipe(
       switchMap((args: any[]) => {
         return this.eventService.getSubEventsCompetition(args[1]).pipe(
@@ -75,15 +79,18 @@ export class EditClubComponent implements OnInit {
       })
     );
 
-    this.club$ = combineLatest([clubid$, this.update$.pipe(debounceTime(600))]).pipe(
-      switchMap(([id]) =>
-        this.clubService.getClub(id, {
-          includeTeams: false,
-          includeRoles: true,
-          includeLocations: true,
-          teamsWhere: { active: true },
-        })
-      )
+    this.club$ = combineLatest([clubid$, this.updateClub$]).pipe(
+      debounceTime(600),
+      switchMap(([id]) => this.clubService.getClub(id))
+    );
+
+    this.locations$ = combineLatest([clubid$, this.updateClub$]).pipe(
+      debounceTime(600),
+      switchMap(([id]) => this.locationService.getLocations({ clubId: id }))
+    );
+    this.roles$ = combineLatest([clubid$, this.updateClub$]).pipe(
+      debounceTime(600),
+      switchMap(([id]) => this.roleService.getRoles({ clubId: id }))
     );
   }
 
@@ -102,7 +109,7 @@ export class EditClubComponent implements OnInit {
         duration: 1000,
         panelClass: 'success',
       });
-      this.update$.next(null);
+      this.updateClub$.next(null);
     }
   }
 
@@ -113,7 +120,7 @@ export class EditClubComponent implements OnInit {
         duration: 1000,
         panelClass: 'success',
       });
-      this.update$.next(null);
+      this.updateRoles$.next(null);
     }
   }
 
@@ -124,7 +131,7 @@ export class EditClubComponent implements OnInit {
         duration: 1000,
         panelClass: 'success',
       });
-      this.update$.next(null);
+      this.updateRoles$.next(null);
     }
   }
 
@@ -138,25 +145,25 @@ export class EditClubComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.update$.next(0);
+      this.updateLocation$.next(0);
     });
   }
 
   async onDeleteLocation(location: Location) {
     await this.locationService.deleteLocation(location.id).toPromise();
-    this.update$.next(0);
+    this.updateLocation$.next(0);
   }
   async onDeleteRole(role: Role) {
     await this.roleService.deleteRole(role.id).toPromise();
-    this.update$.next(0);
+    this.updateRoles$.next(0);
   }
 
   async onAddBasePlayer(player: Player, team: Team) {
     await this.teamService.addBasePlayer(team.id, player.id, team.subEvents[0].id).toPromise();
-    this.update$.next(0);
+    this.updateClub$.next(0);
   }
   async onDeleteBasePlayer(player: Player, team: Team) {
     await this.teamService.removeBasePlayer(team.id, player.id, team.subEvents[0].id).toPromise();
-    this.update$.next(0);
+    this.updateClub$.next(0);
   }
 }
