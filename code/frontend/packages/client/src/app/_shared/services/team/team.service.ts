@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 
@@ -52,6 +52,15 @@ export class TeamService {
   addPlayer(team: Team, player: Player) {
     return this.apollo.mutate({
       mutation: addPlayerToTeamMutation,
+      awaitRefetchQueries: true,
+      refetchQueries: [
+        {
+          query: teamQuery,
+          variables: {
+            id: team.id,
+          },
+        },
+      ],
       variables: {
         playerId: player.id,
         teamId: team.id,
@@ -62,6 +71,15 @@ export class TeamService {
   removePlayer(team: Team, player: Player) {
     return this.apollo.mutate({
       mutation: removePlayerToTeamMutation,
+      awaitRefetchQueries: true,
+      refetchQueries: [
+        {
+          query: teamQuery,
+          variables: {
+            id: team.id,
+          },
+        },
+      ],
       variables: {
         playerId: player.id,
         teamId: team.id,
@@ -71,6 +89,14 @@ export class TeamService {
   updatePlayer(team: Team, player: Player) {
     return this.apollo.mutate({
       mutation: updatePlayerTeamMutation,
+      refetchQueries: [
+        {
+          query: teamQuery,
+          variables: {
+            id: team.id,
+          },
+        },
+      ],
       variables: {
         playerId: player.id,
         teamId: team.id,
@@ -83,6 +109,15 @@ export class TeamService {
     return this.apollo
       .mutate<{ updateTeam: Team }>({
         mutation: updateTeamMutation,
+        awaitRefetchQueries: true,
+        refetchQueries: [
+          {
+            query: teamQuery,
+            variables: {
+              id: team.id,
+            },
+          },
+        ],
         variables: {
           team,
         },
@@ -115,21 +150,20 @@ export class TeamService {
     return this.apollo
       .query<{
         club: {
-          teams: Team[]
-        }
+          teams: Team[];
+        };
       }>({
         query: teamAssemblyInfo,
         variables: {
           clubId,
           ranking: mayDate,
-          subEventWhere : {
-            id: { "$in": subEventIds },
+          subEventWhere: {
+            id: { $in: subEventIds },
           },
         },
       })
       .pipe(map((x: any) => x.data?.club?.teams?.map((t: Partial<Team>) => new Team(t))));
   }
-
 
   addBasePlayer(teamId: string, playerId: string, subEventId: string) {
     return this.apollo.mutate<{ addPlayerBaseSubEventMutation: Team }>({
@@ -137,7 +171,7 @@ export class TeamService {
       variables: {
         teamId,
         playerId,
-        subEventId
+        subEventId,
       },
     });
   }
@@ -148,7 +182,7 @@ export class TeamService {
       variables: {
         teamId,
         playerId,
-        subEventId
+        subEventId,
       },
     });
   }
