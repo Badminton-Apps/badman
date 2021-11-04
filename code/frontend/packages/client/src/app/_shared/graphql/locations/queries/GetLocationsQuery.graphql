@@ -1,0 +1,14 @@
+query GetLocationQuery($where: SequelizeJSON) {
+  locations(where: $where) {
+    id
+    name
+    address
+    postalcode
+    street
+    streetNumber
+    city
+    state
+    phone
+    fax
+  }
+}

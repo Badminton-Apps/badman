@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 
 import { map, tap } from 'rxjs/operators';
@@ -6,6 +6,7 @@ import { AuthService } from '../security';
 import { Player, Role } from './../../models';
 
 import * as roleQuery from '../../graphql/roles/queries/GetRoleQuery.graphql';
+import * as rolesQuery from '../../graphql/roles/queries/GetRolesQuery.graphql';
 
 import * as addRoleMutation from '../../graphql/roles/mutations/addRole.graphql';
 import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.graphql';
@@ -26,11 +27,21 @@ export class RoleService {
         variables: {
           id: roleId,
         },
+        fetchPolicy: 'network-only'
       })
-      .pipe(
-        map((x) => new Role(x.data.role)),
-        tap(() => this.authService.reloadPermissions())
-      );
+      .pipe(map((x) => new Role(x.data.role)));
+  }
+
+  getRoles(where?: { [key: string]: any }) {
+    return this.apollo
+      .query<{ roles: Role[] }>({
+        query: rolesQuery,
+        variables: {
+          where,
+        },
+        fetchPolicy: 'network-only'
+      })
+      .pipe(map((x) => x.data.roles.map((r) => new Role(r))));
   }
 
   addRole(role: Role, clubId: string) {
