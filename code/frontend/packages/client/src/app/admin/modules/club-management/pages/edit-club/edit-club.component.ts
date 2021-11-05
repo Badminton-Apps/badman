@@ -84,11 +84,11 @@ export class EditClubComponent implements OnInit {
       switchMap(([id]) => this.clubService.getClub(id))
     );
 
-    this.locations$ = combineLatest([clubid$, this.updateClub$]).pipe(
+    this.locations$ = combineLatest([clubid$, this.updateLocation$]).pipe(
       debounceTime(600),
       switchMap(([id]) => this.locationService.getLocations({ clubId: id }))
     );
-    this.roles$ = combineLatest([clubid$, this.updateClub$]).pipe(
+    this.roles$ = combineLatest([clubid$, this.updateRoles$]).pipe(
       debounceTime(600),
       switchMap(([id]) => this.roleService.getRoles({ clubId: id }))
     );
