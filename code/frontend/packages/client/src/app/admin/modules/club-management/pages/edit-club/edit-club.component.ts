@@ -17,7 +17,7 @@ import {
   Team,
   TeamService,
 } from 'app/_shared';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, lastValueFrom } from 'rxjs';
 import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -25,12 +25,12 @@ import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
   styleUrls: ['./edit-club.component.scss'],
 })
 export class EditClubComponent implements OnInit {
-  club$: Observable<Club>;
-  roles$: Observable<Role[]>;
-  locations$: Observable<Location[]>;
+  club$!: Observable<Club>;
+  roles$!: Observable<Role[]>;
+  locations$!: Observable<Location[]>;
 
-  compYears$: Observable<number[]>;
-  teamsForYear$: Observable<Team[]>;
+  compYears$?: Observable<(number | undefined)[]>;
+  teamsForYear$!: Observable<Team[]>;
 
   updateClub$ = new BehaviorSubject(null);
   updateLocation$ = new BehaviorSubject(null);
@@ -58,7 +58,7 @@ export class EditClubComponent implements OnInit {
       clubid$,
       this.authService.userPermissions$,
       this.updateClub$.pipe(debounceTime(600)),
-    ]).pipe(switchMap(([id]) => this.clubService.getCompetitionYears(id)));
+    ]).pipe(switchMap(([id]) => this.clubService.getCompetitionYears(id!)));
 
     this.teamsForYear$ = combineLatest([
       clubid$,
@@ -69,19 +69,19 @@ export class EditClubComponent implements OnInit {
       switchMap((args: any[]) => {
         return this.eventService.getSubEventsCompetition(args[1]).pipe(
           map((subEvents) => {
-            args.push(subEvents.map((subEvent) => subEvent.subEvents.map((subEvent) => subEvent.id)).flat(2));
-            return args;
+            args.push(subEvents?.map((subEvent) => subEvent?.subEvents?.map((subEvent) => subEvent.id)).flat(2));
+            return args ;
           })
         );
       }),
       switchMap(([clubId, year, permissions, update, subEvents]) => {
-        return this.clubService.getTeamsForSubEvents(clubId, subEvents);
+        return this.clubService.getTeamsForSubEvents(clubId, subEvents) ;
       })
     );
 
     this.club$ = combineLatest([clubid$, this.updateClub$]).pipe(
       debounceTime(600),
-      switchMap(([id]) => this.clubService.getClub(id))
+      switchMap(([id]) => this.clubService.getClub(id!))
     );
 
     this.locations$ = combineLatest([clubid$, this.updateLocation$]).pipe(
@@ -96,7 +96,7 @@ export class EditClubComponent implements OnInit {
 
   async save(club: Club) {
     await this.clubService.updateClub(club).toPromise();
-    this._snackBar.open('Saved', null, {
+    this._snackBar.open('Saved', undefined, {
       duration: 1000,
       panelClass: 'success',
     });
@@ -104,8 +104,8 @@ export class EditClubComponent implements OnInit {
 
   async onPlayerUpdatedFromTeam(player: Player, team: Team) {
     if (player && team) {
-      await this.teamService.updatePlayer(team, player).toPromise();
-      this._snackBar.open('Player updated', null, {
+      await this.teamService.updatePlayer(team, player).subscribe();
+      this._snackBar.open('Player updated', undefined, {
         duration: 1000,
         panelClass: 'success',
       });
@@ -116,7 +116,7 @@ export class EditClubComponent implements OnInit {
   async onPlayerAddedToRole(player: Player, role: Role) {
     if (player && role) {
       await this.roleService.addPlayer(role, player).toPromise();
-      this._snackBar.open('Player added', null, {
+      this._snackBar.open('Player added', undefined, {
         duration: 1000,
         panelClass: 'success',
       });
@@ -127,7 +127,7 @@ export class EditClubComponent implements OnInit {
   async onPlayerRemovedFromRole(player: Player, role: Role) {
     if (player && role) {
       await this.roleService.removePlayer(role, player).toPromise();
-      this._snackBar.open('Player removed', null, {
+      this._snackBar.open('Player removed', undefined, {
         duration: 1000,
         panelClass: 'success',
       });
@@ -139,31 +139,31 @@ export class EditClubComponent implements OnInit {
     this.router.navigate(['/', 'admin', 'club', club.id, 'edit', 'role', role.id]);
   }
 
-  async onEditLocation(location: Location, club: Club) {
+  async onEditLocation(location?: Location, club?: Club) {
     let dialogRef = this.dialog.open(LocationDialogComponent, {
       data: { location, club },
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.updateLocation$.next(0);
+      this.updateLocation$.next(null);
     });
   }
 
   async onDeleteLocation(location: Location) {
-    await this.locationService.deleteLocation(location.id).toPromise();
-    this.updateLocation$.next(0);
+    await lastValueFrom(this.locationService.deleteLocation(location.id!));
+    this.updateLocation$.next(null);
   }
   async onDeleteRole(role: Role) {
-    await this.roleService.deleteRole(role.id).toPromise();
-    this.updateRoles$.next(0);
+    await lastValueFrom(this.roleService.deleteRole(role.id!));
+    this.updateRoles$.next(null);
   }
 
   async onAddBasePlayer(player: Player, team: Team) {
-    await this.teamService.addBasePlayer(team.id, player.id, team.subEvents[0].id).toPromise();
-    this.updateClub$.next(0);
+    await lastValueFrom(this.teamService.addBasePlayer(team.id!, player.id!, team.subEvents[0].id!));
+    this.updateClub$.next(null);
   }
   async onDeleteBasePlayer(player: Player, team: Team) {
-    await this.teamService.removeBasePlayer(team.id, player.id, team.subEvents[0].id).toPromise();
-    this.updateClub$.next(0);
+    await lastValueFrom(this.teamService.removeBasePlayer(team.id!, player.id!, team.subEvents[0].id!));
+    this.updateClub$.next(null);
   }
 }

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CompetitionEncounter } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
-import { Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { filter, map, startWith } from 'rxjs/operators';
 
 @Component({
@@ -18,13 +18,13 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
   controlName = 'encounter';
 
   @Input()
-  formGroup: FormGroup;
+  formGroup!: FormGroup;
 
   @Input()
   dependsOn: string = 'team';
 
   formControl = new FormControl();
-  options: CompetitionEncounter[];
+  options!: CompetitionEncounter[];
 
   constructor(
     private encounterService: EncounterService,
@@ -48,10 +48,11 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
           }
           // TODO: Convert to observable way
           this.options = (
-            await this.encounterService
-              .getEncounters(r.id)
-              .pipe(map((c) => c.encounterCompetitions.edges.map((r) => r.node)))
-              .toPromise()
+            await lastValueFrom(
+              this.encounterService
+                .getEncounters(r.id)
+                .pipe(map((c) => c.encounters.map((r) => r.node)))
+            )
           ).sort((a, b) => moment(a.date).diff(b.date));
         } else {
           this.formControl.disable();
@@ -68,8 +69,8 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
         const params = this.activatedRoute.snapshot.queryParams;
         let foundEncounter = null;
 
-        if (params && params.encounter && this.options?.length > 0) {
-          foundEncounter = this.options.find((r) => r.id == params.encounter);
+        if (params && params['encounter'] && this.options?.length > 0) {
+          foundEncounter = this.options.find((r) => r.id == params['encounter']);
         }
 
         if (foundEncounter) {

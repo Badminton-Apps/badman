@@ -3,10 +3,10 @@ import { Event, EventType } from '../event.model';
 import { CompetitionSubEvent } from './sub-event.model';
 
 export class CompetitionEvent extends Event {
-  startYear: number;
-  subEvents: CompetitionSubEvent[];
-  comments: Comment[];
-  type: LevelType;
+  startYear?: number;
+  subEvents?: CompetitionSubEvent[];
+  comments?: Comment[];
+  type?: LevelType;
 
   constructor({ ...args }: Partial<CompetitionEvent>) {
     super(args);

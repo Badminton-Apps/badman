@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from 'app/player';
 import { Club } from 'app/_shared';
-import { AuthService, ClubService } from 'app/_shared/services';
-import { combineLatest, concat, Observable, of } from 'rxjs';
+import { AuthService, ClubService, UserService } from 'app/_shared/services';
+import { combineLatest, concat, lastValueFrom, of } from 'rxjs';
 import { filter, map, startWith, switchMap, take, tap } from 'rxjs/operators';
 
 @Component({
@@ -18,19 +17,19 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   controlName = 'club';
 
   @Input()
-  formGroup: FormGroup;
+  formGroup!: FormGroup;
 
   @Input()
-  singleClubPermission: string;
+  singleClubPermission!: string;
 
   @Input()
-  allClubPermission: string;
+  allClubPermission!: string;
 
   @Input()
   needsPermission: boolean = true;
 
   formControl = new FormControl(null, [Validators.required]);
-  options: Club[];
+  options!: Club[];
 
   constructor(
     private clubService: ClubService,
@@ -43,38 +42,39 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.formGroup.addControl(this.controlName, this.formControl);
 
-    this.options = await combineLatest([
-      this.authSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
-      this.authSerice.hasAllClaims$([`${this.allClubPermission}`]),
-      this.user.profile$.pipe(filter(p => !!p.player))
-    ])
-      .pipe(
-        switchMap(([single, all]) => {
-          if (all) {
-            return this.clubService.getClubs({ first: 999 });
-          } else if (single) {
-            return this.authSerice.userPermissions$.pipe(
-              map((r) => r.filter((x) => x.indexOf(this.singleClubPermission) != -1)),
-              map((r) => r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))),
-              switchMap((ids) => this.clubService.getClubs({ ids, first: ids.length }))
-            );
-          } else if (this.needsPermission) {
-            return of({ clubs: null });
-          } else {
-            return this.clubService.getClubs({ first: 999 });
-          }
-        }),
-        take(1),
-        map((data) => {
-          const count = data?.clubs?.total || 0;
-          if (count) {
-            return data?.clubs.edges.map((x) => new Club(x.node))?.sort((a, b) => a.name.localeCompare(b.name));
-          } else {
-            return [];
-          }
-        })
-      )
-      .toPromise();
+    this.options =
+      (await lastValueFrom(
+        combineLatest([
+          this.authSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
+          this.authSerice.hasAllClaims$([`${this.allClubPermission}`]),
+          this.user.profile$.pipe(filter((p) => !!p?.player)),
+        ]).pipe(
+          switchMap(([single, all]) => {
+            if (all) {
+              return this.clubService.getClubs({ first: 999 });
+            } else if (single) {
+              return this.authSerice.userPermissions$.pipe(
+                map((r) => r.filter((x) => x.indexOf(this.singleClubPermission) != -1)),
+                map((r) => r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))),
+                switchMap((ids) => this.clubService.getClubs({ ids, first: ids.length }))
+              );
+            } else if (this.needsPermission) {
+              return of({ clubs: [], total: 0 });
+            } else {
+              return this.clubService.getClubs({ first: 999 });
+            }
+          }),
+          take(1),
+          map((data) => {
+            const count = data?.total || 0;
+            if (count) {
+              return data?.clubs?.map((x) => new Club(x.node))?.sort((a, b) => a.name!.localeCompare(b.name!));
+            } else {
+              return [];
+            }
+          })
+        )
+      )) ?? [];
 
     this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
       this.router.navigate([], {
@@ -87,12 +87,12 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     const params = this.activatedRoute.snapshot.queryParams;
     let foundClub = null;
 
-    if (params && params.club && this.options.length > 0) {
-      foundClub = this.options.find((r) => r.id == params.club);
+    if (params && params['club'] && this.options.length > 0) {
+      foundClub = this.options.find((r) => r.id == params['club']);
     }
 
     if (foundClub == null) {
-      const clubIds = this.user?.profile?.clubs.map((r) => r.id);
+      const clubIds = this.user?.profile?.clubs?.map((r) => r.id);
       if (clubIds) {
         foundClub = this.options.find((r) => clubIds.includes(r.id));
       }

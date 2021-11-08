@@ -19,15 +19,15 @@
   <ng-container *ngIf="this.team.players && this.team.players.length > 0">
     <mat-list-item *ngFor="let player of this.team.players">
       <mat-checkbox
-        [checked]="player.base"
-        [disabled]="(!player.base && this.baseComplete) || disableIds.indexOf(player.id) >= 0"
+        [checked]="player.base ?? false"
+        [disabled]="(!player.base && this.baseComplete) || disableIds!.indexOf(player.id!) >= 0"
         mat-line
         (change)="clicked(player, $event.checked)"
       >
         {{ player.fullName }}
         <small
           >({{ player.index }})
-          <ng-container *ngIf="disableIds.indexOf(player.id) >= 0"
+          <ng-container *ngIf="disableIds!.indexOf(player.id!) >= 0"
             >&nbsp; ({{ 'competition.enrollment.player-base' | translate }})</ng-container
           ></small
         >

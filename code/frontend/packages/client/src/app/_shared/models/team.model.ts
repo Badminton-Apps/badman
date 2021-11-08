@@ -3,26 +3,26 @@ import { Location } from './location.model';
 import { Player } from './player.model';
 
 export class Team {
-  id: string;
-  name: string;
-  abbreviation: string;
-  type: string;
-  teamNumber: number;
-  active: boolean;
-  preferredTime: string;
-  preferredDay: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+  id?: string;
+  name?: string;
+  abbreviation?: string;
+  type?: string;
+  teamNumber?: number;
+  active?: boolean;
+  preferredTime?: string;
+  preferredDay?: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
 
-  players: Player[];
-  locations: Location[];
-  subEvents: CompetitionSubEvent[];
+  players!: Player[];
+  locations?: Location[];
+  subEvents!: CompetitionSubEvent[];
 
-  baseIndex: number;
-  captain: Player;
-  captainId: string;
-  email: string;
-  phone: string;
+  baseIndex?: number;
+  captain?: Player;
+  captainId?: string;
+  email?: string;
+  phone?: string;
 
-  meta: any;
+  meta?: any;
 
   constructor(args?: Partial<Team>) {
     this.id = args?.id;
@@ -35,9 +35,9 @@ export class Team {
     this.preferredTime = args?.preferredTime;
     this.preferredDay = args?.preferredDay;
 
-    this.subEvents = args?.subEvents?.map((s) => new CompetitionSubEvent(s));
+    this.subEvents = args?.subEvents?.map((s) => new CompetitionSubEvent(s)) ?? [];
     this.locations = args?.locations?.map((l) => new Location(l));
-    this.captain = args?.captain != null ? new Player(args?.captain) : null;
+    this.captain = args?.captain != null ? new Player(args?.captain) : undefined;
     this.captainId = args?.captain?.id;
     this.email = args?.email;
     this.phone = args?.phone;
@@ -49,9 +49,9 @@ export class Team {
         let index = this.type == 'MX' ? 36 : 24;
         if (p.lastRanking) {
           if (this.type == 'MX') {
-            index = p.lastRanking.single + p.lastRanking.double + p.lastRanking.mix;
+            index = p.lastRanking.single! + p.lastRanking.double! + p.lastRanking.mix!;
           } else {
-            index = p.lastRanking.single + p.lastRanking.double;
+            index = p.lastRanking.single! + p.lastRanking.double!;
           }
         }
 
@@ -62,12 +62,12 @@ export class Team {
   }
 
   private calculateBase() {
-    const basePlayers = this.players.filter((r) => r.base);
+    const basePlayers = this.players!.filter((r) => r.base);
 
     if (this.type !== 'MX') {
       const bestPlayers = basePlayers
         .map((r) => r.index)
-        .sort((a, b) => a - b)
+        .sort((a, b) => a! - b!)
         .slice(0, 4);
 
       let missingIndex = 0;
@@ -75,20 +75,20 @@ export class Team {
         missingIndex = (bestPlayers.length - 4) * 24;
       }
 
-      this.baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
+      this.baseIndex = bestPlayers.reduce((a, b) => a! + b!, missingIndex);
     } else {
       const bestPlayers = [
         // 2 best male
         ...basePlayers
           .filter((p) => p.gender == 'M')
           .map((r) => r.index)
-          .sort((a, b) => a - b)
+          .sort((a, b) => a! - b!)
           .slice(0, 2),
         // 2 best female
         ...basePlayers
           .filter((p) => p.gender == 'F')
           .map((r) => r.index)
-          .sort((a, b) => a - b)
+          .sort((a, b) => a! - b!)
           .slice(0, 2),
       ];
 
@@ -97,7 +97,7 @@ export class Team {
         missingIndex = (bestPlayers.length - 4) * 36;
       }
 
-      this.baseIndex = bestPlayers.reduce((a, b) => a + b, missingIndex);
+      this.baseIndex = bestPlayers.reduce((a, b) => a! + b!, missingIndex);
     }
   }
 }

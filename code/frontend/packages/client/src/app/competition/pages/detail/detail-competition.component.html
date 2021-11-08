@@ -19,8 +19,8 @@
       <div class="picture"></div>
       <div class="name">
         <span class="up"> {{ event.name }}</span>
-        <span class="down">
-          {{ event.startYear }} - {{ event.startYear + 1 }}
+        <span class="down" *ngIf="event.startYear">
+          {{ event.startYear! }} - {{ event.startYear! + 1 }}
           <span *ngIf="event.updatedAt"
             >- {{ 'competition.last-updated' | translate }}: {{ event.updatedAt | date }}</span
           >
@@ -32,7 +32,7 @@
   <div class="mat-subheading-1">Sub events</div>
   <mat-list *ngIf="event.subEvents">
     <mat-list-item *ngFor="let subEvent of event.subEvents">
-     <a [routerLink]="[subEvent.id]">
+      <a [routerLink]="[subEvent.id]">
         {{ subEvent.name }}
       </a>
     </mat-list-item>

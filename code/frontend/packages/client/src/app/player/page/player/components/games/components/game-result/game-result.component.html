@@ -31,32 +31,32 @@
 
   <div class="results">
     <div class="result">
-      <div class="set" [ngClass]="{ won: this.game.set1Team1 > this.game.set1Team2 }">
+      <div class="set" [ngClass]="{ won: (this.game.set1Team1 ?? 0) > (this.game.set1Team2 ?? 0) }">
         {{ this.game.set1Team1 }}
       </div>
-      <div class="set" [ngClass]="{ won: this.game.set2Team1 > this.game.set2Team2 }">
+      <div class="set" [ngClass]="{ won: (this.game.set2Team1 ?? 0) > (this.game.set2Team2 ?? 0) }">
         {{ this.game.set2Team1 }}
       </div>
       <div
         class="set"
         *ngIf="this.game.set3Team1 || this.game.set3Team2"
-        [ngClass]="{ won: this.game.set3Team1 > this.game.set3Team2 }"
+        [ngClass]="{ won: (this.game.set3Team1 ?? 0) > (this.game.set3Team2 ?? 0) }"
       >
         {{ this.game.set3Team1 }}
       </div>
     </div>
     <div class="divider"></div>
     <div class="result">
-      <div class="set" [ngClass]="{ won: this.game.set1Team2 > this.game.set1Team1 }">
+      <div class="set" [ngClass]="{ won: (this.game.set1Team2 ?? 0) > (this.game.set1Team1 ?? 0) }">
         {{ this.game.set1Team2 }}
       </div>
-      <div class="set" [ngClass]="{ won: this.game.set2Team2 > this.game.set2Team1 }">
+      <div class="set" [ngClass]="{ won: (this.game.set2Team2 ?? 0) > (this.game.set2Team1 ?? 0) }">
         {{ this.game.set2Team2 }}
       </div>
       <div
         class="set"
         *ngIf="this.game.set3Team1 || this.game.set3Team2"
-        [ngClass]="{ won: this.game.set3Team2 > this.game.set3Team1 }"
+        [ngClass]="{ won: (this.game.set3Team2 ?? 0) > (this.game.set3Team1 ?? 0) }"
       >
         {{ this.game.set3Team2 }}
       </div>

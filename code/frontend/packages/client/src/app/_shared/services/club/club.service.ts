@@ -74,7 +74,7 @@ export class ClubService {
           club,
         },
       })
-      .pipe(map((x) => new Club(x.data.addClub)));
+      .pipe(map((x) => new Club(x.data!.addClub)));
   }
 
   removeClub(club: Club) {
@@ -113,12 +113,12 @@ export class ClubService {
           club,
         },
       })
-      .pipe(map((x) => new Club(x.data.updateClub)));
+      .pipe(map((x) => new Club(x.data!.updateClub)));
   }
 
   getClubs(args?: { first?: number; after?: string; query?: string; ids?: string[] }) {
     let where = undefined;
-    if (args.query) {
+    if (args?.query) {
       where = {
         name: {
           $iLike: `%${args.query}%`,
@@ -126,7 +126,7 @@ export class ClubService {
       };
     }
 
-    if (args.ids) {
+    if (args?.ids) {
       where = {
         id: {
           in: args.ids,
@@ -143,22 +143,25 @@ export class ClubService {
       }>({
         query: clubsQuery,
         variables: {
-          first: args.first,
-          after: args.after,
+          first: args?.first,
+          after: args?.after,
           where,
         },
+
       })
       .pipe(
         map((x) => {
-          if (x.data.clubs) {
-            x.data.clubs.edges = x.data.clubs.edges.map((x) => {
-              x.node = new Club(x.node);
-              return x;
-            });
-          }
-          return x.data;
+          return {
+            total: x.data.clubs.total,
+            clubs: x.data.clubs.edges?.map((e) => {
+              return {
+                cursor: e.cursor,
+                node: new Club(e.node),
+              };
+            }),
+          };
         })
-      );
+    );
   }
 
   getTeamsForSubEvents(clubId: string, subEvents?: string[]) {
@@ -180,7 +183,7 @@ export class ClubService {
       })
       .pipe(
         map((x) => {
-          return x.data.club.teams.filter((r) => r.subEvents.length > 0 && r.subEvents[0].meta != null);
+          return x.data.club.teams?.filter((r) => r.subEvents.length > 0 && r.subEvents[0].meta != null) ?? [];
         })
       );
   }
@@ -194,12 +197,13 @@ export class ClubService {
         },
       })
       .pipe(
-        map((x) =>
-          x.data.club.teams
-            .map((r) => r.subEvents.map((r) => r.event.startYear))
-            .flat()
-            .filter((x, i, a) => a.indexOf(x) === i)
-            .sort()
+        map(
+          (x) =>
+            x.data.club.teams
+              ?.map((r) => r.subEvents.map((r) => r.event?.startYear))
+              .flat()
+              .filter((x, i, a) => a.indexOf(x) === i)
+              .sort() ?? []
         )
       );
   }

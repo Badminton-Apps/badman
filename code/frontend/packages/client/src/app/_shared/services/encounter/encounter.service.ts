@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 
 import { CompetitionEncounter } from 'app/_shared';
@@ -32,13 +32,15 @@ export class EncounterService {
       })
       .pipe(
         map((x) => {
-          if (x.data.encounterCompetitions) {
-            x.data.encounterCompetitions.edges = x.data.encounterCompetitions.edges.map((x) => {
-              x.node = new CompetitionEncounter(x.node);
-              return x;
-            });
-          }
-          return x.data;
+          return {
+            total: x.data.encounterCompetitions?.total,
+            encounters: x.data.encounterCompetitions?.edges?.map((e) => {
+              return {
+                cursor: e.cursor,
+                node: new CompetitionEncounter(e.node),
+              };
+            }),
+          };
         })
       );
   }
@@ -65,11 +67,11 @@ export class EncounterService {
         variables: {
           change: {
             accepted: encounterChange.accepted,
-            encounterId: encounterChange.encounter.id,
+            encounterId: encounterChange.encounter!.id,
             home,
             dates: encounterChange.dates,
             comment: {
-              message: home ? encounterChange.homeComment.message : encounterChange.awayComment.message
+              message: home ? encounterChange.homeComment!.message : encounterChange.awayComment!.message,
             },
           },
         },

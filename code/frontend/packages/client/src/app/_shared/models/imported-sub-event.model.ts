@@ -1,15 +1,15 @@
 export class ImporterSubEvent {
-  id: string;
-  name: string;
-  eventType: string;
-  gameType: string;
-  drawType: string;
-  levelType: string;
-  internalId: string;
-  size: string;
-  level: string;
+  id?: string;
+  name?: string;
+  eventType?: string;
+  gameType?: string;
+  drawType?: string;
+  levelType?: string;
+  internalId?: string;
+  size?: string;
+  level?: string;
 
-  constructor({ ...args }) {
+  constructor({ ...args }: Partial<ImporterSubEvent>) {
     this.id = args.id;
     this.name = args.name;
     this.eventType = args.eventType;

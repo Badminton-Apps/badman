@@ -17,6 +17,7 @@ import { CovalentPagingModule } from '@covalent/core/paging';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentLineEchartsModule } from '@covalent/echarts/line';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
+
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { SharedModule } from '../_shared';
 import { ProfileComponent } from './page';
@@ -32,6 +33,8 @@ import {
 } from './page/player';
 import { TopPlayersComponent } from './page/top-players/top-players.component';
 import { PlayerRoutingModule } from './player-routing.module';
+import { GroupCompetitionComponent } from './page/player/components/games/components/games-result/group-competition/group-competition.component';
+import { GroupTournamentComponent } from './page/player/components/games/components/games-result/group-tournament/group-tournament.component';
 
 const coreModules = [FormsModule];
 const materialModules = [
@@ -70,6 +73,8 @@ const otherModules = [MomentDateModule, InfiniteScrollModule];
     TopPlayersComponent,
     GamesComponent,
     ChartComponent,
+    GroupCompetitionComponent,
+    GroupTournamentComponent,
   ],
   imports: [
     SharedModule,

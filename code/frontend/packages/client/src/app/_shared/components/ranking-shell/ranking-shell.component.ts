@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from 'app/player';
+import { UserService } from 'app/_shared';
 import { environment } from 'environments/environment';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -12,9 +12,9 @@ import { DeviceService, EventService } from '../../services';
   styleUrls: ['./ranking-shell.component.scss'],
 })
 export class RankingShellComponent implements OnDestroy, OnInit {
-  private mobileQueryListener: () => void;
-  profile$: Observable<Player>;
-  canEnroll$: Observable<boolean>;
+  private mobileQueryListener!: () => void;
+  profile$!: Observable<Player>;
+  canEnroll$!: Observable<boolean>;
   version: string = environment.version;
 
   constructor(
@@ -30,9 +30,9 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 
     this.profile$ = this.user.profile$.pipe(
-      filter((x) => x !== null && x.player !== null),
-      map((x) => x.player)
-    );
+      filter((x) => x !== null && x?.player !== null),
+      map((x) => x!.player)
+    ) as Observable<Player>;
 
     this.canEnroll$ = combineLatest([
       this.eventService.getEvents({
@@ -47,7 +47,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
           allowEnlisting: true,
         },
       }),
-    ]).pipe(map(([a, b]) => a.eventCompetitions.edges.length != 0 || b.eventTournaments.edges.length != 0));
+    ]).pipe(map(([a, b]) => a?.events.length != 0 || b?.events.length != 0));
   }
 
   ngOnDestroy(): void {

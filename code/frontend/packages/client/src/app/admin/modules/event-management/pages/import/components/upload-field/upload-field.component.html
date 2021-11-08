@@ -5,7 +5,7 @@
     #fileDropRef
     id="fileDropRef"
     multiple
-    (change)="addFiles($event.target.files)"
+    (change)="addFiles($any($event.target).files)"
   />
   <svg xmlns="http://www.w3.org/2000/svg" width="31" height="32" viewBox="0 0 63 64">
     <g fill="#3B454F" fill-rule="nonzero">

@@ -10,5 +10,5 @@ import { Event } from 'app/_shared';
 })
 export class CompetitionDataComponent {
   @Input()
-  data: Event
+  data!: Event
 }

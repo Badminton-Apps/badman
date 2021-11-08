@@ -1,0 +1,16 @@
+<div class="mat-subheading-2">
+  <div>
+    <a [routerLink]="['/competition', this.subEvent?.event?.id, this.subEvent?.id]"
+      >{{ subEvent.name }} - {{ subEvent.level }}</a
+    >
+  </div>
+
+  <div class="date">
+    {{ subEvent.games![0].playedAt | date }}
+  </div>
+</div>
+
+<div class="games">
+  <app-game-result [game]="game" [player]="player" *ngFor="let game of subEvent.games"></app-game-result>
+</div>
+ 

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from 'app/player';
-import { TeamService } from 'app/_shared';
+import { TeamService, UserService } from 'app/_shared';
 import { Team } from 'app/_shared/models/team.model';
 import { filter } from 'rxjs/operators';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-select-team',
@@ -17,16 +17,16 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   controlName = 'team';
 
   @Input()
-  formGroup: FormGroup;
+  formGroup!: FormGroup;
 
   @Input()
   dependsOn: string = 'club';
 
   formControl = new FormControl();
-  teamsM: Team[];
-  teamsF: Team[];
-  teamsMX: Team[];
-  teamsNAT: Team[];
+  teamsM?: Team[];
+  teamsF?: Team[];
+  teamsMX?: Team[];
+  teamsNAT?: Team[];
 
   constructor(
     private teamService: TeamService,
@@ -58,22 +58,22 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
             this.formControl.enable();
           }
           // TODO: Convert to observable way
-          const teams = await this.teamService.getTeams(r.id).toPromise();
+          const teams = await lastValueFrom(this.teamService.getTeams(r.id));
 
-          this.teamsF = teams.filter((r) => r.type === 'F').sort((a, b) => a.teamNumber - b.teamNumber);
-          this.teamsM = teams.filter((r) => r.type === 'M').sort((a, b) => a.teamNumber - b.teamNumber);
-          this.teamsMX = teams.filter((r) => r.type === 'MX').sort((a, b) => a.teamNumber - b.teamNumber);
-          this.teamsNAT = teams.filter((r) => r.type === 'NATIONAL').sort((a, b) => a.teamNumber - b.teamNumber);
+          this.teamsF = teams.filter((r) => r.type === 'F').sort((a, b) => a.teamNumber! - b.teamNumber!);
+          this.teamsM = teams.filter((r) => r.type === 'M').sort((a, b) => a.teamNumber! - b.teamNumber!);
+          this.teamsMX = teams.filter((r) => r.type === 'MX').sort((a, b) => a.teamNumber! - b.teamNumber!);
+          this.teamsNAT = teams.filter((r) => r.type === 'NATIONAL').sort((a, b) => a.teamNumber! - b.teamNumber!);
 
           const params = this.activatedRoute.snapshot.queryParams;
           let foundTeam = null;
 
-          if (params && params.team && teams.length > 0) {
-            foundTeam = teams.find((r) => r.id == params.team);
+          if (params && params['team'] && teams.length > 0) {
+            foundTeam = teams.find((r) => r.id == params['team']);
           }
 
           if (foundTeam == null) {
-            foundTeam = teams.find((r) => r.captainId == this.user.profile.id);
+            foundTeam = teams.find((r) => r.captainId == this.user?.profile?.id);
           }
 
           if (foundTeam) {

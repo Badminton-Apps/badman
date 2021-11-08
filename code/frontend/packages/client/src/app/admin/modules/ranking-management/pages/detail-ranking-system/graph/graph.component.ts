@@ -13,11 +13,14 @@ import {
 })
 export class GraphComponent {
   @Input()
-  levels: number[];
+  levels!: number[];
 
   @Input()
-  title: string;
+  title!: string;
 
   @Input()
-  seriesData;
+  seriesData!: {
+    date: Date;
+    points: number[]
+  }[];
 }

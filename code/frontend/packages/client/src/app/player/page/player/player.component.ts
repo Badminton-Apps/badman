@@ -2,8 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RankingService } from 'app/admin';
-import { UserService } from 'app/player/services';
-import { DeviceService, Player, PlayerService, SystemService } from 'app/_shared';
+import { DeviceService, Player, PlayerService, SystemService, UserService } from 'app/_shared';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject, throwError } from 'rxjs';
 import { catchError, delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 
@@ -12,11 +11,11 @@ import { catchError, delay, filter, map, shareReplay, startWith, switchMap, tap 
   styleUrls: ['./player.component.scss'],
 })
 export class PlayerComponent implements OnInit, OnDestroy {
-  private mobileQueryListener: () => void;
-  player$: Observable<Player>;
-  user$: Observable<{ player: Player; request: any }>;
+  private mobileQueryListener!: () => void;
+  player$!: Observable<Player>;
+  user$!: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
 
-  canClaimAccount$: Observable<{ canClaim: boolean; isClaimedByUser: boolean }>;
+  canClaimAccount$!: Observable<{ isClaimedByUser: boolean; canClaim: boolean }>; 
 
   updateHappend = new BehaviorSubject(true);
 
@@ -48,24 +47,25 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
 
-    this.player$ = merge<Player>(
+    this.player$ = merge(
       reset$,
       combineLatest([id$, system$]).pipe(
-        switchMap(([playerId, system]) => this.playerService.getPlayer(playerId, system.id)),
+        switchMap(([playerId, system]) => this.playerService.getPlayer(playerId!, system?.id)),
         map((player) => {
           if (!player) {
             throw new Error('No player found');
           }
-          return this.setStaticsUrl(player);
+          this.setStaticsUrl(player);
+          return player;
         }),
         catchError((err, caught) => {
           console.error('error', err);
           this.snackbar.open(err.message);
           this.router.navigate(['/']);
-          return throwError(err);
+          throw err;
         })
       )
-    );
+    ) as Observable<Player>;
 
     this.user$ = this.updateHappend.pipe(switchMap((_) => this.userService.profile$));
 
@@ -91,7 +91,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   private setStaticsUrl(player: Player) {
     player.rankingPlaces = player.rankingPlaces?.map((ranking) => {
-      ranking.statisticUrl = this.rankingService.getStatisticUrl(ranking.rankingSystem.id, player.id);
+      ranking.statisticUrl = this.rankingService.getStatisticUrl(ranking.rankingSystem!.id!, player.id!);
       return ranking;
     });
     return player;

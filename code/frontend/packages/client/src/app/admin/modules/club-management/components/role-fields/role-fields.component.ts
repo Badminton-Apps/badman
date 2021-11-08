@@ -20,14 +20,14 @@ export class RoleFieldsComponent implements OnInit {
   role: Role = {} as Role;
 
   @Input()
-  club: Club;
+  club!: Club;
 
   @Input()
-  claims: { category: string; claims: Claim[] }[];
+  claims!: { category: string; claims: Claim[] }[];
 
   @Output() save = new EventEmitter<Role>();
 
-  roleForm: FormGroup;
+  roleForm!: FormGroup;
 
   selectedClaims: Claim[] = [];
 

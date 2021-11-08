@@ -18,7 +18,7 @@ import {
   styleUrls: ['./edit-competition-event.component.scss'],
 })
 export class EditEventCompetitionComponent implements OnInit {
-  event$: Observable<CompetitionEvent>;
+  event$!: Observable<CompetitionEvent>;
   update$ = new BehaviorSubject(0);
   saved$ = new BehaviorSubject(0);
 
@@ -36,7 +36,7 @@ export class EditEventCompetitionComponent implements OnInit {
       this.update$.pipe(debounceTime(600)),
     ]).pipe(
       map(([params]) => params.get('id')),
-      switchMap((id) => this.eventService.getCompetitionEvent(id))
+      switchMap((id) => this.eventService.getCompetitionEvent(id!))
     );
 
     this.event$.subscribe((event) => {
@@ -48,7 +48,7 @@ export class EditEventCompetitionComponent implements OnInit {
     });
 
     this.saved$.pipe(debounceTime(5000), skip(1)).subscribe(() => {
-      this._snackBar.open('Saved', null, {
+      this._snackBar.open('Saved', undefined, {
         duration: 1000,
         panelClass: 'success',
       });
@@ -65,7 +65,7 @@ export class EditEventCompetitionComponent implements OnInit {
         Validators.max(3000),
       ]),
       subEvents: new FormArray(
-        event.subEvents.map((subEvent) => {
+        event.subEvents?.map((subEvent) => {
           return new FormGroup({
             id: new FormControl(subEvent.id),
             name: new FormControl(subEvent.name, Validators.required),
@@ -75,7 +75,7 @@ export class EditEventCompetitionComponent implements OnInit {
             minBaseIndex: new FormControl(subEvent.minBaseIndex),
             maxBaseIndex: new FormControl(subEvent.maxBaseIndex),
           });
-        })
+        }) ?? []
       ),
     });
   }

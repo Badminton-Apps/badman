@@ -1,15 +1,16 @@
+import { Player } from 'app/_shared';
 import { Event, EventType } from '../event.model';
 import { TournamentSubEvent } from './sub-event.model';
 
 export class TournamentEvent extends Event {
-  firstDay: Date;
+  firstDay?: Date;
   dates: Date[];
-  subEvents: TournamentSubEvent[];
-  tournamentNumber: number;
+  subEvents?: TournamentSubEvent[];
+  tournamentNumber?: number;
 
   constructor({ ...args }: Partial<TournamentEvent>) {
     super(args);
-    this.firstDay = args.firstDay != null ? new Date(args.firstDay) : null;
+    this.firstDay = args?.firstDay != null ? new Date(args.firstDay) : undefined;
     this.dates = ((args.dates as unknown) as string)
       ?.split(',')
       .map((x) => new Date(x));

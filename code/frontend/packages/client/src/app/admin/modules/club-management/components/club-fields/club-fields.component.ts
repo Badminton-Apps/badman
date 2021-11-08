@@ -15,7 +15,7 @@ export class ClubFieldsComponent implements OnInit {
 
   @Output() save = new EventEmitter<Club>();
 
-  clubForm: FormGroup;
+  clubForm!: FormGroup;
 
   constructor(private auth: AuthService) {}
 

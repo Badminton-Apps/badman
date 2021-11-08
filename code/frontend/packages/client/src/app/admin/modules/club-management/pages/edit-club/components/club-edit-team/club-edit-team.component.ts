@@ -12,19 +12,19 @@ export class ClubEditTeamComponent implements OnInit {
   @Output() onPlayerRemoved = new EventEmitter<Player>();
 
   @Input()
-  club: Club;
+  club!: Club;
 
   @Input()
-  team: Team;
+  team!: Team;
 
-  players: Player[];
-  teamIndex: number;
+  players?: Player[];
+  teamIndex?: number;
 
-  where: {};
+  where!: {};
 
   ngOnInit(): void {
-    this.teamIndex = this.team.subEvents[0].meta.teamIndex;
-    this.players = this.team.subEvents[0].meta.players.map((p) => new Player(p.player));
+    this.teamIndex = this.team.subEvents[0].meta?.teamIndex;
+    this.players = this.team.subEvents[0].meta?.players.map((p) => new Player(p));
 
     this.where = {
       gender: this.team.type == 'MX' || this.team.type == 'NATIONAL' ? undefined : this.team.type,
