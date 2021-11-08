@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
@@ -21,16 +21,13 @@ import * as updateRankingSysyemMutatino from '../../graphql/rankingSystem/mutati
   providedIn: 'root',
 })
 export class SystemService {
-  private primarySystem: RankingSystem;
+  private primarySystem?: RankingSystem | null;
   private urlBase = `${environment.api}/${environment.apiVersion}/systems`;
 
   constructor(private httpClient: HttpClient, private apollo: Apollo) {}
 
   makePrimary(systemId: string) {
-    return this.httpClient.post(
-      `${this.urlBase}/${systemId}/make-primary`,
-      true
-    );
+    return this.httpClient.post(`${this.urlBase}/${systemId}/make-primary`, true);
   }
 
   deleteSystem(systemId: string) {
@@ -85,7 +82,7 @@ export class SystemService {
           rankingSystem,
         },
       })
-      .pipe(map((x) => new RankingSystem(x.data.updateRankingSystem)));
+      .pipe(map((x) => new RankingSystem(x.data!.updateRankingSystem)));
   }
 
   updateSystem(rankingSystem: RankingSystem) {
@@ -96,15 +93,12 @@ export class SystemService {
           rankingSystem,
         },
       })
-      .pipe(map((x) => new RankingSystem(x.data.updateRankingSystem)));
+      .pipe(map((x) => new RankingSystem(x.data!.updateRankingSystem)));
   }
 
   systems(sort: string, direction: SortDirection, page: number) {
     const params: any = { sort, direction, page };
-    return this.httpClient.get<{ totalCount: number; items: RankingSystem[] }>(
-      `${this.urlBase}`,
-      { params }
-    );
+    return this.httpClient.get<{ totalCount: number; items: RankingSystem[] }>(`${this.urlBase}`, { params });
   }
 
   getPrimarySystem() {
@@ -118,25 +112,17 @@ export class SystemService {
       })
       .pipe(
         share(),
-        map((x) =>
-          x.data?.systems?.length > 0
-            ? new RankingSystem(x.data.systems[0])
-            : null
-        ),
+        map((x) => (x.data?.systems?.length > 0 ? new RankingSystem(x.data.systems[0]) : null)),
         tap((s) => (this.primarySystem = s))
       );
   }
 
-  getSystems(
-    sort?: string,
-    direction?: SortDirection,
-    page?: number
-  ): Observable<RankingSystem[]> {
+  getSystems(sort?: string, direction?: SortDirection, page?: number): Observable<RankingSystem[]> {
     return this.apollo
-      .query({
+      .query<{ systems: RankingSystem[] }>({
         query: systemsQuery,
       })
-      .pipe(map((x: any) => x.data?.systems.map((s) => new RankingSystem(s))));
+      .pipe(map((x) => x.data?.systems.map((s) => new RankingSystem(s))));
   }
 
   getSystemsGroups(): Observable<RankingSystemGroup[]> {
@@ -144,10 +130,6 @@ export class SystemService {
       .query<{ rankingSystemGroup: RankingSystemGroup[] }>({
         query: systemsGroupsQuery,
       })
-      .pipe(
-        map((x) =>
-          x.data.rankingSystemGroup?.map((g) => new RankingSystemGroup(g))
-        )
-      );
+      .pipe(map((x) => x.data.rankingSystemGroup?.map((g) => new RankingSystemGroup(g))));
   }
 }

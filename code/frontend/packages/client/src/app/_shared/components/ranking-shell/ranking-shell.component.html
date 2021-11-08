@@ -9,7 +9,6 @@
         <small>v{{ version }}</small>
       </a>
     </div>
-    
 
     <div class="middle">
       <app-header-search (onSelectPlayer)="this.playerSearch($event)"></app-header-search>
@@ -36,13 +35,13 @@
 
             <a
               mat-list-item
-              *ngIf="profile?.clubs && profile.clubs.length == 1"
-              [routerLink]="['/club', profile.clubs[0].id]"
+              *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) == 1"
+              [routerLink]="['/club', profile.clubs![0].id]"
             >
               My club
             </a>
 
-            <mat-accordion class="app-nav-accordion" *ngIf="profile?.clubs && profile.clubs.length > 1">
+            <mat-accordion class="app-nav-accordion" *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) > 1">
               <mat-expansion-panel class="mat-elevation-z0">
                 <mat-expansion-panel-header>
                   <mat-panel-title>Clubs</mat-panel-title>
@@ -68,7 +67,7 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>{{ 'competition.title' | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
-                <mat-nav-list *ngIf="profile?.clubs && profile.clubs.length > 0">
+                <mat-nav-list *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) > 0">
                   <a mat-list-item routerLink="/competition/team-assembly" routerLinkActive="active">
                     {{ 'competition.team-assembly.title' | translate }}</a
                   >

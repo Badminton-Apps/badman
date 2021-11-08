@@ -19,8 +19,8 @@ export class TeamOverviewComponent {
   @Output() onDelete = new EventEmitter<Team>();
 
   @Input()
-  team: Team;
+  team!: Team;
 
   @Input()
-  club: Club;
+  club!: Club;
 }

@@ -18,7 +18,7 @@ export class LinkAccountComponent implements AfterViewInit {
   resultsLength = 0;
   isLoadingResults = true;
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private adminService: AdminService) {}
 
@@ -30,7 +30,7 @@ export class LinkAccountComponent implements AfterViewInit {
           this.isLoadingResults = true;
           return this.adminService.linkAccounts();
         }),
-        map((data: any[]) => {
+        map((data: any) => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
           this.resultsLength = data.length;
@@ -63,6 +63,6 @@ export class LinkAccountComponent implements AfterViewInit {
 
   async linkAccounts(accept: boolean) {
     await this.adminService.linkAccount(this.selection.selected.map((x) => x.id).join(','), accept).toPromise();
-    this.processed.next();
+    this.processed.next(null);
   }
 }

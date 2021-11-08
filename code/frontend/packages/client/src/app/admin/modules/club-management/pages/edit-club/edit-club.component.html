@@ -11,7 +11,7 @@
       Locations
 
       <app-has-claim [any]="[club.id + '_add:locations', club.id + '_edit:club', 'edit-any:club']">
-        <button mat-icon-button (click)="this.onEditLocation(null, club)">
+        <button mat-icon-button (click)="this.onEditLocation(undefined, club)">
           <mat-icon>add</mat-icon>
         </button>
       </app-has-claim>

@@ -21,14 +21,14 @@ export class AuthService {
         redirect_uri: `${window.location.origin}`,
         audience: `ranking-simulation`,
         useRefreshTokens: true,
-        cacheLocation: 'localstorage'
+        cacheLocation: 'localstorage',
       })
     ) as Observable<Auth0Client>
   ).pipe(
     shareReplay(1), // Every subscription receives the same shared value
     catchError((err) => throwError(err))
   );
-  update$ = new BehaviorSubject(0);
+  update$ = new BehaviorSubject(null);
 
   // Define observables for SDK methods that return promises by default
   // For each Auth0 SDK method, first ensure the client instance is ready
@@ -46,9 +46,9 @@ export class AuthService {
   private userProfileSubject$ = new BehaviorSubject<any>(null);
   userProfile$ = this.userProfileSubject$.asObservable();
   // Create a local property for login status
-  loggedIn: boolean = null;
+  loggedIn: boolean = false;
 
-  userPermissions$: Observable<string[]>;
+  userPermissions$!: Observable<string[]>;
 
   constructor(private router: Router, private httpClient: HttpClient, private apmService: ApmService) {
     // On initial load, check authentication state with authorization server
@@ -62,10 +62,10 @@ export class AuthService {
 
   // When calling, options can be passed if desired
   // https://auth0.github.io/auth0-spa-js/classes/auth0client.html#getuser
-  getUser$(options?): Observable<any> {
+  getUser$(options?: GetUserOptions): Observable<any> {
     return this.auth0Client$.pipe(
       exhaustMap((client: Auth0Client) => from(client.getUser(options))),
-      tap((user: User) => {
+      tap((user: User | undefined) => {
         this.apmService.apm.setUserContext({
           username: user?.name,
           email: user?.email,
@@ -92,7 +92,7 @@ export class AuthService {
     checkAuth$.subscribe();
   }
 
-  login(redirectPath: string = null) {
+  login(redirectPath?: string): void {
     // A desired redirect path can be passed to login method
     // (e.g., from a route guard)
     // Ensure Auth0 client instance exists
@@ -123,14 +123,14 @@ export class AuthService {
   hasAllClaims$(claims: string[]): Observable<boolean> {
     return this.userPermissions$.pipe(
       map((userClaims) => {
-        return claims.reduce((acc, claim) => acc && this.includes(userClaims, claim), true);
+        return claims.reduce((acc: boolean, claim) => acc && this.includes(userClaims, claim), true);
       })
     );
   }
 
   hasAnyClaims$(claims: string[]): Observable<boolean> {
     return this.userPermissions$.pipe(
-      map((userClaims) => claims.reduce((acc, claim) => acc || this.includes(userClaims, claim), false))
+      map((userClaims) => claims.reduce((acc: boolean, claim) => acc || this.includes(userClaims, claim), false))
     );
   }
 
@@ -138,7 +138,7 @@ export class AuthService {
     this.update$.next(null);
   }
 
-  private includes(claims: string[], claim: string) {
+  private includes(claims: string[], claim: string): boolean {
     if (claim.indexOf('*') >= 0) {
       const found = claims.find((r) => r.indexOf(claim.replace('*', '')) != -1);
       return found != null && found != undefined;

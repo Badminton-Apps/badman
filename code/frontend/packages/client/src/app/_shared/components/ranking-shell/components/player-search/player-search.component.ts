@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
-import { merge, Observable, of, ReplaySubject } from 'rxjs';
+import { lastValueFrom, merge, Observable, of, ReplaySubject } from 'rxjs';
 import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
 import { PlayerService } from '../../../../services/player/player.service';
 import { NewPlayerComponent } from '../new-player/new-player.component';
@@ -11,7 +11,7 @@ import { Club, Player } from './../../../../models';
 @Component({
   selector: 'app-player-search',
   templateUrl: './player-search.component.html',
-  styleUrls: ['./player-search.component.scss']
+  styleUrls: ['./player-search.component.scss'],
 })
 export class PlayerSearchComponent implements OnInit {
   @Output() onSelectPlayer = new EventEmitter<Player>();
@@ -26,38 +26,38 @@ export class PlayerSearchComponent implements OnInit {
   clearOnSelection: boolean = true;
 
   @Input()
-  where: {};
+  where!: {};
 
   @Input()
-  player: Player;
+  player!: Player;
 
   @Input()
-  ranking: Date;
-
+  ranking!: Date;
 
   @Input()
-  club: string | Club;
+  club!: string | Club;
 
   @Input()
   searchOutsideClub = true;
 
-  clubId: string;
+  clubId?: string;
 
   @Input()
-  ignorePlayers: Player[];
+  ignorePlayers?: Player[];
 
-  ignorePlayersIds: string[];
+  ignorePlayersIds?: string[];
 
-  formControl: FormControl;
-  filteredOptions$: Observable<Player[]>;
+  formControl!: FormControl;
+  filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
 
   constructor(private playerService: PlayerService, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.formControl = new FormControl(this.player);
-    this.ignorePlayersIds = this.ignorePlayers?.map((r) => r.id) ?? [];
-    this.ignorePlayersIds = this.ignorePlayersIds.filter((v, i, a) => a.indexOf(v) === i);
+    this.ignorePlayersIds = (this.ignorePlayers?.map((r) => r.id) ?? []).filter(
+      (v, i, a) => a.indexOf(v) === i
+    ) as string[];
 
     const search$ = this.formControl.valueChanges.pipe(
       startWith(''),
@@ -72,7 +72,7 @@ export class PlayerSearchComponent implements OnInit {
           ? this.playerService.searchClubPlayers(this.clubId, {
               query: r,
               where: this.where,
-              ranking: this.ranking
+              ranking: this.ranking,
             })
           : of([]);
 
@@ -93,7 +93,7 @@ export class PlayerSearchComponent implements OnInit {
             query: response.query,
             where: this.where,
             includeClub: true,
-            ranking: this.ranking
+            ranking: this.ranking,
           });
         } else {
           return of([]);
@@ -118,14 +118,14 @@ export class PlayerSearchComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(async (player: Partial<Player>) => {
         if (player) {
-          const dbPlayer = await this.playerService
-            .addPlayer({
+          const dbPlayer = await lastValueFrom(
+            this.playerService.addPlayer({
               memberId: player.memberId,
               firstName: player.firstName,
               lastName: player.lastName,
               gender: player.gender,
             })
-            .toPromise();
+          );
           if (!this.clearOnSelection) {
             this.formControl.setValue(player);
           }
@@ -141,7 +141,7 @@ export class PlayerSearchComponent implements OnInit {
     this.onSelectPlayer.next(player);
     if (this.clearOnSelection) {
       this.formControl.reset();
-      this.clear$.next(null);
+      this.clear$.next([]);
     }
   }
 }

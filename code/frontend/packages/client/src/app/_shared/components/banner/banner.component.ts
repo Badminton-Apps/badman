@@ -9,12 +9,12 @@ import { environment } from 'environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BannerComponent implements OnInit, AfterViewInit {
-  banner: Banner;
+  banner!: Banner;
 
   showAd = environment.adsense.show;
 
   @Input()
-  adSlot: number;
+  adSlot!: number;
 
   constructor(private elementRef: ElementRef) {}
 
@@ -36,7 +36,7 @@ export class BannerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       try {
-        (window['adsbygoogle'] = window['adsbygoogle'] || []).push({});
+        ((window as any)['adsbygoogle'] = (window as any)['adsbygoogle'] || []).push({});
       } catch (e) {
         console.error(e);
       }

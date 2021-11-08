@@ -16,7 +16,7 @@
     <app-select-team fxFlex="50" [formGroup]="formGroup"></app-select-team>
   </div>
 
-  <div [hidden]="!formGroup.get('team').value">
+  <div [hidden]="!formGroup.get('team')!.value">
     <div div class="mat-subheading-2">{{ 'competition.change-encounter.choose-encounter' | translate }}</div>
     <div fxLayout="row">
       <app-list-encounters [formGroup]="formGroup"></app-list-encounters>

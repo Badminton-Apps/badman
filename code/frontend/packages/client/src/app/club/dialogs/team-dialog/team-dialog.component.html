@@ -33,7 +33,7 @@
         color="primary"
         *ngIf="!this.team.id"
         [disabled]="!this.form?.valid"
-        (click)="this.teamAdded(this.form?.get('team')?.getRawValue())"
+        (click)="this.teamAdded($any(this.form?.get('team')!).getRawValue())"
       >
         Create
       </button>

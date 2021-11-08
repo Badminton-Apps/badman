@@ -11,22 +11,19 @@ import { environment } from '../../../../environments/environment';
 })
 export class UserService {
   private urlBase = `${environment.api}/${environment.apiVersion}/user`;
-  
-  profile$: Observable<{ player: Player; request: any }>;
-  profile: Player;
+
+  profile$: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
+  profile?: Player;
 
   constructor(private httpClient: HttpClient, private auth: AuthService) {
-    const whenAuthenticated = this.httpClient
-      .get<{ player: Player; request: any }>(`${this.urlBase}/profile`)
-      .pipe(
-        startWith({ player: null, request: null }),
-        filter((user) => user !== null),
-        tap(({ player }) => this.profile = player),
-        shareReplay(1)
-      );
-    this.profile$ = this.auth.userProfile$.pipe(
-      mergeMap((x) => iif(() => x, whenAuthenticated, of(null)))
+    const whenAuthenticated = this.httpClient.get<{ player: Player; request: any }>(`${this.urlBase}/profile`).pipe(
+      startWith({ player: null, request: null }),
+      filter((user) => user !== null),
+      tap(({ player }) => (this.profile = player!)),
+      shareReplay(1)
     );
+
+    this.profile$ = this.auth.userProfile$.pipe(mergeMap((x) => iif(() => x, whenAuthenticated, of(null))));
   }
 
   requestLink(playerId: string): Observable<RequestLink> {
@@ -36,7 +33,7 @@ export class UserService {
     );
   }
 
-  permissions(){
+  permissions() {
     return this.auth.userPermissions$;
   }
 }

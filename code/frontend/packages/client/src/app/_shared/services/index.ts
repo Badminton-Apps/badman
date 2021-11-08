@@ -8,5 +8,6 @@ export * from './club';
 export * from './team';
 export * from './role';
 export * from './location';
+export * from './profile';
 // end:ng42.barrel
 

@@ -22,15 +22,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditRankingComponent implements OnInit {
-  rankingForm: FormGroup;
+  rankingForm!: FormGroup;
 
   @Output() onRankingPlaceChanged = new EventEmitter<Partial<RankingPlace>>();
 
   @Input()
-  rankingPlace: RankingPlace;
+  rankingPlace!: RankingPlace;
 
   @Input()
-  rankingSystem: RankingSystem;
+  rankingSystem!: RankingSystem;
 
   constructor() {}
 

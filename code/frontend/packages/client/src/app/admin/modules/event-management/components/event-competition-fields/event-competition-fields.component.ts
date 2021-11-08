@@ -21,5 +21,5 @@ export class EventCompetitionFieldsComponent {
   event: CompetitionEvent = {} as CompetitionEvent;
 
   @Input()
-  formGroup: FormGroup;
+  formGroup!: FormGroup;
 }

@@ -11,11 +11,11 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class EditPlayerFieldsComponent implements OnInit {
   @Input()
-  player: Player;
+  player!: Player;
 
   @Output() onPlayerChanged = new EventEmitter<Partial<Player>>();
 
-  fg: FormGroup;
+  fg!: FormGroup;
 
   constructor(private auth: AuthService) {}
 

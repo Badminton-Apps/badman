@@ -1,19 +1,17 @@
-import {Apollo} from 'apollo-angular';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
-import { MatVerticalStepper } from '@angular/material/stepper';
-
-import { Club, Comment, CompetitionEvent, EventService, EventType, SubEvent, SystemService, Team } from 'app/_shared';
-import { combineLatest, Observable, of, ReplaySubject } from 'rxjs';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatStepper, MatVerticalStepper } from '@angular/material/stepper';
+import { Apollo } from 'apollo-angular';
+import { Club, Comment, CompetitionEvent, EventService, EventType, SubEvent, Team } from 'app/_shared';
+import { combineLatest, lastValueFrom, Observable, of, ReplaySubject } from 'rxjs';
 import { debounceTime, filter, map, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
+import * as addComment from './graphql/AddComment.graphql';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
 import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
 import * as GetClub from './graphql/GetClub.graphql';
-
 import * as updateComment from './graphql/UpdateComment.graphql';
-import * as addComment from './graphql/AddComment.graphql';
 
 @Component({
   selector: 'app-team-enrollment',
@@ -21,38 +19,46 @@ import * as addComment from './graphql/AddComment.graphql';
   styleUrls: ['./team-enrollment.component.scss'],
 })
 export class TeamEnrollmentComponent implements OnInit {
-  @ViewChild(MatVerticalStepper) vert_stepper: MatVerticalStepper;
+  @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
-  competitionYear: number;
+  competitionYear?: number;
 
-  formGroup: FormGroup;
+  formGroup!: FormGroup;
 
-  enabledProvincialControl: FormControl;
-  enabledLigaControl: FormControl;
-  enabledNationalControl: FormControl;
-  commentProvControl: FormControl;
-  commentLigaControl: FormControl;
-  commentNatControl: FormControl;
+  enabledProvincialControl!: FormControl;
+  enabledLigaControl!: FormControl;
+  enabledNationalControl!: FormControl;
+  commentProvControl!: FormControl;
+  commentLigaControl!: FormControl;
+  commentNatControl!: FormControl;
 
-  club$: Observable<Club>;
-  commentProv: Comment;
-  commentLiga: Comment;
-  commentNat: Comment;
+  club$!: Observable<Club>;
+  commentProv!: Comment;
+  commentLiga!: Comment;
+  commentNat!: Comment;
 
-  teamsM$: Observable<Team[]>;
-  teamsF$: Observable<Team[]>;
-  teamsMX$: Observable<Team[]>;
+  teamsM$!: Observable<Team[]>;
+  teamsF$!: Observable<Team[]>;
+  teamsMX$!: Observable<Team[]>;
 
-  provEvent$: Observable<CompetitionEvent>;
-  ligaEvent$: Observable<CompetitionEvent>;
-  natEvent$: Observable<CompetitionEvent>;
+  provEvent$!: Observable<CompetitionEvent | null>;
+  ligaEvent$!: Observable<CompetitionEvent | null>;
+  natEvent$!: Observable<CompetitionEvent | null>;
 
   subEventM$: ReplaySubject<SubEvent[]> = new ReplaySubject(1);
   subEventF$: ReplaySubject<SubEvent[]> = new ReplaySubject(1);
   subEventMX$: ReplaySubject<SubEvent[]> = new ReplaySubject(1);
 
-  show$: Observable<any>;
-  form$: Observable<any>;
+  show$?: Observable<{
+    teamsM: Team[];
+    teamsF: Team[];
+    teamsMX: Team[];
+    subEventM: SubEvent[];
+    subEventF: SubEvent[];
+    subEventMX: SubEvent[];
+    club: Club;
+  }>;
+  form$!: Observable<any>;
 
   subEventsInitialized: boolean = false;
 
@@ -86,27 +92,15 @@ export class TeamEnrollmentComponent implements OnInit {
 
     this.setTeams();
 
-    this.show$ = combineLatest([
-      this.teamsM$,
-      this.teamsF$,
-      this.teamsMX$,
-      this.subEventM$,
-      this.subEventF$,
-      this.subEventMX$,
-      this.club$,
-    ]).pipe(
-      map(([teamsM, teamsF, teamsMX, subEventM, subEventF, subEventMX, club]) => {
-        return {
-          teamsM,
-          teamsF,
-          teamsMX,
-          subEventM,
-          subEventF,
-          subEventMX,
-          club,
-        };
-      })
-    );
+    this.show$ = combineLatest({
+      teamsM: this.teamsM$,
+      teamsF: this.teamsF$,
+      teamsMX: this.teamsMX$,
+      subEventM: this.subEventM$,
+      subEventF: this.subEventF$,
+      subEventMX: this.subEventMX$,
+      club: this.club$,
+    });
   }
 
   async changStepper(event: StepperSelectionEvent) {
@@ -127,8 +121,8 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async submit() {
-    this.club$.pipe(switchMap((club) => this.eventService.finishEnrollment(club, this.competitionYear))).toPromise();
-    this.snackbar.open('Submitted', null, { panelClass: 'success', duration: 2000 });
+    this.club$.pipe(switchMap((club) => this.eventService.finishEnrollment(club, this.competitionYear!))).toPromise();
+    this.snackbar.open('Submitted', undefined, { panelClass: 'success', duration: 2000 });
   }
 
   async locationAssigned(event: { locationId: string; eventId: string; use: boolean }) {
@@ -142,10 +136,10 @@ export class TeamEnrollmentComponent implements OnInit {
       .toPromise();
   }
 
-  private hasAnyLevelSelected: ValidatorFn = (fg: FormGroup) => {
-    const prov = fg.get('enabledProvincial').value;
-    const liga = fg.get('enabledLiga').value;
-    const nat = fg.get('enabledNational').value;
+  private hasAnyLevelSelected: ValidatorFn | null = (fg: AbstractControl) => {
+    const prov = fg.get('enabledProvincial')?.value;
+    const liga = fg.get('enabledLiga')?.value;
+    const nat = fg.get('enabledNational')?.value;
 
     let hasProvEvent = false;
     if (prov) {
@@ -174,26 +168,26 @@ export class TeamEnrollmentComponent implements OnInit {
       shareReplay()
     );
 
-    this.teamsF$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'F')));
+    this.teamsF$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'F') ?? []));
 
-    this.teamsM$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'M')));
+    this.teamsM$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'M') ?? []));
 
-    this.teamsMX$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'MX')));
+    this.teamsMX$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'MX') ?? []));
   }
 
   private async initializeEvents() {
-    const club = await this.club$.toPromise();
-    
-    this.provEvent$ = this.formGroup.get('enabledProvincial').value
+    const club = await lastValueFrom(this.club$);
+
+    this.provEvent$ = this.formGroup.get('enabledProvincial')!.value
       ? this.eventService
           .getCompetitionEvent(this.formGroup.value.event.id, {
-            clubId: club.id,
+            clubId: club!.id!,
             includeComments: true,
           })
           .pipe(shareReplay(1))
       : of(null);
 
-    this.ligaEvent$ = this.formGroup.get('enabledLiga').value
+    this.ligaEvent$ = this.formGroup.get('enabledLiga')!.value
       ? this.eventService
           .getEvents({
             type: EventType.COMPETITION,
@@ -202,17 +196,17 @@ export class TeamEnrollmentComponent implements OnInit {
               type: 'LIGA',
               allowEnlisting: true,
             },
-            clubId: club.id,
+            clubId: club!.id,
             includeComments: true,
             includeSubEvents: true,
           })
           .pipe(
-            map((events) => (events?.eventCompetitions?.total > 0 ? events.eventCompetitions.edges[0].node : null)),
+            map((events) => ((events?.total ?? 0) > 0 ? events!.events[0].node : null)),
             shareReplay(1)
           )
       : of(null);
 
-    this.natEvent$ = this.formGroup.get('enabledNational').value
+    this.natEvent$ = this.formGroup.get('enabledNational')?.value
       ? this.eventService
           .getEvents({
             type: EventType.COMPETITION,
@@ -221,45 +215,45 @@ export class TeamEnrollmentComponent implements OnInit {
               type: 'NATIONAL',
               allowEnlisting: true,
             },
-            clubId: club.id,
+            clubId: club!.id,
             includeComments: true,
             includeSubEvents: true,
           })
           .pipe(
-            map((events) => (events?.eventCompetitions?.total > 0 ? events.eventCompetitions.edges[0].node : null)),
+            map((events) => ((events?.total ?? 0) > 0 ? events!.events[0].node : null)),
             shareReplay(1)
           )
       : of(null);
 
     // not really ideal, but I just want it working for now
-    const [prov, liga, nat] = await combineLatest([this.provEvent$, this.ligaEvent$, this.natEvent$]).toPromise();
+    const [prov, liga, nat] = await lastValueFrom(combineLatest([this.provEvent$, this.ligaEvent$, this.natEvent$]));
 
-    this.competitionYear = prov.startYear ?? liga.startYear ?? nat.startYear;
+    this.competitionYear = prov?.startYear ?? liga!.startYear ?? nat!.startYear;
 
     this.subEventF$.next([
-      ...(nat?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'F') ?? []),
-      ...(liga?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'F') ?? []),
-      ...(prov?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'F') ?? []),
+      ...(nat?.subEvents?.filter((s) => s.eventType == 'F') ?? []),
+      ...(liga?.subEvents?.filter((s) => s.eventType == 'F') ?? []),
+      ...(prov?.subEvents?.filter((s) => s.eventType == 'F') ?? []),
     ]);
 
     this.subEventM$.next([
-      ...(nat?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'M') ?? []),
-      ...(liga?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'M') ?? []),
-      ...(prov?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'M') ?? []),
+      ...(nat?.subEvents?.filter((s) => s.eventType == 'M') ?? []),
+      ...(liga?.subEvents?.filter((s) => s.eventType == 'M') ?? []),
+      ...(prov?.subEvents?.filter((s) => s.eventType == 'M') ?? []),
     ]);
 
     this.subEventMX$.next([
-      ...(nat?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'MX') ?? []),
-      ...(liga?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'MX') ?? []),
-      ...(prov?.subEvents?.filter((s: { eventType: string }) => s.eventType == 'MX') ?? []),
+      ...(nat?.subEvents?.filter((s) => s.eventType == 'MX') ?? []),
+      ...(liga?.subEvents?.filter((s) => s.eventType == 'MX') ?? []),
+      ...(prov?.subEvents?.filter((s) => s.eventType == 'MX') ?? []),
     ]);
 
     if (prov) {
       this.commentProv =
-        prov.comments?.length > 0
-          ? prov.comments[0]
+        (prov.comments?.length ?? 0) > 0
+          ? prov!.comments![0]
           : new Comment({
-              clubId: club.id,
+              clubId: club?.id,
               eventId: prov.id,
             });
       this.commentProvControl.patchValue(this.commentProv.message);
@@ -271,10 +265,10 @@ export class TeamEnrollmentComponent implements OnInit {
 
     if (liga) {
       this.commentLiga =
-        liga.comments?.length > 0
-          ? liga.comments[0]
+        (liga.comments?.length ?? 0) > 0
+          ? liga!.comments![0]
           : new Comment({
-              clubId: club.id,
+              clubId: club?.id,
               eventId: liga.id,
             });
       this.commentLigaControl.patchValue(this.commentLiga.message);
@@ -286,10 +280,10 @@ export class TeamEnrollmentComponent implements OnInit {
 
     if (nat) {
       this.commentNat =
-        nat.comments?.length > 0
-          ? nat.comments[0]
+        (nat.comments?.length ?? 0) > 0
+          ? nat!.comments![0]
           : new Comment({
-              clubId: club.id,
+              clubId: club?.id,
               eventId: nat.id,
             });
       this.commentNatControl.patchValue(this.commentNat.message);
@@ -311,11 +305,11 @@ export class TeamEnrollmentComponent implements OnInit {
         mutation: commentMessage.id ? updateComment : addComment,
         variables: {
           comment: commentMessage,
-          eventId
+          eventId,
         },
       })
       .toPromise();
 
-    return result.data?.addComment?.id ?? comment.id;
+    return result?.data?.addComment?.id ?? comment.id;
   }
 }
