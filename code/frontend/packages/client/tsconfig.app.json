@@ -1,9 +1,17 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": ["node"]
+    "types": []
   },
-  "files": ["src/main.ts", "src/polyfills.ts", "src/@types/graphql.d.ts"],
-  "include": ["src/**/*.d.ts"]
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts",
+    "src/@types/graphql.d.ts",
+    "src/@types/json.d.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
 }

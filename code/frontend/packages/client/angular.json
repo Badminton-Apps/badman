@@ -8,28 +8,22 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:directive": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:modules": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:pipe": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:service": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:class": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         }
       },
       "root": "",
@@ -103,7 +97,15 @@
               ],
               "serviceWorker": true,
               "ngswConfigPath": "ngsw-config.json"
-            }
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
           }
         },
         "serve": {
@@ -114,8 +116,12 @@
           "configurations": {
             "production": {
               "browserTarget": "client:build:production"
+            },
+            "development": {
+              "browserTarget": "client:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

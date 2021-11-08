@@ -6,6 +6,7 @@ import { SwUpdate } from '@angular/service-worker';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -38,7 +39,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.statusChangeSubscription = this.ccService.statusChange$.subscribe((event: NgcStatusChangeEvent) => {
-      console.log(event.status);
       if (event.status === 'allow' || event.status === 'dismiss') {
         this.cookieService.set(this.IS_COOKIE_ALLOWED, 'true');
         this.ccService.destroy();

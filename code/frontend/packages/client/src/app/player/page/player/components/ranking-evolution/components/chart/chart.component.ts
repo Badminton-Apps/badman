@@ -10,7 +10,7 @@ import { DataPoint, logarithmic } from 'regression';
 })
 export class ChartComponent implements OnInit {
   @Input()
-  rankingPlaces: {
+  rankingPlaces!: {
     level: number;
     rankingDate: Date;
     points: number;
@@ -19,16 +19,16 @@ export class ChartComponent implements OnInit {
   }[];
 
   @Input()
-  maxLevels: number;
+  maxLevels?: number;
 
   @Input()
   probablyInacurate: moment.Moment = moment('2018-07-31T22:00:00.000Z');
 
-  seriesData = [];
-  seriesDataInacc = [];
+  seriesData: { name: { top: string; bottom: string }; subName?: string; value: [Date, number] }[] = [];
+  seriesDataInacc: { name: { top: string; bottom: string }; subName?: string; value: [Date, number] }[] = [];
   axisData = [];
-  firstDay: Date;
-  lastDay: Date;
+  firstDay!: Date;
+  lastDay!: Date;
 
   interval() {
     return false;

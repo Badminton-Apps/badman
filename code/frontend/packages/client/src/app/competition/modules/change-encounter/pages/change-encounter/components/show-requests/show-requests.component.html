@@ -2,7 +2,7 @@
   <ng-container *ngIf="this.encounter != null">
     <form [formGroup]="this.formGroupRequest" novalidate (ngSubmit)="save()">
       <div class="mat-subheading-1">
-        {{ encounter.home.name }} {{ 'competition.change-encounter.vs' | translate }} {{ encounter.away.name }}
+        {{ encounter.home!.name }} {{ 'competition.change-encounter.vs' | translate }} {{ encounter.away!.name }}
       </div>
 
       <div div class="mat-subheading-2">{{ 'competition.change-encounter.comments' | translate }}</div>
@@ -45,7 +45,7 @@
                   [min]="this.minDate"
                   [max]="this.maxDate"
                 />
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker-toggle matSuffix [for]="$any(picker)"></mat-datepicker-toggle>
                 <ngx-mat-datetime-picker #picker> </ngx-mat-datetime-picker>
               </mat-form-field>
             </div>
@@ -75,7 +75,7 @@
             </div>
 
             <div fxFlex="8" fxLayoutAlign="center center">
-              <div *ngIf="!date.get('id').value">
+              <div *ngIf="!date.get('id')!.value">
                 <button mat-icon-button (click)="this.removeDate(i)" type="button">
                   <mat-icon>delete</mat-icon>
                 </button>

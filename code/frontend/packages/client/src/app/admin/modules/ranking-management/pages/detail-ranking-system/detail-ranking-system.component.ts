@@ -4,21 +4,21 @@ import { ITdDataTableColumn } from '@covalent/core/data-table';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { RankingSystem, SystemService } from 'app/_shared';
+import { RankingPoint, RankingSystem, SystemService } from 'app/_shared';
 
 @Component({
   templateUrl: './detail-ranking-system.component.html',
   styleUrls: ['./detail-ranking-system.component.scss'],
 })
 export class DetailRankingSystemComponent implements OnInit {
-  system: RankingSystem;
-  allGenders$: Observable<any>;
-  male$: Observable<any>;
-  female$: Observable<any>;
-  final$: Observable<any>;
-  caps$: Observable<any>;
-  start$: Observable<any>;
-  levels: number[];
+  system!: RankingSystem;
+  allGenders$!: Observable<any>;
+  male$!: Observable<any>;
+  female$!: Observable<any>;
+  final$!: Observable<any>;
+  caps$!: Observable<any>;
+  start$!: Observable<any>;
+  levels!: number[];
 
   capsColumns: ITdDataTableColumn[] = [
     { name: 'level', label: 'Level' },
@@ -52,7 +52,7 @@ export class DetailRankingSystemComponent implements OnInit {
     );
 
     this.caps$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemCaps(id)),
+      switchMap((id) => this.systemService.getSystemCaps(id!)),
       map((systemCaps) => {
         let level = 12;
         return systemCaps.pointsWhenWinningAgainst.map((winning, index) => {
@@ -72,7 +72,7 @@ export class DetailRankingSystemComponent implements OnInit {
 
     this.allGenders$ = id$.pipe(
       switchMap((id) =>
-        this.systemService.getSystemWithCount(id)
+        this.systemService.getSystemWithCount(id!)
       ),
       tap(
         (system) =>
@@ -85,13 +85,13 @@ export class DetailRankingSystemComponent implements OnInit {
     );
     this.male$ = id$.pipe(
       switchMap((id) =>
-        this.systemService.getSystemWithCount(id, 'M')
+        this.systemService.getSystemWithCount(id!, 'M')
       ),
       map((system) => this.getSeriesData(system))
     );
     this.female$ = id$.pipe(
       switchMap((id) =>
-        this.systemService.getSystemWithCount(id, 'F')
+        this.systemService.getSystemWithCount(id!, 'F')
       ),
       map((system) => this.getSeriesData(system))
     );
@@ -158,15 +158,16 @@ export class DetailRankingSystemComponent implements OnInit {
     );
   }
 
-  private getSeriesData(system) {
+  private getSeriesData(system: any) {
+    console.warn("Fix me type!")
     const seriesData = {
       single: [],
       double: [],
       mix: [],
     };
 
-    seriesData.single = system.counts.single.map((x) => {
-      const points = x.points.map((point) => {
+    seriesData.single = system.counts.single.map((x: any) => {
+      const points = x.points.map((point: any) => {
         return {
           name: point.level,
           value: point.amount,
@@ -178,8 +179,8 @@ export class DetailRankingSystemComponent implements OnInit {
         points,
       };
     });
-    seriesData.double = system.counts.double.map((x) => {
-      const points = x.points.map((point) => {
+    seriesData.double = system.counts.double.map((x: any) => {
+      const points = x.points.map((point: any) => {
         return {
           name: point.level,
           value: point.amount,
@@ -191,8 +192,8 @@ export class DetailRankingSystemComponent implements OnInit {
         points,
       };
     });
-    seriesData.mix = system.counts.mix.map((x) => {
-      const points = x.points.map((point) => {
+    seriesData.mix = system.counts.mix.map((x: any) => {
+      const points = x.points.map((point: any) => {
         return {
           name: point.level,
           value: point.amount,

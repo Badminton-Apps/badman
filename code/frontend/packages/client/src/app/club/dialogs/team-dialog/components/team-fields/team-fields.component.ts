@@ -20,20 +20,20 @@ export class TeamFieldsComponent implements OnInit {
   team: Team = {} as Team;
 
   @Input()
-  club: Club;
+  club!: Club;
 
   @Input()
-  allowEditType: boolean;
+  allowEditType!: boolean;
   @Input()
-  allowEditNumber: boolean;
+  allowEditNumber!: boolean;
 
   @Input()
-  form: FormGroup;
+  form!: FormGroup;
 
-  teamForm: FormGroup;
+  teamForm!: FormGroup;
 
-  locationControl: FormControl;
-  teamNumbers: number[];
+  locationControl!: FormControl;
+  teamNumbers!: number[];
 
   ngOnInit() {
     this.allowEditType = this.allowEditType ?? true;
@@ -74,7 +74,7 @@ export class TeamFieldsComponent implements OnInit {
     this.form.addControl('team', this.teamForm);
 
     if (this.team.id) {
-      this.calcTeamsOfType(this.team.type);
+      this.calcTeamsOfType(this.team.type!);
     }
 
     typeControl.valueChanges.subscribe((type) => {
@@ -84,8 +84,8 @@ export class TeamFieldsComponent implements OnInit {
     this.locationControl.valueChanges
       .pipe(debounceTime(600), startWith(this.team.locations?.map((r) => r.id) ?? []), pairwise())
       .subscribe(async ([prev, next]) => {
-        let removed = prev.filter((item) => next.indexOf(item) < 0);
-        let added = next.filter((item) => prev.indexOf(item) < 0);
+        let removed = prev.filter((item: any) => next.indexOf(item) < 0);
+        let added = next.filter((item: any) => prev.indexOf(item) < 0);
 
         for (const add of added) {
           this.onLocationAdded.next(add);
@@ -112,8 +112,8 @@ export class TeamFieldsComponent implements OnInit {
     });
   }
 
-  private calcTeamsOfType(type) {
-    let teamsOfType = this.club.teams.filter((r) => r.type == type).length;
+  private calcTeamsOfType(type: string) {
+    let teamsOfType = this.club.teams?.filter((r) => r.type == type).length ?? 0;
     if (this.team.id == null) {
       teamsOfType++;
       this.teamForm.patchValue({ teamNumber: teamsOfType });

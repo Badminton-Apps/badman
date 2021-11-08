@@ -1,35 +1,22 @@
 <div class="mat-subheading-1">
-  <ng-container *ngIf="subEvent.event.eventType == 'COMPETITION'">
+  <ng-container *ngIf="subEvent.event!.eventType == 'COMPETITION'">
     <a [routerLink]="['/competition', this.subEvent?.event?.id]">{{ this.subEvent?.event?.name }}</a>
   </ng-container>
 
-  <ng-container *ngIf="subEvent.event.eventType == 'TOURNAMENT'">
+  <ng-container *ngIf="subEvent.event!.eventType == 'TOURNAMENT'">
     <a [routerLink]="['/competition', this.subEvent?.event?.id]">{{ this.subEvent?.event?.name }}</a>
   </ng-container>
 </div>
 
 <ng-container *ngFor="let subEvent of this.subEvents">
-  <div class="mat-subheading-2">
-    <div>
-      <ng-container *ngIf="subEvent.event.eventType == 'COMPETITION'">
-        <a [routerLink]="['/competition', this.subEvent?.event?.id, this.subEvent?.id]"
-          >{{ subEvent.name }} {{ subEvent.levelType }} {{ subEvent.eventType }}</a
-        >
-      </ng-container>
-
-      <ng-container *ngIf="subEvent.event.eventType == 'TOURNAMENT'">
-        <a [routerLink]="['/competition', this.subEvent?.event?.id, this.subEvent?.id]"
-          >{{ subEvent.name }} - {{ subEvent.level }}</a
-        >
-      </ng-container>
-    </div>
-
-    <div class="date">
-      {{ subEvent.games[0].playedAt | date }}
-    </div>
-  </div>
-
-  <div class="games">
-    <app-game-result [game]="game" [player]="player" *ngFor="let game of subEvent.games"></app-game-result>
-  </div>
+  <app-group-competition
+    *ngIf="subEvent.event!.eventType == 'COMPETITION'"
+    [player]="this.player"
+    [subEvent]="$any(subEvent)"
+  ></app-group-competition>
+  <app-group-tournament
+    *ngIf="subEvent.event!.eventType == 'TOURNAMENT'"
+    [player]="this.player"
+    [subEvent]="$any(subEvent)"
+  ></app-group-tournament>
 </ng-container>

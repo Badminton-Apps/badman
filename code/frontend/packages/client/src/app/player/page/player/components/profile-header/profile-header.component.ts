@@ -12,44 +12,44 @@ import { Club } from 'app/_shared';
 })
 export class ProfileHeaderComponent implements OnInit {
   @Input()
-  player: Player;
+  player!: Player;
 
   @Input()
-  mobile: boolean;
+  mobile!: boolean;
 
-  playerAge: number;
+  playerAge?: number;
 
   @Input()
-  canClaimAccount: {
-    canClaim: boolean;
-    isClaimedByUser: boolean;
-    isUser: boolean;
-  };
+  canClaimAccount!: {
+    canClaim?: boolean;
+    isClaimedByUser?: boolean;
+    isUser?: boolean;
+  } | null;
 
   @Output()
   claimAccount = new EventEmitter<string>();
 
-  shownRanking: RankingPlace;
-  initials: string;
+  shownRanking?: RankingPlace;
+  initials?: string;
 
-  singleTooltip: string;
-  doubleTooltip: string;
-  mixTooltip: string;
+  singleTooltip!: string;
+  doubleTooltip!: string;
+  mixTooltip!: string;
 
-  playerClub: Club;
+  playerClub?: Club;
 
   constructor() {}
 
   ngOnInit(): void {
     this.shownRanking = {
-      ...this.player.lastRanking,
-      single: this.player.lastRanking.single ?? 12,
-      double: this.player.lastRanking.double ?? 12,
-      mix: this.player.lastRanking.mix ?? 12
-    };
+      ...this.player?.lastRanking,
+      single: this.player?.lastRanking?.single ?? 12,
+      double: this.player?.lastRanking?.double ?? 12,
+      mix: this.player?.lastRanking?.mix ?? 12
+    } as RankingPlace;
 
-    const lastNames = this.player.lastName.split(' ');
-    this.initials = `${this.player.firstName[0]}${lastNames[lastNames.length - 1][0]}`.toUpperCase();
+    const lastNames = this.player.lastName!.split(' ');
+    this.initials = `${this.player.firstName![0]}${lastNames[lastNames.length - 1][0]}`.toUpperCase();
 
     if (this.shownRanking) {
       const date = moment(this.shownRanking.rankingDate);

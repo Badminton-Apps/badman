@@ -5,16 +5,16 @@
     </button>
 
     <mat-menu #options="matMenu">
-      <button mat-menu-item *ngIf="!this.canClaimAccount.isUser && !this.canClaimAccount.canClaim">
+      <button mat-menu-item *ngIf="!this.canClaimAccount?.isUser && !this.canClaimAccount?.canClaim">
         Placeholder for favorite
       </button>
-      <button mat-menu-item *ngIf="this.canClaimAccount.isUser">Placeholder for profile</button>
+      <button mat-menu-item *ngIf="this.canClaimAccount?.isUser">Placeholder for profile</button>
 
-      <button mat-menu-item *ngIf="this.canClaimAccount.canClaim" (click)="this.claimAccount.next(player.id)">
+      <button mat-menu-item *ngIf="this.canClaimAccount?.canClaim" (click)="this.claimAccount.next(player.id!)">
         Claim
       </button>
 
-      <button mat-menu-item *ngIf="this.canClaimAccount.isClaimedByUser">You've requested this account</button>
+      <button mat-menu-item *ngIf="this.canClaimAccount?.isClaimedByUser">You've requested this account</button>
 
       <app-has-claim [any]="['edit:claims']">
         <button mat-menu-item [routerLink]="['/', 'admin', 'player', player.id, 'edit']">

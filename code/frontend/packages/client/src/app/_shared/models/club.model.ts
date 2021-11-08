@@ -4,15 +4,15 @@ import { Role } from './security';
 import { Location } from './location.model';
 
 export class Club {
-  id: string;
-  name: string;
-  abbreviation: string;
-  clubId: string;
+  id?: string;
+  name?: string;
+  abbreviation?: string;
+  clubId?: string;
 
-  teams: Team[];
-  players: Player[];
-  roles: Role[];
-  locations: Location[];
+  teams?: Team[];
+  players?: Player[];
+  roles?: Role[];
+  locations?: Location[];
 
   constructor({ ...args }: Partial<Club>) {
     this.id = args.id;
@@ -25,3 +25,4 @@ export class Club {
     this.locations = args.locations?.map((p) => new Location(p));
   }
 }
+ 

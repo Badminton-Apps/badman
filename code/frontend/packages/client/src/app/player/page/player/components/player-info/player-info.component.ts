@@ -14,36 +14,36 @@ import { GameType, PlayerGame, RankingPoint } from '../../../../../_shared';
 })
 export class PlayerInfoComponent implements OnInit {
   @Input()
-  player: PlayerGame;
+  player!: PlayerGame;
 
   @Input()
-  type: string;
+  type?: GameType;
 
   @Input()
-  rankingPoint: RankingPoint;
+  rankingPoint!: RankingPoint;
 
-  ranking: number;
-  isUsedForUpgrade: boolean;
-  isUsedForDowngrade: boolean;
+  ranking?: number;
+  isUsedForUpgrade!: boolean;
+  isUsedForDowngrade!: boolean;
 
   ngOnInit() {
     if (this.player) {
-      if (this.player.rankingPlace) {
-        this.ranking = this.player.rankingPlace[GameType[this.type]];
+      if (this.player.rankingPlace && this.type) {
+        this.ranking = this.player.rankingPlace[this.type] ;
       }
     }
 
     if (this.rankingPoint) {
-      let hasWon: boolean = this.rankingPoint.points > 0;
+      let hasWon: boolean = this.rankingPoint.points! > 0;
       this.isUsedForUpgrade =
         hasWon &&
-        this.rankingPoint.differenceInLevel <=
-          this.rankingPoint.type.differenceForUpgrade;
+        this.rankingPoint.differenceInLevel! <=
+          this.rankingPoint.type!.differenceForUpgrade!;
           
       this.isUsedForDowngrade =
         !hasWon &&
-        this.rankingPoint.differenceInLevel >=
-          this.rankingPoint.type.differenceForDowngrade;
+        this.rankingPoint.differenceInLevel! >=
+          this.rankingPoint.type!.differenceForDowngrade!;
     } else {
       this.isUsedForUpgrade = false;
       this.isUsedForDowngrade = false;

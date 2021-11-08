@@ -25,24 +25,24 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ShowRequestsComponent implements OnInit {
   @Input()
-  formGroup: FormGroup;
+  formGroup!: FormGroup;
 
   @Input()
   dependsOn: string = 'encounter';
 
-  formGroupRequest: FormGroup;
-  previous: AbstractControl;
+  formGroupRequest!: FormGroup;
+  previous?: AbstractControl;
   dateControls = new FormArray([]);
 
-  encounter: CompetitionEncounter;
-  home: boolean;
+  encounter!: CompetitionEncounter;
+  home!: boolean;
   running: boolean = false;
 
   minDate: Date = new Date('2021-09-01');
   maxDate: Date = new Date('2022-05-01');
 
-  requests$: Observable<EncounterChange>;
-  @ViewChild('confirm', { static: true }) confirmDialog: TemplateRef<any>;
+  requests$!: Observable<EncounterChange>;
+  @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<any>;
 
   constructor(
     private _encounterService: EncounterService,
@@ -53,7 +53,7 @@ export class ShowRequestsComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.previous = this.formGroup.get(this.dependsOn);
+    this.previous = this.formGroup.get(this.dependsOn) ?? undefined;
 
     if (this.previous) {
       this.requests$ = this.previous.valueChanges.pipe(
@@ -64,17 +64,16 @@ export class ShowRequestsComponent implements OnInit {
           if (encounter == null) {
             this._cd.detectChanges();
           } else {
-            this.home = this.formGroup.get('team').value?.id == encounter?.home?.id;
+            this.home = this.formGroup.get('team')!.value?.id == encounter?.home?.id;
           }
         }),
         filter((value) => value !== null),
-        switchMap((encounter: CompetitionEncounter) =>
-          iif(
-            () => encounter?.encounterChange?.id != null,
-            this._encounterService.getRequests(encounter.encounterChange?.id),
-            of(new EncounterChange())
-          )
-        ),
+        switchMap((encounter: CompetitionEncounter) => {
+          if (encounter?.encounterChange?.id == undefined) {
+            return of(new EncounterChange());
+          }
+          return this._encounterService.getRequests(encounter!.encounterChange!.id!);
+        }),
         tap((encounterChange) => {
           this.dateControls = new FormArray([]);
 
@@ -94,7 +93,7 @@ export class ShowRequestsComponent implements OnInit {
             awayComment,
           });
 
-          encounterChange?.dates.map((r) => this._addDateControl(r));
+          encounterChange?.dates?.map((r) => this._addDateControl(r));
           // Set initial
           this._updateSelected();
 
@@ -111,7 +110,9 @@ export class ShowRequestsComponent implements OnInit {
     let lastDate = this.encounter.date;
     let dates = this.dateControls.value;
     if (dates && dates.length > 0) {
-      lastDate = dates.sort((a, b) => b.date.getTime() - a.date.getTime())[0].date;
+      lastDate = dates.sort(
+        (a: EncounterChangeDate, b: EncounterChangeDate) => b.date!.getTime() - a.date!.getTime()
+      )[0].date;
     }
 
     const newDate = new EncounterChangeDate({
@@ -146,7 +147,7 @@ export class ShowRequestsComponent implements OnInit {
     change.homeComment = new Comment({ message: this.formGroupRequest.get('homeComment')?.value });
     change.awayComment = new Comment({ message: this.formGroupRequest.get('awayComment')?.value });
     const dates: EncounterChangeDate[] = this.formGroupRequest.get('dates')?.value?.map(
-      (d) =>
+      (d: { availabilityAway: Availability; availabilityHome: Availability; selected: boolean; date: Date }) =>
         new EncounterChangeDate({
           availabilityAway: d?.availabilityAway,
           availabilityHome: d?.availabilityHome,
@@ -154,8 +155,8 @@ export class ShowRequestsComponent implements OnInit {
           date: d?.date,
         })
     );
-    const ids = dates.map((o) => o.date.getTime());
-    change.dates = dates.filter(({ date }, index) => !ids.includes(date.getTime(), index + 1));
+    const ids = dates.map((o) => o.date!.getTime());
+    change.dates = dates.filter(({ date }, index) => !ids.includes(date!.getTime(), index + 1));
     change.accepted = change.dates.some((r) => r.selected == true);
 
     if (change.dates == null || (change.dates?.length ?? 0) == 0) {
@@ -181,9 +182,9 @@ export class ShowRequestsComponent implements OnInit {
     const success = async () => {
       try {
         await this._encounterService.addEncounterChange(change, this.home).toPromise();
-        const teamControl = this.formGroup.get('team');
-        teamControl.setValue(teamControl.value);
-        this.formGroup.get(this.dependsOn).setValue(null);
+        const teamControl = this.formGroup.get('team')!;
+        teamControl!.setValue(teamControl.value);
+        this.formGroup.get(this.dependsOn)!.setValue(null);
         this._snackBar.open(await this._translate.instant('competition.change-encounter.requested'), 'OK', {
           duration: 4000,
         });
@@ -214,14 +215,14 @@ export class ShowRequestsComponent implements OnInit {
     const selected = this.dateControls.getRawValue().find((r) => r.selected == true);
 
     for (const control of this.dateControls.controls) {
-      control.get('selected').disable({ emitEvent: false });
+      control.get('selected')!.disable({ emitEvent: false });
 
       if (
-        (selected == null || selected?.date == control.get('date').value) &&
-        control.get('availabilityHome').value == Availability.POSSIBLE &&
-        control.get('availabilityAway').value == Availability.POSSIBLE
+        (selected == null || selected?.date == control.get('date')!.value) &&
+        control.get('availabilityHome')!.value == Availability.POSSIBLE &&
+        control.get('availabilityAway')!.value == Availability.POSSIBLE
       ) {
-        control.get('selected').enable({ emitEvent: false });
+        control.get('selected')!.enable({ emitEvent: false });
       }
     }
   }

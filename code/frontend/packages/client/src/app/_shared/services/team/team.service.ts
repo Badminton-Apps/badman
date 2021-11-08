@@ -46,7 +46,7 @@ export class TeamService {
           clubId,
         },
       })
-      .pipe(map((x) => new Team(x.data.addTeam)));
+      .pipe(map((x) => new Team(x.data!.addTeam)));
   }
 
   addPlayer(team: Team, player: Player) {
@@ -122,7 +122,7 @@ export class TeamService {
           team,
         },
       })
-      .pipe(map((x) => new Team(x.data.updateTeam)));
+      .pipe(map((x) => new Team(x.data!['updateTeam'])));
   }
 
   deleteTeam(teamId: string) {

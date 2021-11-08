@@ -9,22 +9,24 @@ import { Player } from 'app/_shared';
 })
 export class TeamAssemblyPlayerComponent implements OnInit {
   @Input()
-  player: Player;
+  player!: Player;
 
   @Input()
-  eventType: string;
+  eventType!: string;
 
   @Input()
-  showType: string;
+  showType!: string;
 
-  ranking: string;
+  ranking!: string;
 
   ngOnInit() {
     if (!this.showType) {
       if (this.eventType == 'M' || this.eventType == 'F') {
         this.ranking = `${this.player.lastRanking?.single ?? 12} - ${this.player.lastRanking?.double ?? 12}`;
       } else {
-        this.ranking = `${this.player.lastRanking?.single ?? 12} - ${this.player.lastRanking?.double ?? 12} - ${this.player.lastRanking?.mix ?? 12}`;
+        this.ranking = `${this.player.lastRanking?.single ?? 12} - ${this.player.lastRanking?.double ?? 12} - ${
+          this.player.lastRanking?.mix ?? 12
+        }`;
       }
     } else {
       if (this.showType.includes('single')) {

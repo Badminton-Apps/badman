@@ -11,13 +11,13 @@ import { Game, Player, PlayerService, SystemService } from '../../../../../_shar
   styleUrls: ['./games.component.scss'],
 })
 export class GamesComponent implements OnInit {
-  games$: Observable<Game[]>;
+  games$!: Observable<Game[][]>;
   currentPage$ = new BehaviorSubject<number>(0);
   pageSize = 15;
-  request$: Observable<any>;
+  request$?: Observable<any>;
 
   @Input()
-  player: Player;
+  player!: Player;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,7 +40,7 @@ export class GamesComponent implements OnInit {
         if (this.request$) {
           return this.request$;
         } else {
-          this.request$ = this.playerService.getPlayerGames(playerId, system, page * this.pageSize, this.pageSize).pipe(
+          this.request$ = this.playerService.getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize).pipe(
             share(),
             finalize(() => this.onFinalize())
           );
@@ -50,7 +50,7 @@ export class GamesComponent implements OnInit {
       scan((acc: any, newGames: Game[]) => {
         function sameEvent(game1: Game, game2: Game) {
           if (game1.tournament && game2.tournament) {
-            return game2.tournament.subEvent.event.id === game1.tournament.subEvent.event.id;
+            return game2.tournament.subEvent!.event!.id === game1.tournament.subEvent!.event!.id;
           } else if (game1.competition && game2.competition) {
             return game2.competition.id === game1.competition.id;
           }
@@ -87,6 +87,6 @@ export class GamesComponent implements OnInit {
     }
   }
   private onFinalize(): void {
-    this.request$ = null;
+    this.request$ = undefined;
   }
 }

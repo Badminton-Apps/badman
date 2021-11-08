@@ -12,8 +12,8 @@ export class UploadFieldComponent implements OnInit {
   fileAdded: EventEmitter<FileList> = new EventEmitter<FileList>();
 
   @Input('status')
-  status$: Observable<{
-    completed: false;
+  status$!: Observable<{
+    completed: boolean;
     finished: number;
     total: number;
   }>;
@@ -31,7 +31,7 @@ export class UploadFieldComponent implements OnInit {
       });
   }
 
-  addFiles(file: FileList) {
+  addFiles(file?: FileList) {
     // TODO: Convert this event emitter to allow simultanious uploads
     if (this.canImport$.value) {
       this.fileAdded.emit(file);

@@ -1,19 +1,7 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Imported } from 'app/_shared';
-import {
-  Club,
-  CompetitionEvent,
-  CompetitionSubEvent,
-  Event,
-  EventType,
-  SubEvent,
-  TournamentEvent,
-  TournamentSubEvent,
-} from 'app/_shared/models';
-import { environment } from 'environments/environment';
 import { BehaviorSubject, concat, of } from 'rxjs';
 import { map, share, tap, toArray } from 'rxjs/operators';
 import * as getCompetitionEventQuery from '../../graphql/events/queries/GetCompetition.graphql';
@@ -29,6 +17,8 @@ import * as addEventMutation from '../../graphql/events/mutations/addEvent.graph
 import * as deleteEventMutation from '../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql';
 
 import * as updateCompetitionEvent from '../../graphql/events/mutations/UpdateCompetitionEvent.graphql';
+import { Club, CompetitionEvent, EventType, Imported, TournamentEvent, Event } from '../../models';
+import { environment } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +33,7 @@ export class EventService {
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
   getEvents(args?: {
-    type: EventType;
+    type?: EventType;
     first?: number;
     after?: string;
     includeSubEvents?: boolean;
@@ -81,28 +71,35 @@ export class EventService {
       .pipe(
         map((x) => {
           if (x.data.eventCompetitions) {
-            x.data.eventCompetitions.edges = x.data.eventCompetitions.edges.map((x) => {
-              x.node = new CompetitionEvent(x.node);
-              return x;
-            });
+            return {
+              total: x.data.eventCompetitions.total,
+              events: x.data.eventCompetitions.edges?.map((e) => {
+                return {
+                  cursor: e.cursor,
+                  node: new CompetitionEvent(e.node),
+                };
+              }),
+            };
+         
           }
           if (x.data.eventTournaments) {
-            x.data.eventTournaments.edges = x.data.eventTournaments.edges.map((x) => {
-              x.node = new TournamentEvent(x.node);
-              return x;
-            });
+            return {
+              total: x.data.eventTournaments.total,
+              events: x.data.eventTournaments.edges?.map((e) => {
+                return {
+                  cursor: e.cursor,
+                  node: new TournamentEvent(e.node),
+                };
+              }),
+            };
           }
 
-          return x.data;
+          return;
         })
       );
   }
 
   getCompetitionEvent(id: string, args?: { clubId: string; includeComments: boolean }) {
-    args = {
-      includeComments: false,
-      ...args,
-    };
     return this.apollo
       .query<{
         eventCompetition: CompetitionEvent;
@@ -110,7 +107,7 @@ export class EventService {
         query: getCompetitionEventQuery,
         variables: {
           id,
-          includeComments: args.includeComments && args?.clubId != null,
+          includeComments: (args?.includeComments ?? false) && args?.clubId != null,
           clubId: args?.clubId,
         },
       })
@@ -130,11 +127,7 @@ export class EventService {
           year,
         },
       })
-      .pipe(
-        map((x) =>
-          x?.data?.eventCompetitions?.edges.map((x) => new CompetitionEvent(x.node))
-        )
-      );
+      .pipe(map((x) => x?.data?.eventCompetitions?.edges.map((x) => new CompetitionEvent(x.node))));
   }
 
   getTournamentEvent(id: string, args?: {}) {
@@ -160,10 +153,10 @@ export class EventService {
           event,
         },
       })
-      .pipe(map((x) => new CompetitionEvent(x.data.updateEventCompetition)));
+      .pipe(map((x) => new CompetitionEvent(x.data!.updateEventCompetition)));
   }
 
-  getImported(order: string, first: number, after: string) {
+  getImported(order: string, first: number, after?: string) {
     return this.apollo
       .query<{
         imported: {
@@ -229,11 +222,11 @@ export class EventService {
         map((x) => {
           const events = [];
           if (x.data.eventCompetitions) {
-            events.push(...x.data.eventCompetitions?.edges?.map((e) => new CompetitionEvent(e.node)));
+            events.push(...x.data.eventCompetitions!.edges!.map((e) => new CompetitionEvent(e.node)));
           }
 
           if (x.data.eventTournaments) {
-            events.push(...x.data.eventTournaments?.edges?.map((e) => new TournamentEvent(e.node)));
+            events.push(...x.data.eventTournaments!.edges!.map((e) => new TournamentEvent(e.node)));
           }
 
           return events;
@@ -252,7 +245,7 @@ export class EventService {
           },
         },
       })
-      .pipe(map((x) => new Event(x.data.addEvent)));
+      .pipe(map((x) => new Event(x.data!.addEvent)));
   }
 
   upload(files: FileList) {

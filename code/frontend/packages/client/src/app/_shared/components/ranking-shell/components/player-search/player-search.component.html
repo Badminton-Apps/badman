@@ -19,7 +19,7 @@
         <mat-option
           *ngFor="let option of options"
           [value]="option"
-          [disabled]="this.ignorePlayersIds.indexOf(option.id) >= 0"
+          [disabled]="this.ignorePlayersIds!.indexOf(option.id!) >= 0"
         >
           {{ option.firstName }} {{ option.lastName }}
           <small *ngIf="option.memberId">({{ option.memberId }}) </small>

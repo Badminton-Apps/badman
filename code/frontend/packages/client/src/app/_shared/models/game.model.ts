@@ -4,27 +4,27 @@ import { RankingPoint } from './ranking-point.model';
 import { RankingSystem } from './ranking-system.model';
 
 export class Game {
-  id: string;
-  playedAt: Date;
-  gameType: GameType | string;
-  players: PlayerGame[];
+  id?: string;
+  playedAt?: Date;
+  gameType?: GameType;
+  players?: PlayerGame[];
   set1Team1?: number;
   set1Team2?: number;
   set2Team1?: number;
   set2Team2?: number;
   set3Team1?: number;
   set3Team2?: number;
-  winner: number;
-  rankingPoints: RankingPoint[];
+  winner?: number;
+  rankingPoints?: RankingPoint[];
   
-  competition: CompetitionEncounter;
-  tournament: TournamentDraw;
+  competition?: CompetitionEncounter;
+  tournament?: TournamentDraw;
 
   constructor({ ...args }: Partial<Game>, rankingType?: RankingSystem) {
-    this.id = args.id;
+    this.id = args?.id;
     this.playedAt = args.playedAt;
-    this.gameType = args.gameType;
-    this.players = args.players;
+    this.gameType = args?.gameType;
+    this.players = args?.players;
     this.set1Team1 = args.set1Team1;
     this.set1Team2 = args.set1Team2;
     this.set2Team1 = args.set2Team1;

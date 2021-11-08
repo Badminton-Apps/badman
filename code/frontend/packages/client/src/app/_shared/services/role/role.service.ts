@@ -53,7 +53,7 @@ export class RoleService {
         },
       })
       .pipe(
-        map((x) => new Role(x.data.addRole)),
+        map((x) => new Role(x.data!.addRole)),
         tap(() => this.authService.reloadPermissions())
       );
   }
@@ -91,7 +91,7 @@ export class RoleService {
         },
       })
       .pipe(
-        map((x) => new Role(x.data.updateRole)),
+        map((x) => new Role(x.data!.updateRole)),
         tap(() => this.authService.reloadPermissions())
       );
   }

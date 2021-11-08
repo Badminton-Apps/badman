@@ -8,7 +8,7 @@ import { IPageChangeEvent, TdPagingBarComponent } from '@covalent/core/paging';
 import { TranslateService } from '@ngx-translate/core';
 import { SystemService, PlayerService, Player } from 'app/_shared';
 import { Observable, Subject } from 'rxjs';
-import { filter, flatMap, map, shareReplay, startWith } from 'rxjs/operators';
+import { filter, flatMap, map, mergeMap, shareReplay, startWith } from 'rxjs/operators';
 
 @Component({
   templateUrl: './top-players.component.html',
@@ -16,9 +16,9 @@ import { filter, flatMap, map, shareReplay, startWith } from 'rxjs/operators';
 })
 export class TopPlayersComponent implements OnInit {
   @ViewChild(TdPagingBarComponent, { static: true })
-  pagingBar: TdPagingBarComponent;
-  columns: ITdDataTableColumn[];
-  data$: Observable<any[]>;
+  pagingBar!: TdPagingBarComponent;
+  columns!: ITdDataTableColumn[];
+  data$!: Observable<any[] | any>;
   filters = new Subject<any>();
 
   filterTerm = '';
@@ -44,13 +44,13 @@ export class TopPlayersComponent implements OnInit {
 
     this.data$ = this.filters.pipe(
       startWith(true),
-      flatMap((x) => system$),
-      flatMap((x) =>
+      mergeMap((x) => system$),
+      mergeMap((x) =>
         this.playerService.getTopPlayers(
-          x.id,
+          x!.id!,
           this.sortBy,
           this.sortOrder,
-          x.caluclationIntervalLastUpdate,
+          x!.caluclationIntervalLastUpdate!,
           this.pageSize,
           (this.currentPage - 1) * this.pageSize,
           this.gender

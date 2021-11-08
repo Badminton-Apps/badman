@@ -20,15 +20,15 @@ export class TeamPlayersComponent implements OnInit {
   @Output() onPlayerUpdated = new EventEmitter<Player>();
 
   @Input()
-  team: Team;
+  team!: Team;
 
   @Input()
-  club: Club;
+  club!: Club;
 
   @Input()
-  disableIds: string[] = [];
+  disableIds: string[] | null = [];
 
-  where: {};
+  where!: {};
 
   baseComplete: boolean = false;
 

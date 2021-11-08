@@ -1,24 +1,12 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
-import { BehaviorSubject, merge, of, interval } from 'rxjs';
-import {
-  catchError,
-  map,
-  startWith,
-  switchMap,
-  tap,
-  distinctUntilChanged,
-} from 'rxjs/operators';
+import { BehaviorSubject, merge, of, lastValueFrom } from 'rxjs';
+import { catchError, map, startWith, switchMap, tap, distinctUntilChanged } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { RankingSystem, SystemService } from 'app/_shared';
 import { AdminService, RankingService } from 'app/admin/services';
@@ -33,8 +21,8 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   populateOptions: string[] = [];
 
   dataSource = new MatTableDataSource();
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
   rankingSelection = new SelectionModel<RankingSystem>(true, []);
   resultsLength = 0;
@@ -78,11 +66,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this.systemsService.getSystems(
-            this.sort.active,
-            this.sort.direction,
-            this.paginator.pageIndex
-          );
+          return this.systemsService.getSystems(this.sort.active, this.sort.direction, this.paginator.pageIndex);
         }),
         map((data) => {
           // Flip flag to show that loading has finished.
@@ -105,32 +89,34 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   }
 
   async calculate() {
-    await this.simulateService
-      .calculateRanking(
-        this.rankingSelection.selected.map((x) => x.id),
-        this.maxDate.value,
-        this.forceStartDate ? this.minDate.value : null,
-        this.startingRankings
-      )
-      .pipe(tap((_) => this.updateHappend.next(true)))
-      .toPromise();
+    await lastValueFrom(
+      this.simulateService
+        .calculateRanking(
+          this.rankingSelection.selected.map((x) => x.id!),
+          this.maxDate.value,
+          this.forceStartDate ? this.minDate.value : null,
+          this.startingRankings
+        )
+        .pipe(tap((_) => this.updateHappend.next(true)))
+    );
   }
 
   async download(type?: string) {
     await this.rankingService.downloadRankingAsync(
-      this.rankingSelection.selected.map((x) => x.id),
+      this.rankingSelection.selected.map((x) => x.id!),
       type
     );
   }
-  async reset(templateRef) {
+  async reset(templateRef: TemplateRef<any>) {
     const dialogRef = this.dialog.open(templateRef);
 
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        await this.simulateService
-          .resetRanking(this.rankingSelection.selected.map((x) => x.id))
-          .pipe(tap((_) => this.updateHappend.next(true)))
-          .toPromise();
+        await lastValueFrom(
+          this.simulateService
+            .resetRanking(this.rankingSelection.selected.map((x) => x.id!))
+            .pipe(tap((_) => this.updateHappend.next(true)))
+        );
       }
     });
   }
@@ -142,15 +128,9 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   }
 
   async makePrimary(systemId: string) {
-    await this.systemsService
-      .makePrimary(systemId)
-      .pipe(tap((_) => this.updateHappend.next(true)))
-      .toPromise();
+    await lastValueFrom(this.systemsService.makePrimary(systemId).pipe(tap((_) => this.updateHappend.next(true))));
   }
   async deleteSystem(systemId: string) {
-    await this.systemsService
-      .deleteSystem(systemId)
-      .pipe(tap((_) => this.updateHappend.next(true)))
-      .toPromise();
+    await lastValueFrom(this.systemsService.deleteSystem(systemId).pipe(tap((_) => this.updateHappend.next(true))));
   }
 }
