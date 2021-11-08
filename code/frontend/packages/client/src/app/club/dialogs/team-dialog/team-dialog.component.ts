@@ -1,29 +1,25 @@
-import { Apollo } from 'apollo-angular';
-import { FormGroup } from '@angular/forms';
-
 import { Component, Inject, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Club, Location, Player, SystemService, Team, TeamService } from 'app/_shared';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
-
-import * as addTeamMutation from '../../../_shared/graphql/teams/mutations/addTeam.graphql';
-import * as updateTeamMutation from '../../../_shared/graphql/teams/mutations/updateTeam.graphql';
+import { Apollo } from 'apollo-angular';
+import { Club, Player, Team, TeamService, Location } from 'app/_shared';
+import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import * as updatePlayerMutation from '../../../_shared/graphql/players/mutations/UpdatePlayerMutation.graphql';
-import * as updateTeamLocation from './graphql/UpdateTeamLocation.graphql';
 import * as teamQuery from '../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
+import * as updateTeamLocation from './graphql/UpdateTeamLocation.graphql';
 
 @Component({
   templateUrl: './team-dialog.component.html',
   styleUrls: ['./team-dialog.component.scss'],
 })
 export class TeamDialogComponent implements OnInit {
-  team$: Observable<Team>;
-  alreadyUsed$: Observable<string[]>;
+  team$!: Observable<Team>;
+  alreadyUsed$!: Observable<string[]>;
 
   update$ = new BehaviorSubject(0);
 
-  form: FormGroup;
+  form!: FormGroup;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { team: Team; club: Club; allowEditType: boolean; allowEditNumber: boolean },
@@ -53,13 +49,14 @@ export class TeamDialogComponent implements OnInit {
 
     if (this.data.club) {
       this.alreadyUsed$ = this.team$.pipe(
-        map(
-          (team) =>
+        map((team) => {
+          return (
             this.data.club.teams
-              .filter((t) => t.type == team?.type && t.id != team?.id && t.active)
-              ?.map((t) => t.players.filter((p) => p.base).map((p) => p.id))
+              ?.filter((t) => t.type == team?.type && t.id != team?.id && t.active)
+              ?.map((t) => (t.players.filter((p) => p.base).map((p) => p.id) ?? []) as string[])
               ?.flat() ?? []
-        ),
+          );
+        }),
         startWith([])
       );
     }
@@ -69,7 +66,7 @@ export class TeamDialogComponent implements OnInit {
 
   async onPlayerAddedToTeam(player: Player, team: Team) {
     if (player) {
-      await this.teamService.addPlayer(team, player).toPromise();
+      await lastValueFrom(this.teamService.addPlayer(team, player));
 
       this.update$.next(0);
     }
@@ -77,20 +74,20 @@ export class TeamDialogComponent implements OnInit {
 
   async onPlayerRemovedFromTeam(player: Player, team: Team) {
     if (player && team.id) {
-      await this.teamService.removePlayer(team, player).toPromise();
+      await lastValueFrom(this.teamService.removePlayer(team, player));
       this.update$.next(0);
     }
   }
 
   async onPlayerUpdatedFromTeam(player: Player, team: Team) {
     if (player && team.id) {
-      await this.teamService.updatePlayer(team, player).toPromise();
+      await lastValueFrom(this.teamService.updatePlayer(team, player));
       this.update$.next(0);
     }
   }
 
   async teamAdded(team: Partial<Team>) {
-    const newTeam = await this.teamService.addTeam(team, this.data.club.id).toPromise();
+    const newTeam = await lastValueFrom(this.teamService.addTeam(team, this.data.club.id!));
 
     this.data.team = newTeam;
     this.update$.next(0);
@@ -98,49 +95,49 @@ export class TeamDialogComponent implements OnInit {
 
   async onTeamUpdated(team: Partial<Team>) {
     await this.teamService.updateTeam(team).toPromise();
-   ;
     this.update$.next(0);
   }
 
   async onCaptainUpdated(player: Partial<Player>) {
-    await this.apollo
-      .mutate<{ updatePlayer: Player }>({
-        mutation: updatePlayerMutation,
-        variables: {
-          player,
-        },
-      })
-      .pipe(map((r) => new Player(r.data.updatePlayer)))
-      .toPromise();
+    await lastValueFrom(
+      this.apollo
+        .mutate<{ updatePlayer: Player }>({
+          mutation: updatePlayerMutation,
+          variables: {
+            player,
+          },
+        })
+        .pipe(map((r) => new Player(r.data?.updatePlayer)))
+    );
     this.update$.next(0);
   }
 
-  async onLocationAdded(location: string, team: Team) {
-    await this.apollo
-      .mutate({
+  async onLocationAdded(location: Partial<Location>, team: Team) {
+    await lastValueFrom(
+      this.apollo.mutate({
         mutation: updateTeamLocation,
         variables: {
           teamId: team.id,
-          locationId: location,
+          locationId: location.id,
           use: true,
         },
       })
-      .toPromise();
+    );
 
     this.update$.next(0);
   }
 
-  async onLocationRemoved(location: string, team: Team) {
-    await this.apollo
-      .mutate({
+  async onLocationRemoved(location: Partial<Location>, team: Team) {
+    await lastValueFrom(
+      this.apollo.mutate({
         mutation: updateTeamLocation,
         variables: {
           teamId: team.id,
-          locationId: location,
+          locationId: location.id,
           use: false,
         },
       })
-      .toPromise();
+    );
 
     this.update$.next(0);
   }

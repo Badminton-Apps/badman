@@ -1,17 +1,15 @@
-import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
-
-import { Observable } from 'rxjs';
+import { Apollo } from 'apollo-angular';
 import { map } from 'rxjs/operators';
-import { Player, Location } from './../../models';
-
+import * as addLocationMutation from '../../graphql/locations/mutations/addLocation.graphql';
+import * as deleteLocationMutation from '../../graphql/locations/mutations/removeLocation.graphql';
+import * as updateLocationMutation from '../../graphql/locations/mutations/updateLocation.graphql';
 import * as locationQuery from '../../graphql/locations/queries/GetLocationQuery.graphql';
 import * as locationsQuery from '../../graphql/locations/queries/GetLocationsQuery.graphql';
+import { Location } from './../../models';
 
-import * as addLocationMutation from '../../graphql/locations/mutations/addLocation.graphql';
-import * as updateLocationMutation from '../../graphql/locations/mutations/updateLocation.graphql';
-import * as deleteLocationMutation from '../../graphql/locations/mutations/removeLocation.graphql';
+
+
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +50,7 @@ export class LocationService {
           clubId,
         },
       })
-      .pipe(map((x) => new Location(x.data.addLocation)));
+      .pipe(map((x) => new Location(x.data!.addLocation)));
   }
 
   updateLocation(location: Partial<Location>) {
@@ -63,7 +61,7 @@ export class LocationService {
           location,
         },
       })
-      .pipe(map((x) => new Location(x.data.updateLocation)));
+      .pipe(map((x) => new Location(x.data!.updateLocation)));
   }
 
   deleteLocation(locationId: string) {

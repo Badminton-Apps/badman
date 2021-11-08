@@ -6,7 +6,7 @@
   >
     <mat-icon matListIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
     <h3 matLine>
-      {{ option.showingForHomeTeam ? option.away.name : option.home.name }}
+      {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
       <span *ngIf="option.originalDate != null">*</span>
     </h3>
     <p matLine>
@@ -29,7 +29,7 @@
   >
     <mat-icon matListIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
     <h3 matLine>
-      {{ option.showingForHomeTeam ? option.away.name : option.home.name }}
+      {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
       <span *ngIf="option.originalDate != null">*</span>
     </h3>
     <p matLine>

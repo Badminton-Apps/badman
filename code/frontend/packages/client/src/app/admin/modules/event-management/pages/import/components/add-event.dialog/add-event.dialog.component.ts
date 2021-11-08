@@ -21,33 +21,26 @@ export class AddEventDialogComponent implements OnInit {
   selectedGroups = new FormControl([]);
   selection = new Map<string, SelectionModel<ImporterSubEvent>>();
 
-  eventForm: FormGroup;
-  subEvents: MatTableDataSource<ImporterSubEvent>;
-  groups: RankingSystemGroup[];
+  eventForm!: FormGroup;
+  subEvents!: MatTableDataSource<ImporterSubEvent>;
+  groups!: RankingSystemGroup[];
   useSame: boolean = true;
 
   ngOnInit() {
-    this.subEvents = new MatTableDataSource<ImporterSubEvent>(
-      this.data.imported.subEvents
-    );
+    this.subEvents = new MatTableDataSource<ImporterSubEvent>(this.data.imported.subEvents);
     this.groups = this.data.groups;
 
-    this.selectedGroups.valueChanges.subscribe((groups) => {
+    this.selectedGroups.valueChanges.subscribe((groups: { name: string }[]) => {
       const groupNames = groups.map((g) => `group-${g.name}`);
 
       // Delete removed
-      const removed = Object.keys(this.selection).filter(
-        (s) => !groupNames.includes(s)
-      );
+      const removed = Object.keys(this.selection).filter((s) => !groupNames.includes(s));
       removed.forEach((element) => this.selection.delete(element));
 
       // Initialize new
       groupNames.forEach((element) => {
         if (!this.selection.has(element)) {
-          this.selection.set(
-            element,
-            new SelectionModel<ImporterSubEvent>(true, [])
-          );
+          this.selection.set(element, new SelectionModel<ImporterSubEvent>(true, []));
         }
       });
 
@@ -61,10 +54,7 @@ export class AddEventDialogComponent implements OnInit {
       name: new FormControl(this.data.imported.name, Validators.required),
       // usedForRanking: new FormControl(true, Validators.required),
       dates: new FormControl(this.data.imported.dates, Validators.required),
-      firstDay: new FormControl(
-        this.data.imported.firstDay,
-        Validators.required
-      ),
+      firstDay: new FormControl(this.data.imported.firstDay, Validators.required),
       type: new FormControl(this.data.imported.type, Validators.required),
       uniCode: new FormControl(this.data.imported.uniCode, Validators.required),
       tournamentNumber: new FormControl(this.data.imported.tournamentNumber),
@@ -80,15 +70,13 @@ export class AddEventDialogComponent implements OnInit {
           let groups = [];
 
           if (this.useSame) {
-            groups = this.selectedGroups.value.map((g) => {
+            groups = this.selectedGroups.value.map((g: any) => {
               return { id: g.id, name: g.name };
             });
           } else {
             for (let [key, value] of this.selection) {
               if (value.isSelected(subEvent)) {
-                const g = this.selectedGroups.value.find(
-                  (r) => r.name == key.replace('group-', '')
-                );
+                const g = this.selectedGroups.value.find((r: any) => r.name == key.replace('group-', ''));
                 groups.push({
                   id: g.id,
                   name: g.name,
@@ -114,7 +102,7 @@ export class AddEventDialogComponent implements OnInit {
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected(group: string) {
-    const numSelected = this.selection.get(group).selected.length;
+    const numSelected = this.selection.get(group)!.selected.length;
     const numRows = this.subEvents.data.length;
     return numSelected === numRows;
   }
@@ -122,10 +110,8 @@ export class AddEventDialogComponent implements OnInit {
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle(group: string) {
     this.isAllSelected(group)
-      ? this.selection.get(group).clear()
-      : this.subEvents.data.forEach((row) =>
-          this.selection.get(group).select(row)
-        );
+      ? this.selection.get(group)!.clear()
+      : this.subEvents.data.forEach((row) => this.selection.get(group)!.select(row));
   }
 
   /** The label for the checkbox on the passed row */
@@ -133,8 +119,6 @@ export class AddEventDialogComponent implements OnInit {
     if (!row) {
       return `${this.isAllSelected(group) ? 'select' : 'deselect'} all`;
     }
-    return `${
-      this.selection.get(group).isSelected(row) ? 'deselect' : 'select'
-    } row ${row.name}`;
+    return `${this.selection.get(group)!.isSelected(row) ? 'deselect' : 'select'} row ${row.name}`;
   }
 }

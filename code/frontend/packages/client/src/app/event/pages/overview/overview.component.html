@@ -8,7 +8,7 @@
 
   <mat-form-field flex>
     <mat-label>{{ 'input.year' | translate }}</mat-label>
-    <input matInput type="number" (keyup)="filterYear(inputYear.value)" placeholder="2019" #inputYear />
+    <input matInput type="number" (keyup)="filterYear(+inputYear.value)" placeholder="2019" #inputYear />
   </mat-form-field>
 
   <mat-form-field flex>
@@ -77,10 +77,10 @@
     <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
       <div class="event-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
         <ng-container *ngIf="element.eventType == 'TOURNAMENT'">
-          <app-tournaments-data data="element"></app-tournaments-data>
+          <app-tournaments-data [data]="element"></app-tournaments-data>
         </ng-container>
         <ng-container *ngIf="element.eventType == 'COMPETITION'">
-          <app-competition-data data="element"></app-competition-data>
+          <app-competition-data [data]="element"></app-competition-data>
         </ng-container>
 
         <button mat-button [routerLink]="['/', element.eventType.toLowerCase(), element.id]">

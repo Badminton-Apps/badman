@@ -8,7 +8,7 @@
         [matTooltip]="'competition.team-assembly.team-index-ignored' | translate"
         [matTooltipDisabled]="this.formGroup.value.team.teamNumber !== 1"
         [innerHtml]="
-          'competition.team-assembly.team-index' | translate: { current: teamIndex, team: subEvent.meta.teamIndex }
+          'competition.team-assembly.team-index' | translate: { current: teamIndex, team: subEvent?.meta?.teamIndex }
         "
       ></div>
 
@@ -20,7 +20,7 @@
     <div fxFlex="33" class="team-info">
       <div class="captain">
         <app-player-search
-          [player]="this.formGroup.get('captain').value"
+          [player]="this.formGroup.get('captain')!.value"
           [allowCreation]="false"
           [club]="this.club"
           label="competition.team-assembly.captain"
@@ -50,11 +50,13 @@
       </div>
 
       <div class="add-player">
-        <small [matTooltip]="'competition.team-assembly.permanent-dialog' | translate">{{ 'competition.team-assembly.permanent' | translate }}</small>
+        <small [matTooltip]="'competition.team-assembly.permanent-dialog' | translate">{{
+          'competition.team-assembly.permanent' | translate
+        }}</small>
         <app-player-search
           [allowCreation]="false"
           [searchOutsideClub]="false"
-          [club]="this.formGroup.get('club').value"
+          [club]="this.formGroup.get('club')!.value"
           [label]="'Voeg speler toe'"
           [where]="this.wherePlayer"
           [ranking]="this.mayRankingDate"
@@ -73,9 +75,9 @@
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         [cdkDropListSortingDisabled]="true"
         (cdkDropListDropped)="drop($event)"
-        [matTooltip]="this.errors.double1 | translate"
-        [matTooltipDisabled]="!this.errors.double1"
-        [ngClass]="{ error: this.errors.double1 }"
+        [matTooltip]="this.errors['double1'] | translate"
+        [matTooltipDisabled]="!this.errors['double1']"
+        [ngClass]="{ error: this.errors['double1'] }"
       >
         <label class="mat-caption"
           >{{ this.captionDouble1Prefix | translate }} {{ this.captionDouble1 | translate }}</label
@@ -99,9 +101,9 @@
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         [cdkDropListSortingDisabled]="true"
         (cdkDropListDropped)="drop($event)"
-        [matTooltip]="this.errors.double2 | translate"
-        [matTooltipDisabled]="!this.errors.double2"
-        [ngClass]="{ error: this.errors.double2 }"
+        [matTooltip]="this.errors['double2'] | translate"
+        [matTooltipDisabled]="!this.errors['double2']"
+        [ngClass]="{ error: this.errors['double2'] }"
       >
         <label class="mat-caption"
           >{{ this.captionDouble2Prefix | translate }} {{ this.captionDouble2 | translate }}</label
@@ -125,9 +127,9 @@
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         [cdkDropListSortingDisabled]="true"
         (cdkDropListDropped)="drop($event)"
-        [matTooltip]="this.errors.double3 | translate"
-        [matTooltipDisabled]="!this.errors.double3"
-        [ngClass]="{ error: this.errors.double3 }"
+        [matTooltip]="this.errors['double3'] | translate"
+        [matTooltipDisabled]="!this.errors['double3']"
+        [ngClass]="{ error: this.errors['double3'] }"
       >
         <label class="mat-caption"
           >{{ this.captionDouble3Prefix | translate }} {{ this.captionDouble3 | translate }}</label
@@ -151,9 +153,9 @@
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         [cdkDropListSortingDisabled]="true"
         (cdkDropListDropped)="drop($event)"
-        [matTooltip]="this.errors.double4 | translate"
-        [matTooltipDisabled]="!this.errors.double4"
-        [ngClass]="{ error: this.errors.double4 }"
+        [matTooltip]="this.errors['double4'] | translate"
+        [matTooltipDisabled]="!this.errors['double4']"
+        [ngClass]="{ error: this.errors['double4'] }"
       >
         <label class="mat-caption"
           >{{ this.captionDouble4Prefix | translate }} {{ this.captionDouble4 | translate }}</label
@@ -177,9 +179,9 @@
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         [cdkDropListSortingDisabled]="true"
         (cdkDropListDropped)="drop($event)"
-        [matTooltip]="this.errors.single1 | translate"
-        [matTooltipDisabled]="!this.errors.single1"
-        [ngClass]="{ error: this.errors.single1 }"
+        [matTooltip]="this.errors['single1'] | translate"
+        [matTooltipDisabled]="!this.errors['single1']"
+        [ngClass]="{ error: this.errors['single1'] }"
       >
         <label class="mat-caption"
           >{{ this.captionSingle1Prefix | translate }} {{ this.captionSingle1 | translate }}</label
@@ -203,9 +205,9 @@
         [cdkDropListSortingDisabled]="true"
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         (cdkDropListDropped)="drop($event)"
-        [matTooltip]="this.errors.single2 | translate"
-        [matTooltipDisabled]="!this.errors.single2"
-        [ngClass]="{ error: this.errors.single2 }"
+        [matTooltip]="this.errors['single2'] | translate"
+        [matTooltipDisabled]="!this.errors['single2']"
+        [ngClass]="{ error: this.errors['single2'] }"
       >
         <label class="mat-caption"
           >{{ this.captionSingle2Prefix | translate }} {{ this.captionSingle2 | translate }}</label
@@ -229,9 +231,9 @@
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         [cdkDropListSortingDisabled]="true"
         (cdkDropListDropped)="drop($event)"
-        [matTooltip]="this.errors.single3 | translate"
-        [matTooltipDisabled]="!this.errors.single3"
-        [ngClass]="{ error: this.errors.single3 }"
+        [matTooltip]="this.errors['single3'] | translate"
+        [matTooltipDisabled]="!this.errors['single3']"
+        [ngClass]="{ error: this.errors['single3'] }"
       >
         <label class="mat-caption"
           >{{ this.captionSingle3Prefix | translate }} {{ this.captionSingle3 | translate }}</label
@@ -255,9 +257,9 @@
         [cdkDropListEnterPredicate]="this.canDropPredicate"
         [cdkDropListSortingDisabled]="true"
         (cdkDropListDropped)="drop($event)"
-        [matTooltip]="this.errors.single4 | translate"
-        [matTooltipDisabled]="!this.errors.single4"
-        [ngClass]="{ error: this.errors.single4 }"
+        [matTooltip]="this.errors['single4'] | translate"
+        [matTooltipDisabled]="!this.errors['single4']"
+        [ngClass]="{ error: this.errors['single4'] }"
       >
         <label class="mat-caption"
           >{{ this.captionSingle4Prefix | translate }} {{ this.captionSingle4 | translate }}</label

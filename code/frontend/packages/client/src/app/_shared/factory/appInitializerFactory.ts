@@ -20,6 +20,10 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       const savedLang = localStorage.getItem('translation.language');
       const values = language_map.get(savedLang || 'nl_BE');
 
+      if (!values){
+        return;
+      }
+
       await translate.use(values.translate).toPromise();
       adapter.setLocale(values.adapter);
       moment.locale(values.moment);

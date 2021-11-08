@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Club, ClubService } from 'app/_shared';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   templateUrl: './add-club.component.html',
   styleUrls: ['./add-club.component.scss'],
 })
 export class AddClubComponent {
-  club: Club;
+  club!: Club;
 
   constructor(private clubSerice: ClubService, private router: Router) {}
 
@@ -16,7 +17,7 @@ export class AddClubComponent {
   }
 
   async save() {
-    const newClub = await this.clubSerice.addClub(this.club).toPromise();
+    const newClub = await lastValueFrom(this.clubSerice.addClub(this.club));
     this.router.navigate(['club', newClub.id]);
   }
 }

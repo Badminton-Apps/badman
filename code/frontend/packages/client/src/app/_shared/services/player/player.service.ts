@@ -1,4 +1,4 @@
-import {Apollo} from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -52,16 +52,16 @@ export class PlayerService {
           where: this._searchPlayer(args),
           id: clubsId,
           includeClub: false,
-          includeRanking: args.ranking !== null,
-          ranking: args.ranking ?? null,
+          includeRanking: args?.ranking !== null,
+          ranking: args?.ranking ?? null,
         },
       })
       .pipe(map((x) => x.data?.club?.players?.map((r) => new Player(r))));
   }
 
   private _searchPlayer(args?: { query?: string; where?: any }) {
-    const parts = args.query
-      .toLowerCase()
+    const parts = args!
+      .query!.toLowerCase()
       .replace(/[;\\\\/:*?\"<>|&',]/, ' ')
       .split(' ');
     const queries = [];
@@ -77,7 +77,7 @@ export class PlayerService {
 
     return {
       $and: queries,
-      ...args.where,
+      ...args?.where,
     };
   }
 
@@ -163,7 +163,7 @@ export class PlayerService {
           player,
         },
       })
-      .pipe(map((x) => new Player(x.data.addPlayer)));
+      .pipe(map((x) => new Player(x.data!.addPlayer)));
   }
 
   updatePlayer(player: Partial<Player>) {
@@ -174,10 +174,10 @@ export class PlayerService {
           player,
         },
       })
-      .pipe(map((r) => new Player(r.data.updatePlayer)));
+      .pipe(map((r) => new Player(r.data!.updatePlayer)));
   }
 
-  updatePlayerRanking(rankingPlace: RankingPlace) {
+  updatePlayerRanking(rankingPlace: Partial<RankingPlace>) {
     return this.apollo.mutate<{ updatePlayer: Player }>({
       mutation: updatePlayerRankingMutation,
       variables: {

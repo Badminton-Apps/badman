@@ -11,7 +11,7 @@
     <div *ngFor="let subEvent of event.subEvents; index as i">
       <app-event-competition-level-fields
         [subEvent]="subEvent"
-        [formGroup]="this.formGroup.get('subEvents')?.at(i)"
+        [formGroup]="$any(this.formGroup.get('subEvents'))?.at(i)"
       ></app-event-competition-level-fields>
     </div>
 

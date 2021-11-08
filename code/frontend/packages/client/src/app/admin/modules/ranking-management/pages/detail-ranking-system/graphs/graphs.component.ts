@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 
 @Component({
   selector: 'app-graphs',
@@ -13,8 +8,21 @@ import {
 })
 export class GraphsComponent {
   @Input()
-  levels: number[];
+  levels!: number[];
 
   @Input()
-  seriesData;
+  seriesData!: {
+    double: {
+      date: Date;
+      points: number[];
+    }[];
+    single: {
+      date: Date;
+      points: number[];
+    }[];
+    mix: {
+      date: Date;
+      points: number[];
+    }[];
+  };
 }

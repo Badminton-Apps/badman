@@ -22,16 +22,16 @@ export class HeaderSearchComponent implements OnInit {
   clearOnSelection: boolean = true;
 
   @Input()
-  where: {};
+  where!: {};
 
   @Input()
-  player: Player;
+  player!: Player;
 
   @Input()
   searchOutsideClub = true;
 
-  formControl: FormControl;
-  filteredOptions$: Observable<Player[]>;
+  formControl!: FormControl;
+  filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
 
   constructor(private playerService: PlayerService) {}
@@ -69,7 +69,7 @@ export class HeaderSearchComponent implements OnInit {
     this.onSelectPlayer.next(player);
     if (this.clearOnSelection) {
       this.formControl.reset();
-      this.clear$.next(null);
+      this.clear$.next([]);
     }
   }
 }

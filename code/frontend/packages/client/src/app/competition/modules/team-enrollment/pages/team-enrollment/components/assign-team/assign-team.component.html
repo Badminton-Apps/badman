@@ -25,8 +25,8 @@
       *ngFor="let team of subEvent.teams"
       cdkDrag
       matTooltipClass="issues"
-      [ngClass]="issues[team.id]?.class"
-      [matTooltip]="issues[team.id]?.message"
+      [ngClass]="issues[team.id!]?.class!"
+      [matTooltip]="issues[team.id!]?.message!"
     >
       <div>
         <div class="team-description">

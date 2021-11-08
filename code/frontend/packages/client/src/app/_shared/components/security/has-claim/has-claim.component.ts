@@ -10,15 +10,15 @@ import { map, tap } from 'rxjs/operators';
 })
 export class HasClaimComponent implements OnInit {
   @Input()
-  any: string | string[];
+  any!: string | string[];
 
   @Input()
-  all: string | string[];
+  all!: string | string[];
 
   // @Input()
   // some: string|string[]
 
-  show$: Observable<boolean>;
+  show$!: Observable<boolean>;
 
   constructor(private auth: AuthService) {}
 

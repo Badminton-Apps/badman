@@ -20,14 +20,16 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 import {
   HeaderSearchComponent,
   LanguageComponent,
   NotificationComponent,
   PlayerSearchComponent,
   RankingShellComponent,
-  UserInfoComponent,
+  UserInfoComponent
 } from './components';
+import { BannerComponent } from './components/banner/banner.component';
 import { BetaComponent } from './components/beta/beta.component';
 import { ClaimComponent } from './components/claim/claim.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
@@ -35,8 +37,6 @@ import { NewPlayerComponent } from './components/ranking-shell/components/new-pl
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
-import { BannerComponent } from './components/banner/banner.component';
-import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 
 const materialModules = [
   MatAutocompleteModule,

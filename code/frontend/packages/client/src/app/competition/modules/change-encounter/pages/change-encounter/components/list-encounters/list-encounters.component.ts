@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CompetitionEncounter, Team } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
-import { Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
@@ -16,15 +16,15 @@ export class ListEncountersComponent implements OnInit {
   controlName = 'encounter';
 
   @Input()
-  formGroup: FormGroup;
+  formGroup!: FormGroup;
 
   @Input()
   dependsOn: string = 'team';
 
   formControl = new FormControl();
 
-  encountersSem1: CompetitionEncounter[];
-  encountersSem2: CompetitionEncounter[];
+  encountersSem1!: CompetitionEncounter[];
+  encountersSem2!: CompetitionEncounter[];
 
   constructor(
     private encounterService: EncounterService,
@@ -53,26 +53,27 @@ export class ListEncountersComponent implements OnInit {
           }
 
           const encounters = (
-            await this.encounterService
-              .getEncounters(team.id)
-              .pipe(map((c) => c.encounterCompetitions.edges.map((r) => r.node)))
-              .toPromise()
+            await lastValueFrom(
+              this.encounterService
+                .getEncounters(team.id)
+                .pipe(map((c) => c.encounters.map((r) => r.node)))
+            )
           )
             .sort((a, b) => {
-              return a.date.getTime() - b.date.getTime();
+              return a.date!.getTime() - b.date!.getTime();
             })
             .map((r) => {
               r.showingForHomeTeam = r.home?.id == team.id;
               return r;
             });
 
-          this.encountersSem1 = encounters.filter((r) => [8, 9, 10, 11, 12].includes(r.date.getMonth()));
-          this.encountersSem2 = encounters.filter((r) => [0, 1, 2, 3, 4, 5].includes(r.date.getMonth()));
+          this.encountersSem1 = encounters.filter((r) => [8, 9, 10, 11, 12].includes(r.date!.getMonth()));
+          this.encountersSem2 = encounters.filter((r) => [0, 1, 2, 3, 4, 5].includes(r.date!.getMonth()));
 
           const params = this.activatedRoute.snapshot.queryParams;
-          if (params && params.encounter && this.encountersSem1.length > 0) {
+          if (params && params['encounter'] && this.encountersSem1.length > 0) {
             const foundEncounter = [...this.encountersSem1, ...this.encountersSem2].find(
-              (r) => r.id == params.encounter
+              (r) => r.id == params['encounter']
             );
 
             if (foundEncounter) {

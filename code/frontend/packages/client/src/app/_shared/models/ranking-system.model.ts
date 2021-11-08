@@ -1,39 +1,39 @@
 import { RankingSystemGroup } from './group.model';
 
 export class RankingSystem {
-  id: string;
-  name: string;
-  amountOfLevels: number;
-  procentWinning: number;
-  procentWinningPlus1: number;
-  procentLosing: number;
-  minNumberOfGamesUsedForUpgrade: number;
-  maxDiffLevels: number;
-  maxDiffLevelsHighest: number;
-  latestXGamesToUse: number;
-  maxLevelUpPerChange: number;
-  maxLevelDownPerChange: number;
-  gamesForInactivty: number;
-  inactivityAmount: number;
-  inactivityUnit: 'months' | 'weeks' | 'days';
-  caluclationIntervalLastUpdate: Date;
-  caluclationIntervalAmount: number;
-  calculationIntervalUnit: 'months' | 'weeks' | 'days';
-  periodAmount: number;
-  periodUnit: 'months' | 'weeks' | 'days';
-  updateIntervalAmountLastUpdate: Date;
-  updateIntervalAmount: number;
-  updateIntervalUnit: 'months' | 'weeks' | 'days';
-  rankingSystem: RankingSystems;
-  primary: boolean;
-  runCurrently: boolean;
-  differenceForUpgrade: number;
-  differenceForDowngrade: number;
-  startingType: StartingType;
+  id?: string;
+  name?: string;
+  amountOfLevels?: number;
+  procentWinning?: number;
+  procentWinningPlus1?: number;
+  procentLosing?: number;
+  minNumberOfGamesUsedForUpgrade?: number;
+  maxDiffLevels?: number;
+  maxDiffLevelsHighest?: number;
+  latestXGamesToUse?: number;
+  maxLevelUpPerChange?: number;
+  maxLevelDownPerChange?: number;
+  gamesForInactivty?: number;
+  inactivityAmount?: number;
+  inactivityUnit?: 'months' | 'weeks' | 'days';
+  caluclationIntervalLastUpdate?: Date;
+  caluclationIntervalAmount?: number;
+  calculationIntervalUnit?: 'months' | 'weeks' | 'days';
+  periodAmount?: number;
+  periodUnit?: 'months' | 'weeks' | 'days';
+  updateIntervalAmountLastUpdate?: Date;
+  updateIntervalAmount?: number;
+  updateIntervalUnit?: 'months' | 'weeks' | 'days';
+  rankingSystem?: RankingSystems;
+  primary?: boolean;
+  runCurrently?: boolean;
+  differenceForUpgrade?: number;
+  differenceForDowngrade?: number;
+  startingType?: StartingType;
 
-  groups: RankingSystemGroup[];
+  groups?: RankingSystemGroup[];
 
-  constructor({ ...args }) {
+  constructor({ ...args }: Partial<RankingSystem>) {
     this.id = args.id;
     this.name = args.name;
     this.amountOfLevels = args.amountOfLevels;
@@ -49,12 +49,12 @@ export class RankingSystem {
     this.gamesForInactivty = args.gamesForInactivty;
     this.inactivityAmount = args.inactivityAmount;
     this.inactivityUnit = args.inactivityUnit;
-    this.caluclationIntervalLastUpdate = new Date(args.caluclationIntervalLastUpdate);
+    this.caluclationIntervalLastUpdate = new Date(args.caluclationIntervalLastUpdate as unknown as string);
     this.caluclationIntervalAmount = args.caluclationIntervalAmount;
     this.calculationIntervalUnit = args.calculationIntervalUnit;
     this.periodAmount = args.periodAmount;
     this.periodUnit = args.periodUnit;
-    this.updateIntervalAmountLastUpdate = new Date(args.updateIntervalAmountLastUpdate);
+    this.updateIntervalAmountLastUpdate = new Date(args.updateIntervalAmountLastUpdate as unknown as string);
     this.updateIntervalAmount = args.updateIntervalAmount;
     this.updateIntervalUnit = args.updateIntervalUnit;
     this.rankingSystem = args.rankingSystem;
