@@ -20,7 +20,8 @@ export class AuthenticationSercice {
         }),
         audience: 'ranking-simulation',
         issuer: `${process.env.AUTH0_ISSUER}/`,
-        algorithms: ['RS256']
+        algorithms: ['RS256'],
+        credentialsRequired: false
       }),
       this.getUserInfo.bind(this)
     ];
