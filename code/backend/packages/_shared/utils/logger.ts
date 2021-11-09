@@ -5,6 +5,7 @@ import prettyMilliseconds from 'pretty-ms';
 import { createLogger, transports, format } from 'winston';
 const { combine, errors, timestamp, colorize, align } = format;
 import ecsFormat from '@elastic/ecs-winston-format';
+import packagejson from '../package.json';
 
 dotenv.config();
 
@@ -94,9 +95,24 @@ if (process.env.LOG_LEVEL === 'None') {
       level: process.env.LOG_LEVEL ?? 'debug'
     })
   );
+
+  // tr.push(
+  //   new transports.Console({
+  //     format: ecsFormat({
+  //       apmIntegration: true,
+  //       convertReqRes: true,
+  //       convertErr: true
+  //     }),
+  //     level: process.env.LOG_LEVEL ?? 'debug'
+  //   })
+  // );
 }
 
 const logger = createLogger({
+  defaultMeta: {
+    version: packagejson.version,
+    name: packagejson.name
+  },
   format: combine(errors({ stack: true }), timestamp(), align()),
   transports: tr
 });
