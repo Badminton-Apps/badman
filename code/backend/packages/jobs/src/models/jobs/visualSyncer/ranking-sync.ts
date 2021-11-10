@@ -151,7 +151,7 @@ export class RankingSyncer {
           let canUpdate = false;
           if (this.updateMonths.includes(momentDate.month())) {
             const firstMondayOfMonth = momentDate.clone().set('date', 1);
-            const endFirstWeek = firstMondayOfMonth.clone().add(1, 'week');
+            const endFirstWeek = firstMondayOfMonth.clone().add(5, 'days');
             canUpdate = momentDate.isBetween(firstMondayOfMonth, endFirstWeek);
           }
 
