@@ -48,6 +48,9 @@ export class TeamFieldsComponent implements OnInit {
     const phoneControl = new FormControl(this.team.phone);
     const emailControl = new FormControl(this.team.email);
 
+
+    console.log(this.team.captain);
+
     this.locationControl = new FormControl(this.team.locations?.map((r) => r.id) ?? [], Validators.required);
 
     this.teamForm = new FormGroup({

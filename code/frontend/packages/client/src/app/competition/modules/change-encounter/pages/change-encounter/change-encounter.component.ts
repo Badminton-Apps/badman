@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 
 @Component({
@@ -9,7 +10,15 @@ import * as moment from 'moment';
 export class ChangeEncounterComponent implements OnInit {
   formGroup: FormGroup = new FormGroup({});
 
-  constructor() {}
+  constructor(private activatedRoute: ActivatedRoute) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const today = moment();
+    const year =
+      parseInt(this.activatedRoute.snapshot.queryParams['year'], 10) ??
+      (today.month() >= 6 ? today.year() : today.year() - 1);
+
+    this.formGroup.addControl('year', new FormControl(year));
+    this.formGroup.addControl('mayRankingDate', new FormControl(moment(`${year}-05-15`).toDate()));
+  }
 }
