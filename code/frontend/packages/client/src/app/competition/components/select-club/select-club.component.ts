@@ -79,7 +79,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
-        queryParams: { club: r.id },
+        queryParams: { club: r },
         queryParamsHandling: 'merge',
       });
     });
@@ -104,7 +104,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     }
 
     if (foundClub) {
-      this.formControl.setValue(foundClub);
+      this.formControl.setValue(foundClub.id, { onlySelf: true });
     } else {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
