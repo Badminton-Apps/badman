@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CompetitionEncounter } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
-import { lastValueFrom } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, map, startWith } from 'rxjs/operators';
 
 @Component({
@@ -24,7 +24,8 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
   dependsOn: string = 'team';
 
   formControl = new FormControl();
-  options!: CompetitionEncounter[];
+
+  encounters$?: Observable<CompetitionEncounter[]>;
 
   constructor(
     private encounterService: EncounterService,
@@ -39,56 +40,53 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
     const previous = this.formGroup.get(this.dependsOn);
 
     if (previous) {
-      previous.valueChanges.subscribe(async (r) => {
+      previous.valueChanges.subscribe(async (teamId: string) => {
         this.formControl.setValue(null);
 
-        if (r?.id != null) {
+        if (teamId != null) {
           if (!this.formControl.enabled) {
             this.formControl.enable();
           }
-          // TODO: Convert to observable way
-          this.options = (
-            await lastValueFrom(
-              this.encounterService
-                .getEncounters(r.id)
-                .pipe(map((c) => c.encounters.map((r) => r.node)))
-            )
-          ).sort((a, b) => moment(a.date).diff(b.date));
+
+          this.encounters$ = this.encounterService.getEncounters(teamId).pipe(
+            map((c) => c.encounters.map((r) => r.node)),
+            map((e) => e.sort((a, b) => moment(a.date).diff(b.date)))
+          );
+
+          this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
+            this.router.navigate([], {
+              relativeTo: this.activatedRoute,
+              queryParams: { encounter: r },
+              queryParamsHandling: 'merge',
+            });
+          });
+
+          this.encounters$.subscribe((encoutners) => {
+            let foundEncounter = null;
+            let encounterId = this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
+
+            if (encounterId && encoutners.length > 0) {
+              foundEncounter = encoutners.find((r) => r.id == encounterId);
+            }
+
+            if (!foundEncounter) {
+              const future = encoutners.filter((r) => moment(r.date).isAfter());
+              if (future.length > 0) {
+                foundEncounter = future[0];
+              }
+            }
+            if (foundEncounter) {
+              this.formControl.setValue(foundEncounter.id, { onlySelf: true });
+            } else {
+              this.router.navigate([], {
+                relativeTo: this.activatedRoute,
+                queryParams: { team: undefined, encounter: undefined },
+                queryParamsHandling: 'merge',
+              });
+            }
+          });
         } else {
           this.formControl.disable();
-        }
-
-        this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
-          this.router.navigate([], {
-            relativeTo: this.activatedRoute,
-            queryParams: { encounter: r.id },
-            queryParamsHandling: 'merge',
-          });
-        });
-
-        const params = this.activatedRoute.snapshot.queryParams;
-        let foundEncounter = null;
-
-        if (params && params['encounter'] && this.options?.length > 0) {
-          foundEncounter = this.options.find((r) => r.id == params['encounter']);
-        }
-
-        if (foundEncounter) {
-          this.formControl.setValue(foundEncounter);
-        } else {
-          this.router.navigate([], {
-            relativeTo: this.activatedRoute,
-            queryParams: { encounter: undefined },
-            queryParamsHandling: 'merge',
-          });
-        }
-
-        if (this.formControl.value == null && this.options && this.options.length > 0) {
-          const future = this.options.filter((r) => moment(r.date).isAfter());
-
-          if (future.length > 0) {
-            this.formControl.setValue(future[0]);
-          }
         }
       });
     } else {

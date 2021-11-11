@@ -5,6 +5,7 @@ import { CompetitionEncounter } from 'app/_shared';
 import { Availability, EncounterChange } from 'app/_shared/models';
 import { map, tap } from 'rxjs/operators';
 import * as encounterQuery from '../../graphql/encounters/queries/GetEncounterQuery.graphql';
+import * as encountersQuery from '../../graphql/encounters/queries/GetEncountersQuery.graphql';
 import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.graphql';
 import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
 
@@ -22,7 +23,7 @@ export class EncounterService {
           edges: { cursor: string; node: CompetitionEncounter }[];
         };
       }>({
-        query: encounterQuery,
+        query: encountersQuery,
         variables: {
           id: teamId,
           where: {
@@ -41,6 +42,23 @@ export class EncounterService {
               };
             }),
           };
+        })
+      );
+  }
+
+  getEncounter(encounterId: string) {
+    return this.apollo
+      .query<{
+        encounterCompetition: CompetitionEncounter;
+      }>({
+        query: encounterQuery,
+        variables: {
+          id: encounterId,
+        },
+      })
+      .pipe(
+        map((x) => {
+          return new CompetitionEncounter(x.data.encounterCompetition);
         })
       );
   }

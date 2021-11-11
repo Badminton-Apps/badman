@@ -2,11 +2,13 @@
   <mat-form-field appearance="outline" class="flex">
     <mat-label>{{ 'pickers.select-encounter' | translate }}</mat-label>
     <mat-select formControlName="encounter" required>
-      <mat-option *ngFor="let option of this.options" [value]="option">
-        {{ option.date | amDateFormat: 'llll' }} - {{ option.home?.name }} {{ 'competition.change-encounter.vs' | translate }}
-        {{ option.away?.name }}
-      </mat-option>
+      <ng-container *ngIf="this.encounters$ | async as encounters">
+        <mat-option *ngFor="let encounter of encounters" [value]="encounter.id">
+          {{ encounter.date | amDateFormat: 'llll' }} - {{ encounter.home?.name }}
+          {{ 'competition.change-encounter.vs' | translate }}
+          {{ encounter.away?.name }}
+        </mat-option>
+      </ng-container>
     </mat-select>
   </mat-form-field>
 </ng-container>
- 
