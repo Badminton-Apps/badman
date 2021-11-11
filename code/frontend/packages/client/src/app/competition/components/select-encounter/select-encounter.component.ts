@@ -5,7 +5,7 @@ import { CompetitionEncounter } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
-import { share, filter, map, switchMap, startWith } from 'rxjs/operators';
+import { shareReplay, filter, map, switchMap, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-encounter',
@@ -61,7 +61,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             switchMap((year) => this.encounterService.getEncounters(teamId, [`${year}-08-01`, `${year + 1}-07-01`])),
             map((c) => c.encounters.map((r) => r.node)),
             map((e) => e.sort((a, b) => moment(a.date).diff(b.date))),
-            share()
+            shareReplay(1)
           );
 
           this.encounters$.subscribe((encoutners) => {
