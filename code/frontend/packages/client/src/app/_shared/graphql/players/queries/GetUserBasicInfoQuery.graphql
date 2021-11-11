@@ -1,5 +1,5 @@
 # Write your query or mutation here
-query GetUserInfoQuery($id: ID!, $rankingType: ID) {
+query GetUserInfoQuery($id: ID!) {
   player(id: $id) {
     id
     memberId
@@ -8,43 +8,5 @@ query GetUserInfoQuery($id: ID!, $rankingType: ID) {
     sub
     gender
     birthDate
-    rankingPlaces(
-      order: "rankingDate"
-      direction: "desc"
-      limit: 1
-      where: { SystemId: $rankingType }
-    ) {
-      id
-
-      rankingDate
-      single
-      singleRank
-      singlePoints
-      singlePointsDowngrade
-      singleInactive
-      totalSingleRanking
-      totalWithinSingleLevel
-
-      mix
-      mixRank
-      mixPoints
-      mixPointsDowngrade
-      mixInactive
-      totalMixRanking
-      totalWithinMixLevel
-
-      double
-      doubleRank
-      doublePoints
-      doublePointsDowngrade
-      doubleInactive
-      totalDoubleRanking
-      totalWithinDoubleLevel
-
-      rankingSystem {
-        id
-        name
-      }
-    }
   }
 }
