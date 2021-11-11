@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
-import { lastValueFrom, merge, Observable, of, ReplaySubject } from 'rxjs';
+import { lastValueFrom, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
 import { PlayerService } from '../../../../services/player/player.service';
 import { NewPlayerComponent } from '../new-player/new-player.component';
@@ -13,7 +13,7 @@ import { Club, Player } from './../../../../models';
   templateUrl: './player-search.component.html',
   styleUrls: ['./player-search.component.scss'],
 })
-export class PlayerSearchComponent implements OnInit {
+export class PlayerSearchComponent implements OnChanges, OnInit {
   @Output() onSelectPlayer = new EventEmitter<Player>();
 
   @Input()
@@ -29,7 +29,7 @@ export class PlayerSearchComponent implements OnInit {
   where!: {};
 
   @Input()
-  player!: Player;
+  player!: string | Player;
 
   @Input()
   ranking!: Date;
@@ -53,11 +53,20 @@ export class PlayerSearchComponent implements OnInit {
 
   constructor(private playerService: PlayerService, private dialog: MatDialog) {}
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (!(changes['player']?.isFirstChange() ?? true)) {
+      this.setPlayer();
+    }
+    if (changes['ignorePlayers']) {
+      this.ignorePlayersIds = (this.ignorePlayers?.map((r) => r.id) ?? []).filter(
+        (v, i, a) => a.indexOf(v) === i
+      ) as string[];
+    }
+  }
+
   ngOnInit() {
-    this.formControl = new FormControl(this.player);
-    this.ignorePlayersIds = (this.ignorePlayers?.map((r) => r.id) ?? []).filter(
-      (v, i, a) => a.indexOf(v) === i
-    ) as string[];
+    this.formControl = new FormControl();
+    this.setPlayer();
 
     const search$ = this.formControl.valueChanges.pipe(
       startWith(''),
@@ -104,6 +113,23 @@ export class PlayerSearchComponent implements OnInit {
     );
 
     this.filteredOptions$ = merge(search$, this.clear$);
+  }
+
+  private setPlayer() {
+    of(this.player)
+      .pipe(
+        switchMap((p) => {
+          if (typeof p == 'string') {
+            return lastValueFrom(this.playerService.getPlayer(p));
+          }
+          return of(p);
+        })
+      )
+      .subscribe((player) => {
+        if (player) {
+          this.formControl.setValue(player, { emitEvent: false });
+        }
+      });
   }
 
   displayFn(user: Player): string {
