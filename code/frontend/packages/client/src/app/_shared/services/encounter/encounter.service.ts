@@ -15,7 +15,7 @@ import * as changeEncounterRequestMutation from '../../graphql/encounters/mutati
 export class EncounterService {
   constructor(private apollo: Apollo) {}
 
-  getEncounters(teamId: string) {
+  getEncounters(teamId: string, between: string []) {
     return this.apollo
       .query<{
         encounterCompetitions: {
@@ -27,7 +27,7 @@ export class EncounterService {
         variables: {
           id: teamId,
           where: {
-            date: { $between: ['2021-08-01', '2022-07-01'] },
+            date: { $between: between },
           },
         },
       })
