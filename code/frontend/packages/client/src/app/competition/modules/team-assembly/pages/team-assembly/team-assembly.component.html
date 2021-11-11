@@ -1,7 +1,6 @@
 <div fxFlex fxLayout="column" fxLayoutGap="16px">
   <div>
     <div class="mat-subheading-1">{{ 'competition.team-assembly.title' | translate }} <app-beta></app-beta></div>
-
   </div>
 
   <div class="select-encounter" fxFlex fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
@@ -13,9 +12,5 @@
     </div>
   </div>
 
-  <ng-container *ngIf="this.formGroup.value.team && this.formGroup.value.encounter">
-    <app-assembly [formGroup]="this.formGroup"></app-assembly>
-  </ng-container>
+  <app-assembly [formGroup]="this.formGroup"></app-assembly>
 </div>
-
-
