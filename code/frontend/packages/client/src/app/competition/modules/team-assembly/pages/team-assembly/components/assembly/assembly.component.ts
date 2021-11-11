@@ -8,19 +8,8 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Club, CompetitionSubEvent, EventService, LevelType, Player, TeamService } from 'app/_shared';
-import {
-  combineLatest,
-  debounce,
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  lastValueFrom,
-  pairwise,
-  map,
-  tap,
-} from 'rxjs';
-import * as moment from 'moment';
+import { CompetitionSubEvent, EventService, LevelType, Player, TeamService } from 'app/_shared';
+import { combineLatest, distinctUntilChanged, filter, lastValueFrom, map, pairwise, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'app-assembly',
@@ -80,7 +69,10 @@ export class AssemblyComponent implements OnInit {
 
   type!: string;
   mayRankingDate!: Date;
+  subEvents!: string[];
+
   teamIndex: number = 0;
+  teamNumber?: number = 0;
   club!: string;
   subEvent?: CompetitionSubEvent;
   ignorePlayers!: Player[];
@@ -89,7 +81,7 @@ export class AssemblyComponent implements OnInit {
   errors = {} as { [key: string]: string };
   totalPlayers = 0;
 
-  constructor(private eventService: EventService, private teamService: TeamService) {}
+  constructor(private teamService: TeamService) {}
 
   ngOnInit() {
     this.formGroup.addControl('single1', new FormControl());
@@ -103,6 +95,14 @@ export class AssemblyComponent implements OnInit {
     this.formGroup.addControl('substitude', new FormControl());
     this.formGroup.addControl('captain', new FormControl());
 
+    this.subEvents = this.formGroup.get('subEvents')?.value;
+    this.mayRankingDate = this.formGroup.get('mayRankingDate')?.value;
+
+    this.formGroup.get('year')?.valueChanges.subscribe(() => {
+      this.subEvents = this.formGroup.get('subEvents')?.value;
+      this.mayRankingDate = this.formGroup.get('mayRankginDate')?.value;
+    });
+
     // only update if the encounter was null or became null
     const encoutner$ = this.formGroup.get('encounter')!.valueChanges.pipe(
       pairwise(),
@@ -112,11 +112,15 @@ export class AssemblyComponent implements OnInit {
 
     combineLatest([this.formGroup.get('team')!.valueChanges, encoutner$])
       .pipe(
-        tap(([team, encounter]) => (this.gotRequired = team && encounter)),
-        filter(([team, encounter]) => team && encounter)
+        map(([team, encounter]) => team != null && encounter != null),
+        distinctUntilChanged()
       )
-      .subscribe(() => {
-        this.loadData();
+      .subscribe((gotRequired) => {
+        this.gotRequired = gotRequired;
+
+        if (gotRequired) {
+          this.loadData();
+        }
       });
   }
 
@@ -132,25 +136,27 @@ export class AssemblyComponent implements OnInit {
     this.formGroup.get('double4')!.reset();
     this.formGroup.get('substitude')!.reset();
 
+    this.single1 = [];
+    this.single2 = [];
+    this.single3 = [];
+    this.single4 = [];
+  
+    this.double1 = [];
+    this.double2 = [];
+    this.double3 = [];
+    this.double4 = [];
+
+    // Get values
     this.club = this.formGroup.get('club')!.value;
     const teamId = this.formGroup.get('team')?.value;
 
-    const today = moment();
-    const year = today.month() >= 6 ? today.year() : today.year() - 1;
-    this.mayRankingDate = moment(`${year}-05-15`).toDate();
-
-    const events = (await lastValueFrom(this.eventService.getSubEventsCompetition(year))) ?? [];
     const teams =
-      (await lastValueFrom(
-        this.teamService.getTeamsAndPlayers(
-          this.club,
-          this.mayRankingDate,
-          events.map((r) => r.subEvents?.map((y) => y.id)).flat() as string[]
-        )
-      )) ?? [];
+      (await lastValueFrom(this.teamService.getTeamsAndPlayers(this.club, this.mayRankingDate, this.subEvents))) ?? [];
     const team = teams?.find((r) => r.id === teamId);
+    this.teamNumber = team?.teamNumber;
     this.formGroup.get('captain')?.setValue(team?.captain?.id);
 
+    // Sort the players
     this.players =
       team?.players.sort((a, b) => {
         if (a.gender != b.gender) {
@@ -184,6 +190,7 @@ export class AssemblyComponent implements OnInit {
       },
     };
 
+    // Set prefixes of form
     if (this.type == 'M') {
       this.captionSingle1Prefix = 'gender.male';
       this.captionSingle2Prefix = 'gender.male';
@@ -218,6 +225,8 @@ export class AssemblyComponent implements OnInit {
       this.captionDouble4 = `competition.team-assembly.mix4`;
     }
 
+
+    // Ignore ids
     this.ignorePlayers = [];
     const ignoredLevels = [];
     if (this.subEvent?.event?.type == LevelType.PROV) {
@@ -267,7 +276,10 @@ export class AssemblyComponent implements OnInit {
       }
     }
 
+    // calculate team index
     this._calculateIndex();
+
+    // Done
     this.loaded = true;
   }
 

@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CompetitionEncounter, Team } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import { lastValueFrom } from 'rxjs';
-import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-list-encounters',
@@ -45,27 +45,29 @@ export class ListEncountersComponent implements OnInit {
         });
       });
 
-      previous.valueChanges.subscribe(async (team) => {
+      previous.valueChanges.subscribe(async (teamId) => {
         this.formControl.setValue(null);
-        if (team?.id != null) {
+        if (teamId != null) {
           if (!this.formControl.enabled) {
             this.formControl.enable();
           }
 
-          const encounters = (
-            await lastValueFrom(
-              this.encounterService
-                .getEncounters(team.id)
-                .pipe(map((c) => c.encounters.map((r) => r.node)))
+          const encounters = await lastValueFrom(
+            this.formGroup.get('year')!.valueChanges.pipe(
+              startWith(this.formGroup.get('year')!.value),
+              switchMap((year) => this.encounterService.getEncounters(teamId, [`${year}-08-01`, `${year + 1}-07-01`])),
+              map((c) => c.encounters.map((r) => r.node)),
+              map((e) => e.sort((a, b) => a.date!.getTime() - b.date!.getTime())),
+              map((e) => {
+                e = e.map((r) => {
+                  r.showingForHomeTeam = r.home?.id == teamId;
+                  return r;
+                });
+                return e;
+              }),
+              first()
             )
-          )
-            .sort((a, b) => {
-              return a.date!.getTime() - b.date!.getTime();
-            })
-            .map((r) => {
-              r.showingForHomeTeam = r.home?.id == team.id;
-              return r;
-            });
+          );
 
           this.encountersSem1 = encounters.filter((r) => [8, 9, 10, 11, 12].includes(r.date!.getMonth()));
           this.encountersSem2 = encounters.filter((r) => [0, 1, 2, 3, 4, 5].includes(r.date!.getMonth()));

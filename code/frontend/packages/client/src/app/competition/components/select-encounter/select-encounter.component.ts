@@ -5,7 +5,7 @@ import { CompetitionEncounter } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, map, startWith } from 'rxjs/operators';
+import { share, filter, map, switchMap, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-encounter',
@@ -48,11 +48,6 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             this.formControl.enable();
           }
 
-          this.encounters$ = this.encounterService.getEncounters(teamId).pipe(
-            map((c) => c.encounters.map((r) => r.node)),
-            map((e) => e.sort((a, b) => moment(a.date).diff(b.date)))
-          );
-
           this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
             this.router.navigate([], {
               relativeTo: this.activatedRoute,
@@ -60,6 +55,14 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
               queryParamsHandling: 'merge',
             });
           });
+
+          this.encounters$ = this.formGroup.get('year')!.valueChanges.pipe(
+            startWith(this.formGroup.get('year')!.value),
+            switchMap((year) => this.encounterService.getEncounters(teamId, [`${year}-08-01`, `${year + 1}-07-01`])),
+            map((c) => c.encounters.map((r) => r.node)),
+            map((e) => e.sort((a, b) => moment(a.date).diff(b.date))),
+            share()
+          );
 
           this.encounters$.subscribe((encoutners) => {
             let foundEncounter = null;
