@@ -132,8 +132,8 @@ export class PdfService {
     });
 
     const meta = membership?.meta;
-    const today = moment();
-    const year = today.month() >= 6 ? today.year() : today.year() - 1;
+    const year = encounter.draw.subEvent.event.startYear;
+
     const players = await Player.findAll({
       where: {
         id: {

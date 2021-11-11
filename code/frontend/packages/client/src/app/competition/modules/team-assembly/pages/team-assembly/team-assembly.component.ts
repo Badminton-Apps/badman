@@ -24,9 +24,9 @@ export class TeamAssemblyComponent implements OnInit {
 
   ngOnInit() {
     const today = moment();
-    const year =
-      parseInt(this.activatedRoute.snapshot.queryParams['year'], 10) ??
-      (today.month() >= 6 ? today.year() : today.year() - 1);
+    const queryYear = parseInt(this.activatedRoute.snapshot.queryParams['year'], 10);
+    const year = isNaN(queryYear) ? (today.month() >= 6 ? today.year() : today.year() - 1) : queryYear;
+
 
     this.formGroup.addControl('year', new FormControl(year));
     this.formGroup.addControl('mayRankingDate', new FormControl(moment(`${year}-05-15`).toDate()));
