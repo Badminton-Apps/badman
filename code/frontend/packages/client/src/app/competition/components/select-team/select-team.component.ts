@@ -3,8 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamService, UserService } from 'app/_shared';
 import { Team } from 'app/_shared/models/team.model';
-import { filter } from 'rxjs/operators';
-import { lastValueFrom } from 'rxjs';
+import { filter, map, share } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-select-team',
@@ -28,6 +28,11 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   teamsMX?: Team[];
   teamsNAT?: Team[];
 
+  teamsM$?: Observable<Team[]>;
+  teamsF$?: Observable<Team[]>;
+  teamsMX$?: Observable<Team[]>;
+  teamsNAT$?: Observable<Team[]>;
+
   constructor(
     private teamService: TeamService,
     private router: Router,
@@ -45,46 +50,65 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
       this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
         this.router.navigate([], {
           relativeTo: this.activatedRoute,
-          queryParams: { team: r.id },
+          queryParams: { team: r },
           queryParamsHandling: 'merge',
         });
       });
 
-      previous.valueChanges.subscribe(async (r) => {
+      previous.valueChanges.subscribe(async (clubId: string) => {
         this.formControl.setValue(null);
 
-        if (r?.id != null) {
+        if (clubId != null) {
           if (!this.formControl.enabled) {
             this.formControl.enable();
           }
-          // TODO: Convert to observable way
-          const teams = await lastValueFrom(this.teamService.getTeams(r.id));
 
-          this.teamsF = teams.filter((r) => r.type === 'F').sort((a, b) => a.teamNumber! - b.teamNumber!);
-          this.teamsM = teams.filter((r) => r.type === 'M').sort((a, b) => a.teamNumber! - b.teamNumber!);
-          this.teamsMX = teams.filter((r) => r.type === 'MX').sort((a, b) => a.teamNumber! - b.teamNumber!);
-          this.teamsNAT = teams.filter((r) => r.type === 'NATIONAL').sort((a, b) => a.teamNumber! - b.teamNumber!);
+          const team$ = this.teamService.getTeams(clubId).pipe(share());
 
-          const params = this.activatedRoute.snapshot.queryParams;
-          let foundTeam = null;
+          this.teamsF$ = team$.pipe(
+            map((teams) => teams.filter((team) => team.type === 'F')),
+            map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
+          );
 
-          if (params && params['team'] && teams.length > 0) {
-            foundTeam = teams.find((r) => r.id == params['team']);
-          }
+          this.teamsM$ = team$.pipe(
+            map((teams) => teams.filter((team) => team.type === 'M')),
+            map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
+          );
 
-          if (foundTeam == null) {
-            foundTeam = teams.find((r) => r.captainId == this.user?.profile?.id);
-          }
+          this.teamsMX$ = team$.pipe(
+            map((teams) => teams.filter((team) => team.type === 'MX')),
+            map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
+          );
 
-          if (foundTeam) {
-            this.formControl.setValue(foundTeam);
-          } else {
-            this.router.navigate([], {
-              relativeTo: this.activatedRoute,
-              queryParams: { team: undefined, encounter: undefined },
-              queryParamsHandling: 'merge',
-            });
-          }
+
+          this.teamsNAT$ = team$.pipe(
+            map((teams) => teams.filter((team) => team.type === 'NATIONAL')),
+            map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
+          );
+
+
+          team$.subscribe((teams) => {
+            let foundTeam = null;
+            let teamId = this.activatedRoute.snapshot?.queryParamMap?.get('team');
+
+            if (teamId && teams.length > 0) {
+              foundTeam = teams.find((r) => r.id == teamId);
+            }
+
+            if (foundTeam == null) {
+              foundTeam = teams.find((r) => r.captainId == this.user?.profile?.id);
+            }
+
+            if (foundTeam) {
+              this.formControl.setValue(foundTeam.id, { onlySelf: true });
+            } else {
+              this.router.navigate([], {
+                relativeTo: this.activatedRoute,
+                queryParams: { team: undefined, encounter: undefined },
+                queryParamsHandling: 'merge',
+              });
+            }
+          });
         } else {
           this.formControl.disable();
         }

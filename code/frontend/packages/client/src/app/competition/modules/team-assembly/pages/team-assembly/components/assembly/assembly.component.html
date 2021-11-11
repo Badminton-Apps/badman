@@ -22,7 +22,7 @@
         <app-player-search
           [player]="this.formGroup.get('captain')!.value"
           [allowCreation]="false"
-          [club]="this.club"
+          [club]="{id: this.club}"
           label="competition.team-assembly.captain"
           (onSelectPlayer)="this.selectedCaptain($event)"
           [clearOnSelection]="false"
@@ -301,5 +301,5 @@
 </div>
 
 <ng-template #loading>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <mat-progress-bar *ngIf="gotRequired" mode="indeterminate"></mat-progress-bar>
 </ng-template>

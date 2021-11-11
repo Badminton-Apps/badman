@@ -2,35 +2,39 @@
   <mat-form-field appearance="outline" class="flex">
     <mat-label>{{ 'pickers.select-team' | translate }}</mat-label>
     <mat-select formControlName="team" required>
-      <mat-optgroup *ngIf="this.teamsF && this.teamsF.length > 0" [label]="'pickers.select-team-groups.F' | translate">
-        <mat-option *ngFor="let option of this.teamsF" [value]="option">
-          {{ option.name }}
-        </mat-option>
-      </mat-optgroup>
+      <ng-container *ngIf="this.teamsF$ | async as teamsF">
+        <mat-optgroup *ngIf="teamsF && teamsF.length > 0" [label]="'pickers.select-team-groups.F' | translate">
+          <mat-option *ngFor="let option of teamsF" [value]="option.id">
+            {{ option.name }}
+          </mat-option>
+        </mat-optgroup>
+      </ng-container>
 
-      <mat-optgroup *ngIf="this.teamsM && this.teamsM.length > 0" [label]="'pickers.select-team-groups.M' | translate">
-        <mat-option *ngFor="let option of this.teamsM" [value]="option">
-          {{ option.name }}
-        </mat-option>
-      </mat-optgroup>
+      <ng-container *ngIf="this.teamsM$ | async as teamsM">
+        <mat-optgroup *ngIf="teamsM && teamsM.length > 0" [label]="'pickers.select-team-groups.M' | translate">
+          <mat-option *ngFor="let option of teamsM" [value]="option.id">
+            {{ option.name }}
+          </mat-option>
+        </mat-optgroup>
+      </ng-container>
 
-      <mat-optgroup
-        *ngIf="this.teamsMX && this.teamsMX.length > 0"
-        [label]="'pickers.select-team-groups.MX' | translate"
-      >
-        <mat-option *ngFor="let option of this.teamsMX" [value]="option">
-          {{ option.name }}
-        </mat-option>
-      </mat-optgroup>
+      <ng-container *ngIf="this.teamsMX$ | async as teamsMX">
+        <mat-optgroup *ngIf="teamsMX && teamsMX.length > 0" [label]="'pickers.select-team-groups.MX' | translate">
+          <mat-option *ngFor="let option of teamsMX" [value]="option.id">
+            {{ option.name }}
+          </mat-option>
+        </mat-optgroup>
+      </ng-container>
 
-      <mat-optgroup
-        *ngIf="this.teamsNAT && this.teamsNAT.length > 0"
-        [label]="'pickers.select-team-groups.NATIONAL' | translate"
-      >
-        <mat-option *ngFor="let option of this.teamsNAT" [value]="option">
-          {{ option.name }}
-        </mat-option>
-      </mat-optgroup>
+
+      <ng-container *ngIf="this.teamsNAT$ | async as teamsNAT">
+        <mat-optgroup *ngIf="teamsNAT && teamsNAT.length > 0" [label]="'pickers.select-team-groups.NATIONAL' | translate">
+          <mat-option *ngFor="let option of teamsNAT" [value]="option.id">
+            {{ option.name }}
+          </mat-option>
+        </mat-optgroup>
+      </ng-container>
+
     </mat-select>
   </mat-form-field>
 </ng-container>

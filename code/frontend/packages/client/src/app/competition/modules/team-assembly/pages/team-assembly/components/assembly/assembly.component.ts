@@ -9,7 +9,17 @@ import {
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Club, CompetitionSubEvent, EventService, LevelType, Player, TeamService } from 'app/_shared';
-import { lastValueFrom } from 'rxjs';
+import {
+  combineLatest,
+  debounce,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  lastValueFrom,
+  pairwise,
+  map,
+  tap,
+} from 'rxjs';
 import * as moment from 'moment';
 
 @Component({
@@ -71,10 +81,11 @@ export class AssemblyComponent implements OnInit {
   type!: string;
   mayRankingDate!: Date;
   teamIndex: number = 0;
-  club!: Club;
+  club!: string;
   subEvent?: CompetitionSubEvent;
   ignorePlayers!: Player[];
   loaded = false;
+  gotRequired = false;
   errors = {} as { [key: string]: string };
   totalPlayers = 0;
 
@@ -92,7 +103,21 @@ export class AssemblyComponent implements OnInit {
     this.formGroup.addControl('substitude', new FormControl());
     this.formGroup.addControl('captain', new FormControl());
 
-    this.loadData();
+    // only update if the encounter was null or became null
+    const encoutner$ = this.formGroup.get('encounter')!.valueChanges.pipe(
+      pairwise(),
+      filter(([prev, next]) => next == null || (prev == null && next != null)),
+      map(([prev, next]) => next)
+    );
+
+    combineLatest([this.formGroup.get('team')!.valueChanges, encoutner$])
+      .pipe(
+        tap(([team, encounter]) => (this.gotRequired = team && encounter)),
+        filter(([team, encounter]) => team && encounter)
+      )
+      .subscribe(() => {
+        this.loadData();
+      });
   }
 
   async loadData() {
@@ -107,11 +132,8 @@ export class AssemblyComponent implements OnInit {
     this.formGroup.get('double4')!.reset();
     this.formGroup.get('substitude')!.reset();
 
-    const form = this.formGroup.value;
-    this.type = form?.team?.type;
-
     this.club = this.formGroup.get('club')!.value;
-    const teamId = this.formGroup.get('team')?.value?.id;
+    const teamId = this.formGroup.get('team')?.value;
 
     const today = moment();
     const year = today.month() >= 6 ? today.year() : today.year() - 1;
@@ -121,13 +143,13 @@ export class AssemblyComponent implements OnInit {
     const teams =
       (await lastValueFrom(
         this.teamService.getTeamsAndPlayers(
-          this.club.id!,
+          this.club,
           this.mayRankingDate,
           events.map((r) => r.subEvents?.map((y) => y.id)).flat() as string[]
         )
       )) ?? [];
     const team = teams?.find((r) => r.id === teamId);
-    this.formGroup.get('captain')?.setValue(team?.captain);
+    this.formGroup.get('captain')?.setValue(team?.captain?.id);
 
     this.players =
       team?.players.sort((a, b) => {
@@ -258,7 +280,7 @@ export class AssemblyComponent implements OnInit {
   }
 
   selectedCaptain(player: Player) {
-    this.formGroup.get('captain')!.setValue(player);
+    this.formGroup.get('captain')!.setValue(player.id);
   }
 
   canDropPredicate = (item: CdkDrag, drop: CdkDropList<Player[]>) => {
