@@ -1,6 +1,6 @@
 import { Processor, ProcessStep, XmlTournament } from '@badvlasim/shared';
 import { Transaction } from 'sequelize';
-import { VisualService } from '../../../../utils/visualService';
+import { VisualService } from '../../../../../utils/visualService';
 import {
   CompetitionSyncDrawProcessor,
   CompetitionSyncEncounterProcessor,
@@ -24,12 +24,12 @@ export class CompetitionSyncer {
   readonly STEP_PLAYER = 'player';
   readonly STEP_GAME = 'game';
 
-  private eventStep: CompetitionSyncEventProcessor;
-  private subEventStep: CompetitionSyncSubEventProcessor;
-  private drawStep: CompetitionSyncDrawProcessor;
-  private encounterStep: CompetitionSyncEncounterProcessor;
-  private playerStep: CompetitionSyncPlayerProcessor;
-  private gameStep: CompetitionSyncGameProcessor;
+  private _eventStep: CompetitionSyncEventProcessor;
+  private _subEventStep: CompetitionSyncSubEventProcessor;
+  private _drawStep: CompetitionSyncDrawProcessor;
+  private _encounterStep: CompetitionSyncEncounterProcessor;
+  private _playerStep: CompetitionSyncPlayerProcessor;
+  private _gameStep: CompetitionSyncGameProcessor;
 
   constructor() {
     this.processor = new Processor();
@@ -44,35 +44,35 @@ export class CompetitionSyncer {
   }
 
   process(args: { transaction: Transaction; xmlTournament: XmlTournament }) {
-    this.eventStep = new CompetitionSyncEventProcessor(
+    this._eventStep = new CompetitionSyncEventProcessor(
       args.xmlTournament,
       args.transaction,
       this.visualService
     );
-    this.subEventStep = new CompetitionSyncSubEventProcessor(
+    this._subEventStep = new CompetitionSyncSubEventProcessor(
       args.xmlTournament,
       args.transaction,
       this.visualService
     );
-    this.drawStep = new CompetitionSyncDrawProcessor(
-      args.xmlTournament,
-      args.transaction,
-      this.visualService
-    );
-
-    this.encounterStep = new CompetitionSyncEncounterProcessor(
+    this._drawStep = new CompetitionSyncDrawProcessor(
       args.xmlTournament,
       args.transaction,
       this.visualService
     );
 
-    this.playerStep = new CompetitionSyncPlayerProcessor(
+    this._encounterStep = new CompetitionSyncEncounterProcessor(
       args.xmlTournament,
       args.transaction,
       this.visualService
     );
 
-    this.gameStep = new CompetitionSyncGameProcessor(
+    this._playerStep = new CompetitionSyncPlayerProcessor(
+      args.xmlTournament,
+      args.transaction,
+      this.visualService
+    );
+
+    this._gameStep = new CompetitionSyncGameProcessor(
       args.xmlTournament,
       args.transaction,
       this.visualService
@@ -84,59 +84,59 @@ export class CompetitionSyncer {
   protected getEvent(): ProcessStep {
     return new ProcessStep(this.STEP_EVENT, async () => {
       // Process step
-      const data = await this.eventStep.process();
+      const data = await this._eventStep.process();
 
       // Pass data to other steps
-      this.subEventStep.event = data.event;
-      this.subEventStep.existed = data.existed;
-      this.encounterStep.event = data.event;
+      this._subEventStep.event = data.event;
+      this._subEventStep.existed = data.existed;
+      this._encounterStep.event = data.event;
     });
   }
 
   protected addSubEvents(): ProcessStep {
     return new ProcessStep(this.STEP_SUBEVENT, async () => {
       // Process step
-      const data = await this.subEventStep.process();
+      const data = await this._subEventStep.process();
 
       // Pass data to other steps
-      this.drawStep.subEvents = data;
+      this._drawStep.subEvents = data;
     });
   }
 
   protected addDraws(): ProcessStep {
     return new ProcessStep(this.STEP_DRAW, async () => {
       // Process step
-      const data = await this.drawStep.process();
+      const data = await this._drawStep.process();
 
       // Pass data to other steps
-      this.encounterStep.draws = data;
+      this._encounterStep.draws = data;
     });
   }
 
   protected addEncounters(): ProcessStep {
     return new ProcessStep(this.STEP_ENCOUNTER, async () => {
       // Process step
-      const data = await this.encounterStep.process();
+      const data = await this._encounterStep.process();
 
       // Pass data to other steps
-      this.gameStep.encounters = data;
+      this._gameStep.encounters = data;
     });
   }
 
   protected addPlayers(): ProcessStep {
     return new ProcessStep(this.STEP_PLAYER, async () => {
       // Process step
-      const data = await this.playerStep.process();
+      const data = await this._playerStep.process();
 
       // Pass data to other steps
-      this.gameStep.players = data;
+      this._gameStep.players = data;
     });
   }
 
   protected addGames(): ProcessStep {
     return new ProcessStep(this.STEP_GAME, async () => {
       // Process step
-      await this.gameStep.process();
+      await this._gameStep.process();
     });
   }
 }

@@ -1,7 +1,6 @@
 import { AuthenticatedRequest, BaseController, Cron } from '@badvlasim/shared';
 import { Response, Router } from 'express';
-import { CronJob, GetScoresVisual } from '../models';
-import { GetRankingVisual } from '../models/jobs/get-levels-visual';
+import { CronJob, GetRankingVisual, GetScoresVisual } from '../models';
 
 export class JobController extends BaseController {
   private _path = '/job';

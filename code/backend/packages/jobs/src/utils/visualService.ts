@@ -4,8 +4,8 @@ import { parse } from 'fast-xml-parser';
 import * as rax from 'retry-axios';
 
 export class VisualService {
-  private retries = 25;
-  private parseSettings = {
+  private _retries = 25;
+  private _parseSettings = {
     attributeNamePrefix: '',
     ignoreAttributes: false,
     parseAttributeValue: true
@@ -13,7 +13,7 @@ export class VisualService {
 
   async getPlayers(tourneyId: string) {
     const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}/Player`);
-    const parsed = parse(result.data, this.parseSettings).Result as XmlResult;
+    const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.Player);
   }
 
@@ -21,7 +21,7 @@ export class VisualService {
     const result = await this._getFromApi(
       `${process.env.VR_API}/Tournament/${tourneyId}/TeamMatch/${matchId}`
     );
-    const parsed = parse(result.data, this.parseSettings).Result as XmlResult;
+    const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.Match);
   }
 
@@ -29,7 +29,7 @@ export class VisualService {
     const result = await this._getFromApi(
       `${process.env.VR_API}/Tournament/${tourneyId}/Draw/${drawId}/Match`
     );
-    const parsed = parse(result.data, this.parseSettings).Result as XmlResult;
+    const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.TeamMatch);
   }
 
@@ -37,25 +37,25 @@ export class VisualService {
     const result = await this._getFromApi(
       `${process.env.VR_API}/Tournament/${tourneyId}/Event/${eventId}/Draw`
     );
-    const parsed = parse(result.data, this.parseSettings).Result as XmlResult;
+    const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.TournamentDraw);
   }
 
   async getEvents(tourneyId: string | number) {
     const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}/Event`);
-    const parsed = parse(result.data, this.parseSettings).Result as XmlResult;
+    const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.TournamentEvent);
   }
 
   async getTournament(tourneyId: string) {
     const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}`);
-    const parsed = parse(result.data, this.parseSettings).Result as XmlResult;
+    const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return parsed.Tournament as XmlTournament;
   }
 
   private _getFromApi(url) {
     logger.silly(`Getting from ${url}`);
-    return axios.get(url, {
+    return axios.get(url, { 
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
@@ -63,10 +63,10 @@ export class VisualService {
       },
       timeout: 600000,
       raxConfig: {
-        retry: this.retries,
+        retry: this._retries,
         onRetryAttempt: err => {
           const cfg = rax.getConfig(err);
-          if (cfg.currentRetryAttempt > this.retries * 0.75) {
+          if (cfg.currentRetryAttempt > this._retries * 0.75) {
             logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`, err);
           } else {
             logger.debug(`Retry attempt #${cfg.currentRetryAttempt}`, err);

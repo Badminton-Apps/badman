@@ -1,20 +1,14 @@
 import {
   DrawCompetition,
   EncounterCompetition,
-  EventCompetition,
   Game,
-  LevelType,
-  logger,
   SubEventCompetition,
-  SubEventType,
-  XmlGenderID,
   XmlTournament
 } from '@badvlasim/shared';
-import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
-import { EventStepData, SubEventStepData } from '.';
-import { StepProcessor } from '../../../../../utils/step-processor';
-import { VisualService } from '../../../../../utils/visualService';
+import { SubEventStepData } from '.';
+import { StepProcessor } from '../../../../../../utils/step-processor';
+import { VisualService } from '../../../../../../utils/visualService';
 
 export interface DrawStepData {
   draw: DrawCompetition;
@@ -23,9 +17,8 @@ export interface DrawStepData {
 
 export class CompetitionSyncDrawProcessor extends StepProcessor {
   public subEvents: SubEventStepData[];
-  private dbDraws: DrawStepData[] = [];
+  private _dbDraws: DrawStepData[] = [];
 
-  
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly transaction: Transaction,
@@ -35,11 +28,11 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
   }
 
   public async process(): Promise<DrawStepData[]> {
-    await Promise.all(this.subEvents.map(e => this.processDraws(e)));
-    return this.dbDraws;
+    await Promise.all(this.subEvents.map(e => this._processDraws(e)));
+    return this._dbDraws;
   }
 
-  private async processDraws({
+  private async _processDraws({
     subEvent,
     internalId
   }: {
@@ -63,7 +56,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
         }).save({ transaction: this.transaction });
       }
 
-      this.dbDraws.push({ draw: dbDraw, internalId: parseInt(xmlDraw.Code, 10) });
+      this._dbDraws.push({ draw: dbDraw, internalId: parseInt(xmlDraw.Code, 10) });
     }
 
     // Remove draw that have no visual code

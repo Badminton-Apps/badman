@@ -6,9 +6,10 @@ import {
   ProcessStep,
   RankingPlace,
   RankingPoint,
+  RankingProcessor,
   RankingSystem,
   RankingSystems,
-  splitInChunks,
+  DataBaseHandler,
   XmlRanking,
   XmlResult
 } from '@badvlasim/shared';
@@ -255,7 +256,9 @@ export class RankingSyncer {
             );
 
             if (publication.usedForUpdate === false && foundPlayer.lastRankingPlaces != null) {
-              const place = foundPlayer.lastRankingPlaces.find(r => r.systemId === ranking.system.id);
+              const place = foundPlayer.lastRankingPlaces.find(
+                r => r.systemId === ranking.system.id
+              );
               if (place != null && place[type] != null && place[type] !== points.Level) {
                 place[type] = points.Level;
                 await place.save({ transaction: args.transaction });
@@ -317,18 +320,16 @@ export class RankingSyncer {
             'F'
           );
 
-          await RankingPlace.bulkCreate(
-            Array.from(rankingPlaces).map(([id, place]) => place.toJSON()),
-            {
-              ignoreDuplicates: true,
-              transaction: args.transaction,
-              hooks: true
-            }
-          );
+          const instances = Array.from(rankingPlaces).map(([id, place]) => place.toJSON());
+          await RankingPlace.bulkCreate(instances, {
+            ignoreDuplicates: true,
+            transaction: args.transaction,
+            hooks: true
+          }); 
 
           ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
           await ranking.system.save({ transaction: args.transaction });
-        }
+        }  
       }
     });
   }

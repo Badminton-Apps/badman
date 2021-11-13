@@ -1,6 +1,6 @@
 import { Cron, DataBaseHandler, logger } from '@badvlasim/shared';
 import { CronJob } from '../cronJob';
-import { RankingSyncer } from './visualSyncer/ranking-sync';
+import { RankingSyncer } from './visualSyncer/get-levels-visual';
 
 export class GetRankingVisual extends CronJob {
   private _levelSync: RankingSyncer;
@@ -32,7 +32,7 @@ export class GetRankingVisual extends CronJob {
   } {
     return {
       cron: '0 */4 * * *',
-      type: 'ranking-visual'
+      type: 'levels-visual'
     };
   }
 }
