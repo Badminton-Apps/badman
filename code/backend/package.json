@@ -14,7 +14,7 @@
     "test:local": "npx lerna run test:local --stream",
     "migrate": "npx lerna run migrate --scope=@badvlasim\\server",
     "release": "npx lerna version",
-    "kill-ports": "npx kill-port 5000 5001 5002 5003 5004 5858 5859 5860 5861",
+    "kill-ports": "npx kill-port 5000 5001 5002 5003 5004 6858 6859 6860 6861",
     "kill-node": "taskkill /f /im node.exe"
   },
   "dependencies": {
@@ -74,6 +74,7 @@
     "babel-jest": "^25.2.6",
     "babel-register": "^6.26.0",
     "eslint-config-prettier": "6.15.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsdoc": "^30.7.3",
     "eslint-plugin-prefer-arrow": "^1.2.2",

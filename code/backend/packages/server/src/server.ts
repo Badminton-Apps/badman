@@ -106,8 +106,8 @@ const startServer = (databaseService: DataBaseHandler) => {
       }
     },
     schema,
-    tracing: true,
-    cacheControl: true,
+    // tracing: true,
+    // cacheControl: true,
     formatError: (err: GraphQLError) => ({
       message: err.originalError?.message || err.message,
       code: err.originalError?.code || 500

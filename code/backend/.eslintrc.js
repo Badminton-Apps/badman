@@ -54,6 +54,7 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: [
+    'prettier',
     'eslint-plugin-jsdoc',
     'eslint-plugin-prefer-arrow',
     'eslint-plugin-import',

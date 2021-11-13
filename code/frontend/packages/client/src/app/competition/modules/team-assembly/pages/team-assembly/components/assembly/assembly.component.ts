@@ -67,7 +67,7 @@ export class AssemblyComponent implements OnInit {
   captionDouble3 = 'competition.team-assembly.double3';
   captionDouble4 = 'competition.team-assembly.double4';
 
-  type!: string;
+  type?: string;
   mayRankingDate!: Date;
   subEvents!: string[];
 
@@ -140,7 +140,7 @@ export class AssemblyComponent implements OnInit {
     this.single2 = [];
     this.single3 = [];
     this.single4 = [];
-  
+
     this.double1 = [];
     this.double2 = [];
     this.double3 = [];
@@ -154,6 +154,7 @@ export class AssemblyComponent implements OnInit {
       (await lastValueFrom(this.teamService.getTeamsAndPlayers(this.club, this.mayRankingDate, this.subEvents))) ?? [];
     const team = teams?.find((r) => r.id === teamId);
     this.teamNumber = team?.teamNumber;
+    this.type = team?.type;
     this.formGroup.get('captain')?.setValue(team?.captain?.id);
 
     // Sort the players
@@ -225,7 +226,6 @@ export class AssemblyComponent implements OnInit {
       this.captionDouble4 = `competition.team-assembly.mix4`;
     }
 
-
     // Ignore ids
     this.ignorePlayers = [];
     const ignoredLevels = [];
@@ -265,15 +265,21 @@ export class AssemblyComponent implements OnInit {
           }
         }
 
-        this.ignorePlayers.push(
-          ...dbTeam.players.filter(
-            (p) =>
-              (p.lastRanking?.single ?? 12) < this.subEvent!.maxLevel! ||
-              (p.lastRanking?.double ?? 12) < this.subEvent!.maxLevel! ||
-              (this.type == 'MX' && (p.lastRanking?.mix ?? 12) < this.subEvent!.maxLevel!)
-          )
+        const levelRestirced = dbTeam.players.filter(
+          (p) =>
+            (p.lastRanking?.single ?? 12) < this.subEvent!.maxLevel! ||
+            (p.lastRanking?.double ?? 12) < this.subEvent!.maxLevel! ||
+            (this.type == 'MX' && (p.lastRanking?.mix ?? 12) < this.subEvent!.maxLevel!)
         );
+        if (levelRestirced.length > 0) {
+          this.ignorePlayers.push(...levelRestirced);
+        }
       }
+
+      // ignore duplicates for improved queries
+      this.ignorePlayers = this.ignorePlayers.filter(
+        (value, index, self) => self.findIndex((m) => m.id === value.id) === index
+      );
     }
 
     // calculate team index
