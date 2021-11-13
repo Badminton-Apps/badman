@@ -89,7 +89,7 @@ const exportedComponents = [
     NewPlayerComponent,
     UserInfoComponent,
   ],
-  imports: [CommonModule, RouterModule, NgcCookieConsentModule, TranslateModule.forChild(), ...materialModules],
+  imports: [CommonModule, RouterModule, NgcCookieConsentModule, FlexLayoutModule, TranslateModule.forChild(), ...materialModules],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

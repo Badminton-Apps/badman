@@ -27,107 +27,108 @@
       [opened]="!device.mobileQuery.matches"
       fixedTopGap="56"
     >
-      <mat-nav-list>
-        <div class="pages">
-          <a mat-list-item [routerLink]="['./']" *ngIf="device.mobileQuery.matches">Badman</a>
-          <ng-container *ngIf="this.profile$ | async as profile">
-            <a mat-list-item [routerLink]="['/player', profile.id]" routerLinkActive="active"> My games </a>
+      <div class="side-menu" fxLayout="column">
+        <mat-nav-list>
+          <div class="pages">
+            <a mat-list-item [routerLink]="['./']" *ngIf="device.mobileQuery.matches">Badman</a>
+            <ng-container *ngIf="this.profile$ | async as profile">
+              <a mat-list-item [routerLink]="['/player', profile.id]" routerLinkActive="active"> My games </a>
 
-            <a
-              mat-list-item
-              *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) == 1"
-              [routerLink]="['/club', profile.clubs![0].id]"
-            >
-              My club
+              <a
+                mat-list-item
+                *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) == 1"
+                [routerLink]="['/club', profile.clubs![0].id]"
+              >
+                My club
+              </a>
+
+              <mat-accordion class="app-nav-accordion" *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) > 1">
+                <mat-expansion-panel class="mat-elevation-z0">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>Clubs</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <mat-nav-list *ngFor="let club of profile.clubs">
+                    <a mat-list-item [routerLink]="['/club', club.id]" routerLinkActive="active">
+                      {{ club.name }}
+                    </a>
+                  </mat-nav-list>
+                </mat-expansion-panel>
+              </mat-accordion>
+              <mat-divider></mat-divider>
+            </ng-container>
+
+            <a mat-list-item routerLink="player/top" routerLinkActive="active">
+              {{ 'systems.list' | translate }}
             </a>
 
-            <mat-accordion class="app-nav-accordion" *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) > 1">
-              <mat-expansion-panel class="mat-elevation-z0">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Clubs</mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-nav-list *ngFor="let club of profile.clubs">
-                  <a mat-list-item [routerLink]="['/club', club.id]" routerLinkActive="active">
-                    {{ club.name }}
-                  </a>
-                </mat-nav-list>
-              </mat-expansion-panel>
-            </mat-accordion>
-            <mat-divider></mat-divider>
-          </ng-container>
-
-          <a mat-list-item routerLink="player/top" routerLinkActive="active">
-            {{ 'systems.list' | translate }}
-          </a>
-
-          <!-- <app-has-claim [any]="['*_enlist:team', '*_change:encounter', 'change-any:encounter', 'enlist-any:team']"> -->
-          <ng-container *ngIf="this.profile$ | async as profile">
-            <mat-accordion class="app-nav-accordion">
-              <mat-expansion-panel class="mat-elevation-z0">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>{{ 'competition.title' | translate }}</mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-nav-list *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) > 0">
-                  <a mat-list-item routerLink="/competition/team-assembly" routerLinkActive="active">
-                    {{ 'competition.team-assembly.title' | translate }}</a
-                  >
-                </mat-nav-list>
-
-                <app-has-claim [all]="['*_enlist:team', 'enlist-any:team']">
-                  <mat-nav-list *ngIf="this.canEnroll$ | async">
-                    <a mat-list-item routerLink="/competition/team-enrollment" routerLinkActive="active">
-                      {{ 'competition.enrollment.title' | translate }}
-                    </a>
+            <!-- <app-has-claim [any]="['*_enlist:team', '*_change:encounter', 'change-any:encounter', 'enlist-any:team']"> -->
+            <ng-container *ngIf="this.profile$ | async as profile">
+              <mat-accordion class="app-nav-accordion">
+                <mat-expansion-panel class="mat-elevation-z0">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>{{ 'competition.title' | translate }}</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <mat-nav-list *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) > 0">
+                    <a mat-list-item routerLink="/competition/team-assembly" routerLinkActive="active">
+                      {{ 'competition.team-assembly.title' | translate }}</a
+                    >
                   </mat-nav-list>
-                </app-has-claim>
 
-                <app-has-claim [any]="['change-any:encounter']">
-                  <!-- <app-has-claim [any]="['*_change:encounter', 'change-any:encounter']"> -->
+                  <app-has-claim [all]="['*_enlist:team', 'enlist-any:team']">
+                    <mat-nav-list *ngIf="this.canEnroll$ | async">
+                      <a mat-list-item routerLink="/competition/team-enrollment" routerLinkActive="active">
+                        {{ 'competition.enrollment.title' | translate }}
+                      </a>
+                    </mat-nav-list>
+                  </app-has-claim>
+
+                  <app-has-claim [any]="['change-any:encounter']">
+                    <!-- <app-has-claim [any]="['*_change:encounter', 'change-any:encounter']"> -->
+                    <mat-nav-list>
+                      <a mat-list-item routerLink="/competition/change-encounter" routerLinkActive="active">
+                        {{ 'competition.change-encounter.title' | translate }}
+                      </a>
+                    </mat-nav-list>
+                  </app-has-claim>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </ng-container>
+
+            <mat-nav-list>
+              <a mat-list-item routerLink="/club" routerLinkActive="active"> Clubs </a>
+            </mat-nav-list>
+
+            <app-has-claim [any]="['import:competition', 'import:tournament']">
+              <mat-accordion class="app-nav-accordion">
+                <mat-expansion-panel class="mat-elevation-z0">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>Events</mat-panel-title>
+                  </mat-expansion-panel-header>
                   <mat-nav-list>
-                    <a mat-list-item routerLink="/competition/change-encounter" routerLinkActive="active">
-                      {{ 'competition.change-encounter.title' | translate }}
-                    </a>
+                    <a mat-list-item routerLink="/event" routerLinkActive="active"> Overview <app-beta></app-beta> </a>
+                    <a mat-list-item routerLink="/admin/event/import" routerLinkActive="active"> Import </a>
                   </mat-nav-list>
-                </app-has-claim>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </ng-container>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </app-has-claim>
 
-          <mat-nav-list>
-            <a mat-list-item routerLink="/club" routerLinkActive="active"> Clubs </a>
-          </mat-nav-list>
+            <mat-divider></mat-divider>
 
-          <app-has-claim [any]="['import:competition', 'import:tournament']">
-            <mat-accordion class="app-nav-accordion">
-              <mat-expansion-panel class="mat-elevation-z0">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>Events</mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-nav-list>
-                  <a mat-list-item routerLink="/event" routerLinkActive="active"> Overview <app-beta></app-beta> </a>
-                  <a mat-list-item routerLink="/admin/event/import" routerLinkActive="active"> Import </a>
-                </mat-nav-list>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </app-has-claim>
-
-          <mat-divider></mat-divider>
-
-          <app-has-claim [any]="['view:ranking', 'edit:ranking']">
-            <div mat-subheader>Admin stuff</div>
             <app-has-claim [any]="['view:ranking', 'edit:ranking']">
-              <a mat-list-item routerLink="/admin/ranking" routerLinkActive="active"> Ranking </a>
+              <div mat-subheader>Admin stuff</div>
+              <app-has-claim [any]="['view:ranking', 'edit:ranking']">
+                <a mat-list-item routerLink="/admin/ranking" routerLinkActive="active"> Ranking </a>
+              </app-has-claim>
+              <app-has-claim [any]="['link:player']">
+                <a mat-list-item routerLink="/admin/player/link-accounts" routerLinkActive="active">
+                  Link accounts <app-beta></app-beta>
+                </a>
+              </app-has-claim>
             </app-has-claim>
-            <app-has-claim [any]="['link:player']">
-              <a mat-list-item routerLink="/admin/player/link-accounts" routerLinkActive="active">
-                Link accounts <app-beta></app-beta>
-              </a>
-            </app-has-claim>
-          </app-has-claim>
-        </div>
-      </mat-nav-list>
-
-      <app-banner [adSlot]="4690724012"></app-banner>
+          </div>
+        </mat-nav-list>
+        <app-banner [adSlot]="4690724012"></app-banner>
+      </div>
     </mat-sidenav>
 
     <mat-sidenav-content>

@@ -1,16 +1,23 @@
 :host {
   display: block;
-  position: absolute;
   bottom: 0;
-  min-height: 150px;
-  max-height: 250px !important;
+  min-height: 100px;
+  max-height: 200px !important;
   overflow: hidden !important;
   width: 100%;
+  background-color: red;
 }
 
 @media only screen and (max-height: 750px) {
   :host {
     display: none;
+  }
+}
+
+@media only screen and (min-height: 900px) {
+  :host {
+    min-height: 150px;
+    max-height: 250px !important;
   }
 }
 
