@@ -1,6 +1,3 @@
-import { parse } from 'fast-xml-parser';
-import moment, { Moment } from 'moment';
-import { Op, Transaction } from 'sequelize';
 import {
   correctWrongPlayers,
   DrawTournament,
@@ -16,14 +13,14 @@ import {
   SubEventTournament,
   SubEventType,
   XmlDrawTypeID,
-  XmlEventName,
   XmlGameTypeID,
   XmlGenderID,
   XmlMatch,
-  XmlResult,
   XmlTournament
 } from '@badvlasim/shared';
-import { VisualService } from '../../../utils/visualService';
+import moment, { Moment } from 'moment';
+import { Op, Transaction } from 'sequelize';
+import { VisualService } from '../../../../../utils/visualService';
 
 export class TournamentSyncer {
   public processor: Processor;
@@ -248,7 +245,6 @@ export class TournamentSyncer {
             }
             await removed.destroy({ transaction: args.transaction });
           }
-        
         };
 
         await Promise.all(subEvents.map(e => processDraws(e)));

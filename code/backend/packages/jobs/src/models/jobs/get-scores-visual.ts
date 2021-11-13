@@ -1,11 +1,10 @@
 import { Cron, DataBaseHandler, logger, XmlResult, XmlTournamentTypeID } from '@badvlasim/shared';
+import axios from 'axios';
 import { parse } from 'fast-xml-parser';
 import moment, { Moment } from 'moment';
-import { CronJob } from '../cronJob';
-import { CompetitionSyncer } from './visualSyncer/competition-sync/competition-sync';
-import { TournamentSyncer } from './visualSyncer/tournament-sync';
-import axios from 'axios';
 import * as rax from 'retry-axios';
+import { CronJob } from '../cronJob';
+import { CompetitionSyncer, TournamentSyncer } from './visualSyncer/get-scores-visual';
 
 export class GetScoresVisual extends CronJob {
   private _pageSize = 1000;
@@ -79,7 +78,7 @@ export class GetScoresVisual extends CronJob {
         retry: 25,
         onRetryAttempt: err => {
           const cfg = rax.getConfig(err);
-          console.log(`Retry attempt #${cfg.currentRetryAttempt}`);
+          logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`);
         }
       },
       headers: {
@@ -113,7 +112,7 @@ export class GetScoresVisual extends CronJob {
   } {
     return {
       cron: '0 2 * * *',
-      type: 'sync-visual'
+      type: 'scores-visual'
     };
   }
 }
