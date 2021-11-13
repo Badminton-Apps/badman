@@ -441,9 +441,9 @@
         </div>
         <div class="box d{{@index}} p1 level">
           {{#if (and (eq @root.type 'MX') (gt @index 1))}}
-            {{double.player1.lastRankingPlaces.mix}}
+            {{double.player1.lastRankingPlace.mix}}
           {{else}}
-            {{double.player1.lastRankingPlaces.double}}
+            {{double.player1.lastRankingPlace.double}}
           {{/if}}
         </div>
         <div class="box d{{@index}} p1 number">
@@ -470,9 +470,9 @@
         </div>
         <div class="box d{{@index}} p2 level">
           {{#if (and (eq @root.type 'MX') (gt @index 1))}}
-            {{double.player2.lastRankingPlaces.mix}}
+            {{double.player2.lastRankingPlace.mix}}
           {{else}}
-            {{double.player2.lastRankingPlaces.double}}
+            {{double.player2.lastRankingPlace.double}}
           {{/if}}
         </div>
         <div class="box d{{@index}} p2 number">
@@ -503,7 +503,7 @@
           {{single.fullName}}
         </div>
         <div class="box s{{@index}} p1 level">
-          {{single.lastRankingPlaces.single}}
+          {{single.lastRankingPlace.single}}
         </div>
         <div class="box s{{@index}} p1 number">
           {{single.memberId}}
@@ -549,13 +549,13 @@
         </div>
         <div class="box p{{@index}} level">
           <div>
-            {{subtitude.lastRankingPlaces.single}}
+            {{subtitude.lastRankingPlace.single}}
           </div>
           <div>
-            {{subtitude.lastRankingPlaces.double}}
+            {{subtitude.lastRankingPlace.double}}
           </div>
           <div>
-            {{subtitude.lastRankingPlaces.mix}}
+            {{subtitude.lastRankingPlace.mix}}
           </div>
         </div>
         <div class="box p{{@index}} number">

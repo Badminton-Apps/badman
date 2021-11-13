@@ -1,22 +1,13 @@
 import {
   correctWrongPlayers,
-  DrawCompetition,
-  EncounterCompetition,
   EventCompetition,
-  Game,
-  LevelType,
-  logger,
   Player,
-  SubEventCompetition,
-  SubEventType,
   XmlGenderID,
   XmlTournament
 } from '@badvlasim/shared';
-import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
-import { EventStepData } from '.';
-import { StepProcessor } from '../../../../../utils/step-processor';
-import { VisualService } from '../../../../../utils/visualService';
+import { StepProcessor } from '../../../../../../utils/step-processor';
+import { VisualService } from '../../../../../../utils/visualService';
 
 export class CompetitionSyncPlayerProcessor extends StepProcessor {
   public event: EventCompetition;

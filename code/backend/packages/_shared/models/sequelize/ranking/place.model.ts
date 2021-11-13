@@ -1,6 +1,8 @@
 import {
   AfterBulkCreate,
   AfterCreate,
+  BeforeBulkCreate,
+  BeforeCreate,
   BelongsTo,
   Column,
   DataType,
@@ -22,7 +24,7 @@ import {
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
 import { LastRankingPlace } from './last-place.model';
-import { logger } from '../../..';
+import { logger, RankingProcessor } from '../../..';
 
 @Table({
   timestamps: true,
@@ -195,13 +197,25 @@ export class RankingPlace extends Model {
       totalWithinDoubleLevel: this.totalWithinDoubleLevel,
       single: this.single,
       mix: this.mix,
-      double: this.double,
+      double: this.double, 
       singleInactive: this.singleInactive,
       mixInactive: this.mixInactive,
       doubleInactive: this.doubleInactive,
       playerId: this.playerId,
       systemId: this.SystemId
     } as LastRankingPlace;
+  }
+
+  @BeforeBulkCreate
+  static async protectRankings(instances: RankingPlace[], options: SaveOptions) {
+    await RankingProcessor.checkInactive(instances, options);
+    await RankingProcessor.protectRanking(instances);
+  }
+
+  @BeforeCreate
+  static async protectRanking(instance: RankingPlace, options: SaveOptions) {
+    await RankingProcessor.checkInactive([instance], options);
+    await RankingProcessor.protectRanking([instance])[0];
   }
 
   // #endregion

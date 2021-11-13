@@ -12,7 +12,7 @@ export class TeamAssemblyPlayerComponent implements OnInit {
   player!: Player;
 
   @Input()
-  eventType!: string;
+  eventType?: string;
 
   @Input()
   showType!: string;
