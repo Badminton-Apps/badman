@@ -25,7 +25,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     private eventService: EventService
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit() {
     this.device.addEvent('change', this.mobileQueryListener);
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 

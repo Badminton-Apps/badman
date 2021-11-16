@@ -1,6 +1,5 @@
 import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
 import { Component, OnInit } from '@angular/core';
-import { DateAdapter } from '@angular/material/core';
 import { TranslateService } from '@ngx-translate/core';
 import { language_map } from 'app/_shared/factory';
 import * as moment from 'moment';
@@ -24,8 +23,8 @@ export class LanguageComponent implements OnInit {
 
   async setLang(lang: string) {
     // Get value from map
-    const values = language_map.get(lang) ;
-    if (!values){
+    const values = language_map.get(lang);
+    if (!values) {
       return;
     }
 
@@ -39,4 +38,3 @@ export class LanguageComponent implements OnInit {
     localStorage.setItem('translation.language', lang);
   }
 }
- 

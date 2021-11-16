@@ -1,6 +1,6 @@
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -36,14 +36,12 @@ const materialModules = [
   FormsModule,
   MatButtonModule,
   MatCheckboxModule,
-  MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
   MatMenuModule,
-  MatMomentDateModule,
   MatPaginatorModule,
   MatProgressBarModule,
   MatSortModule,
@@ -51,6 +49,7 @@ const materialModules = [
   MatOptionModule,
   MatSelectModule,
   ReactiveFormsModule,
+  MatDatepickerModule
 ];
 
 const covalentModules = [
@@ -70,11 +69,6 @@ const covalentModules = [
     GraphsComponent,
     GraphComponent,
   ],
-  imports: [
-    SharedModule,
-    ...materialModules,
-    ...covalentModules,
-    RankingManagementRoutingModule,
-  ],
+  imports: [SharedModule, ...materialModules, ...covalentModules, RankingManagementRoutingModule],
 })
 export class RankingManagementModule {}

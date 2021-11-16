@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddPlayerComponent } from 'app/admin/modules/club-management/dialogs/add-player/add-player.component';
@@ -12,7 +12,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './detail-club.component.html',
   styleUrls: ['./detail-club.component.scss'],
 })
-export class DetailClubComponent {
+export class DetailClubComponent implements OnInit{
   club$!: Observable<Club>;
   update$ = new BehaviorSubject(null);
 
@@ -27,7 +27,7 @@ export class DetailClubComponent {
     private dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.club$ = combineLatest([
       this.route.paramMap,
       this.activeTeams$,
@@ -54,8 +54,9 @@ export class DetailClubComponent {
 
   async deleteClub(club: Club) {
     await lastValueFrom(this.clubService.removeClub(club));
-    this.router.navigate(['..']);
+    await this.router.navigate(['..']);
   }
+
   addPlayer(club: Club) {
     const dialogRef = this.dialog.open(AddPlayerComponent);
 

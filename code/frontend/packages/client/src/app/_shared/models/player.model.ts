@@ -25,6 +25,7 @@ export class Player {
   clubs?: Club[];
 
   constructor(args?: Partial<Player>) {
+
     this.id = args?.id;
     this.memberId = args?.memberId;
     this.gender = args?.gender;

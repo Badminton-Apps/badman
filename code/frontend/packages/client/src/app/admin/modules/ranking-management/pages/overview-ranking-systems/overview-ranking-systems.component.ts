@@ -1,16 +1,16 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
-import { BehaviorSubject, merge, of, lastValueFrom } from 'rxjs';
-import { catchError, map, startWith, switchMap, tap, distinctUntilChanged } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
-import { RankingSystem, SystemService } from 'app/_shared';
-import { AdminService, RankingService } from 'app/admin/services';
+import { RankingService } from 'app/admin/services';
 import { SimulateService } from 'app/admin/services/simulate.service';
+import { RankingSystem, SystemService } from 'app/_shared';
+import * as moment from 'moment';
+import { BehaviorSubject, lastValueFrom, merge, of } from 'rxjs';
+import { catchError, distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './overview-ranking-systems.component.html',

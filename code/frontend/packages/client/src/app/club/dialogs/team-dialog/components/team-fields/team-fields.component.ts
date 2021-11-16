@@ -13,8 +13,8 @@ import { merge } from 'rxjs';
 export class TeamFieldsComponent implements OnInit {
   @Output() onTeamUpdated = new EventEmitter<Partial<Team>>();
   @Output() onCaptainUpdated = new EventEmitter<Partial<Player>>();
-  @Output() onLocationAdded = new EventEmitter<Partial<Location>>();
-  @Output() onLocationRemoved = new EventEmitter<Partial<Location>>();
+  @Output() onLocationAdded = new EventEmitter<string>();
+  @Output() onLocationRemoved = new EventEmitter<string>();
 
   @Input()
   team: Team = {} as Team;

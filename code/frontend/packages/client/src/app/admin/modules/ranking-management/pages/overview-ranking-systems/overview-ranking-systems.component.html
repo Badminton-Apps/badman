@@ -88,7 +88,7 @@
     import starting rankings
   </mat-checkbox>
 </div>
-<div class="period">
+<!-- <div class="period">
   <mat-form-field appearance="outline" *ngIf="this.forceStartDate">
     <mat-label>Start</mat-label>
     <input matInput [matDatepicker]="start" [formControl]="minDate" />
@@ -101,7 +101,7 @@
     <mat-datepicker-toggle matSuffix [for]="stop"></mat-datepicker-toggle>
     <mat-datepicker #stop></mat-datepicker>
   </mat-form-field>
-</div>
+</div> -->
 
 <button mat-button (click)="calculate()">Calculate</button>
 <button mat-button (click)="download()">Download</button>

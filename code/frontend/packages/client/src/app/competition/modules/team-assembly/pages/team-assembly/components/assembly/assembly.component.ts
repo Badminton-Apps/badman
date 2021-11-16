@@ -115,11 +115,11 @@ export class AssemblyComponent implements OnInit {
         map(([team, encounter]) => team != null && encounter != null),
         distinctUntilChanged()
       )
-      .subscribe((gotRequired) => {
+      .subscribe(async (gotRequired) => {
         this.gotRequired = gotRequired;
 
         if (gotRequired) {
-          this.loadData();
+          await this.loadData();
         }
       });
   }
