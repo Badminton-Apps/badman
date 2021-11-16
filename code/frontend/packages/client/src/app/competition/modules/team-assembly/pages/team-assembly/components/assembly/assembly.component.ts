@@ -191,6 +191,28 @@ export class AssemblyComponent implements OnInit {
       },
     };
 
+
+    // Reset prefix when not full reloading this would be cached
+    this.captionSingle1Prefix = '';
+    this.captionDouble4Prefix = '';
+    this.captionSingle2Prefix = '';
+    this.captionSingle3Prefix = '';
+    this.captionSingle4Prefix = '';
+    this.captionDouble1Prefix = '';
+    this.captionDouble2Prefix = '';
+    this.captionDouble3Prefix = '';
+  
+    this.captionSingle1 = 'competition.team-assembly.single1';
+    this.captionSingle2 = 'competition.team-assembly.single2';
+    this.captionSingle3 = 'competition.team-assembly.single3';
+    this.captionSingle4 = 'competition.team-assembly.single4';
+  
+    this.captionDouble1 = 'competition.team-assembly.double1';
+    this.captionDouble2 = 'competition.team-assembly.double2';
+    this.captionDouble3 = 'competition.team-assembly.double3';
+    this.captionDouble4 = 'competition.team-assembly.double4';
+
+
     // Set prefixes of form
     if (this.type == 'M') {
       this.captionSingle1Prefix = 'gender.male';
