@@ -9,7 +9,7 @@
     "gen-erd": "node -r ts-node/register ./utils/generate-erd.ts",
     "test:inspect": "node --inspect ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand",
     "test:inspect:name": "node --inspect ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand  -t \"PDF service\" ",
-    "test": "jest --config ./jest.config.js --runInBand -t \"PDF service\" "
+    "test": "jest --config ./jest.config.js --runInBand"
   },
   "dependencies": {
     "@elastic/ecs-winston-format": "^1.3.0",
