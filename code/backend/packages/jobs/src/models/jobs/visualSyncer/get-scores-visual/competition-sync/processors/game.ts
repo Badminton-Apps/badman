@@ -1,8 +1,10 @@
 import {
   Game,
   GamePlayer,
-  GameType, logger,
-  Player, XmlMatch,
+  GameType,
+  logger,
+  Player,
+  XmlMatch,
   XmlMatchTypeID,
   XmlTournament
 } from '@badvlasim/shared';
@@ -32,13 +34,15 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         include: [Player]
       });
 
-      const visualMatch = (await this.visualService.getMatch(this.visualTournament.Code, internalId)).filter(
-        m => !m || m?.Winner !== 0
-      );
+      const visualMatch = (
+        await this.visualService.getMatch(this.visualTournament.Code, internalId)
+      ).filter(m => !m || m?.Winner !== 0);
 
       for (const xmlMatch of visualMatch) {
         let game = games.find(
-          r => r.round === xmlMatch.RoundName && r.visualCode === `${xmlMatch.Code}`
+          r =>
+            r.round === (xmlMatch.RoundName ?? null) ||
+            (null && r.visualCode === `${xmlMatch.Code}`)
         );
 
         if (!game) {
