@@ -23,8 +23,8 @@ import axios from 'axios';
 export class RankingSyncer {
   public processor: Processor;
   readonly updateMonths = [0, 2, 4, 6, 8, 10];
-  readonly fuckedDatesGoods = [];
-  readonly fuckedDatesBads = [];
+  readonly fuckedDatesGoods = ["2021-09-12T22:00:00.000Z"];
+  readonly fuckedDatesBads = ["2021-09-05T22:00:00.000Z"];
 
   readonly STEP_RANKING = 'ranking';
   readonly STEP_CATEGORIES = 'categories';
