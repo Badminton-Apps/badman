@@ -1,7 +1,7 @@
 <div [class.is-mobile]="device.mobileQuery.matches" class="container">
   <mat-toolbar class="toolbar">
     <div class="start">
-      <button mat-icon-button (click)="snav.toggle()">
+      <button mat-icon-button (click)="snav.toggle()" aria-label="Toggle sidenav">
         <mat-icon>menu</mat-icon>
       </button>
       <a [routerLink]="['./']" class="app-name" *ngIf="!device.mobileQuery.matches">
