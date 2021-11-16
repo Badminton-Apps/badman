@@ -158,7 +158,7 @@ export class RankingSyncer {
           let canUpdate = false;
 
           if (this.updateMonths.includes(momentDate.month())) {
-            let firstMondayOfMonth = momentDate.clone().date(1).day(8);
+            const firstMondayOfMonth = momentDate.clone().date(1).day(8);
             if (firstMondayOfMonth.date() > 7) {
               firstMondayOfMonth.day(-6);
             }
