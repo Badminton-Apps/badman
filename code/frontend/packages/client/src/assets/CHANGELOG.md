@@ -1,3 +1,12 @@
+## [4.0.2](https://github.com/Badminton-Apps/core/compare/v4.0.1...v4.0.2) (2021-11-16)
+
+
+### Bug Fixes
+
+* Pwa should register immediatly ([c1ccf3e](https://github.com/Badminton-Apps/core/commit/c1ccf3ea6d5305ef7bece578e06cf2cade63b9ac))
+
+
+
 ## [4.0.1](https://github.com/Badminton-Apps/core/compare/v4.0.0...v4.0.1) (2021-11-16)
 
 
