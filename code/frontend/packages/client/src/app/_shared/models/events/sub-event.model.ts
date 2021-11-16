@@ -1,7 +1,7 @@
 import { Game } from '../game.model';
 import { Event } from './event.model';
 import { Draw } from './draw.model';
-import { GameType } from 'app/_shared';
+import { GameType, Player } from 'app/_shared';
 
 export class SubEvent {
   id?: string;
@@ -40,5 +40,6 @@ interface SubEventMeta {
     double: number;
     mix: number;
     gender: string;
+    player: Partial<Player>
   }[];
 }

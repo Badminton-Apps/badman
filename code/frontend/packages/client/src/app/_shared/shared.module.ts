@@ -27,7 +27,7 @@ import {
   NotificationComponent,
   PlayerSearchComponent,
   RankingShellComponent,
-  UserInfoComponent
+  UserInfoComponent,
 } from './components';
 import { BannerComponent } from './components/banner/banner.component';
 import { BetaComponent } from './components/beta/beta.component';
@@ -89,7 +89,14 @@ const exportedComponents = [
     NewPlayerComponent,
     UserInfoComponent,
   ],
-  imports: [CommonModule, RouterModule, NgcCookieConsentModule, FlexLayoutModule, TranslateModule.forChild(), ...materialModules],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgcCookieConsentModule,
+    FlexLayoutModule,
+    TranslateModule.forChild(),
+    ...materialModules,
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
