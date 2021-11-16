@@ -25,7 +25,7 @@ export class GetRankingVisual extends CronJob {
       throw e;
     }
   }
-
+ 
   static dbEntry(): {
     cron: string;
     type: string;
@@ -36,3 +36,4 @@ export class GetRankingVisual extends CronJob {
     };
   }
 }
+ 

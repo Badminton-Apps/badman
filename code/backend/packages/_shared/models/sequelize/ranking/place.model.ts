@@ -197,7 +197,7 @@ export class RankingPlace extends Model {
       totalWithinDoubleLevel: this.totalWithinDoubleLevel,
       single: this.single,
       mix: this.mix,
-      double: this.double, 
+      double: this.double,
       singleInactive: this.singleInactive,
       mixInactive: this.mixInactive,
       doubleInactive: this.doubleInactive,
@@ -207,7 +207,10 @@ export class RankingPlace extends Model {
   }
 
   @BeforeBulkCreate
-  static async protectRankings(instances: RankingPlace[], options: SaveOptions) {
+  static async protectRankings(
+    instances: RankingPlace[],
+    options: SaveOptions
+  ) {
     await RankingProcessor.checkInactive(instances, options);
     await RankingProcessor.protectRanking(instances);
   }

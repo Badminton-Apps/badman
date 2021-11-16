@@ -81,7 +81,7 @@ export class GetScoresVisual extends CronJob {
           logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`);
         }
       },
-      headers: {
+      headers: { 
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/xml'
       }
@@ -94,7 +94,7 @@ export class GetScoresVisual extends CronJob {
     const body = parse(result.data, {
       attributeNamePrefix: '',
       ignoreAttributes: false,
-      parseAttributeValue: true
+      parseAttributeValue: true 
     }).Result as XmlResult;
     const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
 
