@@ -1,3 +1,21 @@
+# [4.1.0](https://github.com/Badminton-Apps/core/compare/v4.0.2...v4.1.0) (2021-11-16)
+
+
+### Bug Fixes
+
+* alt text for images ([027d904](https://github.com/Badminton-Apps/core/commit/027d904bb2c585d021f52db5b4cbcd55088005e2))
+* lighthouse doesn't need ads ([f26f920](https://github.com/Badminton-Apps/core/commit/f26f9205f9eff8c9c960772a3c9cec6328fe76c7))
+* more compression ([0df8f50](https://github.com/Badminton-Apps/core/commit/0df8f504684ab20e457e93a0f01685adf0f6fc4a))
+* sidenav button label ([504b580](https://github.com/Badminton-Apps/core/commit/504b580a246a593db6238028432689e9164a3f1a))
+* swap scss ([c22995a](https://github.com/Badminton-Apps/core/commit/c22995a8d2aab3066d0cd077e8f9481a93e3001f))
+
+
+### Features
+
+* add robots.txt file ([34f3e01](https://github.com/Badminton-Apps/core/commit/34f3e01d6f102bf26117346c31ba283f648a6a05))
+
+
+
 ## [4.0.2](https://github.com/Badminton-Apps/core/compare/v4.0.1...v4.0.2) (2021-11-16)
 
 
