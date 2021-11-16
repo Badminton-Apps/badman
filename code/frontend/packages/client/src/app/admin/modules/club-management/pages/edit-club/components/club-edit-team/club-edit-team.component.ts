@@ -24,7 +24,7 @@ export class ClubEditTeamComponent implements OnInit {
 
   ngOnInit(): void {
     this.teamIndex = this.team.subEvents[0].meta?.teamIndex;
-    this.players = this.team.subEvents[0].meta?.players.map((p) => new Player(p));
+    this.players = this.team.subEvents[0].meta?.players.map((p) => new Player(p.player));
 
     this.where = {
       gender: this.team.type == 'MX' || this.team.type == 'NATIONAL' ? undefined : this.team.type,

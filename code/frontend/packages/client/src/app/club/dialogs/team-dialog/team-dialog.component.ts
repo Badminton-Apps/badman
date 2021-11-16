@@ -112,13 +112,15 @@ export class TeamDialogComponent implements OnInit {
     this.update$.next(0);
   }
 
-  async onLocationAdded(location: Partial<Location>, team: Team) {
+  async onLocationAdded(location: string, team: Team) {
+    console.log('added', location);
+
     await lastValueFrom(
       this.apollo.mutate({
         mutation: updateTeamLocation,
         variables: {
           teamId: team.id,
-          locationId: location.id,
+          locationId: location,
           use: true,
         },
       })
@@ -127,13 +129,15 @@ export class TeamDialogComponent implements OnInit {
     this.update$.next(0);
   }
 
-  async onLocationRemoved(location: Partial<Location>, team: Team) {
+  async onLocationRemoved(location: string, team: Team) {
+    console.log('removed', location);
+
     await lastValueFrom(
       this.apollo.mutate({
         mutation: updateTeamLocation,
         variables: {
           teamId: team.id,
-          locationId: location.id,
+          locationId: location,
           use: false,
         },
       })

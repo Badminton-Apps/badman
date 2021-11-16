@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, EventEmitter, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,7 +12,7 @@ import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operat
   templateUrl: './overview-clubs.component.html',
   styleUrls: ['./overview-clubs.component.scss'],
 })
-export class OverviewClubsComponent {
+export class OverviewClubsComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<Club>();
   displayedColumns: string[] = ['name', 'clubId', 'abbreviation'];
 
@@ -78,7 +78,7 @@ export class OverviewClubsComponent {
         map((data) => {
           const count = data.total || 0;
           this.isLoadingResults = false;
-          this.resultsLength$.next(count); 
+          this.resultsLength$.next(count);
 
           if (count) {
             this.nextCursor = data.clubs[data.clubs.length - 1].cursor;

@@ -32,7 +32,7 @@ export class ListEncountersComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.formGroup.addControl(this.controlName, this.formControl);
 
     const previous = this.formGroup.get(this.dependsOn);
