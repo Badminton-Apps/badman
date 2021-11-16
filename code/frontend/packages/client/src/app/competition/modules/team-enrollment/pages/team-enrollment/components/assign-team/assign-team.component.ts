@@ -30,7 +30,7 @@ interface Warnings {
   level: string[];
   hasIssues: boolean;
 }
-
+ 
 @Component({
   selector: 'app-assign-team',
   templateUrl: './assign-team.component.html',

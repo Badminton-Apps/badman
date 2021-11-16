@@ -14,7 +14,7 @@
           "skipTests": true
         },
         "@schematics/angular:modules": {
-          "skipTests": true
+      "skipTests": true
         },
         "@schematics/angular:pipe": {
           "skipTests": true
@@ -105,7 +105,7 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
-            },
+            }
           }
         },
         "serve": {
@@ -169,6 +169,7 @@
   },
   "defaultProject": "client",
   "cli": {
-    "analytics": "8a73d833-ff12-494b-b30d-10d49e1ba140"
+    "analytics": "8a73d833-ff12-494b-b30d-10d49e1ba140",
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }
