@@ -21,6 +21,8 @@ import axios from 'axios';
 export class RankingSyncer {
   public processor: Processor;
   readonly updateMonths = [0, 2, 4, 6, 8, 10];
+  readonly fuckedDatesGoods = [];
+  readonly fuckedDatesBads = [];
 
   readonly STEP_RANKING = 'ranking';
   readonly STEP_CATEGORIES = 'categories';
@@ -150,11 +152,20 @@ export class RankingSyncer {
         publication => {
           const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
           let canUpdate = false;
+
           if (this.updateMonths.includes(momentDate.month())) {
             const firstMondayOfMonth = momentDate.clone().set('date', 1);
             const endFirstWeek = firstMondayOfMonth.clone().add(5, 'days');
             canUpdate = momentDate.isBetween(firstMondayOfMonth, endFirstWeek);
           }
+
+          if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
+            canUpdate = true;
+          }
+          if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
+            canUpdate = false;
+          }
+          
 
           return {
             usedForUpdate: canUpdate,
@@ -272,6 +283,14 @@ export class RankingSyncer {
         const rankingPlaces = new Map<string, RankingPlace>();
 
         if (publication.date.isAfter(ranking.system.caluclationIntervalLastUpdate)) {
+          logger.debug('Removing old points for date (voiding collision)');
+          await RankingPlace.destroy({
+            where: {
+              rankingDate: publication.publicationDate
+            },
+            transaction: args.transaction
+          });
+
           logger.debug(`Getting single levels for ${publication.publicationDate}`);
           await pointsForCategory(
             publication,
@@ -325,11 +344,11 @@ export class RankingSyncer {
             ignoreDuplicates: true,
             transaction: args.transaction,
             hooks: true
-          }); 
+          });
 
           ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
           await ranking.system.save({ transaction: args.transaction });
-        }  
+        }
       }
     });
   }
