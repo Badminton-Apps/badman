@@ -1,3 +1,48 @@
+# [4.0.0](https://github.com/Badminton-Apps/core/compare/v3.59.1...v4.0.0) (2021-11-16)
+
+
+### Bug Fixes
+
+* add version to logging ([965f596](https://github.com/Badminton-Apps/core/commit/965f596503679f8348c7860490c77a41672621fc))
+* ads overlapping options ([b0d7492](https://github.com/Badminton-Apps/core/commit/b0d749259b22e471ccf0b0dbe86c6c613718d468))
+* allow first week for level change ([49412ed](https://github.com/Badminton-Apps/core/commit/49412edb78fa3a9625f24415eb6c659b4b40d836))
+* anuglar breaking things ([c3bf944](https://github.com/Badminton-Apps/core/commit/c3bf94432703bafae106a196961eeed07b1fa11a))
+* cached switching not updating labels ([ddfea8e](https://github.com/Badminton-Apps/core/commit/ddfea8eefd2c4b8d001331befb9f3478682c9063))
+* caching on team assembly ([3c7c2ff](https://github.com/Badminton-Apps/core/commit/3c7c2ffe28b367e8bbc3342bc03c652bd4892f09))
+* correcting first monday of odd months ([67763df](https://github.com/Badminton-Apps/core/commit/67763df0363f7c9b4ad78055745ebb0b7cb8cf08))
+* don't throw error when no auth token was provided ([ed4cabb](https://github.com/Badminton-Apps/core/commit/ed4cabb40f5a16986b498050ecac930eb072bade))
+* **server:** Allow external abbr to be set ([29a2fc8](https://github.com/Badminton-Apps/core/commit/29a2fc8f994de9399a7c5ba4a48be359ef625242))
+* show evolution on mobile ([70157fc](https://github.com/Badminton-Apps/core/commit/70157fc030b9e7c79e5041393afdc79f3dca1ff8))
+* update last place if score changes ([ec61edb](https://github.com/Badminton-Apps/core/commit/ec61edb69f301e6392e9a43a0d3dec52eccba7ef))
+* updatePossible should be less then 1 week ([0eaca50](https://github.com/Badminton-Apps/core/commit/0eaca509d9b93076c087f3bc77b4330c988db9aa))
+
+
+### Features
+
+* adding gzip for client ([88cc769](https://github.com/Badminton-Apps/core/commit/88cc76999d5a0a29fcd27b93b1a9753da5a94f6d))
+* allow multiple years of competition ([81c3f35](https://github.com/Badminton-Apps/core/commit/81c3f35b4bfb54caba42253b5e013db2330ab498))
+* cache apollo queries ([e206e60](https://github.com/Badminton-Apps/core/commit/e206e60e8c504052600e3df6376b73fbba20620d))
+* Hint for permanently adding players to assembly overview ([8b241fa](https://github.com/Badminton-Apps/core/commit/8b241fa764f23262fc9ea23de7103dc6e00ae8e2))
+* player search can have id as input ([83aca66](https://github.com/Badminton-Apps/core/commit/83aca66c3155f92968aed369d5c1b0d01ea725ef))
+* ranking update on 13 sept. not on 6 sept. ([6adb739](https://github.com/Badminton-Apps/core/commit/6adb739383afe527758685f5f1406b33fe0f3157))
+* Removing old points when re-running level sync ([589dac1](https://github.com/Badminton-Apps/core/commit/589dac11138653dd34435df37e7abb2c0c4f563f))
+* Score sync upgrades + lastplace is an array ([f525d2f](https://github.com/Badminton-Apps/core/commit/f525d2fa2d5a6dcba07fc786dfc4ed01f16d5b91))
+* start of event detail pages ([bb953e9](https://github.com/Badminton-Apps/core/commit/bb953e9bf536608a082d49474e30b107d17a5b20))
+* store inactive players's level ([df6e3bc](https://github.com/Badminton-Apps/core/commit/df6e3bc9915213e80d14749b344835fe48a6a8cc))
+* updated dependencies ([8e10f99](https://github.com/Badminton-Apps/core/commit/8e10f99a4cfa78ca0a66937ac40ee3a313d01d21))
+* updated to angular 13 ([de12588](https://github.com/Badminton-Apps/core/commit/de1258852a2b30130fca2ff8b11ad478fc275f36))
+* visual sync scores pt3. ([be1cd83](https://github.com/Badminton-Apps/core/commit/be1cd83173c6f0443c4adccce26eeea10e232af5))
+
+
+### BREAKING CHANGES
+
+* not all pacakges have been updated. you need update: `node_modules\@angular-material-components\datetime-picker\lib\datetime-picker.component.d.ts`:
+* remove CanColorCtr from import
+* Set _MatDatepickerContentMixinBase to just be `typeof MatDatepickerContentBase`
+* import missing attributes in `NgxMatDatetimeContent`
+
+
+
 ## [3.59.1](https://github.com/Badminton-Apps/core/compare/v3.59.0...v3.59.1) (2021-10-15)
 
 
