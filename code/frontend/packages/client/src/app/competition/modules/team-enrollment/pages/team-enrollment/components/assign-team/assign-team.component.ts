@@ -76,13 +76,13 @@ export class AssignTeamComponent implements OnInit {
     this.initialPlacing();
   }
 
-  drop(event: CdkDragDrop<Team[] | undefined, Team[]>, subEvent: CompetitionSubEvent): void {
+  async drop(event: CdkDragDrop<Team[] | undefined, Team[]>, subEvent: CompetitionSubEvent): Promise<void> {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data!, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(event.previousContainer.data, event.container.data!, event.previousIndex, event.currentIndex);
       const team = subEvent.teams![event.currentIndex];
-      this.validate(team, subEvent);
+      await this.validate(team, subEvent);
 
       this.newSubEvent.next({
         teamId: team.id!,
@@ -109,9 +109,9 @@ export class AssignTeamComponent implements OnInit {
         ),
         map((x) => new Team(x.data.team))
       )
-      .subscribe((newTeam) => {
+      .subscribe(async (newTeam) => {
         const index = subEvent.teams!.findIndex((t) => t.id == team.id);
-        this.validate(newTeam, subEvent);
+        await this.validate(newTeam, subEvent);
         subEvent.teams![index] = newTeam;
       });
   }
@@ -299,7 +299,7 @@ export class AssignTeamComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  private initialPlacing() {
+  private async initialPlacing() {
     // Because sort is in place, we create a local copy to not effect the original untill needed
     const localInstanceSubEvents = [...this.subEvents];
     const subEventsSorted = localInstanceSubEvents.sort((a, b) => b.level! - a.level!);
@@ -326,7 +326,7 @@ export class AssignTeamComponent implements OnInit {
           subEventId: subEvent!.id!,
         });
       }
-      this.validate(team, subEvent!);
+      await this.validate(team, subEvent!);
     }
 
     const natSubEvents = localInstanceSubEvents
