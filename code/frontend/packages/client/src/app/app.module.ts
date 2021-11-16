@@ -84,6 +84,7 @@ const cookieConfig: NgcCookieConsentConfig = {
     MarkdownModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
+      registrationStrategy: 'registerImmediately'
     }),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
