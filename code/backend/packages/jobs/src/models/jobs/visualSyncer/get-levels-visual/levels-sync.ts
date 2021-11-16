@@ -11,7 +11,9 @@ import {
   RankingSystems,
   DataBaseHandler,
   XmlRanking,
-  XmlResult
+  XmlResult,
+  Game,
+  GameType
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
 import { parse } from 'fast-xml-parser';
@@ -28,6 +30,7 @@ export class RankingSyncer {
   readonly STEP_CATEGORIES = 'categories';
   readonly STEP_PUBLICATIONS = 'publications';
   readonly STEP_POINTS = 'points';
+  readonly STEP_INACTIVE = 'inactive';
 
   constructor() {
     this.processor = new Processor();
@@ -36,6 +39,7 @@ export class RankingSyncer {
     this.processor.addStep(this.getCategories());
     this.processor.addStep(this.getPublications());
     this.processor.addStep(this.getPoints());
+    // this.processor.addStep(this.setInactive());
   }
 
   process(args: { transaction: Transaction }) {
@@ -154,9 +158,16 @@ export class RankingSyncer {
           let canUpdate = false;
 
           if (this.updateMonths.includes(momentDate.month())) {
-            const firstMondayOfMonth = momentDate.clone().set('date', 1);
-            const endFirstWeek = firstMondayOfMonth.clone().add(5, 'days');
-            canUpdate = momentDate.isBetween(firstMondayOfMonth, endFirstWeek);
+            let firstMondayOfMonth = momentDate.clone().date(1).day(8);
+            if (firstMondayOfMonth.date() > 7) {
+              firstMondayOfMonth.day(-6);
+            }
+          
+            // Create some margin
+            const margin = firstMondayOfMonth.clone().add(2, 'days');
+            canUpdate =
+              momentDate.isSame(firstMondayOfMonth) ||
+              momentDate.isBetween(firstMondayOfMonth, margin);
           }
 
           if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
@@ -165,7 +176,10 @@ export class RankingSyncer {
           if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
             canUpdate = false;
           }
-          
+
+          if (canUpdate){
+            logger.info(`Updating ranking on ${publication.PublicationDate}`);
+          }
 
           return {
             usedForUpdate: canUpdate,
@@ -348,6 +362,105 @@ export class RankingSyncer {
 
           ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
           await ranking.system.save({ transaction: args.transaction });
+        }
+      }
+    });
+  }
+
+  protected setInactive(): ProcessStep<{ id: string; name: string }[]> {
+    return new ProcessStep(this.STEP_INACTIVE, async (args: { transaction: Transaction }) => {
+      logger.debug('Check inactive for players');
+      const { system }: { visualCode: string; system: RankingSystem } = this.processor.getData(
+        this.STEP_RANKING
+      );
+
+      const canBeInactive = await Player.findAll({
+        include: [
+          {
+            model: RankingPlace,
+            where: {
+              systemId: system.id,
+              rankignDate: {
+                [Op.not]: system.caluclationIntervalLastUpdate.toISOString()
+              }
+            },
+            required: true
+          },
+          {
+            model: LastRankingPlace,
+            where: {
+              [Op.and]: {
+                [Op.or]: [
+                  { singleInactive: false },
+                  { doubleInactive: false },
+                  { mixInactive: false }
+                ],
+                rankignDate: {
+                  [Op.lt]: system.caluclationIntervalLastUpdate.toISOString()
+                }
+              }
+            },
+            required: true
+          }
+        ],
+        transaction: args.transaction
+      });
+
+      const inactiveDate = moment(system.caluclationIntervalLastUpdate)
+        .add(system.inactivityAmount, system.inactivityUnit)
+        .toDate();
+
+      logger.debug(`Found ${canBeInactive.length} possible inactive players`);
+
+      for (const player of canBeInactive) {
+        let singleInactive = false;
+        let doubleInactive = false;
+        let mixInactive = false;
+
+        const games = await player.getGames({
+          transaction: args.transaction,
+          where: {
+            playedAt: {
+              [Op.gte]: inactiveDate
+            }
+          }
+        });
+
+        const singleGames = games.filter(game => game.gameType === GameType.S);
+        const doubleGames = games.filter(game => game.gameType === GameType.D);
+        const mixGames = games.filter(game => game.gameType === GameType.MX);
+
+        if ((singleGames?.length ?? 0) < system.gamesForInactivty) {
+          singleInactive = true;
+        }
+
+        if ((doubleGames?.length ?? 0) < system.gamesForInactivty) {
+          doubleInactive = true;
+        }
+
+        if ((mixGames?.length ?? 0) < system.gamesForInactivty) {
+          mixInactive = true;
+        }
+
+        if (singleInactive && doubleInactive && mixInactive) {
+          logger.debug(`Set player ${player.fullName} (${player.memberId}) to inactive`);
+          const lastRankingPlaces = player.lastRankingPlaces.filter(
+            p => p.systemId === system.id
+          )[0];
+          const newRankingPlace = await new RankingPlace({
+            updatePossible: false,
+            playerId: player.id,
+            rankingDate: system.caluclationIntervalLastUpdate,
+            singleInactive: true,
+            doubleInactive: true,
+            mixInactive: true,
+            single: lastRankingPlaces.single,
+            double: lastRankingPlaces.double,
+            mix: lastRankingPlaces.mix,
+            SystemId: system.id
+          }).save({ transaction: args.transaction });
+
+          await player.addRankingPlace(newRankingPlace, { transaction: args.transaction });
         }
       }
     });
