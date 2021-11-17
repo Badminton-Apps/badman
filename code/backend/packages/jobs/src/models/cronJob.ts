@@ -5,6 +5,8 @@ export abstract class CronJob {
   private _cronJob: ScheduledTask;
 
   constructor(public dbCron: Cron) {
+    logger.info(`Adding cron job ${dbCron.type} (${dbCron.cron}), state: ${dbCron.running ? 'running' : 'stopped'}`)
+
     this._cronJob = schedule(
       this.dbCron.cron,
       () => {
