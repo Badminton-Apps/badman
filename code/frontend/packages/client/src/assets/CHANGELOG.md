@@ -1,3 +1,12 @@
+## [4.1.3](https://github.com/Badminton-Apps/core/compare/v4.1.2...v4.1.3) (2021-11-17)
+
+
+### Bug Fixes
+
+* imports for logger ([691211a](https://github.com/Badminton-Apps/core/commit/691211ae28a45dea06db0994bfe87b58c724c3d9))
+
+
+
 ## [4.1.2](https://github.com/Badminton-Apps/core/compare/v4.1.1...v4.1.2) (2021-11-17)
 
 
