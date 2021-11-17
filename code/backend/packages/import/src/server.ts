@@ -1,7 +1,8 @@
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
-// First config
+import pkg from '../package.json'
+
 import {
   App,
   AuthenticationSercice,
@@ -13,12 +14,21 @@ import { Router } from 'express';
 import { ImportController } from './controllers/import.controller';
 import { Convertor } from './convert/convertor';
 
-(async () => {
-  await startWhenReady(false, false, db => {
-    startServer(db);
-  });
-})();
 
+try {
+  (async () => {
+    try {
+      logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
+      await startWhenReady(false, false, db => startServer(db));
+    } catch (e) {
+      logger.error('Something failed', e);
+      throw e;
+    }
+  })();
+} catch (err) {
+  logger.error('Something failed', err);
+  throw err;
+}
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
 
