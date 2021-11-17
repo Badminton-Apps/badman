@@ -105,7 +105,7 @@ export class App {
       `SIGTERM`
     ].forEach(event => {
       process.on(event, () => {
-        logger.info('Process event type: ', event);
+        logger.debug('Process event type: ', event);
         httpServer.close();
         process.exit();
       });

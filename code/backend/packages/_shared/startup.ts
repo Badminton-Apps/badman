@@ -39,7 +39,6 @@ export const startWhenReady = async (
   }
 
   try {
-    logger.debug('Starting server');
     startFunction(databaseService);
   } catch (error) {
     logger.error('Starting server failed', error);
