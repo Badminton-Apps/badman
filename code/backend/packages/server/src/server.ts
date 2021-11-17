@@ -1,12 +1,14 @@
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
+import pkg from '../package.json'
 
 import {
   App,
   AuthenticatedRequest,
   AuthenticationSercice,
   DataBaseHandler,
+  logger,
   NotificationService,
   PdfService,
   Player,
@@ -26,11 +28,20 @@ import {
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
-(async () => {
-  await startWhenReady(true, false, db => {
-    startServer(db);
-  });
-})();
+try {
+  (async () => {
+    try {
+      logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
+      await startWhenReady(true, false, db => startServer(db));
+    } catch (e) {
+      logger.error('Something failed', e);
+      throw e;
+    }
+  })();
+} catch (err) {
+  logger.error('Something failed', err);
+  throw err;
+}
 
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();

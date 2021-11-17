@@ -1,32 +1,37 @@
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
-// First config
-import { App, AuthenticationSercice, logger, startWhenReady } from '@badvlasim/shared';
+import pkg from '../package.json'
+
+
+import {
+  App,
+  AuthenticationSercice,
+  DataBaseHandler,
+  logger,
+  startWhenReady
+} from '@badvlasim/shared';
+
 import { Router } from 'express';
 import { JobController } from './controllers';
 
 try {
   (async () => {
     try {
-      logger.info('Starting server...');
-      await startWhenReady(false, false, _ => {
-        startServer();
-        logger.info('Server started!');
-      });
+      logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
+      await startWhenReady(false, false, db => startServer(db));
     } catch (e) {
       logger.error('Something failed', e);
       throw e;
     }
   })();
-} catch (err) { 
-  logger.error(err);
+} catch (err) {
+  logger.error('Something failed', err);
   throw err;
 }
-
-const startServer = () => {
+const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
 
   const app = new App([new JobController(Router(), authService.checkAuth)]);
-  app.listen(); 
+  app.listen();
 };
