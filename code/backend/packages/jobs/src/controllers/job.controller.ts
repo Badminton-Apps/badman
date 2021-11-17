@@ -71,6 +71,7 @@ export class JobController extends BaseController {
     const foundJob = this._jobs.find(job => job.dbCron.type === request.query.type);
 
     if (foundJob) {
+      logger.info(`Scheduling cron job ${this.dbCron.type}`);
       foundJob.start();
       response.status(200).send('Job started');
     } else {
@@ -92,6 +93,7 @@ export class JobController extends BaseController {
     const foundJob = this._jobs.find(job => job.dbCron.type === request.query.type);
 
     if (foundJob) {
+      logger.info(`Unscheduling cron job ${this.dbCron.type}`);
       foundJob.stop();
       response.status(200).send('Job stopped');
     } else {
