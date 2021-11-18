@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Club } from 'app/_shared';
-import { AuthService, ClubService, UserService } from 'app/_shared/services';
+import { ClubService, UserService } from 'app/_shared/services';
+import { ClaimService } from 'app/_shared/services/security/claim.service';
+import { PermissionService } from 'app/_shared/services/security/permission.service';
 import { combineLatest, concat, lastValueFrom, of } from 'rxjs';
 import { filter, map, startWith, switchMap, take, tap } from 'rxjs/operators';
 
@@ -33,7 +35,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
 
   constructor(
     private clubService: ClubService,
-    private authSerice: AuthService,
+    private claimSerice: ClaimService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private user: UserService
@@ -45,19 +47,21 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     this.options =
       (await lastValueFrom(
         combineLatest([
-          this.authSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
-          this.authSerice.hasAllClaims$([`${this.allClubPermission}`]),
+          this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
+          this.claimSerice.hasAllClaims$([`${this.allClubPermission}`]),
           this.user.profile$.pipe(filter((p) => !!p?.player)),
         ]).pipe(
           switchMap(([single, all]) => {
             if (all) {
               return this.clubService.getClubs({ first: 999 });
             } else if (single) {
-              return this.authSerice.userPermissions$.pipe(
-                map((r) => r.filter((x) => x.indexOf(this.singleClubPermission) != -1)),
-                map((r) => r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))),
-                switchMap((ids) => this.clubService.getClubs({ ids, first: ids.length }))
-              );
+              return of({ clubs: [], total: 0 });
+              // TODO: fix this :)
+              // return this.claimSerice.userPermissions$.pipe(
+              //   map((r) => r.filter((x) => x.indexOf(this.singleClubPermission) != -1)),
+              //   map((r) => r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))),
+              //   switchMap((ids) => this.clubService.getClubs({ ids, first: ids.length }))
+              // );
             } else if (this.needsPermission) {
               return of({ clubs: [], total: 0 });
             } else {

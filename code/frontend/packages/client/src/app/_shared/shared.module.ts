@@ -19,6 +19,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
+import { AuthHttpInterceptor } from '@auth0/auth0-angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 import {
@@ -35,7 +36,6 @@ import { ClaimComponent } from './components/claim/claim.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { NewPlayerComponent } from './components/ranking-shell/components/new-player/new-player.component';
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
-import { AuthInterceptor } from './interceptors';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 
 const materialModules = [
@@ -97,13 +97,7 @@ const exportedComponents = [
     TranslateModule.forChild(),
     ...materialModules,
   ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
-  ],
+  
   exports: [...exportedComponents],
 })
 export class SharedModule {}
