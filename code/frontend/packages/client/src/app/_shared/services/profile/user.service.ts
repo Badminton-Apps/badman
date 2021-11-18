@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { iif, Observable, of } from 'rxjs';
 import { filter, mergeMap, shareReplay, startWith, tap } from 'rxjs/operators';
 import { RequestLink, RankingPlace, Player } from '../../../_shared/models';
-import { AuthService } from '../../../_shared/services';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,9 @@ export class UserService {
       shareReplay(1)
     );
 
-    this.profile$ = this.auth.userProfile$.pipe(mergeMap((x) => iif(() => x, whenAuthenticated, of(null))));
+    this.profile$ = this.auth.user$.pipe(
+      mergeMap((x) => iif(() => x != null && x != undefined, whenAuthenticated, of(null)))
+    );
   }
 
   requestLink(playerId: string): Observable<RequestLink> {
@@ -33,7 +35,7 @@ export class UserService {
     );
   }
 
-  permissions() {
-    return this.auth.userPermissions$;
-  }
+  // permissions() {
+  //   return this.auth.userPermissions$;
+  // }
 }

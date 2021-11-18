@@ -5,7 +5,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
 import {
-  AuthService,
   Club,
   ClubService,
   EventService,
@@ -17,8 +16,8 @@ import {
   Team,
   TeamService,
 } from 'app/_shared';
-import { BehaviorSubject, combineLatest, Observable, lastValueFrom } from 'rxjs';
-import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, lastValueFrom, Observable } from 'rxjs';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './edit-club.component.html',
@@ -39,7 +38,6 @@ export class EditClubComponent implements OnInit {
   competitionYear = new FormControl();
 
   constructor(
-    private authService: AuthService,
     private teamService: TeamService,
     private roleService: RoleService,
     private clubService: ClubService,
@@ -54,28 +52,25 @@ export class EditClubComponent implements OnInit {
   ngOnInit(): void {
     const clubid$ = this.route.paramMap.pipe(map((params) => params.get('id')));
 
-    this.compYears$ = combineLatest([
-      clubid$,
-      this.authService.userPermissions$,
-      this.updateClub$.pipe(debounceTime(600)),
-    ]).pipe(switchMap(([id]) => this.clubService.getCompetitionYears(id!)));
+    this.compYears$ = combineLatest([clubid$, this.updateClub$.pipe(debounceTime(600))]).pipe(
+      switchMap(([id]) => this.clubService.getCompetitionYears(id!))
+    );
 
     this.teamsForYear$ = combineLatest([
       clubid$,
       this.competitionYear.valueChanges,
-      this.authService.userPermissions$,
       this.updateClub$.pipe(debounceTime(600)),
     ]).pipe(
       switchMap((args: any[]) => {
         return this.eventService.getSubEventsCompetition(args[1]).pipe(
           map((subEvents) => {
             args.push(subEvents?.map((subEvent) => subEvent?.subEvents?.map((subEvent) => subEvent.id)).flat(2));
-            return args ;
+            return args;
           })
         );
       }),
       switchMap(([clubId, year, permissions, update, subEvents]) => {
-        return this.clubService.getTeamsForSubEvents(clubId, subEvents) ;
+        return this.clubService.getTeamsForSubEvents(clubId, subEvents);
       })
     );
 

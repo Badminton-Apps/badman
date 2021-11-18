@@ -1,4 +1,4 @@
-<pre *ngIf="this.auth.userProfile$ | async as profile">
+<pre *ngIf="this.auth.user$ | async as profile">
   <code>{{ profile | json }}</code>
   </pre>
 
