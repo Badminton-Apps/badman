@@ -2,7 +2,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatStepper, MatVerticalStepper } from '@angular/material/stepper';
+import { MatStepper } from '@angular/material/stepper';
 import { Apollo } from 'apollo-angular';
 import { Club, Comment, CompetitionEvent, EventService, EventType, SubEvent, Team } from 'app/_shared';
 import { combineLatest, lastValueFrom, Observable, of, ReplaySubject } from 'rxjs';

@@ -6,7 +6,7 @@ import {
   NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   NGX_MAT_MOMENT_FORMATS,
 } from '@angular-material-components/moment-adapter';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, ErrorHandler, Injector, NgModule } from '@angular/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -14,6 +14,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { ApmErrorHandler, ApmModule, ApmService } from '@elastic/apm-rum-angular';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -84,11 +85,29 @@ const cookieConfig: NgcCookieConsentConfig = {
     MarkdownModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
-      registrationStrategy: 'registerImmediately'
+      registrationStrategy: 'registerImmediately',
     }),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
       libraries: ['places'],
+    }),
+    AuthModule.forRoot({
+      domain: 'badvlasim.eu.auth0.com',
+      clientId: '2LqkYZMbrTTXEE0OMkQJLmpRrOVQheoF',
+      audience: `ranking-simulation`,
+      useRefreshTokens: true,
+      httpInterceptor: {
+        allowedList: [
+          // Attach access tokens to any calls to '/api' (exact match)
+          '/api',
+
+          // Attach access tokens to any calls that start with '/api/'
+          'api/*',
+
+          // local dev
+          'http://localhost:5000/api/*',
+        ],
+      },
     }),
   ],
   providers: [
@@ -110,6 +129,7 @@ const cookieConfig: NgcCookieConsentConfig = {
       useClass: NgxMatMomentAdapter,
       deps: [MAT_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '@auth0/auth0-angular';
 import { Player, UserService } from 'app/_shared';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../../_shared/services/security/auth.service';
 
 @Component({
   templateUrl: './profile.component.html',
