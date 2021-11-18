@@ -102,7 +102,7 @@ const cookieConfig: NgcCookieConsentConfig = {
           '/api',
 
           // Attach access tokens to any calls that start with '/api/'
-          'api/*',
+          '/api/*',
 
           // local dev
           'http://localhost:5000/api/*',
