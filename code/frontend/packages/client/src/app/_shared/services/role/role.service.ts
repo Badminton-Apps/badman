@@ -1,24 +1,21 @@
-import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-
+import { Apollo } from 'apollo-angular';
+import { PermissionService } from 'app/_shared';
 import { map, tap } from 'rxjs/operators';
-import { AuthService } from '../security';
-import { Player, Role } from './../../models';
-
-import * as roleQuery from '../../graphql/roles/queries/GetRoleQuery.graphql';
-import * as rolesQuery from '../../graphql/roles/queries/GetRolesQuery.graphql';
-
-import * as addRoleMutation from '../../graphql/roles/mutations/addRole.graphql';
-import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.graphql';
 import * as addPlayerToRoleMutation from '../../graphql/roles/mutations/addPlayerToRoleMutation.graphql';
+import * as addRoleMutation from '../../graphql/roles/mutations/addRole.graphql';
 import * as removePlayerToRoleMutation from '../../graphql/roles/mutations/removePlayerFromRoleMutation.graphql';
 import * as deleteRoleMutation from '../../graphql/roles/mutations/removeRole.graphql';
+import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.graphql';
+import * as roleQuery from '../../graphql/roles/queries/GetRoleQuery.graphql';
+import * as rolesQuery from '../../graphql/roles/queries/GetRolesQuery.graphql';
+import { Player, Role } from './../../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoleService {
-  constructor(private apollo: Apollo, private authService: AuthService) {}
+  constructor(private apollo: Apollo, private permissionService: PermissionService) {}
 
   getRole(roleId: string) {
     return this.apollo
@@ -54,7 +51,7 @@ export class RoleService {
       })
       .pipe(
         map((x) => new Role(x.data!.addRole)),
-        tap(() => this.authService.reloadPermissions())
+        tap(() => this.permissionService.reloadPermissions())
       );
   }
 
@@ -67,7 +64,7 @@ export class RoleService {
           roleId: role.id,
         },
       })
-      .pipe(tap(() => this.authService.reloadPermissions()));
+      .pipe(tap(() => this.permissionService.reloadPermissions()));
   }
 
   removePlayer(role: Role, player: Player) {
@@ -79,7 +76,7 @@ export class RoleService {
           roleId: role.id,
         },
       })
-      .pipe(tap(() => this.authService.reloadPermissions()));
+      .pipe(tap(() => this.permissionService.reloadPermissions()));
   }
 
   updateRole(role: Role) {
@@ -92,7 +89,7 @@ export class RoleService {
       })
       .pipe(
         map((x) => new Role(x.data!.updateRole)),
-        tap(() => this.authService.reloadPermissions())
+        tap(() => this.permissionService.reloadPermissions())
       );
   }
 

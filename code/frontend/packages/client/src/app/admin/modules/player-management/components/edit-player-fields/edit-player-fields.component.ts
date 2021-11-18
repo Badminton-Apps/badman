@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService, Player } from 'app/_shared';
+import { ClaimService, Player } from 'app/_shared';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
@@ -17,7 +17,7 @@ export class EditPlayerFieldsComponent implements OnInit {
 
   fg!: FormGroup;
 
-  constructor(private auth: AuthService) {}
+  constructor(private claimService: ClaimService) {}
 
   ngOnInit(): void {
     const firstNameControl = new FormControl(this.player.firstName, Validators.required);
@@ -29,7 +29,7 @@ export class EditPlayerFieldsComponent implements OnInit {
     memberIdControl.disable();
     subControl.disable();
 
-    this.auth.hasClaim$('link:player').subscribe((r) => {
+    this.claimService.hasClaim$('link:player').subscribe((r) => {
       if (r) {
         memberIdControl.enable();
         subControl.enable();

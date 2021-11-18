@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgcCookieConsentService, NgcNoCookieLawEvent, NgcStatusChangeEvent } from 'ngx-cookieconsent';
-import { Subscription } from 'rxjs';
+import { filter, map, mergeMap, Subscription, switchMap } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SwUpdate } from '@angular/service-worker';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
-
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '@auth0/auth0-angular';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -21,20 +23,36 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     updates: SwUpdate,
     snackBar: MatSnackBar,
-    translate: TranslateService,
     private ccService: NgcCookieConsentService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private auth: AuthService,
+    private httpClient: HttpClient
   ) {
-    updates.available.subscribe((event) => {
-      updates.activateUpdate().then(() => {
+    updates.versionUpdates
+      .pipe(
+        filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
+        map((evt) => ({
+          type: 'UPDATE_AVAILABLE',
+          current: evt.currentVersion,
+          available: evt.latestVersion,
+        }))
+      )
+      .subscribe((update) => {
         snackBar
-          .open('New version available', 'refresh')
+          .open(`New version available. old:${update.current}, new: ${update.available}`, 'refresh')
           .onAction()
           .subscribe(() => {
             document.location.reload();
           });
       });
-    });
+
+    this.auth.user$
+      .pipe(
+        switchMap((_) => this.httpClient.get<string[]>(`${environment.api}/${environment.apiVersion}/user/permissions`))
+      )
+      .subscribe((r) => {
+        console.log(r);
+      });
   }
 
   ngOnInit() {
@@ -50,7 +68,6 @@ export class AppComponent implements OnInit, OnDestroy {
     if (isCookieAllowed == 'true') {
       this.ccService.destroy();
     }
-
   }
 
   ngOnDestroy() {

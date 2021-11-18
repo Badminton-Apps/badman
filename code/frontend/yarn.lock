@@ -486,7 +486,15 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.10.1.tgz#70e45678f06c72fa2e350e8553ec4a4d72b92e06"
   integrity sha512-H71nDOOL8Y7kWRLqf6Sums+01Q5msqBW2KhDUTemh1tvY04eSkSXrK0uj/4mmY0Xr16/3zyZmsrxN7CKuRbNRg==
 
-"@auth0/auth0-spa-js@^1.19.2":
+"@auth0/auth0-angular@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-angular/-/auth0-angular-1.8.0.tgz#818ddc8913f0a2c43f0a46c25b2318ad50a92d27"
+  integrity sha512-45KQRgebEmo5nF/JGsoaOj7dEUoQ/B/y+wAsqrQwAz8Z9hUX/GPZi5lltfnCVLeSAb7mPJiJvjJYNJMj7d3Q+w==
+  dependencies:
+    "@auth0/auth0-spa-js" "^1.16.0"
+    tslib "^2.0.0"
+
+"@auth0/auth0-spa-js@^1.16.0":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-1.19.2.tgz#e8719927d975c932e01631eb24f5a8176a8e009d"
   integrity sha512-K/9p9VzG4YGFeVUbjLm7PFC4FF3FLI29pzv1SVmJAt9CsfnQQU11IiGV4Af1VjEgue09UfIO8knp6lKKAJDCnw==
@@ -10254,7 +10262,7 @@ typescript@4.0.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.3.tgz#153bbd468ef07725c1df9c77e8b453f8d36abba5"
   integrity sha512-tEu6DGxGgRJPb/mVPIZ48e69xCn2yRmCgYmDugAVwmJ6o+0u1RI18eO7E7WBTLYLaEVVOhwQmcdhQHweux/WPg==
 
-typescript@^4.4.4:
+typescript@~4.4.4:
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
   integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==

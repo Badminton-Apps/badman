@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AuthService } from 'app/_shared/services';
+import { ClaimService } from 'app/_shared';
 import { combineLatest, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ export class HasClaimComponent implements OnInit {
 
   show$!: Observable<boolean>;
 
-  constructor(private auth: AuthService) {}
+  constructor(private auth: ClaimService) {}
 
   ngOnInit(): void {
     const permissions: Observable<boolean>[] = [];
