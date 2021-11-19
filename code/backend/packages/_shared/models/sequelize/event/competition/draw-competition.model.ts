@@ -43,9 +43,13 @@ export class DrawCompetition extends Model {
   @Column
   id: string;
 
-  @Unique('unique_constraint')
+  @Unique('DrawCompetitions_unique_constraint')
   @Column 
   name: string;
+
+  @Unique('DrawCompetitions_unique_constraint')
+  @Column
+  visualCode: string;
 
   @Column
   size: number;
@@ -56,7 +60,7 @@ export class DrawCompetition extends Model {
   })
   subEvent?: SubEventCompetition;
 
-  @Unique('unique_constraint')
+  @Unique('DrawCompetitions_unique_constraint')
   @ForeignKey(() => SubEventCompetition)
   @Column
   subeventId: string;

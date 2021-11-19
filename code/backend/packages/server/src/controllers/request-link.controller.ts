@@ -36,17 +36,21 @@ export class RequestLinkController extends BaseController {
         return response.send(`Player already has player ${player.id}`);
       }
 
-      const props = {
-        playerId: player.id,
-        sub: request.user.sub
-      };
+      logger.debug(`Changing request link to permanent link`);
+      player.sub = request.user.sub
+      player.save();
 
-      const [linkRequest] = await RequestLink.findOrCreate({
-        where: props,
-        defaults: props
-      });
+      // const props = {
+      //   playerId: player.id,
+      //   sub: request.user.sub
+      // };
 
-      response.json(linkRequest.toJSON());
+      // const [linkRequest] = await RequestLink.findOrCreate({
+      //   where: props,
+      //   defaults: props
+      // });
+
+      response.json(player.toJSON());
     } catch (error) {
       logger.error(error);
       response.status(400).json(error);

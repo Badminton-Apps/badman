@@ -9,7 +9,7 @@ import { Claim } from './claim.model';
 export class PlayerClaimMembership extends Model {
   @ForeignKey(() => Player)
   @Column
-  userId: number;
+  playerId: number;
 
   @ForeignKey(() => Claim)
   @Column

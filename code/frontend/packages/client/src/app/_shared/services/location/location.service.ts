@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 import { Apollo } from 'apollo-angular';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Player, Location } from './../../models';
-
-import * as locationQuery from '../../graphql/locations/queries/GetLocationQuery.graphql';
-
 import * as addLocationMutation from '../../graphql/locations/mutations/addLocation.graphql';
-import * as updateLocationMutation from '../../graphql/locations/mutations/updateLocation.graphql';
 import * as deleteLocationMutation from '../../graphql/locations/mutations/removeLocation.graphql';
+import * as updateLocationMutation from '../../graphql/locations/mutations/updateLocation.graphql';
+import * as locationQuery from '../../graphql/locations/queries/GetLocationQuery.graphql';
+import * as locationsQuery from '../../graphql/locations/queries/GetLocationsQuery.graphql';
+import { Location } from './../../models';
+
+
+
 
 @Injectable({
   providedIn: 'root',
@@ -25,8 +25,20 @@ export class LocationService {
           id: locationId,
           rankingType,
         },
+        fetchPolicy: 'network-only'
       })
       .pipe(map((x) => new Location(x.data.location)));
+  }
+  getLocations(where?: { [key: string]: any }) {
+    return this.apollo
+      .query<{ locations: Location[] }>({
+        query: locationsQuery,
+        variables: {
+          where,
+        },
+        fetchPolicy: 'network-only'
+      })
+      .pipe(map((x) => x.data.locations.map((l) => new Location(l))));
   }
 
   addLocation(location: Location, clubId: string) {
@@ -38,7 +50,7 @@ export class LocationService {
           clubId,
         },
       })
-      .pipe(map((x) => new Location(x.data.addLocation)));
+      .pipe(map((x) => new Location(x.data!.addLocation)));
   }
 
   updateLocation(location: Partial<Location>) {
@@ -49,7 +61,7 @@ export class LocationService {
           location,
         },
       })
-      .pipe(map((x) => new Location(x.data.updateLocation)));
+      .pipe(map((x) => new Location(x.data!.updateLocation)));
   }
 
   deleteLocation(locationId: string) {

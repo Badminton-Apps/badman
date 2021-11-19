@@ -18,7 +18,7 @@ const addEventTournamentMutation = {
     }
   },
   resolve: async (findOptions, { eventTournament }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:tournament'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:tournament'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['add:tournament', 'add-any:tournament']
@@ -37,7 +37,7 @@ const addEventTournamentMutation = {
         const { groups, ...sub } = subEventTournament;
 
         return {
-          subEventTournamentGroup: { internalId: sub.internalId, groups },
+          subEventTournamentGroup: { visualCode: sub.visualCode, groups },
           subEventTournament: {
             ...sub,
             EventTournamentId: eventTournamentDb.id
@@ -54,7 +54,7 @@ const addEventTournamentMutation = {
       subEventTournaments
         .map(r => r.subEventTournamentGroup)
         .forEach(element => {
-          const subDb = subEventTournamentsDb.find(r => r.internalId === element.internalId);
+          const subDb = subEventTournamentsDb.find(r => r.visualCode === element.visualCode);
           element.groups.forEach(group => {
             groupSubEventTournaments.push({ subEventId: subDb.id, groupId: group.id });
           });
@@ -65,7 +65,7 @@ const addEventTournamentMutation = {
       await transaction.commit();
       return eventTournamentDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -86,7 +86,7 @@ const updateEventTournamentMutation = {
   },
   resolve: async (findOptions, { id, eventTournament }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission(['edit:eventTournament', 'edit-any:tournament'])
     ) {
       logger.warn("User tried something it should't have done", {
@@ -109,7 +109,7 @@ const updateEventTournamentMutation = {
 
       await transaction.commit();
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }

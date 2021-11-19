@@ -1,4 +1,4 @@
-import { Club, DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import { Club, DataBaseHandler, logger, Player, Team } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLString } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { ClubInputType, ClubType } from '../types';
@@ -12,7 +12,7 @@ export const addClubMutation = {
     }
   },
   resolve: async (findOptions, { club }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:club'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:club'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['add:club']
@@ -31,11 +31,11 @@ export const addClubMutation = {
       await transaction.commit();
       return clubDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
-  }
+  } 
 };
 
 export const removeClubMutation = {
@@ -47,7 +47,7 @@ export const removeClubMutation = {
     }
   },
   resolve: async (findOptions, { id }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['remove:club'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['remove:club'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['remove:club']
@@ -66,7 +66,7 @@ export const removeClubMutation = {
       await transaction.commit();
       return true;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -87,7 +87,7 @@ export const addPlayerToClubMutation = {
   },
   resolve: async (findOptions, { clubId, playerId }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${clubId}_edit:club`, 'edit-any:club'])
     ) {
       logger.warn("User tried something it should't have done", {
@@ -121,7 +121,7 @@ export const addPlayerToClubMutation = {
       await transaction.commit();
       return dbClub;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -129,7 +129,7 @@ export const addPlayerToClubMutation = {
 };
 
 export const updateClubMutation = {
-  type: ClubType,
+  type: ClubType, 
   args: {
     club: {
       name: 'Club',
@@ -138,7 +138,7 @@ export const updateClubMutation = {
   },
   resolve: async (findOptions, { club }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${club.id}_edit:club`, 'edit-any:club'])
     ) {
       logger.warn("User tried something it should't have done", {
@@ -150,11 +150,12 @@ export const updateClubMutation = {
       throw new ApiError({
         code: 401,
         message: "You don't have permission to do this "
-      });
+      }); 
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbClub = await Club.findByPk(club.id, { transaction });
+      const dbClubCopy = dbClub.get({ plain: true, clone: true });
       if (!dbClub) {
         logger.debug('club', dbClub);
         throw new ApiError({
@@ -166,6 +167,16 @@ export const updateClubMutation = {
       await dbClub.update(club, {
         transaction
       });
+
+      // Update team abbreaviations when club abbreviation changed
+       if (dbClubCopy.abbreviation !== club.abbreviation) {
+        const teams = await dbClub.getTeams({ where: {active: true}, transaction });
+        logger.debug(`updating teams ${teams.length}`);
+        for (const team of teams) {
+          await Team.generateAbbreviation(team, { transaction });
+          await team.save({ transaction });
+        }
+      }
 
       await transaction.commit();
       return dbClub;

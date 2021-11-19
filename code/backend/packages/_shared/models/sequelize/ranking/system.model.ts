@@ -135,7 +135,7 @@ export class RankingSystem extends Model {
     };
   }
 
-  @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB'))
+  @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
   rankingSystem: RankingSystems;
 
   @Column
@@ -228,6 +228,7 @@ export class RankingSystem extends Model {
 
     switch (this.rankingSystem) {
       case RankingSystems.BVL:
+      case RankingSystems.VISUAL:
         this._bvlCaps();
         break;
       case RankingSystems.LFBB:

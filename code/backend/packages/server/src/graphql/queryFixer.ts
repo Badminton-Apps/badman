@@ -1,8 +1,12 @@
 import { Op } from 'sequelize';
 
 export const queryFixer = input => {
+  if (input === null || input === undefined){
+    return input;
+  }
+
   Object.keys(input).forEach(element => {
-    if (typeof input[element] == 'object') {
+    if (typeof input[element] === 'object') {
       input[element] = queryFixer(input[element]);
     }
     if (input.hasOwnProperty('$adjacent')) {

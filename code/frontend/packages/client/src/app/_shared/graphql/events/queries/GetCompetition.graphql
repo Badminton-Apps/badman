@@ -8,6 +8,7 @@ query GetEvent($id: ID!, $includeComments: Boolean!, $clubId: ID) {
     allowEnlisting
     started
     type
+    updatedAt
     subEvents(order: "eventType") {
       ...SubEventsDetails
     }

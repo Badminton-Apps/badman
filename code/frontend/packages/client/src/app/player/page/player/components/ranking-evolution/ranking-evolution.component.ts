@@ -1,18 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import {
-  Player,
-  PlayerService,
-  RankingSystem,
-  SystemService,
-} from '../../../../../_shared';
+import { Player, PlayerService, RankingSystem, SystemService } from '../../../../../_shared';
 
 @Component({
   selector: 'app-ranking-evolution',
@@ -22,15 +12,15 @@ import {
 })
 export class RankingEvolutionComponent implements OnInit {
   @Input()
-  player: Player;
+  player!: Player;
 
-  rankingPlaces$: Observable<{
-    single: { level: number; rankingDate: Date; points: number }[];
-    mix: { level: number; rankingDate: Date; points: number }[];
-    double: { level: number; rankingDate: Date; points: number }[];
+  rankingPlaces$?: Observable<{
+    single: { level: number; rankingDate: Date; points: number; pointsDowngrade: number; updatePossible: boolean }[];
+    mix: { level: number; rankingDate: Date; points: number; pointsDowngrade: number; updatePossible: boolean }[];
+    double: { level: number; rankingDate: Date; points: number; pointsDowngrade: number; updatePossible: boolean }[];
   }>;
-  request$: Observable<any>;
-  rankingSystem: RankingSystem;
+  request$!: Observable<any>;
+  rankingSystem!: RankingSystem;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,18 +37,14 @@ export class RankingEvolutionComponent implements OnInit {
       shareReplay(1)
     );
 
-    const system$ = this.systemService
-      .getPrimarySystem()
-      .pipe(filter((x) => !!x));
+    const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
 
     this.rankingPlaces$ = combineLatest([id$, system$]).pipe(
-      tap(([playerId, system]) => (this.rankingSystem = system)),
-      switchMap(([playerId, system]) =>
-        this.playerService.getPlayerEvolution(playerId, system.id)
-      ),
+      tap(([playerId, system]) => (this.rankingSystem = system!)),
+      switchMap(([playerId, system]) => this.playerService.getPlayerEvolution(playerId!, system!.id!)),
       map((x) => {
         return x.reduce(
-          (acc, value) => {
+          (acc: any, value) => {
             return {
               single: [
                 ...acc.single,

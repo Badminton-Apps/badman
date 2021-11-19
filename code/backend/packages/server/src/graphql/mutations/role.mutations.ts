@@ -24,7 +24,7 @@ export const addRoleMutation = {
   },
   resolve: async (findOptions, { role, clubId }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([
         clubId + '_add:role',
         clubId + '_edit:club',
@@ -87,7 +87,7 @@ export const addPlayerToRoleMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([
           dbRole.clubId + '_edit:role',
           dbRole.clubId + '_edit:club',
@@ -126,7 +126,7 @@ export const addPlayerToRoleMutation = {
       await transaction.commit();
       return dbRole;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -158,7 +158,7 @@ export const removePlayerFromRoleMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([
           dbRole.clubId + '_edit:role',
           dbRole.clubId + '_edit:club',
@@ -196,7 +196,7 @@ export const removePlayerFromRoleMutation = {
       await transaction.commit();
       return dbRole;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -224,7 +224,7 @@ export const updateRoleMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([
           dbRole.clubId + '_edit:role',
           dbRole.clubId + '_edit:club',
@@ -258,7 +258,7 @@ export const updateRoleMutation = {
       await transaction.commit();
       return dbRole;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -287,7 +287,7 @@ export const removeRoleMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbRole.clubId}_remove:role`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {

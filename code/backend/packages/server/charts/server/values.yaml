@@ -5,6 +5,7 @@ image:
   repository: ghcr.io/badminton-apps/core/server
 
 service:
+  name: badman-server
   internalPort: 4000
   externalPort: 80
 
@@ -35,7 +36,13 @@ database:
 services:
   simulate: simulate-simulate.badvla
   import: import-import.badvla
-  supervisor: supervisor-supervisor.badvla
+  job: jobs-jobs.badvla
 
 auth0:
   issuer: https://badvlasim.eu.auth0.com
+
+apm:
+  server: http://elastic-apm-apm-http.elastic:8200
+
+esc:
+  server: http://elastic-search-es-http.elastic:9200

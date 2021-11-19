@@ -20,9 +20,9 @@ import { ClaimService } from 'app/_shared/services/security/claim.service';
   styleUrls: ['./edit-role.component.scss'],
 })
 export class EditRoleComponent implements OnInit {
-  role$: Observable<Role>;
-  club$: Observable<Club>;
-  claims$: Observable<{ category: string; claims: Claim[] }[]>;
+  role$!: Observable<Role>;
+  club$!: Observable<Club>;
+  claims$!: Observable<{ category: string; claims: Claim[] }[]>;
 
   constructor(
     private clubSerice: ClubService,
@@ -35,11 +35,11 @@ export class EditRoleComponent implements OnInit {
   ngOnInit(): void {
     this.club$ = this.route.paramMap.pipe(
       map((x) => x.get('id')),
-      switchMap((id) => this.clubSerice.getClub(id))
+      switchMap((id) => this.clubSerice.getClub(id!))
     );
     this.role$ = this.route.paramMap.pipe(
       map((x) => x.get('roleId')),
-      switchMap((id) => this.roleSerice.getRole(id)),
+      switchMap((id) => this.roleSerice.getRole(id!)),
       share(),
       take(1)
     );
@@ -51,12 +51,12 @@ export class EditRoleComponent implements OnInit {
       take(1),
       map(([userPerm, clubClaims]) =>
         clubClaims.map((c) => {
-          c.hasPermission = userPerm.findIndex((uc) => uc.name == c.name) != -1;
+          c.hasPermission = userPerm?.findIndex((uc) => uc.name == c.name) != -1;
           return c;
         })
       ),
       mergeMap((res) => res),
-      groupBy((person) => person.category),
+      groupBy((person) => person.category!),
       mergeMap((obs) => {
         return obs.pipe(
           toArray(),

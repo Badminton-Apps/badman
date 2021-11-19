@@ -1,39 +1,63 @@
-import { EventCompetition, Team, Club, logger } from '@badvlasim/shared';
-import nodemailer from 'nodemailer';
-import smtpTransport from 'nodemailer-smtp-transport';
+import { logger } from '@badvlasim/shared';
+import moment from 'moment';
+import nodemailer, { Transporter } from 'nodemailer';
 import exphbs from 'nodemailer-express-handlebars';
+import smtpTransport from 'nodemailer-smtp-transport';
 import path from 'path';
-import { Player, SubEventCompetition } from '../../models';
+import { DataBaseHandler } from '../../database';
+import {
+  Comment,
+  EncounterChange,
+  Player,
+  SubEventCompetition,
+  Team,
+  Club,
+  EventCompetition
+} from '../../models';
 
 export class MailService {
-  private _transporter;
+  private _transporter: Transporter;
+  private _mailingEnabled = false;
+  private _clientUrl: string;
 
-  constructor() {
-    this._transporter = nodemailer.createTransport(
-      smtpTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        auth: {
-          user: 'glenn.latomme@gmail.com',
-          pass: 'bkxtlkysohswmeoi'
+  constructor(private _databaseService: DataBaseHandler) {
+    this._clientUrl = process.env.CLIENT_URL;
+    try {
+      this._transporter = nodemailer.createTransport(
+        smtpTransport({
+          host: process.env.MAIL_HOST,
+          port: 465,
+          auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS
+          }
+        })
+      );
+
+      this._transporter.verify().then(() => {
+        this._mailingEnabled = process.env.NODE_ENV === 'production';
+      });
+
+      const hbsOptions = exphbs({
+        viewEngine: {
+          partialsDir: path.join(__dirname, './templates/partials'),
+          layoutsDir: path.join(__dirname, './templates/layouts'),
+          defaultLayout: 'layout.handlebars'
         },
-        secure: true
-      })
-    );
+        viewPath: path.join(__dirname, './templates')
+      });
 
-    const hbsOptions = exphbs({
-      viewEngine: {
-        partialsDir: path.join(__dirname, './templates/partials'),
-        layoutsDir: path.join(__dirname, './templates/layouts'),
-        defaultLayout: 'layout.handlebars'
-      },
-      viewPath: path.join(__dirname, './templates'),
-    });
-
-    this._transporter.use('compile', hbsOptions);
+      this._transporter.use('compile', hbsOptions);
+    } catch (e) {
+      logger.warn('Mailing disabled', e);
+    }
   }
 
   async sendNewPeopleMail(to: string) {
+    if (this._mailingEnabled === false) {
+      return;
+    }
+
     const events = await EventCompetition.findAll({
       attributes: ['name'],
       where: {
@@ -88,7 +112,9 @@ export class MailService {
           // Set the players
           for (const player of team.players) {
             if (
-              !clubs[clubIndex].players.find(r => r.memberId === player.memberId)
+              !clubs[clubIndex].players.find(
+                r => r.memberId === player.memberId
+              )
             ) {
               clubs[clubIndex].players.push(player.toJSON());
             }
@@ -97,17 +123,169 @@ export class MailService {
       }
     }
 
-    const clientUrl = process.env.CLIENT_URL;
-
     const options = {
       from: 'test@gmail.com',
       to,
       subject: 'New players',
       template: 'newplayers',
-      context: { clubs, clientUrl, title: 'New players' }
+      context: { clubs, clientUrl: this._clientUrl, title: 'New players' }
     };
 
+    await this._sendMail(options);
+  }
+
+  async sendClubMail(
+    to: string | string[],
+    clubId: string,
+    year: number,
+    cc?: string | string[]
+  ) {
+    if (this._mailingEnabled === false) {
+      return;
+    }
+
+    const comments = await Comment.findAll({
+      attributes: ['message'],
+      where: {
+        clubId
+      },
+      include: [
+        {
+          model: EventCompetition,
+          where: { startYear: year },
+          required: true,
+          attributes: ['name']
+        }
+      ]
+    });
+
+    const club = await this._databaseService.getClubsTeamsForEnrollemnt(
+      clubId,
+      year
+    );
+
+    // Sort by type, followed by number
+    club.teams = club.teams.sort((a, b) => {
+      if (a.type < b.type) {
+        return -1;
+      }
+      if (a.type > b.type) {
+        return 1;
+      }
+      if (a.teamNumber < b.teamNumber) {
+        return -1;
+      }
+      if (a.teamNumber > b.teamNumber) {
+        return 1;
+      }
+      return 0;
+    });
+
+    const clientUrl = process.env.CLIENT_URL;
+
+    const options = {
+      from: 'info@badman.app',
+      to,
+      subject: `${club.name} inschrijving`,
+      template: 'clubenrollment',
+      context: {
+        club: club.toJSON(),
+        clientUrl,
+        title: `${club.name} enrollment`,
+        preview: `${club.name} schreef ${club.teams.length} teams in`,
+        years: `${year}-${year + 1}`,
+        comments: comments.map(c => c.toJSON())
+      }
+    };
+
+    await this._sendMail(options);
+  }
+
+  async sendRequestMail(
+    changeRequest: EncounterChange,
+    homeTeamRequests: boolean
+  ) {
+    const encounter = await changeRequest.getEncounter({
+      include: [
+        {
+          model: Team,
+          as: 'home',
+          include: [{ model: Player, as: 'captain' }]
+        },
+        { model: Team, as: 'away', include: [{ model: Player, as: 'captain' }] }
+      ]
+    });
+
+    const otherTeam = homeTeamRequests ? encounter.away : encounter.home;
+    const clubTeam = homeTeamRequests ? encounter.home : encounter.away;
+    const captain = homeTeamRequests
+      ? encounter.away.captain
+      : encounter.home.captain;
+
+    const options = {
+      from: 'info@badman.app',
+      to: otherTeam.email,
+      subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name}`,
+      template: 'encounterchange',
+      context: {
+        captain: captain.toJSON(),
+        otherTeam: otherTeam.toJSON(),
+        clubTeam: clubTeam.toJSON(),
+        encounter: encounter.toJSON(),
+        clientUrl: this._clientUrl
+      }
+    };
+
+    await this._sendMail(options);
+  }
+
+  async sendRequestFinishedMail(changeRequest: EncounterChange) {
+    const encounter = await changeRequest.getEncounter({
+      include: [
+        {
+          model: Team,
+          as: 'home',
+          include: [{ model: Player, as: 'captain' }]
+        },
+        { model: Team, as: 'away', include: [{ model: Player, as: 'captain' }] }
+      ]
+    });
+
+    const sendMail = async (team: Team, captain: Player) => {
+      moment.locale('nl-be');
+      const options = {
+        from: 'info@badman.app',
+        to: team.email,
+        subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name} afgewerkt`,
+        template: 'encounterchangefinished',
+        context: {
+          captain: captain.toJSON(),
+          team: team.toJSON(),
+          encounter: encounter.toJSON(),
+          newDate: moment(encounter.date).format('LLLL'),
+          clientUrl: this._clientUrl
+        }
+      };
+
+      await this._sendMail(options);
+    };
+
+    await sendMail(encounter.home, encounter.home.captain);
+    await sendMail(encounter.away, encounter.away.captain);
+  }
+
+  private async _sendMail(options: any) {
     try {
+      if (this._mailingEnabled === false) {
+        logger.debug('Mailing disabled', options);
+        return;
+      }
+
+      if (options.to === null || options.to.length === 0) {
+        logger.error('no mail adress?', options);
+        return;
+      }
+
       const info = await this._transporter.sendMail(options);
       logger.debug('Message sent: %s', info.messageId);
       logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));

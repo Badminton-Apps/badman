@@ -38,7 +38,7 @@ export class RankingPoint extends Model {
   @Column
   points: number;
 
-  @BelongsTo(() => Player, 'PlayerId')
+  @BelongsTo(() => Player, 'playerId')
   player: Player;
 
   @BelongsTo(() => Game, 'GameId')
@@ -64,7 +64,7 @@ export class RankingPoint extends Model {
   @ForeignKey(() => Player)
   @Index('point_system_index')
   @Column
-  PlayerId: string;
+  playerId: string;
 
   @ForeignKey(() => Game)
   @Column

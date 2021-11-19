@@ -4,14 +4,10 @@ import { SubEvent } from '../sub-event.model';
 import { CompetitionDraw } from './draw.model';
 
 export class CompetitionSubEvent extends SubEvent {
-  maxLevel: number;
-  minBaseIndex: number;
-  maxBaseIndex: number;
-  levelType: string;
-  teams: Team[];
+  levelType?: string;
+  teams?: Team[];
 
-  event: CompetitionEvent;
-  draws: CompetitionDraw[];
+  event?: CompetitionEvent;
 
   constructor({ ...args }: Partial<CompetitionSubEvent>) {
     super(args);
@@ -21,7 +17,7 @@ export class CompetitionSubEvent extends SubEvent {
     this.maxBaseIndex = args.maxBaseIndex ?? 0;
     this.teams = [];
 
-    this.event = args?.event != null ? new CompetitionEvent(args.event) : null;
+    this.event = args?.event != null ? new CompetitionEvent(args.event) : undefined;
     this.draws = args?.draws?.map((d) => new CompetitionDraw(d));
   }
 }

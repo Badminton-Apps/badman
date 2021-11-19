@@ -4,12 +4,17 @@ import {
   EventCompetition,
   logger,
   Player,
+  RankingPlace,
+  RankingSystem,
   SubEventCompetition,
+  SubEventType,
   Team,
-  TeamLocationCompetition,
-  TeamPlayerMembership
+  TeamPlayerMembership,
+  TeamSubEventMembership
 } from '@badvlasim/shared';
-import { GraphQLBoolean, GraphQLID, GraphQLInt, GraphQLNonNull } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
+import moment from 'moment';
+import { Op } from 'sequelize';
 import { ApiError } from '../../models/api.error';
 import { TeamInputType, TeamType } from '../types';
 
@@ -27,7 +32,7 @@ export const addTeamMutation = {
   },
   resolve: async (findOptions, { team, clubId }, context) => {
     if (
-      context?.req?.user == null ||
+      context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${clubId}_add:team`, 'add-any:club'])
     ) {
       logger.warn("User tried something it should't have done", {
@@ -45,7 +50,8 @@ export const addTeamMutation = {
     try {
       const [teamDb, created] = await Team.findOrCreate({
         where: {
-          name: team.name,
+          type: team.type,
+          teamNumber: team.teamNumber,
           clubId
         },
         defaults: team,
@@ -53,11 +59,11 @@ export const addTeamMutation = {
       });
 
       if (created) {
-        teamDb.setClub(clubId, { transaction });
+        await teamDb.setClub(clubId, { transaction });
       } else {
         // Re-activate team
         teamDb.active = true;
-        teamDb.save({ transaction });
+        await teamDb.save({ transaction });
       }
 
       await transaction.commit();
@@ -92,7 +98,7 @@ export const removeTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -127,10 +133,10 @@ export const updateTeamMutation = {
       type: TeamInputType
     }
   },
-  resolve: async (findOptions, { team }, context) => {
+  resolve: async (findOptions, { team }: { team: Partial<Team> }, context) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(team.id, { transaction });
+      const dbTeam = await Team.findByPk(team.id, { transaction, include: [Club] });
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -141,7 +147,7 @@ export const updateTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -156,7 +162,81 @@ export const updateTeamMutation = {
         });
       }
 
+      const changedTeams = [];
+
+      if (team.teamNumber && team.teamNumber !== dbTeam.teamNumber) {
+        team.name = `${dbTeam.club.name} ${team.teamNumber}${Team.getLetterForRegion(
+          dbTeam.type,
+          'vl'
+        )}`;
+        team.abbreviation = `${dbTeam.club.abbreviation} ${
+          team.teamNumber
+        }${Team.getLetterForRegion(dbTeam.type, 'vl')}`;
+
+        if (team.teamNumber > dbTeam.teamNumber) {
+          // Number was increased
+          const dbLowerTeams = await Team.findAll({
+            where: {
+              clubId: dbTeam.clubId,
+              teamNumber: {
+                [Op.and]: [{ [Op.gt]: dbTeam.teamNumber }, { [Op.lte]: team.teamNumber }]
+              },
+              type: dbTeam.type
+            },
+            transaction
+          });
+          // unique contraints
+          for (const dbLteam of dbLowerTeams) {
+            dbLteam.teamNumber--;
+            // set teams to temp name for unique constraint
+            dbLteam.name = `${dbTeam.club.name} ${dbLteam.teamNumber}${Team.getLetterForRegion(
+              dbLteam.type,
+              'vl'
+            )}_temp`;
+            dbLteam.abbreviation = `${dbTeam.club.abbreviation} ${
+              dbLteam.teamNumber
+            }${Team.getLetterForRegion(dbLteam.type, 'vl')}`;
+            await dbLteam.save({ transaction });
+            changedTeams.push(dbLteam);
+          }
+        } else if (team.teamNumber < dbTeam.teamNumber) {
+          // number was decreased
+          const dbHigherTeams = await Team.findAll({
+            where: {
+              clubId: dbTeam.clubId,
+              teamNumber: {
+                [Op.and]: [{ [Op.lt]: dbTeam.teamNumber }, { [Op.gte]: team.teamNumber }]
+              },
+              type: dbTeam.type
+            },
+            transaction
+          });
+          for (const dbHteam of dbHigherTeams) {
+            dbHteam.teamNumber++;
+            // set teams to temp name for unique constraint
+            dbHteam.name = `${dbTeam.club.name} ${dbHteam.teamNumber}${Team.getLetterForRegion(
+              dbHteam.type,
+              'vl'
+            )}_temp`;
+            dbHteam.abbreviation = `${dbTeam.club.abbreviation} ${
+              dbHteam.teamNumber
+            }${Team.getLetterForRegion(dbHteam.type, 'vl')}`;
+            await dbHteam.save({ transaction });
+            changedTeams.push(dbHteam);
+          }
+        }
+      }
+
       await dbTeam.update(team, { transaction });
+      // set impacted teams to final name
+      for (const dbCteam of changedTeams) {
+        dbCteam.name = `${dbTeam.club.name} ${dbCteam.teamNumber}${Team.getLetterForRegion(
+          dbCteam.type,
+          'vl'
+        )}`;
+        await dbCteam.save({ transaction });
+      }
+
       await transaction.commit();
       return dbTeam;
     } catch (e) {
@@ -193,7 +273,7 @@ export const addPlayerToTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -262,7 +342,7 @@ export const removePlayerFromTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -315,10 +395,26 @@ export const updateSubEventTeamMutation = {
     }
   },
   resolve: async (findOptions, { teamId, subEventId }, context) => {
+    const dbTeam = await Team.findByPk(teamId);
+
+    if (
+      context?.req?.user === null ||
+      !context.req.user.hasAnyPermission([`${dbTeam.clubId}_enlist:team`, 'edit-any:club'])
+    ) {
+      logger.warn("User tried something it should't have done", {
+        required: {
+          anyClaim: [`${dbTeam.clubId}_enlist:team`, 'add-any:club']
+        },
+        received: context?.req?.user?.permissions
+      });
+      throw new ApiError({
+        code: 401,
+        message: "You don't have permission to do this "
+      });
+    }
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(teamId, { transaction });
-      
       // Find new subevent
       const dbNewSubEvent = await SubEventCompetition.findByPk(subEventId, {
         transaction,
@@ -332,12 +428,16 @@ export const updateSubEventTeamMutation = {
       });
 
       // Find all subEvents from same year
-      const subEvents = (await EventCompetition.findAll({
-        where: { startYear: dbNewSubEvent.event.startYear },
-        attributes: [],
-        include: [{ model: SubEventCompetition, attributes: ['id'] }],
-        transaction
-      })).map(r => r.subEvents?.map(r => r?.id)).flat();
+      const subEvents = (
+        await EventCompetition.findAll({
+          where: { startYear: dbNewSubEvent.event.startYear },
+          attributes: [],
+          include: [{ model: SubEventCompetition, attributes: ['id'] }],
+          transaction
+        })
+      )
+        .map(e => e.subEvents?.map(s => s?.id))
+        .flat();
 
       if (!dbTeam) {
         logger.debug('team', dbTeam);
@@ -348,7 +448,7 @@ export const updateSubEventTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -363,7 +463,7 @@ export const updateSubEventTeamMutation = {
         });
       }
 
-      if (subEvents != null && subEvents.length> 0) {
+      if (subEvents !== null && subEvents.length > 0) {
         await dbTeam.removeSubEvents(subEvents, { transaction });
       }
       await dbTeam.addSubEvent(dbNewSubEvent.id, { transaction });
@@ -408,7 +508,7 @@ export const updatePlayerTeamMutation = {
       }
 
       if (
-        context?.req?.user == null ||
+        context?.req?.user === null ||
         !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
       ) {
         logger.warn("User tried something it should't have done", {
@@ -487,6 +587,309 @@ export const updateTeamLocationMutation = {
       } else {
         await dbTeam.removeLocation(locationId, { transaction });
       }
+
+      await transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const addPlayerBaseSubEventMutation = {
+  type: TeamType,
+  args: {
+    teamId: {
+      name: 'teamId',
+      type: GraphQLID
+    },
+    playerId: {
+      name: 'playerId',
+      type: GraphQLID
+    },
+    subEventId: {
+      name: 'subEventId',
+      type: GraphQLID
+    }
+  },
+  resolve: async (findOptions, { teamId, playerId, subEventId }, context) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbTeam = await Team.findByPk(teamId, { transaction });
+
+      if (!dbTeam) {
+        logger.debug('team', dbTeam);
+        throw new ApiError({
+          code: 404,
+          message: 'Team not found'
+        });
+      }
+
+      if (context?.req?.user === null || !context.req.user.hasAnyPermission([`change-base:team`])) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`change-base:team`]
+          },
+          received: context?.req?.user?.permissions
+        });
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
+        });
+      }
+
+      const dbMembership = await TeamSubEventMembership.findOne({
+        where: {
+          teamId: dbTeam.id,
+          subEventId
+        },
+        transaction
+      });
+      if (!dbMembership) {
+        throw new ApiError({
+          code: 404,
+          message: 'SubEvent not found'
+        });
+      }
+
+      const dbPlayer = await Player.findByPk(playerId, {
+        transaction
+      });
+
+      if (!dbPlayer) {
+        throw new ApiError({
+          code: 404,
+          message: 'Player not found'
+        });
+      }
+
+      const dbSubEvent = await SubEventCompetition.findByPk(subEventId, {
+        attributes: [],
+        include: [{ model: EventCompetition, attributes: ['startYear'] }]
+      });
+
+      const dbSystem = await RankingSystem.findOne({
+        where: {
+          primary: true
+        },
+        transaction
+      });
+
+      if (!dbSystem) {
+        throw new ApiError({
+          code: 404,
+          message: 'System not found'
+        });
+      }
+
+      const startDate = moment([dbSubEvent.event.startYear, 4, 14]).toDate();
+      const endDate = moment([dbSubEvent.event.startYear, 4, 16]).toDate();
+      const dbRanking = await RankingPlace.findOne({
+        where: {
+          playerId: dbPlayer.id,
+          SystemId: dbSystem.id,
+          rankingDate: { [Op.between]: [startDate, endDate] }
+        },
+        transaction
+      });
+
+      const meta = dbMembership.meta;
+      meta.players.push({
+        id: dbPlayer.id,
+        single: dbRanking?.single ?? 12,
+        double: dbRanking?.double ?? 12,
+        mix: dbRanking?.mix ?? 12,
+        gender: dbPlayer.gender
+      });
+
+      let bestPlayers = meta.players;
+      if (meta.players.length > 4) {
+        if (dbTeam.type === SubEventType.MX) {
+          bestPlayers = [
+            ...meta.players
+              .filter(p => p.gender === 'M')
+              .sort(
+                (b, a) =>
+                  (b?.single ?? 12) +
+                  (b?.double ?? 12) +
+                  (b?.mix ?? 12) -
+                  ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+              )
+              .slice(0, 2),
+            ...meta.players
+              .filter(p => p.gender === 'F')
+              .sort(
+                (b, a) =>
+                  (b?.single ?? 12) +
+                  (b?.double ?? 12) +
+                  (b?.mix ?? 12) -
+                  ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+              )
+              .slice(0, 2)
+          ];
+        } else {
+          bestPlayers = meta.players
+            .sort(
+              (b, a) =>
+                (b?.single ?? 12) + (b?.double ?? 12) - ((a?.single ?? 12) + (a?.double ?? 12))
+            )
+            .slice(0, 4);
+        }
+      }
+
+      meta.teamIndex = Team.getIndexFromPlayers(
+        dbTeam.type,
+        bestPlayers.map(p => {
+          return {
+            single: p.single,
+            double: p.double,
+            mix: p.mix
+          };
+        })
+      );
+
+      dbMembership.meta = meta;
+
+      await dbMembership.save({ transaction });
+
+      await transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const removePlayerBaseSubEventMutation = {
+  type: TeamType,
+  args: {
+    teamId: {
+      name: 'teamId',
+      type: GraphQLID
+    },
+    playerId: {
+      name: 'playerId',
+      type: GraphQLID
+    },
+    subEventId: {
+      name: 'subEventId',
+      type: GraphQLID
+    }
+  },
+  resolve: async (findOptions, { teamId, playerId, subEventId }, context) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbTeam = await Team.findByPk(teamId, { transaction });
+
+      if (!dbTeam) {
+        logger.debug('team', dbTeam);
+        throw new ApiError({
+          code: 404,
+          message: 'Team not found'
+        });
+      }
+
+      if (context?.req?.user === null || !context.req.user.hasAnyPermission([`change-base:team`])) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`change-base:team`]
+          },
+          received: context?.req?.user?.permissions
+        });
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
+        });
+      }
+      const dbPlayer = await Player.findByPk(playerId, {
+        transaction
+      });
+
+      if (!dbPlayer) {
+        throw new ApiError({
+          code: 404,
+          message: 'Player not found'
+        });
+      }
+
+      const dbMembership = await TeamSubEventMembership.findOne({
+        where: {
+          teamId: dbTeam.id,
+          subEventId
+        },
+        transaction
+      });
+      if (!dbMembership) {
+        throw new ApiError({
+          code: 404,
+          message: 'SubEvent not found'
+        });
+      }
+
+      const meta = dbMembership.meta;
+      const removedPlayer = meta.players.filter(p => p.id === playerId)[0];
+      if (!removedPlayer) {
+        throw new ApiError({
+          code: 404,
+          message: 'Player not part of base?'
+        });
+      }
+
+      meta.players = meta.players.filter(p => p.id !== playerId);
+
+      let bestPlayers = meta.players;
+      if (meta.players.length > 4) {
+        if (dbTeam.type === SubEventType.MX) {
+          bestPlayers = [
+            ...meta.players
+              .filter(p => p.gender === 'M')
+              .sort(
+                (b, a) =>
+                  (b?.single ?? 12) +
+                  (b?.double ?? 12) +
+                  (b?.mix ?? 12) -
+                  ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+              )
+              .slice(0, 2),
+            ...meta.players
+              .filter(p => p.gender === 'F')
+              .sort(
+                (b, a) =>
+                  (b?.single ?? 12) +
+                  (b?.double ?? 12) +
+                  (b?.mix ?? 12) -
+                  ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+              )
+              .slice(0, 2)
+          ];
+        } else {
+          bestPlayers = meta.players
+            .sort(
+              (b, a) =>
+                (b?.single ?? 12) + (b?.double ?? 12) - ((a?.single ?? 12) + (a?.double ?? 12))
+            )
+            .slice(0, 4);
+        }
+      }
+
+      meta.teamIndex = Team.getIndexFromPlayers(
+        dbTeam.type,
+        bestPlayers.map(p => {
+          return {
+            single: p.single,
+            double: p.double,
+            mix: p.mix
+          };
+        })
+      );
+
+      dbMembership.meta = meta;
+
+      await dbMembership.save({ transaction });
 
       await transaction.commit();
       return dbTeam;

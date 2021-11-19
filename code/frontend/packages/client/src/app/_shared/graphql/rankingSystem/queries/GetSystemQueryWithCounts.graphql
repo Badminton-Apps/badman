@@ -5,7 +5,7 @@ query GetSystemsQuery($id: ID!, $gender: String) {
     primary
     runCurrently
     amountOfLevels
-    counts (gender: $gender) {
+    counts(gender: $gender) {
       single {
         date
         points {
