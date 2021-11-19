@@ -22,7 +22,7 @@ Existing issues often contain information about workarounds, resolution, or prog
 ## 🔬 Minimal Reproduction
 
 ### What's the affected URL?**
-<!-- ✍️edit:--> https://beta.latomme.org/...
+<!-- ✍️edit:--> https://badman.app
 
 ### Reproduction Steps**
 <!-- If applicable please list the steps to take to reproduce the issue -->

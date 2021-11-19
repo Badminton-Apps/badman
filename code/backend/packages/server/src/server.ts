@@ -1,43 +1,61 @@
-// First config
+// We need dontenv before App!!!
+import dotenv from 'dotenv';
+dotenv.config();
+import pkg from '../package.json'
+
 import {
   App,
   AuthenticatedRequest,
   AuthenticationSercice,
   DataBaseHandler,
+  logger,
+  NotificationService,
+  PdfService,
   Player,
   startWhenReady
 } from '@badvlasim/shared';
 import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
-import dotenv from 'dotenv';
 import { Response, Router } from 'express';
-import { RankingController } from './controllers/ranking.controller';
-import { RequestLinkController } from './controllers/request-link.controller';
-import { SystemController } from './controllers/system.controller';
-// Then  rest
-import { UserController } from './controllers/user.controller';
+import {
+  EnrollmentController,
+  RankingController,
+  RequestLinkController,
+  SystemController,
+  UserController,
+  PdfController
+} from './controllers';
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 
-dotenv.config();
-
-(async () => {
-  await startWhenReady(true, false, db => {
-    startServer(db);
-  });
-})();
+try {
+  (async () => {
+    try {
+      logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
+      await startWhenReady(true, false, db => startServer(db));
+    } catch (e) {
+      logger.error('Something failed', e);
+      throw e;
+    }
+  })();
+} catch (err) {
+  logger.error('Something failed', err);
+  throw err;
+}
 
 const startServer = (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
-
-  const router = Router();
+  const pdfService = new PdfService(databaseService);
+  const notifService = new NotificationService(databaseService);
 
   const app = new App(
     [
-      new RankingController(router, authService.checkAuth),
-      new SystemController(router, authService.checkAuth, databaseService),
-      new UserController(router, authService.checkAuth),
-      new RequestLinkController(router, authService.checkAuth)
+      new EnrollmentController(Router(), authService.checkAuth, databaseService, notifService),
+      new RankingController(Router(), authService.checkAuth),
+      new SystemController(Router(), authService.checkAuth, databaseService),
+      new UserController(Router(), authService.checkAuth),
+      new RequestLinkController(Router(), authService.checkAuth),
+      new PdfController(Router(), pdfService)
     ],
     [
       {
@@ -47,29 +65,46 @@ const startServer = (databaseService: DataBaseHandler) => {
       {
         from: '/api/v1/simulate',
         to: `http://${process.env.SIMULATE_SERVICE}`
+      },
+      {
+        from: '/api/v1/job',
+        to: `http://${process.env.JOB_SERVICE}`
       }
     ]
   );
 
-  const schema = createSchema();
+  const schema = createSchema(notifService);
   const apolloServer = new ApolloServer({
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
       // When in dev we can allow graph playground to run without permission
-      if (process.env.production === 'false') {
-        const grahpReq = {
-          ...req,
-          player: await Player.findOne({ where: { memberId: '50104197' } }),
-          user: {
-            ...req.user,
-            hasAnyPermission: (permissions: string[]) => {
-              return true;
-            },
-            hasAllPermission: (permissions: string[]) => {
-              return true;
-            }
+      if (process.env.NODE_ENV === 'development') {
+        // We can try to do the auth
+        try {
+          for (const check of authService.checkAuth) {
+            await new Promise((resolve, reject) => {
+              check(req, res, () => {
+                resolve(null);
+              });
+            });
           }
-        };
-        return { req: grahpReq, res };
+          return { req, res };
+        } catch (err) {
+          // But if we fail we can just return a default setting
+          const grahpReq = {
+            ...req,
+            player: await Player.findOne({ where: { memberId: '50104197' } }),
+            user: {
+              ...req.user,
+              hasAnyPermission: (permissions: string[]) => {
+                return true;
+              },
+              hasAllPermission: (permissions: string[]) => {
+                return true;
+              }
+            }
+          };
+          return { req: grahpReq, res };
+        }
       } else {
         for (const check of authService.checkAuth) {
           await new Promise((resolve, reject) => {
@@ -82,8 +117,8 @@ const startServer = (databaseService: DataBaseHandler) => {
       }
     },
     schema,
-    tracing: true,
-    cacheControl: true,
+    // tracing: true,
+    // cacheControl: true,
     formatError: (err: GraphQLError) => ({
       message: err.originalError?.message || err.message,
       code: err.originalError?.code || 500

@@ -1,12 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {
@@ -21,18 +16,8 @@ import {
   TournamentEvent,
 } from 'app/_shared';
 import { ConfirmationDialogComponent } from 'app/_shared/components/confirmation-dialog/confirmation-dialog.component';
-import { BehaviorSubject, combineLatest, of, Subject, timer } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  filter,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
-import { AddEventDialogComponent } from './components/add-event.dialog/add-event.dialog.component';
+import { BehaviorSubject, combineLatest, of, Subject, lastValueFrom, timer } from 'rxjs';
+import { catchError, debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './import.component.html',
@@ -40,13 +25,13 @@ import { AddEventDialogComponent } from './components/add-event.dialog/add-event
 })
 export class ImportComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Imported>();
-  lastIds: string;
+  lastIds!: string;
   displayedColumns: string[] = ['dates', 'name', 'event', 'import', 'delete'];
 
   resultsLength$ = new BehaviorSubject(0);
   pageIndex$ = new BehaviorSubject(0);
   pageSize$ = new BehaviorSubject(10);
-  filterChange$ = new BehaviorSubject<{ query: string; eventType: EventType }>({
+  filterChange$ = new BehaviorSubject<{ query?: string; eventType?: EventType }>({
     eventType: undefined,
     query: undefined,
   });
@@ -57,58 +42,48 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   eventTypes = EventType;
 
-  totalItems: number;
+  totalItems!: number;
   isLoadingResults = true;
-  cursor: string;
-  prevCursor: string;
-  nextCursor: string;
+  cursor?: string;
+  prevCursor?: string;
+  nextCursor?: string;
 
-  defaultEvent: TournamentEvent | CompetitionEvent = { id: '-1' } as
-    | TournamentEvent
-    | CompetitionEvent;
+  defaultEvent: TournamentEvent | CompetitionEvent = { id: '-1' } as TournamentEvent | CompetitionEvent;
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort!: MatSort;
 
-  rankingGroups: RankingSystemGroup[];
+  rankingGroups!: RankingSystemGroup[];
 
-  constructor(
-    public eventService: EventService,
-    private dialog: MatDialog,
-    private systemsService: SystemService
-  ) {}
+  constructor(public eventService: EventService, private dialog: MatDialog, private systemsService: SystemService) {}
 
   async ngOnInit() {
-    this.rankingGroups = await this.systemsService
-      .getSystemsGroups()
-      .toPromise();
+    this.rankingGroups = await lastValueFrom(this.systemsService.getSystemsGroups());
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.sort.sortChange.pipe(takeUntil(this.destroyed$)).subscribe(() => {
       this.pageIndex$.next(0);
-      this.cursor = null;
+      this.cursor = undefined;
     });
 
     this.filterChange$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
       this.pageIndex$.next(0);
-      this.cursor = null;
+      this.cursor = undefined;
     });
 
-    this.onPaginateChange
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((newPage: PageEvent) => {
-        this.pageSize$.next(newPage.pageSize);
+    this.onPaginateChange.pipe(takeUntil(this.destroyed$)).subscribe((newPage: PageEvent) => {
+      this.pageSize$.next(newPage.pageSize);
 
-        if (newPage.previousPageIndex < newPage.pageIndex) {
-          // We are going to the next page
-          this.prevCursor = this.cursor;
-          this.cursor = this.nextCursor;
-        } else if (newPage.previousPageIndex > newPage.pageIndex) {
-          // We are going to the prev page
-          this.cursor = this.prevCursor;
-        }
-      });
+      if (newPage.previousPageIndex! < newPage.pageIndex) {
+        // We are going to the next page
+        this.prevCursor = this.cursor;
+        this.cursor = this.nextCursor;
+      } else if (newPage.previousPageIndex! > newPage.pageIndex) {
+        // We are going to the prev page
+        this.cursor = this.prevCursor;
+      }
+    });
 
     combineLatest([
       this.filterChange$,
@@ -123,9 +98,7 @@ export class ImportComponent implements OnInit, OnDestroy {
           this.isLoadingResults = true;
 
           return this.eventService.getImported(
-            this.sort.direction
-              ? `DATE_${this.sort.direction.toUpperCase()}`
-              : 'DATE_ASC',
+            this.sort.direction ? `DATE_${this.sort.direction.toUpperCase()}` : 'DATE_ASC',
             this.pageSize$.value,
             this.cursor
           );
@@ -135,8 +108,7 @@ export class ImportComponent implements OnInit, OnDestroy {
           this.isLoadingResults = false;
           this.resultsLength$.next(count);
           if (count) {
-            this.nextCursor =
-              data.imported.edges[data.imported.edges.length - 1].cursor;
+            this.nextCursor = data.imported.edges[data.imported.edges.length - 1].cursor;
 
             return data.imported.edges.map((x) => x.node);
           } else {
@@ -183,13 +155,13 @@ export class ImportComponent implements OnInit, OnDestroy {
     this.dataSource.data[dsId].importing = true;
 
     if (imported.event == this.defaultEvent) {
-      imported.event = null;
+      imported.event = undefined;
     }
 
     await this.eventService.startImport(imported).toPromise();
   }
 
-  async changedEvent(event, imported: Imported) {
+  async changedEvent(event: MatSelectChange, imported: Imported) {
     let dsId = this.dataSource.data.findIndex((r) => r.id == imported.id);
     if (event.value.id != -1) {
       this.dataSource.data[dsId].event = event.value;
@@ -222,10 +194,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   deleteImportedEvent(event: Imported) {
-    const dialogData = new ConfirmDialogModel(
-      'Confirm Action',
-      'Are you sure you want to delete this?'
-    );
+    const dialogData = new ConfirmDialogModel('Confirm Action', 'Are you sure you want to delete this?');
 
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: dialogData,
@@ -233,16 +202,14 @@ export class ImportComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(async (r) => {
       if (r) {
-        await this.eventService
-          .deleteImportedEvent({ id: event.id })
-          .toPromise();
+        await lastValueFrom(this.eventService.deleteImportedEvent({ id: event.id! }));
         this.filterChange$.next(this.filterChange$.value);
       }
     });
   }
 
   ngOnDestroy() {
-    this.destroyed$.next();
+    this.destroyed$.next(null);
     this.destroyed$.complete();
   }
 }

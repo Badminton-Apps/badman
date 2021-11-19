@@ -12,7 +12,7 @@ export const addRankingSystemGroupMutation = {
     }
   },
   resolve: async (findOptions, { rankingSystemGroup }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:ranking-group'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:ranking-group'])) {
       logger.warn('User tried something it should\'t have done', {
         required: {
           anyClaim: ['add:ranking-group']
@@ -41,7 +41,7 @@ export const updateRankingSystemGroupMutation = {
     }
   },
   resolve: async (findOptions, { id, rankingSystemGroup }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:ranking-group'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:ranking-group'])) {
       logger.warn('User tried something it should\'t have done', {
         required: {
           anyClaim: ['edit:ranking-group']

@@ -1,6 +1,7 @@
 query GetClubQuery(
   $id: ID!
   $end: String
+  $systemId: String
   $includePlacesTeams: Boolean!
   $includePlaces: Boolean!
   $includeTeams: Boolean!
@@ -8,6 +9,7 @@ query GetClubQuery(
   $includeRoles: Boolean!
   $includeLocations: Boolean!
   $teamsWhere: SequelizeJSON
+  $teamPlayersWhere: SequelizeJSON
 ) {
   club(id: $id) {
     id
@@ -23,13 +25,15 @@ query GetClubQuery(
       preferredDay
       active
       teamNumber
-      players(end: $end) {
+      players(end: $end, where: $teamPlayersWhere) {
         id
         firstName
         lastName
         competitionPlayer
         base
-        lastRanking @include(if: $includePlacesTeams) {
+        gender
+        lastRanking(system: $systemId) @include(if: $includePlacesTeams) {
+          id
           single
           double
           mix
@@ -66,6 +70,7 @@ query GetClubQuery(
       firstName
       lastName
       lastRanking @include(if: $includePlaces) {
+        id
         single
         double
         mix

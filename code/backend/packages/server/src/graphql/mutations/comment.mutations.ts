@@ -16,12 +16,12 @@ export const addCommentMutation = {
     }
   },
   resolve: async (findOptions, { comment, eventId }, context) => {
-    if (context?.req?.player == null) {
-      throw new ApiError({
-        code: 401,
-        message: 'You are not logged in?'
-      });
-    }
+    // if (context?.req?.player === null) {
+    //   throw new ApiError({
+    //     code: 401,
+    //     message: 'You are not logged in?'
+    //   });
+    // }
     
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
@@ -39,7 +39,7 @@ export const addCommentMutation = {
       // Save comment
       const commentDb = await new Comment({
         ...comment,
-        playerId: context?.req?.player?.id
+        playerId: context?.req?.user?.player?.id
       }).save({ transaction });
 
       await dbEventComp.addComment(commentDb, { transaction });
@@ -47,7 +47,7 @@ export const addCommentMutation = {
       await transaction.commit();
       return commentDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -71,8 +71,9 @@ export const updateCommentMutation = {
       });
 
       await transaction.commit();
+      return comment;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }

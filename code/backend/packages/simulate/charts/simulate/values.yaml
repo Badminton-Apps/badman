@@ -5,11 +5,9 @@ image:
   repository: ghcr.io/badminton-apps/core/simulate
 
 service:
-  internalPort: 4000
+  name: badman-simulate
+  internalPort: 4003
   externalPort: 80
-
-services:
-  supervisor: supervisor-supervisor.badvla
 
 database:
   DB_IP: server-postgresql.badvla
@@ -19,3 +17,9 @@ database:
 
 auth0:
   issuer: https://badvlasim.eu.auth0.com
+
+apm:
+  server: http://elastic-apm-apm-http.elastic:8200
+
+esc:
+  server: http://elastic-search-es-http.elastic:9200

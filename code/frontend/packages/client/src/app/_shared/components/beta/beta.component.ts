@@ -4,7 +4,6 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-beta',
   templateUrl: './beta.component.html',
   styleUrls: ['./beta.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BetaComponent {
-}
+export class BetaComponent {}

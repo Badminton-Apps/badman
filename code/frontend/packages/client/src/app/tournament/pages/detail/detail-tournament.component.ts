@@ -10,22 +10,15 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./detail-tournament.component.scss'],
 })
 export class DetailTournamentComponent implements OnInit {
-  event$: Observable<TournamentEvent>;
+  event$!: Observable<TournamentEvent>;
 
   update$ = new BehaviorSubject(0);
 
-  constructor(
-    private eventService: EventService,
-    private systemService: SystemService,
-    private route: ActivatedRoute,
-    private dialog: MatDialog
-  ) {}
+  constructor(private eventService: EventService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.event$ = this.route.paramMap.pipe(
-      switchMap((params) =>
-        this.eventService.getTournamentEvent(params.get('id'))
-      )
+      switchMap((params) => this.eventService.getTournamentEvent(params.get('id')!))
     );
   }
 }

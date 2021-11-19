@@ -1,13 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import {
-  Club,
-  Player,
-  SystemService,
-  Location,
-  LocationService,
-} from 'app/_shared';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Club, Player, SystemService, Location, LocationService } from 'app/_shared';
+import { BehaviorSubject, Observable, of, lastValueFrom } from 'rxjs';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
@@ -15,7 +9,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
   styleUrls: ['./location-dialog.component.scss'],
 })
 export class LocationDialogComponent implements OnInit {
-  location$: Observable<Location>;
+  location$!: Observable<Location>;
 
   update$ = new BehaviorSubject(0);
 
@@ -39,9 +33,7 @@ export class LocationDialogComponent implements OnInit {
   }
 
   async create() {
-    const newlocation = await this.locationService
-      .addLocation(this.data.location, this.data.club.id)
-      .toPromise();
+    const newlocation = await lastValueFrom(this.locationService.addLocation(this.data.location, this.data.club.id!));
     this.data.location = newlocation;
     this.update$.next(0);
   }

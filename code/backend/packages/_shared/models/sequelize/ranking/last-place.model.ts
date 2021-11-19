@@ -1,4 +1,11 @@
 import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions,
+  SaveOptions
+} from 'sequelize';
+import {
+  BeforeCreate,
   BelongsTo,
   Column,
   DataType,
@@ -11,11 +18,6 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import {
-  BelongsToGetAssociationMixin,
-  BelongsToSetAssociationMixin,
-  BuildOptions
-} from 'sequelize';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
 

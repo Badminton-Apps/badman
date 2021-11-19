@@ -1,10 +1,11 @@
+import { Apollo } from 'apollo-angular';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Game, Player, RankingPlace, RankingSystem } from '../../models';
+import { Club, Game, Player, RankingPlace, RankingSystem } from '../../models';
 
 import * as searchQuery from '../../graphql/players/queries/GetPlayersQuery.graphql';
 import * as searchClubQuery from '../../graphql/players/queries/GetClubPlayersQuery.graphql';
@@ -12,6 +13,7 @@ import * as playerQuery from '../../graphql/players/queries/GetUserInfoQuery.gra
 import * as playerBasicQuery from '../../graphql/players/queries/GetUserBasicInfoQuery.graphql';
 import * as gamesQuery from '../../graphql/players/queries/GetUserGamesQuery.graphql';
 import * as evolutionQuery from '../../graphql/players/queries/GetPlayerEvolutionQuery.graphql';
+import * as getBasePlayers from '../../graphql/players/queries/GetBasePlayersQuery.graphql';
 
 import * as addPlayerMutation from '../../graphql/players/mutations/AddPlayerMutation.graphql';
 import * as updatePlayerMutation from '../../graphql/players/mutations/UpdatePlayerMutation.graphql';
@@ -23,7 +25,7 @@ import * as updatePlayerRankingMutation from '../../graphql/players/mutations/Up
 export class PlayerService {
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
-  searchPlayers(args?: { query?: string; where?: any; includeClub?: boolean }) {
+  searchPlayers(args?: { query?: string; where?: any; includeClub?: boolean; ranking?: Date }) {
     args = {
       includeClub: false,
       ...args,
@@ -34,13 +36,15 @@ export class PlayerService {
         query: searchQuery,
         variables: {
           where: this._searchPlayer(args),
+          ranking: args.ranking ?? null,
+          includeRanking: args.ranking !== null,
           includeClub: args.includeClub,
         },
       })
       .pipe(map((x) => x.data?.players?.map((r) => new Player(r))));
   }
 
-  searchClubPlayers(clubsId: string, args?: { query?: string; where?: any }) {
+  searchClubPlayers(clubsId: string, args?: { query?: string; where?: any; ranking?: Date }) {
     return this.apollo
       .query<{ club: { players: Player[] } }>({
         query: searchClubQuery,
@@ -48,14 +52,16 @@ export class PlayerService {
           where: this._searchPlayer(args),
           id: clubsId,
           includeClub: false,
+          includeRanking: args?.ranking !== null,
+          ranking: args?.ranking ?? null,
         },
       })
       .pipe(map((x) => x.data?.club?.players?.map((r) => new Player(r))));
   }
 
   private _searchPlayer(args?: { query?: string; where?: any }) {
-    const parts = args.query
-      .toLowerCase()
+    const parts = args!
+      .query!.toLowerCase()
       .replace(/[;\\\\/:*?\"<>|&',]/, ' ')
       .split(' ');
     const queries = [];
@@ -71,7 +77,7 @@ export class PlayerService {
 
     return {
       $and: queries,
-      ...args.where,
+      ...args?.where,
     };
   }
 
@@ -87,12 +93,7 @@ export class PlayerService {
       .pipe(map((x: any) => new Player(x.data?.player)));
   }
 
-  getPlayerGames(
-    playerId: string,
-    rankingType: RankingSystem,
-    offset: number,
-    limit: number
-  ): Observable<Game[]> {
+  getPlayerGames(playerId: string, rankingType: RankingSystem, offset: number, limit: number): Observable<Game[]> {
     return this.apollo
       .query({
         query: gamesQuery,
@@ -103,19 +104,10 @@ export class PlayerService {
           limit,
         },
       })
-      .pipe(
-        map((x: any) =>
-          x.data?.player?.games.map(
-            (g: Partial<Game>) => new Game(g, rankingType)
-          )
-        )
-      );
+      .pipe(map((x: any) => x.data?.player?.games.map((g: Partial<Game>) => new Game(g, rankingType))));
   }
 
-  getPlayerEvolution(
-    playerId: string,
-    rankingType: string
-  ): Observable<RankingPlace[]> {
+  getPlayerEvolution(playerId: string, rankingType: string): Observable<RankingPlace[]> {
     return this.apollo
       .query({
         query: evolutionQuery,
@@ -171,7 +163,7 @@ export class PlayerService {
           player,
         },
       })
-      .pipe(map((x) => new Player(x.data.addPlayer)));
+      .pipe(map((x) => new Player(x.data!.addPlayer)));
   }
 
   updatePlayer(player: Partial<Player>) {
@@ -182,14 +174,24 @@ export class PlayerService {
           player,
         },
       })
-      .pipe(map((r) => new Player(r.data.updatePlayer)));
+      .pipe(map((r) => new Player(r.data!.updatePlayer)));
   }
 
-  updatePlayerRanking(rankingPlace: RankingPlace) {
+  updatePlayerRanking(rankingPlace: Partial<RankingPlace>) {
     return this.apollo.mutate<{ updatePlayer: Player }>({
       mutation: updatePlayerRankingMutation,
       variables: {
         rankingPlace,
+      },
+    });
+  }
+
+  getBasePlayers(clubId: String, type: String) {
+    return this.apollo.query<{ club: Club }>({
+      query: getBasePlayers,
+      variables: {
+        type,
+        clubId,
       },
     });
   }

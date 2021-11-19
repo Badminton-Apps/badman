@@ -1,10 +1,12 @@
-import prettyMilliseconds from 'pretty-ms';
-import { createLogger, format, transports } from 'winston';
-const { combine, errors, timestamp, colorize, align } = format;
-import jsonStringify from 'fast-safe-stringify';
-import moment, { HTML5_FMT } from 'moment';
-
 import dotenv from 'dotenv';
+import jsonStringify from 'fast-safe-stringify';
+import moment from 'moment';
+import prettyMilliseconds from 'pretty-ms';
+import { createLogger, transports, format } from 'winston';
+const { combine, errors, timestamp, colorize, align } = format;
+import ecsFormat from '@elastic/ecs-winston-format';
+import packagejson from '../package.json';
+
 dotenv.config();
 
 let lastMesage = moment();
@@ -50,11 +52,7 @@ if (process.env.LOG_LEVEL === 'None') {
   );
 } else {
   // eslint-disable-next-line no-console
-  console.log(
-    'LOG LEVEL',
-    process.env.LOG_LEVEL,
-    process.env.production === 'true' ? 'Production' : 'Dev'
-  );
+  console.log('LOG LEVEL', process.env.LOG_LEVEL, process.env.NODE_ENV);
 
   tr.push(
     new transports.File({
@@ -82,17 +80,42 @@ if (process.env.LOG_LEVEL === 'None') {
     })
   );
 
+  const outputFormat =
+    process.env.NODE_ENV === 'production'
+      ? ecsFormat({
+          apmIntegration: true,
+          convertReqRes: true,
+          convertErr: true
+        })
+      : combine(colorize(), timestamp(), logLikeFormat(1000));
+
   tr.push(
     new transports.Console({
-      format: combine(colorize(), timestamp(), logLikeFormat(1000)),
-      level: process.env.production === 'true' ? 'info' : 'debug'
+      format: outputFormat,
+      level: process.env.LOG_LEVEL ?? 'debug'
     })
   );
+
+  // tr.push(
+  //   new transports.Console({
+  //     format: ecsFormat({
+  //       apmIntegration: true,
+  //       convertReqRes: true,
+  //       convertErr: true
+  //     }),
+  //     level: process.env.LOG_LEVEL ?? 'debug'
+  //   })
+  // );
 }
 
 const logger = createLogger({
+  defaultMeta: {
+    version: packagejson.version,
+    name: packagejson.name
+  },
   format: combine(errors({ stack: true }), timestamp(), align()),
   transports: tr
 });
+
 
 export { logger };

@@ -9,5 +9,6 @@ export * from './startingType.enum'
 export * from './rankingTiming.enum'
 export * from './teamMembershipType.enum'
 export * from './clubMembershipType.enum'
+export * from './availability.enum'
 // end:ng42.barrel
 

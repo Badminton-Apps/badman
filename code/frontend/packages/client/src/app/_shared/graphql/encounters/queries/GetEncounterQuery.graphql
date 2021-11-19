@@ -1,0 +1,23 @@
+query GetEncounterQuery($id: ID!) {
+  encounterCompetition(id: $id) {
+    id
+    date
+    originalDate
+    home {
+      id
+      name
+    }
+    away {
+      id
+      name
+    }
+    encounterChange {
+      id
+      accepted
+    }
+    draw {
+      id
+      subeventId
+    }
+  }
+}

@@ -1,10 +1,13 @@
-import { BuildOptions } from 'sequelize';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, BuildOptions, HasOneGetAssociationMixin, HasOneSetAssociationMixin } from 'sequelize';
 import {
   AllowNull,
+  BelongsTo,
   Column,
+  DataType,
   ForeignKey,
+  HasOne,
   Model,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { SubEventCompetition } from './event';
 import { Team } from './team.model';
@@ -29,4 +32,31 @@ export class TeamSubEventMembership extends Model {
   @AllowNull(false)
   @Column
   teamId: string;
+
+  @Column({
+    type: DataType.STRING,
+    field: 'meta'
+  })
+  private _meta!: string;
+
+  get meta(): TeamSubEventMembershipBadmintonBvlMembershipMeta {
+    return JSON.parse(this._meta);
+  }
+
+  set meta(value: TeamSubEventMembershipBadmintonBvlMembershipMeta) {
+    this._meta = JSON.stringify(value);
+  }
+}
+
+export interface TeamSubEventMembershipBadmintonBvlMembershipMeta {
+  teamIndex: number;
+  players: TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta[];
+}
+
+export interface TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta {
+  id: string;
+  single: number;
+  double: number;
+  mix: number;
+  gender: string;
 }

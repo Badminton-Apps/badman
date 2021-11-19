@@ -1,4 +1,3 @@
-import { MailService } from './services/mail/mail.service';
 import { DataBaseHandler } from './database';
 import { logger } from './utils';
 // eslint-disable-next-line import/no-internal-modules
@@ -40,7 +39,6 @@ export const startWhenReady = async (
   }
 
   try {
-    logger.debug('Starting server');
     startFunction(databaseService);
   } catch (error) {
     logger.error('Starting server failed', error);

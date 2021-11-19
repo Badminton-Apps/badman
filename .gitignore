@@ -123,3 +123,5 @@ server/results/
 rnd/*.sql
 erd.svg
 
+.angular/
+assembly.html

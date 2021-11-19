@@ -1,1 +1,4 @@
-GET https://beta.latomme.org/api/v1/status/healtz
+# GET https://beta.latomme.org/api/v1/status/healtz
+
+GET https://www.tournamentsoftware.com/1.0/Tournament?q=summer&pagesize=10&pageno=1
+Authorization: Basic tsapi_be_jwn3r6:jRXgfDSaPJZ6YxG4ZgnXcHYy

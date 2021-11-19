@@ -21,12 +21,12 @@ jobs:
             code/${{ matrix.folder }}/node_modules
             code/${{ matrix.folder }}/*/*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('code/${{ matrix.folder }}/yarn.lock') }}
-      - run: npx lerna bootstrap
+      - run: npx lerna bootstrap --ci
         working-directory: code/${{ matrix.folder }}
       - run: npm run lint
         working-directory: code/${{ matrix.folder }}
-      - run: npm run test
-        working-directory: code/${{ matrix.folder }}
+      # - run: npm run test
+      #   working-directory: code/${{ matrix.folder }}
       - uses: codecov/codecov-action@v1
         with:
           name: codecov-${{ matrix.folder }}
@@ -93,7 +93,7 @@ jobs:
     needs: publish-github
     strategy:
       matrix:
-        pacakge: ['server', 'import', 'simulate', 'supervisor']
+        pacakge: ['server', 'import', 'jobs']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -139,7 +139,7 @@ jobs:
       - name: Upgrade
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm upgrade --install --namespace badvla --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}/${{ matrix.pacakge }}-0.3.10.tgz
+          exec: helm upgrade --install --namespace badvla --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} --set postgresql.existingSecret=server-postgresql ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}/${{ matrix.pacakge }}-0.3.15.tgz
           kubeconfig: '${{ secrets.KUBECONFIG }}'
   docker-frontend:
     needs: publish-github
@@ -189,5 +189,5 @@ jobs:
       - name: Deploy
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm upgrade --install --namespace badvla --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}/${{ matrix.pacakge }}-0.3.10.tgz
+          exec: helm upgrade --install --namespace badvla --set image.repostory=ghcr.io/badminton-apps/core/${{ matrix.pacakge }} ${{ matrix.pacakge }} code/backend/packages/${{ matrix.pacakge }}/${{ matrix.pacakge }}-0.3.15.tgz
           kubeconfig: '${{ secrets.KUBECONFIG }}'

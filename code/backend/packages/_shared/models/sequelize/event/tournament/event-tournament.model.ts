@@ -34,7 +34,7 @@ import {
   HasManySetAssociationsMixin
 } from 'sequelize';
 import { Location } from '../location.model';
-import { LocationEventTournament } from './location_event.model';
+import { LocationEventTournament } from './location-event.model';
 import { SubEventTournament } from './sub-event-tournament.model';
 
 @Table({
@@ -55,11 +55,11 @@ export class EventTournament extends Model {
   @Column
   tournamentNumber: string;
 
-  @Unique('unique_constraint')
+  @Unique('EventTournaments_unique_constraint')
   @Column
   name: string;
 
-  @Unique('unique_constraint')
+  @Unique('EventTournaments_unique_constraint')
   @Column
   firstDay: Date;
 
@@ -88,8 +88,9 @@ export class EventTournament extends Model {
   @Column
   allowEnlisting: boolean;
 
+  @Unique('EventTournaments_unique_constraint')
   @Column
-  uniCode: string;
+  visualCode: string;
 
   // Has many subEvent
   getSubEvents!: HasManyGetAssociationsMixin<SubEventTournament>;

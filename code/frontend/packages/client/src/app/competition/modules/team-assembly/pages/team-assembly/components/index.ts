@@ -1,5 +1,4 @@
 // start:ng42.barrel
-export * from '../../../../../components/select-team';
-export * from '../../../../../components/select-game';
+export * from './assembly';
 // end:ng42.barrel
 

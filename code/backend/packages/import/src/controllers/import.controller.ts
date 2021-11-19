@@ -18,7 +18,7 @@ import {
 } from '@badvlasim/shared';
 import { parseString } from '@fast-csv/parse';
 import { Response, Router } from 'express';
-import { readFile, unlink } from 'fs';
+import { readFile, readFileSync, unlink } from 'fs';
 import moment from 'moment';
 import multer, { diskStorage } from 'multer';
 import { join } from 'path';
@@ -46,13 +46,6 @@ export class ImportController extends BaseController {
       this._upload.array('upload'),
       this._setRanking
     );
-    this.router.post(
-      `${this._path}/file`,
-      this._authMiddleware,
-      this._upload.array('upload'),
-      this._import
-    );
-    this.router.put(`${this._path}/start/:id/:eventId?`, this._authMiddleware, this._startImport);
   }
 
   private _setRanking = async (request: AuthenticatedRequest, response: Response) => {
@@ -66,36 +59,39 @@ export class ImportController extends BaseController {
         const fileLocation = join(process.cwd(), file.path);
         const date = moment(request.query.date as string).toDate();
 
-        readFile(fileLocation, 'utf8', (err, csv) => {
-          const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true });
-          const data = new Map();
-          stream.on('data', row => {
-            if (row.TypeName === 'Competitiespeler') {
-              data.set(row.memberid, row);
-            }
-          });
-          stream.on('error', error => {
-            logger.error(error);
-          });
-          stream.on('end', async rowCount => {
-            const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-            try {
-              logger.info('Player indexes import started');
-              await this._addPlayers(data, transaction);
+        const csv = readFileSync(fileLocation, 'utf8');
+        const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true });
 
-              const memberIds = [...data.keys()];
-              const players = await this._getPlayers(transaction, memberIds);
-              await this._setCompetitionStatus(transaction, memberIds);
-              await this._createRankingPlaces(transaction, players, data, date);
-              await this._createLastRankingPlaces(transaction, players, data, date);
-              await transaction.commit();
-              logger.info('Player indexes imported');
-            } catch (e) {
-              logger.error(e);
-              await transaction.rollback();
-              throw e;
-            }
-          });
+        const data = new Map();
+        stream.on('data', row => {
+          // if (row.TypeName === 'Competitiespeler') {
+          data.set(row.memberid, row);
+          // }
+        });
+        stream.on('error', error => {
+          logger.error(error);
+        });
+        stream.on('end', async rowCount => {
+          const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+          try {
+            logger.info('Player indexes import started');
+            await this._addPlayers(data, transaction);
+
+            const memberIds = [...data.keys()];
+            const players = await this._getPlayers(transaction, memberIds);
+            await this._setCompetitionStatus(
+              transaction,
+              [...data.values()].filter(r => r.TypeName === 'Competitiespeler').map(r => r.memberid)
+            );
+            await this._createRankingPlaces(transaction, players, data, date);
+            await this._createLastRankingPlaces(transaction, players, data, date);
+            await transaction.commit();
+            logger.info('Player indexes imported');
+          } catch (e) {
+            logger.error(e);
+            await transaction.rollback();
+            throw e;
+          }
         });
       }
 
@@ -115,6 +111,7 @@ export class ImportController extends BaseController {
       response.render('error', { error: e });
     }
   };
+
   private _import = async (request: AuthenticatedRequest, response: Response) => {
     if (!request.user.hasAnyPermission(['import:competition', 'import:tournament'])) {
       response.status(401).send('No no no!!');
@@ -262,7 +259,7 @@ export class ImportController extends BaseController {
 
         if (single && double && mix) {
           return new RankingPlace({
-            PlayerId: p.id,
+            playerId: p.id,
             SystemId: system.id,
             single,
             double,
@@ -277,7 +274,8 @@ export class ImportController extends BaseController {
     await RankingPlace.bulkCreate(newPlaces, {
       transaction,
       updateOnDuplicate: ['single', 'double', 'mix', 'rankingDate'],
-      returning: false
+      returning: false,
+      hooks: false
     });
   }
 
@@ -302,16 +300,35 @@ export class ImportController extends BaseController {
             single,
             double,
             mix,
-            rankingDate: date
+            rankingDate: date,
+            totalWithinDoubleLevel: -1,
+            totalWithinMixLevel: -1,
+            totalWithinSingleLevel: -1,
+            totalSingleRanking: -1,
+            totalDoubleRanking: -1,
+            totalMixRanking: -1,
+            doubleRank: -1,
+            singleRank: -1,
+            mixRank: -1,
+            singlePointsDowngrade: -1,
+            mixPointsDowngrade: -1,
+            doublePointsDowngrade: -1,
+            singlePoints: -1,
+            mixPoints: -1,
+            doublePoints: -1,
+            singleInactive: false,
+            doubleInactive: false,
+            mixInactive: false
           }).toJSON();
         }
       }
     });
 
-    await RankingPlace.bulkCreate(newPlaces, {
+    await LastRankingPlace.bulkCreate(newPlaces, {
       transaction,
       updateOnDuplicate: ['single', 'double', 'mix', 'rankingDate'],
-      returning: false
+      returning: false,
+      hooks: false
     });
   }
 

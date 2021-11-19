@@ -3,6 +3,7 @@
 @import 'app/_shared/variables.scss';
 // Plus imports for other components in your app.
 
+
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
@@ -29,6 +30,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-display: swap;
 }
 
 mat-sidenav-content>ng-component {
@@ -87,7 +89,6 @@ mat-sidenav-content>ng-component {
     }
   }
 }
-
 
 snack-bar-container.success {
   background-color: green;

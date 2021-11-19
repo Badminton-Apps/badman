@@ -37,6 +37,13 @@ export const EventCompetitionType = new GraphQLObjectType({
                 order: [[args.order, args.direction ?? "asc"], ['level', 'asc']]
               };
             }
+
+                
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions?.where)
+            }
+
             return findOptions;
           }
         })
@@ -44,7 +51,15 @@ export const EventCompetitionType = new GraphQLObjectType({
       comments: {
         type: new GraphQLList(CommentType),
         args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(EventCompetition.associations.comments)
+        resolve: resolver(EventCompetition.associations.comments, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       }
     })
 });

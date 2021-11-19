@@ -50,10 +50,7 @@ export class ImporterFile extends Model {
   linkCode: string;
 
   @Column
-  webID: string;
-
-  @Column
-  uniCode: string;
+  visualCode: string;
 
   @Default(false)
   @Column

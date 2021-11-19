@@ -9,8 +9,8 @@ import { RankingSystem, RankingSystemGroup, SystemService } from 'app/_shared';
   styleUrls: ['./edit-ranking-system.component.scss'],
 })
 export class EditRankingSystemComponent implements OnInit {
-  system$: Observable<RankingSystem>;
-  rankingGroups$: Observable<RankingSystemGroup[]>;
+  system$!: Observable<RankingSystem>;
+  rankingGroups$!: Observable<RankingSystemGroup[]>;
 
   constructor(
     private systemService: SystemService,
@@ -21,7 +21,7 @@ export class EditRankingSystemComponent implements OnInit {
   ngOnInit(): void {
     this.system$ = this.route.paramMap.pipe(
       map((x) => x.get('id')),
-      switchMap((id) => this.systemService.getSystem(id))
+      switchMap((id) => this.systemService.getSystem(id!))
     ); 
     this.rankingGroups$ = this.systemService.getSystemsGroups();
   }

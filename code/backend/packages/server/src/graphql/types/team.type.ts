@@ -17,6 +17,8 @@ import moment from 'moment';
 import { SubEventCompetitionType } from './competition';
 import { ClubType } from './club.type';
 import { LocationType } from './location.type';
+import { queryFixer } from '../queryFixer';
+import { EncounterCompetitionType } from './competition/encounter-competition.type';
 
 export const TeamType = new GraphQLObjectType({
   name: 'Team',
@@ -26,8 +28,45 @@ export const TeamType = new GraphQLObjectType({
       club: {
         type: ClubType,
         args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Team.associations.club)
+        resolve: resolver(Team.associations.club, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
+
+      homeEncounters: {
+        type: new GraphQLList(EncounterCompetitionType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Team.associations.homeEncounters, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
+      },
+
+      awayEncounters: {
+        type: new GraphQLList(EncounterCompetitionType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Team.associations.awayEncounters, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
+      },
+
       players: {
         type: new GraphQLList(PlayerType),
         args: Object.assign(defaultListArgs(), {
@@ -37,10 +76,18 @@ export const TeamType = new GraphQLObjectType({
         }),
         resolve: resolver(Team.associations.players, {
           before: async (findOptions, args, context, info) => {
-            // findOptions.order = [
-            //   ['lastName', 'asc'],
-            //   ['firstName', 'asc']
-            // ];
+            const whereFixed = queryFixer(findOptions.where);
+            let where = whereFixed;
+
+            if (findOptions.where?.base) {
+              const { base, ...filtered } = whereFixed;
+              where = filtered;
+            }
+
+            findOptions = {
+              ...findOptions,
+              where
+            };
             return findOptions;
           },
           after: (result, args, context) => {
@@ -58,27 +105,63 @@ export const TeamType = new GraphQLObjectType({
                 });
             }
 
-            return result.map(player => {
+            let players = result.map(player => {
               player.base = player.getDataValue('TeamPlayerMembership')?.base;
               return player;
+            });
+
+            if (args.where?.base) {
+              players = players.filter(player => player.base === args.where.base);
+            }
+            return players;
+          }
+        })
+      },
+
+      subEvents: {
+        type: new GraphQLList(SubEventCompetitionType),
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(Team.associations.subEvents, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          },
+          after: (subEvents, args, context) => {
+            return subEvents.map(subevent => {
+              subevent.meta = subevent.getDataValue('TeamSubEventMembership').meta;
+              return subevent;
             });
           }
         })
       },
-      subEvents: {
-        type: new GraphQLList(SubEventCompetitionType),
-        args: Object.assign(defaultListArgs()),
-        resolve: resolver(Team.associations.subEvents)
-      },
       captain: {
         type: PlayerType,
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(Team.associations.captain)
+        resolve: resolver(Team.associations.captain, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       locations: {
         type: new GraphQLList(LocationType),
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(Team.associations.locations)
+        resolve: resolver(Team.associations.locations, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       }
     })
 });
@@ -88,7 +171,10 @@ export const TeamInputType = new GraphQLInputObjectType({
   description: 'This represents a TeamInputType',
   fields: () =>
     Object.assign(
-      getAttributeFields(Team, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }),
+      getAttributeFields(Team, {
+        exclude: ['createdAt', 'updatedAt', 'name', 'abbreviation'],
+        optionalString: ['id']
+      }),
       {
         players: {
           type: PlayerInputType

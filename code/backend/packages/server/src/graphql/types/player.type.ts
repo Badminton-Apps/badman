@@ -1,4 +1,5 @@
-import { Club, Player } from '@badvlasim/shared/models';
+import { logger } from '@badvlasim/shared';
+import { Club, Player, RankingSystem } from '@badvlasim/shared/models';
 import {
   GraphQLBoolean,
   GraphQLInputObjectType,
@@ -8,6 +9,7 @@ import {
 } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { Op } from 'sequelize';
+import { queryFixer } from '../queryFixer';
 import { getAttributeFields } from './attributes.type';
 import { ClubType } from './club.type';
 import { GameType } from './game.type';
@@ -39,7 +41,7 @@ export const PlayerType = new GraphQLObjectType({
         resolve: resolver(Player.associations.rankingPlaces, {
           before: async (findOptions, args, context, info) => {
             findOptions.where = {
-              ...findOptions.where
+              ...queryFixer(findOptions.where)
             };
             findOptions.order =
               args.order && args.direction
@@ -52,8 +54,24 @@ export const PlayerType = new GraphQLObjectType({
       },
       lastRanking: {
         type: LastRankingPlaceType,
-        args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(Player.associations.lastRankingPlace, {})
+        args: Object.assign(defaultListArgs(), {
+          system: {
+            type: GraphQLString
+          }
+        }),
+        resolve: async (obj: Player, args, context, info) => {
+          let systemId = args.system;
+          if (systemId == null) {
+            systemId = (await RankingSystem.findOne({ where: { primary: true } })).id;
+          }
+
+          if (systemId == null) {
+            return null;
+          }
+
+          const places = await obj.getLastRankingPlaces({ where: { systemId } });
+          return places[0];
+        }
       },
       rankingPoints: {
         type: new GraphQLList(RankingPointType),
@@ -67,6 +85,7 @@ export const PlayerType = new GraphQLObjectType({
             if (args.order && args.direction) {
               findOptions = {
                 ...findOptions,
+                where: queryFixer(findOptions.where),
                 order: [[args.order, args.direction]]
               };
             }
@@ -86,6 +105,7 @@ export const PlayerType = new GraphQLObjectType({
             if (args.order && args.direction) {
               findOptions = {
                 ...findOptions,
+                where: queryFixer(findOptions.where),
                 order: [
                   [args.order, args.direction],
                   ['id', 'desc']
@@ -119,6 +139,8 @@ export const PlayerType = new GraphQLObjectType({
               [Op.gte]: args.end
             };
           }
+
+          args.where = queryFixer(args.where);
 
           const player = await Player.findOne({
             attributes: ['id'],

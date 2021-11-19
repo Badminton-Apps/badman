@@ -20,8 +20,8 @@ export class ClubEditRoleComponent {
   @Output() onDelete = new EventEmitter<Role>();
 
   @Input()
-  club: Club;
+  club!: Club;
 
   @Input()
-  role: Role;
+  role!: Role;
 }

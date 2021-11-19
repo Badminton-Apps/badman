@@ -22,8 +22,8 @@ COPY packages/simulate ./packages/simulate
 
 # bootstrap
 COPY lerna.json .
-RUN lerna bootstrap --scope=@badvlasim/simulate -- --production=false
+RUN lerna bootstrap --scope=@badvlasim/simulate  --ci -- --production=false
 
 EXPOSE 4000
 
-CMD ["lerna", "run", "start", "--scope=@badvlasim/simulate", "--stream"]
+CMD ["lerna", "run", "start", "--scope=@badvlasim/simulate", "--stream", "--no-prefix"]
