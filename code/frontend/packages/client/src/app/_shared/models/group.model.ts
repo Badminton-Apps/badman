@@ -1,9 +1,9 @@
 
 export class RankingSystemGroup {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
 
-  constructor({ ...args }) {
+  constructor({ ...args }: Partial<RankingSystemGroup>) {
     this.name = args.name;
     this.id = args.id;
   }

@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 $config: mat-typography-config();
 
 :host {
@@ -64,6 +64,12 @@ $config: mat-typography-config();
     font-size: 14px;
     color: #aaaaaa;
   }
+}
+
+
+a {
+  color: rgba(0, 0, 0, .87);
+  text-decoration: none;
 }
 
 .teams {

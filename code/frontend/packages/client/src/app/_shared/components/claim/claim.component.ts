@@ -1,14 +1,5 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-  Output,
-  EventEmitter,
-} from '@angular/core';
-import { UserService } from 'app/player';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Claim } from 'app/_shared/models';
-import { ClaimService } from 'app/_shared/services/security/claim.service';
 
 @Component({
   selector: 'app-claim',
@@ -18,8 +9,8 @@ import { ClaimService } from 'app/_shared/services/security/claim.service';
 })
 export class ClaimComponent {
   @Input()
-  claim: Claim;
+  claim!: Claim;
 
   @Output()
-  onChange = new EventEmitter<boolean>()
+  onChange = new EventEmitter<boolean>();
 }

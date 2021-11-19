@@ -6,6 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SharedModule } from 'app/_shared';
 import { CompetitionRoutingModule } from './competition-routing.module';
 import { DetailCompetitionComponent } from './pages';
+import { DetailSubEventCompetitionComponent } from './pages/detail-sub-event-competition/detail-sub-event-competition.component';
 
 const materialModules = [
   MatListModule,
@@ -15,7 +16,7 @@ const materialModules = [
 ];
 
 @NgModule({
-  declarations: [DetailCompetitionComponent],
+  declarations: [DetailCompetitionComponent, DetailSubEventCompetitionComponent],
   imports: [SharedModule, ...materialModules, CompetitionRoutingModule],
 })
 export class CompetitionModule {}

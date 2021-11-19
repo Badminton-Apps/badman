@@ -1,6 +1,8 @@
 import {
   AfterBulkCreate,
   AfterCreate,
+  BeforeBulkCreate,
+  BeforeCreate,
   BelongsTo,
   Column,
   DataType,
@@ -22,7 +24,7 @@ import {
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
 import { LastRankingPlace } from './last-place.model';
-import { logger } from '../../..';
+import { logger, RankingProcessor } from '../../..';
 
 @Table({
   timestamps: true,
@@ -103,7 +105,7 @@ export class RankingPlace extends Model {
   @ForeignKey(() => Player)
   @Index('ranking_index')
   @Column
-  PlayerId: string;
+  playerId: string;
 
   @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
@@ -111,7 +113,7 @@ export class RankingPlace extends Model {
   @Column
   SystemId: string;
 
-  @BelongsTo(() => Player, 'PlayerId')
+  @BelongsTo(() => Player, 'playerId')
   player: Player;
 
   @BelongsTo(() => RankingSystem, {
@@ -135,34 +137,7 @@ export class RankingPlace extends Model {
     instances: RankingPlace[],
     options: SaveOptions
   ) {
-    const updateInstances = instances.map(r => {
-      return {
-        rankingDate: r.rankingDate,
-        singlePoints: r.singlePoints,
-        mixPoints: r.mixPoints,
-        doublePoints: r.doublePoints,
-        singlePointsDowngrade: r.singlePointsDowngrade,
-        mixPointsDowngrade: r.mixPointsDowngrade,
-        doublePointsDowngrade: r.doublePointsDowngrade,
-        singleRank: r.singleRank,
-        mixRank: r.mixRank,
-        doubleRank: r.doubleRank,
-        totalSingleRanking: r.totalSingleRanking,
-        totalMixRanking: r.totalMixRanking,
-        totalDoubleRanking: r.totalDoubleRanking,
-        totalWithinSingleLevel: r.totalWithinSingleLevel,
-        totalWithinMixLevel: r.totalWithinMixLevel,
-        totalWithinDoubleLevel: r.totalWithinDoubleLevel,
-        single: r.single,
-        mix: r.mix,
-        double: r.double,
-        singleInactive: r.singleInactive,
-        mixInactive: r.mixInactive,
-        doubleInactive: r.doubleInactive,
-        playerId: r.PlayerId,
-        systemId: r.SystemId
-      } as const;
-    });
+    const updateInstances = instances.map(r => r.asLastRankingPlace());
 
     await LastRankingPlace.bulkCreate(updateInstances, {
       updateOnDuplicate: [
@@ -200,6 +175,50 @@ export class RankingPlace extends Model {
   ) {
     logger.debug('This is called?');
     return this.updateLatestRankings([instance], options);
+  }
+
+  asLastRankingPlace() {
+    return {
+      rankingDate: this.rankingDate,
+      singlePoints: this.singlePoints,
+      mixPoints: this.mixPoints,
+      doublePoints: this.doublePoints,
+      singlePointsDowngrade: this.singlePointsDowngrade,
+      mixPointsDowngrade: this.mixPointsDowngrade,
+      doublePointsDowngrade: this.doublePointsDowngrade,
+      singleRank: this.singleRank,
+      mixRank: this.mixRank,
+      doubleRank: this.doubleRank,
+      totalSingleRanking: this.totalSingleRanking,
+      totalMixRanking: this.totalMixRanking,
+      totalDoubleRanking: this.totalDoubleRanking,
+      totalWithinSingleLevel: this.totalWithinSingleLevel,
+      totalWithinMixLevel: this.totalWithinMixLevel,
+      totalWithinDoubleLevel: this.totalWithinDoubleLevel,
+      single: this.single,
+      mix: this.mix,
+      double: this.double,
+      singleInactive: this.singleInactive,
+      mixInactive: this.mixInactive,
+      doubleInactive: this.doubleInactive,
+      playerId: this.playerId,
+      systemId: this.SystemId
+    } as LastRankingPlace;
+  }
+
+  @BeforeBulkCreate
+  static async protectRankings(
+    instances: RankingPlace[],
+    options: SaveOptions
+  ) {
+    await RankingProcessor.checkInactive(instances, options);
+    await RankingProcessor.protectRanking(instances);
+  }
+
+  @BeforeCreate
+  static async protectRanking(instance: RankingPlace, options: SaveOptions) {
+    await RankingProcessor.checkInactive([instance], options);
+    await RankingProcessor.protectRanking([instance])[0];
   }
 
   // #endregion

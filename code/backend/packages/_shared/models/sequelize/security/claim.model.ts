@@ -35,7 +35,7 @@ import { RoleClaimMembership } from './claim-role-membership.model';
   schema: 'security'
 })
 export class Claim extends Model {
-constructor(values?: Partial<Claim>, options?: BuildOptions) {
+  constructor(values?: Partial<Claim>, options?: BuildOptions) {
     super(values, options);
   }
   @Default(DataType.UUIDV4)

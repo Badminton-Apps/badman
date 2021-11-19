@@ -1,14 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Club } from 'app/_shared';
-import { AuthService, ClubService } from 'app/_shared/services';
-import { Observable } from 'rxjs';
-import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
+import { ClubService, UserService } from 'app/_shared/services';
+import { ClaimService } from 'app/_shared/services/security/claim.service';
+import { PermissionService } from 'app/_shared/services/security/permission.service';
+import { combineLatest, concat, lastValueFrom, of } from 'rxjs';
+import { filter, map, startWith, switchMap, take, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-club',
@@ -16,67 +14,111 @@ import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
   styleUrls: ['./select-club.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectClubComponent implements OnInit {
+export class SelectClubComponent implements OnInit, OnDestroy {
   @Input()
-  formGroup: FormGroup;
+  controlName = 'club';
 
   @Input()
-  requiredPermission: string[];
+  formGroup!: FormGroup;
+
+  @Input()
+  singleClubPermission!: string;
+
+  @Input()
+  allClubPermission!: string;
+
+  @Input()
+  needsPermission: boolean = true;
 
   formControl = new FormControl(null, [Validators.required]);
-  options: Club[];
-  filteredOptions: Observable<Club[]>;
+  options!: Club[];
 
   constructor(
     private clubService: ClubService,
-    private authSerice: AuthService
+    private claimSerice: ClaimService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private user: UserService
   ) {}
 
   async ngOnInit() {
-    this.formGroup.addControl('club', this.formControl);
+    this.formGroup.addControl(this.controlName, this.formControl);
 
-    // Get all where the user has rights
-    this.options = await this.authSerice.userPermissions$
-      .pipe(
-        take(1),
-        map((r) => r.filter((x) => x.indexOf('enlist:team') != -1)),
-        map((r) => r.map((c) => c.replace('_enlist:team', ''))),
-        switchMap((ids) => this.clubService.getClubs({ ids, first: 999 })),
-        map((data) => {
-          const count = data.clubs?.total || 0;
-          if (count) {
-            return data.clubs.edges.map((x) => new Club(x.node));
-          } else {
-            return [];
-          }
-        })
-      )
-      .toPromise();
+    this.options =
+      (await lastValueFrom(
+        combineLatest([
+          this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
+          this.claimSerice.hasAllClaims$([`${this.allClubPermission}`]),
+          this.user.profile$.pipe(filter((p) => !!p?.player)),
+        ]).pipe(
+          switchMap(([single, all]) => {
+            if (all) {
+              return this.clubService.getClubs({ first: 999 });
+            } else if (single) {
+              return of({ clubs: [], total: 0 });
+              // TODO: fix this :)
+              // return this.claimSerice.userPermissions$.pipe(
+              //   map((r) => r.filter((x) => x.indexOf(this.singleClubPermission) != -1)),
+              //   map((r) => r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))),
+              //   switchMap((ids) => this.clubService.getClubs({ ids, first: ids.length }))
+              // );
+            } else if (this.needsPermission) {
+              return of({ clubs: [], total: 0 });
+            } else {
+              return this.clubService.getClubs({ first: 999 });
+            }
+          }),
+          take(1),
+          map((data) => {
+            const count = data?.total || 0;
+            if (count) {
+              return data?.clubs?.map((x) => new Club(x.node))?.sort((a, b) => a.name!.localeCompare(b.name!));
+            } else {
+              return [];
+            }
+          })
+        )
+      )) ?? [];
 
-      // When we have exactly 1 club, we might as well set it
-    if (this.options.length == 1) {
-      this.formControl.setValue(this.options[0]);
+    this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: { club: r },
+        queryParamsHandling: 'merge',
+      });
+    });
+
+    const params = this.activatedRoute.snapshot.queryParams;
+    let foundClub = null;
+
+    if (params && params['club'] && this.options.length > 0) {
+      foundClub = this.options.find((r) => r.id == params['club']);
+    }
+
+    if (foundClub == null) {
+      const clubIds = this.user?.profile?.clubs?.map((r) => r.id);
+      if (clubIds) {
+        foundClub = this.options.find((r) => clubIds.includes(r.id));
+      }
+    }
+
+    if (foundClub == null && this.options.length == 1) {
+      foundClub = this.options[0];
       this.formControl.disable();
     }
 
-    this.filteredOptions = this.formControl.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filter(value))
-    );
-  }
-
-  private _filter(value: string | Club): Club[] {
-    // when selected the filter is with the selected object
-    if (typeof value === 'string') {
-      const filterValue = value.toLowerCase();
-
-      return this.options.filter(
-        (option) => option.name.toLowerCase().indexOf(filterValue) === 0
-      );
+    if (foundClub) {
+      this.formControl.setValue(foundClub.id, { onlySelf: true });
+    } else {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: { club: undefined, team: undefined, encounter: undefined },
+        queryParamsHandling: 'merge',
+      });
     }
   }
 
-  getOptionText(option) {
-    return option?.name;
+  ngOnDestroy() {
+    this.formGroup.removeControl(this.controlName);
   }
 }

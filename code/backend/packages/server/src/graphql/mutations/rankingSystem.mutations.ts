@@ -20,7 +20,7 @@ export const addRankingSystemMutation = {
     }
   },
   resolve: async (findOptions, { rankingSystem: rankingSystemInput }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:ranking'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:ranking'])) {
       logger.warn('User tried something it should\'t have done', {
         required: {
           anyClaim: ['add:ranking']
@@ -67,7 +67,7 @@ export const updateRankingSystemMutation = {
     }
   },
   resolve: async (findOptions, { rankingSystem }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:ranking'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:ranking'])) {
       logger.warn('User tried something it should\'t have done', {
         required: {
           anyClaim: ['edit:ranking']
@@ -87,12 +87,12 @@ export const updateRankingSystemMutation = {
       });
 
       // Destroy existing
-      await GroupSystems.destroy({ where: { SystemId: rankingSystem.id }, transaction });
+      await GroupSystems.destroy({ where: { systemId: rankingSystem.id }, transaction });
       // Create new
       await GroupSystems.bulkCreate(
         rankingSystem.groups?.map(g => {
           return {
-            SystemId: rankingSystem.id,
+            systemId: rankingSystem.id,
             groupId: g.id
           };
         }),
@@ -107,7 +107,7 @@ export const updateRankingSystemMutation = {
       await transaction.commit();
       return dbEvent;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }

@@ -1,8 +1,13 @@
-import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { Injectable } from '@angular/core';
+
 import { CompetitionEncounter } from 'app/_shared';
-import { map } from 'rxjs/operators';
-import * as teamQuery from '../../graphql/teams/queries/GetTeamQuery.graphql';
+import { Availability, EncounterChange } from 'app/_shared/models';
+import { map, tap } from 'rxjs/operators';
+import * as encounterQuery from '../../graphql/encounters/queries/GetEncounterQuery.graphql';
+import * as encountersQuery from '../../graphql/encounters/queries/GetEncountersQuery.graphql';
+import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.graphql';
+import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
 
 @Injectable({
   providedIn: 'root',
@@ -10,14 +15,85 @@ import * as teamQuery from '../../graphql/teams/queries/GetTeamQuery.graphql';
 export class EncounterService {
   constructor(private apollo: Apollo) {}
 
-  getEncounters(teamId: string) {
+  getEncounters(teamId: string, between: string []) {
     return this.apollo
-      .query({
-        query: teamQuery,
+      .query<{
+        encounterCompetitions: {
+          total: number;
+          edges: { cursor: string; node: CompetitionEncounter }[];
+        };
+      }>({
+        query: encountersQuery,
         variables: {
           id: teamId,
+          where: {
+            date: { $between: between },
+          },
         },
       })
-      .pipe(map((x: any) => x.data?.encounters.map(s => new CompetitionEncounter(s))));
+      .pipe(
+        map((x) => {
+          return {
+            total: x.data.encounterCompetitions?.total,
+            encounters: x.data.encounterCompetitions?.edges?.map((e) => {
+              return {
+                cursor: e.cursor,
+                node: new CompetitionEncounter(e.node),
+              };
+            }),
+          };
+        })
+      );
+  }
+
+  getEncounter(encounterId: string) {
+    return this.apollo
+      .query<{
+        encounterCompetition: CompetitionEncounter;
+      }>({
+        query: encounterQuery,
+        variables: {
+          id: encounterId,
+        },
+      })
+      .pipe(
+        map((x) => {
+          return new CompetitionEncounter(x.data.encounterCompetition);
+        })
+      );
+  }
+
+  getRequests(encounterId: string) {
+    return this.apollo
+      .query<{
+        encounterChange: EncounterChange;
+      }>({
+        query: requestsQuery,
+        variables: {
+          id: encounterId,
+        },
+      })
+      .pipe(map((x) => new EncounterChange(x.data?.encounterChange)));
+  }
+
+  addEncounterChange(encounterChange: EncounterChange, home: boolean) {
+    return this.apollo
+      .mutate<{
+        addChangeEncounter: EncounterChange;
+      }>({
+        mutation: changeEncounterRequestMutation,
+        variables: {
+          change: {
+            accepted: encounterChange.accepted,
+            encounterId: encounterChange.encounter!.id,
+            home,
+            dates: encounterChange.dates,
+            comment: {
+              message: home ? encounterChange.homeComment!.message : encounterChange.awayComment!.message,
+            },
+          },
+        },
+      })
+      .pipe(map((x) => new EncounterChange(x.data?.addChangeEncounter)));
   }
 }

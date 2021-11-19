@@ -29,10 +29,10 @@ export class PointCalculator {
       double: this._type.amountOfLevels,
     }
 
-    const rankingPlayer1Team1 = player1Team1?.lastRankingPlace ?? maxRanking;
-    const rankingPlayer2Team1 = player2Team1?.lastRankingPlace ?? maxRanking;
-    const rankingPlayer1Team2 = player1Team2?.lastRankingPlace ?? maxRanking;
-    const rankingPlayer2Team2 = player2Team2?.lastRankingPlace ?? maxRanking;
+    const rankingPlayer1Team1 = player1Team1?.lastRankingPlaces ?? maxRanking;
+    const rankingPlayer2Team1 = player2Team1?.lastRankingPlaces ?? maxRanking;
+    const rankingPlayer1Team2 = player1Team2?.lastRankingPlaces ?? maxRanking;
+    const rankingPlayer2Team2 = player2Team2?.lastRankingPlaces ?? maxRanking;
       
     let pointsFrom: string;
 

@@ -1,9 +1,12 @@
-import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { Injectable } from '@angular/core';
+
 import { map } from 'rxjs/operators';
 import { Club, Player, RankingSystem } from './../../models';
 
 import * as clubQuery from '../../graphql/clubs/queries/GetClubQuery.graphql';
+import * as clubGetBasePlayersQuery from '../../graphql/clubs/queries/GetBasePlayersQuery.graphql';
+import * as clubGetCompYearsQuery from '../../graphql/clubs/queries/GetCompYearsQuery.graphql';
 import * as clubsQuery from '../../graphql/clubs/queries/GetClubsQuery.graphql';
 
 import * as addClubMutation from '../../graphql/clubs/mutations/addClub.graphql';
@@ -28,6 +31,8 @@ export class ClubService {
       includeRoles?: boolean;
       includeLocations?: boolean;
       teamsWhere?: { [key: string]: any };
+      teamPlayersWhere?: { [key: string]: any };
+      systemId?: string;
     }
   ) {
     // setting default values
@@ -54,6 +59,8 @@ export class ClubService {
           includeRoles: args.includeRoles,
           includeLocations: args.includeLocations,
           teamsWhere: args.teamsWhere,
+          teamPlayersWhere: args.teamPlayersWhere,
+          systemId: args.systemId,
         },
       })
       .pipe(map((x) => new Club(x.data.club)));
@@ -67,7 +74,7 @@ export class ClubService {
           club,
         },
       })
-      .pipe(map((x) => new Club(x.data.addClub)));
+      .pipe(map((x) => new Club(x.data!.addClub)));
   }
 
   removeClub(club: Club) {
@@ -82,6 +89,15 @@ export class ClubService {
   addPlayer(club: Club, player: Player) {
     return this.apollo.mutate({
       mutation: addPlayerToClubMutation,
+      awaitRefetchQueries: true,
+      refetchQueries: [
+        {
+          query: clubQuery,
+          variables: {
+            id: club.id,
+          },
+        },
+      ],
       variables: {
         playerId: player.id,
         clubId: club.id,
@@ -97,12 +113,12 @@ export class ClubService {
           club,
         },
       })
-      .pipe(map((x) => new Club(x.data.updateClub)));
+      .pipe(map((x) => new Club(x.data!.updateClub)));
   }
 
   getClubs(args?: { first?: number; after?: string; query?: string; ids?: string[] }) {
     let where = undefined;
-    if (args.query) {
+    if (args?.query) {
       where = {
         name: {
           $iLike: `%${args.query}%`,
@@ -110,7 +126,7 @@ export class ClubService {
       };
     }
 
-    if (args.ids) {
+    if (args?.ids) {
       where = {
         id: {
           in: args.ids,
@@ -127,21 +143,68 @@ export class ClubService {
       }>({
         query: clubsQuery,
         variables: {
-          first: args.first,
-          after: args.after,
+          first: args?.first,
+          after: args?.after,
           where,
+        },
+
+      })
+      .pipe(
+        map((x) => {
+          return {
+            total: x.data.clubs.total,
+            clubs: x.data.clubs.edges?.map((e) => {
+              return {
+                cursor: e.cursor,
+                node: new Club(e.node),
+              };
+            }),
+          };
+        })
+    );
+  }
+
+  getTeamsForSubEvents(clubId: string, subEvents?: string[]) {
+    var where = {};
+
+    if (subEvents) {
+      where = {
+        id: { ['$in']: subEvents },
+      };
+    }
+
+    return this.apollo
+      .query<{ club: Club }>({
+        query: clubGetBasePlayersQuery,
+        variables: {
+          id: clubId,
+          subEventsWhere: where,
         },
       })
       .pipe(
         map((x) => {
-          if (x.data.clubs) {
-            x.data.clubs.edges = x.data.clubs.edges.map((x) => {
-              x.node = new Club(x.node);
-              return x;
-            });
-          }
-          return x.data;
+          return x.data.club.teams?.filter((r) => r.subEvents.length > 0 && r.subEvents[0].meta != null) ?? [];
         })
+      );
+  }
+
+  getCompetitionYears(clubId: string) {
+    return this.apollo
+      .query<{ club: Club }>({
+        query: clubGetCompYearsQuery,
+        variables: {
+          id: clubId,
+        },
+      })
+      .pipe(
+        map(
+          (x) =>
+            x.data.club.teams
+              ?.map((r) => r.subEvents.map((r) => r.event?.startYear))
+              .flat()
+              .filter((x, i, a) => a.indexOf(x) === i)
+              .sort() ?? []
+        )
       );
   }
 }

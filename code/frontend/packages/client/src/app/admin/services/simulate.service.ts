@@ -11,17 +11,14 @@ export class SimulateService {
   private urlBase = `${environment.api}/${environment.apiVersion}/simulate`;
   constructor(private httpClient: HttpClient) {}
 
-  calculateRanking(
-    systems: string[],
-    endDate: Date,
-    startDate?: Date,
-    startingRankings?: boolean
-  ) {
+  calculateRanking(systems: string[], endDate: Date, startDate?: Date, startingRankings?: boolean) {
     if (systems.length <= 0) {
       return of();
     }
 
-    let params = {
+    let params: {
+      [key: string]: any;
+    } = {
       systems: `${systems.join(',')}`,
       endDate: endDate.toISOString(),
     };

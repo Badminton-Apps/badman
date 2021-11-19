@@ -9,7 +9,7 @@ import { Role } from './role.model';
 export class PlayerRoleMembership extends Model {
   @ForeignKey(() => Player)
   @Column
-  userId: number;
+  playerId: number;
 
   @ForeignKey(() => Role)
   @Column

@@ -20,22 +20,22 @@ export class TeamPlayersComponent implements OnInit {
   @Output() onPlayerUpdated = new EventEmitter<Player>();
 
   @Input()
-  team: Team;
+  team!: Team;
 
   @Input()
-  club: Club;
+  club!: Club;
 
   @Input()
-  disableIds: string[] = [];
+  disableIds: string[] | null = [];
 
-  where: {};
+  where!: {};
 
   baseComplete: boolean = false;
 
   ngOnInit() {
     this.checkIfBaseComplete();
     this.where = {
-      gender: this.team.type == "MX" ? undefined : this.team.type
+      gender: this.team.type == "MX" || this.team.type == "NATIONAL" ? undefined : this.team.type
     }
   }
 

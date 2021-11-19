@@ -2,5 +2,6 @@
 export enum SubEventType {
   M = 'M',
   F = 'F',
-  MX = 'MX'
+  MX = 'MX',
+  NATIONAL = 'NATIONAL',
 }

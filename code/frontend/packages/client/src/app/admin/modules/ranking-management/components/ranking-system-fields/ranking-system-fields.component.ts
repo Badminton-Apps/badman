@@ -20,11 +20,11 @@ export class RankingSystemFieldsComponent implements OnInit {
   system: RankingSystem = {} as RankingSystem;
   
   @Input()
-  groups: RankingSystemGroup[];
+  groups!: RankingSystemGroup[] | null;
 
   @Output() save = new EventEmitter<RankingSystem>();
 
-  rankingSystemForm: FormGroup;
+  rankingSystemForm!: FormGroup;
 
   ngOnInit() {
     this.rankingSystemForm = new FormGroup({
@@ -109,7 +109,7 @@ export class RankingSystemFieldsComponent implements OnInit {
     }
   }
 
-  groupCompare(option, value) {
+  groupCompare(option: RankingSystemGroup, value: RankingSystemGroup) {
     return option.id === value.id
   }
 }

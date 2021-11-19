@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'levelToLetter',
 })
 export class LevelToLetterPipe implements PipeTransform {
-  transform(value: number): unknown {
+  transform(value: number) {
     switch (value) {
       case 1:
         return 'A';
@@ -18,6 +18,8 @@ export class LevelToLetterPipe implements PipeTransform {
         return 'C2';
       case 6:
         return 'D';
+      default:
+        return;
     }
   }
 }

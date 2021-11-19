@@ -1,6 +1,11 @@
-query GetRolesQuery($clubId: ID!) {
-  roles(clubId: $clubId) {
+query GetRolesQuery($where: SequelizeJSON) {
+  roles(where: $where) {
     id
     name
+    players {
+      id
+      firstName
+      lastName
+    }
   }
 }

@@ -11,6 +11,7 @@ spec:
   ports:
   - port: {{ .Values.service.externalPort }}
     protocol: TCP
+    name: internal
     targetPort: {{ .Values.service.internalPort }}
   selector:
     app: {{ template "fullname" . }}

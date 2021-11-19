@@ -8,28 +8,22 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:directive": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:modules": {
-          "skipTests": true,
-          "spec": false
+      "skipTests": true
         },
         "@schematics/angular:pipe": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:service": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         },
         "@schematics/angular:class": {
-          "skipTests": true,
-          "spec": false
+          "skipTests": true
         }
       },
       "root": "",
@@ -49,15 +43,29 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "showCircularDependencies": false,
-            "assets": ["src/favicon.ico", "src/assets", "src/manifest.webmanifest"],
-            "styles": ["src/styles.scss", "../../node_modules/prismjs/themes/prism-okaidia.css"],
+            "assets": [
+              "src/favicon.ico",
+              "src/ads.txt",
+              "src/assets",
+              "src/manifest.webmanifest"
+            ],
+            "styles": [
+              "src/styles.scss",
+              "../../node_modules/prismjs/themes/prism-okaidia.css",
+              "../../node_modules/cookieconsent/build/cookieconsent.min.css"
+            ],
             "scripts": [
               "../../node_modules/prismjs/prism.js",
               "../../node_modules/prismjs/components/prism-markdown.min.js",
-              "../../node_modules/prismjs/components/prism-typescript.min.js"
+              "../../node_modules/prismjs/components/prism-typescript.min.js",
+              "../../node_modules/cookieconsent/build/cookieconsent.min.js"
             ],
-            "allowedCommonJsDependencies": ["echarts", "zen-observable", "moment-timezone", "zrender"]
+            "allowedCommonJsDependencies": [
+              "echarts",
+              "zen-observable",
+              "moment-timezone",
+              "zrender"
+            ]
           },
           "configurations": {
             "production": {
@@ -70,7 +78,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -89,6 +96,14 @@
               ],
               "serviceWorker": true,
               "ngswConfigPath": "ngsw-config.json"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           }
         },
@@ -100,8 +115,12 @@
           "configurations": {
             "production": {
               "browserTarget": "client:build:production"
+            },
+            "development": {
+              "browserTarget": "client:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -121,16 +140,15 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "codeCoverage": true,
-            "assets": ["src/favicon.ico", "src/assets", "src/manifest.webmanifest"],
-            "styles": ["src/styles.scss"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest"
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
             "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["tsconfig.app.json", "tsconfig.spec.json", "e2e/tsconfig.json"],
-            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
@@ -150,6 +168,7 @@
   },
   "defaultProject": "client",
   "cli": {
-    "analytics": "8a73d833-ff12-494b-b30d-10d49e1ba140"
+    "analytics": "8a73d833-ff12-494b-b30d-10d49e1ba140",
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }

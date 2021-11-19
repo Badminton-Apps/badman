@@ -1,5 +1,6 @@
 export enum RankingSystems {
   BVL = 'BVL',
   LFBB = 'LFBB',
-  ORIGINAL = 'ORIGINAL'
+  ORIGINAL = 'ORIGINAL',
+  VISUAL = 'VISUAL'
 }

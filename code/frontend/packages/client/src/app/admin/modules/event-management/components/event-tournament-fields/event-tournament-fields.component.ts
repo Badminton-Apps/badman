@@ -12,5 +12,5 @@ export class EventTournamentFieldsComponent {
   @Input()
   event: TournamentEvent = {} as TournamentEvent;
 
-  eventForm: FormGroup;
+  eventForm!: FormGroup;
 }
