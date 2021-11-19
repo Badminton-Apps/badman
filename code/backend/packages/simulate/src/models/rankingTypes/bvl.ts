@@ -124,7 +124,7 @@ export class BvlRankingCalc extends RankingCalc {
             [Op.ne]: null
           }
         },
-        attributes: ['points', 'PlayerId', 'differenceInLevel'],
+        attributes: ['points', 'playerId', 'differenceInLevel'],
         include: [
           {
             model: Game,
@@ -139,9 +139,9 @@ export class BvlRankingCalc extends RankingCalc {
         ]
       })
     ).map((x: RankingPoint) => {
-      const points = eligbleForRanking.get(x.PlayerId) || [];
+      const points = eligbleForRanking.get(x.playerId) || [];
       points.push(x);
-      eligbleForRanking.set(x.PlayerId, points);
+      eligbleForRanking.set(x.playerId, points);
     });
 
     let placesMen = [];
@@ -159,7 +159,7 @@ export class BvlRankingCalc extends RankingCalc {
       gameCount = await this.countGames(players, endDate, this.rankingType);
     }
 
-    for await (const [key, player] of players) {
+    for (const [key, player] of players) {
       const rankingPoints = eligbleForRanking.get(player.id) || [];
       const inactive = { single: false, double: false, mix: false };
 
@@ -175,7 +175,7 @@ export class BvlRankingCalc extends RankingCalc {
       }
 
       const lastRanking =
-        player.lastRankingPlace ??
+        player.lastRankingPlaces.find(p => p.systemId === this.rankingType.id) ??
         ({
           single: this.rankingType.amountOfLevels,
           mix: this.rankingType.amountOfLevels,
@@ -188,7 +188,7 @@ export class BvlRankingCalc extends RankingCalc {
         inactive,
         updateRankings
       );
-      newPlace.PlayerId = player.id;
+      newPlace.playerId = player.id;
       newPlace.SystemId = this.rankingType.id;
       newPlace.rankingDate = endDate;
 
@@ -321,7 +321,7 @@ export class BvlRankingCalc extends RankingCalc {
       return RankingPoint.count({
         where: {
           SystemId: rankingType.id,
-          PlayerId: chunk
+          playerId: chunk
         },
         include: [
           {
@@ -334,7 +334,7 @@ export class BvlRankingCalc extends RankingCalc {
                     [Op.gt]: moment(endDate).subtract(
                       rankingType.inactivityAmount,
                       rankingType.inactivityUnit
-                    )
+                    ).toDate()
                   },
                   { [Op.lte]: endDate }
                 ]
@@ -343,11 +343,11 @@ export class BvlRankingCalc extends RankingCalc {
             required: true
           }
         ],
-        group: ['RankingPoint.PlayerId', 'game.gameType']
+        group: ['RankingPoint.playerId', 'game.gameType']
       });
     };
 
-    for await (const chunk of chunks) {
+    for (const chunk of chunks) {
       lastWeeks = lastWeeks.concat(await getCount(chunk));
     }
 
@@ -360,7 +360,7 @@ export class BvlRankingCalc extends RankingCalc {
       }
     >();
     lastWeeks.forEach(result => {
-      const player = results.get(result.PlayerId) || {
+      const player = results.get(result.playerId) || {
         single: 0,
         double: 0,
         mix: 0
@@ -377,7 +377,7 @@ export class BvlRankingCalc extends RankingCalc {
           break;
       }
 
-      results.set(result.PlayerId, player);
+      results.set(result.playerId, player);
     });
 
     return results;

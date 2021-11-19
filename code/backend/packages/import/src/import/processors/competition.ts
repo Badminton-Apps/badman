@@ -6,15 +6,15 @@ import {
   ImporterFile,
   logger,
   RankingSystemGroup,
-  SubEventCompetition
+  SubEventCompetition,
+  ProcessStep
 } from '@badvlasim/shared';
 import { Transaction, Op } from 'sequelize';
-import { ImportStep } from '../import-step';
-import { ProcessImport } from '../processor';
+import { ProcessImport } from '../importProcessor';
 
 export abstract class CompetitionProcessor extends ProcessImport {
-  protected addEvent(): ImportStep<EventCompetition> {
-    return new ImportStep(
+  protected addEvent(): ProcessStep<EventCompetition> {
+    return new ProcessStep(
       'event',
       async (args: {
         importFile: ImporterFile;
@@ -22,7 +22,7 @@ export abstract class CompetitionProcessor extends ProcessImport {
         event?: EventCompetition;
       }) => {
         if (!args.event) {
-          args.event = this.importSteps.get('find_event')?.getData();
+          args.event = this.importProcess.getData('find_event')
         }
 
         if (args.event) {
@@ -30,12 +30,12 @@ export abstract class CompetitionProcessor extends ProcessImport {
         }
 
         try {
-          return new EventCompetition({
+          const event = await new EventCompetition({
             name: args.importFile.name,
-            uniCode: args.importFile.uniCode,
             startYear: args.importFile.firstDay?.getFullYear(),
             type: this.getLeague(args.importFile)
           }).save({ transaction: args.transaction });
+          return event;
         } catch (e) {
           logger.error('import failed', e);
           throw e;
@@ -44,8 +44,8 @@ export abstract class CompetitionProcessor extends ProcessImport {
     );
   }
 
-  protected findEvent(): ImportStep<EventCompetition> {
-    return new ImportStep(
+  protected findEvent(): ProcessStep<EventCompetition> {
+    return new ProcessStep(
       'find_event',
       async (args: {
         event: EventCompetition;
@@ -58,25 +58,26 @@ export abstract class CompetitionProcessor extends ProcessImport {
 
         const or: any = [{ name: args.importFile.name }];
 
-        if (args.importFile.uniCode) {
-          or.push({ uniCode: args.importFile.uniCode });
+        if (args.importFile.visualCode) {
+          or.push({ visualCode: args.importFile.visualCode });
         }
         const where: { [key: string]: any } = {
           startYear: args.importFile.firstDay?.getFullYear(),
           [Op.or]: or
         };
 
-        return EventCompetition.findOne({ where, transaction: args.transaction });
+        const event = await EventCompetition.findOne({ where, transaction: args.transaction });
+        return event;
       }
     );
   }
 
-  protected cleanupEvent(): ImportStep<any[]> {
-    return new ImportStep(
+  protected cleanupEvent(): ProcessStep<any[]> {
+    return new ProcessStep(
       'cleanup_event',
       async (args: { event: EventCompetition; transaction: Transaction }) => {
         if (!args.event) {
-          const event: EventCompetition = this.importSteps.get('find_event')?.getData();
+          const event: EventCompetition = this.importProcess.getData('find_event');;
           if (!event) {
             return;
           }

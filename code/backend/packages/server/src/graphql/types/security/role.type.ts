@@ -9,6 +9,7 @@ import { ClaimInputType, ClaimType } from './claim.type';
 export const RoleType = new GraphQLObjectType({
   name: 'Role',
   description: 'A Role',
+  
   fields: () =>
     Object.assign(getAttributeFields(Role), {
       club: {

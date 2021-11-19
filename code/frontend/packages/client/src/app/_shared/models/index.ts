@@ -15,5 +15,6 @@ export * from './team.model';
 export * from './ranking-point.model';
 export * from './location.model';
 export * from './comment.model';
+export * from './banner.model';
 // end:ng42.barrel
 

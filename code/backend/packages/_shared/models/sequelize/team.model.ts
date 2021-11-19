@@ -1,28 +1,4 @@
 import {
-  AfterConnect,
-  AfterCreate,
-  AfterUpdate,
-  AllowNull,
-  BeforeBulkCreate,
-  BeforeBulkUpdate,
-  BeforeCreate,
-  BeforeUpdate,
-  BelongsTo,
-  BelongsToMany,
-  Column,
-  DataType,
-  Default,
-  ForeignKey,
-  HasMany,
-  HasOne,
-  Index,
-  IsUUID,
-  Model,
-  PrimaryKey,
-  Table,
-  Unique
-} from 'sequelize-typescript';
-import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -35,6 +11,7 @@ import {
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
+  CreateOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -43,17 +20,35 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin
+  HasManySetAssociationsMixin
 } from 'sequelize';
+import {
+  AfterBulkUpdate,
+  AfterUpdate,
+  BeforeBulkCreate,
+  BeforeCreate,
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  HasMany,
+  Index,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique
+} from 'sequelize-typescript';
+import { RankingSystem } from '.';
+import { SubEventType } from '../enums';
 import { Club } from './club.model';
 import { EncounterCompetition, Location, SubEventCompetition } from './event';
+import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player } from './player.model';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { TeamSubEventMembership } from './team-subEvent-membership.model';
-import { SubEventType } from '../enums';
-import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 
 @Table({
   timestamps: true,
@@ -65,67 +60,31 @@ export class Team extends Model {
   }
 
   // #region hooks
-
   @BeforeBulkCreate
-  static setAbbriviations(instances: Team[]) {
+  static async setAbbriviations(instances: Team[], options: CreateOptions) {
     for (const instance of instances ?? []) {
-      this.setAbbriviation(instance);
+      await this.setAbbriviation(instance, options);
     }
   }
 
   @BeforeCreate
-  static setAbbriviation(instance: Team) {
-    if (!instance.abbreviation && instance.isNewRecord && instance.name) {
-      const suffix = (instance?.name
-        ?.substr(instance?.name?.length - 4)
-        .match(/(\d+[GHD])/) ?? [''])[0];
-      let club = instance.name?.replace(` ${suffix}`, '');
-      club = club.replace(/[^0-9a-zA-Z]+/, ' ');
-
-      if (club.indexOf(' ') !== -1) {
-        club = club.match(/\b(\w)/g)?.join('');
-      }
-
-      if (suffix.length) {
-        instance.abbreviation = `${club} ${suffix}`;
-      }
+  static async setAbbriviation(instance: Team, options: CreateOptions) {
+    if (instance.isNewRecord) {
+      await this.generateAbbreviation(instance, options);
     }
   }
 
-  @BeforeBulkCreate
-  static extractNumberAndTypes(instances: Team[]) {
-    for (const instance of instances ?? []) {
-      this.extractNumberAndType(instance);
-    }
+  static async generateAbbreviation(instance: Team, options: CreateOptions) {
+    const dbClub = await Club.findByPk(instance.clubId, {
+      transaction: options.transaction
+    });
+    instance.name = `${dbClub.name} ${
+      instance.teamNumber
+    }${this.getLetterForRegion(instance.type, 'vl')}`;
+    instance.abbreviation = `${dbClub.abbreviation} ${
+      instance.teamNumber
+    }${this.getLetterForRegion(instance.type, 'vl')}`;
   }
-
-  @BeforeCreate
-  static extractNumberAndType(instance: Team) {
-    const suffix = (instance?.name
-      ?.substr(instance?.name?.length - 4)
-      .match(/(\d+[GHD])/) ?? [''])[0];
-
-    if (!instance.teamNumber) {
-      instance.teamNumber = +suffix.replace(/[GHD]/, '');
-    }
-
-    if (!instance.type) {
-      const type = suffix.replace(/\d+/, '');
-
-      switch (type) {
-        case 'G':
-          instance.type = SubEventType.MX;
-          break;
-        case 'H':
-          instance.type = SubEventType.M;
-          break;
-        case 'D':
-          instance.type = SubEventType.F;
-          break;
-      }
-    }
-  }
-
   // #endregion
 
   @Default(DataType.UUIDV4)
@@ -184,11 +143,88 @@ export class Team extends Model {
   )
   players: Player[];
 
+  private _basePlayers: Player[] = null;
+
+  basePlayers(system: RankingSystem): Player[] {
+    if (this._basePlayers !== null) {
+      return this._basePlayers;
+    }
+
+    this._basePlayers = this.players.filter(
+      r => r.getDataValue('TeamPlayerMembership')?.base ?? false
+    );
+
+    if (this._basePlayers.length > 4) {
+      if (this.type === SubEventType.MX) {
+        this._basePlayers = [
+          ...this._basePlayers
+            .filter(p => p.gender === 'M')
+            .sort(
+              (b, a) =>
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.single ?? 12) +
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.double ?? 12) +
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ??
+                  12) -
+                ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.single ?? 12) +
+                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                    ?.double ?? 12) +
+                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                    ?.mix ?? 12))
+            )
+            .slice(0, 2),
+          ...this._basePlayers
+            .filter(p => p.gender === 'F')
+            .sort(
+              (b, a) =>
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.single ?? 12) +
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.double ?? 12) +
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ??
+                  12) -
+                ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.single ?? 12) +
+                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                    ?.double ?? 12) +
+                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                    ?.mix ?? 12))
+            )
+            .slice(0, 2)
+        ];
+      } else {
+        this._basePlayers = this._basePlayers
+          .sort(
+            (b, a) =>
+              (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                ?.single ?? 12) +
+              (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                ?.double ?? 12) -
+              ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                ?.single ?? 12) +
+                (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.double ?? 12))
+          )
+          .slice(0, 4);
+      }
+    }
+
+    return this._basePlayers;
+  }
+
   @Column
   type: SubEventType;
 
   @BelongsTo(() => Player, 'captainId')
   captain: Player;
+
+  @Column
+  email: string;
+
+  @Column
+  phone: string;
 
   @Unique('unique_constraint')
   @Column
@@ -203,6 +239,26 @@ export class Team extends Model {
 
   @HasMany(() => EncounterCompetition, 'awayTeamId')
   awayEncounters: EncounterCompetition;
+
+  private _baseIndex: number = -1;
+
+  baseIndex(system: RankingSystem): number {
+    // Only run this once per team
+    if (this._baseIndex !== -1) {
+      return this._baseIndex;
+    }
+
+    if (this.players?.length === null) {
+      return -1;
+    }
+    this._baseIndex = Team.getIndexFromPlayers(
+      this.type,
+      this.basePlayers(system).map(r =>
+        r.lastRankingPlaces.find(place => place.systemId === system.id)
+      )
+    );
+    return this._baseIndex;
+  }
 
   // Belongs to Club
   getClub!: BelongsToGetAssociationMixin<Club>;
@@ -284,4 +340,46 @@ export class Team extends Model {
   // Belongs to Captain
   getCaptain!: BelongsToGetAssociationMixin<Player>;
   setCaptain!: BelongsToSetAssociationMixin<Player, string>;
+
+  static getIndexFromPlayers(
+    type: SubEventType,
+    rankings: { single: number; double: number; mix: number }[]
+  ): number {
+    if (type !== 'MX') {
+      const bestPlayers = rankings.map(
+        r => (r?.single ?? 12) + (r?.double ?? 12)
+      );
+
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (4 - bestPlayers.length) * 24;
+      }
+
+      return bestPlayers.reduce((a, b) => a + b, missingIndex);
+    } else {
+      const bestPlayers = rankings.map(
+        r => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12)
+      );
+
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (4 - bestPlayers.length) * 36;
+      }
+
+      return bestPlayers.reduce((a, b) => a + b, missingIndex);
+    }
+  }
+
+  static getLetterForRegion(type: SubEventType, region: 'vl' | 'wl') {
+    switch (type) {
+      case SubEventType.F:
+        return region === 'vl' ? 'D' : 'D';
+      case SubEventType.M:
+        return region === 'vl' ? 'H' : 'M';
+      case SubEventType.MX:
+        return region === 'vl' ? 'G' : 'Mx';
+      case SubEventType.NATIONAL:
+        return '';
+    }
+  }
 }

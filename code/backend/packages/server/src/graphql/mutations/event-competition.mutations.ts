@@ -18,7 +18,7 @@ export const addEventCompetitionMutation = {
     }
   },
   resolve: async (findOptions, { eventCompetition }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['add:competition'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:competition'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['add:competition']
@@ -67,7 +67,7 @@ export const addEventCompetitionMutation = {
       await transaction.commit();
       return eventCompetitionDb;
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -83,7 +83,7 @@ export const updateEventCompetitionMutation = {
     }
   },
   resolve: async (findOptions, { eventCompetition }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:competition'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:competition'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:competition']
@@ -111,7 +111,7 @@ export const updateEventCompetitionMutation = {
 
       await transaction.commit();
     } catch (e) {
-      logger.warn('rollback');
+      logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }
@@ -131,7 +131,7 @@ export const setGroupsCompetitionMutation = {
     }
   },
   resolve: async (findOptions, { id, groupIds }, context) => {
-    if (context?.req?.user == null || !context.req.user.hasAnyPermission(['edit:competition'])) {
+    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:competition'])) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:competition']

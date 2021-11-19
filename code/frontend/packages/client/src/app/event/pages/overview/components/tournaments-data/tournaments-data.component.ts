@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
 })
 export class tournamentsDataComponent {
   @Input()
-  data: Event;
+  data!: Event;
 }

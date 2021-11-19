@@ -3,12 +3,18 @@
     <button class="options" mat-icon-button [matMenuTriggerFor]="options">
       <mat-icon>more_vert</mat-icon>
     </button>
+
     <mat-menu #options="matMenu">
-      <button mat-menu-item *ngIf="this.canClaimAccount.canClaim" (click)="this.claimAccount.next(player.id)">
+      <button mat-menu-item *ngIf="!this.canClaimAccount?.isUser && !this.canClaimAccount?.canClaim">
+        Placeholder for favorite
+      </button>
+      <button mat-menu-item *ngIf="this.canClaimAccount?.isUser">Placeholder for profile</button>
+
+      <button mat-menu-item *ngIf="this.canClaimAccount?.canClaim" (click)="this.claimAccount.next(player.id!)">
         Claim
       </button>
 
-      <button mat-menu-item *ngIf="this.canClaimAccount.isClaimedByUser">You've requested this account</button>
+      <button mat-menu-item *ngIf="this.canClaimAccount?.isClaimedByUser">You've requested this account</button>
 
       <app-has-claim [any]="['edit:claims']">
         <button mat-menu-item [routerLink]="['/', 'admin', 'player', player.id, 'edit']">
@@ -26,11 +32,16 @@
     </div>
     <div class="name">
       <span class="up"> {{ this.player.firstName }} {{ this.player.lastName }}</span>
-      <span class="down"> {{ this.player.memberId }} - {{ this.player.gender }} </span>
+      <span class="down">
+        <ng-container *ngIf="this.playerClub"
+          ><a [routerLink]="['/', 'club', this.playerClub.id]">{{ this.playerClub.name }}</a> -</ng-container
+        >
+        {{ this.player.memberId }} - {{ this.player.gender }}
+      </span>
     </div>
 
     <div class="ranking" *ngIf="this.shownRanking">
-      <div class="single" [matTooltip]="singleTooltip">
+      <div class="single" [matTooltip]="singleTooltip" [matTooltipDisabled]="!singleTooltip">
         <span class="up">
           {{ this.shownRanking.single }}
           <mat-icon *ngIf="this.shownRanking.singleInactive" matTooltip="Player in inactive for single"
@@ -39,7 +50,7 @@
         </span>
         <span class="down" translate>systems.single</span>
       </div>
-      <div class="double" [matTooltip]="doubleTooltip">
+      <div class="double" [matTooltip]="doubleTooltip" [matTooltipDisabled]="!doubleTooltip">
         <span class="up">
           {{ this.shownRanking.double }}
           <mat-icon *ngIf="this.shownRanking.doubleInactive" matTooltip="Player in inactive for double"
@@ -48,7 +59,7 @@
         </span>
         <span class="down" translate>systems.double</span>
       </div>
-      <div class="mix" [matTooltip]="mixTooltip">
+      <div class="mix" [matTooltip]="mixTooltip" [matTooltipDisabled]="!mixTooltip">
         <span class="up">
           {{ this.shownRanking.mix }}
           <mat-icon *ngIf="this.shownRanking.mixInactive" matTooltip="Player in inactive for mix">warning </mat-icon>

@@ -1,8 +1,14 @@
-<div class="row">
-  <div class="mat-subheading-2">
-    Players, <small>index: {{ this.team.baseIndex }}</small>
+<div fxLayout="column">
+  <div class="mat-subheading-2" fxLayout="column">
+    <div>
+      {{ 'team.title.players' | translate }} <small>index: {{ this.team.baseIndex }}</small>
+    </div>
+    <div class="mat-caption">
+      {{ 'team.check-players' | translate }}
+    </div>
   </div>
 </div>
+
 <mat-list>
   <ng-container *ngIf="!(this.team.players && this.team.players.length > 0)">
     <mat-list-item>
@@ -13,15 +19,15 @@
   <ng-container *ngIf="this.team.players && this.team.players.length > 0">
     <mat-list-item *ngFor="let player of this.team.players">
       <mat-checkbox
-        [checked]="player.base"
-        [disabled]="(!player.base && this.baseComplete) || disableIds.indexOf(player.id) >= 0"
+        [checked]="player.base ?? false"
+        [disabled]="(!player.base && this.baseComplete) || disableIds!.indexOf(player.id!) >= 0"
         mat-line
         (change)="clicked(player, $event.checked)"
       >
         {{ player.fullName }}
         <small
           >({{ player.index }})
-          <ng-container *ngIf="disableIds.indexOf(player.id) >= 0"
+          <ng-container *ngIf="disableIds!.indexOf(player.id!) >= 0"
             >&nbsp; ({{ 'competition.enrollment.player-base' | translate }})</ng-container
           ></small
         >
@@ -39,14 +45,13 @@
       </button>
     </mat-list-item>
   </ng-container>
-  <mat-list-item>
-    <app-player-search
-      (onSelectPlayer)="this.playerAdded($event)"
-      [ignorePlayers]="this.team.players"
-      [allowCreation]="true"
-      [where]="this.where"
-      [club]="this.club"
-      label="Add player"
-    ></app-player-search>
-  </mat-list-item>
 </mat-list>
+
+<app-player-search
+  (onSelectPlayer)="this.playerAdded($event)"
+  [ignorePlayers]="this.team.players"
+  [allowCreation]="true"
+  [where]="this.where"
+  [club]="this.club"
+  label="Add player"
+></app-player-search>

@@ -1,7 +1,7 @@
 <div fxLayout="row" fxLayoutGap="10px">
   <mat-form-field fxFlex="auto" appearance="outline" fxFlex="auto">
     <mat-label>Search</mat-label>
-    <input (onAutocompleteSelected)="syncAutoComplete($event)" matGoogleMapsAutocomplete matInput required />
+    <input (onAutocompleteSelected)="syncAutoComplete($event)" matGoogleMapsAutocomplete matInput />
     <mat-icon color="primary" matSuffix>search</mat-icon>
   </mat-form-field>
 </div>
@@ -29,7 +29,7 @@
   <div fxLayout="row" fxLayoutGap="10px">
     <mat-form-field appearance="outline" fxFlex="20">
       <mat-label>{{ 'input.postalcode' | translate }}</mat-label>
-      <input formControlName="postalcode" matInput required type="number" />
+      <input formControlName="postalcode" matInput required />
     </mat-form-field>
     <mat-form-field appearance="outline" fxFlex="40">
       <mat-label>{{ 'input.city' | translate }}</mat-label>

@@ -13,8 +13,8 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CompetitionComponentsModule } from 'app/competition/components';
 import { SharedModule } from 'app/_shared';
-import { AssignTeamComponent } from './pages/components/assign-team/assign-team.component';
-import { TeamEnrollmentComponent } from './pages/team-enrollment.component';
+import { AssignTeamComponent } from './pages';
+import { TeamEnrollmentComponent } from './pages/team-enrollment/team-enrollment.component';
 import { TeamEnrolmentRoutingModule } from './team-enrollment-routing.module';
 
 const materialModules = [
@@ -30,16 +30,11 @@ const materialModules = [
   MatListModule,
   ReactiveFormsModule,
   FormsModule,
-  MatInputModule
+  MatInputModule,
 ];
 
 @NgModule({
   declarations: [TeamEnrollmentComponent, AssignTeamComponent],
-  imports: [
-    SharedModule,
-    TeamEnrolmentRoutingModule,
-    CompetitionComponentsModule,
-    ...materialModules,
-  ],
+  imports: [SharedModule, TeamEnrolmentRoutingModule, CompetitionComponentsModule, ...materialModules],
 })
 export class TeamEnrolmentModule {}

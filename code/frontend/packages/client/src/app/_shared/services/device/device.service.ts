@@ -11,7 +11,7 @@ export class DeviceService {
     this.mobileQuery = media.matchMedia('screen and (max-width: 600px)');
   }
 
-  addEvent(evnt, func) {
+  addEvent(evnt: any, func: (ev: any) => any) {
     if (this.mobileQuery.addEventListener) {
       this.mobileQuery.addEventListener(evnt, func, false);
     } else if (this.mobileQuery.attachEvent) {
@@ -21,7 +21,7 @@ export class DeviceService {
     }
   }
 
-  removeEvent(evnt, func) {
+  removeEvent(evnt: any, func: (ev: any) => any) {
     if (this.mobileQuery.removeEventListener) {
       this.mobileQuery.removeEventListener(evnt, func, false);
     } else if (this.mobileQuery.detachEvent) {

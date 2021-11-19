@@ -1,6 +1,13 @@
 #import "./subEventsFragment.graphql"
 
-query GetEvents($first: Int, $after: String, $where: SequelizeJSON, $includeSubEvents: Boolean!) {
+query GetEvents(
+  $first: Int
+  $after: String
+  $where: SequelizeJSON
+  $clubId: ID
+  $includeSubEvents: Boolean!
+  $includeComments: Boolean!
+) {
   eventCompetitions(first: $first, after: $after, where: $where) {
     total
     edges {
@@ -12,10 +19,16 @@ query GetEvents($first: Int, $after: String, $where: SequelizeJSON, $includeSubE
         allowEnlisting
         started
         type
-        subEvents(order: "eventType") @include(if: $includeSubEvents) {
+        subEvents @include(if: $includeSubEvents) {
           ...SubEventsDetails
+        }
+        comments(where: { clubId: $clubId }) @include(if: $includeComments) {
+          id
+          clubId
+          message
+          playerId
         }
       }
     }
-  }
+  } 
 }

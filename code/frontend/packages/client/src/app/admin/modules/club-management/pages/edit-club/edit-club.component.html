@@ -9,16 +9,15 @@
   <app-has-claim [any]="[club.id + '_edit:location', club.id + '_edit:club', 'edit-any:club']">
     <div class="mat-subheading-1">
       Locations
-
       <app-has-claim [any]="[club.id + '_add:locations', club.id + '_edit:club', 'edit-any:club']">
-        <button mat-icon-button (click)="this.onEditLocation(null, club)">
+        <button mat-icon-button (click)="this.onEditLocation(undefined, club)">
           <mat-icon>add</mat-icon>
         </button>
       </app-has-claim>
     </div>
-    <div class="locations">
+    <div class="locations" fxLayout="row wrap" fxLayoutGap="16px grid">
       <app-club-edit-location
-        *ngFor="let location of club.locations"
+        *ngFor="let location of locations$ | async"
         [location]="location"
         [club]="club"
         (onEdit)="this.onEditLocation($event, club)"
@@ -37,9 +36,9 @@
         </button>
       </app-has-claim>
     </div>
-    <div class="roles">
+    <div class="roles" fxLayout="row wrap" fxLayoutGap="16px grid">
       <app-club-edit-role
-        *ngFor="let role of club.roles"
+        *ngFor="let role of roles$ | async"
         [role]="role"
         [club]="club"
         (onPlayerAdded)="this.onPlayerAddedToRole($event, role)"
@@ -48,6 +47,29 @@
         (onDelete)="this.onDeleteRole($event)"
       >
       </app-club-edit-role>
+    </div>
+  </app-has-claim>
+
+  <app-has-claim [any]="['change-base:team']">
+    <div class="mat-subheading-1">Base players</div>
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'pickers.select-year' | translate }}</mat-label>
+      <mat-select [formControl]="this.competitionYear">
+        <mat-option *ngFor="let option of this.compYears$ | async" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="teams" fxLayout="row wrap" fxLayoutGap="16px grid">
+      <app-club-edit-team
+        *ngFor="let team of this.teamsForYear$ | async"
+        [team]="team"
+        [club]="club"
+        (onPlayerAdded)="this.onAddBasePlayer($event, team)"
+        (onPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
+      >
+      </app-club-edit-team>
     </div>
   </app-has-claim>
 </ng-container>

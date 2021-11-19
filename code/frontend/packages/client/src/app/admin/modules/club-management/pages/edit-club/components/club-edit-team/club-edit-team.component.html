@@ -1,0 +1,37 @@
+<div class="mat-elevation-z1">
+  <div class="info">
+    <div class="name">
+      <span class="up">
+        {{ team.name }} <small>{{ teamIndex }}</small></span
+      >
+    </div>
+  </div>
+
+  <div class="content">
+    <mat-list>
+      <ng-container *ngIf="!(this.players && this.players.length > 0)">
+        <mat-list-item>
+          <div class="no-players">No players</div>
+        </mat-list-item>
+      </ng-container>
+
+      <ng-container *ngIf="this.players && this.players.length > 0">
+        <mat-list-item *ngFor="let player of this.players">
+          <div mat-line>{{ player.fullName }}</div>
+          <button mat-icon-button (click)="this.onPlayerRemoved.next(player)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </ng-container>
+    </mat-list>
+    <app-player-search
+      (onSelectPlayer)="this.onPlayerAdded.next($event)"
+      [ignorePlayers]="this.players"
+      [allowCreation]="true"
+      [where]="this.where"
+      [club]="this.club"
+      label="Add player"
+    ></app-player-search>
+    <!-- <app-player-search (onSelectPlayer)="this.onPlayerAdded.next($event)" [club]="this.club"></app-player-search> -->
+  </div>
+</div>

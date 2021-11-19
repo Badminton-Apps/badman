@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Event, EventService, EventType } from 'app/_shared';
-import { combineLatest, Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-event',
@@ -12,16 +12,19 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class SelectEventComponent implements OnInit, OnDestroy {
   @Input()
-  formGroup: FormGroup;
+  controlName = 'event';
+
+  @Input()
+  formGroup!: FormGroup;
 
   formControl = new FormControl(null, [Validators.required]);
 
-  events$: Observable<Event[]>;
+  events$!: Observable<Event[]>;
 
   constructor(private eventService: EventService) {}
 
   ngOnInit() {
-    this.formGroup.addControl('event', this.formControl);
+    this.formGroup.addControl(this.controlName, this.formControl);
 
     this.events$ = this.eventService
       .getEvents({
@@ -29,10 +32,10 @@ export class SelectEventComponent implements OnInit, OnDestroy {
         type: EventType.COMPETITION,
         where: { allowEnlisting: true, type: 'PROV' },
       })
-      .pipe(map((r) => r.eventCompetitions.edges.map((r) => r.node)));
+      .pipe(map((r) => r?.events.map((r) => r.node) ?? []));
   }
 
   ngOnDestroy() {
-    this.formGroup.removeControl('event');
+    this.formGroup.removeControl(this.controlName);
   }
 }

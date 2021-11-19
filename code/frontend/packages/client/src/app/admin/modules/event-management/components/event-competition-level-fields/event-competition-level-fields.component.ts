@@ -13,6 +13,6 @@ export class EventCompetitionLevelFieldsComponent {
   subEvent: CompetitionSubEvent = {} as CompetitionSubEvent;
 
   @Input()
-  formGroup: FormGroup;
+  formGroup!: FormGroup;
 
 }

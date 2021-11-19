@@ -19,6 +19,7 @@ import {
   Table,
   TableOptions
 } from 'sequelize-typescript';
+import { EncounterChange } from './event';
 
 @Table({
   timestamps: true
@@ -34,7 +35,7 @@ export class Comment extends Model {
   @Column
   id: string;
 
-  @Column
+  @Column(DataType.TEXT)
   message: string;
 
   @BelongsTo(() => Player, 'playerId')
@@ -58,6 +59,12 @@ export class Comment extends Model {
     constraints: false
   })
   competition: EventCompetition;
+
+  @BelongsTo(() => EncounterChange, {
+    foreignKey: 'linkId',
+    constraints: false
+  })
+  encounter: EncounterChange;
 
   @Index('comment_index')
   @Column

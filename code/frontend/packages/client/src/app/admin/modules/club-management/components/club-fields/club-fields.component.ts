@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { AuthService, Club } from 'app/_shared';
-import { debounce, debounceTime } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ClaimService, Club } from 'app/_shared';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-club-fields',
@@ -15,9 +15,9 @@ export class ClubFieldsComponent implements OnInit {
 
   @Output() save = new EventEmitter<Club>();
 
-  clubForm: FormGroup;
+  clubForm!: FormGroup;
 
-  constructor(private auth: AuthService) {}
+  constructor(private claimService: ClaimService) {}
 
   ngOnInit() {
     const nameControl = new FormControl(this.club.name, Validators.required);
@@ -31,7 +31,7 @@ export class ClubFieldsComponent implements OnInit {
     });
 
     this.clubForm.disable();
-    this.auth.hasAnyClaims$(['edit-any:club']).subscribe((r) => {
+    this.claimService.hasAnyClaims$(['edit-any:club']).subscribe((r) => {
       if (r) {
         this.clubForm.enable();
       }

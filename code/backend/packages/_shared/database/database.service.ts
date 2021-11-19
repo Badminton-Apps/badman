@@ -1,11 +1,12 @@
 import { exec } from 'child_process';
-import { CreateOptions } from 'sequelize';
+import { CreateOptions, Op } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
   ClubMembership,
   DrawCompetition,
   DrawTournament,
+  EventCompetition,
   Game,
   GamePlayer,
   Player,
@@ -16,8 +17,14 @@ import {
   SubEventCompetition,
   SubEventTournament,
   Team,
+  Comment,
   TeamPlayerMembership,
-  TeamSubEventMembership
+  TeamSubEventMembership,
+  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta,
+  LastRankingPlace,
+  RoleClaimMembership,
+  PlayerClaimMembership,
+  PlayerRoleMembership
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
@@ -50,6 +57,7 @@ export class DataBaseHandler {
 
       DataBaseHandler.sequelizeInstance = new Sequelize({
         ...config,
+        logging: config.logging ?? false,
         retry: {
           report: (message, configObj) => {
             if (configObj.$current > 5) {
@@ -57,11 +65,7 @@ export class DataBaseHandler {
             }
           }
         },
-        models,
-        logging:
-          process.env.LOG_LEVEL === 'silly' || config.logging
-            ? logger.silly.bind(logger)
-            : false
+        models
       } as SequelizeOptions);
     }
   }
@@ -156,6 +160,58 @@ export class DataBaseHandler {
     }
   }
 
+  async addMetaForEnrollment(clubId: string, year: number) {
+    // Get Club, team, base players from database
+    const club = await this.getClubsTeamsForEnrollemnt(clubId, year);
+    const primarySystem = await RankingSystem.findOne({
+      where: { primary: true }
+    });
+    // Store in meta table
+    for (const team of club?.teams) {
+      logger.debug(`Team: ${team.name}`);
+      if (team.subEvents.length > 1) {
+        logger.warn('Multiple events?');
+      }
+
+      const membership = team.subEvents[0].getDataValue(
+        'TeamSubEventMembership'
+      ) as TeamSubEventMembership;
+
+      const playerMeta = [];
+      const teamPlayers = [];
+
+      for (const player of team.players) {
+        const rankingPlaceMay = await RankingPlace.findOne({
+          where: {
+            playerId: player.id,
+            SystemId: primarySystem.id,
+            rankingDate: `${year}-05-15`
+          }
+        });
+        player.lastRankingPlaces = [rankingPlaceMay.asLastRankingPlace()];
+        teamPlayers.push(player);
+
+        playerMeta.push({
+          id: player.id,
+          single: rankingPlaceMay.single,
+          double: rankingPlaceMay.double,
+          mix: rankingPlaceMay.mix,
+          gender: player.gender
+        } as TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta);
+      }
+
+      // update the players with the ranking places, this allows the calculation for baseIndex
+      team.players = teamPlayers;
+
+      membership.meta = {
+        teamIndex: team.baseIndex(primarySystem),
+        players: playerMeta
+      };
+
+      await membership.save();
+    }
+  }
+
   async addPlayers(
     users: {
       memberId: string;
@@ -203,7 +259,7 @@ export class DataBaseHandler {
       const chunks = splitInChunks(rankings, 500);
       for (const chunk of chunks) {
         await RankingPlace.bulkCreate(chunk, {
-          ignoreDuplicates: ['PlayerId'] as any,
+          ignoreDuplicates: ['playerId'] as any,
           transaction,
           returning: false
         });
@@ -211,6 +267,231 @@ export class DataBaseHandler {
       await transaction.commit();
     } catch (err) {
       logger.error('Something went wrong adding ranking places');
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
+  async getClubsTeamsForEnrollemnt(clubId: string, year: number) {
+    return Club.findOne({
+      where: {
+        id: clubId
+      },
+      include: [
+        {
+          attributes: ['name', 'teamNumber', 'type', 'abbreviation'],
+          model: Team,
+          where: {
+            active: true
+          },
+          include: [
+            {
+              model: Player,
+              as: 'captain'
+            },
+            {
+              model: Player,
+              as: 'players',
+              through: { where: { base: true, end: null } }
+            },
+            {
+              model: SubEventCompetition,
+              attributes: ['id', 'name'],
+              required: true,
+              include: [
+                {
+                  required: true,
+                  model: EventCompetition,
+                  where: {
+                    startYear: year
+                  },
+                  attributes: ['id', 'name']
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+  }
+
+  /**
+   * @param {string} destinationPlayerId The player where all info will be copied to
+   * @param {string} sourcePlayerId The player where the info will be copied from
+   */
+  async mergePlayers(destinationPlayerId: string, sourcePlayerId: string) {
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const destination = await Player.findByPk(destinationPlayerId, {
+        transaction
+      });
+      const source = await Player.findByPk(sourcePlayerId, {
+        transaction
+      });
+
+      logger.debug(`Merging ${destination.fullName}`);
+
+      if (destination === null) {
+        throw new Error('destination does not exist');
+      }
+
+      if (source === null) {
+        throw new Error('source does not exist');
+      }
+
+      // Move memberships
+      const sourceClubMemberships = await ClubMembership.findAll({
+        where: { playerId: source.id }
+      });
+
+      // We only update if the releation ship doesn't exists already
+      await ClubMembership.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+            clubId: {
+              [Op.notIn]: sourceClubMemberships.map(row => row.clubId)
+            }
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      const destinationTeamMemberships = await TeamPlayerMembership.findAll({
+        where: { playerId: destination.id }
+      });
+
+      await TeamPlayerMembership.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+            teamId: {
+              [Op.notIn]: destinationTeamMemberships.map(row => row.teamId)
+            }
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      const destinationRoleMemberships = await PlayerRoleMembership.findAll({
+        where: { playerId: destination.id }
+      });
+
+      await PlayerRoleMembership.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+            roleId: {
+              [Op.notIn]: destinationRoleMemberships.map(row => row.roleId)
+            }
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      const destinationClaimMemberships = await PlayerClaimMembership.findAll({
+        where: { playerId: destination.id }
+      });
+
+      await PlayerClaimMembership.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+            claimId: {
+              [Op.notIn]: destinationClaimMemberships.map(row => row.claimId)
+            }
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      // Delete reamining memberships
+      await ClubMembership.destroy({
+        where: { playerId: source.id },
+        transaction
+      });
+      await TeamPlayerMembership.destroy({
+        where: { playerId: source.id },
+        transaction
+      });
+      await PlayerRoleMembership.destroy({
+        where: { playerId: source.id },
+        transaction 
+      });
+      await PlayerClaimMembership.destroy({
+        where: { playerId: source.id },
+        transaction
+      });
+
+      // Update where the player isn't a unique key
+      await GamePlayer.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id
+          },
+          returning: false,
+          transaction
+        }
+      );
+      await Comment.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      await RankingPoint.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id
+          },
+          returning: false,
+          transaction
+        }
+      );
+
+      // Destoy douplicate
+      await LastRankingPlace.destroy({
+        where: {
+          playerId: source.id
+        },
+        transaction
+      });
+
+      await RankingPlace.destroy({
+        where: {
+          playerId: source.id
+        },
+        transaction
+      });
+
+      destination.sub = destination.sub ?? source.sub;
+      destination.memberId = destination.memberId ?? source.memberId;
+      destination.competitionPlayer =
+        destination.competitionPlayer ?? source.competitionPlayer;
+      destination.birthDate = destination.birthDate ?? source.birthDate;
+
+      await destination.save({ transaction });
+      await source.destroy({ transaction });
+
+      await transaction.commit();
+    } catch (err) {
+      logger.error('Something went wrong merging players');
       await transaction.rollback();
       throw err;
     }

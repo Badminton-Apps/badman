@@ -1,4 +1,3 @@
-import { LocationType } from './../location.type';
 import { EventTournament } from '@badvlasim/shared';
 import {
   GraphQLEnumType,
@@ -10,7 +9,7 @@ import {
 import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
-import { PlayerType } from '../player.type';
+import { LocationType } from './../location.type';
 import { SubEventTournamentInputType, SubEventTournamentType } from './subEvent-tournaments.type';
 
 export const EventTournamentType = new GraphQLObjectType({

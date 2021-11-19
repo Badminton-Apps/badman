@@ -44,7 +44,7 @@ module.exports = {
             onDelete: 'CASCADE'
           },
           message: {
-            type: sequelize.DataTypes.STRING
+            type: sequelize.DataTypes.TEXT
           },
           linkId: {
             type: sequelize.DataTypes.STRING

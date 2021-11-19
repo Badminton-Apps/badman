@@ -50,9 +50,9 @@ COPY packages/import ./packages/import
 COPY lerna.json .
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers unixodbc-dev make python && \
-  lerna bootstrap --scope=@badvlasim/import -- --production=false && \
+  lerna bootstrap --scope=@badvlasim/import  --ci -- --production=false && \
   apk del native-deps
 
 EXPOSE 4000
 
-CMD ["lerna", "run", "start", "--scope=@badvlasim/import", "--stream"]
+CMD ["lerna", "run", "start", "--scope=@badvlasim/import", "--stream", "--no-prefix"]

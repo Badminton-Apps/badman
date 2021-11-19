@@ -26,7 +26,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditPermissionsComponent implements OnInit {
-  claims$: Observable<{ category: string; claims: Claim[] }[]>;
+  claims$!: Observable<{ category: string; claims: Claim[] }[]>;
 
   @Output() onClaimChanged = new EventEmitter<{
     claim: Claim;
@@ -34,13 +34,13 @@ export class EditPermissionsComponent implements OnInit {
   }>();
 
   @Input()
-  player: Player;
+  player!: Player;
 
   constructor(private claimService: ClaimService) {}
 
   ngOnInit(): void {
     this.claims$ = combineLatest([
-      this.claimService.globalUserClaims(this.player.id),
+      this.claimService.globalUserClaims(this.player.id!),
       this.claimService.globalClaims(),
     ]).pipe(
       take(1),
@@ -51,7 +51,7 @@ export class EditPermissionsComponent implements OnInit {
         })
       ),
       mergeMap((res) => res),
-      groupBy((person) => person.category),
+      groupBy((person) => person.category!),
       mergeMap((obs) => {
         return obs.pipe(
           toArray(),

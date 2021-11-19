@@ -8,7 +8,7 @@ import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
   styleUrls: ['./new-player.component.scss'],
 })
 export class NewPlayerComponent implements OnInit {
-  playerForm: FormGroup;
+  playerForm!: FormGroup;
 
   constructor(
     private dialogRef: MatDialogRef<NewPlayerComponent>,

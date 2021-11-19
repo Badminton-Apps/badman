@@ -41,7 +41,7 @@ import { EventTournament } from '.';
 import { Club } from '../../..';
 import { TeamLocationCompetition } from './competition/team-location-membership.model';
 import { Court } from './court.model';
-import { LocationEventTournament } from './tournament/location_event.model';
+import { LocationEventTournament } from './tournament/location-event.model';
 
 @Table({
   timestamps: true,
@@ -71,7 +71,7 @@ export class Location extends Model {
   streetNumber: string;
 
   @Column
-  postalcode: number;
+  postalcode: string;
 
   @Column
   city: string;
