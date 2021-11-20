@@ -40,8 +40,13 @@ describe('competition xml', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service.importFile(fileLocation, transaction);
-    await transaction.commit();
+    try {
+      await service.importFile(fileLocation, transaction);
+      await transaction.commit();
+    } catch (e) {
+      await transaction.rollback();
+      throw e;
+    }
 
     // Assert
     const importerFiles = await ImporterFile.findAll();
@@ -63,8 +68,13 @@ describe('competition xml', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service.import(importFile, { transaction });
-    await transaction.commit();
+    try {
+      await service.import(importFile, { transaction });
+      await transaction.commit();
+    } catch (e) {
+      await transaction.rollback();
+      throw e;
+    }
 
     // Assert
     const encounters = await EncounterCompetition.findAll({});
@@ -105,7 +115,13 @@ describe('competition xml', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service.import(importFile, { transaction, event });
+    try {
+      await service.import(importFile, { transaction, event });
+      await transaction.commit();
+    } catch (e) {
+      await transaction.rollback();
+      throw e;
+    }
 
     // Assert
     const encounters = await EncounterCompetition.findAll({});

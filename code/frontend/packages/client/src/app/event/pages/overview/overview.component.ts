@@ -1,12 +1,14 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CompetitionEvent, Event, EventService, EventType, TournamentEvent } from 'app/_shared';
-import { BehaviorSubject, combineLatest, of as observableOf } from 'rxjs';
+import { BehaviorSubject, combineLatest, of as observableOf, tap } from 'rxjs';
 import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -20,24 +22,18 @@ import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operat
     ]),
   ],
 })
-export class OverviewComponent {
+export class OverviewComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<Event>();
   displayedColumns: string[] = ['select', 'dates', 'name', 'registration'];
   expandedElement!: Event | null;
   selection = new SelectionModel<string>(true, []);
 
+  formGroup!: FormGroup;
+
   resultsLength$ = new BehaviorSubject(0);
   pageIndex$ = new BehaviorSubject(0);
   pageSize$ = new BehaviorSubject(10);
-  filterChange$ = new BehaviorSubject<{
-    query?: string;
-    eventType?: EventType;
-    startYear?: number;
-  }>({
-    eventType: undefined,
-    query: undefined,
-    startYear: undefined,
-  });
+
   onPaginateChange = new EventEmitter<PageEvent>();
 
   eventTypes = [
@@ -53,17 +49,30 @@ export class OverviewComponent {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private eventService: EventService) {}
+  constructor(private eventService: EventService, private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  ngOnInit() {
+    const queryParams = this.activatedRoute.snapshot.queryParams;
+
+    this.formGroup = new FormGroup({
+      query: new FormControl(queryParams['query']),
+      startYear: new FormControl(queryParams['startYear'], [Validators.pattern('^[0-9]*$')]),
+      type: new FormControl(queryParams['type'] ?? EventType.COMPETITION_CP, [Validators.required]),
+      allowEnlisting: new FormControl(
+        queryParams['allowEnlisting'] === undefined ? undefined : queryParams['allowEnlisting'] === 'true'
+      ),
+      started: new FormControl(queryParams['started'] === undefined ? undefined : queryParams['started'] === 'true'),
+    });
+  }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
-
     // Reset when any filter changes
     this.sort.sortChange.subscribe(() => {
       this.pageIndex$.next(0);
       this.cursor = undefined;
     });
-    this.filterChange$.subscribe(() => {
+    this.formGroup.valueChanges.subscribe(() => {
       this.pageIndex$.next(0);
       this.cursor = undefined;
     });
@@ -82,15 +91,14 @@ export class OverviewComponent {
     });
 
     combineLatest([
-      this.filterChange$,
+      this.formGroup.valueChanges,
       this.sort.sortChange.pipe(startWith({})),
       this.onPaginateChange.pipe(startWith({})),
     ])
       .pipe(
+        startWith([this.formGroup.value, undefined, undefined]),
         debounceTime(300),
-        switchMap(([filterChange, sortChange, pageChange]) => {
-          this.isLoadingResults = true;
-
+        map(([filterChange]) => {
           const where: { [key: string]: any } = {};
 
           if (filterChange.query) {
@@ -103,10 +111,35 @@ export class OverviewComponent {
             where['startYear'] = filterChange.startYear;
           }
 
+          if (filterChange.started != undefined && filterChange.type == EventType.COMPETITION_CP) {
+            where['started'] = filterChange.started;
+          }
+
+          if (filterChange.allowEnlisting != undefined) {
+            where['allowEnlisting'] = filterChange.allowEnlisting;
+          }
+
+          return { where, type: filterChange.type, query: filterChange.query };
+        }),
+        tap(({ where, type, query }) => {
+          const {name, ...params} = where;
+
+          this.router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: {
+              ...params,
+              query,
+              type,
+            },
+          });
+        }),
+        switchMap(({ where, type }) => {
+          this.isLoadingResults = true;
+
           return this.eventService.getEvents({
             first: this.pageSize$.value,
             after: this.cursor,
-            type: filterChange.eventType,
+            type,
             where,
           });
         }),
@@ -133,26 +166,6 @@ export class OverviewComponent {
       )
       .subscribe((data) => (this.dataSource.data = data));
   }
-  filterName(query: string) {
-    this.filterChange$.next({
-      ...this.filterChange$.value,
-      query,
-    });
-  }
-
-  filterType(eventType: MatSelectChange) {
-    this.filterChange$.next({
-      ...this.filterChange$.value,
-      eventType: EventType[eventType.value as EventType],
-    });
-  }
-
-  filterYear(year: number) {
-    this.filterChange$.next({
-      ...this.filterChange$.value,
-      startYear: year,
-    });
-  }
 
   checkboxLabel(row: string): string {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'}`;
@@ -160,14 +173,23 @@ export class OverviewComponent {
 
   async setOpenState(state: boolean) {
     for (const selected of this.selection.selected) {
-      await this.eventService
+      this.eventService
         .updateCompetitionEvent({
           id: selected,
           allowEnlisting: state,
         })
-        .toPromise();
+        .subscribe((_) => {
+          // trigger update
+          this.formGroup.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+        });
     }
-    // Just reload :P
-    this.filterChange$.next(this.filterChange$.value);
   }
+}
+
+interface EventFilters {
+  query?: string;
+  eventType?: EventType;
+  startYear?: number;
+  allowEnlisting?: boolean;
+  started?: boolean;
 }
