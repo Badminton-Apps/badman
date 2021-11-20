@@ -19,10 +19,7 @@ describe('competition xml', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(
-      process.cwd(),
-      'packages/import/src/import/__tests__/files/competition.xml'
-    );
+    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition.xml');
 
     databaseService = new DataBaseHandler({
       dialect: 'sqlite',
@@ -42,7 +39,6 @@ describe('competition xml', () => {
     // Arrange
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
-    // Act
     // Act
     try {
       await service.importFile(fileLocation, transaction);
@@ -122,7 +118,7 @@ describe('competition xml', () => {
     try {
       await service.import(importFile, { transaction, event });
       await transaction.commit();
-    } catch (e)  {
+    } catch (e) {
       await transaction.rollback();
       throw e;
     }

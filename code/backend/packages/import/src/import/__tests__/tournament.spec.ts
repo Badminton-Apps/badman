@@ -40,7 +40,7 @@ describe('tournament', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'packages/import/src/import/__tests__/files/tournament.tp');
+    fileLocation = join(process.cwd(), 'src/import/__tests__/files/tournament.tp');
 
     databaseService = new DataBaseHandler({
       dialect: 'sqlite',
@@ -171,10 +171,7 @@ describe('tournament 2', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(
-      process.cwd(),
-      'packages/import/src/import/__tests__/files/tournament_2.tp'
-    );
+    fileLocation = join(process.cwd(), 'src/import/__tests__/files/tournament_2.tp');
 
     databaseService = new DataBaseHandler({
       dialect: 'sqlite',
