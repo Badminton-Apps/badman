@@ -22,7 +22,7 @@ describe('Wrong file', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition_wrong_file.cp');
+    fileLocation = join(process.cwd(), 'packages/import/src/import/__tests__/files/competition_wrong_file.cp');
 
     service = new CompetitionCpProcessor();
   });
@@ -46,7 +46,7 @@ describe('Empty file', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/empty.cp');
+    fileLocation = join(process.cwd(), 'packages/import/src/import/__tests__/files/empty.cp');
 
     service = new CompetitionCpProcessor();
   });
