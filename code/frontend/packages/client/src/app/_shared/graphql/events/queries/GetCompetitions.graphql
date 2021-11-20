@@ -17,6 +17,7 @@ query GetEvents(
         name
         startYear
         allowEnlisting
+        started
         type
         subEvents @include(if: $includeSubEvents) {
           ...SubEventsDetails

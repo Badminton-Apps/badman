@@ -1,25 +1,43 @@
 <div class="mat-subheading-1">Events <app-beta></app-beta></div>
 
-<div layout="row" layout-fill layout-margin layout-align="start center">
-  <mat-form-field flex>
+<form [formGroup]="this.formGroup" layout="row" layout-fill layout-margin layout-align="start center">
+  <mat-form-field flex >
     <mat-label>Filter</mat-label>
-    <input matInput (keyup)="filterName(inputName.value)" placeholder="Ex. ium" #inputName />
+    <input matInput placeholder="Ex. ium" #inputName formControlName="query" />
   </mat-form-field>
 
   <mat-form-field flex>
     <mat-label>{{ 'input.year' | translate }}</mat-label>
-    <input matInput type="number" (keyup)="filterYear(+inputYear.value)" placeholder="2019" #inputYear />
+    <input matInput type="number"formControlName="startYear" placeholder="2019" #inputYear />
   </mat-form-field>
 
   <mat-form-field flex>
     <mat-label>Type</mat-label>
-    <mat-select (selectionChange)="filterType($event)" [value]="eventTypes[0].value">
+    <mat-select [value]="eventTypes[0].value" formControlName="type">
       <mat-option *ngFor="let eventType of this.eventTypes" [value]="eventType.value"
         >{{ 'event.types.' + eventType.label | translate }}
       </mat-option>
     </mat-select>
   </mat-form-field>
-</div>
+
+  <mat-form-field flex>
+    <mat-label>Open</mat-label>
+    <mat-select formControlName="allowEnlisting">
+      <mat-option [value]="undefined"> Both </mat-option>
+      <mat-option [value]="true"> Open </mat-option>
+      <mat-option [value]="false"> Closed </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field flex>
+    <mat-label>Started</mat-label>
+    <mat-select formControlName="started">
+      <mat-option [value]="undefined"> Both </mat-option>
+      <mat-option [value]="true"> Started </mat-option>
+      <mat-option [value]="false"> Not started </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
 
 <div *ngIf="isLoadingResults">
   <mat-progress-bar mode="indeterminate" *ngIf="isLoadingResults"></mat-progress-bar>
