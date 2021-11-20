@@ -5,7 +5,7 @@ import { Transaction } from 'sequelize';
 import { ProcessImport } from '../importProcessor';
 import { CompetitionCpProcessor } from '../processors';
 
-describe.skip('Club Membership', () => {
+describe('Club Membership', () => {
   let databaseService: DataBaseHandler;
   let service: ProcessImport;
   let transaction: Transaction;

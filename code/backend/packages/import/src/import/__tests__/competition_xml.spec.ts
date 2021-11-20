@@ -19,7 +19,10 @@ describe('competition xml', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition.xml');
+    fileLocation = join(
+      process.cwd(),
+      'packages/import/src/import/__tests__/files/competition.xml'
+    );
 
     databaseService = new DataBaseHandler({
       dialect: 'sqlite',
@@ -40,8 +43,14 @@ describe('competition xml', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service.importFile(fileLocation, transaction);
-    await transaction.commit();
+    // Act
+    try {
+      await service.importFile(fileLocation, transaction);
+      await transaction.commit();
+    } catch (e) {
+      await transaction.rollback();
+      throw e;
+    }
 
     // Assert
     const importerFiles = await ImporterFile.findAll();
@@ -63,8 +72,13 @@ describe('competition xml', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service.import(importFile, { transaction });
-    await transaction.commit();
+    try {
+      await service.import(importFile, { transaction });
+      await transaction.commit();
+    } catch (e) {
+      await transaction.rollback();
+      throw e;
+    }
 
     // Assert
     const encounters = await EncounterCompetition.findAll({});
@@ -105,7 +119,13 @@ describe('competition xml', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service.import(importFile, { transaction, event });
+    try {
+      await service.import(importFile, { transaction, event });
+      await transaction.commit();
+    } catch (e)  {
+      await transaction.rollback();
+      throw e;
+    }
 
     // Assert
     const encounters = await EncounterCompetition.findAll({});
