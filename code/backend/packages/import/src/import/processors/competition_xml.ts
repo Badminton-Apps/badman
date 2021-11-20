@@ -213,7 +213,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addClubs(): ProcessStep<Club[]> {
     return new ProcessStep('clubs', async (args: { transaction: Transaction }) => {
-      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load')
+      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load');
 
       const teamClubDistinct = data.teams.filter(
         (value, index, self) =>
@@ -254,33 +254,51 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addTeams(): ProcessStep<{ team: Team; internalId: number; members: any[] }[]> {
     return new ProcessStep('teams', async (args: { transaction: Transaction }) => {
-      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load')
-      const clubs: Club[] = this.importProcess.getData('clubs')
+      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load');
+      const clubs: Club[] = this.importProcess.getData('clubs');
 
       const teams = data.teams.map((team, i) => {
         if (team.TeamName) {
-          // Filter out team number
-          const regexResult = /.*((\d)[GHD]|[GHD](\d))/gim.exec(team.TeamName);
+          const regexResult = /(?<club>.*)\ ((?<teamNumberFront>\d+)(?<teamTypeFront>[GHD]?)|(?<teamTypeBack>[GHD]?)(?<teamNumberBack>\d))/gim.exec(
+            team.TeamName
+          );
 
-          // Get team number from regex group
-          const teamNumber =
-            regexResult && regexResult.length > 3
-              ? +regexResult[2]
-                ? +regexResult[2]
-                : +regexResult[3]
-                ? +regexResult[3]
-                : -1
-              : -1;
+          const teamNumber = parseInt(
+            regexResult.groups?.teamNumberFront || regexResult.groups?.teamNumberBack,
+            10
+          );
 
+          let type;
+          switch (
+            (regexResult.groups?.teamTypeFront || regexResult.groups?.teamTypeBack)?.toUpperCase()
+          ) {
+            case 'G':
+              type = SubEventType.MX;
+              break;
+            case 'D':
+              type = SubEventType.F;
+              break;
+            case 'H':
+              type = SubEventType.M;
+              break;
+
+            default:
+              logger.warn('no type?');
+          }
           return new Team({
             name: this.cleanedTeamName(team.TeamName),
             teamNumber,
+            type,
             clubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
           }).toJSON();
         }
       });
 
-      await Team.bulkCreate(teams, { ignoreDuplicates: true, transaction: args.transaction });
+      await Team.bulkCreate(teams, {
+        ignoreDuplicates: true,
+        transaction: args.transaction,
+        hooks: false
+      });
 
       const dbTeams = await Team.findAll({
         where: {

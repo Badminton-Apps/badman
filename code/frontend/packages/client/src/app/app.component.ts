@@ -45,14 +45,6 @@ export class AppComponent implements OnInit, OnDestroy {
             document.location.reload();
           });
       });
-
-    this.auth.user$
-      .pipe(
-        switchMap((_) => this.httpClient.get<string[]>(`${environment.api}/${environment.apiVersion}/user/permissions`))
-      )
-      .subscribe((r) => {
-        console.log(r);
-      });
   }
 
   ngOnInit() {
