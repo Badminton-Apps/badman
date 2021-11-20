@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/dot-notation */
 import mock from 'mock-fs';
 import moment from 'moment';
 import path from 'path';
@@ -502,3 +503,4 @@ describe('PDF service', () => {
   });
 });
 /* eslint-enable no-underscore-dangle*/
+/* eslint-enable @typescript-eslint/dot-notation */
