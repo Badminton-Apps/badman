@@ -118,7 +118,7 @@ describe('tournament', () => {
     expect(games.length).toBe(827);
   });
 
-  it.skip('Should re-add tournamnet', async () => {
+  it('Should re-add tournamnet', async () => {
     // Arrange
     const importFile = await new ImporterFile({
       name: 'Flemish Summer Event 2018',
@@ -191,8 +191,13 @@ describe('tournament 2', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service.importFile(fileLocation, transaction);
-    await transaction.commit();
+    try {
+      await service.importFile(fileLocation, transaction);
+      await transaction.commit();
+    } catch (e) {
+      await transaction.rollback();
+      throw e;
+    }
 
     // Assert
     const importerFiles = await ImporterFile.findAll();
@@ -214,9 +219,13 @@ describe('tournament 2', () => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
     // Act
-    await service.import(importFile, { transaction });
-    await transaction.commit();
-
+    try {
+      await service.import(importFile, { transaction });
+      await transaction.commit();
+    } catch (e) {
+      await transaction.rollback();
+      throw e;
+    }
     // Assert
     const event = await EventTournament.findOne({
       include: [
