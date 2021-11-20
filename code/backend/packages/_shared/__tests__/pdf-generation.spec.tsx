@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/dot-notation */
 import mock from 'mock-fs';
 import moment from 'moment';
 import path from 'path';
@@ -16,7 +15,10 @@ import {
   TeamSubEventMembership,
   Player,
   RankingPlace,
-  LastRankingPlace
+  LastRankingPlace,
+  RankingSystem,
+  RankingSystems,
+  StartingType
 } from '..';
 import fakerator from 'fakerator';
 
@@ -51,6 +53,38 @@ describe('PDF service', () => {
   afterEach(mock.restore);
 
   it('Assembly pdf Mix', async () => {
+    const rankingSystem = await new RankingSystem({
+      name: 'BBF Rating',
+      amountOfLevels: 12,
+      procentWinning: 75,
+      procentWinningPlus1: 50,
+      procentLosing: 30,
+      minNumberOfGamesUsedForUpgrade: 7,
+      maxDiffLevels: 2,
+      maxDiffLevelsHighest: null,
+      latestXGamesToUse: null,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: 1,
+      gamesForInactivty: 3,
+      inactivityAmount: 103,
+      inactivityUnit: 'weeks',
+      caluclationIntervalLastUpdate: new Date('2021-11-14T23:00:00.000Z'),
+      caluclationIntervalAmount: 1,
+      calculationIntervalUnit: 'weeks',
+      periodAmount: 104,
+      periodUnit: 'weeks',
+      updateIntervalAmountLastUpdate: new Date('2018-03-01T23:00:00.000Z'),
+      updateIntervalAmount: 2,
+      updateIntervalUnit: 'months',
+      rankingSystem: RankingSystems.VISUAL,
+      primary: true,
+      runCurrently: false,
+      runDate: new Date('2021-04-21T07:30:13.173Z'),
+      differenceForUpgrade: 1,
+      differenceForDowngrade: 0,
+      startingType: StartingType.tableLFBB
+    }).save();
+
     const fakeClub1Name = fake.names.name();
     const fakeClub2Name = fake.names.name();
 
@@ -91,10 +125,9 @@ describe('PDF service', () => {
       gender: 'F'
     };
 
-    // const systemId = await new RankingSystem({primary: true}).save();
     // Arrange
-    const encounterDate = moment('2021-01-01');
-    const event = await new EventCompetition().save();
+    const encounterDate = moment('2021-10-01');
+    const event = await new EventCompetition({ startYear: 2021 }).save();
     const subevent = await new SubEventCompetition().save();
     const draw = await new DrawCompetition().save();
     const encounter = await new EncounterCompetition({
@@ -122,12 +155,11 @@ describe('PDF service', () => {
     await encounter.setHome(team1);
     await encounter.setAway(team2);
 
-    const membership = new TeamSubEventMembership({
+    const teamSubEventMembership = new TeamSubEventMembership({
       teamId: team1.id,
       subEventId: subevent.id
     });
-
-    membership.meta = {
+    teamSubEventMembership.meta = {
       teamIndex: 80,
       players: [
         {
@@ -160,7 +192,7 @@ describe('PDF service', () => {
         }
       ]
     };
-    await membership.save();
+    await teamSubEventMembership.save();
 
     const captainPlayer = await Player.create({
       firstName: 'John',
@@ -173,18 +205,22 @@ describe('PDF service', () => {
         ...fakeMPerson1,
         rankingPlaces: [
           new RankingPlace({
+            SystemId: rankingSystem.id,
             single: 7,
             double: 5,
             mix: 7,
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlaces: new LastRankingPlace({
-          single: 7,
-          double: 5,
-          mix: 7,
-          rankingDate: moment('2021-09-11').toDate()
-        })
+        lastRankingPlaces: [
+          new LastRankingPlace({
+            systemId: rankingSystem.id,
+            single: 7,
+            double: 5,
+            mix: 7,
+            rankingDate: moment('2021-09-11').toDate()
+          })
+        ]
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -195,39 +231,48 @@ describe('PDF service', () => {
         ...fakeMPerson2,
         rankingPlaces: [
           new RankingPlace({
+            SystemId: rankingSystem.id,
             single: 7,
             double: 6,
             mix: 7,
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlaces: new LastRankingPlace({
-          single: 7,
-          double: 6,
-          mix: 7,
-          rankingDate: moment('2021-09-11').toDate()
-        })
+        lastRankingPlaces: [
+          new LastRankingPlace({
+            systemId: rankingSystem.id,
+            single: 7,
+            double: 6,
+            mix: 7,
+            rankingDate: moment('2021-09-11').toDate()
+          })
+        ]
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
 
     const playerM3 = await Player.create(
       {
+        id: '387637da-7b97-4716-871f-eb2d81e0563e',
         ...fakeMPerson3,
         rankingPlaces: [
           new RankingPlace({
+            SystemId: rankingSystem.id,
             single: 7,
             double: 8,
             mix: 9,
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlaces: new LastRankingPlace({
-          single: 7,
-          double: 8,
-          mix: 9,
-          rankingDate: moment('2021-09-11').toDate()
-        })
+        lastRankingPlaces: [
+          new LastRankingPlace({
+            systemId: rankingSystem.id,
+            single: 7,
+            double: 8,
+            mix: 9,
+            rankingDate: moment('2021-09-11').toDate()
+          })
+        ]
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -238,60 +283,75 @@ describe('PDF service', () => {
         ...fakeFPerson1,
         rankingPlaces: [
           new RankingPlace({
+            SystemId: rankingSystem.id,
             single: 7,
             double: 6,
             mix: 8,
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlaces: new LastRankingPlace({
-          single: 7,
-          double: 6,
-          mix: 8,
-          rankingDate: moment('2021-09-11').toDate()
-        })
+        lastRankingPlaces: [
+          new LastRankingPlace({
+            systemId: rankingSystem.id,
+            single: 7,
+            double: 6,
+            mix: 8,
+            rankingDate: moment('2021-09-11').toDate()
+          })
+        ]
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
 
     const playerF2 = await Player.create(
       {
+        id: 'f4a7b889-ac6b-4a94-8e48-88fc1ac37175',
         ...fakeFPerson2,
         rankingPlaces: [
           new RankingPlace({
+            SystemId: rankingSystem.id,
             single: 8,
             double: 9,
             mix: 8,
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlaces: new LastRankingPlace({
-          single: 8,
-          double: 9,
-          mix: 8,
-          rankingDate: moment('2021-09-11').toDate()
-        })
+        lastRankingPlaces: [
+          new LastRankingPlace({
+            systemId: rankingSystem.id,
+            single: 8,
+            double: 9,
+            mix: 8,
+            rankingDate: moment('2021-09-11').toDate()
+          })
+        ]
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
 
     const playerF3 = await Player.create(
       {
+        id: 'bbdbd15e-8a36-4959-acfd-699ab213c121',
         ...fakeFPerson3,
         rankingPlaces: [
           new RankingPlace({
+            id: fake.misc.uuid(),
+            SystemId: rankingSystem.id,
             single: 9,
             double: 8,
             mix: 7,
             rankingDate: moment('2021-05-15').toDate()
           })
         ],
-        lastRankingPlaces: new LastRankingPlace({
-          single: 9,
-          double: 7,
-          mix: 7,
-          rankingDate: moment('2021-09-11').toDate()
-        })
+        lastRankingPlaces: [
+          new LastRankingPlace({
+            systemId: rankingSystem.id,
+            single: 9,
+            double: 7,
+            mix: 7,
+            rankingDate: moment('2021-09-11').toDate()
+          })
+        ]
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -442,4 +502,3 @@ describe('PDF service', () => {
   });
 });
 /* eslint-enable no-underscore-dangle*/
-/* eslint-enable @typescript-eslint/dot-notation */
