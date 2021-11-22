@@ -39,7 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
       )
       .subscribe((update) => {
         snackBar
-          .open(`New version available. old:${update.current}, new: ${update.available}`, 'refresh')
+          .open(`New version available.`, 'refresh')
           .onAction()
           .subscribe(() => {
             document.location.reload();
