@@ -103,7 +103,7 @@ export class Club extends Model {
   comments?: Comment[];
 
   @HasMany(() => Location)
-  locations: Location[]; 
+  locations: Location[];
 
   // #endregion
 
@@ -116,12 +116,11 @@ export class Club extends Model {
     }
   }
 
-  @BeforeBulkUpdate
   @BeforeBulkCreate
   static setAbbriviations(instances: Club[], options: SaveOptions) {
     for (const instance of instances) {
       this.setAbbriviation(instance, options);
-    }
+    } 
   }
 
   @AfterUpdate
@@ -134,7 +133,6 @@ export class Club extends Model {
     }
   }
 
-  @AfterBulkUpdate
   @AfterBulkCreate
   static async setTeamNames(instances: Club[], options: SaveOptions) {
     for (const instance of instances) {

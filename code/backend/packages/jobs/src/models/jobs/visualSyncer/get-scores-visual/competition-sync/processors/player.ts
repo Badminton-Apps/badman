@@ -65,6 +65,8 @@ export class CompetitionSyncPlayerProcessor extends StepProcessor {
         foundPlayer = await new Player(xmlPlayer?.player).save({
           transaction: this.transaction
         });
+        // Push to the list if player exists twice
+        players.push(foundPlayer);
       }
       mapPlayers.set(`${xmlPlayer?.xmlMemberId}`, foundPlayer);
     }
