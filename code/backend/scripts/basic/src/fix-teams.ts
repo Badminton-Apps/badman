@@ -1152,7 +1152,7 @@ import {
     await club33.save({ transaction });
 
     const club34 = await Club.findByPk( '1f51fea6-39b7-476a-9d38-8fb2409ce57b', {transaction});
-    club34.name = 'Shuttle Buster';
+    club34.name = 'Shuttle Busters';
     club34.useForTeamName =  UseForTeamName.NAME;
     await club34.save({ transaction });
 
