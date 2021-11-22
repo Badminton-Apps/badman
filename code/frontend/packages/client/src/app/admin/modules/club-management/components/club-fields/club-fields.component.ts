@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClaimService, Club } from 'app/_shared';
+import { ClaimService, Club, UseForTeamName } from 'app/_shared';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
@@ -17,16 +17,23 @@ export class ClubFieldsComponent implements OnInit {
 
   clubForm!: FormGroup;
 
+  exampleTeamName?: string;
+
   constructor(private claimService: ClaimService) {}
 
   ngOnInit() {
     const nameControl = new FormControl(this.club.name, Validators.required);
+    const fullNameControl = new FormControl(this.club.fullName);
     const clubIdControl = new FormControl(this.club.clubId, Validators.required);
     const abbrControl = new FormControl(this.club.abbreviation, Validators.required);
+    const useForTeamNameControl = new FormControl(this.club.useForTeamName, Validators.required);
+
 
     this.clubForm = new FormGroup({
       name: nameControl,
+      fullName: fullNameControl,
       abbreviation: abbrControl,
+      useForTeamName: useForTeamNameControl,
       clubId: clubIdControl,
     });
 
@@ -36,6 +43,8 @@ export class ClubFieldsComponent implements OnInit {
         this.clubForm.enable();
       }
     });
+
+    this.clubForm.valueChanges.subscribe(() => this._setExampleTeamName());
 
     nameControl.valueChanges.subscribe((r) => {
       if (!abbrControl.touched) {
@@ -49,5 +58,23 @@ export class ClubFieldsComponent implements OnInit {
         this.save.next({ id: this.club.id, ...this.clubForm.value });
       }
     });
+
+    this._setExampleTeamName();
+  }
+
+  private _setExampleTeamName() {
+    switch (this.clubForm.value.useForTeamName) {
+      case UseForTeamName.FULL_NAME:
+        this.exampleTeamName = `${this.club.fullName ?? ''} 1G`;
+        break;
+      case UseForTeamName.ABBREVIATION:
+        this.exampleTeamName = `${this.club.abbreviation ?? ''} 1G`;
+        break;
+
+      default:
+      case UseForTeamName.NAME:
+        this.exampleTeamName = `${this.club.name ?? ''} 1G`;
+        break;
+    }
   }
 }

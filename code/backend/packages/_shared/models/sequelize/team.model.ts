@@ -43,6 +43,7 @@ import {
 } from 'sequelize-typescript';
 import { RankingSystem } from '.';
 import { SubEventType } from '../enums';
+import { UseForTeamName } from '../enums/useForTeams.enum';
 import { Club } from './club.model';
 import { EncounterCompetition, Location, SubEventCompetition } from './event';
 import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
@@ -74,14 +75,34 @@ export class Team extends Model {
     }
   }
 
-  static async generateAbbreviation(instance: Team, options: CreateOptions) {
-    const dbClub = await Club.findByPk(instance.clubId, {
-      transaction: options.transaction
-    });
-    instance.name = `${dbClub.name} ${
-      instance.teamNumber
-    }${this.getLetterForRegion(instance.type, 'vl')}`;
-    instance.abbreviation = `${dbClub.abbreviation} ${
+  static async generateAbbreviation(
+    instance: Team,
+    options: CreateOptions,
+    club?: Club
+  ) {
+    club = club ?? (await instance.getClub());
+
+    switch (club.useForTeamName) {
+      case UseForTeamName.FULL_NAME:
+        instance.name = `${club.fullName} ${
+          instance.teamNumber
+        }${this.getLetterForRegion(instance.type, 'vl')}`;
+        break;
+      case UseForTeamName.ABBREVIATION:
+        instance.name = `${club.abbreviation} ${
+          instance.teamNumber
+        }${this.getLetterForRegion(instance.type, 'vl')}`;
+        break;
+
+      default:
+      case UseForTeamName.NAME:
+        instance.name = `${club.name} ${
+          instance.teamNumber
+        }${this.getLetterForRegion(instance.type, 'vl')}`;
+        break;
+    }
+
+    instance.abbreviation = `${club.abbreviation} ${
       instance.teamNumber
     }${this.getLetterForRegion(instance.type, 'vl')}`;
   }
@@ -165,8 +186,8 @@ export class Team extends Model {
                   ?.single ?? 12) +
                 (b.lastRankingPlaces?.find(p => p.systemId === system.id)
                   ?.double ?? 12) +
-                (b.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ??
-                  12) -
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.mix ?? 12) -
                 ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
                   ?.single ?? 12) +
                   (a.lastRankingPlaces?.find(p => p.systemId === system.id)
@@ -183,8 +204,8 @@ export class Team extends Model {
                   ?.single ?? 12) +
                 (b.lastRankingPlaces?.find(p => p.systemId === system.id)
                   ?.double ?? 12) +
-                (b.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ??
-                  12) -
+                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  ?.mix ?? 12) -
                 ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
                   ?.single ?? 12) +
                   (a.lastRankingPlaces?.find(p => p.systemId === system.id)
