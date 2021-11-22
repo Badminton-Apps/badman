@@ -1,3 +1,12 @@
+## [4.2.2](https://github.com/Badminton-Apps/core/compare/v4.2.1...v4.2.2) (2021-11-22)
+
+
+### Bug Fixes
+
+* Correct update message ([c555fb0](https://github.com/Badminton-Apps/core/commit/c555fb028193ac48100a1ae60adbd66ff3261ed7))
+
+
+
 ## [4.2.1](https://github.com/Badminton-Apps/core/compare/v4.2.0...v4.2.1) (2021-11-22)
 
 
