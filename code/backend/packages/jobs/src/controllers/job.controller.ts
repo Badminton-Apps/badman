@@ -21,16 +21,18 @@ export class JobController extends BaseController {
 
   private async _initializeJobs() {
     // VisualSync
+    const scoresVisual = GetScoresVisual.dbEntry()
     const [scoresDb] = await Cron.findOrCreate({
-      where: { type: 'sync-visual' },
-      defaults: GetScoresVisual.dbEntry()
+      where: { type: scoresVisual.type },
+      defaults: scoresVisual
     });
     const visual = new GetScoresVisual(scoresDb);
     this._jobs.push(visual);
 
+    const levelsVisual = GetRankingVisual.dbEntry()
     const [rankingDb] = await Cron.findOrCreate({
-      where: { type: 'ranking-visual' },
-      defaults: GetRankingVisual.dbEntry()
+      where: { type: levelsVisual.type },
+      defaults: levelsVisual
     });
     const ranking = new GetRankingVisual(rankingDb);
     this._jobs.push(ranking);
