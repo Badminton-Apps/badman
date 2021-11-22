@@ -1,3 +1,12 @@
+## [4.3.2](https://github.com/Badminton-Apps/core/compare/v4.3.1...v4.3.2) (2021-11-22)
+
+
+### Bug Fixes
+
+* Correctly parse teams ([19896e7](https://github.com/Badminton-Apps/core/commit/19896e799d6b31e5a599a8a25d9a672ff54f1e49))
+
+
+
 ## [4.3.1](https://github.com/Badminton-Apps/core/compare/v4.3.0...v4.3.1) (2021-11-22)
 
 
