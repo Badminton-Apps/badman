@@ -23,6 +23,17 @@ export const correctWrongTeams = (team: {
     return team; 
   }
 
+  
+  if (team.name?.indexOf('DZ 99') > -1) {
+    team.name = team.name.replace('DZ 99', 'DZ99');
+    return team; 
+  }
+
+  if (team.name?.indexOf('Nivelles') > -1) {
+    team.name = team.name.replace('Nivelles', 'BC Nivellois');
+    return team; 
+  }
+
 
   return team;
 };
