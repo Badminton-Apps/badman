@@ -106,6 +106,9 @@ const cookieConfig: NgcCookieConsentConfig = {
 
           // local dev
           'http://localhost:5000/api/*',
+          
+          // Prod
+          'https://badman.app/api/*',
         ],
       },
     }),
