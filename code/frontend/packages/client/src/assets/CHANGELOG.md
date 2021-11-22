@@ -1,3 +1,19 @@
+# [4.2.0](https://github.com/Badminton-Apps/core/compare/v4.1.3...v4.2.0) (2021-11-22)
+
+
+### Bug Fixes
+
+* testing ([3192237](https://github.com/Badminton-Apps/core/commit/3192237625b8e3ed3eb8708cdb6ca4c6bf244371))
+
+
+### Features
+
+* event list filtering ([624de64](https://github.com/Badminton-Apps/core/commit/624de647cc7e86a36d5a128c82dd9e8ded6ed2e6))
+* extra filter options ([92dacd5](https://github.com/Badminton-Apps/core/commit/92dacd524c80758009126a238404c5aa27e3b090))
+* moved to official login pacakge to (hopefully) remove repeated logins ([13947c2](https://github.com/Badminton-Apps/core/commit/13947c2ea5e0a895312cb2c6149bfa4ac62f867b))
+
+
+
 ## [4.1.3](https://github.com/Badminton-Apps/core/compare/v4.1.2...v4.1.3) (2021-11-17)
 
 
