@@ -24,7 +24,9 @@ import {
 } from 'sequelize';
 import {
   AfterBulkCreate,
+  AfterBulkUpdate,
   AfterCreate,
+  AfterUpdate,
   AllowNull,
   BeforeBulkCreate,
   BeforeBulkUpdate,
@@ -65,7 +67,7 @@ export class Club extends Model {
   @Column
   id: string;
 
-  @Unique
+  @Unique('club_number_unique')
   @Index
   @AllowNull(false)
   @Column
@@ -81,6 +83,7 @@ export class Club extends Model {
   @Column
   abbreviation: string;
 
+  @Unique('club_number_unique')
   @Column
   clubId?: number;
 
@@ -100,7 +103,7 @@ export class Club extends Model {
   comments?: Comment[];
 
   @HasMany(() => Location)
-  locations: Location[];
+  locations: Location[]; 
 
   // #endregion
 
@@ -121,18 +124,18 @@ export class Club extends Model {
     }
   }
 
-  @BeforeUpdate
-  @BeforeCreate
+  @AfterUpdate
+  @AfterCreate
   static async setTeamName(instance: Club, options: SaveOptions) {
-    const teams = await instance.getTeams({ transaction: options.transaction })
-    for(const team of teams){
+    const teams = await instance.getTeams({ transaction: options.transaction });
+    for (const team of teams) {
       await Team.generateAbbreviation(team, {}, instance);
       await team.save({ transaction: options.transaction });
     }
   }
 
-  @BeforeBulkUpdate
-  @BeforeBulkCreate
+  @AfterBulkUpdate
+  @AfterBulkCreate
   static async setTeamNames(instances: Club[], options: SaveOptions) {
     for (const instance of instances) {
       await this.setTeamName(instance, options);

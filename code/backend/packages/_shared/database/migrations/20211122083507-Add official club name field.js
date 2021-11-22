@@ -25,6 +25,31 @@ module.exports = {
         },
         { transaction: t }
       );
+
+      await queryInterface.removeConstraint(
+        {
+          tableName: 'Clubs',
+          schema: 'public'
+        },
+        'Clubs_name_key',
+        {
+          transaction: t
+        }
+      );
+
+      await queryInterface.addConstraint(
+        {
+          tableName: 'Clubs',
+          schema: 'public'
+        },
+        {
+          fields: ['name', 'clubId'],
+          type: 'unique',
+          unique: true,
+          name: 'club_number_unique',
+          transaction: t
+        }
+      );
     });
   },
 
@@ -46,6 +71,31 @@ module.exports = {
         },
         'useForTeamName',
         { transaction: t }
+      );
+
+      await queryInterface.removeConstraint(
+        {
+          tableName: 'Clubs',
+          schema: 'public'
+        },
+        'club_number_unique',
+        {
+          transaction: t
+        }
+      );
+
+      await queryInterface.addConstraint(
+        {
+          tableName: 'Clubs',
+          schema: 'public'
+        },
+        {
+          fields: ['name'],
+          type: 'unique',
+          unique: true,
+          name: 'Clubs_name_key' ,
+          transaction: t
+        }
       );
     });
   }
