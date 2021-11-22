@@ -80,9 +80,9 @@ export class Team extends Model {
     options: CreateOptions,
     club?: Club
   ) {
-    club = club ?? (await instance.getClub());
+    club = club ?? (await instance.getClub({ transaction: options.transaction }));
 
-    switch (club.useForTeamName) {
+    switch (club?.useForTeamName ?? UseForTeamName.NAME) {
       case UseForTeamName.FULL_NAME:
         instance.name = `${club.fullName} ${
           instance.teamNumber
@@ -92,7 +92,7 @@ export class Team extends Model {
         instance.name = `${club.abbreviation} ${
           instance.teamNumber
         }${this.getLetterForRegion(instance.type, 'vl')}`;
-        break;
+        break; 
 
       default:
       case UseForTeamName.NAME:
