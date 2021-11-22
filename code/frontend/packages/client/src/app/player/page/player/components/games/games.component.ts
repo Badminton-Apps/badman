@@ -34,6 +34,7 @@ export class GamesComponent implements OnInit {
       shareReplay(1)
     );
 
+
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
     this.games$ = combineLatest([id$, system$, this.currentPage$]).pipe(
       switchMap(([playerId, system, page]) => {
@@ -89,4 +90,7 @@ export class GamesComponent implements OnInit {
   private onFinalize(): void {
     this.request$ = undefined;
   }
+
+
+
 }
