@@ -19,6 +19,14 @@ import {
     // logging: (...msg) => logger.debug('Query', msg)
   });
 
+  const fullNameReplace = [
+    'bc',
+    'vzw',
+    'badminton club',
+    'badmintonclub',
+    'badminton'
+  ];
+
   const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
   // Fix teams that need some updates
@@ -33,6 +41,7 @@ import {
     // combine teams with same name
     for (const club of clubs) {
       const destroyed = [];
+
       for (const team of club.teams) {
         if (destroyed.includes(team.id)) {
           continue;
@@ -57,12 +66,26 @@ import {
           destroyed.push(...otherTeams.map(t => t.id));
         }
 
-        if (!destroyed.includes(team.id)) {
-          team.name = team.name.trim();
-          await Team.generateAbbreviation(team, { transaction });
-          await team.save({ transaction });
+        // if (!destroyed.includes(team.id)) {
+        //   team.name = team.name.trim();
+        //   await Team.generateAbbreviation(team, { transaction });
+        //   await team.save({ transaction });
+        // }
+      }
+
+      club.fullName = club.name;
+
+      for (const repalcer of fullNameReplace) {
+        // Check if club name contains a full name replacement with a space in front or behind to make sure it's not a port of the name
+        if (
+          club.name.toLowerCase().startsWith(`${repalcer.toLowerCase()} `) ||
+          club.name.toLowerCase().endsWith(` ${repalcer.toLowerCase()}`)
+        ) {
+          const regex = new RegExp(repalcer, 'ig');
+          club.name = club.name.replace(regex, '').trim();
         }
       }
+      await club.save({ transaction });
     }
 
     await transaction.commit();
@@ -70,7 +93,6 @@ import {
     logger.debug('something went wrong', error);
     transaction.rollback();
   }
-
 
   async function mergeTeams(active: Team, otherTeams: Team[]) {
     await EncounterCompetition.update(
@@ -137,27 +159,31 @@ import {
     await new Club({
       id: '9fc46f1a-6cfc-4b40-a266-f88ea09dc34e',
       name: 'Bad79',
+      fullName: 'Bad79',
       abbreviation: 'Bad79',
       clubId: 39
     }).save({ transaction });
 
     await new Club({
       id: '2b3628e2-4154-428c-8221-801bafeffaa5',
-      name: 'BC Nivellois',
+      fullName: 'BC Nivellois',
+      name: 'Nivellois',
       abbreviation: 'Nivellois',
       clubId: 15
     }).save({ transaction });
 
     await new Club({
       id: '9c62b2b6-507e-4428-8579-8a280dfaa19e',
-      name: 'Grâce BC asbl',
+      fullName: 'Grâce BC asbl',
+      name: 'Grâce',
       abbreviation: 'Grâce',
       clubId: 15
     }).save({ transaction });
 
     await new Club({
       id: 'afbb85f2-9144-4357-8c7c-fb23346fc2e4',
-      name: 'Royal Badminton Club Verviers',
+      fullName: 'Royal Badminton Club Verviers',
+      name: 'Verviers',
       abbreviation: 'Verviers',
       clubId: 19
     }).save({ transaction });

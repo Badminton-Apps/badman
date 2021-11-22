@@ -65,15 +65,15 @@ export class ClubFieldsComponent implements OnInit {
   private _setExampleTeamName() {
     switch (this.clubForm.value.useForTeamName) {
       case UseForTeamName.FULL_NAME:
-        this.exampleTeamName = `${this.club.fullName ?? ''} 1G`;
+        this.exampleTeamName = `${this.clubForm.value.fullName ?? ''} 1G`;
         break;
       case UseForTeamName.ABBREVIATION:
-        this.exampleTeamName = `${this.club.abbreviation ?? ''} 1G`;
+        this.exampleTeamName = `${this.clubForm.value.abbreviation ?? ''} 1G`;
         break;
 
       default:
       case UseForTeamName.NAME:
-        this.exampleTeamName = `${this.club.name ?? ''} 1G`;
+        this.exampleTeamName = `${this.clubForm.value.name ?? ''} 1G`;
         break;
     }
   }
