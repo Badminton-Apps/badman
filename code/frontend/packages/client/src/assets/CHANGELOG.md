@@ -1,3 +1,12 @@
+## [4.2.1](https://github.com/Badminton-Apps/core/compare/v4.2.0...v4.2.1) (2021-11-22)
+
+
+### Bug Fixes
+
+* Auth intercepter configuration for produciton wasn't setup properly ([8d9c89e](https://github.com/Badminton-Apps/core/commit/8d9c89ea6cd5ef7351d8a2580658bf036ff54761))
+
+
+
 # [4.2.0](https://github.com/Badminton-Apps/core/compare/v4.1.3...v4.2.0) (2021-11-22)
 
 
