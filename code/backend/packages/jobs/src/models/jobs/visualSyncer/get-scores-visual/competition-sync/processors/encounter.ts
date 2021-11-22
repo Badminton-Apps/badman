@@ -8,7 +8,7 @@ import {
   SubEventType,
   Team,
   XmlTeamMatch,
-  XmlTournament
+  XmlTournament,
 } from '@badvlasim/shared';
 import moment from 'moment';
 import { Op, Transaction, fn } from 'sequelize';
@@ -46,7 +46,9 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   private async _processEncounters({ draw, internalId }: DrawStepData) {
-    const encounters = await draw.getEncounters({ transaction: this.transaction });
+    const encounters = await draw.getEncounters({
+      transaction: this.transaction,
+    });
     const visualMatches = await this.visualService.getMatches(
       this.visualTournament.Code,
       internalId
@@ -60,11 +62,17 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       let dbEncounter = null; // encounters.find(r => r.visualCode === `${xmlTeamMatch.Code}`);
 
       if (!dbEncounter) {
-        const { team1, team2 } = await this._findTeams(xmlTeamMatch, this.transaction);
+        const { team1, team2 } = await this._findTeams(
+          xmlTeamMatch,
+          this.transaction
+        );
 
         // FInd one with same teams
         dbEncounter = encounters.find(
-          e => e.homeTeamId === team1?.id && e.awayTeamId === team2?.id && e.drawId === draw.id
+          (e) =>
+            e.homeTeamId === team1?.id &&
+            e.awayTeamId === team2?.id &&
+            e.drawId === draw.id
         );
 
         if (!dbEncounter) {
@@ -73,7 +81,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
             visualCode: xmlTeamMatch.Code,
             date: matchDate,
             homeTeamId: team1?.id,
-            awayTeamId: team2?.id
+            awayTeamId: team2?.id,
           }).save({ transaction: this.transaction });
         } else {
           dbEncounter.visualCode = xmlTeamMatch.Code;
@@ -89,7 +97,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
       // Set teams if undefined (should not happen)
       if (dbEncounter.awayTeamId == null || dbEncounter.homeTeamId == null) {
-        const { team1, team2 } = await this._findTeams(xmlTeamMatch, this.transaction);
+        const { team1, team2 } = await this._findTeams(
+          xmlTeamMatch,
+          this.transaction
+        );
         dbEncounter.homeTeamId = team1?.id;
         dbEncounter.awayTeamId = team2?.id;
         await dbEncounter.save({ transaction: this.transaction });
@@ -97,37 +108,40 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
       this._dbEncounters.push({
         encounter: dbEncounter,
-        internalId: parseInt(xmlTeamMatch.Code, 10)
+        internalId: parseInt(xmlTeamMatch.Code, 10),
       });
     }
 
     // Remove draw that are not in the xml
-    const removedEncounters = encounters.filter(e => e.visualCode == null);
+    const removedEncounters = encounters.filter((e) => e.visualCode == null);
     for (const removed of removedEncounters) {
       const gameIds = (
         await removed?.getGames({
           attributes: ['id'],
-          transaction: this.transaction
+          transaction: this.transaction,
         })
       )
-        ?.map(g => g?.id)
-        ?.filter(g => !!g);
+        ?.map((g) => g?.id)
+        ?.filter((g) => !!g);
 
       if (gameIds && gameIds.length > 0) {
         await Game.destroy({
           where: {
             id: {
-              [Op.in]: gameIds
-            }
+              [Op.in]: gameIds,
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
       await removed.destroy({ transaction: this.transaction });
     }
   }
 
-  private async _findTeams(xmlTeamMatch: XmlTeamMatch, transaction: Transaction) {
+  private async _findTeams(
+    xmlTeamMatch: XmlTeamMatch,
+    transaction: Transaction
+  ) {
     // We only know about last years teams
     if (
       this.event.startYear >= 2021 &&
@@ -188,17 +202,17 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     const teamName = correctWrongTeams({ name }).name;
     if (teamName === null || teamName === undefined) {
-      logger.warn(`Team not filled`); 
+      logger.warn(`Team not filled`);
       return null;
     }
- 
+
     const where: { [key: string]: any } = {
       name: {
-        [Op.iLike]: teamName
+        [Op.iLike]: teamName,
       },
-      active: true 
+      active: true,
     };
-    if (clubId) { 
+    if (clubId) {
       where.clubId = clubId;
     }
     let teams = await Team.findAll({ where, transaction: this.transaction });
@@ -206,7 +220,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       logger.warn(`Found more than one team for ${teamName}`);
     }
 
-    let team = teams.length == 0 ? await this._findTeamByRegex(teamName, clubId) : teams[0];
+    let team =
+      (teams?.length ?? 0) === 0
+        ? await this._findTeamByRegex(teamName, clubId)
+        : teams[0];
 
     if (team == null) {
       logger.warn(`Team ${name} not found`);
@@ -219,13 +236,15 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     // remove leading index for PBA
     // name = name.replace(/\(\d+\)/gim, '');
 
-    const regexResult = /(?<club>.*)\ ((?<teamNumberFront>\d+)(?<teamTypeFront>[GHD]?)|(?<teamTypeBack>[GHD]?)(?<teamNumberBack>\d))/gim.exec(
-      name
-    );
+    const regexResult =
+      /(?<club>.*)\ ((?<teamNumberFront>\d+)(?<teamTypeFront>[GHD]?)|(?<teamTypeBack>[GHD]?)(?<teamNumberBack>\d))/gim.exec(
+        name
+      );
 
     if (regexResult) {
       const teamNumber = parseInt(
-        regexResult.groups?.teamNumberFront || regexResult.groups?.teamNumberBack,
+        regexResult.groups?.teamNumberFront ||
+          regexResult.groups?.teamNumberBack,
         10
       );
       const getType = (type: string) => {
@@ -245,15 +264,19 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         }
       };
 
-      const type = getType(regexResult.groups?.teamTypeFront || regexResult.groups?.teamTypeBack);
+      const type = getType(
+        regexResult.groups?.teamTypeFront || regexResult.groups?.teamTypeBack
+      );
 
       const where: { [key: string]: any } = {
         name: {
-          [Op.iLike]: `%${correctWrongTeams({ name: regexResult.groups?.club || name }).name}%`
+          [Op.iLike]: `%${
+            correctWrongTeams({ name: regexResult.groups?.club || name }).name
+          }%`,
         },
         teamNumber,
         type,
-        active: true
+        active: true,
       };
       if (clubId) {
         where.clubId = clubId;
@@ -261,7 +284,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
       const results = await Team.findAll({
         where,
-        transaction: this.transaction
+        transaction: this.transaction,
       });
 
       if (results.length === 1) {
@@ -269,11 +292,11 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       } else if (results.length > 1) {
         // Stupid fix, but works.
         const sortedByLength = results
-          .filter(r => r.name.length > name.length)
+          .filter((r) => r.name.length > name.length)
           .sort((a, b) => a.name.length - b.name.length);
 
         logger.debug('Found multiple teams', {
-          sortedByLength: sortedByLength.map(r => r.name)
+          sortedByLength: sortedByLength.map((r) => r.name),
         });
 
         return sortedByLength[0];
