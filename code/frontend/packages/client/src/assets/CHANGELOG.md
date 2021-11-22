@@ -1,3 +1,19 @@
+# [4.3.0](https://github.com/Badminton-Apps/core/compare/v4.2.2...v4.3.0) (2021-11-22)
+
+
+### Bug Fixes
+
+* **jobs:** Level sync should check against the player fixer ([c767d0f](https://github.com/Badminton-Apps/core/commit/c767d0f170c99fac266c7bda87c3c5aadc5e9430))
+* Login should be optional ([8413513](https://github.com/Badminton-Apps/core/commit/8413513bee02df4c7e8a3dba53ecd33ebab26ba6))
+
+
+### Features
+
+* Added full name for clubs (+ option to select prefix of the team) ([829a49e](https://github.com/Badminton-Apps/core/commit/829a49ed71518eab0cc3ceb1da15e708fa496192))
+* Sync games pt. 3 ([d49416d](https://github.com/Badminton-Apps/core/commit/d49416d4edd718106fcc0d2b7963909845b49084))
+
+
+
 ## [4.2.2](https://github.com/Badminton-Apps/core/compare/v4.2.1...v4.2.2) (2021-11-22)
 
 
