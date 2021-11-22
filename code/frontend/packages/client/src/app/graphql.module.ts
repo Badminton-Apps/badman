@@ -10,6 +10,7 @@ export function createApollo(httpLink: HttpLink) {
   const defaultOptions: DefaultOptions = {
     watchQuery: {
       fetchPolicy: 'cache-and-network',
+      returnPartialData: true,
       // errorPolicy: 'ignore',
     },
     query: {
