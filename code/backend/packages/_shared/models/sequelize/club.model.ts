@@ -24,13 +24,15 @@ import {
 } from 'sequelize';
 import {
   AfterBulkCreate,
+  AfterBulkUpdate,
   AfterCreate,
+  AfterUpdate,
   AllowNull,
   BeforeBulkCreate,
-  BeforeBulkUpdate, 
+  BeforeBulkUpdate,
   BeforeCreate,
   BeforeUpdate,
-  BelongsToMany, 
+  BelongsToMany,
   Column,
   DataType,
   Default,
@@ -47,6 +49,7 @@ import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
+import { UseForTeamName } from '../enums/useForTeams.enum';
 
 @Table({
   timestamps: true,
@@ -64,15 +67,23 @@ export class Club extends Model {
   @Column
   id: string;
 
-  @Unique
+  @Unique('club_number_unique')
   @Index
   @AllowNull(false)
   @Column
   name: string;
 
   @Column
+  fullName?: string;
+
+  @Default(UseForTeamName.NAME)
+  @Column(DataType.ENUM('name', 'fullName', 'abbreviation'))
+  useForTeamName?: UseForTeamName;
+
+  @Column
   abbreviation: string;
 
+  @Unique('club_number_unique')
   @Column
   clubId?: number;
 
@@ -105,11 +116,27 @@ export class Club extends Model {
     }
   }
 
-  @BeforeBulkUpdate
   @BeforeBulkCreate
   static setAbbriviations(instances: Club[], options: SaveOptions) {
     for (const instance of instances) {
       this.setAbbriviation(instance, options);
+    } 
+  }
+
+  @AfterUpdate
+  @AfterCreate
+  static async setTeamName(instance: Club, options: SaveOptions) {
+    const teams = await instance.getTeams({ transaction: options.transaction });
+    for (const team of teams) {
+      await Team.generateAbbreviation(team, {}, instance);
+      await team.save({ transaction: options.transaction });
+    }
+  }
+
+  @AfterBulkCreate
+  static async setTeamNames(instances: Club[], options: SaveOptions) {
+    for (const instance of instances) {
+      await this.setTeamName(instance, options);
     }
   }
 

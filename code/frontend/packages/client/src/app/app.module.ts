@@ -97,7 +97,7 @@ const cookieConfig: NgcCookieConsentConfig = {
       audience: `ranking-simulation`,
       useRefreshTokens: true,
       httpInterceptor: {
-        allowedList: [{ uriMatcher: (uri) => uri.indexOf('api') > -1 }],
+        allowedList: [{ uriMatcher: (uri) => uri.indexOf('api') > -1, allowAnonymous: true }],
       },
     }),
   ],
