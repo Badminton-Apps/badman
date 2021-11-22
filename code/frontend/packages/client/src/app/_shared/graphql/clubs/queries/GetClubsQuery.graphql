@@ -1,9 +1,5 @@
 # Write your query or mutation here
-query GetClubs(
-  $first: Int
-  $after: String
-	$where: SequelizeJSON
-) {
+query GetClubs($first: Int, $after: String, $where: SequelizeJSON) {
   clubs(first: $first, after: $after, where: $where) {
     total
     edges {
@@ -11,9 +7,11 @@ query GetClubs(
       node {
         id
         name
+        fullName
         clubId
         abbreviation
       }
     }
   }
 }
+ 
