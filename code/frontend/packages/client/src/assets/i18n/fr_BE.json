@@ -203,11 +203,18 @@
         "females": "",
         "national": ""
     },
+    "usedForTeam": {
+        "title": "",
+        "description": "",
+        "select": "",
+        "example": ""
+    },
     "input": {
         "type": "",
         "memberId": "",
         "year": "",
         "name": "Nom",
+        "fullName": "Full nom",
         "firstname": "",
         "lastname": "",
         "abbreviation": "",

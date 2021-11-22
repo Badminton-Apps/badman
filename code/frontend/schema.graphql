@@ -76,6 +76,14 @@ type RootQueryType {
     # Id of the location
     id: ID!
   ): Location
+  locations(
+    limit: Int
+    order: String
+
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Location]
   player(
     # id of the user
     id: ID!
@@ -192,6 +200,8 @@ scalar SequelizeJSON
 type Club {
   id: String!
   name: String!
+  fullName: String
+  useForTeamName: ClubuseForTeamNameEnumType
   abbreviation: String
   clubId: Int
   createdAt: Date!
@@ -229,6 +239,12 @@ type Club {
     offset: Int
     end: String
   ): [Player]
+}
+
+enum ClubuseForTeamNameEnumType {
+  name
+  fullName
+  abbreviation
 }
 
 # A Team
@@ -910,6 +926,7 @@ type EventCompetition {
   type: EventCompetitiontypeEnumType
   visualCode: String
   allowEnlisting: Boolean
+  started: Boolean
   createdAt: Date!
   updatedAt: Date!
   subEvents(
@@ -1236,6 +1253,8 @@ type RootMutationType {
 input ClubInput {
   id: String
   name: String!
+  fullName: String
+  useForTeamName: ClubuseForTeamNameEnumType
   abbreviation: String
   clubId: Int
 }
@@ -1258,6 +1277,7 @@ input EventCompetitionInput {
   type: EventCompetitiontypeEnumType
   visualCode: String
   allowEnlisting: Boolean
+  started: Boolean
   subEvents: [SubEventCompetitionInput]
 }
 
