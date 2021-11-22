@@ -208,11 +208,18 @@
         "females": "Vrouw",
         "national": "Nationale"
     },
+    "usedForTeam": {
+        "title": "Team namen",
+        "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",
+        "select": "Team prefix",
+        "example": "Vorbeeld: {{teamName}}"
+    },
     "input": {
         "type": "Type",
         "memberId": "Lidnummer",
         "year": "Jaar",
         "name": "Naam",
+        "fullName": "Volledige naam",
         "firstname": "Voornaam",
         "lastname": "Achteraam",
         "abbreviation": "Afkorting",

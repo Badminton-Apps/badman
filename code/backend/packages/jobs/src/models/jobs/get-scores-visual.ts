@@ -7,6 +7,16 @@ import { CronJob } from '../cronJob';
 import { CompetitionSyncer, TournamentSyncer } from './visualSyncer/get-scores-visual';
 
 export class GetScoresVisual extends CronJob {
+  static dbEntry(): {
+    cron: string;
+    type: string;
+  } {
+    return {
+      cron: '0 2 * * *',
+      type: 'scores-visual'
+    };
+  }
+
   private _pageSize = 1000;
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
@@ -18,7 +28,7 @@ export class GetScoresVisual extends CronJob {
 
     this._competitionSync = new CompetitionSyncer();
     this._tournamentSync = new TournamentSyncer();
-  }
+  } 
 
   async run(args?: { date: Date }): Promise<void> {
     // Use argument date, else stored date, finally use today
@@ -33,7 +43,10 @@ export class GetScoresVisual extends CronJob {
 
     // newEvents = newEvents.filter(event => {
     //   return (
-    //     event.Name == 'PBA competitie 2021-2022'
+    //     event.Name === 'PBA jeugdcompetitie 2017-2018'
+    //     // && event.Name != 'PBA competitie 2021-2022'
+    //     // && event.Name != 'VVBBC interclubcompetitie 2021-2022'
+    //     // && event.Name != 'PBO competitie 2021-2022'
     //     // || event.Name == 'Limburgse interclubcompetitie 2021-2022'
     //     // || event.Name == 'WVBF Competitie 2021-2022'
     //   );
@@ -75,13 +88,13 @@ export class GetScoresVisual extends CronJob {
         password: `${process.env.VR_API_PASS}`
       },
       raxConfig: {
-        retry: 25,
+        retry: 25, 
         onRetryAttempt: err => {
           const cfg = rax.getConfig(err);
           logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`);
         }
       },
-      headers: { 
+      headers: {  
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/xml'
       }
@@ -106,13 +119,5 @@ export class GetScoresVisual extends CronJob {
     return tournaments;
   }
 
-  static dbEntry(): {
-    cron: string;
-    type: string;
-  } {
-    return {
-      cron: '0 2 * * *',
-      type: 'scores-visual'
-    };
-  }
+  
 }

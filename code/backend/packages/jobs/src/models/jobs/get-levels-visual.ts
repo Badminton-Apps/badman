@@ -3,6 +3,16 @@ import { CronJob } from '../cronJob';
 import { RankingSyncer } from './visualSyncer/get-levels-visual';
 
 export class GetRankingVisual extends CronJob {
+  static dbEntry(): {
+    cron: string;
+    type: string;
+  } {
+    return {
+      cron: '0 */4 * * *',
+      type: 'levels-visual'
+    };
+  }
+
   private _levelSync: RankingSyncer;
   private _meta: any;
 
@@ -26,14 +36,6 @@ export class GetRankingVisual extends CronJob {
     }
   }
  
-  static dbEntry(): {
-    cron: string;
-    type: string;
-  } {
-    return {
-      cron: '0 */4 * * *',
-      type: 'levels-visual'
-    };
-  }
+
 }
  
