@@ -14,12 +14,14 @@ query GetClubQuery(
   club(id: $id) {
     id
     name
+    fullName
+    useForTeamName
     abbreviation
     clubId
     teams(order: "type", where: $teamsWhere) @include(if: $includeTeams) {
       id
       name
-      abbreviation
+      abbreviation 
       type
       preferredTime
       preferredDay

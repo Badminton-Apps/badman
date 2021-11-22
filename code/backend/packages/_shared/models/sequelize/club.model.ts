@@ -27,10 +27,10 @@ import {
   AfterCreate,
   AllowNull,
   BeforeBulkCreate,
-  BeforeBulkUpdate, 
+  BeforeBulkUpdate,
   BeforeCreate,
   BeforeUpdate,
-  BelongsToMany, 
+  BelongsToMany,
   Column,
   DataType,
   Default,
@@ -47,6 +47,7 @@ import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
+import { UseForTeamName } from '../enums/useForTeams.enum';
 
 @Table({
   timestamps: true,
@@ -69,6 +70,13 @@ export class Club extends Model {
   @AllowNull(false)
   @Column
   name: string;
+
+  @Column
+  fullName?: string;
+
+  @Default(UseForTeamName.NAME)
+  @Column(DataType.ENUM('name', 'fullName', 'abbreviation'))
+  useForTeamName?: UseForTeamName;
 
   @Column
   abbreviation: string;
@@ -110,6 +118,24 @@ export class Club extends Model {
   static setAbbriviations(instances: Club[], options: SaveOptions) {
     for (const instance of instances) {
       this.setAbbriviation(instance, options);
+    }
+  }
+
+  @BeforeUpdate
+  @BeforeCreate
+  static async setTeamName(instance: Club, options: SaveOptions) {
+    const teams = await instance.getTeams({ transaction: options.transaction })
+    for(const team of teams){
+      await Team.generateAbbreviation(team, {}, instance);
+      await team.save({ transaction: options.transaction });
+    }
+  }
+
+  @BeforeBulkUpdate
+  @BeforeBulkCreate
+  static async setTeamNames(instances: Club[], options: SaveOptions) {
+    for (const instance of instances) {
+      await this.setTeamName(instance, options);
     }
   }
 
