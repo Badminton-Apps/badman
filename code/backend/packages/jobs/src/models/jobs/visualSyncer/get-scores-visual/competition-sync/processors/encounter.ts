@@ -188,22 +188,25 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     const teamName = correctWrongTeams({ name }).name;
     if (teamName === null || teamName === undefined) {
-      logger.warn(`Team 1 not filled`);
+      logger.warn(`Team not filled`); 
       return null;
     }
-
+ 
     const where: { [key: string]: any } = {
-      name: teamName,
-      active: true
+      name: {
+        [Op.iLike]: teamName
+      },
+      active: true 
     };
-    if (clubId) {
+    if (clubId) { 
       where.clubId = clubId;
     }
-    let team = await Team.findOne({ where, transaction: this.transaction });
-
-    if (team == null) {
-      team = await this._findTeamByRegex(teamName, clubId);
+    let teams = await Team.findAll({ where, transaction: this.transaction });
+    if (teams.length > 1) {
+      logger.warn(`Found more than one team for ${teamName}`);
     }
+
+    let team = teams.length == 0 ? await this._findTeamByRegex(teamName, clubId) : teams[0];
 
     if (team == null) {
       logger.warn(`Team ${name} not found`);
