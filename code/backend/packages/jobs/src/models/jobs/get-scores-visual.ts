@@ -28,9 +28,9 @@ export class GetScoresVisual extends CronJob {
 
     this._competitionSync = new CompetitionSyncer();
     this._tournamentSync = new TournamentSyncer();
-  } 
+  }
 
-  async run(args?: { date: Date }): Promise<void> {
+  async run(args?: { date: Date; skip: string[] }): Promise<void> {
     // Use argument date, else stored date, finally use today
     const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
     logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
@@ -52,18 +52,24 @@ export class GetScoresVisual extends CronJob {
     //   );
     // });
 
-    for (const xmlTournament of newEvents) {
+    for (let i = 0; i < newEvents.length; i++) {
+      const xmlTournament = newEvents[i];
+      const percent = Math.round((i / newEvents.length) * 10000) / 100;
+      logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${newEvents.length})`);
+
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
       try {
-        logger.info(`Processing ${xmlTournament.Name}`);
-
         if (
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
           xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
         ) {
-          await this._competitionSync.process({ transaction, xmlTournament });
+          if (!args.skip?.includes(xmlTournament.Name) && !args.skip?.includes('competition')) {
+            await this._competitionSync.process({ transaction, xmlTournament });
+          }
         } else {
-          await this._tournamentSync.process({ transaction, xmlTournament });
+          if (!args.skip?.includes(xmlTournament.Name) && !args.skip?.includes('tournament')) {
+            await this._tournamentSync.process({ transaction, xmlTournament });
+          }
         }
         await transaction.commit();
         logger.info(`Finished ${xmlTournament.Name}`);
@@ -88,13 +94,13 @@ export class GetScoresVisual extends CronJob {
         password: `${process.env.VR_API_PASS}`
       },
       raxConfig: {
-        retry: 25, 
+        retry: 25,
         onRetryAttempt: err => {
           const cfg = rax.getConfig(err);
           logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`);
         }
       },
-      headers: {  
+      headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/xml'
       }
@@ -107,7 +113,7 @@ export class GetScoresVisual extends CronJob {
     const body = parse(result.data, {
       attributeNamePrefix: '',
       ignoreAttributes: false,
-      parseAttributeValue: true 
+      parseAttributeValue: true
     }).Result as XmlResult;
     const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
 
@@ -118,6 +124,4 @@ export class GetScoresVisual extends CronJob {
 
     return tournaments;
   }
-
-  
 }
