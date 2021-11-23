@@ -15,7 +15,7 @@ export class  Cron extends Model {
   @IsUUID(4) 
   @PrimaryKey
   @Column 
-  id: string;
+  id: string; 
 
   @Column
   cron: string;
@@ -28,6 +28,9 @@ export class  Cron extends Model {
 
   @Column 
   running: boolean;
+
+  @Column 
+  scheduled: boolean;
 
   @Column(DataType.JSON)
   meta: any;

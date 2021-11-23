@@ -8,7 +8,7 @@ export class JobController extends BaseController {
 
   constructor(router: Router, private _authMiddleware: any) {
     super(router);
-
+ 
     this._intializeRoutes();
     this._initializeJobs();
   }
@@ -52,8 +52,13 @@ export class JobController extends BaseController {
     const foundJob = this._jobs.find(job => job.dbCron.type === request.query.type);
 
     if (foundJob) {
-      foundJob.single(request.body);
-      response.status(200).send('Running job');
+      try {
+        foundJob.single(request.body);
+        response.status(200).send('Running job');
+      } catch (e) {
+        response.status(500).send(e);
+        return;
+      }
     } else {
       response.status(400).send('Job not found');
     }

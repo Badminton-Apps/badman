@@ -20,12 +20,9 @@ export class GetScoresVisual extends CronJob {
   private _pageSize = 1000;
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
-  private _meta: any;
 
   constructor(cron: Cron) {
     super(cron);
-    this._meta = JSON.parse(cron.meta) as any;
-
     this._competitionSync = new CompetitionSyncer();
     this._tournamentSync = new TournamentSyncer();
   }
@@ -56,8 +53,14 @@ export class GetScoresVisual extends CronJob {
       const xmlTournament = newEvents[i];
       const percent = Math.round((i / newEvents.length) * 10000) / 100;
       logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${newEvents.length})`);
-
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+
+      this.dbCron.meta = {
+        percent,
+        current: i, 
+        total: newEvents.length
+      };
+      this.dbCron.save({ transaction });
       try {
         if (
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
