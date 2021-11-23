@@ -25,6 +25,18 @@ type RootQueryType {
     # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
     where: SequelizeJSON
   ): ClubConnection
+  cron(
+    # Id of the Cron
+    id: String!
+  ): Cron
+  crons(
+    limit: Int
+    order: String
+
+    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    where: SequelizeJSON
+    offset: Int
+  ): [Cron]
   eventCompetition(
     # id of the event competition
     id: ID!
@@ -1075,6 +1087,19 @@ type ClubEdge {
 
   # A cursor for use in pagination
   cursor: String!
+}
+
+# A Cron
+type Cron {
+  id: String!
+  cron: String
+  type: String
+  lastRun: Date
+  running: Boolean
+  scheduled: Boolean
+  meta: SequelizeJSON
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 # A connection to a list of items.
