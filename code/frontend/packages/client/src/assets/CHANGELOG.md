@@ -1,3 +1,17 @@
+# [4.4.0](https://github.com/Badminton-Apps/core/compare/v4.3.2...v4.4.0) (2021-11-23)
+
+
+### Bug Fixes
+
+* **job:** Games for tournaments weren't processed ([953d0c9](https://github.com/Badminton-Apps/core/commit/953d0c9a28c80b57de667c4437bf3007bb53681a))
+
+
+### Features
+
+* Cron status and queries ([f7202f9](https://github.com/Badminton-Apps/core/commit/f7202f94b1075a108daf1afeae1e96f46fc11898))
+
+
+
 ## [4.3.2](https://github.com/Badminton-Apps/core/compare/v4.3.1...v4.3.2) (2021-11-22)
 
 
