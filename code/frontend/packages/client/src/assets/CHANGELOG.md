@@ -1,3 +1,12 @@
+## [4.4.1](https://github.com/Badminton-Apps/core/compare/v4.4.0...v4.4.1) (2021-11-23)
+
+
+### Bug Fixes
+
+* Double encounters ([f219dbd](https://github.com/Badminton-Apps/core/commit/f219dbd9db37406cbbd0ab8474186a2f1458c83b))
+
+
+
 # [4.4.0](https://github.com/Badminton-Apps/core/compare/v4.3.2...v4.4.0) (2021-11-23)
 
 
