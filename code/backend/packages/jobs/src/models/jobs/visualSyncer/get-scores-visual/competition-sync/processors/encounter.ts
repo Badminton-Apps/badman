@@ -62,7 +62,8 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbEncounters;
         dbEncounter = first;
-
+        
+        logger.warn('Having multiple? Removing old')
         await this._destroyEncounters(rest);
       }
 
