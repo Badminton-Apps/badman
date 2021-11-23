@@ -24,6 +24,19 @@ const routes: Routes = [
     },
   },
   {
+    path: 'jobs',
+    loadChildren: () =>
+      import('./modules/job-management/job-management.module').then(
+        (m) => m.JobManagementModule
+      ),
+    canActivate: [AuthGuard],
+    data: {
+      claims: {
+        all: 'change:job',
+      },
+    },
+  },
+  {
     path: 'club',
     loadChildren: () =>
       import('./modules/club-management/club-management.module').then(
