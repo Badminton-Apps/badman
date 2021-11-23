@@ -212,7 +212,7 @@ export class TournamentSyncer {
           internalId: number;
         }[] = this.processor.getData(this.STEP_SUBEVENT);
 
-        const dbDraws = [];
+        const resultDraws = [];
         const processDraws = async ({ subEvent, internalId }) => {
           const draws = await subEvent.getDraws({ transaction: args.transaction });
           const visualDraws = await this.visualService.getDraws(args.tourneyKey, internalId);
@@ -258,7 +258,7 @@ export class TournamentSyncer {
                     : DrawType.QUALIFICATION
               }).save({ transaction: args.transaction });
             }
-            dbDraws.push({ draw: dbDraw, internalId: xmlDraw.Code });
+            resultDraws.push({ draw: dbDraw, internalId: xmlDraw.Code });
             dbXmlDraws.push(dbDraw);
           }
 
@@ -285,7 +285,7 @@ export class TournamentSyncer {
         };
 
         await Promise.all(subEvents.map(e => processDraws(e)));
-        return dbDraws;
+        return resultDraws;
       }
     );
   }
