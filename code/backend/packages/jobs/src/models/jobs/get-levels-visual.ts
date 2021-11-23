@@ -14,11 +14,9 @@ export class GetRankingVisual extends CronJob {
   }
 
   private _levelSync: RankingSyncer;
-  private _meta: any;
 
   constructor(cron: Cron) {
     super(cron);
-    this._meta = JSON.parse(cron.meta) as any;
 
     this._levelSync = new RankingSyncer();
   }

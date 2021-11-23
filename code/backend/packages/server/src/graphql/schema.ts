@@ -66,7 +66,9 @@ import {
   systemsGroupsQuery,
   systemsQuery,
   teamQuery,
-  teamsQuery
+  teamsQuery,
+  cronQuery,
+  cronsQuery
 } from './queries';
 
 export const createSchema = (notificationService: NotificationService) => {
@@ -77,6 +79,8 @@ export const createSchema = (notificationService: NotificationService) => {
         claims: claimsQuery,
         club: clubQuery,
         clubs: clubsQuery,
+        cron: cronQuery,
+        crons: cronsQuery,
         eventCompetition: eventCompetitionQuery,
         eventCompetitions: eventCompetitionsQuery,
         eventTournament: eventTournamentQuery,
@@ -142,7 +146,7 @@ export const createSchema = (notificationService: NotificationService) => {
         updateTeamLocation: updateTeamLocationMutation,
         updateTournamentEventLocation: updateTournamentEventLocationMutation,
         addPlayerBaseSubEvent: addPlayerBaseSubEventMutation,
-        removePlayerBaseSubEvent: removePlayerBaseSubEventMutation,
+        removePlayerBaseSubEvent: removePlayerBaseSubEventMutation
       })
     })
   });
