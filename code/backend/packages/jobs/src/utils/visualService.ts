@@ -22,7 +22,15 @@ export class VisualService {
       `${process.env.VR_API}/Tournament/${tourneyId}/TeamMatch/${matchId}`
     );
     const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
-    return this._asArray(parsed.Match);
+    if (parsed.Match) {
+      return this._asArray(parsed.Match);
+    }
+    if (parsed.TeamMatch) {
+      return this._asArray(parsed.TeamMatch);
+    } 
+
+    logger.warn('No matches')
+    return [];
   }
 
   async getMatches(tourneyId: string, drawId: string | number) {
@@ -30,7 +38,16 @@ export class VisualService {
       `${process.env.VR_API}/Tournament/${tourneyId}/Draw/${drawId}/Match`
     );
     const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
-    return this._asArray(parsed.TeamMatch);
+
+    if (parsed.Match) {
+      return this._asArray(parsed.Match);
+    }
+    if (parsed.TeamMatch) {
+      return this._asArray(parsed.TeamMatch);
+    }
+
+    logger.warn('No matches')
+    return [];
   }
 
   async getDraws(tourneyId: string, eventId: string | number) {
@@ -55,7 +72,7 @@ export class VisualService {
 
   private _getFromApi(url) {
     logger.silly(`Getting from ${url}`);
-    return axios.get(url, { 
+    return axios.get(url, {
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
