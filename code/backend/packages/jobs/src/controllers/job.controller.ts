@@ -56,7 +56,7 @@ export class JobController extends BaseController {
         foundJob.single(request.body);
         response.status(200).send('Running job');
       } catch (e) {
-        response.status(500).send(e);
+        response.status(500).send(e.message);
         return;
       }
     } else {
