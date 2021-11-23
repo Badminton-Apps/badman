@@ -331,7 +331,7 @@ export class TournamentSyncer {
           const subEvent = subevents.find(sub => draw.subeventId === sub.subEvent.id).subEvent;
 
           const visualMatch = (
-            await this.visualService.getMatch(args.tourneyKey, internalId)
+            await this.visualService.getMatches(args.tourneyKey, internalId)
           ).filter(m => !m || m?.Winner !== 0);
 
           for (const xmlMatch of visualMatch) {
