@@ -41,7 +41,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       for (const xmlMatch of visualMatch) {
         let game = games.find(
           r =>
-            r.round === (xmlMatch.RoundName ?? null) && null && r.visualCode === `${xmlMatch.Code}`
+            r.round === (xmlMatch.RoundName ?? null) && r.visualCode === `${xmlMatch.Code}`
         );
 
         if (!game) {

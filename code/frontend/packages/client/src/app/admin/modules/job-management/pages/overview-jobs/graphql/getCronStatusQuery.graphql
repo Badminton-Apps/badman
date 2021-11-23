@@ -1,0 +1,9 @@
+query {
+  crons {
+    type
+    cron
+    running
+    scheduled
+    meta
+  }
+}
