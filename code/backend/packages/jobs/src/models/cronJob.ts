@@ -5,28 +5,33 @@ export abstract class CronJob {
   private _cronJob: ScheduledTask;
 
   constructor(public dbCron: Cron) {
-    logger.info(`Adding cron job ${dbCron.type} (${dbCron.cron}), state: ${dbCron.running ? 'running' : 'stopped'}`)
+    logger.info(
+      `Adding cron job ${dbCron.type} (${dbCron.cron}), state: ${
+        dbCron.scheduled ? 'running' : 'stopped'
+      }`
+    );
 
     this._cronJob = schedule(
       this.dbCron.cron,
       () => {
-        this.preRun();
-        this.run();
-        this.postRun();
+        this.single();
       },
-      { scheduled: dbCron.running ?? false }
+      { scheduled: dbCron.scheduled ?? false }
     );
   }
 
   async preRun() {
     // override in subclasses
     logger.info(`Cron job ${this.dbCron.type} is running`);
+    this.dbCron.running = true;
+    this.dbCron.save();
   }
 
   abstract run(args?: any): Promise<void>;
 
   async postRun() {
     this.dbCron.lastRun = new Date();
+    this.dbCron.running = false;
     await this.dbCron.save();
     logger.info(`Cron job ${this.dbCron.type} finished`);
   }
@@ -34,19 +39,31 @@ export abstract class CronJob {
   async start() {
     logger.info(`Starting cron job ${this.dbCron.type} on cron ${this.dbCron.cron}`);
     this._cronJob.start();
-    this.dbCron.running = true;
+    this.dbCron.scheduled = true;
     await this.dbCron.save();
-  }
+  } 
 
-  async single(args?: any) {
-    this.run(args);
-    this.dbCron.lastRun = new Date();
-    await this.dbCron.save();
+  single(args?: any) {
+    if (this.dbCron.running && (args?.force ?? false) == false) {
+      logger.info(`Cron job ${this.dbCron.type} is already running`);
+      throw `Cron job ${this.dbCron.type} is already running`;
+    }
+
+    return new Promise(async _ => {
+      try {
+        await this.preRun();
+        await this.run(args);
+      } catch (error) {
+        logger.error('Cron failed', error);
+      } finally {
+        await this.postRun();
+      }
+    });
   }
 
   async stop() {
     logger.info(`Stopped cron job ${this.dbCron.type}`);
-    this.dbCron.running = false;
+    this.dbCron.scheduled = false;
     await this.dbCron.save();
     this._cronJob.stop();
   }
