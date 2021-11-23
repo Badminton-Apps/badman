@@ -40,14 +40,34 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
 
     const subEvents = await this.event.getSubEvents({ transaction: this.transaction });
     const visualEvents = await this.visualService.getEvents(this.visualTournament.Code);
-    const dbSubEvents: SubEventStepData[] = [];
+    const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events
     for (const xmlEvent of visualEvents) {
       if (!xmlEvent) {
         continue;
       }
-      let dbSubEvent = subEvents.find(r => r.visualCode === `${xmlEvent.Code}`);
+      let dbSubEvents = subEvents.filter(r => r.visualCode === `${xmlEvent.Code}`);
+      let dbSubEvent: SubEventCompetition = null;
+
+      if (dbSubEvents.length === 1) {
+        dbSubEvent = dbSubEvents[0];
+      } else if (dbSubEvents.length > 1) {
+        // We have multiple encounters with the same visual code
+        const [first, ...rest] = dbSubEvents;
+        dbSubEvent = first;
+
+        logger.warn('Having multiple? Removing old');
+        await SubEventCompetition.destroy({
+          where: {
+            id: {
+              [Op.in]: rest.map(e => e.id)
+            }
+          },
+          transaction: this.transaction
+        });
+      }
+
 
       if (!dbSubEvent) {
         let type =
@@ -93,7 +113,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         }
       }
 
-      dbSubEvents.push({ subEvent: dbSubEvent, internalId: xmlEvent.Code });
+      returnSubEvents.push({ subEvent: dbSubEvent, internalId: xmlEvent.Code });
     }
 
     // Remove subEvents that are not in the xml
@@ -139,6 +159,6 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       await removed.destroy({ transaction: this.transaction });
     }
 
-    return dbSubEvents;
+    return returnSubEvents;
   }
 }

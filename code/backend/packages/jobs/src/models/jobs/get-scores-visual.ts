@@ -80,7 +80,7 @@ export class GetScoresVisual extends CronJob {
         logger.error('Rollback', e);
         await transaction.rollback();
         throw e;
-      }
+      } 
     }
 
     logger.info('Finished sync of Visual scores');
