@@ -27,6 +27,8 @@ export class GetScoresVisual extends CronJob {
     this._tournamentSync = new TournamentSyncer();
   }
 
+  
+
   async run(args?: { date: Date; skip: string[] }): Promise<void> {
     // Use argument date, else stored date, finally use today
     const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
@@ -37,6 +39,13 @@ export class GetScoresVisual extends CronJob {
     newEvents = newEvents.sort((a, b) => {
       return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
     });
+
+    this.dbCron.meta = {
+      percent: 0,
+      current: 0,
+      total: newEvents.length,
+    };
+    await this.dbCron.save();
 
     // newEvents = newEvents.filter(event => {
     //   return (
