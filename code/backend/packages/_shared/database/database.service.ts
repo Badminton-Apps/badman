@@ -334,7 +334,7 @@ export class DataBaseHandler {
         transaction
       });
 
-      if (source.memberId !== destination.memberId && canBeDifferentMemberId == false) {
+      if (source.memberId !== destination.memberId && canBeDifferentMemberId === false) {
         throw new Error(`Source and destination player don't have the same memberid`);
       }
 
