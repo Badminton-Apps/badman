@@ -21,20 +21,13 @@ export const EventCompetitionType = new GraphQLObjectType({
     Object.assign(getAttributeFields(EventCompetition), {
       subEvents: {
         type: new GraphQLList(SubEventCompetitionType),
-        args: Object.assign(defaultListArgs(), {
-          direction: {
-            type: GraphQLString
-          },
-          order: {
-            type: GraphQLString
-          }
-        }),
+        args: Object.assign(defaultListArgs()),
         resolve: resolver(EventCompetition.associations.subEvents, {
           before: async (findOptions, args, context, info) => {
             if (args.order) {
               findOptions = {
                 ...findOptions,
-                order: [[args.order, args.direction ?? "asc"], ['level', 'asc']]
+                order: [args.order, 'level']
               };
             }
 
