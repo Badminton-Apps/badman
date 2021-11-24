@@ -1,3 +1,18 @@
+# [4.5.0](https://github.com/Badminton-Apps/core/compare/v4.4.3...v4.5.0) (2021-11-24)
+
+
+### Bug Fixes
+
+* Setting percentage to 0 before start ([f8f53c3](https://github.com/Badminton-Apps/core/commit/f8f53c3c40e60a4c7452d8ae606c4a357ed40aba))
+* When list arguments are there, it should have query fixer in order for the where queries to work ([5069e52](https://github.com/Badminton-Apps/core/commit/5069e528b15346b4644bea74c9c1e4be08c6a296))
+
+
+### Features
+
+* showing team info on game overview ([36cfaf0](https://github.com/Badminton-Apps/core/commit/36cfaf02f4eeaad9e24e6f315e855099e289707c))
+
+
+
 ## [4.4.3](https://github.com/Badminton-Apps/core/compare/v4.4.2...v4.4.3) (2021-11-24)
 
 
