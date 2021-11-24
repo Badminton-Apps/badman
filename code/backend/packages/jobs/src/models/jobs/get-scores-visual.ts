@@ -66,11 +66,11 @@ export class GetScoresVisual extends CronJob {
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
           xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
         ) {
-          if (!args.skip?.includes(xmlTournament.Name) && !args.skip?.includes('competition')) {
+          if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('competition')) {
             await this._competitionSync.process({ transaction, xmlTournament });
           }
         } else {
-          if (!args.skip?.includes(xmlTournament.Name) && !args.skip?.includes('tournament')) {
+          if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('tournament')) {
             await this._tournamentSync.process({ transaction, xmlTournament });
           }
         }

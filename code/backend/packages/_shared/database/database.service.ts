@@ -319,10 +319,14 @@ export class DataBaseHandler {
    * @param {string} destinationPlayerId The player where all info will be copied to
    * @param {string} sourcePlayerId The player where the info will be copied from
    */
-  async mergePlayers(destinationPlayerId: string, sourcePlayerId: string) {
+  async mergePlayers(destinationPlayerId: string, sourcePlayerId: string, canBeDifferentMemberId: boolean = false) {
     const transaction = await this._sequelize.transaction();
 
     try {
+      if (sourcePlayerId === destinationPlayerId) {
+        throw new Error('Source and destination player are the same');
+      }
+
       const destination = await Player.findByPk(destinationPlayerId, {
         transaction
       });
@@ -330,7 +334,11 @@ export class DataBaseHandler {
         transaction
       });
 
-      logger.debug(`Merging ${destination.fullName}`);
+      if (source.memberId !== destination.memberId && canBeDifferentMemberId == false) {
+        throw new Error(`Source and destination player don't have the same memberid`);
+      }
+
+      logger.debug(`Merging ${destination.fullName} (${destination.memberId})`);
 
       if (destination === null) {
         throw new Error('destination does not exist');
