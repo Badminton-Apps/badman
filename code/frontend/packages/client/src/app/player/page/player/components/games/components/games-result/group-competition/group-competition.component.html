@@ -1,15 +1,20 @@
 <div class="mat-subheading-2">
-  <div>
-    <a [routerLink]="['/competition', this.subEvent?.event?.id, this.subEvent?.id]"
-      >{{ subEvent.name }} {{ subEvent.levelType }} {{ subEvent.eventType }}</a
-    >
+  <div class="top teams" *ngIf="encounter.home?.name && encounter.away?.name">
+    {{ encounter.home?.name }} {{ 'competition.vs' | translate | lowercase }} {{ encounter.away?.name }}
   </div>
 
-  <div class="date">
-    {{ subEvent.games![0].playedAt | date }}
+  <div class="bottom">
+    <span class="event">
+      <a [routerLink]="['/competition', this.encounter.draw!.subEvent?.event?.id, this.encounter.draw!.subEvent?.id]"
+        >{{ this.encounter.draw!.subEvent?.name }} {{ this.encounter.draw!.subEvent?.levelType }}
+        {{ this.encounter.draw!.subEvent?.eventType }}</a
+      >
+    </span>
+    <span class="spacer">-</span>
+    <span class="date">{{ games![0].playedAt | date }}</span>
   </div>
 </div>
 
 <div class="games">
-  <app-game-result [game]="game" [player]="player" *ngFor="let game of subEvent.games"></app-game-result>
+  <app-game-result [game]="game" [player]="player" *ngFor="let game of games"></app-game-result>
 </div>

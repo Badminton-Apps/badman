@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { Player, TournamentSubEvent } from 'app/_shared';
+import { Game, Player, TournamentDraw, TournamentSubEvent } from 'app/_shared';
 
 @Component({
   selector: 'app-group-tournament',
@@ -8,6 +8,7 @@ import { Player, TournamentSubEvent } from 'app/_shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroupTournamentComponent {
-  @Input() subEvent!: TournamentSubEvent;
+  @Input() draw!: TournamentDraw;
   @Input() player!: Player;
+  @Input() games?: Game[];
 }

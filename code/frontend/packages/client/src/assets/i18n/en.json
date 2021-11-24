@@ -86,6 +86,7 @@
     "competition": {
         "title": "Competition",
         "last-updated": "Modified on",
+        "vs": "Vs",
         "subevent": {
             "max": "Max level",
             "min-base": "Min basis team index",
@@ -121,7 +122,6 @@
         "change-encounter": {
             "title": "Encounters",
             "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",
-            "vs": "Vs.",
             "home": "Home",
             "away": "Away",
             "possible": "Available",
