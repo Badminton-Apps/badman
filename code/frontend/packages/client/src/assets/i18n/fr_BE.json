@@ -81,6 +81,8 @@
     },
     "competition": {
         "title": "",
+        "last-updated": "",
+        "vs": "",
         "subevent": {
             "max": "",
             "min-base": "",
@@ -116,7 +118,6 @@
         "change-encounter": {
             "title": "",
             "description": "",
-            "vs": "",
             "home": "",
             "away": "",
             "possible": "",
