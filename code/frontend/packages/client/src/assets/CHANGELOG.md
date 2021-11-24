@@ -1,3 +1,12 @@
+## [4.5.1](https://github.com/Badminton-Apps/core/compare/v4.5.0...v4.5.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* Showing the correct subevent in overview ([5035a5f](https://github.com/Badminton-Apps/core/commit/5035a5fafbded514a5cfeaa843812ed333272e93))
+
+
+
 # [4.5.0](https://github.com/Badminton-Apps/core/compare/v4.4.3...v4.5.0) (2021-11-24)
 
 
