@@ -87,7 +87,7 @@ export const PlayerType = new GraphQLObjectType({
       games: {
         type: new GraphQLList(GameType),
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(Player.associations.game, {
+        resolve: resolver(Player.associations.games, {
           before: async (findOptions, args, context, info) => {
             findOptions = {
               ...findOptions,
