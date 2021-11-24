@@ -31,7 +31,8 @@ export abstract class CronJob {
 
   async postRun() {
     this.dbCron.lastRun = new Date(); 
-    this.dbCron.running = false;
+    this.dbCron.running = false; 
+    this.dbCron.meta = null;
     await this.dbCron.save();
     logger.info(`Cron job ${this.dbCron.type} finished`);
   }
