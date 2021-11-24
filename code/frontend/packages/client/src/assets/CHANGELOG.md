@@ -1,3 +1,14 @@
+## [4.4.3](https://github.com/Badminton-Apps/core/compare/v4.4.2...v4.4.3) (2021-11-24)
+
+
+### Bug Fixes
+
+* Correctly calculate percentage of job progress ([d6ae700](https://github.com/Badminton-Apps/core/commit/d6ae7008871db5664e8d95d58f06a754f176e841))
+* Label jobs overview incorrect ([279b5b5](https://github.com/Badminton-Apps/core/commit/279b5b5c49d2bd540b71a2294cbe718fd4517a4b))
+* Running without arguments ([b186586](https://github.com/Badminton-Apps/core/commit/b1865867c580b61d0bd2b8e07b37f4e98e462ce1))
+
+
+
 ## [4.4.2](https://github.com/Badminton-Apps/core/compare/v4.4.1...v4.4.2) (2021-11-23)
 
 
