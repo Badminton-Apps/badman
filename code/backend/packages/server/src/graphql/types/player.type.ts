@@ -74,12 +74,28 @@ export const PlayerType = new GraphQLObjectType({
       rankingPoints: {
         type: new GraphQLList(RankingPointType),
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(Player.associations.rankingPoints)
+        resolve: resolver(Player.associations.rankingPoints, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       games: {
         type: new GraphQLList(GameType),
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(Player.associations.games)
+        resolve: resolver(Player.associations.game, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       base: {
         type: GraphQLBoolean
