@@ -1,11 +1,13 @@
-
 .mat-subheading-2 {
   flex-direction: column;
 
-  .date {
-    line-height: 0.6em;
-    font-size: 0.6em;
-    padding-bottom: 7px;
+  .bottom {
+    line-height: 1em;
+    font-size: 0.75em;
+  }
+
+  .spacer {
+    margin: 0 5px;
   }
 }
 
