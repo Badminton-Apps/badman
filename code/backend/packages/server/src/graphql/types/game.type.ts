@@ -33,7 +33,15 @@ export const GameType = new GraphQLObjectType({
       rankingPoints: {
         type: new GraphQLList(RankingPointType),
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(Game.associations.rankingPoints)
+        resolve: resolver(Game.associations.rankingPoints, {
+          before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       tournament: {
         type: DrawTournamentType,
