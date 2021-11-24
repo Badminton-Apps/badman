@@ -18,6 +18,10 @@ export const GameType = new GraphQLObjectType({
         type: new GraphQLList(GamePlayerType),
         resolve: resolver(Game.associations.players, {
           before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
             return findOptions;
           },
           after: (result, args, context) => {
