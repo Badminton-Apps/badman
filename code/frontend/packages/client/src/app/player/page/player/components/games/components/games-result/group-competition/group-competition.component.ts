@@ -7,7 +7,8 @@ import { CompetitionEncounter, CompetitionSubEvent, Game, Player } from 'app/_sh
   styleUrls: ['./group-competition.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GroupCompetitionComponent{
+export class GroupCompetitionComponent {
+  @Input() subEvent!: CompetitionSubEvent;
   @Input() encounter!: CompetitionEncounter;
   @Input() player!: Player;
   @Input() games?: Game[];

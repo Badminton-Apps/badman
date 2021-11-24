@@ -5,9 +5,8 @@
 
   <div class="bottom">
     <span class="event">
-      <a [routerLink]="['/competition', this.encounter.draw!.subEvent?.event?.id, this.encounter.draw!.subEvent?.id]"
-        >{{ this.encounter.draw!.subEvent?.name }} {{ this.encounter.draw!.subEvent?.levelType }}
-        {{ this.encounter.draw!.subEvent?.eventType }}</a
+      <a [routerLink]="['/competition', this.subEvent?.event?.id, this.subEvent?.id]"
+        >{{ this.subEvent?.name }} {{ this.subEvent?.levelType }} {{ this.subEvent?.eventType }}</a
       >
     </span>
     <span class="spacer">-</span>
