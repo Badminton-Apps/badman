@@ -26,7 +26,7 @@
   </ng-container>
 
   <ng-container matColumnDef="done">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Scheduled</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
     <td mat-cell *matCellDef="let element">
       <span *ngIf="element.meta"
         >{{ element.meta.percent }}% ({{ element.meta.current }}/{{ element.meta.total }})</span

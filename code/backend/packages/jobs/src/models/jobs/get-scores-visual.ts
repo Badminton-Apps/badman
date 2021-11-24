@@ -57,7 +57,7 @@ export class GetScoresVisual extends CronJob {
 
       this.dbCron.meta = {
         percent,
-        current: i, 
+        current: i,
         total: newEvents.length
       };
       this.dbCron.save({ transaction });
@@ -80,7 +80,7 @@ export class GetScoresVisual extends CronJob {
         logger.error('Rollback', e);
         await transaction.rollback();
         throw e;
-      } 
+      }
     }
 
     logger.info('Finished sync of Visual scores');
