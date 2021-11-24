@@ -15,12 +15,14 @@
     *ngIf="subEvent.event!.eventType == 'COMPETITION'"
     [player]="this.player"
     [encounter]="this.competition"
+    [subEvent]="$any(subEvent)"
     [games]="subEvent.games"
   ></app-group-competition>
   <app-group-tournament
     *ngIf="subEvent.event!.eventType == 'TOURNAMENT'"
     [player]="this.player"
     [draw]="this.tournament"
+    [subEvent]="$any(subEvent)"
     [games]="subEvent.games"
   ></app-group-tournament>
 </ng-container>

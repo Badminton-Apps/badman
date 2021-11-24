@@ -8,6 +8,7 @@ import { Game, Player, TournamentDraw, TournamentSubEvent } from 'app/_shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroupTournamentComponent {
+  @Input() subEvent!: TournamentSubEvent;
   @Input() draw!: TournamentDraw;
   @Input() player!: Player;
   @Input() games?: Game[];
