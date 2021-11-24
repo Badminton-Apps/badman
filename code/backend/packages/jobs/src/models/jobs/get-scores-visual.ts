@@ -51,14 +51,16 @@ export class GetScoresVisual extends CronJob {
 
     for (let i = 0; i < newEvents.length; i++) {
       const xmlTournament = newEvents[i];
-      const percent = Math.round((i / newEvents.length) * 10000) / 100;
+      const current = i + 1;
+      const total = newEvents.length;
+      const percent = Math.round(( current / total) * 10000) / 100;
       logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${newEvents.length})`);
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
       this.dbCron.meta = {
         percent,
-        current: i,
-        total: newEvents.length
+        current,
+        total,
       };
       this.dbCron.save({ transaction });
       try {
