@@ -33,20 +33,18 @@ export const PlayerType = new GraphQLObjectType({
       },
       rankingPlaces: {
         type: new GraphQLList(RankingPlaceType),
-        args: Object.assign(defaultListArgs(), {
-          direction: {
-            type: GraphQLString
-          }
-        }),
+        args: Object.assign(defaultListArgs()),
         resolve: resolver(Player.associations.rankingPlaces, {
-          before: async (findOptions, args, context, info) => {
+          before: async (
+            findOptions: { where: any; order: any[]; limit: any },
+            args: { order: any; limit: any },
+            context: any,
+            info: any
+          ) => {
             findOptions.where = {
               ...queryFixer(findOptions.where)
             };
-            findOptions.order =
-              args.order && args.direction
-                ? [[args.order, args.direction]]
-                : [['rankingDate', 'DESC']];
+            findOptions.order = [args.order ?? 'reverse:rankingDate'];
             findOptions.limit = args.limit;
             return findOptions;
           }
@@ -75,46 +73,13 @@ export const PlayerType = new GraphQLObjectType({
       },
       rankingPoints: {
         type: new GraphQLList(RankingPointType),
-        args: Object.assign(defaultListArgs(), {
-          direction: {
-            type: GraphQLString
-          }
-        }),
-        resolve: resolver(Player.associations.rankingPoints, {
-          before: async (findOptions, args, context, info) => {
-            if (args.order && args.direction) {
-              findOptions = {
-                ...findOptions,
-                where: queryFixer(findOptions.where),
-                order: [[args.order, args.direction]]
-              };
-            }
-            return findOptions;
-          }
-        })
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(Player.associations.rankingPoints)
       },
       games: {
         type: new GraphQLList(GameType),
-        args: Object.assign(defaultListArgs(), {
-          direction: {
-            type: GraphQLString
-          }
-        }),
-        resolve: resolver(Player.associations.games, {
-          before: async (findOptions, args, context, info) => {
-            if (args.order && args.direction) {
-              findOptions = {
-                ...findOptions,
-                where: queryFixer(findOptions.where),
-                order: [
-                  [args.order, args.direction],
-                  ['id', 'desc']
-                ]
-              };
-            }
-            return findOptions;
-          }
-        })
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(Player.associations.games)
       },
       base: {
         type: GraphQLBoolean
