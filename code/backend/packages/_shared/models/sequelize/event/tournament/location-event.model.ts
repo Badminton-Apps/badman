@@ -4,14 +4,13 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
 } from 'sequelize-typescript';
 import { Location } from '../location.model';
 import { EventTournament } from './event-tournament.model';
 
 @Table({
   timestamps: false,
-  schema: 'event'
+  schema: 'event',
 })
 export class LocationEventTournament extends Model {
   @PrimaryKey

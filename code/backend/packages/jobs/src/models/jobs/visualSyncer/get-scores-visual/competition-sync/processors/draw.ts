@@ -46,7 +46,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       if (!xmlDraw) {
         continue;
       }
-      let dbDraws = draws.filter(r => r.visualCode === `${xmlDraw.Code}`);
+      const dbDraws = draws.filter(r => r.visualCode === `${xmlDraw.Code}`);
       let dbDraw = null;
 
       if (dbDraws.length === 1) {

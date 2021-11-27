@@ -3,21 +3,20 @@ import {
   ForeignKey,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { Team } from '../../team.model';
 import { Location } from '../location.model';
-import { SubEventCompetition } from './sub-event-competition.model';
 
 @Table({
   timestamps: false,
-  schema: 'event'
+  schema: 'event',
 })
 export class TeamLocationCompetition extends Model {
   @PrimaryKey
   @ForeignKey(() => Team)
   @Column
-  teamId: string; 
+  teamId: string;
 
   @PrimaryKey
   @ForeignKey(() => Location)

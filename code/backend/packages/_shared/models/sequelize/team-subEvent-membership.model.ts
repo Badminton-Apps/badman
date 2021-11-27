@@ -1,11 +1,9 @@
-import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, BuildOptions, HasOneGetAssociationMixin, HasOneSetAssociationMixin } from 'sequelize';
+import { BuildOptions } from 'sequelize';
 import {
   AllowNull,
-  BelongsTo,
   Column,
   DataType,
   ForeignKey,
-  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -13,7 +11,7 @@ import { SubEventCompetition } from './event';
 import { Team } from './team.model';
 
 @Table({
-  schema: 'event'
+  schema: 'event',
 })
 export class TeamSubEventMembership extends Model {
   constructor(
@@ -35,7 +33,7 @@ export class TeamSubEventMembership extends Model {
 
   @Column({
     type: DataType.STRING,
-    field: 'meta'
+    field: 'meta',
   })
   private _meta!: string;
 

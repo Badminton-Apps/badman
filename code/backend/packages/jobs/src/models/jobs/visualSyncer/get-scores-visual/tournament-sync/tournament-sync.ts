@@ -57,10 +57,7 @@ export class TournamentSyncer {
           where: { name: args.xmlTournament.Name },
           transaction: args.transaction
         });
-        let existed = true;
-
         if (!event) {
-          existed = false;
           const dates: Moment[] = [];
           for (
             let date = moment(args.xmlTournament.StartDate);
@@ -87,7 +84,6 @@ export class TournamentSyncer {
           }
         }
         return {
-          // stop: existed,
           event,
           internalId: args.xmlTournament.Code
         };
@@ -95,7 +91,7 @@ export class TournamentSyncer {
     );
   }
 
-  protected addSubEvents(): ProcessStep<{ subEvent: SubEventTournament; internalId: number }[]> {
+  protected addSubEvents(): ProcessStep<{ subEvent: SubEventTournament; internalId: string }[]> {
     return new ProcessStep(this.STEP_SUBEVENT, async (args: { transaction: Transaction }) => {
       // get previous step data
       const {
@@ -118,7 +114,7 @@ export class TournamentSyncer {
         if (!xmlEvent) {
           continue;
         }
-        let dbSubEvents = subEvents.filter(r => r.visualCode === `${xmlEvent.Code}`);
+        const dbSubEvents = subEvents.filter(r => r.visualCode === `${xmlEvent.Code}`);
         let dbSubEvent: SubEventTournament = null;
 
         if (dbSubEvents.length === 1) {
@@ -202,14 +198,14 @@ export class TournamentSyncer {
     });
   }
 
-  protected addDraws(): ProcessStep<{ draw: DrawTournament; internalId: number }[]> {
+  protected addDraws(): ProcessStep<{ draw: DrawTournament; internalId: string }[]> {
     return new ProcessStep(
       this.STEP_DRAW,
       async (args: { transaction: Transaction; tourneyKey: string }) => {
         // get previous step data
         const subEvents: {
           subEvent: SubEventTournament;
-          internalId: number;
+          internalId: string;
         }[] = this.processor.getData(this.STEP_SUBEVENT);
 
         const resultDraws = [];
@@ -222,7 +218,7 @@ export class TournamentSyncer {
             if (!xmlDraw) {
               continue;
             }
-            let dbDraws = draws.filter(r => r.visualCode === `${xmlDraw.Code}`);
+            const dbDraws = draws.filter(r => r.visualCode === `${xmlDraw.Code}`);
             let dbDraw = null;
 
             if (dbDraws.length === 1) {
@@ -348,11 +344,11 @@ export class TournamentSyncer {
       async (args: { transaction: Transaction; tourneyKey: string }) => {
         const draws: {
           draw: DrawTournament;
-          internalId: number;
+          internalId: string;
         }[] = this.processor.getData(this.STEP_DRAW);
         const subevents: {
           subEvent: SubEventTournament;
-          internalId: number;
+          internalId: string;
         }[] = this.processor.getData(this.STEP_SUBEVENT);
         const event: {
           event: EventTournament;

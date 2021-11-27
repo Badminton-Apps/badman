@@ -11,7 +11,8 @@
     "start:watch:inspect": "nodemon --exec node --inspect=6861 -r ts-node/register ./src/server.ts",
     "test:local": "jest --colors --watchAll",
     "test": "jest --runInBand",
-    "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
+    "lint": "eslint -c ../../.eslintrc ./**/*{.ts,.tsx}",
+    "format": "eslint --fix -c ../../.eslintrc ./**/*{.ts,.tsx}"
   },
   "browserslist": [
     ">0.2%",
@@ -24,8 +25,8 @@
     "node-cron": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node-cron": "^2.0.4",
-    "mock-fs": "^5.1.0"
+    "@types/node-cron": "^3.0.0",
+    "mock-fs": "^5.1.2"
   },
   "peerDependencies": {
     "moment": "^2.24.0"

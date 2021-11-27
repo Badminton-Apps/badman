@@ -10,7 +10,7 @@ const deleteImportedEventMutation = {
       type: ImportInputType
     }
   },
-  resolve: async (findOptions, { event }) => {
+  resolve: async (findOptions: { [key: string]: object }, { event }) => {
     const importerFile = await ImporterFile.findByPk(event.id);
     unlink(importerFile.fileLocation, err => {
       if (err) {

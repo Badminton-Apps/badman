@@ -1,13 +1,11 @@
-import { GraphQLEnumType, GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
-import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { EncounterCompetition } from '@badvlasim/shared/models';
-import { where } from './utils';
+import { GraphQLID, GraphQLNonNull } from 'graphql';
+import { resolver } from 'graphql-sequelize';
 import {
   EncounterCompetitionInputConnectionType,
   EncounterCompetitionType
 } from '../types/competition/encounter-competition.type';
-import { queryFixer } from '../queryFixer';
-import { Op } from 'sequelize';
+import { where } from './utils';
 
 export const encounterCompetitionQuery = {
   type: EncounterCompetitionType,
@@ -30,5 +28,5 @@ export const encounterCompetitionsQuery = {
       type: new GraphQLNonNull(GraphQLID)
     }
   },
-  resolve: (...args: any) => EncounterCompetitionInputConnectionType.resolve(...args)
+  resolve: (...args) => EncounterCompetitionInputConnectionType.resolve(...args)
 };

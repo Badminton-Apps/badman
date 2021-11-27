@@ -8,7 +8,7 @@ export const cronsQuery = {
   type: new GraphQLList(CronType),
   args: Object.assign(defaultListArgs()),
   resolve: resolver(Cron, {
-    before: async (findOptions, args, context, info) => {
+    before: async (findOptions: { [key: string]: object }) => {
       findOptions = {
         ...findOptions,
         where: queryFixer(findOptions.where)

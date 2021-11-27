@@ -64,7 +64,7 @@ export const EventTournamentConnectionType = createConnection({
       DATE_DESC: { value: ['firstDay', 'DESC'] }
     }
   }),
-  where: (key, value, currentWhere) => {
+  where: (key: string, value: unknown) => {
     if (key === 'where') {
       return queryFixer(value);
     } else {

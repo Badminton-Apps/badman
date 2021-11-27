@@ -1,6 +1,6 @@
 import { GraphQLID, GraphQLNonNull } from 'graphql';
 import { ApiError } from './../../models/api.error';
-import { Comment, DataBaseHandler, logger, EventCompetition } from '@badvlasim/shared';
+import { Comment, DataBaseHandler, logger, EventCompetition, AuthenticatedRequest } from '@badvlasim/shared';
 import { CommentInputType, CommentType } from '../types';
 
 export const addCommentMutation = {
@@ -15,13 +15,13 @@ export const addCommentMutation = {
       type: new GraphQLNonNull(GraphQLID)
     }
   },
-  resolve: async (findOptions, { comment, eventId }, context) => {
-    // if (context?.req?.player === null) {
-    //   throw new ApiError({
-    //     code: 401,
-    //     message: 'You are not logged in?'
-    //   });
-    // }
+  resolve: async (_findOptions: { [key: string]: object }, { comment, eventId }, context: { req: AuthenticatedRequest }) => {
+    if (context?.req?.user === null) {
+      throw new ApiError({
+        code: 401,
+        message: 'You are not logged in?'
+      });
+    }
     
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
@@ -62,9 +62,16 @@ export const updateCommentMutation = {
       type: CommentInputType
     }
   },
-  resolve: async (findOptions, { comment }, context) => {
+  resolve: async (_findOptions: { [key: string]: object }, { comment }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
+      if (context?.req?.user === null) {
+        throw new ApiError({
+          code: 401,
+          message: 'You are not logged in?'
+        });
+      }
+
       await Comment.update(comment, {
         where: { id: comment.id },
         transaction

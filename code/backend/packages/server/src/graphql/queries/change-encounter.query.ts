@@ -1,5 +1,5 @@
 import { EncounterChange } from '@badvlasim/shared';
-import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
 import { EncounterChangeType } from '../types';
@@ -19,7 +19,7 @@ export const encounterChangesQuery = {
   type: new GraphQLList(EncounterChangeType),
   args: Object.assign(defaultListArgs(), {}),
   resolve: resolver(EncounterChange, {
-    before: async (findOptions, args, context, info) => {
+    before: async (findOptions: { [key: string]: object }) => {
       findOptions = {
         ...findOptions,
         where: queryFixer(findOptions.where)

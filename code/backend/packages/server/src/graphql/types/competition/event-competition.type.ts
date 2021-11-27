@@ -1,17 +1,15 @@
-import { CommentType } from './../comment.type';
-import { LocationType } from './../location.type';
 import { EventCompetition } from '@badvlasim/shared';
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
-  GraphQLObjectType,
-  GraphQLString
+  GraphQLObjectType
 } from 'graphql';
 import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
+import { CommentType } from './../comment.type';
 import { SubEventCompetitionInputType, SubEventCompetitionType } from './subEvent-competition.type';
 
 export const EventCompetitionType = new GraphQLObjectType({
@@ -23,7 +21,10 @@ export const EventCompetitionType = new GraphQLObjectType({
         type: new GraphQLList(SubEventCompetitionType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(EventCompetition.associations.subEvents, {
-          before: async (findOptions, args, context, info) => {
+          before: async (
+            findOptions: { [key: string]: object },
+            args: { [key: string]: object }
+          ) => {
             if (args.order) {
               findOptions = {
                 ...findOptions,
@@ -31,11 +32,10 @@ export const EventCompetitionType = new GraphQLObjectType({
               };
             }
 
-                
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions?.where)
-            }
+            };
 
             return findOptions;
           }
@@ -45,7 +45,9 @@ export const EventCompetitionType = new GraphQLObjectType({
         type: new GraphQLList(CommentType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(EventCompetition.associations.comments, {
-          before: async (findOptions, args, context, info) => {
+          before: async (
+            findOptions: { [key: string]: object }
+          ) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -91,7 +93,7 @@ export const EventCompetitionConnectionType = createConnection({
       DATE_DESC: { value: ['startYear', 'DESC'] }
     }
   }),
-  where: (key, value, currentWhere) => {
+  where: (key: string, value: unknown) => {
     if (key === 'where') {
       return queryFixer(value);
     } else {
