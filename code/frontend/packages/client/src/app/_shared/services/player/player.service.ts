@@ -32,15 +32,14 @@ export class PlayerService {
     };
 
     const ranking = args.ranking ?? null;
-    
 
     return this.apollo
       .query<{ players: Player[] }>({
         query: searchQuery,
         variables: {
           where: this._searchPlayer(args),
-          ranking: ranking,
-          includeRanking: ranking !== null,
+          includeRanking: args?.ranking !== null,
+          ranking: args?.ranking ?? null,
           includeClub: args.includeClub,
         },
       })

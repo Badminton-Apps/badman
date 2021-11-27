@@ -240,6 +240,7 @@
     "button": {
         "close": "Close",
         "delete": "Delete",
+        "merge-accounts": "Merge accounts",
         "create": "Create",
         "edit": "Edit",
         "done": "Done",
