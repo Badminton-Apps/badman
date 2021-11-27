@@ -1,28 +1,27 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/dot-notation */
 import mock from 'mock-fs';
 import moment from 'moment';
 import path from 'path';
+import { DataBaseHandler } from '..';
 
-import fakerator from 'fakerator';
-import { PdfService } from '../services';
-import { DataBaseHandler } from '../database';
 import {
-  Club,
+  EventCompetition,
+  SubEventCompetition,
   DrawCompetition,
   EncounterCompetition,
-  EventCompetition,
-  LastRankingPlace,
+  Club,
+  Team,
+  SubEventType,
+  TeamSubEventMembership,
   Player,
   RankingPlace,
+  LastRankingPlace,
   RankingSystem,
   RankingSystems,
   StartingType,
-  SubEventCompetition,
-  SubEventType,
-  Team,
-  TeamSubEventMembership,
 } from '../models';
+
+import fakerator from 'fakerator';
+import { PdfService } from '../services';
 
 const fake = fakerator();
 
@@ -502,5 +501,3 @@ describe('PDF service', () => {
     );
   });
 });
-/* eslint-enable no-underscore-dangle*/
-/* eslint-enable @typescript-eslint/dot-notation */
