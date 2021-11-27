@@ -2,8 +2,7 @@
   "name": "badman-backend",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "scripts/*"
+    "packages/*"
   ],
   "scripts": {
     "start": "npx lerna run --parallel start:watch",
