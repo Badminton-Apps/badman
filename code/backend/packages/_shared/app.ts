@@ -1,11 +1,11 @@
-import { start } from 'elastic-apm-node';
-export const apm = start({
+require('elastic-apm-node').start({
   serviceName: process.env.SERVICE_NAME,
   serverUrl: process.env.APM_SERVER_URL,
   secretToken: process.env.APM_SERVER_TOKEN,
   verifyServerCert: false,
   disableSend: process.env.NODE_ENV !== 'production'
 }); 
+
 
 import { logger } from '@badvlasim/shared';
 import cors from 'cors';
@@ -44,7 +44,8 @@ export class App {
       'http://localhost:5000',
       'http://localhost:4000',
       'http://localhost:4200',
-      'https://badman.app'
+      'https://badman.app',
+      'https://studio.apollographql.com'
     ];
     this.corsOptions = {
       origin: (origin, callback) => {
