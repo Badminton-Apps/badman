@@ -22,11 +22,11 @@
   "dependencies": {
     "@badvlasim/shared": "^4.5.1",
     "apollo-cache-control": "^0.11.4",
-    "apollo-server-express": "^2.19.0",
+    "apollo-server-express": "^3.5.0",
     "global": "^4.4.0",
-    "http-proxy-middleware": "^1.0.5",
-    "rxjs": "^6.6.3",
-    "sequelize-cli": "^6.2.0"
+    "http-proxy-middleware": "^2.0.1",
+    "rxjs": "^7.4.0",
+    "sequelize-cli": "^6.3.0"
   },
   "peerDependencies": {
     "moment": "^2.24.0"
