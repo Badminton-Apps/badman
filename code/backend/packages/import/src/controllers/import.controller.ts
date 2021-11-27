@@ -17,12 +17,12 @@ import {
   SubEventTournament
 } from '@badvlasim/shared';
 import { parseString } from '@fast-csv/parse';
-import { Response, Router } from 'express';
-import { readFile, readFileSync, unlink } from 'fs';
+import { RequestHandler, Response, Router } from 'express';
+import { readFileSync, unlink } from 'fs';
 import moment from 'moment';
 import multer, { diskStorage } from 'multer';
 import { join } from 'path';
-import { Convertor } from '../convert/convertor';
+import { Convertor } from '../convert';
 
 export class ImportController extends BaseController {
   private _path = '/import';
@@ -33,7 +33,11 @@ export class ImportController extends BaseController {
   });
   private _upload = multer({ storage: this._storage });
 
-  constructor(router: Router, private _authMiddleware: any, private _converter: Convertor) {
+  constructor(
+    router: Router,
+    private _authMiddleware: RequestHandler[],
+    private _converter: Convertor
+  ) {
     super(router);
 
     this._intializeRoutes();
@@ -63,15 +67,15 @@ export class ImportController extends BaseController {
         const stream = parseString(csv, { headers: true, delimiter: ';', ignoreEmpty: true });
 
         const data = new Map();
-        stream.on('data', row => {
+        stream.on('data', (row) => {
           // if (row.TypeName === 'Competitiespeler') {
           data.set(row.memberid, row);
           // }
         });
-        stream.on('error', error => {
+        stream.on('error', (error) => {
           logger.error(error);
         });
-        stream.on('end', async rowCount => {
+        stream.on('end', async () => {
           const transaction = await DataBaseHandler.sequelizeInstance.transaction();
           try {
             logger.info('Player indexes import started');
@@ -81,7 +85,9 @@ export class ImportController extends BaseController {
             const players = await this._getPlayers(transaction, memberIds);
             await this._setCompetitionStatus(
               transaction,
-              [...data.values()].filter(r => r.TypeName === 'Competitiespeler').map(r => r.memberid)
+              [...data.values()]
+                .filter((r) => r.TypeName === 'Competitiespeler')
+                .map((r) => r.memberid)
             );
             await this._createRankingPlaces(transaction, players, data, date);
             await this._createLastRankingPlaces(transaction, players, data, date);
@@ -100,8 +106,8 @@ export class ImportController extends BaseController {
     } catch (e) {
       logger.error('Error getting basic info', e);
 
-      request.files.forEach(file => {
-        unlink(file.path, err => {
+      request.files.forEach((file) => {
+        unlink(file.path, (err) => {
           if (err) throw new Error('File deletion failed');
           logger.debug('File delete');
         });
@@ -123,12 +129,7 @@ export class ImportController extends BaseController {
         const fileLocation = join(process.cwd(), file.path);
         let type;
 
-        switch (
-          file.filename
-            .toLowerCase()
-            .split('.')
-            .pop()
-        ) {
+        switch (file.filename.toLowerCase().split('.').pop()) {
           case 'cp':
             type = EventImportType.COMPETITION_CP;
             break;
@@ -156,8 +157,8 @@ export class ImportController extends BaseController {
     } catch (e) {
       logger.error('Error getting basic info', e);
 
-      request.files.forEach(file => {
-        unlink(file.path, err => {
+      request.files.forEach((file) => {
+        unlink(file.path, (err) => {
           if (err) throw new Error('File deletion failed');
           logger.debug('File delete');
         });
@@ -233,7 +234,7 @@ export class ImportController extends BaseController {
     }
   };
 
-  private async _getPlayers(transaction, memberIds: any[]) {
+  private async _getPlayers(transaction, memberIds: string[]) {
     return Player.findAll({
       attributes: ['id', 'memberId'],
       where: {
@@ -246,11 +247,11 @@ export class ImportController extends BaseController {
   private async _createRankingPlaces(
     transaction,
     players: Player[],
-    data: Map<any, any>,
+    data: Map<string, { [key: string]: string }>,
     date: Date
   ) {
     const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
-    const newPlaces = players.map(p => {
+    const newPlaces = players.map((p) => {
       const csvData = data.get(p.memberId);
       if (csvData) {
         const single = parseInt(csvData.PlayerLevelSingle, 10) ?? null;
@@ -282,11 +283,11 @@ export class ImportController extends BaseController {
   private async _createLastRankingPlaces(
     transaction,
     players: Player[],
-    data: Map<any, any>,
+    data: Map<string, { [key: string]: string }>,
     date: Date
   ) {
     const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
-    const newPlaces = players.map(p => {
+    const newPlaces = players.map((p) => {
       const csvData = data.get(p.memberId);
       if (csvData) {
         const single = parseInt(csvData.PlayerLevelSingle, 10) ?? null;
@@ -332,7 +333,7 @@ export class ImportController extends BaseController {
     });
   }
 
-  private async _setCompetitionStatus(transaction, memberIds: any[]) {
+  private async _setCompetitionStatus(transaction, memberIds: string[]) {
     // Set all players as non-competition players
     await Player.update(
       { competitionPlayer: false },
@@ -356,9 +357,9 @@ export class ImportController extends BaseController {
     );
   }
 
-  private async _addPlayers(data: Map<any, any>, transaction) {
+  private async _addPlayers(data: Map<string, { [key: string]: string }>, transaction) {
     await Player.bulkCreate(
-      [...data.values()].map(d =>
+      [...data.values()].map((d) =>
         new Player({
           memberId: d.memberid,
           firstName: d.firstname,

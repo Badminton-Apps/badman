@@ -20,7 +20,7 @@ export const RankingSystemType = new GraphQLObjectType({
             type: GraphQLString
           }
         },
-        resolve: async (source: RankingSystem, args, context, info) => {
+        resolve: async (source: RankingSystem, args: { [key: string]: object }) => {
           const sharedWhere = {
             SystemId: source.id
           };
@@ -48,28 +48,31 @@ export const RankingSystemType = new GraphQLObjectType({
             include: sharedInclude
           });
 
-          const single = singleCount.reduce((acc: RankingPlacesResult[], value: any) => {
-            const existing = acc.find(x => x.date.toString() === value.rankingDate.toString());
+          const single = singleCount.reduce(
+            (acc: RankingPlacesResult[], value: RankingPlace & { count: number }) => {
+              const existing = acc.find((x) => x.date.toString() === value.rankingDate.toString());
 
-            if (existing) {
-              existing.points.push({
-                level: value.single,
-                amount: value.count
-              });
-            } else {
-              acc.push({
-                date: value.rankingDate,
-                points: [
-                  {
-                    level: value.single,
-                    amount: value.count
-                  }
-                ]
-              });
-            }
+              if (existing) {
+                existing.points.push({
+                  level: value.single,
+                  amount: value.count
+                });
+              } else {
+                acc.push({
+                  date: value.rankingDate,
+                  points: [
+                    {
+                      level: value.single,
+                      amount: value.count
+                    }
+                  ]
+                });
+              }
 
-            return acc;
-          }, []);
+              return acc;
+            },
+            []
+          );
           const doubleCount = await RankingPlace.findAll({
             group: ['rankingDate', 'double'],
             attributes: ['rankingDate', [Sequelize.fn('COUNT', 'double'), 'count'], 'double'],
@@ -84,28 +87,31 @@ export const RankingSystemType = new GraphQLObjectType({
             include: sharedInclude
           });
 
-          const double = doubleCount.reduce((acc: RankingPlacesResult[], value: any) => {
-            const existing = acc.find(x => x.date.toString() === value.rankingDate.toString());
+          const double = doubleCount.reduce(
+            (acc: RankingPlacesResult[], value: RankingPlace & { count: number }) => {
+              const existing = acc.find((x) => x.date.toString() === value.rankingDate.toString());
 
-            if (existing) {
-              existing.points.push({
-                level: value.double,
-                amount: value.count
-              });
-            } else {
-              acc.push({
-                date: value.rankingDate,
-                points: [
-                  {
-                    level: value.double,
-                    amount: value.count
-                  }
-                ]
-              });
-            }
+              if (existing) {
+                existing.points.push({
+                  level: value.double,
+                  amount: value.count
+                });
+              } else {
+                acc.push({
+                  date: value.rankingDate,
+                  points: [
+                    {
+                      level: value.double,
+                      amount: value.count
+                    }
+                  ]
+                });
+              }
 
-            return acc;
-          }, []);
+              return acc;
+            },
+            []
+          );
           const mixCount = await RankingPlace.findAll({
             group: ['rankingDate', 'mix'],
             attributes: ['rankingDate', [Sequelize.fn('COUNT', 'mix'), 'count'], 'mix'],
@@ -120,28 +126,31 @@ export const RankingSystemType = new GraphQLObjectType({
             include: sharedInclude
           });
 
-          const mix = mixCount.reduce((acc: RankingPlacesResult[], value: any) => {
-            const existing = acc.find(x => x.date.toString() === value.rankingDate.toString());
+          const mix = mixCount.reduce(
+            (acc: RankingPlacesResult[], value: RankingPlace & { count: number }) => {
+              const existing = acc.find((x) => x.date.toString() === value.rankingDate.toString());
 
-            if (existing) {
-              existing.points.push({
-                level: value.mix,
-                amount: value.count
-              });
-            } else {
-              acc.push({
-                date: value.rankingDate,
-                points: [
-                  {
-                    level: value.mix,
-                    amount: value.count
-                  }
-                ]
-              });
-            }
+              if (existing) {
+                existing.points.push({
+                  level: value.mix,
+                  amount: value.count
+                });
+              } else {
+                acc.push({
+                  date: value.rankingDate,
+                  points: [
+                    {
+                      level: value.mix,
+                      amount: value.count
+                    }
+                  ]
+                });
+              }
 
-            return acc;
-          }, []);
+              return acc;
+            },
+            []
+          );
 
           return {
             single,
@@ -157,14 +166,19 @@ export const RankingSystemType = new GraphQLObjectType({
     })
 });
 
-
 export const RankingSystemInputType = new GraphQLInputObjectType({
   name: 'RankingSystemInput',
   description: 'This represents a RankingSystemGroupInput',
   fields: () =>
-    Object.assign(getAttributeFields(RankingSystem, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] }), {
-      groups: {
-        type: new GraphQLList(RankingSystemGroupInputType)
+    Object.assign(
+      getAttributeFields(RankingSystem, {
+        exclude: ['createdAt', 'updatedAt'],
+        optionalString: ['id']
+      }),
+      {
+        groups: {
+          type: new GraphQLList(RankingSystemGroupInputType)
+        }
       }
-    })
+    )
 });

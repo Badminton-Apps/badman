@@ -1,5 +1,4 @@
 import {
-  Court,
   DataBaseHandler,
   EncounterCompetition,
   EventCompetition,
@@ -20,7 +19,7 @@ import { readFileSync } from 'fs';
 // We can't read settings in
 jest.mock('child_process', () => {
   return {
-    spawn: (exe: string, args: any[]) => {
+    spawn: (exe: string, args: string[]) => {
       if (exe === 'mdb-export') {
         // Basically we write each column to a different file and append the column name to the filename
         // e.g:
@@ -40,14 +39,13 @@ jest.mock('child_process', () => {
 });
 
 describe('competition cp', () => {
-  let databaseService: DataBaseHandler;
   let service: CompetitionCpProcessor;
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition.cp');
+    fileLocation = join(__dirname, 'files/competition.cp');
 
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });
@@ -60,7 +58,7 @@ describe('competition cp', () => {
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
 
-  it('Should import competition', async () => {
+  it('Should import competition cp', async () => {
     // Arrange
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
@@ -76,7 +74,7 @@ describe('competition cp', () => {
     expect(importerFile.firstDay.toISOString()).toEqual('2019-09-27T22:00:00.000Z');
   });
 
-  it('should add competition', async () => {
+  it('should add competition cp', async () => {
     // Arrange
     const importFile = await new ImporterFile({
       name: 'test',
@@ -112,14 +110,13 @@ describe('competition cp', () => {
 });
 
 describe('competition cp 2', () => {
-  let databaseService: DataBaseHandler;
   let service: CompetitionCpProcessor;
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition2.cp');
+    fileLocation = join(__dirname, 'files/competition2.cp');
 
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });
@@ -133,7 +130,7 @@ describe('competition cp 2', () => {
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
 
-  it('Should import tournamnet', async () => {
+  it('Should import competition cp', async () => {
     // Arrange
 
     // Act
@@ -147,7 +144,7 @@ describe('competition cp 2', () => {
     expect(importerFile.firstDay.toISOString()).toEqual('2021-08-31T22:00:00.000Z');
   });
 
-  it.skip('should re-add competition', async () => {
+  it.skip('should re-add competition cp', async () => {
     // Arrange
     const importFile = await new ImporterFile({
       name: 'PBA competitie 2021-2022',

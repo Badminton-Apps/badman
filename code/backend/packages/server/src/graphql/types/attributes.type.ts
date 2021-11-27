@@ -1,4 +1,3 @@
-import { logger } from '@badvlasim/shared';
 import { GraphQLString } from 'graphql';
 import { attributeFields } from 'graphql-sequelize';
 

@@ -1,13 +1,6 @@
-import { EncounterCompetition } from '@badvlasim/shared/models';
-import {
-  GraphQLID,
-  GraphQLInputObjectType,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType
-} from 'graphql';
-import { createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
+import { EncounterCompetition, Game } from '@badvlasim/shared/models';
+import { GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLObjectType } from 'graphql';
+import { createConnection, resolver } from 'graphql-sequelize';
 import { Op } from 'sequelize';
 import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
@@ -25,7 +18,7 @@ export const EncounterCompetitionType = new GraphQLObjectType({
       games: {
         type: new GraphQLList(GameType),
         resolve: resolver(EncounterCompetition.associations.games, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -36,7 +29,15 @@ export const EncounterCompetitionType = new GraphQLObjectType({
       },
       gamesCount: {
         type: GraphQLInt,
-        resolve: async (source: EncounterCompetition, args, context, info) => {
+        resolve: async (
+          source: EncounterCompetition,
+          _args: unknown,
+          context: {
+            models: {
+              Game: typeof Game;
+            };
+          }
+        ) => {
           return context.models.Game.count({
             where: { drawId: source.id, drawType: 'competition' }
           });
@@ -88,7 +89,7 @@ export const EncounterCompetitionInputConnectionType = createConnection({
       resolve: ({ fullCount }) => fullCount
     }
   },
-  where: (key, value, currentWhere) => {
+  where: (key: string, value: unknown) => {
     if (key === 'team') {
       return { [Op.or]: [{ homeTeamId: value }, { awayTeamId: value }] };
     } else if (key === 'where') {

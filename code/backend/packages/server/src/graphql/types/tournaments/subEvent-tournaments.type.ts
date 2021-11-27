@@ -1,6 +1,6 @@
 import { SubEventTournament } from '@badvlasim/shared/models';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
-import { attributeFields, resolver } from 'graphql-sequelize';
+import { resolver } from 'graphql-sequelize';
 import { getAttributeFields } from '../attributes.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
 import { DrawTournamentType } from './draw-tournaments.type';

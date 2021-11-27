@@ -11,7 +11,7 @@ import {
   XmlTournament
 } from '@badvlasim/shared';
 import moment from 'moment';
-import { Op, Transaction, fn } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { StepProcessor } from '../../../../../../utils/step-processor';
 import { VisualService } from '../../../../../../utils/visualService';
 import { DrawStepData } from './draw';
@@ -35,7 +35,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EncounterStepData[]> {
-    await Promise.all(this.draws.map(e => this._processEncounters(e)));
+    await Promise.all(this.draws.map((e) => this._processEncounters(e)));
     return this._dbEncounters;
   }
 
@@ -53,7 +53,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         continue;
       }
       const matchDate = moment(xmlTeamMatch.MatchTime).toDate();
-      let dbEncounters = encounters.filter(r => r.visualCode === `${xmlTeamMatch.Code}`);
+      const dbEncounters = encounters.filter((r) => r.visualCode === `${xmlTeamMatch.Code}`);
       let dbEncounter = null;
 
       if (dbEncounters.length === 1) {
@@ -62,17 +62,17 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbEncounters;
         dbEncounter = first;
-        
-        logger.warn('Having multiple? Removing old')
+
+        logger.warn('Having multiple? Removing old');
         await this._destroyEncounters(rest);
       }
 
       if (!dbEncounter) {
-        const { team1, team2 } = await this._findTeams(xmlTeamMatch, this.transaction);
+        const { team1, team2 } = await this._findTeams(xmlTeamMatch);
 
         // FInd one with same teams
         dbEncounter = encounters.find(
-          e => e.homeTeamId === team1?.id && e.awayTeamId === team2?.id && e.drawId === draw.id
+          (e) => e.homeTeamId === team1?.id && e.awayTeamId === team2?.id && e.drawId === draw.id
         );
 
         if (!dbEncounter) {
@@ -97,7 +97,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
       // Set teams if undefined (should not happen)
       if (dbEncounter.awayTeamId == null || dbEncounter.homeTeamId == null) {
-        const { team1, team2 } = await this._findTeams(xmlTeamMatch, this.transaction);
+        const { team1, team2 } = await this._findTeams(xmlTeamMatch);
         dbEncounter.homeTeamId = team1?.id;
         dbEncounter.awayTeamId = team2?.id;
         await dbEncounter.save({ transaction: this.transaction });
@@ -110,7 +110,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     }
 
     // Remove draw that are not in the xml
-    const removedEncounters = encounters.filter(e => e.visualCode == null);
+    const removedEncounters = encounters.filter((e) => e.visualCode == null);
 
     await this._destroyEncounters(removedEncounters);
   }
@@ -120,7 +120,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       where: {
         linkType: 'competition',
         linkId: {
-          [Op.in]: encounter.map(e => e.id)
+          [Op.in]: encounter.map((e) => e.id)
         }
       },
       transaction: this.transaction
@@ -129,14 +129,14 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     await EncounterCompetition.destroy({
       where: {
         id: {
-          [Op.in]: encounter.map(e => e.id)
+          [Op.in]: encounter.map((e) => e.id)
         }
       },
       transaction: this.transaction
     });
   }
 
-  private async _findTeams(xmlTeamMatch: XmlTeamMatch, transaction: Transaction) {
+  private async _findTeams(xmlTeamMatch: XmlTeamMatch) {
     // We only know about last years teams
     if (
       this.event.startYear >= 2021 &&
@@ -201,7 +201,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       return null;
     }
 
-    const where: { [key: string]: any } = {
+    const where: { [key: string]: unknown } = {
       name: {
         [Op.iLike]: teamName
       },
@@ -210,12 +210,12 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     if (clubId) {
       where.clubId = clubId;
     }
-    let teams = await Team.findAll({ where, transaction: this.transaction });
+    const teams = await Team.findAll({ where, transaction: this.transaction });
     if (teams.length > 1) {
       logger.warn(`Found more than one team for ${teamName}`);
     }
 
-    let team =
+    const team =
       (teams?.length ?? 0) === 0 ? await this._findTeamByRegex(teamName, clubId) : teams[0];
 
     if (team == null) {
@@ -229,9 +229,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     // remove leading index for PBA
     // name = name.replace(/\(\d+\)/gim, '');
 
-    const regexResult = /(?<club>.*)\ ((?<teamNumberFront>\d+)(?<teamTypeFront>[GHD]?)|(?<teamTypeBack>[GHD]?)(?<teamNumberBack>\d))/gim.exec(
-      name
-    );
+    const regexResult =
+      /(?<club>.*)\ ((?<teamNumberFront>\d+)(?<teamTypeFront>[GHD]?)|(?<teamTypeBack>[GHD]?)(?<teamNumberBack>\d))/gim.exec(
+        name
+      );
 
     if (regexResult) {
       const teamNumber = parseInt(
@@ -257,7 +258,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
       const type = getType(regexResult.groups?.teamTypeFront || regexResult.groups?.teamTypeBack);
 
-      const where: { [key: string]: any } = {
+      const where: { [key: string]: unknown } = {
         name: {
           [Op.iLike]: `%${correctWrongTeams({ name: regexResult.groups?.club || name }).name}%`
         },
@@ -279,11 +280,11 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       } else if (results.length > 1) {
         // Stupid fix, but works.
         const sortedByLength = results
-          .filter(r => r.name.length > name.length)
+          .filter((r) => r.name.length > name.length)
           .sort((a, b) => a.name.length - b.name.length);
 
         logger.debug('Found multiple teams', {
-          sortedByLength: sortedByLength.map(r => r.name)
+          sortedByLength: sortedByLength.map((r) => r.name)
         });
 
         return sortedByLength[0];

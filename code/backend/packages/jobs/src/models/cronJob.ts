@@ -27,11 +27,11 @@ export abstract class CronJob {
     this.dbCron.save();
   }
 
-  abstract run(args?: any): Promise<void>;
+  abstract run(args?: { force?: boolean } & { [key: string]: unknown }): Promise<void>;
 
   async postRun() {
-    this.dbCron.lastRun = new Date(); 
-    this.dbCron.running = false; 
+    this.dbCron.lastRun = new Date();
+    this.dbCron.running = false;
     await this.dbCron.save();
     logger.info(`Cron job ${this.dbCron.type} finished`);
   }
@@ -41,15 +41,15 @@ export abstract class CronJob {
     this._cronJob.start();
     this.dbCron.scheduled = true;
     await this.dbCron.save();
-  } 
+  }
 
-  single(args?: any) {
+  single(args?: { force?: boolean } & { [key: string]: unknown }) {
     if (this.dbCron.running && (args?.force ?? false) === false) {
       logger.info(`Cron job ${this.dbCron.type} is already running`);
       throw new Error(`Cron job ${this.dbCron.type} is already running`);
     }
 
-    return new Promise(async _ => {
+    return new Promise(async () => {
       try {
         await this.preRun();
         await this.run(args);

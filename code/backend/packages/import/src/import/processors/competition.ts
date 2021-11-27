@@ -5,11 +5,11 @@ import {
   Game,
   ImporterFile,
   logger,
+  ProcessStep,
   RankingSystemGroup,
-  SubEventCompetition,
-  ProcessStep
+  SubEventCompetition
 } from '@badvlasim/shared';
-import { Transaction, Op } from 'sequelize';
+import { Op, Transaction, WhereOptions, WhereValue } from 'sequelize';
 import { ProcessImport } from '../importProcessor';
 
 export abstract class CompetitionProcessor extends ProcessImport {
@@ -22,7 +22,7 @@ export abstract class CompetitionProcessor extends ProcessImport {
         event?: EventCompetition;
       }) => {
         if (!args.event) {
-          args.event = this.importProcess.getData('find_event')
+          args.event = this.importProcess.getData('find_event');
         }
 
         if (args.event) {
@@ -56,12 +56,12 @@ export abstract class CompetitionProcessor extends ProcessImport {
           return args.event;
         }
 
-        const or: any = [{ name: args.importFile.name }];
+        const or: WhereValue[] = [{ name: args.importFile.name }];
 
         if (args.importFile.visualCode) {
           or.push({ visualCode: args.importFile.visualCode });
         }
-        const where: { [key: string]: any } = {
+        const where: WhereOptions = {
           startYear: args.importFile.firstDay?.getFullYear(),
           [Op.or]: or
         };
@@ -72,12 +72,12 @@ export abstract class CompetitionProcessor extends ProcessImport {
     );
   }
 
-  protected cleanupEvent(): ProcessStep<any[]> {
+  protected cleanupEvent(): ProcessStep<Partial<SubEventCompetition>[]> {
     return new ProcessStep(
       'cleanup_event',
       async (args: { event: EventCompetition; transaction: Transaction }) => {
         if (!args.event) {
-          const event: EventCompetition = this.importProcess.getData('find_event');;
+          const event: EventCompetition = this.importProcess.getData('find_event');
           if (!event) {
             return;
           }
@@ -114,7 +114,10 @@ export abstract class CompetitionProcessor extends ProcessImport {
           transaction: args.transaction
         });
 
-        await Game.destroy({ where: { id: games.map(r => r.id) }, transaction: args.transaction });
+        await Game.destroy({
+          where: { id: games.map((r) => r.id) },
+          transaction: args.transaction
+        });
 
         const dbSubEvents = await SubEventCompetition.findAll({
           where: {
@@ -132,8 +135,9 @@ export abstract class CompetitionProcessor extends ProcessImport {
           transaction: args.transaction
         });
 
-        return dbSubEvents?.map(r => {
-          const { id, ...event } = r.toJSON() as any;
+        return dbSubEvents?.map((r) => {
+          const event = r.toJSON();
+          delete event.id;
           return event;
         });
       }

@@ -1,4 +1,4 @@
-import { AuthenticationSercice, DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import { AuthenticatedRequest, AuthenticationSercice, DataBaseHandler, logger, Player } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { RoleType } from '../types';
@@ -19,7 +19,7 @@ export const updateGlobalClaimUserMutation = {
       type: GraphQLBoolean
     }
   },
-  resolve: async (findOptions, { playerId, claimId, active }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { playerId, claimId, active }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:claims'])) {
       logger.warn("User tried something it should't have done", {
         required: {

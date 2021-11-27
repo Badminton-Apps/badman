@@ -5,40 +5,75 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint --fix -c ../../.eslintrc.js ./**/*{.ts,.tsx}",
+    "lint": "eslint -c ../../.eslintrc ./**/*{.ts,.tsx}",
+    "format": "eslint --fix -c ../../.eslintrc ./**/*{.ts,.tsx}",
     "gen-erd": "node -r ts-node/register ./utils/generate-erd.ts",
-    "test:inspect": "node --inspect ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand",
-    "test:inspect:name": "node --inspect-brk ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand  -t \"PDF service\" ",
-    "test": "jest --config ./jest.config.js --runInBand"
+    "test:inspect": "node --inspect ../../node_modules/jest/bin/jest.js --runInBand",
+    "test:inspect:name": "node --inspect-brk ../../node_modules/jest/bin/jest.js --runInBand  -t \"PDF service\" ",
+    "test": "jest --runInBand"
   },
   "dependencies": {
-    "@elastic/ecs-winston-format": "^1.3.0",
-    "@fast-csv/parse": "^4.3.1",
-    "@types/concat-stream": "^1.6.0",
-    "@types/nodemailer": "^6.4.1",
-    "@types/nodemailer-direct-transport": "^1.0.31",
-    "@types/nodemailer-smtp-transport": "^2.7.4",
+    "@elastic/ecs-winston-format": "^1.3.1",
+    "@fast-csv/parse": "^4.3.6",
+    "@types/concat-stream": "^1.6.1",
+    "@types/nodemailer": "^6.4.4",
+    "@types/nodemailer-direct-transport": "^1.0.32",
+    "@types/nodemailer-smtp-transport": "^2.7.5",
     "concat-stream": "^2.0.0",
-    "elastic-apm-node": "^3.20.0",
-    "fast-csv": "^4.3.1",
+    "elastic-apm-node": "^3.25.0",
+    "fast-csv": "^4.3.6",
     "handlebars": "^4.7.7",
-    "http-proxy-middleware": "^1.0.6",
-    "nodemailer": "^6.5.0",
+    "http-proxy-middleware": "^2.0.1",
+    "nodemailer": "^6.7.2",
     "nodemailer-express-handlebars": "^4.0.0",
     "nodemailer-smtp-transport": "^2.7.4",
     "promise-callbacks": "^3.8.2",
-    "puppeteer": "^10.2.0"
+    "puppeteer": "^11.0.0"
   },
   "devDependencies": {
     "@types/elastic-apm-node": "^2.7.0",
     "@types/puppeteer": "^5.4.4",
     "fakerator": "^0.3.4",
-    "mock-fs": "^5.1.0",
+    "mock-fs": "^5.1.2",
     "sequelize-erd": "^1.3.1"
   },
   "peerDependencies": {
     "dotenv": "^8.2.0",
     "graphql-sequelize": "^9.4.0",
     "moment": "^2.24.0"
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{ts,tsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "collectCoverage": true,
+    "setupFiles": [
+      "<rootDir>/../../test/env.js"
+    ],
+    "reporters": [
+      "default",
+      "jest-github-actions-reporter"
+    ],
+    "testEnvironment": "node",
+    "coverageReporters": [
+      "text-summary",
+      "lcov"
+    ],
+    "testLocationInResults": true
   }
 }

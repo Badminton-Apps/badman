@@ -1,4 +1,3 @@
-import { logger } from '@badvlasim/shared';
 import { Club, Player, RankingSystem } from '@badvlasim/shared/models';
 import {
   GraphQLBoolean,
@@ -35,7 +34,7 @@ export const PlayerType = new GraphQLObjectType({
         type: new GraphQLList(RankingPlaceType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Player.associations.rankingPlaces, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }, args) => {
             findOptions.where = {
               ...queryFixer(findOptions.where)
             };
@@ -52,7 +51,7 @@ export const PlayerType = new GraphQLObjectType({
             type: GraphQLString
           }
         }),
-        resolve: async (obj: Player, args, context, info) => {
+        resolve: async (obj: Player, args: { system: string }) => {
           let systemId = args.system;
           if (systemId == null) {
             systemId = (await RankingSystem.findOne({ where: { primary: true } })).id;
@@ -70,7 +69,7 @@ export const PlayerType = new GraphQLObjectType({
         type: new GraphQLList(RankingPointType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Player.associations.rankingPoints, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -83,7 +82,7 @@ export const PlayerType = new GraphQLObjectType({
         type: new GraphQLList(GameType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Player.associations.games, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -103,7 +102,7 @@ export const PlayerType = new GraphQLObjectType({
           }
         }),
 
-        resolve: async (obj: Player, args, context, info) => {
+        resolve: async (obj: Player, args: { end: string; where: { [key: string]: object } }) => {
           const where = {
             end: undefined
           };

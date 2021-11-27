@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Model, ModelCtor } from 'sequelize-typescript';
 type ModelAttributes<T> = Omit<T, keyof Model>;
 type CreationAttributes<T> = {
