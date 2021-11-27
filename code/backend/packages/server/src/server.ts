@@ -14,6 +14,8 @@ import {
   Player,
   startWhenReady
 } from '@badvlasim/shared';
+
+
 import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
 import { Response, Router } from 'express';
@@ -43,7 +45,7 @@ try {
   throw err;
 }
 
-const startServer = (databaseService: DataBaseHandler) => {
+const startServer = async (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
   const pdfService = new PdfService(databaseService);
   const notifService = new NotificationService(databaseService);
@@ -114,7 +116,7 @@ const startServer = (databaseService: DataBaseHandler) => {
           });
         }
         return { req, res };
-      }
+      } 
     },
     schema,
     // tracing: true,
@@ -124,6 +126,8 @@ const startServer = (databaseService: DataBaseHandler) => {
       code: err.originalError?.code || 500
     })
   });
+
+  await apolloServer.start();
 
   apolloServer.applyMiddleware({
     app: app.app,
