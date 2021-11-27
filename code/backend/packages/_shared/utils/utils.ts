@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Valid types for an objects key
  */
@@ -316,24 +317,6 @@ export const nestedObjectFind = (
   }
 };
 
-/**
- * Flatten an array of arrays into a single array.
- *
- * Example usage:
- *
- * ```javascript
- * const arrays = [
- *   [1, 2, 3],
- *   [2, 3, 4],
- *   [3, 4, 5]
- * ];
- * ```
- *
- * flatten(arrays) //[1, 2, 3, 2, 3, 4, 3, 4, 5];
- */
-export const flatten = <T>(arr: T[][]): T[] => {
-  return [].concat.apply([], arr);
-};
 
 /**
  * Return the cartesian product of the given arrays. Unfortunately accurate type information is not possible until variadic types are implemented.
@@ -375,7 +358,7 @@ export const flatten = <T>(arr: T[][]): T[] => {
  */
 export const product = (...sets: any[][]): any[][] => {
   return sets.reduce(
-    (acc, set) => flatten(acc.map(x => set.map(y => [...x, y]))),
+    (acc, set) => acc.map(x => set.map(y => [...x, y])).flat(),
     [[]]
   );
 };

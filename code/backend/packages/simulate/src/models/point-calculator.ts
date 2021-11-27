@@ -102,7 +102,7 @@ export class PointCalculator {
     return points;
   }
 
-  private _getWinningPoints(level: number): any {
+  private _getWinningPoints(level: number): number {
     const index = this._type.pointsWhenWinningAgainst.length - level;
     return this._type.pointsWhenWinningAgainst[index];
   }

@@ -18,8 +18,6 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin
 } from 'sequelize';
 import {
   BelongsToMany,
@@ -27,31 +25,30 @@ import {
   DataType,
   Default,
   HasMany,
-  HasOne,
   Index,
   IsUUID,
-  Model,
+  Model, 
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { ClubMembership } from './club-membership.model';
 import { Club } from './club.model';
+import { Comment } from './comment.model';
 import { Game, GamePlayer } from './event';
 import { LastRankingPlace, RankingPlace, RankingPoint } from './ranking';
-import { Comment } from './comment.model';
 import {
   Claim,
   PlayerClaimMembership,
   PlayerRoleMembership,
-  Role
+  Role,
 } from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { Team } from './team.model';
 
 @Table({
   timestamps: true,
-  schema: 'public'
+  schema: 'public',
 })
 export class Player extends Model {
   constructor(values?: Partial<Player>, options?: BuildOptions) {
@@ -118,38 +115,23 @@ export class Player extends Model {
   @HasMany(() => Comment, 'playerId')
   comments?: Comment[];
 
-  @BelongsToMany(
-    () => Team,
-    () => TeamPlayerMembership
-  )
+  @BelongsToMany(() => Team, () => TeamPlayerMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   teams: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
-  @BelongsToMany(
-    () => Club,
-    () => ClubMembership
-  )
+  @BelongsToMany(() => Club, () => ClubMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   clubs: (Club & { ClubMembership: ClubMembership })[];
 
-  @BelongsToMany(
-    () => Game,
-    () => GamePlayer
-  )
+  @BelongsToMany(() => Game, () => GamePlayer)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   games: (Game & { GamePlayer: GamePlayer })[];
 
-  @BelongsToMany(
-    () => Role,
-    () => PlayerRoleMembership
-  )
+  @BelongsToMany(() => Role, () => PlayerRoleMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   roles: (Role & { PlayerRoleMembership: PlayerRoleMembership })[];
 
-  @BelongsToMany(
-    () => Claim,
-    () => PlayerClaimMembership
-  )
+  @BelongsToMany(() => Claim, () => PlayerClaimMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   claims: (Claim & { PlayerClaimMembership: PlayerClaimMembership })[];
 
@@ -248,13 +230,13 @@ export class Player extends Model {
   countLastRankingPlaces!: HasManyCountAssociationsMixin;
 
   async getUserClaims(): Promise<string[]> {
-    let claims = (await this.getClaims()).map(r => r.name);
+    let claims = (await this.getClaims()).map((r) => r.name);
     const roles = await this.getRoles({
-      include: [Claim]
+      include: [Claim],
     });
     claims = [
       ...claims,
-      ...roles.map(r => r?.claims.map(c => `${r.clubId}_${c.name}`)).flat()
+      ...roles.map((r) => r?.claims.map((c) => `${r.clubId}_${c.name}`)).flat(),
     ];
 
     return claims;
@@ -265,14 +247,14 @@ export class Player extends Model {
       return null;
     }
     const placesInSystem = this.rankingPlaces.filter(
-      x => x.SystemId === system
+      (x) => x.SystemId === system
     );
 
     if (placesInSystem.length <= 0) {
       return {
         single: max,
         double: max,
-        mix: max
+        mix: max,
       } as RankingPlace;
     }
 
@@ -281,7 +263,7 @@ export class Player extends Model {
         placesInSystem.sort((a, b) => a.single - b.single)[0]?.single || max,
       double:
         placesInSystem.sort((a, b) => a.double - b.double)[0]?.double || max,
-      mix: placesInSystem.sort((a, b) => a.mix - b.mix)[0]?.mix || max
+      mix: placesInSystem.sort((a, b) => a.mix - b.mix)[0]?.mix || max,
     } as RankingPlace;
   }
 }

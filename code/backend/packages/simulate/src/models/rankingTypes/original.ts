@@ -34,11 +34,12 @@ export class OriginalRankingCalc extends RankingCalc {
   }
 
   private _initialPlayers(
-    player: any,
+    player: {
+      [key: string]: string;
+    },
     place: RankingPlace,
     type: string,
-    startPlaces: number[]
-  ) {
+  ): RankingPlace {
     // Set type specific stuff
     place[`${type}Points`] = parseInt(player['Totaal punten'], 10);
     place[`${type}Rank`] = parseInt(player.Rank, 10);

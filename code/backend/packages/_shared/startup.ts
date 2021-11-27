@@ -1,6 +1,5 @@
 import { DataBaseHandler } from './database';
 import { logger } from './utils';
-// eslint-disable-next-line import/no-internal-modules
 import * as dbConfig from './database/database.config.js';
 
 let times = 0;

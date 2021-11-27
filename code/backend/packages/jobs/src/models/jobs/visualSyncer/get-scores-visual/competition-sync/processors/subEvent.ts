@@ -47,7 +47,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       if (!xmlEvent) {
         continue;
       }
-      let dbSubEvents = subEvents.filter(r => r.visualCode === `${xmlEvent.Code}`);
+      const dbSubEvents = subEvents.filter(r => r.visualCode === `${xmlEvent.Code}`);
       let dbSubEvent: SubEventCompetition = null;
 
       if (dbSubEvents.length === 1) {

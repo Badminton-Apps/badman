@@ -14,6 +14,7 @@ import {
   Player,
   startWhenReady
 } from '@badvlasim/shared';
+
 import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
 import { Response, Router } from 'express';
@@ -43,10 +44,10 @@ try {
   throw err;
 }
 
-const startServer = (databaseService: DataBaseHandler) => {
+const startServer = async (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
-  const pdfService = new PdfService(databaseService);
-  const notifService = new NotificationService(databaseService);
+  const pdfService = new PdfService();
+  const notifService = new NotificationService(databaseService); 
 
   const app = new App(
     [
@@ -81,7 +82,7 @@ const startServer = (databaseService: DataBaseHandler) => {
         // We can try to do the auth
         try {
           for (const check of authService.checkAuth) {
-            await new Promise((resolve, reject) => {
+            await new Promise((resolve, ) => {
               check(req, res, () => {
                 resolve(null);
               });
@@ -95,10 +96,10 @@ const startServer = (databaseService: DataBaseHandler) => {
             player: await Player.findOne({ where: { memberId: '50104197' } }),
             user: {
               ...req.user,
-              hasAnyPermission: (permissions: string[]) => {
+              hasAnyPermission: () => {
                 return true;
               },
-              hasAllPermission: (permissions: string[]) => {
+              hasAllPermission: () => {
                 return true;
               }
             }
@@ -107,14 +108,14 @@ const startServer = (databaseService: DataBaseHandler) => {
         }
       } else {
         for (const check of authService.checkAuth) {
-          await new Promise((resolve, reject) => {
+          await new Promise((resolve, ) => {
             check(req, res, () => {
               resolve(null);
             });
           });
         }
         return { req, res };
-      }
+      } 
     },
     schema,
     // tracing: true,
@@ -124,6 +125,8 @@ const startServer = (databaseService: DataBaseHandler) => {
       code: err.originalError?.code || 500
     })
   });
+
+  await apolloServer.start();
 
   apolloServer.applyMiddleware({
     app: app.app,

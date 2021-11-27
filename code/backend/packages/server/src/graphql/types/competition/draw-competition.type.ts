@@ -1,16 +1,8 @@
 import { DrawCompetition } from '@badvlasim/shared/models';
-import {
-  GraphQLID,
-  GraphQLInputObjectType,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType
-} from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
-import { GameType } from '../game.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
 import { EncounterCompetitionType } from './encounter-competition.type';
 import { SubEventCompetitionType } from './subEvent-competition.type';
@@ -23,8 +15,10 @@ const DrawCompetitionType = new GraphQLObjectType({
       encounters: {
         type: new GraphQLList(EncounterCompetitionType),
         args: Object.assign(defaultListArgs(), {}),
-        resolve: resolver(DrawCompetition.associations.encounters, { 
-          before: async (findOptions, args, context, info) => {
+        resolve: resolver(DrawCompetition.associations.encounters, {
+          before: async (
+            findOptions: { [key: string]: object }
+          ) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -37,7 +31,9 @@ const DrawCompetitionType = new GraphQLObjectType({
         type: SubEventCompetitionType,
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(DrawCompetition.associations.subEvent, {
-          before: async (findOptions, args, context, info) => {
+          before: async (
+            findOptions: { [key: string]: object }
+          ) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)

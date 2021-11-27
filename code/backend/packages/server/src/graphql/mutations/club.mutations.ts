@@ -1,4 +1,4 @@
-import { Club, DataBaseHandler, logger, Player, Team } from '@badvlasim/shared';
+import { AuthenticatedRequest, Club, DataBaseHandler, logger, Player, Team } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLString } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { ClubInputType, ClubType } from '../types';
@@ -11,7 +11,7 @@ export const addClubMutation = {
       type: ClubInputType
     }
   },
-  resolve: async (findOptions, { club }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { club }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:club'])) {
       logger.warn("User tried something it should't have done", {
         required: {
@@ -46,7 +46,7 @@ export const removeClubMutation = {
       type: GraphQLString
     }
   },
-  resolve: async (findOptions, { id }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { id }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['remove:club'])) {
       logger.warn("User tried something it should't have done", {
         required: {
@@ -85,7 +85,7 @@ export const addPlayerToClubMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { clubId, playerId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { clubId, playerId }, context: { req: AuthenticatedRequest }) => {
     if (
       context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${clubId}_edit:club`, 'edit-any:club'])
@@ -136,7 +136,7 @@ export const updateClubMutation = {
       type: ClubInputType
     }
   },
-  resolve: async (findOptions, { club }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { club }, context: { req: AuthenticatedRequest }) => {
     if (
       context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${club.id}_edit:club`, 'edit-any:club'])

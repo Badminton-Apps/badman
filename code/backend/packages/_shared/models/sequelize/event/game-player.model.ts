@@ -1,15 +1,15 @@
-import { AutoIncrement, Column, ForeignKey, Index, Model, PrimaryKey, Table, Unique } from 'sequelize-typescript';
-import { Game } from './game.model';
-import { Player } from '../player.model';
 import { BuildOptions } from 'sequelize';
+import { Column, ForeignKey, Index, Model, Table } from 'sequelize-typescript';
+import { Player } from '../player.model';
+import { Game } from './game.model';
 
 @Table({
   timestamps: false,
-  schema: 'event'
+  schema: 'event',
 })
 export class GamePlayer extends Model {
-  constructor(values?: Partial<GamePlayer>, options?: BuildOptions){
-    super(values, options)
+  constructor(values?: Partial<GamePlayer>, options?: BuildOptions) {
+    super(values, options);
   }
 
   @ForeignKey(() => Player)

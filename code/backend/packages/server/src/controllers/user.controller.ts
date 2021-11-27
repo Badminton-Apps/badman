@@ -7,12 +7,12 @@ import {
   Player,
   RequestLink
 } from '@badvlasim/shared';
-import { Response, Router } from 'express';
+import { RequestHandler, Response, Router } from 'express';
 
 export class UserController extends BaseController {
   private _path = '/user';
 
-  constructor(router: Router, private _authMiddleware, private _databaseService: DataBaseHandler) {
+  constructor(router: Router, private _authMiddleware: RequestHandler[], private _databaseService: DataBaseHandler) {
     super(router);
     this._intializeRoutes();
   }

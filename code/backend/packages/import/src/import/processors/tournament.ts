@@ -79,7 +79,7 @@ export class TournamentTpProcessor extends ProcessImport {
           // Required
           name: string;
           // optional
-          [key: string]: any;
+          [key: string]: unknown;
         } = {
           name: args.importFile.name
         };
@@ -143,7 +143,10 @@ export class TournamentTpProcessor extends ProcessImport {
           transaction: args.transaction
         });
 
-        await Game.destroy({ where: { id: games.map(r => r.id) }, transaction: args.transaction });
+        await Game.destroy({
+          where: { id: games.map((r) => r.id) },
+          transaction: args.transaction
+        });
 
         const dbSubEvents = await SubEventTournament.findAll({
           where: {
@@ -171,8 +174,8 @@ export class TournamentTpProcessor extends ProcessImport {
       // get previous step data
       const event: EventTournament = this.importProcess.getData('event');
       const prevSubEvents: SubEventTournament[] = this.importProcess.getData('cleanup_event');
-      const csvEvents = await csvToArray<ICsvEvent[]>(await args.mdb.toCsv('Event'), {
-        onError: e => {
+      const csvEvents = await csvToArray<ICsvEvent>(await args.mdb.toCsv('Event'), {
+        onError: (e) => {
           logger.error('Parsing went wrong', {
             error: e
           });
@@ -190,7 +193,7 @@ export class TournamentTpProcessor extends ProcessImport {
         const eventType = this.getEventType(+subEvent.gender);
         const level = +subEvent.level;
         const prevEvent = prevSubEvents?.find(
-          r => r.name === subEvent.name && r.level === level && r.eventType === eventType
+          (r) => r.name === subEvent.name && r.level === level && r.eventType === eventType
         );
 
         let dbSubEvent: SubEventTournament = null;
@@ -236,8 +239,8 @@ export class TournamentTpProcessor extends ProcessImport {
       }[] = this.importProcess.getData('subEvents');
 
       // Run Current step
-      const csvDraws = await csvToArray<ICsvDraw[]>(await args.mdb.toCsv('Draw'), {
-        onError: e => {
+      const csvDraws = await csvToArray<ICsvDraw>(await args.mdb.toCsv('Draw'), {
+        onError: (e) => {
           logger.error('Parsing went wrong', {
             error: e
           });
@@ -247,8 +250,9 @@ export class TournamentTpProcessor extends ProcessImport {
 
       const draws = [];
       for (const csvDraw of csvDraws) {
-        const dbSubEvent = subEvents.find(e => e.internalId === parseInt(csvDraw.event, 10))
-          .subEvent;
+        const dbSubEvent = subEvents.find(
+          (e) => e.internalId === parseInt(csvDraw.event, 10)
+        ).subEvent;
 
         draws.push(
           new DrawTournament({
@@ -296,7 +300,7 @@ export class TournamentTpProcessor extends ProcessImport {
             continue;
           }
 
-          const dbClubs = clubs.find(e => e.internalId === +player.club)?.club;
+          const dbClubs = clubs.find((e) => e.internalId === +player.club)?.club;
           const playerIds = teamPlayers.get(dbClubs?.id) ?? [];
 
           teamPlayers.set(dbClubs.id, [...playerIds, player.player.id]);
@@ -313,7 +317,7 @@ export class TournamentTpProcessor extends ProcessImport {
 
   protected addClubs(): ProcessStep<{ club: Club; internalId: number }[]> {
     return new ProcessStep('clubs', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const csvClubs = await csvToArray<ICsvClub[]>(await args.mdb.toCsv('Club'));
+      const csvClubs = await csvToArray<ICsvClub>(await args.mdb.toCsv('Club'));
 
       const teams = [];
       for (const csvClub of csvClubs) {
@@ -334,14 +338,14 @@ export class TournamentTpProcessor extends ProcessImport {
       const dbClubs = await Club.findAll({
         where: {
           name: {
-            [Op.in]: csvClubs.map(team => this.cleanedClubName(team.name))
+            [Op.in]: csvClubs.map((team) => this.cleanedClubName(team.name))
           }
         },
         transaction: args.transaction
       });
 
-      return csvClubs.map((v, i) => {
-        const dbClub = dbClubs.find(r => this.cleanedClubName(v.name) === r.name);
+      return csvClubs.map((v,) => {
+        const dbClub = dbClubs.find((r) => this.cleanedClubName(v.name) === r.name);
         return {
           club: dbClub,
           internalId: +v.id
@@ -352,7 +356,7 @@ export class TournamentTpProcessor extends ProcessImport {
 
   protected addPlayers(): ProcessStep<{ player: Player; internalId: number; club: string }[]> {
     return new ProcessStep('players', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const csvPlayers = await csvToArray<ICsvPlayer[]>(await args.mdb.toCsv('Player'));
+      const csvPlayers = await csvToArray<ICsvPlayer>(await args.mdb.toCsv('Player'));
 
       const corrected = [];
       for (const csvPlayer of csvPlayers) {
@@ -377,7 +381,7 @@ export class TournamentTpProcessor extends ProcessImport {
       const dbPlayers = await Player.findAll({
         where: {
           memberId: {
-            [Op.in]: corrected.map(team => `${team.memberId}`)
+            [Op.in]: corrected.map((team) => `${team.memberId}`)
           }
         },
         transaction: args.transaction
@@ -386,7 +390,8 @@ export class TournamentTpProcessor extends ProcessImport {
       // Return result
       return corrected.map((v, i) => {
         const dbPlayer = dbPlayers.find(
-          p => p.memberId === v.memberId && p.firstName === v.firstName && p.lastName === v.lastName
+          (p) =>
+            p.memberId === v.memberId && p.firstName === v.firstName && p.lastName === v.lastName
         );
 
         return {
@@ -400,7 +405,7 @@ export class TournamentTpProcessor extends ProcessImport {
 
   protected addLocations(): ProcessStep<{ location: Location; internalId: number }[]> {
     return new ProcessStep('locations', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const csvLocations = await csvToArray<ICsvLocation[]>(await args.mdb.toCsv('Location'));
+      const csvLocations = await csvToArray<ICsvLocation>(await args.mdb.toCsv('Location'));
       const event: EventTournament = this.importProcess.getData('event');
 
       const locations = [];
@@ -418,7 +423,7 @@ export class TournamentTpProcessor extends ProcessImport {
         }
 
         const sameLoc = locations.find(
-          r =>
+          (r) =>
             r.name === csvLocation.name &&
             r.street === street &&
             r.streetNumber === locNumber &&
@@ -453,7 +458,7 @@ export class TournamentTpProcessor extends ProcessImport {
         locations.push(dbLocation);
       }
 
-      const links = locations.map(l => {
+      const links = locations.map((l) => {
         return {
           eventId: event.id,
           locationId: l.id
@@ -477,17 +482,16 @@ export class TournamentTpProcessor extends ProcessImport {
 
   protected addCourts(): ProcessStep<{ court: Court; internalId: number }[]> {
     return new ProcessStep('courts', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const locations: { location: Location; internalId: number }[] = this.importProcess.getData(
-        'locations'
-      );
-      const csvCourts = await csvToArray<ICsvCourt[]>(await args.mdb.toCsv('Court'));
+      const locations: { location: Location; internalId: number }[] =
+        this.importProcess.getData('locations');
+      const csvCourts = await csvToArray<ICsvCourt>(await args.mdb.toCsv('Court'));
 
       const courts = [];
       for (const csvCourt of csvCourts) {
         courts.push(
           new Court({
             name: csvCourt.name,
-            locationId: locations.find(x => x.internalId === +csvCourt.location)?.location?.id
+            locationId: locations.find((x) => x.internalId === +csvCourt.location)?.location?.id
           }).toJSON()
         );
       }
@@ -497,17 +501,17 @@ export class TournamentTpProcessor extends ProcessImport {
       const dbCourts = await Court.findAll({
         where: {
           name: {
-            [Op.in]: courts.map(r => r.name)
+            [Op.in]: courts.map((r) => r.name)
           }
         },
         transaction: args.transaction
       });
 
       // Return result
-      return dbCourts.map((v, i) => {
+      return dbCourts.map((v,) => {
         return {
           court: v,
-          internalId: +csvCourts.find(c => c.name === v.name).id
+          internalId: +csvCourts.find((c) => c.name === v.name).id
         };
       });
     });
@@ -515,18 +519,16 @@ export class TournamentTpProcessor extends ProcessImport {
 
   protected addGames(): ProcessStep<void> {
     return new ProcessStep('games', async (args: { mdb: Mdb; transaction: Transaction }) => {
-      const players: { player: Player; internalId: number }[] = this.importProcess.getData(
-        'players'
-      );
+      const players: { player: Player; internalId: number }[] =
+        this.importProcess.getData('players');
       const courts: { court: Court; internalId: number }[] = this.importProcess.getData('courts');
-      const draws: { draw: DrawTournament; internalId: number }[] = this.importProcess.getData(
-        'draws'
-      );
+      const draws: { draw: DrawTournament; internalId: number }[] =
+        this.importProcess.getData('draws');
 
-      const csvPlayerMatches = await csvToArray<ICsvPlayerMatchTp[]>(
+      const csvPlayerMatches = await csvToArray<ICsvPlayerMatchTp>(
         await args.mdb.toCsv('PlayerMatch'),
         {
-          onError: e => {
+          onError: (e) => {
             logger.error('Parsing went wrong', {
               error: e
             });
@@ -535,8 +537,8 @@ export class TournamentTpProcessor extends ProcessImport {
         }
       );
 
-      const csvEntries = await csvToArray<ICsvEntryCp[]>(await args.mdb.toCsv('Entry'), {
-        onError: e => {
+      const csvEntries = await csvToArray<ICsvEntryCp>(await args.mdb.toCsv('Entry'), {
+        onError: (e) => {
           logger.error('Parsing went wrong', {
             error: e
           });
@@ -547,16 +549,16 @@ export class TournamentTpProcessor extends ProcessImport {
       const games = [];
       const gamePlayers = [];
       // For matching on players we only need the ones with entry
-      const csvPlayerMatchesEntries = csvPlayerMatches.filter(x => x.entry !== '');
+      const csvPlayerMatchesEntries = csvPlayerMatches.filter((x) => x.entry !== '');
 
       // But for knowing what games are actual games we need a different sub set (go Visual Reality ...)
       const csvPlayerMatchesFiltered = [];
       csvPlayerMatches
-        .filter(x => x.van1 !== '0' && x.van2 !== '0')
-        .forEach(pm1 => {
+        .filter((x) => x.van1 !== '0' && x.van2 !== '0')
+        .forEach((pm1) => {
           if (
             !csvPlayerMatchesFiltered.find(
-              pm2 =>
+              (pm2) =>
                 // Poule home / away finder
                 pm1.event === pm2.event &&
                 pm1.draw === pm2.draw &&
@@ -575,34 +577,34 @@ export class TournamentTpProcessor extends ProcessImport {
 
       for (const csvPlayerMatch of csvPlayerMatchesFiltered) {
         const csvEntryInPlayerMatch1 = csvPlayerMatchesEntries.find(
-          x =>
+          (x) =>
             x.planning === csvPlayerMatch.van1 &&
             x.event === csvPlayerMatch.event &&
             x.draw === csvPlayerMatch.draw
         );
         const csvEntryInPlayerMatch2 = csvPlayerMatchesEntries.find(
-          x =>
+          (x) =>
             x.planning === csvPlayerMatch.van2 &&
             x.event === csvPlayerMatch.event &&
             x.draw === csvPlayerMatch.draw
         );
-        const draw = draws.find(s => s.internalId === parseInt(csvPlayerMatch.draw, 10)).draw;
+        const draw = draws.find((s) => s.internalId === parseInt(csvPlayerMatch.draw, 10)).draw;
 
         let csvEntry1: ICsvEntryCp = null;
         let csvEntry2: ICsvEntryCp = null;
 
         if (csvEntryInPlayerMatch1) {
-          csvEntry1 = csvEntries.find(e => e.id === csvEntryInPlayerMatch1.entry);
+          csvEntry1 = csvEntries.find((e) => e.id === csvEntryInPlayerMatch1.entry);
         }
         if (csvEntryInPlayerMatch2) {
-          csvEntry2 = csvEntries.find(e => e.id === csvEntryInPlayerMatch2.entry);
+          csvEntry2 = csvEntries.find((e) => e.id === csvEntryInPlayerMatch2.entry);
         }
 
         // TODO: investigate if this works for tournaments
-        const team1Player1 = players.find(x => x.internalId === +csvEntry1?.player1)?.player;
-        const team1Player2 = players.find(x => x.internalId === +csvEntry1?.player2)?.player;
-        const team2Player1 = players.find(x => x.internalId === +csvEntry2?.player1)?.player;
-        const team2Player2 = players.find(x => x.internalId === +csvEntry2?.player2)?.player;
+        const team1Player1 = players.find((x) => x.internalId === +csvEntry1?.player1)?.player;
+        const team1Player2 = players.find((x) => x.internalId === +csvEntry1?.player2)?.player;
+        const team2Player1 = players.find((x) => x.internalId === +csvEntry2?.player1)?.player;
+        const team2Player2 = players.find((x) => x.internalId === +csvEntry2?.player2)?.player;
 
         // Set null when both sets are 0 (=set not played)
         const set1Team1 =
@@ -635,7 +637,7 @@ export class TournamentTpProcessor extends ProcessImport {
           parseInt(csvPlayerMatch.team2set3, 10) === 0
             ? null
             : parseInt(csvPlayerMatch.team2set3, 10);
-        const court = courts.find(x => x.internalId === +csvPlayerMatch.court)?.court;
+        const court = courts.find((x) => x.internalId === +csvPlayerMatch.court)?.court;
 
         if (court === null && !csvPlayerMatch.court && csvPlayerMatch.court !== '') {
           logger.warn('Court not found in db?');
@@ -754,11 +756,11 @@ export class TournamentTpProcessor extends ProcessImport {
       'import file',
       async (args: { fileLocation: string; mdb: Mdb; transaction: Transaction }) => {
         const settingsCsv = await args.mdb.toCsv('Settings');
-        const settings = await csvToArray<{
-          name: string;
-          visualCode: string;
-        }>(settingsCsv, {
-          onEnd: data => {
+        const settings = await csvToArray<
+          { name: string; value: string },
+          { name: string; visualCode: string }
+        >(settingsCsv, {
+          onEnd: (data) => {
             return {
               name:
                 (data.find((r: { name: string }) => r.name.toLowerCase() === 'tournament')
@@ -768,7 +770,7 @@ export class TournamentTpProcessor extends ProcessImport {
                   ?.value as string) ?? null
             };
           },
-          onError: e => {
+          onError: (e) => {
             logger.error('Parsing went wrong', {
               error: e
             });
@@ -777,8 +779,8 @@ export class TournamentTpProcessor extends ProcessImport {
         });
 
         const daysCsv = await args.mdb.toCsv('TournamentDay');
-        const days = await csvToArray<{ dates: Date[] }>(daysCsv, {
-          onEnd: data => {
+        const days = await csvToArray<{ tournamentday: string }, { dates: Date[] }>(daysCsv, {
+          onEnd: (data) => {
             moment.locale('nl-be');
 
             const dates = data
@@ -794,7 +796,7 @@ export class TournamentTpProcessor extends ProcessImport {
               dates
             };
           },
-          onError: e => {
+          onError: (e) => {
             logger.error('Parsing went wrong', {
               error: e
             });
@@ -802,7 +804,7 @@ export class TournamentTpProcessor extends ProcessImport {
           }
         });
 
-        let dates = days.dates.map(x => x.toISOString()).join(',');
+        let dates = days.dates.map((x) => x.toISOString()).join(',');
         if (days.dates.length > 7) {
           dates = `${days.dates[0]},${days.dates[days.dates.length - 1].toISOString()}`;
         }
@@ -819,7 +821,7 @@ export class TournamentTpProcessor extends ProcessImport {
 
         if (importerFile) {
           // delete old file
-          unlink(importerFile.fileLocation, err => {
+          unlink(importerFile.fileLocation, (err) => {
             if (err) {
               logger.error(`delete file ${importerFile.fileLocation} failed`, err);
               // throw new Error(err);

@@ -1,11 +1,10 @@
 import {
   AuthenticatedRequest,
   BaseController,
-  DataBaseHandler,
   logger,
   RankingSystem
 } from '@badvlasim/shared';
-import { Response, Router } from 'express';
+import { RequestHandler, Response, Router } from 'express';
 import moment from 'moment';
 import { RankingCalculator } from '../models';
 
@@ -14,8 +13,7 @@ export class SimulateController extends BaseController {
 
   constructor(
     router: Router,
-    private _authMiddleware: any,
-    private _databaseService: DataBaseHandler,
+    private _authMiddleware: RequestHandler[],
     private _calculator: RankingCalculator
   ) {
     super(router);
@@ -51,7 +49,7 @@ export class SimulateController extends BaseController {
 
     logger.silly('query', request.query, startString, start);
 
-    this._calculator.calculateRanking(systems, end, fromStart, start).then(_ => {
+    this._calculator.calculateRanking(systems, end, fromStart, start).then(() => {
       logger.info('Processing done');
     });
   };

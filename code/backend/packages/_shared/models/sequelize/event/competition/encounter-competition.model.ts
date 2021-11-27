@@ -12,7 +12,7 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
   HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin
+  HasOneSetAssociationMixin,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -26,16 +26,15 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
 } from 'sequelize-typescript';
-import { DrawCompetition } from './draw-competition.model';
-import { Game } from '../game.model';
 import { Team } from '../../team.model';
+import { Game } from '../game.model';
+import { DrawCompetition } from './draw-competition.model';
 import { EncounterChange } from './encounter-change';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 })
 export class EncounterCompetition extends Model {
   constructor(values?: Partial<EncounterCompetition>, options?: BuildOptions) {
@@ -55,17 +54,17 @@ export class EncounterCompetition extends Model {
   originalDate: Date;
 
   @HasMany(() => Game, {
-    foreignKey: 'linkId', 
+    foreignKey: 'linkId',
     constraints: false,
     scope: {
-      linkType: 'competition'
-    }
+      linkType: 'competition',
+    },
   })
   games: Game[];
 
   @BelongsTo(() => DrawCompetition, {
     foreignKey: 'drawId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   draw?: DrawCompetition;
 
@@ -88,14 +87,14 @@ export class EncounterCompetition extends Model {
   awayTeamId: string;
 
   @Column
-  synced: Date; 
+  synced: Date;
 
   @Column
   visualCode: string;
 
   @HasOne(() => EncounterChange, {
     foreignKey: 'encounterId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   encounterChange: EncounterChange;
 

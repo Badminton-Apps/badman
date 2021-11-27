@@ -33,6 +33,6 @@ export class  Cron extends Model {
   scheduled: boolean;
 
   @Column(DataType.JSON)
-  meta: any;
+  meta: object;
 
 }

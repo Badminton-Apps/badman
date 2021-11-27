@@ -1,12 +1,12 @@
 import { AuthenticatedRequest, BaseController, Cron, logger } from '@badvlasim/shared';
-import { Response, Router } from 'express';
+import { RequestHandler, Response, Router } from 'express';
 import { CronJob, GetRankingVisual, GetScoresVisual } from '../models';
 
 export class JobController extends BaseController {
   private _path = '/job';
   private _jobs: CronJob[] = [];
 
-  constructor(router: Router, private _authMiddleware: any) {
+  constructor(router: Router, private _authMiddleware: RequestHandler[]) {
     super(router);
  
     this._intializeRoutes();
