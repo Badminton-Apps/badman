@@ -66,8 +66,8 @@ export class ClaimService {
 
   updateGlobalUserClaim(playerId: string, claimId: string, active: boolean) {
     return this.apollo
-      .query<{ claims: Claim[] }>({
-        query: updateGlobalUserClaimQuery,
+      .mutate<{ claims: Claim[] }>({
+        mutation: updateGlobalUserClaimQuery,
         variables: {
           claimId,
           playerId,

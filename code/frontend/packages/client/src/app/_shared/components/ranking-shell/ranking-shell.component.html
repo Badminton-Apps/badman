@@ -114,10 +114,13 @@
 
             <mat-divider></mat-divider>
 
-            <app-has-claim [any]="['view:ranking', 'edit:ranking']">
+            <app-has-claim [any]="['view:ranking', 'edit:ranking', 'change:job']">
               <div mat-subheader>Admin stuff</div>
               <app-has-claim [any]="['view:ranking', 'edit:ranking']">
                 <a mat-list-item routerLink="/admin/ranking" routerLinkActive="active"> Ranking </a>
+              </app-has-claim>
+              <app-has-claim [any]="['change:job']">
+                <a mat-list-item routerLink="/admin/jobs" routerLinkActive="active"> Jobs </a>
               </app-has-claim>
               <app-has-claim [any]="['link:player']">
                 <a mat-list-item routerLink="/admin/player/link-accounts" routerLinkActive="active">

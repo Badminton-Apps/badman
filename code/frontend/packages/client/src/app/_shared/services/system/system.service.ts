@@ -96,11 +96,6 @@ export class SystemService {
       .pipe(map((x) => new RankingSystem(x.data!.updateRankingSystem)));
   }
 
-  systems(sort: string, direction: SortDirection, page: number) {
-    const params: any = { sort, direction, page };
-    return this.httpClient.get<{ totalCount: number; items: RankingSystem[] }>(`${this.urlBase}`, { params });
-  }
-
   getPrimarySystem() {
     if (this.primarySystem != null) {
       return of(this.primarySystem);

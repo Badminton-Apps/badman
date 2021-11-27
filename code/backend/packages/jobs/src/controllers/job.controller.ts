@@ -8,7 +8,7 @@ export class JobController extends BaseController {
 
   constructor(router: Router, private _authMiddleware: any) {
     super(router);
-
+ 
     this._intializeRoutes();
     this._initializeJobs();
   }
@@ -21,16 +21,18 @@ export class JobController extends BaseController {
 
   private async _initializeJobs() {
     // VisualSync
+    const scoresVisual = GetScoresVisual.dbEntry()
     const [scoresDb] = await Cron.findOrCreate({
-      where: { type: 'sync-visual' },
-      defaults: GetScoresVisual.dbEntry()
+      where: { type: scoresVisual.type },
+      defaults: scoresVisual
     });
     const visual = new GetScoresVisual(scoresDb);
     this._jobs.push(visual);
 
+    const levelsVisual = GetRankingVisual.dbEntry()
     const [rankingDb] = await Cron.findOrCreate({
-      where: { type: 'ranking-visual' },
-      defaults: GetRankingVisual.dbEntry()
+      where: { type: levelsVisual.type },
+      defaults: levelsVisual
     });
     const ranking = new GetRankingVisual(rankingDb);
     this._jobs.push(ranking);
@@ -50,8 +52,13 @@ export class JobController extends BaseController {
     const foundJob = this._jobs.find(job => job.dbCron.type === request.query.type);
 
     if (foundJob) {
-      foundJob.single(request.body);
-      response.status(200).send('Running job');
+      try {
+        foundJob.single(request.body);
+        response.status(200).send('Running job');
+      } catch (e) {
+        response.status(500).send(e.message);
+        return;
+      }
     } else {
       response.status(400).send('Job not found');
     }

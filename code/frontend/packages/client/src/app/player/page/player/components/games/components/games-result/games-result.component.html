@@ -1,10 +1,12 @@
 <div class="mat-subheading-1">
-  <ng-container *ngIf="subEvent.event!.eventType == 'COMPETITION'">
-    <a [routerLink]="['/competition', this.subEvent?.event?.id]">{{ this.subEvent?.event?.name }}</a>
+  <ng-container *ngIf="this.competition">
+    <a [routerLink]="['/competition', this.competition?.draw?.subEvent?.event?.id]">{{
+      this.competition?.draw?.subEvent?.event?.name
+    }}</a>
   </ng-container>
 
-  <ng-container *ngIf="subEvent.event!.eventType == 'TOURNAMENT'">
-    <a [routerLink]="['/competition', this.subEvent?.event?.id]">{{ this.subEvent?.event?.name }}</a>
+  <ng-container *ngIf="this.tournament">
+    <a [routerLink]="['/tournament', this.tournament?.subEvent?.event?.id]">{{ this.tournament?.subEvent?.event?.name }}</a>
   </ng-container>
 </div>
 
@@ -12,11 +14,15 @@
   <app-group-competition
     *ngIf="subEvent.event!.eventType == 'COMPETITION'"
     [player]="this.player"
+    [encounter]="this.competition"
     [subEvent]="$any(subEvent)"
+    [games]="subEvent.games"
   ></app-group-competition>
   <app-group-tournament
     *ngIf="subEvent.event!.eventType == 'TOURNAMENT'"
     [player]="this.player"
+    [draw]="this.tournament"
     [subEvent]="$any(subEvent)"
+    [games]="subEvent.games"
   ></app-group-tournament>
 </ng-container>

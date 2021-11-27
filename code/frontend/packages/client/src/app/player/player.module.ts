@@ -35,6 +35,10 @@ import { TopPlayersComponent } from './page/top-players/top-players.component';
 import { PlayerRoutingModule } from './player-routing.module';
 import { GroupCompetitionComponent } from './page/player/components/games/components/games-result/group-competition/group-competition.component';
 import { GroupTournamentComponent } from './page/player/components/games/components/games-result/group-tournament/group-tournament.component';
+import { MergeAccountComponent } from './page/player/dialogs/merge-account/merge-account.component';
+import { MergePlayerComponent } from './page/player/dialogs/merge-account/components/merge-player/merge-player.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 const coreModules = [FormsModule];
 const materialModules = [
@@ -49,6 +53,8 @@ const materialModules = [
   MatTabsModule,
   MatSelectModule,
   MatExpansionModule,
+  MatDialogModule,
+  MatSlideToggleModule
 ];
 
 const covalentModules = [
@@ -75,6 +81,8 @@ const otherModules = [MomentDateModule, InfiniteScrollModule];
     ChartComponent,
     GroupCompetitionComponent,
     GroupTournamentComponent,
+    MergeAccountComponent,
+    MergePlayerComponent,
   ],
   imports: [
     SharedModule,

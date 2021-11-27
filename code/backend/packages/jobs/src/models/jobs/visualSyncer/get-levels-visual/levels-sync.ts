@@ -13,7 +13,8 @@ import {
   XmlRanking,
   XmlResult,
   Game,
-  GameType
+  GameType,
+  correctWrongPlayers
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
 import { parse } from 'fast-xml-parser';
@@ -23,8 +24,8 @@ import axios from 'axios';
 export class RankingSyncer {
   public processor: Processor;
   readonly updateMonths = [0, 2, 4, 6, 8, 10];
-  readonly fuckedDatesGoods = ["2021-09-12T22:00:00.000Z"];
-  readonly fuckedDatesBads = ["2021-09-05T22:00:00.000Z"];
+  readonly fuckedDatesGoods = ['2021-09-12T22:00:00.000Z'];
+  readonly fuckedDatesBads = ['2021-09-05T22:00:00.000Z'];
 
   readonly STEP_RANKING = 'ranking';
   readonly STEP_CATEGORIES = 'categories';
@@ -158,11 +159,14 @@ export class RankingSyncer {
           let canUpdate = false;
 
           if (this.updateMonths.includes(momentDate.month())) {
-            const firstMondayOfMonth = momentDate.clone().date(1).day(8);
+            const firstMondayOfMonth = momentDate
+              .clone()
+              .date(1)
+              .day(8);
             if (firstMondayOfMonth.date() > 7) {
               firstMondayOfMonth.day(-6);
             }
-          
+
             // Create some margin
             const margin = firstMondayOfMonth.clone().add(2, 'days');
             canUpdate =
@@ -177,7 +181,7 @@ export class RankingSyncer {
             canUpdate = false;
           }
 
-          if (canUpdate){
+          if (canUpdate) {
             logger.info(`Updating ranking on ${publication.PublicationDate}`);
           }
 
@@ -241,7 +245,7 @@ export class RankingSyncer {
           where: {
             memberId: {
               [Op.in]: bodyTournament.RankingPublicationPoints.map(
-                points => `${points.Player1.MemberID}`
+                points => correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
               )
             }
           },
@@ -250,17 +254,23 @@ export class RankingSyncer {
         });
 
         for (const points of bodyTournament.RankingPublicationPoints) {
-          let foundPlayer = players.find(p => p.memberId === `${points.Player1.MemberID}`);
+          let foundPlayer = players.find(
+            p =>
+              p.memberId ===
+              correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
+          );
 
           if (foundPlayer == null) {
             logger.info('New player');
             const [firstName, ...lastName] = points.Player1.Name.split(' ').filter(Boolean);
-            foundPlayer = await new Player({
-              memberId: points.Player1.MemberID,
-              firstName,
-              lastName: lastName.join(' '),
-              gender
-            }).save({ transaction: args.transaction });
+            foundPlayer = await new Player(
+              correctWrongPlayers({
+                memberId: points.Player1.MemberID,
+                firstName,
+                lastName: lastName.join(' '),
+                gender
+              })
+            ).save({ transaction: args.transaction });
           }
           if (places.has(foundPlayer.id)) {
             places.get(foundPlayer.id)[type] = points.Level;

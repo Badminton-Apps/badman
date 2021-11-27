@@ -6,10 +6,19 @@ import { InMemoryCache, DefaultOptions } from '@apollo/client/core';
 import { environment } from './../environments/environment';
 
 const uri = `${environment.api}/graphql`;
+export const cache = new InMemoryCache({
+  typePolicies: {
+    GamePlayer: {
+      keyFields: ['id', 'team', 'player'],
+    },
+  },
+});
+
 export function createApollo(httpLink: HttpLink) {
   const defaultOptions: DefaultOptions = {
     watchQuery: {
       fetchPolicy: 'cache-and-network',
+      returnPartialData: true,
       // errorPolicy: 'ignore',
     },
     query: {
@@ -18,17 +27,10 @@ export function createApollo(httpLink: HttpLink) {
     },
   };
 
-
   const options = {
     link: httpLink.create({ uri }),
     connectToDevTools: environment.production == false,
-    cache: new InMemoryCache({
-      typePolicies: {
-        GamePlayer: {
-          keyFields: ['id', 'team', 'player'],
-        },
-      },
-    }),
+    cache,
     defaultOptions,
   };
 

@@ -5,7 +5,7 @@
       <ng-container *ngIf="this.encounters$ | async as encounters">
         <mat-option *ngFor="let encounter of encounters" [value]="encounter.id">
           {{ encounter.date | amDateFormat: 'llll' }} - {{ encounter.home?.name }}
-          {{ 'competition.change-encounter.vs' | translate }}
+          {{ 'competition.vs' | translate }}
           {{ encounter.away?.name }}
         </mat-option>
       </ng-container>
