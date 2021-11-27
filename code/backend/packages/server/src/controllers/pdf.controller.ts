@@ -1,5 +1,5 @@
-import { AuthenticatedRequest, BaseController, logger, PdfService } from '@badvlasim/shared';
-import { Response, Router, Request } from 'express';
+import { BaseController, PdfService } from '@badvlasim/shared';
+import { Request, Response, Router } from 'express';
 
 export class PdfController extends BaseController {
   private _path = '/pdf';

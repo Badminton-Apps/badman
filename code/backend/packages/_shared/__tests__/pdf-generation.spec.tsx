@@ -3,38 +3,38 @@
 import mock from 'mock-fs';
 import moment from 'moment';
 import path from 'path';
+
+import fakerator from 'fakerator';
+import { PdfService } from '../services';
+import { DataBaseHandler } from '../database';
 import {
-  DataBaseHandler,
-  PdfService,
-  EventCompetition,
-  SubEventCompetition,
+  Club,
   DrawCompetition,
   EncounterCompetition,
-  Club,
-  Team,
-  SubEventType,
-  TeamSubEventMembership,
+  EventCompetition,
+  LastRankingPlace,
   Player,
   RankingPlace,
-  LastRankingPlace,
   RankingSystem,
   RankingSystems,
-  StartingType
-} from '..';
-import fakerator from 'fakerator';
+  StartingType,
+  SubEventCompetition,
+  SubEventType,
+  Team,
+  TeamSubEventMembership,
+} from '../models';
 
 const fake = fakerator();
 
 describe('PDF service', () => {
-  let databaseService: DataBaseHandler;
   let pdfService: PdfService;
 
   beforeAll(async () => {
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
-      storage: ':memory:'
+      storage: ':memory:',
     });
-    pdfService = new PdfService(databaseService);
+    pdfService = new PdfService();
     pdfService['_htmlToPdf'] = jest
       .fn()
       .mockImplementation(() => Promise.resolve(null));
@@ -45,7 +45,7 @@ describe('PDF service', () => {
       __dirname + '/../services/pdf/assets/logo.png'
     );
     mock({
-      [logoLocation]: 'logo'
+      [logoLocation]: 'logo',
     });
     // Clear eveything
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
@@ -83,7 +83,7 @@ describe('PDF service', () => {
       runDate: new Date('2021-04-21T07:30:13.173Z'),
       differenceForUpgrade: 1,
       differenceForDowngrade: 0,
-      startingType: StartingType.tableLFBB
+      startingType: StartingType.tableLFBB,
     }).save();
 
     const fakeClub1Name = fake.names.name();
@@ -93,37 +93,37 @@ describe('PDF service', () => {
       firstName: fake.names.firstNameM(),
       lastName: fake.names.lastName(),
       memberId: fake.populate('########'),
-      gender: 'M'
+      gender: 'M',
     };
     const fakeMPerson2 = {
       firstName: fake.names.firstNameM(),
       lastName: fake.names.lastName(),
       memberId: fake.populate('########'),
-      gender: 'M'
+      gender: 'M',
     };
     const fakeMPerson3 = {
       firstName: fake.names.firstNameM(),
       lastName: fake.names.lastName(),
       memberId: fake.populate('########'),
-      gender: 'M'
+      gender: 'M',
     };
     const fakeFPerson1 = {
       firstName: fake.names.firstNameF(),
       lastName: fake.names.lastName(),
       memberId: fake.populate('########'),
-      gender: 'F'
+      gender: 'F',
     };
     const fakeFPerson2 = {
       firstName: fake.names.firstNameF(),
       lastName: fake.names.lastName(),
       memberId: fake.populate('########'),
-      gender: 'F'
+      gender: 'F',
     };
     const fakeFPerson3 = {
       firstName: fake.names.firstNameF(),
       lastName: fake.names.lastName(),
       memberId: fake.populate('########'),
-      gender: 'F'
+      gender: 'F',
     };
 
     // Arrange
@@ -132,7 +132,7 @@ describe('PDF service', () => {
     const subevent = await new SubEventCompetition().save();
     const draw = await new DrawCompetition().save();
     const encounter = await new EncounterCompetition({
-      date: encounterDate.toDate()
+      date: encounterDate.toDate(),
     }).save();
 
     await subevent.setEvent(event);
@@ -144,13 +144,13 @@ describe('PDF service', () => {
     const team1 = await new Team({
       teamNumber: 1,
       type: SubEventType.MX,
-      clubId: club1.id
+      clubId: club1.id,
     }).save();
 
     const team2 = await new Team({
       teamNumber: 2,
       type: SubEventType.MX,
-      clubId: club2.id
+      clubId: club2.id,
     }).save();
 
     await encounter.setHome(team1);
@@ -158,7 +158,7 @@ describe('PDF service', () => {
 
     const teamSubEventMembership = new TeamSubEventMembership({
       teamId: team1.id,
-      subEventId: subevent.id
+      subEventId: subevent.id,
     });
     teamSubEventMembership.meta = {
       teamIndex: 80,
@@ -168,36 +168,36 @@ describe('PDF service', () => {
           single: 7,
           double: 6,
           mix: 7,
-          gender: 'M'
+          gender: 'M',
         },
         {
           id: '990a2e5c-4670-4053-9634-506d276ccc97',
           single: 7,
           double: 6,
           mix: 8,
-          gender: 'F'
+          gender: 'F',
         },
         {
           id: '8c1c0a6b-d252-4d17-a5f8-e53cdeb4178a',
           single: 7,
           double: 5,
           mix: 7,
-          gender: 'M'
+          gender: 'M',
         },
         {
           id: '96df9d4c-be58-4eaa-9d27-62b241b3000a',
           single: 7,
           double: 6,
           mix: 7,
-          gender: 'F'
-        }
-      ]
+          gender: 'F',
+        },
+      ],
     };
     await teamSubEventMembership.save();
 
     const captainPlayer = await Player.create({
       firstName: 'John',
-      lastName: 'Doe'
+      lastName: 'Doe',
     });
 
     const playerM1 = await Player.create(
@@ -210,8 +210,8 @@ describe('PDF service', () => {
             single: 7,
             double: 5,
             mix: 7,
-            rankingDate: moment('2021-05-15').toDate()
-          })
+            rankingDate: moment('2021-05-15').toDate(),
+          }),
         ],
         lastRankingPlaces: [
           new LastRankingPlace({
@@ -219,9 +219,9 @@ describe('PDF service', () => {
             single: 7,
             double: 5,
             mix: 7,
-            rankingDate: moment('2021-09-11').toDate()
-          })
-        ]
+            rankingDate: moment('2021-09-11').toDate(),
+          }),
+        ],
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -236,8 +236,8 @@ describe('PDF service', () => {
             single: 7,
             double: 6,
             mix: 7,
-            rankingDate: moment('2021-05-15').toDate()
-          })
+            rankingDate: moment('2021-05-15').toDate(),
+          }),
         ],
         lastRankingPlaces: [
           new LastRankingPlace({
@@ -245,9 +245,9 @@ describe('PDF service', () => {
             single: 7,
             double: 6,
             mix: 7,
-            rankingDate: moment('2021-09-11').toDate()
-          })
-        ]
+            rankingDate: moment('2021-09-11').toDate(),
+          }),
+        ],
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -262,8 +262,8 @@ describe('PDF service', () => {
             single: 7,
             double: 8,
             mix: 9,
-            rankingDate: moment('2021-05-15').toDate()
-          })
+            rankingDate: moment('2021-05-15').toDate(),
+          }),
         ],
         lastRankingPlaces: [
           new LastRankingPlace({
@@ -271,9 +271,9 @@ describe('PDF service', () => {
             single: 7,
             double: 8,
             mix: 9,
-            rankingDate: moment('2021-09-11').toDate()
-          })
-        ]
+            rankingDate: moment('2021-09-11').toDate(),
+          }),
+        ],
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -288,8 +288,8 @@ describe('PDF service', () => {
             single: 7,
             double: 6,
             mix: 8,
-            rankingDate: moment('2021-05-15').toDate()
-          })
+            rankingDate: moment('2021-05-15').toDate(),
+          }),
         ],
         lastRankingPlaces: [
           new LastRankingPlace({
@@ -297,9 +297,9 @@ describe('PDF service', () => {
             single: 7,
             double: 6,
             mix: 8,
-            rankingDate: moment('2021-09-11').toDate()
-          })
-        ]
+            rankingDate: moment('2021-09-11').toDate(),
+          }),
+        ],
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -314,8 +314,8 @@ describe('PDF service', () => {
             single: 8,
             double: 9,
             mix: 8,
-            rankingDate: moment('2021-05-15').toDate()
-          })
+            rankingDate: moment('2021-05-15').toDate(),
+          }),
         ],
         lastRankingPlaces: [
           new LastRankingPlace({
@@ -323,9 +323,9 @@ describe('PDF service', () => {
             single: 8,
             double: 9,
             mix: 8,
-            rankingDate: moment('2021-09-11').toDate()
-          })
-        ]
+            rankingDate: moment('2021-09-11').toDate(),
+          }),
+        ],
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -341,8 +341,8 @@ describe('PDF service', () => {
             single: 9,
             double: 8,
             mix: 7,
-            rankingDate: moment('2021-05-15').toDate()
-          })
+            rankingDate: moment('2021-05-15').toDate(),
+          }),
         ],
         lastRankingPlaces: [
           new LastRankingPlace({
@@ -350,9 +350,9 @@ describe('PDF service', () => {
             single: 9,
             double: 7,
             mix: 7,
-            rankingDate: moment('2021-09-11').toDate()
-          })
-        ]
+            rankingDate: moment('2021-09-11').toDate(),
+          }),
+        ],
       },
       { include: [RankingPlace, LastRankingPlace] }
     );
@@ -368,10 +368,10 @@ describe('PDF service', () => {
           [playerM1.id, playerM2.id],
           [playerF1.id, playerF2.id],
           [playerF3.id, playerM1.id],
-          [playerF1.id, playerM3.id]
+          [playerF1.id, playerM3.id],
         ],
-        subtitude: []
-      }
+        subtitude: [],
+      },
     });
 
     // Assert
@@ -382,7 +382,7 @@ describe('PDF service', () => {
       {
         format: 'a4',
         landscape: true,
-        printBackground: true
+        printBackground: true,
       }
     );
 
@@ -396,7 +396,7 @@ describe('PDF service', () => {
         baseIndex: 80,
         captain: 'John Doe',
         date: encounterDate.format('DD-MM-YYYY HH:mm'),
-        type: 'MX'
+        type: 'MX',
       }),
       expect.anything()
     );
@@ -410,27 +410,27 @@ describe('PDF service', () => {
             base: false,
             team: false,
             memberId: fakeMPerson3.memberId,
-            fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`
+            fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`,
           }),
           expect.objectContaining({
             base: false,
             team: false,
             memberId: fakeMPerson2.memberId,
-            fullName: `${fakeMPerson2.firstName} ${fakeMPerson2.lastName}`
+            fullName: `${fakeMPerson2.firstName} ${fakeMPerson2.lastName}`,
           }),
           expect.objectContaining({
             base: false,
             team: false,
             memberId: fakeMPerson2.memberId,
-            fullName: `${fakeMPerson2.firstName} ${fakeMPerson2.lastName}`
+            fullName: `${fakeMPerson2.firstName} ${fakeMPerson2.lastName}`,
           }),
           expect.objectContaining({
             base: false,
             team: false,
             memberId: fakeMPerson3.memberId,
-            fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`
-          })
-        ])
+            fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`,
+          }),
+        ]),
       }),
       expect.anything()
     );
@@ -445,58 +445,58 @@ describe('PDF service', () => {
               base: true,
               team: true,
               memberId: fakeMPerson1.memberId,
-              fullName: `${fakeMPerson1.firstName} ${fakeMPerson1.lastName}`
+              fullName: `${fakeMPerson1.firstName} ${fakeMPerson1.lastName}`,
             }),
             player2: expect.objectContaining({
               base: true,
               team: true,
               memberId: fakeMPerson2.memberId,
-              fullName: `${fakeMPerson2.firstName} ${fakeMPerson2.lastName}`
-            })
+              fullName: `${fakeMPerson2.firstName} ${fakeMPerson2.lastName}`,
+            }),
           },
           {
             player1: expect.objectContaining({
               base: true,
               team: true,
               memberId: fakeFPerson1.memberId,
-              fullName: `${fakeFPerson1.firstName} ${fakeFPerson1.lastName}`
+              fullName: `${fakeFPerson1.firstName} ${fakeFPerson1.lastName}`,
             }),
             player2: expect.objectContaining({
               base: false,
               team: false,
               memberId: fakeFPerson2.memberId,
-              fullName: `${fakeFPerson2.firstName} ${fakeFPerson2.lastName}`
-            })
+              fullName: `${fakeFPerson2.firstName} ${fakeFPerson2.lastName}`,
+            }),
           },
           {
             player1: expect.objectContaining({
               base: false,
               team: true,
               memberId: fakeFPerson3.memberId,
-              fullName: `${fakeFPerson3.firstName} ${fakeFPerson3.lastName}`
+              fullName: `${fakeFPerson3.firstName} ${fakeFPerson3.lastName}`,
             }),
             player2: expect.objectContaining({
               base: false,
               team: false,
               memberId: fakeMPerson1.memberId,
-              fullName: `${fakeMPerson1.firstName} ${fakeMPerson1.lastName}`
-            })
+              fullName: `${fakeMPerson1.firstName} ${fakeMPerson1.lastName}`,
+            }),
           },
           {
             player1: expect.objectContaining({
               base: false,
               team: false,
               memberId: fakeFPerson1.memberId,
-              fullName: `${fakeFPerson1.firstName} ${fakeFPerson1.lastName}`
+              fullName: `${fakeFPerson1.firstName} ${fakeFPerson1.lastName}`,
             }),
             player2: expect.objectContaining({
               base: false,
               team: false,
               memberId: fakeMPerson3.memberId,
-              fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`
-            })
-          }
-        ])
+              fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`,
+            }),
+          },
+        ]),
       }),
       expect.anything()
     );

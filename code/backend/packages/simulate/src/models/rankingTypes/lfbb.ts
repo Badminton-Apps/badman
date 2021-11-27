@@ -47,7 +47,7 @@ export class LfbbRankingCalc extends RankingCalc {
     }
   }
 
-  private _initialPlayers(player: any, place: RankingPlace, type: string, startPlaces: number[]) {
+  private _initialPlayers(player: { [key: string]: string }, place: RankingPlace, type: string, startPlaces: number[]) {
     // Set type specific stuff
     place[`${type}Points`] = parseInt(player['Totaal punten'], 10);
     place[`${type}Rank`] = parseInt(player.Rank, 10);

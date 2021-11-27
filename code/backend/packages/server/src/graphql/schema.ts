@@ -1,4 +1,5 @@
 import { NotificationService } from '@badvlasim/shared';
+
 import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import {
   addChangeEncounterMutation,
@@ -39,9 +40,9 @@ import {
   addPlayerBaseSubEventMutation,
   removePlayerBaseSubEventMutation,
   updateTeamMutation,
-  updateTournamentEventLocationMutation
+  updateTournamentEventLocationMutation,
+  updatePlayerRankingMutation
 } from './mutations';
-import { updatePlayerRankingMutation } from './mutations/player.mutations';
 import {
   claimsQuery,
   clubQuery,
@@ -70,6 +71,7 @@ import {
   cronQuery,
   cronsQuery
 } from './queries';
+
 
 export const createSchema = (notificationService: NotificationService) => {
   return new GraphQLSchema({

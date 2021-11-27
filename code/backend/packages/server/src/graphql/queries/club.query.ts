@@ -1,6 +1,6 @@
-import { GraphQLEnumType, GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
-import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { Club } from '@badvlasim/shared/models';
+import { GraphQLID, GraphQLNonNull } from 'graphql';
+import { resolver } from 'graphql-sequelize';
 import { ClubConnectionType, ClubType } from '../types/club.type';
 import { where } from './utils';
 

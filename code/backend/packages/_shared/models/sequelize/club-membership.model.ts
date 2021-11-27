@@ -7,10 +7,8 @@ import {
   DataType,
   Unique,
   PrimaryKey,
-  AutoIncrement,
   IsUUID,
   Default,
-  NotNull,
   AllowNull
 } from 'sequelize-typescript';
 import { BuildOptions } from 'sequelize';

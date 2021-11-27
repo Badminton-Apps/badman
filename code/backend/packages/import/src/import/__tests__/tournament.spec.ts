@@ -15,7 +15,7 @@ import { readFileSync } from 'fs';
 
 jest.mock('child_process', () => {
   return {
-    spawn: (exe: string, args: any[]) => {
+    spawn: (exe: string, args: string[]) => {
       if (exe === 'mdb-export') {
         // Basically we write each column to a different file and append the column name to the filename
         // e.g:
@@ -35,14 +35,13 @@ jest.mock('child_process', () => {
 });
 
 describe('tournament', () => {
-  let databaseService: DataBaseHandler;
   let service: TournamentTpProcessor;
   let fileLocation: string;
 
   beforeAll(async () => {
     fileLocation = join(process.cwd(), 'src/import/__tests__/files/tournament.tp');
 
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });
@@ -100,7 +99,7 @@ describe('tournament', () => {
           order: ['name']
         }
       ]
-    } as any);
+    });
 
     const games = await Game.findAll({
       include: [{ model: Player }]
@@ -146,7 +145,7 @@ describe('tournament', () => {
           order: ['name']
         }
       ]
-    } as any);
+    } );
 
     const games = await Game.findAll({
       include: [{ model: Player }]
@@ -166,14 +165,13 @@ describe('tournament', () => {
 });
 
 describe('tournament 2', () => {
-  let databaseService: DataBaseHandler;
   let service: TournamentTpProcessor;
   let fileLocation: string;
 
   beforeAll(async () => {
     fileLocation = join(process.cwd(), 'src/import/__tests__/files/tournament_2.tp');
 
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });
@@ -240,7 +238,7 @@ describe('tournament 2', () => {
           order: ['name']
         }
       ]
-    } as any);
+    });
 
     const games = await Game.findAll({
       include: [{ model: Player }]

@@ -1,20 +1,10 @@
-import {
-  GraphQLEnumType,
-  GraphQLID,
-  GraphQLInputObjectType,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString
-} from 'graphql';
-import { attributeFields, createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
 import { LastRankingPlace, RankingPlace } from '@badvlasim/shared/models';
+import { GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType } from 'graphql';
+import { defaultListArgs, resolver } from 'graphql-sequelize';
+import { queryFixer } from '../queryFixer';
+import { getAttributeFields } from './attributes.type';
 import { PlayerType } from './player.type';
 import { RankingSystemType } from './rankingSystem.type';
-import { getAttributeFields } from './attributes.type';
-import { queryFixer } from '../queryFixer';
 
 export const RankingPlaceType = new GraphQLObjectType({
   name: 'RankingPlace',
@@ -29,7 +19,9 @@ export const RankingPlaceType = new GraphQLObjectType({
         type: new GraphQLNonNull(PlayerType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(RankingPlace.associations.player, {
-          before: async (findOptions, args, context, info) => {
+          before: async (
+            findOptions: { [key: string]: object }
+          ) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -66,7 +58,9 @@ export const LastRankingPlaceType = new GraphQLObjectType({
         type: new GraphQLNonNull(PlayerType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(LastRankingPlace.associations.player, {
-          before: async (findOptions, args, context, info) => {
+          before: async (
+            findOptions: { [key: string]: object }
+          ) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)

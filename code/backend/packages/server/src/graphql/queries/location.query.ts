@@ -8,7 +8,7 @@ export const locationsQuery = {
   type: new GraphQLList(LocationType),
   args: Object.assign(defaultListArgs()),
   resolve: resolver(Location, {
-    before: async (findOptions, args, context, info) => {
+    before: async (findOptions: { [key: string]: object }) => {
       findOptions = {
         ...findOptions,
         where: queryFixer(findOptions.where)

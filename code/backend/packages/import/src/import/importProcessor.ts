@@ -22,7 +22,7 @@ export abstract class ProcessImport {
     this.importFileProcess = new Processor();
   }
 
-  async import(args: any) {
+  async import(args: unknown) {
     return this.importProcess.process(args);
   }
 

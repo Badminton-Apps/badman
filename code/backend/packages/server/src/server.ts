@@ -15,7 +15,6 @@ import {
   startWhenReady
 } from '@badvlasim/shared';
 
-
 import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
 import { Response, Router } from 'express';
@@ -47,8 +46,8 @@ try {
 
 const startServer = async (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
-  const pdfService = new PdfService(databaseService);
-  const notifService = new NotificationService(databaseService);
+  const pdfService = new PdfService();
+  const notifService = new NotificationService(databaseService); 
 
   const app = new App(
     [
@@ -83,7 +82,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
         // We can try to do the auth
         try {
           for (const check of authService.checkAuth) {
-            await new Promise((resolve, reject) => {
+            await new Promise((resolve, ) => {
               check(req, res, () => {
                 resolve(null);
               });
@@ -97,10 +96,10 @@ const startServer = async (databaseService: DataBaseHandler) => {
             player: await Player.findOne({ where: { memberId: '50104197' } }),
             user: {
               ...req.user,
-              hasAnyPermission: (permissions: string[]) => {
+              hasAnyPermission: () => {
                 return true;
               },
-              hasAllPermission: (permissions: string[]) => {
+              hasAllPermission: () => {
                 return true;
               }
             }
@@ -109,7 +108,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
         }
       } else {
         for (const check of authService.checkAuth) {
-          await new Promise((resolve, reject) => {
+          await new Promise((resolve, ) => {
             check(req, res, () => {
               resolve(null);
             });
