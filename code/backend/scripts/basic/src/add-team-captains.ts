@@ -7,7 +7,7 @@ import {
   Player,
   Role,
   Team
-} from '../../../packages/_shared';
+} from '@badvlasim/shared';
 
 (async () => {
   new DataBaseHandler({
@@ -35,7 +35,7 @@ import {
 
     for (const club of clubs) {
       logger.debug(`Club ${club.name} started`);
-      
+
       if (club.roles.length > 1) {
         logger.warn(`Club ${club.name} has more than one role`);
         continue;
@@ -54,8 +54,10 @@ import {
       });
 
       const captains = club.teams.map(t => t?.captain?.id).filter(r => !!r);
-      await captainRole.addPlayers(captains, { transaction, ignoreDuplicates: true });
-
+      await captainRole.addPlayers(captains, {
+        transaction,
+        ignoreDuplicates: true
+      });
 
       logger.debug(`Club ${club.name} finished`);
     }

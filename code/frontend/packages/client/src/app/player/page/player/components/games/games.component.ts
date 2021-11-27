@@ -34,17 +34,18 @@ export class GamesComponent implements OnInit {
       shareReplay(1)
     );
 
-
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
     this.games$ = combineLatest([id$, system$, this.currentPage$]).pipe(
       switchMap(([playerId, system, page]) => {
         if (this.request$) {
           return this.request$;
         } else {
-          this.request$ = this.playerService.getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize).pipe(
-            share(),
-            finalize(() => this.onFinalize())
-          );
+          this.request$ = this.playerService
+            .getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize)
+            .pipe(
+              share(),
+              finalize(() => this.onFinalize())
+            );
           return this.request$;
         }
       }),
@@ -90,7 +91,4 @@ export class GamesComponent implements OnInit {
   private onFinalize(): void {
     this.request$ = undefined;
   }
-
-
-
 }
