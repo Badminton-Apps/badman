@@ -1,0 +1,8 @@
+<div>
+  <strong>{{ this.player.fullName }}</strong> ({{ this.player.memberId }})<br />
+  {{ this.club?.name }}<br />
+  <div>
+    {{ this.player.lastRanking?.single ?? 12 }} - {{ this.player.lastRanking?.double ?? 12 }} -
+    {{ this.player.lastRanking?.mix ?? 12 }}
+  </div>
+</div>

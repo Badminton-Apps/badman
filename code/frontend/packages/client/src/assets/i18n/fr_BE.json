@@ -236,6 +236,7 @@
     "button": {
         "close": "",
         "delete": "",
+        "merge-accounts": "",
         "create": "",
         "edit": "",
         "done": "",
