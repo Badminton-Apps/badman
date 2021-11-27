@@ -63,6 +63,6 @@
     "testLocationInResults": true
   },
   "devDependencies": {
-    "mock-fs": "^5.1.0"
+    "mock-fs": "^5.1.2"
   }
 }
