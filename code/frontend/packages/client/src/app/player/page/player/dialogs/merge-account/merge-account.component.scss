@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+#left-arrow {
+  text-align: center;
+}
+
+#toMergePlayers .empty {
+  min-width: 200px;
+  min-height: 38px;
+
+  border: solid 1px #ccc;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+
+.warn{
+  color: #f00;
+}

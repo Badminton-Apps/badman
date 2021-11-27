@@ -180,8 +180,7 @@ async function updateCsvFile(
     ]
   });
 
-  const system = await RankingSystem.findOne({where: {primary: true}});
-
+  const system = await RankingSystem.findOne({ where: { primary: true } });
 
   for (const team of dbTeams) {
     const subEvent = team.subEvents[0];
