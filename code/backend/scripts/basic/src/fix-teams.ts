@@ -1,17 +1,17 @@
-import * as dbConfig from '@badvlasim/shared/database/database.config.js';
-import { Op } from 'sequelize';
 import {
   Club,
   DataBaseHandler,
   EncounterCompetition,
   logger,
-  Team,
   SubEventType,
+  Team,
   TeamLocationCompetition,
   TeamPlayerMembership,
   TeamSubEventMembership,
-  TeamSubEventMembershipBadmintonBvlMembershipMeta
-} from '../../../packages/_shared';
+  UseForTeamName
+} from '@badvlasim/shared';
+import * as dbConfig from '@badvlasim/shared/database/database.config.js';
+import { Op } from 'sequelize';
 
 (async () => {
   new DataBaseHandler({
@@ -19,12 +19,20 @@ import {
     // logging: (...msg) => logger.debug('Query', msg)
   });
 
+  const fullNameReplace = [
+    'bc',
+    'vzw',
+    'badminton club',
+    'badmintonclub',
+    'badminton'
+  ];
+
   const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
-  // Fix teams that need some updates
-  await fixTeams();
-
   try {
+    // Fix teams that need some updates
+    await fixTeams();
+
     const clubs = await Club.findAll({
       transaction,
       include: [{ model: Team }]
@@ -33,6 +41,7 @@ import {
     // combine teams with same name
     for (const club of clubs) {
       const destroyed = [];
+
       for (const team of club.teams) {
         if (destroyed.includes(team.id)) {
           continue;
@@ -57,20 +66,35 @@ import {
           destroyed.push(...otherTeams.map(t => t.id));
         }
 
-        if (!destroyed.includes(team.id)) {
-          team.name = team.name.trim();
-          await Team.generateAbbreviation(team, { transaction });
-          await team.save({ transaction });
+        // if (!destroyed.includes(team.id)) {
+        //   team.name = team.name.trim();
+        //   await Team.generateAbbreviation(team, { transaction });
+        //   await team.save({ transaction });
+        // }
+      }
+
+      club.fullName = club.name;
+
+      for (const repalcer of fullNameReplace) {
+        // Check if club name contains a full name replacement with a space in front or behind to make sure it's not a port of the name
+        if (
+          club.name.toLowerCase().startsWith(`${repalcer.toLowerCase()} `) ||
+          club.name.toLowerCase().endsWith(` ${repalcer.toLowerCase()}`)
+        ) {
+          const regex = new RegExp(repalcer, 'ig');
+          club.name = club.name.replace(regex, '').trim();
         }
       }
+      await club.save({ transaction });
     }
+
+    await fixClubs();
 
     await transaction.commit();
   } catch (error) {
     logger.debug('something went wrong', error);
     transaction.rollback();
   }
-
 
   async function mergeTeams(active: Team, otherTeams: Team[]) {
     await EncounterCompetition.update(
@@ -137,27 +161,31 @@ import {
     await new Club({
       id: '9fc46f1a-6cfc-4b40-a266-f88ea09dc34e',
       name: 'Bad79',
+      fullName: 'Bad79',
       abbreviation: 'Bad79',
       clubId: 39
     }).save({ transaction });
 
     await new Club({
       id: '2b3628e2-4154-428c-8221-801bafeffaa5',
-      name: 'BC Nivellois',
+      fullName: 'BC Nivellois',
+      name: 'Nivellois',
       abbreviation: 'Nivellois',
       clubId: 15
     }).save({ transaction });
 
     await new Club({
       id: '9c62b2b6-507e-4428-8579-8a280dfaa19e',
-      name: 'Grâce BC asbl',
+      fullName: 'Grâce BC asbl',
+      name: 'Grâce',
       abbreviation: 'Grâce',
       clubId: 15
     }).save({ transaction });
 
     await new Club({
       id: 'afbb85f2-9144-4357-8c7c-fb23346fc2e4',
-      name: 'Royal Badminton Club Verviers',
+      fullName: 'Royal Badminton Club Verviers',
+      name: 'Verviers',
       abbreviation: 'Verviers',
       clubId: 19
     }).save({ transaction });
@@ -949,5 +977,315 @@ import {
       players: []
     };
     await membership14.save({ transaction });
+  }
+
+  async function fixClubs() {
+    const club1 = await Club.findByPk('9ceaeed9-e8c9-42a7-b2c5-1982d1b50839', {
+      transaction
+    });
+    club1.name = 'Oostendse';
+    club1.useForTeamName = UseForTeamName.ABBREVIATION;
+    club1.abbreviation = 'OBTC';
+    await club1.save({ transaction });
+
+    const club2 = await Club.findByPk('d58e0d95-e3b2-4403-8222-d2dbdd42c06f', {
+      transaction
+    });
+    club2.useForTeamName = UseForTeamName.ABBREVIATION;
+    club2.abbreviation = 'IZBA';
+    await club2.save({ transaction });
+
+    const club3 = await Club.findByPk('9dd9f7f3-fe23-4d2c-a004-6f51fca20629', {
+      transaction
+    });
+    club3.fullName = 'BC Oostrozebeke';
+    club3.useForTeamName = UseForTeamName.FULL_NAME;
+    await club3.save({ transaction });
+
+    const club4 = await Club.findByPk('26147cfb-a5c1-4ac4-822f-b4d797c91b41', {
+      transaction
+    });
+    club4.name = 'Zuid-West';
+    await club4.save({ transaction });
+
+    const club5 = await Club.findByPk('60bbc3ab-f4f0-45f9-8a25-a331bbb30291', {
+      transaction
+    });
+    club5.fullName = 'BC De Voskes';
+    club5.useForTeamName = UseForTeamName.FULL_NAME;
+    await club5.save({ transaction });
+
+    const club6 = await Club.findByPk('2e1ebcf0-de7b-4b82-ac8e-37a9bafe54e9', {
+      transaction
+    });
+    club6.fullName = 'Fz Forza Webacsa';
+    club6.useForTeamName = UseForTeamName.FULL_NAME;
+    club6.abbreviation = 'OBTC';
+    await club6.save({ transaction });
+
+    const club7 = await Club.findByPk('bfffbd75-e7e6-4132-a34d-09711833ff1b', {
+      transaction
+    });
+    club7.fullName = 'Sint job';
+    club7.useForTeamName = UseForTeamName.FULL_NAME;
+    await club7.save({ transaction });
+
+    const club8 = await Club.findByPk('2ccbbca6-2509-4f0d-aa90-ef724de5eaa7', {
+      transaction
+    });
+    club8.abbreviation = 'BaZo';
+    club8.useForTeamName = UseForTeamName.ABBREVIATION;
+    await club8.save({ transaction });
+
+    const club9 = await Club.findByPk('f3199a98-0a86-4157-af6c-ba61bfda190c', {
+      transaction
+    });
+    club9.name = 'BC Wolvertem';
+    club9.useForTeamName = UseForTeamName.NAME;
+    await club9.save({ transaction });
+
+    const club10 = await Club.findByPk('d574f90d-5768-4a57-a8e7-f93189ee7f95', {
+      transaction
+    });
+    club10.fullName = 'BC Kampenhout';
+    club10.useForTeamName = UseForTeamName.FULL_NAME;
+    await club10.save({ transaction });
+
+    const club11 = await Club.findByPk('a029008b-9efe-4206-a34b-0e73f47e8392', {
+      transaction
+    });
+    club11.abbreviation = 'BIBC';
+    club11.useForTeamName = UseForTeamName.ABBREVIATION;
+    await club11.save({ transaction });
+
+    const club12 = await Club.findByPk('cc39766d-47a3-4c34-83af-5c9b53423ae1', {
+      transaction
+    });
+    club12.abbreviation = 'EBC';
+    club12.useForTeamName = UseForTeamName.ABBREVIATION;
+    await club12.save({ transaction });
+
+    const club13 = await Club.findByPk('0f74a1c9-75c9-4a6e-ad6e-3da18d1a7e9a', {
+      transaction
+    });
+    club13.name = "Nero's BC";
+    club13.useForTeamName = UseForTeamName.NAME;
+    await club13.save({ transaction });
+
+    const club14 = await Club.findByPk('d962d499-1209-4489-b455-c10974abd644', {
+      transaction
+    });
+    club14.name = 'Dijlevallei';
+    club14.useForTeamName = UseForTeamName.NAME;
+    await club14.save({ transaction });
+
+    const club15 = await Club.findByPk('266ff052-b3e5-474d-a8dd-61eba8528f00', {
+      transaction
+    });
+    club15.name = 'Herentals';
+    club15.useForTeamName = UseForTeamName.NAME;
+    await club15.save({ transaction });
+
+    const club16 = await Club.findByPk('e85da8d5-36f9-4847-ad09-8c0ac12c80e4', {
+      transaction
+    });
+    club16.name = 'Brugse';
+    club16.useForTeamName = UseForTeamName.NAME;
+    await club16.save({ transaction });
+
+    const club17 = await Club.findByPk('b5c22c05-34a5-4243-9c46-273f27f75178', {
+      transaction
+    });
+    club17.name = 'Brasschaat';
+    club17.useForTeamName = UseForTeamName.NAME;
+    await club17.save({ transaction });
+
+    const club18 = await Club.findByPk('72bf58a2-fbb0-48e2-b87d-294db0542b8e', {
+      transaction
+    });
+    club18.name = 'Beerke';
+    club18.useForTeamName = UseForTeamName.NAME;
+    await club18.save({ transaction });
+
+    const club19 = await Club.findByPk('395ac8e4-285f-4baf-a042-105767965006', {
+      transaction
+    });
+    club19.name = 'Smash';
+    club19.useForTeamName = UseForTeamName.NAME;
+    await club19.save({ transaction });
+
+    const club20 = await Club.findByPk('368ea1b8-71d3-4faf-b17b-4fbb7621cb6f', {
+      transaction
+    });
+    club20.name = 'Huirtuits Dropke';
+    club20.useForTeamName = UseForTeamName.NAME;
+    await club20.save({ transaction });
+
+    const club21 = await Club.findByPk('104af8bc-96dd-40a6-81cf-fc24461519c6', {
+      transaction
+    });
+    club21.name = 'Blauwput';
+    club21.useForTeamName = UseForTeamName.NAME;
+    await club21.save({ transaction });
+
+    const club22 = await Club.findByPk('ece5e4ef-c1f7-4409-ac43-1d848599b79d', {
+      transaction
+    });
+    club22.name = 'Wetteren';
+    club22.useForTeamName = UseForTeamName.NAME;
+    await club22.save({ transaction });
+
+    const club23 = await Club.findByPk('5fcb3107-42f1-453d-b71d-d6af334306a8', {
+      transaction
+    });
+    club23.name = 'Poona';
+    club23.useForTeamName = UseForTeamName.NAME;
+    await club23.save({ transaction });
+
+    const club24 = await Club.findByPk('06920343-0c50-4aef-aa24-a119175ae61a', {
+      transaction
+    });
+    club24.name = 'Opslag';
+    club24.useForTeamName = UseForTeamName.NAME;
+    await club24.save({ transaction });
+
+    const club25 = await Club.findByPk('29cd65fe-bc49-428e-b293-50690290f99a', {
+      transaction
+    });
+    club25.name = 'Zandhoven';
+    club25.useForTeamName = UseForTeamName.NAME;
+    await club25.save({ transaction });
+
+    const club26 = await Club.findByPk('376efda8-6fe7-443f-95fd-f175a1ccdc3f', {
+      transaction
+    });
+    club26.name = 'Shuttle Puurs';
+    club26.useForTeamName = UseForTeamName.NAME;
+    await club26.save({ transaction });
+
+    const club27 = await Club.findByPk('74f76cb5-2155-4f37-b033-0dab95b97bf5', {
+      transaction
+    });
+    club27.name = 'Smash';
+    club27.useForTeamName = UseForTeamName.NAME;
+    await club27.save({ transaction });
+
+    const club28 = await Club.findByPk('e0a19952-38fe-4f9e-974c-61d0abf99d8e', {
+      transaction
+    });
+    club28.name = 'Essen';
+    club28.useForTeamName = UseForTeamName.NAME;
+    await club28.save({ transaction });
+
+    const club29 = await Club.findByPk('f8f11902-ba8a-40cd-b431-628b02a00a46', {
+      transaction
+    });
+    club29.name = 'Zwijndrecht';
+    club29.useForTeamName = UseForTeamName.NAME;
+    await club29.save({ transaction });
+
+    const club30 = await Club.findByPk('ce21f778-5709-480e-92e3-5c503f241ab9', {
+      transaction
+    });
+    club30.name = 'Torpedo';
+    club30.useForTeamName = UseForTeamName.NAME;
+    await club30.save({ transaction });
+
+    const club31 = await Club.findByPk('53f015a4-d900-487a-8169-43b2b97ffe01', {
+      transaction
+    });
+    club31.name = 'Antverpino';
+    club31.useForTeamName = UseForTeamName.NAME;
+    await club31.save({ transaction });
+
+    const club32 = await Club.findByPk('1f4914fb-c57c-4762-a9a9-96cc01f0d1bf', {
+      transaction
+    });
+    club32.name = 'Leeuwse';
+    club32.useForTeamName = UseForTeamName.NAME;
+    await club32.save({ transaction });
+
+    const club33 = await Club.findByPk('1869a19c-1f3f-4093-8912-35d5829eb9dd', {
+      transaction
+    });
+    club33.name = 'Halle';
+    club33.useForTeamName = UseForTeamName.NAME;
+    await club33.save({ transaction });
+
+    const club34 = await Club.findByPk('1f51fea6-39b7-476a-9d38-8fb2409ce57b', {
+      transaction
+    });
+    club34.name = 'Shuttle Busters';
+    club34.useForTeamName = UseForTeamName.NAME;
+    await club34.save({ transaction });
+
+    const club35 = await Club.findByPk('52cd3b5b-ebf0-45c0-a3a6-94b928fc1ec3', {
+      transaction
+    });
+    club35.name = 'Lede';
+    club35.useForTeamName = UseForTeamName.NAME;
+    await club35.save({ transaction });
+
+    const club36 = await Club.findByPk('3ffe1eea-b118-42d2-8426-14942bdc7c09', {
+      transaction
+    });
+    club36.name = 'Evergem';
+    club36.useForTeamName = UseForTeamName.NAME;
+    await club36.save({ transaction });
+
+    const club37 = await Club.findByPk('1d928e29-4f2c-4695-bdf5-898363c07290', {
+      transaction
+    });
+    club37.name = 'Flee Shuttle';
+    club37.useForTeamName = UseForTeamName.NAME;
+    await club37.save({ transaction });
+
+    const club38 = await Club.findByPk('e60a7152-9f6f-4ee0-bc6e-43e48e8db99a', {
+      transaction
+    });
+    club38.name = 'De Wallabies';
+    club38.useForTeamName = UseForTeamName.NAME;
+    await club38.save({ transaction });
+
+    const club39 = await Club.findByPk('2bdf111e-14bd-4f29-8680-c6802d6cbedf', {
+      transaction
+    });
+    club39.name = 'Danlie';
+    club39.useForTeamName = UseForTeamName.NAME;
+    await club39.save({ transaction });
+
+    const club40 = await Club.findByPk('76952221-7b55-49ec-b22f-db1674b5733f', {
+      transaction
+    });
+    club40.name = 'Neerpelt';
+    club40.useForTeamName = UseForTeamName.NAME;
+    await club40.save({ transaction });
+
+    const club41 = await Club.findByPk('17ebb48d-eaa6-4c4f-b34b-f29cf2aa4496', {
+      transaction
+    });
+    club41.useForTeamName = UseForTeamName.FULL_NAME;
+    await club41.save({ transaction });
+
+    const club42 = await Club.findByPk('e2bfad97-ae6a-42d6-8bc4-b0f819ad05a1', {
+      transaction
+    });
+    club42.name = 'Ieper';
+    club42.useForTeamName = UseForTeamName.NAME;
+    await club42.save({ transaction });
+
+    const club43 = await Club.findByPk('126d87c2-cfe5-468f-ab14-6276631ea253', {
+      transaction
+    });
+    club43.name = 'PSV Brugge';
+    club43.useForTeamName = UseForTeamName.NAME;
+    await club43.save({ transaction });
+
+    const club44 = await Club.findByPk('fee975cc-f91c-4bac-8eee-646f4562d19c', {
+      transaction
+    });
+    club44.fullName = 'BC Damme';
+    club44.useForTeamName = UseForTeamName.FULL_NAME;
+    await club44.save({ transaction });
   }
 })();

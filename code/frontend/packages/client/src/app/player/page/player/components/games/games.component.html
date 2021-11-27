@@ -7,7 +7,13 @@
 >
   <app-games-result [games]="games" *ngFor="let games of this.games$ | async"> </app-games-result>
 
-  <div class="loading" *ngIf="this.request$ !== null">
+  <div class="loading" *ngIf="this.request$ !== undefined">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+
+  <div class="no more games" *ngIf="this.request$ == undefined">
+    <p>
+      <span translate>No more games</span>
+    </p>
   </div>
 </div>

@@ -86,6 +86,7 @@
     "competition": {
         "title": "Competitie",
         "last-updated": "Gewijzigd op",
+        "vs": "Vs",
         "subevent": {
             "max": "Max klassement",
             "min-base": "Min basis ploegindex",
@@ -121,7 +122,6 @@
         "change-encounter": {
             "title": "Speelmomenten",
             "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
-            "vs": "Vs.",
             "home": "Thuis",
             "away": "Uit",
             "possible": "Beschikbaar",
@@ -208,11 +208,18 @@
         "females": "Vrouw",
         "national": "Nationale"
     },
+    "usedForTeam": {
+        "title": "Team namen",
+        "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",
+        "select": "Team prefix",
+        "example": "Vorbeeld: {{teamName}}"
+    },
     "input": {
         "type": "Type",
         "memberId": "Lidnummer",
         "year": "Jaar",
         "name": "Naam",
+        "fullName": "Volledige naam",
         "firstname": "Voornaam",
         "lastname": "Achteraam",
         "abbreviation": "Afkorting",
@@ -234,6 +241,7 @@
         "close": "Sluiten",
         "delete": "Verwijderen",
         "create": "Aanmaken",
+        "merge-accounts": "Combineer accounts",
         "edit": "Bewerken",
         "done": "Klaar",
         "detail": "Details",

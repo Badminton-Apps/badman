@@ -120,9 +120,23 @@ export class ClubService {
     let where = undefined;
     if (args?.query) {
       where = {
-        name: {
-          $iLike: `%${args.query}%`,
-        },
+        $or: [
+          {
+            name: {
+              $iLike: `%${args.query}%`,
+            },
+          },
+          {
+            fullName: {
+              $iLike: `%${args.query}%`,
+            },
+          },
+          {
+            abbreviation: {
+              $iLike: `%${args.query}%`,
+            },
+          },
+        ],
       };
     }
 
@@ -147,7 +161,6 @@ export class ClubService {
           after: args?.after,
           where,
         },
-
       })
       .pipe(
         map((x) => {
@@ -161,7 +174,7 @@ export class ClubService {
             }),
           };
         })
-    );
+      );
   }
 
   getTeamsForSubEvents(clubId: string, subEvents?: string[]) {

@@ -1,27 +1,41 @@
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
-import { DataBaseHandler, Player } from '../../../packages/_shared';
+import { DataBaseHandler, logger } from '@badvlasim/shared';
 
 (async () => {
   await merge_accounts();
 })();
 
 async function merge_accounts() {
-  const databaseService = new DataBaseHandler(dbConfig.default);
-  let destination = `f99f9769-e85a-472c-8eed-b4d0b974c5e7`;
-  let sources = [`8bab3915-4b3d-43ac-beff-42f055804947`];
+  logger.info('Start manual merging accounts');
 
-  for (const source of sources) {
-    await databaseService.mergePlayers(destination, source);
-  }
+  // const databaseService = new DataBaseHandler(dbConfig.default);
+  // const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
-  destination = `6d84dbd6-7c53-49d9-a84e-5eea17010e5a`;
-  sources = [
-    `523cff7c-b826-45d7-9c99-14d9a76c8d04`,
-    `d2bff236-f2a7-4a73-805b-699b0b40292f`,
-    `d2e3be99-48d1-42ca-a7c2-266eae889888`
-  ];
+  // try {
+  //   let destination = `c57ed8da-fd1e-4fbe-be14-484208b6bb5d`;
+  //   let sources = [`6bab7042-e545-4c05-9f8b-7cfd8f357640`];
 
-  for (const source of sources) {
-    await databaseService.mergePlayers(destination, source);
-  }
+  //   for (const source of sources) {
+  //     await databaseService.mergePlayers(destination, source, { transaction });
+  //   }
+
+  //   destination = `fc1bec5d-21e5-4dfe-a7c4-03460239aaca`;
+  //   sources = [`94c3244c-f9fe-4575-b675-9937d533be8b`];
+
+  //   for (const source of sources) {
+  //     await databaseService.mergePlayers(destination, source, { transaction });
+  //   }
+
+  //   destination = `4ee4f638-46e8-426d-9576-f23e502371b2`;
+  //   sources = [`193c4346-ac5b-415f-95d1-08990e9725f8`];
+
+  //   for (const source of sources) {
+  //     await databaseService.mergePlayers(destination, source, { transaction });
+  //   }
+  //   await transaction.commit();
+  // } catch (err) {
+  //   logger.error('Something went wrong merging players');
+  //   await transaction.rollback();
+  //   throw err;
+  // }
 }

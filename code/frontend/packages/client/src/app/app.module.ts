@@ -97,16 +97,7 @@ const cookieConfig: NgcCookieConsentConfig = {
       audience: `ranking-simulation`,
       useRefreshTokens: true,
       httpInterceptor: {
-        allowedList: [
-          // Attach access tokens to any calls to '/api' (exact match)
-          '/api',
-
-          // Attach access tokens to any calls that start with '/api/'
-          '/api/*',
-
-          // local dev
-          'http://localhost:5000/api/*',
-        ],
+        allowedList: [{ uriMatcher: (uri) => uri.indexOf('api') > -1, allowAnonymous: true }],
       },
     }),
   ],

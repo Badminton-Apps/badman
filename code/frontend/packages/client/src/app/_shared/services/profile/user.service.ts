@@ -5,6 +5,7 @@ import { filter, mergeMap, shareReplay, startWith, tap } from 'rxjs/operators';
 import { RequestLink, RankingPlace, Player } from '../../../_shared/models';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '@auth0/auth0-angular';
+import { cache } from 'app/graphql.module';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,22 @@ export class UserService {
     );
   }
 
-  // permissions() {
-  //   return this.auth.userPermissions$;
-  // }
+  mergeAccoutns(destination: string, source: string[], canBeDifferentMemberId: boolean): Observable<void> {
+    return this.httpClient
+      .post<void>(`${this.urlBase}/merge-accounts`, {
+        playerId: destination,
+        playerIdToMerge: source,
+        canBeDifferentMemberId,
+      })
+      .pipe(
+        tap((_) => {
+          // Clear from cache
+          source.forEach((id) => {
+            const normalizedId = cache.identify({ id, __typename: 'Player' });
+            cache.evict({ id: normalizedId });
+            cache.gc();
+          });
+        })
+      );
+  }
 }

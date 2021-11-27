@@ -21,7 +21,6 @@ import {
 import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { VisualService } from '../../../../../utils/visualService';
-
 export class TournamentSyncer {
   public processor: Processor;
   public visualService: VisualService;
@@ -113,13 +112,32 @@ export class TournamentSyncer {
 
       const subEvents = await event.getSubEvents({ transaction: args.transaction });
       const visualEvents = await this.visualService.getEvents(internalId);
-      const dbSubEvents: { subEvent: SubEventTournament; internalId: string }[] = [];
+      const returnSubEvents: { subEvent: SubEventTournament; internalId: string }[] = [];
       // Add sub events
       for (const xmlEvent of visualEvents) {
         if (!xmlEvent) {
           continue;
         }
-        let dbSubEvent = subEvents.find(r => r.visualCode === `${xmlEvent.Code}`);
+        let dbSubEvents = subEvents.filter(r => r.visualCode === `${xmlEvent.Code}`);
+        let dbSubEvent: SubEventTournament = null;
+
+        if (dbSubEvents.length === 1) {
+          dbSubEvent = dbSubEvents[0];
+        } else if (dbSubEvents.length > 1) {
+          // We have multiple encounters with the same visual code
+          const [first, ...rest] = dbSubEvents;
+          dbSubEvent = first;
+
+          logger.warn('Having multiple? Removing old');
+          await SubEventTournament.destroy({
+            where: {
+              id: {
+                [Op.in]: rest.map(e => e.id)
+              }
+            },
+            transaction: args.transaction
+          });
+        }
 
         if (!dbSubEvent) {
           dbSubEvent = await new SubEventTournament({
@@ -142,7 +160,7 @@ export class TournamentSyncer {
           }).save({ transaction: args.transaction });
         }
 
-        dbSubEvents.push({ subEvent: dbSubEvent, internalId: xmlEvent.Code });
+        returnSubEvents.push({ subEvent: dbSubEvent, internalId: xmlEvent.Code });
       }
 
       // Remove subEvents that are not in the xml
@@ -180,7 +198,7 @@ export class TournamentSyncer {
         await removed.destroy({ transaction: args.transaction });
       }
 
-      return dbSubEvents;
+      return returnSubEvents;
     });
   }
 
@@ -194,7 +212,7 @@ export class TournamentSyncer {
           internalId: number;
         }[] = this.processor.getData(this.STEP_SUBEVENT);
 
-        const dbDraws = [];
+        const resultDraws = [];
         const processDraws = async ({ subEvent, internalId }) => {
           const draws = await subEvent.getDraws({ transaction: args.transaction });
           const visualDraws = await this.visualService.getDraws(args.tourneyKey, internalId);
@@ -204,7 +222,26 @@ export class TournamentSyncer {
             if (!xmlDraw) {
               continue;
             }
-            let dbDraw = draws.find(r => r.visualCode === `${xmlDraw.Code}`);
+            let dbDraws = draws.filter(r => r.visualCode === `${xmlDraw.Code}`);
+            let dbDraw = null;
+
+            if (dbDraws.length === 1) {
+              dbDraw = dbDraws[0];
+            } else if (dbDraws.length > 1) {
+              // We have multiple encounters with the same visual code
+              const [first, ...rest] = dbDraws;
+              dbDraw = first;
+
+              logger.warn('Having multiple? Removing old');
+              await DrawTournament.destroy({
+                where: {
+                  id: {
+                    [Op.in]: rest.map(e => e.id)
+                  }
+                },
+                transaction: args.transaction
+              });
+            }
 
             if (!dbDraw) {
               dbDraw = await new DrawTournament({
@@ -221,7 +258,7 @@ export class TournamentSyncer {
                     : DrawType.QUALIFICATION
               }).save({ transaction: args.transaction });
             }
-            dbDraws.push({ draw: dbDraw, internalId: xmlDraw.Code });
+            resultDraws.push({ draw: dbDraw, internalId: xmlDraw.Code });
             dbXmlDraws.push(dbDraw);
           }
 
@@ -248,7 +285,7 @@ export class TournamentSyncer {
         };
 
         await Promise.all(subEvents.map(e => processDraws(e)));
-        return dbDraws;
+        return resultDraws;
       }
     );
   }
@@ -331,7 +368,7 @@ export class TournamentSyncer {
           const subEvent = subevents.find(sub => draw.subeventId === sub.subEvent.id).subEvent;
 
           const visualMatch = (
-            await this.visualService.getMatch(args.tourneyKey, internalId)
+            await this.visualService.getMatches(args.tourneyKey, internalId)
           ).filter(m => !m || m?.Winner !== 0);
 
           for (const xmlMatch of visualMatch) {
