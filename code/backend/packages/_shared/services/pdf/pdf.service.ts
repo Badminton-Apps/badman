@@ -1,6 +1,6 @@
 import { promises, writeFileSync } from 'fs';
 const { readFile } = promises;
-import { compile, registerHelper } from 'handlebars';
+import Handlebars, { compile } from 'handlebars';
 import path from 'path';
 import puppeteer, { Browser, PDFOptions } from 'puppeteer';
 import { Op } from 'sequelize';
@@ -15,7 +15,7 @@ import {
   SubEventCompetition,
   SubEventType,
   Team,
-  TeamSubEventMembership
+  TeamSubEventMembership,
 } from '../../models';
 import { logger } from '../../utils';
 import moment from 'moment';
@@ -23,14 +23,14 @@ import moment from 'moment';
 export class PdfService {
   constructor(private _databaseService: DataBaseHandler) {
     /* eslint-disable prefer-arrow/prefer-arrow-functions */
-    const reduceOp = function(args, reducer) {
+    const reduceOp = function (args, reducer) {
       args = Array.from(args);
       args.pop(); // => options
       const first = args.shift();
       return args.reduce(reducer, first);
     };
 
-    registerHelper({
+    Handlebars.registerHelper({
       eq() {
         return reduceOp(arguments, (a, b) => a === b);
       },
@@ -87,7 +87,7 @@ export class PdfService {
           const prefix = type === 'M' ? 'HD' : 'DD';
           return `${prefix} ${index + 1}`;
         }
-      }
+      },
     });
   }
 
@@ -104,7 +104,7 @@ export class PdfService {
     const ids = [
       ...input.team?.single,
       ...input.team?.double.flat(1),
-      ...input.team?.subtitude
+      ...input.team?.subtitude,
     ];
 
     const encounter = await EncounterCompetition.findByPk(input.encounterId, {
@@ -116,19 +116,19 @@ export class PdfService {
           include: [
             {
               model: SubEventCompetition,
-              include: [{ model: EventCompetition }]
-            }
-          ]
-        }
-      ]
+              include: [{ model: EventCompetition }],
+            },
+          ],
+        },
+      ],
     });
     const type = encounter.home.type;
 
     const membership = await TeamSubEventMembership.findOne({
       where: {
         teamId: input.teamId,
-        subEventId: encounter?.draw?.subEvent?.id
-      }
+        subEventId: encounter?.draw?.subEvent?.id,
+      },
     });
 
     const meta = membership?.meta;
@@ -137,8 +137,8 @@ export class PdfService {
     const players = await Player.findAll({
       where: {
         id: {
-          [Op.in]: ids
-        }
+          [Op.in]: ids,
+        },
       },
       include: [
         { model: LastRankingPlace },
@@ -146,10 +146,10 @@ export class PdfService {
           model: RankingPlace,
           limit: 1,
           where: {
-            rankingDate: `${year}-05-15`
-          }
-        }
-      ]
+            rankingDate: `${year}-05-15`,
+          },
+        },
+      ],
     });
 
     const captain = await Player.findByPk(input.captainId);
@@ -157,18 +157,18 @@ export class PdfService {
     const teamIndex = this._teamIndex(players, type);
     const preppedMap = new Map<string, any>();
 
-    players.forEach(player => {
+    players.forEach((player) => {
       const mayIndex = player.rankingPlaces[0] ?? {
         single: 12,
         double: 12,
-        mix: 12
+        mix: 12,
       };
 
       preppedMap.set(player.id, {
         ...player.toJSON(),
         lastRankingPlace: player.lastRankingPlaces[0].toJSON(),
-        base: !!meta?.players?.find(p => p?.id === player.id)?.id,
-        team: !!teamIndex.players.find(p => p?.id === player.id),
+        base: !!meta?.players?.find((p) => p?.id === player.id)?.id,
+        team: !!teamIndex.players.find((p) => p?.id === player.id),
         sum:
           mayIndex.single +
           mayIndex.double +
@@ -177,7 +177,7 @@ export class PdfService {
           mayIndex.single,
           mayIndex.double,
           type === 'MX' ? mayIndex.mix : 12
-        )
+        ),
       });
     });
 
@@ -212,7 +212,7 @@ export class PdfService {
         teamed,
         input.team.double?.[3]?.[0],
         input.team.double?.[3]?.[1]
-      )
+      ),
     ];
 
     const singles = [
@@ -222,15 +222,16 @@ export class PdfService {
         .player1,
       this._addPlayer(preppedMap, based, teamed, input.team.single?.[2])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[3]).player1
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[3])
+        .player1,
     ];
 
     const subtitudes = input.team.subtitude.map(
-      r => this._addPlayer(preppedMap, based, teamed, r)?.player1
+      (r) => this._addPlayer(preppedMap, based, teamed, r)?.player1
     );
 
     const logo = await readFile(`${__dirname}/assets/logo.png`, {
-      encoding: 'base64'
+      encoding: 'base64',
     });
     const options = {
       date: moment(encounter.date).format('DD-MM-YYYY HH:mm'),
@@ -247,13 +248,13 @@ export class PdfService {
         encounter.draw.name
       }`,
       isHomeTeam: encounter.homeTeamId === input.teamId,
-      logo: `data:image/png;base64, ${logo}`
+      logo: `data:image/png;base64, ${logo}`,
     };
 
     const pdf = await this._htmlToPdf('assembly', options, {
       format: 'a4',
       landscape: true,
-      printBackground: true
+      printBackground: true,
     });
 
     return pdf;
@@ -298,7 +299,7 @@ export class PdfService {
     }
     return {
       player1,
-      player2
+      player2,
     };
   }
 
@@ -314,16 +315,16 @@ export class PdfService {
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage'
+            '--disable-dev-shm-usage',
           ],
-          headless: true
+          headless: true,
         });
       }
       const context = await browser.createIncognitoBrowserContext();
       const page = await context.newPage();
       const content = await this._compile(templatePath, data);
       await page.goto(`data: text/html, ${content}`, {
-        waitUntil: 'networkidle0'
+        waitUntil: 'networkidle0',
       });
       await page.setContent(content);
       const pdf = await page.pdf(options);
@@ -368,7 +369,7 @@ export class PdfService {
             (b.rankingPlaces[0]?.single ?? 12) +
             (b.rankingPlaces[0]?.double ?? 12),
           missingIndex
-        )
+        ),
       };
     } else {
       let missingIndex = 0;
@@ -385,7 +386,7 @@ export class PdfService {
             (b.rankingPlaces[0]?.double ?? 12) +
             (b.rankingPlaces[0]?.mix ?? 12),
           missingIndex
-        )
+        ),
       };
     }
   }
@@ -395,7 +396,7 @@ export class PdfService {
     if (type === SubEventType.MX) {
       bestPlayers = [
         ...players
-          .filter(p => p.gender === 'M')
+          .filter((p) => p.gender === 'M')
           .sort(
             (b, a) =>
               (b.rankingPlaces[0]?.single ?? 12) +
@@ -407,7 +408,7 @@ export class PdfService {
           )
           .slice(0, 2),
         ...players
-          .filter(p => p.gender === 'F')
+          .filter((p) => p.gender === 'F')
           .sort(
             (b, a) =>
               (b.rankingPlaces[0]?.single ?? 12) +
@@ -417,7 +418,7 @@ export class PdfService {
                 (a.rankingPlaces[0]?.double ?? 12) +
                 (a.rankingPlaces[0]?.mix ?? 12))
           )
-          .slice(0, 2)
+          .slice(0, 2),
       ];
     } else {
       bestPlayers = players
