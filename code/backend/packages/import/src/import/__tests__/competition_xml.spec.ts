@@ -145,5 +145,5 @@ describe('competition xml', () => {
 
     expect(player).not.toBeNull();
     expect(player.games.length).toBeGreaterThan(0);
-  }, 100000);
+  });
 });
