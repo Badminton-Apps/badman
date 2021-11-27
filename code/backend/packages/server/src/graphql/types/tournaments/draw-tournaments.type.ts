@@ -1,10 +1,9 @@
-import { DrawTournament } from '@badvlasim/shared';
+import { DrawTournament, Game } from '@badvlasim/shared';
 import {
   GraphQLID,
   GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
-  GraphQLNonNull,
   GraphQLObjectType
 } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
@@ -28,7 +27,7 @@ const DrawTournamentType = new GraphQLObjectType({
           }
         }),
         resolve: resolver(DrawTournament.associations.games, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -39,7 +38,15 @@ const DrawTournamentType = new GraphQLObjectType({
       },
       gamesCount: {
         type: GraphQLInt,
-        resolve: async (source: DrawTournament, args, context, info) => {
+        resolve: async (
+          source: DrawTournament,
+          _args: unknown,
+          context: {
+            models: {
+              Game: typeof Game;
+            };
+          }
+        ) => {
           return context.models.Game.count({
             where: { drawId: source.id, drawType: 'tournament' }
           });

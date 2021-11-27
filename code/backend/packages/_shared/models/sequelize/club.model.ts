@@ -1,4 +1,3 @@
-import { Comment } from './comment.model';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -20,16 +19,14 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
   Op,
-  SaveOptions
+  SaveOptions,
 } from 'sequelize';
 import {
   AfterBulkCreate,
-  AfterBulkUpdate,
   AfterCreate,
   AfterUpdate,
   AllowNull,
   BeforeBulkCreate,
-  BeforeBulkUpdate,
   BeforeCreate,
   BeforeUpdate,
   BelongsToMany,
@@ -42,18 +39,19 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
+import { UseForTeamName } from '../enums/useForTeams.enum';
 import { ClubMembership } from './club-membership.model';
+import { Comment } from './comment.model';
 import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
-import { UseForTeamName } from '../enums/useForTeams.enum';
 
 @Table({
   timestamps: true,
-  schema: 'public'
+  schema: 'public',
 })
 export class Club extends Model {
   constructor(values?: Partial<Club>, options?: BuildOptions) {
@@ -93,10 +91,7 @@ export class Club extends Model {
   @HasMany(() => Role)
   roles?: Role[];
 
-  @BelongsToMany(
-    () => Player,
-    () => ClubMembership
-  )
+  @BelongsToMany(() => Player, () => ClubMembership)
   players: Player[];
 
   @HasMany(() => Comment)
@@ -110,17 +105,17 @@ export class Club extends Model {
   // #region hooks
   @BeforeUpdate
   @BeforeCreate
-  static setAbbriviation(instance: Club, options: SaveOptions) {
+  static setAbbriviation(instance: Club) {
     if (!instance.abbreviation && instance.isNewRecord) {
       instance.abbreviation = instance?.name?.match(/\b(\w)/g)?.join('');
     }
   }
 
   @BeforeBulkCreate
-  static setAbbriviations(instances: Club[], options: SaveOptions) {
+  static setAbbriviations(instances: Club[]) {
     for (const instance of instances) {
-      this.setAbbriviation(instance, options);
-    } 
+      this.setAbbriviation(instance);
+    }
   }
 
   @AfterUpdate
@@ -144,22 +139,22 @@ export class Club extends Model {
     const [dbRole, created] = await Role.findOrCreate({
       where: {
         name: 'Admin',
-        clubId: instance.id
+        clubId: instance.id,
       },
       defaults: {
-        name: 'Admin'
+        name: 'Admin',
       },
-      transaction: options.transaction
+      transaction: options.transaction,
     });
 
     if (created) {
       const claims = await Claim.findAll({
         where: {
           type: {
-            [Op.in]: ['club', 'team']
-          }
+            [Op.in]: ['club', 'team'],
+          },
         },
-        transaction: options.transaction
+        transaction: options.transaction,
       });
 
       await dbRole.setClub(instance, { transaction: options.transaction });

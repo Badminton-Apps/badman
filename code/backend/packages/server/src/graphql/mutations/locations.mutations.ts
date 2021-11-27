@@ -1,4 +1,4 @@
-import { DataBaseHandler, Location, logger } from '@badvlasim/shared';
+import { AuthenticatedRequest, DataBaseHandler, Location, logger } from '@badvlasim/shared';
 import { GraphQLID, GraphQLNonNull, GraphQLBoolean } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { LocationInputType, LocationType } from '../types';
@@ -15,7 +15,11 @@ export const addLocationMutation = {
       type: new GraphQLNonNull(GraphQLID)
     }
   },
-  resolve: async (findOptions, { location, clubId }, context) => {
+  resolve: async (
+    _findOptions: { [key: string]: object },
+    { location, clubId },
+    context: { req: AuthenticatedRequest }
+  ) => {
     if (
       context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${clubId}_add:location`, 'edit-any:club'])
@@ -64,7 +68,11 @@ export const removeLocationMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { locationId, playerId }, context) => {
+  resolve: async (
+    _findOptions: { [key: string]: object },
+    { locationId },
+    context: { req: AuthenticatedRequest }
+  ) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbLocation = await Location.findByPk(locationId, { transaction });
@@ -124,7 +132,11 @@ export const updateTournamentEventLocationMutation = {
       type: GraphQLBoolean
     }
   },
-  resolve: async (findOptions, { locationId, eventId, use }, context) => {
+  resolve: async (
+    _findOptions: { [key: string]: object },
+    { locationId, eventId, use },
+    context: { req: AuthenticatedRequest }
+  ) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbLocation = await Location.findByPk(locationId, { transaction });
@@ -134,6 +146,22 @@ export const updateTournamentEventLocationMutation = {
         throw new ApiError({
           code: 404,
           message: 'location not found'
+        });
+      }
+
+      if (
+        context?.req?.user === null ||
+        !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
+      ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
         });
       }
 
@@ -161,10 +189,10 @@ export const updateLocationMutation = {
       type: LocationInputType
     }
   },
-  resolve: async (findOptions, { location }, context) => {
+  resolve: async (_findOptions: { [key: string]: object }, { location }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbLocation = await Location.findByPk(location.id,{ transaction });
+      const dbLocation = await Location.findByPk(location.id, { transaction });
 
       if (!dbLocation) {
         logger.debug('location', dbLocation);

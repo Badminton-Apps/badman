@@ -3,10 +3,9 @@ import {
   BaseController,
   DataBaseHandler,
   logger,
-  MailService,
   NotificationService
 } from '@badvlasim/shared';
-import { Response, Router } from 'express';
+import { RequestHandler, Response, Router } from 'express';
 import { ApiError } from '../models/api.error';
 
 export class EnrollmentController extends BaseController {
@@ -14,7 +13,7 @@ export class EnrollmentController extends BaseController {
 
   constructor(
     router: Router,
-    private _authMiddleware,
+    private _authMiddleware: RequestHandler[],
     private _databaseService: DataBaseHandler,
     private _notificationService: NotificationService
   ) {

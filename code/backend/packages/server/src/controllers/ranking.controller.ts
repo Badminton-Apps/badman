@@ -1,9 +1,6 @@
 import {
   AuthenticatedRequest,
   BaseController,
-  DataBaseHandler,
-  DrawCompetition,
-  EncounterCompetition,
   EventCompetition,
   EventTournament,
   Game,
@@ -19,7 +16,7 @@ import {
   SubEventTournament
 } from '@badvlasim/shared';
 import async from 'async';
-import { Request, Response, Router } from 'express';
+import { Request, RequestHandler, Response, Router } from 'express';
 import fs, { writeFileSync } from 'fs';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -28,7 +25,7 @@ import zipstream from 'zip-stream';
 export class RankingController extends BaseController {
   private _path = '/ranking';
 
-  constructor(router: Router, private _authMiddleware: any) {
+  constructor(router: Router, private _authMiddleware: RequestHandler[]) {
     super(router);
 
     this._intializeRoutes();
@@ -44,7 +41,7 @@ export class RankingController extends BaseController {
   }
 
   private _makeAdult = async (request: AuthenticatedRequest, response: Response) => {
-      if (!request.user.hasAnyPermission(['calculate:ranking'])) {
+    if (!request.user.hasAnyPermission(['calculate:ranking'])) {
       response.status(401).send('No no no!!');
       return;
     }
@@ -58,21 +55,30 @@ export class RankingController extends BaseController {
       include: [{ attributes: [], model: SubEventCompetition }]
     });
 
+    const group = await RankingSystemGroup.findOne({ where: { name: 'Adults' } });
 
-    const group = await RankingSystemGroup.findOne({where:  {name: 'Adults'}});
-
-    await GroupSubEventCompetition.bulkCreate(cevents.map(r => r.subEvents.map(s => s.id)).flat().map(c => {
-      return {
-        subEventId: c,
-        groupId: group.id
-      }
-    }));
-    await GroupSubEventCompetition.bulkCreate(tevents.map(r => r.subEvents.map(s => s.id)).flat().map(c => {
-      return {
-        subEventId: c,
-        groupId: group.id
-      }
-    }));
+    await GroupSubEventCompetition.bulkCreate(
+      cevents
+        .map((r) => r.subEvents.map((s) => s.id))
+        .flat()
+        .map((c) => {
+          return {
+            subEventId: c,
+            groupId: group.id
+          };
+        })
+    );
+    await GroupSubEventCompetition.bulkCreate(
+      tevents
+        .map((r) => r.subEvents.map((s) => s.id))
+        .flat()
+        .map((c) => {
+          return {
+            subEventId: c,
+            groupId: group.id
+          };
+        })
+    );
   };
 
   private _top = async (request: Request, response: Response) => {
@@ -186,15 +192,13 @@ export class RankingController extends BaseController {
             [Op.and]: [
               {
                 playerId: {
-                  [Op.in]: rankingPoint.game.players.map(x => x.id)
+                  [Op.in]: rankingPoint.game.players.map((x) => x.id)
                 }
               },
               {
                 rankingDate: {
                   [Op.or]: [
-                    moment(rankingPoint.rankingDate)
-                      .subtract(3, 'months')
-                      .toISOString(),
+                    moment(rankingPoint.rankingDate).subtract(3, 'months').toISOString(),
                     '2012-01-01 01:00:00'
                   ]
                 }
@@ -448,16 +452,12 @@ export class RankingController extends BaseController {
     response.header('Access-Control-Expose-Headers', 'Content-Disposition');
 
     if (files.length > 1) {
-      const exportedfiles = files.map(file => {
+      const exportedfiles = files.map((file) => {
         return {
           path: `results/${file}.csv`,
           name: `${file}.csv`
         };
       });
-
-      const myCb = (err: any, bytes?: undefined) => {
-        if (err) logger.error('Something went wrong exporting the files', err);
-      };
 
       response.header('Content-Type', 'application/zip');
       response.header('Content-Disposition', `attachment; filename="${filename}.zip"`);
@@ -465,14 +465,13 @@ export class RankingController extends BaseController {
       const zip = zipstream({ level: 1 });
       zip.pipe(response); // res is a writable stream
 
-      const addFile = (file: { path: fs.PathLike; name: any }, cb: any) => {
-        zip.entry(fs.createReadStream(file.path), { name: file.name }, cb);
+      const addFile = (file: { path: fs.PathLike; name: string }) => {
+        zip.entry(fs.createReadStream(file.path), { name: file.name });
       };
 
-      async.forEachSeries(exportedfiles, addFile, (err: any) => {
-        if (err) myCb(err);
+      async.forEachSeries(exportedfiles, addFile, (err: Error) => {
+        if (err) logger.error('Something went wrong exporting the files', err);
         zip.finalize();
-        myCb(null, zip.getBytesWritten());
       });
       return;
     } else {

@@ -1,19 +1,14 @@
-import { EncounterChange, EncounterChangeDate } from '@badvlasim/shared/models';
-import {
-  GraphQLBoolean,
-  GraphQLID,
-  GraphQLInputObjectType,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType
-} from 'graphql';
+import { EncounterChange } from '@badvlasim/shared/models';
+import { GraphQLBoolean, GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../../queryFixer';
 import { getAttributeFields } from '../../attributes.type';
 import { CommentInputType, CommentType } from '../../comment.type';
 import { EncounterCompetitionType } from '../encounter-competition.type';
-import { EncounterChangeDateInputType, EncounterChangeDateType } from './change-encounter-date.type';
+import {
+  EncounterChangeDateInputType,
+  EncounterChangeDateType
+} from './change-encounter-date.type';
 
 const EncounterChangeType = new GraphQLObjectType({
   name: 'EncounterChange',
@@ -28,7 +23,9 @@ const EncounterChangeType = new GraphQLObjectType({
         type: new GraphQLList(EncounterChangeDateType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(EncounterChange.associations.dates, {
-          before: async (findOptions, args, context, info) => {
+          before: async (
+            findOptions: { [key: string]: object }
+          ) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)

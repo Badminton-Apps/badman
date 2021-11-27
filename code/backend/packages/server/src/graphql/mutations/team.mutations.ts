@@ -1,4 +1,5 @@
 import {
+  AuthenticatedRequest,
   Club,
   DataBaseHandler,
   EventCompetition,
@@ -30,7 +31,7 @@ export const addTeamMutation = {
       type: new GraphQLNonNull(GraphQLID)
     }
   },
-  resolve: async (findOptions, { team, clubId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { team, clubId }, context: { req: AuthenticatedRequest }) => {
     if (
       context?.req?.user === null ||
       !context.req.user.hasAnyPermission([`${clubId}_add:team`, 'add-any:club'])
@@ -84,7 +85,7 @@ export const removeTeamMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { teamId, playerId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { teamId }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(teamId, { transaction });
@@ -133,7 +134,7 @@ export const updateTeamMutation = {
       type: TeamInputType
     }
   },
-  resolve: async (findOptions, { team }: { team: Partial<Team> }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { team }: { team: Partial<Team> }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(team.id, { transaction, include: [Club] });
@@ -259,7 +260,7 @@ export const addPlayerToTeamMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { teamId, playerId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { teamId, playerId }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(teamId, { transaction });
@@ -328,7 +329,7 @@ export const removePlayerFromTeamMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { teamId, playerId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { teamId, playerId }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(teamId, { transaction });
@@ -394,7 +395,7 @@ export const updateSubEventTeamMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { teamId, subEventId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { teamId, subEventId }, context: { req: AuthenticatedRequest }) => {
     const dbTeam = await Team.findByPk(teamId);
 
     if (
@@ -494,7 +495,7 @@ export const updatePlayerTeamMutation = {
       type: GraphQLBoolean
     }
   },
-  resolve: async (findOptions, { teamId, playerId, base }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { teamId, playerId, base }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(teamId, { transaction });
@@ -569,7 +570,7 @@ export const updateTeamLocationMutation = {
       type: GraphQLBoolean
     }
   },
-  resolve: async (findOptions, { locationId, teamId, use }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { locationId, teamId, use }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(teamId, { transaction });
@@ -579,6 +580,22 @@ export const updateTeamLocationMutation = {
         throw new ApiError({
           code: 404,
           message: 'location not found'
+        });
+      }
+
+      if (
+        context?.req?.user === null ||
+        !context.req.user.hasAnyPermission([`${dbTeam.clubId}_edit:team`, 'edit-any:club'])
+      ) {
+        logger.warn("User tried something it should't have done", {
+          required: {
+            anyClaim: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
+          },
+          received: context?.req?.user?.permissions
+        });
+        throw new ApiError({
+          code: 401,
+          message: "You don't have permission to do this "
         });
       }
 
@@ -614,7 +631,7 @@ export const addPlayerBaseSubEventMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { teamId, playerId, subEventId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { teamId, playerId, subEventId }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(teamId, { transaction });
@@ -780,7 +797,7 @@ export const removePlayerBaseSubEventMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { teamId, playerId, subEventId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { teamId, playerId, subEventId }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbTeam = await Team.findByPk(teamId, { transaction });

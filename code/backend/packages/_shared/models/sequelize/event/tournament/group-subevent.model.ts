@@ -4,14 +4,13 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
 } from 'sequelize-typescript';
 import { RankingSystemGroup } from '../../ranking';
 import { SubEventTournament } from './sub-event-tournament.model';
 
 @Table({
   timestamps: false,
-  schema: 'ranking'
+  schema: 'ranking',
 })
 export class GroupSubEventTournament extends Model {
   @PrimaryKey

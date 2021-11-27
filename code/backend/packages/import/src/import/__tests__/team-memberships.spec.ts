@@ -4,11 +4,10 @@ import moment from 'moment';
 import { CompetitionCpProcessor } from '../processors';
 
 describe('Team Membership', () => {
-  let databaseService: DataBaseHandler;
   let service: CompetitionCpProcessor;
 
   beforeAll(async () => {
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });

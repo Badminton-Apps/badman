@@ -2,12 +2,14 @@
   "name": "badman-backend",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "scripts/*"
   ],
   "scripts": {
     "start": "npx lerna run --parallel start:watch",
     "start:inspect": "npx lerna run start:watch:inspect --stream",
     "lint": "npx lerna run lint --stream",
+    "format": "npx lerna run format --stream",
     "test": "npx lerna run test --stream",
     "test:inspect": "npx lerna run test:inspect --stream",
     "build": "npx lerna run build --stream",
@@ -18,7 +20,6 @@
     "kill-node": "taskkill /f /im node.exe"
   },
   "dependencies": {
-    "@supercharge/promise-pool": "^2.0.0",
     "@types/jest": "^27.0.3",
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.11.10",

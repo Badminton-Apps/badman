@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 
-export const queryFixer = input => {
+export const queryFixer = (input) => {
   if (input === null || input === undefined){
     return input;
   }

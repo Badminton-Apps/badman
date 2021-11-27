@@ -7,7 +7,6 @@ import pkg from '../package.json'
 import {
   App,
   AuthenticationSercice,
-  DataBaseHandler,
   logger,
   startWhenReady
 } from '@badvlasim/shared';
@@ -19,7 +18,7 @@ try {
   (async () => {
     try {
       logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
-      await startWhenReady(false, false, db => startServer(db));
+      await startWhenReady(false, false, () => startServer());
     } catch (e) {
       logger.error('Something failed', e);
       throw e;
@@ -29,7 +28,7 @@ try {
   logger.error('Something failed', err);
   throw err;
 }
-const startServer = (databaseService: DataBaseHandler) => {
+const startServer = () => {
   const authService = new AuthenticationSercice();
 
   const app = new App([new JobController(Router(), authService.checkAuth)]);

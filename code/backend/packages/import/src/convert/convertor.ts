@@ -3,7 +3,6 @@ import {
   EventCompetition,
   EventImportType,
   EventTournament,
-  EventType,
   ImporterFile,
   logger
 } from '@badvlasim/shared';
@@ -112,7 +111,7 @@ export class Convertor {
         throw e;
       }
 
-      await new Promise((res, reject) => {
+      await new Promise((res,) => {
         try {
           // When imported, delete file
           unlink(item.imported.fileLocation, async () => {

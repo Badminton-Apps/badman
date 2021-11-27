@@ -1,14 +1,7 @@
-import {
-  AuthenticationSercice,
-  Claim,
-  DataBaseHandler,
-  logger,
-  Player,
-  Role
-} from '@badvlasim/shared';
-import { GraphQLBoolean, GraphQLID, GraphQLInt } from 'graphql';
+import { AuthenticatedRequest, AuthenticationSercice, DataBaseHandler, logger, Player, Role } from '@badvlasim/shared';
+import { GraphQLID, GraphQLInt } from 'graphql';
 import { ApiError } from '../../models/api.error';
-import { ClaimType, RoleInputType, RoleType } from '../types';
+import { RoleInputType, RoleType } from '../types';
 
 export const addRoleMutation = {
   type: RoleType,
@@ -22,7 +15,7 @@ export const addRoleMutation = {
       type: GraphQLInt
     }
   },
-  resolve: async (findOptions, { role, clubId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { role, clubId }, context: { req: AuthenticatedRequest }) => {
     if (
       context?.req?.user === null ||
       !context.req.user.hasAnyPermission([
@@ -48,7 +41,7 @@ export const addRoleMutation = {
 
       await roleDb.setClub(clubId, { transaction });
       await roleDb.setClaims(
-        role?.claims?.map(c => c.id),
+        role?.claims?.map((c) => c.id),
         { transaction }
       );
 
@@ -74,7 +67,7 @@ export const addPlayerToRoleMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { roleId, playerId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { roleId, playerId }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbRole = await Role.findByPk(roleId);
@@ -145,7 +138,7 @@ export const removePlayerFromRoleMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { roleId, playerId }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { roleId, playerId }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbRole = await Role.findByPk(roleId);
@@ -211,7 +204,7 @@ export const updateRoleMutation = {
       type: RoleInputType
     }
   },
-  resolve: async (findOptions, { role }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { role }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbRole = await Role.findByPk(role.id);
@@ -246,7 +239,7 @@ export const updateRoleMutation = {
       await dbRole.update(role, { transaction });
 
       await dbRole.setClaims(
-        role?.claims?.map(c => c.id),
+        role?.claims?.map((c) => c.id),
         { transaction }
       );
 
@@ -273,7 +266,7 @@ export const removeRoleMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions, { id }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { id }, context: { req: AuthenticatedRequest }) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbRole = await Role.findByPk(id);
@@ -301,7 +294,6 @@ export const removeRoleMutation = {
           message: "You don't have permission to do this "
         });
       }
-
 
       const players = await dbRole.getPlayers({ transaction, attributes: ['id'] });
       for (const player of players) {

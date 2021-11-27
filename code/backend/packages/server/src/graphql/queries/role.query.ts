@@ -1,5 +1,5 @@
 import { Role } from '@badvlasim/shared/models';
-import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
 import { RoleType } from '../types/security/role.type';
@@ -8,7 +8,7 @@ export const rolesQuery = {
   type: new GraphQLList(RoleType),
   args: Object.assign(defaultListArgs()),
   resolve: resolver(Role, {
-    before: async (findOptions, args, context, info) => {
+    before: async (findOptions: { [key: string]: object }) => {
       findOptions = {
         ...findOptions,
         where: queryFixer(findOptions.where)

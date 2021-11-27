@@ -4,12 +4,12 @@ import {
   DataBaseHandler,
   RankingSystem
 } from '@badvlasim/shared';
-import { Request, Response, Router } from 'express';
+import { Request, RequestHandler, Response, Router } from 'express';
 
 export class SystemController extends BaseController {
   private _path = '/systems';
 
-  constructor(router: Router, private _authMiddleware, private _databaseService: DataBaseHandler) {
+  constructor(router: Router, private _authMiddleware: RequestHandler[], private _databaseService: DataBaseHandler) {
     super(router);
     this._intializeRoutes();
   }

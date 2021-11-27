@@ -8,7 +8,6 @@ import {
   Model,
   PrimaryKey,
   Table,
-  TableOptions,
   Unique
 } from 'sequelize-typescript';
 

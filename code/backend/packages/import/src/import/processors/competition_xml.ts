@@ -22,6 +22,14 @@ import { readFileSync, unlink } from 'fs';
 import { Op, Transaction } from 'sequelize';
 import { CompetitionProcessor } from './competition';
 import moment from 'moment-timezone';
+import {
+  XmlDivision,
+  XmlEvent,
+  XmlFixture,
+  XmlMember,
+  XmlTeam,
+  XmlMatch
+} from '../../models/competition.types';
 
 export class CompetitionXmlProcessor extends CompetitionProcessor {
   constructor() {
@@ -56,7 +64,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     return super.importFile({ transaction, fileLocation });
   }
 
-  protected loadXml(): ProcessStep<{ name: string; teams: any[]; events: any[] }> {
+  protected loadXml(): ProcessStep<{ name: string; teams: XmlTeam[]; events: XmlEvent[] }> {
     return new ProcessStep('load', async (args: { importFile: ImporterFile }) => {
       const xmlData = parse(readFileSync(args.importFile.fileLocation, 'utf8'));
 
@@ -69,18 +77,20 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       return {
         name: xmlData.LeagueName,
-        teams: teams.filter(team => team.TeamName !== ''),
+        teams: teams.filter((team) => team.TeamName !== ''),
         events
       };
     });
   }
 
-  protected addSubEvents(): ProcessStep<{ subEvent: SubEventCompetition; divisions: any[] }[]> {
+  protected addSubEvents(): ProcessStep<
+    { subEvent: SubEventCompetition; divisions: XmlDivision[] }[]
+  > {
     return new ProcessStep('subEvents', async (args: { transaction: Transaction }) => {
       // get previous step data
       const event: EventCompetition = this.importProcess.getData('event');
-      const prevSubEvents: any[] = this.importProcess.getData('cleanup_event');
-      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load');
+      const prevSubEvents: SubEventCompetition[] = this.importProcess.getData('cleanup_event');
+      const data: { teams: XmlTeam[]; events: XmlEvent[] } = this.importProcess.getData('load');
 
       const subEvents = [];
       const xmlDivisions = [];
@@ -94,9 +104,9 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           : [subEvent.Division];
 
         if (divisions && divisions.length > 0) {
-          const firstFixture = (Array.isArray(divisions[0].Fixture)
-            ? [...divisions[0].Fixture]
-            : [divisions[0].Fixture])[0];
+          const firstFixture = (
+            Array.isArray(divisions[0].Fixture) ? [...divisions[0].Fixture] : [divisions[0].Fixture]
+          )[0];
 
           if (firstFixture && !!firstFixture.Match) {
             const matches = Array.isArray(firstFixture.Match)
@@ -105,10 +115,11 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
             // fiew, Got it now
             eventType = matches.find(
-              r => r?.MatchType === null || r.MatchType === 5 || r.MatchType === 'GD'
+              (r) =>
+                r?.MatchType === null || parseInt(r.MatchType, 10) === 5 || r.MatchType === 'GD'
             )
               ? SubEventType.MX
-              : matches.find(r => r.MatchType === 1 || r.MatchType === 'HD')
+              : matches.find((r) => parseInt(r.MatchType, 10) === 1 || r.MatchType === 'HD')
               ? SubEventType.M
               : SubEventType.F;
           }
@@ -117,13 +128,13 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         const name = this.cleanedSubEventName(subEvent.EventName);
         const level = this.getLevel(name);
         const foundEventIndex = subEvents.findIndex(
-          r => r.name === name && r.level === level && r.eventType === eventType
+          (r) => r.name === name && r.level === level && r.eventType === eventType
         );
 
         // This is when the the draws are configured as subevents (liga did so...)
         if (foundEventIndex === -1) {
           const prevEvent = prevSubEvents?.find(
-            r => r.name === name && r.level === level && r.eventType === eventType
+            (r) => r.name === name && r.level === level && r.eventType === eventType
           );
 
           let dbSubEvent: SubEventCompetition = null;
@@ -159,12 +170,12 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addDraws(): ProcessStep<{ draw: DrawCompetition; fixtures: any[] }[]> {
+  protected addDraws(): ProcessStep<{ draw: DrawCompetition; fixtures: XmlFixture[] }[]> {
     return new ProcessStep('draws', async (args: { transaction: Transaction }) => {
       // get previous step data
       const subEvents: {
         subEvent: SubEventCompetition;
-        divisions: any[];
+        divisions: XmlDivision[];
       }[] = this.importProcess.getData('subEvents');
 
       const draws = [];
@@ -176,7 +187,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
             new DrawCompetition({
               name: division.DivisionName,
               subeventId: subEvent.subEvent.id,
-              size: division.DivisionSize
+              size: parseInt(division.DivisionSize, 10)
             }).toJSON()
           );
 
@@ -197,7 +208,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       // Return result
       return draws.map((v, i) => {
-        const db = dbDraws.filter(r => r.name === v.name && r.subeventId === v.subeventId);
+        const db = dbDraws.filter((r) => r.name === v.name && r.subeventId === v.subeventId);
 
         if (db.length > 1) {
           logger.warn('Multiple draws found?');
@@ -213,15 +224,15 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addClubs(): ProcessStep<Club[]> {
     return new ProcessStep('clubs', async (args: { transaction: Transaction }) => {
-      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load');
+      const data: { teams: XmlTeam[]; events: XmlEvent[] } = this.importProcess.getData('load');
 
       const teamClubDistinct = data.teams.filter(
         (value, index, self) =>
-          self.findIndex(m => m.TeamClubSiebelId === value.TeamClubSiebelId) === index
+          self.findIndex((m) => m.TeamClubSiebelId === value.TeamClubSiebelId) === index
       );
 
       await Club.bulkCreate(
-        teamClubDistinct.map(team => {
+        teamClubDistinct.map((team) => {
           const clubName = this.cleanedClubName(team.TeamName);
           const clubId = +team.TeamClubSiebelId || null;
           if (clubName !== null) {
@@ -238,8 +249,8 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         where: {
           clubId: {
             [Op.in]: teamClubDistinct
-              .map(team => +team.TeamClubSiebelId || null)
-              .filter(id => id !== null)
+              .map((team) => +team.TeamClubSiebelId || null)
+              .filter((id) => id !== null)
           }
         },
         transaction: args.transaction
@@ -252,23 +263,24 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
     });
   }
 
-  protected addTeams(): ProcessStep<{ team: Team; internalId: number; members: any[] }[]> {
+  protected addTeams(): ProcessStep<{ team: Team; internalId: number; members: XmlMember[] }[]> {
     return new ProcessStep('teams', async (args: { transaction: Transaction }) => {
-      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load');
+      const data: { teams: XmlTeam[]; events: XmlEvent[] } = this.importProcess.getData('load');
       const clubs: Club[] = this.importProcess.getData('clubs');
 
-      const teams = data.teams.map((team, i) => {
+      const teams: Partial<Team>[] = data.teams.map((team) => {
         if (team.TeamName) {
-          const regexResult = /(?<club>.*)\ ((?<teamNumberFront>\d+)(?<teamTypeFront>[GHD]?)|(?<teamTypeBack>[GHD]?)(?<teamNumberBack>\d))/gim.exec(
-            team.TeamName
-          );
+          const regexResult =
+            /(?<club>.*)\ ((?<teamNumberFront>\d+)(?<teamTypeFront>[GHD]?)|(?<teamTypeBack>[GHD]?)(?<teamNumberBack>\d))/gim.exec(
+              team.TeamName
+            );
 
           const teamNumber = parseInt(
             regexResult.groups?.teamNumberFront || regexResult.groups?.teamNumberBack,
             10
           );
 
-          let type;
+          let type: SubEventType;
           switch (
             (regexResult.groups?.teamTypeFront || regexResult.groups?.teamTypeBack)?.toUpperCase()
           ) {
@@ -289,7 +301,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
             name: this.cleanedTeamName(team.TeamName),
             teamNumber,
             type,
-            clubId: clubs.find(r => r.clubId === +team.TeamClubSiebelId)?.id || null
+            clubId: clubs.find((r) => r.clubId === +team.TeamClubSiebelId)?.id || null
           }).toJSON();
         }
       });
@@ -303,19 +315,19 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       const dbTeams = await Team.findAll({
         where: {
           name: {
-            [Op.in]: teams.map((team: any) => team.name)
+            [Op.in]: teams.map((team) => team.name)
           }
         },
         transaction: args.transaction
       });
 
-      return data.teams.map((v, i) => {
-        const members = (Array.isArray(v.Member) ? [...v.Member] : [v.Member]).filter(r => !!r);
+      return data.teams.map((v) => {
+        const members = (Array.isArray(v.Member) ? [...v.Member] : [v.Member]).filter((r) => !!r);
 
-        const dbTeam = dbTeams.find(t => this.cleanedTeamName(v.TeamName) === t.name);
+        const dbTeam = dbTeams.find((t) => this.cleanedTeamName(v.TeamName) === t.name);
         return {
           team: dbTeam,
-          internalId: v.TeamLPId,
+          internalId: parseInt(v.TeamLPId, 10),
           members
         };
       });
@@ -324,9 +336,9 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addPlayers(): ProcessStep<{ player: Player; internalId: number }[]> {
     return new ProcessStep('players', async (args: { transaction: Transaction }) => {
-      const data: { teams: any[]; events: any[] } = this.importProcess.getData('load');
+      const data: { teams: XmlTeam[]; events: XmlEvent[] } = this.importProcess.getData('load');
       const xmlPlayers = data.teams
-        .map(v => (Array.isArray(v.Member) ? [...v.Member] : [v.Member]).filter(r => !!r))
+        .map((v) => (Array.isArray(v.Member) ? [...v.Member] : [v.Member]).filter((r) => !!r))
         .flat();
 
       const players = [];
@@ -354,7 +366,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       const dbPlayers = await Player.findAll({
         where: {
           memberId: {
-            [Op.in]: playersCorrected.map(team => `${team.memberId}`)
+            [Op.in]: playersCorrected.map((team) => `${team.memberId}`)
           }
         },
         transaction: args.transaction
@@ -362,7 +374,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
       return players.map((v, i) => {
         return {
-          player: dbPlayers.find(r => r.memberId === `${playersCorrected[i].memberId}`),
+          player: dbPlayers.find((r) => r.memberId === `${playersCorrected[i].memberId}`),
           internalId: v
         };
       });
@@ -371,13 +383,12 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addTeamsToSubEvents(): ProcessStep<void> {
     return new ProcessStep('teams_subEvents', async (args: { transaction: Transaction }) => {
-      const draws: { draw: DrawCompetition; fixtures: any[] }[] = this.importProcess.getData(
-        'draws'
-      );
+      const draws: { draw: DrawCompetition; fixtures: XmlFixture[] }[] =
+        this.importProcess.getData('draws');
       const teams: {
         team: Team;
         internalId: number;
-        members: any[];
+        members: XmlMember[];
       }[] = this.importProcess.getData('teams');
 
       const teamSubscriptions = [];
@@ -385,15 +396,15 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const draw of draws) {
         if (draw.fixtures.length > 0) {
           const teamSet = new Set([
-            ...draw.fixtures.map(r => r?.FixtureTeam1Id),
-            ...draw.fixtures.map(r => r?.FixtureTeam2Id)
+            ...draw.fixtures.map((r) => parseInt(r?.FixtureTeam1Id, 10)),
+            ...draw.fixtures.map((r) => parseInt(r?.FixtureTeam2Id, 10))
           ]);
 
           for (const team of teamSet.values()) {
             if (team !== null && team !== undefined) {
               teamSubscriptions.push(
                 new TeamSubEventMembership({
-                  teamId: teams.find(r => r.internalId === team)?.team?.id,
+                  teamId: teams.find((r) => r.internalId === team)?.team?.id,
                   subEventId: draw?.draw?.subeventId
                 }).toJSON()
               );
@@ -413,13 +424,12 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addPlayersToTeams(): ProcessStep<void> {
     return new ProcessStep('players_teams', async (args: { transaction: Transaction }) => {
-      const playersData: { player: Player; internalId: number }[] = this.importProcess.getData(
-        'players'
-      );
+      const playersData: { player: Player; internalId: number }[] =
+        this.importProcess.getData('players');
       const teams: {
         team: Team;
         internalId: number;
-        members: any[];
+        members: XmlMember[];
       }[] = this.importProcess.getData('teams');
       const event: EventCompetition = this.importProcess.getData('event');
 
@@ -428,7 +438,9 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const team of teams) {
         const playerIds = [];
         for (const teamMember of team.members) {
-          const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
+          const player = playersData.find(
+            (r) => r.internalId === parseInt(teamMember.MemberLTANo, 10)
+          )?.player;
           if (player) {
             playerIds.push(player.id);
           }
@@ -445,13 +457,12 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addPlayersToTClubs(): ProcessStep<void> {
     return new ProcessStep('players_clubs', async (args: { transaction: Transaction }) => {
-      const playersData: { player: Player; internalId: number }[] = this.importProcess.getData(
-        'players'
-      );
+      const playersData: { player: Player; internalId: number }[] =
+        this.importProcess.getData('players');
       const teams: {
         team: Team;
         internalId: number;
-        members: any[];
+        members: XmlMember[];
       }[] = this.importProcess.getData('teams');
       const event: EventCompetition = this.importProcess.getData('event');
 
@@ -461,7 +472,9 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const team of teams) {
         const clubPlayers = playerIds.get(team.team.clubId) ?? [];
         for (const teamMember of team.members) {
-          const player = playersData.find(r => r.internalId === teamMember.MemberLTANo)?.player;
+          const player = playersData.find(
+            (r) => r.internalId === parseInt(teamMember.MemberLTANo, 10)
+          )?.player;
           if (player) {
             clubPlayers.push(player.id);
           }
@@ -483,9 +496,8 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
   protected addEncounters(): ProcessStep<{ encounter: EncounterCompetition; matches: [] }[]> {
     return new ProcessStep('encounters', async (args: { transaction: Transaction }) => {
       // get previous step data
-      const draws: { draw: DrawCompetition; fixtures: any[] }[] = this.importProcess.getData(
-        'draws'
-      );
+      const draws: { draw: DrawCompetition; fixtures: XmlFixture[] }[] =
+        this.importProcess.getData('draws');
       const teams: { team: Team; internalId: number }[] = this.importProcess.getData('teams');
 
       // Run Current step
@@ -502,16 +514,16 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           }
 
           const time = fixture.FixtureStartTime.split(':');
-          const homeTeam = teams.find(r => r.internalId === +fixture.FixtureTeam1Id).team;
-          const awayTeam = teams.find(r => r.internalId === +fixture.FixtureTeam2Id).team;
+          const homeTeam = teams.find((r) => r.internalId === +fixture.FixtureTeam1Id).team;
+          const awayTeam = teams.find((r) => r.internalId === +fixture.FixtureTeam2Id).team;
           encounters.push(
             new EncounterCompetition({
               date: new Date(
-                fixture.FixtureYear,
-                fixture.FixtureMonth,
-                fixture.FixtureDay,
-                time[0],
-                time[1]
+                parseInt(fixture.FixtureYear, 10),
+                parseInt(fixture.FixtureMonth, 10) - 1,
+                parseInt(fixture.FixtureDay, 10),
+                parseInt(time[0], 10),
+                parseInt(time[1], 10)
               ),
               awayTeamId: awayTeam.id,
               homeTeamId: homeTeam.id,
@@ -520,7 +532,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           );
           const games =
             (Array.isArray(fixture.Match) ? [...fixture.Match] : [fixture.Match]).filter(
-              r => !!r
+              (r) => !!r
             ) ?? [];
 
           matches.push(games);
@@ -535,7 +547,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       // Return result
       return encounters.map((v, i) => {
         const db = dbEncounters.filter(
-          r =>
+          (r) =>
             r.homeTeamId === v.homeTeamId && r.awayTeamId === v.awayTeamId && r.drawId === v.drawId
         );
 
@@ -553,12 +565,11 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
   protected addGames(): ProcessStep<void> {
     return new ProcessStep('games', async (args: { transaction: Transaction }) => {
-      const playersData: { player: Player; internalId: number }[] = this.importProcess.getData(
-        'players'
-      );
+      const playersData: { player: Player; internalId: number }[] =
+        this.importProcess.getData('players');
       const encounters: {
         encounter: EncounterCompetition;
-        matches: any[];
+        matches: XmlMatch[];
       }[] = this.importProcess.getData('encounters');
 
       const games = [];
@@ -567,15 +578,16 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
       for (const encounter of encounters) {
         for (const xmlMatch of encounter.matches) {
           const teamWinnerPlayer1 = playersData.find(
-            r => r.internalId === xmlMatch?.MatchWinnerLTANo
+            (r) => r.internalId === parseInt(xmlMatch?.MatchWinnerLTANo, 10)
           )?.player;
           const teamWinnerPlayer2 = playersData.find(
-            r => r.internalId === xmlMatch?.MatchWinnerPartnerLTANo
+            (r) => r.internalId === parseInt(xmlMatch?.MatchWinnerPartnerLTANo, 10)
           )?.player;
-          const teamLoserPlayer1 = playersData.find(r => r.internalId === xmlMatch?.MatchLoserLTANo)
-            ?.player;
+          const teamLoserPlayer1 = playersData.find(
+            (r) => r.internalId === parseInt(xmlMatch?.MatchLoserLTANo, 10)
+          )?.player;
           const teamLoserPlayer2 = playersData.find(
-            r => r.internalId === xmlMatch?.MatchLoserPartnerLTANo
+            (r) => r.internalId === parseInt(xmlMatch?.MatchLoserPartnerLTANo, 10)
           )?.player;
 
           // Set null when both sets are 0 (=set not played)
@@ -682,7 +694,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
 
         if (importerFile) {
           // delete old file
-          unlink(importerFile.fileLocation, err => {
+          unlink(importerFile.fileLocation, (err) => {
             if (err) {
               logger.error(`delete file ${importerFile.fileLocation} failed`, err);
               // throw err;
