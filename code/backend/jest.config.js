@@ -16,5 +16,5 @@ module.exports = {
   testEnvironment: 'node',
   coverageReporters: ['text-summary', 'lcov'],
   testLocationInResults: true,
-  // testTimeout: 100000000 // USE WHEN DEBUGGING :)
+  testTimeout: 100000000 // USE WHEN DEBUGGING :)
 };

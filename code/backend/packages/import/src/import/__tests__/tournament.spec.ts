@@ -39,7 +39,7 @@ describe('tournament', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/tournament.tp');
+    fileLocation = join(__dirname, 'files/tournament.tp');
 
     new DataBaseHandler({
       dialect: 'sqlite',
@@ -169,7 +169,7 @@ describe('tournament 2', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/tournament_2.tp');
+    fileLocation = join(__dirname, 'files/tournament_2.tp');
 
     new DataBaseHandler({
       dialect: 'sqlite',

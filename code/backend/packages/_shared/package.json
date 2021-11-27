@@ -8,9 +8,9 @@
     "lint": "eslint -c ../../.eslintrc ./**/*{.ts,.tsx}",
     "format": "eslint --fix -c ../../.eslintrc ./**/*{.ts,.tsx}",
     "gen-erd": "node -r ts-node/register ./utils/generate-erd.ts",
-    "test:inspect": "node --inspect ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand",
-    "test:inspect:name": "node --inspect-brk ../../node_modules/jest/bin/jest.js --config ./jest.config.js --runInBand  -t \"PDF service\" ",
-    "test": "jest --config ./jest.config.js --runInBand"
+    "test:inspect": "node --inspect ../../node_modules/jest/bin/jest.js --runInBand",
+    "test:inspect:name": "node --inspect-brk ../../node_modules/jest/bin/jest.js --runInBand  -t \"PDF service\" ",
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "@elastic/ecs-winston-format": "^1.3.1",
@@ -41,5 +41,39 @@
     "dotenv": "^8.2.0",
     "graphql-sequelize": "^9.4.0",
     "moment": "^2.24.0"
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{ts,tsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "collectCoverage": true,
+    "setupFiles": [
+      "<rootDir>/../../test/env.js"
+    ],
+    "reporters": [
+      "default",
+      "jest-github-actions-reporter"
+    ],
+    "testEnvironment": "node",
+    "coverageReporters": [
+      "text-summary",
+      "lcov"
+    ],
+    "testLocationInResults": true
   }
 }

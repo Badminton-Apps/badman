@@ -18,7 +18,7 @@ describe('competition xml', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition.xml');
+    fileLocation = join(__dirname, 'files/competition.xml');
 
      new DataBaseHandler({
       dialect: 'sqlite',
@@ -34,7 +34,7 @@ describe('competition xml', () => {
     await DataBaseHandler.sequelizeInstance.sync({ force: true });
   });
 
-  it('Should import tournamnet', async () => {
+  it('Should import competition xml', async () => {
     // Arrange
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
@@ -55,7 +55,7 @@ describe('competition xml', () => {
     expect(importerFile.firstDay.toISOString()).toEqual('2020-08-31T22:00:00.000Z');
   });
 
-  it('should add competition', async () => {
+  it('should add competition xml', async () => {
     // Arrange
     jest.setTimeout(100000);
     const importFile = await new ImporterFile({
@@ -100,7 +100,7 @@ describe('competition xml', () => {
     expect(player.games.length).toBeGreaterThan(0);
   });
 
-  it('should re-add competition', async () => {
+  it('should re-add competition xml', async () => {
     // Arrange
     const importFile = await new ImporterFile({
       name: 'test',
@@ -145,5 +145,5 @@ describe('competition xml', () => {
 
     expect(player).not.toBeNull();
     expect(player.games.length).toBeGreaterThan(0);
-  });
+  }, 100000);
 });
