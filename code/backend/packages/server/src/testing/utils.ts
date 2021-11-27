@@ -2,7 +2,7 @@ import { GameType, RankingPoint } from '@badvlasim/shared';
 
 export const generatePoints = (
   gameType: GameType,
-  differenceInLevel: number = 0,
+  differenceInLevel = 0,
   ...points: number[]
 ): RankingPoint[] => {
   return points.map(point => {

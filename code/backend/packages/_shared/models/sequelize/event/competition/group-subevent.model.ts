@@ -4,7 +4,6 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
 } from 'sequelize-typescript';
 import { RankingSystemGroup } from '../../ranking';
 import { SubEventCompetition } from './sub-event-competition.model';

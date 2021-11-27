@@ -1,10 +1,8 @@
 import { Club, DataBaseHandler, EncounterChange, EncounterCompetition, SubEventType, Team } from '@badvlasim/shared';
 
 describe('calendar changes', () => {
-  let databaseService: DataBaseHandler;
-
   beforeAll(async () => {
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });

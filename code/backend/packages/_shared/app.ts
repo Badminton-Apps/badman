@@ -1,4 +1,5 @@
-require('elastic-apm-node').start({
+import apm from "elastic-apm-node";
+apm.start({
   serviceName: process.env.SERVICE_NAME,
   serverUrl: process.env.APM_SERVER_URL,
   secretToken: process.env.APM_SERVER_TOKEN,
@@ -19,7 +20,7 @@ moment.suppressDeprecationWarnings = true;
  
 export class App {
   public app: Application;
-  public corsOptions;
+  public corsOptions: cors.CorsOptions;
   private _lightship: Lightship;
 
   constructor(
@@ -55,7 +56,7 @@ export class App {
           callback(new Error(`${origin} not allowed by CORS`));
         }
       }
-    } as cors.CorsOptions;
+    };
 
     this.app.use(cors(this.corsOptions));
   }
@@ -133,13 +134,13 @@ export class App {
       clear: 39
     };
 
-    const spacer = x =>
+    const spacer = (x: number) =>
       x > 0 ? [...new Array(x)].map(() => ' ').join('') : '';
 
-    const colorText = (color: number, value: any) =>
+    const colorText = (color: number, value: string) =>
       `\u001b[${color}m${value}\u001b[${COLORS.clear}m`;
 
-    const colorMethod = (method: any) => {
+    const colorMethod = (method: string) => {
       switch (method) {
         case 'POST':
           return colorText(COLORS.yellow, method);
@@ -216,7 +217,7 @@ export class App {
           if (stack.route) {
             const routeLogged = {};
             for (const route of stack.route.stack) {
-              const method = route.method ? route.method.toUpperCase() : null;
+              const method: string = route.method ? route.method.toUpperCase() : null;
               if (!routeLogged[method] && method) {
                 const stackMethod = colorMethod(method);
                 const stackSpace = spacer(options.spacer - method.length);

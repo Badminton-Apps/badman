@@ -6,7 +6,6 @@ import {
   RankingPlace,
   StartingType
 } from '@badvlasim/shared';
-// eslint-disable-next-line import/no-internal-modules
 import startRanking from '../start-ranking/start-ranking.json';
 
 export class StartingRanking {
@@ -26,7 +25,9 @@ export class StartingRanking {
     systemId: string,
     amountOfLevels: number,
     processor: (
-      player: any,
+      player: {
+        [key: string]: string;
+      },
       place: RankingPlace,
       type: string,
       startingPlaces: number[]
@@ -43,9 +44,9 @@ export class StartingRanking {
       const jsonType = startRanking[type.json];
       delete startRanking[type.json];
 
-      let startPlaces;
-      let percentages;
-      let amountOfPlayers;
+      let startPlaces: number[];
+      let percentages: number[];
+      let amountOfPlayers: number;
       switch (startingType) {
         case StartingType.formula:
           startPlaces = this._createStartingPlaces(

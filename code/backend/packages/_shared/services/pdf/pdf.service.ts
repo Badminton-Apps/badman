@@ -1,10 +1,10 @@
+/* eslint-disable prefer-rest-params */
 import { promises, writeFileSync } from 'fs';
 const { readFile } = promises;
 import Handlebars, { compile } from 'handlebars';
 import path from 'path';
 import puppeteer, { Browser, PDFOptions } from 'puppeteer';
 import { Op } from 'sequelize';
-import { DataBaseHandler } from '../../database';
 import {
   DrawCompetition,
   EncounterCompetition,
@@ -21,41 +21,51 @@ import { logger } from '../../utils';
 import moment from 'moment';
 
 export class PdfService {
-  constructor(private _databaseService: DataBaseHandler) {
-    /* eslint-disable prefer-arrow/prefer-arrow-functions */
-    const reduceOp = function (args, reducer) {
+  constructor() {
+    const reduceOp = function (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      args: any,
+      reducer: (
+        a: string | boolean | number,
+        b: string | boolean | number
+      ) => boolean
+    ) {
       args = Array.from(args);
       args.pop(); // => options
       const first = args.shift();
       return args.reduce(reducer, first);
     };
-
     Handlebars.registerHelper({
       eq() {
-        return reduceOp(arguments, (a, b) => a === b);
+        return reduceOp(
+          arguments,
+          (a: string | number, b: string | number) => a === b
+        );
       },
       ne() {
-        return reduceOp(arguments, (a, b) => a !== b);
+        return reduceOp(
+          arguments,
+          (a: string | number, b: string | number) => a !== b
+        );
       },
       lt() {
-        return reduceOp(arguments, (a, b) => a < b);
+        return reduceOp(arguments, (a: number, b: number) => a < b);
       },
       gt() {
-        return reduceOp(arguments, (a, b) => a > b);
+        return reduceOp(arguments, (a: number, b: number) => a > b);
       },
       lte() {
-        return reduceOp(arguments, (a, b) => a <= b);
+        return reduceOp(arguments, (a: number, b: number) => a <= b);
       },
       gte() {
-        return reduceOp(arguments, (a, b) => a >= b);
+        return reduceOp(arguments, (a: number, b: number) => a >= b);
       },
       and() {
-        return reduceOp(arguments, (a, b) => a && b);
+        return reduceOp(arguments, (a: boolean, b: boolean) => a && b);
       },
       or() {
-        return reduceOp(arguments, (a, b) => a || b);
+        return reduceOp(arguments, (a: boolean, b: boolean) => a || b);
       },
-      /* eslint-enable prefer-arrow/prefer-arrow-functions */
       labelSingle: (index, type) => {
         if (type === 'MX') {
           if (index === 0) {
@@ -155,7 +165,16 @@ export class PdfService {
     const captain = await Player.findByPk(input.captainId);
 
     const teamIndex = this._teamIndex(players, type);
-    const preppedMap = new Map<string, any>();
+    const preppedMap = new Map<
+      string,
+      Partial<Player> & {
+        base: boolean;
+        team: boolean;
+        lastRankingPlace: LastRankingPlace;
+        sum: number;
+        highest: number;
+      }
+    >();
 
     players.forEach((player) => {
       const mayIndex = player.rankingPlaces[0] ?? {
@@ -261,7 +280,16 @@ export class PdfService {
   }
 
   private _addPlayer(
-    preppedMap: Map<string, any>,
+    preppedMap: Map<
+      string,
+      Partial<Player> & {
+        base: boolean;
+        team: boolean;
+        lastRankingPlace: LastRankingPlace;
+        sum: number;
+        highest: number;
+      }
+    >,
     based: string[],
     teamed: string[],
     player1Id = '',
@@ -305,7 +333,7 @@ export class PdfService {
 
   private async _htmlToPdf(
     templatePath: string,
-    data: any,
+    data: unknown,
     options: PDFOptions
   ) {
     let browser: Browser;
@@ -339,7 +367,7 @@ export class PdfService {
     }
   }
 
-  private async _compile(templateName, context) {
+  private async _compile(templateName: string, context: unknown) {
     const filePath = path.join(
       __dirname,
       'templates',

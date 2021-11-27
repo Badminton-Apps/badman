@@ -1,13 +1,12 @@
-import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
-import { attributeFields, defaultListArgs, resolver } from 'graphql-sequelize';
-import { Game, Player } from '@badvlasim/shared/models';
-import { GamePlayerType } from './gamePlayer.type';
-import { getAttributeFields } from './attributes.type';
-import { DrawCompetitionType } from './competition';
-import { DrawTournamentType } from './tournaments';
-import { RankingPointType } from './rankingPoint.type';
-import { EncounterCompetitionType } from './competition/encounter-competition.type';
+import { Game, GamePlayer, Player } from '@badvlasim/shared/models';
+import { GraphQLList, GraphQLObjectType } from 'graphql';
+import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
+import { getAttributeFields } from './attributes.type';
+import { EncounterCompetitionType } from './competition/encounter-competition.type';
+import { GamePlayerType } from './gamePlayer.type';
+import { RankingPointType } from './rankingPoint.type';
+import { DrawTournamentType } from './tournaments';
 
 export const GameType = new GraphQLObjectType({
   name: 'Game',
@@ -17,14 +16,14 @@ export const GameType = new GraphQLObjectType({
       players: {
         type: new GraphQLList(GamePlayerType),
         resolve: resolver(Game.associations.players, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
             };
             return findOptions;
           },
-          after: (result, args, context) => {
+          after: (result: (Player & GamePlayer)[]) => {
             return result.map(player => {
               player.team = player.getDataValue('GamePlayer').team;
               player.player = player.getDataValue('GamePlayer').player;
@@ -38,7 +37,7 @@ export const GameType = new GraphQLObjectType({
         type: new GraphQLList(RankingPointType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Game.associations.rankingPoints, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)

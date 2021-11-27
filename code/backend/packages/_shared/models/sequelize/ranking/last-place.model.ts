@@ -2,10 +2,8 @@ import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
-  SaveOptions
 } from 'sequelize';
 import {
-  BeforeCreate,
   BelongsTo,
   Column,
   DataType,
@@ -16,7 +14,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { Player } from '../player.model';
 import { RankingSystem } from './system.model';
@@ -24,7 +22,7 @@ import { RankingSystem } from './system.model';
 @Table({
   timestamps: true,
   tableName: 'LastPlaces',
-  schema: 'ranking'
+  schema: 'ranking',
 })
 export class LastRankingPlace extends Model {
   constructor(values?: Partial<LastRankingPlace>, options?: BuildOptions) {
@@ -108,7 +106,7 @@ export class LastRankingPlace extends Model {
 
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'systemId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   rankingSystem: RankingSystem;
 

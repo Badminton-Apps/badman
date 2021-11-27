@@ -1,11 +1,11 @@
 import {
+  AuthenticatedRequest,
   DataBaseHandler,
   EventTournament,
   GroupSubEventTournament,
   logger,
   SubEventTournament
 } from '@badvlasim/shared';
-import { GraphQLInt } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { EventTournamentInputType, EventTournamentType } from '../types';
 
@@ -17,7 +17,11 @@ const addEventTournamentMutation = {
       type: EventTournamentInputType
     }
   },
-  resolve: async (findOptions, { eventTournament }, context) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { eventTournament },
+    context: { req: AuthenticatedRequest }
+  ) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:tournament'])) {
       logger.warn("User tried something it should't have done", {
         required: {
@@ -33,7 +37,7 @@ const addEventTournamentMutation = {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const eventTournamentDb = await EventTournament.create(eventTournament, { transaction });
-      const subEventTournaments = eventTournament.subEventTournaments.map(subEventTournament => {
+      const subEventTournaments = eventTournament.subEventTournaments.map((subEventTournament) => {
         const { groups, ...sub } = subEventTournament;
 
         return {
@@ -46,16 +50,16 @@ const addEventTournamentMutation = {
       });
 
       const subEventTournamentsDb = await SubEventTournament.bulkCreate(
-        subEventTournaments.map(r => r.subEventTournament),
+        subEventTournaments.map((r) => r.subEventTournament),
         { returning: ['id'], transaction }
       );
 
       const groupSubEventTournaments = [];
       subEventTournaments
-        .map(r => r.subEventTournamentGroup)
-        .forEach(element => {
-          const subDb = subEventTournamentsDb.find(r => r.visualCode === element.visualCode);
-          element.groups.forEach(group => {
+        .map((r) => r.subEventTournamentGroup)
+        .forEach((element) => {
+          const subDb = subEventTournamentsDb.find((r) => r.visualCode === element.visualCode);
+          element.groups.forEach((group) => {
             groupSubEventTournaments.push({ subEventId: subDb.id, groupId: group.id });
           });
         });
@@ -75,16 +79,16 @@ const addEventTournamentMutation = {
 const updateEventTournamentMutation = {
   type: EventTournamentType,
   args: {
-    id: {
-      name: 'Id',
-      type: GraphQLInt
-    },
     eventTournament: {
       name: 'EventTournament',
       type: EventTournamentInputType
     }
   },
-  resolve: async (findOptions, { id, eventTournament }, context) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { eventTournament },
+    context: { req: AuthenticatedRequest }
+  ) => {
     if (
       context?.req?.user === null ||
       !context.req.user.hasAnyPermission(['edit:eventTournament', 'edit-any:tournament'])

@@ -1,5 +1,5 @@
 import { RankingSystem, RankingSystemGroup } from '@badvlasim/shared/models';
-import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
 import { RankingSystemGroupType, RankingSystemType } from '../types';
@@ -18,7 +18,7 @@ export const systemQuery = {
     }
   },
   resolve: resolver(RankingSystem, {
-    before: async (findOptions, args, context, info) => {
+    before: async (findOptions: { [key: string]: object }) => {
       findOptions = {
         ...findOptions,
         where: queryFixer(findOptions.where)
@@ -32,7 +32,7 @@ export const systemsGroupsQuery = {
   type: new GraphQLList(RankingSystemGroupType),
   args: Object.assign(defaultListArgs(), {}),
   resolve: resolver(RankingSystemGroup, {
-    before: async (findOptions, args, context, info) => {
+    before: async (findOptions: { [key: string]: object }) => {
       findOptions = {
         ...findOptions,
         where: queryFixer(findOptions.where)

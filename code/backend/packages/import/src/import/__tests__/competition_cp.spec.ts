@@ -1,5 +1,4 @@
 import {
-  Court,
   DataBaseHandler,
   EncounterCompetition,
   EventCompetition,
@@ -20,7 +19,7 @@ import { readFileSync } from 'fs';
 // We can't read settings in
 jest.mock('child_process', () => {
   return {
-    spawn: (exe: string, args: any[]) => {
+    spawn: (exe: string, args: string[]) => {
       if (exe === 'mdb-export') {
         // Basically we write each column to a different file and append the column name to the filename
         // e.g:
@@ -40,14 +39,13 @@ jest.mock('child_process', () => {
 });
 
 describe('competition cp', () => {
-  let databaseService: DataBaseHandler;
   let service: CompetitionCpProcessor;
   let fileLocation: string;
 
   beforeAll(async () => {
     fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition.cp');
 
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });
@@ -112,14 +110,13 @@ describe('competition cp', () => {
 });
 
 describe('competition cp 2', () => {
-  let databaseService: DataBaseHandler;
   let service: CompetitionCpProcessor;
   let fileLocation: string;
 
   beforeAll(async () => {
     fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition2.cp');
 
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });

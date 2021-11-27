@@ -48,7 +48,14 @@ export class BvlRankingCalc extends RankingCalc {
     }
   }
 
-  private _initialPlayers(player: any, place: RankingPlace, type: string, startPlaces: number[]) {
+  private _initialPlayers(
+    player: {
+      [key: string]: string;
+    },
+    place: RankingPlace,
+    type: string,
+    startPlaces: number[]
+  ) {
     // Set type specific stuff
     place[`${type}Points`] = parseInt(player['Totaal punten'], 10);
     place[`${type}Rank`] = parseInt(player.Rank, 10);
@@ -159,7 +166,7 @@ export class BvlRankingCalc extends RankingCalc {
       gameCount = await this.countGames(players, endDate, this.rankingType);
     }
 
-    for (const [key, player] of players) {
+    for (const [, player] of players) {
       const rankingPoints = eligbleForRanking.get(player.id) || [];
       const inactive = { single: false, double: false, mix: false };
 
@@ -175,7 +182,7 @@ export class BvlRankingCalc extends RankingCalc {
       }
 
       const lastRanking =
-        player.lastRankingPlaces.find(p => p.systemId === this.rankingType.id) ??
+        player.lastRankingPlaces.find((p) => p.systemId === this.rankingType.id) ??
         ({
           single: this.rankingType.amountOfLevels,
           mix: this.rankingType.amountOfLevels,
@@ -201,7 +208,7 @@ export class BvlRankingCalc extends RankingCalc {
 
     const types = ['single', 'double', 'mix'];
 
-    types.forEach(type => {
+    types.forEach((type) => {
       // Reset ranking per type
       let rankingLevel = 1;
       let rankingLevelAcc = 1;
@@ -268,10 +275,10 @@ export class BvlRankingCalc extends RankingCalc {
       const countsFemale = {};
 
       // Total counts per level
-      this.rankingType.levelArray.forEach(level => {
-        countsMale[level + 1] = placesMen.filter(place => place[`${type}`] === level + 1).length;
+      this.rankingType.levelArray.forEach((level) => {
+        countsMale[level + 1] = placesMen.filter((place) => place[`${type}`] === level + 1).length;
         countsFemale[level + 1] = placesWomen.filter(
-          place => place[`${type}`] === level + 1
+          (place) => place[`${type}`] === level + 1
         ).length;
       });
 
@@ -297,7 +304,7 @@ export class BvlRankingCalc extends RankingCalc {
   }
 
   getStartRanking(currentPlace: number, startPlaces: number[]): number {
-    const level = startPlaces.indexOf(startPlaces.find(x => x > currentPlace));
+    const level = startPlaces.indexOf(startPlaces.find((x) => x > currentPlace));
     if (level === -1) {
       return this.rankingType.amountOfLevels;
     } else {
@@ -305,7 +312,7 @@ export class BvlRankingCalc extends RankingCalc {
     }
   }
   getStartRankingRev(currentPlace: number, startPlaces: number[]): number {
-    const level = startPlaces.indexOf(startPlaces.find(x => x < currentPlace));
+    const level = startPlaces.indexOf(startPlaces.find((x) => x < currentPlace));
     if (level === -1) {
       return this.rankingType.amountOfLevels;
     } else {
@@ -317,7 +324,7 @@ export class BvlRankingCalc extends RankingCalc {
     const chunks = splitInChunks(Array.from(players.keys()), 3500);
     let lastWeeks = [];
 
-    const getCount = chunk => {
+    const getCount = (chunk) => {
       return RankingPoint.count({
         where: {
           SystemId: rankingType.id,
@@ -331,10 +338,9 @@ export class BvlRankingCalc extends RankingCalc {
               playedAt: {
                 [Op.and]: [
                   {
-                    [Op.gt]: moment(endDate).subtract(
-                      rankingType.inactivityAmount,
-                      rankingType.inactivityUnit
-                    ).toDate()
+                    [Op.gt]: moment(endDate)
+                      .subtract(rankingType.inactivityAmount, rankingType.inactivityUnit)
+                      .toDate()
                   },
                   { [Op.lte]: endDate }
                 ]
@@ -359,7 +365,7 @@ export class BvlRankingCalc extends RankingCalc {
         mix: number;
       }
     >();
-    lastWeeks.forEach(result => {
+    lastWeeks.forEach((result) => {
       const player = results.get(result.playerId) || {
         single: 0,
         double: 0,

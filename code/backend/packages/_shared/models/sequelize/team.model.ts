@@ -20,11 +20,9 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
-  AfterBulkUpdate,
-  AfterUpdate,
   BeforeBulkCreate,
   BeforeCreate,
   BelongsTo,
@@ -39,7 +37,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { RankingSystem } from '.';
 import { SubEventType } from '../enums';
@@ -53,7 +51,7 @@ import { TeamSubEventMembership } from './team-subEvent-membership.model';
 
 @Table({
   timestamps: true,
-  schema: 'public'
+  schema: 'public',
 })
 export class Team extends Model {
   constructor(values?: Partial<Team>, options?: BuildOptions) {
@@ -80,7 +78,8 @@ export class Team extends Model {
     options: CreateOptions,
     club?: Club
   ) {
-    club = club ?? (await instance.getClub({ transaction: options.transaction }));
+    club =
+      club ?? (await instance.getClub({ transaction: options.transaction }));
 
     switch (club?.useForTeamName ?? UseForTeamName.NAME) {
       case UseForTeamName.FULL_NAME:
@@ -92,7 +91,7 @@ export class Team extends Model {
         instance.name = `${club.abbreviation} ${
           instance.teamNumber
         }${this.getLetterForRegion(instance.type, 'vl')}`;
-        break; 
+        break;
 
       default:
       case UseForTeamName.NAME:
@@ -134,19 +133,13 @@ export class Team extends Model {
   )
   preferredDay: string;
 
-  @BelongsToMany(
-    () => Location,
-    () => TeamLocationCompetition
-  )
+  @BelongsToMany(() => Location, () => TeamLocationCompetition)
   locations: Location[];
 
   @Column
   abbreviation: string;
 
-  @BelongsToMany(
-    () => SubEventCompetition,
-    () => TeamSubEventMembership
-  )
+  @BelongsToMany(() => SubEventCompetition, () => TeamSubEventMembership)
   subEvents: SubEventCompetition[];
 
   @BelongsTo(() => Club, 'clubId')
@@ -158,10 +151,7 @@ export class Team extends Model {
   @Column
   clubId: string;
 
-  @BelongsToMany(
-    () => Player,
-    () => TeamPlayerMembership
-  )
+  @BelongsToMany(() => Player, () => TeamPlayerMembership)
   players: Player[];
 
   private _basePlayers: Player[] = null;
@@ -172,60 +162,60 @@ export class Team extends Model {
     }
 
     this._basePlayers = this.players.filter(
-      r => r.getDataValue('TeamPlayerMembership')?.base ?? false
+      (r) => r.getDataValue('TeamPlayerMembership')?.base ?? false
     );
 
     if (this._basePlayers.length > 4) {
       if (this.type === SubEventType.MX) {
         this._basePlayers = [
           ...this._basePlayers
-            .filter(p => p.gender === 'M')
+            .filter((p) => p.gender === 'M')
             .sort(
               (b, a) =>
-                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                (b.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.single ?? 12) +
-                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                (b.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.double ?? 12) +
-                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                (b.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.mix ?? 12) -
-                ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                ((a.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.single ?? 12) +
-                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  (a.lastRankingPlaces?.find((p) => p.systemId === system.id)
                     ?.double ?? 12) +
-                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  (a.lastRankingPlaces?.find((p) => p.systemId === system.id)
                     ?.mix ?? 12))
             )
             .slice(0, 2),
           ...this._basePlayers
-            .filter(p => p.gender === 'F')
+            .filter((p) => p.gender === 'F')
             .sort(
               (b, a) =>
-                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                (b.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.single ?? 12) +
-                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                (b.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.double ?? 12) +
-                (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+                (b.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.mix ?? 12) -
-                ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                ((a.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.single ?? 12) +
-                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  (a.lastRankingPlaces?.find((p) => p.systemId === system.id)
                     ?.double ?? 12) +
-                  (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                  (a.lastRankingPlaces?.find((p) => p.systemId === system.id)
                     ?.mix ?? 12))
             )
-            .slice(0, 2)
+            .slice(0, 2),
         ];
       } else {
         this._basePlayers = this._basePlayers
           .sort(
             (b, a) =>
-              (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+              (b.lastRankingPlaces?.find((p) => p.systemId === system.id)
                 ?.single ?? 12) +
-              (b.lastRankingPlaces?.find(p => p.systemId === system.id)
+              (b.lastRankingPlaces?.find((p) => p.systemId === system.id)
                 ?.double ?? 12) -
-              ((a.lastRankingPlaces?.find(p => p.systemId === system.id)
+              ((a.lastRankingPlaces?.find((p) => p.systemId === system.id)
                 ?.single ?? 12) +
-                (a.lastRankingPlaces?.find(p => p.systemId === system.id)
+                (a.lastRankingPlaces?.find((p) => p.systemId === system.id)
                   ?.double ?? 12))
           )
           .slice(0, 4);
@@ -261,7 +251,7 @@ export class Team extends Model {
   @HasMany(() => EncounterCompetition, 'awayTeamId')
   awayEncounters: EncounterCompetition;
 
-  private _baseIndex: number = -1;
+  private _baseIndex = -1;
 
   baseIndex(system: RankingSystem): number {
     // Only run this once per team
@@ -274,8 +264,8 @@ export class Team extends Model {
     }
     this._baseIndex = Team.getIndexFromPlayers(
       this.type,
-      this.basePlayers(system).map(r =>
-        r.lastRankingPlaces.find(place => place.systemId === system.id)
+      this.basePlayers(system).map((r) =>
+        r.lastRankingPlaces.find((place) => place.systemId === system.id)
       )
     );
     return this._baseIndex;
@@ -368,7 +358,7 @@ export class Team extends Model {
   ): number {
     if (type !== 'MX') {
       const bestPlayers = rankings.map(
-        r => (r?.single ?? 12) + (r?.double ?? 12)
+        (r) => (r?.single ?? 12) + (r?.double ?? 12)
       );
 
       let missingIndex = 0;
@@ -379,7 +369,7 @@ export class Team extends Model {
       return bestPlayers.reduce((a, b) => a + b, missingIndex);
     } else {
       const bestPlayers = rankings.map(
-        r => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12)
+        (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12)
       );
 
       let missingIndex = 0;

@@ -1,4 +1,5 @@
 import {
+  AuthenticatedRequest,
   Availability,
   Comment,
   DataBaseHandler,
@@ -27,7 +28,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
       }
     },
     resolve: async (
-      findOptions,
+      _findOptions: {[key: string]: unknown},
       {
         change
       }: {
@@ -38,13 +39,13 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
           accepted: boolean;
           dates: {
             selected: boolean;
-            date: any;
+            date: Date;
             availabilityHome: Availability;
             availabilityAway: Availability;
           }[];
         };
       },
-      context
+      context: { req: AuthenticatedRequest }
     ) => {
       const encounter = await EncounterCompetition.findByPk(change.encounterId);
 
@@ -130,11 +131,11 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
       }
 
       // Notify the user
-      // if (change.accepted) {
-      //   await notificationService.requestFinished(encounterChange);
-      // } else {
-      //   await notificationService.requestChange(encounterChange, change.home);
-      // }
+      if (change.accepted) {
+        await notificationService.requestFinished(encounterChange);
+      } else {
+        await notificationService.requestChange(encounterChange, change.home);
+      }
 
       return encounterChange;
     }
@@ -151,13 +152,13 @@ const changeOrUpdate = async (
     accepted: boolean;
     dates: {
       selected: boolean;
-      date: any;
+      date: Date;
       availabilityHome: Availability;
       availabilityAway: Availability;
     }[];
   },
-  transaction,
-  context: any,
+  transaction: Transaction,
+  context: { req: AuthenticatedRequest },
   team: Team,
   dates: EncounterChangeDate[]
 ) => {

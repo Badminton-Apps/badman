@@ -7,10 +7,11 @@ import {
   RequestLink
 } from '@badvlasim/shared';
 import { Response, Router } from 'express';
+import { RequestHandler } from 'express';
 
 export class RequestLinkController extends BaseController {
   private _path = '/request-link';
-  constructor(router: Router, private _authMiddleware) {
+  constructor(router: Router, private _authMiddleware: RequestHandler[]) {
     super(router);
 
     this._intializeRoutes();
