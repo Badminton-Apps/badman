@@ -43,7 +43,7 @@
       "json",
       "node"
     ],
-    "testTimeout": 10000,
+    "testTimeout": 20000,
     "collectCoverageFrom": [
       "**/*.{ts,tsx}",
       "!**/node_modules/**",
