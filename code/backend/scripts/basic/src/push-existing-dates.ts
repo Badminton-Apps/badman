@@ -5,7 +5,7 @@ import {
   DataBaseHandler,
   EncounterCompetition,
   logger
-} from '../../../packages/_shared';
+} from '@badvlasim/shared';
 
 (async () => {
   new DataBaseHandler({
