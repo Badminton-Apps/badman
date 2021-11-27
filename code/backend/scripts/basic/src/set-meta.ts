@@ -12,7 +12,7 @@ import {
   SubEventCompetition,
   Team,
   TeamSubEventMembership
-} from '../../../packages/_shared';
+} from '@badvlasim/shared';
 
 (async () => {
   await set_meta();

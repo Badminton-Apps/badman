@@ -25,7 +25,6 @@ export class Player {
   clubs?: Club[];
 
   constructor(args?: Partial<Player>) {
-
     this.id = args?.id;
     this.memberId = args?.memberId;
     this.gender = args?.gender;
@@ -36,7 +35,7 @@ export class Player {
     this.lastName = args?.lastName;
     this._fullName = args?.fullName;
     this.isClaimed = args?.isClaimed ?? false;
-    this.lastRanking = new RankingPlace(args?.lastRanking);
+    this.lastRanking = (args?.lastRanking ?? null) != null ? new RankingPlace(args?.lastRanking) : undefined;
     this.games = args?.games?.map((g) => new Game(g));
     this.base = args?.base;
     this.sub = args?.sub;
@@ -45,7 +44,7 @@ export class Player {
     this.clubs = args?.clubs?.map((club) => new Club(club));
 
     this.rankingPlaces = args?.rankingPlaces?.map((r) => new RankingPlace(r));
-    if (this.lastRanking == null && this.rankingPlaces != null && this.rankingPlaces.length > 0) {
+    if ((this.lastRanking ?? null) == null && this.rankingPlaces != null && this.rankingPlaces.length > 0) {
       this.lastRanking = this.rankingPlaces?.sort((a, b) => a.rankingDate!.getTime() - b.rankingDate!.getTime())[0];
     }
   }

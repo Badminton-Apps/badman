@@ -3,6 +3,8 @@ import { Player } from './../../../../../_shared/models/player.model';
 import { Component, OnInit, ChangeDetectionStrategy, Input, EventEmitter, Output } from '@angular/core';
 import * as moment from 'moment';
 import { Club } from 'app/_shared';
+import { MatDialog } from '@angular/material/dialog';
+import { MergeAccountComponent } from '../../dialogs/merge-account/merge-account.component';
 
 @Component({
   selector: 'app-profile-header',
@@ -18,6 +20,8 @@ export class ProfileHeaderComponent implements OnInit {
   mobile!: boolean;
 
   playerAge?: number;
+
+  menuItesm = [];
 
   @Input()
   canClaimAccount!: {
@@ -38,7 +42,7 @@ export class ProfileHeaderComponent implements OnInit {
 
   playerClub?: Club;
 
-  constructor() {}
+  constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.shownRanking = {
@@ -105,5 +109,13 @@ export class ProfileHeaderComponent implements OnInit {
     if (this.player.clubs) {
       this.playerClub = this.player.clubs[0];
     }
+  }
+
+  mergePlayer(){
+    this.dialog.open(MergeAccountComponent, {
+      data: {
+        player: this.player
+      }
+    });
   }
 }
