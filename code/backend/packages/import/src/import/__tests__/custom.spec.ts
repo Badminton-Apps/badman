@@ -1,9 +1,8 @@
 import { Club, DataBaseHandler } from '@badvlasim/shared';
 
 describe.skip('custom', () => {
-  let databaseService: DataBaseHandler;
   beforeAll(async () => {
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });
@@ -21,7 +20,7 @@ describe.skip('custom', () => {
 
     const club2 = new Club({
       name: 'Testing'
-    }).toJSON() as any;
+    }).toJSON();
 
     const dbClub = await Club.bulkCreate([club2], {
       ignoreDuplicates: true
@@ -39,7 +38,7 @@ describe.skip('custom', () => {
 
     const club2 = new Club({
       name: 'Testing'
-    }).toJSON() as any;
+    }).toJSON() ;
 
     const dbClub = await Club.bulkCreate([club2], {
       updateOnDuplicate: ['name'],
@@ -58,7 +57,7 @@ describe.skip('custom', () => {
 
     const club2 = new Club({
       name: 'Testing'
-    }).toJSON() as any;
+    }).toJSON() ;
 
     const dbClub = await Club.bulkCreate([club2], {
       ignoreDuplicates: true,

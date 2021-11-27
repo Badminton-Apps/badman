@@ -10,32 +10,19 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions,
-  HasManyAddAssociationMixin,
-  HasManyAddAssociationsMixin,
-  HasManyCountAssociationsMixin,
-  HasManyGetAssociationsMixin,
-  HasManyHasAssociationMixin,
-  HasManyHasAssociationsMixin,
-  HasManyRemoveAssociationMixin,
-  HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  BuildOptions
 } from 'sequelize';
 import {
-  AllowNull,
   BelongsTo,
   BelongsToMany,
   Column,
   DataType,
   Default,
-  ForeignKey,
-  HasMany,
-  Index,
+  ForeignKey, Index,
   IsUUID,
   Model,
   PrimaryKey,
-  Table,
-  Unique
+  Table
 } from 'sequelize-typescript';
 import { Player, RoleClaimMembership } from '..';
 import { Club } from '../club.model';

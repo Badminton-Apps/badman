@@ -1,4 +1,4 @@
-import { DataBaseHandler, LastRankingPlace, logger, Player, RankingPlace } from '@badvlasim/shared';
+import { AuthenticatedRequest, DataBaseHandler, LastRankingPlace, logger, Player, RankingPlace } from '@badvlasim/shared';
 import { ApiError } from '../../models/api.error';
 import { PlayerInputType, PlayerType, RankingPlaceInputType } from '../types';
 
@@ -10,7 +10,7 @@ export const addPlayerMutation = {
       type: PlayerInputType
     }
   },
-  resolve: async (findOptions, { player }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { player }, context: { req: AuthenticatedRequest }) => {
     // || !context.req.user.hasAnyPermission(['add:player'])
     if (context?.req?.user === null) {
       // logger.warn("User tried something it should't have done", {
@@ -53,7 +53,7 @@ export const updatePlayerMutation = {
       type: PlayerInputType
     }
   },
-  resolve: async (findOptions, { player }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { player }, context: { req: AuthenticatedRequest }) => {
     // TODO: check if the player is in the club and thbe user is allowed to change values
 
     if (
@@ -105,7 +105,7 @@ export const updatePlayerRankingMutation = {
       type: RankingPlaceInputType
     }
   },
-  resolve: async (findOptions, { rankingPlace }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { rankingPlace }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:player-ranking'])) {
       logger.warn("User tried something it should't have done", {
         required: {

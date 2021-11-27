@@ -1,11 +1,12 @@
 import {
+  AuthenticatedRequest,
   DataBaseHandler,
   EventCompetition,
   GroupSubEventCompetition,
   logger,
   SubEventCompetition
 } from '@badvlasim/shared';
-import { GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull } from 'graphql';
+import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { EventCompetitionInputType, EventCompetitionType } from '../types';
 
@@ -17,7 +18,7 @@ export const addEventCompetitionMutation = {
       type: EventCompetitionInputType
     }
   },
-  resolve: async (findOptions, { eventCompetition }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { eventCompetition }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:competition'])) {
       logger.warn("User tried something it should't have done", {
         required: {
@@ -33,24 +34,24 @@ export const addEventCompetitionMutation = {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const eventCompetitionDb = await EventCompetition.create(eventCompetition, { transaction });
-      const subEventCompetitions = eventCompetition.subEventCompetitions.map(
-        subEventCompetition => {
-          const { groups, ...sub } = subEventCompetition;
+      // const subEventCompetitions = eventCompetition.subEventCompetitions.map(
+      //   subEventCompetition => {
+      //     const { groups, ...sub } = subEventCompetition;
 
-          return {
-            subEventCompetitionGroup: { internalId: sub.internalId, groups },
-            subEventCompetition: {
-              ...sub,
-              EventCompetitionId: eventCompetitionDb.id
-            }
-          };
-        }
-      );
+      //     return {
+      //       subEventCompetitionGroup: { internalId: sub.internalId, groups },
+      //       subEventCompetition: {
+      //         ...sub,
+      //         EventCompetitionId: eventCompetitionDb.id
+      //       }
+      //     };
+      //   }
+      // );
 
-      const subEventCompetitionsDb = await SubEventCompetition.bulkCreate(
-        subEventCompetitions.map(r => r.subEventCompetition),
-        { returning: ['id'], transaction }
-      );
+      // const subEventCompetitionsDb = await SubEventCompetition.bulkCreate(
+      //   subEventCompetitions.map(r => r.subEventCompetition),
+      //   { returning: ['id'], transaction }
+      // );
 
       const groupSubEventCompetitions = [];
       // subEventCompetitions
@@ -82,7 +83,7 @@ export const updateEventCompetitionMutation = {
       type: EventCompetitionInputType
     }
   },
-  resolve: async (findOptions, { eventCompetition }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { eventCompetition }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:competition'])) {
       logger.warn("User tried something it should't have done", {
         required: {
@@ -130,7 +131,7 @@ export const setGroupsCompetitionMutation = {
       type: new GraphQLList(GraphQLID)
     }
   },
-  resolve: async (findOptions, { id, groupIds }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { id, groupIds }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:competition'])) {
       logger.warn("User tried something it should't have done", {
         required: {

@@ -5,7 +5,7 @@ import { CompetitionCpProcessor } from '../processors';
 
 jest.mock('child_process', () => {
   return {
-    spawn: (exe: string, args: any[]) => {
+    spawn: (exe: string, ) => {
       if (exe === 'mdb-export') {
         const readableStream = Readable.from('');
         return {
@@ -22,7 +22,7 @@ describe('Wrong file', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition_wrong_file.cp');
+    fileLocation = join(__dirname, 'files/competition_wrong_file.cp');
 
     service = new CompetitionCpProcessor();
   });
@@ -46,7 +46,7 @@ describe('Empty file', () => {
   let fileLocation: string;
 
   beforeAll(async () => {
-    fileLocation = join(process.cwd(), 'src/import/__tests__/files/empty.cp');
+    fileLocation = join(__dirname, 'files/empty.cp');
 
     service = new CompetitionCpProcessor();
   });

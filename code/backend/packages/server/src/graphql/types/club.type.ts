@@ -23,7 +23,7 @@ export const ClubType = new GraphQLObjectType({
         type: new GraphQLList(TeamType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Club.associations.teams, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions.where = queryFixer(findOptions.where);
             findOptions.order = [
               ['type', 'asc'],
@@ -37,7 +37,7 @@ export const ClubType = new GraphQLObjectType({
         type: new GraphQLList(RoleType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Club.associations.roles, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -50,7 +50,7 @@ export const ClubType = new GraphQLObjectType({
         type: new GraphQLList(LocationType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Club.associations.locations, {
-          before: async (findOptions, args, context, info) => {
+          before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
               where: queryFixer(findOptions.where)
@@ -66,7 +66,7 @@ export const ClubType = new GraphQLObjectType({
             type: GraphQLString
           }
         }),
-        resolve: async (obj: Club, args, context, info) => {
+        resolve: async (obj: Club, args: { [key: string]: object }) => {
           let where = {}
 
           if (args.where){
@@ -107,7 +107,7 @@ export const ClubConnectionType = createConnection({
       resolve: ({ fullCount }) => fullCount
     }
   },
-  where: (key, value, currentWhere) => {
+  where: (key: string, value: unknown) => {
     if (key === 'where') {
       return queryFixer(value);
     } else {

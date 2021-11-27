@@ -1,7 +1,6 @@
 import { TeamType } from './../team.type';
 import { SubEventCompetition, Player } from '@badvlasim/shared/models';
 import {
-  GraphQLBoolean,
   GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
@@ -32,7 +31,7 @@ const SubEventCompetitionType = new GraphQLObjectType({
           type: new GraphQLList(DrawCompetitionType),
           args: Object.assign(defaultListArgs(), {}),
           resolve: resolver(SubEventCompetition.associations.draws, {
-            before: async (findOptions, args, context, info) => {
+            before: async (findOptions: { [key: string]: object }) => {
               findOptions = {
                 ...findOptions,
                 where: queryFixer(findOptions.where)
@@ -45,7 +44,7 @@ const SubEventCompetitionType = new GraphQLObjectType({
           type: EventCompetitionType,
           args: Object.assign(defaultListArgs(), {}),
           resolve: resolver(SubEventCompetition.associations.event, {
-            before: async (findOptions, args, context, info) => {
+            before: async (findOptions: { [key: string]: object }) => {
               findOptions = {
                 ...findOptions,
                 where: queryFixer(findOptions.where)
@@ -58,7 +57,7 @@ const SubEventCompetitionType = new GraphQLObjectType({
           type: new GraphQLList(TeamType),
           args: Object.assign(defaultListArgs(), {}),
           resolve: resolver(SubEventCompetition.associations.teams, {
-            before: async (findOptions, args, context, info) => {
+            before: async (findOptions: { [key: string]: object }) => {
               findOptions = {
                 ...findOptions,
                 where: queryFixer(findOptions.where)

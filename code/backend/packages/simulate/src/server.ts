@@ -29,7 +29,7 @@ const startServer = (databaseService: DataBaseHandler) => {
   const calculator = new RankingCalculator(databaseService);
 
   const app = new App([
-    new SimulateController(Router(), authService.checkAuth, databaseService, calculator)
+    new SimulateController(Router(), authService.checkAuth, calculator)
   ]);
   app.listen();
 };

@@ -19,7 +19,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -33,9 +33,9 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
-import { LevelType, SubEventType } from '../../../enums';
+import { SubEventType } from '../../../enums';
 import { RankingSystemGroup } from '../../ranking';
 import { TeamSubEventMembership } from '../../team-subEvent-membership.model';
 import { Team } from '../../team.model';
@@ -45,7 +45,7 @@ import { GroupSubEventCompetition } from './group-subevent.model';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 })
 export class SubEventCompetition extends Model {
   constructor(values?: Partial<SubEventCompetition>, options?: BuildOptions) {
@@ -78,27 +78,21 @@ export class SubEventCompetition extends Model {
   @Column
   maxBaseIndex?: number;
 
-  @BelongsToMany(
-    () => Team,
-    () => TeamSubEventMembership
-  )
+  @BelongsToMany(() => Team, () => TeamSubEventMembership)
   teams: Team[];
 
-  @BelongsToMany(
-    () => RankingSystemGroup,
-    () => GroupSubEventCompetition
-  )
+  @BelongsToMany(() => RankingSystemGroup, () => GroupSubEventCompetition)
   groups: RankingSystemGroup[];
 
   @HasMany(() => DrawCompetition, {
     foreignKey: 'subeventId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   draws: DrawCompetition[];
 
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'eventId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   event?: EventCompetition;
 

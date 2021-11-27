@@ -2,14 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'express-jwt';
 import jwks from 'jwks-rsa';
 import get from 'axios';
-import { logger } from '@badvlasim/shared';
 import { Player } from '../../models';
+import { RequestHandler } from 'http-proxy-middleware';
 
 export class AuthenticationSercice {
   static subCache = new Map();
   static playerCache = new Map();
   static permissionCache = new Map();
-  checkAuth = null;
+  checkAuth: RequestHandler[] = null;
 
   constructor() {
     this.checkAuth = [

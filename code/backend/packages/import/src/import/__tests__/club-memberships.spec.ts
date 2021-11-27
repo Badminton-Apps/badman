@@ -6,12 +6,11 @@ import { ProcessImport } from '../importProcessor';
 import { CompetitionCpProcessor } from '../processors';
 
 describe('Club Membership', () => {
-  let databaseService: DataBaseHandler;
   let service: ProcessImport;
   let transaction: Transaction;
 
   beforeAll(async () => {
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });

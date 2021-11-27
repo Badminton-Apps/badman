@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import jsonStringify from 'fast-safe-stringify';
 import moment from 'moment';
-import prettyMilliseconds from 'pretty-ms';
 import { createLogger, transports, format } from 'winston';
 const { combine, errors, timestamp, colorize, align } = format;
 import ecsFormat from '@elastic/ecs-winston-format';
@@ -9,8 +8,6 @@ import packagejson from '../package.json';
 
 dotenv.config();
 
-let lastMesage = moment();
-let lastDiff = '';
 let lastMessageText = '';
 const logLikeFormat = (maxArgLength?: number) => {
   return {
@@ -24,10 +21,6 @@ const logLikeFormat = (maxArgLength?: number) => {
       }
 
       if (lastMessageText !== message) {
-        const time = moment(ts);
-        const duration = moment.duration(time.diff(lastMesage));
-        lastDiff = prettyMilliseconds(duration.asMilliseconds()); // `${hrs}:${mins}:${secs}.${msecs}`;
-        lastMesage = time;
         lastMessageText = message;
       }
 

@@ -5,18 +5,15 @@ import {
   EncounterCompetition,
   Game,
   GameType,
-  GroupSystems,
   LastRankingPlace,
   logger,
   Player,
   RankingPlace,
   RankingPoint,
   RankingSystem,
-  RankingSystemGroup,
   SubEventCompetition,
   SubEventTournament
 } from '@badvlasim/shared';
-import promisePool from '@supercharge/promise-pool';
 import moment, { Moment } from 'moment';
 import { Op } from 'sequelize';
 import { PointCalculator } from './point-calculator';
@@ -76,7 +73,7 @@ export class RankingCalc {
           `Truncated ${deleted} LastRankingPlace for system ${
             where.SystemId
           } and after ${startingDate.toISOString()}`
-        ); 
+        );
       }
 
       const pointCount = await RankingPoint.count({ where });
@@ -87,7 +84,7 @@ export class RankingCalc {
             where.SystemId
           } and after ${startingDate.toISOString()}`
         );
-      } 
+      }
 
       this.rankingType.runCurrently = true;
       this.rankingType.runDate = new Date();
@@ -171,7 +168,7 @@ export class RankingCalc {
     logger.info(
       `Started Calcualting for period ${start.toISOString()} untill ${end.toISOString()}${
         updateRankings ? ', and updating rankings' : ''
-      }`
+      }, historical: ${historicalGames}`
     );
   }
 
@@ -194,28 +191,28 @@ export class RankingCalc {
 
     const player1Team1 = players.get(
       game.players.find(
-        player =>
+        (player) =>
           player.getDataValue('GamePlayer').team === 1 &&
           player.getDataValue('GamePlayer').player === 1
       )?.id
     );
     const player2Team1 = players.get(
       game.players.find(
-        player =>
+        (player) =>
           player.getDataValue('GamePlayer').team === 1 &&
           player.getDataValue('GamePlayer').player === 2
       )?.id
     );
     const player1Team2 = players.get(
       game.players.find(
-        player =>
+        (player) =>
           player.getDataValue('GamePlayer').team === 2 &&
           player.getDataValue('GamePlayer').player === 1
       )?.id
     );
     const player2Team2 = players.get(
       game.players.find(
-        player =>
+        (player) =>
           player.getDataValue('GamePlayer').team === 2 &&
           player.getDataValue('GamePlayer').player === 2
       )?.id
@@ -433,7 +430,7 @@ export class RankingCalc {
           }
         ]
       })
-    ).map(x => {
+    ).map((x) => {
       players.set(x.id, x);
     });
 
@@ -452,7 +449,7 @@ export class RankingCalc {
 
       if (rankings.length > 0) {
         await RankingPoint.bulkCreate(
-          rankings.map(r => r.toJSON()),
+          rankings.map((r) => r.toJSON()),
           {
             returning: false
           }
@@ -476,7 +473,7 @@ export class RankingCalc {
     const mixRankingPoints: RankingPoint[] = [];
 
     // Split games in theire respective gameTypes
-    points.forEach(rankingPoint => {
+    points.forEach((rankingPoint) => {
       switch (rankingPoint.game.gameType) {
         case GameType.S:
           singleRankingPoints.push(rankingPoint);
@@ -492,13 +489,13 @@ export class RankingCalc {
 
     // difference is a negative number when layers are higher
     let singleCountsForUpgrade = singleRankingPoints.filter(
-      x => x.differenceInLevel >= this.rankingType.differenceForUpgrade * -1
+      (x) => x.differenceInLevel >= this.rankingType.differenceForUpgrade * -1
     );
     let doubleCountsForUpgrade = doubleRankingPoints.filter(
-      x => x.differenceInLevel >= this.rankingType.differenceForUpgrade * -1
+      (x) => x.differenceInLevel >= this.rankingType.differenceForUpgrade * -1
     );
     let mixCountsForUpgrade = mixRankingPoints.filter(
-      x => x.differenceInLevel >= this.rankingType.differenceForUpgrade * -1
+      (x) => x.differenceInLevel >= this.rankingType.differenceForUpgrade * -1
     );
 
     // Filter out when there is a limit to use
@@ -522,13 +519,13 @@ export class RankingCalc {
 
     // difference is a negative number when layers are higher
     let singleCountsForDowngrade = singleRankingPoints.filter(
-      x => x.differenceInLevel >= this.rankingType.differenceForDowngrade * -1
+      (x) => x.differenceInLevel >= this.rankingType.differenceForDowngrade * -1
     );
     let doubleCountsForDowngrade = doubleRankingPoints.filter(
-      x => x.differenceInLevel >= this.rankingType.differenceForDowngrade * -1
+      (x) => x.differenceInLevel >= this.rankingType.differenceForDowngrade * -1
     );
     let mixCountsForDowngrade = mixRankingPoints.filter(
-      x => x.differenceInLevel >= this.rankingType.differenceForDowngrade * -1
+      (x) => x.differenceInLevel >= this.rankingType.differenceForDowngrade * -1
     );
 
     // Filter out when there is a limit to use
@@ -633,12 +630,12 @@ export class RankingCalc {
     });
   }
 
-  public findPointsBetterAverage(rankingPoints: RankingPoint[], limitMinGames: boolean = true) {
-    const avgPoints = rankingPoints.map(x => x.points).filter(x => x === 0);
-    const wonPoints = rankingPoints.filter(x => x.points > 0).sort((a, b) => b.points - a.points);
+  public findPointsBetterAverage(rankingPoints: RankingPoint[], limitMinGames = true) {
+    const avgPoints = rankingPoints.map((x) => x.points).filter((x) => x === 0);
+    const wonPoints = rankingPoints.filter((x) => x.points > 0).sort((a, b) => b.points - a.points);
     let avg = 0;
 
-    wonPoints.forEach(element => {
+    wonPoints.forEach((element) => {
       // add new point
       avgPoints.push(element.points);
       const sum = avgPoints.reduce((a, b) => a + b, 0);
@@ -666,7 +663,7 @@ export class RankingCalc {
       return 0;
     }
 
-    const points = rankingPoints.map(x => x.points).reduce((a, b) => a + b, 0);
+    const points = rankingPoints.map((x) => x.points).reduce((a, b) => a + b, 0);
     const amountOfGamesToUse = rankingPoints.length;
 
     const pointAvg = points / amountOfGamesToUse;
@@ -681,9 +678,8 @@ export class RankingCalc {
     // Check if can go up,
     // we start at our current level and go down in number (so higher rankings)
     for (let estimatedUpLevel = currentLevel; estimatedUpLevel >= 1; estimatedUpLevel--) {
-      const pointsNeededForNextLevel = this.rankingType.pointsToGoUp[
-        this.rankingType.pointsToGoUp.length + 1 - estimatedUpLevel
-      ];
+      const pointsNeededForNextLevel =
+        this.rankingType.pointsToGoUp[this.rankingType.pointsToGoUp.length + 1 - estimatedUpLevel];
       if (pointsNeededForNextLevel > pointsUpgrade) {
         topLevelByUpgradePoints = estimatedUpLevel;
         break;
@@ -706,9 +702,10 @@ export class RankingCalc {
       estimatedDownLevel < this.rankingType.amountOfLevels;
       estimatedDownLevel++
     ) {
-      const pointsNeededForPreviousLevel = this.rankingType.pointsToGoDown[
-        this.rankingType.pointsToGoDown.length - estimatedDownLevel
-      ];
+      const pointsNeededForPreviousLevel =
+        this.rankingType.pointsToGoDown[
+          this.rankingType.pointsToGoDown.length - estimatedDownLevel
+        ];
       if (pointsNeededForPreviousLevel < pointsDowngrade) {
         bottomLevelByDowngradePoints = estimatedDownLevel;
         break;

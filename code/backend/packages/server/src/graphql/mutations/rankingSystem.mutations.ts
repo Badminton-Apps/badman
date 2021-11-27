@@ -4,10 +4,8 @@ import {
   logger,
   RankingSystem,
   GroupSystems,
-  AuthenticatedUser,
-  AuthenticatedRequest
+  AuthenticatedRequest,
 } from '@badvlasim/shared';
-import { Op } from 'sequelize';
 import { ApiError } from '../../models/api.error';
 import { RankingSystemInputType, RankingSystemType } from '../types';
 
@@ -19,7 +17,7 @@ export const addRankingSystemMutation = {
       type: RankingSystemInputType
     }
   },
-  resolve: async (findOptions, { rankingSystem: rankingSystemInput }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { rankingSystem: rankingSystemInput }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:ranking'])) {
       logger.warn('User tried something it should\'t have done', {
         required: {
@@ -66,7 +64,7 @@ export const updateRankingSystemMutation = {
       type: RankingSystemInputType
     }
   },
-  resolve: async (findOptions, { rankingSystem }, context) => {
+  resolve: async (findOptions: { [key: string]: object }, { rankingSystem }, context: { req: AuthenticatedRequest }) => {
     if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:ranking'])) {
       logger.warn('User tried something it should\'t have done', {
         required: {

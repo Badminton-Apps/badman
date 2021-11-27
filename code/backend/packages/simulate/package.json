@@ -10,8 +10,9 @@
     "start:watch": "nodemon",
     "start:watch:inspect": "nodemon --exec node --inspect=6860 -r ts-node/register ./src/server.ts",
     "test:local": "jest --colors --watchAll",
-    "test": "jest --config ./jest.config.js --runInBand",
-    "lint": "eslint --fix -c ../../.eslintrc.js src/**/*{.ts,.tsx}"
+    "test": "jest --runInBand",
+    "lint": "eslint -c ../../.eslintrc ./**/*{.ts,.tsx}",
+    "format": "eslint --fix -c ../../.eslintrc ./**/*{.ts,.tsx}"
   },
   "browserslist": [
     ">0.2%",
@@ -26,6 +27,40 @@
     "moment": "^2.24.0"
   },
   "devDependencies": {
-    "mock-fs": "^5.1.0"
+    "mock-fs": "^5.1.2"
+  },
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{ts,tsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "collectCoverage": true,
+    "setupFiles": [
+      "<rootDir>/../../test/env.js"
+    ],
+    "reporters": [
+      "default",
+      "jest-github-actions-reporter"
+    ],
+    "testEnvironment": "node",
+    "coverageReporters": [
+      "text-summary",
+      "lcov"
+    ],
+    "testLocationInResults": true
   }
 }

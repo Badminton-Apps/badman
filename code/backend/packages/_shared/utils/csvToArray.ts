@@ -1,40 +1,39 @@
 import { parseString } from '@fast-csv/parse';
 import { logger } from './logger';
 
-const defaultOptions = {
-  onAdd: (item: any) => item,
-  onEnd: (item: any) => item,
-  onError: (item: any) => item
-};
-
-export const csvToArray = <T>(
+export const csvToArray = <T, Y = T[]>(
   csv: string,
   options?: {
-    onAdd?: (item: any) => any;
-    onEnd?: (item: any) => T;
-    onError?: (item: any) => any;
+    onAdd?: (item: T) => T | PromiseLike<T>;
+    onEnd?: (item: T[]) => Y | PromiseLike<Y>;
+    onError?: (error: Error) => void | PromiseLike<void>;
   }
 ) => {
   const o = {
-    ...defaultOptions,
-    ...options
+    // Default methods
+    onAdd: (item: T) => item,
+    onEnd: (item: T[]) => item as unknown as Y,
+    onError: (item: Error) => item,
+
+    // Override defaults
+    ...options,
   };
 
-  return new Promise<T>((resolve, reject) => {
+  return new Promise<Y>((resolve, reject) => {
     const parser = parseString(csv, { headers: true });
-    const data = [];
+    const data: T[] = [];
 
-    parser.on('data', async result => {
+    parser.on('data', async (result: T) => {
       if (o.onAdd.constructor.name === 'AsyncFunction') {
         data.push(await o.onAdd(result));
       } else {
-        data.push(o.onAdd(result));
+        data.push(o.onAdd(result) as T);
       }
     });
 
-    parser.on('error', async error => {
+    parser.on('error', async (error) => {
       logger.error('Error reading csv', error);
-      if (o.onAdd.constructor.name === 'AsyncFunction') {
+      if (o.onError.constructor.name === 'AsyncFunction') {
         reject(await o.onError(error));
       } else {
         reject(o.onError(error));
@@ -49,11 +48,11 @@ export const csvToArray = <T>(
       ) {
         reject({
           message: 'No data',
-          arguments: { csv }
+          arguments: { csv },
         });
       }
 
-      if (o.onAdd.constructor.name === 'AsyncFunction') {
+      if (o.onEnd.constructor.name === 'AsyncFunction') {
         resolve(await o.onEnd(data));
       } else {
         resolve(o.onEnd(data));

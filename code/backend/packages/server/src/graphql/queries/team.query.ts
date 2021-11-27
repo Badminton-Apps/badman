@@ -13,7 +13,7 @@ export const teamsQuery = {
     }
   }),
   resolve: resolver(Team, {
-    before: async (findOptions, args, context, info) => {
+    before: async (findOptions: { [key: string]: object }, args: { [key: string]: object }) => {
       // info.cacheControl.setCacheHint({ maxAge: 6000, scope: 'PRIVATE' });
       findOptions.where = {
         ...queryFixer(findOptions.where),
