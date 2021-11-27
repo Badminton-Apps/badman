@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { CreateOptions, Op } from 'sequelize';
+import { CreateOptions, Op, Transaction, where } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
@@ -319,182 +319,236 @@ export class DataBaseHandler {
    * @param {string} destinationPlayerId The player where all info will be copied to
    * @param {string} sourcePlayerId The player where the info will be copied from
    */
-  async mergePlayers(destinationPlayerId: string, sourcePlayerId: string) {
-    const transaction = await this._sequelize.transaction();
+  async mergePlayers(
+    destinationPlayerId: string,
+    sourcePlayerId: string,
+    args?: { canBeDifferentMemberId?: boolean; transaction?: Transaction }
+  ) {
+    args = {
+      canBeDifferentMemberId: false,
+      ...args
+    };
 
-    try {
-      const destination = await Player.findByPk(destinationPlayerId, {
-        transaction
-      });
-      const source = await Player.findByPk(sourcePlayerId, {
-        transaction
-      });
-
-      logger.debug(`Merging ${destination.fullName}`);
-
-      if (destination === null) {
-        throw new Error('destination does not exist');
-      }
-
-      if (source === null) {
-        throw new Error('source does not exist');
-      }
-
-      // Move memberships
-      const sourceClubMemberships = await ClubMembership.findAll({
-        where: { playerId: source.id }
-      });
-
-      // We only update if the releation ship doesn't exists already
-      await ClubMembership.update(
-        { playerId: destination.id },
-        {
-          where: {
-            playerId: source.id,
-            clubId: {
-              [Op.notIn]: sourceClubMemberships.map(row => row.clubId)
-            }
-          },
-          returning: false,
-          transaction
-        }
-      );
-
-      const destinationTeamMemberships = await TeamPlayerMembership.findAll({
-        where: { playerId: destination.id }
-      });
-
-      await TeamPlayerMembership.update(
-        { playerId: destination.id },
-        {
-          where: {
-            playerId: source.id,
-            teamId: {
-              [Op.notIn]: destinationTeamMemberships.map(row => row.teamId)
-            }
-          },
-          returning: false,
-          transaction
-        }
-      );
-
-      const destinationRoleMemberships = await PlayerRoleMembership.findAll({
-        where: { playerId: destination.id }
-      });
-
-      await PlayerRoleMembership.update(
-        { playerId: destination.id },
-        {
-          where: {
-            playerId: source.id,
-            roleId: {
-              [Op.notIn]: destinationRoleMemberships.map(row => row.roleId)
-            }
-          },
-          returning: false,
-          transaction
-        }
-      );
-
-      const destinationClaimMemberships = await PlayerClaimMembership.findAll({
-        where: { playerId: destination.id }
-      });
-
-      await PlayerClaimMembership.update(
-        { playerId: destination.id },
-        {
-          where: {
-            playerId: source.id,
-            claimId: {
-              [Op.notIn]: destinationClaimMemberships.map(row => row.claimId)
-            }
-          },
-          returning: false,
-          transaction
-        }
-      );
-
-      // Delete reamining memberships
-      await ClubMembership.destroy({
-        where: { playerId: source.id },
-        transaction
-      });
-      await TeamPlayerMembership.destroy({
-        where: { playerId: source.id },
-        transaction
-      });
-      await PlayerRoleMembership.destroy({
-        where: { playerId: source.id },
-        transaction 
-      });
-      await PlayerClaimMembership.destroy({
-        where: { playerId: source.id },
-        transaction
-      });
-
-      // Update where the player isn't a unique key
-      await GamePlayer.update(
-        { playerId: destination.id },
-        {
-          where: {
-            playerId: source.id
-          },
-          returning: false,
-          transaction
-        }
-      );
-      await Comment.update(
-        { playerId: destination.id },
-        {
-          where: {
-            playerId: source.id
-          },
-          returning: false,
-          transaction
-        }
-      );
-
-      await RankingPoint.update(
-        { playerId: destination.id },
-        {
-          where: {
-            playerId: source.id
-          },
-          returning: false,
-          transaction
-        }
-      );
-
-      // Destoy douplicate
-      await LastRankingPlace.destroy({
-        where: {
-          playerId: source.id
-        },
-        transaction
-      });
-
-      await RankingPlace.destroy({
-        where: {
-          playerId: source.id
-        },
-        transaction
-      });
-
-      destination.sub = destination.sub ?? source.sub;
-      destination.memberId = destination.memberId ?? source.memberId;
-      destination.competitionPlayer =
-        destination.competitionPlayer ?? source.competitionPlayer;
-      destination.birthDate = destination.birthDate ?? source.birthDate;
-
-      await destination.save({ transaction });
-      await source.destroy({ transaction });
-
-      await transaction.commit();
-    } catch (err) {
-      logger.error('Something went wrong merging players');
-      await transaction.rollback();
-      throw err;
+    if (sourcePlayerId === destinationPlayerId) {
+      throw new Error('Source and destination player are the same');
     }
+
+    const destination = await Player.findByPk(destinationPlayerId, {
+      transaction: args.transaction
+    });
+    const source = await Player.findByPk(sourcePlayerId, {
+      transaction: args.transaction
+    });
+
+    if (destination === null) {
+      throw new Error('destination does not exist');
+    }
+
+    if (source === null) {
+      throw new Error('source does not exist');
+    }
+
+    logger.debug(
+      `Merging into ${destination.fullName} (${destination.memberId})`
+    );
+    if (
+      source.memberId !== destination.memberId &&
+      args.canBeDifferentMemberId === false
+    ) {
+      throw new Error(
+        `Source and destination player don't have the same memberid`
+      );
+    }
+
+    // Move memberships
+    const destinationClubMemberships = await ClubMembership.findAll({
+      where: { playerId: destination.id },
+      transaction: args.transaction
+    });
+
+    // We only update if the releation ship doesn't exists already
+    // NOTE: If a person is returning to the club this isn't registerd
+    await ClubMembership.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id,
+          clubId: {
+            [Op.notIn]: destinationClubMemberships.map(row => row.clubId)
+          }
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+
+    const destinationTeamMemberships = await TeamPlayerMembership.findAll({
+      where: { playerId: destination.id },
+      transaction: args.transaction
+    });
+
+    // NOTE: If a person is returning to the team this isn't registerd
+    await TeamPlayerMembership.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id,
+          teamId: {
+            [Op.notIn]: destinationTeamMemberships.map(row => row.teamId)
+          }
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+
+    const destinationRoleMemberships = await PlayerRoleMembership.findAll({
+      where: { playerId: destination.id },
+      transaction: args.transaction
+    });
+
+    await PlayerRoleMembership.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id,
+          roleId: {
+            [Op.notIn]: destinationRoleMemberships.map(row => row.roleId)
+          }
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+
+    const destinationClaimMemberships = await PlayerClaimMembership.findAll({
+      where: { playerId: destination.id },
+      transaction: args.transaction
+    });
+
+    await PlayerClaimMembership.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id,
+          claimId: {
+            [Op.notIn]: destinationClaimMemberships.map(row => row.claimId)
+          }
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+
+    // Delete reamining memberships
+    await ClubMembership.destroy({
+      where: { playerId: source.id },
+      transaction: args.transaction
+    });
+    await TeamPlayerMembership.destroy({
+      where: { playerId: source.id },
+      transaction: args.transaction
+    });
+    await PlayerRoleMembership.destroy({
+      where: { playerId: source.id },
+      transaction: args.transaction
+    });
+    await PlayerClaimMembership.destroy({
+      where: { playerId: source.id },
+      transaction: args.transaction
+    });
+
+    // Update where the player isn't a unique key
+    await GamePlayer.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+    await Comment.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+
+    await RankingPoint.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+
+    const placesDest = await destination.getRankingPlaces({
+      transaction: args.transaction
+    });
+
+    const lplacesDest = await destination.getLastRankingPlaces({
+      transaction: args.transaction
+    });
+
+    await RankingPlace.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id,
+          rankingDate: {
+            [Op.notIn]: placesDest.map(row => row.rankingDate.toString())
+          }
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+
+    await LastRankingPlace.update(
+      { playerId: destination.id },
+      {
+        where: {
+          playerId: source.id,
+          systemId: {
+            [Op.notIn]: lplacesDest.map(row => row.systemId.toString())
+          }
+        },
+        returning: false,
+        transaction: args.transaction
+      }
+    );
+
+    await LastRankingPlace.destroy({
+      where: {
+        playerId: source.id
+      },
+      transaction: args.transaction
+    });
+
+    await RankingPlace.destroy({
+      where: {
+        playerId: source.id
+      },
+      transaction: args.transaction
+    });
+
+    destination.sub = destination.sub ?? source.sub;
+    destination.memberId = destination.memberId ?? source.memberId;
+    destination.competitionPlayer =
+      destination.competitionPlayer ?? source.competitionPlayer;
+    destination.birthDate = destination.birthDate ?? source.birthDate;
+
+    await destination.save({ transaction: args.transaction });
+    await source.destroy({ transaction: args.transaction });
   }
 
   /**

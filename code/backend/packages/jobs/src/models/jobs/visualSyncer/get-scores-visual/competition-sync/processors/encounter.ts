@@ -35,18 +35,14 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EncounterStepData[]> {
-    // await Promise.all(draws.map(e => this.processEncounters(e)));
-
-    // Debugging
-    for (const e of this.draws) {
-      await this._processEncounters(e);
-    }
-
+    await Promise.all(this.draws.map(e => this._processEncounters(e)));
     return this._dbEncounters;
   }
 
   private async _processEncounters({ draw, internalId }: DrawStepData) {
-    const encounters = await draw.getEncounters({ transaction: this.transaction });
+    const encounters = await draw.getEncounters({
+      transaction: this.transaction
+    });
     const visualMatches = await this.visualService.getMatches(
       this.visualTournament.Code,
       internalId
@@ -57,7 +53,19 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         continue;
       }
       const matchDate = moment(xmlTeamMatch.MatchTime).toDate();
-      let dbEncounter = null; // encounters.find(r => r.visualCode === `${xmlTeamMatch.Code}`);
+      let dbEncounters = encounters.filter(r => r.visualCode === `${xmlTeamMatch.Code}`);
+      let dbEncounter = null;
+
+      if (dbEncounters.length === 1) {
+        dbEncounter = dbEncounters[0];
+      } else if (dbEncounters.length > 1) {
+        // We have multiple encounters with the same visual code
+        const [first, ...rest] = dbEncounters;
+        dbEncounter = first;
+        
+        logger.warn('Having multiple? Removing old')
+        await this._destroyEncounters(rest);
+      }
 
       if (!dbEncounter) {
         const { team1, team2 } = await this._findTeams(xmlTeamMatch, this.transaction);
@@ -103,28 +111,29 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     // Remove draw that are not in the xml
     const removedEncounters = encounters.filter(e => e.visualCode == null);
-    for (const removed of removedEncounters) {
-      const gameIds = (
-        await removed?.getGames({
-          attributes: ['id'],
-          transaction: this.transaction
-        })
-      )
-        ?.map(g => g?.id)
-        ?.filter(g => !!g);
 
-      if (gameIds && gameIds.length > 0) {
-        await Game.destroy({
-          where: {
-            id: {
-              [Op.in]: gameIds
-            }
-          },
-          transaction: this.transaction
-        });
-      }
-      await removed.destroy({ transaction: this.transaction });
-    }
+    await this._destroyEncounters(removedEncounters);
+  }
+
+  private async _destroyEncounters(encounter: EncounterCompetition[]) {
+    await Game.destroy({
+      where: {
+        linkType: 'competition',
+        linkId: {
+          [Op.in]: encounter.map(e => e.id)
+        }
+      },
+      transaction: this.transaction
+    });
+
+    await EncounterCompetition.destroy({
+      where: {
+        id: {
+          [Op.in]: encounter.map(e => e.id)
+        }
+      },
+      transaction: this.transaction
+    });
   }
 
   private async _findTeams(xmlTeamMatch: XmlTeamMatch, transaction: Transaction) {
@@ -188,22 +197,26 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     const teamName = correctWrongTeams({ name }).name;
     if (teamName === null || teamName === undefined) {
-      logger.warn(`Team 1 not filled`);
+      logger.warn(`Team not filled`);
       return null;
     }
 
     const where: { [key: string]: any } = {
-      name: teamName,
+      name: {
+        [Op.iLike]: teamName
+      },
       active: true
     };
     if (clubId) {
       where.clubId = clubId;
     }
-    let team = await Team.findOne({ where, transaction: this.transaction });
-
-    if (team == null) {
-      team = await this._findTeamByRegex(teamName, clubId);
+    let teams = await Team.findAll({ where, transaction: this.transaction });
+    if (teams.length > 1) {
+      logger.warn(`Found more than one team for ${teamName}`);
     }
+
+    let team =
+      (teams?.length ?? 0) === 0 ? await this._findTeamByRegex(teamName, clubId) : teams[0];
 
     if (team == null) {
       logger.warn(`Team ${name} not found`);

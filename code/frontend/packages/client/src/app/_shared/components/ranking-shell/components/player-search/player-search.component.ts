@@ -26,16 +26,16 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   clearOnSelection: boolean = true;
 
   @Input()
-  where!: {};
+  where?: {};
 
   @Input()
-  player!: string | Player;
+  player?: string | Player;
 
   @Input()
-  ranking!: Date;
+  ranking?: Date;
 
   @Input()
-  club!: string | Club;
+  club?: string | Club;
 
   @Input()
   searchOutsideClub = true;
@@ -45,7 +45,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   @Input()
   ignorePlayers?: Player[];
 
-  ignorePlayersIds?: string[];
+  ignorePlayersIds?: string[] = [];
 
   formControl!: FormControl;
   filteredOptions$!: Observable<Player[]>;
@@ -54,6 +54,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   constructor(private playerService: PlayerService, private dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges) {
+
     if (!(changes['player']?.isFirstChange() ?? true)) {
       this.setPlayer();
     }
@@ -102,7 +103,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
             query: response.query,
             where: this.where,
             includeClub: true,
-            ranking: this.ranking,
+            ranking: this.ranking ?? undefined,
           });
         } else {
           return of([]);

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CompetitionSubEvent, Game, GameType, Player, TournamentSubEvent } from '../../../../../../../_shared';
+import { CompetitionSubEvent, Game, GameType, Player, TournamentSubEvent, CompetitionEncounter, TournamentDraw } from '../../../../../../../_shared';
 
 @Component({
   selector: 'app-games-result',
@@ -12,7 +12,9 @@ export class GamesResultComponent implements OnInit {
 
   gamesLength = -1;
 
-  subEvent!: CompetitionSubEvent | TournamentSubEvent;
+  tournament!: TournamentDraw;
+  competition!: CompetitionEncounter;
+
   gameType!: GameType;
 
   subEvents!: (CompetitionSubEvent | TournamentSubEvent)[];
@@ -47,11 +49,11 @@ export class GamesResultComponent implements OnInit {
         // This is only once
         if (this.gamesLength === -1) {
           if (this.games[0].competition) {
-            this.subEvent = this.games[0].competition.draw!.subEvent!;
+            this.competition = this.games[0].competition;
           }
 
           if (this.games[0].tournament) {
-            this.subEvent = this.games[0].tournament.subEvent!;
+            this.tournament = this.games[0].tournament;
           }
 
           this.subEvents.map((x) => {

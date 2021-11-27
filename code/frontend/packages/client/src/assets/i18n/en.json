@@ -86,6 +86,7 @@
     "competition": {
         "title": "Competition",
         "last-updated": "Modified on",
+        "vs": "Vs",
         "subevent": {
             "max": "Max level",
             "min-base": "Min basis team index",
@@ -121,7 +122,6 @@
         "change-encounter": {
             "title": "Encounters",
             "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",
-            "vs": "Vs.",
             "home": "Home",
             "away": "Away",
             "possible": "Available",
@@ -198,6 +198,12 @@
         "title": "Games",
         "bye": "Bye"
     },
+    "usedForTeam": {
+        "title": "Team names",
+        "description": "Team names are automatically generated, choose below what prefix should be used",
+        "select": "Team prefix",
+        "example": "Example: {{teamName}}"
+    },
     "gender": {
         "select": "Select",
         "title": "Gender",
@@ -213,6 +219,7 @@
         "memberId": "Member id",
         "year": "Year",
         "name": "Name",
+        "fullName": "Full name",
         "firstname": "First name",
         "lastname": "Last name",
         "abbreviation": "Abbreviation",
@@ -233,6 +240,7 @@
     "button": {
         "close": "Close",
         "delete": "Delete",
+        "merge-accounts": "Merge accounts",
         "create": "Create",
         "edit": "Edit",
         "done": "Done",

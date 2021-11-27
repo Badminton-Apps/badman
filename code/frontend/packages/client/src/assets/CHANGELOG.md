@@ -1,3 +1,133 @@
+## [4.5.1](https://github.com/Badminton-Apps/core/compare/v4.5.0...v4.5.1) (2021-11-24)
+
+
+### Bug Fixes
+
+* Showing the correct subevent in overview ([5035a5f](https://github.com/Badminton-Apps/core/commit/5035a5fafbded514a5cfeaa843812ed333272e93))
+
+
+
+# [4.5.0](https://github.com/Badminton-Apps/core/compare/v4.4.3...v4.5.0) (2021-11-24)
+
+
+### Bug Fixes
+
+* Setting percentage to 0 before start ([f8f53c3](https://github.com/Badminton-Apps/core/commit/f8f53c3c40e60a4c7452d8ae606c4a357ed40aba))
+* When list arguments are there, it should have query fixer in order for the where queries to work ([5069e52](https://github.com/Badminton-Apps/core/commit/5069e528b15346b4644bea74c9c1e4be08c6a296))
+
+
+### Features
+
+* showing team info on game overview ([36cfaf0](https://github.com/Badminton-Apps/core/commit/36cfaf02f4eeaad9e24e6f315e855099e289707c))
+
+
+
+## [4.4.3](https://github.com/Badminton-Apps/core/compare/v4.4.2...v4.4.3) (2021-11-24)
+
+
+### Bug Fixes
+
+* Correctly calculate percentage of job progress ([d6ae700](https://github.com/Badminton-Apps/core/commit/d6ae7008871db5664e8d95d58f06a754f176e841))
+* Label jobs overview incorrect ([279b5b5](https://github.com/Badminton-Apps/core/commit/279b5b5c49d2bd540b71a2294cbe718fd4517a4b))
+* Running without arguments ([b186586](https://github.com/Badminton-Apps/core/commit/b1865867c580b61d0bd2b8e07b37f4e98e462ce1))
+
+
+
+## [4.4.2](https://github.com/Badminton-Apps/core/compare/v4.4.1...v4.4.2) (2021-11-23)
+
+
+
+## [4.4.1](https://github.com/Badminton-Apps/core/compare/v4.4.0...v4.4.1) (2021-11-23)
+
+
+### Bug Fixes
+
+* Double encounters ([f219dbd](https://github.com/Badminton-Apps/core/commit/f219dbd9db37406cbbd0ab8474186a2f1458c83b))
+
+
+
+# [4.4.0](https://github.com/Badminton-Apps/core/compare/v4.3.2...v4.4.0) (2021-11-23)
+
+
+### Bug Fixes
+
+* **job:** Games for tournaments weren't processed ([953d0c9](https://github.com/Badminton-Apps/core/commit/953d0c9a28c80b57de667c4437bf3007bb53681a))
+
+
+### Features
+
+* Cron status and queries ([f7202f9](https://github.com/Badminton-Apps/core/commit/f7202f94b1075a108daf1afeae1e96f46fc11898))
+
+
+
+## [4.3.2](https://github.com/Badminton-Apps/core/compare/v4.3.1...v4.3.2) (2021-11-22)
+
+
+### Bug Fixes
+
+* Correctly parse teams ([19896e7](https://github.com/Badminton-Apps/core/commit/19896e799d6b31e5a599a8a25d9a672ff54f1e49))
+
+
+
+## [4.3.1](https://github.com/Badminton-Apps/core/compare/v4.3.0...v4.3.1) (2021-11-22)
+
+
+### Bug Fixes
+
+* job creation on startup ([f411cc8](https://github.com/Badminton-Apps/core/commit/f411cc86b6b484bd2a912b6a6eee715c64d1c701))
+
+
+
+# [4.3.0](https://github.com/Badminton-Apps/core/compare/v4.2.2...v4.3.0) (2021-11-22)
+
+
+### Bug Fixes
+
+* **jobs:** Level sync should check against the player fixer ([c767d0f](https://github.com/Badminton-Apps/core/commit/c767d0f170c99fac266c7bda87c3c5aadc5e9430))
+* Login should be optional ([8413513](https://github.com/Badminton-Apps/core/commit/8413513bee02df4c7e8a3dba53ecd33ebab26ba6))
+
+
+### Features
+
+* Added full name for clubs (+ option to select prefix of the team) ([829a49e](https://github.com/Badminton-Apps/core/commit/829a49ed71518eab0cc3ceb1da15e708fa496192))
+* Sync games pt. 3 ([d49416d](https://github.com/Badminton-Apps/core/commit/d49416d4edd718106fcc0d2b7963909845b49084))
+
+
+
+## [4.2.2](https://github.com/Badminton-Apps/core/compare/v4.2.1...v4.2.2) (2021-11-22)
+
+
+### Bug Fixes
+
+* Correct update message ([c555fb0](https://github.com/Badminton-Apps/core/commit/c555fb028193ac48100a1ae60adbd66ff3261ed7))
+
+
+
+## [4.2.1](https://github.com/Badminton-Apps/core/compare/v4.2.0...v4.2.1) (2021-11-22)
+
+
+### Bug Fixes
+
+* Auth intercepter configuration for produciton wasn't setup properly ([8d9c89e](https://github.com/Badminton-Apps/core/commit/8d9c89ea6cd5ef7351d8a2580658bf036ff54761))
+
+
+
+# [4.2.0](https://github.com/Badminton-Apps/core/compare/v4.1.3...v4.2.0) (2021-11-22)
+
+
+### Bug Fixes
+
+* testing ([3192237](https://github.com/Badminton-Apps/core/commit/3192237625b8e3ed3eb8708cdb6ca4c6bf244371))
+
+
+### Features
+
+* event list filtering ([624de64](https://github.com/Badminton-Apps/core/commit/624de647cc7e86a36d5a128c82dd9e8ded6ed2e6))
+* extra filter options ([92dacd5](https://github.com/Badminton-Apps/core/commit/92dacd524c80758009126a238404c5aa27e3b090))
+* moved to official login pacakge to (hopefully) remove repeated logins ([13947c2](https://github.com/Badminton-Apps/core/commit/13947c2ea5e0a895312cb2c6149bfa4ac62f867b))
+
+
+
 ## [4.1.3](https://github.com/Badminton-Apps/core/compare/v4.1.2...v4.1.3) (2021-11-17)
 
 

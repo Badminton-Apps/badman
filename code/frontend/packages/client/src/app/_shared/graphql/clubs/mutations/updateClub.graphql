@@ -2,6 +2,7 @@ mutation UpdateClub($club: ClubInput!) {
   updateClub(club: $club) {
     id
     name
+    fullName
     abbreviation
     clubId
   }

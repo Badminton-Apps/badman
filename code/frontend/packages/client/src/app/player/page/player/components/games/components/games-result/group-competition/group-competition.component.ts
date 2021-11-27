@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { CompetitionSubEvent, Player } from 'app/_shared';
+import { CompetitionEncounter, CompetitionSubEvent, Game, Player } from 'app/_shared';
 
 @Component({
   selector: 'app-group-competition',
@@ -9,5 +9,7 @@ import { CompetitionSubEvent, Player } from 'app/_shared';
 })
 export class GroupCompetitionComponent {
   @Input() subEvent!: CompetitionSubEvent;
+  @Input() encounter!: CompetitionEncounter;
   @Input() player!: Player;
+  @Input() games?: Game[];
 }

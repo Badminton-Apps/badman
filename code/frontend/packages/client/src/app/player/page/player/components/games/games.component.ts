@@ -40,10 +40,12 @@ export class GamesComponent implements OnInit {
         if (this.request$) {
           return this.request$;
         } else {
-          this.request$ = this.playerService.getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize).pipe(
-            share(),
-            finalize(() => this.onFinalize())
-          );
+          this.request$ = this.playerService
+            .getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize)
+            .pipe(
+              share(),
+              finalize(() => this.onFinalize())
+            );
           return this.request$;
         }
       }),
