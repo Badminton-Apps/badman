@@ -1,6 +1,6 @@
 import { logger } from '@badvlasim/shared';
 import moment from 'moment';
-import nodemailer, { Transporter } from 'nodemailer';
+import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
 import exphbs from 'nodemailer-express-handlebars';
 import smtpTransport from 'nodemailer-smtp-transport';
 import path from 'path';
@@ -93,7 +93,7 @@ export class MailService {
       ]
     });
 
-    const clubs: any[] = [];
+    const clubs: Partial<Club>[] = [];
 
     if (events.length === 0) {
       // no players
@@ -186,6 +186,7 @@ export class MailService {
     const options = {
       from: 'info@badman.app',
       to,
+      cc,
       subject: `${club.name} inschrijving`,
       template: 'clubenrollment',
       context: {
@@ -274,13 +275,14 @@ export class MailService {
     await sendMail(encounter.away, encounter.away.captain);
   }
 
-  private async _sendMail(options: any) {
+  private async _sendMail(options: SendMailOptions) {
     try {
       if (this._mailingEnabled === false) {
         logger.debug('Mailing disabled', options);
         return;
       }
 
+      options.to = Array.isArray(options.to) ? options.to : [options.to];
       if (options.to === null || options.to.length === 0) {
         logger.error('no mail adress?', options);
         return;

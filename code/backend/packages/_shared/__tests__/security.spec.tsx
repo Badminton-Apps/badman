@@ -1,10 +1,8 @@
 import { Claim, Club, DataBaseHandler, Player, Role } from '@badvlasim/shared';
 
 describe('Security', () => {
-  let databaseService: DataBaseHandler;
-
   beforeAll(async () => {
-    databaseService = new DataBaseHandler({
+    new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });
@@ -17,10 +15,10 @@ describe('Security', () => {
 
   it('Should create permissions', async () => {
     // arrange
-    const player1 = await new Player({
+    await new Player({
       firstName: 'TestPlayer 1'
     }).save();
-    const player2 = await new Player({
+    await new Player({
       firstName: 'TestPlayer 2'
     }).save();
     const club1 = await new Club({
@@ -73,13 +71,12 @@ describe('Security', () => {
       name: 'TestClub 1'
     }).save();
 
-    const club2 = await new Club({
+    await new Club({
       name: 'TestClub 2'
     }).save();
 
     const claim1 = await new Claim({ name: 'claim:1' }).save();
     const claim2 = await new Claim({ name: 'claim:2' }).save();
-    const claim3 = await new Claim({ name: 'claim:3' }).save();
     const role = await new Role({ name: 'admin' }).save();
 
     // Act
@@ -105,13 +102,12 @@ describe('Security', () => {
       name: 'TestClub 1'
     }).save();
 
-    const club2 = await new Club({
+    await new Club({
       name: 'TestClub 2'
     }).save();
 
     const claim1 = await new Claim({ name: 'claim:1' }).save();
     const claim2 = await new Claim({ name: 'claim:2' }).save();
-    const claim3 = await new Claim({ name: 'claim:3' }).save();
     const role = await new Role({ name: 'admin' }).save();
 
     // Act
@@ -135,7 +131,7 @@ describe('Security', () => {
       name: 'TestClub 1'
     }).save();
 
-    const club2 = await new Club({
+    await new Club({
       name: 'TestClub 2'
     }).save();
 

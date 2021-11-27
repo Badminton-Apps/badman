@@ -14,14 +14,13 @@ import { join } from 'path';
 import { CompetitionXmlProcessor } from '../processors';
 
 describe('competition xml', () => {
-  let databaseService: DataBaseHandler;
   let service: CompetitionXmlProcessor;
   let fileLocation: string;
 
   beforeAll(async () => {
     fileLocation = join(process.cwd(), 'src/import/__tests__/files/competition.xml');
 
-    databaseService = new DataBaseHandler({
+     new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:'
     });

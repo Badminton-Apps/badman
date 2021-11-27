@@ -1,20 +1,10 @@
-import {
-  GraphQLEnumType,
-  GraphQLID,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString
-} from 'graphql';
-import { attributeFields, createConnection, defaultListArgs, resolver } from 'graphql-sequelize';
-import { col, fn, Includeable, Op, or, QueryTypes, where } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { Game, GamePlayer, Player } from '@badvlasim/shared/models';
-import { RankingPlaceType } from './rankingPlace.type';
-import { getAttributeFields } from './attributes.type';
+import { Game, GamePlayer, Player, RankingPlace } from '@badvlasim/shared/models';
+import { GraphQLObjectType } from 'graphql';
+import { defaultListArgs, resolver } from 'graphql-sequelize';
+import { Identifier, Op } from 'sequelize';
 import { queryFixer } from '../queryFixer';
+import { getAttributeFields } from './attributes.type';
+import { RankingPlaceType } from './rankingPlace.type';
 
 const GamePlayerType = new GraphQLObjectType({
   name: 'GamePlayer',
@@ -25,7 +15,12 @@ const GamePlayerType = new GraphQLObjectType({
         type: RankingPlaceType,
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(Player.associations.rankingPlaces, {
-          before: async (findOptions, args, context, info) => {
+          before: async (
+            findOptions: { [key: string]: object | number },
+            _args: unknown,
+            _context: unknown,
+            info: { source: { GamePlayer: { gameId: Identifier } } }
+          ) => {
             const game = await Game.findByPk(info.source.GamePlayer.gameId, {
               attributes: ['playedAt']
             });
@@ -33,13 +28,12 @@ const GamePlayerType = new GraphQLObjectType({
             findOptions.where = {
               ...queryFixer(findOptions.where),
               rankingDate: { [Op.lte]: game.playedAt }
-              // rankingDate: '2019-12-13 00:00:00+01'
             };
             findOptions.order = [['rankingDate', 'DESC']];
             findOptions.limit = 1;
             return findOptions;
           },
-          after: (results, args) => {
+          after: (results: RankingPlace[]) => {
             return results[0];
           }
         })

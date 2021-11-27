@@ -1,25 +1,20 @@
 import {
+  correctWrongPlayers,
+  GameType,
   LastRankingPlace,
   logger,
   Player,
   Processor,
   ProcessStep,
   RankingPlace,
-  RankingPoint,
-  RankingProcessor,
   RankingSystem,
   RankingSystems,
-  DataBaseHandler,
-  XmlRanking,
-  XmlResult,
-  Game,
-  GameType,
-  correctWrongPlayers
+  XmlResult
 } from '@badvlasim/shared';
-import { Op, Transaction } from 'sequelize';
+import axios from 'axios';
 import { parse } from 'fast-xml-parser';
 import moment, { Moment } from 'moment';
-import axios from 'axios';
+import { Op, Transaction } from 'sequelize';
 
 export class RankingSyncer {
   public processor: Processor;
@@ -91,7 +86,7 @@ export class RankingSyncer {
   }
 
   protected getCategories(): ProcessStep<{ code: string; name: string }[]> {
-    return new ProcessStep(this.STEP_CATEGORIES, async (args: { transaction: Transaction }) => {
+    return new ProcessStep(this.STEP_CATEGORIES, async () => {
       const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
         this.STEP_RANKING
       );
@@ -117,7 +112,7 @@ export class RankingSyncer {
         parseAttributeValue: true
       }).Result as XmlResult;
 
-      return bodyTournament.RankingCategory.map(c => {
+      return bodyTournament.RankingCategory.map((c) => {
         return {
           code: c.Code,
           name: c.Name
@@ -127,7 +122,7 @@ export class RankingSyncer {
   }
 
   protected getPublications(): ProcessStep<VisualPublication[]> {
-    return new ProcessStep(this.STEP_PUBLICATIONS, async (args: { transaction: Transaction }) => {
+    return new ProcessStep(this.STEP_PUBLICATIONS, async () => {
       const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
         this.STEP_RANKING
       );
@@ -153,16 +148,13 @@ export class RankingSyncer {
         parseAttributeValue: true
       }).Result as XmlResult;
 
-      let pubs = bodyTournament.RankingPublication.filter(publication => publication.Visible).map(
-        publication => {
+      let pubs = bodyTournament.RankingPublication.filter((publication) => publication.Visible).map(
+        (publication) => {
           const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
           let canUpdate = false;
 
           if (this.updateMonths.includes(momentDate.month())) {
-            const firstMondayOfMonth = momentDate
-              .clone()
-              .date(1)
-              .day(8);
+            const firstMondayOfMonth = momentDate.clone().date(1).day(8);
             if (firstMondayOfMonth.date() > 7) {
               firstMondayOfMonth.day(-6);
             }
@@ -202,7 +194,7 @@ export class RankingSyncer {
     });
   }
 
-  protected getPoints(): ProcessStep<{ id: string; name: string }[]> {
+  protected getPoints(): ProcessStep {
     return new ProcessStep(this.STEP_POINTS, async (args: { transaction: Transaction }) => {
       const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
         this.STEP_RANKING
@@ -245,7 +237,7 @@ export class RankingSyncer {
           where: {
             memberId: {
               [Op.in]: bodyTournament.RankingPublicationPoints.map(
-                points => correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
+                (points) => correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
               )
             }
           },
@@ -255,7 +247,7 @@ export class RankingSyncer {
 
         for (const points of bodyTournament.RankingPublicationPoints) {
           let foundPlayer = players.find(
-            p =>
+            (p) =>
               p.memberId ===
               correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
           );
@@ -292,7 +284,7 @@ export class RankingSyncer {
 
             if (publication.usedForUpdate === false && foundPlayer.lastRankingPlaces != null) {
               const place = foundPlayer.lastRankingPlaces.find(
-                r => r.systemId === ranking.system.id
+                (r) => r.systemId === ranking.system.id
               );
               if (place != null && place[type] != null && place[type] !== points.Level) {
                 place[type] = points.Level;
@@ -318,14 +310,14 @@ export class RankingSyncer {
           logger.debug(`Getting single levels for ${publication.publicationDate}`);
           await pointsForCategory(
             publication,
-            categories.find(category => category.name === 'HE/SM').code,
+            categories.find((category) => category.name === 'HE/SM').code,
             rankingPlaces,
             'single',
             'M'
           );
           await pointsForCategory(
             publication,
-            categories.find(category => category.name === 'DE/SD').code,
+            categories.find((category) => category.name === 'DE/SD').code,
             rankingPlaces,
             'single',
             'F'
@@ -334,14 +326,14 @@ export class RankingSyncer {
           logger.debug(`Getting double levels for ${publication.publicationDate}`);
           await pointsForCategory(
             publication,
-            categories.find(category => category.name === 'HD/DM').code,
+            categories.find((category) => category.name === 'HD/DM').code,
             rankingPlaces,
             'double',
             'M'
           );
           await pointsForCategory(
             publication,
-            categories.find(category => category.name === 'DD').code,
+            categories.find((category) => category.name === 'DD').code,
             rankingPlaces,
             'double',
             'F'
@@ -350,20 +342,20 @@ export class RankingSyncer {
           logger.debug(`Getting mix levels for ${publication.publicationDate}`);
           await pointsForCategory(
             publication,
-            categories.find(category => category.name === 'GD H/DX M').code,
+            categories.find((category) => category.name === 'GD H/DX M').code,
             rankingPlaces,
             'mix',
             'M'
           );
           await pointsForCategory(
             publication,
-            categories.find(category => category.name === 'GD D/DX D').code,
+            categories.find((category) => category.name === 'GD D/DX D').code,
             rankingPlaces,
             'mix',
             'F'
           );
 
-          const instances = Array.from(rankingPlaces).map(([id, place]) => place.toJSON());
+          const instances = Array.from(rankingPlaces).map(([, place]) => place.toJSON());
           await RankingPlace.bulkCreate(instances, {
             ignoreDuplicates: true,
             transaction: args.transaction,
@@ -377,7 +369,7 @@ export class RankingSyncer {
     });
   }
 
-  protected setInactive(): ProcessStep<{ id: string; name: string }[]> {
+  protected setInactive(): ProcessStep {
     return new ProcessStep(this.STEP_INACTIVE, async (args: { transaction: Transaction }) => {
       logger.debug('Check inactive for players');
       const { system }: { visualCode: string; system: RankingSystem } = this.processor.getData(
@@ -436,9 +428,9 @@ export class RankingSyncer {
           }
         });
 
-        const singleGames = games.filter(game => game.gameType === GameType.S);
-        const doubleGames = games.filter(game => game.gameType === GameType.D);
-        const mixGames = games.filter(game => game.gameType === GameType.MX);
+        const singleGames = games.filter((game) => game.gameType === GameType.S);
+        const doubleGames = games.filter((game) => game.gameType === GameType.D);
+        const mixGames = games.filter((game) => game.gameType === GameType.MX);
 
         if ((singleGames?.length ?? 0) < system.gamesForInactivty) {
           singleInactive = true;
@@ -455,7 +447,7 @@ export class RankingSyncer {
         if (singleInactive && doubleInactive && mixInactive) {
           logger.debug(`Set player ${player.fullName} (${player.memberId}) to inactive`);
           const lastRankingPlaces = player.lastRankingPlaces.filter(
-            p => p.systemId === system.id
+            (p) => p.systemId === system.id
           )[0];
           const newRankingPlace = await new RankingPlace({
             updatePossible: false,

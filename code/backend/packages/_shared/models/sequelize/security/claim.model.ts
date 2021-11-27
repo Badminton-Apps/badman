@@ -1,5 +1,4 @@
 import {
-  BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
@@ -9,11 +8,9 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
-  BelongsToSetAssociationMixin,
-  BuildOptions
+  BuildOptions,
 } from 'sequelize';
 import {
-  BelongsTo,
   BelongsToMany,
   Column,
   DataType,
@@ -23,16 +20,16 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { Player } from '../player.model';
-import { Role } from './role.model';
 import { PlayerClaimMembership } from './claim-player-membership.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
+import { Role } from './role.model';
 
 @Table({
   timestamps: true,
-  schema: 'security'
+  schema: 'security',
 })
 export class Claim extends Model {
   constructor(values?: Partial<Claim>, options?: BuildOptions) {
@@ -60,17 +57,11 @@ export class Claim extends Model {
   @Column(DataType.ENUM('global', 'club', 'team'))
   type: 'global' | 'club' | 'team';
 
-  @BelongsToMany(
-    () => Player,
-    () => PlayerClaimMembership
-  )
+  @BelongsToMany(() => Player, () => PlayerClaimMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   players: (Player & { PlayerClaimMembership: PlayerClaimMembership })[];
 
-  @BelongsToMany(
-    () => Role,
-    () => RoleClaimMembership
-  )
+  @BelongsToMany(() => Role, () => RoleClaimMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   roles: (Role & { RoleClaimMembership: RoleClaimMembership })[];
 

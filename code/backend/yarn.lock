@@ -1177,7 +1177,7 @@
     lodash.isfunction "^3.0.9"
     lodash.isnil "^4.0.0"
 
-"@fast-csv/parse@4.3.6", "@fast-csv/parse@^4.3.6":
+"@fast-csv/parse@4.3.6", "@fast-csv/parse@^4.3.1", "@fast-csv/parse@^4.3.2", "@fast-csv/parse@^4.3.6":
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/@fast-csv/parse/-/parse-4.3.6.tgz#ee47d0640ca0291034c7aa94039a744cfb019264"
   integrity sha512-uRsLYksqpbDmWaSmzvJcuApSEe38+6NQZBUsuAyMZKqHxH0g1wcJgsKUvN3WC8tewaqFjBMMGrkHmC+T7k8LvA==
@@ -2794,7 +2794,7 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/concat-stream@^1.6.1":
+"@types/concat-stream@^1.6.0", "@types/concat-stream@^1.6.1":
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/@types/concat-stream/-/concat-stream-1.6.1.tgz#24bcfc101ecf68e886aaedce60dfd74b632a1b74"
   integrity sha512-eHE4cQPoj6ngxBZMvVf6Hw7Mh4jMW4U9lpGmS5GBPB9RYxlFg+CHaVN7ErNY4W9XfLIEn20b4VDYaIrbq0q4uA==
@@ -3008,7 +3008,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/multer@^1.4.7":
+"@types/multer@^1.4.4":
   version "1.4.7"
   resolved "https://registry.yarnpkg.com/@types/multer/-/multer-1.4.7.tgz#89cf03547c28c7bbcc726f029e2a76a7232cc79e"
   integrity sha512-/SNsDidUFCvqqcWDwxv2feww/yqhNeTRL5CVoL3jU4Goc4kKEL10T7Eye65ZqPNi4HRx8sAEX59pV1aEH7drNA==
@@ -3048,7 +3048,7 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.10.tgz#2e3ad0a680d96367103d3e670d41c2fed3da61ae"
   integrity sha512-3aRnHa1KlOEEhJ6+CvyHKK5vE9BcLGjtUpwvqYLRvYNQKMfabu3BwfJaA/SLW8dxe28LsNDjtHwePTuzn3gmOA==
 
-"@types/nodemailer-direct-transport@*", "@types/nodemailer-direct-transport@^1.0.32":
+"@types/nodemailer-direct-transport@*", "@types/nodemailer-direct-transport@^1.0.31", "@types/nodemailer-direct-transport@^1.0.32":
   version "1.0.32"
   resolved "https://registry.yarnpkg.com/@types/nodemailer-direct-transport/-/nodemailer-direct-transport-1.0.32.tgz#43e5f8afd55030e92b7b7c63e029acd71806659f"
   integrity sha512-1S0E405ghuApKUSH3x1dJpu/4Y8cQP4kQZ6BSLsfrM5uJB+IKKJuxCUVCDJoe3OTydPtzAoKFGggseXY97jlDw==
@@ -3063,7 +3063,7 @@
     "@types/nodemailer" "^3"
     aws-sdk "^2.37.0"
 
-"@types/nodemailer-smtp-transport@*", "@types/nodemailer-smtp-transport@^2.7.5":
+"@types/nodemailer-smtp-transport@*", "@types/nodemailer-smtp-transport@^2.7.4", "@types/nodemailer-smtp-transport@^2.7.5":
   version "2.7.5"
   resolved "https://registry.yarnpkg.com/@types/nodemailer-smtp-transport/-/nodemailer-smtp-transport-2.7.5.tgz#5b1d990c9e72b227e38a8ca4d7ede44cc662d984"
   integrity sha512-TziFYmQgyO9QuKvD3j7GcC6rnbp/Js9CEROm5h3u50AAeD8d8LcwoOlhosaEeMyPmy7fVXN63ZC1/MtjvzQViQ==
@@ -3082,7 +3082,7 @@
     "@types/nodemailer-smtp-transport" "*"
     aws-sdk "^2.37.0"
 
-"@types/nodemailer@^6.4.4":
+"@types/nodemailer@^6.4.1", "@types/nodemailer@^6.4.4":
   version "6.4.4"
   resolved "https://registry.yarnpkg.com/@types/nodemailer/-/nodemailer-6.4.4.tgz#c265f7e7a51df587597b3a49a023acaf0c741f4b"
   integrity sha512-Ksw4t7iliXeYGvIQcSIgWQ5BLuC/mljIEbjf615svhZL10PE9t+ei8O9gDaD3FPCasUJn9KTLwz2JFJyiiyuqw==
@@ -6727,7 +6727,7 @@ fakerator@^0.3.4:
   resolved "https://registry.yarnpkg.com/fakerator/-/fakerator-0.3.4.tgz#dbd4ee47cf05da45da30d272733ee9ec31f74591"
   integrity sha512-g5zg8XiBx46jyB+mOzOw32Snqffe32n+n92wn0VHpgHTltgLjgUszQrK8YXZf1yc7c9XvpFbBm8vJmSMEF44uw==
 
-fast-csv@^4.3.6:
+fast-csv@^4.3.1, fast-csv@^4.3.6:
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/fast-csv/-/fast-csv-4.3.6.tgz#70349bdd8fe4d66b1130d8c91820b64a21bc4a63"
   integrity sha512-2RNSpuwwsJGP0frGsOmTb9oUF+VkFSM4SyLTDgwf2ciHWTarN0lQTC+F2f/t5J9QjW+c65VFIAAu85GsvMIusw==
@@ -6800,7 +6800,7 @@ fast-stream-to-buffer@^1.0.0:
   dependencies:
     end-of-stream "^1.4.1"
 
-fast-xml-parser@^3.21.1:
+fast-xml-parser@^3.16.0, fast-xml-parser@^3.21.1:
   version "3.21.1"
   resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.21.1.tgz#152a1d51d445380f7046b304672dd55d15c9e736"
   integrity sha512-FTFVjYoBOZTJekiUsawGsSYV9QL0A+zDYCRj7y34IO6Jg+2IMYEtQa+bbictpdpV8dHxXywqU7C0gRDEOFtBFg==
@@ -7766,6 +7766,17 @@ http-proxy-agent@^4.0.1:
     "@tootallnate/once" "1"
     agent-base "6"
     debug "4"
+
+http-proxy-middleware@^1.0.6:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-1.3.1.tgz#43700d6d9eecb7419bf086a128d0f7205d9eb665"
+  integrity sha512-13eVVDYS4z79w7f1+NPllJtOQFx/FdUW4btIvVRMaRlUY9VGstAbo5MOhLEuUgZFRHn3x50ufn25zkj/boZnEg==
+  dependencies:
+    "@types/http-proxy" "^1.17.5"
+    http-proxy "^1.18.1"
+    is-glob "^4.0.1"
+    is-plain-obj "^3.0.0"
+    micromatch "^4.0.2"
 
 http-proxy-middleware@^2.0.1:
   version "2.0.1"
@@ -10171,7 +10182,7 @@ ms@^2.0.0, ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-multer@^1.4.3:
+multer@^1.4.2:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/multer/-/multer-1.4.3.tgz#4db352d6992e028ac0eacf7be45c6efd0264297b"
   integrity sha512-np0YLKncuZoTzufbkM6wEKp68EhWJXcU6fq6QqrSwkckd2LlMgd1UqhUJLj6NS/5sZ8dE8LYDWslsltJznnXlg==
@@ -10282,6 +10293,11 @@ nock@^13.2.1:
     json-stringify-safe "^5.0.1"
     lodash.set "^4.3.2"
     propagate "^2.0.0"
+
+node-addon-api@^3.0.0:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-3.2.1.tgz#81325e0a2117789c0128dab65e7e38f07ceba161"
+  integrity sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==
 
 node-adodb@^5.0.3:
   version "5.0.3"
@@ -10449,7 +10465,7 @@ nodemailer-wellknown@0.1.10:
   resolved "https://registry.yarnpkg.com/nodemailer-wellknown/-/nodemailer-wellknown-0.1.10.tgz#586db8101db30cb4438eb546737a41aad0cf13d5"
   integrity sha1-WG24EB2zDLRDjrVGc3pBqtDPE9U=
 
-nodemailer@^6.7.2:
+nodemailer@^6.5.0, nodemailer@^6.7.2:
   version "6.7.2"
   resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.7.2.tgz#44b2ad5f7ed71b7067f7a21c4fedabaec62b85e0"
   integrity sha512-Dz7zVwlef4k5R71fdmxwR8Q39fiboGbu3xgswkzGwczUfjp873rVxt1O46+Fh0j1ORnAC6L9+heI8uUpO6DT7Q==
@@ -12689,13 +12705,6 @@ split-on-first@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/split-on-first/-/split-on-first-1.1.0.tgz#f610afeee3b12bce1d0c30425e76398b78249a5f"
   integrity sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==
-
-split-string@^3.0.1, split-string@^3.0.2:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/split-string/-/split-string-3.1.0.tgz#7cb09dda3a86585705c64b39a6466038682e8fe2"
-  integrity sha512-NzNVhJDYpwceVVii8/Hu6DKfD2G+NrQHlS/V/qgv763EYudVwEcMQNxd2lh+0VrUByXN/oJkl5grOhYWvQUYiw==
-  dependencies:
-    extend-shallow "^3.0.0"
 
 split2@^2.1.0:
   version "2.2.0"

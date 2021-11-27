@@ -1,16 +1,8 @@
 import { EncounterChangeDate } from '@badvlasim/shared/models';
-import {
-  GraphQLID,
-  GraphQLInputObjectType,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType
-} from 'graphql';
-import { defaultListArgs, resolver } from 'graphql-sequelize';
+import { GraphQLInputObjectType, GraphQLObjectType } from 'graphql';
+import { resolver } from 'graphql-sequelize';
 import { getAttributeFields } from '../../attributes.type';
 import { EncounterChangeType } from './change-encounter.type';
-
 
 const EncounterChangeDateType = new GraphQLObjectType({
   name: 'EncounterChangeDate',
@@ -20,8 +12,7 @@ const EncounterChangeDateType = new GraphQLObjectType({
       encounterChange: {
         type: EncounterChangeType,
         resolve: resolver(EncounterChangeDate.associations.encounterChange)
-      },
-     
+      }
     })
 });
 

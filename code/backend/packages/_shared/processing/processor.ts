@@ -3,13 +3,13 @@ import { ProcessStep } from './process-step';
 import prettyMilliseconds from 'pretty-ms';
 
 export class Processor {
-  protected procesSteps: Map<string, ProcessStep<any>>;
+  protected procesSteps: Map<string, ProcessStep<unknown>>;
 
-  constructor(steps?: Map<string, ProcessStep<any>>) {
+  constructor(steps?: Map<string, ProcessStep<unknown>>) {
     this.procesSteps = steps ?? new Map();
   }
 
-  addStep(step: ProcessStep<any>, override: boolean = false) {
+  addStep(step: ProcessStep<unknown>, override = false) {
     if (!override && !this.procesSteps.has(step.name)) {
       this.procesSteps.set(step.name, step);
     } else {
@@ -31,7 +31,7 @@ export class Processor {
     return this.procesSteps.get(stepName)?.getData();
   }
 
-  async process(args?: any) {
+  async process(args?: unknown) {
     const totalStart = new Date().getTime();
 
     logger.debug(`Running process`);

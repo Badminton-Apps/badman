@@ -1,30 +1,22 @@
 import { exec } from 'child_process';
-import { CreateOptions, Op, Transaction, where } from 'sequelize';
+import { CreateOptions, Op, Transaction } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
-  ClubMembership,
-  DrawCompetition,
+  ClubMembership, Comment, DrawCompetition,
   DrawTournament,
   EventCompetition,
   Game,
-  GamePlayer,
-  Player,
-  RankingPlace,
+  GamePlayer, LastRankingPlace, Player, PlayerClaimMembership,
+  PlayerRoleMembership, RankingPlace,
   RankingPoint,
   RankingSystem,
   RequestLink,
   SubEventCompetition,
   SubEventTournament,
-  Team,
-  Comment,
-  TeamPlayerMembership,
+  Team, TeamPlayerMembership,
   TeamSubEventMembership,
-  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta,
-  LastRankingPlace,
-  RoleClaimMembership,
-  PlayerClaimMembership,
-  PlayerRoleMembership
+  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
@@ -50,7 +42,7 @@ export class DataBaseHandler {
       const models = Object.values(sequelizeModels);
 
       logger.debug('Connecting with ', {
-        ...config
+        ...config,
       });
 
       this._dialect = config.dialect;
@@ -63,9 +55,9 @@ export class DataBaseHandler {
             if (configObj.$current > 5) {
               logger.warn(message);
             }
-          }
+          },
         },
-        models
+        models,
       } as SequelizeOptions);
     }
   }
@@ -89,14 +81,14 @@ export class DataBaseHandler {
         SubEventTournament.getTableName(),
         DrawCompetition.getTableName(),
         DrawTournament.getTableName(),
-        RequestLink.getTableName()
+        RequestLink.getTableName(),
       ];
 
       await this._sequelize.query(
         `TRUNCATE ONLY "${tableToTruncate.join('","')}" RESTART IDENTITY`
       );
       await this._sequelize.query(`DELETE FROM "${Player.getTableName()}"`, {
-        transaction
+        transaction,
       });
 
       await this._enableForeignKeyCheck(transaction);
@@ -130,13 +122,13 @@ export class DataBaseHandler {
       case 'mysql':
         await this._sequelize.query('SET FOREIGN_KEY_CHECKS = 0', {
           raw: true,
-          transaction
+          transaction,
         });
         break;
       case 'postgres':
         await this._sequelize.query("SET session_replication_role='replica'", {
           raw: true,
-          transaction
+          transaction,
         });
         break;
     }
@@ -148,13 +140,13 @@ export class DataBaseHandler {
       case 'mysql':
         await this._sequelize.query('SET FOREIGN_KEY_CHECKS = 1', {
           raw: true,
-          transaction
+          transaction,
         });
         break;
       case 'postgres':
         await this._sequelize.query("SET session_replication_role='origin'", {
           raw: true,
-          transaction
+          transaction,
         });
         break;
     }
@@ -164,7 +156,7 @@ export class DataBaseHandler {
     // Get Club, team, base players from database
     const club = await this.getClubsTeamsForEnrollemnt(clubId, year);
     const primarySystem = await RankingSystem.findOne({
-      where: { primary: true }
+      where: { primary: true },
     });
     // Store in meta table
     for (const team of club?.teams) {
@@ -185,8 +177,8 @@ export class DataBaseHandler {
           where: {
             playerId: player.id,
             SystemId: primarySystem.id,
-            rankingDate: `${year}-05-15`
-          }
+            rankingDate: `${year}-05-15`,
+          },
         });
         player.lastRankingPlaces = [rankingPlaceMay.asLastRankingPlace()];
         teamPlayers.push(player);
@@ -196,7 +188,7 @@ export class DataBaseHandler {
           single: rankingPlaceMay.single,
           double: rankingPlaceMay.double,
           mix: rankingPlaceMay.mix,
-          gender: player.gender
+          gender: player.gender,
         } as TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta);
       }
 
@@ -205,7 +197,7 @@ export class DataBaseHandler {
 
       membership.meta = {
         teamIndex: team.baseIndex(primarySystem),
-        players: playerMeta
+        players: playerMeta,
       };
 
       await membership.save();
@@ -224,7 +216,7 @@ export class DataBaseHandler {
     try {
       return await Player.bulkCreate(users, {
         updateOnDuplicate: ['memberId', 'firstName', 'lastName', 'birthDate'],
-        returning: ['id']
+        returning: ['id'],
       });
     } catch (err) {
       logger.error('Something went wrong adding users', err);
@@ -234,9 +226,9 @@ export class DataBaseHandler {
 
   async makeSystemPrimary(id: string) {
     const currentSystems = await RankingSystem.findAll({
-      where: { primary: true }
+      where: { primary: true },
     });
-    currentSystems.forEach(system => {
+    currentSystems.forEach((system) => {
       system.primary = false;
       system.save();
     });
@@ -248,20 +240,20 @@ export class DataBaseHandler {
     }
   }
 
-  async createSystem(vaues, options: CreateOptions) {
+  async createSystem(vaues: RankingSystem, options: CreateOptions) {
     return RankingSystem.create(vaues, options);
   }
 
-  async addRankingPlaces(rankings) {
+  async addRankingPlaces(rankings: RankingPlace[]) {
     const transaction = await this._sequelize.transaction();
     try {
       logger.silly(`Adding ${rankings.length} places`);
       const chunks = splitInChunks(rankings, 500);
       for (const chunk of chunks) {
         await RankingPlace.bulkCreate(chunk, {
-          ignoreDuplicates: ['playerId'] as any,
+          ignoreDuplicates: true,
           transaction,
-          returning: false
+          returning: false,
         });
       }
       await transaction.commit();
@@ -275,24 +267,24 @@ export class DataBaseHandler {
   async getClubsTeamsForEnrollemnt(clubId: string, year: number) {
     return Club.findOne({
       where: {
-        id: clubId
+        id: clubId,
       },
       include: [
         {
           attributes: ['name', 'teamNumber', 'type', 'abbreviation'],
           model: Team,
           where: {
-            active: true
+            active: true,
           },
           include: [
             {
               model: Player,
-              as: 'captain'
+              as: 'captain',
             },
             {
               model: Player,
               as: 'players',
-              through: { where: { base: true, end: null } }
+              through: { where: { base: true, end: null } },
             },
             {
               model: SubEventCompetition,
@@ -303,15 +295,15 @@ export class DataBaseHandler {
                   required: true,
                   model: EventCompetition,
                   where: {
-                    startYear: year
+                    startYear: year,
                   },
-                  attributes: ['id', 'name']
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  attributes: ['id', 'name'],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
   }
 
@@ -326,7 +318,7 @@ export class DataBaseHandler {
   ) {
     args = {
       canBeDifferentMemberId: false,
-      ...args
+      ...args,
     };
 
     if (sourcePlayerId === destinationPlayerId) {
@@ -334,10 +326,10 @@ export class DataBaseHandler {
     }
 
     const destination = await Player.findByPk(destinationPlayerId, {
-      transaction: args.transaction
+      transaction: args.transaction,
     });
     const source = await Player.findByPk(sourcePlayerId, {
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     if (destination === null) {
@@ -363,7 +355,7 @@ export class DataBaseHandler {
     // Move memberships
     const destinationClubMemberships = await ClubMembership.findAll({
       where: { playerId: destination.id },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     // We only update if the releation ship doesn't exists already
@@ -374,17 +366,40 @@ export class DataBaseHandler {
         where: {
           playerId: source.id,
           clubId: {
-            [Op.notIn]: destinationClubMemberships.map(row => row.clubId)
-          }
+            [Op.notIn]: destinationClubMemberships.map((row) => row.clubId),
+          },
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
 
+    // set all to
+    await ClubMembership.update(
+      { end: new Date() },
+      {
+        where: {
+          playerId: destination.id,
+        },
+        returning: false,
+        transaction: args.transaction,
+      }
+    );
+
+    // Set the last created as current club membership
+    const lastCreated = await ClubMembership.findOne({
+      where: { playerId: destination.id },
+      order: [['createdAt', 'DESC']],
+      transaction: args.transaction,
+    });
+    if (lastCreated) {
+      lastCreated.end = null;
+      await lastCreated.save({ transaction: args.transaction });
+    }
+
     const destinationTeamMemberships = await TeamPlayerMembership.findAll({
       where: { playerId: destination.id },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     // NOTE: If a person is returning to the team this isn't registerd
@@ -394,17 +409,17 @@ export class DataBaseHandler {
         where: {
           playerId: source.id,
           teamId: {
-            [Op.notIn]: destinationTeamMemberships.map(row => row.teamId)
-          }
+            [Op.notIn]: destinationTeamMemberships.map((row) => row.teamId),
+          },
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
 
     const destinationRoleMemberships = await PlayerRoleMembership.findAll({
       where: { playerId: destination.id },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     await PlayerRoleMembership.update(
@@ -413,17 +428,17 @@ export class DataBaseHandler {
         where: {
           playerId: source.id,
           roleId: {
-            [Op.notIn]: destinationRoleMemberships.map(row => row.roleId)
-          }
+            [Op.notIn]: destinationRoleMemberships.map((row) => row.roleId),
+          },
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
 
     const destinationClaimMemberships = await PlayerClaimMembership.findAll({
       where: { playerId: destination.id },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     await PlayerClaimMembership.update(
@@ -432,30 +447,30 @@ export class DataBaseHandler {
         where: {
           playerId: source.id,
           claimId: {
-            [Op.notIn]: destinationClaimMemberships.map(row => row.claimId)
-          }
+            [Op.notIn]: destinationClaimMemberships.map((row) => row.claimId),
+          },
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
 
     // Delete reamining memberships
     await ClubMembership.destroy({
       where: { playerId: source.id },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
     await TeamPlayerMembership.destroy({
       where: { playerId: source.id },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
     await PlayerRoleMembership.destroy({
       where: { playerId: source.id },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
     await PlayerClaimMembership.destroy({
       where: { playerId: source.id },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     // Update where the player isn't a unique key
@@ -463,20 +478,20 @@ export class DataBaseHandler {
       { playerId: destination.id },
       {
         where: {
-          playerId: source.id
+          playerId: source.id,
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
     await Comment.update(
       { playerId: destination.id },
       {
         where: {
-          playerId: source.id
+          playerId: source.id,
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
 
@@ -484,19 +499,19 @@ export class DataBaseHandler {
       { playerId: destination.id },
       {
         where: {
-          playerId: source.id
+          playerId: source.id,
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
 
     const placesDest = await destination.getRankingPlaces({
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     const lplacesDest = await destination.getLastRankingPlaces({
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     await RankingPlace.update(
@@ -505,11 +520,11 @@ export class DataBaseHandler {
         where: {
           playerId: source.id,
           rankingDate: {
-            [Op.notIn]: placesDest.map(row => row.rankingDate.toString())
-          }
+            [Op.notIn]: placesDest.map((row) => row.rankingDate.toString()),
+          },
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
 
@@ -519,26 +534,26 @@ export class DataBaseHandler {
         where: {
           playerId: source.id,
           systemId: {
-            [Op.notIn]: lplacesDest.map(row => row.systemId.toString())
-          }
+            [Op.notIn]: lplacesDest.map((row) => row.systemId.toString()),
+          },
         },
         returning: false,
-        transaction: args.transaction
+        transaction: args.transaction,
       }
     );
 
     await LastRankingPlace.destroy({
       where: {
-        playerId: source.id
+        playerId: source.id,
       },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     await RankingPlace.destroy({
       where: {
-        playerId: source.id
+        playerId: source.id,
       },
-      transaction: args.transaction
+      transaction: args.transaction,
     });
 
     destination.sub = destination.sub ?? source.sub;
@@ -557,8 +572,8 @@ export class DataBaseHandler {
    * @param canMigrate Allows migration of DB
    * @param sync Forces DB to recreate every table, this also adds the default Ranking System
    */
-  dbCheck(canMigrate: boolean, sync: boolean = false) {
-    return new Promise(async (resolve, reject) => {
+  dbCheck(canMigrate: boolean, sync = false) {
+    return new Promise(async (resolve,) => {
       logger.debug(`Running dbCheck with`, { canMigrate, sync });
 
       if (canMigrate) {
@@ -569,9 +584,9 @@ export class DataBaseHandler {
           logger.info('Syncing');
           // Create non-existing schemas
           const mySchemas = ['import', 'ranking', 'event', 'security'];
-          const schemas = ((await this._sequelize.showAllSchemas(
+          const schemas = (await this._sequelize.showAllSchemas(
             {}
-          )) as unknown) as string[];
+          )) as unknown as string[];
 
           for (const schema of mySchemas) {
             if (schemas.indexOf(schema) === -1) {
@@ -595,7 +610,7 @@ export class DataBaseHandler {
 
   runCommmand(cmd: string) {
     return new Promise((res, rej) => {
-      const migrate = exec(cmd, { env: process.env }, err => {
+      const migrate = exec(cmd, { env: process.env }, (err) => {
         return err ? rej(err) : res('ok');
       });
       // Forward stdout+stderr to this process

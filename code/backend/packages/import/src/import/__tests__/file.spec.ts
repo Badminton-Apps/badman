@@ -5,7 +5,7 @@ import { CompetitionCpProcessor } from '../processors';
 
 jest.mock('child_process', () => {
   return {
-    spawn: (exe: string, args: any[]) => {
+    spawn: (exe: string, ) => {
       if (exe === 'mdb-export') {
         const readableStream = Readable.from('');
         return {
