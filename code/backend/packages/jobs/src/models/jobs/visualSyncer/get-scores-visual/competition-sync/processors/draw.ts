@@ -2,6 +2,7 @@ import {
   DrawCompetition,
   EncounterCompetition,
   Game,
+  logger,
   SubEventCompetition,
   XmlTournament
 } from '@badvlasim/shared';
@@ -45,7 +46,27 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       if (!xmlDraw) {
         continue;
       }
-      let dbDraw: DrawCompetition = draws.find(r => r.visualCode === `${xmlDraw.Code}`);
+      let dbDraws = draws.filter(r => r.visualCode === `${xmlDraw.Code}`);
+      let dbDraw = null;
+
+      if (dbDraws.length === 1) {
+        dbDraw = dbDraws[0];
+      } else if (dbDraws.length > 1) {
+        logger.warn('Having multiple? Removing old')
+        
+        // We have multiple encounters with the same visual code
+        const [first, ...rest] = dbDraws;
+        dbDraw = first;
+
+        await DrawCompetition.destroy({
+          where: {
+            id: {
+              [Op.in]: rest.map(e => e.id)
+            }
+          },
+          transaction: this.transaction
+        });
+      }
 
       if (!dbDraw) {
         dbDraw = await new DrawCompetition({

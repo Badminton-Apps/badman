@@ -2,7 +2,7 @@
 query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit: Int!) {
   player(id: $playerId) {
     id
-    games(limit: $limit, offset: $offset, order: "playedAt", direction: "desc") {
+    games(limit: $limit, offset: $offset, order: "reverse:playedAt") {
       id
       set1Team1
       set1Team2
@@ -13,8 +13,17 @@ query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit
       playedAt
       winner
       gameType
+
       competition {
         id
+        home {
+          id
+          name
+        }
+        away {
+          id
+          name
+        }
         draw {
           id
           name

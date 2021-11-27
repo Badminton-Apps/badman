@@ -81,6 +81,8 @@
     },
     "competition": {
         "title": "",
+        "last-updated": "",
+        "vs": "",
         "subevent": {
             "max": "",
             "min-base": "",
@@ -116,7 +118,6 @@
         "change-encounter": {
             "title": "",
             "description": "",
-            "vs": "",
             "home": "",
             "away": "",
             "possible": "",
@@ -203,11 +204,18 @@
         "females": "",
         "national": ""
     },
+    "usedForTeam": {
+        "title": "",
+        "description": "",
+        "select": "",
+        "example": ""
+    },
     "input": {
         "type": "",
         "memberId": "",
         "year": "",
         "name": "Nom",
+        "fullName": "Full nom",
         "firstname": "",
         "lastname": "",
         "abbreviation": "",
@@ -228,6 +236,7 @@
     "button": {
         "close": "",
         "delete": "",
+        "merge-accounts": "",
         "create": "",
         "edit": "",
         "done": "",

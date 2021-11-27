@@ -18,6 +18,10 @@ export const GameType = new GraphQLObjectType({
         type: new GraphQLList(GamePlayerType),
         resolve: resolver(Game.associations.players, {
           before: async (findOptions, args, context, info) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
             return findOptions;
           },
           after: (result, args, context) => {
@@ -32,23 +36,13 @@ export const GameType = new GraphQLObjectType({
 
       rankingPoints: {
         type: new GraphQLList(RankingPointType),
-        args: Object.assign(defaultListArgs(), {
-          direction: {
-            type: GraphQLString
-          },
-          order: {
-            type: GraphQLString
-          }
-        }),
+        args: Object.assign(defaultListArgs()),
         resolve: resolver(Game.associations.rankingPoints, {
           before: async (findOptions, args, context, info) => {
-            if (args.order && args.direction) {
-              findOptions = {
-                ...findOptions,
-                where: queryFixer(findOptions.where),
-                order: [[args.order, args.direction]]
-              };
-            }
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
             return findOptions;
           }
         })
@@ -60,6 +54,6 @@ export const GameType = new GraphQLObjectType({
       competition: {
         type: EncounterCompetitionType,
         resolve: resolver(Game.associations.competition)
-      },
+      }
     })
 });

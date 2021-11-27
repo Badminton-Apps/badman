@@ -7,20 +7,29 @@ import { CronJob } from '../cronJob';
 import { CompetitionSyncer, TournamentSyncer } from './visualSyncer/get-scores-visual';
 
 export class GetScoresVisual extends CronJob {
+  static dbEntry(): {
+    cron: string;
+    type: string;
+  } {
+    return {
+      cron: '0 2 * * *',
+      type: 'scores-visual'
+    };
+  }
+
   private _pageSize = 1000;
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
-  private _meta: any;
 
   constructor(cron: Cron) {
     super(cron);
-    this._meta = JSON.parse(cron.meta) as any;
-
     this._competitionSync = new CompetitionSyncer();
     this._tournamentSync = new TournamentSyncer();
   }
 
-  async run(args?: { date: Date }): Promise<void> {
+  
+
+  async run(args?: { date: Date; skip: string[] }): Promise<void> {
     // Use argument date, else stored date, finally use today
     const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
     logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
@@ -31,26 +40,50 @@ export class GetScoresVisual extends CronJob {
       return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
     });
 
+    this.dbCron.meta = {
+      percent: 0,
+      current: 0,
+      total: newEvents.length,
+    };
+    await this.dbCron.save();
+
     // newEvents = newEvents.filter(event => {
     //   return (
-    //     event.Name == 'PBA competitie 2021-2022'
+    //     event.Name === 'PBA jeugdcompetitie 2017-2018'
+    //     // && event.Name != 'PBA competitie 2021-2022'
+    //     // && event.Name != 'VVBBC interclubcompetitie 2021-2022'
+    //     // && event.Name != 'PBO competitie 2021-2022'
     //     // || event.Name == 'Limburgse interclubcompetitie 2021-2022'
     //     // || event.Name == 'WVBF Competitie 2021-2022'
     //   );
     // });
 
-    for (const xmlTournament of newEvents) {
+    for (let i = 0; i < newEvents.length; i++) {
+      const xmlTournament = newEvents[i];
+      const current = i + 1;
+      const total = newEvents.length;
+      const percent = Math.round(( current / total) * 10000) / 100;
+      logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${newEvents.length})`);
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-      try {
-        logger.info(`Processing ${xmlTournament.Name}`);
 
+      this.dbCron.meta = {
+        percent,
+        current,
+        total,
+      };
+      this.dbCron.save({ transaction });
+      try {
         if (
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
           xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
         ) {
-          await this._competitionSync.process({ transaction, xmlTournament });
+          if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('competition')) {
+            await this._competitionSync.process({ transaction, xmlTournament });
+          }
         } else {
-          await this._tournamentSync.process({ transaction, xmlTournament });
+          if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('tournament')) {
+            await this._tournamentSync.process({ transaction, xmlTournament });
+          }
         }
         await transaction.commit();
         logger.info(`Finished ${xmlTournament.Name}`);
@@ -81,7 +114,7 @@ export class GetScoresVisual extends CronJob {
           logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`);
         }
       },
-      headers: { 
+      headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/xml'
       }
@@ -94,7 +127,7 @@ export class GetScoresVisual extends CronJob {
     const body = parse(result.data, {
       attributeNamePrefix: '',
       ignoreAttributes: false,
-      parseAttributeValue: true 
+      parseAttributeValue: true
     }).Result as XmlResult;
     const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
 
@@ -104,15 +137,5 @@ export class GetScoresVisual extends CronJob {
     // }
 
     return tournaments;
-  }
-
-  static dbEntry(): {
-    cron: string;
-    type: string;
-  } {
-    return {
-      cron: '0 2 * * *',
-      type: 'scores-visual'
-    };
   }
 }

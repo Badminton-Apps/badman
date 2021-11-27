@@ -13,6 +13,7 @@ export * from './rankingPoint.type';
 export * from './rankingSystem.type';
 export * from './rankingSystemGroup.type';
 export * from './team.type';
+export * from './cron.type';
 
 export * from './tournaments';
 export * from './competition';

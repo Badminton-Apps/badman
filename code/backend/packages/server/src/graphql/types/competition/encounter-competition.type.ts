@@ -24,12 +24,6 @@ export const EncounterCompetitionType = new GraphQLObjectType({
     Object.assign(getAttributeFields(EncounterCompetition), {
       games: {
         type: new GraphQLList(GameType),
-        args: Object.assign(defaultListArgs(), {
-          playerId: {
-            description: 'id of the user',
-            type: new GraphQLNonNull(GraphQLID)
-          }
-        }),
         resolve: resolver(EncounterCompetition.associations.games, {
           before: async (findOptions, args, context, info) => {
             findOptions = {

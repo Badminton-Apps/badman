@@ -6,23 +6,13 @@ import { queryFixer } from '../queryFixer';
 
 export const gamesQuery = {
   type: new GraphQLList(GameType),
-  args: Object.assign(defaultListArgs(), {
-    direction: {
-      type: GraphQLString
-    }
-  }),
+  args: Object.assign(defaultListArgs()),
   resolve: resolver(Game, {
     before: async (findOptions, args, context, info) => {
-      if (args.order && args.direction) {
-        findOptions = {
-          ...findOptions,
-          where: queryFixer(findOptions.where),
-          order: [
-            [args.order, args.direction],
-            ['id', 'desc']
-          ]
-        };
-      }
+      findOptions = {
+        ...findOptions,
+        where: queryFixer(findOptions.where)
+      };
       return findOptions;
     }
   })
