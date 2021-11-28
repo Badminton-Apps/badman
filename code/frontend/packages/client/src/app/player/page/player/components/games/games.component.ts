@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, startWith, Subject } from 'rxjs';
 import { filter, finalize, map, scan, share, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { Game, Player, PlayerService, SystemService } from '../../../../../_shared';
 
@@ -15,6 +16,8 @@ export class GamesComponent implements OnInit {
   currentPage$ = new BehaviorSubject<number>(0);
   pageSize = 15;
   request$?: Observable<any>;
+
+  gameType = new FormControl();
 
   @Input()
   player!: Player;
@@ -35,52 +38,59 @@ export class GamesComponent implements OnInit {
     );
 
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
-    this.games$ = combineLatest([id$, system$, this.currentPage$]).pipe(
-      switchMap(([playerId, system, page]) => {
-        if (this.request$) {
-          return this.request$;
-        } else {
-          this.request$ = this.playerService
-            .getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize)
-            .pipe(
-              share(),
-              finalize(() => this.onFinalize())
-            );
-          return this.request$;
-        }
-      }),
-      scan((acc: any, newGames: Game[]) => {
-        function sameEvent(game1: Game, game2: Game) {
-          if (game1.tournament && game2.tournament) {
-            return game2.tournament.subEvent!.event!.id === game1.tournament.subEvent!.event!.id;
-          } else if (game1.competition && game2.competition) {
-            return game2.competition.id === game1.competition.id;
-          }
-
-          return false;
-        }
-        if (newGames.length > 0) {
-          // Find and match same event
-          return newGames.reduce((all, curr) => {
-            let prevWasSameEvent = false;
-            if (all.length > 0) {
-              const prevGame = all[all.length - 1][0];
-              prevWasSameEvent = sameEvent(curr, prevGame);
-            }
-            if (prevWasSameEvent) {
-              // Don't use a .push()
-              // That doesn't trigger the change detection
-              all[all.length - 1] = [...all[all.length - 1], curr];
+    this.games$ = this.gameType.valueChanges.pipe(
+      startWith(undefined),
+      tap((_) => this.currentPage$.next(0)),
+      switchMap((type) =>
+        combineLatest([id$, system$, this.currentPage$]).pipe(
+          switchMap(([playerId, system, page]) => {
+            if (this.request$) {
+              return this.request$;
             } else {
-              all.push([curr]);
+              this.request$ = this.playerService
+                .getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize, { gameType: type })
+                .pipe(
+                  share(),
+                  finalize(() => this.onFinalize())
+                );
+              return this.request$;
             }
+          }),
+          scan((acc: Game[][], newGames: Game[]) => {
+            if (newGames.length > 0) {
+              // Find and match same event
+              return newGames.reduce((all, curr) => {
+                let prevWasSameEvent = false;
+                if (all.length > 0) {
+                  const prevGame = all[all.length - 1][0];
+                  prevWasSameEvent = this._sameEvent(curr, prevGame);
+                }
+                if (prevWasSameEvent) {
+                  // Don't use a .push()
+                  // That doesn't trigger the change detection
+                  all[all.length - 1] = [...all[all.length - 1], curr];
+                } else {
+                  all.push([curr]);
+                }
 
-            return all;
-          }, acc);
-        }
-        return acc;
-      }, [])
+                return all;
+              }, acc);
+            }
+            return acc;
+          }, [])
+        )
+      )
     );
+  }
+
+  private _sameEvent(game1: Game, game2: Game) {
+    if (game1.tournament && game2.tournament) {
+      return game2.tournament.subEvent!.event!.id === game1.tournament.subEvent!.event!.id;
+    } else if (game1.competition && game2.competition) {
+      return game2.competition.id === game1.competition.id;
+    }
+
+    return false;
   }
 
   public onScroll(): void {
