@@ -60,6 +60,8 @@ const exportedComponents = [
   FlexLayoutModule,
   TranslateModule,
   CommonModule,
+  ReactiveFormsModule,
+  FormsModule,
   LoadingPipe,
   LevelToLetterPipe,
   EnumToArrayPipe,
