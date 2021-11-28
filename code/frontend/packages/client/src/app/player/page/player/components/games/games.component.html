@@ -1,19 +1,43 @@
-<div
-  class="results"
-  infiniteScroll
-  (scrolled)="onScroll()"
-  [fromRoot]="true"
-  [infiniteScrollContainer]="'.mat-sidenav-content'"
->
-  <app-games-result [games]="games" *ngFor="let games of this.games$ | async"> </app-games-result>
+<div fxLayout="column">
+  <form [formGroup]="this.gameFilter" fxFlex fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="200px">
+      <mat-label>{{ 'game.type' | translate }}</mat-label>
+      <mat-select formControlName="gameType">
+        <mat-option>All</mat-option>
+        <mat-option [value]="'S'">{{ 'systems.single' | translate }}</mat-option>
+        <mat-option [value]="'D'">{{ 'systems.double' | translate }}</mat-option>
+        <mat-option [value]="'MX'">{{ 'systems.mix' | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <div class="loading" *ngIf="this.request$ !== undefined">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </div>
+    <mat-form-field appearance="outline" fxFlex="200px">
+      <mat-label>{{ 'event.type' | translate }}</mat-label>
+      <mat-select formControlName="eventType">
+        <mat-option>All</mat-option>
+        <mat-option [value]="'competition'">{{ 'event.types.competition' | translate }}</mat-option>
+        <mat-option [value]="'tournament'">{{ 'event.types.tournament' | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
 
-  <div class="no more games" *ngIf="this.request$ == undefined">
-    <p>
-      <span translate>No more games</span>
-    </p>
+  <div
+    fxLayout="column"
+    class="results"
+    infiniteScroll
+    (scrolled)="onScroll()"
+    [fromRoot]="true"
+    [infiniteScrollContainer]="'.mat-sidenav-content'"
+  >
+    <app-games-result [games]="games" *ngFor="let games of this.games$ | async"> </app-games-result>
+
+    <div class="loading" *ngIf="this.request$ !== undefined">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </div>
+
+    <div class="no more games" *ngIf="this.request$ == undefined">
+      <p>
+        <span translate>No more games</span>
+      </p>
+    </div>
   </div>
 </div>
