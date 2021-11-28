@@ -1,6 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -28,8 +27,6 @@ const materialModules = [
   MatDialogModule,
   MatCheckboxModule,
   MatListModule,
-  ReactiveFormsModule,
-  FormsModule,
   MomentModule,
   MatInputModule,
 ];

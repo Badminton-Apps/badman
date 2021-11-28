@@ -60,7 +60,9 @@ const exportedComponents = [
   FlexLayoutModule,
   TranslateModule,
   CommonModule,
+  MatInputModule,
   ReactiveFormsModule,
+  MatFormFieldModule,
   FormsModule,
   LoadingPipe,
   LevelToLetterPipe,
@@ -97,7 +99,7 @@ const exportedComponents = [
     TranslateModule.forChild(),
     ...materialModules,
   ],
-  
+
   exports: [...exportedComponents],
 })
 export class SharedModule {}

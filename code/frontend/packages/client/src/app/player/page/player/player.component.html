@@ -7,7 +7,7 @@
   ></app-profile-header>
 
   <div class="player-details" *ngIf="!device.mobileQuery.matches">
-    <app-games [player]="player"></app-games>
+    <!-- <app-games [player]="player"></app-games> -->
     <app-ranking-evolution [player]="player"></app-ranking-evolution>
   </div>
   <div class="player-details-mobile" *ngIf="device.mobileQuery.matches">

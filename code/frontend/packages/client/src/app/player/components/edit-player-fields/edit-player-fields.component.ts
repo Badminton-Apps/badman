@@ -23,7 +23,6 @@ export class EditPlayerFieldsComponent implements OnInit {
     const firstNameControl = new FormControl(this.player.firstName, Validators.required);
     const lastNameControl = new FormControl(this.player.lastName, Validators.required);
     const memberIdControl = new FormControl(this.player.memberId, Validators.required);
-    const compPlayer = new FormControl(this.player.competitionPlayer);
     const subControl = new FormControl(this.player.sub);
 
     memberIdControl.disable();
@@ -40,8 +39,7 @@ export class EditPlayerFieldsComponent implements OnInit {
       firstName: firstNameControl,
       lastName: lastNameControl,
       memberId: memberIdControl,
-      compPlayer: compPlayer,
-      sub: subControl,
+      sub: subControl
     });
 
     this.fg.valueChanges.pipe(debounceTime(600)).subscribe((value) => {
@@ -51,7 +49,6 @@ export class EditPlayerFieldsComponent implements OnInit {
           firstName: this.fg.value.firstName,
           lastName: this.fg.value.lastName,
           memberId: this.fg.value.memberId,
-          competitionPlayer: this.fg.value.compPlayer,
           sub: this.fg.value.sub,
         });
       }

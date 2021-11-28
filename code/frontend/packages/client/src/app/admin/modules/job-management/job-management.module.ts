@@ -1,11 +1,9 @@
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -24,11 +22,9 @@ import { JobManagementRoutingModule } from './job-management-routing.module';
 import { OverviewJobsComponent } from './pages/overview-jobs/overview-jobs.component';
 
 const materialModules = [
-  FormsModule,
   MatButtonModule,
   MatCheckboxModule,
   MatDialogModule,
-  MatFormFieldModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
@@ -39,7 +35,6 @@ const materialModules = [
   MatTableModule,
   MatOptionModule,
   MatSelectModule,
-  ReactiveFormsModule,
   MatDatepickerModule,
 ];
 
