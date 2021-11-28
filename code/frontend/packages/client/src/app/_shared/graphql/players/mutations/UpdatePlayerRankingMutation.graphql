@@ -1,5 +1,5 @@
-mutation UpdatePlayer($rankingPlace: RankingPlaceInput!) {
-  updatePlayerRanking(rankingPlace: $rankingPlace) {
+mutation UpdatePlayer($playerId: String!, $rankingPlace: RankingPlaceInput!) {
+  updatePlayerRanking(rankingPlace: $rankingPlace, playerId: $playerId) {
     id
     lastRanking {
       id

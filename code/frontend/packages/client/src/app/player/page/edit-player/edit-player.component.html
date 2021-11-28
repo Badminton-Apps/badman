@@ -8,7 +8,8 @@
       <mat-tab label="Ranking">
         <app-edit-ranking
           [rankingPlace]="player.lastRanking"
-          (onRankingPlaceChanged)="this.onRankingPlaceChanged($event)"
+          [rankingSystem]="this.system"
+          (onRankingPlaceChanged)="this.onRankingPlaceChanged($event, player)"
         ></app-edit-ranking>
 
         <app-edit-competition-status

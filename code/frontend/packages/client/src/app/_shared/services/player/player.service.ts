@@ -187,12 +187,13 @@ export class PlayerService {
       .pipe(map((r) => new Player(r.data!.updatePlayer)));
   }
 
-  updatePlayerRanking(rankingPlace: Partial<RankingPlace>) {
+  updatePlayerRanking(rankingPlace: Partial<RankingPlace>, playerId: string) {
     return this.apollo
       .mutate<{ updatePlayerRanking: Player }>({
         mutation: updatePlayerRankingMutation,
         variables: {
           rankingPlace,
+          playerId
         }
       })
       .pipe(
