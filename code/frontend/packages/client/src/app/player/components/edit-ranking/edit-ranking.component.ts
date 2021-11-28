@@ -1,19 +1,7 @@
-import { debounceTime } from 'rxjs/operators';
-import { RankingSystem } from './../../../../../_shared/models/ranking-system.model';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { RankingPlace } from './../../../../../_shared/models/ranking-place.model';
-import { Player } from './../../../../../_shared/models/player.model';
-import {
-  Component,
-  ChangeDetectionStrategy,
-  EventEmitter,
-  Input,
-  Output,
-  Inject,
-  OnInit,
-  Optional,
-} from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Player, RankingPlace, RankingSystem } from 'app/_shared';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-ranking',
@@ -27,14 +15,14 @@ export class EditRankingComponent implements OnInit {
   @Output() onRankingPlaceChanged = new EventEmitter<Partial<RankingPlace>>();
 
   @Input()
-  rankingPlace!: RankingPlace;
+  rankingPlace?: RankingPlace;
 
   @Input()
   rankingSystem!: RankingSystem;
 
-  constructor() {}
 
   ngOnInit() {
+
     const singleControl = new FormControl(
       this.rankingPlace?.single ?? this.rankingSystem?.amountOfLevels ?? 0,
       Validators.required
@@ -54,10 +42,12 @@ export class EditRankingComponent implements OnInit {
       mix: mixControl,
     });
 
+  
+
     this.rankingForm.valueChanges.pipe(debounceTime(600)).subscribe((value) => {
       if (this.rankingForm.valid) {
         this.onRankingPlaceChanged.next({
-          id: this.rankingPlace.id,
+          id: this.rankingPlace?.id,
           single: +value.single,
           double: +value.double,
           mix: +value.mix,
