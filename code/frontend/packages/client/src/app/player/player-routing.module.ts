@@ -1,9 +1,7 @@
-import { AuthGuard } from './../_shared/guards/auth/auth.guard';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { ProfileComponent } from './page/profile/profile.component';
-import { PlayerComponent } from './page/player';
-import { TopPlayersComponent } from './page/top-players/top-players.component';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './../_shared';
+import { EditPlayerComponent, PlayerComponent, ProfileComponent, TopPlayersComponent } from './page';
 
 const routes: Routes = [
   {
@@ -12,7 +10,19 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   { path: 'top', component: TopPlayersComponent },
-  { path: ':id', component: PlayerComponent },
+  {
+    path: ':id',
+    children: [
+      {
+        path: '',
+        component: PlayerComponent,
+      },
+      {
+        path: 'edit',
+        component: EditPlayerComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({

@@ -2,7 +2,6 @@
 
 const { Op } = require('sequelize');
 
-const editRole = 'eab465d6-749a-4595-ad03-3c2fe3c31020';
 
 module.exports = {
   up: async (queryInterface, sequelize) => {

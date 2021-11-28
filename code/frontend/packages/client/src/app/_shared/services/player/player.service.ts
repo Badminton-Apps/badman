@@ -18,20 +18,21 @@ import * as getBasePlayers from '../../graphql/players/queries/GetBasePlayersQue
 import * as addPlayerMutation from '../../graphql/players/mutations/AddPlayerMutation.graphql';
 import * as updatePlayerMutation from '../../graphql/players/mutations/UpdatePlayerMutation.graphql';
 import * as updatePlayerRankingMutation from '../../graphql/players/mutations/UpdatePlayerRankingMutation.graphql';
+import { apolloCache as apolloCache } from 'app/graphql.module';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlayerService {
-  constructor(private apollo: Apollo, private httpClient: HttpClient) {}
+  constructor(private apollo: Apollo, private httpClient: HttpClient) {
+    console.log(apolloCache);
+  }
 
   searchPlayers(args?: { query?: string; where?: any; includeClub?: boolean; ranking?: Date }) {
     args = {
       includeClub: false,
       ...args,
     };
-
-    const ranking = args.ranking ?? null;
 
     return this.apollo
       .query<{ players: Player[] }>({
@@ -95,7 +96,13 @@ export class PlayerService {
       .pipe(map((x: any) => new Player(x.data?.player)));
   }
 
-  getPlayerGames(playerId: string, rankingType: RankingSystem, offset: number, limit: number,  where?: { [key: string]: any } ): Observable<Game[]> {
+  getPlayerGames(
+    playerId: string,
+    rankingType: RankingSystem,
+    offset: number,
+    limit: number,
+    where?: { [key: string]: any }
+  ): Observable<Game[]> {
     return this.apollo
       .query({
         query: gamesQuery,
@@ -104,7 +111,7 @@ export class PlayerService {
           rankingType: rankingType.id,
           offset,
           limit,
-          where
+          where,
         },
       })
       .pipe(map((x: any) => x.data?.player?.games.map((g: Partial<Game>) => new Game(g, rankingType))));
@@ -181,12 +188,32 @@ export class PlayerService {
   }
 
   updatePlayerRanking(rankingPlace: Partial<RankingPlace>) {
-    return this.apollo.mutate<{ updatePlayer: Player }>({
-      mutation: updatePlayerRankingMutation,
-      variables: {
-        rankingPlace,
-      },
-    });
+    return this.apollo
+      .mutate<{ updatePlayerRanking: Player }>({
+        mutation: updatePlayerRankingMutation,
+        variables: {
+          rankingPlace,
+        }
+      })
+      .pipe(
+        tap((result) => {
+          const player = result.data!.updatePlayerRanking;
+
+          const normalizedIdPlayer = apolloCache.identify({ id: player?.id, __typename: 'Player' });
+          apolloCache.evict({ id: normalizedIdPlayer });
+          
+          // Clear from cache
+          const normalizedIdLastRanking = apolloCache.identify({ id: player.lastRanking?.id, __typename: 'LastRankingPlace' });
+          apolloCache.evict({ id: normalizedIdLastRanking });
+
+          for(const ranking of player.rankingPlaces ?? []) {
+            const normalizedId = apolloCache.identify({ id: ranking?.id, __typename: 'RankingPlace' });
+            apolloCache.evict({ id: normalizedId });
+          }
+
+          apolloCache.gc();
+        })
+      );
   }
 
   getBasePlayers(clubId: String, type: String) {

@@ -1,12 +1,10 @@
 import { MatGoogleMapsAutocompleteModule } from '@angular-material-extensions/google-maps-autocomplete';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -27,9 +25,7 @@ import { DetailClubComponent, OverviewClubsComponent } from './pages';
 import { TeamOverviewComponent } from './pages/detail-club/components/team-overview/team-overview.component';
 
 const materialModules = [
-  FormsModule,
   MatButtonModule,
-  MatFormFieldModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
@@ -38,7 +34,6 @@ const materialModules = [
   MatProgressBarModule,
   MatSortModule,
   MatTableModule,
-  ReactiveFormsModule,
   MatIconModule,
   MatTabsModule,
   MatCardModule,

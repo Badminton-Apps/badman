@@ -61,8 +61,8 @@ export const PlayerType = new GraphQLObjectType({
             return null;
           }
 
-          const places = await obj.getLastRankingPlaces({ where: { systemId } });
-          return places[0];
+          const places = await obj.getLastRankingPlaces({ where: { systemId }, order: [['rankingDate', 'DESC']] });
+          return places?.[0];
         }
       },
       rankingPoints: {

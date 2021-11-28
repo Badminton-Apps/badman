@@ -46,8 +46,6 @@ export class MergeAccountComponent implements OnInit {
         )
       );
 
-     
-
       this._snackBar.open('Merged', undefined, {
         duration: 1000,
         panelClass: 'success',
