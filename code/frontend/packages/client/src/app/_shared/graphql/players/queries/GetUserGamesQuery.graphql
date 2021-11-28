@@ -1,8 +1,8 @@
 # Write your query or mutation here
-query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit: Int!) {
+query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit: Int!, $where: SequelizeJSON) {
   player(id: $playerId) {
     id
-    games(limit: $limit, offset: $offset, order: "reverse:playedAt") {
+    games(limit: $limit, offset: $offset, order: "reverse:playedAt", where: $where) {
       id
       set1Team1
       set1Team2
@@ -76,6 +76,7 @@ query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit
           single
           double
           mix
+          rankingDate
         }
       }
     }

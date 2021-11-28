@@ -1,3 +1,15 @@
+<div>
+  <mat-form-field appearance="outline" fxFlex="200px">
+    <mat-label>{{ 'game.type' | translate }}</mat-label>
+    <mat-select [formControl]="this.gameType">
+      <mat-option>All</mat-option>
+      <mat-option [value]="'S'">{{ 'systems.single' | translate }}</mat-option>
+      <mat-option [value]="'D'">{{ 'systems.double' | translate }}</mat-option>
+      <mat-option [value]="'MX'">{{ 'systems.mix' | translate }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
 <div
   class="results"
   infiniteScroll
