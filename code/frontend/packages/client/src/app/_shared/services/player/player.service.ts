@@ -106,6 +106,8 @@ export class PlayerService {
           limit,
           where
         },
+        // TODO: CHECK WHY THIS BEHAVES WEIRD FOR RANKING
+        fetchPolicy: 'no-cache',
       })
       .pipe(map((x: any) => x.data?.player?.games.map((g: Partial<Game>) => new Game(g, rankingType))));
   }
