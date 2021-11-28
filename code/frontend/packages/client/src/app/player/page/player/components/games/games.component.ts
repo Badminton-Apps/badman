@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, Observable, startWith, Subject } from 'rxjs';
@@ -17,7 +17,10 @@ export class GamesComponent implements OnInit {
   pageSize = 15;
   request$?: Observable<any>;
 
-  gameType = new FormControl();
+  gameFilter = new FormGroup({
+    gameType: new FormControl(undefined),
+    eventType: new FormControl(undefined),
+  });
 
   @Input()
   player!: Player;
@@ -38,17 +41,20 @@ export class GamesComponent implements OnInit {
     );
 
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
-    this.games$ = this.gameType.valueChanges.pipe(
+    this.games$ = this.gameFilter.valueChanges.pipe(
       startWith(undefined),
       tap((_) => this.currentPage$.next(0)),
-      switchMap((type) =>
+      switchMap((filter) =>
         combineLatest([id$, system$, this.currentPage$]).pipe(
           switchMap(([playerId, system, page]) => {
             if (this.request$) {
               return this.request$;
             } else {
               this.request$ = this.playerService
-                .getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize, { gameType: type })
+                .getPlayerGames(playerId!, system!, page * this.pageSize, this.pageSize, {
+                  gameType: filter?.gameType ?? undefined,
+                  linkType: filter?.eventType ?? undefined,
+                })
                 .pipe(
                   share(),
                   finalize(() => this.onFinalize())
