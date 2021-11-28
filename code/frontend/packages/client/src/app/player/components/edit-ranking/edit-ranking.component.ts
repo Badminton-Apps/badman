@@ -18,11 +18,10 @@ export class EditRankingComponent implements OnInit {
   rankingPlace?: RankingPlace;
 
   @Input()
-  rankingSystem!: RankingSystem;
+  rankingSystem?: RankingSystem;
 
 
   ngOnInit() {
-
     const singleControl = new FormControl(
       this.rankingPlace?.single ?? this.rankingSystem?.amountOfLevels ?? 0,
       Validators.required

@@ -4,8 +4,10 @@ import {
   LastRankingPlace,
   logger,
   Player,
-  RankingPlace
+  RankingPlace,
+  RankingSystem
 } from '@badvlasim/shared';
+import { GraphQLNonNull, GraphQLString } from 'graphql';
 import { ApiError } from '../../models/api.error';
 import { PlayerInputType, PlayerType, RankingPlaceInputType } from '../types';
 
@@ -117,12 +119,16 @@ export const updatePlayerRankingMutation = {
   args: {
     rankingPlace: {
       name: 'rankingPlace',
-      type: RankingPlaceInputType
+      type: new GraphQLNonNull(RankingPlaceInputType)
+    },
+    playerId: {
+      name: 'playerId',
+      type: new GraphQLNonNull(GraphQLString)
     }
   },
   resolve: async (
     findOptions: { [key: string]: object },
-    { rankingPlace },
+    { rankingPlace, playerId },
     context: { req: AuthenticatedRequest }
   ) => {
     if (
@@ -143,38 +149,56 @@ export const updatePlayerRankingMutation = {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbLastRanking = await LastRankingPlace.findByPk(rankingPlace.id, { transaction });
-      dbLastRanking.single = rankingPlace.single ?? dbLastRanking.single;
-      dbLastRanking.double = rankingPlace.double ?? dbLastRanking.double;
-      dbLastRanking.mix = rankingPlace.mix ?? dbLastRanking.mix;
-      await dbLastRanking.save({ transaction });
-
-      const dbRankingPlaces = await RankingPlace.findAll({
-        where: {
-          playerId: dbLastRanking.playerId,
-          SystemId: dbLastRanking.systemId
-        },
-        transaction
-      });
-
-      dbRankingPlaces.sort((a, b) => {
-        return b.rankingDate.getTime() - a.rankingDate.getTime();
-      });
-
-      for (const dbRankingPlace of dbRankingPlaces) {
-        dbRankingPlace.single = rankingPlace.single ?? dbRankingPlace.single;
-        dbRankingPlace.double = rankingPlace.double ?? dbRankingPlace.double;
-        dbRankingPlace.mix = rankingPlace.mix ?? dbRankingPlace.mix;
-        await dbRankingPlace.save({ transaction });
-
-        // Go back untill update was possible
-        if (dbRankingPlace.updatePossible == true) {
-          break;
+      if (dbLastRanking !== null) {
+        if (dbLastRanking.playerId !== playerId) {
+          throw new ApiError({
+            code: 500,
+            message: 'This ranking place is from another player'
+          });
         }
+
+        dbLastRanking.single = rankingPlace.single ?? dbLastRanking.single;
+        dbLastRanking.double = rankingPlace.double ?? dbLastRanking.double;
+        dbLastRanking.mix = rankingPlace.mix ?? dbLastRanking.mix;
+        await dbLastRanking.save({ transaction });
+
+        const dbRankingPlaces = await RankingPlace.findAll({
+          where: {
+            playerId: dbLastRanking.playerId,
+            SystemId: dbLastRanking.systemId
+          },
+          transaction
+        });
+
+        dbRankingPlaces.sort((a, b) => {
+          return b.rankingDate.getTime() - a.rankingDate.getTime();
+        });
+
+        for (const dbRankingPlace of dbRankingPlaces) {
+          dbRankingPlace.single = rankingPlace.single ?? dbRankingPlace.single;
+          dbRankingPlace.double = rankingPlace.double ?? dbRankingPlace.double;
+          dbRankingPlace.mix = rankingPlace.mix ?? dbRankingPlace.mix;
+          await dbRankingPlace.save({ transaction });
+
+          // Go back untill update was possible
+          if (dbRankingPlace.updatePossible == true) {
+            break;
+          }
+        }
+      } else {
+        const system = await RankingSystem.findOne({where: {primary: true}});
+        await new LastRankingPlace({
+          playerId ,
+          systemId: system.id,
+          single: rankingPlace.single,
+          double: rankingPlace.double,
+          mix: rankingPlace.mix
+        }).save({ transaction });
       }
 
       await transaction.commit();
 
-      return await Player.findByPk(dbLastRanking.playerId);
+      return await Player.findByPk(playerId);
     } catch (e) {
       logger.error('rollback', e);
       await transaction.rollback();
