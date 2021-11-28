@@ -180,6 +180,7 @@
     }
   },
   "event": {
+    "type": "Event type",
     "types": {
       "competition": "Competitie",
       "tournament": "Toernooien"
@@ -199,7 +200,7 @@
     "bye": "bye"
   },
   "game": {
-    "type": "Type"
+    "type": "Spel type"
   },
   "gender": {
     "select": "Selecteer",

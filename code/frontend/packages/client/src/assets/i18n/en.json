@@ -180,6 +180,7 @@
     }
   },
   "event": {
+    "type": "Event type",
     "types": {
       "competition": "Competition",
       "tournament": "Tournament"
@@ -199,7 +200,7 @@
     "bye": "Bye"
   },
   "game": {
-    "type": "Type"
+    "type": "Game type"
   },
   "usedForTeam": {
     "title": "Team names",
