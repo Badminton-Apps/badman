@@ -95,7 +95,7 @@ export class PlayerService {
       .pipe(map((x: any) => new Player(x.data?.player)));
   }
 
-  getPlayerGames(playerId: string, rankingType: RankingSystem, offset: number, limit: number): Observable<Game[]> {
+  getPlayerGames(playerId: string, rankingType: RankingSystem, offset: number, limit: number,  where?: { [key: string]: any } ): Observable<Game[]> {
     return this.apollo
       .query({
         query: gamesQuery,
@@ -104,6 +104,7 @@ export class PlayerService {
           rankingType: rankingType.id,
           offset,
           limit,
+          where
         },
         // TODO: CHECK WHY THIS BEHAVES WEIRD FOR RANKING
         fetchPolicy: 'no-cache',
