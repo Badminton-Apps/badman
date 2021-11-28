@@ -13,7 +13,6 @@ query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit
       playedAt
       winner
       gameType
-
       competition {
         id
         home {

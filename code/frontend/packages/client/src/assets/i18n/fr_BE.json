@@ -176,6 +176,7 @@
     }
   },
   "event": {
+    "type": "",
     "types": {
       "competition": "",
       "tournament": ""
