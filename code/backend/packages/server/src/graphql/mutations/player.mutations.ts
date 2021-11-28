@@ -1,4 +1,11 @@
-import { AuthenticatedRequest, DataBaseHandler, LastRankingPlace, logger, Player, RankingPlace } from '@badvlasim/shared';
+import {
+  AuthenticatedRequest,
+  DataBaseHandler,
+  LastRankingPlace,
+  logger,
+  Player,
+  RankingPlace
+} from '@badvlasim/shared';
 import { ApiError } from '../../models/api.error';
 import { PlayerInputType, PlayerType, RankingPlaceInputType } from '../types';
 
@@ -10,7 +17,11 @@ export const addPlayerMutation = {
       type: PlayerInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { player }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { player },
+    context: { req: AuthenticatedRequest }
+  ) => {
     // || !context.req.user.hasAnyPermission(['add:player'])
     if (context?.req?.user === null) {
       // logger.warn("User tried something it should't have done", {
@@ -53,7 +64,11 @@ export const updatePlayerMutation = {
       type: PlayerInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { player }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { player },
+    context: { req: AuthenticatedRequest }
+  ) => {
     // TODO: check if the player is in the club and thbe user is allowed to change values
 
     if (
@@ -105,8 +120,15 @@ export const updatePlayerRankingMutation = {
       type: RankingPlaceInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { rankingPlace }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:player-ranking'])) {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { rankingPlace },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    if (
+      context?.req?.user === null ||
+      !context.req.user.hasAnyPermission(['edit:player-ranking'])
+    ) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:player-ranking']
@@ -120,30 +142,39 @@ export const updatePlayerRankingMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbRankingPlace = await RankingPlace.findByPk(rankingPlace.id, { transaction });
-      dbRankingPlace.single = rankingPlace.single ?? dbRankingPlace.single;
-      dbRankingPlace.double = rankingPlace.double ?? dbRankingPlace.double;
-      dbRankingPlace.mix = rankingPlace.mix ?? dbRankingPlace.mix;
-      await dbRankingPlace.save({ transaction });
+      const dbLastRanking = await LastRankingPlace.findByPk(rankingPlace.id, { transaction });
+      dbLastRanking.single = rankingPlace.single ?? dbLastRanking.single;
+      dbLastRanking.double = rankingPlace.double ?? dbLastRanking.double;
+      dbLastRanking.mix = rankingPlace.mix ?? dbLastRanking.mix;
+      await dbLastRanking.save({ transaction });
 
-      const dbLastRanking = await LastRankingPlace.findOne({
+      const dbRankingPlaces = await RankingPlace.findAll({
         where: {
-          playerId: dbRankingPlace.playerId,
-          rankingDate: dbRankingPlace.rankingDate,
-          systemId: dbRankingPlace.SystemId
+          playerId: dbLastRanking.playerId,
+          SystemId: dbLastRanking.systemId
         },
         transaction
       });
 
-      // Update if it is the last player ranking
-      if (dbLastRanking) {
-        dbLastRanking.single = rankingPlace.single ?? dbLastRanking.single;
-        dbLastRanking.double = rankingPlace.double ?? dbLastRanking.double;
-        dbLastRanking.mix = rankingPlace.mix ?? dbLastRanking.mix;
-        await dbLastRanking.save({ transaction });
+      dbRankingPlaces.sort((a, b) => {
+        return b.rankingDate.getTime() - a.rankingDate.getTime();
+      });
+
+      for (const dbRankingPlace of dbRankingPlaces) {
+        dbRankingPlace.single = rankingPlace.single ?? dbRankingPlace.single;
+        dbRankingPlace.double = rankingPlace.double ?? dbRankingPlace.double;
+        dbRankingPlace.mix = rankingPlace.mix ?? dbRankingPlace.mix;
+        await dbRankingPlace.save({ transaction });
+
+        // Go back untill update was possible
+        if (dbRankingPlace.updatePossible == true) {
+          break;
+        }
       }
 
       await transaction.commit();
+
+      return await Player.findByPk(dbLastRanking.playerId);
     } catch (e) {
       logger.error('rollback', e);
       await transaction.rollback();

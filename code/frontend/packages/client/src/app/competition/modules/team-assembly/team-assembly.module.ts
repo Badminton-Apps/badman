@@ -1,11 +1,9 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -19,8 +17,6 @@ import { TeamAssemblyRoutingModule } from './team-assembly-routing.module';
 
 const materialModules = [
   MatAutocompleteModule,
-  MatFormFieldModule,
-  ReactiveFormsModule,
   MatInputModule,
   MatButtonModule,
   DragDropModule,

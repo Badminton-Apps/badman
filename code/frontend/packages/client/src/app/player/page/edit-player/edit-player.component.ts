@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Claim, Player, PlayerService, SystemService } from 'app/_shared';
+import { Claim, Player, PlayerService, RankingPlace, SystemService } from 'app/_shared';
 import { ClaimService } from 'app/_shared/services/security/claim.service';
 import { combineLatest, Observable, lastValueFrom } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { RankingPlace } from './../../../../../_shared/models/ranking-place.model';
 @Component({
   templateUrl: './edit-player.component.html',
   styleUrls: ['./edit-player.component.scss'],

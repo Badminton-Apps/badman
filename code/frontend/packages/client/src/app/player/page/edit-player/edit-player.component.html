@@ -1,0 +1,29 @@
+<ng-container *ngIf="this.player$ | async as player">
+  <div class="mat-subheading-1">Edit {{ player.fullName }}</div>
+  <mat-tab-group dynamicHeight>
+    <mat-tab label="Player">
+      <app-player-fields [player]="player" (onPlayerChanged)="this.onPlayerUpdated($event)"></app-player-fields>
+    </mat-tab>
+    <app-has-claim [any]="['edit:ranking', 'competition-status:player']">
+      <mat-tab label="Ranking">
+        <app-edit-ranking
+          [rankingPlace]="player.lastRanking"
+          (onRankingPlaceChanged)="this.onRankingPlaceChanged($event)"
+        ></app-edit-ranking>
+
+        <app-edit-competition-status
+          [player]="player"
+          (onPlayerChanged)="this.onPlayerUpdated($event)"
+        ></app-edit-competition-status>
+      </mat-tab>
+    </app-has-claim>
+    <app-has-claim [any]="['edit:claims']">
+      <mat-tab label="Permissions">
+        <app-edit-permissions
+          [player]="player"
+          (onClaimChanged)="this.claimChanged($event, player)"
+        ></app-edit-permissions
+      ></mat-tab>
+    </app-has-claim>
+  </mat-tab-group>
+</ng-container>

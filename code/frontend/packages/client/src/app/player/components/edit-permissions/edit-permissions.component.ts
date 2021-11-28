@@ -1,23 +1,7 @@
-import { ClaimService } from 'app/_shared/services/security/claim.service';
-import { Claim, Player } from 'app/_shared';
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-  Output,
-  EventEmitter,
-} from '@angular/core';
-import { Observable, combineLatest } from 'rxjs';
-import {
-  groupBy,
-  map,
-  mergeMap,
-  switchMap,
-  take,
-  tap,
-  toArray,
-} from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Claim, ClaimService, Player } from 'app/_shared';
+import { combineLatest, Observable } from 'rxjs';
+import { groupBy, map, mergeMap, take, toArray } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-permissions',

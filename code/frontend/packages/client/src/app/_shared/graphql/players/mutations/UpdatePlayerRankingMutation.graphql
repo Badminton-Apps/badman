@@ -1,5 +1,11 @@
 mutation UpdatePlayer($rankingPlace: RankingPlaceInput!) {
   updatePlayerRanking(rankingPlace: $rankingPlace) {
     id
+    lastRanking {
+      id
+    }
+    rankingPlaces {
+      id
+    }
   }
 }
