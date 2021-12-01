@@ -12,6 +12,23 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/label-pr.yml
+
+  changed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bump version and create changelog
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dry_run: true    
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v1
+        
+        with:
+          message: ${{ steps.tag_version.outputs.changelog }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build:
     name: Bootstrap, Build & Test.
     runs-on: ubuntu-latest
