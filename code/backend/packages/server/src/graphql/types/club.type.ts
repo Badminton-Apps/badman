@@ -1,4 +1,4 @@
-import { Club, Player } from '@badvlasim/shared/models';
+import { Club, ClubMembership, Player } from '@badvlasim/shared/models';
 import {
   GraphQLInputObjectType,
   GraphQLInt,
@@ -67,25 +67,31 @@ export const ClubType = new GraphQLObjectType({
           }
         }),
         resolve: async (obj: Club, args: { [key: string]: object }) => {
-          let where = {}
+          let where = {};
 
-          if (args.where){
+          if (args.where) {
             where = queryFixer(args.where);
           }
 
           const club = await Club.findOne({
             attributes: ['id'],
             where: { id: obj.id },
-            include: [
-              { model: Player, required: false, where, through: { where: { end: null } } }
-            ]
+            include: [{ model: Player, required: false, where, through: { where: { end: null } } }]
           });
 
           return club?.players;
         }
-        
+      },
+      clubMembership: {
+        type: ClubMembershipType
       }
     })
+});
+
+export const ClubMembershipType = new GraphQLObjectType({
+  name: 'ClubMembership',
+  description: 'A Club bMembership',
+  fields: () => Object.assign(getAttributeFields(ClubMembership))
 });
 
 export const ClubInputType = new GraphQLInputObjectType({
@@ -94,6 +100,18 @@ export const ClubInputType = new GraphQLInputObjectType({
   fields: () =>
     Object.assign(
       getAttributeFields(Club, { exclude: ['createdAt', 'updatedAt'], optionalString: ['id'] })
+    )
+});
+
+export const ClubMembershipInputType = new GraphQLInputObjectType({
+  name: 'ClubMembershipInput',
+  description: 'A Club Membership input type',
+  fields: () =>
+    Object.assign(
+      getAttributeFields(ClubMembership, {
+        exclude: ['createdAt', 'updatedAt'],
+        optionalString: ['id', 'playerId', 'clubId']
+      })
     )
 });
 

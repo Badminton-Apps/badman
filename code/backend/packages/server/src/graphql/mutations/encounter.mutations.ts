@@ -14,7 +14,7 @@ import { parse } from 'fast-xml-parser';
 import axios from 'axios';
 import moment from 'moment';
 import { Transaction } from 'sequelize/types';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { EncounterChangeInputType, EncounterChangeType } from '../types';
 
 export const addChangeEncounterMutation = (notificationService: NotificationService) => {

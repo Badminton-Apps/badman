@@ -40,8 +40,8 @@
     <div class="name">
       <span class="up"> {{ this.player.firstName }} {{ this.player.lastName }}</span>
       <span class="down">
-        <ng-container *ngIf="this.playerClub"
-          ><a [routerLink]="['/', 'club', this.playerClub.id]">{{ this.playerClub.name }}</a> -</ng-container
+        <ng-container *ngIf="this.player.club"
+          ><a [routerLink]="['/', 'club', this.player.club?.id]">{{ this.player.club?.name }}</a> -</ng-container
         >
         {{ this.player.memberId }} - {{ this.player.gender }}
       </span>

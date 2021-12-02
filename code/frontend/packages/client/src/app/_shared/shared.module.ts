@@ -1,3 +1,5 @@
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -20,6 +22,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgcCookieConsentModule } from 'ngx-cookieconsent';
+import { MomentModule } from 'ngx-moment';
 import {
   HeaderSearchComponent,
   LanguageComponent,
@@ -54,6 +57,7 @@ const materialModules = [
   ReactiveFormsModule,
   FormsModule,
   MatOptionModule,
+  MomentModule
 ];
 
 const exportedComponents = [
@@ -71,6 +75,7 @@ const exportedComponents = [
   PlayerSearchComponent,
   ClaimComponent,
   HasClaimComponent,
+  MomentModule
 ];
 
 @NgModule({

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { MomentDateModule } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,11 +19,18 @@ import { CovalentPagingModule } from '@covalent/core/paging';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentLineEchartsModule } from '@covalent/echarts/line';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
+import { SelctionComponentsModule } from 'app/_shared';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MomentModule } from 'ngx-moment';
 import { SharedModule } from '../_shared';
-import { EditPermissionsComponent, EditPlayerFieldsComponent, EditRankingComponent } from './components';
 import {
   ChartComponent,
+  EditClubHistoryComponent,
+  EditCompetitionStatusComponent,
+  EditPermissionsComponent,
+  EditPlayerComponent,
+  EditPlayerFieldsComponent,
+  EditRankingComponent,
   GameResultComponent,
   GamesComponent,
   GamesResultComponent,
@@ -36,10 +44,9 @@ import {
   ProfileHeaderComponent,
   RankingEvolutionComponent,
   TopPlayersComponent,
-  EditPlayerComponent,
+  EditClubHistoryDialogComponent,
 } from './page';
 import { PlayerRoutingModule } from './player-routing.module';
-import { EditCompetitionStatusComponent } from './components/edit-competition-status/edit-competition-status.component';
 
 const materialModules = [
   MatCardModule,
@@ -55,6 +62,7 @@ const materialModules = [
   MatExpansionModule,
   MatDialogModule,
   MatSlideToggleModule,
+  MatDatepickerModule,
 ];
 
 const covalentModules = [
@@ -65,7 +73,7 @@ const covalentModules = [
   CovalentPagingModule,
 ];
 
-const otherModules = [MomentDateModule, InfiniteScrollModule];
+const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, SelctionComponentsModule];
 
 @NgModule({
   declarations: [
@@ -88,6 +96,8 @@ const otherModules = [MomentDateModule, InfiniteScrollModule];
     MergeAccountComponent,
     MergePlayerComponent,
     EditCompetitionStatusComponent,
+    EditClubHistoryComponent,
+    EditClubHistoryDialogComponent,
   ],
   imports: [SharedModule, ...materialModules, ...covalentModules, ...otherModules, PlayerRoutingModule],
 })
