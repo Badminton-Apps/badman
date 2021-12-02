@@ -8,7 +8,7 @@ import {
   RankingSystem
 } from '@badvlasim/shared';
 import { GraphQLNonNull, GraphQLString } from 'graphql';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { PlayerInputType, PlayerType, RankingPlaceInputType } from '../types';
 
 export const addPlayerMutation = {

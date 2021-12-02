@@ -6,7 +6,7 @@ import {
   GroupSystems,
   AuthenticatedRequest,
 } from '@badvlasim/shared';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RankingSystemInputType, RankingSystemType } from '../types';
 
 export const addRankingSystemMutation = {

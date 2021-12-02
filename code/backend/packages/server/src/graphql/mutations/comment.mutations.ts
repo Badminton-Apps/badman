@@ -1,5 +1,5 @@
 import { GraphQLID, GraphQLNonNull } from 'graphql';
-import { ApiError } from './../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { Comment, DataBaseHandler, logger, EventCompetition, AuthenticatedRequest } from '@badvlasim/shared';
 import { CommentInputType, CommentType } from '../types';
 

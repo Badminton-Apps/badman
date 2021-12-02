@@ -10,8 +10,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CompetitionComponentsModule } from 'app/competition/components';
-import { SharedModule } from 'app/_shared';
+import { SelctionComponentsModule, SharedModule } from 'app/_shared';
 import { AssignTeamComponent } from './pages';
 import { TeamEnrollmentComponent } from './pages/team-enrollment/team-enrollment.component';
 import { TeamEnrolmentRoutingModule } from './team-enrollment-routing.module';
@@ -32,6 +31,6 @@ const materialModules = [
 
 @NgModule({
   declarations: [TeamEnrollmentComponent, AssignTeamComponent],
-  imports: [SharedModule, TeamEnrolmentRoutingModule, CompetitionComponentsModule, ...materialModules],
+  imports: [SharedModule, TeamEnrolmentRoutingModule, SelctionComponentsModule, ...materialModules],
 })
 export class TeamEnrolmentModule {}

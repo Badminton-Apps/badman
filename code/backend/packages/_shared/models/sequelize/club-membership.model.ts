@@ -34,6 +34,9 @@ export class ClubMembership extends Model {
   @Column
   clubId: string;
 
+  
+  club: Club;
+  player: Player;
 
   @Column
   end?: Date;

@@ -16,7 +16,7 @@ import {
 import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
 import moment from 'moment';
 import { Op } from 'sequelize';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { TeamInputType, TeamType } from '../types';
 
 export const addTeamMutation = {

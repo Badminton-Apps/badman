@@ -24,9 +24,7 @@ import { apolloCache as apolloCache } from 'app/graphql.module';
   providedIn: 'root',
 })
 export class PlayerService {
-  constructor(private apollo: Apollo, private httpClient: HttpClient) {
-    console.log(apolloCache);
-  }
+  constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
   searchPlayers(args?: { query?: string; where?: any; includeClub?: boolean; ranking?: Date }) {
     args = {
@@ -193,8 +191,8 @@ export class PlayerService {
         mutation: updatePlayerRankingMutation,
         variables: {
           rankingPlace,
-          playerId
-        }
+          playerId,
+        },
       })
       .pipe(
         tap((result) => {
@@ -202,12 +200,15 @@ export class PlayerService {
 
           const normalizedIdPlayer = apolloCache.identify({ id: player?.id, __typename: 'Player' });
           apolloCache.evict({ id: normalizedIdPlayer });
-          
+
           // Clear from cache
-          const normalizedIdLastRanking = apolloCache.identify({ id: player.lastRanking?.id, __typename: 'LastRankingPlace' });
+          const normalizedIdLastRanking = apolloCache.identify({
+            id: player.lastRanking?.id,
+            __typename: 'LastRankingPlace',
+          });
           apolloCache.evict({ id: normalizedIdLastRanking });
 
-          for(const ranking of player.rankingPlaces ?? []) {
+          for (const ranking of player.rankingPlaces ?? []) {
             const normalizedId = apolloCache.identify({ id: ranking?.id, __typename: 'RankingPlace' });
             apolloCache.evict({ id: normalizedId });
           }
