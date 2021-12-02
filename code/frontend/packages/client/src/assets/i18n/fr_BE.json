@@ -269,7 +269,10 @@
     "warning": ""
   },
   "club": {
-    "number": ""
+    "number": "",
+    "current": "",
+    "start": "",
+    "end": ""
   },
   "pickers": {
     "select-team": "",

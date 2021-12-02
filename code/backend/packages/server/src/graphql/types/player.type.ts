@@ -1,4 +1,4 @@
-import { Club, Player, RankingSystem } from '@badvlasim/shared/models';
+import { Club, ClubMembership, Player, RankingSystem } from '@badvlasim/shared/models';
 import {
   GraphQLBoolean,
   GraphQLInputObjectType,
@@ -7,10 +7,9 @@ import {
   GraphQLString
 } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
-import { Op } from 'sequelize';
+import { ClubType } from '.';
 import { queryFixer } from '../queryFixer';
 import { getAttributeFields } from './attributes.type';
-import { ClubType } from './club.type';
 import { GameType } from './game.type';
 import { LastRankingPlaceType, RankingPlaceType } from './rankingPlace.type';
 import { RankingPointType } from './rankingPoint.type';
@@ -61,7 +60,10 @@ export const PlayerType = new GraphQLObjectType({
             return null;
           }
 
-          const places = await obj.getLastRankingPlaces({ where: { systemId }, order: [['rankingDate', 'DESC']] });
+          const places = await obj.getLastRankingPlaces({
+            where: { systemId },
+            order: [['rankingDate', 'DESC']]
+          });
           return places?.[0];
         }
       },
@@ -94,36 +96,37 @@ export const PlayerType = new GraphQLObjectType({
       base: {
         type: GraphQLBoolean
       },
-      clubs: {
-        type: new GraphQLList(ClubType),
-        args: Object.assign(defaultListArgs(), {
-          end: {
-            type: GraphQLString
-          }
-        }),
-
-        resolve: async (obj: Player, args: { end: string; where: { [key: string]: object } }) => {
-          const where = {
-            end: undefined
-          };
-
-          if (!args.end) {
-            where.end = null;
-          } else {
-            where.end = {
-              [Op.gte]: args.end
-            };
-          }
-
-          args.where = queryFixer(args.where);
-
-          const player = await Player.findOne({
-            attributes: ['id'],
-            where: { id: obj.id },
-            include: [{ model: Club, through: { where } }]
+      club: {
+        description: 'The current club of the player',
+        type: ClubType,
+        resolve: async (obj: Player) => {
+          // Todo, do this via associations
+          const memberShip = await ClubMembership.findOne({
+            where: { end: null, playerId: obj.id }
           });
-          return player?.clubs;
+
+          return Club.findByPk(memberShip?.clubId);
         }
+      },
+      clubs: {
+        description: 'All the club the player has been a part of',
+        type: new GraphQLList(ClubType),
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(Player.associations.clubs, {
+          before: async (findOptions: { [key: string]: object | boolean }) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          },
+          after: (results: (Club & { clubMembership: ClubMembership })[]) => {
+            return results.map((result) => {
+              result.clubMembership = result.getDataValue('ClubMembership');
+              return result;
+            });
+          }
+        })
       }
     })
 });

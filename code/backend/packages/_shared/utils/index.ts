@@ -6,3 +6,5 @@ export * from './range';
 export * from './utils';
 export * from './csvToArray';
 export * from './csvInterfaces';
+export * from './permission';
+export * from './permission';
