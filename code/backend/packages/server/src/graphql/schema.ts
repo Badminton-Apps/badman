@@ -25,6 +25,7 @@ import {
   removeTeamMutation,
   setGroupsCompetitionMutation,
   updateClubMutation,
+  updateClubMembershipMutation,
   updateCommentMutation,
   updateEventCompetitionMutation,
   updateEventTournamentMutation,
@@ -41,7 +42,9 @@ import {
   removePlayerBaseSubEventMutation,
   updateTeamMutation,
   updateTournamentEventLocationMutation,
-  updatePlayerRankingMutation
+  updatePlayerRankingMutation,
+  deleteClubMembershipMutation,
+  addClubMembershipMutation
 } from './mutations';
 import {
   claimsQuery,
@@ -71,7 +74,6 @@ import {
   cronQuery,
   cronsQuery
 } from './queries';
-
 
 export const createSchema = (notificationService: NotificationService) => {
   return new GraphQLSchema({
@@ -125,6 +127,9 @@ export const createSchema = (notificationService: NotificationService) => {
         addChangeEncounter: addChangeEncounterMutation(notificationService),
         deleteImportedEvent: deleteImportedEventMutation,
         removeClub: removeClubMutation,
+        updateClubMembership: updateClubMembershipMutation,
+        deleteClubMembership: deleteClubMembershipMutation,
+        addClubMembership: addClubMembershipMutation,
         removeLocation: removeLocationMutation,
         removePlayerFromRole: removePlayerFromRoleMutation,
         removePlayerFromTeam: removePlayerFromTeamMutation,

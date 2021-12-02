@@ -21,8 +21,10 @@ export class Player {
   games?: Game[];
   index?: number;
   competitionPlayer?: boolean;
+  updatedAt?: Date;
 
   clubs?: Club[];
+  club?: Club;
 
   constructor(args?: Partial<Player>) {
     this.id = args?.id;
@@ -42,6 +44,8 @@ export class Player {
     this.index = args?.index as any;
     this.competitionPlayer = args?.competitionPlayer ?? false;
     this.clubs = args?.clubs?.map((club) => new Club(club));
+    this.club = args?.club != null ? new Club(args?.club) : undefined;
+    this.updatedAt = args?.updatedAt != null ? new Date(args.updatedAt) : undefined;
 
     this.rankingPlaces = args?.rankingPlaces?.map((r) => new RankingPlace(r));
     if ((this.lastRanking ?? null) == null && this.rankingPlaces != null && this.rankingPlaces.length > 0) {

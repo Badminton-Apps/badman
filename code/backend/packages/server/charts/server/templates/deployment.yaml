@@ -97,6 +97,14 @@ spec:
             value: {{ .Values.services.import }}
           - name: JOB_SERVICE
             value: {{ .Values.services.job }}
+          - name: APOLLO_KEY
+            value: {{ .Values.APOLLO.APOLLO_KEY }}
+          - name: APOLLO_GRAPH_ID
+            value: {{ .Values.APOLLO.APOLLO_GRAPH_ID }}
+          - name: APOLLO_GRAPH_VARIANT
+            value: {{ .Values.APOLLO.APOLLO_GRAPH_VARIANT }}
+          - name: APOLLO_SCHEMA_REPORTING
+            value: {{ .Values.APOLLO.APOLLO_SCHEMA_REPORTING }}
           - name: LOG_LEVEL
             value: debug
           - name: CLIENT_URL

@@ -8,5 +8,7 @@ query GetUserInfoQuery($id: ID!) {
     sub
     gender
     birthDate
+    competitionPlayer
+    updatedAt
   }
 }

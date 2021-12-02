@@ -325,6 +325,7 @@ type Club {
     offset: Int
     end: String
   ): [Player]
+  clubMembership: ClubMembership
 }
 
 enum ClubuseForTeamNameEnumType {
@@ -728,6 +729,11 @@ type Player {
     offset: Int
   ): [Game]
   base: Boolean
+
+  """The current club of the player"""
+  club: Club
+
+  """All the club the player has been a part of"""
   clubs(
     limit: Int
     order: String
@@ -737,7 +743,6 @@ type Player {
     """
     where: SequelizeJSON
     offset: Int
-    end: String
   ): [Club]
 }
 
@@ -1182,6 +1187,18 @@ type Role {
   ): [Player]
 }
 
+"""A Club bMembership"""
+type ClubMembership {
+  playerId: String!
+  clubId: String!
+  end: Date
+  active: Boolean
+  start: Date!
+  id: String!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
 """A connection to a list of items."""
 type ClubConnection {
   """Information to aid in pagination."""
@@ -1361,6 +1378,7 @@ type RootMutationType {
   addChangeEncounter(change: EncounterChangeInput): EncounterChange
   deleteImportedEvent(event: ImportInput): Imported
   removeClub(id: String): Boolean
+  updateClubMembership(clubMembership: ClubMembershipInput): ClubMembership
   removeLocation(locationId: ID): Location
   removePlayerFromRole(roleId: ID, playerId: ID): Role
   removePlayerFromTeam(teamId: ID, playerId: ID): Team
@@ -1593,6 +1611,16 @@ input ImportInput {
   visualCode: String
   importing: Boolean
   tournamentNumber: Int
+}
+
+"""A Club Membership input type"""
+input ClubMembershipInput {
+  playerId: String!
+  clubId: String!
+  end: Date
+  active: Boolean
+  start: Date!
+  id: String
 }
 
 """This represents a RankingPlaceInputType"""

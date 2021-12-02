@@ -1,6 +1,6 @@
 import { RankingSystemGroup, logger, AuthenticatedRequest } from '@badvlasim/shared';
 import { GraphQLInt } from 'graphql';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RankingSystemGroupInputType, RankingSystemGroupType } from '../types';
 
 export const addRankingSystemGroupMutation = {
