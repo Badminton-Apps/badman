@@ -26,7 +26,9 @@ jobs:
         uses: thollander/actions-comment-pull-request@v1
         
         with:
-          message: ${{ steps.tag_version.outputs.changelog }}
+          message: "#The following items will be added to the changelog:
+
+            ${{ steps.tag_version.outputs.changelog }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
