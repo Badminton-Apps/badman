@@ -56,6 +56,7 @@ export class GamesComponent implements OnInit {
                   linkType: filter?.eventType ?? undefined,
                 })
                 .pipe(
+                  startWith([]),
                   share(),
                   finalize(() => this.onFinalize())
                 );
