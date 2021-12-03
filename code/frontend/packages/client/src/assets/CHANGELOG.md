@@ -1,3 +1,13 @@
+## [4.8.2](https://github.com/Badminton-Apps/core/compare/v4.8.1...v4.8.2) (2021-12-03)
+
+
+### Bug Fixes
+
+* mobile suport for games ([4d7eb59](https://github.com/Badminton-Apps/core/commit/4d7eb597244aabb0ab7439deb5a563549ac8c917))
+* stop job upon restart ([6b48e05](https://github.com/Badminton-Apps/core/commit/6b48e0545a38cfbb02c3e7a4055503e8b20193e5))
+
+
+
 ## [4.8.1](https://github.com/Badminton-Apps/core/compare/v4.8.0...v4.8.1) (2021-12-03)
 
 
