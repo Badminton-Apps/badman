@@ -8,103 +8,148 @@ type RootQueryType {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Claim]
   club(
-    # id of the club
+    """id of the club"""
     id: ID!
   ): Club
   clubs(
+    """Returns the items in the list that come after the specified cursor."""
     after: String
+
+    """Returns the first n items from the list."""
     first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
     before: String
+
+    """Returns the last n items from the list."""
     last: Int
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
   ): ClubConnection
   cron(
-    # Id of the Cron
+    """Id of the Cron"""
     id: String!
   ): Cron
   crons(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Cron]
   eventCompetition(
-    # id of the event competition
+    """id of the event competition"""
     id: ID!
   ): EventCompetition
   eventCompetitions(
+    """Returns the items in the list that come after the specified cursor."""
     after: String
+
+    """Returns the first n items from the list."""
     first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
     before: String
+
+    """Returns the last n items from the list."""
     last: Int
     orderBy: [EventCompetitionOrderBy]
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
   ): EventCompetitionConnection
   eventTournament(
-    # id of the event tournament
+    """id of the event tournament"""
     id: ID!
   ): EventTournament
   eventTournaments(
+    """Returns the items in the list that come after the specified cursor."""
     after: String
+
+    """Returns the first n items from the list."""
     first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
     before: String
+
+    """Returns the last n items from the list."""
     last: Int
     orderBy: [EventTournamentOrderBy]
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
   ): EventTournamentConnection
   games(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
-    direction: String
   ): [Game]
   imported(
+    """Returns the items in the list that come after the specified cursor."""
     after: String
+
+    """Returns the first n items from the list."""
     first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
     before: String
+
+    """Returns the last n items from the list."""
     last: Int
     orderBy: [ImportedOrderBy]
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
   ): ImportedConnection
   location(
-    # Id of the location
+    """Id of the location"""
     id: ID!
   ): Location
   locations(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Location]
   player(
-    # id of the user
+    """id of the user"""
     id: ID!
   ): Player
   players(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Player]
@@ -112,80 +157,99 @@ type RootQueryType {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [RankingSystemGroup]
   role(
-    # Id of the role
+    """Id of the role"""
     id: String!
   ): Role
   roles(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Role]
   system(
-    # Id of the system
+    """Id of the system"""
     id: ID!
   ): RankingSystem
   systems(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [RankingSystem]
   team(
-    # Id of the team
+    """Id of the team"""
     id: ID!
   ): Team
   teams(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
 
-    # id of the club
+    """id of the club"""
     clubId: ID!
   ): [Team]
   encounterChange(
-    # id of the event competition
+    """id of the event competition"""
     id: ID!
   ): EncounterChange
   encounterChanges(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [EncounterChange]
   encounterCompetition(
-    # id of the encounter
+    """id of the encounter"""
     id: ID!
   ): EncounterCompetition
   encounterCompetitions(
+    """Returns the items in the list that come after the specified cursor."""
     after: String
+
+    """Returns the first n items from the list."""
     first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
     before: String
+
+    """Returns the last n items from the list."""
     last: Int
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
 
-    # id of the team
+    """id of the team"""
     team: ID!
   ): EncounterCompetitionConnection
 }
 
-# A Claim
+"""A Claim"""
 type Claim {
   id: String!
   name: String
@@ -202,13 +266,15 @@ enum ClaimtypeEnumType {
   team
 }
 
-# A special custom Scalar type for Dates that converts to a ISO formatted string
+"""
+A special custom Scalar type for Dates that converts to a ISO formatted string 
+"""
 scalar Date
 
-# The `JSON` scalar type represents raw JSON as values.
+"""The `JSON` scalar type represents raw JSON as values."""
 scalar SequelizeJSON
 
-# A Club
+"""A Club"""
 type Club {
   id: String!
   name: String!
@@ -222,7 +288,9 @@ type Club {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Team]
@@ -230,7 +298,9 @@ type Club {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Role]
@@ -238,7 +308,9 @@ type Club {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Location]
@@ -246,11 +318,14 @@ type Club {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
     end: String
   ): [Player]
+  clubMembership: ClubMembership
 }
 
 enum ClubuseForTeamNameEnumType {
@@ -259,7 +334,7 @@ enum ClubuseForTeamNameEnumType {
   abbreviation
 }
 
-# A Team
+"""A Team"""
 type Team {
   id: String!
   name: String
@@ -279,7 +354,9 @@ type Team {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): Club
@@ -287,7 +364,9 @@ type Team {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [EncounterCompetition]
@@ -295,7 +374,9 @@ type Team {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [EncounterCompetition]
@@ -303,7 +384,9 @@ type Team {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
     end: String
@@ -312,7 +395,9 @@ type Team {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [SubEventCompetition]
@@ -320,7 +405,9 @@ type Team {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): Player
@@ -328,7 +415,9 @@ type Team {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Location]
@@ -344,7 +433,7 @@ enum TeampreferredDayEnumType {
   saturday
 }
 
-# A EncounterCompetition
+"""A EncounterCompetition"""
 type EncounterCompetition {
   id: String!
   date: Date
@@ -356,17 +445,7 @@ type EncounterCompetition {
   visualCode: String
   createdAt: Date!
   updatedAt: Date!
-  games(
-    limit: Int
-    order: String
-
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
-    where: SequelizeJSON
-    offset: Int
-
-    # id of the user
-    playerId: ID!
-  ): [Game]
+  games: [Game]
   gamesCount: Int
   draw: DrawCompetition
   home: Team
@@ -374,7 +453,7 @@ type EncounterCompetition {
   encounterChange: EncounterChange
 }
 
-# A Game
+"""A Game"""
 type Game {
   id: String!
   playedAt: Date
@@ -399,10 +478,11 @@ type Game {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
-    direction: String
   ): [RankingPoint]
   tournament: DrawTournament
   competition: EncounterCompetition
@@ -414,7 +494,7 @@ enum GamegameTypeEnumType {
   MX
 }
 
-# A Player that is from a game
+"""A Player that is from a game"""
 type GamePlayer {
   id: String!
   email: String
@@ -437,13 +517,15 @@ type GamePlayer {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): RankingPlace
 }
 
-# A RankingPlace
+"""A RankingPlace"""
 type RankingPlace {
   id: String!
   rankingDate: Date
@@ -478,13 +560,15 @@ type RankingPlace {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): Player!
 }
 
-# A RankingSystem
+"""A RankingSystem"""
 type RankingSystem {
   id: String!
   name: String
@@ -519,7 +603,7 @@ type RankingSystem {
   createdAt: Date!
   updatedAt: Date!
   counts(
-    # Gender
+    """Gender"""
     gender: String
   ): CountsResult
   groups: [RankingSystemGroup]
@@ -578,7 +662,7 @@ type rankingPlaceResultType {
   amount: Int
 }
 
-# A RankingSystemGroup
+"""A RankingSystemGroup"""
 type RankingSystemGroup {
   id: String!
   name: String
@@ -586,7 +670,7 @@ type RankingSystemGroup {
   updatedAt: Date!
 }
 
-# A Player
+"""A Player"""
 type Player {
   id: String!
   email: String
@@ -607,16 +691,19 @@ type Player {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
-    direction: String
   ): [RankingPlace]
   lastRanking(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
     system: String
@@ -625,33 +712,41 @@ type Player {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
-    direction: String
   ): [RankingPoint]
   games(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
-    direction: String
   ): [Game]
   base: Boolean
+
+  """The current club of the player"""
+  club: Club
+
+  """All the club the player has been a part of"""
   clubs(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
-    end: String
   ): [Club]
 }
 
-# A LastRankingPlace
+"""A LastRankingPlace"""
 type LastRankingPlace {
   id: String!
   rankingDate: Date
@@ -685,13 +780,15 @@ type LastRankingPlace {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): Player!
 }
 
-# A RankingPoint
+"""A RankingPoint"""
 type RankingPoint {
   id: String!
   points: Int
@@ -706,7 +803,9 @@ type RankingPoint {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): RankingSystem!
@@ -714,13 +813,15 @@ type RankingPoint {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): Player!
 }
 
-# A DrawTournament
+"""A DrawTournament"""
 type DrawTournament {
   id: String!
   name: String
@@ -734,11 +835,13 @@ type DrawTournament {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
 
-    # id of the user
+    """id of the user"""
     playerId: ID
   ): [Game]
   gamesCount: Int
@@ -751,7 +854,7 @@ enum DrawTournamenttypeEnumType {
   QUALIFICATION
 }
 
-# A SubEventTournament
+"""A SubEventTournament"""
 type SubEventTournament {
   id: String!
   name: String
@@ -779,7 +882,7 @@ enum SubEventTournamentgameTypeEnumType {
   MX
 }
 
-# A EventTournament
+"""A EventTournament"""
 type EventTournament {
   id: String!
   tournamentNumber: String
@@ -794,7 +897,9 @@ type EventTournament {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [SubEventTournament]
@@ -802,13 +907,15 @@ type EventTournament {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Location]
 }
 
-# A Location
+"""A Location"""
 type Location {
   id: String!
   name: String
@@ -827,7 +934,9 @@ type Location {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Club]
@@ -835,13 +944,15 @@ type Location {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [EventTournament]
 }
 
-# A DrawCompetition
+"""A DrawCompetition"""
 type DrawCompetition {
   id: String!
   name: String
@@ -854,7 +965,9 @@ type DrawCompetition {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [EncounterCompetition]
@@ -862,13 +975,15 @@ type DrawCompetition {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): SubEventCompetition
 }
 
-# A SubEventCompetition
+"""A SubEventCompetition"""
 type SubEventCompetition {
   id: String!
   name: String
@@ -886,7 +1001,9 @@ type SubEventCompetition {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [DrawCompetition]
@@ -894,7 +1011,9 @@ type SubEventCompetition {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): EventCompetition
@@ -902,7 +1021,9 @@ type SubEventCompetition {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Team]
@@ -915,13 +1036,13 @@ enum SubEventCompetitioneventTypeEnumType {
   MINIBAD
 }
 
-# Team meta
+"""Team meta"""
 type TeamMeta {
   teamIndex: String
   players: [TeamMetaPlayers]
 }
 
-# Team meta Players
+"""Team meta Players"""
 type TeamMetaPlayers {
   player: Player
   id: String
@@ -930,7 +1051,7 @@ type TeamMetaPlayers {
   mix: Int
 }
 
-# A EventCompetition
+"""A EventCompetition"""
 type EventCompetition {
   id: String!
   name: String
@@ -945,16 +1066,19 @@ type EventCompetition {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
-    direction: String
   ): [SubEventCompetition]
   comments(
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Comment]
@@ -966,7 +1090,7 @@ enum EventCompetitiontypeEnumType {
   NATIONAL
 }
 
-# A Comment
+"""A Comment"""
 type Comment {
   id: String!
   message: String
@@ -978,7 +1102,7 @@ type Comment {
   updatedAt: Date!
 }
 
-# A EncounterChange
+"""A EncounterChange"""
 type EncounterChange {
   id: String!
   accepted: Boolean
@@ -990,7 +1114,9 @@ type EncounterChange {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [EncounterChangeDate]
@@ -998,7 +1124,7 @@ type EncounterChange {
   awayComment: Comment
 }
 
-# A EncounterChangeDate
+"""A EncounterChangeDate"""
 type EncounterChangeDate {
   id: String!
   selected: Boolean
@@ -1021,7 +1147,7 @@ enum EncounterChangeDateavailabilityAwayEnumType {
   NOT_POSSIBLE
 }
 
-# A Role
+"""A Role"""
 type Role {
   id: String!
   name: String
@@ -1033,7 +1159,9 @@ type Role {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Club]
@@ -1041,7 +1169,9 @@ type Role {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Claim]
@@ -1049,47 +1179,61 @@ type Role {
     limit: Int
     order: String
 
-    # A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
     where: SequelizeJSON
     offset: Int
   ): [Player]
 }
 
-# A connection to a list of items.
+"""A Club bMembership"""
+type ClubMembership {
+  playerId: String!
+  clubId: String!
+  end: Date
+  active: Boolean
+  start: Date!
+  id: String!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+"""A connection to a list of items."""
 type ClubConnection {
-  # Information to aid in pagination.
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  # A list of edges.
+  """A list of edges."""
   edges: [ClubEdge]
   total: Int
 }
 
-# Information about pagination in a connection.
+"""Information about pagination in a connection."""
 type PageInfo {
-  # When paginating forwards, are there more items?
+  """When paginating forwards, are there more items?"""
   hasNextPage: Boolean!
 
-  # When paginating backwards, are there more items?
+  """When paginating backwards, are there more items?"""
   hasPreviousPage: Boolean!
 
-  # When paginating backwards, the cursor to continue.
+  """When paginating backwards, the cursor to continue."""
   startCursor: String
 
-  # When paginating forwards, the cursor to continue.
+  """When paginating forwards, the cursor to continue."""
   endCursor: String
 }
 
-# An edge in a connection.
+"""An edge in a connection."""
 type ClubEdge {
-  # The item at the end of the edge
+  """The item at the end of the edge"""
   node: Club
 
-  # A cursor for use in pagination
+  """A cursor for use in pagination"""
   cursor: String!
 }
 
-# A Cron
+"""A Cron"""
 type Cron {
   id: String!
   cron: String
@@ -1102,22 +1246,22 @@ type Cron {
   updatedAt: Date!
 }
 
-# A connection to a list of items.
+"""A connection to a list of items."""
 type EventCompetitionConnection {
-  # Information to aid in pagination.
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  # A list of edges.
+  """A list of edges."""
   edges: [EventCompetitionEdge]
   total: Int
 }
 
-# An edge in a connection.
+"""An edge in a connection."""
 type EventCompetitionEdge {
-  # The item at the end of the edge
+  """The item at the end of the edge"""
   node: EventCompetition
 
-  # A cursor for use in pagination
+  """A cursor for use in pagination"""
   cursor: String!
 }
 
@@ -1126,22 +1270,22 @@ enum EventCompetitionOrderBy {
   DATE_DESC
 }
 
-# A connection to a list of items.
+"""A connection to a list of items."""
 type EventTournamentConnection {
-  # Information to aid in pagination.
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  # A list of edges.
+  """A list of edges."""
   edges: [EventTournamentEdge]
   total: Int
 }
 
-# An edge in a connection.
+"""An edge in a connection."""
 type EventTournamentEdge {
-  # The item at the end of the edge
+  """The item at the end of the edge"""
   node: EventTournament
 
-  # A cursor for use in pagination
+  """A cursor for use in pagination"""
   cursor: String!
 }
 
@@ -1150,26 +1294,26 @@ enum EventTournamentOrderBy {
   DATE_DESC
 }
 
-# A connection to a list of items.
+"""A connection to a list of items."""
 type ImportedConnection {
-  # Information to aid in pagination.
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  # A list of edges.
+  """A list of edges."""
   edges: [ImportedEdge]
   total: Int
 }
 
-# An edge in a connection.
+"""An edge in a connection."""
 type ImportedEdge {
-  # The item at the end of the edge
+  """The item at the end of the edge"""
   node: Imported
 
-  # A cursor for use in pagination
+  """A cursor for use in pagination"""
   cursor: String!
 }
 
-# A Imported
+"""A Imported"""
 type Imported {
   id: String!
   name: String
@@ -1196,22 +1340,22 @@ enum ImportedOrderBy {
   DATE_DESC
 }
 
-# A connection to a list of items.
+"""A connection to a list of items."""
 type EncounterCompetitionConnection {
-  # Information to aid in pagination.
+  """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  # A list of edges.
+  """A list of edges."""
   edges: [EncounterCompetitionEdge]
   total: Int
 }
 
-# An edge in a connection.
+"""An edge in a connection."""
 type EncounterCompetitionEdge {
-  # The item at the end of the edge
+  """The item at the end of the edge"""
   node: EncounterCompetition
 
-  # A cursor for use in pagination
+  """A cursor for use in pagination"""
   cursor: String!
 }
 
@@ -1226,16 +1370,15 @@ type RootMutationType {
   addPlayerToRole(roleId: ID, playerId: ID): Role
   addPlayerToTeam(teamId: ID, playerId: ID): Team
   addRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
-  addRankingSystemGroup(
-    rankingSystemGroup: RankingSystemGroupInput
-  ): RankingSystemGroup
+  addRankingSystemGroup(rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
   addRole(role: RoleInput, clubId: Int): Role
   addTeam(team: TeamInput!, clubId: ID!): Team
 
-  # Add a change to an encounter
+  """Add a change to an encounter"""
   addChangeEncounter(change: EncounterChangeInput): EncounterChange
   deleteImportedEvent(event: ImportInput): Imported
   removeClub(id: String): Boolean
+  updateClubMembership(clubMembership: ClubMembershipInput): ClubMembership
   removeLocation(locationId: ID): Location
   removePlayerFromRole(roleId: ID, playerId: ID): Role
   removePlayerFromTeam(teamId: ID, playerId: ID): Team
@@ -1244,37 +1387,25 @@ type RootMutationType {
   setGroupsCompetition(id: ID!, groupIds: [ID]): EventCompetition
   updateClub(club: ClubInput): Club
   updateComment(comment: CommentInput): Comment
-  updateEventCompetition(
-    eventCompetition: EventCompetitionInput
-  ): EventCompetition
-  updateEventTournament(
-    id: Int
-    eventTournament: EventTournamentInput
-  ): EventTournament
+  updateEventCompetition(eventCompetition: EventCompetitionInput): EventCompetition
+  updateEventTournament(eventTournament: EventTournamentInput): EventTournament
   updateGlobalClaimUser(playerId: ID, claimId: ID, active: Boolean): Role
   updateLocation(location: LocationInput): Location
   updatePlayer(player: PlayerInput): Player
-  updatePlayerRanking(rankingPlace: RankingPlaceInput): Player
+  updatePlayerRanking(rankingPlace: RankingPlaceInput!, playerId: String!): Player
   updatePlayerTeam(teamId: ID, playerId: ID, base: Boolean): Team
   updateRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
-  updateRankingSystemGroup(
-    id: Int
-    rankingSystemGroup: RankingSystemGroupInput
-  ): RankingSystemGroup
+  updateRankingSystemGroup(id: Int, rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
   updateRole(role: RoleInput): Role
   updateSubEventTeam(teamId: ID, subEventId: ID): Team
   updateTeam(team: TeamInput): Team
   updateTeamLocation(locationId: ID, teamId: ID, use: Boolean): Team
-  updateTournamentEventLocation(
-    locationId: ID
-    eventId: ID
-    use: Boolean
-  ): Location
+  updateTournamentEventLocation(locationId: ID, eventId: ID, use: Boolean): Location
   addPlayerBaseSubEvent(teamId: ID, playerId: ID, subEventId: ID): Team
   removePlayerBaseSubEvent(teamId: ID, playerId: ID, subEventId: ID): Team
 }
 
-# This represents a ClubnputType
+"""This represents a ClubnputType"""
 input ClubInput {
   id: String
   name: String!
@@ -1284,7 +1415,7 @@ input ClubInput {
   clubId: Int
 }
 
-# This represents a CommentnputType
+"""This represents a CommentnputType"""
 input CommentInput {
   id: String
   message: String
@@ -1294,7 +1425,7 @@ input CommentInput {
   linkType: String
 }
 
-# This represents a UserInputType
+"""This represents a UserInputType"""
 input EventCompetitionInput {
   id: String
   name: String
@@ -1306,7 +1437,7 @@ input EventCompetitionInput {
   subEvents: [SubEventCompetitionInput]
 }
 
-# This represents a UserInputType
+"""This represents a UserInputType"""
 input SubEventCompetitionInput {
   id: String
   name: String
@@ -1320,13 +1451,13 @@ input SubEventCompetitionInput {
   groups: [RankingSystemGroupInput]
 }
 
-# This represents a RankingSystemGroupInput
+"""This represents a RankingSystemGroupInput"""
 input RankingSystemGroupInput {
   id: String
   name: String
 }
 
-# This represents a UserInputType
+"""This represents a UserInputType"""
 input EventTournamentInput {
   id: String
   tournamentNumber: String
@@ -1338,7 +1469,7 @@ input EventTournamentInput {
   subEvents: [SubEventTournamentInput]
 }
 
-# This represents a UserInputType
+"""This represents a UserInputType"""
 input SubEventTournamentInput {
   id: String
   name: String
@@ -1350,7 +1481,7 @@ input SubEventTournamentInput {
   groups: [RankingSystemGroupInput]
 }
 
-# This represents a LocationInputType
+"""This represents a LocationInputType"""
 input LocationInput {
   id: String
   name: String
@@ -1365,7 +1496,7 @@ input LocationInput {
   clubId: String
 }
 
-# This represents a PlayerInputType
+"""This represents a PlayerInputType"""
 input PlayerInput {
   id: String
   email: String
@@ -1380,7 +1511,7 @@ input PlayerInput {
   memberId: String
 }
 
-# This represents a RankingSystemGroupInput
+"""This represents a RankingSystemGroupInput"""
 input RankingSystemInput {
   id: String
   name: String
@@ -1415,7 +1546,7 @@ input RankingSystemInput {
   groups: [RankingSystemGroupInput]
 }
 
-# This represents a RolenputType
+"""This represents a RolenputType"""
 input RoleInput {
   id: String
   name: String
@@ -1424,7 +1555,7 @@ input RoleInput {
   claims: [ClaimInput]
 }
 
-# A ClaimInput
+"""A ClaimInput"""
 input ClaimInput {
   id: String
   name: String
@@ -1433,7 +1564,7 @@ input ClaimInput {
   type: ClaimtypeEnumType
 }
 
-# This represents a TeamInputType
+"""This represents a TeamInputType"""
 input TeamInput {
   id: String
   preferredTime: String
@@ -1448,7 +1579,7 @@ input TeamInput {
   players: PlayerInput
 }
 
-# This represents a EncounterChangeInput
+"""This represents a EncounterChangeInput"""
 input EncounterChangeInput {
   id: String
   accepted: Boolean
@@ -1458,7 +1589,7 @@ input EncounterChangeInput {
   comment: CommentInput
 }
 
-# This represents a UserInputType
+"""This represents a UserInputType"""
 input EncounterChangeDateInput {
   id: String
   selected: Boolean
@@ -1468,7 +1599,7 @@ input EncounterChangeDateInput {
   availabilityAway: EncounterChangeDateavailabilityAwayEnumType
 }
 
-# This represents a UserInputType
+"""This represents a UserInputType"""
 input ImportInput {
   id: String
   name: String
@@ -1482,7 +1613,17 @@ input ImportInput {
   tournamentNumber: Int
 }
 
-# This represents a RankingPlaceInputType
+"""A Club Membership input type"""
+input ClubMembershipInput {
+  playerId: String!
+  clubId: String!
+  end: Date
+  active: Boolean
+  start: Date!
+  id: String
+}
+
+"""This represents a RankingPlaceInputType"""
 input RankingPlaceInput {
   id: String
   rankingDate: Date

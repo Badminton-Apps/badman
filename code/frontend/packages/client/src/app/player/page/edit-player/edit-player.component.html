@@ -1,0 +1,21 @@
+<ng-container *ngIf="this.player$ | async as player">
+  <div class="mat-subheading-1">Edit {{ player.fullName }}</div>
+  <mat-tab-group dynamicHeight>
+    <mat-tab label="Player">
+      <app-player-fields [player]="player"></app-player-fields>
+    </mat-tab>
+    <mat-tab label="Ranking" *ngIf="this.hasPermission(['edit:ranking', 'status:competition']) | async">
+      <app-edit-ranking [player]="player"></app-edit-ranking>
+
+      <app-edit-competition-status [player]="player"></app-edit-competition-status>
+    </mat-tab>
+
+    <mat-tab label="Club History" *ngIf="this.hasPermission(['membership:club']) | async">
+      <app-edit-club-history [player]="player"></app-edit-club-history
+    ></mat-tab>
+
+    <mat-tab label="Permissions" *ngIf="this.hasPermission(['edit:claims']) | async">
+      <app-edit-permissions [player]="player"></app-edit-permissions
+    ></mat-tab>
+  </mat-tab-group>
+</ng-container>

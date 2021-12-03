@@ -86,7 +86,7 @@
   "competition": {
     "title": "Competitie",
     "last-updated": "Gewijzigd op",
-    "vs": "Vs",
+    "vs": "tegen",
     "subevent": {
       "max": "Max klassement",
       "min-base": "Min basis ploegindex",
@@ -273,7 +273,10 @@
     "warning": "Spelershistorie even niet beschikbaar"
   },
   "club": {
-    "number": "club nummer"
+    "number": "club nummer",
+    "current": "Huidig club",
+    "start": "Begindatum",
+    "end": "Einde"
   },
   "pickers": {
     "select-team": "Kies een ploeg",

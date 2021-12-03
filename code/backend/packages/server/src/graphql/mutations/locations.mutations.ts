@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, DataBaseHandler, Location, logger } from '@badvlasim/shared';
 import { GraphQLID, GraphQLNonNull, GraphQLBoolean } from 'graphql';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { LocationInputType, LocationType } from '../types';
 
 export const addLocationMutation = {
