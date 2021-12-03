@@ -31,7 +31,7 @@ APOLLO:
   APOLLO_KEY: service:Badman-PROD:DdwlGfdehSYN_RVG99YiQw
   APOLLO_GRAPH_ID: Badman-PROD
   APOLLO_GRAPH_VARIANT: current
-  APOLLO_SCHEMA_REPORTING: true
+  APOLLO_SCHEMA_REPORTING: "true"
 
 database:
   DB_IP: server-postgresql.badvla
