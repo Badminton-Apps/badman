@@ -8,7 +8,7 @@ import {
   Player,
   Team
 } from '@badvlasim/shared';
-import { GraphQLBoolean, GraphQLID, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
 import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { ClubInputType, ClubMembershipInputType, ClubMembershipType, ClubType } from '../types';
 
