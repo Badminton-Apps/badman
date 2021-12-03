@@ -76,6 +76,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
 
   const schema = createSchema(notifService);
   const apolloServer = new ApolloServer({
+    introspection: true,
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
       // When in dev we can allow graph playground to run without permission
       if (process.env.NODE_ENV === 'development') {
