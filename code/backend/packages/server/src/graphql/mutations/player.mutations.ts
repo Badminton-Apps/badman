@@ -133,11 +133,11 @@ export const updatePlayerRankingMutation = {
   ) => {
     if (
       context?.req?.user === null ||
-      !context.req.user.hasAnyPermission(['edit:player-ranking'])
+      !context.req.user.hasAnyPermission(['edit:ranking'])
     ) {
       logger.warn("User tried something it should't have done", {
         required: {
-          anyClaim: ['edit:player-ranking']
+          anyClaim: ['edit:ranking']
         },
         received: context?.req?.user?.permissions
       });

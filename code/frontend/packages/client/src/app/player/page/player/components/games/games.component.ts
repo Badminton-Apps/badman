@@ -64,7 +64,7 @@ export class GamesComponent implements OnInit {
             }
           }),
           scan((acc: Game[][], newGames: Game[]) => {
-            if (newGames.length > 0) {
+            if ((newGames?.length ?? 0) > 0) {
               // Find and match same event
               return newGames.reduce((all, curr) => {
                 let prevWasSameEvent = false;
