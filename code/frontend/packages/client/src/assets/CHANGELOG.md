@@ -1,3 +1,24 @@
+# [4.6.0](https://github.com/Badminton-Apps/core/compare/v4.5.1...v4.6.0) (2021-12-03)
+
+
+### Bug Fixes
+
+* increase time budget for importing ([07db14d](https://github.com/Badminton-Apps/core/commit/07db14dde4896ec41c5ff2b6d8069046774950b8))
+* Player's ranking not or incorreclty showing ([f1c78ff](https://github.com/Badminton-Apps/core/commit/f1c78ff5f1df18687ecd9ae3ab8d86612befcdd7))
+* update ranking ([c96734a](https://github.com/Badminton-Apps/core/commit/c96734ac094d23eb9390d1b6caeced601a3537f0))
+
+
+### Features
+
+* add/edit player ranking ([425923e](https://github.com/Badminton-Apps/core/commit/425923e981cf7ecc4f22a0e9cbe00513116f5c87))
+* Edit club history ([830d51a](https://github.com/Badminton-Apps/core/commit/830d51a058cee296f45851d18b84d3a4cebd2456))
+* Filter games by type ([a216b3e](https://github.com/Badminton-Apps/core/commit/a216b3e8e389c112b14b3968f1c1e58849eb6202))
+* filter on game type ([5034588](https://github.com/Badminton-Apps/core/commit/5034588544c682ad3b13f3ded887202cfe7158a3))
+* merge accounts ([1b9d8fe](https://github.com/Badminton-Apps/core/commit/1b9d8fe06a6a27d9a6414ddca030732ecfb6ed11))
+* upgraded backend packages ([602e6a6](https://github.com/Badminton-Apps/core/commit/602e6a6bb1ccf4314a943063af2afc98283afbd1))
+
+
+
 ## [4.5.1](https://github.com/Badminton-Apps/core/compare/v4.5.0...v4.5.1) (2021-11-24)
 
 
