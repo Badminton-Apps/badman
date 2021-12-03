@@ -1,3 +1,12 @@
+# [4.9.0](https://github.com/Badminton-Apps/core/compare/v4.8.2...v4.9.0) (2021-12-03)
+
+
+### Features
+
+* Use last run and arguments for deciding when to use a publication ([167bcfa](https://github.com/Badminton-Apps/core/commit/167bcfa897c72519e0a328c11153c3f68c9de817))
+
+
+
 ## [4.8.2](https://github.com/Badminton-Apps/core/compare/v4.8.1...v4.8.2) (2021-12-03)
 
 
