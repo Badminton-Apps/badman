@@ -1,11 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSelectionListChange } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
-import { EditClubHistoryDialogComponent } from 'app/player';
 import { Club, Player } from 'app/_shared';
-import { BehaviorSubject, combineLatest, map, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject,  map, Observable, switchMap } from 'rxjs';
+import { EditClubHistoryDialogComponent } from '../../dialogs';
 
 @Component({
   selector: 'app-edit-club-history',
