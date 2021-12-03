@@ -2,13 +2,19 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { environment } from 'environments/environment';
-import { BehaviorSubject, combineLatest, exhaustMap, filter, Observable, shareReplay, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  exhaustMap,
+  filter,
+  Observable,
+  shareReplay,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PermissionService {
-  
   public userPermissions$!: Observable<string[]>;
   private update$ = new BehaviorSubject(null);
 

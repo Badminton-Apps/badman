@@ -7,7 +7,7 @@ import {
   SubEventCompetition
 } from '@badvlasim/shared';
 import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { EventCompetitionInputType, EventCompetitionType } from '../types';
 
 export const addEventCompetitionMutation = {

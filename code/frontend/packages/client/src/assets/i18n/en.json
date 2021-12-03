@@ -86,7 +86,7 @@
   "competition": {
     "title": "Competition",
     "last-updated": "Modified on",
-    "vs": "Vs",
+    "vs": "vs",
     "subevent": {
       "max": "Max level",
       "min-base": "Min basis team index",
@@ -273,7 +273,10 @@
     "warning": "Player evolution temporary not available"
   },
   "club": {
-    "number": "club number"
+    "number": "club number",
+    "current": "Current club",
+    "start": "Start date",
+    "end": "end date"
   },
   "pickers": {
     "select-team": "Pick a team",

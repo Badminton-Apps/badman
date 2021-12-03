@@ -113,8 +113,6 @@ export class TeamDialogComponent implements OnInit {
   }
 
   async onLocationAdded(location: string, team: Team) {
-    console.log('added', location);
-
     await lastValueFrom(
       this.apollo.mutate({
         mutation: updateTeamLocation,
@@ -130,8 +128,6 @@ export class TeamDialogComponent implements OnInit {
   }
 
   async onLocationRemoved(location: string, team: Team) {
-    console.log('removed', location);
-
     await lastValueFrom(
       this.apollo.mutate({
         mutation: updateTeamLocation,

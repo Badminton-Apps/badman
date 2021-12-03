@@ -40,7 +40,6 @@ export class ProfileHeaderComponent implements OnInit {
   doubleTooltip!: string;
   mixTooltip!: string;
 
-  playerClub?: Club;
 
   constructor(private dialog: MatDialog) {}
 
@@ -104,10 +103,6 @@ export class ProfileHeaderComponent implements OnInit {
           this.singleTooltip += `\r\nUp: ${this.shownRanking.singlePoints}`;
         }
       }
-    }
-
-    if (this.player.clubs) {
-      this.playerClub = this.player.clubs[0];
     }
   }
 
