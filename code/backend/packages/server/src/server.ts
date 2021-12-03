@@ -149,8 +149,9 @@ class CostAnalysisApolloServer extends ApolloServer {
         variables: req.body.variables,
         maximumCost: 1000
       })
-    );
+    ); 
 
     return options;
   }
 }
+ 
