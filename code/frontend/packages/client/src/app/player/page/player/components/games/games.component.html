@@ -1,6 +1,6 @@
 <div fxLayout="column">
-  <form [formGroup]="this.gameFilter" fxFlex fxLayout="row" fxLayoutGap="10px">
-    <mat-form-field appearance="outline" fxFlex="200px">
+  <form [formGroup]="this.gameFilter" fxFlex fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="200px" fxFlex.lt-md>
       <mat-label>{{ 'game.type' | translate }}</mat-label>
       <mat-select formControlName="gameType">
         <mat-option>All</mat-option>
@@ -10,7 +10,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" fxFlex="200px">
+    <mat-form-field appearance="outline" fxFlex="200px"  fxFlex.lt-md>
       <mat-label>{{ 'event.type' | translate }}</mat-label>
       <mat-select formControlName="eventType">
         <mat-option>All</mat-option>
