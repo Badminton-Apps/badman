@@ -1,12 +1,11 @@
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 import { Op } from 'sequelize';
-import { DataBaseHandler, Player, logger, Club, Team } from '@badvlasim/shared';
+import { DataBaseHandler, Player, logger, Club } from '@badvlasim/shared';
 import { parseString } from '@fast-csv/parse';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import path from 'path';
 import csvWriter from 'csv-write-stream';
-import { WriteStream } from 'fs';
-import { createWriteStream, readFile } from 'fs';
+import { createWriteStream, unlinkSync } from 'fs';
 
 (async () => {
   await merge_accounts();
@@ -14,8 +13,11 @@ import { createWriteStream, readFile } from 'fs';
 
 async function merge_accounts() {
   const destination = `merged.csv`;
+  if (existsSync(destination)) {
+    unlinkSync(destination);
+  }
   const writer = csvWriter({
-    headers: ['Lidnummer', 'Voornaam', 'Achternaam', 'Club']
+    headers: ['Lidnummer', 'Voornaam', 'Achternaam', 'Club', 'ExcelClub'],
   });
   writer.pipe(createWriteStream(destination, { flags: 'a' }));
   const databaseService = new DataBaseHandler(dbConfig.default);
@@ -27,13 +29,13 @@ async function merge_accounts() {
       transaction,
       where: {
         memberId: {
-          [Op.in]: [...players.keys()]
-        }
-      }
+          [Op.in]: [...players.keys()],
+        },
+      },
     });
 
     for (const csvPlayer of players) {
-      const found = dbPlayers.filter(p => p.memberId == csvPlayer[0]);
+      const found = dbPlayers.filter((p) => p.memberId == csvPlayer[0]);
 
       if (found.length == 0) {
         logger.info(`No player found for ${csvPlayer[0]}`);
@@ -42,14 +44,14 @@ async function merge_accounts() {
 
       if (found.length > 1) {
         let bestMatch = found.find(
-          p =>
+          (p) =>
             p.firstName == csvPlayer[1].Voornaam &&
             p.lastName == csvPlayer[1].Achternaam
         );
 
         if (!bestMatch) {
           bestMatch = found.find(
-            p =>
+            (p) =>
               p.lastName == csvPlayer[1].Voornaam &&
               p.firstName == csvPlayer[1].Achternaam
           );
@@ -61,7 +63,7 @@ async function merge_accounts() {
         if (!bestMatch) {
           bestMatch = found[0];
         }
-        const remaining = found.filter(p => p.id != bestMatch.id);
+        const remaining = found.filter((p) => p.id != bestMatch.id);
 
         for (const player of remaining) {
           logger.debug(
@@ -69,23 +71,24 @@ async function merge_accounts() {
           );
 
           await databaseService.mergePlayers(bestMatch.id, player.id, {
-            transaction
+            transaction,
           });
         }
 
         const finishedPlayer = await Player.findByPk(bestMatch.id, {
           include: [Club],
-          transaction
+          transaction,
         });
         const clubs = finishedPlayer.clubs
-          .filter(c => c.getDataValue('end') == null)
-          .map(c => c.fullName.toLocaleLowerCase());
+          .filter((c) => c.getDataValue('end') == null)
+          .map((c) => c.fullName.toLocaleLowerCase());
 
         writer.write({
           Lidnummer: finishedPlayer.memberId,
           Voornaam: finishedPlayer.firstName,
           Achternaam: finishedPlayer.lastName,
-          Club: clubs.join(', ')
+          Club: clubs.join(', '),
+          ExcelClub: csvPlayer[1].Club,
         });
       }
     }
@@ -107,18 +110,18 @@ async function readCsvPlayers(): Promise<Map<string, any>> {
     const stream = parseString(csv, {
       headers: true,
       delimiter: ';',
-      ignoreEmpty: true
+      ignoreEmpty: true,
     });
 
     const data = new Map();
-    stream.on('data', row => {
+    stream.on('data', (row) => {
       data.set(row.Lidnummer, row);
     });
-    stream.on('error', error => {
+    stream.on('error', (error) => {
       logger.error(error);
       reject(error);
     });
-    stream.on('end', async rowCount => {
+    stream.on('end', async (rowCount) => {
       resolve(data);
     });
   });
