@@ -28,6 +28,7 @@ import {
 } from './controllers';
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
+import graphqlCostAnalysis from 'graphql-cost-analysis';
 
 try {
   (async () => {
@@ -75,7 +76,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
   );
 
   const schema = createSchema(notifService);
-  const apolloServer = new ApolloServer({
+  const apolloServer = new CostAnalysisApolloServer({
     introspection: true,
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
       // When in dev we can allow graph playground to run without permission
@@ -137,3 +138,19 @@ const startServer = async (databaseService: DataBaseHandler) => {
 
   app.listen();
 };
+
+class CostAnalysisApolloServer extends ApolloServer {
+  async createGraphQLServerOptions(req, res) {
+    const options = await super.createGraphQLServerOptions(req, res);
+
+    options.validationRules = options.validationRules ? options.validationRules.slice() : [];
+    options.validationRules.push(
+      graphqlCostAnalysis({
+        variables: req.body.variables,
+        maximumCost: 1000
+      })
+    );
+
+    return options;
+  }
+}
