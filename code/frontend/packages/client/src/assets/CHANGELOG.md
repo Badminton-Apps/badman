@@ -1,3 +1,18 @@
+# [4.8.0](https://github.com/Badminton-Apps/core/compare/v4.7.0...v4.8.0) (2021-12-03)
+
+
+### Bug Fixes
+
+* deployment value ([a19c147](https://github.com/Badminton-Apps/core/commit/a19c147fa2cbf1a121a6bf7acfe275ae5c9d70d6))
+* enable introspection ([c1bade0](https://github.com/Badminton-Apps/core/commit/c1bade070afb2b655dd59e3166c6aadf3f93fbec))
+
+
+### Features
+
+* Cost analysis for graphql ([3b4c0f0](https://github.com/Badminton-Apps/core/commit/3b4c0f0d0b9196916bbb74514efd24bc94f91c9f))
+
+
+
 # [4.7.0](https://github.com/Badminton-Apps/core/compare/v4.6.0...v4.7.0) (2021-12-03)
 
 
