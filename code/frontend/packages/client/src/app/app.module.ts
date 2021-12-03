@@ -30,7 +30,7 @@ import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { SharedModule } from './_shared/shared.module';
 
 const baseModules = [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule];
-const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule, MatSnackBarModule];
+const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule.forRoot(), MatSnackBarModule];
 const translateModules = [
   TranslateModule.forRoot({
     defaultLanguage: 'en',

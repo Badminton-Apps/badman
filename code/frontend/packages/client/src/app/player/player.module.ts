@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MomentDateModule } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -17,30 +19,35 @@ import { CovalentPagingModule } from '@covalent/core/paging';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentLineEchartsModule } from '@covalent/echarts/line';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
-
+import { SelctionComponentsModule } from 'app/_shared';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { MomentModule } from 'ngx-moment';
 import { SharedModule } from '../_shared';
-import { ProfileComponent } from './page';
 import {
   ChartComponent,
+  EditClubHistoryComponent,
+  EditCompetitionStatusComponent,
+  EditPermissionsComponent,
+  EditPlayerComponent,
+  EditPlayerFieldsComponent,
+  EditRankingComponent,
   GameResultComponent,
   GamesComponent,
   GamesResultComponent,
+  GroupCompetitionComponent,
+  GroupTournamentComponent,
+  MergeAccountComponent,
+  MergePlayerComponent,
   PlayerComponent,
   PlayerInfoComponent,
+  ProfileComponent,
   ProfileHeaderComponent,
   RankingEvolutionComponent,
-} from './page/player';
-import { TopPlayersComponent } from './page/top-players/top-players.component';
+  TopPlayersComponent,
+  EditClubHistoryDialogComponent,
+} from './page';
 import { PlayerRoutingModule } from './player-routing.module';
-import { GroupCompetitionComponent } from './page/player/components/games/components/games-result/group-competition/group-competition.component';
-import { GroupTournamentComponent } from './page/player/components/games/components/games-result/group-tournament/group-tournament.component';
-import { MergeAccountComponent } from './page/player/dialogs/merge-account/merge-account.component';
-import { MergePlayerComponent } from './page/player/dialogs/merge-account/components/merge-player/merge-player.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-const coreModules = [FormsModule];
 const materialModules = [
   MatCardModule,
   MatIconModule,
@@ -54,7 +61,8 @@ const materialModules = [
   MatSelectModule,
   MatExpansionModule,
   MatDialogModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatDatepickerModule,
 ];
 
 const covalentModules = [
@@ -65,10 +73,14 @@ const covalentModules = [
   CovalentPagingModule,
 ];
 
-const otherModules = [MomentDateModule, InfiniteScrollModule];
+const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, SelctionComponentsModule];
 
 @NgModule({
   declarations: [
+    EditPlayerComponent,
+    EditPermissionsComponent,
+    EditPlayerFieldsComponent,
+    EditRankingComponent,
     ProfileComponent,
     PlayerComponent,
     GameResultComponent,
@@ -83,14 +95,10 @@ const otherModules = [MomentDateModule, InfiniteScrollModule];
     GroupTournamentComponent,
     MergeAccountComponent,
     MergePlayerComponent,
+    EditCompetitionStatusComponent,
+    EditClubHistoryComponent,
+    EditClubHistoryDialogComponent,
   ],
-  imports: [
-    SharedModule,
-    ...coreModules,
-    ...materialModules,
-    ...covalentModules,
-    ...otherModules,
-    PlayerRoutingModule,
-  ],
+  imports: [SharedModule, ...materialModules, ...covalentModules, ...otherModules, PlayerRoutingModule],
 })
 export class PlayerModule {}

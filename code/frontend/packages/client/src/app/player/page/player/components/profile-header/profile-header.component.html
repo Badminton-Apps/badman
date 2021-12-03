@@ -16,24 +16,19 @@
 
       <button mat-menu-item *ngIf="this.canClaimAccount?.isClaimedByUser">You've requested this account</button>
 
-      <app-has-claim [any]="['edit:claims', 'player:merge']">
-        <mat-divider></mat-divider>
-        <app-has-claim [any]="['edit:claims']">
-          <button mat-menu-item [routerLink]="['/', 'admin', 'player', player.id, 'edit']">
-            {{ 'button.edit' | translate }}
-          </button>
-        </app-has-claim>
+      <mat-divider></mat-divider>
+      <button mat-menu-item [routerLink]="['edit']">
+        {{ 'button.edit' | translate }}
+      </button>
 
-        <app-has-claim [any]="['merge:player']">
-          <button mat-menu-item (click)="this.mergePlayer()">
-            {{ 'button.merge-accounts' | translate }}
-          </button>
-        </app-has-claim>
+      <app-has-claim [any]="['merge:player']">
+        <button mat-menu-item (click)="this.mergePlayer()">
+          {{ 'button.merge-accounts' | translate }}
+        </button>
+      </app-has-claim>
 
-        <app-has-claim [any]="['delete:player']">
-          <button mat-menu-item>{{ 'button.delete' | translate }}</button>
-        </app-has-claim>
-
+      <app-has-claim [any]="['delete:player']">
+        <button mat-menu-item>{{ 'button.delete' | translate }}</button>
       </app-has-claim>
     </mat-menu>
     <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
@@ -45,8 +40,8 @@
     <div class="name">
       <span class="up"> {{ this.player.firstName }} {{ this.player.lastName }}</span>
       <span class="down">
-        <ng-container *ngIf="this.playerClub"
-          ><a [routerLink]="['/', 'club', this.playerClub.id]">{{ this.playerClub.name }}</a> -</ng-container
+        <ng-container *ngIf="this.player.club"
+          ><a [routerLink]="['/', 'club', this.player.club?.id]">{{ this.player.club?.name }}</a> -</ng-container
         >
         {{ this.player.memberId }} - {{ this.player.gender }}
       </span>

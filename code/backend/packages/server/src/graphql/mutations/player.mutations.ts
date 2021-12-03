@@ -1,5 +1,14 @@
-import { AuthenticatedRequest, DataBaseHandler, LastRankingPlace, logger, Player, RankingPlace } from '@badvlasim/shared';
-import { ApiError } from '../../models/api.error';
+import {
+  AuthenticatedRequest,
+  DataBaseHandler,
+  LastRankingPlace,
+  logger,
+  Player,
+  RankingPlace,
+  RankingSystem
+} from '@badvlasim/shared';
+import { GraphQLNonNull, GraphQLString } from 'graphql';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { PlayerInputType, PlayerType, RankingPlaceInputType } from '../types';
 
 export const addPlayerMutation = {
@@ -10,7 +19,11 @@ export const addPlayerMutation = {
       type: PlayerInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { player }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { player },
+    context: { req: AuthenticatedRequest }
+  ) => {
     // || !context.req.user.hasAnyPermission(['add:player'])
     if (context?.req?.user === null) {
       // logger.warn("User tried something it should't have done", {
@@ -53,7 +66,11 @@ export const updatePlayerMutation = {
       type: PlayerInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { player }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { player },
+    context: { req: AuthenticatedRequest }
+  ) => {
     // TODO: check if the player is in the club and thbe user is allowed to change values
 
     if (
@@ -102,11 +119,22 @@ export const updatePlayerRankingMutation = {
   args: {
     rankingPlace: {
       name: 'rankingPlace',
-      type: RankingPlaceInputType
+      type: new GraphQLNonNull(RankingPlaceInputType)
+    },
+    playerId: {
+      name: 'playerId',
+      type: new GraphQLNonNull(GraphQLString)
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { rankingPlace }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:player-ranking'])) {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { rankingPlace, playerId },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    if (
+      context?.req?.user === null ||
+      !context.req.user.hasAnyPermission(['edit:player-ranking'])
+    ) {
       logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: ['edit:player-ranking']
@@ -120,30 +148,57 @@ export const updatePlayerRankingMutation = {
     }
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbRankingPlace = await RankingPlace.findByPk(rankingPlace.id, { transaction });
-      dbRankingPlace.single = rankingPlace.single ?? dbRankingPlace.single;
-      dbRankingPlace.double = rankingPlace.double ?? dbRankingPlace.double;
-      dbRankingPlace.mix = rankingPlace.mix ?? dbRankingPlace.mix;
-      await dbRankingPlace.save({ transaction });
+      const dbLastRanking = await LastRankingPlace.findByPk(rankingPlace.id, { transaction });
+      if (dbLastRanking !== null) {
+        if (dbLastRanking.playerId !== playerId) {
+          throw new ApiError({
+            code: 500,
+            message: 'This ranking place is from another player'
+          });
+        }
 
-      const dbLastRanking = await LastRankingPlace.findOne({
-        where: {
-          playerId: dbRankingPlace.playerId,
-          rankingDate: dbRankingPlace.rankingDate,
-          systemId: dbRankingPlace.SystemId
-        },
-        transaction
-      });
-
-      // Update if it is the last player ranking
-      if (dbLastRanking) {
         dbLastRanking.single = rankingPlace.single ?? dbLastRanking.single;
         dbLastRanking.double = rankingPlace.double ?? dbLastRanking.double;
         dbLastRanking.mix = rankingPlace.mix ?? dbLastRanking.mix;
         await dbLastRanking.save({ transaction });
+
+        const dbRankingPlaces = await RankingPlace.findAll({
+          where: {
+            playerId: dbLastRanking.playerId,
+            SystemId: dbLastRanking.systemId
+          },
+          transaction
+        });
+
+        dbRankingPlaces.sort((a, b) => {
+          return b.rankingDate.getTime() - a.rankingDate.getTime();
+        });
+
+        for (const dbRankingPlace of dbRankingPlaces) {
+          dbRankingPlace.single = rankingPlace.single ?? dbRankingPlace.single;
+          dbRankingPlace.double = rankingPlace.double ?? dbRankingPlace.double;
+          dbRankingPlace.mix = rankingPlace.mix ?? dbRankingPlace.mix;
+          await dbRankingPlace.save({ transaction });
+
+          // Go back untill update was possible
+          if (dbRankingPlace.updatePossible == true) {
+            break;
+          }
+        }
+      } else {
+        const system = await RankingSystem.findOne({where: {primary: true}});
+        await new LastRankingPlace({
+          playerId ,
+          systemId: system.id,
+          single: rankingPlace.single,
+          double: rankingPlace.double,
+          mix: rankingPlace.mix
+        }).save({ transaction });
       }
 
       await transaction.commit();
+
+      return await Player.findByPk(playerId);
     } catch (e) {
       logger.error('rollback', e);
       await transaction.rollback();

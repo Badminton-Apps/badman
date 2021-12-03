@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, AuthenticationSercice, DataBaseHandler, logger, Player, Role } from '@badvlasim/shared';
 import { GraphQLID, GraphQLInt } from 'graphql';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RoleInputType, RoleType } from '../types';
 
 export const addRoleMutation = {

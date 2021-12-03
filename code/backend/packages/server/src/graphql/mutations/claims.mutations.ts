@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, AuthenticationSercice, DataBaseHandler, logger, Player } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID } from 'graphql';
-import { ApiError } from '../../models/api.error';
+import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RoleType } from '../types';
 
 export const updateGlobalClaimUserMutation = {
