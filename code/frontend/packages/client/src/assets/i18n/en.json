@@ -148,6 +148,7 @@
     },
     "team-assembly": {
       "title": "Team assembly",
+      "disclaimer": "Disclaimer: This team assembly module is a beta version and may exceptionally still contain errors. Therefore, always critically check your setup taking into account regulation C320.",
       "double1": "Double 1",
       "double2": "Double 2",
       "double3": "Double 3",
