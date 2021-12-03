@@ -38,7 +38,7 @@ export class RankingSyncer {
     // this.processor.addStep(this.setInactive());
   }
 
-  process(args: { transaction: Transaction }) {
+  process(args: { transaction: Transaction, runFrom: Date }) {
     return this.processor.process({ ...args });
   }
 
@@ -173,10 +173,6 @@ export class RankingSyncer {
             canUpdate = false;
           }
 
-          if (canUpdate) {
-            logger.info(`Updating ranking on ${publication.PublicationDate}`);
-          }
-
           return {
             usedForUpdate: canUpdate,
             code: publication.Code,
@@ -195,7 +191,7 @@ export class RankingSyncer {
   }
 
   protected getPoints(): ProcessStep {
-    return new ProcessStep(this.STEP_POINTS, async (args: { transaction: Transaction }) => {
+    return new ProcessStep(this.STEP_POINTS, async (args: { transaction: Transaction, runFrom: Date }) => {
       const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
         this.STEP_RANKING
       );
@@ -297,14 +293,17 @@ export class RankingSyncer {
 
       for (const publication of publications) {
         const rankingPlaces = new Map<string, RankingPlace>();
+        if (publication.date.isAfter(args.runFrom)) {
+          if (publication.usedForUpdate) {
+            logger.info(`Updating ranking on ${publication.date}`); 
+          }
 
-        if (publication.date.isAfter(ranking.system.caluclationIntervalLastUpdate)) {
           logger.debug('Removing old points for date (voiding collision)');
           await RankingPlace.destroy({
             where: {
               rankingDate: publication.publicationDate
             },
-            transaction: args.transaction
+            transaction: args.transaction 
           });
 
           logger.debug(`Getting single levels for ${publication.publicationDate}`);
