@@ -33,7 +33,7 @@ export class ClaimService {
 
   hasAnyClaims$(claims: string[]): Observable<boolean> {
     return this.permissionService.userPermissions$.pipe(
-      map((userClaims) => claims.reduce((acc: boolean, claim) => acc || this.includes(userClaims, claim), false))
+      map((userClaims) => claims.reduce((acc: boolean, claim) => acc || this.includes(userClaims, claim), false)),
     );
   }
 

@@ -16,6 +16,8 @@ export class Club {
   roles?: Role[];
   locations?: Location[];
 
+  clubMembership?: ClubMembership;
+
   constructor({ ...args }: Partial<Club>) {
     this.id = args.id;
     this.name = args.name;
@@ -27,6 +29,25 @@ export class Club {
     this.players = args.players?.map((p) => new Player(p));
     this.roles = args.roles?.map((p) => new Role(p));
     this.locations = args.locations?.map((p) => new Location(p));
+    this.clubMembership = args?.clubMembership ? new ClubMembership(args.clubMembership) : undefined; 
+  }
+}
+
+export class ClubMembership{
+  id?: string;
+  start?: Date;
+  end?: Date;
+  active?: boolean;
+  clubId?: string;
+  playerId?: string;
+
+  constructor({ ...args }: Partial<ClubMembership>) {
+    this.id = args.id;
+    this.start = args.start != null ? new Date(args.start) : undefined;
+    this.end = args.end != null ? new Date(args.end) : undefined;
+    this.active = args.active;
+    this.clubId = args.clubId;
+    this.playerId = args.playerId;
   }
 }
 

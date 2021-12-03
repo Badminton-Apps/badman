@@ -5,7 +5,7 @@ import { filter, mergeMap, shareReplay, startWith, tap } from 'rxjs/operators';
 import { RequestLink, RankingPlace, Player } from '../../../_shared/models';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '@auth0/auth0-angular';
-import { cache } from 'app/graphql.module';
+import { apolloCache } from 'app/graphql.module';
 
 @Injectable({
   providedIn: 'root',
@@ -47,10 +47,11 @@ export class UserService {
         tap((_) => {
           // Clear from cache
           source.forEach((id) => {
-            const normalizedId = cache.identify({ id, __typename: 'Player' });
-            cache.evict({ id: normalizedId });
-            cache.gc();
+            const normalizedId = apolloCache.identify({ id, __typename: 'Player' });
+            apolloCache.evict({ id: normalizedId });
           });
+          apolloCache.gc();
+
         })
       );
   }

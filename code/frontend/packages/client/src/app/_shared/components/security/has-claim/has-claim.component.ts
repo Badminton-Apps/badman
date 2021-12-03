@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ClaimService } from 'app/_shared';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 @Component({

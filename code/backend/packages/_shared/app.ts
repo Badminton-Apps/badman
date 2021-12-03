@@ -1,30 +1,28 @@
-import apm from "elastic-apm-node";
+import apm from 'elastic-apm-node';
 apm.start({
   serviceName: process.env.SERVICE_NAME,
   serverUrl: process.env.APM_SERVER_URL,
   secretToken: process.env.APM_SERVER_TOKEN,
   verifyServerCert: false,
-  disableSend: process.env.NODE_ENV !== 'production'
-}); 
-
+});
 
 import { logger } from '@badvlasim/shared';
 import cors from 'cors';
 import moment from 'moment';
-import express, { Application, json } from 'express';
+import express, { Application, json } from 'express'; 
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { BaseController } from './models';
+import { BaseController } from './models'; 
 import { createLightship, Lightship } from 'lightship';
 
 moment.suppressDeprecationWarnings = true;
- 
+
 export class App {
   public app: Application;
   public corsOptions: cors.CorsOptions;
   private _lightship: Lightship;
 
   constructor(
-    controllers: BaseController[], 
+    controllers: BaseController[],
     proxies: { from: string; to: string }[] = []
   ) {
     this.app = express();
@@ -46,7 +44,7 @@ export class App {
       'http://localhost:4000',
       'http://localhost:4200',
       'https://badman.app',
-      'https://studio.apollographql.com'
+      'https://studio.apollographql.com',
     ];
     this.corsOptions = {
       origin: (origin, callback) => {
@@ -55,14 +53,14 @@ export class App {
         } else {
           callback(new Error(`${origin} not allowed by CORS`));
         }
-      }
+      },
     };
 
     this.app.use(cors(this.corsOptions));
   }
 
   private _initializeControllers(controllers: BaseController[]) {
-    controllers.forEach(controller => {
+    controllers.forEach((controller) => {
       try {
         this.app.use('/api/v1', controller.router);
       } catch (error) {
@@ -73,7 +71,7 @@ export class App {
   }
 
   private _initializeProxies(proxies) {
-    proxies.forEach(p => {
+    proxies.forEach((p) => {
       logger.debug('Setting up proxy', p.from, p.to);
       this.app.use(
         p.from,
@@ -81,7 +79,7 @@ export class App {
           target: p.to,
           changeOrigin: true,
           ws: true,
-          logLevel: 'debug'
+          logLevel: 'debug',
         })
       );
     });
@@ -90,10 +88,12 @@ export class App {
   public listen() {
     const httpServer = this.app
       .listen(process.env.PORT, () => {
-        logger.info(`🚀 ${process.env.SERVICE_NAME} listening on the port ${process.env.PORT}`);
+        logger.info(
+          `🚀 ${process.env.SERVICE_NAME} listening on the port ${process.env.PORT}`
+        );
         this._lightship.signalReady();
       })
-      .on('error', e => {
+      .on('error', (e) => {
         logger.error('Error', e);
         this._lightship.shutdown();
       });
@@ -104,8 +104,8 @@ export class App {
       `SIGUSR1`,
       `SIGUSR2`,
       `uncaughtException`,
-      `SIGTERM`
-    ].forEach(event => {
+      `SIGTERM`,
+    ].forEach((event) => {
       process.on(event, () => {
         logger.debug('Process event type: ', event);
         httpServer.close();
@@ -121,7 +121,7 @@ export class App {
   private _list() {
     const defaultOptions = {
       prefix: '',
-      spacer: 7
+      spacer: 7,
     };
 
     const COLORS = {
@@ -131,7 +131,7 @@ export class App {
       red: 31,
       grey: 90,
       magenta: 35,
-      clear: 39
+      clear: 39,
     };
 
     const spacer = (x: number) =>
@@ -157,7 +157,7 @@ export class App {
       }
     };
 
-    const getPathFromRegex = regexp => {
+    const getPathFromRegex = (regexp) => {
       return regexp
         .toString()
         .replace('/^', '')
@@ -170,22 +170,22 @@ export class App {
         const routerPath = getPathFromRegex(stack.regexp);
         return [
           ...acc,
-          ...stack.handle.stack.map(innerStack => ({
+          ...stack.handle.stack.map((innerStack) => ({
             routerPath,
-            ...innerStack
-          }))
+            ...innerStack,
+          })),
         ];
       }
       return [...acc, stack];
     };
 
-    const getStacks = app => {
+    const getStacks = (app) => {
       // Express 3
       if (app.routes) {
         // convert to express 4
         return Object.keys(app.routes)
           .reduce((acc, method) => [...acc, ...app.routes[method]], [])
-          .map(route => ({ route: { stack: [route] } }));
+          .map((route) => ({ route: { stack: [route] } }));
       }
 
       /* eslint-disable no-underscore-dangle */
@@ -217,7 +217,9 @@ export class App {
           if (stack.route) {
             const routeLogged = {};
             for (const route of stack.route.stack) {
-              const method: string = route.method ? route.method.toUpperCase() : null;
+              const method: string = route.method
+                ? route.method.toUpperCase()
+                : null;
               if (!routeLogged[method] && method) {
                 const stackMethod = colorMethod(method);
                 const stackSpace = spacer(options.spacer - method.length);
@@ -225,9 +227,9 @@ export class App {
                   options.prefix,
                   stack.routerPath,
                   stack.route.path,
-                  route.path
+                  route.path,
                 ]
-                  .filter(s => !!s)
+                  .filter((s) => !!s)
                   .join('');
 
                 logger.debug(`${stackMethod}${stackSpace}${stackPath}`);

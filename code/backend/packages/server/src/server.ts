@@ -1,7 +1,7 @@
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
-import pkg from '../package.json'
+import pkg from '../package.json';
 
 import {
   App,
@@ -33,7 +33,7 @@ try {
   (async () => {
     try {
       logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
-      await startWhenReady(true, false, db => startServer(db));
+      await startWhenReady(true, false, (db) => startServer(db));
     } catch (e) {
       logger.error('Something failed', e);
       throw e;
@@ -47,7 +47,7 @@ try {
 const startServer = async (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
   const pdfService = new PdfService();
-  const notifService = new NotificationService(databaseService); 
+  const notifService = new NotificationService(databaseService);
 
   const app = new App(
     [
@@ -82,7 +82,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
         // We can try to do the auth
         try {
           for (const check of authService.checkAuth) {
-            await new Promise((resolve, ) => {
+            await new Promise((resolve) => {
               check(req, res, () => {
                 resolve(null);
               });
@@ -108,14 +108,14 @@ const startServer = async (databaseService: DataBaseHandler) => {
         }
       } else {
         for (const check of authService.checkAuth) {
-          await new Promise((resolve, ) => {
+          await new Promise((resolve) => {
             check(req, res, () => {
               resolve(null);
             });
           });
         }
         return { req, res };
-      } 
+      }
     },
     schema,
     // tracing: true,
