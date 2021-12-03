@@ -1,3 +1,12 @@
+# [4.7.0](https://github.com/Badminton-Apps/core/compare/v4.6.0...v4.7.0) (2021-12-03)
+
+
+### Features
+
+* Added disclaimer for the team assembly ([1a7670e](https://github.com/Badminton-Apps/core/commit/1a7670e13af0f3075b407bfe1125908daf3ee6b4))
+
+
+
 # [4.6.0](https://github.com/Badminton-Apps/core/compare/v4.5.1...v4.6.0) (2021-12-03)
 
 
