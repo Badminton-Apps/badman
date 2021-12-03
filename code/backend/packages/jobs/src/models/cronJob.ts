@@ -11,6 +11,12 @@ export abstract class CronJob {
       }`
     );
 
+    if (dbCron.running){
+      // When restarting, a job can't be running
+      dbCron.running = false;
+      dbCron.save();
+    }
+
     this._cronJob = schedule(
       this.dbCron.cron,
       () => {
