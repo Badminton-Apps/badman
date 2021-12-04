@@ -1,3 +1,12 @@
+## [4.9.1](https://github.com/Badminton-Apps/core/compare/v4.9.0...v4.9.1) (2021-12-04)
+
+
+### Bug Fixes
+
+* added caching for scripts ([1318214](https://github.com/Badminton-Apps/core/commit/131821403b7f3e85fc38534e8e069ae3c8a2b757))
+
+
+
 # [4.9.0](https://github.com/Badminton-Apps/core/compare/v4.8.2...v4.9.0) (2021-12-03)
 
 
