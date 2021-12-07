@@ -194,7 +194,8 @@
   },
   "games": {
     "title": "",
-    "bye": ""
+    "bye": "",
+    "unkown": ""
   },
   "game": {
     "type": "Type"
