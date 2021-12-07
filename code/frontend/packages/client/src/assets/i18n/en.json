@@ -198,7 +198,8 @@
   },
   "games": {
     "title": "Games",
-    "bye": "Bye"
+    "bye": "Bye",
+    "unkown": "Unkown player"
   },
   "game": {
     "type": "Game type"
