@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.bye">
+<ng-container *ngIf="this.bye && !this.player">
   <div class="bye">{{ 'games.bye' | translate }}</div>
 </ng-container>
 
@@ -18,7 +18,6 @@
 
   <!-- Points -->
   <div
-  
     class="points"
     *ngIf="rankingPoint"
     [ngClass]="this.isUsedForUpgrade ? 'upgrade' : this.isUsedForDowngrade ? 'downgrade' : 'none'"
