@@ -34,6 +34,7 @@
         display: block;
       }
     }
+
     // last child  must be pushed to top
     .player:last-child {
       app-player-info:only-child {
@@ -52,17 +53,21 @@
   display: flex;
   flex-direction: column;
   align-self: center;
+
   .result {
     display: flex;
+
+    &.won {
+      .set {
+        font-weight: 500;
+      }
+    }
+
     .set {
       width: 20px;
       text-align: right;
       font-weight: lighter;
-      &.won {
-        font-weight: 500;
-      }
+
     }
   }
 }
-
-

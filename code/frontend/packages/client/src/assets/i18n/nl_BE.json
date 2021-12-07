@@ -198,7 +198,8 @@
   },
   "games": {
     "title": "Wedstrijden",
-    "bye": "bye"
+    "bye": "bye",
+    "unkown": "Onbekende speler"
   },
   "game": {
     "type": "Spel type"

@@ -19,9 +19,4 @@ a {
 .games {
   display: flex;
   flex-wrap: wrap;
-
-  app-game-result {
-    flex: 1 auto;
-    width: 350px;
-  }
 }

@@ -1,14 +1,22 @@
 <div class="game-info">
+  <!-- <div fxFlex="10" *ngIf="this.game.order || this.game.round">
+    {{ this.game.linkType == 'competition' ? this.game.order : this.game.round }}
+  </div> -->
+
   <div class="players">
     <div class="player" [ngClass]="{ won: this.game.winner === 1 }">
       <app-player-info
         [player]="this.player1Team1"
+        [bye]="(this.game?.set1Team1 ?? 0) == 0 && (game?.set1Team2 ?? 0) == 0"
         [type]="this.game.gameType"
+        [won]="this.game.winner === 1"
         [rankingPoint]="this.rankingPointP1T1"
       ></app-player-info>
       <app-player-info
-        *ngIf="this.player2Team1"
+        *ngIf="this.game.gameType + '' != 'single'"
         [player]="this.player2Team1"
+        [bye]="(this.game?.set1Team1 ?? 0) == 0 && (game?.set1Team2 ?? 0) == 0"
+        [won]="this.game.winner === 1"
         [type]="this.game.gameType"
         [rankingPoint]="this.rankingPointP2T1"
       ></app-player-info>
@@ -17,12 +25,16 @@
     <div class="player" [ngClass]="{ won: this.game.winner === 2 }">
       <app-player-info
         [player]="this.player1Team2"
+        [bye]="(this.game?.set1Team1 ?? 0) == 0 && (game?.set1Team2 ?? 0) == 0"
         [type]="this.game.gameType"
+        [won]="this.game.winner === 2"
         [rankingPoint]="this.rankingPointP1T2"
       ></app-player-info>
       <app-player-info
-        *ngIf="this.player2Team2"
+        *ngIf="this.game.gameType + '' != 'single'"
         [player]="this.player2Team2"
+        [bye]="(this.game?.set1Team1 ?? 0) == 0 && (game?.set1Team2 ?? 0) == 0"
+        [won]="this.game.winner === 2"
         [type]="this.game.gameType"
         [rankingPoint]="this.rankingPointP2T2"
       ></app-player-info>
@@ -30,34 +42,26 @@
   </div>
 
   <div class="results">
-    <div class="result">
-      <div class="set" [ngClass]="{ won: (this.game.set1Team1 ?? 0) > (this.game.set1Team2 ?? 0) }">
+    <div class="result" [ngClass]="{ won: this.game.winner === 1 }">
+      <div class="set">
         {{ this.game.set1Team1 }}
       </div>
-      <div class="set" [ngClass]="{ won: (this.game.set2Team1 ?? 0) > (this.game.set2Team2 ?? 0) }">
+      <div class="set">
         {{ this.game.set2Team1 }}
       </div>
-      <div
-        class="set"
-        *ngIf="this.game.set3Team1 || this.game.set3Team2"
-        [ngClass]="{ won: (this.game.set3Team1 ?? 0) > (this.game.set3Team2 ?? 0) }"
-      >
+      <div class="set" *ngIf="this.game.set3Team1 || this.game.set3Team2">
         {{ this.game.set3Team1 }}
       </div>
     </div>
     <div class="divider"></div>
-    <div class="result">
-      <div class="set" [ngClass]="{ won: (this.game.set1Team2 ?? 0) > (this.game.set1Team1 ?? 0) }">
+    <div class="result" [ngClass]="{ won: this.game.winner === 2 }">
+      <div class="set">
         {{ this.game.set1Team2 }}
       </div>
-      <div class="set" [ngClass]="{ won: (this.game.set2Team2 ?? 0) > (this.game.set2Team1 ?? 0) }">
+      <div class="set">
         {{ this.game.set2Team2 }}
       </div>
-      <div
-        class="set"
-        *ngIf="this.game.set3Team1 || this.game.set3Team2"
-        [ngClass]="{ won: (this.game.set3Team2 ?? 0) > (this.game.set3Team1 ?? 0) }"
-      >
+      <div class="set" *ngIf="this.game.set3Team1 || this.game.set3Team2">
         {{ this.game.set3Team2 }}
       </div>
     </div>
