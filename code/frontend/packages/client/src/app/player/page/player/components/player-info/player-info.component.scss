@@ -1,16 +1,38 @@
+:host {
+  display: block;
+}
+
 .has-user {
   cursor: pointer;
   font-size: 16px;
-  &:focus{
-    outline: none;;
+  display: inline-block;
+
+  &:focus {
+    outline: none;
   }
 }
 
-.ranking-points {
+.ranking {
+  display: inline-block;
+  margin-left: 6px;
+}
+
+.points {
   display: inline-block;
   font-weight: 100;
   font-size: small;
   line-height: small;
-  color: #ff6e40;
-}
+  margin-left: 6px;
 
+  &.upgrade {
+    color: green;
+  }
+
+  &.downgrade {
+    color: #ff6e40;
+  }
+
+  &.none {
+    color: lightgrey;
+  }
+}

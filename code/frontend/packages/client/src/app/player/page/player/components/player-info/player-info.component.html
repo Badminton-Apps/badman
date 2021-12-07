@@ -1,13 +1,29 @@
-<ng-container *ngIf="!this.player">
+<ng-container *ngIf="this.bye">
   <div class="bye">{{ 'games.bye' | translate }}</div>
 </ng-container>
 
+<ng-container *ngIf="!this.bye && !this.player">
+  <div class="bye">{{ 'games.unkown' | translate }}</div>
+</ng-container>
+
 <ng-container *ngIf="this.player">
+  <!-- User -->
   <div class="has-user" [routerLink]="['/player', this.player.id]">
-    {{ this.player.firstName }} {{ this.player.lastName }}
-    <ng-container *ngIf="this.ranking">({{ this.ranking }})</ng-container>
-    <div class="ranking-points" *ngIf="rankingPoint && (isUsedForUpgrade || isUsedForDowngrade)">
-      +{{ rankingPoint.points }}
-    </div>
+    <!-- Name -->
+    <span>{{ this.player.firstName }} {{ this.player.lastName }}</span>
+
+    <!-- Ranking -->
+    <span class="ranking" *ngIf="this.ranking">({{ this.ranking }})</span>
+  </div>
+
+  <!-- Points -->
+  <div
+  
+    class="points"
+    *ngIf="rankingPoint"
+    [ngClass]="this.isUsedForUpgrade ? 'upgrade' : this.isUsedForDowngrade ? 'downgrade' : 'none'"
+    [matTooltip]="this.tooltip"
+  >
+    {{ rankingPoint.points }}
   </div>
 </ng-container>
