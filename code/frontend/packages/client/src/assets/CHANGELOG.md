@@ -1,3 +1,15 @@
+# [4.10.0](https://github.com/Badminton-Apps/core/compare/v4.9.1...v4.10.0) (2021-12-08)
+
+
+### Features
+
+* add compression and baisc protection ([6295ba0](https://github.com/Badminton-Apps/core/commit/6295ba057739646038b93779aee656cf2d74978d))
+* link ranking groups to events via UI ([59ea31d](https://github.com/Badminton-Apps/core/commit/59ea31d3c3c9582554ffa9316e9c30cdb709f7ec))
+* Show points and unkown player ([ebb4f20](https://github.com/Badminton-Apps/core/commit/ebb4f204ca005f4b27e88bb5a4c7ff99a0c64f96))
+* Updated muations permissions ([f838f3f](https://github.com/Badminton-Apps/core/commit/f838f3ff2d13329fbfffe66100a2f7c532c2f664))
+
+
+
 ## [4.9.1](https://github.com/Badminton-Apps/core/compare/v4.9.0...v4.9.1) (2021-12-04)
 
 
