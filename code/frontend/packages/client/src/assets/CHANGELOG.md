@@ -1,3 +1,12 @@
+## [4.11.1](https://github.com/Badminton-Apps/core/compare/v4.11.0...v4.11.1) (2021-12-08)
+
+
+### Bug Fixes
+
+* There is a 4th color for ranking points ([49220a7](https://github.com/Badminton-Apps/core/commit/49220a79b39b5da29ba0d7229d75380df7483031))
+
+
+
 # [4.11.0](https://github.com/Badminton-Apps/core/compare/v4.10.1...v4.11.0) (2021-12-08)
 
 
