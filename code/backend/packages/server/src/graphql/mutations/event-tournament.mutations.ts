@@ -1,12 +1,12 @@
 import {
   AuthenticatedRequest,
+  canExecute,
   DataBaseHandler,
   EventTournament,
   GroupSubEventTournament,
   logger,
   SubEventTournament
 } from '@badvlasim/shared';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { EventTournamentInputType, EventTournamentType } from '../types';
 
 const addEventTournamentMutation = {
@@ -22,18 +22,8 @@ const addEventTournamentMutation = {
     { eventTournament },
     context: { req: AuthenticatedRequest }
   ) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:tournament'])) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['add:tournament', 'add-any:tournament']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: [`add:tournament`] });
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const eventTournamentDb = await EventTournament.create(eventTournament, { transaction });
@@ -89,21 +79,8 @@ const updateEventTournamentMutation = {
     { eventTournament },
     context: { req: AuthenticatedRequest }
   ) => {
-    if (
-      context?.req?.user === null ||
-      !context.req.user.hasAnyPermission(['edit:eventTournament', 'edit-any:tournament'])
-    ) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['edit:tournament', 'edit-any:tournament']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: [`edit:tournament`] });
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       await EventTournament.update(eventTournament, {

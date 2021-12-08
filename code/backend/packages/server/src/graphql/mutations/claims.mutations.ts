@@ -1,4 +1,4 @@
-import { AuthenticatedRequest, AuthenticationSercice, DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import { AuthenticatedRequest, AuthenticationSercice, canExecute, DataBaseHandler, logger, Player } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID } from 'graphql';
 import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RoleType } from '../types';
@@ -20,18 +20,8 @@ export const updateGlobalClaimUserMutation = {
     }
   },
   resolve: async (findOptions: { [key: string]: object }, { playerId, claimId, active }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:claims'])) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['edit:claims']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: [`edit:claims`] });
+   
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbPlayer = await Player.findByPk(playerId, {

@@ -1,6 +1,7 @@
 import {
   AuthenticatedRequest,
   Availability,
+  canExecute,
   Comment,
   DataBaseHandler,
   EncounterChange,
@@ -28,7 +29,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
       }
     },
     resolve: async (
-      _findOptions: {[key: string]: unknown},
+      _findOptions: { [key: string]: unknown },
       {
         change
       }: {
@@ -58,24 +59,13 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
 
       const team = change.home ? await encounter.getHome() : await encounter.getAway();
 
-      if (
-        context?.req?.user === null ||
-        !context.req.user.hasAnyPermission([
+      canExecute(context?.req?.user, {
+        anyPermissions: [
           // `${team.clubId}_change:encounter`,
           'change-any:encounter'
-        ])
-      ) {
-        logger.warn("User tried something it should't have done", {
-          required: {
-            anyClaim: [`${team.clubId}_change:encounter`, 'change-any:encounter']
-          },
-          received: context?.req?.user?.permissions
-        });
-        throw new ApiError({
-          code: 401,
-          message: "You don't have permission to do this "
-        });
-      }
+        ]
+      });
+
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
       let encounterChange: EncounterChange;
 
@@ -95,7 +85,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
 
         // Set the state
         if (change.accepted) {
-          const selectedDates = change.dates.filter(r => r.selected === true);
+          const selectedDates = change.dates.filter((r) => r.selected === true);
           if (selectedDates.length !== 1) {
             // Multiple dates were selected
             throw new ApiError({
@@ -191,17 +181,17 @@ const changeOrUpdate = async (
   await comment.save({ transaction });
 
   change.dates = change.dates
-    .map(r => {
+    .map((r) => {
       const parsedDate = moment(r.date);
       r.date = parsedDate.isValid() ? parsedDate.toDate() : null;
       return r;
     })
-    .filter(r => r.date !== null);
+    .filter((r) => r.date !== null);
 
   // Add new dates
   for (const date of change.dates) {
     // Check if the encounter has alredy a change for this date
-    let encounterChangeDate = dates.find(r => r.date.getTime() === date.date.getTime());
+    let encounterChangeDate = dates.find((r) => r.date.getTime() === date.date.getTime());
 
     // If not create new one
     if (!encounterChangeDate) {
@@ -224,7 +214,7 @@ const changeOrUpdate = async (
 
   // remove old dates
   for (const date of dates) {
-    if (change.dates.find(r => r.date.getTime() === date.date.getTime()) === null) {
+    if (change.dates.find((r) => r.date.getTime() === date.date.getTime()) === null) {
       await date.destroy({ transaction });
     }
   }

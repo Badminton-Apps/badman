@@ -1,8 +1,9 @@
 import { SubEventTournament } from '@badvlasim/shared/models';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
-import { resolver } from 'graphql-sequelize';
+import { resolver, defaultListArgs } from 'graphql-sequelize';
+import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
-import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
+import { RankingSystemGroupInputType, RankingSystemGroupType } from '../rankingSystemGroup.type';
 import { DrawTournamentType } from './draw-tournaments.type';
 import { EventTournamentType } from './event-tournaments.type';
 
@@ -13,11 +14,33 @@ export const SubEventTournamentType = new GraphQLObjectType({
     Object.assign(getAttributeFields(SubEventTournament), {
       draws: {
         type: new GraphQLList(DrawTournamentType),
-        resolve: resolver(SubEventTournament.associations.draws)
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(SubEventTournament.associations.draws, {
+          before: async (findOptions: { [key: string]: object }) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions; 
+          }
+        })
       },
       event: {
         type: EventTournamentType,
         resolve: resolver(SubEventTournament.associations.event)
+      },
+      groups: {
+        type: new GraphQLList(RankingSystemGroupType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(SubEventTournament.associations.groups, {
+          before: async (findOptions: { [key: string]: object }) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions; 
+          }
+        })
       }
     })
 });

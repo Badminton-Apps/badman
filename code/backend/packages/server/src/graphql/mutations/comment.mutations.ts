@@ -1,6 +1,13 @@
 import { GraphQLID, GraphQLNonNull } from 'graphql';
 import { ApiError } from '@badvlasim/shared/utils/api.error';
-import { Comment, DataBaseHandler, logger, EventCompetition, AuthenticatedRequest } from '@badvlasim/shared';
+import {
+  Comment,
+  DataBaseHandler,
+  logger,
+  EventCompetition,
+  AuthenticatedRequest,
+  canExecute
+} from '@badvlasim/shared';
 import { CommentInputType, CommentType } from '../types';
 
 export const addCommentMutation = {
@@ -15,14 +22,13 @@ export const addCommentMutation = {
       type: new GraphQLNonNull(GraphQLID)
     }
   },
-  resolve: async (_findOptions: { [key: string]: object }, { comment, eventId }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null) {
-      throw new ApiError({
-        code: 401,
-        message: 'You are not logged in?'
-      });
-    }
-    
+  resolve: async (
+    _findOptions: { [key: string]: object },
+    { comment, eventId },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    canExecute(context?.req?.user);
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbEventComp = await EventCompetition.findByPk(eventId, {
@@ -62,25 +68,37 @@ export const updateCommentMutation = {
       type: CommentInputType
     }
   },
-  resolve: async (_findOptions: { [key: string]: object }, { comment }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    _findOptions: { [key: string]: object },
+    { comment },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    canExecute(context?.req?.user);
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      if (context?.req?.user === null) {
+      const dbComment = await Comment.findByPk(comment.id, { transaction });
+      if (!dbComment) {
         throw new ApiError({
-          code: 401,
-          message: 'You are not logged in?'
+          code: 404,
+          message: 'Club not found'
         });
       }
 
-      await Comment.update(comment, {
-        where: { id: comment.id },
+      if (dbComment.playerId !== context?.req?.user?.player?.id) {
+        throw new ApiError({
+          code: 401,
+          message: 'Not your comment'
+        });
+      }
+
+      await dbComment.update(comment, {
         transaction
       });
-
       await transaction.commit();
-      return comment;
+      return dbComment;
     } catch (e) {
-      logger.error('rollback', e);
+      logger.warn('rollback', e);
       await transaction.rollback();
       throw e;
     }

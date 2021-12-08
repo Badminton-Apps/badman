@@ -1,4 +1,4 @@
-import { Player } from 'app/_shared';
+import { Player, SubEvent } from 'app/_shared';
 
 export class Event {
   id?: string;
@@ -9,6 +9,8 @@ export class Event {
   allowEnlisting?: boolean;
   updatedAt?: Date;
   players?: Player[];
+
+  subEvents?: SubEvent[];
 
   constructor({ ...args }: Partial<Event>) {
     this.name = args.name;

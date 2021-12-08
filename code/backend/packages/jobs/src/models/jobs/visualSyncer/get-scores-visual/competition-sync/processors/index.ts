@@ -5,5 +5,6 @@ export * from './event';
 export * from './game';
 export * from './player';
 export * from './subEvent';
+export * from './gamePoints';
 // end:ng42.barrel
 
