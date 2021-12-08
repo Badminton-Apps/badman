@@ -24,15 +24,19 @@
   line-height: small;
   margin-left: 6px;
 
-  &.upgrade {
+  &.won {
     color: green;
   }
 
-  &.downgrade {
-    color: #ff6e40;
+  &.upgrade {
+    color: #ff0000;
   }
 
-  &.none {
+  &.downgrade {
+    color: #ffe600;
+  }
+
+  &.not-used {
     color: lightgrey;
   }
 }
