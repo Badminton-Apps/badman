@@ -1,5 +1,3 @@
-#import "./subEventsFragment.graphql"
-
 query GetEvent($id: ID!, $includeComments: Boolean!, $clubId: ID) {
   eventCompetition(id: $id) {
     id
@@ -10,7 +8,17 @@ query GetEvent($id: ID!, $includeComments: Boolean!, $clubId: ID) {
     type
     updatedAt
     subEvents(order: "eventType") {
-      ...SubEventsDetails
+      id
+      name
+      eventType
+      level
+      maxLevel
+      minBaseIndex
+      maxBaseIndex
+      groups {
+        id
+        name
+      }
     }
     comments(where: { clubId: $clubId }) @include(if: $includeComments) {
       id

@@ -38,7 +38,7 @@ export class RankingSyncer {
     // this.processor.addStep(this.setInactive());
   }
 
-  process(args: { transaction: Transaction, runFrom: Date }) {
+  process(args: { transaction: Transaction; runFrom: Date }) {
     return this.processor.process({ ...args });
   }
 
@@ -191,181 +191,185 @@ export class RankingSyncer {
   }
 
   protected getPoints(): ProcessStep {
-    return new ProcessStep(this.STEP_POINTS, async (args: { transaction: Transaction, runFrom: Date }) => {
-      const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
-        this.STEP_RANKING
-      );
-
-      const publications: VisualPublication[] = this.processor.getData(this.STEP_PUBLICATIONS);
-
-      const categories: { code: string; name: string }[] = this.processor.getData(
-        this.STEP_CATEGORIES
-      );
-
-      const pointsForCategory = async (
-        publication: VisualPublication,
-        category: string,
-        places: Map<string, RankingPlace>,
-        type: 'single' | 'double' | 'mix',
-        gender: 'M' | 'F'
-      ) => {
-        const resultTournament = await axios.get(
-          `${process.env.VR_API}/Ranking/${ranking.visualCode}/Publication/${publication.code}/Category/${category}`,
-          {
-            withCredentials: true,
-            auth: {
-              username: `${process.env.VR_API_USER}`,
-              password: `${process.env.VR_API_PASS}`
-            },
-            headers: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              'Content-Type': 'application/xml'
-            }
-          }
+    return new ProcessStep(
+      this.STEP_POINTS,
+      async (args: { transaction: Transaction; runFrom: Date }) => {
+        const ranking: { visualCode: string; system: RankingSystem } = this.processor.getData(
+          this.STEP_RANKING
         );
-        const bodyTournament = parse(resultTournament.data, {
-          attributeNamePrefix: '',
-          ignoreAttributes: false,
-          parseAttributeValue: true
-        }).Result as XmlResult;
 
-        const players = await Player.findAll({
-          where: {
-            memberId: {
-              [Op.in]: bodyTournament.RankingPublicationPoints.map(
-                (points) => correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
-              )
+        const publications: VisualPublication[] = this.processor.getData(this.STEP_PUBLICATIONS);
+
+        const categories: { code: string; name: string }[] = this.processor.getData(
+          this.STEP_CATEGORIES
+        );
+
+        const pointsForCategory = async (
+          publication: VisualPublication,
+          category: string,
+          places: Map<string, RankingPlace>,
+          type: 'single' | 'double' | 'mix',
+          gender: 'M' | 'F'
+        ) => {
+          const resultTournament = await axios.get(
+            `${process.env.VR_API}/Ranking/${ranking.visualCode}/Publication/${publication.code}/Category/${category}`,
+            {
+              withCredentials: true,
+              auth: {
+                username: `${process.env.VR_API_USER}`,
+                password: `${process.env.VR_API_PASS}`
+              },
+              headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Content-Type': 'application/xml'
+              }
             }
-          },
-          include: [LastRankingPlace],
-          transaction: args.transaction
-        });
-
-        for (const points of bodyTournament.RankingPublicationPoints) {
-          let foundPlayer = players.find(
-            (p) =>
-              p.memberId ===
-              correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
           );
+          const bodyTournament = parse(resultTournament.data, {
+            attributeNamePrefix: '',
+            ignoreAttributes: false,
+            parseAttributeValue: true
+          }).Result as XmlResult;
 
-          if (foundPlayer == null) {
-            logger.info('New player');
-            const [firstName, ...lastName] = points.Player1.Name.split(' ').filter(Boolean);
-            foundPlayer = await new Player(
-              correctWrongPlayers({
-                memberId: points.Player1.MemberID,
-                firstName,
-                lastName: lastName.join(' '),
-                gender
-              })
-            ).save({ transaction: args.transaction });
-          }
-          if (places.has(foundPlayer.id)) {
-            places.get(foundPlayer.id)[type] = points.Level;
-            places.get(foundPlayer.id)[`${type}Points`] = points.Totalpoints;
-            places.get(foundPlayer.id)[`${type}Rank`] = points.Rank;
-          } else {
-            places.set(
-              foundPlayer.id,
-              new RankingPlace({
-                updatePossible: publication.usedForUpdate,
-                playerId: foundPlayer.id,
-                rankingDate: publication.publicationDate,
-                [type]: points.Level,
-                [`${type}Points`]: points.Totalpoints,
-                [`${type}Rank`]: points.Rank,
-                SystemId: ranking.system.id
-              })
+          const players = await Player.findAll({
+            where: {
+              memberId: {
+                [Op.in]: bodyTournament.RankingPublicationPoints.map(
+                  (points) =>
+                    correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
+                )
+              }
+            },
+            include: [LastRankingPlace],
+            transaction: args.transaction
+          });
+
+          for (const points of bodyTournament.RankingPublicationPoints) {
+            let foundPlayer = players.find(
+              (p) =>
+                p.memberId ===
+                correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
             );
 
-            if (publication.usedForUpdate === false && foundPlayer.lastRankingPlaces != null) {
-              const place = foundPlayer.lastRankingPlaces.find(
-                (r) => r.systemId === ranking.system.id
+            if (foundPlayer == null) {
+              logger.info('New player');
+              const [firstName, ...lastName] = points.Player1.Name.split(' ').filter(Boolean);
+              foundPlayer = await new Player(
+                correctWrongPlayers({
+                  memberId: points.Player1.MemberID,
+                  firstName,
+                  lastName: lastName.join(' '),
+                  gender
+                })
+              ).save({ transaction: args.transaction });
+            }
+            if (places.has(foundPlayer.id)) {
+              places.get(foundPlayer.id)[type] = points.Level;
+              places.get(foundPlayer.id)[`${type}Points`] = points.Totalpoints;
+              places.get(foundPlayer.id)[`${type}Rank`] = points.Rank;
+            } else {
+              places.set(
+                foundPlayer.id,
+                new RankingPlace({
+                  updatePossible: publication.usedForUpdate,
+                  playerId: foundPlayer.id,
+                  rankingDate: publication.date.toDate(),
+                  [type]: points.Level,
+                  [`${type}Points`]: points.Totalpoints,
+                  [`${type}Rank`]: points.Rank,
+                  SystemId: ranking.system.id
+                })
               );
-              if (place != null && place[type] != null && place[type] !== points.Level) {
-                place[type] = points.Level;
-                await place.save({ transaction: args.transaction });
+
+              if (publication.usedForUpdate === false && foundPlayer.lastRankingPlaces != null) {
+                const place = foundPlayer.lastRankingPlaces.find(
+                  (r) => r.systemId === ranking.system.id
+                );
+                if (place != null && place[type] != null && place[type] !== points.Level) {
+                  place[type] = points.Level;
+                  await place.save({ transaction: args.transaction });
+                }
               }
             }
           }
-        }
-      };
+        };
 
-      for (const publication of publications) {
-        const rankingPlaces = new Map<string, RankingPlace>();
-        if (publication.date.isAfter(args.runFrom)) {
-          if (publication.usedForUpdate) {
-            logger.info(`Updating ranking on ${publication.date}`); 
+        for (const publication of publications) {
+          const rankingPlaces = new Map<string, RankingPlace>();
+          if (publication.date.isAfter(args.runFrom)) {
+            if (publication.usedForUpdate) {
+              logger.info(`Updating ranking on ${publication.date}`);
+            }
+
+            logger.debug('Removing old points for date (voiding collision)');
+            await RankingPlace.destroy({
+              where: {
+                rankingDate: publication.date.toDate()
+              },
+              transaction: args.transaction
+            });
+
+            logger.debug(`Getting single levels for ${publication.date.format('LLL')}`);
+            await pointsForCategory(
+              publication,
+              categories.find((category) => category.name === 'HE/SM').code,
+              rankingPlaces,
+              'single',
+              'M'
+            );
+            await pointsForCategory(
+              publication,
+              categories.find((category) => category.name === 'DE/SD').code,
+              rankingPlaces,
+              'single',
+              'F'
+            );
+
+            logger.debug(`Getting double levels for ${publication.date.format('LLL')}`);
+            await pointsForCategory(
+              publication,
+              categories.find((category) => category.name === 'HD/DM').code,
+              rankingPlaces,
+              'double',
+              'M'
+            );
+            await pointsForCategory(
+              publication,
+              categories.find((category) => category.name === 'DD').code,
+              rankingPlaces,
+              'double',
+              'F'
+            );
+
+            logger.debug(`Getting mix levels for ${publication.date.format('LLL')}`);
+            await pointsForCategory(
+              publication,
+              categories.find((category) => category.name === 'GD H/DX M').code,
+              rankingPlaces,
+              'mix',
+              'M'
+            );
+            await pointsForCategory(
+              publication,
+              categories.find((category) => category.name === 'GD D/DX D').code,
+              rankingPlaces,
+              'mix',
+              'F'
+            );
+
+            const instances = Array.from(rankingPlaces).map(([, place]) => place.toJSON());
+            await RankingPlace.bulkCreate(instances, {
+              ignoreDuplicates: true,
+              transaction: args.transaction,
+              hooks: true
+            });
+
+            ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
+            await ranking.system.save({ transaction: args.transaction });
           }
-
-          logger.debug('Removing old points for date (voiding collision)');
-          await RankingPlace.destroy({
-            where: {
-              rankingDate: publication.publicationDate
-            },
-            transaction: args.transaction 
-          });
-
-          logger.debug(`Getting single levels for ${publication.publicationDate}`);
-          await pointsForCategory(
-            publication,
-            categories.find((category) => category.name === 'HE/SM').code,
-            rankingPlaces,
-            'single',
-            'M'
-          );
-          await pointsForCategory(
-            publication,
-            categories.find((category) => category.name === 'DE/SD').code,
-            rankingPlaces,
-            'single',
-            'F'
-          );
-
-          logger.debug(`Getting double levels for ${publication.publicationDate}`);
-          await pointsForCategory(
-            publication,
-            categories.find((category) => category.name === 'HD/DM').code,
-            rankingPlaces,
-            'double',
-            'M'
-          );
-          await pointsForCategory(
-            publication,
-            categories.find((category) => category.name === 'DD').code,
-            rankingPlaces,
-            'double',
-            'F'
-          );
-
-          logger.debug(`Getting mix levels for ${publication.publicationDate}`);
-          await pointsForCategory(
-            publication,
-            categories.find((category) => category.name === 'GD H/DX M').code,
-            rankingPlaces,
-            'mix',
-            'M'
-          );
-          await pointsForCategory(
-            publication,
-            categories.find((category) => category.name === 'GD D/DX D').code,
-            rankingPlaces,
-            'mix',
-            'F'
-          );
-
-          const instances = Array.from(rankingPlaces).map(([, place]) => place.toJSON());
-          await RankingPlace.bulkCreate(instances, {
-            ignoreDuplicates: true,
-            transaction: args.transaction,
-            hooks: true
-          });
-
-          ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
-          await ranking.system.save({ transaction: args.transaction });
         }
       }
-    });
+    );
   }
 
   protected setInactive(): ProcessStep {

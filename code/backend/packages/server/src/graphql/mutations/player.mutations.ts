@@ -131,11 +131,10 @@ export const updatePlayerRankingMutation = {
     context: { req: AuthenticatedRequest }
   ) => {
     canExecute(context?.req?.user, { anyPermissions: ['edit:ranking'] });
-
-
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbLastRanking = await LastRankingPlace.findByPk(rankingPlace.id, { transaction });
+     
       if (dbLastRanking !== null) {
         if (dbLastRanking.playerId !== playerId) {
           throw new ApiError({
