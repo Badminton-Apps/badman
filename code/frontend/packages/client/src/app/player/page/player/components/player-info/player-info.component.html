@@ -20,7 +20,7 @@
   <div
     class="points"
     *ngIf="rankingPoint"
-    [ngClass]="this.isUsedForUpgrade ? 'upgrade' : this.isUsedForDowngrade ? 'downgrade' : 'none'"
+    [ngClass]="this.class"
     [matTooltip]="this.tooltip"
   >
     {{ rankingPoint.points }}
