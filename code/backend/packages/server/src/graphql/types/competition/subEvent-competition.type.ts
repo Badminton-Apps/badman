@@ -13,7 +13,7 @@ import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
 import { DrawCompetitionType } from './draw-competition.type';
 import { EventCompetitionType } from './event-competition.type';
 import { queryFixer } from '../../queryFixer';
-import { PlayerType } from '..';
+import { PlayerType, RankingSystemGroupType } from '..';
 
 const SubEventCompetitionType = new GraphQLObjectType({
   name: 'SubEventCompetition',
@@ -57,6 +57,19 @@ const SubEventCompetitionType = new GraphQLObjectType({
           type: new GraphQLList(TeamType),
           args: Object.assign(defaultListArgs(), {}),
           resolve: resolver(SubEventCompetition.associations.teams, {
+            before: async (findOptions: { [key: string]: object }) => {
+              findOptions = {
+                ...findOptions,
+                where: queryFixer(findOptions.where)
+              };
+              return findOptions; 
+            }
+          })
+        },
+        groups: {
+          type: new GraphQLList(RankingSystemGroupType),
+          args: Object.assign(defaultListArgs(), {}),
+          resolve: resolver(SubEventCompetition.associations.groups, {
             before: async (findOptions: { [key: string]: object }) => {
               findOptions = {
                 ...findOptions,

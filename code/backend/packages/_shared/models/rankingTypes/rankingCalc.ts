@@ -1,5 +1,4 @@
 import {
-  DataBaseHandler,
   DrawCompetition,
   DrawTournament,
   EncounterCompetition,
@@ -12,12 +11,12 @@ import {
   RankingPoint,
   RankingSystem,
   SubEventCompetition,
-  SubEventTournament
+  SubEventTournament,
 } from '@badvlasim/shared';
 import moment, { Moment } from 'moment';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { PointCalculator } from './point-calculator';
-import { StartingRanking } from './starting-ranking';
+import { StartingRanking } from '@badvlasim/shared/models/rankingTypes/starting-ranking';
 
 export class RankingCalc {
   periods: RankingPeriod[];
@@ -26,15 +25,15 @@ export class RankingCalc {
 
   constructor(
     public rankingType: RankingSystem,
-    protected dataBaseService: DataBaseHandler,
     protected runningFromStart: boolean
   ) {
-    this.startingRanking = new StartingRanking(dataBaseService);
+    this.startingRanking = new StartingRanking();
   }
 
   async beforeCalculationAsync(start?: Moment) {
     const SystemId = this.rankingType.id;
-    let startingDate = start ?? moment(this.rankingType.caluclationIntervalLastUpdate);
+    let startingDate =
+      start ?? moment(this.rankingType.caluclationIntervalLastUpdate);
 
     if (this.runningFromStart) {
       startingDate = moment(0);
@@ -43,8 +42,8 @@ export class RankingCalc {
     const where = {
       SystemId,
       rankingDate: {
-        [Op.gte]: startingDate.toDate()
-      }
+        [Op.gte]: startingDate.toDate(),
+      },
     };
 
     try {
@@ -62,8 +61,8 @@ export class RankingCalc {
       const newWhere = {
         systemId: SystemId,
         rankingDate: {
-          [Op.gte]: startingDate.toDate()
-        }
+          [Op.gte]: startingDate.toDate(),
+        },
       };
       const placeLastCount = await LastRankingPlace.count({ where: newWhere });
 
@@ -103,16 +102,20 @@ export class RankingCalc {
     }
 
     let lastPeriod = moment(this.rankingType.caluclationIntervalLastUpdate);
-    const lastUpdateRanking = moment(this.rankingType.updateIntervalAmountLastUpdate);
+    const lastUpdateRanking = moment(
+      this.rankingType.updateIntervalAmountLastUpdate
+    );
 
     logger.silly('Config', {
-      caluclationIntervalLastUpdate: this.rankingType.caluclationIntervalLastUpdate,
-      updateIntervalAmountLastUpdate: this.rankingType.updateIntervalAmountLastUpdate,
+      caluclationIntervalLastUpdate:
+        this.rankingType.caluclationIntervalLastUpdate,
+      updateIntervalAmountLastUpdate:
+        this.rankingType.updateIntervalAmountLastUpdate,
       updateInterval: this.rankingType.updateInterval,
       period: this.rankingType.period,
       calculationInterval: this.rankingType.calculationInterval,
       stop,
-      start
+      start,
     });
 
     let hasHistoricalGames = this.runningFromStart;
@@ -127,10 +130,16 @@ export class RankingCalc {
       const periodStop = lastPeriod.toDate();
       const updateRankings = lastUpdateRanking.isSameOrBefore(lastPeriod);
 
-      await this.calculatePeriodAsync(periodStart, periodStop, updateRankings, hasHistoricalGames);
+      await this.calculatePeriodAsync(
+        periodStart,
+        periodStop,
+        updateRankings,
+        hasHistoricalGames
+      );
 
       if (updateRankings) {
-        this.rankingType.updateIntervalAmountLastUpdate = lastUpdateRanking.toDate();
+        this.rankingType.updateIntervalAmountLastUpdate =
+          lastUpdateRanking.toDate();
         lastUpdateRanking.add(
           this.rankingType.updateInterval.amount,
           this.rankingType.updateInterval.unit
@@ -177,7 +186,11 @@ export class RankingCalc {
     this.rankingType.save();
   }
 
-  public processGame(game: Game, players: Map<string, Player>, rankingDate: Date): RankingPoint[] {
+  public processGame(
+    game: Game,
+    players: Map<string, Player>,
+    rankingDate?: Date
+  ): RankingPoint[] {
     const rankings: RankingPoint[] = [];
     // ignore these types
     if (game.winner === 0 || game.winner === 7 || game.winner === 6) {
@@ -185,7 +198,10 @@ export class RankingCalc {
     }
 
     // ignore WO's
-    if (game.set1Team1 === null && game.set1Team2 === null) {
+    if (
+      (game.set1Team1 ?? null) === null &&
+      (game.set1Team2 ?? null) === null
+    ) {
       return;
     }
 
@@ -223,7 +239,7 @@ export class RankingCalc {
       player2Team1Points,
       player1Team2Points,
       player2Team2Points,
-      differenceInLevel
+      differenceInLevel,
     } = this.pointCalculator.getPointsForGame(
       game,
       player1Team1,
@@ -239,8 +255,8 @@ export class RankingCalc {
           SystemId: this.rankingType.id,
           playerId: player1Team1.id,
           GameId: game.id,
-          rankingDate,
-          differenceInLevel: player1Team1Points === 0 ? differenceInLevel : 0
+          rankingDate: rankingDate ?? game.playedAt,
+          differenceInLevel: player1Team1Points === 0 ? differenceInLevel : 0,
         })
       );
     }
@@ -251,8 +267,8 @@ export class RankingCalc {
           SystemId: this.rankingType.id,
           playerId: player1Team2.id,
           GameId: game.id,
-          rankingDate,
-          differenceInLevel: player1Team2Points === 0 ? differenceInLevel : 0
+          rankingDate: rankingDate ?? game.playedAt,
+          differenceInLevel: player1Team2Points === 0 ? differenceInLevel : 0,
         })
       );
     }
@@ -264,8 +280,8 @@ export class RankingCalc {
           SystemId: this.rankingType.id,
           playerId: player2Team1.id,
           GameId: game.id,
-          rankingDate,
-          differenceInLevel: player2Team1Points === 0 ? differenceInLevel : 0
+          rankingDate: rankingDate ?? game.playedAt,
+          differenceInLevel: player2Team1Points === 0 ? differenceInLevel : 0,
         })
       );
     }
@@ -277,8 +293,8 @@ export class RankingCalc {
           SystemId: this.rankingType.id,
           playerId: player2Team2.id,
           GameId: game.id,
-          rankingDate,
-          differenceInLevel: player2Team2Points === 0 ? differenceInLevel : 0
+          rankingDate: rankingDate ?? game.playedAt,
+          differenceInLevel: player2Team2Points === 0 ? differenceInLevel : 0,
         })
       );
     }
@@ -290,7 +306,11 @@ export class RankingCalc {
     newRanking: RankingPlace
     // highestRanking: { single: number; mix: number; double: number }
   ): RankingPlace {
-    const highest = Math.min(newRanking.single, newRanking.double, newRanking.mix);
+    const highest = Math.min(
+      newRanking.single,
+      newRanking.double,
+      newRanking.mix
+    );
 
     if (newRanking.single - highest >= this.rankingType.maxDiffLevels) {
       newRanking.single = highest + this.rankingType.maxDiffLevels;
@@ -326,12 +346,14 @@ export class RankingCalc {
   }
 
   protected async getGamesAsync(start: Date, end: Date): Promise<Game[]> {
-    logger.debug(`getGamesAsync for period ${start.toISOString()} - ${end.toISOString()}`);
+    logger.debug(
+      `getGamesAsync for period ${start.toISOString()} - ${end.toISOString()}`
+    );
 
     const where = {
       playedAt: {
-        [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }]
-      }
+        [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }],
+      },
     };
 
     // const groups = this.rankingType.groups.map(r => r.id);
@@ -351,7 +373,7 @@ export class RankingCalc {
               include: [
                 {
                   model: SubEventCompetition,
-                  attributes: []
+                  attributes: [],
                   // include: [
                   //   {
                   //     model: RankingSystemGroup,
@@ -364,10 +386,10 @@ export class RankingCalc {
                   //     }
                   //   }
                   // ]
-                }
-              ]
-            }
-          ]
+                },
+              ],
+            },
+          ],
         },
         {
           model: DrawTournament,
@@ -375,7 +397,7 @@ export class RankingCalc {
           include: [
             {
               model: SubEventTournament,
-              attributes: []
+              attributes: [],
               // include: [
               //   {
               //     model: RankingSystemGroup,
@@ -388,20 +410,25 @@ export class RankingCalc {
               //     }
               //   }
               // ]
-            }
-          ]
-        }
-      ]
+            },
+          ],
+        },
+      ],
     });
 
     logger.debug(`Got ${games.length} games`);
 
     return games;
   }
-  protected async getPlayersAsync(start: Date, end: Date): Promise<Map<string, Player>> {
+  protected async getPlayersAsync(
+    start: Date,
+    end: Date
+  ): Promise<Map<string, Player>> {
     const players = new Map();
 
-    logger.debug(`getPlayersAsync for preiod ${start.toISOString()} - ${end.toISOString()}`);
+    logger.debug(
+      `getPlayersAsync for preiod ${start.toISOString()} - ${end.toISOString()}`
+    );
 
     // Get all players with relevant info
     (
@@ -416,19 +443,19 @@ export class RankingCalc {
               'mix',
               'singleInactive',
               'doubleInactive',
-              'mixInactive'
-            ]
+              'mixInactive',
+            ],
           },
           {
             model: Game,
             required: true,
             where: {
               playedAt: {
-                [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }]
-              }
-            }
-          }
-        ]
+                [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }],
+              },
+            },
+          },
+        ],
       })
     ).map((x) => {
       players.set(x.id, x);
@@ -437,21 +464,24 @@ export class RankingCalc {
     return players;
   }
 
-  protected async calculateRankingPointsPerGameAsync(
+  public async calculateRankingPointsPerGameAsync(
     games: Game[],
     players: Map<string, Player>,
-    rankingDate: Date
+    rankingDate?: Date,
+    transaction?: Transaction
   ) {
-    logger.debug(`calculateRankingPointsPerGameAsync for date ${rankingDate.toISOString()}`);
+    logger.debug(`calculateRankingPointsPerGameAsync`);
 
     while (games.length > 0) {
-      const rankings = this.processGame(games.pop(), players, rankingDate) ?? [];
+      const rankings =
+        this.processGame(games.pop(), players, rankingDate) ?? [];
 
       if (rankings.length > 0) {
         await RankingPoint.bulkCreate(
           rankings.map((r) => r.toJSON()),
           {
-            returning: false
+            returning: false,
+            transaction,
           }
         );
       }
@@ -513,8 +543,12 @@ export class RankingCalc {
         .slice(0, this.rankingType.latestXGamesToUse);
     }
 
-    const singlePointsUpgrade = this.findPointsBetterAverage(singleCountsForUpgrade);
-    const doublePointsUpgrade = this.findPointsBetterAverage(doubleCountsForUpgrade);
+    const singlePointsUpgrade = this.findPointsBetterAverage(
+      singleCountsForUpgrade
+    );
+    const doublePointsUpgrade = this.findPointsBetterAverage(
+      doubleCountsForUpgrade
+    );
     const mixPointsUpgrade = this.findPointsBetterAverage(mixCountsForUpgrade);
 
     // difference is a negative number when layers are higher
@@ -543,9 +577,18 @@ export class RankingCalc {
         .slice(0, this.rankingType.latestXGamesToUse);
     }
 
-    const singlePointsDowngrade = this.findPointsBetterAverage(singleCountsForDowngrade, false);
-    const doublePointsDowngrade = this.findPointsBetterAverage(doubleCountsForDowngrade, false);
-    const mixPointsDowngrade = this.findPointsBetterAverage(mixCountsForDowngrade, false);
+    const singlePointsDowngrade = this.findPointsBetterAverage(
+      singleCountsForDowngrade,
+      false
+    );
+    const doublePointsDowngrade = this.findPointsBetterAverage(
+      doubleCountsForDowngrade,
+      false
+    );
+    const mixPointsDowngrade = this.findPointsBetterAverage(
+      mixCountsForDowngrade,
+      false
+    );
 
     // Determin new level based on inactivity or not
     let singleLevel = this.findRanking(
@@ -558,15 +601,23 @@ export class RankingCalc {
       doublePointsDowngrade,
       lastRanking.double
     );
-    let mixLevel = this.findRanking(mixPointsUpgrade, mixPointsDowngrade, lastRanking.mix);
+    let mixLevel = this.findRanking(
+      mixPointsUpgrade,
+      mixPointsDowngrade,
+      lastRanking.mix
+    );
 
     if (singleLevel > lastRanking.single) {
       // If you are marked as inactive
       if (inactive.single) {
-        singleLevel = lastRanking.singleInactive ? lastRanking.single : lastRanking.single + 2;
+        singleLevel = lastRanking.singleInactive
+          ? lastRanking.single
+          : lastRanking.single + 2;
       }
       // if not inactive but not have enough points, you remain the same
-      else if (singleRankingPoints.length <= this.rankingType.gamesForInactivty) {
+      else if (
+        singleRankingPoints.length <= this.rankingType.gamesForInactivty
+      ) {
         singleLevel = lastRanking.single;
       }
     }
@@ -574,10 +625,14 @@ export class RankingCalc {
     if (doubleLevel > lastRanking.double) {
       // If you are marked as inactive
       if (inactive.double) {
-        doubleLevel = lastRanking.doubleInactive ? lastRanking.double : lastRanking.double + 2;
+        doubleLevel = lastRanking.doubleInactive
+          ? lastRanking.double
+          : lastRanking.double + 2;
       }
       // if not inactive but not have enough points, you remain the same
-      else if (doubleRankingPoints.length <= this.rankingType.gamesForInactivty) {
+      else if (
+        doubleRankingPoints.length <= this.rankingType.gamesForInactivty
+      ) {
         doubleLevel = lastRanking.double;
       }
     }
@@ -585,7 +640,9 @@ export class RankingCalc {
     if (mixLevel > lastRanking.mix) {
       // If you are marked as inactive
       if (inactive.mix) {
-        mixLevel = lastRanking.mixInactive ? lastRanking.mix : lastRanking.mix + 2;
+        mixLevel = lastRanking.mixInactive
+          ? lastRanking.mix
+          : lastRanking.mix + 2;
       }
       // if not inactive but not have enough points, you remain the same
       else if (mixRankingPoints.length <= this.rankingType.gamesForInactivty) {
@@ -607,7 +664,7 @@ export class RankingCalc {
         single: singleLevel,
         mix: mixLevel,
         double: doubleLevel,
-        updatePossible: true
+        updatePossible: true,
       });
 
       return this.protectRanking(newRanking);
@@ -626,13 +683,18 @@ export class RankingCalc {
       single: lastRanking.single,
       mix: lastRanking.mix,
       double: lastRanking.double,
-      updatePossible: false
+      updatePossible: false,
     });
   }
 
-  public findPointsBetterAverage(rankingPoints: RankingPoint[], limitMinGames = true) {
+  public findPointsBetterAverage(
+    rankingPoints: RankingPoint[],
+    limitMinGames = true
+  ) {
     const avgPoints = rankingPoints.map((x) => x.points).filter((x) => x === 0);
-    const wonPoints = rankingPoints.filter((x) => x.points > 0).sort((a, b) => b.points - a.points);
+    const wonPoints = rankingPoints
+      .filter((x) => x.points > 0)
+      .sort((a, b) => b.points - a.points);
     let avg = 0;
 
     wonPoints.forEach((element) => {
@@ -663,7 +725,9 @@ export class RankingCalc {
       return 0;
     }
 
-    const points = rankingPoints.map((x) => x.points).reduce((a, b) => a + b, 0);
+    const points = rankingPoints
+      .map((x) => x.points)
+      .reduce((a, b) => a + b, 0);
     const amountOfGamesToUse = rankingPoints.length;
 
     const pointAvg = points / amountOfGamesToUse;
@@ -671,15 +735,25 @@ export class RankingCalc {
     return Math.round(pointAvg);
   }
 
-  public findRanking(pointsUpgrade: number, pointsDowngrade: number, currentLevel: number): number {
+  public findRanking(
+    pointsUpgrade: number,
+    pointsDowngrade: number,
+    currentLevel: number
+  ): number {
     let topLevelByUpgradePoints = 1;
     let bottomLevelByDowngradePoints = this.rankingType.amountOfLevels;
 
     // Check if can go up,
     // we start at our current level and go down in number (so higher rankings)
-    for (let estimatedUpLevel = currentLevel; estimatedUpLevel >= 1; estimatedUpLevel--) {
+    for (
+      let estimatedUpLevel = currentLevel;
+      estimatedUpLevel >= 1;
+      estimatedUpLevel--
+    ) {
       const pointsNeededForNextLevel =
-        this.rankingType.pointsToGoUp[this.rankingType.pointsToGoUp.length + 1 - estimatedUpLevel];
+        this.rankingType.pointsToGoUp[
+          this.rankingType.pointsToGoUp.length + 1 - estimatedUpLevel
+        ];
       if (pointsNeededForNextLevel > pointsUpgrade) {
         topLevelByUpgradePoints = estimatedUpLevel;
         break;
@@ -689,7 +763,10 @@ export class RankingCalc {
     const upgrade = currentLevel - topLevelByUpgradePoints;
     if (upgrade > 0) {
       // You can only go up one level at a time
-      if (this.rankingType.maxLevelUpPerChange && upgrade > this.rankingType.maxLevelUpPerChange) {
+      if (
+        this.rankingType.maxLevelUpPerChange &&
+        upgrade > this.rankingType.maxLevelUpPerChange
+      ) {
         return currentLevel - this.rankingType.maxLevelUpPerChange;
       } else {
         return topLevelByUpgradePoints;

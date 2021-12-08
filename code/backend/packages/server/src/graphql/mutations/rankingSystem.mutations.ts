@@ -5,8 +5,8 @@ import {
   RankingSystem,
   GroupSystems,
   AuthenticatedRequest,
+  canExecute
 } from '@badvlasim/shared';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RankingSystemInputType, RankingSystemType } from '../types';
 
 export const addRankingSystemMutation = {
@@ -17,27 +17,24 @@ export const addRankingSystemMutation = {
       type: RankingSystemInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { rankingSystem: rankingSystemInput }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:ranking'])) {
-      logger.warn('User tried something it should\'t have done', {
-        required: {
-          anyClaim: ['add:ranking']
-        },
-        received: context?.req?.user?.permissions
-      })
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { rankingSystem: rankingSystemInput },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    canExecute(context?.req?.user, {
+      anyPermissions: ['add:ranking']
+    });
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const { groups, ...rankingSystem } = rankingSystemInput;
       const eventDb = await RankingSystem.create(rankingSystem, { transaction });
-      logger.debug('Event', eventDb.toJSON())
-      logger.debug('Got groups', groups.map(r => r.id))
-
+      logger.debug('Event', eventDb.toJSON());
+      logger.debug(
+        'Got groups',
+        groups.map((r) => r.id)
+      );
 
       for (const group of groups) {
         const dbGroup = await RankingSystemGroup.findByPk(group.id);
@@ -50,7 +47,7 @@ export const addRankingSystemMutation = {
       return eventDb;
     } catch (e) {
       logger.warn('rollback', e);
-      await  transaction.rollback();
+      await transaction.rollback();
       throw e;
     }
   }
@@ -64,19 +61,13 @@ export const updateRankingSystemMutation = {
       type: RankingSystemInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { rankingSystem }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:ranking'])) {
-      logger.warn('User tried something it should\'t have done', {
-        required: {
-          anyClaim: ['edit:ranking']
-        },
-        received: context?.req?.user?.permissions
-      })
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { rankingSystem },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    canExecute(context?.req?.user, { anyPermissions: ['edit:ranking']});
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       await RankingSystem.update(rankingSystem, {
@@ -88,7 +79,7 @@ export const updateRankingSystemMutation = {
       await GroupSystems.destroy({ where: { systemId: rankingSystem.id }, transaction });
       // Create new
       await GroupSystems.bulkCreate(
-        rankingSystem.groups?.map(g => {
+        rankingSystem.groups?.map((g) => {
           return {
             systemId: rankingSystem.id,
             groupId: g.id

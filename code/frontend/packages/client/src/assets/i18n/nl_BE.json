@@ -198,7 +198,8 @@
   },
   "games": {
     "title": "Wedstrijden",
-    "bye": "bye"
+    "bye": "bye",
+    "unkown": "Onbekende speler"
   },
   "game": {
     "type": "Spel type"
@@ -247,6 +248,7 @@
     "delete": "Verwijderen",
     "create": "Aanmaken",
     "merge-accounts": "Combineer accounts",
+    "set-ranking-groups": "Set ranking",
     "edit": "Bewerken",
     "done": "Klaar",
     "detail": "Details",

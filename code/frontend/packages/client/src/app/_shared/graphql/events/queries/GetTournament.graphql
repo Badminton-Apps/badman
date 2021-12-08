@@ -9,7 +9,13 @@ query GetEvent($id: ID!) {
     subEvents(order: "name") {
       id
       name
+      level
       eventType
+      gameType
+      groups {
+        id
+        name
+      }
     }
   }
 }

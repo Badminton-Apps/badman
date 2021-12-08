@@ -7,6 +7,7 @@ import {
   CompetitionSyncEventProcessor,
   CompetitionSyncGameProcessor,
   CompetitionSyncPlayerProcessor,
+  CompetitionSyncPointProcessor,
   CompetitionSyncSubEventProcessor
 } from './processors';
 
@@ -23,6 +24,7 @@ export class CompetitionSyncer {
   readonly STEP_ENCOUNTER = 'encounter';
   readonly STEP_PLAYER = 'player';
   readonly STEP_GAME = 'game';
+  readonly STEP_POINT = 'point';
 
   private _eventStep: CompetitionSyncEventProcessor;
   private _subEventStep: CompetitionSyncSubEventProcessor;
@@ -30,6 +32,7 @@ export class CompetitionSyncer {
   private _encounterStep: CompetitionSyncEncounterProcessor;
   private _playerStep: CompetitionSyncPlayerProcessor;
   private _gameStep: CompetitionSyncGameProcessor;
+  private _pointStep: CompetitionSyncPointProcessor;
 
   constructor() {
     this.processor = new Processor();
@@ -41,6 +44,7 @@ export class CompetitionSyncer {
     this.processor.addStep(this.addEncounters());
     this.processor.addStep(this.addPlayers());
     this.processor.addStep(this.addGames());
+    this.processor.addStep(this.addPoints());
   }
 
   process(args: { transaction: Transaction; xmlTournament: XmlTournament }) {
@@ -78,6 +82,10 @@ export class CompetitionSyncer {
       this.visualService
     );
 
+    this._pointStep = new CompetitionSyncPointProcessor(
+      args.transaction
+    );
+
     return this.processor.process();
   }
 
@@ -90,6 +98,7 @@ export class CompetitionSyncer {
       this._subEventStep.event = data.event;
       this._subEventStep.existed = data.existed;
       this._encounterStep.event = data.event;
+      this._pointStep.event = data.event;
     });
   }
 
@@ -137,6 +146,13 @@ export class CompetitionSyncer {
     return new ProcessStep(this.STEP_GAME, async () => {
       // Process step
       await this._gameStep.process();
+    });
+  }
+
+  protected addPoints(): ProcessStep {
+    return new ProcessStep(this.STEP_POINT, async () => {
+      // Process step
+      await this._pointStep.process();
     });
   }
 }

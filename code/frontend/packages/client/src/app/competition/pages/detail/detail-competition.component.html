@@ -9,6 +9,11 @@
           <button mat-menu-item [routerLink]="['/', 'admin', 'event', 'competition', event.id, 'edit']">
             {{ 'button.edit' | translate }}
           </button>
+          <app-has-claim [any]="['add:event', 'remove:event']">
+            <button mat-menu-item (click)="this.assignRankingGroups(event)">
+              {{ 'button.set-ranking-groups' | translate }}
+            </button>
+          </app-has-claim>
           <mat-divider></mat-divider>
           <button mat-menu-item>{{ 'button.delete' | translate }}</button>
         </mat-menu>
@@ -33,7 +38,7 @@
   <mat-list *ngIf="event.subEvents">
     <mat-list-item *ngFor="let subEvent of event.subEvents">
       <a [routerLink]="[subEvent.id]">
-        {{ subEvent.name }}
+        {{ subEvent.name }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span>
       </a>
     </mat-list-item>
   </mat-list>
