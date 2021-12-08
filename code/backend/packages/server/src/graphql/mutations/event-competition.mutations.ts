@@ -1,5 +1,6 @@
 import {
   AuthenticatedRequest,
+  canExecute,
   DataBaseHandler,
   EventCompetition,
   GroupSubEventCompetition,
@@ -19,18 +20,8 @@ export const addEventCompetitionMutation = {
     }
   },
   resolve: async (findOptions: { [key: string]: object }, { eventCompetition }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:competition'])) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['add:competition']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: [`add:competition`] });
+   
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const eventCompetitionDb = await EventCompetition.create(eventCompetition, { transaction });
@@ -84,18 +75,8 @@ export const updateEventCompetitionMutation = {
     }
   },
   resolve: async (findOptions: { [key: string]: object }, { eventCompetition }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:competition'])) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['edit:competition']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: [`edit:competition`] });
+   
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       await EventCompetition.update(eventCompetition, {
@@ -132,18 +113,10 @@ export const setGroupsCompetitionMutation = {
     }
   },
   resolve: async (findOptions: { [key: string]: object }, { id, groupIds }, context: { req: AuthenticatedRequest }) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:competition'])) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['edit:competition']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, {
+      anyPermissions: ['edit:competition']
+    });
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbComp = await EventCompetition.findByPk(id, { transaction });

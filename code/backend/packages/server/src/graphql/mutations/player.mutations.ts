@@ -1,5 +1,7 @@
 import {
   AuthenticatedRequest,
+  canExecute,
+  ClubMembership,
   DataBaseHandler,
   LastRankingPlace,
   logger,
@@ -24,19 +26,7 @@ export const addPlayerMutation = {
     { player },
     context: { req: AuthenticatedRequest }
   ) => {
-    // || !context.req.user.hasAnyPermission(['add:player'])
-    if (context?.req?.user === null) {
-      // logger.warn("User tried something it should't have done", {
-      //   required: {
-      //     anyClaim: ['add:player']
-      //   },
-      //   received: context?.req?.user?.permissions
-      // });
-      throw new ApiError({
-        code: 401,
-        message: 'You need to be logged in '
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: ['add:player'] });
 
     if (player.memberId === null || player.firstName === null || player.lastName === null) {
       throw new ApiError({
@@ -71,17 +61,25 @@ export const updatePlayerMutation = {
     { player },
     context: { req: AuthenticatedRequest }
   ) => {
-    // TODO: check if the player is in the club and thbe user is allowed to change values
+    const dbPlayer = await Player.findByPk(player.id, {
+      include: [{ model: ClubMembership, where: { end: null }, required: false }]
+    });
 
-    if (
-      context?.req?.user === null ||
-      !context.req.user.hasAnyPermission([`${player.id}_edit:player`, 'edit-any:player'])
-    ) {
+    if (!dbPlayer) {
       throw new ApiError({
-        code: 401,
-        message: 'No permissions'
+        code: 404,
+        message: 'Player not found'
       });
     }
+
+    const permissions = [`${player.id}_edit:player`, 'edit-any:player'];
+    if (dbPlayer.clubs.length > 0) {
+      permissions.push(`${dbPlayer.clubs[0].id}_edit:player`);
+    }
+
+    canExecute(context?.req?.user, {
+      anyPermissions: permissions
+    });
 
     let canEditAllFields = false;
     if (context.req.user.hasAnyPermission(['edit-any:player'])) {
@@ -95,7 +93,8 @@ export const updatePlayerMutation = {
           ? player
           : {
               email: player.email,
-              phone: player.phone
+              phone: player.phone,
+              memberId: player.memberId,
             },
         {
           where: { id: player.id },
@@ -131,21 +130,9 @@ export const updatePlayerRankingMutation = {
     { rankingPlace, playerId },
     context: { req: AuthenticatedRequest }
   ) => {
-    if (
-      context?.req?.user === null ||
-      !context.req.user.hasAnyPermission(['edit:ranking'])
-    ) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['edit:ranking']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: ['edit:ranking'] });
+
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbLastRanking = await LastRankingPlace.findByPk(rankingPlace.id, { transaction });
@@ -186,9 +173,9 @@ export const updatePlayerRankingMutation = {
           }
         }
       } else {
-        const system = await RankingSystem.findOne({where: {primary: true}});
+        const system = await RankingSystem.findOne({ where: { primary: true } });
         await new LastRankingPlace({
-          playerId ,
+          playerId,
           systemId: system.id,
           single: rankingPlace.single,
           double: rankingPlace.double,
