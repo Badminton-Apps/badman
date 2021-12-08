@@ -1,12 +1,12 @@
 import {
   correctWrongPlayers,
-  DataBaseHandler,
   logger,
   Player,
   RankingPlace,
+  splitInChunks,
   StartingType
 } from '@badvlasim/shared';
-import startRanking from '../start-ranking/start-ranking.json';
+import startRanking from '../../../simulate/src/start-ranking/start-ranking.json';
 
 export class StartingRanking {
   private _types = [
@@ -17,8 +17,6 @@ export class StartingRanking {
     { json: 'GD D-DX D', type: 'mix' },
     { json: 'GD H-DX M', type: 'mix' }
   ];
-
-  constructor(private _databaseService: DataBaseHandler) {}
 
   async addInitialPlayersAsync(
     startingType: StartingType,
@@ -233,7 +231,13 @@ export class StartingRanking {
     );
 
     // Add initial scoring
-    await this._databaseService.addRankingPlaces(rankingPlaces);
+    const chunks = splitInChunks(rankingPlaces, 500);
+    for (const chunk of chunks) {
+      await RankingPlace.bulkCreate(chunk, {
+        ignoreDuplicates: true,
+        returning: false,
+      });
+    }
   }
 
   private _createStartingPlaces(amountOfLevels: number, startPlayersAmount: number): number[] {

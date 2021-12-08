@@ -1,7 +1,7 @@
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions
+  BuildOptions,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -13,7 +13,7 @@ import {
   IsUUID,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { Game } from '../event/game.model';
 import { Player } from '../player.model';
@@ -22,11 +22,14 @@ import { RankingSystem } from './system.model';
 @Table({
   timestamps: true,
   tableName: 'Points',
-  schema: 'ranking'
+  schema: 'ranking',
 })
 export class RankingPoint extends Model {
   constructor(values?: Partial<RankingPoint>, options?: BuildOptions) {
     super(values, options);
+
+    // TODO: Check if this is wanted
+    this.points = Math.round(values.points);
   }
 
   @Default(DataType.UUIDV4)

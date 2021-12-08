@@ -78,7 +78,7 @@ export class VisualService {
         username: `${process.env.VR_API_USER}`,
         password: `${process.env.VR_API_PASS}`
       },
-      timeout: 600000,
+      timeout: 1000000,
       raxConfig: {
         retry: this._retries,
         onRetryAttempt: err => {

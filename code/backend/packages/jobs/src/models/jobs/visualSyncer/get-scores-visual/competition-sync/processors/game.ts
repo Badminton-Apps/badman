@@ -28,7 +28,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   public async process(): Promise<void> {
     const updatedGames = [];
     const updatedgamePlayers = [];
-    const processEncounters = async ({ encounter, internalId }) => {
+    const processEncounters = async ({ encounter, internalId }: EncounterStepData) => {
       const games = await encounter.getGames({
         transaction: this.transaction,
         include: [Player]
@@ -36,18 +36,16 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
 
       const visualMatch = (
         await this.visualService.getMatch(this.visualTournament.Code, internalId)
-      ).filter(m => !m || m?.Winner !== 0);
+      ).filter((m) => !m || m?.Winner !== 0) as XmlMatch[];
 
       for (const xmlMatch of visualMatch) {
         let game = games.find(
-          r =>
-            r.round === (xmlMatch.RoundName ?? null) && r.visualCode === `${xmlMatch.Code}`
+          (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
         );
 
         if (!game) {
           game = new Game({
             visualCode: xmlMatch.Code,
-            playedAt: encounter.date,
             winner: xmlMatch.Winner,
             gameType: this._getGameType(xmlMatch.MatchTypeID),
             order: xmlMatch.MatchOrder,
@@ -57,6 +55,11 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
 
           updatedgamePlayers.push(...this._createGamePlayers(xmlMatch, game, this.players));
         }
+        // Set dates (if changed)
+        game.playedAt = encounter.date;
+
+        // Set dates (if changed)
+        game.order = xmlMatch.MatchOrder
 
         // Set winner
         game.winner = xmlMatch.Winner;
@@ -75,13 +78,13 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       }
 
       // Remove draw that are not in the xml
-      const removedGames = games.filter(g => g.visualCode == null);
+      const removedGames = games.filter((g) => g.visualCode == null);
       for (const removed of removedGames) {
         await removed.destroy({ transaction: this.transaction });
       }
     };
 
-    await Promise.all(this.encounters.map(e => processEncounters(e)));
+    await Promise.all(this.encounters.map((e) => processEncounters(e)));
     logger.debug(`Creating ${updatedGames.length} games`);
 
     await Game.bulkCreate(updatedGames, {
@@ -93,7 +96,8 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         'set2Team1',
         'set2Team2',
         'set3Team1',
-        'set3Team2'
+        'set3Team2',
+        'updatedAt'
       ]
     });
 

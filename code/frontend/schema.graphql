@@ -865,8 +865,27 @@ type SubEventTournament {
   eventId: String
   createdAt: Date!
   updatedAt: Date!
-  draws: [DrawTournament]
+  draws(
+    limit: Int
+    order: String
+
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    where: SequelizeJSON
+    offset: Int
+  ): [DrawTournament]
   event: EventTournament
+  groups(
+    limit: Int
+    order: String
+
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    where: SequelizeJSON
+    offset: Int
+  ): [RankingSystemGroup]
 }
 
 enum SubEventTournamenteventTypeEnumType {
@@ -1027,6 +1046,16 @@ type SubEventCompetition {
     where: SequelizeJSON
     offset: Int
   ): [Team]
+  groups(
+    limit: Int
+    order: String
+
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    where: SequelizeJSON
+    offset: Int
+  ): [RankingSystemGroup]
 }
 
 enum SubEventCompetitioneventTypeEnumType {
@@ -1377,8 +1406,10 @@ type RootMutationType {
   """Add a change to an encounter"""
   addChangeEncounter(change: EncounterChangeInput): EncounterChange
   deleteImportedEvent(event: ImportInput): Imported
-  removeClub(id: String): Boolean
+  removeClub(id: ID!): Boolean
   updateClubMembership(clubMembership: ClubMembershipInput): ClubMembership
+  deleteClubMembership(clubMembershipId: ID!): ClubMembership
+  addClubMembership(clubMembership: ClubMembershipInput): ClubMembership
   removeLocation(locationId: ID): Location
   removePlayerFromRole(roleId: ID, playerId: ID): Role
   removePlayerFromTeam(teamId: ID, playerId: ID): Team
@@ -1615,8 +1646,8 @@ input ImportInput {
 
 """A Club Membership input type"""
 input ClubMembershipInput {
-  playerId: String!
-  clubId: String!
+  playerId: String
+  clubId: String
   end: Date
   active: Boolean
   start: Date!
