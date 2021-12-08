@@ -6,7 +6,7 @@ import {
   splitInChunks,
   StartingType
 } from '@badvlasim/shared';
-import startRanking from '../../../simulate/src/start-ranking/start-ranking.json';
+import startRanking from './start-ranking.json';
 
 export class StartingRanking {
   private _types = [
