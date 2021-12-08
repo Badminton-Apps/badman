@@ -1,6 +1,5 @@
 import {
   logger,
-  DataBaseHandler,
   Game,
   GameType,
   Player,
@@ -12,18 +11,14 @@ import {
 } from '@badvlasim/shared';
 import moment, { Moment } from 'moment';
 import { Op } from 'sequelize';
-import { PointCalculator } from '../point-calculator';
-import { RankingCalc } from '../rankingCalc';
+import { PointCalculator } from './point-calculator';
+import { RankingCalc } from './rankingCalc';
 
 export class BvlRankingCalc extends RankingCalc {
   private _gameSplitInterval = 30 * 24 * 60 * 60 * 1000; // 30 days max
 
-  constructor(
-    public rankingType: RankingSystem,
-    protected dataBaseService: DataBaseHandler,
-    protected runningFromStart: boolean
-  ) {
-    super(rankingType, dataBaseService, runningFromStart);
+  constructor(public rankingType: RankingSystem, protected runningFromStart: boolean) {
+    super(rankingType, runningFromStart);
     this.pointCalculator = new PointCalculator(this.rankingType);
   }
 
@@ -300,7 +295,13 @@ export class BvlRankingCalc extends RankingCalc {
         .map((value, index) => mapFunction(value, index, placesWomen, countsFemale));
     });
 
-    await this.dataBaseService.addRankingPlaces([...placesMen, ...placesWomen]);
+    const chunks = splitInChunks([...placesMen, ...placesWomen], 500);
+    for (const chunk of chunks) {
+      await RankingPlace.bulkCreate(chunk, {
+        ignoreDuplicates: true,
+        returning: false,
+      });
+    }
   }
 
   getStartRanking(currentPlace: number, startPlaces: number[]): number {

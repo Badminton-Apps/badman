@@ -27,8 +27,6 @@ export class GetScoresVisual extends CronJob {
     this._tournamentSync = new TournamentSyncer();
   }
 
-  
-
   async run(args?: { date: Date; skip: string[] }): Promise<void> {
     // Use argument date, else stored date, finally use today
     const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
@@ -43,33 +41,31 @@ export class GetScoresVisual extends CronJob {
     this.dbCron.meta = {
       percent: 0,
       current: 0,
-      total: newEvents.length,
+      total: newEvents.length
     };
     await this.dbCron.save();
 
-    // newEvents = newEvents.filter(event => {
-    //   return (
-    //     event.Name === 'PBA jeugdcompetitie 2017-2018'
-    //     // && event.Name != 'PBA competitie 2021-2022'
-    //     // && event.Name != 'VVBBC interclubcompetitie 2021-2022'
-    //     // && event.Name != 'PBO competitie 2021-2022'
-    //     // || event.Name == 'Limburgse interclubcompetitie 2021-2022'
-    //     // || event.Name == 'WVBF Competitie 2021-2022'
-    //   );
-    // });
+    newEvents = newEvents.filter((event) => {
+      return moment(event.StartDate).isAfter('2020-09-01 00:00:00+02');
+      // && event.Name != 'PBA competitie 2021-2022'
+      // && event.Name != 'VVBBC interclubcompetitie 2021-2022'
+      // && event.Name != 'PBO competitie 2021-2022'
+      // || event.Name == 'Limburgse interclubcompetitie 2021-2022'
+      // || event.Name == 'WVBF Competitie 2021-2022'
+    });
 
     for (let i = 0; i < newEvents.length; i++) {
       const xmlTournament = newEvents[i];
       const current = i + 1;
       const total = newEvents.length;
-      const percent = Math.round(( current / total) * 10000) / 100;
+      const percent = Math.round((current / total) * 10000) / 100;
       logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${newEvents.length})`);
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
       this.dbCron.meta = {
         percent,
         current,
-        total,
+        total
       };
       this.dbCron.save({ transaction });
       try {
@@ -109,7 +105,7 @@ export class GetScoresVisual extends CronJob {
       },
       raxConfig: {
         retry: 25,
-        onRetryAttempt: err => {
+        onRetryAttempt: (err) => {
           const cfg = rax.getConfig(err);
           logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`);
         }

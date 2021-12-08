@@ -1,15 +1,9 @@
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
-import pkg from '../package.json'
+import pkg from '../package.json';
 
-
-import {
-  App,
-  AuthenticationSercice,
-  logger,
-  startWhenReady
-} from '@badvlasim/shared';
+import { App, AuthenticationSercice, logger, startWhenReady } from '@badvlasim/shared';
 
 import { Router } from 'express';
 import { JobController } from './controllers';

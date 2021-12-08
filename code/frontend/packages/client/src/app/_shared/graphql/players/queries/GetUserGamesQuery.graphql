@@ -1,5 +1,12 @@
 # Write your query or mutation here
-query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit: Int!, $where: SequelizeJSON) {
+query GetUserGamesQuery(
+  $playerId: ID!
+  $rankingType: ID!
+  $offset: Int!
+  $limit: Int!
+  $where: SequelizeJSON
+  $rankingPointsWhere: SequelizeJSON
+) {
   player(id: $playerId) {
     id
     games(limit: $limit, offset: $offset, order: "reverse:playedAt", where: $where) {
@@ -12,7 +19,10 @@ query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit
       set3Team2
       playedAt
       winner
+      round
+      order
       gameType
+      linkType
       competition {
         id
         home {
@@ -56,7 +66,7 @@ query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit
           }
         }
       }
-      rankingPoints {
+      rankingPoints(where: $rankingPointsWhere) {
         id
         points
         differenceInLevel

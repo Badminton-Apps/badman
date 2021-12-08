@@ -1,19 +1,17 @@
 import {
-  DataBaseHandler,
   logger,
   RankingPlace,
   RankingSystem
 } from '@badvlasim/shared';
-import { RankingCalc } from '../rankingCalc';
 import moment, { Moment } from 'moment';
+import { RankingCalc } from './rankingCalc';
 
 export class OriginalRankingCalc extends RankingCalc {
   constructor(
     public rankingType: RankingSystem,
-    dataBaseService: DataBaseHandler,
     protected runningFromStart: boolean
   ) {
-    super(rankingType, dataBaseService, runningFromStart);
+    super(rankingType, runningFromStart);
   }
 
 

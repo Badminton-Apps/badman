@@ -16,7 +16,8 @@
     "merge-accounts": "node --inspect=6862 -r ts-node/register ./src/merge-accounts.ts",
     "merge-dupes": "node --inspect=6862 -r ts-node/register ./src/merge-double-players.ts",
     "set-meta": "node --inspect=6862 -r ts-node/register ./src/set-meta.ts",
-    "fix-teams": "node --inspect=6862 -r ts-node/register ./src/fix-teams.ts"
+    "fix-teams": "node --inspect=6862 -r ts-node/register ./src/fix-teams.ts",
+    "add-grroups": "node --inspect=6862 -r ts-node/register ./src/add-to-ranking.ts"
   },
   "dependencies": {
     "@badvlasim/shared": "^4.5.1",
