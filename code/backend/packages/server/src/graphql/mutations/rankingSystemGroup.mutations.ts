@@ -1,6 +1,5 @@
-import { RankingSystemGroup, logger, AuthenticatedRequest } from '@badvlasim/shared';
+import { RankingSystemGroup, logger, AuthenticatedRequest, canExecute } from '@badvlasim/shared';
 import { GraphQLInt } from 'graphql';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RankingSystemGroupInputType, RankingSystemGroupType } from '../types';
 
 export const addRankingSystemGroupMutation = {
@@ -16,18 +15,11 @@ export const addRankingSystemGroupMutation = {
     { rankingSystemGroup },
     context: { req: AuthenticatedRequest }
   ) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['add:ranking-group'])) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['add:ranking-group']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, {
+      anyPermissions: ['add:ranking-group']
+    });
+
+  
     return RankingSystemGroup.create(rankingSystemGroup);
   }
 };
@@ -49,18 +41,9 @@ export const updateRankingSystemGroupMutation = {
     { id, rankingSystemGroup },
     context: { req: AuthenticatedRequest }
   ) => {
-    if (context?.req?.user === null || !context.req.user.hasAnyPermission(['edit:ranking-group'])) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: ['edit:ranking-group']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: ['edit:ranking-group']});
+
+
 
     logger.debug('TO IMPLEMENT', id, rankingSystemGroup);
     // return await RankingSystemGroup.create(rankingSystemGroup);
