@@ -194,7 +194,8 @@
   },
   "games": {
     "title": "",
-    "bye": ""
+    "bye": "",
+    "unkown": ""
   },
   "game": {
     "type": "Type"
@@ -242,6 +243,7 @@
     "close": "",
     "delete": "",
     "merge-accounts": "",
+    "set-ranking-groups": "",
     "create": "",
     "edit": "",
     "done": "",

@@ -56,6 +56,7 @@ export const EventCompetitionType = new GraphQLObjectType({
           }
         })
       }
+      
     })
 });
 

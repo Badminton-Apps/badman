@@ -8,6 +8,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompetitionEvent, Event, EventService, EventType, TournamentEvent } from 'app/_shared';
+import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, of as observableOf, tap } from 'rxjs';
 import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 
@@ -56,7 +57,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
     this.formGroup = new FormGroup({
       query: new FormControl(queryParams['query']),
-      startYear: new FormControl(queryParams['startYear'], [Validators.pattern('^[0-9]*$')]),
+      startYear: new FormControl(parseInt(queryParams['year'], 10) ?? undefined, [Validators.pattern('^[0-9]*$')]),
       type: new FormControl(queryParams['type'] ?? EventType.COMPETITION_CP, [Validators.required]),
       allowEnlisting: new FormControl(
         queryParams['allowEnlisting'] === undefined ? undefined : queryParams['allowEnlisting'] === 'true'
@@ -99,30 +100,48 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         startWith([this.formGroup.value, undefined, undefined]),
         debounceTime(300),
         map(([filterChange]) => {
+          
           const where: { [key: string]: any } = {};
 
           if (filterChange.query) {
             where['name'] = {
               $iLike: `%${filterChange.query}%`,
             };
+          } else {
+            where['name'] = undefined;
           }
 
           if (filterChange.startYear) {
-            where['startYear'] = filterChange.startYear;
+            if (filterChange.type === EventType.COMPETITION_CP) {
+              where['startYear'] = filterChange.startYear;
+            } else {
+              where['firstDay'] = {
+                $between: [
+                  moment([filterChange.startYear, 0, 1]).toISOString(),
+                  moment([filterChange.startYear + 1, 0, 1]).toISOString(),
+                ],
+              };
+            }
+          } else {
+            where['startYear'] = undefined;
           }
 
           if (filterChange.started != undefined && filterChange.type == EventType.COMPETITION_CP) {
             where['started'] = filterChange.started;
+          } else {
+            where['started'] = undefined;
           }
 
           if (filterChange.allowEnlisting != undefined) {
             where['allowEnlisting'] = filterChange.allowEnlisting;
+          } else {
+            where['allowEnlisting'] = undefined;
           }
 
-          return { where, type: filterChange.type, query: filterChange.query };
+          return { where, type: filterChange.type, query: filterChange.query ?? undefined, year: filterChange.startYear ?? undefined  };
         }),
-        tap(({ where, type, query }) => {
-          const {name, ...params} = where;
+        tap(({ where, type, query, year }) => {
+          const { name, firstDay, ...params } = where;
 
           this.router.navigate([], {
             relativeTo: this.activatedRoute,
@@ -130,6 +149,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
               ...params,
               query,
               type,
+              year
             },
           });
         }),
@@ -145,7 +165,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         }),
         map((data) => {
           const events = data?.events ?? [];
-
           const count = data?.total || 0;
           this.isLoadingResults = false;
           this.resultsLength$.next(count);

@@ -1,3 +1,4 @@
+import { RankingSystemGroup } from 'app/_shared';
 import { CompetitionEvent } from '.';
 import { Team } from '../../team.model';
 import { SubEvent } from '../sub-event.model';
