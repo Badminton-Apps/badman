@@ -39,23 +39,24 @@ export class PlayerInfoComponent implements OnInit {
     }
 
     if (this.rankingPoint) {
-      this.wonIsUsedForUpgrade =
-        this.won && this.rankingPoint.differenceInLevel! <= this.rankingPoint.type!.differenceForUpgrade!;
-      this.lostIsUsedForUpgrade =
-        !this.won && this.rankingPoint.differenceInLevel! >= this.rankingPoint.type!.differenceForUpgrade!;
-      this.lostIsUsedForDowngrade =
-        !this.won && this.rankingPoint.differenceInLevel! >= this.rankingPoint.type!.differenceForDowngrade!;
+      this.wonIsUsedForUpgrade = this.won;
 
-      if (this.wonIsUsedForUpgrade ) {
+      this.lostIsUsedForUpgrade =
+        !this.won && this.rankingPoint.differenceInLevel! >= this.rankingPoint.type!.differenceForUpgrade! * -1;
+
+      this.lostIsUsedForDowngrade =
+        !this.won && this.rankingPoint.differenceInLevel! >= this.rankingPoint.type!.differenceForDowngrade! * -1;
+
+      if (this.wonIsUsedForUpgrade) {
         this.tooltip = 'Used for upgrade and downgrade';
         this.class = 'won';
-      } else if (this.lostIsUsedForUpgrade) {
+      } else if (this.lostIsUsedForDowngrade) {
         this.tooltip = 'Used for upgrade and downgrade';
         this.class = 'upgrade';
-      } else if (this.lostIsUsedForDowngrade) {
-        this.tooltip = 'Used only for downgrade';
+      } else if (this.lostIsUsedForUpgrade) {
+        this.tooltip = 'Used only for upgrade';
         this.class = 'downgrade';
-      }else {
+      } else {
         this.tooltip = 'Not used';
         this.class = 'not-used';
       }
