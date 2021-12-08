@@ -1,3 +1,17 @@
+# [4.11.0](https://github.com/Badminton-Apps/core/compare/v4.10.1...v4.11.0) (2021-12-08)
+
+
+### Bug Fixes
+
+* Ranking points shouldn't be removed from other events ([c5f277f](https://github.com/Badminton-Apps/core/commit/c5f277ff7455966ba2e5d7d13fd6e18a8d71c9f1))
+
+
+### Features
+
+* Only calculate points for the period we have the rankings of ([118ba2e](https://github.com/Badminton-Apps/core/commit/118ba2e391db3d5a793c9ee1ca7e5f5605204cee))
+
+
+
 ## [4.10.1](https://github.com/Badminton-Apps/core/compare/v4.10.0...v4.10.1) (2021-12-08)
 
 
