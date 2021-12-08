@@ -10,7 +10,8 @@ import {
   RankingPlace,
   RankingPoint,
   RankingSystem,
-  RankingSystems
+  RankingSystems,
+  StartVisualRankingDate
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
 import { StepProcessor } from '../../../../../../utils/step-processor';
@@ -45,7 +46,7 @@ export class TournamentSyncPointProcessor extends StepProcessor {
                 [Op.in]: draws.map((e) => e.id)
               },
               playedAt: {
-                [Op.gte]: new Date('2020-09-23 00:00:00+02') // Date we got our first BVL ranking from VISUAL
+                [Op.gte]: StartVisualRankingDate
               }
             },
             include: [
