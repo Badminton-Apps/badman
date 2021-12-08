@@ -1,3 +1,12 @@
+## [4.10.1](https://github.com/Badminton-Apps/core/compare/v4.10.0...v4.10.1) (2021-12-08)
+
+
+### Bug Fixes
+
+* moved start-ranking to correct package ([b4a228a](https://github.com/Badminton-Apps/core/commit/b4a228a69f62b9a1741f3c5ea02a4214f08ef7cc))
+
+
+
 # [4.10.0](https://github.com/Badminton-Apps/core/compare/v4.9.1...v4.10.0) (2021-12-08)
 
 
