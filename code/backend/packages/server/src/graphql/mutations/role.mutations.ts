@@ -1,4 +1,12 @@
-import { AuthenticatedRequest, AuthenticationSercice, DataBaseHandler, logger, Player, Role } from '@badvlasim/shared';
+import {
+  AuthenticatedRequest,
+  AuthenticationSercice,
+  canExecute,
+  DataBaseHandler,
+  logger,
+  Player,
+  Role
+} from '@badvlasim/shared';
 import { GraphQLID, GraphQLInt } from 'graphql';
 import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RoleInputType, RoleType } from '../types';
@@ -15,26 +23,15 @@ export const addRoleMutation = {
       type: GraphQLInt
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { role, clubId }, context: { req: AuthenticatedRequest }) => {
-    if (
-      context?.req?.user === null ||
-      !context.req.user.hasAnyPermission([
-        clubId + '_add:role',
-        clubId + '_edit:club',
-        'edit-any:club'
-      ])
-    ) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: [clubId + '_add:role', clubId + '_edit:club', 'edit-any:club']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { role, clubId },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    canExecute(context?.req?.user, {
+      anyPermissions: [clubId + '_add:role', clubId + '_edit:club', 'edit-any:club']
+    });
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const roleDb = await new Role(role).save({ transaction });
@@ -67,7 +64,11 @@ export const addPlayerToRoleMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { roleId, playerId }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { roleId, playerId },
+    context: { req: AuthenticatedRequest }
+  ) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbRole = await Role.findByPk(roleId);
@@ -138,7 +139,11 @@ export const removePlayerFromRoleMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { roleId, playerId }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { roleId, playerId },
+    context: { req: AuthenticatedRequest }
+  ) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbRole = await Role.findByPk(roleId);
@@ -150,25 +155,13 @@ export const removePlayerFromRoleMutation = {
         });
       }
 
-      if (
-        context?.req?.user === null ||
-        !context.req.user.hasAnyPermission([
+      canExecute(context?.req?.user, {
+        anyPermissions: [
           dbRole.clubId + '_edit:role',
           dbRole.clubId + '_edit:club',
           'edit-any:club'
-        ])
-      ) {
-        logger.warn("User tried something it should't have done", {
-          required: {
-            anyClaim: [dbRole.clubId + '_edit:role', dbRole.clubId + '_edit:club', 'edit-any:club']
-          },
-          received: context?.req?.user?.permissions
-        });
-        throw new ApiError({
-          code: 401,
-          message: "You don't have permission to do this "
-        });
-      }
+        ]
+      });
 
       const dbPlayer = await Player.findByPk(playerId, {
         transaction
@@ -204,7 +197,11 @@ export const updateRoleMutation = {
       type: RoleInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { role }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { role },
+    context: { req: AuthenticatedRequest }
+  ) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbRole = await Role.findByPk(role.id);
@@ -215,27 +212,15 @@ export const updateRoleMutation = {
           message: 'Role not found'
         });
       }
-
-      if (
-        context?.req?.user === null ||
-        !context.req.user.hasAnyPermission([
+      canExecute(context?.req?.user, {
+        anyPermissions: [
           dbRole.clubId + '_edit:role',
           dbRole.clubId + '_edit:club',
           'edit-any:club'
-        ])
-      ) {
-        logger.warn("User tried something it should't have done", {
-          required: {
-            anyClaim: [dbRole.clubId + '_edit:role', dbRole.clubId + '_edit:club', 'edit-any:club']
-          },
-          received: context?.req?.user?.permissions
-        });
-        throw new ApiError({
-          code: 401,
-          message: "You don't have permission to do this "
-        });
-      }
+        ]
+      });
 
+    
       await dbRole.update(role, { transaction });
 
       await dbRole.setClaims(
@@ -266,7 +251,11 @@ export const removeRoleMutation = {
       type: GraphQLID
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { id }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { id },
+    context: { req: AuthenticatedRequest }
+  ) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbRole = await Role.findByPk(id);
@@ -279,21 +268,9 @@ export const removeRoleMutation = {
         });
       }
 
-      if (
-        context?.req?.user === null ||
-        !context.req.user.hasAnyPermission([`${dbRole.clubId}_remove:role`, 'edit-any:club'])
-      ) {
-        logger.warn("User tried something it should't have done", {
-          required: {
-            anyClaim: [`${dbRole.clubId}_remove:role`, 'edit-any:club']
-          },
-          received: context?.req?.user?.permissions
-        });
-        throw new ApiError({
-          code: 401,
-          message: "You don't have permission to do this "
-        });
-      }
+      canExecute(context?.req?.user, {
+        anyPermissions: [`${dbRole.clubId}_remove:role`, 'edit-any:club']
+      });
 
       const players = await dbRole.getPlayers({ transaction, attributes: ['id'] });
       for (const player of players) {
