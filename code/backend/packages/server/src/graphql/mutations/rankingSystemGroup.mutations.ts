@@ -16,7 +16,8 @@ import {
   RankingPoint,
   RankingSystem,
   RankingSystemGroup,
-  RankingSystems
+  RankingSystems,
+  StartVisualRankingDate
 } from '@badvlasim/shared';
 import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
@@ -225,6 +226,11 @@ const addGamePointsForSubEvents = async (
   for (const system of systems) {
     const tournamentGames = await Game.findAll({
       transaction,
+      where: {
+        playedAt: {
+          [Op.gte]: StartVisualRankingDate
+        }
+      },
       include: [
         {
           model: DrawTournament,
@@ -246,6 +252,11 @@ const addGamePointsForSubEvents = async (
 
     const competitionGames = await Game.findAll({
       transaction,
+      where: {
+        playedAt: {
+          [Op.gte]: StartVisualRankingDate
+        }
+      },
       include: [
         {
           model: EncounterCompetition,
