@@ -24,9 +24,11 @@ export class PlayerInfoComponent implements OnInit {
   rankingPoint!: RankingPoint;
 
   ranking?: number;
-  isUsedForUpgrade!: boolean;
-  isUsedForDowngrade!: boolean;
+  wonIsUsedForUpgrade!: boolean;
+  lostIsUsedForUpgrade!: boolean;
+  lostIsUsedForDowngrade!: boolean;
 
+  class: string = 'not-used';
   tooltip: string = '';
 
   ngOnInit() {
@@ -37,17 +39,25 @@ export class PlayerInfoComponent implements OnInit {
     }
 
     if (this.rankingPoint) {
-      this.isUsedForUpgrade =
+      this.wonIsUsedForUpgrade =
         this.won && this.rankingPoint.differenceInLevel! <= this.rankingPoint.type!.differenceForUpgrade!;
-      this.isUsedForDowngrade =
+      this.lostIsUsedForUpgrade =
+        !this.won && this.rankingPoint.differenceInLevel! >= this.rankingPoint.type!.differenceForUpgrade!;
+      this.lostIsUsedForDowngrade =
         !this.won && this.rankingPoint.differenceInLevel! >= this.rankingPoint.type!.differenceForDowngrade!;
 
-      if (this.isUsedForUpgrade) {
+      if (this.wonIsUsedForUpgrade ) {
         this.tooltip = 'Used for upgrade and downgrade';
-      } else if (this.isUsedForDowngrade) {
+        this.class = 'won';
+      } else if (this.lostIsUsedForUpgrade) {
+        this.tooltip = 'Used for upgrade and downgrade';
+        this.class = 'upgrade';
+      } else if (this.lostIsUsedForDowngrade) {
         this.tooltip = 'Used only for downgrade';
-      } else {
+        this.class = 'downgrade';
+      }else {
         this.tooltip = 'Not used';
+        this.class = 'not-used';
       }
     }
   }
