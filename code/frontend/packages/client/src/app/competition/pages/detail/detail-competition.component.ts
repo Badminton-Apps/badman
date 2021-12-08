@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { CompetitionEvent, EventService } from 'app/_shared';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { AssignRankingGroupsComponent } from 'app/_shared/dialogs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './detail-competition.component.html',
@@ -13,11 +15,27 @@ export class DetailCompetitionComponent implements OnInit {
 
   update$ = new BehaviorSubject(0);
 
-  constructor(private eventService: EventService, private route: ActivatedRoute) {}
+  constructor(private eventService: EventService, private route: ActivatedRoute, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.event$ = this.route.paramMap.pipe(
-      switchMap((params) => this.eventService.getCompetitionEvent(params.get('id')!))
+    this.event$ = combineLatest([this.route.paramMap, this.update$]).pipe(
+      switchMap(([params]) => this.eventService.getCompetitionEvent(params.get('id')!))
     );
+  }
+
+  assignRankingGroups(event: Partial<CompetitionEvent>) {
+    this.dialog
+      .open(AssignRankingGroupsComponent, {
+        minWidth: '50vw',
+        maxHeight: '80vh',
+        data: {
+          event,
+        },
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.update$.next(0);
+        
+      });
   }
 }

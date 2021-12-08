@@ -16,7 +16,6 @@ import {
   addRankingSystemMutation,
   addRoleMutation,
   addTeamMutation,
-  deleteImportedEventMutation,
   removeClubMutation,
   removeLocationMutation,
   removePlayerFromRoleMutation,
@@ -44,7 +43,9 @@ import {
   updateTournamentEventLocationMutation,
   updatePlayerRankingMutation,
   deleteClubMembershipMutation,
-  addClubMembershipMutation
+  addClubMembershipMutation,
+  addSubEventToRankingSystemGroupMutation,
+  removeSubEventToRankingSystemGroupMutation
 } from './mutations';
 import {
   claimsQuery,
@@ -122,10 +123,11 @@ export const createSchema = (notificationService: NotificationService) => {
         addPlayerToTeam: addPlayerToTeamMutation,
         addRankingSystem: addRankingSystemMutation,
         addRankingSystemGroup: addRankingSystemGroupMutation,
+        addSubEventToRankingSystemGroup: addSubEventToRankingSystemGroupMutation,
         addRole: addRoleMutation,
         addTeam: addTeamMutation,
         addChangeEncounter: addChangeEncounterMutation(notificationService),
-        deleteImportedEvent: deleteImportedEventMutation,
+        setGroupsCompetition: setGroupsCompetitionMutation,
         removeClub: removeClubMutation,
         updateClubMembership: updateClubMembershipMutation,
         deleteClubMembership: deleteClubMembershipMutation,
@@ -133,9 +135,9 @@ export const createSchema = (notificationService: NotificationService) => {
         removeLocation: removeLocationMutation,
         removePlayerFromRole: removePlayerFromRoleMutation,
         removePlayerFromTeam: removePlayerFromTeamMutation,
+        removeSubEventToRankingSystemGroup: removeSubEventToRankingSystemGroupMutation,
         removeTeam: removeTeamMutation,
         removeRole: removeRoleMutation,
-        setGroupsCompetition: setGroupsCompetitionMutation,
         updateClub: updateClubMutation,
         updateComment: updateCommentMutation,
         updateEventCompetition: updateEventCompetitionMutation,

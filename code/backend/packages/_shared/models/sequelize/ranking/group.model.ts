@@ -72,7 +72,7 @@ export class RankingSystemGroup extends Model {
   getSubEventTournaments!: BelongsToManyGetAssociationsMixin<
     SubEventTournament
   >;
-  setSubEventTournament!: BelongsToManySetAssociationsMixin<
+  setSubEventTournaments!: BelongsToManySetAssociationsMixin<
     SubEventTournament,
     string
   >;
@@ -106,7 +106,7 @@ export class RankingSystemGroup extends Model {
   getSubEventCompetitions!: BelongsToManyGetAssociationsMixin<
     SubEventCompetition
   >;
-  setSubEventCompetition!: BelongsToManySetAssociationsMixin<
+  setSubEventCompetitions!: BelongsToManySetAssociationsMixin<
     SubEventCompetition,
     string
   >;

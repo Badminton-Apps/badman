@@ -1,16 +1,15 @@
 import {
-  DataBaseHandler,
   logger,
   RankingSystem,
   RankingSystemGroup,
-  RankingSystems
+  RankingSystems,
+  BvlRankingCalc,
+  LfbbRankingCalc,
+  OriginalRankingCalc
 } from '@badvlasim/shared';
 import { Moment } from 'moment';
-import { BvlRankingCalc, LfbbRankingCalc, OriginalRankingCalc } from './rankingTypes';
 
 export class RankingCalculator {
-  constructor(private _databaseService: DataBaseHandler) {}
-
   async calculateRanking(systemIds: string[], stop: Moment, fromStart: boolean, start?: Moment) {
     const rankingSystems = (
       await RankingSystem.findAll({
@@ -20,14 +19,14 @@ export class RankingCalculator {
         },
         include: [{ model: RankingSystemGroup }]
       })
-    ).map(x => {
+    ).map((x) => {
       switch (x.rankingSystem) {
         case RankingSystems.LFBB:
-          return new LfbbRankingCalc(x, this._databaseService, fromStart);
+          return new LfbbRankingCalc(x, fromStart);
         case RankingSystems.BVL:
-          return new BvlRankingCalc(x, this._databaseService, fromStart);
+          return new BvlRankingCalc(x, fromStart);
         case RankingSystems.ORIGINAL:
-          return new OriginalRankingCalc(x, this._databaseService, fromStart);
+          return new OriginalRankingCalc(x, fromStart);
       }
     });
 
