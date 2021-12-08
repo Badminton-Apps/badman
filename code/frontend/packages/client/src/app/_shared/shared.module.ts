@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -18,6 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -38,6 +40,7 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
 import { NewPlayerComponent } from './components/ranking-shell/components/new-player/new-player.component';
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
+import { AssignRankingGroupsComponent } from './dialogs';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -57,7 +60,10 @@ const materialModules = [
   ReactiveFormsModule,
   FormsModule,
   MatOptionModule,
-  MomentModule
+  MomentModule,
+
+  MatCheckboxModule,
+  MatTableModule,
 ];
 
 const exportedComponents = [
@@ -75,7 +81,8 @@ const exportedComponents = [
   PlayerSearchComponent,
   ClaimComponent,
   HasClaimComponent,
-  MomentModule
+  MomentModule,
+  AssignRankingGroupsComponent
 ];
 
 @NgModule({
@@ -95,6 +102,7 @@ const exportedComponents = [
     HasClaimComponent,
     NewPlayerComponent,
     UserInfoComponent,
+    AssignRankingGroupsComponent
   ],
   imports: [
     CommonModule,

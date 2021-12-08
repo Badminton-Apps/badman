@@ -198,7 +198,8 @@
   },
   "games": {
     "title": "Games",
-    "bye": "Bye"
+    "bye": "Bye",
+    "unkown": "Unkown player"
   },
   "game": {
     "type": "Game type"
@@ -246,6 +247,7 @@
     "close": "Close",
     "delete": "Delete",
     "merge-accounts": "Merge accounts",
+    "set-ranking-groups": "Set ranking",
     "create": "Create",
     "edit": "Edit",
     "done": "Done",

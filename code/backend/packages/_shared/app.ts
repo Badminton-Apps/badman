@@ -4,6 +4,7 @@ apm.start({
   serverUrl: process.env.APM_SERVER_URL,
   secretToken: process.env.APM_SERVER_TOKEN,
   verifyServerCert: false,
+  active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
 });
 
 import { logger } from '@badvlasim/shared';
@@ -11,8 +12,10 @@ import cors from 'cors';
 import moment from 'moment';
 import express, { Application, json } from 'express'; 
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { BaseController } from './models'; 
+import { BaseController } from './models';  
 import { createLightship, Lightship } from 'lightship';
+import helmet from 'helmet';
+import compression from 'compression';
 
 moment.suppressDeprecationWarnings = true;
 
@@ -33,6 +36,8 @@ export class App {
 
     // place this after the proxies!!
     this.app.use(json());
+    this.app.use(helmet());
+    this.app.use(compression());
 
     this._initializeControllers(controllers);
     this._list();

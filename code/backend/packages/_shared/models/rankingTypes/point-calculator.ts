@@ -14,7 +14,7 @@ export class PointCalculator {
       player2Team1Points: null,
       player1Team2Points: null,
       player2Team2Points: null,
-      differenceInLevel: 0
+      differenceInLevel: 0,
     };
 
     let levelP1T1 = this._type.amountOfLevels;
@@ -27,16 +27,20 @@ export class PointCalculator {
       single: this._type.amountOfLevels,
       mix: this._type.amountOfLevels,
       double: this._type.amountOfLevels,
-    }
+    };
 
-    const rankingPlayer1Team1 = player1Team1?.lastRankingPlaces ?? maxRanking;
-    const rankingPlayer2Team1 = player2Team1?.lastRankingPlaces ?? maxRanking;
-    const rankingPlayer1Team2 = player1Team2?.lastRankingPlaces ?? maxRanking;
-    const rankingPlayer2Team2 = player2Team2?.lastRankingPlaces ?? maxRanking;
-      
+    const rankingPlayer1Team1 =
+      this._getRankingPlace(player1Team1, game.playedAt) ?? maxRanking;
+    const rankingPlayer2Team1 =
+      this._getRankingPlace(player2Team1, game.playedAt) ?? maxRanking;
+    const rankingPlayer1Team2 =
+      this._getRankingPlace(player1Team2, game.playedAt) ?? maxRanking;
+    const rankingPlayer2Team2 =
+      this._getRankingPlace(player2Team2, game.playedAt) ?? maxRanking;
+
     let pointsFrom: string;
 
-    switch (game.gameType) { 
+    switch (game.gameType) {
       case GameType.S:
         pointsFrom = 'single';
         break;
@@ -78,24 +82,30 @@ export class PointCalculator {
     } else {
       if (game.winner === 1) {
         const wonPoints =
-          (this._getWinningPoints(levelP1T2) + this._getWinningPoints(levelP2T2)) / 2;
+          (this._getWinningPoints(levelP1T2) +
+            this._getWinningPoints(levelP2T2)) /
+          2;
         points.player1Team1Points = wonPoints;
         points.player2Team1Points = wonPoints;
         points.player1Team2Points = 0;
         points.player2Team2Points = 0;
 
         // Store the difference in levels
-        points.differenceInLevel = (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
+        points.differenceInLevel =
+          (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
       } else {
         const wonPoints =
-          (this._getWinningPoints(levelP1T1) + this._getWinningPoints(levelP2T1)) / 2;
+          (this._getWinningPoints(levelP1T1) +
+            this._getWinningPoints(levelP2T1)) /
+          2;
         points.player1Team2Points = wonPoints;
         points.player2Team2Points = wonPoints;
         points.player1Team1Points = 0;
         points.player2Team1Points = 0;
 
         // Store the difference in levels
-        points.differenceInLevel = (levelP1T2 + levelP2T2 - (levelP1T1 + levelP2T1)) / 2;
+        points.differenceInLevel =
+          (levelP1T2 + levelP2T2 - (levelP1T1 + levelP2T1)) / 2;
       }
     }
 
@@ -105,5 +115,13 @@ export class PointCalculator {
   private _getWinningPoints(level: number): number {
     const index = this._type.pointsWhenWinningAgainst.length - level;
     return this._type.pointsWhenWinningAgainst[index];
+  }
+
+  private _getRankingPlace(player: Player, date: Date) {
+    // Sort the rankings by date
+    // Get the closest ranking before the game was played
+    return player?.rankingPlaces
+      ?.sort((a, b) => b.rankingDate.getTime() - a.rankingDate.getTime())
+      ?.filter((place) => place.rankingDate.getTime() <= date.getTime())?.[0];
   }
 }

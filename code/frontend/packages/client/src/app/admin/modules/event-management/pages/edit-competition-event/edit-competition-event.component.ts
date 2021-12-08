@@ -4,14 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { CompetitionEvent, EventService } from 'app/_shared';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import {
-  debounceTime,
-  filter,
-  map,
-  skip,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
+import { debounceTime, filter, map, skip, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './edit-competition-event.component.html',
@@ -24,17 +17,10 @@ export class EditEventCompetitionComponent implements OnInit {
 
   formGroup: FormGroup = new FormGroup({});
 
-  constructor(
-    private eventService: EventService,
-    private route: ActivatedRoute,
-    private _snackBar: MatSnackBar
-  ) {}
+  constructor(private eventService: EventService, private route: ActivatedRoute, private _snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
-    this.event$ = combineLatest([
-      this.route.paramMap,
-      this.update$.pipe(debounceTime(600)),
-    ]).pipe(
+    this.event$ = combineLatest([this.route.paramMap, this.update$.pipe(debounceTime(600))]).pipe(
       map(([params]) => params.get('id')),
       switchMap((id) => this.eventService.getCompetitionEvent(id!))
     );
@@ -59,11 +45,7 @@ export class EditEventCompetitionComponent implements OnInit {
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
-      startYear: new FormControl(event.startYear, [
-        Validators.required,
-        Validators.min(2000),
-        Validators.max(3000),
-      ]),
+      startYear: new FormControl(event.startYear, [Validators.required, Validators.min(2000), Validators.max(3000)]),
       subEvents: new FormArray(
         event.subEvents?.map((subEvent) => {
           return new FormGroup({
@@ -82,7 +64,7 @@ export class EditEventCompetitionComponent implements OnInit {
 
   async save(event: CompetitionEvent) {
     // strip eventType because it's not used in BE
-    const {eventType, ...newEvent} = event;
+    const { eventType, ...newEvent } = event;
 
     await this.eventService.updateCompetitionEvent(newEvent).toPromise();
     this.saved$.next(0);

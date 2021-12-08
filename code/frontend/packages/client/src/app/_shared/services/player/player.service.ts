@@ -110,6 +110,9 @@ export class PlayerService {
           offset,
           limit,
           where,
+          rankingPointsWhere: {
+            SystemId: rankingType.id,
+          }
         },
         // TODO: CHECK WHY THIS BEHAVES WEIRD FOR RANKING
         fetchPolicy: 'no-cache',
