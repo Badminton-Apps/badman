@@ -130,7 +130,7 @@ export const addSubEventToRankingSystemGroupMutation = {
       }
 
       logger.debug(
-        `Updated ${competitions?.length || 0} subEvents competitions and ${
+        `Added ${competitions?.length || 0} subEvents competitions and ${
           tournaments?.length || 0
         } subEvents tournaments`
       );
@@ -200,7 +200,7 @@ export const removeSubEventToRankingSystemGroupMutation = {
       }
 
       logger.debug(
-        `Updated ${competitions?.length || 0} subEvents competitions and ${
+        `Removed ${competitions?.length || 0} subEvents competitions and ${
           tournaments?.length || 0
         } subEvents tournaments`
       );
@@ -273,9 +273,9 @@ const addGamePointsForSubEvents = async (
 
     const games = [...tournamentGames, ...competitionGames];
 
-    await RankingPoint.truncate({
+    await RankingPoint.destroy({
       transaction,
-      where: { systemId: system.id, GameId: { [Op.in]: [...games.map((game) => game.id)] } }
+      where: { SystemId: system.id, GameId: { [Op.in]: [...games.map((game) => game.id)] } }
     });
 
     const gamePlayers = await GamePlayer.findAll({
@@ -306,7 +306,7 @@ const addGamePointsForSubEvents = async (
 
     const hash = new Map<string, Player>(players.map((e) => [e.id, e]));
 
-    logger.debug(`updating ${games.length} games for system ${system.id}`);
+    logger.debug(`Adding points for ${games.length} games in system ${system.name}(${system.id})`);
 
     await getSystem(system).calculateRankingPointsPerGameAsync(games, hash, null, transaction);
   }
@@ -317,11 +317,9 @@ const removeGamePointsForSubEvents = async (
   subEvents: string[],
   transaction: Transaction
 ) => {
-  logger.debug(`Updating for groups`);
   const systems = await group.getSystems({ transaction });
 
   for (const system of systems) {
-    logger.debug(`Updating for system`);
 
     const tournamentGames = await Game.findAll({
       transaction,
@@ -353,12 +351,12 @@ const removeGamePointsForSubEvents = async (
 
     const games = [...tournamentGames, ...competitionGames];
 
-    await RankingPoint.truncate({
+    await RankingPoint.destroy({
       transaction,
-      where: { systemId: system.id, GameId: { [Op.in]: [...games.map((game) => game.id)] } }
+      where: { SystemId: system.id, GameId: { [Op.in]: [...games.map((game) => game.id)] } }
     });
 
-    logger.debug(`Removed ranking points for ${games.length} games for system ${system.id}`);
+    logger.debug(`Removed points for ${games.length} games in system ${system.name}(${system.id})`);
   }
 };
 
