@@ -1,4 +1,10 @@
-import { AuthenticatedRequest, DataBaseHandler, Location, logger } from '@badvlasim/shared';
+import {
+  AuthenticatedRequest,
+  canExecute,
+  DataBaseHandler,
+  Location,
+  logger
+} from '@badvlasim/shared';
 import { GraphQLID, GraphQLNonNull, GraphQLBoolean } from 'graphql';
 import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { LocationInputType, LocationType } from '../types';
@@ -20,21 +26,8 @@ export const addLocationMutation = {
     { location, clubId },
     context: { req: AuthenticatedRequest }
   ) => {
-    if (
-      context?.req?.user === null ||
-      !context.req.user.hasAnyPermission([`${clubId}_add:location`, 'edit-any:club'])
-    ) {
-      logger.warn("User tried something it should't have done", {
-        required: {
-          anyClaim: [`${clubId}_add:location`, 'edit-any:club']
-        },
-        received: context?.req?.user?.permissions
-      });
-      throw new ApiError({
-        code: 401,
-        message: "You don't have permission to do this "
-      });
-    }
+    canExecute(context?.req?.user, { anyPermissions: [`${clubId}_add:location`, 'edit-any:club'] });
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const [locationDb, created] = await Location.findOrCreate({
@@ -85,24 +78,9 @@ export const removeLocationMutation = {
         });
       }
 
-      if (
-        context?.req?.user === null ||
-        !context.req.user.hasAnyPermission([
-          `${dbLocation.clubId}_remove:location`,
-          'edit-any:club'
-        ])
-      ) {
-        logger.warn("User tried something it should't have done", {
-          required: {
-            anyClaim: [`${dbLocation.clubId}_remove:location`, 'edit-any:club']
-          },
-          received: context?.req?.user?.permissions
-        });
-        throw new ApiError({
-          code: 401,
-          message: "You don't have permission to do this "
-        });
-      }
+      canExecute(context?.req?.user, {
+        anyPermissions: [`${dbLocation.clubId}_remove:location`, 'edit-any:club']
+      });
 
       await dbLocation.destroy({ transaction });
 
@@ -142,28 +120,17 @@ export const updateTournamentEventLocationMutation = {
       const dbLocation = await Location.findByPk(locationId, { transaction });
 
       if (!dbLocation) {
-        logger.debug('location', dbLocation);
         throw new ApiError({
           code: 404,
           message: 'location not found'
         });
       }
 
-      if (
-        context?.req?.user === null ||
-        !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
-      ) {
-        logger.warn("User tried something it should't have done", {
-          required: {
-            anyClaim: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
-          },
-          received: context?.req?.user?.permissions
-        });
-        throw new ApiError({
-          code: 401,
-          message: "You don't have permission to do this "
-        });
-      }
+      canExecute(context?.req?.user, {
+        anyPermissions: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
+      });
+
+
 
       if (use) {
         await dbLocation.addEventTournament(eventId, { transaction });
@@ -189,7 +156,11 @@ export const updateLocationMutation = {
       type: LocationInputType
     }
   },
-  resolve: async (_findOptions: { [key: string]: object }, { location }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    _findOptions: { [key: string]: object },
+    { location },
+    context: { req: AuthenticatedRequest }
+  ) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbLocation = await Location.findByPk(location.id, { transaction });
@@ -201,22 +172,9 @@ export const updateLocationMutation = {
           message: 'Location not found'
         });
       }
-
-      if (
-        context?.req?.user === null ||
-        !context.req.user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club'])
-      ) {
-        logger.warn("User tried something it should't have done", {
-          required: {
-            anyClaim: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
-          },
-          received: context?.req?.user?.permissions
-        });
-        throw new ApiError({
-          code: 401,
-          message: "You don't have permission to do this "
-        });
-      }
+      canExecute(context?.req?.user, {
+        anyPermissions: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
+      });
 
       await dbLocation.update(location, { transaction });
       await transaction.commit();
