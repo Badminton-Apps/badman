@@ -19,7 +19,7 @@ export class GetRankingVisual extends CronJob {
   constructor(cron: Cron) {
     super(cron);
 
-    this._levelSync = new RankingSyncer();
+    this._levelSync = new RankingSyncer(cron);
   }
 
   async run(args?: { date: Date; skip: string[] }): Promise<void> {
@@ -28,7 +28,7 @@ export class GetRankingVisual extends CronJob {
     try {
       await this._levelSync.process({
         transaction,
-        runFrom: moment(args?.date ?? this.dbCron.lastRun).toDate(),
+        runFrom: args?.date
       });
       await transaction.commit();
     } catch (e) {

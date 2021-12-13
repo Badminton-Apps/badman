@@ -1,5 +1,6 @@
 import {
   correctWrongPlayers,
+  Cron,
   GameType,
   LastRankingPlace,
   logger,
@@ -28,7 +29,7 @@ export class RankingSyncer {
   readonly STEP_POINTS = 'points';
   readonly STEP_INACTIVE = 'inactive';
 
-  constructor() {
+  constructor(private dbCron: Cron) {
     this.processor = new Processor();
 
     this.processor.addStep(this.getRankings());
@@ -294,9 +295,17 @@ export class RankingSyncer {
           }
         };
 
+        const runFrom =
+          args.runFrom == null || args.runFrom == undefined
+            ? this.dbCron.meta?.['lastPublication']
+              ? moment(this.dbCron.meta['lastPublication'])
+              : moment('2000-01-01') 
+            : moment(args.runFrom);
+
         for (const publication of publications) {
           const rankingPlaces = new Map<string, RankingPlace>();
-          if (publication.date.isAfter(args.runFrom)) {
+
+          if (publication.date.isAfter(runFrom)) {
             if (publication.usedForUpdate) {
               logger.info(`Updating ranking on ${publication.date}`);
             }
@@ -366,6 +375,11 @@ export class RankingSyncer {
 
             ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
             await ranking.system.save({ transaction: args.transaction });
+            this.dbCron.meta = {
+              ...this.dbCron.meta,
+              lastPublication: publication.date.toDate()
+            };
+            await this.dbCron.save({ transaction: args.transaction });
           }
         }
       }
