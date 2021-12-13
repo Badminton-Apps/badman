@@ -119,7 +119,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
             }
           ],
           transaction: this.transaction
-        })
+        }) 
       )
         ?.map((g) => g.id)
         ?.filter((g) => !!g);
@@ -144,11 +144,11 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
   private getGameType(xmlEvent: XmlTournamentEvent): GameType {
     switch (xmlEvent.GameTypeID) {
       case XmlGameTypeID.Doubles:
-        return GameType.MX;
-      case XmlGameTypeID.Singles:
         return GameType.D;
-      case XmlGameTypeID.Mixed:
+      case XmlGameTypeID.Singles:
         return GameType.S;
+        case XmlGameTypeID.Mixed:
+        return GameType.MX;
       default:
         logger.warn('No Game type found');
         return;
