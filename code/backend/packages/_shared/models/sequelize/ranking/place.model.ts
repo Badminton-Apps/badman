@@ -173,7 +173,6 @@ export class RankingPlace extends Model {
     instance: RankingPlace,
     options: SaveOptions
   ) {
-    logger.debug('This is called?');
     return this.updateLatestRankings([instance], options);
   }
 
