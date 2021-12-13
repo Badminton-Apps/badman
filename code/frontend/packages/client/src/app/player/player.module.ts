@@ -47,6 +47,7 @@ import {
   EditClubHistoryDialogComponent,
 } from './page';
 import { PlayerRoutingModule } from './player-routing.module';
+import { RankingBreakdownComponent } from './page/ranking-breakdown/ranking-breakdown.component';
 
 const materialModules = [
   MatCardModule,
@@ -98,6 +99,7 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
     EditCompetitionStatusComponent,
     EditClubHistoryComponent,
     EditClubHistoryDialogComponent,
+    RankingBreakdownComponent,
   ],
   imports: [SharedModule, ...materialModules, ...covalentModules, ...otherModules, PlayerRoutingModule],
 })
