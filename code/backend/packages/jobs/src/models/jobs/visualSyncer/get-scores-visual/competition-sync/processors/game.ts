@@ -110,18 +110,27 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     await Promise.all(this.encounters.map((e) => processEncounters(e)));
     logger.debug(`Creating/updating ${updatedGames.length} games`);
 
-    await Game.bulkCreate(updatedGames, {
-      transaction: this.transaction,
-      updateOnDuplicate: [
+    const updateOnDuplicate = [];
+    if (this.options.updateMeta) {
+      updateOnDuplicate.push(
+        'playedAt',
+        'order',
         'winner',
         'set1Team1',
         'set1Team2',
         'set2Team1',
         'set2Team2',
         'set3Team1',
-        'set3Team2',
-        'updatedAt'
-      ]
+        'set3Team2'
+      );
+    }
+    if (this.options.fixGender) {
+      updateOnDuplicate.push('gameType');
+    }
+
+    await Game.bulkCreate(updatedGames, {
+      transaction: this.transaction,
+      updateOnDuplicate
     });
 
     await GamePlayer.bulkCreate(updatedgamePlayers, {
