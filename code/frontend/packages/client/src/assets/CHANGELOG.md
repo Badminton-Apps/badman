@@ -1,3 +1,12 @@
+## [4.11.2](https://github.com/Badminton-Apps/core/compare/v4.11.1...v4.11.2) (2021-12-13)
+
+
+### Bug Fixes
+
+* Tournament's genders were wrongly set ([da5a6b1](https://github.com/Badminton-Apps/core/commit/da5a6b11dbbdaffee4b06d1a36cce23b58998d6c))
+
+
+
 ## [4.11.1](https://github.com/Badminton-Apps/core/compare/v4.11.0...v4.11.1) (2021-12-08)
 
 
