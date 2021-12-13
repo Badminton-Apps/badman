@@ -8,7 +8,8 @@ import {
   SubEventCompetition,
   SubEventType,
   XmlGenderID,
-  XmlTournament
+  XmlTournament,
+  XmlTournamentEvent
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
 import { StepProcessor } from '../../../../../../utils/step-processor';
@@ -96,12 +97,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         dbSubEvent = await new SubEventCompetition({
           visualCode: xmlEvent.Code,
           name: xmlEvent.Name,
-          eventType:
-            xmlEvent.GenderID === XmlGenderID.Mixed
-              ? SubEventType.MX
-              : xmlEvent.GenderID === XmlGenderID.Male || xmlEvent.GenderID === XmlGenderID.Boy
-              ? SubEventType.M
-              : SubEventType.F,
+          eventType: this.getEventType(xmlEvent),
           eventId: this.event.id,
           level: xmlEvent.LevelID
         }).save({ transaction: this.transaction });
@@ -159,5 +155,21 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     }
 
     return returnSubEvents;
+  }
+
+  private getEventType(xmlEvent: XmlTournamentEvent): SubEventType {
+    switch (xmlEvent.GenderID) {
+      case XmlGenderID.Male:
+      case XmlGenderID.Boy:
+        return SubEventType.M;
+      case XmlGenderID.Female:
+      case XmlGenderID.Girl:
+        return SubEventType.F;
+      case XmlGenderID.Mixed:
+        return SubEventType.MX;
+      default:
+        logger.warn('No event type found');
+        return;
+    }
   }
 }
