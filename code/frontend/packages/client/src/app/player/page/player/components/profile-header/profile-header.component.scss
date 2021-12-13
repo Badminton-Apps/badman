@@ -3,6 +3,7 @@ $config: mat-typography-config();
 
 :host {
   display: block;
+  position: relative;
 }
 
 .header {
@@ -24,6 +25,13 @@ $config: mat-typography-config();
       color: white;
     }
   }
+}
+
+.below {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 0.75rem;
 }
 
 .info {
@@ -58,6 +66,12 @@ $config: mat-typography-config();
     flex: 1;
     display: flex;
 
+    .single,
+    .double,
+    .mix {
+      cursor: pointer;
+    }
+
     div {
       flex-direction: column;
       align-items: center;
@@ -82,7 +96,6 @@ $config: mat-typography-config();
     &,
     a {
       text-decoration: none;
-      margin-top: 6px;
       font-size: 14px;
       color: #aaaaaa;
     }

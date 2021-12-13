@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { Club } from 'app/_shared';
 import { MatDialog } from '@angular/material/dialog';
 import { MergeAccountComponent } from '../../dialogs/merge-account/merge-account.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-header',
@@ -40,15 +41,14 @@ export class ProfileHeaderComponent implements OnInit {
   doubleTooltip!: string;
   mixTooltip!: string;
 
-
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private translateService: TranslateService) {}
 
   ngOnInit(): void {
     this.shownRanking = {
       ...this.player?.lastRanking,
       single: this.player?.lastRanking?.single ?? 12,
       double: this.player?.lastRanking?.double ?? 12,
-      mix: this.player?.lastRanking?.mix ?? 12
+      mix: this.player?.lastRanking?.mix ?? 12,
     } as RankingPlace;
 
     const lastNames = this.player.lastName!.split(' ');
@@ -60,57 +60,53 @@ export class ProfileHeaderComponent implements OnInit {
       var week = `Week: ${date.week()}-${date.weekYear()}`;
 
       if (this.shownRanking.doubleRank != -1) {
-        this.doubleTooltip = week;
+        this.doubleTooltip = `${this.translateService.instant('systems.single')}\r\n${week}`;
         if (this.shownRanking.doubleRank && this.shownRanking.totalWithinDoubleLevel) {
           this.doubleTooltip += `\r\nWithin level: ${this.shownRanking.doubleRank} of ${this.shownRanking.totalWithinDoubleLevel}`;
         }
+        
         if (this.shownRanking.totalDoubleRanking) {
           this.doubleTooltip += `\r\nTotal: ${this.shownRanking.totalDoubleRanking}`;
         }
-        if (this.shownRanking.doublePoints && this.shownRanking.doublePointsDowngrade) {
-          this.doubleTooltip += `\r\nUp: ${this.shownRanking.doublePoints}, down: ${this.shownRanking.doublePointsDowngrade}`;
-        } else if (this.shownRanking.doublePoints) {
-          this.doubleTooltip += `\r\nUp: ${this.shownRanking.doublePoints}`;
+        
+        if (this.shownRanking.doublePointsDowngrade) {
+          this.doubleTooltip += `\r\nDown: ${this.shownRanking.doublePointsDowngrade}`;
         }
       }
 
       if (this.shownRanking.mixRank != -1) {
-        this.mixTooltip = week;
+        this.mixTooltip = `${this.translateService.instant('systems.double')}\r\n${week}`;
         if (this.shownRanking.mixRank && this.shownRanking.totalWithinMixLevel) {
           this.mixTooltip += `\r\nWithin level: ${this.shownRanking.mixRank} of ${this.shownRanking.totalWithinMixLevel}`;
         }
         if (this.shownRanking.totalMixRanking) {
           this.mixTooltip += `\r\nTotal: ${this.shownRanking.totalMixRanking}`;
         }
-        if (this.shownRanking.mixPoints && this.shownRanking.mixPointsDowngrade) {
-          this.mixTooltip += `\r\nUp: ${this.shownRanking.mixPoints}, down: ${this.shownRanking.mixPointsDowngrade}`;
-        } else if (this.shownRanking.mixPoints) {
-          this.mixTooltip += `\r\nUp: ${this.shownRanking.mixPoints}`;
+        if (this.shownRanking.mixPointsDowngrade) {
+          this.mixTooltip += `\r\nDown: ${this.shownRanking.mixPointsDowngrade}`;
         }
       }
 
       if (this.shownRanking.singleRank != -1) {
-        this.singleTooltip = week;
+        this.singleTooltip = `${this.translateService.instant('systems.mix')}\r\n${week}`;
         if (this.shownRanking.singleRank && this.shownRanking.totalWithinSingleLevel) {
           this.singleTooltip += `\r\nWithin level: ${this.shownRanking.singleRank} of ${this.shownRanking.totalWithinSingleLevel}`;
         }
         if (this.shownRanking.totalSingleRanking) {
           this.singleTooltip += `\r\nTotal: ${this.shownRanking.totalSingleRanking}`;
         }
-        if (this.shownRanking.singlePoints && this.shownRanking.singlePointsDowngrade) {
-          this.singleTooltip += `\r\nUp: ${this.shownRanking.singlePoints}, down: ${this.shownRanking.singlePointsDowngrade}`;
-        } else if (this.shownRanking.singlePoints) {
-          this.singleTooltip += `\r\nUp: ${this.shownRanking.singlePoints}`;
+        if (this.shownRanking.singlePointsDowngrade) {
+          this.singleTooltip += `\r\nDown: ${this.shownRanking.singlePointsDowngrade}`;
         }
       }
     }
   }
 
-  mergePlayer(){
+  mergePlayer() {
     this.dialog.open(MergeAccountComponent, {
       data: {
-        player: this.player
-      }
+        player: this.player,
+      },
     });
   }
 }
