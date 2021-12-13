@@ -9,7 +9,7 @@ metadata:
   name: elastic-search
   namespace: elastic
 spec:
-  version: 7.15.0
+  version: 7.16.0
   volumeClaimDeletePolicy: DeleteOnScaledownOnly
   nodeSets:
     - name: default
@@ -33,7 +33,7 @@ metadata:
   name: elastic-kibana
   namespace: elastic
 spec:
-  version: 7.15.0
+  version: 7.16.0
   count: 1
   elasticsearchRef:
     name: elastic-search
@@ -54,7 +54,7 @@ metadata:
   name: elastic-apm
   namespace: elastic
 spec:
-  version: 7.15.0
+  version: 7.16.0
   count: 1
   elasticsearchRef:
     name: elastic-search
@@ -79,7 +79,7 @@ metadata:
   namespace: elastic
 spec:
   type: heartbeat
-  version: 7.15.0
+  version: 7.16.0
   elasticsearchRef:
     name: elastic-search
   kibanaRef:
@@ -115,7 +115,7 @@ metadata:
   namespace: elastic
 spec:
   type: filebeat
-  version: 7.15.0
+  version: 7.16.0
   elasticsearchRef:
     name: elastic-search
   kibanaRef:
