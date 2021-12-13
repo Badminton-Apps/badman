@@ -32,7 +32,16 @@ export class TournamentSyncer {
   private _gameStep: TournamentSyncGameProcessor;
   private _pointStep: TournamentSyncPointProcessor;
 
-  constructor() {
+  constructor(
+    protected readonly options?: {
+      updateMeta?: boolean;
+    }
+  ) {
+    this.options = {
+      updateMeta: false,
+      ...this.options
+    };
+
     this.processor = new Processor();
     this.visualService = new VisualService();
 
@@ -58,7 +67,9 @@ export class TournamentSyncer {
       args.xmlTournament,
       args.transaction,
       this.visualService,
-      args?.other['fixGender'] as unknown as boolean
+      {
+        figGender: args.other.figGender as unknown as boolean
+      }
     );
 
     this._drawStep = new TournamentSyncDrawProcessor(
@@ -76,7 +87,11 @@ export class TournamentSyncer {
     this._gameStep = new TournamentSyncGameProcessor(
       args.xmlTournament,
       args.transaction,
-      this.visualService
+      this.visualService,
+      {
+        figGender: args.other.figGender as unknown as boolean,
+        updateMeta: this.options.updateMeta
+      }
     );
 
     this._pointStep = new TournamentSyncPointProcessor(args.transaction);

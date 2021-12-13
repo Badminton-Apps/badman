@@ -20,9 +20,19 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly transaction: Transaction,
-    protected readonly visualService: VisualService
+    protected readonly visualService: VisualService,
+    protected readonly options?: {
+      figGender?: boolean;
+      updateMeta?: boolean;
+    }
   ) {
     super(visualTournament, transaction);
+
+    this.options = {
+      figGender: false,
+      updateMeta: false,
+      ...this.options
+    };
   }
 
   public async process(): Promise<void> {
@@ -43,6 +53,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
         );
 
+        let markedForUpdate = false;
         if (!game) {
           game = new Game({
             visualCode: xmlMatch.Code,
@@ -54,27 +65,39 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           });
 
           updatedgamePlayers.push(...this._createGamePlayers(xmlMatch, game, this.players));
+          markedForUpdate = true;
         }
-        // Set dates (if changed)
-        game.playedAt = encounter.date;
 
-        // Set dates (if changed)
-        game.order = xmlMatch.MatchOrder
+        if (this.options.updateMeta) {
+          // Set dates (if changed)
+          game.playedAt = encounter.date;
 
-        // Set winner
-        game.winner = xmlMatch.Winner;
+          // Set dates (if changed)
+          game.order = xmlMatch.MatchOrder;
 
-        // Set sets
-        game.set1Team1 = xmlMatch?.Sets?.Set[0]?.Team1;
-        game.set1Team2 = xmlMatch?.Sets?.Set[0]?.Team2;
+          // Set winner
+          game.winner = xmlMatch.Winner;
 
-        game.set2Team1 = xmlMatch?.Sets?.Set[1]?.Team1;
-        game.set2Team2 = xmlMatch?.Sets?.Set[1]?.Team2;
+          // Set sets
+          game.set1Team1 = xmlMatch?.Sets?.Set[0]?.Team1;
+          game.set1Team2 = xmlMatch?.Sets?.Set[0]?.Team2;
 
-        game.set3Team1 = xmlMatch?.Sets?.Set[2]?.Team1;
-        game.set3Team2 = xmlMatch?.Sets?.Set[2]?.Team2;
+          game.set2Team1 = xmlMatch?.Sets?.Set[1]?.Team1;
+          game.set2Team2 = xmlMatch?.Sets?.Set[1]?.Team2;
 
-        updatedGames.push(game.toJSON());
+          game.set3Team1 = xmlMatch?.Sets?.Set[2]?.Team1;
+          game.set3Team2 = xmlMatch?.Sets?.Set[2]?.Team2;
+          markedForUpdate = true;
+        }
+
+        if (this.options.figGender){
+          game.gameType = this._getGameType(xmlMatch.MatchTypeID);
+          markedForUpdate = true;
+        }
+
+        if (markedForUpdate) {
+          updatedGames.push(game.toJSON());
+        }
       }
 
       // Remove draw that are not in the xml
@@ -85,7 +108,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     };
 
     await Promise.all(this.encounters.map((e) => processEncounters(e)));
-    logger.debug(`Creating ${updatedGames.length} games`);
+    logger.debug(`Creating/updating ${updatedGames.length} games`);
 
     await Game.bulkCreate(updatedGames, {
       transaction: this.transaction,
