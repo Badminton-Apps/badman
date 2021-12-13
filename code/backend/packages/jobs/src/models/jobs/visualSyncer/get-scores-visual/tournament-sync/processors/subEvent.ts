@@ -43,8 +43,6 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
   }
 
   public async process(): Promise<SubEventStepData[]> {
-    // deconstructing
-
     if (!this.event) {
       throw new Error('No Event');
     }
@@ -151,7 +149,12 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
   private getGameType(xmlEvent: XmlTournamentEvent): GameType {
     switch (xmlEvent.GameTypeID) {
       case XmlGameTypeID.Doubles:
-        return GameType.D;
+        // Stupid fix but should work
+        if (xmlEvent.GenderID === XmlGenderID.Mixed) {
+          return GameType.MX;
+        } else {
+          return GameType.D;
+        }
       case XmlGameTypeID.Singles:
         return GameType.S;
       case XmlGameTypeID.Mixed:
