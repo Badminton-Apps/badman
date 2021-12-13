@@ -27,7 +27,11 @@ export class GetScoresVisual extends CronJob {
     this._tournamentSync = new TournamentSyncer();
   }
 
-  async run(args?: { date: Date; skip: string[] }): Promise<void> {
+  async run(args?: {
+    date: Date;
+    skip: string[];
+    other: { [key: string]: object };
+  }): Promise<void> {
     // Use argument date, else stored date, finally use today
     const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
     logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
@@ -45,14 +49,14 @@ export class GetScoresVisual extends CronJob {
     };
     await this.dbCron.save();
 
-    newEvents = newEvents.filter((event) => {
-      return moment(event.StartDate).isAfter('2020-09-01 00:00:00+02');
-      // && event.Name != 'PBA competitie 2021-2022'
-      // && event.Name != 'VVBBC interclubcompetitie 2021-2022'
-      // && event.Name != 'PBO competitie 2021-2022'
-      // || event.Name == 'Limburgse interclubcompetitie 2021-2022'
-      // || event.Name == 'WVBF Competitie 2021-2022'
-    });
+    // newEvents = newEvents.filter((event) => {
+    //   return moment(event.StartDate).isAfter('2020-09-01 00:00:00+02');
+    //   // && event.Name != 'PBA competitie 2021-2022'
+    //   // && event.Name != 'VVBBC interclubcompetitie 2021-2022'
+    //   // && event.Name != 'PBO competitie 2021-2022'
+    //   // || event.Name == 'Limburgse interclubcompetitie 2021-2022'
+    //   // || event.Name == 'WVBF Competitie 2021-2022'
+    // });
 
     for (let i = 0; i < newEvents.length; i++) {
       const xmlTournament = newEvents[i];
@@ -78,7 +82,7 @@ export class GetScoresVisual extends CronJob {
           }
         } else {
           if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('tournament')) {
-            await this._tournamentSync.process({ transaction, xmlTournament });
+            await this._tournamentSync.process({ transaction, xmlTournament, other: args?.other });
           }
         }
         await transaction.commit();

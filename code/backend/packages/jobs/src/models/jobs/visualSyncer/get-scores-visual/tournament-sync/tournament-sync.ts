@@ -44,7 +44,11 @@ export class TournamentSyncer {
     this.processor.addStep(this.addPoints());
   }
 
-  process(args: { transaction: Transaction; xmlTournament: XmlTournament }) {
+  process(args: {
+    transaction: Transaction;
+    xmlTournament: XmlTournament;
+    other: { [key: string]: object };
+  }) {
     this._eventStep = new TournamentSyncEventProcessor(
       args.xmlTournament,
       args.transaction,
@@ -53,8 +57,10 @@ export class TournamentSyncer {
     this._subEventStep = new TournamentSyncSubEventProcessor(
       args.xmlTournament,
       args.transaction,
-      this.visualService
+      this.visualService,
+      args?.other['fixGender'] as unknown as boolean
     );
+
     this._drawStep = new TournamentSyncDrawProcessor(
       args.xmlTournament,
       args.transaction,
@@ -73,9 +79,7 @@ export class TournamentSyncer {
       this.visualService
     );
 
-    this._pointStep = new TournamentSyncPointProcessor(
-      args.transaction
-    );
+    this._pointStep = new TournamentSyncPointProcessor(args.transaction);
 
     return this.processor.process();
   }

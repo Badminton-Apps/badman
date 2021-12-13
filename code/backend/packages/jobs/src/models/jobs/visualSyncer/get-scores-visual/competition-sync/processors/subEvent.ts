@@ -47,7 +47,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       if (!xmlEvent) {
         continue;
       }
-      const dbSubEvents = subEvents.filter(r => r.visualCode === `${xmlEvent.Code}`);
+      const dbSubEvents = subEvents.filter((r) => r.visualCode === `${xmlEvent.Code}`);
       let dbSubEvent: SubEventCompetition = null;
 
       if (dbSubEvents.length === 1) {
@@ -61,13 +61,12 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         await SubEventCompetition.destroy({
           where: {
             id: {
-              [Op.in]: rest.map(e => e.id)
+              [Op.in]: rest.map((e) => e.id)
             }
           },
           transaction: this.transaction
         });
       }
-
 
       if (!dbSubEvent) {
         let type =
@@ -83,7 +82,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
 
         // Hopefully with this we can link with the correct subEvent so our link isn't lost
         dbSubEvent = subEvents.find(
-          r => r.name === xmlEvent.Name.replace(/[ABCDE]+$/gm, '').trim() && r.eventType === type
+          (r) => r.name === xmlEvent.Name.replace(/[ABCDE]+$/gm, '').trim() && r.eventType === type
         );
       }
 
@@ -113,11 +112,11 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         }
       }
 
-      returnSubEvents.push({ subEvent: dbSubEvent, internalId: xmlEvent.Code });
+      returnSubEvents.push({ subEvent: dbSubEvent, internalId: parseInt(xmlEvent.Code, 10) });
     }
 
     // Remove subEvents that are not in the xml
-    const removedSubEvents = subEvents.filter(s => s.visualCode == null);
+    const removedSubEvents = subEvents.filter((s) => s.visualCode == null);
     for (const removed of removedSubEvents) {
       const gameIds = (
         await Game.findAll({
@@ -142,8 +141,8 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
           transaction: this.transaction
         })
       )
-        ?.map(g => g.id)
-        ?.filter(g => !!g);
+        ?.map((g) => g.id)
+        ?.filter((g) => !!g);
 
       if (gameIds && gameIds.length > 0) {
         await Game.destroy({
