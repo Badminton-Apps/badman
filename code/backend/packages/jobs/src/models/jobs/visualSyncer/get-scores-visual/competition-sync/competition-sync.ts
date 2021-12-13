@@ -34,7 +34,16 @@ export class CompetitionSyncer {
   private _gameStep: CompetitionSyncGameProcessor;
   private _pointStep: CompetitionSyncPointProcessor;
 
-  constructor() {
+  constructor(
+    protected readonly options?: {
+      updateMeta?: boolean;
+    }
+  ) {
+    this.options = {
+      updateMeta: false,
+      ...this.options
+    };
+
     this.processor = new Processor();
     this.visualService = new VisualService();
 
@@ -47,7 +56,11 @@ export class CompetitionSyncer {
     this.processor.addStep(this.addPoints());
   }
 
-  process(args: { transaction: Transaction; xmlTournament: XmlTournament }) {
+  process(args: {
+    transaction: Transaction;
+    xmlTournament: XmlTournament;
+    other: { [key: string]: object };
+  }) {
     this._eventStep = new CompetitionSyncEventProcessor(
       args.xmlTournament,
       args.transaction,
@@ -79,12 +92,14 @@ export class CompetitionSyncer {
     this._gameStep = new CompetitionSyncGameProcessor(
       args.xmlTournament,
       args.transaction,
-      this.visualService
+      this.visualService,
+      {
+        figGender: args.other.figGender as unknown as boolean,
+        updateMeta: this.options.updateMeta
+      }
     );
 
-    this._pointStep = new CompetitionSyncPointProcessor(
-      args.transaction
-    );
+    this._pointStep = new CompetitionSyncPointProcessor(args.transaction);
 
     return this.processor.process();
   }
