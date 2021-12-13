@@ -1,4 +1,10 @@
 import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  BuildOptions,
+  SaveOptions,
+} from 'sequelize';
+import {
   AfterBulkCreate,
   AfterCreate,
   BeforeBulkCreate,
@@ -13,23 +19,17 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
-import {
-  BelongsToGetAssociationMixin,
-  BelongsToSetAssociationMixin,
-  BuildOptions,
-  SaveOptions
-} from 'sequelize';
+import { RankingProcessor } from '../../../processing';
 import { Player } from '../player.model';
-import { RankingSystem } from './system.model';
 import { LastRankingPlace } from './last-place.model';
-import { logger, RankingProcessor } from '../../..';
+import { RankingSystem } from './system.model';
 
 @Table({
   timestamps: true,
   tableName: 'Places',
-  schema: 'ranking'
+  schema: 'ranking',
 })
 export class RankingPlace extends Model {
   constructor(values?: Partial<RankingPlace>, options?: BuildOptions) {
@@ -118,7 +118,7 @@ export class RankingPlace extends Model {
 
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'SystemId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   rankingSystem: RankingSystem;
 
@@ -137,7 +137,7 @@ export class RankingPlace extends Model {
     instances: RankingPlace[],
     options: SaveOptions
   ) {
-    const updateInstances = instances.map(r => r.asLastRankingPlace());
+    const updateInstances = instances.map((r) => r.asLastRankingPlace());
 
     await LastRankingPlace.bulkCreate(updateInstances, {
       updateOnDuplicate: [
@@ -162,9 +162,9 @@ export class RankingPlace extends Model {
         'double',
         'singleInactive',
         'mixInactive',
-        'doubleInactive'
+        'doubleInactive',
       ],
-      transaction: options.transaction
+      transaction: options.transaction,
     });
   }
 
@@ -201,7 +201,7 @@ export class RankingPlace extends Model {
       mixInactive: this.mixInactive,
       doubleInactive: this.doubleInactive,
       playerId: this.playerId,
-      systemId: this.SystemId
+      systemId: this.SystemId,
     } as LastRankingPlace;
   }
 
