@@ -5,7 +5,6 @@ query GetUserGamesQuery(
   $offset: Int!
   $limit: Int!
   $where: SequelizeJSON
-  $rankingPointsWhere: SequelizeJSON
 ) {
   player(id: $playerId) {
     id
@@ -66,7 +65,7 @@ query GetUserGamesQuery(
           }
         }
       }
-      rankingPoints(where: $rankingPointsWhere) {
+      rankingPoints(where: { SystemId: $rankingType }) {
         id
         points
         differenceInLevel

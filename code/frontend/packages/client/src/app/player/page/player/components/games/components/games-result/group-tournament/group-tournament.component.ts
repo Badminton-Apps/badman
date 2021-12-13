@@ -7,9 +7,14 @@ import { Game, Player, TournamentDraw, TournamentSubEvent } from 'app/_shared';
   styleUrls: ['./group-tournament.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GroupTournamentComponent {
+export class GroupTournamentComponent implements OnInit {
   @Input() subEvent!: TournamentSubEvent;
   @Input() draw!: TournamentDraw;
   @Input() player!: Player;
   @Input() games?: Game[];
+
+  ngOnInit(): void {
+    // TODO: write order logic
+    // this.games = this.games?.sort((a, b) => (a.r ?? 0) - (b.order ?? 0));
+  }
 }
