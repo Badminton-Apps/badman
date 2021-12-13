@@ -22,14 +22,14 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     protected readonly transaction: Transaction,
     protected readonly visualService: VisualService,
     protected readonly options?: {
-      figGender?: boolean;
+      fixGender?: boolean;
       updateMeta?: boolean;
     }
   ) {
     super(visualTournament, transaction);
 
     this.options = {
-      figGender: false,
+      fixGender: false,
       updateMeta: false,
       ...this.options
     };
@@ -90,7 +90,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           markedForUpdate = true;
         }
 
-        if (this.options.figGender){
+        if (this.options.fixGender){
           game.gameType = this._getGameType(xmlMatch.MatchTypeID);
           markedForUpdate = true;
         }

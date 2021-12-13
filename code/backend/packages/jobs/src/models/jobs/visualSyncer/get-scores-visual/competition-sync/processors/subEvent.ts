@@ -69,14 +69,8 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         });
       }
 
+      let type = this.getEventType(xmlEvent);
       if (!dbSubEvent) {
-        let type =
-          xmlEvent.GenderID === XmlGenderID.Mixed
-            ? SubEventType.MX
-            : xmlEvent.GenderID === XmlGenderID.Male || xmlEvent.GenderID === XmlGenderID.Boy
-            ? SubEventType.M
-            : SubEventType.F;
-
         if (this.event.type === LevelType.NATIONAL) {
           type = SubEventType.MX;
         }
@@ -97,7 +91,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         dbSubEvent = await new SubEventCompetition({
           visualCode: xmlEvent.Code,
           name: xmlEvent.Name,
-          eventType: this.getEventType(xmlEvent),
+          eventType: type,
           eventId: this.event.id,
           level: xmlEvent.LevelID
         }).save({ transaction: this.transaction });
