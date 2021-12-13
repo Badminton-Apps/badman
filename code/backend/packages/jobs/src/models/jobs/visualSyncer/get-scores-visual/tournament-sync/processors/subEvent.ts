@@ -31,13 +31,13 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
     protected readonly transaction: Transaction,
     protected readonly visualService: VisualService,
     protected readonly options?: {
-      figGender?: boolean;
+      fixGender?: boolean;
     }
   ) {
     super(visualTournament, transaction);
 
     this.options = {
-      figGender: false,
+      fixGender: false,
       ...this.options
     };
   }
@@ -99,7 +99,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
           await dbSubEvent.save({ transaction: this.transaction });
         }
 
-        if (this.options) {
+        if (this.options.fixGender) {
           dbSubEvent.eventType = this.getEventType(xmlEvent);
           dbSubEvent.gameType = this.getGameType(xmlEvent);
           await dbSubEvent.save({ transaction: this.transaction });

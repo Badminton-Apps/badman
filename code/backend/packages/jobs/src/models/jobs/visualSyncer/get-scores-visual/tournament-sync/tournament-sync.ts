@@ -68,7 +68,7 @@ export class TournamentSyncer {
       args.transaction,
       this.visualService,
       {
-        figGender: args.other.figGender as unknown as boolean
+        fixGender: args.other.fixGender as unknown as boolean
       }
     );
 
@@ -89,7 +89,7 @@ export class TournamentSyncer {
       args.transaction,
       this.visualService,
       {
-        figGender: args.other.figGender as unknown as boolean,
+        fixGender: args.other.fixGender as unknown as boolean,
         updateMeta: this.options.updateMeta
       }
     );
