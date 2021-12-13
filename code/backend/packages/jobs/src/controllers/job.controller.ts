@@ -21,14 +21,24 @@ export class JobController extends BaseController {
 
   private async _initializeJobs() {
     // VisualSync
-    const scoresVisual = GetScoresVisual.dbEntry()
+    const scoresVisual = GetScoresVisual.dbEntryDaily()
     const [scoresDb] = await Cron.findOrCreate({
-      where: { type: scoresVisual.type },
+      where: { type: scoresVisual.type }, 
       defaults: scoresVisual
     });
+    
     const visual = new GetScoresVisual(scoresDb);
     this._jobs.push(visual);
 
+    const scoresVisualFull = GetScoresVisual.dbEntryWeekly()
+    const [scoresDbFull] = await Cron.findOrCreate({
+      where: { type: scoresVisualFull.type },
+      defaults: scoresVisualFull
+    });
+    
+    const visualFull = new GetScoresVisual(scoresDbFull, { updateMeta: true});
+    this._jobs.push(visualFull);
+ 
     const levelsVisual = GetRankingVisual.dbEntry()
     const [rankingDb] = await Cron.findOrCreate({
       where: { type: levelsVisual.type },
