@@ -22,13 +22,17 @@
 
   <ng-container matColumnDef="cron">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Cron</th>
-    <td mat-cell *matCellDef="let element">{{element.cron}}</td>
+    <td mat-cell *matCellDef="let element">
+      <span [matTooltip]="element?.tooltip">
+        {{ element.cron }}
+      </span>
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="done">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
     <td mat-cell *matCellDef="let element">
-      <span *ngIf="element.meta"
+      <span *ngIf="element.meta?.percent"
         >{{ element.meta.percent }}% ({{ element.meta.current }}/{{ element.meta.total }})</span
       >
     </td>

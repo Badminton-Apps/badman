@@ -45,6 +45,7 @@
     "@types/regression": "^2.0.2",
     "apollo-angular": "^2.6.0",
     "cookieconsent": "^3.1.1",
+    "cronstrue": "^1.122.0",
     "echarts": "~4.7.0",
     "graphql": "^15.0.0",
     "moment": "^2.29.1",
