@@ -258,7 +258,7 @@ export class PdfService {
       teamIndex: teamIndex.index,
       homeTeam: encounter.home.name,
       awayTeam: encounter.away.name,
-      captain: captain.fullName,
+      captain: captain?.fullName,
       doubles,
       singles,
       subtitudes,
