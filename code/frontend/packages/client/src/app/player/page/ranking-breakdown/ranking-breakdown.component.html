@@ -1,0 +1,14 @@
+<div class="mat-subheading-1">
+  Level breakdown
+  <app-beta></app-beta>
+</div>
+
+<ng-container *ngIf="this.player$ | async as player">
+  <app-ranking-evolution [player]="player" fxLayout="row" fxLayout.lt-md="column"> </app-ranking-evolution>
+
+  <mat-tab-group>
+    <mat-tab label="single"></mat-tab>
+    <mat-tab label="double"></mat-tab>
+    <mat-tab label="mix"></mat-tab>
+  </mat-tab-group>
+</ng-container>

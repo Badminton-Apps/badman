@@ -71,7 +71,7 @@ export class GetScoresVisual extends CronJob {
         current,
         total
       };
-      this.dbCron.save({ transaction });
+      await this.dbCron.save({ transaction });
       try {
         if (
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
