@@ -1,3 +1,20 @@
+# [4.12.0](https://github.com/Badminton-Apps/core/compare/v4.11.2...v4.12.0) (2021-12-13)
+
+
+### Bug Fixes
+
+* Competition event type ([0f15d30](https://github.com/Badminton-Apps/core/commit/0f15d300370c043ebdf9a2d6284a8190bb772cd9))
+* Game type ([93c89b6](https://github.com/Badminton-Apps/core/commit/93c89b663aecc3907d1a08fb1afd6b3ea4a2f2d1))
+* null reference ([0ffda11](https://github.com/Badminton-Apps/core/commit/0ffda115a2dd694d62524d249bccf781b3bd15fa))
+* tooltip ranking showing wrong type ([7305245](https://github.com/Badminton-Apps/core/commit/7305245a7a88375f00c97d088849e496bbdcf0e9))
+
+
+### Features
+
+* run full sync on monday, other days only do new games ([47c56c3](https://github.com/Badminton-Apps/core/commit/47c56c31a188211209b1ac5f48445fadfa147163))
+
+
+
 ## [4.11.2](https://github.com/Badminton-Apps/core/compare/v4.11.1...v4.11.2) (2021-12-13)
 
 
