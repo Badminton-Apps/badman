@@ -1,3 +1,17 @@
+# [4.13.0](https://github.com/Badminton-Apps/core/compare/v4.12.2...v4.13.0) (2021-12-13)
+
+
+### Bug Fixes
+
+* Getting levels should check against the last publication date ([9ae6eab](https://github.com/Badminton-Apps/core/commit/9ae6eab0529551b39cdba69ae45ecae7b6750387))
+
+
+### Features
+
+* Showing cron explanation for job list ([94f3f46](https://github.com/Badminton-Apps/core/commit/94f3f4644b2a9fd9ac5388c29fb5052b961ad4c3))
+
+
+
 ## [4.12.2](https://github.com/Badminton-Apps/core/compare/v4.12.1...v4.12.2) (2021-12-13)
 
 
