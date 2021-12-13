@@ -7,9 +7,13 @@ import { CompetitionEncounter, CompetitionSubEvent, Game, Player } from 'app/_sh
   styleUrls: ['./group-competition.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GroupCompetitionComponent {
+export class GroupCompetitionComponent implements OnInit {
   @Input() subEvent!: CompetitionSubEvent;
   @Input() encounter!: CompetitionEncounter;
   @Input() player!: Player;
   @Input() games?: Game[];
+
+  ngOnInit(): void {
+    this.games = this.games?.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
 }

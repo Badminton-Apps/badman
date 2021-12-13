@@ -1,5 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CompetitionSubEvent, Game, GameType, Player, TournamentSubEvent, CompetitionEncounter, TournamentDraw } from '../../../../../../../_shared';
+import {
+  CompetitionSubEvent,
+  Game,
+  GameType,
+  Player,
+  TournamentSubEvent,
+  CompetitionEncounter,
+  TournamentDraw,
+} from '../../../../../../../_shared';
 
 @Component({
   selector: 'app-games-result',
