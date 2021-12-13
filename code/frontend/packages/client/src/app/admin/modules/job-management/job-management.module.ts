@@ -13,6 +13,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CovalentDataTableModule } from '@covalent/core/data-table';
 import { CovalentBarEchartsModule } from '@covalent/echarts/bar';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
@@ -36,6 +37,7 @@ const materialModules = [
   MatOptionModule,
   MatSelectModule,
   MatDatepickerModule,
+  MatTooltipModule
 ];
 
 const covalentModules = [
