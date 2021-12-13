@@ -7,13 +7,29 @@ import { CronJob } from '../cronJob';
 import { CompetitionSyncer, TournamentSyncer } from './visualSyncer/get-scores-visual';
 
 export class GetScoresVisual extends CronJob {
-  static dbEntry(): {
+  /**
+   * Run every day except monday
+   */
+  static dbEntryDaily(): {
     cron: string;
     type: string;
   } {
     return {
-      cron: '0 2 * * *',
+      cron: '0 2 * * 0,2-6',
       type: 'scores-visual'
+    };
+  }
+
+  /**
+   * Run every monday
+   */
+  static dbEntryWeekly(): {
+    cron: string;
+    type: string;
+  } {
+    return {
+      cron: '0 0 * * MON',
+      type: 'scores-visual-full'
     };
   }
 
@@ -21,10 +37,15 @@ export class GetScoresVisual extends CronJob {
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
 
-  constructor(cron: Cron) {
+  constructor(
+    cron: Cron,
+    readonly options?: {
+      updateMeta?: boolean;
+    }
+  ) {
     super(cron);
-    this._competitionSync = new CompetitionSyncer();
-    this._tournamentSync = new TournamentSyncer();
+    this._competitionSync = new CompetitionSyncer(options);
+    this._tournamentSync = new TournamentSyncer(options);
   }
 
   async run(args?: {
@@ -78,7 +99,7 @@ export class GetScoresVisual extends CronJob {
           xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
         ) {
           if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('competition')) {
-            await this._competitionSync.process({ transaction, xmlTournament });
+            await this._competitionSync.process({ transaction, xmlTournament, other: args?.other });
           }
         } else {
           if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('tournament')) {

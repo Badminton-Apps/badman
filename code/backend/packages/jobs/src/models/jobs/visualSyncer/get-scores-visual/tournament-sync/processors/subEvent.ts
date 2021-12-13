@@ -30,9 +30,16 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
     protected readonly visualTournament: XmlTournament,
     protected readonly transaction: Transaction,
     protected readonly visualService: VisualService,
-    protected readonly fixGender = false
+    protected readonly options?: {
+      figGender?: boolean;
+    }
   ) {
     super(visualTournament, transaction);
+
+    this.options = {
+      figGender: false,
+      ...this.options
+    };
   }
 
   public async process(): Promise<SubEventStepData[]> {
@@ -92,7 +99,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
           await dbSubEvent.save({ transaction: this.transaction });
         }
 
-        if (this.fixGender) {
+        if (this.options) {
           dbSubEvent.eventType = this.getEventType(xmlEvent);
           dbSubEvent.gameType = this.getGameType(xmlEvent);
           await dbSubEvent.save({ transaction: this.transaction });
@@ -119,7 +126,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
             }
           ],
           transaction: this.transaction
-        }) 
+        })
       )
         ?.map((g) => g.id)
         ?.filter((g) => !!g);
@@ -147,7 +154,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
         return GameType.D;
       case XmlGameTypeID.Singles:
         return GameType.S;
-        case XmlGameTypeID.Mixed:
+      case XmlGameTypeID.Mixed:
         return GameType.MX;
       default:
         logger.warn('No Game type found');
