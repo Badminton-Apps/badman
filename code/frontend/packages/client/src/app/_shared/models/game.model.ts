@@ -36,6 +36,7 @@ export class Game {
     this.set3Team1 = args.set3Team1;
     this.set3Team2 = args.set3Team2;
     this.round = args?.round;
+    this.order = args?.order;
     this.winner = args.winner;
     this.linkType = args?.linkType;
     this.rankingPoints = args.rankingPoints?.map((r) => new RankingPoint({ ...r, type: rankingType }));
