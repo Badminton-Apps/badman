@@ -19,16 +19,18 @@ export class GetRankingVisual extends CronJob {
   constructor(cron: Cron) {
     super(cron);
 
-    this._levelSync = new RankingSyncer(cron);
+    this._levelSync = new RankingSyncer();
   }
 
   async run(args?: { date: Date; skip: string[] }): Promise<void> {
+    this.dbCron = await Cron.findByPk(this.dbCron.id); 
     logger.info('Started sync of Visual ranking');
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       await this._levelSync.process({
         transaction,
-        runFrom: args?.date
+        runFrom: args?.date,
+        cron: this.dbCron,
       });
       await transaction.commit();
     } catch (e) {
