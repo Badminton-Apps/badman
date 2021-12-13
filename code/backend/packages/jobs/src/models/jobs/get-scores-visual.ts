@@ -53,6 +53,7 @@ export class GetScoresVisual extends CronJob {
     skip: string[];
     other: { [key: string]: object };
   }): Promise<void> {
+    this.dbCron = await Cron.findByPk(this.dbCron.id);
     // Use argument date, else stored date, finally use today
     const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
     logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);

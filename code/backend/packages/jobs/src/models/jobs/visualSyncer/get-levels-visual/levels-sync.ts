@@ -29,17 +29,20 @@ export class RankingSyncer {
   readonly STEP_POINTS = 'points';
   readonly STEP_INACTIVE = 'inactive';
 
-  constructor(private dbCron: Cron) {
+  private dbCron: Cron;
+
+  constructor() {
     this.processor = new Processor();
 
     this.processor.addStep(this.getRankings());
     this.processor.addStep(this.getCategories());
-    this.processor.addStep(this.getPublications());
+    this.processor.addStep(this.getPublications()); 
     this.processor.addStep(this.getPoints());
     // this.processor.addStep(this.setInactive());
   }
 
-  process(args: { transaction: Transaction; runFrom: Date }) {
+  async process(args: { transaction: Transaction; runFrom: Date, cron: Cron }) {
+    this.dbCron = args.cron;
     return this.processor.process({ ...args });
   }
 
