@@ -1,4 +1,12 @@
-import { logger, XmlResult, XmlTournament } from '@badvlasim/shared';
+import {
+  logger,
+  XmlMatch,
+  XmlResult,
+  XmlTeamMatch,
+  XmlTournament,
+  XmlTournamentDraw,
+  XmlTournamentEvent
+} from '@badvlasim/shared';
 import axios from 'axios';
 import { parse } from 'fast-xml-parser';
 import * as rax from 'retry-axios';
@@ -27,13 +35,16 @@ export class VisualService {
     }
     if (parsed.TeamMatch) {
       return this._asArray(parsed.TeamMatch);
-    } 
+    }
 
-    logger.warn('No matches')
+    logger.warn('No matches');
     return [];
   }
 
-  async getMatches(tourneyId: string, drawId: string | number) {
+  async getMatches(
+    tourneyId: string,
+    drawId: string | number
+  ): Promise<(XmlTeamMatch | XmlMatch)[]> {
     const result = await this._getFromApi(
       `${process.env.VR_API}/Tournament/${tourneyId}/Draw/${drawId}/Match`
     );
@@ -46,11 +57,11 @@ export class VisualService {
       return this._asArray(parsed.TeamMatch);
     }
 
-    logger.warn('No matches')
+    logger.warn('No matches');
     return [];
   }
 
-  async getDraws(tourneyId: string, eventId: string | number) {
+  async getDraws(tourneyId: string, eventId: string | number): Promise<XmlTournamentDraw[]> {
     const result = await this._getFromApi(
       `${process.env.VR_API}/Tournament/${tourneyId}/Event/${eventId}/Draw`
     );
@@ -58,7 +69,7 @@ export class VisualService {
     return this._asArray(parsed.TournamentDraw);
   }
 
-  async getEvents(tourneyId: string | number) {
+  async getEvents(tourneyId: string | number): Promise<XmlTournamentEvent[]> {
     const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}/Event`);
     const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.TournamentEvent);
@@ -81,7 +92,7 @@ export class VisualService {
       timeout: 1000000,
       raxConfig: {
         retry: this._retries,
-        onRetryAttempt: err => {
+        onRetryAttempt: (err) => {
           const cfg = rax.getConfig(err);
           if (cfg.currentRetryAttempt > this._retries * 0.75) {
             logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`, err);

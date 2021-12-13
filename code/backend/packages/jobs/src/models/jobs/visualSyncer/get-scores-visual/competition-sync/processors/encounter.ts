@@ -43,10 +43,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     const encounters = await draw.getEncounters({
       transaction: this.transaction
     });
-    const visualMatches = await this.visualService.getMatches(
+    const visualMatches = (await this.visualService.getMatches(
       this.visualTournament.Code,
       internalId
-    );
+    )) as XmlTeamMatch[];
 
     for (const xmlTeamMatch of visualMatches) {
       if (!xmlTeamMatch) {
