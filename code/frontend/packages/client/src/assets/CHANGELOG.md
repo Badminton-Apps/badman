@@ -1,3 +1,12 @@
+## [4.12.1](https://github.com/Badminton-Apps/core/compare/v4.12.0...v4.12.1) (2021-12-13)
+
+
+### Bug Fixes
+
+* Typo in option ([d74eb96](https://github.com/Badminton-Apps/core/commit/d74eb9618496c0aa807d0ec9487b9898526d07d3))
+
+
+
 # [4.12.0](https://github.com/Badminton-Apps/core/compare/v4.11.2...v4.12.0) (2021-12-13)
 
 
