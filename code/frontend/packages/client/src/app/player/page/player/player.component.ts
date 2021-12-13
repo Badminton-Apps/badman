@@ -55,7 +55,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
           if (!player) {
             throw new Error('No player found');
           }
-          this.setStaticsUrl(player);
           return player;
         }),
         catchError((err, caught) => {
@@ -87,14 +86,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.device.removeEvent('change', this.mobileQueryListener);
-  }
-
-  private setStaticsUrl(player: Player) {
-    player.rankingPlaces = player.rankingPlaces?.map((ranking) => {
-      ranking.statisticUrl = this.rankingService.getStatisticUrl(ranking.rankingSystem!.id!, player.id!);
-      return ranking;
-    });
-    return player;
   }
 
   async claimAccount(playerId: string) {
