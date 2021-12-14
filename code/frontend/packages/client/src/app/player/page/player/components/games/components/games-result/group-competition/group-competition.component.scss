@@ -9,6 +9,16 @@
   .spacer {
     margin: 0 5px;
   }
+
+  .top {
+    .won {
+      font-weight: 500;
+    }
+
+    .vs, .score {
+      margin: 0 5px;
+    }
+  }
 }
 
 a {
