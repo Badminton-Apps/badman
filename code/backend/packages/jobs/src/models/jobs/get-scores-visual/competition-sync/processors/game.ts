@@ -90,7 +90,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           markedForUpdate = true;
         }
 
-        if (this.options.fixGender){
+        if (this.options.fixGender) {
           game.gameType = this._getGameType(xmlMatch.MatchTypeID);
           markedForUpdate = true;
         }
@@ -128,14 +128,16 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       updateOnDuplicate.push('gameType');
     }
 
-    await Game.bulkCreate(updatedGames, {
-      transaction: this.transaction,
-      updateOnDuplicate
-    });
+    if (updateOnDuplicate.length > 0 && updatedGames.length > 0) {
+      await Game.bulkCreate(updatedGames, {
+        transaction: this.transaction,
+        updateOnDuplicate
+      });
 
-    await GamePlayer.bulkCreate(updatedgamePlayers, {
-      transaction: this.transaction
-    });
+      await GamePlayer.bulkCreate(updatedgamePlayers, {
+        transaction: this.transaction
+      });
+    }
   }
 
   private _createGamePlayers(xmlGame: XmlMatch, game: Game, players: Map<string, Player>) {
