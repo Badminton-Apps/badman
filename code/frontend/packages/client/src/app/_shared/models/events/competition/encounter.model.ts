@@ -9,6 +9,8 @@ export class CompetitionEncounter {
   originalDate?: Date;
   draw?: CompetitionDraw;
   games?: Game[];
+  homeScore?: number;
+  awayScore?: number;
   home?: Team;
   away?: Team;
   showingForHomeTeam?: boolean;
@@ -24,6 +26,8 @@ export class CompetitionEncounter {
     this.games = args?.games?.map((g) => new Game(g));
     this.home = args?.home != null ? new Team(args.home) : undefined;
     this.away = args?.away != null ? new Team(args.away) : undefined;
+    this.homeScore = args?.homeScore;
+    this.awayScore = args?.awayScore;
     this.encounterChange = args?.encounterChange != null ? new EncounterChange(args.encounterChange) : undefined;
 
     if (this.encounterChange && this.encounterChange.accepted != true) {
