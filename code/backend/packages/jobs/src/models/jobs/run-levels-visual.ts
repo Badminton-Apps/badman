@@ -1,7 +1,6 @@
 import { Cron, DataBaseHandler, logger } from '@badvlasim/shared';
-import moment from 'moment';
 import { CronJob } from '../cronJob';
-import { RankingSyncer } from './visualSyncer/get-levels-visual';
+import { RankingSyncer } from './get-levels-visual';
 
 export class GetRankingVisual extends CronJob {
   static dbEntry(): {
