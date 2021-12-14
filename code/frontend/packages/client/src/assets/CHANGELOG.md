@@ -1,3 +1,12 @@
+## [4.14.2](https://github.com/Badminton-Apps/core/compare/v4.14.1...v4.14.2) (2021-12-14)
+
+
+### Bug Fixes
+
+* if no games are added and/or no fields are required for updating. Skip ([237b582](https://github.com/Badminton-Apps/core/commit/237b5823e892be8f1cf02efd8ebb0b7947884101))
+
+
+
 ## [4.14.1](https://github.com/Badminton-Apps/core/compare/v4.14.0...v4.14.1) (2021-12-14)
 
 
