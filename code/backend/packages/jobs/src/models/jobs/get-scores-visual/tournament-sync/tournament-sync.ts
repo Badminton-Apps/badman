@@ -1,6 +1,6 @@
 import { Processor, ProcessStep, XmlTournament } from '@badvlasim/shared';
 import { Transaction } from 'sequelize';
-import { VisualService } from '../../../../../utils/visualService';
+import { VisualService } from '../../../../utils/visualService';
 import {
   TournamentSyncDrawProcessor,
   TournamentSyncEventProcessor,
