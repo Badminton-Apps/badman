@@ -1,8 +1,8 @@
 import { EventCompetition, logger, XmlTournament } from '@badvlasim/shared';
 import moment, { Moment } from 'moment';
 import { Transaction } from 'sequelize';
-import { StepProcessor } from '../../../../../utils/step-processor';
-import { VisualService } from '../../../../../utils/visualService';
+import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
+import { VisualService } from '../../../visualService';
 
 export interface EventStepData {
   existed: boolean;

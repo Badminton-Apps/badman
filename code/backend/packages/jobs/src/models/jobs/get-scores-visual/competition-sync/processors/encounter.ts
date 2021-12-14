@@ -12,8 +12,8 @@ import {
 } from '@badvlasim/shared';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '../../../../../utils/step-processor';
-import { VisualService } from '../../../../../utils/visualService';
+import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
+import { VisualService } from '../../../visualService';
 import { DrawStepData } from './draw';
 
 export interface EncounterStepData {

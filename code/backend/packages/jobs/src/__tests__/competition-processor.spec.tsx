@@ -1,5 +1,5 @@
 import { DataBaseHandler, GameType, RankingPoint, RankingSystems } from '@badvlasim/shared';
-import { CompetitionSyncPointProcessor } from '../models/jobs/visualSyncer/get-scores-visual/competition-sync/processors/gamePoints';
+import { CompetitionSyncPointProcessor } from '../models/jobs/get-scores-visual/competition-sync/processors';
 import {
   DrawCompetitionBuilder,
   EncounterCompetitionBuilder,

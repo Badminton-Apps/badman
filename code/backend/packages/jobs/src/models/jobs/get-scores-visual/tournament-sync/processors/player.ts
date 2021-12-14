@@ -6,8 +6,8 @@ import {
   XmlTournament
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '../../../../../utils/step-processor';
-import { VisualService } from '../../../../../utils/visualService';
+import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
+import { VisualService } from '../../../visualService';
 
 export class TournamentSyncPlayerProcessor extends StepProcessor {
   public event: EventTournament;
