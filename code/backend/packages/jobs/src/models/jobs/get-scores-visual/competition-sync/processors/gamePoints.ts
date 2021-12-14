@@ -15,7 +15,7 @@ import {
   StartVisualRankingDate
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '../../../../../utils/step-processor';
+import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 
 export class CompetitionSyncPointProcessor extends StepProcessor {
   public event: EventCompetition;

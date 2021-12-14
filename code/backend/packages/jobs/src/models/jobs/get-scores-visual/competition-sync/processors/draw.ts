@@ -8,8 +8,8 @@ import {
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
 import { SubEventStepData } from '.';
-import { StepProcessor } from '../../../../../utils/step-processor';
-import { VisualService } from '../../../../../utils/visualService';
+import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
+import { VisualService } from '../../../visualService';
 
 export interface DrawStepData {
   draw: DrawCompetition;

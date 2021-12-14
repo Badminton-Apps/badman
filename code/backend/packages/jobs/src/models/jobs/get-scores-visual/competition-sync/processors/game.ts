@@ -9,9 +9,9 @@ import {
   XmlTournament
 } from '@badvlasim/shared';
 import { Transaction } from 'sequelize';
-import { StepProcessor } from '../../../../utils/step-processor';
-import { VisualService } from '../../../../utils/visualService';
+import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 import { EncounterStepData } from './encounter';
+import { VisualService } from '../../../visualService';
 
 export class CompetitionSyncGameProcessor extends StepProcessor {
   public players: Map<string, Player>;
