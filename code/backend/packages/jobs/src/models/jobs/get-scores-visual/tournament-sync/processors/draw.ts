@@ -8,8 +8,8 @@ import {
   XmlTournament
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '../../../../../../utils/step-processor';
-import { VisualService } from '../../../../../../utils/visualService';
+import { StepProcessor } from '../../../../../utils/step-processor';
+import { VisualService } from '../../../../../utils/visualService';
 import { SubEventStepData } from './subEvent';
 
 export interface DrawStepData {
