@@ -1,5 +1,5 @@
 import { DataBaseHandler, GameType, RankingPoint, RankingSystems } from '@badvlasim/shared';
-import { TournamentSyncPointProcessor } from '../models/jobs/visualSyncer/get-scores-visual/tournament-sync/processors';
+import { TournamentSyncPointProcessor } from '../models/jobs/get-scores-visual/tournament-sync/processors';
 import {
   DrawTournamentBuilder,
   EventTournamentBuilder,
