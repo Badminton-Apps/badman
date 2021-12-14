@@ -72,8 +72,8 @@ export class GetScoresVisual extends CronJob {
     await this.dbCron.save();
 
     // newEvents = newEvents.filter((event) => {
-    //   return moment(event.StartDate).isAfter('2020-09-01 00:00:00+02');
-    //   // && event.Name != 'PBA competitie 2021-2022'
+    //   //return moment(event.StartDate).isAfter('2020-09-01 00:00:00+02');
+    //   return event.Name === 'PBA competitie 2021-2022'
     //   // && event.Name != 'VVBBC interclubcompetitie 2021-2022'
     //   // && event.Name != 'PBO competitie 2021-2022'
     //   // || event.Name == 'Limburgse interclubcompetitie 2021-2022'

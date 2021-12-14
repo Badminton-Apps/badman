@@ -470,8 +470,6 @@ export class RankingCalc {
     rankingDate?: Date,
     transaction?: Transaction
   ) {
-    logger.debug(`calculateRankingPointsPerGameAsync`);
-
     while (games.length > 0) {
       const rankings =
         this.processGame(games.pop(), players, rankingDate) ?? [];
