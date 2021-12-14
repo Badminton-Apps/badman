@@ -4,7 +4,7 @@ import { parse } from 'fast-xml-parser';
 import moment, { Moment } from 'moment';
 import * as rax from 'retry-axios';
 import { CronJob } from '../cronJob';
-import { CompetitionSyncer, TournamentSyncer } from './visualSyncer/get-scores-visual';
+import { CompetitionSyncer, TournamentSyncer } from './get-scores-visual';
 
 export class GetScoresVisual extends CronJob {
   /**
