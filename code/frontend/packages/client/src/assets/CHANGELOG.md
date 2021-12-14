@@ -1,3 +1,12 @@
+## [4.14.1](https://github.com/Badminton-Apps/core/compare/v4.14.0...v4.14.1) (2021-12-14)
+
+
+### Bug Fixes
+
+* requesting option that could be undefined ([50fadbb](https://github.com/Badminton-Apps/core/commit/50fadbbaa2706acab1eea78b2ff945a3f45f80fe))
+
+
+
 # [4.14.0](https://github.com/Badminton-Apps/core/compare/v4.13.0...v4.14.0) (2021-12-13)
 
 
