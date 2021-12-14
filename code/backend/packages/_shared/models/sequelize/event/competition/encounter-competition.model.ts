@@ -75,12 +75,18 @@ export class EncounterCompetition extends Model {
   @BelongsTo(() => Team, 'homeTeamId')
   home: Team;
 
+  @Column
+  homeScore: number;
+
   @ForeignKey(() => Team)
   @Column
   homeTeamId: string;
 
   @BelongsTo(() => Team, 'awayTeamId')
   away: Team;
+
+  @Column
+  awayScore: number;
 
   @ForeignKey(() => Team)
   @Column
