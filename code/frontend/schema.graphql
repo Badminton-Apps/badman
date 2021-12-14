@@ -439,7 +439,9 @@ type EncounterCompetition {
   date: Date
   originalDate: Date
   drawId: String
+  homeScore: Int
   homeTeamId: String
+  awayScore: Int
   awayTeamId: String
   synced: Date
   visualCode: String
@@ -1400,12 +1402,13 @@ type RootMutationType {
   addPlayerToTeam(teamId: ID, playerId: ID): Team
   addRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
   addRankingSystemGroup(rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
+  addSubEventToRankingSystemGroup(rankingSystemGroupId: ID!, competitions: [ID!], tournaments: [ID!]): RankingSystemGroup
   addRole(role: RoleInput, clubId: Int): Role
   addTeam(team: TeamInput!, clubId: ID!): Team
 
   """Add a change to an encounter"""
   addChangeEncounter(change: EncounterChangeInput): EncounterChange
-  deleteImportedEvent(event: ImportInput): Imported
+  setGroupsCompetition(id: ID!, groupIds: [ID]): EventCompetition
   removeClub(id: ID!): Boolean
   updateClubMembership(clubMembership: ClubMembershipInput): ClubMembership
   deleteClubMembership(clubMembershipId: ID!): ClubMembership
@@ -1413,9 +1416,9 @@ type RootMutationType {
   removeLocation(locationId: ID): Location
   removePlayerFromRole(roleId: ID, playerId: ID): Role
   removePlayerFromTeam(teamId: ID, playerId: ID): Team
+  removeSubEventToRankingSystemGroup(rankingSystemGroupId: ID!, competitions: [ID!], tournaments: [ID!]): RankingSystemGroup
   removeTeam(teamId: ID): Team
   removeRole(id: ID): Role
-  setGroupsCompetition(id: ID!, groupIds: [ID]): EventCompetition
   updateClub(club: ClubInput): Club
   updateComment(comment: CommentInput): Comment
   updateEventCompetition(eventCompetition: EventCompetitionInput): EventCompetition
@@ -1426,7 +1429,7 @@ type RootMutationType {
   updatePlayerRanking(rankingPlace: RankingPlaceInput!, playerId: String!): Player
   updatePlayerTeam(teamId: ID, playerId: ID, base: Boolean): Team
   updateRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
-  updateRankingSystemGroup(id: Int, rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
+  updateRankingSystemGroup(rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
   updateRole(role: RoleInput): Role
   updateSubEventTeam(teamId: ID, subEventId: ID): Team
   updateTeam(team: TeamInput): Team
@@ -1628,20 +1631,6 @@ input EncounterChangeDateInput {
   date: Date
   availabilityHome: EncounterChangeDateavailabilityHomeEnumType
   availabilityAway: EncounterChangeDateavailabilityAwayEnumType
-}
-
-"""This represents a UserInputType"""
-input ImportInput {
-  id: String
-  name: String
-  type: ImporterFiletypeEnumType
-  firstDay: Date
-  fileLocation: String
-  dates: String
-  linkCode: String
-  visualCode: String
-  importing: Boolean
-  tournamentNumber: Int
 }
 
 """A Club Membership input type"""

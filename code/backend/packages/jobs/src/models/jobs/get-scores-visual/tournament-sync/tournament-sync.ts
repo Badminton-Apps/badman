@@ -33,12 +33,14 @@ export class TournamentSyncer {
   private _pointStep: TournamentSyncPointProcessor;
 
   constructor(
-    protected readonly options?: {
+    protected options?: {
       updateMeta?: boolean;
+      fixGender?: boolean;
     }
   ) {
     this.options = {
       updateMeta: false,
+      fixGender: false,
       ...this.options
     };
 
@@ -56,8 +58,14 @@ export class TournamentSyncer {
   process(args: {
     transaction: Transaction;
     xmlTournament: XmlTournament;
-    other: { [key: string]: object };
+    other?: { [key: string]: unknown };
   }) {
+    // Override options with args
+    this.options = {
+      updateMeta: (args?.other?.updateMeta as boolean) ?? this.options.updateMeta,
+      fixGender: (args?.other?.fixGender as boolean) ?? this.options.fixGender
+    };
+    
     this._eventStep = new TournamentSyncEventProcessor(
       args.xmlTournament,
       args.transaction,
@@ -67,9 +75,7 @@ export class TournamentSyncer {
       args.xmlTournament,
       args.transaction,
       this.visualService,
-      {
-        fixGender: args?.other?.fixGender as unknown as boolean,
-      }
+      this.options
     );
 
     this._drawStep = new TournamentSyncDrawProcessor(
@@ -88,10 +94,7 @@ export class TournamentSyncer {
       args.xmlTournament,
       args.transaction,
       this.visualService,
-      {
-        fixGender: args?.other?.fixGender as unknown as boolean,
-        updateMeta: this.options.updateMeta
-      }
+      this.options
     );
 
     this._pointStep = new TournamentSyncPointProcessor(args.transaction);
