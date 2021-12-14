@@ -1,11 +1,16 @@
 <div class="mat-subheading-2">
   <div class="top">
     <ng-container *ngIf="encounter.home?.name && encounter.away?.name">
-      {{ encounter.home?.name }}
-      {{ 'competition.vs' | translate | lowercase }} {{ encounter.away?.name }}
+      <span [ngClass]="{ won: (encounter.homeScore ?? 0) > (encounter.awayScore ?? 0) }">{{
+        encounter.home?.name
+      }}</span>
+      <span class="vs"> {{ 'competition.vs' | translate | lowercase }} </span>
+      <span [ngClass]="{ won: (encounter.awayScore ?? 0) > (encounter.homeScore ?? 0) }">{{
+        encounter.away?.name
+      }}</span>
     </ng-container>
-    <ng-container *ngIf="encounter.homeScore != null && encounter.awayScore != null"
-      >( {{ encounter.homeScore }} - {{ encounter.awayScore }} )</ng-container
+    <span class="score" *ngIf="encounter.homeScore != null && encounter.awayScore != null"
+      >( {{ encounter.homeScore }} - {{ encounter.awayScore }} )</span
     >
   </div>
 
