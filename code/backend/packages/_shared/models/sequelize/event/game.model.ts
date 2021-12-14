@@ -11,6 +11,7 @@ import {
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
+  CreateOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -19,9 +20,14 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
+  UpdateOptions,
 } from 'sequelize';
 import {
+  AfterBulkCreate,
+  AfterBulkUpdate,
+  AfterCreate,
+  AfterUpdate,
   BelongsTo,
   BelongsToMany,
   Column,
@@ -34,7 +40,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  TableOptions
+  TableOptions,
 } from 'sequelize-typescript';
 import { DrawTournament } from '../../..';
 import { GameType } from '../../enums';
@@ -46,7 +52,7 @@ import { GamePlayer } from './game-player.model';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 } as TableOptions)
 export class Game extends Model {
   constructor(values?: Partial<Game>, options?: BuildOptions) {
@@ -89,13 +95,13 @@ export class Game extends Model {
 
   @BelongsTo(() => DrawTournament, {
     foreignKey: 'linkId',
-    constraints: false
+    constraints: false,
   })
   tournament: DrawTournament;
 
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
-    constraints: false
+    constraints: false,
   })
   competition: EncounterCompetition;
 
@@ -120,12 +126,68 @@ export class Game extends Model {
   @Column
   visualCode: string;
 
-  @BelongsToMany(
-    () => Player,
-    () => GamePlayer
-  )
+  @BelongsToMany(() => Player, () => GamePlayer)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   players: (Player & { GamePlayer: GamePlayer })[];
+
+  @AfterCreate
+  @AfterUpdate
+  static async gameCreatedOrUpdated(
+    instance: Game,
+    options: CreateOptions | UpdateOptions
+  ) {
+    const competition = await instance.getCompetition({
+      transaction: options.transaction,
+    });
+    if (competition) {
+      await Game.updateEncounterScore(competition, options);
+    }
+  }
+
+  @AfterBulkCreate
+  @AfterBulkUpdate
+  static async gamesCreatedOrUpdated(
+    instances: Game[],
+    options: CreateOptions | UpdateOptions
+  ) {
+    const doneCompetitions = [];
+    for (const instance of instances) {
+      if (doneCompetitions.includes(instance.linkId)) {
+        continue;
+      } 
+      const competition = await instance.getCompetition({
+        transaction: options.transaction,
+      });
+      if (competition) {
+        await Game.updateEncounterScore(competition, options);
+      }
+      doneCompetitions.push(instance.linkId);
+    }
+  }
+
+  static async updateEncounterScore(
+    encounter: EncounterCompetition,
+    options: CreateOptions | UpdateOptions
+  ) {
+    const games = await encounter.getGames({
+      transaction: options.transaction,
+    });
+    const scores = games.reduce(
+      (acc, game) => {
+        acc.home += game.winner === 1 ? 1 : 0;
+        acc.away += game.winner === 2 ? 1 : 0;
+        return acc;
+      },
+      { home: 0, away: 0 }
+    );
+    await encounter.update(
+      {
+        homeScore: scores.home,
+        awayScore: scores.away,
+      },
+      { transaction: options.transaction }
+    );
+  }
 
   // Has many RankingPoint
   getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;

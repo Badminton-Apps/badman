@@ -24,6 +24,8 @@ query GetUserGamesQuery(
       linkType
       competition {
         id
+        homeScore
+        awayScore
         home {
           id
           name
