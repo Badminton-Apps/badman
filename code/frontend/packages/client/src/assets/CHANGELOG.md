@@ -1,3 +1,13 @@
+# [4.14.0](https://github.com/Badminton-Apps/core/compare/v4.13.0...v4.14.0) (2021-12-13)
+
+
+### Features
+
+* always fetch values from db before start ([f0088d0](https://github.com/Badminton-Apps/core/commit/f0088d0195cd6c6db9f535e0d0a7efcf45825e08))
+* sort competition games in order they were played ([d643501](https://github.com/Badminton-Apps/core/commit/d643501af3f9f33d3ab7528a5a81195581a7da9e))
+
+
+
 # [4.13.0](https://github.com/Badminton-Apps/core/compare/v4.12.2...v4.13.0) (2021-12-13)
 
 
