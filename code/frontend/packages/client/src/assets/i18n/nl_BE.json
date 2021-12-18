@@ -220,6 +220,31 @@
     "select": "Team prefix",
     "example": "Vorbeeld: {{teamName}}"
   },
+  "breakdown": {
+    "title": "Level breakdown",
+    "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen om onderstaande correct te tonen. We werken hieraan.",
+    "evolution": "Evolution",
+    "pointsPerGame": "Punten per wedstrijd",
+    "lostGames": {
+      "none": "Geen verloren wedstrijden",
+      "one": "1 verloren wedstrijd",
+      "other": "{{count}} verloren wedstrijden"
+    },
+    "date": "Datum",
+    "team": "Team",
+    "opponent": "Tegenstander",
+    "points": "Punten",
+    "ignored": "Niet meegeteld",
+    "upgrade": "Upgrade",
+    "downgrade": "Downgrade",
+    "corrected": "{{original}} aangepast naar {{corrected}}",
+    "noGames": "Geen wedstrijden",
+    "nextUpdate": "Voor volgende update",
+    "period": "Periode",
+    "untill": "tot",
+    "nextPeriod": "Volgende periode",
+    "prevPeriod": "Vorige periode"
+  },
   "input": {
     "type": "Type",
     "memberId": "Lidnummer",

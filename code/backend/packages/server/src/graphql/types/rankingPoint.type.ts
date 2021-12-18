@@ -5,6 +5,7 @@ import { queryFixer } from '../queryFixer';
 import { getAttributeFields } from './attributes.type';
 import { PlayerType } from './player.type';
 import { RankingSystemType } from './rankingSystem.type';
+import { GameType } from './game.type';
 
 const RankingPointType = new GraphQLObjectType({
   name: 'RankingPoint',
@@ -28,6 +29,19 @@ const RankingPointType = new GraphQLObjectType({
         type: new GraphQLNonNull(PlayerType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(RankingPoint.associations.player, {
+          before: async (findOptions: { [key: string]: object }) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
+      },
+      game: {
+        type: new GraphQLNonNull(GameType),
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(RankingPoint.associations.game, {
           before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
