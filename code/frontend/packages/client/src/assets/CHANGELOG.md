@@ -1,3 +1,13 @@
+# [4.15.0](https://github.com/Badminton-Apps/core/compare/v4.14.2...v4.15.0) (2021-12-18)
+
+
+### Features
+
+* level breakdown ([abba581](https://github.com/Badminton-Apps/core/commit/abba581b45efbf57158e42c50ae1cf8392d2310c))
+* showing competition score ([653b25a](https://github.com/Badminton-Apps/core/commit/653b25aff48b705d718018eb99766e07d5df8a9e))
+
+
+
 ## [4.14.2](https://github.com/Badminton-Apps/core/compare/v4.14.1...v4.14.2) (2021-12-14)
 
 
