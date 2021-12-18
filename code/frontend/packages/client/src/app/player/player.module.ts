@@ -12,6 +12,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CovalentDataTableModule } from '@covalent/core/data-table';
@@ -26,6 +27,7 @@ import { SharedModule } from '../_shared';
 import {
   ChartComponent,
   EditClubHistoryComponent,
+  EditClubHistoryDialogComponent,
   EditCompetitionStatusComponent,
   EditPermissionsComponent,
   EditPlayerComponent,
@@ -44,10 +46,9 @@ import {
   ProfileHeaderComponent,
   RankingEvolutionComponent,
   TopPlayersComponent,
-  EditClubHistoryDialogComponent,
 } from './page';
+import { ListGamesComponent, PeriodSelectionComponent, RankingBreakdownComponent } from './page/ranking-breakdown';
 import { PlayerRoutingModule } from './player-routing.module';
-import { RankingBreakdownComponent } from './page/ranking-breakdown/ranking-breakdown.component';
 
 const materialModules = [
   MatCardModule,
@@ -59,6 +60,7 @@ const materialModules = [
   MatProgressBarModule,
   MatSnackBarModule,
   MatTabsModule,
+  MatTableModule,
   MatSelectModule,
   MatExpansionModule,
   MatDialogModule,
@@ -100,6 +102,8 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
     EditClubHistoryComponent,
     EditClubHistoryDialogComponent,
     RankingBreakdownComponent,
+    ListGamesComponent,
+    PeriodSelectionComponent,
   ],
   imports: [SharedModule, ...materialModules, ...covalentModules, ...otherModules, PlayerRoutingModule],
 })
