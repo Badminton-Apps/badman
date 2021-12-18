@@ -9,7 +9,8 @@ export class RankingPoint {
   type?: RankingSystem;
   rankingDate?: Date;
   differenceInLevel?: number;
-  systemId?: number;
+  systemId?: string;
+  playerId?: string;
 
   constructor({ ...args }: Partial<RankingPoint>) {
     this.points = args.points;
