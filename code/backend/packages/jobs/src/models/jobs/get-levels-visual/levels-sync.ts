@@ -377,6 +377,9 @@ export class RankingSyncer {
             });
 
             ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
+            if (publication.usedForUpdate) {
+              ranking.system.updateIntervalAmountLastUpdate = publication.date.toDate();
+            }
             await ranking.system.save({ transaction: args.transaction });
             this.dbCron.meta = {
               ...this.dbCron.meta,

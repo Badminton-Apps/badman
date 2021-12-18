@@ -1,0 +1,22 @@
+<div class="label">{{ 'breakdown.period' | translate }}</div>
+
+<div fxLayout="row" id="selection">
+  <div>
+    <button [matTooltip]="'breakdown.prevPeriod' | translate" mat-icon-button (click)="this.onPrev.next()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+  </div>
+  <div fxFlex class="period">
+    {{ formGroup.value.start | amDateFormat: 'MMM YYYY' }} - {{ formGroup.value.end | amDateFormat: 'MMM YYYY' }}
+  </div>
+  <div>
+    <button
+      [matTooltip]="'breakdown.nextPeriod' | translate"
+      mat-icon-button
+      id="next-period"
+      (click)="this.onNext.next()"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>

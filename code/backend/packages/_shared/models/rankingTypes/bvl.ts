@@ -86,7 +86,7 @@ export class BvlRankingCalc extends RankingCalc {
       const slice = {
         start: new Date(gamesStartDate),
         end: suggestedEndDate > end ? end : suggestedEndDate
-      };
+      }; 
 
       dateRanges.push(slice);
       // Forward
