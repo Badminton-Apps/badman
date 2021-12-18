@@ -1,0 +1,168 @@
+<div fxLayout="column">
+  <div fxLayout="row">
+    <form [formGroup]="formGroup">
+      <div>
+        <mat-slide-toggle formControlName="includedIgnored">
+          {{ 'breakdown.ignored' | translate }}:
+          {{
+            lostGamesIgnored.length
+              | i18nPlural
+                : {
+                    '=0': 'breakdown.lostGames.none',
+                    '=1': 'breakdown.lostGames.one',
+                    other: 'breakdown.lostGames.other'
+                  }
+              | translate: { count: lostGamesIgnored.length }
+          }}</mat-slide-toggle
+        >
+      </div>
+      <div>
+        <mat-slide-toggle formControlName="includedUpgrade">
+          {{ 'breakdown.upgrade' | translate }}:
+          {{
+            lostGamesUpgrade.length
+              | i18nPlural
+                : {
+                    '=0': 'breakdown.lostGames.none',
+                    '=1': 'breakdown.lostGames.one',
+                    other: 'breakdown.lostGames.other'
+                  }
+              | translate: { count: lostGamesUpgrade.length }
+          }}
+        </mat-slide-toggle>
+      </div>
+      <div>
+        <mat-slide-toggle formControlName="includedDowngrade">
+          {{ 'breakdown.downgrade' | translate }}:
+          {{
+            lostGamesDowngrade.length
+              | i18nPlural
+                : {
+                    '=0': 'breakdown.lostGames.none',
+                    '=1': 'breakdown.lostGames.one',
+                    other: 'breakdown.lostGames.other'
+                  }
+              | translate: { count: lostGamesDowngrade.length }
+          }}
+        </mat-slide-toggle>
+      </div>
+    </form>
+  </div>
+
+  <table mat-table [dataSource]="gameBreakdown" fxFlex>
+    <!-- Item Column -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.date' | translate }}</th>
+      <td mat-cell *matCellDef="let game">{{ game.playedAt | amDateFormat: 'lll' }}</td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- downgrade Column -->
+    <ng-container matColumnDef="team">
+      <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.team' | translate }}</th>
+      <td mat-cell *matCellDef="let game">
+        <span *ngIf="game.team?.[0]"
+          >{{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] ?? 'N/A'}})</span
+        >
+        <span *ngIf="game.team?.[1]"
+          ><br />{{ game.team?.[1].fullName }} ({{game.team?.[1]?.rankingPlace?.[type] ??  'N/A'}})</span
+        >
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- downgrade Column -->
+    <ng-container matColumnDef="opponent">
+      <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.opponent' | translate }}</th>
+      <td mat-cell *matCellDef="let game">
+        <span *ngIf="game.opponent?.[0]"
+          >{{ game.opponent?.[0].fullName }} ({{game.opponent?.[0]?.rankingPlace?.[type] ?? 'N/A'}})
+        </span>
+        <span *ngIf="game.opponent?.[1]"
+          ><br />{{ game.opponent?.[1].fullName }} ({{game.opponent?.[1]?.rankingPlace?.[type] ?? 'N/A'}})
+        </span>
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- upgrade Column -->
+    <ng-container matColumnDef="points">
+      <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.points' | translate }}</th>
+      <td mat-cell *matCellDef="let game">
+        <container-element [ngSwitch]="game.type">
+          <span *ngSwitchCase="0">{{ game.points }}</span>
+          <span *ngSwitchCase="1">0</span>
+          <span *ngSwitchCase="2">- / 0</span>
+          <span *ngSwitchDefault>-</span>
+        </container-element>
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- upgrade Column -->
+    <ng-container matColumnDef="average-upgrade">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'breakdown.upgrade' | translate }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let game; let i = index"
+        [ngClass]="{
+          used: i === pointsUsedForUpgrade,
+          unused: i < pointsUsedForUpgrade,
+          ignore: i > pointsUsedForUpgrade
+        }"
+      >
+        <span [matTooltip]="getTooltip(game, true)">{{ game.avgUpgrade | number: '.2-2' }}</span>
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- downgrade Column -->
+    <ng-container matColumnDef="average-downgrade">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'breakdown.downgrade' | translate }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let game; let i = index"
+        [ngClass]="{
+          used: i === pointsUsedForDowngrade,
+          unused: i < pointsUsedForDowngrade,
+          ignore: i > pointsUsedForDowngrade
+        }"
+      >
+        <span [matTooltip]="getTooltip(game, false)">{{ game.avgDowngrade | number: '.2-2' }}</span>
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- upgrade-games Column -->
+    <ng-container matColumnDef="space-description">
+      <td mat-footer-cell *matFooterCellDef colspan="4"></td>
+    </ng-container>
+
+    <!-- upgrade-games Column -->
+    <ng-container matColumnDef="average-upgrade-description">
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- downgrade-games Column -->
+    <ng-container matColumnDef="average-downgrade-description">
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Row shown when there is no matching data that will be provided to the wrapper table. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="6">{{ 'breakdown.noGames' | translate }}</td>
+    </tr>
+
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+    <!-- <tr
+      mat-footer-row
+      *matFooterRowDef="['space-description', 'average-upgrade-description', 'average-downgrade-description']"
+    ></tr> -->
+  </table>
+</div>

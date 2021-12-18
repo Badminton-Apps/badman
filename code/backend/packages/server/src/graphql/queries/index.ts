@@ -13,5 +13,6 @@ export * from './location.query';
 export * from './change-encounter.query';
 export * from './encounter.query';
 export * from './cron.query';
+export * from './points.query';
 // end:ng42.barrel
 
