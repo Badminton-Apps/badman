@@ -83,21 +83,21 @@ export class ListGamesComponent implements OnInit {
           });
         }
       } else {
-        if (rankingPoint?.differenceInLevel! >= this.system.differenceForUpgrade! * -1) {
-          this.lostGamesUpgrade.push({
-            game,
-            points: undefined,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.LOST_UPGRADE,
-          });
-        } else if (rankingPoint?.differenceInLevel! >= this.system.differenceForDowngrade! * -1) {
+        if (rankingPoint?.differenceInLevel! >= this.system.differenceForDowngrade! * -1) {
           this.lostGamesDowngrade.push({
             game,
             points: undefined,
             team: [teamP1, teamP2],
             opponent: [opponentP1, opponentP2],
             type: GameBreakdownType.LOST_DOWNGRADE,
+          });
+        } else if (rankingPoint?.differenceInLevel! >= this.system.differenceForUpgrade! * -1) {
+          this.lostGamesUpgrade.push({
+            game,
+            points: undefined,
+            team: [teamP1, teamP2],
+            opponent: [opponentP1, opponentP2],
+            type: GameBreakdownType.LOST_UPGRADE,
           });
         } else {
           this.lostGamesIgnored.push({
@@ -130,7 +130,7 @@ export class ListGamesComponent implements OnInit {
     if (this.formGroup?.get('includedIgnored')?.value) {
       processGames.push(...this.lostGamesIgnored);
     }
-    
+
     let totalPoints = 0;
     for (var i = 0; i < processGames.length; i++) {
       const { game, points, team, opponent, type } = processGames[i];
@@ -180,6 +180,8 @@ export class ListGamesComponent implements OnInit {
 
       this.gameBreakdown.push(gameBreakdown);
     }
+
+    
   }
 
   getTooltip(game: GameBreakdown, isForUpgrade: boolean): string {
