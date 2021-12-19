@@ -222,7 +222,7 @@
   },
   "breakdown": {
     "title": "Level breakdown",
-    "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen om onderstaande correct te tonen. We werken hieraan.",
+    "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
     "evolution": "Evolution",
     "pointsPerGame": "Punten per wedstrijd",
     "lostGames": {
