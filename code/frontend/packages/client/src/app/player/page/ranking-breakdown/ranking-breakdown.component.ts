@@ -121,7 +121,8 @@ export class RankingBreakdownComponent implements OnInit {
       }),
       delay(1),
       switchMap(([playerId, system, type, end]) => {
-        const endPeriod = (end ?? null) == null ?  moment(system.updateIntervalAmountLastUpdate) : moment(end);
+        // Default we take next update interval, if no end is given
+        const endPeriod = (end ?? null) == null ?  moment(system.updateIntervalAmountLastUpdate).add(system.updateIntervalAmount, system.updateIntervalUnit) : moment(end);
         const startPeriod = endPeriod.clone().subtract(system.periodAmount, system.periodUnit);
 
         this.period.setValue(
