@@ -3,20 +3,27 @@ import { CreateOptions, Op, Transaction } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
-  ClubMembership, Comment, DrawCompetition,
+  ClubMembership,
+  Comment,
+  DrawCompetition,
   DrawTournament,
   EventCompetition,
   Game,
-  GamePlayer, LastRankingPlace, Player, PlayerClaimMembership,
-  PlayerRoleMembership, RankingPlace,
+  GamePlayer,
+  LastRankingPlace,
+  Player,
+  PlayerClaimMembership,
+  PlayerRoleMembership,
+  RankingPlace,
   RankingPoint,
   RankingSystem,
   RequestLink,
   SubEventCompetition,
   SubEventTournament,
-  Team, TeamPlayerMembership,
+  Team,
+  TeamPlayerMembership,
   TeamSubEventMembership,
-  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta
+  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta,
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
@@ -441,6 +448,7 @@ export class DataBaseHandler {
       transaction: args.transaction,
     });
 
+
     await PlayerClaimMembership.update(
       { playerId: destination.id },
       {
@@ -474,37 +482,65 @@ export class DataBaseHandler {
     });
 
     // Update where the player isn't a unique key
-    await GamePlayer.update(
-      { playerId: destination.id },
-      {
-        where: {
-          playerId: source.id,
-        },
-        returning: false,
-        transaction: args.transaction,
-      }
-    );
-    await Comment.update(
-      { playerId: destination.id },
-      {
-        where: {
-          playerId: source.id,
-        },
-        returning: false,
-        transaction: args.transaction,
-      }
-    );
+    const gameCount = await GamePlayer.count({
+      where: {
+        playerId: source.id,
+      },
+      transaction: args.transaction,
+    });
 
-    await RankingPoint.update(
-      { playerId: destination.id },
-      {
-        where: {
-          playerId: source.id,
-        },
-        returning: false,
-        transaction: args.transaction,
-      }
-    );
+    if (gameCount > 0) {
+      await GamePlayer.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+          },
+          returning: false,
+          transaction: args.transaction,
+        }
+      );
+    }
+
+    const commentCount = await Comment.count({
+      where: {
+        playerId: source.id,
+      },
+      transaction: args.transaction,
+    });
+
+    if (commentCount > 0) {
+      await Comment.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+          },
+          returning: false,
+          transaction: args.transaction,
+        }
+      );
+    } 
+
+    const pointCount = await RankingPoint.count({
+      where: {
+        playerId: source.id,
+      },
+      transaction: args.transaction,
+    });
+
+    if (pointCount > 0) {
+      await RankingPoint.update(
+        { playerId: destination.id },
+        {
+          where: {
+            playerId: source.id,
+          },
+          returning: false,
+          transaction: args.transaction,
+        }
+      );
+    }
 
     const placesDest = await destination.getRankingPlaces({
       transaction: args.transaction,
@@ -573,7 +609,7 @@ export class DataBaseHandler {
    * @param sync Forces DB to recreate every table, this also adds the default Ranking System
    */
   dbCheck(canMigrate: boolean, sync = false) {
-    return new Promise(async (resolve,) => {
+    return new Promise(async (resolve) => {
       logger.debug(`Running dbCheck with`, { canMigrate, sync });
 
       if (canMigrate) {

@@ -3,8 +3,29 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RankingService } from 'app/admin';
 import { DeviceService, Player, PlayerService, SystemService, UserService } from 'app/_shared';
-import { BehaviorSubject, combineLatest, merge, Observable, Subject, throwError } from 'rxjs';
-import { catchError, delay, filter, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  concat,
+  forkJoin,
+  lastValueFrom,
+  withLatestFrom,
+  merge,
+  Observable,
+  Subject,
+  combineAll,
+  throwError,
+} from 'rxjs';
+import {
+  catchError,
+  delay,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 
 @Component({
   templateUrl: './player.component.html',
@@ -12,19 +33,18 @@ import { catchError, delay, filter, map, shareReplay, startWith, switchMap, tap 
 })
 export class PlayerComponent implements OnInit, OnDestroy {
   private mobileQueryListener!: () => void;
-  player$!: Observable<Player>;
+  player$!: Observable<Player | null>;
   user$!: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
 
-  canClaimAccount$!: Observable<{ isClaimedByUser: boolean; canClaim: boolean }>; 
+  canClaimAccount$!: Observable<{ isClaimedByUser: boolean; canClaim: boolean }>;
 
-  updateHappend = new BehaviorSubject(true);
+  updateHappend$ = new BehaviorSubject(null);
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private playerService: PlayerService,
     private systemService: SystemService,
-    private rankingService: RankingService,
     private userService: UserService,
     private snackbar: MatSnackBar,
 
@@ -36,10 +56,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.device.addEvent('change', this.mobileQueryListener);
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 
-    const reset$ = new Subject();
-
     const id$ = this.route.paramMap.pipe(
-      tap((_) => reset$.next(undefined)),
+      tap((_) => this.updateHappend$.next(null)),
       delay(1),
       map((x) => x.get('id')),
       shareReplay(1)
@@ -48,25 +66,28 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
 
     this.player$ = merge(
-      reset$,
-      combineLatest([id$, system$]).pipe(
+      combineLatest([id$, system$, this.updateHappend$]).pipe(
         switchMap(([playerId, system]) => this.playerService.getPlayer(playerId!, system?.id)),
         map((player) => {
           if (!player) {
             throw new Error('No player found');
           }
           return player;
-        }),
-        catchError((err, caught) => {
-          console.error('error', err);
-          this.snackbar.open(err.message);
-          this.router.navigate(['/']);
-          throw err;
         })
-      )
-    ) as Observable<Player>;
+      ),
+      this.updateHappend$//.pipe(map(() => null)),
+    ).pipe(
+      // Forces a re-render when getting from cache
+      delay(1),
+      catchError((err, caught) => {
+        console.error('error', err);
+        this.snackbar.open(err.message);
+        this.router.navigate(['/']);
+        throw err;
+      })
+    );
 
-    this.user$ = this.updateHappend.pipe(switchMap((_) => this.userService.profile$));
+    this.user$ = this.updateHappend$.pipe(switchMap((_) => this.userService.profile$));
 
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
       map(([player, user]) => {
@@ -89,10 +110,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   async claimAccount(playerId: string) {
-    const result = await this.userService
-      .requestLink(playerId)
-      .pipe(tap((_) => this.updateHappend.next(true)))
-      .toPromise();
+    const result = await lastValueFrom(
+      this.userService.requestLink(playerId).pipe(tap((_) => this.updateHappend$.next(null)))
+    );
 
     if (result && result.id) {
       this.snackbar.open('Account linked', 'close', { duration: 5000 });
