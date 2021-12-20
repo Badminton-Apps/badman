@@ -1,3 +1,12 @@
+## [4.16.1](https://github.com/Badminton-Apps/core/compare/v4.16.0...v4.16.1) (2021-12-20)
+
+
+### Bug Fixes
+
+* Average calculation was wrongly devided ([3689282](https://github.com/Badminton-Apps/core/commit/3689282242c8e0b492d7359abcd29a41ca0f4d0f))
+
+
+
 # [4.16.0](https://github.com/Badminton-Apps/core/compare/v4.15.0...v4.16.0) (2021-12-19)
 
 
