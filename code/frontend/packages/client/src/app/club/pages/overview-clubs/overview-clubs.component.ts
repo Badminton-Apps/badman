@@ -3,6 +3,7 @@ import { AfterViewInit, Component, EventEmitter, ViewChild } from '@angular/core
 import { PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Title } from '@angular/platform-browser';
 import { ClubService } from 'app/_shared';
 import { Club } from 'app/_shared/models/club.model';
 import { BehaviorSubject, combineLatest, of as observableOf } from 'rxjs';
@@ -32,7 +33,9 @@ export class OverviewClubsComponent implements AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private eventService: ClubService) {}
+  constructor(private eventService: ClubService, titleService: Title) {
+    titleService.setTitle('Clubs');
+  }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
