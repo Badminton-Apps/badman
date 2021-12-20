@@ -1,6 +1,8 @@
-<div class="mat-subheading-1">Edit Club</div>
+<ng-container *ngIf="this.club$ | async as club; loading">
+  <div class="mat-subheading-1">
+    <button mat-icon-button [routerLink]="['/club', club.id]"><mat-icon>arrow_back</mat-icon></button>Edit Club
+  </div>
 
-<ng-container *ngIf="this.club$ | async as club">
   <app-has-claim [any]="[club.id + '_edit:club', 'edit-any:club']">
     <app-club-fields [club]="club" (save)="this.save($event)"></app-club-fields>
     <div noPerm>{{ club.name }}</div>
@@ -73,3 +75,7 @@
     </div>
   </app-has-claim>
 </ng-container>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
