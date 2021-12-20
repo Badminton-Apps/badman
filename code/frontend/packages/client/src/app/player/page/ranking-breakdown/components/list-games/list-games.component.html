@@ -3,7 +3,7 @@
     <form [formGroup]="formGroup">
       <div>
         <mat-slide-toggle formControlName="includedIgnored">
-          {{ 'breakdown.ignored' | translate }}:
+          {{ 'breakdown.notUsed' | translate }}:
           {{
             lostGamesIgnored.length
               | i18nPlural
@@ -18,7 +18,7 @@
       </div>
       <div>
         <mat-slide-toggle formControlName="includedUpgrade">
-          {{ 'breakdown.upgrade' | translate }}:
+          {{ 'breakdown.usedForUpgrade' | translate }}:
           {{
             lostGamesUpgrade.length
               | i18nPlural
@@ -33,7 +33,7 @@
       </div>
       <div>
         <mat-slide-toggle formControlName="includedDowngrade">
-          {{ 'breakdown.downgrade' | translate }}:
+          {{ 'breakdown.usedForDowngrade' | translate }}:
           {{
             lostGamesDowngrade.length
               | i18nPlural
@@ -89,12 +89,7 @@
     <ng-container matColumnDef="points">
       <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.points' | translate }}</th>
       <td mat-cell *matCellDef="let game">
-        <container-element [ngSwitch]="game.type">
-          <span *ngSwitchCase="0">{{ game.points }}</span>
-          <span *ngSwitchCase="1">0</span>
-          <span *ngSwitchCase="2">- / 0</span>
-          <span *ngSwitchDefault>-</span>
-        </container-element>
+        <ng-container *ngIf="game.type == 0">{{game.points}}</ng-container>
       </td>
       <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
@@ -108,12 +103,19 @@
         mat-cell
         *matCellDef="let game; let i = index"
         [ngClass]="{
-          used: i === pointsUsedForUpgrade,
-          unused: i < pointsUsedForUpgrade,
-          ignore: i > pointsUsedForUpgrade
+          used: i === indexUsedForUpgrade,
+          unused: i < indexUsedForUpgrade,
+          ignore: i > indexUsedForUpgrade
         }"
       >
-        <span [matTooltip]="getTooltip(game, true)">{{ game.avgUpgrade | number: '.2-2' }}</span>
+        <ng-container [ngSwitch]="game.type">
+          <span *ngSwitchCase="0"
+            ><span [matTooltip]="getTooltip(game, true)">{{ game.avgUpgrade | number: '.2-2' }}</span></span
+          >
+          <span *ngSwitchCase="1">0</span>
+          <span *ngSwitchCase="2">-</span>
+          <span *ngSwitchDefault>-</span>
+        </ng-container>
       </td>
       <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
@@ -127,12 +129,19 @@
         mat-cell
         *matCellDef="let game; let i = index"
         [ngClass]="{
-          used: i === pointsUsedForDowngrade,
-          unused: i < pointsUsedForDowngrade,
-          ignore: i > pointsUsedForDowngrade
+          used: i === indexUsedForDowngrade,
+          unused: i < indexUsedForDowngrade,
+          ignore: i > indexUsedForDowngrade
         }"
       >
-        <span [matTooltip]="getTooltip(game, false)">{{ game.avgDowngrade | number: '.2-2' }}</span>
+        <ng-container [ngSwitch]="game.type">
+          <span *ngSwitchCase="0">
+            <span [matTooltip]="getTooltip(game, false)">{{ game.avgDowngrade | number: '.2-2' }}</span></span
+          >
+          <span *ngSwitchCase="1">0</span>
+          <span *ngSwitchCase="2">0</span>
+          <span *ngSwitchDefault>-</span>
+        </ng-container>
       </td>
       <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
