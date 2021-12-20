@@ -1,3 +1,18 @@
+# [4.17.0](https://github.com/Badminton-Apps/core/compare/v4.16.1...v4.17.0) (2021-12-20)
+
+
+### Bug Fixes
+
+* **merge-accoutns:** Only update values if there are any ([c76f067](https://github.com/Badminton-Apps/core/commit/c76f0677c34438d584748016822f19b3dc54f120))
+
+
+### Features
+
+* Back arrow ([182b838](https://github.com/Badminton-Apps/core/commit/182b838f5f2b5572f3852f548bec5950f831f318))
+* Set title ([386aa0b](https://github.com/Badminton-Apps/core/commit/386aa0b2a8e45de87016d1e836e5f4d08eb5ed58))
+
+
+
 ## [4.16.1](https://github.com/Badminton-Apps/core/compare/v4.16.0...v4.16.1) (2021-12-20)
 
 
