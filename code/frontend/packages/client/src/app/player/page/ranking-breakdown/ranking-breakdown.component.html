@@ -1,8 +1,9 @@
-<div class="mat-subheading-1">
-  {{ 'breakdown.title' | translate }}
-</div>
+<ng-container *ngIf="this.data$ | async as data; else loading">
+  <div class="mat-subheading-1">
+    <button mat-icon-button [routerLink]="['/player', data.player.id]"><mat-icon>arrow_back</mat-icon></button
+    >{{ 'breakdown.title' | translate }}
+  </div>
 
-<ng-container *ngIf="this.data$ | async as data">
   <div fxLayout="column">
     <div class="mat-subheading-2">{{ 'breakdown.evolution' | translate }}</div>
     <app-ranking-evolution [player]="data.player" fxLayout="row" fxLayout.lt-md="column"> </app-ranking-evolution>
