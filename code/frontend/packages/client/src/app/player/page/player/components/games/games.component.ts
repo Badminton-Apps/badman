@@ -25,6 +25,7 @@ export class GamesComponent implements OnInit {
   @Input()
   player!: Player;
 
+
   constructor(
     private route: ActivatedRoute,
     private playerService: PlayerService,
