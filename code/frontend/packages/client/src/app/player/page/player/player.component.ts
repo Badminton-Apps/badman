@@ -20,8 +20,10 @@ import {
 import {
   catchError,
   delay,
+  distinctUntilChanged,
   filter,
   map,
+  share,
   shareReplay,
   startWith,
   switchMap,
@@ -36,6 +38,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   private mobileQueryListener!: () => void;
   player$!: Observable<Player | null>;
   user$!: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
+  loadingPlayer = false;
 
   canClaimAccount$!: Observable<{ isClaimedByUser: boolean; canClaim: boolean }>;
 
@@ -49,44 +52,30 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private snackbar: MatSnackBar,
     private titleService: Title,
-    public device: DeviceService,
-    private changeDetectorRef: ChangeDetectorRef
+    public device: DeviceService
   ) {}
 
   ngOnInit(): void {
-    this.device.addEvent('change', this.mobileQueryListener);
-    this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
-
-    const id$ = this.route.paramMap.pipe(
-      tap((_) => this.updateHappend$.next(null)),
-      delay(1),
-      map((x) => x.get('id')),
-      shareReplay(1)
-    );
-
+    const id$ = this.route.paramMap.pipe(map((x) => x.get('id')));
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
 
-    this.player$ = merge(
-      combineLatest([id$, system$, this.updateHappend$]).pipe(
-        switchMap(([playerId, system]) => this.playerService.getPlayer(playerId!, system?.id)),
-        map((player) => {
-          if (!player) {
-            throw new Error('No player found');
-          }
-          return player;
-        })
-      ),
-      this.updateHappend$//.pipe(map(() => null)),
-    ).pipe(
-      // Forces a re-render when getting from cache
-      delay(1),
-      tap((player) => this.titleService.setTitle(player ? `${player?.fullName}` : 'Loading ...')),
+    this.player$ = combineLatest([id$, system$, this.updateHappend$]).pipe(
+      share(),
+      switchMap(([playerId, system]) => this.playerService.getPlayer(playerId!, system?.id)),
+      map((player) => {
+        if (!player) {
+          throw new Error('No player found');
+        }
+        return player;
+      }),
+      tap((player) => this.titleService.setTitle(`${player?.fullName}`)),
       catchError((err, caught) => {
         console.error('error', err);
         this.snackbar.open(err.message);
         this.router.navigate(['/']);
         throw err;
-      })
+      }),
+      share()
     );
 
     this.user$ = this.updateHappend$.pipe(switchMap((_) => this.userService.profile$));
