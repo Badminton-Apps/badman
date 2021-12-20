@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddPlayerComponent } from 'app/admin/modules/club-management/dialogs/add-player/add-player.component';
 import { TeamDialogComponent } from 'app/club/dialogs';
 import { Club, ClubService, SystemService, Team, TeamService } from 'app/_shared';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, lastValueFrom, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './detail-club.component.html',
@@ -22,6 +23,7 @@ export class DetailClubComponent implements OnInit{
     private clubService: ClubService,
     private teamService: TeamService,
     private systemService: SystemService,
+    private titleService: Title,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
@@ -48,7 +50,8 @@ export class DetailClubComponent implements OnInit{
             active: activeTeams ? true : undefined,
           },
         });
-      })
+      }),
+      tap(club => this.titleService.setTitle(`${club.name}`))
     );
   }
 

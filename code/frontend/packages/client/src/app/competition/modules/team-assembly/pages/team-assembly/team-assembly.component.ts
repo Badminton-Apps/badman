@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { EventService, Player } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, startWith } from 'rxjs';
 import { TeamAssemblyService } from '../../services/team-assembly.service';
 
 @Component({
@@ -19,6 +20,7 @@ export class TeamAssemblyComponent implements OnInit {
     private assemblyService: TeamAssemblyService,
     private eventService: EventService,
     private encoutnerService: EncounterService,
+    private titleService: Title,
     private activatedRoute: ActivatedRoute
   ) {}
 
@@ -26,6 +28,8 @@ export class TeamAssemblyComponent implements OnInit {
     const today = moment();
     const queryYear = parseInt(this.activatedRoute.snapshot.queryParams['year'], 10);
     const year = isNaN(queryYear) ? (today.month() >= 6 ? today.year() : today.year() - 1) : queryYear;
+
+    this.titleService.setTitle(`Team Assembly`);
 
     this.formGroup.addControl('year', new FormControl(year));
     this.formGroup.addControl('mayRankingDate', new FormControl(moment(`${year}-05-15`).toDate()));

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RankingService } from 'app/admin';
 import { DeviceService, Player, PlayerService, SystemService, UserService } from 'app/_shared';
@@ -47,7 +48,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private systemService: SystemService,
     private userService: UserService,
     private snackbar: MatSnackBar,
-
+    private titleService: Title,
     public device: DeviceService,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
@@ -79,6 +80,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     ).pipe(
       // Forces a re-render when getting from cache
       delay(1),
+      tap((player) => this.titleService.setTitle(player ? `${player?.fullName}` : 'Loading ...')),
       catchError((err, caught) => {
         console.error('error', err);
         this.snackbar.open(err.message);

@@ -7,6 +7,7 @@ import {
   MatDateRangePicker,
   MatDateRangeSelectionStrategy,
 } from '@angular/material/datepicker';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { Game, Player, PlayerService, RankingSystem } from 'app/_shared';
@@ -57,6 +58,7 @@ export class RankingBreakdownComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private playerService: PlayerService,
+    private titleService: Title,
     private apollo: Apollo
   ) {}
 
@@ -206,6 +208,7 @@ export class RankingBreakdownComponent implements OnInit {
         return combineLatest([of(system), player, games, of(type!)]);
       }),
       map(([system, player, games, type]) => {
+        this.titleService.setTitle(`${player?.fullName} - ${type}`);
         return { system, player, games, type };
       }),
       tap((r) => {
