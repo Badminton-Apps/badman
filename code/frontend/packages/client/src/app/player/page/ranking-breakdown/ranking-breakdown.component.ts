@@ -61,15 +61,41 @@ export class RankingBreakdownComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const routeParam$ = this.route.paramMap.pipe(delay(1), shareReplay(1));
-    const queryParam$ = this.route.queryParams.pipe(delay(1), shareReplay(1));
+    const routeParam$ = this.route.paramMap.pipe(shareReplay(1));
+    const queryParam$ = this.route.queryParams.pipe(shareReplay(1));
+
+    // Get params on startup
+    combineLatest([routeParam$, queryParam$])
+      .pipe(take(1))
+      .subscribe(([params, queries]) => {
+        const filters: { [key: string]: unknown } = {};
+
+        if (params.get('type')) {
+          filters['gameType'] = params.get('type');
+        }
+
+        if (queries['includedIgnored']) {
+          filters['includedIgnored'] = queries['includedIgnored'] == 'true';
+        }
+        if (queries['includedUpgrade']) {
+          filters['includedUpgrade'] = queries['includedUpgrade'] == 'true';
+        }
+        if (queries['includedDowngrade']) {
+          filters['includedDowngrade'] = queries['includedDowngrade'] == 'true';
+        }
+
+        this.gameFilter.patchValue(filters);
+      });
 
     const player$ = routeParam$.pipe(
       map((x) => x.get('id')),
       distinctUntilChanged()
     );
-    const type$ = routeParam$.pipe(map((x) => x.get('type')));
-    const end$ = queryParam$.pipe(map((x) => x['end']));
+    const type$ = routeParam$.pipe(map((x) => x.get('type'), distinctUntilChanged()));
+    const end$ = queryParam$.pipe(
+      map((x) => x['end']),
+      distinctUntilChanged()
+    );
 
     this.gameFilter.valueChanges.subscribe((x) => {
       // We need a type to work
@@ -78,18 +104,13 @@ export class RankingBreakdownComponent implements OnInit {
           relativeTo: this.route,
           queryParams: {
             end: x.period.end ? x.period.end.toISOString() : undefined,
+            includedIgnored: x.includedIgnored,
+            includedUpgrade: x.includedUpgrade,
+            includedDowngrade: x.includedDowngrade,
           },
         });
       }
     });
-
-    combineLatest([type$])
-      .pipe(take(1)) // this only needs to run once
-      .subscribe(([type]) => {
-        if (type) {
-          this.gameFilter.get('gameType')!.setValue(type, { emitEvent: false });
-        }
-      });
 
     const system$ = this.apollo
       .query<{ systems: RankingSystem[] }>({
@@ -122,15 +143,16 @@ export class RankingBreakdownComponent implements OnInit {
       delay(1),
       switchMap(([playerId, system, type, end]) => {
         // Default we take next update interval, if no end is given
-        const endPeriod = (end ?? null) == null ?  moment(system.updateIntervalAmountLastUpdate).add(system.updateIntervalAmount, system.updateIntervalUnit) : moment(end);
+        const endPeriod =
+          (end ?? null) == null
+            ? moment(system.updateIntervalAmountLastUpdate).add(system.updateIntervalAmount, system.updateIntervalUnit)
+            : moment(end);
         const startPeriod = endPeriod.clone().subtract(system.periodAmount, system.periodUnit);
 
-        this.period.setValue(
-          {
-            start: startPeriod,
-            end: endPeriod,
-          },
-        );
+        this.period.setValue({
+          start: startPeriod,
+          end: endPeriod,
+        });
 
         const games = this.apollo
           .query<{ player: Player }>({
@@ -184,9 +206,6 @@ export class RankingBreakdownComponent implements OnInit {
         return combineLatest([of(system), player, games, of(type!)]);
       }),
       map(([system, player, games, type]) => {
-        const testing = games.find((r) => r.id == '49f79d6c-0949-48f5-a442-5b0433ddb2bc');
-        console.log(testing);
-
         return { system, player, games, type };
       }),
       tap((r) => {
@@ -195,26 +214,25 @@ export class RankingBreakdownComponent implements OnInit {
     );
   }
 
-  nextPeriod(system: RankingSystem){
+  nextPeriod(system: RankingSystem) {
     const endPeriod = moment(this.period.get('end')?.value).add(system.updateIntervalAmount, system.updateIntervalUnit);
     const startPeriod = endPeriod.clone().subtract(system.periodAmount, system.periodUnit);
 
-    this.period.setValue(
-      {
-        start: startPeriod,
-        end: endPeriod,
-      },
-    );
+    this.period.setValue({
+      start: startPeriod,
+      end: endPeriod,
+    });
   }
-  prevPeriod(system: RankingSystem){
-    const endPeriod = moment(this.period.get('end')?.value).subtract(system.updateIntervalAmount, system.updateIntervalUnit);
+  prevPeriod(system: RankingSystem) {
+    const endPeriod = moment(this.period.get('end')?.value).subtract(
+      system.updateIntervalAmount,
+      system.updateIntervalUnit
+    );
     const startPeriod = endPeriod.clone().subtract(system.periodAmount, system.periodUnit);
 
-    this.period.setValue(
-      {
-        start: startPeriod,
-        end: endPeriod,
-      },
-    );
+    this.period.setValue({
+      start: startPeriod,
+      end: endPeriod,
+    });
   }
 }
