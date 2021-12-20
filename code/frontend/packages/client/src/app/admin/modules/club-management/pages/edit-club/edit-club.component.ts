@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
 import {
@@ -17,7 +18,7 @@ import {
   TeamService,
 } from 'app/_shared';
 import { BehaviorSubject, combineLatest, lastValueFrom, Observable } from 'rxjs';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './edit-club.component.html',
@@ -43,6 +44,7 @@ export class EditClubComponent implements OnInit {
     private clubService: ClubService,
     private eventService: EventService,
     private locationService: LocationService,
+    private titleService: Title,
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
@@ -76,7 +78,8 @@ export class EditClubComponent implements OnInit {
 
     this.club$ = combineLatest([clubid$, this.updateClub$]).pipe(
       debounceTime(600),
-      switchMap(([id]) => this.clubService.getClub(id!))
+      switchMap(([id]) => this.clubService.getClub(id!)),
+      tap(club => this.titleService.setTitle(`Edit ${club.name}`))
     );
 
     this.locations$ = combineLatest([clubid$, this.updateLocation$]).pipe(
