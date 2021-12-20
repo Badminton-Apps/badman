@@ -5,20 +5,13 @@ import { FormGroup } from '@angular/forms';
   selector: 'app-period-selection',
   templateUrl: './period-selection.component.html',
   styleUrls: ['./period-selection.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeriodSelectionComponent implements OnInit {
-
+export class PeriodSelectionComponent {
   @Input() formGroup!: FormGroup;
 
   @Output()
   onNext = new EventEmitter<void>();
   @Output()
   onPrev = new EventEmitter<void>();
-
-  ngOnInit(): void {
-
-    console.log(this.formGroup);
-  }
-
 }

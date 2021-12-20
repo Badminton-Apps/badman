@@ -23,8 +23,8 @@ export class ListGamesComponent implements OnInit {
   lostGamesUpgrade: ListGame[] = [];
   lostGamesDowngrade: ListGame[] = [];
 
-  pointsUsedForUpgrade = 0;
-  pointsUsedForDowngrade = 0;
+  indexUsedForUpgrade = 0;
+  indexUsedForDowngrade = 0;
 
   gameBreakdown: GameBreakdown[] = [];
 
@@ -117,93 +117,100 @@ export class ListGamesComponent implements OnInit {
 
   fillGames() {
     this.gameBreakdown = [];
-    const processGames = [...this.wonGames];
-
-    if (this.formGroup?.get('includedUpgrade')?.value) {
-      processGames.push(...this.lostGamesUpgrade);
-    }
 
     if (this.formGroup?.get('includedDowngrade')?.value) {
-      processGames.push(...this.lostGamesDowngrade);
+      this.addLostGames(this.lostGamesDowngrade);
     }
 
-    if (this.formGroup?.get('includedIgnored')?.value) {
-      processGames.push(...this.lostGamesIgnored);
+    if (this.formGroup?.get('includedUpgrade')?.value) {
+      this.addLostGames(this.lostGamesUpgrade);
     }
 
+    const startingIndex = this.gameBreakdown.length;
     let totalPoints = 0;
-    for (var i = 0; i < processGames.length; i++) {
-      const { game, points, team, opponent, type } = processGames[i];
 
-      const gameBreakdown = {
+    for (var i = 0; i < this.wonGames.length; i++) {
+      const { game, points, team, opponent, type } = this.wonGames[i];
+
+      totalPoints += points ?? 0;
+      const devideUpgrade = this.lostGamesUpgrade.length + i + 1; // 0 based
+      const devideDowngrade = this.lostGamesUpgrade.length + this.lostGamesDowngrade.length + i + 1; // 0 based;
+
+      const devideUpgradeCorrected =
+        devideUpgrade < this.system.minNumberOfGamesUsedForUpgrade!
+          ? this.system.minNumberOfGamesUsedForUpgrade!
+          : devideUpgrade;
+
+      const devideDowngradeCorrected =
+        devideDowngrade < this.system.minNumberOfGamesUsedForUpgrade!
+          ? this.system.minNumberOfGamesUsedForUpgrade!
+          : devideDowngrade;
+
+      const avgUpgrade = totalPoints / devideUpgradeCorrected;
+      const avgDowngrade = totalPoints / devideDowngradeCorrected;
+
+      if (avgUpgrade > (this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? -1)) {
+        this.indexUsedForUpgrade = startingIndex + i;
+      }
+
+      if (avgDowngrade > (this.gameBreakdown[this.indexUsedForDowngrade]?.avgDowngrade ?? -1)) {
+        this.indexUsedForDowngrade = startingIndex + i;
+      }
+
+      this.gameBreakdown.push({
         id: game.id!,
         playedAt: new Date(game.playedAt!),
         totalPoints,
         team,
         opponent,
         type,
-      } as GameBreakdown;
-
-      if (type == GameBreakdownType.WON) {
-        totalPoints += points ?? 0;
-        const devideUpgrade = this.lostGamesUpgrade.length + i;
-        const devideDowngrade = this.lostGamesDowngrade.length + i;
-
-        const devideUpgradeCorrected =
-          devideUpgrade < this.system.minNumberOfGamesUsedForUpgrade!
-            ? this.system.minNumberOfGamesUsedForUpgrade!
-            : devideUpgrade;
-
-        const devideDowngradeCorrected =
-          devideDowngrade < this.system.minNumberOfGamesUsedForUpgrade!
-            ? this.system.minNumberOfGamesUsedForUpgrade!
-            : devideDowngrade;
-
-        const avgUpgrade = totalPoints / devideUpgradeCorrected;
-        const avgDowngrade = totalPoints / devideDowngradeCorrected;
-        if (avgUpgrade > (this.gameBreakdown[this.pointsUsedForUpgrade]?.avgUpgrade ?? -1)) {
-          this.pointsUsedForUpgrade = i;
-        }
-
-        if (avgDowngrade > (this.gameBreakdown[this.pointsUsedForDowngrade]?.avgDowngrade ?? -1)) {
-          this.pointsUsedForDowngrade = i;
-        }
-
-        gameBreakdown.points = points;
-        gameBreakdown.avgUpgrade = avgUpgrade;
-        gameBreakdown.avgDowngrade = avgDowngrade;
-        gameBreakdown.devideDowngrade = devideDowngrade;
-        gameBreakdown.devideUpgrade = devideUpgrade;
-        gameBreakdown.devideUpgradeCorrected = devideUpgradeCorrected;
-        gameBreakdown.devideDowngradeCorrected = devideDowngradeCorrected;
-      }
-
-      this.gameBreakdown.push(gameBreakdown);
+        points,
+        avgUpgrade,
+        avgDowngrade,
+        devideDowngrade,
+        devideUpgrade,
+        devideUpgradeCorrected,
+        devideDowngradeCorrected,
+      });
     }
 
-    
+    if (this.formGroup?.get('includedIgnored')?.value) {
+      this.addLostGames(this.lostGamesIgnored);
+    }
+  }
+
+  private addLostGames(processGames: ListGame[]) {
+    for (const { game, team, opponent, type } of processGames) {
+      this.gameBreakdown.push({
+        id: game.id!,
+        playedAt: new Date(game.playedAt!),
+        totalPoints: 0,
+        team,
+        opponent,
+        type,
+      } as GameBreakdown);
+    }
   }
 
   getTooltip(game: GameBreakdown, isForUpgrade: boolean): string {
     let devider = '';
 
     if (isForUpgrade) {
+      devider = `${game.devideUpgradeCorrected}`;
       if (game.devideUpgrade < game.devideUpgradeCorrected) {
-        devider = this.translateService.instant('breakdown.corrected', {
+        devider += `\n${this.translateService.instant('breakdown.corrected', {
           original: game.devideUpgrade,
           corrected: game.devideUpgradeCorrected,
-        });
-      } else {
-        devider = `${game.devideUpgradeCorrected}`;
+        })}`;
       }
     } else {
+      devider = `${game.devideDowngradeCorrected}`;
+     
       if (game.devideDowngrade < game.devideDowngradeCorrected) {
-        devider = this.translateService.instant('breakdown.corrected', {
+        devider += `\n${this.translateService.instant('breakdown.corrected', {
           original: game.devideDowngrade,
-          corrected: game.devideDowngradeCorrected,
-        });
-      } else {
-        devider = `${game.devideDowngradeCorrected}`;
+          corrected: game.devideUpgradeCorrected,
+        })}`;
       }
     }
 
