@@ -50,7 +50,7 @@ export class MergeAccountComponent implements OnInit {
         duration: 1000,
         panelClass: 'success',
       });
-      this.dialogRef.close();
+      this.dialogRef.close('success');
     } catch (error: any) {
       this._snackBar.open(error.message, undefined, {
         duration: 1000,

@@ -34,6 +34,9 @@ export class ProfileHeaderComponent implements OnInit {
   @Output()
   claimAccount = new EventEmitter<string>();
 
+  @Output()
+  accountMerged = new EventEmitter<void>();
+
   shownRanking?: RankingPlace;
   initials?: string;
 
@@ -50,6 +53,7 @@ export class ProfileHeaderComponent implements OnInit {
       double: this.player?.lastRanking?.double ?? 12,
       mix: this.player?.lastRanking?.mix ?? 12,
     } as RankingPlace;
+
 
     const lastNames = this.player.lastName!.split(' ');
     this.initials = `${this.player.firstName![0]}${lastNames[lastNames.length - 1][0]}`.toUpperCase();
@@ -103,10 +107,17 @@ export class ProfileHeaderComponent implements OnInit {
   }
 
   mergePlayer() {
-    this.dialog.open(MergeAccountComponent, {
-      data: {
-        player: this.player,
-      },
-    });
+    this.dialog
+      .open(MergeAccountComponent, {
+        data: {
+          player: this.player,
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.accountMerged.emit();
+        }
+      });
   }
 }
