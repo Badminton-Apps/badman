@@ -1,3 +1,17 @@
+# [4.16.0](https://github.com/Badminton-Apps/core/compare/v4.15.0...v4.16.0) (2021-12-19)
+
+
+### Bug Fixes
+
+* used for upgrade only vs upgrade and downgrade ([c152619](https://github.com/Badminton-Apps/core/commit/c1526192cdfa275aa024862bc941587f0bafd110))
+
+
+### Features
+
+* By default show next update period ([ea9bfdb](https://github.com/Badminton-Apps/core/commit/ea9bfdbe9fdfa973f5b1698c78e3b8c3e4ac2d1a))
+
+
+
 # [4.15.0](https://github.com/Badminton-Apps/core/compare/v4.14.2...v4.15.0) (2021-12-18)
 
 
