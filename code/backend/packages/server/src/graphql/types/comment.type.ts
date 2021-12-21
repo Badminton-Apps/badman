@@ -1,4 +1,4 @@
-import { Comment } from '@badvlasim/shared/models';
+import { Comment } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLObjectType } from 'graphql';
 import { getAttributeFields } from './attributes.type';
 

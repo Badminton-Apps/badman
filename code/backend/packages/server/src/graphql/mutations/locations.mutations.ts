@@ -1,12 +1,12 @@
 import {
+  ApiError,
   AuthenticatedRequest,
   canExecute,
   DataBaseHandler,
   Location,
   logger
 } from '@badvlasim/shared';
-import { GraphQLID, GraphQLNonNull, GraphQLBoolean } from 'graphql';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
+import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
 import { LocationInputType, LocationType } from '../types';
 
 export const addLocationMutation = {
@@ -129,8 +129,6 @@ export const updateTournamentEventLocationMutation = {
       canExecute(context?.req?.user, {
         anyPermissions: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
       });
-
-
 
       if (use) {
         await dbLocation.addEventTournament(eventId, { transaction });

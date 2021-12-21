@@ -7,7 +7,6 @@ apm.start({
   active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
 });
 
-import { logger } from '@badvlasim/shared';
 import cors from 'cors';
 import moment from 'moment';
 import express, { Application, json } from 'express'; 
@@ -16,6 +15,7 @@ import { BaseController } from './models';
 import { createLightship, Lightship } from 'lightship';
 import helmet from 'helmet';
 import compression from 'compression';
+import { logger } from './utils';
 
 moment.suppressDeprecationWarnings = true;
 

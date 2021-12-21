@@ -1,4 +1,4 @@
-// import { GameType, RankingSystem } from '@badvlasim/shared/models';
+// import { GameType, RankingSystem } from '@badvlasim/shared';
 // import { PointCalculator } from '../models';
 
 describe('test', () => {

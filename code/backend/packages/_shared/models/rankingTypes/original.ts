@@ -1,10 +1,10 @@
 import {
-  logger,
   RankingPlace,
   RankingSystem
-} from '@badvlasim/shared';
+} from '../sequelize';
 import moment, { Moment } from 'moment';
 import { RankingCalc } from './rankingCalc';
+import { logger } from '../../utils';
 
 export class OriginalRankingCalc extends RankingCalc {
   constructor(
