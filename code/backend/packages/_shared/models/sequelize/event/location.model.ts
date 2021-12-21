@@ -1,4 +1,3 @@
-import { EventCompetition, Team } from '@badvlasim/shared';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -20,7 +19,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -35,17 +34,18 @@ import {
   Model,
   PrimaryKey,
   Table,
-  TableOptions
+  TableOptions,
 } from 'sequelize-typescript';
-import { EventTournament } from '.';
-import { Club } from '../../..';
+import { Club } from '../club.model';
+import { Team } from '../team.model';
 import { TeamLocationCompetition } from './competition/team-location-membership.model';
 import { Court } from './court.model';
+import { EventTournament } from './tournament';
 import { LocationEventTournament } from './tournament/location-event.model';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 } as TableOptions)
 export class Location extends Model {
   constructor(values?: Partial<Location>, options?: BuildOptions) {
@@ -85,17 +85,11 @@ export class Location extends Model {
   @Column
   fax: string;
 
-  @BelongsToMany(
-    () => Team,
-    () => TeamLocationCompetition
-  )
+  @BelongsToMany(() => Team, () => TeamLocationCompetition)
   teams: Team[];
 
-  @BelongsToMany(
-    () => EventTournament,
-    () => LocationEventTournament
-  )
-  eventTournaments: EventCompetition[];
+  @BelongsToMany(() => EventTournament, () => LocationEventTournament)
+  eventTournaments: EventTournament[];
 
   @HasMany(() => Court, 'locationId')
   courts: Court;

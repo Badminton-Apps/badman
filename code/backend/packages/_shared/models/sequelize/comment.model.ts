@@ -1,4 +1,3 @@
-import { Club } from '@badvlasim/shared';
 import { Player } from './player.model';
 import { EventCompetition } from './event/competition/event-competition.model';
 import {
@@ -20,6 +19,7 @@ import {
   TableOptions
 } from 'sequelize-typescript';
 import { EncounterChange } from './event';
+import { Club } from './club.model';
 
 @Table({
   timestamps: true

@@ -1,4 +1,4 @@
-import { ImporterFile } from '@badvlasim/shared/models';
+import { ImporterFile } from '@badvlasim/shared';
 import {
   GraphQLEnumType,
 
