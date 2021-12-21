@@ -1,7 +1,6 @@
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
-import pkg from '../package.json';
 
 import {
   App,
@@ -32,7 +31,7 @@ import graphqlCostAnalysis from 'graphql-cost-analysis';
 try {
   (async () => {
     try {
-      logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
+      logger.info(`Starting ${process.env.SERVICE_NAME} version ${process.env.SERVICE_VERSION}`);
       await startWhenReady(true, false, (db) => startServer(db));
     } catch (e) {
       logger.error('Something failed', e);
