@@ -18,7 +18,7 @@ COPY packages/_shared ./packages/_shared
 COPY packages/import ./packages/import
 
 RUN yarn global add lerna
-RUN lerna bootstrap --scope=@badvlasim/import  --ci -- --production=false --frozen-lockfile
+RUN lerna bootstrap --scope=@badvlasim/import  --ci -- --production=false
 RUN lerna run build --scope=@badvlasim/import
 
 # production environment
