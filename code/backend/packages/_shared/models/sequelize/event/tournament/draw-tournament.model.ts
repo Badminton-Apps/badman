@@ -25,9 +25,9 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin
 } from 'sequelize';
-import { Game } from '..';
-import { DrawType } from '../../..';
 import { SubEventTournament } from './sub-event-tournament.model';
+import { DrawType } from '../../../enums';
+import { Game } from '../game.model';
 
 @Table({
   timestamps: true,

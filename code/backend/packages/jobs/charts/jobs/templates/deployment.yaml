@@ -73,6 +73,8 @@ spec:
         env:
           - name: production
             value: "true"
+          - name: SERVICE_VERSION
+            value: {{ .Chart.AppVersion }}            
           - name: SERVICE_NAME
             value: {{ .Values.service.name }}       
           - name: APM_SERVER_URL

@@ -1,23 +1,25 @@
+import moment, { Moment } from 'moment';
+import { Op } from 'sequelize';
+import { logger, splitInChunks } from '../../utils';
+import { GameType } from '../enums';
 import {
-  logger,
   Game,
-  GameType,
+  LastRankingPlace,
   Player,
   RankingPlace,
   RankingPoint,
   RankingSystem,
-  splitInChunks,
-  LastRankingPlace
-} from '@badvlasim/shared';
-import moment, { Moment } from 'moment';
-import { Op } from 'sequelize';
+} from '../sequelize';
 import { PointCalculator } from './point-calculator';
 import { RankingCalc } from './rankingCalc';
 
 export class BvlRankingCalc extends RankingCalc {
   private _gameSplitInterval = 30 * 24 * 60 * 60 * 1000; // 30 days max
 
-  constructor(public rankingType: RankingSystem, protected runningFromStart: boolean) {
+  constructor(
+    public rankingType: RankingSystem,
+    protected runningFromStart: boolean
+  ) {
     super(rankingType, runningFromStart);
     this.pointCalculator = new PointCalculator(this.rankingType);
   }
@@ -38,8 +40,12 @@ export class BvlRankingCalc extends RankingCalc {
         this._initialPlayers.bind(this),
         this.protectRanking.bind(this)
       );
-      this.rankingType.caluclationIntervalLastUpdate = moment([2017, 8, 1]).toDate();
-      this.rankingType.updateIntervalAmountLastUpdate = moment([2017, 8, 1]).toDate();
+      this.rankingType.caluclationIntervalLastUpdate = moment([
+        2017, 8, 1,
+      ]).toDate();
+      this.rankingType.updateIntervalAmountLastUpdate = moment([
+        2017, 8, 1,
+      ]).toDate();
     }
   }
 
@@ -81,12 +87,14 @@ export class BvlRankingCalc extends RankingCalc {
     const dateRanges: { start: Date; end: Date }[] = [];
 
     while (end > gamesStartDate) {
-      const suggestedEndDate = new Date(gamesStartDate.getTime() + this._gameSplitInterval);
+      const suggestedEndDate = new Date(
+        gamesStartDate.getTime() + this._gameSplitInterval
+      );
 
       const slice = {
         start: new Date(gamesStartDate),
-        end: suggestedEndDate > end ? end : suggestedEndDate
-      }; 
+        end: suggestedEndDate > end ? end : suggestedEndDate,
+      };
 
       dateRanges.push(slice);
       // Forward
@@ -99,12 +107,21 @@ export class BvlRankingCalc extends RankingCalc {
       const gamesRange = await this.getGamesAsync(range.start, range.end);
 
       // Calculate new points
-      await this.calculateRankingPointsPerGameAsync(gamesRange, playersRange, range.end);
+      await this.calculateRankingPointsPerGameAsync(
+        gamesRange,
+        playersRange,
+        range.end
+      );
     }
 
     // Calculate places for new period
     const players = await this.getPlayersAsync(originalStart, originalEnd);
-    await this._calculateRankingPlacesAsync(originalStart, originalEnd, players, updateRankings);
+    await this._calculateRankingPlacesAsync(
+      originalStart,
+      originalEnd,
+      players,
+      updateRankings
+    );
   }
 
   // Testing grounds: https://stackblitz.com/edit/typescript-2yg1po
@@ -123,8 +140,8 @@ export class BvlRankingCalc extends RankingCalc {
         where: {
           SystemId: this.rankingType.id,
           points: {
-            [Op.ne]: null
-          }
+            [Op.ne]: null,
+          },
         },
         attributes: ['points', 'playerId', 'differenceInLevel'],
         include: [
@@ -133,12 +150,12 @@ export class BvlRankingCalc extends RankingCalc {
             attributes: ['id', 'gameType', 'playedAt'],
             where: {
               playedAt: {
-                [Op.and]: [{ [Op.gt]: startDate }, { [Op.lte]: endDate }]
-              }
+                [Op.and]: [{ [Op.gt]: startDate }, { [Op.lte]: endDate }],
+              },
             },
-            required: true
-          }
-        ]
+            required: true,
+          },
+        ],
       })
     ).map((x: RankingPoint) => {
       const points = eligbleForRanking.get(x.playerId) || [];
@@ -154,7 +171,8 @@ export class BvlRankingCalc extends RankingCalc {
       moment([2016, 8, 1]).diff(endDate, this.rankingType.inactivityUnit)
     );
 
-    const canBeInactive = amountSinceStart > this.rankingType.inactivityAmount && updateRankings;
+    const canBeInactive =
+      amountSinceStart > this.rankingType.inactivityAmount && updateRankings;
 
     if (canBeInactive) {
       logger.silly('Checking inactive');
@@ -169,19 +187,23 @@ export class BvlRankingCalc extends RankingCalc {
         const playerGameCount = gameCount.get(player.id) || {
           single: 0,
           double: 0,
-          mix: 0
+          mix: 0,
         };
-        inactive.single = playerGameCount.single < this.rankingType.gamesForInactivty;
-        inactive.double = playerGameCount.double < this.rankingType.gamesForInactivty;
+        inactive.single =
+          playerGameCount.single < this.rankingType.gamesForInactivty;
+        inactive.double =
+          playerGameCount.double < this.rankingType.gamesForInactivty;
         inactive.mix = playerGameCount.mix < this.rankingType.gamesForInactivty;
       }
 
       const lastRanking =
-        player.lastRankingPlaces.find((p) => p.systemId === this.rankingType.id) ??
+        player.lastRankingPlaces.find(
+          (p) => p.systemId === this.rankingType.id
+        ) ??
         ({
           single: this.rankingType.amountOfLevels,
           mix: this.rankingType.amountOfLevels,
-          double: this.rankingType.amountOfLevels
+          double: this.rankingType.amountOfLevels,
         } as LastRankingPlace);
 
       const newPlace = await this.findNewPlacePlayer(
@@ -271,7 +293,9 @@ export class BvlRankingCalc extends RankingCalc {
 
       // Total counts per level
       this.rankingType.levelArray.forEach((level) => {
-        countsMale[level + 1] = placesMen.filter((place) => place[`${type}`] === level + 1).length;
+        countsMale[level + 1] = placesMen.filter(
+          (place) => place[`${type}`] === level + 1
+        ).length;
         countsFemale[level + 1] = placesWomen.filter(
           (place) => place[`${type}`] === level + 1
         ).length;
@@ -280,7 +304,9 @@ export class BvlRankingCalc extends RankingCalc {
       // Sort and map
       placesMen = placesMen
         .sort(sortFunc)
-        .map((value, index) => mapFunction(value, index, placesMen, countsMale));
+        .map((value, index) =>
+          mapFunction(value, index, placesMen, countsMale)
+        );
 
       // Reset for gender switch
       rankingLevel = 1;
@@ -292,7 +318,9 @@ export class BvlRankingCalc extends RankingCalc {
       // Sort and map
       placesWomen = placesWomen
         .sort(sortFunc)
-        .map((value, index) => mapFunction(value, index, placesWomen, countsFemale));
+        .map((value, index) =>
+          mapFunction(value, index, placesWomen, countsFemale)
+        );
     });
 
     const chunks = splitInChunks([...placesMen, ...placesWomen], 500);
@@ -305,7 +333,9 @@ export class BvlRankingCalc extends RankingCalc {
   }
 
   getStartRanking(currentPlace: number, startPlaces: number[]): number {
-    const level = startPlaces.indexOf(startPlaces.find((x) => x > currentPlace));
+    const level = startPlaces.indexOf(
+      startPlaces.find((x) => x > currentPlace)
+    );
     if (level === -1) {
       return this.rankingType.amountOfLevels;
     } else {
@@ -313,7 +343,9 @@ export class BvlRankingCalc extends RankingCalc {
     }
   }
   getStartRankingRev(currentPlace: number, startPlaces: number[]): number {
-    const level = startPlaces.indexOf(startPlaces.find((x) => x < currentPlace));
+    const level = startPlaces.indexOf(
+      startPlaces.find((x) => x < currentPlace)
+    );
     if (level === -1) {
       return this.rankingType.amountOfLevels;
     } else {
@@ -321,7 +353,11 @@ export class BvlRankingCalc extends RankingCalc {
     }
   }
 
-  async countGames(players: Map<string, Player>, endDate: Date, rankingType: RankingSystem) {
+  async countGames(
+    players: Map<string, Player>,
+    endDate: Date,
+    rankingType: RankingSystem
+  ) {
     const chunks = splitInChunks(Array.from(players.keys()), 3500);
     let lastWeeks = [];
 
@@ -329,7 +365,7 @@ export class BvlRankingCalc extends RankingCalc {
       return RankingPoint.count({
         where: {
           SystemId: rankingType.id,
-          playerId: chunk
+          playerId: chunk,
         },
         include: [
           {
@@ -340,17 +376,20 @@ export class BvlRankingCalc extends RankingCalc {
                 [Op.and]: [
                   {
                     [Op.gt]: moment(endDate)
-                      .subtract(rankingType.inactivityAmount, rankingType.inactivityUnit)
-                      .toDate()
+                      .subtract(
+                        rankingType.inactivityAmount,
+                        rankingType.inactivityUnit
+                      )
+                      .toDate(),
                   },
-                  { [Op.lte]: endDate }
-                ]
-              }
+                  { [Op.lte]: endDate },
+                ],
+              },
             },
-            required: true
-          }
+            required: true,
+          },
         ],
-        group: ['RankingPoint.playerId', 'game.gameType']
+        group: ['RankingPoint.playerId', 'game.gameType'],
       });
     };
 
@@ -370,7 +409,7 @@ export class BvlRankingCalc extends RankingCalc {
       const player = results.get(result.playerId) || {
         single: 0,
         double: 0,
-        mix: 0
+        mix: 0,
       };
       switch (result.gameType) {
         case GameType.S:

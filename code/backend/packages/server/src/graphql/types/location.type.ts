@@ -1,4 +1,4 @@
-import { Location } from '@badvlasim/shared/models';
+import { Location } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { ClubType } from './club.type';

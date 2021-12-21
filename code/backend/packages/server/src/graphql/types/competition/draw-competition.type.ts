@@ -1,4 +1,4 @@
-import { DrawCompetition } from '@badvlasim/shared/models';
+import { DrawCompetition } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../queryFixer';

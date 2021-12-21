@@ -1,15 +1,15 @@
 import {
+  ApiError,
   AuthenticatedRequest,
+  canExecute,
   Club,
   ClubMembership,
   DataBaseHandler,
-  canExecute,
   logger,
   Player,
   Team
 } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { ClubInputType, ClubMembershipInputType, ClubMembershipType, ClubType } from '../types';
 
 export const addClubMutation = {
@@ -25,7 +25,7 @@ export const addClubMutation = {
     { club },
     context: { req: AuthenticatedRequest }
   ) => {
-    canExecute(context?.req?.user, {anyPermissions: ['add:club']});
+    canExecute(context?.req?.user, { anyPermissions: ['add:club'] });
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
@@ -54,8 +54,8 @@ export const removeClubMutation = {
     { id },
     context: { req: AuthenticatedRequest }
   ) => {
-    canExecute(context?.req?.user, {anyPermissions: ['remove:club']});
- 
+    canExecute(context?.req?.user, { anyPermissions: ['remove:club'] });
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       await Club.destroy({ where: { id }, transaction, cascade: true });
@@ -87,8 +87,8 @@ export const addPlayerToClubMutation = {
     { clubId, playerId },
     context: { req: AuthenticatedRequest }
   ) => {
-    canExecute(context?.req?.user, {anyPermissions: [`${clubId}_edit:club`, 'edit-any:club']});
-   
+    canExecute(context?.req?.user, { anyPermissions: [`${clubId}_edit:club`, 'edit-any:club'] });
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbClub = await Club.findByPk(clubId, {
@@ -129,12 +129,10 @@ export const updateClubMutation = {
     { club },
     context: { req: AuthenticatedRequest }
   ) => {
-
     canExecute(context?.req?.user, {
       anyPermissions: [`${club.id}_edit:club`, 'edit-any:club']
     });
 
-  
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbClub = await Club.findByPk(club.id, { transaction });
