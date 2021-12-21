@@ -11,6 +11,7 @@ ENV NODE_ENV=production
 COPY package.json .
 COPY lerna.json .
 COPY tsconfig.json .
+COPY tsconfig.build.json .
 COPY yarn.lock .
 
 # Copy packages
@@ -40,7 +41,7 @@ RUN yarn global add lerna
 # Only install production packages
 RUN lerna bootstrap --scope=@badvlasim/server --ci -- --production
 
-COPY --from=build /usr/src/app/dist .
+COPY --from=build /usr/src/app/packages/server/dist ./packages/server/dist
 
 # Set env values
 ENV LOG_LEVEL=debug
@@ -64,4 +65,4 @@ RUN  apt-get update \
 RUN npm install pm2 -g
 EXPOSE 4000
 
-CMD ["pm2-runtime","server/src/server.js"]
+CMD ["pm2-runtime","packages/server/dist/server.js"]
