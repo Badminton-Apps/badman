@@ -1,3 +1,12 @@
+## [4.17.1](https://github.com/Badminton-Apps/core/compare/v4.17.0...v4.17.1) (2021-12-21)
+
+
+### Bug Fixes
+
+* **client:** Don't trigger getting user info twice ([7ee7ec3](https://github.com/Badminton-Apps/core/commit/7ee7ec3eb5be4957af978fcef22bcda8d21c27e3))
+
+
+
 # [4.17.0](https://github.com/Badminton-Apps/core/compare/v4.16.1...v4.17.0) (2021-12-20)
 
 
