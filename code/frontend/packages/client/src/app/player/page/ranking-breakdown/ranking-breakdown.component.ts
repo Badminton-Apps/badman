@@ -38,9 +38,6 @@ export class RankingBreakdownComponent implements OnInit {
   loadingData: boolean = true;
   data$!: Observable<{ system: RankingSystem; player: Player; games: Game[]; type: string }>;
 
-  // startPeriod!: moment.Moment;
-  // endPeriod!: moment.Moment;
-
   period = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
@@ -128,6 +125,10 @@ export class RankingBreakdownComponent implements OnInit {
               updateIntervalUnit
               periodAmount
               periodUnit
+              pointsToGoUp
+              pointsWhenWinningAgainst
+              pointsToGoDown
+              amountOfLevels
             }
           }
         `,

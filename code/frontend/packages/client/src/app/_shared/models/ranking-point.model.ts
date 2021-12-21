@@ -14,6 +14,7 @@ export class RankingPoint {
 
   constructor({ ...args }: Partial<RankingPoint>) {
     this.points = args.points;
+    this.playerId = args.playerId;
     this.player = args.player ? new Player(args.player) : undefined;
     this.game = args.game ? new Game(args.game) : undefined;
     this.type = args.type ? new RankingSystem(args.type) : undefined;
