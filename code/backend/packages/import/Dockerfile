@@ -23,31 +23,17 @@ RUN lerna bootstrap --scope=@badvlasim/import  --ci -- --production=false
 RUN lerna run build --scope=@badvlasim/import
 
 # production environment
-FROM node:12.22.0-slim
-ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Brussels
-RUN apt-get install -y tzdata
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+FROM node:12.22.0-alpine
 
 # Work dir
 WORKDIR /usr/src/app
-
-COPY package.json .
-COPY lerna.json .
-COPY packages/_shared/package.json ./packages/_shared/
-COPY packages/import/package.json ./packages/import/
-
-RUN yarn global add lerna
-# Only install production packages
-RUN lerna bootstrap --scope=@badvlasim/import --ci -- --production
-
-COPY --from=build /usr/src/app/packages/import/dist ./packages/import/dist
 
 # Set env values
 ENV LOG_LEVEL=debug
 ENV NODE_ENV=production
 
-RUN apk --no-cache add wget ca-certificates \
+# Install dependencies
+RUN apk --no-cache add curl gnupg tzdata wget ca-certificates \
     autoconf \
     automake \
     build-base \
@@ -68,12 +54,25 @@ RUN apk --no-cache add wget ca-certificates \
     apk del autoconf automake build-base glib-dev libc-dev unixodbc-dev flex-dev && \
     rm -rf mdbtools-0.7.1
 
+## TZ
+ENV TZ=Europe/Brussels
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Copy packages
+COPY package.json .
+COPY lerna.json .
+COPY packages/_shared/package.json ./packages/_shared/
+COPY packages/import/package.json ./packages/import/
+
+RUN yarn global add lerna
+
 # bootstrap
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers unixodbc-dev make python && \
-  lerna bootstrap --scope=@badvlasim/import  --ci -- --production=false && \
+  lerna bootstrap --scope=@badvlasim/import  --ci -- --production && \
   apk del native-deps
 
+COPY --from=build /usr/src/app/packages/import/dist ./packages/import/dist
 
 RUN npm install pm2 -g
 EXPOSE 4000
