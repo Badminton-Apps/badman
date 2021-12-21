@@ -36,7 +36,7 @@ export class PlayerService {
       .query<{ players: Player[] }>({
         query: searchQuery,
         variables: {
-          where: this._searchPlayer(args),
+          where: PlayerService.playerSearchWhere(args),
           includeRanking: args?.ranking !== null,
           ranking: args?.ranking ?? null,
           includeClub: args.includeClub,
@@ -50,7 +50,7 @@ export class PlayerService {
       .query<{ club: { players: Player[] } }>({
         query: searchClubQuery,
         variables: {
-          where: this._searchPlayer(args),
+          where: PlayerService.playerSearchWhere(args),
           id: clubsId,
           includeClub: false,
           includeRanking: args?.ranking !== null,
@@ -60,7 +60,7 @@ export class PlayerService {
       .pipe(map((x) => x.data?.club?.players?.map((r) => new Player(r))));
   }
 
-  private _searchPlayer(args?: { query?: string; where?: any }) {
+  public static playerSearchWhere(args?: { query?: string; where?: any }) {
     const parts = args!
       .query!.toLowerCase()
       .replace(/[;\\\\/:*?\"<>|&',]/, ' ')

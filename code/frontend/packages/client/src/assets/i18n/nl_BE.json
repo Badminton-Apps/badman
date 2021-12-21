@@ -231,6 +231,15 @@
       "other": "{{count}} verloren wedstrijden"
     },
     "date": "Datum",
+    "no-tean": "Geen team",
+    "add-game": {
+      "title": "Voeg (fictieve) wedstrijd toe",
+      "p1t1": "Speler 1 - Team 1",
+      "p1t2": "Speler 1 - Team 2",
+      "p2t1": "Speler 2 - Team 1",
+      "p2t2": "Speler 2 - Team 2",
+      "won": "Team 1 Gewonnen?"
+    },
     "team": "Team",
     "opponent": "Tegenstander",
     "points": "Punten",

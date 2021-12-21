@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
@@ -11,7 +11,7 @@ import { Game, Player, PlayerService, SystemService } from '../../../../../_shar
   templateUrl: './games.component.html',
   styleUrls: ['./games.component.scss'],
 })
-export class GamesComponent implements OnInit {
+export class GamesComponent implements OnChanges {
   games$!: Observable<Game[][]>;
   currentPage$ = new BehaviorSubject<number>(0);
   pageSize = 15;
@@ -32,7 +32,7 @@ export class GamesComponent implements OnInit {
     private systemService: SystemService
   ) {}
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     const reset$ = new Subject();
 
     const id$ = this.route.paramMap.pipe(

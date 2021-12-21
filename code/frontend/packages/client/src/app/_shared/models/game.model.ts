@@ -26,7 +26,7 @@ export class Game {
   constructor({ ...args }: Partial<Game>, rankingType?: RankingSystem) {
     const parsed = (args?.gameType as unknown as 'S' | 'D' | 'MX') ?? null;
     this.id = args?.id;
-    this.playedAt = args.playedAt != null ? new Date(args.playedAt) : undefined;
+    this.playedAt = !!args.playedAt ? new Date(args.playedAt) : undefined;
     this.gameType = parsed != null ? GameType[parsed] : undefined;
     this.players = args?.players?.map(r => new PlayerGame(r));
     this.set1Team1 = args.set1Team1;

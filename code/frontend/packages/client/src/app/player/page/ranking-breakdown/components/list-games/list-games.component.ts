@@ -1,8 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
-import { Game, PlayerGame, RankingPoint, RankingSystem } from 'app/_shared';
+import { Game, PlayerGame, RankingSystem } from 'app/_shared';
 import { distinctUntilChanged, map } from 'rxjs';
+import { AddGameComponent } from '../../dialogs/add-game/add-game.component';
 
 @Component({
   selector: 'app-list-games',
@@ -17,6 +20,8 @@ export class ListGamesComponent implements OnInit {
   @Input() type!: string;
   @Input() formGroup!: FormGroup;
 
+  dataSource = new MatTableDataSource<GameBreakdown>([]);
+
   wonGames: ListGame[] = [];
 
   lostGamesIgnored: ListGame[] = [];
@@ -28,9 +33,9 @@ export class ListGamesComponent implements OnInit {
 
   gameBreakdown: GameBreakdown[] = [];
 
-  displayedColumns: string[] = ['date', 'team', 'opponent', 'points', 'average-upgrade', 'average-downgrade'];
+  displayedColumns: string[] = ['date', 'team', 'opponent', 'points', 'average-upgrade', 'average-downgrade', 'delete'];
 
-  constructor(private translateService: TranslateService) {}
+  constructor(private translateService: TranslateService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.calculateAvg();
@@ -62,6 +67,11 @@ export class ListGamesComponent implements OnInit {
   }
 
   calculateAvg() {
+    this.wonGames = [];
+    this.lostGamesDowngrade = [];
+    this.lostGamesUpgrade = [];
+    this.lostGamesIgnored = [];
+
     for (const game of this.games!) {
       const me = game.players!.find((x) => x.id == this.playerId);
       const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.playerId);
@@ -159,7 +169,7 @@ export class ListGamesComponent implements OnInit {
 
       this.gameBreakdown.push({
         id: game.id!,
-        playedAt: new Date(game.playedAt!),
+        playedAt: game.playedAt,
         totalPoints,
         team,
         opponent,
@@ -177,13 +187,14 @@ export class ListGamesComponent implements OnInit {
     if (this.formGroup?.get('includedIgnored')?.value) {
       this.addLostGames(this.lostGamesIgnored);
     }
+    this.dataSource.data = this.gameBreakdown;
   }
 
   private addLostGames(processGames: ListGame[]) {
     for (const { game, team, opponent, type } of processGames) {
       this.gameBreakdown.push({
         id: game.id!,
-        playedAt: new Date(game.playedAt!),
+        playedAt: game.playedAt,
         totalPoints: 0,
         team,
         opponent,
@@ -205,7 +216,7 @@ export class ListGamesComponent implements OnInit {
       }
     } else {
       devider = `${game.devideDowngradeCorrected}`;
-     
+
       if (game.devideDowngrade < game.devideDowngradeCorrected) {
         devider += `\n${this.translateService.instant('breakdown.corrected', {
           original: game.devideDowngrade,
@@ -215,6 +226,35 @@ export class ListGamesComponent implements OnInit {
     }
 
     return `${game.totalPoints} / ${devider}`;
+  }
+
+  deleteGame(game: GameBreakdown) {
+    const index = this.games.findIndex((x) => x.id == game.id);
+    if (index != -1) {
+      this.games.splice(index, 1);
+    }
+    this.calculateAvg();
+    this.fillGames();
+  }
+
+  addGame() {
+    this.dialog
+      .open(AddGameComponent, {
+        minWidth: '450px', 
+        data: {
+          playerId: this.playerId,
+          type: this.type,
+          system: this.system,
+        },
+      })
+      .afterClosed()
+      .subscribe((game: Game) => {
+        if (game) {
+          this.games.push(game);
+          this.calculateAvg();
+          this.fillGames();
+        }
+      });
   }
 }
 

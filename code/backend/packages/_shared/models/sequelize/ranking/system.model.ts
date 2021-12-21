@@ -17,7 +17,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
   BelongsToMany,
@@ -29,7 +29,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { RankingSystems, RankingTiming, StartingType } from '../../enums/';
 import { RankingSystemGroup } from './group.model';
@@ -39,7 +39,7 @@ import { RankingPoint } from './point.model';
 @Table({
   timestamps: true,
   tableName: 'Systems',
-  schema: 'ranking'
+  schema: 'ranking',
 })
 export class RankingSystem extends Model {
   constructor(values?: Partial<RankingSystem>, options?: BuildOptions) {
@@ -91,7 +91,7 @@ export class RankingSystem extends Model {
   get inactivity(): RankingTiming {
     return {
       amount: this.inactivityAmount,
-      unit: this.inactivityUnit
+      unit: this.inactivityUnit,
     };
   }
   @Default(new Date('2016-08-31T22:00:00.000Z'))
@@ -105,7 +105,7 @@ export class RankingSystem extends Model {
   get calculationInterval(): RankingTiming {
     return {
       amount: this.caluclationIntervalAmount,
-      unit: this.calculationIntervalUnit
+      unit: this.calculationIntervalUnit,
     };
   }
 
@@ -117,7 +117,7 @@ export class RankingSystem extends Model {
   get period(): RankingTiming {
     return {
       amount: this.periodAmount,
-      unit: this.periodUnit
+      unit: this.periodUnit,
     };
   }
   @Default(new Date('2016-08-31T22:00:00.000Z'))
@@ -131,7 +131,7 @@ export class RankingSystem extends Model {
   get updateInterval(): RankingTiming {
     return {
       amount: this.updateIntervalAmount,
-      unit: this.updateIntervalUnit
+      unit: this.updateIntervalUnit,
     };
   }
 
@@ -155,17 +155,14 @@ export class RankingSystem extends Model {
 
   @Column({
     type: DataType.ENUM('formula', 'tableLFBB', 'tableBVL'),
-    defaultValue: 'formula'
+    defaultValue: 'formula',
   })
   startingType: StartingType;
 
   @HasMany(() => RankingPoint, 'SystemId')
   rankingPoints: RankingPoint;
 
-  @BelongsToMany(
-    () => RankingSystemGroup,
-    () => GroupSystems
-  )
+  @BelongsToMany(() => RankingSystemGroup, () => GroupSystems)
   groups: RankingSystemGroup[];
 
   // Has many RankingPoint
@@ -200,20 +197,26 @@ export class RankingSystem extends Model {
   private _levelArray: number[];
   private _levelArrayOneMinus: number[];
 
+  @Column(DataType.VIRTUAL)
   get pointsToGoUp(): number[] {
     return this._pointsToGoUp;
   }
+
+  @Column(DataType.VIRTUAL)
   get pointsWhenWinningAgainst(): number[] {
     return this._pointsWhenWinningAgainst;
   }
+
+  @Column(DataType.VIRTUAL)
   get pointsToGoDown(): number[] {
     return this._pointsToGoDown;
   }
 
+  @Column(DataType.VIRTUAL)
   get levelArray(): number[] {
     return this._levelArray;
   }
-
+  @Column(DataType.VIRTUAL)
   get levelArrayOneMinus(): number[] {
     return this._levelArrayOneMinus;
   }
@@ -245,7 +248,7 @@ export class RankingSystem extends Model {
     this._pointsWhenWinningAgainst = [];
     this._pointsToGoDown = [];
 
-    this._levelArray.forEach(x => {
+    this._levelArray.forEach((x) => {
       if (x === 0) {
         this._pointsWhenWinningAgainst[x] = 50;
       } else {
@@ -255,56 +258,30 @@ export class RankingSystem extends Model {
       }
     });
 
-    this._levelArrayOneMinus.forEach(x => {
-      this._pointsToGoUp[x] =
-        (this._pointsWhenWinningAgainst[x] * this.procentWinning) / 100;
+    this._levelArrayOneMinus.forEach((x) => {
+      this._pointsToGoUp[x] = Math.round(
+        (this._pointsWhenWinningAgainst[x] * this.procentWinning) / 100
+      );
     });
-    this._levelArrayOneMinus.forEach(x => {
-      this._pointsToGoDown[x] =
-        (this._pointsWhenWinningAgainst[x + 1] * this.procentLosing) / 100;
+    this._levelArrayOneMinus.forEach((x) => {
+      this._pointsToGoDown[x] = Math.round(
+        (this._pointsWhenWinningAgainst[x + 1] * this.procentLosing) / 100
+      );
     });
+
+    this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map(p => Math.round(p));
   }
 
   private _lfbbCaps() {
     this._pointsWhenWinningAgainst = [
-      10,
-      30,
-      45,
-      60,
-      75,
-      120,
-      165,
-      210,
-      255,
-      390,
-      525,
-      660,
-      795,
-      1200,
-      1605,
-      2010,
-      2415
+      10, 30, 45, 60, 75, 120, 165, 210, 255, 390, 525, 660, 795, 1200, 1605,
+      2010, 2415,
     ];
     this._pointsToGoUp = [
-      5,
-      20,
-      31,
-      38,
-      61,
-      83,
-      106,
-      128,
-      196,
-      263,
-      331,
-      398,
-      601,
-      803,
-      1006,
-      1208
+      5, 20, 31, 38, 61, 83, 106, 128, 196, 263, 331, 398, 601, 803, 1006, 1208,
     ];
     this._pointsToGoDown = this._pointsToGoUp;
-  }
+  } 
   private _originalCaps() {
     throw new Error('Not implementd');
   }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { lastValueFrom, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
@@ -48,13 +48,13 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   ignorePlayersIds?: string[] = [];
 
   formControl!: FormControl;
+
   filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
 
   constructor(private playerService: PlayerService, private dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges) {
-
     if (!(changes['player']?.isFirstChange() ?? true)) {
       this.setPlayer();
     }

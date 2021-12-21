@@ -30,6 +30,9 @@ export class RankingSystem {
   differenceForUpgrade?: number;
   differenceForDowngrade?: number;
   startingType?: StartingType;
+  pointsToGoUp?: number[];
+  pointsWhenWinningAgainst?: number[];
+  pointsToGoDown?: number[];
 
   groups?: RankingSystemGroup[];
 
@@ -63,6 +66,9 @@ export class RankingSystem {
     this.differenceForUpgrade = args.differenceForUpgrade;
     this.differenceForDowngrade = args.differenceForDowngrade;
     this.startingType = args.startingType;
+    this.pointsToGoUp = args?.pointsToGoUp;
+    this.pointsWhenWinningAgainst = args?.pointsWhenWinningAgainst;
+    this.pointsToGoDown = args?.pointsToGoDown;
 
     this.groups = args?.groups?.map((g) => new RankingSystemGroup(g));
   }
@@ -87,7 +93,7 @@ export enum RankingSystems {
   BVL,
   LFBB,
   ORIGINAL,
-  VISUAL
+  VISUAL,
 }
 
 export enum StartingType {
