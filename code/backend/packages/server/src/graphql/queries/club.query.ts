@@ -1,4 +1,4 @@
-import { Club } from '@badvlasim/shared/models';
+import { Club } from '@badvlasim/shared';
 import { GraphQLID, GraphQLNonNull } from 'graphql';
 import { resolver } from 'graphql-sequelize';
 import { ClubConnectionType, ClubType } from '../types/club.type';

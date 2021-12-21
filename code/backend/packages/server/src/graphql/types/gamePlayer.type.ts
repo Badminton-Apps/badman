@@ -1,4 +1,4 @@
-import { Game, GamePlayer, Player, RankingPlace, RankingSystem } from '@badvlasim/shared/models';
+import { Game, GamePlayer, Player, RankingPlace, RankingSystem } from '@badvlasim/shared';
 import { GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { Identifier, Op } from 'sequelize';

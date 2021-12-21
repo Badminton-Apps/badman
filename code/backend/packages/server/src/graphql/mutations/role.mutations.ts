@@ -1,4 +1,5 @@
 import {
+  ApiError,
   AuthenticatedRequest,
   AuthenticationSercice,
   canExecute,
@@ -8,7 +9,6 @@ import {
   Role
 } from '@badvlasim/shared';
 import { GraphQLID, GraphQLInt } from 'graphql';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RoleInputType, RoleType } from '../types';
 
 export const addRoleMutation = {
@@ -220,7 +220,6 @@ export const updateRoleMutation = {
         ]
       });
 
-    
       await dbRole.update(role, { transaction });
 
       await dbRole.setClaims(

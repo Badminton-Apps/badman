@@ -4,14 +4,14 @@ import {
   GameType,
   logger,
   Player,
+  StepProcessor,
   XmlMatch,
   XmlMatchTypeID,
   XmlTournament
 } from '@badvlasim/shared';
 import { Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
-import { EncounterStepData } from './encounter';
 import { VisualService } from '../../../visualService';
+import { EncounterStepData } from './encounter';
 
 export class CompetitionSyncGameProcessor extends StepProcessor {
   public players: Map<string, Player>;

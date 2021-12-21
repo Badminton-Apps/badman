@@ -1,4 +1,6 @@
-import { Game, GameType, Player, RankingSystem } from '@badvlasim/shared';
+import { GameType } from '../enums';
+import { Game, Player, RankingSystem } from '../sequelize';
+
 export class PointCalculator {
   constructor(private _type: RankingSystem) {}
 

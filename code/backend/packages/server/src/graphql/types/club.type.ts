@@ -1,4 +1,4 @@
-import { Club, ClubMembership, Player } from '@badvlasim/shared/models';
+import { Club, ClubMembership, Player } from '@badvlasim/shared';
 import {
   GraphQLInputObjectType,
   GraphQLInt,

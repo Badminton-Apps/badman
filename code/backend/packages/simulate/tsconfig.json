@@ -1,8 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "database/database.config.js"
-, "../_shared/models/rankingTypes/rankingCalc.ts", "../_shared/models/rankingTypes/starting-ranking.ts", "../_shared/models/rankingTypes/calculate-ranking.ts"  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
