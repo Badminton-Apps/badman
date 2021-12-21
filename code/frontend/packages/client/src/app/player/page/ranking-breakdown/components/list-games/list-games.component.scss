@@ -10,7 +10,85 @@
   color: lightgrey;
 }
 
+.mat-column-date {
+  flex: 0 0 150px;
+}
 
-.mat-column-points {
-  min-width: 50px;
+.mat-column-team,
+.mat-column-opponent {
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start
+}
+
+.mat-column-points,
+.mat-column-average-upgrade,
+.mat-column-average-downgrade {
+  flex: 0 0 100px;
+  justify-content: center;
+}
+
+
+.mat-column-delete {
+  flex: 0 0 25px;
+}
+
+.mat-row .hidden-when-not-hovered {
+  display: none;
+}
+
+.mat-row:hover .hidden-when-not-hovered {
+  display: block;
+}
+
+
+@media screen and (max-width: 960px) {
+  .mat-table {
+    border: 0;
+    vertical-align: middle
+  }
+
+  .mat-header-row {
+    display: hidden;
+  }
+
+  .mat-table caption {
+    font-size: 1em;
+  }
+
+  .mat-table .mat-row {
+    border-bottom: 5px solid #ddd;
+    display: block;
+  }
+
+  .mat-table .mat-cell {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: 1em;
+    text-align: right;
+    font-weight: bold;
+    height: 30px;
+    margin-bottom: 4%;
+  }
+
+  .mat-table .mat-cell:before {
+    content: attr(data-label);
+    float: left;
+    text-transform: uppercase;
+    font-weight: normal;
+    font-size: .85em;
+  }
+
+  // .mat-cell {
+  //   padding: 0 24px;
+  // }
+
+  .mat-table .mat-cell:last-child {
+    border-bottom: 0;
+  }
+
+  .mat-table .mat-cell:first-child {
+    margin-top: 4%;
+  }
 }

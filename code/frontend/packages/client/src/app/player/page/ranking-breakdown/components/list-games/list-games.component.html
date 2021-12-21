@@ -1,4 +1,4 @@
-<div fxLayout="column">
+<div fxLayout="column" fxLayoutGap="12px">
   <div fxLayout="row">
     <form [formGroup]="formGroup">
       <div>
@@ -49,58 +49,68 @@
     </form>
   </div>
 
-  <table mat-table [dataSource]="gameBreakdown" fxFlex>
+  <mat-table #breakdownTable [dataSource]="dataSource">
     <!-- Item Column -->
     <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.date' | translate }}</th>
-      <td mat-cell *matCellDef="let game">{{ game.playedAt | amDateFormat: 'lll' }}</td>
-      <td mat-footer-cell *matFooterCellDef></td>
+      <mat-header-cell *matHeaderCellDef>{{ 'breakdown.date' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.date' | translate }}">
+        {{ !!game.playedAt ? (game.playedAt | amDateFormat: 'lll') : '' }}
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
-    <!-- downgrade Column -->
+    <!-- team Column -->
     <ng-container matColumnDef="team">
-      <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.team' | translate }}</th>
-      <td mat-cell *matCellDef="let game">
-        <span *ngIf="game.team?.[0]"
-          >{{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] ?? 'N/A'}})</span
-        >
-        <span *ngIf="game.team?.[1]"
-          ><br />{{ game.team?.[1].fullName }} ({{game.team?.[1]?.rankingPlace?.[type] ??  'N/A'}})</span
-        >
-      </td>
-      <td mat-footer-cell *matFooterCellDef></td>
+      <mat-header-cell *matHeaderCellDef>{{ 'breakdown.team' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.team' | translate }}">
+        <div *ngIf="game.team?.[0]">
+          {{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] ?? 'N/A'}})
+        </div>
+        <div *ngIf="game.team?.[1]">
+          {{ game.team?.[1].fullName }} ({{game.team?.[1]?.rankingPlace?.[type] ??  'N/A'}})
+        </div>
+
+        <div *ngIf="!game.team?.[0] && !game.team?.[1]">
+          {{ 'breakdown.no-tean' | translate }}
+        </div>
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
-    <!-- downgrade Column -->
+    <!-- opponent Column -->
     <ng-container matColumnDef="opponent">
-      <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.opponent' | translate }}</th>
-      <td mat-cell *matCellDef="let game">
-        <span *ngIf="game.opponent?.[0]"
-          >{{ game.opponent?.[0].fullName }} ({{game.opponent?.[0]?.rankingPlace?.[type] ?? 'N/A'}})
-        </span>
-        <span *ngIf="game.opponent?.[1]"
-          ><br />{{ game.opponent?.[1].fullName }} ({{game.opponent?.[1]?.rankingPlace?.[type] ?? 'N/A'}})
-        </span>
-      </td>
-      <td mat-footer-cell *matFooterCellDef></td>
+      <mat-header-cell *matHeaderCellDef>{{ 'breakdown.opponent' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.opponent' | translate }}">
+        <div *ngIf="game.opponent?.[0]">
+          {{ game.opponent?.[0].fullName }} ({{game.opponent?.[0]?.rankingPlace?.[type] ?? 'N/A'}})
+        </div>
+        <div *ngIf="game.opponent?.[1]">
+          {{ game.opponent?.[1].fullName }} ({{game.opponent?.[1]?.rankingPlace?.[type] ?? 'N/A'}})
+        </div>
+
+        <div *ngIf="!game.team?.[0] && !game.team?.[1]">
+          {{ 'breakdown.no-tean' | translate }}
+        </div>
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
-    <!-- upgrade Column -->
+    <!-- points Column -->
     <ng-container matColumnDef="points">
-      <th mat-header-cell *matHeaderCellDef>{{ 'breakdown.points' | translate }}</th>
-      <td mat-cell *matCellDef="let game">
-        <ng-container *ngIf="game.type == 0">{{game.points}}</ng-container>
-      </td>
-      <td mat-footer-cell *matFooterCellDef></td>
+      <mat-header-cell *matHeaderCellDef>{{ 'breakdown.points' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let game" attr.data-label="{{ 'points' | translate }}">
+        <ng-container *ngIf="game.type == 0">{{ game.points }}</ng-container>
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <!-- upgrade Column -->
     <ng-container matColumnDef="average-upgrade">
-      <th mat-header-cell *matHeaderCellDef>
+      <mat-header-cell *matHeaderCellDef>
         {{ 'breakdown.upgrade' | translate }}
-      </th>
-      <td
-        mat-cell
+      </mat-header-cell>
+      <mat-cell
+        attr.data-label="{{ 'breakdown.upgrade' | translate }}"
         *matCellDef="let game; let i = index"
         [ngClass]="{
           used: i === indexUsedForUpgrade,
@@ -116,17 +126,17 @@
           <span *ngSwitchCase="2">-</span>
           <span *ngSwitchDefault>-</span>
         </ng-container>
-      </td>
-      <td mat-footer-cell *matFooterCellDef></td>
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <!-- downgrade Column -->
     <ng-container matColumnDef="average-downgrade">
-      <th mat-header-cell *matHeaderCellDef>
+      <mat-header-cell *matHeaderCellDef>
         {{ 'breakdown.downgrade' | translate }}
-      </th>
-      <td
-        mat-cell
+      </mat-header-cell>
+      <mat-cell
+        attr.data-label="{{ 'breakdown.downgrade' | translate }}"
         *matCellDef="let game; let i = index"
         [ngClass]="{
           used: i === indexUsedForDowngrade,
@@ -142,36 +152,43 @@
           <span *ngSwitchCase="2">0</span>
           <span *ngSwitchDefault>-</span>
         </ng-container>
-      </td>
-      <td mat-footer-cell *matFooterCellDef></td>
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <!-- points Column -->
+    <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let game" attr.data-label="{{ 'actions' | translate }}">
+        <div class="hidden-when-not-hovered">
+          <button mat-icon-button (click)="this.deleteGame(game)"><mat-icon>delete</mat-icon></button>
+        </div>
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <!-- upgrade-games Column -->
     <ng-container matColumnDef="space-description">
-      <td mat-footer-cell *matFooterCellDef colspan="4"></td>
+      <mat-footer-cell *matFooterCellDef colspan="4"></mat-footer-cell>
     </ng-container>
-
     <!-- upgrade-games Column -->
     <ng-container matColumnDef="average-upgrade-description">
-      <td mat-footer-cell *matFooterCellDef></td>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
-
     <!-- downgrade-games Column -->
     <ng-container matColumnDef="average-downgrade-description">
-      <td mat-footer-cell *matFooterCellDef></td>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
-    <!-- Row shown when there is no matching data that will be provided to the wrapper table. -->
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="6">{{ 'breakdown.noGames' | translate }}</td>
-    </tr>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-
-    <!-- <tr
-      mat-footer-row
+    <!-- <mat-footer-row
       *matFooterRowDef="['space-description', 'average-upgrade-description', 'average-downgrade-description']"
-    ></tr> -->
-  </table>
+    ></mat-footer-row> -->
+  </mat-table>
+
+  <div>
+    <button (click)="this.addGame()" mat-stroked-button>{{ 'breakdown.add-game.title' | translate }}</button>
+  </div>
 </div>

@@ -1,6 +1,6 @@
 import { RankingPlace } from '../../../../../_shared/models/ranking-place.model';
 import { Player } from './../../../../../_shared/models/player.model';
-import { Component, OnInit, ChangeDetectionStrategy, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, EventEmitter, Output, OnChanges } from '@angular/core';
 import * as moment from 'moment';
 import { Club } from 'app/_shared';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,12 +13,9 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./profile-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileHeaderComponent implements OnInit {
+export class ProfileHeaderComponent implements OnChanges  {
   @Input()
   player!: Player;
-
-  @Input()
-  mobile!: boolean;
 
   playerAge?: number;
 
@@ -46,14 +43,13 @@ export class ProfileHeaderComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private translateService: TranslateService) {}
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.shownRanking = {
       ...this.player?.lastRanking,
       single: this.player?.lastRanking?.single ?? 12,
       double: this.player?.lastRanking?.double ?? 12,
       mix: this.player?.lastRanking?.mix ?? 12,
     } as RankingPlace;
-
 
     const lastNames = this.player.lastName!.split(' ');
     this.initials = `${this.player.firstName![0]}${lastNames[lastNames.length - 1][0]}`.toUpperCase();

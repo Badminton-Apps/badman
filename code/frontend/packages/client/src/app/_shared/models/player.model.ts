@@ -68,7 +68,15 @@ export class Player {
   }
 
   get fullName() {
-    return this._fullName ?? `${this.firstName} ${this.lastName}`;
+    if (this._fullName != null) {
+      return this._fullName;
+    }
+
+    if (this.firstName != null && this.lastName != null) {
+      return `${this.firstName} ${this.lastName}`;
+    }
+
+    return "N/A";
   }
 }
 
