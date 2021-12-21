@@ -21,7 +21,6 @@ import {
   Table,
   Unique
 } from 'sequelize-typescript';
-import { RankingSystem } from '../../..'; 
 import {
   GroupSubEventCompetition,
   GroupSubEventTournament,
@@ -29,6 +28,7 @@ import {
   SubEventTournament
 } from '../event';
 import { GroupSystems } from './group_system.model';
+import { RankingSystem } from './system.model';
 
 @Table({
   timestamps: true,

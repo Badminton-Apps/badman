@@ -2,11 +2,11 @@ import {
   correctWrongPlayers,
   EventTournament,
   Player,
+  StepProcessor,
   XmlGenderID,
   XmlTournament
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 import { VisualService } from '../../../visualService';
 
 export class TournamentSyncPlayerProcessor extends StepProcessor {
@@ -23,7 +23,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
   public async process(): Promise<Map<string, Player>> {
     const mapPlayers = new Map<string, Player>();
     const visualPlayers = (await this.visualService.getPlayers(this.visualTournament.Code)).map(
-      xmlPlayer => {
+      (xmlPlayer) => {
         if (!xmlPlayer) {
           return null;
         }
@@ -43,7 +43,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
       }
     );
 
-    const ids = visualPlayers.map(p => `${p?.player.memberId}`);
+    const ids = visualPlayers.map((p) => `${p?.player.memberId}`);
 
     const players = await Player.findAll({
       where: {
@@ -55,7 +55,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
     });
 
     for (const xmlPlayer of visualPlayers) {
-      let foundPlayer = players.find(r => r.memberId === `${xmlPlayer?.player?.memberId}`);
+      let foundPlayer = players.find((r) => r.memberId === `${xmlPlayer?.player?.memberId}`);
 
       if (
         !foundPlayer &&

@@ -35,10 +35,11 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin
 } from 'sequelize';
-import { RankingSystemGroup, DrawTournament } from '../..';
-import { SubEventType, GameType } from '../../..';
 import { EventTournament } from './event-tournament.model';
 import { GroupSubEventTournament } from './group-subevent.model';
+import { DrawTournament } from './draw-tournament.model';
+import { RankingSystemGroup } from '../../ranking';
+import { GameType, SubEventType } from '../../../enums';
 
 @Table({
   timestamps: true,
