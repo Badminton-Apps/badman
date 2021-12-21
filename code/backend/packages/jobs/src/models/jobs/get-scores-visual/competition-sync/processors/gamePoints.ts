@@ -12,10 +12,10 @@ import {
   RankingPoint,
   RankingSystem,
   RankingSystems,
-  StartVisualRankingDate
+  StartVisualRankingDate,
+  StepProcessor
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 
 export class CompetitionSyncPointProcessor extends StepProcessor {
   public event: EventCompetition;

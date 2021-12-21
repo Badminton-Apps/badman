@@ -1,4 +1,5 @@
 import {
+  ApiError,
   AuthenticatedRequest,
   BvlRankingCalc,
   canExecute,
@@ -19,7 +20,6 @@ import {
   RankingSystems,
   StartVisualRankingDate
 } from '@badvlasim/shared';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import { Op, Transaction } from 'sequelize';
 import { RankingSystemGroupInputType, RankingSystemGroupType } from '../types';
@@ -331,7 +331,6 @@ const removeGamePointsForSubEvents = async (
   const systems = await group.getSystems({ transaction });
 
   for (const system of systems) {
-
     const tournamentGames = await Game.findAll({
       transaction,
       include: [

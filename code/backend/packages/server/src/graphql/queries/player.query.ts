@@ -1,6 +1,6 @@
 import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
-import { Player } from '@badvlasim/shared/models';
+import { Player } from '@badvlasim/shared';
 import { PlayerType } from '../types/player.type';
 import { queryFixer } from '../queryFixer';
 

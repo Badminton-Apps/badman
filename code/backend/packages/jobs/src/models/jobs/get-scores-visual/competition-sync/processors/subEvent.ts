@@ -5,6 +5,7 @@ import {
   Game,
   LevelType,
   logger,
+  StepProcessor,
   SubEventCompetition,
   SubEventType,
   XmlGenderID,
@@ -12,7 +13,6 @@ import {
   XmlTournamentEvent
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 import { VisualService } from '../../../visualService';
 
 export interface SubEventStepData {

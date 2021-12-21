@@ -3,20 +3,20 @@ import {
   DrawTournament,
   EncounterCompetition,
   Game,
-  GameType,
   LastRankingPlace,
-  logger,
   Player,
   RankingPlace,
   RankingPoint,
   RankingSystem,
   SubEventCompetition,
   SubEventTournament,
-} from '@badvlasim/shared';
+} from '../sequelize';
 import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { PointCalculator } from './point-calculator';
-import { StartingRanking } from '@badvlasim/shared/models/rankingTypes/starting-ranking';
+import { StartingRanking } from './starting-ranking';
+import { logger } from '../../utils';
+import { GameType } from '../enums';
 
 export class RankingCalc {
   periods: RankingPeriod[];

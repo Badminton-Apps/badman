@@ -11,10 +11,10 @@ import {
   RankingPoint,
   RankingSystem,
   RankingSystems,
-  StartVisualRankingDate
+  StartVisualRankingDate,
+  StepProcessor
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 
 export class TournamentSyncPointProcessor extends StepProcessor {
   public event: EventTournament;
@@ -96,15 +96,19 @@ export class TournamentSyncPointProcessor extends StepProcessor {
 
             const hash = new Map<string, Player>(players.map((e) => [e.id, e]));
 
-            await system.calculateRankingPointsPerGameAsync(gamesWithoutPoints, hash, null, this.transaction);
+            await system.calculateRankingPointsPerGameAsync(
+              gamesWithoutPoints,
+              hash,
+              null,
+              this.transaction
+            );
           }
           totalGames += games.length;
           totalWithoutPoints += gamesWithoutPoints.length;
         }
-       
       }
     }
-    
+
     logger.info(`${totalGames} games found, ${totalWithoutPoints} without points`);
   }
 

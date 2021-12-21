@@ -1,4 +1,5 @@
 import {
+  ApiError,
   AuthenticatedRequest,
   canExecute,
   ClubMembership,
@@ -10,7 +11,6 @@ import {
   RankingSystem
 } from '@badvlasim/shared';
 import { GraphQLNonNull, GraphQLString } from 'graphql';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { PlayerInputType, PlayerType, RankingPlaceInputType } from '../types';
 
 export const addPlayerMutation = {
@@ -94,7 +94,7 @@ export const updatePlayerMutation = {
           : {
               email: player.email,
               phone: player.phone,
-              memberId: player.memberId,
+              memberId: player.memberId
             },
         {
           where: { id: player.id },
@@ -134,7 +134,7 @@ export const updatePlayerRankingMutation = {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbLastRanking = await LastRankingPlace.findByPk(rankingPlace.id, { transaction });
-     
+
       if (dbLastRanking !== null) {
         if (dbLastRanking.playerId !== playerId) {
           throw new ApiError({
