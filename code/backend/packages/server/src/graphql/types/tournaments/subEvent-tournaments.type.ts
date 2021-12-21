@@ -1,4 +1,4 @@
-import { SubEventTournament } from '@badvlasim/shared/models';
+import { SubEventTournament } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { resolver, defaultListArgs } from 'graphql-sequelize';
 import { queryFixer } from '../../queryFixer';

@@ -1,8 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "database/database.config.js"
-, "../_shared/utils/step-processor.ts"  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

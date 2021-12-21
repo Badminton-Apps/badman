@@ -1,5 +1,5 @@
 import { TeamType } from './../team.type';
-import { SubEventCompetition, Player } from '@badvlasim/shared/models';
+import { SubEventCompetition, Player } from '@badvlasim/shared';
 import {
   GraphQLInputObjectType,
   GraphQLInt,
@@ -9,11 +9,11 @@ import {
 } from 'graphql';
 import { resolver, defaultListArgs } from 'graphql-sequelize';
 import { getAttributeFields } from '../attributes.type';
-import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
+import { RankingSystemGroupInputType, RankingSystemGroupType } from '../rankingSystemGroup.type';
 import { DrawCompetitionType } from './draw-competition.type';
 import { EventCompetitionType } from './event-competition.type';
 import { queryFixer } from '../../queryFixer';
-import { PlayerType, RankingSystemGroupType } from '..';
+import { PlayerType } from '../player.type';
 
 const SubEventCompetitionType = new GraphQLObjectType({
   name: 'SubEventCompetition',

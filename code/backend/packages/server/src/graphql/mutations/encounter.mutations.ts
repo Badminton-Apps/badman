@@ -1,4 +1,5 @@
 import {
+  ApiError,
   AuthenticatedRequest,
   Availability,
   canExecute,
@@ -11,11 +12,10 @@ import {
   NotificationService,
   Team
 } from '@badvlasim/shared';
-import { parse } from 'fast-xml-parser';
 import axios from 'axios';
+import { parse } from 'fast-xml-parser';
 import moment from 'moment';
 import { Transaction } from 'sequelize/types';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { EncounterChangeInputType, EncounterChangeType } from '../types';
 
 export const addChangeEncounterMutation = (notificationService: NotificationService) => {

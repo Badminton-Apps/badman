@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.build.json",
+
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+  },
+
+  "references": [
+    {
+      "path": "../_shared/tsconfig.build.json"
+    }
+  ],
+
+  "include": ["src/**/*.ts"]
+}

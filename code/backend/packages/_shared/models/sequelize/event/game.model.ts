@@ -42,13 +42,13 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { DrawTournament } from '../../..';
 import { GameType } from '../../enums';
 import { Player } from '../player.model';
 import { RankingPoint } from '../ranking';
 import { EncounterCompetition } from './competition/encounter-competition.model';
 import { Court } from './court.model';
 import { GamePlayer } from './game-player.model';
+import { DrawTournament } from './tournament';
 
 @Table({
   timestamps: true,
