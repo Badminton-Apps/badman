@@ -1,4 +1,4 @@
-import { EncounterChange } from '@badvlasim/shared/models';
+import { EncounterChange } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../../../queryFixer';

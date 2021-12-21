@@ -1,4 +1,4 @@
-import { EncounterCompetition, Game } from '@badvlasim/shared/models';
+import { EncounterCompetition, Game } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLObjectType } from 'graphql';
 import { createConnection, resolver } from 'graphql-sequelize';
 import { Op } from 'sequelize';

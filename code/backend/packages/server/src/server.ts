@@ -15,7 +15,6 @@ import {
   startWhenReady
 } from '@badvlasim/shared';
 
-import 'apollo-cache-control';
 import { ApolloServer } from 'apollo-server-express';
 import { Response, Router } from 'express';
 import {
@@ -120,8 +119,6 @@ const startServer = async (databaseService: DataBaseHandler) => {
       }
     },
     schema,
-    // tracing: true,
-    // cacheControl: true,
     formatError: (err: GraphQLError) => ({
       message: err.originalError?.message || err.message,
       code: err.originalError?.code || 500

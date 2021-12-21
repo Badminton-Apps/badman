@@ -1,4 +1,4 @@
-import { RankingPoint } from '@badvlasim/shared/models';
+import { RankingPoint } from '@badvlasim/shared';
 import { GraphQLList } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';

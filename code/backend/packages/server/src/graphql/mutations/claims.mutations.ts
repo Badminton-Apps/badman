@@ -1,6 +1,13 @@
-import { AuthenticatedRequest, AuthenticationSercice, canExecute, DataBaseHandler, logger, Player } from '@badvlasim/shared';
+import {
+  ApiError,
+  AuthenticatedRequest,
+  AuthenticationSercice,
+  canExecute,
+  DataBaseHandler,
+  logger,
+  Player
+} from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID } from 'graphql';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { RoleType } from '../types';
 
 export const updateGlobalClaimUserMutation = {
@@ -19,9 +26,13 @@ export const updateGlobalClaimUserMutation = {
       type: GraphQLBoolean
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { playerId, claimId, active }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { playerId, claimId, active },
+    context: { req: AuthenticatedRequest }
+  ) => {
     canExecute(context?.req?.user, { anyPermissions: [`edit:claims`] });
-   
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const dbPlayer = await Player.findByPk(playerId, {

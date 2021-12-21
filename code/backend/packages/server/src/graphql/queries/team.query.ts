@@ -1,4 +1,4 @@
-import { Team } from '@badvlasim/shared/models';
+import { Team } from '@badvlasim/shared';
 import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
@@ -14,7 +14,6 @@ export const teamsQuery = {
   }),
   resolve: resolver(Team, {
     before: async (findOptions: { [key: string]: object }, args: { [key: string]: object }) => {
-      // info.cacheControl.setCacheHint({ maxAge: 6000, scope: 'PRIVATE' });
       findOptions.where = {
         ...queryFixer(findOptions.where),
         clubId: args.clubId

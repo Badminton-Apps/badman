@@ -1,5 +1,4 @@
-# production environment
-FROM node:12.22.0-alpine
+FROM node:12.22.0-alpine as build
 
 # Work dir
 WORKDIR /usr/src/app
@@ -8,12 +7,44 @@ WORKDIR /usr/src/app
 ENV LOG_LEVEL=debug
 ENV NODE_ENV=production
 
-# Install dependencies
-RUN apk --no-cache add curl gnupg tzdata
+# Add lerna
+COPY package.json .
+COPY lerna.json .
+COPY tsconfig.json .
+COPY yarn.lock .
 
-## TZ
+# Copy packages
+COPY packages/_shared ./packages/_shared
+COPY packages/import ./packages/import
+
+RUN yarn global add lerna
+RUN lerna bootstrap --scope=@badvlasim/import  --ci -- --production=false --frozen-lockfile
+RUN lerna run build --scope=@badvlasim/import
+
+# production environment
+FROM node:12.22.0-slim
+ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Brussels
+RUN apt-get install -y tzdata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Work dir
+WORKDIR /usr/src/app
+
+COPY package.json .
+COPY lerna.json .
+COPY packages/_shared/package.json ./packages/_shared/
+COPY packages/import/package.json ./packages/import/
+
+RUN yarn global add lerna
+# Only install production packages
+RUN lerna bootstrap --scope=@badvlasim/import --ci -- --production
+
+COPY --from=build /usr/src/app/dist .
+
+# Set env values
+ENV LOG_LEVEL=debug
+ENV NODE_ENV=production
 
 RUN apk --no-cache add wget ca-certificates \
     autoconf \
@@ -36,23 +67,14 @@ RUN apk --no-cache add wget ca-certificates \
     apk del autoconf automake build-base glib-dev libc-dev unixodbc-dev flex-dev && \
     rm -rf mdbtools-0.7.1
 
-# Add lerna
-COPY package.json .
-COPY tsconfig.json .
-RUN npm i lerna -g --loglevel notice
-
-
-# Copy packages
-COPY packages/_shared ./packages/_shared
-COPY packages/import ./packages/import
-
 # bootstrap
-COPY lerna.json .
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers unixodbc-dev make python && \
   lerna bootstrap --scope=@badvlasim/import  --ci -- --production=false && \
   apk del native-deps
 
+
+RUN npm install pm2 -g
 EXPOSE 4000
 
-CMD ["lerna", "run", "start", "--scope=@badvlasim/import", "--stream", "--no-prefix"]
+CMD ["pm2-runtime","import/src/server.js"]

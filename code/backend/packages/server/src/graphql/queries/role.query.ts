@@ -1,4 +1,4 @@
-import { Role } from '@badvlasim/shared/models';
+import { Role } from '@badvlasim/shared';
 import { GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';

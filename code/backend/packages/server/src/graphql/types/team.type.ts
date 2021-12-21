@@ -4,7 +4,7 @@ import {
   Team,
   TeamPlayerMembership,
   TeamSubEventMembership
-} from '@badvlasim/shared/models';
+} from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import moment from 'moment';

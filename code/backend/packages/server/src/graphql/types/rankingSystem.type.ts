@@ -1,4 +1,4 @@
-import { Player, RankingPlace, RankingSystem } from '@badvlasim/shared/models';
+import { Player, RankingPlace, RankingSystem } from '@badvlasim/shared';
 import {
   GraphQLInputObjectType,
   GraphQLInt,

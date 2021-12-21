@@ -1,4 +1,5 @@
 import {
+  ApiError,
   AuthenticatedRequest,
   canExecute,
   Club,
@@ -17,7 +18,6 @@ import {
 import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
 import moment from 'moment';
 import { Op } from 'sequelize';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { TeamInputType, TeamType } from '../types';
 
 export const addTeamMutation = {
@@ -41,7 +41,6 @@ export const addTeamMutation = {
       anyPermissions: [`${clubId}_add:team`, 'add-any:club']
     });
 
-   
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const [teamDb, created] = await Team.findOrCreate({
@@ -139,8 +138,6 @@ export const updateTeamMutation = {
       canExecute(context?.req?.user, {
         anyPermissions: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
       });
-  
-
 
       const changedTeams = [];
 
@@ -321,8 +318,6 @@ export const removePlayerFromTeamMutation = {
         anyPermissions: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
       });
 
-     
-
       const dbPlayer = await Player.findByPk(playerId, {
         transaction
       });
@@ -376,8 +371,6 @@ export const updateSubEventTeamMutation = {
     canExecute(context?.req?.user, {
       anyPermissions: [`${dbTeam.clubId}_enlist:team`, 'edit-any:club']
     });
-
-
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
@@ -476,9 +469,10 @@ export const updatePlayerTeamMutation = {
           message: 'Team not found'
         });
       }
-      canExecute(context?.req?.user, { anyPermissions: [`${dbTeam.clubId}_edit:team`, 'edit-any:club'] });
+      canExecute(context?.req?.user, {
+        anyPermissions: [`${dbTeam.clubId}_edit:team`, 'edit-any:club']
+      });
 
-      
       const dbPlayer = await Player.findByPk(playerId, {
         transaction
       });
@@ -596,7 +590,6 @@ export const addPlayerBaseSubEventMutation = {
       canExecute(context?.req?.user, {
         anyPermissions: [`change-base:team`]
       });
-
 
       const dbMembership = await TeamSubEventMembership.findOne({
         where: {
@@ -754,11 +747,9 @@ export const removePlayerBaseSubEventMutation = {
         });
       }
 
-      
       canExecute(context?.req?.user, {
         anyPermissions: [`change-base:team`]
       });
-
 
       const dbPlayer = await Player.findByPk(playerId, {
         transaction
