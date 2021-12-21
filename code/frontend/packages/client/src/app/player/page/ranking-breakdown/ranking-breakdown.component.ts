@@ -1,18 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DateAdapter } from '@angular/material/core';
-import {
-  DateRange,
-  MatDatepicker,
-  MatDateRangePicker,
-  MatDateRangeSelectionStrategy,
-} from '@angular/material/datepicker';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { Game, Player, PlayerService, RankingSystem } from 'app/_shared';
 import * as moment from 'moment';
-import { Moment } from 'moment';
 import {
   combineLatest,
   delay,
@@ -41,6 +33,7 @@ export class RankingBreakdownComponent implements OnInit {
   period = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
+    game: new FormControl(),
   });
 
   gameFilter = new FormGroup({
@@ -151,10 +144,12 @@ export class RankingBreakdownComponent implements OnInit {
             ? moment(system.updateIntervalAmountLastUpdate).add(system.updateIntervalAmount, system.updateIntervalUnit)
             : moment(end);
         const startPeriod = endPeriod.clone().subtract(system.periodAmount, system.periodUnit);
+        const gamePeriod = startPeriod.clone().subtract(system.updateIntervalAmount, system.updateIntervalUnit);
 
         this.period.setValue({
           start: startPeriod,
           end: endPeriod,
+          game: gamePeriod,
         });
 
         const games = this.apollo
@@ -193,17 +188,14 @@ export class RankingBreakdownComponent implements OnInit {
               where: {
                 gameType: type == 'single' ? 'S' : type == 'double' ? 'D' : 'MX',
                 playedAt: {
-                  $between: [
-                    this.period.get('start')?.value.toISOString(),
-                    this.period.get('end')?.value.toISOString(),
-                  ],
+                  $between: [this.period.get('game')?.value.toISOString(), this.period.get('end')?.value.toISOString()],
                 },
               },
               playerId,
               rankingType: system?.id,
             },
           })
-          .pipe(map((x) => x.data.player.games!));
+          .pipe(map((x) => x.data.player.games!.map((g) => new Game(g))));
 
         const player = this.playerService.getPlayer(playerId!, system?.id);
         return combineLatest([of(system), player, games, of(type!)]);
@@ -221,10 +213,12 @@ export class RankingBreakdownComponent implements OnInit {
   nextPeriod(system: RankingSystem) {
     const endPeriod = moment(this.period.get('end')?.value).add(system.updateIntervalAmount, system.updateIntervalUnit);
     const startPeriod = endPeriod.clone().subtract(system.periodAmount, system.periodUnit);
+    const gamePeriod = startPeriod.clone().subtract(system.updateIntervalAmount, system.updateIntervalUnit);
 
-    this.period.setValue({
+    this.period.patchValue({
       start: startPeriod,
       end: endPeriod,
+      game: gamePeriod,
     });
   }
   prevPeriod(system: RankingSystem) {
@@ -233,10 +227,12 @@ export class RankingBreakdownComponent implements OnInit {
       system.updateIntervalUnit
     );
     const startPeriod = endPeriod.clone().subtract(system.periodAmount, system.periodUnit);
+    const gamePeriod = startPeriod.clone().subtract(system.updateIntervalAmount, system.updateIntervalUnit);
 
-    this.period.setValue({
+    this.period.patchValue({
       start: startPeriod,
       end: endPeriod,
+      game: gamePeriod,
     });
   }
 }
