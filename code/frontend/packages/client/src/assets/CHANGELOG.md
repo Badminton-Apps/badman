@@ -1,3 +1,12 @@
+# [4.18.0](https://github.com/Badminton-Apps/core/compare/v4.17.1...v4.18.0) (2021-12-21)
+
+
+### Features
+
+* Show previous period games ([83c881a](https://github.com/Badminton-Apps/core/commit/83c881aebd593d70e7109088b5f9544d9ca6627a))
+
+
+
 ## [4.17.1](https://github.com/Badminton-Apps/core/compare/v4.17.0...v4.17.1) (2021-12-21)
 
 
