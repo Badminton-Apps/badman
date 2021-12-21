@@ -4,7 +4,6 @@ import moment from 'moment';
 import { createLogger, transports, format } from 'winston';
 const { combine, errors, timestamp, colorize, align } = format;
 import ecsFormat from '@elastic/ecs-winston-format';
-import packagejson from '../package.json';
 
 dotenv.config();
 
@@ -101,10 +100,11 @@ if (process.env.LOG_LEVEL === 'None') {
   // );
 }
 
+
 const logger = createLogger({
   defaultMeta: {
-    version: packagejson.version,
-    name: packagejson.name
+    version: process.env.SERVICE_VERSION,
+    name: process.env.SERVICE_NAME
   },
   format: combine(errors({ stack: true }), timestamp(), align()),
   transports: tr

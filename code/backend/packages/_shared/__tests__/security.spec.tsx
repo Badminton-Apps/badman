@@ -1,4 +1,5 @@
-import { Claim, Club, DataBaseHandler, Player, Role } from '@badvlasim/shared';
+import { DataBaseHandler } from '../database';
+import { Claim, Club, Player, Role } from '../models';
 
 describe('Security', () => {
   beforeAll(async () => {

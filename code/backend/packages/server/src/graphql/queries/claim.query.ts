@@ -1,4 +1,4 @@
-import { Claim } from '@badvlasim/shared/models';
+import { Claim } from '@badvlasim/shared';
 import { GraphQLList } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';

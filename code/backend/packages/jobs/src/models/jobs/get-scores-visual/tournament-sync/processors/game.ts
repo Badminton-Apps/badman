@@ -4,13 +4,13 @@ import {
   GameType,
   logger,
   Player,
+  StepProcessor,
   XmlMatch,
   XmlMatchTypeID,
   XmlTournament
 } from '@badvlasim/shared';
 import moment from 'moment';
 import { Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 import { VisualService } from '../../../visualService';
 import { DrawStepData } from './draw';
 import { EventStepData } from './event';

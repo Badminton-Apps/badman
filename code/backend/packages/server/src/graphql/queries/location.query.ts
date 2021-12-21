@@ -1,4 +1,4 @@
-import { Location } from '@badvlasim/shared/models';
+import { Location } from '@badvlasim/shared';
 import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';

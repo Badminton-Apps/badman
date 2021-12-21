@@ -1,4 +1,5 @@
 import {
+  ApiError,
   AuthenticatedRequest,
   canExecute,
   DataBaseHandler,
@@ -8,7 +9,6 @@ import {
   SubEventCompetition
 } from '@badvlasim/shared';
 import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import { EventCompetitionInputType, EventCompetitionType } from '../types';
 
 export const addEventCompetitionMutation = {
@@ -19,9 +19,13 @@ export const addEventCompetitionMutation = {
       type: EventCompetitionInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { eventCompetition }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { eventCompetition },
+    context: { req: AuthenticatedRequest }
+  ) => {
     canExecute(context?.req?.user, { anyPermissions: [`add:competition`] });
-   
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const eventCompetitionDb = await EventCompetition.create(eventCompetition, { transaction });
@@ -74,9 +78,13 @@ export const updateEventCompetitionMutation = {
       type: EventCompetitionInputType
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { eventCompetition }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { eventCompetition },
+    context: { req: AuthenticatedRequest }
+  ) => {
     canExecute(context?.req?.user, { anyPermissions: [`edit:competition`] });
-   
+
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       await EventCompetition.update(eventCompetition, {
@@ -112,7 +120,11 @@ export const setGroupsCompetitionMutation = {
       type: new GraphQLList(GraphQLID)
     }
   },
-  resolve: async (findOptions: { [key: string]: object }, { id, groupIds }, context: { req: AuthenticatedRequest }) => {
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { id, groupIds },
+    context: { req: AuthenticatedRequest }
+  ) => {
     canExecute(context?.req?.user, {
       anyPermissions: ['edit:competition']
     });

@@ -6,7 +6,7 @@ import {
   NotificationService
 } from '@badvlasim/shared';
 import { RequestHandler, Response, Router } from 'express';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
+import { ApiError } from '@badvlasim/shared';
 
 export class EnrollmentController extends BaseController {
   private _path = '/enrollment';
