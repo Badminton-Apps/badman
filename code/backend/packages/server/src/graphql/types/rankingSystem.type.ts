@@ -1,5 +1,11 @@
 import { Player, RankingPlace, RankingSystem } from '@badvlasim/shared/models';
-import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
+import {
+  GraphQLInputObjectType,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLString
+} from 'graphql';
 import { resolver } from 'graphql-sequelize';
 import { Includeable, Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
@@ -162,6 +168,15 @@ export const RankingSystemType = new GraphQLObjectType({
       groups: {
         type: new GraphQLList(RankingSystemGroupType),
         resolve: resolver(RankingSystem.associations.groups)
+      },
+      pointsToGoUp: {
+        type: new GraphQLList(GraphQLInt)
+      },
+      pointsWhenWinningAgainst: {
+        type: new GraphQLList(GraphQLInt)
+      },
+      pointsToGoDown: {
+        type: new GraphQLList(GraphQLInt)
       }
     })
 });

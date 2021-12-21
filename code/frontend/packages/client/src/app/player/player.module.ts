@@ -49,6 +49,7 @@ import {
 } from './page';
 import { ListGamesComponent, PeriodSelectionComponent, RankingBreakdownComponent } from './page/ranking-breakdown';
 import { PlayerRoutingModule } from './player-routing.module';
+import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
 
 const materialModules = [
   MatCardModule,
@@ -65,7 +66,7 @@ const materialModules = [
   MatExpansionModule,
   MatDialogModule,
   MatSlideToggleModule,
-  MatDatepickerModule,
+  MatDatepickerModule
 ];
 
 const covalentModules = [
@@ -104,6 +105,7 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
     RankingBreakdownComponent,
     ListGamesComponent,
     PeriodSelectionComponent,
+    AddGameComponent,
   ],
   imports: [SharedModule, ...materialModules, ...covalentModules, ...otherModules, PlayerRoutingModule],
 })
