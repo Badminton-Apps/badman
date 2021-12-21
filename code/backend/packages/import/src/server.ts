@@ -1,7 +1,6 @@
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
-import pkg from '../package.json'
 
 import {
   App,
@@ -17,7 +16,7 @@ import { Convertor } from './convert';
 try {
   (async () => {
     try {
-      logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
+      logger.info(`Starting ${process.env.SERVICE_NAME} version ${process.env.SERVICE_VERSION}`);
       await startWhenReady(false, false, () => startServer());
     } catch (e) {
       logger.error('Something failed', e);

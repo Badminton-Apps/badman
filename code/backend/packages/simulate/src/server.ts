@@ -1,7 +1,6 @@
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
-import pkg from '../package.json'
 
 // First config
 import { App, AuthenticationSercice, logger, startWhenReady } from '@badvlasim/shared';
@@ -12,7 +11,7 @@ import { RankingCalculator } from './models';
 try {
   (async () => {
     try {
-      logger.info(`Starting ${process.env.SERVICE_NAME} version ${pkg.version}`);
+      logger.info(`Starting ${process.env.SERVICE_NAME} version ${process.env.SERVICE_VERSION}`);
       await startWhenReady(false, false, () => startServer());
     } catch (e) {
       logger.error('Something failed', e);
