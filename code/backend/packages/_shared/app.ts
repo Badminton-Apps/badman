@@ -1,21 +1,14 @@
-import apm from 'elastic-apm-node';
-apm.start({
-  serviceName: process.env.SERVICE_NAME,
-  serverUrl: process.env.APM_SERVER_URL,
-  secretToken: process.env.APM_SERVER_TOKEN,
-  verifyServerCert: false,
-  active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
-});
+
+import { logger } from './utils';
 
 import cors from 'cors';
 import moment from 'moment';
-import express, { Application, json } from 'express'; 
+import express, { Application, json } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { BaseController } from './models';  
+import { BaseController } from './models';
 import { createLightship, Lightship } from 'lightship';
 import helmet from 'helmet';
 import compression from 'compression';
-import { logger } from './utils';
 
 moment.suppressDeprecationWarnings = true;
 
