@@ -1,4 +1,4 @@
-import { EncounterChangeDate } from '@badvlasim/shared/models';
+import { EncounterChangeDate } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLObjectType } from 'graphql';
 import { resolver } from 'graphql-sequelize';
 import { getAttributeFields } from '../../attributes.type';

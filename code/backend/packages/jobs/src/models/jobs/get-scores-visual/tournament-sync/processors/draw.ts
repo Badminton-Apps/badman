@@ -3,14 +3,14 @@ import {
   DrawType,
   Game,
   logger,
+  StepProcessor,
   SubEventTournament,
   XmlDrawTypeID,
   XmlTournament
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
-import { SubEventStepData } from './subEvent';
 import { VisualService } from '../../../visualService';
+import { SubEventStepData } from './subEvent';
 
 export interface DrawStepData {
   draw: DrawTournament;

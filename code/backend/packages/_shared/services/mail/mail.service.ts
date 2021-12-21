@@ -1,4 +1,3 @@
-import { logger } from '@badvlasim/shared';
 import moment from 'moment';
 import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
 import exphbs from 'nodemailer-express-handlebars';
@@ -14,6 +13,7 @@ import {
   Club,
   EventCompetition
 } from '../../models';
+import { logger } from '../../utils';
 
 export class MailService {
   private _transporter: Transporter;
