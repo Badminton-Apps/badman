@@ -1,7 +1,6 @@
-import { EventTournament, logger, XmlTournament } from '@badvlasim/shared';
+import { EventTournament, logger, StepProcessor, XmlTournament } from '@badvlasim/shared';
 import moment, { Moment } from 'moment';
 import { Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 import { VisualService } from '../../../visualService';
 
 export interface EventStepData {

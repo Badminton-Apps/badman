@@ -3,12 +3,12 @@ import {
   EncounterCompetition,
   Game,
   logger,
+  StepProcessor,
   SubEventCompetition,
   XmlTournament
 } from '@badvlasim/shared';
 import { Op, Transaction } from 'sequelize';
 import { SubEventStepData } from '.';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 import { VisualService } from '../../../visualService';
 
 export interface DrawStepData {
@@ -29,7 +29,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
   }
 
   public async process(): Promise<DrawStepData[]> {
-    await Promise.all(this.subEvents.map(e => this._processDraws(e)));
+    await Promise.all(this.subEvents.map((e) => this._processDraws(e)));
     return this._dbDraws;
   }
 
@@ -46,14 +46,14 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       if (!xmlDraw) {
         continue;
       }
-      const dbDraws = draws.filter(r => r.visualCode === `${xmlDraw.Code}`);
+      const dbDraws = draws.filter((r) => r.visualCode === `${xmlDraw.Code}`);
       let dbDraw = null;
 
       if (dbDraws.length === 1) {
         dbDraw = dbDraws[0];
       } else if (dbDraws.length > 1) {
-        logger.warn('Having multiple? Removing old')
-        
+        logger.warn('Having multiple? Removing old');
+
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbDraws;
         dbDraw = first;
@@ -61,7 +61,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
         await DrawCompetition.destroy({
           where: {
             id: {
-              [Op.in]: rest.map(e => e.id)
+              [Op.in]: rest.map((e) => e.id)
             }
           },
           transaction: this.transaction
@@ -81,7 +81,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
     }
 
     // Remove draw that have no visual code
-    const removedDraws = draws.filter(i => i.visualCode === null);
+    const removedDraws = draws.filter((i) => i.visualCode === null);
     for (const removed of removedDraws) {
       const gameIds = (
         await Game.findAll({
@@ -99,8 +99,8 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
           transaction: this.transaction
         })
       )
-        ?.map(g => g.id)
-        ?.filter(g => !!g);
+        ?.map((g) => g.id)
+        ?.filter((g) => !!g);
 
       if (gameIds && gameIds.length > 0) {
         await Game.destroy({

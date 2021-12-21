@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "node -r ts-node/register ./src/server.ts",
-    "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "build": "yarn run clean && yarn run compile",
+    "clean": "rimraf -rf ./dist ../_shared/dist",
+    "compile": "tsc -b tsconfig.build.json",
     "start:inspect": "node --inspect=6861 -r ts-node/register ./src/server.ts",
     "start:watch": "nodemon",
     "start:watch:inspect": "nodemon --exec node --inspect=6861 -r ts-node/register ./src/server.ts",

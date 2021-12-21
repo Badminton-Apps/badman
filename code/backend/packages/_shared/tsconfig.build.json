@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.build.json",
+
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./"
+  },
+
+  "include": [
+    "**/*.ts",
+    "models/rankingTypes/start-ranking.json",
+    "database/seeders/players.json",
+    "database/database.config.js"
+  ]
+}

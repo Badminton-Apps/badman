@@ -1,4 +1,4 @@
-import { EncounterCompetition } from '@badvlasim/shared/models';
+import { EncounterCompetition } from '@badvlasim/shared';
 import { GraphQLID, GraphQLNonNull } from 'graphql';
 import { resolver } from 'graphql-sequelize';
 import {
