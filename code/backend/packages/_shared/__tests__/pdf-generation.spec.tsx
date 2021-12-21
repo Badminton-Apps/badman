@@ -1,7 +1,6 @@
 import mock from 'mock-fs';
 import moment from 'moment';
 import path from 'path';
-import { DataBaseHandler } from '..';
 
 import {
   EventCompetition,
@@ -22,6 +21,7 @@ import {
 
 import fakerator from 'fakerator';
 import { PdfService } from '../services';
+import { DataBaseHandler } from '../database';
 
 const fake = fakerator();
 

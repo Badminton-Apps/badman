@@ -1,4 +1,4 @@
-import { Cron } from '@badvlasim/shared/models';
+import { Cron } from '@badvlasim/shared';
 import { GraphQLObjectType } from 'graphql';
 import { getAttributeFields } from './attributes.type';
 

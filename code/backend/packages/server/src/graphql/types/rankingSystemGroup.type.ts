@@ -1,4 +1,4 @@
-import { RankingSystemGroup } from '@badvlasim/shared/models';
+import { RankingSystemGroup } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLObjectType } from 'graphql';
 import { getAttributeFields } from './attributes.type';
 

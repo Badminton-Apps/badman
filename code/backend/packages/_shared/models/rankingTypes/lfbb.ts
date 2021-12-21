@@ -1,22 +1,24 @@
+import moment, { Moment } from 'moment';
+import { Op } from 'sequelize';
+import { logger, splitInChunks } from '../../utils';
 import {
-  logger,
   Game,
+  LastRankingPlace,
   Player,
   RankingPlace,
   RankingPoint,
   RankingSystem,
-  LastRankingPlace,
-  splitInChunks
-} from '@badvlasim/shared';
-import moment, { Moment } from 'moment';
-import { Op } from 'sequelize';
+} from '../sequelize';
 import { PointCalculator } from './point-calculator';
 import { RankingCalc } from './rankingCalc';
 
 export class LfbbRankingCalc extends RankingCalc {
   private _gameSplitInterval = 30 * 24 * 60 * 60 * 1000; // 30 days max
 
-  constructor(public rankingType: RankingSystem, protected runningFromStart: boolean) {
+  constructor(
+    public rankingType: RankingSystem,
+    protected runningFromStart: boolean
+  ) {
     super(rankingType, runningFromStart);
     this.pointCalculator = new PointCalculator(this.rankingType);
   }
@@ -38,8 +40,12 @@ export class LfbbRankingCalc extends RankingCalc {
         this.protectRanking.bind(this)
       );
 
-      this.rankingType.caluclationIntervalLastUpdate = moment([2017, 8, 1]).toDate();
-      this.rankingType.updateIntervalAmountLastUpdate = moment([2017, 8, 1]).toDate();
+      this.rankingType.caluclationIntervalLastUpdate = moment([
+        2017, 8, 1,
+      ]).toDate();
+      this.rankingType.updateIntervalAmountLastUpdate = moment([
+        2017, 8, 1,
+      ]).toDate();
     }
   }
 
@@ -90,7 +96,11 @@ export class LfbbRankingCalc extends RankingCalc {
     //   newRanking.mix = maxInLevel.mix;
     // }
 
-    const highest = Math.min(newRanking.single, newRanking.double, newRanking.mix);
+    const highest = Math.min(
+      newRanking.single,
+      newRanking.double,
+      newRanking.mix
+    );
     if (newRanking.single - highest >= this.rankingType.maxDiffLevels) {
       newRanking.single = highest + this.rankingType.maxDiffLevels;
     }
@@ -127,11 +137,13 @@ export class LfbbRankingCalc extends RankingCalc {
     const dateRanges: { start: Date; end: Date }[] = [];
 
     while (end > gamesStartDate) {
-      const suggestedEndDate = new Date(gamesStartDate.getTime() + this._gameSplitInterval);
+      const suggestedEndDate = new Date(
+        gamesStartDate.getTime() + this._gameSplitInterval
+      );
 
       const slice = {
         start: new Date(gamesStartDate),
-        end: suggestedEndDate > end ? end : suggestedEndDate
+        end: suggestedEndDate > end ? end : suggestedEndDate,
       };
 
       dateRanges.push(slice);
@@ -145,12 +157,21 @@ export class LfbbRankingCalc extends RankingCalc {
       const gamesRange = await this.getGamesAsync(range.start, range.end);
 
       // Calculate new points
-      await this.calculateRankingPointsPerGameAsync(gamesRange, playersRange, range.end);
+      await this.calculateRankingPointsPerGameAsync(
+        gamesRange,
+        playersRange,
+        range.end
+      );
     }
 
     // Calculate places for new period
     const players = await this.getPlayersAsync(originalStart, originalEnd);
-    await this._calculateRankingPlacesAsync(originalStart, originalEnd, players, updateRankings);
+    await this._calculateRankingPlacesAsync(
+      originalStart,
+      originalEnd,
+      players,
+      updateRankings
+    );
   }
 
   private async _calculateRankingPlacesAsync(
@@ -165,8 +186,8 @@ export class LfbbRankingCalc extends RankingCalc {
         where: {
           SystemId: this.rankingType.id,
           points: {
-            [Op.ne]: null
-          }
+            [Op.ne]: null,
+          },
         },
         attributes: ['points', 'playerId', 'differenceInLevel'],
         include: [
@@ -175,12 +196,12 @@ export class LfbbRankingCalc extends RankingCalc {
             attributes: ['id', 'gameType'],
             where: {
               playedAt: {
-                [Op.and]: [{ [Op.gt]: startDate }, { [Op.lte]: endDate }]
-              }
+                [Op.and]: [{ [Op.gt]: startDate }, { [Op.lte]: endDate }],
+              },
             },
-            required: true
-          }
-        ]
+            required: true,
+          },
+        ],
       })
     ).map((x: RankingPoint) => {
       const points = eligbleForRanking.get(x.playerId) || [];
@@ -199,11 +220,13 @@ export class LfbbRankingCalc extends RankingCalc {
     players.forEach(async (player) => {
       const points = eligbleForRanking.get(player.id) || [];
       const lastRanking =
-        player.lastRankingPlaces.find((p) => p.systemId === this.rankingType.id) ??
+        player.lastRankingPlaces.find(
+          (p) => p.systemId === this.rankingType.id
+        ) ??
         ({
           single: this.rankingType.amountOfLevels,
           mix: this.rankingType.amountOfLevels,
-          double: this.rankingType.amountOfLevels
+          double: this.rankingType.amountOfLevels,
         } as LastRankingPlace);
       // const highestRanking = player.getHighsetRanking(
       //   this.rankingType.id,
@@ -215,7 +238,7 @@ export class LfbbRankingCalc extends RankingCalc {
         {
           single: false,
           double: false,
-          mix: false
+          mix: false,
         },
         updateRankings
       );
@@ -224,7 +247,7 @@ export class LfbbRankingCalc extends RankingCalc {
         ...newPlace,
         playerId: player.id,
         SystemId: this.rankingType.id,
-        rankingDate: endDate
+        rankingDate: endDate,
       });
     });
     logger.debug(`proccesd ${places.length} places`);
@@ -239,7 +262,9 @@ export class LfbbRankingCalc extends RankingCalc {
   }
 
   getStartRanking(currentPlace: number, startPlaces: number[]): number {
-    const level = startPlaces.indexOf(startPlaces.find((x) => x > currentPlace));
+    const level = startPlaces.indexOf(
+      startPlaces.find((x) => x > currentPlace)
+    );
     if (level === -1) {
       return this.rankingType.amountOfLevels;
     } else {

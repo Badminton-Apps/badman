@@ -1,13 +1,13 @@
-import { GraphQLID, GraphQLNonNull } from 'graphql';
-import { ApiError } from '@badvlasim/shared/utils/api.error';
 import {
+  ApiError,
+  AuthenticatedRequest,
+  canExecute,
   Comment,
   DataBaseHandler,
-  logger,
   EventCompetition,
-  AuthenticatedRequest,
-  canExecute
+  logger
 } from '@badvlasim/shared';
+import { GraphQLID, GraphQLNonNull } from 'graphql';
 import { CommentInputType, CommentType } from '../types';
 
 export const addCommentMutation = {

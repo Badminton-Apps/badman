@@ -5,6 +5,7 @@ import {
   Game,
   LevelType,
   logger,
+  StepProcessor,
   SubEventType,
   Team,
   XmlTeamMatch,
@@ -12,7 +13,6 @@ import {
 } from '@badvlasim/shared';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
-import { StepProcessor } from '@badvlasim/shared/utils/step-processor';
 import { VisualService } from '../../../visualService';
 import { DrawStepData } from './draw';
 

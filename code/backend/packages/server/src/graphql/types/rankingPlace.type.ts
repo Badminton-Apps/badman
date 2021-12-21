@@ -1,4 +1,4 @@
-import { LastRankingPlace, RankingPlace } from '@badvlasim/shared/models';
+import { LastRankingPlace, RankingPlace } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
