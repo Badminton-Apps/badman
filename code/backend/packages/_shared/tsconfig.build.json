@@ -11,7 +11,8 @@
   "include": [
     "**/*.ts",
     "models/rankingTypes/start-ranking.json",
-    "database/seeders/players.json",
-    "database/database.config.js"
+    "database/**/*.js",
+    "database/**/*.json",
+    "database/*.js"
   ]
 }

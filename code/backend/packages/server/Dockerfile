@@ -30,7 +30,8 @@ WORKDIR /usr/src/app
 
 COPY package.json lerna.json ./
 COPY packages/_shared/package.json ./packages/_shared/
-COPY packages/server/package.json packages/server/.sequelizerc ./packages/server/
+COPY packages/server/package.json ./packages/server/
+COPY packages/server/.sequelizerc.prod ./packages/server/.sequelizerc
 
 RUN yarn global add lerna
 # Only install production packages
