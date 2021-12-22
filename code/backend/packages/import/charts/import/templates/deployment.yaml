@@ -80,7 +80,7 @@ spec:
           - name: APM_SERVER_URL
             value: {{ .Values.apm.server }}   
           - name: APM_SERVER_ACTIVE
-            value: {{ .Values.apm.active }}               
+            value: {{ .Values.apm.active | quote}}               
           - name: ESC_SERVER_URL
             value: {{ .Values.esc.server }}   
           - name: PORT
