@@ -41,6 +41,7 @@ RUN yarn global add lerna
 # Only install production packages
 RUN lerna bootstrap --scope=@badvlasim/simulate --ci -- --production
 
+COPY --from=build /usr/src/app/packages/_shared/dist ./packages/_shared/dist
 COPY --from=build /usr/src/app/packages/simulate/dist ./packages/simulate/dist
 
 # Set env values

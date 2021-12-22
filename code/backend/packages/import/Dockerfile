@@ -72,6 +72,7 @@ RUN apk --no-cache add --virtual native-deps \
   lerna bootstrap --scope=@badvlasim/import  --ci -- --production && \
   apk del native-deps
 
+COPY --from=build /usr/src/app/packages/_shared/dist ./packages/_shared/dist
 COPY --from=build /usr/src/app/packages/import/dist ./packages/import/dist
 
 RUN npm install pm2 -g
