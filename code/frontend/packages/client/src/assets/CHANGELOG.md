@@ -1,3 +1,12 @@
+## [4.18.12](https://github.com/Badminton-Apps/core/compare/v4.18.11...v4.18.12) (2021-12-22)
+
+
+### Bug Fixes
+
+* copy `.` files  ([1f48202](https://github.com/Badminton-Apps/core/commit/1f48202cefa784c68d321069884913ecf88a125b))
+
+
+
 ## [4.18.11](https://github.com/Badminton-Apps/core/compare/v4.18.10...v4.18.11) (2021-12-22)
 
 
