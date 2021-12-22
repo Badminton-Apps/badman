@@ -1,3 +1,12 @@
+## [4.18.9](https://github.com/Badminton-Apps/core/compare/v4.18.8...v4.18.9) (2021-12-22)
+
+
+### Bug Fixes
+
+* Npx command sequelize ([48d8feb](https://github.com/Badminton-Apps/core/commit/48d8febb10e4572972fcf22a7a23809f0f79fe8b))
+
+
+
 ## [4.18.8](https://github.com/Badminton-Apps/core/compare/v4.18.7...v4.18.8) (2021-12-22)
 
 
