@@ -93,6 +93,8 @@ spec:
             value: {{ .Values.database.DB_USER }}
           - name: DB_DIALECT
             value: {{ .Values.database.DB_DIALECT }}
+          - name: DB_PATH
+            value: {{ .Values.database.PATH | quote }}
           - name: AUTH0_ISSUER
             value: {{ .Values.auth0.issuer }}
           - name: SIMULATE_SERVICE
