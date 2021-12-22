@@ -1,3 +1,12 @@
+## [4.18.8](https://github.com/Badminton-Apps/core/compare/v4.18.7...v4.18.8) (2021-12-22)
+
+
+### Bug Fixes
+
+* running migrations on startup ([1369c20](https://github.com/Badminton-Apps/core/commit/1369c20618ccd86a377fd0da828e52cf841f8c8c))
+
+
+
 ## [4.18.7](https://github.com/Badminton-Apps/core/compare/v4.18.6...v4.18.7) (2021-12-22)
 
 
