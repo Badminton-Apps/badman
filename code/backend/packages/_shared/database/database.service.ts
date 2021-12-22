@@ -615,11 +615,11 @@ export class DataBaseHandler {
       if (canMigrate) {
         if (!sync) {
           logger.info('Running migration');
-          await this.runCommmand('sequelize db:migrate');
+          await this.runCommmand('npx sequelize db:migrate');
         } else {
           logger.info('Syncing');
           // Create non-existing schemas
-          const mySchemas = ['import', 'ranking', 'event', 'security'];
+          const mySchemas = ['import', 'ranking', 'event', 'security', 'job'];
           const schemas = (await this._sequelize.showAllSchemas(
             {}
           )) as unknown as string[];
