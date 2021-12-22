@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/simulate",
   "description": "Ranking simulation simulate Badminton Vlaanderen",
-  "version": "4.18.5",
+  "version": "4.18.6",
   "private": true,
   "scripts": {
     "start": "node -r ts-node/register ./src/server.ts",
@@ -23,7 +23,7 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@badvlasim/shared": "^4.18.5"
+    "@badvlasim/shared": "^4.18.6"
   },
   "peerDependencies": {
     "moment": "^2.24.0"
