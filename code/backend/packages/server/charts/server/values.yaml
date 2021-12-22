@@ -38,6 +38,7 @@ database:
   DB_DATABASE: ranking
   DB_USER: postgres
   DB_DIALECT: postgres
+  DB_PATH: ../_shared/dist/
 
 services:
   simulate: simulate-simulate.badvla
