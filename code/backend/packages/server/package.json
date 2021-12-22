@@ -28,8 +28,7 @@
     "global": "^4.4.0",
     "graphql-cost-analysis": "^1.0.3",
     "http-proxy-middleware": "^2.0.1",
-    "rxjs": "^7.4.0",
-    "sequelize-cli": "^6.3.0"
+    "rxjs": "^7.4.0"
   },
   "peerDependencies": {
     "moment": "^2.24.0"
