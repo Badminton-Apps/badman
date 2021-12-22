@@ -615,7 +615,7 @@ export class DataBaseHandler {
       if (canMigrate) {
         if (!sync) {
           logger.info('Running migration');
-          await this.runCommmand('npx sequelize db:migrate');
+          await this.runCommmand('npx sequelize-cli db:migrate');
         } else {
           logger.info('Syncing');
           // Create non-existing schemas
