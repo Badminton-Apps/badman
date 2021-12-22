@@ -8,11 +8,7 @@ ENV LOG_LEVEL=debug
 ENV NODE_ENV=production
 
 # Add lerna
-COPY package.json .
-COPY lerna.json .
-COPY tsconfig.json .
-COPY tsconfig.build.json .
-COPY yarn.lock .
+COPY package.json lerna.json tsconfig.json tsconfig.build.json yarn.lock ./
 
 # Copy packages
 COPY packages/_shared ./packages/_shared
@@ -32,10 +28,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Work dir
 WORKDIR /usr/src/app
 
-COPY package.json .
-COPY lerna.json .
+COPY package.json lerna.json ./
 COPY packages/_shared/package.json ./packages/_shared/
-COPY packages/server/package.json ./packages/server/
+COPY packages/server/package.json packages/server/.sequelizerc ./packages/server/
 
 RUN yarn global add lerna
 # Only install production packages
