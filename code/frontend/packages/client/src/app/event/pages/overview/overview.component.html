@@ -101,7 +101,7 @@
           <app-competition-data [data]="element"></app-competition-data>
         </ng-container>
 
-        <button mat-button [routerLink]="['/', element.eventType.toLowerCase(), element.id]">
+        <button mat-button [routerLink]="['/', element.eventType.toLowerCase(), element.slug]">
           {{ 'button.detail' | translate }}
         </button>
       </div>

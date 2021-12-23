@@ -1,3 +1,4 @@
+import { Slugify } from '../../types/slugify';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -27,7 +28,7 @@ import {
   HasMany,
   Index,
   IsUUID,
-  Model, 
+  Model,
   PrimaryKey,
   Table,
   Unique,
@@ -97,6 +98,9 @@ export class Player extends Model {
   @Default(false)
   @Column
   competitionPlayer: boolean;
+
+  @Column
+  slug: string;
 
   @Unique('unique_constraint')
   @Index
@@ -228,6 +232,8 @@ export class Player extends Model {
   hasLastRankingPlace!: HasManyHasAssociationMixin<LastRankingPlace, string>;
   hasLastRankingPlaces!: HasManyHasAssociationsMixin<LastRankingPlace, string>;
   countLastRankingPlaces!: HasManyCountAssociationsMixin;
+
+  regenerateSlug!: Slugify<Player>;
 
   async getUserClaims(): Promise<string[]> {
     let claims = (await this.getClaims()).map((r) => r.name);

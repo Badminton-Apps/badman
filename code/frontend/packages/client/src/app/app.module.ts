@@ -131,6 +131,7 @@ export class AppModule {
       serviceName: 'badman-client',
       serverUrl: environment.apmServer,
       environment: environment.production ? 'production' : 'development',
+      active: false
     });
   }
 }

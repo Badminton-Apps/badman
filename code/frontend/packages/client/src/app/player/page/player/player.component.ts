@@ -66,9 +66,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
         if (!player) {
           throw new Error('No player found');
         }
-        return player;
+        return player; 
       }),
-      tap((player) => this.titleService.setTitle(`${player?.fullName}`)),
+      tap((player) => this.titleService.setTitle(`${player!.fullName}`)),
       catchError((err, caught) => {
         console.error('error', err);
         this.snackbar.open(err.message);
