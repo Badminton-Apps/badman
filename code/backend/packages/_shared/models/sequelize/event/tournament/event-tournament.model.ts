@@ -35,7 +35,7 @@ import {
 import { Location } from '../location.model';
 import { LocationEventTournament } from './location-event.model';
 import { SubEventTournament } from './sub-event-tournament.model';
-import { Slugify } from '@badvalsim/shared/types/slugify';
+import { Slugify } from '../../../../types';
 
 @Table({
   timestamps: true,
