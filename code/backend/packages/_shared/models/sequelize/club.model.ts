@@ -1,3 +1,4 @@
+import { Slugify } from '@badvalsim/shared/types/slugify';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -99,6 +100,11 @@ export class Club extends Model {
 
   @HasMany(() => Location)
   locations: Location[];
+
+  @Column
+  slug: string;
+  
+  regenerateSlug!: Slugify<Club>;
 
   // #endregion
 

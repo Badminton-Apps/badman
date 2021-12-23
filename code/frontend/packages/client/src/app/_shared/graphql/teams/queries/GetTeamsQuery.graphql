@@ -1,6 +1,7 @@
 query GetTeamsQuery($clubId: ID!, $active: Boolean!) {
-  teams(clubId: $clubId, where: {active: $active}) {
+  teams(clubId: $clubId, where: { active: $active }) {
     id
+    slug
     name
     abbreviation
     type

@@ -11,6 +11,7 @@ query GetEvents(
       cursor
       node {
         id
+        slug
         name
         dates
         firstDay

@@ -26,7 +26,7 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row.id]"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="[row.slug]"></tr>
 </table>
 
 <mat-paginator

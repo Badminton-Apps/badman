@@ -4,6 +4,7 @@ import { Player } from './player.model';
 
 export class Team {
   id?: string;
+  slug?: string;
   name?: string;
   abbreviation?: string;
   type?: string;
@@ -26,6 +27,7 @@ export class Team {
 
   constructor(args?: Partial<Team>) {
     this.id = args?.id;
+    this.slug = args?.slug;
     this.name = args?.name;
     this.teamNumber = args?.teamNumber;
     this.abbreviation = args?.abbreviation;
