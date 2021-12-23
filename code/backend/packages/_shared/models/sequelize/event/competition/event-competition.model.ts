@@ -1,4 +1,4 @@
-import { Slugify } from '../../../../types';
+import { Slugify } from '../../../../types/slugify';
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
