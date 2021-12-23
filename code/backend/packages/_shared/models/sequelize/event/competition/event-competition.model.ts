@@ -1,4 +1,4 @@
-import { Slugify } from '@badvalsim/shared/types/slugify';
+import { Slugify } from '../../../../types';
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
