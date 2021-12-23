@@ -13,9 +13,14 @@ const playerQuery = {
     }
   },
   resolve: resolver(Player, {
-    before: async (findOptions: { [key: string]: object }) => {
+    before: async (findOptions: { [key: string]: unknown }) => {
+      if (findOptions.where?.['id']) {
+        findOptions.where = {
+          $or: [{ id: findOptions.where?.['id'] }, { slug: findOptions.where?.['id'] }]
+        };
+      }
+
       findOptions = {
-        ...findOptions,
         where: queryFixer(findOptions.where)
       };
       return findOptions;

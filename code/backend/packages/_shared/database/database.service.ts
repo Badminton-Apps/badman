@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { CreateOptions, Op, Transaction } from 'sequelize';
+import { CreateOptions, Model, Op, Transaction } from 'sequelize';
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import {
   Club,
@@ -8,6 +8,7 @@ import {
   DrawCompetition,
   DrawTournament,
   EventCompetition,
+  EventTournament,
   Game,
   GamePlayer,
   LastRankingPlace,
@@ -28,6 +29,7 @@ import {
 import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
 import { splitInChunks } from '../utils/utils';
+import SequelizeSlugify from 'sequelize-slugify';
 
 export class DataBaseHandler {
   static sequelizeInstance: Sequelize;
@@ -47,13 +49,13 @@ export class DataBaseHandler {
   setupDb(config: SequelizeOptions) {
     if (!DataBaseHandler.sequelizeInstance) {
       const models = Object.values(sequelizeModels);
-
       logger.debug('Connecting with ', {
         ...config,
       });
 
       this._dialect = config.dialect;
 
+      // Initialize Sequelize
       DataBaseHandler.sequelizeInstance = new Sequelize({
         ...config,
         logging: config.logging ?? false,
@@ -66,6 +68,23 @@ export class DataBaseHandler {
         },
         models,
       } as SequelizeOptions);
+
+      // Addons & Plugins
+      SequelizeSlugify.slugifyModel(Player as unknown as Model, {
+        source: ['firstName', 'lastName'],
+      });
+      SequelizeSlugify.slugifyModel(EventCompetition as unknown as Model, {
+        source: ['name'],
+      });
+      SequelizeSlugify.slugifyModel(EventTournament as unknown as Model, {
+        source: ['name'],
+      });
+      SequelizeSlugify.slugifyModel(Club as unknown as Model, {
+        source: ['name'],
+      });
+      SequelizeSlugify.slugifyModel(Team as unknown as Model, {
+        source: ['name'],
+      });
     }
   }
 
@@ -448,7 +467,6 @@ export class DataBaseHandler {
       transaction: args.transaction,
     });
 
-
     await PlayerClaimMembership.update(
       { playerId: destination.id },
       {
@@ -520,7 +538,7 @@ export class DataBaseHandler {
           transaction: args.transaction,
         }
       );
-    } 
+    }
 
     const pointCount = await RankingPoint.count({
       where: {

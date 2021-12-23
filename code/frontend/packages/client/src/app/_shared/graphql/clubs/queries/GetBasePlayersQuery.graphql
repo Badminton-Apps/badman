@@ -14,6 +14,7 @@ query GetBasePlayersQuery($id: ID!, $subEventsWhere: SequelizeJSON) {
             id
             player {
               id
+              slug
               fullName
             }
           }

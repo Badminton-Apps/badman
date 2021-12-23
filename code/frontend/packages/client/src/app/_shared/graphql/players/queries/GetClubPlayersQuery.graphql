@@ -3,6 +3,7 @@ query GetClubPlayers($id: ID!, $ranking: Date, $includeRanking: Boolean!, $where
     id
     players(where: $where) {
       id
+      slug
       memberId
       firstName
       lastName

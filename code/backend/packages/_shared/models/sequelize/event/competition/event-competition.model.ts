@@ -1,3 +1,4 @@
+import { Slugify } from '@badvalsim/shared/types/slugify';
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
@@ -8,7 +9,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
   Column,
@@ -20,7 +21,7 @@ import {
   PrimaryKey,
   Table,
   TableOptions,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { LevelType } from '../../../enums';
 import { Comment } from './../../comment.model';
@@ -28,7 +29,7 @@ import { SubEventCompetition } from './sub-event-competition.model';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 } as TableOptions)
 export class EventCompetition extends Model {
   constructor(values?: Partial<EventCompetition>, options?: BuildOptions) {
@@ -53,21 +54,20 @@ export class EventCompetition extends Model {
     foreignKey: 'linkId',
     constraints: false,
     scope: {
-      linkType: 'competition'
-    }
+      linkType: 'competition',
+    },
   })
   comments: Comment[];
 
   @HasMany(() => SubEventCompetition, {
     foreignKey: 'eventId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   subEvents: SubEventCompetition[];
 
   @Unique('EventCompetitions_unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
   type: LevelType;
-
 
   @Unique('EventCompetitions_unique_constraint')
   @Column
@@ -80,6 +80,11 @@ export class EventCompetition extends Model {
   @Default(false)
   @Column
   started: boolean;
+
+  @Column
+  slug: string;
+
+  regenerateSlug!: Slugify<EventCompetition>;
 
   // Has many SubEvent
   getSubEvents!: HasManyGetAssociationsMixin<SubEventCompetition>;

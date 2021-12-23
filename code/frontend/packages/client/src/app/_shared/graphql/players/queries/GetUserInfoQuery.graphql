@@ -1,6 +1,7 @@
 query GetUserInfoQuery($id: ID!) {
   player(id: $id) {
     id
+    slug
     memberId
     firstName
     lastName
@@ -10,6 +11,7 @@ query GetUserInfoQuery($id: ID!) {
     competitionPlayer
     club { 
       id
+      slug
       name
     }
     lastRanking {

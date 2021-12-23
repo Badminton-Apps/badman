@@ -56,7 +56,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
 
   playerSearch(player: Player) {
     if (player.id) {
-      this.router.navigate(['/player', player.id]);
+      this.router.navigate(['/player', player.slug]);
     }
   }
 }
