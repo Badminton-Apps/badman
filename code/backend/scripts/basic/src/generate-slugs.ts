@@ -24,11 +24,15 @@ import * as dbConfig from '@badvlasim/shared/database/database.config.js';
       await p.save({ transaction });
     }
 
+    logger.debug(`${player.length} players updated`);
+
     const clubs = await Club.findAll({ transaction });
     for (const p of clubs) {
       await p.regenerateSlug(transaction);
       await p.save({ transaction });
     }
+
+    logger.debug(`${clubs.length} clubs updated`);
 
     const comps = await EventCompetition.findAll({ transaction });
     for (const p of comps) {
@@ -36,17 +40,23 @@ import * as dbConfig from '@badvlasim/shared/database/database.config.js';
       await p.save({ transaction });
     }
 
+    logger.debug(`${comps.length} competitions updated`);
+
     const tournaments = await EventTournament.findAll({ transaction });
     for (const p of tournaments) {
       await p.regenerateSlug(transaction);
       await p.save({ transaction });
     }
 
+    logger.debug(`${tournaments.length} tournaments updated`);
+
     const teams = await Team.findAll({ transaction });
     for (const p of teams) {
       await p.regenerateSlug(transaction);
       await p.save({ transaction });
     }
+
+    logger.debug(`${teams.length} teams updated`);
 
     await transaction.commit();
   } catch (error) {
