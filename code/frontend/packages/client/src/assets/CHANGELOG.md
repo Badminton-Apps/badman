@@ -1,3 +1,12 @@
+# [4.19.0](https://github.com/Badminton-Apps/core/compare/v4.18.16...v4.19.0) (2021-12-23)
+
+
+### Features
+
+* Slug for main types ([b1dcfd9](https://github.com/Badminton-Apps/core/commit/b1dcfd9dd6782d6488eee3ec7814a4fd82e6cb4b))
+
+
+
 ## [4.18.16](https://github.com/Badminton-Apps/core/compare/v4.18.15...v4.18.16) (2021-12-22)
 
 
