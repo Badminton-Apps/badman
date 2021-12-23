@@ -1,3 +1,4 @@
+import { Slugify } from '@badvalsim/shared/types/slugify';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -150,6 +151,11 @@ export class Team extends Model {
   @Index('club_index')
   @Column
   clubId: string;
+
+  @Column
+  slug: string;
+
+  regenerateSlug!: Slugify<Team>;
 
   @BelongsToMany(() => Player, () => TeamPlayerMembership)
   players: Player[];

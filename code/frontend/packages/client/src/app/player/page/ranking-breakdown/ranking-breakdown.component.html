@@ -1,6 +1,6 @@
 <ng-container *ngIf="this.data$ | async as data; else loading">
   <div class="mat-subheading-1">
-    <button mat-icon-button [routerLink]="['/player', data.player.id]"><mat-icon>arrow_back</mat-icon></button
+    <button mat-icon-button [routerLink]="['/player', data.player.slug]"><mat-icon>arrow_back</mat-icon></button
     >{{ 'breakdown.title' | translate }}
   </div>
 

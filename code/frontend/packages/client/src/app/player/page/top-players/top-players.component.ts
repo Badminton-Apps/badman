@@ -83,7 +83,7 @@ export class TopPlayersComponent implements OnInit {
   }
 
   goToPlayer(event: any) {
-    this.router.navigate(['/', 'player', event.row.player.id]);
+    this.router.navigate(['/', 'player', event.row.player.slug]);
   }
 
   private createColums() {

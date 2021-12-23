@@ -32,12 +32,12 @@
           <div class="pages">
             <a mat-list-item [routerLink]="['./']" *ngIf="device.mobileQuery.matches">Badman</a>
             <ng-container *ngIf="this.profile$ | async as profile">
-              <a mat-list-item [routerLink]="['/player', profile.id]" routerLinkActive="active"> My games </a>
+              <a mat-list-item [routerLink]="['/player', profile.slug]" routerLinkActive="active"> My games </a>
 
               <a
                 mat-list-item
                 *ngIf="profile?.clubs && (profile.clubs?.length ?? 0) == 1"
-                [routerLink]="['/club', profile.clubs![0].id]"
+                [routerLink]="['/club', profile.clubs![0].slug]"
               >
                 My club
               </a>
@@ -48,7 +48,7 @@
                     <mat-panel-title>Clubs</mat-panel-title>
                   </mat-expansion-panel-header>
                   <mat-nav-list *ngFor="let club of profile.clubs">
-                    <a mat-list-item [routerLink]="['/club', club.id]" routerLinkActive="active">
+                    <a mat-list-item [routerLink]="['/club', club.slug]" routerLinkActive="active">
                       {{ club.name }}
                     </a>
                   </mat-nav-list>
