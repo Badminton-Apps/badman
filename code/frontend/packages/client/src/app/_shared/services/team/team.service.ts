@@ -18,7 +18,6 @@ import * as removePlayerToTeamMutation from '../../graphql/teams/mutations/remov
 import * as updatePlayerTeamMutation from '../../graphql/teams/mutations/updatePlayerTeamMutation.graphql';
 import * as addBasePlayerForSubEvent from '../../graphql/teams/mutations/addBasePlayerForSubEvent.graphql';
 import * as removeBasePlayerForSubEvent from '../../graphql/teams/mutations/removeBasePlayerForSubEvent.graphql';
-import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root',

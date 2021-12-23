@@ -9,7 +9,7 @@
     </button>
 
     <mat-menu #profileMenu="matMenu">
-      <a mat-menu-item [routerLink]="['/', 'player', user?.player?.id]">Profile</a>
+      <a mat-menu-item [routerLink]="['/', 'player', user?.player?.slug]">Profile</a>
       <button mat-menu-item *ngIf="auth.isAuthenticated$ | async" (click)="logout()">Log Out</button>
       <app-language></app-language>
     </mat-menu>
