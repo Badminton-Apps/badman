@@ -1,3 +1,12 @@
+## [4.19.2](https://github.com/Badminton-Apps/core/compare/v4.19.1...v4.19.2) (2021-12-23)
+
+
+### Bug Fixes
+
+* package reference should be for shared ([a224987](https://github.com/Badminton-Apps/core/commit/a224987a207f627f2af222ad4cef380a9608d16a))
+
+
+
 ## [4.19.1](https://github.com/Badminton-Apps/core/compare/v4.19.0...v4.19.1) (2021-12-23)
 
 
