@@ -1,3 +1,7 @@
+## [4.19.1](https://github.com/Badminton-Apps/core/compare/v4.19.0...v4.19.1) (2021-12-23)
+
+
+
 # [4.19.0](https://github.com/Badminton-Apps/core/compare/v4.18.16...v4.19.0) (2021-12-23)
 
 
