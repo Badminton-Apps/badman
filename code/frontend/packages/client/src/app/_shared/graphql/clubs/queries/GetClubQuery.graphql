@@ -13,6 +13,7 @@ query GetClubQuery(
 ) {
   club(id: $id) {
     id
+    slug
     name
     fullName
     useForTeamName
@@ -20,8 +21,9 @@ query GetClubQuery(
     clubId
     teams(order: "type", where: $teamsWhere) @include(if: $includeTeams) {
       id
+      slug
       name
-      abbreviation 
+      abbreviation
       type
       preferredTime
       preferredDay
@@ -29,6 +31,7 @@ query GetClubQuery(
       teamNumber
       players(end: $end, where: $teamPlayersWhere) {
         id
+        slug
         firstName
         lastName
         competitionPlayer
@@ -61,6 +64,7 @@ query GetClubQuery(
       name
       description
       players {
+        slug
         id
         firstName
         lastName
@@ -69,6 +73,7 @@ query GetClubQuery(
 
     players(end: $end) @include(if: $includePlayers) {
       id
+      slug
       firstName
       lastName
       lastRanking @include(if: $includePlaces) {

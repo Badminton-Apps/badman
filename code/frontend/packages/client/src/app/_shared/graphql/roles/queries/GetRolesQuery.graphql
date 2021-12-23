@@ -3,6 +3,7 @@ query GetRolesQuery($where: SequelizeJSON) {
     id
     name
     players {
+      slug
       id
       firstName
       lastName

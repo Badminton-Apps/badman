@@ -40,7 +40,7 @@
         class="player"
         *ngFor="let player of this.team.players"
         [ngClass]="{ base: player.base }"
-        [routerLink]="['/player', this.player.id]"
+        [routerLink]="['/player', this.player.slug]"
       >
         {{ player.firstName }} {{ player.lastName }}
         <small *ngIf="player.lastRanking">

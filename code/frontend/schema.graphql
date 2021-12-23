@@ -50,6 +50,16 @@ type RootQueryType {
     where: SequelizeJSON
     offset: Int
   ): [Cron]
+  points(
+    limit: Int
+    order: String
+
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    where: SequelizeJSON
+    offset: Int
+  ): [RankingPoint]
   eventCompetition(
     """id of the event competition"""
     id: ID!
@@ -282,6 +292,7 @@ type Club {
   useForTeamName: ClubuseForTeamNameEnumType
   abbreviation: String
   clubId: Int
+  slug: String
   createdAt: Date!
   updatedAt: Date!
   teams(
@@ -342,6 +353,7 @@ type Team {
   preferredDay: TeampreferredDayEnumType
   abbreviation: String
   clubId: String
+  slug: String
   type: String
   email: String
   phone: String
@@ -508,6 +520,7 @@ type GamePlayer {
   lastName: String
   fullName: String
   competitionPlayer: Boolean
+  slug: String
   memberId: String
   createdAt: Date!
   updatedAt: Date!
@@ -602,6 +615,11 @@ type RankingSystem {
   differenceForUpgrade: Int
   differenceForDowngrade: Int
   startingType: RankingSystemstartingTypeEnumType
+  pointsToGoUp: [Int]
+  pointsWhenWinningAgainst: [Int]
+  pointsToGoDown: [Int]
+  levelArray: String
+  levelArrayOneMinus: String
   createdAt: Date!
   updatedAt: Date!
   counts(
@@ -684,6 +702,7 @@ type Player {
   lastName: String
   fullName: String
   competitionPlayer: Boolean
+  slug: String
   memberId: String
   createdAt: Date!
   updatedAt: Date!
@@ -821,6 +840,16 @@ type RankingPoint {
     where: SequelizeJSON
     offset: Int
   ): Player!
+  game(
+    limit: Int
+    order: String
+
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    where: SequelizeJSON
+    offset: Int
+  ): Game!
 }
 
 """A DrawTournament"""
@@ -912,6 +941,7 @@ type EventTournament {
   dates: String
   allowEnlisting: Boolean
   visualCode: String
+  slug: String
   createdAt: Date!
   updatedAt: Date!
   subEvents(
@@ -1091,6 +1121,7 @@ type EventCompetition {
   visualCode: String
   allowEnlisting: Boolean
   started: Boolean
+  slug: String
   createdAt: Date!
   updatedAt: Date!
   subEvents(
@@ -1447,6 +1478,7 @@ input ClubInput {
   useForTeamName: ClubuseForTeamNameEnumType
   abbreviation: String
   clubId: Int
+  slug: String
 }
 
 """This represents a CommentnputType"""
@@ -1468,6 +1500,7 @@ input EventCompetitionInput {
   visualCode: String
   allowEnlisting: Boolean
   started: Boolean
+  slug: String
   subEvents: [SubEventCompetitionInput]
 }
 
@@ -1500,6 +1533,7 @@ input EventTournamentInput {
   dates: String
   allowEnlisting: Boolean
   visualCode: String
+  slug: String
   subEvents: [SubEventTournamentInput]
 }
 
@@ -1542,6 +1576,7 @@ input PlayerInput {
   lastName: String
   fullName: String
   competitionPlayer: Boolean
+  slug: String
   memberId: String
 }
 
@@ -1577,6 +1612,11 @@ input RankingSystemInput {
   differenceForUpgrade: Int
   differenceForDowngrade: Int
   startingType: RankingSystemstartingTypeEnumType
+  pointsToGoUp: String
+  pointsWhenWinningAgainst: String
+  pointsToGoDown: String
+  levelArray: String
+  levelArrayOneMinus: String
   groups: [RankingSystemGroupInput]
 }
 
@@ -1604,6 +1644,7 @@ input TeamInput {
   preferredTime: String
   preferredDay: TeampreferredDayEnumType
   clubId: String
+  slug: String
   type: String
   email: String
   phone: String

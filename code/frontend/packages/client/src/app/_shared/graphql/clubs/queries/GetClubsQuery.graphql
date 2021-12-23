@@ -6,6 +6,7 @@ query GetClubs($first: Int, $after: String, $where: SequelizeJSON) {
       cursor
       node {
         id
+        slug
         name
         fullName
         clubId
@@ -14,4 +15,3 @@ query GetClubs($first: Int, $after: String, $where: SequelizeJSON) {
     }
   }
 }
- 

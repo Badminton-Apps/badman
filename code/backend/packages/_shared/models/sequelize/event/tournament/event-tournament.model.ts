@@ -35,6 +35,7 @@ import {
 import { Location } from '../location.model';
 import { LocationEventTournament } from './location-event.model';
 import { SubEventTournament } from './sub-event-tournament.model';
+import { Slugify } from '../../../../types/slugify';
 
 @Table({
   timestamps: true,
@@ -90,6 +91,11 @@ export class EventTournament extends Model {
   @Unique('EventTournaments_unique_constraint')
   @Column
   visualCode: string;
+
+  @Column
+  slug: string;
+
+  regenerateSlug!: Slugify<EventTournament>;
 
   // Has many subEvent
   getSubEvents!: HasManyGetAssociationsMixin<SubEventTournament>;

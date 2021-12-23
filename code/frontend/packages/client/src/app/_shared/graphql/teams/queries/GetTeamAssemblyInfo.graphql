@@ -23,6 +23,7 @@ query GetTeamInfo($clubId: ID!, $ranking: Date, $subEventWhere: SequelizeJSON) {
       }
       players {
         id
+        slug
         fullName
         gender
         competitionPlayer

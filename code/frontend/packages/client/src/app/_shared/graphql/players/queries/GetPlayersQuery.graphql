@@ -1,6 +1,7 @@
 query GetPlayers($where: SequelizeJSON, $ranking: Date, $includeRanking: Boolean!, $includeClub: Boolean!) {
   players(where: $where) {
     id
+    slug
     memberId
     firstName
     lastName
