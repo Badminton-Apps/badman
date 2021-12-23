@@ -93,7 +93,7 @@ export class RankingController extends BaseController {
       include: [
         {
           model: Player,
-          attributes: ['id', 'firstName', 'lastName'],
+          attributes: ['id', 'slug',  'firstName', 'lastName'],
           where: {
             gender: request.query.gender ?? 'M'
           },

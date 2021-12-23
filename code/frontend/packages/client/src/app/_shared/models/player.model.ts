@@ -10,6 +10,7 @@ export class Player {
   phone?: string;
   memberId?: string;
   sub?: string;
+  slug?: string;
   gender?: string;
   avatar?: string;
   firstName?: string;
@@ -41,6 +42,7 @@ export class Player {
     this.games = args?.games?.map((g) => new Game(g));
     this.base = args?.base;
     this.sub = args?.sub;
+    this.slug = args?.slug;
     this.index = args?.index as any;
     this.competitionPlayer = args?.competitionPlayer ?? false;
     this.clubs = args?.clubs?.map((club) => new Club(club));

@@ -2,6 +2,7 @@
 query GetEvent($id: ID!) {
   eventTournament(id: $id) {
     id
+    slug
     name
     dates
     firstDay

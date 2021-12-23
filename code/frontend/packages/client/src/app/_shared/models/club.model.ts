@@ -5,6 +5,7 @@ import { Location } from './location.model';
 
 export class Club {
   id?: string;
+  slug?: string;
   name?: string;
   fullName?: string;
   abbreviation?: string;
@@ -20,6 +21,7 @@ export class Club {
 
   constructor({ ...args }: Partial<Club>) {
     this.id = args.id;
+    this.slug = args.slug;
     this.name = args.name;
     this.fullName = args.fullName;
     this.abbreviation = args.abbreviation;

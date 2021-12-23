@@ -2,6 +2,7 @@ import { Player, SubEvent } from 'app/_shared';
 
 export class Event {
   id?: string;
+  slug?: string;
   name?: string;
   eventType?: EventType;
   fileName?: string;
@@ -15,6 +16,7 @@ export class Event {
   constructor({ ...args }: Partial<Event>) {
     this.name = args.name;
     this.id = args.id;
+    this.slug = args.slug;
     this.fileName = args.fileName;
     this.uniCode = args.uniCode;
     this.allowEnlisting = args.allowEnlisting;

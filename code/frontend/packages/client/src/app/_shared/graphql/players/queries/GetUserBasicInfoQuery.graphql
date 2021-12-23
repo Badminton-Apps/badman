@@ -2,6 +2,7 @@
 query GetUserInfoQuery($id: ID!) {
   player(id: $id) {
     id
+    slug
     memberId
     firstName
     lastName
