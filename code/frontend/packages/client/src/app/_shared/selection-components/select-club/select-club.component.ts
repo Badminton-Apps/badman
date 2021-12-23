@@ -88,7 +88,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
-        queryParams: { club: r },
+        queryParams: { club: this.options.find((x) => x.id === r)?.slug ?? r },
         queryParamsHandling: 'merge',
       });
     });
@@ -98,7 +98,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       let foundClub = null;
 
       if (params && params['club'] && this.options.length > 0) {
-        foundClub = this.options.find((r) => r.id == params['club']);
+        foundClub = this.options.find((r) => r.slug === params['club'] || r.id === params['club']);
       }
 
       if (foundClub == null) {

@@ -8,7 +8,7 @@
 
 <ng-container *ngIf="this.player">
   <!-- User -->
-  <div class="has-user" [routerLink]="['/player', this.player.id]">
+  <div class="has-user" [routerLink]="['/player', this.player.slug]">
     <!-- Name -->
     <span>{{ this.player.firstName }} {{ this.player.lastName }}</span>
 

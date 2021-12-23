@@ -1,6 +1,7 @@
 query GetEvent($id: ID!, $includeComments: Boolean!, $clubId: ID) {
   eventCompetition(id: $id) {
     id
+    slug
     name
     startYear
     allowEnlisting

@@ -8,6 +8,7 @@ query GetBasePlayers($clubId: ID!, $type: String) {
         id
         base
         id
+        slug
         lastRanking {
           id
           single

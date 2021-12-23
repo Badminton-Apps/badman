@@ -33,6 +33,9 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   teamsMX$?: Observable<Team[]>;
   teamsNAT$?: Observable<Team[]>;
 
+  // TODO check if this can be changed to obserable
+  options?: Team[];
+
   constructor(
     private teamService: TeamService,
     private router: Router,
@@ -46,11 +49,13 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
 
     const previous = this.formGroup.get(this.dependsOn);
 
-    if (previous) {
+    if (!previous) {
+      console.warn(`Dependency ${this.dependsOn} not found`, previous);
+    } else {
       this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
         this.router.navigate([], {
           relativeTo: this.activatedRoute,
-          queryParams: { team: r },
+          queryParams: { team: this.options?.find((x) => x.id === r)?.slug ?? r },
           queryParamsHandling: 'merge',
         });
       });
@@ -80,19 +85,19 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
             map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
           );
 
-
           this.teamsNAT$ = team$.pipe(
             map((teams) => teams.filter((team) => team.type === 'NATIONAL')),
             map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
           );
 
-
           team$.subscribe((teams) => {
+            this.options = teams; 
+
             let foundTeam = null;
             let teamId = this.activatedRoute.snapshot?.queryParamMap?.get('team');
 
             if (teamId && teams.length > 0) {
-              foundTeam = teams.find((r) => r.id == teamId);
+              foundTeam = teams.find((r) => r.slug == teamId || r.id == teamId);
             }
 
             if (foundTeam == null) {
@@ -113,8 +118,6 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
           this.formControl.disable();
         }
       });
-    } else {
-      console.warn(`Dependency ${this.dependsOn} not found`, previous);
     }
   }
 
