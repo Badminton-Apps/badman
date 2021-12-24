@@ -12,9 +12,10 @@ spec:
   version: 7.16.2
   volumeClaimDeletePolicy: DeleteOnScaledownOnly
   nodeSets:
-    - name: default
+    - name: master-nodes
       count: 3
       config:
+        node.roles: ["master"]
         node.store.allow_mmap: false
       volumeClaimTemplates:
         - metadata:
@@ -26,6 +27,21 @@ spec:
               requests:
                 storage: 5Gi
             storageClassName: linode-block-storage
+    - name: data-nodes
+      count: 3
+      config:
+        node.roles: ["data", "ingest"]
+        node.store.allow_mmap: false
+      volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+          storageClassName: linode-block-storage
 ---
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
