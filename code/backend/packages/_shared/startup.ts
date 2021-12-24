@@ -23,7 +23,7 @@ export const startWhenReady = async (
       serverUrl: process.env.APM_SERVER_URL,
       secretToken: process.env.APM_SERVER_TOKEN,
       verifyServerCert: false,
-      active: false // process.env.APM_SERVER_ACTIVE === 'true' ?? true,
+      active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
     } as AgentConfigOptions;
     apm.start(apmConifg);
     logger.debug(`Started APM`, apmConifg);
