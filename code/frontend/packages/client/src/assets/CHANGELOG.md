@@ -1,3 +1,17 @@
+# [4.20.0](https://github.com/Badminton-Apps/core/compare/v4.19.2...v4.20.0) (2021-12-24)
+
+
+### Bug Fixes
+
+* re-enabeling APM ([60b8af5](https://github.com/Badminton-Apps/core/commit/60b8af564e5890fe085ae4c724c83b01097e5301))
+
+
+### Features
+
+* added data nodes for elastic ([8dbf9bc](https://github.com/Badminton-Apps/core/commit/8dbf9bcb9493fc07d3eb53fdb4fb268147255399))
+
+
+
 ## [4.19.2](https://github.com/Badminton-Apps/core/compare/v4.19.1...v4.19.2) (2021-12-23)
 
 
