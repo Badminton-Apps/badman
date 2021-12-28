@@ -1,3 +1,12 @@
+## [4.20.2](https://github.com/Badminton-Apps/core/compare/v4.20.1...v4.20.2) (2021-12-28)
+
+
+### Bug Fixes
+
+* moved copy of assets files to root ([cd43d7c](https://github.com/Badminton-Apps/core/commit/cd43d7cc7997005350493668b0b96ea623136590))
+
+
+
 ## [4.20.1](https://github.com/Badminton-Apps/core/compare/v4.20.0...v4.20.1) (2021-12-28)
 
 
