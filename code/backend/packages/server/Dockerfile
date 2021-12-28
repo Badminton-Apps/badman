@@ -16,7 +16,7 @@ COPY packages/server ./packages/server
 
 RUN yarn global add lerna
 RUN lerna bootstrap --scope=@badvlasim/server  --ci -- --production=false
-RUN lerna run build --scope=@badvlasim/server
+RUN yarn run build --scope=@badvlasim/server
 
 # production environment
 FROM node:12.22.0-slim
