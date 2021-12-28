@@ -10,6 +10,7 @@
   "private": true,
   "scripts": {
     "build": "yarn run clean && yarn run compile",
+    "postbuild": "copyfiles **/*.png dist/",
     "clean": "rimraf -rf ./dist",
     "compile": "tsc -b tsconfig.build.json",
     "lint": "eslint -c ../../.eslintrc ./**/*{.ts,.tsx}",
