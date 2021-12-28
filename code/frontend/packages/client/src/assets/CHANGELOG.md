@@ -1,3 +1,22 @@
+## [4.20.4](https://github.com/Badminton-Apps/core/compare/v4.20.3...v4.20.4) (2021-12-28)
+
+
+### Bug Fixes
+
+* Add user context info to APM ([67b4ead](https://github.com/Badminton-Apps/core/commit/67b4eada4155adad0a0068356cd62eb8354d3c99))
+* Copy template files ([90f1589](https://github.com/Badminton-Apps/core/commit/90f158999616e515f3204e1a38b1e46f998caa3d))
+
+
+
+## [4.20.3](https://github.com/Badminton-Apps/core/compare/v4.20.2...v4.20.3) (2021-12-28)
+
+
+### Bug Fixes
+
+* Running correct build command ([f8f1dc1](https://github.com/Badminton-Apps/core/commit/f8f1dc1ff301cf0b531635c737858d5c407e9bb9))
+
+
+
 ## [4.20.2](https://github.com/Badminton-Apps/core/compare/v4.20.1...v4.20.2) (2021-12-28)
 
 
