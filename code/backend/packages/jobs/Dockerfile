@@ -16,7 +16,7 @@ COPY packages/jobs ./packages/jobs
 
 RUN yarn global add lerna
 RUN lerna bootstrap --scope=@badvlasim/job  --ci -- --production=false
-RUN lerna run build --scope=@badvlasim/job
+RUN yarn run build --scope=@badvlasim/job
 
 # production environment
 FROM node:12.22.0-slim

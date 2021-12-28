@@ -16,7 +16,7 @@ COPY packages/import ./packages/import
 
 RUN yarn global add lerna
 RUN lerna bootstrap --scope=@badvlasim/import  --ci -- --production=false
-RUN lerna run build --scope=@badvlasim/import
+RUN yarn run build --scope=@badvlasim/import
 
 # production environment
 FROM node:12.22.0-alpine
