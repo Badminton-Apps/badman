@@ -16,7 +16,7 @@ export class UserService {
   profile$: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
   profile?: Player;
 
-  constructor(private httpClient: HttpClient, private auth: AuthService) {
+  constructor(private httpClient: HttpClient, private auth: AuthService, private apmService: ApmService) {
     const whenAuthenticated = this.httpClient.get<{ player: Player; request: any }>(`${this.urlBase}/profile`).pipe(
       startWith({ player: null, request: null }),
       filter((user) => user !== null),
@@ -25,7 +25,14 @@ export class UserService {
     );
 
     this.profile$ = this.auth.user$.pipe(
-      mergeMap((x) => iif(() => x != null && x != undefined, whenAuthenticated, of(null)))
+      tap((user) => {
+        this.apmService.apm.setUserContext({
+          username: user?.name,
+          email: user?.email,
+        });
+      }),
+      mergeMap((x) => iif(() => x != null && x != undefined, whenAuthenticated, of(null))),
+      shareReplay()
     );
   }
 
