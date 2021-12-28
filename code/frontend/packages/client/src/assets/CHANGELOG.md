@@ -1,3 +1,12 @@
+## [4.20.1](https://github.com/Badminton-Apps/core/compare/v4.20.0...v4.20.1) (2021-12-28)
+
+
+### Bug Fixes
+
+* pdf generation team assembly ([408acfd](https://github.com/Badminton-Apps/core/commit/408acfdea9c6b37fdbee2c587f0a3e21ebc8e323))
+
+
+
 # [4.20.0](https://github.com/Badminton-Apps/core/compare/v4.19.2...v4.20.0) (2021-12-24)
 
 
