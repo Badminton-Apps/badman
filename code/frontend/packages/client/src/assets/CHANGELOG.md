@@ -1,3 +1,12 @@
+## [4.20.3](https://github.com/Badminton-Apps/core/compare/v4.20.2...v4.20.3) (2021-12-28)
+
+
+### Bug Fixes
+
+* Running correct build command ([f8f1dc1](https://github.com/Badminton-Apps/core/commit/f8f1dc1ff301cf0b531635c737858d5c407e9bb9))
+
+
+
 ## [4.20.2](https://github.com/Badminton-Apps/core/compare/v4.20.1...v4.20.2) (2021-12-28)
 
 
