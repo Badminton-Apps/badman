@@ -12,7 +12,7 @@
     "test": "npx lerna run test --stream",
     "test:inspect": "npx lerna run test:inspect --stream",
     "build": "npx lerna run build --stream",
-    "postbuild": "copyfiles -u 2 -e '**/lcov-report/*.png' packages/_shared/**/*.png  packages/_shared/dist",
+    "postbuild": "copyfiles -u 2 -e '**/lcov-report/*.png' packages/_shared/**/*.png packages/_shared/**/*.handlebars  packages/_shared/dist",
     "test:local": "npx lerna run test:local --stream",
     "migrate": "npx lerna run migrate --scope=@badvlasim\\server",
     "release": "npx lerna version",
