@@ -9,13 +9,13 @@ import {
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
+  TeamSubEventMembership,
   LastRankingPlace,
   Player,
   RankingPlace,
   SubEventCompetition,
   SubEventType,
   Team,
-  TeamSubEventMembership,
 } from '../../models';
 import { logger } from '../../utils';
 import moment from 'moment';
@@ -111,11 +111,11 @@ export class PdfService {
       subtitude: string[];
     };
   }) {
-    const ids = [
+    const idPlayers = [
       ...input.team?.single,
       ...input.team?.double.flat(1),
-      ...input.team?.subtitude,
     ];
+    const idSubs =  input.team?.subtitude
 
     const encounter = await EncounterCompetition.findByPk(input.encounterId, {
       include: [
@@ -147,7 +147,25 @@ export class PdfService {
     const players = await Player.findAll({
       where: {
         id: {
-          [Op.in]: ids,
+          [Op.in]: idPlayers,
+        },
+      },
+      include: [
+        { model: LastRankingPlace },
+        {
+          model: RankingPlace,
+          limit: 1,
+          where: {
+            rankingDate: `${year}-05-15`,
+          },
+        },
+      ],
+    });
+
+    const subs = await Player.findAll({
+      where: {
+        id: {
+          [Op.in]: idSubs,
         },
       },
       include: [
@@ -176,7 +194,7 @@ export class PdfService {
       }
     >();
 
-    players.forEach((player) => {
+    players.concat(subs).forEach((player) => {
       const mayIndex = player.rankingPlaces[0] ?? {
         single: 12,
         double: 12,
