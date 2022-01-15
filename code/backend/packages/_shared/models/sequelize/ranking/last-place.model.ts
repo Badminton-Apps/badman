@@ -39,6 +39,9 @@ export class LastRankingPlace extends Model {
   rankingDate: Date;
 
   @Column
+  gender: string;
+
+  @Column
   singlePoints: number;
   @Column
   mixPoints: number;
