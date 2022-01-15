@@ -3,7 +3,6 @@ import {
   EventTournament,
   Game,
   GameType,
-  logger,
   StepOptions,
   StepProcessor,
   SubEventTournament,

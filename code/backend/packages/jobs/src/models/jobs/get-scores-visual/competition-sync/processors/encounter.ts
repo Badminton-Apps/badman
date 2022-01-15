@@ -4,7 +4,6 @@ import {
   EventCompetition,
   Game,
   LevelType,
-  logger,
   StepOptions,
   StepProcessor,
   SubEventType,

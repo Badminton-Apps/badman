@@ -1,6 +1,5 @@
 import {
   EventTournament,
-  logger,
   StepOptions,
   StepProcessor,
   XmlTournament

@@ -3,7 +3,6 @@ import {
   DrawType,
   EncounterCompetition,
   Game,
-  logger,
   StepOptions,
   StepProcessor,
   SubEventCompetition,

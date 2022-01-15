@@ -4,7 +4,6 @@ import {
   Game,
   GamePlayer,
   LfbbRankingCalc,
-  logger,
   OriginalRankingCalc,
   Player,
   RankingPlace,
