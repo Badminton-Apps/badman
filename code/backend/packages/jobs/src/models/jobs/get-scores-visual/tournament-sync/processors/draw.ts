@@ -2,7 +2,6 @@ import {
   DrawTournament,
   DrawType,
   Game,
-  logger,
   StepOptions,
   StepProcessor,
   SubEventTournament,
