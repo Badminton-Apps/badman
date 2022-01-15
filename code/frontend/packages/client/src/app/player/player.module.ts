@@ -50,6 +50,8 @@ import {
 import { ListGamesComponent, PeriodSelectionComponent, RankingBreakdownComponent } from './page/ranking-breakdown';
 import { PlayerRoutingModule } from './player-routing.module';
 import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 const materialModules = [
   MatCardModule,
@@ -62,6 +64,8 @@ const materialModules = [
   MatSnackBarModule,
   MatTabsModule,
   MatTableModule,
+  MatPaginatorModule,
+  MatSortModule,
   MatSelectModule,
   MatExpansionModule,
   MatDialogModule,
@@ -73,8 +77,6 @@ const covalentModules = [
   CovalentBaseEchartsModule,
   CovalentLineEchartsModule,
   CovalentTooltipEchartsModule,
-  CovalentDataTableModule,
-  CovalentPagingModule,
 ];
 
 const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, SelctionComponentsModule];
