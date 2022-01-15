@@ -27,12 +27,12 @@
   },
   "systems": {
     "double": "Dubbel",
-    "double-rank": "Ranking klassement",
+    "double-rank": "Ranking plaats",
     "list": "Ranking spelers",
     "mix": "Gemengd",
-    "mix-rank": "Ranking klassement",
+    "mix-rank": "Ranking plaats",
     "single": "Enkel",
-    "single-rank": "Ranking klassement"
+    "single-rank": "Ranking plaats"
   },
   "faq": {
     "legend": "Legende",
