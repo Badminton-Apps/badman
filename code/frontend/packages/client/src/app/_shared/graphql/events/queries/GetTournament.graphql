@@ -1,6 +1,6 @@
 # Write your query or mutation here
 query GetEvent($id: ID!) {
-  eventTournament(id: $id) {
+  tournamentEvent(id: $id) {
     id
     slug
     name

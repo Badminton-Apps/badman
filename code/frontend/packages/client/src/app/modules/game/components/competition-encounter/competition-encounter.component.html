@@ -1,0 +1,27 @@
+<div fxFlex fxLayout="column">
+  <div fxLayout="row" class="summary">
+    <div fxFlex fxLayout="column">
+      <div fxLayout="row" class="teams">
+        <div>{{ this.encounter.home?.name }}</div>
+        <div class="result">
+          (
+          <span class="score">{{ this.encounter.homeScore ?? 0 }}</span>
+          <span class="between"> - </span>
+          <span class="score">{{ this.encounter.awayScore ?? 0 }}</span>
+          )
+        </div>
+        <div>{{ this.encounter.away?.name }}</div>
+      </div>
+      <div fxFlex class="date">{{ this.encounter.date | amDateFormat: 'llll' }}</div>
+    </div>
+    <div fxFlex="50px">
+      <button id="expand" [@icon-rotation]="collapsed" (click)="toggleCollapse()" mat-icon-button>
+        <mat-icon>expand_more</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div [@collapse]="collapsed" class="games">
+    <app-game-info *ngFor="let game of this.encounter.games" [game]="game"></app-game-info>
+  </div>
+</div>

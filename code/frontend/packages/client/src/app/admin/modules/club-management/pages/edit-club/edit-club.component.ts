@@ -63,23 +63,30 @@ export class EditClubComponent implements OnInit {
       this.competitionYear.valueChanges,
       this.updateClub$.pipe(debounceTime(600)),
     ]).pipe(
-      switchMap((args: any[]) => {
-        return this.eventService.getSubEventsCompetition(args[1]).pipe(
+      switchMap(([clubId, year, update]) => {
+        return this.eventService.getSubEventsCompetition(year).pipe(
           map((subEvents) => {
-            args.push(subEvents?.map((subEvent) => subEvent?.subEvents?.map((subEvent) => subEvent.id)).flat(2));
-            return args;
+            return [
+              clubId,
+              year,
+              update,
+              subEvents?.map((subEvent) => subEvent?.subEvents?.map((subEvent) => subEvent.id)).flat(2),
+            ];
           })
         );
       }),
-      switchMap(([clubId, year, permissions, update, subEvents]) => {
+      switchMap(([clubId, year, update, subEvents]) => {
         return this.clubService.getTeamsForSubEvents(clubId, subEvents);
+      }),
+      tap((teams) => {
+        console.log(teams);
       })
     );
 
     this.club$ = combineLatest([clubid$, this.updateClub$]).pipe(
       debounceTime(600),
       switchMap(([id]) => this.clubService.getClub(id!)),
-      tap(club => this.titleService.setTitle(`Edit ${club.name}`))
+      tap((club) => this.titleService.setTitle(`Edit ${club.name}`))
     );
 
     this.locations$ = combineLatest([clubid$, this.updateLocation$]).pipe(
@@ -157,11 +164,15 @@ export class EditClubComponent implements OnInit {
   }
 
   async onAddBasePlayer(player: Player, team: Team) {
-    await lastValueFrom(this.teamService.addBasePlayer(team.id!, player.id!, team.subEvents[0].id!));
+    await lastValueFrom(
+      this.teamService.addBasePlayer(team.id!, player.id!, team.entries![0]!.competitionSubEvent!.id!)
+    );
     this.updateClub$.next(null);
   }
   async onDeleteBasePlayer(player: Player, team: Team) {
-    await lastValueFrom(this.teamService.removeBasePlayer(team.id!, player.id!, team.subEvents[0].id!));
+    await lastValueFrom(
+      this.teamService.removeBasePlayer(team.id!, player.id!, team.entries![0]!.competitionSubEvent!.id!)
+    );
     this.updateClub$.next(null);
   }
 }

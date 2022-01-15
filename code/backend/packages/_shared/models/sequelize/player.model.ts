@@ -10,6 +10,7 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BuildOptions,
+  CreateOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -21,6 +22,7 @@ import {
   HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
+  BeforeCreate,
   BelongsToMany,
   Column,
   DataType,
@@ -36,7 +38,7 @@ import {
 import { ClubMembership } from './club-membership.model';
 import { Club } from './club.model';
 import { Comment } from './comment.model';
-import { Game, GamePlayer } from './event';
+import { EventEntry, Game, GamePlayer } from './event';
 import { LastRankingPlace, RankingPlace, RankingPoint } from './ranking';
 import {
   Claim,
@@ -78,7 +80,17 @@ export class Player extends Model {
   sub: string;
 
   @HasMany(() => Team, 'captainId')
-  taems: Team[];
+  myTeams: Team[];
+
+  @HasMany(() => EventEntry, 'player1Id')
+  entriesP1: EventEntry[];
+
+  @HasMany(() => EventEntry, 'player2Id')
+  entriesP2: EventEntry[];
+
+  get entries() {
+    return this.entriesP1.concat(this.entriesP2);
+  }
 
   @Unique('unique_constraint')
   @Index
@@ -234,6 +246,33 @@ export class Player extends Model {
   countLastRankingPlaces!: HasManyCountAssociationsMixin;
 
   regenerateSlug!: Slugify<Player>;
+
+  @BeforeCreate
+  static async forceMemberId(player: Player, options: CreateOptions) {
+    if ((player.memberId ?? null) === null) {
+      let tries = 0;
+      let memberId = '';
+
+      while (tries < 10) {
+        (memberId = `unknown-${Math.floor(Math.random() * 90000) + 10000}`), 10;
+        const result = await Player.findOne({
+          where: { memberId },
+          transaction: options.transaction,
+        });
+
+        if (result === null) {
+          break;
+        }
+        tries++;
+      }
+
+      if (memberId === '') {
+        throw new Error('Could not generate memberId');
+      }
+
+      player.memberId = memberId;
+    }
+  }
 
   async getUserClaims(): Promise<string[]> {
     let claims = (await this.getClaims()).map((r) => r.name);

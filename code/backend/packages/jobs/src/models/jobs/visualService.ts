@@ -7,9 +7,11 @@ import {
   XmlTournamentDraw,
   XmlTournamentEvent
 } from '@badvlasim/shared';
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { parse } from 'fast-xml-parser';
 import * as rax from 'retry-axios';
+import { performance } from 'perf_hooks';
+import rateLimit from 'axios-rate-limit';
 
 export class VisualService {
   private _retries = 25;
@@ -18,6 +20,12 @@ export class VisualService {
     ignoreAttributes: false,
     parseAttributeValue: true
   };
+  private http: AxiosInstance;
+
+  constructor() {
+    this.http = rateLimit(axios.create(), { maxRPS: 10 });
+    rax.attach();
+  }
 
   async getPlayers(tourneyId: string) {
     const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}/Player`);
@@ -82,8 +90,9 @@ export class VisualService {
   }
 
   private _getFromApi(url) {
-    logger.silly(`Getting from ${url}`);
-    return axios.get(url, {
+    const t0 = performance.now();
+    // logger.silly(`Getting from ${url}, max requests per second: ${(this.http as any).getMaxRPS()}`);
+    const request = this.http.get(url, {
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
@@ -91,13 +100,19 @@ export class VisualService {
       },
       timeout: 1000000,
       raxConfig: {
+        statusCodesToRetry: [
+          [100, 199],
+          [429, 429],
+          [500, 599]
+        ],
         retry: this._retries,
-        onRetryAttempt: (err) => {
-          const cfg = rax.getConfig(err);
+        noResponseRetries: this._retries / 2,
+        onRetryAttempt: (error) => {
+          const cfg = rax.getConfig(error);
           if (cfg.currentRetryAttempt > this._retries * 0.75) {
-            logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`, err);
+            logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`, error);
           } else {
-            logger.debug(`Retry attempt #${cfg.currentRetryAttempt}`, err);
+            logger.debug(`Retry attempt #${cfg.currentRetryAttempt}`, error);
           }
         }
       },
@@ -106,6 +121,13 @@ export class VisualService {
         'Content-Type': 'application/xml'
       }
     });
+
+    request.then(() => {
+      const t1 = performance.now();
+      logger.silly(`Got from ${url} in ${(t1 - t0).toFixed(2)}ms`);
+    });
+
+    return request;
   }
 
   private _asArray(obj) {

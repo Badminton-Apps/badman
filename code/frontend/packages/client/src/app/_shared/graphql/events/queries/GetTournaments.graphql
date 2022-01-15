@@ -5,7 +5,7 @@ query GetEvents(
   $where: SequelizeJSON
   $includeSubEvents: Boolean!
 ) {
-  eventTournaments(first: $first, after: $after, where: $where) {
+  tournamentEvents(first: $first, after: $after, where: $where) {
     total
     edges {
       cursor

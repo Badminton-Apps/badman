@@ -306,12 +306,13 @@ export class AssignTeamComponent implements OnInit {
     for (const team of this.teams) {
       let subEvent = null;
 
-      for (const tse of team.subEvents) {
-        subEvent = subEventsSorted.find((s) => s.id === tse.id);
-        if (subEvent) {
-          break;
-        }
-      }
+      // TODO: Get entries from team
+      // for (const tse of team.subEvents) {
+      //   subEvent = subEventsSorted.find((s) => s.id === tse.id);
+      //   if (subEvent) {
+      //     break;
+      //   }
+      // }
 
       if (!subEvent) {
         subEvent = subEventsSorted.find((subEvent) => team.baseIndex! > subEvent.minBaseIndex!);

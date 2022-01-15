@@ -8,7 +8,7 @@ query GetEvents(
   $includeSubEvents: Boolean!
   $includeComments: Boolean!
 ) {
-  eventCompetitions(first: $first, after: $after, where: $where) {
+  competitionEvents(first: $first, after: $after, where: $where) {
     total
     edges {
       cursor

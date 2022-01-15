@@ -5,6 +5,7 @@ import {
   Club,
   DataBaseHandler,
   EventCompetition,
+  EventEntry,
   logger,
   Player,
   RankingPlace,
@@ -13,7 +14,6 @@ import {
   SubEventType,
   Team,
   TeamPlayerMembership,
-  TeamSubEventMembership
 } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
 import moment from 'moment';
@@ -89,7 +89,7 @@ export const removeTeamMutation = {
       const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
-        logger.debug('team', dbTeam);
+        logger.debug('team', {data: dbTeam});
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -246,7 +246,7 @@ export const addPlayerToTeamMutation = {
       const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
-        logger.debug('team', dbTeam);
+        logger.debug('team', {data: dbTeam});
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -307,7 +307,7 @@ export const removePlayerFromTeamMutation = {
       const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
-        logger.debug('team', dbTeam);
+        logger.debug('team', {data: dbTeam});
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -399,7 +399,7 @@ export const updateSubEventTeamMutation = {
         .flat();
 
       if (!dbTeam) {
-        logger.debug('team', dbTeam);
+        logger.debug('team', {data: dbTeam});
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -463,7 +463,7 @@ export const updatePlayerTeamMutation = {
       const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
-        logger.debug('team', dbTeam);
+        logger.debug('team', {data: dbTeam});
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -591,7 +591,7 @@ export const addPlayerBaseSubEventMutation = {
         anyPermissions: [`change-base:team`]
       });
 
-      const dbMembership = await TeamSubEventMembership.findOne({
+      const dbMembership = await EventEntry.findOne({
         where: {
           teamId: dbTeam.id,
           subEventId
@@ -647,7 +647,7 @@ export const addPlayerBaseSubEventMutation = {
       });
 
       const meta = dbMembership.meta;
-      meta.players.push({
+      meta?.competition.players.push({
         id: dbPlayer.id,
         single: dbRanking?.single ?? 12,
         double: dbRanking?.double ?? 12,
@@ -655,11 +655,11 @@ export const addPlayerBaseSubEventMutation = {
         gender: dbPlayer.gender
       });
 
-      let bestPlayers = meta.players;
-      if (meta.players.length > 4) {
+      let bestPlayers = meta?.competition.players;
+      if (meta?.competition.players.length > 4) {
         if (dbTeam.type === SubEventType.MX) {
           bestPlayers = [
-            ...meta.players
+            ...meta?.competition.players
               .filter((p) => p.gender === 'M')
               .sort(
                 (b, a) =>
@@ -669,7 +669,7 @@ export const addPlayerBaseSubEventMutation = {
                   ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
               )
               .slice(0, 2),
-            ...meta.players
+            ...meta?.competition.players
               .filter((p) => p.gender === 'F')
               .sort(
                 (b, a) =>
@@ -681,7 +681,7 @@ export const addPlayerBaseSubEventMutation = {
               .slice(0, 2)
           ];
         } else {
-          bestPlayers = meta.players
+          bestPlayers = meta?.competition.players
             .sort(
               (b, a) =>
                 (b?.single ?? 12) + (b?.double ?? 12) - ((a?.single ?? 12) + (a?.double ?? 12))
@@ -690,7 +690,7 @@ export const addPlayerBaseSubEventMutation = {
         }
       }
 
-      meta.teamIndex = Team.getIndexFromPlayers(
+      meta.competition.teamIndex = Team.getIndexFromPlayers(
         dbTeam.type,
         bestPlayers.map((p) => {
           return {
@@ -762,7 +762,7 @@ export const removePlayerBaseSubEventMutation = {
         });
       }
 
-      const dbMembership = await TeamSubEventMembership.findOne({
+      const dbMembership = await EventEntry.findOne({
         where: {
           teamId: dbTeam.id,
           subEventId
@@ -777,7 +777,7 @@ export const removePlayerBaseSubEventMutation = {
       }
 
       const meta = dbMembership.meta;
-      const removedPlayer = meta.players.filter((p) => p.id === playerId)[0];
+      const removedPlayer = meta?.competition?.players.filter((p) => p.id === playerId)[0];
       if (!removedPlayer) {
         throw new ApiError({
           code: 404,
@@ -785,13 +785,13 @@ export const removePlayerBaseSubEventMutation = {
         });
       }
 
-      meta.players = meta.players.filter((p) => p.id !== playerId);
+      meta.competition.players = meta?.competition.players.filter((p) => p.id !== playerId);
 
-      let bestPlayers = meta.players;
-      if (meta.players.length > 4) {
+      let bestPlayers = meta?.competition.players;
+      if (meta?.competition.players.length > 4) {
         if (dbTeam.type === SubEventType.MX) {
           bestPlayers = [
-            ...meta.players
+            ...meta?.competition.players
               .filter((p) => p.gender === 'M')
               .sort(
                 (b, a) =>
@@ -801,7 +801,7 @@ export const removePlayerBaseSubEventMutation = {
                   ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
               )
               .slice(0, 2),
-            ...meta.players
+            ...meta?.competition.players
               .filter((p) => p.gender === 'F')
               .sort(
                 (b, a) =>
@@ -813,7 +813,7 @@ export const removePlayerBaseSubEventMutation = {
               .slice(0, 2)
           ];
         } else {
-          bestPlayers = meta.players
+          bestPlayers = meta?.competition.players
             .sort(
               (b, a) =>
                 (b?.single ?? 12) + (b?.double ?? 12) - ((a?.single ?? 12) + (a?.double ?? 12))
@@ -822,7 +822,7 @@ export const removePlayerBaseSubEventMutation = {
         }
       }
 
-      meta.teamIndex = Team.getIndexFromPlayers(
+      meta.competition.teamIndex = Team.getIndexFromPlayers(
         dbTeam.type,
         bestPlayers.map((p) => {
           return {

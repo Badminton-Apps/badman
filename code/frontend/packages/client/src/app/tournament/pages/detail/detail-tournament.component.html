@@ -33,17 +33,114 @@
     </div>
   </div>
 
-  <div class="mat-subheading-1">Sub events</div>
-  <mat-list *ngIf="event.subEvents">
-    <mat-list-item *ngFor="let subEvent of event.subEvents">
-      {{ subEvent.name }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span>
-    </mat-list-item>
-  </mat-list>
+  <div class="mat-subheading-1">Sub events<app-beta></app-beta></div>
 
-  <div class="mat-subheading-1">{{ 'players.title' | translate }}</div>
-  <mat-list *ngIf="event.players">
-    <mat-list-item *ngFor="let player of event.players">
-      {{ player.fullName }}
-    </mat-list-item>
-  </mat-list>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ 'systems.single' | translate }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div fxFlex>
+        <mat-list>
+          <ng-container *ngFor="let subEvent of this.subEventsM_S$ | async">
+            <mat-list-item
+              >{{ subEvent.name }} {{ subEvent.eventType
+              }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+            >
+            <mat-list style="margin-left: 30px">
+              <div *ngFor="let draw of subEvent.draws">
+                <a [routerLink]="[draw.id]"
+                  ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+                >
+              </div>
+            </mat-list>
+          </ng-container>
+        </mat-list>
+      </div>
+      <div fxFlex>
+        <mat-list>
+          <ng-container *ngFor="let subEvent of this.subEventsF_S$ | async">
+            <mat-list-item
+              >{{ subEvent.name }} {{ subEvent.eventType
+              }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+            >
+            <mat-list style="margin-left: 30px">
+              <div *ngFor="let draw of subEvent.draws">
+                <a [routerLink]="[draw.id]"
+                  ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+                >
+              </div>
+            </mat-list>
+          </ng-container>
+        </mat-list>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ 'systems.double' | translate }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div fxFlex>
+        <mat-list>
+          <ng-container *ngFor="let subEvent of this.subEventsM_D$ | async">
+            <mat-list-item
+              >{{ subEvent.name }} {{ subEvent.eventType
+              }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+            >
+            <mat-list style="margin-left: 30px">
+              <div *ngFor="let draw of subEvent.draws">
+                <a [routerLink]="[draw.id]"
+                  ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+                >
+              </div>
+            </mat-list>
+          </ng-container>
+        </mat-list>
+      </div>
+      <div fxFlex>
+        <mat-list>
+          <ng-container *ngFor="let subEvent of this.subEventsF_D$ | async">
+            <mat-list-item
+              >{{ subEvent.name }} {{ subEvent.eventType
+              }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+            >
+            <mat-list style="margin-left: 30px">
+              <div *ngFor="let draw of subEvent.draws">
+                <a [routerLink]="[draw.id]"
+                  ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+                >
+              </div>
+            </mat-list>
+          </ng-container>
+        </mat-list>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ 'systems.mix' | translate }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div fxFlex>
+        <mat-list>
+          <ng-container *ngFor="let subEvent of this.subEventsMX_MX$ | async">
+            <mat-list-item
+              >{{ subEvent.name }} {{ subEvent.eventType
+              }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+            >
+            <mat-list style="margin-left: 30px">
+              <div *ngFor="let draw of subEvent.draws">
+                <a [routerLink]="[draw.id]"
+                  ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+                >
+              </div>
+            </mat-list>
+          </ng-container>
+        </mat-list>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
 </ng-container>
