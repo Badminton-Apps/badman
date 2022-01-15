@@ -137,17 +137,6 @@ export interface XmlTeamMatch {
   Sets: XmlSets;
 }
 
-export enum XmlRoundName {
-  Sf = 'SF',
-  Qf = 'QF',
-  R1 = 'R1',
-  R2 = 'R2',
-  R3 = 'R3',
-  R16 = 'R16',
-  R32 = 'R32',
-  R64 = 'R64'
-}
-
 export enum XmlDrawName {
   The1StProvincialeA = '1st Provinciale - A'
 }
@@ -159,7 +148,7 @@ export enum XmlEventName {
 export interface XmlMatch {
   Code: string;
   Winner: number;
-  ScoreStatus: string;
+  ScoreStatus: XmlScoreStatus;
   TeamMatchWinner: string;
   TeamMatchScoreStatus: string;
   OOPTypeID: string;
@@ -182,7 +171,7 @@ export interface XmlMatch {
   Duration: string;
   Sets: XmlSets;
   Stats: XmlStats;
-  RoundName: XmlRoundName;
+  RoundName: string;
 }
 
 export interface XmlTournamentEvent {
@@ -344,6 +333,14 @@ export enum XmlDrawTypeID {
   FullRoundRobin = 3,
   CompassDraw = 4,
   QualificationTypeDraw = 5
+}
+
+export enum XmlScoreStatus {
+  Normal = 0,
+  Walkover = 1,
+  Retirement = 2,
+  Disqualified = 3,
+  "No Match" = 4,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */

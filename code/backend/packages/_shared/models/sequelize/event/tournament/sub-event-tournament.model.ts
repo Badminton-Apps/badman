@@ -40,6 +40,7 @@ import { GroupSubEventTournament } from './group-subevent.model';
 import { DrawTournament } from './draw-tournament.model';
 import { RankingSystemGroup } from '../../ranking';
 import { GameType, SubEventType } from '../../../enums';
+import { EventEntry } from '../entry.model';
 
 @Table({
   timestamps: true,
@@ -76,7 +77,7 @@ export class SubEventTournament extends Model {
   visualCode: string;
 
   @BelongsToMany(
-    () => RankingSystemGroup,
+    () => RankingSystemGroup, 
     () => GroupSubEventTournament
   )
   groups: RankingSystemGroup[];
@@ -97,6 +98,15 @@ export class SubEventTournament extends Model {
   @ForeignKey(() => EventTournament)
   @Column
   eventId: string;
+
+  @HasMany(() => EventEntry, {
+    foreignKey: 'subEventId',
+    onDelete: 'CASCADE',
+    scope: {
+      entryType: 'tournament',
+    },
+  })
+  entries: EventEntry[];
 
   // Belongs to many Group
   getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;

@@ -10,13 +10,13 @@ import {
   Club,
   Team,
   SubEventType,
-  TeamSubEventMembership,
   Player,
   RankingPlace,
   LastRankingPlace,
   RankingSystem,
   RankingSystems,
   StartingType,
+  EventEntry,
 } from '../models';
 
 import fakerator from 'fakerator';
@@ -43,6 +43,7 @@ describe('PDF service', () => {
     const logoLocation = path.resolve(
       __dirname + '/../services/pdf/assets/logo.png'
     );
+    
     mock({
       [logoLocation]: 'logo',
     });
@@ -155,44 +156,46 @@ describe('PDF service', () => {
     await encounter.setHome(team1);
     await encounter.setAway(team2);
 
-    const teamSubEventMembership = new TeamSubEventMembership({
+    const eventEntry = new EventEntry({
       teamId: team1.id,
       subEventId: subevent.id,
     });
-    teamSubEventMembership.meta = {
-      teamIndex: 80,
-      players: [
-        {
-          id: 'c76f2327-dbf9-4de6-b314-42cb29012724',
-          single: 7,
-          double: 6,
-          mix: 7,
-          gender: 'M',
-        },
-        {
-          id: '990a2e5c-4670-4053-9634-506d276ccc97',
-          single: 7,
-          double: 6,
-          mix: 8,
-          gender: 'F',
-        },
-        {
-          id: '8c1c0a6b-d252-4d17-a5f8-e53cdeb4178a',
-          single: 7,
-          double: 5,
-          mix: 7,
-          gender: 'M',
-        },
-        {
-          id: '96df9d4c-be58-4eaa-9d27-62b241b3000a',
-          single: 7,
-          double: 6,
-          mix: 7,
-          gender: 'F',
-        },
-      ],
+    eventEntry.meta = {
+      competition: {
+        teamIndex: 80,
+        players: [
+          {
+            id: 'c76f2327-dbf9-4de6-b314-42cb29012724',
+            single: 7,
+            double: 6,
+            mix: 7,
+            gender: 'M',
+          },
+          {
+            id: '990a2e5c-4670-4053-9634-506d276ccc97',
+            single: 7,
+            double: 6,
+            mix: 8,
+            gender: 'F',
+          },
+          {
+            id: '8c1c0a6b-d252-4d17-a5f8-e53cdeb4178a',
+            single: 7,
+            double: 5,
+            mix: 7,
+            gender: 'M',
+          },
+          {
+            id: '96df9d4c-be58-4eaa-9d27-62b241b3000a',
+            single: 7,
+            double: 6,
+            mix: 7,
+            gender: 'F',
+          },
+        ],
+      },
     };
-    await teamSubEventMembership.save();
+    await eventEntry.save();
 
     const captainPlayer = await Player.create({
       firstName: 'John',

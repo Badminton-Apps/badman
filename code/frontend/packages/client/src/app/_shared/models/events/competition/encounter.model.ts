@@ -13,8 +13,14 @@ export class CompetitionEncounter {
   awayScore?: number;
   home?: Team;
   away?: Team;
+
+  
+  homeTeamId?: string;
+  awayTeamId?: string;
+
   showingForHomeTeam?: boolean;
   encounterChange?: EncounterChange;
+
 
   finished = true;
 
@@ -29,6 +35,9 @@ export class CompetitionEncounter {
     this.homeScore = args?.homeScore;
     this.awayScore = args?.awayScore;
     this.encounterChange = args?.encounterChange != null ? new EncounterChange(args.encounterChange) : undefined;
+
+    this.homeTeamId = args?.homeTeamId;
+    this.awayTeamId = args?.awayTeamId;
 
     if (this.encounterChange && this.encounterChange.accepted != true) {
       this.finished = false;

@@ -10,9 +10,9 @@
 @include mat-core();
 
 // Create the theme object (a Sass map containing all of the palettes).
-$client-angular-theme: mat-light-theme($client-angular-primary,
-  $client-angular-accent,
-  $client-angular-warn);
+$client-angular-theme: mat-light-theme((color: (primary: $client-angular-primary,
+      accent: $client-angular-accent,
+      warn: $client-angular-warn)));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -20,7 +20,21 @@ $client-angular-theme: mat-light-theme($client-angular-primary,
 @include angular-material-theme($client-angular-theme);
 @include covalent-theme($client-angular-theme);
 
+
+/*
+  * App Styles
+  * To be replaced when theme is meregd
+  * --------------------------------------------------
+  *
+*/
+
+@import './app/modules/';
+@include app-competition-encounter-theme($client-angular-theme);
+
 /* You can add global styles to this file, and also import other style files */
+html{
+  scroll-behavior: smooth;
+}
 
 html,
 body {
@@ -30,7 +44,6 @@ body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-  font-display: swap;
 }
 
 mat-sidenav-content>ng-component {
@@ -118,4 +131,10 @@ button {
     border-top-color: #000000;
     animation: spinner .8s linear infinite;
   }
+}
+
+
+a {
+  color: initial;
+  text-decoration: none;
 }

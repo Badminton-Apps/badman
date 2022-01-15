@@ -16,8 +16,8 @@
 
   <div class="bottom">
     <span class="event">
-      <a [routerLink]="['/competition', this.subEvent?.event?.id, this.subEvent?.id]"
-        >{{ this.subEvent?.name }} {{ this.subEvent?.levelType }} {{ this.subEvent?.eventType }}</a
+      <a [routerLink]="['/competition', this.subEvent?.event?.slug, games![0]?.competition?.draw?.id]">
+        {{ games![0]?.competition?.draw?.name }}</a
       >
     </span>
     <span class="spacer">-</span>

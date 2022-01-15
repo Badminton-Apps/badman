@@ -1,15 +1,20 @@
 import {
+  correctWrongPlayers,
+  EncounterCompetition,
   Game,
   GamePlayer,
+  GameStatus,
   GameType,
-  logger,
   Player,
+  StepOptions,
   StepProcessor,
   XmlMatch,
   XmlMatchTypeID,
+  XmlPlayer,
+  XmlScoreStatus,
   XmlTournament
 } from '@badvlasim/shared';
-import { Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 import { VisualService } from '../../../visualService';
 import { EncounterStepData } from './encounter';
 
@@ -17,179 +22,274 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   public players: Map<string, Player>;
   public encounters: EncounterStepData[];
 
+  private _games: Game[] = [];
+
   constructor(
     protected readonly visualTournament: XmlTournament,
-    protected readonly transaction: Transaction,
     protected readonly visualService: VisualService,
-    protected readonly options?: {
-      fixGender?: boolean;
-      updateMeta?: boolean;
-    }
+    options?: StepOptions
   ) {
-    super(visualTournament, transaction);
-
-    this.options = {
-      fixGender: false,
-      updateMeta: false,
-      ...this.options
-    };
+    super(options);
   }
 
-  public async process(): Promise<void> {
-    const updatedGames = [];
-    const updatedgamePlayers = [];
-    const processEncounters = async ({ encounter, internalId }: EncounterStepData) => {
-      const games = await encounter.getGames({
-        transaction: this.transaction,
-        include: [Player]
-      });
-
-      const visualMatch = (
-        await this.visualService.getMatch(this.visualTournament.Code, internalId)
-      ).filter((m) => !m || m?.Winner !== 0) as XmlMatch[];
-
-      for (const xmlMatch of visualMatch) {
-        let game = games.find(
-          (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
-        );
-
-        let markedForUpdate = false;
-        if (!game) {
-          game = new Game({
-            visualCode: xmlMatch.Code,
-            winner: xmlMatch.Winner,
-            gameType: this._getGameType(xmlMatch.MatchTypeID),
-            order: xmlMatch.MatchOrder,
-            linkId: encounter.id,
-            linkType: 'competition'
-          });
-
-          updatedgamePlayers.push(...this._createGamePlayers(xmlMatch, game, this.players));
-          markedForUpdate = true;
+  public async process(): Promise<Game[]> {
+    const games = await Game.findAll({
+      where: {
+        linkId: {
+          [Op.in]: this.encounters.map((encounter) => encounter?.encounter.id).flat()
         }
+      },
+      transaction: this.transaction
+    });
 
-        if (this.options.updateMeta) {
-          // Set dates (if changed)
+    await Promise.all(
+      this.encounters.map((e) => {
+        const filtered = games.filter((g) => g.linkId === e.encounter.id);
+        return this._processEncounter(e.encounter, e.internalId, filtered);
+      })
+    );
+
+    return this._games;
+  }
+
+  private async _processEncounter(
+    encounter: EncounterCompetition,
+    internalId: number,
+    games: Game[]
+  ) {
+    const visualMatch = (
+      await this.visualService.getMatch(this.visualTournament.Code, internalId)
+    ).filter((m) => !m || m?.Winner !== 0) as XmlMatch[];
+
+    for (const xmlMatch of visualMatch) {
+      let game = games.find(
+        (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
+      );
+
+      let gameStatus = GameStatus.NORMAL;
+      switch (xmlMatch.ScoreStatus) {
+        case XmlScoreStatus.Retirement:
+          gameStatus = GameStatus.RETIREMENT;
+          break;
+        case XmlScoreStatus.Disqualified:
+          gameStatus = GameStatus.DISQUALIFIED;
+          break;
+        case XmlScoreStatus['No Match']:
+          gameStatus = GameStatus.NO_MATCH;
+          break;
+        case XmlScoreStatus.Walkover:
+          gameStatus = GameStatus.WALKOVER;
+          break;
+        default:
+        case XmlScoreStatus.Normal:
+          gameStatus = GameStatus.NORMAL;
+          break;
+      }
+
+      if (!game) {
+        game = new Game({
+          visualCode: xmlMatch.Code,
+          winner: xmlMatch.Winner,
+          gameType: this._getGameType(xmlMatch.MatchTypeID),
+          order: xmlMatch.MatchOrder,
+          linkId: encounter.id,
+          linkType: 'competition',
+          status: gameStatus,
+          playedAt: encounter.date,
+          set1Team1: xmlMatch?.Sets?.Set[0]?.Team1,
+          set1Team2: xmlMatch?.Sets?.Set[0]?.Team2,
+          set2Team1: xmlMatch?.Sets?.Set[1]?.Team1,
+          set2Team2: xmlMatch?.Sets?.Set[1]?.Team2,
+          set3Team1: xmlMatch?.Sets?.Set[2]?.Team1,
+          set3Team2: xmlMatch?.Sets?.Set[2]?.Team2
+        });
+
+        await game.save({ transaction: this.transaction });
+        await GamePlayer.bulkCreate(this._createGamePlayers(xmlMatch, game), {
+          transaction: this.transaction,
+          ignoreDuplicates: true
+        });
+      } else {
+        if (game.playedAt != encounter.date) {
           game.playedAt = encounter.date;
+        }
 
-          // Set dates (if changed)
+        if (game.order != xmlMatch.MatchOrder) {
           game.order = xmlMatch.MatchOrder;
+        }
 
-          // Set winner
+        if (game.round != xmlMatch.RoundName) {
+          game.round = xmlMatch.RoundName;
+        }
+
+        if (game.winner != xmlMatch.Winner) {
           game.winner = xmlMatch.Winner;
+        }
 
-          // Set sets
+        if (game.set1Team1 != xmlMatch?.Sets?.Set[0]?.Team1) {
           game.set1Team1 = xmlMatch?.Sets?.Set[0]?.Team1;
+        }
+
+        if (game.set1Team2 != xmlMatch?.Sets?.Set[0]?.Team2) {
           game.set1Team2 = xmlMatch?.Sets?.Set[0]?.Team2;
+        }
 
+        if (game.set2Team1 != xmlMatch?.Sets?.Set[1]?.Team1) {
           game.set2Team1 = xmlMatch?.Sets?.Set[1]?.Team1;
+        }
+
+        if (game.set2Team2 != xmlMatch?.Sets?.Set[1]?.Team2) {
           game.set2Team2 = xmlMatch?.Sets?.Set[1]?.Team2;
+        }
 
+        if (game.set3Team1 != xmlMatch?.Sets?.Set[2]?.Team1) {
           game.set3Team1 = xmlMatch?.Sets?.Set[2]?.Team1;
+        }
+
+        if (game.set3Team2 != xmlMatch?.Sets?.Set[2]?.Team2) {
           game.set3Team2 = xmlMatch?.Sets?.Set[2]?.Team2;
-          markedForUpdate = true;
         }
 
-        if (this.options.fixGender) {
-          game.gameType = this._getGameType(xmlMatch.MatchTypeID);
-          markedForUpdate = true;
+        if (game.status !== gameStatus) {
+          game.status = gameStatus;
         }
 
-        if (markedForUpdate) {
-          updatedGames.push(game.toJSON());
+        await game.save({ transaction: this.transaction });
+        game.players = [];
+
+        const t1p1 = this._getPlayer(xmlMatch?.Team1?.Player1);
+        const t1p2 = this._getPlayer(xmlMatch?.Team1?.Player2);
+        const t2p1 = this._getPlayer(xmlMatch?.Team2?.Player1);
+        const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
+
+        if (t1p1) {
+          game.players.push({
+            ...t1p1.toJSON(),
+            GamePlayer: {
+              gameId: game.id,
+              playerId: t1p1.id,
+              team: 1,
+              player: 1
+            }
+          } as Player & { GamePlayer: GamePlayer });
+        }
+
+        if (game.gameType != GameType.S && t1p2) {
+          game.players.push({
+            ...t1p2.toJSON(),
+            GamePlayer: {
+              gameId: game.id,
+              playerId: t1p2.id,
+              team: 1,
+              player: 2
+            }
+          } as Player & { GamePlayer: GamePlayer });
+        }
+
+        if (t2p1) {
+          game.players.push({
+            ...t2p1.toJSON(),
+            GamePlayer: {
+              gameId: game.id,
+              playerId: t2p1.id,
+              team: 2,
+              player: 1
+            }
+          } as Player & { GamePlayer: GamePlayer });
+        }
+
+        if (game.gameType != GameType.S && t2p2) {
+          game.players.push({
+            ...t2p2.toJSON(),
+            GamePlayer: {
+              gameId: game.id,
+              playerId: t2p2.id,
+              team: 2,
+              player: 2
+            }
+          } as Player & { GamePlayer: GamePlayer });
         }
       }
-
-      // Remove draw that are not in the xml
-      const removedGames = games.filter((g) => g.visualCode == null);
-      for (const removed of removedGames) {
-        await removed.destroy({ transaction: this.transaction });
-      }
-    };
-
-    await Promise.all(this.encounters.map((e) => processEncounters(e)));
-    logger.debug(`Creating/updating ${updatedGames.length} games`);
-
-    const updateOnDuplicate = [];
-    if (this.options.updateMeta) {
-      updateOnDuplicate.push(
-        'playedAt',
-        'order',
-        'winner',
-        'set1Team1',
-        'set1Team2',
-        'set2Team1',
-        'set2Team2',
-        'set3Team1',
-        'set3Team2'
-      );
-    }
-    if (this.options.fixGender) {
-      updateOnDuplicate.push('gameType');
     }
 
-    if (updateOnDuplicate.length > 0 && updatedGames.length > 0) {
-      await Game.bulkCreate(updatedGames, {
-        transaction: this.transaction,
-        updateOnDuplicate
-      });
-
-      await GamePlayer.bulkCreate(updatedgamePlayers, {
-        transaction: this.transaction
-      });
+    // Remove draw that are not in the xml
+    const removedGames = games.filter((g) => g.visualCode == null);
+    for (const removed of removedGames) {
+      await removed.destroy({ transaction: this.transaction });
+      games.splice(games.indexOf(removed), 1);
     }
+
+    this._games = this._games.concat(games);
   }
 
-  private _createGamePlayers(xmlGame: XmlMatch, game: Game, players: Map<string, Player>) {
+  private _createGamePlayers(xmlMatch: XmlMatch, game: Game) {
     const gamePlayers = [];
+    game.players = [];
 
-    const t1p1 = players.get(`${xmlGame?.Team1?.Player1?.MemberID}`);
-    const t1p2 = players.get(`${xmlGame?.Team1?.Player2?.MemberID}`);
-    const t2p1 = players.get(`${xmlGame?.Team2?.Player1?.MemberID}`);
-    const t2p2 = players.get(`${xmlGame?.Team2?.Player2?.MemberID}`);
+    const t1p1 = this._getPlayer(xmlMatch?.Team1?.Player1);
+    const t1p2 = this._getPlayer(xmlMatch?.Team1?.Player2);
+    const t2p1 = this._getPlayer(xmlMatch?.Team2?.Player1);
+    const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
 
-    if (t1p1 && xmlGame?.Team1?.Player1?.MemberID != null) {
-      gamePlayers.push(
-        new GamePlayer({
-          gameId: game.id,
-          playerId: t1p1.id,
-          team: 1,
-          player: 1
-        }).toJSON()
-      );
+    if (t1p1) {
+      const gp = new GamePlayer({
+        gameId: game.id,
+        playerId: t1p1.id,
+        team: 1,
+        player: 1
+      });
+      gamePlayers.push(gp.toJSON());
+
+      // Push to list
+      game.players.push({
+        ...t1p1.toJSON(),
+        GamePlayer: gp
+      } as Player & { GamePlayer: GamePlayer });
     }
 
-    if (t1p2 && xmlGame?.Team1?.Player2?.MemberID != null && t1p2?.id !== t1p1?.id) {
-      gamePlayers.push(
-        new GamePlayer({
-          gameId: game.id,
-          playerId: t1p2.id,
-          team: 1,
-          player: 2
-        }).toJSON()
-      );
+    if (t1p2 && t1p2?.id !== t1p1?.id) {
+      const gp = new GamePlayer({
+        gameId: game.id,
+        playerId: t1p2.id,
+        team: 1,
+        player: 2
+      });
+      gamePlayers.push(gp.toJSON());
+      // Push to list
+      game.players.push({
+        ...t1p2.toJSON(),
+        GamePlayer: gp
+      } as Player & { GamePlayer: GamePlayer });
     }
 
-    if (t2p1 && xmlGame?.Team2?.Player1?.MemberID != null) {
-      gamePlayers.push(
-        new GamePlayer({
-          gameId: game.id,
-          playerId: t2p1.id,
-          team: 2,
-          player: 1
-        }).toJSON()
-      );
+    if (t2p1) {
+      const gp = new GamePlayer({
+        gameId: game.id,
+        playerId: t2p1.id,
+        team: 2,
+        player: 1
+      });
+      gamePlayers.push(gp.toJSON());
+      // Push to list
+      game.players.push({
+        ...t2p1.toJSON(),
+        GamePlayer: gp
+      } as Player & { GamePlayer: GamePlayer });
     }
 
-    if (t2p2 && xmlGame?.Team2?.Player2?.MemberID != null && t2p2?.id !== t2p1?.id) {
-      gamePlayers.push(
-        new GamePlayer({
-          gameId: game.id,
-          playerId: t2p2.id,
-          team: 2,
-          player: 2
-        }).toJSON()
-      );
+    if (t2p2 && t2p2?.id !== t2p1?.id) {
+      const gp = new GamePlayer({
+        gameId: game.id,
+        playerId: t2p2.id,
+        team: 2,
+        player: 2
+      });
+      gamePlayers.push(gp.toJSON());
+      // Push to list
+      game.players.push({
+        ...t2p2.toJSON(),
+        GamePlayer: gp
+      } as Player & { GamePlayer: GamePlayer });
     }
 
     return gamePlayers;
@@ -213,5 +313,24 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       default:
         throw new Error(`Type not found, ${type}`);
     }
+  }
+
+  private _getPlayer(player: XmlPlayer) {
+    let returnPlayer = this.players.get(`${player?.MemberID}`);
+
+    if ((returnPlayer ?? null) == null && (player ?? null) != null) {
+      // Search our map for unkowns
+      const corrected = correctWrongPlayers({
+        firstName: player.Firstname,
+        lastName: player.Lastname
+      });
+
+      returnPlayer = [...this.players.values()].find(
+        (p) =>
+          (p.firstName === corrected.firstName && p.lastName === corrected.lastName) ||
+          (p.firstName === corrected.lastName && p.lastName === corrected.firstName)
+      );
+    }
+    return returnPlayer;
   }
 }

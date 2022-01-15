@@ -59,7 +59,6 @@ export class UserService {
             apolloCache.evict({ id: normalizedId });
           });
           apolloCache.gc();
-
         })
       );
   }

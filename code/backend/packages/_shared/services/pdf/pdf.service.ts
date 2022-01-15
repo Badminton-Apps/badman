@@ -9,7 +9,7 @@ import {
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
-  TeamSubEventMembership,
+  EventEntry,
   LastRankingPlace,
   Player,
   RankingPlace,
@@ -134,7 +134,7 @@ export class PdfService {
     });
     const type = encounter.home.type;
 
-    const membership = await TeamSubEventMembership.findOne({
+    const membership = await EventEntry.findOne({
       where: {
         teamId: input.teamId,
         subEventId: encounter?.draw?.subEvent?.id,
@@ -204,7 +204,7 @@ export class PdfService {
       preppedMap.set(player.id, {
         ...player.toJSON(),
         lastRankingPlace: player.lastRankingPlaces[0].toJSON(),
-        base: !!meta?.players?.find((p) => p?.id === player.id)?.id,
+        base: !!meta?.competition?.players?.find((p) => p?.id === player.id)?.id,
         team: !!teamIndex.players.find((p) => p?.id === player.id),
         sum:
           mayIndex.single +
@@ -272,7 +272,7 @@ export class PdfService {
     });
     const options = {
       date: moment(encounter.date).format('DD-MM-YYYY HH:mm'),
-      baseIndex: meta?.teamIndex,
+      baseIndex: meta?.competition?.teamIndex,
       teamIndex: teamIndex.index,
       homeTeam: encounter.home.name,
       awayTeam: encounter.away.name,

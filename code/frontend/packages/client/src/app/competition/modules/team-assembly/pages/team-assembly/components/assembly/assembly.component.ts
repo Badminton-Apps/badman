@@ -8,7 +8,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CompetitionSubEvent, EventService, LevelType, Player, TeamService } from 'app/_shared';
+import { CompetitionSubEvent, Entry, EventService, LevelType, Player, TeamService } from 'app/_shared';
 import { combineLatest, distinctUntilChanged, filter, lastValueFrom, map, pairwise, startWith, tap } from 'rxjs';
 
 @Component({
@@ -74,7 +74,9 @@ export class AssemblyComponent implements OnInit {
   teamIndex: number = 0;
   teamNumber?: number = 0;
   club!: string;
-  subEvent?: CompetitionSubEvent;
+
+  entry!: Entry;
+
   ignorePlayers!: Player[];
   loaded = false;
   gotRequired = false;
@@ -182,7 +184,7 @@ export class AssemblyComponent implements OnInit {
         return playerA - playerB;
       }) ?? [];
 
-    this.subEvent = team?.subEvents[0];
+    this.entry = team?.entries![0]!;
 
     this.wherePlayer = {
       gender: this.type == 'MX' || this.type == 'NATIONAL' ? undefined : this.type,
@@ -190,7 +192,6 @@ export class AssemblyComponent implements OnInit {
         $notIn: this.players?.map((p) => p.id),
       },
     };
-
 
     // Reset prefix when not full reloading this would be cached
     this.captionSingle1Prefix = '';
@@ -201,17 +202,16 @@ export class AssemblyComponent implements OnInit {
     this.captionDouble1Prefix = '';
     this.captionDouble2Prefix = '';
     this.captionDouble3Prefix = '';
-  
+
     this.captionSingle1 = 'competition.team-assembly.single1';
     this.captionSingle2 = 'competition.team-assembly.single2';
     this.captionSingle3 = 'competition.team-assembly.single3';
     this.captionSingle4 = 'competition.team-assembly.single4';
-  
+
     this.captionDouble1 = 'competition.team-assembly.double1';
     this.captionDouble2 = 'competition.team-assembly.double2';
     this.captionDouble3 = 'competition.team-assembly.double3';
     this.captionDouble4 = 'competition.team-assembly.double4';
-
 
     // Set prefixes of form
     if (this.type == 'M') {
@@ -251,36 +251,38 @@ export class AssemblyComponent implements OnInit {
     // Ignore ids
     this.ignorePlayers = [];
     const ignoredLevels = [];
-    if (this.subEvent?.event?.type == LevelType.PROV) {
+    if (this.entry?.competitionSubEvent?.event?.type == LevelType.PROV) {
       ignoredLevels.push(LevelType.LIGA);
       ignoredLevels.push(LevelType.NATIONAL);
-    } else if (this.subEvent!.event!.type == LevelType.LIGA) {
+    } else if (this.entry?.competitionSubEvent!.event!.type == LevelType.LIGA) {
       ignoredLevels.push(LevelType.NATIONAL);
     }
 
     for (const dbTeam of teams) {
       if (dbTeam.type == team!.type && dbTeam.id != teamId) {
-        if (dbTeam?.subEvents[0]?.event?.type == undefined || dbTeam?.subEvents[0]?.event?.type == null) {
+        if ((dbTeam?.entries?.[0]?.competitionSubEvent?.event?.type ?? null) == null) {
           continue;
         }
 
         // Base players
-        if (ignoredLevels.includes(dbTeam.subEvents[0].event.type)) {
+        if (ignoredLevels.includes(dbTeam.entries![0].competitionSubEvent!.event!.type!)) {
           this.ignorePlayers.push(
-            ...(dbTeam?.subEvents[0].meta?.players?.map((p) => {
+            ...(dbTeam?.entries![0]?.meta?.competition?.players?.map((p) => {
               return { id: p.id } as Player;
             }) ?? [])
           );
-        } else if (dbTeam.subEvents[0].event.type == team!.subEvents[0].event!.type) {
+        } else if (
+          dbTeam.entries![0].competitionSubEvent?.event?.type == team!.entries![0].competitionSubEvent?.event!.type
+        ) {
           if (dbTeam.teamNumber! < team!.teamNumber!) {
             this.ignorePlayers.push(
-              ...(dbTeam.subEvents[0].meta?.players?.map((p) => {
+              ...(dbTeam.entries![0]?.meta?.competition?.players?.map((p) => {
                 return { id: p.id } as Player;
               }) ?? [])
             );
-          } else if (dbTeam.subEvents[0].id == team!.subEvents[0].id) {
+          } else if (dbTeam.entries![0]?.id == team!.entries![0]?.id) {
             this.ignorePlayers.push(
-              ...(dbTeam.subEvents[0].meta?.players?.map((p) => {
+              ...(dbTeam.entries![0]?.meta?.competition?.players?.map((p) => {
                 return { id: p.id } as Player;
               }) ?? [])
             );
@@ -289,9 +291,9 @@ export class AssemblyComponent implements OnInit {
 
         const levelRestirced = dbTeam.players.filter(
           (p) =>
-            (p.lastRanking?.single ?? 12) < this.subEvent!.maxLevel! ||
-            (p.lastRanking?.double ?? 12) < this.subEvent!.maxLevel! ||
-            (this.type == 'MX' && (p.lastRanking?.mix ?? 12) < this.subEvent!.maxLevel!)
+            (p.lastRanking?.single ?? 12) < this.entry?.competitionSubEvent!.maxLevel! ||
+            (p.lastRanking?.double ?? 12) < this.entry?.competitionSubEvent!.maxLevel! ||
+            (this.type == 'MX' && (p.lastRanking?.mix ?? 12) < this.entry?.competitionSubEvent!.maxLevel!)
         );
         if (levelRestirced.length > 0) {
           this.ignorePlayers.push(...levelRestirced);

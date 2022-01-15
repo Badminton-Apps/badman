@@ -1,5 +1,5 @@
 query GetEvent($id: ID!, $includeComments: Boolean!, $clubId: ID) {
-  eventCompetition(id: $id) {
+  competitionEvent(id: $id) {
     id
     slug
     name

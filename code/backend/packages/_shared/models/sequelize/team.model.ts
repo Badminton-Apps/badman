@@ -44,11 +44,15 @@ import { RankingSystem } from '.';
 import { SubEventType } from '../enums';
 import { UseForTeamName } from '../enums/useForTeams.enum';
 import { Club } from './club.model';
-import { EncounterCompetition, Location, SubEventCompetition } from './event';
+import {
+  EncounterCompetition,
+  EventEntry,
+  Location,
+  SubEventCompetition,
+} from './event';
 import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player } from './player.model';
 import { TeamPlayerMembership } from './team-player-membership.model';
-import { TeamSubEventMembership } from './team-subEvent-membership.model';
 
 @Table({
   timestamps: true,
@@ -58,6 +62,83 @@ export class Team extends Model {
   constructor(values?: Partial<Team>, options?: BuildOptions) {
     super(values, options);
   }
+
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Column
+  id: string;
+
+  @Unique('unique_constraint')
+  @Column
+  name: string;
+
+  @Column(DataType.TIME)
+  preferredTime: Date;
+
+  @Column(
+    DataType.ENUM(
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday'
+    )
+  )
+  preferredDay: string;
+
+  @BelongsToMany(() => Location, () => TeamLocationCompetition)
+  locations: Location[];
+
+  @Column
+  abbreviation: string;
+
+  @HasMany(() => EventEntry, 'teamId')
+  entries: EventEntry[];
+
+  @BelongsTo(() => Club, 'clubId')
+  club?: Club;
+
+  @ForeignKey(() => Club)
+  @Unique('unique_constraint')
+  @Index('club_index')
+  @Column
+  clubId: string;
+
+  @Column
+  slug: string;
+
+  @BelongsToMany(() => Player, () => TeamPlayerMembership)
+  players: Player[];
+
+  @Column
+  type: SubEventType;
+
+  @BelongsTo(() => Player, 'captainId')
+  captain: Player;
+
+  @Column
+  email: string;
+
+  @Column
+  phone: string;
+
+  @Unique('unique_constraint')
+  @Column
+  teamNumber: number;
+
+  @Default(true)
+  @Column
+  active: boolean;
+
+  @HasMany(() => EncounterCompetition, 'homeTeamId')
+  homeEncounters: EncounterCompetition;
+
+  @HasMany(() => EncounterCompetition, 'awayTeamId')
+  awayEncounters: EncounterCompetition;
+
 
   // #region hooks
   @BeforeBulkCreate
@@ -108,60 +189,28 @@ export class Team extends Model {
   }
   // #endregion
 
-  @Default(DataType.UUIDV4)
-  @IsUUID(4)
-  @PrimaryKey
-  @Column
-  id: string;
+  private _baseIndex = -1;
 
-  @Unique('unique_constraint')
-  @Column
-  name: string;
+  baseIndex(system: RankingSystem): number {
+    // Only run this once per team
+    if (this._baseIndex !== -1) {
+      return this._baseIndex;
+    }
 
-  @Column(DataType.TIME)
-  preferredTime: Date;
+    if (this.players?.length === null) {
+      return -1;
+    }
+    this._baseIndex = Team.getIndexFromPlayers(
+      this.type,
+      this.basePlayers(system).map((r) =>
+        r.lastRankingPlaces.find((place) => place.systemId === system.id)
+      )
+    );
+    return this._baseIndex;
+  }
 
-  @Column(
-    DataType.ENUM(
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday'
-    )
-  )
-  preferredDay: string;
-
-  @BelongsToMany(() => Location, () => TeamLocationCompetition)
-  locations: Location[];
-
-  @Column
-  abbreviation: string;
-
-  @BelongsToMany(() => SubEventCompetition, () => TeamSubEventMembership)
-  subEvents: SubEventCompetition[];
-
-  @BelongsTo(() => Club, 'clubId')
-  club?: Club;
-
-  @ForeignKey(() => Club)
-  @Unique('unique_constraint')
-  @Index('club_index')
-  @Column
-  clubId: string;
-
-  @Column
-  slug: string;
-
-  regenerateSlug!: Slugify<Team>;
-
-  @BelongsToMany(() => Player, () => TeamPlayerMembership)
-  players: Player[];
-
+  
   private _basePlayers: Player[] = null;
-
   basePlayers(system: RankingSystem): Player[] {
     if (this._basePlayers !== null) {
       return this._basePlayers;
@@ -231,52 +280,8 @@ export class Team extends Model {
     return this._basePlayers;
   }
 
-  @Column
-  type: SubEventType;
-
-  @BelongsTo(() => Player, 'captainId')
-  captain: Player;
-
-  @Column
-  email: string;
-
-  @Column
-  phone: string;
-
-  @Unique('unique_constraint')
-  @Column
-  teamNumber: number;
-
-  @Default(true)
-  @Column
-  active: boolean;
-
-  @HasMany(() => EncounterCompetition, 'homeTeamId')
-  homeEncounters: EncounterCompetition;
-
-  @HasMany(() => EncounterCompetition, 'awayTeamId')
-  awayEncounters: EncounterCompetition;
-
-  private _baseIndex = -1;
-
-  baseIndex(system: RankingSystem): number {
-    // Only run this once per team
-    if (this._baseIndex !== -1) {
-      return this._baseIndex;
-    }
-
-    if (this.players?.length === null) {
-      return -1;
-    }
-    this._baseIndex = Team.getIndexFromPlayers(
-      this.type,
-      this.basePlayers(system).map((r) =>
-        r.lastRankingPlaces.find((place) => place.systemId === system.id)
-      )
-    );
-    return this._baseIndex;
-  }
-
+  regenerateSlug!: Slugify<Team>;
+  
   // Belongs to Club
   getClub!: BelongsToGetAssociationMixin<Club>;
   setClub!: BelongsToSetAssociationMixin<Club, string>;
@@ -357,6 +362,17 @@ export class Team extends Model {
   // Belongs to Captain
   getCaptain!: BelongsToGetAssociationMixin<Player>;
   setCaptain!: BelongsToSetAssociationMixin<Player, string>;
+
+  // Has many EventEntry
+  getEventEntrys!: HasManyGetAssociationsMixin<EventEntry>;
+  setEventEntrys!: HasManySetAssociationsMixin<EventEntry, string>;
+  addEventEntrys!: HasManyAddAssociationsMixin<EventEntry, string>;
+  addEventEntry!: HasManyAddAssociationMixin<EventEntry, string>;
+  removeEventEntry!: HasManyRemoveAssociationMixin<EventEntry, string>;
+  removeEventEntrys!: HasManyRemoveAssociationsMixin<EventEntry, string>;
+  hasEventEntry!: HasManyHasAssociationMixin<EventEntry, string>;
+  hasEventEntrys!: HasManyHasAssociationsMixin<EventEntry, string>;
+  countEventEntrys!: HasManyCountAssociationsMixin;
 
   static getIndexFromPlayers(
     type: SubEventType,
