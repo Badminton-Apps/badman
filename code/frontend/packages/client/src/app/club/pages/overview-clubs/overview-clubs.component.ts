@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 import { ClubService } from 'app/_shared';
 import { Club } from 'app/_shared/models/club.model';
-import { BehaviorSubject, combineLatest, of as observableOf } from 'rxjs';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -94,7 +94,7 @@ export class OverviewClubsComponent implements AfterViewInit {
         catchError((error) => {
           this.isLoadingResults = false;
           console.error(error);
-          return observableOf([]);
+          return of([]);
         })
       )
       .subscribe((data) => (this.dataSource.data = data));

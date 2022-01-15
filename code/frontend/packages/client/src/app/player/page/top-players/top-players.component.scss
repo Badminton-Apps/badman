@@ -1,6 +1,19 @@
-.level{
+.level {
   font-weight: bold;
 }
+
 .rank {
-  color: rgba(0,0,0,0.5);
+  color: rgba(0, 0, 0, 0.5);
 }
+
+@import 'app/_shared/mixins.scss';
+
+@include mat-table-columns((player: (width: 20rem),
+    single: (flex: 1, justify-content: center),
+    singleRank: (flex: 1, justify-content: center),
+    double: (flex: 1, justify-content: center),
+    doubleRank: (flex: 1, justify-content: center),
+    mix: (flex: 1, justify-content: center),
+    mixRank: (flex: 1, justify-content: center),
+  ),
+);
