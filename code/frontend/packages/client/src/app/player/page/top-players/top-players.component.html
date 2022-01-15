@@ -1,29 +1,69 @@
-<ng-container *ngIf="columns">
-  <td-data-table
-    #dataTable
-    [data]="this.data$ | async"
-    [columns]="columns"
-    [sortable]="true"
-    [clickable]="true"
-    [sortBy]="sortBy"
-    [sortOrder]="sortOrder"
-    (sortChange)="sort($event)"
-    (rowClick)="goToPlayer($event)"
-  >
-  </td-data-table>
+<div class="mat-subheading-1">Players</div>
 
-  <td-paging-bar #pagingBar [pageSize]="this.pageSize" [total]="this.totalCount" (change)="page($event)">
-    <mat-select [style.width.px]="50" [(ngModel)]="gender" (selectionChange)="this.changeGender()">
-      <mat-option *ngFor="let size of ['M', 'F']" [value]="size">
-        {{ size }}
-      </mat-option>
-    </mat-select>
-    <span hide-xs>Rows per page:</span>
-    <mat-select [style.width.px]="50" [(ngModel)]="pageSize">
-      <mat-option *ngFor="let size of [10, 15, 20, 25, 50, 100, 200, 500]" [value]="size">
-        {{ size }}
-      </mat-option>
-    </mat-select>
-    {{ pagingBar.range }} <span hide-xs>of {{ pagingBar.total }}</span>
-  </td-paging-bar>
-</ng-container>
+<div layout="column" layout-fill layout-margin layout-align="start center">
+  <form [formGroup]="this.filter" fxflex fxLayoutGap="16px">
+    <mat-form-field appearance="outline" fxFlex="33">
+      <mat-label>Gender</mat-label>
+      <mat-select formControlName="gender">
+        <mat-option value="M">
+          {{ 'gender.male' | translate }}
+        </mat-option>
+        <mat-option value="F">
+          {{ 'gender.female' | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+
+  <div *ngIf="isLoadingResults">
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoadingResults"></mat-progress-bar>
+  </div>
+
+  <mat-table
+    [dataSource]="dataSource"
+    matSort
+    matSortActive="singleRank"
+    matSortDirection="asc"
+    [matSortDisableClear]="true"
+  >
+    <ng-container matColumnDef="player">
+      <mat-header-cell *matHeaderCellDef>{{ 'lists.name' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.player.fullName }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="single">
+      <mat-header-cell *matHeaderCellDef>{{ 'systems.single' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.single }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="singleRank">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'systems.single-rank' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.singleRank }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="double">
+      <mat-header-cell *matHeaderCellDef>{{ 'systems.double' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.double }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="doubleRank">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'systems.double-rank' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.doubleRank }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="mix">
+      <mat-header-cell *matHeaderCellDef>{{ 'systems.mix' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.mix }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="mixRank">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'systems.mix-rank' | translate }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.mixRank }}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" [routerLink]="['/player', row.player.slug]"></mat-row>
+  </mat-table>
+
+  <mat-paginator
+    [length]="this.resultsLength$ | async"
+    [pageSize]="this.pageSize$ | async"
+    [pageIndex]="this.pageIndex$ | async"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="this.onPaginateChange.next($event)"
+  ></mat-paginator>
+</div>

@@ -31,6 +31,7 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
+import { LastRankingPlace, RankingPlace } from '.';
 import { RankingSystems, RankingTiming, StartingType } from '../../enums/';
 import { RankingSystemGroup } from './group.model';
 import { GroupSystems } from './group_system.model';
@@ -161,6 +162,12 @@ export class RankingSystem extends Model {
 
   @HasMany(() => RankingPoint, 'SystemId')
   rankingPoints: RankingPoint;
+
+  @HasMany(() => RankingPlace, 'SystemId')
+  places: RankingPlace;
+
+  @HasMany(() => LastRankingPlace, 'systemId')
+  lastPlaces: LastRankingPlace;
 
   @BelongsToMany(() => RankingSystemGroup, () => GroupSystems)
   groups: RankingSystemGroup[];

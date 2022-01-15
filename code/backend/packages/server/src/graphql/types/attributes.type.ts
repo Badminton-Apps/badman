@@ -8,7 +8,9 @@ export const getAttributeFields = (
   options: { exclude?: string[]; optionalString?: string[] } = null
 ) => {
   if (attributeFieldsCached[model.name] == null) {
-    attributeFieldsCached[model.name] = attributeFields(model);
+    attributeFieldsCached[model.name] = attributeFields(model, {
+      commentToDescription: true,
+    });
   }
 
   const returnInstance = { ...attributeFieldsCached[model.name] };
