@@ -1,8 +1,8 @@
-import { GraphQLList } from 'graphql';
-import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { Game } from '@badvlasim/shared';
-import { GameType } from '../types/game.type';
+import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
+import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { queryFixer } from '../queryFixer';
+import { GameType } from '../types/game.type';
 
 export const gamesQuery = {
   type: new GraphQLList(GameType),
@@ -16,4 +16,15 @@ export const gamesQuery = {
       return findOptions;
     }
   })
+};
+
+export const gameQuery = {
+  type: GameType,
+  args: {
+    id: {
+      description: 'Id of the location',
+      type: new GraphQLNonNull(GraphQLID)
+    }
+  },
+  resolve: resolver(Game)
 };

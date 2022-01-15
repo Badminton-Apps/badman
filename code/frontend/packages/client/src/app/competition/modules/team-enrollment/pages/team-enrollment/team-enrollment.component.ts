@@ -52,7 +52,7 @@ export class TeamEnrollmentComponent implements OnInit {
   show$?: Observable<{
     teamsM: Team[];
     teamsF: Team[];
-    teamsMX: Team[];
+  teamsMX: Team[];
     subEventM: SubEvent[];
     subEventF: SubEvent[];
     subEventMX: SubEvent[];

@@ -17,24 +17,25 @@ export const startWhenReady = async (
   startFunction: (...args) => void
 ) => {
   let databaseService: DataBaseHandler;
-  try {
-    const apmConifg = {
-      serviceName: process.env.SERVICE_NAME,
-      serverUrl: process.env.APM_SERVER_URL,
-      secretToken: process.env.APM_SERVER_TOKEN,
-      verifyServerCert: false,
-      active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
-    } as AgentConfigOptions;
-    apm.start(apmConifg);
-    logger.debug(`Started APM`, apmConifg);
+  const apmConfig = {
+    serviceName: process.env.SERVICE_NAME,
+    serverUrl: process.env.APM_SERVER_URL,
+    secretToken: process.env.APM_SERVER_TOKEN,
+    verifyServerCert: false,
+    active: process.env.APM_SERVER_ACTIVE === 'true' ?? true, 
+  } as AgentConfigOptions;
 
+  apm.start(apmConfig);
+  logger.debug(`Started APM`, { data: apmConfig });
+
+  try {
     databaseService = new DataBaseHandler(dbConfig.default);
     logger.debug('Checking Database');
     await databaseService.dbCheck(canMigrate, sync);
   } catch (error) {
     times += 1;
-    logger.warn('DB is not availible yet', error);
-    logger.warn('retrying', 1000 * times);
+    logger.error('DB is not availible yet', error);
+    logger.warn(`Retrying in ${1000 * times} seconds`);
 
     if (times < 3) {
       setTimeout(startFunction, 1000 * times);
@@ -43,7 +44,7 @@ export const startWhenReady = async (
         startWhenReady(canMigrate, sync, startFunction);
       }, 1000 * times);
     } else {
-      logger.error(error);
+      logger.error(`Something went wrong initializing`, error);
       throw new Error(error);
     }
   }

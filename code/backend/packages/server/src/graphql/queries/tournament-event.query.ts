@@ -5,7 +5,7 @@ import { queryFixer } from '../queryFixer';
 import { EventTournamentConnectionType, EventTournamentType } from '../types/tournaments';
 import { where } from './utils';
 
-export const eventTournamentQuery = {
+export const tournamentEventQuery = {
   type: EventTournamentType,
   args: {
     id: {
@@ -29,7 +29,7 @@ export const eventTournamentQuery = {
   })
 };
 
-export const eventTournamentsQuery = {
+export const tournamentEventsQuery = {
   type: EventTournamentConnectionType.connectionType,
   args: {
     ...EventTournamentConnectionType.connectionArgs,

@@ -1,4 +1,4 @@
-import { Processor, ProcessStep, XmlTournament } from '@badvlasim/shared';
+import { logger, Processor, ProcessStep, XmlTournament } from '@badvlasim/shared';
 import { Transaction } from 'sequelize';
 import { VisualService } from '../../visualService';
 import {
@@ -7,6 +7,7 @@ import {
   TournamentSyncGameProcessor,
   TournamentSyncPlayerProcessor,
   TournamentSyncPointProcessor,
+  TournamentSyncStandingProcessor,
   TournamentSyncSubEventProcessor
 } from './processors';
 
@@ -14,8 +15,8 @@ export class TournamentSyncer {
   protected visualTournament: XmlTournament;
   protected transaction: Transaction;
 
-  public processor: Processor;
-  public visualService: VisualService;
+  public readonly processor: Processor;
+  public readonly visualService: VisualService;
 
   readonly STEP_EVENT = 'event';
   readonly STEP_SUBEVENT = 'subevent';
@@ -24,6 +25,7 @@ export class TournamentSyncer {
   readonly STEP_PLAYER = 'player';
   readonly STEP_GAME = 'game';
   readonly STEP_POINT = 'point';
+  readonly STEP_STANDING = 'standing';
 
   private _eventStep: TournamentSyncEventProcessor;
   private _subEventStep: TournamentSyncSubEventProcessor;
@@ -31,20 +33,21 @@ export class TournamentSyncer {
   private _playerStep: TournamentSyncPlayerProcessor;
   private _gameStep: TournamentSyncGameProcessor;
   private _pointStep: TournamentSyncPointProcessor;
+  private _standingStep: TournamentSyncStandingProcessor;
+
+  private tournamentLogger = logger.child({ label: 'tournament-processor' });
 
   constructor(
     protected options?: {
-      updateMeta?: boolean;
-      fixGender?: boolean;
+      newGames?: boolean;
     }
   ) {
     this.options = {
-      updateMeta: false,
-      fixGender: false,
+      newGames: false,
       ...this.options
     };
 
-    this.processor = new Processor();
+    this.processor = new Processor(null, {logger: this.tournamentLogger});
     this.visualService = new VisualService();
 
     this.processor.addStep(this.getEvent());
@@ -53,51 +56,52 @@ export class TournamentSyncer {
     this.processor.addStep(this.addPlayers());
     this.processor.addStep(this.addGames());
     this.processor.addStep(this.addPoints());
+
+    this.processor.addStep(this.updateStanding());
   }
 
   process(args: {
     transaction: Transaction;
     xmlTournament: XmlTournament;
-    other?: { [key: string]: unknown };
+    options?: { [key: string]: unknown };
   }) {
-    // Override options with args
-    this.options = {
-      updateMeta: (args?.other?.updateMeta as boolean) ?? this.options.updateMeta,
-      fixGender: (args?.other?.fixGender as boolean) ?? this.options.fixGender
+    const options = {
+      logger: this.tournamentLogger,
+      transaction: args.transaction,
+      lastRun: args.options.lastRun as Date
     };
-    
+ 
     this._eventStep = new TournamentSyncEventProcessor(
       args.xmlTournament,
-      args.transaction,
-      this.visualService
+      this.visualService,
+      options
     );
     this._subEventStep = new TournamentSyncSubEventProcessor(
       args.xmlTournament,
-      args.transaction,
       this.visualService,
-      this.options
+      options
     );
 
     this._drawStep = new TournamentSyncDrawProcessor(
       args.xmlTournament,
-      args.transaction,
-      this.visualService
+      this.visualService,
+      options
     );
 
     this._playerStep = new TournamentSyncPlayerProcessor(
       args.xmlTournament,
-      args.transaction,
-      this.visualService
+      this.visualService,
+      options
     );
 
     this._gameStep = new TournamentSyncGameProcessor(
       args.xmlTournament,
-      args.transaction,
       this.visualService,
-      this.options
+      options
     );
 
-    this._pointStep = new TournamentSyncPointProcessor(args.transaction);
+    this._pointStep = new TournamentSyncPointProcessor(options);
+    this._standingStep = new TournamentSyncStandingProcessor(options);
 
     return this.processor.process();
   }
@@ -133,6 +137,7 @@ export class TournamentSyncer {
 
       // Pass data to other steps
       this._gameStep.draws = data;
+      this._standingStep.draws = data;
     });
   }
 
@@ -149,7 +154,10 @@ export class TournamentSyncer {
   protected addGames(): ProcessStep {
     return new ProcessStep(this.STEP_GAME, async () => {
       // Process step
-      await this._gameStep.process();
+      const data = await this._gameStep.process();
+
+      // Pass data to other steps
+      this._standingStep.games = data;
     });
   }
 
@@ -157,6 +165,13 @@ export class TournamentSyncer {
     return new ProcessStep(this.STEP_POINT, async () => {
       // Process step
       await this._pointStep.process();
+    });
+  }
+
+  protected updateStanding(): ProcessStep {
+    return new ProcessStep(this.STEP_STANDING, async () => {
+      // Process step
+      await this._standingStep.process();
     });
   }
 }

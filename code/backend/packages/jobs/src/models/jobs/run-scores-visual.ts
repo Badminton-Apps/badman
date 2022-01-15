@@ -33,6 +33,8 @@ export class GetScoresVisual extends CronJob {
     };
   }
 
+  private logger = logger.child({ label: 'GetScoresVisual' });
+
   private _pageSize = 1000;
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
@@ -40,7 +42,7 @@ export class GetScoresVisual extends CronJob {
   constructor(
     cron: Cron,
     readonly options?: {
-      updateMeta?: boolean;
+      newGames?: boolean;
     }
   ) {
     super(cron);
@@ -48,15 +50,49 @@ export class GetScoresVisual extends CronJob {
     this._tournamentSync = new TournamentSyncer(options);
   }
 
+  /**
+   * Run the visual sync
+   * @param args.date Start from a certain date
+   * @param args.skip Skip certain event types
+   * @param args.only Only process certain event types
+   * @param args.offset Continue from a previous (failed) run
+   * @param args.limit Only process a certain number of events
+   * 
+   * 
+   * Example args:
+   ```json
+   {
+      "date": "2000-01-01",
+      "offset": 816
+    }
+    ```
+    --------------------------------------------------------------------------------
+    ```json
+    {
+      "date": "2000-01-01",
+      "only": [
+        "Georges Rogiers Tornooi - YBJM Brons"
+      ]
+    }
+    ```
+   */
+
   async run(args?: {
-    date: Date;
+    // Start from certain date
+    date?: Date;
+    // Skip types / event names
     skip: string[];
-    other: { [key: string]: object };
+    // Only types / event names
+    only: string[];
+    // Continue from a previous (failed) run
+    offset: number;
+    // Only process a certain number of events
+    limit: number;
   }): Promise<void> {
     this.dbCron = await Cron.findByPk(this.dbCron.id);
     // Use argument date, else stored date, finally use today
     const newDate = moment(args?.date ?? this.dbCron.lastRun ?? null);
-    logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
+    this.logger.info(`Started sync of Visual scores from ${newDate.format('YYYY-MM-DD')}`);
 
     let newEvents = await this._getChangeEvents(newDate);
 
@@ -71,21 +107,17 @@ export class GetScoresVisual extends CronJob {
     };
     await this.dbCron.save();
 
-    // newEvents = newEvents.filter((event) => {
-    //   //return moment(event.StartDate).isAfter('2020-09-01 00:00:00+02');
-    //   return event.Name === 'PBA competitie 2021-2022'
-    //   // && event.Name != 'VVBBC interclubcompetitie 2021-2022'
-    //   // && event.Name != 'PBO competitie 2021-2022'
-    //   // || event.Name == 'Limburgse interclubcompetitie 2021-2022'
-    //   // || event.Name == 'WVBF Competitie 2021-2022'
-    // });
+    let toProcess = newEvents.length;
+    if (args?.limit) {
+      toProcess = args?.offset ?? 0 + args?.limit;
+    }
 
-    for (let i = 0; i < newEvents.length; i++) {
+    for (let i = args?.offset ?? 0; i < toProcess; i++) {
       const xmlTournament = newEvents[i];
       const current = i + 1;
-      const total = newEvents.length;
+      const total = toProcess;
       const percent = Math.round((current / total) * 10000) / 100;
-      logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${newEvents.length})`);
+      this.logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${total})`);
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
       this.dbCron.meta = {
@@ -95,28 +127,54 @@ export class GetScoresVisual extends CronJob {
       };
       await this.dbCron.save({ transaction });
       try {
+        // Skip certain events
+        if ((args?.skip?.length ?? 0) > 0 && args?.skip?.includes(xmlTournament.Name)) {
+          await transaction.commit();
+          continue;
+        }
+
+        // Only process certain events
+        if ((args?.only?.length ?? 0) > 0 && !args?.only?.includes(xmlTournament.Name)) {
+          await transaction.commit();
+          continue;
+        }
+
         if (
           xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
           xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
         ) {
-          if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('competition')) {
-            await this._competitionSync.process({ transaction, xmlTournament, other: args?.other });
+          if (args?.skip?.includes('competition')) {
+            await transaction.commit();
+            continue;
           }
+
+          await this._competitionSync.process({
+            transaction,
+            xmlTournament,
+            options: { ...args, lastRun: this.dbCron.lastRun }
+          });
         } else {
-          if (!args?.skip?.includes(xmlTournament.Name) && !args?.skip?.includes('tournament')) {
-            await this._tournamentSync.process({ transaction, xmlTournament, other: args?.other });
+          if (args?.skip?.includes('tournament')) {
+            await transaction.commit();
+            continue;
           }
+
+          await this._tournamentSync.process({
+            transaction,
+            xmlTournament,
+            options: { ...args, lastRun: this.dbCron.lastRun }
+          });
         }
         await transaction.commit();
-        logger.info(`Finished ${xmlTournament.Name}`);
+        this.logger.info(`Finished ${xmlTournament.Name}`);
       } catch (e) {
-        logger.error('Rollback', e);
+        this.logger.error('Rollback', e);
         await transaction.rollback();
         throw e;
       }
     }
 
-    logger.info('Finished sync of Visual scores');
+    this.logger.info('Finished sync of Visual scores');
   }
 
   private async _getChangeEvents(date: Moment, page = 0) {
@@ -133,7 +191,7 @@ export class GetScoresVisual extends CronJob {
         retry: 25,
         onRetryAttempt: (err) => {
           const cfg = rax.getConfig(err);
-          logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`);
+          this.logger.warn(`Retry attempt #${cfg.currentRetryAttempt}`);
         }
       },
       headers: {
@@ -151,6 +209,11 @@ export class GetScoresVisual extends CronJob {
       ignoreAttributes: false,
       parseAttributeValue: true
     }).Result as XmlResult;
+
+    if (body.Tournament === undefined) {
+      return [];
+    }
+
     const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
 
     // TODO: Wait untill Visual fixes this

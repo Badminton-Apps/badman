@@ -4,7 +4,21 @@ import { Player } from '@badvlasim/shared';
 import { PlayerType } from '../types/player.type';
 import { queryFixer } from '../queryFixer';
 
-const playerQuery = {
+export const playersQuery = {
+  type: new GraphQLList(PlayerType),
+  args: Object.assign(defaultListArgs(), {}),
+  resolve: resolver(Player, {
+    before: async (findOptions: { [key: string]: object }) => {
+      findOptions = {
+        ...findOptions,
+        where: queryFixer(findOptions.where)
+      };
+      return findOptions;
+    }
+  })
+};
+
+export const playerQuery = {
   type: PlayerType,
   args: {
     id: {
@@ -27,19 +41,3 @@ const playerQuery = {
     }
   })
 };
-
-const playersQuery = {
-  type: new GraphQLList(PlayerType),
-  args: Object.assign(defaultListArgs(), {}),
-  resolve: resolver(Player, {
-    before: async (findOptions: { [key: string]: object }) => {
-      findOptions = {
-        ...findOptions,
-        where: queryFixer(findOptions.where)
-      };
-      return findOptions;
-    }
-  })
-};
-
-export { playerQuery, playersQuery };

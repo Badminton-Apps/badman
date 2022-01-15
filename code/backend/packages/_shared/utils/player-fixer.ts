@@ -1,6 +1,6 @@
 export const correctWrongPlayers = (player: {
   id?: string;
-  memberId: string;
+  memberId?: string;
   firstName?: string;
   lastName?: string;
   birthDate?: Date;
@@ -8,7 +8,7 @@ export const correctWrongPlayers = (player: {
   club?: number;
 }): {
   id?: string;
-  memberId: string;
+  memberId?: string;
   firstName?: string;
   lastName?: string;
   birthDate?: Date;

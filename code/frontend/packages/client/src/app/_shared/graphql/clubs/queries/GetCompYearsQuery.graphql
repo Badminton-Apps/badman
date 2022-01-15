@@ -6,11 +6,14 @@ query GetCompYearsQuery($id: ID!) {
       slug
       name
       clubId
-      subEvents {
+      entries {
         id
-        event {
+        competitionSubEvent {
           id
-          startYear
+          event {
+            id
+            startYear
+          }
         }
       }
     }
