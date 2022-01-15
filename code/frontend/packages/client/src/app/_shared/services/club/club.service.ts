@@ -182,7 +182,7 @@ export class ClubService {
 
     if (subEvents) {
       where = {
-        id: { ['$in']: subEvents },
+        subEventId: { ['$in']: subEvents },
       };
     }
 
@@ -196,7 +196,13 @@ export class ClubService {
       })
       .pipe(
         map((x) => {
-          return x.data.club.teams?.filter((r) => r.subEvents.length > 0 && r.subEvents[0].meta != null) ?? [];
+          return (
+            x.data.club.teams?.filter(
+              (r) =>
+                (r.entries?.length ?? 0) > 0 &&
+                (r.entries![0].meta?.competition != null || r.entries![0].meta?.tournament != null)
+            ) ?? []
+          );
         })
       );
   }
@@ -213,7 +219,7 @@ export class ClubService {
         map(
           (x) =>
             x.data.club.teams
-              ?.map((r) => r.subEvents.map((r) => r.event?.startYear))
+              ?.map((r) => r.entries?.map((r) => r.competitionSubEvent?.event?.startYear))
               .flat()
               .filter((x, i, a) => a.indexOf(x) === i)
               .sort() ?? []

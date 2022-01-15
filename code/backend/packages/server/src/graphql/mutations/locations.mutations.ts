@@ -71,7 +71,7 @@ export const removeLocationMutation = {
       const dbLocation = await Location.findByPk(locationId, { transaction });
 
       if (!dbLocation) {
-        logger.debug('location', dbLocation);
+        logger.debug('location', {data: dbLocation});
         throw new ApiError({
           code: 404,
           message: 'Location not found'
@@ -164,7 +164,7 @@ export const updateLocationMutation = {
       const dbLocation = await Location.findByPk(location.id, { transaction });
 
       if (!dbLocation) {
-        logger.debug('location', dbLocation);
+        logger.debug('location', {data: dbLocation});
         throw new ApiError({
           code: 404,
           message: 'Location not found'

@@ -15,14 +15,10 @@ import {
   StartVisualRankingDate,
   StepProcessor
 } from '@badvlasim/shared';
-import { Op, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 
 export class CompetitionSyncPointProcessor extends StepProcessor {
   public event: EventCompetition;
-
-  constructor(protected readonly transaction: Transaction) {
-    super(null, transaction);
-  }
 
   public async process(): Promise<void> {
     const subEvents = await this.event.getSubEvents({ transaction: this.transaction });
@@ -113,7 +109,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
         }
       }
     }
-    logger.info(`${totalGames} games found, ${totalWithoutPoints} without points`);
+    this.logger.debug(`${totalGames} games found, ${totalWithoutPoints} without points`);
   }
 
   private getSystem(rankingSystem: RankingSystem) {

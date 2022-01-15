@@ -1,6 +1,11 @@
-import { EventTournament, logger, StepProcessor, XmlTournament } from '@badvlasim/shared';
+import {
+  EventTournament,
+  logger,
+  StepOptions,
+  StepProcessor,
+  XmlTournament
+} from '@badvlasim/shared';
 import moment, { Moment } from 'moment';
-import { Transaction } from 'sequelize';
 import { VisualService } from '../../../visualService';
 
 export interface EventStepData {
@@ -12,14 +17,14 @@ export interface EventStepData {
 export class TournamentSyncEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
-    protected readonly transaction: Transaction,
-    protected readonly visualService: VisualService
+    protected readonly visualService: VisualService,
+    options?: StepOptions
   ) {
-    super(visualTournament, transaction);
+    super(options);
   }
 
   public async process(): Promise<EventStepData> {
-    logger.debug(`Searching for ${this.visualTournament.Name}`);
+    this.logger.debug(`Searching for ${this.visualTournament.Name}`);
     let event = await EventTournament.findOne({
       where: { name: `${this.visualTournament.Name}` },
       transaction: this.transaction
@@ -39,7 +44,7 @@ export class TournamentSyncEventProcessor extends StepProcessor {
 
       const visualTournament = await this.visualService.getTournament(this.visualTournament.Code);
 
-      logger.debug(`EventTournament ${visualTournament.Name} not found, creating`);
+      this.logger.debug(`EventTournament ${visualTournament.Name} not found, creating`);
       event = await new EventTournament({
         name: visualTournament.Name,
         firstDay: visualTournament.StartDate,

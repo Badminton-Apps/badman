@@ -28,6 +28,8 @@ import {
 import { SubEventTournament } from './sub-event-tournament.model';
 import { DrawType } from '../../../enums';
 import { Game } from '../game.model';
+import { Standing } from '../standing.model';
+import { EventEntry } from '../entry.model';
 
 @Table({
   timestamps: true,
@@ -64,6 +66,15 @@ export class DrawTournament extends Model {
   })
   games: Game[];
 
+  @HasMany(() => EventEntry, {
+    foreignKey: 'drawId',
+    onDelete: 'CASCADE',
+    scope: {
+      entryType: 'tournament',
+    },
+  })
+  entries: EventEntry[];
+
   @Unique('DrawTournaments_unique_constraint')
   @Column
   visualCode: string;
@@ -89,6 +100,17 @@ export class DrawTournament extends Model {
   hasGame!: HasManyHasAssociationMixin<Game, string>;
   hasGames!: HasManyHasAssociationsMixin<Game, string>;
   countGames!: HasManyCountAssociationsMixin;
+
+  // Has many Standing
+  getStandings!: HasManyGetAssociationsMixin<Standing>;
+  setStandings!: HasManySetAssociationsMixin<Standing, string>;
+  addStandings!: HasManyAddAssociationsMixin<Standing, string>;
+  addStanding!: HasManyAddAssociationMixin<Standing, string>;
+  removeStanding!: HasManyRemoveAssociationMixin<Standing, string>;
+  removeStandings!: HasManyRemoveAssociationsMixin<Standing, string>;
+  hasStanding!: HasManyHasAssociationMixin<Standing, string>;
+  hasStandings!: HasManyHasAssociationsMixin<Standing, string>;
+  countStandings!: HasManyCountAssociationsMixin;
 
   // Belongs to SubEvent
   getSubEvent!: BelongsToGetAssociationMixin<SubEventTournament>;

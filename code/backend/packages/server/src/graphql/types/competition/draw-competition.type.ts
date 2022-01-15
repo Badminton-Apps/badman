@@ -1,6 +1,7 @@
 import { DrawCompetition } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
+import { EntryType } from '..';
 import { queryFixer } from '../../queryFixer';
 import { getAttributeFields } from '../attributes.type';
 import { RankingSystemGroupInputType } from '../rankingSystemGroup.type';
@@ -16,6 +17,21 @@ const DrawCompetitionType = new GraphQLObjectType({
         type: new GraphQLList(EncounterCompetitionType),
         args: Object.assign(defaultListArgs(), {}),
         resolve: resolver(DrawCompetition.associations.encounters, {
+          before: async (
+            findOptions: { [key: string]: object }
+          ) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
+      },
+      entries: {
+        type: new GraphQLList(EntryType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(DrawCompetition.associations.entries, {
           before: async (
             findOptions: { [key: string]: object }
           ) => {

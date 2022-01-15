@@ -1,13 +1,13 @@
-import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-
+import { Apollo } from 'apollo-angular';
 import { CompetitionEncounter } from 'app/_shared';
-import { Availability, EncounterChange } from 'app/_shared/models';
-import { map, tap } from 'rxjs/operators';
+import { EncounterChange } from 'app/_shared/models';
+import { map } from 'rxjs/operators';
+import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
 import * as encounterQuery from '../../graphql/encounters/queries/GetEncounterQuery.graphql';
 import * as encountersQuery from '../../graphql/encounters/queries/GetEncountersQuery.graphql';
 import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.graphql';
-import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
+
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class EncounterService {
   getEncounters(teamId: string, between: string []) {
     return this.apollo
       .query<{
-        encounterCompetitions: {
+        competitionEncounters: {
           total: number;
           edges: { cursor: string; node: CompetitionEncounter }[];
         };
@@ -34,8 +34,8 @@ export class EncounterService {
       .pipe(
         map((x) => {
           return {
-            total: x.data.encounterCompetitions?.total,
-            encounters: x.data.encounterCompetitions?.edges?.map((e) => {
+            total: x.data.competitionEncounters?.total,
+            encounters: x.data.competitionEncounters?.edges?.map((e) => {
               return {
                 cursor: e.cursor,
                 node: new CompetitionEncounter(e.node),
@@ -49,7 +49,7 @@ export class EncounterService {
   getEncounter(encounterId: string) {
     return this.apollo
       .query<{
-        encounterCompetition: CompetitionEncounter;
+        competitionEncounter: CompetitionEncounter;
       }>({
         query: encounterQuery,
         variables: {
@@ -58,7 +58,7 @@ export class EncounterService {
       })
       .pipe(
         map((x) => {
-          return new CompetitionEncounter(x.data.encounterCompetition);
+          return new CompetitionEncounter(x.data.competitionEncounter);
         })
       );
   }

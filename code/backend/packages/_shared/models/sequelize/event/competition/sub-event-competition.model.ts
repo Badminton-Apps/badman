@@ -35,10 +35,9 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
+import { EventEntry } from '..';
 import { SubEventType } from '../../../enums';
 import { RankingSystemGroup } from '../../ranking';
-import { TeamSubEventMembership } from '../../team-subEvent-membership.model';
-import { Team } from '../../team.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EventCompetition } from './event-competition.model';
 import { GroupSubEventCompetition } from './group-subevent.model';
@@ -71,20 +70,26 @@ export class SubEventCompetition extends Model {
 
   @Column
   maxLevel?: number;
-
+ 
   @Column
   minBaseIndex?: number;
 
   @Column
   maxBaseIndex?: number;
 
-  @BelongsToMany(() => Team, () => TeamSubEventMembership)
-  teams: Team[];
+  @HasMany(() => EventEntry, {
+    foreignKey: 'subEventId',
+    onDelete: 'CASCADE',
+    scope: {
+      entryType: 'competition',
+    },
+  })
+  entries: EventEntry[];
 
   @BelongsToMany(() => RankingSystemGroup, () => GroupSubEventCompetition)
   groups: RankingSystemGroup[];
 
-  @HasMany(() => DrawCompetition, {
+  @HasMany(() => DrawCompetition, { 
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
@@ -119,16 +124,16 @@ export class SubEventCompetition extends Model {
   hasGroups!: BelongsToManyHasAssociationsMixin<RankingSystemGroup, string>;
   countGroup!: BelongsToManyCountAssociationsMixin;
 
-  // Belongs to many Team
-  getTeams!: BelongsToManyGetAssociationsMixin<Team>;
-  setTeam!: BelongsToManySetAssociationsMixin<Team, string>;
-  addTeams!: BelongsToManyAddAssociationsMixin<Team, string>;
-  addTeam!: BelongsToManyAddAssociationMixin<Team, string>;
-  removeTeam!: BelongsToManyRemoveAssociationMixin<Team, string>;
-  removeTeams!: BelongsToManyRemoveAssociationsMixin<Team, string>;
-  hasTeam!: BelongsToManyHasAssociationMixin<Team, string>;
-  hasTeams!: BelongsToManyHasAssociationsMixin<Team, string>;
-  countTeam!: BelongsToManyCountAssociationsMixin;
+  // Has many EventEntry
+  getEventEntrys!: HasManyGetAssociationsMixin<EventEntry>;
+  setEventEntrys!: HasManySetAssociationsMixin<EventEntry, string>;
+  addEventEntrys!: HasManyAddAssociationsMixin<EventEntry, string>;
+  addEventEntry!: HasManyAddAssociationMixin<EventEntry, string>;
+  removeEventEntry!: HasManyRemoveAssociationMixin<EventEntry, string>;
+  removeEventEntrys!: HasManyRemoveAssociationsMixin<EventEntry, string>;
+  hasEventEntry!: HasManyHasAssociationMixin<EventEntry, string>;
+  hasEventEntrys!: HasManyHasAssociationsMixin<EventEntry, string>;
+  countEventEntrys!: HasManyCountAssociationsMixin;
 
   // Has many Draw
   getDraws!: HasManyGetAssociationsMixin<DrawCompetition>;

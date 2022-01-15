@@ -1,4 +1,3 @@
-
 import { logger } from './utils';
 
 import cors from 'cors';
@@ -70,7 +69,12 @@ export class App {
 
   private _initializeProxies(proxies) {
     proxies.forEach((p) => {
-      logger.debug('Setting up proxy', p.from, p.to);
+      logger.debug('Setting up proxy', {
+        data: {
+          from: p.from,
+          to: p.to,
+        },
+      });
       this.app.use(
         p.from,
         createProxyMiddleware({
@@ -105,7 +109,7 @@ export class App {
       `SIGTERM`,
     ].forEach((event) => {
       process.on(event, () => {
-        logger.debug('Process event type: ', event);
+        logger.debug('Process event type: ', { data: { event } });
         httpServer.close();
         process.exit();
       });

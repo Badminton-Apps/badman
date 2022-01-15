@@ -1,0 +1,82 @@
+<div fxFlex fxLayout="row" fxLayoutalign="space-between">
+  <div fxFlex fxLayout="column" class="players">
+    <div fxFlex fxLayout="column" fxLayoutAlign="end start" [ngClass]="{ won: game.winner == 1 }">
+      <ng-container [ngSwitch]="game.status">
+        <ng-container *ngSwitchCase="'NO_MATCH'">
+          <div class="bye" *ngIf="!this.playerT1P1">{{ 'games.unkown' | translate }}</div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'WALKOVER'">
+          <div class="bye" *ngIf="!this.playerT1P1">{{ 'games.unkown' | translate }}</div>
+        </ng-container>
+      </ng-container>
+
+      <div fxFlex *ngIf="this.playerT1P1">
+        <!-- User -->
+        <div class="has-user" [routerLink]="['/player', this.playerT1P1?.slug]">
+          <!-- Name -->
+          <span>{{ this.playerT1P1?.fullName }}</span>
+        </div>
+      </div>
+      <div fxFlex *ngIf="this.playerT1P2">
+        <!-- User -->
+        <div class="has-user" [routerLink]="['/player', this.playerT1P2?.slug]">
+          <!-- Name -->
+          <span>{{ this.playerT1P2?.fullName }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div fxFlex fxLayout="column" fxLayoutAlign="start start" [ngClass]="{ won: game.winner == 2 }">
+      <ng-container [ngSwitch]="game.status">
+        <ng-container *ngSwitchCase="'NO_MATCH'">
+          <div class="bye" *ngIf="!this.playerT2P1">{{ 'games.unkown' | translate }}</div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'WALKOVER'">
+          <div class="bye" *ngIf="!this.playerT2P1">{{ 'games.unkown' | translate }}</div>
+        </ng-container>
+      </ng-container>
+
+      <div fxFlex *ngIf="this.playerT2P1">
+        <!-- User -->
+        <div class="has-user" [routerLink]="['/player', this.playerT2P1?.slug]">
+          <!-- Name -->
+          <span>{{ this.playerT2P1?.fullName }}</span>
+        </div>
+      </div>
+      <div fxFlex *ngIf="this.playerT2P2">
+        <!-- User -->
+        <div class="has-user" [routerLink]="['/player', this.playerT2P2?.slug]">
+          <!-- Name -->
+          <span>{{ this.playerT2P2?.fullName }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="column" class="scores">
+    <div fxFlex fxLayout="row" fxLayoutAlign="end end">
+      <div fxFlex="25px" [ngClass]="{ won: game.set1Winner == 1 }">
+        {{ this.game?.set1Team1 }}
+      </div>
+      <div fxFlex="25px" [ngClass]="{ won: game.set2Winner == 1 }">
+        {{ this.game?.set2Team1 }}
+      </div>
+      <div fxFlex="25px" [ngClass]="{ won: game.set3Winner == 1 }">
+        {{ this.game?.set3Team1 }}
+      </div>
+    </div>
+
+    <div fxFlex fxLayout="row" fxLayoutAlign="start start">
+      <div fxFlex="25px" [ngClass]="{ won: game.set1Winner == 2 }">
+        {{ this.game?.set1Team2 }}
+      </div>
+      <div fxFlex="25px" [ngClass]="{ won: game.set2Winner == 2 }">
+        {{ this.game?.set2Team2 }}
+      </div>
+      <div fxFlex="25px" [ngClass]="{ won: game.set3Winner == 2 }">
+        {{ this.game?.set3Team2 }}
+      </div>
+    </div>
+  </div>
+</div>

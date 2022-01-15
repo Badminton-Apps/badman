@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { CompetitionEvent, EventService } from 'app/_shared';
+import { Apollo, gql } from 'apollo-angular';
+import { CompetitionDraw, CompetitionEvent, CompetitionSubEvent, EventService } from 'app/_shared';
 import { AssignRankingGroupsComponent } from 'app/_shared/dialogs';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './detail-competition.component.html',
@@ -13,14 +14,57 @@ import { switchMap, tap } from 'rxjs/operators';
 export class DetailCompetitionComponent implements OnInit {
   event$!: Observable<CompetitionEvent>;
 
+  subEventsM$!: Observable<CompetitionSubEvent[]>;
+  subEventsF$!: Observable<CompetitionSubEvent[]>;
+  subEventsMX$!: Observable<CompetitionSubEvent[]>;
+
   update$ = new BehaviorSubject(0);
 
-  constructor(private eventService: EventService, private route: ActivatedRoute, private dialog: MatDialog) {}
+  constructor(private apollo: Apollo, private route: ActivatedRoute, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.event$ = combineLatest([this.route.paramMap, this.update$]).pipe(
-      switchMap(([params]) => this.eventService.getCompetitionEvent(params.get('id')!))
+      switchMap(([params]) =>
+        this.apollo.query<{ competitionEvent: CompetitionEvent }>({
+          query: gql`
+            query GetCompetitionDetails($id: ID!) {
+              competitionEvent(id: $id) {
+                id
+                slug
+                name
+                startYear
+                allowEnlisting
+                started
+                type
+                updatedAt
+                subEvents(order: "eventType") {
+                  id
+                  name
+                  eventType
+                  level
+                  groups {
+                    id
+                    name
+                  }
+                  draws(order: "name") {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            id: params.get('id')!,
+          },
+        })
+      ),
+      map(({ data }) => new CompetitionEvent(data.competitionEvent))
     );
+
+    this.subEventsM$ = this.event$.pipe(map((event) => event.subEvents!.filter((se) => se.eventType === 'M')));
+    this.subEventsF$ = this.event$.pipe(map((event) => event.subEvents!.filter((se) => se.eventType === 'F')));
+    this.subEventsMX$ = this.event$.pipe(map((event) => event.subEvents!.filter((se) => se.eventType === 'MX')));
   }
 
   assignRankingGroups(event: Partial<CompetitionEvent>) {
@@ -35,7 +79,6 @@ export class DetailCompetitionComponent implements OnInit {
       .afterClosed()
       .subscribe(() => {
         this.update$.next(0);
-        
       });
   }
 }

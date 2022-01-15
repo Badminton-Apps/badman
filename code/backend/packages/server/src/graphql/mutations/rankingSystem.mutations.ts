@@ -30,10 +30,10 @@ export const addRankingSystemMutation = {
     try {
       const { groups, ...rankingSystem } = rankingSystemInput;
       const eventDb = await RankingSystem.create(rankingSystem, { transaction });
-      logger.debug('Event', eventDb.toJSON());
+      logger.debug('Event', {data: eventDb.toJSON()});
       logger.debug(
         'Got groups',
-        groups.map((r) => r.id)
+        {data: groups.map((r) => r.id)}
       );
 
       for (const group of groups) {
