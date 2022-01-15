@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
 import { DetailCompetitionComponent } from './pages';
-import { DetailSubEventCompetitionComponent } from './pages/detail-sub-event-competition/detail-sub-event-competition.component';
+import { DetailDrawCompetitionComponent } from './pages/detail-draw/detail-draw.component';
 
 const routes: Routes = [
   {
@@ -26,8 +26,8 @@ const routes: Routes = [
         component: DetailCompetitionComponent,
       },
       {
-        path: ':subEvent',
-        component: DetailSubEventCompetitionComponent,
+        path: ':drawId',
+        component: DetailDrawCompetitionComponent,
       },
     ],
   },

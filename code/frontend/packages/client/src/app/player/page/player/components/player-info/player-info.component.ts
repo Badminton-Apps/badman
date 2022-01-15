@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { GameType, PlayerGame, RankingPoint } from '../../../../../_shared';
+import { GameStatus, GameType, PlayerGame, RankingPoint } from '../../../../../_shared';
 
 @Component({
   selector: 'app-player-info',
@@ -18,7 +18,7 @@ export class PlayerInfoComponent implements OnInit {
   won: boolean = false;
 
   @Input()
-  bye: boolean = false;
+  status?: GameStatus;
 
   @Input()
   rankingPoint!: RankingPoint;
@@ -32,6 +32,8 @@ export class PlayerInfoComponent implements OnInit {
   tooltip: string = '';
 
   ngOnInit() {
+    this.status = this.status || GameStatus.NORMAL;
+
     if (this.player) {
       if (this.player.rankingPlace && this.type) {
         this.ranking = this.player.rankingPlace[this.type];

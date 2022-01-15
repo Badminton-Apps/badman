@@ -2,16 +2,15 @@ import {
   Player,
   SubEventCompetition,
   Team,
-  TeamPlayerMembership,
-  TeamSubEventMembership
+  TeamPlayerMembership
 } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import moment from 'moment';
+import { EntryType } from './entry.type';
 import { queryFixer } from '../queryFixer';
 import { getAttributeFields } from './attributes.type';
 import { ClubType } from './club.type';
-import { SubEventCompetitionType } from './competition';
 import { EncounterCompetitionType } from './competition/encounter-competition.type';
 import { LocationType } from './location.type';
 import { PlayerInputType, PlayerType } from './player.type';
@@ -42,7 +41,7 @@ export const TeamType = new GraphQLObjectType({
           before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
-              where: queryFixer(findOptions.where)
+              where: queryFixer(findOptions.where) 
             };
             return findOptions;
           }
@@ -113,11 +112,10 @@ export const TeamType = new GraphQLObjectType({
           }
         })
       },
-
-      subEvents: {
-        type: new GraphQLList(SubEventCompetitionType),
+      entries: {
+        type: new GraphQLList(EntryType),
         args: Object.assign(defaultListArgs()),
-        resolve: resolver(Team.associations.subEvents, {
+        resolve: resolver(Team.associations.entries, {
           before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
@@ -125,9 +123,10 @@ export const TeamType = new GraphQLObjectType({
             };
             return findOptions;
           },
-          after: (subEvents: (TeamSubEventMembership & SubEventCompetition)[]) => {
+          after: (subEvents: ( & SubEventCompetition)[]) => {
             return subEvents.map((subevent) => {
-              subevent.meta = subevent.getDataValue('TeamSubEventMembership').meta;
+              // TODO
+              // subevent.meta = subevent.getEntries().meta;
               return subevent;
             });
           }

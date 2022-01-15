@@ -5,6 +5,7 @@
     "**/*.test.ts",
     "**/*.spec.ts",
     ".git",
+    "dist",
     "node_modules",
     "import/competitions/",
     "import/tournaments/"

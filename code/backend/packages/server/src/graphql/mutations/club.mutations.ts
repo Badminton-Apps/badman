@@ -138,7 +138,7 @@ export const updateClubMutation = {
       const dbClub = await Club.findByPk(club.id, { transaction });
       const dbClubCopy = dbClub.get({ plain: true, clone: true });
       if (!dbClub) {
-        logger.debug('club', dbClub);
+        logger.debug('club', {data: dbClub});
         throw new ApiError({
           code: 404,
           message: 'Club not found'

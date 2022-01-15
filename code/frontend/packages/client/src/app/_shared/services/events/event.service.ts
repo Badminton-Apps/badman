@@ -49,11 +49,11 @@ export class EventService {
 
     return this.apollo
       .query<{
-        eventCompetitions?: {
+        competitionEvents?: {
           total: number;
           edges: { cursor: string; node: CompetitionEvent }[];
         };
-        eventTournaments?: {
+        tournamentEvents?: {
           total: number;
           edges: { cursor: string; node: TournamentEvent }[];
         };
@@ -70,10 +70,10 @@ export class EventService {
       })
       .pipe(
         map((x) => {
-          if (x.data.eventCompetitions) {
+          if (x.data.competitionEvents) {
             return {
-              total: x.data.eventCompetitions.total,
-              events: x.data.eventCompetitions.edges?.map((e) => {
+              total: x.data.competitionEvents.total,
+              events: x.data.competitionEvents.edges?.map((e) => {
                 return {
                   cursor: e.cursor,
                   node: new CompetitionEvent(e.node),
@@ -82,10 +82,10 @@ export class EventService {
             };
          
           }
-          if (x.data.eventTournaments) {
+          if (x.data.tournamentEvents) {
             return {
-              total: x.data.eventTournaments.total,
-              events: x.data.eventTournaments.edges?.map((e) => {
+              total: x.data.tournamentEvents.total,
+              events: x.data.tournamentEvents.edges?.map((e) => {
                 return {
                   cursor: e.cursor,
                   node: new TournamentEvent(e.node),
@@ -102,7 +102,7 @@ export class EventService {
   getCompetitionEvent(id: string, args?: { clubId: string; includeComments: boolean }) {
     return this.apollo
       .query<{
-        eventCompetition: CompetitionEvent;
+        competitionEvent: CompetitionEvent;
       }>({
         query: getCompetitionEventQuery,
         variables: {
@@ -111,13 +111,13 @@ export class EventService {
           clubId: args?.clubId,
         },
       })
-      .pipe(map((x) => new CompetitionEvent(x.data.eventCompetition)));
+      .pipe(map((x) => new CompetitionEvent(x.data.competitionEvent)));
   }
 
   getSubEventsCompetition(year: number) {
     return this.apollo
       .query<{
-        eventCompetitions?: {
+        competitionEvents?: {
           total: number;
           edges: { cursor: string; node: CompetitionEvent }[];
         };
@@ -127,20 +127,20 @@ export class EventService {
           year,
         },
       })
-      .pipe(map((x) => x?.data?.eventCompetitions?.edges.map((x) => new CompetitionEvent(x.node))));
+      .pipe(map((x) => x?.data?.competitionEvents?.edges.map((x) => new CompetitionEvent(x.node))));
   }
 
   getTournamentEvent(id: string, args?: {}) {
     return this.apollo
       .query<{
-        eventTournament: TournamentEvent;
+        tournamentEvent: TournamentEvent;
       }>({
         query: getTournamentEventQuery,
         variables: {
           id,
         },
       })
-      .pipe(map((x) => new TournamentEvent(x.data.eventTournament)));
+      .pipe(map((x) => new TournamentEvent(x.data.tournamentEvent)));
   }
 
   updateCompetitionEvent(event: Partial<CompetitionEvent>) {
@@ -194,11 +194,11 @@ export class EventService {
   findEvent(name: string, uniCode: string, type: EventType) {
     return this.apollo
       .query<{
-        eventCompetitions?: {
+        competitionEvents?: {
           total: number;
           edges?: { cursor: string; node: Event }[];
         };
-        eventTournaments?: {
+        tournamentEvents?: {
           total: number;
           edges?: { cursor: string; node: Event }[];
         };
@@ -221,12 +221,12 @@ export class EventService {
       .pipe(
         map((x) => {
           const events = [];
-          if (x.data.eventCompetitions) {
-            events.push(...x.data.eventCompetitions!.edges!.map((e) => new CompetitionEvent(e.node)));
+          if (x.data.competitionEvents) {
+            events.push(...x.data.competitionEvents!.edges!.map((e) => new CompetitionEvent(e.node)));
           }
 
-          if (x.data.eventTournaments) {
-            events.push(...x.data.eventTournaments!.edges!.map((e) => new TournamentEvent(e.node)));
+          if (x.data.tournamentEvents) {
+            events.push(...x.data.tournamentEvents!.edges!.map((e) => new TournamentEvent(e.node)));
           }
 
           return events;

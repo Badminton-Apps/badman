@@ -34,21 +34,67 @@
     </div>
   </div>
 
-  <div class="mat-subheading-1">Sub events</div>
-  <mat-list *ngIf="event.subEvents">
-    <mat-list-item *ngFor="let subEvent of event.subEvents">
-      <a [routerLink]="[subEvent.id]">
-        {{ subEvent.name }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span>
-      </a>
-    </mat-list-item>
-  </mat-list>
+  <div class="mat-subheading-1">Sub events<app-beta></app-beta></div>
+  <div fxLayout="row">
+    <div fxFlex>
+      <mat-list>
+        <ng-container *ngFor="let subEvent of this.subEventsM$ | async">
+          <mat-list-item
+            >{{ subEvent.name }} {{ subEvent.eventType
+            }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+          >
+          <mat-list style="margin-left: 30px">
+            <div *ngFor="let draw of subEvent.draws">
+              <a [routerLink]="[draw.id]"
+                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+              >
+            </div>
+          </mat-list>
+        </ng-container>
+      </mat-list>
+    </div>
+    <div fxFlex>
+      <mat-list>
+        <ng-container *ngFor="let subEvent of this.subEventsF$ | async">
+          <mat-list-item
+            >{{ subEvent.name }} {{ subEvent.eventType
+            }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+          >
+          <mat-list style="margin-left: 30px">
+            <div *ngFor="let draw of subEvent.draws">
+              <a [routerLink]="[draw.id]"
+                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+              >
+            </div>
+          </mat-list>
+        </ng-container>
+      </mat-list>
+    </div>
+    <div fxFlex>
+      <mat-list>
+        <ng-container *ngFor="let subEvent of this.subEventsMX$ | async">
+          <mat-list-item
+            >{{ subEvent.name }} {{ subEvent.eventType
+            }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+          >
+          <mat-list style="margin-left: 30px">
+            <div *ngFor="let draw of subEvent.draws">
+              <a [routerLink]="[draw.id]"
+                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+              >
+            </div>
+          </mat-list>
+        </ng-container>
+      </mat-list>
+    </div>
+  </div>
 
-  <div class="mat-subheading-1">{{ 'players.title' | translate }}</div>
+  <!-- <div class="mat-subheading-1">{{ 'players.title' | translate }}</div>
   <mat-list *ngIf="event.players">
     <mat-list-item *ngFor="let player of event.players">
       {{ player.fullName }}
     </mat-list-item>
-  </mat-list>
+  </mat-list> -->
   <!-- <mat-tab-group *ngIf="event.subEvents">
     <mat-tab *ngFor="let subEvent of event.subEvents" [label]="subEvent.name + ' ' + subEvent.eventType"> Content 1 </mat-tab>
   </mat-tab-group> -->

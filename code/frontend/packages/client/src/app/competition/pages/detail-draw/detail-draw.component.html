@@ -1,0 +1,15 @@
+<div *ngIf="this.draw$ | async as draw" fxLayout="column" fxLayoutGap="16px">
+  <div class="mat-subheading-1">
+    <a [routerLink]="['/competition', competitionId]"
+      ><button mat-icon-button><mat-icon>arrow_back</mat-icon></button></a
+    >
+    {{ 'competition.draw.title' | translate }}: {{ draw.name }}
+    <app-beta></app-beta>
+  </div>
+
+  <div class="mat-subheading-2">{{ 'event.standing.title' | translate }}</div>
+  <app-standing [type]="'team'" [entries]="draw.entries!"></app-standing>
+  
+  <div class="mat-subheading-2">{{ 'competition.draw.encounters' | translate }}</div>
+  <app-sub-event *ngFor="let encounter of draw.encounters" [competition]="encounter"></app-sub-event>
+</div>

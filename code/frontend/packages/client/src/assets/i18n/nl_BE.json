@@ -81,7 +81,11 @@
   },
   "tournament": {
     "title": "Toernooi",
-    "last-updated": "Gewijzigd op"
+    "last-updated": "Gewijzigd op",
+    "draw": {
+      "title": "Poule",
+      "games": "Wedstrijden"
+    }
   },
   "competition": {
     "title": "Competitie",
@@ -178,6 +182,10 @@
       "mix4": "Gemengd dubbel 2",
       "permanent": "Permanent speler in de lijst?",
       "permanent-dialog": "Als je een speler permanent in de lijst wilt hebben, moet je deze  (laten, indien je geen rechten hebt) toevoegen bij het team via het cluboverzicht"
+    },
+    "draw": {
+      "title": "Poule",
+      "encounters": "Ontmoetingen"
     }
   },
   "event": {
@@ -185,6 +193,19 @@
     "types": {
       "competition": "Competitie",
       "tournament": "Toernooien"
+    },
+    "standing": {
+      "title": "Standen",
+      "name": "name",
+      "points": "Punten",
+      "played": "Gespeeld",
+      "won": "Gewonnen",
+      "tied": "Gelijk",
+      "lost": "verloren",
+      "games": "Wedstrijden",
+      "sets": "Games",
+      "totalPoints": "Punten",
+      "spoiler": "Dit is een Knock-out reeks, maar omdat er binnenkort een nieuwe design komt (spoiler alert!), tonen we de reeks voorlopig als tabel"
     }
   },
   "players": {

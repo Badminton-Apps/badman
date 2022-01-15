@@ -1,13 +1,16 @@
 import {
   DrawCompetition,
+  DrawType,
   EncounterCompetition,
   Game,
   logger,
+  StepOptions,
   StepProcessor,
   SubEventCompetition,
+  XmlDrawTypeID,
   XmlTournament
 } from '@badvlasim/shared';
-import { Op, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 import { SubEventStepData } from '.';
 import { VisualService } from '../../../visualService';
 
@@ -22,10 +25,10 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
 
   constructor(
     protected readonly visualTournament: XmlTournament,
-    protected readonly transaction: Transaction,
-    protected readonly visualService: VisualService
+    protected readonly visualService: VisualService,
+    options?: StepOptions
   ) {
-    super(visualTournament, transaction);
+    super(options);
   }
 
   public async process(): Promise<DrawStepData[]> {
@@ -52,7 +55,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       if (dbDraws.length === 1) {
         dbDraw = dbDraws[0];
       } else if (dbDraws.length > 1) {
-        logger.warn('Having multiple? Removing old');
+        this.logger.warn('Having multiple? Removing old');
 
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbDraws;
@@ -73,7 +76,14 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
           visualCode: `${xmlDraw.Code}`,
           subeventId: subEvent.id,
           name: xmlDraw.Name,
-          size: xmlDraw.Size
+          size: xmlDraw.Size,
+          type:
+            xmlDraw.TypeID === XmlDrawTypeID.Elimination
+              ? DrawType.KO
+              : xmlDraw.TypeID === XmlDrawTypeID.RoundRobin ||
+                xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
+              ? DrawType.POULE
+              : DrawType.QUALIFICATION
         }).save({ transaction: this.transaction });
       }
 

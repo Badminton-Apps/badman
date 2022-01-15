@@ -16,6 +16,7 @@ query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit
       order
       gameType
       linkType
+      status
       competition {
         id
         homeScore
@@ -38,6 +39,7 @@ query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit
             eventType
             event {
               id
+              slug
               type
               name
               startYear
@@ -56,6 +58,7 @@ query GetUserGamesQuery($playerId: ID!, $rankingType: ID!, $offset: Int!, $limit
           eventType
           event {
             id
+            slug
             name
             firstDay
           }

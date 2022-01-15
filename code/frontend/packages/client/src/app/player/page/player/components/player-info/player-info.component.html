@@ -1,28 +1,24 @@
-<ng-container *ngIf="this.bye && !this.player">
-  <div class="bye">{{ 'games.bye' | translate }}</div>
-</ng-container>
 
-<ng-container *ngIf="!this.bye && !this.player">
-  <div class="bye">{{ 'games.unkown' | translate }}</div>
-</ng-container>
+<ng-container [ngSwitch]="this.status">
+  <ng-container *ngSwitchCase="'NO_MATCH'">
+    <div class="bye">{{ 'games.unkown' | translate }}</div>
+  </ng-container>
 
-<ng-container *ngIf="this.player">
-  <!-- User -->
-  <div class="has-user" [routerLink]="['/player', this.player.slug]">
-    <!-- Name -->
-    <span>{{ this.player.firstName }} {{ this.player.lastName }}</span>
+  <ng-container *ngSwitchDefault>
+    <ng-container *ngIf="this.player">
+      <!-- User -->
+      <div class="has-user" [routerLink]="['/player', this.player.slug]">
+        <!-- Name -->
+        <span>{{ this.player.firstName }} {{ this.player.lastName }}</span>
 
-    <!-- Ranking -->
-    <span class="ranking" *ngIf="this.ranking">({{ this.ranking }})</span>
-  </div>
+        <!-- Ranking -->
+        <span class="ranking" *ngIf="this.ranking">({{ this.ranking }})</span>
+      </div>
 
-  <!-- Points -->
-  <div
-    class="points"
-    *ngIf="rankingPoint"
-    [ngClass]="this.class"
-    [matTooltip]="this.tooltip"
-  >
-    {{ rankingPoint.points }}
-  </div>
+      <!-- Points -->
+      <div class="points" *ngIf="rankingPoint" [ngClass]="this.class" [matTooltip]="this.tooltip">
+        {{ rankingPoint.points }}
+      </div>
+    </ng-container>
+  </ng-container>
 </ng-container>
