@@ -1,3 +1,16 @@
+## [4.20.6](https://github.com/Badminton-Apps/core/compare/v4.20.5...v4.20.6) (2022-01-09)
+
+
+### Bug Fixes
+
+* Remove substitude from team index ([ceb5e6b](https://github.com/Badminton-Apps/core/commit/ceb5e6b8f5e6812e86e49461ca1e1aaecac6ef24))
+
+
+
+## [4.20.5](https://github.com/Badminton-Apps/core/compare/v4.20.4...v4.20.5) (2021-12-28)
+
+
+
 ## [4.20.4](https://github.com/Badminton-Apps/core/compare/v4.20.3...v4.20.4) (2021-12-28)
 
 
