@@ -42,7 +42,7 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { GameType } from '../../enums';
+import { GameStatus, GameType } from '../../enums';
 import { Player } from '../player.model';
 import { RankingPoint } from '../ranking';
 import { EncounterCompetition } from './competition/encounter-competition.model';
@@ -71,6 +71,17 @@ export class Game extends Model {
   @Column(DataType.ENUM('S', 'D', 'MX'))
   gameType: GameType;
 
+  @Column(
+    DataType.ENUM(
+      'NORMAL',
+      'WALKOVER',
+      'RETIREMENT',
+      'DISQUALIFIED',
+      'NO_MATCH'
+    )
+  )
+  status: GameStatus;
+
   @Column
   set1Team1?: number;
   @Column
@@ -93,6 +104,9 @@ export class Game extends Model {
   @Column
   round?: string;
 
+  @HasMany(() => RankingPoint, 'GameId')
+  rankingPoints?: RankingPoint[];
+
   @BelongsTo(() => DrawTournament, {
     foreignKey: 'linkId',
     constraints: false,
@@ -104,9 +118,6 @@ export class Game extends Model {
     constraints: false,
   })
   competition: EncounterCompetition;
-
-  @HasMany(() => RankingPoint, 'GameId')
-  rankingPoints?: RankingPoint[];
 
   @Index('game_parent_index')
   @Column
@@ -154,7 +165,7 @@ export class Game extends Model {
     for (const instance of instances) {
       if (doneCompetitions.includes(instance.linkId)) {
         continue;
-      } 
+      }
       const competition = await instance.getCompetition({
         transaction: options.transaction,
       });

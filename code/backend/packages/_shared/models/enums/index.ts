@@ -11,5 +11,6 @@ export * from './teamMembershipType.enum'
 export * from './clubMembershipType.enum'
 export * from './availability.enum'
 export * from './useForTeams.enum'
+export * from './gameStatus.enum'
 // end:ng42.barrel
 

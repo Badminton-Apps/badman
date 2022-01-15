@@ -35,17 +35,18 @@
   </div>
 
   <div class="info">
-    <div class="picture">
+    <div class="picture" fxHide.lt-md>
       {{ this.initials }}
     </div>
     <div class="name">
       <span class="up"> {{ this.player.firstName }} {{ this.player.lastName }}</span>
-      <span class="down">
-        <ng-container *ngIf="this.player.club"
-          ><a [routerLink]="['/', 'club', this.player.club?.slug]">{{ this.player.club?.name }}</a> -</ng-container
-        >
-        {{ this.player.memberId }} - {{ this.player.gender }}
-      </span>
+      <div class="down" fxLayout.lt-md="column" fxLayout="row" fxLayoutGap="3px">
+        <div *ngIf="this.player.club">
+          <a [routerLink]="['/', 'club', this.player.club?.slug]">{{ this.player.club?.name }}</a>
+          <span fxHide.lt-md> - </span>
+        </div>
+        <div>{{ this.player.memberId }} - {{ this.player.gender }}</div>
+      </div>
     </div>
 
     <div class="ranking" *ngIf="this.shownRanking">

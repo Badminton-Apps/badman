@@ -20,12 +20,12 @@ import {
   XmlTournamentDraw,
   XmlTeam,
   XmlTeamMatch,
-  XmlGenderID
+  XmlGenderID,
 } from '@badvlasim/shared';
 
 (async () => {
   const databaseService = new DataBaseHandler({
-    ...dbConfig.default
+    ...dbConfig.default,
     // logging: (...msg) => logger.debug('Query', msg)
   });
   const URL_BASE = 'https://api.tournamentsoftware.com/1.0/Tournament/';
@@ -37,7 +37,7 @@ import {
     '343A6D01-7373-405B-9427-CB56B07F8CCD', // PBA
     '36DA478C-B036-47A6-BAAA-D2F7995F7599', // VVBBC
     'BD406AC5-DB29-4CD7-B8A6-5EDF9A9BCD37', // Vlaams / liga
-    '9BBF45C4-4826-4D4A-9FCA-18189693800E' // WVBF
+    '9BBF45C4-4826-4D4A-9FCA-18189693800E', // WVBF
   ];
 
   // deactivate all teams
@@ -75,7 +75,7 @@ import {
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
-        password: `${process.env.VR_API_PASS}`
+        password: `${process.env.VR_API_PASS}`,
       },
     });
     const body = parse(result.data).Result as XmlResult;
@@ -87,7 +87,7 @@ import {
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
-        password: `${process.env.VR_API_PASS}`
+        password: `${process.env.VR_API_PASS}`,
       },
     });
     const body = parse(result.data).Result as XmlResult;
@@ -101,7 +101,7 @@ import {
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
-        password: `${process.env.VR_API_PASS}`
+        password: `${process.env.VR_API_PASS}`,
       },
     });
     const body = parse(result.data).Result as XmlResult;
@@ -115,7 +115,7 @@ import {
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
-        password: `${process.env.VR_API_PASS}`
+        password: `${process.env.VR_API_PASS}`,
       },
     });
     const body = parse(result.data).Result as XmlResult;
@@ -127,7 +127,7 @@ import {
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
-        password: `${process.env.VR_API_PASS}`
+        password: `${process.env.VR_API_PASS}`,
       },
     });
     const body = parse(result.data).Result as XmlResult;
@@ -142,7 +142,7 @@ import {
       withCredentials: true,
       auth: {
         username: `${process.env.VR_API_USER}`,
-        password: `${process.env.VR_API_PASS}`
+        password: `${process.env.VR_API_PASS}`,
       },
     });
     const body = parse(result.data).Result as XmlResult;
@@ -153,7 +153,7 @@ import {
     event: XmlTournament
   ): Promise<EventCompetition> {
     return EventCompetition.findOne({
-      where: { name: event.Name }
+      where: { name: event.Name },
     });
   }
 
@@ -185,8 +185,8 @@ import {
         where: {
           eventId: event.id,
           eventType: subEventType,
-          name: xmlEvent.Name
-        }
+          name: xmlEvent.Name,
+        },
       });
 
       if (dbSub === null) {
@@ -211,13 +211,13 @@ import {
       const [dbDraw] = await DrawCompetition.findCreateFind({
         where: {
           subeventId: dbSubevent.id,
-          name: xmlDraw.Name
+          name: xmlDraw.Name,
         },
         defaults: {
           subeventId: dbSubevent.id,
           name: xmlDraw.Name,
-          size: xmlDraw.Size
-        }
+          size: xmlDraw.Size,
+        },
       });
 
       if (dbDraw === null) {
@@ -237,7 +237,7 @@ import {
     for (const xmlTeamBasic of xmlTeams) {
       let xmlTeam = await getTeam(id, xmlTeamBasic.Code);
 
-      const genders = xmlTeam.Players?.Player?.map(r => r.GenderID);
+      const genders = xmlTeam.Players?.Player?.map((r) => r.GenderID);
 
       let type: SubEventType;
 
@@ -265,7 +265,7 @@ import {
           : -1;
 
       const dbClub = await Club.findOne({
-        where: { clubId: xmlTeam.Club.Number }
+        where: { clubId: xmlTeam.Club.Number },
       });
       if (dbClub === null) {
         logger.warn('No Club?', xmlTeam.Club);
@@ -275,22 +275,27 @@ import {
         where: {
           clubId: dbClub.id,
           type,
-          teamNumber
+          teamNumber,
         },
         include: [
           { model: Player, as: 'players', attributes: ['id'] },
-          { model: Player, as: 'captain' }
-        ]
+          { model: Player, as: 'captain' },
+        ],
       });
 
       if (dbTeam === null) {
         dbTeam = await new Team({
           clubId: dbClub.id,
           type,
-          teamNumber
+          teamNumber,
         }).save();
 
-        logger.debug('New team', xmlTeam, dbTeam.toJSON());
+        logger.debug('New team', {
+          data: {
+            xmlTeam,
+            dbTeam: dbTeam.toJSON(),
+          },
+        });
       }
 
       if (xmlTeam.Contact) {
@@ -302,13 +307,13 @@ import {
           queries.push({
             [Op.or]: [
               { firstName: { [Op.iLike]: `%${part}%` } },
-              { lastName: { [Op.iLike]: `%${part}%` } }
-            ]
+              { lastName: { [Op.iLike]: `%${part}%` } },
+            ],
           });
         }
 
         const captain = await Player.findOne({
-          where: { [Op.or]: queries }
+          where: { [Op.or]: queries },
         });
 
         if (captain && dbTeam.captain === null) {
@@ -327,8 +332,8 @@ import {
         for (const player of xmlTeam.Players?.Player) {
           const dbPlayer = await Player.findOne({
             where: {
-              memberId: `${player.MemberID}`
-            }
+              memberId: `${player.MemberID}`,
+            },
           });
 
           if (dbPlayer === null) {
@@ -336,16 +341,16 @@ import {
             continue;
           }
 
-          if (!dbTeam.players?.map(p => p.id)?.includes(dbPlayer.id)) {
+          if (!dbTeam.players?.map((p) => p.id)?.includes(dbPlayer.id)) {
             await dbTeam.addPlayer(dbPlayer, {
               through: { start: new Date() },
-              hooks: false
+              hooks: false,
             });
           }
 
           memberships.push({
             teamId: dbTeam.id,
-            playerId: dbPlayer.id
+            playerId: dbPlayer.id,
           });
         }
       }
@@ -359,8 +364,8 @@ import {
         where: {
           [Op.or]: memberships.map(({ teamId, playerId }) => {
             return { [Op.and]: [{ teamId }, { playerId }] };
-          })
-        }
+          }),
+        },
       }
     );
 
@@ -373,13 +378,13 @@ import {
     teams: Map<string, Team>
   ) {
     return EncounterCompetition.bulkCreate(
-      matches.map(match =>
+      matches.map((match) =>
         new EncounterCompetition({
           drawId: draw.id,
           homeTeamId: teams.get(match.Team1.Code).id,
           awayTeamId: teams.get(match.Team2.Code).id,
           date: new Date(match.MatchTime),
-          visualCode: match.Code
+          visualCode: match.Code,
         }).toJSON()
       )
     );

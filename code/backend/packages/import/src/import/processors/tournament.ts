@@ -827,7 +827,7 @@ export class TournamentTpProcessor extends ProcessImport {
               // throw new Error(err);
               return;
             }
-            logger.debug('Old file deleted', importerFile.fileLocation);
+            logger.debug('Old file deleted', {data: importerFile.fileLocation});
           });
           await importerFile.destroy();
         }

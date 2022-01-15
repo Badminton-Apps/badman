@@ -1,3 +1,5 @@
+import { Club } from './club.model';
+import { Entry } from './entry.model';
 import { CompetitionSubEvent } from './events';
 import { Location } from './location.model';
 import { Player } from './player.model';
@@ -15,15 +17,14 @@ export class Team {
 
   players!: Player[];
   locations?: Location[];
-  subEvents!: CompetitionSubEvent[];
+  entries?: Entry[];
 
   baseIndex?: number;
   captain?: Player;
   captainId?: string;
   email?: string;
   phone?: string;
-
-  meta?: any;
+  club?: Club;
 
   constructor(args?: Partial<Team>) {
     this.id = args?.id;
@@ -37,14 +38,13 @@ export class Team {
     this.preferredTime = args?.preferredTime;
     this.preferredDay = args?.preferredDay;
 
-    this.subEvents = args?.subEvents?.map((s) => new CompetitionSubEvent(s)) ?? [];
     this.locations = args?.locations?.map((l) => new Location(l));
+    this.entries = args?.entries?.map((l) => new Entry(l));
     this.captain = args?.captain != null ? new Player(args?.captain) : undefined;
+    this.club = args?.club != null ? new Club(args?.club) : undefined;
     this.captainId = args?.captain?.id;
     this.email = args?.email;
     this.phone = args?.phone;
-
-    this.meta = args?.meta;
 
     this.players =
       args?.players?.map((p) => {

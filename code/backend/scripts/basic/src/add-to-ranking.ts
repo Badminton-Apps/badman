@@ -93,7 +93,7 @@ import { Op } from 'sequelize';
 
     await transaction.commit();
   } catch (error) {
-    logger.debug('something went wrong', error);
+    logger.error('something went wrong', error);
     transaction.rollback();
   }
 })();

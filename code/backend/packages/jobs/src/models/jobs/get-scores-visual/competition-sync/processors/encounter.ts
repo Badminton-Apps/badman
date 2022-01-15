@@ -4,7 +4,7 @@ import {
   EventCompetition,
   Game,
   LevelType,
-  logger,
+  StepOptions,
   StepProcessor,
   SubEventType,
   Team,
@@ -12,7 +12,7 @@ import {
   XmlTournament
 } from '@badvlasim/shared';
 import moment from 'moment';
-import { Op, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 import { VisualService } from '../../../visualService';
 import { DrawStepData } from './draw';
 
@@ -21,17 +21,24 @@ export interface EncounterStepData {
   internalId: number;
 }
 
+export interface EncounterStepOptions {
+  newGames?: boolean;
+}
+
 export class CompetitionSyncEncounterProcessor extends StepProcessor {
   public event: EventCompetition;
   public draws: DrawStepData[];
   private _dbEncounters: EncounterStepData[] = [];
+  private encounterOptions: EncounterStepOptions;
 
   constructor(
     protected readonly visualTournament: XmlTournament,
-    protected readonly transaction: Transaction,
-    protected readonly visualService: VisualService
+    protected readonly visualService: VisualService,
+    options?: StepOptions & EncounterStepOptions
   ) {
-    super(visualTournament, transaction);
+    super(options);
+
+    this.encounterOptions = options || {};
   }
 
   public async process(): Promise<EncounterStepData[]> {
@@ -63,7 +70,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         const [first, ...rest] = dbEncounters;
         dbEncounter = first;
 
-        logger.warn('Having multiple? Removing old');
+        this.logger.warn('Having multiple? Removing old');
         await this._destroyEncounters(rest);
       }
 
@@ -92,7 +99,12 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       // Update date if needed
       if (dbEncounter.date !== matchDate) {
         dbEncounter.date = matchDate;
-        await dbEncounter.save({ transaction: this.transaction });
+        await dbEncounter.save({ transaction: this.transaction }); 
+      }
+
+      // Check if encounter was before last run, skip if only process new events
+      if (dbEncounter.date < this.lastRun && this.encounterOptions.newGames) {
+        continue; 
       }
 
       // Set teams if undefined (should not happen)
@@ -154,7 +166,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
         return { team1, team2 };
       } catch (e) {
-        logger.warn(e, xmlTeamMatch);
+        this.logger.warn(e, xmlTeamMatch);
         return { team1: null, team2: null };
       }
     } else {
@@ -197,7 +209,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     const teamName = correctWrongTeams({ name }).name;
     if (teamName === null || teamName === undefined) {
-      logger.warn(`Team not filled`);
+      this.logger.warn(`Team not filled`);
       return null;
     }
 
@@ -212,14 +224,14 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     }
     const teams = await Team.findAll({ where, transaction: this.transaction });
     if (teams.length > 1) {
-      logger.warn(`Found more than one team for ${teamName}`);
+      this.logger.warn(`Found more than one team for ${teamName}`);
     }
 
     const team =
       (teams?.length ?? 0) === 0 ? await this._findTeamByRegex(teamName, clubId) : teams[0];
 
     if (team == null) {
-      logger.warn(`Team ${name} not found`);
+      this.logger.warn(`Team ${name} not found`);
     }
 
     return team;
@@ -252,7 +264,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
             return SubEventType.M;
 
           default:
-            logger.warn('no type?', name);
+            this.logger.warn('no type?', name);
         }
       };
 
@@ -283,8 +295,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
           .filter((r) => r.name.length > name.length)
           .sort((a, b) => a.name.length - b.name.length);
 
-        logger.debug('Found multiple teams', {
-          sortedByLength: sortedByLength.map((r) => r.name)
+        this.logger.debug('Found multiple teams', {
+          data: {
+            sortedByLength: sortedByLength.map((r) => r.name)
+          }
         });
 
         return sortedByLength[0];

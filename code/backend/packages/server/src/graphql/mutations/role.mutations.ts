@@ -260,7 +260,7 @@ export const removeRoleMutation = {
       const dbRole = await Role.findByPk(id);
 
       if (!dbRole) {
-        logger.debug('role', dbRole);
+        logger.debug('role', {data: dbRole});
         throw new ApiError({
           code: 404,
           message: 'Role not found'

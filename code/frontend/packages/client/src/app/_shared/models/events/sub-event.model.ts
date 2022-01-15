@@ -21,7 +21,7 @@ export class SubEvent {
   constructor(args: Partial<SubEvent>) {
     this.id = args?.id;
     this.meta = args?.meta;
-    this.gameType = args?.gameType;
+    this.gameType = (args?.gameType ?? null) != null ? (<any>GameType)[args.gameType!] : undefined;
     this.eventType = args?.eventType;
     this.name = args?.name;
     this.level = args?.level;
@@ -42,6 +42,6 @@ interface SubEventMeta {
     double: number;
     mix: number;
     gender: string;
-    player: Partial<Player>
+    player: Partial<Player>;
   }[];
 }

@@ -1,0 +1,16 @@
+<div *ngIf="this.draw$ | async as draw" fxLayout="column" fxLayoutGap="16px">
+  <div class="mat-subheading-1">
+    <a [routerLink]="['/tournament', tournamentId]"
+      ><button mat-icon-button><mat-icon>arrow_back</mat-icon></button></a
+    >
+    {{ 'tournament.draw.title' | translate }}: {{ draw.name }}
+    <app-beta></app-beta>
+  </div>
+
+  <div class="mat-subheading-2">{{ 'event.standing.title' | translate }}</div>
+  <ng-container *ngIf="draw.type == 'KO'">{{ 'event.standing.spoiler' | translate }}</ng-container>
+  <app-standing [type]="'players'" [entries]="draw.entries!"></app-standing>
+
+  <div class="mat-subheading-2">{{ 'tournament.draw.games' | translate }}</div>
+  <app-sub-event [tournament]="draw"></app-sub-event>
+</div>
