@@ -1,11 +1,12 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { iif, Observable, of } from 'rxjs';
 import { filter, mergeMap, shareReplay, startWith, tap } from 'rxjs/operators';
-import { RequestLink, RankingPlace, Player } from '../../../_shared/models';
+import { RequestLink, Player } from '../../../_shared/models';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '@auth0/auth0-angular';
 import { apolloCache } from 'app/graphql.module';
+import { ApmService } from '@elastic/apm-rum-angular';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +59,6 @@ export class UserService {
             apolloCache.evict({ id: normalizedId });
           });
           apolloCache.gc();
-
         })
       );
   }

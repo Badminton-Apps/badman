@@ -1,17 +1,15 @@
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 import moment from 'moment';
-import { Op, where } from 'sequelize';
+import { Op } from 'sequelize';
 import {
   Club,
   DataBaseHandler,
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
-  logger,
-  Player,
+  EventEntry,
   SubEventCompetition,
   Team,
-  TeamSubEventMembership
 } from '@badvlasim/shared';
 
 (async () => {
@@ -23,7 +21,7 @@ async function set_meta() {
 
   const teams = await Team.findAll({
     where: {
-      active: true
+      active: true,
     },
     include: [
       {
@@ -32,16 +30,16 @@ async function set_meta() {
         limit: 1,
         where: {
           date: {
-            [Op.gte]: moment('2021-09-01').toDate()
-          }
+            [Op.gte]: moment('2021-09-01').toDate(),
+          },
         },
         include: [
           {
             model: DrawCompetition,
             attributes: ['subeventId'],
-            required: true
-          }
-        ]
+            required: true,
+          },
+        ],
       },
       {
         model: SubEventCompetition,
@@ -51,36 +49,36 @@ async function set_meta() {
             required: true,
             model: EventCompetition,
             where: {
-              startYear: 2021
+              startYear: 2021,
             },
-            attributes: ['id', 'name']
-          }
-        ]
-      }
-    ]
+            attributes: ['id', 'name'],
+          },
+        ],
+      },
+    ],
   });
 
   for (const team of teams) {
     const correctSubEvent = team.homeEncounters[0].draw?.subeventId;
 
     if (
-      !team.subEvents
-        ?.map(r => r.id)
+      !team.entries
+        ?.map((r) => r.id)
         .includes(team.homeEncounters[0].draw?.subeventId) ||
-      team.subEvents.length > 1
+      team.entries.length > 1
     ) {
-      await TeamSubEventMembership.destroy({
+      await EventEntry.destroy({
         where: {
           teamId: team.id,
           subEventId: {
-            [Op.in]: team.subEvents.map(r => r.id)
-          }
-        }
+            [Op.in]: team.entries.map((r) => r.id),
+          },
+        },
       });
 
-      await new TeamSubEventMembership({
+      await new EventEntry({
         teamId: team.id,
-        subEventId: correctSubEvent
+        subEventId: correctSubEvent,
       }).save();
     }
   }
@@ -103,14 +101,14 @@ async function set_meta() {
                 model: EventCompetition,
                 required: true,
                 where: {
-                  startYear: 2021
-                }
-              }
-            ]
-          }
-        ]
-      }
-    ]
+                  startYear: 2021,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
   });
 
   for (const club of clubs) {

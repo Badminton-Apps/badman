@@ -4,6 +4,7 @@ import {
   Game,
   GameType,
   logger,
+  StepOptions,
   StepProcessor,
   SubEventTournament,
   SubEventType,
@@ -12,7 +13,7 @@ import {
   XmlTournament,
   XmlTournamentEvent
 } from '@badvlasim/shared';
-import { Op, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 import { VisualService } from '../../../visualService';
 
 export interface SubEventStepData {
@@ -28,18 +29,10 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
 
   constructor(
     protected readonly visualTournament: XmlTournament,
-    protected readonly transaction: Transaction,
     protected readonly visualService: VisualService,
-    protected readonly options?: {
-      fixGender?: boolean;
-    }
+    options?: StepOptions
   ) {
-    super(visualTournament, transaction);
-
-    this.options = {
-      fixGender: false,
-      ...this.options
-    };
+    super(options);
   }
 
   public async process(): Promise<SubEventStepData[]> {
@@ -66,7 +59,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
         const [first, ...rest] = dbSubEvents;
         dbSubEvent = first;
 
-        logger.warn('Having multiple? Removing old');
+        this.logger.warn('Having multiple? Removing old');
         await SubEventTournament.destroy({
           where: {
             id: {
@@ -79,7 +72,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
 
       if (!dbSubEvent) {
         if (this.existed) {
-          logger.warn(
+          this.logger.warn(
             `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`
           );
         }
@@ -94,12 +87,6 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       } else {
         if (dbSubEvent.visualCode === null) {
           dbSubEvent.visualCode = xmlEvent.Code;
-          await dbSubEvent.save({ transaction: this.transaction });
-        }
-
-        if (this.options.fixGender) {
-          dbSubEvent.eventType = this.getEventType(xmlEvent);
-          dbSubEvent.gameType = this.getGameType(xmlEvent);
           await dbSubEvent.save({ transaction: this.transaction });
         }
       }
@@ -160,7 +147,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       case XmlGameTypeID.Mixed:
         return GameType.MX;
       default:
-        logger.warn('No Game type found');
+        this.logger.warn('No Game type found');
         return;
     }
   }
@@ -176,7 +163,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       case XmlGenderID.Mixed:
         return SubEventType.MX;
       default:
-        logger.warn('No event type found');
+        this.logger.warn('No event type found');
         return;
     }
   }

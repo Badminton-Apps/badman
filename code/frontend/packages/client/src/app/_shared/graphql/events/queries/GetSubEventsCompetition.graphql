@@ -1,5 +1,5 @@
 query GetSubevents($year: Int!) {
-  eventCompetitions(where: { startYear: $year }) {
+  competitionEvents(where: { startYear: $year }) {
     edges {
       node {
         id

@@ -138,8 +138,7 @@ export class TeamService {
       .query({
         query: teamsQuery,
         variables: {
-          clubId,
-          active,
+          where: { active, clubId },
         },
       })
       .pipe(map((x: any) => x.data?.teams?.map((t: Partial<Team>) => new Team(t))));
@@ -156,8 +155,8 @@ export class TeamService {
         variables: {
           clubId,
           ranking: mayDate,
-          subEventWhere: {
-            id: { $in: subEventIds },
+          entryWhere: {
+            subEventId: { $in: subEventIds },
           },
         },
       })

@@ -1,4 +1,4 @@
-import { Processor, ProcessStep, XmlTournament } from '@badvlasim/shared';
+import { logger, Processor, ProcessStep, XmlTournament } from '@badvlasim/shared';
 import { Transaction } from 'sequelize';
 import { VisualService } from '../../visualService';
 import {
@@ -8,6 +8,7 @@ import {
   CompetitionSyncGameProcessor,
   CompetitionSyncPlayerProcessor,
   CompetitionSyncPointProcessor,
+  CompetitionSyncStandingProcessor,
   CompetitionSyncSubEventProcessor
 } from './processors';
 
@@ -15,8 +16,8 @@ export class CompetitionSyncer {
   protected visualTournament: XmlTournament;
   protected transaction: Transaction;
 
-  public processor: Processor;
-  public visualService: VisualService;
+  public readonly processor: Processor;
+  public readonly visualService: VisualService;
 
   readonly STEP_EVENT = 'event';
   readonly STEP_SUBEVENT = 'subevent';
@@ -25,6 +26,7 @@ export class CompetitionSyncer {
   readonly STEP_PLAYER = 'player';
   readonly STEP_GAME = 'game';
   readonly STEP_POINT = 'point';
+  readonly STEP_STANDING = 'standing';
 
   private _eventStep: CompetitionSyncEventProcessor;
   private _subEventStep: CompetitionSyncSubEventProcessor;
@@ -33,20 +35,21 @@ export class CompetitionSyncer {
   private _playerStep: CompetitionSyncPlayerProcessor;
   private _gameStep: CompetitionSyncGameProcessor;
   private _pointStep: CompetitionSyncPointProcessor;
+  private _standingStep: CompetitionSyncStandingProcessor;
+
+  private compLogger = logger.child({ label: 'competition-processor' });
 
   constructor(
     protected options?: {
-      updateMeta?: boolean;
-      fixGender?: boolean;
+      newGames?: boolean;
     }
   ) {
     this.options = {
-      updateMeta: false,
-      fixGender: false,
+      newGames: false,
       ...this.options
     };
 
-    this.processor = new Processor();
+    this.processor = new Processor(null, { logger: this.compLogger });
     this.visualService = new VisualService();
 
     this.processor.addStep(this.getEvent());
@@ -56,55 +59,58 @@ export class CompetitionSyncer {
     this.processor.addStep(this.addPlayers());
     this.processor.addStep(this.addGames());
     this.processor.addStep(this.addPoints());
+
+    this.processor.addStep(this.updateStanding());
   }
 
   process(args: {
     transaction: Transaction;
     xmlTournament: XmlTournament;
-    other?: { [key: string]: unknown };
+    options?: { [key: string]: unknown };
   }) {
-    // Override options with args
-    this.options = {
-      updateMeta: (args?.other?.updateMeta as boolean) ?? this.options.updateMeta,
-      fixGender: (args?.other?.fixGender as boolean) ?? this.options.fixGender
+    const options = {
+      logger: this.compLogger,
+      transaction: args.transaction,
+      lastRun: args.options.lastRun as Date
     };
 
     this._eventStep = new CompetitionSyncEventProcessor(
       args.xmlTournament,
-      args.transaction,
-      this.visualService
+      this.visualService,
+      options
     );
+
     this._subEventStep = new CompetitionSyncSubEventProcessor(
       args.xmlTournament,
-      args.transaction,
-      this.visualService
+      this.visualService,
+      options
     );
     this._drawStep = new CompetitionSyncDrawProcessor(
       args.xmlTournament,
-      args.transaction,
-      this.visualService
+      this.visualService,
+      options
     );
 
     this._encounterStep = new CompetitionSyncEncounterProcessor(
       args.xmlTournament,
-      args.transaction,
-      this.visualService
+      this.visualService,
+      { ...options, newGames: this.options.newGames }
     );
 
     this._playerStep = new CompetitionSyncPlayerProcessor(
       args.xmlTournament,
-      args.transaction,
-      this.visualService
+      this.visualService,
+      options
     );
 
     this._gameStep = new CompetitionSyncGameProcessor(
       args.xmlTournament,
-      args.transaction,
       this.visualService,
-      this.options
+      options
     );
 
-    this._pointStep = new CompetitionSyncPointProcessor(args.transaction);
+    this._pointStep = new CompetitionSyncPointProcessor(options);
+    this._standingStep = new CompetitionSyncStandingProcessor(options);
 
     return this.processor.process();
   }
@@ -139,6 +145,7 @@ export class CompetitionSyncer {
 
       // Pass data to other steps
       this._encounterStep.draws = data;
+      this._standingStep.draws = data;
     });
   }
 
@@ -149,6 +156,14 @@ export class CompetitionSyncer {
 
       // Pass data to other steps
       this._gameStep.encounters = data;
+      this._standingStep.encounters = data;
+    });
+  }
+
+  protected updateStanding(): ProcessStep {
+    return new ProcessStep(this.STEP_STANDING, async () => {
+      // Process step
+      await this._standingStep.process();
     });
   }
 
@@ -165,7 +180,10 @@ export class CompetitionSyncer {
   protected addGames(): ProcessStep {
     return new ProcessStep(this.STEP_GAME, async () => {
       // Process step
-      await this._gameStep.process();
+      const data = await this._gameStep.process();
+
+      // Pass data to other steps
+      this._standingStep.games = data;
     });
   }
 

@@ -2,11 +2,12 @@ import {
   correctWrongPlayers,
   EventTournament,
   Player,
+  StepOptions,
   StepProcessor,
   XmlGenderID,
   XmlTournament
 } from '@badvlasim/shared';
-import { Op, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 import { VisualService } from '../../../visualService';
 
 export class TournamentSyncPlayerProcessor extends StepProcessor {
@@ -14,10 +15,10 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
 
   constructor(
     protected readonly visualTournament: XmlTournament,
-    protected readonly transaction: Transaction,
-    protected readonly visualService: VisualService
+    protected readonly visualService: VisualService,
+    options?: StepOptions
   ) {
-    super(visualTournament, transaction);
+    super(options);
   }
 
   public async process(): Promise<Map<string, Player>> {
@@ -56,19 +57,39 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
 
     for (const xmlPlayer of visualPlayers) {
       let foundPlayer = players.find((r) => r.memberId === `${xmlPlayer?.player?.memberId}`);
+      let memberId = xmlPlayer?.xmlMemberId;
 
-      if (
-        !foundPlayer &&
-        xmlPlayer?.player?.memberId != null &&
-        xmlPlayer?.player?.lastName?.toLowerCase().indexOf('onbekend') === -1
-      ) {
+      if (!foundPlayer) {
+        // Try finding with same first and last name (technically this can be the wrong person, but at this point how do we know?)
+        foundPlayer = await Player.findOne({
+          where: {
+            [Op.or]: [
+              {
+                firstName: xmlPlayer?.player?.firstName ?? '',
+                lastName: xmlPlayer?.player?.lastName ?? ''
+              },
+              {
+                firstName: xmlPlayer?.player?.lastName ?? '',
+                lastName: xmlPlayer?.player?.firstName ?? ''
+              }
+            ]
+          },
+          transaction: this.transaction
+        });
+      }
+
+      if (!foundPlayer) {
+        // Create if not found
         foundPlayer = await new Player(xmlPlayer?.player).save({
           transaction: this.transaction
         });
         // Push to the list if player exists twice
         players.push(foundPlayer);
+        memberId = foundPlayer.memberId;
       }
-      mapPlayers.set(`${xmlPlayer?.xmlMemberId}`, foundPlayer);
+
+      // Set with memberId
+      mapPlayers.set(`${memberId}`, foundPlayer);
     }
     return mapPlayers;
   }

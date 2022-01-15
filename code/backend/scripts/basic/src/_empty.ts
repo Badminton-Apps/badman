@@ -12,7 +12,7 @@ import * as dbConfig from '@badvlasim/shared/database/database.config.js';
   try {
     await transaction.commit();
   } catch (error) {
-    logger.debug('something went wrong', error);
+    logger.error('something went wrong', error);
     transaction.rollback();
   }
 })();

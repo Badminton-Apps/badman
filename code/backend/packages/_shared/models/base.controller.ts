@@ -4,3 +4,4 @@ export class BaseController {
   constructor(public router: Router) {
   }
 }
+ 

@@ -1,5 +1,5 @@
-query GetTeamsQuery($clubId: ID!, $active: Boolean!) {
-  teams(clubId: $clubId, where: { active: $active }) {
+query GetTeamsQuery($where: SequelizeJSON) {
+  teams(where: $where) {
     id
     slug
     name

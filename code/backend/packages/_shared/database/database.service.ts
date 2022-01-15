@@ -7,7 +7,9 @@ import {
   Comment,
   DrawCompetition,
   DrawTournament,
+  EntryCompetitionPlayers,
   EventCompetition,
+  EventEntry,
   EventTournament,
   Game,
   GamePlayer,
@@ -19,12 +21,11 @@ import {
   RankingPoint,
   RankingSystem,
   RequestLink,
+  Standing,
   SubEventCompetition,
   SubEventTournament,
   Team,
   TeamPlayerMembership,
-  TeamSubEventMembership,
-  TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta,
 } from '../models';
 import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
@@ -50,7 +51,9 @@ export class DataBaseHandler {
     if (!DataBaseHandler.sequelizeInstance) {
       const models = Object.values(sequelizeModels);
       logger.debug('Connecting with ', {
-        ...config,
+        data: {
+          ...config,
+        },
       });
 
       this._dialect = config.dialect;
@@ -65,7 +68,7 @@ export class DataBaseHandler {
               logger.warn(message);
             }
           },
-        },
+        }, 
         models,
       } as SequelizeOptions);
 
@@ -97,7 +100,8 @@ export class DataBaseHandler {
         GamePlayer.getTableName(),
         ClubMembership.getTableName(),
         TeamPlayerMembership.getTableName(),
-        TeamSubEventMembership.getTableName(),
+        EventEntry.getTableName(),
+        Standing.getTableName(),
         RankingPlace.getTableName(),
         RankingPoint.getTableName(),
         Team.getTableName(),
@@ -187,13 +191,11 @@ export class DataBaseHandler {
     // Store in meta table
     for (const team of club?.teams) {
       logger.debug(`Team: ${team.name}`);
-      if (team.subEvents.length > 1) {
+      if (team.entries.length > 1) {
         logger.warn('Multiple events?');
       }
 
-      const membership = team.subEvents[0].getDataValue(
-        'TeamSubEventMembership'
-      ) as TeamSubEventMembership;
+      const membership = (await team.getEventEntrys())[0];
 
       const playerMeta = [];
       const teamPlayers = [];
@@ -215,15 +217,17 @@ export class DataBaseHandler {
           double: rankingPlaceMay.double,
           mix: rankingPlaceMay.mix,
           gender: player.gender,
-        } as TeamSubEventMembershipBadmintonBvlMembershipPlayerMeta);
+        } as EntryCompetitionPlayers);
       }
 
       // update the players with the ranking places, this allows the calculation for baseIndex
       team.players = teamPlayers;
 
       membership.meta = {
-        teamIndex: team.baseIndex(primarySystem),
-        players: playerMeta,
+        competition: {
+          teamIndex: team.baseIndex(primarySystem),
+          players: playerMeta,
+        },
       };
 
       await membership.save();
@@ -628,7 +632,7 @@ export class DataBaseHandler {
    */
   dbCheck(canMigrate: boolean, sync = false) {
     return new Promise(async (resolve) => {
-      logger.debug(`Running dbCheck with`, { canMigrate, sync });
+      logger.debug(`Running dbCheck with`, { data: { canMigrate, sync } });
 
       if (canMigrate) {
         if (!sync) {
