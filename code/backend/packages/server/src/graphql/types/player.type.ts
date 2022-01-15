@@ -42,10 +42,10 @@ export const PlayerType = new GraphQLObjectType({
             return findOptions;
           }
         })
-      },
+      }, 
       lastRanking: {
         type: LastRankingPlaceType,
-        args: Object.assign(defaultListArgs(), {
+        args: Object.assign({
           system: {
             type: GraphQLString
           }

@@ -47,6 +47,9 @@ export class RankingPlace extends Model {
   rankingDate: Date;
 
   @Column
+  gender: string;
+
+  @Column
   singlePoints: number;
   @Column
   mixPoints: number;
@@ -145,6 +148,7 @@ export class RankingPlace extends Model {
         'singlePoints',
         'mixPoints',
         'doublePoints',
+        'gender',
         'singlePointsDowngrade',
         'mixPointsDowngrade',
         'doublePointsDowngrade',
@@ -181,6 +185,7 @@ export class RankingPlace extends Model {
       rankingDate: this.rankingDate,
       singlePoints: this.singlePoints,
       mixPoints: this.mixPoints,
+      gender: this.gender,
       doublePoints: this.doublePoints,
       singlePointsDowngrade: this.singlePointsDowngrade,
       mixPointsDowngrade: this.mixPointsDowngrade,
