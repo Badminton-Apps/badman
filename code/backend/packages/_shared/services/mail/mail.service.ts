@@ -102,7 +102,7 @@ export class MailService {
 
     for (const event of events) {
       for (const subEvent of event.subEvents) {
-        for (const team of subEvent.teams) {
+        for (const team of subEvent.entries?.map(r => r.team)) {
           // get existing
           let clubIndex = clubs.findIndex(r => r.name === team.club.name);
           if (clubIndex === -1) {
@@ -278,13 +278,13 @@ export class MailService {
   private async _sendMail(options: SendMailOptions) {
     try {
       if (this._mailingEnabled === false) {
-        logger.debug('Mailing disabled', options);
+        logger.debug('Mailing disabled', {data: options});
         return;
       }
 
       options.to = Array.isArray(options.to) ? options.to : [options.to];
       if (options.to === null || options.to.length === 0) {
-        logger.error('no mail adress?', options);
+        logger.error('no mail adress?', {error: options});
         return;
       }
 

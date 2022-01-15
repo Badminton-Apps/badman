@@ -1,9 +1,4 @@
-import {
-  AuthenticatedRequest,
-  BaseController,
-  logger,
-  RankingSystem
-} from '@badvlasim/shared';
+import { AuthenticatedRequest, BaseController, logger, RankingSystem } from '@badvlasim/shared';
 import { RequestHandler, Response, Router } from 'express';
 import moment from 'moment';
 import { RankingCalculator } from '../models';
@@ -32,12 +27,12 @@ export class SimulateController extends BaseController {
     }
 
     response.json('Processing started');
-
-    logger.debug('Systems', request.query.systems);
-
     const systems = (request.query.systems as string)
       .split(',')
       .map((systemId: string) => systemId);
+
+    logger.debug(`Calculating systems ${systems}`);
+
     const end = moment(request.query.endDate as string);
     const startString = request.query.startDate as string;
     const fromStart = request.query.runningFromStart === 'true';
@@ -62,9 +57,8 @@ export class SimulateController extends BaseController {
       response.status(401).send('No no no!!');
       return;
     }
-    logger.debug('Resetting systems', request.body.systems);
-
     const systems = (request.body.systems as string).split(',').map((systemId: string) => systemId);
+    logger.debug(`Resetting systems ${systems}`);
 
     for (const id of systems) {
       const system = await RankingSystem.findByPk(id);

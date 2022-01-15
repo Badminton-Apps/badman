@@ -1,9 +1,20 @@
+import { logger } from '@badvlasim/shared';
 import { Transaction } from 'sequelize';
-import { XmlTournament } from '../models';
-
+import { Logger } from 'winston';
 export class StepProcessor {
-  constructor(protected readonly visualTournament: XmlTournament, protected readonly transaction: Transaction) {
-    this.visualTournament = visualTournament;
-    this.transaction = transaction;
+  protected readonly transaction?: Transaction;
+  protected readonly logger?: Logger;
+  protected readonly lastRun?: Date;
+
+  constructor(options?: StepOptions) {
+    this.transaction = options?.transaction;
+    this.logger = options?.logger ?? logger;
+    this.lastRun = options?.lastRun;
   }
+}
+
+export interface StepOptions {
+  lastRun?: Date;
+  transaction?: Transaction;
+  logger?: Logger;
 }

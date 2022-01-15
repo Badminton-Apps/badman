@@ -9,7 +9,7 @@
           [matTooltip]="'competition.team-assembly.team-index-ignored' | translate"
           [matTooltipDisabled]="teamNumber !== 1"
           [innerHtml]="
-            'competition.team-assembly.team-index' | translate: { current: teamIndex, team: subEvent?.meta?.teamIndex }
+            'competition.team-assembly.team-index' | translate: { current: teamIndex, team: entry?.meta?.competition?.teamIndex ?? 0 }
           "
         ></div>
 

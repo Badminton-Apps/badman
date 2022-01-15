@@ -14,8 +14,8 @@ import {
   SubEventCompetition,
   SubEventType,
   Team,
-  TeamSubEventMembership,
-  titleCase
+  titleCase,
+  EventEntry
 } from '@badvlasim/shared';
 import { parse } from 'fast-xml-parser';
 import { readFileSync, unlink } from 'fs';
@@ -403,7 +403,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
           for (const team of teamSet.values()) {
             if (team !== null && team !== undefined) {
               teamSubscriptions.push(
-                new TeamSubEventMembership({
+                new EventEntry({
                   teamId: teams.find((r) => r.internalId === team)?.team?.id,
                   subEventId: draw?.draw?.subeventId
                 }).toJSON()
@@ -415,7 +415,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
         }
       }
 
-      await TeamSubEventMembership.bulkCreate(teamSubscriptions, {
+      await EventEntry.bulkCreate(teamSubscriptions, {
         transaction: args.transaction,
         ignoreDuplicates: true
       });
@@ -700,7 +700,7 @@ export class CompetitionXmlProcessor extends CompetitionProcessor {
               // throw err;
               return;
             }
-            logger.debug('Old file deleted', importerFile.fileLocation);
+            logger.debug('Old file deleted', { data: importerFile.fileLocation });
           });
           await importerFile.destroy();
         }

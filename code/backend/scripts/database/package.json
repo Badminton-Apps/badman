@@ -1,0 +1,17 @@
+{
+  "name": "@badvlascript/database",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "restart": "node -r ts-node/register ./src/re-create.ts"
+  },
+  "dependencies": {
+
+  },
+  "peerDependencies": {
+    "dotenv": "^8.2.0",
+    "moment": "^2.24.0"
+  }
+}

@@ -7,7 +7,7 @@ import {
 } from '../types/competition/encounter-competition.type';
 import { where } from './utils';
 
-export const encounterCompetitionQuery = {
+export const competitionEncounterQuery = {
   type: EncounterCompetitionType,
   args: {
     id: {
@@ -18,7 +18,7 @@ export const encounterCompetitionQuery = {
   resolve: resolver(EncounterCompetition)
 };
 
-export const encounterCompetitionsQuery = {
+export const competitionEncountersQuery = {
   type: EncounterCompetitionInputConnectionType.connectionType,
   args: {
     ...EncounterCompetitionInputConnectionType.connectionArgs,

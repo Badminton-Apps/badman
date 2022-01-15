@@ -6,16 +6,21 @@ query GetBasePlayersQuery($id: ID!, $subEventsWhere: SequelizeJSON) {
       name
       clubId
       type
-      subEvents(where: $subEventsWhere) {
+      entries(where: $subEventsWhere) {
         id
+        competitionSubEvent {
+          id
+        }
         meta {
-          teamIndex
-          players {
-            id
-            player {
+          competition {
+            teamIndex
+            players {
               id
-              slug
-              fullName
+              player {
+                id
+                slug
+                fullName
+              }
             }
           }
         }

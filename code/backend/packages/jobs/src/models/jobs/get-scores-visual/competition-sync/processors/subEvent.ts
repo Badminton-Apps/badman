@@ -5,6 +5,7 @@ import {
   Game,
   LevelType,
   logger,
+  StepOptions,
   StepProcessor,
   SubEventCompetition,
   SubEventType,
@@ -12,7 +13,7 @@ import {
   XmlTournament,
   XmlTournamentEvent
 } from '@badvlasim/shared';
-import { Op, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 import { VisualService } from '../../../visualService';
 
 export interface SubEventStepData {
@@ -26,10 +27,10 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
 
   constructor(
     protected readonly visualTournament: XmlTournament,
-    protected readonly transaction: Transaction,
-    protected readonly visualService: VisualService
+    protected readonly visualService: VisualService,
+    options?: StepOptions
   ) {
-    super(visualTournament, transaction);
+    super(options);
   }
 
   public async process(): Promise<SubEventStepData[]> {
@@ -58,7 +59,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         const [first, ...rest] = dbSubEvents;
         dbSubEvent = first;
 
-        logger.warn('Having multiple? Removing old');
+        this.logger.warn('Having multiple? Removing old');
         await SubEventCompetition.destroy({
           where: {
             id: {
@@ -83,7 +84,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
 
       if (!dbSubEvent) {
         if (this.existed) {
-          logger.warn(
+          this.logger.warn(
             `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`
           );
         }
@@ -162,7 +163,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       case XmlGenderID.Mixed:
         return SubEventType.MX;
       default:
-        logger.warn('No event type found');
+        this.logger.warn('No event type found');
         return;
     }
   }
