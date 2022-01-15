@@ -1,7 +1,9 @@
 import { LastRankingPlace, RankingPlace } from '@badvlasim/shared';
-import { GraphQLInputObjectType, GraphQLNonNull, GraphQLObjectType } from 'graphql';
-import { defaultListArgs, resolver } from 'graphql-sequelize';
-import { queryFixer } from '../queryFixer';
+import {
+  GraphQLInputObjectType, GraphQLNonNull,
+  GraphQLObjectType
+} from 'graphql';
+import { resolver } from 'graphql-sequelize';
 import { getAttributeFields } from './attributes.type';
 import { PlayerType } from './player.type';
 import { RankingSystemType } from './rankingSystem.type';
@@ -17,18 +19,7 @@ export const RankingPlaceType = new GraphQLObjectType({
       },
       player: {
         type: new GraphQLNonNull(PlayerType),
-        args: Object.assign(defaultListArgs()),
-        resolve: resolver(RankingPlace.associations.player, {
-          before: async (
-            findOptions: { [key: string]: object }
-          ) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
+        resolve: resolver(RankingPlace.associations.player)
       }
     })
 });
@@ -55,19 +46,8 @@ export const LastRankingPlaceType = new GraphQLObjectType({
         resolve: resolver(LastRankingPlace.associations.rankingSystem)
       },
       player: {
-        type: new GraphQLNonNull(PlayerType),
-        args: Object.assign(defaultListArgs()),
-        resolve: resolver(LastRankingPlace.associations.player, {
-          before: async (
-            findOptions: { [key: string]: object }
-          ) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
+        type: PlayerType,
+        resolve: resolver(LastRankingPlace.associations.player)
       }
     })
 });
@@ -83,3 +63,4 @@ export const LastRankingPlaceInputType = new GraphQLInputObjectType({
       })
     )
 });
+

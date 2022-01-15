@@ -1,17 +1,22 @@
-import { Player, RankingPlace, RankingSystem } from '@badvlasim/shared';
+import { LastRankingPlace, Player, RankingPlace, RankingSystem } from '@badvlasim/shared';
 import {
+  GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLObjectType,
   GraphQLString
 } from 'graphql';
-import { resolver } from 'graphql-sequelize';
+import { createConnection, resolver } from 'graphql-sequelize';
+import { queryFixer } from '../queryFixer';
 import { Includeable, Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
+import { where } from '../queries/utils';
 import { getAttributeFields } from './attributes.type';
+import { LastRankingPlaceType, RankingPlaceType } from './rankingPlace.type';
 import { CountsResultType, RankingPlacesResult } from './rankingPlayerResult.type';
 import { RankingSystemGroupInputType, RankingSystemGroupType } from './rankingSystemGroup.type';
+import { PlayerType } from './player.type';
 
 export const RankingSystemType = new GraphQLObjectType({
   name: 'RankingSystem',
@@ -177,8 +182,95 @@ export const RankingSystemType = new GraphQLObjectType({
       },
       pointsToGoDown: {
         type: new GraphQLList(GraphQLInt)
+      },
+      places: {
+        args: { ...RankingPlaceConnectionType.connectionArgs, where },
+        type: RankingPlaceConnectionType.connectionType,
+        resolve: RankingPlaceConnectionType.resolve
+      },
+      lastPlaces: {
+        args: { ...LastRankingPlaceConnectionType.connectionArgs, where },
+        type: LastRankingPlaceConnectionType.connectionType,
+        resolve: LastRankingPlaceConnectionType.resolve
       }
     })
+});
+
+// TODO: replace this with dynamic ordering
+const RankingOrderBy = new GraphQLEnumType({
+  name: 'RankingOrderBy',
+  values: {
+    singleRank: { value: ['singleRank', 'ASC'] },
+    doubleRank: { value: ['doubleRank', 'ASC'] },
+    mixRank: { value: ['mixRank', 'ASC'] },
+    reverse_singleRank: { value: ['singleRank', 'DESC'] },
+    reverse_doubleRank: { value: ['doubleRank', 'DESC'] },
+    reverse_mixRank: { value: ['mixRank', 'DESC'] }
+  }
+});
+
+export const RankingPlaceOutputType = new GraphQLObjectType({
+  name: 'RankingPlaceOutput',
+  description: 'A 2nd RankingPlace',
+  fields: () =>
+    Object.assign(getAttributeFields(RankingPlace), {
+      player: {
+        type: PlayerType,
+        resolve: resolver(RankingPlace.associations.player)
+      }
+    })
+});
+
+export const RankingPlaceConnectionType = createConnection({
+  name: 'RankingPlace',
+  nodeType: RankingPlaceOutputType,
+  target: () => RankingSystem.associations.places,
+  connectionFields: {
+    total: {
+      type: GraphQLInt,
+      resolve: ({ fullCount }) => fullCount
+    }
+  },
+  orderBy: RankingOrderBy,
+  where: (key: string, value: unknown) => {
+    if (key === 'where') {
+      return queryFixer(value);
+    } else {
+      return { [key]: value };
+    }
+  }
+});
+
+export const LastRankingPlaceOutputType = new GraphQLObjectType({
+  name: 'LastRankingPlaceOutput',
+  description: 'A 2nd LastRankingPlace',
+  fields: () =>
+    Object.assign(getAttributeFields(LastRankingPlace), {
+      player: {
+        type: PlayerType,
+        resolve: resolver(LastRankingPlace.associations.player)
+      }
+    })
+});
+
+export const LastRankingPlaceConnectionType = createConnection({
+  name: 'LastRankingPlace',
+  nodeType: LastRankingPlaceOutputType,
+  target: () => RankingSystem.associations.lastPlaces,
+  connectionFields: {
+    total: {
+      type: GraphQLInt,
+      resolve: ({ fullCount }) => fullCount
+    }
+  },
+  orderBy: RankingOrderBy,
+  where: (key: string, value: unknown) => {
+    if (key === 'where') {
+      return queryFixer(value);
+    } else {
+      return { [key]: value };
+    }
+  }
 });
 
 export const RankingSystemInputType = new GraphQLInputObjectType({
