@@ -29,51 +29,7 @@ export class RankingController extends BaseController {
     this.router.get(`${this._path}/export`, this._export);
     this.router.get(`${this._path}/exportVisual`, this._exportVisualBvlLfbb);
     this.router.get(`${this._path}/exportNotVisual`, this._exportVisualNonBvlLfbb);
-    this.router.get(`${this._path}/top`, this._top);
   }
-
-  private _top = async (request: Request, response: Response) => {
-    const where = {
-      SystemId: request.query.systemId,
-      rankingDate: new Date(request.query.date as string)
-    };
-
-    const places = await RankingPlace.findAll({
-      where,
-      attributes: ['single', 'singleRank', 'double', 'doubleRank', 'mix', 'mixRank'],
-      include: [
-        {
-          model: Player,
-          attributes: ['id', 'slug', 'firstName', 'lastName'],
-          where: {
-            gender: request.query.gender ?? 'M'
-          },
-          required: true
-        }
-      ],
-      order: [
-        [request.query.sortBy as string, request.query.sortOrder as string],
-        [`${request.query.sortBy as string}Rank`, request.query.sortOrder as string]
-      ],
-      limit: parseInt(request.query.limit as string, 10),
-      offset: parseInt(request.query.offset as string, 10)
-    });
-
-    const count = await RankingPlace.count({
-      where,
-      include: [
-        {
-          model: Player,
-          where: {
-            gender: request.query.gender ?? 'M'
-          },
-          required: true
-        }
-      ]
-    });
-
-    response.json({ rankingPlaces: places, total: count });
-  };
 
   private _statistics = async (request: Request, response: Response) => {
     const systemId = parseInt(request.params.system, 10);
