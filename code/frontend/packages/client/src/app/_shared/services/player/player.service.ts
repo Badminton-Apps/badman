@@ -26,6 +26,18 @@ import { apolloCache as apolloCache } from 'app/graphql.module';
 export class PlayerService {
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
+  headerSearch(query: string) {
+    return this.httpClient
+      .get<Player[]>(`${environment.api}/${environment.apiVersion}/search`, {
+        params: new HttpParams().set('query', query),
+      })
+      .pipe(
+        map((x) => {
+          return x?.map((r) => new Player(r));
+        })
+      );
+  }
+
   searchPlayers(args?: { query?: string; where?: any; includeClub?: boolean; ranking?: Date }) {
     args = {
       includeClub: false,
@@ -109,7 +121,7 @@ export class PlayerService {
           rankingType: rankingType.id,
           offset,
           limit,
-          where         
+          where,
         },
         // TODO: CHECK WHY THIS BEHAVES WEIRD FOR RANKING
         fetchPolicy: 'no-cache',
