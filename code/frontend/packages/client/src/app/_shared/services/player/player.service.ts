@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Club, Game, Player, RankingPlace, RankingSystem } from '../../models';
+import { Club, CompetitionEvent, Game, Player, RankingPlace, RankingSystem, TournamentEvent } from '../../models';
 
 import * as searchQuery from '../../graphql/players/queries/GetPlayersQuery.graphql';
 import * as searchClubQuery from '../../graphql/players/queries/GetClubPlayersQuery.graphql';
@@ -28,12 +28,30 @@ export class PlayerService {
 
   headerSearch(query: string) {
     return this.httpClient
-      .get<Player[]>(`${environment.api}/${environment.apiVersion}/search`, {
-        params: new HttpParams().set('query', query),
-      })
+      .get<{ value: Player | CompetitionEvent | TournamentEvent; type: string }[]>(
+        `${environment.api}/${environment.apiVersion}/search`,
+        {
+          params: new HttpParams().set('query', query),
+        }
+      )
       .pipe(
         map((x) => {
-          return x?.map((r) => new Player(r));
+          return x?.map((r) => {
+            if (r.type == 'Player') {
+              r.value = new Player(r.value as Player);
+            }
+            if (r.type == 'CompetitionEvent') {
+              r.value = new CompetitionEvent(r.value as CompetitionEvent);
+            }
+            if (r.type == 'TournamentEvent') {
+              r.value = new TournamentEvent(r.value as TournamentEvent);
+            }
+            if (r.type == 'Club') {
+              r.value = new Club(r.value as Club);
+            }
+
+            return r;
+          });
         })
       );
   }

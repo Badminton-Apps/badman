@@ -7,6 +7,15 @@
   "lists": {
     "name": "Naam"
   },
+  "search": {
+    "placeholder": "Zoeken",
+    "type": {
+      "club": "Club",
+      "player": "Speler",
+      "eventcompetition": "Competitie",
+      "eventtournament": "Toernooi"
+    }
+  },
   "management": {
     "calculate": "Bereken",
     "cleanup": "Opkuisen",
