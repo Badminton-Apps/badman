@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { merge, Observable, of, ReplaySubject } from 'rxjs';
 import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
-import { Club, Player } from '../../../../models';
+import { Club, CompetitionEvent, Player, TournamentEvent } from '../../../../models';
 import { PlayerService } from '../../../../services/player/player.service';
 
 @Component({
@@ -13,41 +14,28 @@ import { PlayerService } from '../../../../services/player/player.service';
   styleUrls: ['./header-search.component.scss'],
 })
 export class HeaderSearchComponent implements OnInit {
-  @Output() onSelectPlayer = new EventEmitter<Player>();
-
   @Input()
-  label: string = 'Search';
-
-  @Input()
-  clearOnSelection: boolean = true;
-
-  @Input()
-  where!: {};
-
-  @Input()
-  player!: Player;
-
-  @Input()
-  searchOutsideClub = true;
+  label: string = 'search.placeholder';
 
   formControl!: FormControl;
-  filteredOptions$!: Observable<Player[]>;
-  clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
+  filteredOptions$!: Observable<{ value: Player | CompetitionEvent | TournamentEvent; type: string }[]>;
+  clear$: ReplaySubject<{ value: Player | CompetitionEvent | TournamentEvent; type: string }[]> = new ReplaySubject(0);
 
-  constructor(private playerService: PlayerService) {}
+  constructor(private playerService: PlayerService, private router: Router) {}
 
   ngOnInit() {
-    this.formControl = new FormControl(this.player);
-
+    this.formControl = new FormControl();
     const search$ = this.formControl.valueChanges.pipe(
       startWith(''),
       filter((x) => !!x),
       filter((x) => typeof x === 'string'),
-      filter((x) => x?.length > 3),
+      filter((x) => x?.length > 1),
       debounceTime(600),
       switchMap((query) => this.playerService.headerSearch(query)),
       // Distinct by id
-      map((result) => result?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index))
+      map((result) =>
+        result?.filter((value, index, self) => self.findIndex((m) => m?.value?.id === value?.value?.id) === index)
+      )
     );
 
     this.filteredOptions$ = merge(search$, this.clear$);
@@ -58,14 +46,19 @@ export class HeaderSearchComponent implements OnInit {
   }
 
   selectedPlayer(event: MatAutocompleteSelectedEvent) {
-    this._selectPlayer(event.option.value);
-  }
-
-  private _selectPlayer(player: Player) {
-    this.onSelectPlayer.next(player);
-    if (this.clearOnSelection) {
-      this.formControl.reset();
-      this.clear$.next([]);
+    switch (event.option.value.type) {
+      case 'Player':
+        this.router.navigate(['/player', event.option.value.value.slug]);
+        break;
+      case 'EventCompetition':
+        this.router.navigate(['/competition', event.option.value.value.slug]);
+        break;
+      case 'EventTournament':
+        this.router.navigate(['/tournament', event.option.value.value.slug]);
+        break;
+      case 'Club':
+        this.router.navigate(['/club', event.option.value.value.slug]);
+        break;
     }
   }
 }
