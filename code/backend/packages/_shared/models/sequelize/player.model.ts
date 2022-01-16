@@ -197,7 +197,7 @@ export class Player extends Model {
 
   // Belongs to many Club
   getClubs!: BelongsToManyGetAssociationsMixin<Club>;
-  setClub!: BelongsToManySetAssociationsMixin<Club, string>;
+  setClubs!: BelongsToManySetAssociationsMixin<Club, string>;
   addClubs!: BelongsToManyAddAssociationsMixin<Club, string>;
   addClub!: BelongsToManyAddAssociationMixin<Club, string>;
   removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;

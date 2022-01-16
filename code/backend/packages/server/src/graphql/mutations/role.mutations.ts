@@ -80,25 +80,13 @@ export const addPlayerToRoleMutation = {
         });
       }
 
-      if (
-        context?.req?.user === null ||
-        !context.req.user.hasAnyPermission([
+      canExecute(context?.req?.user, {
+        anyPermissions: [
           dbRole.clubId + '_edit:role',
           dbRole.clubId + '_edit:club',
           'edit-any:club'
-        ])
-      ) {
-        logger.warn("User tried something it should't have done", {
-          required: {
-            anyClaim: [dbRole.clubId + '_edit:role', dbRole.clubId + '_edit:club', 'edit-any:club']
-          },
-          received: context?.req?.user?.permissions
-        });
-        throw new ApiError({
-          code: 401,
-          message: "You don't have permission to do this "
-        });
-      }
+        ]
+      });
 
       const dbPlayer = await Player.findByPk(playerId, {
         transaction
@@ -114,6 +102,18 @@ export const addPlayerToRoleMutation = {
       await dbRole.addPlayer(dbPlayer, {
         transaction
       });
+
+      const playerClubs = await dbPlayer.getClubs({ transaction });
+      const club = playerClubs.find((c) => c.id === dbRole.clubId);
+
+      if ((club ?? null) == null) {
+        await dbPlayer.addClub(dbRole.clubId, {
+          transaction,
+          through: {
+            start: new Date()
+          }
+        });
+      }
 
       AuthenticationSercice.permissionCache.delete(dbPlayer.id);
 
@@ -260,7 +260,7 @@ export const removeRoleMutation = {
       const dbRole = await Role.findByPk(id);
 
       if (!dbRole) {
-        logger.debug('role', {data: dbRole});
+        logger.debug('role', { data: dbRole });
         throw new ApiError({
           code: 404,
           message: 'Role not found'
