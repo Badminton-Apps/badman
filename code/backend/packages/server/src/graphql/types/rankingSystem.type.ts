@@ -13,7 +13,6 @@ import { Includeable, Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { where } from '../queries/utils';
 import { getAttributeFields } from './attributes.type';
-import { LastRankingPlaceType, RankingPlaceType } from './rankingPlace.type';
 import { CountsResultType, RankingPlacesResult } from './rankingPlayerResult.type';
 import { RankingSystemGroupInputType, RankingSystemGroupType } from './rankingSystemGroup.type';
 import { PlayerType } from './player.type';
