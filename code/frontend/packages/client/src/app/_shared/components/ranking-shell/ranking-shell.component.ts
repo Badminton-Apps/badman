@@ -54,9 +54,4 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     this.device.removeEvent('change', this.mobileQueryListener);
   }
 
-  playerSearch(player: Player) {
-    if (player.id) {
-      this.router.navigate(['/player', player.slug]);
-    }
-  }
 }
