@@ -20,6 +20,9 @@ frontend:
 '@badvlasim/client':
   - code/frontend/packages/client/*
   - code/frontend/packages/client/**/*
+'@badvlasim/search':
+  - code/backend/packages/search/*
+  - code/backend/packages/search/**/*
 
 database:
   - ./**/*.sql

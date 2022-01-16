@@ -1,0 +1,11 @@
+{
+  "watch": ["src/", "../_shared"],
+  "ext": "ts",
+  "ignore": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    ".git",
+    "dist",
+    "node_modules"
+  ]
+}
