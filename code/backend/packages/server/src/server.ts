@@ -59,8 +59,8 @@ const startServer = async (databaseService: DataBaseHandler) => {
     ],
     [
       {
-        from: '/api/v1/import',
-        to: `http://${process.env.IMPORT_SERVICE}`
+        from: '/api/v1/search',
+        to: `http://${process.env.SEARCH_SERVICE}`
       },
       {
         from: '/api/v1/simulate',
