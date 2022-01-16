@@ -41,11 +41,8 @@ export class HeaderSearchComponent implements OnInit {
     this.filteredOptions$ = merge(search$, this.clear$);
   }
 
-  displayFn(user: Player): string {
-    return user && user.fullName;
-  }
-
   selectedPlayer(event: MatAutocompleteSelectedEvent) {
+    this.formControl.setValue(null);
     switch (event.option.value.type) {
       case 'Player':
         this.router.navigate(['/player', event.option.value.value.slug]);
