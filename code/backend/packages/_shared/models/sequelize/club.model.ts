@@ -103,7 +103,7 @@ export class Club extends Model {
 
   @Column
   slug: string;
-  
+
   regenerateSlug!: Slugify<Club>;
 
   // #endregion
