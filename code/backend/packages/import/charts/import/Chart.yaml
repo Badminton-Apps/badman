@@ -1,5 +1,0 @@
-apiVersion: v2
-description: Import Service
-name: import
-version: 0.3.15
-appVersion: 0.1.0
