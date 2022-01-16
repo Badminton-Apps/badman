@@ -71,10 +71,14 @@ describe('Search', () => {
     expect(res.send).toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
-          memberId: '123456789'
+          value: expect.objectContaining({
+            memberId: '123456789'
+          })
         }),
         expect.objectContaining({
-          memberId: '654'
+          value: expect.objectContaining({
+            memberId: '654'
+          })
         })
       ])
     );
@@ -83,7 +87,7 @@ describe('Search', () => {
   describe('Throw error when no or empty query is defined', () => {
     test.each([
       { name: 'Empty', query: '' },
-      { name: 'space', query: ' ' },
+      { name: 'space', query: ' ' }
     ])('$name', async ({ query }) => {
       // Arrange
       const req = getMockReq({
@@ -97,8 +101,8 @@ describe('Search', () => {
       await controller['_search'](req, res);
 
       // Assert
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.send).toHaveBeenCalledWith({ message: 'No query provided' });
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.send).toHaveBeenCalledWith([]);
     });
   });
 });
