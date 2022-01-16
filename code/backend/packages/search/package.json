@@ -23,12 +23,10 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@badvlasim/shared": "^4.20.6",
-    "node-cron": "^3.0.0"
+    "@badvlasim/shared": "^4.20.6"
   },
   "devDependencies": {
-    "@types/node-cron": "^3.0.0",
-    "mock-fs": "^5.1.2"
+    "@jest-mock/express": "^1.4.5"
   },
   "peerDependencies": {
     "moment": "^2.24.0"
