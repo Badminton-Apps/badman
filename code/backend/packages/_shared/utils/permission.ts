@@ -15,7 +15,7 @@ export const canExecute = (
     allPermissions?: string[];
   }
 ) => {
-  if (user === null) {
+  if ((user ?? null) === null) {
     throw new ApiError({ code: 401, message: 'Not authenticated' });
   }
 
@@ -29,7 +29,7 @@ export const canExecute = (
       });
       throw new ApiError({
         code: 401,
-        message: "You don't have permission to do this ",
+        message: "You don't have permission to do this",
       });
     }
   }
@@ -44,7 +44,7 @@ export const canExecute = (
       });
       throw new ApiError({
         code: 401,
-        message: "You don't have permission to do this ",
+        message: "You don't have permission to do this",
       });
     }
   }
