@@ -1,16 +1,38 @@
 <form class="header">
-  <input type="text" [placeholder]="this.label" [formControl]="formControl" [matAutocomplete]="auto" />
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectedPlayer($event)">
+  <input
+    type="text"
+    [placeholder]="this.label | translate"
+    [formControl]="formControl"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedPlayer($event)">
     <ng-container *ngIf="this.filteredOptions$ | async as options">
       <mat-option [value]="this.formControl.value" *ngIf="options.length == 0" [disabled]="true">
         No players found
       </mat-option>
 
       <mat-option *ngFor="let option of options" [value]="option">
-        {{ option.firstName }} {{ option.lastName }}
-        <small *ngIf="option.memberId">({{ option.memberId }}) </small>
+        {{ 'search.type.' + option.type | lowercase | translate }} -
+        <ng-container [ngSwitch]="option.type">
+          <ng-container *ngSwitchCase="'Player'">
+            {{ $any(option.value).firstName }} {{ $any(option.value).lastName }}
+            <small *ngIf="$any(option.value).memberId">({{ $any(option.value).memberId }}) </small>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'EventCompetition'">
+            {{ $any(option.value).name }}
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'EventTournament'">
+            {{ $any(option.value).name }}
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'Club'">
+            {{ $any(option.value).name }}
+            <small *ngIf="$any(option.value).abbreviation">({{ $any(option.value).abbreviation }}) </small>
+          </ng-container>
+        </ng-container>
       </mat-option>
     </ng-container>
   </mat-autocomplete>
 </form>
- 
