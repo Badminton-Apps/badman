@@ -45,11 +45,7 @@ export class HeaderSearchComponent implements OnInit {
       filter((x) => typeof x === 'string'),
       filter((x) => x?.length > 3),
       debounceTime(600),
-      switchMap((query) => {
-        return this.playerService.searchPlayers({
-          query: query
-        });
-      }),
+      switchMap((query) => this.playerService.headerSearch(query)),
       // Distinct by id
       map((result) => result?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index))
     );
