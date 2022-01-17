@@ -44,7 +44,6 @@
     "@types/nodemailer-direct-transport": "^1.0.32",
     "@types/nodemailer-smtp-transport": "^2.7.5",
     "@types/puppeteer": "^5.4.4",
-    "fakerator": "^0.3.4",
     "mock-fs": "^5.1.2",
     "sequelize-erd": "^1.3.1"
   },
