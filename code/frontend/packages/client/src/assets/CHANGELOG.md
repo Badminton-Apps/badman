@@ -1,3 +1,12 @@
+## [4.21.4](https://github.com/Badminton-Apps/core/compare/v4.21.3...v4.21.4) (2022-01-17)
+
+
+### Bug Fixes
+
+* Define search service ([e2d76e4](https://github.com/Badminton-Apps/core/commit/e2d76e44bf4b9da7b810348ef9130f234a4e5bb7))
+
+
+
 ## [4.21.3](https://github.com/Badminton-Apps/core/compare/v4.21.2...v4.21.3) (2022-01-17)
 
 
