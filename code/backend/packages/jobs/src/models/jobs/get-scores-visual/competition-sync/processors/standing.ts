@@ -170,31 +170,37 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         } else if (a.points < b.points) {
           return 1;
         }
-    
+
         if (a.won > b.won) {
           return -1;
         } else if (a.won < b.won) {
           return 1;
         }
-    
-        if (a.tied > b.tied) {
+
+        if (a.won - a.lost > b.won - b.lost) {
           return -1;
-        } else if (a.tied < b.tied) {
+        } else if (a.won - a.lost < b.won - b.lost) {
           return 1;
         }
-    
-        if (a.lost > b.lost) {
-          return 1;
-        } else if (a.lost < b.lost) {
+
+        if (a.gamesWon - a.gamesLost > b.gamesWon - b.gamesLost) {
           return -1;
-        }
-    
-        if (a.gamesWon > b.gamesWon) {
-          return -1;
-        } else if (a.gamesWon < b.gamesWon) {
+        } else if (a.gamesWon - a.gamesLost < b.gamesWon - b.gamesLost) {
           return 1;
         }
-    
+
+        if (a.setsWon - a.setsLost > b.setsWon - b.setsLost) {
+          return -1;
+        } else if (a.setsWon - a.setsLost < b.setsWon - b.setsLost) {
+          return 1;
+        }
+
+        if (a.totalPointsWon - a.totalPointsLost > b.totalPointsWon - b.totalPointsLost) {
+          return -1;
+        } else if (a.totalPointsWon - a.totalPointsLost < b.totalPointsWon - b.totalPointsLost) {
+          return 1;
+        }
+
         return 0;
       })
       ?.map((acc) => {
