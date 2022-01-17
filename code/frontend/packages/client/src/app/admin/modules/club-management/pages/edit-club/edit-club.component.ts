@@ -77,9 +77,6 @@ export class EditClubComponent implements OnInit {
       }),
       switchMap(([clubId, year, update, subEvents]) => {
         return this.clubService.getTeamsForSubEvents(clubId, subEvents);
-      }),
-      tap((teams) => {
-        console.log(teams);
       })
     );
 
