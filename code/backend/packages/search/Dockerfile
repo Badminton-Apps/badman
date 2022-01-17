@@ -15,8 +15,8 @@ COPY packages/_shared ./packages/_shared
 COPY packages/search ./packages/search
 
 RUN yarn global add lerna
-RUN lerna bootstrap --scope=@badvlasim/job  --ci -- --production=false
-RUN yarn run build --scope=@badvlasim/job
+RUN lerna bootstrap --scope=@badvlasim/search  --ci -- --production=false
+RUN yarn run build --scope=@badvlasim/search
 
 # production environment
 FROM node:12.22.0-slim
@@ -34,7 +34,7 @@ COPY packages/search/package.json ./packages/search/
 
 RUN yarn global add lerna
 # Only install production packages
-RUN lerna bootstrap --scope=@badvlasim/job --ci -- --production
+RUN lerna bootstrap --scope=@badvlasim/search --ci -- --production
 
 COPY --from=build /usr/src/app/packages/_shared/dist ./packages/_shared/dist
 COPY --from=build /usr/src/app/packages/search/dist ./packages/search/dist
