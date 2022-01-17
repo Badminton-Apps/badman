@@ -1,3 +1,12 @@
+## [4.21.5](https://github.com/Badminton-Apps/core/compare/v4.21.4...v4.21.5) (2022-01-17)
+
+
+### Bug Fixes
+
+* Typo in service name ([6162082](https://github.com/Badminton-Apps/core/commit/6162082977c69414f0bc252956551ac8a2b9290a))
+
+
+
 ## [4.21.4](https://github.com/Badminton-Apps/core/compare/v4.21.3...v4.21.4) (2022-01-17)
 
 
