@@ -1,3 +1,12 @@
+## [4.21.3](https://github.com/Badminton-Apps/core/compare/v4.21.2...v4.21.3) (2022-01-17)
+
+
+### Bug Fixes
+
+* dependecy ([0a4ec57](https://github.com/Badminton-Apps/core/commit/0a4ec57cce568100e05d6a1c8adfa8153704b080))
+
+
+
 ## [4.21.2](https://github.com/Badminton-Apps/core/compare/v4.21.1...v4.21.2) (2022-01-17)
 
 
