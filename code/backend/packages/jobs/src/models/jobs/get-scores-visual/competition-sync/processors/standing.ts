@@ -170,7 +170,31 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         } else if (a.points < b.points) {
           return 1;
         }
-
+    
+        if (a.won > b.won) {
+          return -1;
+        } else if (a.won < b.won) {
+          return 1;
+        }
+    
+        if (a.tied > b.tied) {
+          return -1;
+        } else if (a.tied < b.tied) {
+          return 1;
+        }
+    
+        if (a.lost > b.lost) {
+          return 1;
+        } else if (a.lost < b.lost) {
+          return -1;
+        }
+    
+        if (a.gamesWon > b.gamesWon) {
+          return -1;
+        } else if (a.gamesWon < b.gamesWon) {
+          return 1;
+        }
+    
         return 0;
       })
       ?.map((acc) => {
@@ -268,7 +292,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
           entryDraw = entriesDraw[0];
 
           // Destroy other entries
-          for (const entry of entriesDraw.filter(d => d.drawId === null).slice(1)) {
+          for (const entry of entriesDraw.filter((d) => d.drawId === null).slice(1)) {
             await entry.destroy({ transaction: this.transaction });
           }
         }
