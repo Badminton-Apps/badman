@@ -99,8 +99,8 @@ spec:
             value: {{ .Values.auth0.issuer }}
           - name: SIMULATE_SERVICE
             value: {{ .Values.services.simulate }}
-          - name: IMPORT_SERVICE
-            value: {{ .Values.services.import }}
+          - name: SEARCH_SERVICE
+            value: {{ .Values.services.search }}
           - name: JOB_SERVICE
             value: {{ .Values.services.job }}
           - name: APOLLO_KEY
