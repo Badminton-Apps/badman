@@ -1,6 +1,6 @@
 {
   "name": "@badvlasim/shared",
-  "version": "4.21.2",
+  "version": "4.21.3",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
