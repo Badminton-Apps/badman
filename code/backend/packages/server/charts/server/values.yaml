@@ -42,7 +42,7 @@ database:
 
 services:
   simulate: simulate-simulate.badvla
-  search: import-search.badvla
+  search: search-search.badvla
   job: jobs-jobs.badvla
 
 auth0:
