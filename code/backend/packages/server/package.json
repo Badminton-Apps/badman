@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/server",
   "description": "Ranking simulation server Badminton Vlaanderen",
-  "version": "4.20.6",
+  "version": "4.21.0",
   "private": true,
   "scripts": {
     "start": "node -r ts-node/register ./src/server.ts",
@@ -23,19 +23,19 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@badvlasim/shared": "^4.20.6",
+    "@badvlasim/shared": "^4.21.0",
     "apollo-server-express": "^3.5.0",
     "global": "^4.4.0",
-    "http-proxy-middleware": "^2.0.1",
-    "rxjs": "^7.4.0",
-    "sequelize-slugify": "^1.6.0",
     "graphql": "^16.0.1",
-    "graphql-sequelize": "^9.4.3",
+    "graphql-cost-analysis": "^1.0.3",
     "graphql-fields-list": "^2.2.4",
     "graphql-import": "^1.0.1",
     "graphql-relay": "^0.9.0",
-    "graphql-cost-analysis": "^1.0.3",
-    "graphql-resolvers": "^0.4.2"
+    "graphql-resolvers": "^0.4.2",
+    "graphql-sequelize": "^9.4.3",
+    "http-proxy-middleware": "^2.0.1",
+    "rxjs": "^7.4.0",
+    "sequelize-slugify": "^1.6.0"
   },
   "peerDependencies": {
     "moment": "^2.24.0"

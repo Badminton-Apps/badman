@@ -1,3 +1,22 @@
+# [4.21.0](https://github.com/Badminton-Apps/core/compare/v4.20.6...v4.21.0) (2022-01-17)
+
+
+### Bug Fixes
+
+* Adding to role doesn't add to club ([5dc212f](https://github.com/Badminton-Apps/core/commit/5dc212f15a8908d08e35d383f5189dafdcbd01c7)), closes [#142](https://github.com/Badminton-Apps/core/issues/142)
+* Adding to role doesn't add to club ([3afb044](https://github.com/Badminton-Apps/core/commit/3afb0447b098632ebe2344e719f6b8a380bc680b)), closes [#142](https://github.com/Badminton-Apps/core/issues/142)
+* Enhance search for allowing events and clubs ([eeaf51c](https://github.com/Badminton-Apps/core/commit/eeaf51c1f1acfd5e45d520fff0faa644bbae0c04)), closes [#25](https://github.com/Badminton-Apps/core/issues/25)
+
+
+### Features
+
+* Enhance search for allowing events and clubs ([b4f4063](https://github.com/Badminton-Apps/core/commit/b4f406329dc5335ef5bc3f67c3e9e773f819e331))
+* Move search to it's own package ([d77175b](https://github.com/Badminton-Apps/core/commit/d77175bd0ca80de59dbf85374b0cc0d2c0f0a803)), closes [#26](https://github.com/Badminton-Apps/core/issues/26)
+* Ranking players via graphql ([6730748](https://github.com/Badminton-Apps/core/commit/6730748bfd1d8a3454e7c3b7c54dbb2de8b38aa6))
+* Sync standings + basic detail pages ([2087704](https://github.com/Badminton-Apps/core/commit/20877041a29878d61386c3801c4bbc3ca803f801))
+
+
+
 ## [4.20.6](https://github.com/Badminton-Apps/core/compare/v4.20.5...v4.20.6) (2022-01-09)
 
 
