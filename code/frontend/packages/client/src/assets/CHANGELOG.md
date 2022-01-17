@@ -1,3 +1,12 @@
+## [4.21.7](https://github.com/Badminton-Apps/core/compare/v4.21.6...v4.21.7) (2022-01-17)
+
+
+### Bug Fixes
+
+* Removing unwanted console.log ([061657f](https://github.com/Badminton-Apps/core/commit/061657fbfcc3667ce412557af8d43bb9f6b439df))
+
+
+
 ## [4.21.6](https://github.com/Badminton-Apps/core/compare/v4.21.5...v4.21.6) (2022-01-17)
 
 
