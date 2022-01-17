@@ -1,3 +1,12 @@
+## [4.21.1](https://github.com/Badminton-Apps/core/compare/v4.21.0...v4.21.1) (2022-01-17)
+
+
+### Bug Fixes
+
+* sorting of standing: corrected for visual's sorting ([95cc0df](https://github.com/Badminton-Apps/core/commit/95cc0df516dfe0a41b647e14bca8e4b0a9e1cc67))
+
+
+
 # [4.21.0](https://github.com/Badminton-Apps/core/compare/v4.20.6...v4.21.0) (2022-01-17)
 
 
