@@ -129,8 +129,6 @@ export class ListGamesComponent implements OnInit {
   fillLostGames() {
     const gameBreakdownPrev = [];
 
-    console.log(this.prevGames);
-
     for (const game of this.prevGames!) {
       const me = game.players!.find((x) => x.id == this.playerId);
       const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.playerId);
