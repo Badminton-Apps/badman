@@ -1,3 +1,12 @@
+## [4.21.6](https://github.com/Badminton-Apps/core/compare/v4.21.5...v4.21.6) (2022-01-17)
+
+
+### Bug Fixes
+
+* Standing calculation by regulations ([22336d0](https://github.com/Badminton-Apps/core/commit/22336d0d2bc8427cb3f964e5ff64a3db02b02505))
+
+
+
 ## [4.21.5](https://github.com/Badminton-Apps/core/compare/v4.21.4...v4.21.5) (2022-01-17)
 
 
