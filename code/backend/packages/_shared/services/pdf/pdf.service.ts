@@ -111,11 +111,8 @@ export class PdfService {
       subtitude: string[];
     };
   }) {
-    const idPlayers = [
-      ...input.team?.single,
-      ...input.team?.double.flat(1),
-    ];
-    const idSubs =  input.team?.subtitude
+    const idPlayers = [...input.team?.single, ...input.team?.double.flat(1)];
+    const idSubs = input.team?.subtitude;
 
     const encounter = await EncounterCompetition.findByPk(input.encounterId, {
       include: [
@@ -123,10 +120,12 @@ export class PdfService {
         { model: Team, as: 'away' },
         {
           model: DrawCompetition,
+          as: 'draw',
           include: [
             {
               model: SubEventCompetition,
-              include: [{ model: EventCompetition }],
+              as: 'subEvent',
+              include: [{ model: EventCompetition, as: 'event' }],
             },
           ],
         },
@@ -204,7 +203,8 @@ export class PdfService {
       preppedMap.set(player.id, {
         ...player.toJSON(),
         lastRankingPlace: player.lastRankingPlaces[0].toJSON(),
-        base: !!meta?.competition?.players?.find((p) => p?.id === player.id)?.id,
+        base: !!meta?.competition?.players?.find((p) => p?.id === player.id)
+          ?.id,
         team: !!teamIndex.players.find((p) => p?.id === player.id),
         sum:
           mayIndex.single +
