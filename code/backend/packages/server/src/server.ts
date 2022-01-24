@@ -2,6 +2,18 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import apm, { AgentConfigOptions } from 'elastic-apm-node';
+
+const apmConfig = {
+  serviceName: process.env.SERVICE_NAME,
+  serverUrl: process.env.APM_SERVER_URL,
+  secretToken: process.env.APM_SERVER_TOKEN,
+  verifyServerCert: false,
+  active: process.env.APM_SERVER_ACTIVE === 'true' ?? true
+} as AgentConfigOptions;
+
+apm.start(apmConfig);
+
 import {
   App,
   AuthenticatedRequest,
@@ -31,6 +43,7 @@ import graphqlCostAnalysis from 'graphql-cost-analysis';
 try {
   (async () => {
     try {
+      logger.debug(`Started APM`, { data: apmConfig });
       logger.info(`Starting ${process.env.SERVICE_NAME} version ${process.env.SERVICE_VERSION}`);
       await startWhenReady(true, false, (db) => startServer(db));
     } catch (e) {
@@ -42,7 +55,7 @@ try {
   logger.error('Something failed', err);
   throw err;
 }
- 
+
 const startServer = async (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
   const pdfService = new PdfService();
