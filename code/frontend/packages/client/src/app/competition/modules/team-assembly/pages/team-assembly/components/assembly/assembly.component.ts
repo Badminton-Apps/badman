@@ -606,6 +606,8 @@ export class AssemblyComponent implements OnInit {
           .slice(0, 2),
       ];
 
+
+
       let missingIndex = 0;
       if (bestPlayers.length < 4) {
         missingIndex = (4 - bestPlayers.length) * 36;
