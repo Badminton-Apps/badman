@@ -42,7 +42,7 @@ try {
   logger.error('Something failed', err);
   throw err;
 }
-
+ 
 const startServer = async (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
   const pdfService = new PdfService();
