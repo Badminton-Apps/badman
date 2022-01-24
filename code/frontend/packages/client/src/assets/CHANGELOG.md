@@ -1,3 +1,13 @@
+## [4.21.10](https://github.com/Badminton-Apps/core/compare/v4.21.9...v4.21.10) (2022-01-24)
+
+
+### Bug Fixes
+
+* APM server startup ([cc16eb5](https://github.com/Badminton-Apps/core/commit/cc16eb509b08c702d59bfc2f493bc224e761c0f8))
+* Attach logger to proxy ([3b80072](https://github.com/Badminton-Apps/core/commit/3b8007200be3c2f567adb322fa8d9010fafa6e9a))
+
+
+
 ## [4.21.9](https://github.com/Badminton-Apps/core/compare/v4.21.8...v4.21.9) (2022-01-24)
 
 
