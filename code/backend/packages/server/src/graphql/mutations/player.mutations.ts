@@ -61,9 +61,8 @@ export const updatePlayerMutation = {
     { player },
     context: { req: AuthenticatedRequest }
   ) => {
-    const dbPlayer = await Player.findByPk(player.id, {
-      include: [{ model: ClubMembership, where: { end: null }, required: false }]
-    });
+    const dbPlayer = await Player.findByPk(player.id);
+    const playerClubs = await dbPlayer.getClubs();
 
     if (!dbPlayer) {
       throw new ApiError({
@@ -73,8 +72,8 @@ export const updatePlayerMutation = {
     }
 
     const permissions = [`${player.id}_edit:player`, 'edit-any:player'];
-    if (dbPlayer.clubs.length > 0) {
-      permissions.push(`${dbPlayer.clubs[0].id}_edit:player`);
+    for (const club of playerClubs) {
+      permissions.push(`${club.id}_edit:player`);
     }
 
     canExecute(context?.req?.user, {
