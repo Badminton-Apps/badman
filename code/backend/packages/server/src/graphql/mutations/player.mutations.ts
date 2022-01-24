@@ -2,7 +2,6 @@ import {
   ApiError,
   AuthenticatedRequest,
   canExecute,
-  ClubMembership,
   DataBaseHandler,
   LastRankingPlace,
   logger,
