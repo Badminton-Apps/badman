@@ -1,3 +1,12 @@
+## [4.21.8](https://github.com/Badminton-Apps/core/compare/v4.21.7...v4.21.8) (2022-01-24)
+
+
+### Bug Fixes
+
+* check for competition player not working ([5e28ad7](https://github.com/Badminton-Apps/core/commit/5e28ad7c42dc7a46c8e1aee12cd22844532c130a))
+
+
+
 ## [4.21.7](https://github.com/Badminton-Apps/core/compare/v4.21.6...v4.21.7) (2022-01-17)
 
 
