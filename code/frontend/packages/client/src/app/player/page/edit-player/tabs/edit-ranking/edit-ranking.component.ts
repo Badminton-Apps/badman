@@ -34,10 +34,10 @@ export class EditRankingComponent implements OnInit {
             this.appollo
               .query<{ player: { lastRanking: Partial<RankingPlace> } }>({
                 query: gql`
-                  query LastRanking($playerId: ID!, $where: SequelizeJSON) {
+                  query LastRanking($playerId: ID!, $system: String) {
                     player(id: $playerId) {
                       id
-                      lastRanking(where: $where) {
+                      lastRanking(system: $system) {
                         id
                         single
                         mix
@@ -48,9 +48,7 @@ export class EditRankingComponent implements OnInit {
                 `,
                 variables: {
                   playerId: this.player.id,
-                  where: {
-                    systemId: system!.id,
-                  },
+                  system: system!.id,
                 },
               })
               .pipe(map((r) => new RankingPlace(r?.data?.player?.lastRanking))),
