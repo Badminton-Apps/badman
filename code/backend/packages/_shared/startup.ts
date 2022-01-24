@@ -1,18 +1,6 @@
 import { DataBaseHandler } from './database';
 import { logger } from './utils';
 import * as dbConfig from './database/database.config.js';
-import apm, { AgentConfigOptions } from 'elastic-apm-node';
-
-const apmConfig = {
-  serviceName: process.env.SERVICE_NAME,
-  serverUrl: process.env.APM_SERVER_URL,
-  secretToken: process.env.APM_SERVER_TOKEN,
-  verifyServerCert: false,
-  active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
-} as AgentConfigOptions;
-
-apm.start(apmConfig);
-logger.debug(`Started APM`, { data: apmConfig });
 
 let times = 0;
 /**
