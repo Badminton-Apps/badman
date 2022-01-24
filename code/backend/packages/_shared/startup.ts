@@ -3,6 +3,17 @@ import { logger } from './utils';
 import * as dbConfig from './database/database.config.js';
 import apm, { AgentConfigOptions } from 'elastic-apm-node';
 
+const apmConfig = {
+  serviceName: process.env.SERVICE_NAME,
+  serverUrl: process.env.APM_SERVER_URL,
+  secretToken: process.env.APM_SERVER_TOKEN,
+  verifyServerCert: false,
+  active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
+} as AgentConfigOptions;
+
+apm.start(apmConfig);
+logger.debug(`Started APM`, { data: apmConfig });
+
 let times = 0;
 /**
  * Starts the server when all pre-start scripts are up and running
@@ -17,18 +28,7 @@ export const startWhenReady = async (
   startFunction: (...args) => void
 ) => {
   let databaseService: DataBaseHandler;
-  const apmConfig = {
-    serviceName: process.env.SERVICE_NAME,
-    serverUrl: process.env.APM_SERVER_URL,
-    secretToken: process.env.APM_SERVER_TOKEN,
-    verifyServerCert: false,
-    active: process.env.APM_SERVER_ACTIVE === 'true' ?? true, 
-  } as AgentConfigOptions;
-
-  apm.start(apmConfig);
-  logger.debug(`Started APM`, { data: apmConfig });
-
-  try {
+  try { 
     databaseService = new DataBaseHandler(dbConfig.default);
     logger.debug('Checking Database');
     await databaseService.dbCheck(canMigrate, sync);
