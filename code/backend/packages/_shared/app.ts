@@ -82,6 +82,9 @@ export class App {
           changeOrigin: true,
           ws: true,
           logLevel: 'debug',
+          logProvider: () => {
+            return logger;
+          }
         })
       );
     });
