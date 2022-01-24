@@ -64,6 +64,8 @@ export class Player {
   indexOfDate(type?: string, date?: Date) {
     const ranking = this.rankingPlaces?.find((r) => moment(date).isSame(r?.rankingDate));
 
+    console.log(this);
+
     return type == 'MX'
       ? (ranking?.single ?? 12) + (ranking?.double ?? 12) + (ranking?.mix ?? 12)
       : (ranking?.single ?? 12) + (ranking?.double ?? 12);
@@ -78,7 +80,7 @@ export class Player {
       return `${this.firstName} ${this.lastName}`;
     }
 
-    return "N/A";
+    return 'N/A';
   }
 }
 
