@@ -1,3 +1,12 @@
+## [4.21.9](https://github.com/Badminton-Apps/core/compare/v4.21.8...v4.21.9) (2022-01-24)
+
+
+### Bug Fixes
+
+* Trying to resolve assembly not being generated ([5e0b384](https://github.com/Badminton-Apps/core/commit/5e0b3843541595f13b40d5b5ff4fd7cf1ac151fa))
+
+
+
 ## [4.21.8](https://github.com/Badminton-Apps/core/compare/v4.21.7...v4.21.8) (2022-01-24)
 
 
