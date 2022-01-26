@@ -2,11 +2,18 @@ import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
+  DestroyOptions,
+  Op,
   SaveOptions,
+  UpdateOptions,
 } from 'sequelize';
 import {
   AfterBulkCreate,
+  AfterBulkDestroy,
+  AfterBulkUpdate,
   AfterCreate,
+  AfterDestroy,
+  AfterUpdate,
   BeforeBulkCreate,
   BeforeCreate,
   BelongsTo,
@@ -135,13 +142,100 @@ export class RankingPlace extends Model {
 
   // #region Hooks
 
+  @AfterUpdate
+  @AfterBulkUpdate
+  static async updateLatestRankingsUpdates(
+    instances: RankingPlace[] | RankingPlace,
+    options: UpdateOptions
+  ) {
+    if (!Array.isArray(instances)) {
+      instances = [instances];
+    }
+
+    await this.updateLatestRankings(instances, options, 'update');
+  }
+
+  @AfterCreate
   @AfterBulkCreate
-  static async updateLatestRankings(
-    instances: RankingPlace[],
+  static async updateLatestRankingsCreate(
+    instances: RankingPlace[] | RankingPlace,
     options: SaveOptions
   ) {
-    const updateInstances = instances.map((r) => r.asLastRankingPlace());
+    if (!Array.isArray(instances)) {
+      instances = [instances];
+    }
+    await this.updateLatestRankings(instances, options, 'create');
+  }
 
+  @AfterDestroy
+  @AfterBulkDestroy
+  static async updateLatestRankingsDestroy(
+    instances: RankingPlace[] | RankingPlace,
+    options: DestroyOptions
+  ) {
+    if (!Array.isArray(instances)) {
+      instances = [instances];
+    }
+
+    const currentInstances = [];
+
+    for (const instance of instances) {
+      const lastRanking = await RankingPlace.findOne({
+        where: {
+          playerId: instance.playerId,
+          SystemId: instance.SystemId,
+        },
+        transaction: options.transaction,
+        limit: 1,
+        order: [['rankingDate', 'DESC']],
+      });
+      currentInstances.push(lastRanking)
+    }
+
+    await this.updateLatestRankings(currentInstances, options, 'destroy');
+  }
+
+  static async updateLatestRankings(
+    instances: RankingPlace[],
+    options: SaveOptions | UpdateOptions,
+    type: 'create' | 'update' | 'destroy'
+  ) {
+    const lastRankingPlaces = instances.map((r) => r.asLastRankingPlace());
+
+    // Find where the last ranking place is not the same as the current one
+    const current = await LastRankingPlace.findAll({
+      where: {
+        [Op.or]: lastRankingPlaces.map((r) => {
+          const filter: {
+            playerId: string;
+            systemId: string;
+            rankingDate?: unknown;
+          } = {
+            playerId: r.playerId,
+            systemId: r.systemId,
+          };
+
+          if (type === 'create') {
+            filter.rankingDate = { [Op.lte]: r.rankingDate };
+          } else if (type === 'update') {
+            filter.rankingDate = r.rankingDate;
+          }
+
+          return filter;
+        }),
+      },
+      transaction: options.transaction,
+    });
+
+    // Filter out if the last ranking is not newer than the current one
+    const updateInstances = lastRankingPlaces.filter(
+      (l) =>
+        current.findIndex(
+          (c) => c.playerId === l.playerId && c.systemId === l.systemId
+        ) > -1
+    );
+
+    // Update the last ranking place
     await LastRankingPlace.bulkCreate(updateInstances, {
       updateOnDuplicate: [
         'rankingDate',
@@ -172,13 +266,22 @@ export class RankingPlace extends Model {
     });
   }
 
-  @AfterCreate
-  static async updateLatestRanking(
-    instance: RankingPlace,
+  @BeforeBulkCreate
+  static async protectRankings(
+    instances: RankingPlace[],
     options: SaveOptions
   ) {
-    return this.updateLatestRankings([instance], options);
+    await RankingProcessor.checkInactive(instances, options);
+    await RankingProcessor.protectRanking(instances);
   }
+
+  @BeforeCreate
+  static async protectRanking(instance: RankingPlace, options: SaveOptions) {
+    await RankingProcessor.checkInactive([instance], options);
+    await RankingProcessor.protectRanking([instance])[0];
+  }
+
+  // #endregion
 
   asLastRankingPlace() {
     return {
@@ -207,23 +310,6 @@ export class RankingPlace extends Model {
       doubleInactive: this.doubleInactive,
       playerId: this.playerId,
       systemId: this.SystemId,
-    } as LastRankingPlace;
+    } as Partial<LastRankingPlace>;
   }
-
-  @BeforeBulkCreate
-  static async protectRankings(
-    instances: RankingPlace[],
-    options: SaveOptions
-  ) {
-    await RankingProcessor.checkInactive(instances, options);
-    await RankingProcessor.protectRanking(instances);
-  }
-
-  @BeforeCreate
-  static async protectRanking(instance: RankingPlace, options: SaveOptions) {
-    await RankingProcessor.checkInactive([instance], options);
-    await RankingProcessor.protectRanking([instance])[0];
-  }
-
-  // #endregion
 }
