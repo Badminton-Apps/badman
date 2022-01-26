@@ -32,6 +32,7 @@ import {
   EditPermissionsComponent,
   EditPlayerComponent,
   EditPlayerFieldsComponent,
+  EditRankingAllComponent,
   EditRankingComponent,
   GameResultComponent,
   GamesComponent,
@@ -52,6 +53,7 @@ import { PlayerRoutingModule } from './player-routing.module';
 import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { EditRankingPlaceDialogComponent } from './page/edit-player/dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
 
 const materialModules = [
   MatCardModule,
@@ -87,6 +89,7 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
     EditPermissionsComponent,
     EditPlayerFieldsComponent,
     EditRankingComponent,
+    EditRankingAllComponent,
     ProfileComponent,
     PlayerComponent,
     GameResultComponent,
@@ -108,6 +111,7 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
     ListGamesComponent,
     PeriodSelectionComponent,
     AddGameComponent,
+    EditRankingPlaceDialogComponent,
   ],
   imports: [SharedModule, ...materialModules, ...covalentModules, ...otherModules, PlayerRoutingModule],
 })
