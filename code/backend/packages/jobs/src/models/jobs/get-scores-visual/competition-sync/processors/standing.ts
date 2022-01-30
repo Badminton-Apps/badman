@@ -241,7 +241,12 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
             const homeTeam = await e.getHome({
               transaction: this.transaction,
               include: [
-                { model: EventEntry, required: false, where: { subEventId: draw.subeventId } }
+                {
+                  model: EventEntry,
+                  as: 'entries',
+                  required: false,
+                  where: { subEventId: draw.subeventId }
+                }
               ]
             });
             teams.set(homeTeam.id, homeTeam);
@@ -251,7 +256,12 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
             const awayTeam = await e.getAway({
               transaction: this.transaction,
               include: [
-                { model: EventEntry, required: false, where: { subEventId: draw.subeventId } }
+                {
+                  model: EventEntry,
+                  as: 'entries',
+                  required: false,
+                  where: { subEventId: draw.subeventId }
+                }
               ]
             });
             teams.set(awayTeam.id, awayTeam);
