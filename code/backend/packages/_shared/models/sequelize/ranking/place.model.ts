@@ -9,8 +9,6 @@ import {
 } from 'sequelize';
 import {
   AfterBulkCreate,
-  AfterBulkDestroy,
-  AfterBulkUpdate,
   AfterCreate,
   AfterDestroy,
   AfterUpdate,
