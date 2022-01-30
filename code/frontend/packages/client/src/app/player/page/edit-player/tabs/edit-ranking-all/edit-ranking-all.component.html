@@ -23,7 +23,7 @@
                 {{ place.rankingDate | date }} <ng-container *ngIf="place.updatePossible">*</ng-container>
               </h4>
               <p matLine *ngIf="place.rankingDate?.getDate() == 15 && place.rankingDate?.getMonth() == 4">
-                May ranking
+                {{'ranking.may-ranking' | translate}}
               </p>
               <p
                 matLine

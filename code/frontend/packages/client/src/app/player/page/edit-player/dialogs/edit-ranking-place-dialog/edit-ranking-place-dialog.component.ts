@@ -19,7 +19,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<EditRankingPlaceDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { place: RankingPlace, rankingSystem?: RankingSystem }
+    @Inject(MAT_DIALOG_DATA) public data: { place: RankingPlace; rankingSystem?: RankingSystem }
   ) {
     const today = moment();
     const year = today.month() >= 6 ? today.year() : today.year() - 1;
@@ -51,7 +51,6 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
     if (this.data.rankingSystem || true) {
       this.dateClass = (cellDate, view) => {
-
         if (view === 'month') {
           const date = cellDate.get('date');
           const month = cellDate.get('month');
@@ -75,7 +74,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
   mayRanking(event: Event) {
     event.preventDefault();
-    this.rankingPlaceForm.patchValue({ rankingDate: this.mayRankingDate });
+    this.rankingPlaceForm.patchValue({ rankingDate: this.mayRankingDate, updatePossible: true });
   }
 
   onUpdate() {
