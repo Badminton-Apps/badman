@@ -44,7 +44,10 @@ import {
   updateSubEventTeamMutation,
   updateTeamLocationMutation,
   updateTeamMutation,
-  updateTournamentEventLocationMutation
+  updateTournamentEventLocationMutation,
+  addRankingPlaceMutation,
+  removeRankingPlaceMutation,
+  updateRankingPlaceMutation
 } from './mutations';
 import {
   claimsQuery,
@@ -120,7 +123,7 @@ export const createSchema = (notificationService: NotificationService) => {
         tournamentDraw: tournamentDrawQuery,
         tournamentDraws: tournamentDrawsQuery,
         tournamentEvent: tournamentEventQuery,
-        tournamentEvents: tournamentEventsQuery,
+        tournamentEvents: tournamentEventsQuery
       })
     }),
     mutation: new GraphQLObjectType({
@@ -138,6 +141,7 @@ export const createSchema = (notificationService: NotificationService) => {
         addPlayerToClub: addPlayerToClubMutation,
         addPlayerToRole: addPlayerToRoleMutation,
         addPlayerToTeam: addPlayerToTeamMutation,
+        addRankingPlace: addRankingPlaceMutation,
         addRankingSystem: addRankingSystemMutation,
         addRankingSystemGroup: addRankingSystemGroupMutation,
         addRole: addRoleMutation,
@@ -149,6 +153,7 @@ export const createSchema = (notificationService: NotificationService) => {
         removePlayerBaseSubEvent: removePlayerBaseSubEventMutation,
         removePlayerFromRole: removePlayerFromRoleMutation,
         removePlayerFromTeam: removePlayerFromTeamMutation,
+        removeRankingPlace: removeRankingPlaceMutation,
         removeRole: removeRoleMutation,
         removeSubEventToRankingSystemGroup: removeSubEventToRankingSystemGroupMutation,
         removeTeam: removeTeamMutation,
@@ -163,6 +168,7 @@ export const createSchema = (notificationService: NotificationService) => {
         updatePlayer: updatePlayerMutation,
         updatePlayerRanking: updatePlayerRankingMutation,
         updatePlayerTeam: updatePlayerTeamMutation,
+        updateRankingPlace: updateRankingPlaceMutation,
         updateRankingSystem: updateRankingSystemMutation,
         updateRankingSystemGroup: updateRankingSystemGroupMutation,
         updateRole: updateRoleMutation,

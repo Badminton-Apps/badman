@@ -1,8 +1,8 @@
-<h1 align="center">Badminton Belgium Simulation</h1>
+<h1 align="center">Badman</h1>
 
 <p align="center">
-<!-- <img alt="GitHub" src="(https://img.shields.io/github/license/Badminton-Apps/core)"> -->
-<!-- <img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/Badminton-Apps/core"> -->
+<img alt="GitHub" src="(https://img.shields.io/github/license/Badminton-Apps/core)">
+<img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/Badminton-Apps/core">
 <img alt="publish" src="https://github.com/Badminton-Apps/core/workflows/publish/badge.svg?branch=main">
 <img alt="codecov" src="https://codecov.io/gh/Badminton-Apps/core/branch/main/graph/badge.svg?token=R5LYY78RWC">
 
@@ -41,8 +41,6 @@ Starting from root: `code/backend`
 
 - Install pacakges: `lerna bootstrap`
 - Rename all `.env.example` to `.env` and fill in with your values
-- extract data from: `rnd/initial_db.zip`
-- Import it via: `psql "host=localhost port=5432 dbname=ranking user=ranking password=pass" < initial_db.sql`_
 - Start server: `yarn start`
 
 ### OPTIONAL: Debugging
@@ -93,8 +91,8 @@ If using vscode the following `launch.json` can be used
   }
 ```
 
-### Database
-you can checkout the erd schema [here][erd]
+<!-- ### Database
+you can checkout the erd schema [here][erd] -->
 
 ## Contributing
 
@@ -111,4 +109,4 @@ Help us keep Angular open and inclusive. Please read and follow our [Code of Con
 [node.js]: https://nodejs.org/
 [npm]: https://www.npmjs.com/get-npm
 [codeofconduct]: CODE_OF_CONDUCT.md
-[erd]: erd.svg
+<!-- [erd]: erd.svg -->

@@ -36,12 +36,11 @@ export class RankingSyncer {
 
     this.processor.addStep(this.getRankings());
     this.processor.addStep(this.getCategories());
-    this.processor.addStep(this.getPublications()); 
+    this.processor.addStep(this.getPublications());
     this.processor.addStep(this.getPoints());
-    // this.processor.addStep(this.setInactive());
   }
 
-  async process(args: { transaction: Transaction; runFrom: Date, cron: Cron }) {
+  async process(args: { transaction: Transaction; runFrom: Date; cron: Cron }) {
     this.dbCron = args.cron;
     return this.processor.process({ ...args });
   }
@@ -235,16 +234,24 @@ export class RankingSyncer {
             parseAttributeValue: true
           }).Result as XmlResult;
 
+          const memberIds = bodyTournament.RankingPublicationPoints.map(
+            (points) => correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
+          );
+
+          logger.debug(
+            `Getting ${memberIds.length} players for ${publication.name} ${type} ${gender}`
+          );
+
           const players = await Player.findAll({
+            attributes: ['id', 'memberId'],
             where: {
               memberId: {
-                [Op.in]: bodyTournament.RankingPublicationPoints.map(
-                  (points) =>
-                    correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
-                )
+                [Op.in]: memberIds
               }
             },
-            include: [LastRankingPlace],
+            include: [
+              { model: LastRankingPlace, attributes: ['id', 'systemId', 'single', 'double', 'mix'] }
+            ],
             transaction: args.transaction
           });
 
@@ -302,7 +309,7 @@ export class RankingSyncer {
           args.runFrom == null || args.runFrom == undefined
             ? this.dbCron.meta?.['lastPublication']
               ? moment(this.dbCron.meta['lastPublication'])
-              : moment('2000-01-01') 
+              : moment('2000-01-01')
             : moment(args.runFrom);
 
         for (const publication of publications) {
@@ -373,8 +380,10 @@ export class RankingSyncer {
             await RankingPlace.bulkCreate(instances, {
               ignoreDuplicates: true,
               transaction: args.transaction,
-              hooks: true
+              returning: false
             });
+
+            logger.debug(`RankingPlace were created`);
 
             ranking.system.caluclationIntervalLastUpdate = publication.date.toDate();
             if (publication.usedForUpdate) {
@@ -390,105 +399,6 @@ export class RankingSyncer {
         }
       }
     );
-  }
-
-  protected setInactive(): ProcessStep {
-    return new ProcessStep(this.STEP_INACTIVE, async (args: { transaction: Transaction }) => {
-      logger.debug('Check inactive for players');
-      const { system }: { visualCode: string; system: RankingSystem } = this.processor.getData(
-        this.STEP_RANKING
-      );
-
-      const canBeInactive = await Player.findAll({
-        include: [
-          {
-            model: RankingPlace,
-            where: {
-              systemId: system.id,
-              rankignDate: {
-                [Op.not]: system.caluclationIntervalLastUpdate.toISOString()
-              }
-            },
-            required: true
-          },
-          {
-            model: LastRankingPlace,
-            where: {
-              [Op.and]: {
-                [Op.or]: [
-                  { singleInactive: false },
-                  { doubleInactive: false },
-                  { mixInactive: false }
-                ],
-                rankignDate: {
-                  [Op.lt]: system.caluclationIntervalLastUpdate.toISOString()
-                }
-              }
-            },
-            required: true
-          }
-        ],
-        transaction: args.transaction
-      });
-
-      const inactiveDate = moment(system.caluclationIntervalLastUpdate)
-        .add(system.inactivityAmount, system.inactivityUnit)
-        .toDate();
-
-      logger.debug(`Found ${canBeInactive.length} possible inactive players`);
-
-      for (const player of canBeInactive) {
-        let singleInactive = false;
-        let doubleInactive = false;
-        let mixInactive = false;
-
-        const games = await player.getGames({
-          transaction: args.transaction,
-          where: {
-            playedAt: {
-              [Op.gte]: inactiveDate
-            }
-          }
-        });
-
-        const singleGames = games.filter((game) => game.gameType === GameType.S);
-        const doubleGames = games.filter((game) => game.gameType === GameType.D);
-        const mixGames = games.filter((game) => game.gameType === GameType.MX);
-
-        if ((singleGames?.length ?? 0) < system.gamesForInactivty) {
-          singleInactive = true;
-        }
-
-        if ((doubleGames?.length ?? 0) < system.gamesForInactivty) {
-          doubleInactive = true;
-        }
-
-        if ((mixGames?.length ?? 0) < system.gamesForInactivty) {
-          mixInactive = true;
-        }
-
-        if (singleInactive && doubleInactive && mixInactive) {
-          logger.debug(`Set player ${player.fullName} (${player.memberId}) to inactive`);
-          const lastRankingPlaces = player.lastRankingPlaces.filter(
-            (p) => p.systemId === system.id
-          )[0];
-          const newRankingPlace = await new RankingPlace({
-            updatePossible: false,
-            playerId: player.id,
-            rankingDate: system.caluclationIntervalLastUpdate,
-            singleInactive: true,
-            doubleInactive: true,
-            mixInactive: true,
-            single: lastRankingPlaces.single,
-            double: lastRankingPlaces.double,
-            mix: lastRankingPlaces.mix,
-            SystemId: system.id
-          }).save({ transaction: args.transaction });
-
-          await player.addRankingPlace(newRankingPlace, { transaction: args.transaction });
-        }
-      }
-    });
   }
 }
 

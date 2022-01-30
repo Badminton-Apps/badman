@@ -2,20 +2,31 @@
   <div class="mat-subheading-1">Edit {{ player.fullName }}</div>
   <mat-tab-group dynamicHeight>
     <mat-tab label="Player">
-      <app-player-fields [player]="player"></app-player-fields>
+      <div class="tab-content">
+        <app-player-fields [player]="player"></app-player-fields>
+      </div>
     </mat-tab>
     <mat-tab label="Ranking" *ngIf="this.hasPermission(['edit:ranking', 'status:competition']) | async">
-      <app-edit-ranking [player]="player"></app-edit-ranking>
-
-      <app-edit-competition-status [player]="player"></app-edit-competition-status>
+      <div class="tab-content" fxLayout="column" fxLayoutGap="16px">
+        <div class="mat-subheading-2">Last Ranking</div>
+        <app-edit-ranking fxFlex [player]="player"></app-edit-ranking>
+        <div class="mat-subheading-2">Comp status</div>
+        <app-edit-competition-status [player]="player"></app-edit-competition-status>
+        <div class="mat-subheading-2">All ranking <app-beta></app-beta></div>
+        <app-edit-ranking-all fxFlex [player]="player"></app-edit-ranking-all>
+      </div>
     </mat-tab>
 
     <mat-tab label="Club History" *ngIf="this.hasPermission(['membership:club']) | async">
-      <app-edit-club-history [player]="player"></app-edit-club-history
-    ></mat-tab>
+      <div class="tab-content">
+        <app-edit-club-history [player]="player"></app-edit-club-history>
+      </div>
+    </mat-tab>
 
     <mat-tab label="Permissions" *ngIf="this.hasPermission(['edit:claims']) | async">
-      <app-edit-permissions [player]="player"></app-edit-permissions
-    ></mat-tab>
+      <div class="tab-content">
+        <app-edit-permissions [player]="player"></app-edit-permissions>
+      </div>
+    </mat-tab>
   </mat-tab-group>
 </ng-container>

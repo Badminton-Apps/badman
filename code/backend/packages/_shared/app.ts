@@ -53,7 +53,7 @@ export class App {
       },
     };
 
-    this.app.use(cors(this.corsOptions)); 
+    this.app.use(cors(this.corsOptions));
   }
 
   private _initializeControllers(controllers: BaseController[]) {
