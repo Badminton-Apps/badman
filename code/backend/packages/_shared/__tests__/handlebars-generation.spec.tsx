@@ -34,14 +34,14 @@ describe('PDF service', () => {
       storage: ':memory:',
     });
     handlebarService = new HandlebarService();
-    handlebarService['_htmlToPdf'] = jest
+    handlebarService['_getHtml'] = jest
       .fn()
       .mockImplementation(() => Promise.resolve(null));
   });
 
   beforeEach(async () => {
     const logoLocation = path.resolve(
-      __dirname + '/../services/pdf/assets/logo.png'
+      __dirname + '/../services/handlebars/assets/logo.png'
     );
     
     mock({
@@ -438,7 +438,7 @@ describe('PDF service', () => {
     );
 
     // Doubles
-    expect(handlebarService['_htmlToPdf']).toBeCalledWith(
+    expect(handlebarService['_getHtml']).toBeCalledWith(
       expect.anything(),
       expect.objectContaining({
         doubles: expect.arrayContaining([
