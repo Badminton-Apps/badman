@@ -31,6 +31,7 @@ export class RankingProcessor {
     for (const instance of singleNullInstances) {
       const system = systems.find(r => r.id === instance.SystemId);
       const place = await RankingPlace.findOne({
+        attributes: ['id', 'single', 'singleInactive'],
         where: {
           SystemId: instance.SystemId,
           playerId: instance.playerId,
@@ -46,10 +47,13 @@ export class RankingProcessor {
       });
 
       const player = await Player.findByPk(instance.playerId, {
+        attributes: ['id'],
         include: [
           {
+            attributes: ['id'],
             required: false,
             model: Game,
+            as: 'games',
             where: {
               gameType: GameType.S,
               playedAt: {
@@ -71,6 +75,7 @@ export class RankingProcessor {
     for (const instance of doubleNullInstances) {
       const system = systems.find(r => r.id === instance.SystemId);
       const place = await RankingPlace.findOne({
+        attributes: ['id', 'double', 'doubleInactive'],
         where: {
           SystemId: instance.SystemId,
           playerId: instance.playerId,
@@ -86,10 +91,13 @@ export class RankingProcessor {
       });
 
       const player = await Player.findByPk(instance.playerId, {
+        attributes: ['id'],
         include: [
           {
+            attributes: ['id'],
             required: false,
             model: Game,
+            as: 'games',
             where: {
               gameType: GameType.D,
               playedAt: {
@@ -111,6 +119,7 @@ export class RankingProcessor {
     for (const instance of mixNullInstances) {
       const system = systems.find(r => r.id === instance.SystemId);
       const place = await RankingPlace.findOne({
+        attributes: ['id', 'mix', 'mixInactive'],
         where: {
           SystemId: instance.SystemId,
           playerId: instance.playerId,
@@ -126,10 +135,13 @@ export class RankingProcessor {
       });
 
       const player = await Player.findByPk(instance.playerId, {
+        attributes: ['id'],
         include: [
           {
+            attributes: ['id'],
             required: false,
             model: Game,
+            as: 'games',
             where: {
               gameType: GameType.MX,
               playedAt: {
