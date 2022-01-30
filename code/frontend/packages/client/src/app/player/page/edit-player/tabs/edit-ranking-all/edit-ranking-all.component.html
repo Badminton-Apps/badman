@@ -15,12 +15,25 @@
 
           <mat-action-list *ngFor="let place of group[1]">
             <button mat-list-item (click)="this.editRanking(place)">
-              <h4 matLine [matTooltip]="'ranking.update-happend' | translate" [matTooltipDisabled]="!place.updatePossible">
+              <h4
+                matLine
+                [matTooltip]="'ranking.update-happend' | translate"
+                [matTooltipDisabled]="!place.updatePossible"
+              >
                 {{ place.rankingDate | date }} <ng-container *ngIf="place.updatePossible">*</ng-container>
               </h4>
-              <p matLine>
-                {{ 'ranking.single' | translate }}: {{ place.singlePoints }}, {{ 'ranking.double' | translate }}:
-                {{ place.doublePoints }}, {{ 'ranking.mix' | translate }}: {{ place.mixPoints }}
+              <p matLine *ngIf="place.rankingDate?.getDate() == 15 && place.rankingDate?.getMonth() == 4">
+                May ranking
+              </p>
+              <p
+                matLine
+                *ngIf="place.singlePoints || place.doublePoints || place.mixPoints"
+                fxLayoutGap="8px"
+                fxLayout="row"
+              >
+                <span *ngIf="place.singlePoints">{{ 'ranking.single' | translate }}: {{ place.singlePoints }}</span>
+                <span *ngIf="place.doublePoints">{{ 'ranking.double' | translate }}: {{ place.doublePoints }}</span>
+                <span *ngIf="place.mixPoints">{{ 'ranking.mix' | translate }}: {{ place.mixPoints }}</span>
               </p>
             </button>
           </mat-action-list>
