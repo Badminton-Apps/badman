@@ -3,7 +3,7 @@ export class Standing {
 
   position?: number;
   played?: number;
-  points?: number;
+  points?: number | null;
   gamesWon?: number;
   gamesLost?: number;
   setsWon?: number;

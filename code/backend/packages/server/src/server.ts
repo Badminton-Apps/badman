@@ -9,7 +9,7 @@ import {
   DataBaseHandler,
   logger,
   NotificationService,
-  PdfService,
+  HandlebarService,
   Player,
   startWhenReady
 } from '@badvlasim/shared';
@@ -45,7 +45,7 @@ try {
  
 const startServer = async (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
-  const pdfService = new PdfService();
+  const handlebarService = new HandlebarService();
   const notifService = new NotificationService(databaseService);
 
   const app = new App(
@@ -55,7 +55,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
       new SystemController(Router(), authService.checkAuth, databaseService),
       new UserController(Router(), authService.checkAuth, databaseService),
       new RequestLinkController(Router(), authService.checkAuth),
-      new PdfController(Router(), pdfService)
+      new PdfController(Router(), handlebarService)
     ],
     [
       {

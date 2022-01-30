@@ -220,7 +220,7 @@ export class EventService {
       })
       .pipe(
         map((x) => {
-          const events = [];
+          const events: any = [];
           if (x.data.competitionEvents) {
             events.push(...x.data.competitionEvents!.edges!.map((e) => new CompetitionEvent(e.node)));
           }
@@ -254,8 +254,8 @@ export class EventService {
       finished: 0,
       total: files.length,
     });
-    const fileArray = [];
-    const requests = [];
+    const fileArray: any = [];
+    const requests: any = [];
 
     // copy to usable array
     for (let i = 0; i < files.length; i++) {
