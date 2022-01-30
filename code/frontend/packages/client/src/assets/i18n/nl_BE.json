@@ -34,14 +34,23 @@
     "start": "Start",
     "sync": "Sync"
   },
-  "systems": {
+  "ranking": {
+    "last-ranking": "Laatste ranking",
+    "all-ranking": "Alle updates",
+    "add-ranking": "Voeg ranking toe",
+    "next-ranking": "Volgende ranking",
+    "update-happend": "Update plaatsgevonden",
+    "updates": "Updates",
     "double": "Dubbel",
     "double-rank": "Ranking plaats",
+    "double-points": "Ranking punten",
     "list": "Ranking spelers",
     "mix": "Gemengd",
     "mix-rank": "Ranking plaats",
+    "mix-points": "Ranking punten",
     "single": "Enkel",
-    "single-rank": "Ranking plaats"
+    "single-rank": "Ranking plaats",
+    "single-points": "Ranking punten"
   },
   "faq": {
     "legend": "Legende",
@@ -302,6 +311,7 @@
     "required": "Velden met een sterretje (*) zijn verplicht",
     "gender": "Geslacht",
     "select": "Selecteer",
+    "date": "Datum",
     "sub": "Inschrijving",
     "street": "Straat",
     "streetnumber": "Huisnummer",
