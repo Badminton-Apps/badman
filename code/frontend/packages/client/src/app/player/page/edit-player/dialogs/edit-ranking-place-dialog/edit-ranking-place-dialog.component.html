@@ -4,7 +4,7 @@
     <form [formGroup]="this.rankingPlaceForm" fxLayout="column" fxLayoutGap="10px">
       <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column">
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'rankingPlace.date' | translate }}</mat-label>
+          <mat-label>{{ 'input.date' | translate }}</mat-label>
           <input matInput [matDatepicker]="rankingDate" formControlName="rankingDate" />
           <mat-datepicker-toggle matSuffix [for]="rankingDate"></mat-datepicker-toggle>
           <mat-datepicker #rankingDate></mat-datepicker>
@@ -12,30 +12,30 @@
       </div>
       <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column">
         <mat-form-field appearance="outline" fxFlex>
-          <mat-label>{{ 'rankingPlace.single' | translate }}</mat-label>
+          <mat-label>{{ 'ranking.single' | translate }}</mat-label>
           <input matInput type="number" min="1" formControlName="single" />
         </mat-form-field>
         <mat-form-field appearance="outline" fxFlex>
-          <mat-label>{{ 'rankingPlace.double' | translate }}</mat-label>
+          <mat-label>{{ 'ranking.double' | translate }}</mat-label>
           <input matInput type="number" min="1" formControlName="double" />
         </mat-form-field>
         <mat-form-field appearance="outline" fxFlex>
-          <mat-label>{{ 'rankingPlace.mix' | translate }}</mat-label>
+          <mat-label>{{ 'ranking.mix' | translate }}</mat-label>
           <input matInput type="number" min="1" formControlName="mix" />
         </mat-form-field>
       </div>
 
       <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column">
         <mat-form-field appearance="outline" fxFlex>
-          <mat-label>{{ 'rankingPlace.singlePoints' | translate }}</mat-label>
+          <mat-label>{{ 'ranking.single-points' | translate }}</mat-label>
           <input matInput type="number" min="1" formControlName="singlePoints" />
         </mat-form-field>
         <mat-form-field appearance="outline" fxFlex>
-          <mat-label>{{ 'rankingPlace.doublePoints' | translate }}</mat-label>
+          <mat-label>{{ 'ranking.double-points' | translate }}</mat-label>
           <input matInput type="number" min="1" formControlName="doublePoints" />
         </mat-form-field>
         <mat-form-field appearance="outline" fxFlex>
-          <mat-label>{{ 'rankingPlace.mixPoints' | translate }}</mat-label>
+          <mat-label>{{ 'ranking.mix-points' | translate }}</mat-label>
           <input matInput type="number" min="1" formControlName="mixPoints" />
         </mat-form-field>
       </div>

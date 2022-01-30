@@ -60,7 +60,7 @@ export class ProfileHeaderComponent implements OnChanges  {
       var week = `Week: ${date.week()}-${date.weekYear()}`;
 
       if (this.shownRanking.singleRank != -1) {
-        this.singleTooltip = `${this.translateService.instant('systems.single')}\r\n${week}`;
+        this.singleTooltip = `${this.translateService.instant('ranking.single')}\r\n${week}`;
         if (this.shownRanking.singleRank && this.shownRanking.totalWithinSingleLevel) {
           this.singleTooltip += `\r\nWithin level: ${this.shownRanking.singleRank} of ${this.shownRanking.totalWithinSingleLevel}`;
         }
@@ -73,7 +73,7 @@ export class ProfileHeaderComponent implements OnChanges  {
       }
 
       if (this.shownRanking.doubleRank != -1) {
-        this.doubleTooltip = `${this.translateService.instant('systems.double')}\r\n${week}`;
+        this.doubleTooltip = `${this.translateService.instant('ranking.double')}\r\n${week}`;
         if (this.shownRanking.doubleRank && this.shownRanking.totalWithinDoubleLevel) {
           this.doubleTooltip += `\r\nWithin level: ${this.shownRanking.doubleRank} of ${this.shownRanking.totalWithinDoubleLevel}`;
         }
@@ -88,7 +88,7 @@ export class ProfileHeaderComponent implements OnChanges  {
       }
 
       if (this.shownRanking.mixRank != -1) {
-        this.mixTooltip = `${this.translateService.instant('systems.mix')}\r\n${week}`;
+        this.mixTooltip = `${this.translateService.instant('ranking.mix')}\r\n${week}`;
         if (this.shownRanking.mixRank && this.shownRanking.totalWithinMixLevel) {
           this.mixTooltip += `\r\nWithin level: ${this.shownRanking.mixRank} of ${this.shownRanking.totalWithinMixLevel}`;
         }

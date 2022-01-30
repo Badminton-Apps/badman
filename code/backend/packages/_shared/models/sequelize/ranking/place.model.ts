@@ -185,7 +185,7 @@ export class RankingPlace extends Model {
           playerId: instance.playerId,
           SystemId: instance.SystemId,
         },
-        transaction: options.transaction,
+        transaction: options?.transaction,
         limit: 1,
         order: [['rankingDate', 'DESC']],
       });
