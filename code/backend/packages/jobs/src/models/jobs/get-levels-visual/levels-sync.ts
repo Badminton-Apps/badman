@@ -1,7 +1,6 @@
 import {
   correctWrongPlayers,
   Cron,
-  GameType,
   LastRankingPlace,
   logger,
   Player,
