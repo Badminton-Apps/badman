@@ -43,7 +43,7 @@ describe('PDF service', () => {
     const logoLocation = path.resolve(
       __dirname + '/../services/handlebars/assets/logo.png'
     );
-    
+
     mock({
       [logoLocation]: 'logo',
     });
@@ -378,18 +378,13 @@ describe('PDF service', () => {
 
     // Assert
     // Static values
-    expect(handlebarService['_htmlToPdf']).toBeCalledWith(
+    expect(handlebarService['_getHtml']).toBeCalledWith(
       'assembly',
-      expect.anything(),
-      {
-        format: 'a4',
-        landscape: true,
-        printBackground: true,
-      }
+      expect.anything()
     );
 
     // Base options
-    expect(handlebarService['_htmlToPdf']).toBeCalledWith(
+    expect(handlebarService['_getHtml']).toBeCalledWith(
       expect.anything(),
       expect.objectContaining({
         awayTeam: `${fakeClub2Name} 2G`,
@@ -399,12 +394,11 @@ describe('PDF service', () => {
         captain: 'John Doe',
         date: encounterDate.format('DD-MM-YYYY HH:mm'),
         type: 'MX',
-      }),
-      expect.anything()
+      })
     );
 
     // Singles
-    expect(handlebarService['_htmlToPdf']).toBeCalledWith(
+    expect(handlebarService['_getHtml']).toBeCalledWith(
       expect.anything(),
       expect.objectContaining({
         singles: expect.arrayContaining([
@@ -433,8 +427,7 @@ describe('PDF service', () => {
             fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`,
           }),
         ]),
-      }),
-      expect.anything()
+      })
     );
 
     // Doubles
@@ -499,8 +492,7 @@ describe('PDF service', () => {
             }),
           },
         ]),
-      }),
-      expect.anything()
+      })
     );
   });
 });
