@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EventService, PdfService, Player } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
-import { lastValueFrom, startWith, switchMap } from 'rxjs';
+import { lastValueFrom, switchMap } from 'rxjs';
 import { TeamAssemblyService } from '../../services/team-assembly.service';
 
 @Component({

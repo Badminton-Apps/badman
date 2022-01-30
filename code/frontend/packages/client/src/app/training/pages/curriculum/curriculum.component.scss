@@ -1,0 +1,25 @@
+$breakpoints: (800px: 125px,
+);
+
+@each $width,
+$size in $breakpoints {
+  @media screen and (max-width: $width) {
+
+    div.selection-button {
+      height: $size;
+      width: $size;
+    }
+  }
+}
+
+.selection-button {
+  height: 150px;
+  width: 150px;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  text-align: center;
+}

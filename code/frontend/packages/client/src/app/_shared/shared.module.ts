@@ -67,22 +67,23 @@ const materialModules = [
 ];
 
 const exportedComponents = [
-  FlexLayoutModule,
-  TranslateModule,
-  CommonModule,
-  MatInputModule,
-  ReactiveFormsModule,
-  MatFormFieldModule,
-  FormsModule,
-  LoadingPipe,
-  LevelToLetterPipe,
-  EnumToArrayPipe,
+  AssignRankingGroupsComponent,
   BetaComponent,
-  PlayerSearchComponent,
   ClaimComponent,
+  CommonModule,
+  EnumToArrayPipe,
+  FlexLayoutModule,
+  FormsModule,
   HasClaimComponent,
+  LevelToLetterPipe,
+  LoadingPipe,
+  MatButtonModule,
+  MatFormFieldModule,
+  MatInputModule,
   MomentModule,
-  AssignRankingGroupsComponent
+  PlayerSearchComponent,
+  ReactiveFormsModule,
+  TranslateModule,
 ];
 
 @NgModule({
@@ -102,7 +103,7 @@ const exportedComponents = [
     HasClaimComponent,
     NewPlayerComponent,
     UserInfoComponent,
-    AssignRankingGroupsComponent
+    AssignRankingGroupsComponent,
   ],
   imports: [
     CommonModule,
