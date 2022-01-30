@@ -67,10 +67,10 @@
       <mat-header-cell *matHeaderCellDef>{{ 'breakdown.team' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.team' | translate }}">
         <div *ngIf="game.team?.[0]">
-          {{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] ?? 'N/A'}})
+          {{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] || 'N/A'}})
         </div>
         <div *ngIf="game.team?.[1]">
-          {{ game.team?.[1].fullName }} ({{game.team?.[1]?.rankingPlace?.[type] ??  'N/A'}})
+          {{ game.team?.[1].fullName }} ({{game.team?.[1]?.rankingPlace?.[type] || 'N/A'}})
         </div>
 
         <div *ngIf="!game.team?.[0] && !game.team?.[1]">
@@ -85,10 +85,10 @@
       <mat-header-cell *matHeaderCellDef>{{ 'breakdown.opponent' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.opponent' | translate }}">
         <div *ngIf="game.opponent?.[0]">
-          {{ game.opponent?.[0].fullName }} ({{game.opponent?.[0]?.rankingPlace?.[type] ?? 'N/A'}})
+          {{ game.opponent?.[0].fullName }} ({{game.opponent?.[0]?.rankingPlace?.[type] || 'N/A'}})
         </div>
         <div *ngIf="game.opponent?.[1]">
-          {{ game.opponent?.[1].fullName }} ({{game.opponent?.[1]?.rankingPlace?.[type] ?? 'N/A'}})
+          {{ game.opponent?.[1].fullName }} ({{game.opponent?.[1]?.rankingPlace?.[type] || 'N/A'}})
         </div>
 
         <div *ngIf="!game.team?.[0] && !game.team?.[1]">
@@ -209,10 +209,10 @@
       <mat-header-cell *matHeaderCellDef>{{ 'breakdown.team' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.team' | translate }}">
         <div *ngIf="game.team?.[0]">
-          {{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] ?? 'N/A'}})
+          {{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] || 'N/A'}})
         </div>
         <div *ngIf="game.team?.[1]">
-          {{ game.team?.[1].fullName }} ({{game.team?.[1]?.rankingPlace?.[type] ??  'N/A'}})
+          {{ game.team?.[1].fullName }} ({{game.team?.[1]?.rankingPlace?.[type] || 'N/A'}})
         </div>
 
         <div *ngIf="!game.team?.[0] && !game.team?.[1]">
@@ -227,10 +227,10 @@
       <mat-header-cell *matHeaderCellDef>{{ 'breakdown.opponent' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.opponent' | translate }}">
         <div *ngIf="game.opponent?.[0]">
-          {{ game.opponent?.[0].fullName }} ({{game.opponent?.[0]?.rankingPlace?.[type] ?? 'N/A'}})
+          {{ game.opponent?.[0].fullName }} ({{game.opponent?.[0]?.rankingPlace?.[type] || 'N/A'}})
         </div>
         <div *ngIf="game.opponent?.[1]">
-          {{ game.opponent?.[1].fullName }} ({{game.opponent?.[1]?.rankingPlace?.[type] ?? 'N/A'}})
+          {{ game.opponent?.[1].fullName }} ({{game.opponent?.[1]?.rankingPlace?.[type] || 'N/A'}})
         </div>
 
         <div *ngIf="!game.team?.[0] && !game.team?.[1]">

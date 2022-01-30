@@ -304,7 +304,7 @@ export class AssignTeamComponent implements OnInit {
     const localInstanceSubEvents = [...this.subEvents];
     const subEventsSorted = localInstanceSubEvents.sort((a, b) => b.level! - a.level!);
     for (const team of this.teams) {
-      let subEvent = null;
+      let subEvent: (CompetitionSubEvent | undefined) = undefined;
 
       // TODO: Get entries from team
       // for (const tse of team.subEvents) {

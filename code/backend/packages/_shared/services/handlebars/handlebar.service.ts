@@ -1,9 +1,8 @@
 /* eslint-disable prefer-rest-params */
 import { promises, writeFileSync } from 'fs';
-const { readFile } = promises;
-import Handlebars, { compile } from 'handlebars';
+import Handlebars from 'handlebars';
+import moment from 'moment';
 import path from 'path';
-import puppeteer, { Browser, PDFOptions } from 'puppeteer';
 import { Op } from 'sequelize';
 import {
   DrawCompetition,
@@ -17,10 +16,9 @@ import {
   SubEventType,
   Team,
 } from '../../models';
-import { logger } from '../../utils';
-import moment from 'moment';
+const { readFile } = promises;
 
-export class PdfService {
+export class HandlebarService {
   constructor() {
     const reduceOp = function (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -270,7 +268,7 @@ export class PdfService {
     const logo = await readFile(`${__dirname}/assets/logo.png`, {
       encoding: 'base64',
     });
-    const options = {
+    const context = {
       date: moment(encounter.date).format('DD-MM-YYYY HH:mm'),
       baseIndex: meta?.competition?.teamIndex,
       teamIndex: teamIndex.index,
@@ -288,13 +286,7 @@ export class PdfService {
       logo: `data:image/png;base64, ${logo}`,
     };
 
-    const pdf = await this._htmlToPdf('assembly', options, {
-      format: 'a4',
-      landscape: true,
-      printBackground: true,
-    });
-
-    return pdf;
+    return await this._getHtml('assembly', context);
   }
 
   private _addPlayer(
@@ -349,43 +341,19 @@ export class PdfService {
     };
   }
 
-  private async _htmlToPdf(
-    templatePath: string,
-    data: unknown,
-    options: PDFOptions
-  ) {
-    let browser: Browser;
-    try {
-      if (!browser) {
-        browser = await puppeteer.launch({
-          args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-          ],
-          headless: true,
-        });
-      }
-      const context = await browser.createIncognitoBrowserContext();
-      const page = await context.newPage();
-      const content = await this._compile(templatePath, data);
-      await page.goto(`data: text/html, ${content}`, {
-        waitUntil: 'networkidle0',
-      });
-      await page.setContent(content);
-      const pdf = await page.pdf(options);
+  private async _getHtml(templateName: string, context: unknown) {
+    const template = await this._getTemplate(templateName);
 
-      writeFileSync('assembly.html', await page.content());
-
-      await context.close();
-      return pdf;
-    } catch (err) {
-      logger.error(err);
-      throw err;
+    const compiled = Handlebars.compile(template)(context);
+    // Write file to disk for debugging purposes
+    if (process.env.NODE_ENV !== 'production') {
+      writeFileSync('assembly.html', compiled);
     }
+
+    return compiled;
   }
 
-  private async _compile(templateName: string, context: unknown) {
+  private async _getTemplate(templateName: string) {
     const filePath = path.join(
       __dirname,
       'templates',
@@ -395,7 +363,8 @@ export class PdfService {
       throw new Error(`Could not find ${templateName}.hbs in generatePDF`);
     }
     const html = await readFile(filePath, 'utf-8');
-    return compile(html)(context);
+
+    return html;
   }
 
   private _teamIndex(players: Player[], type: SubEventType) {

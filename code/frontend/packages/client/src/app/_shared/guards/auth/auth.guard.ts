@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean | UrlTree> | boolean {
-    const canActivateObservables$ = [];
+    const canActivateObservables$: Observable<boolean>[] = [];
 
     // If we have AuthGuard you have to be logged in
     canActivateObservables$.push(
