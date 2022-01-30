@@ -1,3 +1,12 @@
+## [4.22.2](https://github.com/Badminton-Apps/badman/compare/v4.22.1...v4.22.2) (2022-01-30)
+
+
+### Bug Fixes
+
+* bulk destroy shouldn't update lastUpdate ([eae115e](https://github.com/Badminton-Apps/badman/commit/eae115ed7a2c24dc111ffbe559f18ccbc2eec2bc))
+
+
+
 ## [4.22.1](https://github.com/Badminton-Apps/badman/compare/v4.22.0...v4.22.1) (2022-01-30)
 
 
