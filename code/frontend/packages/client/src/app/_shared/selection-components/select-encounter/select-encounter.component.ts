@@ -75,11 +75,11 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
           );
 
           this.encounters$.subscribe((encoutners) => {
-            let foundEncounter = null;
+            let foundEncounter: CompetitionEncounter | null = null;
             let encounterId = this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
 
             if (encounterId && encoutners.length > 0) {
-              foundEncounter = encoutners.find((r) => r.id == encounterId);
+              foundEncounter = encoutners.find((r) => r.id == encounterId) ?? null;
             }
 
             if (!foundEncounter) {

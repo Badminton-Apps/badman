@@ -30,41 +30,41 @@
   </ng-container>
   <ng-container matColumnDef="points">
     <mat-header-cell *matHeaderCellDef>{{ 'event.standing.points' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.points ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.points || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="played">
     <mat-header-cell *matHeaderCellDef>{{ 'event.standing.played' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.played ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.played || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="won">
     <mat-header-cell *matHeaderCellDef>{{ 'event.standing.won' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.won ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.won || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="tied">
     <mat-header-cell *matHeaderCellDef>{{ 'event.standing.tied' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.tied ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.tied || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="lost">
     <mat-header-cell *matHeaderCellDef>{{ 'event.standing.lost' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.lost ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.lost || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="gamesWon">
-    <mat-cell *matCellDef="let element">{{ element.standing?.gamesWon ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.gamesWon || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="gamesLost">
-    <mat-cell *matCellDef="let element">{{ element.standing?.gamesLost ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.gamesLost || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="setsWon">
-    <mat-cell *matCellDef="let element">{{ element.standing?.setsWon ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.setsWon || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="setsLost">
-    <mat-cell *matCellDef="let element">{{ element.standing?.setsLost ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.setsLost || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="totalPointsWon">
-    <mat-cell *matCellDef="let element">{{ element.standing?.totalPointsWon ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.totalPointsWon || 0 }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="totalPointsLost">
-    <mat-cell *matCellDef="let element">{{ element.standing?.totalPointsLost ?? 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{ element.standing?.totalPointsLost || 0 }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="games">

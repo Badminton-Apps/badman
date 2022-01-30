@@ -117,7 +117,7 @@ export class ClubService {
   }
 
   getClubs(args?: { first?: number; after?: string; query?: string; ids?: string[] }) {
-    let where = undefined;
+    let where: any = undefined;
     if (args?.query) {
       where = {
         $or: [

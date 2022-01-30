@@ -95,7 +95,7 @@ export class PlayerService {
       .query!.toLowerCase()
       .replace(/[;\\\\/:*?\"<>|&',]/, ' ')
       .split(' ');
-    const queries = [];
+    const queries: any = [];
     for (const part of parts) {
       queries.push({
         $or: [

@@ -8,19 +8,19 @@
               <ng-container *ngIf="group[0]">
                 {{ group[0].rankingDate | date }} - {{ group[0].single }} - {{ group[0].double }} - {{ group[0].mix }}
               </ng-container>
-              <ng-container *ngIf="!group[0]">Next Update</ng-container>
+              <ng-container *ngIf="!group[0]">{{ 'ranking.next-ranking' | translate }}</ng-container>
             </mat-panel-title>
-            <mat-panel-description> {{ group[1].length }} updates </mat-panel-description>
+            <mat-panel-description> {{ group[1].length }} {{ 'ranking.updates' | translate }} </mat-panel-description>
           </mat-expansion-panel-header>
 
           <mat-action-list *ngFor="let place of group[1]">
             <button mat-list-item (click)="this.editRanking(place)">
-              <h4 matLine matTooltip="Update happend" [matTooltipDisabled]="!place.updatePossible">
+              <h4 matLine [matTooltip]="'ranking.update-happend' | translate" [matTooltipDisabled]="!place.updatePossible">
                 {{ place.rankingDate | date }} <ng-container *ngIf="place.updatePossible">*</ng-container>
               </h4>
               <p matLine>
-                {{ 'systems.single' | translate }}: {{ place.singlePoints }}, {{ 'systems.double' | translate }}:
-                {{ place.doublePoints }}, {{ 'systems.mix' | translate }}: {{ place.mixPoints }}
+                {{ 'ranking.single' | translate }}: {{ place.singlePoints }}, {{ 'ranking.double' | translate }}:
+                {{ place.doublePoints }}, {{ 'ranking.mix' | translate }}: {{ place.mixPoints }}
               </p>
             </button>
           </mat-action-list>
@@ -29,7 +29,7 @@
     </div>
     <div fxFlex>
       <button mat-stroked-button color="primary" (click)="this.editRanking()">
-        {{ 'player.editRanking.add' | translate }}
+        {{ 'ranking.add-ranking' | translate }}
       </button>
     </div>
   </ng-container>
