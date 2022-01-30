@@ -1,6 +1,6 @@
 {
   "name": "@badvlasim/shared",
-  "version": "4.21.10",
+  "version": "4.21.9",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -24,7 +24,6 @@
     "@fast-csv/parse": "^4.3.6",
     "compression": "^1.7.4",
     "concat-stream": "^2.0.0",
-    "elastic-apm-node": "^3.25.0",
     "fast-csv": "^4.3.6",
     "handlebars": "^4.7.7",
     "helmet": "^4.6.0",
@@ -39,7 +38,6 @@
   "devDependencies": {
     "@types/compression": "^1.7.2",
     "@types/concat-stream": "^1.6.1",
-    "@types/elastic-apm-node": "^2.7.0",
     "@types/nodemailer": "^6.4.4",
     "@types/nodemailer-direct-transport": "^1.0.32",
     "@types/nodemailer-smtp-transport": "^2.7.5",

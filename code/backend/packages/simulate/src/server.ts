@@ -2,18 +2,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import apm, { AgentConfigOptions } from 'elastic-apm-node';
-
-const apmConfig = {
-  serviceName: process.env.SERVICE_NAME,
-  serverUrl: process.env.APM_SERVER_URL,
-  secretToken: process.env.APM_SERVER_TOKEN,
-  verifyServerCert: false,
-  active: process.env.APM_SERVER_ACTIVE === 'true' ?? true
-} as AgentConfigOptions;
-
-apm.start(apmConfig);
-
 // First config
 import { App, AuthenticationSercice, logger, startWhenReady } from '@badvlasim/shared';
 import { Router } from 'express';
@@ -23,7 +11,6 @@ import { RankingCalculator } from './models';
 try {
   (async () => {
     try {
-      logger.debug(`Started APM`, { data: apmConfig });
       logger.info(`Starting ${process.env.SERVICE_NAME} version ${process.env.SERVICE_VERSION}`);
       await startWhenReady(false, false, () => startServer());
     } catch (e) {
@@ -40,6 +27,8 @@ const startServer = () => {
   const authService = new AuthenticationSercice();
   const calculator = new RankingCalculator();
 
-  const app = new App([new SimulateController(Router(), authService.checkAuth, calculator)]);
+  const app = new App([
+    new SimulateController(Router(), authService.checkAuth, calculator)
+  ]);
   app.listen();
 };
