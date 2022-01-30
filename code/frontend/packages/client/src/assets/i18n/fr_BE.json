@@ -25,14 +25,23 @@
     "start": "Commencer",
     "sync": "Sync"
   },
-  "systems": {
+  "ranking": {
+    "last-ranking": "Dernier classement",
+    "all-ranking": "Alle updates",
+    "add-ranking": "Voeg ranking toe",
+    "next-ranking": "Volgende ranking",
+    "update-happend": "Update plaatsgevonden",
+    "updates": "Updates",
     "double": "Double",
     "double-rank": "Ranking classement",
+    "double-points": "Double points",
     "list": "Ranking joueurs",
     "mix": "Mixte",
     "mix-rank": "Ranking classement",
+    "mix-points": "Mixte points",
     "single": "Simple",
-    "single-rank": "Ranking classement"
+    "single-rank": "Ranking classement",
+    "single-points": "Simple points"
   },
   "faq": {
     "legend": "Légende",

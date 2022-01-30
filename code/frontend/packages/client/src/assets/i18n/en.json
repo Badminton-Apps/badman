@@ -25,14 +25,23 @@
     "start": "Start",
     "sync": "Sync"
   },
-  "systems": {
+  "ranking": {
+    "last-ranking": "Last ranking",
+    "all-ranking": "Alle raking",
+    "add-ranking": "Add ranking",
+    "next-ranking": "Next ranking",
+    "update-happend": "Update happend",
+    "updates": "Updates",
     "double": "Double",
     "double-rank": "Ranking level",
+    "double-points": "Double points",
     "list": "Ranking Players",
     "mix": "Mix",
     "mix-rank": "Ranking level",
+    "mix-points": "Mix points",
     "single": "Single",
-    "single-rank": "Ranking level"
+    "single-rank": "Ranking level",
+    "single-points": "Single points"
   },
   "faq": {
     "legend": "Table of contents",
