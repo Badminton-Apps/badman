@@ -23,7 +23,7 @@
       </div>
     </mat-tab>
 
-    <mat-tab label="Permissions" *ngIf="this.hasPermission(['edit:claims']) | async">
+    <mat-tab label="Permissions" *ngIf="this.hasPermission(['edit:ranking']) | async">
       <div class="tab-content">
         <app-edit-permissions [player]="player"></app-edit-permissions>
       </div>

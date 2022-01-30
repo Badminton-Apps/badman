@@ -1,4 +1,4 @@
-query GetTeamInfo($clubId: ID!, $ranking: Date, $entryWhere: SequelizeJSON) {
+query GetTeamInfo($clubId: ID!, $rankingWhere: SequelizeJSON, $entryWhere: SequelizeJSON) {
   club(id: $clubId) {
     id
     teams(where: { active: true }) {
@@ -38,7 +38,7 @@ query GetTeamInfo($clubId: ID!, $ranking: Date, $entryWhere: SequelizeJSON) {
           double
           mix
         }
-        rankingPlaces(where: { rankingDate: $ranking }) {
+        rankingPlaces(where: $rankingWhere) {
           id
           rankingDate
           single
