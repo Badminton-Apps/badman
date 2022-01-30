@@ -250,7 +250,7 @@ export class AssemblyComponent implements OnInit {
 
     // Ignore ids
     this.ignorePlayers = [];
-    const ignoredLevels = [];
+    const ignoredLevels: any = [];
     if (this.entry?.competitionSubEvent?.event?.type == LevelType.PROV) {
       ignoredLevels.push(LevelType.LIGA);
       ignoredLevels.push(LevelType.NATIONAL);

@@ -2,7 +2,14 @@
   <head>
     <meta charset="UTF-8" />
     <style>
-      body {
+      /*
+* Prefixed by:
+* PostCSS: v7.0.29,
+* Autoprefixer: v9.7.6
+* Browsers: last 10 version
+*/
+
+body {
       margin: 16px 48px;
       font-size: 12px;
     }
@@ -11,7 +18,9 @@
 
     .encounter {
       display: -ms-grid;
+      display: -webkit-grid;
       display: grid;
+      -ms-grid-columns: 1fr 250px 35px 250px 1fr;
       grid-template-columns: 1fr 250px 35px 250px 1fr;
       margin-top: 15px;
       margin-bottom: 10px;
@@ -121,6 +130,9 @@
       border-bottom: 1px solid black;
       border-right: 1px solid black;
       padding: 5px;
+      font-size: 10px;
+      line-height: 12px;
+      min-height: 12px;
     }
 
     .d0.box.p1,
@@ -129,10 +141,6 @@
     .d3.box.p1{
       border-bottom: 1px dashed darkgray;
     }
-    .box{
-      min-height: 15px;
-    }
- 
 
     .players {
       border-right: 1px solid black;
@@ -311,6 +319,7 @@
     .bottom {
       display: -ms-grid;
       display: grid;
+      -ms-grid-columns: 350px 1fr 1fr;
       grid-template-columns: 350px 1fr 1fr;
       text-align: right;
       margin-top: 10px;

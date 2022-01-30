@@ -1,10 +1,10 @@
-import { BaseController, PdfService } from '@badvlasim/shared';
+import { BaseController, HandlebarService } from '@badvlasim/shared';
 import { Request, Response, Router } from 'express';
 
 export class PdfController extends BaseController {
   private _path = '/pdf';
 
-  constructor(router: Router, private _pdfService: PdfService) {
+  constructor(router: Router, private handlebarService: HandlebarService) {
     super(router);
     this._intializeRoutes();
   }
@@ -14,9 +14,8 @@ export class PdfController extends BaseController {
   }
 
   private _assembly = async (request: Request, response: Response) => {
-    const pdf = await this._pdfService.getTeamAssemblyPdf(request.body);
+    const pdf = await this.handlebarService.getTeamAssemblyPdf(request.body);
 
-    response.contentType('application/pdf');
     response.send(pdf);
   };
 }

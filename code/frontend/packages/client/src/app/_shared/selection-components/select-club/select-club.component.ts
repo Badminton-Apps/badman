@@ -95,16 +95,16 @@ export class SelectClubComponent implements OnInit, OnDestroy {
 
     if (this.updateUrl) {
       const params = this.activatedRoute.snapshot.queryParams;
-      let foundClub = null;
+      let foundClub: Club | null = null;
 
       if (params && params['club'] && this.options.length > 0) {
-        foundClub = this.options.find((r) => r.slug === params['club'] || r.id === params['club']);
+        foundClub = this.options.find((r) => r.slug === params['club'] || r.id === params['club']) ?? null;
       }
 
       if (foundClub == null) {
         const clubIds = this.user?.profile?.clubs?.map((r) => r.id);
         if (clubIds) {
-          foundClub = this.options.find((r) => clubIds.includes(r.id));
+          foundClub = this.options.find((r) => clubIds.includes(r.id)) ?? null;
         }
       }
 

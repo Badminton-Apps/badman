@@ -65,12 +65,12 @@ export class EditRankingAllComponent implements OnInit {
             return b.rankingDate!.getTime() - a.rankingDate!.getTime();
           });
 
-          let currUpdateDate = null;
+          let currUpdateDate: Date | null = null;
 
           for (const place of sorted ?? []) {
             if (place.updatePossible) {
               allPlaces.set(place.rankingDate!, [place]);
-              currUpdateDate = place.rankingDate;
+              currUpdateDate = place.rankingDate ?? null;
             } else {
               const oldPlace = allPlaces.get(currUpdateDate!);
               if (oldPlace) {

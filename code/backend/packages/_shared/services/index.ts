@@ -2,6 +2,6 @@
 export * from './authentication';
 export * from './mail';
 export * from './notification';
-export * from './pdf';
+export * from './handlebars';
 // end:ng42.barrel
 

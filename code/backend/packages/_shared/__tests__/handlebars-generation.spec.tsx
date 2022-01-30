@@ -20,30 +20,30 @@ import {
 } from '../models';
 
 import fakerator from 'fakerator';
-import { PdfService } from '../services';
+import { HandlebarService } from '../services';
 import { DataBaseHandler } from '../database';
 
 const fake = fakerator();
 
 describe('PDF service', () => {
-  let pdfService: PdfService;
+  let handlebarService: HandlebarService;
 
   beforeAll(async () => {
     new DataBaseHandler({
       dialect: 'sqlite',
       storage: ':memory:',
     });
-    pdfService = new PdfService();
-    pdfService['_htmlToPdf'] = jest
+    handlebarService = new HandlebarService();
+    handlebarService['_getHtml'] = jest
       .fn()
       .mockImplementation(() => Promise.resolve(null));
   });
 
   beforeEach(async () => {
     const logoLocation = path.resolve(
-      __dirname + '/../services/pdf/assets/logo.png'
+      __dirname + '/../services/handlebars/assets/logo.png'
     );
-    
+
     mock({
       [logoLocation]: 'logo',
     });
@@ -360,7 +360,7 @@ describe('PDF service', () => {
     );
 
     // Act
-    await pdfService.getTeamAssemblyPdf({
+    await handlebarService.getTeamAssemblyPdf({
       captainId: captainPlayer.id,
       encounterId: encounter.id,
       teamId: team1.id,
@@ -378,18 +378,13 @@ describe('PDF service', () => {
 
     // Assert
     // Static values
-    expect(pdfService['_htmlToPdf']).toBeCalledWith(
+    expect(handlebarService['_getHtml']).toBeCalledWith(
       'assembly',
-      expect.anything(),
-      {
-        format: 'a4',
-        landscape: true,
-        printBackground: true,
-      }
+      expect.anything()
     );
 
     // Base options
-    expect(pdfService['_htmlToPdf']).toBeCalledWith(
+    expect(handlebarService['_getHtml']).toBeCalledWith(
       expect.anything(),
       expect.objectContaining({
         awayTeam: `${fakeClub2Name} 2G`,
@@ -399,12 +394,11 @@ describe('PDF service', () => {
         captain: 'John Doe',
         date: encounterDate.format('DD-MM-YYYY HH:mm'),
         type: 'MX',
-      }),
-      expect.anything()
+      })
     );
 
     // Singles
-    expect(pdfService['_htmlToPdf']).toBeCalledWith(
+    expect(handlebarService['_getHtml']).toBeCalledWith(
       expect.anything(),
       expect.objectContaining({
         singles: expect.arrayContaining([
@@ -433,12 +427,11 @@ describe('PDF service', () => {
             fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`,
           }),
         ]),
-      }),
-      expect.anything()
+      })
     );
 
     // Doubles
-    expect(pdfService['_htmlToPdf']).toBeCalledWith(
+    expect(handlebarService['_getHtml']).toBeCalledWith(
       expect.anything(),
       expect.objectContaining({
         doubles: expect.arrayContaining([
@@ -499,8 +492,7 @@ describe('PDF service', () => {
             }),
           },
         ]),
-      }),
-      expect.anything()
+      })
     );
   });
 });
