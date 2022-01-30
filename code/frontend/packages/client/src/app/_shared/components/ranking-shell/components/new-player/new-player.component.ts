@@ -16,8 +16,8 @@ export class NewPlayerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    let firstName = null;
-    let lastName = null;
+    let firstName: string | null = null;
+    let lastName: string | null = null;
     if (this.data?.input != null) {
       const spaced = this.data.input.indexOf(' ');
       if (spaced != -1){

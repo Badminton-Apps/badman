@@ -145,7 +145,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
   async assignRankingGroups() {
     this.loading = true;
-    const mutations = [];
+    const mutations: any = [];
 
     for (const [groupKey, group] of this.selection) {
       const key = groupKey.replace('group-', '');
@@ -153,8 +153,8 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         rankingSystemGroupId: key,
       };
 
-      const removed = [];
-      const added = [];
+      const removed: any = [];
+      const added: any = [];
 
       for (const subEvent of this.data.event.subEvents ?? []) {
         const hasGroup = (subEvent.groups ?? []).find((g) => g.id == key) != null;

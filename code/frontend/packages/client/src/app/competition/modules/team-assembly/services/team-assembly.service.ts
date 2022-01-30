@@ -9,7 +9,7 @@ export class TeamAssemblyService {
   private urlBase = `${environment.api}/${environment.apiVersion}/pdf`;
   constructor(private httpClient: HttpClient) {}
 
-  getPdf(input: {
+  getTeamAssembly(input: {
     captainId: string;
     teamId: string;
     encounterId: string;
@@ -19,6 +19,6 @@ export class TeamAssemblyService {
       subtitude: string[];
     };
   }) {
-    return this.httpClient.post(`${this.urlBase}/team-assembly`, input, { responseType: 'blob' });
+    return this.httpClient.post(`${this.urlBase}/team-assembly`, input, { responseType: 'text' });
   }
-} 
+}

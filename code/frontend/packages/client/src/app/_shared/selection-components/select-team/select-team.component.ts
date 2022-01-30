@@ -91,17 +91,17 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
           );
 
           team$.subscribe((teams) => {
-            this.options = teams; 
+            this.options = teams;
 
-            let foundTeam = null;
+            let foundTeam: Team | null = null;
             let teamId = this.activatedRoute.snapshot?.queryParamMap?.get('team');
 
             if (teamId && teams.length > 0) {
-              foundTeam = teams.find((r) => r.slug == teamId || r.id == teamId);
+              foundTeam = teams.find((r) => r.slug == teamId || r.id == teamId) ?? null;
             }
 
             if (foundTeam == null) {
-              foundTeam = teams.find((r) => r.captainId == this.user?.profile?.id);
+              foundTeam = teams.find((r) => r.captainId == this.user?.profile?.id) ?? null;
             }
 
             if (foundTeam) {
