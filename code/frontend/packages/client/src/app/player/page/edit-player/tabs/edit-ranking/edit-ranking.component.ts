@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
 import { Player, PlayerService, RankingPlace, SystemService } from 'app/_shared';
-import { combineLatest, debounceTime, of, take } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { combineLatest, debounceTime, of } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-ranking',
@@ -13,6 +13,8 @@ import { map, mergeMap, tap } from 'rxjs/operators';
 })
 export class EditRankingComponent implements OnInit {
   rankingForm!: FormGroup;
+
+  allPlaces?: RankingPlace[][];
 
   @Input()
   player!: Player;
@@ -25,67 +27,76 @@ export class EditRankingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.systemService
-      .getPrimarySystem()
-      .pipe(
-        mergeMap((system) =>
-          combineLatest([
-            of(system),
-            this.appollo
-              .query<{ player: { lastRanking: Partial<RankingPlace> } }>({
-                query: gql`
-                  query LastRanking($playerId: ID!, $system: String) {
-                    player(id: $playerId) {
-                      id
-                      lastRanking(system: $system) {
-                        id
-                        single
-                        mix
-                        double
-                      }
-                    }
+    const getRanings$ = this.systemService.getPrimarySystem().pipe(
+      mergeMap((system) =>
+        combineLatest([
+          of(system),
+          this.appollo.query<{ player: Partial<Player> }>({
+            query: gql`
+              query LastRanking($playerId: ID!, $system: String) {
+                player(id: $playerId) {
+                  id
+                  lastRanking(system: $system) {
+                    id
+                    single
+                    mix
+                    double
                   }
-                `,
-                variables: {
-                  playerId: this.player.id,
-                  system: system!.id,
-                },
-              })
-              .pipe(map((r) => new RankingPlace(r?.data?.player?.lastRanking))),
-          ])
-        )
-      )
-      .subscribe(([system, lastPlace]) => {
-        const singleControl = new FormControl(lastPlace?.single ?? system?.amountOfLevels ?? 0, [Validators.required]);
-        const doubleControl = new FormControl(lastPlace?.double ?? system?.amountOfLevels ?? 0, [Validators.required]);
-        const mixControl = new FormControl(lastPlace?.mix ?? system?.amountOfLevels ?? 0, [Validators.required]);
+                }
+              }
+            `,
+            variables: {
+              playerId: this.player.id,
+              system: system!.id,
+            },
+          }),
+        ])
+      ),
+      map(([system, rankings]) => {
+        return {
+          system,
+          player: new Player(rankings?.data?.player),
+        };
+      })
+    );
 
-        this.rankingForm = new FormGroup({
-          single: singleControl,
-          double: doubleControl,
-          mix: mixControl,
-        });
+    getRanings$.subscribe(({ system, player }) => {
+      const singleControl = new FormControl(player?.lastRanking?.single ?? system?.amountOfLevels ?? 0, [
+        Validators.required,
+      ]);
+      const doubleControl = new FormControl(player?.lastRanking?.double ?? system?.amountOfLevels ?? 0, [
+        Validators.required,
+      ]);
+      const mixControl = new FormControl(player?.lastRanking?.mix ?? system?.amountOfLevels ?? 0, [
+        Validators.required,
+      ]);
 
-        this.rankingForm.valueChanges.pipe(debounceTime(600)).subscribe((value) => {
-          if (this.rankingForm.valid) {
-            this.playerService
-              .updatePlayerRanking(
-                {
-                  id: lastPlace?.id,
-                  single: +value.single,
-                  double: +value.double,
-                  mix: +value.mix,
-                },
-                this.player.id!
-              )
-              .subscribe(() => {
-                this._snackBar.open('Saved', undefined, {
-                  duration: 1000,
-                  panelClass: 'success',
-                });
-              });
-          }
-        });
+      this.rankingForm = new FormGroup({
+        single: singleControl,
+        double: doubleControl,
+        mix: mixControl,
       });
+
+      this.rankingForm.valueChanges.pipe(debounceTime(600)).subscribe((value) => {
+        if (this.rankingForm.valid) {
+          this.playerService
+            .updatePlayerRanking(
+              {
+                id: player?.lastRanking?.id,
+                single: +value.single,
+                double: +value.double,
+                mix: +value.mix,
+              },
+              this.player.id!
+            )
+            .subscribe(() => {
+              this._snackBar.open('Saved', undefined, {
+                duration: 1000,
+                panelClass: 'success',
+              });
+            });
+        }
+      });
+    });
   }
 }
