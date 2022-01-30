@@ -8,8 +8,18 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CompetitionSubEvent, Entry, EventService, LevelType, Player, TeamService } from 'app/_shared';
-import { combineLatest, distinctUntilChanged, filter, lastValueFrom, map, pairwise, startWith, tap } from 'rxjs';
+import { CompetitionSubEvent, Entry, EventService, LevelType, Player, SystemService, TeamService } from 'app/_shared';
+import {
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  lastValueFrom,
+  map,
+  pairwise,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-assembly',
@@ -83,7 +93,7 @@ export class AssemblyComponent implements OnInit {
   errors = {} as { [key: string]: string };
   totalPlayers = 0;
 
-  constructor(private teamService: TeamService) {}
+  constructor(private teamService: TeamService, private systemService: SystemService) {}
 
   ngOnInit() {
     this.formGroup.addControl('single1', new FormControl());
@@ -153,7 +163,15 @@ export class AssemblyComponent implements OnInit {
     const teamId = this.formGroup.get('team')?.value;
 
     const teams =
-      (await lastValueFrom(this.teamService.getTeamsAndPlayers(this.club, this.mayRankingDate, this.subEvents))) ?? [];
+      (await lastValueFrom(
+        this.systemService
+          .getPrimarySystem()
+          .pipe(
+            switchMap((system) =>
+              this.teamService.getTeamsAndPlayers(this.club, this.mayRankingDate, system!.id!, this.subEvents)
+            )
+          )
+      )) ?? [];
     const team = teams?.find((r) => r.id === teamId);
     this.teamNumber = team?.teamNumber;
     this.type = team?.type;
@@ -605,8 +623,6 @@ export class AssemblyComponent implements OnInit {
           .sort((a, b) => a - b)
           .slice(0, 2),
       ];
-
-
 
       let missingIndex = 0;
       if (bestPlayers.length < 4) {

@@ -144,7 +144,7 @@ export class TeamService {
       .pipe(map((x: any) => x.data?.teams?.map((t: Partial<Team>) => new Team(t))));
   }
 
-  getTeamsAndPlayers(clubId: string, mayDate: Date, subEventIds: string[]): Observable<Team[]> {
+  getTeamsAndPlayers(clubId: string, mayDate: Date, systemId: string, subEventIds: string[]): Observable<Team[]> {
     return this.apollo
       .query<{
         club: {
@@ -154,7 +154,11 @@ export class TeamService {
         query: teamAssemblyInfo,
         variables: {
           clubId,
-          ranking: mayDate,
+          rankingWhere: {
+            rankingDate: mayDate,
+            SystemId: systemId,
+          },
+
           entryWhere: {
             subEventId: { $in: subEventIds },
           },
