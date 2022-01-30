@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, sequelize) => {
+  up: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         const [systems] = await queryInterface.sequelize.query(
