@@ -1,3 +1,12 @@
+# [4.23.0](https://github.com/Badminton-Apps/badman/compare/v4.22.2...v4.23.0) (2022-01-30)
+
+
+### Features
+
+* Use primary system for assembly ([27ff6dd](https://github.com/Badminton-Apps/badman/commit/27ff6dd829f04437056c1199d24127d4a1232a2d))
+
+
+
 ## [4.22.2](https://github.com/Badminton-Apps/badman/compare/v4.22.1...v4.22.2) (2022-01-30)
 
 
