@@ -208,7 +208,7 @@ export class DataBaseHandler {
             rankingDate: `${year}-05-15`,
           },
         });
-        player.lastRankingPlaces = [rankingPlaceMay.asLastRankingPlace()];
+        player.lastRankingPlaces = [rankingPlaceMay.asLastRankingPlace() as LastRankingPlace];
         teamPlayers.push(player);
 
         playerMeta.push({
@@ -271,7 +271,7 @@ export class DataBaseHandler {
   }
 
   async createSystem(vaues: RankingSystem, options: CreateOptions) {
-    return RankingSystem.create(vaues, options);
+    return RankingSystem.create(vaues.toJSON(), options);
   }
 
   async addRankingPlaces(rankings: RankingPlace[]) {
