@@ -3,21 +3,18 @@
   <mat-dialog-content fxLayout="column" fxLayoutGap="10px">
     <form [formGroup]="this.rankingPlaceForm" fxLayout="column" fxLayoutGap="10px">
       <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign="start center">
-        <mat-form-field class="dense" appearance="outline" fxFlex>
+        <mat-form-field class="dense" appearance="outline">
           <mat-label>{{ 'input.date' | translate }}</mat-label>
           <input matInput [matDatepicker]="rankingDate" formControlName="rankingDate" />
           <mat-datepicker-toggle matSuffix [for]="rankingDate"></mat-datepicker-toggle>
           <mat-datepicker [dateClass]="this.dateClass" #rankingDate></mat-datepicker>
         </mat-form-field>
 
-        <div fxFlex>
-          <button mat-button (click)="this.mayRanking($event)">May ranking</button>
-        </div>
-        <div fxFlex></div>
+        <button mat-stroked-button (click)="this.mayRanking($event)">{{ 'ranking.may-ranking' | translate }}</button>
       </div>
 
       <div>
-        <mat-slide-toggle formControlName="updatePossible">{{ 'input.update-possible' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle formControlName="updatePossible">{{ 'ranking.update-happend' | translate }}</mat-slide-toggle>
       </div>
 
       <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column">
