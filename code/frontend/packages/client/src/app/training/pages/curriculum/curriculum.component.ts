@@ -57,7 +57,7 @@ export class CurriculumComponent implements OnInit {
     ])
       .pipe(filter(([gameType, offenseType, place, action]) => !!gameType && !!offenseType && !!place && !!action))
       .subscribe(([gameType, offenseType, place, action]) => {
-        this.suggestions = ['Pluim hoger pakke', 'raket hoog', '...'];
+        this.suggestions = ['...'];
       }
     );
 
