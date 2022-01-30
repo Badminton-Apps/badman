@@ -143,7 +143,6 @@ export class RankingPlace extends Model {
   // #region Hooks
 
   @AfterUpdate
-  @AfterBulkUpdate
   static async updateLatestRankingsUpdates(
     instances: RankingPlace[] | RankingPlace,
     options: UpdateOptions
@@ -168,7 +167,6 @@ export class RankingPlace extends Model {
   }
 
   @AfterDestroy
-  @AfterBulkDestroy
   static async updateLatestRankingsDestroy(
     instances: RankingPlace[] | RankingPlace,
     options: DestroyOptions
