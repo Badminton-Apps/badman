@@ -1,3 +1,7 @@
+## [4.23.1](https://github.com/Badminton-Apps/badman/compare/v4.23.0...v4.23.1) (2022-02-03)
+
+
+
 # [4.23.0](https://github.com/Badminton-Apps/badman/compare/v4.22.2...v4.23.0) (2022-01-30)
 
 
