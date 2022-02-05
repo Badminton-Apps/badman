@@ -9,6 +9,7 @@ import {
   filter,
   Observable,
   shareReplay,
+  startWith,
 } from 'rxjs';
 
 @Injectable({
@@ -21,6 +22,7 @@ export class PermissionService {
   constructor(private authService: AuthService, private httpClient: HttpClient) {
     this.userPermissions$ = combineLatest([this.authService.user$, this.update$]).pipe(
       filter(([profile]) => profile != null),
+      startWith(false),
       exhaustMap((_) => this.httpClient.get<string[]>(`${environment.api}/${environment.apiVersion}/user/permissions`)),
       shareReplay(1)
     );

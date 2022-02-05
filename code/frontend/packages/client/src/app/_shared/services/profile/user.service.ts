@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { iif, Observable, of } from 'rxjs';
-import { filter, mergeMap, shareReplay, startWith, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, mergeMap, shareReplay, startWith, tap } from 'rxjs/operators';
 import { RequestLink, Player } from '../../../_shared/models';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '@auth0/auth0-angular';
@@ -33,6 +33,7 @@ export class UserService {
         });
       }),
       mergeMap((x) => iif(() => x != null && x != undefined, whenAuthenticated, of(null))),
+      distinctUntilChanged(),
       shareReplay()
     );
   }
