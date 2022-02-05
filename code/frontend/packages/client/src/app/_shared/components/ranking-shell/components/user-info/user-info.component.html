@@ -1,5 +1,5 @@
 <ng-container *ngIf="(auth.isAuthenticated$ | async) === false">
-  <button mat-button color="primary" (click)="this.auth.loginWithRedirect()">Log In</button>
+  <button mat-button color="primary" (click)="this.login()">Log In</button>
 </ng-container>
 
 <ng-container *ngIf="auth.user$ | async as authUser">
