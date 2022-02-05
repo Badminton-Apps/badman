@@ -1,5 +1,5 @@
 import moment, { Moment } from 'moment';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { logger, splitInChunks } from '../../utils';
 import {
   Game,
@@ -118,16 +118,23 @@ export class LfbbRankingCalc extends RankingCalc {
     start: Date,
     end: Date,
     updateRankings: boolean,
-    historicalGames: boolean
+    options?: {
+      hasHistoricalGames?: boolean;
+      transaction?: Transaction;
+    }
   ) {
-    super.calculatePeriodAsync(start, end, updateRankings, historicalGames);
+    options = {
+      ...options,
+      hasHistoricalGames: options?.hasHistoricalGames ?? false,
+    }
+    super.calculatePeriodAsync(start, end, updateRankings, options);
     const originalEnd = new Date(end);
     const originalStart = new Date(start);
     let gamesStartDate = this.rankingType.caluclationIntervalLastUpdate;
 
     // If running from start, we are reimporting evertyhing,
     // so the game points need to be caculated for those previous period
-    if (historicalGames) {
+    if (options?.hasHistoricalGames) {
       logger.silly('Modifying gamesstart date for historical games');
       gamesStartDate = moment(end)
         .subtract(this.rankingType.period.amount, this.rankingType.period.unit)

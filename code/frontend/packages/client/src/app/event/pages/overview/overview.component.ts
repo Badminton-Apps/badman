@@ -33,7 +33,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
   resultsLength$ = new BehaviorSubject(0);
   pageIndex$ = new BehaviorSubject(0);
-  pageSize$ = new BehaviorSubject(10);
+  pageSize$ = new BehaviorSubject(25);
 
   onPaginateChange = new EventEmitter<PageEvent>();
 
