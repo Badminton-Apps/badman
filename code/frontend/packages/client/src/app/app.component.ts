@@ -6,8 +6,8 @@ import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '@auth0/auth0-angular';
 import { environment } from 'environments/environment';
+import { AuthGuard } from './_shared';
 
 @Component({
   selector: 'app-root',
@@ -25,8 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
     snackBar: MatSnackBar,
     private ccService: NgcCookieConsentService,
     private cookieService: CookieService,
-    private auth: AuthService,
-    private httpClient: HttpClient
+    public authGuard: AuthGuard
   ) {
     updates.versionUpdates
       .pipe(
