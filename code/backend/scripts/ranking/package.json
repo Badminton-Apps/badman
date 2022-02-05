@@ -1,0 +1,32 @@
+{
+  "name": "@badvlascript/ranking",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "ranking": "node  --max-old-space-size=16384 -r ts-node/register ./src/rankingForSystem.ts"
+  },
+  "dependencies": {
+    "@badvlasim/shared": "^4.5.1",
+    "@fast-csv/parse": "^4.3.1",
+    "@types/concat-stream": "^1.6.0",
+    "@types/nodemailer": "^6.4.1",
+    "@types/nodemailer-direct-transport": "^1.0.31",
+    "@types/nodemailer-smtp-transport": "^2.7.4",
+    "concat-stream": "^2.0.0",
+    "fast-csv": "^4.3.1",
+    "fast-xml-parser": "^3.16.0",
+    "http-proxy-middleware": "^1.0.6",
+    "nodemailer": "^6.5.0",
+    "nodemailer-express-handlebars": "^4.0.0",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "promise-callbacks": "^3.8.2",
+    "node-adodb": "^5.0.3",
+    "csv-write-stream": "^2.0.0"
+  },
+  "peerDependencies": {
+    "dotenv": "^8.2.0",
+    "moment": "^2.24.0"
+  }
+}

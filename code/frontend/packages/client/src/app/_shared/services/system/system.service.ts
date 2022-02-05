@@ -27,7 +27,7 @@ export class SystemService {
   constructor(private httpClient: HttpClient, private apollo: Apollo) {}
 
   makePrimary(systemId: string) {
-    return this.httpClient.post(`${this.urlBase}/${systemId}/make-primary`, true);
+    return this.httpClient.post(`${this.urlBase}/${systemId}/make-primary`, {primary: true});
   }
 
   deleteSystem(systemId: string) {

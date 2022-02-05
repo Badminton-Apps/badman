@@ -17,7 +17,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin,
+  HasManySetAssociationsMixin
 } from 'sequelize';
 import {
   BelongsToMany,
@@ -29,7 +29,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique,
+  Unique
 } from 'sequelize-typescript';
 import { LastRankingPlace, RankingPlace } from '.';
 import { RankingSystems, RankingTiming, StartingType } from '../../enums/';
@@ -185,7 +185,7 @@ export class RankingSystem extends Model {
 
   // Belongs to many Group
   getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
-  setGroup!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;
+  setGroups!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;
   addGroups!: BelongsToManyAddAssociationsMixin<RankingSystemGroup, string>;
   addGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
   removeGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
@@ -292,4 +292,7 @@ export class RankingSystem extends Model {
   private _originalCaps() {
     throw new Error('Not implementd');
   }
+
+ 
+  
 }

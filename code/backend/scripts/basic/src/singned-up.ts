@@ -2,18 +2,14 @@ import {
   Club,
   DataBaseHandler,
   EventCompetition,
-  SubEventCompetition,
-  SubEventType,
-  Team,
   logger,
-  MailService,
+  Player,
   Role,
-  Player
+  SubEventCompetition,
+  Team,
 } from '@badvlasim/shared';
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 import got from 'got';
-import { Length } from 'sequelize-typescript';
-import { clubsQuery } from '../../../packages/server/src/graphql';
 
 export interface Identity {
   user_id: string;
@@ -42,7 +38,6 @@ const YEAR = 2021;
   try {
     const databaseService = new DataBaseHandler(dbConfig.default);
 
-
     let length = -1;
     let page = 0;
 
@@ -54,15 +49,15 @@ const YEAR = 2021;
         `${process.env.AUTH0_ISSUER}/api/v2/users`,
         {
           responseType: 'json',
-          searchParams:{
+          searchParams: {
             page: page++,
             include_totals: true,
-            per_page: 50
+            per_page: 50,
           },
           headers: {
             // generate token on: https://manage.auth0.com/dashboard/eu/badvlasim/apis/5e804e697a2d8c08d310fb08/explorer
-            Authorization: `Bearer ${process.env.AUTH0_JWT}`
-          }
+            Authorization: `Bearer ${process.env.AUTH0_JWT}`,
+          },
         }
       );
 
@@ -83,7 +78,7 @@ const YEAR = 2021;
           attributes: ['id'],
           model: Team,
           where: {
-            active: true
+            active: true,
           },
           include: [
             {
@@ -95,16 +90,16 @@ const YEAR = 2021;
                   required: true,
                   model: EventCompetition,
                   where: {
-                    startYear: YEAR
+                    startYear: YEAR,
                   },
-                  attributes: []
-                }
-              ]
-            }
-          ]
+                  attributes: [],
+                },
+              ],
+            },
+          ],
         },
-        { model: Role, include: [{ model: Player }] }
-      ]
+        { model: Role, include: [{ model: Player }] },
+      ],
     });
 
     for (const club of dbClubs) {
@@ -115,7 +110,7 @@ const YEAR = 2021;
 
       let adminRole = club.roles[0];
       if (club.roles.length > 1) {
-        adminRole = club.roles.find(r => r.name === 'Admin') ?? adminRole;
+        adminRole = club.roles.find((r) => r.name === 'Admin') ?? adminRole;
       }
 
       if (adminRole === null) {
@@ -124,17 +119,17 @@ const YEAR = 2021;
       }
 
       const mails = adminRole.players
-        .map(r => users.get(r.sub))
-        .filter(r => !!r);
+        .map((r) => users.get(r.sub))
+        .filter((r) => !!r);
 
       if (mails.length === 0) {
         logger.warn(
           `Cant send mail to ${club.name}`,
-          adminRole.players.map(r => r.toJSON())
+          adminRole.players.map((r) => r.toJSON())
         );
       }
 
-      logger.info(`Sending mail for club ${club.name}`, mails)
+      logger.info(`Sending mail for club ${club.name}`, mails);
     }
 
     logger.info('Finished clubs', dbClubs.length);

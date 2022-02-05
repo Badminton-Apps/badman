@@ -185,7 +185,7 @@ export class RankingPlace extends Model {
         limit: 1,
         order: [['rankingDate', 'DESC']],
       });
-      currentInstances.push(lastRanking)
+      currentInstances.push(lastRanking);
     }
 
     await this.updateLatestRankings(currentInstances, options, 'destroy');
@@ -224,12 +224,15 @@ export class RankingPlace extends Model {
     });
 
     // Filter out if the last ranking is not newer than the current one
-    const updateInstances = lastRankingPlaces.filter(
-      (l) =>
-        current.findIndex(
-          (c) => c.playerId === l.playerId && c.systemId === l.systemId
-        ) > -1
-    );
+    const updateInstances =
+      type == 'create'
+        ? lastRankingPlaces
+        : lastRankingPlaces.filter(
+            (l) =>
+              current.findIndex(
+                (c) => c.playerId === l.playerId && c.systemId === l.systemId
+              ) > -1
+          );
 
     // Update the last ranking place
     await LastRankingPlace.bulkCreate(updateInstances, {

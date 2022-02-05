@@ -1,6 +1,6 @@
 import moment, { Moment } from 'moment';
-import { Op } from 'sequelize';
-import { logger, splitInChunks } from '../../utils';
+import { Op, Transaction } from 'sequelize';
+import { logger } from '../../utils';
 import { GameType } from '../enums';
 import {
   Game,
@@ -68,16 +68,23 @@ export class BvlRankingCalc extends RankingCalc {
     start: Date,
     end: Date,
     updateRankings: boolean,
-    historicalGames: boolean
+    options?: {
+      hasHistoricalGames?: boolean;
+      transaction?: Transaction;
+    }
   ) {
-    super.calculatePeriodAsync(start, end, updateRankings, historicalGames);
+    options = {
+      ...options,
+      hasHistoricalGames: options?.hasHistoricalGames ?? false,
+    };
+    super.calculatePeriodAsync(start, end, updateRankings, options);
     const originalEnd = new Date(end);
     const originalStart = new Date(start);
     let gamesStartDate = this.rankingType.caluclationIntervalLastUpdate;
 
     // If running from start, we are reimporting evertyhing,
     // so the game points need to be caculated for those previous period
-    if (historicalGames) {
+    if (options?.hasHistoricalGames) {
       logger.silly('Modifying gamesstart date for historical games');
       gamesStartDate = moment(end)
         .subtract(this.rankingType.period.amount, this.rankingType.period.unit)
@@ -102,25 +109,40 @@ export class BvlRankingCalc extends RankingCalc {
     }
 
     for (const range of dateRanges) {
+      logger.debug(`Calculating ${range.start} - ${range.end}`);
       // Get all relevant games and players
-      const playersRange = await this.getPlayersAsync(range.start, range.end);
-      const gamesRange = await this.getGamesAsync(range.start, range.end);
+      const playersRange = await this.getPlayersAsync(
+        range.start,
+        range.end,
+        options?.transaction
+      );
+      const gamesRange = await this.getGamesAsync(
+        range.start,
+        range.end,
+        options?.transaction
+      );
 
       // Calculate new points
       await this.calculateRankingPointsPerGameAsync(
         gamesRange,
         playersRange,
-        range.end
+        range.end,
+        options.transaction
       );
     }
 
     // Calculate places for new period
-    const players = await this.getPlayersAsync(originalStart, originalEnd);
+    const players = await this.getPlayersAsync(
+      originalStart,
+      originalEnd,
+      options.transaction
+    );
     await this._calculateRankingPlacesAsync(
       originalStart,
       originalEnd,
       players,
-      updateRankings
+      updateRankings,
+      options.transaction
     );
   }
 
@@ -129,7 +151,8 @@ export class BvlRankingCalc extends RankingCalc {
     startDate: Date,
     endDate: Date,
     players: Map<string, Player>,
-    updateRankings: boolean
+    updateRankings: boolean,
+    transaction?: Transaction
   ) {
     const eligbleForRanking: Map<string, RankingPoint[]> = new Map();
     logger.info(
@@ -156,6 +179,7 @@ export class BvlRankingCalc extends RankingCalc {
             required: true,
           },
         ],
+        transaction,
       })
     ).map((x: RankingPoint) => {
       const points = eligbleForRanking.get(x.playerId) || [];
@@ -176,14 +200,19 @@ export class BvlRankingCalc extends RankingCalc {
 
     if (canBeInactive) {
       logger.silly('Checking inactive');
-      gameCount = await this.countGames(players, endDate, this.rankingType);
+      gameCount = await this.countGames(
+        players,
+        endDate,
+        this.rankingType,
+        transaction
+      );
     }
 
     for (const [, player] of players) {
       const rankingPoints = eligbleForRanking.get(player.id) || [];
       const inactive = { single: false, double: false, mix: false };
 
-      if (canBeInactive) {
+      if (canBeInactive && gameCount) {
         const playerGameCount = gameCount.get(player.id) || {
           single: 0,
           double: 0,
@@ -323,13 +352,11 @@ export class BvlRankingCalc extends RankingCalc {
         );
     });
 
-    const chunks = splitInChunks([...placesMen, ...placesWomen], 500);
-    for (const chunk of chunks) {
-      await RankingPlace.bulkCreate(chunk, {
-        ignoreDuplicates: true,
-        returning: false,
-      });
-    }
+    await RankingPlace.bulkCreate([...placesMen, ...placesWomen], {
+      ignoreDuplicates: true,
+      returning: false,
+      transaction,
+    });
   }
 
   getStartRanking(currentPlace: number, startPlaces: number[]): number {
@@ -356,75 +383,71 @@ export class BvlRankingCalc extends RankingCalc {
   async countGames(
     players: Map<string, Player>,
     endDate: Date,
-    rankingType: RankingSystem
+    rankingType: RankingSystem,
+    transaction?: Transaction
   ) {
-    const chunks = splitInChunks(Array.from(players.keys()), 3500);
-    let lastWeeks = [];
+    const startDate = moment(endDate)
+      .subtract(rankingType.inactivityAmount, rankingType.inactivityUnit)
+      .toDate();
 
-    const getCount = (chunk) => {
-      return RankingPoint.count({
-        where: {
-          SystemId: rankingType.id,
-          playerId: chunk,
+    const counts = await RankingPoint.count({
+      where: {
+        SystemId: rankingType.id,
+        playerId: {
+          [Op.in]: Array.from(players.keys()),
         },
-        include: [
-          {
-            model: Game,
-            attributes: ['gameType'],
-            where: {
-              playedAt: {
-                [Op.and]: [
-                  {
-                    [Op.gt]: moment(endDate)
-                      .subtract(
-                        rankingType.inactivityAmount,
-                        rankingType.inactivityUnit
-                      )
-                      .toDate(),
-                  },
-                  { [Op.lte]: endDate },
-                ],
-              },
+      },
+      include: [
+        {
+          model: Game,
+          attributes: ['gameType'],
+          where: {
+            playedAt: {
+              [Op.and]: [
+                {
+                  [Op.gt]: startDate,
+                },
+                { [Op.lte]: endDate },
+              ],
             },
-            required: true,
           },
-        ],
-        group: ['RankingPoint.playerId', 'game.gameType'],
-      });
-    };
-
-    for (const chunk of chunks) {
-      lastWeeks = lastWeeks.concat(await getCount(chunk));
-    }
+          required: true,
+        },
+      ],
+      group: ['RankingPoint.playerId', 'game.gameType'],
+      transaction,
+    });
 
     const results = new Map<
-      number,
+      string,
       {
         single: number;
         double: number;
         mix: number;
       }
     >();
-    lastWeeks.forEach((result) => {
-      const player = results.get(result.playerId) || {
-        single: 0,
-        double: 0,
-        mix: 0,
-      };
-      switch (result.gameType) {
-        case GameType.S:
-          player.single = parseInt(result.count, 10);
-          break;
-        case GameType.MX:
-          player.mix = parseInt(result.count, 10);
-          break;
-        case GameType.D:
-          player.double = parseInt(result.count, 10);
-          break;
-      }
+    counts.forEach(
+      (result: { count: number; gameType: GameType; playerId: string }) => {
+        const player = results.get(result.playerId) || {
+          single: 0,
+          double: 0,
+          mix: 0,
+        };
+        switch (result.gameType) {
+          case GameType.S:
+            player.single = result.count;
+            break;
+          case GameType.MX:
+            player.mix = result.count;
+            break;
+          case GameType.D:
+            player.double = result.count;
+            break;
+        }
 
-      results.set(result.playerId, player);
-    });
+        results.set(result.playerId, player);
+      }
+    );
 
     return results;
   }

@@ -1,7 +1,6 @@
 import {
   ApiError,
   AuthenticatedRequest,
-  BvlRankingCalc,
   canExecute,
   DataBaseHandler,
   DrawCompetition,
@@ -9,15 +8,12 @@ import {
   EncounterCompetition,
   Game,
   GamePlayer,
-  LfbbRankingCalc,
+  getSystemCalc,
   logger,
-  OriginalRankingCalc,
   Player,
   RankingPlace,
   RankingPoint,
-  RankingSystem,
   RankingSystemGroup,
-  RankingSystems,
   StartVisualRankingDate
 } from '@badvlasim/shared';
 import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
@@ -216,7 +212,7 @@ export const removeSubEventToRankingSystemGroupMutation = {
   }
 };
 
-const addGamePointsForSubEvents = async (
+export const addGamePointsForSubEvents = async (
   group: RankingSystemGroup,
   subEvents: string[],
   transaction: Transaction
@@ -319,7 +315,12 @@ const addGamePointsForSubEvents = async (
 
     logger.debug(`Adding points for ${games.length} games in system ${system.name}(${system.id})`);
 
-    await getSystem(system).calculateRankingPointsPerGameAsync(games, hash, null, transaction);
+    await getSystemCalc(system).calculateRankingPointsPerGameAsync(
+      games,
+      hash,
+      null,
+      transaction
+    );
   }
 };
 
@@ -367,17 +368,5 @@ const removeGamePointsForSubEvents = async (
     });
 
     logger.debug(`Removed points for ${games.length} games in system ${system.name}(${system.id})`);
-  }
-};
-
-const getSystem = (rankingSystem: RankingSystem) => {
-  switch (rankingSystem.rankingSystem) {
-    case RankingSystems.LFBB:
-    case RankingSystems.VISUAL:
-      return new LfbbRankingCalc(rankingSystem, false);
-    case RankingSystems.BVL:
-      return new BvlRankingCalc(rankingSystem, false);
-    case RankingSystems.ORIGINAL:
-      return new OriginalRankingCalc(rankingSystem, false);
   }
 };
