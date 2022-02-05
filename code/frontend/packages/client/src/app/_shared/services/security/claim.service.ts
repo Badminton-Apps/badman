@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Claim } from 'app/_shared';
-import { map, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 
 import * as globalClaimsQuery from '../../graphql/security/queries/GetGlobalClaims.graphql';
 import * as globalUserClaimsQuery from '../../graphql/security/queries/GetGlobalUserClaims.graphql';
@@ -27,13 +27,15 @@ export class ClaimService {
     return this.permissionService.userPermissions$.pipe(
       map((userClaims) => {
         return claims.reduce((acc: boolean, claim) => acc && this.includes(userClaims, claim), true);
-      })
+      }),
+      distinctUntilChanged()
     );
   }
 
   hasAnyClaims$(claims: string[]): Observable<boolean> {
     return this.permissionService.userPermissions$.pipe(
       map((userClaims) => claims.reduce((acc: boolean, claim) => acc || this.includes(userClaims, claim), false)),
+      distinctUntilChanged()
     );
   }
 

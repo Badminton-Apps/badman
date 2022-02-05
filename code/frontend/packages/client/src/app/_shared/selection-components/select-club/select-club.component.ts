@@ -6,7 +6,7 @@ import { ClubService, UserService } from 'app/_shared/services';
 import { ClaimService } from 'app/_shared/services/security/claim.service';
 import { PermissionService } from 'app/_shared/services/security/permission.service';
 import { combineLatest, concat, lastValueFrom, of } from 'rxjs';
-import { filter, map, startWith, switchMap, take, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap, take, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-club',
@@ -28,7 +28,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   allClubPermission!: string;
 
   @Input()
-  needsPermission: boolean = true;
+  needsPermission: boolean = false;
 
   @Input()
   updateUrl: boolean = false;
@@ -54,8 +54,9 @@ export class SelectClubComponent implements OnInit, OnDestroy {
         combineLatest([
           this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
           this.claimSerice.hasAllClaims$([`${this.allClubPermission}`]),
-          this.user.profile$.pipe(filter((p) => !!p?.player)),
+          this.user.profile$,
         ]).pipe(
+          
           switchMap(([single, all]) => {
             if (all) {
               return this.clubService.getClubs({ first: 999 });
