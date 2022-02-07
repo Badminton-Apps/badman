@@ -68,7 +68,7 @@ export class DataBaseHandler {
               logger.warn(message);
             }
           },
-        }, 
+        },
         models,
       } as SequelizeOptions);
 
@@ -195,7 +195,7 @@ export class DataBaseHandler {
         logger.warn('Multiple events?');
       }
 
-      const membership = (await team.getEventEntrys())[0];
+      const membership = (await team.getEventEntrys())?.at(0);
 
       const playerMeta = [];
       const teamPlayers = [];
@@ -208,7 +208,9 @@ export class DataBaseHandler {
             rankingDate: `${year}-05-15`,
           },
         });
-        player.lastRankingPlaces = [rankingPlaceMay.asLastRankingPlace() as LastRankingPlace];
+        player.lastRankingPlaces = [
+          rankingPlaceMay.asLastRankingPlace() as LastRankingPlace,
+        ];
         teamPlayers.push(player);
 
         playerMeta.push({
