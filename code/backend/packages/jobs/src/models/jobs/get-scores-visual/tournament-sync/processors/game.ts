@@ -91,12 +91,12 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           linkType: 'tournament',
           status: gameStatus,
           playedAt,
-          set1Team1: xmlMatch?.Sets?.Set?.at(0)?.Team1,
-          set1Team2: xmlMatch?.Sets?.Set?.at(0)?.Team2,
-          set2Team1: xmlMatch?.Sets?.Set?.at(1)?.Team1,
-          set2Team2: xmlMatch?.Sets?.Set?.at(1)?.Team2,
-          set3Team1: xmlMatch?.Sets?.Set?.at(2)?.Team1,
-          set3Team2: xmlMatch?.Sets?.Set?.at(2)?.Team2
+          set1Team1: xmlMatch?.Sets?.Set[0]?.Team1,
+          set1Team2: xmlMatch?.Sets?.Set[0]?.Team2,
+          set2Team1: xmlMatch?.Sets?.Set[1]?.Team1,
+          set2Team2: xmlMatch?.Sets?.Set[1]?.Team2,
+          set3Team1: xmlMatch?.Sets?.Set[2]?.Team1,
+          set3Team2: xmlMatch?.Sets?.Set[2]?.Team2
         });
 
         await game.save({ transaction: this.transaction });
@@ -121,28 +121,28 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           game.winner = xmlMatch.Winner;
         }
 
-        if (game.set1Team1 != xmlMatch?.Sets?.Set?.at(0)?.Team1) {
-          game.set1Team1 = xmlMatch?.Sets?.Set?.at(0)?.Team1;
+        if (game.set1Team1 != xmlMatch?.Sets?.Set[0]?.Team1) {
+          game.set1Team1 = xmlMatch?.Sets?.Set[0]?.Team1;
         }
 
-        if (game.set1Team2 != xmlMatch?.Sets?.Set?.at(0)?.Team2) {
-          game.set1Team2 = xmlMatch?.Sets?.Set?.at(0)?.Team2;
+        if (game.set1Team2 != xmlMatch?.Sets?.Set[0]?.Team2) {
+          game.set1Team2 = xmlMatch?.Sets?.Set[0]?.Team2;
         }
 
-        if (game.set2Team1 != xmlMatch?.Sets?.Set?.at(1)?.Team1) {
-          game.set2Team1 = xmlMatch?.Sets?.Set?.at(1)?.Team1;
+        if (game.set2Team1 != xmlMatch?.Sets?.Set[1]?.Team1) {
+          game.set2Team1 = xmlMatch?.Sets?.Set[1]?.Team1;
         }
 
-        if (game.set2Team2 != xmlMatch?.Sets?.Set?.at(1)?.Team2) {
-          game.set2Team2 = xmlMatch?.Sets?.Set?.at(1)?.Team2;
+        if (game.set2Team2 != xmlMatch?.Sets?.Set[1]?.Team2) {
+          game.set2Team2 = xmlMatch?.Sets?.Set[1]?.Team2;
         }
 
-        if (game.set3Team1 != xmlMatch?.Sets?.Set?.at(2)?.Team1) {
-          game.set3Team1 = xmlMatch?.Sets?.Set?.at(2)?.Team1;
+        if (game.set3Team1 != xmlMatch?.Sets?.Set[2]?.Team1) {
+          game.set3Team1 = xmlMatch?.Sets?.Set[2]?.Team1;
         }
 
-        if (game.set3Team2 != xmlMatch?.Sets?.Set?.at(2)?.Team2) {
-          game.set3Team2 = xmlMatch?.Sets?.Set?.at(2)?.Team2;
+        if (game.set3Team2 != xmlMatch?.Sets?.Set[2]?.Team2) {
+          game.set3Team2 = xmlMatch?.Sets?.Set[2]?.Team2;
         }
 
         if (game.status !== gameStatus) {

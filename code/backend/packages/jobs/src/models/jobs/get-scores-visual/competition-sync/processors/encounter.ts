@@ -64,7 +64,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       let dbEncounter = null;
 
       if (dbEncounters.length === 1) {
-        dbEncounter = dbEncounters?.at(0);
+        dbEncounter = dbEncounters[0];
       } else if (dbEncounters.length > 1) {
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbEncounters;
@@ -228,7 +228,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     }
 
     const team =
-      (teams?.length ?? 0) === 0 ? await this._findTeamByRegex(teamName, clubId) : teams?.at(0);
+      (teams?.length ?? 0) === 0 ? await this._findTeamByRegex(teamName, clubId) : teams[0];
 
     if (team == null) {
       this.logger.warn(`Team ${name} not found`);
@@ -288,7 +288,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       });
 
       if (results.length === 1) {
-        return results?.at(0);
+        return results[0];
       } else if (results.length > 1) {
         // Stupid fix, but works.
         const sortedByLength = results
@@ -301,7 +301,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
           }
         });
 
-        return sortedByLength?.at(0);
+        return sortedByLength[0];
       } else {
         return null;
       }

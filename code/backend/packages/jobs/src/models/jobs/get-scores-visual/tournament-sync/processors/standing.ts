@@ -233,10 +233,10 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
 
       if (entriesDraw.length > 0) {
         if (entriesDraw.length === 1) {
-          entryDraw = entriesDraw?.at(0);
+          entryDraw = entriesDraw[0];
         } else {
           // Use first
-          entryDraw = entriesDraw?.at(0);
+          entryDraw = entriesDraw[0];
 
           // Destroy other entries
           for (const entry of entriesDraw.filter((d) => d.drawId === null).slice(1)) {
@@ -256,7 +256,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
             transaction: this.transaction
           });
         } else if (entriesSubevent.length == 1) {
-          entryDraw = entriesSubevent?.at(0);
+          entryDraw = entriesSubevent[0];
 
           entryDraw.entryType = 'tournament';
           entryDraw.drawId = draw.id;

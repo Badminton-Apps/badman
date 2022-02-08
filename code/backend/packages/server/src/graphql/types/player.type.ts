@@ -103,7 +103,7 @@ export const PlayerType = new GraphQLObjectType({
             where: { systemId },
             order: [['rankingDate', 'DESC']]
           });
-          return places?.at(0);
+          return places[0];
         }
       },
       rankingPoints: {

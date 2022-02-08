@@ -253,7 +253,7 @@ export function* nestedObjectSearch(
   ...keys: ObjectKey[]
 ): any | undefined {
   // find all the results at this search level
-  const values = preferentialKeySearch(obj, keys?.at(0), fallbackKey);
+  const values = preferentialKeySearch(obj, keys[0], fallbackKey);
 
   for (const value of values) {
     // if this is the last iteration return the values
@@ -303,16 +303,16 @@ export const nestedObjectFind = (
   ...keys: ObjectKey[]
 ): any | undefined => {
   // find all the results at this search level
-  const values = preferentialKeySearch(obj, keys?.at(0), fallbackKey);
+  const values = preferentialKeySearch(obj, keys[0], fallbackKey);
 
   if (values.length > 0) {
     // if this is the last iteration return the values
     if (keys.length === 1) {
-      return values?.at(0);
+      return values[0];
     }
     // otherwise continue to go deeper into the object
     else {
-      return nestedObjectFind(values?.at(0), fallbackKey, ...keys.slice(1));
+      return nestedObjectFind(values[0], fallbackKey, ...keys.slice(1));
     }
   }
 };
@@ -382,9 +382,9 @@ export const product = (...sets: any[][]): any[][] => {
  * safeGet(obj, "type", "name", "fail"); // undefined
  */
 export const safeGet = <T>(obj: any, ...props: ObjectKey[]): T | undefined => {
-  return props.length > 1 && obj[props?.at(0)]
-    ? safeGet(obj[props?.at(0)], ...props.slice(1))
-    : obj[props?.at(0)];
+  return props.length > 1 && obj[props[0]]
+    ? safeGet(obj[props[0]], ...props.slice(1))
+    : obj[props[0]];
 };
 
 export const splitInChunks = (array, sizeChunks = 500) => {

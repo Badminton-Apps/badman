@@ -93,7 +93,7 @@ const competitionMeta = new GraphQLObjectType({
             player: {
               type: PlayerType,
               resolve: async (...args) => {
-                return Player.findByPk(args?.at(0).id);
+                return Player.findByPk(args[0].id);
               }
             },
             id: {

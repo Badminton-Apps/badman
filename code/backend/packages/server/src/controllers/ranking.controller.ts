@@ -235,7 +235,7 @@ export class RankingController extends BaseController {
         .filter((ranking: RankingPlace) => ranking.player.memberId !== null)
         .filter(
           (ranking: RankingPlace) =>
-            ranking.player.memberId?.at(0) === '5' || ranking.player.memberId?.at(0) === '3'
+            ranking.player.memberId[0] === '5' || ranking.player.memberId[0] === '3'
         )
         .map((ranking: RankingPlace) => {
           const lines = [];
@@ -316,7 +316,7 @@ export class RankingController extends BaseController {
         .filter((ranking: RankingPlace) => ranking.player.memberId !== null)
         .filter(
           (ranking: RankingPlace) =>
-            ranking.player.memberId?.at(0) !== '5' && ranking.player.memberId?.at(0) !== '3'
+            ranking.player.memberId[0] !== '5' && ranking.player.memberId[0] !== '3'
         )
         .map((ranking: RankingPlace) => {
           const lines = [];
@@ -384,7 +384,7 @@ export class RankingController extends BaseController {
     } else {
       response.header('Content-Type', 'text/csv');
       response.header('Content-Disposition', `attachment; filename="${filename}.csv"`);
-      const stream = fs.createReadStream(`results/${files?.at(0)}.csv`);
+      const stream = fs.createReadStream(`results/${files[0]}.csv`);
       stream.pipe(response);
     }
   }

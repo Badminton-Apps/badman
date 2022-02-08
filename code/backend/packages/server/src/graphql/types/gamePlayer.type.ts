@@ -36,7 +36,7 @@ const GamePlayerType = new GraphQLObjectType({
             return findOptions;
           },
           after: (results: RankingPlace[]) => {
-            return results?.at(0);
+            return results[0];
           }
         })
       }

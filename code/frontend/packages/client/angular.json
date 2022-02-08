@@ -61,6 +61,9 @@
               "../../node_modules/cookieconsent/build/cookieconsent.min.js"
             ],
             "allowedCommonJsDependencies": [
+              "raf",
+              "html2pdf.js",
+              "opentracing",
               "core-js",
               "echarts",
               "zen-observable",

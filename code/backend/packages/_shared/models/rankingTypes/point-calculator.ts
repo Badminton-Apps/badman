@@ -125,6 +125,6 @@ export class PointCalculator {
     return player?.rankingPlaces
       ?.sort((a, b) => b.rankingDate.getTime() - a.rankingDate.getTime())
       ?.filter((place) => place.rankingDate.getTime() <= date.getTime())
-      ?.at(0);
+      [0];
   }
 }
