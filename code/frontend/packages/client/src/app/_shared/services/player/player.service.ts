@@ -35,7 +35,7 @@ export class PlayerService {
         }
       )
       .pipe(
-        map((x) => {
+        map((x) => { 
           return x?.map((r) => {
             if (r.type == 'Player') {
               r.value = new Player(r.value as Player);
