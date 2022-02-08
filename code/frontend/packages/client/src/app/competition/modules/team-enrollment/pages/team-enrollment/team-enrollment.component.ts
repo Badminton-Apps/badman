@@ -201,7 +201,7 @@ export class TeamEnrollmentComponent implements OnInit {
             includeSubEvents: true,
           })
           .pipe(
-            map((events) => ((events?.total ?? 0) > 0 ? events!.events[0].node : null)),
+            map((events) => ((events?.total ?? 0) > 0 ? events!.events?.at(0).node : null)),
             shareReplay(1)
           )
       : of(null);
@@ -220,7 +220,7 @@ export class TeamEnrollmentComponent implements OnInit {
             includeSubEvents: true,
           })
           .pipe(
-            map((events) => ((events?.total ?? 0) > 0 ? events!.events[0].node : null)),
+            map((events) => ((events?.total ?? 0) > 0 ? events!.events?.at(0).node : null)),
             shareReplay(1)
           )
       : of(null);
@@ -251,7 +251,7 @@ export class TeamEnrollmentComponent implements OnInit {
     if (prov) {
       this.commentProv =
         (prov.comments?.length ?? 0) > 0
-          ? prov!.comments![0]
+          ? prov!.comments!?.at(0)
           : new Comment({
               clubId: club?.id,
               eventId: prov.id,
@@ -266,7 +266,7 @@ export class TeamEnrollmentComponent implements OnInit {
     if (liga) {
       this.commentLiga =
         (liga.comments?.length ?? 0) > 0
-          ? liga!.comments![0]
+          ? liga!.comments!?.at(0)
           : new Comment({
               clubId: club?.id,
               eventId: liga.id,
@@ -281,7 +281,7 @@ export class TeamEnrollmentComponent implements OnInit {
     if (nat) {
       this.commentNat =
         (nat.comments?.length ?? 0) > 0
-          ? nat!.comments![0]
+          ? nat!.comments!?.at(0)
           : new Comment({
               clubId: club?.id,
               eventId: nat.id,

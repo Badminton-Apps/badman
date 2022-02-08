@@ -183,7 +183,7 @@ async function updateCsvFile(
   const system = await RankingSystem.findOne({ where: { primary: true } });
 
   for (const team of dbTeams) {
-    const subEvent = team.subEvents[0];
+    const subEvent = team.subEvents?.at(0);
     logger.debug(`running for team: ${team.name}`);
     const outputRow = {
       is_correct: true,
@@ -200,10 +200,10 @@ async function updateCsvFile(
       min_index: subEvent.minBaseIndex,
       max_index: subEvent.maxBaseIndex,
       min_level: subEvent.maxLevel,
-      player1: team.basePlayers[0]?.fullName,
-      player2: team.basePlayers[1]?.fullName,
-      player3: team.basePlayers[2]?.fullName,
-      player4: team.basePlayers[3]?.fullName,
+      player1: team.basePlayers?.at(0)?.fullName,
+      player2: team.basePlayers?.at(1)?.fullName,
+      player3: team.basePlayers?.at(2)?.fullName,
+      player4: team.basePlayers?.at(3)?.fullName,
 
       player1_level: null,
       player2_level: null,
@@ -224,25 +224,25 @@ async function updateCsvFile(
       speler4_level: true
     };
 
-    const player1_ranking = code_players.get(team.basePlayers[0]?.memberId) ?? {
+    const player1_ranking = code_players.get(team.basePlayers?.at(0)?.memberId) ?? {
       PlayerLevelSingle: 12,
       PlayerLevelDouble: 12,
       PlayerLevelMixed: 12,
       TypeName: 'nope'
     };
-    const player2_ranking = code_players.get(team.basePlayers[1]?.memberId) ?? {
+    const player2_ranking = code_players.get(team.basePlayers?.at(1)?.memberId) ?? {
       PlayerLevelSingle: 12,
       PlayerLevelDouble: 12,
       PlayerLevelMixed: 12,
       TypeName: 'nope'
     };
-    const player3_ranking = code_players.get(team.basePlayers[2]?.memberId) ?? {
+    const player3_ranking = code_players.get(team.basePlayers?.at(2)?.memberId) ?? {
       PlayerLevelSingle: 12,
       PlayerLevelDouble: 12,
       PlayerLevelMixed: 12,
       TypeName: 'nope'
     };
-    const player4_ranking = code_players.get(team.basePlayers[3]?.memberId) ?? {
+    const player4_ranking = code_players.get(team.basePlayers?.at(3)?.memberId) ?? {
       PlayerLevelSingle: 12,
       PlayerLevelDouble: 12,
       PlayerLevelMixed: 12,

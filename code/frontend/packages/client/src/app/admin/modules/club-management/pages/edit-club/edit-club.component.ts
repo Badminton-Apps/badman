@@ -162,13 +162,13 @@ export class EditClubComponent implements OnInit {
 
   async onAddBasePlayer(player: Player, team: Team) {
     await lastValueFrom(
-      this.teamService.addBasePlayer(team.id!, player.id!, team.entries![0]!.competitionSubEvent!.id!)
+      this.teamService.addBasePlayer(team.id!, player.id!, team.entries!?.at(0)!.competitionSubEvent!.id!)
     );
     this.updateClub$.next(null);
   }
   async onDeleteBasePlayer(player: Player, team: Team) {
     await lastValueFrom(
-      this.teamService.removeBasePlayer(team.id!, player.id!, team.entries![0]!.competitionSubEvent!.id!)
+      this.teamService.removeBasePlayer(team.id!, player.id!, team.entries!?.at(0)!.competitionSubEvent!.id!)
     );
     this.updateClub$.next(null);
   }

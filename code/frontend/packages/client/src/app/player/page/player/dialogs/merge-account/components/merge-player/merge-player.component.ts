@@ -14,7 +14,7 @@ export class MergePlayerComponent implements OnInit {
 
   ngOnInit(): void {
     if ((this.player.clubs?.length ?? 0) > 0) {
-      this.club = this.player.clubs?.[0];
+      this.club = this.player.clubs?.at(0);
     }
   }
 }

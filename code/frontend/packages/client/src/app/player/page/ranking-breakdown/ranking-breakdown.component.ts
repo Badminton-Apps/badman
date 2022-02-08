@@ -127,7 +127,7 @@ export class RankingBreakdownComponent implements OnInit {
         `,
       })
       .pipe(
-        map((x) => new RankingSystem(x.data.systems[0])),
+        map((x) => new RankingSystem(x.data.systems?.at(0))),
         filter((x) => !!x),
         shareReplay(1)
       );

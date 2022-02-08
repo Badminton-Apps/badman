@@ -131,27 +131,27 @@ export class DetailRankingSystemComponent implements OnInit {
         return [
           {
             name: 'S M',
-            values: male.single[0].points,
+            values: male.single?.at(0).points,
           },
           {
             name: 'D M',
-            values: male.double[0].points,
+            values: male.double?.at(0).points,
           },
           {
             name: 'MX M',
-            values: male.mix[0].points,
+            values: male.mix?.at(0).points,
           },
           {
             name: 'S F',
-            values: female.single[0].points,
+            values: female.single?.at(0).points,
           },
           {
             name: 'D F',
-            values: female.double[0].points,
+            values: female.double?.at(0).points,
           },
           {
             name: 'MX F',
-            values: female.mix[0].points,
+            values: female.mix?.at(0).points,
           },
         ];
       })

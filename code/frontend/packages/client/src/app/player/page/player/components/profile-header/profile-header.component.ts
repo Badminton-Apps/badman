@@ -52,7 +52,7 @@ export class ProfileHeaderComponent implements OnChanges  {
     } as RankingPlace;
 
     const lastNames = this.player.lastName!.split(' ');
-    this.initials = `${this.player.firstName![0]}${lastNames[lastNames.length - 1][0]}`.toUpperCase();
+    this.initials = `${this.player.firstName!?.at(0)}${lastNames[lastNames.length - 1]?.at(0)}`.toUpperCase();
 
     if (this.shownRanking) {
       const date = moment(this.shownRanking.rankingDate);

@@ -299,13 +299,13 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
     try {
       if (entriesDraw.length > 0) {
         if (entriesDraw.length === 1) {
-          entryDraw = entriesDraw[0];
+          entryDraw = entriesDraw?.at(0);
         } else {
           this.logger.warn(
             `Found ${entriesDraw.length} entries for team ${team.id} in draw ${draw.id}, destroing others`
           );
           // Use first
-          entryDraw = entriesDraw[0];
+          entryDraw = entriesDraw?.at(0);
 
           // Destroy other entries
           for (const entry of entriesDraw.filter((d) => d.drawId === null).slice(1)) {
@@ -328,7 +328,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
           });
         } else if (entriesSubevent.length == 1) {
           // We only have one subevent. Lets use that :)
-          entryDraw = entriesSubevent[0];
+          entryDraw = entriesSubevent?.at(0);
 
           entryDraw.entryType = 'competition';
           entryDraw.drawId = draw.id;

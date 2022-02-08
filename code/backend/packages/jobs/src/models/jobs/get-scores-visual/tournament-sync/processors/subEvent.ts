@@ -52,7 +52,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       let dbSubEvent: SubEventTournament = null;
 
       if (dbSubEvents.length === 1) {
-        dbSubEvent = dbSubEvents[0];
+        dbSubEvent = dbSubEvents?.at(0);
       } else if (dbSubEvents.length > 1) {
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbSubEvents;

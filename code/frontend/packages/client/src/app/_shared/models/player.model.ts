@@ -51,7 +51,7 @@ export class Player {
 
     this.rankingPlaces = args?.rankingPlaces?.map((r) => new RankingPlace(r));
     if ((this.lastRanking ?? null) == null && this.rankingPlaces != null && this.rankingPlaces.length > 0) {
-      this.lastRanking = this.rankingPlaces?.sort((a, b) => a.rankingDate!.getTime() - b.rankingDate!.getTime())[0];
+      this.lastRanking = this.rankingPlaces?.sort((a, b) => a.rankingDate!.getTime() - b.rankingDate!.getTime())?.at(0);
     }
   }
 

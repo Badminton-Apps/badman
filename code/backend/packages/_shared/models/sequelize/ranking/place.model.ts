@@ -277,7 +277,7 @@ export class RankingPlace extends Model {
   @BeforeCreate
   static async protectRanking(instance: RankingPlace, options: SaveOptions) {
     await RankingProcessor.checkInactive([instance], options);
-    await RankingProcessor.protectRanking([instance])[0];
+    await RankingProcessor.protectRanking([instance])?.at(0);
   }
 
   // #endregion

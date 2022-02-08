@@ -257,10 +257,10 @@ import {
       // Get team number from regex group
       const teamNumber =
         regexResult && regexResult.length > 3
-          ? parseInt(regexResult[2], 10)
-            ? parseInt(regexResult[2], 10)
-            : parseInt(regexResult[3], 10)
-            ? parseInt(regexResult[3], 10)
+          ? parseInt(regexResult?.at(2), 10)
+            ? parseInt(regexResult?.at(2), 10)
+            : parseInt(regexResult?.at(3), 10)
+            ? parseInt(regexResult?.at(3), 10)
             : -1
           : -1;
 
