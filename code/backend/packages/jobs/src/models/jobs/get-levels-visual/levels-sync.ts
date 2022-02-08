@@ -70,7 +70,7 @@ export class RankingSyncer {
 
         const system = await RankingSystem.findOne({
           where: {
-            name: rankingDetail[0].Name,
+            name: rankingDetail?.at(0).Name,
             rankingSystem: RankingSystems.VISUAL
           },
           transaction: args.transaction
@@ -79,7 +79,7 @@ export class RankingSyncer {
         return {
           stop: system == null,
           system,
-          visualCode: rankingDetail[0].Code
+          visualCode: rankingDetail?.at(0).Code
         };
       } catch (error) {
         throw error;

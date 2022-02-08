@@ -53,11 +53,11 @@ import { Op } from 'sequelize';
             (r.type == team.type && r.teamNumber == team.teamNumber)
         );
 
-        let active = sameNameTeams.filter((t) => t.active)[0];
+        let active = sameNameTeams.filter((t) => t.active)?.at(0);
 
         // Prefer active team, if no active team found, use first team
         if (active == null) {
-          active = sameNameTeams[0];
+          active = sameNameTeams?.at(0);
         }
 
         if (sameNameTeams.length > 1) {

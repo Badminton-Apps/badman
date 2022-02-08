@@ -58,7 +58,7 @@ export class EditRankingAllComponent implements OnInit {
         map((player) => {
           const allPlaces: Map<Date, RankingPlace[]> = new Map();
           allPlaces[Symbol.iterator] = function* () {
-            yield* [...allPlaces.entries()].sort((a, b) => b[0]?.getTime() - a[0]?.getTime());
+            yield* [...allPlaces.entries()].sort((a, b) => b?.at(0)?.getTime() - a?.at(0)?.getTime());
           };
 
           const sorted = player.rankingPlaces?.sort((a, b) => {

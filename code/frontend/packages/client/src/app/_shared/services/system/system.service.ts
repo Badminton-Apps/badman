@@ -107,7 +107,7 @@ export class SystemService {
       })
       .pipe(
         share(),
-        map((x) => (x.data?.systems?.length > 0 ? new RankingSystem(x.data.systems[0]) : null)),
+        map((x) => (x.data?.systems?.length > 0 ? new RankingSystem(x.data.systems?.at(0)) : null)),
         tap((s) => (this.primarySystem = s))
       );
   }
