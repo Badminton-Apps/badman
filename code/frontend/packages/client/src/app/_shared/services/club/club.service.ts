@@ -200,7 +200,7 @@ export class ClubService {
             x.data.club.teams?.filter(
               (r) =>
                 (r.entries?.length ?? 0) > 0 &&
-                (r.entries![0].meta?.competition != null || r.entries![0].meta?.tournament != null)
+                (r.entries!?.at(0).meta?.competition != null || r.entries!?.at(0).meta?.tournament != null)
             ) ?? []
           );
         })

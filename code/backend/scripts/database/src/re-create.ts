@@ -36,7 +36,7 @@ const runCommmand = (cmd: string) => {
 
 const getMostRecentFile = (dir) => {
   const files = orderReccentFiles(dir);
-  return files.length ? files[0] : undefined;
+  return files.length ? files?.at(0) : undefined;
 };
 
 const orderReccentFiles = (dir) => {

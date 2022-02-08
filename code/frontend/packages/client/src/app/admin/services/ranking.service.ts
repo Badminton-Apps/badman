@@ -36,8 +36,8 @@ export class RankingService {
     if (contentDisposition) {
       const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
       const matches = fileNameRegex.exec(contentDisposition);
-      if (matches != null && matches[1]) {
-        fileName = matches[1].replace(/['"]/g, '');
+      if (matches != null && matches?.at(1)) {
+        fileName = matches?.at(1).replace(/['"]/g, '');
       }
     }
 

@@ -35,33 +35,33 @@ async function merge_accounts() {
     });
 
     for (const csvPlayer of players) {
-      const found = dbPlayers.filter((p) => p.memberId == csvPlayer[0]);
+      const found = dbPlayers.filter((p) => p.memberId == csvPlayer?.at(0));
 
       if (found.length == 0) {
-        logger.info(`No player found for ${csvPlayer[0]}`);
+        logger.info(`No player found for ${csvPlayer?.at(0)}`);
         continue;
       }
 
       if (found.length > 1) {
         let bestMatch = found.find(
           (p) =>
-            p.firstName == csvPlayer[1].Voornaam &&
-            p.lastName == csvPlayer[1].Achternaam
+            p.firstName == csvPlayer?.at(1).Voornaam &&
+            p.lastName == csvPlayer?.at(1).Achternaam
         );
 
         if (!bestMatch) {
           bestMatch = found.find(
             (p) =>
-              p.lastName == csvPlayer[1].Voornaam &&
-              p.firstName == csvPlayer[1].Achternaam
+              p.lastName == csvPlayer?.at(1).Voornaam &&
+              p.firstName == csvPlayer?.at(1).Achternaam
           );
-          bestMatch.firstName = csvPlayer[1].Voornaam;
-          bestMatch.lastName = csvPlayer[1].Achternaam;
+          bestMatch.firstName = csvPlayer?.at(1).Voornaam;
+          bestMatch.lastName = csvPlayer?.at(1).Achternaam;
           await bestMatch.save({ transaction });
         }
 
         if (!bestMatch) {
-          bestMatch = found[0];
+          bestMatch = found?.at(0);
         }
         const remaining = found.filter((p) => p.id != bestMatch.id);
 
@@ -88,7 +88,7 @@ async function merge_accounts() {
           Voornaam: finishedPlayer.firstName,
           Achternaam: finishedPlayer.lastName,
           Club: clubs.join(', '),
-          ExcelClub: csvPlayer[1].Club,
+          ExcelClub: csvPlayer?.at(1).Club,
         });
       }
     }

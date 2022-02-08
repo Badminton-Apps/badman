@@ -59,12 +59,12 @@ async function set_meta() {
   });
 
   for (const team of teams) {
-    const correctSubEvent = team.homeEncounters[0].draw?.subeventId;
+    const correctSubEvent = team.homeEncounters?.at(0).draw?.subeventId;
 
     if (
       !team.entries
         ?.map((r) => r.id)
-        .includes(team.homeEncounters[0].draw?.subeventId) ||
+        .includes(team.homeEncounters?.at(0).draw?.subeventId) ||
       team.entries.length > 1
     ) {
       await EventEntry.destroy({
