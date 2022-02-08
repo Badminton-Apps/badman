@@ -85,7 +85,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             if (!foundEncounter) {
               const future = encoutners.filter((r) => moment(r.date).isAfter());
               if (future.length > 0) {
-                foundEncounter = future?.at(0);
+                foundEncounter = future[0];
               }
             }
             if (foundEncounter) {

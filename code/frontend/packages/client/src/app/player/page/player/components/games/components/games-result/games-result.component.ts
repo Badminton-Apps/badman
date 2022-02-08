@@ -56,16 +56,16 @@ export class GamesResultComponent implements OnInit {
 
         // This is only once
         if (this.gamesLength === -1) {
-          if (this.games?.at(0).competition) {
-            this.competition = this.games?.at(0).competition;
+          if (this.games[0].competition) {
+            this.competition = this.games[0]!.competition as CompetitionEncounter;
           }
 
-          if (this.games?.at(0).tournament) {
-            this.tournament = this.games?.at(0).tournament;
+          if (this.games[0].tournament) {
+            this.tournament = this.games[0]!.tournament as TournamentDraw;
           }
 
           this.subEvents.map((x) => {
-            x.gameType = x.games!?.at(0).gameType;
+            x.gameType = x.games![0]!.gameType;
           });
         }
 

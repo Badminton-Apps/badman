@@ -110,7 +110,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       }
 
       if (foundClub == null && this.options.length == 1) {
-        foundClub = this.options?.at(0);
+        foundClub = this.options[0];
         this.formControl.disable();
       }
 
