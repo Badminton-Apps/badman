@@ -61,6 +61,7 @@
               "../../node_modules/cookieconsent/build/cookieconsent.min.js"
             ],
             "allowedCommonJsDependencies": [
+              "core-js",
               "echarts",
               "zen-observable",
               "moment-timezone",
