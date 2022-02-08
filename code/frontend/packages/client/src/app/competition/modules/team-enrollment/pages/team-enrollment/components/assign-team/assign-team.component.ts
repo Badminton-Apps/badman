@@ -319,7 +319,7 @@ export class AssignTeamComponent implements OnInit {
       }
 
       if (!subEvent && subEventsSorted.length > 0) {
-        subEventsSorted?.at(0).teams?.push(team);
+        subEventsSorted[0].teams?.push(team);
       } else {
         subEvent?.teams?.push(team);
         this.newSubEvent.next({

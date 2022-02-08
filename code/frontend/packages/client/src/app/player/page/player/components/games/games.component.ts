@@ -70,7 +70,7 @@ export class GamesComponent implements OnChanges {
               return newGames.reduce((all, curr) => {
                 let prevWasSameEvent = false;
                 if (all.length > 0) {
-                  const prevGame = all[all.length - 1]?.at(0);
+                  const prevGame = all[all.length - 1][0];
                   prevWasSameEvent = this._sameEvent(curr, prevGame);
                 }
                 if (prevWasSameEvent) {

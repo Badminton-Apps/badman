@@ -1,33 +1,18 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RankingService } from 'app/admin';
 import { DeviceService, Player, PlayerService, SystemService, UserService } from 'app/_shared';
 import {
   BehaviorSubject,
-  combineLatest,
-  concat,
-  forkJoin,
-  lastValueFrom,
-  withLatestFrom,
-  merge,
-  Observable,
-  Subject,
-  combineAll,
-  throwError,
+  combineLatest, lastValueFrom, Observable
 } from 'rxjs';
 import {
-  catchError,
-  delay,
-  distinctUntilChanged,
-  filter,
+  catchError, filter,
   map,
-  share,
-  shareReplay,
-  startWith,
+  share, startWith,
   switchMap,
-  tap,
+  tap
 } from 'rxjs/operators';
 
 @Component({

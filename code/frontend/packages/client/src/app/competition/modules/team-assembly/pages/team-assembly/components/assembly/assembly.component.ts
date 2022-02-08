@@ -202,7 +202,7 @@ export class AssemblyComponent implements OnInit {
         return playerA - playerB;
       }) ?? [];
 
-    this.entry = team?.entries!?.at(0)!;
+    this.entry = team?.entries![0]!;
 
     this.wherePlayer = {
       gender: this.type == 'MX' || this.type == 'NATIONAL' ? undefined : this.type,
@@ -278,29 +278,29 @@ export class AssemblyComponent implements OnInit {
 
     for (const dbTeam of teams) {
       if (dbTeam.type == team!.type && dbTeam.id != teamId) {
-        if ((dbTeam?.entries?.at(0)?.competitionSubEvent?.event?.type ?? null) == null) {
+        if ((dbTeam?.entries?.[0]?.competitionSubEvent?.event?.type ?? null) == null) {
           continue;
         }
 
         // Base players
-        if (ignoredLevels.includes(dbTeam.entries!?.at(0).competitionSubEvent!.event!.type!)) {
+        if (ignoredLevels.includes(dbTeam.entries![0].competitionSubEvent!.event!.type!)) {
           this.ignorePlayers.push(
-            ...(dbTeam?.entries!?.at(0)?.meta?.competition?.players?.map((p) => {
+            ...(dbTeam?.entries![0]?.meta?.competition?.players?.map((p) => {
               return { id: p.id } as Player;
             }) ?? [])
           );
         } else if (
-          dbTeam.entries!?.at(0).competitionSubEvent?.event?.type == team!.entries!?.at(0).competitionSubEvent?.event!.type
+          dbTeam.entries![0].competitionSubEvent?.event?.type == team!.entries![0].competitionSubEvent?.event!.type
         ) {
           if (dbTeam.teamNumber! < team!.teamNumber!) {
             this.ignorePlayers.push(
-              ...(dbTeam.entries!?.at(0)?.meta?.competition?.players?.map((p) => {
+              ...(dbTeam.entries![0]?.meta?.competition?.players?.map((p) => {
                 return { id: p.id } as Player;
               }) ?? [])
             );
-          } else if (dbTeam.entries!?.at(0)?.id == team!.entries!?.at(0)?.id) {
+          } else if (dbTeam.entries![0]?.id == team!.entries![0]?.id) {
             this.ignorePlayers.push(
-              ...(dbTeam.entries!?.at(0)?.meta?.competition?.players?.map((p) => {
+              ...(dbTeam.entries![0]?.meta?.competition?.players?.map((p) => {
                 return { id: p.id } as Player;
               }) ?? [])
             );
@@ -442,10 +442,10 @@ export class AssemblyComponent implements OnInit {
       this.double4.length +
       this.substitude.length;
 
-    this.formGroup.get('single1')!.setValue(this.single1?.at(0));
-    this.formGroup.get('single2')!.setValue(this.single2?.at(0));
-    this.formGroup.get('single3')!.setValue(this.single3?.at(0));
-    this.formGroup.get('single4')!.setValue(this.single4?.at(0));
+    this.formGroup.get('single1')!.setValue(this.single1[0]);
+    this.formGroup.get('single2')!.setValue(this.single2[0]);
+    this.formGroup.get('single3')!.setValue(this.single3[0]);
+    this.formGroup.get('single4')!.setValue(this.single4[0]);
     this.formGroup.get('double1')!.setValue(this.double1);
     this.formGroup.get('double2')!.setValue(this.double2);
     this.formGroup.get('double3')!.setValue(this.double3);
@@ -505,8 +505,8 @@ export class AssemblyComponent implements OnInit {
 
   private _checkOtherLists() {
     const checkDoubles = (list1: Player[], list2: Player[], type: 'double' | 'mix') => {
-      const double1 = (list1?.at(0)?.lastRanking?.[type] ?? 12) + (list1?.at(1)?.lastRanking?.[type] ?? 12);
-      const double2 = (list2?.at(0)?.lastRanking?.[type] ?? 12) + (list2?.at(1)?.lastRanking?.[type] ?? 12);
+      const double1 = (list1[0]?.lastRanking?.[type] ?? 12) + (list1[1]?.lastRanking?.[type] ?? 12);
+      const double2 = (list2[0]?.lastRanking?.[type] ?? 12) + (list2[1]?.lastRanking?.[type] ?? 12);
 
       if (list1.length == 2 && list2.length == 2) {
         if (double1 > double2) {
@@ -515,14 +515,14 @@ export class AssemblyComponent implements OnInit {
 
         if (double1 == double2) {
           const dl1 =
-            (list1?.at(0)?.lastRanking?.[type] ?? 12) < (list1?.at(1)?.lastRanking?.[type] ?? 12)
-              ? list1?.at(0)?.lastRanking?.[type] ?? 12
-              : list1?.at(1)?.lastRanking?.[type] ?? 12;
+            (list1[0]?.lastRanking?.[type] ?? 12) < (list1[1]?.lastRanking?.[type] ?? 12)
+              ? list1[0]?.lastRanking?.[type] ?? 12
+              : list1[1]?.lastRanking?.[type] ?? 12;
 
           const dl2 =
-            (list2?.at(0)?.lastRanking?.[type] ?? 12) < (list2?.at(1)?.lastRanking?.[type] ?? 12)
-              ? list2?.at(0)?.lastRanking?.[type] ?? 12
-              : list2?.at(1)?.lastRanking?.[type] ?? 12;
+            (list2[0]?.lastRanking?.[type] ?? 12) < (list2[1]?.lastRanking?.[type] ?? 12)
+              ? list2[0]?.lastRanking?.[type] ?? 12
+              : list2[1]?.lastRanking?.[type] ?? 12;
           if (dl1 > dl2) {
             return 'competition.team-assembly.errors.players-above-lower';
           }
@@ -533,10 +533,10 @@ export class AssemblyComponent implements OnInit {
 
     this.errors = {};
 
-    const single1 = this.single1?.at(0)?.lastRanking?.single ?? 12;
-    const single2 = this.single2?.at(0)?.lastRanking?.single ?? 12;
-    const single3 = this.single3?.at(0)?.lastRanking?.single ?? 12;
-    const single4 = this.single4?.at(0)?.lastRanking?.single ?? 12;
+    const single1 = this.single1[0]?.lastRanking?.single ?? 12;
+    const single2 = this.single2[0]?.lastRanking?.single ?? 12;
+    const single3 = this.single3[0]?.lastRanking?.single ?? 12;
+    const single4 = this.single4[0]?.lastRanking?.single ?? 12;
 
     if (this.type == 'MX') {
       if (single1 > single2) {

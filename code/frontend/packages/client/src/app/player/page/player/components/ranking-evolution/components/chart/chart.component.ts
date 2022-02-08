@@ -43,7 +43,7 @@ export class ChartComponent implements OnInit {
 
     // Get the years for start / end to space them in year basis
     if (this.rankingPlaces && this.rankingPlaces.length > 0) {
-      const lastDay = moment(this.rankingPlaces?.at(0)?.rankingDate).startOf('year').add(1, 'year');
+      const lastDay = moment(this.rankingPlaces[0].rankingDate).startOf('year').add(1, 'year');
       const firstDay = moment(this.rankingPlaces[this.rankingPlaces?.length - 1].rankingDate).startOf('year');
       this.firstDay = firstDay.toDate();
       this.lastDay = lastDay.toDate();

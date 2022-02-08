@@ -168,15 +168,15 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
           });
         }),
         map((result) => {
-          const count = result.data.systems?.at(0)!.lastPlaces.total || 0;
+          const count = result.data.systems[0]!.lastPlaces.total || 0;
           this.isLoadingResults = false;
           this.resultsLength$.next(count);
 
           if (count) {
             this.nextCursor =
-              result.data.systems?.at(0)!.lastPlaces.edges[result.data.systems?.at(0)!.lastPlaces.edges.length - 1].cursor;
+              result.data.systems[0]!.lastPlaces.edges[result.data.systems[0]!.lastPlaces.edges.length - 1].cursor;
 
-            return result.data.systems?.at(0)!.lastPlaces.edges.map((x) => x.node);
+            return result.data.systems[0]!.lastPlaces.edges.map((x) => x.node);
           } else {
             return [];
           }

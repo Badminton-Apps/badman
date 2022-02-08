@@ -112,7 +112,7 @@ export class ShowRequestsComponent implements OnInit {
     if (dates && dates.length > 0) {
       lastDate = dates.sort(
         (a: EncounterChangeDate, b: EncounterChangeDate) => b.date!.getTime() - a.date!.getTime()
-      )?.at(0).date;
+      )[0].date;
     }
 
     const newDate = new EncounterChangeDate({
