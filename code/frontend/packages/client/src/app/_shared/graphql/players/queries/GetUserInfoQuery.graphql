@@ -7,7 +7,6 @@ query GetUserInfoQuery($id: ID!) {
     lastName
     sub
     gender
-    birthDate
     competitionPlayer
     club { 
       id
