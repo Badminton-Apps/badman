@@ -777,7 +777,7 @@ export const removePlayerBaseSubEventMutation = {
       }
 
       const meta = dbMembership.meta;
-      const removedPlayer = meta?.competition?.players.filter((p) => p.id === playerId)?.at(0);
+      const removedPlayer = meta?.competition?.players.filter((p) => p.id === playerId)[0];
       if (!removedPlayer) {
         throw new ApiError({
           code: 404,

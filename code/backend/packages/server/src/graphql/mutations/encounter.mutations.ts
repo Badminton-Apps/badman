@@ -98,7 +98,7 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
             encounter.originalDate = encounter.date;
           }
           // Set date to the selected date
-          encounter.date = selectedDates?.at(0).date;
+          encounter.date = selectedDates[0].date;
 
           // Accept
           await acceptDate(encounter, transaction);

@@ -24,7 +24,7 @@ import {
 } from '@badvlasim/shared';
 
 (async () => {
-  const databaseService = new DataBaseHandler({
+  new DataBaseHandler({
     ...dbConfig.default,
     // logging: (...msg) => logger.debug('Query', msg)
   });
@@ -235,7 +235,7 @@ import {
     const memberships = [];
 
     for (const xmlTeamBasic of xmlTeams) {
-      let xmlTeam = await getTeam(id, xmlTeamBasic.Code);
+      const xmlTeam = await getTeam(id, xmlTeamBasic.Code);
 
       const genders = xmlTeam.Players?.Player?.map((r) => r.GenderID);
 
@@ -257,10 +257,10 @@ import {
       // Get team number from regex group
       const teamNumber =
         regexResult && regexResult.length > 3
-          ? parseInt(regexResult?.at(2), 10)
-            ? parseInt(regexResult?.at(2), 10)
-            : parseInt(regexResult?.at(3), 10)
-            ? parseInt(regexResult?.at(3), 10)
+          ? parseInt(regexResult[2], 10)
+            ? parseInt(regexResult[2], 10)
+            : parseInt(regexResult[3], 10)
+            ? parseInt(regexResult[3], 10)
             : -1
           : -1;
 
