@@ -122,7 +122,7 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
             },
           })
         );
-        this.formControl.setValue(player?.data?.players?.at(0));
+        this.formControl.setValue(player?.data?.players[0]);
       } else if (this.formControl.value instanceof Player) {
         this.formControl.setValue(this.formControl.value);
       }

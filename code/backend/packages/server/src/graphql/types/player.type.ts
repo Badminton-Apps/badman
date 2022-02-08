@@ -1,4 +1,4 @@
-import { Club, ClubMembership, Player, RankingSystem } from '@badvlasim/shared';
+import { AuthenticatedRequest, canExecute, Club, ClubMembership, Player, RankingSystem } from '@badvlasim/shared';
 import {
   GraphQLBoolean,
   GraphQLInputObjectType,
@@ -21,6 +21,45 @@ export const PlayerType = new GraphQLObjectType({
   description: 'A Player',
   fields: () =>
     Object.assign(getAttributeFields(Player), {
+      email: {
+        type: GraphQLString,
+        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+          canExecute(
+            context?.req?.user,
+            { anyPermissions: [`details-any:player`, `${obj.id}_details:player`] },
+            "You don't have permissions to access the email field"
+          );
+          return obj.email;
+        }
+      },
+      phone: {
+        type: GraphQLString,
+        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+          canExecute(
+            context?.req?.user,
+            {
+              anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
+            },
+            "You don't have permissions to access the phone field"
+          );
+          return obj.phone;
+        }
+      },
+
+      birthDate: {
+        type: GraphQLString,
+        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+          canExecute(
+            context?.req?.user,
+            {
+              anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
+            },
+            "You don't have permissions to access the birthDate field"
+          );
+          return obj.birthDate;
+        }
+      },
+
       teams: {
         type: new GraphQLList(TeamType),
         resolve: resolver(Player.associations.teams)
@@ -42,7 +81,7 @@ export const PlayerType = new GraphQLObjectType({
             return findOptions;
           }
         })
-      }, 
+      },
       lastRanking: {
         type: LastRankingPlaceType,
         args: Object.assign({
