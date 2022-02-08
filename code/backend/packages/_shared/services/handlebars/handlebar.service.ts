@@ -192,7 +192,7 @@ export class HandlebarService {
     >();
 
     players.concat(subs).forEach((player) => {
-      const mayIndex = player.rankingPlaces?.at(0) ?? {
+      const mayIndex = player.rankingPlaces[0] ?? {
         single: 12,
         double: 12,
         mix: 12,
@@ -200,7 +200,7 @@ export class HandlebarService {
 
       preppedMap.set(player.id, {
         ...player.toJSON(),
-        lastRankingPlace: player.lastRankingPlaces?.at(0).toJSON(),
+        lastRankingPlace: player.lastRankingPlaces[0].toJSON(),
         base: !!meta?.competition?.players?.find((p) => p?.id === player.id)
           ?.id,
         team: !!teamIndex.players.find((p) => p?.id === player.id),
@@ -224,40 +224,40 @@ export class HandlebarService {
         preppedMap,
         based,
         teamed,
-        input.team.double?.at(0)?.at(0),
-        input.team.double?.at(0)?.at(1)
+        input.team.double[0][0],
+        input.team.double[0][1]
       ),
       this._addPlayer(
         preppedMap,
         based,
         teamed,
-        input.team.double?.at(1)?.at(0),
-        input.team.double?.at(1)?.at(1)
+        input.team.double[1][0],
+        input.team.double[1][1]
       ),
       this._addPlayer(
         preppedMap,
         based,
         teamed,
-        input.team.double?.at(2)?.at(0),
-        input.team.double?.at(2)?.at(1)
+        input.team.double[2][0],
+        input.team.double[2][1]
       ),
       this._addPlayer(
         preppedMap,
         based,
         teamed,
-        input.team.double?.at(3)?.at(0),
-        input.team.double?.at(3)?.at(1)
+        input.team.double[3][0],
+        input.team.double[3][1]
       ),
     ];
 
     const singles = [
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.at(0))
+      this._addPlayer(preppedMap, based, teamed, input.team.single[0])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.at(1))
+      this._addPlayer(preppedMap, based, teamed, input.team.single[1])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.at(2))
+      this._addPlayer(preppedMap, based, teamed, input.team.single[2])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.at(3))
+      this._addPlayer(preppedMap, based, teamed, input.team.single[3])
         .player1,
     ];
 
@@ -381,8 +381,8 @@ export class HandlebarService {
         index: bestPlayers.reduce(
           (a, b) =>
             a +
-            (b.rankingPlaces?.at(0)?.single ?? 12) +
-            (b.rankingPlaces?.at(0)?.double ?? 12),
+            (b.rankingPlaces[0]?.single ?? 12) +
+            (b.rankingPlaces[0]?.double ?? 12),
           missingIndex
         ),
       };
@@ -397,9 +397,9 @@ export class HandlebarService {
         index: bestPlayers.reduce(
           (a, b) =>
             a +
-            (b.rankingPlaces?.at(0)?.single ?? 12) +
-            (b.rankingPlaces?.at(0)?.double ?? 12) +
-            (b.rankingPlaces?.at(0)?.mix ?? 12),
+            (b.rankingPlaces[0]?.single ?? 12) +
+            (b.rankingPlaces[0]?.double ?? 12) +
+            (b.rankingPlaces[0]?.mix ?? 12),
           missingIndex
         ),
       };
@@ -414,24 +414,24 @@ export class HandlebarService {
           .filter((p) => p.gender === 'M')
           .sort(
             (b, a) =>
-              (b.rankingPlaces?.at(0)?.single ?? 12) +
-              (b.rankingPlaces?.at(0)?.double ?? 12) +
-              (b.rankingPlaces?.at(0)?.mix ?? 12) -
-              ((a.rankingPlaces?.at(0)?.single ?? 12) +
-                (a.rankingPlaces?.at(0)?.double ?? 12) +
-                (a.rankingPlaces?.at(0)?.mix ?? 12))
+              (b.rankingPlaces[0]?.single ?? 12) +
+              (b.rankingPlaces[0]?.double ?? 12) +
+              (b.rankingPlaces[0]?.mix ?? 12) -
+              ((a.rankingPlaces[0]?.single ?? 12) +
+                (a.rankingPlaces[0]?.double ?? 12) +
+                (a.rankingPlaces[0]?.mix ?? 12))
           )
           .slice(0, 2),
         ...players
           .filter((p) => p.gender === 'F')
           .sort(
             (b, a) =>
-              (b.rankingPlaces?.at(0)?.single ?? 12) +
-              (b.rankingPlaces?.at(0)?.double ?? 12) +
-              (b.rankingPlaces?.at(0)?.mix ?? 12) -
-              ((a.rankingPlaces?.at(0)?.single ?? 12) +
-                (a.rankingPlaces?.at(0)?.double ?? 12) +
-                (a.rankingPlaces?.at(0)?.mix ?? 12))
+              (b.rankingPlaces[0]?.single ?? 12) +
+              (b.rankingPlaces[0]?.double ?? 12) +
+              (b.rankingPlaces[0]?.mix ?? 12) -
+              ((a.rankingPlaces[0]?.single ?? 12) +
+                (a.rankingPlaces[0]?.double ?? 12) +
+                (a.rankingPlaces[0]?.mix ?? 12))
           )
           .slice(0, 2),
       ];
@@ -439,10 +439,10 @@ export class HandlebarService {
       bestPlayers = players
         .sort(
           (b, a) =>
-            (b.rankingPlaces?.at(0)?.single ?? 12) +
-            (b.rankingPlaces?.at(0)?.double ?? 12) -
-            ((a.rankingPlaces?.at(0)?.single ?? 12) +
-              (a.rankingPlaces?.at(0)?.double ?? 12))
+            (b.rankingPlaces[0]?.single ?? 12) +
+            (b.rankingPlaces[0]?.double ?? 12) -
+            ((a.rankingPlaces[0]?.single ?? 12) +
+              (a.rankingPlaces[0]?.double ?? 12))
         )
         .slice(0, 4);
     }

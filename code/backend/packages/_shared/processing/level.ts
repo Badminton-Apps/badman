@@ -170,7 +170,7 @@ export class RankingProcessor {
       rankingPoints.length > 0
     ) {
       rankingSystem = await RankingSystem.findOne({
-        where: { id: rankingPoints?.at(0).SystemId }
+        where: { id: rankingPoints[0].SystemId }
       });
     }
 

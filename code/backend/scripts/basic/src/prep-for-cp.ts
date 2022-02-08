@@ -240,7 +240,7 @@ async function updateCpFile(
       }
 
       const myEvent = events.find(
-        r => r.name === team.subEvents?.at(0).name && r.gender === gender
+        r => r.name === team.subEvents[0].name && r.gender === gender
       );
       if (!myEvent) {
         throw new Error('No event found');
@@ -258,7 +258,7 @@ async function updateCpFile(
       }
 
       const stageRes = await connection.execute(
-        `INSERT INTO stageentry(entry, stage) VALUES (${entryRes?.at(0).id}, ${myStage.ID})`,
+        `INSERT INTO stageentry(entry, stage) VALUES (${entryRes[0].id}, ${myStage.ID})`,
         `SELECT @@Identity AS id`
       );
 
@@ -275,7 +275,7 @@ async function updateCpFile(
       try {
         let memo = `Index: ${team.baseIndex(system)}`;
 
-        const issues = validate(team, team.subEvents?.at(0), code_players);
+        const issues = validate(team, team.subEvents[0], code_players);
 
         let teamName = sql_escaped(team.name);
         if (issues.hasIssues) {
@@ -300,7 +300,7 @@ async function updateCpFile(
         const comments = await Comment.findAll({
           where
         });
-        if (comments && comments.length > 0 && comments?.at(0).message.length > 0) {
+        if (comments && comments.length > 0 && comments[0].message.length > 0) {
           logger.debug(`[${name}] Logging adding comments`, {data: comments});
           memo += `\n\nClub opmerking:\n${comments
             .map(r => sql_escaped(r.message))
@@ -322,7 +322,7 @@ async function updateCpFile(
       }
 
       logger.debug(
-        `[${name}] Added Entry team: ${teamId}, event: ${myEvent.id} (entryId: ${entryRes?.at(0).id}, stageId: ${stageRes?.at(0).id})`
+        `[${name}] Added Entry team: ${teamId}, event: ${myEvent.id} (entryId: ${entryRes[0].id}, stageId: ${stageRes[0].id})`
       );
     }
   }
@@ -393,8 +393,8 @@ async function updateCpFile(
       // Manually overwrite the team index private value so it matches the csv version
       team['_baseIndex'] = getCsvBaseIndex(team);
 
-      const prefLoc1 = locations.get(team.locations?.at(0)?.id) ?? 'NULL';
-      const prefLoc2 = locations.get(team.locations?.at(1)?.id) ?? 'NULL';
+      const prefLoc1 = locations.get(team.locations[0]?.id) ?? 'NULL';
+      const prefLoc2 = locations.get(team.locations[1]?.id) ?? 'NULL';
       const captain =
         team.captain ??
         ({
@@ -422,10 +422,10 @@ async function updateCpFile(
           `SELECT @@Identity AS id`
         );
         logger.debug(
-          `[${name}] Added Team ${team.name} (id: ${teamRes?.at(0).id})`
+          `[${name}] Added Team ${team.name} (id: ${teamRes[0].id})`
         );
-        teams.set(teamRes?.at(0).id, team);
-        await addBasePlayers(team, teamRes?.at(0).id, internalClubId);
+        teams.set(teamRes[0].id, team);
+        await addBasePlayers(team, teamRes[0].id, internalClubId);
       } catch (e) {
         logger.error(`[${name}] Error adding team`, e, query);
         throw e;
@@ -454,7 +454,7 @@ async function updateCpFile(
           parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
           (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ?? 12);
 
-        let memberid = player?.memberId;
+        const memberid = player?.memberId;
         const gender = getGender(player.gender);
         const queryPlayer = `INSERT INTO Player(name, firstname, gender, memberid, club, foreignid, dob) VALUES (
           "${sql_escaped(player.lastName)}", "${sql_escaped(
@@ -466,7 +466,7 @@ async function updateCpFile(
             queryPlayer,
             `SELECT @@Identity AS id`
           );
-          playerId = playerRes?.at(0).id;
+          playerId = playerRes[0].id;
           players.set(player.memberId, playerId);
 
           const queryLevel = `INSERT INTO PlayerlevelEntry(leveltype, playerid, level1, level2, level3) VALUES (1, ${playerId}, ${single}, ${double}, ${mix})`;
@@ -503,7 +503,7 @@ async function updateCpFile(
         )}", "${club.clubId}", 19, "${club.abbreviation}")`,
         `SELECT @@Identity AS id`
       );
-      const response = clubRes?.at(0);
+      const response = clubRes[0];
 
       logger.debug(`[${name}] Added club ${club.name} (id: ${response.id})`);
       clubs.set(response.id, club);
@@ -617,9 +617,9 @@ async function updateCpFile(
         );
 
         logger.debug(
-          `[${name}] Added location ${location.name} (id: ${locationRes?.at(0).id})`
+          `[${name}] Added location ${location.name} (id: ${locationRes[0].id})`
         );
-        locations.set(location.id, locationRes?.at(0).id);
+        locations.set(location.id, locationRes[0].id);
       } catch (e) {
         logger.error(`[${name}] Added location failed`, {
           error: e,

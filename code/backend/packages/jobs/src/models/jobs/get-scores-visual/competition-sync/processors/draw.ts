@@ -52,7 +52,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       let dbDraw = null;
 
       if (dbDraws.length === 1) {
-        dbDraw = dbDraws?.at(0);
+        dbDraw = dbDraws[0];
       } else if (dbDraws.length > 1) {
         this.logger.warn('Having multiple? Removing old');
 

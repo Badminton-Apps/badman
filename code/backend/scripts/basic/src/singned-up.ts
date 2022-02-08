@@ -108,7 +108,7 @@ const YEAR = 2021;
         continue;
       }
 
-      let adminRole = club.roles?.at(0);
+      let adminRole = club.roles[0];
       if (club.roles.length > 1) {
         adminRole = club.roles.find((r) => r.name === 'Admin') ?? adminRole;
       }
