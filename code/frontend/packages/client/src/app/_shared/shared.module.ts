@@ -42,6 +42,7 @@ import { NewPlayerComponent } from './components/ranking-shell/components/new-pl
 import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 import { AssignRankingGroupsComponent } from './dialogs';
+import { WatchSystemInfoComponent } from './components/ranking-shell/components/watch-system-info/watch-system-info.component';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -106,6 +107,7 @@ const exportedComponents = [
     NewPlayerComponent,
     UserInfoComponent,
     AssignRankingGroupsComponent,
+    WatchSystemInfoComponent,
   ],
   imports: [
     CommonModule,
