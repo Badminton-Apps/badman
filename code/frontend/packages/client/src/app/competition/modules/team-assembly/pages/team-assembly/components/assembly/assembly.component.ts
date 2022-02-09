@@ -136,7 +136,7 @@ export class AssemblyComponent implements OnInit {
     this.single4 = [];
 
     this.double1 = [];
-    this.double2 = [];
+    this.double2 = []; 
     this.double3 = [];
     this.double4 = [];
 
@@ -149,7 +149,7 @@ export class AssemblyComponent implements OnInit {
     usedRankingDate.set('year', event.startYear!);
     usedRankingDate.set(event.usedRankingUnit!, event.usedRankingAmount!);
 
-    const startRanking = usedRankingDate.clone().set('day', 0);
+    const startRanking = usedRankingDate.clone().set('date', 0);
     const endRanking = usedRankingDate.clone().clone().endOf('month');
 
     const teams =

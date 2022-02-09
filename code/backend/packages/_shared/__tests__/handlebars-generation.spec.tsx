@@ -55,6 +55,7 @@ describe('PDF service', () => {
 
   it('Assembly pdf Mix', async () => {
     const rankingSystem = await new RankingSystem({
+      id: fake.misc.uuid(),
       name: 'BBF Rating',
       amountOfLevels: 12,
       procentWinning: 75,
@@ -128,7 +129,11 @@ describe('PDF service', () => {
 
     // Arrange
     const encounterDate = moment('2021-10-01');
-    const event = await new EventCompetition({ startYear: 2021 }).save();
+    const event = await new EventCompetition({
+      startYear: 2021,
+      usedRankingAmount: 4,
+      usedRankingUnit: 'months',
+    }).save();
     const subevent = await new SubEventCompetition().save();
     const draw = await new DrawCompetition().save();
     const encounter = await new EncounterCompetition({

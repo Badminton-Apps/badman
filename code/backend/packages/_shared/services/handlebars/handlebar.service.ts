@@ -12,7 +12,6 @@ import {
   LastRankingPlace,
   Player,
   RankingPlace,
-  RankingSystem,
   SubEventCompetition,
   SubEventType,
   Team,
@@ -101,17 +100,16 @@ export class HandlebarService {
   }
 
   async getTeamAssemblyPdf(input: {
+    systemId: string;
     captainId: string;
     teamId: string;
     encounterId: string;
-    systemId: string;
     team: {
       single: string[];
       double: string[][];
       subtitude: string[];
     };
   }) {
-    const system = await RankingSystem.findByPk(input.systemId);
     const idPlayers = [...input.team?.single, ...input.team?.double.flat(1)];
     const idSubs = input.team?.subtitude;
 
@@ -151,7 +149,7 @@ export class HandlebarService {
       encounter.draw.subEvent.event.usedRankingAmount
     );
 
-    const startRanking = usedRankingDate.clone().set('day', 0);
+    const startRanking = usedRankingDate.clone().set('date', 0);
     const endRanking = usedRankingDate.clone().clone().endOf('month');
 
     const players = await Player.findAll({
@@ -164,7 +162,7 @@ export class HandlebarService {
         {
           model: LastRankingPlace,
           where: {
-            systemId: system.id,
+            systemId: input.systemId,
           },
         },
         {
@@ -174,7 +172,7 @@ export class HandlebarService {
             rankingDate: {
               [Op.between]: [startRanking.toDate(), endRanking.toDate()],
             },
-            SystemId: system.id,
+            SystemId: input.systemId,
           },
         },
       ],
@@ -190,7 +188,7 @@ export class HandlebarService {
         {
           model: LastRankingPlace,
           where: {
-            systemId: system.id,
+            systemId: input.systemId,
           },
         },
         {
@@ -200,7 +198,7 @@ export class HandlebarService {
             rankingDate: {
               [Op.between]: [startRanking.toDate(), endRanking.toDate()],
             },
-            SystemId: system.id,
+            SystemId: input.systemId,
           },
         },
       ],
