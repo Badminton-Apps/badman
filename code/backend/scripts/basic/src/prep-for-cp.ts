@@ -10,7 +10,7 @@ import {
   Player,
   LastRankingPlace,
   Comment,
-  RankingSystem
+  RankingSystem,
 } from '@badvlasim/shared';
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 
@@ -39,18 +39,18 @@ const provs: { file: string; event: string }[] = [
   { file: 'PBA competitie 2021-2022', event: 'PBA competitie 2021-2022' },
   {
     file: 'VVBBC interclubcompetitie 2021-2022',
-    event: 'VVBBC interclubcompetitie 2021-2022'
+    event: 'VVBBC interclubcompetitie 2021-2022',
   },
   { file: 'PBO competitie 2021-2022', event: 'PBO competitie 2021-2022' },
   {
     file: 'Limburgse interclubcompetitie 2021-2022',
-    event: 'Limburgse interclubcompetitie 2021-2022'
+    event: 'Limburgse interclubcompetitie 2021-2022',
   },
   { file: 'WVBF Competitie 2021-2022', event: 'WVBF Competitie 2021-2022' },
   {
     file: 'Vlaamse interclubcompetitie 2021-2022',
-    event: 'Vlaamse interclubcompetitie 2021-2022'
-  }
+    event: 'Vlaamse interclubcompetitie 2021-2022',
+  },
 ];
 
 (async () => {
@@ -58,7 +58,7 @@ const provs: { file: string; event: string }[] = [
     const players = await readCsvPlayers();
     const promsisse = provs
       // .filter(r => r.event === 'Limburgse interclubcompetitie 2021-2022')
-      .map(prov => processProv(prov, players));
+      .map((prov) => processProv(prov, players));
     await Promise.all(promsisse);
   } catch (e) {
     logger.error('Something went wrong', e);
@@ -92,20 +92,20 @@ async function readCsvPlayers() {
         const stream = parseString(csv, {
           headers: true,
           delimiter: ';',
-          ignoreEmpty: true
+          ignoreEmpty: true,
         });
         const code_players: Map<string, csvPlayer> = new Map();
-        stream.on('data', row => {
+        stream.on('data', (row) => {
           if (code_players.get(row.memberid) != null) {
             logger.warn('Player exists twice?', row.memberid);
           }
 
           code_players.set(row.memberid, row);
         });
-        stream.on('error', error => {
+        stream.on('error', (error) => {
           logger.error(error);
         });
-        stream.on('end', async rowCount => {
+        stream.on('end', async (rowCount) => {
           resolve(code_players);
         });
       }
@@ -123,6 +123,7 @@ async function updateCpFile(
   );
 
   new DataBaseHandler(dbConfig.default);
+  const system = await RankingSystem.findOne({ where: { primary: true } });
 
   const dbClubs = await Club.findAll({
     include: [
@@ -130,7 +131,7 @@ async function updateCpFile(
         model: Team,
         required: true,
         where: {
-          active: true
+          active: true,
         },
         include: [
           {
@@ -143,36 +144,40 @@ async function updateCpFile(
                 attributes: [],
                 where: {
                   startYear: YEAR,
-                  name
-                }
-              }
-            ]
+                  name,
+                },
+              },
+            ],
           },
           {
-            model: Location
+            model: Location,
           },
           {
             model: Player,
             as: 'players',
-            include: [{ model: LastRankingPlace }],
+            include: [
+              {
+                model: LastRankingPlace,
+                where: {
+                  systemId: system.id,
+                },
+              },
+            ],
             through: {
-              where: { base: true }
-            }
+              where: { base: true },
+            },
           },
           {
             model: Player,
-            as: 'captain'
-          }
-        ]
+            as: 'captain',
+          },
+        ],
       },
       {
-        model: Location
-      }
-    ]
+        model: Location,
+      },
+    ],
   });
-
-  const system = await RankingSystem.findOne({where: {primary: true}});
-  
 
   logger.info(`[${name}] cleanup`);
   await connection.execute('DELETE FROM stageentry');
@@ -240,7 +245,7 @@ async function updateCpFile(
       }
 
       const myEvent = events.find(
-        r => r.name === team.subEvents[0].name && r.gender === gender
+        (r) => r.name === team.subEvents[0].name && r.gender === gender
       );
       if (!myEvent) {
         throw new Error('No event found');
@@ -251,7 +256,7 @@ async function updateCpFile(
         `SELECT @@Identity AS id`
       );
 
-      const myStage = stages.find(s => +s.event === +myEvent.id);
+      const myStage = stages.find((s) => +s.event === +myEvent.id);
 
       if (!myStage) {
         throw new Error('No stage found');
@@ -262,13 +267,13 @@ async function updateCpFile(
         `SELECT @@Identity AS id`
       );
 
-      const dbEventIds = [...team.subEvents?.map(r => r.eventId)];
+      const dbEventIds = [...team.subEvents?.map((r) => r.eventId)];
       const where = {
         clubId: team.clubId,
         linkId: {
-          [Op.any]: dbEventIds
+          [Op.any]: dbEventIds,
         },
-        linkType: 'competition'
+        linkType: 'competition',
       };
 
       let query = '';
@@ -282,28 +287,28 @@ async function updateCpFile(
           teamName = `* ${teamName}`;
           if (issues.status.length > 0) {
             memo += `\n\nStatus Speler fouten:\n${issues.status
-              .map(r => ` - ${sql_escaped(r)}`)
+              .map((r) => ` - ${sql_escaped(r)}`)
               .join('\n')}`;
           }
           if (issues.level.length > 0) {
             memo += `\n\nLevel Speler vekereerd:\n${issues.level
-              .map(r => ` - ${sql_escaped(r)}`)
+              .map((r) => ` - ${sql_escaped(r)}`)
               .join('\n')}`;
           }
           if (issues.base.length > 0) {
             memo += `\n\nPloeg verkeerd:\n${issues.base
-              .map(r => ` - ${sql_escaped(r)}`)
+              .map((r) => ` - ${sql_escaped(r)}`)
               .join('\n')}`;
           }
         }
 
         const comments = await Comment.findAll({
-          where
+          where,
         });
         if (comments && comments.length > 0 && comments[0].message.length > 0) {
-          logger.debug(`[${name}] Logging adding comments`, {data: comments});
+          logger.debug(`[${name}] Logging adding comments`, { data: comments });
           memo += `\n\nClub opmerking:\n${comments
-            .map(r => sql_escaped(r.message))
+            .map((r) => sql_escaped(r.message))
             .join('\n')}`;
         }
 
@@ -315,7 +320,7 @@ async function updateCpFile(
         logger.error(`[${name}] Comments didn't work`, {
           where,
           query,
-          error: e
+          error: e,
         });
 
         throw e;
@@ -328,22 +333,28 @@ async function updateCpFile(
   }
 
   function getCsvBaseIndex(team: Team) {
-    const basePlayers = team.basePlayers(system).map(p => {
+    const basePlayers = team.basePlayers(system).map((p) => {
       const csvPlayer = code_players.get(p.memberId);
 
       return {
         ...p.toJSON(),
-        lastRankingPlaces: [{
-          single: parseInt(csvPlayer?.PlayerLevelSingle, 10) || 12,
-          double: parseInt(csvPlayer?.PlayerLevelDouble, 10) || 12,
-          mix: parseInt(csvPlayer?.PlayerLevelMixed, 10) || 12
-        }]
+        lastRankingPlaces: [
+          {
+            single: parseInt(csvPlayer?.PlayerLevelSingle, 10) || 12,
+            double: parseInt(csvPlayer?.PlayerLevelDouble, 10) || 12,
+            mix: parseInt(csvPlayer?.PlayerLevelMixed, 10) || 12,
+          },
+        ],
       } as Partial<Player>;
     });
 
     if (team.type !== 'MX') {
       const bestPlayers = basePlayers
-        .map(r => r.lastRankingPlaces?.find(p => p.systemId === system.id)?.single + r.lastRankingPlaces?.find(p => p.systemId === system.id)?.double)
+        .map(
+          (r) =>
+            r.lastRankingPlaces?.find((p) => p.systemId === system.id)?.single +
+            r.lastRankingPlaces?.find((p) => p.systemId === system.id)?.double
+        )
         .sort((a, b) => a - b)
         .slice(0, 4);
 
@@ -357,26 +368,30 @@ async function updateCpFile(
       const bestPlayers = [
         // 2 best male
         ...basePlayers
-          .filter(p => p.gender === 'M')
+          .filter((p) => p.gender === 'M')
           .map(
-            r =>
-              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.single +
-              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.double +
-              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix
+            (r) =>
+              r.lastRankingPlaces?.find((p) => p.systemId === system.id)
+                ?.single +
+              r.lastRankingPlaces?.find((p) => p.systemId === system.id)
+                ?.double +
+              r.lastRankingPlaces?.find((p) => p.systemId === system.id)?.mix
           )
           .sort((a, b) => a - b)
           .slice(0, 2),
         // 2 best female
         ...basePlayers
-          .filter(p => p.gender === 'F')
+          .filter((p) => p.gender === 'F')
           .map(
-            r =>
-              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.single +
-              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.double +
-              r.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix
+            (r) =>
+              r.lastRankingPlaces?.find((p) => p.systemId === system.id)
+                ?.single +
+              r.lastRankingPlaces?.find((p) => p.systemId === system.id)
+                ?.double +
+              r.lastRankingPlaces?.find((p) => p.systemId === system.id)?.mix
           )
           .sort((a, b) => a - b)
-          .slice(0, 2)
+          .slice(0, 2),
       ];
 
       let missingIndex = 0;
@@ -400,7 +415,7 @@ async function updateCpFile(
         ({
           phone: '',
           email: '',
-          fullName: ''
+          fullName: '',
         } as Partial<Player>);
       const captainName = captain.fullName;
       const dayofweek = getDayOfWeek(team.preferredDay);
@@ -446,13 +461,19 @@ async function updateCpFile(
         const dob = csvPlayer?.dob ? `#${csvPlayer?.dob}#` : 'NULL';
         const single =
           parseInt(csvPlayer?.PlayerLevelSingle, 10) ||
-          (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.single ?? 12);
+          (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
+            ?.single ??
+            12);
         const double =
           parseInt(csvPlayer?.PlayerLevelDouble, 10) ||
-          (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.double ?? 12);
+          (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
+            ?.double ??
+            12);
         const mix =
           parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
-          (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ?? 12);
+          (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
+            ?.mix ??
+            12);
 
         const memberid = player?.memberId;
         const gender = getGender(player.gender);
@@ -475,7 +496,7 @@ async function updateCpFile(
           } catch (e) {
             logger.error('Error adding player', {
               query: queryLevel,
-              error: e
+              error: e,
             });
             throw e;
           }
@@ -523,20 +544,25 @@ async function updateCpFile(
       level: [],
       base: [],
       status: [],
-      hasIssues: false
+      hasIssues: false,
     };
 
     for (const player of team.basePlayers(system)) {
       const csvPlayer = code_players.get(player.memberId);
       const single =
         parseInt(csvPlayer?.PlayerLevelSingle, 10) ||
-        (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.single ?? 12);
+        (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
+          ?.single ??
+          12);
       const double =
         parseInt(csvPlayer?.PlayerLevelDouble, 10) ||
-        (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.double ?? 12);
+        (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
+          ?.double ??
+          12);
       const mix =
         parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
-        (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ?? 12);
+        (player.lastRankingPlaces?.find((p) => p.systemId === system.id)?.mix ??
+          12);
 
       if (csvPlayer?.TypeName != 'Competitiespeler') {
         issues.hasIssues = true;
@@ -623,7 +649,7 @@ async function updateCpFile(
       } catch (e) {
         logger.error(`[${name}] Added location failed`, {
           error: e,
-          query
+          query,
         });
         throw e;
       }

@@ -249,7 +249,15 @@ export class RankingSyncer {
               }
             },
             include: [
-              { model: LastRankingPlace, attributes: ['id', 'systemId', 'single', 'double', 'mix'] }
+              {
+                model: LastRankingPlace,
+                where: {
+                  where: {
+                    SystemId: ranking.system.id
+                  }
+                },
+                attributes: ['id', 'systemId', 'single', 'double', 'mix']
+              }
             ],
             transaction: args.transaction
           });
@@ -322,7 +330,8 @@ export class RankingSyncer {
             logger.debug('Removing old points for date (voiding collision)');
             await RankingPlace.destroy({
               where: {
-                rankingDate: publication.date.toDate()
+                rankingDate: publication.date.toDate(),
+                SystemId: ranking.system.id
               },
               transaction: args.transaction
             });
