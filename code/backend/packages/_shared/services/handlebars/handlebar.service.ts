@@ -200,7 +200,7 @@ export class HandlebarService {
 
       preppedMap.set(player.id, {
         ...player.toJSON(),
-        lastRankingPlace: player.lastRankingPlaces[0].toJSON(),
+        lastRankingPlace: player.lastRankingPlaces?.[0].toJSON(),
         base: !!meta?.competition?.players?.find((p) => p?.id === player.id)
           ?.id,
         team: !!teamIndex.players.find((p) => p?.id === player.id),
@@ -224,40 +224,40 @@ export class HandlebarService {
         preppedMap,
         based,
         teamed,
-        input.team.double?.[0]?.[0],
-        input.team.double?.[0]?.[1]
+        input.team.double[0][0],
+        input.team.double[0][1]
       ),
       this._addPlayer(
         preppedMap,
         based,
         teamed,
-        input.team.double?.[1]?.[0],
-        input.team.double?.[1]?.[1]
+        input.team.double[1][0],
+        input.team.double[1][1]
       ),
       this._addPlayer(
         preppedMap,
         based,
         teamed,
-        input.team.double?.[2]?.[0],
-        input.team.double?.[2]?.[1]
+        input.team.double[2][0],
+        input.team.double[2][1]
       ),
       this._addPlayer(
         preppedMap,
         based,
         teamed,
-        input.team.double?.[3]?.[0],
-        input.team.double?.[3]?.[1]
+        input.team.double[3][0],
+        input.team.double[3][1]
       ),
     ];
 
     const singles = [
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[0])
+      this._addPlayer(preppedMap, based, teamed, input.team.single[0])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[1])
+      this._addPlayer(preppedMap, based, teamed, input.team.single[1])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[2])
+      this._addPlayer(preppedMap, based, teamed, input.team.single[2])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[3])
+      this._addPlayer(preppedMap, based, teamed, input.team.single[3])
         .player1,
     ];
 

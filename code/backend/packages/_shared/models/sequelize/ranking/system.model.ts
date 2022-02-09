@@ -45,7 +45,10 @@ import { RankingPoint } from './point.model';
 export class RankingSystem extends Model {
   constructor(values?: Partial<RankingSystem>, options?: BuildOptions) {
     super(values, options);
-    this._setupValues();
+
+    if (values.amountOfLevels) {
+      this._setupValues();
+    }
   }
 
   @Default(DataType.UUIDV4)
@@ -185,7 +188,7 @@ export class RankingSystem extends Model {
 
   // Belongs to many Group
   getGroups!: BelongsToManyGetAssociationsMixin<RankingSystemGroup>;
-  setGroup!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;
+  setGroups!: BelongsToManySetAssociationsMixin<RankingSystemGroup, string>;
   addGroups!: BelongsToManyAddAssociationsMixin<RankingSystemGroup, string>;
   addGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
   removeGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
@@ -276,7 +279,9 @@ export class RankingSystem extends Model {
       );
     });
 
-    this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map(p => Math.round(p));
+    this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map((p) =>
+      Math.round(p)
+    );
   }
 
   private _lfbbCaps() {
@@ -288,7 +293,7 @@ export class RankingSystem extends Model {
       5, 20, 31, 38, 61, 83, 106, 128, 196, 263, 331, 398, 601, 803, 1006, 1208,
     ];
     this._pointsToGoDown = this._pointsToGoUp;
-  } 
+  }
   private _originalCaps() {
     throw new Error('Not implementd');
   }

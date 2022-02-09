@@ -5,8 +5,8 @@ import { Club } from 'app/_shared';
 import { ClubService, UserService } from 'app/_shared/services';
 import { ClaimService } from 'app/_shared/services/security/claim.service';
 import { PermissionService } from 'app/_shared/services/security/permission.service';
-import { combineLatest, concat, lastValueFrom, of } from 'rxjs';
-import { filter, map, startWith, switchMap, take, tap } from 'rxjs/operators';
+import { combineLatest, concat, lastValueFrom, Observable, of } from 'rxjs';
+import { distinctUntilChanged, filter, map, skip, startWith, switchMap, take, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-club',
@@ -28,13 +28,22 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   allClubPermission!: string;
 
   @Input()
-  needsPermission: boolean = true;
+  needsPermission: boolean = false;
 
   @Input()
   updateUrl: boolean = false;
 
   formControl = new FormControl(null, [Validators.required]);
   options!: Club[];
+
+  filteredOptions?: Observable<Club[]>;
+  autoCompleteFormControl = new FormControl(null);
+
+  @Input()
+  useAutocomplete: true | false | 'auto' = 'auto';
+
+  @Input()
+  autoCompleteTreshold = 5;
 
   constructor(
     private clubService: ClubService,
@@ -49,12 +58,17 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       this.formGroup.addControl(this.controlName, this.formControl);
     }
 
+    this.filteredOptions = this.autoCompleteFormControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filter(value))
+    );
+
     this.options =
       (await lastValueFrom(
         combineLatest([
           this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
           this.claimSerice.hasAllClaims$([`${this.allClubPermission}`]),
-          this.user.profile$.pipe(filter((p) => !!p?.player)),
+          this.user.profile$,
         ]).pipe(
           switchMap(([single, all]) => {
             if (all) {
@@ -77,6 +91,9 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           map((data) => {
             const count = data?.total || 0;
             if (count) {
+              if (this.useAutocomplete == 'auto') {
+                this.useAutocomplete = count > this.autoCompleteTreshold;
+              }
               return data?.clubs?.map((x) => new Club(x.node))?.sort((a, b) => a.name!.localeCompare(b.name!));
             } else {
               return [];
@@ -115,6 +132,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
 
       if (foundClub) {
         this.formControl.setValue(foundClub.id, { onlySelf: true });
+        this.autoCompleteFormControl.setValue(foundClub, { onlySelf: true });
       } else {
         this.router.navigate([], {
           relativeTo: this.activatedRoute,
@@ -123,6 +141,27 @@ export class SelectClubComponent implements OnInit, OnDestroy {
         });
       }
     }
+  }
+
+  private _filter(value?: string | Club): Club[] {
+    if (value == null) {
+      return this.options;
+    }
+    let filterValue = '';
+
+    if (value instanceof Club) {
+      filterValue = value.id!;
+    } else {
+      filterValue = value?.toLowerCase();
+    }
+
+    return (this.options ?? []).filter(
+      (option) => option.name?.toLowerCase().includes(filterValue) || option.id?.toLowerCase().includes(filterValue)
+    );
+  }
+
+  displayFn(club?: Club): string {
+    return club?.name ?? '';
   }
 
   ngOnDestroy() {

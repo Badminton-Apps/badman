@@ -142,7 +142,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 
           // data[index].event =
           //   data[index].suggestions?.length > 0
-          //     ? data[index]?.suggestions[0]
+          //     ? data[index]?.suggestions?[0]
           //     : ({ id: undefined } as TournamentEvent | CompetitionEvent);
         }
 

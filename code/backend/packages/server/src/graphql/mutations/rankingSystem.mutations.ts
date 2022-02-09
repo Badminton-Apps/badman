@@ -1,12 +1,25 @@
 import {
-  DataBaseHandler,
-  RankingSystemGroup,
-  logger,
-  RankingSystem,
-  GroupSystems,
   AuthenticatedRequest,
-  canExecute
+  canExecute,
+  DataBaseHandler,
+  DrawCompetition,
+  DrawTournament,
+  EncounterCompetition,
+  Game,
+  GamePlayer,
+  GroupSystems,
+  logger,
+  Player,
+  RankingPlace,
+  getSystemCalc,
+  RankingSystem,
+  RankingSystemGroup,
+  StartVisualRankingDate,
+  SubEventCompetition,
+  SubEventTournament,
+  ApiError
 } from '@badvlasim/shared';
+import { Op } from 'sequelize';
 import { RankingSystemInputType, RankingSystemType } from '../types';
 
 export const addRankingSystemMutation = {
@@ -29,22 +42,15 @@ export const addRankingSystemMutation = {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const { groups, ...rankingSystem } = rankingSystemInput;
-      const eventDb = await RankingSystem.create(rankingSystem, { transaction });
-      logger.debug('Event', {data: eventDb.toJSON()});
-      logger.debug(
-        'Got groups',
-        {data: groups.map((r) => r.id)}
-      );
+      const systemDb = await RankingSystem.create(rankingSystem, { transaction });
 
       for (const group of groups) {
         const dbGroup = await RankingSystemGroup.findByPk(group.id);
-        await eventDb.addGroup(dbGroup, { transaction });
+        await systemDb.addGroup(dbGroup, { transaction });
       }
 
-      logger.debug('Added');
-
       await transaction.commit();
-      return eventDb;
+      return systemDb;
     } catch (e) {
       logger.warn('rollback', e);
       await transaction.rollback();
@@ -66,30 +72,53 @@ export const updateRankingSystemMutation = {
     { rankingSystem },
     context: { req: AuthenticatedRequest }
   ) => {
-    canExecute(context?.req?.user, { anyPermissions: ['edit:ranking']});
+    canExecute(context?.req?.user, { anyPermissions: ['edit:ranking'] });
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      await RankingSystem.update(rankingSystem, {
-        where: { id: rankingSystem.id },
+      const dbSystem = await RankingSystem.findByPk(rankingSystem.id);
+      if (!dbSystem) {
+        throw new ApiError({
+          code: 404,
+          message: 'System not found'
+        });
+      }
+
+      // New system is now primary
+      if (rankingSystem.primary == true) {
+        // Set other systems to false
+        await RankingSystem.update(
+          { primary: false },
+          {
+            where: {
+              primary: true
+            },
+            transaction
+          }
+        );
+      }
+
+      // Update system
+      await dbSystem.update(rankingSystem, {
         transaction
       });
 
-      // Destroy existing
-      await GroupSystems.destroy({ where: { systemId: rankingSystem.id }, transaction });
-      // Create new
-      await GroupSystems.bulkCreate(
-        rankingSystem.groups?.map((g) => {
-          return {
-            systemId: rankingSystem.id,
-            groupId: g.id
-          };
-        }),
-        { transaction }
-      );
+      if ((rankingSystem.groups?.length ?? 0) > 0) {
+        // Destroy existing
+        await GroupSystems.destroy({ where: { systemId: rankingSystem.id }, transaction });
+        // Create new
+        await GroupSystems.bulkCreate(
+          rankingSystem.groups?.map((g) => {
+            return {
+              systemId: rankingSystem.id,
+              groupId: g.id
+            };
+          }),
+          { transaction }
+        );
+      }
 
       const dbEvent = await RankingSystem.findByPk(rankingSystem.id, {
-        include: [{ model: RankingSystemGroup, attributes: ['id', 'name'] }],
         transaction
       });
 

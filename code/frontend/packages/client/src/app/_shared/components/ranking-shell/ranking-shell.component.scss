@@ -49,7 +49,10 @@
   align-items: center;
   display: flex;
   border-bottom: 1px solid mat-color($client-angular-accent);
+}
 
+.app-name,
+.app-name-mobile {
   small {
     font-size: x-small;
     margin-left: 10px;

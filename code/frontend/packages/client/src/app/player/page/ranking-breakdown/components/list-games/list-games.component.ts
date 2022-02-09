@@ -31,6 +31,7 @@ export class ListGamesComponent implements OnInit {
   lostGamesIgnored: ListGame[] = [];
   lostGamesUpgrade: ListGame[] = [];
   lostGamesDowngrade: ListGame[] = [];
+  outOfScopeGames: ListGame[] = [];
 
   indexUsedForUpgrade = 0;
   indexUsedForDowngrade = 0;
@@ -59,6 +60,7 @@ export class ListGamesComponent implements OnInit {
             includedIgnored: value.includedIgnored,
             includedUpgrade: value.includedUpgrade,
             includedDowngrade: value.includedDowngrade,
+            includeOutOfScope: value.includeOutOfScope,
           };
         }, distinctUntilChanged())
       )
@@ -68,10 +70,9 @@ export class ListGamesComponent implements OnInit {
   }
 
   calculateAvg() {
-    this.wonGames = [];
-    this.lostGamesDowngrade = [];
-    this.lostGamesUpgrade = [];
-    this.lostGamesIgnored = [];
+    const gameBreakdown: ListGame[] = [];
+    this.games.sort((a, b) => b.playedAt!.getTime() - a.playedAt!.getTime());
+    let validGames = 0;
 
     for (const game of this.games!) {
       const me = game.players!.find((x) => x.id == this.playerId);
@@ -83,47 +84,34 @@ export class ListGamesComponent implements OnInit {
       const opponentP1 = game.players?.find((x) => x.team !== me!.team && x.player == 1);
       const opponentP2 = game.players?.find((x) => x.team !== me!.team && x.player == 2);
 
-      if ((game.winner == 1 && me?.team == 1) || (game.winner == 2 && me?.team == 2)) {
-        if ((rankingPoint?.points ?? 0) > 0) {
-          this.wonGames.push({
-            game,
-            points: rankingPoint!.points!,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.WON,
-          });
-        }
-      } else {
-        if (rankingPoint?.differenceInLevel! >= this.system.differenceForDowngrade! * -1) {
-          this.lostGamesDowngrade.push({
-            game,
-            points: undefined,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.LOST_DOWNGRADE,
-          });
-        } else if (rankingPoint?.differenceInLevel! >= this.system.differenceForUpgrade! * -1) {
-          this.lostGamesUpgrade.push({
-            game,
-            points: undefined,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.LOST_UPGRADE,
-          });
-        } else {
-          this.lostGamesIgnored.push({
-            game,
-            points: undefined,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.LOST_IGNORED,
-          });
-        }
+      const type = this.getGameResultType(game);
+      const newGameBreakdown = {
+        game,
+        points: rankingPoint?.points ?? 0,
+        team: [teamP1, teamP2],
+        opponent: [opponentP1, opponentP2],
+        type,
+      };
+
+      // Latest x Games to use
+      if (this.system.latestXGamesToUse && validGames >= this.system.latestXGamesToUse) {
+        newGameBreakdown.type = GameBreakdownType.OUT_SCOPE;
+      }
+      gameBreakdown.push(newGameBreakdown);
+
+      if (type !== GameBreakdownType.LOST_IGNORED) {
+        validGames++;
       }
     }
 
     // Sort the games
-    this.wonGames = this.wonGames.sort((a, b) => (b.points ?? 0) - (a.points ?? 0));
+    this.wonGames =
+      gameBreakdown.filter((g) => g.type == GameBreakdownType.WON).sort((a, b) => (b.points ?? 0) - (a.points ?? 0)) ??
+      [];
+    this.lostGamesDowngrade = gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_DOWNGRADE) ?? [];
+    this.lostGamesUpgrade = gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_UPGRADE) ?? [];
+    this.lostGamesIgnored = gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_IGNORED) ?? [];
+    this.outOfScopeGames = gameBreakdown.filter((g) => g.type == GameBreakdownType.OUT_SCOPE) ?? [];
   }
 
   fillLostGames() {
@@ -139,45 +127,18 @@ export class ListGamesComponent implements OnInit {
       const opponentP1 = game.players?.find((x) => x.team !== me!.team && x.player == 1);
       const opponentP2 = game.players?.find((x) => x.team !== me!.team && x.player == 2);
 
-      if ((game.winner == 1 && me?.team == 1) || (game.winner == 2 && me?.team == 2)) {
-        if ((rankingPoint?.points ?? 0) > 0) {
-          gameBreakdownPrev.push({
-            id: game.id!,
-            playedAt: game.playedAt,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.WON,
-            points: rankingPoint!.points!,
-          });
-        }
-      } else {
-        if (rankingPoint?.differenceInLevel! >= this.system.differenceForDowngrade! * -1) {
-          gameBreakdownPrev.push({
-            id: game.id!,
-            playedAt: game.playedAt,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.LOST_DOWNGRADE,
-          });
-        } else if (rankingPoint?.differenceInLevel! >= this.system.differenceForUpgrade! * -1) {
-          gameBreakdownPrev.push({
-            id: game.id!,
-            playedAt: game.playedAt,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.LOST_UPGRADE,
-          });
-        } else {
-          gameBreakdownPrev.push({
-            id: game.id!,
-            playedAt: game.playedAt,
-            team: [teamP1, teamP2],
-            opponent: [opponentP1, opponentP2],
-            type: GameBreakdownType.LOST_IGNORED,
-          });
-        }
-      }
+      const type = this.getGameResultType(game);
+
+      gameBreakdownPrev.push({
+        id: game.id!,
+        playedAt: game.playedAt,
+        team: [teamP1, teamP2],
+        opponent: [opponentP1, opponentP2],
+        type,
+        points: rankingPoint?.points ?? undefined,
+      });
     }
+
     gameBreakdownPrev.sort((a, b) => {
       return a.type - b.type;
     });
@@ -188,12 +149,16 @@ export class ListGamesComponent implements OnInit {
   fillGames() {
     this.gameBreakdown = [];
 
-    if (this.formGroup?.get('includedDowngrade')?.value) {
-      this.addLostGames(this.lostGamesDowngrade);
+    if (this.formGroup?.get('includeOutOfScope')?.value) {
+      this.addLostGames(this.outOfScopeGames);
     }
 
     if (this.formGroup?.get('includedUpgrade')?.value) {
       this.addLostGames(this.lostGamesUpgrade);
+    }
+
+    if (this.formGroup?.get('includedDowngrade')?.value) {
+      this.addLostGames(this.lostGamesDowngrade);
     }
 
     const startingIndex = this.gameBreakdown.length;
@@ -203,8 +168,8 @@ export class ListGamesComponent implements OnInit {
       const { game, points, team, opponent, type } = this.wonGames[i];
 
       totalPoints += points ?? 0;
-      const devideUpgrade = this.lostGamesUpgrade.length + i + 1; // 0 based
-      const devideDowngrade = this.lostGamesUpgrade.length + this.lostGamesDowngrade.length + i + 1; // 0 based;
+      const devideUpgrade = this.lostGamesUpgrade.length + this.lostGamesDowngrade.length + i + 1; // 0 based
+      const devideDowngrade = this.lostGamesDowngrade.length + i + 1; // 0 based;
 
       const devideUpgradeCorrected =
         devideUpgrade < this.system.minNumberOfGamesUsedForUpgrade!
@@ -263,6 +228,26 @@ export class ListGamesComponent implements OnInit {
     }
   }
 
+  private getGameResultType(game: Game) {
+    const me = game.players!.find((x) => x.id == this.playerId);
+    const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.playerId);
+
+    if (game.winner == me?.team) {
+      return GameBreakdownType.WON;
+    } else {
+      const upgrade = rankingPoint?.differenceInLevel! >= this.system.differenceForUpgrade! * -1;
+      const downgrade = rankingPoint?.differenceInLevel! >= this.system.differenceForDowngrade! * -1;
+
+      if (downgrade) {
+        return GameBreakdownType.LOST_DOWNGRADE;
+      } else if (upgrade) {
+        return GameBreakdownType.LOST_UPGRADE;
+      } else {
+        return GameBreakdownType.LOST_IGNORED;
+      }
+    }
+  }
+
   getTooltip(game: GameBreakdown, isForUpgrade: boolean): string {
     let devider = '';
 
@@ -280,7 +265,7 @@ export class ListGamesComponent implements OnInit {
       if (game.devideDowngrade! < game.devideDowngradeCorrected!) {
         devider += `\n${this.translateService.instant('breakdown.corrected', {
           original: game.devideDowngrade,
-          corrected: game.devideUpgradeCorrected,
+          corrected: game.devideDowngradeCorrected,
         })}`;
       }
     }
@@ -343,8 +328,9 @@ interface ListGame {
 }
 
 enum GameBreakdownType {
-  WON,
-  LOST_UPGRADE,
-  LOST_DOWNGRADE,
-  LOST_IGNORED,
+  WON = 'WON',
+  LOST_UPGRADE = 'LOST_UPGRADE',
+  LOST_DOWNGRADE = 'LOST_DOWNGRADE',
+  LOST_IGNORED = 'LOST_IGNORED',
+  OUT_SCOPE = 'OUT_SCOPE',
 }

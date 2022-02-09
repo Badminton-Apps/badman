@@ -2,7 +2,8 @@ import { Component, Inject, Input, OnInit, ViewEncapsulation } from '@angular/co
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { RankingPlace, RankingSystem } from 'app/_shared';
+import { Apollo, gql } from 'apollo-angular';
+import { RankingPlace, RankingSystem, RankingSystems } from 'app/_shared';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
@@ -15,16 +16,10 @@ export class EditRankingPlaceDialogComponent implements OnInit {
   rankingPlaceForm: FormGroup = new FormGroup({});
   dateClass!: MatCalendarCellClassFunction<Moment>;
 
-  mayRankingDate: Moment;
-
   constructor(
     private dialogRef: MatDialogRef<EditRankingPlaceDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { place: RankingPlace; rankingSystem?: RankingSystem }
-  ) {
-    const today = moment();
-    const year = today.month() >= 6 ? today.year() : today.year() - 1;
-    this.mayRankingDate = moment(`${year}-05-15`);
-  }
+    @Inject(MAT_DIALOG_DATA) public data: { place: RankingPlace; system?: RankingSystem }
+  ) {}
 
   ngOnInit(): void {
     const singleControl = new FormControl(this.data.place?.single, Validators.required);
@@ -49,19 +44,20 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     this.rankingPlaceForm.addControl('rankingDate', rankingDateControl);
     this.rankingPlaceForm.addControl('updatePossible', updatePossibleControl);
 
-    if (this.data.rankingSystem || true) {
+    if (this.data.system) {
       this.dateClass = (cellDate, view) => {
         if (view === 'month') {
+          const day = cellDate.get('day');
           const date = cellDate.get('date');
           const month = cellDate.get('month');
 
-          if (date == 15 && month == 5) {
-            return 'date-class-may';
-          }
-
-          if (date == 1 && month % 2 == 0) {
-            console.log(`${date}-${month}`);
-            return 'date-class-update';
+          if (
+            this.data.system?.rankingSystem == RankingSystems.VISUAL ||
+            this.data.system?.rankingSystem == RankingSystems.BVL
+          ) {
+            if (day == 1 && date < 8 && month % this.data.system.updateIntervalAmount! == 0) {
+              return 'date-class-update';
+            }
           }
         }
 
@@ -74,7 +70,14 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
   mayRanking(event: Event) {
     event.preventDefault();
-    this.rankingPlaceForm.patchValue({ rankingDate: this.mayRankingDate, updatePossible: true });
+    const date = moment();
+    const compEvent = this.data.system?.groups?.[0]?.subEventCompetitions?.[0].event!;
+
+    date.set('year', compEvent.startYear!);
+    date.set(compEvent.usedRankingUnit!, compEvent.usedRankingAmount!);
+    date.set('day', 1);
+
+    this.rankingPlaceForm.patchValue({ rankingDate: date, updatePossible: true });
   }
 
   onUpdate() {

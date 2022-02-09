@@ -9,7 +9,8 @@
           [matTooltip]="'competition.team-assembly.team-index-ignored' | translate"
           [matTooltipDisabled]="teamNumber !== 1"
           [innerHtml]="
-            'competition.team-assembly.team-index' | translate: { current: teamIndex, team: entry?.meta?.competition?.teamIndex ?? 0 }
+            'competition.team-assembly.team-index'
+              | translate: { current: teamIndex, team: entry?.meta?.competition?.teamIndex ?? 0 }
           "
         ></div>
 
@@ -18,7 +19,7 @@
     </div>
 
     <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="16px">
-      <div fxFlex="33" class="team-info">
+      <div fxFlex="33" class="team-info" fxLayout="column" fxLayoutGap="16px">
         <div class="captain">
           <app-player-search
             [player]="this.formGroup.get('captain')!.value"
@@ -60,7 +61,6 @@
             [club]="this.formGroup.get('club')!.value"
             [label]="'Voeg speler toe'"
             [where]="this.wherePlayer"
-            [ranking]="this.mayRankingDate"
             (onSelectPlayer)="addPlayer($event)"
             [ignorePlayers]="this.ignorePlayers"
           ></app-player-search>

@@ -44,7 +44,12 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private apollo: Apollo) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private apollo: Apollo,
+    private systemService: SystemService
+  ) {}
 
   ngOnInit() {
     this.filter = new FormGroup({
@@ -114,58 +119,60 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
           where['gender'] = filterChange?.gender;
 
           // Query graph
-          return this.apollo.query<{
-            systems: {
-              id: string;
-              lastPlaces: {
-                total: number;
-                edges: { cursor: string; node: RankingPlace }[];
-              };
-            }[];
-          }>({
-            query: gql`
-              query PlayerRankings(
-                $systemsWhere: SequelizeJSON
-                $where: SequelizeJSON
-                $after: String
-                $first: Int
-                $orderBy: [RankingOrderBy]
-              ) {
-                systems(where: $systemsWhere) {
-                  id
-                  name
-                  lastPlaces(where: $where, after: $after, first: $first, orderBy: $orderBy) {
-                    total
-                    edges {
-                      cursor
-                      node {
-                        single
-                        mix
-                        double
-                        singleRank
-                        mixRank
-                        doubleRank
-                        player {
-                          fullName
-                          slug
-                          gender
+          return this.systemService.getPrimarySystemsWhere().pipe(
+            switchMap((query) =>
+              this.apollo.query<{
+                systems: {
+                  id: string;
+                  lastPlaces: {
+                    total: number;
+                    edges: { cursor: string; node: RankingPlace }[];
+                  };
+                }[];
+              }>({
+                query: gql`
+                  query PlayerRankings(
+                    $systemsWhere: SequelizeJSON
+                    $where: SequelizeJSON
+                    $after: String
+                    $first: Int
+                    $orderBy: [RankingOrderBy]
+                  ) {
+                    systems(where: $systemsWhere) {
+                      id
+                      name
+                      lastPlaces(where: $where, after: $after, first: $first, orderBy: $orderBy) {
+                        total
+                        edges {
+                          cursor
+                          node {
+                            single
+                            mix
+                            double
+                            singleRank
+                            mixRank
+                            doubleRank
+                            player {
+                              fullName
+                              slug
+                              gender
+                            }
+                          }
                         }
                       }
                     }
                   }
-                }
-              }
-            `,
-            variables: {
-              first: this.pageSize$.value,
-              after: this.cursor,
-              orderBy: `${sortChange.direction == 'asc' ? '' : 'reverse_'}${sortChange.active}`,
-              where,
-              systemsWhere: {
-                primary: true,
-              },
-            },
-          });
+                `,
+                variables: {
+                  first: this.pageSize$.value,
+                  after: this.cursor,
+                  orderBy: `${sortChange.direction == 'asc' ? '' : 'reverse_'}${sortChange.active}`,
+                  where,
+                  systemsWhere: query,
+                },
+              })
+            )
+          );
         }),
         map((result) => {
           const count = result.data.systems[0]!.lastPlaces.total || 0;

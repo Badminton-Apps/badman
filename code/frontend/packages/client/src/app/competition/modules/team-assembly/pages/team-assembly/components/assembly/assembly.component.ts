@@ -6,20 +6,12 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CompetitionSubEvent, Entry, EventService, LevelType, Player, SystemService, TeamService } from 'app/_shared';
-import {
-  combineLatest,
-  distinctUntilChanged,
-  filter,
-  lastValueFrom,
-  map,
-  pairwise,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { Apollo, gql } from 'apollo-angular';
+import { Club, CompetitionEvent, Entry, LevelType, Player, SystemService, Team } from 'app/_shared';
+import * as moment from 'moment';
+import { combineLatest, distinctUntilChanged, filter, lastValueFrom, map, pairwise, switchMap, take } from 'rxjs';
 
 @Component({
   selector: 'app-assembly',
@@ -78,8 +70,6 @@ export class AssemblyComponent implements OnInit {
   captionDouble4 = 'competition.team-assembly.double4';
 
   type?: string;
-  mayRankingDate!: Date;
-  subEvents!: string[];
 
   teamIndex: number = 0;
   teamNumber?: number = 0;
@@ -93,7 +83,7 @@ export class AssemblyComponent implements OnInit {
   errors = {} as { [key: string]: string };
   totalPlayers = 0;
 
-  constructor(private teamService: TeamService, private systemService: SystemService) {}
+  constructor(private apollo: Apollo, private systemService: SystemService) {}
 
   ngOnInit() {
     this.formGroup.addControl('single1', new FormControl());
@@ -106,14 +96,6 @@ export class AssemblyComponent implements OnInit {
     this.formGroup.addControl('double4', new FormControl());
     this.formGroup.addControl('substitude', new FormControl());
     this.formGroup.addControl('captain', new FormControl());
-
-    this.subEvents = this.formGroup.get('subEvents')?.value;
-    this.mayRankingDate = this.formGroup.get('mayRankingDate')?.value;
-
-    this.formGroup.get('year')?.valueChanges.subscribe(() => {
-      this.subEvents = this.formGroup.get('subEvents')?.value;
-      this.mayRankingDate = this.formGroup.get('mayRankginDate')?.value;
-    });
 
     // only update if the encounter was null or became null
     const encoutner$ = this.formGroup.get('encounter')!.valueChanges.pipe(
@@ -161,17 +143,99 @@ export class AssemblyComponent implements OnInit {
     // Get values
     this.club = this.formGroup.get('club')!.value;
     const teamId = this.formGroup.get('team')?.value;
+    const event = this.formGroup.get('event')?.value as CompetitionEvent;
+
+    const usedRankingDate = moment();
+    usedRankingDate.set('year', event.startYear!);
+    usedRankingDate.set(event.usedRankingUnit!, event.usedRankingAmount!);
+
+    const startRanking = usedRankingDate.clone().set('day', 0);
+    const endRanking = usedRankingDate.clone().clone().endOf('month');
 
     const teams =
       (await lastValueFrom(
         this.systemService
           .getPrimarySystem()
           .pipe(
+            take(1),
             switchMap((system) =>
-              this.teamService.getTeamsAndPlayers(this.club, this.mayRankingDate, system!.id!, this.subEvents)
+              this.apollo.query<{ club: Club }>({
+                query: gql`
+                  query GetTeamInfo($clubId: ID!, $rankingWhere: SequelizeJSON, $entryWhere: SequelizeJSON) {
+                    club(id: $clubId) {
+                      id
+                      teams(where: { active: true }) {
+                        id
+                        type
+                        teamNumber
+                        entries(where: $entryWhere) {
+                          id
+                          competitionSubEvent {
+                            id
+                            maxLevel
+                            minBaseIndex
+                            maxBaseIndex
+                            event {
+                              id
+                              type
+                            }
+                          }
+                          meta {
+                            competition {
+                              teamIndex
+                              players {
+                                id
+                              }
+                            }
+                          }
+                        }
+                        players {
+                          id
+                          slug
+                          fullName
+                          gender
+                          competitionPlayer
+                          lastRanking {
+                            id
+                            single
+                            double
+                            mix
+                          }
+                          rankingPlaces(where: $rankingWhere, limit: 1, order: "rankingDate") {
+                            id
+                            rankingDate
+                            single
+                            double
+                            mix
+                          }
+                        }
+                        captain {
+                          id
+                          fullName
+                        }
+                      }
+                    }
+                  }
+                `,
+                variables: {
+                  clubId: this.club,
+                  rankingWhere: {
+                    rankingDate: {
+                      $between: [startRanking, endRanking],
+                    },
+                    SystemId: system!.id,
+                  },
+
+                  entryWhere: {
+                    subEventId: { $in: event!.subEvents!.map((r) => r.id!) },
+                  },
+                },
+              })
             )
           )
+          .pipe(map((x) => x.data?.club?.teams?.map((t: Partial<Team>) => new Team(t))))
       )) ?? [];
+
     const team = teams?.find((r) => r.id === teamId);
     this.teamNumber = team?.teamNumber;
     this.type = team?.type;
@@ -598,7 +662,7 @@ export class AssemblyComponent implements OnInit {
 
     if (this.type !== 'MX') {
       const bestPlayers = filtered
-        .map((r) => r.indexOfDate(this.type, this.mayRankingDate))
+        .map((r) => r.indexOfDate(this.type))
         .sort((a, b) => a - b)
         .slice(0, 4);
 
@@ -613,13 +677,13 @@ export class AssemblyComponent implements OnInit {
         // 2 best male
         ...filtered
           .filter((p) => p.gender == 'M')
-          .map((r) => r.indexOfDate(this.type, this.mayRankingDate))
+          .map((r) => r.indexOfDate(this.type))
           .sort((a, b) => a - b)
           .slice(0, 2),
         // 2 best female
         ...filtered
           .filter((p) => p.gender == 'F')
-          .map((r) => r.indexOfDate(this.type, this.mayRankingDate))
+          .map((r) => r.indexOfDate(this.type))
           .sort((a, b) => a - b)
           .slice(0, 2),
       ];

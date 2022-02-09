@@ -1,5 +1,5 @@
 <ng-container [formGroup]="formGroup">
-  <mat-form-field appearance="outline" class="flex">
+  <mat-form-field appearance="outline" fxFlex class="dense">
     <mat-label>{{ 'pickers.select-encounter' | translate }}</mat-label>
     <mat-select formControlName="encounter" required>
       <ng-container *ngIf="this.encounters$ | async as encounters">

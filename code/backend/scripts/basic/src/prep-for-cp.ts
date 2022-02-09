@@ -454,7 +454,7 @@ async function updateCpFile(
           parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
           (player.lastRankingPlaces?.find(p => p.systemId === system.id)?.mix ?? 12);
 
-        let memberid = player?.memberId;
+        const memberid = player?.memberId;
         const gender = getGender(player.gender);
         const queryPlayer = `INSERT INTO Player(name, firstname, gender, memberid, club, foreignid, dob) VALUES (
           "${sql_escaped(player.lastName)}", "${sql_escaped(

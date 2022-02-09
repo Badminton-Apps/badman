@@ -35,7 +35,7 @@ export class PlayerService {
         }
       )
       .pipe(
-        map((x) => {
+        map((x) => { 
           return x?.map((r) => {
             if (r.type == 'Player') {
               r.value = new Player(r.value as Player);
@@ -112,13 +112,13 @@ export class PlayerService {
     };
   }
 
-  getPlayer(id: string, rankingType?: string): Observable<Player> {
+  getPlayer(id: string, system?: string): Observable<Player> {
     return this.apollo
       .query({
-        query: rankingType ? playerQuery : playerBasicQuery,
+        query: system ? playerQuery : playerBasicQuery,
         variables: {
           id,
-          rankingType,
+          system,
         },
       })
       .pipe(map((x: any) => new Player(x.data?.player)));
@@ -136,7 +136,7 @@ export class PlayerService {
         query: gamesQuery,
         variables: {
           playerId,
-          rankingType: rankingType.id,
+          system: rankingType.id,
           offset,
           limit,
           where,

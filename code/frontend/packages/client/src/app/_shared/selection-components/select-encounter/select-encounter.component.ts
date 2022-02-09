@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CompetitionEncounter, Team } from 'app/_shared';
+import { CompetitionEncounter } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
-import { combineLatest, Observable } from 'rxjs';
-import { shareReplay, filter, map, switchMap, startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-encounter',
@@ -22,6 +22,9 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
 
   @Input()
   dependsOn: string = 'team';
+
+  @Output()
+  onSelectEncounter = new EventEmitter<CompetitionEncounter>();
 
   formControl = new FormControl();
 
@@ -63,9 +66,9 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             map((c) => {
               return c.map((r) => {
                 if (r.home?.id === teamId) {
-                  r.showingForHomeTeam = true
+                  r.showingForHomeTeam = true;
                 } else {
-                  r.showingForHomeTeam = false
+                  r.showingForHomeTeam = false;
                 }
                 return r;
               });
@@ -89,6 +92,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
               }
             }
             if (foundEncounter) {
+              this.onSelectEncounter.emit(foundEncounter);
               this.formControl.setValue(foundEncounter.id, { onlySelf: true });
             } else {
               this.router.navigate([], {

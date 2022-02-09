@@ -67,7 +67,8 @@
       </button>
 
       <mat-menu #rankingSystemMenu="matMenu">
-        <button mat-menu-item (click)="makePrimary(element.id)">Make primary</button>
+        <button mat-menu-item (click)="makePrimary(element)">{{ 'button.set-primary' | translate }}</button>
+        <button mat-menu-item (click)="watchSystem(element)">{{ 'button.watch-system' | translate }}</button>
         <button mat-menu-item [routerLink]="[element.id, 'edit']">{{ 'button.edit' | translate }}</button>
         <button mat-menu-item [routerLink]="[element.id]">{{ 'button.detail' | translate }}</button>
         <button mat-menu-item (click)="deleteSystem(element.id)">{{ 'button.delete' | translate }}</button>

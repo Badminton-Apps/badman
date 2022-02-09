@@ -68,7 +68,7 @@ export class DataBaseHandler {
               logger.warn(message);
             }
           },
-        }, 
+        },
         models,
       } as SequelizeOptions);
 
@@ -208,7 +208,9 @@ export class DataBaseHandler {
             rankingDate: `${year}-05-15`,
           },
         });
-        player.lastRankingPlaces = [rankingPlaceMay.asLastRankingPlace() as LastRankingPlace];
+        player.lastRankingPlaces = [
+          rankingPlaceMay.asLastRankingPlace() as LastRankingPlace,
+        ];
         teamPlayers.push(player);
 
         playerMeta.push({

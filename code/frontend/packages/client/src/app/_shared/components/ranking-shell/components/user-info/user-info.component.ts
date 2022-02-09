@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { UserService } from 'app/_shared';
 
@@ -8,13 +9,16 @@ import { UserService } from 'app/_shared';
   styleUrls: ['./user-info.component.scss'],
 })
 export class UserInfoComponent implements OnInit {
-  constructor(public auth: AuthService, public user: UserService) {}
+  constructor(public auth: AuthService, public user: UserService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {}
 
-  loginWithRedirect(): void {
+  login(): void {
+    console.log(this.route.url);
+
     // Call this to redirect the user to the login page
-    this.auth.loginWithRedirect();
+    this.auth.loginWithPopup();
+    // this.auth.loginWithRedirect({});
   }
 
   logout(): void {
