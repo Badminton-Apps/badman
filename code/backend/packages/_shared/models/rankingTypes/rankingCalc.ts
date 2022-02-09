@@ -345,7 +345,11 @@ export class RankingCalc {
     return newRanking;
   }
 
-  protected async getGamesAsync(start: Date, end: Date, transaction?:Transaction): Promise<Game[]> {
+  protected async getGamesAsync(
+    start: Date,
+    end: Date,
+    transaction?: Transaction
+  ): Promise<Game[]> {
     logger.debug(
       `getGamesAsync for period ${start.toISOString()} - ${end.toISOString()}`
     );
@@ -390,7 +394,7 @@ export class RankingCalc {
           ],
         },
       ],
-      transaction
+      transaction,
     });
 
     logger.debug(`Got ${games.length} games`);
@@ -422,6 +426,7 @@ export class RankingCalc {
               'singleInactive',
               'doubleInactive',
               'mixInactive',
+              "systemId"
             ],
           },
           {
@@ -491,7 +496,12 @@ export class RankingCalc {
     const doubleRankingPoints: RankingPoint[] = [];
     const mixRankingPoints: RankingPoint[] = [];
 
-    // Split games in theire respective gameTypes
+    // Sort the points by their played date
+    points.sort(
+      (a, b) => b.game.playedAt.getTime() - a.game.playedAt.getTime()
+    );
+
+    // Push to their respective arrays
     points.forEach((rankingPoint) => {
       switch (rankingPoint.game.gameType) {
         case GameType.S:
@@ -519,8 +529,6 @@ export class RankingCalc {
 
     // Filter out when there is a limit to use
     if (this.rankingType.latestXGamesToUse) {
-      // FYI: Ordering is done in query
-
       singleCountsForUpgrade = singleCountsForUpgrade
         // Take last x amount
         .slice(0, this.rankingType.latestXGamesToUse);
@@ -553,8 +561,6 @@ export class RankingCalc {
 
     // Filter out when there is a limit to use
     if (this.rankingType.latestXGamesToUse) {
-      // FYI: Ordering is done in query
-
       singleCountsForDowngrade = singleCountsForDowngrade
         // Take last x amount
         .slice(0, this.rankingType.latestXGamesToUse);
@@ -567,16 +573,13 @@ export class RankingCalc {
     }
 
     const singlePointsDowngrade = this.findPointsBetterAverage(
-      singleCountsForDowngrade,
-      false
+      singleCountsForDowngrade
     );
     const doublePointsDowngrade = this.findPointsBetterAverage(
-      doubleCountsForDowngrade,
-      false
+      doubleCountsForDowngrade
     );
     const mixPointsDowngrade = this.findPointsBetterAverage(
-      mixCountsForDowngrade,
-      false
+      mixCountsForDowngrade
     );
 
     // Determin new level based on inactivity or not

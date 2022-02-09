@@ -16,7 +16,8 @@ import {
   RankingSystemGroup,
   StartVisualRankingDate,
   SubEventCompetition,
-  SubEventTournament
+  SubEventTournament,
+  ApiError
 } from '@badvlasim/shared';
 import { Op } from 'sequelize';
 import { RankingSystemInputType, RankingSystemType } from '../types';
@@ -48,8 +49,6 @@ export const addRankingSystemMutation = {
         await systemDb.addGroup(dbGroup, { transaction });
       }
 
-      logger.debug('Added');
-
       await transaction.commit();
       return systemDb;
     } catch (e) {
@@ -77,26 +76,49 @@ export const updateRankingSystemMutation = {
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      await RankingSystem.update(rankingSystem, {
-        where: { id: rankingSystem.id },
+      const dbSystem = await RankingSystem.findByPk(rankingSystem.id);
+      if (!dbSystem) {
+        throw new ApiError({
+          code: 404,
+          message: 'System not found'
+        });
+      }
+
+      // New system is now primary
+      if (rankingSystem.primary == true) {
+        // Set other systems to false
+        await RankingSystem.update(
+          { primary: false },
+          {
+            where: {
+              primary: true
+            },
+            transaction
+          }
+        );
+      }
+
+      // Update system
+      await dbSystem.update(rankingSystem, {
         transaction
       });
 
-      // Destroy existing
-      await GroupSystems.destroy({ where: { systemId: rankingSystem.id }, transaction });
-      // Create new
-      await GroupSystems.bulkCreate(
-        rankingSystem.groups?.map((g) => {
-          return {
-            systemId: rankingSystem.id,
-            groupId: g.id
-          };
-        }),
-        { transaction }
-      );
+      if ((rankingSystem.groups?.length ?? 0) > 0) {
+        // Destroy existing
+        await GroupSystems.destroy({ where: { systemId: rankingSystem.id }, transaction });
+        // Create new
+        await GroupSystems.bulkCreate(
+          rankingSystem.groups?.map((g) => {
+            return {
+              systemId: rankingSystem.id,
+              groupId: g.id
+            };
+          }),
+          { transaction }
+        );
+      }
 
       const dbEvent = await RankingSystem.findByPk(rankingSystem.id, {
-        include: [{ model: RankingSystemGroup, attributes: ['id', 'name'] }],
         transaction
       });
 
@@ -109,101 +131,3 @@ export const updateRankingSystemMutation = {
     }
   }
 };
-async function setPointsForSystem(transaction, systemDb: RankingSystem) {
-  logger.debug('Set points for system');
-  const groups = await systemDb.getGroups({
-    include: [
-      {
-        model: SubEventCompetition
-      },
-      {
-        model: SubEventTournament
-      }
-    ],
-    transaction
-  })
-
-  const subEventsTournament = groups.filter((g) => g.subEventTournaments.length > 0).map(g => g.subEventTournaments).flat();
-  const subEventsCompetition = groups.filter((g) => g.subEventCompetitions.length > 0).map(g => g.subEventCompetitions).flat()
-
-  const tournamentGames = await Game.findAll({
-    transaction,
-    where: {
-      playedAt: {
-        [Op.gte]: StartVisualRankingDate
-      }
-    },
-    include: [
-      {
-        model: DrawTournament,
-        required: true,
-        where: { subeventId: { [Op.in]: [...subEventsTournament.map((subEvent) => subEvent.id)] } }
-      },
-      {
-        model: Player,
-        attributes: ['id']
-      }
-    ]
-  });
-
-  const competitionGames = await Game.findAll({
-    transaction,
-    where: {
-      playedAt: {
-        [Op.gte]: StartVisualRankingDate
-      }
-    },
-    include: [
-      {
-        model: EncounterCompetition,
-        required: true,
-        include: [
-          {
-            model: DrawCompetition,
-            required: true,
-            where: { subeventId: { [Op.in]: [...subEventsCompetition.map((subEvent) => subEvent.id)] } }
-          }
-        ]
-      },
-      {
-        model: Player,
-        attributes: ['id']
-      }
-    ]
-  });
-
-  const gamePlayers = await GamePlayer.findAll({
-    where: {
-      gameId: {
-        [Op.in]: [...tournamentGames, ...competitionGames].map((game) => game.id)
-      }
-    },
-    transaction: transaction
-  });
-  const players = await Player.findAll({
-    where: {
-      id: {
-        [Op.in]: gamePlayers.map((gp) => gp.playerId)
-      }
-    },
-    include: [
-      {
-        required: false,
-        model: RankingPlace,
-        where: {
-          SystemId: systemDb.id
-        }
-      }
-    ],
-    transaction: transaction
-  });
-
-  const hash = new Map<string, Player>(players.map((e) => [e.id, e]));
-
-  await getSystemCalc(systemDb).calculateRankingPointsPerGameAsync(
-    [...tournamentGames, ...competitionGames],
-    hash,
-    null,
-    transaction
-  );
-}

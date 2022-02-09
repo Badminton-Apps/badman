@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 
-import { Observable, of } from 'rxjs';
-import { filter, map, share, shareReplay, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { filter, map, share, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from './../../../../environments/environment';
 import { RankingSystem, RankingSystemGroup } from './../../models';
 
@@ -17,17 +17,29 @@ import * as systemsGroupsQuery from '../../graphql/rankingSystem/queries/GetSyst
 import * as addRankingSystemMutation from '../../graphql/rankingSystem/mutations/addRankingSystem.graphql';
 import * as updateRankingSysyemMutatino from '../../graphql/rankingSystem/mutations/updateRankingSystem.graphql';
 
+const WATCH_SYSTEM_KEY = 'system.id';
 @Injectable({
   providedIn: 'root',
 })
 export class SystemService {
-  private primarySystem?: RankingSystem | null;
   private urlBase = `${environment.api}/${environment.apiVersion}/systems`;
+  public watchSysem$ = new BehaviorSubject<RankingSystem | null>(null);
 
-  constructor(private httpClient: HttpClient, private apollo: Apollo) {}
+  constructor(private httpClient: HttpClient, private apollo: Apollo) {
+    const savedSystem = sessionStorage.getItem(WATCH_SYSTEM_KEY);
+    if (savedSystem != null) {
+      this.watchSysem$.next(JSON.parse(savedSystem));
+    }
+  }
 
-  makePrimary(systemId: string) {
-    return this.httpClient.post(`${this.urlBase}/${systemId}/make-primary`, {primary: true});
+  watchSystem(system: RankingSystem) {
+    sessionStorage.setItem(WATCH_SYSTEM_KEY, JSON.stringify(system));
+    this.watchSysem$.next(system);
+  }
+
+  clearWatchSystem() {
+    sessionStorage.removeItem(WATCH_SYSTEM_KEY);
+    this.watchSysem$.next(null);
   }
 
   deleteSystem(systemId: string) {
@@ -66,14 +78,6 @@ export class SystemService {
       .pipe(map((x: any) => x.data?.system as RankingSystem));
   }
 
-  // saveSystem(system: RankingSystem) {
-  //   return this.httpClient.put(`${this.urlBase}/${system.id}`, system);
-  // }
-
-  // addSystem(system: RankingSystem) {
-  //   return this.httpClient.post(`${this.urlBase}`, system);
-  // }
-
   addSystem(rankingSystem: RankingSystem) {
     return this.apollo
       .mutate<{ updateRankingSystem: RankingSystem }>({
@@ -97,19 +101,35 @@ export class SystemService {
   }
 
   getPrimarySystem() {
-    if (this.primarySystem != null) {
-      return of(this.primarySystem);
-    }
+    return this.getPrimarySystemsWhere().pipe(
+      switchMap((query) =>
+        this.apollo
+          .query<{ systems: RankingSystem[] }>({
+            query: primarySystemsQuery,
+            variables: {
+              where: query,
+            },
+          })
+          .pipe(
+            map((x) => (x.data?.systems?.length > 0 ? new RankingSystem(x.data.systems[0]) : null)),
+            shareReplay(1)
+          )
+      )
+    );
+  }
 
-    return this.apollo
-      .query<{ systems: RankingSystem[] }>({
-        query: primarySystemsQuery,
+  getPrimarySystemsWhere() {
+    return this.watchSysem$.pipe(
+      map((system) => {
+        return system != null
+          ? {
+              id: system.id,
+            }
+          : {
+              primary: true,
+            };
       })
-      .pipe(
-        share(),
-        map((x) => (x.data?.systems?.length > 0 ? new RankingSystem(x.data.systems[0]) : null)),
-        tap((s) => (this.primarySystem = s))
-      );
+    );
   }
 
   getSystems(sort?: string, direction?: SortDirection, page?: number): Observable<RankingSystem[]> {

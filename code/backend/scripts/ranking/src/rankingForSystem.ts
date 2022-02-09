@@ -54,7 +54,7 @@ import moment from 'moment';
       latestXGamesToUse: 20,
       periodUnit: 'weeks',
       periodAmount: 128,
-      primary: true,
+      primary: false,
     }).save({ transaction });
     await system1.setGroups(groups, { transaction });
 
@@ -66,7 +66,7 @@ import moment from 'moment';
       latestXGamesToUse: 15,
       periodUnit: 'weeks',
       periodAmount: 128,
-      primary: true,
+      primary: false,
     }).save({ transaction });
     await system2.setGroups(groups, { transaction });
 
@@ -78,7 +78,7 @@ import moment from 'moment';
       latestXGamesToUse: 15,
       periodUnit: 'weeks',
       periodAmount: 128,
-      primary: true,
+      primary: false,
     }).save({ transaction });
     await system3.setGroups(groups, { transaction });
 
@@ -90,6 +90,7 @@ import moment from 'moment';
       latestXGamesToUse: 20,
       periodUnit: 'weeks',
       periodAmount: 52,
+      primary: false,
     }).save({ transaction });
     await system4.setGroups(groups, { transaction });
     const system5 = await new RankingSystem({
@@ -99,6 +100,7 @@ import moment from 'moment';
       name: 'BFF Rating - 52 weeks - Last 15 games',
       latestXGamesToUse: 15,
       periodUnit: 'weeks',
+      primary: false,
       periodAmount: 52,
     }).save({ transaction });
     await system5.setGroups(groups, { transaction });
@@ -110,14 +112,50 @@ import moment from 'moment';
       latestXGamesToUse: 10,
       periodUnit: 'weeks',
       periodAmount: 52,
+      primary: true,
     }).save({ transaction });
     await system6.setGroups(groups, { transaction });
 
-    const targets = [system1, system2, system3, system4, system5, system6];
+    const system7 = await new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '6b4f75c8-2e37-4adc-bdfc-8386687a32bf',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 74 weeks - Last 10 games',
+      latestXGamesToUse: 10,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 74,
+    }).save({ transaction });
+    await system7.setGroups(groups, { transaction });
+    const system8 = await new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '79769246-5a55-4b7e-bd17-ca9ed6a13fb3',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 74 weeks - Last 15 games',
+      latestXGamesToUse: 15,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 74,
+    }).save({ transaction });
+    await system8.setGroups(groups, { transaction });
+    const system9 = await new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: 'd8a7a9f2-5f93-4884-83ef-6632da1dae2c',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 74 weeks - Last 20 games',
+      latestXGamesToUse: 20,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 74,
+    }).save({ transaction });
+    await system9.setGroups(groups, { transaction });
+
+    // const targets = [system1, system2, system3, system4, system5, system6, system7, system8, system9];
+    const targets = [system7, system8, system9];
 
     for (const targetSystem of targets) {
       transaction = await DataBaseHandler.sequelizeInstance.transaction();
-
+      logger.info(`Calculating ${targetSystem.name}`);
       await RankingPlace.destroy({
         where: {
           SystemId: targetSystem.id,
@@ -143,6 +181,7 @@ import moment from 'moment';
       await calulateLastPlace(transaction, targetSystem);
       await transaction.commit();
     }
+    
   } catch (error) {
     logger.error('something went wrong', error);
     transaction.rollback();

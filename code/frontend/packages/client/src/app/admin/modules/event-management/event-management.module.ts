@@ -14,10 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from 'app/_shared';
-import { EventCompetitionFieldsComponent, EventTournamentFieldsComponent } from './components';
-import { EventCompetitionLevelFieldsComponent } from './components/event-competition-level-fields/event-competition-level-fields.component';
 import { EventManagementRoutingModule } from './event-management-routing.module';
-import { EditEventCompetitionComponent } from './pages/edit-competition-event';
 import { AddEventDialogComponent } from './pages/import/components/add-event.dialog/add-event.dialog.component';
 import { UploadFieldComponent } from './pages/import/components/upload-field/upload-field.component';
 import { DragOverDirective } from './pages/import/directives/dragover.directive';
@@ -42,14 +39,10 @@ const materialModules = [
 
 @NgModule({
   declarations: [
-    EventCompetitionFieldsComponent,
-    EventTournamentFieldsComponent,
-    EditEventCompetitionComponent,
     ImportComponent,
     DragOverDirective,
     UploadFieldComponent,
     AddEventDialogComponent,
-    EventCompetitionLevelFieldsComponent,
   ],
   imports: [SharedModule, ...materialModules, EventManagementRoutingModule],
 })

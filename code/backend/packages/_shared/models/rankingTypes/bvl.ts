@@ -189,7 +189,7 @@ export class BvlRankingCalc extends RankingCalc {
 
     let placesMen = [];
     let placesWomen = [];
-    let gameCount;
+    let gameCount = null;
 
     const amountSinceStart = Math.abs(
       moment([2016, 8, 1]).diff(endDate, this.rankingType.inactivityUnit)

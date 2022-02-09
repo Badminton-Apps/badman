@@ -88,6 +88,10 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
       .subscribe((data) => (this.dataSource.data = data));
   }
 
+  watchSystem(system: RankingSystem) {
+    this.systemsService.watchSystem(system);
+  }
+
   async calculate() {
     await lastValueFrom(
       this.simulateService
@@ -127,8 +131,15 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
     return numSelected === numRows;
   }
 
-  async makePrimary(systemId: string) {
-    await lastValueFrom(this.systemsService.makePrimary(systemId).pipe(tap((_) => this.updateHappend.next(true))));
+  async makePrimary(systemId: RankingSystem) {
+    await lastValueFrom(
+      this.systemsService
+        .updateSystem({
+          id: systemId.id,
+          primary: true,
+        })
+        .pipe(tap((_) => this.updateHappend.next(true)))
+    );
   }
   async deleteSystem(systemId: string) {
     await lastValueFrom(this.systemsService.deleteSystem(systemId).pipe(tap((_) => this.updateHappend.next(true))));
