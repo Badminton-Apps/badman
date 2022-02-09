@@ -225,7 +225,8 @@
       "sets": "Games",
       "totalPoints": "Punten",
       "spoiler": "Dit is een Knock-out reeks, maar omdat er binnenkort een nieuwe design komt (spoiler alert!), tonen we de reeks voorlopig als tabel"
-    }
+    },
+    "usedRankingNote": "Maak zeker dat er een update is geweest deze maand"
   },
   "players": {
     "title": "Spelers",
@@ -373,5 +374,18 @@
   },
   "permission": {
     "no-perm": "Je hebt onvoldoende bewerkingsrechten hiervoor"
+  },
+  "months": {
+    "january": "Januari",
+    "february": "Februari",
+    "march": "Maart",
+    "april": "April",
+    "may": "Mei",
+    "june": "Juni",
+    "august": "Augustus",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "December"
   }
 }
