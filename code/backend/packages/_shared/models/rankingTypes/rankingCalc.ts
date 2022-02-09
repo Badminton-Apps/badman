@@ -429,7 +429,7 @@ export class RankingCalc {
               'systemId',
             ],
             where: {
-              SystemId: this.rankingType.id,
+              systemId: this.rankingType.id,
             },
           },
           {
