@@ -1,3 +1,12 @@
+## [4.24.2](https://github.com/Badminton-Apps/badman/compare/v4.24.1...v4.24.2) (2022-02-09)
+
+
+### Bug Fixes
+
+* reset loading when done downloading ([959b0d8](https://github.com/Badminton-Apps/badman/commit/959b0d8693ac6959e715483e3a502ee675e1533e))
+
+
+
 ## [4.24.1](https://github.com/Badminton-Apps/badman/compare/v4.24.0...v4.24.1) (2022-02-09)
 
 
