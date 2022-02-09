@@ -112,7 +112,7 @@ import moment from 'moment';
       latestXGamesToUse: 10,
       periodUnit: 'weeks',
       periodAmount: 52,
-      primary: true,
+      primary: false,
     }).save({ transaction });
     await system6.setGroups(groups, { transaction });
 

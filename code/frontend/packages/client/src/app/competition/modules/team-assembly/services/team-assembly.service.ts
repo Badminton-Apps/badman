@@ -10,6 +10,7 @@ export class TeamAssemblyService {
   constructor(private httpClient: HttpClient) {}
 
   getTeamAssembly(input: {
+    systemId: string;
     captainId: string;
     teamId: string;
     encounterId: string;

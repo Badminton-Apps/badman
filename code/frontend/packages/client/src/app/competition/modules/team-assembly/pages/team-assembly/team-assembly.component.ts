@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { CompetitionEncounter, CompetitionEvent, EventService, PdfService, Player } from 'app/_shared';
+import { CompetitionEncounter, CompetitionEvent, EventService, PdfService, Player, SystemService } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
 import { lastValueFrom, map, switchMap } from 'rxjs';
@@ -25,6 +25,7 @@ export class TeamAssemblyComponent implements OnInit {
     private assemblyService: TeamAssemblyService,
     private apollo: Apollo,
     private encoutnerService: EncounterService,
+    private systemService: SystemService,
     private pdfService: PdfService,
     private titleService: Title,
     private activatedRoute: ActivatedRoute
@@ -84,28 +85,32 @@ export class TeamAssemblyComponent implements OnInit {
     }.pdf`;
 
     await lastValueFrom(
-      this.assemblyService
-        .getTeamAssembly({
-          captainId: this.formGroup.get('captain')?.value,
-          teamId: this.formGroup.get('team')?.value,
-          encounterId: encounterId,
-          team: {
-            double: [
-              this.formGroup.get('double1')?.value?.map((r: Player) => r.id),
-              this.formGroup.get('double2')?.value?.map((r: Player) => r.id),
-              this.formGroup.get('double3')?.value?.map((r: Player) => r.id),
-              this.formGroup.get('double4')?.value?.map((r: Player) => r.id),
-            ],
-            single: [
-              this.formGroup.get('single1')?.value?.id,
-              this.formGroup.get('single2')?.value?.id,
-              this.formGroup.get('single3')?.value?.id,
-              this.formGroup.get('single4')?.value?.id,
-            ],
-            subtitude: this.formGroup.get('substitude')?.value?.map((r: Player) => r?.id) ?? [],
-          },
-        })
-        .pipe(switchMap((html) => this.pdfService.generatePdf(html, fileName)))
+      this.systemService.getPrimarySystem().pipe(
+        switchMap((system) =>
+          this.assemblyService.getTeamAssembly({
+            systemId: system!.id!,
+            captainId: this.formGroup.get('captain')?.value,
+            teamId: this.formGroup.get('team')?.value,
+            encounterId: encounterId,
+            team: {
+              double: [
+                this.formGroup.get('double1')?.value?.map((r: Player) => r.id),
+                this.formGroup.get('double2')?.value?.map((r: Player) => r.id),
+                this.formGroup.get('double3')?.value?.map((r: Player) => r.id),
+                this.formGroup.get('double4')?.value?.map((r: Player) => r.id),
+              ],
+              single: [
+                this.formGroup.get('single1')?.value?.id,
+                this.formGroup.get('single2')?.value?.id,
+                this.formGroup.get('single3')?.value?.id,
+                this.formGroup.get('single4')?.value?.id,
+              ],
+              subtitude: this.formGroup.get('substitude')?.value?.map((r: Player) => r?.id) ?? [],
+            },
+          })
+        ),
+        switchMap((html) => this.pdfService.generatePdf(html, fileName))
+      )
     );
 
     this.pdfLoading = false;
