@@ -1,3 +1,14 @@
+## [4.24.1](https://github.com/Badminton-Apps/badman/compare/v4.24.0...v4.24.1) (2022-02-09)
+
+
+### Bug Fixes
+
+* All (last)Places Check for system id ([1a8f64d](https://github.com/Badminton-Apps/badman/commit/1a8f64dede507daa12cf2df3b9ba614de3f87c4f))
+* Assembly should check system ([2e3f796](https://github.com/Badminton-Apps/badman/commit/2e3f79633a8b7d209d7ef0e651e04606c9cc688e))
+* Correct default value for ranking ([1441469](https://github.com/Badminton-Apps/badman/commit/14414690b94948741894b3b24bdad04800607154))
+
+
+
 # [4.24.0](https://github.com/Badminton-Apps/badman/compare/v4.23.1...v4.24.0) (2022-02-09)
 
 
