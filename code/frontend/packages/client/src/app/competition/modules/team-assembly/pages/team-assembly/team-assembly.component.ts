@@ -6,7 +6,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { CompetitionEncounter, CompetitionEvent, EventService, PdfService, Player, SystemService } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
-import { lastValueFrom, map, switchMap } from 'rxjs';
+import { lastValueFrom, map, switchMap, finalize } from 'rxjs';
 import { TeamAssemblyService } from '../../services/team-assembly.service';
 
 @Component({
@@ -109,10 +109,9 @@ export class TeamAssemblyComponent implements OnInit {
             },
           })
         ),
-        switchMap((html) => this.pdfService.generatePdf(html, fileName))
+        switchMap((html) => this.pdfService.generatePdf(html, fileName)),
+        finalize(() => (this.pdfLoading = false))
       )
     );
-
-    this.pdfLoading = false;
   }
 }
