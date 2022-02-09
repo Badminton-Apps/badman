@@ -8,7 +8,7 @@ export class PdfService {
   constructor() {}
 
   public async generatePdf(data: any, filename: string) {
-    html2pdf()
+    return html2pdf()
       .from(data)
       .set({
         margin: 3,

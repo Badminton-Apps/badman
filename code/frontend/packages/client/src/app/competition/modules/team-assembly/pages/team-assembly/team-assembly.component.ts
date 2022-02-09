@@ -1,12 +1,12 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { CompetitionEncounter, CompetitionEvent, EventService, PdfService, Player, SystemService } from 'app/_shared';
+import { CompetitionEncounter, CompetitionEvent, PdfService, Player, SystemService } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
-import { lastValueFrom, map, switchMap, finalize } from 'rxjs';
+import { lastValueFrom, map, switchMap } from 'rxjs';
 import { TeamAssemblyService } from '../../services/team-assembly.service';
 
 @Component({
@@ -77,13 +77,22 @@ export class TeamAssemblyComponent implements OnInit {
   }
 
   async download() {
+    // Mark as downloading
     this.pdfLoading = true;
+
+    // Auto reeset after 5 seconds
+    setTimeout(() => {
+      this.pdfLoading = false;
+    }, 5000);
+
+    // Get info
     const encounterId = this.formGroup.get('encounter')?.value;
     var encounter = await lastValueFrom(this.encoutnerService.getEncounter(encounterId));
     const fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${encounter?.home?.name} vs ${
       encounter?.away?.name
     }.pdf`;
 
+    // Generate pdf
     await lastValueFrom(
       this.systemService.getPrimarySystem().pipe(
         switchMap((system) =>
@@ -109,9 +118,11 @@ export class TeamAssemblyComponent implements OnInit {
             },
           })
         ),
-        switchMap((html) => this.pdfService.generatePdf(html, fileName)),
-        finalize(() => (this.pdfLoading = false))
+        switchMap((html) => this.pdfService.generatePdf(html, fileName))
       )
     );
+
+    // Reset loading
+    this.pdfLoading = false;
   }
 }
