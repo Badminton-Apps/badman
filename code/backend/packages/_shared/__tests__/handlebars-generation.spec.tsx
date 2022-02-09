@@ -361,6 +361,7 @@ describe('PDF service', () => {
 
     // Act
     await handlebarService.getTeamAssemblyPdf({
+      systemId: rankingSystem.id,
       captainId: captainPlayer.id,
       encounterId: encounter.id,
       teamId: team1.id,
