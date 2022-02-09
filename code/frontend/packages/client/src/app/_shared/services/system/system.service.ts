@@ -144,10 +144,15 @@ export class SystemService {
     );
   }
 
-  getSystems(sort?: string, direction?: SortDirection, page?: number): Observable<RankingSystem[]> {
+  getSystems(sort?: string, direction?: SortDirection, page?: number, pageSize?: number): Observable<RankingSystem[]> {
     return this.apollo
       .query<{ systems: RankingSystem[] }>({
         query: systemsQuery,
+        variables: {
+          order: `${direction == 'asc' ? '' : 'reverse:'}${sort}`,
+          offset: (page ?? 0) * (pageSize ?? 15),
+          limit: pageSize,
+        },
       })
       .pipe(map((x) => x.data?.systems.map((s) => new RankingSystem(s))));
   }

@@ -64,9 +64,9 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
     merge(this.sort.sortChange, this.paginator.page, this.updateHappend)
       .pipe(
         startWith({}),
-        switchMap(() => {
+        switchMap((sort, page) => {
           this.isLoadingResults = true;
-          return this.systemsService.getSystems(this.sort.active, this.sort.direction, this.paginator.pageIndex);
+          return this.systemsService.getSystems(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
         }),
         map((data) => {
           // Flip flag to show that loading has finished.

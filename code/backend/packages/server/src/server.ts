@@ -20,7 +20,6 @@ import {
   EnrollmentController,
   RankingController,
   RequestLinkController,
-  SystemController,
   UserController,
   PdfController
 } from './controllers';
@@ -52,7 +51,6 @@ const startServer = async (databaseService: DataBaseHandler) => {
     [
       new EnrollmentController(Router(), authService.checkAuth, databaseService, notifService),
       new RankingController(Router(), authService.checkAuth),
-      new SystemController(Router(), authService.checkAuth, databaseService),
       new UserController(Router(), authService.checkAuth, databaseService),
       new RequestLinkController(Router(), authService.checkAuth),
       new PdfController(Router(), handlebarService)
