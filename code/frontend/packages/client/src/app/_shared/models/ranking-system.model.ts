@@ -90,10 +90,10 @@ export interface RankingPlacesResult {
 }
 
 export enum RankingSystems {
-  BVL,
-  LFBB,
-  ORIGINAL,
-  VISUAL,
+  BVL = 'BVL',
+  LFBB = 'LFBB',
+  ORIGINAL = 'ORIGINAL',
+  VISUAL = 'VISUAL',
 }
 
 export enum StartingType {

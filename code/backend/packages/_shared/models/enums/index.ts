@@ -7,6 +7,7 @@ export * from './subEventType.enum';
 export * from './rankingsSystemsType.enum';
 export * from './startingType.enum'
 export * from './rankingTiming.enum'
+export * from './usedRankingTiming.enum'
 export * from './teamMembershipType.enum'
 export * from './clubMembershipType.enum'
 export * from './availability.enum'

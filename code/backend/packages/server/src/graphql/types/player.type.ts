@@ -72,12 +72,11 @@ export const PlayerType = new GraphQLObjectType({
         type: new GraphQLList(RankingPlaceType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Player.associations.rankingPlaces, {
-          before: async (findOptions: { [key: string]: object }, args) => {
-            findOptions.where = {
-              ...queryFixer(findOptions.where)
+          before: async (findOptions: { [key: string]: object }) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
             };
-            findOptions.order = [args.order ?? ['rankingDate', 'DESC']];
-            findOptions.limit = args.limit;
             return findOptions;
           }
         })

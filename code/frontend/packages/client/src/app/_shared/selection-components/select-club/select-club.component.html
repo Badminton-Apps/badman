@@ -1,10 +1,21 @@
 <ng-container [formGroup]="formGroup">
-  <mat-form-field appearance="outline" class="flex">
+  <mat-form-field appearance="outline" fxFlex *ngIf="!this.useAutocomplete">
     <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
+
     <mat-select formControlName="club" required>
       <mat-option *ngFor="let option of this.options" [value]="option.id">
         {{ option.name }}
       </mat-option>
     </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" *ngIf="this.useAutocomplete" fxFlex>
+    <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
+    <input matInput [formControl]="autoCompleteFormControl"  [matAutocomplete]="auto" />
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="this.formControl.setValue($event.option.value.id)">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{ option.name }}
+      </mat-option>
+    </mat-autocomplete>
   </mat-form-field>
 </ng-container>

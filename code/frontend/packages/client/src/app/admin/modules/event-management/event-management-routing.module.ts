@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
-import { EditEventCompetitionComponent } from './pages/edit-competition-event';
 import { ImportComponent } from './pages/import/import.component';
 
 const routes: Routes = [
@@ -14,26 +13,6 @@ const routes: Routes = [
         any: ['import:competition', 'import:tournament'],
       },
     },
-  },
-  {
-    path: 'competition',
-    children: [
-      {
-        path: ':id/edit',
-        children: [
-          {
-            path: '',
-            component: EditEventCompetitionComponent,
-          },
-        ],
-        canActivate: [AuthGuard],
-        data: {
-          claims: {
-            any: 'edit:competition',
-          },
-        },
-      },
-    ],
   },
 ];
 

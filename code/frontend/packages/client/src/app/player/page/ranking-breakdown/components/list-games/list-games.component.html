@@ -46,6 +46,21 @@
           }}
         </mat-slide-toggle>
       </div>
+      <div *ngIf="(this.system.latestXGamesToUse ?? 0) > 0">
+        <mat-slide-toggle formControlName="includeOutOfScope">
+          {{ 'breakdown.includeOutOfScope' | translate }}:
+          {{
+            outOfScopeGames.length
+              | i18nPlural
+                : {
+                    '=0': 'breakdown.outOfScope.none',
+                    '=1': 'breakdown.outOfScope.one',
+                    other: 'breakdown.outOfScope.other'
+                  }
+              | translate: { count: outOfScopeGames.length }
+          }}
+        </mat-slide-toggle>
+      </div>
       <div>
         <button (click)="this.addGame()" mat-stroked-button>{{ 'breakdown.add-game.title' | translate }}</button>
       </div>
@@ -102,7 +117,7 @@
     <ng-container matColumnDef="points">
       <mat-header-cell *matHeaderCellDef>{{ 'breakdown.points' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let game" attr.data-label="{{ 'points' | translate }}">
-        <ng-container *ngIf="game.type == 0">{{ game.points }}</ng-container>
+        <ng-container *ngIf="game.type == 'WON'">{{ game.points }}</ng-container>
       </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
@@ -122,11 +137,11 @@
         }"
       >
         <ng-container [ngSwitch]="game.type">
-          <span *ngSwitchCase="0"
+          <span *ngSwitchCase="'WON'"
             ><span [matTooltip]="getTooltip(game, true)">{{ game.avgUpgrade | number: '.2-2' }}</span></span
           >
-          <span *ngSwitchCase="1">0</span>
-          <span *ngSwitchCase="2">-</span>
+          <span *ngSwitchCase="'LOST_UPGRADE'">0</span>
+          <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
           <span *ngSwitchDefault>-</span>
         </ng-container>
       </mat-cell>
@@ -148,11 +163,11 @@
         }"
       >
         <ng-container [ngSwitch]="game.type">
-          <span *ngSwitchCase="0">
+          <span *ngSwitchCase="'WON'">
             <span [matTooltip]="getTooltip(game, false)">{{ game.avgDowngrade | number: '.2-2' }}</span></span
           >
-          <span *ngSwitchCase="1">0</span>
-          <span *ngSwitchCase="2">0</span>
+          <span *ngSwitchCase="'LOST_UPGRADE'">-</span>
+          <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
           <span *ngSwitchDefault>-</span>
         </ng-container>
       </mat-cell>
@@ -244,7 +259,7 @@
     <ng-container matColumnDef="points">
       <mat-header-cell *matHeaderCellDef>{{ 'breakdown.points' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let game" attr.data-label="{{ 'points' | translate }}">
-        <ng-container *ngIf="game.type == 0">{{ game.points }}</ng-container>
+        <ng-container *ngIf="game.type == 'WON'">{{ game.points }}</ng-container>
       </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
@@ -256,9 +271,9 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let game">
         <ng-container [ngSwitch]="game.type">
-          <span *ngSwitchCase="0"></span>
-          <span *ngSwitchCase="1">0</span>
-          <span *ngSwitchCase="2">-</span>
+          <span *ngSwitchCase="'WON'"></span>
+          <span *ngSwitchCase="'LOST_UPGRADE'">0</span>
+          <span *ngSwitchCase="'LOST_DOWNGRADE'">-</span>
           <span *ngSwitchDefault>-</span>
         </ng-container>
       </mat-cell>
@@ -272,9 +287,9 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let game">
         <ng-container [ngSwitch]="game.type">
-          <span *ngSwitchCase="0"></span>
-          <span *ngSwitchCase="1">0</span>
-          <span *ngSwitchCase="2">0</span>
+          <span *ngSwitchCase="'WON'"></span>
+          <span *ngSwitchCase="'LOST_UPGRADE'">0</span>
+          <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
           <span *ngSwitchDefault>-</span>
         </ng-container>
       </mat-cell>

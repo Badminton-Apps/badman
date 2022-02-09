@@ -225,7 +225,8 @@
       "sets": "Games",
       "totalPoints": "Punten",
       "spoiler": "Dit is een Knock-out reeks, maar omdat er binnenkort een nieuwe design komt (spoiler alert!), tonen we de reeks voorlopig als tabel"
-    }
+    },
+    "usedRankingNote": "Maak zeker dat er een update is geweest deze maand"
   },
   "players": {
     "title": "Spelers",
@@ -265,10 +266,16 @@
     "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
     "evolution": "Evolution",
     "pointsPerGame": "Punten per wedstrijd",
+    "includeOutOfScope": "Out of scope",
     "lostGames": {
       "none": "Geen verloren wedstrijden",
       "one": "1 verloren wedstrijd",
       "other": "{{count}} verloren wedstrijden"
+    },
+    "outOfScope": {
+      "none": "Geen wedstrijden",
+      "one": "1 wedstrijd",
+      "other": "{{count}} wedstrijden"
     },
     "date": "Datum",
     "no-tean": "Geen team",
@@ -327,6 +334,8 @@
     "create": "Aanmaken",
     "merge-accounts": "Combineer accounts",
     "set-ranking-groups": "Set ranking",
+    "set-primary": "Maak primair",
+    "watch-system": "Bekijk systeem",
     "edit": "Bewerken",
     "done": "Klaar",
     "detail": "Details",
@@ -373,5 +382,18 @@
   },
   "permission": {
     "no-perm": "Je hebt onvoldoende bewerkingsrechten hiervoor"
+  },
+  "months": {
+    "january": "Januari",
+    "february": "Februari",
+    "march": "Maart",
+    "april": "April",
+    "may": "Mei",
+    "june": "Juni",
+    "august": "Augustus",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "December"
   }
 }

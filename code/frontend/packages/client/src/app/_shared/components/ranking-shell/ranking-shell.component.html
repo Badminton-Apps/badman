@@ -13,7 +13,14 @@
     <div class="middle">
       <app-header-search></app-header-search>
     </div>
-    <div class="end">
+    <div class="end" fxLayoutGap="16px">
+      <button
+        mat-stroked-button
+        *ngIf="this.systemService.watchSysem$ | async as watching"
+        (click)="this.systemService.clearWatchSystem()"
+      >
+        {{ watching.name }}
+      </button>
       <!-- <app-notification></app-notification> -->
       <app-user-info></app-user-info>
     </div>
