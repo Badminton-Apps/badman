@@ -426,8 +426,11 @@ export class RankingCalc {
               'singleInactive',
               'doubleInactive',
               'mixInactive',
-              "systemId"
+              'systemId',
             ],
+            where: {
+              SystemId: this.rankingType.id,
+            },
           },
           {
             model: Game,
@@ -657,6 +660,7 @@ export class RankingCalc {
         mix: mixLevel,
         double: doubleLevel,
         updatePossible: true,
+        SystemId: this.rankingType.id
       });
 
       return this.protectRanking(newRanking);
@@ -676,6 +680,7 @@ export class RankingCalc {
       mix: lastRanking.mix,
       double: lastRanking.double,
       updatePossible: false,
+      SystemId: this.rankingType.id
     });
   }
 

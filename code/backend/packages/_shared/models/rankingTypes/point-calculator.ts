@@ -124,7 +124,6 @@ export class PointCalculator {
     // Get the closest ranking before the game was played
     return player?.rankingPlaces
       ?.sort((a, b) => b.rankingDate.getTime() - a.rankingDate.getTime())
-      ?.filter((place) => place.rankingDate.getTime() <= date.getTime())
-      [0];
+      ?.filter((place) => place.rankingDate.getTime() <= date.getTime())[0];
   }
 }

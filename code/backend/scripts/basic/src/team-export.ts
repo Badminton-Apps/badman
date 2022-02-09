@@ -141,6 +141,7 @@ async function updateCsvFile(
 ) {
   new DataBaseHandler(dbConfig.default);
 
+  const system = await RankingSystem.findOne({ where: { primary: true } });
   const dbTeams = await Team.findAll({
     where: {
       active: true
@@ -169,8 +170,11 @@ async function updateCsvFile(
         model: Player,
         as: 'players',
         include: [LastRankingPlace],
+        where: {
+          systemId: system.id
+        },
         through: {
-          where: { base: true }
+          where: { base: true },
         }
       },
       {
@@ -180,7 +184,6 @@ async function updateCsvFile(
     ]
   });
 
-  const system = await RankingSystem.findOne({ where: { primary: true } });
 
   for (const team of dbTeams) {
     const subEvent = team.subEvents[0];
