@@ -8,6 +8,7 @@ export class CompetitionEvent extends Event {
   comments?: Comment[];
   type?: LevelType;
 
+
   constructor({ ...args }: Partial<CompetitionEvent>) {
     super(args);
     this.startYear = args.startYear;
