@@ -590,6 +590,7 @@ type GamePlayer {
 type RankingPlace {
   id: String!
   rankingDate: Date
+  gender: String
   singlePoints: Int
   mixPoints: Int
   doublePoints: Int
@@ -617,16 +618,7 @@ type RankingPlace {
   createdAt: Date!
   updatedAt: Date!
   rankingSystem: RankingSystem
-  player(
-    limit: Int
-    order: String
-
-    """
-    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
-    """
-    where: SequelizeJSON
-    offset: Int
-  ): Player!
+  player: Player!
 }
 
 """A RankingSystem"""
@@ -673,6 +665,44 @@ type RankingSystem {
     gender: String
   ): CountsResult
   groups: [RankingSystemGroup]
+  places(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+    orderBy: [RankingOrderBy]
+
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    where: SequelizeJSON
+  ): RankingPlaceConnection
+  lastPlaces(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+    orderBy: [RankingOrderBy]
+
+    """
+    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
+    """
+    where: SequelizeJSON
+  ): LastRankingPlaceConnection
 }
 
 enum RankingSysteminactivityUnitEnumType {
@@ -736,6 +766,74 @@ type RankingSystemGroup {
   updatedAt: Date!
 }
 
+"""A connection to a list of items."""
+type RankingPlaceConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [RankingPlaceEdge]
+  total: Int
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+"""An edge in a connection."""
+type RankingPlaceEdge {
+  """The item at the end of the edge"""
+  node: RankingPlaceOutput
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""A 2nd RankingPlace"""
+type RankingPlaceOutput {
+  id: String!
+  rankingDate: Date
+  gender: String
+  singlePoints: Int
+  mixPoints: Int
+  doublePoints: Int
+  singlePointsDowngrade: Int
+  mixPointsDowngrade: Int
+  doublePointsDowngrade: Int
+  singleRank: Int
+  mixRank: Int
+  doubleRank: Int
+  totalSingleRanking: Int
+  totalMixRanking: Int
+  totalDoubleRanking: Int
+  totalWithinSingleLevel: Int
+  totalWithinMixLevel: Int
+  totalWithinDoubleLevel: Int
+  single: Int
+  mix: Int
+  double: Int
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  updatePossible: Boolean
+  playerId: String
+  SystemId: String
+  createdAt: Date!
+  updatedAt: Date!
+  player: Player
+}
+
 """A Player"""
 type Player {
   id: String!
@@ -764,17 +862,7 @@ type Player {
     where: SequelizeJSON
     offset: Int
   ): [RankingPlace]
-  lastRanking(
-    limit: Int
-    order: String
-
-    """
-    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
-    """
-    where: SequelizeJSON
-    offset: Int
-    system: String
-  ): LastRankingPlace
+  lastRanking(system: String): LastRankingPlace
   rankingPoints(
     limit: Int
     order: String
@@ -817,6 +905,7 @@ type Player {
 type LastRankingPlace {
   id: String!
   rankingDate: Date
+  gender: String
   singlePoints: Int
   mixPoints: Int
   doublePoints: Int
@@ -843,16 +932,7 @@ type LastRankingPlace {
   createdAt: Date!
   updatedAt: Date!
   rankingSystem: RankingSystem
-  player(
-    limit: Int
-    order: String
-
-    """
-    A JSON object conforming the the shape specified in http://docs.sequelizejs.com/en/latest/docs/querying/
-    """
-    where: SequelizeJSON
-    offset: Int
-  ): Player!
+  player: Player
 }
 
 """A RankingPoint"""
@@ -896,6 +976,67 @@ type RankingPoint {
     where: SequelizeJSON
     offset: Int
   ): Game!
+}
+
+enum RankingOrderBy {
+  singleRank
+  doubleRank
+  mixRank
+  reverse_singleRank
+  reverse_doubleRank
+  reverse_mixRank
+}
+
+"""A connection to a list of items."""
+type LastRankingPlaceConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [LastRankingPlaceEdge]
+  total: Int
+}
+
+"""An edge in a connection."""
+type LastRankingPlaceEdge {
+  """The item at the end of the edge"""
+  node: LastRankingPlaceOutput
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""A 2nd LastRankingPlace"""
+type LastRankingPlaceOutput {
+  id: String!
+  rankingDate: Date
+  gender: String
+  singlePoints: Int
+  mixPoints: Int
+  doublePoints: Int
+  singlePointsDowngrade: Int
+  mixPointsDowngrade: Int
+  doublePointsDowngrade: Int
+  singleRank: Int
+  mixRank: Int
+  doubleRank: Int
+  totalSingleRanking: Int
+  totalMixRanking: Int
+  totalDoubleRanking: Int
+  totalWithinSingleLevel: Int
+  totalWithinMixLevel: Int
+  totalWithinDoubleLevel: Int
+  single: Int
+  mix: Int
+  double: Int
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  playerId: String
+  systemId: String
+  createdAt: Date!
+  updatedAt: Date!
+  player: Player
 }
 
 """A DrawTournament"""
@@ -1056,6 +1197,8 @@ type EventTournament {
   allowEnlisting: Boolean
   visualCode: String
   slug: String
+  usedRankingAmount: Int
+  usedRankingUnit: EventTournamentusedRankingUnitEnumType
   createdAt: Date!
   updatedAt: Date!
   subEvents(
@@ -1078,6 +1221,12 @@ type EventTournament {
     where: SequelizeJSON
     offset: Int
   ): [Location]
+}
+
+enum EventTournamentusedRankingUnitEnumType {
+  months
+  weeks
+  days
 }
 
 """A Location"""
@@ -1237,6 +1386,8 @@ type EventCompetition {
   allowEnlisting: Boolean
   started: Boolean
   slug: String
+  usedRankingAmount: Int
+  usedRankingUnit: EventCompetitionusedRankingUnitEnumType
   createdAt: Date!
   updatedAt: Date!
   subEvents(
@@ -1265,6 +1416,12 @@ enum EventCompetitiontypeEnumType {
   PROV
   LIGA
   NATIONAL
+}
+
+enum EventCompetitionusedRankingUnitEnumType {
+  months
+  weeks
+  days
 }
 
 """A Comment"""
@@ -1405,21 +1562,6 @@ type ClubConnection {
   """A list of edges."""
   edges: [ClubEdge]
   total: Int
-}
-
-"""Information about pagination in a connection."""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: String
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
 }
 
 """An edge in a connection."""
@@ -1571,6 +1713,7 @@ type RootMutationType {
   addPlayerToClub(clubId: ID, playerId: ID): Club
   addPlayerToRole(roleId: ID, playerId: ID): Role
   addPlayerToTeam(teamId: ID, playerId: ID): Team
+  addRankingPlace(rankingPlace: RankingPlaceInput!): RankingPlace
   addRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
   addRankingSystemGroup(rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
   addRole(role: RoleInput, clubId: Int): Role
@@ -1582,6 +1725,7 @@ type RootMutationType {
   removePlayerBaseSubEvent(teamId: ID, playerId: ID, subEventId: ID): Team
   removePlayerFromRole(roleId: ID, playerId: ID): Role
   removePlayerFromTeam(teamId: ID, playerId: ID): Team
+  removeRankingPlace(rankingPlace: RankingPlaceInput!): RankingPlace
   removeRole(id: ID): Role
   removeSubEventToRankingSystemGroup(rankingSystemGroupId: ID!, competitions: [ID!], tournaments: [ID!]): RankingSystemGroup
   removeTeam(teamId: ID): Team
@@ -1596,6 +1740,7 @@ type RootMutationType {
   updatePlayer(player: PlayerInput): Player
   updatePlayerRanking(rankingPlace: RankingPlaceInput!, playerId: String!): Player
   updatePlayerTeam(teamId: ID, playerId: ID, base: Boolean): Team
+  updateRankingPlace(rankingPlace: RankingPlaceInput!): RankingPlace
   updateRankingSystem(rankingSystem: RankingSystemInput): RankingSystem
   updateRankingSystemGroup(rankingSystemGroup: RankingSystemGroupInput): RankingSystemGroup
   updateRole(role: RoleInput): Role
@@ -1666,6 +1811,8 @@ input EventCompetitionInput {
   allowEnlisting: Boolean
   started: Boolean
   slug: String
+  usedRankingAmount: Int
+  usedRankingUnit: EventCompetitionusedRankingUnitEnumType
   subEvents: [SubEventCompetitionInput]
 }
 
@@ -1699,6 +1846,8 @@ input EventTournamentInput {
   allowEnlisting: Boolean
   visualCode: String
   slug: String
+  usedRankingAmount: Int
+  usedRankingUnit: EventTournamentusedRankingUnitEnumType
   subEvents: [SubEventTournamentInput]
 }
 
@@ -1743,6 +1892,37 @@ input PlayerInput {
   competitionPlayer: Boolean
   slug: String
   memberId: String
+}
+
+"""This represents a RankingPlaceInputType"""
+input RankingPlaceInput {
+  id: String
+  rankingDate: Date
+  gender: String
+  singlePoints: Int
+  mixPoints: Int
+  doublePoints: Int
+  singlePointsDowngrade: Int
+  mixPointsDowngrade: Int
+  doublePointsDowngrade: Int
+  singleRank: Int
+  mixRank: Int
+  doubleRank: Int
+  totalSingleRanking: Int
+  totalMixRanking: Int
+  totalDoubleRanking: Int
+  totalWithinSingleLevel: Int
+  totalWithinMixLevel: Int
+  totalWithinDoubleLevel: Int
+  single: Int
+  mix: Int
+  double: Int
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  updatePossible: Boolean
+  playerId: String
+  SystemId: String
 }
 
 """This represents a RankingSystemGroupInput"""
@@ -1817,34 +1997,4 @@ input TeamInput {
   active: Boolean
   captainId: String
   players: PlayerInput
-}
-
-"""This represents a RankingPlaceInputType"""
-input RankingPlaceInput {
-  id: String
-  rankingDate: Date
-  singlePoints: Int
-  mixPoints: Int
-  doublePoints: Int
-  singlePointsDowngrade: Int
-  mixPointsDowngrade: Int
-  doublePointsDowngrade: Int
-  singleRank: Int
-  mixRank: Int
-  doubleRank: Int
-  totalSingleRanking: Int
-  totalMixRanking: Int
-  totalDoubleRanking: Int
-  totalWithinSingleLevel: Int
-  totalWithinMixLevel: Int
-  totalWithinDoubleLevel: Int
-  single: Int
-  mix: Int
-  double: Int
-  singleInactive: Boolean
-  mixInactive: Boolean
-  doubleInactive: Boolean
-  updatePossible: Boolean
-  playerId: String
-  SystemId: String
 }

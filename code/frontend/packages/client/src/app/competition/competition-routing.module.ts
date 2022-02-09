@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
-import { DetailCompetitionComponent } from './pages';
-import { DetailDrawCompetitionComponent } from './pages/detail-draw/detail-draw.component';
+import { DetailCompetitionComponent, DetailDrawCompetitionComponent, EditEventCompetitionComponent } from './pages';
 
 const routes: Routes = [
   {
@@ -25,6 +24,23 @@ const routes: Routes = [
         path: '',
         component: DetailCompetitionComponent,
       },
+
+      {
+        path: 'edit',
+        children: [
+          {
+            path: '',
+            component: EditEventCompetitionComponent,
+          },
+        ],
+        canActivate: [AuthGuard],
+        data: {
+          claims: {
+            any: 'edit:competition',
+          },
+        },
+      },
+
       {
         path: ':drawId',
         component: DetailDrawCompetitionComponent,
@@ -38,4 +54,3 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class CompetitionRoutingModule {}
- 
