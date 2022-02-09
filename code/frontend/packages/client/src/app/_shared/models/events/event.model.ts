@@ -11,6 +11,9 @@ export class Event {
   updatedAt?: Date;
   players?: Player[];
 
+  usedRankingUnit?: 'days' | 'weeks' | 'months';
+  usedRankingAmount?: number;
+
   subEvents?: SubEvent[];
 
   constructor({ ...args }: Partial<Event>) {
@@ -22,6 +25,9 @@ export class Event {
     this.allowEnlisting = args.allowEnlisting;
     this.updatedAt = args.updatedAt;
     this.players = args?.players?.map((p) => new Player(p));
+
+    this.usedRankingUnit = args.usedRankingUnit;
+    this.usedRankingAmount = args.usedRankingAmount;
   }
 }
 

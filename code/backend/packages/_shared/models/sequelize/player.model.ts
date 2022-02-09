@@ -305,10 +305,10 @@ export class Player extends Model {
 
     return {
       single:
-        placesInSystem.sort((a, b) => a.single - b.single)?.at(0)?.single || max,
+        placesInSystem.sort((a, b) => a.single - b.single)?.[0]?.single || max,
       double:
-        placesInSystem.sort((a, b) => a.double - b.double)?.at(0)?.double || max,
-      mix: placesInSystem.sort((a, b) => a.mix - b.mix)?.at(0)?.mix || max,
+        placesInSystem.sort((a, b) => a.double - b.double)?.[0]?.double || max,
+      mix: placesInSystem.sort((a, b) => a.mix - b.mix)?.[0]?.mix || max,
     } as RankingPlace;
   }
 }

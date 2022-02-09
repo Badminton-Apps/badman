@@ -1,9 +1,8 @@
-query GetPrimarySystemsQuery {
-  systems(where: { primary: true }) {
+query GetPrimarySystemsQuery($where: SequelizeJSON) {
+  systems(where: $where) {
     id
     primary
     amountOfLevels
-    runCurrently
     caluclationIntervalLastUpdate
     differenceForUpgrade
     differenceForDowngrade

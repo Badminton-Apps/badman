@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { Game, Player, PlayerService, RankingSystem } from 'app/_shared';
+import { Game, Player, PlayerService, RankingSystem, SystemService } from 'app/_shared';
 import * as moment from 'moment';
 import {
   combineLatest,
@@ -42,6 +42,7 @@ export class RankingBreakdownComponent implements OnInit {
     includedIgnored: new FormControl(false),
     includedUpgrade: new FormControl(false),
     includedDowngrade: new FormControl(false),
+    includeOutOfScope: new FormControl(false),
   });
 
   constructor(
@@ -49,6 +50,7 @@ export class RankingBreakdownComponent implements OnInit {
     private router: Router,
     private playerService: PlayerService,
     private titleService: Title,
+    private systemService: SystemService,
     private apollo: Apollo
   ) {}
 
@@ -75,6 +77,9 @@ export class RankingBreakdownComponent implements OnInit {
         if (queries['includedDowngrade']) {
           filters['includedDowngrade'] = queries['includedDowngrade'] == 'true';
         }
+        if (queries['includeOutOfScope']) {
+          filters['includeOutOfScope'] = queries['includeOutOfScope'] == 'true';
+        }
 
         this.gameFilter.patchValue(filters);
       });
@@ -99,38 +104,47 @@ export class RankingBreakdownComponent implements OnInit {
             includedIgnored: x.includedIgnored,
             includedUpgrade: x.includedUpgrade,
             includedDowngrade: x.includedDowngrade,
+            includeOutOfScope: x.includeOutOfScope,
           },
         });
       }
     });
 
-    const system$ = this.apollo
-      .query<{ systems: RankingSystem[] }>({
-        query: gql`
-          query getPrimary {
-            systems(where: { primary: true }) {
-              id
-              differenceForUpgrade
-              differenceForDowngrade
-              updateIntervalAmountLastUpdate
-              minNumberOfGamesUsedForUpgrade
-              updateIntervalAmount
-              updateIntervalUnit
-              periodAmount
-              periodUnit
-              pointsToGoUp
-              pointsWhenWinningAgainst
-              pointsToGoDown
-              amountOfLevels
-            }
-          }
-        `,
-      })
-      .pipe(
-        map((x) => new RankingSystem(x.data.systems[0])),
-        filter((x) => !!x),
-        shareReplay(1)
-      );
+    const system$ = this.systemService.getPrimarySystemsWhere().pipe(
+      switchMap((query) =>
+        this.apollo
+          .query<{ systems: RankingSystem[] }>({
+            query: gql`
+              query getPrimary($where: SequelizeJSON) {
+                systems(where: $where) {
+                  id
+                  differenceForUpgrade
+                  differenceForDowngrade
+                  updateIntervalAmountLastUpdate
+                  minNumberOfGamesUsedForUpgrade
+                  updateIntervalAmount
+                  updateIntervalUnit
+                  periodAmount
+                  periodUnit
+                  pointsToGoUp
+                  pointsWhenWinningAgainst
+                  pointsToGoDown
+                  amountOfLevels
+                  latestXGamesToUse
+                }
+              }
+            `,
+            variables: {
+              where: query,
+            },
+          })
+          .pipe(
+            map((x) => new RankingSystem(x.data.systems[0])),
+            filter((x) => !!x),
+            shareReplay(1)
+          )
+      )
+    );
 
     this.data$ = combineLatest([player$, system$, type$, end$]).pipe(
       tap((r) => {
@@ -168,7 +182,7 @@ export class RankingBreakdownComponent implements OnInit {
                         team
                         player
                         fullName
-                        rankingPlace(where: { SystemId: $rankingType }) {
+                        rankingPlace(where: { SystemId: $rankingType }, limit: 1, order: "reverse:rankingDate") {
                           id
                           rankingDate
                           ${type}
