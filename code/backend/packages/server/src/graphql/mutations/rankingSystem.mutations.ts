@@ -1,25 +1,13 @@
 import {
+  ApiError,
   AuthenticatedRequest,
   canExecute,
   DataBaseHandler,
-  DrawCompetition,
-  DrawTournament,
-  EncounterCompetition,
-  Game,
-  GamePlayer,
   GroupSystems,
   logger,
-  Player,
-  RankingPlace,
-  getSystemCalc,
   RankingSystem,
-  RankingSystemGroup,
-  StartVisualRankingDate,
-  SubEventCompetition,
-  SubEventTournament,
-  ApiError
+  RankingSystemGroup
 } from '@badvlasim/shared';
-import { Op } from 'sequelize';
 import { RankingSystemInputType, RankingSystemType } from '../types';
 
 export const addRankingSystemMutation = {
