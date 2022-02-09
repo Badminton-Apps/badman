@@ -8,7 +8,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 
 import {
@@ -30,16 +30,17 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import { Location } from '../location.model';
 import { LocationEventTournament } from './location-event.model';
 import { SubEventTournament } from './sub-event-tournament.model';
 import { Slugify } from '../../../../types/slugify';
+import { UsedRankingTiming } from '../../../enums/';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 })
 export class EventTournament extends Model {
   constructor(values?: Partial<EventTournament>, options?: BuildOptions) {
@@ -66,22 +67,16 @@ export class EventTournament extends Model {
   @Column
   dates: string;
 
-  @BelongsToMany(
-    () => Location,
-    () => LocationEventTournament
-  )
+  @BelongsToMany(() => Location, () => LocationEventTournament)
   locations: Location[];
 
   @HasMany(() => SubEventTournament, {
     foreignKey: 'eventId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   subEvents: SubEventTournament[];
 
-  @BelongsToMany(
-    () => Location,
-    () => LocationEventTournament
-  )
+  @BelongsToMany(() => Location, () => LocationEventTournament)
   groups: Location[];
 
   @Default(false)
@@ -94,6 +89,19 @@ export class EventTournament extends Model {
 
   @Column
   slug: string;
+
+  @Column
+  usedRankingAmount: number;
+
+  @Column(DataType.ENUM('months', 'weeks', 'days'))
+  usedRankingUnit: 'months' | 'weeks' | 'days';
+
+  get usedRankingg(): UsedRankingTiming {
+    return {
+      amount: this.usedRankingAmount,
+      unit: this.usedRankingUnit,
+    };
+  }
 
   regenerateSlug!: Slugify<EventTournament>;
 
