@@ -7,16 +7,18 @@ import { logger } from './logger';
  *
  * @param user Checks if the user is logged
  * @param permissions The permissions to check
+ * @param errorMessage The error message to show if the user is not logged in or does not have the permission
  */
 export const canExecute = (
   user: AuthenticatedUser,
   permissions?: {
     anyPermissions?: string[];
     allPermissions?: string[];
-  }
+  },
+  message?: string
 ) => {
   if ((user ?? null) === null) {
-    throw new ApiError({ code: 401, message: 'Not authenticated' });
+    throw new ApiError({ code: 401, message: message ?? 'Not authenticated' });
   }
 
   if (permissions.anyPermissions && permissions.anyPermissions.length > 0) {
@@ -29,7 +31,7 @@ export const canExecute = (
       });
       throw new ApiError({
         code: 401,
-        message: "You don't have permission to do this",
+        message: message ?? "You don't have permission to do this",
       });
     }
   }
@@ -44,7 +46,7 @@ export const canExecute = (
       });
       throw new ApiError({
         code: 401,
-        message: "You don't have permission to do this",
+        message: message ?? "You don't have permission to do this",
       });
     }
   }

@@ -1,3 +1,7 @@
+import moment, { Moment } from 'moment';
+import { Op, Transaction } from 'sequelize';
+import { logger } from '../../utils';
+import { GameType } from '../enums';
 import {
   DrawCompetition,
   DrawTournament,
@@ -11,12 +15,8 @@ import {
   SubEventCompetition,
   SubEventTournament,
 } from '../sequelize';
-import moment, { Moment } from 'moment';
-import { Op, Transaction } from 'sequelize';
 import { PointCalculator } from './point-calculator';
 import { StartingRanking } from './starting-ranking';
-import { logger } from '../../utils';
-import { GameType } from '../enums';
 
 export class RankingCalc {
   periods: RankingPeriod[];
@@ -130,12 +130,9 @@ export class RankingCalc {
       const periodStop = lastPeriod.toDate();
       const updateRankings = lastUpdateRanking.isSameOrBefore(lastPeriod);
 
-      await this.calculatePeriodAsync(
-        periodStart,
-        periodStop,
-        updateRankings,
-        hasHistoricalGames
-      );
+      await this.calculatePeriodAsync(periodStart, periodStop, updateRankings, {
+        hasHistoricalGames,
+      });
 
       if (updateRankings) {
         this.rankingType.updateIntervalAmountLastUpdate =
@@ -172,12 +169,15 @@ export class RankingCalc {
     start: Date,
     end: Date,
     updateRankings: boolean,
-    historicalGames: boolean
+    options?: {
+      hasHistoricalGames?: boolean;
+      transaction?: Transaction;
+    }
   ) {
     logger.info(
       `Started Calcualting for period ${start.toISOString()} untill ${end.toISOString()}${
         updateRankings ? ', and updating rankings' : ''
-      }, historical: ${historicalGames}`
+      }, historical: ${options?.hasHistoricalGames ?? false}`
     );
   }
 
@@ -345,7 +345,11 @@ export class RankingCalc {
     return newRanking;
   }
 
-  protected async getGamesAsync(start: Date, end: Date): Promise<Game[]> {
+  protected async getGamesAsync(
+    start: Date,
+    end: Date,
+    transaction?: Transaction
+  ): Promise<Game[]> {
     logger.debug(
       `getGamesAsync for period ${start.toISOString()} - ${end.toISOString()}`
     );
@@ -374,18 +378,6 @@ export class RankingCalc {
                 {
                   model: SubEventCompetition,
                   attributes: [],
-                  // include: [
-                  //   {
-                  //     model: RankingSystemGroup,
-                  //     attributes: [],
-                  //     required: true,
-                  //     through: {
-                  //       where: {
-                  //         groupId: { [Op.in]: groups }
-                  //       }
-                  //     }
-                  //   }
-                  // ]
                 },
               ],
             },
@@ -398,22 +390,11 @@ export class RankingCalc {
             {
               model: SubEventTournament,
               attributes: [],
-              // include: [
-              //   {
-              //     model: RankingSystemGroup,
-              //     attributes: [],
-              //     required: true,
-              //     through: {
-              //       where: {
-              //         groupId: { [Op.in]: groups }
-              //       }
-              //     }
-              //   }
-              // ]
             },
           ],
         },
       ],
+      transaction,
     });
 
     logger.debug(`Got ${games.length} games`);
@@ -422,7 +403,8 @@ export class RankingCalc {
   }
   protected async getPlayersAsync(
     start: Date,
-    end: Date
+    end: Date,
+    transaction?: Transaction
   ): Promise<Map<string, Player>> {
     const players = new Map();
 
@@ -444,11 +426,13 @@ export class RankingCalc {
               'singleInactive',
               'doubleInactive',
               'mixInactive',
+              "systemId"
             ],
           },
           {
             model: Game,
             required: true,
+            attributes: [],
             where: {
               playedAt: {
                 [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }],
@@ -456,6 +440,7 @@ export class RankingCalc {
             },
           },
         ],
+        transaction,
       })
     ).map((x) => {
       players.set(x.id, x);
@@ -470,9 +455,20 @@ export class RankingCalc {
     rankingDate?: Date,
     transaction?: Transaction
   ) {
+    const total = games.length;
+
     while (games.length > 0) {
       const rankings =
         this.processGame(games.pop(), players, rankingDate) ?? [];
+
+      if (games.length % 100 === 0) {
+        logger.debug(
+          `Calulating point: ${total - games.length}/${total} (${(
+            ((total - games.length) / total) *
+            100
+          ).toFixed(2)}%)`
+        );
+      }
 
       if (rankings.length > 0) {
         await RankingPoint.bulkCreate(
@@ -500,7 +496,12 @@ export class RankingCalc {
     const doubleRankingPoints: RankingPoint[] = [];
     const mixRankingPoints: RankingPoint[] = [];
 
-    // Split games in theire respective gameTypes
+    // Sort the points by their played date
+    points.sort(
+      (a, b) => b.game.playedAt.getTime() - a.game.playedAt.getTime()
+    );
+
+    // Push to their respective arrays
     points.forEach((rankingPoint) => {
       switch (rankingPoint.game.gameType) {
         case GameType.S:
@@ -528,8 +529,6 @@ export class RankingCalc {
 
     // Filter out when there is a limit to use
     if (this.rankingType.latestXGamesToUse) {
-      // FYI: Ordering is done in query
-
       singleCountsForUpgrade = singleCountsForUpgrade
         // Take last x amount
         .slice(0, this.rankingType.latestXGamesToUse);
@@ -562,8 +561,6 @@ export class RankingCalc {
 
     // Filter out when there is a limit to use
     if (this.rankingType.latestXGamesToUse) {
-      // FYI: Ordering is done in query
-
       singleCountsForDowngrade = singleCountsForDowngrade
         // Take last x amount
         .slice(0, this.rankingType.latestXGamesToUse);
@@ -576,16 +573,13 @@ export class RankingCalc {
     }
 
     const singlePointsDowngrade = this.findPointsBetterAverage(
-      singleCountsForDowngrade,
-      false
+      singleCountsForDowngrade
     );
     const doublePointsDowngrade = this.findPointsBetterAverage(
-      doubleCountsForDowngrade,
-      false
+      doubleCountsForDowngrade
     );
     const mixPointsDowngrade = this.findPointsBetterAverage(
-      mixCountsForDowngrade,
-      false
+      mixCountsForDowngrade
     );
 
     // Determin new level based on inactivity or not

@@ -1,0 +1,10 @@
+query GetSystemQuery($id: ID!) {
+  system(id: $id) {
+    id
+    name
+    amountOfLevels
+    pointsToGoUp
+    pointsToGoDown
+    pointsWhenWinningAgainst
+  }
+}

@@ -1,4 +1,4 @@
-import { Club, ClubMembership, Player, RankingSystem } from '@badvlasim/shared';
+import { AuthenticatedRequest, canExecute, Club, ClubMembership, Player, RankingSystem } from '@badvlasim/shared';
 import {
   GraphQLBoolean,
   GraphQLInputObjectType,
@@ -21,6 +21,45 @@ export const PlayerType = new GraphQLObjectType({
   description: 'A Player',
   fields: () =>
     Object.assign(getAttributeFields(Player), {
+      email: {
+        type: GraphQLString,
+        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+          canExecute(
+            context?.req?.user,
+            { anyPermissions: [`details-any:player`, `${obj.id}_details:player`] },
+            "You don't have permissions to access the email field"
+          );
+          return obj.email;
+        }
+      },
+      phone: {
+        type: GraphQLString,
+        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+          canExecute(
+            context?.req?.user,
+            {
+              anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
+            },
+            "You don't have permissions to access the phone field"
+          );
+          return obj.phone;
+        }
+      },
+
+      birthDate: {
+        type: GraphQLString,
+        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+          canExecute(
+            context?.req?.user,
+            {
+              anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
+            },
+            "You don't have permissions to access the birthDate field"
+          );
+          return obj.birthDate;
+        }
+      },
+
       teams: {
         type: new GraphQLList(TeamType),
         resolve: resolver(Player.associations.teams)
@@ -33,16 +72,15 @@ export const PlayerType = new GraphQLObjectType({
         type: new GraphQLList(RankingPlaceType),
         args: Object.assign(defaultListArgs()),
         resolve: resolver(Player.associations.rankingPlaces, {
-          before: async (findOptions: { [key: string]: object }, args) => {
-            findOptions.where = {
-              ...queryFixer(findOptions.where)
+          before: async (findOptions: { [key: string]: object }) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
             };
-            findOptions.order = [args.order ?? ['rankingDate', 'DESC']];
-            findOptions.limit = args.limit;
             return findOptions;
           }
         })
-      }, 
+      },
       lastRanking: {
         type: LastRankingPlaceType,
         args: Object.assign({
@@ -64,7 +102,7 @@ export const PlayerType = new GraphQLObjectType({
             where: { systemId },
             order: [['rankingDate', 'DESC']]
           });
-          return places?.[0];
+          return places[0];
         }
       },
       rankingPoints: {

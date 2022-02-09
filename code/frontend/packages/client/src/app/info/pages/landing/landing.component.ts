@@ -39,13 +39,13 @@ export class LandingComponent implements OnInit {
   ngOnInit(): void {
     this.caps$ = this.systemService.getPrimarySystem().pipe(
       switchMap((systems) => this.systemService.getSystemCaps(systems!.id!)),
-      map((systemCaps: any) => {
-        let level = 12;
-        return systemCaps.pointsWhenWinningAgainst.map((winning: number, index: number) => {
+      map((system: any) => {
+        let level = system.amountOfLevels!;
+        return system.pointsWhenWinningAgainst.map((winning: number, index: number) => {
           return {
             level: level--,
-            pointsToGoUp: level !== 0 ? Math.round(systemCaps.pointsToGoUp[index]) : null,
-            pointsToGoDown: index === 0 ? null : Math.round(systemCaps.pointsToGoDown[index - 1]),
+            pointsToGoUp: level !== 0 ? Math.round(system.pointsToGoUp[index]) : null,
+            pointsToGoDown: index === 0 ? null : Math.round(system.pointsToGoDown[index - 1]),
             pointsWhenWinningAgainst: Math.round(winning),
           };
         });

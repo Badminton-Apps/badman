@@ -1,0 +1,19 @@
+<ng-container *ngIf="isMobile">
+  <button
+    mat-stroked-button
+    *ngIf="this.systemService.watchSysem$ | async as watching"
+    (click)="this.systemService.clearWatchSystem()"
+  >
+    {{ watching.name }}
+  </button>
+</ng-container>
+
+<ng-container *ngIf="!isMobile">
+  <button
+    mat-icon-button
+    *ngIf="this.systemService.watchSysem$ | async as watching"
+    (click)="this.systemService.clearWatchSystem()"
+  >
+    <mat-icon>assessment_outlined</mat-icon>
+  </button>
+</ng-container>

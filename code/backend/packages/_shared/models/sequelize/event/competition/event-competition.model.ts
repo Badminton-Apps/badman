@@ -23,7 +23,7 @@ import {
   TableOptions,
   Unique,
 } from 'sequelize-typescript';
-import { LevelType } from '../../../enums';
+import { LevelType, UsedRankingTiming } from '../../../enums';
 import { Comment } from './../../comment.model';
 import { SubEventCompetition } from './sub-event-competition.model';
 
@@ -83,6 +83,19 @@ export class EventCompetition extends Model {
 
   @Column
   slug: string;
+
+  @Column
+  usedRankingAmount: number;
+
+  @Column(DataType.ENUM('months', 'weeks', 'days'))
+  usedRankingUnit: 'months' | 'weeks' | 'days';
+
+  get usedRankingg(): UsedRankingTiming {
+    return {
+      amount: this.usedRankingAmount,
+      unit: this.usedRankingUnit,
+    };
+  }
 
   regenerateSlug!: Slugify<EventCompetition>;
 

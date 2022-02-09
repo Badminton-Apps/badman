@@ -97,6 +97,10 @@ mat-sidenav-content>ng-component {
       border-top-width: 0.4em;
     }
 
+    .mat-form-field-label{
+      top: 2em
+    }
+
     div.mat-form-field-underline {
       bottom: 0;
     }
@@ -137,4 +141,24 @@ button {
 a {
   color: initial;
   text-decoration: none;
+}
+
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: lighten(mat-color($client-angular-primary), 30);
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: lighten(mat-color($client-angular-primary), 5%);
 }

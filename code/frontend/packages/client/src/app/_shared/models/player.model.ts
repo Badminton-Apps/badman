@@ -62,7 +62,9 @@ export class Player {
   }
 
   indexOfDate(type?: string, date?: Date) {
-    const ranking = this.rankingPlaces?.find((r) => moment(date).isSame(r?.rankingDate));
+    const ranking = date
+      ? this.rankingPlaces?.find((r) => moment(date).isSame(r?.rankingDate))
+      : this.rankingPlaces?.[0];
 
     return type == 'MX'
       ? (ranking?.single ?? 12) + (ranking?.double ?? 12) + (ranking?.mix ?? 12)
