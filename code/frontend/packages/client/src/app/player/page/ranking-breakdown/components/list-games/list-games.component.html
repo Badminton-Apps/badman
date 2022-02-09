@@ -72,15 +72,17 @@
     <ng-container matColumnDef="date">
       <mat-header-cell *matHeaderCellDef>{{ 'breakdown.date' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.date' | translate }}">
-        {{ !!game.playedAt ? (game.playedAt | amDateFormat: 'lll') : '' }}
+        <span fxHide fxShow.gt-md>{{ !!game.playedAt ? (game.playedAt | amDateFormat: 'lll') : '' }}</span>
+        <span fxHide fxShow.md>{{ !!game.playedAt ? (game.playedAt | amDateFormat: 'll') : '' }}</span>
+        <span fxHide fxShow.lt-md>{{ !!game.playedAt ? (game.playedAt | amDateFormat: 'DD MMM YY') : '' }}</span>
       </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <!-- team Column -->
     <ng-container matColumnDef="team">
-      <mat-header-cell *matHeaderCellDef>{{ 'breakdown.team' | translate }}</mat-header-cell>
-      <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.team' | translate }}">
+      <mat-header-cell fxShow fxHide.lt-md *matHeaderCellDef>{{ 'breakdown.team' | translate }}</mat-header-cell>
+      <mat-cell fxShow fxHide.lt-md *matCellDef="let game" attr.data-label="{{ 'breakdown.team' | translate }}">
         <div *ngIf="game.team?.[0]">
           {{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] || 'N/A'}})
         </div>
@@ -92,7 +94,7 @@
           {{ 'breakdown.no-tean' | translate }}
         </div>
       </mat-cell>
-      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+      <mat-footer-cell fxShow fxHide.lt-md *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <!-- opponent Column -->
@@ -138,7 +140,7 @@
       >
         <ng-container [ngSwitch]="game.type">
           <span *ngSwitchCase="'WON'"
-            ><span [matTooltip]="getTooltip(game, true)">{{ game.avgUpgrade | number: '.2-2' }}</span></span
+            ><span [matTooltip]="getTooltip(game, true)">{{ game.avgUpgrade | number: '.0-0' }}</span></span
           >
           <span *ngSwitchCase="'LOST_UPGRADE'">0</span>
           <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
@@ -164,7 +166,7 @@
       >
         <ng-container [ngSwitch]="game.type">
           <span *ngSwitchCase="'WON'">
-            <span [matTooltip]="getTooltip(game, false)">{{ game.avgDowngrade | number: '.2-2' }}</span></span
+            <span [matTooltip]="getTooltip(game, false)">{{ game.avgDowngrade | number: '.0-0' }}</span></span
           >
           <span *ngSwitchCase="'LOST_UPGRADE'">-</span>
           <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
@@ -214,15 +216,17 @@
     <ng-container matColumnDef="date">
       <mat-header-cell *matHeaderCellDef>{{ 'breakdown.date' | translate }}</mat-header-cell>
       <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.date' | translate }}">
-        {{ !!game.playedAt ? (game.playedAt | amDateFormat: 'lll') : '' }}
+        <span fxHide fxShow.gt-md>{{ !!game.playedAt ? (game.playedAt | amDateFormat: 'lll') : '' }}</span>
+        <span fxHide fxShow.md>{{ !!game.playedAt ? (game.playedAt | amDateFormat: 'll') : '' }}</span>
+        <span fxHide fxShow.lt-md>{{ !!game.playedAt ? (game.playedAt | amDateFormat: 'DD MMM YY') : '' }}</span>
       </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <!-- team Column -->
     <ng-container matColumnDef="team">
-      <mat-header-cell *matHeaderCellDef>{{ 'breakdown.team' | translate }}</mat-header-cell>
-      <mat-cell *matCellDef="let game" attr.data-label="{{ 'breakdown.team' | translate }}">
+      <mat-header-cell fxShow fxHide.lt-md *matHeaderCellDef>{{ 'breakdown.team' | translate }}</mat-header-cell>
+      <mat-cell fxShow fxHide.lt-md *matCellDef="let game" attr.data-label="{{ 'breakdown.team' | translate }}">
         <div *ngIf="game.team?.[0]">
           {{ game.team?.[0].fullName }} ({{game.team?.[0]?.rankingPlace?.[type] || 'N/A'}})
         </div>
@@ -230,7 +234,7 @@
           {{ game.team?.[1].fullName }} ({{game.team?.[1]?.rankingPlace?.[type] || 'N/A'}})
         </div>
 
-        <div *ngIf="!game.team?.[0] && !game.team?.[1]">
+        <div fxShow fxHide.lt-md *ngIf="!game.team?.[0] && !game.team?.[1]">
           {{ 'breakdown.no-tean' | translate }}
         </div>
       </mat-cell>

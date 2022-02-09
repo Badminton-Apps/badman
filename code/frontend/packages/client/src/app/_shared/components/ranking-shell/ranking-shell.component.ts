@@ -25,7 +25,6 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private router: Router,
     private eventService: EventService,
-    public systemService: SystemService
   ) {}
 
   ngOnInit() {

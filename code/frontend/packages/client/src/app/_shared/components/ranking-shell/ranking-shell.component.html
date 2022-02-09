@@ -14,13 +14,7 @@
       <app-header-search></app-header-search>
     </div>
     <div class="end" fxLayoutGap="16px">
-      <button
-        mat-stroked-button
-        *ngIf="this.systemService.watchSysem$ | async as watching"
-        (click)="this.systemService.clearWatchSystem()"
-      >
-        {{ watching.name }}
-      </button>
+      <app-watch-system-info [isMobile]="!device.mobileQuery.matches"></app-watch-system-info>
       <!-- <app-notification></app-notification> -->
       <app-user-info></app-user-info>
     </div>
@@ -37,7 +31,9 @@
       <div class="side-menu" fxLayout="column">
         <mat-nav-list>
           <div class="pages">
-            <a mat-list-item [routerLink]="['./']" *ngIf="device.mobileQuery.matches">Badman</a>
+            <a mat-list-item [routerLink]="['./']" *ngIf="device.mobileQuery.matches" class="app-name-mobile"
+              >Badman<small>v{{ version }}</small></a
+            >
             <ng-container *ngIf="this.profile$ | async as profile">
               <a mat-list-item [routerLink]="['/player', profile.slug]" routerLinkActive="active"> My games </a>
 
@@ -66,6 +62,10 @@
 
             <a mat-list-item routerLink="player/top" routerLinkActive="active">
               {{ 'ranking.list' | translate }}
+            </a>
+
+            <a mat-list-item routerLink="faq" routerLinkActive="active">
+              {{ 'faq.title' | translate }}
             </a>
 
             <!-- <app-has-claim [any]="['*_enlist:team', '*_change:encounter', 'change-any:encounter', 'enlist-any:team']"> -->

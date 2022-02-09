@@ -6,34 +6,12 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
-import {
-  Club,
-  CompetitionEvent,
-  CompetitionSubEvent,
-  Entry,
-  EventService,
-  LevelType,
-  Player,
-  SystemService,
-  Team,
-  TeamService,
-} from 'app/_shared';
+import { Club, CompetitionEvent, Entry, LevelType, Player, SystemService, Team } from 'app/_shared';
 import * as moment from 'moment';
-import {
-  combineLatest,
-  distinctUntilChanged,
-  filter,
-  lastValueFrom,
-  map,
-  pairwise,
-  startWith,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs';
+import { combineLatest, distinctUntilChanged, filter, lastValueFrom, map, pairwise, switchMap, take } from 'rxjs';
 
 @Component({
   selector: 'app-assembly',

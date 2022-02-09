@@ -1,5 +1,5 @@
 <ng-container [formGroup]="formGroup">
-  <mat-form-field appearance="outline" fxFlex *ngIf="!this.useAutocomplete">
+  <mat-form-field appearance="outline" fxFlex *ngIf="!this.useAutocomplete" class="dense">
     <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
 
     <mat-select formControlName="club" required>
@@ -9,7 +9,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline" *ngIf="this.useAutocomplete" fxFlex>
+  <mat-form-field appearance="outline" *ngIf="this.useAutocomplete" fxFlex class="dense">
     <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
     <input matInput [formControl]="autoCompleteFormControl"  [matAutocomplete]="auto" />
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="this.formControl.setValue($event.option.value.id)">

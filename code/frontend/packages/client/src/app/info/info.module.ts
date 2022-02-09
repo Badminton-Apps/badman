@@ -8,13 +8,14 @@ import { LandingComponent } from './pages/landing/landing.component';
 import { CovalentDataTableModule } from '@covalent/core/data-table';
 import { CovalentPagingModule } from '@covalent/core/paging';
 import { CookiesComponent } from './pages/cookies/cookies.component';
+import { FaqComponent } from './pages/pages/faq/faq.component';
 
 const covalentModules = [CovalentDataTableModule, CovalentPagingModule];
 
 const materialModules = [MatExpansionModule];
 
 @NgModule({
-  declarations: [ChangelogComponent, LandingComponent, CookiesComponent],
+  declarations: [ChangelogComponent, LandingComponent, CookiesComponent, FaqComponent],
   imports: [SharedModule, ...materialModules, InfoRoutingModule, ...covalentModules, MarkdownModule.forChild()],
 })
 export class InfoModule {}
