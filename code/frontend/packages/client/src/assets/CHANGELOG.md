@@ -1,3 +1,26 @@
+# [4.24.0](https://github.com/Badminton-Apps/badman/compare/v4.23.1...v4.24.0) (2022-02-09)
+
+
+### Bug Fixes
+
+* client had some extra `at()` logic ([0635ec4](https://github.com/Badminton-Apps/badman/commit/0635ec48cb135c71613d6c4dbd8fbb7cfe5d06e5))
+* reverting that `at()`. Didn't work out ([f96420d](https://github.com/Badminton-Apps/badman/commit/f96420df789811ccc87bfbeded235d241f852725))
+* using at vs directly calling array index ([3418c4b](https://github.com/Badminton-Apps/badman/commit/3418c4b3f352ec6cab55f1fcfd19aec9e6332101))
+
+
+### Features
+
+* login and loading ([d14a644](https://github.com/Badminton-Apps/badman/commit/d14a644d778be0ef2f4c966191d70cb131ce5634))
+* make change competition public ([5df0416](https://github.com/Badminton-Apps/badman/commit/5df0416c31e8aa064dac75bf3e58665c68ccb6ad))
+* Removed default scrollbar ([7fbbd76](https://github.com/Badminton-Apps/badman/commit/7fbbd764110b0440789b153a690310c0a581a849))
+* Responsive updates ([9c88f00](https://github.com/Badminton-Apps/badman/commit/9c88f0041fb07a22c5086934f210bb21e2237aec))
+* **simulation:** Improve speed of calculating ranking ([da4f2c7](https://github.com/Badminton-Apps/badman/commit/da4f2c7baab234d4d14a77b93d8188e323eb90dc))
+* sorting ranking systems ([b8332a4](https://github.com/Badminton-Apps/badman/commit/b8332a481d4697c3819edeaac88d37c00329d9ce))
+* Watch system ([1d0db4a](https://github.com/Badminton-Apps/badman/commit/1d0db4af1dc7781106d39efc19e6367d65eb6111))
+* Watch system ([28d74fc](https://github.com/Badminton-Apps/badman/commit/28d74fc40d53d86b5a3ee625b650ea82434add67))
+
+
+
 ## [4.23.1](https://github.com/Badminton-Apps/badman/compare/v4.23.0...v4.23.1) (2022-02-03)
 
 
