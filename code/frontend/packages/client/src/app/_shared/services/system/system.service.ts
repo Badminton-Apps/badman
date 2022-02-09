@@ -11,6 +11,7 @@ import { RankingSystem, RankingSystemGroup } from './../../models';
 import * as primarySystemsQuery from '../../graphql/rankingSystem/queries/GetPrimarySystemsQuery.graphql';
 import * as systemWithCountsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql';
 import * as systemQuery from '../../graphql/rankingSystem/queries/GetSystemQuery.graphql';
+import * as systemCapsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryCaps.graphql';
 import * as systemsQuery from '../../graphql/rankingSystem/queries/GetSystemsQuery.graphql';
 import * as systemsGroupsQuery from '../../graphql/rankingSystem/queries/GetSystemGroupsQuery.graphql';
 
@@ -58,13 +59,24 @@ export class SystemService {
   }
 
   getSystemCaps(systemId: string) {
-    return this.httpClient.get<{
-      amountOfLevels: number;
-      pointsToGoUp: number[];
-      pointsToGoDown: number[];
-      pointsWhenWinningAgainst: number[];
-    }>(`${this.urlBase}/${systemId}/caps`);
+    return this.apollo
+      .query<{ system: RankingSystem }>({
+        query: systemCapsQuery,
+        variables: {
+          id: systemId,
+        },
+      })
+      .pipe(map((x) => new RankingSystem(x.data.system)));
   }
+
+  // getSystemCaps(systemId: string) {
+  //   return this.httpClient.get<{
+  //     amountOfLevels: number;
+  //     pointsToGoUp: number[];
+  //     pointsToGoDown: number[];
+  //     pointsWhenWinningAgainst: number[];
+  //   }>(`${this.urlBase}/${systemId}/caps`);
+  // }
 
   getSystemWithCount(systemId: string, gender?: string) {
     return this.apollo

@@ -4,7 +4,14 @@
     <small>{{ 'competition.team-assembly.disclaimer' | translate }}</small>
   </div>
 
-  <div class="select-encounter" fxFlex fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+  <div
+    class="select-encounter"
+    fxFlex
+    fxLayout="row"
+    fxLayout.lt-sm="column"
+    fxLayoutAlign="space-between center"
+    fxLayoutGap="16px"
+  >
     <app-select-club fxFlex="25" [needsPermission]="false" [formGroup]="formGroup" [updateUrl]="true"></app-select-club>
     <app-select-team fxFlex="25" [formGroup]="formGroup"></app-select-team>
     <app-select-encounter
@@ -15,17 +22,19 @@
     <div class="download">
       <button
         mat-stroked-button
+        color="primary"
         [class.spinner]="this.pdfLoading"
         [disabled]="this.pdfLoading"
         (click)="this.download()"
+        fxFlex
       >
         <mat-icon>download</mat-icon>
+        {{ 'competition.team-assembly.download' | translate }}
       </button>
     </div>
   </div>
 
   <app-assembly [formGroup]="this.formGroup"></app-assembly>
-
 </div>
 
 <ng-template #loading>

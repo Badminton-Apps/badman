@@ -97,6 +97,10 @@ mat-sidenav-content>ng-component {
       border-top-width: 0.4em;
     }
 
+    .mat-form-field-label{
+      top: 2em
+    }
+
     div.mat-form-field-underline {
       bottom: 0;
     }

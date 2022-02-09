@@ -53,9 +53,15 @@
     "single-points": "Ranking punten",
     "may-ranking": "Mei ranking"
   },
+  "landing": {
+    "description": "We werken er aan om badman de centrale plaats te zijn voor al je badminton data"
+  },
+  "points": {
+    "title": "Punten tabel"
+  },
   "faq": {
     "legend": "Legende",
-    "title": "Info hoe website te gebruiken",
+    "title": "FAQ",
     "info": {
       "title": "Infofilmpje",
       "description": "Via de volgende link kan het infofilmpje gevonden worden waarin alle details van het nieuwe systeem worden uitgelegd:"
@@ -182,6 +188,7 @@
       "single4": "Enkel 4",
       "mix1": "Heren Dubbel",
       "mix2": "Dames Dubbel",
+      "download": "Download",
       "errors": {
         "already": "Speler al als titualris aanwezig",
         "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen",
