@@ -40,10 +40,7 @@ export class DetailRankingSystemComponent implements OnInit {
     },
   };
 
-  constructor(
-    private systemService: SystemService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private systemService: SystemService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const id$ = this.route.paramMap.pipe(
@@ -53,17 +50,13 @@ export class DetailRankingSystemComponent implements OnInit {
 
     this.caps$ = id$.pipe(
       switchMap((id) => this.systemService.getSystemCaps(id!)),
-      map((systemCaps) => {
-        let level = 12;
-        return systemCaps.pointsWhenWinningAgainst.map((winning, index) => {
+      map((system) => {
+        let level = system.amountOfLevels!;
+        return system.pointsWhenWinningAgainst!.map((winning, index) => {
           return {
             level: level--,
-            pointsToGoUp:
-              level !== 0 ? Math.round(systemCaps.pointsToGoUp[index]) : null,
-            pointsToGoDown:
-              index === 0
-                ? null
-                : Math.round(systemCaps.pointsToGoDown[index - 1]),
+            pointsToGoUp: level !== 0 ? Math.round(system.pointsToGoUp![index]) : null,
+            pointsToGoDown: index === 0 ? null : Math.round(system.pointsToGoDown![index - 1]),
             pointsWhenWinningAgainst: Math.round(winning),
           };
         });
@@ -71,9 +64,7 @@ export class DetailRankingSystemComponent implements OnInit {
     );
 
     this.allGenders$ = id$.pipe(
-      switchMap((id) =>
-        this.systemService.getSystemWithCount(id!)
-      ),
+      switchMap((id) => this.systemService.getSystemWithCount(id!)),
       tap(
         (system) =>
           (this.levels = Array(system.amountOfLevels)
@@ -84,15 +75,11 @@ export class DetailRankingSystemComponent implements OnInit {
       map((system) => this.getSeriesData(system))
     );
     this.male$ = id$.pipe(
-      switchMap((id) =>
-        this.systemService.getSystemWithCount(id!, 'M')
-      ),
+      switchMap((id) => this.systemService.getSystemWithCount(id!, 'M')),
       map((system) => this.getSeriesData(system))
     );
     this.female$ = id$.pipe(
-      switchMap((id) =>
-        this.systemService.getSystemWithCount(id!, 'F')
-      ),
+      switchMap((id) => this.systemService.getSystemWithCount(id!, 'F')),
       map((system) => this.getSeriesData(system))
     );
 
@@ -159,7 +146,7 @@ export class DetailRankingSystemComponent implements OnInit {
   }
 
   private getSeriesData(system: any) {
-    console.warn("Fix me type!")
+    console.warn('Fix me type!');
     const seriesData = {
       single: [],
       double: [],

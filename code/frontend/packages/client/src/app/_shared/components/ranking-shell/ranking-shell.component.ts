@@ -5,7 +5,7 @@ import { environment } from 'environments/environment';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { EventType, Player } from '../../models';
-import { DeviceService, EventService } from '../../services';
+import { DeviceService, EventService, SystemService } from '../../services';
 
 @Component({
   templateUrl: './ranking-shell.component.html',
@@ -17,12 +17,14 @@ export class RankingShellComponent implements OnDestroy, OnInit {
   canEnroll$!: Observable<boolean>;
   version: string = environment.version;
 
+
+
   constructor(
     private user: UserService,
     public device: DeviceService,
     private changeDetectorRef: ChangeDetectorRef,
     private router: Router,
-    private eventService: EventService
+    private eventService: EventService,
   ) {}
 
   ngOnInit() {

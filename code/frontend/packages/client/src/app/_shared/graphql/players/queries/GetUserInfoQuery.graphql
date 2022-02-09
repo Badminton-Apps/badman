@@ -1,4 +1,4 @@
-query GetUserInfoQuery($id: ID!) {
+query GetUserInfoQuery($id: ID!, $system: String) {
   player(id: $id) {
     id
     slug
@@ -7,14 +7,13 @@ query GetUserInfoQuery($id: ID!) {
     lastName
     sub
     gender
-    birthDate
     competitionPlayer
     club { 
       id
       slug
       name
     }
-    lastRanking {
+    lastRanking(system: $system) {
       id
       rankingDate
       single

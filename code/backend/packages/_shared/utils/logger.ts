@@ -39,7 +39,7 @@ const logLikeFormat = (maxArgLength?: number) => {
         strArgs += '\n...andMore';
       }
       if (strArgs) {
-        returnMessage += `\n${strArgs}`;
+        returnMessage += `\n${strArgs}`; 
       }
 
       if (stack) {

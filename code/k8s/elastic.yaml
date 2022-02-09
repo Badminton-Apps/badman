@@ -109,9 +109,9 @@ spec:
       name: Badman server
     - type: tcp
       schedule: '@every 5s'
-      hosts: ["import-import.badvla.svc:80"]
-      id: badvla-import
-      name: Badman importer
+      hosts: ["search-search.badvla.svc:80"]
+      id: badvla-search
+      name: Badman search
     - type: tcp
       schedule: '@every 5s'
       hosts: ["jobs-jobs.badvla.svc:80"]
