@@ -176,13 +176,8 @@ export class ListGamesComponent implements OnInit {
           ? this.system.minNumberOfGamesUsedForUpgrade!
           : devideUpgrade;
 
-      const devideDowngradeCorrected =
-        devideDowngrade < this.system.minNumberOfGamesUsedForUpgrade!
-          ? this.system.minNumberOfGamesUsedForUpgrade!
-          : devideDowngrade;
-
       const avgUpgrade = totalPoints / devideUpgradeCorrected;
-      const avgDowngrade = totalPoints / devideDowngradeCorrected;
+      const avgDowngrade = totalPoints / devideDowngrade;
 
       if (avgUpgrade > (this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? -1)) {
         this.indexUsedForUpgrade = startingIndex + i;
@@ -205,7 +200,6 @@ export class ListGamesComponent implements OnInit {
         devideDowngrade,
         devideUpgrade,
         devideUpgradeCorrected,
-        devideDowngradeCorrected,
       });
     }
 
@@ -260,14 +254,7 @@ export class ListGamesComponent implements OnInit {
         })}`;
       }
     } else {
-      devider = `${game.devideDowngradeCorrected}`;
-
-      if (game.devideDowngrade! < game.devideDowngradeCorrected!) {
-        devider += `\n${this.translateService.instant('breakdown.corrected', {
-          original: game.devideDowngrade,
-          corrected: game.devideDowngradeCorrected,
-        })}`;
-      }
+      devider = `${game.devideDowngrade}`;
     }
 
     return `${game.totalPoints} / ${devider}`;

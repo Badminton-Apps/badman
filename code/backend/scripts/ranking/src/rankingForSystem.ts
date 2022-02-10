@@ -150,8 +150,8 @@ import moment from 'moment';
     }).save({ transaction });
     await system9.setGroups(groups, { transaction });
 
-    const targets = [system1, system2, system3, system4, system5, system6, system7, system8, system9];
-    // const targets = [system7, system8, system9];
+    // const targets = [system1, system2, system3, system4, system5, system6, system7, system8, system9];
+    const targets = [system8, system7, system6, system9, system4, system5, system2, system3, system1];
 
     for (const targetSystem of targets) {
       transaction = await DataBaseHandler.sequelizeInstance.transaction();

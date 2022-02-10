@@ -576,13 +576,16 @@ export class RankingCalc {
     }
 
     const singlePointsDowngrade = this.findPointsBetterAverage(
-      singleCountsForDowngrade
+      singleCountsForDowngrade,
+      false
     );
     const doublePointsDowngrade = this.findPointsBetterAverage(
-      doubleCountsForDowngrade
+      doubleCountsForDowngrade,
+      false
     );
     const mixPointsDowngrade = this.findPointsBetterAverage(
-      mixCountsForDowngrade
+      mixCountsForDowngrade,
+      false
     );
 
     // Determin new level based on inactivity or not
