@@ -3,7 +3,5 @@ mutation UpdatePlayer($player: PlayerInput!) {
     id
     firstName
     lastName
-    phone
-    email
   }
 }
