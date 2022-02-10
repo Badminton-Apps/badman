@@ -27,11 +27,11 @@ export class EditRankingAllComponent implements OnInit {
     this.systemService
       .getPrimarySystemsWhere()
       .pipe(
-        switchMap((query) =>
+        switchMap((where) =>
           this.appollo
             .query<{ systems: RankingSystem[] }>({
               query: gql`
-                query GetPrimarySystemsInfoForRanking {
+                query GetPrimarySystemsInfoForRanking($where: SequelizeJSON) {
                   systems(where: $where) {
                     id
                     rankingSystem
@@ -51,7 +51,7 @@ export class EditRankingAllComponent implements OnInit {
                 }
               `,
               variables: {
-                where: query,
+                where,
               },
             })
             .pipe(map((result) => new RankingSystem(result.data.systems?.[0])))
