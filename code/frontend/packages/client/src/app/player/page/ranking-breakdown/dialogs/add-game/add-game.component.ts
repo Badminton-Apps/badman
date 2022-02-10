@@ -86,7 +86,7 @@ export class AddGameComponent implements OnInit {
     });
 
     this.formGroup = new FormGroup({
-      won: new FormControl(false, [Validators.required]),
+      won: new FormControl(true, [Validators.required]),
       p1t1: this.p1t1,
       p1t2: this.p1t2,
       p2t1: this.p2t1,
@@ -181,6 +181,7 @@ export class AddGameComponent implements OnInit {
       winner: t1won ? 1 : 0,
       rankingPoints,
       players,
+      playedAt: new Date(),
     });
 
     this.dialogRef.close(game);
