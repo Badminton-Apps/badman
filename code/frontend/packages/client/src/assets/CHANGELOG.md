@@ -1,3 +1,12 @@
+## [4.24.5](https://github.com/Badminton-Apps/badman/compare/v4.24.4...v4.24.5) (2022-02-10)
+
+
+### Bug Fixes
+
+* remove unused fields from quety ([f8d9b88](https://github.com/Badminton-Apps/badman/commit/f8d9b889e2eebf863a9102bd783770b4465a71b0))
+
+
+
 ## [4.24.4](https://github.com/Badminton-Apps/badman/compare/v4.24.3...v4.24.4) (2022-02-10)
 
 
