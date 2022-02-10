@@ -7,8 +7,6 @@ query GetClubPlayers($id: ID!, $ranking: Date, $includeRanking: Boolean!, $where
       memberId
       firstName
       lastName
-      phone
-      email
       gender
       competitionPlayer
       lastRanking {

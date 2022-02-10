@@ -13,8 +13,6 @@ query GetTeamQuery($id: ID!) {
       firstName
       lastName
     }
-    phone
-    email
     locations {
       id
       name
