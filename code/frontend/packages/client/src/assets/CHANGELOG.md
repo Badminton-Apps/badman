@@ -1,3 +1,12 @@
+## [4.24.4](https://github.com/Badminton-Apps/badman/compare/v4.24.3...v4.24.4) (2022-02-10)
+
+
+### Bug Fixes
+
+* downgrade doesn't have min games ([d9596d8](https://github.com/Badminton-Apps/badman/commit/d9596d81a4fc0b6498ad7670ef9329fcf0d2e528))
+
+
+
 ## [4.24.3](https://github.com/Badminton-Apps/badman/compare/v4.24.2...v4.24.3) (2022-02-09)
 
 
