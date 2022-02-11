@@ -8,6 +8,7 @@ import {
   RankingSystem,
   RankingSystemGroup
 } from '@badvlasim/shared';
+import { GraphQLBoolean, GraphQLID } from 'graphql';
 import { RankingSystemInputType, RankingSystemType } from '../types';
 
 export const addRankingSystemMutation = {
@@ -114,6 +115,45 @@ export const updateRankingSystemMutation = {
       return dbEvent;
     } catch (e) {
       logger.error('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+
+export const removeRankingSystemMutation = {
+  type: GraphQLBoolean,
+  args: {
+    RankingSystemIdId: {
+      name: 'RankingSystemId',
+      type: GraphQLID
+    }
+  },
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { RankingSystemIdId },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      canExecute(context?.req?.user, { anyPermissions: ['edit:ranking'] });
+      const dbRankingSystem = await RankingSystem.findByPk(RankingSystemIdId, { transaction });
+
+      if (!dbRankingSystem) {
+        logger.debug('RankingSystemId', {data: dbRankingSystem});
+        throw new ApiError({
+          code: 404,
+          message: 'RankingSystem not found'
+        });
+      }
+
+      await dbRankingSystem.destroy({ transaction });
+
+      await transaction.commit();
+      return true;
+    } catch (e) {
+      logger.warn('rollback', e);
       await transaction.rollback();
       throw e;
     }
