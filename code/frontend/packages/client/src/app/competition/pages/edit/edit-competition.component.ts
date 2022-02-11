@@ -84,8 +84,6 @@ export class EditEventCompetitionComponent implements OnInit {
   }
 
   private setupFormGroup(event: CompetitionEvent) {
-    console.log(event);
-
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),

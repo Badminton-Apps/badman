@@ -39,8 +39,6 @@ export class EditClubHistoryDialogComponent implements OnInit {
   }
 
   onUpdate() {
-    console.log(this.clubFormGroup.getRawValue())
-
     const data = {
       id: this.data.club?.clubMembership?.id,
       clubId: this.clubFormGroup.value.club,

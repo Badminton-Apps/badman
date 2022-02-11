@@ -1,4 +1,4 @@
-<ng-container [formGroup]="formGroup">
+<ng-container [formGroup]="formGroup" *ngIf="this.clubs">
   <mat-form-field appearance="outline" fxFlex *ngIf="!this.useAutocomplete" class="dense">
     <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
 
