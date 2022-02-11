@@ -1,3 +1,14 @@
+## [4.24.6](https://github.com/Badminton-Apps/badman/compare/v4.24.5...v4.24.6) (2022-02-11)
+
+
+### Bug Fixes
+
+* Query should be defined in arguments ([27fcf99](https://github.com/Badminton-Apps/badman/commit/27fcf99330466dd98690a48691115e50beb50790))
+* Selecting club for player ([b4ff274](https://github.com/Badminton-Apps/badman/commit/b4ff2748abc31f2892a8dd1f2f82a43b3999aafd))
+* Store a default time + change default to won ([70c18f8](https://github.com/Badminton-Apps/badman/commit/70c18f814a2162126f5437d8e518da3044585814))
+
+
+
 ## [4.24.5](https://github.com/Badminton-Apps/badman/compare/v4.24.4...v4.24.5) (2022-02-10)
 
 
