@@ -144,6 +144,7 @@ export class EditClubComponent implements OnInit {
   async onEditLocation(location?: Location, club?: Club) {
     let dialogRef = this.dialog.open(LocationDialogComponent, {
       data: { location, club },
+      autoFocus: false,
     });
 
     dialogRef.afterClosed().subscribe(() => {

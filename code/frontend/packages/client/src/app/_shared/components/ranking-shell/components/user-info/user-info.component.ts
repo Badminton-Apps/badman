@@ -14,8 +14,6 @@ export class UserInfoComponent implements OnInit {
   ngOnInit(): void {}
 
   login(): void {
-    console.log(this.route.url);
-
     // Call this to redirect the user to the login page
     this.auth.loginWithPopup();
     // this.auth.loginWithRedirect({});
