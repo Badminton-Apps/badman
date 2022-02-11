@@ -47,6 +47,7 @@ import {
   updateTournamentEventLocationMutation,
   addRankingPlaceMutation,
   removeRankingPlaceMutation,
+  removeRankingSystemMutation,
   updateRankingPlaceMutation
 } from './mutations';
 import {
@@ -154,6 +155,7 @@ export const createSchema = (notificationService: NotificationService) => {
         removePlayerFromRole: removePlayerFromRoleMutation,
         removePlayerFromTeam: removePlayerFromTeamMutation,
         removeRankingPlace: removeRankingPlaceMutation,
+        removeRankingSystem: removeRankingSystemMutation,
         removeRole: removeRoleMutation,
         removeSubEventToRankingSystemGroup: removeSubEventToRankingSystemGroupMutation,
         removeTeam: removeTeamMutation,
