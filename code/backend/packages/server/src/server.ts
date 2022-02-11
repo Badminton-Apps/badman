@@ -13,7 +13,12 @@ import {
   Player,
   startWhenReady
 } from '@badvlasim/shared';
-
+import {
+  ApolloServerPlugin,
+  GraphQLRequestContext,
+  BaseContext,
+  GraphQLRequestContextDidResolveOperation
+} from 'apollo-server-plugin-base';
 import { ApolloServer } from 'apollo-server-express';
 import { Response, Router } from 'express';
 import {
@@ -26,6 +31,7 @@ import {
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 import graphqlCostAnalysis from 'graphql-cost-analysis';
+import apm from 'elastic-apm-node';
 
 try {
   (async () => {
@@ -41,7 +47,7 @@ try {
   logger.error('Something failed', err);
   throw err;
 }
- 
+
 const startServer = async (databaseService: DataBaseHandler) => {
   const authService = new AuthenticationSercice();
   const handlebarService = new HandlebarService();
@@ -75,6 +81,22 @@ const startServer = async (databaseService: DataBaseHandler) => {
   const apolloServer = new CostAnalysisApolloServer({
     introspection: true,
     logger: logger,
+    plugins: [
+      // Add the operation name to transaction
+      (): ApolloServerPlugin => ({
+        async requestDidStart() {
+          return {
+            async didResolveOperation(
+              context: GraphQLRequestContextDidResolveOperation<BaseContext>
+            ) {
+              apm.setTransactionName(
+                `${context.operation.operation.toUpperCase()} ${context.operation.name.value}`
+              );
+            }
+          };
+        }
+      })
+    ],
     context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
       // When in dev we can allow graph playground to run without permission
       if (process.env.NODE_ENV === 'development') {

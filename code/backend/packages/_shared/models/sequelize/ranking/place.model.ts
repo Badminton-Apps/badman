@@ -35,6 +35,7 @@ import { RankingSystem } from './system.model';
   timestamps: true,
   tableName: 'Places',
   schema: 'ranking',
+
 })
 export class RankingPlace extends Model {
   constructor(values?: Partial<RankingPlace>, options?: BuildOptions) {
@@ -48,6 +49,10 @@ export class RankingPlace extends Model {
   id: string;
 
   @Unique('unique_constraint')
+  @Index({
+    name: 'ranking_index',
+    using: 'BTREE'
+  })
   @Column
   rankingDate: Date;
 
@@ -111,13 +116,19 @@ export class RankingPlace extends Model {
 
   @Unique('unique_constraint')
   @ForeignKey(() => Player)
-  @Index('ranking_index')
+  @Index({
+    name: 'ranking_index',
+    using: 'BTREE'
+  })
   @Column
   playerId: string;
 
   @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
-  @Index('ranking_index')
+  @Index({
+    name: 'ranking_index',
+    using: 'BTREE'
+  })
   @Column
   SystemId: string;
 
