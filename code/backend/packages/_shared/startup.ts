@@ -9,9 +9,21 @@ const apmConfig = {
   secretToken: process.env.APM_SERVER_TOKEN,
   verifyServerCert: false,
   active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
+  logUncaughtExceptions: true,
 } as AgentConfigOptions;
 
 apm.start(apmConfig);
+
+// Ignore options calls
+apm.addFilter((t) => {
+  if (
+    t.context?.request != null &&
+    t.context?.request?.method.toUpperCase() == 'OPTIONS'
+  ) {
+    return;
+  }
+  return t;
+});
 logger.debug(`Started APM`, { data: apmConfig });
 
 let times = 0;
@@ -28,7 +40,7 @@ export const startWhenReady = async (
   startFunction: (...args) => void
 ) => {
   let databaseService: DataBaseHandler;
-  try { 
+  try {
     databaseService = new DataBaseHandler(dbConfig.default);
     logger.debug('Checking Database');
     await databaseService.dbCheck(canMigrate, sync);
