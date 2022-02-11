@@ -1,7 +1,7 @@
 <div fxFlex fxLayout="column">
   <h2 mat-dialog-title>Edit</h2>
-  <mat-dialog-content  fxLayout="column" fxLayoutGap="10px">
-    <div fxLayout="row" fxLayoutGap="10px">
+  <mat-dialog-content fxLayout="column" fxLayoutGap="10px">
+    <div fxLayout="row" fxLayoutGap="16px">
       <app-select-club [formGroup]="this.clubFormGroup" [needsPermission]="false"></app-select-club>
     </div>
 
@@ -15,7 +15,7 @@
       <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column">
         <div fxFlex="250px" fxFlex.lt-md>
           <mat-form-field appearance="outline">
-            <mat-label>{{'club.start' | translate}}</mat-label>
+            <mat-label>{{ 'club.start' | translate }}</mat-label>
             <input matInput [matDatepicker]="start" formControlName="start" />
             <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
             <mat-datepicker #start></mat-datepicker>
@@ -23,7 +23,7 @@
         </div>
         <div fxFlex="250px" fxFlex.lt-md>
           <mat-form-field appearance="outline" *ngIf="!this.currentClub">
-            <mat-label>{{'club.end' | translate}}</mat-label>
+            <mat-label>{{ 'club.end' | translate }}</mat-label>
             <input matInput [matDatepicker]="end" formControlName="end" />
             <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
             <mat-datepicker #end></mat-datepicker>
@@ -36,6 +36,16 @@
   <mat-dialog-actions align="end">
     <button mat-button (click)="this.onDelete()" color="warn">{{ 'button.delete' | translate }}</button>
     <button mat-button [mat-dialog-close]="">{{ 'button.close' | translate }}</button>
-    <button mat-raised-button color="primary" (click)="this.onUpdate()">{{ 'button.save' | translate }}</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="this.onUpdate()"
+      [disabled]="!(this.clubFormGroup.valid && this.membershipFormGroup.valid)"
+      [matTooltip]="
+        this.clubFormGroup.valid && this.membershipFormGroup.valid ? null : ('club.form.invalid' | translate)
+      "
+    >
+      {{ 'button.save' | translate }}
+    </button>
   </mat-dialog-actions>
 </div>
