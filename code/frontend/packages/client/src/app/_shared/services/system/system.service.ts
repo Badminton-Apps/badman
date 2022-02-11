@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
@@ -43,9 +43,6 @@ export class SystemService {
     this.watchSysem$.next(null);
   }
 
-  deleteSystem(systemId: string) {
-    return this.httpClient.delete(`${this.urlBase}/${systemId}`);
-  }
 
   getSystem(systemId: string) {
     return this.apollo
@@ -144,18 +141,6 @@ export class SystemService {
     );
   }
 
-  getSystems(sort?: string, direction?: SortDirection, page?: number, pageSize?: number): Observable<RankingSystem[]> {
-    return this.apollo
-      .query<{ systems: RankingSystem[] }>({
-        query: systemsQuery,
-        variables: {
-          order: `${direction == 'asc' ? '' : 'reverse:'}${sort}`,
-          offset: (page ?? 0) * (pageSize ?? 15),
-          limit: pageSize,
-        },
-      })
-      .pipe(map((x) => x.data?.systems.map((s) => new RankingSystem(s))));
-  }
 
   getSystemsGroups(): Observable<RankingSystemGroup[]> {
     return this.apollo

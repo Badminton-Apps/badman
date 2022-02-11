@@ -4,13 +4,14 @@ import { FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Apollo, gql } from 'apollo-angular';
 import { RankingService } from 'app/admin/services';
 import { SimulateService } from 'app/admin/services/simulate.service';
 import { RankingSystem, SystemService } from 'app/_shared';
 import * as moment from 'moment';
-import { BehaviorSubject, lastValueFrom, merge, of } from 'rxjs';
-import { catchError, distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, lastValueFrom, merge, of } from 'rxjs';
+import { catchError, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './overview-ranking-systems.component.html',
@@ -23,6 +24,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   dataSource = new MatTableDataSource();
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
+  @ViewChild(MatTable, { static: false }) table!: MatTable<RankingSystem>;
 
   rankingSelection = new SelectionModel<RankingSystem>(true, []);
   resultsLength = 0;
@@ -40,7 +42,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
     'options',
   ];
 
-  updateHappend = new BehaviorSubject(true);
+  updateHappend = new BehaviorSubject(false);
 
   minDate: FormControl;
   maxDate: FormControl;
@@ -50,7 +52,9 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
 
   constructor(
     private systemsService: SystemService,
+    private apollo: Apollo,
     private rankingService: RankingService,
+
     private simulateService: SimulateService,
     private dialog: MatDialog
   ) {
@@ -61,13 +65,39 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   ngAfterViewInit() {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-    merge(this.sort.sortChange, this.paginator.page, this.updateHappend)
+    combineLatest([
+      this.sort.sortChange.pipe(startWith({})),
+      this.paginator.page.pipe(startWith({})),
+      this.updateHappend,
+    ])
       .pipe(
-        startWith({}),
-        switchMap((sort, page) => {
+        shareReplay(),
+        switchMap(([sort, page, update]) => {
           this.isLoadingResults = true;
-          return this.systemsService.getSystems(this.sort.active, this.sort.direction, this.paginator.pageIndex, this.paginator.pageSize);
+          return this.apollo.query<{ systems: RankingSystem[] }>({
+            fetchPolicy: update ? 'network-only' : 'cache-first',
+            query: gql`
+              query GetSystemsQuery($order: String, $offset: Int, $limit: Int) {
+                systems(order: $order, offset: $offset, limit: $limit) {
+                  id
+                  primary
+                  runCurrently
+                  name
+                  procentWinning
+                  procentLosing
+                  latestXGamesToUse
+                  rankingSystem
+                }
+              }
+            `,
+            variables: {
+              order: `${this.sort.direction == 'asc' ? '' : 'reverse:'}${this.sort.active}`,
+              offset: (this.paginator.pageIndex ?? 0) * (this.paginator.pageSize ?? 15),
+              limit: this.paginator.pageSize,
+            },
+          });
         }),
+        map((x) => x.data?.systems.map((s) => new RankingSystem(s))),
         map((data) => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
@@ -85,7 +115,12 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
         distinctUntilChanged(),
         tap((_) => this.rankingSelection.clear())
       )
-      .subscribe((data) => (this.dataSource.data = data));
+      .subscribe((data) => {
+        this.dataSource.data = data;
+        // this.table.renderRows();
+
+        console.log('Updated');
+      });
   }
 
   watchSystem(system: RankingSystem) {
@@ -142,6 +177,19 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
     );
   }
   async deleteSystem(systemId: string) {
-    await lastValueFrom(this.systemsService.deleteSystem(systemId).pipe(tap((_) => this.updateHappend.next(true))));
+    await lastValueFrom(
+      this.apollo
+        .mutate({
+          mutation: gql`
+            mutation RemoveRankingSystem($rankingSystemIdId: ID) {
+              removeRankingSystem(RankingSystemIdId: $rankingSystemIdId)
+            }
+          `,
+          variables: {
+            rankingSystemIdId: systemId,
+          },
+        })
+        .pipe(tap((_) => this.updateHappend.next(true)))
+    );
   }
 }
