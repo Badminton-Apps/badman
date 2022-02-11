@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Club } from 'app/_shared';
 import { ClubService, UserService } from 'app/_shared/services';
@@ -34,10 +35,9 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   updateUrl: boolean = false;
 
   formControl = new FormControl(null, [Validators.required]);
-  options!: Club[];
+  clubs!: Club[];
 
-  filteredOptions?: Observable<Club[]>;
-  autoCompleteFormControl = new FormControl(null);
+  filteredClubs?: Observable<Club[]>;
 
   @Input()
   useAutocomplete: true | false | 'auto' = 'auto';
@@ -58,12 +58,16 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       this.formGroup.addControl(this.controlName, this.formControl);
     }
 
-    this.filteredOptions = this.autoCompleteFormControl.valueChanges.pipe(
+    this.formGroup.valueChanges.subscribe((r) => {
+      console.log('club changed 1', r);
+    });
+
+    this.filteredClubs = this.formGroup.get(this.controlName)!.valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(value))
     );
 
-    this.options =
+    this.clubs =
       (await lastValueFrom(
         combineLatest([
           this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
@@ -102,37 +106,37 @@ export class SelectClubComponent implements OnInit, OnDestroy {
         )
       )) ?? [];
 
-    this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
-      this.router.navigate([], {
-        relativeTo: this.activatedRoute,
-        queryParams: { club: this.options.find((x) => x.id === r)?.slug ?? r },
-        queryParamsHandling: 'merge',
-      });
-    });
-
     if (this.updateUrl) {
+      this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
+        this.router.navigate([], {
+          relativeTo: this.activatedRoute,
+          queryParams: { club: this.clubs.find((x) => x.id === r)?.slug ?? r },
+          queryParamsHandling: 'merge',
+        });
+      });
+
       const params = this.activatedRoute.snapshot.queryParams;
       let foundClub: Club | null = null;
 
-      if (params && params['club'] && this.options.length > 0) {
-        foundClub = this.options.find((r) => r.slug === params['club'] || r.id === params['club']) ?? null;
+      if (params && params['club'] && this.clubs.length > 0) {
+        foundClub = this.clubs.find((r) => r.slug === params['club'] || r.id === params['club']) ?? null;
       }
 
       if (foundClub == null) {
         const clubIds = this.user?.profile?.clubs?.map((r) => r.id);
         if (clubIds) {
-          foundClub = this.options.find((r) => clubIds.includes(r.id)) ?? null;
+          foundClub = this.clubs.find((r) => clubIds.includes(r.id)) ?? null;
         }
       }
 
-      if (foundClub == null && this.options.length == 1) {
-        foundClub = this.options[0];
+      if (foundClub == null && this.clubs.length == 1) {
+        foundClub = this.clubs[0];
         this.formControl.disable();
       }
 
       if (foundClub) {
         this.formControl.setValue(foundClub.id, { onlySelf: true });
-        this.autoCompleteFormControl.setValue(foundClub, { onlySelf: true });
+        // this.autoCompleteFormControl.setValue(foundClub, { onlySelf: true });
       } else {
         this.router.navigate([], {
           relativeTo: this.activatedRoute,
@@ -145,7 +149,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
 
   private _filter(value?: string | Club): Club[] {
     if (value == null) {
-      return this.options;
+      return this.clubs;
     }
     let filterValue = '';
 
@@ -155,13 +159,18 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       filterValue = value?.toLowerCase();
     }
 
-    return (this.options ?? []).filter(
+    return (this.clubs ?? []).filter(
       (option) => option.name?.toLowerCase().includes(filterValue) || option.id?.toLowerCase().includes(filterValue)
     );
   }
 
-  displayFn(club?: Club): string {
-    return club?.name ?? '';
+  displayFn(value?: string | Club): string {
+    if (value instanceof Club) {
+      return value?.name ?? '';
+    } else {
+      return this.clubs?.find((r) => r.id === value)?.name ?? '';
+    }
+
   }
 
   ngOnDestroy() {

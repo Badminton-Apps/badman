@@ -19,8 +19,8 @@ export class EditClubHistoryDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const clubControl = new FormControl(this.data.club?.id, Validators.required);
-    const startControl = new FormControl(this.data.club?.clubMembership?.start, Validators.required);
+    const clubControl = new FormControl(this.data.club?.id, [Validators.required]);
+    const startControl = new FormControl(this.data.club?.clubMembership?.start, [Validators.required]);
     const endControl = new FormControl(this.data.club?.clubMembership?.end);
 
     this.currentClub = this.data.club?.clubMembership?.end === undefined;
@@ -39,6 +39,8 @@ export class EditClubHistoryDialogComponent implements OnInit {
   }
 
   onUpdate() {
+    console.log(this.clubFormGroup.getRawValue())
+
     const data = {
       id: this.data.club?.clubMembership?.id,
       clubId: this.clubFormGroup.value.club,
