@@ -101,6 +101,7 @@ export class LastRankingPlace extends Model {
 
   @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
+  @Index('lastPlaces_ranking_index')
   @Column
   systemId: string;
 

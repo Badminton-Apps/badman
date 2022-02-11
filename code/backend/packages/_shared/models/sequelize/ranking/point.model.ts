@@ -53,6 +53,7 @@ export class RankingPoint extends Model {
   })
   type: RankingSystem;
 
+  @ForeignKey(() => RankingSystem)
   @Column
   rankingDate: Date;
 
