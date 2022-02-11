@@ -60,7 +60,7 @@ export class EditClubHistoryComponent implements OnInit {
 
   editClubMembership(club?: Club) {
     this.dialog
-      .open(EditClubHistoryDialogComponent, { data: { club } })
+      .open(EditClubHistoryDialogComponent, { data: { club }, autoFocus: false })
       .afterClosed()
       .subscribe((r) => {
         if (r?.action == 'update') {
