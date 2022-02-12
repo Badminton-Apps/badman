@@ -5,13 +5,13 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.sequelize.query(
-          `DELETE FROM  "ranking"."Points" WHERE id IN (SELECT id FROM (SELECT id, ROW_NUMBER() OVER( PARTITION BY "GameId", "SystemId") AS row_num FROM  "ranking"."Points" ) t WHERE t.row_num > 1 );`,
+          `DELETE FROM  "ranking"."Points" WHERE id IN (SELECT id FROM (SELECT id, ROW_NUMBER() OVER( PARTITION BY "GameId", "playerId", "SystemId", "rankingDate") AS row_num FROM  "ranking"."Points" ) t WHERE t.row_num > 1 );`,
           { transaction: t }
         );
-        // await queryInterface.sequelize.query(
-        //   `DELETE FROM  "ranking"."Places" WHERE id IN (SELECT id FROM (SELECT id, ROW_NUMBER() OVER( PARTITION BY "playerId", "SystemId", "rankingDate") AS row_num FROM  "ranking"."Places" ) t WHERE t.row_num > 1 );`,
-        //   { transaction: t }
-        // );
+        await queryInterface.sequelize.query(
+          `DELETE FROM  "ranking"."Places" WHERE id IN (SELECT id FROM (SELECT id, ROW_NUMBER() OVER( PARTITION BY "playerId", "SystemId", "rankingDate") AS row_num FROM  "ranking"."Places" ) t WHERE t.row_num > 1 );`,
+          { transaction: t }
+        );
 
         await queryInterface.removeIndex(
           {
@@ -66,22 +66,21 @@ module.exports = {
           }
         );
 
-        
-
-        // await queryInterface.addIndex(
-        //   {
-        //     tableName: 'Points',
-        //     schema: 'ranking',
-        //   },
-        //   {
-        //     fields: ['playerId', 'SystemId', 'rankingDate'],
-        //     using: 'btree',
-        //     unique: true,
-        //     name: 'point_system_index',
-        //     transaction: t,
-        //     timeout: 90000,
-        //   }
-        // );
+           
+        await queryInterface.addIndex(
+          {
+            tableName: 'Points',
+            schema: 'ranking',
+          },
+          {
+            fields: ['playerId', 'GameId', 'SystemId'],
+            using: 'btree',
+            unique: true,
+            name: 'point_player_system_index',
+            transaction: t,
+            timeout: 90000,
+          }
+        );
 
         await queryInterface.addIndex(
           {
@@ -91,8 +90,7 @@ module.exports = {
           {
             fields: ['GameId', 'SystemId'],
             using: 'btree',
-            unique: true,
-            name: 'point_system_index',
+            name: 'point_game_system_index',
             transaction: t,
             timeout: 90000,
           }
@@ -206,7 +204,19 @@ module.exports = {
             tableName: 'Points',
             schema: 'ranking',
           },
-          'point_system_index',
+          'point_player_system_index',
+          {
+            transaction: t,
+            timeout: 90000,
+          }
+        );
+
+        await queryInterface.removeIndex(
+          {
+            tableName: 'Points',
+            schema: 'ranking',
+          },
+          'point_game_system_index',
           {
             transaction: t,
             timeout: 90000,
