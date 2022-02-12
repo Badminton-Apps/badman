@@ -15,7 +15,6 @@ import {
 } from '@badvlasim/shared';
 import {
   ApolloServerPlugin,
-  GraphQLRequestContext,
   BaseContext,
   GraphQLRequestContextDidResolveOperation
 } from 'apollo-server-plugin-base';
@@ -49,59 +48,86 @@ try {
 }
 
 const startServer = async (databaseService: DataBaseHandler) => {
-  const authService = new AuthenticationSercice();
-  const handlebarService = new HandlebarService();
-  const notifService = new NotificationService(databaseService);
+  try {
+    const authService = new AuthenticationSercice();
+    const handlebarService = new HandlebarService();
+    const notifService = new NotificationService(databaseService);
 
-  const app = new App(
-    [
-      new EnrollmentController(Router(), authService.checkAuth, databaseService, notifService),
-      new RankingController(Router(), authService.checkAuth),
-      new UserController(Router(), authService.checkAuth, databaseService),
-      new RequestLinkController(Router(), authService.checkAuth),
-      new PdfController(Router(), handlebarService)
-    ],
-    [
-      {
-        from: '/api/v1/search',
-        to: `http://${process.env.SEARCH_SERVICE}`
-      },
-      {
-        from: '/api/v1/simulate',
-        to: `http://${process.env.SIMULATE_SERVICE}`
-      },
-      {
-        from: '/api/v1/job',
-        to: `http://${process.env.JOB_SERVICE}`
-      }
-    ]
-  );
-
-  const schema = createSchema(notifService);
-  const apolloServer = new CostAnalysisApolloServer({
-    introspection: true,
-    logger: logger,
-    plugins: [
-      // Add the operation name to transaction
-      (): ApolloServerPlugin => ({
-        async requestDidStart() {
-          return {
-            async didResolveOperation(
-              context: GraphQLRequestContextDidResolveOperation<BaseContext>
-            ) {
-              apm.setTransactionName(
-                `${context.operation.operation.toUpperCase()} ${context.operation.name.value}`
-              );
-            }
-          };
+    const app = new App(
+      [
+        new EnrollmentController(Router(), authService.checkAuth, databaseService, notifService),
+        new RankingController(Router(), authService.checkAuth),
+        new UserController(Router(), authService.checkAuth, databaseService),
+        new RequestLinkController(Router(), authService.checkAuth),
+        new PdfController(Router(), handlebarService)
+      ],
+      [
+        {
+          from: '/api/v1/search',
+          to: `http://${process.env.SEARCH_SERVICE}`
+        },
+        {
+          from: '/api/v1/simulate',
+          to: `http://${process.env.SIMULATE_SERVICE}`
+        },
+        {
+          from: '/api/v1/job',
+          to: `http://${process.env.JOB_SERVICE}`
         }
-      })
-    ],
-    context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
-      // When in dev we can allow graph playground to run without permission
-      if (process.env.NODE_ENV === 'development') {
-        // We can try to do the auth
-        try {
+      ]
+    );
+
+    const schema = createSchema(notifService);
+    const apolloServer = new CostAnalysisApolloServer({
+      introspection: true,
+      logger: logger,
+      plugins: [
+        // Add the operation name to transaction
+        (): ApolloServerPlugin => ({
+          async requestDidStart() {
+            return {
+              async didResolveOperation(
+                context: GraphQLRequestContextDidResolveOperation<BaseContext>
+              ) {
+                apm.setTransactionName(
+                  `${context.operation.operation.toUpperCase()} ${context.operation.name.value}`
+                );
+              }
+            };
+          }
+        })
+      ],
+      context: async ({ req, res }: { req: AuthenticatedRequest; res: Response }) => {
+        // When in dev we can allow graph playground to run without permission
+        if (process.env.NODE_ENV === 'development') {
+          // We can try to do the auth
+          try {
+            for (const check of authService.checkAuth) {
+              await new Promise((resolve) => {
+                check(req, res, () => {
+                  resolve(null);
+                });
+              });
+            }
+            return { req, res };
+          } catch (err) {
+            // But if we fail we can just return a default setting
+            const grahpReq = {
+              ...req,
+              player: await Player.findOne({ where: { memberId: '50104197' } }),
+              user: {
+                ...req.user,
+                hasAnyPermission: () => {
+                  return true;
+                },
+                hasAllPermission: () => {
+                  return true;
+                }
+              }
+            };
+            return { req: grahpReq, res };
+          }
+        } else {
           for (const check of authService.checkAuth) {
             await new Promise((resolve) => {
               check(req, res, () => {
@@ -110,50 +136,28 @@ const startServer = async (databaseService: DataBaseHandler) => {
             });
           }
           return { req, res };
-        } catch (err) {
-          // But if we fail we can just return a default setting
-          const grahpReq = {
-            ...req,
-            player: await Player.findOne({ where: { memberId: '50104197' } }),
-            user: {
-              ...req.user,
-              hasAnyPermission: () => {
-                return true;
-              },
-              hasAllPermission: () => {
-                return true;
-              }
-            }
-          };
-          return { req: grahpReq, res };
         }
-      } else {
-        for (const check of authService.checkAuth) {
-          await new Promise((resolve) => {
-            check(req, res, () => {
-              resolve(null);
-            });
-          });
-        }
-        return { req, res };
-      }
-    },
-    schema,
-    formatError: (err: GraphQLError) => ({
-      message: err.originalError?.message || err.message,
-      code: err.originalError?.code || 500
-    })
-  });
+      },
+      schema,
+      formatError: (err: GraphQLError) => ({
+        message: err.originalError?.message || err.message,
+        code: err.originalError?.code || 500
+      })
+    });
 
-  await apolloServer.start();
+    await apolloServer.start();
 
-  apolloServer.applyMiddleware({
-    app: app.app,
-    cors: app.corsOptions,
-    path: '/api/graphql'
-  });
+    apolloServer.applyMiddleware({
+      app: app.app,
+      cors: app.corsOptions,
+      path: '/api/graphql'
+    });
 
-  app.listen();
+    app.listen();
+  } catch (err) {
+    logger.error('Something failed', err);
+    throw err;
+  }
 };
 
 class CostAnalysisApolloServer extends ApolloServer {
