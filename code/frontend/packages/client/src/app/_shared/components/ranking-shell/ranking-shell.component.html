@@ -1,32 +1,49 @@
-<div [class.is-mobile]="device.mobileQuery.matches" class="container">
+<div
+  [ngClass]="{ 'device-mobile': device.mobileQuery.matches, 'device-other': !device.mobileQuery.matches }"
+  class="container"
+>
   <mat-toolbar class="toolbar">
-    <div class="start">
-      <button mat-icon-button (click)="snav.toggle()" aria-label="Toggle sidenav">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <a [routerLink]="['./']" class="app-name" *ngIf="!device.mobileQuery.matches">
-        <h1>Badman</h1>
-        <small>v{{ version }}</small>
-      </a>
-    </div>
+    <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+      <ng-container>
+        <!-- Mobile -->
+        <div fxHide [fxShow]="device.mobileQuery.matches" class="start">
+          <button mat-icon-button (click)="snav.toggle()" aria-label="Toggle sidenav">
+            <mat-icon>menu</mat-icon>
+          </button>
+        </div>
 
-    <div class="middle">
-      <app-header-search></app-header-search>
-    </div>
-    <div class="end" fxLayoutGap="16px">
-      <app-watch-system-info [isMobile]="!device.mobileQuery.matches"></app-watch-system-info>
-      <!-- <app-notification></app-notification> -->
-      <app-user-info></app-user-info>
+        <!-- Other -->
+        <div fxFlex class="start" fxHide [fxShow]="!device.mobileQuery.matches">
+          <button mat-icon-button (click)="snav.toggle()" aria-label="Toggle sidenav">
+            <mat-icon>menu</mat-icon>
+          </button>
+          <a fxFlex fxLayoutAlign="start center" [routerLink]="['./']" class="app-name">
+            <h1>Badman</h1>
+            <small>v{{ version }}</small>
+          </a>
+        </div>
+      </ng-container>
+
+      <div class="middle" fxFlex>
+        <app-header-search></app-header-search>
+      </div>
+
+      <div class="end" fxLayoutGap="16px" fxLayoutAlign="center center">
+        <app-watch-system-info [isMobile]="!device.mobileQuery.matches"></app-watch-system-info>
+        <!-- <app-notification></app-notification> -->
+        <app-user-info></app-user-info>
+      </div>
     </div>
   </mat-toolbar>
 
-  <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="device.mobileQuery.matches ? 56 : 0">
+  <mat-sidenav-container class="sidenav-container" fxFlexFill>
     <mat-sidenav
       #snav
       [mode]="device.mobileQuery.matches ? 'over' : 'side'"
       [fixedInViewport]="device.mobileQuery.matches"
       [opened]="!device.mobileQuery.matches"
       fixedTopGap="56"
+      
     >
       <div class="side-menu" fxLayout="column">
         <mat-nav-list>
