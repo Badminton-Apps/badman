@@ -1,3 +1,18 @@
+# [4.25.0](https://github.com/Badminton-Apps/badman/compare/v4.24.6...v4.25.0) (2022-02-14)
+
+
+### Bug Fixes
+
+* **client:** Small screens didn't have login button vissible ([7c59be0](https://github.com/Badminton-Apps/badman/commit/7c59be0e718f642e5db17cf9715f1c4ca070e62d))
+* Update on change ([8fa6c75](https://github.com/Badminton-Apps/badman/commit/8fa6c757eb863354231ce3141816206027355f28))
+
+
+### Features
+
+* improved indexing and send operation name to transaction ([4151041](https://github.com/Badminton-Apps/badman/commit/4151041d724d5d1c192ba16ef3cd774c97920d3e))
+
+
+
 ## [4.24.6](https://github.com/Badminton-Apps/badman/compare/v4.24.5...v4.24.6) (2022-02-11)
 
 
