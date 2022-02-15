@@ -152,6 +152,18 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
+      const endDate = moment(
+        await RankingPlace.max('rankingDate', {
+          where: { SystemId: system }
+        })
+      );
+
+      const startDate = moment(
+        await RankingPlace.min('rankingDate', {
+          where: { SystemId: system }
+        })
+      );
+
       const results = await RankingPlace.findAll({
         attributes: [
           'single',
@@ -168,7 +180,13 @@ export class RankingController extends BaseController {
           'doubleInactive',
           'rankingDate'
         ],
-        where: { SystemId: system },
+        where: {
+          SystemId: system,
+          updatePossible: true,
+          rankingDate: {
+            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
+          }
+        },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
       });
 
@@ -209,17 +227,17 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
-      const rankingDate = moment(
+      const endDate = moment(
         await RankingPlace.max('rankingDate', {
           where: { SystemId: system }
         })
       );
 
-      const endDate = rankingDate.toISOString();
-      const startDate = rankingDate
-        .subtract(2, 'years') // 2 years of data
-        .subtract(1, 'month') // some margin :)
-        .toISOString();
+      const startDate = moment(
+        await RankingPlace.min('rankingDate', {
+          where: { SystemId: system }
+        })
+      );
 
       const results = await RankingPlace.findAll({
         attributes: [
@@ -233,8 +251,9 @@ export class RankingController extends BaseController {
         ],
         where: {
           SystemId: system,
+          updatePossible: true,
           rankingDate: {
-            [Op.between]: [startDate, endDate]
+            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
           }
         },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
@@ -292,17 +311,20 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
-      const rankingDate = moment(
+     
+      const endDate = moment(
         await RankingPlace.max('rankingDate', {
           where: { SystemId: system }
         })
       );
 
-      const endDate = rankingDate.toISOString();
-      const startDate = rankingDate
-        .subtract(2, 'years') // 2 years of data
-        .subtract(1, 'month') // some margin :)
-        .toISOString();
+      const startDate = moment(
+        await RankingPlace.min('rankingDate', {
+          where: { SystemId: system }
+        })
+      );
+
+  
 
       const results = await RankingPlace.findAll({
         attributes: [
@@ -316,8 +338,9 @@ export class RankingController extends BaseController {
         ],
         where: {
           SystemId: system,
+          updatePossible: true,
           rankingDate: {
-            [Op.between]: [startDate, endDate]
+            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
           }
         },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
@@ -387,11 +410,11 @@ export class RankingController extends BaseController {
         zlib: { level: 9 }
       });
       zip.pipe(response); // res is a writable stream
-      
-      for(const file of exportedfiles) {
+
+      for (const file of exportedfiles) {
         zip.append(fs.createReadStream(file.path), { name: file.name });
       }
-      
+
       zip.finalize();
     } else {
       response.header('Content-Type', 'text/csv');
