@@ -105,7 +105,7 @@
 </div>
 
 <button mat-button (click)="calculate()">Calculate</button>
-<button mat-button (click)="download()">Download</button>
+<button mat-button (click)="download()" [class.spinner]="this.downloading" [disabled]="this.downloading">Download</button>
 <button mat-button (click)="download('visual')">Download Visual</button>
 <button mat-button (click)="download('visual-nonBVL_LFBB')">Download Visual (non LFBB/BVL)</button>
 <button mat-button (click)="reset(resetTmpl)">Reset</button>
