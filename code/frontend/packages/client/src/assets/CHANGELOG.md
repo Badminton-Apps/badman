@@ -1,3 +1,12 @@
+## [4.25.2](https://github.com/Badminton-Apps/badman/compare/v4.25.1...v4.25.2) (2022-02-15)
+
+
+### Bug Fixes
+
+* store location + spinner for download ([cab2c83](https://github.com/Badminton-Apps/badman/commit/cab2c83717b2912fc062391a46bbe2796b10f467))
+
+
+
 ## [4.25.1](https://github.com/Badminton-Apps/badman/compare/v4.25.0...v4.25.1) (2022-02-14)
 
 
