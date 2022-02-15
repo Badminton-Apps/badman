@@ -250,11 +250,10 @@ export class RankingSyncer {
             },
             include: [
               {
+                required: false,
                 model: LastRankingPlace,
                 where: {
-                  where: {
-                    SystemId: ranking.system.id
-                  }
+                  systemId: ranking.system.id
                 },
                 attributes: ['id', 'systemId', 'single', 'double', 'mix']
               }
