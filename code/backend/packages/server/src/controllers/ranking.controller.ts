@@ -12,13 +12,14 @@ import async from 'async';
 import { Request, RequestHandler, Response, Router } from 'express';
 import fs, { existsSync, mkdirSync, writeFileSync } from 'fs';
 import moment from 'moment';
+import { join } from 'path';
 import { Op } from 'sequelize';
 import zipstream from 'zip-stream';
 
 export class RankingController extends BaseController {
   private _path = '/ranking';
 
-  private _resultFolder = '/results';
+  private _resultFolder = join(__dirname, 'result');
 
   constructor(router: Router, private _authMiddleware: RequestHandler[]) {
     super(router);
@@ -185,15 +186,15 @@ export class RankingController extends BaseController {
           },${ranking.player.gender},${ranking.player.memberId}`
       );
 
+      const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
       writeFileSync(
-        `${this._resultFolder}/${fileNameSafe}.csv`,
+        outputFile,
         `single, single points, single points downgrade, single inactive, double, double points, double points downgrade, double inactive, mix, mix points, mix points downgrade, mix inactive, rankingDate, name, gender, memberId\n${mapped.join(
           '\n'
-        )}`,
-        {}
+        )}`
       );
       files.push(fileNameSafe);
-      logger.info(`Exported results/${fileNameSafe}.csv`);
+      logger.info(`Exported ${outputFile}`);
     }
 
     return this._download(response, files);
@@ -270,12 +271,13 @@ export class RankingController extends BaseController {
         })
         .flat();
 
+      const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
       writeFileSync(
-        `results/${fileNameSafe}.csv`,
+        outputFile,
         `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join('\n')}`
       );
       files.push(fileNameSafe);
-      logger.info(`Exported results/${fileNameSafe}.csv`);
+      logger.info(`Exported ${outputFile}`);
     }
 
     return this._download(response, files);
@@ -351,12 +353,13 @@ export class RankingController extends BaseController {
         })
         .flat();
 
+      const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
       writeFileSync(
-        `results/${fileNameSafe}.csv`,
+        outputFile,
         `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join('\n')}`
       );
       files.push(fileNameSafe);
-      logger.info(`Exported results/${fileNameSafe}.csv`);
+      logger.info(`Exported ${outputFile}`);
     }
 
     return this._download(response, files);
@@ -368,8 +371,9 @@ export class RankingController extends BaseController {
 
     if (files.length > 1) {
       const exportedfiles = files.map((file) => {
+        const outputFile = join(this._resultFolder, `${file}.csv`);
         return {
-          path: `results/${file}.csv`,
+          path: outputFile,
           name: `${file}.csv`
         };
       });
@@ -392,7 +396,7 @@ export class RankingController extends BaseController {
     } else {
       response.header('Content-Type', 'text/csv');
       response.header('Content-Disposition', `attachment; filename="${filename}.csv"`);
-      const stream = fs.createReadStream(`results/${files[0]}.csv`);
+      const stream = fs.createReadStream(`${this._resultFolder}/${files[0]}.csv`);
       stream.pipe(response);
     }
   }
