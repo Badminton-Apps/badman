@@ -1,3 +1,12 @@
+## [4.25.1](https://github.com/Badminton-Apps/badman/compare/v4.25.0...v4.25.1) (2022-02-14)
+
+
+### Bug Fixes
+
+* **client:** APM version ([fd96d2e](https://github.com/Badminton-Apps/badman/commit/fd96d2ec7e3b496201b2f616e362be473e497206))
+
+
+
 # [4.25.0](https://github.com/Badminton-Apps/badman/compare/v4.24.6...v4.25.0) (2022-02-14)
 
 
