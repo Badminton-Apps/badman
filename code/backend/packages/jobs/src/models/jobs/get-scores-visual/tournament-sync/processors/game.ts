@@ -76,7 +76,22 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           break;
         default:
         case XmlScoreStatus.Normal:
-          gameStatus = GameStatus.NORMAL;
+          // This is the case when the tournament didn't configured their score status
+          if (
+            // No scores
+            xmlMatch?.Sets?.Set[0]?.Team1 == null &&
+            xmlMatch?.Sets?.Set[0]?.Team2 == null &&
+            
+            // But not both players filled
+            !(xmlMatch?.Team1?.Player1?.MemberID == null && xmlMatch?.Team2?.Player1?.MemberID == null) &&
+
+            // And not both players null
+            (xmlMatch?.Team2?.Player1?.MemberID !== null || xmlMatch?.Team2?.Player1?.MemberID !== null)
+          ) {
+            gameStatus = GameStatus.WALKOVER;
+          } else {
+            gameStatus = GameStatus.NORMAL;
+          }
           break;
       }
 
@@ -287,7 +302,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       } as Player & { GamePlayer: GamePlayer });
     }
 
-    return gamePlayers; 
+    return gamePlayers;
   }
 
   private _getPlayer(player: XmlPlayer) {
