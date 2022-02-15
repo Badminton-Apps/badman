@@ -2,7 +2,7 @@
 
 <div class="mat-subheading-2">Ranking</div>
 
-<table mat-table matSort matSortActive="id" matSortDisableClear matSortDirection="asc" [dataSource]="this.dataSource">
+<table mat-table matSort matSortActive="name" matSortDisableClear matSortDirection="asc" [dataSource]="this.dataSource">
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
@@ -105,9 +105,20 @@
 </div>
 
 <button mat-button (click)="calculate()">Calculate</button>
-<button mat-button (click)="download()" [class.spinner]="this.downloading" [disabled]="this.downloading">Download</button>
-<button mat-button (click)="download('visual')">Download Visual</button>
-<button mat-button (click)="download('visual-nonBVL_LFBB')">Download Visual (non LFBB/BVL)</button>
+<button mat-button (click)="download()" [class.spinner]="this.downloading" [disabled]="this.downloading">
+  Download
+</button>
+<button mat-button (click)="download('visual')" [class.spinner]="this.downloading" [disabled]="this.downloading">
+  Download Visual
+</button>
+<button
+  mat-button
+  (click)="download('visual-nonBVL_LFBB')"
+  [class.spinner]="this.downloading"
+  [disabled]="this.downloading"
+>
+  Download Visual (non LFBB/BVL)
+</button>
 <button mat-button (click)="reset(resetTmpl)">Reset</button>
 <button mat-button [routerLink]="['add']">New system</button>
 
