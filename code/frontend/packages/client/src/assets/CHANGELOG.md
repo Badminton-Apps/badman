@@ -1,3 +1,64 @@
+## [4.25.5](https://github.com/Badminton-Apps/badman/compare/v4.25.4...v4.25.5) (2022-02-15)
+
+
+### Bug Fixes
+
+* only return ranking updates ([55f91a8](https://github.com/Badminton-Apps/badman/commit/55f91a89555b696ed33bac469dbc993bc30f133f))
+
+
+
+## [4.25.4](https://github.com/Badminton-Apps/badman/compare/v4.25.3...v4.25.4) (2022-02-15)
+
+
+### Bug Fixes
+
+* Generalize the output folder and use of env safe join ([2ee63a8](https://github.com/Badminton-Apps/badman/commit/2ee63a8108c2629413c0b2287938f58f4169c987))
+* reset of download button + download logic client side ([855cff9](https://github.com/Badminton-Apps/badman/commit/855cff994e0e570a524613a00be7e3c8fdaf0cc0))
+
+
+
+## [4.25.3](https://github.com/Badminton-Apps/badman/compare/v4.25.2...v4.25.3) (2022-02-15)
+
+
+### Bug Fixes
+
+* ranking system typo ([fa343a8](https://github.com/Badminton-Apps/badman/commit/fa343a855da90a77ca4778bf4b3f4177f6d99ed0))
+
+
+
+## [4.25.2](https://github.com/Badminton-Apps/badman/compare/v4.25.1...v4.25.2) (2022-02-15)
+
+
+### Bug Fixes
+
+* store location + spinner for download ([cab2c83](https://github.com/Badminton-Apps/badman/commit/cab2c83717b2912fc062391a46bbe2796b10f467))
+
+
+
+## [4.25.1](https://github.com/Badminton-Apps/badman/compare/v4.25.0...v4.25.1) (2022-02-14)
+
+
+### Bug Fixes
+
+* **client:** APM version ([fd96d2e](https://github.com/Badminton-Apps/badman/commit/fd96d2ec7e3b496201b2f616e362be473e497206))
+
+
+
+# [4.25.0](https://github.com/Badminton-Apps/badman/compare/v4.24.6...v4.25.0) (2022-02-14)
+
+
+### Bug Fixes
+
+* **client:** Small screens didn't have login button vissible ([7c59be0](https://github.com/Badminton-Apps/badman/commit/7c59be0e718f642e5db17cf9715f1c4ca070e62d))
+* Update on change ([8fa6c75](https://github.com/Badminton-Apps/badman/commit/8fa6c757eb863354231ce3141816206027355f28))
+
+
+### Features
+
+* improved indexing and send operation name to transaction ([4151041](https://github.com/Badminton-Apps/badman/commit/4151041d724d5d1c192ba16ef3cd774c97920d3e))
+
+
+
 ## [4.24.6](https://github.com/Badminton-Apps/badman/compare/v4.24.5...v4.24.6) (2022-02-11)
 
 

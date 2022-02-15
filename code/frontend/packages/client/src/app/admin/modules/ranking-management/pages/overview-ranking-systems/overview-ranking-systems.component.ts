@@ -1,5 +1,12 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, ChangeDetectionStrategy, Component, TemplateRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -11,7 +18,16 @@ import { SimulateService } from 'app/admin/services/simulate.service';
 import { RankingSystem, SystemService } from 'app/_shared';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, lastValueFrom, merge, of } from 'rxjs';
-import { catchError, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  distinctUntilChanged,
+  finalize,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 
 @Component({
   templateUrl: './overview-ranking-systems.component.html',
@@ -20,6 +36,8 @@ import { catchError, distinctUntilChanged, map, shareReplay, startWith, switchMa
 })
 export class OverviewRankingSystemsComponent implements AfterViewInit {
   populateOptions: string[] = [];
+
+  downloading = false;
 
   dataSource = new MatTableDataSource();
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
@@ -54,7 +72,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
     private systemsService: SystemService,
     private apollo: Apollo,
     private rankingService: RankingService,
-
+    private changeDetectorRef: ChangeDetectorRef,
     private simulateService: SimulateService,
     private dialog: MatDialog
   ) {
@@ -117,9 +135,6 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
       )
       .subscribe((data) => {
         this.dataSource.data = data;
-        // this.table.renderRows();
-
-        console.log('Updated');
       });
   }
 
@@ -141,11 +156,30 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   }
 
   async download(type?: string) {
-    await this.rankingService.downloadRankingAsync(
-      this.rankingSelection.selected.map((x) => x.id!),
-      type
-    );
+    this.downloading = true;
+
+    this.rankingService
+      .downloadRankingAsync(
+        this.rankingSelection.selected.map((x) => x.id!),
+        type
+      )
+      .pipe(
+        finalize(() => {
+          this.downloading = false;
+          this.changeDetectorRef.detectChanges();
+        }),
+        catchError((e) => {
+          console.error(e);
+          throw e;
+        })
+      )
+      .subscribe((r) => {
+        console.log('Subscribe finished');
+        this.downloading = false;
+        this.changeDetectorRef.detectChanges();
+      });
   }
+
   async reset(templateRef: TemplateRef<any>) {
     const dialogRef = this.dialog.open(templateRef);
 

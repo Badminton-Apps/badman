@@ -132,6 +132,8 @@ export class AppModule {
       serverUrl: environment.apmServer,
       environment: environment.production ? 'production' : 'development',
     });
+
+    apmService.apm.addLabels({ version: environment.version });
   }
 }
 

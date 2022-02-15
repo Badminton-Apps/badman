@@ -8,20 +8,27 @@ import {
   RankingPoint,
   RankingSystem
 } from '@badvlasim/shared';
-import async from 'async';
+import archiver from 'archiver';
 import { Request, RequestHandler, Response, Router } from 'express';
-import fs, { writeFileSync } from 'fs';
+import fs, { mkdirSync, rmdirSync, unlinkSync, writeFileSync } from 'fs';
 import moment from 'moment';
+import { join } from 'path';
 import { Op } from 'sequelize';
-import zipstream from 'zip-stream';
 
 export class RankingController extends BaseController {
   private _path = '/ranking';
+
+  private _resultFolder = join(__dirname, 'results');
 
   constructor(router: Router, private _authMiddleware: RequestHandler[]) {
     super(router);
 
     this._intializeRoutes();
+
+    // Remove
+    rmdirSync(this._resultFolder, { recursive: true });
+    // Recreate
+    mkdirSync(this._resultFolder, { recursive: true });
   }
 
   private _intializeRoutes() {
@@ -145,6 +152,18 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
+      const endDate = moment(
+        await RankingPlace.max('rankingDate', {
+          where: { SystemId: system }
+        })
+      );
+
+      const startDate = moment(
+        await RankingPlace.min('rankingDate', {
+          where: { SystemId: system }
+        })
+      );
+
       const results = await RankingPlace.findAll({
         attributes: [
           'single',
@@ -161,7 +180,13 @@ export class RankingController extends BaseController {
           'doubleInactive',
           'rankingDate'
         ],
-        where: { SystemId: system },
+        where: {
+          SystemId: system,
+          updatePossible: true,
+          rankingDate: {
+            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
+          }
+        },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
       });
 
@@ -178,14 +203,16 @@ export class RankingController extends BaseController {
           },${ranking.player.gender},${ranking.player.memberId}`
       );
 
+      const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
       writeFileSync(
-        `results/${fileNameSafe}.csv`,
+        outputFile,
         `single, single points, single points downgrade, single inactive, double, double points, double points downgrade, double inactive, mix, mix points, mix points downgrade, mix inactive, rankingDate, name, gender, memberId\n${mapped.join(
           '\n'
-        )}`
+        )}`,
+        { encoding: 'utf8', flag: 'w' }
       );
       files.push(fileNameSafe);
-      logger.info(`Exported results/${fileNameSafe}.csv`);
+      logger.info(`Exported ${outputFile}`);
     }
 
     return this._download(response, files);
@@ -200,17 +227,17 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
-      const rankingDate = moment(
+      const endDate = moment(
         await RankingPlace.max('rankingDate', {
           where: { SystemId: system }
         })
       );
 
-      const endDate = rankingDate.toISOString();
-      const startDate = rankingDate
-        .subtract(2, 'years') // 2 years of data
-        .subtract(1, 'month') // some margin :)
-        .toISOString();
+      const startDate = moment(
+        await RankingPlace.min('rankingDate', {
+          where: { SystemId: system }
+        })
+      );
 
       const results = await RankingPlace.findAll({
         attributes: [
@@ -224,8 +251,9 @@ export class RankingController extends BaseController {
         ],
         where: {
           SystemId: system,
+          updatePossible: true,
           rankingDate: {
-            [Op.between]: [startDate, endDate]
+            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
           }
         },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
@@ -262,12 +290,14 @@ export class RankingController extends BaseController {
         })
         .flat();
 
+      const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
       writeFileSync(
-        `results/${fileNameSafe}.csv`,
-        `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join('\n')}`
+        outputFile,
+        `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join('\n')}`,
+        { encoding: 'utf8', flag: 'w' }
       );
       files.push(fileNameSafe);
-      logger.info(`Exported results/${fileNameSafe}.csv`);
+      logger.info(`Exported ${outputFile}`);
     }
 
     return this._download(response, files);
@@ -281,17 +311,20 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
-      const rankingDate = moment(
+     
+      const endDate = moment(
         await RankingPlace.max('rankingDate', {
           where: { SystemId: system }
         })
       );
 
-      const endDate = rankingDate.toISOString();
-      const startDate = rankingDate
-        .subtract(2, 'years') // 2 years of data
-        .subtract(1, 'month') // some margin :)
-        .toISOString();
+      const startDate = moment(
+        await RankingPlace.min('rankingDate', {
+          where: { SystemId: system }
+        })
+      );
+
+  
 
       const results = await RankingPlace.findAll({
         attributes: [
@@ -305,8 +338,9 @@ export class RankingController extends BaseController {
         ],
         where: {
           SystemId: system,
+          updatePossible: true,
           rankingDate: {
-            [Op.between]: [startDate, endDate]
+            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
           }
         },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
@@ -343,25 +377,28 @@ export class RankingController extends BaseController {
         })
         .flat();
 
+      const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
       writeFileSync(
-        `results/${fileNameSafe}.csv`,
-        `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join('\n')}`
+        outputFile,
+        `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join('\n')}`,
+        { encoding: 'utf8', flag: 'w' }
       );
       files.push(fileNameSafe);
-      logger.info(`Exported results/${fileNameSafe}.csv`);
+      logger.info(`Exported ${outputFile}`);
     }
 
     return this._download(response, files);
   };
 
-  private _download(response: Response, files: string[]) {
+  private async _download(response: Response, files: string[]) {
     const filename = `export_${moment().toISOString()}`;
     response.header('Access-Control-Expose-Headers', 'Content-Disposition');
 
     if (files.length > 1) {
       const exportedfiles = files.map((file) => {
+        const outputFile = join(this._resultFolder, `${file}.csv`);
         return {
-          path: `results/${file}.csv`,
+          path: outputFile,
           name: `${file}.csv`
         };
       });
@@ -369,23 +406,26 @@ export class RankingController extends BaseController {
       response.header('Content-Type', 'application/zip');
       response.header('Content-Disposition', `attachment; filename="${filename}.zip"`);
 
-      const zip = zipstream({ level: 1 });
+      const zip = archiver('zip', {
+        zlib: { level: 9 }
+      });
       zip.pipe(response); // res is a writable stream
 
-      const addFile = (file: { path: fs.PathLike; name: string }) => {
-        zip.entry(fs.createReadStream(file.path), { name: file.name });
-      };
+      for (const file of exportedfiles) {
+        zip.append(fs.createReadStream(file.path), { name: file.name });
+      }
 
-      async.forEachSeries(exportedfiles, addFile, (err: Error) => {
-        if (err) logger.error('Something went wrong exporting the files', err);
-        zip.finalize();
-      });
-      return;
+      zip.finalize();
     } else {
       response.header('Content-Type', 'text/csv');
       response.header('Content-Disposition', `attachment; filename="${filename}.csv"`);
-      const stream = fs.createReadStream(`results/${files[0]}.csv`);
+      const stream = fs.createReadStream(`${this._resultFolder}/${files[0]}.csv`);
       stream.pipe(response);
+    }
+
+    // Cleanup
+    for (const file of files) {
+      unlinkSync(join(this._resultFolder, `${file}.csv`));
     }
   }
 }
