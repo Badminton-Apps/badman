@@ -1,3 +1,12 @@
+## [4.25.5](https://github.com/Badminton-Apps/badman/compare/v4.25.4...v4.25.5) (2022-02-15)
+
+
+### Bug Fixes
+
+* only return ranking updates ([55f91a8](https://github.com/Badminton-Apps/badman/commit/55f91a89555b696ed33bac469dbc993bc30f133f))
+
+
+
 ## [4.25.4](https://github.com/Badminton-Apps/badman/compare/v4.25.3...v4.25.4) (2022-02-15)
 
 
