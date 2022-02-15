@@ -64,6 +64,10 @@
       &.won {
         font-weight: 500;
       }
+
+      &.walkover{
+        width: 120px;
+      }
     }
   }
 }
