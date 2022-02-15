@@ -59,6 +59,7 @@
 
 .sidenav-container {
   background-color: white;
+  min-height: calc(100vh - 64px);
 
   mat-sidenav-content {
     padding-left: 12px;
