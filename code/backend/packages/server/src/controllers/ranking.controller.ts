@@ -10,7 +10,7 @@ import {
 } from '@badvlasim/shared';
 import async from 'async';
 import { Request, RequestHandler, Response, Router } from 'express';
-import fs, { writeFileSync } from 'fs';
+import fs, { existsSync, mkdirSync, writeFileSync } from 'fs';
 import moment from 'moment';
 import { Op } from 'sequelize';
 import zipstream from 'zip-stream';
@@ -18,10 +18,17 @@ import zipstream from 'zip-stream';
 export class RankingController extends BaseController {
   private _path = '/ranking';
 
+  private _resultFolder = '/results';
+
   constructor(router: Router, private _authMiddleware: RequestHandler[]) {
     super(router);
 
     this._intializeRoutes();
+
+    // Create folder if not exist
+    if (!existsSync(this._resultFolder)) {
+      mkdirSync(this._resultFolder, { recursive: true });
+    }
   }
 
   private _intializeRoutes() {
@@ -179,10 +186,11 @@ export class RankingController extends BaseController {
       );
 
       writeFileSync(
-        `results/${fileNameSafe}.csv`,
+        `${this._resultFolder}/${fileNameSafe}.csv`,
         `single, single points, single points downgrade, single inactive, double, double points, double points downgrade, double inactive, mix, mix points, mix points downgrade, mix inactive, rankingDate, name, gender, memberId\n${mapped.join(
           '\n'
-        )}`
+        )}`,
+        {}
       );
       files.push(fileNameSafe);
       logger.info(`Exported results/${fileNameSafe}.csv`);

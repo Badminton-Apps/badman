@@ -21,6 +21,8 @@ import { catchError, distinctUntilChanged, map, shareReplay, startWith, switchMa
 export class OverviewRankingSystemsComponent implements AfterViewInit {
   populateOptions: string[] = [];
 
+  downloading = false;
+
   dataSource = new MatTableDataSource();
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
@@ -141,10 +143,12 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   }
 
   async download(type?: string) {
+    this.downloading = true;
     await this.rankingService.downloadRankingAsync(
       this.rankingSelection.selected.map((x) => x.id!),
       type
     );
+    this.downloading = false;
   }
   async reset(templateRef: TemplateRef<any>) {
     const dialogRef = this.dialog.open(templateRef);
