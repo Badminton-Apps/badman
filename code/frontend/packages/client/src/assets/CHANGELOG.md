@@ -1,3 +1,13 @@
+## [4.25.4](https://github.com/Badminton-Apps/badman/compare/v4.25.3...v4.25.4) (2022-02-15)
+
+
+### Bug Fixes
+
+* Generalize the output folder and use of env safe join ([2ee63a8](https://github.com/Badminton-Apps/badman/commit/2ee63a8108c2629413c0b2287938f58f4169c987))
+* reset of download button + download logic client side ([855cff9](https://github.com/Badminton-Apps/badman/commit/855cff994e0e570a524613a00be7e3c8fdaf0cc0))
+
+
+
 ## [4.25.3](https://github.com/Badminton-Apps/badman/compare/v4.25.2...v4.25.3) (2022-02-15)
 
 
