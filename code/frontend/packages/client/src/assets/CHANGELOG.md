@@ -1,3 +1,12 @@
+## [4.26.1](https://github.com/Badminton-Apps/badman/compare/v4.26.0...v4.26.1) (2022-02-16)
+
+
+### Bug Fixes
+
+* show points of both systems and tooltip of viewing ([816fa4f](https://github.com/Badminton-Apps/badman/commit/816fa4fabd4ef88446b4f9b32935c55a7273e44a))
+
+
+
 # [4.26.0](https://github.com/Badminton-Apps/badman/compare/v4.25.5...v4.26.0) (2022-02-16)
 
 
