@@ -9,7 +9,6 @@ import { Club, CompetitionEvent, Game, Player, RankingPlace, RankingSystem, Tour
 
 import * as searchQuery from '../../graphql/players/queries/GetPlayersQuery.graphql';
 import * as searchClubQuery from '../../graphql/players/queries/GetClubPlayersQuery.graphql';
-import * as playerQuery from '../../graphql/players/queries/GetUserInfoQuery.graphql';
 import * as playerBasicQuery from '../../graphql/players/queries/GetUserBasicInfoQuery.graphql';
 import * as gamesQuery from '../../graphql/players/queries/GetUserGamesQuery.graphql';
 import * as evolutionQuery from '../../graphql/players/queries/GetPlayerEvolutionQuery.graphql';
@@ -35,7 +34,7 @@ export class PlayerService {
         }
       )
       .pipe(
-        map((x) => { 
+        map((x) => {
           return x?.map((r) => {
             if (r.type == 'Player') {
               r.value = new Player(r.value as Player);
@@ -112,13 +111,12 @@ export class PlayerService {
     };
   }
 
-  getPlayer(id: string, system?: string): Observable<Player> {
+  getPlayer(id: string): Observable<Player> {
     return this.apollo
       .query({
-        query: system ? playerQuery : playerBasicQuery,
+        query: playerBasicQuery,
         variables: {
           id,
-          system,
         },
       })
       .pipe(map((x: any) => new Player(x.data?.player)));
