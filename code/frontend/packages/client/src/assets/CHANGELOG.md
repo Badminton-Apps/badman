@@ -1,3 +1,20 @@
+# [4.26.0](https://github.com/Badminton-Apps/badman/compare/v4.25.5...v4.26.0) (2022-02-16)
+
+
+### Bug Fixes
+
+* dubble sidebar ([8b25861](https://github.com/Badminton-Apps/badman/commit/8b258610ea3f7914a752f81e7cb1040de7b79b7b))
+* walkover results ([608615f](https://github.com/Badminton-Apps/badman/commit/608615f0eb9201b5340b4ea2446ffb784b932d70))
+* walkovers that have a NORMAL status ([4b3b616](https://github.com/Badminton-Apps/badman/commit/4b3b616058aeeabfc2ed93f2e2e18b150df652f2))
+
+
+### Features
+
+* first version detail encounter ([f79f273](https://github.com/Badminton-Apps/badman/commit/f79f273e96089ba8fc5e5415c74c5f807b7cfb9e))
+* show new place when evaluating ([069e01c](https://github.com/Badminton-Apps/badman/commit/069e01c21b039cc8a8760488f36e4f8e506dd755))
+
+
+
 ## [4.25.5](https://github.com/Badminton-Apps/badman/compare/v4.25.4...v4.25.5) (2022-02-15)
 
 
