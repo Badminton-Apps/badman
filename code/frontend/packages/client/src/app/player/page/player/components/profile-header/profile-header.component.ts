@@ -156,6 +156,9 @@ export class ProfileHeaderComponent implements OnChanges {
           single: primary?.single ?? 12,
           double: primary?.double ?? 12,
           mix: primary?.mix ?? 12,
+          singlePoints: primary?.singlePoints ?? 0,
+          doublePoints: primary?.doublePoints ?? 0,
+          mixPoints: primary?.mixPoints ?? 0,
         } as RankingPlace;
 
         let shownRanking: RankingPlace | undefined;
@@ -165,6 +168,9 @@ export class ProfileHeaderComponent implements OnChanges {
             single: secondary?.single ?? 12,
             double: secondary?.double ?? 12,
             mix: secondary?.mix ?? 12,
+            singlePoints: secondary?.singlePoints ?? 0,
+            doublePoints: secondary?.doublePoints ?? 0,
+            mixPoints: secondary?.mixPoints ?? 0,
           } as RankingPlace;
         }
 
