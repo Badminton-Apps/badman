@@ -170,7 +170,7 @@ export class RankingBreakdownComponent implements OnInit {
           .query<{ player: Player }>({
             fetchPolicy: 'no-cache',
             query: gql`
-                query playerGames($where: SequelizeJSON, $playerId: ID!, $rankingType: ID!) {
+                query PlayerGames($where: SequelizeJSON, $playerId: ID!, $rankingType: ID!) {
                   player(id: $playerId) {
                     id
                     games(where: $where) {
