@@ -8,9 +8,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { GameModule } from 'app/modules/game';
 import { StandingsModule } from 'app/modules/standings/standings.module';
 import { SharedModule } from 'app/_shared';
+import { GameResultModule } from 'app/_shared';
 import { CompetitionRoutingModule } from './competition-routing.module';
 import { EventCompetitionFieldsComponent, EventCompetitionLevelFieldsComponent } from './components';
 import { DetailCompetitionComponent, DetailDrawCompetitionComponent, EditEventCompetitionComponent } from './pages';
+import { DetailEncounterComponent } from './pages/detail-encounter/detail-encounter.component';
 
 const materialModules = [MatListModule, MatMenuModule, MatButtonModule, MatIconModule, MatTabsModule, MatSelectModule];
 
@@ -22,7 +24,8 @@ const materialModules = [MatListModule, MatMenuModule, MatButtonModule, MatIconM
     EventCompetitionFieldsComponent,
     EditEventCompetitionComponent,
     EventCompetitionLevelFieldsComponent,
+    DetailEncounterComponent,
   ],
-  imports: [SharedModule, ...materialModules, CompetitionRoutingModule, GameModule, StandingsModule],
+  imports: [SharedModule, ...materialModules, GameResultModule, CompetitionRoutingModule, GameModule, StandingsModule],
 })
 export class CompetitionModule {}

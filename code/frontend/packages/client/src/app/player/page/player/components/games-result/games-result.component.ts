@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
+  CompetitionEncounter,
   CompetitionSubEvent,
   Game,
   GameType,
   Player,
-  TournamentSubEvent,
-  CompetitionEncounter,
   TournamentDraw,
-} from '../../../../../../../_shared';
+  TournamentSubEvent,
+} from 'app/_shared/models';
 
 @Component({
   selector: 'app-games-result',
@@ -23,14 +23,17 @@ export class GamesResultComponent implements OnInit {
   tournament!: TournamentDraw;
   competition!: CompetitionEncounter;
 
+  @Input()
   gameType!: GameType;
-
+  
   subEvents!: (CompetitionSubEvent | TournamentSubEvent)[];
 
   @Input()
   player!: Player;
 
   ngOnInit() {
+    
+
     // This every time the games length changes
     if (this.games.length !== this.gamesLength) {
       // Shouldn't happen, but still :)
@@ -65,7 +68,9 @@ export class GamesResultComponent implements OnInit {
           }
 
           this.subEvents.map((x) => {
-            x.gameType = x.games![0]!.gameType;
+            if (x instanceof TournamentSubEvent) {
+              x.gameType = this.gameType ?? x.games![0]!.gameType;
+            }
           });
         }
 

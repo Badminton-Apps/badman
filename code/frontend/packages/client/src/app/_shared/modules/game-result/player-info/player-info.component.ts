@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { GameStatus, GameType, PlayerGame, RankingPoint } from '../../../../../_shared';
+import { GameStatus, GameType, PlayerGame, RankingPoint } from 'app/_shared/models';
 
 @Component({
   selector: 'app-player-info',

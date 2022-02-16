@@ -7,7 +7,6 @@ export class SubEvent {
   id?: string;
   name?: string;
   eventType?: string;
-  gameType?: GameType | string;
   level?: number;
   maxLevel?: number;
   minBaseIndex?: number;
@@ -21,7 +20,6 @@ export class SubEvent {
   constructor(args: Partial<SubEvent>) {
     this.id = args?.id;
     this.meta = args?.meta;
-    this.gameType = (args?.gameType ?? null) != null ? (<any>GameType)[args.gameType!] : undefined;
     this.eventType = args?.eventType;
     this.name = args?.name;
     this.level = args?.level;

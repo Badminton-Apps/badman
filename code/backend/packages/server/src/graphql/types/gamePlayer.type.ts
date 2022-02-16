@@ -1,4 +1,4 @@
-import { Game, GamePlayer, Player, RankingPlace, RankingSystem } from '@badvlasim/shared';
+import { Game, GamePlayer, Player, RankingPlace } from '@badvlasim/shared';
 import { GraphQLObjectType } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import { Identifier, Op } from 'sequelize';
@@ -21,7 +21,6 @@ const GamePlayerType = new GraphQLObjectType({
             _context: unknown,
             info: { source: { GamePlayer: { gameId: Identifier } } }
           ) => {
-            const system = await RankingSystem.findOne({where: {primary: true}});
             const game = await Game.findByPk(info.source.GamePlayer.gameId, {
               attributes: ['playedAt']
             });
@@ -29,7 +28,6 @@ const GamePlayerType = new GraphQLObjectType({
             findOptions.where = {
               ...queryFixer(findOptions.where),
               rankingDate: { [Op.lte]: game.playedAt },
-              SystemId: system.id
             };
             findOptions.order = [['rankingDate', 'DESC']];
             findOptions.limit = 1;

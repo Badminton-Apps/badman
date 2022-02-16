@@ -29,6 +29,7 @@ import { Player } from '../player.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Claim } from './claim.model';
 import { PlayerRoleMembership } from './role-player-membership.model';
+import { SecurityType } from './security-types.enum';
 
 @Table({
   timestamps: true,
@@ -69,6 +70,9 @@ export class Role extends Model {
 
   @BelongsTo(() => Club, 'clubId')
   club: Club;
+
+  @Column(DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM))
+  type: SecurityType;
 
   @ForeignKey(() => Club)
   @Column
