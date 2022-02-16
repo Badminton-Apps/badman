@@ -26,6 +26,7 @@ import { Player } from '../player.model';
 import { PlayerClaimMembership } from './claim-player-membership.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Role } from './role.model';
+import { SecurityType } from './security-types.enum';
 
 @Table({
   timestamps: true,
@@ -54,8 +55,8 @@ export class Claim extends Model {
   @Column
   category: string;
 
-  @Column(DataType.ENUM('global', 'club', 'team'))
-  type: 'global' | 'club' | 'team';
+  @Column(DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM))
+  type: SecurityType;
 
   @BelongsToMany(() => Player, () => PlayerClaimMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention

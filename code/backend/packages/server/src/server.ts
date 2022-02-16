@@ -32,20 +32,7 @@ import { GraphQLError } from './models/graphql.error';
 import graphqlCostAnalysis from 'graphql-cost-analysis';
 import apm from 'elastic-apm-node';
 
-try {
-  (async () => {
-    try {
-      logger.info(`Starting ${process.env.SERVICE_NAME} version ${process.env.SERVICE_VERSION}`);
-      await startWhenReady(true, false, (db) => startServer(db));
-    } catch (e) {
-      logger.error('Something failed', e);
-      throw e;
-    }
-  })();
-} catch (err) {
-  logger.error('Something failed', err);
-  throw err;
-}
+
 
 const startServer = async (databaseService: DataBaseHandler) => {
   try {
@@ -159,6 +146,21 @@ const startServer = async (databaseService: DataBaseHandler) => {
     throw err;
   }
 };
+
+try {
+  (async () => {
+    try {
+      logger.info(`Starting ${process.env.SERVICE_NAME} version ${process.env.SERVICE_VERSION}`);
+      await startWhenReady(true, false, (db) => startServer(db));
+    } catch (e) {
+      logger.error('Something failed', e);
+      throw e; 
+    }
+  })();
+} catch (err) {
+  logger.error('Something failed', err);
+  throw err;
+}
 
 class CostAnalysisApolloServer extends ApolloServer {
   async createGraphQLServerOptions(req, res) {

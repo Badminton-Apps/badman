@@ -116,7 +116,7 @@ export const ClubMembershipInputType = new GraphQLInputObjectType({
 });
 
 export const ClubConnectionType = createConnection({
-  name: 'Club',
+  name: 'ClubConnection',
   nodeType: ClubType,
   target: Club,
   connectionFields: {

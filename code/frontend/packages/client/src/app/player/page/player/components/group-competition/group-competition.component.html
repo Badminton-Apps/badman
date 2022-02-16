@@ -16,12 +16,10 @@
 
   <div class="bottom">
     <span class="event">
-      <a [routerLink]="['/competition', this.subEvent?.event?.slug, games![0]?.competition?.draw?.id]">
-        {{ games![0]?.competition?.draw?.name }}</a
-      >
+      <a [routerLink]="['/competition', this.subEvent?.event?.slug, encounter?.drawId]"> {{ encounter?.draw?.name }}</a>
     </span>
     <span class="spacer">-</span>
-    <span class="date">{{ games![0].playedAt | date }}</span>
+    <span class="date">{{ encounter.date | date }}</span>
   </div>
 </div>
 

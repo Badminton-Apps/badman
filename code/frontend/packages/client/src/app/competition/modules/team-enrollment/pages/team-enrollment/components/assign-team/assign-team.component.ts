@@ -156,7 +156,7 @@ export class AssignTeamComponent implements OnInit {
                 })
               );
             }
-            if (subEvent.gameType == 'MX') {
+            if (subEvent.eventType == 'MX') {
               if (player.lastRanking.mix! < subEvent.maxLevel!) {
                 issues.hasIssues = true;
                 issues.level.push(
@@ -192,7 +192,7 @@ export class AssignTeamComponent implements OnInit {
                 })
               );
             }
-            if (subEvent.gameType == 'MX') {
+            if (subEvent.eventType == 'MX') {
               if (player.lastRanking.mix! < subEvent.maxLevel!) {
                 warnings.hasIssues = true;
                 warnings.level.push(
