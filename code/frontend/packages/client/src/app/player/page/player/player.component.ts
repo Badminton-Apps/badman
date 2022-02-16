@@ -42,11 +42,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const id$ = this.route.paramMap.pipe(map((x) => x.get('id')));
-    const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
 
-    this.player$ = combineLatest([id$, system$, this.updateHappend$]).pipe(
+    this.player$ = combineLatest([id$, this.updateHappend$]).pipe(
       share(),
-      switchMap(([playerId, system]) => this.playerService.getPlayer(playerId!, system?.id)),
+      switchMap(([playerId]) => this.playerService.getPlayer(playerId!)),
       map((player) => {
         if (!player) {
           throw new Error('No player found');
