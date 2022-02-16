@@ -8,19 +8,19 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CovalentDataTableModule } from '@covalent/core/data-table';
-import { CovalentPagingModule } from '@covalent/core/paging';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentLineEchartsModule } from '@covalent/echarts/line';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
-import { SelctionComponentsModule } from 'app/_shared';
+import { GameResultModule, SelctionComponentsModule } from 'app/_shared';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MomentModule } from 'ngx-moment';
 import { SharedModule } from '../_shared';
@@ -34,25 +34,21 @@ import {
   EditPlayerFieldsComponent,
   EditRankingAllComponent,
   EditRankingComponent,
-  GameResultComponent,
   GamesComponent,
-  GamesResultComponent,
-  GroupCompetitionComponent,
-  GroupTournamentComponent,
   MergeAccountComponent,
   MergePlayerComponent,
   PlayerComponent,
-  PlayerInfoComponent,
   ProfileHeaderComponent,
   RankingEvolutionComponent,
   TopPlayersComponent,
+  GamesResultComponent,
+  GroupCompetitionComponent,
+  GroupTournamentComponent
 } from './page';
-import { ListGamesComponent, PeriodSelectionComponent, RankingBreakdownComponent } from './page/ranking-breakdown';
-import { PlayerRoutingModule } from './player-routing.module';
-import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
 import { EditRankingPlaceDialogComponent } from './page/edit-player/dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
+import { ListGamesComponent, PeriodSelectionComponent, RankingBreakdownComponent } from './page/ranking-breakdown';
+import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
+import { PlayerRoutingModule } from './player-routing.module';
 
 const materialModules = [
   MatCardModule,
@@ -71,14 +67,10 @@ const materialModules = [
   MatExpansionModule,
   MatDialogModule,
   MatSlideToggleModule,
-  MatDatepickerModule
+  MatDatepickerModule,
 ];
 
-const covalentModules = [
-  CovalentBaseEchartsModule,
-  CovalentLineEchartsModule,
-  CovalentTooltipEchartsModule,
-];
+const covalentModules = [CovalentBaseEchartsModule, CovalentLineEchartsModule, CovalentTooltipEchartsModule];
 
 const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, SelctionComponentsModule];
 
@@ -90,16 +82,11 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
     EditRankingComponent,
     EditRankingAllComponent,
     PlayerComponent,
-    GameResultComponent,
-    GamesResultComponent,
-    PlayerInfoComponent,
     ProfileHeaderComponent,
     RankingEvolutionComponent,
     TopPlayersComponent,
     GamesComponent,
     ChartComponent,
-    GroupCompetitionComponent,
-    GroupTournamentComponent,
     MergeAccountComponent,
     MergePlayerComponent,
     EditCompetitionStatusComponent,
@@ -107,10 +94,20 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
     EditClubHistoryDialogComponent,
     RankingBreakdownComponent,
     ListGamesComponent,
+    GamesResultComponent,
+    GroupCompetitionComponent,
+    GroupTournamentComponent,
     PeriodSelectionComponent,
     AddGameComponent,
     EditRankingPlaceDialogComponent,
   ],
-  imports: [SharedModule, ...materialModules, ...covalentModules, ...otherModules, PlayerRoutingModule],
+  imports: [
+    SharedModule,
+    ...materialModules,
+    ...covalentModules,
+    ...otherModules,
+    GameResultModule,
+    PlayerRoutingModule,
+  ],
 })
 export class PlayerModule {}

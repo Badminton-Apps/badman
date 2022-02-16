@@ -170,7 +170,7 @@ export class RankingBreakdownComponent implements OnInit {
           .query<{ player: Player }>({
             fetchPolicy: 'no-cache',
             query: gql`
-                query playerGames($where: SequelizeJSON, $playerId: ID!, $rankingType: ID!) {
+                query PlayerGames($where: SequelizeJSON, $playerId: ID!, $rankingType: ID!) {
                   player(id: $playerId) {
                     id
                     games(where: $where) {
@@ -211,7 +211,7 @@ export class RankingBreakdownComponent implements OnInit {
           })
           .pipe(map((x) => x.data.player.games!.map((g) => new Game(g))));
 
-        const player = this.playerService.getPlayer(playerId!, system?.id);
+        const player = this.playerService.getPlayer(playerId!);
         return combineLatest([of(system), player, games, of(type!)]);
       }),
       map(([system, player, games, type]) => {

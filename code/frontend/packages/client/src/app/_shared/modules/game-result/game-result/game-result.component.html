@@ -1,5 +1,5 @@
-<div class="game-info">
-  <!-- <div fxFlex="10" *ngIf="this.game.order || this.game.round">
+<div class="game-info" fxLayout="row">
+  <!-- <div class="round" fxFlex="10px" *ngIf="this.game.order || this.game.round" fxLayoutAlign="start center">
     {{ this.game.linkType == 'competition' ? this.game.order : this.game.round }}
   </div> -->
 
@@ -45,7 +45,7 @@
     <div class="result">
       <ng-container [ngSwitch]="this.game.status">
         <ng-container *ngSwitchCase="'WALKOVER'">
-          <div class="set">
+          <div class="set walkover">
             <ng-container *ngIf="this.game.winner == 1">&nbsp;</ng-container>
             <ng-container *ngIf="this.game.winner == 2">walkover</ng-container>
           </div>

@@ -1,6 +1,6 @@
 // start:ng42.barrel
 export * from './components';
-export * from './selection-components';
+export * from './modules';
 export * from './factory';
 export * from './guards';
 export * from './models';

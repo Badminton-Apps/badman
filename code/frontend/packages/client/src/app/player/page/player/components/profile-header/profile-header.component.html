@@ -1,4 +1,4 @@
-<div class="mat-elevation-z1">
+<div class="mat-elevation-z1" *ngIf="this.places$ | async as places">
   <div class="header">
     <button class="options" mat-icon-button [matMenuTriggerFor]="options">
       <mat-icon>more_vert</mat-icon>
@@ -49,7 +49,7 @@
       </div>
     </div>
 
-    <div class="ranking" *ngIf="this.shownRanking">
+    <div class="ranking" *ngIf="places.shownRankingPrimary">
       <div
         class="single"
         [matTooltip]="singleTooltip"
@@ -57,12 +57,13 @@
         [routerLink]="['ranking', 'single']"
       >
         <span class="up">
-          {{ this.shownRanking.single }}
-          <mat-icon *ngIf="this.shownRanking.singleInactive" matTooltip="Player in inactive for single"
+          <span [ngClass]="{ viewing: places.shownRanking }">{{ places.shownRankingPrimary.single }}</span>
+          <span *ngIf="places.shownRanking"> <span class="viewing">➔</span> {{ places.shownRanking.single }} </span>
+          <mat-icon *ngIf="places.shownRankingPrimary.singleInactive" matTooltip="Player in inactive for single"
             >warning
           </mat-icon>
         </span>
-        <span class="down">{{ this.shownRanking.singlePoints }}</span>
+        <span class="down">{{ places.shownRankingPrimary.singlePoints }}</span>
       </div>
       <div
         class="double"
@@ -71,19 +72,23 @@
         [routerLink]="['ranking', 'double']"
       >
         <span class="up">
-          {{ this.shownRanking.double }}
-          <mat-icon *ngIf="this.shownRanking.doubleInactive" matTooltip="Player in inactive for double"
+          <span [ngClass]="{ viewing: places.shownRanking }">{{ places.shownRankingPrimary.double }}</span>
+          <span *ngIf="places.shownRanking"><span class="viewing">➔</span> {{ places.shownRanking.double }} </span>
+          <mat-icon *ngIf="places.shownRankingPrimary.doubleInactive" matTooltip="Player in inactive for double"
             >warning
           </mat-icon>
         </span>
-        <span class="down">{{ this.shownRanking.doublePoints }}</span>
+        <span class="down">{{ places.shownRankingPrimary.doublePoints }}</span>
       </div>
       <div class="mix" [matTooltip]="mixTooltip" [matTooltipDisabled]="!mixTooltip" [routerLink]="['ranking', 'mix']">
         <span class="up">
-          {{ this.shownRanking.mix }}
-          <mat-icon *ngIf="this.shownRanking.mixInactive" matTooltip="Player in inactive for mix">warning </mat-icon>
+          <span [ngClass]="{ viewing: places.shownRanking }">{{ places.shownRankingPrimary.mix }}</span>
+          <span *ngIf="places.shownRanking"><span class="viewing">➔</span> {{ places.shownRanking.mix }} </span>
+          <mat-icon *ngIf="places.shownRankingPrimary.mixInactive" matTooltip="Player in inactive for mix"
+            >warning
+          </mat-icon>
         </span>
-        <span class="down">{{ this.shownRanking.mixPoints }}</span>
+        <span class="down">{{ places.shownRankingPrimary.mixPoints }}</span>
       </div>
     </div>
   </div>
