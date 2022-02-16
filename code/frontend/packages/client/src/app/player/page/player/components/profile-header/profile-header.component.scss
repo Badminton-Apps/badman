@@ -81,11 +81,11 @@ $config: mat-typography-config();
     }
   }
 
+
   .up {
     @include mat-typography-level-to-styles($config, headline);
 
     .viewing {
-      color: #8b8b8b;
       font-size: 1.2rem;
     }
 
