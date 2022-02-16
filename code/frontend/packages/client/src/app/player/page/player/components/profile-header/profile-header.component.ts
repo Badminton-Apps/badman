@@ -177,49 +177,51 @@ export class ProfileHeaderComponent implements OnChanges {
         };
       }),
       tap((data) => {
-        if (data.shownRankingPrimary) {
-          const date = moment(data.shownRankingPrimary.rankingDate);
+        const usedRanking = data.shownRanking ?? data.shownRankingPrimary;
+
+        if (usedRanking) {
+          const date = moment(usedRanking.rankingDate);
 
           var week = `Week: ${date.week()}-${date.weekYear()}`;
 
-          if (data.shownRankingPrimary.singleRank != -1) {
+          if (usedRanking.singleRank != -1) {
             this.singleTooltip = `${this.translateService.instant('ranking.single')}\r\n${week}`;
-            if (data.shownRankingPrimary.singleRank && data.shownRankingPrimary.totalWithinSingleLevel) {
-              this.singleTooltip += `\r\nWithin level: ${data.shownRankingPrimary.singleRank} of ${data.shownRankingPrimary.totalWithinSingleLevel}`;
+            if (usedRanking.singleRank && usedRanking.totalWithinSingleLevel) {
+              this.singleTooltip += `\r\nWithin level: ${usedRanking.singleRank} of ${usedRanking.totalWithinSingleLevel}`;
             }
-            if (data.shownRankingPrimary.totalSingleRanking) {
-              this.singleTooltip += `\r\nTotal: ${data.shownRankingPrimary.totalSingleRanking}`;
+            if (usedRanking.totalSingleRanking) {
+              this.singleTooltip += `\r\nTotal: ${usedRanking.totalSingleRanking}`;
             }
-            if (data.shownRankingPrimary.singlePointsDowngrade) {
-              this.singleTooltip += `\r\nDown: ${data.shownRankingPrimary.singlePointsDowngrade}`;
+            if (usedRanking.singlePointsDowngrade) {
+              this.singleTooltip += `\r\nDown: ${usedRanking.singlePointsDowngrade}`;
             }
           }
 
-          if (data.shownRankingPrimary.doubleRank != -1) {
+          if (usedRanking.doubleRank != -1) {
             this.doubleTooltip = `${this.translateService.instant('ranking.double')}\r\n${week}`;
-            if (data.shownRankingPrimary.doubleRank && data.shownRankingPrimary.totalWithinDoubleLevel) {
-              this.doubleTooltip += `\r\nWithin level: ${data.shownRankingPrimary.doubleRank} of ${data.shownRankingPrimary.totalWithinDoubleLevel}`;
+            if (usedRanking.doubleRank && usedRanking.totalWithinDoubleLevel) {
+              this.doubleTooltip += `\r\nWithin level: ${usedRanking.doubleRank} of ${usedRanking.totalWithinDoubleLevel}`;
             }
 
-            if (data.shownRankingPrimary.totalDoubleRanking) {
-              this.doubleTooltip += `\r\nTotal: ${data.shownRankingPrimary.totalDoubleRanking}`;
+            if (usedRanking.totalDoubleRanking) {
+              this.doubleTooltip += `\r\nTotal: ${usedRanking.totalDoubleRanking}`;
             }
 
-            if (data.shownRankingPrimary.doublePointsDowngrade) {
-              this.doubleTooltip += `\r\nDown: ${data.shownRankingPrimary.doublePointsDowngrade}`;
+            if (usedRanking.doublePointsDowngrade) {
+              this.doubleTooltip += `\r\nDown: ${usedRanking.doublePointsDowngrade}`;
             }
           }
 
-          if (data.shownRankingPrimary.mixRank != -1) {
+          if (usedRanking.mixRank != -1) {
             this.mixTooltip = `${this.translateService.instant('ranking.mix')}\r\n${week}`;
-            if (data.shownRankingPrimary.mixRank && data.shownRankingPrimary.totalWithinMixLevel) {
-              this.mixTooltip += `\r\nWithin level: ${data.shownRankingPrimary.mixRank} of ${data.shownRankingPrimary.totalWithinMixLevel}`;
+            if (usedRanking.mixRank && usedRanking.totalWithinMixLevel) {
+              this.mixTooltip += `\r\nWithin level: ${usedRanking.mixRank} of ${usedRanking.totalWithinMixLevel}`;
             }
-            if (data.shownRankingPrimary.totalMixRanking) {
-              this.mixTooltip += `\r\nTotal: ${data.shownRankingPrimary.totalMixRanking}`;
+            if (usedRanking.totalMixRanking) {
+              this.mixTooltip += `\r\nTotal: ${usedRanking.totalMixRanking}`;
             }
-            if (data.shownRankingPrimary.mixPointsDowngrade) {
-              this.mixTooltip += `\r\nDown: ${data.shownRankingPrimary.mixPointsDowngrade}`;
+            if (usedRanking.mixPointsDowngrade) {
+              this.mixTooltip += `\r\nDown: ${usedRanking.mixPointsDowngrade}`;
             }
           }
         }

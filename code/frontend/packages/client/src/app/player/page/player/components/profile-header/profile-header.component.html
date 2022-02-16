@@ -63,7 +63,12 @@
             >warning
           </mat-icon>
         </span>
-        <span class="down">{{ places.shownRankingPrimary.singlePoints }}</span>
+        <span class="down">
+          <span [ngClass]="{ viewing: places.shownRanking }">{{ places.shownRankingPrimary.singlePoints }}</span>
+          <span *ngIf="places.shownRanking">
+            <span class="viewing">➔</span> {{ places.shownRanking.singlePoints }}
+          </span>
+        </span>
       </div>
       <div
         class="double"
@@ -78,7 +83,12 @@
             >warning
           </mat-icon>
         </span>
-        <span class="down">{{ places.shownRankingPrimary.doublePoints }}</span>
+        <span class="down">
+          <span [ngClass]="{ viewing: places.shownRanking }">{{ places.shownRankingPrimary.doublePoints }}</span>
+          <span *ngIf="places.shownRanking">
+            <span class="viewing">➔</span> {{ places.shownRanking.doublePoints }}
+          </span>
+        </span>
       </div>
       <div class="mix" [matTooltip]="mixTooltip" [matTooltipDisabled]="!mixTooltip" [routerLink]="['ranking', 'mix']">
         <span class="up">
@@ -88,7 +98,12 @@
             >warning
           </mat-icon>
         </span>
-        <span class="down">{{ places.shownRankingPrimary.mixPoints }}</span>
+        <span class="down">
+          <span [ngClass]="{ viewing: places.shownRanking }">{{ places.shownRankingPrimary.mixPoints }}</span>
+          <span *ngIf="places.shownRanking">
+            <span class="viewing">➔</span> {{ places.shownRanking.mixPoints }}
+          </span>
+        </span>
       </div>
     </div>
   </div>
