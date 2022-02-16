@@ -1,5 +1,5 @@
 query GetClaims {
-  claims(where: {type: { ne: "global"} }){
+  claims(where: {type: { ne: "GLOBAL"} }){
     id
     name
     description

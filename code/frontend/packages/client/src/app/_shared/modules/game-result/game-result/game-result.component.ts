@@ -12,7 +12,7 @@ export class GameResultComponent implements OnInit {
   game!: Game;
 
   @Input()
-  player!: Player;
+  player?: Player;
 
   player1Team1!: Player;
   player2Team1!: Player;
@@ -30,7 +30,7 @@ export class GameResultComponent implements OnInit {
 
   getRankingPoint(player: Player) {
     if (player) {
-      return this.game.rankingPoints!.find((rankingPoint) => rankingPoint.player!.id === player.id);
+      return this.game.rankingPoints?.find((rankingPoint) => rankingPoint.player!.id === player.id);
     }
     return null;
   }
