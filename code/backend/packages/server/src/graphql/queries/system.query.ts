@@ -7,16 +7,6 @@ import { RankingSystemGroupType, RankingSystemType } from '../types';
 export const systemsQuery = {
   type: new GraphQLList(RankingSystemType),
   args: Object.assign(defaultListArgs(), {}),
-  resolve: resolver(RankingSystem)
-};
-export const systemQuery = {
-  type: RankingSystemType,
-  args: {
-    id: {
-      description: 'Id of the system',
-      type: new GraphQLNonNull(GraphQLID)
-    }
-  },
   resolve: resolver(RankingSystem, {
     before: async (findOptions: { [key: string]: object }) => {
       findOptions = {
@@ -26,6 +16,16 @@ export const systemQuery = {
       return findOptions;
     }
   })
+};
+export const systemQuery = {
+  type: RankingSystemType,
+  args: {
+    id: {
+      description: 'Id of the system',
+      type: new GraphQLNonNull(GraphQLID)
+    }
+  },
+  resolve: resolver(RankingSystem)
 };
 
 export const systemsGroupsQuery = {

@@ -21,6 +21,8 @@ query GetUserGamesQuery($playerId: ID!, $system: ID!, $offset: Int!, $limit: Int
         id
         homeScore
         awayScore
+        date
+        drawId
         home {
           id
           name
@@ -79,7 +81,7 @@ query GetUserGamesQuery($playerId: ID!, $system: ID!, $offset: Int!, $limit: Int
         lastName
         team
         player
-        rankingPlace(where: { SystemId: $system }, limit: 1, order: "reverse:rankingDate") {
+        rankingPlace(where: { SystemId: $system }) {
           id
           single
           double

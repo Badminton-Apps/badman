@@ -9,7 +9,7 @@
       <!-- User -->
       <div class="has-user" [routerLink]="['/player', this.player.slug]">
         <!-- Name -->
-        <span>{{ this.player.firstName }} {{ this.player.lastName }}</span>
+        <span>{{ this.player.fullName }}</span>
 
         <!-- Ranking -->
         <span class="ranking" *ngIf="this.ranking">({{ this.ranking }})</span>

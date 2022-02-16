@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'app/_shared';
 import { DetailCompetitionComponent, DetailDrawCompetitionComponent, EditEventCompetitionComponent } from './pages';
+import { DetailEncounterComponent } from './pages/detail-encounter/detail-encounter.component';
 
 const routes: Routes = [
   {
@@ -43,7 +44,16 @@ const routes: Routes = [
 
       {
         path: ':drawId',
-        component: DetailDrawCompetitionComponent,
+        children: [
+          {
+            path: '',
+            component: DetailDrawCompetitionComponent,
+          },
+          {
+            path: ':encounterId',
+            component: DetailEncounterComponent
+          }
+        ],
       },
     ],
   },

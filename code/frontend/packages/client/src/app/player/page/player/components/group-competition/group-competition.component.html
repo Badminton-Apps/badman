@@ -1,5 +1,5 @@
 <div class="mat-subheading-2">
-  <div class="top">
+  <div class="top" [routerLink]="['/competition', this.subEvent?.event?.slug, encounter?.drawId, encounter.id]">
     <ng-container *ngIf="encounter.home?.name && encounter.away?.name">
       <span [ngClass]="{ won: (encounter.homeScore ?? 0) > (encounter.awayScore ?? 0) }">{{
         encounter.home?.name
@@ -16,12 +16,10 @@
 
   <div class="bottom">
     <span class="event">
-      <a [routerLink]="['/competition', this.subEvent?.event?.slug, games![0]?.competition?.draw?.id]">
-        {{ games![0]?.competition?.draw?.name }}</a
-      >
+      <a [routerLink]="['/competition', this.subEvent?.event?.slug, encounter?.drawId]"> {{ encounter?.draw?.name }}</a>
     </span>
     <span class="spacer">-</span>
-    <span class="date">{{ games![0].playedAt | date }}</span>
+    <span class="date">{{ encounter.date | date }}</span>
   </div>
 </div>
 

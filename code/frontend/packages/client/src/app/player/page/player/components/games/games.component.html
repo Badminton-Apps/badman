@@ -10,7 +10,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" fxFlex="200px"  fxFlex.lt-md>
+    <mat-form-field appearance="outline" fxFlex="200px" fxFlex.lt-md>
       <mat-label>{{ 'event.type' | translate }}</mat-label>
       <mat-select formControlName="eventType">
         <mat-option>All</mat-option>
@@ -25,8 +25,8 @@
     class="results"
     infiniteScroll
     (scrolled)="onScroll()"
-    [fromRoot]="true"
-    [infiniteScrollContainer]="'.mat-sidenav-content'"
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="50"
   >
     <app-games-result [games]="games" *ngFor="let games of this.games$ | async"> </app-games-result>
 

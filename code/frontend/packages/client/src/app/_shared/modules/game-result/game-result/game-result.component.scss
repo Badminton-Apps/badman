@@ -1,4 +1,4 @@
-@import '../../../../../../../_shared/variables.scss';
+@import '../../../variables.scss';
 
 :host {
   display: block;
@@ -7,10 +7,12 @@
 
 .game-info {
   max-width: 350px;
-  flex-direction: row;
-  display: flex;
-  justify-content: space-between;
 
+
+  .round {
+    border-right: 1px solid rgba($color: #000000, $alpha: 0.3);
+    
+  }
 
   .players {
     flex: 1 auto;
@@ -61,8 +63,13 @@
       width: 20px;
       text-align: right;
       font-weight: lighter;
+
       &.won {
         font-weight: 500;
+      }
+
+      &.walkover {
+        width: 120px;
       }
     }
   }

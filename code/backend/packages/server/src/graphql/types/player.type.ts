@@ -1,4 +1,11 @@
-import { AuthenticatedRequest, canExecute, Club, ClubMembership, Player, RankingSystem } from '@badvlasim/shared';
+import {
+  AuthenticatedRequest,
+  canExecute,
+  Club,
+  ClubMembership,
+  Player,
+  RankingSystem
+} from '@badvlasim/shared';
 import {
   GraphQLBoolean,
   GraphQLInputObjectType,
@@ -99,11 +106,23 @@ export const PlayerType = new GraphQLObjectType({
           }
 
           const places = await obj.getLastRankingPlaces({
-            where: { systemId },
-            order: [['rankingDate', 'DESC']]
+            where: { systemId }
           });
           return places[0];
         }
+      },
+      lastRankingPlaces: {
+        type: new GraphQLList(RankingPlaceType),
+        args: Object.assign(defaultListArgs()),
+        resolve: resolver(Player.associations.lastRankingPlaces, {
+          before: async (findOptions: { [key: string]: object }) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
       },
       rankingPoints: {
         type: new GraphQLList(RankingPointType),

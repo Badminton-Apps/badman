@@ -11,11 +11,14 @@
   }
 
   .top {
+    cursor: pointer;
+
     .won {
       font-weight: 500;
     }
 
-    .vs, .score {
+    .vs,
+    .score {
       margin: 0 5px;
     }
   }

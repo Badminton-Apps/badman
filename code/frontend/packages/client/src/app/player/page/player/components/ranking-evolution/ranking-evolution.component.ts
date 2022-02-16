@@ -38,6 +38,9 @@ export class RankingEvolutionComponent implements OnInit {
     );
 
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
+    
+    
+
 
     this.rankingPlaces$ = combineLatest([id$, system$]).pipe(
       tap(([playerId, system]) => (this.rankingSystem = system!)),
