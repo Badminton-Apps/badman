@@ -1,5 +1,5 @@
 <ng-container *ngIf="this.encounter$ | async as encounter">
-  <div class="mat-subheading-1">{{ encounter.home?.name }} vs {{ encounter.away?.name }}</div>
+  <div class="mat-subheading-1">{{ encounter.home?.name }} vs {{ encounter.away?.name }} <app-beta></app-beta></div>
 
   <div class="mat-subheading-2">Games</div>
   <div class="games" fxLayout="column">
