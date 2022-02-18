@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "ranking": "node  --max-old-space-size=16384 -r ts-node/register ./src/rankingForSystem.ts"
+    "ranking": "node  --max-old-space-size=4096 -r ts-node/register ./src/rankingForSystem.ts"
   },
   "dependencies": {
     "@badvlasim/shared": "^4.5.1",
