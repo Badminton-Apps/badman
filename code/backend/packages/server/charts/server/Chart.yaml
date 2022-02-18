@@ -5,7 +5,7 @@ version: 0.3.15
 appVersion: 0.1.0
 
 dependencies:
-  - name: postgresql
-    version: 10.3.15
+  - name: postgresql-ha
+    version: 8.3.1
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
