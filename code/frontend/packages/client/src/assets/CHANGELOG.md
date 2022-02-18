@@ -1,3 +1,12 @@
+## [4.27.1](https://github.com/Badminton-Apps/badman/compare/v4.27.0...v4.27.1) (2022-02-18)
+
+
+### Bug Fixes
+
+* Package name should be present ([4eb9371](https://github.com/Badminton-Apps/badman/commit/4eb9371658f7d14108cb32bb560382bcfa12c72b))
+
+
+
 # [4.27.0](https://github.com/Badminton-Apps/badman/compare/v4.26.1...v4.27.0) (2022-02-18)
 
 
