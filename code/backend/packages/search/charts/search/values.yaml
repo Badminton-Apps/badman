@@ -10,7 +10,7 @@ service:
   externalPort: 80
 
 database:
-  DB_IP: server-postgresql.badvla
+  DB_IP: postgresql-postgresql-ha-pgpool.badvla.svc.cluster.local
   DB_DATABASE: ranking
   DB_USER: postgres
   DB_DIALECT: postgres
