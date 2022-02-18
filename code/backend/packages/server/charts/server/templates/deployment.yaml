@@ -133,7 +133,7 @@ spec:
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: server-postgresql
+                name: server-postgresql-ha-postgresql
                 key: postgresql-password
           - name: MAIL_PASS
             valueFrom:
