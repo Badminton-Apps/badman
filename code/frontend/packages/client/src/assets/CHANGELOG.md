@@ -1,3 +1,18 @@
+# [4.27.0](https://github.com/Badminton-Apps/badman/compare/v4.26.1...v4.27.0) (2022-02-18)
+
+
+### Bug Fixes
+
+* Simulate with empty player could cause error ([1cacd97](https://github.com/Badminton-Apps/badman/commit/1cacd978e62dee1c2ec83ea31b34c46edf82c330))
+
+
+### Features
+
+* Database HA ([97968d7](https://github.com/Badminton-Apps/badman/commit/97968d784b6b21f6202393feb9669174e7a83beb))
+* moved DB to clustered environment ([71a56fe](https://github.com/Badminton-Apps/badman/commit/71a56fecd254d4cd1930e8cf48419ed946a0467b))
+
+
+
 ## [4.26.1](https://github.com/Badminton-Apps/badman/compare/v4.26.0...v4.26.1) (2022-02-16)
 
 
