@@ -19,7 +19,7 @@ export class VisualService {
     attributeNamePrefix: '',
     ignoreAttributes: false,
     parseAttributeValue: true
-  };
+  }; 
   private http: AxiosInstance;
 
   constructor() {

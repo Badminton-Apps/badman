@@ -127,7 +127,7 @@ export class BvlRankingCalc extends RankingCalc {
         gamesRange,
         playersRange,
         range.end,
-        options.transaction
+        { transaction: options.transaction }
       );
     }
 
