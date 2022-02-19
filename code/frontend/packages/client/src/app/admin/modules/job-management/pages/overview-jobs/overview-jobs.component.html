@@ -38,6 +38,13 @@
     </td>
   </ng-container>
 
+  <ng-container matColumnDef="lastRun">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Last run</th>
+    <td mat-cell *matCellDef="let element">
+      <span *ngIf="element.lastRun">{{ element.lastRun | amDateFormat: 'LLL' }}</span>
+    </td>
+  </ng-container>
+
   <ng-container matColumnDef="options">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
@@ -46,7 +53,7 @@
       </button>
 
       <mat-menu #rankingSystemMenu="matMenu">
-        <button mat-menu-item>Nothing</button>
+        <button mat-menu-item (click)="runJob(element)">Trigger</button>
       </mat-menu>
     </td>
   </ng-container>

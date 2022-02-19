@@ -23,10 +23,9 @@ const WATCH_SYSTEM_KEY = 'system.id';
   providedIn: 'root',
 })
 export class SystemService {
-  private urlBase = `${environment.api}/${environment.apiVersion}/systems`;
   public watchSysem$ = new BehaviorSubject<RankingSystem | null>(null);
 
-  constructor(private httpClient: HttpClient, private apollo: Apollo) {
+  constructor( private apollo: Apollo) {
     const savedSystem = sessionStorage.getItem(WATCH_SYSTEM_KEY);
     if (savedSystem != null) {
       this.watchSysem$.next(JSON.parse(savedSystem));
