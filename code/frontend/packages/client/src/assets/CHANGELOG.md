@@ -1,3 +1,17 @@
+# [4.29.0](https://github.com/Badminton-Apps/badman/compare/v4.28.0...v4.29.0) (2022-02-19)
+
+
+### Bug Fixes
+
+* send user id to RUM agent ([db00ba9](https://github.com/Badminton-Apps/badman/commit/db00ba99578c580c6cedf4eaded55ab8ebebc18f))
+
+
+### Features
+
+* Sending version to APM ([2e2f3d2](https://github.com/Badminton-Apps/badman/commit/2e2f3d24e407af62daf2b8e24484d3c4b74c5366))
+
+
+
 # [4.28.0](https://github.com/Badminton-Apps/badman/compare/v4.27.2...v4.28.0) (2022-02-19)
 
 
