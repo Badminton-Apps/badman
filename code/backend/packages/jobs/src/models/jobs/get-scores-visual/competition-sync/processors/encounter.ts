@@ -103,7 +103,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       }
 
       // Check if encounter was before last run, skip if only process new events
-      if (dbEncounter.date < this.lastRun && this.encounterOptions.newGames) {
+      if (this.encounterOptions.newGames && dbEncounter.date < this.lastRun) {
         continue; 
       }
 

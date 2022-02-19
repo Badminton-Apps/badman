@@ -4,16 +4,28 @@ import {
   EventEntry,
   Game,
   Standing,
+  StepOptions,
   StepProcessor,
   Team
 } from '@badvlasim/shared';
 import { DrawStepData } from './draw';
 import { EncounterStepData } from './encounter';
 
+export interface StandingStepOptions {
+  newGames?: boolean;
+}
 export class CompetitionSyncStandingProcessor extends StepProcessor {
   public draws: DrawStepData[];
   public encounters: EncounterStepData[];
   public games: Game[];
+
+  private standingOptions: StandingStepOptions;
+
+  constructor(options?: StepOptions & StandingStepOptions) {
+    super(options);
+
+    this.standingOptions = options || {};
+  }
 
   public async process(): Promise<void> {
     // for (const e of this.draws) {
@@ -41,9 +53,12 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
     const teams = await this._getTeams(draw, encounters);
     const standings = await this._getStanding(draw, teams);
 
-    for (const standing of standings.values()) {
-      // Restart the counts.
-      standing.restartCount();
+    // Only reset if we are running from start
+    if (!this.standingOptions.newGames) {
+      for (const standing of standings.values()) {
+        // Restart the counts.
+        standing.restartCount();
+      }
     }
 
     for (const encounter of encounters) {

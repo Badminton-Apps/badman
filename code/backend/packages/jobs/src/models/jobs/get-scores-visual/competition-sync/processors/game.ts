@@ -38,7 +38,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         linkId: {
           [Op.in]: this.encounters.map((encounter) => encounter?.encounter.id).flat()
         }
-      },
+      }, 
       transaction: this.transaction
     });
 
@@ -209,7 +209,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
             }
           } as Player & { GamePlayer: GamePlayer });
         }
-      }
+      } 
     }
 
     // Remove draw that are not in the xml
