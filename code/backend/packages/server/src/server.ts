@@ -32,8 +32,6 @@ import { GraphQLError } from './models/graphql.error';
 import graphqlCostAnalysis from 'graphql-cost-analysis';
 import apm from 'elastic-apm-node';
 
-
-
 const startServer = async (databaseService: DataBaseHandler) => {
   try {
     const authService = new AuthenticationSercice();
@@ -77,7 +75,9 @@ const startServer = async (databaseService: DataBaseHandler) => {
                 context: GraphQLRequestContextDidResolveOperation<BaseContext>
               ) {
                 apm.setTransactionName(
-                  `${context.operation.operation.toUpperCase()} ${context.operation.name.value}`
+                  `${context?.operation?.operation?.toUpperCase()} ${
+                    context.operation.name?.value ?? 'UNKOWN'
+                  }`
                 );
               }
             };
@@ -154,7 +154,7 @@ try {
       await startWhenReady(true, false, (db) => startServer(db));
     } catch (e) {
       logger.error('Something failed', e);
-      throw e; 
+      throw e;
     }
   })();
 } catch (err) {

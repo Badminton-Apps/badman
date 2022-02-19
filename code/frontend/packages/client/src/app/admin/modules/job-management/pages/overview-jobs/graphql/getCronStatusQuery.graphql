@@ -1,4 +1,4 @@
-query {
+query GetCrons {
   crons {
     type
     cron
