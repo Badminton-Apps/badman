@@ -6,12 +6,16 @@ import { Apollo } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import * as cronQuery from './graphql/getCronStatusQuery.graphql';
 import cronstrue from 'cronstrue';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 @Component({
   templateUrl: './overview-jobs.component.html',
   styleUrls: ['./overview-jobs.component.scss'],
 })
 export class OverviewJobsComponent implements OnInit, OnDestroy {
+  private urlBase = `${environment.api}/${environment.apiVersion}/job`;
+
   dataSource = new MatTableDataSource();
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
@@ -20,11 +24,11 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   isRateLimitReached = false;
 
-  displayedColumns: string[] = ['running', 'name', 'scheduled', 'cron', 'done', 'options'];
+  displayedColumns: string[] = ['running', 'name', 'scheduled', 'cron', 'done', 'lastRun', 'options'];
 
   private querySubscription!: Subscription;
 
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
   ngOnInit(): void {
     this.querySubscription = this.apollo
@@ -38,6 +42,10 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
           return { ...cron, tooltip: cronstrue.toString(cron.cron) };
         });
       });
+  }
+
+  runJob(cronJob) {
+    this.httpClient.post(`${this.urlBase}/single-run?type=${cronJob.type}`, {}).subscribe(() => {});
   }
 
   ngOnDestroy() {
