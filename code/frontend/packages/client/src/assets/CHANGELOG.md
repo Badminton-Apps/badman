@@ -1,3 +1,20 @@
+# [4.28.0](https://github.com/Badminton-Apps/badman/compare/v4.27.2...v4.28.0) (2022-02-19)
+
+
+### Bug Fixes
+
+* **job:** Standings should know when it's only running for the new games or doing a full sync ([42ac1cc](https://github.com/Badminton-Apps/badman/commit/42ac1cceeba63d2f3b9a017dec6dea81f681c167))
+* **job:** Standings should know when it's only running for the new games or doing a full sync ([deecdcf](https://github.com/Badminton-Apps/badman/commit/deecdcf7f445fb08a9beb75bd62d910ed3f464e7))
+* Query should have name ([18bfd89](https://github.com/Badminton-Apps/badman/commit/18bfd890034ab08c969cdf3368a9a37bb79ddc4e))
+* sidebar shouldn't scale with content ([14adf48](https://github.com/Badminton-Apps/badman/commit/14adf489bdbbdc8325e18e26b80f649ba156268f))
+
+
+### Features
+
+* trigger job from UI ([dda49cb](https://github.com/Badminton-Apps/badman/commit/dda49cbab34310b1289d0925e465c62ba0519245))
+
+
+
 ## [4.27.2](https://github.com/Badminton-Apps/badman/compare/v4.27.1...v4.27.2) (2022-02-19)
 
 
