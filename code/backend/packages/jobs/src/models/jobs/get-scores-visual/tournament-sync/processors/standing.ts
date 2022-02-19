@@ -1,10 +1,23 @@
-import { DrawTournament, Standing, StepProcessor, EventEntry, Game } from '@badvlasim/shared';
+import { DrawTournament, Standing, StepProcessor, EventEntry, Game, StepOptions } from '@badvlasim/shared';
 import { DrawStepData } from './draw';
 import { Op } from 'sequelize';
+
+export interface StandingStepOptions {
+  newGames?: boolean;
+}
 
 export class TournamentSyncStandingProcessor extends StepProcessor {
   public draws: DrawStepData[];
   public games: Game[];
+
+  private standingOptions: StandingStepOptions;
+
+  constructor(options?: StepOptions & StandingStepOptions) {
+    super(options);
+
+    this.standingOptions = options || {};
+  }
+
 
   public async process(): Promise<void> {
     // Now we can process the games per draw
@@ -29,9 +42,12 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     const entries = await this._getEntries(games, draw.subeventId);
     const standings = await this._getStanding2(draw, games, entries);
 
-    for (const standing of standings.values()) {
-      // Restart the counts.
-      standing.restartCount();
+    // Only reset if we are running from start
+    if (!this.standingOptions.newGames) {
+      for (const standing of standings.values()) {
+        // Restart the counts.
+        standing.restartCount();
+      }
     }
 
     for (const game of games) {

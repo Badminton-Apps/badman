@@ -95,12 +95,10 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
 
             const hash = new Map<string, Player>(players.map((e) => [e.id, e]));
 
-            await system.calculateRankingPointsPerGameAsync(
-              gamesWithoutPoints,
-              hash,
-              null,
-              this.transaction
-            );
+            await system.calculateRankingPointsPerGameAsync(gamesWithoutPoints, hash, null, {
+              transaction: this.transaction,
+              logger: this.logger
+            });
           }
 
           totalGames += games.length;

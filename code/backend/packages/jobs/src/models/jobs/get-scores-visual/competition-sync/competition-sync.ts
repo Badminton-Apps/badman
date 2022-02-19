@@ -110,7 +110,10 @@ export class CompetitionSyncer {
     );
 
     this._pointStep = new CompetitionSyncPointProcessor(options);
-    this._standingStep = new CompetitionSyncStandingProcessor(options);
+    this._standingStep = new CompetitionSyncStandingProcessor({
+      ...options,
+      newGames: this.options.newGames
+    });
 
     return this.processor.process();
   }

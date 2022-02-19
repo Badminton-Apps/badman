@@ -1,5 +1,6 @@
 import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
+import winston from 'winston';
 import { logger } from '../../utils';
 import { GameType } from '../enums';
 import {
@@ -456,7 +457,9 @@ export class RankingCalc {
     games: Game[],
     players: Map<string, Player>,
     rankingDate?: Date,
-    transaction?: Transaction
+    args: { transaction?: Transaction; logger?: winston.Logger } = {
+      logger: logger,
+    }
   ) {
     const total = games.length;
 
@@ -465,7 +468,7 @@ export class RankingCalc {
         this.processGame(games.pop(), players, rankingDate) ?? [];
 
       if (games.length % 100 === 0) {
-        logger.debug(
+        args?.logger.debug(
           `Calulating point: ${total - games.length}/${total} (${(
             ((total - games.length) / total) *
             100
@@ -478,7 +481,7 @@ export class RankingCalc {
           rankings.map((r) => r.toJSON()),
           {
             returning: false,
-            transaction,
+            transaction: args?.transaction,
           }
         );
       }
@@ -663,7 +666,7 @@ export class RankingCalc {
         mix: mixLevel,
         double: doubleLevel,
         updatePossible: true,
-        SystemId: this.rankingType.id
+        SystemId: this.rankingType.id,
       });
 
       return this.protectRanking(newRanking);
@@ -683,7 +686,7 @@ export class RankingCalc {
       mix: lastRanking.mix,
       double: lastRanking.double,
       updatePossible: false,
-      SystemId: this.rankingType.id
+      SystemId: this.rankingType.id,
     });
   }
 
