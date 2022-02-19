@@ -30,6 +30,7 @@ export class UserService {
         this.apmService.apm.setUserContext({
           username: user?.name,
           email: user?.email,
+          id: user?.sub,
         });
       }),
       mergeMap((x) => iif(() => x != null && x != undefined, whenAuthenticated, of(null))),
