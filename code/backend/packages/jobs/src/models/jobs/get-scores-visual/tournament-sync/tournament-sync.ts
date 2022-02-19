@@ -47,7 +47,7 @@ export class TournamentSyncer {
       ...this.options
     };
 
-    this.processor = new Processor(null, {logger: this.tournamentLogger});
+    this.processor = new Processor(null, { logger: this.tournamentLogger });
     this.visualService = new VisualService();
 
     this.processor.addStep(this.getEvent());
@@ -70,7 +70,7 @@ export class TournamentSyncer {
       transaction: args.transaction,
       lastRun: args.options.lastRun as Date
     };
- 
+
     this._eventStep = new TournamentSyncEventProcessor(
       args.xmlTournament,
       this.visualService,
@@ -94,14 +94,16 @@ export class TournamentSyncer {
       options
     );
 
-    this._gameStep = new TournamentSyncGameProcessor(
-      args.xmlTournament,
-      this.visualService,
-      options
-    );
+    this._gameStep = new TournamentSyncGameProcessor(args.xmlTournament, this.visualService, {
+      ...options,
+      newGames: this.options.newGames
+    });
 
     this._pointStep = new TournamentSyncPointProcessor(options);
-    this._standingStep = new TournamentSyncStandingProcessor(options);
+    this._standingStep = new TournamentSyncStandingProcessor({
+      ...options,
+      newGames: this.options.newGames
+    });
 
     return this.processor.process();
   }

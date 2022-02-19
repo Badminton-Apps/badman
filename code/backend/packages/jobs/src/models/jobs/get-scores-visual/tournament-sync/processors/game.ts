@@ -19,6 +19,10 @@ import { DrawStepData } from './draw';
 import { EventStepData } from './event';
 import { SubEventStepData } from './subEvent';
 
+export interface GameStepOptions {
+  newGames?: boolean;
+}
+
 export class TournamentSyncGameProcessor extends StepProcessor {
   public players: Map<string, Player>;
   public draws: DrawStepData[];
@@ -26,12 +30,16 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   public event: EventStepData;
   private _games: Game[] = [];
 
+  private gameOptions: GameStepOptions;
+
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions & GameStepOptions
   ) {
     super(options);
+
+    this.gameOptions = options || {};
   }
 
   public async process(): Promise<Game[]> {
@@ -60,6 +68,11 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           ? moment(xmlMatch.MatchTime).toDate()
           : this.event.event.firstDay;
 
+      // Check if encounter was before last run, skip if only process new events
+      if (this.gameOptions.newGames && playedAt < this.lastRun) {
+        continue;
+      }
+
       let gameStatus = GameStatus.NORMAL;
       switch (xmlMatch.ScoreStatus) {
         case XmlScoreStatus.Retirement:
@@ -81,12 +94,14 @@ export class TournamentSyncGameProcessor extends StepProcessor {
             // No scores
             xmlMatch?.Sets?.Set[0]?.Team1 == null &&
             xmlMatch?.Sets?.Set[0]?.Team2 == null &&
-            
             // But not both players filled
-            !(xmlMatch?.Team1?.Player1?.MemberID == null && xmlMatch?.Team2?.Player1?.MemberID == null) &&
-
+            !(
+              xmlMatch?.Team1?.Player1?.MemberID == null &&
+              xmlMatch?.Team2?.Player1?.MemberID == null
+            ) &&
             // And not both players null
-            (xmlMatch?.Team2?.Player1?.MemberID !== null || xmlMatch?.Team2?.Player1?.MemberID !== null)
+            (xmlMatch?.Team2?.Player1?.MemberID !== null ||
+              xmlMatch?.Team2?.Player1?.MemberID !== null)
           ) {
             gameStatus = GameStatus.WALKOVER;
           } else {
