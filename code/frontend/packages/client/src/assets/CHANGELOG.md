@@ -1,3 +1,12 @@
+## [4.27.2](https://github.com/Badminton-Apps/badman/compare/v4.27.1...v4.27.2) (2022-02-19)
+
+
+### Bug Fixes
+
+* PG pool was doing weird ([a1683af](https://github.com/Badminton-Apps/badman/commit/a1683afee43771025a9bda3f62c851ae042dd936))
+
+
+
 ## [4.27.1](https://github.com/Badminton-Apps/badman/compare/v4.27.0...v4.27.1) (2022-02-18)
 
 
