@@ -5,7 +5,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "restart": "node -r ts-node/register ./src/re-create.ts"
+    "restart": "node -r ts-node/register ./src/re-create.ts",
+    "dump": "node -r ts-node/register ./src/dump.ts",
+    "restore": "node -r ts-node/register ./src/restore.ts"
   },
   "dependencies": {
 
