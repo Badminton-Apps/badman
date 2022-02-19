@@ -129,11 +129,10 @@ export class AppModule {
     // Agent API is exposed through this apm instance
     apmService.init({
       serviceName: 'badman-client',
+      serviceVersion: environment.version,
       serverUrl: environment.apmServer,
       environment: environment.production ? 'production' : 'development',
     });
-
-    apmService.apm.addLabels({ version: environment.version });
   }
 }
 

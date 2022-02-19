@@ -7,6 +7,7 @@ const apmConfig = {
   serviceName: process.env.SERVICE_NAME,
   serverUrl: process.env.APM_SERVER_URL,
   secretToken: process.env.APM_SERVER_TOKEN,
+  serviceVersion: process.env.SERVICE_VERSION,
   verifyServerCert: false,
   active: process.env.APM_SERVER_ACTIVE === 'true' ?? true,
   logUncaughtExceptions: true,
