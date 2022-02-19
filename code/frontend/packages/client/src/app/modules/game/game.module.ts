@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +5,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'app/_shared';
 import { MomentModule } from 'ngx-moment';
 import { PlayerInfoModule } from '../player-info/player-info.module';
 import { CompetitionEncounterComponent } from './components/competition-encounter/competition-encounter.component';
@@ -16,7 +16,7 @@ import { TournamentDrawComponent } from './components/tournament-draw/tournament
 @NgModule({
   declarations: [GameInfoComponent, SubEventComponent, TournamentDrawComponent, CompetitionEncounterComponent],
   imports: [
-    CommonModule,
+    SharedModule,
     PlayerInfoModule,
     MatExpansionModule,
     FlexModule,
