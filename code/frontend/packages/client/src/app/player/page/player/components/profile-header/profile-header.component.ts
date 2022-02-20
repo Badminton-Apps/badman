@@ -19,10 +19,6 @@ export class ProfileHeaderComponent implements OnChanges {
   @Input()
   player!: Player;
 
-  playerAge?: number;
-
-  menuItesm = [];
-
   @Input()
   canClaimAccount!: {
     canClaim?: boolean;
@@ -36,28 +32,18 @@ export class ProfileHeaderComponent implements OnChanges {
   @Output()
   accountMerged = new EventEmitter<void>();
 
-  // shownRankingPrimary?: RankingPlace;
-  // shownRanking?: RankingPlace;
   places$?: Observable<{
     shownRankingPrimary: RankingPlace;
     shownRanking?: RankingPlace;
   }>;
 
+  systems$?: Observable<RankingSystem[]>;
   initials?: string;
 
-  singleTooltip!: string;
-  doubleTooltip!: string;
-  mixTooltip!: string;
-
-  constructor(
-    private dialog: MatDialog,
-    private translateService: TranslateService,
-    private apollo: Apollo,
-    private systemService: SystemService
-  ) {}
+  constructor(private dialog: MatDialog, private apollo: Apollo, private systemService: SystemService) {}
 
   ngOnChanges(): void {
-    this.places$ = this.systemService.getPrimarySystemsWhere().pipe(
+    this.systems$ = this.systemService.getPrimarySystemsWhere().pipe(
       switchMap((query) => {
         const where = {};
 
@@ -80,6 +66,9 @@ export class ProfileHeaderComponent implements OnChanges {
               systems(where: $where) {
                 id
                 primary
+                amountOfLevels
+                pointsToGoUp
+                pointsToGoDown
               }
             }
           `,
@@ -88,6 +77,10 @@ export class ProfileHeaderComponent implements OnChanges {
           },
         });
       }),
+      map((x) => x.data.systems?.map((x) => new RankingSystem(x)))
+    );
+
+    this.places$ = this.systems$.pipe(
       switchMap((systems) => {
         return this.apollo.query<{ player: Player }>({
           query: gql`
@@ -123,7 +116,6 @@ export class ProfileHeaderComponent implements OnChanges {
 
                   rankingSystem {
                     id
-                    name
                     primary
                   }
                 }
@@ -135,14 +127,14 @@ export class ProfileHeaderComponent implements OnChanges {
 
             where: {
               systemId: {
-                $in: systems?.data?.systems?.map((x) => x.id),
+                $in: systems?.map((x) => x.id),
               },
             },
           },
         });
       }),
       map((player) => {
-        return player.data?.player.lastRankingPlaces;
+        return player.data?.player.lastRankingPlaces?.map((x) => new RankingPlace(x));
       }),
       map((places) => {
         if ((places?.length ?? 0) > 2) {
@@ -181,56 +173,6 @@ export class ProfileHeaderComponent implements OnChanges {
           shownRankingPrimary,
           shownRanking,
         };
-      }),
-      tap((data) => {
-        const usedRanking = data.shownRanking ?? data.shownRankingPrimary;
-
-        if (usedRanking) {
-          const date = moment(usedRanking.rankingDate);
-
-          var week = `Week: ${date.week()}-${date.weekYear()}`;
-
-          if (usedRanking.singleRank != -1) {
-            this.singleTooltip = `${this.translateService.instant('ranking.single')}\r\n${week}`;
-            if (usedRanking.singleRank && usedRanking.totalWithinSingleLevel) {
-              this.singleTooltip += `\r\nWithin level: ${usedRanking.singleRank} of ${usedRanking.totalWithinSingleLevel}`;
-            }
-            if (usedRanking.totalSingleRanking) {
-              this.singleTooltip += `\r\nTotal: ${usedRanking.totalSingleRanking}`;
-            }
-            if (usedRanking.singlePointsDowngrade) {
-              this.singleTooltip += `\r\nDown: ${usedRanking.singlePointsDowngrade}`;
-            }
-          }
-
-          if (usedRanking.doubleRank != -1) {
-            this.doubleTooltip = `${this.translateService.instant('ranking.double')}\r\n${week}`;
-            if (usedRanking.doubleRank && usedRanking.totalWithinDoubleLevel) {
-              this.doubleTooltip += `\r\nWithin level: ${usedRanking.doubleRank} of ${usedRanking.totalWithinDoubleLevel}`;
-            }
-
-            if (usedRanking.totalDoubleRanking) {
-              this.doubleTooltip += `\r\nTotal: ${usedRanking.totalDoubleRanking}`;
-            }
-
-            if (usedRanking.doublePointsDowngrade) {
-              this.doubleTooltip += `\r\nDown: ${usedRanking.doublePointsDowngrade}`;
-            }
-          }
-
-          if (usedRanking.mixRank != -1) {
-            this.mixTooltip = `${this.translateService.instant('ranking.mix')}\r\n${week}`;
-            if (usedRanking.mixRank && usedRanking.totalWithinMixLevel) {
-              this.mixTooltip += `\r\nWithin level: ${usedRanking.mixRank} of ${usedRanking.totalWithinMixLevel}`;
-            }
-            if (usedRanking.totalMixRanking) {
-              this.mixTooltip += `\r\nTotal: ${usedRanking.totalMixRanking}`;
-            }
-            if (usedRanking.mixPointsDowngrade) {
-              this.mixTooltip += `\r\nDown: ${usedRanking.mixPointsDowngrade}`;
-            }
-          }
-        }
       })
     );
   }
