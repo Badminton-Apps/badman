@@ -51,7 +51,7 @@
   }
 }
 
-.device-mobile{
+.device-mobile {
   mat-sidenav-content {
     margin-top: 56px;
   }
@@ -59,7 +59,11 @@
 
 .sidenav-container {
   background-color: white;
-  height: calc(100vh - 64px);
+  height: calc(100vh);
+
+  @media only screen and (min-width: 600px) {
+    height: calc(100vh - 64px);
+  }
 
   mat-sidenav-content {
     padding-left: 12px;
