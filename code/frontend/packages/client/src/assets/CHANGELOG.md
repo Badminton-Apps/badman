@@ -1,3 +1,18 @@
+# [4.30.0](https://github.com/Badminton-Apps/badman/compare/v4.29.0...v4.30.0) (2022-02-20)
+
+
+### Bug Fixes
+
+* allow download of all types + temporary remove simulate button ([433c4c0](https://github.com/Badminton-Apps/badman/commit/433c4c06bdc412b6ae25d40b1ac948727184015e))
+* height was wrong on mobile ([8d2afb7](https://github.com/Badminton-Apps/badman/commit/8d2afb740626a43eb3d00ab5f40dafd1ab190b72))
+
+
+### Features
+
+* show trending up/down for level ([0767774](https://github.com/Badminton-Apps/badman/commit/0767774f0260945d433277cabe97117a8bd31d01))
+
+
+
 # [4.29.0](https://github.com/Badminton-Apps/badman/compare/v4.28.0...v4.29.0) (2022-02-19)
 
 
