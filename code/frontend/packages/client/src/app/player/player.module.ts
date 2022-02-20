@@ -49,6 +49,7 @@ import { EditRankingPlaceDialogComponent } from './page/edit-player/dialogs/edit
 import { ListGamesComponent, PeriodSelectionComponent, RankingBreakdownComponent } from './page/ranking-breakdown';
 import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
 import { PlayerRoutingModule } from './player-routing.module';
+import { ShowRankingComponent } from './page/player';
 
 const materialModules = [
   MatCardModule,
@@ -100,6 +101,7 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
     PeriodSelectionComponent,
     AddGameComponent,
     EditRankingPlaceDialogComponent,
+    ShowRankingComponent,
   ],
   imports: [
     SharedModule,

@@ -63,37 +63,12 @@ $config: mat-typography-config();
   }
 
   .ranking {
-    flex: 1;
-    display: flex;
-
-    .single,
-    .double,
-    .mix {
-      cursor: pointer;
-    }
-
-    div {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      display: flex;
-    }
+    margin-right: 16px;
   }
 
 
   .up {
     @include mat-typography-level-to-styles($config, headline);
-
-    .viewing {
-      font-size: 1.2rem;
-    }
-
-    mat-icon {
-      font-size: 18px;
-      height: auto;
-      width: auto;
-    }
   }
 
   .down {
@@ -104,4 +79,5 @@ $config: mat-typography-config();
       color: #aaaaaa;
     }
   }
+
 }

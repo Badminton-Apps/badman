@@ -1,0 +1,41 @@
+<div fxLayout="column" fxLayoutAlign="center center" fxFlex [routerLink]="['ranking', this.type]">
+  <div class="up">
+    <ng-container *ngIf="!this.viewingRankingPlace">
+      <span>{{ this.rankingPlace?.[this.type!] }}</span>
+
+      <mat-icon
+        *ngIf="this.rankingPlace?.[this.type + 'Inactive']"
+        [matTooltip]="'ranking.inactive.' + this.type | translate"
+        >warning
+      </mat-icon>
+
+      <mat-icon *ngIf="this.nextUp === 'upgrade'" [matTooltip]="'ranking.trending_up' | translate"
+        >trending_up</mat-icon
+      >
+      <mat-icon *ngIf="this.nextUp === 'downgrade'" [matTooltip]="'ranking.trending_down' | translate"
+        >trending_down</mat-icon
+      >
+    </ng-container>
+
+    <ng-container *ngIf="this.viewingRankingPlace">
+      <span class="viewing">{{ this.rankingPlace?.[this.type!] }}</span>
+      <span> <span class="viewing">➔</span> {{ this.viewingRankingPlace?.[this.type!] }} </span>
+      <mat-icon
+        *ngIf="this.viewingRankingPlace?.[this.type + 'Inactive']"
+        [matTooltip]="'ranking.inactive.' + this.type | translate"
+        >warning
+      </mat-icon>
+    </ng-container>
+  </div>
+
+  <div class="down">
+    <ng-container *ngIf="this.viewingRankingPlace">
+      <span class="viewing">{{ this.rankingPlace?.[this.type + 'Points'] }}</span>
+      <span> <span class="viewing">➔</span> {{ this.viewingRankingPlace?.[this.type + 'Points'] }} </span>
+    </ng-container>
+
+    <ng-container *ngIf="!this.viewingRankingPlace">
+      <span>{{ this.rankingPlace?.[this.type + 'Points'] }}</span>
+    </ng-container>
+  </div>
+</div>

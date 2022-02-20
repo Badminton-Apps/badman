@@ -1,22 +1,15 @@
-import { Apollo, gql } from 'apollo-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
-
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { filter, map, share, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { environment } from './../../../../environments/environment';
-import { RankingSystem, RankingSystemGroup } from './../../models';
-
-import * as primarySystemsQuery from '../../graphql/rankingSystem/queries/GetPrimarySystemsQuery.graphql';
-import * as systemWithCountsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql';
-import * as systemQuery from '../../graphql/rankingSystem/queries/GetSystemQuery.graphql';
-import * as systemCapsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryCaps.graphql';
-import * as systemsQuery from '../../graphql/rankingSystem/queries/GetSystemsQuery.graphql';
-import * as systemsGroupsQuery from '../../graphql/rankingSystem/queries/GetSystemGroupsQuery.graphql';
-
+import { Apollo } from 'apollo-angular';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import * as addRankingSystemMutation from '../../graphql/rankingSystem/mutations/addRankingSystem.graphql';
 import * as updateRankingSysyemMutatino from '../../graphql/rankingSystem/mutations/updateRankingSystem.graphql';
+import * as primarySystemsQuery from '../../graphql/rankingSystem/queries/GetPrimarySystemsQuery.graphql';
+import * as systemsGroupsQuery from '../../graphql/rankingSystem/queries/GetSystemGroupsQuery.graphql';
+import * as systemQuery from '../../graphql/rankingSystem/queries/GetSystemQuery.graphql';
+import * as systemCapsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryCaps.graphql';
+import * as systemWithCountsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql';
+import { RankingSystem, RankingSystemGroup } from './../../models';
 
 const WATCH_SYSTEM_KEY = 'system.id';
 @Injectable({
@@ -25,7 +18,7 @@ const WATCH_SYSTEM_KEY = 'system.id';
 export class SystemService {
   public watchSysem$ = new BehaviorSubject<RankingSystem | null>(null);
 
-  constructor( private apollo: Apollo) {
+  constructor(private apollo: Apollo) {
     const savedSystem = sessionStorage.getItem(WATCH_SYSTEM_KEY);
     if (savedSystem != null) {
       this.watchSysem$.next(JSON.parse(savedSystem));
@@ -41,7 +34,6 @@ export class SystemService {
     sessionStorage.removeItem(WATCH_SYSTEM_KEY);
     this.watchSysem$.next(null);
   }
-
 
   getSystem(systemId: string) {
     return this.apollo
@@ -139,7 +131,6 @@ export class SystemService {
       })
     );
   }
-
 
   getSystemsGroups(): Observable<RankingSystemGroup[]> {
     return this.apollo
