@@ -1,4 +1,11 @@
-import { DrawTournament, Standing, StepProcessor, EventEntry, Game, StepOptions } from '@badvlasim/shared';
+import {
+  DrawTournament,
+  Standing,
+  StepProcessor,
+  EventEntry,
+  Game,
+  StepOptions
+} from '@badvlasim/shared';
 import { DrawStepData } from './draw';
 import { Op } from 'sequelize';
 
@@ -17,7 +24,6 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
 
     this.standingOptions = options || {};
   }
-
 
   public async process(): Promise<void> {
     // Now we can process the games per draw
@@ -156,32 +162,34 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
 
     let position = 1;
 
-    const sorted = [...standings.values()]?.sort(this.sortStandings())?.map((acc) => {
-      acc.position = position;
-      position++;
-      return acc;
-    });
+    if (standings.size > 0) {
+      const sorted = [...standings.values()]?.sort(this.sortStandings())?.map((acc) => {
+        acc.position = position;
+        position++;
+        return acc;
+      });
 
-    await Standing.bulkCreate(
-      sorted?.map((e) => e.toJSON()),
-      {
-        transaction: this.transaction,
-        updateOnDuplicate: [
-          'position',
-          'played',
-          'won',
-          'lost',
-          'tied',
-          'points',
-          'gamesWon',
-          'gamesLost',
-          'setsWon',
-          'setsLost',
-          'totalPointsWon',
-          'totalPointsLost'
-        ]
-      }
-    );
+      await Standing.bulkCreate(
+        sorted?.map((e) => e.toJSON()),
+        {
+          transaction: this.transaction,
+          updateOnDuplicate: [
+            'position',
+            'played',
+            'won',
+            'lost',
+            'tied',
+            'points',
+            'gamesWon',
+            'gamesLost',
+            'setsWon',
+            'setsLost',
+            'totalPointsWon',
+            'totalPointsLost'
+          ]
+        }
+      );
+    }
   }
 
   private sortStandings(): (a: Standing, b: Standing) => number {
