@@ -1,3 +1,13 @@
+## [4.30.1](https://github.com/Badminton-Apps/badman/compare/v4.30.0...v4.30.1) (2022-02-21)
+
+
+### Bug Fixes
+
+* make sure there are things to update before we update ([54dfd3a](https://github.com/Badminton-Apps/badman/commit/54dfd3aa3e70c1541c0831f91e35bcc8a1d834e1))
+* Removing `console.log` ([e080d20](https://github.com/Badminton-Apps/badman/commit/e080d20ec6cb10252d6b2afbaeafa7f96ac164bc))
+
+
+
 # [4.30.0](https://github.com/Badminton-Apps/badman/compare/v4.29.0...v4.30.0) (2022-02-20)
 
 
