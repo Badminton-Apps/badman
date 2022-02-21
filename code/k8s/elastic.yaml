@@ -148,6 +148,7 @@ spec:
                   and: 
                     - not.equals.kubernetes.container.name: "controller"
                     - not.equals.kubernetes.container.name: "client"
+                    - not.equals.kubernetes.container.name: "postgresql"
                 config:
                   - type: container
                     json.keys_under_root: true
