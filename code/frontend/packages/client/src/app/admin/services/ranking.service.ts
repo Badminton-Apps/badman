@@ -32,7 +32,6 @@ export class RankingService {
         take(1),
         map((response) => {
           let fileName = 'file';
-          console.log(`Downloaded ${fileName}`);
 
           const contentDisposition = response.headers.get('Content-Disposition');
           if (contentDisposition) {
@@ -59,8 +58,6 @@ export class RankingService {
           link.download = fileName;
           // this is necessary as link.click() does not work on the latest firefox
           link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-
-          console.log(`Downloaded ${fileName}`);
 
           return { link, downloadURL };
 

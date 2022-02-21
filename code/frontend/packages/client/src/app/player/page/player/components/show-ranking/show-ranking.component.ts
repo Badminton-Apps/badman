@@ -25,8 +25,6 @@ export class ShowRankingComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    console.log(this.rankingPlace);
-
     if (this.systems) {
       const usedSystem = this.systems.find((s) => s.id === this.rankingPlace?.rankingSystem?.id)!;
       const level = this.rankingPlace![this.type!];
@@ -42,7 +40,6 @@ export class ShowRankingComponent implements OnInit {
       // we can go down
       if (level !== usedSystem.amountOfLevels) {
         const poitnsNeeded = usedSystem.pointsToGoDown![usedSystem.amountOfLevels! - level! - 1];
-        console.log(poitnsNeeded);
 
         if (this.rankingPlace![`${this.type!}Points`!] < poitnsNeeded) {
           this.nextUp = 'downgrade';
