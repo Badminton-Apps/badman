@@ -11,7 +11,7 @@ export abstract class CronJob {
       }`
     );
 
-    if (dbCron.running){
+    if (dbCron.running) {
       // When restarting, a job can't be running
       dbCron.running = false;
       dbCron.save();
@@ -30,16 +30,16 @@ export abstract class CronJob {
     // override in subclasses
     logger.info(`Cron job ${this.dbCron.type} is running`);
     this.dbCron.running = true;
-    this.dbCron.save();
+    return this.dbCron.save();
   }
 
   abstract run(args?: { force?: boolean } & { [key: string]: unknown }): Promise<void>;
 
   async postRun() {
+    logger.info(`Cron job ${this.dbCron.type} finished`);
     this.dbCron.lastRun = new Date();
     this.dbCron.running = false;
-    await this.dbCron.save();
-    logger.info(`Cron job ${this.dbCron.type} finished`);
+    return this.dbCron.save();
   }
 
   async start() {
@@ -62,7 +62,13 @@ export abstract class CronJob {
       } catch (error) {
         logger.error('Cron failed', error);
       } finally {
-        await this.postRun();
+        logger.debug('Cron finaly');
+
+        try {
+          await this.postRun();
+        } catch (error) {
+          logger.error("Couln't run post run", error);
+        }
       }
     });
   }
