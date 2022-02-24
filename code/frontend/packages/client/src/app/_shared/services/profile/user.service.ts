@@ -12,7 +12,7 @@ import { ApmService } from '@elastic/apm-rum-angular';
   providedIn: 'root',
 })
 export class UserService {
-  private urlBase = `${environment.api}/${environment.apiVersion}/user`;
+  private urlBase = `${environment.api}/api/${environment.apiVersion}/user`;
 
   profile$: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
   profile?: Player;
@@ -41,7 +41,7 @@ export class UserService {
 
   requestLink(playerId: string): Observable<RequestLink> {
     return this.httpClient.post<RequestLink>(
-      `${environment.api}/${environment.apiVersion}/request-link/${playerId}`,
+      `${environment.api}/api/${environment.apiVersion}/request-link/${playerId}`,
       {}
     );
   }

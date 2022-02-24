@@ -8,19 +8,28 @@ import { BaseController } from './models';
 import { createLightship, Lightship } from 'lightship';
 import helmet from 'helmet';
 import compression from 'compression';
+import { createServer, Server } from 'http';
+import { SocketEmitter } from './sockets';
 
 moment.suppressDeprecationWarnings = true;
 
 export class App {
   public app: Application;
+  public httpServer: Server;
   public corsOptions: cors.CorsOptions;
   private _lightship: Lightship;
+  constructor(args?: {
+    controllers: BaseController[];
+    proxies?: { from: string; to: string }[];
+  }) {
+    const { proxies, controllers } = {
+      proxies: [],
+      ...args,
+    };
 
-  constructor(
-    controllers: BaseController[],
-    proxies: { from: string; to: string }[] = []
-  ) {
     this.app = express();
+
+    this.httpServer = createServer(this.app);
     this._lightship = createLightship();
 
     this._initializeMiddlewares();
@@ -30,6 +39,9 @@ export class App {
     this.app.use(json());
     this.app.use(helmet());
     this.app.use(compression());
+
+    // Setup socket client
+    SocketEmitter.setup();
 
     this._initializeControllers(controllers);
     this._list();
@@ -80,21 +92,22 @@ export class App {
         createProxyMiddleware({
           target: p.to,
           changeOrigin: true,
-          ws: true,
           logLevel: 'debug',
           logProvider: () => {
             return logger;
-          }
+          },
         })
       );
     });
   }
 
   public listen() {
-    const httpServer = this.app
+    const httpServer = this.httpServer
       .listen(process.env.PORT, () => {
         logger.info(
-          `🚀 ${process.env.SERVICE_NAME} listening on the port ${process.env.PORT}`
+          `🚀 ${process.env.SERVICE_NAME} listening on the port ${this.app.get(
+            'port'
+          )}`
         );
         this._lightship.signalReady();
       })

@@ -23,7 +23,7 @@ export class PermissionService {
     this.userPermissions$ = combineLatest([this.authService.user$, this.update$]).pipe(
       filter(([profile]) => profile != null),
       startWith(false),
-      exhaustMap((_) => this.httpClient.get<string[]>(`${environment.api}/${environment.apiVersion}/user/permissions`)),
+      exhaustMap((_) => this.httpClient.get<string[]>(`${environment.api}/api/${environment.apiVersion}/user/permissions`)),
       shareReplay(1)
     );
   }

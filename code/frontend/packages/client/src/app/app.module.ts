@@ -28,6 +28,7 @@ import { AppComponent } from './app.component';
 import { GraphQLModule } from './graphql.module';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { SharedModule } from './_shared/shared.module';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
 const baseModules = [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule];
 const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule.forRoot(), MatSnackBarModule];
@@ -99,6 +100,9 @@ const cookieConfig: NgcCookieConsentConfig = {
       httpInterceptor: {
         allowedList: [{ uriMatcher: (uri) => uri.indexOf('api') > -1, allowAnonymous: true }],
       },
+    }),
+    SocketIoModule.forRoot({
+      url: environment.api,
     }),
   ],
   providers: [

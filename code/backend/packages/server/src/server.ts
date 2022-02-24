@@ -11,7 +11,8 @@ import {
   NotificationService,
   HandlebarService,
   Player,
-  startWhenReady
+  startWhenReady,
+  SocketServer
 } from '@badvlasim/shared';
 import {
   ApolloServerPlugin,
@@ -25,7 +26,8 @@ import {
   RankingController,
   RequestLinkController,
   UserController,
-  PdfController
+  PdfController,
+  TestController
 } from './controllers';
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
@@ -38,15 +40,16 @@ const startServer = async (databaseService: DataBaseHandler) => {
     const handlebarService = new HandlebarService();
     const notifService = new NotificationService(databaseService);
 
-    const app = new App(
-      [
+    const app = new App({
+      controllers: [
         new EnrollmentController(Router(), authService.checkAuth, databaseService, notifService),
         new RankingController(Router(), authService.checkAuth),
         new UserController(Router(), authService.checkAuth, databaseService),
         new RequestLinkController(Router(), authService.checkAuth),
-        new PdfController(Router(), handlebarService)
+        new PdfController(Router(), handlebarService),
+        new TestController(Router())
       ],
-      [
+      proxies: [
         {
           from: '/api/v1/search',
           to: `http://${process.env.SEARCH_SERVICE}`
@@ -60,8 +63,12 @@ const startServer = async (databaseService: DataBaseHandler) => {
           to: `http://${process.env.JOB_SERVICE}`
         }
       ]
-    );
+    });
 
+    // Setup socket.io
+    await SocketServer.setup(app.httpServer, app.corsOptions);
+
+    // Setup Apollo
     const schema = createSchema(notifService);
     const apolloServer = new CostAnalysisApolloServer({
       introspection: true,
@@ -133,13 +140,13 @@ const startServer = async (databaseService: DataBaseHandler) => {
     });
 
     await apolloServer.start();
-
     apolloServer.applyMiddleware({
       app: app.app,
       cors: app.corsOptions,
       path: '/api/graphql'
     });
 
+    // Listen to everything
     app.listen();
   } catch (err) {
     logger.error('Something failed', err);

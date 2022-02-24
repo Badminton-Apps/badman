@@ -28,7 +28,7 @@ export class PlayerService {
   headerSearch(query: string) {
     return this.httpClient
       .get<{ value: Player | CompetitionEvent | TournamentEvent; type: string }[]>(
-        `${environment.api}/${environment.apiVersion}/search`,
+        `${environment.api}/api/${environment.apiVersion}/search`,
         {
           params: new HttpParams().set('query', query),
         }
@@ -178,7 +178,7 @@ export class PlayerService {
       .get<{
         total: number;
         rankingPlaces: RankingPlace[];
-      }>(`${environment.api}/${environment.apiVersion}/ranking/top`, {
+      }>(`${environment.api}/api/${environment.apiVersion}/ranking/top`, {
         params: params as any,
       })
       .pipe(

@@ -1,4 +1,4 @@
-import { Cron, logger } from '@badvlasim/shared';
+import { Cron, EVENTS, logger, SocketEmitter } from '@badvlasim/shared';
 import { schedule, ScheduledTask } from 'node-cron';
 
 export abstract class CronJob {
@@ -29,6 +29,8 @@ export abstract class CronJob {
   async preRun() {
     // override in subclasses
     logger.info(`Cron job ${this.dbCron.type} is running`);
+    SocketEmitter.emit(EVENTS.JOB.CRON_STARTED, this.dbCron.toJSON());
+
     this.dbCron.running = true;
     return this.dbCron.save();
   }
@@ -39,6 +41,8 @@ export abstract class CronJob {
     logger.info(`Cron job ${this.dbCron.type} finished`);
     this.dbCron.lastRun = new Date();
     this.dbCron.running = false;
+    SocketEmitter.emit(EVENTS.JOB.CRON_FINISHED, this.dbCron.toJSON());
+
     return this.dbCron.save();
   }
 

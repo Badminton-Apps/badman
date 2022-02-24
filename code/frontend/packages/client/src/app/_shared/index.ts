@@ -6,6 +6,7 @@ export * from './guards';
 export * from './models';
 export * from './pipes';
 export * from './services';
+export * from './socket';
 export * from './shared.module';
 // end:ng42.barrel
 

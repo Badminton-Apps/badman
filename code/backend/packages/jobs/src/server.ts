@@ -24,6 +24,10 @@ try {
 const startServer = () => {
   const authService = new AuthenticationSercice();
 
-  const app = new App([new JobController(Router(), authService.checkAuth)]);
-  app.listen();
+  const app = new App( {
+    controllers: [new JobController(Router(), authService.checkAuth)]
+  });
+
+  app.listen(); 
 };
+ 
