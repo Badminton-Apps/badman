@@ -5,7 +5,6 @@ dotenv.config();
 import {
   App,
   AuthenticationSercice,
-  EVENTS,
   SocketListener,
   logger,
   startWhenReady

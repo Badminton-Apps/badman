@@ -24,3 +24,6 @@ apm:
 
 esc:
   server: http://elastic-search-es-http.elastic:9200
+
+websocket:
+  server: http://server-server:4000

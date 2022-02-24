@@ -15,7 +15,6 @@ export class SocketEmitter {
     });
 
     this.emitter = new Emitter(pool);
-    logger.debug('socket.io client initialized');
   }
   
 
