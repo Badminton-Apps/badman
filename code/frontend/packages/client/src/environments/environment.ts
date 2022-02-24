@@ -5,7 +5,7 @@ import packages from '../../package.json';
 
 export const environment = {
   production: false,
-  api: 'http://localhost:5000/api',
+  api: 'http://localhost:5000',
   apiVersion: 'v1',
   apmServer: 'https://apm.badman.app',
   adsense: {

@@ -22,14 +22,14 @@ export class GetRankingVisual extends CronJob {
   }
 
   async run(args?: { date: Date; skip: string[] }): Promise<void> {
-    this.dbCron = await Cron.findByPk(this.dbCron.id); 
+    this.dbCron = await Cron.findByPk(this.dbCron.id);
     logger.info('Started sync of Visual ranking');
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       await this._levelSync.process({
         transaction,
         runFrom: args?.date,
-        cron: this.dbCron,
+        cron: this.dbCron
       });
       await transaction.commit();
     } catch (e) {

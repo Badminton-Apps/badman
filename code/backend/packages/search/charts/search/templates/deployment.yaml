@@ -85,6 +85,8 @@ spec:
             value: {{ .Values.esc.server }}    
           - name: PORT
             value: {{ .Values.service.internalPort | quote}}
+          - name: SOCKET_SERVICE
+            value: {{ .Values.websocket.server }}            
           - name: DB_IP
             value: {{ .Values.database.DB_IP }}
           - name: DB_DATABASE
