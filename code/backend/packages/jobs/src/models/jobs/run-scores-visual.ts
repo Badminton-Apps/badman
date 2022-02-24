@@ -1,4 +1,12 @@
-import { Cron, DataBaseHandler, logger, XmlResult, XmlTournamentTypeID } from '@badvlasim/shared';
+import {
+  Cron,
+  DataBaseHandler,
+  EVENTS,
+  logger,
+  SocketEmitter,
+  XmlResult,
+  XmlTournamentTypeID
+} from '@badvlasim/shared';
 import axios from 'axios';
 import { parse } from 'fast-xml-parser';
 import moment, { Moment } from 'moment';
@@ -119,13 +127,13 @@ export class GetScoresVisual extends CronJob {
       const percent = Math.round((current / total) * 10000) / 100;
       this.logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${total})`);
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
-
       this.dbCron.meta = {
-        percent,
+        percent, 
         current,
         total
       };
       await this.dbCron.save({ transaction });
+      SocketEmitter.emit(EVENTS.JOB.CRON_UPDATE, this.dbCron.toJSON());
       try {
         // Skip certain events
         if ((args?.skip?.length ?? 0) > 0 && args?.skip?.includes(xmlTournament.Name)) {

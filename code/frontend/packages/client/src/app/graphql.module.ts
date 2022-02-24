@@ -5,7 +5,7 @@ import { InMemoryCache, DefaultOptions } from '@apollo/client/core';
 
 import { environment } from './../environments/environment';
 
-const uri = `${environment.api}/graphql`;
+const uri = `${environment.api}/api/graphql`;
 export const apolloCache = new InMemoryCache({
   typePolicies: {
     GamePlayer: {

@@ -2,7 +2,14 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { App, AuthenticationSercice, logger, startWhenReady } from '@badvlasim/shared';
+import {
+  App,
+  AuthenticationSercice,
+  EVENTS,
+  SocketListener,
+  logger,
+  startWhenReady
+} from '@badvlasim/shared';
 
 import { Router } from 'express';
 import { SearchController } from './controllers';
@@ -21,9 +28,34 @@ try {
   logger.error('Something failed', err);
   throw err;
 }
-const startServer = () => {
+const startServer = async () => {
   const authService = new AuthenticationSercice();
 
-  const app = new App([new SearchController(Router(), authService.checkAuth)]);
+  const app = new App({
+    controllers: [new SearchController(Router(), authService.checkAuth)]
+  });
+ 
+  // Setup socket.io
+  await SocketListener.setup([
+    // {
+    //   name: EVENTS.JOB.CRON_STARTED,
+    //   handler: async (data) => {
+    //     logger.debug(`Received event ${EVENTS.JOB.CRON_STARTED}`, { data });
+    //   }
+    // },
+    // {
+    //   name: EVENTS.JOB.CRON_UPDATE,
+    //   handler: async (data) => {
+    //     logger.debug(`Received event ${EVENTS.JOB.CRON_UPDATE}`, { data });
+    //   }
+    // },
+    // {
+    //   name: EVENTS.JOB.CRON_FINISHED,
+    //   handler: async (data) => {
+    //     logger.debug(`Received event ${EVENTS.JOB.CRON_FINISHED}`, { data });
+    //   }
+    // }
+  ]);
+ 
   app.listen();
 };

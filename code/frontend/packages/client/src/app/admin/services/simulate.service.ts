@@ -8,7 +8,7 @@ import { environment } from './../../../environments/environment';
   providedIn: 'root',
 })
 export class SimulateService {
-  private urlBase = `${environment.api}/${environment.apiVersion}/simulate`;
+  private urlBase = `${environment.api}/api/${environment.apiVersion}/simulate`;
   constructor(private httpClient: HttpClient) {}
 
   calculateRanking(systems: string[], endDate: Date, startDate?: Date, startingRankings?: boolean) {

@@ -7,7 +7,7 @@ import { environment } from './../../../environments/environment';
   providedIn: 'root',
 })
 export class RankingService {
-  private urlBase = `${environment.api}/${environment.apiVersion}/ranking`;
+  private urlBase = `${environment.api}/api/${environment.apiVersion}/ranking`;
   constructor(private httpClient: HttpClient) {}
 
   downloadRankingAsync(systems: string[], type?: string) {

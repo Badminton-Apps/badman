@@ -23,7 +23,7 @@ export class JobController extends BaseController {
     // VisualSync
     const scoresVisual = GetScoresVisual.dbEntryDaily();
     const [scoresDb] = await Cron.findOrCreate({
-      where: { type: scoresVisual.type }, 
+      where: { type: scoresVisual.type },
       defaults: scoresVisual
     });
 
@@ -50,12 +50,12 @@ export class JobController extends BaseController {
 
   private _single = async (request: AuthenticatedRequest, response: Response) => {
     if (!request.user.hasAnyPermission(['change:job'])) {
-      response.status(401).send('No no no!!');
+      response.status(401).send({ message: 'No no no!!' });
       return;
     }
 
     if (!request.query.type) {
-      response.status(400).send('Missing type');
+      response.status(400).send({ message: 'Missing type' });
       return;
     }
 
@@ -64,24 +64,24 @@ export class JobController extends BaseController {
     if (foundJob) {
       try {
         foundJob.single(request.body);
-        response.status(200).send('Running job');
+        response.status(200).send({ message: 'Running job' });
       } catch (e) {
         response.status(500).send(e.message);
         return;
       }
     } else {
-      response.status(400).send('Job not found');
+      response.status(400).send({ message: 'Job not found' });
     }
   };
 
   private _startJob = async (request: AuthenticatedRequest, response: Response) => {
     if (!request.user.hasAnyPermission(['change:job'])) {
-      response.status(401).send('No no no!!');
+      response.status(401).send({ message: 'No no no!!' });
       return;
     }
 
     if (!request.query.type) {
-      response.status(400).send('Missing type');
+      response.status(400).send({ message: 'Missing type' });
       return;
     }
 
@@ -90,20 +90,20 @@ export class JobController extends BaseController {
     if (foundJob) {
       logger.info(`Scheduling cron job ${foundJob.dbCron.type}`);
       foundJob.start();
-      response.status(200).send('Job started');
+      response.status(200).send({ message: 'Job started' });
     } else {
-      response.status(400).send('Job not found');
+      response.status(400).send({ message: 'Job not found' });
     }
   };
 
   private _stopJob = async (request: AuthenticatedRequest, response: Response) => {
     if (!request.user.hasAnyPermission(['change:job'])) {
-      response.status(401).send('No no no!!');
+      response.status(401).send({ message: 'No no no!!' });
       return;
     }
 
     if (!request.query.type) {
-      response.status(400).send('Missing type');
+      response.status(400).send({ message: 'Missing type' });
       return;
     }
 
@@ -112,9 +112,9 @@ export class JobController extends BaseController {
     if (foundJob) {
       logger.info(`Unscheduling cron job ${foundJob.dbCron.type}`);
       foundJob.stop();
-      response.status(200).send('Job stopped');
+      response.status(200).send({ message: 'Job stopped' });
     } else {
-      response.status(400).send('Job not found');
+      response.status(400).send({ message: 'Job not found' });
     }
   };
 }
