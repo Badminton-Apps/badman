@@ -6,7 +6,7 @@ import { environment } from 'environments/environment';
   providedIn: 'root',
 })
 export class TeamAssemblyService {
-  private urlBase = `${environment.api}/${environment.apiVersion}/pdf`;
+  private urlBase = `${environment.api}/api/${environment.apiVersion}/pdf`;
   constructor(private httpClient: HttpClient) {}
 
   getTeamAssembly(input: {

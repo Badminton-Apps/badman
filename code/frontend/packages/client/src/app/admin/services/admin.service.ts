@@ -9,24 +9,24 @@ export class AdminService {
   constructor(private httpClient: HttpClient) {}
 
   import() {
-    return this.httpClient.get(`${environment.api}/${environment.apiVersion}/import`);
+    return this.httpClient.get(`${environment.api}/api/${environment.apiVersion}/import`);
   }
   cleanup() {
-    return this.httpClient.get(`${environment.api}/${environment.apiVersion}/import/cleanup`);
+    return this.httpClient.get(`${environment.api}/api/${environment.apiVersion}/import/cleanup`);
   }
   sync(force: boolean = false) {
-    return this.httpClient.get(`${environment.api}/${environment.apiVersion}/import/sync`, {
+    return this.httpClient.get(`${environment.api}/api/${environment.apiVersion}/import/sync`, {
       params: { force: `${force}` }
     });
   }
 
   linkAccounts() {
-    return this.httpClient.get(`${environment.api}/${environment.apiVersion}/request-link`);
+    return this.httpClient.get(`${environment.api}/api/${environment.apiVersion}/request-link`);
   }
 
   linkAccount(ids: string, accept: boolean) {
     return this.httpClient.put(
-      `${environment.api}/${environment.apiVersion}/request-link/${accept}/${ids}`,
+      `${environment.api}/api/${environment.apiVersion}/request-link/${accept}/${ids}`,
       {}
     );
   }
