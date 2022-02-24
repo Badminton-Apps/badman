@@ -1,5 +1,6 @@
 query GetCrons {
   crons {
+    id
     type
     cron
     running

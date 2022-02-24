@@ -27,8 +27,8 @@ const startServer = () => {
   const authService = new AuthenticationSercice();
   const calculator = new RankingCalculator();
 
-  const app = new App([
-    new SimulateController(Router(), authService.checkAuth, calculator)
-  ]);
+  const app = new App({
+    controllers: [new SimulateController(Router(), authService.checkAuth, calculator)]
+  });
   app.listen();
 };

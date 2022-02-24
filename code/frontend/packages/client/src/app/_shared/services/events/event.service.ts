@@ -186,7 +186,7 @@ export class EventService {
 
   startImport(imported: Imported) {
     return this.httpClient.put(
-      `${environment.api}/${environment.apiVersion}/import/start/${imported.id}/${imported.event?.id}`,
+      `${environment.api}/api/${environment.apiVersion}/import/start/${imported.id}/${imported.event?.id}`,
       null
     );
   }
@@ -280,7 +280,7 @@ export class EventService {
 
       const req = new HttpRequest(
         'POST',
-        `${environment.api}/${environment.apiVersion}/import/file`,
+        `${environment.api}/api/${environment.apiVersion}/import/file`,
         formData,
         options
       );
@@ -314,7 +314,7 @@ export class EventService {
 
   finishEnrollment(club: Club, year: number) {
     return this.httpClient.post(
-      `${environment.api}/${environment.apiVersion}/enrollment/finish/${club.id}/${year}`,
+      `${environment.api}/api/${environment.apiVersion}/enrollment/finish/${club.id}/${year}`,
       null
     );
   }
