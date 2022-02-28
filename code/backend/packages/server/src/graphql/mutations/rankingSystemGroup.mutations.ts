@@ -316,7 +316,8 @@ export const addGamePointsForSubEvents = async (
     logger.debug(`Adding points for ${games.length} games in system ${system.name}(${system.id})`);
 
     await getSystemCalc(system).calculateRankingPointsPerGameAsync(games, hash, null, {
-      transaction
+      transaction,
+      logger
     });
   }
 };

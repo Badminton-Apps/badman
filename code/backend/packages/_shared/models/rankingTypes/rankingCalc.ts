@@ -468,7 +468,7 @@ export class RankingCalc {
         this.processGame(games.pop(), players, rankingDate) ?? [];
 
       if (games.length % 100 === 0) {
-        args?.logger.debug(
+        args?.logger?.debug(
           `Calulating point: ${total - games.length}/${total} (${(
             ((total - games.length) / total) *
             100
