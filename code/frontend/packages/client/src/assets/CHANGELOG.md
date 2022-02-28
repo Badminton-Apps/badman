@@ -1,3 +1,12 @@
+## [4.31.2](https://github.com/Badminton-Apps/badman/compare/v4.31.1...v4.31.2) (2022-02-28)
+
+
+### Bug Fixes
+
+* client ([c3a2118](https://github.com/Badminton-Apps/badman/commit/c3a2118cd44a3e15b52e790209f552a415f5eda8))
+
+
+
 ## [4.31.1](https://github.com/Badminton-Apps/badman/compare/v4.31.0...v4.31.1) (2022-02-28)
 
 
