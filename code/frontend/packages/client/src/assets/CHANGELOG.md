@@ -1,3 +1,19 @@
+# [4.31.0](https://github.com/Badminton-Apps/badman/compare/v4.30.1...v4.31.0) (2022-02-28)
+
+
+### Bug Fixes
+
+* logger wasn't availible for mutation ([faa6270](https://github.com/Badminton-Apps/badman/commit/faa62701c1dc86df603d516b0ec504cf1d9c0849))
+* stopping cron was doing wasn't fully saving ([f937a52](https://github.com/Badminton-Apps/badman/commit/f937a5243598f6fe1821bb05829332c83e6d20be))
+* store gender when level sync a new place ([33af4d3](https://github.com/Badminton-Apps/badman/commit/33af4d3e609b489487336bcfcd28c8da6060d404))
+
+
+### Features
+
+* Websockets ([831648a](https://github.com/Badminton-Apps/badman/commit/831648aa6dbfd36b9e3f5ab51d8fe4f901b459da)), closes [#50](https://github.com/Badminton-Apps/badman/issues/50)
+
+
+
 ## [4.30.1](https://github.com/Badminton-Apps/badman/compare/v4.30.0...v4.30.1) (2022-02-21)
 
 
