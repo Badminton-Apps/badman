@@ -1,3 +1,12 @@
+## [4.31.3](https://github.com/Badminton-Apps/badman/compare/v4.31.2...v4.31.3) (2022-02-28)
+
+
+### Bug Fixes
+
+* api ([8dce7a9](https://github.com/Badminton-Apps/badman/commit/8dce7a9c318a2061bfc903b0091fe7b1310e6064))
+
+
+
 ## [4.31.2](https://github.com/Badminton-Apps/badman/compare/v4.31.1...v4.31.2) (2022-02-28)
 
 
