@@ -282,13 +282,13 @@ export class RankingPlace extends Model {
     options: SaveOptions
   ) {
     await RankingProcessor.checkInactive(instances, options);
-    await RankingProcessor.protectRanking(instances);
+    await RankingProcessor.protectRanking(instances, null, options);
   }
 
   @BeforeCreate
   static async protectRanking(instance: RankingPlace, options: SaveOptions) {
     await RankingProcessor.checkInactive([instance], options);
-    await RankingProcessor.protectRanking([instance]);
+    await RankingProcessor.protectRanking([instance], null, options);
   }
 
   // #endregion

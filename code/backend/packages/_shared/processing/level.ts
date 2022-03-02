@@ -1,49 +1,49 @@
 import moment from 'moment';
-import { Op, SaveOptions } from 'sequelize';
+import { Op, SaveOptions, Transaction } from 'sequelize';
 import { Game, GameType, Player, RankingPlace, RankingSystem } from '../models';
 
 export class RankingProcessor {
   static async checkInactive(instances: RankingPlace[], options: SaveOptions) {
     const singleNullInstances = instances.filter(
-      instance => instance.single === null || instance.single === undefined
+      (instance) => instance.single === null || instance.single === undefined
     );
     const doubleNullInstances = instances.filter(
-      instance => instance.double === null || instance.double === undefined
+      (instance) => instance.double === null || instance.double === undefined
     );
     const mixNullInstances = instances.filter(
-      instance => instance.mix === null || instance.mix === undefined
+      (instance) => instance.mix === null || instance.mix === undefined
     );
 
     const systemDisintct = instances.filter(
       (value, index, self) =>
-        self.findIndex(m => m.SystemId === value.SystemId) === index
+        self.findIndex((m) => m.SystemId === value.SystemId) === index
     );
 
     const systems = await RankingSystem.findAll({
       where: {
         id: {
-          [Op.in]: systemDisintct.map(instance => instance.SystemId)
-        }
+          [Op.in]: systemDisintct.map((instance) => instance.SystemId),
+        },
       },
-      transaction: options.transaction
+      transaction: options.transaction,
     });
 
     for (const instance of singleNullInstances) {
-      const system = systems.find(r => r.id === instance.SystemId);
+      const system = systems.find((r) => r.id === instance.SystemId);
       const place = await RankingPlace.findOne({
         attributes: ['id', 'single', 'singleInactive'],
         where: {
           SystemId: instance.SystemId,
           playerId: instance.playerId,
           single: {
-            [Op.not]: null
+            [Op.not]: null,
           },
           rankingDate: {
-            [Op.lt]: instance.rankingDate
-          }
+            [Op.lt]: instance.rankingDate,
+          },
         },
         order: [['rankingDate', 'DESC']],
-        transaction: options.transaction
+        transaction: options.transaction,
       });
 
       const player = await Player.findByPk(instance.playerId, {
@@ -59,12 +59,12 @@ export class RankingProcessor {
               playedAt: {
                 [Op.gte]: moment(instance.rankingDate)
                   .add(system.inactivityAmount, system.inactivityUnit)
-                  .toDate()
-              }
-            }
-          }
+                  .toDate(),
+              },
+            },
+          },
         ],
-        transaction: options.transaction
+        transaction: options.transaction,
       });
 
       instance.single = place?.single;
@@ -73,21 +73,21 @@ export class RankingProcessor {
     }
 
     for (const instance of doubleNullInstances) {
-      const system = systems.find(r => r.id === instance.SystemId);
+      const system = systems.find((r) => r.id === instance.SystemId);
       const place = await RankingPlace.findOne({
         attributes: ['id', 'double', 'doubleInactive'],
         where: {
           SystemId: instance.SystemId,
           playerId: instance.playerId,
           double: {
-            [Op.not]: null
+            [Op.not]: null,
           },
           rankingDate: {
-            [Op.gt]: instance.rankingDate
-          }
+            [Op.gt]: instance.rankingDate,
+          },
         },
         order: [['rankingDate', 'DESC']],
-        transaction: options.transaction
+        transaction: options.transaction,
       });
 
       const player = await Player.findByPk(instance.playerId, {
@@ -103,12 +103,12 @@ export class RankingProcessor {
               playedAt: {
                 [Op.gte]: moment(instance.rankingDate)
                   .add(system.inactivityAmount, system.inactivityUnit)
-                  .toDate()
-              }
-            }
-          }
+                  .toDate(),
+              },
+            },
+          },
         ],
-        transaction: options.transaction
+        transaction: options.transaction,
       });
 
       instance.double = place?.double;
@@ -117,21 +117,21 @@ export class RankingProcessor {
     }
 
     for (const instance of mixNullInstances) {
-      const system = systems.find(r => r.id === instance.SystemId);
+      const system = systems.find((r) => r.id === instance.SystemId);
       const place = await RankingPlace.findOne({
         attributes: ['id', 'mix', 'mixInactive'],
         where: {
           SystemId: instance.SystemId,
           playerId: instance.playerId,
           mix: {
-            [Op.not]: null
+            [Op.not]: null,
           },
           rankingDate: {
-            [Op.gt]: instance.rankingDate
-          }
+            [Op.gt]: instance.rankingDate,
+          },
         },
         order: [['rankingDate', 'DESC']],
-        transaction: options.transaction
+        transaction: options.transaction,
       });
 
       const player = await Player.findByPk(instance.playerId, {
@@ -147,12 +147,12 @@ export class RankingProcessor {
               playedAt: {
                 [Op.gte]: moment(instance.rankingDate)
                   .add(system.inactivityAmount, system.inactivityUnit)
-                  .toDate()
-              }
-            }
-          }
+                  .toDate(),
+              },
+            },
+          },
         ],
-        transaction: options.transaction
+        transaction: options.transaction,
       });
 
       instance.mix = place?.mix;
@@ -163,20 +163,31 @@ export class RankingProcessor {
 
   static async protectRanking(
     rankingPoints: RankingPlace[],
-    rankingSystem?: RankingSystem
+    rankingSystems?: RankingSystem[],
+    args?: {
+      transaction?: Transaction,
+    }
   ): Promise<RankingPlace[]> {
     if (
-      (rankingSystem === undefined || rankingSystem === null) &&
+      (rankingSystems === undefined || rankingSystems === null) &&
       rankingPoints.length > 0
     ) {
-      rankingSystem = await RankingSystem.findOne({
-        where: { id: rankingPoints[0].SystemId }
+      rankingSystems = await RankingSystem.findAll({
+        where: {
+          id: {
+            [Op.in]: rankingPoints.map((r) => r.SystemId),
+          },
+        },
+        transaction: args?.transaction,
       });
     }
 
     return Promise.all(
-      rankingPoints.map(rankingPoint =>
-        this._protect(rankingPoint, rankingSystem)
+      rankingPoints.map((rankingPoint) =>
+        this._protect(
+          rankingPoint,
+          rankingSystems.find((r) => r.id === rankingPoint.SystemId)
+        )
       )
     );
   }
