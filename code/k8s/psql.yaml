@@ -1,6 +1,9 @@
 postgresql:
-  replicaCount: 3
+  replicaCount: 1
   existingSecret: server-postgresql-ha-postgresql
+
+persistence:
+  size: 18Gi
 
 pgpool:
   existingSecret: server-postgresql-ha-pgpool

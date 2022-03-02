@@ -34,3 +34,10 @@ spec:
                 name: server-server
                 port:
                   number: 80
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: server-server
+                port:
+                  number: 80
