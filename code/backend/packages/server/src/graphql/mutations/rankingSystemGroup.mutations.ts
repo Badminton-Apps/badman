@@ -89,7 +89,7 @@ export const addSubEventToRankingSystemGroupMutation = {
     }
   },
   resolve: async (
-    findOptions: { [key: string]: object },
+    findOptions: { [key: string]: object }, 
     {
       rankingSystemGroupId,
       competitions,
