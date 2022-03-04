@@ -12,6 +12,7 @@ import {
   XmlTournament,
   XmlTournamentEvent
 } from '@badvlasim/shared';
+import moment from 'moment';
 import { Op } from 'sequelize';
 import { VisualService } from '../../../visualService';
 
@@ -40,7 +41,9 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     }
 
     const subEvents = await this.event.getSubEvents({ transaction: this.transaction });
-    const visualEvents = await this.visualService.getEvents(this.visualTournament.Code);
+    const canChange = moment().isBefore(`${this.event.startYear}-09-01`);
+
+    const visualEvents = await this.visualService.getEvents(this.visualTournament.Code, !canChange);
     const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events

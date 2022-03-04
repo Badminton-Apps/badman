@@ -54,7 +54,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     });
     const subEvent = this.subEvents.find((sub) => draw.subeventId === sub.subEvent.id).subEvent;
 
-    const isLastWeek = moment().subtract(1, 'week').isBefore(this.event.event.firstDay)
+    const isLastWeek = moment().subtract(2, 'week').isBefore(this.event.event.firstDay)
 
     const visualMatch = (await this.visualService.getMatches(
       this.visualTournament.Code,

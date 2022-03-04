@@ -1,6 +1,7 @@
 import {
   DrawTournament,
   DrawType,
+  EventTournament,
   Game,
   StepOptions,
   StepProcessor,
@@ -8,6 +9,7 @@ import {
   XmlDrawTypeID,
   XmlTournament
 } from '@badvlasim/shared';
+import moment from 'moment';
 import { Op } from 'sequelize';
 import { VisualService } from '../../../visualService';
 import { SubEventStepData } from './subEvent';
@@ -18,6 +20,7 @@ export interface DrawStepData {
 }
 
 export class TournamentSyncDrawProcessor extends StepProcessor {
+  public event: EventTournament;
   public subEvents: SubEventStepData[];
   private _dbDraws: DrawStepData[] = [];
 
@@ -42,7 +45,8 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
     internalId: number;
   }) {
     const draws = await subEvent.getDraws({ transaction: this.transaction });
-    const visualDraws = await this.visualService.getDraws(this.visualTournament.Code, internalId);
+    const canChange = moment().subtract(1, 'month').isBefore(this.event.firstDay);
+    const visualDraws = await this.visualService.getDraws(this.visualTournament.Code, internalId, !canChange);
     for (const xmlDraw of visualDraws) {
       if (!xmlDraw) {
         continue;
