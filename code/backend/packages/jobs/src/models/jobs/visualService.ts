@@ -55,8 +55,8 @@ export class VisualService {
     setTimeout(this.writeCacheToDisk.bind(this), 5000);
   }
 
-  async getPlayers(tourneyId: string) {
-    const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}/Player`);
+  async getPlayers(tourneyId: string, useCache = true) {
+    const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}/Player`, useCache);
     const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.Player);
   }
@@ -100,21 +100,26 @@ export class VisualService {
     return [];
   }
 
-  async getDraws(tourneyId: string, eventId: string | number): Promise<XmlTournamentDraw[]> {
+  async getDraws(
+    tourneyId: string,
+    eventId: string | number,
+    useCache = true
+  ): Promise<XmlTournamentDraw[]> {
     const result = await this._getFromApi(
-      `${process.env.VR_API}/Tournament/${tourneyId}/Event/${eventId}/Draw`
+      `${process.env.VR_API}/Tournament/${tourneyId}/Event/${eventId}/Draw`,
+      useCache
     );
     const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.TournamentDraw);
   }
 
-  async getEvents(tourneyId: string | number): Promise<XmlTournamentEvent[]> {
-    const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}/Event`);
+  async getEvents(tourneyId: string | number, useCache = true): Promise<XmlTournamentEvent[]> {
+    const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}/Event`, useCache);
     const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return this._asArray(parsed.TournamentEvent);
   }
 
-  async getTournament(tourneyId: string) {
+  async getTournament(tourneyId: string, useCache = true) {
     const result = await this._getFromApi(`${process.env.VR_API}/Tournament/${tourneyId}`);
     const parsed = parse(result.data, this._parseSettings).Result as XmlResult;
     return parsed.Tournament as XmlTournament;
