@@ -83,10 +83,11 @@ export class PointCalculator {
       }
     } else {
       if (game.winner === 1) {
-        const wonPoints =
+        const wonPoints = Math.round(
           (this._getWinningPoints(levelP1T2) +
             this._getWinningPoints(levelP2T2)) /
-          2;
+            2
+        );
         points.player1Team1Points = wonPoints;
         points.player2Team1Points = wonPoints;
         points.player1Team2Points = 0;
@@ -96,10 +97,11 @@ export class PointCalculator {
         points.differenceInLevel =
           (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
       } else {
-        const wonPoints =
+        const wonPoints = Math.round(
           (this._getWinningPoints(levelP1T1) +
             this._getWinningPoints(levelP2T1)) /
-          2;
+            2
+        );
         points.player1Team2Points = wonPoints;
         points.player2Team2Points = wonPoints;
         points.player1Team1Points = 0;
