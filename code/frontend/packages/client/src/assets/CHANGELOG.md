@@ -1,3 +1,12 @@
+## [4.32.1](https://github.com/Badminton-Apps/badman/compare/v4.32.0...v4.32.1) (2022-03-04)
+
+
+### Bug Fixes
+
+* Upgrade node version for docker files ([7c0da95](https://github.com/Badminton-Apps/badman/commit/7c0da959175db663e0c859c90e231fdd7e32324e))
+
+
+
 # [4.32.0](https://github.com/Badminton-Apps/badman/compare/v4.31.3...v4.32.0) (2022-03-04)
 
 
