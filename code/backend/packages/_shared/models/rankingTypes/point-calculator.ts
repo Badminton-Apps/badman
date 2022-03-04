@@ -116,7 +116,7 @@ export class PointCalculator {
 
   private _getWinningPoints(level: number): number {
     const index = this._type.pointsWhenWinningAgainst.length - level;
-    return this._type.pointsWhenWinningAgainst[index];
+    return Math.round(this._type.pointsWhenWinningAgainst[index]);
   }
 
   private _getRankingPlace(player: Player, date: Date) {
