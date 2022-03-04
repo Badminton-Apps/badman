@@ -1,3 +1,14 @@
+# [4.32.0](https://github.com/Badminton-Apps/badman/compare/v4.31.3...v4.32.0) (2022-03-04)
+
+
+### Features
+
+* cache visual results ([f77e659](https://github.com/Badminton-Apps/badman/commit/f77e659e3bd623db4efb8e44a2fda69d9cb8ad40))
+* more simulation tests ([9156ad4](https://github.com/Badminton-Apps/badman/commit/9156ad4b8450e83db6138d27e04aa77a3e6c2300))
+* updates and tweaks for new ranking update ([61bb02a](https://github.com/Badminton-Apps/badman/commit/61bb02a703b72584b3acad118054249ce967fe55))
+
+
+
 ## [4.31.3](https://github.com/Badminton-Apps/badman/compare/v4.31.2...v4.31.3) (2022-02-28)
 
 
