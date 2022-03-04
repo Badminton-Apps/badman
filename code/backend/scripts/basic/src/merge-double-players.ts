@@ -65,15 +65,10 @@ async function merge_accounts() {
         }
         const remaining = found.filter((p) => p.id != bestMatch.id);
 
-        for (const player of remaining) {
-          logger.debug(
-            `Merging ${bestMatch.fullName}(${bestMatch.memberId}) with ${player.fullName}(${player.memberId})`
-          );
 
-          await databaseService.mergePlayers(bestMatch.id, player.id, {
-            transaction,
-          });
-        }
+        await databaseService.mergePlayers(bestMatch.id, remaining, {
+          transaction,
+        });
 
         const finishedPlayer = await Player.findByPk(bestMatch.id, {
           include: [Club],
