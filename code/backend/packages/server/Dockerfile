@@ -19,7 +19,7 @@ RUN lerna bootstrap --scope=@badvlasim/server  --ci -- --production=false
 RUN yarn run build --scope=@badvlasim/server
 
 # production environment
-FROM node:12.22.0-slim
+FROM node:14-slim
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Brussels
 RUN apt-get install -y tzdata
