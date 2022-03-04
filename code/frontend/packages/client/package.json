@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/client",
   "description": "Badman client",
-  "version": "4.31.3",
+  "version": "4.32.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -28,7 +28,7 @@
     "@angular/forms": "^13.0.2",
     "@angular/localize": "^13.0.1",
     "@angular/material": "^13.0.2",
-  "@angular/material-moment-adapter": "^13.0.1",
+    "@angular/material-moment-adapter": "^13.0.1",
     "@angular/platform-browser": "^13.0.2",
     "@angular/platform-browser-dynamic": "^13.0.2",
     "@angular/router": "^13.0.2",
