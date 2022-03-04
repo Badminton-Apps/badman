@@ -25,6 +25,8 @@
     class="results"
     infiniteScroll
     (scrolled)="onScroll()"
+    [fromRoot]="true"
+    [infiniteScrollContainer]="'.mat-drawer-content'"
     [infiniteScrollDistance]="2"
     [infiniteScrollThrottle]="50"
   >
