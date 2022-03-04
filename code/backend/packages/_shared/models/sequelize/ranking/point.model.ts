@@ -27,9 +27,6 @@ import { RankingSystem } from './system.model';
 export class RankingPoint extends Model {
   constructor(values?: Partial<RankingPoint>, options?: BuildOptions) {
     super(values, options);
-
-    // TODO: Check if this is wanted
-    this.points = Math.round(values.points);
   }
 
   @Default(DataType.UUIDV4)

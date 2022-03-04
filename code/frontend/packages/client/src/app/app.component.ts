@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(
         filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
         map((evt) => ({
-          type: 'UPDATE_AVAILABLE',
+          type: 'UPDATE_AVAILABLE', 
           current: evt.currentVersion,
           available: evt.latestVersion,
         }))

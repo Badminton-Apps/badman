@@ -391,7 +391,6 @@ export class RankingController extends BaseController {
   };
 
   private async _download(response: Response, files: string[]) {
-    const filename = `export_${moment().toISOString()}`;
     response.header('Access-Control-Expose-Headers', 'Content-Disposition');
 
     if (files.length > 1) {
@@ -402,6 +401,7 @@ export class RankingController extends BaseController {
           name: `${file}.csv`
         };
       });
+      const filename = `export_${moment().toISOString()}`;
 
       response.header('Content-Type', 'application/zip');
       response.header('Content-Disposition', `attachment; filename="${filename}.zip"`);
@@ -418,7 +418,7 @@ export class RankingController extends BaseController {
       zip.finalize();
     } else {
       response.header('Content-Type', 'text/csv');
-      response.header('Content-Disposition', `attachment; filename="${filename}.csv"`);
+      response.header('Content-Disposition', `attachment; filename="${files[0]}.csv"`);
       const stream = fs.createReadStream(`${this._resultFolder}/${files[0]}.csv`);
       stream.pipe(response);
     }

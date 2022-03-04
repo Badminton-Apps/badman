@@ -123,5 +123,7 @@ server/results/
 rnd/*.sql
 erd.svg
 
+visualCache.json
+
 .angular/
 assembly.html

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
-import { Game, PlayerGame, RankingSystem } from 'app/_shared';
+import { Game, GameStatus, PlayerGame, RankingSystem } from 'app/_shared';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { distinctUntilChanged, map } from 'rxjs';
@@ -75,6 +75,10 @@ export class ListGamesComponent implements OnInit {
     let validGames = 0;
 
     for (const game of this.games!) {
+      if (game.status !== GameStatus.NORMAL){
+        continue;
+      }
+      
       const me = game.players!.find((x) => x.id == this.playerId);
       const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.playerId);
 
