@@ -284,7 +284,7 @@ export const addGamePointsForSubEvents = async (
       transaction,
       where: { SystemId: system.id, GameId: { [Op.in]: [...games.map((game) => game.id)] } }
     });
-
+ 
     const gamePlayers = await GamePlayer.findAll({
       where: {
         gameId: {
@@ -293,7 +293,7 @@ export const addGamePointsForSubEvents = async (
       },
       transaction: transaction
     });
-    const players = await Player.findAll({
+    const players = await Player.findAll({ 
       where: {
         id: {
           [Op.in]: gamePlayers.map((gp) => gp.playerId)

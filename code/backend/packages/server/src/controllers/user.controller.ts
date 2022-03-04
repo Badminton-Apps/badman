@@ -12,7 +12,11 @@ import { RequestHandler, Response, Router } from 'express';
 export class UserController extends BaseController {
   private _path = '/user';
 
-  constructor(router: Router, private _authMiddleware: RequestHandler[], private _databaseService: DataBaseHandler) {
+  constructor(
+    router: Router,
+    private _authMiddleware: RequestHandler[],
+    private _databaseService: DataBaseHandler
+  ) {
     super(router);
     this._intializeRoutes();
   }
@@ -70,12 +74,14 @@ export class UserController extends BaseController {
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      for (const toMerge of request.body.playerIdToMerge) {
-        await this._databaseService.mergePlayers(request.body.playerId, toMerge, {
+      await this._databaseService.mergePlayers(
+        request.body.playerId,
+        request.body.playerIdToMerge,
+        {
           transaction,
           canBeDifferentMemberId: request.body.canBeDifferentMemberId
-        });
-      }
+        }
+      );
 
       await transaction.commit();
 

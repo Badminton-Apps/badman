@@ -6,6 +6,7 @@ import { App, AuthenticationSercice, logger, startWhenReady } from '@badvlasim/s
 
 import { Router } from 'express';
 import { JobController } from './controllers';
+import { VisualService } from './models/jobs/visualService';
 
 try {
   (async () => {
@@ -23,6 +24,8 @@ try {
 }
 const startServer = () => {
   const authService = new AuthenticationSercice();
+
+  VisualService.initializeCache();
 
   const app = new App( {
     controllers: [new JobController(Router(), authService.checkAuth)]
