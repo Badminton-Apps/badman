@@ -31,6 +31,6 @@ const startServer = () => {
     controllers: [new JobController(Router(), authService.checkAuth)]
   });
 
-  app.listen(); 
+  app.listen();  
 };
  
