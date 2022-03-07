@@ -142,16 +142,16 @@ import { v4 as uuidv4 } from 'uuid';
       maxLevelDownPerChange: 1,
     });
 
-    const targets = [
-      system78weeks15games,
-      system78weeks20games,
-      system78weeks25games,
-      system78weeks15games1down,
-      system78weeks20games1down,
-      system78weeks25games1down,
-      system78weeksAllGames
-    ];
-    // const targets = [system15, system9, system11];
+    // const targets = [
+    //   system78weeks15games,
+    //   system78weeks20games,
+    //   system78weeks25games,
+    //   system78weeks15games1down,
+    //   system78weeks20games1down,
+    //   system78weeks25games1down,
+    //   system78weeksAllGames
+    // ];
+    const targets = [system78weeksAllGames];
 
     for (const targetSystem of targets) {
       logger.info(`Calculating ${targetSystem.name}`);
