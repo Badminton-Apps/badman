@@ -46,7 +46,6 @@ import { v4 as uuidv4 } from 'uuid';
 
     const groups = await sourceSystem.getGroups();
 
-
     const system78weeks15games = new RankingSystem({
       ...sourceSystem.toJSON(),
       id: '79769246-5a55-4b7e-bd17-ca9ed6a13fb3',
@@ -72,7 +71,6 @@ import { v4 as uuidv4 } from 'uuid';
       maxLevelUpPerChange: null,
       maxLevelDownPerChange: null,
     });
-
 
     const system78weeks25games = new RankingSystem({
       ...sourceSystem.toJSON(),
@@ -100,7 +98,6 @@ import { v4 as uuidv4 } from 'uuid';
       maxLevelDownPerChange: 1,
     });
 
-    
     const system78weeks20games1down = new RankingSystem({
       ...sourceSystem.toJSON(),
       id: '2688df19-027a-4776-a62b-9deca0cd7952',
@@ -114,7 +111,6 @@ import { v4 as uuidv4 } from 'uuid';
       maxLevelDownPerChange: 1,
     });
 
-        
     const system78weeks25games1down = new RankingSystem({
       ...sourceSystem.toJSON(),
       id: 'e60543e9-2b9b-424d-893a-09d37d624ed8',
@@ -128,8 +124,6 @@ import { v4 as uuidv4 } from 'uuid';
       maxLevelDownPerChange: 1,
     });
 
-
-
     const system78weeksAllGames = new RankingSystem({
       ...sourceSystem.toJSON(),
       id: 'fb85f869-e6b3-454a-88f3-eae30a619edb',
@@ -142,16 +136,49 @@ import { v4 as uuidv4 } from 'uuid';
       maxLevelDownPerChange: 1,
     });
 
+    const system78weeks25games1downUpDiff = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '78124a5e-7b5c-468e-be6b-47a3099d6385',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 78 weeks - Last 25 games - max 1 down - Up Diff 0',
+      latestXGamesToUse: 25,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: 1,
+      differenceForUpgrade: 0,
+    });
+
+    const system78weeks20games1downUpDiff = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '43f2ae74-bfe1-4b05-b4dd-bfb2c67536d1',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 78 weeks - Last 20 games - max 1 down - Up Diff 0',
+      latestXGamesToUse: 20,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: 1,
+      differenceForUpgrade: 0,
+    });
+
     // const targets = [
+    //   system78weeksAllGames,
     //   system78weeks15games,
     //   system78weeks20games,
     //   system78weeks25games,
     //   system78weeks15games1down,
     //   system78weeks20games1down,
     //   system78weeks25games1down,
-    //   system78weeksAllGames
+    //   system78weeks25games1downUpDiff,
+    //   system78weeks20games1downUpDiff,
     // ];
-    const targets = [system78weeksAllGames];
+    const targets = [
+      system78weeks25games1downUpDiff,
+      system78weeks20games1downUpDiff,
+    ];
 
     for (const targetSystem of targets) {
       logger.info(`Calculating ${targetSystem.name}`);
