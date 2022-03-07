@@ -225,15 +225,20 @@ export class BvlRankingCalc extends RankingCalc {
         inactive.mix = playerGameCount.mix < this.rankingType.gamesForInactivty;
       }
 
-      const lastRanking =
-        player.lastRankingPlaces.find(
-          (p) => p.systemId === this.rankingType.id
-        ) ??
-        ({
-          single: this.rankingType.amountOfLevels,
-          mix: this.rankingType.amountOfLevels,
-          double: this.rankingType.amountOfLevels,
-        } as LastRankingPlace);
+      const lastRanking = player.lastRankingPlaces.find(
+        (p) => p.systemId === this.rankingType.id
+      );
+
+      // Check for null
+      if ((lastRanking?.single ?? null) === null) {
+        lastRanking.single = this.rankingType.amountOfLevels;
+      }
+      if ((lastRanking?.double ?? null) === null) {
+        lastRanking.double = this.rankingType.amountOfLevels;
+      }
+      if ((lastRanking?.mix ?? null) === null) {
+        lastRanking.mix = this.rankingType.amountOfLevels;
+      }
 
       const newPlace = await this.findNewPlacePlayer(
         rankingPoints,

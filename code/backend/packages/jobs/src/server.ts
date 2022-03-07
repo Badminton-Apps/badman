@@ -29,7 +29,7 @@ const startServer = () => {
 
   const app = new App( {
     controllers: [new JobController(Router(), authService.checkAuth)]
-  });
+  }); 
 
   app.listen();  
 };
