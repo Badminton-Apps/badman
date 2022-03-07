@@ -1,3 +1,12 @@
+## [4.32.4](https://github.com/Badminton-Apps/badman/compare/v4.32.3...v4.32.4) (2022-03-07)
+
+
+### Bug Fixes
+
+* Always empty updates from visual caused strange behaviour. ([1475c09](https://github.com/Badminton-Apps/badman/commit/1475c0997ca7bc5fe0d56e6e849e1cdef4b579ae))
+
+
+
 ## [4.32.3](https://github.com/Badminton-Apps/badman/compare/v4.32.2...v4.32.3) (2022-03-04)
 
 

@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/search",
   "description": "Badman search",
-  "version": "4.32.3",
+  "version": "4.32.4",
   "private": true,
   "scripts": {
     "start": "node -r ts-node/register ./src/server.ts",
@@ -23,7 +23,7 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@badvlasim/shared": "^4.32.3"
+    "@badvlasim/shared": "^4.32.4"
   },
   "devDependencies": {
     "@jest-mock/express": "^1.4.5"
