@@ -37,7 +37,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     this.canEnroll$ = this.apollo
       .query<{ tournamentEvents: { total: number }; competitionEvents: { total: number } }>({
         query: gql`
-          # we request only one, because if it's more that means it's open
+          # we request only first one, because if it's more that means it's open
           query CanEnroll($where: SequelizeJSON) {
             # tournamentEvents(first: 1, where: $where) {
             #   total

@@ -13,7 +13,7 @@ import { getAttributeFields } from './attributes.type';
 import { ClubType } from './club.type';
 import { EncounterCompetitionType } from './competition/encounter-competition.type';
 import { LocationType } from './location.type';
-import { PlayerInputType, PlayerType } from './player.type';
+import { PlayerInputType, PlayerType, TeamPlayerType } from './player.type';
 
 export const TeamType = new GraphQLObjectType({
   name: 'Team',
@@ -63,7 +63,7 @@ export const TeamType = new GraphQLObjectType({
       },
 
       players: {
-        type: new GraphQLList(PlayerType),
+        type: new GraphQLList(TeamPlayerType),
         args: Object.assign(defaultListArgs(), {
           end: {
             type: GraphQLString

@@ -38,29 +38,27 @@
     <ng-template matStepLabel>{{ 'competition.enrollment.assign-team' | translate }}</ng-template>
 
     <ng-container *ngIf="this.show$ | async as teamInfo; else loading">
-      <ng-container *ngIf="this.subEventsInitialized; else loading">
-        <app-assign-team
-          (newSubEvent)="this.teamsAssigned($event)"
-          [club]="teamInfo.club"
-          [type]="'gender.male' | translate"
-          [teams]="teamInfo.teamsM"
-          [subEvents]="teamInfo.subEventM"
-        ></app-assign-team>
-        <app-assign-team
-          (newSubEvent)="this.teamsAssigned($event)"
-          [club]="teamInfo.club"
-          [type]="'gender.mix' | translate"
-          [teams]="teamInfo.teamsMX"
-          [subEvents]="teamInfo.subEventMX"
-        ></app-assign-team>
-        <app-assign-team
-          (newSubEvent)="this.teamsAssigned($event)"
-          [club]="teamInfo.club"
-          [type]="'gender.female' | translate"
-          [teams]="teamInfo.teamsF"
-          [subEvents]="teamInfo.subEventF"
-        ></app-assign-team>
-      </ng-container>
+      <app-assign-team
+        (newSubEventAssignmentForTeam)="this.teamsAssigned($event)"
+        [club]="teamInfo.club"
+        [type]="'gender.male' | translate"
+        [teams]="teamInfo.teamsM"
+        [subEvents]="teamInfo.subEventM"
+      ></app-assign-team>
+      <app-assign-team
+        (newSubEventAssignmentForTeam)="this.teamsAssigned($event)"
+        [club]="teamInfo.club"
+        [type]="'gender.mix' | translate"
+        [teams]="teamInfo.teamsMX"
+        [subEvents]="teamInfo.subEventMX"
+      ></app-assign-team>
+      <app-assign-team
+        (newSubEventAssignmentForTeam)="this.teamsAssigned($event)"
+        [club]="teamInfo.club"
+        [type]="'gender.female' | translate"
+        [teams]="teamInfo.teamsF"
+        [subEvents]="teamInfo.subEventF"
+      ></app-assign-team>
     </ng-container>
 
     <ng-template #loading>

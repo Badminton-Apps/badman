@@ -1,4 +1,4 @@
-import { Player, SubEvent } from 'app/_shared';
+import { Entry, Player, SubEvent } from 'app/_shared';
 
 export class Event {
   id?: string;
@@ -15,6 +15,7 @@ export class Event {
   usedRankingAmount?: number;
 
   subEvents?: SubEvent[];
+  entries?: Entry[];
 
   constructor({ ...args }: Partial<Event>) {
     this.name = args.name;
@@ -25,6 +26,7 @@ export class Event {
     this.allowEnlisting = args.allowEnlisting;
     this.updatedAt = args.updatedAt;
     this.players = args?.players?.map((p) => new Player(p));
+    this.entries = args?.entries?.map((p) => new Entry(p));
 
     this.usedRankingUnit = args.usedRankingUnit;
     this.usedRankingAmount = args.usedRankingAmount;

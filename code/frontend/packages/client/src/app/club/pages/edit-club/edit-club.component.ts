@@ -118,7 +118,7 @@ export class EditClubComponent implements OnInit {
               clubId,
               year,
               update,
-              subEvents?.map((subEvent) => subEvent?.subEvents?.map((subEvent) => subEvent.id)).flat(2),
+              subEvents?.map((subEvent) => subEvent?.entries?.map((e) => e.competitionSubEvent?.id)).flat(2),
             ];
           })
         );
@@ -175,7 +175,7 @@ export class EditClubComponent implements OnInit {
   }
 
   async onEditRole(role: Role) {
-    this.router.navigate(['role', role.id]);
+    this.router.navigate(['role', role.id], { relativeTo: this.route });
   }
 
   async onEditLocation(location?: Location, club?: Club) {
