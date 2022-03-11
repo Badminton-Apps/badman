@@ -50,9 +50,12 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     const encounters = await draw.getEncounters({
       transaction: this.transaction
     });
+    const canChange = moment().isBefore(`${this.event.startYear + 1}-01-01`);
+
     const visualMatches = (await this.visualService.getMatches(
       this.visualTournament.Code,
-      internalId
+      internalId,
+      !canChange
     )) as XmlTeamMatch[];
 
     for (const xmlTeamMatch of visualMatches) {
@@ -99,12 +102,12 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       // Update date if needed
       if (dbEncounter.date !== matchDate) {
         dbEncounter.date = matchDate;
-        await dbEncounter.save({ transaction: this.transaction }); 
+        await dbEncounter.save({ transaction: this.transaction });
       }
 
       // Check if encounter was before last run, skip if only process new events
       if (this.encounterOptions.newGames && dbEncounter.date < this.lastRun) {
-        continue; 
+        continue;
       }
 
       // Set teams if undefined (should not happen)

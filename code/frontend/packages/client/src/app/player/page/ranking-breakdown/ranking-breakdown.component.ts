@@ -177,6 +177,7 @@ export class RankingBreakdownComponent implements OnInit {
                       id
                       playedAt
                       winner
+                      status
                       players {
                         id
                         team

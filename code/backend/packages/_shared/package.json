@@ -1,6 +1,6 @@
 {
   "name": "@badvlasim/shared",
-  "version": "4.30.1",
+  "version": "4.32.4",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -22,6 +22,8 @@
   "dependencies": {
     "@elastic/ecs-winston-format": "^1.3.1",
     "@fast-csv/parse": "^4.3.6",
+    "@socket.io/postgres-adapter": "^0.2.0",
+    "@socket.io/postgres-emitter": "^0.1.0",
     "compression": "^1.7.4",
     "concat-stream": "^2.0.0",
     "fast-csv": "^4.3.6",
@@ -34,9 +36,7 @@
     "promise-callbacks": "^3.8.2",
     "sequelize-slugify": "^1.6.0",
     "socket.io": "^4.4.1",
-    "socket.io-client": "^4.4.1",
-    "@socket.io/postgres-emitter": "^0.1.0",
-    "@socket.io/postgres-adapter": "^0.2.0"
+    "socket.io-client": "^4.4.1"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",

@@ -4,7 +4,6 @@ import {
   Game,
   GamePlayer,
   GameStatus,
-  GameType,
   Player,
   StepOptions,
   StepProcessor,
@@ -55,9 +54,12 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     });
     const subEvent = this.subEvents.find((sub) => draw.subeventId === sub.subEvent.id).subEvent;
 
+    const isLastWeek = moment().subtract(2, 'week').isBefore(this.event.event.firstDay)
+
     const visualMatch = (await this.visualService.getMatches(
       this.visualTournament.Code,
-      internalId
+      internalId,
+      !isLastWeek
     )) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
@@ -128,12 +130,6 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           set3Team1: xmlMatch?.Sets?.Set[2]?.Team1,
           set3Team2: xmlMatch?.Sets?.Set[2]?.Team2
         });
-
-        await game.save({ transaction: this.transaction });
-        await GamePlayer.bulkCreate(this._createGamePlayers(xmlMatch, game), {
-          transaction: this.transaction,
-          ignoreDuplicates: true
-        });
       } else {
         if (game.playedAt != playedAt) {
           game.playedAt = playedAt;
@@ -178,63 +174,13 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         if (game.status !== gameStatus) {
           game.status = gameStatus;
         }
-
-        game.players = [];
-        await game.save({ transaction: this.transaction });
-
-        const t1p1 = this._getPlayer(xmlMatch?.Team1?.Player1);
-        const t1p2 = this._getPlayer(xmlMatch?.Team1?.Player2);
-        const t2p1 = this._getPlayer(xmlMatch?.Team2?.Player1);
-        const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
-
-        if (t1p1) {
-          game.players.push({
-            ...t1p1.toJSON(),
-            GamePlayer: {
-              gameId: game.id,
-              playerId: t1p1.id,
-              team: 1,
-              player: 1
-            }
-          } as Player & { GamePlayer: GamePlayer });
-        }
-
-        if (game.gameType != GameType.S && t1p2) {
-          game.players.push({
-            ...t1p2.toJSON(),
-            GamePlayer: {
-              gameId: game.id,
-              playerId: t1p2.id,
-              team: 1,
-              player: 2
-            }
-          } as Player & { GamePlayer: GamePlayer });
-        }
-
-        if (t2p1) {
-          game.players.push({
-            ...t2p1.toJSON(),
-            GamePlayer: {
-              gameId: game.id,
-              playerId: t2p1.id,
-              team: 2,
-              player: 1
-            }
-          } as Player & { GamePlayer: GamePlayer });
-        }
-
-        if (game.gameType != GameType.S && t2p2) {
-          game.players.push({
-            ...t2p2.toJSON(),
-            GamePlayer: {
-              gameId: game.id,
-              playerId: t2p2.id,
-              team: 2,
-              player: 2
-            }
-          } as Player & { GamePlayer: GamePlayer });
-        }
       }
+
+      await game.save({ transaction: this.transaction });
+      await GamePlayer.bulkCreate(this._createGamePlayers(xmlMatch, game), {
+        transaction: this.transaction,
+        ignoreDuplicates: true
+      });
     }
 
     // Remove draw that are not in the xml

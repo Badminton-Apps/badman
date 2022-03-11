@@ -1,7 +1,7 @@
 {
   "name": "@badvlasim/client",
   "description": "Badman client",
-  "version": "4.30.1",
+  "version": "4.32.4",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -69,11 +69,11 @@
     "@angular/cli": "^13.0.2",
     "@angular/compiler-cli": "^13.0.1",
     "@angular/language-service": "^13.0.1",
+    "@types/googlemaps": "3.39.12",
     "@types/jasmine": "^3.10.2",
     "@types/jasminewd2": "^2.0.10",
-    "@types/googlemaps": "3.39.12",
-    "@types/regression": "^2.0.2",
     "@types/node": "^16.11.11",
+    "@types/regression": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",

@@ -30,9 +30,8 @@ export class Game {
   tournament?: TournamentDraw;
 
   constructor({ ...args }: Partial<Game>, rankingType?: RankingSystem) {
-    const parsedType = (args?.gameType as unknown as 'S' | 'D' | 'MX') ?? null;
-    const parsedStatus =
-      (args?.status as unknown as 'NORMAL' | 'WALKOVER' | 'RETIREMENT' | 'DISQUALIFIED' | 'NO_MATCH') ?? null;
+    const parsedType = (args?.gameType as unknown as GameType) ?? null;
+    const parsedStatus = (args?.status as unknown as GameStatus) ?? GameStatus.NORMAL;
 
     this.id = args?.id;
     this.playedAt = !!args.playedAt ? new Date(args.playedAt) : undefined;

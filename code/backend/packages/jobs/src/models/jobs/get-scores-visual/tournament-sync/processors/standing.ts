@@ -163,11 +163,13 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     let position = 1;
 
     if (standings.size > 0) {
-      const sorted = [...standings.values()]?.sort(this.sortStandings())?.map((acc) => {
+      let sorted = [...standings.values()]?.sort(this.sortStandings())?.map((acc) => {
         acc.position = position;
         position++;
         return acc;
       });
+
+      sorted = sorted.filter((a, i) => sorted.findIndex((s) => a.id === s.id) === i);
 
       await Standing.bulkCreate(
         sorted?.map((e) => e.toJSON()),

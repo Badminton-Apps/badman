@@ -24,6 +24,9 @@ Default we run on a 3 node cluster
 `helm install postgresql --namespace badvla bitnami/postgresql-ha --version=8.3.1 -f psql.yaml`
 
 upgrade replica count:
+`helm upgrade --install postgresql --namespace badvla bitnami/postgresql-ha --version=8.3.1 -f psql.yaml`
+
+
 `helm upgrade --install postgresql --namespace badvla bitnami/postgresql-ha --version=8.3.1 --set postgresql.existingSecret=server-postgresql-ha-postgresql --set pgpool.existingSecret=server-postgresql-ha-pgpool --set postgresql.replicaCount=3`
 
 

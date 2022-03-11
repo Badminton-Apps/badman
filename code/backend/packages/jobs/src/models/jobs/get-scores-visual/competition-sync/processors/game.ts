@@ -14,6 +14,7 @@ import {
   XmlScoreStatus,
   XmlTournament
 } from '@badvlasim/shared';
+import moment from 'moment';
 import { Op } from 'sequelize';
 import { VisualService } from '../../../visualService';
 import { EncounterStepData } from './encounter';
@@ -38,7 +39,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         linkId: {
           [Op.in]: this.encounters.map((encounter) => encounter?.encounter.id).flat()
         }
-      }, 
+      },
       transaction: this.transaction
     });
 
@@ -57,8 +58,10 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     internalId: number,
     games: Game[]
   ) {
+    const isLastWeek = moment().subtract(1, 'week').isBefore(encounter.date);
+
     const visualMatch = (
-      await this.visualService.getMatch(this.visualTournament.Code, internalId)
+      await this.visualService.getMatch(this.visualTournament.Code, internalId, !isLastWeek)
     ).filter((m) => !m || m?.Winner !== 0) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
@@ -102,12 +105,6 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           set2Team2: xmlMatch?.Sets?.Set[1]?.Team2,
           set3Team1: xmlMatch?.Sets?.Set[2]?.Team1,
           set3Team2: xmlMatch?.Sets?.Set[2]?.Team2
-        });
-
-        await game.save({ transaction: this.transaction });
-        await GamePlayer.bulkCreate(this._createGamePlayers(xmlMatch, game), {
-          transaction: this.transaction,
-          ignoreDuplicates: true
         });
       } else {
         if (game.playedAt != encounter.date) {
@@ -153,63 +150,12 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         if (game.status !== gameStatus) {
           game.status = gameStatus;
         }
-
-        await game.save({ transaction: this.transaction });
-        game.players = [];
-
-        const t1p1 = this._getPlayer(xmlMatch?.Team1?.Player1);
-        const t1p2 = this._getPlayer(xmlMatch?.Team1?.Player2);
-        const t2p1 = this._getPlayer(xmlMatch?.Team2?.Player1);
-        const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
-
-        if (t1p1) {
-          game.players.push({
-            ...t1p1.toJSON(),
-            GamePlayer: {
-              gameId: game.id,
-              playerId: t1p1.id,
-              team: 1,
-              player: 1
-            }
-          } as Player & { GamePlayer: GamePlayer });
-        }
-
-        if (game.gameType != GameType.S && t1p2) {
-          game.players.push({
-            ...t1p2.toJSON(),
-            GamePlayer: {
-              gameId: game.id,
-              playerId: t1p2.id,
-              team: 1,
-              player: 2
-            }
-          } as Player & { GamePlayer: GamePlayer });
-        }
-
-        if (t2p1) {
-          game.players.push({
-            ...t2p1.toJSON(),
-            GamePlayer: {
-              gameId: game.id,
-              playerId: t2p1.id,
-              team: 2,
-              player: 1
-            }
-          } as Player & { GamePlayer: GamePlayer });
-        }
-
-        if (game.gameType != GameType.S && t2p2) {
-          game.players.push({
-            ...t2p2.toJSON(),
-            GamePlayer: {
-              gameId: game.id,
-              playerId: t2p2.id,
-              team: 2,
-              player: 2
-            }
-          } as Player & { GamePlayer: GamePlayer });
-        }
-      } 
+      }
+      await game.save({ transaction: this.transaction });
+      await GamePlayer.bulkCreate(this._createGamePlayers(xmlMatch, game), {
+        transaction: this.transaction,
+        ignoreDuplicates: true
+      });
     }
 
     // Remove draw that are not in the xml

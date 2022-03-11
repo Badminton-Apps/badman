@@ -14,9 +14,9 @@ import {
   RankingSystems,
 } from '@badvlasim/shared';
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
-import { Transaction, Op } from 'sequelize';
-import {} from 'uuid';
+import { Transaction } from 'sequelize';
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
 (async () => {
   new DataBaseHandler({
@@ -46,158 +46,160 @@ import moment from 'moment';
 
     const groups = await sourceSystem.getGroups();
 
-    const system1 = new RankingSystem({
-      ...sourceSystem.toJSON(),
-      rankingSystem: RankingSystems.BVL,
-      id: '0f565890-3b41-40ff-a415-7b21a73de8e7',
-      name: 'BFF Rating - 128 weeks - Last 20 games',
-      latestXGamesToUse: 20,
-      periodUnit: 'weeks',
-      periodAmount: 128,
-      primary: false,
-    });
-
-    const system2 = new RankingSystem({
-      ...sourceSystem.toJSON(),
-      rankingSystem: RankingSystems.BVL,
-      id: 'a2ff5727-f5cf-44b4-b477-860b8babc9c9',
-      name: 'BFF Rating - 128 weeks - Last 15 games',
-      latestXGamesToUse: 15,
-      periodUnit: 'weeks',
-      periodAmount: 128,
-      primary: false,
-    });
-
-    const system3 = new RankingSystem({
-      ...sourceSystem.toJSON(),
-      rankingSystem: RankingSystems.BVL,
-      id: 'f8023656-6fe5-4c81-bed1-095f66d46ebc',
-      name: 'BFF Rating - 128 weeks - Last 10 games',
-      latestXGamesToUse: 15,
-      periodUnit: 'weeks',
-      periodAmount: 128,
-      primary: false,
-    });
-
-    const system4 = new RankingSystem({
-      ...sourceSystem.toJSON(),
-      id: 'dc86af6b-9e78-4d73-bcf5-829dd79a6a89',
-      rankingSystem: RankingSystems.BVL,
-      name: 'BFF Rating - 52 weeks - Last 20 games',
-      latestXGamesToUse: 20,
-      periodUnit: 'weeks',
-      periodAmount: 52,
-      primary: false,
-    });
-
-    const system5 = new RankingSystem({
-      ...sourceSystem.toJSON(),
-      id: '6c76a18a-ed0d-4c30-9527-c40cf0554ed6',
-      rankingSystem: RankingSystems.BVL,
-      name: 'BFF Rating - 52 weeks - Last 15 games',
-      latestXGamesToUse: 15,
-      periodUnit: 'weeks',
-      primary: false,
-      periodAmount: 52,
-    });
-
-    const system6 = new RankingSystem({
-      ...sourceSystem.toJSON(),
-      id: 'a6792053-6b2c-4044-9f9c-f16247f3a63c',
-      rankingSystem: RankingSystems.BVL,
-      name: 'BFF Rating - 52 weeks - Last 10 games',
-      latestXGamesToUse: 10,
-      periodUnit: 'weeks',
-      periodAmount: 52,
-      primary: false,
-    });
-
-    const system7 = new RankingSystem({
-      ...sourceSystem.toJSON(),
-      id: '6b4f75c8-2e37-4adc-bdfc-8386687a32bf',
-      rankingSystem: RankingSystems.BVL,
-      name: 'BFF Rating - 74 weeks - Last 10 games',
-      latestXGamesToUse: 10,
-      periodUnit: 'weeks',
-      primary: false,
-      periodAmount: 74,
-    });
-
-    const system8 = new RankingSystem({
+    const system78weeks15games = new RankingSystem({
       ...sourceSystem.toJSON(),
       id: '79769246-5a55-4b7e-bd17-ca9ed6a13fb3',
       rankingSystem: RankingSystems.BVL,
-      name: 'BFF Rating - 74 weeks - Last 15 games',
+      name: 'BFF Rating - 78 weeks - Last 15 games',
       latestXGamesToUse: 15,
       periodUnit: 'weeks',
       primary: false,
-      periodAmount: 74,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: null,
     });
 
-    const system9 = new RankingSystem({
+    const system78weeks20games = new RankingSystem({
       ...sourceSystem.toJSON(),
       id: 'd8a7a9f2-5f93-4884-83ef-6632da1dae2c',
       rankingSystem: RankingSystems.BVL,
-      name: 'BFF Rating - 74 weeks - Last 20 games',
+      name: 'BFF Rating - 78 weeks - Last 20 games',
       latestXGamesToUse: 20,
       periodUnit: 'weeks',
       primary: false,
-      periodAmount: 74,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: null,
     });
 
-    const system10 = new RankingSystem({
+    const system78weeks25games = new RankingSystem({
       ...sourceSystem.toJSON(),
-      id: '658ff44c-e6d3-489b-a9c5-06952256c9f2',
+      id: 'd36581a8-bcd3-48d1-98f2-fd1b9adf46f3',
       rankingSystem: RankingSystems.BVL,
-      name: 'BFF Rating - 74 weeks - Last 20 games - 0 level diff',
-      latestXGamesToUse: 20,
+      name: 'BFF Rating - 78 weeks - Last 25 games',
+      latestXGamesToUse: 25,
       periodUnit: 'weeks',
-      differenceForUpgrade: 0,
       primary: false,
-      periodAmount: 74,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: null,
     });
 
-    // const targets = [system1, system2, system3, system4, system5, system6, system7, system8, system9];
-    const targets = [system10];
+    const system78weeks15games1down = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: 'c327aff1-a0ba-498a-9e7b-202b1da04c65',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 78 weeks - Last 15 games - max 1 down',
+      latestXGamesToUse: 25,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: 1,
+    });
+
+    const system78weeks20games1down = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '2688df19-027a-4776-a62b-9deca0cd7952',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 78 weeks - Last 20 games - max 1 down',
+      latestXGamesToUse: 25,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: 1,
+    });
+
+    const system78weeks25games1down = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: 'e60543e9-2b9b-424d-893a-09d37d624ed8',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 78 weeks - Last 25 games - max 1 down',
+      latestXGamesToUse: 25,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: 1,
+    });
+
+    const system78weeksAllGames = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: 'fb85f869-e6b3-454a-88f3-eae30a619edb',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 78 weeks',
+      primary: false,
+      periodUnit: 'weeks',
+      periodAmount: 78,
+      maxLevelUpPerChange: 1,
+      maxLevelDownPerChange: 1,
+    });
+
+    const system78weeks25games1downUpDiff = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '78124a5e-7b5c-468e-be6b-47a3099d6385',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 78 weeks - Last 25 games - max 1 down - Up Diff 0',
+      latestXGamesToUse: 25,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: 1,
+      differenceForUpgrade: 0,
+    });
+
+    const system78weeks20games1downUpDiff = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '43f2ae74-bfe1-4b05-b4dd-bfb2c67536d1',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 78 weeks - Last 20 games - max 1 down - Up Diff 0',
+      latestXGamesToUse: 20,
+      periodUnit: 'weeks',
+      primary: false,
+      periodAmount: 78,
+      maxLevelUpPerChange: null,
+      maxLevelDownPerChange: 1,
+      differenceForUpgrade: 0,
+    });
+
+    // const targets = [
+    //   system78weeksAllGames,
+    //   system78weeks15games,
+    //   system78weeks20games,
+    //   system78weeks25games,
+    //   system78weeks15games1down,
+    //   system78weeks20games1down,
+    //   system78weeks25games1down,
+    //   system78weeks25games1downUpDiff,
+    //   system78weeks20games1downUpDiff,
+    // ];
+    const targets = [
+      system78weeks25games1downUpDiff,
+      system78weeks20games1downUpDiff,
+    ];
 
     for (const targetSystem of targets) {
+      logger.info(`Calculating ${targetSystem.name}`);
       transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
-      await RankingSystem.destroy({
-        where: {
-          id: targetSystem.id,
+      // Destroy old
+      await destroySystem(targetSystem);
+
+      // Create new
+      const resultSystem = await RankingSystem.create(
+        {
+          ...targetSystem.toJSON(),
         },
-        cascade: true,
-        transaction,
-      });
+        { transaction }
+      );
 
-      await targetSystem.save({ transaction });
-      await targetSystem.setGroups(groups, { transaction });
+      // Set groups
+      await resultSystem.setGroups(groups, { transaction });
 
-      logger.info(`Calculating ${targetSystem.name}`);
-      await RankingPlace.destroy({
-        where: {
-          SystemId: targetSystem.id,
-        },
-        transaction,
-      });
-
-      await RankingPoint.destroy({
-        where: {
-          SystemId: targetSystem.id,
-        },
-        transaction,
-      });
-
-      await LastRankingPlace.destroy({
-        where: {
-          systemId: targetSystem.id,
-        },
-        transaction,
-      });
-
-      await copyPlaces(transaction, sourceSystem, targetSystem);
-      await calulateLastPlace(transaction, targetSystem);
+      await copyPlaces(transaction, sourceSystem, resultSystem);
+      await calulateLastPlace(transaction, resultSystem);
       await transaction.commit();
     }
   } catch (error) {
@@ -205,6 +207,36 @@ import moment from 'moment';
     transaction.rollback();
   }
 })();
+
+async function destroySystem(system: RankingSystem) {
+  await RankingSystem.destroy({
+    where: {
+      id: system.id,
+    },
+    cascade: true,
+  });
+
+  await RankingPlace.destroy({
+    where: {
+      SystemId: system.id,
+    },
+    cascade: true,
+  });
+
+  await RankingPoint.destroy({
+    where: {
+      SystemId: system.id,
+    },
+    cascade: true,
+  });
+
+  await LastRankingPlace.destroy({
+    where: {
+      systemId: system.id,
+    },
+    cascade: true,
+  });
+}
 
 async function calulateLastPlace(
   transaction: Transaction,

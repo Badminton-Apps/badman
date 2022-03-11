@@ -223,9 +223,9 @@ export class Game extends Model {
   getCourt!: BelongsToGetAssociationMixin<Court>;
   setCourt!: BelongsToSetAssociationMixin<Court, string>;
 
-  // Belongs to many Player
+  // Belongs to many Players
   getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
-  setPlayer!: BelongsToManySetAssociationsMixin<Player, string>;
+  setPlayers!: BelongsToManySetAssociationsMixin<Player, string>;
   addPlayers!: BelongsToManyAddAssociationsMixin<Player, string>;
   addPlayer!: BelongsToManyAddAssociationMixin<Player, string>;
   removePlayer!: BelongsToManyRemoveAssociationMixin<Player, string>;

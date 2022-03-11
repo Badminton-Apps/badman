@@ -114,6 +114,7 @@ export class TournamentSyncer {
       const data = await this._eventStep.process();
 
       // Pass data to other steps
+      this._drawStep.event = data.event;
       this._subEventStep.event = data.event;
       this._subEventStep.existed = data.existed;
       this._pointStep.event = data.event;

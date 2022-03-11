@@ -225,15 +225,20 @@ export class BvlRankingCalc extends RankingCalc {
         inactive.mix = playerGameCount.mix < this.rankingType.gamesForInactivty;
       }
 
-      const lastRanking =
-        player.lastRankingPlaces.find(
-          (p) => p.systemId === this.rankingType.id
-        ) ??
-        ({
-          single: this.rankingType.amountOfLevels,
-          mix: this.rankingType.amountOfLevels,
-          double: this.rankingType.amountOfLevels,
-        } as LastRankingPlace);
+      const lastRanking = player.lastRankingPlaces.find(
+        (p) => p.systemId === this.rankingType.id
+      );
+
+      // Check for null
+      if ((lastRanking?.single ?? null) === null) {
+        lastRanking.single = this.rankingType.amountOfLevels;
+      }
+      if ((lastRanking?.double ?? null) === null) {
+        lastRanking.double = this.rankingType.amountOfLevels;
+      }
+      if ((lastRanking?.mix ?? null) === null) {
+        lastRanking.mix = this.rankingType.amountOfLevels;
+      }
 
       const newPlace = await this.findNewPlacePlayer(
         rankingPoints,
@@ -389,6 +394,82 @@ export class BvlRankingCalc extends RankingCalc {
     const startDate = moment(endDate)
       .subtract(rankingType.inactivityAmount, rankingType.inactivityUnit)
       .toDate();
+
+    // const linkIds = (
+    //   await rankingType.getGroups({
+    //     attributes: [],
+    //     transaction,
+    //     include: [
+    //       {
+    //         attributes: [],
+    //         model: SubEventCompetition,
+    //         include: [
+    //           {
+    //             attributes: [],
+    //             model: DrawCompetition,
+    //             include: [
+    //               {
+    //                 model: EncounterCompetition,
+    //                 attributes: [],
+    //               },
+    //             ],
+    //           },
+    //         ],
+    //       },
+    //       {
+    //         attributes: [],
+    //         model: SubEventTournament,
+    //         include: [
+    //           {
+    //             attributes: [],
+    //             model: DrawTournament,
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   })
+    // )
+    //   ?.map((group) => {
+    //     const comppids = group?.subEventCompetitions
+    //       ?.map((subEvent) =>
+    //         subEvent.draws?.map((draw) =>
+    //           draw?.encounters?.map((encounter) => encounter?.id)
+    //         )
+    //       )
+    //       .flat(2);
+    //     const tourids = group?.subEventTournaments
+    //       ?.map((subEvent) => subEvent.draws?.map((draw) => draw?.id))
+    //       .flat(1);
+    //     return [...comppids, ...tourids];
+    //   })
+    //   ?.flat();
+
+    // const counts = await Player.count({
+    //   where: {
+    //     playerId: {
+    //       [Op.in]: Array.from(players.keys()),
+    //     },
+    //   },
+    //   include: [
+    //     {
+    //       model: Game,
+    //       attributes: ['gameType'],
+    //       where: {
+    //         linkId: { [Op.in]: linkIds },
+    //         playedAt: {
+    //           [Op.and]: [
+    //             {
+    //               [Op.gt]: startDate,
+    //             },
+    //             { [Op.lte]: endDate },
+    //           ],
+    //         },
+    //       },
+    //       required: true,
+    //     },
+    //   ],
+    //   group: ['RankingPoint.playerId', 'game.gameType'],
+    // });
 
     const counts = await RankingPoint.count({
       where: {

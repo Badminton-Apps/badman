@@ -340,12 +340,13 @@ export class DataBaseHandler {
   }
 
   /**
-   * @param {string} destinationPlayerId The player where all info will be copied to
-   * @param {string} sourcePlayerId The player where the info will be copied from
+   * @param {string} destination The player where all info will be copied to
+   * @param {string} source The player where the info will be copied from
    */
+
   async mergePlayers(
-    destinationPlayerId: string,
-    sourcePlayerId: string,
+    destination: string | Player,
+    sources: (string | Player)[],
     args?: { canBeDifferentMemberId?: boolean; transaction?: Transaction }
   ) {
     args = {
@@ -353,16 +354,61 @@ export class DataBaseHandler {
       ...args,
     };
 
-    if (sourcePlayerId === destinationPlayerId) {
-      throw new Error('Source and destination player are the same');
+    let destinationPlayer: Player;
+    const sourcePlayers: Player[] = [];
+
+    if (destination instanceof Player) {
+      destinationPlayer = destination;
+    } else {
+      destinationPlayer = await Player.findByPk(destination, {
+        transaction: args?.transaction,
+      });
     }
 
-    const destination = await Player.findByPk(destinationPlayerId, {
-      transaction: args.transaction,
-    });
-    const source = await Player.findByPk(sourcePlayerId, {
-      transaction: args.transaction,
-    });
+    for (const source of sources) {
+      if (source instanceof Player) {
+        sourcePlayers.push(source);
+      } else {
+        sourcePlayers.push(
+          await Player.findByPk(source, {
+            transaction: args?.transaction,
+          })
+        );
+      }
+    }
+
+    // Change destination memberId so no constraint violation occurs
+    const originalMemeberId = destinationPlayer.memberId;
+    destinationPlayer.memberId += '_before_merge';
+    await destinationPlayer.save({ transaction: args?.transaction });
+
+    // MERGE!!!
+    for (const sourcePlayer of sourcePlayers) {
+      if (
+        sourcePlayer.memberId !== originalMemeberId &&
+        args.canBeDifferentMemberId === false
+      ) {
+        throw new Error(
+          `Source and destination player don't have the same memberid`
+        );
+      }
+
+      await this._mergePlayers(destinationPlayer, sourcePlayer, args);
+    }
+
+    // Put original back
+    destinationPlayer.memberId = originalMemeberId;
+    await destinationPlayer.save({ transaction: args?.transaction });
+  }
+
+  async _mergePlayers(
+    destination: Player,
+    source: Player,
+    args?: { transaction?: Transaction }
+  ) {
+    if (source.id === destination.id) {
+      throw new Error('Source and destination player are the same');
+    }
 
     if (destination === null) {
       throw new Error('destination does not exist');
@@ -375,14 +421,6 @@ export class DataBaseHandler {
     logger.debug(
       `Merging into ${destination.fullName} (${destination.memberId})`
     );
-    if (
-      source.memberId !== destination.memberId &&
-      args.canBeDifferentMemberId === false
-    ) {
-      throw new Error(
-        `Source and destination player don't have the same memberid`
-      );
-    }
 
     // Move memberships
     const destinationClubMemberships = await ClubMembership.findAll({
@@ -580,7 +618,7 @@ export class DataBaseHandler {
         where: {
           playerId: source.id,
           rankingDate: {
-            [Op.notIn]: placesDest.map((row) => row.rankingDate.toString()),
+            [Op.notIn]: placesDest?.map((row) => row.rankingDate.toString()),
           },
         },
         returning: false,
@@ -594,7 +632,7 @@ export class DataBaseHandler {
         where: {
           playerId: source.id,
           systemId: {
-            [Op.notIn]: lplacesDest.map((row) => row.systemId.toString()),
+            [Op.notIn]: lplacesDest?.map((row) => row.systemId),
           },
         },
         returning: false,
@@ -617,14 +655,34 @@ export class DataBaseHandler {
     });
 
     destination.sub = destination.sub ?? source.sub;
-    destination.memberId = destination.memberId ?? source.memberId;
+    destination.memberId = (destination.memberId ?? source.memberId).trim();
     destination.competitionPlayer =
       destination.competitionPlayer ?? source.competitionPlayer;
     destination.birthDate = destination.birthDate ?? source.birthDate;
+    destination.firstName = this.pascalCase(
+      destination.firstName ?? source.firstName
+    ).trim();
+    destination.lastName = this.pascalCase(
+      destination.lastName ?? source.lastName
+    ).trim();
 
-    await destination.save({ transaction: args.transaction });
     await source.destroy({ transaction: args.transaction });
+    await destination.save({ transaction: args.transaction });
   }
+
+  pascalCase = (sentence: string) => {
+    return sentence
+      .toLowerCase()
+      .split(' ')
+      .map((word) => {
+        return this.firstUppercase(word);
+      })
+      .join(' ');
+  };
+
+  firstUppercase = (word: string) => {
+    return word && word.charAt(0).toUpperCase() + word.slice(1);
+  };
 
   /**
    * Check if DB is migrated to latest version
