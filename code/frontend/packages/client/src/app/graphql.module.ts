@@ -11,6 +11,10 @@ export const apolloCache = new InMemoryCache({
     GamePlayer: {
       keyFields: ['id', 'team', 'player'],
     },
+    TeamPlayer: {
+      // Not a "good" solution, but it works, and I'm tired
+      keyFields: ['id', 'base'],
+    },
   },
 });
 

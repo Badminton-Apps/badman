@@ -5,11 +5,38 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
 import { Apollo } from 'apollo-angular';
 import { Club, Comment, CompetitionEvent, EventService, EventType, SubEvent, Team } from 'app/_shared';
-import { combineLatest, lastValueFrom, Observable, of, ReplaySubject } from 'rxjs';
-import { debounceTime, filter, map, shareReplay, startWith, switchMap, take } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  concat,
+  forkJoin,
+  lastValueFrom,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject,
+  withLatestFrom,
+  zip,
+} from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  last,
+  map,
+  mergeAll,
+  mergeMap,
+  pairwise,
+  shareReplay,
+  skip,
+  startWith,
+  switchMap,
+  take,
+  takeLast,
+  tap,
+} from 'rxjs/operators';
 import * as addComment from './graphql/AddComment.graphql';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
-import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
 import * as GetClub from './graphql/GetClub.graphql';
 import * as updateComment from './graphql/UpdateComment.graphql';
 
@@ -41,26 +68,22 @@ export class TeamEnrollmentComponent implements OnInit {
   teamsF$!: Observable<Team[]>;
   teamsMX$!: Observable<Team[]>;
 
-  provEvent$!: Observable<CompetitionEvent | null>;
-  ligaEvent$!: Observable<CompetitionEvent | null>;
-  natEvent$!: Observable<CompetitionEvent | null>;
+  subEventM$ = new Subject<SubEvent[]>();
+  subEventF$ = new Subject<SubEvent[]>();
+  subEventMX$ = new Subject<SubEvent[]>();
 
-  subEventM$: ReplaySubject<SubEvent[]> = new ReplaySubject(1);
-  subEventF$: ReplaySubject<SubEvent[]> = new ReplaySubject(1);
-  subEventMX$: ReplaySubject<SubEvent[]> = new ReplaySubject(1);
+  updateSubEvents = new BehaviorSubject(0);
 
   show$?: Observable<{
     teamsM: Team[];
     teamsF: Team[];
-  teamsMX: Team[];
+    teamsMX: Team[];
     subEventM: SubEvent[];
     subEventF: SubEvent[];
     subEventMX: SubEvent[];
     club: Club;
   }>;
   form$!: Observable<any>;
-
-  subEventsInitialized: boolean = false;
 
   constructor(private eventService: EventService, private apollo: Apollo, private snackbar: MatSnackBar) {}
 
@@ -84,40 +107,51 @@ export class TeamEnrollmentComponent implements OnInit {
       { validators: this.hasAnyLevelSelected }
     );
 
-    this.form$ = this.formGroup.valueChanges;
-    this.form$.subscribe((newValue) => {
-      // re-intialize subevents when change on the subEvent selection
-      this.subEventsInitialized = false;
-    });
+    this.form$ = this.formGroup.valueChanges.pipe(debounceTime(500), shareReplay(1));
 
     this.setTeams();
 
-    this.show$ = combineLatest({
-      teamsM: this.teamsM$,
-      teamsF: this.teamsF$,
-      teamsMX: this.teamsMX$,
-      subEventM: this.subEventM$,
-      subEventF: this.subEventF$,
-      subEventMX: this.subEventMX$,
-      club: this.club$,
-    });
+    this.show$ = combineLatest([
+      this.updateSubEvents.pipe(
+        withLatestFrom(combineLatest([this.subEventM$, this.subEventF$, this.subEventMX$])),
+        shareReplay(1)
+      ),
+      this.teamsM$,
+      this.teamsF$,
+      this.teamsMX$,
+      this.club$,
+    ]).pipe(
+      map(([[_, [subEventM, subEventF, subEventMX]], teamsM, teamsF, teamsMX, club]) => {
+        return {
+          teamsM,
+          teamsF,
+          teamsMX,
+          subEventM,
+          subEventF,
+          subEventMX,
+          club,
+        };
+      })
+    );
   }
 
   async changStepper(event: StepperSelectionEvent) {
-    if (event.selectedIndex == 1 && !this.subEventsInitialized) {
+    if (event.selectedIndex == 1) {
       await this.initializeEvents();
     }
   }
 
   async teamsAssigned(event: { teamId: string; subEventId: string }) {
-    await this.apollo
-      .mutate({
-        mutation: AssignTeamSubEvent,
-        variables: {
-          ...event,
-        },
-      })
-      .toPromise();
+    console.log('Assigning team')
+
+    // await lastValueFrom(
+    //   this.apollo.mutate({
+    //     mutation: AssignTeamSubEvent,
+    //     variables: {
+    //       ...event,
+    //     },
+    //   })
+    // );
   }
 
   async submit() {
@@ -152,9 +186,9 @@ export class TeamEnrollmentComponent implements OnInit {
   private setTeams() {
     this.club$ = this.form$.pipe(
       startWith(this.formGroup.value),
-      map((group) => group?.club?.id),
+      map((group) => group?.club),
       filter((id) => !!id),
-      take(1),
+      distinctUntilChanged(),
       switchMap((id) =>
         this.apollo
           .query<{ club: Club }>({
@@ -165,7 +199,7 @@ export class TeamEnrollmentComponent implements OnInit {
           })
           .pipe(map((x) => new Club(x.data.club)))
       ),
-      shareReplay()
+      shareReplay(1)
     );
 
     this.teamsF$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'F') ?? []));
@@ -176,18 +210,18 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   private async initializeEvents() {
-    const club = await lastValueFrom(this.club$);
+    const club = await lastValueFrom(this.club$.pipe(take(1)));
 
-    this.provEvent$ = this.formGroup.get('enabledProvincial')!.value
+    const provEvent$ = this.formGroup.get('enabledProvincial')!.value
       ? this.eventService
           .getCompetitionEvent(this.formGroup.value.event.id, {
             clubId: club!.id!,
             includeComments: true,
           })
-          .pipe(shareReplay(1))
+          .pipe(take(1))
       : of(null);
 
-    this.ligaEvent$ = this.formGroup.get('enabledLiga')!.value
+    const ligaEvent$ = this.formGroup.get('enabledLiga')!.value
       ? this.eventService
           .getEvents({
             type: EventType.COMPETITION,
@@ -201,12 +235,12 @@ export class TeamEnrollmentComponent implements OnInit {
             includeSubEvents: true,
           })
           .pipe(
-            map((events) => ((events?.total ?? 0) > 0 ? events!.events[0].node : null)),
-            shareReplay(1)
+            map((events) => ((events?.total ?? 0) > 0 ? (events!.events[0].node as CompetitionEvent) : null)),
+            take(1)
           )
       : of(null);
 
-    this.natEvent$ = this.formGroup.get('enabledNational')?.value
+    const natEvent$ = this.formGroup.get('enabledNational')?.value
       ? this.eventService
           .getEvents({
             type: EventType.COMPETITION,
@@ -220,13 +254,12 @@ export class TeamEnrollmentComponent implements OnInit {
             includeSubEvents: true,
           })
           .pipe(
-            map((events) => ((events?.total ?? 0) > 0 ? events!.events[0].node : null)),
-            shareReplay(1)
+            map((events) => ((events?.total ?? 0) > 0 ? (events!.events[0].node as CompetitionEvent) : null)),
+            take(1)
           )
       : of(null);
 
-    // not really ideal, but I just want it working for now
-    const [prov, liga, nat] = await lastValueFrom(combineLatest([this.provEvent$, this.ligaEvent$, this.natEvent$]));
+    const [prov, liga, nat] = await lastValueFrom(combineLatest([provEvent$, ligaEvent$, natEvent$]));
 
     this.competitionYear = prov?.startYear ?? liga!.startYear ?? nat!.startYear;
 
@@ -247,6 +280,7 @@ export class TeamEnrollmentComponent implements OnInit {
       ...(liga?.subEvents?.filter((s) => s.eventType == 'MX') ?? []),
       ...(prov?.subEvents?.filter((s) => s.eventType == 'MX') ?? []),
     ]);
+    this.updateSubEvents.next(0);
 
     if (prov) {
       this.commentProv =
@@ -257,10 +291,16 @@ export class TeamEnrollmentComponent implements OnInit {
               eventId: prov.id,
             });
       this.commentProvControl.patchValue(this.commentProv.message);
-      this.commentProvControl.valueChanges.pipe(debounceTime(600)).subscribe(async (r) => {
-        this.commentProv.message = r;
-        this.commentProv.id = await this._updateComment(this.commentProv);
-      });
+      this.commentProvControl.valueChanges
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged(),
+          filter((c) => (c?.length ?? 0) > 0)
+        )
+        .subscribe(async (r) => {
+          this.commentProv.message = r;
+          this.commentProv.id = await this._updateComment(this.commentProv);
+        });
     }
 
     if (liga) {
@@ -272,10 +312,16 @@ export class TeamEnrollmentComponent implements OnInit {
               eventId: liga.id,
             });
       this.commentLigaControl.patchValue(this.commentLiga.message);
-      this.commentLigaControl.valueChanges.pipe(debounceTime(600)).subscribe(async (r) => {
-        this.commentLiga.message = r;
-        this.commentLiga.id = await this._updateComment(this.commentLiga);
-      });
+      this.commentLigaControl.valueChanges
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged(),
+          filter((c) => (c?.length ?? 0) > 0)
+        )
+        .subscribe(async (r) => {
+          this.commentLiga.message = r;
+          this.commentLiga.id = await this._updateComment(this.commentLiga);
+        });
     }
 
     if (nat) {
@@ -287,13 +333,17 @@ export class TeamEnrollmentComponent implements OnInit {
               eventId: nat.id,
             });
       this.commentNatControl.patchValue(this.commentNat.message);
-      this.commentNatControl.valueChanges.pipe(debounceTime(600)).subscribe(async (r) => {
-        this.commentNat.message = r;
-        this.commentNat.id = await this._updateComment(this.commentNat);
-      });
+      this.commentNatControl.valueChanges
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged(),
+          filter((c) => (c?.length ?? 0) > 0)
+        )
+        .subscribe(async (r) => {
+          this.commentNat.message = r;
+          this.commentNat.id = await this._updateComment(this.commentNat);
+        });
     }
-
-    this.subEventsInitialized = true;
   }
 
   private async _updateComment(comment: Comment): Promise<string> {
