@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Game, Player, RankingPoint } from 'app/_shared';
+import { ListenTopic, EVENTS } from 'app/_shared/modules/socket';
 
 @Component({
   selector: 'app-game-result',
@@ -24,18 +25,9 @@ export class GameResultComponent implements OnInit {
   rankingPointP1T2!: RankingPoint;
   rankingPointP2T2!: RankingPoint;
 
-  getPlayer(player: number, team: number) {
-    return this.game.players!.find((x) => x.team === team && x.player === player);
+  constructor(private ref: ChangeDetectorRef){
+    
   }
-
-  getRankingPoint(player: Player) {
-    if (player) {
-      return this.game.rankingPoints?.find((rankingPoint) => rankingPoint.player!.id === player.id);
-    }
-    return null;
-  }
-
-  constructor() {}
 
   ngOnInit(): void {
     this.player1Team1 = this.getPlayer(1, 1)!;
@@ -47,5 +39,25 @@ export class GameResultComponent implements OnInit {
     this.rankingPointP2T1 = this.getRankingPoint(this.player2Team1)!;
     this.rankingPointP1T2 = this.getRankingPoint(this.player1Team2)!;
     this.rankingPointP2T2 = this.getRankingPoint(this.player2Team2)!;
+  }
+
+  getPlayer(player: number, team: number) {
+    return this.game.players!.find((x) => x.team === team && x.player === player);
+  }
+
+  getRankingPoint(player: Player) {
+    if (player) {
+      return this.game.rankingPoints?.find((rankingPoint) => rankingPoint.player!.id === player.id);
+    }
+    return null;
+  }
+
+  @ListenTopic(EVENTS.GAME.GAME_FINISHED)
+  @ListenTopic(EVENTS.GAME.GAME_UPDATED)
+  gameUpdated(game: Partial<Game>) {
+    if (game.id == this.game.id) {
+      this.game = new Game(game);
+      this.ref.markForCheck();
+    }
   }
 }
