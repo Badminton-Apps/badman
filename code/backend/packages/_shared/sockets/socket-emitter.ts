@@ -19,7 +19,7 @@ export class SocketEmitter {
 
   static emit(event: string, data: unknown, channel?: string) {
     if (this.emitter == null) {
-      throw new Error('Socket.io client is not initialized');
+      logger.warn('Socket.io client is not initialized');
     }
     logger.silly(
       `Emitting event ${event}${
