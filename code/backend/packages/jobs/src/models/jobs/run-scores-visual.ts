@@ -86,8 +86,10 @@ export class GetScoresVisual extends CronJob {
    */
 
   async run(args?: {
-    // Start from certain date
+    // Changed after date
     date?: Date;
+    // Start from certain date
+    startDate?: Date;
     // Skip types / event names
     skip: string[];
     // Only types / event names
@@ -106,7 +108,13 @@ export class GetScoresVisual extends CronJob {
 
     newEvents = newEvents.sort((a, b) => {
       return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
-    });
+    }); 
+
+    if (args?.startDate) {
+      newEvents = newEvents.filter((e) => {
+        return moment(e.StartDate).isSameOrAfter(args?.startDate);
+      });
+    }
 
     this.dbCron.meta = {
       percent: 0,
@@ -128,7 +136,7 @@ export class GetScoresVisual extends CronJob {
       this.logger.info(`Processing ${xmlTournament.Name}, ${percent}% (${i}/${total})`);
       const transaction = await DataBaseHandler.sequelizeInstance.transaction();
       this.dbCron.meta = {
-        percent, 
+        percent,
         current,
         total
       };

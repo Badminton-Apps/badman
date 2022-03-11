@@ -2,6 +2,7 @@ import {
   BaseController,
   Game,
   GameType,
+  LastRankingPlace,
   logger,
   Player,
   RankingPlace,
@@ -152,19 +153,8 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
-      const endDate = moment(
-        await RankingPlace.max('rankingDate', {
-          where: { SystemId: system }
-        })
-      );
 
-      const startDate = moment(
-        await RankingPlace.min('rankingDate', {
-          where: { SystemId: system }
-        })
-      );
-
-      const results = await RankingPlace.findAll({
+      const results = await LastRankingPlace.findAll({
         attributes: [
           'single',
           'double',
@@ -181,17 +171,13 @@ export class RankingController extends BaseController {
           'rankingDate'
         ],
         where: {
-          SystemId: system,
-          updatePossible: true,
-          rankingDate: {
-            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
-          }
+          systemId: system
         },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
       });
 
       const mapped = results.map(
-        (ranking: RankingPlace) =>
+        (ranking: LastRankingPlace) =>
           `${ranking.single},${ranking.singlePoints},${ranking.singlePointsDowngrade},${
             ranking.singleInactive
           },${ranking.double},${ranking.doublePoints},${ranking.doublePointsDowngrade},${
@@ -227,19 +213,7 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
-      const endDate = moment(
-        await RankingPlace.max('rankingDate', {
-          where: { SystemId: system }
-        })
-      );
-
-      const startDate = moment(
-        await RankingPlace.min('rankingDate', {
-          where: { SystemId: system }
-        })
-      );
-
-      const results = await RankingPlace.findAll({
+      const results = await LastRankingPlace.findAll({
         attributes: [
           'single',
           'double',
@@ -250,22 +224,18 @@ export class RankingController extends BaseController {
           'rankingDate'
         ],
         where: {
-          SystemId: system,
-          updatePossible: true,
-          rankingDate: {
-            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
-          }
+          systemId: system
         },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
       });
 
       const mapped = results
-        .filter((ranking: RankingPlace) => ranking.player.memberId !== null)
+        .filter((ranking: LastRankingPlace) => ranking.player.memberId !== null)
         .filter(
-          (ranking: RankingPlace) =>
+          (ranking: LastRankingPlace) =>
             ranking.player.memberId[0] === '5' || ranking.player.memberId[0] === '3'
         )
-        .map((ranking: RankingPlace) => {
+        .map((ranking: LastRankingPlace) => {
           const lines = [];
           const baseinfo = `${ranking.player.memberId},${ranking.player.firstName} ${
             ranking.player.lastName
@@ -311,22 +281,7 @@ export class RankingController extends BaseController {
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
 
-     
-      const endDate = moment(
-        await RankingPlace.max('rankingDate', {
-          where: { SystemId: system }
-        })
-      );
-
-      const startDate = moment(
-        await RankingPlace.min('rankingDate', {
-          where: { SystemId: system }
-        })
-      );
-
-  
-
-      const results = await RankingPlace.findAll({
+      const results = await LastRankingPlace.findAll({
         attributes: [
           'single',
           'double',
@@ -337,22 +292,18 @@ export class RankingController extends BaseController {
           'rankingDate'
         ],
         where: {
-          SystemId: system,
-          updatePossible: true,
-          rankingDate: {
-            [Op.between]: [startDate.toISOString(), endDate.toISOString()]
-          }
+          systemId: system
         },
         include: [{ model: Player, attributes: ['firstName', 'lastName', 'gender', 'memberId'] }]
       });
 
       const mapped = results
-        .filter((ranking: RankingPlace) => ranking.player.memberId !== null)
+        .filter((ranking: LastRankingPlace) => ranking.player.memberId !== null)
         .filter(
-          (ranking: RankingPlace) =>
+          (ranking: LastRankingPlace) =>
             ranking.player.memberId[0] !== '5' && ranking.player.memberId[0] !== '3'
         )
-        .map((ranking: RankingPlace) => {
+        .map((ranking: LastRankingPlace) => {
           const lines = [];
           const baseinfo = `${ranking.player.memberId},${ranking.player.firstName} ${
             ranking.player.lastName
@@ -391,7 +342,6 @@ export class RankingController extends BaseController {
   };
 
   private async _download(response: Response, files: string[]) {
-    const filename = `export_${moment().toISOString()}`;
     response.header('Access-Control-Expose-Headers', 'Content-Disposition');
 
     if (files.length > 1) {
@@ -402,6 +352,7 @@ export class RankingController extends BaseController {
           name: `${file}.csv`
         };
       });
+      const filename = `export_${moment().toISOString()}`;
 
       response.header('Content-Type', 'application/zip');
       response.header('Content-Disposition', `attachment; filename="${filename}.zip"`);
@@ -418,7 +369,7 @@ export class RankingController extends BaseController {
       zip.finalize();
     } else {
       response.header('Content-Type', 'text/csv');
-      response.header('Content-Disposition', `attachment; filename="${filename}.csv"`);
+      response.header('Content-Disposition', `attachment; filename="${files[0]}.csv"`);
       const stream = fs.createReadStream(`${this._resultFolder}/${files[0]}.csv`);
       stream.pipe(response);
     }

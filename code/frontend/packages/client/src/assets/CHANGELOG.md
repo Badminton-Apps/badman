@@ -1,3 +1,78 @@
+## [4.32.4](https://github.com/Badminton-Apps/badman/compare/v4.32.3...v4.32.4) (2022-03-07)
+
+
+### Bug Fixes
+
+* Always empty updates from visual caused strange behaviour. ([1475c09](https://github.com/Badminton-Apps/badman/commit/1475c0997ca7bc5fe0d56e6e849e1cdef4b579ae))
+
+
+
+## [4.32.3](https://github.com/Badminton-Apps/badman/compare/v4.32.2...v4.32.3) (2022-03-04)
+
+
+
+## [4.32.2](https://github.com/Badminton-Apps/badman/compare/v4.32.1...v4.32.2) (2022-03-04)
+
+
+
+## [4.32.1](https://github.com/Badminton-Apps/badman/compare/v4.32.0...v4.32.1) (2022-03-04)
+
+
+### Bug Fixes
+
+* Upgrade node version for docker files ([7c0da95](https://github.com/Badminton-Apps/badman/commit/7c0da959175db663e0c859c90e231fdd7e32324e))
+
+
+
+# [4.32.0](https://github.com/Badminton-Apps/badman/compare/v4.31.3...v4.32.0) (2022-03-04)
+
+
+### Features
+
+* cache visual results ([f77e659](https://github.com/Badminton-Apps/badman/commit/f77e659e3bd623db4efb8e44a2fda69d9cb8ad40))
+* more simulation tests ([9156ad4](https://github.com/Badminton-Apps/badman/commit/9156ad4b8450e83db6138d27e04aa77a3e6c2300))
+* updates and tweaks for new ranking update ([61bb02a](https://github.com/Badminton-Apps/badman/commit/61bb02a703b72584b3acad118054249ce967fe55))
+
+
+
+## [4.31.3](https://github.com/Badminton-Apps/badman/compare/v4.31.2...v4.31.3) (2022-02-28)
+
+
+### Bug Fixes
+
+* api ([8dce7a9](https://github.com/Badminton-Apps/badman/commit/8dce7a9c318a2061bfc903b0091fe7b1310e6064))
+
+
+
+## [4.31.2](https://github.com/Badminton-Apps/badman/compare/v4.31.1...v4.31.2) (2022-02-28)
+
+
+### Bug Fixes
+
+* client ([c3a2118](https://github.com/Badminton-Apps/badman/commit/c3a2118cd44a3e15b52e790209f552a415f5eda8))
+
+
+
+## [4.31.1](https://github.com/Badminton-Apps/badman/compare/v4.31.0...v4.31.1) (2022-02-28)
+
+
+
+# [4.31.0](https://github.com/Badminton-Apps/badman/compare/v4.30.1...v4.31.0) (2022-02-28)
+
+
+### Bug Fixes
+
+* logger wasn't availible for mutation ([faa6270](https://github.com/Badminton-Apps/badman/commit/faa62701c1dc86df603d516b0ec504cf1d9c0849))
+* stopping cron was doing wasn't fully saving ([f937a52](https://github.com/Badminton-Apps/badman/commit/f937a5243598f6fe1821bb05829332c83e6d20be))
+* store gender when level sync a new place ([33af4d3](https://github.com/Badminton-Apps/badman/commit/33af4d3e609b489487336bcfcd28c8da6060d404))
+
+
+### Features
+
+* Websockets ([831648a](https://github.com/Badminton-Apps/badman/commit/831648aa6dbfd36b9e3f5ab51d8fe4f901b459da)), closes [#50](https://github.com/Badminton-Apps/badman/issues/50)
+
+
+
 ## [4.30.1](https://github.com/Badminton-Apps/badman/compare/v4.30.0...v4.30.1) (2022-02-21)
 
 
