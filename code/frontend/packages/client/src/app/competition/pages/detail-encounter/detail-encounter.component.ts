@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { CompetitionEncounter, SystemService } from 'app/_shared';
+import { CompetitionEncounter, EVENTS, Game, ListenTopic, SystemService } from 'app/_shared';
 import { combineLatest, map, Observable, switchMap, tap } from 'rxjs';
 
 @Component({

@@ -16,16 +16,25 @@ export class SocketEmitter {
 
     this.emitter = new Emitter(pool);
   }
-  
 
-  static emit(event: string, data: unknown) {
+  static emit(event: string, data: unknown, channel?: string) {
     if (this.emitter == null) {
-      throw new Error('Socket.io client is not initialized');
+      logger.warn('Socket.io client is not initialized');
+      return;
     }
-    logger.silly(`Emitting event ${event}`, { data });
+    logger.silly(
+      `Emitting event ${event}${
+        channel != null ? ' to channel ' + channel : ''
+      }`,
+      { data }
+    );
+
+    if (channel != null) {
+      return this.emitter.in(channel).emit(event, data);
+    }
+
     return this.emitter.emit(event, data);
   }
-
 }
 
 export interface SocketEvent {

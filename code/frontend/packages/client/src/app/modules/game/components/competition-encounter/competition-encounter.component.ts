@@ -1,7 +1,7 @@
 import { animate, AUTO_STYLE, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
-import { CompetitionEncounter, Game } from 'app/_shared';
+import { CompetitionEncounter, EVENTS, Game, ListenTopic } from 'app/_shared';
 import { lastValueFrom, map } from 'rxjs';
 import { GAME_INFO } from '../../fragments';
 
@@ -64,4 +64,5 @@ export class CompetitionEncounterComponent {
       })
       .pipe(map((result) => result?.data?.competitionEncounter?.games?.map((game) => new Game(game))));
   }
+
 }

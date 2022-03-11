@@ -1,3 +1,4 @@
+import { SocketEmitter, EVENTS } from '../../../sockets';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -147,12 +148,7 @@ export class Game extends Model {
     instance: Game,
     options: CreateOptions | UpdateOptions
   ) {
-    const competition = await instance.getCompetition({
-      transaction: options.transaction,
-    });
-    if (competition) {
-      await Game.updateEncounterScore(competition, options);
-    }
+    await Game.onUpdate(instance, options);
   }
 
   @AfterBulkCreate
@@ -161,19 +157,36 @@ export class Game extends Model {
     instances: Game[],
     options: CreateOptions | UpdateOptions
   ) {
-    const doneCompetitions = [];
+    // Ignore duplicates
+    instances = instances.filter(
+      (a, i) => instances.findIndex((s) => a.linkId === s.linkId) === i
+    );
+
     for (const instance of instances) {
-      if (doneCompetitions.includes(instance.linkId)) {
-        continue;
-      }
-      const competition = await instance.getCompetition({
-        transaction: options.transaction,
-      });
-      if (competition) {
-        await Game.updateEncounterScore(competition, options);
-      }
-      doneCompetitions.push(instance.linkId);
+      await Game.onUpdate(instance, options);
     }
+  }
+
+  static async onUpdate(game: Game, options: CreateOptions | UpdateOptions) {
+    // Update socket
+    Game.emitSocket(game);
+
+    // Update the score of the encounter
+    const competition = await game.getCompetition({
+      transaction: options.transaction,
+    });
+    if (competition) {
+      await Game.updateEncounterScore(competition, options);
+    }
+  }
+
+  static emitSocket(game: Game) {
+    SocketEmitter.emit(
+      (game.winner ?? 0) === 0
+        ? EVENTS.GAME.GAME_UPDATED
+        : EVENTS.GAME.GAME_FINISHED,
+      game
+    );
   }
 
   static async updateEncounterScore(

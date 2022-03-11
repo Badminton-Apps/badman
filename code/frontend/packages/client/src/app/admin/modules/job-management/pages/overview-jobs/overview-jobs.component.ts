@@ -1,14 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
-import { Cron, EVENTS } from 'app/_shared';
+import { Cron, EVENTS, ListenTopic } from 'app/_shared';
 import cronstrue from 'cronstrue';
 import { environment } from 'environments/environment';
-import { Socket } from 'ngx-socket-io';
 import { map, Subscription, take } from 'rxjs';
 import * as cronQuery from './graphql/getCronStatusQuery.graphql';
 
@@ -31,7 +29,7 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
 
   private querySubscription!: Subscription;
 
-  constructor(private apollo: Apollo, private httpClient: HttpClient, private socket: Socket) {}
+  constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
   ngOnInit(): void {
     this.querySubscription = this.apollo
@@ -47,21 +45,24 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
           return { ...cron, tooltip: cronstrue.toString(cron.cron) };
         });
       });
+  }
 
+  @ListenTopic(EVENTS.JOB.CRON_STARTED)
+  jobStarted(data: Cron) {
+    const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
+    this.dataSource.data[index]!.running! = true;
+  }
 
-    this.socket.fromEvent<Cron>(EVENTS.JOB.CRON_STARTED).subscribe((data) => {
-      const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
-      this.dataSource.data[index]!.running! = true;
-    });
+  @ListenTopic(EVENTS.JOB.CRON_UPDATE)
+  jobUpdated(data: Cron) {
+    const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
+    this.dataSource.data[index]!.meta! = data.meta;
+  }
 
-    this.socket.fromEvent<Cron>(EVENTS.JOB.CRON_UPDATE).subscribe((data) => {
-      const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
-      this.dataSource.data[index]!.meta! = data.meta;
-    });
-    this.socket.fromEvent<Cron>(EVENTS.JOB.CRON_FINISHED).subscribe((data) => {
-      const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
-      this.dataSource.data[index]!.running! = false;
-    });
+  @ListenTopic(EVENTS.JOB.CRON_FINISHED)
+  jobFinished(data: Cron) {
+    const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
+    this.dataSource.data[index]!.running! = false;
   }
 
   runJob(cronJob) {

@@ -4,8 +4,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@badvalsim/shared/*": ["packages/_shared/*"],
-      "@badvalsim/*": ["packages/*/src"],
+      "@badvlasim/shared/*": ["packages/_shared/*"],
+      "@badvlasim/*": ["packages/*/src"],
     },
     "noEmit": true
   }
