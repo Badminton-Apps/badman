@@ -127,10 +127,6 @@ const cookieConfig: NgcCookieConsentConfig = {
       provide: SOCKET_URL,
       useValue: environment.api,
     },
-    // {
-    //   provide: SOCKET_PREFIX,
-    //   useValue: config?.prefix,
-    // },
   ],
   bootstrap: [AppComponent],
 })

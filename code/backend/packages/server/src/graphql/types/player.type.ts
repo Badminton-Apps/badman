@@ -26,167 +26,192 @@ import { TeamType } from './team.type';
 export const PlayerType = new GraphQLObjectType({
   name: 'Player',
   description: 'A Player',
-  fields: () =>
-    Object.assign(getAttributeFields(Player), {
-      email: {
-        type: GraphQLString,
-        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
-          canExecute(
-            context?.req?.user,
-            { anyPermissions: [`details-any:player`, `${obj.id}_details:player`] },
-            "You don't have permissions to access the email field"
-          );
-          return obj.email;
-        }
-      },
-      phone: {
-        type: GraphQLString,
-        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
-          canExecute(
-            context?.req?.user,
-            {
-              anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
-            },
-            "You don't have permissions to access the phone field"
-          );
-          return obj.phone;
-        }
-      },
-
-      birthDate: {
-        type: GraphQLString,
-        resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
-          canExecute(
-            context?.req?.user,
-            {
-              anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
-            },
-            "You don't have permissions to access the birthDate field"
-          );
-          return obj.birthDate;
-        }
-      },
-
-      teams: {
-        type: new GraphQLList(TeamType),
-        resolve: resolver(Player.associations.teams)
-      },
-      claims: {
-        type: new GraphQLList(ClaimType),
-        resolve: resolver(Player.associations.claims)
-      },
-      rankingPlaces: {
-        type: new GraphQLList(RankingPlaceType),
-        args: Object.assign(defaultListArgs()),
-        resolve: resolver(Player.associations.rankingPlaces, {
-          before: async (findOptions: { [key: string]: object }) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
-      },
-      lastRanking: {
-        type: LastRankingPlaceType,
-        args: Object.assign({
-          system: {
-            type: GraphQLString
-          }
-        }),
-        resolve: async (obj: Player, args: { system: string }) => {
-          let systemId = args.system;
-          if (systemId == null) {
-            systemId = (await RankingSystem.findOne({ where: { primary: true } })).id;
-          }
-
-          if (systemId == null) {
-            return null;
-          }
-
-          const places = await obj.getLastRankingPlaces({
-            where: { systemId }
-          });
-          return places[0];
-        }
-      },
-      lastRankingPlaces: {
-        type: new GraphQLList(RankingPlaceType),
-        args: Object.assign(defaultListArgs()),
-        resolve: resolver(Player.associations.lastRankingPlaces, {
-          before: async (findOptions: { [key: string]: object }) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
-      },
-      rankingPoints: {
-        type: new GraphQLList(RankingPointType),
-        args: Object.assign(defaultListArgs()),
-        resolve: resolver(Player.associations.rankingPoints, {
-          before: async (findOptions: { [key: string]: object }) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
-      },
-      games: {
-        type: new GraphQLList(GameType),
-        args: Object.assign(defaultListArgs()),
-        resolve: resolver(Player.associations.games, {
-          before: async (findOptions: { [key: string]: object }) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          }
-        })
-      },
+  fields: () => {
+    if (_fields == null) {
+      _fields = initFields();
+    }
+    return Object.assign(getAttributeFields(Player), {
+      ..._fields
+    });
+  }
+});
+export const TeamPlayerType = new GraphQLObjectType({
+  name: 'TeamPlayer',
+  description: 'A TeamPlayer',
+  fields: () => {
+    if (_fields == null) {
+      _fields = initFields();
+    }
+    return Object.assign(getAttributeFields(Player), {
+      ..._fields,
       base: {
         type: GraphQLBoolean
-      },
-      club: {
-        description: 'The current club of the player',
-        type: ClubType,
-        resolve: async (obj: Player) => {
-          // Todo, do this via associations
-          const memberShip = await ClubMembership.findOne({
-            where: { end: null, playerId: obj.id }
-          });
-
-          return Club.findByPk(memberShip?.clubId);
-        }
-      },
-      clubs: {
-        description: 'All the club the player has been a part of',
-        type: new GraphQLList(ClubType),
-        args: Object.assign(defaultListArgs()),
-        resolve: resolver(Player.associations.clubs, {
-          before: async (findOptions: { [key: string]: object | boolean }) => {
-            findOptions = {
-              ...findOptions,
-              where: queryFixer(findOptions.where)
-            };
-            return findOptions;
-          },
-          after: (results: (Club & { clubMembership: ClubMembership })[]) => {
-            return results.map((result) => {
-              result.clubMembership = result.getDataValue('ClubMembership');
-              return result;
-            });
-          }
-        })
       }
-    })
+    }); 
+  }
 });
+
+let _fields = null;
+
+const initFields = () => {
+  return {
+    email: {
+      type: GraphQLString,
+      resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+        canExecute(
+          context?.req?.user,
+          { anyPermissions: [`details-any:player`, `${obj.id}_details:player`] },
+          "You don't have permissions to access the email field"
+        );
+        return obj.email;
+      }
+    },
+    phone: {
+      type: GraphQLString,
+      resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+        canExecute(
+          context?.req?.user,
+          {
+            anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
+          },
+          "You don't have permissions to access the phone field"
+        );
+        return obj.phone;
+      }
+    },
+
+    birthDate: {
+      type: GraphQLString,
+      resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+        canExecute(
+          context?.req?.user,
+          {
+            anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
+          },
+          "You don't have permissions to access the birthDate field"
+        );
+        return obj.birthDate;
+      }
+    },
+
+    teams: {
+      type: new GraphQLList(TeamType),
+      resolve: resolver(Player.associations.teams)
+    },
+    claims: {
+      type: new GraphQLList(ClaimType),
+      resolve: resolver(Player.associations.claims)
+    },
+    rankingPlaces: {
+      type: new GraphQLList(RankingPlaceType),
+      args: Object.assign(defaultListArgs()),
+      resolve: resolver(Player.associations.rankingPlaces, {
+        before: async (findOptions: { [key: string]: object }) => {
+          findOptions = {
+            ...findOptions,
+            where: queryFixer(findOptions.where)
+          };
+          return findOptions;
+        }
+      })
+    },
+    lastRanking: {
+      type: LastRankingPlaceType,
+      args: Object.assign({
+        system: {
+          type: GraphQLString
+        }
+      }),
+      resolve: async (obj: Player, args: { system: string }) => {
+        let systemId = args.system;
+        if (systemId == null) {
+          systemId = (await RankingSystem.findOne({ where: { primary: true } })).id;
+        }
+
+        if (systemId == null) {
+          return null;
+        }
+
+        const places = await obj.getLastRankingPlaces({
+          where: { systemId }
+        });
+        return places[0];
+      }
+    },
+    lastRankingPlaces: {
+      type: new GraphQLList(RankingPlaceType),
+      args: Object.assign(defaultListArgs()),
+      resolve: resolver(Player.associations.lastRankingPlaces, {
+        before: async (findOptions: { [key: string]: object }) => {
+          findOptions = {
+            ...findOptions,
+            where: queryFixer(findOptions.where)
+          };
+          return findOptions;
+        }
+      })
+    },
+    rankingPoints: {
+      type: new GraphQLList(RankingPointType),
+      args: Object.assign(defaultListArgs()),
+      resolve: resolver(Player.associations.rankingPoints, {
+        before: async (findOptions: { [key: string]: object }) => {
+          findOptions = {
+            ...findOptions,
+            where: queryFixer(findOptions.where)
+          };
+          return findOptions;
+        }
+      })
+    },
+    games: {
+      type: new GraphQLList(GameType),
+      args: Object.assign(defaultListArgs()),
+      resolve: resolver(Player.associations.games, {
+        before: async (findOptions: { [key: string]: object }) => {
+          findOptions = {
+            ...findOptions,
+            where: queryFixer(findOptions.where)
+          };
+          return findOptions;
+        }
+      })
+    },
+
+    club: {
+      description: 'The current club of the player',
+      type: ClubType,
+      resolve: async (obj: Player) => {
+        // Todo, do this via associations
+        const memberShip = await ClubMembership.findOne({
+          where: { end: null, playerId: obj.id }
+        });
+
+        return Club.findByPk(memberShip?.clubId);
+      }
+    },
+    clubs: {
+      description: 'All the club the player has been a part of',
+      type: new GraphQLList(ClubType),
+      args: Object.assign(defaultListArgs()),
+      resolve: resolver(Player.associations.clubs, {
+        before: async (findOptions: { [key: string]: object | boolean }) => {
+          findOptions = {
+            ...findOptions,
+            where: queryFixer(findOptions.where)
+          };
+          return findOptions;
+        },
+        after: (results: (Club & { clubMembership: ClubMembership })[]) => {
+          return results.map((result) => {
+            result.clubMembership = result.getDataValue('ClubMembership');
+            return result;
+          });
+        }
+      })
+    }
+  };
+};
 
 export const PlayerInputType = new GraphQLInputObjectType({
   name: 'PlayerInput',
