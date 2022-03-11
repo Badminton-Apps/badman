@@ -26,9 +26,9 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GraphQLModule } from './graphql.module';
+import { SocketModule, SOCKET_URL } from './_shared';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { SharedModule } from './_shared/shared.module';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
 const baseModules = [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule];
 const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule.forRoot(), MatSnackBarModule];
@@ -101,9 +101,7 @@ const cookieConfig: NgcCookieConsentConfig = {
         allowedList: [{ uriMatcher: (uri) => uri.indexOf('api') > -1, allowAnonymous: true }],
       },
     }),
-    SocketIoModule.forRoot({
-      url: environment.api,
-    }),
+    SocketModule,
   ],
   providers: [
     CookieService,
@@ -125,6 +123,14 @@ const cookieConfig: NgcCookieConsentConfig = {
       deps: [MAT_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
+    {
+      provide: SOCKET_URL,
+      useValue: environment.api,
+    },
+    // {
+    //   provide: SOCKET_PREFIX,
+    //   useValue: config?.prefix,
+    // },
   ],
   bootstrap: [AppComponent],
 })
