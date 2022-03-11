@@ -1,5 +1,10 @@
+import {
+  DataBaseHandler,
+  LastRankingPlace,
+  logger,
+  Player,
+} from '@badvlasim/shared';
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
-import { DataBaseHandler, logger } from '@badvlasim/shared';
 
 (async () => {
   await merge_accounts();
@@ -8,34 +13,65 @@ import { DataBaseHandler, logger } from '@badvlasim/shared';
 async function merge_accounts() {
   logger.info('Start manual merging accounts');
 
-  // const databaseService = new DataBaseHandler(dbConfig.default);
-  // const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+  const databaseService = new DataBaseHandler({
+    ...dbConfig.default,
+    // logging: (...msg) => logger.debug('Query', msg)
+  });
 
-  // try {
-  //   let destination = `c57ed8da-fd1e-4fbe-be14-484208b6bb5d`;
-  //   let sources = [`6bab7042-e545-4c05-9f8b-7cfd8f357640`];
+  const transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
-  //   for (const source of sources) {
-  //     await databaseService.mergePlayers(destination, source, { transaction });
-  //   }
+  logger.info(`Getting players`);
+  const players = await Player.findAll({
+    transaction,
+    include: [
+      {
+        model: LastRankingPlace,
+        attributes: ['singlePoints', 'doublePoints', 'mixPoints'],
+        required: false,
+      },
+    ],
+  });
 
-  //   destination = `fc1bec5d-21e5-4dfe-a7c4-03460239aaca`;
-  //   sources = [`94c3244c-f9fe-4575-b675-9937d533be8b`];
+  const ids = players?.map((p) => p.memberId?.trim());
 
-  //   for (const source of sources) {
-  //     await databaseService.mergePlayers(destination, source, { transaction });
-  //   }
+  // create a new (dirty) Array with only the non-unique items
+  let nonUnique = ids.filter(
+    (item, i) =>
+      item !== null &&
+      item !== undefined &&
+      item.length > 1 &&
+      ids.includes(item, i + 1)
+  );
 
-  //   destination = `4ee4f638-46e8-426d-9576-f23e502371b2`;
-  //   sources = [`193c4346-ac5b-415f-95d1-08990e9725f8`];
+  // Cleanup - remove duplicate & empty items items
+  nonUnique = [...new Set(nonUnique)];
 
-  //   for (const source of sources) {
-  //     await databaseService.mergePlayers(destination, source, { transaction });
-  //   }
-  //   await transaction.commit();
-  // } catch (err) {
-  //   logger.error('Something went wrong merging players');
-  //   await transaction.rollback();
-  //   throw err;
-  // }
+  logger.info(`Found ${nonUnique.length} non-unique memberIds`);
+  try {
+    for (const player of nonUnique) {
+      const nonUniques = players
+        .filter((p) => p.memberId === player)
+        .sort((a, b) => {
+          return (
+            (b.lastRankingPlaces?.[0]?.singlePoints ?? 0) +
+            (b.lastRankingPlaces?.[0]?.doublePoints ?? 0) +
+            (b.lastRankingPlaces?.[0]?.mixPoints ?? 0) -
+            ((a.lastRankingPlaces?.[0]?.singlePoints ?? 0) +
+              (a.lastRankingPlaces?.[0]?.doublePoints ?? 0) +
+              (a.lastRankingPlaces?.[0]?.mixPoints ?? 0))
+          );
+        });
+      const destination = nonUniques.shift();
+      const sources = nonUniques.filter((p) => p.id !== destination.id);
+
+      await databaseService.mergePlayers(destination, sources, {
+        transaction,
+      });
+    }
+
+    await transaction.commit();
+  } catch (error) {
+    logger.error('Something went wrong merging players', error);
+    await transaction.rollback();
+  }
 }

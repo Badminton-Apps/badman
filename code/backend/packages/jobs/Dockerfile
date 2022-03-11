@@ -1,4 +1,4 @@
-FROM node:12.22.0-alpine as build
+FROM node:14-alpine as build
 
 # Work dir
 WORKDIR /usr/src/app
@@ -19,7 +19,7 @@ RUN lerna bootstrap --scope=@badvlasim/job  --ci -- --production=false
 RUN yarn run build --scope=@badvlasim/job
 
 # production environment
-FROM node:12.22.0-slim
+FROM node:14-slim
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Brussels
 RUN apt-get install -y tzdata

@@ -294,7 +294,8 @@ export class RankingSyncer {
                   [type]: points.Level,
                   [`${type}Points`]: points.Totalpoints,
                   [`${type}Rank`]: points.Rank,
-                  SystemId: ranking.system.id
+                  SystemId: ranking.system.id,
+                  gender
                 })
               );
 
