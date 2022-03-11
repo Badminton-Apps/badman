@@ -6,7 +6,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #options="matMenu">
-          <button mat-menu-item [routerLink]="['/', 'admin', 'club', club.id, 'edit']">
+          <button mat-menu-item [routerLink]="['edit']">
             {{ 'button.edit' | translate }}
           </button>
           <button mat-menu-item (click)="addPlayer(club)">Add player</button>

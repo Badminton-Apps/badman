@@ -33,7 +33,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private playerService: PlayerService,
-    private systemService: SystemService,
     private userService: UserService,
     private snackbar: MatSnackBar,
     private titleService: Title,
