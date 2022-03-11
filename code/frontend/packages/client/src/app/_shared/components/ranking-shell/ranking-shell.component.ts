@@ -39,12 +39,12 @@ export class RankingShellComponent implements OnDestroy, OnInit {
         query: gql`
           # we request only one, because if it's more that means it's open
           query CanEnroll($where: SequelizeJSON) {
-            tournamentEvents(first: 1, where: $where) {
-              total
-              edges {
-                cursor
-              }
-            }
+            # tournamentEvents(first: 1, where: $where) {
+            #   total
+            #   edges {
+            #     cursor
+            #   }
+            # }
             competitionEvents(first: 1, where: $where) {
               total
               edges {
@@ -59,7 +59,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
           },
         },
       })
-      .pipe(map((events) => events.data.tournamentEvents.total != 0 || events.data.competitionEvents.total != 0));
+      .pipe(map((events) => events?.data?.tournamentEvents?.total != 0 || events?.data?.competitionEvents?.total != 0));
   }
 
   ngOnDestroy(): void {
