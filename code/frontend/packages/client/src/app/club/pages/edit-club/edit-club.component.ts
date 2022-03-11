@@ -65,7 +65,7 @@ export class EditClubComponent implements OnInit {
       switchMap(([id]) =>
         this.apollo.query<{ club: Club }>({
           query: gql`
-            query getClub($id: ID!) {
+            query GetClub($id: ID!) {
               club(id: $id) {
                 id
                 slug
