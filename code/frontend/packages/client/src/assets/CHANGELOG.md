@@ -1,3 +1,18 @@
+# [4.33.0](https://github.com/Badminton-Apps/badman/compare/v4.32.4...v4.33.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* Restricted adding should use the rankingPlace (from may) instead of the last ranking place ([c7a90ba](https://github.com/Badminton-Apps/badman/commit/c7a90ba594210a8f688b9e612846f9c00d171a44))
+
+
+### Features
+
+* more ranking systems ([f61ea15](https://github.com/Badminton-Apps/badman/commit/f61ea15aae80739cef9fdf21179af5e0f0c64208))
+* **server:** Update game when server saves ([3f586c3](https://github.com/Badminton-Apps/badman/commit/3f586c3cba7c47e48b0aac00faf939b7fa00b424))
+
+
+
 ## [4.32.4](https://github.com/Badminton-Apps/badman/compare/v4.32.3...v4.32.4) (2022-03-07)
 
 
