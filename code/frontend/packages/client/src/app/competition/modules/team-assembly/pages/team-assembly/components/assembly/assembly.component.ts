@@ -373,9 +373,9 @@ export class AssemblyComponent implements OnInit {
 
         const levelRestirced = dbTeam.players.filter(
           (p) =>
-            (p.lastRanking?.single ?? 12) < this.entry?.competitionSubEvent!.maxLevel! ||
-            (p.lastRanking?.double ?? 12) < this.entry?.competitionSubEvent!.maxLevel! ||
-            (this.type == 'MX' && (p.lastRanking?.mix ?? 12) < this.entry?.competitionSubEvent!.maxLevel!)
+            (p.rankingPlaces?.[0]?.single ?? 12) < this.entry?.competitionSubEvent!.maxLevel! ||
+            (p.rankingPlaces?.[0]?.double ?? 12) < this.entry?.competitionSubEvent!.maxLevel! ||
+            (this.type == 'MX' && (p.rankingPlaces?.[0]?.mix ?? 12) < this.entry?.competitionSubEvent!.maxLevel!)
         );
         if (levelRestirced.length > 0) {
           this.ignorePlayers.push(...levelRestirced);
