@@ -14,7 +14,7 @@ export class Location {
   streetNumber?: string;
   competitionEvents?: CompetitionEvent[]
   eventTournements?: TournamentEvent[]
-  // courts: Court;
+  courts?: number;
 
   constructor(args?: Partial<Location>) {
     this.id = args?.id;
@@ -29,5 +29,6 @@ export class Location {
     this.streetNumber = args?.streetNumber;
     this.competitionEvents = args?.competitionEvents?.map(r => new CompetitionEvent(r));
     this.eventTournements = args?.eventTournements?.map(r => new TournamentEvent(r));
+    this.courts = args?.courts;
   }
 }

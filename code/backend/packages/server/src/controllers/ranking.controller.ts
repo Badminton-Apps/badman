@@ -11,7 +11,7 @@ import {
 } from '@badvlasim/shared';
 import archiver from 'archiver';
 import { Request, RequestHandler, Response, Router } from 'express';
-import fs, { mkdirSync, rmdirSync, unlinkSync, writeFileSync } from 'fs';
+import fs, { mkdirSync, existsSync, rmdirSync, unlinkSync, writeFileSync } from 'fs';
 import moment from 'moment';
 import { join } from 'path';
 import { Op } from 'sequelize';
@@ -27,7 +27,10 @@ export class RankingController extends BaseController {
     this._intializeRoutes();
 
     // Remove
-    rmdirSync(this._resultFolder, { recursive: true });
+    if (existsSync(this._resultFolder)) {
+      rmdirSync(this._resultFolder, { recursive: true });
+    }
+
     // Recreate
     mkdirSync(this._resultFolder, { recursive: true });
   }
@@ -152,7 +155,6 @@ export class RankingController extends BaseController {
       const fileNameSafe = (
         await RankingSystem.findByPk(system, { attributes: ['name'] })
       )?.name.replace(/[/\\?%*:|"<>]/g, '-');
-
 
       const results = await LastRankingPlace.findAll({
         attributes: [
