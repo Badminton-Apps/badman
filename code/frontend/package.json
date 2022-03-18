@@ -23,5 +23,9 @@
     "test:local": "npx lerna run test:local --stream",
     "kill-ports": "npx kill-port 4200",
     "kill-node": "taskkill /f /im node.exe"
+  },
+  "volta": {
+    "node": "16.14.2",
+    "yarn": "1.22.17"
   }
 }
