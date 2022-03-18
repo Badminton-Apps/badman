@@ -1,0 +1,29 @@
+<div>
+  <div>
+    <button mat-button (click)="decreaseMonth()">-</button>
+    <button mat-button (click)="setCurrentMonth()">Today</button>
+    <button mat-button (click)="increaseMonth()">+</button>
+    <strong>{{ currentMonth }}</strong>
+  </div>
+</div>
+
+<div class="calendar-table" *ngIf="calendar">
+  <div class="calendar-day weekday">Monday</div>
+  <div class="calendar-day weekday">Tuesday</div>
+  <div class="calendar-day weekday">Wednesday</div>
+  <div class="calendar-day weekday">Thursday</div>
+  <div class="calendar-day weekday">Friday</div>
+  <div class="calendar-day weekday">Saturday</div>
+  <div class="calendar-day weekday">Sunday</div>
+
+  <div
+    *ngFor="let row of calendar"
+    class="calendar-day"
+    [ngClass]="{ 'past-date': row.isPastDate, today: row.isToday }"
+  >
+    <div class="calendar-day-header" [ngClass]="{ 'blue-date': row.isToday }">
+      <strong>{{ row.date.getDate() }}</strong>
+      <strong *ngIf="row.isToday || row.date.getDate() == 1"> {{ monthNames[row.date.getMonth()] }}</strong>
+    </div>
+  </div>
+</div>
