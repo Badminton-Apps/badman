@@ -175,10 +175,8 @@ import { v4 as uuidv4 } from 'uuid';
     //   system78weeks25games1downUpDiff,
     //   system78weeks20games1downUpDiff,
     // ];
-    const targets = [
-      system78weeks25games1downUpDiff,
-      system78weeks20games1downUpDiff,
-    ];
+    
+    const targets = [system78weeks25games1down];
 
     for (const targetSystem of targets) {
       logger.info(`Calculating ${targetSystem.name}`);
