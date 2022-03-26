@@ -13,7 +13,6 @@ import {
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 import { writeFile } from 'fs/promises';
 import { Op } from 'sequelize';
-import { StreamTransportInstance } from 'winston/lib/winston/transports';
 
 (async () => {
   new DataBaseHandler({
@@ -30,6 +29,7 @@ import { StreamTransportInstance } from 'winston/lib/winston/transports';
     });
 
     await calculateAverages('PBO competitie 2021-2022', ranking);
+    await calculateAverages('PBA competitie 2021-2022', ranking);
 
     logger.info('done');
   } catch (error) {
@@ -106,7 +106,7 @@ async function calculateAverages(name: string, ranking: RankingSystem) {
                     include: [
                       {
                         model: Player,
-                        attributes: ['id'],
+                        attributes: ['id', 'gender'],
                       },
                     ],
                   },
@@ -160,19 +160,25 @@ async function calculateAverages(name: string, ranking: RankingSystem) {
       )
     );
 
-    subEventsW.set(
-      `${subevent.level} ${subevent.eventType}_weighted`,
-      average(players, playersPerSubEvent)
-    );
+    if (playersPerSubEvent.find((p) => p.gender === 'M')) {
+      subEventsW.set(
+        `${subevent.level} ${subevent.eventType} Male`,
+        average(
+          players,
+          playersPerSubEvent.filter((p) => p.gender === 'M')
+        )
+      );
+    }
 
-    const distinctPlayersPerSubEvent = playersPerSubEvent.filter(
-      (a, i) => playersPerSubEvent.findIndex((s) => a.id === s.id) === i
-    );
-
-    subEvents.set(
-      `${subevent.level} ${subevent.eventType}`,
-      average(players, distinctPlayersPerSubEvent)
-    );
+    if (playersPerSubEvent.find((p) => p.gender === 'F')) {
+      subEventsW.set(
+        `${subevent.level} ${subevent.eventType} Female`,
+        average(
+          players,
+          playersPerSubEvent.filter((p) => p.gender === 'F')
+        )
+      );
+    }
 
     // const gameTypes = subevent.draws.flatMap((d) =>
     //   d.encounters.flatMap((e) => e.games.map((g) => g.gameType))
@@ -187,7 +193,7 @@ async function calculateAverages(name: string, ranking: RankingSystem) {
   }
 
   await writeFile(
-    `avg-level-${event.name}.json`,
+    `avg-level-${name}.json`,
     JSON.stringify(
       { ...Object.fromEntries(subEvents), ...Object.fromEntries(subEventsW) },
       null,
