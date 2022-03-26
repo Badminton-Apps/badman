@@ -90,7 +90,7 @@ import { v4 as uuidv4 } from 'uuid';
       id: 'c327aff1-a0ba-498a-9e7b-202b1da04c65',
       rankingSystem: RankingSystems.BVL,
       name: 'BFF Rating - 78 weeks - Last 15 games - max 1 down',
-      latestXGamesToUse: 25,
+      latestXGamesToUse: 15,
       periodUnit: 'weeks',
       primary: false,
       periodAmount: 78,
@@ -103,7 +103,7 @@ import { v4 as uuidv4 } from 'uuid';
       id: '2688df19-027a-4776-a62b-9deca0cd7952',
       rankingSystem: RankingSystems.BVL,
       name: 'BFF Rating - 78 weeks - Last 20 games - max 1 down',
-      latestXGamesToUse: 25,
+      latestXGamesToUse: 20,
       periodUnit: 'weeks',
       primary: false,
       periodAmount: 78,
@@ -175,8 +175,10 @@ import { v4 as uuidv4 } from 'uuid';
     //   system78weeks25games1downUpDiff,
     //   system78weeks20games1downUpDiff,
     // ];
-    
-    const targets = [system78weeks25games1down];
+    const targets = [
+      system78weeks15games1down,
+      system78weeks20games1down,
+    ];
 
     for (const targetSystem of targets) {
       logger.info(`Calculating ${targetSystem.name}`);
