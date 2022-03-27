@@ -1,13 +1,14 @@
 import {
   ApiError,
   AuthenticatedRequest,
+  Availability,
   canExecute,
   DataBaseHandler,
   Location,
   logger
 } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
-import { LocationInputType, LocationType } from '../types';
+import { AvailabilityInputType, AvailabilityType, LocationInputType, LocationType } from '../types';
 
 export const addLocationMutation = {
   type: LocationType,
@@ -71,7 +72,7 @@ export const removeLocationMutation = {
       const dbLocation = await Location.findByPk(locationId, { transaction });
 
       if (!dbLocation) {
-        logger.debug('location', {data: dbLocation});
+        logger.debug('location', { data: dbLocation });
         throw new ApiError({
           code: 404,
           message: 'Location not found'
@@ -164,7 +165,7 @@ export const updateLocationMutation = {
       const dbLocation = await Location.findByPk(location.id, { transaction });
 
       if (!dbLocation) {
-        logger.debug('location', {data: dbLocation});
+        logger.debug('location', { data: dbLocation });
         throw new ApiError({
           code: 404,
           message: 'Location not found'
@@ -177,6 +178,102 @@ export const updateLocationMutation = {
       await dbLocation.update(location, { transaction });
       await transaction.commit();
       return dbLocation;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const updateLocationAvailibiltyMutation = {
+  type: AvailabilityType,
+  args: {
+    availibilty: {
+      name: 'Availability',
+      type: AvailabilityInputType
+    }
+  },
+  resolve: async (
+    _findOptions: { [key: string]: object },
+    { availibilty },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbAvailability = await Availability.findByPk(availibilty.id, {
+        include: [
+          {
+            model: Location
+          }
+        ],
+        transaction
+      });
+
+      if (!dbAvailability) {
+        logger.debug('availibilty', { data: dbAvailability });
+        throw new ApiError({
+          code: 404,
+          message: 'Availibilty not found'
+        });
+      }
+      canExecute(context?.req?.user, {
+        anyPermissions: [`${dbAvailability.location.clubId}_edit:location`, 'edit-any:club']
+      });
+
+      await dbAvailability.update(availibilty, { transaction });
+      await transaction.commit();
+      return dbAvailability;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const addLocationAvailibiltyMutation = {
+  type: AvailabilityType,
+  args: {
+    availibilty: {
+      name: 'Availability',
+      type: AvailabilityInputType
+    },
+    locationId: {
+      name: 'locationId',
+      type: new GraphQLNonNull(GraphQLID)
+    }
+  },
+  resolve: async (
+    _findOptions: { [key: string]: object },
+    { availibilty, locationId },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const dbLocation = await Location.findByPk(locationId, {
+        transaction
+      });
+
+      if (!dbLocation) {
+        logger.debug('location', { data: dbLocation });
+        throw new ApiError({
+          code: 404,
+          message: 'Location not found'
+        });
+      }
+      canExecute(context?.req?.user, {
+        anyPermissions: [`${dbLocation.clubId}_edit:location`, 'edit-any:club']
+      });
+
+      const dbAvailability = await Availability.create(
+        { ...availibilty, locationId },
+        { transaction }
+      );
+
+      // await dbLocation.update(location, { transaction });
+      await transaction.commit();
+      return dbAvailability;
     } catch (e) {
       logger.warn('rollback', e);
       await transaction.rollback();

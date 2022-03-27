@@ -114,8 +114,6 @@ export class CalendarDay {
 
     for (const event of events) {
       courts.set(event.locationId, courts.get(event.locationId)! - 1);
-
-      console.log(event.locationId, courts.get(event.locationId));
     }
 
     this.remainingCourts = [...courts.values()];
