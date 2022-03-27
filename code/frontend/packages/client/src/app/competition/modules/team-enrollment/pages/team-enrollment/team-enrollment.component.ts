@@ -5,40 +5,22 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
 import { Apollo } from 'apollo-angular';
 import { Club, Comment, CompetitionEvent, EventService, EventType, SubEvent, Team } from 'app/_shared';
-import {
-  BehaviorSubject,
-  combineLatest,
-  concat,
-  forkJoin,
-  lastValueFrom,
-  Observable,
-  of,
-  ReplaySubject,
-  Subject,
-  withLatestFrom,
-  zip,
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, lastValueFrom, Observable, of, Subject, withLatestFrom } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
-  last,
   map,
-  mergeAll,
-  mergeMap,
-  pairwise,
   shareReplay,
-  skip,
   startWith,
   switchMap,
   take,
-  takeLast,
-  tap,
 } from 'rxjs/operators';
 import * as addComment from './graphql/AddComment.graphql';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
 import * as GetClub from './graphql/GetClub.graphql';
 import * as updateComment from './graphql/UpdateComment.graphql';
+import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
 
 @Component({
   selector: 'app-team-enrollment',
@@ -142,16 +124,14 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async teamsAssigned(event: { teamId: string; subEventId: string }) {
-    console.log('Assigning team')
-
-    // await lastValueFrom(
-    //   this.apollo.mutate({
-    //     mutation: AssignTeamSubEvent,
-    //     variables: {
-    //       ...event,
-    //     },
-    //   })
-    // );
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: AssignTeamSubEvent,
+        variables: {
+          ...event,
+        },
+      })
+    );
   }
 
   async submit() {

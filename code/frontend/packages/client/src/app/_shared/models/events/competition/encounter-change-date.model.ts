@@ -1,6 +1,3 @@
-import { Game } from '../../game.model';
-import { CompetitionDraw } from './draw.model';
-
 export class EncounterChangeDate {
   id?: string;
   date?: Date;

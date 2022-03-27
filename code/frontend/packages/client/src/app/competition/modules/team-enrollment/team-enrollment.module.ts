@@ -14,6 +14,7 @@ import { SelctionComponentsModule, SharedModule } from 'app/_shared';
 import { AssignTeamComponent } from './pages';
 import { TeamEnrollmentComponent } from './pages/team-enrollment/team-enrollment.component';
 import { TeamEnrolmentRoutingModule } from './team-enrollment-routing.module';
+import { LocationAvailabilityComponent } from './pages/team-enrollment/components/location-availability/location-availability.component';
 
 const materialModules = [
   DragDropModule,
@@ -30,7 +31,7 @@ const materialModules = [
 ];
 
 @NgModule({
-  declarations: [TeamEnrollmentComponent, AssignTeamComponent],
+  declarations: [TeamEnrollmentComponent, AssignTeamComponent, LocationAvailabilityComponent],
   imports: [SharedModule, TeamEnrolmentRoutingModule, SelctionComponentsModule, ...materialModules],
 })
 export class TeamEnrolmentModule {}

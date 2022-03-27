@@ -35,6 +35,19 @@
     </form>
   </mat-step>
   <mat-step>
+    <ng-template matStepLabel>{{ 'competition.enrollment.availability' | translate }}</ng-template>
+
+    <ng-container *ngIf="club$ | async as club; else loading">
+      <ng-container *ngIf="this.competitionYear; else loading">
+        <app-location-availability [club]="club!" [year]="this.competitionYear!"></app-location-availability>
+      </ng-container>
+    </ng-container>
+    <div>
+      <button mat-button matStepperPrevious>{{ 'button.prev' | translate }}</button>
+      <button mat-button matStepperNext>{{ 'button.next' | translate }}</button>
+    </div>
+  </mat-step>
+  <mat-step>
     <ng-template matStepLabel>{{ 'competition.enrollment.assign-team' | translate }}</ng-template>
 
     <ng-container *ngIf="this.show$ | async as teamInfo; else loading">

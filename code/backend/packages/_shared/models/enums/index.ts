@@ -10,8 +10,8 @@ export * from './rankingTiming.enum'
 export * from './usedRankingTiming.enum'
 export * from './teamMembershipType.enum'
 export * from './clubMembershipType.enum'
-export * from './availability.enum'
 export * from './useForTeams.enum'
 export * from './gameStatus.enum'
+export * from './changeEncounterAvailibilty.enum'
 // end:ng42.barrel
 

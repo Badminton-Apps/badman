@@ -107,13 +107,6 @@ export class EventEntry extends Model {
   })
   meta?: Meta;
 
-  // get meta(): Meta {
-  //   this.getDataValue('meta');
-  //   return this?._meta ? JSON.parse(this?._meta) ?? undefined : undefined;
-  // }
-  // set meta(value: Meta) {
-  //   this._meta = JSON.stringify(value);
-  // }
 
   // Belongs to Team
   getTeam!: BelongsToGetAssociationMixin<Team>;

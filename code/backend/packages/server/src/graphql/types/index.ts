@@ -15,6 +15,7 @@ export * from './rankingSystemGroup.type';
 export * from './team.type';
 export * from './cron.type';
 export * from './entry.type';
+export * from './availability.type';
 
 export * from './tournaments';
 export * from './competition';
