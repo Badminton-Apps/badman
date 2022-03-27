@@ -195,7 +195,7 @@ export class DataBaseHandler {
         logger.warn('Multiple events?');
       }
 
-      const membership = (await team.getEventEntrys())[0];
+      const membership = (await team.getEntries())[0];
 
       const playerMeta = [];
       const teamPlayers = [];

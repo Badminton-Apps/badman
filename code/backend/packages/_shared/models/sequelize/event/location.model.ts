@@ -38,6 +38,7 @@ import {
 } from 'sequelize-typescript';
 import { Club } from '../club.model';
 import { Team } from '../team.model';
+import { Availability } from './availability.model';
 import { TeamLocationCompetition } from './competition/team-location-membership.model';
 import { Court } from './court.model';
 import { EventTournament } from './tournament';
@@ -101,6 +102,20 @@ export class Location extends Model {
   @Index
   @Column
   clubId: string;
+
+  @HasMany(() => Availability)
+  availabilities: Availability[];
+
+  // Has many Availibilty
+  getAvailibilties!: HasManyGetAssociationsMixin<Availability>;
+  setAvailibilties!: HasManySetAssociationsMixin<Availability, string>;
+  addAvailibilties!: HasManyAddAssociationsMixin<Availability, string>;
+  addAvailibilty!: HasManyAddAssociationMixin<Availability, string>;
+  removeAvailibilty!: HasManyRemoveAssociationMixin<Availability, string>;
+  removeAvailibilties!: HasManyRemoveAssociationsMixin<Availability, string>;
+  hasAvailibilty!: HasManyHasAssociationMixin<Availability, string>;
+  hasAvailibilties!: HasManyHasAssociationsMixin<Availability, string>;
+  countAvailibilties!: HasManyCountAssociationsMixin;
 
   // Belongs to many Team
   getTeams!: BelongsToManyGetAssociationsMixin<Team>;

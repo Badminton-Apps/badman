@@ -28,8 +28,13 @@ import { Op } from 'sequelize';
       },
     });
 
-    await calculateAverages('PBO competitie 2021-2022', ranking);
-    await calculateAverages('PBA competitie 2021-2022', ranking);
+    // await calculateAverages('PBO competitie 2021-2022', ranking);
+    // await calculateAverages('PBA competitie 2021-2022', ranking);
+    // await calculateAverages('WVBF Competitie 2021-2022', ranking);
+    // await calculateAverages('VVBBC interclubcompetitie 2021-2022', ranking);
+    // await calculateAverages('Limburgse interclubcompetitie 2021-2022', ranking);
+    await calculateAverages('Victor League 2021-2022', ranking);
+    await calculateAverages('Vlaamse interclubcompetitie 2021-2022', ranking);
 
     logger.info('done');
   } catch (error) {
