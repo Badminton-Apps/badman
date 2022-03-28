@@ -15,6 +15,10 @@ import { AssignTeamComponent } from './pages';
 import { TeamEnrollmentComponent } from './pages/team-enrollment/team-enrollment.component';
 import { TeamEnrolmentRoutingModule } from './team-enrollment-routing.module';
 import { LocationAvailabilityComponent } from './pages/team-enrollment/components/location-availability/location-availability.component';
+import { PlayDaysComponent } from './pages/team-enrollment/components/play-days/play-days.component';
+import { NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 const materialModules = [
   DragDropModule,
@@ -28,10 +32,13 @@ const materialModules = [
   MatCheckboxModule,
   MatListModule,
   MatInputModule,
+  NgxMatTimepickerModule,
+  MatOptionModule,
+  MatSelectModule
 ];
 
 @NgModule({
-  declarations: [TeamEnrollmentComponent, AssignTeamComponent, LocationAvailabilityComponent],
+  declarations: [TeamEnrollmentComponent, AssignTeamComponent, LocationAvailabilityComponent, PlayDaysComponent],
   imports: [SharedModule, TeamEnrolmentRoutingModule, SelctionComponentsModule, ...materialModules],
 })
 export class TeamEnrolmentModule {}

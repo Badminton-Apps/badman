@@ -1,8 +1,8 @@
 export class EncounterChangeDate {
   id?: string;
   date?: Date;
-  availabilityHome?: Availability;
-  availabilityAway?: Availability;
+  availabilityHome?: ChangeEncounterAvailability;
+  availabilityAway?: ChangeEncounterAvailability;
   selected?: boolean;
 
   constructor(args?: Partial<EncounterChangeDate>) {
@@ -14,7 +14,7 @@ export class EncounterChangeDate {
   }
 }
 
-export enum Availability {
+export enum ChangeEncounterAvailability {
   POSSIBLE = 'POSSIBLE',
   NOT_POSSIBLE = 'NOT_POSSIBLE',
 }

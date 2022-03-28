@@ -1,0 +1,36 @@
+<!-- <mat-form-field appearance="fill" *ngIf="this.range">
+  <mat-label>Enter a date range</mat-label>
+  <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+    <input matStartDate formControlName="start" placeholder="Start date" />
+    <input matEndDate formControlName="end" placeholder="End date" />
+  </mat-date-range-input>
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+
+  <mat-error *ngIf="range.controls['start']?.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+  <mat-error *ngIf="range.controls['end']?.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+</mat-form-field> -->
+<form (submit)="this.submit()" [formGroup]="this.fg" fxLayout="row" fxLayoutGap="16px">
+  <mat-form-field appearance="outline">
+    <mat-select formControlName="day">
+      <mat-option value="monday">{{ 'days.monday' | translate }}</mat-option>
+      <mat-option value="tuesday">{{ 'days.tuesday' | translate }}</mat-option>
+      <mat-option value="wednesday">{{ 'days.wednesday' | translate }}</mat-option>
+      <mat-option value="thursday">{{ 'days.thursday' | translate }}</mat-option>
+      <mat-option value="friday">{{ 'days.friday' | translate }}</mat-option>
+      <mat-option value="saturday">{{ 'days.saturday' | translate }}</mat-option>
+      <mat-option value="sunday">{{ 'days.sunday' | translate }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div>
+    <mat-label>{{ 'input.name' | translate }}</mat-label>
+    <ngx-mat-timepicker formControlName="start" [showSpinners]="false"> </ngx-mat-timepicker>
+  </div>
+  <ngx-mat-timepicker formControlName="end" [showSpinners]="false"> </ngx-mat-timepicker>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'input.name' | translate }}</mat-label>
+    <input matInput formControlName="courts" alt="courts" required />
+  </mat-form-field>
+</form>
