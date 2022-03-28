@@ -11,57 +11,22 @@ import {
   SubEventCompetition,
   Team,
   Club,
-  EventCompetition
+  EventCompetition,
 } from '../../models';
 import { logger } from '../../utils';
 
 export class MailService {
   private _transporter: Transporter;
   private _mailingEnabled = false;
-  private _clientUrl: string;
+  private initialized = false;
 
-  constructor(private _databaseService: DataBaseHandler) {
-    this._clientUrl = process.env.CLIENT_URL;
-    try {
-      this._transporter = nodemailer.createTransport(
-        smtpTransport({
-          host: process.env.MAIL_HOST,
-          port: 465,
-          auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS
-          }
-        })
-      );
-
-      this._transporter.verify().then(() => {
-        this._mailingEnabled = process.env.NODE_ENV === 'production';
-      });
-
-      const hbsOptions = exphbs({
-        viewEngine: {
-          partialsDir: path.join(__dirname, './templates/partials'),
-          layoutsDir: path.join(__dirname, './templates/layouts'),
-          defaultLayout: 'layout.handlebars'
-        },
-        viewPath: path.join(__dirname, './templates')
-      });
-
-      this._transporter.use('compile', hbsOptions);
-    } catch (e) {
-      logger.warn('Mailing disabled', e);
-    }
-  }
+  constructor(private _databaseService: DataBaseHandler) {}
 
   async sendNewPeopleMail(to: string) {
-    if (this._mailingEnabled === false) {
-      return;
-    }
-
     const events = await EventCompetition.findAll({
       attributes: ['name'],
       where: {
-        startYear: 2020
+        startYear: 2020,
       },
       include: [
         {
@@ -79,18 +44,18 @@ export class MailService {
                   model: Player,
                   required: true,
                   where: {
-                    competitionPlayer: true
-                  }
+                    competitionPlayer: true,
+                  },
                 },
                 {
                   attributes: ['id', 'name'],
-                  model: Club
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  model: Club,
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
     const clubs: Partial<Club>[] = [];
@@ -102,9 +67,9 @@ export class MailService {
 
     for (const event of events) {
       for (const subEvent of event.subEvents) {
-        for (const team of subEvent.entries?.map(r => r.team)) {
+        for (const team of subEvent.entries?.map((r) => r.team)) {
           // get existing
-          let clubIndex = clubs.findIndex(r => r.name === team.club.name);
+          let clubIndex = clubs.findIndex((r) => r.name === team.club.name);
           if (clubIndex === -1) {
             clubIndex = clubs.push({ ...team.club.toJSON(), players: [] }) - 1;
           }
@@ -113,7 +78,7 @@ export class MailService {
           for (const player of team.players) {
             if (
               !clubs[clubIndex].players.find(
-                r => r.memberId === player.memberId
+                (r) => r.memberId === player.memberId
               )
             ) {
               clubs[clubIndex].players.push(player.toJSON());
@@ -128,7 +93,7 @@ export class MailService {
       to,
       subject: 'New players',
       template: 'newplayers',
-      context: { clubs, clientUrl: this._clientUrl, title: 'New players' }
+      context: { clubs, title: 'New players' },
     };
 
     await this._sendMail(options);
@@ -140,23 +105,19 @@ export class MailService {
     year: number,
     cc?: string | string[]
   ) {
-    if (this._mailingEnabled === false) {
-      return;
-    }
-
     const comments = await Comment.findAll({
       attributes: ['message'],
       where: {
-        clubId
+        clubId,
       },
       include: [
         {
           model: EventCompetition,
           where: { startYear: year },
           required: true,
-          attributes: ['name']
-        }
-      ]
+          attributes: ['name'],
+        },
+      ],
     });
 
     const club = await this._databaseService.getClubsTeamsForEnrollemnt(
@@ -181,8 +142,6 @@ export class MailService {
       return 0;
     });
 
-    const clientUrl = process.env.CLIENT_URL;
-
     const options = {
       from: 'info@badman.app',
       to,
@@ -191,12 +150,11 @@ export class MailService {
       template: 'clubenrollment',
       context: {
         club: club.toJSON(),
-        clientUrl,
         title: `${club.name} enrollment`,
         preview: `${club.name} schreef ${club.teams.length} teams in`,
         years: `${year}-${year + 1}`,
-        comments: comments.map(c => c.toJSON())
-      }
+        comments: comments.map((c) => c.toJSON()),
+      },
     };
 
     await this._sendMail(options);
@@ -211,10 +169,14 @@ export class MailService {
         {
           model: Team,
           as: 'home',
-          include: [{ model: Player, as: 'captain' }]
+          include: [{ model: Player, as: 'captain' }],
         },
-        { model: Team, as: 'away', include: [{ model: Player, as: 'captain' }] }
-      ]
+        {
+          model: Team,
+          as: 'away',
+          include: [{ model: Player, as: 'captain' }],
+        },
+      ],
     });
 
     const otherTeam = homeTeamRequests ? encounter.away : encounter.home;
@@ -233,8 +195,7 @@ export class MailService {
         otherTeam: otherTeam.toJSON(),
         clubTeam: clubTeam.toJSON(),
         encounter: encounter.toJSON(),
-        clientUrl: this._clientUrl
-      }
+      },
     };
 
     await this._sendMail(options);
@@ -246,10 +207,14 @@ export class MailService {
         {
           model: Team,
           as: 'home',
-          include: [{ model: Player, as: 'captain' }]
+          include: [{ model: Player, as: 'captain' }],
         },
-        { model: Team, as: 'away', include: [{ model: Player, as: 'captain' }] }
-      ]
+        {
+          model: Team,
+          as: 'away',
+          include: [{ model: Player, as: 'captain' }],
+        },
+      ],
     });
 
     const sendMail = async (team: Team, captain: Player) => {
@@ -264,8 +229,7 @@ export class MailService {
           team: team.toJSON(),
           encounter: encounter.toJSON(),
           newDate: moment(encounter.date).format('LLLL'),
-          clientUrl: this._clientUrl
-        }
+        },
       };
 
       await this._sendMail(options);
@@ -275,16 +239,56 @@ export class MailService {
     await sendMail(encounter.away, encounter.away.captain);
   }
 
+  private async _setupMailing() {
+    if (this.initialized) return;
+
+    try {
+      this._transporter = nodemailer.createTransport(
+        smtpTransport({
+          host: process.env.MAIL_HOST,
+          port: 465,
+          auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS,
+          },
+        })
+      );
+
+      await this._transporter.verify();
+
+      const hbsOptions = exphbs({
+        viewEngine: {
+          partialsDir: path.join(__dirname, './templates/partials'),
+          layoutsDir: path.join(__dirname, './templates/layouts'),
+          defaultLayout: 'layout.handlebars',
+        },
+        viewPath: path.join(__dirname, './templates'),
+      });
+
+      this._transporter.use('compile', hbsOptions);
+      this._mailingEnabled = process.env.NODE_ENV === 'production';
+    } catch (e) {
+      this._mailingEnabled = false;
+      logger.warn('Mailing disabled', e);
+    }
+  }
+
   private async _sendMail(options: SendMailOptions) {
+    await this._setupMailing();
+
     try {
       if (this._mailingEnabled === false) {
-        logger.debug('Mailing disabled', {data: options});
+        logger.debug('Mailing disabled', { data: options });
         return;
       }
 
+      // add clientUrl to context
+      options['context']['clientUrl'] = process.env.CLIENT_URL;
+
+      // Check if the to is filled in
       options.to = Array.isArray(options.to) ? options.to : [options.to];
       if (options.to === null || options.to.length === 0) {
-        logger.error('no mail adress?', {error: options});
+        logger.error('no mail adress?', { error: options });
         return;
       }
 

@@ -18,6 +18,7 @@ export * from './comment.model';
 export * from './banner.model';
 export * from './entry.model';
 export * from './standing.model';
+export * from './availibilty.model';
 export * from './cron.model';
 // end:ng42.barrel
 

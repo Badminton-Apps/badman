@@ -1,13 +1,17 @@
 <div class="location" *ngFor="let loc of locations$ | async">
   {{ loc.name }}
 
-  <ng-container *ngFor="let availibility of loc.availibilities">
-    <div class="location-days" *ngFor="let day of availibility.days">
-      <div class="location-days-item">
+  <ng-container *ngIf="loc.availibility">
+    <div class="location-days">
+      <div class="location-days-title">Speeldagen</div>
+      <div class="location-days-item" *ngFor="let day of loc.availibility.days">
         <span class="value">{{ day.day }} {{ day.startTime }} - {{ day.endTime }}: {{ day.courts }} courts</span>
       </div>
+      <div class="location-days-item"><app-play-days [newDay]="true"></app-play-days></div>
     </div>
-    <div class="location-exceptions" *ngFor="let day of availibility.exceptions">
+
+    <div class="location-exceptions" *ngFor="let day of loc.availibility.exceptions">
+      <div class="location-exceptions-title">Uitzonderingen</div>
       <div class="location-exceptions-item">
         <span class="value"
           >{{ day.start | amDateFormat: 'LLL' }} - {{ day.end | amDateFormat: 'LLL' }}: {{ day.courts }} courts</span

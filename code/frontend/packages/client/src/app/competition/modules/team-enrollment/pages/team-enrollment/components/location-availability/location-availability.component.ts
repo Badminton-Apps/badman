@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Club, Location } from 'app/_shared';
-import { map, Observable } from 'rxjs';
+import { Availability, Club, Location } from 'app/_shared';
+import { map, Observable, tap } from 'rxjs';
 
 @Component({
   selector: 'app-location-availability',
@@ -15,16 +15,13 @@ export class LocationAvailabilityComponent implements OnInit {
   @Input()
   year!: number;
 
-  locations$!: Observable<Location[]>;
+  locations$!: Observable<LocationAvailibilty[]>;
 
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    console.log('year', this.year);
-
-
     this.locations$ = this.apollo
-      .query<{ locations: Partial<Location>[] }>({
+      .query<{ locations: Partial<LocationAvailibilty>[] }>({
         query: gql`
           query getLocationAvailability($clubId: ID!, $year: Int!) {
             locations(where: { clubId: $clubId }) {
@@ -51,6 +48,21 @@ export class LocationAvailabilityComponent implements OnInit {
           year: this.year,
         },
       })
-      .pipe(map((result) => result.data.locations.map((location) => new Location(location))));
+      .pipe(
+        map((result) => result.data.locations.map((location) => new Location(location))),
+        map((l) => {
+          const curr = l as LocationAvailibilty[];
+          for (const loc of curr) {
+            loc.availibility =
+              loc.availibilities?.find((a) => a.year == this.year) ?? new Availability({ year: this.year });
+          }
+
+          return curr;
+        })
+      );
   }
+}
+
+interface LocationAvailibilty extends Location {
+  availibility?: Availability;
 }

@@ -121,11 +121,13 @@ export class App {
       `SIGINT`,
       `SIGUSR1`,
       `SIGUSR2`,
-      `uncaughtException`,
       `SIGTERM`,
+      'uncaughtException',
     ].forEach((event) => {
-      process.on(event, () => {
-        logger.debug('Process event type: ', { data: { event } });
+      process.on(event, (err) => {
+        logger.error(`${event}: ${err.message}`, {
+          error: err.stack,
+        });
         httpServer.close();
         process.exit();
       });

@@ -1,13 +1,13 @@
 import { Location } from './location.model';
 
-export class Availibility {
+export class Availability {
   id?: string;
   year?: number;
-  days?: AvailiblyDay[];
+  days?: AvailabilityDay[];
   exceptions?: AvailabilityException[];
   location?: Location;
 
-  constructor(args?: Partial<Availibility>) {
+  constructor(args?: Partial<Availability>) {
     this.id = args?.id;
     this.year = args?.year;
     this.days = args?.days;
@@ -22,7 +22,7 @@ export interface AvailabilityException {
   courts: number;
 }
 
-export interface AvailiblyDay {
+export interface AvailabilityDay {
   day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
   startTime: string;
   endTime: string;
