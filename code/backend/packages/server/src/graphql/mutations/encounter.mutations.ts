@@ -15,7 +15,7 @@ import {
 import axios from 'axios';
 import { parse } from 'fast-xml-parser';
 import moment from 'moment';
-import { Transaction } from 'sequelize/types';
+import { Transaction } from 'sequelize';
 import { EncounterChangeInputType, EncounterChangeType } from '../types';
 
 export const addChangeEncounterMutation = (notificationService: NotificationService) => {
