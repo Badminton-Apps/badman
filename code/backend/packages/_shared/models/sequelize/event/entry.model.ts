@@ -2,6 +2,7 @@ import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
+  HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
 } from 'sequelize';
 import {
@@ -17,7 +18,6 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { HasOneGetAssociationMixin } from 'sequelize/types';
 import { Standing } from '.';
 import { Player } from '../player.model';
 import { Team } from '../team.model';
@@ -106,7 +106,6 @@ export class EventEntry extends Model {
     type: DataType.JSON,
   })
   meta?: Meta;
-
 
   // Belongs to Team
   getTeam!: BelongsToGetAssociationMixin<Team>;
