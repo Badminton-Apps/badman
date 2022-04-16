@@ -27,7 +27,7 @@ import {
   RequestLinkController,
   UserController,
   PdfController,
-  TestController
+  TestController 
 } from './controllers';
 import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
@@ -60,7 +60,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
         },
         {
           from: '/api/v1/job',
-          to: `http://${process.env.JOB_SERVICE}`
+          to: `http://${process.env.JOB_SERVICE}` 
         }
       ]
     });
