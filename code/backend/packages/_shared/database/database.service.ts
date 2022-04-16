@@ -31,6 +31,7 @@ import * as sequelizeModels from '../models/sequelize';
 import { logger } from '../utils/logger';
 import { splitInChunks } from '../utils/utils';
 import SequelizeSlugify from 'sequelize-slugify';
+import moment from 'moment';
 
 export class DataBaseHandler {
   static sequelizeInstance: Sequelize;
@@ -195,21 +196,43 @@ export class DataBaseHandler {
         logger.warn('Multiple events?');
       }
 
-      const membership = (await team.getEventEntrys())[0];
+      const membership = team.entries[0];
 
       const playerMeta = [];
       const teamPlayers = [];
 
+      const usedRankingDate = moment();
+      usedRankingDate.set('year', year);
+      usedRankingDate.set(
+        membership.competitionSubEvent.event.usedRankingUnit,
+        membership.competitionSubEvent.event.usedRankingAmount
+      );
+
+      const startRanking = usedRankingDate.clone().set('date', 0);
+      const endRanking = usedRankingDate.clone().clone().endOf('month');
+
       for (const player of team.players) {
-        const rankingPlaceMay = await RankingPlace.findOne({
+        let rankingPlaceMay = await RankingPlace.findOne({
           where: {
             playerId: player.id,
             SystemId: primarySystem.id,
-            rankingDate: `${year}-05-15`,
+            rankingDate: {
+              [Op.between]: [startRanking.toDate(), endRanking.toDate()],
+            },
           },
         });
+
+        if (!rankingPlaceMay) {
+          rankingPlaceMay = new RankingPlace({
+            playerId: player.id,
+            single: 12,
+            double: 12,
+            mix: 12,
+          });
+        }
+
         player.lastRankingPlaces = [
-          rankingPlaceMay.asLastRankingPlace() as LastRankingPlace,
+          rankingPlaceMay?.asLastRankingPlace() as LastRankingPlace,
         ];
         teamPlayers.push(player);
 
@@ -319,17 +342,24 @@ export class DataBaseHandler {
               through: { where: { base: true, end: null } },
             },
             {
-              model: SubEventCompetition,
-              attributes: ['id', 'name'],
-              required: true,
+              model: EventEntry,
+              as: 'entries',
               include: [
                 {
-                  required: true,
-                  model: EventCompetition,
-                  where: {
-                    startYear: year,
-                  },
+                  model: SubEventCompetition,
                   attributes: ['id', 'name'],
+                  required: true,
+                  as: 'competitionSubEvent',
+                  include: [
+                    {
+                      required: true,
+                      model: EventCompetition,
+                      where: {
+                        startYear: year,
+                      },
+                      attributes: ['id', 'name'],
+                    },
+                  ],
                 },
               ],
             },

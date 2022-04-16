@@ -8,9 +8,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { Availability, Comment, CompetitionEncounter, EncounterChange, EncounterChangeDate } from 'app/_shared';
+import { ChangeEncounterAvailability, Comment, CompetitionEncounter, EncounterChange, EncounterChangeDate } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
-import { iif, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { MatDialog } from '@angular/material/dialog';
@@ -120,9 +120,9 @@ export class ShowRequestsComponent implements OnInit {
     });
 
     if (this.home) {
-      newDate.availabilityHome = Availability.POSSIBLE;
+      newDate.availabilityHome = ChangeEncounterAvailability.POSSIBLE;
     } else {
-      newDate.availabilityAway = Availability.POSSIBLE;
+      newDate.availabilityAway = ChangeEncounterAvailability.POSSIBLE;
     }
 
     this._addDateControl(newDate);
@@ -147,7 +147,7 @@ export class ShowRequestsComponent implements OnInit {
     change.homeComment = new Comment({ message: this.formGroupRequest.get('homeComment')?.value });
     change.awayComment = new Comment({ message: this.formGroupRequest.get('awayComment')?.value });
     const dates: EncounterChangeDate[] = this.formGroupRequest.get('dates')?.value?.map(
-      (d: { availabilityAway: Availability; availabilityHome: Availability; selected: boolean; date: Date }) =>
+      (d: { availabilityAway: ChangeEncounterAvailability; availabilityHome: ChangeEncounterAvailability; selected: boolean; date: Date }) =>
         new EncounterChangeDate({
           availabilityAway: d?.availabilityAway,
           availabilityHome: d?.availabilityHome,
@@ -219,8 +219,8 @@ export class ShowRequestsComponent implements OnInit {
 
       if (
         (selected == null || selected?.date == control.get('date')!.value) &&
-        control.get('availabilityHome')!.value == Availability.POSSIBLE &&
-        control.get('availabilityAway')!.value == Availability.POSSIBLE
+        control.get('availabilityHome')!.value == ChangeEncounterAvailability.POSSIBLE &&
+        control.get('availabilityAway')!.value == ChangeEncounterAvailability.POSSIBLE
       ) {
         control.get('selected')!.enable({ emitEvent: false });
       }

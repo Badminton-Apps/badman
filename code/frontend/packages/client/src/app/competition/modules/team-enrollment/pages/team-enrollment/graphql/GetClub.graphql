@@ -14,12 +14,6 @@ query GetClubInfo($id: ID!) {
       captain {
         id
       }
-      subEvents {
-        id
-        event {
-          name
-        }
-      }
       locations {
         id
         name
@@ -32,9 +26,19 @@ query GetClubInfo($id: ID!) {
         base
         gender
         lastRanking {
+          id
           single
           double
           mix
+        }
+      }
+      entries {
+        id
+        competitionSubEvent {
+          id
+          event {
+            name
+          }
         }
       }
     }

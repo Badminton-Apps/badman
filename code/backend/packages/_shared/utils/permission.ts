@@ -21,7 +21,7 @@ export const canExecute = (
     throw new ApiError({ code: 401, message: message ?? 'Not authenticated' });
   }
 
-  if (permissions.anyPermissions && permissions.anyPermissions.length > 0) {
+  if (permissions?.anyPermissions && permissions?.anyPermissions.length > 0) {
     if (!user.hasAnyPermission(permissions.anyPermissions)) {
       logger.warn("User tried something it should't have done", {
         required: {
@@ -36,7 +36,7 @@ export const canExecute = (
     }
   }
 
-  if (permissions.allPermissions && permissions.allPermissions.length > 0) {
+  if (permissions?.allPermissions && permissions?.allPermissions.length > 0) {
     if (!user.hasAllPermission(permissions.allPermissions)) {
       logger.warn("User tried something it should't have done", {
         required: {

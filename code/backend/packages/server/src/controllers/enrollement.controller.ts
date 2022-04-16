@@ -22,7 +22,7 @@ export class EnrollmentController extends BaseController {
   }
 
   private _intializeRoutes() {
-    this.router.post(
+    this.router.post( 
       `${this._path}/finish/:clubId/:year`,
       this._authMiddleware,
       this._finsihedEnrollemnt
@@ -54,9 +54,9 @@ export class EnrollmentController extends BaseController {
       const clubId = request.params.clubId;
       const year = parseInt(request.params.year, 10);
 
-      this._databaseService.addMetaForEnrollment(clubId, year);
+      await this._databaseService.addMetaForEnrollment(clubId, year);
 
-      this._notificationService.clubEnrolled(email, clubId, year);
+      await this._notificationService.clubEnrolled(email, clubId, year);
       response.json({ success: true });
     } catch (error) {
       logger.error(error);

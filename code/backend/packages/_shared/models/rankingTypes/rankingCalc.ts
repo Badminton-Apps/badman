@@ -42,12 +42,12 @@ export class RankingCalc {
 
     const where = {
       SystemId,
-      rankingDate: {
+      rankingDate: { 
         [Op.gte]: startingDate.toDate(),
       },
     };
 
-    try {
+    try { 
       const placeCount = await RankingPlace.count({ where });
 
       if (placeCount > 0) {

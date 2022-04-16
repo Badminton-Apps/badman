@@ -1,37 +1,43 @@
 <div class="mat-elevation-z1" *ngIf="this.places$ | async as places">
   <div class="header">
-    <button class="options" mat-icon-button [matMenuTriggerFor]="options">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-
-    <mat-menu #options="matMenu">
-      <button mat-menu-item *ngIf="!this.canClaimAccount?.isUser && !this.canClaimAccount?.canClaim">
-        Placeholder for favorite
-      </button>
-      <button mat-menu-item *ngIf="this.canClaimAccount?.isUser">Placeholder for profile</button>
-
-      <button mat-menu-item *ngIf="this.canClaimAccount?.canClaim" (click)="this.claimAccount.next(player.id!)">
-        Claim
+    <app-has-claim [any]="['edit:player', 'merge:player', 'delete:player']">
+      <button class="options" mat-icon-button [matMenuTriggerFor]="options">
+        <mat-icon>more_vert</mat-icon>
       </button>
 
-      <button mat-menu-item *ngIf="this.canClaimAccount?.isClaimedByUser">You've requested this account</button>
-
-      <mat-divider></mat-divider>
-      <button mat-menu-item [routerLink]="['edit']">
-        {{ 'button.edit' | translate }}
-      </button>
-
-      <app-has-claim [any]="['merge:player']">
-        <button mat-menu-item (click)="this.mergePlayer()">
-          {{ 'button.merge-accounts' | translate }}
+      <mat-menu #options="matMenu">
+        <!-- <button mat-menu-item *ngIf="!this.canClaimAccount?.isUser && !this.canClaimAccount?.canClaim">
+          Placeholder for favorite
         </button>
-      </app-has-claim>
+        <button mat-menu-item *ngIf="this.canClaimAccount?.isUser">Placeholder for profile</button> -->
 
-      <app-has-claim [any]="['delete:player']">
-        <button mat-menu-item>{{ 'button.delete' | translate }}</button>
-      </app-has-claim>
-    </mat-menu>
-    <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
+        <button mat-menu-item *ngIf="this.canClaimAccount?.canClaim" (click)="this.claimAccount.next(player.id!)">
+          Claim
+        </button>
+
+        <button mat-menu-item *ngIf="this.canClaimAccount?.isClaimedByUser">You've requested this account</button>
+
+        <app-has-claim [any]="['edit:player', 'merge:player', 'delete:player']">
+          <mat-divider *ngIf="this.canClaimAccount?.canClaim || this.canClaimAccount?.isClaimedByUser"></mat-divider>
+          <app-has-claim [any]="['edit:player']">
+            <button mat-menu-item [routerLink]="['edit']">
+              {{ 'button.edit' | translate }}
+            </button>
+          </app-has-claim>
+
+          <app-has-claim [any]="['merge:player']">
+            <button mat-menu-item (click)="this.mergePlayer()">
+              {{ 'button.merge-accounts' | translate }}
+            </button>
+          </app-has-claim>
+
+          <app-has-claim [any]="['delete:player']">
+            <button mat-menu-item>{{ 'button.delete' | translate }}</button>
+          </app-has-claim>
+        </app-has-claim>
+      </mat-menu>
+    </app-has-claim>
+    <img loading="lazy" src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
   </div>
 
   <div class="info">

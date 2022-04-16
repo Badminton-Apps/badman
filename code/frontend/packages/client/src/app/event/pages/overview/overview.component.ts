@@ -2,15 +2,17 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import { CompetitionEvent, Event, EventService, EventType, TournamentEvent } from 'app/_shared';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, of as observableOf, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of as observableOf, tap } from 'rxjs';
 import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operators';
+import { apolloCache as apolloCache } from 'app/graphql.module';
 
 @Component({
   templateUrl: './overview.component.html',
@@ -50,7 +52,13 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private eventService: EventService, private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private eventService: EventService,
+    private _apollo: Apollo,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private _dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     const queryParams = this.activatedRoute.snapshot.queryParams;
@@ -100,7 +108,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         startWith([this.formGroup.value, undefined, undefined]),
         debounceTime(300),
         map(([filterChange]) => {
-          
           const where: { [key: string]: any } = {};
 
           if (filterChange.query) {
@@ -138,7 +145,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             where['allowEnlisting'] = undefined;
           }
 
-          return { where, type: filterChange.type, query: filterChange.query ?? undefined, year: filterChange.startYear ?? undefined  };
+          return {
+            where,
+            type: filterChange.type,
+            query: filterChange.query ?? undefined,
+            year: filterChange.startYear ?? undefined,
+          };
         }),
         tap(({ where, type, query, year }) => {
           const { name, firstDay, ...params } = where;
@@ -149,7 +161,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
               ...params,
               query,
               type,
-              year
+              year,
             },
           });
         }),
@@ -202,6 +214,42 @@ export class OverviewComponent implements OnInit, AfterViewInit {
           this.formGroup.updateValueAndValidity({ onlySelf: false, emitEvent: true });
         });
     }
+  }
+
+  async copy(templateRef) {
+    let dialogRef = this._dialog
+      .open(templateRef, {
+        width: '300px',
+      })
+      .afterClosed()
+      .subscribe((r) => {
+        if (r) {
+          const obs: Observable<unknown>[] = [];
+          for (const selected of this.selection.selected) {
+            obs.push(
+              this._apollo.mutate({
+                mutation: gql`
+                  mutation CopyEventCompetition($id: ID!, $year: Int!) {
+                    copyEventCompetition(id: $id, year: $year) {
+                      id
+                    }
+                  }
+                `,
+                variables: {
+                  id: selected,
+                  year: r,
+                },
+              })
+            );
+          }
+
+          forkJoin(obs).subscribe(() => {
+            const rootQuery = apolloCache.identify({  __typename: 'Query' });
+            apolloCache.evict({ id: rootQuery });
+            this.formGroup.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          });
+        }
+      });
   }
 }
 

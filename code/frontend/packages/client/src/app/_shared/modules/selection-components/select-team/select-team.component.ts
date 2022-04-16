@@ -53,9 +53,10 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
       console.warn(`Dependency ${this.dependsOn} not found`, previous);
     } else {
       this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
+        const selectedTeam = this.options?.find((x) => x.id === r)?.slug ?? r;
         this.router.navigate([], {
           relativeTo: this.activatedRoute,
-          queryParams: { team: this.options?.find((x) => x.id === r)?.slug ?? r },
+          queryParams: { team: selectedTeam },
           queryParamsHandling: 'merge',
         });
       });
@@ -103,6 +104,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
             if (foundTeam == null) {
               foundTeam = teams.find((r) => r.captainId == this.user?.profile?.id) ?? null;
             }
+
 
             if (foundTeam) {
               this.formControl.setValue(foundTeam.id, { onlySelf: true });

@@ -3,8 +3,14 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { CompetitionEncounter, CompetitionEvent, PdfService, Player, SystemService } from 'app/_shared';
-import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
+import {
+  CompetitionEncounter,
+  CompetitionEvent,
+  EncounterService,
+  PdfService,
+  Player,
+  SystemService,
+} from 'app/_shared';
 import * as moment from 'moment';
 import { lastValueFrom, map, switchMap } from 'rxjs';
 import { TeamAssemblyService } from '../../services/team-assembly.service';
@@ -39,6 +45,10 @@ export class TeamAssemblyComponent implements OnInit {
     this.titleService.setTitle(`Team Assembly`);
     this.formGroup.addControl('year', new FormControl(year));
     this.formGroup.addControl('event', this.selectedEventControl);
+
+    // this.formGroup.valueChanges.subscribe((r) => {
+    //   console.log(`Form changed`, r);
+    // });
 
     this.apollo
       .query<{ competitionEvents: { edges: { node: Partial<CompetitionEvent> }[] } }>({

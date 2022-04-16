@@ -35,32 +35,43 @@
     </form>
   </mat-step>
   <mat-step>
+    <ng-template matStepLabel>{{ 'competition.enrollment.availability' | translate }}</ng-template>
+
+    <ng-container *ngIf="club$ | async as club; else loading">
+      <ng-container *ngIf="this.competitionYear; else loading">
+        <app-location-availability [club]="club!" [year]="this.competitionYear!"></app-location-availability>
+      </ng-container>
+    </ng-container>
+    <div>
+      <button mat-button matStepperPrevious>{{ 'button.prev' | translate }}</button>
+      <button mat-button matStepperNext>{{ 'button.next' | translate }}</button>
+    </div>
+  </mat-step>
+  <mat-step>
     <ng-template matStepLabel>{{ 'competition.enrollment.assign-team' | translate }}</ng-template>
 
     <ng-container *ngIf="this.show$ | async as teamInfo; else loading">
-      <ng-container *ngIf="this.subEventsInitialized; else loading">
-        <app-assign-team
-          (newSubEvent)="this.teamsAssigned($event)"
-          [club]="teamInfo.club"
-          [type]="'gender.male' | translate"
-          [teams]="teamInfo.teamsM"
-          [subEvents]="teamInfo.subEventM"
-        ></app-assign-team>
-        <app-assign-team
-          (newSubEvent)="this.teamsAssigned($event)"
-          [club]="teamInfo.club"
-          [type]="'gender.mix' | translate"
-          [teams]="teamInfo.teamsMX"
-          [subEvents]="teamInfo.subEventMX"
-        ></app-assign-team>
-        <app-assign-team
-          (newSubEvent)="this.teamsAssigned($event)"
-          [club]="teamInfo.club"
-          [type]="'gender.female' | translate"
-          [teams]="teamInfo.teamsF"
-          [subEvents]="teamInfo.subEventF"
-        ></app-assign-team>
-      </ng-container>
+      <app-assign-team
+        (newSubEventAssignmentForTeam)="this.teamsAssigned($event)"
+        [club]="teamInfo.club"
+        [type]="'gender.male' | translate"
+        [teams]="teamInfo.teamsM"
+        [subEvents]="teamInfo.subEventM"
+      ></app-assign-team>
+      <app-assign-team
+        (newSubEventAssignmentForTeam)="this.teamsAssigned($event)"
+        [club]="teamInfo.club"
+        [type]="'gender.mix' | translate"
+        [teams]="teamInfo.teamsMX"
+        [subEvents]="teamInfo.subEventMX"
+      ></app-assign-team>
+      <app-assign-team
+        (newSubEventAssignmentForTeam)="this.teamsAssigned($event)"
+        [club]="teamInfo.club"
+        [type]="'gender.female' | translate"
+        [teams]="teamInfo.teamsF"
+        [subEvents]="teamInfo.subEventF"
+      ></app-assign-team>
     </ng-container>
 
     <ng-template #loading>
@@ -117,7 +128,9 @@
     </form>
     <div>
       <button mat-button matStepperPrevious>{{ 'button.prev' | translate }}</button>
-      <button mat-button (click)="this.submit()">{{ 'button.submit' | translate }}</button>
+      <button mat-button (click)="this.submit()" [class.spinner]="this.enrolling" [disabled]="this.enrolling">
+        {{ 'button.submit' | translate }}
+      </button>
     </div>
   </mat-step>
 </mat-vertical-stepper>

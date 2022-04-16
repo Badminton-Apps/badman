@@ -45,7 +45,7 @@
         [club]="club"
         (onPlayerAdded)="this.onPlayerAddedToRole($event, role)"
         (onPlayerRemoved)="this.onPlayerRemovedFromRole($event, role)"
-        (onEdit)="this.onEditRole($event, club)"
+        (onEdit)="this.onEditRole($event)"
         (onDelete)="this.onDeleteRole($event)"
       >
       </app-club-edit-role>
@@ -54,7 +54,7 @@
 
   <app-has-claim [any]="['change-base:team']">
     <div class="mat-subheading-1">Base players</div>
-    <mat-form-field appearance="outline" class="flex">
+    <mat-form-field appearance="outline" fxFlex="300px">
       <mat-label>{{ 'pickers.select-year' | translate }}</mat-label>
       <mat-select [formControl]="this.competitionYear">
         <mat-option *ngFor="let option of this.compYears$ | async" [value]="option">

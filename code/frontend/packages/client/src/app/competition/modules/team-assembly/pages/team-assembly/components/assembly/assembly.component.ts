@@ -136,7 +136,7 @@ export class AssemblyComponent implements OnInit {
     this.single4 = [];
 
     this.double1 = [];
-    this.double2 = []; 
+    this.double2 = [];
     this.double3 = [];
     this.double4 = [];
 
@@ -195,6 +195,7 @@ export class AssemblyComponent implements OnInit {
                           fullName
                           gender
                           competitionPlayer
+                          base
                           lastRanking {
                             id
                             single

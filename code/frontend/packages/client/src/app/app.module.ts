@@ -9,7 +9,7 @@ import {
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, ErrorHandler, Injector, NgModule } from '@angular/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -111,26 +111,22 @@ const cookieConfig: NgcCookieConsentConfig = {
       useClass: ApmErrorHandler,
     },
     {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [TranslateService, Injector, NgxMatDateAdapter],
-      multi: true,
-    },
-    { provide: NGX_MAT_DATE_FORMATS, useValue: NGX_MAT_MOMENT_FORMATS },
-    {
       provide: NgxMatDateAdapter,
       useClass: NgxMatMomentAdapter,
       deps: [MAT_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    { provide: NGX_MAT_DATE_FORMATS, useValue: NGX_MAT_MOMENT_FORMATS },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFactory,
+      deps: [TranslateService, Injector, DateAdapter],
+      multi: true,
     },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
     {
       provide: SOCKET_URL,
       useValue: environment.api,
     },
-    // {
-    //   provide: SOCKET_PREFIX,
-    //   useValue: config?.prefix,
-    // },
   ],
   bootstrap: [AppComponent],
 })

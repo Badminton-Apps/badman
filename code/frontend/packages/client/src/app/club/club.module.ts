@@ -1,5 +1,6 @@
 import { MatGoogleMapsAutocompleteModule } from '@angular-material-extensions/google-maps-autocomplete';
 import { NgModule } from '@angular/core';
+import { FlexModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -12,17 +13,34 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/_shared';
 import { ClubRoutingModule } from './club-routing.module';
-import { TeamDialogComponent, TeamFieldsComponent, TeamPlayersComponent } from './dialogs';
-import { LocationFieldsComponent } from './dialogs/location-dialog/components/location-fields/location-fields.component';
-import { LocationDialogComponent } from './dialogs/location-dialog/location-dialog.component';
-import { DetailClubComponent, OverviewClubsComponent } from './pages';
-import { TeamOverviewComponent } from './pages/detail-club/components/team-overview/team-overview.component';
+import { ClubFieldsComponent, RoleFieldsComponent } from './components';
+import {
+  AddPlayerComponent,
+  LocationDialogComponent,
+  LocationFieldsComponent,
+  TeamDialogComponent,
+  TeamFieldsComponent,
+  TeamPlayersComponent,
+} from './dialogs';
+import {
+  AddClubComponent,
+  AddRoleComponent,
+  ClubEditLocationComponent,
+  ClubEditRoleComponent,
+  ClubEditTeamComponent,
+  DetailClubComponent,
+  EditClubComponent,
+  EditRoleComponent,
+  OverviewClubsComponent,
+  TeamOverviewComponent,
+} from './pages';
 
 const materialModules = [
   MatButtonModule,
@@ -42,9 +60,10 @@ const materialModules = [
   MatOptionModule,
   MatSelectModule,
   MatTooltipModule,
+  MatSnackBarModule,
 
   // AgmCoreModule,
-  MatGoogleMapsAutocompleteModule,
+  MatGoogleMapsAutocompleteModule
 ];
 
 @NgModule({
@@ -59,6 +78,17 @@ const materialModules = [
     TeamDialogComponent,
     TeamFieldsComponent,
     TeamPlayersComponent,
+
+    AddClubComponent,
+    EditClubComponent,
+    EditRoleComponent,
+    ClubFieldsComponent,
+    RoleFieldsComponent,
+    AddPlayerComponent,
+    AddRoleComponent,
+    ClubEditRoleComponent,
+    ClubEditLocationComponent,
+    ClubEditTeamComponent,
   ],
 
   imports: [SharedModule, ...materialModules, ClubRoutingModule],
