@@ -1,3 +1,12 @@
+## [4.35.1](https://github.com/Badminton-Apps/badman/compare/v4.35.0...v4.35.1) (2022-04-16)
+
+
+### Bug Fixes
+
+* shared package had invalid main ([e7c598b](https://github.com/Badminton-Apps/badman/commit/e7c598b1044243f7f8bbd4dfec9153583d8089ab))
+
+
+
 # [4.35.0](https://github.com/Badminton-Apps/badman/compare/v4.34.0...v4.35.0) (2022-04-16)
 
 
