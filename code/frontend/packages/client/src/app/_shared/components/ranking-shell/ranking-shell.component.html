@@ -43,7 +43,6 @@
       [fixedInViewport]="device.mobileQuery.matches"
       [opened]="!device.mobileQuery.matches"
       fixedTopGap="56"
-      
     >
       <div class="side-menu" fxLayout="column">
         <mat-nav-list>
@@ -85,7 +84,6 @@
               {{ 'faq.title' | translate }}
             </a>
 
-            <!-- <app-has-claim [any]="['*_enlist:team', '*_change:encounter', 'change-any:encounter', 'enlist-any:team']"> -->
             <mat-accordion class="app-nav-accordion">
               <mat-expansion-panel class="mat-elevation-z0">
                 <mat-expansion-panel-header>
@@ -97,7 +95,8 @@
                   >
                 </mat-nav-list>
 
-                <app-has-claim [any]="['*_enlist:team', 'enlist-any:team']">
+                <app-has-claim [any]="['enlist-any:team']">
+                  <!-- <app-has-claim [any]="['*_enlist:team', 'enlist-any:team']"> -->
                   <mat-nav-list *ngIf="this.canEnroll$ | async">
                     <a mat-list-item routerLink="/competition/team-enrollment" routerLinkActive="active">
                       {{ 'competition.enrollment.title' | translate }}

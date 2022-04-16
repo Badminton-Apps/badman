@@ -105,9 +105,7 @@ export class App {
     const httpServer = this.httpServer
       .listen(process.env.PORT, () => {
         logger.info(
-          `🚀 ${process.env.SERVICE_NAME} listening on the port ${this.app.get(
-            'port'
-          )}`
+          `🚀 ${process.env.SERVICE_NAME} listening on the port ${process.env.PORT}`
         );
         this._lightship.signalReady();
       })

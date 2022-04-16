@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 .teams, .roles {
   display: flex;
   flex-flow: row wrap;

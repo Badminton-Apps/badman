@@ -413,7 +413,8 @@ export const updateSubEventTeamMutation = {
 
       const newEntry = new EventEntry({
         teamId: dbTeam.id,
-        subEventId: dbNewSubEvent.id
+        subEventId: dbNewSubEvent.id,
+        entryType: 'competition'
       })
       await newEntry.save({ transaction });
       

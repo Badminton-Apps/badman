@@ -56,6 +56,8 @@ export class TeamEnrollmentComponent implements OnInit {
 
   updateSubEvents = new BehaviorSubject(0);
 
+  enrolling = false;
+
   show$?: Observable<{
     teamsM: Team[];
     teamsF: Team[];
@@ -73,6 +75,7 @@ export class TeamEnrollmentComponent implements OnInit {
     this.enabledProvincialControl = new FormControl(false);
     this.enabledLigaControl = new FormControl(false);
     this.enabledNationalControl = new FormControl(false);
+
     this.commentProvControl = new FormControl();
     this.commentLigaControl = new FormControl();
     this.commentNatControl = new FormControl();
@@ -135,8 +138,23 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async submit() {
-    this.club$.pipe(switchMap((club) => this.eventService.finishEnrollment(club, this.competitionYear!))).toPromise();
-    this.snackbar.open('Submitted', undefined, { panelClass: 'success', duration: 2000 });
+    this.enrolling = true;
+    try {
+      await lastValueFrom(
+        this.club$.pipe(
+          switchMap((club) => this.eventService.finishEnrollment(club, this.competitionYear!)),
+          take(1)
+        )
+      );
+      console.log('Enrollment finished');
+      this.snackbar.open('Submitted', undefined, { panelClass: 'success', duration: 2000 });
+    } catch (e) {
+      console.log(e);
+      this.snackbar.open('Error', undefined, { panelClass: 'error', duration: 2000 });
+    } finally {
+      console.log();
+      this.enrolling = false;
+    }
   }
 
   async locationAssigned(event: { locationId: string; eventId: string; use: boolean }) {
@@ -191,6 +209,10 @@ export class TeamEnrollmentComponent implements OnInit {
 
   private async initializeEvents() {
     const club = await lastValueFrom(this.club$.pipe(take(1)));
+
+    if (!club) {
+      return;
+    }
 
     const provEvent$ = this.formGroup.get('enabledProvincial')!.value
       ? this.eventService
