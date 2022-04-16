@@ -20,7 +20,8 @@
     "add-grroups": "node --inspect=6862 -r ts-node/register ./src/add-to-ranking.ts",
     "slug": "node --inspect=6862 -r ts-node/register ./src/generate-slugs.ts",
     "avg": "node --inspect=6862 -r ts-node/register ./src/average-per-subevent.ts",
-    "results": "node --inspect=6862 -r ts-node/register ./src/club-results.ts"
+    "results": "node --inspect=6862 -r ts-node/register ./src/club-results.ts",
+    "fix-meta": "node -r ts-node/register ./src/fix-meta.ts"
   },
   "dependencies": {
     "@badvlasim/shared": "^4.5.1",

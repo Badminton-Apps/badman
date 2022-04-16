@@ -6,7 +6,6 @@ metadata:
 spec:
   dnsNames:
     - badman.app
-    - '*.badman.app'
   secretName: badvla-staging-certificate
   issuerRef:
     name: letsencrypt-staging

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { FlexModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -13,7 +14,15 @@ import { EventCompetitionFieldsComponent, EventCompetitionLevelFieldsComponent }
 import { DetailCompetitionComponent, DetailDrawCompetitionComponent, EditEventCompetitionComponent } from './pages';
 import { DetailEncounterComponent } from './pages/detail-encounter/detail-encounter.component';
 
-const materialModules = [MatListModule, MatMenuModule, MatButtonModule, MatIconModule, MatTabsModule, MatSelectModule];
+const materialModules = [
+  MatListModule,
+  MatMenuModule,
+  MatButtonModule,
+  MatIconModule,
+  MatTabsModule,
+  MatSelectModule,
+  FlexModule,
+];
 
 @NgModule({
   declarations: [
@@ -26,5 +35,6 @@ const materialModules = [MatListModule, MatMenuModule, MatButtonModule, MatIconM
     DetailEncounterComponent,
   ],
   imports: [SharedModule, ...materialModules, GameResultModule, CompetitionRoutingModule, GameModule, StandingsModule],
+
 })
 export class CompetitionModule {}

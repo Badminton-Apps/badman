@@ -1,0 +1,30 @@
+<form [formGroup]="this.fg" fxLayout="row" fxLayoutGap="16px" fxFlex>
+  <mat-form-field appearance="outline" fxFlex="250px" class="dense">
+    <mat-label>{{ 'input.date-range' | translate }}</mat-label>
+    <mat-date-range-input [formGroup]="fg" [rangePicker]="picker">
+      <input matStartDate formControlName="start" placeholder="Start date" />
+      <input matEndDate formControlName="end" placeholder="End date" />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+
+    <mat-error *ngIf="fg.controls['start'].hasError('matStartDateInvalid')">Invalid start date</mat-error>
+    <mat-error *ngIf="fg.controls['end'].hasError('matEndDateInvalid')">Invalid end date</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" fxFlex="100px" class="dense">
+    <mat-label>{{ 'input.courts' | translate }}</mat-label>
+    <input matInput type="number" formControlName="courts" alt="courts" required />
+  </mat-form-field>
+
+
+  <div class="actions">
+    <button type="button" *ngIf="isNew" (click)="addException()" mat-icon-button>
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <button type="button" *ngIf="!isNew" (click)="deleteException()" mat-icon-button>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</form>

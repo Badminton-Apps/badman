@@ -1,3 +1,4 @@
+import { ChangeEncounterAvailability } from '@badvlasim/shared/models/enums';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -14,7 +15,6 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { Availability } from '../../../../enums';
 import { EncounterChange } from './encounter-change.model';
 
 @Table({
@@ -49,10 +49,10 @@ export class EncounterChangeDate extends Model {
   date: Date;
 
   @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
-  availabilityHome?: Availability;
+  availabilityHome?: ChangeEncounterAvailability;
 
   @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
-  availabilityAway?: Availability;
+  availabilityAway?: ChangeEncounterAvailability;
 
   // Belongs to EncounterChange
   getEncounterChange!: BelongsToGetAssociationMixin<EncounterChange>;

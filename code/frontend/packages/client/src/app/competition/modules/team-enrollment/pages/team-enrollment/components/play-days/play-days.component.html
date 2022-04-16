@@ -1,0 +1,39 @@
+<form [formGroup]="this.fg" fxLayout="row" fxLayoutGap="16px" fxFlex>
+  <mat-form-field appearance="outline" fxFlex="250px" class="dense">
+    <mat-label>{{ 'input.day' | translate }}</mat-label>
+    <mat-select formControlName="day">
+      <mat-option value="monday">{{ 'days.monday' | translate }}</mat-option>
+      <mat-option value="tuesday">{{ 'days.tuesday' | translate }}</mat-option>
+      <mat-option value="wednesday">{{ 'days.wednesday' | translate }}</mat-option>
+      <mat-option value="thursday">{{ 'days.thursday' | translate }}</mat-option>
+      <mat-option value="friday">{{ 'days.friday' | translate }}</mat-option>
+      <mat-option value="saturday">{{ 'days.saturday' | translate }}</mat-option>
+      <mat-option value="sunday">{{ 'days.sunday' | translate }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" fxFlex="150px" class="dense">
+    <mat-label>Start hour</mat-label>
+    <input matInput type="time" formControlName="startTime" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" fxFlex="150px" class="dense">
+    <mat-label>End hour</mat-label>
+    <input matInput type="time" formControlName="endTime" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" fxFlex="100px" class="dense">
+    <mat-label>{{ 'input.courts' | translate }}</mat-label>
+    <input matInput type="number" formControlName="courts" alt="courts" required />
+  </mat-form-field>
+
+  <div class="actions">
+    <button type="button" *ngIf="isNew" (click)="addPlayDay()" mat-icon-button>
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <button type="button" *ngIf="!isNew" (click)="deletePlayDay()" mat-icon-button>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</form>

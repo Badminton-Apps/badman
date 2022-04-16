@@ -7,6 +7,7 @@ export * from './system';
 export * from './club';
 export * from './team';
 export * from './role';
+export * from './encounter';
 export * from './location';
 export * from './profile';
 export * from './pdf';

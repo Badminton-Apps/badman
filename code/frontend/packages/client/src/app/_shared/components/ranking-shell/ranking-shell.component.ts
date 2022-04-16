@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import { UserService } from 'app/_shared';
 import { environment } from 'environments/environment';
 import { combineLatest, Observable } from 'rxjs';
@@ -17,14 +18,11 @@ export class RankingShellComponent implements OnDestroy, OnInit {
   canEnroll$!: Observable<boolean>;
   version: string = environment.version;
 
-
-
   constructor(
     private user: UserService,
     public device: DeviceService,
     private changeDetectorRef: ChangeDetectorRef,
-    private router: Router,
-    private eventService: EventService,
+    private apollo: Apollo
   ) {}
 
   ngOnInit() {
@@ -36,24 +34,35 @@ export class RankingShellComponent implements OnDestroy, OnInit {
       map((x) => x!.player)
     ) as Observable<Player>;
 
-    this.canEnroll$ = combineLatest([
-      this.eventService.getEvents({
-        type: EventType.COMPETITION,
-        where: {
-          allowEnlisting: true,
+    this.canEnroll$ = this.apollo
+      .query<{ tournamentEvents: { total: number }; competitionEvents: { total: number } }>({
+        query: gql`
+          # we request only first one, because if it's more that means it's open
+          query CanEnroll($where: SequelizeJSON) {
+            # tournamentEvents(first: 1, where: $where) {
+            #   total
+            #   edges {
+            #     cursor
+            #   }
+            # }
+            competitionEvents(first: 1, where: $where) {
+              total
+              edges {
+                cursor
+              }
+            }
+          }
+        `,
+        variables: {
+          where: {
+            allowEnlisting: true,
+          },
         },
-      }),
-      this.eventService.getEvents({
-        type: EventType.TOURNAMENT,
-        where: {
-          allowEnlisting: true,
-        },
-      }),
-    ]).pipe(map(([a, b]) => a?.events.length != 0 || b?.events.length != 0));
+      })
+      .pipe(map((events) => events?.data?.tournamentEvents?.total != 0 || events?.data?.competitionEvents?.total != 0));
   }
 
   ngOnDestroy(): void {
     this.device.removeEvent('change', this.mobileQueryListener);
   }
-
 }

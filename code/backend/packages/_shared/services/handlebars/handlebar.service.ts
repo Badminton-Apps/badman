@@ -1,5 +1,11 @@
 /* eslint-disable prefer-rest-params */
-import { promises, writeFileSync } from 'fs';
+import {
+  lstatSync,
+  promises,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'fs';
 import Handlebars from 'handlebars';
 import moment from 'moment';
 import path from 'path';
@@ -96,6 +102,9 @@ export class HandlebarService {
           return `${prefix} ${index + 1}`;
         }
       },
+      dateFormat: (format, date ) => {
+        return moment(date).format(format);
+      }
     });
   }
 
@@ -278,10 +287,14 @@ export class HandlebarService {
     ];
 
     const singles = [
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[0]).player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[1]).player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[2]).player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[3]).player1,
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[0])
+        .player1,
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[1])
+        .player1,
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[2])
+        .player1,
+      this._addPlayer(preppedMap, based, teamed, input.team.single?.[3])
+        .player1,
     ];
 
     const subtitudes = input.team.subtitude.map(
@@ -309,7 +322,7 @@ export class HandlebarService {
       logo: `data:image/png;base64, ${logo}`,
     };
 
-    return await this._getHtml('assembly', context);
+    return await this._getHtml('assembly', context, 'assembly');
   }
 
   private _addPlayer(
@@ -364,13 +377,17 @@ export class HandlebarService {
     };
   }
 
-  private async _getHtml(templateName: string, context: unknown) {
+  private async _getHtml(
+    templateName: string,
+    context: unknown,
+    filename: string
+  ) {
     const template = await this._getTemplate(templateName);
 
     const compiled = Handlebars.compile(template)(context);
     // Write file to disk for debugging purposes
     if (process.env.NODE_ENV !== 'production') {
-      writeFileSync('assembly.html', compiled);
+      writeFileSync(`${filename}.html`, compiled);
     }
 
     return compiled;
@@ -388,6 +405,30 @@ export class HandlebarService {
     const html = await readFile(filePath, 'utf-8');
 
     return html;
+  }
+
+  public Compile(template: string, context: unknown) {
+    return Handlebars.compile(template)(context);
+  }
+
+  public registerPartials(dir: string, parentDir = '') {
+    const partials = readdirSync(dir);
+    partials.forEach((partial) => {
+      // check if file
+      if (lstatSync(path.join(dir, partial)).isFile()) {
+        // Has the right extension
+        if (partial.endsWith('.handlebars')) {
+          const name = partial.replace('.handlebars', '');
+          const template = readFileSync(path.join(dir, partial), 'utf-8');
+          Handlebars.registerPartial(`${parentDir}${name}`, template);
+        }
+      } else {
+        this.registerPartials(
+          path.join(dir, partial),
+          `${parentDir}${partial}/`
+        );
+      }
+    });
   }
 
   private _teamIndex(players: Player[], type: SubEventType) {

@@ -1,8 +1,8 @@
 import {
   ApiError,
   AuthenticatedRequest,
-  Availability,
   canExecute,
+  ChangeEncounterAvailability,
   Comment,
   DataBaseHandler,
   EncounterChange,
@@ -15,7 +15,7 @@ import {
 import axios from 'axios';
 import { parse } from 'fast-xml-parser';
 import moment from 'moment';
-import { Transaction } from 'sequelize/types';
+import { Transaction } from 'sequelize';
 import { EncounterChangeInputType, EncounterChangeType } from '../types';
 
 export const addChangeEncounterMutation = (notificationService: NotificationService) => {
@@ -41,8 +41,8 @@ export const addChangeEncounterMutation = (notificationService: NotificationServ
           dates: {
             selected: boolean;
             date: Date;
-            availabilityHome: Availability;
-            availabilityAway: Availability;
+            availabilityHome: ChangeEncounterAvailability;
+            availabilityAway: ChangeEncounterAvailability;
           }[];
         };
       },
@@ -143,8 +143,8 @@ const changeOrUpdate = async (
     dates: {
       selected: boolean;
       date: Date;
-      availabilityHome: Availability;
-      availabilityAway: Availability;
+      availabilityHome: ChangeEncounterAvailability;
+      availabilityAway: ChangeEncounterAvailability;
     }[];
   },
   transaction: Transaction,

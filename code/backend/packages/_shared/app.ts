@@ -105,9 +105,7 @@ export class App {
     const httpServer = this.httpServer
       .listen(process.env.PORT, () => {
         logger.info(
-          `🚀 ${process.env.SERVICE_NAME} listening on the port ${this.app.get(
-            'port'
-          )}`
+          `🚀 ${process.env.SERVICE_NAME} listening on the port ${process.env.PORT}`
         );
         this._lightship.signalReady();
       })
@@ -121,11 +119,13 @@ export class App {
       `SIGINT`,
       `SIGUSR1`,
       `SIGUSR2`,
-      `uncaughtException`,
       `SIGTERM`,
+      'uncaughtException',
     ].forEach((event) => {
-      process.on(event, () => {
-        logger.debug('Process event type: ', { data: { event } });
+      process.on(event, (err) => {
+        logger.error(`${event}: ${err.message}`, {
+          error: err.stack,
+        });
         httpServer.close();
         process.exit();
       });

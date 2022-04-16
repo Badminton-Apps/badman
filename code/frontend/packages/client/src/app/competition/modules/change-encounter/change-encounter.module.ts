@@ -16,6 +16,9 @@ import { SelctionComponentsModule, SharedModule } from 'app/_shared';
 import { MomentModule } from 'ngx-moment';
 import { ChangeEncounterRoutingModule } from './change-encounter-routing.module';
 import { ChangeEncounterComponent, ListEncountersComponent, ShowRequestsComponent } from './pages';
+import { CalendarComponent } from './components/calendar/calendar.component';
+import { FlexModule } from '@angular/flex-layout';
+import { MatChipsModule } from '@angular/material/chips';
 
 const materialModules = [
   DragDropModule,
@@ -30,12 +33,14 @@ const materialModules = [
   MatListModule,
   MomentModule,
   MatInputModule,
+  MatChipsModule,
   MatDatepickerModule,
-  NgxMatDatetimePickerModule
+  NgxMatDatetimePickerModule,
+  FlexModule
 ];
 
 @NgModule({
-  declarations: [ChangeEncounterComponent, ListEncountersComponent, ShowRequestsComponent],
+  declarations: [ChangeEncounterComponent, ListEncountersComponent, ShowRequestsComponent, CalendarComponent],
   imports: [SharedModule, SelctionComponentsModule, ChangeEncounterRoutingModule, ...materialModules],
 })
 export class ChangeEncoutnerModule {}

@@ -21,7 +21,7 @@ interface XmlTournamentMatch {
   MatchID: string;
   MatchDate: Date;
 }
-
+ 
 export interface XmlRanking {
   Code: string;
   Name: string;
@@ -138,11 +138,11 @@ export interface XmlTeamMatch {
 }
 
 export enum XmlDrawName {
-  The1StProvincialeA = '1st Provinciale - A'
+  The1StProvincialeA = '1st Provinciale - A',
 }
 
 export enum XmlEventName {
-  The1StProvinciale = '1st Provinciale'
+  The1StProvinciale = '1st Provinciale',
 }
 
 export interface XmlMatch {
@@ -285,13 +285,13 @@ export enum XmlGenderID {
   Mixed = 3,
   Boy = 4,
   Girl = 5,
-  Genderless = 6
+  Genderless = 6,
 }
 
 export enum XmlGameTypeID {
   Singles = 1,
   Doubles = 2,
-  Mixed = 3
+  Mixed = 3,
 }
 
 export enum XmlMatchTypeID {
@@ -305,14 +305,14 @@ export enum XmlMatchTypeID {
   BD = 13,
   GD = 14,
   Single = 101,
-  Double = 102
+  Double = 102,
 }
 
 export enum XmlTournamentTypeID {
   IndividualTournament = 0,
   TeamTournament = 1,
   TeamSportTournament = 2,
-  OnlineLeague = 3
+  OnlineLeague = 3,
 }
 
 export enum XmlTournamentstatus {
@@ -323,7 +323,7 @@ export enum XmlTournamentstatus {
   LeagueNew = 201,
   LeagueEntryOpen = 202,
   LeaguePubliclyVisible = 203,
-  LeagueFinished = 204
+  LeagueFinished = 204,
 }
 
 export enum XmlDrawTypeID {
@@ -332,7 +332,7 @@ export enum XmlDrawTypeID {
   Monrad = 2,
   FullRoundRobin = 3,
   CompassDraw = 4,
-  QualificationTypeDraw = 5
+  QualificationTypeDraw = 5,
 }
 
 export enum XmlScoreStatus {
@@ -340,7 +340,7 @@ export enum XmlScoreStatus {
   Walkover = 1,
   Retirement = 2,
   Disqualified = 3,
-  "No Match" = 4,
+  'No Match' = 4,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */

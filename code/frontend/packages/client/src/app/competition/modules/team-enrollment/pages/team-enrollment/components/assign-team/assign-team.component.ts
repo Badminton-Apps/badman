@@ -6,6 +6,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
 } from '@angular/core';
@@ -13,7 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 
 import { TeamDialogComponent } from 'app/club/dialogs';
-import { Club, CompetitionSubEvent, Team } from 'app/_shared';
+import { Club, CompetitionSubEvent, EventType, LevelType, SubEvent, Team } from 'app/_shared';
 import { map, switchMap } from 'rxjs/operators';
 import * as teamQuery from '../../../../../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
 
@@ -30,14 +31,14 @@ interface Warnings {
   level: string[];
   hasIssues: boolean;
 }
- 
+
 @Component({
   selector: 'app-assign-team',
   templateUrl: './assign-team.component.html',
   styleUrls: ['./assign-team.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AssignTeamComponent implements OnInit {
+export class AssignTeamComponent implements OnChanges {
   @Input()
   teams!: Team[];
 
@@ -51,7 +52,7 @@ export class AssignTeamComponent implements OnInit {
   type!: string;
 
   @Output()
-  newSubEvent = new EventEmitter<{
+  newSubEventAssignmentForTeam = new EventEmitter<{
     teamId: string;
     subEventId: string;
   }>();
@@ -61,8 +62,6 @@ export class AssignTeamComponent implements OnInit {
   };
   warnings = {} as { [key: string]: Warnings };
 
-  ids: string[] = [];
-
   constructor(
     private dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
@@ -70,23 +69,51 @@ export class AssignTeamComponent implements OnInit {
     private apollo: Apollo
   ) {}
 
-  ngOnInit(): void {
-    this.ids = this.subEvents.map((s) => s.id!);
-    this.subEvents = this.subEvents.sort((a, b) => a.level! - b.level!);
+  ngOnChanges(): void {
+    this.subEvents = this.subEvents.sort((a, b) => {
+      // Sort by type: 
+      //  1. NAT 
+      //  2. LIGA
+      //  3. PROV
+      // If equal sort by level
+      if (a.event!.type! === b.event!.type!) {
+        return a.level! - b.level!;
+      }
+
+      if (a.event!.type! == LevelType.NATIONAL) {
+        return -1;
+      }
+
+      if (b.event!.type! == LevelType.NATIONAL) {
+        return 1;
+      }
+
+      if (a.event!.type! == LevelType.PROV) {
+        return 1;
+      }
+
+      if (b.event!.type! == LevelType.PROV) {
+        return -1;
+      }
+      return 0;
+    });
     this.initialPlacing();
   }
 
-  async drop(event: CdkDragDrop<Team[] | undefined, Team[]>, subEvent: CompetitionSubEvent): Promise<void> {
+  async drop(event: CdkDragDrop<CompetitionSubEvent, CompetitionSubEvent, Team>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data!, event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data?.teams!, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(event.previousContainer.data, event.container.data!, event.previousIndex, event.currentIndex);
-      const team = subEvent.teams![event.currentIndex];
-      await this.validate(team, subEvent);
-
-      this.newSubEvent.next({
-        teamId: team.id!,
-        subEventId: event.container.id,
+      transferArrayItem(
+        event.previousContainer.data?.teams!,
+        event.container.data?.teams!,
+        event.previousIndex,
+        event.currentIndex
+      );
+      await this.validate(event.item.data, event.container.data);
+      this.newSubEventAssignmentForTeam.next({
+        teamId: event.item.data.id!,
+        subEventId: event.container.data.id!,
       });
     }
   }
@@ -240,37 +267,37 @@ export class AssignTeamComponent implements OnInit {
 
     if (bestIndex < subEvent.minBaseIndex! && team.teamNumber! > 1) {
       warnings.hasIssues = true;
-      warnings.base.push(this.translation.instant('competition.enrollment.errors.best-players').toPromise());
+      warnings.base.push(this.translation.instant('competition.enrollment.errors.best-players'));
     }
 
     if (team.baseIndex! < subEvent.minBaseIndex!) {
       issues.hasIssues = true;
-      issues.base.push(this.translation.instant('competition.enrollment.errors.base-min').toPromise());
+      issues.base.push(this.translation.instant('competition.enrollment.errors.base-min'));
     }
 
     if (team.baseIndex! > subEvent.maxBaseIndex!) {
       issues.hasIssues = true;
-      issues.base.push(this.translation.instant('competition.enrollment.errors.base-max').toPromise());
+      issues.base.push(this.translation.instant('competition.enrollment.errors.base-max'));
     }
 
     if (team.captain == null) {
       issues.hasIssues = true;
-      issues.base.push(this.translation.instant('competition.enrollment.errors.no-captain').toPromise());
+      issues.base.push(this.translation.instant('competition.enrollment.errors.no-captain'));
     }
 
     if (team.locations == null || team.locations?.length == 0) {
       issues.hasIssues = true;
-      issues.base.push(this.translation.instant('competition.enrollment.errors.no-location').toPromise());
+      issues.base.push(this.translation.instant('competition.enrollment.errors.no-location'));
     }
 
     if (team.preferredDay == null || team.preferredTime == null) {
       issues.hasIssues = true;
-      issues.base.push(this.translation.instant('competition.enrollment.errors.no-prefferd').toPromise());
+      issues.base.push(this.translation.instant('competition.enrollment.errors.no-prefferd'));
     }
 
     if (bestIndex > subEvent.maxBaseIndex!) {
       warnings.hasIssues = true;
-      warnings.base.push(this.translation.instant('competition.enrollment.errors.best-max').toPromise());
+      warnings.base.push(this.translation.instant('competition.enrollment.errors.best-max'));
     }
 
     if (issues.hasIssues) {
@@ -302,42 +329,47 @@ export class AssignTeamComponent implements OnInit {
   private async initialPlacing() {
     // Because sort is in place, we create a local copy to not effect the original untill needed
     const localInstanceSubEvents = [...this.subEvents];
-    const subEventsSorted = localInstanceSubEvents.sort((a, b) => b.level! - a.level!);
+    const subEventsSorted = localInstanceSubEvents.sort((a, b) => a.minBaseIndex! - b.minBaseIndex!);
     for (const team of this.teams) {
-      let subEvent: (CompetitionSubEvent | undefined) = undefined;
+      let subEventIndex = -1;
 
-      // TODO: Get entries from team
-      // for (const tse of team.subEvents) {
-      //   subEvent = subEventsSorted.find((s) => s.id === tse.id);
-      //   if (subEvent) {
-      //     break;
-      //   }
-      // }
-
-      if (!subEvent) {
-        subEvent = subEventsSorted.find((subEvent) => team.baseIndex! > subEvent.minBaseIndex!);
+      for (const tse of team.entries ?? []) {
+        subEventIndex = subEventsSorted.findIndex((s) => s.id === tse.competitionSubEvent?.id);
+        if (subEventIndex >= 0) {
+          break;
+        }
       }
 
-      if (!subEvent && subEventsSorted.length > 0) {
-        subEventsSorted[0].teams?.push(team);
-      } else {
-        subEvent?.teams?.push(team);
-        this.newSubEvent.next({
+      // We couldn't find any assign based on index
+      if (subEventIndex < 0) {
+        // subEventIndex = subEventsSorted.findIndex((subEvent) => team.baseIndex! > subEvent.minBaseIndex!);
+        subEventIndex = subEventsSorted.findIndex((subEvent) => subEvent.maxBaseIndex! > team.baseIndex!) ;
+
+        // console.log(subEventIndex)
+
+        if (subEventIndex < 0) {
+          subEventIndex = subEventsSorted.length - 1;
+        }
+
+        this.newSubEventAssignmentForTeam.next({
           teamId: team.id!,
-          subEventId: subEvent!.id!,
+          subEventId: subEventsSorted[subEventIndex].id!,
         });
       }
-      await this.validate(team, subEvent!);
+
+      localInstanceSubEvents[subEventIndex]?.teams?.push(team);
+
+      await this.validate(team, localInstanceSubEvents[subEventIndex]!);
     }
 
     const natSubEvents = localInstanceSubEvents
-      .filter((a) => a.levelType == 'NATIONAL')
+      .filter((a) => a.event?.type == 'NATIONAL')
       .sort((a, b) => a.level! - b.level!);
     const ligaSubEvents = localInstanceSubEvents
-      .filter((a) => a.levelType == 'LIGA')
+      .filter((a) => a.event?.type == 'LIGA')
       .sort((a, b) => a.level! - b.level!);
     const provSubEvents = localInstanceSubEvents
-      .filter((a) => a.levelType == 'PROV')
+      .filter((a) => a.event?.type == 'PROV')
       .sort((a, b) => a.level! - b.level!);
 
     this.subEvents = [...natSubEvents, ...ligaSubEvents, ...provSubEvents];

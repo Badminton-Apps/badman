@@ -37,13 +37,6 @@ const routes: Routes = [
     },
   },
   {
-    path: 'club',
-    loadChildren: () =>
-      import('./modules/club-management/club-management.module').then(
-        (m) => m.ClubManagementModule
-      ),
-  },
-  {
     path: 'player',
     loadChildren: () =>
       import('./modules/player-management/player-management.module').then(

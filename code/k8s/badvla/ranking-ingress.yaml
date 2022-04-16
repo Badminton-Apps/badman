@@ -21,6 +21,7 @@ spec:
       http:
         paths:
           - path: /
+            tls: 
             pathType: Prefix
             backend:
               service:
@@ -29,6 +30,7 @@ spec:
                   number: 80
           - path: /api
             pathType: Prefix
+            tls: 
             backend:
               service:
                 name: server-server
@@ -36,6 +38,7 @@ spec:
                   number: 80
           - path: /socket.io
             pathType: Prefix
+            tls: 
             backend:
               service:
                 name: server-server
