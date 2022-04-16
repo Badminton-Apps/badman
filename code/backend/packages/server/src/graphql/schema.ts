@@ -50,7 +50,8 @@ import {
   updateSubEventTeamMutation,
   updateTeamLocationMutation,
   updateTeamMutation,
-  updateTournamentEventLocationMutation
+  updateTournamentEventLocationMutation,
+  copyEventCompetitionMutation
 } from './mutations';
 import {
   claimsQuery,
@@ -152,6 +153,7 @@ export const createSchema = (notificationService: NotificationService) => {
         addSubEventToRankingSystemGroup: addSubEventToRankingSystemGroupMutation,
         addTeam: addTeamMutation,
         deleteClubMembership: deleteClubMembershipMutation,
+        copyEventCompetition: copyEventCompetitionMutation,
         removeClub: removeClubMutation,
         removeLocation: removeLocationMutation,
         removePlayerBaseSubEvent: removePlayerBaseSubEventMutation,

@@ -1,3 +1,5 @@
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -25,20 +27,21 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 import { MomentModule } from 'ngx-moment';
 import {
+  BannerComponent,
+  BetaComponent,
+  ClaimComponent,
+  ConfirmationDialogComponent,
+  HasClaimComponent,
   HeaderSearchComponent,
   LanguageComponent,
+  NewPlayerComponent,
   NotificationComponent,
   PlayerSearchComponent,
   RankingShellComponent,
-  UserInfoComponent
+  TimePickerInput,
+  UserInfoComponent,
+  WatchSystemInfoComponent,
 } from './components';
-import { BannerComponent } from './components/banner/banner.component';
-import { BetaComponent } from './components/beta/beta.component';
-import { ClaimComponent } from './components/claim/claim.component';
-import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
-import { NewPlayerComponent } from './components/ranking-shell/components/new-player/new-player.component';
-import { WatchSystemInfoComponent } from './components/ranking-shell/components/watch-system-info/watch-system-info.component';
-import { HasClaimComponent } from './components/security/has-claim/has-claim.component';
 import { AssignRankingGroupsComponent } from './dialogs';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 
@@ -64,7 +67,7 @@ const materialModules = [
   MatChipsModule,
 
   MatCheckboxModule,
-  MatTableModule,
+  MatTableModule
 ];
 
 const exportedComponents = [
@@ -85,6 +88,7 @@ const exportedComponents = [
   PlayerSearchComponent,
   ReactiveFormsModule,
   TranslateModule,
+  TimePickerInput
 ];
 
 @NgModule({
@@ -106,6 +110,7 @@ const exportedComponents = [
     UserInfoComponent,
     AssignRankingGroupsComponent,
     WatchSystemInfoComponent,
+    TimePickerInput,
   ],
   imports: [
     CommonModule,

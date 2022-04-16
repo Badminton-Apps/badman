@@ -1,15 +1,13 @@
 <form [formGroup]="this.formGroup">
-  <div class="row">
-    <mat-form-field appearance="outline" class="flex">
-      <mat-label>{{ 'input.name' | translate }}</mat-label>
-      <input matInput formControlName="name" alt="name" required />
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="flex">
-      <mat-label>Level</mat-label>
-      <input matInput type="number" formControlName="level" alt="level" required />
-    </mat-form-field>
+  <div class="mat-subheading-2">
+    {{ this.formGroup.value.name }}
+    <button mat-icon-button (click)="onDelete.next(this.subEvent)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 
-    <mat-form-field appearance="outline" class="flex">
+  <div fxLayout="row" fxLayoutGap="16px">
+    <mat-form-field appearance="outline" fxFlex="1 1 20%">
       <mat-label>{{ 'gender.title' | translate }}</mat-label>
       <mat-select formControlName="eventType" required>
         <mat-option value="F">{{ 'gender.female' | translate }}</mat-option>
@@ -17,17 +15,21 @@
         <mat-option value="MX">{{ 'gender.mix' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field appearance="outline" class="flex">
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
+      <mat-label>Level</mat-label>
+      <input matInput type="number" formControlName="level" alt="level" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
       <mat-label>{{ 'competition.subevent.max' | translate }}</mat-label>
       <input matInput type="number" formControlName="maxLevel" alt="maxLevel" />
     </mat-form-field>
-    <mat-form-field appearance="outline" class="flex">
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
       <mat-label>{{ 'competition.subevent.min-base' | translate }}</mat-label>
       <input matInput type="number" formControlName="minBaseIndex" alt="minBaseIndex" />
     </mat-form-field>
-    <mat-form-field appearance="outline" class="flex">
+    <mat-form-field appearance="outline" fxFlex="1 1 auto">
       <mat-label>{{ 'competition.subevent.max-base' | translate }}</mat-label>
       <input matInput type="number" formControlName="maxBaseIndex" alt="maxBaseIndex" />
     </mat-form-field>

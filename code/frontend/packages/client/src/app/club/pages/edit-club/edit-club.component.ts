@@ -113,13 +113,8 @@ export class EditClubComponent implements OnInit {
     ]).pipe(
       switchMap(([clubId, year, update]) => {
         return this.eventService.getSubEventsCompetition(year).pipe(
-          map((subEvents) => {
-            return [
-              clubId,
-              year,
-              update,
-              subEvents?.map((subEvent) => subEvent?.entries?.map((e) => e.competitionSubEvent?.id)).flat(2),
-            ];
+          map((events) => {
+            return [clubId, year, update, events?.flatMap((event) => event?.subEvents?.flatMap((s) => s.id))];
           })
         );
       }),

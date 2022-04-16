@@ -14,7 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 
 import { TeamDialogComponent } from 'app/club/dialogs';
-import { Club, CompetitionSubEvent, SubEvent, Team } from 'app/_shared';
+import { Club, CompetitionSubEvent, EventType, LevelType, SubEvent, Team } from 'app/_shared';
 import { map, switchMap } from 'rxjs/operators';
 import * as teamQuery from '../../../../../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
 
@@ -70,7 +70,33 @@ export class AssignTeamComponent implements OnChanges {
   ) {}
 
   ngOnChanges(): void {
-    this.subEvents = this.subEvents.sort((a, b) => a.level! - b.level!);
+    this.subEvents = this.subEvents.sort((a, b) => {
+      // Sort by type: 
+      //  1. NAT 
+      //  2. LIGA
+      //  3. PROV
+      // If equal sort by level
+      if (a.event!.type! === b.event!.type!) {
+        return a.level! - b.level!;
+      }
+
+      if (a.event!.type! == LevelType.NATIONAL) {
+        return -1;
+      }
+
+      if (b.event!.type! == LevelType.NATIONAL) {
+        return 1;
+      }
+
+      if (a.event!.type! == LevelType.PROV) {
+        return 1;
+      }
+
+      if (b.event!.type! == LevelType.PROV) {
+        return -1;
+      }
+      return 0;
+    });
     this.initialPlacing();
   }
 
@@ -303,7 +329,7 @@ export class AssignTeamComponent implements OnChanges {
   private async initialPlacing() {
     // Because sort is in place, we create a local copy to not effect the original untill needed
     const localInstanceSubEvents = [...this.subEvents];
-    const subEventsSorted = localInstanceSubEvents.sort((a, b) => a.level! - b.level!);
+    const subEventsSorted = localInstanceSubEvents.sort((a, b) => a.minBaseIndex! - b.minBaseIndex!);
     for (const team of this.teams) {
       let subEventIndex = -1;
 
@@ -316,10 +342,13 @@ export class AssignTeamComponent implements OnChanges {
 
       // We couldn't find any assign based on index
       if (subEventIndex < 0) {
-        subEventIndex = subEventsSorted.findIndex((subEvent) => team.baseIndex! > subEvent.minBaseIndex!);
+        // subEventIndex = subEventsSorted.findIndex((subEvent) => team.baseIndex! > subEvent.minBaseIndex!);
+        subEventIndex = subEventsSorted.findIndex((subEvent) => subEvent.maxBaseIndex! > team.baseIndex!) ;
+
+        // console.log(subEventIndex)
 
         if (subEventIndex < 0) {
-          subEventIndex = 0;
+          subEventIndex = subEventsSorted.length - 1;
         }
 
         this.newSubEventAssignmentForTeam.next({

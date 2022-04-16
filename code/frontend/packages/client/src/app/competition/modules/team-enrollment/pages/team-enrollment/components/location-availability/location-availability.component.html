@@ -1,21 +1,34 @@
 <div class="location" *ngFor="let loc of locations$ | async">
-  {{ loc.name }}
+  <div class="mat-subheading-1">{{ loc.name }}</div>
 
-  <ng-container *ngIf="loc.availibility">
+  <ng-container *ngFor="let availabilityDay of loc.availibilities">
     <div class="location-days">
-      <div class="location-days-title">Speeldagen</div>
-      <div class="location-days-item" *ngFor="let day of loc.availibility.days">
-        <span class="value">{{ day.day }} {{ day.startTime }} - {{ day.endTime }}: {{ day.courts }} courts</span>
+      <div class="location-days-title mat-subheading-2">Speelmoment</div>
+      <div class="location-days-item" *ngFor="let day of availabilityDay.days; let i = index">
+        <app-play-days
+          (onChange)="this.uppdateAvailabilityDay($event, i, availabilityDay)"
+          (onDelete)="this.deleteAvailabilityDay('day', i, availabilityDay)"
+          [day]="day"
+        ></app-play-days>
       </div>
-      <div class="location-days-item"><app-play-days [newDay]="true"></app-play-days></div>
+      <div class="location-days-item">
+        <mat-label>Add new</mat-label>
+        <app-play-days (onChange)="this.uppdateAvailabilityDay($event, -1, availabilityDay)"></app-play-days>
+      </div>
     </div>
 
-    <div class="location-exceptions" *ngFor="let day of loc.availibility.exceptions">
-      <div class="location-exceptions-title">Uitzonderingen</div>
+    <div class="location-exceptions">
+      <div class="location-exceptions-title mat-subheading-2">Uitzonderingen</div>
+      <div class="location-exceptions-item" *ngFor="let exception of availabilityDay.exceptions; let i = index">
+        <app-exception-days
+          (onChange)="this.uppdateAvailabilityDay($event, i, availabilityDay)"
+          (onDelete)="this.deleteAvailabilityDay('exception', i, availabilityDay)"
+          [exception]="exception"
+        ></app-exception-days>
+      </div>
       <div class="location-exceptions-item">
-        <span class="value"
-          >{{ day.start | amDateFormat: 'LLL' }} - {{ day.end | amDateFormat: 'LLL' }}: {{ day.courts }} courts</span
-        >
+        <mat-label>Add new</mat-label>
+        <app-exception-days (onChange)="this.uppdateAvailabilityDay($event, -1, availabilityDay)"></app-exception-days>
       </div>
     </div>
   </ng-container>

@@ -4,11 +4,10 @@ import {
   canExecute,
   DataBaseHandler,
   EventCompetition,
-  GroupSubEventCompetition,
   logger,
   SubEventCompetition
 } from '@badvlasim/shared';
-import { GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
+import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLInt } from 'graphql';
 import { EventCompetitionInputType, EventCompetitionType } from '../types';
 
 export const addEventCompetitionMutation = {
@@ -21,7 +20,7 @@ export const addEventCompetitionMutation = {
   },
   resolve: async (
     findOptions: { [key: string]: object },
-    { eventCompetition },
+    { eventCompetition }: { eventCompetition: Partial<EventCompetition> },
     context: { req: AuthenticatedRequest }
   ) => {
     canExecute(context?.req?.user, { anyPermissions: [`add:competition`] });
@@ -29,39 +28,78 @@ export const addEventCompetitionMutation = {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
       const eventCompetitionDb = await EventCompetition.create(eventCompetition, { transaction });
-      // const subEventCompetitions = eventCompetition.subEventCompetitions.map(
-      //   subEventCompetition => {
-      //     const { groups, ...sub } = subEventCompetition;
 
-      //     return {
-      //       subEventCompetitionGroup: { internalId: sub.internalId, groups },
-      //       subEventCompetition: {
-      //         ...sub,
-      //         EventCompetitionId: eventCompetitionDb.id
-      //       }
-      //     };
-      //   }
-      // );
+      const subEventCompetitionsDb = await SubEventCompetition.bulkCreate(
+        eventCompetition.subEvents?.map((r) => {
+          return { ...r, eventId: eventCompetitionDb.id };
+        }),
+        { returning: ['id'], transaction }
+      );
 
-      // const subEventCompetitionsDb = await SubEventCompetition.bulkCreate(
-      //   subEventCompetitions.map(r => r.subEventCompetition),
-      //   { returning: ['id'], transaction }
-      // );
-
-      const groupSubEventCompetitions = [];
-      // subEventCompetitions
-      //   .map(r => r.subEventCompetitionGroup)
-      //   .forEach(element => {
-      //     const subDb = subEventCompetitionsDb.find(r => r.internalId === element.internalId);
-      //     element.groups.forEach(group => {
-      //       groupSubEventCompetitions.push({ subEventId: subDb.id, groupId: group.id });
-      //     });
-      //   });
-
-      await GroupSubEventCompetition.bulkCreate(groupSubEventCompetitions, { transaction });
+      eventCompetitionDb.subEvents = subEventCompetitionsDb;
 
       await transaction.commit();
       return eventCompetitionDb;
+    } catch (e) {
+      logger.error('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const copyEventCompetitionMutation = {
+  type: EventCompetitionType,
+  args: {
+    id: {
+      name: 'Id',
+      type: new GraphQLNonNull(GraphQLID)
+    },
+    year: {
+      name: 'year',
+      type: new GraphQLNonNull(GraphQLInt)
+    }
+  },
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { id, year }: { id: string; year: number },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    canExecute(context?.req?.user, { anyPermissions: [`add:competition`] });
+
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      const eventCompetitionDb = await EventCompetition.findByPk(id, {
+        transaction,
+        include: [{ model: SubEventCompetition }]
+      });
+      const newName = `${eventCompetitionDb.name.replace(/(\d{4}-\d{4})/gi, '').trim()} ${year}-${
+        year + 1
+      }`;
+
+      const newEventCompetitionDb = new EventCompetition({
+        ...eventCompetitionDb.toJSON(),
+        id: undefined,
+        startYear: year,
+        name: newName
+      });
+
+      const newEventCompetitionDbSaved = await newEventCompetitionDb.save({ transaction });
+      const newSubEvents = [];
+      for (const subEventCompetition of eventCompetitionDb.subEvents) {
+        const newSubEventCompetitionDb = new SubEventCompetition({
+          ...subEventCompetition.toJSON(),
+          id: undefined,
+          eventId: newEventCompetitionDbSaved.id
+        });
+        await newSubEventCompetitionDb.save({ transaction });
+        newSubEvents.push(newSubEventCompetitionDb);
+      }
+
+      newEventCompetitionDbSaved.subEvents = newSubEvents;
+
+      await transaction.commit();
+      return newEventCompetitionDb;
     } catch (e) {
       logger.error('rollback', e);
       await transaction.rollback();
@@ -80,24 +118,51 @@ export const updateEventCompetitionMutation = {
   },
   resolve: async (
     findOptions: { [key: string]: object },
-    { eventCompetition },
+    { eventCompetition }: { eventCompetition: Partial<EventCompetition> },
     context: { req: AuthenticatedRequest }
   ) => {
     canExecute(context?.req?.user, { anyPermissions: [`edit:competition`] });
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      await EventCompetition.update(eventCompetition, {
-        where: { id: eventCompetition.id },
+      const dbEvent = await EventCompetition.findByPk(eventCompetition.id, {
+        include: [{ model: SubEventCompetition, attributes: ['id', 'name'] }],
         transaction
       });
 
-      for (const subEvent of eventCompetition?.subEvents ?? []) {
-        await SubEventCompetition.update(subEvent, {
-          where: { id: subEvent.id },
-          transaction
+      if (!dbEvent) {
+        throw new ApiError({
+          code: 404,
+          message: 'Event not found'
         });
       }
+
+      // Update sub event competitions
+      for (const subEvent of eventCompetition?.subEvents ?? []) {
+        if (subEvent.id) {
+          await SubEventCompetition.update(subEvent, {
+            where: { id: subEvent.id },
+            transaction
+          });
+        } else {
+          const newSubEvent = await SubEventCompetition.create({ ...subEvent }, { transaction });
+          await dbEvent.addSubEvent(newSubEvent, { transaction });
+        }
+      }
+
+      // Delete removed events
+      if (eventCompetition?.subEvents?.length > 0) {
+        for (const subEvent of dbEvent.subEvents) {
+          if (!eventCompetition.subEvents.find((r) => r.id === subEvent.id)) {
+            await SubEventCompetition.destroy({
+              where: { id: subEvent.id },
+              transaction
+            });
+          }
+        }
+      }
+
+      await dbEvent.update(eventCompetition, { transaction });
 
       await transaction.commit();
     } catch (e) {
