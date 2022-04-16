@@ -1,3 +1,12 @@
+# [4.35.0](https://github.com/Badminton-Apps/badman/compare/v4.34.0...v4.35.0) (2022-04-16)
+
+
+### Features
+
+* check permissions for enlisting ([52f8e1a](https://github.com/Badminton-Apps/badman/commit/52f8e1a7fcfc3dec75dedaa30009e26558730780))
+
+
+
 # [4.34.0](https://github.com/Badminton-Apps/badman/compare/v4.33.0...v4.34.0) (2022-04-16)
 
 
