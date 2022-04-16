@@ -77,20 +77,25 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             shareReplay(1)
           );
 
-          this.encounters$.subscribe((encoutners) => {
+          this.encounters$.subscribe((encounters) => {
             let foundEncounter: CompetitionEncounter | null = null;
             let encounterId = this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
 
-            if (encounterId && encoutners.length > 0) {
-              foundEncounter = encoutners.find((r) => r.id == encounterId) ?? null;
+            if (encounterId && encounters.length > 0) {
+              foundEncounter = encounters.find((r) => r.id == encounterId) ?? null;
             }
 
             if (!foundEncounter) {
-              const future = encoutners.filter((r) => moment(r.date).isAfter());
+              const future = encounters.filter((r) => moment(r.date).isSameOrAfter());
               if (future.length > 0) {
                 foundEncounter = future[0];
               }
             }
+
+            if (!foundEncounter) {
+              foundEncounter = encounters[encounters.length - 1];
+            }
+
             if (foundEncounter) {
               this.onSelectEncounter.emit(foundEncounter);
               this.formControl.setValue(foundEncounter.id, { onlySelf: true });
