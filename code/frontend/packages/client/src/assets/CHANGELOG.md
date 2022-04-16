@@ -1,3 +1,22 @@
+# [4.34.0](https://github.com/Badminton-Apps/badman/compare/v4.33.0...v4.34.0) (2022-04-16)
+
+
+### Bug Fixes
+
+* Assembly would fail when there are only encounters in the past ([46bdd42](https://github.com/Badminton-Apps/badman/commit/46bdd4279b559451fef9de7f00e4e3829614a8b8))
+* Caching of team players ([4207cb8](https://github.com/Badminton-Apps/badman/commit/4207cb894e9f7ddbb758d3080ce50e3200b7fadc))
+* Meta was stored incorrectly, this script fixes it ([4da9c3f](https://github.com/Badminton-Apps/badman/commit/4da9c3f2ef1ea36eaf3b74566b7099fe32717420))
+* player header had invalid option ([7a99e5c](https://github.com/Badminton-Apps/badman/commit/7a99e5cef97dac246a533722cf0fa3c524fae12e))
+
+
+### Features
+
+* Moved "can enroll" to own query that makes it ~5 times as fast ([fba6d6f](https://github.com/Badminton-Apps/badman/commit/fba6d6f6715d76b645440d704cac27bd45bc2a0a))
+* play days for location ([e5c028f](https://github.com/Badminton-Apps/badman/commit/e5c028f785f54f8d8d64cc7cb1da9913fd7d4776))
+* team assembly ([1cf5e49](https://github.com/Badminton-Apps/badman/commit/1cf5e499ba61b4b05b68c3c0ed2b86b41fa2b77f))
+
+
+
 # [4.33.0](https://github.com/Badminton-Apps/badman/compare/v4.32.4...v4.33.0) (2022-03-15)
 
 
