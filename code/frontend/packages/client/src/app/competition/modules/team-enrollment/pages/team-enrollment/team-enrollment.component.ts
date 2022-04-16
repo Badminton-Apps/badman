@@ -146,13 +146,10 @@ export class TeamEnrollmentComponent implements OnInit {
           take(1)
         )
       );
-      console.log('Enrollment finished');
       this.snackbar.open('Submitted', undefined, { panelClass: 'success', duration: 2000 });
     } catch (e) {
-      console.log(e);
       this.snackbar.open('Error', undefined, { panelClass: 'error', duration: 2000 });
     } finally {
-      console.log();
       this.enrolling = false;
     }
   }
