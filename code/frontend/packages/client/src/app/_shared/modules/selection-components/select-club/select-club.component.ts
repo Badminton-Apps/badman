@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import { Club } from 'app/_shared';
-import { ClubService, UserService } from 'app/_shared/services';
+import { ClubService, PermissionService, UserService } from 'app/_shared/services';
 import { ClaimService } from 'app/_shared/services/security/claim.service';
 import { combineLatest, Observable, of } from 'rxjs';
 import { debounceTime, filter, map, startWith, switchMap, take } from 'rxjs/operators';
@@ -47,7 +48,8 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     private claimSerice: ClaimService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private user: UserService
+    private user: UserService,
+    private permissionService: PermissionService
   ) {}
 
   async ngOnInit() {
@@ -70,13 +72,11 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           if (all) {
             return this.clubService.getClubs({ first: 999 });
           } else if (single) {
-            return of({ clubs: [], total: 0 });
-            // TODO: fix this :)
-            // return this.claimSerice.userPermissions$.pipe(
-            //   map((r) => r.filter((x) => x.indexOf(this.singleClubPermission) != -1)),
-            //   map((r) => r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))),
-            //   switchMap((ids) => this.clubService.getClubs({ ids, first: ids.length }))
-            // );
+            return this.permissionService.userPermissions$.pipe(
+              map((r) => r.filter((x) => x.indexOf(this.singleClubPermission) != -1)),
+              map((r) => r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))),
+              switchMap((ids) => this.clubService.getClubs({ ids, first: ids.length }))
+            );
           } else if (this.needsPermission) {
             return of({ clubs: [], total: 0 });
           } else {

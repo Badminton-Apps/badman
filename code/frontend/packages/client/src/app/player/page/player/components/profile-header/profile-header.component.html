@@ -17,9 +17,9 @@
 
         <button mat-menu-item *ngIf="this.canClaimAccount?.isClaimedByUser">You've requested this account</button>
 
-        <app-has-claim [any]="['edit:player', 'merge:player', 'delete:player']">
+        <app-has-claim [any]="['edit-any:player', 'merge:player', 'delete:player']">
           <mat-divider *ngIf="this.canClaimAccount?.canClaim || this.canClaimAccount?.isClaimedByUser"></mat-divider>
-          <app-has-claim [any]="['edit:player']">
+          <app-has-claim [any]="['edit-any:player']">
             <button mat-menu-item [routerLink]="['edit']">
               {{ 'button.edit' | translate }}
             </button>

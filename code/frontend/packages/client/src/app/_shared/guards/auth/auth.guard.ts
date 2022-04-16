@@ -47,7 +47,7 @@ export class AuthGuard implements CanActivate {
       )
     );
 
-    if (next?.data?.['claims'] && next.data?.['claims'].length > 0) {
+    if (next?.data?.['claims']) {
       if (typeof next.data?.['claims'] === 'string') {
         canActivateObservables$.push(
           this.claimService.hasClaim$(this.replaceParams(next.params, [next.data?.['claims']])[0])
