@@ -6,25 +6,40 @@ export class Availability {
   days?: AvailabilityDay[];
   exceptions?: AvailabilityException[];
   location?: Location;
+  locationId?: string;
 
   constructor(args?: Partial<Availability>) {
     this.id = args?.id;
     this.year = args?.year;
-    this.days = args?.days;
-    this.exceptions = args?.exceptions;
+    this.days = args?.days?.map(d => new AvailabilityDay(d)) || [];
+    this.exceptions = args?.exceptions?.map(e => new AvailabilityException(e)) || [];
     this.location = args?.location;
+    this.locationId = args?.locationId;
   }
 }
 
-export interface AvailabilityException {
-  start: Date;
-  end: Date;
-  courts: number;
+export class AvailabilityException {
+  start?: Date;
+  end?: Date;
+  courts?: number;
+
+  constructor(args?: Partial<AvailabilityException>) {
+    this.start = args?.start;
+    this.end = args?.end;
+    this.courts = args?.courts;
+  }
 }
 
-export interface AvailabilityDay {
-  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
-  startTime: string;
-  endTime: string;
-  courts: number;
+export class AvailabilityDay {
+  day?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  startTime?: string;
+  endTime?: string;
+  courts?: number;
+
+  constructor(args?: Partial<AvailabilityDay>) {
+    this.day = args?.day;
+    this.startTime = args?.startTime;
+    this.endTime = args?.endTime;
+    this.courts = args?.courts;
+  }
 }

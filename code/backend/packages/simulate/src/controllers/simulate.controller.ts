@@ -42,7 +42,13 @@ export class SimulateController extends BaseController {
       start = moment(startString);
     }
 
-    logger.silly('query', request.query, startString, start);
+    logger.silly('query', {
+      data: {
+        query: request.query,
+        startString,
+        start
+      }
+    });
 
     this._calculator.calculateRanking(systems, end, fromStart, start).then(() => {
       logger.info('Processing done');

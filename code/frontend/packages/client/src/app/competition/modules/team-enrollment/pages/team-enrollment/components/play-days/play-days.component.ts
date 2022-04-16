@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { AvailabilityDay } from 'app/_shared';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AvailabilityDay, resetAllFormFields, validateAllFormFields } from 'app/_shared';
 import * as moment from 'moment';
 
 @Component({
@@ -12,52 +12,42 @@ export class PlayDaysComponent implements OnInit {
   fg!: FormGroup;
 
   @Input()
-  availabilityDay?: AvailabilityDay;
-
-  @Output()
-  onAdd = new EventEmitter<AvailabilityDay>();
+  day?: AvailabilityDay | null;
 
   @Output()
   onChange = new EventEmitter<AvailabilityDay>();
 
-  @Input()
-  newDay = false;
+  @Output()
+  onDelete = new EventEmitter();
+
+  isNew = false;
 
   ngOnInit(): void {
-    const startControl = new FormControl();
-    const endControl = new FormControl();
-    if (this.availabilityDay) {
-      startControl.setValue(moment(this.availabilityDay?.startTime, 'HH:mm'));
-      endControl.setValue(moment(this.availabilityDay?.endTime, 'HH:mm'));
-    } else {
-      startControl.setValue(moment('19:00', 'HH:mm'));
-      endControl.setValue(moment('21:00', 'HH:mm'));
+    if (!this.day) {
+      this.isNew = true;
     }
 
     this.fg = new FormGroup({
-      day: new FormControl(this.availabilityDay?.day ?? 'saturday'),
-      start: startControl,
-      end: endControl,
-      courts: new FormControl(this.availabilityDay?.courts ?? 0),
+      day: new FormControl(this.day?.day, [Validators.required]),
+      courts: new FormControl(this.day?.courts, [Validators.required]),
+      startTime: new FormControl(moment(this.day?.startTime ?? '19:00', 'HH:mm').format('HH:mm'), [
+        Validators.required,
+      ]),
+      endTime: new FormControl(moment(this.day?.endTime ?? '21:00', 'HH:mm').format('HH:mm'), [Validators.required]),
     });
   }
 
-  submit() {
-    const start = this.fg.get('start')!.value!;
-    const startTime = `${start.getHours()}:${start.getMinutes()}`;
-
-    const end = this.fg.get('end')!.value!;
-    const endTime = `${end.getHours()}:${end.getMinutes()}`;
-
-    if (this.newDay) {
-      this.onAdd.next({
-        day: 'monday',
-        startTime,
-        endTime,
-        courts: 0,
-      });
-    } else {
-      this.onChange.next(this.fg.value);
+  addPlayDay() {
+    if (!this.fg.valid) {
+      validateAllFormFields(this.fg);
+      return;
     }
+
+    this.onChange.next(new AvailabilityDay(this.fg.value));
+    resetAllFormFields(this.fg);
+  }
+
+  deletePlayDay() {
+    this.onDelete.next(null);
   }
 }

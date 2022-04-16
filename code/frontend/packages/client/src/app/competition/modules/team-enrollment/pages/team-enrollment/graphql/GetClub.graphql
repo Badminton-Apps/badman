@@ -33,6 +33,7 @@ query GetClubInfo($id: ID!) {
         }
       }
       entries {
+        id
         competitionSubEvent {
           id
           event {

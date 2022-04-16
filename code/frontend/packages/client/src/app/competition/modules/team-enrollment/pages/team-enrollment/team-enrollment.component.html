@@ -128,7 +128,9 @@
     </form>
     <div>
       <button mat-button matStepperPrevious>{{ 'button.prev' | translate }}</button>
-      <button mat-button (click)="this.submit()">{{ 'button.submit' | translate }}</button>
+      <button mat-button (click)="this.submit()" [class.spinner]="this.enrolling" [disabled]="this.enrolling">
+        {{ 'button.submit' | translate }}
+      </button>
     </div>
   </mat-step>
 </mat-vertical-stepper>

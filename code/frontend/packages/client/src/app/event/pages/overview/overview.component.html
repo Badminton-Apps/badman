@@ -1,17 +1,17 @@
 <div class="mat-subheading-1">Events <app-beta></app-beta></div>
 
 <form [formGroup]="this.formGroup" layout="row" layout-fill layout-margin layout-align="start center">
-  <mat-form-field flex>
+  <mat-form-field fxFlex>
     <mat-label>Filter</mat-label>
     <input matInput placeholder="Ex. ium" #inputName formControlName="query" />
   </mat-form-field>
 
-  <mat-form-field flex>
+  <mat-form-field fxFlex>
     <mat-label>{{ 'input.year' | translate }}</mat-label>
     <input matInput type="number" formControlName="startYear" placeholder="2019" #inputYear />
   </mat-form-field>
 
-  <mat-form-field flex>
+  <mat-form-field fxFlex>
     <mat-label>Type</mat-label>
     <mat-select [value]="eventTypes[0].value" formControlName="type">
       <mat-option *ngFor="let eventType of this.eventTypes" [value]="eventType.value"
@@ -20,7 +20,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field flex>
+  <mat-form-field fxFlex>
     <mat-label>Open</mat-label>
     <mat-select formControlName="allowEnlisting">
       <mat-option [value]="undefined"> Both </mat-option>
@@ -29,7 +29,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field flex>
+  <mat-form-field fxFlex>
     <mat-label>Started</mat-label>
     <mat-select formControlName="started">
       <mat-option [value]="undefined"> Both </mat-option>
@@ -124,6 +124,7 @@
 <div class="toolbar">
   <button mat-button (click)="setOpenState(true)">Open selected</button>
   <button mat-button (click)="setOpenState(false)">Colse selected</button>
+  <button mat-button *ngIf="formGroup.value.type == 'COMPETITION_CP'" (click)="copy(year)">Copy selected</button>
   <mat-paginator
     [length]="this.resultsLength$ | async"
     [pageSize]="this.pageSize$ | async"
@@ -132,3 +133,19 @@
     (page)="this.onPaginateChange.next($event)"
   ></mat-paginator>
 </div>
+
+<ng-template #year>
+  <h2 mat-dialog-title>Copy subevent</h2>
+  <mat-dialog-content>
+    <mat-form-field appearance="outline">
+      <mat-label>Copmetition year</mat-label>
+      <input matInput placeholder="2025" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]>{{ 'button.close' | translate }}</button>
+
+    <button mat-raised-button color="primary" [mat-dialog-close]="2022">Create</button>
+  </mat-dialog-actions>
+</ng-template>

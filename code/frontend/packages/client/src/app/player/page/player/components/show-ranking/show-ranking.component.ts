@@ -29,6 +29,7 @@ export class ShowRankingComponent implements OnInit {
       const usedSystem = this.systems.find((s) => s.id === this.rankingPlace?.rankingSystem?.id)!;
       const level = this.rankingPlace![this.type!];
 
+      console.log(usedSystem, this.systems);
       // we can go up
       if (level !== 1) {
         const poitnsNeeded = usedSystem.pointsToGoUp![usedSystem.amountOfLevels! - level!];

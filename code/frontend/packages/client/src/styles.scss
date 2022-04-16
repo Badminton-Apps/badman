@@ -32,7 +32,7 @@ $client-angular-theme: mat-light-theme((color: (primary: $client-angular-primary
 @include app-competition-encounter-theme($client-angular-theme);
 
 /* You can add global styles to this file, and also import other style files */
-html{
+html {
   scroll-behavior: smooth;
 }
 
@@ -85,21 +85,66 @@ body {
   margin-top: -10px;
 }
 
-.mat-form-field.dense {
+
+.mat-form-field {
   div.mat-form-field-wrapper {
-    padding: 0;
-
     .mat-form-field-infix {
-      border-top-width: 0.4em;
+      width: auto;
     }
+  }
 
-    .mat-form-field-label{
-      top: 2em
-    }
+  &.dense {
+    div.mat-form-field-wrapper {
+      padding: 0;
 
-    div.mat-form-field-underline {
-      bottom: 0;
+      .mat-form-field-infix {
+        border-top-width: 0.4em;
+      }
+
+      .mat-form-field-label {
+        top: 2em
+      }
+
+      div.mat-form-field-underline {
+        bottom: 0;
+      }
     }
+  }
+}
+
+ngx-mat-timepicker.ngx-mat-timepicker form {
+  min-width: initial;
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0.55em;
+  }
+}
+
+.outlined {
+  display: block;
+  margin: 0.25em 0;
+  padding-bottom: 1.34375em;
+
+  &>div {
+    padding: 0 0.75em 0 0.75em;
+    border: solid 1px #ccc;
+    background: white;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  mat-label {
+    position: absolute;
+    color: rgba(0, 0, 0, 0.6);
+    transform: scale(0.75);
+    margin-top: -0.5em;
+    font-weight: 400;
+    line-height: 1.125;
+    background: white;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    letter-spacing: normal;
+    padding: 0 5px;
+    left: -5px
   }
 }
 

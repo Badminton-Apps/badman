@@ -1,6 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgModule } from '@angular/core';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -28,6 +27,5 @@ const materialModules = [
 @NgModule({
   declarations: [TeamAssemblyComponent, AssemblyComponent, TeamAssemblyPlayerComponent],
   imports: [SharedModule, ...materialModules, TeamAssemblyRoutingModule, SelctionComponentsModule],
-  providers: [{ provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }],
 })
 export class TeamAssemblyModule {}

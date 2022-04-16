@@ -1,5 +1,6 @@
+import { readFile, writeFile } from 'fs/promises';
 import moment from 'moment';
-import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
+import nodemailer, { Transporter } from 'nodemailer';
 import exphbs from 'nodemailer-express-handlebars';
 import smtpTransport from 'nodemailer-smtp-transport';
 import path from 'path';
@@ -12,15 +13,23 @@ import {
   Team,
   Club,
   EventCompetition,
+  Availability,
 } from '../../models';
 import { logger } from '../../utils';
+import { HandlebarService } from '../handlebars';
 
 export class MailService {
   private _transporter: Transporter;
+  private _handleBarService: HandlebarService;
   private _mailingEnabled = false;
   private initialized = false;
 
-  constructor(private _databaseService: DataBaseHandler) {}
+  constructor(private _databaseService: DataBaseHandler) {
+    this._handleBarService = new HandlebarService();
+    this._handleBarService.registerPartials(
+      path.join(__dirname, 'templates', 'partials')
+    );
+  }
 
   async sendNewPeopleMail(to: string) {
     const events = await EventCompetition.findAll({
@@ -94,12 +103,12 @@ export class MailService {
       subject: 'New players',
       template: 'newplayers',
       context: { clubs, title: 'New players' },
-    };
+    } as MailOptions;
 
     await this._sendMail(options);
   }
 
-  async sendClubMail(
+  async sendEnrollmentMail(
     to: string | string[],
     clubId: string,
     year: number,
@@ -117,6 +126,11 @@ export class MailService {
           required: true,
           attributes: ['name'],
         },
+        {
+          model: Player,
+          required: true,
+          attributes: ['firstName', 'lastName', 'memberId'],
+        },
       ],
     });
 
@@ -124,6 +138,10 @@ export class MailService {
       clubId,
       year
     );
+
+    const locations = await club.getLocations({
+      include: [{ model: Availability, where: { year: year }, required: true }],
+    });
 
     // Sort by type, followed by number
     club.teams = club.teams.sort((a, b) => {
@@ -154,8 +172,9 @@ export class MailService {
         preview: `${club.name} schreef ${club.teams.length} teams in`,
         years: `${year}-${year + 1}`,
         comments: comments.map((c) => c.toJSON()),
+        locations: locations.map((l) => l.toJSON()),
       },
-    };
+    } as MailOptions;
 
     await this._sendMail(options);
   }
@@ -196,7 +215,7 @@ export class MailService {
         clubTeam: clubTeam.toJSON(),
         encounter: encounter.toJSON(),
       },
-    };
+    } as MailOptions;
 
     await this._sendMail(options);
   }
@@ -230,7 +249,7 @@ export class MailService {
           encounter: encounter.toJSON(),
           newDate: moment(encounter.date).format('LLLL'),
         },
-      };
+      } as MailOptions;
 
       await this._sendMail(options);
     };
@@ -269,21 +288,32 @@ export class MailService {
       this._mailingEnabled = process.env.NODE_ENV === 'production';
     } catch (e) {
       this._mailingEnabled = false;
-      logger.warn('Mailing disabled', e);
+      logger.warn('Mailing disabled due to config setup failing', e);
     }
   }
 
-  private async _sendMail(options: SendMailOptions) {
+  private async _sendMail(options: MailOptions) {
     await this._setupMailing();
+    // add clientUrl to context
+    options['context']['clientUrl'] = process.env.CLIENT_URL;
 
     try {
       if (this._mailingEnabled === false) {
         logger.debug('Mailing disabled', { data: options });
+        const filePath = path.join(
+          __dirname,
+          'templates',
+          `${options.template}.handlebars`
+        );
+        const template = await readFile(filePath, 'utf-8');
+        const compiled = this._handleBarService.Compile(
+          template,
+          options.context
+        );
+        await writeFile(`${options.template}.html`, compiled);
+
         return;
       }
-
-      // add clientUrl to context
-      options['context']['clientUrl'] = process.env.CLIENT_URL;
 
       // Check if the to is filled in
       options.to = Array.isArray(options.to) ? options.to : [options.to];
@@ -299,4 +329,13 @@ export class MailService {
       logger.error('Hello', e);
     }
   }
+}
+
+interface MailOptions {
+  from: string;
+  to: string | string[];
+  cc: string | string[];
+  subject: string;
+  template: string;
+  context: unknown;
 }

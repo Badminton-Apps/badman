@@ -79,6 +79,7 @@ async function set_meta() {
       await new EventEntry({
         teamId: team.id,
         subEventId: correctSubEvent,
+        entryType: 'competition'
       }).save();
     }
   }

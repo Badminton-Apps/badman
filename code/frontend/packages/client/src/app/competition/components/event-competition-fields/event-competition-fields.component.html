@@ -27,7 +27,7 @@
     </div>
 
     <div fxLayout="row" fxLayoutGap="16px">
-      <mat-form-field appearance="outline">  
+      <mat-form-field appearance="outline" fxFlex="200px">  
         <mat-label>Update unit</mat-label>
         <mat-select formControlName="usedRankingUnit" alt="Unit" required>
           <mat-option value="months">Months</mat-option>
@@ -35,12 +35,12 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" *ngIf="this.formGroup.get('usedRankingUnit')?.value == 'weeks'">
+      <mat-form-field appearance="outline" *ngIf="this.formGroup.get('usedRankingUnit')?.value == 'weeks'" fxFlex="200px">
         <mat-label>Week nbr</mat-label>
         <input matInput type="number" formControlName="usedRankingAmount" alt="Amount" required />
       </mat-form-field>
 
-      <mat-form-field appearance="outline" *ngIf="this.formGroup.get('usedRankingUnit')?.value == 'months'">
+      <mat-form-field appearance="outline" *ngIf="this.formGroup.get('usedRankingUnit')?.value == 'months'" fxFlex="200px">
         <mat-label>Month</mat-label>
         <mat-select formControlName="usedRankingAmount" alt="Unit" required>
           <mat-option [value]="0">{{ 'months.january' | translate }}</mat-option>
