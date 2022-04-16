@@ -386,6 +386,7 @@ describe('PDF service', () => {
     // Static values
     expect(handlebarService['_getHtml']).toBeCalledWith(
       'assembly',
+      expect.anything(),
       expect.anything()
     );
 
@@ -400,7 +401,8 @@ describe('PDF service', () => {
         captain: 'John Doe',
         date: encounterDate.format('DD-MM-YYYY HH:mm'),
         type: 'MX',
-      })
+      }),
+      expect.anything()
     );
 
     // Singles
@@ -433,7 +435,8 @@ describe('PDF service', () => {
             fullName: `${fakeMPerson3.firstName} ${fakeMPerson3.lastName}`,
           }),
         ]),
-      })
+      }),
+      expect.anything()
     );
 
     // Doubles
@@ -498,7 +501,8 @@ describe('PDF service', () => {
             }),
           },
         ]),
-      })
+      }),
+      expect.anything()
     );
   });
 });
