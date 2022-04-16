@@ -5,6 +5,7 @@ import { ClubType } from './club.type';
 import { queryFixer } from '../queryFixer';
 import { getAttributeFields } from './attributes.type';
 import { EventTournamentType } from './tournaments';
+import { AvailabilityType } from './availability.type';
 
 export const LocationType = new GraphQLObjectType({
   name: 'Location',
@@ -36,7 +37,20 @@ export const LocationType = new GraphQLObjectType({
             return findOptions;
           }
         })
-      }
+      },
+      availibilities: {
+        type: new GraphQLList(AvailabilityType),
+        args: Object.assign(defaultListArgs(), {}),
+        resolve: resolver(Location.associations.availabilities, {
+          before: async (findOptions: { [key: string]: object }) => {
+            findOptions = {
+              ...findOptions,
+              where: queryFixer(findOptions.where)
+            };
+            return findOptions;
+          }
+        })
+      },
     })
 });
 

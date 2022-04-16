@@ -7,7 +7,7 @@
   </div>
 
   <div fxLayout="row" fxLayoutGap="10px">
-    <div *ngIf="this.team.id == null">
+    <div *ngIf="this.team.id == null" fxFlex>
       <mat-form-field appearance="outline" fxFlex>
         <mat-label>Type</mat-label>
         <mat-select formControlName="type" required>
@@ -19,15 +19,13 @@
       </mat-form-field>
     </div>
 
-    <div fxLayout="column">
-      <div fxFlex>
-        <mat-form-field appearance="outline">
-          <mat-label>Number</mat-label>
-          <mat-select formControlName="teamNumber" required>
-            <mat-option *ngFor="let tn of this.teamNumbers" [value]="tn">{{ tn }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+    <div fxLayout="column" fxFlex="50">
+      <mat-form-field appearance="outline" fxFlex>
+        <mat-label>Number</mat-label>
+        <mat-select formControlName="teamNumber" required>
+          <mat-option *ngFor="let tn of this.teamNumbers" [value]="tn">{{ tn }}</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </div>
 
@@ -36,7 +34,7 @@
   </div>
   <div fxLayout="row" fxLayoutGap="10px">
     <mat-form-field appearance="outline" fxFlex>
-      <mat-label>{{ 'team.day' | translate }}</mat-label>
+      <mat-label>{{ 'input.day' | translate }}</mat-label>
       <mat-select formControlName="preferredDay">
         <mat-option>-- {{ 'input.select' | translate }} --</mat-option>
         <mat-option value="monday">{{ 'days.monday' | translate }}</mat-option>
@@ -65,8 +63,7 @@
     <div class="mat-subheading-2">{{ 'team.title.captain' | translate }}</div>
   </div>
   <div fxLayout="row">
-    
-    <app-player-search 
+    <app-player-search
       [player]="this.team.captain!"
       [allowCreation]="true"
       [club]="this.club"

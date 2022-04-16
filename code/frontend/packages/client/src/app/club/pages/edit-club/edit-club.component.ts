@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
 import {
   Club,
@@ -48,7 +49,8 @@ export class EditClubComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +60,52 @@ export class EditClubComponent implements OnInit {
       switchMap(([id]) => this.clubService.getCompetitionYears(id!))
     );
 
+    const query = combineLatest([clubid$, this.updateClub$]).pipe(
+      debounceTime(600),
+      switchMap(([id]) =>
+        this.apollo.query<{ club: Club }>({
+          query: gql`
+            query GetClub($id: ID!) {
+              club(id: $id) {
+                id
+                slug
+                name
+                fullName
+                useForTeamName
+                abbreviation
+                clubId
+                locations {
+                  id
+                  name
+                  address
+                  postalcode
+                  street
+                  streetNumber
+                  city
+                  state
+                  phone
+                  fax
+                }
+                roles {
+                  id
+                  name
+                  players {
+                    slug
+                    id
+                    firstName
+                    lastName
+                  }
+                }
+              }
+            }
+          `,
+          variables: { id },
+        })
+      ),
+      map((result) => result.data.club),
+      map((club) => new Club(club))
+    );
+
     this.teamsForYear$ = combineLatest([
       clubid$,
       this.competitionYear.valueChanges,
@@ -65,13 +113,8 @@ export class EditClubComponent implements OnInit {
     ]).pipe(
       switchMap(([clubId, year, update]) => {
         return this.eventService.getSubEventsCompetition(year).pipe(
-          map((subEvents) => {
-            return [
-              clubId,
-              year,
-              update,
-              subEvents?.map((subEvent) => subEvent?.subEvents?.map((subEvent) => subEvent.id)).flat(2),
-            ];
+          map((events) => {
+            return [clubId, year, update, events?.flatMap((event) => event?.subEvents?.flatMap((s) => s.id))];
           })
         );
       }),
@@ -80,20 +123,9 @@ export class EditClubComponent implements OnInit {
       })
     );
 
-    this.club$ = combineLatest([clubid$, this.updateClub$]).pipe(
-      debounceTime(600),
-      switchMap(([id]) => this.clubService.getClub(id!)),
-      tap((club) => this.titleService.setTitle(`Edit ${club.name}`))
-    );
-
-    this.locations$ = combineLatest([clubid$, this.updateLocation$]).pipe(
-      debounceTime(600),
-      switchMap(([id]) => this.locationService.getLocations({ clubId: id }))
-    );
-    this.roles$ = combineLatest([clubid$, this.updateRoles$]).pipe(
-      debounceTime(600),
-      switchMap(([id]) => this.roleService.getRoles({ clubId: id }))
-    );
+    this.club$ = query.pipe(tap((club) => this.titleService.setTitle(`Edit ${club.name}`)));
+    this.locations$ = query.pipe(map((club) => club.locations!));
+    this.roles$ = query.pipe(map((club) => club.roles!));
   }
 
   async save(club: Club) {
@@ -106,7 +138,7 @@ export class EditClubComponent implements OnInit {
 
   async onPlayerUpdatedFromTeam(player: Player, team: Team) {
     if (player && team) {
-      await this.teamService.updatePlayer(team, player).subscribe();
+      await lastValueFrom(this.teamService.updatePlayer(team, player));
       this._snackBar.open('Player updated', undefined, {
         duration: 1000,
         panelClass: 'success',
@@ -117,7 +149,7 @@ export class EditClubComponent implements OnInit {
 
   async onPlayerAddedToRole(player: Player, role: Role) {
     if (player && role) {
-      await this.roleService.addPlayer(role, player).toPromise();
+      await lastValueFrom(this.roleService.addPlayer(role, player));
       this._snackBar.open('Player added', undefined, {
         duration: 1000,
         panelClass: 'success',
@@ -128,7 +160,7 @@ export class EditClubComponent implements OnInit {
 
   async onPlayerRemovedFromRole(player: Player, role: Role) {
     if (player && role) {
-      await this.roleService.removePlayer(role, player).toPromise();
+      await lastValueFrom(this.roleService.removePlayer(role, player));
       this._snackBar.open('Player removed', undefined, {
         duration: 1000,
         panelClass: 'success',
@@ -137,8 +169,8 @@ export class EditClubComponent implements OnInit {
     }
   }
 
-  async onEditRole(role: Role, club: Club) {
-    this.router.navigate(['/', 'admin', 'club', club.id, 'edit', 'role', role.id]);
+  async onEditRole(role: Role) {
+    this.router.navigate(['role', role.id], { relativeTo: this.route });
   }
 
   async onEditLocation(location?: Location, club?: Club) {

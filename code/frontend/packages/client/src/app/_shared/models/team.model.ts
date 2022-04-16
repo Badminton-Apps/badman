@@ -1,6 +1,5 @@
 import { Club } from './club.model';
 import { Entry } from './entry.model';
-import { CompetitionSubEvent } from './events';
 import { Location } from './location.model';
 import { Player } from './player.model';
 

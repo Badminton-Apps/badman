@@ -10,7 +10,7 @@ export class NotificationService {
   }
 
   clubEnrolled(email: string, clubId: string, year: number) {
-    return this._mailService.sendClubMail(email, clubId, year);
+    return this._mailService.sendEnrollmentMail(email, clubId, year);
   }
 
   requestChange(encounterChange: EncounterChange, homeTeamRequests: boolean) {

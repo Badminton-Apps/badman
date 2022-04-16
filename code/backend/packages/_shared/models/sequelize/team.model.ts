@@ -364,15 +364,15 @@ export class Team extends Model {
   setCaptain!: BelongsToSetAssociationMixin<Player, string>;
 
   // Has many EventEntry
-  getEventEntrys!: HasManyGetAssociationsMixin<EventEntry>;
-  setEventEntrys!: HasManySetAssociationsMixin<EventEntry, string>;
-  addEventEntrys!: HasManyAddAssociationsMixin<EventEntry, string>;
-  addEventEntry!: HasManyAddAssociationMixin<EventEntry, string>;
-  removeEventEntry!: HasManyRemoveAssociationMixin<EventEntry, string>;
-  removeEventEntrys!: HasManyRemoveAssociationsMixin<EventEntry, string>;
-  hasEventEntry!: HasManyHasAssociationMixin<EventEntry, string>;
-  hasEventEntrys!: HasManyHasAssociationsMixin<EventEntry, string>;
-  countEventEntrys!: HasManyCountAssociationsMixin;
+  getEntries!: HasManyGetAssociationsMixin<EventEntry>;
+  setEntries!: HasManySetAssociationsMixin<EventEntry, string>;
+  addEntries!: HasManyAddAssociationsMixin<EventEntry, string>;
+  addEntry!: HasManyAddAssociationMixin<EventEntry, string>;
+  removeEntry!: HasManyRemoveAssociationMixin<EventEntry, string>;
+  removeEntries!: HasManyRemoveAssociationsMixin<EventEntry, string>;
+  hasEntry!: HasManyHasAssociationMixin<EventEntry, string>;
+  hasEntries!: HasManyHasAssociationsMixin<EventEntry, string>;
+  countEntries!: HasManyCountAssociationsMixin;
 
   static getIndexFromPlayers(
     type: SubEventType,

@@ -15,9 +15,10 @@ export class CompetitionEvent extends Event {
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
     this.subEvents = args?.subEvents
-      ?.map((s) => new CompetitionSubEvent(s))
-      .sort((a, b) => (a?.level ?? 0) - (b?.level ?? 0))
-      .sort((a, b) => (a?.levelType ?? 'A').localeCompare(b?.levelType ?? 'A'));
+      ?.map((s) => new CompetitionSubEvent({ ...s, event: this }))
+      .sort((a, b) => {
+        return (a?.level ?? 0) - (b?.level ?? 0);
+      })
     this.comments = args?.comments?.map((c) => new Comment(c));
   }
 }

@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { CompetitionEvent, EventService } from 'app/_shared';
+import { CompetitionEvent, CompetitionSubEvent, EventService } from 'app/_shared';
 import { BehaviorSubject, combineLatest, lastValueFrom, Observable } from 'rxjs';
 import { debounceTime, filter, map, skip, switchMap, tap } from 'rxjs/operators';
 
@@ -18,7 +18,11 @@ export class EditEventCompetitionComponent implements OnInit {
 
   formGroup: FormGroup = new FormGroup({});
 
-  constructor(private apollo: Apollo, private route: ActivatedRoute, private _snackBar: MatSnackBar) {}
+  constructor(
+    private apollo: Apollo,
+    private route: ActivatedRoute,
+    private _snackBar: MatSnackBar,
+  ) {}
 
   ngOnInit(): void {
     this.event$ = combineLatest([this.route.paramMap, this.update$.pipe(debounceTime(600))]).pipe(
@@ -63,10 +67,15 @@ export class EditEventCompetitionComponent implements OnInit {
 
     this.event$.subscribe((event) => {
       this.setupFormGroup(event);
-      this.formGroup.valueChanges.pipe(debounceTime(600)).subscribe((form) => {
-        const { type, ...newEvent } = { ...event, ...form } as any;
-        this.save(newEvent);
-      });
+      this.formGroup.valueChanges
+        .pipe(
+          debounceTime(600),
+          filter(() => this.formGroup.valid)
+        )
+        .subscribe((form) => {
+          const newEvent = { ...event, ...form } as any;
+          this.save(newEvent);
+        });
     });
 
     this.saved$
@@ -113,6 +122,8 @@ export class EditEventCompetitionComponent implements OnInit {
   }
 
   async save(event: CompetitionEvent) {
+    console.log(event);
+
     // strip eventType because it's not used in BE
     const { eventType, updatedAt, ...newEvent } = event;
 
@@ -124,6 +135,9 @@ export class EditEventCompetitionComponent implements OnInit {
               id
               name
               startYear
+              type
+              usedRankingUnit
+              usedRankingAmount
               subEvents {
                 name
                 eventType
@@ -140,5 +154,38 @@ export class EditEventCompetitionComponent implements OnInit {
     );
 
     this.saved$.next(0);
+  }
+
+  async updateSubEvent() {}
+
+  async addSubEvent() {}
+
+  async newSubEvent(event: CompetitionEvent) {
+    const subEvents = this.formGroup.get('subEvents') as FormArray;
+
+    subEvents.push(
+      new FormGroup({
+        name: new FormControl(undefined, Validators.required),
+        level: new FormControl(undefined, Validators.required),
+        eventType: new FormControl(undefined, Validators.required),
+        maxLevel: new FormControl(undefined, Validators.required),
+        minBaseIndex: new FormControl(undefined),
+        maxBaseIndex: new FormControl(undefined),
+      })
+    );
+
+    event.subEvents?.push(
+      new CompetitionSubEvent({
+        event,
+      })
+    );
+  }
+
+  async removeSubEvent(event: CompetitionEvent, subEvent: CompetitionSubEvent) {
+    const subEvents = this.formGroup.get('subEvents') as FormArray;
+
+    subEvents.removeAt(subEvents.value.indexOf(subEvent));
+
+    event.subEvents?.splice(event.subEvents.indexOf(subEvent), 1);
   }
 }

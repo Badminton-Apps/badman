@@ -13,7 +13,7 @@ import {
   SubEventCompetition,
   SubEventType,
   Team,
-  TeamPlayerMembership,
+  TeamPlayerMembership
 } from '@badvlasim/shared';
 import { GraphQLBoolean, GraphQLID, GraphQLNonNull } from 'graphql';
 import moment from 'moment';
@@ -89,7 +89,7 @@ export const removeTeamMutation = {
       const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
-        logger.debug('team', {data: dbTeam});
+        logger.debug('team', { data: dbTeam });
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -246,7 +246,7 @@ export const addPlayerToTeamMutation = {
       const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
-        logger.debug('team', {data: dbTeam});
+        logger.debug('team', { data: dbTeam });
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -307,7 +307,7 @@ export const removePlayerFromTeamMutation = {
       const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
-        logger.debug('team', {data: dbTeam});
+        logger.debug('team', { data: dbTeam });
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -386,6 +386,91 @@ export const updateSubEventTeamMutation = {
         ]
       });
 
+      const currentEntries = await dbTeam.getEntries({
+        include: [
+          {
+            model: SubEventCompetition,
+            attributes: ['id'],
+            required: true,
+            include: [
+              {
+                model: EventCompetition,
+                attributes: ['id'],
+                required: true,
+                where: {
+                  startYear: dbNewSubEvent.event.startYear
+                }
+              }
+            ]
+          }
+        ],
+        transaction
+      });
+
+      for(const entry of currentEntries) {
+        await entry.destroy({ transaction });
+      }
+
+      const newEntry = new EventEntry({
+        teamId: dbTeam.id,
+        subEventId: dbNewSubEvent.id,
+        entryType: 'competition'
+      })
+      await newEntry.save({ transaction });
+      
+      await transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+};
+
+export const updateSubEventTeamMutationOld = {
+  type: TeamType,
+  args: {
+    teamId: {
+      name: 'teamId',
+      type: GraphQLID
+    },
+    subEventId: {
+      name: 'subEventId',
+      type: GraphQLID
+    }
+  },
+  resolve: async (
+    findOptions: { [key: string]: object },
+    { teamId, subEventId },
+    context: { req: AuthenticatedRequest }
+  ) => {
+    const dbTeam = await Team.findByPk(teamId);
+
+    if (!dbTeam) {
+      throw new ApiError({
+        code: 404,
+        message: 'Team not found'
+      });
+    }
+    canExecute(context?.req?.user, {
+      anyPermissions: [`${dbTeam.clubId}_enlist:team`, 'edit-any:club']
+    });
+
+    const transaction = await DataBaseHandler.sequelizeInstance.transaction();
+    try {
+      // Find new subevent
+      const dbNewSubEvent = await SubEventCompetition.findByPk(subEventId, {
+        transaction,
+        attributes: ['id'],
+        include: [
+          {
+            model: EventCompetition,
+            attributes: ['startYear']
+          }
+        ]
+      });
+
       // Find all subEvents from same year
       const subEvents = (
         await EventCompetition.findAll({
@@ -399,7 +484,7 @@ export const updateSubEventTeamMutation = {
         .flat();
 
       if (!dbTeam) {
-        logger.debug('team', {data: dbTeam});
+        logger.debug('team', { data: dbTeam });
         throw new ApiError({
           code: 404,
           message: 'Team not found'
@@ -463,7 +548,7 @@ export const updatePlayerTeamMutation = {
       const dbTeam = await Team.findByPk(teamId, { transaction });
 
       if (!dbTeam) {
-        logger.debug('team', {data: dbTeam});
+        logger.debug('team', { data: dbTeam });
         throw new ApiError({
           code: 404,
           message: 'Team not found'
