@@ -4,7 +4,6 @@ import { logger } from '../../utils';
 import { GameType } from '../enums';
 import {
   Game,
-  LastRankingPlace,
   Player,
   RankingPlace,
   RankingPoint,

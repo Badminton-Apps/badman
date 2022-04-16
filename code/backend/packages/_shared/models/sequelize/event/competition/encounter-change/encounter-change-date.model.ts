@@ -1,4 +1,4 @@
-import { ChangeEncounterAvailability } from '@badvlasim/shared/models/enums';
+import { ChangeEncounterAvailability } from '@badvlasim/shared';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
