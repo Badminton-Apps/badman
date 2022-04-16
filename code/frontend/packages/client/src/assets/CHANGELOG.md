@@ -1,3 +1,12 @@
+## [4.35.2](https://github.com/Badminton-Apps/badman/compare/v4.35.1...v4.35.2) (2022-04-16)
+
+
+### Bug Fixes
+
+* shared should always be called from root ([f954895](https://github.com/Badminton-Apps/badman/commit/f9548956ef42e2cc1b418f5429f5c833bd568075))
+
+
+
 ## [4.35.1](https://github.com/Badminton-Apps/badman/compare/v4.35.0...v4.35.1) (2022-04-16)
 
 
