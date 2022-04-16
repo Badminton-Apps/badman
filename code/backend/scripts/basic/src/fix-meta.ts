@@ -114,7 +114,7 @@ const PASSWORD = process.env.OLD_DB_PASSWORD || 'ranking-pass';
         logger.debug(`Team ${entry.team.name} updated`);
         // update meta
         await EventEntry.update(
-          { meta: JSON.stringify(entry.meta) },
+          { meta: entry.meta },
           {
             where: {
               id: entry.id,
