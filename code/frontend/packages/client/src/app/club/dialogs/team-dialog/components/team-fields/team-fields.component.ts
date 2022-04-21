@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnInit,
+  Input,
+  Output,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Club, Team, Player, PlayerService, Location } from 'app/_shared';
 import { debounceTime, pairwise, skip, startWith } from 'rxjs/operators';
@@ -10,7 +19,7 @@ import { merge } from 'rxjs';
   styleUrls: ['./team-fields.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeamFieldsComponent implements OnInit {
+export class TeamFieldsComponent implements OnInit, OnChanges {
   @Output() onTeamUpdated = new EventEmitter<Partial<Team>>();
   @Output() onCaptainUpdated = new EventEmitter<Partial<Player>>();
   @Output() onLocationAdded = new EventEmitter<string>();
@@ -24,8 +33,6 @@ export class TeamFieldsComponent implements OnInit {
 
   @Input()
   allowEditType!: boolean;
-  @Input()
-  allowEditNumber!: boolean;
 
   @Input()
   form!: FormGroup;
@@ -35,9 +42,20 @@ export class TeamFieldsComponent implements OnInit {
   locationControl!: FormControl;
   teamNumbers!: number[];
 
+  ngOnChanges(changes: SimpleChanges) {
+    const teamChanges = changes['team'];
+    if (teamChanges.previousValue?.id != teamChanges.currentValue?.id) {
+      console.log('Update')
+      if (this.team.id) {
+        this.teamForm?.get('teamNumber')?.enable();
+      } else {
+        this.teamForm?.get('teamNumber')?.disable();
+      }
+    }
+  }
+
   ngOnInit() {
     this.allowEditType = this.allowEditType ?? true;
-    this.allowEditNumber = this.allowEditNumber ?? true;
 
     const numberControl = new FormControl(this.team.teamNumber, Validators.required);
     const typeControl = new FormControl(this.team.type, Validators.required);
@@ -60,11 +78,12 @@ export class TeamFieldsComponent implements OnInit {
       email: emailControl,
     });
 
-    if (this.allowEditNumber) {
+    if (this.team.id) {
       numberControl.enable();
     } else {
       numberControl.disable();
     }
+
     if (this.allowEditType) {
       typeControl.enable();
     } else {

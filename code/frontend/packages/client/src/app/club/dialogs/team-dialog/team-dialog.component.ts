@@ -23,7 +23,7 @@ export class TeamDialogComponent implements OnInit {
   form!: FormGroup;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { team: Team; club: Club; allowEditType: boolean; allowEditNumber: boolean },
+    @Inject(MAT_DIALOG_DATA) public data: { team: Team; club: Club; allowEditType: boolean; },
     private teamService: TeamService,
     private apollo: Apollo
   ) {}
