@@ -32,6 +32,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
     const rankingDateControl = new FormControl(this.data.place?.rankingDate, Validators.required);
     const updatePossibleControl = new FormControl(this.data.place?.updatePossible);
+    
 
     this.rankingPlaceForm.addControl('single', singleControl);
     this.rankingPlaceForm.addControl('double', doubleControl);
@@ -43,6 +44,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
     this.rankingPlaceForm.addControl('rankingDate', rankingDateControl);
     this.rankingPlaceForm.addControl('updatePossible', updatePossibleControl);
+  
 
     if (this.data.system) {
       this.dateClass = (cellDate, view) => {
@@ -84,6 +86,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     this.dialogRef.close({
       action: this.data.place?.id ? 'update' : 'add',
       place: {
+        SystemId: this.data.system!.id!,
         ...this.data.place,
         ...this.rankingPlaceForm.value,
       },
@@ -93,6 +96,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     this.dialogRef.close({
       action: 'remove',
       place: {
+        SystemId: this.data.system!.id!,
         ...this.data.place,
         ...this.rankingPlaceForm.value,
       },
