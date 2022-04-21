@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 import { ITdDataTableColumn } from '@covalent/core/data-table';
 import { switchMap, map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { SystemService } from 'app/_shared';
+import { RankingSystem, SystemService } from 'app/_shared';
+import { Apollo, gql } from 'apollo-angular';
 
 @Component({
   templateUrl: './landing.component.html',
@@ -15,7 +16,7 @@ export class LandingComponent implements OnInit {
 
   capsColumns: ITdDataTableColumn[];
 
-  constructor(private systemService: SystemService, translateService: TranslateService) {
+  constructor(private systemService: SystemService, private apollo: Apollo, translateService: TranslateService) {
     this.capsColumns = [
       {
         name: 'level',
@@ -37,8 +38,52 @@ export class LandingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.caps$ = this.systemService.getPrimarySystem().pipe(
-      switchMap((systems) => this.systemService.getSystemCaps(systems!.id!)),
+    this.caps$ = this.systemService.getPrimarySystemsWhere().pipe(
+      switchMap((query) => {
+        const where = {};
+
+        if (!query.primary) {
+          where['$or'] = [
+            {
+              primary: true,
+            },
+            {
+              id: query.id,
+            },
+          ];
+        } else {
+          where['primary'] = true;
+        }
+
+        return this.apollo.query<{ systems: Partial<RankingSystem>[] }>({
+          query: gql`
+            query GetSystems($where: SequelizeJSON) {
+              systems(where: $where) {
+                id
+                name
+                amountOfLevels
+                pointsToGoUp
+                pointsToGoDown
+                pointsWhenWinningAgainst
+                primary
+              }
+            }
+          `,
+          variables: {
+            where,
+          },
+        });
+      }),
+      map((x) => x.data.systems?.map((x) => new RankingSystem(x))),
+      map((s) => {
+        if (s.length > 1) {
+          return s.find((x) => x.primary == false);
+        } else if (s.length == 1) {
+          return s[0];
+        } else {
+          throw 'No systems found';
+        }
+      }),
       map((system: any) => {
         let level = system.amountOfLevels!;
         return system.pointsWhenWinningAgainst.map((winning: number, index: number) => {
