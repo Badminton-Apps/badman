@@ -33,7 +33,7 @@ import { createSchema } from './graphql/schema';
 import { GraphQLError } from './models/graphql.error';
 import graphqlCostAnalysis from 'graphql-cost-analysis';
 import apm from 'elastic-apm-node';
-
+ 
 const startServer = async (databaseService: DataBaseHandler) => {
   try {
     const authService = new AuthenticationSercice();

@@ -89,7 +89,7 @@ export const addSubEventToRankingSystemGroupMutation = {
     }
   },
   resolve: async (
-    findOptions: { [key: string]: object }, 
+    findOptions: { [key: string]: object },
     {
       rankingSystemGroupId,
       competitions,
@@ -284,7 +284,7 @@ export const addGamePointsForSubEvents = async (
       transaction,
       where: { SystemId: system.id, GameId: { [Op.in]: [...games.map((game) => game.id)] } }
     });
- 
+
     const gamePlayers = await GamePlayer.findAll({
       where: {
         gameId: {
@@ -293,7 +293,7 @@ export const addGamePointsForSubEvents = async (
       },
       transaction: transaction
     });
-    const players = await Player.findAll({ 
+    const players = await Player.findAll({
       where: {
         id: {
           [Op.in]: gamePlayers.map((gp) => gp.playerId)
@@ -316,8 +316,7 @@ export const addGamePointsForSubEvents = async (
     logger.debug(`Adding points for ${games.length} games in system ${system.name}(${system.id})`);
 
     await getSystemCalc(system).calculateRankingPointsPerGameAsync(games, hash, null, {
-      transaction,
-      logger
+      transaction
     });
   }
 };
