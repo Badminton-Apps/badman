@@ -120,7 +120,7 @@ export class AssignTeamComponent implements OnChanges {
 
   editTeam(team: Team, subEvent: CompetitionSubEvent) {
     let dialogRef = this.dialog.open(TeamDialogComponent, {
-      data: { team, club: this.club, allowEditType: false, allowEditNumber: false },
+      data: { team, club: this.club, allowEditType: false },
     });
 
     dialogRef

@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddPlayerComponent, TeamDialogComponent } from 'app/club/dialogs';
+import { apolloCache } from 'app/graphql.module';
 import { Club, ClubService, SystemService, Team, TeamService } from 'app/_shared';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, lastValueFrom, Observable } from 'rxjs';
@@ -12,9 +13,9 @@ import { switchMap, tap } from 'rxjs/operators';
   templateUrl: './detail-club.component.html',
   styleUrls: ['./detail-club.component.scss'],
 })
-export class DetailClubComponent implements OnInit{
+export class DetailClubComponent implements OnInit {
   club$!: Observable<Club>;
-  update$ = new BehaviorSubject(null);
+  update$ = new BehaviorSubject(false);
 
   activeTeams$ = new BehaviorSubject(true);
 
@@ -37,8 +38,9 @@ export class DetailClubComponent implements OnInit{
       // Triggers refresh
       this.update$,
     ]).pipe(
-      switchMap(([params, activeTeams, primarySystem]) => {
-        return this.clubService.getClub(params.get('id')!, {
+      switchMap(([params, activeTeams, primarySystem, update]) => {
+        const clubId = params.get('id')!;
+        return this.clubService.getClub(clubId, {
           playersfrom: moment().subtract(1, 'year').toDate(),
           includePlayers: true,
           includeTeams: true,
@@ -48,9 +50,10 @@ export class DetailClubComponent implements OnInit{
           teamsWhere: {
             active: activeTeams ? true : undefined,
           },
+          fromCache: !update
         });
       }),
-      tap(club => this.titleService.setTitle(`${club.name}`))
+      tap((club) => this.titleService.setTitle(`${club.name}`))
     );
   }
 
@@ -65,7 +68,7 @@ export class DetailClubComponent implements OnInit{
     dialogRef.afterClosed().subscribe(async (player) => {
       if (player) {
         await lastValueFrom(this.clubService.addPlayer(club, player));
-        this.update$.next(null);
+        this.update$.next(true);
       }
     });
   }
@@ -76,27 +79,27 @@ export class DetailClubComponent implements OnInit{
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.update$.next(null);
+      this.update$.next(true);
     });
   }
 
   addTeam(club?: Club) {
     let dialogRef = this.dialog.open(TeamDialogComponent, {
-      data: { club, allowEditNumber: false },
+      data: { club },
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.update$.next(null);
+      this.update$.next(true);
     });
   }
 
   async setActiveTeam(data: { team: Team; active: boolean }) {
     await lastValueFrom(this.teamService.updateTeam({ id: data.team.id, active: data.active }));
-    this.update$.next(null);
+    this.update$.next(true);
   }
 
   async deleteTeam(team: Team) {
     await lastValueFrom(this.teamService.deleteTeam(team.id!));
-    this.update$.next(null);
+    this.update$.next(true);
   }
 }
