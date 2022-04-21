@@ -33,6 +33,7 @@ export class ClubService {
       teamsWhere?: { [key: string]: any };
       teamPlayersWhere?: { [key: string]: any };
       systemId?: string;
+      fromCache: boolean;
     }
   ) {
     // setting default values
@@ -43,12 +44,14 @@ export class ClubService {
       includePlayers: false,
       includeRoles: false,
       includeLocations: false,
+      fromCache: true,
       ...args,
     };
 
     return this.apollo
       .query<{ club: Club }>({
         query: clubQuery,
+        fetchPolicy: args.fromCache ? 'cache-first' : 'network-only',
         variables: {
           id: clubId,
           end: args.playersfrom?.toISOString(),

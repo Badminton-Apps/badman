@@ -4,7 +4,7 @@
       <span class="up"> {{ team.name }}</span>
       <span class="down"> Index: {{ this.team.baseIndex }} </span>
     </div>
-    <app-has-claim [any]="[club.id + '_edit:team', club.id + '_edit:club', 'edit-any:club']">
+    <app-has-claim [any]="[club.id + '_edit:team', club.id + '_edit:club', 'edit-any:club', 'delete-any:team']">
       <button class="options" mat-icon-button [matMenuTriggerFor]="options">
         <mat-icon>more_vert</mat-icon>
       </button>
@@ -24,8 +24,13 @@
         >
           Activate
         </button>
-        <!-- <mat-divider></mat-divider> -->
-        <!-- <button mat-menu-item (click)="this.onDelete.next(this.team)">{{ 'button.delete' | translate }}</button> -->
+        <app-has-claim [any]="['delete-any:team']">
+          <mat-divider></mat-divider>
+          
+          <app-has-claim [all]="['delete-any:team']">
+            <button mat-menu-item (click)="this.onDelete.next(this.team)">{{ 'button.delete' | translate }}</button>
+          </app-has-claim>
+        </app-has-claim>
       </mat-menu>
     </app-has-claim>
   </div>
