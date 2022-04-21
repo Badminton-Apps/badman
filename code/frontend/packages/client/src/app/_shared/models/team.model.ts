@@ -72,8 +72,9 @@ export class Team {
         .slice(0, 4);
 
       let missingIndex = 0;
+
       if (bestPlayers.length < 4) {
-        missingIndex = (bestPlayers.length - 4) * 24;
+        missingIndex = (4 - bestPlayers.length) * 24;
       }
 
       this.baseIndex = bestPlayers.reduce((a, b) => a! + b!, missingIndex);
@@ -95,7 +96,7 @@ export class Team {
 
       let missingIndex = 0;
       if (bestPlayers.length < 4) {
-        missingIndex = (bestPlayers.length - 4) * 36;
+        missingIndex = (4 - bestPlayers.length - 4) * 36;
       }
 
       this.baseIndex = bestPlayers.reduce((a, b) => a! + b!, missingIndex);
