@@ -4,6 +4,7 @@ import { logger } from '../../utils';
 import { GameType } from '../enums';
 import {
   Game,
+  LastRankingPlace,
   Player,
   RankingPlace,
   RankingPoint,
@@ -19,7 +20,7 @@ export class BvlRankingCalc extends RankingCalc {
     public rankingType: RankingSystem,
     protected runningFromStart: boolean
   ) {
-    super(rankingType, runningFromStart);
+    super(rankingType, runningFromStart, logger.child({ label: 'BVL' }));
     this.pointCalculator = new PointCalculator(this.rankingType);
   }
 
@@ -31,7 +32,7 @@ export class BvlRankingCalc extends RankingCalc {
     await super.beforeCalculationAsync(start);
 
     if (this.runningFromStart) {
-      logger.debug('Adding initial players');
+      this._logger.debug('Adding initial players');
       await this.startingRanking.addInitialPlayersAsync(
         this.rankingType.startingType,
         this.rankingType.id,
@@ -108,17 +109,19 @@ export class BvlRankingCalc extends RankingCalc {
     }
 
     for (const range of dateRanges) {
-      logger.debug(`Calculating ${range.start} - ${range.end}`);
       // Get all relevant games and players
-      const playersRange = await this.getPlayersAsync(
+      const gamesRange = await this.getGamesAsync(range.start, range.end, {
+        transaction: options?.transaction,
+        logger: this._logger,
+      });
+
+      const playersRange = await this.getPlayersForGamesAsync(
+        gamesRange,
         range.start,
         range.end,
-        options?.transaction
-      );
-      const gamesRange = await this.getGamesAsync(
-        range.start,
-        range.end,
-        options?.transaction
+        {
+          transaction: options?.transaction,
+        }
       );
 
       // Calculate new points
@@ -130,12 +133,12 @@ export class BvlRankingCalc extends RankingCalc {
       );
     }
 
+    this._logger.debug('Updating ranking');
+
     // Calculate places for new period
-    const players = await this.getPlayersAsync(
-      originalStart,
-      originalEnd,
-      options.transaction
-    );
+    const players = await this.getPlayersAsync(originalStart, originalEnd, {
+      transaction: options?.transaction,
+    });
     await this._calculateRankingPlacesAsync(
       originalStart,
       originalEnd,
@@ -154,7 +157,7 @@ export class BvlRankingCalc extends RankingCalc {
     transaction?: Transaction
   ) {
     const eligbleForRanking: Map<string, RankingPoint[]> = new Map();
-    logger.info(
+    this._logger.info(
       `calculateRankingPlacesAsync for period ${startDate.toISOString()} - ${endDate.toISOString()}`
     );
     (
@@ -224,11 +227,22 @@ export class BvlRankingCalc extends RankingCalc {
         inactive.mix = playerGameCount.mix < this.rankingType.gamesForInactivty;
       }
 
-      const lastRanking = player.lastRankingPlaces.find(
+      let lastRanking = player.lastRankingPlaces.find(
         (p) => p.systemId === this.rankingType.id
       );
 
       // Check for null
+      if (lastRanking == null) {
+        lastRanking = new LastRankingPlace({
+          systemId: this.rankingType.id,
+          playerId: player.id,
+          single: this.rankingType.amountOfLevels,
+          double: this.rankingType.amountOfLevels,
+          mix: this.rankingType.amountOfLevels,
+        });
+      }
+
+      // Check if a single ranking place is null
       if ((lastRanking?.single ?? null) === null) {
         lastRanking.single = this.rankingType.amountOfLevels;
       }

@@ -13,8 +13,6 @@ import {
   RankingPlace,
   RankingPoint,
   RankingSystem,
-  SubEventCompetition,
-  SubEventTournament,
 } from '../sequelize';
 import { PointCalculator } from './point-calculator';
 import { StartingRanking } from './starting-ranking';
@@ -26,7 +24,8 @@ export class RankingCalc {
 
   constructor(
     public rankingType: RankingSystem,
-    protected runningFromStart: boolean
+    protected runningFromStart: boolean,
+    protected _logger: winston.Logger = logger
   ) {
     this.startingRanking = new StartingRanking();
   }
@@ -42,17 +41,17 @@ export class RankingCalc {
 
     const where = {
       SystemId,
-      rankingDate: { 
+      rankingDate: {
         [Op.gte]: startingDate.toDate(),
       },
     };
 
-    try { 
+    try {
       const placeCount = await RankingPlace.count({ where });
 
       if (placeCount > 0) {
         const deleted = await RankingPlace.destroy({ where });
-        logger.silly(
+        this._logger.silly(
           `Truncated ${deleted} RankingPlace for system ${
             where.SystemId
           } and after ${startingDate.toISOString()}`
@@ -69,7 +68,7 @@ export class RankingCalc {
 
       if (placeLastCount > 0) {
         const deleted = await LastRankingPlace.destroy({ where: newWhere });
-        logger.silly(
+        this._logger.silly(
           `Truncated ${deleted} LastRankingPlace for system ${
             where.SystemId
           } and after ${startingDate.toISOString()}`
@@ -79,7 +78,7 @@ export class RankingCalc {
       const pointCount = await RankingPoint.count({ where });
       if (pointCount > 0) {
         const deleted = await RankingPoint.destroy({ where });
-        logger.silly(
+        this._logger.silly(
           `Truncated ${deleted} RankingPoint for system ${
             where.SystemId
           } and after ${startingDate.toISOString()}`
@@ -90,7 +89,7 @@ export class RankingCalc {
       this.rankingType.runDate = new Date();
       await this.rankingType.save();
     } catch (er) {
-      logger.error('Something went wrong clearing the DB', er);
+      this._logger.error('Something went wrong clearing the DB', er);
       throw er;
     }
   }
@@ -107,7 +106,7 @@ export class RankingCalc {
       this.rankingType.updateIntervalAmountLastUpdate
     );
 
-    logger.silly('Config', {
+    this._logger.silly('Config', {
       caluclationIntervalLastUpdate:
         this.rankingType.caluclationIntervalLastUpdate,
       updateIntervalAmountLastUpdate:
@@ -170,13 +169,19 @@ export class RankingCalc {
     start: Date,
     end: Date,
     updateRankings: boolean,
-    options?: {
+    options: {
       hasHistoricalGames?: boolean;
       transaction?: Transaction;
     }
   ) {
-    logger.info(
-      `Started Calcualting for period ${start.toISOString()} untill ${end.toISOString()}${
+    options = {
+      hasHistoricalGames: false,
+      transaction: undefined,
+      ...options,
+    };
+
+    this._logger.info(
+      `Started Calcualting for period ${start.toDateString()} untill ${end.toDateString()}${
         updateRankings ? ', and updating rankings' : ''
       }, historical: ${options?.hasHistoricalGames ?? false}`
     );
@@ -349,68 +354,177 @@ export class RankingCalc {
   protected async getGamesAsync(
     start: Date,
     end: Date,
-    transaction?: Transaction
+    options?: { transaction?: Transaction; logger?: winston.Logger }
   ): Promise<Game[]> {
-    logger.debug(
-      `getGamesAsync for period ${start.toISOString()} - ${end.toISOString()}`
+    // Default options
+    options = {
+      transaction: undefined,
+      ...options,
+    };
+
+    // Get Games
+    this._logger.debug(
+      `getGamesAsync for period ${start.toDateString()} - ${end.toDateString()}`
     );
 
     const where = {
       playedAt: {
-        [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }],
+        [Op.between]: [start, end],
       },
     };
 
-    // const groups = this.rankingType.groups.map(r => r.id);
+    const groups = await this.rankingType.getGroups({
+      transaction: options.transaction,
+    });
 
-    const games = await Game.findAll({
+    const subEventsC: string[] = [];
+    for (const group of groups) {
+      const subEvents = await group.getSubEventCompetitions({
+        transaction: options.transaction,
+        attributes: ['id'],
+      });
+
+      subEventsC.push(...subEvents?.map((s) => s.id));
+    }
+
+    const subEventsT: string[] = [];
+    for (const group of groups) {
+      const subEvents = await group.getSubEventTournaments({
+        transaction: options.transaction,
+        attributes: ['id'],
+      });
+
+      subEventsT.push(...subEvents?.map((s) => s.id));
+    }
+
+    const gamesC = await Game.findAll({
       where,
-      attributes: ['id', 'gameType', 'winner', 'set1Team1', 'set1Team2'],
+      attributes: [
+        'id',
+        'playedAt',
+        'gameType',
+        'winner',
+        'set1Team1',
+        'set1Team2',
+      ],
       include: [
         { model: Player, attributes: ['id'] },
         {
+          required: true,
           model: EncounterCompetition,
-          attributes: [],
+          attributes: ['id'],
           include: [
             {
               model: DrawCompetition,
-              attributes: [],
-              include: [
-                {
-                  model: SubEventCompetition,
-                  attributes: [],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          model: DrawTournament,
-          attributes: [],
-          include: [
-            {
-              model: SubEventTournament,
-              attributes: [],
+              required: true,
+              attributes: ['id'],
+              where: {
+                subeventId: subEventsC,
+              },
             },
           ],
         },
       ],
-      transaction,
+      transaction: options?.transaction,
     });
 
-    logger.debug(`Got ${games.length} games`);
+    const gamesT = await Game.findAll({
+      where,
+      attributes: [
+        'id',
+        'playedAt',
+        'gameType',
+        'winner',
+        'set1Team1',
+        'set1Team2',
+      ],
+      include: [
+        { model: Player, attributes: ['id'] },
+        {
+          model: DrawTournament,
+          attributes: ['id'],
+          required: true,
+          where: {
+            subeventId: subEventsT,
+          },
+        },
+      ],
+      transaction: options?.transaction,
+    });
 
-    return games;
+    const games = [...gamesC, ...gamesT];
+
+    this._logger.debug(`Got ${games.length} games`);
+
+    return games
   }
+
+  protected async getPlayersForGamesAsync(
+    games: Game[],
+    start: Date,
+    end: Date,
+    options: {
+      transaction?: Transaction;
+    }
+  ): Promise<Map<string, Player>> {
+    // Get players
+    const players = new Map();
+    this._logger.debug(`getPlayersAsync for games`);
+
+    // Subtract one update interval so we have last ranking for first games
+    const rankingstart = moment(start)
+      .subtract(
+        this.rankingType.updateIntervalAmount,
+        this.rankingType.updateIntervalUnit
+      )
+      .toDate();
+
+    // Get all players with relevant info
+    (
+      await Player.findAll({
+        attributes: ['id', 'gender'],
+        include: [
+          {
+            model: Game,
+            required: true,
+            attributes: [],
+            where: {
+              id: games?.map((g) => g.id),
+            },
+          },
+          {
+            required: false,
+            model: RankingPlace,
+            attributes: ['single', 'double', 'mix', 'rankingDate', 'SystemId'],
+            where: {
+              SystemId: this.rankingType.id,
+              // Start date = last update
+              rankingDate: {
+                [Op.between]: [rankingstart, end],
+              },
+            },
+          },
+        ],
+        transaction: options?.transaction,
+      })
+    ).map((x) => {
+      players.set(x.id, x);
+    });
+
+    return players;
+  }
+
   protected async getPlayersAsync(
     start: Date,
     end: Date,
-    transaction?: Transaction
+    options: {
+      transaction?: Transaction;
+    }
   ): Promise<Map<string, Player>> {
+    // Get players
     const players = new Map();
-
-    logger.debug(
-      `getPlayersAsync for preiod ${start.toISOString()} - ${end.toISOString()}`
+    this._logger.debug(
+      `getPlayersAsync for preiod ${start.toDateString()} - ${end.toDateString()}`
     );
 
     // Get all players with relevant info
@@ -419,6 +533,17 @@ export class RankingCalc {
         attributes: ['id', 'gender'],
         include: [
           {
+            model: Game,
+            required: true,
+            attributes: [],
+            where: {
+              playedAt: {
+                [Op.between]: [start, end],
+              },
+            },
+          },
+          {
+            required: false,
             model: LastRankingPlace,
             attributes: [
               'single',
@@ -433,18 +558,8 @@ export class RankingCalc {
               systemId: this.rankingType.id,
             },
           },
-          {
-            model: Game,
-            required: true,
-            attributes: [],
-            where: {
-              playedAt: {
-                [Op.and]: [{ [Op.gt]: start }, { [Op.lte]: end }],
-              },
-            },
-          },
         ],
-        transaction,
+        transaction: options?.transaction,
       })
     ).map((x) => {
       players.set(x.id, x);
@@ -457,10 +572,15 @@ export class RankingCalc {
     games: Game[],
     players: Map<string, Player>,
     rankingDate?: Date,
-    args: { transaction?: Transaction; logger?: winston.Logger } = {
-      logger: logger,
-    }
+    options?: { transaction?: Transaction }
   ) {
+    // Default options
+    options = {
+      transaction: undefined,
+      ...options,
+    };
+
+    // Calculate ranking points per game
     const total = games.length;
 
     while (games.length > 0) {
@@ -468,7 +588,7 @@ export class RankingCalc {
         this.processGame(games.pop(), players, rankingDate) ?? [];
 
       if (games.length % 100 === 0) {
-        args?.logger?.debug(
+        this._logger.debug(
           `Calulating point: ${total - games.length}/${total} (${(
             ((total - games.length) / total) *
             100
@@ -481,7 +601,7 @@ export class RankingCalc {
           rankings.map((r) => r.toJSON()),
           {
             returning: false,
-            transaction: args?.transaction,
+            transaction: options?.transaction,
           }
         );
       }
