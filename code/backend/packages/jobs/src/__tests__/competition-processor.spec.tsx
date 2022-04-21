@@ -201,9 +201,7 @@ describe('competition processor', () => {
             1,
             PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
               .WithName('player1', 'team1')
-              .WithRanking(9, 8, 8, new Date('2021-10-01'), system.id)
               .WithRanking(6, 8, 8, new Date('2021-10-10'), system.id)
-              .WithRanking(9, 8, 8, new Date('2021-10-20'), system.id)
           )
           .WithPlayer(
             2,
@@ -249,6 +247,7 @@ describe('competition processor', () => {
           (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e'
         );
         expect(t1p1Points?.points).toBe(253);
+
 
         const t2p1Points = points.find(
           (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b'
