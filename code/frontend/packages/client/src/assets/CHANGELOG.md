@@ -1,3 +1,20 @@
+# [4.36.0](https://github.com/Badminton-Apps/badman/compare/v4.35.2...v4.36.0) (2022-04-21)
+
+
+### Bug Fixes
+
+* add systemId to the place ([7e976d8](https://github.com/Badminton-Apps/badman/commit/7e976d87acf29d979262c6757fadc5c4b424b627))
+* Remove cache when updating a Team ([9451e70](https://github.com/Badminton-Apps/badman/commit/9451e70e3a2e9d0934aa33e6bb6cc8b0b2d3d6da))
+* team index wrongly calculated when not having 4 players ([90e21ea](https://github.com/Badminton-Apps/badman/commit/90e21ead03eb89222cfe4647ee3489b76e5ed919))
+
+
+### Features
+
+* Changed add team logic ([c7652c4](https://github.com/Badminton-Apps/badman/commit/c7652c4f115fa25a9f096953c1e24694475af7c2))
+* show viewing ranking place's in table ([3dad177](https://github.com/Badminton-Apps/badman/commit/3dad177527fb6ffc2cf59128a544b464d508dc57))
+
+
+
 ## [4.35.2](https://github.com/Badminton-Apps/badman/compare/v4.35.1...v4.35.2) (2022-04-16)
 
 
