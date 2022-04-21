@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
+import { apolloCache } from 'app/graphql.module';
 import { Club, Player, Team, TeamService, Location } from 'app/_shared';
 import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
@@ -29,8 +30,17 @@ export class TeamDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.team$ = this.update$.pipe(
-      startWith(0),
-      switchMap(() => {
+      startWith(-1),
+      switchMap((u) => {
+        if (u >= 0 && this.data.team?.id) {
+          // Evict cache
+          const normalizedAvailibility = apolloCache.identify({
+            id: this.data.team!.id!,
+            __typename: 'Team',
+          });
+          apolloCache.evict({ id: normalizedAvailibility });
+          apolloCache.gc();
+        }
         if (this.data.team?.id) {
           return this.apollo
             .query<{ team: Team }>({
