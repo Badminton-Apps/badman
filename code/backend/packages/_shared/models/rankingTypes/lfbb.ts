@@ -19,7 +19,7 @@ export class LfbbRankingCalc extends RankingCalc {
     public rankingType: RankingSystem,
     protected runningFromStart: boolean
   ) {
-    super(rankingType, runningFromStart);
+    super(rankingType, runningFromStart, logger.child({ label: 'LFBB' }));
     this.pointCalculator = new PointCalculator(this.rankingType);
   }
 
@@ -126,7 +126,7 @@ export class LfbbRankingCalc extends RankingCalc {
     options = {
       ...options,
       hasHistoricalGames: options?.hasHistoricalGames ?? false,
-    }
+    };
     super.calculatePeriodAsync(start, end, updateRankings, options);
     const originalEnd = new Date(end);
     const originalStart = new Date(start);
@@ -160,19 +160,35 @@ export class LfbbRankingCalc extends RankingCalc {
 
     for (const range of dateRanges) {
       // Get all relevant games and players
-      const playersRange = await this.getPlayersAsync(range.start, range.end);
-      const gamesRange = await this.getGamesAsync(range.start, range.end);
+      const gamesRange = await this.getGamesAsync(range.start, range.end, {
+        transaction: options?.transaction,
+        logger: this._logger,
+      });
+
+      const playersRange = await this.getPlayersForGamesAsync(
+        gamesRange,
+        range.start,
+        range.end,
+        {
+          transaction: options?.transaction,
+        }
+      );
 
       // Calculate new points
       await this.calculateRankingPointsPerGameAsync(
         gamesRange,
         playersRange,
-        range.end
+        range.end,
+        { transaction: options.transaction }
       );
     }
 
+    this._logger.debug('Updating ranking');
+
     // Calculate places for new period
-    const players = await this.getPlayersAsync(originalStart, originalEnd);
+    const players = await this.getPlayersAsync(originalStart, originalEnd, {
+      transaction: options?.transaction,
+    });
     await this._calculateRankingPlacesAsync(
       originalStart,
       originalEnd,

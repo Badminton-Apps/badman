@@ -17,6 +17,7 @@ import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 import { Transaction } from 'sequelize';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
+import { copyPlaces } from '../utils';
 
 (async () => {
   new DataBaseHandler({
@@ -164,6 +165,15 @@ import { v4 as uuidv4 } from 'uuid';
       differenceForUpgrade: 0,
     });
 
+    const system88Weeks = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '07a3c2cf-bc9e-49db-ad23-dd6641292d66',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 88 weeks',
+      periodAmount: 88,
+      primary: false,
+    });
+
     // const targets = [
     //   system78weeksAllGames,
     //   system78weeks15games,
@@ -175,17 +185,14 @@ import { v4 as uuidv4 } from 'uuid';
     //   system78weeks25games1downUpDiff,
     //   system78weeks20games1downUpDiff,
     // ];
-    const targets = [
-      system78weeks15games1down,
-      system78weeks20games1down,
-    ];
+    const targets = [system88Weeks];
 
     for (const targetSystem of targets) {
       logger.info(`Calculating ${targetSystem.name}`);
       transaction = await DataBaseHandler.sequelizeInstance.transaction();
 
       // Destroy old
-      await destroySystem(targetSystem);
+      await destroySystem(targetSystem, transaction);
 
       // Create new
       const resultSystem = await RankingSystem.create(
@@ -198,8 +205,8 @@ import { v4 as uuidv4 } from 'uuid';
       // Set groups
       await resultSystem.setGroups(groups, { transaction });
 
-      await copyPlaces(transaction, sourceSystem, resultSystem);
-      await calulateLastPlace(transaction, resultSystem);
+      await copyPlaces(sourceSystem, resultSystem, transaction);
+      await calulateLastPlace(targetSystem, transaction);
       await transaction.commit();
     }
   } catch (error) {
@@ -208,12 +215,13 @@ import { v4 as uuidv4 } from 'uuid';
   }
 })();
 
-async function destroySystem(system: RankingSystem) {
+async function destroySystem(system: RankingSystem, transaction?: Transaction) {
   await RankingSystem.destroy({
     where: {
       id: system.id,
     },
     cascade: true,
+    transaction,
   });
 
   await RankingPlace.destroy({
@@ -221,6 +229,7 @@ async function destroySystem(system: RankingSystem) {
       SystemId: system.id,
     },
     cascade: true,
+    transaction,
   });
 
   await RankingPoint.destroy({
@@ -228,6 +237,7 @@ async function destroySystem(system: RankingSystem) {
       SystemId: system.id,
     },
     cascade: true,
+    transaction,
   });
 
   await LastRankingPlace.destroy({
@@ -235,12 +245,13 @@ async function destroySystem(system: RankingSystem) {
       systemId: system.id,
     },
     cascade: true,
+    transaction,
   });
 }
 
 async function calulateLastPlace(
-  transaction: Transaction,
-  newSystem: RankingSystem
+  newSystem: RankingSystem,
+  transaction: Transaction
 ) {
   const lastUpdate = moment();
   const originalStart = lastUpdate
@@ -253,7 +264,7 @@ async function calulateLastPlace(
   const players = await calculator['getPlayersAsync'](
     originalStart,
     originalEnd,
-    transaction
+    { transaction }
   );
   await calculator['_calculateRankingPlacesAsync'](
     originalStart,
@@ -262,48 +273,4 @@ async function calulateLastPlace(
     true,
     transaction
   );
-}
-
-async function copyPlaces(
-  transaction: Transaction,
-  sourceSystem: RankingSystem,
-  newSystem: RankingSystem
-) {
-  newSystem.caluclationIntervalLastUpdate =
-    sourceSystem.caluclationIntervalLastUpdate;
-  newSystem.updateIntervalAmountLastUpdate =
-    sourceSystem.updateIntervalAmountLastUpdate;
-  await newSystem.save({ transaction });
-
-  const queryPlaces = `
-  INSERT INTO "ranking"."Places" (id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", "updatePossible", gender, "SystemId")
-  SELECT gen_random_uuid() as id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", "updatePossible", gender, '${newSystem.id}' as "SystemId"   
-  FROM "ranking"."Places" 
-  WHERE "SystemId" = '${sourceSystem.id}'
-`;
-
-  await DataBaseHandler.sequelizeInstance.query(queryPlaces, { transaction });
-  logger.debug('Copied places');
-
-  const queryLastPlaces = `
-  INSERT INTO "ranking"."LastPlaces" (id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", gender, "systemId")
-  SELECT gen_random_uuid() as id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", gender, '${newSystem.id}' as "systemId"   
-  FROM "ranking"."LastPlaces" 
-  WHERE "systemId" = '${sourceSystem.id}'
-`;
-
-  await DataBaseHandler.sequelizeInstance.query(queryLastPlaces, {
-    transaction,
-  });
-  logger.debug('Copied LastPlaces');
-
-  const queryPoints = `
-  INSERT INTO "ranking"."Points" (id, points, "rankingDate", "differenceInLevel", "playerId", "GameId", "createdAt", "updatedAt", "SystemId" )
-  SELECT gen_random_uuid() as id, points, "rankingDate", "differenceInLevel", "playerId", "GameId", "createdAt", "updatedAt", '${newSystem.id}' as "SystemId"
-  FROM "ranking"."Points" 
-  WHERE "SystemId" = '${sourceSystem.id}'
-`;
-
-  await DataBaseHandler.sequelizeInstance.query(queryPoints, { transaction });
-  logger.debug('Copied Points');
 }
