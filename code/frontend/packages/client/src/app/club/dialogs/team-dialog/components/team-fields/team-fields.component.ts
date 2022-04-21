@@ -45,7 +45,6 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const teamChanges = changes['team'];
     if (teamChanges.previousValue?.id != teamChanges.currentValue?.id) {
-      console.log('Update')
       if (this.team.id) {
         this.teamForm?.get('teamNumber')?.enable();
       } else {
