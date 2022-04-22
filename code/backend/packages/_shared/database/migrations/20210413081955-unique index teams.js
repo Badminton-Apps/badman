@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, sequelize) => {
+  up: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async t => {
       await queryInterface.bulkDelete(
         { tableName: 'Teams', schema: 'public' },
@@ -60,7 +60,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface, sequelize) => {
+  down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async t => {
       await queryInterface.removeConstraint(
         {

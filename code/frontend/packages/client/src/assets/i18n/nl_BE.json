@@ -66,6 +66,9 @@
       "players": "Spelers",
       "base-fields": "Algemene info"
     },
+    "no-perm": {
+      "email-phone": "Je hebt geen toestemming om je e-mailadres of telefoonnummer te wijzigen"
+    },
     "change-number": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
     "check-players": "Vink bij de basisspelers de checkbox aan"
   },
