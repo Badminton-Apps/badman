@@ -126,7 +126,10 @@ export const updateTeamMutation = {
   ) => {
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
     try {
-      const dbTeam = await Team.findByPk(team.id, { transaction, include: [Club] });
+      const dbTeam = await Team.findByPk(team.id, {
+        transaction,
+        include: [{ model: Club }, { model: Player, as: 'captain' }]
+      });
 
       if (!dbTeam) {
         throw new ApiError({
@@ -407,7 +410,7 @@ export const updateSubEventTeamMutation = {
         transaction
       });
 
-      for(const entry of currentEntries) {
+      for (const entry of currentEntries) {
         await entry.destroy({ transaction });
       }
 
@@ -415,9 +418,9 @@ export const updateSubEventTeamMutation = {
         teamId: dbTeam.id,
         subEventId: dbNewSubEvent.id,
         entryType: 'competition'
-      })
+      });
       await newEntry.save({ transaction });
-      
+
       await transaction.commit();
       return dbTeam;
     } catch (e) {

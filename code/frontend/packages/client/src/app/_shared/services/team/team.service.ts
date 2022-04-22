@@ -8,7 +8,6 @@ import { Player, Team } from './../../models';
 
 import * as teamQuery from '../../graphql/teams/queries/GetTeamQuery.graphql';
 import * as teamsQuery from '../../graphql/teams/queries/GetTeamsQuery.graphql';
-import * as teamAssemblyInfo from '../../graphql/teams/queries/GetTeamAssemblyInfo.graphql';
 
 import * as addTeamMutation from '../../graphql/teams/mutations/addTeam.graphql';
 import * as updateTeamMutation from '../../graphql/teams/mutations/updateTeam.graphql';
@@ -25,16 +24,6 @@ import * as removeBasePlayerForSubEvent from '../../graphql/teams/mutations/remo
 export class TeamService {
   constructor(private apollo: Apollo) {}
 
-  getTeam(teamId: string) {
-    return this.apollo
-      .query<{ team: Team }>({
-        query: teamQuery,
-        variables: {
-          id: teamId,
-        },
-      })
-      .pipe(map((x) => new Team(x.data.team)));
-  }
 
   addTeam(team: Partial<Team>, clubId: string) {
     return this.apollo
@@ -48,7 +37,7 @@ export class TeamService {
       .pipe(map((x) => new Team(x.data!.addTeam)));
   }
 
-  addPlayer(team: Team, player: Player) {
+  addPlayer(team: Team, player: Player, personal = false) {
     return this.apollo.mutate({
       mutation: addPlayerToTeamMutation,
       awaitRefetchQueries: true,
@@ -57,6 +46,7 @@ export class TeamService {
           query: teamQuery,
           variables: {
             id: team.id,
+            personal
           },
         },
       ],
@@ -67,7 +57,7 @@ export class TeamService {
     });
   }
 
-  removePlayer(team: Team, player: Player) {
+  removePlayer(team: Team, player: Player, personal = false) {
     return this.apollo.mutate({
       mutation: removePlayerToTeamMutation,
       awaitRefetchQueries: true,
@@ -76,6 +66,7 @@ export class TeamService {
           query: teamQuery,
           variables: {
             id: team.id,
+            personal
           },
         },
       ],
@@ -85,7 +76,7 @@ export class TeamService {
       },
     });
   }
-  updatePlayer(team: Team, player: Player) {
+  updatePlayer(team: Team, player: Player, personal = false) {
     return this.apollo.mutate({
       mutation: updatePlayerTeamMutation,
       refetchQueries: [
@@ -93,6 +84,7 @@ export class TeamService {
           query: teamQuery,
           variables: {
             id: team.id,
+            personal
           },
         },
       ],
@@ -104,7 +96,7 @@ export class TeamService {
     });
   }
 
-  updateTeam(team: Partial<Team>) {
+  updateTeam(team: Partial<Team>, personal = false) {
     return this.apollo
       .mutate<{ updateTeam: Team }>({
         mutation: updateTeamMutation,
@@ -114,6 +106,7 @@ export class TeamService {
             query: teamQuery,
             variables: {
               id: team.id,
+              personal
             },
           },
         ],
@@ -144,28 +137,6 @@ export class TeamService {
       .pipe(map((x: any) => x.data?.teams?.map((t: Partial<Team>) => new Team(t))));
   }
 
-  getTeamsAndPlayers(clubId: string, rankingDate: Date, systemId: string, subEventIds: string[]): Observable<Team[]> {
-    return this.apollo
-      .query<{
-        club: {
-          teams: Team[];
-        };
-      }>({
-        query: teamAssemblyInfo,
-        variables: {
-          clubId,
-          rankingWhere: {
-            rankingDate: rankingDate,
-            SystemId: systemId,
-          },
-
-          entryWhere: {
-            subEventId: { $in: subEventIds },
-          },
-        },
-      })
-      .pipe(map((x: any) => x.data?.club?.teams?.map((t: Partial<Team>) => new Team(t))));
-  }
 
   addBasePlayer(teamId: string, playerId: string, subEventId: string) {
     return this.apollo.mutate<{ addPlayerBaseSubEventMutation: Team }>({

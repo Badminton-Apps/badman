@@ -56,8 +56,8 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.allowEditType = this.allowEditType ?? true;
 
-    const numberControl = new FormControl(this.team.teamNumber, Validators.required);
-    const typeControl = new FormControl(this.team.type, Validators.required);
+    const numberControl = new FormControl(this.team.teamNumber);
+    const typeControl = new FormControl(this.team.type);
     const preferredTimeControl = new FormControl(this.team.preferredTime);
     const preferredDayControl = new FormControl(this.team.preferredDay);
 
@@ -65,7 +65,7 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
     const phoneControl = new FormControl(this.team.phone);
     const emailControl = new FormControl(this.team.email);
 
-    this.locationControl = new FormControl(this.team.locations?.map((r) => r.id) ?? [], Validators.required);
+    this.locationControl = new FormControl(this.team.locations?.map((r) => r.id) ?? []);
 
     this.teamForm = new FormGroup({
       teamNumber: numberControl,

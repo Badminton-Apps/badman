@@ -8,7 +8,7 @@
   <div fxLayout="row" fxLayoutGap="10px">
     <mat-form-field appearance="outline" fxFlex="200px" *ngIf="this.team.id == null">
       <mat-label>Type</mat-label>
-      <mat-select formControlName="type" required>
+      <mat-select formControlName="type">
         <mat-option value="M">{{ 'gender.male' | translate }}</mat-option>
         <mat-option value="F">{{ 'gender.female' | translate }}</mat-option>
         <mat-option value="MX">{{ 'gender.mix' | translate }}</mat-option>
@@ -19,7 +19,7 @@
     <div fxLayout="column" fxFlex="150px" *ngIf="this.team.id != null">
       <mat-form-field appearance="outline">
         <mat-label>Number</mat-label>
-        <mat-select formControlName="teamNumber" required>
+        <mat-select formControlName="teamNumber">
           <mat-option *ngFor="let tn of this.teamNumbers" [value]="tn">{{ tn }}</mat-option>
         </mat-select>
       </mat-form-field>
@@ -63,6 +63,7 @@
     <div fxLayout="row">
       <app-player-search
         [player]="this.team.captain!"
+        [includePersonal]="true"
         [allowCreation]="true"
         [club]="this.club"
         (onSelectPlayer)="this.selectedCaptain($event)"
@@ -70,16 +71,21 @@
       ></app-player-search>
     </div>
 
-    <div fxLayout="row" fxLayoutGap="10px">
-      <mat-form-field appearance="outline" fxFlex="200px">
-        <mat-label>{{ 'input.email' | translate }}</mat-label>
-        <input matInput formControlName="email" alt="email" autocomplete="email" required />
-      </mat-form-field>
+    <app-has-claim [any]="['details-any:team', this.club.id + '_details:team']">
+      <div fxLayout="row" fxLayoutGap="10px">
+        <mat-form-field appearance="outline" fxFlex="200px">
+          <mat-label>{{ 'input.email' | translate }}</mat-label>
+          <input matInput formControlName="email" alt="email" autocomplete="email" />
+        </mat-form-field>
 
-      <mat-form-field appearance="outline" fxFlex="200px">
-        <mat-label>{{ 'input.phone' | translate }}</mat-label>
-        <input matInput formControlName="phone" alt="phone" autocomplete="phone" required />
-      </mat-form-field>
-    </div>
+        <mat-form-field appearance="outline" fxFlex="200px">
+          <mat-label>{{ 'input.phone' | translate }}</mat-label>
+          <input matInput formControlName="phone" alt="phone" autocomplete="phone" />
+        </mat-form-field>
+      </div>
+      <div noPerm>
+        {{ 'team.no-perm.email-phone' | translate }}
+      </div>
+    </app-has-claim>
   </ng-container>
 </form>

@@ -17,7 +17,7 @@ import {
 import {
   ApolloServerPlugin,
   BaseContext,
-  GraphQLRequestContextDidResolveOperation
+  GraphQLRequestContextDidResolveOperation 
 } from 'apollo-server-plugin-base';
 import { ApolloServer } from 'apollo-server-express';
 import { Response, Router } from 'express';
@@ -52,7 +52,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
       proxies: [
         {
           from: '/api/v1/search',
-          to: `http://${process.env.SEARCH_SERVICE}`
+          to: `http://${process.env.SEARCH_SERVICE}` 
         },
         {
           from: '/api/v1/simulate',

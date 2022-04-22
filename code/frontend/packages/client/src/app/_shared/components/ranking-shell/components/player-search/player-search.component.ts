@@ -40,6 +40,9 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   @Input()
   searchOutsideClub = true;
 
+  @Input()
+  includePersonal = false;
+
   clubId?: string;
 
   @Input()
@@ -83,6 +86,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
               query: r,
               where: this.where,
               ranking: this.ranking,
+              personal: this.includePersonal,
+
             })
           : of([]);
 

@@ -4,7 +4,7 @@ import {
   Club,
   ClubMembership,
   Player,
-  RankingSystem
+  RankingSystem,
 } from '@badvlasim/shared';
 import {
   GraphQLBoolean,
@@ -47,7 +47,7 @@ export const TeamPlayerType = new GraphQLObjectType({
       base: {
         type: GraphQLBoolean
       }
-    }); 
+    });
   }
 });
 
@@ -58,9 +58,15 @@ const initFields = () => {
     email: {
       type: GraphQLString,
       resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+        const perm = [`details-any:player`, `${obj.id}_details:player`];
+
+        if (context.req.body['operationName'] === 'GetClubPlayers') {
+          perm.push(`${context.req.body.variables.id}_details:player`);
+        }
+
         canExecute(
           context?.req?.user,
-          { anyPermissions: [`details-any:player`, `${obj.id}_details:player`] },
+          { anyPermissions: perm },
           "You don't have permissions to access the email field"
         );
         return obj.email;
@@ -69,11 +75,14 @@ const initFields = () => {
     phone: {
       type: GraphQLString,
       resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+        const perm = [`details-any:player`, `${obj.id}_details:player`];
+        if (context.req.body['operationName'] === 'GetClubPlayers') {
+          perm.push(`${context.req.body.variables.id}_details:player`);
+        }
+
         canExecute(
           context?.req?.user,
-          {
-            anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
-          },
+          { anyPermissions: perm },
           "You don't have permissions to access the phone field"
         );
         return obj.phone;
@@ -83,11 +92,15 @@ const initFields = () => {
     birthDate: {
       type: GraphQLString,
       resolve: async (obj: Player, _, context: { req: AuthenticatedRequest; res: Response }) => {
+        const perm = [`details-any:player`, `${obj.id}_details:player`];
+
+        if (context.req.body['operationName'] === 'GetClubPlayers') {
+          perm.push(`${context.req.body.variables.id}_details:player`);
+        }
+
         canExecute(
           context?.req?.user,
-          {
-            anyPermissions: [`details-any:player`, `${obj.id}_details:player`]
-          },
+          { anyPermissions: perm },
           "You don't have permissions to access the birthDate field"
         );
         return obj.birthDate;

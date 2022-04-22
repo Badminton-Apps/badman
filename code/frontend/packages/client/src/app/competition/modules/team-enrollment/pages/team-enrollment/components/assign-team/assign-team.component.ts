@@ -131,6 +131,7 @@ export class AssignTeamComponent implements OnChanges {
             query: teamQuery,
             variables: {
               id: team?.id,
+              personal: false
             },
           })
         ),

@@ -3,9 +3,9 @@ import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo } from 'apollo-angular';
 import { apolloCache } from 'app/graphql.module';
-import { Club, Player, Team, TeamService, Location } from 'app/_shared';
-import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { Club, Player, Team, TeamService, Location, ClaimService } from 'app/_shared';
+import { BehaviorSubject, combineLatest, lastValueFrom, Observable, of } from 'rxjs';
+import { map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import * as updatePlayerMutation from '../../../_shared/graphql/players/mutations/UpdatePlayerMutation.graphql';
 import * as teamQuery from '../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
 import * as updateTeamLocation from './graphql/UpdateTeamLocation.graphql';
@@ -23,15 +23,18 @@ export class TeamDialogComponent implements OnInit {
   form!: FormGroup;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { team: Team; club: Club; allowEditType: boolean; },
+    @Inject(MAT_DIALOG_DATA) public data: { team: Team; club: Club; allowEditType: boolean },
     private teamService: TeamService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private auth: ClaimService
   ) {}
 
   ngOnInit(): void {
-    this.team$ = this.update$.pipe(
-      startWith(-1),
-      switchMap((u) => {
+    this.team$ = combineLatest([
+      this.auth.hasAnyClaims$(['details-any:team', this.data.club.id + '_details:team']),
+      this.update$.pipe(startWith(-1)),
+    ]).pipe(
+      switchMap(([claims, u]) => {
         if (u >= 0 && this.data.team?.id) {
           // Evict cache
           const normalizedAvailibility = apolloCache.identify({
@@ -47,6 +50,7 @@ export class TeamDialogComponent implements OnInit {
               query: teamQuery,
               variables: {
                 id: this.data.team?.id,
+                personal: claims,
               },
             })
             .pipe(map((x) => new Team(x.data.team)));
