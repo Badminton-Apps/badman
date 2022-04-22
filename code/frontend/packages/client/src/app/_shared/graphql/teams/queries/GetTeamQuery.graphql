@@ -1,4 +1,4 @@
-query GetTeamQuery($id: ID!) {
+query GetTeamQuery($id: ID!, $personal: Boolean!) {
   team(id: $id) {
     id
     name
@@ -8,10 +8,11 @@ query GetTeamQuery($id: ID!) {
     preferredTime
     preferredDay
     active
+    phone @include(if: $personal)
+    email @include(if: $personal)
     captain {
       id
-      firstName
-      lastName
+      fullName
     }
     locations {
       id

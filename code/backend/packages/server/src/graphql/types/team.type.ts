@@ -1,9 +1,4 @@
-import {
-  Player,
-  SubEventCompetition,
-  Team,
-  TeamPlayerMembership
-} from '@badvlasim/shared';
+import { AuthenticatedRequest, canExecute, Player, SubEventCompetition, Team, TeamPlayerMembership } from '@badvlasim/shared';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 import { defaultListArgs, resolver } from 'graphql-sequelize';
 import moment from 'moment';
@@ -20,6 +15,32 @@ export const TeamType = new GraphQLObjectType({
   description: 'A Team',
   fields: () =>
     Object.assign(getAttributeFields(Team), {
+      email: {
+        type: GraphQLString,
+        resolve: async (obj: Team, _, context: { req: AuthenticatedRequest; res: Response }) => {
+          const perm = [`details-any:team`, `${obj.clubId}_details:team`];
+
+          canExecute(
+            context?.req?.user,
+            { anyPermissions: perm },
+            "You don't have permissions to access the email field"
+          );
+          return obj.email;
+        }
+      },
+      phone: {
+        type: GraphQLString,
+        resolve: async (obj: Team, _, context: { req: AuthenticatedRequest; res: Response }) => {
+          const perm = [`details-any:team`, `${obj.clubId}_details:team`];
+
+          canExecute(
+            context?.req?.user,
+            { anyPermissions: perm },
+            "You don't have permissions to access the phone field"
+          );
+          return obj.phone;
+        }
+      },
       club: {
         type: ClubType,
         args: Object.assign(defaultListArgs(), {}),
@@ -41,7 +62,7 @@ export const TeamType = new GraphQLObjectType({
           before: async (findOptions: { [key: string]: object }) => {
             findOptions = {
               ...findOptions,
-              where: queryFixer(findOptions.where) 
+              where: queryFixer(findOptions.where)
             };
             return findOptions;
           }
@@ -123,7 +144,7 @@ export const TeamType = new GraphQLObjectType({
             };
             return findOptions;
           },
-          after: (subEvents: ( & SubEventCompetition)[]) => {
+          after: (subEvents: (SubEventCompetition)[]) => {
             return subEvents.map((subevent) => {
               // TODO
               // subevent.meta = subevent.getEntries().meta;

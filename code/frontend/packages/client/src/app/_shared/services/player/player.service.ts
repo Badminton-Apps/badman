@@ -74,7 +74,7 @@ export class PlayerService {
       .pipe(map((x) => x.data?.players?.map((r) => new Player(r))));
   }
 
-  searchClubPlayers(clubsId: string, args?: { query?: string; where?: any; ranking?: Date }) {
+  searchClubPlayers(clubsId: string, args?: { query?: string; where?: any; ranking?: Date; personal?: boolean }) {
     return this.apollo
       .query<{ club: { players: Player[] } }>({
         query: searchClubQuery,
@@ -84,6 +84,7 @@ export class PlayerService {
           includeClub: false,
           includeRanking: args?.ranking !== null,
           ranking: args?.ranking ?? null,
+          personal: args?.personal ?? false,
         },
       })
       .pipe(map((x) => x.data?.club?.players?.map((r) => new Player(r))));
