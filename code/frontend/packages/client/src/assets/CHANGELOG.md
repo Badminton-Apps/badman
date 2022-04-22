@@ -1,3 +1,13 @@
+## [4.37.2](https://github.com/Badminton-Apps/badman/compare/v4.37.1...v4.37.2) (2022-04-22)
+
+
+### Bug Fixes
+
+* estimating go up/down for players with no ranking ([74f00cc](https://github.com/Badminton-Apps/badman/commit/74f00cc1491e66e4968c9172d76814c9ac022481))
+* updated translations ([b415cfc](https://github.com/Badminton-Apps/badman/commit/b415cfcfd688cc66a5ac2c1cc51a328a9c3b50ed))
+
+
+
 ## [4.37.1](https://github.com/Badminton-Apps/badman/compare/v4.37.0...v4.37.1) (2022-04-22)
 
 
