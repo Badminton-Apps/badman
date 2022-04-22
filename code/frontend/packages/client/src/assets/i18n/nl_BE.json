@@ -61,7 +61,7 @@
   "team": {
     "location": "Locatie",
     "title": {
-      "prefferd-encounter": "Voorkeurs speel moment",
+      "prefferd-encounter": "Voorkeurs speelmoment",
       "captain": "Ploegkapitein",
       "players": "Spelers",
       "base-fields": "Algemene info"
@@ -84,6 +84,10 @@
       "select-club": "Selecteer club & competitie",
       "assign-team": "Deel ploegen in",
       "availability": "Beschikbaarheid",
+      "play-day": "Speelmoment",
+      "exceptions": "Uitzonderingen",
+      "new-play-day": "Niew speelmoment",
+      "new-exception": "Niewe uitzondering",
       "max": "Max",
       "base": "Grenzen",
       "errors": {
@@ -93,6 +97,9 @@
         "base-min": "Ploegindex te laag voor afdeling",
         "base-max": "Ploegindex te hoog voor afdeling",
         "no-day": "Gelieve een speelmoment te kiezen",
+        "no-captain": "Gelieve een ploegkapitein te kiezen",
+        "no-location": "Gelieve een locatie te kiezen",
+        "no-prefferd": "Gelieve een voorkeurs speelmoment te kiezen",
         "not-comp": "{{player}} is niet geregistreerd als een CT-speler (opmerking: het duurt enkele dagen voor de aanvraag tot CT-statuut verwerkt is)",
         "best-max": "Sterkste 4 spelers te hoog voor afdeling"
       },
