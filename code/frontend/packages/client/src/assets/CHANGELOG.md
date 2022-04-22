@@ -1,3 +1,12 @@
+## [4.37.1](https://github.com/Badminton-Apps/badman/compare/v4.37.0...v4.37.1) (2022-04-22)
+
+
+### Bug Fixes
+
+* Delete club cache when assigning team to subevent ([420ae48](https://github.com/Badminton-Apps/badman/commit/420ae48dafcb5dc3daa803c38004346f75b0ba29))
+
+
+
 # [4.37.0](https://github.com/Badminton-Apps/badman/compare/v4.36.0...v4.37.0) (2022-04-22)
 
 
