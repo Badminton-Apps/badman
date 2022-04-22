@@ -24,6 +24,7 @@ export class Team {
   email?: string;
   phone?: string;
   club?: Club;
+  clubId?: string;
 
   constructor(args?: Partial<Team>) {
     this.id = args?.id;

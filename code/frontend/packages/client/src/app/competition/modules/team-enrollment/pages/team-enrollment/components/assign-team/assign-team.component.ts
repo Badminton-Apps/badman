@@ -53,7 +53,7 @@ export class AssignTeamComponent implements OnChanges {
 
   @Output()
   newSubEventAssignmentForTeam = new EventEmitter<{
-    teamId: string;
+    team: Team;
     subEventId: string;
   }>();
 
@@ -112,7 +112,7 @@ export class AssignTeamComponent implements OnChanges {
       );
       await this.validate(event.item.data, event.container.data);
       this.newSubEventAssignmentForTeam.next({
-        teamId: event.item.data.id!,
+        team: event.item.data!,
         subEventId: event.container.data.id!,
       });
     }
@@ -356,7 +356,7 @@ export class AssignTeamComponent implements OnChanges {
         }
 
         this.newSubEventAssignmentForTeam.next({
-          teamId: team.id!,
+          team: team,
           subEventId: subEventsSorted[subEventIndex].id!,
         });
       }

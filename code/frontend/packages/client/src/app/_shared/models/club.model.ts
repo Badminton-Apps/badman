@@ -27,15 +27,15 @@ export class Club {
     this.abbreviation = args.abbreviation;
     this.useForTeamName = args.useForTeamName;
     this.clubId = args.clubId;
-    this.teams = args.teams?.map((t) => new Team(t));
+    this.teams = args.teams?.map((t) => new Team({ ...t, club: this, clubId: this.id })) ?? [];
     this.players = args.players?.map((p) => new Player(p));
     this.roles = args.roles?.map((p) => new Role(p));
     this.locations = args.locations?.map((p) => new Location(p));
-    this.clubMembership = args?.clubMembership ? new ClubMembership(args.clubMembership) : undefined; 
+    this.clubMembership = args?.clubMembership ? new ClubMembership(args.clubMembership) : undefined;
   }
 }
 
-export class ClubMembership{
+export class ClubMembership {
   id?: string;
   start?: Date;
   end?: Date;

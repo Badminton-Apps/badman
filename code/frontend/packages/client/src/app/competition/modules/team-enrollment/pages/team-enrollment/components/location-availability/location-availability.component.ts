@@ -118,7 +118,6 @@ export class LocationAvailabilityComponent implements OnInit {
       .pipe(
         map((result) => new Availability(result.data?.addLocationAvailibilty)),
         tap((availability) => {
-          console.log('evicting location');
           const normalized = apolloCache.identify({
             id: availability.locationId,
             __typename: 'Location',

@@ -15,12 +15,14 @@ import {
   startWith,
   switchMap,
   take,
+  tap,
 } from 'rxjs/operators';
 import * as addComment from './graphql/AddComment.graphql';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
 import * as GetClub from './graphql/GetClub.graphql';
 import * as updateComment from './graphql/UpdateComment.graphql';
 import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
+import { apolloCache } from 'app/graphql.module';
 
 @Component({
   selector: 'app-team-enrollment',
@@ -126,14 +128,25 @@ export class TeamEnrollmentComponent implements OnInit {
     }
   }
 
-  async teamsAssigned(event: { teamId: string; subEventId: string }) {
+  async teamsAssigned(event: { team: Team; subEventId: string }) {
     await lastValueFrom(
-      this.apollo.mutate({
-        mutation: AssignTeamSubEvent,
-        variables: {
-          ...event,
-        },
-      })
+      this.apollo
+        .mutate({
+          mutation: AssignTeamSubEvent,
+          variables: {
+            teamId: event.team.id,
+            subEventId: event.subEventId,
+          },
+        })
+        .pipe(tap(() => {
+          // Invalidate Club Cache
+          const normalized = apolloCache.identify({
+            id: event.team.clubId,
+            __typename: 'Club',
+          });
+          apolloCache.evict({ id: normalized });
+          apolloCache.gc();
+        }))
     );
   }
 
