@@ -64,6 +64,7 @@ export class LocationAvailabilityComponent implements OnInit {
           }
 
           if (toCreateDays.length > 0) {
+            console.log('Creating days')
             return combineLatest(toCreateDays).pipe(
               take(1),
               map((newAvailibilties) => {
@@ -114,7 +115,18 @@ export class LocationAvailabilityComponent implements OnInit {
           },
         },
       })
-      .pipe(map((result) => new Availability(result.data?.addLocationAvailibilty)));
+      .pipe(
+        map((result) => new Availability(result.data?.addLocationAvailibilty)),
+        tap((availability) => {
+          console.log('evicting location');
+          const normalized = apolloCache.identify({
+            id: availability.locationId,
+            __typename: 'Location',
+          });
+          apolloCache.evict({ id: normalized });
+          apolloCache.gc();
+        })
+      );
   }
 
   async uppdateAvailabilityDay(

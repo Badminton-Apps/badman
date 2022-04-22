@@ -246,6 +246,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
           forkJoin(obs).subscribe(() => {
             const rootQuery = apolloCache.identify({  __typename: 'Query' });
             apolloCache.evict({ id: rootQuery });
+            apolloCache.gc();
             this.formGroup.updateValueAndValidity({ onlySelf: false, emitEvent: true });
           });
         }
