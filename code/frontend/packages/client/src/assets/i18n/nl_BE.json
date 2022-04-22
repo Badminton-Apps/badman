@@ -58,20 +58,6 @@
       "description": "Overzicht veranderingen"
     }
   },
-  "team": {
-    "location": "Locatie",
-    "title": {
-      "prefferd-encounter": "Voorkeurs speelmoment",
-      "captain": "Ploegkapitein",
-      "players": "Spelers",
-      "base-fields": "Algemene info"
-    },
-    "no-perm": {
-      "email-phone": "Je hebt geen toestemming om je e-mailadres of telefoonnummer te wijzigen"
-    },
-    "change-number": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
-    "check-players": "Vink bij de basisspelers de checkbox aan"
-  },
   "competition": {
     "title": "Competitie",
     "subevent": {
@@ -83,11 +69,6 @@
       "select-location": "Selecteer locaties voor ontmoetingen",
       "select-club": "Selecteer club & competitie",
       "assign-team": "Deel ploegen in",
-      "availability": "Beschikbaarheid",
-      "play-day": "Speelmoment",
-      "exceptions": "Uitzonderingen",
-      "new-play-day": "Niew speelmoment",
-      "new-exception": "Niewe uitzondering",
       "max": "Max",
       "base": "Grenzen",
       "errors": {
@@ -97,17 +78,22 @@
         "base-min": "Ploegindex te laag voor afdeling",
         "base-max": "Ploegindex te hoog voor afdeling",
         "no-day": "Gelieve een speelmoment te kiezen",
+        "not-comp": "{{player}} is niet geregistreerd als een CT-speler (opmerking: het duurt enkele dagen voor de aanvraag tot CT-statuut verwerkt is)",
+        "best-max": "Sterkste 4 spelers te hoog voor afdeling",
         "no-captain": "Gelieve een ploegkapitein te kiezen",
         "no-location": "Gelieve een locatie te kiezen",
-        "no-prefferd": "Gelieve een voorkeurs speelmoment te kiezen",
-        "not-comp": "{{player}} is niet geregistreerd als een CT-speler (opmerking: het duurt enkele dagen voor de aanvraag tot CT-statuut verwerkt is)",
-        "best-max": "Sterkste 4 spelers te hoog voor afdeling"
+        "no-prefferd": "Gelieve een voorkeurs speelmoment te kiezen"
       },
       "player-base": "Speler is al basisspeler van andere ploeg",
       "title": "Ploeginschrijving",
       "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
       "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
-      "comment-nat": "Opmerkingen Nationale competitie (per ploeg)"
+      "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
+      "availability": "Beschikbaarheid",
+      "play-day": "Speelmoment",
+      "exceptions": "Uitzonderingen",
+      "new-play-day": "Nieuw speelmoment",
+      "new-exception": "Nieuwe uitzondering"
     },
     "type": "Type",
     "national": "Nationaal",
@@ -154,14 +140,14 @@
       "mix1": "Heren Dubbel",
       "mix2": "Dames Dubbel",
       "errors": {
-        "already": "Speler al als titualris aanwezig",
-        "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen",
-        "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld",
-        "player-above-lower": "Speler met hogere opstellingsindex staat voor deze speler opgesteld",
-        "not-enough-players": "Te weinig titularissen zijn momenteel opgesteld voor de ontmoeting"
+        "already": "Speler al als titualris aanwezig.",
+        "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen.",
+        "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld.",
+        "player-above-lower": "Speler met hogere opstellingsindex staat voor deze speler opgesteld.",
+        "not-enough-players": "Te weinig titularissen zijn momenteel opgesteld voor de ontmoeting."
       },
       "team-index": "Ploegindex titularissen is <strong>{{current}}</strong> en mag minimaal <strong>{{team}}</strong> zijn",
-      "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg",
+      "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
       "captain": "Ploegkapitein",
       "players": {
         "title": "Mogelijke titularissen"
@@ -285,6 +271,20 @@
     "title": "Locatie(s)"
   },
   "loading": "Aan het laden",
+  "team": {
+    "location": "Locatie",
+    "title": {
+      "prefferd-encounter": "Voorkeur speelmoment",
+      "captain": "Ploegkapitein",
+      "players": "Spelers",
+      "base-fields": "Algemene info"
+    },
+    "change-number": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
+    "check-players": "Vink bij de basisspelers de checkbox aan",
+    "no-perm": {
+      "email-phone": "Je hebt geen toestemming om je e-mailadres of telefoonnummer te wijzigen."
+    }
+  },
   "evolution": {
     "warning": "Spelershistorie even niet beschikbaar"
   },
@@ -329,7 +329,7 @@
   "breakdown": {
     "title": "Level breakdown",
     "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
-    "evolution": "Evolution",
+    "evolution": "Evolutie",
     "pointsPerGame": "Punten per wedstrijd",
     "date": "Datum",
     "team": "Team",
@@ -342,7 +342,7 @@
       "one": "1 verloren wedstrijd",
       "other": "{{count}} verloren wedstrijden"
     },
-    "corrected": "Origineel {{original}} wedstrijden, gemiddelde wordt berekend met mimum {{corrected}}.",
+    "corrected": "Origineel {{original}} wedstrijden, gemiddelde wordt berekend met mimum {{corrected}} wedstrijden.",
     "noGames": "Geen wedstrijden",
     "period": "Periode",
     "untill": "tot",
