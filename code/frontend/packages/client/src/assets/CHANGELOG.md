@@ -1,3 +1,18 @@
+# [4.37.0](https://github.com/Badminton-Apps/badman/compare/v4.36.0...v4.37.0) (2022-04-22)
+
+
+### Bug Fixes
+
+* Cache update after availibility is added ([cc5d61b](https://github.com/Badminton-Apps/badman/commit/cc5d61b168dddc939a39269b0828c1d8ef298a28))
+* Only show captain details when you have permissions ([b9f4316](https://github.com/Badminton-Apps/badman/commit/b9f4316d88724dcdedd41b6b7c81e574fb6880f9))
+
+
+### Features
+
+* updated translations ([3ca6e41](https://github.com/Badminton-Apps/badman/commit/3ca6e419cc2c072706453678530b51412b6241f1))
+
+
+
 # [4.36.0](https://github.com/Badminton-Apps/badman/compare/v4.35.2...v4.36.0) (2022-04-21)
 
 
