@@ -31,7 +31,7 @@ export class ShowRankingComponent implements OnInit {
 
       // console.log(usedSystem, this.systems);
       // we can go up
-      if (level !== 1) {
+      if (usedSystem && level && level !== 1) {
         const poitnsNeeded = usedSystem.pointsToGoUp![usedSystem.amountOfLevels! - level!];
         if (this.rankingPlace![`${this.type!}Points`!] >= poitnsNeeded) {
           this.nextUp = 'upgrade';
@@ -39,7 +39,7 @@ export class ShowRankingComponent implements OnInit {
       }
 
       // we can go down
-      if (level !== usedSystem.amountOfLevels) {
+      if (usedSystem && level && level !== usedSystem.amountOfLevels) {
         const poitnsNeeded = usedSystem.pointsToGoDown![usedSystem.amountOfLevels! - level! - 1];
 
         if (this.rankingPlace![`${this.type!}Points`!] < poitnsNeeded) {
