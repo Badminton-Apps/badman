@@ -33,7 +33,7 @@
         <p><strong>{{location.name}}</strong><br/>
         {{#each location.availabilities as |availability|}}
           {{#if availability.days.length }}
-            <p><strong>Speeldagen:</strong><br/>
+            <p><strong>Speelmomenten:</strong><br/>
               {{#each availability.days as |day|}}
                 - {{day.day}}, {{day.startTime}} - {{day.endTime}}: {{day.courts}} courts <br/>
               {{/each}}

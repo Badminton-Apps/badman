@@ -323,6 +323,9 @@ export class AssignTeamComponent implements OnChanges {
 
     issues.class = issues.hasIssues ? 'issues' : warnings.hasIssues ? 'warnings' : '';
 
+    // If there are issues or warnings, show the message
+    issues.hasIssues = issues.hasIssues || warnings.hasIssues;
+
     this.issues[team.id!] = issues;
     this.changeDetector.detectChanges();
   }
