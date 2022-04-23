@@ -11,11 +11,15 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from 'app/_shared';
 import { EventRoutingModule } from './event-routing.module';
-import { OverviewComponent } from './pages';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
-  CompetitionDataComponent,
-  tournamentsDataComponent,
-} from './pages/overview/components';
+  AddEventDialogComponent,
+  DragOverDirective,
+  ImportComponent,
+  OverviewComponent,
+  UploadFieldComponent,
+} from './pages';
+import { CompetitionDataComponent, tournamentsDataComponent } from './pages/overview/components';
 
 const materialModules = [
   MatButtonModule,
@@ -27,7 +31,8 @@ const materialModules = [
   MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatDialogModule
+  MatDialogModule,
+  MatProgressSpinnerModule,
 ];
 
 @NgModule({
@@ -35,6 +40,10 @@ const materialModules = [
     OverviewComponent,
     CompetitionDataComponent,
     tournamentsDataComponent,
+    ImportComponent,
+    DragOverDirective,
+    UploadFieldComponent,
+    AddEventDialogComponent,
   ],
   imports: [SharedModule, ...materialModules, EventRoutingModule],
 })

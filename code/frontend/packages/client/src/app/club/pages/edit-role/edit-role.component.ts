@@ -71,6 +71,6 @@ export class EditRoleComponent implements OnInit {
 
   async update(role: Role, club: Club) {
     await this.roleSerice.updateRole(role).toPromise();
-    await this.router.navigate(['/', 'admin', 'club', club.id, 'edit']);
+    await this.router.navigate(['/', 'club', club.id, 'edit']);
   }
 }

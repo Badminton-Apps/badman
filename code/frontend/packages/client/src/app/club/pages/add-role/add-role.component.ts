@@ -53,6 +53,6 @@ export class AddRoleComponent implements OnInit {
 
   async add(role: Role, club: Club) {
     await lastValueFrom(this.roleSerice.addRole(role, club.id!));
-    await this.router.navigate(['/', 'admin', 'club', club.id, 'edit']);
+    await this.router.navigate(['/', 'club', club.id, 'edit']);
   }
 }

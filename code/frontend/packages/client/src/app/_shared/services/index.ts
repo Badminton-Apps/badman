@@ -11,5 +11,6 @@ export * from './encounter';
 export * from './location';
 export * from './profile';
 export * from './pdf';
+export * from './admin.service';
 // end:ng42.barrel
 

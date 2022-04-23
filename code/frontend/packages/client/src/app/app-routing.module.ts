@@ -11,11 +11,6 @@ const routes: Routes = [
         path: '',
         loadChildren: () => import('./info/info.module').then((m) => m.InfoModule),
       },
-
-      {
-        path: 'admin',
-        loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
-      },
       {
         path: 'player',
         loadChildren: () => import('./player/player.module').then((m) => m.PlayerModule),
@@ -39,6 +34,14 @@ const routes: Routes = [
       {
         path: 'training',
         loadChildren: () => import('./training/training.module').then((m) => m.TrainingModule),
+      },
+      {
+        path: 'job',
+        loadChildren: () => import('./job/job.module').then((m) => m.JobModule),
+      },
+      {
+        path: 'ranking',
+        loadChildren: () => import('./ranking/ranking.module').then((m) => m.RankingModule),
       },
     ],
   },

@@ -76,11 +76,11 @@
               <mat-divider></mat-divider>
             </ng-container>
 
-            <a mat-list-item routerLink="player/top" routerLinkActive="active">
+            <a mat-list-item [routerLink]="['/player', 'top']" routerLinkActive="active">
               {{ 'ranking.list' | translate }}
             </a>
 
-            <a mat-list-item routerLink="faq" routerLinkActive="active">
+            <a mat-list-item [routerLink]="['faq']" routerLinkActive="active">
               {{ 'faq.title' | translate }}
             </a>
 
@@ -90,7 +90,7 @@
                   <mat-panel-title>{{ 'competition.title' | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
                 <mat-nav-list>
-                  <a mat-list-item routerLink="/competition/team-assembly" routerLinkActive="active">
+                  <a mat-list-item [routerLink]="['/competition', 'team-assembly']" routerLinkActive="active">
                     {{ 'competition.team-assembly.title' | translate }}</a
                   >
                 </mat-nav-list>
@@ -98,7 +98,7 @@
                 <app-has-claim [any]="['enlist-any:team']">
                   <!-- <app-has-claim [any]="['*_enlist:team', 'enlist-any:team']"> -->
                   <mat-nav-list *ngIf="this.canEnroll$ | async">
-                    <a mat-list-item routerLink="/competition/team-enrollment" routerLinkActive="active">
+                    <a mat-list-item [routerLink]="['/competition', 'team-enrollment']" routerLinkActive="active">
                       {{ 'competition.enrollment.title' | translate }}
                     </a>
                   </mat-nav-list>
@@ -107,7 +107,7 @@
                 <app-has-claim [any]="['change-any:encounter']">
                   <!-- <app-has-claim [any]="['*_change:encounter', 'change-any:encounter']"> -->
                   <mat-nav-list>
-                    <a mat-list-item routerLink="/competition/change-encounter" routerLinkActive="active">
+                    <a mat-list-item [routerLink]="['/competition', 'change-encounter']" routerLinkActive="active">
                       {{ 'competition.change-encounter.title' | translate }}
                     </a>
                   </mat-nav-list>
@@ -116,7 +116,7 @@
             </mat-accordion>
 
             <mat-nav-list>
-              <a mat-list-item routerLink="/club" routerLinkActive="active"> Clubs </a>
+              <a mat-list-item [routerLink]="['/club']" routerLinkActive="active"> Clubs </a>
             </mat-nav-list>
 
             <app-has-claim [any]="['import:competition', 'import:tournament']">
@@ -126,8 +126,10 @@
                     <mat-panel-title>Events</mat-panel-title>
                   </mat-expansion-panel-header>
                   <mat-nav-list>
-                    <a mat-list-item routerLink="/event" routerLinkActive="active"> Overview <app-beta></app-beta> </a>
-                    <a mat-list-item routerLink="/admin/event/import" routerLinkActive="active"> Import </a>
+                    <a mat-list-item [routerLink]="['/event']" routerLinkActive="active">
+                      Overview <app-beta></app-beta>
+                    </a>
+                    <a mat-list-item [routerLink]="['/event', 'import']" routerLinkActive="active"> Import </a>
                   </mat-nav-list>
                 </mat-expansion-panel>
               </mat-accordion>
@@ -138,13 +140,13 @@
             <app-has-claim [any]="['view:ranking', 'edit:ranking', 'change:job']">
               <div mat-subheader>Admin stuff</div>
               <app-has-claim [any]="['view:ranking', 'edit:ranking']">
-                <a mat-list-item routerLink="/admin/ranking" routerLinkActive="active"> Ranking </a>
+                <a mat-list-item [routerLink]="'/ranking'" routerLinkActive="active"> Ranking </a>
               </app-has-claim>
               <app-has-claim [any]="['change:job']">
-                <a mat-list-item routerLink="/admin/jobs" routerLinkActive="active"> Jobs </a>
+                <a mat-list-item [routerLink]="'/job'" routerLinkActive="active"> Jobs </a>
               </app-has-claim>
               <app-has-claim [any]="['link:player']">
-                <a mat-list-item routerLink="/admin/player/link-accounts" routerLinkActive="active">
+                <a mat-list-item [routerLink]="['/player', 'link-accounts']" routerLinkActive="active">
                   Link accounts <app-beta></app-beta>
                 </a>
               </app-has-claim>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { MomentDateModule } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -25,6 +26,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MomentModule } from 'ngx-moment';
 import { SharedModule } from '../_shared';
 import {
+  AddGameComponent,
   ChartComponent,
   EditClubHistoryComponent,
   EditClubHistoryDialogComponent,
@@ -34,22 +36,24 @@ import {
   EditPlayerFieldsComponent,
   EditRankingAllComponent,
   EditRankingComponent,
+  EditRankingPlaceDialogComponent,
   GamesComponent,
-  MergeAccountComponent,
-  MergePlayerComponent,
-  PlayerComponent,
-  ProfileHeaderComponent,
-  RankingEvolutionComponent,
-  TopPlayersComponent,
   GamesResultComponent,
   GroupCompetitionComponent,
-  GroupTournamentComponent
-} from './page';
-import { EditRankingPlaceDialogComponent } from './page/edit-player/dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
-import { ListGamesComponent, PeriodSelectionComponent, RankingBreakdownComponent } from './page/ranking-breakdown';
-import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
+  GroupTournamentComponent,
+  LinkAccountComponent,
+  ListGamesComponent,
+  MergeAccountComponent,
+  MergePlayerComponent,
+  PeriodSelectionComponent,
+  PlayerComponent,
+  ProfileHeaderComponent,
+  RankingBreakdownComponent,
+  RankingEvolutionComponent,
+  ShowRankingComponent,
+  TopPlayersComponent,
+} from './pages';
 import { PlayerRoutingModule } from './player-routing.module';
-import { ShowRankingComponent } from './page/player';
 
 const materialModules = [
   MatCardModule,
@@ -69,6 +73,7 @@ const materialModules = [
   MatDialogModule,
   MatSlideToggleModule,
   MatDatepickerModule,
+  MatCheckboxModule,
 ];
 
 const covalentModules = [CovalentBaseEchartsModule, CovalentLineEchartsModule, CovalentTooltipEchartsModule];
@@ -77,6 +82,7 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
 
 @NgModule({
   declarations: [
+    LinkAccountComponent,
     EditPlayerComponent,
     EditPermissionsComponent,
     EditPlayerFieldsComponent,

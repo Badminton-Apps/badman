@@ -80,7 +80,6 @@ export class EventService {
                 };
               }),
             };
-         
           }
           if (x.data.tournamentEvents) {
             return {
@@ -173,8 +172,8 @@ export class EventService {
       })
       .pipe(
         map((x) => {
-          if (x.data.imported) {
-            x.data.imported.edges = x.data.imported.edges.map((x) => {
+          if (x.data.imported && x.data.imported.edges?.length > 0) {
+            x.data.imported.edges = x.data.imported.edges?.map((x) => {
               x.node = new Imported(x.node);
               return x;
             });

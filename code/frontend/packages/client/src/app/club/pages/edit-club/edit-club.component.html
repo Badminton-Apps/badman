@@ -33,7 +33,7 @@
     <div class="mat-subheading-1">
       Roles
       <app-has-claim [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']">
-        <button mat-icon-button [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'role', 'add']">
+        <button mat-icon-button [routerLink]="['/', 'club', club.id, 'edit', 'role', 'add']">
           <mat-icon>add</mat-icon>
         </button>
       </app-has-claim>
