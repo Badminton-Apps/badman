@@ -174,18 +174,54 @@ import { copyPlaces } from '../utils';
       primary: false,
     });
 
-    // const targets = [
-    //   system78weeksAllGames,
-    //   system78weeks15games,
-    //   system78weeks20games,
-    //   system78weeks25games,
-    //   system78weeks15games1down,
-    //   system78weeks20games1down,
-    //   system78weeks25games1down,
-    //   system78weeks25games1downUpDiff,
-    //   system78weeks20games1downUpDiff,
-    // ];
-    const targets = [system88Weeks];
+    const system88Weeks2YearInactive = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: 'eab07d22-ae09-4009-8168-855c21ebe672',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 88 weeks - 2 years inactivity',
+      periodAmount: 88,
+      inactivityAmount: 24,
+      inactivityUnit: 'months',
+      primary: false,
+    });
+
+    const system88Weeks3YearInactive = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '0ffacd6d-cb60-4afb-997d-2d04e0be0e91',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 88 weeks - 3 years inactivity',
+      periodAmount: 88,
+      primary: false,
+      inactivityAmount: 36,
+      inactivityUnit: 'months',
+    });
+
+    const system128Weeks = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: '87fb177a-d36a-4cc5-a1e0-3bc27ec06698',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 128 weeks',
+      periodAmount: 128,
+      primary: false,
+    });
+
+    const system128Weeks3YearInactive = new RankingSystem({
+      ...sourceSystem.toJSON(),
+      id: 'bc1fb79a-0251-43e7-813b-f2a22e0f7a53',
+      rankingSystem: RankingSystems.BVL,
+      name: 'BFF Rating - 128 weeks - 3 years inactivity ',
+      periodAmount: 128,
+      primary: false,
+      inactivityAmount: 36,
+      inactivityUnit: 'months',
+    });
+
+    const targets = [
+      system88Weeks,
+      system128Weeks,
+      system88Weeks3YearInactive,
+      system128Weeks3YearInactive,
+    ];
 
     for (const targetSystem of targets) {
       logger.info(`Calculating ${targetSystem.name}`);
