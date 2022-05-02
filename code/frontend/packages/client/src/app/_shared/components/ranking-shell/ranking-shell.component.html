@@ -95,8 +95,8 @@
                   >
                 </mat-nav-list>
 
-                <app-has-claim [any]="['enlist-any:team']">
-                  <!-- <app-has-claim [any]="['*_enlist:team', 'enlist-any:team']"> -->
+                <!-- <app-has-claim [any]="['enlist-any:team']"> -->
+                <app-has-claim [any]="['*_enlist:team', 'enlist-any:team']">
                   <mat-nav-list *ngIf="this.canEnroll$ | async">
                     <a mat-list-item routerLink="/competition/team-enrollment" routerLinkActive="active">
                       {{ 'competition.enrollment.title' | translate }}
