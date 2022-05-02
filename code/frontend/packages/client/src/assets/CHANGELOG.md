@@ -1,3 +1,13 @@
+# [4.38.0](https://github.com/Badminton-Apps/badman/compare/v4.37.2...v4.38.0) (2022-05-02)
+
+
+### Features
+
+* Opening enrollment + new rules ([a7a988f](https://github.com/Badminton-Apps/badman/commit/a7a988fdca672e85b76a75b86bcd7df25b27e064))
+* **simulation:** More simulation systems ([b186984](https://github.com/Badminton-Apps/badman/commit/b1869849030cd8e5b70c323b5b79b214a900a0c5))
+
+
+
 ## [4.37.2](https://github.com/Badminton-Apps/badman/compare/v4.37.1...v4.37.2) (2022-04-22)
 
 
