@@ -64,7 +64,6 @@ export class LocationAvailabilityComponent implements OnInit {
           }
 
           if (toCreateDays.length > 0) {
-            console.log('Creating days')
             return combineLatest(toCreateDays).pipe(
               take(1),
               map((newAvailibilties) => {
