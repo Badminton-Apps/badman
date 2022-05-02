@@ -13,6 +13,16 @@ const routes: Routes = [
     component: OverviewClubsComponent,
   },
   {
+    path: 'add',
+    component: AddClubComponent,
+    canActivate: [AuthGuard],
+    data: {
+      claims: {
+        all: 'add:club',
+      },
+    },
+  },
+  {
     path: ':id',
     children: [
       {
@@ -20,16 +30,6 @@ const routes: Routes = [
         component: DetailClubComponent,
       },
 
-      {
-        path: 'add',
-        component: AddClubComponent,
-        canActivate: [AuthGuard],
-        data: {
-          claims: {
-            all: 'add:club',
-          },
-        },
-      },
       {
         path: 'edit',
         canActivate: [AuthGuard],
@@ -53,8 +53,6 @@ const routes: Routes = [
         ],
       },
     ],
-
-    
   },
 ];
 
