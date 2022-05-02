@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // We need dontenv before App!!!
 import dotenv from 'dotenv';
 dotenv.config();
@@ -218,8 +219,6 @@ import { copyPlaces } from '../utils';
     const targets = [
       system88Weeks,
       system128Weeks,
-      system88Weeks3YearInactive,
-      system128Weeks3YearInactive,
     ];
 
     for (const targetSystem of targets) {

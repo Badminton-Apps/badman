@@ -8,10 +8,17 @@ import {
   ViewChild,
 } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-import { ChangeEncounterAvailability, Comment, CompetitionEncounter, EncounterChange, EncounterChangeDate } from 'app/_shared';
+import {
+  ChangeEncounterAvailability,
+  Club,
+  Comment,
+  CompetitionEncounter,
+  EncounterChange,
+  EncounterChangeDate,
+} from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import { Observable, of } from 'rxjs';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { filter, startWith, switchMap, take, tap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -29,6 +36,8 @@ export class ShowRequestsComponent implements OnInit {
 
   @Input()
   dependsOn: string = 'encounter';
+
+  club$?: Observable<Club>;
 
   formGroupRequest!: FormGroup;
   previous?: AbstractControl;
@@ -147,7 +156,12 @@ export class ShowRequestsComponent implements OnInit {
     change.homeComment = new Comment({ message: this.formGroupRequest.get('homeComment')?.value });
     change.awayComment = new Comment({ message: this.formGroupRequest.get('awayComment')?.value });
     const dates: EncounterChangeDate[] = this.formGroupRequest.get('dates')?.value?.map(
-      (d: { availabilityAway: ChangeEncounterAvailability; availabilityHome: ChangeEncounterAvailability; selected: boolean; date: Date }) =>
+      (d: {
+        availabilityAway: ChangeEncounterAvailability;
+        availabilityHome: ChangeEncounterAvailability;
+        selected: boolean;
+        date: Date;
+      }) =>
         new EncounterChangeDate({
           availabilityAway: d?.availabilityAway,
           availabilityHome: d?.availabilityHome,

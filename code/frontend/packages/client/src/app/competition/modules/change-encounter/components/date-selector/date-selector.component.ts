@@ -2,59 +2,50 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   Component,
-  ElementRef,
-  HostListener,
-  Inject,
+  OnInit,
+  ChangeDetectionStrategy,
   Input,
+  ViewChild,
+  ElementRef,
+  Inject,
   OnDestroy,
   Optional,
   Self,
-  ViewChild,
 } from '@angular/core';
-import {
-  AbstractControl,
-  ControlValueAccessor,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  NgControl,
-  Validators,
-} from '@angular/forms';
-import { MAT_FORM_FIELD, MatFormField, MatFormFieldControl } from '@angular/material/form-field';
+import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, NgControl, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldControl, MAT_FORM_FIELD, MatFormField } from '@angular/material/form-field';
+import { Club, TimePickerInput } from 'app/_shared';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { Subject } from 'rxjs';
+import { CalendarComponent } from '../calendar';
 
-const selector = 'app-time-picker-input';
+const selector = 'app-date-selector';
+
 @Component({
   selector,
-  templateUrl: './time-picker-input.html',
-  styleUrls: ['./time-picker-input.scss'],
-  providers: [{ provide: MatFormFieldControl, useExisting: TimePickerInput }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-  },
+  templateUrl: './date-selector.component.html',
+  styleUrls: ['./date-selector.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TimePickerInput implements ControlValueAccessor, MatFormFieldControl<Moment>, OnDestroy {
+export class DateSelectorComponent implements ControlValueAccessor, MatFormFieldControl<Moment>, OnDestroy {
   static nextId = 0;
-  @ViewChild('hours') hoursInput!: HTMLInputElement;
-  @ViewChild('minutes') minutesInput!: HTMLInputElement;
 
-  parts: FormGroup;
+  @Input()
+  club?: string;
+
+  dateControl: FormControl;
+
   stateChanges = new Subject<void>();
   focused = false;
   touched = false;
-  id = `${selector}-${TimePickerInput.nextId++}`;
+  id = `${selector}-${DateSelectorComponent.nextId++}`;
   onChange = (_: any) => {};
   onTouched = () => {};
 
   get empty() {
-    const {
-      value: { hours, minutes },
-    } = this.parts;
-
-    return !hours && !minutes;
+    return !this.dateControl;
   }
 
   get shouldLabelFloat() {
@@ -89,52 +80,41 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
   }
   set disabled(value: BooleanInput) {
     this._disabled = coerceBooleanProperty(value);
-    this._disabled ? this.parts.disable() : this.parts.enable();
+    this._disabled ? this.dateControl.disable() : this.dateControl.enable();
     this.stateChanges.next();
   }
   private _disabled = false;
 
   @Input()
   get value(): Moment | null {
-    if (this.parts.valid) {
-      const {
-        value: { hours, minutes },
-      } = this.parts;
-      return moment(`${hours}:${minutes}`, 'HH:mm');
+    if (this.dateControl.valid) {
+      return this.dateControl.value;
     }
     return null;
   }
   set value(tel: Moment | null) {
     const t = tel || moment();
-    this.parts.setValue({ hours: t.format('HH'), minutes: t.format('mm') });
+    this.dateControl.setValue(t);
     this.stateChanges.next();
   }
 
   get errorState(): boolean {
-    return this.parts.invalid && this.touched;
+    return this.dateControl.invalid && this.touched;
   }
 
   constructor(
-    formBuilder: FormBuilder,
     private _focusMonitor: FocusMonitor,
     private _elementRef: ElementRef<HTMLElement>,
     @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
+    private _dialog: MatDialog
   ) {
-    this.parts = formBuilder.group({
-      hours: [
-        null,
-        [Validators.required, Validators.min(0), Validators.max(24), Validators.minLength(0), Validators.maxLength(2)],
-      ],
-      minutes: [
-        null,
-        [Validators.required, Validators.min(0), Validators.max(59), Validators.minLength(0), Validators.maxLength(2)],
-      ],
-    });
+    this.dateControl = new FormControl(null, [Validators.required]);
 
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+
   }
 
   ngOnDestroy() {
@@ -147,6 +127,14 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
       this.focused = true;
       this.stateChanges.next();
     }
+  }
+
+  onClick(event: Event) {
+    this._dialog.open(CalendarComponent, {
+      data: {
+        clubId: this.club,
+      },
+    });
   }
 
   onFocusOut(event: FocusEvent) {
@@ -175,15 +163,7 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
     controlElement.setAttribute('aria-describedby', ids.join(' '));
   }
 
-  onContainerClick() {
-    // if (this.parts.controls['minutes'].valid) {
-    //   this._focusMonitor.focusVia(this.hoursInput, 'program');
-    // } else if (this.parts.controls['hours'].valid) {
-    //   this._focusMonitor.focusVia(this.minutesInput, 'program');
-    // } else {
-    //   this._focusMonitor.focusVia(this.hoursInput, 'program');
-    // }
-  }
+  onContainerClick() {}
 
   writeValue(tel: Moment | null): void {
     this.value = tel;

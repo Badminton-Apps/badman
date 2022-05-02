@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="calendar-table" *ngIf="calendar">
+<div class="calendar-table" *ngIf="calendar; else loading">
   <div class="calendar-day weekday" *ngFor="let weekDay of weekDayNames">{{ weekDay | titlecase }}</div>
 
   <div
@@ -44,3 +44,7 @@
     </div>
   </div>
 </div>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>

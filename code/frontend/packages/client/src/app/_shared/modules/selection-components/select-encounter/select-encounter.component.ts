@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CompetitionEncounter } from 'app/_shared';
+import { CompetitionEncounter, compPeriod } from 'app/_shared';
 import { EncounterService } from 'app/_shared/services/encounter/encounter.service';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
@@ -61,7 +61,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
 
           this.encounters$ = this.formGroup.get('year')!.valueChanges.pipe(
             startWith(this.formGroup.get('year')!.value),
-            switchMap((year) => this.encounterService.getEncounters(teamId, [`${year}-08-01`, `${year + 1}-07-01`])),
+            switchMap((year) => this.encounterService.getEncounters(teamId, compPeriod(year))),
             map((c) => c.encounters.map((r) => r.node)),
             map((c) => {
               return c.map((r) => {

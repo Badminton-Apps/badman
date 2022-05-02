@@ -35,20 +35,11 @@
             [formGroupName]="i"
           >
             <div fxFlex="40">
-              <!-- TODO: investigagte <input type="datetime-local"> -->
-              <mat-form-field>
-                <input
-                  matInput
-                  [ngxMatDatetimePicker]="picker"
-                  (focus)="picker.open()"
-                  placeholder="Choose a date"
-                  formControlName="date"
-                  [min]="this.minDate"
-                  [max]="this.maxDate"
-                />
-                <mat-datepicker-toggle matSuffix [for]="$any(picker)"></mat-datepicker-toggle> 
-                <ngx-mat-datetime-picker #picker> </ngx-mat-datetime-picker>
-              </mat-form-field>
+              <app-date-selector
+                *ngIf="formGroup.get('club')?.value as club"
+                [club]="club"
+                formControlName="date"
+              ></app-date-selector>
             </div>
 
             <mat-form-field fxFlex="22">

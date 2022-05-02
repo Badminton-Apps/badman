@@ -1,4 +1,5 @@
 import { FormGroup, FormControl } from '@angular/forms';
+import * as moment from 'moment';
 
 export const validateAllFormFields = (formGroup: FormGroup) => {
   Object.keys(formGroup.controls).forEach((field) => {
@@ -9,7 +10,7 @@ export const validateAllFormFields = (formGroup: FormGroup) => {
       validateAllFormFields(control);
     }
   });
-}
+};
 
 export const resetAllFormFields = (formGroup: FormGroup) => {
   Object.keys(formGroup.controls).forEach((field) => {
@@ -22,4 +23,22 @@ export const resetAllFormFields = (formGroup: FormGroup) => {
       resetAllFormFields(control);
     }
   });
-}
+};
+
+export const compPeriod = (year?: number) => {
+  if (!year) {
+    year = currentCompetitionYear();
+  }
+  return [`${year}-08-01`, `${year + 1}-07-01`];
+};
+
+export const currentCompetitionYear = (override?: number) => {
+  if (override) {
+    return override;
+  }
+
+  const today = moment();
+
+  return today.month() >= 6 ? today.year() : today.year() - 1;
+};
+
