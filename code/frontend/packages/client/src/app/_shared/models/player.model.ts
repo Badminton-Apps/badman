@@ -22,6 +22,7 @@ export class Player {
   lastRankingPlaces?: RankingPlace[];
   games?: Game[];
   index?: number;
+  indexSplit?: string;
   competitionPlayer?: boolean;
   updatedAt?: Date;
   rankingSystem?: RankingSystem;
@@ -47,7 +48,8 @@ export class Player {
     this.base = args?.base;
     this.sub = args?.sub;
     this.slug = args?.slug;
-    this.index = args?.index as any;
+    this.index = args?.index;
+    this.indexSplit = args?.indexSplit;
     this.competitionPlayer = args?.competitionPlayer ?? false;
     this.clubs = args?.clubs?.map((club) => new Club(club));
     this.club = args?.club != null ? new Club(args?.club) : undefined;
@@ -58,12 +60,6 @@ export class Player {
     if ((this.lastRanking ?? null) == null && this.rankingPlaces != null && this.rankingPlaces.length > 0) {
       this.lastRanking = this.rankingPlaces?.sort((a, b) => a.rankingDate!.getTime() - b.rankingDate!.getTime())[0];
     }
-  }
-
-  calcIndex(type: string) {
-    return type == 'MX'
-      ? (this.lastRanking?.single ?? 12) + (this.lastRanking?.double ?? 12) + (this.lastRanking?.mix ?? 12)
-      : (this.lastRanking?.single ?? 12) + (this.lastRanking?.double ?? 12);
   }
 
   indexOfDate(type?: string, date?: Date) {

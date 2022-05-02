@@ -122,8 +122,6 @@ export class EditEventCompetitionComponent implements OnInit {
   }
 
   async save(event: CompetitionEvent) {
-    console.log(event);
-
     // strip eventType because it's not used in BE
     const { eventType, updatedAt, ...newEvent } = event;
 

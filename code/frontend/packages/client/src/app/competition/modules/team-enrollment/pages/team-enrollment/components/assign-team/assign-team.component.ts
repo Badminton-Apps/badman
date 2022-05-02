@@ -71,8 +71,8 @@ export class AssignTeamComponent implements OnChanges {
 
   ngOnChanges(): void {
     this.subEvents = this.subEvents.sort((a, b) => {
-      // Sort by type: 
-      //  1. NAT 
+      // Sort by type:
+      //  1. NAT
       //  2. LIGA
       //  3. PROV
       // If equal sort by level
@@ -131,7 +131,7 @@ export class AssignTeamComponent implements OnChanges {
             query: teamQuery,
             variables: {
               id: team?.id,
-              personal: false
+              personal: false,
             },
           })
         ),
@@ -141,6 +141,7 @@ export class AssignTeamComponent implements OnChanges {
         const index = subEvent.teams!.findIndex((t) => t.id == team.id);
         await this.validate(newTeam, subEvent);
         subEvent.teams![index] = newTeam;
+        this.changeDetector.detectChanges();
       });
   }
 
@@ -158,80 +159,78 @@ export class AssignTeamComponent implements OnChanges {
       hasIssues: false,
     } as Warnings;
 
-    if ((team.teamNumber ?? 0) > 1) {
-      for (const player of team.players) {
-        if (player?.lastRanking) {
-          if (player.base) {
-            if (player.lastRanking.single! < subEvent.maxLevel!) {
+    for (const player of team.players) {
+      if (player?.lastRanking) {
+        if (player.base) {
+          if (player.lastRanking.single! < subEvent.maxLevel!) {
+            issues.hasIssues = true;
+            issues.level.push(
+              this.translation.instant('competition.enrollment.errors.not-allowed', {
+                player: player.fullName,
+                type: 'single',
+                level: player.lastRanking.single,
+                max: subEvent.maxLevel,
+              })
+            );
+          }
+          if (player.lastRanking.double! < subEvent.maxLevel!) {
+            issues.hasIssues = true;
+            issues.level.push(
+              this.translation.instant('competition.enrollment.errors.not-allowed', {
+                player: player.fullName,
+                type: 'double',
+                level: player.lastRanking.double,
+                max: subEvent.maxLevel,
+              })
+            );
+          }
+          if (subEvent.eventType == 'MX') {
+            if (player.lastRanking.mix! < subEvent.maxLevel!) {
               issues.hasIssues = true;
               issues.level.push(
                 this.translation.instant('competition.enrollment.errors.not-allowed', {
                   player: player.fullName,
-                  type: 'single',
-                  level: player.lastRanking.single,
+                  type: 'mix',
+                  level: player.lastRanking.mix,
                   max: subEvent.maxLevel,
                 })
               );
             }
-            if (player.lastRanking.double! < subEvent.maxLevel!) {
-              issues.hasIssues = true;
-              issues.level.push(
-                this.translation.instant('competition.enrollment.errors.not-allowed', {
-                  player: player.fullName,
-                  type: 'double',
-                  level: player.lastRanking.double,
-                  max: subEvent.maxLevel,
-                })
-              );
-            }
-            if (subEvent.eventType == 'MX') {
-              if (player.lastRanking.mix! < subEvent.maxLevel!) {
-                issues.hasIssues = true;
-                issues.level.push(
-                  this.translation.instant('competition.enrollment.errors.not-allowed', {
-                    player: player.fullName,
-                    type: 'mix',
-                    level: player.lastRanking.mix,
-                    max: subEvent.maxLevel,
-                  })
-                );
-              }
-            }
-          } else {
-            if (player.lastRanking.single! < subEvent.maxLevel!) {
+          }
+        } else {
+          if (player.lastRanking.single! < subEvent.maxLevel!) {
+            warnings.hasIssues = true;
+            warnings.level.push(
+              this.translation.instant('competition.enrollment.errors.cant-play', {
+                player: player.fullName,
+                type: 'single',
+                level: player.lastRanking.single,
+                max: subEvent.maxLevel,
+              })
+            );
+          }
+          if (player.lastRanking.double! < subEvent.maxLevel!) {
+            warnings.hasIssues = true;
+            warnings.level.push(
+              this.translation.instant('competition.enrollment.errors.cant-play', {
+                player: player.fullName,
+                type: 'double',
+                level: player.lastRanking.double,
+                max: subEvent.maxLevel,
+              })
+            );
+          }
+          if (subEvent.eventType == 'MX') {
+            if (player.lastRanking.mix! < subEvent.maxLevel!) {
               warnings.hasIssues = true;
               warnings.level.push(
                 this.translation.instant('competition.enrollment.errors.cant-play', {
                   player: player.fullName,
-                  type: 'single',
-                  level: player.lastRanking.single,
+                  type: 'mix',
+                  level: player.lastRanking.mix,
                   max: subEvent.maxLevel,
                 })
               );
-            }
-            if (player.lastRanking.double! < subEvent.maxLevel!) {
-              warnings.hasIssues = true;
-              warnings.level.push(
-                this.translation.instant('competition.enrollment.errors.cant-play', {
-                  player: player.fullName,
-                  type: 'double',
-                  level: player.lastRanking.double,
-                  max: subEvent.maxLevel,
-                })
-              );
-            }
-            if (subEvent.eventType == 'MX') {
-              if (player.lastRanking.mix! < subEvent.maxLevel!) {
-                warnings.hasIssues = true;
-                warnings.level.push(
-                  this.translation.instant('competition.enrollment.errors.cant-play', {
-                    player: player.fullName,
-                    type: 'mix',
-                    level: player.lastRanking.mix,
-                    max: subEvent.maxLevel,
-                  })
-                );
-              }
             }
           }
         }
@@ -347,9 +346,7 @@ export class AssignTeamComponent implements OnChanges {
       // We couldn't find any assign based on index
       if (subEventIndex < 0) {
         // subEventIndex = subEventsSorted.findIndex((subEvent) => team.baseIndex! > subEvent.minBaseIndex!);
-        subEventIndex = subEventsSorted.findIndex((subEvent) => subEvent.maxBaseIndex! > team.baseIndex!) ;
-
-        // console.log(subEventIndex)
+        subEventIndex = subEventsSorted.findIndex((subEvent) => subEvent.maxBaseIndex! > team.baseIndex!);
 
         if (subEventIndex < 0) {
           subEventIndex = subEventsSorted.length - 1;

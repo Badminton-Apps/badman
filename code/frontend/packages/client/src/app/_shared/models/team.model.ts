@@ -49,15 +49,18 @@ export class Team {
     this.players =
       args?.players?.map((p) => {
         let index = this.type == 'MX' ? 36 : 24;
+        let indexSplit = this.type == 'MX' ? '12-12-12' : '12-12';
         if (p.lastRanking) {
           if (this.type == 'MX') {
             index = p.lastRanking.single! + p.lastRanking.double! + p.lastRanking.mix!;
+            indexSplit = `${p.lastRanking.single}-${p.lastRanking.double}-${p.lastRanking.mix}`;
           } else {
             index = p.lastRanking.single! + p.lastRanking.double!;
+            indexSplit = `${p.lastRanking.single}-${p.lastRanking.double}`;
           }
         }
 
-        return new Player({ ...p, index: index });
+        return new Player({ ...p, index, indexSplit});
       }) ?? [];
 
     this.calculateBase();

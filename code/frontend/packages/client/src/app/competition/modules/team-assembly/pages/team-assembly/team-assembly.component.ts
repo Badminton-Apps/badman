@@ -46,10 +46,6 @@ export class TeamAssemblyComponent implements OnInit {
     this.formGroup.addControl('year', new FormControl(year));
     this.formGroup.addControl('event', this.selectedEventControl);
 
-    // this.formGroup.valueChanges.subscribe((r) => {
-    //   console.log(`Form changed`, r);
-    // });
-
     this.apollo
       .query<{ competitionEvents: { edges: { node: Partial<CompetitionEvent> }[] } }>({
         query: gql`

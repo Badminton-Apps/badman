@@ -174,7 +174,6 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
         })
       )
       .subscribe((r) => {
-        console.log('Subscribe finished');
         this.downloading = false;
         this.changeDetectorRef.detectChanges();
       });
