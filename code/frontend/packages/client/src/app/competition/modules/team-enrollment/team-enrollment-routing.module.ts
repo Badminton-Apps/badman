@@ -12,7 +12,7 @@ const routes: Routes = [
     data: {
       claims: {
         any: [
-          // '*_enlist:team',
+          '*_enlist:team',
           'enlist-any:team',
         ],
       },
