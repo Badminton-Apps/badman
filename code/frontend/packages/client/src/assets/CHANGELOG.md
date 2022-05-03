@@ -1,3 +1,14 @@
+## [4.38.1](https://github.com/Badminton-Apps/badman/compare/v4.38.0...v4.38.1) (2022-05-03)
+
+
+### Bug Fixes
+
+* claiming ([4458412](https://github.com/Badminton-Apps/badman/commit/4458412f08b8855a29ab8ad07b3308f0f3cecf9f))
+* Guard for enrollment api ([20b398a](https://github.com/Badminton-Apps/badman/commit/20b398a79e25864688ec316c49f93cf95be570d4))
+* routing for clubs ([76e7037](https://github.com/Badminton-Apps/badman/commit/76e7037696a80d3556204a70d7ac95c279c3f775))
+
+
+
 # [4.38.0](https://github.com/Badminton-Apps/badman/compare/v4.37.2...v4.38.0) (2022-05-02)
 
 
