@@ -1,3 +1,12 @@
+## [4.38.2](https://github.com/Badminton-Apps/badman/compare/v4.38.1...v4.38.2) (2022-05-03)
+
+
+### Bug Fixes
+
+* individual players can be lower then min index ([fba35bd](https://github.com/Badminton-Apps/badman/commit/fba35bdca52510c35fd032f40639b7b1e21e68af))
+
+
+
 ## [4.38.1](https://github.com/Badminton-Apps/badman/compare/v4.38.0...v4.38.1) (2022-05-03)
 
 
