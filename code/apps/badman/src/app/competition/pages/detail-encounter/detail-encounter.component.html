@@ -1,0 +1,9 @@
+<ng-container *ngIf="this.encounter$ | async as encounter">
+  <div class="mat-subheading-1">{{ encounter.home?.name }} vs {{ encounter.away?.name }} <badman-beta></badman-beta></div>
+
+  <div class="mat-subheading-2">Games</div>
+  <div class="games" fxLayout="column">
+    <badman-game-result fxFlex [game]="game" *ngFor="let game of encounter.games"></badman-game-result>
+  </div>
+</ng-container>
+

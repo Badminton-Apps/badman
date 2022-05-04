@@ -1,0 +1,87 @@
+query GetClubQuery(
+  $id: ID!
+  $end: String
+  $systemId: String
+  $includePlacesTeams: Boolean!
+  $includePlaces: Boolean!
+  $includeTeams: Boolean!
+  $includePlayers: Boolean!
+  $includeRoles: Boolean!
+  $includeLocations: Boolean!
+  $teamsWhere: SequelizeJSON
+  $teamPlayersWhere: SequelizeJSON
+) {
+  club(id: $id) {
+    id
+    slug
+    name
+    fullName
+    useForTeamName
+    abbreviation
+    clubId
+    teams(order: "type", where: $teamsWhere) @include(if: $includeTeams) {
+      id
+      slug
+      name
+      abbreviation
+      type
+      preferredTime
+      preferredDay
+      active
+      teamNumber
+      players(end: $end, where: $teamPlayersWhere) {
+        id
+        slug
+        firstName
+        lastName
+        competitionPlayer
+        base
+        gender
+        lastRanking(system: $systemId) @include(if: $includePlacesTeams) {
+          id
+          single
+          double
+          mix
+        }
+      }
+    }
+
+    locations @include(if: $includeLocations) {
+      id
+      name
+      address
+      postalcode
+      street
+      streetNumber
+      city
+      state
+      phone
+      fax
+    }
+
+    roles @include(if: $includeRoles) {
+      id
+      name
+      description
+      players {
+        slug
+        id
+        firstName
+        lastName
+      }
+    }
+
+    players(end: $end) @include(if: $includePlayers) {
+      id
+      slug
+      firstName
+      lastName
+      lastRanking @include(if: $includePlaces) {
+        id
+        single
+        double
+        mix
+      }
+    }
+  }
+}

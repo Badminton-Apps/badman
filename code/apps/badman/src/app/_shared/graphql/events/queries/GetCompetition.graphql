@@ -1,0 +1,31 @@
+query GetEvent($id: ID!, $includeComments: Boolean!, $clubId: ID) {
+  competitionEvent(id: $id) {
+    id
+    slug
+    name
+    startYear
+    allowEnlisting
+    started
+    type
+    updatedAt
+    subEvents(order: "eventType") {
+      id
+      name
+      eventType
+      level
+      maxLevel
+      minBaseIndex
+      maxBaseIndex
+      groups {
+        id
+        name
+      }
+    }
+    comments(where: { clubId: $clubId }) @include(if: $includeComments) {
+      id
+      clubId
+      message
+      playerId
+    }
+  }
+}

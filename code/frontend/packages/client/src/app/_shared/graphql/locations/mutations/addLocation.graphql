@@ -1,5 +1,0 @@
-mutation AddLocation($location: LocationInput!, $clubId: ID!) {
-  addLocation(location: $location, clubId: $clubId) {
-    id
-  }
-}

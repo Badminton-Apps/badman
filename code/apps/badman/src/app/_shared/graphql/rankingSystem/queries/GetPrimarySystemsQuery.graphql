@@ -1,0 +1,10 @@
+query GetPrimarySystemsQuery($where: SequelizeJSON) {
+  systems(where: $where) {
+    id
+    primary
+    amountOfLevels
+    caluclationIntervalLastUpdate
+    differenceForUpgrade
+    differenceForDowngrade
+  }
+}

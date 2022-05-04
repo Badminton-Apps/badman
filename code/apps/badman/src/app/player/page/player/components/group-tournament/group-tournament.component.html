@@ -1,0 +1,15 @@
+<div class="mat-subheading-2">
+  <div>
+    <a [routerLink]="['/tournament', this.subEvent?.event?.slug, this.games?.[0]?.tournament?.id]">{{ this.subEvent?.name }} </a>
+  </div>
+
+  <div class="bottom">
+    <span class="date">
+      {{ games![0].playedAt | date }}
+    </span>
+  </div>
+</div>
+
+<div class="games">
+  <badman-game-result fxFlex="0 1 350px" [game]="game" [player]="player" *ngFor="let game of games"></badman-game-result>
+</div>

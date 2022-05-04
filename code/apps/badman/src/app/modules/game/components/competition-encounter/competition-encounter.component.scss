@@ -1,0 +1,30 @@
+@import '@angular/material/theming';
+$config: mat-typography-config();
+
+:host {
+  display: block;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+}
+
+
+.summary {
+  padding: 12px 0 12px 12px;
+}
+
+.result {
+  margin: 0 6px
+}
+
+.date {
+  @include mat-typography-level-to-styles($config, caption);
+}
+
+.games {
+  padding: 0 12px;
+  overflow: hidden;
+
+  border-top-style: solid;
+  border-top-width: 1px;
+}

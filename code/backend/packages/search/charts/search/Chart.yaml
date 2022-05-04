@@ -1,5 +1,0 @@
-apiVersion: v2
-description: Simulation Service
-name: search
-version: 0.3.15
-appVersion: 0.1.0

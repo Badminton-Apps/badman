@@ -1,0 +1,151 @@
+<div class="mat-subheading-1">Events <badman-beta></badman-beta></div>
+
+<form [formGroup]="this.formGroup" layout="row" layout-fill layout-margin layout-align="start center">
+  <mat-form-field fxFlex>
+    <mat-label>Filter</mat-label>
+    <input matInput placeholder="Ex. ium" #inputName formControlName="query" />
+  </mat-form-field>
+
+  <mat-form-field fxFlex>
+    <mat-label>{{ 'input.year' | translate }}</mat-label>
+    <input matInput type="number" formControlName="startYear" placeholder="2019" #inputYear />
+  </mat-form-field>
+
+  <mat-form-field fxFlex>
+    <mat-label>Type</mat-label>
+    <mat-select [value]="eventTypes[0].value" formControlName="type">
+      <mat-option *ngFor="let eventType of this.eventTypes" [value]="eventType.value"
+        >{{ 'event.types.' + eventType.label | translate }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field fxFlex>
+    <mat-label>Open</mat-label>
+    <mat-select formControlName="allowEnlisting">
+      <mat-option [value]="undefined"> Both </mat-option>
+      <mat-option [value]="true"> Open </mat-option>
+      <mat-option [value]="false"> Closed </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field fxFlex>
+    <mat-label>Started</mat-label>
+    <mat-select formControlName="started">
+      <mat-option [value]="undefined"> Both </mat-option>
+      <mat-option [value]="true"> Started </mat-option>
+      <mat-option [value]="false"> Not started </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<div *ngIf="isLoadingResults">
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoadingResults"></mat-progress-bar>
+</div>
+
+<table
+  mat-table
+  [dataSource]="dataSource"
+  multiTemplateDataRows
+  matSort
+  matSortActive="firstDay"
+  matSortDirection="desc"
+>
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox
+        (click)="$event.stopPropagation()"
+        (change)="$event ? selection.toggle(row.id) : null"
+        [checked]="selection.isSelected(row.id)"
+        [aria-label]="checkboxLabel(row.id)"
+      >
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="dates">
+    <th mat-header-cell *matHeaderCellDef>Date</th>
+    <td mat-cell *matCellDef="let element">
+      <ng-container [ngSwitch]="element.eventType">
+        <ng-container *ngSwitchCase="'TOURNAMENT'">
+          {{ element.firstDay | amLocal | amDateFormat: 'LL' }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'COMPETITION'"> {{ element.startYear }}-{{ element.startYear + 1 }} </ng-container>
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>{{ 'input.name' | translate }}</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="registration">
+    <th mat-header-cell *matHeaderCellDef>Open</th>
+    <td mat-cell *matCellDef="let element">
+      <span *ngIf="element.allowEnlisting">open</span>
+      <span *ngIf="!element.allowEnlisting">colsed</span>
+    </td>
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+      <div class="event-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <ng-container *ngIf="element.eventType == 'TOURNAMENT'">
+          <badman-tournaments-data [data]="element"></badman-tournaments-data>
+        </ng-container>
+        <ng-container *ngIf="element.eventType == 'COMPETITION'">
+          <badman-competition-data [data]="element"></badman-competition-data>
+        </ng-container>
+
+        <button mat-button [routerLink]="['/', element.eventType.toLowerCase(), element.slug]">
+          {{ 'button.detail' | translate }}
+        </button>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let element; columns: displayedColumns"
+    class="event-element-row"
+    [class.example-expanded-row]="expandedElement === element"
+    (click)="expandedElement = expandedElement === element ? null : element"
+  >
+    >
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="event-detail-row"></tr>
+</table>
+
+<div class="toolbar">
+  <button mat-button (click)="setOpenState(true)">Open selected</button>
+  <button mat-button (click)="setOpenState(false)">Colse selected</button>
+  <button mat-button *ngIf="formGroup.value.type == 'COMPETITION_CP'" (click)="copy(year)">Copy selected</button>
+  <mat-paginator
+    [length]="this.resultsLength$ | async"
+    [pageSize]="this.pageSize$ | async"
+    [pageIndex]="this.pageIndex$ | async"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="this.onPaginateChange.next($event)"
+  ></mat-paginator>
+</div>
+
+<ng-template #year>
+  <h2 mat-dialog-title>Copy subevent</h2>
+  <mat-dialog-content>
+    <mat-form-field appearance="outline">
+      <mat-label>Copmetition year</mat-label>
+      <input matInput placeholder="2025" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]>{{ 'button.close' | translate }}</button>
+
+    <button mat-raised-button color="primary" [mat-dialog-close]="2022">Create</button>
+  </mat-dialog-actions>
+</ng-template>

@@ -1,0 +1,77 @@
+<ng-container *ngIf="this.club$ | async as club; else loading">
+  <div class="mat-elevation-z1">
+    <div class="header">
+      <badman-has-claim [any]="[club.id + '_edit:club', 'edit-any:club']">
+        <button class="options" mat-icon-button [matMenuTriggerFor]="options">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #options="matMenu">
+          <button mat-menu-item [routerLink]="['edit']">
+            {{ 'button.edit' | translate }}
+          </button>
+          <button mat-menu-item (click)="addPlayer(club)">Add player</button>
+          <badman-has-claim [any]="['remove:club']">
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="deleteClub(club)">{{ 'button.delete' | translate }}</button>
+          </badman-has-claim>
+        </mat-menu>
+      </badman-has-claim>
+      <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
+    </div>
+    <div class="info">
+      <div class="picture">
+        {{ this.club.abbreviation }}
+      </div>
+      <div class="name">
+        <span class="up"> {{ club.name }}</span>
+        <span class="down">
+          {{ club.clubId }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mat-subheading-1">
+    <div>
+      Teams
+      <badman-has-claim [any]="[club.id + '_add:team', 'edit-any:club']">
+        <button mat-icon-button (click)="this.addTeam(club)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </badman-has-claim>
+    </div>
+    <badman-has-claim [any]="[club.id + '_edit:team', 'edit-any:club']">
+      <div class="end">
+        <button
+          [matTooltip]="this.activeTeams$.value ? 'Show deactivated teams' : 'Hide deactivated teams'"
+          mat-icon-button
+          (click)="this.activeTeams$.next(!this.activeTeams$.value)"
+        >
+          <mat-icon *ngIf="this.activeTeams$.value">visibility</mat-icon>
+          <mat-icon *ngIf="!this.activeTeams$.value">visibility_off</mat-icon>
+        </button>
+      </div>
+    </badman-has-claim>
+  </div>
+
+  <div class="teams" *ngIf="club.teams">
+    <badman-team-overview
+      *ngFor="let team of club.teams"
+      [team]="team"
+      [club]="club"
+      (onEdit)="this.editTeam($event, club)"
+      (onDelete)="this.deleteTeam($event)"
+      (onActiveChange)="this.setActiveTeam($event)"
+    >
+    </badman-team-overview>
+  </div>
+  <!-- 
+  <div class="mat-subheading-1">{{ 'players.title' | translate }}</div>
+  <mat-list *ngIf="club.players">
+    <mat-list-item *ngFor="let player of club.players">
+      {{ player.fullName }}
+    </mat-list-item>
+  </mat-list> -->
+</ng-container>
+
+<ng-template #loading> <mat-progress-bar mode="indeterminate"></mat-progress-bar></ng-template>

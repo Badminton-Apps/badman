@@ -1,0 +1,5 @@
+mutation($comment: CommentInput!, $eventId: ID!) {
+  addComment(comment: $comment, eventId: $eventId) {
+    id
+  }
+}

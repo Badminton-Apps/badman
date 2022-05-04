@@ -1,0 +1,178 @@
+[
+  {
+    "lastName": "dummy",
+    "firstName": "user 1",
+    "memberId": "1231",
+    "gender": "M",
+    "places": [
+      {
+        "single": 1,
+        "double": 2,
+        "mix": 3,
+        "singlePoints": 1,
+        "doublePoints": 2,
+        "mixPoints": 3,
+        "singlePointsDowngrade": 1,
+        "doublePointsDowngrade": 2,
+        "mixPointsDowngrade": 3,
+        "singleRank": 1,
+        "doubleRank": 2,
+        "mixRank": 3
+      }
+    ]
+  },
+  {
+    "lastName": "dummy",
+    "firstName": "user 2",
+    "memberId": "1232",
+    "gender": "M",
+    "places": [
+      {
+        "single": 1,
+        "double": 2,
+        "mix": 3,
+        "singlePoints": 1,
+        "doublePoints": 2,
+        "mixPoints": 3,
+        "singlePointsDowngrade": 1,
+        "doublePointsDowngrade": 2,
+        "mixPointsDowngrade": 3,
+        "singleRank": 1,
+        "doubleRank": 2,
+        "mixRank": 3
+      }
+    ]
+  },
+  {
+    "lastName": "dummy",
+    "firstName": "user 3",
+    "memberId": "1233",
+    "gender": "M",
+    "places": [
+      {
+        "single": 1,
+        "double": 2,
+        "mix": 3,
+        "singlePoints": 1,
+        "doublePoints": 2,
+        "mixPoints": 3,
+        "singlePointsDowngrade": 1,
+        "doublePointsDowngrade": 2,
+        "mixPointsDowngrade": 3,
+        "singleRank": 1,
+        "doubleRank": 2,
+        "mixRank": 3
+      }
+    ]
+  },
+  {
+    "lastName": "dummy",
+    "firstName": "user 4",
+    "memberId": "1234",
+    "gender": "M",
+    "places": [
+      {
+        "single": 1,
+        "double": 2,
+        "mix": 3,
+        "singlePoints": 1,
+        "doublePoints": 2,
+        "mixPoints": 3,
+        "singlePointsDowngrade": 1,
+        "doublePointsDowngrade": 2,
+        "mixPointsDowngrade": 3,
+        "singleRank": 1,
+        "doubleRank": 2,
+        "mixRank": 3
+      }
+    ]
+  },
+  {
+    "lastName": "dummy",
+    "firstName": "user 5",
+    "memberId": "1235",
+    "gender": "M",
+    "places": [
+      {
+        "single": 1,
+        "double": 2,
+        "mix": 3,
+        "singlePoints": 1,
+        "doublePoints": 2,
+        "mixPoints": 3,
+        "singlePointsDowngrade": 1,
+        "doublePointsDowngrade": 2,
+        "mixPointsDowngrade": 3,
+        "singleRank": 1,
+        "doubleRank": 2,
+        "mixRank": 3
+      }
+    ]
+  },
+  {
+    "lastName": "dummy",
+    "firstName": "user 6",
+    "memberId": "1236",
+    "gender": "M",
+    "places": [
+      {
+        "single": 1,
+        "double": 2,
+        "mix": 3,
+        "singlePoints": 1,
+        "doublePoints": 2,
+        "mixPoints": 3,
+        "singlePointsDowngrade": 1,
+        "doublePointsDowngrade": 2,
+        "mixPointsDowngrade": 3,
+        "singleRank": 1,
+        "doubleRank": 2,
+        "mixRank": 3
+      }
+    ]
+  },
+  {
+    "lastName": "dummy",
+    "firstName": "user 7",
+    "memberId": "1237",
+    "gender": "F",
+    "places": [
+      {
+        "single": 1,
+        "double": 2,
+        "mix": 3,
+        "singlePoints": 1,
+        "doublePoints": 2,
+        "mixPoints": 3,
+        "singlePointsDowngrade": 1,
+        "doublePointsDowngrade": 2,
+        "mixPointsDowngrade": 3,
+        "singleRank": 1,
+        "doubleRank": 2,
+        "mixRank": 3
+      }
+    ]
+  },
+  {
+    "lastName": "dummy",
+    "firstName": "user 8",
+    "memberId": "1238",
+    "gender": "F",
+    "places": [
+      {
+        "single": 1,
+        "double": 2,
+        "mix": 3,
+        "singlePoints": 1,
+        "doublePoints": 2,
+        "mixPoints": 3,
+        "singlePointsDowngrade": 1,
+        "doublePointsDowngrade": 2,
+        "mixPointsDowngrade": 3,
+        "singleRank": 1,
+        "doubleRank": 2,
+        "mixRank": 3
+      }
+    ]
+  }
+]

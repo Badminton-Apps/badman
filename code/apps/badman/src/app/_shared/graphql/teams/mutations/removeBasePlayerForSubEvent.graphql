@@ -1,0 +1,5 @@
+mutation RemoveBasePlayerForSubEvent($teamId: ID!, $playerId: ID!, $subEventId: ID!) {
+  removePlayerBaseSubEvent(teamId: $teamId, playerId: $playerId, subEventId: $subEventId) {
+    id
+  }
+}
