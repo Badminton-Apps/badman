@@ -1,8 +1,0 @@
-replicaCount: 1
-image:
-  useImagePullSecrets: false
-  pullPolicy: Always
-  repository: ghcr.io/badminton-apps/core/client
-service:
-  internalPort: 80
-  externalPort: 80

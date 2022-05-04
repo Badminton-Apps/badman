@@ -1,0 +1,12 @@
+query GetRolesQuery($where: SequelizeJSON) {
+  roles(where: $where) {
+    id
+    name
+    players {
+      slug
+      id
+      firstName
+      lastName
+    }
+  }
+}

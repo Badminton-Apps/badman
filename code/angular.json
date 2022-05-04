@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "projects": {
+    "api": "apps/api",
+    "api-database": "libs/api/database",
+    "api-simulate": "libs/api/simulate",
+    "badman": "apps/badman",
+    "badman-e2e": "apps/badman-e2e"
+  }
+}

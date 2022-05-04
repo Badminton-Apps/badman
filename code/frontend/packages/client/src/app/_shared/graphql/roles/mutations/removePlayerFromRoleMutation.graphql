@@ -1,5 +1,0 @@
-mutation RemovePlayerFromRole($roleId: ID!, $playerId: ID!) {
-  removePlayerFromRole(roleId: $roleId, playerId: $playerId) {
-    id
-  }
-}

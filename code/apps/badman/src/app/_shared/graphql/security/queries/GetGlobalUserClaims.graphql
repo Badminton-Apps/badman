@@ -1,0 +1,11 @@
+query GetUserClaims($id: ID!) {
+  player(id: $id) {
+    id
+    claims {
+      id
+      name
+      description
+      category
+    }
+  }
+}

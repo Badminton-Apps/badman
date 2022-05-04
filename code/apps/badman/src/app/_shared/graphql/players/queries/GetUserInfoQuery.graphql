@@ -1,0 +1,49 @@
+query GetUserInfoQuery($id: ID!, $system: String) {
+  player(id: $id) {
+    id
+    slug
+    memberId
+    firstName
+    lastName
+    sub
+    gender
+    competitionPlayer
+    club { 
+      id
+      slug
+      name
+    }
+    lastRanking(system: $system) {
+      id
+      rankingDate
+      single
+      singleRank
+      singlePoints
+      singlePointsDowngrade
+      singleInactive
+      totalSingleRanking
+      totalWithinSingleLevel
+
+      mix
+      mixRank
+      mixPoints
+      mixPointsDowngrade
+      mixInactive
+      totalMixRanking
+      totalWithinMixLevel
+
+      double
+      doubleRank
+      doublePoints
+      doublePointsDowngrade
+      doubleInactive
+      totalDoubleRanking
+      totalWithinDoubleLevel
+
+      rankingSystem {
+        id
+        name
+      }
+    }
+  }
+}

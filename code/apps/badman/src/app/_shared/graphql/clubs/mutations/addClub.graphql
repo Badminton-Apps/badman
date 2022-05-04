@@ -1,0 +1,9 @@
+mutation AddClub($club: ClubInput!) {
+  addClub(club: $club) {
+    id
+    name
+    fullName
+    abbreviation
+    clubId
+  }
+}

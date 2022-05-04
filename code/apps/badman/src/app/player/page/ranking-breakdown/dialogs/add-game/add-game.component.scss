@@ -1,0 +1,32 @@
+.app-game {
+  .vs {
+    margin: 0 3px 0 18px;
+    border-left: 1px solid lightgray;
+
+    &::before {
+      content: "vs";
+      font-size: 12px;
+      position: relative;
+      top: calc(50% - 12px);
+      left: -7px;
+      background-color: white;
+      padding: 1px 3px;
+    }
+
+    @media screen and (max-width: 959px) {
+      margin: 0 0 21px 0;
+      border-left: none;
+      border-bottom: 1px solid lightgray;
+
+      &::before {
+        top: 10px;
+        left: calc(50% - 12px);
+      }
+    }
+
+  }
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "root": "apps/badman-e2e",
+  "sourceRoot": "apps/badman-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/badman-e2e/cypress.json",
+        "devServerTarget": "badman:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "badman:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/badman-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["badman"]
+}

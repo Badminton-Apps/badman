@@ -1,0 +1,11 @@
+query GetCrons {
+  crons {
+    id
+    type
+    cron
+    running
+    scheduled
+    meta
+    lastRun
+  }
+}
