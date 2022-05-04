@@ -1,0 +1,101 @@
+<ng-container *ngIf="this.event$ | async as event">
+  <div class="mat-elevation-z1">
+    <div class="header">
+      <badman-has-claim [any]="['edit:competition', 'edit-any:competition']">
+        <button class="options" mat-icon-button [matMenuTriggerFor]="options">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #options="matMenu">
+          <button mat-menu-item [routerLink]="['edit']">
+            {{ 'button.edit' | translate }}
+          </button>
+          <badman-has-claim [any]="['add:event', 'remove:event']">
+            <button mat-menu-item (click)="this.assignRankingGroups(event)">
+              {{ 'button.set-ranking-groups' | translate }}
+            </button>
+          </badman-has-claim>
+          <mat-divider></mat-divider>
+          <button mat-menu-item>{{ 'button.delete' | translate }}</button>
+        </mat-menu>
+      </badman-has-claim>
+      <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
+    </div>
+    <div class="info">
+      <div class="picture"></div>
+      <div class="name">
+        <span class="up"> {{ event.name }}</span>
+        <span class="down" *ngIf="event.startYear">
+          {{ event.startYear! }} - {{ event.startYear! + 1 }}
+          <span *ngIf="event.updatedAt"
+            >- {{ 'competition.last-updated' | translate }}: {{ event.updatedAt | date }}</span
+          >
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mat-subheading-1">Sub events<badman-beta></badman-beta></div>
+  <div fxLayout="row">
+    <div fxFlex>
+      <mat-list>
+        <ng-container *ngFor="let subEvent of this.subEventsM$ | async">
+          <mat-list-item
+            >{{ subEvent.name }} {{ subEvent.eventType
+            }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+          >
+          <mat-list style="margin-left: 30px">
+            <div *ngFor="let draw of subEvent.draws">
+              <a [routerLink]="[draw.id]"
+                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+              >
+            </div>
+          </mat-list>
+        </ng-container>
+      </mat-list>
+    </div>
+    <div fxFlex>
+      <mat-list>
+        <ng-container *ngFor="let subEvent of this.subEventsF$ | async">
+          <mat-list-item
+            >{{ subEvent.name }} {{ subEvent.eventType
+            }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+          >
+          <mat-list style="margin-left: 30px">
+            <div *ngFor="let draw of subEvent.draws">
+              <a [routerLink]="[draw.id]"
+                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+              >
+            </div>
+          </mat-list>
+        </ng-container>
+      </mat-list>
+    </div>
+    <div fxFlex>
+      <mat-list>
+        <ng-container *ngFor="let subEvent of this.subEventsMX$ | async">
+          <mat-list-item
+            >{{ subEvent.name }} {{ subEvent.eventType
+            }}<span *ngIf="(subEvent?.groups?.length ?? 0) > 0">*</span></mat-list-item
+          >
+          <mat-list style="margin-left: 30px">
+            <div *ngFor="let draw of subEvent.draws">
+              <a [routerLink]="[draw.id]"
+                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+              >
+            </div>
+          </mat-list>
+        </ng-container>
+      </mat-list>
+    </div>
+  </div>
+
+  <!-- <div class="mat-subheading-1">{{ 'players.title' | translate }}</div>
+  <mat-list *ngIf="event.players">
+    <mat-list-item *ngFor="let player of event.players">
+      {{ player.fullName }}
+    </mat-list-item>
+  </mat-list> -->
+  <!-- <mat-tab-group *ngIf="event.subEvents">
+    <mat-tab *ngFor="let subEvent of event.subEvents" [label]="subEvent.name + ' ' + subEvent.eventType"> Content 1 </mat-tab>
+  </mat-tab-group> -->
+</ng-container>

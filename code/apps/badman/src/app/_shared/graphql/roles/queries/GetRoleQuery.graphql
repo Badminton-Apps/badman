@@ -1,0 +1,11 @@
+query GetRoleQuery($id: String!) {
+  role(id: $id) {
+    id
+    name
+    claims {
+      id
+      name
+      description
+    }
+  }
+}

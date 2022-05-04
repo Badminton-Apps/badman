@@ -1,0 +1,22 @@
+# Write your query or mutation here
+query GetEvent($id: ID!) {
+  tournamentEvent(id: $id) {
+    id
+    slug
+    name
+    dates
+    firstDay
+    updatedAt
+    subEvents(order: "name") {
+      id
+      name
+      level
+      eventType
+      gameType
+      groups {
+        id
+        name
+      }
+    }
+  }
+}

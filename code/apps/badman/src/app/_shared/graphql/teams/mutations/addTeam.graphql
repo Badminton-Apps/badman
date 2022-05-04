@@ -1,0 +1,7 @@
+mutation AddTeam($team: TeamInput!, $clubId: ID!) {
+  addTeam(team: $team, clubId: $clubId) {
+    id
+    name
+    abbreviation
+  }
+}

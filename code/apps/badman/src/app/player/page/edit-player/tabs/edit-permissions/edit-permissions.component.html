@@ -1,0 +1,7 @@
+<ng-container *ngFor="let group of this.claims$ | async">
+  <div class="mat-subheading-2">{{ group.category }}</div>
+  <ng-container *ngFor="let claim of group.claims">
+    <badman-claim [claim]="claim" (onChange)="this.claimChanged(claim, $event)"></badman-claim>
+  </ng-container>
+</ng-container>
+ 

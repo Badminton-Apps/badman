@@ -1,7 +1,0 @@
-<form [formGroup]="this.playerForm">
-  <app-has-claim [all]="['status:competition']">
-    <div fxLayout="row" fxLayoutGap="10px">
-      <mat-slide-toggle formControlName="compPlayer">{{ 'input.competitionplayer' | translate }}</mat-slide-toggle>
-    </div>
-  </app-has-claim>
-</form>
