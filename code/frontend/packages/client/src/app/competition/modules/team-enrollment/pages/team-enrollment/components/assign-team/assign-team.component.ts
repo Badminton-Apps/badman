@@ -272,12 +272,12 @@ export class AssignTeamComponent implements OnChanges {
       warnings.base.push(this.translation.instant('competition.enrollment.errors.best-players'));
     }
 
-    if (team.baseIndex! < subEvent.minBaseIndex!) {
+    if (team.baseIndex! < subEvent.minBaseIndex! && team.teamNumber! > 1) {
       issues.hasIssues = true;
       issues.base.push(this.translation.instant('competition.enrollment.errors.base-min'));
     }
 
-    if (team.baseIndex! > subEvent.maxBaseIndex!) {
+    if (team.baseIndex! > subEvent.maxBaseIndex! && team.teamNumber! > 1) {
       issues.hasIssues = true;
       issues.base.push(this.translation.instant('competition.enrollment.errors.base-max'));
     }
