@@ -1,3 +1,12 @@
+## [4.38.3](https://github.com/Badminton-Apps/badman/compare/v4.38.2...v4.38.3) (2022-05-11)
+
+
+### Bug Fixes
+
+* First team can be placed outside restrictions ([dc10542](https://github.com/Badminton-Apps/badman/commit/dc105423a213e768212704041a3632aa180cc44c))
+
+
+
 ## [4.38.2](https://github.com/Badminton-Apps/badman/compare/v4.38.1...v4.38.2) (2022-05-03)
 
 
