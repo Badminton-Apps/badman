@@ -1,3 +1,17 @@
+# [4.39.0](https://github.com/Badminton-Apps/badman/compare/v4.38.3...v4.39.0) (2022-05-12)
+
+
+### Bug Fixes
+
+* Add new availibilty and exceptions when going to next step ([79a55d8](https://github.com/Badminton-Apps/badman/commit/79a55d8cc14f52c185c1db6c9c0dbb5463f79a3a))
+
+
+### Features
+
+* Fixed list for play days ([f0fb725](https://github.com/Badminton-Apps/badman/commit/f0fb725f6992c1e11544e98b69910cce7f2b7a38))
+
+
+
 ## [4.38.3](https://github.com/Badminton-Apps/badman/compare/v4.38.2...v4.38.3) (2022-05-11)
 
 
