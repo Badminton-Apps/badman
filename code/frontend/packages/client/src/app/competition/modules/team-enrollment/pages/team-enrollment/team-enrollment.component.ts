@@ -24,6 +24,8 @@ import * as updateComment from './graphql/UpdateComment.graphql';
 import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
 import { apolloCache } from 'app/graphql.module';
 
+export const STEP_AVAILIBILTY = 1;
+
 @Component({
   selector: 'app-team-enrollment',
   templateUrl: './team-enrollment.component.html',
