@@ -1,7 +1,18 @@
-import { Component, OnInit, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  EventEmitter,
+  Input,
+  Output,
+  Inject,
+  OnDestroy,
+} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
 import { AvailabilityException, resetAllFormFields, validateAllFormFields } from 'app/_shared';
 import * as moment from 'moment';
+import { STEP_AVAILIBILTY } from '../../team-enrollment.component';
 
 @Component({
   selector: 'app-exception-days',
@@ -23,6 +34,12 @@ export class ExceptionDaysComponent implements OnInit {
 
   isNew = false;
 
+  constructor(@Inject(MatStepper) private stepper: MatStepper) {
+    if (!stepper) {
+      throw new Error('Stepper is not provided');
+    }
+  }
+
   ngOnInit(): void {
     if (!this.exception) {
       this.isNew = true;
@@ -41,6 +58,15 @@ export class ExceptionDaysComponent implements OnInit {
       start: startControl,
       end: endControl,
     });
+
+    // Add entered data when leaving this step
+    if (this.isNew) {
+      this.stepper.selectionChange.subscribe((r) => {
+        if (r.previouslySelectedIndex == STEP_AVAILIBILTY) {
+          this.addException();
+        }
+      });
+    }
   }
 
   addException() {
