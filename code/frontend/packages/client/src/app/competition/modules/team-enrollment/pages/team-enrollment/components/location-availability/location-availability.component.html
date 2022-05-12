@@ -12,7 +12,6 @@
         ></app-play-days>
       </div>
       <div class="location-days-item">
-        <mat-label>{{ 'competition.enrollment.new-play-day' | translate }}</mat-label>
         <app-play-days (onChange)="this.uppdateAvailabilityDay($event, -1, availabilityDay)"></app-play-days>
       </div>
     </div>
@@ -27,7 +26,6 @@
         ></app-exception-days>
       </div>
       <div class="location-exceptions-item">
-        <mat-label>{{ 'competition.enrollment.new-exception' | translate }}</mat-label>
         <app-exception-days (onChange)="this.uppdateAvailabilityDay($event, -1, availabilityDay)"></app-exception-days>
       </div>
     </div>
