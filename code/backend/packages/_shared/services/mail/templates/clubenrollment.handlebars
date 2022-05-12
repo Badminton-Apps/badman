@@ -34,16 +34,22 @@
         {{#each location.availabilities as |availability|}}
           {{#if availability.days.length }}
             <p><strong>Speelmomenten:</strong><br/>
+              <ul>
               {{#each availability.days as |day|}}
-                - {{day.day}}, {{day.startTime}} - {{day.endTime}}: {{day.courts}} courts <br/>
+                <li>{{day.day}}, {{day.startTime}} - {{day.endTime}}: {{day.courts}} velden</li>
               {{/each}}
+              </ul>
             </p>
+          {{else}}
+            <p><strong>Geen speelmomenten</strong><br/>
           {{/if}}
           {{#if availability.exceptions.length }}
             <p><strong>Uitzonderingen:</strong><br/>
+              <ul>
                 {{#each availability.exceptions as |exception|}}
-                - {{{ dateFormat "LL"  exception.start}}} until {{{ dateFormat "LL"  exception.end}}}: {{exception.courts}} courts
-              {{/each}}
+                  <li>{{{ dateFormat "LL"  exception.start}}} tot {{{ dateFormat "LL"  exception.end}}}: {{exception.courts}} velden</li>
+                {{/each}}
+              </ul>
             </p>
           {{/if}}
         {{/each}}
