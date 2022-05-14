@@ -28,7 +28,14 @@
     <mat-accordion>
       <mat-expansion-panel *ngFor="let club of clubs">
         <mat-expansion-panel-header>
-          <mat-panel-title fxFlex="200px"> {{ club.name }} </mat-panel-title>
+          <mat-panel-title fxFlex="200px">
+            {{ club.name }}
+            <mat-icon
+              *ngIf="!club.hasLocation"
+              matTooltip="Geen beschikbaarheden ingevuld, gelieve de club te contacteren"
+              >warning</mat-icon
+            >
+          </mat-panel-title>
           <mat-panel-description>{{ club.teams?.length }} Teams</mat-panel-description>
         </mat-expansion-panel-header>
         <div class="mat-subheading-2">Locations</div>
