@@ -30,7 +30,6 @@ export class ClubViewComponent implements OnInit {
         if (eventId == 'all') {
           return this.events$.pipe(
             map((e) => {
-              console.log(e);
               return {
                 data: {
                   competitionEvent: {
