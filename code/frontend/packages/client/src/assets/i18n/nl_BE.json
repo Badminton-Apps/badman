@@ -65,6 +65,9 @@
       "min-base": "Min basis ploegindex",
       "max-base": "Max basis ploegindex"
     },
+    "enrollments": {
+      "title": "Inschrijvingen"
+    },
     "enrollment": {
       "select-location": "Selecteer locaties voor ontmoetingen",
       "select-club": "Selecteer club & competitie",
