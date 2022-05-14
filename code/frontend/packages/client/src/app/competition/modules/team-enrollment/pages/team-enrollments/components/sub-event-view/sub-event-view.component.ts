@@ -78,8 +78,7 @@ export class SubEventViewComponent implements OnInit {
         });
 
         return event.subEvents;
-      }),
-      tap((e) => console.log(e))
+      })
     );
 
     this.events$ = this.yearControl.valueChanges.pipe(
