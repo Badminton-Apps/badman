@@ -73,7 +73,7 @@
         </div>
         <div class="mat-subheading-2">Teams</div>
         <div *ngFor="let team of club.teams">
-          <div cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="overlayOpen = team.id ?? ''">
+          <div class="team-description" cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="overlayOpen = team.id ?? ''">
             {{ team.name }} ({{team.entries?.[0]?.meta?.competition?.teamIndex}}) -
             {{ team.entries?.[0]?.competitionSubEvent?.name }}
             {{ team.entries?.[0]?.competitionSubEvent?.eventType }}
@@ -88,7 +88,7 @@
             (detach)="overlayOpen = ''"
             (backdropClick)="overlayOpen = ''"
           >
-            <div class="team-deatil">
+            <div class="team-detail">
               <ng-container *ngIf="team.entries?.[0] as entry">
                 index: {{ entry.meta?.competition?.teamIndex }}
                 <ul>

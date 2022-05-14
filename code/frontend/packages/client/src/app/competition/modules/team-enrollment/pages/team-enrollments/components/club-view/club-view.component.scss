@@ -14,7 +14,7 @@
 }
 
 
-.team-deatil {
+.team-detail {
   @include mat.elevation(8);
   background-color: white;
   padding: 16px;
@@ -26,4 +26,9 @@
       list-style-type: none
     }
   }
+}
+
+
+.team-description {
+  cursor: pointer;
 }
