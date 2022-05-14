@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { SubEventCompetition } from '..';
+
 /**
  * Valid types for an objects key
  */
@@ -317,7 +320,6 @@ export const nestedObjectFind = (
   }
 };
 
-
 /**
  * Return the cartesian product of the given arrays. Unfortunately accurate type information is not possible until variadic types are implemented.
  *
@@ -358,7 +360,7 @@ export const nestedObjectFind = (
  */
 export const product = (...sets: any[][]): any[][] => {
   return sets.reduce(
-    (acc, set) => acc.map(x => set.map(y => [...x, y])).flat(),
+    (acc, set) => acc.map((x) => set.map((y) => [...x, y])).flat(),
     [[]]
   );
 };
@@ -401,12 +403,12 @@ export const splitInChunks = (array, sizeChunks = 500) => {
   return newArray;
 };
 
-export const titleCase = str => {
+export const titleCase = (str) => {
   if (typeof str !== 'string') return str;
   return str
     .toLowerCase()
     .split(' ')
-    .map(word => {
+    .map((word) => {
       if (!isNaN(parseInt(word.charAt(0), 10))) {
         return (
           word.charAt(0) + word.charAt(1).toUpperCase() + word.substring(2)
@@ -416,6 +418,14 @@ export const titleCase = str => {
       }
     })
     .join(' ');
+};
+
+export const sortSubEvents = (a: SubEventCompetition, b: SubEventCompetition) => {
+  if (a.eventType === b.eventType) {
+    return a.level - b.level;
+  }
+
+  return a.eventType.localeCompare(b.eventType);
 };
 
 declare module 'express' {

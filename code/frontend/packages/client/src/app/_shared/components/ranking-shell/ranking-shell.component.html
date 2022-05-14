@@ -104,6 +104,14 @@
                   </mat-nav-list>
                 </app-has-claim>
 
+                <app-has-claim [any]="['view:entries']">
+                  <mat-nav-list>
+                    <a mat-list-item routerLink="/competition/team-enrollment/list" routerLinkActive="active">
+                      {{ 'competition.enrollments.title' | translate }}
+                    </a>
+                  </mat-nav-list>
+                </app-has-claim>
+
                 <app-has-claim [any]="['change-any:encounter']">
                   <!-- <app-has-claim [any]="['*_change:encounter', 'change-any:encounter']"> -->
                   <mat-nav-list>

@@ -49,7 +49,7 @@ const startServer = async (databaseService: DataBaseHandler) => {
         new PdfController(Router(), handlebarService),
         new TestController(Router())
       ],
-      proxies: [
+      proxies: [ 
         {
           from: '/api/v1/search',
           to: `http://${process.env.SEARCH_SERVICE}` 

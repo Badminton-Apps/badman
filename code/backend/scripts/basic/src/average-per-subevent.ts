@@ -9,6 +9,7 @@ import {
   LastRankingPlace,
   Player,
   RankingSystem,
+  sortSubEvents,
 } from '@badvlasim/shared';
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 import { writeFile } from 'fs/promises';
@@ -151,13 +152,8 @@ async function calculateAverages(name: string, ranking: RankingSystem) {
     { single: string; double: string; mix: string }
   >();
 
-  const subEventsSorted = event.subEvents.sort((a, b) => {
-    if (a.eventType === b.eventType) {
-      return a.level - b.level;
-    }
-
-    return a.eventType.localeCompare(b.eventType);
-  });
+  const subEventsSorted = event.subEvents.sort(sortSubEvents);
+  
   for (const subevent of subEventsSorted) {
     const playersPerSubEvent = subevent.draws.flatMap((d) =>
       d.encounters.flatMap((e) =>

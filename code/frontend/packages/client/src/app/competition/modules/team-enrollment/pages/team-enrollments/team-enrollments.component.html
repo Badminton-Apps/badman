@@ -1,0 +1,14 @@
+<div fxFlex fxLayout="column" fxLayoutGap="16px">
+  <div>
+    <div class="mat-subheading-1">{{ 'competition.enrollments.title' | translate }}</div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Club">
+      <ng-template matTabContent> <app-club-view></app-club-view> </ng-template
+    ></mat-tab>
+    <mat-tab label="Reeks">
+      <ng-template matTabContent> <app-sub-event-view></app-sub-event-view> </ng-template
+    ></mat-tab>
+  </mat-tab-group>
+</div>
