@@ -1,3 +1,17 @@
+# [4.41.0](https://github.com/Badminton-Apps/badman/compare/v4.40.0...v4.41.0) (2022-05-14)
+
+
+### Bug Fixes
+
+* check club where from selection ([4a8f5f8](https://github.com/Badminton-Apps/badman/commit/4a8f5f8d61540875232ea6f2f1b157247ab01689))
+
+
+### Features
+
+* show warning when no availibilities ([78b7c73](https://github.com/Badminton-Apps/badman/commit/78b7c732afdf3119fdedd1d866a68a886a361f6a))
+
+
+
 # [4.40.0](https://github.com/Badminton-Apps/badman/compare/v4.39.0...v4.40.0) (2022-05-14)
 
 
