@@ -1,3 +1,12 @@
+# [4.40.0](https://github.com/Badminton-Apps/badman/compare/v4.39.0...v4.40.0) (2022-05-14)
+
+
+### Features
+
+* View entries ([b5b2fe7](https://github.com/Badminton-Apps/badman/commit/b5b2fe7f952661805b285b6f887d152f1d66ba2b))
+
+
+
 # [4.39.0](https://github.com/Badminton-Apps/badman/compare/v4.38.3...v4.39.0) (2022-05-12)
 
 
