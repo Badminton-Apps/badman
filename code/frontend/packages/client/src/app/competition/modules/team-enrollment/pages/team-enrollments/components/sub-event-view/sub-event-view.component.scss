@@ -1,0 +1,15 @@
+@use '@angular/material'as mat;
+
+.team-deatil {
+  @include mat.elevation(8);
+  background-color: white;
+  padding: 16px;
+
+  ul {
+    padding: 0;
+
+    li {
+      list-style-type: none
+    }
+  }
+}
