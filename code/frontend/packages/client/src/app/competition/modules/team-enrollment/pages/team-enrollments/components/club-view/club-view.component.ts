@@ -77,7 +77,7 @@ export class ClubViewComponent implements OnInit {
       // Distinct
       switchMap(({ subEventIds, clubIds }) => {
         const clubWhere =
-          clubIds.length > 0 && clubIds[0] != undefined
+          this.eventControl.value != 'all'
             ? {
                 id: clubIds,
               }
