@@ -17,7 +17,7 @@ export class ClubViewComponent implements OnInit {
   eventControl: FormControl = new FormControl();
   loading = false;
 
-  clubs$!: Observable<Club[]>;
+  clubs$!: Observable<(Club & { hasLocation: boolean })[]>;
   events$!: Observable<CompetitionEvent[]>;
 
   constructor(private _apollo: Apollo) {}
@@ -158,12 +158,14 @@ export class ClubViewComponent implements OnInit {
         });
       }),
 
-      map((result) => result.data.clubs.edges.map(({ node }) => new Club(node))),
+      map((result) => result.data.clubs.edges.map(({ node }) => new Club(node) as Club & { hasLocation: boolean })),
       map((clubs) => {
         // Sort by name
         clubs = clubs.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
 
         clubs = clubs.map?.((club) => {
+          club.hasLocation = club?.locations?.some((location) => location?.availibilities?.[0]?.days?.length ?? 0 <= 0) ?? false;
+
           club.teams = club.teams?.filter((team) => {
             if ((team.entries?.length ?? 0) == 0) {
               return false;
