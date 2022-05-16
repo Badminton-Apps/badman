@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { merge, of, Subject } from 'rxjs';
-import { startWith, switchMap, map, catchError } from 'rxjs/operators';
-import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
-import { AdminService } from 'app/admin/services';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
+import { merge, of, Subject } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { AdminService } from '../../../../services';
 
 @Component({
   templateUrl: './link-account.component.html',
@@ -51,18 +51,24 @@ export class LinkAccountComponent implements AfterViewInit {
   }
 
   masterToggle() {
-    this.isAllSelected() ? this.selection.clear() : this.data.forEach((row) => this.selection.select(row));
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.data.forEach((row) => this.selection.select(row));
   }
 
   checkboxLabel(row?: any): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${
+      row.position + 1
+    }`;
   }
 
   async linkAccounts(accept: boolean) {
-    await this.adminService.linkAccount(this.selection.selected.map((x) => x.id).join(','), accept).toPromise();
+    await this.adminService
+      .linkAccount(this.selection.selected.map((x) => x.id).join(','), accept)
+      .toPromise();
     this.processed.next(null);
   }
 }

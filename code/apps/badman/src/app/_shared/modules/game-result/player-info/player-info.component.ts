@@ -1,5 +1,15 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { GameStatus, GameType, PlayerGame, RankingPoint } from 'app/_shared/models';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import {
+  PlayerGame,
+  GameType,
+  GameStatus,
+  RankingPoint,
+} from '../../../models';
 
 @Component({
   selector: 'badman-player-info',
@@ -9,27 +19,27 @@ import { GameStatus, GameType, PlayerGame, RankingPoint } from 'app/_shared/mode
 })
 export class PlayerInfoComponent implements OnInit {
   @Input()
-  player!: PlayerGame;
+  player?: PlayerGame;
 
   @Input()
   type?: GameType;
 
   @Input()
-  won: boolean = false;
+  won = false;
 
   @Input()
   status?: GameStatus;
 
   @Input()
-  rankingPoint!: RankingPoint;
+  rankingPoint?: RankingPoint;
 
   ranking?: number;
   wonIsUsedForUpgrade!: boolean;
   lostIsUsedForUpgrade!: boolean;
   lostIsUsedForDowngrade!: boolean;
 
-  class: string = 'not-used';
-  tooltip: string = '';
+  class = 'not-used';
+  tooltip = '';
 
   ngOnInit() {
     this.status = this.status || GameStatus.NORMAL;
@@ -44,10 +54,14 @@ export class PlayerInfoComponent implements OnInit {
       this.wonIsUsedForUpgrade = this.won;
 
       this.lostIsUsedForUpgrade =
-        !this.won && this.rankingPoint.differenceInLevel! >= this.rankingPoint.type!.differenceForUpgrade! * -1;
+        !this.won &&
+        (this.rankingPoint.differenceInLevel ?? 0) >=
+          (this.rankingPoint.type?.differenceForUpgrade ?? 0) * -1;
 
       this.lostIsUsedForDowngrade =
-        !this.won && this.rankingPoint.differenceInLevel! >= this.rankingPoint.type!.differenceForDowngrade! * -1;
+        !this.won &&
+        (this.rankingPoint.differenceInLevel ?? 0) >=
+          (this.rankingPoint.type?.differenceForDowngrade ?? 0) * -1;
 
       if (this.wonIsUsedForUpgrade) {
         this.tooltip = 'Used for upgrade and downgrade';

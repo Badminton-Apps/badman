@@ -1,8 +1,11 @@
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { RankingSystem, RankingSystemGroup, SystemService } from 'app/_shared';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import {
+  RankingSystem,
+  RankingSystemGroup,
+  SystemService,
+} from '../../../../../_shared';
 
 @Component({
   templateUrl: './add-ranking-system.component.html',

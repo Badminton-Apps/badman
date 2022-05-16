@@ -1,22 +1,13 @@
-import {
-  Component,
-  Input,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
-import {
-  filter,
-  map,
-  startWith,
-  switchMap,
-  take
-} from 'rxjs/operators';
+import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
 import { Club } from '../../../models';
 import {
-  ClaimService, ClubService, PermissionService, UserService
+  ClaimService,
+  ClubService,
+  UserService,
 } from '../../../services';
 
 @Component({
@@ -59,8 +50,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     private claimSerice: ClaimService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private user: UserService,
-    private permissionService: PermissionService
+    private user: UserService
   ) {}
 
   async ngOnInit() {
@@ -85,7 +75,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           if (all) {
             return this.clubService.getClubs({ first: 999 });
           } else if (single) {
-            return this.permissionService.userPermissions$.pipe(
+            return this.claimSerice.claims$.pipe(
               map((r) =>
                 r.filter((x) => x.indexOf(this.singleClubPermission) != -1)
               ),

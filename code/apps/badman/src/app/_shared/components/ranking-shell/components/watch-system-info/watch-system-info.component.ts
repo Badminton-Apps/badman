@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { SystemService } from 'app/_shared';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { SystemService } from '../../../../services';
 
 @Component({
   selector: 'badman-watch-system-info',
@@ -9,7 +9,7 @@ import { SystemService } from 'app/_shared';
 })
 export class WatchSystemInfoComponent {
   @Input()
-  isMobile: boolean = false;
+  isMobile = false;
 
   constructor(public systemService: SystemService) {}
 }

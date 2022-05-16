@@ -86,7 +86,7 @@ export class SystemService {
           rankingSystem,
         },
       })
-      .pipe(map((x) => new RankingSystem(x.data!.updateRankingSystem)));
+      .pipe(map((x) => new RankingSystem(x.data?.updateRankingSystem)));
   }
 
   updateSystem(rankingSystem: RankingSystem) {
@@ -97,21 +97,21 @@ export class SystemService {
           rankingSystem,
         },
       })
-      .pipe(map((x) => new RankingSystem(x.data!.updateRankingSystem)));
+      .pipe(map((x) => new RankingSystem(x.data?.updateRankingSystem)));
   }
 
   getPrimarySystem() {
     return this.getPrimarySystemsWhere().pipe(
       switchMap((query) =>
         this.apollo
-          .query<{ systems: RankingSystem[] }>({
+          .query<{ rankingSystems: RankingSystem[] }>({
             query: primarySystemsQuery,
             variables: {
               where: query,
             },
           })
           .pipe(
-            map((x) => (x.data?.systems?.length > 0 ? new RankingSystem(x.data.systems[0]) : null)),
+            map((x) => (x.data?.rankingSystems?.length > 0 ? new RankingSystem(x.data.rankingSystems[0]) : null)),
             shareReplay(1)
           )
       )

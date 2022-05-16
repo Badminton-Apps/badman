@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { RankingSystem, RankingSystemGroup, SystemService } from 'app/_shared';
+import { RankingSystem, RankingSystemGroup, SystemService } from '../../../../../_shared';
 
 @Component({
   templateUrl: './edit-ranking-system.component.html',
@@ -21,7 +21,12 @@ export class EditRankingSystemComponent implements OnInit {
   ngOnInit(): void {
     this.system$ = this.route.paramMap.pipe(
       map((x) => x.get('id')),
-      switchMap((id) => this.systemService.getSystem(id!))
+      switchMap((id) => {
+        if (!id) {
+          throw new Error('No id');
+        }
+        return this.systemService.getSystem(id);
+      })
     ); 
     this.rankingGroups$ = this.systemService.getSystemsGroups();
   }

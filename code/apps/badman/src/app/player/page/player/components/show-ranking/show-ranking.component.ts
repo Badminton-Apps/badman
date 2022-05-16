@@ -1,5 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { RankingPlace, RankingSystem } from 'app/_shared';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+} from '@angular/core';
+import { RankingPlace, RankingSystem } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-show-ranking',
@@ -15,33 +20,45 @@ export class ShowRankingComponent implements OnInit {
   viewingRankingPlace?: RankingPlace;
 
   @Input()
-  type?: 'single' | 'double' | 'mix';
+  type!: 'single' | 'double' | 'mix';
 
   @Input()
   systems?: RankingSystem[];
 
   nextUp: 'upgrade' | 'downgrade' | 'same' = 'same';
 
-  constructor() {}
-
   ngOnInit(): void {
-    if (this.systems) {
-      const usedSystem = this.systems.find((s) => s.id === this.rankingPlace?.rankingSystem?.id)!;
-      const level = this.rankingPlace![this.type!];
+    if (this.systems && this.rankingPlace) {
+      const usedSystem = this.systems.find(
+        (s) => s.id === this.rankingPlace?.rankingSystem?.id
+      );
+      const level = this.rankingPlace[this.type];
+      const raningPlace = this.rankingPlace[`${this.type}Points`] ?? 0;
+
+      if (
+        !usedSystem ||
+        !usedSystem?.pointsToGoDown ||
+        !usedSystem.pointsToGoUp ||
+        !usedSystem.amountOfLevels
+      ) {
+        throw new Error('No system found');
+      }
 
       // we can go up
       if (usedSystem && level && level !== 1) {
-        const poitnsNeeded = usedSystem.pointsToGoUp![usedSystem.amountOfLevels! - level!];
-        if (this.rankingPlace![`${this.type!}Points`!] >= poitnsNeeded) {
+        const poitnsNeeded =
+          usedSystem.pointsToGoUp[usedSystem.amountOfLevels - level];
+        if (raningPlace >= poitnsNeeded) {
           this.nextUp = 'upgrade';
         }
       }
 
       // we can go down
-      if (usedSystem && level && level !== usedSystem.amountOfLevels) {
-        const poitnsNeeded = usedSystem.pointsToGoDown![usedSystem.amountOfLevels! - level! - 1];
+      if (usedSystem && level && level == usedSystem.amountOfLevels) {
+        const poitnsNeeded =
+          usedSystem.pointsToGoDown[usedSystem.amountOfLevels - level - 1];
 
-        if (this.rankingPlace![`${this.type!}Points`!] < poitnsNeeded) {
+        if (raningPlace < poitnsNeeded) {
           this.nextUp = 'downgrade';
         }
       }

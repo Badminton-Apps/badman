@@ -10,7 +10,7 @@ import {
   PrimaryKey,
   Table,
   TableOptions,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import {
   BelongsToGetAssociationMixin,
@@ -24,15 +24,17 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import { Game } from './game.model';
 import { Location } from './location.model';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 } as TableOptions)
+@ObjectType({ description: 'A Court' })
 export class Court extends Model {
   constructor(values?: Partial<Court>, options?: BuildOptions) {
     super(values, options);
@@ -41,10 +43,12 @@ export class Court extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique('unique_constraint')
+  @Field({ nullable: true })
   @Column
   name: string;
 
@@ -56,6 +60,7 @@ export class Court extends Model {
 
   @ForeignKey(() => Location)
   @Unique('unique_constraint')
+  @Field({ nullable: true })
   @Column
   locationId: string;
 

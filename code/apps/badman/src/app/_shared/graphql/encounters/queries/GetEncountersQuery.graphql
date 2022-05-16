@@ -1,4 +1,4 @@
-query GetEncounterQuery($id: ID!, $where: SequelizeJSON) {
+query GetEncounterQuery($id: ID!, $where: JSONObject) {
   competitionEncounters(team: $id, where: $where) {
     edges {
       node {

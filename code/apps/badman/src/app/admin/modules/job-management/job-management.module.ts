@@ -18,7 +18,7 @@ import { CovalentDataTableModule } from '@covalent/core/data-table';
 import { CovalentBarEchartsModule } from '@covalent/echarts/bar';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
-import { SharedModule } from 'app/_shared';
+import { SharedModule } from '../../../_shared';
 import { JobManagementRoutingModule } from './job-management-routing.module';
 import { OverviewJobsComponent } from './pages/overview-jobs/overview-jobs.component';
 

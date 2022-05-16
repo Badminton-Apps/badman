@@ -36,7 +36,7 @@ export class GamesComponent implements OnChanges {
     const reset$ = new Subject();
 
     const id$ = this.route.paramMap.pipe(
-      tap((_) => reset$.next(undefined)),
+      tap(() => reset$.next(undefined)),
       map((x) => x.get('id')),
       shareReplay(1)
     );
@@ -44,7 +44,7 @@ export class GamesComponent implements OnChanges {
     const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
     this.games$ = this.gameFilter.valueChanges.pipe(
       startWith(undefined),
-      tap((_) => this.currentPage$.next(0)),
+      tap(() => this.currentPage$.next(0)),
       switchMap((filter) =>
         combineLatest([id$, system$, this.currentPage$]).pipe(
           switchMap(([playerId, system, page]) => {

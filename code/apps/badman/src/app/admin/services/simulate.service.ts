@@ -1,5 +1,4 @@
-import { map } from 'rxjs/operators';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { environment } from './../../../environments/environment';
@@ -11,13 +10,22 @@ export class SimulateService {
   private urlBase = `${environment.api}/api/${environment.apiVersion}/simulate`;
   constructor(private httpClient: HttpClient) {}
 
-  calculateRanking(systems: string[], endDate: Date, startDate?: Date, startingRankings?: boolean) {
+  calculateRanking(
+    systems: string[],
+    endDate: Date,
+    startDate?: Date,
+    startingRankings?: boolean
+  ) {
     if (systems.length <= 0) {
       return of();
     }
 
-    let params: {
-      [key: string]: any;
+    const params: {
+      [param: string]:
+        | string
+        | number
+        | boolean
+        | ReadonlyArray<string | number | boolean>;
     } = {
       systems: `${systems.join(',')}`,
       endDate: endDate.toISOString(),

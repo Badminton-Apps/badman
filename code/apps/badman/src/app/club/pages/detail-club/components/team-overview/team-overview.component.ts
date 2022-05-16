@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Club, Team } from 'app/_shared';
+import { Club, Team } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-team-overview',

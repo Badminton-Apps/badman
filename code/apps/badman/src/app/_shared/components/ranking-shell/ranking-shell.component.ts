@@ -1,12 +1,10 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { UserService } from 'app/_shared';
-import { environment } from 'environments/environment';
-import { combineLatest, Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { EventType, Player } from '../../models';
-import { DeviceService, EventService, SystemService } from '../../services';
+import { Player } from '../../models';
+import { DeviceService, UserService } from '../../services';
 
 @Component({
   templateUrl: './ranking-shell.component.html',
@@ -30,26 +28,25 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 
     this.profile$ = this.user.profile$.pipe(
-      filter((x) => x !== null && x?.player !== null),
-      map((x) => x!.player)
+      filter((x) => x !== null),
     ) as Observable<Player>;
 
     this.canEnroll$ = this.apollo
-      .query<{ tournamentEvents: { total: number }; competitionEvents: { total: number } }>({
+      .query<{
+        tournamentEvents: { total: number };
+        competitionEvents: { total: number };
+      }>({
         query: gql`
           # we request only first one, because if it's more that means it's open
-          query CanEnroll($where: SequelizeJSON) {
+          query CanEnroll($where: JSONObject) {
             # tournamentEvents(first: 1, where: $where) {
             #   total
             #   edges {
             #     cursor
             #   }
             # }
-            competitionEvents(first: 1, where: $where) {
-              total
-              edges {
-                cursor
-              }
+            eventCompetitions(take: 1, where: $where) {
+              id
             }
           }
         `,
@@ -59,7 +56,13 @@ export class RankingShellComponent implements OnDestroy, OnInit {
           },
         },
       })
-      .pipe(map((events) => events?.data?.tournamentEvents?.total != 0 || events?.data?.competitionEvents?.total != 0));
+      .pipe(
+        map(
+          (events) =>
+            events?.data?.tournamentEvents?.total != 0 ||
+            events?.data?.competitionEvents?.total != 0
+        )
+      );
   }
 
   ngOnDestroy(): void {

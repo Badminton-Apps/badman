@@ -7,7 +7,7 @@ import {
   Player,
   TournamentDraw,
   TournamentSubEvent,
-} from 'app/_shared/models';
+} from '../../../../../_shared';
 
 @Component({
   selector: 'badman-games-result',
@@ -25,51 +25,67 @@ export class GamesResultComponent implements OnInit {
 
   @Input()
   gameType!: GameType;
-  
+
   subEvents!: (CompetitionSubEvent | TournamentSubEvent)[];
 
   @Input()
   player!: Player;
 
   ngOnInit() {
-    
-
     // This every time the games length changes
     if (this.games.length !== this.gamesLength) {
       // Shouldn't happen, but still :)
       if (this.games.length > 0) {
         this.subEvents = Object.values(
-          this.games.reduce((acc: { [key: string]: CompetitionSubEvent | TournamentSubEvent }, cur) => {
-            if (cur.competition?.draw?.subEvent) {
-              (acc[cur.competition.draw.subEvent.id!] = acc[cur.competition.draw.subEvent.id!] || {
-                ...cur.competition.draw.subEvent,
-                games: [],
-              }).games!.push(cur);
-            }
-            if (cur.tournament?.subEvent) {
-              (acc[cur.tournament.subEvent.id!] = acc[cur.tournament.subEvent.id!] || {
-                ...cur.tournament.subEvent,
-                games: [],
-              }).games!.push(cur);
-            }
+          this.games.reduce(
+            (
+              acc: { [key: string]: CompetitionSubEvent | TournamentSubEvent },
+              cur
+            ) => {
+              let subEvent:
+                | CompetitionSubEvent
+                | TournamentSubEvent
+                | undefined;
 
-            return acc;
-          }, {})
+              if (cur.competition?.draw?.subEvent) {
+                subEvent = cur.competition.draw.subEvent;
+              } else if (cur.tournament?.subEvent) {
+                subEvent = cur.tournament.subEvent;
+              }
+
+              if (!subEvent?.id) {
+                throw new Error('No subEvent id');
+              }
+
+              let event = acc[subEvent.id];
+
+              if (!event || !event.games) {
+                event = subEvent;
+                acc[subEvent.id] = event;
+              }
+
+              event.games = [...(event.games ?? []), cur];
+
+              return acc;
+            },
+            {}
+          )
         );
 
         // This is only once
         if (this.gamesLength === -1) {
           if (this.games[0].competition) {
-            this.competition = this.games[0]!.competition as CompetitionEncounter;
+            this.competition = this.games[0]
+              .competition as CompetitionEncounter;
           }
 
           if (this.games[0].tournament) {
-            this.tournament = this.games[0]!.tournament as TournamentDraw;
+            this.tournament = this.games[0].tournament as TournamentDraw;
           }
 
           this.subEvents.map((x) => {
             if (x instanceof TournamentSubEvent) {
-              x.gameType = this.gameType ?? x.games![0]!.gameType;
+              x.gameType = this.gameType ?? (x.games ?? [])[0].gameType;
             }
           });
         }

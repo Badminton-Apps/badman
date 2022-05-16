@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { CompetitionDraw, CompetitionEvent } from 'app/_shared';
-import { combineLatest, switchMap, map, Observable, tap } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
+import { CompetitionDraw } from '../../../_shared';
 
 @Component({
   selector: 'badman-detail-draw',
@@ -65,7 +65,7 @@ export class DetailDrawCompetitionComponent implements OnInit {
             }
           `,
           variables: {
-            competitionDrawId: params.get('drawId')!,
+            competitionDrawId: params.get('drawId'),
           },
         })
       ),
@@ -73,11 +73,13 @@ export class DetailDrawCompetitionComponent implements OnInit {
         const draw = new CompetitionDraw(data.competitionDraw);
 
         draw.encounters?.forEach((encounter) => {
-          encounter.home = draw.entries!.find(e => e.team!.id === encounter.homeTeamId)?.team;
-          encounter.away = draw.entries!.find(e => e.team!.id === encounter.awayTeamId)?.team;
+          encounter.home = draw.entries.find(
+            (e) => e.team?.id === encounter.homeTeamId
+          )?.team;
+          encounter.away = draw.entries.find(
+            (e) => e.team?.id === encounter.awayTeamId
+          )?.team;
         });
-
-
 
         return draw;
       })

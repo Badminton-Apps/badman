@@ -1,8 +1,23 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
-import { apolloCache } from 'app/graphql.module';
-import { Availability, AvailabilityDay, AvailabilityException, Club, Location } from 'app/_shared';
-import { combineLatest, lastValueFrom, map, merge, Observable, of, switchMap, take, tap, withLatestFrom } from 'rxjs';
+import {
+  combineLatest,
+  lastValueFrom,
+  map,
+  Observable,
+  of,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
+import { apolloCache } from '../../../../../../../graphql.module';
+import {
+  Availability,
+  AvailabilityDay,
+  AvailabilityException,
+  Club,
+  Location,
+} from '../../../../../../../_shared';
 
 @Component({
   selector: 'badman-location-availability',
@@ -51,15 +66,20 @@ export class LocationAvailabilityComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) => result.data.locations.map((location) => new Location(location))),
+        map((result) =>
+          result.data.locations.map((location) => new Location(location))
+        ),
         switchMap((locations) => {
           const curr = locations as Location[];
           const toCreateDays: Observable<Availability>[] = [];
 
           for (const loc of curr) {
+            if (!loc?.id) {
+              continue;
+            }
             // If no availibilties are found, create one
             if (!loc.availibilities || loc.availibilities.length === 0) {
-              toCreateDays.push(this.addAvailabilityDay(loc.id!));
+              toCreateDays.push(this.addAvailabilityDay(loc.id));
             }
           }
 
@@ -68,9 +88,13 @@ export class LocationAvailabilityComponent implements OnInit {
               take(1),
               map((newAvailibilties) => {
                 for (const newAvailibilty of newAvailibilties) {
-                  curr
-                    .find((location) => location.id === newAvailibilty.locationId)!
-                    .availibilities!.push(newAvailibilty);
+                  const location = curr.find(
+                    (location) => location.id === newAvailibilty.locationId
+                  );
+                  if (!location) {
+                    throw new Error('Location not found');
+                  }
+                  location.availibilities.push(newAvailibilty);
                 }
 
                 return curr;
@@ -87,8 +111,14 @@ export class LocationAvailabilityComponent implements OnInit {
     return this.apollo
       .mutate<{ addLocationAvailibilty: Partial<Availability> }>({
         mutation: gql`
-          mutation AddAvailibilty($locationId: ID!, $availibilty: AvailabilityInput) {
-            addLocationAvailibilty(locationId: $locationId, availibilty: $availibilty) {
+          mutation AddAvailibilty(
+            $locationId: ID!
+            $availibilty: AvailabilityInput
+          ) {
+            addLocationAvailibilty(
+              locationId: $locationId
+              availibilty: $availibilty
+            ) {
               id
               locationId
               days {
@@ -134,15 +164,15 @@ export class LocationAvailabilityComponent implements OnInit {
   ) {
     if (id === -1) {
       if (updated instanceof AvailabilityDay) {
-        availabilityDay.days!.push(updated);
+        availabilityDay.days.push(updated);
       } else {
-        availabilityDay.exceptions!.push(updated);
+        availabilityDay.exceptions.push(updated);
       }
     } else {
       if (updated instanceof AvailabilityDay) {
-        availabilityDay.days![id] = updated;
+        availabilityDay.days[id] = updated;
       } else {
-        availabilityDay.exceptions![id] = updated;
+        availabilityDay.exceptions[id] = updated;
       }
     }
 
@@ -184,11 +214,15 @@ export class LocationAvailabilityComponent implements OnInit {
     );
   }
 
-  async deleteAvailabilityDay(type: 'day' | 'exception', id: number, availabilityDay: Availability) {
+  async deleteAvailabilityDay(
+    type: 'day' | 'exception',
+    id: number,
+    availabilityDay: Availability
+  ) {
     if (type === 'day') {
-      availabilityDay.days!.splice(id, 1);
+      availabilityDay.days.splice(id, 1);
     } else {
-      availabilityDay.exceptions!.splice(id, 1);
+      availabilityDay.exceptions.splice(id, 1);
     }
 
     await lastValueFrom(

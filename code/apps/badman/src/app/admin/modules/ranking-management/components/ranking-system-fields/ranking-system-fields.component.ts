@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { RankingSystem, RankingSystemGroup } from 'app/_shared';
+import { RankingSystem, RankingSystemGroup } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-ranking-system-fields',

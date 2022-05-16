@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Club, Player, Team } from 'app/_shared';
+import { Club, Player, Team } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-club-edit-team',
@@ -20,11 +20,15 @@ export class ClubEditTeamComponent implements OnInit {
   players?: Player[];
   teamIndex?: number;
 
-  where!: {};
+  where!: { [key: string]: unknown};
 
   ngOnInit(): void {
-    this.teamIndex = this.team.entries![0].meta?.competition?.teamIndex;
-    this.players = this.team.entries![0].meta?.competition?.players.map((p) => new Player(p.player));
+    if (!this.team.entries){
+      throw new Error('Team has no entries');
+    }
+
+    this.teamIndex = this.team.entries[0].meta?.competition?.teamIndex;
+    this.players = this.team.entries[0].meta?.competition?.players.map((p) => new Player(p.player));
 
     this.where = {
       gender: this.team.type == 'MX' || this.team.type == 'NATIONAL' ? undefined : this.team.type,

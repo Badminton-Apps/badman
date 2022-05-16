@@ -4,7 +4,7 @@ import { ITdDataTableColumn } from '@covalent/core/data-table';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { RankingPoint, RankingSystem, SystemService } from 'app/_shared';
+import { RankingSystem, SystemService } from '../../../../../_shared';
 
 @Component({
   templateUrl: './detail-ranking-system.component.html',
@@ -40,23 +40,50 @@ export class DetailRankingSystemComponent implements OnInit {
     },
   };
 
-  constructor(private systemService: SystemService, private route: ActivatedRoute) {}
+  constructor(
+    private systemService: SystemService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     const id$ = this.route.paramMap.pipe(
       map((x) => x.get('id')),
-      shareReplay(1)
+      shareReplay(1),
+      map((id) => {
+        if (!id) {
+          throw new Error('No id');
+        }
+        return id;
+      })
     );
 
     this.caps$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemCaps(id!)),
+      switchMap((id) => {
+        return this.systemService.getSystemCaps(id);
+      }),
       map((system) => {
-        let level = system.amountOfLevels!;
-        return system.pointsWhenWinningAgainst!.map((winning, index) => {
+        if (
+          !system ||
+          !system.pointsWhenWinningAgainst ||
+          !system.pointsToGoUp ||
+          !system.pointsToGoDown ||
+          !system.amountOfLevels
+        ) {
+          throw new Error('No system');
+        }
+
+        let level = system.amountOfLevels;
+        return system.pointsWhenWinningAgainst.map((winning, index) => {
           return {
             level: level--,
-            pointsToGoUp: level !== 0 ? Math.round(system.pointsToGoUp![index]) : null,
-            pointsToGoDown: index === 0 ? null : Math.round(system.pointsToGoDown![index - 1]),
+            pointsToGoUp:
+              level !== 0
+                ? Math.round(system.pointsToGoUp?.[index] ?? 0)
+                : null,
+            pointsToGoDown:
+              index === 0
+                ? null
+                : Math.round(system.pointsToGoDown?.[index - 1] ?? 0),
             pointsWhenWinningAgainst: Math.round(winning),
           };
         });
@@ -64,7 +91,7 @@ export class DetailRankingSystemComponent implements OnInit {
     );
 
     this.allGenders$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemWithCount(id!)),
+      switchMap((id) => this.systemService.getSystemWithCount(id)),
       tap(
         (system) =>
           (this.levels = Array(system.amountOfLevels)
@@ -75,11 +102,11 @@ export class DetailRankingSystemComponent implements OnInit {
       map((system) => this.getSeriesData(system))
     );
     this.male$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemWithCount(id!, 'M')),
+      switchMap((id) => this.systemService.getSystemWithCount(id, 'M')),
       map((system) => this.getSeriesData(system))
     );
     this.female$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemWithCount(id!, 'F')),
+      switchMap((id) => this.systemService.getSystemWithCount(id, 'F')),
       map((system) => this.getSeriesData(system))
     );
 

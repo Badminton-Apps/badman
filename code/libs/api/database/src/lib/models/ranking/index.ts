@@ -1,5 +1,5 @@
 // start:ng42.barrel
-export * from './group_system.model';
+export * from './group-system-membership.model';
 export * from './group.model';
 export * from './period.interface';
 export * from './place.model';

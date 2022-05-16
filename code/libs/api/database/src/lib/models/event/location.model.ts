@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -42,12 +43,13 @@ import { Availability } from './availability.model';
 import { TeamLocationCompetition } from './competition/team-location-membership.model';
 import { Court } from './court.model';
 import { EventTournament } from './tournament';
-import { LocationEventTournament } from './tournament/location-event.model';
+import { LocationEventTournamentMembership } from './tournament/location-event-membership.model';
 
 @Table({
   timestamps: true,
   schema: 'event',
 } as TableOptions)
+@ObjectType({ description: 'A Location' })
 export class Location extends Model {
   constructor(values?: Partial<Location>, options?: BuildOptions) {
     super(values, options);
@@ -56,40 +58,50 @@ export class Location extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column
   name: string;
 
+  @Field({ nullable: true })
   @Column
   address: string;
 
+  @Field({ nullable: true })
   @Column
   street: string;
 
+  @Field({ nullable: true })
   @Column
   streetNumber: string;
 
+  @Field({ nullable: true })
   @Column
   postalcode: string;
 
+  @Field({ nullable: true })
   @Column
   city: string;
 
+  @Field({ nullable: true })
   @Column
   state: string;
 
+  @Field({ nullable: true })
   @Column
   phone: string;
 
+  @Field({ nullable: true })
   @Column
   fax: string;
 
   @BelongsToMany(() => Team, () => TeamLocationCompetition)
   teams: Team[];
 
-  @BelongsToMany(() => EventTournament, () => LocationEventTournament)
+  @BelongsToMany(() => EventTournament, () => LocationEventTournamentMembership)
   eventTournaments: EventTournament[];
 
   @HasMany(() => Court, 'locationId')
@@ -100,6 +112,7 @@ export class Location extends Model {
 
   @ForeignKey(() => Club)
   @Index
+  @Field({ nullable: true })
   @Column
   clubId: string;
 
