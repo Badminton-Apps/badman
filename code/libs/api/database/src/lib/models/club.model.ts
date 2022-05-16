@@ -49,11 +49,13 @@ import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
   schema: 'public',
 })
+@ObjectType({ description: 'A Club' })
 export class Club extends Model {
   constructor(values?: Partial<Club>, options?: BuildOptions) {
     super(values, options);
@@ -63,26 +65,32 @@ export class Club extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique('club_number_unique')
   @Index
   @AllowNull(false)
+  @Field({ nullable: true })
   @Column
   name: string;
 
+  @Field({ nullable: true })
   @Column
   fullName?: string;
 
   @Default(UseForTeamName.NAME)
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('name', 'fullName', 'abbreviation'))
   useForTeamName?: UseForTeamName;
 
+  @Field({ nullable: true })
   @Column
   abbreviation: string;
 
   @Unique('club_number_unique')
+  @Field({ nullable: true })
   @Column
   clubId?: number;
 
@@ -101,6 +109,7 @@ export class Club extends Model {
   @HasMany(() => Location)
   locations: Location[];
 
+  @Field({ nullable: true })
   @Column
   slug: string;
 
@@ -113,7 +122,7 @@ export class Club extends Model {
   @BeforeCreate
   static setAbbriviation(instance: Club) {
     if (!instance.abbreviation && instance.isNewRecord) {
-      instance.abbreviation = instance?.name?.match(/\b(\w)/g)?.join('');
+      instance.abbreviation = instance?.name?.match(/\b(\w)/g)?.join('') ?? '';
     }
   }
 

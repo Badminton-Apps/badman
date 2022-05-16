@@ -1,0 +1,53 @@
+{
+  "root": "apps/worker/sync",
+  "sourceRoot": "apps/worker/sync/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/worker/sync",
+        "main": "apps/worker/sync/src/main.ts",
+        "tsConfig": "apps/worker/sync/tsconfig.app.json",
+        "assets": ["apps/worker/sync/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/worker/sync/src/environments/environment.ts",
+              "with": "apps/worker/sync/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "worker-sync:build",
+        "port": 9230
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/worker/sync/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/worker/sync"],
+      "options": {
+        "jestConfig": "apps/worker/sync/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

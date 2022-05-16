@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -10,7 +11,7 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions
+  BuildOptions,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -18,23 +19,25 @@ import {
   Column,
   DataType,
   Default,
-  ForeignKey, Index,
+  ForeignKey,
+  Index,
   IsUUID,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { Club } from '../club.model';
 import { Player } from '../player.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Claim } from './claim.model';
 import { PlayerRoleMembership } from './role-player-membership.model';
-import { SecurityType } from './security-types.enum';
+import { SecurityType } from '../../enums/security-types.enum';
 
 @Table({
   timestamps: true,
-  schema: 'security'
+  schema: 'security',
 })
+@ObjectType({ description: 'A Role' })
 export class Role extends Model {
   constructor(values?: Partial<Role>, options?: BuildOptions) {
     super(values, options);
@@ -43,38 +46,39 @@ export class Role extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Index
+  @Field({ nullable: true })
   @Column
   name: string;
 
   @Index
+  @Field({ nullable: true })
   @Column
   description: string;
 
-  @BelongsToMany(
-    () => Claim,
-    () => RoleClaimMembership
-  )
+  @BelongsToMany(() => Claim, () => RoleClaimMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   claims: (Claim & { RoleClaimMembership: RoleClaimMembership })[];
 
-  @BelongsToMany(
-    () => Player,
-    () => PlayerRoleMembership
-  )
+  @BelongsToMany(() => Player, () => PlayerRoleMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   players: (Player & { PlayerClaimMembership: PlayerRoleMembership })[];
 
   @BelongsTo(() => Club, 'clubId')
   club: Club;
 
-  @Column(DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM))
+  @Field(() => String, { nullable: true })
+  @Column(
+    DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM)
+  )
   type: SecurityType;
 
   @ForeignKey(() => Club)
+  @Field({ nullable: true })
   @Column
   clubId: string;
 

@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { BuildOptions } from 'sequelize';
 import {
   BelongsTo,
@@ -17,6 +18,7 @@ import { EventEntry } from './entry.model';
   timestamps: true,
   schema: 'event',
 } as TableOptions)
+@ObjectType({ description: 'A Standing' })
 export class Standing extends Model {
   constructor(values?: Partial<Standing>, options?: BuildOptions) {
     super(values, options);
@@ -25,6 +27,7 @@ export class Standing extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
@@ -32,31 +35,41 @@ export class Standing extends Model {
   entry?: EventEntry;
 
   @ForeignKey(() => EventEntry)
+  @Field({ nullable: true })
   @Column
   entryId: string;
 
+  @Field({ nullable: true })
   @Column
   position: number;
 
+  @Field({ nullable: true })
   @Column
   points: number;
 
+  @Field({ nullable: true })
   @Column
   played: number;
 
+  @Field({ nullable: true })
   @Column
   gamesWon: number;
+  @Field({ nullable: true })
   @Column
   gamesLost: number;
 
+  @Field({ nullable: true })
   @Column
   setsWon: number;
+  @Field({ nullable: true })
   @Column
   setsLost: number;
 
+  @Field({ nullable: true })
   @Column
   totalPointsWon: number;
 
+  @Field({ nullable: true })
   @Column
   totalPointsLost: number;
 
@@ -64,6 +77,7 @@ export class Standing extends Model {
    * Competition: encounters won
    * Tournament: Ignored
    */
+  @Field({ nullable: true })
   @Column
   won?: number;
 
@@ -71,6 +85,7 @@ export class Standing extends Model {
    * Competition: encounters draw
    * Tournament: Ignored
    */
+  @Field({ nullable: true })
   @Column
   tied?: number;
 
@@ -78,14 +93,15 @@ export class Standing extends Model {
    * Competition: encounters lost
    * Tournament: Ignored
    */
+  @Field({ nullable: true })
   @Column
   lost?: number;
 
-  restartCount(){
+  restartCount() {
     this.position = 0;
     this.points = 0;
     this.played = 0;
-    this.gamesWon = 0;  
+    this.gamesWon = 0;
     this.gamesLost = 0;
     this.setsWon = 0;
     this.setsLost = 0;

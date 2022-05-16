@@ -199,8 +199,8 @@ export class AssemblyComponent implements OnInit {
                 query: gql`
                   query GetTeamInfo(
                     $clubId: ID!
-                    $rankingWhere: SequelizeJSON
-                    $entryWhere: SequelizeJSON
+                    $rankingWhere: JSONObject
+                    $entryWhere: JSONObject
                   ) {
                     club(id: $clubId) {
                       id

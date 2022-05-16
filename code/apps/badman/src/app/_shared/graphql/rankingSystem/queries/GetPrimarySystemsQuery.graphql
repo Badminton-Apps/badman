@@ -1,5 +1,5 @@
-query GetPrimarySystemsQuery($where: SequelizeJSON) {
-  systems(where: $where) {
+query GetPrimarySystemsQuery($where: JSONObject) {
+  rankingSystems(where: $where) {
     id
     primary
     amountOfLevels

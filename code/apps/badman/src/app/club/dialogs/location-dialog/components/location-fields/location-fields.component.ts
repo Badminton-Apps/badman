@@ -1,9 +1,14 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Club, Location } from 'app/_shared';
-import { debounceTime, skip, tap } from 'rxjs/operators';
-import PlaceResult = google.maps.places.PlaceResult;
-import { Location as GmLocation } from '@angular-material-extensions/google-maps-autocomplete';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
+import { Club, Location } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-location-fields',
@@ -24,7 +29,10 @@ export class LocationFieldsComponent implements OnInit {
   adressForm!: FormControl;
 
   ngOnInit() {
-    const nameControl = new FormControl(this.location.name, Validators.required);
+    const nameControl = new FormControl(
+      this.location.name,
+      Validators.required
+    );
 
     const addressControl = new FormControl(this.location.address);
     const phoneControl = new FormControl(this.location.phone);
@@ -60,13 +68,23 @@ export class LocationFieldsComponent implements OnInit {
 
   syncAutoComplete($event: google.maps.places.PlaceResult) {
     const city =
-      $event.address_components?.find((r) => r.types.includes('sublocality'))?.long_name ??
-      $event.address_components?.find((r) => r.types.includes('locality'))?.long_name;
+      $event.address_components?.find((r) => r.types.includes('sublocality'))
+        ?.long_name ??
+      $event.address_components?.find((r) => r.types.includes('locality'))
+        ?.long_name;
 
-    const postalcode = $event.address_components?.find((r) => r.types.includes('postal_code'))?.long_name;
-    const state = $event.address_components?.find((r) => r.types.includes('administrative_area_level_2'))?.long_name;
-    const street = $event.address_components?.find((r) => r.types.includes('route'))?.long_name;
-    const streetNumber = $event.address_components?.find((r) => r.types.includes('street_number'))?.long_name;
+    const postalcode = $event.address_components?.find((r) =>
+      r.types.includes('postal_code')
+    )?.long_name;
+    const state = $event.address_components?.find((r) =>
+      r.types.includes('administrative_area_level_2')
+    )?.long_name;
+    const street = $event.address_components?.find((r) =>
+      r.types.includes('route')
+    )?.long_name;
+    const streetNumber = $event.address_components?.find((r) =>
+      r.types.includes('street_number')
+    )?.long_name;
 
     this.locationForm.patchValue({
       address: this.locationForm.value.address,

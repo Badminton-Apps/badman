@@ -1,5 +1,5 @@
 query GetSystemsQuery($id: ID!, $gender: String) {
-  system(id: $id) {
+  rankingSystems(id: $id) {
     id
     name
     primary

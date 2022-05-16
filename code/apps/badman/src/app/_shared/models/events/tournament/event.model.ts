@@ -1,4 +1,3 @@
-import { Player } from 'app/_shared';
 import { Event, EventType } from '../event.model';
 import { TournamentSubEvent } from './sub-event.model';
 

@@ -1,4 +1,4 @@
-query GetLocationQuery($where: SequelizeJSON) {
+query GetLocationQuery($where: JSONObject) {
   locations(where: $where) {
     id
     name

@@ -1,4 +1,4 @@
-@import 'app/_shared/mixins.scss';
+@import '../../../../_shared/mixins.scss';
 
 @include mat-table-columns((position: (width: 25px, flex: none),
     name: (width: 8rem),

@@ -126,10 +126,10 @@ export class RankingBreakdownComponent implements OnInit {
     const system$ = this.systemService.getPrimarySystemsWhere().pipe(
       switchMap((query) =>
         this.apollo
-          .query<{ systems: RankingSystem[] }>({
+          .query<{ rankingSystems: RankingSystem[] }>({
             query: gql`
-              query getPrimary($where: SequelizeJSON) {
-                systems(where: $where) {
+              query getPrimary($where: JSONObject) {
+                rankingSystems(where: $where) {
                   id
                   differenceForUpgrade
                   differenceForDowngrade
@@ -152,7 +152,7 @@ export class RankingBreakdownComponent implements OnInit {
             },
           })
           .pipe(
-            map((x) => new RankingSystem(x.data.systems[0])),
+            map((x) => new RankingSystem(x.data.rankingSystems[0])),
             filter((x) => !!x),
             shareReplay(1)
           )
@@ -198,7 +198,7 @@ export class RankingBreakdownComponent implements OnInit {
           .query<{ player: Player }>({
             fetchPolicy: 'no-cache',
             query: gql`
-                query PlayerGames($where: SequelizeJSON, $playerId: ID!, $rankingType: ID!) {
+                query PlayerGames($where: JSONObject, $playerId: ID!, $rankingType: ID!) {
                   player(id: $playerId) {
                     id
                     games(where: $where) {

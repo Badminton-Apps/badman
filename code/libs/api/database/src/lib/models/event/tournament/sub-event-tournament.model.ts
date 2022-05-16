@@ -10,7 +10,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import {
   BelongsToGetAssociationMixin,
@@ -33,19 +33,21 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import { EventTournament } from './event-tournament.model';
-import { GroupSubEventTournament } from './group-subevent.model';
+import { GroupSubEventTournamentMembership } from './group-subevent-membership.model';
 import { DrawTournament } from './draw-tournament.model';
 import { RankingSystemGroup } from '../../ranking';
 import { GameType, SubEventType } from '../../../enums';
 import { EventEntry } from '../entry.model';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 })
+@ObjectType({ description: 'A SubEventTournament' })
 export class SubEventTournament extends Model {
   constructor(values?: Partial<SubEventTournament>, options?: BuildOptions) {
     super(values, options);
@@ -54,48 +56,56 @@ export class SubEventTournament extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique('SubEventTournaments_unique_constraint')
+  @Field({ nullable: true })
   @Column
   name: string;
 
   @Unique('SubEventTournaments_unique_constraint')
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType: SubEventType;
 
   @Unique('SubEventTournaments_unique_constraint')
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('S', 'D', 'MX'))
   gameType: GameType;
 
+  @Field({ nullable: true })
   @Column
   level?: number;
 
   @Unique('SubEventTournaments_unique_constraint')
+  @Field({ nullable: true })
   @Column
   visualCode: string;
 
   @BelongsToMany(
-    () => RankingSystemGroup, 
-    () => GroupSubEventTournament
+    () => RankingSystemGroup,
+    () => GroupSubEventTournamentMembership
   )
   groups: RankingSystemGroup[];
 
   @HasMany(() => DrawTournament, {
     foreignKey: 'subeventId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   draws: DrawTournament[];
 
+  @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
     foreignKey: 'eventId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   event?: EventTournament;
 
   @Unique('SubEventTournaments_unique_constraint')
   @ForeignKey(() => EventTournament)
+  @Field({ nullable: true })
   @Column
   eventId: string;
 
@@ -114,7 +124,10 @@ export class SubEventTournament extends Model {
   addGroups!: BelongsToManyAddAssociationsMixin<RankingSystemGroup, string>;
   addGroup!: BelongsToManyAddAssociationMixin<RankingSystemGroup, string>;
   removeGroup!: BelongsToManyRemoveAssociationMixin<RankingSystemGroup, string>;
-  removeGroups!: BelongsToManyRemoveAssociationsMixin<RankingSystemGroup, string>;
+  removeGroups!: BelongsToManyRemoveAssociationsMixin<
+    RankingSystemGroup,
+    string
+  >;
   hasGroup!: BelongsToManyHasAssociationMixin<RankingSystemGroup, string>;
   hasGroups!: BelongsToManyHasAssociationsMixin<RankingSystemGroup, string>;
   countGroup!: BelongsToManyCountAssociationsMixin;

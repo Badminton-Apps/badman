@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -26,12 +27,13 @@ import { Player } from '../player.model';
 import { PlayerClaimMembership } from './claim-player-membership.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Role } from './role.model';
-import { SecurityType } from './security-types.enum';
+import { SecurityType } from '../../enums';
 
 @Table({
   timestamps: true,
   schema: 'security',
 })
+@ObjectType({ description: 'A Claim' })
 export class Claim extends Model {
   constructor(values?: Partial<Claim>, options?: BuildOptions) {
     super(values, options);
@@ -39,23 +41,30 @@ export class Claim extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique('Claims_name_category')
   @Index
+  @Field({ nullable: true })
   @Column
   name: string;
 
   @Index
+  @Field({ nullable: true })
   @Column
   description: string;
 
   @Unique('Claims_name_category')
+  @Field({ nullable: true })
   @Column
   category: string;
 
-  @Column(DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM))
+  @Field(() => String, { nullable: true })
+  @Column(
+    DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM)
+  )
   type: SecurityType;
 
   @BelongsToMany(() => Player, () => PlayerClaimMembership)

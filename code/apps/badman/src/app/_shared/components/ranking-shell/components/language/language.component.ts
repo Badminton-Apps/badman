@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { TranslateService } from '@ngx-translate/core';
-import { language_map, setLanguage } from 'app/_shared/factory';
+import { language_map, setLanguage } from '../../../../factory';
 
 @Component({
   selector: 'badman-language',

@@ -1,9 +1,7 @@
-import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { Imported, ImporterSubEvent, RankingSystemGroup } from 'app/_shared';
+import { Imported, RankingSystemGroup } from '../../../../../../../_shared';
 
 @Component({
   templateUrl: './add-event.dialog.component.html',
@@ -16,18 +14,17 @@ export class AddEventDialogComponent implements OnInit {
     private data: { imported: Imported; groups: RankingSystemGroup[] }
   ) {}
 
-
-
   eventForm!: FormGroup;
 
-
   ngOnInit() {
-
     this.eventForm = new FormGroup({
       name: new FormControl(this.data.imported.name, Validators.required),
       // usedForRanking: new FormControl(true, Validators.required),
       dates: new FormControl(this.data.imported.dates, Validators.required),
-      firstDay: new FormControl(this.data.imported.firstDay, Validators.required),
+      firstDay: new FormControl(
+        this.data.imported.firstDay,
+        Validators.required
+      ),
       type: new FormControl(this.data.imported.type, Validators.required),
       uniCode: new FormControl(this.data.imported.uniCode, Validators.required),
       tournamentNumber: new FormControl(this.data.imported.tournamentNumber),
@@ -41,7 +38,6 @@ export class AddEventDialogComponent implements OnInit {
       //   dates: this.eventForm.value.dates.join(','),
       //   subEvents: this.subEvents.data.map((subEvent, index) => {
       //     let groups = [];
-
       //     if (this.useSame) {
       //       groups = this.selectedGroups.value.map((g: any) => {
       //         return { id: g.id, name: g.name };
@@ -57,7 +53,6 @@ export class AddEventDialogComponent implements OnInit {
       //         }
       //       }
       //     }
-
       //     return {
       //       ...subEvent,
       //       groups,
@@ -66,6 +61,4 @@ export class AddEventDialogComponent implements OnInit {
       // });
     }
   }
-
-
 }

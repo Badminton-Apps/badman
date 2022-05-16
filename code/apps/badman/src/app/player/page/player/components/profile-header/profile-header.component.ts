@@ -69,10 +69,10 @@ export class ProfileHeaderComponent implements OnChanges {
           where['primary'] = true;
         }
 
-        return this.apollo.query<{ systems: Partial<RankingSystem>[] }>({
+        return this.apollo.query<{ rankingSystems: Partial<RankingSystem>[] }>({
           query: gql`
-            query GetSystems($where: SequelizeJSON) {
-              systems(where: $where) {
+            query GetSystems($where: JSONObject) {
+              rankingSystems(where: $where) {
                 id
                 primary
                 amountOfLevels
@@ -86,7 +86,7 @@ export class ProfileHeaderComponent implements OnChanges {
           },
         });
       }),
-      map((x) => x.data.systems?.map((x) => new RankingSystem(x)))
+      map((x) => x.data.rankingSystems?.map((x) => new RankingSystem(x)))
     );
 
     this.places$ = this.systems$.pipe(
@@ -95,7 +95,7 @@ export class ProfileHeaderComponent implements OnChanges {
           query: gql`
             query GetRankingPlacesForSystems(
               $playerId: ID!
-              $where: SequelizeJSON
+              $where: JSONObject
             ) {
               player(id: $playerId) {
                 id

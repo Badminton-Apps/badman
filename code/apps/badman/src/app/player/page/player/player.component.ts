@@ -30,9 +30,7 @@ import {
 export class PlayerComponent implements OnInit, OnDestroy {
   private mobileQueryListener!: () => void;
   player$!: Observable<Player | null>;
-  user$!: Observable<
-    { player: Player; request: any } | { player: null; request: null } | null
-  >;
+  user$!: Observable<Player | undefined | null>;
   loadingPlayer = false;
 
   canClaimAccount$!: Observable<{
@@ -80,7 +78,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     );
 
     this.user$ = this.updateHappend$.pipe(
-      switchMap((_) => this.userService.profile$)
+      switchMap(() => this.userService.profile$)
     );
 
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
@@ -89,12 +87,17 @@ export class PlayerComponent implements OnInit, OnDestroy {
           return { canClaim: false, isUser: false, isClaimedByUser: false };
         }
 
+        // return {
+        //   canClaim: !player.isClaimed && !user?.player && !user?.request,
+        //   isUser: user?.player?.id === player?.id,
+        //   isClaimedByUser:
+        //     user && user.request && user.request.playerId === player.id,
+        // };
         return {
-          canClaim: !player.isClaimed && !user?.player && !user?.request,
-          isUser: user?.player?.id === player?.id,
-          isClaimedByUser:
-            user && user.request && user.request.playerId === player.id,
-        };
+          canClaim: false,
+          isUser: false,
+          isClaimedByUser: false,
+        }
       }),
       startWith({ canClaim: false, isUser: false, isClaimedByUser: false })
     );
@@ -108,7 +111,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(
       this.userService
         .requestLink(playerId)
-        .pipe(tap((_) => this.updateHappend$.next(null)))
+        .pipe(tap(() => this.updateHappend$.next(null)))
     );
 
     if (result && result.id) {

@@ -158,7 +158,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         startWith([this.formGroup.value, undefined, undefined]),
         debounceTime(300),
         map(([filterChange]) => {
-          const where: { [key: string]: any } = {};
+          const where: { [key: string]: unknown } = {};
 
           if (filterChange.query) {
             where['name'] = {
@@ -264,7 +264,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
           id: selected,
           allowEnlisting: state,
         })
-        .subscribe((_) => {
+        .subscribe(() => {
           // trigger update
           this.formGroup.updateValueAndValidity({
             onlySelf: false,

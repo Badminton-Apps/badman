@@ -26,11 +26,13 @@ import {
 import { LevelType, UsedRankingTiming } from '../../../enums';
 import { Comment } from './../../comment.model';
 import { SubEventCompetition } from './sub-event-competition.model';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
   schema: 'event',
 } as TableOptions)
+@ObjectType({ description: 'A EventCompetition' })
 export class EventCompetition extends Model {
   constructor(values?: Partial<EventCompetition>, options?: BuildOptions) {
     super(values, options);
@@ -39,17 +41,21 @@ export class EventCompetition extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID, { nullable: true })
   @Column
   id: string;
 
   @Unique('EventCompetitions_unique_constraint')
+  @Field({ nullable: true })
   @Column
   name: string;
 
   @Unique('EventCompetitions_unique_constraint')
+  @Field({ nullable: true })
   @Column
   startYear: number;
 
+  @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
     foreignKey: 'linkId',
     constraints: false,
@@ -59,6 +65,7 @@ export class EventCompetition extends Model {
   })
   comments: Comment[];
 
+  @Field(() => [SubEventCompetition], { nullable: true })
   @HasMany(() => SubEventCompetition, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
@@ -66,27 +73,34 @@ export class EventCompetition extends Model {
   subEvents: SubEventCompetition[];
 
   @Unique('EventCompetitions_unique_constraint')
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
   type: LevelType;
 
   @Unique('EventCompetitions_unique_constraint')
+  @Field({ nullable: true })
   @Column
   visualCode: string;
 
   @Default(false)
+  @Field({ nullable: true })
   @Column
   allowEnlisting: boolean;
 
   @Default(false)
+  @Field({ nullable: true })
   @Column
   started: boolean;
 
+  @Field({ nullable: true })
   @Column
   slug: string;
 
+  @Field({ nullable: true })
   @Column
   usedRankingAmount: number;
 
+  @Field(() => String,{ nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   usedRankingUnit: 'months' | 'weeks' | 'days';
 

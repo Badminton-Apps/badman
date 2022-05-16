@@ -71,7 +71,7 @@ export class EditRoleComponent implements OnInit {
         })
       ),
       mergeMap((res) => res),
-      groupBy((person) => person.category),
+      groupBy((person) => person.category ?? 'Other'),
       mergeMap((obs) => {
         return obs.pipe(
           toArray(),

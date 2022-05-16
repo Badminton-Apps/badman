@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -21,6 +22,7 @@ import { EncounterChange } from './encounter-change.model';
   timestamps: true,
   schema: 'event',
 })
+@ObjectType({ description: 'A EncounterChangeDate' })
 export class EncounterChangeDate extends Model {
   constructor(values?: Partial<EncounterChangeDate>, options?: BuildOptions) {
     super(values, options);
@@ -29,9 +31,11 @@ export class EncounterChangeDate extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column
   selected?: boolean;
 
@@ -42,15 +46,19 @@ export class EncounterChangeDate extends Model {
   encounterChange?: EncounterChange;
 
   @ForeignKey(() => EncounterChange)
+  @Field({ nullable: true })
   @Column
   encounterChangeId: string;
 
+  @Field({ nullable: true })
   @Column
   date: Date;
 
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
   availabilityHome?: ChangeEncounterAvailability;
 
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
   availabilityAway?: ChangeEncounterAvailability;
 

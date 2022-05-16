@@ -1,14 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Input,
-  Output,
-} from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { CompetitionEvent, Event } from 'app/_shared';
-import { debounce, debounceTime } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { CompetitionEvent } from '../../../_shared';
 
 @Component({
   selector: 'badman-event-competition-fields',

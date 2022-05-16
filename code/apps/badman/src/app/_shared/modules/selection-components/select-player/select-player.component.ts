@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControlOptions, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
-import { Player, PlayerService } from 'app/_shared';
 import { DocumentNode, FragmentDefinitionNode } from 'graphql';
 import { debounceTime, filter, lastValueFrom, map, Observable, switchMap } from 'rxjs';
+import { Player } from '../../../models';
+import { PlayerService } from '../../../services';
 
 @Component({
   selector: 'badman-select-player',
@@ -16,7 +17,7 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
   label?: string;
 
   @Input()
-  controlName: string = 'player';
+  controlName = 'player';
 
   @Input()
   formGroup!: FormGroup;
@@ -34,7 +35,7 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
    * Extra where queries for the player
    */
   @Input()
-  where?: {};
+  where?: {[key: string]: unknown};
 
   /**
    * Allows to extend the query with a fragemnt, the root must be of type Player
@@ -71,11 +72,11 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
       this.formControl = new FormControl(null, this.validators);
       this.formGroup.addControl(this.controlName, this.formControl);
     } else {
-      this.formControl = this.formGroup.get(this.controlName)! as FormControl;
+      this.formControl = this.formGroup.get(this.controlName) as FormControl;
     }
 
-    if ((this.dependsOn?.length ?? 0) > 0) {
-      const previous = this.formGroup.get(this.dependsOn!);
+    if (this.dependsOn) {
+      const previous = this.formGroup.get(this.dependsOn);
       if (!previous) {
         console.error(`Dependency ${this.dependsOn} not found`, previous);
         throw Error(`Dependency ${this.dependsOn} not found`);
@@ -84,7 +85,7 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
 
     this.setQuery();
 
-    this.loadInitialPlayer().then((_) => {
+    this.loadInitialPlayer().then(() => {
       this.filteredOptions$ = this.formControl.valueChanges.pipe(
         filter((x) => !!x),
         filter((x) => typeof x === 'string'),
@@ -146,21 +147,21 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
       return;
     });
 
-    if ((names?.length ?? 0) > 0) {
+    if (names) {
       this.query = gql`
         ${this.defaultUserInfoFragment}
         ${this.fragment}
-        query Players($where: SequelizeJSON) {
+        query Players($where: JSONObject) {
           players(where: $where) {
             ...PlayerInfo
-            ...${names!.join('\n...')}
+            ...${names.join('\n...')}
           }
         }
       `;
     } else {
       this.query = gql`
         ${this.defaultUserInfoFragment}
-        query Players($where: SequelizeJSON) {
+        query Players($where: JSONObject) {
           players(where: $where) {
             ...PlayerInfo
           }

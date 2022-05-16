@@ -33,15 +33,17 @@ import {
   HasManySetAssociationsMixin,
 } from 'sequelize';
 import { Location } from '../location.model';
-import { LocationEventTournament } from './location-event.model';
+import { LocationEventTournamentMembership } from './location-event-membership.model';
 import { SubEventTournament } from './sub-event-tournament.model';
 import { Slugify } from '../../../types';
 import { UsedRankingTiming } from '../../../enums/';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
   schema: 'event',
 })
+@ObjectType({ description: 'A EventTournament' })
 export class EventTournament extends Model {
   constructor(values?: Partial<EventTournament>, options?: BuildOptions) {
     super(values, options);
@@ -50,24 +52,29 @@ export class EventTournament extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column
   tournamentNumber: string;
 
   @Unique('EventTournaments_unique_constraint')
+  @Field({ nullable: true })
   @Column
   name: string;
 
   @Unique('EventTournaments_unique_constraint')
+  @Field({ nullable: true })
   @Column
   firstDay: Date;
 
+  @Field({ nullable: true })
   @Column
   dates: string;
 
-  @BelongsToMany(() => Location, () => LocationEventTournament)
+  @BelongsToMany(() => Location, () => LocationEventTournamentMembership)
   locations: Location[];
 
   @HasMany(() => SubEventTournament, {
@@ -76,23 +83,28 @@ export class EventTournament extends Model {
   })
   subEvents: SubEventTournament[];
 
-  @BelongsToMany(() => Location, () => LocationEventTournament)
+  @BelongsToMany(() => Location, () => LocationEventTournamentMembership)
   groups: Location[];
 
   @Default(false)
+  @Field({ nullable: true })
   @Column
   allowEnlisting: boolean;
 
   @Unique('EventTournaments_unique_constraint')
+  @Field({ nullable: true })
   @Column
   visualCode: string;
 
+  @Field({ nullable: true })
   @Column
   slug: string;
 
+  @Field({ nullable: true })
   @Column
   usedRankingAmount: number;
 
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   usedRankingUnit: 'months' | 'weeks' | 'days';
 

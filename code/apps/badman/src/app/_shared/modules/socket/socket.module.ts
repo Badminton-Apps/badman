@@ -1,5 +1,5 @@
 import { Injector, ModuleWithProviders, NgModule } from '@angular/core';
-import { environment } from 'environments/environment';
+import { environment } from '../../../../environments/environment';
 import { SocketIoModule } from 'ngx-socket-io';
 import { SocketService, SOCKET_PREFIX, SOCKET_URL } from './socket.service';
 

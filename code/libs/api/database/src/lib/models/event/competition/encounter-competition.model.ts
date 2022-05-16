@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -36,6 +37,7 @@ import { EncounterChange } from './encounter-change';
   timestamps: true,
   schema: 'event',
 })
+@ObjectType({ description: 'A EncounterCompetition' })
 export class EncounterCompetition extends Model {
   constructor(values?: Partial<EncounterCompetition>, options?: BuildOptions) {
     super(values, options);
@@ -44,12 +46,15 @@ export class EncounterCompetition extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column
   date: Date;
 
+  @Field({ nullable: true })
   @Column
   originalDate: Date;
 
@@ -62,6 +67,7 @@ export class EncounterCompetition extends Model {
   })
   games: Game[];
 
+  @Field(() => DrawCompetition, { nullable: true })
   @BelongsTo(() => DrawCompetition, {
     foreignKey: 'drawId',
     onDelete: 'CASCADE',
@@ -69,35 +75,45 @@ export class EncounterCompetition extends Model {
   draw?: DrawCompetition;
 
   @ForeignKey(() => DrawCompetition)
+  @Field({ nullable: true })
   @Column
   drawId: string;
 
+  @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'homeTeamId')
   home: Team;
 
+  @Field({ nullable: true })
   @Column
   homeScore: number;
 
   @ForeignKey(() => Team)
+  @Field({ nullable: true })
   @Column
   homeTeamId: string;
 
+  @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'awayTeamId')
   away: Team;
 
+  @Field({ nullable: true })
   @Column
   awayScore: number;
 
   @ForeignKey(() => Team)
+  @Field({ nullable: true })
   @Column
   awayTeamId: string;
 
+  @Field({ nullable: true })
   @Column
   synced: Date;
 
+  @Field({ nullable: true })
   @Column
   visualCode: string;
 
+  @Field(() => EncounterChange, { nullable: true })
   @HasOne(() => EncounterChange, {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',

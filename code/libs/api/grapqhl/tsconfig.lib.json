@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/out-tsc",
+    "declaration": true,
+    "types": [],
+    "target": "es6"
+  },
+  "include": ["**/*.ts", "../api/database/src/lib/types/availibilty.type.ts", "../authorization/src/lib/decorators/gql.decorator.ts", "../../../pagination.ts"],
+  "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
+}

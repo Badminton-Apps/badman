@@ -90,10 +90,21 @@ export class ListEncountersComponent implements OnInit {
           );
 
           this.encountersSem1 = encounters.filter((r) =>
-            [8, 9, 10, 11, 12].includes(r.date.getMonth())
+            {
+              if (!r.date) {
+                throw new Error('No date');
+              }
+              return [8, 9, 10, 11, 12].includes(r.date.getMonth());
+            }
           );
           this.encountersSem2 = encounters.filter((r) =>
-            [0, 1, 2, 3, 4, 5].includes(r.date.getMonth())
+            {
+              if (!r.date) {
+                throw new Error('No date');
+              }
+              
+              return [0, 1, 2, 3, 4, 5].includes(r.date.getMonth());
+            }
           );
 
           const params = this.activatedRoute.snapshot.queryParams;

@@ -1,13 +1,25 @@
 import { AgmCoreModule } from '@agm/core';
-import { NgxMatDateAdapter, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
+import {
+  NgxMatDateAdapter,
+  NGX_MAT_DATE_FORMATS,
+} from '@angular-material-components/datetime-picker';
 import {
   NgxMatMomentAdapter,
   NgxMatMomentModule,
   NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS,
   NGX_MAT_MOMENT_FORMATS,
 } from '@angular-material-components/moment-adapter';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, ErrorHandler, Injector, NgModule } from '@angular/core';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
+import {
+  APP_INITIALIZER,
+  ErrorHandler,
+  Injector,
+  NgModule,
+} from '@angular/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -15,11 +27,22 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
-import { ApmErrorHandler, ApmModule, ApmService } from '@elastic/apm-rum-angular';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+  ApmErrorHandler,
+  ApmModule,
+  ApmService,
+} from '@elastic/apm-rum-angular';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CookieService } from 'ngx-cookie-service';
-import { NgcCookieConsentConfig, NgcCookieConsentModule } from 'ngx-cookieconsent';
+import {
+  NgcCookieConsentConfig,
+  NgcCookieConsentModule,
+} from 'ngx-cookieconsent';
 import { MarkdownModule } from 'ngx-markdown';
 import { MomentModule } from 'ngx-moment';
 import { environment } from '../environments/environment';
@@ -30,8 +53,18 @@ import { SocketModule, SOCKET_URL } from './_shared';
 import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
 import { SharedModule } from './_shared/shared.module';
 
-const baseModules = [BrowserModule, AppRoutingModule, BrowserAnimationsModule, HttpClientModule];
-const materialModules = [MatMomentDateModule, NgxMatMomentModule, MomentModule.forRoot(), MatSnackBarModule];
+const baseModules = [
+  BrowserModule,
+  AppRoutingModule,
+  BrowserAnimationsModule,
+  HttpClientModule,
+];
+const materialModules = [
+  MatMomentDateModule,
+  NgxMatMomentModule,
+  MomentModule.forRoot(),
+  MatSnackBarModule,
+];
 const translateModules = [
   TranslateModule.forRoot({
     defaultLanguage: 'en',
@@ -65,7 +98,8 @@ const cookieConfig: NgcCookieConsentConfig = {
   },
   type: 'info',
   content: {
-    message: 'This website uses cookies to ensure you get the best experience on our website.',
+    message:
+      'This website uses cookies to ensure you get the best experience on our website.',
     dismiss: 'Got it!',
     deny: 'Refuse cookies',
     link: 'Learn more',
@@ -98,7 +132,12 @@ const cookieConfig: NgcCookieConsentConfig = {
       audience: `ranking-simulation`,
       useRefreshTokens: true,
       httpInterceptor: {
-        allowedList: [{ uriMatcher: (uri) => uri.indexOf('api') > -1, allowAnonymous: true }],
+        allowedList: [
+          {
+            uriMatcher: (uri) => uri.indexOf('api') > -1,
+            allowAnonymous: true,
+          },
+        ],
       },
     }),
     SocketModule,

@@ -1,4 +1,4 @@
-query GetRolesQuery($where: SequelizeJSON) {
+query GetRolesQuery($where: JSONObject) {
   roles(where: $where) {
     id
     name

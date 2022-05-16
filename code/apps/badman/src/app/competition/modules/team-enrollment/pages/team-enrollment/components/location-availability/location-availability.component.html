@@ -21,14 +21,14 @@
       <div class="location-exceptions-title mat-subheading-2">{{ 'competition.enrollment.exceptions' | translate }}</div>
       <div class="location-exceptions-item" *ngFor="let exception of availabilityDay.exceptions; let i = index">
         <badman-exception-days
-          (onChange)="this.uppdateAvailabilityDay($event, i, availabilityDay)"
-          (onDelete)="this.deleteAvailabilityDay('exception', i, availabilityDay)"
+          (exeptionChanged)="this.uppdateAvailabilityDay($event, i, availabilityDay)"
+          (exeptionDeleted)="this.deleteAvailabilityDay('exception', i, availabilityDay)"
           [exception]="exception"
         ></badman-exception-days>
       </div>
       <div class="location-exceptions-item">
         <mat-label>{{ 'competition.enrollment.new-exception' | translate }}</mat-label>
-        <badman-exception-days (onChange)="this.uppdateAvailabilityDay($event, -1, availabilityDay)"></badman-exception-days>
+        <badman-exception-days (exeptionChanged)="this.uppdateAvailabilityDay($event, -1, availabilityDay)"></badman-exception-days>
       </div>
     </div>
   </ng-container>

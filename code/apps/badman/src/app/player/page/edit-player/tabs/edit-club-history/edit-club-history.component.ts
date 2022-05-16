@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
-import { Club, Player } from 'app/_shared';
+import { Club, Player } from '../../../../../_shared';
 import { BehaviorSubject,  map, Observable, switchMap } from 'rxjs';
 import { EditClubHistoryDialogComponent } from '../../dialogs';
 
@@ -77,7 +77,7 @@ export class EditClubHistoryComponent implements OnInit {
                 clubMembership: r.data,
               },
             })
-            .subscribe((r) => {
+            .subscribe(() => {
               this.update$.next(null);
               this._snackBar.open('Saved', undefined, {
                 duration: 1000,
@@ -98,7 +98,7 @@ export class EditClubHistoryComponent implements OnInit {
                 clubMembershipId: r.data.id,
               },
             })
-            .subscribe((r) => {
+            .subscribe(() => {
               this.update$.next(null);
               this._snackBar.open('removed', undefined, {
                 duration: 1000,
@@ -119,7 +119,7 @@ export class EditClubHistoryComponent implements OnInit {
                 clubMembership: { ...r.data, playerId: this.player.id },
               },
             })
-            .subscribe((r) => {
+            .subscribe(() => {
               this.update$.next(null);
               this._snackBar.open('Created', undefined, {
                 duration: 1000,

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { TournamentEvent } from 'app/_shared';
+import { TournamentEvent } from '../../../_shared';
 
 @Component({
   selector: 'badman-event-tournament-fields',

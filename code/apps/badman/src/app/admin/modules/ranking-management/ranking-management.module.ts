@@ -17,7 +17,7 @@ import { CovalentDataTableModule } from '@covalent/core/data-table';
 import { CovalentBarEchartsModule } from '@covalent/echarts/bar';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
-import { SharedModule } from 'app/_shared';
+import { SharedModule } from '../../../_shared';
 import { RankingSystemFieldsComponent } from './components/ranking-system-fields/ranking-system-fields.component';
 import {
   AddRankingSystemComponent,

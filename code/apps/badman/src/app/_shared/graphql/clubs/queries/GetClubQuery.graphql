@@ -8,8 +8,8 @@ query GetClubQuery(
   $includePlayers: Boolean!
   $includeRoles: Boolean!
   $includeLocations: Boolean!
-  $teamsWhere: SequelizeJSON
-  $teamPlayersWhere: SequelizeJSON
+  $teamsWhere: JSONObject
+  $teamPlayersWhere: JSONObject
 ) {
   club(id: $id) {
     id

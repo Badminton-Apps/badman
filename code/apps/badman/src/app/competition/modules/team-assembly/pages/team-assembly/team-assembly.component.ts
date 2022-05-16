@@ -59,7 +59,7 @@ export class TeamAssemblyComponent implements OnInit {
       }>({
         query: gql`
           query GetSubevents($year: Int!) {
-            competitionEvents(where: { startYear: $year }) {
+            eventCompetitions(where: { startYear: $year }) {
               edges {
                 node {
                   id

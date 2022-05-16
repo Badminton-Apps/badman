@@ -1,8 +1,8 @@
-import { Club } from 'app/_shared';
 import { Game } from './game.model';
 import { RankingPlace } from './ranking-place.model';
 import * as moment from 'moment';
-import { RankingSystem } from '.';
+import { Club } from './club.model';
+import { RankingSystem } from './ranking-system.model';
 
 export class Player {
   id?: string;
@@ -30,6 +30,7 @@ export class Player {
 
   clubs?: Club[];
   club?: Club;
+  claims?: string[];
 
   constructor(args?: Partial<Player>) {
     this.id = args?.id;
@@ -42,8 +43,14 @@ export class Player {
     this.lastName = args?.lastName;
     this._fullName = args?.fullName;
     this.isClaimed = args?.isClaimed ?? false;
-    this.lastRanking = (args?.lastRanking ?? null) != null ? new RankingPlace(args?.lastRanking) : undefined;
-    this.rankingSystem = (args?.rankingSystem ?? null) != null ? new RankingSystem(args?.rankingSystem) : undefined;
+    this.lastRanking =
+      (args?.lastRanking ?? null) != null
+        ? new RankingPlace(args?.lastRanking)
+        : undefined;
+    this.rankingSystem =
+      (args?.rankingSystem ?? null) != null
+        ? new RankingSystem(args?.rankingSystem)
+        : undefined;
     this.games = args?.games?.map((g) => new Game(g));
     this.base = args?.base;
     this.sub = args?.sub;
@@ -53,12 +60,25 @@ export class Player {
     this.competitionPlayer = args?.competitionPlayer ?? false;
     this.clubs = args?.clubs?.map((club) => new Club(club));
     this.club = args?.club != null ? new Club(args?.club) : undefined;
-    this.updatedAt = args?.updatedAt != null ? new Date(args.updatedAt) : undefined;
+    this.updatedAt =
+      args?.updatedAt != null ? new Date(args.updatedAt) : undefined;
+    this.claims = args?.claims ?? [];
 
     this.rankingPlaces = args?.rankingPlaces?.map((r) => new RankingPlace(r));
-    this.lastRankingPlaces = args?.lastRankingPlaces?.map((r) => new RankingPlace(r));
-    if ((this.lastRanking ?? null) == null && this.rankingPlaces != null && this.rankingPlaces.length > 0) {
-      this.lastRanking = this.rankingPlaces?.sort((a, b) => a.rankingDate!.getTime() - b.rankingDate!.getTime())[0];
+    this.lastRankingPlaces = args?.lastRankingPlaces?.map(
+      (r) => new RankingPlace(r)
+    );
+    if (
+      (this.lastRanking ?? null) == null &&
+      this.rankingPlaces != null &&
+      this.rankingPlaces.length > 0
+    ) {
+      this.lastRanking = this.rankingPlaces?.sort((a, b) => {
+        if (!a.rankingDate || !b.rankingDate) {
+          return 0;
+        }
+        return a.rankingDate.getTime() - b.rankingDate.getTime();
+      })[0];
     }
   }
 
@@ -93,7 +113,9 @@ export class PlayerGame extends Player {
   constructor(args: Partial<PlayerGame>) {
     super(args);
 
-    this.rankingPlace = args?.rankingPlace ? new RankingPlace(args?.rankingPlace) : undefined;
+    this.rankingPlace = args?.rankingPlace
+      ? new RankingPlace(args?.rankingPlace)
+      : undefined;
     this.team = args?.team;
     this.player = args?.player;
   }

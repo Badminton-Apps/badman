@@ -18,7 +18,7 @@ import * as deleteEventMutation from '../../graphql/importedEvents/mutations/Del
 
 import * as updateCompetitionEvent from '../../graphql/events/mutations/UpdateCompetitionEvent.graphql';
 import { Club, CompetitionEvent, EventType, Imported, TournamentEvent, Event } from '../../models';
-import { environment } from 'environments/environment';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -130,7 +130,7 @@ export class EventService {
       .pipe(map((x) => x?.data?.competitionEvents?.edges.map((x) => new CompetitionEvent(x.node))));
   }
 
-  getTournamentEvent(id: string, args?: {}) {
+  getTournamentEvent(id: string) {
     return this.apollo
       .query<{
         tournamentEvent: TournamentEvent;
@@ -153,7 +153,13 @@ export class EventService {
           event,
         },
       })
-      .pipe(map((x) => new CompetitionEvent(x.data!.updateEventCompetition)));
+      .pipe(map((x) => {
+        if (!x.data?.updateEventCompetition) {
+          return;
+        }
+
+        return new CompetitionEvent(x.data.updateEventCompetition);
+      }));
   }
 
   getImported(order: string, first: number, after?: string) {
@@ -222,11 +228,11 @@ export class EventService {
         map((x) => {
           const events: any = [];
           if (x.data.competitionEvents) {
-            events.push(...x.data.competitionEvents!.edges!.map((e) => new CompetitionEvent(e.node)));
+            events.push(...x.data.competitionEvents.edges?.map((e) => new CompetitionEvent(e.node)) ?? []);
           }
 
           if (x.data.tournamentEvents) {
-            events.push(...x.data.tournamentEvents!.edges!.map((e) => new TournamentEvent(e.node)));
+            events.push(...x.data.tournamentEvents.edges?.map((e) => new TournamentEvent(e.node)) ?? []);
           }
 
           return events;
@@ -245,7 +251,12 @@ export class EventService {
           },
         },
       })
-      .pipe(map((x) => new Event(x.data!.addEvent)));
+      .pipe(map((x) => {
+        if (!x.data?.addEvent) {
+          return;
+        }
+        return new Event(x.data.addEvent);
+      }));
   }
 
   upload(files: FileList) {
@@ -264,14 +275,14 @@ export class EventService {
 
     // process chunked
     while (fileArray.length > 0) {
-      let chunk = fileArray.splice(0, 5);
+      const chunk = fileArray.splice(0, 5);
 
-      let formData = new FormData();
-      chunk.forEach((file) => {
+      const formData = new FormData();
+      chunk.forEach((file: string) => {
         formData.append('upload', file);
       });
 
-      let params = new HttpParams();
+      const params = new HttpParams();
 
       const options = {
         params: params,

@@ -3,12 +3,12 @@
 query GetEvents(
   $first: Int
   $after: String
-  $where: SequelizeJSON
+  $where: JSONObject
   $clubId: ID
   $includeSubEvents: Boolean!
   $includeComments: Boolean!
 ) {
-  competitionEvents(first: $first, after: $after, where: $where) {
+  eventCompetitions(first: $first, after: $after, where: $where) {
     total
     edges {
       cursor

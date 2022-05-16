@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -40,12 +41,13 @@ import { SubEventType } from '../../../enums';
 import { RankingSystemGroup } from '../../ranking';
 import { DrawCompetition } from './draw-competition.model';
 import { EventCompetition } from './event-competition.model';
-import { GroupSubEventCompetition } from './group-subevent.model';
+import { GroupSubEventCompetitionMembership } from './group-subevent-membership.model';
 
 @Table({
   timestamps: true,
   schema: 'event',
 })
+@ObjectType({ description: 'A SubEventCompetition' })
 export class SubEventCompetition extends Model {
   constructor(values?: Partial<SubEventCompetition>, options?: BuildOptions) {
     super(values, options);
@@ -54,29 +56,37 @@ export class SubEventCompetition extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
+  @Field({ nullable: true })
   @Column
   name: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
+  @Field(() => String,{ nullable: true })
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType: SubEventType;
 
+  @Field({ nullable: true })
   @Column
   level?: number;
 
+  @Field({ nullable: true })
   @Column
   maxLevel?: number;
- 
+
+  @Field({ nullable: true })
   @Column
   minBaseIndex?: number;
 
+  @Field({ nullable: true })
   @Column
   maxBaseIndex?: number;
 
+  @Field(() => [EventEntry], { nullable: true })
   @HasMany(() => EventEntry, {
     foreignKey: 'subEventId',
     onDelete: 'CASCADE',
@@ -86,15 +96,18 @@ export class SubEventCompetition extends Model {
   })
   entries: EventEntry[];
 
-  @BelongsToMany(() => RankingSystemGroup, () => GroupSubEventCompetition)
+  @Field(() => [RankingSystemGroup], { nullable: true })
+  @BelongsToMany(() => RankingSystemGroup, () => GroupSubEventCompetitionMembership)
   groups: RankingSystemGroup[];
 
-  @HasMany(() => DrawCompetition, { 
+  @Field(() => [DrawCompetition], { nullable: true })
+  @HasMany(() => DrawCompetition, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
   draws: DrawCompetition[];
 
+  @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
@@ -103,10 +116,12 @@ export class SubEventCompetition extends Model {
 
   @Unique('SubEventCompetitions_unique_constraint')
   @ForeignKey(() => EventCompetition)
+  @Field({ nullable: true })
   @Column
   eventId: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
+  @Field({ nullable: true })
   @Column
   visualCode: string;
 

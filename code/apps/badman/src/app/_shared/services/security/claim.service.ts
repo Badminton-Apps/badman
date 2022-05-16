@@ -1,8 +1,6 @@
 import { Apollo } from 'apollo-angular';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Claim } from 'app/_shared';
 import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 
 import * as globalClaimsQuery from '../../graphql/security/queries/GetGlobalClaims.graphql';
@@ -10,31 +8,47 @@ import * as globalUserClaimsQuery from '../../graphql/security/queries/GetGlobal
 import * as clubClaimsQuery from '../../graphql/security/queries/GetClubClaims.graphql';
 
 import * as updateGlobalUserClaimQuery from '../../graphql/security/mutations/UpdateClaimUser.graphql';
-import { PermissionService } from './permission.service';
 import { Observable } from 'rxjs';
+import { Claim } from '../../models';
+import { UserService } from '../profile';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClaimService {
-  constructor(private apollo: Apollo, private permissionService: PermissionService) {}
+  claims$!: Observable<string[]>;
+
+  constructor(private apollo: Apollo, private userService: UserService) {
+    this.claims$ = userService.profile$.pipe(
+      map((player) => player?.claims ?? []),
+      distinctUntilChanged()
+    );
+  }
 
   hasClaim$(claim: string): Observable<boolean> {
-    return this.permissionService.userPermissions$.pipe(map((userClaims) => this.includes(userClaims, claim)));
+    return this.claims$.pipe(map((claims) => this.includes(claims, claim)));
   }
 
   hasAllClaims$(claims: string[]): Observable<boolean> {
-    return this.permissionService.userPermissions$.pipe(
+    return this.claims$.pipe(
       map((userClaims) => {
-        return claims.reduce((acc: boolean, claim) => acc && this.includes(userClaims, claim), true);
+        return claims.reduce(
+          (acc: boolean, claim) => acc && this.includes(userClaims, claim),
+          true
+        );
       }),
       distinctUntilChanged()
     );
   }
 
   hasAnyClaims$(claims: string[]): Observable<boolean> {
-    return this.permissionService.userPermissions$.pipe(
-      map((userClaims) => claims.reduce((acc: boolean, claim) => acc || this.includes(userClaims, claim), false)),
+    return this.claims$.pipe(
+      map((userClaims) =>
+        claims.reduce(
+          (acc: boolean, claim) => acc || this.includes(userClaims, claim),
+          false
+        )
+      ),
       distinctUntilChanged()
     );
   }
@@ -76,7 +90,7 @@ export class ClaimService {
           active,
         },
       })
-      .pipe(tap(() => this.permissionService.reloadPermissions()));
+      .pipe(tap(() => this.userService.reloadProfile()));
   }
 
   private includes(claims: string[], claim: string): boolean {

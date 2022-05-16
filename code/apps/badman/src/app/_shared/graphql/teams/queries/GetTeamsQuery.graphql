@@ -1,4 +1,4 @@
-query GetTeamsQuery($where: SequelizeJSON) {
+query GetTeamsQuery($where: JSONObject) {
   teams(where: $where) {
     id
     slug

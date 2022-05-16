@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AvailabilityDay, resetAllFormFields, validateAllFormFields } from 'app/_shared';
+import { AvailabilityDay, resetAllFormFields, validateAllFormFields } from '../../../../../../../_shared';
 import * as moment from 'moment';
 
 @Component({

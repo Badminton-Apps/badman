@@ -48,37 +48,52 @@ import {
 } from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { Team } from './team.model';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
   schema: 'public',
 })
+@ObjectType({ description: 'A Player' })
 export class Player extends Model {
   constructor(values?: Partial<Player>, options?: BuildOptions) {
     super(values, options);
   }
 
+  @Field({nullable: true})
+  updatedAt?: Date;
+
+  @Field({nullable: true})
+  createdAt?: Date;
+
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column
   email: string;
 
+  @Field({ nullable: true })
   @Column
   phone: string;
 
+  @Field({ nullable: true })
   @Column
   gender: string;
 
+  @Field({ nullable: true })
   @Column
   birthDate: Date;
 
+  @Field({ nullable: true })
   @Column
   sub: string;
 
+  @Field(() => [Team], { nullable: true })
   @HasMany(() => Team, 'captainId')
   myTeams: Team[];
 
@@ -88,65 +103,81 @@ export class Player extends Model {
   @HasMany(() => EventEntry, 'player2Id')
   entriesP2: EventEntry[];
 
+  @Field(() => [EventEntry], { nullable: true })
   get entries() {
     return this.entriesP1.concat(this.entriesP2);
   }
 
+  @Field({ nullable: true })
   @Unique('unique_constraint')
   @Index
   @Column
   firstName: string;
 
+  @Field({ nullable: true })
   @Unique('unique_constraint')
   @Index
   @Column
   lastName: string;
 
+  @Field({ nullable: true })
   @Column(DataType.VIRTUAL)
-  get fullName() {
+  get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
 
+  @Field({ nullable: true })
   @Default(false)
   @Column
   competitionPlayer: boolean;
 
+  @Field({ nullable: true })
   @Column
   slug: string;
 
+  @Field({ nullable: true })
   @Unique('unique_constraint')
   @Index
   @Column
   memberId: string;
 
+  @Field(() => [RankingPoint], { nullable: true })
   @HasMany(() => RankingPoint, 'playerId')
   rankingPoints?: RankingPoint[];
 
+  @Field(() => [RankingPlace], { nullable: true })
   @HasMany(() => RankingPlace, 'playerId')
   rankingPlaces?: RankingPlace[];
 
+  @Field(() => [LastRankingPlace], { nullable: true })
   @HasMany(() => LastRankingPlace, 'playerId')
   lastRankingPlaces?: LastRankingPlace[];
 
+  @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, 'playerId')
   comments?: Comment[];
 
+  @Field(() => [Team], { nullable: true })
   @BelongsToMany(() => Team, () => TeamPlayerMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   teams: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
+  @Field(() => [Club], { nullable: true })
   @BelongsToMany(() => Club, () => ClubMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   clubs: (Club & { ClubMembership: ClubMembership })[];
 
+  @Field(() => [Game], { nullable: true })
   @BelongsToMany(() => Game, () => GamePlayer)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   games: (Game & { GamePlayer: GamePlayer })[];
 
+  @Field(() => [Role], { nullable: true })
   @BelongsToMany(() => Role, () => PlayerRoleMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   roles: (Role & { PlayerRoleMembership: PlayerRoleMembership })[];
 
+  @Field(() => [String], { nullable: true })
   @BelongsToMany(() => Claim, () => PlayerClaimMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   claims: (Claim & { PlayerClaimMembership: PlayerClaimMembership })[];

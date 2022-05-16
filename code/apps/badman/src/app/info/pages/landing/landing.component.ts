@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { ITdDataTableColumn } from '@covalent/core/data-table';
 import { switchMap, map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { RankingSystem, SystemService } from 'app/_shared';
 import { Apollo, gql } from 'apollo-angular';
+import { RankingSystem, SystemService } from '../../../_shared';
 
 @Component({
   templateUrl: './landing.component.html',
@@ -16,7 +16,11 @@ export class LandingComponent implements OnInit {
 
   capsColumns: ITdDataTableColumn[];
 
-  constructor(private systemService: SystemService, private apollo: Apollo, translateService: TranslateService) {
+  constructor(
+    private systemService: SystemService,
+    private apollo: Apollo,
+    translateService: TranslateService
+  ) {
     this.capsColumns = [
       {
         name: 'level',
@@ -40,7 +44,7 @@ export class LandingComponent implements OnInit {
   ngOnInit(): void {
     this.caps$ = this.systemService.getPrimarySystemsWhere().pipe(
       switchMap((query) => {
-        const where = {};
+        const where: { [key: string]: unknown } = {};
 
         if (!query.primary) {
           where['$or'] = [
@@ -55,10 +59,10 @@ export class LandingComponent implements OnInit {
           where['primary'] = true;
         }
 
-        return this.apollo.query<{ systems: Partial<RankingSystem>[] }>({
+        return this.apollo.query<{ rankingSystems: Partial<RankingSystem>[] }>({
           query: gql`
-            query GetSystems($where: SequelizeJSON) {
-              systems(where: $where) {
+            query GetSystems($where: JSONObject) {
+              rankingSystems(where: $where) {
                 id
                 name
                 amountOfLevels
@@ -74,7 +78,7 @@ export class LandingComponent implements OnInit {
           },
         });
       }),
-      map((x) => x.data.systems?.map((x) => new RankingSystem(x))),
+      map((x) => x.data.rankingSystems?.map((x) => new RankingSystem(x))),
       map((s) => {
         if (s.length > 1) {
           return s.find((x) => x.primary == false);
@@ -85,15 +89,21 @@ export class LandingComponent implements OnInit {
         }
       }),
       map((system: any) => {
-        let level = system.amountOfLevels!;
-        return system.pointsWhenWinningAgainst.map((winning: number, index: number) => {
-          return {
-            level: level--,
-            pointsToGoUp: level !== 0 ? Math.round(system.pointsToGoUp[index]) : null,
-            pointsToGoDown: index === 0 ? null : Math.round(system.pointsToGoDown[index - 1]),
-            pointsWhenWinningAgainst: Math.round(winning),
-          };
-        });
+        let level = system.amountOfLevels;
+        return system.pointsWhenWinningAgainst.map(
+          (winning: number, index: number) => {
+            return {
+              level: level--,
+              pointsToGoUp:
+                level !== 0 ? Math.round(system.pointsToGoUp[index]) : null,
+              pointsToGoDown:
+                index === 0
+                  ? null
+                  : Math.round(system.pointsToGoDown[index - 1]),
+              pointsWhenWinningAgainst: Math.round(winning),
+            };
+          }
+        );
       })
     );
   }

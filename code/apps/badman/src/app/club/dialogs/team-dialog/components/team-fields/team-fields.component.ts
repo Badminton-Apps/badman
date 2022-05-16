@@ -2,16 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  OnInit,
   Input,
-  Output,
   OnChanges,
+  OnInit,
+  Output,
   SimpleChanges,
 } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Club, Team, Player, PlayerService, Location } from 'app/_shared';
-import { debounceTime, pairwise, skip, startWith } from 'rxjs/operators';
-import { merge } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
+import { debounceTime, pairwise, startWith } from 'rxjs/operators';
+import { Club, Player, Team } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-team-fields',
@@ -65,7 +64,9 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
     const phoneControl = new FormControl(this.team.phone);
     const emailControl = new FormControl(this.team.email);
 
-    this.locationControl = new FormControl(this.team.locations?.map((r) => r.id) ?? []);
+    this.locationControl = new FormControl(
+      this.team.locations?.map((r) => r.id) ?? []
+    );
 
     this.teamForm = new FormGroup({
       teamNumber: numberControl,
@@ -92,7 +93,7 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
     this.form.addControl('team', this.teamForm);
 
     if (this.team.id) {
-      this.calcTeamsOfType(this.team.type!);
+      this.calcTeamsOfType(this.team.type);
     }
 
     typeControl.valueChanges.subscribe((type) => {
@@ -100,10 +101,14 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
     });
 
     this.locationControl.valueChanges
-      .pipe(debounceTime(600), startWith(this.team.locations?.map((r) => r.id) ?? []), pairwise())
+      .pipe(
+        debounceTime(600),
+        startWith(this.team.locations?.map((r) => r.id) ?? []),
+        pairwise()
+      )
       .subscribe(async ([prev, next]) => {
-        let removed = prev.filter((item: any) => next.indexOf(item) < 0);
-        let added = next.filter((item: any) => prev.indexOf(item) < 0);
+        const removed = prev.filter((item: any) => next.indexOf(item) < 0);
+        const added = next.filter((item: any) => prev.indexOf(item) < 0);
 
         for (const add of added) {
           this.onLocationAdded.next(add);
@@ -130,8 +135,9 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
     });
   }
 
-  private calcTeamsOfType(type: string) {
-    let teamsOfType = this.club.teams?.filter((r) => r.type == type).length ?? 0;
+  private calcTeamsOfType(type?: string) {
+    let teamsOfType =
+      this.club.teams?.filter((r) => r.type == type).length ?? 0;
     if (this.team.id == null) {
       teamsOfType++;
       this.teamForm.patchValue({ teamNumber: teamsOfType });

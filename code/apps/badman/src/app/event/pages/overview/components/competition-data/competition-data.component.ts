@@ -1,7 +1,7 @@
 import {
   Component, Input
 } from '@angular/core';
-import { Event } from 'app/_shared';
+import { Event } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-competition-data',

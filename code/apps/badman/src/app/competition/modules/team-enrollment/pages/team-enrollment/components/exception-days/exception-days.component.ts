@@ -1,6 +1,17 @@
-import { Component, OnInit, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AvailabilityException, resetAllFormFields, validateAllFormFields } from 'app/_shared';
+import {
+  AvailabilityException,
+  resetAllFormFields,
+  validateAllFormFields,
+} from '../../../../../../../_shared';
 import * as moment from 'moment';
 
 @Component({
@@ -16,10 +27,10 @@ export class ExceptionDaysComponent implements OnInit {
   exception?: AvailabilityException | null;
 
   @Output()
-  onChange = new EventEmitter<AvailabilityException>();
+  exeptionChanged = new EventEmitter<AvailabilityException>();
 
   @Output()
-  onDelete = new EventEmitter();
+  exeptionDeleted = new EventEmitter();
 
   isNew = false;
 
@@ -49,11 +60,11 @@ export class ExceptionDaysComponent implements OnInit {
       return;
     }
 
-    this.onChange.next(new AvailabilityException(this.fg.value));
+    this.exeptionChanged.next(new AvailabilityException(this.fg.value));
     resetAllFormFields(this.fg);
   }
 
   deleteException() {
-    this.onDelete.next(null);
+    this.exeptionDeleted.next(null);
   }
 }

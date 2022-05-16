@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { PermissionService } from 'app/_shared';
 import { map, tap } from 'rxjs/operators';
 import * as addPlayerToRoleMutation from '../../graphql/roles/mutations/addPlayerToRoleMutation.graphql';
 import * as addRoleMutation from '../../graphql/roles/mutations/addRole.graphql';
@@ -9,13 +8,17 @@ import * as deleteRoleMutation from '../../graphql/roles/mutations/removeRole.gr
 import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.graphql';
 import * as roleQuery from '../../graphql/roles/queries/GetRoleQuery.graphql';
 import * as rolesQuery from '../../graphql/roles/queries/GetRolesQuery.graphql';
+import { UserService } from '../profile';
 import { Player, Role } from './../../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoleService {
-  constructor(private apollo: Apollo, private permissionService: PermissionService) {}
+  constructor(
+    private apollo: Apollo,
+    private userService: UserService
+  ) {}
 
   getRole(roleId: string) {
     return this.apollo
@@ -24,7 +27,7 @@ export class RoleService {
         variables: {
           id: roleId,
         },
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
       })
       .pipe(map((x) => new Role(x.data.role)));
   }
@@ -36,7 +39,7 @@ export class RoleService {
         variables: {
           where,
         },
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
       })
       .pipe(map((x) => x.data.roles.map((r) => new Role(r))));
   }
@@ -50,8 +53,14 @@ export class RoleService {
         },
       })
       .pipe(
-        map((x) => new Role(x.data!.addRole)),
-        tap(() => this.permissionService.reloadPermissions())
+        map((x) => {
+          if (x.data) {
+            return new Role(x.data.addRole);
+          } else {
+            return null;
+          }
+        }),
+        tap(() => this.userService.reloadProfile())
       );
   }
 
@@ -64,7 +73,7 @@ export class RoleService {
           roleId: role.id,
         },
       })
-      .pipe(tap(() => this.permissionService.reloadPermissions()));
+      .pipe(tap(() => this.userService.reloadProfile()));
   }
 
   removePlayer(role: Role, player: Player) {
@@ -76,7 +85,7 @@ export class RoleService {
           roleId: role.id,
         },
       })
-      .pipe(tap(() => this.permissionService.reloadPermissions()));
+      .pipe(tap(() => this.userService.reloadProfile()));
   }
 
   updateRole(role: Role) {
@@ -88,8 +97,14 @@ export class RoleService {
         },
       })
       .pipe(
-        map((x) => new Role(x.data!.updateRole)),
-        tap(() => this.permissionService.reloadPermissions())
+        map((x) => {
+          if (x.data) {
+            return new Role(x.data.updateRole);
+          } else {
+            return null;
+          }
+        }),
+        tap(() => this.userService.reloadProfile())
       );
   }
 

@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -58,24 +59,30 @@ import { TeamPlayerMembership } from './team-player-membership.model';
   timestamps: true,
   schema: 'public',
 })
+@ObjectType({ description: 'A Team' })
+@ObjectType({ description: 'A Team' })
 export class Team extends Model {
   constructor(values?: Partial<Team>, options?: BuildOptions) {
     super(values, options);
   }
 
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column
   id!: string;
 
+  @Field({ nullable: true })
   @Unique('unique_constraint')
   @Column
   name: string;
 
+  @Field({ nullable: true })
   @Column(DataType.TIME)
   preferredTime: Date;
 
+  @Field(() => String, { nullable: true })
   @Column(
     DataType.ENUM(
       'sunday',

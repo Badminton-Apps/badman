@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -12,7 +13,7 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
   HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin
+  HasOneSetAssociationMixin,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -25,7 +26,7 @@ import {
   IsUUID,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { Comment } from '../../../comment.model';
 import { EncounterCompetition } from '../encounter-competition.model';
@@ -33,8 +34,9 @@ import { EncounterChangeDate } from './encounter-change-date.model';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 })
+@ObjectType({ description: 'A EncounterChange' })
 export class EncounterChange extends Model {
   constructor(values?: Partial<EncounterChange>, options?: BuildOptions) {
     super(values, options);
@@ -43,25 +45,28 @@ export class EncounterChange extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column
   accepted?: boolean;
 
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'encounterId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   encounter?: EncounterCompetition;
 
   @ForeignKey(() => EncounterCompetition)
+  @Field({ nullable: true })
   @Column
   encounterId: string;
 
   @HasMany(() => EncounterChangeDate, {
     foreignKey: 'encounterChangeId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   dates: EncounterChangeDate[];
 
@@ -69,8 +74,8 @@ export class EncounterChange extends Model {
     foreignKey: 'linkId',
     constraints: false,
     scope: {
-      linkType: 'home_comment'
-    }
+      linkType: 'home_comment',
+    },
   })
   homeComment: Comment;
 
@@ -78,8 +83,8 @@ export class EncounterChange extends Model {
     foreignKey: 'linkId',
     constraints: false,
     scope: {
-      linkType: 'away_comment'
-    }
+      linkType: 'away_comment',
+    },
   })
   awayComment: Comment;
 

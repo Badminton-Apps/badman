@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -8,7 +9,7 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
-  BuildOptions
+  BuildOptions,
 } from 'sequelize';
 import {
   BelongsToMany,
@@ -19,22 +20,23 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import {
-  GroupSubEventCompetition,
-  GroupSubEventTournament,
+  GroupSubEventCompetitionMembership,
+  GroupSubEventTournamentMembership,
   SubEventCompetition,
-  SubEventTournament
+  SubEventTournament,
 } from '../event';
-import { GroupSystems } from './group_system.model';
+import { GroupSystemsMembership } from './group-system-membership.model';
 import { RankingSystem } from './system.model';
 
 @Table({
   timestamps: true,
   tableName: 'Groups',
-  schema: 'ranking'
+  schema: 'ranking',
 })
+@ObjectType({ description: 'A RankingSystemGroup' })
 export class RankingSystemGroup extends Model {
   constructor(values?: Partial<RankingSystemGroup>, options?: BuildOptions) {
     super(values, options);
@@ -43,35 +45,26 @@ export class RankingSystemGroup extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique
+  @Field({ nullable: true })
   @Column
   name: string;
 
-  @BelongsToMany(
-    () => SubEventCompetition,
-    () => GroupSubEventCompetition
-  )
+  @BelongsToMany(() => SubEventCompetition, () => GroupSubEventCompetitionMembership)
   subEventCompetitions: SubEventCompetition[];
 
-  @BelongsToMany(
-    () => SubEventTournament,
-    () => GroupSubEventTournament
-  )
+  @BelongsToMany(() => SubEventTournament, () => GroupSubEventTournamentMembership)
   subEventTournaments: SubEventTournament[];
 
-  @BelongsToMany(
-    () => RankingSystem,
-    () => GroupSystems
-  )
-  systems: RankingSystem[];
+  @BelongsToMany(() => RankingSystem, () => GroupSystemsMembership)
+  rankingSystems: RankingSystem[];
 
   // Belongs to many SubEventTournament
-  getSubEventTournaments!: BelongsToManyGetAssociationsMixin<
-    SubEventTournament
-  >;
+  getSubEventTournaments!: BelongsToManyGetAssociationsMixin<SubEventTournament>;
   setSubEventTournaments!: BelongsToManySetAssociationsMixin<
     SubEventTournament,
     string
@@ -103,9 +96,7 @@ export class RankingSystemGroup extends Model {
   countSubEventTournament!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to many SubEventCompetition
-  getSubEventCompetitions!: BelongsToManyGetAssociationsMixin<
-    SubEventCompetition
-  >;
+  getSubEventCompetitions!: BelongsToManyGetAssociationsMixin<SubEventCompetition>;
   setSubEventCompetitions!: BelongsToManySetAssociationsMixin<
     SubEventCompetition,
     string

@@ -1,4 +1,4 @@
-mutation UpdateCompetitionEvent($event: EventCompetitionInput!) {
+mutation UpdateEventCompetition($event: EventCompetitionInput!) {
   updateEventCompetition(eventCompetition: $event) {
     id
     name

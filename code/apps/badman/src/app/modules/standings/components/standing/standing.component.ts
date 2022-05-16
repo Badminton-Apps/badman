@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { Entry } from 'app/_shared';
+import { Entry } from '../../../../_shared';
 
 @Component({
   selector: 'badman-standing',

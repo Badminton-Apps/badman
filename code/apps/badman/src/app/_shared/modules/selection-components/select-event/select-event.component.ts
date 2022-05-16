@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Event, EventService, EventType } from 'app/_shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CompetitionEvent, EventType } from '../../../models';
+import { EventService } from '../../../services';
 
 @Component({
   selector: 'badman-select-event',
@@ -19,7 +20,7 @@ export class SelectEventComponent implements OnInit, OnDestroy {
 
   formControl = new FormControl(null, [Validators.required]);
 
-  events$!: Observable<Event[]>;
+  events$!: Observable<CompetitionEvent[]>;
 
   constructor(private eventService: EventService) {}
 

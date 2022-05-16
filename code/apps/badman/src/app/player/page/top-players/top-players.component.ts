@@ -136,7 +136,7 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
           return this.systemService.getPrimarySystemsWhere().pipe(
             switchMap((query) =>
               this.apollo.query<{
-                systems: {
+                rankingSystems: {
                   id: string;
                   lastPlaces: {
                     total: number;
@@ -146,8 +146,8 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
               }>({
                 query: gql`
                   query PlayerRankings(
-                    $systemsWhere: SequelizeJSON
-                    $where: SequelizeJSON
+                    $systemsWhere: JSONObject
+                    $where: JSONObject
                     $after: String
                     $first: Int
                     $orderBy: [RankingOrderBy]
@@ -196,17 +196,17 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
           );
         }),
         map((result) => {
-          const count = result.data.systems[0]?.lastPlaces.total || 0;
+          const count = result.data.rankingSystems[0]?.lastPlaces.total || 0;
           this.isLoadingResults = false;
           this.resultsLength$.next(count);
 
           if (count) {
             this.nextCursor =
-              result.data.systems[0]?.lastPlaces.edges[
-                result.data.systems[0]?.lastPlaces.edges.length - 1
+              result.data.rankingSystems[0]?.lastPlaces.edges[
+                result.data.rankingSystems[0]?.lastPlaces.edges.length - 1
               ].cursor;
 
-            return result.data.systems[0]?.lastPlaces.edges.map((x) => x.node);
+            return result.data.rankingSystems[0]?.lastPlaces.edges.map((x) => x.node);
           } else {
             return [];
           }

@@ -1,11 +1,14 @@
-import { Component, Inject, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo, gql } from 'apollo-angular';
-import { RankingPlace, RankingSystem, RankingSystems } from 'app/_shared';
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import {
+  RankingPlace,
+  RankingSystem,
+  RankingSystems,
+} from '../../../../../_shared';
 
 @Component({
   templateUrl: './edit-ranking-place-dialog.component.html',
@@ -18,21 +21,35 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<EditRankingPlaceDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { place: RankingPlace; system?: RankingSystem }
+    @Inject(MAT_DIALOG_DATA)
+    public data: { place: RankingPlace; system: RankingSystem }
   ) {}
 
   ngOnInit(): void {
-    const singleControl = new FormControl(this.data.place?.single, Validators.required);
-    const doubleControl = new FormControl(this.data.place?.double, Validators.required);
-    const mixControl = new FormControl(this.data.place?.mix, Validators.required);
+    const singleControl = new FormControl(
+      this.data.place?.single,
+      Validators.required
+    );
+    const doubleControl = new FormControl(
+      this.data.place?.double,
+      Validators.required
+    );
+    const mixControl = new FormControl(
+      this.data.place?.mix,
+      Validators.required
+    );
 
     const singlePointsControl = new FormControl(this.data.place?.singlePoints);
     const doublePointsControl = new FormControl(this.data.place?.doublePoints);
     const mixPointsControl = new FormControl(this.data.place?.mixPoints);
 
-    const rankingDateControl = new FormControl(this.data.place?.rankingDate, Validators.required);
-    const updatePossibleControl = new FormControl(this.data.place?.updatePossible);
-    
+    const rankingDateControl = new FormControl(
+      this.data.place?.rankingDate,
+      Validators.required
+    );
+    const updatePossibleControl = new FormControl(
+      this.data.place?.updatePossible
+    );
 
     this.rankingPlaceForm.addControl('single', singleControl);
     this.rankingPlaceForm.addControl('double', doubleControl);
@@ -44,7 +61,6 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
     this.rankingPlaceForm.addControl('rankingDate', rankingDateControl);
     this.rankingPlaceForm.addControl('updatePossible', updatePossibleControl);
-  
 
     if (this.data.system) {
       this.dateClass = (cellDate, view) => {
@@ -57,7 +73,11 @@ export class EditRankingPlaceDialogComponent implements OnInit {
             this.data.system?.rankingSystem == RankingSystems.VISUAL ||
             this.data.system?.rankingSystem == RankingSystems.BVL
           ) {
-            if (day == 1 && date < 8 && month % this.data.system.updateIntervalAmount! == 0) {
+            if (
+              day == 1 &&
+              date < 8 &&
+              month % (this.data.system.updateIntervalAmount ?? 0) == 0
+            ) {
               return 'date-class-update';
             }
           }
@@ -73,20 +93,32 @@ export class EditRankingPlaceDialogComponent implements OnInit {
   mayRanking(event: Event) {
     event.preventDefault();
     const date = moment();
-    const compEvent = this.data.system?.groups?.[0]?.subEventCompetitions?.[0].event!;
+    const compEvent =
+      this.data.system?.groups?.[0]?.subEventCompetitions?.[0].event;
 
-    date.set('year', compEvent.startYear!);
-    date.set(compEvent.usedRankingUnit!, compEvent.usedRankingAmount!);
+    if (
+      !compEvent?.startYear ||
+      !compEvent?.usedRankingUnit ||
+      !compEvent?.usedRankingAmount
+    ) {
+      throw new Error('No event data');
+    }
+
+    date.set('year', compEvent.startYear);
+    date.set(compEvent.usedRankingUnit, compEvent.usedRankingAmount);
     date.set('day', 1);
 
-    this.rankingPlaceForm.patchValue({ rankingDate: date, updatePossible: true });
+    this.rankingPlaceForm.patchValue({
+      rankingDate: date,
+      updatePossible: true,
+    });
   }
 
   onUpdate() {
     this.dialogRef.close({
       action: this.data.place?.id ? 'update' : 'add',
       place: {
-        SystemId: this.data.system!.id!,
+        SystemId: this.data.system.id,
         ...this.data.place,
         ...this.rankingPlaceForm.value,
       },
@@ -96,7 +128,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     this.dialogRef.close({
       action: 'remove',
       place: {
-        SystemId: this.data.system!.id!,
+        SystemId: this.data.system.id,
         ...this.data.place,
         ...this.rankingPlaceForm.value,
       },

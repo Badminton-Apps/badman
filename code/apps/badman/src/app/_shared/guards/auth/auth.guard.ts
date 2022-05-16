@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRouteSnapshot, CanActivate, Params, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { ClaimService } from 'app/_shared';
-import { environment } from 'environments/environment';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { debounceTime, map, switchMap, tap, finalize } from 'rxjs/operators';
+import { debounceTime, finalize, map, switchMap, tap } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
+import { ClaimService } from '../../services';
 
 @Injectable({
   providedIn: 'root',
@@ -50,7 +56,9 @@ export class AuthGuard implements CanActivate {
     if (next?.data?.['claims']) {
       if (typeof next.data?.['claims'] === 'string') {
         canActivateObservables$.push(
-          this.claimService.hasClaim$(this.replaceParams(next.params, [next.data?.['claims']])[0])
+          this.claimService.hasClaim$(
+            this.replaceParams(next.params, [next.data?.['claims']])[0]
+          )
         );
       } else {
         if (next.data?.['claims'].any) {
@@ -58,14 +66,18 @@ export class AuthGuard implements CanActivate {
             next.data['claims'].any = [next.data?.['claims'].any];
           }
           canActivateObservables$.push(
-            this.claimService.hasAnyClaims$(this.replaceParams(next.params, next.data?.['claims'].any))
+            this.claimService.hasAnyClaims$(
+              this.replaceParams(next.params, next.data?.['claims'].any)
+            )
           );
         } else if (next.data?.['claims'].all) {
           if (typeof next.data?.['claims'].all === 'string') {
             next.data['claims'].all = [next.data?.['claims'].all];
           }
           canActivateObservables$.push(
-            this.claimService.hasAllClaims$(this.replaceParams(next.params, next.data?.['claims'].all))
+            this.claimService.hasAllClaims$(
+              this.replaceParams(next.params, next.data?.['claims'].all)
+            )
           );
         }
       }

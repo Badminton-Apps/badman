@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from 'app/_shared';
+import { AuthGuard } from '../_shared';
 import { DetailCompetitionComponent, DetailDrawCompetitionComponent, EditEventCompetitionComponent } from './pages';
 import { DetailEncounterComponent } from './pages/detail-encounter/detail-encounter.component';
 

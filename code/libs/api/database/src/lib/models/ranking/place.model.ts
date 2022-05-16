@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -34,8 +35,8 @@ import { RankingSystem } from './system.model';
   timestamps: true,
   tableName: 'Places',
   schema: 'ranking',
-
 })
+@ObjectType({ description: 'A RankingPlace' })
 export class RankingPlace extends Model {
   constructor(values?: Partial<RankingPlace>, options?: BuildOptions) {
     super(values, options);
@@ -44,72 +45,97 @@ export class RankingPlace extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique('unique_constraint')
   @Index({
     name: 'ranking_index',
-    using: 'BTREE'
+    using: 'BTREE',
   })
+  @Field({ nullable: true })
   @Column
   rankingDate: Date;
 
+  @Field({ nullable: true })
   @Column
   gender: string;
 
+  @Field({ nullable: true })
   @Column
   singlePoints: number;
+  @Field({ nullable: true })
   @Column
   mixPoints: number;
+  @Field({ nullable: true })
   @Column
   doublePoints: number;
 
+  @Field({ nullable: true })
   @Column
   singlePointsDowngrade: number;
+  @Field({ nullable: true })
   @Column
   mixPointsDowngrade: number;
+  @Field({ nullable: true })
   @Column
   doublePointsDowngrade: number;
 
+  @Field({ nullable: true })
   @Column
   singleRank: number;
+  @Field({ nullable: true })
   @Column
   mixRank: number;
+  @Field({ nullable: true })
   @Column
   doubleRank: number;
 
+  @Field({ nullable: true })
   @Column
   totalSingleRanking: number;
+  @Field({ nullable: true })
   @Column
   totalMixRanking: number;
+  @Field({ nullable: true })
   @Column
   totalDoubleRanking: number;
 
+  @Field({ nullable: true })
   @Column
   totalWithinSingleLevel: number;
+  @Field({ nullable: true })
   @Column
   totalWithinMixLevel: number;
+  @Field({ nullable: true })
   @Column
   totalWithinDoubleLevel: number;
 
+  @Field({ nullable: true })
   @Column
   single: number;
+  @Field({ nullable: true })
   @Column
   mix: number;
+  @Field({ nullable: true })
   @Column
   double: number;
 
   @Default(false)
+  @Field({ nullable: true })
   @Column
   singleInactive: boolean;
   @Default(false)
+  @Field({ nullable: true })
   @Column
   mixInactive: boolean;
   @Default(false)
+  @Field({ nullable: true })
   @Column
   doubleInactive: boolean;
 
+  @Field({ nullable: true })
   @Column
   updatePossible: boolean;
 
@@ -117,8 +143,9 @@ export class RankingPlace extends Model {
   @ForeignKey(() => Player)
   @Index({
     name: 'ranking_index',
-    using: 'BTREE'
+    using: 'BTREE',
   })
+  @Field({ nullable: true })
   @Column
   playerId: string;
 
@@ -126,8 +153,9 @@ export class RankingPlace extends Model {
   @ForeignKey(() => RankingSystem)
   @Index({
     name: 'ranking_index',
-    using: 'BTREE'
+    using: 'BTREE',
   })
+  @Field({ nullable: true })
   @Column
   SystemId: string;
 
@@ -183,7 +211,7 @@ export class RankingPlace extends Model {
       instances = [instances];
     }
 
-    const currentInstances = [];
+    const currentInstances: RankingPlace[] = [];
 
     for (const instance of instances) {
       const lastRanking = await RankingPlace.findOne({
@@ -195,7 +223,9 @@ export class RankingPlace extends Model {
         limit: 1,
         order: [['rankingDate', 'DESC']],
       });
-      currentInstances.push(lastRanking);
+      if (lastRanking) {
+        currentInstances.push(lastRanking);
+      }
     }
 
     await this.updateLatestRankings(currentInstances, options, 'destroy');
@@ -212,6 +242,10 @@ export class RankingPlace extends Model {
     const current = await LastRankingPlace.findAll({
       where: {
         [Op.or]: lastRankingPlaces.map((r) => {
+          if (!r || !r.playerId || !r.systemId) {
+            throw new Error('RankingPlace is undefined');
+          }
+
           const filter: {
             playerId: string;
             systemId: string;

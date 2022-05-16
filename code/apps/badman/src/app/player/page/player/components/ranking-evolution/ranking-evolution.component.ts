@@ -32,7 +32,7 @@ export class RankingEvolutionComponent implements OnInit {
     const reset$ = new Subject();
 
     const id$ = this.route.paramMap.pipe(
-      tap((_) => reset$.next(undefined)),
+      tap(() => reset$.next(undefined)),
       map((x) => x.get('id')),
       shareReplay(1)
     );

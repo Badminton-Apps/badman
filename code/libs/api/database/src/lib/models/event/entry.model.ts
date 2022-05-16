@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -19,6 +20,7 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import { Standing } from '.';
+import { MetaType } from '../../types';
 import { Player } from '../player.model';
 import { Team } from '../team.model';
 import { DrawCompetition, SubEventCompetition } from './competition';
@@ -29,6 +31,7 @@ import { DrawTournament, SubEventTournament } from './tournament';
   schema: 'event',
   tableName: 'Entries',
 } as TableOptions)
+@ObjectType({ description: 'A EventEntry' })
 export class EventEntry extends Model {
   constructor(values?: Partial<EventEntry>, options?: BuildOptions) {
     super(values, options);
@@ -37,6 +40,7 @@ export class EventEntry extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
@@ -44,6 +48,7 @@ export class EventEntry extends Model {
   team?: Team;
 
   @ForeignKey(() => Team)
+  @Field({ nullable: true })
   @Column
   teamId: string;
 
@@ -51,6 +56,7 @@ export class EventEntry extends Model {
   player1?: Player;
 
   @ForeignKey(() => Player)
+  @Field({ nullable: true })
   @Column
   player1Id: string;
 
@@ -58,6 +64,7 @@ export class EventEntry extends Model {
   player2?: Player;
 
   @ForeignKey(() => Player)
+  @Field({ nullable: true })
   @Column
   player2Id: string;
 
@@ -91,17 +98,21 @@ export class EventEntry extends Model {
   })
   competitionDraw?: DrawCompetition;
 
+  @Field({ nullable: true })
   @Column
   subEventId: string;
+  @Field({ nullable: true })
   @Column
   drawId: string;
 
+  @Field({ nullable: true })
   @Column
   entryType: string;
 
   @HasOne(() => Standing)
   standing?: Standing;
 
+  @Field(() => MetaType, { nullable: true })
   @Column({
     type: DataType.JSON,
   })

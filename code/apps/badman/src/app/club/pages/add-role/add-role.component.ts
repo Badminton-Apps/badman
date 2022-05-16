@@ -42,7 +42,7 @@ export class AddRoleComponent implements OnInit {
 
     this.claims$ = this.claimService.clubClaims().pipe(
       mergeMap((res) => res),
-      groupBy((person) => person.category),
+      groupBy((person) => person.category ?? 'Other'),
       mergeMap((obs) => {
         return obs.pipe(
           toArray(),
