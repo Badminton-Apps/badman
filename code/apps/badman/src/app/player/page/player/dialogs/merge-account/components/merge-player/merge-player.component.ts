@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { Club, Player } from 'app/_shared';
+import { Club, Player } from '../../../../../../../_shared';
 
 @Component({
   selector: 'badman-merge-player',

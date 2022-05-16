@@ -77,7 +77,7 @@ export class CurriculumComponent implements OnInit {
             !!gameType && !!offenseType && !!place && !!action
         )
       )
-      .subscribe((_) => {
+      .subscribe(() => {
         //gameType, offenseType, place, action
         this.suggestions = ['...'];
       });

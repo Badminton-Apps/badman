@@ -2,7 +2,7 @@
 query GetEvents(
   $first: Int
   $after: String
-  $where: SequelizeJSON
+  $where: JSONObject
   $includeSubEvents: Boolean!
 ) {
   tournamentEvents(first: $first, after: $after, where: $where) {

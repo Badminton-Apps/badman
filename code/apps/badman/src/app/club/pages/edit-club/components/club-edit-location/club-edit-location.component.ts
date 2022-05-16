@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Club, Location } from 'app/_shared';
+import { Club, Location } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-club-edit-location',

@@ -13,11 +13,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Apollo, gql } from 'apollo-angular';
-import { RankingService } from 'app/admin/services';
-import { SimulateService } from 'app/admin/services/simulate.service';
-import { RankingSystem, SystemService } from 'app/_shared';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, lastValueFrom, merge, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, lastValueFrom, of } from 'rxjs';
 import {
   catchError,
   distinctUntilChanged,
@@ -28,6 +25,9 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
+import { RankingSystem, SystemService } from '../../../../../_shared';
+import { RankingService } from '../../../../services';
+import { SimulateService } from '../../../../services/simulate.service';
 
 @Component({
   templateUrl: './overview-ranking-systems.component.html',
@@ -90,13 +90,13 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
     ])
       .pipe(
         shareReplay(),
-        switchMap(([sort, page, update]) => {
+        switchMap(([, , update]) => {
           this.isLoadingResults = true;
-          return this.apollo.query<{ systems: RankingSystem[] }>({
+          return this.apollo.query<{ rankingSystems: RankingSystem[] }>({
             fetchPolicy: update ? 'network-only' : 'cache-first',
             query: gql`
               query GetSystemsQuery($order: String, $offset: Int, $limit: Int) {
-                systems(order: $order, offset: $offset, limit: $limit) {
+                rankingSystems(order: $order, offset: $offset, limit: $limit) {
                   id
                   primary
                   runCurrently
@@ -109,13 +109,17 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
               }
             `,
             variables: {
-              order: `${this.sort.direction == 'asc' ? '' : 'reverse:'}${this.sort.active}`,
-              offset: (this.paginator.pageIndex ?? 0) * (this.paginator.pageSize ?? 15),
+              order: `${this.sort.direction == 'asc' ? '' : 'reverse:'}${
+                this.sort.active
+              }`,
+              offset:
+                (this.paginator.pageIndex ?? 0) *
+                (this.paginator.pageSize ?? 15),
               limit: this.paginator.pageSize,
             },
           });
         }),
-        map((x) => x.data?.systems.map((s) => new RankingSystem(s))),
+        map((x) => x.data?.rankingSystems.map((s) => new RankingSystem(s))),
         map((data) => {
           // Flip flag to show that loading has finished.
           this.isLoadingResults = false;
@@ -131,7 +135,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
           return of([]);
         }),
         distinctUntilChanged(),
-        tap((_) => this.rankingSelection.clear())
+        tap(() => this.rankingSelection.clear())
       )
       .subscribe((data) => {
         this.dataSource.data = data;
@@ -146,12 +150,17 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
     await lastValueFrom(
       this.simulateService
         .calculateRanking(
-          this.rankingSelection.selected.map((x) => x.id!),
+          this.rankingSelection.selected.map((x) => {
+            if (!x.id) {
+              throw new Error('No id');
+            }
+            return x.id;
+          }),
           this.maxDate.value,
           this.forceStartDate ? this.minDate.value : null,
           this.startingRankings
         )
-        .pipe(tap((_) => this.updateHappend.next(true)))
+        .pipe(tap(() => this.updateHappend.next(true)))
     );
   }
 
@@ -160,7 +169,12 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
 
     this.rankingService
       .downloadRankingAsync(
-        this.rankingSelection.selected.map((x) => x.id!),
+        this.rankingSelection.selected.map((x) => {
+          if (!x.id) {
+            throw new Error('No id');
+          }
+          return x.id;
+        }),
         type
       )
       .pipe(
@@ -173,7 +187,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
           throw e;
         })
       )
-      .subscribe((r) => {
+      .subscribe(() => {
         this.downloading = false;
         this.changeDetectorRef.detectChanges();
       });
@@ -186,8 +200,15 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
       if (result) {
         await lastValueFrom(
           this.simulateService
-            .resetRanking(this.rankingSelection.selected.map((x) => x.id!))
-            .pipe(tap((_) => this.updateHappend.next(true)))
+            .resetRanking(
+              this.rankingSelection.selected.map((x) => {
+                if (!x.id) {
+                  throw new Error('No id');
+                }
+                return x.id;
+              })
+            )
+            .pipe(tap(() => this.updateHappend.next(true)))
         );
       }
     });
@@ -206,7 +227,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
           id: systemId.id,
           primary: true,
         })
-        .pipe(tap((_) => this.updateHappend.next(true)))
+        .pipe(tap(() => this.updateHappend.next(true)))
     );
   }
   async deleteSystem(systemId: string) {
@@ -222,7 +243,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
             rankingSystemIdId: systemId,
           },
         })
-        .pipe(tap((_) => this.updateHappend.next(true)))
+        .pipe(tap(() => this.updateHappend.next(true)))
     );
   }
 }

@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { Club, Player, Team } from 'app/_shared';
+import { Club, Player, Team } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-team-players',
@@ -28,9 +28,9 @@ export class TeamPlayersComponent implements OnInit {
   @Input()
   disableIds: string[] | null = [];
 
-  where!: {};
+  where!: { [key: string]: unknown };
 
-  baseComplete: boolean = false;
+  baseComplete = false;
 
   ngOnInit() {
     this.checkIfBaseComplete();

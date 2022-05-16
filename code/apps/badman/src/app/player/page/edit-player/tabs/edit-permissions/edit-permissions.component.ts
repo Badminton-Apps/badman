@@ -50,7 +50,7 @@ export class EditPermissionsComponent implements OnInit {
         })
       ),
       mergeMap((res) => res),
-      groupBy((person) => person.category),
+      groupBy((person) => person.category ?? 'Other'),
       mergeMap((obs) => {
         return obs.pipe(
           toArray(),
@@ -74,7 +74,7 @@ export class EditPermissionsComponent implements OnInit {
     this.claimService
       .updateGlobalUserClaim(this.player.id, claim.id, checked)
       .pipe(debounceTime(600))
-      .subscribe((_) => {
+      .subscribe(() => {
         this._snackBar.open('Saved', undefined, {
           duration: 1000,
           panelClass: 'success',

@@ -1,4 +1,4 @@
-import { Location } from 'app/_shared';
+import { Location } from '../../../../../_shared';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import * as moment from 'moment';
 
@@ -20,10 +20,15 @@ export class CalendarComponent implements OnInit {
   ngOnInit(): void {
     this.monthNames = moment.months();
     const weekdays = moment.weekdays();
-    this.weekDayNames = [weekdays[1], weekdays[2], weekdays[3], weekdays[4], weekdays[5], weekdays[6], weekdays[0]];
-
-    this.locations.set(1, { name: 'Location A', courts: Math.floor(Math.random() * 6) + 6 });
-    this.locations.set(2, { name: 'Location B', courts: Math.floor(Math.random() * 6) + 6 });
+    this.weekDayNames = [
+      weekdays[1],
+      weekdays[2],
+      weekdays[3],
+      weekdays[4],
+      weekdays[5],
+      weekdays[6],
+      weekdays[0],
+    ];
 
     this.generateCalendarDays(this.monthIndex);
   }
@@ -50,7 +55,7 @@ export class CalendarComponent implements OnInit {
     const weeks = Math.ceil(daysBetween / 7);
 
     // Loop through the weeks
-    for (var i = 0; i < weeks * 7; i++) {
+    for (let i = 0; i < weeks * 7; i++) {
       const rand = Math.random();
       const events: { name: string; locationId: number }[] = [];
       if (rand > 0.55) {
@@ -109,11 +114,11 @@ export class CalendarDay {
 
     const courts = new Map<number, number>();
     for (const loc of locations) {
-      courts.set(loc[0], loc[1].courts!);
+      courts.set(loc[0], loc[1].courts ?? 0);
     }
 
     for (const event of events) {
-      courts.set(event.locationId, courts.get(event.locationId)! - 1);
+      courts.set(event.locationId, courts.get(event.locationId) ?? 0 - 1);
     }
 
     this.remainingCourts = [...courts.values()];

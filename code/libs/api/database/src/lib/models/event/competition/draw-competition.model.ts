@@ -29,11 +29,13 @@ import { EventEntry } from '../entry.model';
 import { EncounterCompetition } from './encounter-competition.model';
 import { SubEventCompetition } from './sub-event-competition.model';
 import { DrawType } from '../../../enums';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
   schema: 'event',
 })
+@ObjectType({ description: 'A DrawCompetition' })
 export class DrawCompetition extends Model {
   constructor(values?: Partial<DrawCompetition>, options?: BuildOptions) {
     super(values, options);
@@ -42,24 +44,30 @@ export class DrawCompetition extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique('DrawCompetitions_unique_constraint')
+  @Field({ nullable: true })
   @Column
   name: string;
 
   @Unique('DrawCompetitions_unique_constraint')
+  @Field({ nullable: true })
   @Column
   visualCode: string;
 
   @Unique('DrawCompetitions_unique_constraint')
+  @Field(() => String,{ nullable: true })
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
   type: DrawType;
 
+  @Field({ nullable: true })
   @Column
   size: number;
 
+  @Field(() => SubEventCompetition, { nullable: true })
   @BelongsTo(() => SubEventCompetition, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
@@ -68,6 +76,7 @@ export class DrawCompetition extends Model {
 
   @Unique('DrawCompetitions_unique_constraint')
   @ForeignKey(() => SubEventCompetition)
+  @Field({ nullable: true })
   @Column
   subeventId: string;
 
@@ -113,5 +122,5 @@ export class DrawCompetition extends Model {
   removeEntry!: HasManyRemoveAssociationsMixin<EventEntry, string>;
   hasEntries!: HasManyHasAssociationMixin<EventEntry, string>;
   hasEntry!: HasManyHasAssociationsMixin<EventEntry, string>;
-  countEntries!: HasManyCountAssociationsMixin;  
+  countEntries!: HasManyCountAssociationsMixin;
 }

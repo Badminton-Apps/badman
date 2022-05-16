@@ -4,9 +4,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
-import { Cron, EVENTS, ListenTopic } from 'app/_shared';
+import { Cron, EVENTS, ListenTopic } from '../../../../../_shared';
 import cronstrue from 'cronstrue';
-import { environment } from 'environments/environment';
+import { environment } from '../../../../../../environments/environment';
 import { map, Subscription, take } from 'rxjs';
 import * as cronQuery from './graphql/getCronStatusQuery.graphql';
 
@@ -50,22 +50,22 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
   @ListenTopic(EVENTS.JOB.CRON_STARTED)
   jobStarted(data: Cron) {
     const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
-    this.dataSource.data[index]!.running! = true;
+    this.dataSource.data[index].running = true;
   }
 
   @ListenTopic(EVENTS.JOB.CRON_UPDATE)
   jobUpdated(data: Cron) {
     const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
-    this.dataSource.data[index]!.meta! = data.meta;
+    this.dataSource.data[index].meta = data.meta;
   }
 
   @ListenTopic(EVENTS.JOB.CRON_FINISHED)
   jobFinished(data: Cron) {
     const index = this.dataSource.data.findIndex((cron) => cron.id === data.id);
-    this.dataSource.data[index]!.running! = false;
+    this.dataSource.data[index].running = false;
   }
 
-  runJob(cronJob) {
+  runJob(cronJob: Cron) {
     this.httpClient.post(`${this.urlBase}/single-run?type=${cronJob.type}`, {}).subscribe(() => {});
   }
 

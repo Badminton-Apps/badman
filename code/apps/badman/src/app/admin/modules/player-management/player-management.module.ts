@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { SharedModule } from 'app/_shared';
+import { SharedModule } from '../../../_shared';
 import { LinkAccountComponent } from './pages';
 import { PlayerManagementRoutingModule } from './player-management-routing.module';
 

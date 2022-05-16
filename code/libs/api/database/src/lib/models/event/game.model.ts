@@ -1,4 +1,5 @@
 // import { SocketEmitter, EVENTS } from '../../../sockets';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -55,6 +56,7 @@ import { DrawTournament } from './tournament';
   timestamps: true,
   schema: 'event',
 } as TableOptions)
+@ObjectType({ description: 'A Game' })
 export class Game extends Model {
   constructor(values?: Partial<Game>, options?: BuildOptions) {
     super(values, options);
@@ -63,15 +65,19 @@ export class Game extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column
   playedAt: Date;
 
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('S', 'D', 'MX'))
   gameType: GameType;
 
+  @Field(() => String, { nullable: true })
   @Column(
     DataType.ENUM(
       'NORMAL',
@@ -83,37 +89,49 @@ export class Game extends Model {
   )
   status: GameStatus;
 
+  @Field({ nullable: true })
   @Column
   set1Team1?: number;
+  @Field({ nullable: true })
   @Column
   set1Team2?: number;
+  @Field({ nullable: true })
   @Column
   set2Team1?: number;
+  @Field({ nullable: true })
   @Column
   set2Team2?: number;
+  @Field({ nullable: true })
   @Column
   set3Team1?: number;
+  @Field({ nullable: true })
   @Column
   set3Team2?: number;
 
+  @Field({ nullable: true })
   @Column
   winner?: number;
 
+  @Field({ nullable: true })
   @Column
   order?: number;
 
+  @Field({ nullable: true })
   @Column
   round?: string;
 
+  @Field(() => [RankingPoint], { nullable: true })
   @HasMany(() => RankingPoint, 'GameId')
   rankingPoints?: RankingPoint[];
 
+  @Field(() => [DrawTournament], { nullable: true })
   @BelongsTo(() => DrawTournament, {
     foreignKey: 'linkId',
     constraints: false,
   })
   tournament: DrawTournament;
 
+  @Field(() => [EncounterCompetition], { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
@@ -121,10 +139,12 @@ export class Game extends Model {
   competition: EncounterCompetition;
 
   @Index('game_parent_index')
+  @Field({ nullable: true })
   @Column
   linkId: string;
 
   @Index('game_parent_index')
+  @Field({ nullable: true })
   @Column
   linkType: string;
 
@@ -132,14 +152,16 @@ export class Game extends Model {
   court: Court;
 
   @ForeignKey(() => Court)
+  @Field({ nullable: true })
   @Column
   courtId: string;
 
+  @Field({ nullable: true })
   @Column
   visualCode: string;
 
+  @Field(() => [Player], { nullable: true })
   @BelongsToMany(() => Player, () => GamePlayer)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   players: (Player & { GamePlayer: GamePlayer })[];
 
   @AfterCreate

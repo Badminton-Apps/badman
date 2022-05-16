@@ -2,9 +2,13 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "api-authorization": "libs/api/authorization",
     "api-database": "libs/api/database",
-    "api-simulate": "libs/api/simulate",
+    "api-grapqhl": "libs/api/grapqhl",
     "badman": "apps/badman",
-    "badman-e2e": "apps/badman-e2e"
+    "badman-e2e": "apps/badman-e2e",
+    "search": "libs/search",
+    "worker-ranking": "apps/worker/ranking",
+    "worker-sync": "apps/worker/sync"
   }
 }

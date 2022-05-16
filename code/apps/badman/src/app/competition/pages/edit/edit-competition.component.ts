@@ -1,11 +1,16 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { CompetitionEvent, CompetitionSubEvent, EventService } from 'app/_shared';
-import { BehaviorSubject, combineLatest, lastValueFrom, Observable } from 'rxjs';
-import { debounceTime, filter, map, skip, switchMap, tap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  lastValueFrom,
+  Observable,
+} from 'rxjs';
+import { debounceTime, filter, map, skip, switchMap } from 'rxjs/operators';
+import { CompetitionEvent, CompetitionSubEvent } from '../../../_shared';
 
 @Component({
   templateUrl: './edit-competition.component.html',
@@ -21,11 +26,14 @@ export class EditEventCompetitionComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private _snackBar: MatSnackBar,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
-    this.event$ = combineLatest([this.route.paramMap, this.update$.pipe(debounceTime(600))]).pipe(
+    this.event$ = combineLatest([
+      this.route.paramMap,
+      this.update$.pipe(debounceTime(600)),
+    ]).pipe(
       map(([params]) => params.get('id')),
       switchMap((id) =>
         this.apollo.query<{ competitionEvent: CompetitionEvent }>({
@@ -96,9 +104,15 @@ export class EditEventCompetitionComponent implements OnInit {
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
-      startYear: new FormControl(event.startYear, [Validators.required, Validators.min(2000), Validators.max(3000)]),
+      startYear: new FormControl(event.startYear, [
+        Validators.required,
+        Validators.min(2000),
+        Validators.max(3000),
+      ]),
 
-      usedRankingUnit: new FormControl(event.usedRankingUnit, [Validators.required]),
+      usedRankingUnit: new FormControl(event.usedRankingUnit, [
+        Validators.required,
+      ]),
       usedRankingAmount: new FormControl(event.usedRankingAmount, [
         Validators.required,
         Validators.min(1),
@@ -128,7 +142,7 @@ export class EditEventCompetitionComponent implements OnInit {
     await lastValueFrom(
       this.apollo.mutate<{ updateEvent: CompetitionEvent }>({
         mutation: gql`
-          mutation UpdateCompetitionEvent($event: EventCompetitionInput!) {
+          mutation UpdateeventCompetition($event: EventCompetitionInput!) {
             updateEventCompetition(eventCompetition: $event) {
               id
               name
@@ -154,9 +168,13 @@ export class EditEventCompetitionComponent implements OnInit {
     this.saved$.next(0);
   }
 
-  async updateSubEvent() {}
+  async updateSubEvent() {
+    // TODO
+  }
 
-  async addSubEvent() {}
+  async addSubEvent() {
+    // TODO
+  }
 
   async newSubEvent(event: CompetitionEvent) {
     const subEvents = this.formGroup.get('subEvents') as FormArray;

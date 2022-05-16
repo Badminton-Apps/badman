@@ -5,7 +5,7 @@
   "prefix": "badman",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nrwl/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/badman",
@@ -13,6 +13,10 @@
         "main": "apps/badman/src/main.ts",
         "polyfills": "apps/badman/src/polyfills.ts",
         "tsConfig": "apps/badman/tsconfig.app.json",
+        "buildLibsFromSource": false,
+        "customWebpackConfig": {
+          "path": "apps/badman/webpack.config.js"
+        },
         "inlineStyleLanguage": "scss",
         "assets": [
           "apps/badman/src/favicon.ico",
@@ -20,8 +24,27 @@
           "apps/badman/src/assets",
           "apps/badman/src/manifest.webmanifest"
         ],
-        "styles": ["apps/badman/src/styles.scss"],
-        "scripts": []
+        "styles": [
+          "apps/badman/src/styles.scss",
+          "node_modules/prismjs/themes/prism-okaidia.css",
+          "node_modules/cookieconsent/build/cookieconsent.min.css"
+        ],
+        "scripts": [
+          "node_modules/prismjs/prism.js",
+          "node_modules/prismjs/components/prism-markdown.min.js",
+          "node_modules/prismjs/components/prism-typescript.min.js",
+          "node_modules/cookieconsent/build/cookieconsent.min.js"
+        ],
+        "allowedCommonJsDependencies": [
+          "raf",
+          "html2pdf.js",
+          "opentracing",
+          "core-js",
+          "echarts",
+          "zen-observable",
+          "moment-timezone",
+          "zrender"
+        ]
       },
       "configurations": {
         "production": {
@@ -57,7 +80,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nrwl/angular:webpack-server",
       "configurations": {
         "production": {
           "browserTarget": "badman:build:production"

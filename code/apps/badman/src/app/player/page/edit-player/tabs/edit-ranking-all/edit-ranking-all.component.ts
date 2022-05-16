@@ -41,10 +41,10 @@ export class EditRankingAllComponent implements OnInit {
       .pipe(
         switchMap((where) =>
           this.appollo
-            .query<{ systems: RankingSystem[] }>({
+            .query<{ rankingSystems: RankingSystem[] }>({
               query: gql`
-                query GetPrimarySystemsInfoForRanking($where: SequelizeJSON) {
-                  systems(where: $where) {
+                query GetPrimarySystemsInfoForRanking($where: JSONObject) {
+                  rankingSystems(where: $where) {
                     id
                     rankingSystem
                     updateIntervalAmount
@@ -66,7 +66,7 @@ export class EditRankingAllComponent implements OnInit {
                 where,
               },
             })
-            .pipe(map((result) => new RankingSystem(result.data.systems?.[0])))
+            .pipe(map((result) => new RankingSystem(result.data.rankingSystems?.[0])))
         )
       )
       .subscribe((system) => {
@@ -207,7 +207,7 @@ export class EditRankingAllComponent implements OnInit {
                   rankingPlace: result.place,
                 },
               })
-            ).then((_) => this.query$?.refetch());
+            ).then(() => this.query$?.refetch());
           }
         }
       );

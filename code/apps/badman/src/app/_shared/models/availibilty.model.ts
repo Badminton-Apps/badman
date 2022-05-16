@@ -3,8 +3,8 @@ import { Location } from './location.model';
 export class Availability {
   id?: string;
   year?: number;
-  days?: AvailabilityDay[];
-  exceptions?: AvailabilityException[];
+  days: AvailabilityDay[];
+  exceptions: AvailabilityException[];
   location?: Location;
   locationId?: string;
 

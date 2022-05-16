@@ -8,6 +8,7 @@ export * from './gameType.enum';
 export * from './levelType.enum';
 export * from './rankingsSystemsType.enum';
 export * from './rankingTiming.enum';
+export * from './security-types.enum';
 export * from './startingType.enum';
 export * from './subEventType.enum';
 export * from './teamMembershipType.enum';

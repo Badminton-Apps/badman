@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Team, Club, ClubMembership } from 'app/_shared';
+import { Club } from '../../../../../_shared';
 
 @Component({
   templateUrl: './edit-club-history-dialog.component.html',
@@ -19,8 +19,13 @@ export class EditClubHistoryDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const clubControl = new FormControl(this.data.club?.id, [Validators.required]);
-    const startControl = new FormControl(this.data.club?.clubMembership?.start, [Validators.required]);
+    const clubControl = new FormControl(this.data.club?.id, [
+      Validators.required,
+    ]);
+    const startControl = new FormControl(
+      this.data.club?.clubMembership?.start,
+      [Validators.required]
+    );
     const endControl = new FormControl(this.data.club?.clubMembership?.end);
 
     this.currentClub = this.data.club?.clubMembership?.end === undefined;
@@ -32,9 +37,9 @@ export class EditClubHistoryDialogComponent implements OnInit {
 
   toggleCurrentClub() {
     if (this.membershipFormGroup.value.end != null) {
-      this.membershipFormGroup.get('end')!.setValue(null);
+      this.membershipFormGroup.get('end')?.setValue(null);
     } else {
-      this.membershipFormGroup.get('end')!.setValue(new Date());
+      this.membershipFormGroup.get('end')?.setValue(new Date());
     }
   }
 
@@ -42,7 +47,7 @@ export class EditClubHistoryDialogComponent implements OnInit {
     const data = {
       id: this.data.club?.clubMembership?.id,
       clubId: this.clubFormGroup.value.club,
-      ...this.membershipFormGroup!.value,
+      ...this.membershipFormGroup.value,
     };
     this.dialogRef.close({
       action: this.data.club?.clubMembership?.id ? 'update' : 'create',

@@ -1,4 +1,4 @@
-query GetBasePlayersQuery($id: ID!, $subEventsWhere: SequelizeJSON) {
+query GetBasePlayersQuery($id: ID!, $subEventsWhere: JSONObject) {
   club(id: $id) {
     id
     teams {

@@ -1,3 +1,4 @@
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -33,7 +34,7 @@ import {
 } from 'sequelize-typescript';
 import { RankingSystems, RankingTiming, StartingType } from '../../enums/';
 import { RankingSystemGroup } from './group.model';
-import { GroupSystems } from './group_system.model';
+import { GroupSystemsMembership } from './group-system-membership.model';
 import { LastRankingPlace } from './last-place.model';
 import { RankingPlace } from './place.model';
 import { RankingPoint } from './point.model';
@@ -43,11 +44,12 @@ import { RankingPoint } from './point.model';
   tableName: 'Systems',
   schema: 'ranking',
 })
+@ObjectType({ description: 'A RankingSystem' })
 export class RankingSystem extends Model {
   constructor(values?: Partial<RankingSystem>, options?: BuildOptions) {
     super(values, options);
 
-    if (values.amountOfLevels) {
+    if (values?.amountOfLevels) {
       this._setupValues();
     }
   }
@@ -55,41 +57,56 @@ export class RankingSystem extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique
+  @Field({ nullable: true })
   @Column
   name: string;
 
+  @Field({ nullable: true })
   @Column
   amountOfLevels: number;
 
+  @Field({ nullable: true })
   @Column
   procentWinning: number;
+  @Field({ nullable: true })
   @Column
   procentWinningPlus1: number;
+  @Field({ nullable: true })
   @Column
   procentLosing: number;
+  @Field({ nullable: true })
   @Column
   minNumberOfGamesUsedForUpgrade: number;
+  @Field({ nullable: true })
   @Column
   maxDiffLevels: number;
+  @Field({ nullable: true })
   @Column
   maxDiffLevelsHighest: number;
+  @Field({ nullable: true })
   @Column
   latestXGamesToUse: number;
+  @Field({ nullable: true })
   @Column
   maxLevelUpPerChange: number;
+  @Field({ nullable: true })
   @Column
   maxLevelDownPerChange: number;
 
+  @Field({ nullable: true })
   @Column
   gamesForInactivty: number;
 
+  @Field({ nullable: true })
   @Column
   inactivityAmount: number;
 
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   inactivityUnit: 'months' | 'weeks' | 'days';
 
@@ -100,10 +117,13 @@ export class RankingSystem extends Model {
     };
   }
   @Default(new Date('2016-08-31T22:00:00.000Z'))
+  @Field({ nullable: true })
   @Column
   caluclationIntervalLastUpdate: Date;
+  @Field({ nullable: true })
   @Column
   caluclationIntervalAmount: number;
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   calculationIntervalUnit: 'months' | 'weeks' | 'days';
 
@@ -114,8 +134,10 @@ export class RankingSystem extends Model {
     };
   }
 
+  @Field({ nullable: true })
   @Column
   periodAmount: number;
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   periodUnit: 'months' | 'weeks' | 'days';
 
@@ -126,10 +148,13 @@ export class RankingSystem extends Model {
     };
   }
   @Default(new Date('2016-08-31T22:00:00.000Z'))
+  @Field({ nullable: true })
   @Column
   updateIntervalAmountLastUpdate: Date;
+  @Field({ nullable: true })
   @Column
   updateIntervalAmount: number;
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   updateIntervalUnit: 'months' | 'weeks' | 'days';
 
@@ -140,24 +165,31 @@ export class RankingSystem extends Model {
     };
   }
 
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
   rankingSystem: RankingSystems;
 
+  @Field({ nullable: true })
   @Column
   primary: boolean;
 
+  @Field({ nullable: true })
   @Column({ defaultValue: false })
   runCurrently: boolean;
 
+  @Field({ nullable: true })
   @Column
   runDate: Date;
 
+  @Field({ nullable: true })
   @Column({ defaultValue: 1 })
   differenceForUpgrade: number;
 
+  @Field({ nullable: true })
   @Column({ defaultValue: 0 })
   differenceForDowngrade: number;
 
+  @Field(() => String, { nullable: true })
   @Column({
     type: DataType.ENUM('formula', 'tableLFBB', 'tableBVL'),
     defaultValue: 'formula',
@@ -173,7 +205,7 @@ export class RankingSystem extends Model {
   @HasMany(() => LastRankingPlace, 'systemId')
   lastPlaces: LastRankingPlace;
 
-  @BelongsToMany(() => RankingSystemGroup, () => GroupSystems)
+  @BelongsToMany(() => RankingSystemGroup, () => GroupSystemsMembership)
   groups: RankingSystemGroup[];
 
   // Has many RankingPoint
@@ -208,25 +240,30 @@ export class RankingSystem extends Model {
   private _levelArray: number[];
   private _levelArrayOneMinus: number[];
 
+  @Field(() => [Int], { nullable: true })
   @Column(DataType.VIRTUAL)
   get pointsToGoUp(): number[] {
     return this._pointsToGoUp;
   }
 
+  @Field(() => [Int], { nullable: true })
   @Column(DataType.VIRTUAL)
   get pointsWhenWinningAgainst(): number[] {
     return this._pointsWhenWinningAgainst;
   }
 
+  @Field(() => [Int], { nullable: true })
   @Column(DataType.VIRTUAL)
   get pointsToGoDown(): number[] {
     return this._pointsToGoDown;
   }
 
+  @Field(() => [Int], { nullable: true })
   @Column(DataType.VIRTUAL)
   get levelArray(): number[] {
     return this._levelArray;
   }
+  @Field(() => [Int], { nullable: true })
   @Column(DataType.VIRTUAL)
   get levelArrayOneMinus(): number[] {
     return this._levelArrayOneMinus;

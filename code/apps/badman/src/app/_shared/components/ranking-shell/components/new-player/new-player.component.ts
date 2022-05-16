@@ -1,7 +1,7 @@
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Player } from 'app/_shared';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Player } from '../../../../models';
 
 @Component({
   templateUrl: './new-player.component.html',
@@ -20,7 +20,7 @@ export class NewPlayerComponent implements OnInit {
     let lastName: string | null = null;
     if (this.data?.input != null) {
       const spaced = this.data.input.indexOf(' ');
-      if (spaced != -1){
+      if (spaced != -1) {
         firstName = this.data.input.slice(spaced);
         lastName = this.data.input.substr(0, spaced);
       } else {
@@ -37,7 +37,7 @@ export class NewPlayerComponent implements OnInit {
       firstName: firstNameControl,
       lastName: lastNameControl,
       gender: genderControl,
-      memberId: memberIdControl
+      memberId: memberIdControl,
     });
   }
 

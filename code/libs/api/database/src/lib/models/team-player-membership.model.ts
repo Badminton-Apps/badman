@@ -12,37 +12,50 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { ClubMembership } from './club-membership.model';
 import { Player } from './player.model';
 import { Team } from './team.model';
+import { Field, ID } from '@nestjs/graphql';
 
 @Table({
-  schema: 'public'
+  schema: 'public',
 })
 export class TeamPlayerMembership extends Model {
   constructor(values?: Partial<TeamPlayerMembership>, options?: BuildOptions) {
     super(values, options);
   }
 
+  @Default(DataType.UUIDV4)
+  @IsUUID(4)
+  @PrimaryKey
+  @Field(() => ID)
+  @Column
+  id: string;
+
+
   @ForeignKey(() => Player)
   @AllowNull(false)
   @Index('player_team_index')
+  @Field({ nullable: true })
   @Column
   playerId: string;
 
   @ForeignKey(() => Team)
   @AllowNull(false)
   @Index('player_team_index')
+  @Field({ nullable: true })
   @Column
   teamId: string;
 
+  @Field({ nullable: true })
   @Column
   end?: Date;
 
   @AllowNull(false)
   @Default(false)
+  @Field({ nullable: true })
   @Column
   base: boolean;
 
@@ -50,14 +63,10 @@ export class TeamPlayerMembership extends Model {
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
   @Unique('TeamPlayerMemberships_teamId_playerId_unique')
   @AllowNull(false)
+  @Field({ nullable: true })
   @Column
   start: Date;
 
-  @Default(DataType.UUIDV4)
-  @IsUUID(4)
-  @PrimaryKey
-  @Column
-  id: string;
 
   @AfterCreate
   static async checkIfPlayerIsInClub(
@@ -65,19 +74,24 @@ export class TeamPlayerMembership extends Model {
     options: SaveOptions
   ) {
     const team = await Team.findByPk(instance.teamId, {
-      transaction: options.transaction
+      transaction: options.transaction,
     });
+
+    if (!team) {
+      throw new Error('Team not found');
+    }
+
     const connection = await ClubMembership.findOne({
       order: [['end', 'desc']],
       where: { playerId: instance.playerId },
-      transaction: options.transaction
+      transaction: options.transaction,
     });
     if (!connection) {
       // create new
       await new ClubMembership({
         clubId: team.clubId,
         playerId: instance.playerId,
-        start: new Date()
+        start: new Date(),
       }).save({ transaction: options.transaction });
     } else {
       if (connection.clubId !== team.clubId) {
@@ -90,7 +104,7 @@ export class TeamPlayerMembership extends Model {
         await new ClubMembership({
           clubId: team.clubId,
           playerId: instance.playerId,
-          start: new Date()
+          start: new Date(),
         }).save({ transaction: options.transaction });
       }
     }

@@ -1,10 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TeamService, UserService } from 'app/_shared';
-import { Team } from 'app/_shared/models/team.model';
 import { filter, map, share } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { Team } from '../../../models';
+import { TeamService, UserService } from '../../../services';
 
 @Component({
   selector: 'badman-select-team',
@@ -20,7 +26,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
 
   @Input()
-  dependsOn: string = 'club';
+  dependsOn = 'club';
 
   formControl = new FormControl();
   teamsM?: Team[];
@@ -73,38 +79,49 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
 
           this.teamsF$ = team$.pipe(
             map((teams) => teams.filter((team) => team.type === 'F')),
-            map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
+            map((teams) =>
+              teams.sort((a, b) => (a.teamNumber ?? 0) - (b.teamNumber ?? 0))
+            )
           );
 
           this.teamsM$ = team$.pipe(
             map((teams) => teams.filter((team) => team.type === 'M')),
-            map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
+            map((teams) =>
+              teams.sort((a, b) => (a.teamNumber ?? 0) - (b.teamNumber ?? 0))
+            )
           );
 
           this.teamsMX$ = team$.pipe(
             map((teams) => teams.filter((team) => team.type === 'MX')),
-            map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
+            map((teams) =>
+              teams.sort((a, b) => (a.teamNumber ?? 0) - (b.teamNumber ?? 0))
+            )
           );
 
           this.teamsNAT$ = team$.pipe(
             map((teams) => teams.filter((team) => team.type === 'NATIONAL')),
-            map((teams) => teams.sort((a, b) => a.teamNumber! - b.teamNumber!))
+            map((teams) =>
+              teams.sort((a, b) => (a.teamNumber ?? 0) - (b.teamNumber ?? 0))
+            )
           );
 
           team$.subscribe((teams) => {
             this.options = teams;
 
             let foundTeam: Team | null = null;
-            let teamId = this.activatedRoute.snapshot?.queryParamMap?.get('team');
+            const teamId =
+              this.activatedRoute.snapshot?.queryParamMap?.get('team');
 
             if (teamId && teams.length > 0) {
-              foundTeam = teams.find((r) => r.slug == teamId || r.id == teamId) ?? null;
+              foundTeam =
+                teams.find((r) => r.slug == teamId || r.id == teamId) ?? null;
             }
 
             if (foundTeam == null) {
-              foundTeam = teams.find((r) => r.captainId == this.user?.profile?.id) ?? null;
+              foundTeam =
+                teams.find((r) => r.captainId == this.user?.profile?.id) ??
+                null;
             }
-
 
             if (foundTeam) {
               this.formControl.setValue(foundTeam.id, { onlySelf: true });

@@ -13,7 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { SharedModule } from 'app/_shared';
+import { SharedModule } from '../../../_shared';
 import { EventManagementRoutingModule } from './event-management-routing.module';
 import { AddEventDialogComponent } from './pages/import/components/add-event.dialog/add-event.dialog.component';
 import { UploadFieldComponent } from './pages/import/components/upload-field/upload-field.component';

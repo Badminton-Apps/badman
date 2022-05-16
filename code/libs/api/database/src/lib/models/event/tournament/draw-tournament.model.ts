@@ -9,7 +9,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import {
   BuildOptions,
@@ -23,18 +23,20 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import { SubEventTournament } from './sub-event-tournament.model';
 import { DrawType } from '../../../enums';
 import { Game } from '../game.model';
 import { Standing } from '../standing.model';
 import { EventEntry } from '../entry.model';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
-  schema: 'event'
+  schema: 'event',
 })
+@ObjectType({ description: 'A DrawTournament' })
 export class DrawTournament extends Model {
   constructor(values?: Partial<DrawTournament>, options?: BuildOptions) {
     super(values, options);
@@ -43,17 +45,21 @@ export class DrawTournament extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
   @Unique('DrawTournaments_unique_constraint')
+  @Field({ nullable: true })
   @Column
   name: string;
 
   @Unique('DrawTournaments_unique_constraint')
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
   type: DrawType;
 
+  @Field({ nullable: true })
   @Column
   size: number;
 
@@ -61,8 +67,8 @@ export class DrawTournament extends Model {
     foreignKey: 'linkId',
     constraints: false,
     scope: {
-      linkType: 'tournament'
-    }
+      linkType: 'tournament',
+    },
   })
   games: Game[];
 
@@ -76,17 +82,20 @@ export class DrawTournament extends Model {
   entries: EventEntry[];
 
   @Unique('DrawTournaments_unique_constraint')
+  @Field({ nullable: true })
   @Column
   visualCode: string;
 
+  @Field(() => SubEventTournament, { nullable: true })
   @BelongsTo(() => SubEventTournament, {
     foreignKey: 'subeventId',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   subEvent?: SubEventTournament;
 
   @Unique('DrawTournaments_unique_constraint')
   @ForeignKey(() => SubEventTournament)
+  @Field({ nullable: true })
   @Column
   subeventId: string;
 

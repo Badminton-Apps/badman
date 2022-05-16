@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -15,6 +16,7 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
+import { AvailiblyDayType, ExceptionType } from '../../types';
 import { Location } from './location.model';
 
 @Table({
@@ -22,6 +24,7 @@ import { Location } from './location.model';
   schema: 'event',
   tableName: 'Availabilities',
 } as TableOptions)
+@ObjectType({ description: 'A Availability' })
 export class Availability extends Model {
   constructor(values?: Partial<Availability>, options?: BuildOptions) {
     super(values, options);
@@ -30,17 +33,21 @@ export class Availability extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column
   year: number;
 
+  @Field(() => AvailiblyDayType, { nullable: true })
   @Column({
     type: DataType.JSON,
   })
   days: AvailiblyDay[];
 
+  @Field(() => ExceptionType, { nullable: true })
   @Column({
     type: DataType.JSON,
   })
@@ -53,6 +60,7 @@ export class Availability extends Model {
   location: Location;
 
   @ForeignKey(() => Location)
+  @Field({ nullable: true })
   @Column
   locationId: string;
 
@@ -68,7 +76,14 @@ export interface AvailabilityException {
 }
 
 export interface AvailiblyDay {
-  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  day:
+    | 'monday'
+    | 'tuesday'
+    | 'wednesday'
+    | 'thursday'
+    | 'friday'
+    | 'saturday'
+    | 'sunday';
   startTime: string;
   endTime: string;
   courts: number;

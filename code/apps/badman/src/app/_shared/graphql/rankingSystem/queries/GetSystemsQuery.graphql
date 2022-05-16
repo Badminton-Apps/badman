@@ -1,5 +1,5 @@
 query GetSystemsQuery($order: String, $offset: Int, $limit: Int) {
-  systems(order: $order, offset: $offset, limit: $limit) {
+  rankingSystems(order: $order, offset: $offset, limit: $limit) {
     id
     primary
     runCurrently

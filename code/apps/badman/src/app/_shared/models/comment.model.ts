@@ -1,4 +1,5 @@
-import { Player } from 'app/_shared';
+import { Player } from './player.model';
+
 export class Comment {
   id?: string;
   message?: string;

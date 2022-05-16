@@ -1,6 +1,6 @@
 <div class="game-info" fxLayout="row">
   <!-- <div class="round" fxFlex="10px" *ngIf="this.game.order || this.game.round" fxLayoutAlign="start center">
-    {{ this.game.linkType == 'competition' ? this.game.order : this.game.round }}
+    {{ this.game.linkType === 'competition' ? this.game.order : this.game.round }}
   </div> -->
 
   <div class="players">
@@ -13,7 +13,7 @@
         [rankingPoint]="this.rankingPointP1T1"
       ></badman-player-info>
       <badman-player-info
-        *ngIf="this.game.gameType + '' != 'single'"
+        *ngIf="this.game.gameType + '' !== 'single'"
         [player]="this.player2Team1"
         [status]="this.game.status"
         [won]="this.game.winner === 1"
@@ -31,7 +31,7 @@
         [rankingPoint]="this.rankingPointP1T2"
       ></badman-player-info>
       <badman-player-info
-        *ngIf="this.game.gameType + '' != 'single'"
+        *ngIf="this.game.gameType + '' !== 'single'"
         [player]="this.player2Team2"
         [status]="this.game.status"
         [won]="this.game.winner === 2"
@@ -46,8 +46,8 @@
       <ng-container [ngSwitch]="this.game.status">
         <ng-container *ngSwitchCase="'WALKOVER'">
           <div class="set walkover">
-            <ng-container *ngIf="this.game.winner == 1">&nbsp;</ng-container>
-            <ng-container *ngIf="this.game.winner == 2">walkover</ng-container>
+            <ng-container *ngIf="this.game.winner === 1">&nbsp;</ng-container>
+            <ng-container *ngIf="this.game.winner === 2">walkover</ng-container>
           </div>
         </ng-container>
 
@@ -56,16 +56,16 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'NORMAL'">
-          <div class="set" [ngClass]="{ won: this.game.set1Winner == 1 }">
+          <div class="set" [ngClass]="{ won: this.game.set1Winner === 1 }">
             {{ this.game.set1Team1 }}
           </div>
-          <div class="set" [ngClass]="{ won: this.game.set2Winner == 1 }">
+          <div class="set" [ngClass]="{ won: this.game.set2Winner === 1 }">
             {{ this.game.set2Team1 }}
           </div>
           <div
             class="set"
             *ngIf="this.game.set3Team1 || this.game.set3Team2"
-            [ngClass]="{ won: this.game.set3Winner == 1 }"
+            [ngClass]="{ won: this.game.set3Winner === 1 }"
           >
             {{ this.game.set3Team1 }}
           </div>
@@ -78,24 +78,24 @@
       <ng-container [ngSwitch]="this.game.status">
         <ng-container *ngSwitchCase="'WALKOVER'">
           <div class="set">
-            <ng-container *ngIf="this.game.winner == 1">walkover</ng-container>
-            <ng-container *ngIf="this.game.winner == 2">&nbsp;</ng-container>
+            <ng-container *ngIf="this.game.winner === 1">walkover</ng-container>
+            <ng-container *ngIf="this.game.winner === 2">&nbsp;</ng-container>
           </div>
         </ng-container>
 
         <ng-container *ngSwitchCase="'NO_MATCH'"> </ng-container>
 
         <ng-container *ngSwitchCase="'NORMAL'">
-          <div class="set" [ngClass]="{ won: this.game.set1Winner == 2 }">
+          <div class="set" [ngClass]="{ won: this.game.set1Winner === 2 }">
             {{ this.game.set1Team2 }}
           </div>
-          <div class="set" [ngClass]="{ won: this.game.set2Winner == 2 }">
+          <div class="set" [ngClass]="{ won: this.game.set2Winner === 2 }">
             {{ this.game.set2Team2 }}
           </div>
           <div
             class="set"
             *ngIf="this.game.set3Team1 || this.game.set3Team2"
-            [ngClass]="{ won: this.game.set3Winner == 2 }"
+            [ngClass]="{ won: this.game.set3Winner === 2 }"
           >
             {{ this.game.set3Team2 }}
           </div>

@@ -1,7 +1,7 @@
 import { Game } from '../game.model';
-import { Event } from './event.model';
+import { RankingSystemGroup } from '../group.model';
+import { Player } from '../player.model';
 import { Draw } from './draw.model';
-import { GameType, Player, RankingSystemGroup } from 'app/_shared';
 
 export class SubEvent {
   id?: string;

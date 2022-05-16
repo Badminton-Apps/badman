@@ -5,7 +5,12 @@
     "types": [],
     "target": "ES2017"
   },
-  "files": ["src/main.ts", "src/polyfills.ts"],
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts",
+    "src/@types/graphql.d.ts",
+    "src/@types/json.d.ts"
+  ],
   "include": ["src/**/*.d.ts"],
   "exclude": ["**/*.test.ts", "**/*.spec.ts"]
 }

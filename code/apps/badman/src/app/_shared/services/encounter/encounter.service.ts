@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { CompetitionEncounter } from 'app/_shared';
-import { EncounterChange } from 'app/_shared/models';
 import { map } from 'rxjs/operators';
 import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
 import * as encounterQuery from '../../graphql/encounters/queries/GetEncounterQuery.graphql';
 import * as encountersQuery from '../../graphql/encounters/queries/GetEncountersQuery.graphql';
 import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.graphql';
-
+import { CompetitionEncounter, EncounterChange } from '../../models';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +13,7 @@ import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.gra
 export class EncounterService {
   constructor(private apollo: Apollo) {}
 
-  getEncounters(teamId: string, between: string []) {
+  getEncounters(teamId: string, between: string[]) {
     return this.apollo
       .query<{
         competitionEncounters: {
@@ -85,11 +83,13 @@ export class EncounterService {
         variables: {
           change: {
             accepted: encounterChange.accepted,
-            encounterId: encounterChange.encounter!.id,
+            encounterId: encounterChange.encounter?.id,
             home,
             dates: encounterChange.dates,
             comment: {
-              message: home ? encounterChange.homeComment!.message : encounterChange.awayComment!.message,
+              message: home
+                ? encounterChange.homeComment?.message
+                : encounterChange.awayComment?.message,
             },
           },
         },

@@ -3,7 +3,7 @@ import { EventCompetition } from './event/competition/event-competition.model';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions
+  BuildOptions,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -16,14 +16,16 @@ import {
   Model,
   PrimaryKey,
   Table,
-  TableOptions
+  TableOptions,
 } from 'sequelize-typescript';
 import { EncounterChange } from './event';
 import { Club } from './club.model';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
-  timestamps: true
+  timestamps: true,
 } as TableOptions)
+@ObjectType({ description: 'A Comment' })
 export class Comment extends Model {
   constructor(values?: Partial<Comment>, options?: BuildOptions) {
     super(values, options);
@@ -32,9 +34,11 @@ export class Comment extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column
   id: string;
 
+  @Field({ nullable: true })
   @Column(DataType.TEXT)
   message: string;
 
@@ -43,6 +47,7 @@ export class Comment extends Model {
 
   @ForeignKey(() => Player)
   @Index
+  @Field({ nullable: true })
   @Column
   playerId: string;
 
@@ -51,26 +56,29 @@ export class Comment extends Model {
 
   @ForeignKey(() => Club)
   @Index
+  @Field({ nullable: true })
   @Column
   clubId: string;
 
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
-    constraints: false
+    constraints: false,
   })
   competition: EventCompetition;
 
   @BelongsTo(() => EncounterChange, {
     foreignKey: 'linkId',
-    constraints: false
+    constraints: false,
   })
   encounter: EncounterChange;
 
   @Index('comment_index')
+  @Field({ nullable: true })
   @Column
   linkId: string;
 
   @Index('comment_index')
+  @Field({ nullable: true })
   @Column
   linkType: string;
 
