@@ -77,7 +77,7 @@
     <div class="result">
       <ng-container [ngSwitch]="this.game.status">
         <ng-container *ngSwitchCase="'WALKOVER'">
-          <div class="set">
+          <div class="set walkover">
             <ng-container *ngIf="this.game.winner == 1">walkover</ng-container>
             <ng-container *ngIf="this.game.winner == 2">&nbsp;</ng-container>
           </div>
