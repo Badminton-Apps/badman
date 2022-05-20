@@ -52,6 +52,10 @@ export class PlayDaysComponent implements OnInit {
           this.addPlayDay();
         }
       });
+    } else {
+      this.fg.valueChanges.subscribe(() => {
+        this.onChange.next(new AvailabilityDay(this.fg.value));
+      });
     }
   }
 
@@ -62,7 +66,14 @@ export class PlayDaysComponent implements OnInit {
     }
 
     this.onChange.next(new AvailabilityDay(this.fg.value));
-    resetAllFormFields(this.fg);
+    this.fg = new FormGroup({
+      day: new FormControl(this.day?.day, [Validators.required]),
+      courts: new FormControl(this.day?.courts, [Validators.required]),
+      startTime: new FormControl(moment(this.day?.startTime ?? '19:00', 'HH:mm').format('HH:mm'), [
+        Validators.required,
+      ]),
+      endTime: new FormControl(moment(this.day?.endTime ?? '21:00', 'HH:mm').format('HH:mm'), [Validators.required]),
+    });
   }
 
   deletePlayDay() {
