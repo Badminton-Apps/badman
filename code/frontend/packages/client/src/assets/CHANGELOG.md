@@ -1,3 +1,13 @@
+## [4.41.1](https://github.com/Badminton-Apps/badman/compare/v4.41.0...v4.41.1) (2022-05-20)
+
+
+### Bug Fixes
+
+* update availibilty on update ([ee11883](https://github.com/Badminton-Apps/badman/commit/ee1188319ebce6315e537ae42d46034790967b79))
+* Walkover was left aligned on bottom result ([2a279fa](https://github.com/Badminton-Apps/badman/commit/2a279fa98563d596a8d9d996640a05f30a514f98))
+
+
+
 # [4.41.0](https://github.com/Badminton-Apps/badman/compare/v4.40.0...v4.41.0) (2022-05-14)
 
 
