@@ -66,6 +66,10 @@ export class ExceptionDaysComponent implements OnInit {
           this.addException();
         }
       });
+    } else {
+      this.fg.valueChanges.subscribe(() => {
+        this.onChange.next(new AvailabilityException(this.fg.value));
+      });
     }
   }
 
