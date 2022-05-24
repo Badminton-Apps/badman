@@ -326,7 +326,7 @@ export class DataBaseHandler {
       },
       include: [
         {
-          attributes: ['name', 'teamNumber', 'type', 'abbreviation'],
+          attributes: ['name', 'teamNumber', 'type', 'abbreviation', 'email', 'phone'],
           model: Team,
           where: {
             active: true,
