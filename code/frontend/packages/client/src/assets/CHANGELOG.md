@@ -1,3 +1,13 @@
+## [4.41.3](https://github.com/Badminton-Apps/badman/compare/v4.41.2...v4.41.3) (2022-05-24)
+
+
+### Bug Fixes
+
+* claiming user ([2c0c444](https://github.com/Badminton-Apps/badman/commit/2c0c444a792a55d33e89b17887edd7049129432a))
+* Clear cache on update ([903a091](https://github.com/Badminton-Apps/badman/commit/903a091a0aced07463b560bc61070defdfd9ba6c))
+
+
+
 ## [4.41.2](https://github.com/Badminton-Apps/badman/compare/v4.41.1...v4.41.2) (2022-05-24)
 
 
