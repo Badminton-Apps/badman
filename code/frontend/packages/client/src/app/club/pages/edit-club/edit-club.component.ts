@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { LocationDialogComponent } from 'app/club/dialogs/location-dialog/location-dialog.component';
+import { apolloCache } from 'app/graphql.module';
 import {
   Club,
   ClubService,
@@ -18,8 +19,8 @@ import {
   Team,
   TeamService,
 } from 'app/_shared';
-import { BehaviorSubject, combineLatest, lastValueFrom, Observable } from 'rxjs';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, interval, lastValueFrom, Observable } from 'rxjs';
+import { debounce, debounceTime, map, shareReplay, skip, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './edit-club.component.html',
@@ -29,6 +30,8 @@ export class EditClubComponent implements OnInit {
   club$!: Observable<Club>;
   roles$!: Observable<Role[]>;
   locations$!: Observable<Location[]>;
+
+  id?: string;
 
   compYears$?: Observable<(number | undefined)[]>;
   teamsForYear$!: Observable<Team[]>;
@@ -55,13 +58,22 @@ export class EditClubComponent implements OnInit {
 
   ngOnInit(): void {
     const clubid$ = this.route.paramMap.pipe(map((params) => params.get('id')));
-
-    this.compYears$ = combineLatest([clubid$, this.updateClub$.pipe(debounceTime(600))]).pipe(
-      switchMap(([id]) => this.clubService.getCompetitionYears(id!))
-    );
-
-    const query = combineLatest([clubid$, this.updateClub$]).pipe(
+    const updates$ = combineLatest([this.updateClub$, this.updateRoles$, this.updateLocation$]).pipe(
       debounceTime(600),
+      shareReplay()
+    );
+    const club$ = combineLatest([clubid$, updates$]);
+
+    club$.pipe(skip(1)).subscribe((club) => {
+      const normalizedId = apolloCache.identify({ id: this.id, __typename: 'Club' });
+      apolloCache.evict({ id: normalizedId });
+      apolloCache.gc();
+    });
+
+    this.compYears$ = club$.pipe(switchMap(([id]) => this.clubService.getCompetitionYears(id!)));
+
+    const query = club$.pipe(
+      tap(() => console.log('get Club')),
       switchMap(([id]) =>
         this.apollo.query<{ club: Club }>({
           query: gql`
@@ -103,7 +115,8 @@ export class EditClubComponent implements OnInit {
         })
       ),
       map((result) => result.data.club),
-      map((club) => new Club(club))
+      map((club) => new Club(club)),
+      tap((club) => (this.id = club.id))
     );
 
     this.teamsForYear$ = combineLatest([
@@ -130,6 +143,7 @@ export class EditClubComponent implements OnInit {
 
   async save(club: Club) {
     await this.clubService.updateClub(club).toPromise();
+
     this._snackBar.open('Saved', undefined, {
       duration: 1000,
       panelClass: 'success',
