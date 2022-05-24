@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { iif, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, mergeMap, shareReplay, startWith, tap } from 'rxjs/operators';
+import { BehaviorSubject, iif, Observable, of } from 'rxjs';
+import { distinctUntilChanged, filter, mergeMap, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { RequestLink, Player } from '../../../_shared/models';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '@auth0/auth0-angular';
@@ -13,12 +13,14 @@ import { ApmService } from '@elastic/apm-rum-angular';
 })
 export class UserService {
   private urlBase = `${environment.api}/api/${environment.apiVersion}/user`;
+  private updateHappend$ = new BehaviorSubject(null);
 
   profile$: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
   profile?: Player;
 
   constructor(private httpClient: HttpClient, private auth: AuthService, private apmService: ApmService) {
-    const whenAuthenticated = this.httpClient.get<{ player: Player; request: any }>(`${this.urlBase}/profile`).pipe(
+    const whenAuthenticated = this.updateHappend$.pipe(
+      switchMap((_) => this.httpClient.get<{ player: Player; request: any }>(`${this.urlBase}/profile`)),
       startWith({ player: null, request: null }),
       filter((user) => user !== null),
       tap(({ player }) => (this.profile = player!)),
@@ -37,6 +39,10 @@ export class UserService {
       distinctUntilChanged(),
       shareReplay()
     );
+  }
+
+  profileUpdated() {
+    this.updateHappend$.next(null);
   }
 
   requestLink(playerId: string): Observable<RequestLink> {
