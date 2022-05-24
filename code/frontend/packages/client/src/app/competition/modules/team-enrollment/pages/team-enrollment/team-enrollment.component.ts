@@ -35,6 +35,7 @@ export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
   competitionYear?: number;
+  asigned = false;
 
   formGroup!: FormGroup;
 
@@ -125,8 +126,9 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async changStepper(event: StepperSelectionEvent) {
-    if (event.selectedIndex == 1) {
+    if (event.selectedIndex == 1 && !this.asigned) {
       await this.initializeEvents();
+      this.asigned = true
     }
   }
 
