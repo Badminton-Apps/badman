@@ -46,7 +46,7 @@ export class TeamEnrollmentsComponent implements OnInit {
                         teamIndex
                       }
                     }
-                    team {
+                    team(where: {active: true}) {
                       id
                       name
                       clubId
