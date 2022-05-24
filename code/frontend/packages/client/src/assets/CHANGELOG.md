@@ -1,3 +1,14 @@
+## [4.41.2](https://github.com/Badminton-Apps/badman/compare/v4.41.1...v4.41.2) (2022-05-24)
+
+
+### Bug Fixes
+
+* going back & forward would reset teams ([89c0d6f](https://github.com/Badminton-Apps/badman/commit/89c0d6f0a9c18f61d57b1619bdfad6c7aa7f941c))
+* only show active teams ([c6571e8](https://github.com/Badminton-Apps/badman/commit/c6571e861bd9561bab01dfd1e6ec93a3523e1b00))
+* showing correct details of team ([c7e9699](https://github.com/Badminton-Apps/badman/commit/c7e9699ab8165e82da74fea07bf51b8991bb5463))
+
+
+
 ## [4.41.1](https://github.com/Badminton-Apps/badman/compare/v4.41.0...v4.41.1) (2022-05-20)
 
 
