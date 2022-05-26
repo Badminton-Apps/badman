@@ -1,3 +1,12 @@
+# [4.42.0](https://github.com/Badminton-Apps/badman/compare/v4.41.3...v4.42.0) (2022-05-26)
+
+
+### Features
+
+* Closing enrollment ([62b3294](https://github.com/Badminton-Apps/badman/commit/62b329447e16ab65d8c2d38dc7a3075d96e98d7e))
+
+
+
 ## [4.41.3](https://github.com/Badminton-Apps/badman/compare/v4.41.2...v4.41.3) (2022-05-24)
 
 
