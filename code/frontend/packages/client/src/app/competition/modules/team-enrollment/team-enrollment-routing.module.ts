@@ -10,7 +10,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       claims: {
-        any: ['*_enlist:team', 'enlist-any:team'],
+        any: ['enlist-any:team'], // '*_enlist:team'
       },
     },
   },
