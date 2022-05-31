@@ -69,7 +69,7 @@ export class DetailEncounterComponent implements OnInit {
                       fullName
                       team
                       player
-                      rankingPlace(where: { SystemId: $system }) {
+                      rankingPlace(where: { systemId: $system }) {
                         id
                         single
                         double

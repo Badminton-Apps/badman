@@ -35,7 +35,7 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { ClubMembership } from './club-membership.model';
+import { ClubPlayerMemberships } from './club-player-membership.model';
 import { Club } from './club.model';
 import { Comment } from './comment.model';
 import { EventEntry, Game, GamePlayer } from './event';
@@ -163,9 +163,9 @@ export class Player extends Model {
   teams: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
   @Field(() => [Club], { nullable: true })
-  @BelongsToMany(() => Club, () => ClubMembership)
+  @BelongsToMany(() => Club, () => ClubPlayerMemberships)
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  clubs: (Club & { ClubMembership: ClubMembership })[];
+  clubs: (Club & { ClubMembership: ClubPlayerMemberships })[];
 
   @Field(() => [Game], { nullable: true })
   @BelongsToMany(() => Game, () => GamePlayer)
@@ -329,7 +329,7 @@ export class Player extends Model {
       return null;
     }
     const placesInSystem = this.rankingPlaces.filter(
-      (x) => x.SystemId === system
+      (x) => x.systemId === system
     );
 
     if (placesInSystem.length <= 0) {

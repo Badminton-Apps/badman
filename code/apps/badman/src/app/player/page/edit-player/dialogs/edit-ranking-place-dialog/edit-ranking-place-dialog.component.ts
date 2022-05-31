@@ -118,7 +118,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     this.dialogRef.close({
       action: this.data.place?.id ? 'update' : 'add',
       place: {
-        SystemId: this.data.system.id,
+        systemId: this.data.system.id,
         ...this.data.place,
         ...this.rankingPlaceForm.value,
       },
@@ -128,7 +128,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     this.dialogRef.close({
       action: 'remove',
       place: {
-        SystemId: this.data.system.id,
+        systemId: this.data.system.id,
         ...this.data.place,
         ...this.rankingPlaceForm.value,
       },

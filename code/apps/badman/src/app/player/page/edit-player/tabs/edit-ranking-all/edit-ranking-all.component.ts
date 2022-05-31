@@ -96,7 +96,7 @@ export class EditRankingAllComponent implements OnInit {
             query AllRanking($playerId: ID!, $system: String) {
               player(id: $playerId) {
                 id
-                rankingPlaces(where: { SystemId: $system }) {
+                rankingPlaces(where: { systemId: $system }) {
                   id
                   rankingDate
                   single
