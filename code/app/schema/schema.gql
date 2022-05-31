@@ -363,7 +363,7 @@ type Club {
 type Player {
   updatedAt: DateTime
   createdAt: DateTime
-  id: ID!
+  id: ID
   email: String
   phone: String
   gender: String
@@ -421,7 +421,7 @@ type TeamPlayer {
   base: Boolean
   updatedAt: DateTime
   createdAt: DateTime
-  id: ID!
+  id: ID
   email: String
   phone: String
   gender: String
@@ -454,7 +454,7 @@ type GamePlayers {
   player: Float
   updatedAt: DateTime
   createdAt: DateTime
-  id: ID!
+  id: ID
   email: String
   phone: String
   gender: String
@@ -494,7 +494,7 @@ type PagedPlayer {
 
 type Query {
   player(id: ID!): Player!
-  me: Player!
+  me: Player
   players(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): PagedPlayer!
   team(id: String!): Team!
   teams(skip: Int = 0, take: Int = 25): [Team!]!

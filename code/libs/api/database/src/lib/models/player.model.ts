@@ -66,7 +66,7 @@ export class Player extends Model {
   @Field({ nullable: true })
   createdAt?: Date;
 
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey

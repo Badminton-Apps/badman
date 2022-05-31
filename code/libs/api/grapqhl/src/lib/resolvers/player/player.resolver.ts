@@ -57,7 +57,7 @@ export class PlayersResolver {
     return player;
   }
 
-  @Query(() => Player)
+  @Query(() => Player, { nullable: true })
   @UseGuards(GqlGuard)
   async me(@User() user: Player): Promise<Player> {
     return user;

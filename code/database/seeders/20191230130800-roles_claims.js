@@ -4,9 +4,14 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
-      const GLOBALClaims = [
+      await queryInterface.sequelize.query(
+        `TRUNCATE TABLE security."Claims" CASCADE;`,
+        { transaction: t }
+      );
+
+      const globalClaims = [
         ['add', 'club', 'Create new club', 'club', 'GLOBAL'],
-        [`remove`, `club`, 'Delete a club', 'CLUB'],
+        [`remove`, `club`, 'Delete a club', 'CLUB', 'GLOBAL'],
         ['edit-any', 'club', 'Edit any club', 'club', 'GLOBAL'],
         ['add-any', 'role', 'Add any role to club', 'club', 'GLOBAL'],
         ['edit-any', 'role', 'Edits any role of club', 'club', 'GLOBAL'],
@@ -80,7 +85,6 @@ module.exports = {
           'GLOBAL',
         ],
 
-        ,
         ['view', 'ranking', 'View ranking system', 'ranking', 'GLOBAL'],
         ['add', 'ranking', 'Add ranking system', 'ranking', 'GLOBAL'],
         ['edit', 'ranking', 'Edit ranking system', 'ranking', 'GLOBAL'],
@@ -110,7 +114,7 @@ module.exports = {
           'GLOBAL',
         ],
 
-        ['change:job', 'Start stop jobs', 'job', 'GLOBAL'],
+        ['change', 'job', 'Start stop jobs', 'job', 'GLOBAL'],
 
         [
           'enlist-any',
@@ -148,7 +152,7 @@ module.exports = {
         ['edit', 'role', 'Edits role of club', 'club', 'CLUB'],
         ['remove', 'role', 'Removes rol of club', 'club', 'CLUB'],
         ['add', 'tournament', 'Add any tournament', 'competition', 'CLUB'],
-        ['edit', 'tournament', 'Edit tournament', 'tournament'],
+        ['edit', 'tournament', 'Edit tournament', 'tournament', 'CLUB'],
         ['delete', 'tournament', 'Delete tournament', 'tournament', 'CLUB'],
         [
           'details',
@@ -169,27 +173,33 @@ module.exports = {
       const teamClaims = [
         ['enter', 'results', 'Enters competition results', 'club', 'TEAM'],
         ['edit', 'team', 'Edit competition team', 'club', 'TEAM'],
-        ['add', 'team', 'Adds competition team to club', 'club', 'team'],
-        ['enlist', 'team', 'Enlists competition team', 'club', 'team'],
+        ['add', 'team', 'Adds competition team to club', 'club', 'TEAM'],
+        ['enlist', 'team', 'Enlists competition team', 'club', 'TEAM'],
         [
-          'change:encounter',
+          'change',
+          'encounter',
           'Change the date/time of a encounter',
           'club',
           'TEAM',
         ],
       ];
 
+      console.log('Creating global claims');
       await queryInterface.bulkInsert(
         { tableName: 'Claims', schema: 'security' },
-        [...GLOBALClaims, ...clubClaims, ...teamClaims].map((claimName) => {
+        globalClaims.map((claim) => {
+          if (!claim || claim.length !== 5) {
+            console.error('Invalid claim', claim, globalClaims.indexOf(claim));
+          }
+
           return {
             id: uuidv4(),
-            name: `${claimName[0]}:${claimName[1]}`,
-            description: claimName[2],
-            category: claimName[3],
+            name: `${claim[0]}:${claim[1]}`,
+            description: claim[2],
+            category: claim[3],
             updatedAt: new Date(),
             createdAt: new Date(),
-            type: claimName[4].toUpperCase(),
+            type: claim[4].toUpperCase(),
           };
         }),
         {
@@ -197,45 +207,58 @@ module.exports = {
         }
       );
 
-      const player = {
-        id: '90fcc155-3952-4f58-85af-f90794165c89',
-        gender: 'M',
-        firstName: 'Glenn',
-        lastName: 'Latomme',
-        memberId: '50104197',
-        sub: 'auth0|5e81ca9e8755df0c7f7452ea',
-        updatedAt: new Date(),
-        createdAt: new Date(),
-      };
+      console.log('Creating club claims');
       await queryInterface.bulkInsert(
-        { tableName: 'Players', schema: 'public' },
-        [player],
-        {
-          transaction: t,
-          ignoreDuplicates: true,
-          returning: ['id'],
-        }
-      );
-
-      await queryInterface.bulkInsert(
-        { tableName: 'PlayerClaimMemberships', schema: 'security' },
-        GLOBALClaimsJson.map((r) => {
+        { tableName: 'Claims', schema: 'security' },
+        clubClaims.map((claim) => {
+          if (!claim || claim.length !== 5) {
+            console.error('Invalid claim', claim, globalClaims.indexOf(claim));
+          }
           return {
-            claimId: r.id,
-            userId: player.id,
+            id: uuidv4(),
+            name: `${claim[0]}:${claim[1]}`,
+            description: claim[2],
+            category: claim[3],
             updatedAt: new Date(),
             createdAt: new Date(),
+            type: claim[4].toUpperCase(),
           };
         }),
         {
           transaction: t,
-          ignoreDuplicates: true,
+        }
+      );
+
+      console.log('Creating team claims');
+      await queryInterface.bulkInsert(
+        { tableName: 'Claims', schema: 'security' },
+        teamClaims.map((claim) => {
+          if (!claim || claim.length !== 5) {
+            console.error('Invalid claim', claim, globalClaims.indexOf(claim));
+          }
+          return {
+            id: uuidv4(),
+            name: `${claim[0]}:${claim[1]}`,
+            description: claim[2],
+            category: claim[3],
+            updatedAt: new Date(),
+            createdAt: new Date(),
+            type: claim[4].toUpperCase(),
+          };
+        }),
+        {
+          transaction: t,
         }
       );
     });
   },
 
   down: async (queryInterface, sequelize) => {
-    //
+    return queryInterface.sequelize.transaction(async (t) => {
+      await queryInterface.sequelize.query(
+        `TRUNCATE TABLE security."Claims" CASCADE;`,
+        { transaction: t }
+      );
+    });
   },
 };
