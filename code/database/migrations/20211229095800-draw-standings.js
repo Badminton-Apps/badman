@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 'use strict';
 
-var Fakerator = require('fakerator');
-var fakerator = Fakerator();
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -100,7 +99,7 @@ module.exports = {
                   : null;
 
               return {
-                id: fakerator.misc.uuid(),
+                id: uuidv4(),
                 teamId: r.teamId,
                 subEventId: r.subEventId,
                 meta,

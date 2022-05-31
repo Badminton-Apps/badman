@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { CompetitionModule } from './competition';
-import { TournamentModule } from './tournament';
+import { CompetitionModule } from './competition.module';
+import { TournamentModule } from './tournament.module';
 
 @Module({
   imports: [CompetitionModule, TournamentModule],

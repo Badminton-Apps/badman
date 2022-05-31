@@ -60,10 +60,10 @@ export class Player extends Model {
     super(values, options);
   }
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   updatedAt?: Date;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   createdAt?: Date;
 
   @Field(() => ID)
@@ -177,10 +177,16 @@ export class Player extends Model {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   roles: (Role & { PlayerRoleMembership: PlayerRoleMembership })[];
 
-  @Field(() => [String], { nullable: true })
+  @Field(() => [Claim], { nullable: true })
   @BelongsToMany(() => Claim, () => PlayerClaimMembership)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   claims: (Claim & { PlayerClaimMembership: PlayerClaimMembership })[];
+
+  // Team Player Fields
+  @Field({ nullable: true })
+  end?: Date;
+  @Field({ nullable: true })
+  base?: boolean;
 
   // Has many RankingPoints
   getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;

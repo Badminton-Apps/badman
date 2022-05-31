@@ -1,7 +1,14 @@
-import { RankingSystem } from '@badman/api/database';
+import { LastRankingPlace, RankingSystem } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
-import { ListArgs, queryFixer } from '../../utils';
+import {
+  Args,
+  ID,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver
+} from '@nestjs/graphql';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => RankingSystem)
 export class RankingSystemResolver {
@@ -27,10 +34,22 @@ export class RankingSystemResolver {
 
   @Query(() => [RankingSystem])
   async rankingSystems(@Args() listArgs: ListArgs): Promise<RankingSystem[]> {
-    return RankingSystem.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
+    return RankingSystem.findAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [LastRankingPlace])
+  async lastPlaces(
+    @Parent() system: RankingSystem,
+    @Args() listArgs: ListArgs
+  ): Promise<{
+    count: number;
+    rows: LastRankingPlace[];
+  }> {
+    return LastRankingPlace.findAndCountAll({
+      ...ListArgs.toFindOptions(listArgs),
+      where: {
+        systemId: system.id,
+      },
     });
   }
 

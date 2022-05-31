@@ -3,14 +3,35 @@
   "sourceRoot": "apps/api/src",
   "projectType": "application",
   "targets": {
+    "deploy": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build api",
+          "docker build -f ./apps/api/Dockerfile . -t api"
+        ],
+        "parallel": false
+      }
+    },
+    "deploy-dev": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "docker build -f ./apps/api/Dockerfile.dev . -t api-dev"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "poll": 2000,
         "outputPath": "dist/apps/api",
         "main": "apps/api/src/main.ts",
         "tsConfig": "apps/api/tsconfig.app.json",
-        "assets": ["apps/api/src/assets"]
+        "assets": ["apps/api/src/assets"],
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {

@@ -36,7 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
           available: evt.latestVersion,
         }))
       )
-      .subscribe((update) => {
+      .subscribe(() => {
         snackBar
           .open(`New version available.`, 'refresh')
           .onAction()

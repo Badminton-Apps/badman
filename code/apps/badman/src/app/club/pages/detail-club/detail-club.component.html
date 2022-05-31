@@ -12,11 +12,16 @@
           <button mat-menu-item (click)="addPlayer(club)">Add player</button>
           <badman-has-claim [any]="['remove:club']">
             <mat-divider></mat-divider>
-            <button mat-menu-item (click)="deleteClub(club)">{{ 'button.delete' | translate }}</button>
+            <button mat-menu-item (click)="deleteClub(club)">
+              {{ 'button.delete' | translate }}
+            </button>
           </badman-has-claim>
         </mat-menu>
       </badman-has-claim>
-      <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
+      <img
+        src="../../assets/images//user-profile-bg.jpg"
+        alt="Background image"
+      />
     </div>
     <div class="info">
       <div class="picture">
@@ -43,7 +48,11 @@
     <badman-has-claim [any]="[club.id + '_edit:team', 'edit-any:club']">
       <div class="end">
         <button
-          [matTooltip]="this.activeTeams$.value ? 'Show deactivated teams' : 'Hide deactivated teams'"
+          [matTooltip]="
+            this.activeTeams$.value
+              ? 'Show deactivated teams'
+              : 'Hide deactivated teams'
+          "
           mat-icon-button
           (click)="this.activeTeams$.next(!this.activeTeams$.value)"
         >
@@ -74,4 +83,6 @@
   </mat-list> -->
 </ng-container>
 
-<ng-template #loading> <mat-progress-bar mode="indeterminate"></mat-progress-bar></ng-template>
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar
+></ng-template>

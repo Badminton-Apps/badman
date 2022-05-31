@@ -25,11 +25,7 @@ export class RoleResolver {
 
   @Query(() => [Role])
   async roles(@Args() listArgs: ListArgs): Promise<Role[]> {
-    return Role.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return Role.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Role)

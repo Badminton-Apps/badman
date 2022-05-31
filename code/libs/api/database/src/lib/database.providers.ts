@@ -23,10 +23,12 @@ export const databaseProviders = [
         dialect: process.env.DB_DIALECT as Dialect,
         logging: false,
       });
-      const models = Object.values(sequelizeModels);
+      const models = Object.values(sequelizeModels).filter(
+        (m) => m.prototype instanceof Model
+      );
       sequelize.addModels(models as []);
       initAddons();
- 
+
       return sequelize;
     },
   },

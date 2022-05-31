@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_DATABASE}
+  redis:
+    image: "redis:alpine"
+    hostname: redis
+    ports:
+      - "6379:6379"
+  badman:
+    image: badman
+    environment:
+      - API_URL=http://api:5000
+    ports:
+      - '4000:4000'
+  api:
+    image: api
+    environment:
+      - DB_IP=127.0.0.1
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_DIALECT=${DB_DIALECT}
+      - APM_SERVER_URL=${APM_SERVER_URL}
+      - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
+      - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
+      - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - CLIENT_URL=${CLIENT_URL}
+      - MAIL_PASS=${MAIL_PASS}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_HOST=${MAIL_HOST}
+      - VR_API=${VR_API}
+      - VR_API_USER=${VR_API_USER}
+      - VR_API_PASS=${VR_API_PASS}
+    ports:
+      - '5000:5000'
+    depends_on:
+      - db
+      - redis

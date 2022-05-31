@@ -10,6 +10,9 @@
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
+    "dev:install": "nx run-many --target=deploy-dev --projects=badman,api --parallel",
+    "dev:up": "docker-compose -f docker-compose.dev.yml up",
+    "dev:down": "docker-compose -f docker-compose.dev.yml down",
     "start:server": "nx run-many --target=serve --projects=api,worker-sync,worker-ranking --parallel",
     "start:client": "nx run-many --target=serve --projects=badman --parallel",
     "affected:apps": "nx affected:apps",
@@ -75,6 +78,7 @@
     "cookieconsent": "^3.1.1",
     "cronstrue": "^1.122.0",
     "echarts": "~4.7.0",
+    "elastic-apm-node": "^3.33.0",
     "graphql": "^15.8.0",
     "graphql-type-json": "^0.3.2",
     "html2pdf.js": "^0.10.1",
@@ -121,6 +125,7 @@
     "@nrwl/workspace": "14.0.5",
     "@types/bull": "^3.15.8",
     "@types/cron": "^1.7.3",
+    "@types/elastic-apm-node": "^2.7.0",
     "@types/googlemaps": "3.39.12",
     "@types/jasmine": "^3.10.2",
     "@types/jasminewd2": "^2.0.10",
@@ -159,6 +164,9 @@
     "ts-jest": "27.1.4",
     "ts-node": "^10.4.0",
     "typescript": "~4.6.2"
+  },
+  "peerDependencies": {
+    "apollo-server-plugin-base": "3.x"
   },
   "volta": {
     "node": "17.9.0",

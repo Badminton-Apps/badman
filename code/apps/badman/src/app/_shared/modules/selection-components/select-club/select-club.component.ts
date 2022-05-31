@@ -4,11 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
 import { Club } from '../../../models';
-import {
-  ClaimService,
-  ClubService,
-  UserService,
-} from '../../../services';
+import { ClaimService, ClubService, UserService } from '../../../services';
 
 @Component({
   selector: 'badman-select-club',
@@ -73,40 +69,40 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap(([single, all]) => {
           if (all) {
-            return this.clubService.getClubs({ first: 999 });
+            return this.clubService.getClubs({ take: 999 });
           } else if (single) {
             return this.claimSerice.claims$.pipe(
               map((r) =>
-                r.filter((x) => x.indexOf(this.singleClubPermission) != -1)
+                r.filter((x) => x.name.indexOf(this.singleClubPermission) != -1)
               ),
               map((r) =>
-                r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))
+                r.map((c) =>
+                  c.name.replace(`_${this.singleClubPermission}`, '')
+                )
               ),
               switchMap((ids) =>
-                this.clubService.getClubs({ ids, first: ids.length })
+                this.clubService.getClubs({ ids, take: ids.length })
               )
             );
           } else if (this.needsPermission) {
-            return of({ clubs: [], total: 0 });
+            return of({ rows: [], count: 0 });
           } else {
-            return this.clubService.getClubs({ first: 999 });
+            return this.clubService.getClubs({ take: 999 });
           }
         }),
         take(1),
         map((data) => {
-          const count = data?.total || 0;
+          const count = data?.count || 0;
           if (count) {
             if (this.useAutocomplete == 'auto') {
               this.useAutocomplete = count > this.autoCompleteTreshold;
             }
-            return data?.clubs
-              ?.map((x) => new Club(x.node))
-              ?.sort((a, b) => {
-                if (!a?.name || !b?.name) {
-                  return 0;
-                }
-                return a.name.localeCompare(b.name);
-              });
+            return data?.rows?.sort((a, b) => {
+              if (!a?.name || !b?.name) {
+                return 0;
+              }
+              return a.name.localeCompare(b.name);
+            });
           } else {
             return [];
           }

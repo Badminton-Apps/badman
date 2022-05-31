@@ -233,6 +233,18 @@ export class RankingSystem extends Model {
   hasGroups!: BelongsToManyHasAssociationsMixin<RankingSystemGroup, string>;
   countGroup!: BelongsToManyCountAssociationsMixin;
 
+
+  // Has many LastPlace
+  getLastPlaces!: HasManyGetAssociationsMixin<LastRankingPlace>;
+  setLastPlaces!: HasManySetAssociationsMixin<LastRankingPlace, string>;
+  addLastPlaces!: HasManyAddAssociationsMixin<LastRankingPlace, string>;
+  addLastPlace!: HasManyAddAssociationMixin<LastRankingPlace, string>;
+  removeLastPlace!: HasManyRemoveAssociationMixin<LastRankingPlace, string>;
+  removeLastPlaces!: HasManyRemoveAssociationsMixin<LastRankingPlace, string>;
+  hasLastPlace!: HasManyHasAssociationMixin<LastRankingPlace, string>;
+  hasLastPlaces!: HasManyHasAssociationsMixin<LastRankingPlace, string>;
+  countLastPlaces!: HasManyCountAssociationsMixin;
+
   private _pointsToGoUp: number[];
   private _pointsWhenWinningAgainst: number[];
   private _pointsToGoDown: number[];

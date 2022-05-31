@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import * as moment from 'moment';
 import {
   BehaviorSubject,
@@ -9,7 +10,7 @@ import {
   lastValueFrom,
   Observable,
 } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import {
   Club,
   ClubService,
@@ -30,6 +31,7 @@ export class DetailClubComponent implements OnInit {
   activeTeams$ = new BehaviorSubject(true);
 
   constructor(
+    private apollo: Apollo,
     private clubService: ClubService,
     private teamService: TeamService,
     private systemService: SystemService,
@@ -58,19 +60,63 @@ export class DetailClubComponent implements OnInit {
           throw new Error('No system');
         }
 
-        return this.clubService.getClub(clubId, {
-          playersfrom: moment().subtract(1, 'year').toDate(),
-          includePlayers: true,
-          includeTeams: true,
-          includePlacesTeams: true,
-          includeLocations: true,
-          systemId: primarySystem.id,
-          teamsWhere: {
-            active: activeTeams ? true : undefined,
+        return this.apollo.query<{ club: Club }>({
+          query: gql`
+            query Club(
+              $id: ID!
+              $order: [SortOrderType!]
+              $teamsWhere: JSONObject
+              $lastRankingWhere: JSONObject
+            ) {
+              club(id: $id) {
+                id
+                slug
+                name
+                useForTeamName
+                abbreviation
+                clubId
+                teams(order: $order, where: $teamsWhere) {
+                  id
+                  slug
+                  name
+                  active
+                  players {
+                    id
+                    slug
+                    base
+                    firstName
+                    lastName
+                    competitionPlayer
+                    lastRankingPlaces(take: 1, where: $lastRankingWhere) {
+                      id
+                      systemId
+                      single
+                      double
+                      mix
+                    }
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            id: clubId,
+            order: [
+              {
+                field: 'type',
+                direction: 'desc',
+              },
+              {
+                field: 'teamNumber',
+                direction: 'asc',
+              },
+            ],
+            teamsWhere: { active: activeTeams == false ? undefined : true },
+            lastRankingWhere: { systemId: primarySystem.id },
           },
-          fromCache: !update,
         });
       }),
+      map((x) => new Club(x.data.club)),
       tap((club) => this.titleService.setTitle(`${club.name}`))
     );
   }

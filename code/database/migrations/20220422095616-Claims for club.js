@@ -73,36 +73,38 @@ module.exports = {
           { transaction: t }
         );
 
-        await queryInterface.bulkInsert(
-          { tableName: 'RoleClaimMemberships', schema: 'security' },
-          adminRoles.map((admin) => {
-            return {
-              roleId: admin['id'],
-              claimId: personal[0],
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            };
-          }),
-          {
-            transaction: t,
-            ignoreDuplicates: true,
-          }
-        );
-        await queryInterface.bulkInsert(
-          { tableName: 'RoleClaimMemberships', schema: 'security' },
-          adminRoles.map((admin) => {
-            return {
-              roleId: admin['id'],
-              claimId: team[0],
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            };
-          }),
-          {
-            transaction: t,
-            ignoreDuplicates: true,
-          }
-        );
+        if (adminRoles.length > 0) {
+          await queryInterface.bulkInsert(
+            { tableName: 'RoleClaimMemberships', schema: 'security' },
+            adminRoles.map((admin) => {
+              return {
+                roleId: admin['id'],
+                claimId: personal[0],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              };
+            }),
+            {
+              transaction: t,
+              ignoreDuplicates: true,
+            }
+          );
+          await queryInterface.bulkInsert(
+            { tableName: 'RoleClaimMemberships', schema: 'security' },
+            adminRoles.map((admin) => {
+              return {
+                roleId: admin['id'],
+                claimId: team[0],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              };
+            }),
+            {
+              transaction: t,
+              ignoreDuplicates: true,
+            }
+          );
+        }
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();
