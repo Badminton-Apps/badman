@@ -4,7 +4,6 @@ import {
   Player,
   GamePlayer,
   RankingPlace,
-  LastRankingPlace,
 } from './models';
 
 @ObjectType()

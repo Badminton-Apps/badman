@@ -122,7 +122,7 @@ export class Game extends Model {
   round?: string;
 
   @Field(() => [RankingPoint], { nullable: true })
-  @HasMany(() => RankingPoint, 'GameId')
+  @HasMany(() => RankingPoint, 'gameId')
   rankingPoints?: RankingPoint[];
 
   @Field(() => DrawTournament, { nullable: true })

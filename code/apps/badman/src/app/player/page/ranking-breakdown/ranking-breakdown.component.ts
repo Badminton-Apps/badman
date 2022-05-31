@@ -211,13 +211,13 @@ export class RankingBreakdownComponent implements OnInit {
                         team
                         player
                         fullName
-                        rankingPlace(where: { SystemId: $rankingType }, limit: 1, order: "reverse:rankingDate") {
+                        rankingPlace(where: { systemId: $rankingType }, limit: 1, order: "reverse:rankingDate") {
                           id
                           rankingDate
                           ${type}
                         }
                       }
-                      rankingPoints(where: { SystemId: $rankingType }) {
+                      rankingPoints(where: { systemId: $rankingType }) {
                         id
                         differenceInLevel
                         playerId

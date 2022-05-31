@@ -36,6 +36,7 @@ export class PagedPlayer {
   rows: Player[];
 }
 
+@Resolver(() => TeamPlayer)
 @Resolver(() => Player)
 export class PlayersResolver {
   @Query(() => Player)

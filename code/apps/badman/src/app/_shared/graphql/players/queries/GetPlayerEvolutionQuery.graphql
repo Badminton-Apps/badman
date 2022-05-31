@@ -4,7 +4,7 @@ query GetPlayerEvolutionQuery($playerId: ID!, $rankingType: ID!) {
     id
     rankingPlaces(
       order: "rankingDate"
-      where: { SystemId: $rankingType }
+      where: { systemId: $rankingType }
     ) {
       id
       rankingDate

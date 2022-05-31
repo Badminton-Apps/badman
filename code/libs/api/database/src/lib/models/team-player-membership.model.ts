@@ -15,7 +15,7 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { ClubMembership } from './club-membership.model';
+import { ClubPlayerMemberships } from './club-player-membership.model';
 import { Player } from './player.model';
 import { Team } from './team.model';
 
@@ -77,14 +77,14 @@ export class TeamPlayerMembership extends Model {
       throw new Error('Team not found');
     }
 
-    const connection = await ClubMembership.findOne({
+    const connection = await ClubPlayerMemberships.findOne({
       order: [['end', 'desc']],
       where: { playerId: instance.playerId },
       transaction: options.transaction,
     });
     if (!connection) {
       // create new
-      await new ClubMembership({
+      await new ClubPlayerMemberships({
         clubId: team.clubId,
         playerId: instance.playerId,
         start: new Date(),
@@ -97,7 +97,7 @@ export class TeamPlayerMembership extends Model {
         connection.save({ transaction: options.transaction });
 
         // Create new
-        await new ClubMembership({
+        await new ClubPlayerMemberships({
           clubId: team.clubId,
           playerId: instance.playerId,
           start: new Date(),

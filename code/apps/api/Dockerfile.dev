@@ -4,4 +4,4 @@ WORKDIR /usr/src/app
 
 EXPOSE 5000 9229
 
-CMD ["npx", "nx", "serve", "api", "--inspect-brk","0.0.0.0"]
+CMD ["npx", "nx", "serve", "api", "inspect","0.0.0.0"]

@@ -196,10 +196,10 @@ export class RankingSystem extends Model {
   })
   startingType: StartingType;
 
-  @HasMany(() => RankingPoint, 'SystemId')
+  @HasMany(() => RankingPoint, 'systemId')
   rankingPoints: RankingPoint;
 
-  @HasMany(() => RankingPlace, 'SystemId')
+  @HasMany(() => RankingPlace, 'systemId')
   places: RankingPlace;
 
   @HasMany(() => LastRankingPlace, 'systemId')

@@ -33,7 +33,7 @@ export class RankingPlace {
   player?: Player;
 
   playerId?: string;
-  SystemId?: string;
+  systemId?: string;
 
   constructor(args?: Partial<RankingPlace>) {
     this.id = args?.id;
@@ -67,6 +67,6 @@ export class RankingPlace {
     this.player = args?.player;
 
     this.playerId = args?.playerId;
-    this.SystemId = args?.SystemId;
+    this.systemId = args?.systemId;
   }
 }

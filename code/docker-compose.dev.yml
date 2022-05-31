@@ -12,6 +12,9 @@ services:
       - '5432:5432'
     networks:
       - api
+      - postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
 
   redis:
     image: 'redis:alpine'
@@ -77,5 +80,34 @@ services:
     restart: always
     # entrypoint: ["cd /usr/src/database/ && npx --yes sequelize-cli db:migrate"]
 
+  # Tools
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+       - db-admin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+    restart: unless-stopped 
+    logging:
+      driver: "none"
+
 networks:
   api:
+  postgres:
+
+
+volumes:
+  db-data:
+    driver: local
+  db-admin:

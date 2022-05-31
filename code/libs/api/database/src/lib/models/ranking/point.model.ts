@@ -47,12 +47,12 @@ export class RankingPoint extends Model {
   player: Player;
 
   @Field(() => Game, { nullable: true })
-  @BelongsTo(() => Game, 'GameId')
+  @BelongsTo(() => Game, 'gameId')
   game: Game;
 
   @Field(() => RankingSystem, { nullable: true })
   @BelongsTo(() => RankingSystem, {
-    foreignKey: 'SystemId',
+    foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
   type: RankingSystem;
@@ -70,7 +70,7 @@ export class RankingPoint extends Model {
   @Index('point_system_index')
   @Field({ nullable: true })
   @Column
-  SystemId: string;
+  systemId: string;
 
   @ForeignKey(() => Player)
   @Index('point_system_index')
@@ -81,7 +81,7 @@ export class RankingPoint extends Model {
   @ForeignKey(() => Game)
   @Field({ nullable: true })
   @Column
-  GameId: string;
+  gameId: string;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;
