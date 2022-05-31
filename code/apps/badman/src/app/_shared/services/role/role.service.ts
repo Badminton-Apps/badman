@@ -8,7 +8,7 @@ import * as deleteRoleMutation from '../../graphql/roles/mutations/removeRole.gr
 import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.graphql';
 import * as roleQuery from '../../graphql/roles/queries/GetRoleQuery.graphql';
 import * as rolesQuery from '../../graphql/roles/queries/GetRolesQuery.graphql';
-import { UserService } from '../profile';
+import { PermissionService } from '../security';
 import { Player, Role } from './../../models';
 
 @Injectable({
@@ -17,7 +17,7 @@ import { Player, Role } from './../../models';
 export class RoleService {
   constructor(
     private apollo: Apollo,
-    private userService: UserService
+    private permissionService: PermissionService
   ) {}
 
   getRole(roleId: string) {
@@ -32,7 +32,7 @@ export class RoleService {
       .pipe(map((x) => new Role(x.data.role)));
   }
 
-  getRoles(where?: { [key: string]: any }) {
+  getRoles(where?: { [key: string]: unknown }) {
     return this.apollo
       .query<{ roles: Role[] }>({
         query: rolesQuery,
@@ -54,13 +54,12 @@ export class RoleService {
       })
       .pipe(
         map((x) => {
-          if (x.data) {
-            return new Role(x.data.addRole);
-          } else {
-            return null;
+          if (x.data?.addRole == undefined) {
+            throw new Error('Role not created');
           }
+          return new Role(x.data.addRole);
         }),
-        tap(() => this.userService.reloadProfile())
+        tap(() => this.permissionService.reloadPermissions())
       );
   }
 
@@ -73,7 +72,7 @@ export class RoleService {
           roleId: role.id,
         },
       })
-      .pipe(tap(() => this.userService.reloadProfile()));
+      .pipe(tap(() => this.permissionService.reloadPermissions()));
   }
 
   removePlayer(role: Role, player: Player) {
@@ -85,7 +84,7 @@ export class RoleService {
           roleId: role.id,
         },
       })
-      .pipe(tap(() => this.userService.reloadProfile()));
+      .pipe(tap(() => this.permissionService.reloadPermissions()));
   }
 
   updateRole(role: Role) {
@@ -98,13 +97,12 @@ export class RoleService {
       })
       .pipe(
         map((x) => {
-          if (x.data) {
-            return new Role(x.data.updateRole);
-          } else {
-            return null;
+          if (x.data?.updateRole == undefined) {
+            throw new Error('Role not updated');
           }
+          return new Role(x.data.updateRole);
         }),
-        tap(() => this.userService.reloadProfile())
+        tap(() => this.permissionService.reloadPermissions())
       );
   }
 

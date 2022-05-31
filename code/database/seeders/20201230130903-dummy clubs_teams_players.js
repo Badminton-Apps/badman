@@ -14,6 +14,22 @@ module.exports = {
   up: (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
+        await queryInterface.bulkDelete(
+          'Clubs',
+          { name: dummyClubName },
+          { transaction: t, cascade: true }
+        );
+        await queryInterface.bulkDelete(
+          'Teams',
+          { name: dummyTeamName },
+          { transaction: t, cascade: true }
+        );
+        await queryInterface.bulkDelete(
+          'Players',
+          { lastName: 'dummy' },
+          { transaction: t, cascade: true }
+        );
+
         const dbPrimarySystem = await queryInterface.rawSelect(
           {
             tableName: 'Systems',
@@ -81,6 +97,7 @@ module.exports = {
 
         for (const [i, playerRanking] of playersRanking.entries()) {
           playersRanking[i] = playerRanking.map((r) => {
+
             return {
               id: uuidv4(),
               ...r,
@@ -92,7 +109,7 @@ module.exports = {
           });
         }
 
-        const dbPlaces = await queryInterface.bulkInsert(
+        const [dbPlaces] = await queryInterface.bulkInsert(
           {
             tableName: 'Places',
             schema: 'ranking',
@@ -114,10 +131,14 @@ module.exports = {
             updatedAt: new Date(),
           };
         });
-        await queryInterface.bulkInsert('ClubPlayerMemberships', clubMemberships, {
-          transaction: t,
-          ignoreDuplicates: true,
-        });
+        await queryInterface.bulkInsert(
+          'ClubPlayerMemberships',
+          clubMemberships,
+          {
+            transaction: t,
+            ignoreDuplicates: true,
+          }
+        );
 
         const teamMemberships = dummyPlayers.map((r) => {
           return {
@@ -129,10 +150,14 @@ module.exports = {
             updatedAt: new Date(),
           };
         });
-        await queryInterface.bulkInsert('TeamPlayerMemberships', teamMemberships, {
-          transaction: t,
-          ignoreDuplicates: true,
-        });
+        await queryInterface.bulkInsert(
+          'TeamPlayerMemberships',
+          teamMemberships,
+          {
+            transaction: t,
+            ignoreDuplicates: true,
+          }
+        );
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();
@@ -142,59 +167,21 @@ module.exports = {
 
   down: (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
-      const club = await queryInterface.rawSelect(
-        'Clubs',
-        {
-          where: {
-            name: dummyClubName,
-          },
-        },
-        ['id']
-      );
-      const team = await queryInterface.rawSelect(
-        'Teams',
-        {
-          where: {
-            name: dummyTeamName,
-          },
-        },
-        ['id']
-      );
-
       await queryInterface.bulkDelete(
         'Clubs',
         { name: dummyClubName },
-        { transaction: t }
+        { transaction: t, cascade: true }
       );
       await queryInterface.bulkDelete(
         'Teams',
         { name: dummyTeamName },
-        { transaction: t }
+        { transaction: t, cascade: true }
       );
       await queryInterface.bulkDelete(
         'Players',
         { lastName: 'dummy' },
-        { transaction: t }
+        { transaction: t, cascade: true }
       );
-
-      if (club != null) {
-        await queryInterface.bulkDelete(
-          'ClubPlayerMemberships',
-          {
-            clubId: club,
-          },
-          { transaction: t }
-        );
-      }
-      if (team != null) {
-        await queryInterface.bulkDelete(
-          'TeamMemberships',
-          {
-            teamId: team,
-          },
-          { transaction: t }
-        );
-      }
     });
   },
 };

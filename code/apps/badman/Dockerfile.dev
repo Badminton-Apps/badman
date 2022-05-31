@@ -3,4 +3,4 @@ FROM node:17.9.0-alpine
 WORKDIR /usr/src/app
 
 EXPOSE 4200
-CMD ["npx", "nx", "serve", "badman", "--host", "0.0.0.0", "--disable-host-check", "--poll", "2000"]
+CMD ["npx", "nx", "serve", "badman", "--host", "0.0.0.0", "--disable-host-check", "--poll", "1000"]

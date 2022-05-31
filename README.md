@@ -20,8 +20,10 @@ run: `npm run dev:install`
 run: `npm run dev:up`
 
 #### 3a First time running (in /database):
-run `npx --yes sequelize-cli db:migrate && npx --yes sequelize-cli db:seed:all`
-
+- run the migration and seeding `npx --yes sequelize-cli db:migrate && npx --yes sequelize-cli db:seed:all`
+- open: http://localhost:4200/player/admin
+- login with your badman credentials
+- Claim the admin account
 
 ### 4. Profit
 badman should be availible @ http://localhost:4000

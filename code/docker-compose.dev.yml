@@ -40,12 +40,13 @@ services:
     volumes:
       - ./:/usr/src
       - ./user/src/node_modules
-    restart: always
+    restart: unless-stopped 
 
   api:
     build:
       context: .
       dockerfile: apps/api/Dockerfile.dev
+    image: api-dev
     ports:
       - '5000:5000'
       - '9229:9229'
@@ -77,7 +78,7 @@ services:
     volumes:
       - ./:/usr/src
       - ./user/src/node_modules
-    restart: always
+    restart: unless-stopped 
     # entrypoint: ["cd /usr/src/database/ && npx --yes sequelize-cli db:migrate"]
 
   # Tools
