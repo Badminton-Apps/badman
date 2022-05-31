@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "nx": "nx",
+    "preinstall": "npx -y only-allow pnpm",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
     "start": "nx serve",
     "build": "nx build",
@@ -51,13 +52,13 @@
     "@angular/platform-browser-dynamic": "^13.0.2",
     "@angular/router": "^13.0.2",
     "@angular/service-worker": "^13.0.2",
-    "@apollo/client": "^3.5.0-rc.3",
     "@auth0/auth0-angular": "^1.8.0",
     "@covalent/core": "^3.1.1",
     "@covalent/echarts": "^3.1.1",
     "@elastic/apm-rum-angular": "2.1.1",
     "@graphql-tools/webpack-loader": "^6.6.1",
     "@nestjs/apollo": "^10.0.9",
+    "@apollo/client": "^3.6.5",
     "@nestjs/bull": "^0.5.4",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.0",
@@ -166,7 +167,9 @@
     "typescript": "~4.6.2"
   },
   "peerDependencies": {
-    "apollo-server-plugin-base": "3.x"
+    "apollo-server-plugin-base": "3.x",
+    "@babel/core": "7.x",
+    "express": "7.x"
   },
   "volta": {
     "node": "17.9.0",
