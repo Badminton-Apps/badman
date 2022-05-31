@@ -157,13 +157,13 @@ export class RankingPlace extends Model {
   })
   @Field({ nullable: true })
   @Column
-  SystemId: string;
+  systemId: string;
 
   @BelongsTo(() => Player, 'playerId')
   player: Player;
 
   @BelongsTo(() => RankingSystem, {
-    foreignKey: 'SystemId',
+    foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
   rankingSystem: RankingSystem;
@@ -217,7 +217,7 @@ export class RankingPlace extends Model {
       const lastRanking = await RankingPlace.findOne({
         where: {
           playerId: instance.playerId,
-          SystemId: instance.SystemId,
+          systemId: instance.systemId,
         },
         transaction: options?.transaction,
         limit: 1,
@@ -352,7 +352,7 @@ export class RankingPlace extends Model {
       mixInactive: this.mixInactive,
       doubleInactive: this.doubleInactive,
       playerId: this.playerId,
-      systemId: this.SystemId,
+      systemId: this.systemId,
     } as Partial<LastRankingPlace>;
   }
 }

@@ -73,7 +73,7 @@ type RankingPlace {
   doubleInactive: Boolean
   updatePossible: Boolean
   playerId: String
-  SystemId: String
+  systemId: String
   rankingSystem: RankingSystem!
 }
 
@@ -86,9 +86,9 @@ type RankingPoint {
   type: RankingSystem
   rankingDate: DateTime
   differenceInLevel: Float
-  SystemId: String
+  systemId: String
   playerId: String
-  GameId: String
+  gameId: String
 }
 
 """A RankingSystem"""

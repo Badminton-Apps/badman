@@ -5,7 +5,7 @@ export * from './ranking';
 export * from './security';
 export * from './jobs';
 
-export * from './club-membership.model';
+export * from './club-player-membership.model';
 export * from './club.model';
 export * from './player.model';
 export * from './request-link.model';

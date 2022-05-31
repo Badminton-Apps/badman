@@ -14,13 +14,14 @@ import {
 import { BuildOptions } from 'sequelize';
 import { Club } from './club.model';
 import { Player } from './player.model';
-import { Field, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @Table({
   schema: 'public',
 })
-export class ClubMembership extends Model {
-  constructor(values?: Partial<ClubMembership>, options?: BuildOptions) {
+@ObjectType({ description: 'A TeamPlayerMembership' })
+export class ClubPlayerMemberships extends Model {
+  constructor(values?: Partial<ClubPlayerMemberships>, options?: BuildOptions) {
     super(values, options);
   }
 
@@ -59,7 +60,7 @@ export class ClubMembership extends Model {
 
   // Below is a hacky way to make the Unique across FK's + start
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
-  @Unique('ClubMemberships_playerId_clubId_unique')
+  @Unique('ClubPlayerMemberships_playerId_clubId_unique')
   @AllowNull(false)
   @Field({ nullable: true })
   @Column

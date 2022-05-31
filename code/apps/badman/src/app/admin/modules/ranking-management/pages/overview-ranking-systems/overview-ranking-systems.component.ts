@@ -235,12 +235,12 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
       this.apollo
         .mutate({
           mutation: gql`
-            mutation RemoveRankingSystem($rankingSystemIdId: ID) {
-              removeRankingSystem(RankingSystemIdId: $rankingSystemIdId)
+            mutation RemoveRankingSystem($rankingsystemIdId: ID) {
+              removeRankingSystem(RankingsystemIdId: $rankingsystemIdId)
             }
           `,
           variables: {
-            rankingSystemIdId: systemId,
+            rankingsystemIdId: systemId,
           },
         })
         .pipe(tap(() => this.updateHappend.next(true)))

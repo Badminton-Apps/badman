@@ -268,7 +268,7 @@ export class AssemblyComponent implements OnInit {
                     rankingDate: {
                       $between: [startRanking, endRanking],
                     },
-                    SystemId: system?.id,
+                    systemId: system?.id,
                   },
 
                   entryWhere: {

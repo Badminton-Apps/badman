@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import * as moment from 'moment';
 import {
   BehaviorSubject,
   combineLatest,
@@ -50,7 +49,7 @@ export class DetailClubComponent implements OnInit {
       // Triggers refresh
       this.update$,
     ]).pipe(
-      switchMap(([params, activeTeams, primarySystem, update]) => {
+      switchMap(([params, activeTeams, primarySystem,]) => {
         const clubId = params.get('id');
         if (!clubId) {
           throw new Error('No club id');
@@ -87,7 +86,11 @@ export class DetailClubComponent implements OnInit {
                     firstName
                     lastName
                     competitionPlayer
-                    lastRankingPlaces(take: 1, where: $lastRankingWhere) {
+                    lastRankingPlaces(
+                      take: 1
+                      where: $lastRankingPlaceWhere
+                      order: $lastRankingPlacesOrder
+                    ) {
                       id
                       systemId
                       single
@@ -112,7 +115,13 @@ export class DetailClubComponent implements OnInit {
               },
             ],
             teamsWhere: { active: activeTeams == false ? undefined : true },
-            lastRankingWhere: { systemId: primarySystem.id },
+            lastRankingPlaceWhere: { systemId: primarySystem.id },
+            lastRankingPlacesOrder: [
+              {
+                field: 'rankingDate',
+                direction: 'desc',
+              },
+            ],
           },
         });
       }),

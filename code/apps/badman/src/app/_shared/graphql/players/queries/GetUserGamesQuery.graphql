@@ -77,7 +77,7 @@ query GetUserGamesQuery(
           }
         }
       }
-      rankingPoints(where: { SystemId: $system }) {
+      rankingPoints(where: { systemId: $system }) {
         id
         points
         differenceInLevel
@@ -90,7 +90,7 @@ query GetUserGamesQuery(
         lastName
         team
         player
-        rankingPlace(where: { SystemId: $system }) {
+        rankingPlace(where: { systemId: $system }) {
           id
           single
           double

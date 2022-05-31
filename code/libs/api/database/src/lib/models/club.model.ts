@@ -43,7 +43,7 @@ import {
   Unique,
 } from 'sequelize-typescript';
 import { UseForTeamName } from '../enums/useForTeams.enum';
-import { ClubMembership } from './club-membership.model';
+import { ClubPlayerMemberships } from './club-player-membership.model';
 import { Comment } from './comment.model';
 import { Location } from './event';
 import { Player } from './player.model';
@@ -100,7 +100,7 @@ export class Club extends Model {
   @HasMany(() => Role)
   roles?: Role[];
 
-  @BelongsToMany(() => Player, () => ClubMembership)
+  @BelongsToMany(() => Player, () => ClubPlayerMemberships)
   players: Player[];
 
   @HasMany(() => Comment)
