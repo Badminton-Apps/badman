@@ -1,7 +1,25 @@
-import { LastRankingPlace } from '@badman/api/database';
+import { LastRankingPlace, RankingSystem } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
-import { ListArgs, queryFixer } from '../../utils';
+import {
+  Args,
+  Field,
+  ID,
+  ObjectType,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { ListArgs } from '../../utils';
+
+@ObjectType()
+export class PagedLastRankingPlace {
+  @Field()
+  count: number;
+
+  @Field(() => [LastRankingPlace])
+  rows: LastRankingPlace[];
+}
 
 @Resolver(() => LastRankingPlace)
 export class LastRankingPlaceResolver {
@@ -29,11 +47,14 @@ export class LastRankingPlaceResolver {
   async lastRankingPlaces(
     @Args() listArgs: ListArgs
   ): Promise<LastRankingPlace[]> {
-    return LastRankingPlace.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return LastRankingPlace.findAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => RankingSystem)
+  async rankingSystem(
+    @Parent() rankingPlace: LastRankingPlace
+  ): Promise<RankingSystem> {
+    return rankingPlace.getRankingSystem();
   }
 
   // @Mutation(returns => LastRankingPlace)

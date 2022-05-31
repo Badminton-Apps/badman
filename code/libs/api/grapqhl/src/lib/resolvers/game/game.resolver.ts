@@ -1,5 +1,14 @@
 import { GqlGuard } from '@badman/api/authorization';
-import { Game, Player, RankingPoint } from '@badman/api/database';
+import {
+  DrawTournament,
+  EncounterCompetition,
+  Game,
+  GamePlayer,
+  GamePlayers,
+  Player,
+  RankingPlace,
+  RankingPoint,
+} from '@badman/api/database';
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import {
   Args,
@@ -13,6 +22,7 @@ import { User } from '../../decorators';
 import { ListArgs, queryFixer } from '../../utils';
 
 @Resolver(() => Game)
+@Resolver(() => GamePlayer)
 export class GamesResolver {
   @Query(() => Game)
   async game(@Args('id', { type: () => ID }) id: string): Promise<Game> {
@@ -32,19 +42,9 @@ export class GamesResolver {
     return game;
   }
 
-  @Query(() => Game)
-  @UseGuards(GqlGuard)
-  async me(@User() user: Game): Promise<Game> {
-    return user;
-  }
-
   @Query(() => [Game])
   async games(@Args() listArgs: ListArgs): Promise<Game[]> {
-    return Game.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return Game.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [RankingPoint])
@@ -52,15 +52,32 @@ export class GamesResolver {
     @Parent() game: Game,
     @Args() listArgs: ListArgs
   ): Promise<RankingPoint[]> {
-    return game.getRankingPoints({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return game.getRankingPoints(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => EncounterCompetition)
+  async competition(@Parent() game: Game): Promise<EncounterCompetition> {
+    if (game.linkType == 'competition') {
+      return game.getCompetition();
+    }
+  }
+
+  @ResolveField(() => DrawTournament)
+  async tournament(@Parent() game: Game): Promise<DrawTournament> {
+    if (game.linkType == 'tournament') {
+      return game.getTournament();
+    }
   }
 
   @ResolveField(() => [Player])
-  async teams(@Parent() game: Game): Promise<Player[]> {
-    return game.getPlayers();
+  async players(@Parent() game: Game): Promise<(Player & GamePlayer)[][]> {
+    const players = await game.getPlayers();
+
+    return players?.map((gamePlayer: Player & { GamePlayer: GamePlayer }) => {
+      return {
+        ...gamePlayer.GamePlayer.toJSON(),
+        ...gamePlayer.toJSON(),
+      };
+    });
   }
 }

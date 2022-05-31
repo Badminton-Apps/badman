@@ -1,4 +1,6 @@
 // start:ng42.barrel
-export * from './tournament.module';
-export * from './event-tournament.resolver';
+export * from './draw.resolver';
+export * from './event.resolver';
+export * from './subevent.resolver';
 // end:ng42.barrel
+

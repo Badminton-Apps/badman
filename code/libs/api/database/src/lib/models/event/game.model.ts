@@ -45,6 +45,7 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import { GameStatus, GameType } from '../../enums';
+import { GamePlayers } from '../../_interception';
 import { Player } from '../player.model';
 import { RankingPoint } from '../ranking';
 import { EncounterCompetition } from './competition/encounter-competition.model';
@@ -124,14 +125,14 @@ export class Game extends Model {
   @HasMany(() => RankingPoint, 'GameId')
   rankingPoints?: RankingPoint[];
 
-  @Field(() => [DrawTournament], { nullable: true })
+  @Field(() => DrawTournament, { nullable: true })
   @BelongsTo(() => DrawTournament, {
     foreignKey: 'linkId',
     constraints: false,
   })
   tournament: DrawTournament;
 
-  @Field(() => [EncounterCompetition], { nullable: true })
+  @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
@@ -160,7 +161,7 @@ export class Game extends Model {
   @Column
   visualCode: string;
 
-  @Field(() => [Player], { nullable: true })
+  @Field(() => [GamePlayers], { nullable: true })
   @BelongsToMany(() => Player, () => GamePlayer)
   players: (Player & { GamePlayer: GamePlayer })[];
 

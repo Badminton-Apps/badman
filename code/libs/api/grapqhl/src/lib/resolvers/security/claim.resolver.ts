@@ -25,11 +25,7 @@ export class ClaimResolver {
 
   @Query(() => [Claim])
   async claims(@Args() listArgs: ListArgs): Promise<Claim[]> {
-    return Claim.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return Claim.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Claim)

@@ -15,10 +15,10 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
   })
-  const port = process.env.PORT || 3333;
+  const port = process.env.PORT || 5000;
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}.`
   );
 }
 

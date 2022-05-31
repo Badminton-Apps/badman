@@ -3,6 +3,11 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { BaseRedisCache } from 'apollo-server-cache-redis';
+import {
+  ApolloServerPlugin,
+  BaseContext,
+  GraphQLRequestContextDidResolveOperation,
+} from 'apollo-server-plugin-base';
 import * as Redis from 'ioredis';
 import { join } from 'path';
 import {
@@ -15,27 +20,43 @@ import {
   SecurityModule,
   TeamModule,
 } from './resolvers';
+import * as apm from 'elastic-apm-node';
+import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      playground: false,
+      autoSchemaFile: join('schema/schema.gql'),
       cache: new BaseRedisCache({
         client: new Redis({
-          host: 'localhost',
-          port: 6379,
+          host: process.env.REDIS_HOST,
+          port: parseInt(process.env.REDIS_PORT, 10),
         }),
       }),
       context: ({ request }) => {
         return { req: request };
       },
-      /*
-      cacheControl: {
-          defaultMaxAge: 10000,
-        },
-       plugins: [responseCachePlugin()],
-       */
+      plugins: [
+        ApolloServerPluginLandingPageLocalDefault(),
+        // Add the operation name to transaction
+        (): ApolloServerPlugin => ({
+          async requestDidStart() {
+            return {
+              async didResolveOperation(
+                context: GraphQLRequestContextDidResolveOperation<BaseContext>
+              ) {
+                apm.setTransactionName(
+                  `${context?.operation?.operation?.toUpperCase()} ${
+                    context.operation.name?.value ?? 'UNKOWN'
+                  }`
+                );
+              },
+            };
+          },
+        }),
+      ],
     }),
     ApiAuthorizationModule,
     PlayerModule,

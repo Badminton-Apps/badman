@@ -32,15 +32,18 @@ module.exports = {
 
         playerIds = playerIds.filter((v, i, a) => a.indexOf(v) === i);
 
-        const [genders] = await queryInterface.sequelize.query(
-          `SELECT "gender", "id" from public."Players" where "id" in ('${playerIds
-            ?.map((r) => r?.playerId)
-            ?.join("','")}')`,
-          { transaction: t }
-        );
+        if (playerIds.length > 0) {
+          const [genders] = await queryInterface.sequelize.query(
+            `SELECT "gender", "id" from public."Players" where "id" in ('${playerIds
+              ?.map((r) => r?.playerId)
+              ?.join("','")}')`,
+            { transaction: t }
+          );
+        }
 
-        await queryInterface.sequelize.query(
-          `update ranking."Places" as p
+        if (genders.length > 0) {
+          await queryInterface.sequelize.query(
+            `update ranking."Places" as p
           set "gender" = s."gender" 
           from 
           (
@@ -48,11 +51,11 @@ module.exports = {
             ${genders?.map((g) => `('${g.id}','${g.gender}')`)?.join(',')}
           ) as s("playerId", "gender") 
           where p."playerId" = s."playerId"`,
-          { transaction: t }
-        );
+            { transaction: t }
+          );
 
-        await queryInterface.sequelize.query(
-          `update ranking."LastPlaces" as p 
+          await queryInterface.sequelize.query(
+            `update ranking."LastPlaces" as p 
           set "gender" = s."gender" 
           from 
           (
@@ -60,9 +63,9 @@ module.exports = {
             ${genders?.map((g) => `('${g.id}','${g.gender}')`)?.join(',')}
           ) as s("playerId", "gender") 
           where p."playerId" = s."playerId"`,
-          { transaction: t }
-        );
-
+            { transaction: t }
+          );
+        }
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

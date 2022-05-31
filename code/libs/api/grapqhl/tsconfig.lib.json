@@ -6,6 +6,6 @@
     "types": [],
     "target": "es6"
   },
-  "include": ["**/*.ts", "../api/database/src/lib/types/availibilty.type.ts", "../authorization/src/lib/decorators/gql.decorator.ts", "../../../pagination.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
 }

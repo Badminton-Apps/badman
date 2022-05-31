@@ -1,112 +1,139 @@
-import { AfterViewInit, Component, EventEmitter, ViewChild } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
-import { catchError, debounceTime, map, startWith, switchMap } from 'rxjs/operators';
-import { Club, ClubService } from '../../../_shared';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, merge, of } from 'rxjs';
+import { catchError, debounceTime, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { Club, ClubService, pageArgs } from '../../../_shared';
+import { SortDirection } from '@angular/material/sort';
 
 @Component({
   templateUrl: './overview-clubs.component.html',
   styleUrls: ['./overview-clubs.component.scss'],
 })
-export class OverviewClubsComponent implements AfterViewInit {
+export class OverviewClubsComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<Club>();
   displayedColumns: string[] = ['name', 'clubId', 'abbreviation'];
 
-  resultsLength$ = new BehaviorSubject(0);
-  pageIndex$ = new BehaviorSubject(0);
-  pageSize$ = new BehaviorSubject(10);
-  filterChange$ = new BehaviorSubject<{ query?: string }>({
-    query: undefined,
-  });
-  onPaginateChange = new EventEmitter<PageEvent>();
-
-  totalItems?: number;
+  resultsLength = 0;
   isLoadingResults = true;
-  cursor?: string;
-  prevCursor?: string;
-  nextCursor?: string;
+
+  pageIndex = 0;
+  pageSize = 15;
+  active = 'name';
+  direction: SortDirection = 'asc';
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  filter$ = new BehaviorSubject<{ query?: string }>({
+    query: undefined,
+  });
 
-  constructor(private eventService: ClubService, titleService: Title) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private eventService: ClubService,
+    titleService: Title
+  ) {
     titleService.setTitle('Clubs');
   }
 
+  ngOnInit() {
+    this.activatedRoute.queryParams.subscribe((queryParams) => {
+      this.filter$.next({ query: queryParams['query'] });
+
+      const order = queryParams['order'];
+      if (order?.length > 0) {
+        const [field, direction] = order.split('-');
+        this.active = field || 'name';
+        this.direction = direction || 'asc';
+      }
+
+      this.pageIndex = queryParams['page'] ?? 0;
+      this.pageSize = queryParams['take'] ?? 15;
+    });
+  }
+
   ngAfterViewInit() {
+    // Link data
     this.dataSource.sort = this.sort;
-    // Reset when any filter changes
 
-    this.sort.sortChange.subscribe(() => {
-      this.pageIndex$.next(0);
-      this.cursor = undefined;
-    });
-    this.filterChange$.subscribe(() => {
-      this.pageIndex$.next(0);
-      this.cursor = undefined;
-    });
+    // Reset paginator when sort changes
+    this.sort.sortChange.subscribe(() => this.paginator.firstPage());
 
-    this.onPaginateChange.subscribe((newPage: PageEvent) => {
-      this.pageSize$.next(newPage.pageSize);
-
-      const prev = newPage.previousPageIndex;
-      if (!prev) {
-        throw new Error('Previous Page Index is undefined');
-      }
-
-      if (prev < newPage.pageIndex) {
-        // We are going to the next page
-        this.prevCursor = this.cursor;
-        this.cursor = this.nextCursor;
-      } else if (prev > newPage.pageIndex) {
-        // We are going to the prev page
-        this.cursor = this.prevCursor;
-      }
-    });
-
-    combineLatest([
-      this.filterChange$,
-      this.sort.sortChange.pipe(startWith({})),
-      this.onPaginateChange.pipe(startWith({})),
-    ])
+    // Set the data
+    merge(this.sort.sortChange, this.paginator.page, this.filter$)
       .pipe(
-        debounceTime(300),
-        switchMap(([filterChange, sortChange, pageChange]) => {
-          this.isLoadingResults = true;
-          return this.eventService.getClubs({
-            first: this.pageSize$.value,
-            after: this.cursor,
-            query: filterChange.query,
+        debounceTime(200),
+        startWith({}),
+        map(() => {
+          const direction = this.sort.direction === 'asc' ? 'asc' : 'desc';
+          return {
+            query: this.filter$.value?.query,
+            take: this.paginator.pageSize,
+            skip: this.paginator.pageIndex * this.paginator.pageSize,
+            order: [
+              {
+                field: this.sort.active ?? 'name',
+                direction,
+              },
+            ],
+          } as pageArgs;
+        }),
+        tap((args) => {
+          let order: { field: string; direction: string } | undefined =
+            undefined;
+          let orderSort: string | undefined = undefined;
+
+          if (args.order) {
+            order = args.order[0];
+            if (order.direction !== 'asc' || order.field != 'name') {
+              orderSort = order?.field
+                ? `${order.field}-${order.direction}`
+                : undefined;
+            }
+          }
+
+          this.router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: {
+              query: args.query,
+              take: args.take == 15 ? undefined : args.take,
+              page:
+                this.paginator.pageIndex == 0
+                  ? undefined
+                  : this.paginator.pageIndex,
+              order: orderSort,
+            },
+            queryParamsHandling: 'merge',
           });
         }),
-        map((data) => {
-          const count = data.total || 0;
-          this.isLoadingResults = false;
-          this.resultsLength$.next(count);
-
-          if (count) {
-            this.nextCursor = data.clubs[data.clubs.length - 1].cursor;
-
-            return data.clubs.map((x) => x.node);
-          } else {
-            return [];
-          }
+        switchMap((args: pageArgs) => {
+          this.isLoadingResults = true;
+          return this.eventService.getClubs(args);
         }),
-        catchError((error) => {
+        map((data) => {
+          this.resultsLength = data.count;
           this.isLoadingResults = false;
-          console.error(error);
+          return data.rows;
+        }),
+        catchError(() => {
+          this.isLoadingResults = false;
           return of([]);
         })
       )
       .subscribe((data) => (this.dataSource.data = data));
   }
 
-  filterName(query: string) {
-    this.filterChange$.next({
-      ...this.filterChange$.value,
-      query,
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.filter$.next({
+      ...this.filter$.value,
+      query: filterValue.trim().toLowerCase(),
     });
+
+    this.paginator.firstPage();
   }
 }

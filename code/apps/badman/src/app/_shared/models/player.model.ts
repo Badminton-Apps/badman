@@ -3,6 +3,7 @@ import { RankingPlace } from './ranking-place.model';
 import * as moment from 'moment';
 import { Club } from './club.model';
 import { RankingSystem } from './ranking-system.model';
+import { Claim } from './security';
 
 export class Player {
   id?: string;
@@ -30,7 +31,7 @@ export class Player {
 
   clubs?: Club[];
   club?: Club;
-  claims?: string[];
+  claims?: Claim[];
 
   constructor(args?: Partial<Player>) {
     this.id = args?.id;
@@ -68,17 +69,23 @@ export class Player {
     this.lastRankingPlaces = args?.lastRankingPlaces?.map(
       (r) => new RankingPlace(r)
     );
-    if (
-      (this.lastRanking ?? null) == null &&
-      this.rankingPlaces != null &&
-      this.rankingPlaces.length > 0
-    ) {
-      this.lastRanking = this.rankingPlaces?.sort((a, b) => {
-        if (!a.rankingDate || !b.rankingDate) {
-          return 0;
-        }
-        return a.rankingDate.getTime() - b.rankingDate.getTime();
-      })[0];
+    if ((this.lastRanking ?? null) == null) {
+      let places: RankingPlace[] = [];
+
+      if (this.lastRankingPlaces != null && this.lastRankingPlaces.length > 0) {
+        places = this.lastRankingPlaces;
+      } else if (this.rankingPlaces != null && this.rankingPlaces.length > 0) {
+        places = this.rankingPlaces;
+      }
+
+      if (places.length > 0) {
+        this.lastRanking = places?.sort((a, b) => {
+          if (!a.rankingDate || !b.rankingDate) {
+            return 0;
+          }
+          return a.rankingDate.getTime() - b.rankingDate.getTime();
+        })[0];
+      }
     }
   }
 
