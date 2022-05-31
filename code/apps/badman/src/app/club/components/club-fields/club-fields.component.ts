@@ -40,7 +40,7 @@ export class ClubFieldsComponent implements OnInit {
       Validators.required
     );
     const useForTeamNameControl = new FormControl(
-      this.club.useForTeamName,
+      this.club.useForTeamName ?? 'name',
       Validators.required
     );
 
@@ -63,8 +63,8 @@ export class ClubFieldsComponent implements OnInit {
 
     nameControl.valueChanges.subscribe((r) => {
       if (!abbrControl.touched) {
-        const matches = r.match(/\b(\w)/g);
-        abbrControl.setValue(matches.join(''));
+        const matches = r?.match(/\b(\w)/g);
+        abbrControl.setValue(matches?.join(''));
       }
     });
 

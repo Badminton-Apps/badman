@@ -16,7 +16,7 @@ import { UserService } from '../profile';
   providedIn: 'root',
 })
 export class ClaimService {
-  claims$!: Observable<string[]>;
+  claims$!: Observable<Claim[]>;
 
   constructor(private apollo: Apollo, private userService: UserService) {
     this.claims$ = userService.profile$.pipe(
@@ -93,12 +93,14 @@ export class ClaimService {
       .pipe(tap(() => this.userService.reloadProfile()));
   }
 
-  private includes(claims: string[], claim: string): boolean {
+  private includes(claims: Claim[], claim: string): boolean {
     if (claim.indexOf('*') >= 0) {
-      const found = claims.find((r) => r.indexOf(claim.replace('*', '')) != -1);
+      const found = claims.find(
+        (r) => r.name?.indexOf(claim.replace('*', '')) != -1
+      );
       return found != null && found != undefined;
     } else {
-      return claims.includes(claim);
+      return claims?.map((c) => c.name).includes(claim);
     }
   }
 }

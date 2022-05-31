@@ -34,7 +34,7 @@ export class LastRankingPlace extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
   @Column
   id: string;
 

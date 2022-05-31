@@ -35,15 +35,18 @@ export class UserService {
     const whenAuthenticated = combineLatest([
       apollo.query<{ me: Player }>({
         query: gql`
-          query {
+          query GetProfile {
             me {
               id
               slug
               fullName
-              claims
+              claims {
+                name
+              }
               clubs {
                 id
                 name
+                slug
               }
             }
           }

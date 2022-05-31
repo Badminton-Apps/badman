@@ -1,6 +1,7 @@
-import { Team } from '@badman/api/database';
+import { Player, Team, TeamPlayerMembership } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { ListArgs } from '../../utils';
 import { TeamsArgs } from './dto/team.args';
 
 @Resolver(() => Team)
@@ -20,6 +21,35 @@ export class TeamsResolver {
       limit: teamsArgs.take,
       offset: teamsArgs.skip,
     });
+  }
+
+  // @ResolveField(() => [Player])
+  // async players(
+  //   @Parent() team: Team,
+  //   @Args() listArgs: ListArgs
+  // ): Promise<Player[]> {
+  //   const test = await team.getPlayers({ ...ListArgs.toFindOptions(listArgs) });
+
+  //   return test.filter(
+  //     (p) => p.getDataValue('TeamPlayerMembership')?.end === null
+  //   );
+  // }
+
+  @ResolveField(() => [Player])
+  async players(
+    @Parent() team: Team,
+    @Args() listArgs: ListArgs
+  ): Promise<(Player & TeamPlayerMembership)[][]> {
+    const players = await team.getPlayers(ListArgs.toFindOptions(listArgs));
+
+    return players?.map(
+      (player: Player & { TeamPlayerMembership: TeamPlayerMembership }) => {
+        return {
+          ...player.TeamPlayerMembership.toJSON(),
+          ...player.toJSON(),
+        };
+      }
+    );
   }
 
   // @Mutation(returns => Team)

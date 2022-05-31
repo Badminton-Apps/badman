@@ -1,8 +1,19 @@
 # Write your query or mutation here
-query GetUserGamesQuery($playerId: ID!, $system: ID!, $offset: Int!, $limit: Int!, $where: JSONObject) {
+query GetUserGamesQuery(
+  $playerId: ID!
+  $system: ID!
+  $offset: Int!
+  $limit: Int!
+  $where: JSONObject
+) {
   player(id: $playerId) {
     id
-    games(limit: $limit, offset: $offset, order: "reverse:playedAt", where: $where) {
+    games(
+      take: $limit
+      skip: $offset
+      order: { field: "playedAt", direction: "desc" }
+      where: $where
+    ) {
       id
       set1Team1
       set1Team2
@@ -70,9 +81,7 @@ query GetUserGamesQuery($playerId: ID!, $system: ID!, $offset: Int!, $limit: Int
         id
         points
         differenceInLevel
-        player {
-          id
-        }
+        playerId
       }
       players {
         id

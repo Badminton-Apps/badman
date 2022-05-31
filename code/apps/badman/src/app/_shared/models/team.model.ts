@@ -12,7 +12,14 @@ export class Team {
   teamNumber?: number;
   active?: boolean;
   preferredTime?: string;
-  preferredDay?: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+  preferredDay?:
+    | 'sunday'
+    | 'monday'
+    | 'tuesday'
+    | 'wednesday'
+    | 'thursday'
+    | 'friday'
+    | 'saturday';
 
   players!: Player[];
   locations?: Location[];
@@ -40,7 +47,8 @@ export class Team {
 
     this.locations = args?.locations?.map((l) => new Location(l));
     this.entries = args?.entries?.map((l) => new Entry(l));
-    this.captain = args?.captain != null ? new Player(args?.captain) : undefined;
+    this.captain =
+      args?.captain != null ? new Player(args?.captain) : undefined;
     this.club = args?.club != null ? new Club(args?.club) : undefined;
     this.captainId = args?.captain?.id;
     this.email = args?.email;
@@ -48,31 +56,40 @@ export class Team {
 
     this.players =
       args?.players?.map((p) => {
+        const player = new Player(p);
+
         let index = this.type == 'MX' ? 36 : 24;
         let indexSplit = this.type == 'MX' ? '12-12-12' : '12-12';
-        if (p.lastRanking) {
+        if (player.lastRanking) {
           if (this.type == 'MX') {
-            index = p.lastRanking.single! + p.lastRanking.double! + p.lastRanking.mix!;
-            indexSplit = `${p.lastRanking.single}-${p.lastRanking.double}-${p.lastRanking.mix}`;
+            index =
+              (player.lastRanking.single ?? 0) +
+              (player.lastRanking.double ?? 0) +
+              (player.lastRanking.mix ?? 0);
+            indexSplit = `${player.lastRanking.single}-${player.lastRanking.double}-${player.lastRanking.mix}`;
           } else {
-            index = p.lastRanking.single! + p.lastRanking.double!;
-            indexSplit = `${p.lastRanking.single}-${p.lastRanking.double}`;
+            index =
+              (player.lastRanking.single ?? 0) +
+              (player.lastRanking.double ?? 0);
+            indexSplit = `${player.lastRanking.single}-${player.lastRanking.double}`;
           }
         }
 
-        return new Player({ ...p, index, indexSplit});
+        player.index = index;
+        player.indexSplit = indexSplit;
+        return player;
       }) ?? [];
 
     this.calculateBase();
   }
 
   private calculateBase() {
-    const basePlayers = this.players!.filter((r) => r.base);
+    const basePlayers = this.players.filter((r) => r.base);
 
     if (this.type !== 'MX') {
       const bestPlayers = basePlayers
         .map((r) => r.index)
-        .sort((a, b) => a! - b!)
+        .sort((a, b) => (a ?? 0) - (b ?? 0))
         .slice(0, 4);
 
       let missingIndex = 0;
@@ -81,20 +98,23 @@ export class Team {
         missingIndex = (4 - bestPlayers.length) * 24;
       }
 
-      this.baseIndex = bestPlayers.reduce((a, b) => a! + b!, missingIndex);
+      this.baseIndex = bestPlayers.reduce(
+        (a, b) => (a ?? 0) + (b ?? 0),
+        missingIndex
+      );
     } else {
       const bestPlayers = [
         // 2 best male
         ...basePlayers
           .filter((p) => p.gender == 'M')
           .map((r) => r.index)
-          .sort((a, b) => a! - b!)
+          .sort((a, b) => (a ?? 0) - (b ?? 0))
           .slice(0, 2),
         // 2 best female
         ...basePlayers
           .filter((p) => p.gender == 'F')
           .map((r) => r.index)
-          .sort((a, b) => a! - b!)
+          .sort((a, b) => (a ?? 0) - (b ?? 0))
           .slice(0, 2),
       ];
 
@@ -103,7 +123,7 @@ export class Team {
         missingIndex = (4 - bestPlayers.length - 4) * 36;
       }
 
-      this.baseIndex = bestPlayers.reduce((a, b) => a! + b!, missingIndex);
+      this.baseIndex = bestPlayers.reduce((a, b) => (a ?? 0) + (b ?? 0), missingIndex);
     }
   }
 }

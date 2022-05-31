@@ -1,4 +1,5 @@
 import { FormGroup, FormControl } from '@angular/forms';
+import { SortDirection } from '@angular/material/sort';
 
 export const validateAllFormFields = (formGroup: FormGroup) => {
   Object.keys(formGroup.controls).forEach((field) => {
@@ -9,7 +10,7 @@ export const validateAllFormFields = (formGroup: FormGroup) => {
       validateAllFormFields(control);
     }
   });
-}
+};
 
 export const resetAllFormFields = (formGroup: FormGroup) => {
   Object.keys(formGroup.controls).forEach((field) => {
@@ -22,4 +23,12 @@ export const resetAllFormFields = (formGroup: FormGroup) => {
       resetAllFormFields(control);
     }
   });
+};
+
+export interface pageArgs {
+  take?: number;
+  skip?: number;
+  query?: string;
+  order?: { field: string; direction: SortDirection | 'ASC' | 'DESC' }[];
+  ids?: string[];
 }

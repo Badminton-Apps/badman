@@ -25,11 +25,7 @@ export class RankingResolver {
 
   @Query(() => [Comment])
   async comments(@Args() listArgs: ListArgs): Promise<Comment[]> {
-    return Comment.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return Comment.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Comment)

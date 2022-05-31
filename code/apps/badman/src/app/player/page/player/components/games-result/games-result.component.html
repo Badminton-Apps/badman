@@ -12,14 +12,14 @@
 
 <ng-container *ngFor="let subEvent of this.subEvents">
   <badman-group-competition
-    *ngIf="subEvent.event!.eventType == 'COMPETITION'"
+    *ngIf="subEvent.event?.eventType === 'COMPETITION'"
     [player]="this.player"
     [encounter]="this.competition"
     [subEvent]="$any(subEvent)"
     [games]="subEvent.games"
   ></badman-group-competition>
   <badman-group-tournament
-    *ngIf="subEvent.event!.eventType == 'TOURNAMENT'"
+    *ngIf="subEvent.event?.eventType === 'TOURNAMENT'"
     [player]="this.player"
     [draw]="this.tournament"
     [subEvent]="$any(subEvent)"

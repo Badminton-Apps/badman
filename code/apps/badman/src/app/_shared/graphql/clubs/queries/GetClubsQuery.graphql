@@ -1,17 +1,13 @@
-# Write your query or mutation here
-query GetClubs($first: Int, $after: String, $where: JSONObject) {
-  clubs(first: $first, after: $after, where: $where) {
-    total
-    edges {
-      cursor
-      node {
-        id
-        slug
-        name
-        fullName
-        clubId
-        abbreviation
-      }
+query GetClubs($take: Int, $skip: Int, $where: JSONObject, $order: [SortOrderType!]) {
+  clubs(take: $take, skip: $skip, where: $where, order: $order) {
+    count
+    rows {
+      id
+      slug
+      name
+      fullName
+      clubId
+      abbreviation
     }
   }
 }

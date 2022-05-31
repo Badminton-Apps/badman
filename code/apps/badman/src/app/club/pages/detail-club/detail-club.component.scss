@@ -10,6 +10,7 @@ $config: mat-typography-config();
   height: 150px;
   overflow: hidden;
   position: relative;
+
   img {
     width: 100%;
   }
@@ -18,6 +19,7 @@ $config: mat-typography-config();
     position: absolute;
     right: 10px;
     top: 10px;
+
     .mat-icon {
       color: white;
     }
@@ -28,6 +30,7 @@ $config: mat-typography-config();
   display: flex;
   height: 75px;
   align-items: stretch;
+
   .picture {
     display: block;
     margin: 0 30px 0 40px;
@@ -53,12 +56,14 @@ $config: mat-typography-config();
 
   .up {
     @include mat-typography-level-to-styles($config, headline);
+
     mat-icon {
       font-size: 18px;
       height: auto;
       width: auto;
     }
   }
+
   .down {
     margin-top: 6px;
     font-size: 14px;
@@ -67,11 +72,7 @@ $config: mat-typography-config();
 }
 
 .teams {
-  display: flex;
-  flex-flow: row wrap;
-
-  app-team-overview {
-    margin-right: 20px;
-    margin-bottom: 20px;
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 2fr));
+  gap: 1rem;
 }

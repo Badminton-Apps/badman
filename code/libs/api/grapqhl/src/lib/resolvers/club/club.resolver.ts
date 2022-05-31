@@ -2,13 +2,24 @@ import { Club, Team } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,
+  Field,
   ID,
+  ObjectType,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { ListArgs, queryFixer } from '../../utils';
+import { ListArgs } from '../../utils';
+
+@ObjectType()
+export class PagedClub {
+  @Field()
+  count: number;
+
+  @Field(() => [Club])
+  rows: Club[];
+}
 
 @Resolver(() => Club)
 export class ClubsResolver {
@@ -30,25 +41,20 @@ export class ClubsResolver {
     return club;
   }
 
-  @Query(() => [Club])
-  async clubs(@Args() listArgs: ListArgs): Promise<Club[]> {
-    return Club.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+
+  @Query(() => PagedClub)
+  async clubs(
+    @Args() listArgs: ListArgs
+  ): Promise<{ count: number; rows: Club[] }> {
+    return Club.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Team])
   async teams(
     @Parent() club: Club,
-    @Args('includeDisabled', { nullable: true }) disabled?: boolean
+    @Args() listArgs: ListArgs,
   ): Promise<Team[]> {
-    return club.getTeams({
-      where: {
-        active: disabled === undefined ? true : undefined,
-      },
-    });
+    return club.getTeams(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Club)

@@ -29,11 +29,7 @@ export class RankingSystemGroupResolver {
   async rankingSystemGroups(
     @Args() listArgs: ListArgs
   ): Promise<RankingSystemGroup[]> {
-    return RankingSystemGroup.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return RankingSystemGroup.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => RankingSystemGroup)

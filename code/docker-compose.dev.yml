@@ -1,0 +1,81 @@
+version: '3'
+services:
+  # Databases
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - '5432:5432'
+    networks:
+      - api
+
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '6379:6379'
+    networks:
+      - api
+     
+  # My Apps
+  badman:
+    build:
+      context: .
+      dockerfile: apps/badman/Dockerfile.dev
+    image: badman-dev
+    environment:
+      - API_URL=http://api:5000
+    expose:
+      - 4200
+    ports:
+      - 4200:4200
+    depends_on:
+      - api
+    volumes:
+      - ./:/usr/src
+      - ./user/src/node_modules
+    restart: always
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.dev
+    ports:
+      - '5000:5000'
+      - '9229:9229'
+    networks:
+      - api
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_IP=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_DIALECT=${DB_DIALECT}
+      - APM_SERVER_URL=${APM_SERVER_URL}
+      - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
+      - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
+      - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - CLIENT_URL=${CLIENT_URL}
+      - MAIL_PASS=${MAIL_PASS}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_HOST=${MAIL_HOST}
+      - VR_API=${VR_API}
+      - VR_API_USER=${VR_API_USER}
+      - VR_API_PASS=${VR_API_PASS}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./:/usr/src
+      - ./user/src/node_modules
+    restart: always
+    # entrypoint: ["cd /usr/src/database/ && npx --yes sequelize-cli db:migrate"]
+
+networks:
+  api:

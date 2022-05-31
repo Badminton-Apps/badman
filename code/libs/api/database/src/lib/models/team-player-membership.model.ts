@@ -1,3 +1,4 @@
+import { Field, ObjectType } from '@nestjs/graphql';
 import { BuildOptions, SaveOptions } from 'sequelize';
 import {
   AfterBulkCreate,
@@ -17,11 +18,11 @@ import {
 import { ClubMembership } from './club-membership.model';
 import { Player } from './player.model';
 import { Team } from './team.model';
-import { Field, ID } from '@nestjs/graphql';
 
 @Table({
   schema: 'public',
 })
+@ObjectType({ description: 'A TeamPlayerMembership' })
 export class TeamPlayerMembership extends Model {
   constructor(values?: Partial<TeamPlayerMembership>, options?: BuildOptions) {
     super(values, options);
@@ -30,10 +31,8 @@ export class TeamPlayerMembership extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column
   id: string;
-
 
   @ForeignKey(() => Player)
   @AllowNull(false)
@@ -49,7 +48,6 @@ export class TeamPlayerMembership extends Model {
   @Column
   teamId: string;
 
-  @Field({ nullable: true })
   @Column
   end?: Date;
 
@@ -63,10 +61,8 @@ export class TeamPlayerMembership extends Model {
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
   @Unique('TeamPlayerMemberships_teamId_playerId_unique')
   @AllowNull(false)
-  @Field({ nullable: true })
   @Column
   start: Date;
-
 
   @AfterCreate
   static async checkIfPlayerIsInClub(

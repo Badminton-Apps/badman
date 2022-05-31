@@ -1,7 +1,8 @@
 import { ArgsType, Field, Int, InputType } from '@nestjs/graphql';
 import { Max, Min } from 'class-validator';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { WhereOptions } from 'sequelize';
+import { FindOptions, WhereOptions } from 'sequelize';
+import { queryFixer } from './queryFixer';
 
 @InputType()
 export class SortOrderType {
@@ -18,7 +19,13 @@ export class SortOrder {
 }
 
 @ArgsType()
-export class ListArgs {
+export class WhereArgs {
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  where: WhereOptions;
+}
+
+@ArgsType()
+export class ListArgs extends WhereArgs {
   @Field(() => Int, { nullable: true })
   @Min(0)
   skip = 0;
@@ -31,6 +38,15 @@ export class ListArgs {
   @Field(() => [SortOrderType], { nullable: true })
   order?: SortOrderType[];
 
-  @Field(() => GraphQLJSONObject, { nullable: true })
-  where: WhereOptions;
+  static toFindOptions(args: ListArgs) {
+    return {
+      limit: args.take,
+      offset: args.skip,
+      where: queryFixer(args.where),
+      order: args.order?.map(({ field, direction }) => [
+        field,
+        direction,
+      ]),
+    } as FindOptions;
+  }
 }

@@ -8,8 +8,8 @@ import { RankingConsumer } from './processors/ranking';
     BullModule.registerQueue({
       name: 'ranking-queue',
       redis: {
-        host: 'localhost',
-        port: 6379,
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT, 10),
       },
     }),
   ],

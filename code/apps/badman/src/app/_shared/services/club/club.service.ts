@@ -1,18 +1,16 @@
-import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-
+import { Apollo } from 'apollo-angular';
 import { map } from 'rxjs/operators';
-import { Club, Player, RankingSystem } from './../../models';
-
-import * as clubQuery from '../../graphql/clubs/queries/GetClubQuery.graphql';
-import * as clubGetBasePlayersQuery from '../../graphql/clubs/queries/GetBasePlayersQuery.graphql';
-import * as clubGetCompYearsQuery from '../../graphql/clubs/queries/GetCompYearsQuery.graphql';
-import * as clubsQuery from '../../graphql/clubs/queries/GetClubsQuery.graphql';
-
 import * as addClubMutation from '../../graphql/clubs/mutations/addClub.graphql';
+import * as addPlayerToClubMutation from '../../graphql/clubs/mutations/addPlayerToClubMutation.graphql';
 import * as removeClubMutation from '../../graphql/clubs/mutations/removeClub.graphql';
 import * as updateClubMutation from '../../graphql/clubs/mutations/updateClub.graphql';
-import * as addPlayerToClubMutation from '../../graphql/clubs/mutations/addPlayerToClubMutation.graphql';
+import * as clubGetBasePlayersQuery from '../../graphql/clubs/queries/GetBasePlayersQuery.graphql';
+import * as clubQuery from '../../graphql/clubs/queries/GetClubQuery.graphql';
+import * as clubsQuery from '../../graphql/clubs/queries/GetClubsQuery.graphql';
+import * as clubGetCompYearsQuery from '../../graphql/clubs/queries/GetCompYearsQuery.graphql';
+import { pageArgs } from '../../utils';
+import { Club, Player } from './../../models';
 
 @Injectable({
   providedIn: 'root',
@@ -30,8 +28,8 @@ export class ClubService {
       includePlayers?: boolean;
       includeRoles?: boolean;
       includeLocations?: boolean;
-      teamsWhere?: { [key: string]: any };
-      teamPlayersWhere?: { [key: string]: any };
+      teamsWhere?: { [key: string]: unknown };
+      teamPlayersWhere?: { [key: string]: unknown };
       systemId?: string;
       fromCache: boolean;
     }
@@ -77,7 +75,14 @@ export class ClubService {
           club,
         },
       })
-      .pipe(map((x) => new Club(x.data!.addClub)));
+      .pipe(
+        map((x) => {
+          if (!x.data?.addClub) {
+            throw new Error('No club returned');
+          }
+          return new Club(x.data.addClub);
+        })
+      );
   }
 
   removeClub(club: Club) {
@@ -116,11 +121,18 @@ export class ClubService {
           club,
         },
       })
-      .pipe(map((x) => new Club(x.data!.updateClub)));
+      .pipe(
+        map((x) => {
+          if (!x.data?.updateClub) {
+            throw new Error('No club returned');
+          }
+          return new Club(x.data.updateClub);
+        })
+      );
   }
 
-  getClubs(args?: { first?: number; after?: string; query?: string; ids?: string[] }) {
-    let where: any = undefined;
+  getClubs(args?: pageArgs) {
+    let where: { [key: string]: unknown } = {};
     if (args?.query) {
       where = {
         $or: [
@@ -154,34 +166,30 @@ export class ClubService {
     return this.apollo
       .query<{
         clubs: {
-          total: number;
-          edges: { cursor: string; node: Club }[];
+          count: number;
+          rows: Club[];
         };
       }>({
         query: clubsQuery,
         variables: {
-          first: args?.first,
-          after: args?.after,
+          skip: args?.skip,
+          take: args?.take,
+          order: args?.order,
           where,
         },
       })
       .pipe(
         map((x) => {
           return {
-            total: x.data.clubs.total,
-            clubs: x.data.clubs.edges?.map((e) => {
-              return {
-                cursor: e.cursor,
-                node: new Club(e.node),
-              };
-            }),
+            count: x.data.clubs.count,
+            rows: x.data.clubs.rows.map((c) => new Club(c)),
           };
         })
       );
   }
 
   getTeamsForSubEvents(clubId: string, subEvents?: string[]) {
-    var where = {};
+    let where: { [key: string]: unknown } = {};
 
     if (subEvents) {
       where = {
@@ -203,7 +211,8 @@ export class ClubService {
             x.data.club.teams?.filter(
               (r) =>
                 (r.entries?.length ?? 0) > 0 &&
-                (r.entries![0].meta?.competition != null || r.entries![0].meta?.tournament != null)
+                (r.entries?.[0].meta?.competition != null ||
+                  r.entries?.[0].meta?.tournament != null)
             ) ?? []
           );
         })
@@ -222,7 +231,9 @@ export class ClubService {
         map(
           (x) =>
             x.data.club.teams
-              ?.map((r) => r.entries?.map((r) => r.competitionSubEvent?.event?.startYear))
+              ?.map((r) =>
+                r.entries?.map((r) => r.competitionSubEvent?.event?.startYear)
+              )
               .flat()
               .filter((x, i, a) => a.indexOf(x) === i)
               .sort() ?? []

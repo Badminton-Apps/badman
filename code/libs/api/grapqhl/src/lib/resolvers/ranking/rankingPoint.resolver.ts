@@ -1,7 +1,14 @@
-import { RankingPoint } from '@badman/api/database';
+import { Player, RankingPoint } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
-import { ListArgs, queryFixer } from '../../utils';
+import {
+  Args,
+  ID,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => RankingPoint)
 export class RankingPointResolver {
@@ -27,11 +34,12 @@ export class RankingPointResolver {
 
   @Query(() => [RankingPoint])
   async rankingPoints(@Args() listArgs: ListArgs): Promise<RankingPoint[]> {
-    return RankingPoint.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return RankingPoint.findAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => Player)
+  async player(@Parent() rankingPoint: RankingPoint): Promise<Player> {
+    return rankingPoint.getPlayer();
   }
 
   // @Mutation(returns => RankingPoint)

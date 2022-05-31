@@ -1,27 +1,35 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { BuildOptions } from 'sequelize';
-import { Column, ForeignKey, Index, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  ForeignKey,
+  Index,
+  Model,
+  Table,
+  TableOptions,
+} from 'sequelize-typescript';
 import { Player } from '../player.model';
 import { Game } from './game.model';
 
 @Table({
   timestamps: false,
   schema: 'event',
-})
+} as TableOptions)
+@ObjectType({ description: 'A GamePlayer' })
 export class GamePlayer extends Model {
   constructor(values?: Partial<GamePlayer>, options?: BuildOptions) {
     super(values, options);
   }
 
+  @Field({ nullable: true })
   @ForeignKey(() => Player)
   @Index
-  @Field({ nullable: true })
   @Column
   playerId: string;
 
+  @Field({ nullable: true })
   @ForeignKey(() => Game)
   @Index
-  @Field({ nullable: true })
   @Column
   gameId: string;
 

@@ -1,22 +1,40 @@
 import { GqlGuard } from '@badman/api/authorization';
 import {
+  Claim,
   Club,
   Game,
+  GamePlayer,
+  GamePlayers,
   LastRankingPlace,
   Player,
+  RankingPlace,
   Team,
+  TeamPlayer,
 } from '@badman/api/database';
-import { NotFoundException, UseGuards } from '@nestjs/common';
+import { Logger, NotFoundException, UseGuards } from '@nestjs/common';
 import {
   Args,
+  Field,
   ID,
+  ObjectType,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { logger } from 'elastic-apm-node';
+import { Op } from 'sequelize';
 import { User } from '../../decorators';
-import { ListArgs, queryFixer } from '../../utils';
+import { ListArgs, queryFixer, WhereArgs } from '../../utils';
+
+@ObjectType()
+export class PagedPlayer {
+  @Field()
+  count: number;
+
+  @Field(() => [Player])
+  rows: Player[];
+}
 
 @Resolver(() => Player)
 export class PlayersResolver {
@@ -44,13 +62,16 @@ export class PlayersResolver {
     return user;
   }
 
-  @Query(() => [Player])
-  async players(@Args() listArgs: ListArgs): Promise<Player[]> {
-    return Player.findAll({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+  @Query(() => PagedPlayer)
+  async players(
+    @Args() listArgs: ListArgs
+  ): Promise<{ count: number; rows: Player[] }> {
+    return Player.findAndCountAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [Claim])
+  async claims(@Parent() player: Player): Promise<Claim[]> {
+    return player.getClaims();
   }
 
   @ResolveField(() => [LastRankingPlace])
@@ -59,10 +80,8 @@ export class PlayersResolver {
     @Args() listArgs: ListArgs
   ): Promise<LastRankingPlace[]> {
     return player.getLastRankingPlaces({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      order: [['rank', 'DESC']],
-      where: queryFixer(listArgs.where),
+      order: [['rankingDate', 'DESC']],
+      ...ListArgs.toFindOptions(listArgs),
     });
   }
 
@@ -71,11 +90,7 @@ export class PlayersResolver {
     @Parent() player: Player,
     @Args() listArgs: ListArgs
   ): Promise<Game[]> {
-    return player.getGames({
-      limit: listArgs.take,
-      offset: listArgs.skip,
-      where: queryFixer(listArgs.where),
-    });
+    return player.getGames(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Team])
@@ -112,4 +127,47 @@ export class PlayersResolver {
   // async removePlayer(@Args('id') id: string) {
   //   return this.recipesService.remove(id);
   // }
+}
+
+@Resolver(() => GamePlayers)
+export class GamePlayersResolver extends PlayersResolver {
+  @ResolveField(() => RankingPlace)
+  async rankingPlace(
+    @Parent() player: Player & { GamePlayer: GamePlayer },
+    @Args() listArgs: WhereArgs
+  ): Promise<RankingPlace> {
+    const game = await Game.findByPk(player.GamePlayer.gameId, {
+      attributes: ['playedAt'],
+    });
+
+    const places = await RankingPlace.findAll({
+      where: {
+        ...queryFixer(listArgs.where),
+        playerId: player.id,
+        rankingDate: { [Op.lte]: game.playedAt },
+      },
+      order: [['rankingDate', 'DESC']],
+      limit: 1,
+    });
+
+    return places[0];
+  }
+}
+
+@Resolver(() => TeamPlayer)
+export class TeamPlayerResolver extends PlayersResolver {
+  @ResolveField(() => [LastRankingPlace])
+  async lastRankingPlaces(
+    @Parent() player: Player,
+    @Args() listArgs: ListArgs
+  ): Promise<LastRankingPlace[]> {
+    const args = ListArgs.toFindOptions(listArgs);
+
+    args.where = {
+      ...args.where,
+      playerId: player.id,
+    };
+
+    return await LastRankingPlace.findAll(args);
+  }
 }

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { Game, Player, RankingPoint } from '../../../models';
 import { ListenTopic, EVENTS } from '../../socket';
 
@@ -25,9 +31,7 @@ export class GameResultComponent implements OnInit {
   rankingPointP1T2?: RankingPoint;
   rankingPointP2T2?: RankingPoint;
 
-  constructor(private ref: ChangeDetectorRef){
-    
-  }
+  constructor(private ref: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.player1Team1 = this.getPlayer(1, 1);
@@ -42,12 +46,17 @@ export class GameResultComponent implements OnInit {
   }
 
   getPlayer(player: number, team: number) {
-    return this.game.players?.find((x) => x.team === team && x.player === player);
+    return this.game.players?.find(
+      (x) => x.team === team && x.player === player
+    );
   }
 
   getRankingPoint(player?: Player) {
     if (player) {
-      return this.game.rankingPoints?.find((rankingPoint) => rankingPoint.player?.id === player.id);
+      return this.game.rankingPoints?.find(
+        (rankingPoint) =>
+          (rankingPoint.playerId ?? rankingPoint.player?.id) === player.id
+      );
     }
     return;
   }

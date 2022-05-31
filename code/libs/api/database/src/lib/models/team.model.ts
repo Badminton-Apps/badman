@@ -21,7 +21,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin,
+  HasManySetAssociationsMixin
 } from 'sequelize';
 import {
   BeforeBulkCreate,
@@ -38,11 +38,12 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique,
+  Unique
 } from 'sequelize-typescript';
 import { SubEventType } from '../enums';
 import { UseForTeamName } from '../enums/useForTeams.enum';
 import { Slugify } from '../types';
+import { TeamPlayer } from '../_interception';
 import { Club } from './club.model';
 import {
   EncounterCompetition,
@@ -60,11 +61,16 @@ import { TeamPlayerMembership } from './team-player-membership.model';
   schema: 'public',
 })
 @ObjectType({ description: 'A Team' })
-@ObjectType({ description: 'A Team' })
 export class Team extends Model {
   constructor(values?: Partial<Team>, options?: BuildOptions) {
     super(values, options);
   }
+
+  @Field({ nullable: true })
+  updatedAt?: Date;
+
+  @Field({ nullable: true })
+  createdAt?: Date;
 
   @Field(() => ID)
   @Default(DataType.UUIDV4)
@@ -99,32 +105,39 @@ export class Team extends Model {
   @BelongsToMany(() => Location, () => TeamLocationCompetition)
   locations: Location[];
 
+  @Field({ nullable: true })
   @Column
   abbreviation: string;
 
   @HasMany(() => EventEntry, 'teamId')
   entries: EventEntry[];
 
+  @Field(() => Club, { nullable: true })
   @BelongsTo(() => Club, 'clubId')
   club?: Club;
 
+  @Field({ nullable: true })
   @ForeignKey(() => Club)
   @Unique('unique_constraint')
   @Index('club_index')
   @Column
   clubId: string;
 
+  @Field({ nullable: true })
   @Column
   slug: string;
 
+  @Field(() => [TeamPlayer], { nullable: true })
   @BelongsToMany(() => Player, () => TeamPlayerMembership)
-  players: Player[];
+  players: (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
 
+  @Field(() => String, { nullable: true })
   @Column({
     type: DataType.STRING,
   })
   type: SubEventType;
 
+  @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'captainId')
   captain: Player;
 
@@ -134,10 +147,12 @@ export class Team extends Model {
   @Column
   phone: string;
 
+  @Field({ nullable: true })
   @Unique('unique_constraint')
   @Column
   teamNumber?: number;
 
+  @Field({ nullable: true })
   @Default(true)
   @Column
   active: boolean;
@@ -424,3 +439,4 @@ export class Team extends Model {
     }
   }
 }
+
