@@ -77,7 +77,7 @@ query GetUserGamesQuery(
           }
         }
       }
-      rankingPoints(where: { systemId: $system }) {
+      rankingPoints {
         id
         points
         differenceInLevel

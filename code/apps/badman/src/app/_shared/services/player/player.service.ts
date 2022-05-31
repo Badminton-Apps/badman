@@ -116,7 +116,7 @@ export class PlayerService {
 
   
 
-  getPlayer(id: string): Observable<Player> {
+  getPlayer(id?: string): Observable<Player> {
     return this.apollo
       .query({
         query: playerBasicQuery,
@@ -146,7 +146,7 @@ export class PlayerService {
         },
         fetchPolicy: 'no-cache',
       })
-      .pipe(map((x: any) => x.data?.player?.games.map((g: Partial<Game>) => new Game(g, rankingType))));
+      .pipe(map((x: any) => x.data?.player?.games?.map((g: Partial<Game>) => new Game(g, rankingType))));
   }
 
   getPlayerEvolution(playerId: string, rankingType: string): Observable<RankingPlace[]> {

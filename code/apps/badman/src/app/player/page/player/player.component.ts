@@ -6,21 +6,21 @@ import {
   BehaviorSubject,
   combineLatest,
   lastValueFrom,
-  Observable,
+  Observable
 } from 'rxjs';
 import {
   catchError,
-  map,
-  share,
+  map, shareReplay,
   startWith,
   switchMap,
-  tap,
+  tap
 } from 'rxjs/operators';
+import { apolloCache } from '../../../graphql.module';
 import {
   DeviceService,
   Player,
   PlayerService,
-  UserService,
+  UserService
 } from '../../../_shared';
 
 @Component({
@@ -30,13 +30,10 @@ import {
 export class PlayerComponent implements OnInit, OnDestroy {
   private mobileQueryListener!: () => void;
   player$!: Observable<Player | null>;
-  user$!: Observable<Player | undefined | null>;
+  user$!: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
   loadingPlayer = false;
 
-  canClaimAccount$!: Observable<{
-    isClaimedByUser: boolean;
-    canClaim: boolean;
-  }>;
+  canClaimAccount$!: Observable<{ isClaimedByUser: boolean; canClaim: boolean }>;
 
   updateHappend$ = new BehaviorSubject(null);
 
@@ -54,50 +51,37 @@ export class PlayerComponent implements OnInit, OnDestroy {
     const id$ = this.route.paramMap.pipe(map((x) => x.get('id')));
 
     this.player$ = combineLatest([id$, this.updateHappend$]).pipe(
-      share(),
-      switchMap(([playerId]) => {
-        if (!playerId) {
-          throw new Error('No player id');
-        }
-        return this.playerService.getPlayer(playerId);
-      }),
+      switchMap(([playerId]) => this.playerService.getPlayer(playerId ?? '')),
       map((player) => {
         if (!player) {
           throw new Error('No player found');
         }
         return player;
       }),
-      tap((player) => this.titleService.setTitle(`${player.fullName}`)),
-      catchError((err) => {
+      tap((player) => this.titleService.setTitle(`${player?.fullName}`)),
+      catchError((err, caught) => {
         console.error('error', err);
         this.snackbar.open(err.message);
         this.router.navigate(['/']);
         throw err;
       }),
-      share()
+      shareReplay()
     );
 
-    this.user$ = this.updateHappend$.pipe(
-      switchMap(() => this.userService.profile$)
-    );
-
+    this.user$ = this.updateHappend$.pipe(switchMap((_) => this.userService.profile$));
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
       map(([player, user]) => {
+        console.log('canClaimAccount', player, user);
+
         if (!player) {
           return { canClaim: false, isUser: false, isClaimedByUser: false };
         }
 
-        // return {
-        //   canClaim: !player.isClaimed && !user?.player && !user?.request,
-        //   isUser: user?.player?.id === player?.id,
-        //   isClaimedByUser:
-        //     user && user.request && user.request.playerId === player.id,
-        // };
         return {
-          canClaim: false,
-          isUser: false,
-          isClaimedByUser: false,
-        }
+          canClaim: !player.isClaimed && !user?.player && !user?.request,
+          isUser: user?.player?.id === player?.id,
+          isClaimedByUser: user && user.request && user.request.playerId === player.id,
+        };
       }),
       startWith({ canClaim: false, isUser: false, isClaimedByUser: false })
     );
@@ -108,18 +92,20 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   async claimAccount(playerId: string) {
-    const result = await lastValueFrom(
-      this.userService
-        .requestLink(playerId)
-        .pipe(tap(() => this.updateHappend$.next(null)))
-    );
+    const result = await lastValueFrom(this.userService.requestLink(playerId));
+    this.userService.profileUpdated();
 
     if (result && result.id) {
       this.snackbar.open('Account linked', 'close', { duration: 5000 });
+      const normalizedId = apolloCache.identify({ id: result.id, __typename: 'Player' });
+      apolloCache.evict({ id: normalizedId });
+      apolloCache.gc();
+
     } else {
       this.snackbar.open("Wasn't able to link the account", 'close', {
         duration: 5000,
       });
     }
+    this.updateHappend$.next(null);
   }
 }

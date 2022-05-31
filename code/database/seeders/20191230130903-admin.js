@@ -7,14 +7,19 @@ const moment = require('moment');
 // import uuidv4
 const { v4: uuidv4 } = require('uuid');
 
-const dummyClubName = 'dummy club';
-const dummyTeamName = 'Mix and Double dummy team';
-const { v4: uuidv4 } = require('uuid');
-
 module.exports = {
   up: (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
+        await queryInterface.bulkDelete(
+          'Players',
+          {
+            lastName: 'super',
+            firstName: 'admin',
+          },
+          { transaction: t, cascade: true }
+        );
+
         const [admin] = await queryInterface.bulkInsert(
           'Players',
           [
@@ -24,6 +29,9 @@ module.exports = {
               firstName: 'admin',
               memberId: '000',
               gender: 'M',
+              slug: 'admin',
+              createdAt: new Date(),
+              updatedAt: new Date(),
             },
           ],
           {
@@ -39,13 +47,12 @@ module.exports = {
           { transaction: t }
         );
 
-
         await queryInterface.bulkInsert(
           { tableName: 'PlayerClaimMemberships', schema: 'security' },
-          adminRoles.map((admin) => {
+          adminRoles.map((role) => {
             return {
               playerId: admin['id'],
-              claimId: personal[0],
+              claimId: role['id'],
               createdAt: new Date(),
               updatedAt: new Date(),
             };
@@ -55,7 +62,6 @@ module.exports = {
             ignoreDuplicates: true,
           }
         );
-
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

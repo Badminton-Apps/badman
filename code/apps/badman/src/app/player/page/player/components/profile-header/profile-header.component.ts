@@ -54,7 +54,7 @@ export class ProfileHeaderComponent implements OnChanges {
   ngOnChanges(): void {
     this.systems$ = this.systemService.getPrimarySystemsWhere().pipe(
       switchMap((query) => {
-        const where: { [key: string]: unknown } = {};
+        const where = {};
 
         if (!query.primary) {
           where['$or'] = [
@@ -69,10 +69,10 @@ export class ProfileHeaderComponent implements OnChanges {
           where['primary'] = true;
         }
 
-        return this.apollo.query<{ rankingSystems: Partial<RankingSystem>[] }>({
+        return this.apollo.query<{ systems: Partial<RankingSystem>[] }>({
           query: gql`
-            query GetSystems($where: JSONObject) {
-              rankingSystems(where: $where) {
+            query GetSystems($where: SequelizeJSON) {
+              systems(where: $where) {
                 id
                 primary
                 amountOfLevels
@@ -86,7 +86,7 @@ export class ProfileHeaderComponent implements OnChanges {
           },
         });
       }),
-      map((x) => x.data.rankingSystems?.map((x) => new RankingSystem(x)))
+      map((x) => x.data.systems?.map((x) => new RankingSystem(x)))
     );
 
     this.places$ = this.systems$.pipe(
@@ -95,7 +95,7 @@ export class ProfileHeaderComponent implements OnChanges {
           query: gql`
             query GetRankingPlacesForSystems(
               $playerId: ID!
-              $where: JSONObject
+              $where: SequelizeJSON
             ) {
               player(id: $playerId) {
                 id
@@ -181,11 +181,10 @@ export class ProfileHeaderComponent implements OnChanges {
         }
 
         const lastNames = this.player.lastName?.split(' ');
-        if ((lastNames ?? []).length > 1) {
-          this.initials = `${this.player.firstName?.[0]}${
-            lastNames?.[lastNames.length - 1][0]
-          }`.toUpperCase();
-        }
+        this.initials = `${this.player.firstName?.[0]}${
+          lastNames?.[lastNames.length - 1]?.[0]
+        }`.toUpperCase();
+
         return {
           shownRankingPrimary,
           shownRanking,
