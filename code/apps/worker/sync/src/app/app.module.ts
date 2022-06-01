@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
-import { SyncConsumer } from './processors/ranking';
+import { RankingComsumer } from './processors/ranking';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TasksService } from './services/sync.service';
+import { SyncService } from './services/sync.service';
 
 @Module({
-  providers: [SyncConsumer, TasksService],
+  providers: [RankingComsumer, SyncService],
   imports: [
     ScheduleModule.forRoot(),
     BullModule.registerQueue({

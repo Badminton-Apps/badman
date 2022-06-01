@@ -2,14 +2,14 @@ import { Comment } from '../../comment.model';
 import { Event, EventType } from '../event.model';
 import { CompetitionSubEvent } from './sub-event.model';
 
-export class CompetitionEvent extends Event {
+export class EventCompetition extends Event {
   startYear?: number;
   override subEvents?: CompetitionSubEvent[];
   comments?: Comment[];
   type?: LevelType;
 
 
-  constructor({ ...args }: Partial<CompetitionEvent>) {
+  constructor({ ...args }: Partial<EventCompetition>) {
     super(args);
     this.startYear = args.startYear;
     this.eventType = args.eventType ?? EventType.COMPETITION;

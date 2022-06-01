@@ -7,7 +7,6 @@ import { Club } from '../../../models';
 import {
   ClaimService,
   ClubService,
-  PermissionService,
   UserService,
 } from '../../../services';
 
@@ -49,7 +48,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   constructor(
     private clubService: ClubService,
     private claimSerice: ClaimService,
-    private permissionService: PermissionService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private user: UserService
@@ -77,12 +75,12 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           if (all) {
             return this.clubService.getClubs({ take: 999 });
           } else if (single) {
-            return this.permissionService.userPermissions$.pipe(
+            return this.claimSerice.claims$.pipe(
               map((r) =>
-                r.filter((x) => x.indexOf(this.singleClubPermission) != -1)
+                r.filter((x) => x?.name?.indexOf(this.singleClubPermission) != -1)
               ),
               map((r) =>
-                r.map((c) => c.replace(`_${this.singleClubPermission}`, ''))
+                r.map((c) => c?.name?.replace(`_${this.singleClubPermission}`, ''))
               ),
               switchMap((ids) =>
                 this.clubService.getClubs({ ids, take: ids.length })

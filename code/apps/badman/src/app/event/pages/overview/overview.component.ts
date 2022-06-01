@@ -38,11 +38,11 @@ import {
 } from 'rxjs/operators';
 import { apolloCache as apolloCache } from '../../../graphql.module';
 import {
-  CompetitionEvent,
+  EventCompetition,
   EventService,
   Event,
   EventType,
-  TournamentEvent,
+  EventTournament,
 } from '../../../_shared';
 
 @Component({
@@ -238,7 +238,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             this.nextCursor = events[events.length - 1].cursor;
 
             return events.map(
-              (x: { node: CompetitionEvent | TournamentEvent }) => x.node
+              (x: { node: EventCompetition | EventTournament }) => x.node
             );
           } else {
             return [];

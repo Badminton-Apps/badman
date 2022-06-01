@@ -27,40 +27,54 @@ export class ShowRankingComponent implements OnInit {
 
   nextUp: 'upgrade' | 'downgrade' | 'same' = 'same';
 
+  usedSystem?: RankingSystem;
+
   ngOnInit(): void {
-    if (this.systems && this.rankingPlace) {
-      const usedSystem = this.systems.find(
-        (s) => s.id === this.rankingPlace?.rankingSystem?.id
-      );
-      const level = this.rankingPlace[this.type];
-      const raningPlace = this.rankingPlace[`${this.type}Points`] ?? 0;
+    if (this.systems) {
+      if (this.rankingPlace) {
+        this.usedSystem = this.systems.find(
+          (s) => s.id === this.rankingPlace?.rankingSystem?.id
+        );
+        const level = this.rankingPlace[this.type];
+        const raningPlace = this.rankingPlace[`${this.type}Points`] ?? 0;
 
-      if (
-        !usedSystem ||
-        !usedSystem?.pointsToGoDown ||
-        !usedSystem.pointsToGoUp ||
-        !usedSystem.amountOfLevels
-      ) {
-        throw new Error('No system found');
-      }
-
-      // we can go up
-      if (usedSystem && level && level !== 1) {
-        const poitnsNeeded =
-          usedSystem.pointsToGoUp[usedSystem.amountOfLevels - level];
-        if (raningPlace >= poitnsNeeded) {
-          this.nextUp = 'upgrade';
+        if (
+          !this.usedSystem ||
+          !this.usedSystem?.pointsToGoDown ||
+          !this.usedSystem.pointsToGoUp ||
+          !this.usedSystem.amountOfLevels
+        ) {
+          throw new Error('No system found');
         }
-      }
 
-      // we can go down
-      if (usedSystem && level && level == usedSystem.amountOfLevels) {
-        const poitnsNeeded =
-          usedSystem.pointsToGoDown[usedSystem.amountOfLevels - level - 1];
-
-        if (raningPlace < poitnsNeeded) {
-          this.nextUp = 'downgrade';
+        // we can go up
+        if (this.usedSystem && level && level !== 1) {
+          const poitnsNeeded =
+            this.usedSystem.pointsToGoUp[
+              this.usedSystem.amountOfLevels - level
+            ];
+          if (raningPlace >= poitnsNeeded) {
+            this.nextUp = 'upgrade';
+          }
         }
+
+        // we can go down
+        if (
+          this.usedSystem &&
+          level &&
+          level == this.usedSystem.amountOfLevels
+        ) {
+          const poitnsNeeded =
+            this.usedSystem.pointsToGoDown[
+              this.usedSystem.amountOfLevels - level - 1
+            ];
+
+          if (raningPlace < poitnsNeeded) {
+            this.nextUp = 'downgrade';
+          }
+        }
+      } else {
+        this.usedSystem = this.systems?.find((s) => s.primary);
       }
     }
   }

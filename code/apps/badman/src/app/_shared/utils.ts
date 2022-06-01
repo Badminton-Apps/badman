@@ -1,5 +1,6 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
+import { CompetitionSubEvent } from './models';
 
 export const validateAllFormFields = (formGroup: FormGroup) => {
   Object.keys(formGroup.controls).forEach((field) => {
@@ -23,6 +24,17 @@ export const resetAllFormFields = (formGroup: FormGroup) => {
       resetAllFormFields(control);
     }
   });
+};
+
+export const sortSubEvents = (
+  a: CompetitionSubEvent,
+  b: CompetitionSubEvent
+) => {
+  if (a.eventType === b.eventType) {
+    return (a.level ?? 0) - (b.level ?? 0);
+  }
+
+  return (a.eventType ?? '').localeCompare(b.eventType ?? '');
 };
 
 export interface pageArgs {

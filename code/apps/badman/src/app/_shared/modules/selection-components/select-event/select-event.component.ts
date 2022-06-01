@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CompetitionEvent, EventType } from '../../../models';
+import { EventCompetition, EventType } from '../../../models';
 import { EventService } from '../../../services';
 
 @Component({
@@ -20,7 +20,7 @@ export class SelectEventComponent implements OnInit, OnDestroy {
 
   formControl = new FormControl(null, [Validators.required]);
 
-  events$!: Observable<CompetitionEvent[]>;
+  events$!: Observable<EventCompetition[]>;
 
   constructor(private eventService: EventService) {}
 

@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { lastValueFrom, map, switchMap } from 'rxjs';
 import {
   CompetitionEncounter,
-  CompetitionEvent,
+  EventCompetition,
   EncounterService,
   PdfService,
   Player,
@@ -25,7 +25,7 @@ export class TeamAssemblyComponent implements OnInit {
   pdfLoading = false;
 
   selectedEventControl: FormControl = new FormControl();
-  events?: CompetitionEvent[];
+  events?: EventCompetition[];
 
   constructor(
     private assemblyService: TeamAssemblyService,
@@ -55,7 +55,7 @@ export class TeamAssemblyComponent implements OnInit {
 
     this.apollo
       .query<{
-        competitionEvents: { edges: { node: Partial<CompetitionEvent> }[] };
+        competitionEvents: { edges: { node: Partial<EventCompetition> }[] };
       }>({
         query: gql`
           query GetSubevents($year: Int!) {
@@ -81,11 +81,11 @@ export class TeamAssemblyComponent implements OnInit {
       .pipe(
         map((result) =>
           result.data.competitionEvents?.edges?.map(
-            (c) => new CompetitionEvent(c.node)
+            (c) => new EventCompetition(c.node)
           )
         )
       )
-      .subscribe((events: CompetitionEvent[]) => {
+      .subscribe((events: EventCompetition[]) => {
         this.events = events;
         this.loaded = true;
       });

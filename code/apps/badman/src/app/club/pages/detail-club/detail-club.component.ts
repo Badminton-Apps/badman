@@ -86,7 +86,7 @@ export class DetailClubComponent implements OnInit {
                     firstName
                     lastName
                     competitionPlayer
-                    lastRankingPlaces(
+                    rankingLastPlaces(
                       take: 1
                       where: $lastRankingPlaceWhere
                       order: $lastRankingPlacesOrder

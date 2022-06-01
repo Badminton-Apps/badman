@@ -1,3 +1,4 @@
+import { Entry } from '../entry.model';
 import { Game } from '../game.model';
 import { RankingSystemGroup } from '../group.model';
 import { Player } from '../player.model';
@@ -11,6 +12,7 @@ export class SubEvent {
   maxLevel?: number;
   minBaseIndex?: number;
   maxBaseIndex?: number;
+  entries?: Entry[];
 
   draws?: Draw[];
   games?: Game[];
@@ -26,6 +28,7 @@ export class SubEvent {
     this.draws = args?.draws?.map((g) => new Draw(g));
     this.games = args?.games?.map((g) => new Game(g));
     this.groups = args?.groups?.map((g) => new RankingSystemGroup(g));
+    this.entries = args?.entries?.map((e) => new Entry(e));
     this.maxLevel = args?.maxLevel;
     this.minBaseIndex = args?.minBaseIndex;
     this.maxBaseIndex = args?.maxBaseIndex;
