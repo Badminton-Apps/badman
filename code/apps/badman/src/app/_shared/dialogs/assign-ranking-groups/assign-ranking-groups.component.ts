@@ -16,10 +16,10 @@ import {
 } from 'rxjs';
 import { apolloCache } from '../../../graphql.module';
 import {
-  CompetitionEvent,
+  EventCompetition,
   RankingSystemGroup,
   SubEvent,
-  TournamentEvent,
+  EventTournament,
   Event,
 } from '../../models';
 
@@ -190,10 +190,10 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
       }
 
       if (removed.length > 0) {
-        if (this.data.event instanceof TournamentEvent) {
+        if (this.data.event instanceof EventTournament) {
           variables['tournaments'] = removed;
         }
-        if (this.data.event instanceof CompetitionEvent) {
+        if (this.data.event instanceof EventCompetition) {
           variables['competitions'] = removed;
         }
 
@@ -221,10 +221,10 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
       }
 
       if (added.length > 0) {
-        if (this.data.event instanceof TournamentEvent) {
+        if (this.data.event instanceof EventTournament) {
           variables['tournaments'] = added;
         }
-        if (this.data.event instanceof CompetitionEvent) {
+        if (this.data.event instanceof EventCompetition) {
           variables['competitions'] = added;
         }
 

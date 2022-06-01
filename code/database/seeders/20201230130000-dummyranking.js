@@ -3,15 +3,50 @@
 'use strict';
 const { v4: uuidv4 } = require('uuid');
 
-const dummyRankingSystem = 'dummy system';
+const dummyRankingSystem = 'dummy System';
+const dummyRankingSystemGroup = 'dummy Group';
 
 module.exports = {
   up: (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.bulkInsert(
+        await queryInterface.bulkDelete(
           {
-            tableName: 'Systems',
+            tableName: 'RankingSystems',
+            schema: 'ranking',
+          },
+          { name: dummyRankingSystem },
+          { transaction: t, cascade: true }
+        );
+
+        await queryInterface.bulkDelete(
+          {
+            tableName: 'RankingGroups',
+            schema: 'ranking',
+          },
+          { name: dummyRankingSystemGroup },
+          { transaction: t, cascade: true }
+        );
+
+        const groups = await queryInterface.bulkInsert(
+          {
+            tableName: 'RankingGroups',
+            schema: 'ranking',
+          },
+          [
+            {
+              id: uuidv4(),
+              name: dummyRankingSystemGroup,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ],
+          { transaction: t, ignoreDuplicates: true, returning: ['id'] }
+        );
+
+        const systems = await queryInterface.bulkInsert(
+          {
+            tableName: 'RankingSystems',
             schema: 'ranking',
           },
           [
@@ -47,6 +82,27 @@ module.exports = {
           ],
           { transaction: t, ignoreDuplicates: true, returning: ['id'] }
         );
+
+        // make an array for each group with each system
+        const groupSystems = [];
+
+        for (let system of systems) {
+          for (let group of groups) {
+            groupSystems.push({
+              groupId: group.id,
+              systemId: system.id,
+            });
+          }
+        }
+
+        await queryInterface.bulkInsert(
+          {
+            tableName: 'RankingSystemRankingGroupMemberships',
+            schema: 'ranking',
+          },
+          groupSystems,
+          { transaction: t }
+        );
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();
@@ -57,9 +113,21 @@ module.exports = {
   down: (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.bulkDelete(
-        'Clubs',
+        {
+          tableName: 'RankingSystems',
+          schema: 'ranking',
+        },
         { name: dummyRankingSystem },
-        { transaction: t }
+        { transaction: t, cascade: true }
+      );
+
+      await queryInterface.bulkDelete(
+        {
+          tableName: 'RankingGroups',
+          schema: 'ranking',
+        },
+        { name: dummyRankingSystemGroup },
+        { transaction: t, cascade: true }
       );
     });
   },

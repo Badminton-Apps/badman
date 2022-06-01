@@ -1,13 +1,13 @@
 import { Event, EventType } from '../event.model';
 import { TournamentSubEvent } from './sub-event.model';
 
-export class TournamentEvent extends Event {
+export class EventTournament extends Event {
   firstDay?: Date;
   dates: Date[];
   override subEvents?: TournamentSubEvent[];
   tournamentNumber?: number;
 
-  constructor({ ...args }: Partial<TournamentEvent>) {
+  constructor({ ...args }: Partial<EventTournament>) {
     super(args);
     this.firstDay = args?.firstDay != null ? new Date(args.firstDay) : undefined;
     this.dates = (args.dates as unknown as string)?.split(',').map((x) => new Date(x));

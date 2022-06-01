@@ -3,8 +3,8 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
 @Processor('sync-queue')
-export class SyncConsumer {
-  private readonly logger = new Logger(SyncConsumer.name);
+export class RankingComsumer {
+  private readonly logger = new Logger(RankingComsumer.name);
 
   constructor(){
     this.logger.debug('SyncConsumer');

@@ -19,7 +19,7 @@ run: `npm run dev:install`
 ### 3. Start (in /code)
 run: `npm run dev:up`
 
-#### 3a First time running (in /database):
+#### 3a First time running (in /code):
 - run the migration and seeding `npx --yes sequelize-cli db:migrate && npx --yes sequelize-cli db:seed:all`
 - open: http://localhost:4200/player/admin
 - login with your badman credentials

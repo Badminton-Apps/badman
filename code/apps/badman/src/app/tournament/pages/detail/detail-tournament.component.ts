@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import {
   GameType,
-  TournamentEvent,
+  EventTournament,
   TournamentSubEvent,
 } from '../../../_shared';
 import { AssignRankingGroupsComponent } from '../../../_shared/dialogs';
@@ -16,7 +16,7 @@ import { AssignRankingGroupsComponent } from '../../../_shared/dialogs';
   styleUrls: ['./detail-tournament.component.scss'],
 })
 export class DetailTournamentComponent implements OnInit {
-  event$!: Observable<TournamentEvent>;
+  event$!: Observable<EventTournament>;
 
   subEventsM_S$!: Observable<TournamentSubEvent[] | undefined>;
   subEventsF_S$!: Observable<TournamentSubEvent[] | undefined>;
@@ -44,7 +44,7 @@ export class DetailTournamentComponent implements OnInit {
           if (!id) {
             throw new Error('No id');	
           }
-          return this.apollo.query<{ tournamentEvent: TournamentEvent; }>({
+          return this.apollo.query<{ tournamentEvent: EventTournament; }>({
             query: gql`
             query GetTournamentDetails($id: ID!) {
               tournamentEvent(id: $id) {
@@ -79,7 +79,7 @@ export class DetailTournamentComponent implements OnInit {
           });
         }
       ),
-      map(({ data }) => new TournamentEvent(data.tournamentEvent))
+      map(({ data }) => new EventTournament(data.tournamentEvent))
     );
 
     this.subEventsM_S$ = this.event$.pipe(
@@ -149,7 +149,7 @@ export class DetailTournamentComponent implements OnInit {
     );
   }
 
-  assignRankingGroups(event: Partial<TournamentEvent>) {
+  assignRankingGroups(event: Partial<EventTournament>) {
     this.dialog
       .open(AssignRankingGroupsComponent, {
         minWidth: '50vw',

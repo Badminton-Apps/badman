@@ -4,8 +4,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Queue } from 'bull';
 
 @Injectable()
-export class TasksService {
-  private readonly logger = new Logger(TasksService.name);
+export class SyncService {
+  private readonly logger = new Logger(SyncService.name);
 
   constructor(@InjectQueue('sync-queue') private syncQ: Queue) {}
 

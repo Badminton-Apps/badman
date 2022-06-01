@@ -5,11 +5,6 @@
     </button>
 
     <mat-menu #options="matMenu">
-      <!-- <button mat-menu-item *ngIf="!this.canClaimAccount?.isUser && !this.canClaimAccount?.canClaim">
-          Placeholder for favorite
-        </button>
-        <button mat-menu-item *ngIf="this.canClaimAccount?.isUser">Placeholder for profile</button> -->
-
       <button
         mat-menu-item
         *ngIf="this.canClaimAccount?.canClaim"
@@ -18,19 +13,10 @@
         Claim
       </button>
 
-      <button mat-menu-item *ngIf="this.canClaimAccount?.isClaimedByUser">
-        You've requested this account
-      </button>
-
       <badman-has-claim
         [any]="['edit-any:player', 'merge:player', 'delete:player']"
       >
-        <mat-divider
-          *ngIf="
-            this.canClaimAccount?.canClaim ||
-            this.canClaimAccount?.isClaimedByUser
-          "
-        ></mat-divider>
+        <mat-divider *ngIf="this.canClaimAccount?.canClaim"></mat-divider>
         <badman-has-claim [any]="['edit-any:player']">
           <button mat-menu-item [routerLink]="['edit']">
             {{ 'button.edit' | translate }}

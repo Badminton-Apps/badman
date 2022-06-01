@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { TournamentEvent } from '../../../_shared';
+import { EventTournament } from '../../../_shared';
 
 @Component({
   selector: 'badman-event-tournament-fields',
@@ -10,7 +10,7 @@ import { TournamentEvent } from '../../../_shared';
 })
 export class EventTournamentFieldsComponent {
   @Input()
-  event: TournamentEvent = {} as TournamentEvent;
+  event: EventTournament = {} as EventTournament;
 
   eventForm!: FormGroup;
 }

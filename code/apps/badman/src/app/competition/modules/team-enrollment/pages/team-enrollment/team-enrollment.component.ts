@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/f
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
 import { Apollo } from 'apollo-angular';
-import { Club, Comment, CompetitionEvent, EventService, EventType, SubEvent, Team } from '../../../../../_shared';
+import { Club, Comment, EventCompetition, EventService, EventType, SubEvent, Team } from '../../../../../_shared';
 import { BehaviorSubject, combineLatest, lastValueFrom, Observable, of, Subject, withLatestFrom } from 'rxjs';
 import {
   debounceTime,
@@ -247,7 +247,7 @@ export class TeamEnrollmentComponent implements OnInit {
             includeSubEvents: true,
           })
           .pipe(
-            map((events) => ((events?.total ?? 0) > 0 ? (events?.events[0].node as CompetitionEvent) : null)),
+            map((events) => ((events?.total ?? 0) > 0 ? (events?.events[0].node as EventCompetition) : null)),
             take(1)
           )
       : of(null);
@@ -266,7 +266,7 @@ export class TeamEnrollmentComponent implements OnInit {
             includeSubEvents: true,
           })
           .pipe(
-            map((events) => ((events?.total ?? 0) > 0 ? (events?.events[0].node as CompetitionEvent) : null)),
+            map((events) => ((events?.total ?? 0) > 0 ? (events?.events[0].node as EventCompetition) : null)),
             take(1)
           )
       : of(null);

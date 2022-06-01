@@ -2,8 +2,7 @@
 require('dotenv').config();
 
 const retries = 5;
-
-module.exports = {
+const config = {
   host: process.env.DB_IP,
   port: process.env.DB_PORT,
   database: process.env.DB_DATABASE,
@@ -13,6 +12,8 @@ module.exports = {
   migrationStorageTableSchema: 'public',
   logging: false,
   retry: {
-    max: retries
-  }
+    max: retries,
+  },
 };
+
+module.exports = config;

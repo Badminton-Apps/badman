@@ -11,7 +11,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import {
   Club,
-  CompetitionEvent,
+  EventCompetition,
   Entry,
   LevelType,
   Player,
@@ -170,7 +170,7 @@ export class AssemblyComponent implements OnInit {
     // Get values
     this.club = this.formGroup.get('club')?.value;
     const teamId = this.formGroup.get('team')?.value;
-    const event = this.formGroup.get('event')?.value as CompetitionEvent;
+    const event = this.formGroup.get('event')?.value as EventCompetition;
 
     if (
       !event ||

@@ -1,1 +1,1 @@
-export * from './lib/search.module';
+export * from './search.module';

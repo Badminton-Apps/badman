@@ -10,14 +10,14 @@ import {
   Observable,
 } from 'rxjs';
 import { debounceTime, filter, map, skip, switchMap } from 'rxjs/operators';
-import { CompetitionEvent, CompetitionSubEvent } from '../../../_shared';
+import { EventCompetition, CompetitionSubEvent } from '../../../_shared';
 
 @Component({
   templateUrl: './edit-competition.component.html',
   styleUrls: ['./edit-competition.component.scss'],
 })
 export class EditEventCompetitionComponent implements OnInit {
-  event$!: Observable<CompetitionEvent>;
+  event$!: Observable<EventCompetition>;
   update$ = new BehaviorSubject(0);
   saved$ = new BehaviorSubject(0);
 
@@ -36,7 +36,7 @@ export class EditEventCompetitionComponent implements OnInit {
     ]).pipe(
       map(([params]) => params.get('id')),
       switchMap((id) =>
-        this.apollo.query<{ competitionEvent: CompetitionEvent }>({
+        this.apollo.query<{ competitionEvent: EventCompetition }>({
           query: gql`
             query GetEvent($id: ID!) {
               competitionEvent(id: $id) {
@@ -70,7 +70,7 @@ export class EditEventCompetitionComponent implements OnInit {
         })
       ),
       map((result) => result.data.competitionEvent),
-      map((event) => new CompetitionEvent(event))
+      map((event) => new EventCompetition(event))
     );
 
     this.event$.subscribe((event) => {
@@ -100,7 +100,7 @@ export class EditEventCompetitionComponent implements OnInit {
       });
   }
 
-  private setupFormGroup(event: CompetitionEvent) {
+  private setupFormGroup(event: EventCompetition) {
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
@@ -135,12 +135,12 @@ export class EditEventCompetitionComponent implements OnInit {
     });
   }
 
-  async save(event: CompetitionEvent) {
+  async save(event: EventCompetition) {
     // strip eventType because it's not used in BE
     const { eventType, updatedAt, ...newEvent } = event;
 
     await lastValueFrom(
-      this.apollo.mutate<{ updateEvent: CompetitionEvent }>({
+      this.apollo.mutate<{ updateEvent: EventCompetition }>({
         mutation: gql`
           mutation UpdateeventCompetition($event: EventCompetitionInput!) {
             updateEventCompetition(eventCompetition: $event) {
@@ -176,7 +176,7 @@ export class EditEventCompetitionComponent implements OnInit {
     // TODO
   }
 
-  async newSubEvent(event: CompetitionEvent) {
+  async newSubEvent(event: EventCompetition) {
     const subEvents = this.formGroup.get('subEvents') as FormArray;
 
     subEvents.push(
@@ -197,7 +197,7 @@ export class EditEventCompetitionComponent implements OnInit {
     );
   }
 
-  async removeSubEvent(event: CompetitionEvent, subEvent: CompetitionSubEvent) {
+  async removeSubEvent(event: EventCompetition, subEvent: CompetitionSubEvent) {
     const subEvents = this.formGroup.get('subEvents') as FormArray;
 
     subEvents.removeAt(subEvents.value.indexOf(subEvent));

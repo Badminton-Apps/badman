@@ -17,7 +17,7 @@ import * as addEventMutation from '../../graphql/events/mutations/addEvent.graph
 import * as deleteEventMutation from '../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql';
 
 import * as updateCompetitionEvent from '../../graphql/events/mutations/UpdateCompetitionEvent.graphql';
-import { Club, CompetitionEvent, EventType, Imported, TournamentEvent, Event } from '../../models';
+import { Club, EventCompetition, EventType, Imported, EventTournament, Event } from '../../models';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -51,11 +51,11 @@ export class EventService {
       .query<{
         competitionEvents?: {
           total: number;
-          edges: { cursor: string; node: CompetitionEvent }[];
+          edges: { cursor: string; node: EventCompetition }[];
         };
         tournamentEvents?: {
           total: number;
-          edges: { cursor: string; node: TournamentEvent }[];
+          edges: { cursor: string; node: EventTournament }[];
         };
       }>({
         query: args.type == EventType.TOURNAMENT ? getTournamentEventsQuery : getCompetitionEventsQuery,
@@ -76,7 +76,7 @@ export class EventService {
               events: x.data.competitionEvents.edges?.map((e) => {
                 return {
                   cursor: e.cursor,
-                  node: new CompetitionEvent(e.node),
+                  node: new EventCompetition(e.node),
                 };
               }),
             };
@@ -88,7 +88,7 @@ export class EventService {
               events: x.data.tournamentEvents.edges?.map((e) => {
                 return {
                   cursor: e.cursor,
-                  node: new TournamentEvent(e.node),
+                  node: new EventTournament(e.node),
                 };
               }),
             };
@@ -102,7 +102,7 @@ export class EventService {
   getCompetitionEvent(id: string, args?: { clubId: string; includeComments: boolean }) {
     return this.apollo
       .query<{
-        competitionEvent: CompetitionEvent;
+        competitionEvent: EventCompetition;
       }>({
         query: getCompetitionEventQuery,
         variables: {
@@ -111,7 +111,7 @@ export class EventService {
           clubId: args?.clubId,
         },
       })
-      .pipe(map((x) => new CompetitionEvent(x.data.competitionEvent)));
+      .pipe(map((x) => new EventCompetition(x.data.competitionEvent)));
   }
 
   getSubEventsCompetition(year: number) {
@@ -119,7 +119,7 @@ export class EventService {
       .query<{
         competitionEvents?: {
           total: number;
-          edges: { cursor: string; node: CompetitionEvent }[];
+          edges: { cursor: string; node: EventCompetition }[];
         };
       }>({
         query: getSubEvents,
@@ -127,26 +127,26 @@ export class EventService {
           year,
         },
       })
-      .pipe(map((x) => x?.data?.competitionEvents?.edges.map((x) => new CompetitionEvent(x.node))));
+      .pipe(map((x) => x?.data?.competitionEvents?.edges.map((x) => new EventCompetition(x.node))));
   }
 
   getTournamentEvent(id: string) {
     return this.apollo
       .query<{
-        tournamentEvent: TournamentEvent;
+        tournamentEvent: EventTournament;
       }>({
         query: getTournamentEventQuery,
         variables: {
           id,
         },
       })
-      .pipe(map((x) => new TournamentEvent(x.data.tournamentEvent)));
+      .pipe(map((x) => new EventTournament(x.data.tournamentEvent)));
   }
 
-  updateCompetitionEvent(event: Partial<CompetitionEvent>) {
+  updateCompetitionEvent(event: Partial<EventCompetition>) {
     return this.apollo
       .mutate<{
-        updateEventCompetition: CompetitionEvent;
+        updateEventCompetition: EventCompetition;
       }>({
         mutation: updateCompetitionEvent,
         variables: {
@@ -158,7 +158,7 @@ export class EventService {
           return;
         }
 
-        return new CompetitionEvent(x.data.updateEventCompetition);
+        return new EventCompetition(x.data.updateEventCompetition);
       }));
   }
 
@@ -228,11 +228,11 @@ export class EventService {
         map((x) => {
           const events: any = [];
           if (x.data.competitionEvents) {
-            events.push(...x.data.competitionEvents.edges?.map((e) => new CompetitionEvent(e.node)) ?? []);
+            events.push(...x.data.competitionEvents.edges?.map((e) => new EventCompetition(e.node)) ?? []);
           }
 
           if (x.data.tournamentEvents) {
-            events.push(...x.data.tournamentEvents.edges?.map((e) => new TournamentEvent(e.node)) ?? []);
+            events.push(...x.data.tournamentEvents.edges?.map((e) => new EventTournament(e.node)) ?? []);
           }
 
           return events;

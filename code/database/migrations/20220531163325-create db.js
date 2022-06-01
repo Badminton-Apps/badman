@@ -611,7 +611,7 @@ module.exports = {
               id character varying(255) NOT NULL,
               "entryId" character varying(255),
               "position" integer,
-              points integer,
+              RankingPoints integer,
               played integer,
               "gamesWon" integer,
               "gamesLost" integer,
@@ -872,10 +872,10 @@ module.exports = {
           
           --
           -- TOC entry 238 (class 1259 OID 359574)
-          -- Name: GroupSubEventCompetitions; Type: TABLE; Schema: ranking; Owner: -
+          -- Name: RankingGroupSubEventCompetitionMemberships; Type: TABLE; Schema: ranking; Owner: -
           --
           
-          CREATE TABLE ranking."GroupSubEventCompetitions" (
+          CREATE TABLE ranking."RankingGroupSubEventCompetitionMemberships" (
               "subEventId" character varying(255) NOT NULL,
               "groupId" character varying(255) NOT NULL
           );
@@ -883,10 +883,10 @@ module.exports = {
           
           --
           -- TOC entry 239 (class 1259 OID 359580)
-          -- Name: GroupSubEventTournaments; Type: TABLE; Schema: ranking; Owner: -
+          -- Name: RankingGroupSubEventTournamentMemberships; Type: TABLE; Schema: ranking; Owner: -
           --
           
-          CREATE TABLE ranking."GroupSubEventTournaments" (
+          CREATE TABLE ranking."RankingGroupSubEventTournamentMemberships" (
               "subEventId" character varying(255) NOT NULL,
               "groupId" character varying(255) NOT NULL
           );
@@ -894,10 +894,10 @@ module.exports = {
           
           --
           -- TOC entry 240 (class 1259 OID 359586)
-          -- Name: GroupSystems; Type: TABLE; Schema: ranking; Owner: -
+          -- Name: RankingSystemRankingGroupMemberships; Type: TABLE; Schema: ranking; Owner: -
           --
           
-          CREATE TABLE ranking."GroupSystems" (
+          CREATE TABLE ranking."RankingSystemRankingGroupMemberships" (
               "groupId" character varying(255) NOT NULL,
               "systemId" character varying(255) NOT NULL
           );
@@ -905,10 +905,10 @@ module.exports = {
           
           --
           -- TOC entry 241 (class 1259 OID 359592)
-          -- Name: Groups; Type: TABLE; Schema: ranking; Owner: -
+          -- Name: RankingGroups; Type: TABLE; Schema: ranking; Owner: -
           --
           
-          CREATE TABLE ranking."Groups" (
+          CREATE TABLE ranking."RankingGroups" (
               id character varying(255) NOT NULL,
               "createdAt" timestamp with time zone NOT NULL,
               "updatedAt" timestamp with time zone NOT NULL,
@@ -918,10 +918,10 @@ module.exports = {
           
           --
           -- TOC entry 242 (class 1259 OID 359598)
-          -- Name: LastPlaces; Type: TABLE; Schema: ranking; Owner: -
+          -- Name: RankingLastPlaces; Type: TABLE; Schema: ranking; Owner: -
           --
           
-          CREATE TABLE ranking."LastPlaces" (
+          CREATE TABLE ranking."RankingLastPlaces" (
               id character varying(255) NOT NULL,
               "createdAt" timestamp with time zone,
               "updatedAt" timestamp with time zone,
@@ -955,10 +955,10 @@ module.exports = {
           
           --
           -- TOC entry 243 (class 1259 OID 359604)
-          -- Name: Places; Type: TABLE; Schema: ranking; Owner: -
+          -- Name: RankingPlaces; Type: TABLE; Schema: ranking; Owner: -
           --
           
-          CREATE TABLE ranking."Places" (
+          CREATE TABLE ranking."RankingPlaces" (
               id character varying(255) NOT NULL,
               "rankingDate" timestamp with time zone,
               "singlePoints" integer,
@@ -993,12 +993,12 @@ module.exports = {
           
           --
           -- TOC entry 244 (class 1259 OID 359613)
-          -- Name: Points; Type: TABLE; Schema: ranking; Owner: -
+          -- Name: RankingPoints; Type: TABLE; Schema: ranking; Owner: -
           --
           
-          CREATE TABLE ranking."Points" (
+          CREATE TABLE ranking."RankingPoints" (
               id character varying(255) NOT NULL,
-              points integer,
+              RankingPoints integer,
               "rankingDate" timestamp with time zone,
               "differenceInLevel" integer,
               "playerId" character varying(255),
@@ -1011,10 +1011,10 @@ module.exports = {
           
           --
           -- TOC entry 245 (class 1259 OID 359619)
-          -- Name: Systems; Type: TABLE; Schema: ranking; Owner: -
+          -- Name: RankingSystems; Type: TABLE; Schema: ranking; Owner: -
           --
           
-          CREATE TABLE ranking."Systems" (
+          CREATE TABLE ranking."RankingSystems" (
               id character varying(255) NOT NULL,
               name character varying(255),
               "amountOfLevels" integer,
@@ -1586,108 +1586,108 @@ module.exports = {
           
           --
           -- TOC entry 3311 (class 2606 OID 359841)
-          -- Name: GroupSubEventCompetitions GroupSubEventCompetitions_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingGroupSubEventCompetitionMemberships GroupSubEventCompetitions_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSubEventCompetitions"
+          ALTER TABLE ONLY ranking."RankingGroupSubEventCompetitionMemberships"
               ADD CONSTRAINT "GroupSubEventCompetitions_pkey" PRIMARY KEY ("subEventId", "groupId");
           
           
           --
           -- TOC entry 3313 (class 2606 OID 359843)
-          -- Name: GroupSubEventTournaments GroupSubEventTournaments_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingGroupSubEventTournamentMemberships GroupSubEventTournaments_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSubEventTournaments"
+          ALTER TABLE ONLY ranking."RankingGroupSubEventTournamentMemberships"
               ADD CONSTRAINT "GroupSubEventTournaments_pkey" PRIMARY KEY ("subEventId", "groupId");
           
           
           --
           -- TOC entry 3315 (class 2606 OID 359845)
-          -- Name: GroupSystems GroupSystems_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingSystemRankingGroupMemberships GroupSystemMemberships_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSystems"
-              ADD CONSTRAINT "GroupSystems_pkey" PRIMARY KEY ("systemId", "groupId");
+          ALTER TABLE ONLY ranking."RankingSystemRankingGroupMemberships"
+              ADD CONSTRAINT "GroupSystemMemberships_pkey" PRIMARY KEY ("systemId", "groupId");
           
           
           --
           -- TOC entry 3317 (class 2606 OID 359847)
-          -- Name: Groups Groups_name_key; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingGroups Groups_name_key; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Groups"
+          ALTER TABLE ONLY ranking."RankingGroups"
               ADD CONSTRAINT "Groups_name_key" UNIQUE (name);
           
           
           --
           -- TOC entry 3319 (class 2606 OID 359849)
-          -- Name: Groups Groups_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingGroups Groups_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Groups"
+          ALTER TABLE ONLY ranking."RankingGroups"
               ADD CONSTRAINT "Groups_pkey" PRIMARY KEY (id);
           
           
           --
           -- TOC entry 3321 (class 2606 OID 359851)
-          -- Name: LastPlaces LastPlaces_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingLastPlaces LastPlaces_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."LastPlaces"
+          ALTER TABLE ONLY ranking."RankingLastPlaces"
               ADD CONSTRAINT "LastPlaces_pkey" PRIMARY KEY (id);
           
           
           --
           -- TOC entry 3326 (class 2606 OID 359853)
-          -- Name: Places Places_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingPlaces Places_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Places"
+          ALTER TABLE ONLY ranking."RankingPlaces"
               ADD CONSTRAINT "Places_pkey" PRIMARY KEY (id);
           
           
           --
           -- TOC entry 3328 (class 2606 OID 359871)
-          -- Name: Places Places_rankingDate_playerId_systemId_key; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingPlaces Places_rankingDate_playerId_systemId_key; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Places"
+          ALTER TABLE ONLY ranking."RankingPlaces"
               ADD CONSTRAINT "Places_rankingDate_playerId_systemId_key" UNIQUE ("rankingDate", "playerId", "systemId");
           
           
           --
           -- TOC entry 3333 (class 2606 OID 359873)
-          -- Name: Points Points_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingPoints Points_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Points"
+          ALTER TABLE ONLY ranking."RankingPoints"
               ADD CONSTRAINT "Points_pkey" PRIMARY KEY (id);
           
           --
           -- TOC entry 3339 (class 2606 OID 359885)
-          -- Name: Systems Systems_name_key; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingSystems Systems_name_key; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Systems"
+          ALTER TABLE ONLY ranking."RankingSystems"
               ADD CONSTRAINT "Systems_name_key" UNIQUE (name);
           
           
           --
           -- TOC entry 3341 (class 2606 OID 359887)
-          -- Name: Systems Systems_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingSystems Systems_pkey; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Systems"
+          ALTER TABLE ONLY ranking."RankingSystems"
               ADD CONSTRAINT "Systems_pkey" PRIMARY KEY (id);
           
           
           --
           -- TOC entry 3324 (class 2606 OID 359889)
-          -- Name: LastPlaces lastPlaces_unique_constraint; Type: CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingLastPlaces lastPlaces_unique_constraint; Type: CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."LastPlaces"
+          ALTER TABLE ONLY ranking."RankingLastPlaces"
               ADD CONSTRAINT "lastPlaces_unique_constraint" UNIQUE ("playerId", "systemId");
           
           
@@ -1879,7 +1879,7 @@ module.exports = {
           -- Name: lastPlaces_ranking_index; Type: INDEX; Schema: ranking; Owner: -
           --
           
-          CREATE UNIQUE INDEX "lastPlaces_ranking_index" ON ranking."LastPlaces" USING btree ("playerId", "systemId");
+          CREATE UNIQUE INDEX "lastPlaces_ranking_index" ON ranking."RankingLastPlaces" USING btree ("playerId", "systemId");
           
           
           --
@@ -1887,7 +1887,7 @@ module.exports = {
           -- Name: places_date_index; Type: INDEX; Schema: ranking; Owner: -
           --
           
-          CREATE INDEX places_date_index ON ranking."Places" USING brin ("rankingDate");
+          CREATE INDEX places_date_index ON ranking."RankingPlaces" USING brin ("rankingDate");
           
           
           --
@@ -1895,7 +1895,7 @@ module.exports = {
           -- Name: places_system_index; Type: INDEX; Schema: ranking; Owner: -
           --
           
-          CREATE UNIQUE INDEX places_system_index ON ranking."Places" USING btree ("playerId", "systemId", "rankingDate");
+          CREATE UNIQUE INDEX places_system_index ON ranking."RankingPlaces" USING btree ("playerId", "systemId", "rankingDate");
           
           
           --
@@ -1903,7 +1903,7 @@ module.exports = {
           -- Name: point_game_system_index; Type: INDEX; Schema: ranking; Owner: -
           --
           
-          CREATE INDEX point_game_system_index ON ranking."Points" USING btree ("gameId", "systemId");
+          CREATE INDEX point_game_system_index ON ranking."RankingPoints" USING btree ("gameId", "systemId");
           
           
           --
@@ -1911,7 +1911,7 @@ module.exports = {
           -- Name: point_player_system_index; Type: INDEX; Schema: ranking; Owner: -
           --
           
-          CREATE UNIQUE INDEX point_player_system_index ON ranking."Points" USING btree ("playerId", "gameId", "systemId");
+          CREATE UNIQUE INDEX point_player_system_index ON ranking."RankingPoints" USING btree ("playerId", "gameId", "systemId");
           
           
           --
@@ -1919,7 +1919,7 @@ module.exports = {
           -- Name: point_system_index; Type: INDEX; Schema: ranking; Owner: -
           --
           
-          CREATE INDEX point_system_index ON ranking."Points" USING btree ("systemId", "playerId");
+          CREATE INDEX point_system_index ON ranking."RankingPoints" USING btree ("systemId", "playerId");
           
           
           --
@@ -1927,7 +1927,7 @@ module.exports = {
           -- Name: points_date_index; Type: INDEX; Schema: ranking; Owner: -
           --
           
-          CREATE INDEX points_date_index ON ranking."Points" USING brin ("rankingDate");
+          CREATE INDEX points_date_index ON ranking."RankingPoints" USING brin ("rankingDate");
           
           
           --
@@ -1935,7 +1935,7 @@ module.exports = {
           -- Name: ranking_index; Type: INDEX; Schema: ranking; Owner: -
           --
           
-          CREATE INDEX ranking_index ON ranking."Places" USING btree ("playerId", "systemId");
+          CREATE INDEX ranking_index ON ranking."RankingPlaces" USING btree ("playerId", "systemId");
           
           
           --
@@ -2259,119 +2259,119 @@ module.exports = {
           
           --
           -- TOC entry 3392 (class 2606 OID 360089)
-          -- Name: GroupSubEventCompetitions GroupSubEventCompetitions_groupId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingGroupSubEventCompetitionMemberships GroupSubEventCompetitions_groupId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSubEventCompetitions"
-              ADD CONSTRAINT "GroupSubEventCompetitions_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES ranking."Groups"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+          ALTER TABLE ONLY ranking."RankingGroupSubEventCompetitionMemberships"
+              ADD CONSTRAINT "GroupSubEventCompetitions_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES ranking."RankingGroups"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3393 (class 2606 OID 360094)
-          -- Name: GroupSubEventCompetitions GroupSubEventCompetitions_subEventId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingGroupSubEventCompetitionMemberships GroupSubEventCompetitions_subEventId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSubEventCompetitions"
+          ALTER TABLE ONLY ranking."RankingGroupSubEventCompetitionMemberships"
               ADD CONSTRAINT "GroupSubEventCompetitions_subEventId_fkey" FOREIGN KEY ("subEventId") REFERENCES event."SubEventCompetitions"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3394 (class 2606 OID 360099)
-          -- Name: GroupSubEventTournaments GroupSubEventTournaments_groupId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingGroupSubEventTournamentMemberships GroupSubEventTournaments_groupId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSubEventTournaments"
-              ADD CONSTRAINT "GroupSubEventTournaments_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES ranking."Groups"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+          ALTER TABLE ONLY ranking."RankingGroupSubEventTournamentMemberships"
+              ADD CONSTRAINT "GroupSubEventTournaments_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES ranking."RankingGroups"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3395 (class 2606 OID 360104)
-          -- Name: GroupSubEventTournaments GroupSubEventTournaments_subEventId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingGroupSubEventTournamentMemberships GroupSubEventTournaments_subEventId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSubEventTournaments"
+          ALTER TABLE ONLY ranking."RankingGroupSubEventTournamentMemberships"
               ADD CONSTRAINT "GroupSubEventTournaments_subEventId_fkey" FOREIGN KEY ("subEventId") REFERENCES event."SubEventTournaments"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3396 (class 2606 OID 360109)
-          -- Name: GroupSystems GroupSystems_groupId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingSystemRankingGroupMemberships GroupSystemMemberships_groupId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSystems"
-              ADD CONSTRAINT "GroupSystems_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES ranking."Groups"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+          ALTER TABLE ONLY ranking."RankingSystemRankingGroupMemberships"
+              ADD CONSTRAINT "GroupSystemMemberships_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES ranking."RankingGroups"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3397 (class 2606 OID 360114)
-          -- Name: GroupSystems GroupSystems_systemId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingSystemRankingGroupMemberships GroupSystemMemberships_systemId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."GroupSystems"
-              ADD CONSTRAINT "GroupSystems_systemId_fkey" FOREIGN KEY ("systemId") REFERENCES ranking."Systems"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+          ALTER TABLE ONLY ranking."RankingSystemRankingGroupMemberships"
+              ADD CONSTRAINT "GroupSystemMemberships_systemId_fkey" FOREIGN KEY ("systemId") REFERENCES ranking."RankingSystems"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3398 (class 2606 OID 360119)
-          -- Name: LastPlaces LastPlaces_playerId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingLastPlaces LastPlaces_playerId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."LastPlaces"
+          ALTER TABLE ONLY ranking."RankingLastPlaces"
               ADD CONSTRAINT "LastPlaces_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES public."Players"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3399 (class 2606 OID 360124)
-          -- Name: LastPlaces LastPlaces_systemId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingLastPlaces LastPlaces_systemId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."LastPlaces"
-              ADD CONSTRAINT "LastPlaces_systemId_fkey" FOREIGN KEY ("systemId") REFERENCES ranking."Systems"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+          ALTER TABLE ONLY ranking."RankingLastPlaces"
+              ADD CONSTRAINT "LastPlaces_systemId_fkey" FOREIGN KEY ("systemId") REFERENCES ranking."RankingSystems"(id) ON UPDATE CASCADE ON DELETE SET NULL;
           
           
           --
           -- TOC entry 3400 (class 2606 OID 360129)
-          -- Name: Places Places_playerId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingPlaces Places_playerId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Places"
+          ALTER TABLE ONLY ranking."RankingPlaces"
               ADD CONSTRAINT "Places_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES public."Players"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3401 (class 2606 OID 360134)
-          -- Name: Places Places_systemId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingPlaces Places_systemId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Places"
-              ADD CONSTRAINT "Places_systemId_fkey" FOREIGN KEY ("systemId") REFERENCES ranking."Systems"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+          ALTER TABLE ONLY ranking."RankingPlaces"
+              ADD CONSTRAINT "Places_systemId_fkey" FOREIGN KEY ("systemId") REFERENCES ranking."RankingSystems"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3402 (class 2606 OID 360139)
-          -- Name: Points Points_gameId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingPoints Points_gameId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Points"
+          ALTER TABLE ONLY ranking."RankingPoints"
               ADD CONSTRAINT "Points_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES event."Games"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3403 (class 2606 OID 360144)
-          -- Name: Points Points_playerId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingPoints Points_playerId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Points"
+          ALTER TABLE ONLY ranking."RankingPoints"
               ADD CONSTRAINT "Points_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES public."Players"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
           -- TOC entry 3404 (class 2606 OID 360149)
-          -- Name: Points Points_systemId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
+          -- Name: RankingPoints Points_systemId_fkey; Type: FK CONSTRAINT; Schema: ranking; Owner: -
           --
           
-          ALTER TABLE ONLY ranking."Points"
-              ADD CONSTRAINT "Points_systemId_fkey" FOREIGN KEY ("systemId") REFERENCES ranking."Systems"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+          ALTER TABLE ONLY ranking."RankingPoints"
+              ADD CONSTRAINT "Points_systemId_fkey" FOREIGN KEY ("systemId") REFERENCES ranking."RankingSystems"(id) ON UPDATE CASCADE ON DELETE CASCADE;
           
           
           --
@@ -2448,7 +2448,7 @@ module.exports = {
           { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error('We errored with', err?.message ?? err);
         t.rollback();
       }
     });

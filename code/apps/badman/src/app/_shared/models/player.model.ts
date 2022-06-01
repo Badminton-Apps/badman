@@ -20,7 +20,7 @@ export class Player {
   base?: boolean;
   isClaimed = false;
   rankingPlaces?: RankingPlace[];
-  lastRankingPlaces?: RankingPlace[];
+  rankingLastPlaces?: RankingPlace[];
   games?: Game[];
   index?: number;
   indexSplit?: string;
@@ -43,7 +43,6 @@ export class Player {
     this.firstName = args?.firstName;
     this.lastName = args?.lastName;
     this._fullName = args?.fullName;
-    this.isClaimed = args?.isClaimed ?? false;
     this.lastRanking =
       (args?.lastRanking ?? null) != null
         ? new RankingPlace(args?.lastRanking)
@@ -66,14 +65,14 @@ export class Player {
     this.claims = args?.claims ?? [];
 
     this.rankingPlaces = args?.rankingPlaces?.map((r) => new RankingPlace(r));
-    this.lastRankingPlaces = args?.lastRankingPlaces?.map(
+    this.rankingLastPlaces = args?.rankingLastPlaces?.map(
       (r) => new RankingPlace(r)
     );
     if ((this.lastRanking ?? null) == null) {
       let places: RankingPlace[] = [];
 
-      if (this.lastRankingPlaces != null && this.lastRankingPlaces.length > 0) {
-        places = this.lastRankingPlaces;
+      if (this.rankingLastPlaces != null && this.rankingLastPlaces.length > 0) {
+        places = this.rankingLastPlaces;
       } else if (this.rankingPlaces != null && this.rankingPlaces.length > 0) {
         places = this.rankingPlaces;
       }

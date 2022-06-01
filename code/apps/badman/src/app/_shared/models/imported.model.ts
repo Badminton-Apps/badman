@@ -1,4 +1,4 @@
-import { CompetitionEvent, EventType, TournamentEvent } from './events';
+import { EventCompetition, EventType, EventTournament } from './events';
 import { ImporterSubEvent } from './imported-sub-event.model';
 export class Imported {
   name?: string;
@@ -14,8 +14,8 @@ export class Imported {
   uniCode?: string;
   tournamentNumber?: number;
 
-  suggestions?: (TournamentEvent | CompetitionEvent)[];
-  event?: (TournamentEvent | CompetitionEvent);
+  suggestions?: (EventTournament | EventCompetition)[];
+  event?: (EventTournament | EventCompetition);
 
   constructor({ ...args }: Partial<Imported>) {
     const dateString = args?.dates as unknown as string;

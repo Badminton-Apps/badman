@@ -1,7 +1,8 @@
 FROM node:17.9.0-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src
 
 EXPOSE 5000 9229
 
-CMD ["npx", "nx", "serve", "api", "inspect","0.0.0.0"]
+CMD ["npx", "nx", "serve-dev", "api"]
+  

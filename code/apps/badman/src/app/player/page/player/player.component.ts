@@ -2,25 +2,28 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import {
   BehaviorSubject,
   combineLatest,
   lastValueFrom,
-  Observable
+  Observable,
 } from 'rxjs';
 import {
   catchError,
-  map, shareReplay,
+  map,
+  share,
+  shareReplay,
   startWith,
   switchMap,
-  tap
+  tap,
 } from 'rxjs/operators';
 import { apolloCache } from '../../../graphql.module';
 import {
   DeviceService,
   Player,
   PlayerService,
-  UserService
+  UserService,
 } from '../../../_shared';
 
 @Component({
@@ -30,10 +33,13 @@ import {
 export class PlayerComponent implements OnInit, OnDestroy {
   private mobileQueryListener!: () => void;
   player$!: Observable<Player | null>;
-  user$!: Observable<{ player: Player; request: any } | { player: null; request: null } | null>;
+  user$!: Observable<Player | undefined | null>;
   loadingPlayer = false;
 
-  canClaimAccount$!: Observable<{ isClaimedByUser: boolean; canClaim: boolean }>;
+  canClaimAccount$!: Observable<{
+    isUser: boolean;
+    canClaim: boolean;
+  }>;
 
   updateHappend$ = new BehaviorSubject(null);
 
@@ -44,22 +50,29 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private snackbar: MatSnackBar,
     private titleService: Title,
-    public device: DeviceService
+    public device: DeviceService,
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
     const id$ = this.route.paramMap.pipe(map((x) => x.get('id')));
 
     this.player$ = combineLatest([id$, this.updateHappend$]).pipe(
-      switchMap(([playerId]) => this.playerService.getPlayer(playerId ?? '')),
+      share(),
+      switchMap(([playerId]) => {
+        if (!playerId) {
+          throw new Error('No player id');
+        }
+        return this.playerService.getPlayer(playerId);
+      }),
       map((player) => {
         if (!player) {
           throw new Error('No player found');
         }
         return player;
       }),
-      tap((player) => this.titleService.setTitle(`${player?.fullName}`)),
-      catchError((err, caught) => {
+      tap((player) => this.titleService.setTitle(`${player.fullName}`)),
+      catchError((err) => {
         console.error('error', err);
         this.snackbar.open(err.message);
         this.router.navigate(['/']);
@@ -68,22 +81,26 @@ export class PlayerComponent implements OnInit, OnDestroy {
       shareReplay()
     );
 
-    this.user$ = this.updateHappend$.pipe(switchMap((_) => this.userService.profile$));
+    this.user$ = this.updateHappend$.pipe(
+      switchMap(() => this.userService.profile$),
+      shareReplay()
+    );
+
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
       map(([player, user]) => {
-        console.log('canClaimAccount', player, user);
+        console.log('player', player);
+        console.log('user', user);
 
         if (!player) {
-          return { canClaim: false, isUser: false, isClaimedByUser: false };
+          return { canClaim: false, isUser: false };
         }
 
         return {
-          canClaim: !player.isClaimed && !user?.player && !user?.request,
-          isUser: user?.player?.id === player?.id,
-          isClaimedByUser: user && user.request && user.request.playerId === player.id,
+          canClaim: !player.sub && !user,
+          isUser: user?.id === player?.id,
         };
       }),
-      startWith({ canClaim: false, isUser: false, isClaimedByUser: false })
+      startWith({ canClaim: false, isUser: false })
     );
   }
 
@@ -92,20 +109,50 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   async claimAccount(playerId: string) {
-    const result = await lastValueFrom(this.userService.requestLink(playerId));
-    this.userService.profileUpdated();
+    const result = await lastValueFrom(
+      this.apollo.mutate<{ claim: Player }>({
+        mutation: gql`
+          mutation ClaimAccount($playerId: String!) {
+            claim(playerId: $playerId) {
+              id
+              fullName
+              sub
+            }
+          }
+        `,
+        variables: {
+          playerId,
+        },
+      })
+    );
 
-    if (result && result.id) {
-      this.snackbar.open('Account linked', 'close', { duration: 5000 });
-      const normalizedId = apolloCache.identify({ id: result.id, __typename: 'Player' });
+    if (result.data?.claim) {
+      this.snackbar.open('Account claimed');
+      // Clear cache
+      const normalizedId = apolloCache.identify({
+        id: result.data?.claim?.id,
+        __typename: 'Player',
+      });
       apolloCache.evict({ id: normalizedId });
       apolloCache.gc();
 
-    } else {
-      this.snackbar.open("Wasn't able to link the account", 'close', {
-        duration: 5000,
-      });
+      // Mark as updated
+      this.userService.reloadProfile();
+      this.updateHappend$.next(null);
     }
-    this.updateHappend$.next(null);
+
+    // const result = await lastValueFrom(
+    //   this.userService
+    //     .requestLink(playerId)
+    //     .pipe(tap(() => this.updateHappend$.next(null)))
+    // );
+
+    // if (result && result.id) {
+    //   this.snackbar.open('Account linked', 'close', { duration: 5000 });
+    // } else {
+    //   this.snackbar.open("Wasn't able to link the account", 'close', {
+    //     duration: 5000,
+    //   });
+    // }
   }
 }

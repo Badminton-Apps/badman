@@ -32,7 +32,7 @@ module.exports = {
 
         const dbPrimarySystem = await queryInterface.rawSelect(
           {
-            tableName: 'Systems',
+            tableName: 'RankingSystems',
             schema: 'ranking',
           },
           {
@@ -48,6 +48,7 @@ module.exports = {
           [
             {
               id: uuidv4(),
+              slug: 'dummy-club-1',
               name: dummyClubName,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -61,6 +62,7 @@ module.exports = {
           [
             {
               id: uuidv4(),
+              slug: 'dummy-team-1',
               name: dummyTeamName,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -111,7 +113,7 @@ module.exports = {
 
         const [dbPlaces] = await queryInterface.bulkInsert(
           {
-            tableName: 'Places',
+            tableName: 'RankingPlaces',
             schema: 'ranking',
           },
           playersRanking.flat(),

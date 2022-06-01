@@ -16,9 +16,7 @@
     "deploy-dev": {
       "builder": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": [
-          "docker build -f ./apps/api/Dockerfile.dev . -t api-dev"
-        ],
+        "commands": ["docker build -f ./apps/api/Dockerfile.dev . -t api-dev"],
         "parallel": false
       }
     },
@@ -51,6 +49,15 @@
       "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "api:build"
+      }
+    },
+    "serve-dev": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "api:build",
+        "inspect": "inspect",
+        "port": 9229,
+        "host": "0.0.0.0"
       }
     },
     "lint": {

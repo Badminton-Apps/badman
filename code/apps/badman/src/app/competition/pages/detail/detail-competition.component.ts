@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { CompetitionEvent, CompetitionSubEvent } from '../../../_shared';
+import { EventCompetition, CompetitionSubEvent } from '../../../_shared';
 import { AssignRankingGroupsComponent } from '../../../_shared/dialogs';
 
 @Component({
@@ -12,7 +12,7 @@ import { AssignRankingGroupsComponent } from '../../../_shared/dialogs';
   styleUrls: ['./detail-competition.component.scss'],
 })
 export class DetailCompetitionComponent implements OnInit {
-  event$!: Observable<CompetitionEvent>;
+  event$!: Observable<EventCompetition>;
 
   subEventsM$!: Observable<CompetitionSubEvent[] | undefined>;
   subEventsF$!: Observable<CompetitionSubEvent[] | undefined>;
@@ -25,7 +25,7 @@ export class DetailCompetitionComponent implements OnInit {
   ngOnInit(): void {
     this.event$ = combineLatest([this.route.paramMap, this.update$]).pipe(
       switchMap(([params]) =>
-        this.apollo.query<{ competitionEvent: CompetitionEvent }>({
+        this.apollo.query<{ competitionEvent: EventCompetition }>({
           query: gql`
             query GetCompetitionDetails($id: ID!) {
               competitionEvent(id: $id) {
@@ -59,7 +59,7 @@ export class DetailCompetitionComponent implements OnInit {
           },
         })
       ),
-      map(({ data }) => new CompetitionEvent(data.competitionEvent))
+      map(({ data }) => new EventCompetition(data.competitionEvent))
     );
 
     this.subEventsM$ = this.event$.pipe(map((event) => event.subEvents?.filter((se) => se.eventType === 'M')));
@@ -67,7 +67,7 @@ export class DetailCompetitionComponent implements OnInit {
     this.subEventsMX$ = this.event$.pipe(map((event) => event.subEvents?.filter((se) => se.eventType === 'MX')));
   }
 
-  assignRankingGroups(event: Partial<CompetitionEvent>) {
+  assignRankingGroups(event: Partial<EventCompetition>) {
     this.dialog
       .open(AssignRankingGroupsComponent, {
         minWidth: '50vw',

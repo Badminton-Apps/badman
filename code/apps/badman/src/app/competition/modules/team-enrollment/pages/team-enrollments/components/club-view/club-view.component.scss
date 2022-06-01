@@ -1,0 +1,34 @@
+@use '@angular/material'as mat;
+
+.location-item {
+  padding-left: 12px;
+}
+
+.location-title {
+  font-weight: bold;
+}
+
+.location-sub-title {
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+
+.team-detail {
+  @include mat.elevation(8);
+  background-color: white;
+  padding: 16px;
+
+  ul {
+    padding: 0;
+
+    li {
+      list-style-type: none
+    }
+  }
+}
+
+
+.team-description {
+  cursor: pointer;
+}

@@ -9,31 +9,46 @@ import * as clubClaimsQuery from '../../graphql/security/queries/GetClubClaims.g
 
 import * as updateGlobalUserClaimQuery from '../../graphql/security/mutations/UpdateClaimUser.graphql';
 import { Observable } from 'rxjs';
-import { PermissionService } from './permission.service';
 import { Claim } from '../../models';
+import { UserService } from '../profile';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClaimService {
-  constructor(private apollo: Apollo, private permissionService: PermissionService) {}
+  claims$!: Observable<Claim[]>;
+
+  constructor(private apollo: Apollo, private userService: UserService) {
+    this.claims$ = userService.profile$.pipe(
+      map((player) => player?.claims ?? []),
+      distinctUntilChanged()
+    );
+  }
 
   hasClaim$(claim: string): Observable<boolean> {
-    return this.permissionService.userPermissions$.pipe(map((userClaims) => this.includes(userClaims, claim)));
+    return this.claims$.pipe(map((claims) => this.includes(claims, claim)));
   }
 
   hasAllClaims$(claims: string[]): Observable<boolean> {
-    return this.permissionService.userPermissions$.pipe(
+    return this.claims$.pipe(
       map((userClaims) => {
-        return claims.reduce((acc: boolean, claim) => acc && this.includes(userClaims, claim), true);
+        return claims.reduce(
+          (acc: boolean, claim) => acc && this.includes(userClaims, claim),
+          true
+        );
       }),
       distinctUntilChanged()
     );
   }
 
   hasAnyClaims$(claims: string[]): Observable<boolean> {
-    return this.permissionService.userPermissions$.pipe(
-      map((userClaims) => claims.reduce((acc: boolean, claim) => acc || this.includes(userClaims, claim), false)),
+    return this.claims$.pipe(
+      map((userClaims) =>
+        claims.reduce(
+          (acc: boolean, claim) => acc || this.includes(userClaims, claim),
+          false
+        )
+      ),
       distinctUntilChanged()
     );
   }
@@ -75,15 +90,17 @@ export class ClaimService {
           active,
         },
       })
-      .pipe(tap(() => this.permissionService.reloadPermissions()));
+      .pipe(tap(() => this.userService.reloadProfile()));
   }
 
-  private includes(claims: string[], claim: string): boolean {
+  private includes(claims: Claim[], claim: string): boolean {
     if (claim.indexOf('*') >= 0) {
-      const found = claims.find((r) => r.indexOf(claim.replace('*', '')) != -1);
+      const found = claims.find(
+        (r) => r.name?.indexOf(claim.replace('*', '')) != -1
+      );
       return found != null && found != undefined;
     } else {
-      return claims.includes(claim);
+      return claims?.map((c) => c.name).includes(claim);
     }
   }
 }

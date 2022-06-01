@@ -1,7 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="center center" fxFlex [routerLink]="['ranking', this.type]">
   <div class="up">
     <ng-container *ngIf="!this.viewingRankingPlace">
-      <span>{{ this.rankingPlace?.[this.type!] }}</span>
+      <span>{{ this.rankingPlace?.[this.type!] ?? this.usedSystem?.amountOfLevels }}</span>
 
       <mat-icon
         *ngIf="this.rankingPlace?.[this.type + 'Inactive']"

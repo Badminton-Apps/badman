@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
-import { DatabaseModule } from '@badman/api/database';
 
 import { AppController } from './controllers';
-import { ApiGrapqhlModule } from '@badman/api-grapqhl';
+
+import { ApiGrapqhlModule } from '@badman/api/grapqhl';
+import { DatabaseModule } from '@badman/api/database';
 
 @Module({
   imports: [
