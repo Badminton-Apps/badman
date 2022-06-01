@@ -28,8 +28,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 
     this.profile$ = this.user.profile$.pipe(
-      filter((x) => x !== null && x?.player !== null),
-      map((x) => x?.player)
+      filter((x) => x !== null),
     ) as Observable<Player>;
 
     this.canEnroll$ = this.apollo

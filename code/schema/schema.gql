@@ -1,0 +1,551 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""A RankingGroups"""
+type RankingGroups {
+  id: ID!
+  name: String
+  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventCompetition!]!
+  subEventTournaments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventTournament!]!
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+input SortOrderType {
+  field: String!
+  direction: String!
+}
+
+"""A LastRankingPlace"""
+type RankingLastPlace {
+  id: ID!
+  rankingDate: DateTime
+  gender: String
+  singlePoints: Float
+  mixPoints: Float
+  doublePoints: Float
+  singlePointsDowngrade: Float
+  mixPointsDowngrade: Float
+  doublePointsDowngrade: Float
+  singleRank: Float
+  mixRank: Float
+  doubleRank: Float
+  totalSingleRanking: Float
+  totalMixRanking: Float
+  totalDoubleRanking: Float
+  totalWithinSingleLevel: Float
+  totalWithinMixLevel: Float
+  totalWithinDoubleLevel: Float
+  single: Float
+  mix: Float
+  double: Float
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  playerId: String
+  systemId: String
+  player: Player
+  rankingSystem: RankingSystem
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""A RankingPlace"""
+type RankingPlace {
+  id: ID!
+  rankingDate: DateTime
+  gender: String
+  singlePoints: Float
+  mixPoints: Float
+  doublePoints: Float
+  singlePointsDowngrade: Float
+  mixPointsDowngrade: Float
+  doublePointsDowngrade: Float
+  singleRank: Float
+  mixRank: Float
+  doubleRank: Float
+  totalSingleRanking: Float
+  totalMixRanking: Float
+  totalDoubleRanking: Float
+  totalWithinSingleLevel: Float
+  totalWithinMixLevel: Float
+  totalWithinDoubleLevel: Float
+  single: Float
+  mix: Float
+  double: Float
+  singleInactive: Boolean
+  mixInactive: Boolean
+  doubleInactive: Boolean
+  updatePossible: Boolean
+  playerId: String
+  systemId: String
+  rankingSystem: RankingSystem!
+}
+
+"""A RankingPoint"""
+type RankingPoint {
+  id: ID!
+  points: Float
+  player: Player
+  game: Game
+  type: RankingSystem
+  rankingDate: DateTime
+  differenceInLevel: Float
+  systemId: String
+  playerId: String
+  gameId: String
+}
+
+"""A RankingSystem"""
+type RankingSystem {
+  id: ID!
+  name: String
+  amountOfLevels: Float
+  procentWinning: Float
+  procentWinningPlus1: Float
+  procentLosing: Float
+  minNumberOfGamesUsedForUpgrade: Float
+  maxDiffLevels: Float
+  maxDiffLevelsHighest: Float
+  latestXGamesToUse: Float
+  maxLevelUpPerChange: Float
+  maxLevelDownPerChange: Float
+  gamesForInactivty: Float
+  inactivityAmount: Float
+  inactivityUnit: String
+  caluclationIntervalLastUpdate: DateTime
+  caluclationIntervalAmount: Float
+  calculationIntervalUnit: String
+  periodAmount: Float
+  periodUnit: String
+  updateIntervalAmountLastUpdate: DateTime
+  updateIntervalAmount: Float
+  updateIntervalUnit: String
+  rankingSystem: String
+  primary: Boolean
+  runCurrently: Boolean
+  runDate: DateTime
+  differenceForUpgrade: Float
+  differenceForDowngrade: Float
+  startingType: String
+  pointsToGoUp: [Int!]
+  pointsWhenWinningAgainst: [Int!]
+  pointsToGoDown: [Int!]
+  levelArray: [Int!]
+  levelArrayOneMinus: [Int!]
+  lastPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingLastPlace!]!
+  groups(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingGroups!]!
+}
+
+"""A AvailiblyDay"""
+type AvailiblyDayType {
+  day: String
+  startTime: String
+  endTime: String
+  courts: Float
+}
+
+"""An Exception"""
+type ExceptionType {
+  start: DateTime
+  end: DateTime
+  courts: Float
+}
+
+"""A Meta"""
+type MetaType {
+  tournament: EntryTournamentType
+  competition: EntryCompetitionType
+}
+
+"""A EntryTournament"""
+type EntryTournamentType {
+  place: Float
+}
+
+"""A EntryCompetition"""
+type EntryCompetitionType {
+  teamIndex: Float
+  players: [EntryCompetitionPlayersType!]
+}
+
+"""A EntryCompetitionPlayers"""
+type EntryCompetitionPlayersType {
+  id: String
+  single: Float
+  double: Float
+  mix: Float
+  gender: String
+}
+
+"""A EventTournament"""
+type EventTournament {
+  id: ID!
+  tournamentNumber: String
+  name: String
+  firstDay: DateTime
+  dates: String
+  allowEnlisting: Boolean
+  visualCode: String
+  slug: String
+  usedRankingAmount: Float
+  usedRankingUnit: String
+}
+
+"""A SubEventTournament"""
+type SubEventTournament {
+  id: ID!
+  name: String
+  eventType: String
+  gameType: String
+  level: Float
+  visualCode: String
+  event: EventTournament
+  eventId: String
+}
+
+"""A DrawTournament"""
+type DrawTournament {
+  id: ID!
+  name: String
+  type: String
+  size: Float
+  visualCode: String
+  subEvent: SubEventTournament
+  subeventId: String
+}
+
+"""A Team"""
+type Team {
+  updatedAt: DateTime
+  createdAt: DateTime
+  id: ID!
+  name: String
+  preferredTime: DateTime
+  preferredDay: String
+  abbreviation: String
+  club: Club
+  clubId: String
+  slug: String
+  players(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [TeamPlayer!]
+  type: String
+  captain: Player
+  teamNumber: Float
+  active: Boolean
+}
+
+"""A EncounterChange"""
+type EncounterChange {
+  id: ID!
+  accepted: Boolean
+  encounterId: String
+}
+
+"""A EncounterCompetition"""
+type EncounterCompetition {
+  id: ID!
+  date: DateTime
+  originalDate: DateTime
+  draw: DrawCompetition
+  drawId: String
+  home: Team
+  homeScore: Float
+  homeTeamId: String
+  away: Team
+  awayScore: Float
+  awayTeamId: String
+  synced: DateTime
+  visualCode: String
+  encounterChange: EncounterChange
+}
+
+"""A EventEntry"""
+type EventEntry {
+  id: ID!
+  teamId: String
+  player1Id: String
+  player2Id: String
+  subEventId: String
+  drawId: String
+  entryType: String
+  meta: MetaType
+}
+
+"""A DrawCompetition"""
+type DrawCompetition {
+  id: ID!
+  name: String
+  visualCode: String
+  type: String
+  size: Float
+  subEvent: SubEventCompetition
+  subeventId: String
+}
+
+"""A SubEventCompetition"""
+type SubEventCompetition {
+  id: ID!
+  name: String
+  eventType: String
+  level: Float
+  maxLevel: Float
+  minBaseIndex: Float
+  maxBaseIndex: Float
+  entries: [EventEntry!]
+  groups: [RankingGroups!]
+  draws: [DrawCompetition!]
+  event: EventCompetition
+  eventId: String
+  visualCode: String
+}
+
+"""A EventCompetition"""
+type EventCompetition {
+  id: ID!
+  name: String
+  startYear: Float
+  comments: [Comment!]
+  subEvents: [SubEventCompetition!]
+  type: String
+  visualCode: String
+  allowEnlisting: Boolean
+  started: Boolean
+  slug: String
+  usedRankingAmount: Float
+  usedRankingUnit: String
+}
+
+"""A Comment"""
+type Comment {
+  id: ID!
+  message: String
+  playerId: String
+  clubId: String
+  linkId: String
+  linkType: String
+}
+
+"""A Role"""
+type Role {
+  id: ID!
+  name: String
+  description: String
+  type: String
+  clubId: String
+}
+
+"""A Claim"""
+type Claim {
+  id: ID!
+  name: String
+  description: String
+  category: String
+  type: String
+}
+
+"""A Club"""
+type Club {
+  id: ID!
+  name: String
+  fullName: String
+  useForTeamName: String
+  abbreviation: String
+  clubId: Float
+  slug: String
+  teams(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Team!]!
+}
+
+"""A Player"""
+type Player {
+  updatedAt: DateTime
+  createdAt: DateTime
+  id: ID!
+  email: String
+  phone: String
+  gender: String
+  birthDate: DateTime
+  sub: String
+  myTeams: [Team!]
+  entries: [EventEntry!]
+  firstName: String
+  lastName: String
+  fullName: String
+  competitionPlayer: Boolean
+  slug: String
+  memberId: String
+  rankingPoints: [RankingPoint!]
+  rankingPlaces: [RankingPlace!]
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingLastPlace!]
+  comments: [Comment!]
+  teams(includeDisabled: Boolean): [Team!]
+  clubs: [Club!]
+  games(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Game!]
+  roles: [Role!]
+  claims: [Claim!]
+
+  """Team Player end date"""
+  end: DateTime
+
+  """Team Player start date"""
+  base: Boolean
+}
+
+"""A Game"""
+type Game {
+  id: ID!
+  playedAt: DateTime
+  gameType: String
+  status: String
+  set1Team1: Float
+  set1Team2: Float
+  set2Team1: Float
+  set2Team2: Float
+  set3Team1: Float
+  set3Team2: Float
+  winner: Float
+  order: Float
+  round: String
+  rankingPoints: [RankingPoint!]
+  tournament: DrawTournament
+  competition: EncounterCompetition
+  linkId: String
+  linkType: String
+  courtId: String
+  visualCode: String
+  players: [GamePlayers!]
+}
+
+type TeamPlayer {
+  playerId: String
+  teamId: String
+  base: Boolean
+  updatedAt: DateTime
+  createdAt: DateTime
+  id: ID!
+  email: String
+  phone: String
+  gender: String
+  birthDate: DateTime
+  sub: String
+  myTeams: Team
+  entries: EventEntry
+  firstName: String
+  lastName: String
+  fullName: String
+  competitionPlayer: Boolean
+  slug: String
+  memberId: String
+  rankingPoints: RankingPoint
+  rankingPlaces: RankingPlace
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingLastPlace!]!
+  comments: Comment
+  teams: Team
+  clubs: Club
+  games: Game
+  roles: Role
+  claims: Claim
+
+  """Team Player end date"""
+  end: DateTime
+}
+
+type GamePlayers {
+  playerId: String
+  gameId: String
+  team: Float
+  player: Float
+  updatedAt: DateTime
+  createdAt: DateTime
+  id: ID!
+  email: String
+  phone: String
+  gender: String
+  birthDate: DateTime
+  sub: String
+  myTeams: Team
+  entries: EventEntry
+  firstName: String
+  lastName: String
+  fullName: String
+  competitionPlayer: Boolean
+  slug: String
+  memberId: String
+  rankingPoints: RankingPoint
+  rankingPlaces: RankingPlace
+  rankingLastPlaces: RankingLastPlace
+  comments: Comment
+  teams: Team
+  clubs: Club
+  games: Game
+  roles: Role
+  claims: Claim
+
+  """Team Player end date"""
+  end: DateTime
+
+  """Team Player start date"""
+  base: Boolean
+  rankingPlace(where: JSONObject): RankingPlace
+}
+
+type PagedClub {
+  count: Float!
+  rows: [Club!]!
+}
+
+type PagedPlayer {
+  count: Float!
+  rows: [Player!]!
+}
+
+type Query {
+  search(query: String!): [Search!]!
+  player(id: ID!): Player!
+  me: Player
+  players(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): PagedPlayer!
+  team(id: String!): Team!
+  teams(skip: Int = 0, take: Int = 25): [Team!]!
+  club(id: ID!): Club!
+  clubs(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): PagedClub!
+  comment(id: ID!): Comment!
+  comments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Comment!]!
+  rankingSystem(id: ID!): RankingSystem!
+  rankingSystems(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingSystem!]!
+  rankingSystemGroup(id: ID!): RankingGroups!
+  RankingGroups(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingGroups!]!
+  rankingPoint(id: ID!): RankingPoint!
+  rankingPoints(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingPoint!]!
+  rankingPlace(id: ID!): RankingPlace!
+  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingPlace!]!
+  lastRankingPlace(id: ID!): RankingLastPlace!
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingLastPlace!]!
+  eventCompetition(id: ID!): EventCompetition!
+  eventCompetitions(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [EventCompetition!]!
+  subEvents(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventTournament!]!
+  encounterCompetition(id: ID!): SubEventCompetition!
+  encounterCompetitions(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventCompetition!]!
+  eventTournament(id: ID!): EventTournament!
+  eventTournaments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [EventTournament!]!
+  draw(id: ID!): DrawTournament!
+  encounterTournaments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventTournament!]!
+  encounterTournament(id: ID!): SubEventTournament!
+  claim(id: ID!): Claim!
+  claims(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Claim!]!
+  role(id: ID!): Role!
+  roles(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Role!]!
+  game(id: ID!): Game!
+  games(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Game!]!
+}
+
+union Search = Player | EventCompetition | EventTournament | Club
+
+type Mutation {
+  claim(playerId: String!): Player!
+}

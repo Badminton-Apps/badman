@@ -4,6 +4,7 @@
     "firstName": "user 1",
     "memberId": "1231",
     "gender": "M",
+    "slug": "dummy-user-1",
     "places": [
       {
         "single": 1,
@@ -26,6 +27,7 @@
     "firstName": "user 2",
     "memberId": "1232",
     "gender": "M",
+    "slug": "dummy-user-2",
     "places": [
       {
         "single": 1,
@@ -48,6 +50,7 @@
     "firstName": "user 3",
     "memberId": "1233",
     "gender": "M",
+    "slug": "dummy-user-3",
     "places": [
       {
         "single": 1,
@@ -70,6 +73,7 @@
     "firstName": "user 4",
     "memberId": "1234",
     "gender": "M",
+    "slug": "dummy-user-4",
     "places": [
       {
         "single": 1,
@@ -92,6 +96,7 @@
     "firstName": "user 5",
     "memberId": "1235",
     "gender": "M",
+    "slug": "dummy-user-5",
     "places": [
       {
         "single": 1,
@@ -114,6 +119,7 @@
     "firstName": "user 6",
     "memberId": "1236",
     "gender": "M",
+    "slug": "dummy-user-6",
     "places": [
       {
         "single": 1,
@@ -136,6 +142,7 @@
     "firstName": "user 7",
     "memberId": "1237",
     "gender": "F",
+    "slug": "dummy-user-7",
     "places": [
       {
         "single": 1,
@@ -158,6 +165,7 @@
     "firstName": "user 8",
     "memberId": "1238",
     "gender": "F",
+    "slug": "dummy-user-8",
     "places": [
       {
         "single": 1,

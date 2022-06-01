@@ -1,34 +1,40 @@
-import { Apollo } from 'apollo-angular';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
+import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Club, CompetitionEvent, Game, Player, RankingPlace, RankingSystem, TournamentEvent } from '../../models';
-
-import * as searchQuery from '../../graphql/players/queries/GetPlayersQuery.graphql';
-import * as searchClubQuery from '../../graphql/players/queries/GetClubPlayersQuery.graphql';
-import * as playerBasicQuery from '../../graphql/players/queries/GetUserBasicInfoQuery.graphql';
-import * as gamesQuery from '../../graphql/players/queries/GetUserGamesQuery.graphql';
-import * as evolutionQuery from '../../graphql/players/queries/GetPlayerEvolutionQuery.graphql';
-import * as getBasePlayers from '../../graphql/players/queries/GetBasePlayersQuery.graphql';
-
+import { environment } from '../../../../environments/environment';
+import { apolloCache } from '../../../graphql.module';
 import * as addPlayerMutation from '../../graphql/players/mutations/AddPlayerMutation.graphql';
 import * as updatePlayerMutation from '../../graphql/players/mutations/UpdatePlayerMutation.graphql';
 import * as updatePlayerRankingMutation from '../../graphql/players/mutations/UpdatePlayerRankingMutation.graphql';
-import { apolloCache as apolloCache } from '../../../graphql.module';
-import { environment } from '../../../../environments/environment';
+import * as getBasePlayers from '../../graphql/players/queries/GetBasePlayersQuery.graphql';
+import * as searchClubQuery from '../../graphql/players/queries/GetClubPlayersQuery.graphql';
+import * as evolutionQuery from '../../graphql/players/queries/GetPlayerEvolutionQuery.graphql';
+import * as searchQuery from '../../graphql/players/queries/GetPlayersQuery.graphql';
+import * as playerBasicQuery from '../../graphql/players/queries/GetUserBasicInfoQuery.graphql';
+import * as gamesQuery from '../../graphql/players/queries/GetUserGamesQuery.graphql';
+import {
+  Club,
+  EventCompetition,
+  Game,
+  Player,
+  RankingPlace,
+  RankingSystem,
+  EventTournament,
+} from '../../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlayerService {
   public static playerSearchWhere(args?: { query?: string; where?: any }) {
-    const parts = args?.query?.toLowerCase()
+    const parts = args?.query
+      ?.toLowerCase()
       .replace(/[;\\\\/:*?"<>|&',]/, ' ')
       .split(' ');
     const queries: any = [];
-    if (!parts){
+    if (!parts) {
       return;
     }
     for (const part of parts) {
@@ -51,12 +57,11 @@ export class PlayerService {
 
   headerSearch(query: string) {
     return this.httpClient
-      .get<{ value: Player | CompetitionEvent | TournamentEvent; type: string }[]>(
-        `${environment.api}/api/${environment.apiVersion}/search`,
-        {
-          params: new HttpParams().set('query', query),
-        }
-      )
+      .get<
+        { value: Player | EventCompetition | EventTournament; type: string }[]
+      >(`${environment.api}/api/${environment.apiVersion}/search`, {
+        params: new HttpParams().set('query', query),
+      })
       .pipe(
         map((x) => {
           return x?.map((r) => {
@@ -64,10 +69,10 @@ export class PlayerService {
               r.value = new Player(r.value as Player);
             }
             if (r.type == 'CompetitionEvent') {
-              r.value = new CompetitionEvent(r.value as CompetitionEvent);
+              r.value = new EventCompetition(r.value as EventCompetition);
             }
             if (r.type == 'TournamentEvent') {
-              r.value = new TournamentEvent(r.value as TournamentEvent);
+              r.value = new EventTournament(r.value as EventTournament);
             }
             if (r.type == 'Club') {
               r.value = new Club(r.value as Club);
@@ -79,7 +84,12 @@ export class PlayerService {
       );
   }
 
-  searchPlayers(args?: { query?: string; where?: any; includeClub?: boolean; ranking?: Date }) {
+  searchPlayers(args?: {
+    query?: string;
+    where?: any;
+    includeClub?: boolean;
+    ranking?: Date;
+  }) {
     args = {
       includeClub: false,
       ...args,
@@ -98,7 +108,10 @@ export class PlayerService {
       .pipe(map((x) => x.data?.players?.map((r) => new Player(r))));
   }
 
-  searchClubPlayers(clubsId: string, args?: { query?: string; where?: any; ranking?: Date; personal?: boolean }) {
+  searchClubPlayers(
+    clubsId: string,
+    args?: { query?: string; where?: any; ranking?: Date; personal?: boolean }
+  ) {
     return this.apollo
       .query<{ club: { players: Player[] } }>({
         query: searchClubQuery,
@@ -113,8 +126,6 @@ export class PlayerService {
       })
       .pipe(map((x) => x.data?.club?.players?.map((r) => new Player(r))));
   }
-
-  
 
   getPlayer(id?: string): Observable<Player> {
     return this.apollo
@@ -146,10 +157,19 @@ export class PlayerService {
         },
         fetchPolicy: 'no-cache',
       })
-      .pipe(map((x: any) => x.data?.player?.games?.map((g: Partial<Game>) => new Game(g, rankingType))));
+      .pipe(
+        map((x: any) =>
+          x.data?.player?.games?.map(
+            (g: Partial<Game>) => new Game(g, rankingType)
+          )
+        )
+      );
   }
 
-  getPlayerEvolution(playerId: string, rankingType: string): Observable<RankingPlace[]> {
+  getPlayerEvolution(
+    playerId: string,
+    rankingType: string
+  ): Observable<RankingPlace[]> {
     return this.apollo
       .query({
         query: evolutionQuery,
@@ -232,7 +252,10 @@ export class PlayerService {
         tap((result) => {
           const player = result.data?.updatePlayerRanking;
 
-          const normalizedIdPlayer = apolloCache.identify({ id: player?.id, __typename: 'Player' });
+          const normalizedIdPlayer = apolloCache.identify({
+            id: player?.id,
+            __typename: 'Player',
+          });
           apolloCache.evict({ id: normalizedIdPlayer });
 
           // Clear from cache
@@ -243,7 +266,10 @@ export class PlayerService {
           apolloCache.evict({ id: normalizedIdLastRanking });
 
           for (const ranking of player?.rankingPlaces ?? []) {
-            const normalizedId = apolloCache.identify({ id: ranking?.id, __typename: 'RankingPlace' });
+            const normalizedId = apolloCache.identify({
+              id: ranking?.id,
+              __typename: 'RankingPlace',
+            });
             apolloCache.evict({ id: normalizedId });
           }
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CompetitionEvent } from '../../../_shared';
+import { EventCompetition } from '../../../_shared';
 
 @Component({
   selector: 'badman-event-competition-fields',
@@ -10,7 +10,7 @@ import { CompetitionEvent } from '../../../_shared';
 })
 export class EventCompetitionFieldsComponent {
   @Input()
-  event: CompetitionEvent = {} as CompetitionEvent;
+  event: EventCompetition = {} as EventCompetition;
 
   @Input()
   formGroup!: FormGroup;

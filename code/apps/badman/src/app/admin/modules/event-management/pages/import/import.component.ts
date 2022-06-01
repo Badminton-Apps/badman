@@ -11,14 +11,14 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {
-  CompetitionEvent,
+  EventCompetition,
   ConfirmDialogModel,
   EventService,
   EventType,
   Imported,
   RankingSystemGroup,
   SystemService,
-  TournamentEvent,
+  EventTournament,
   ConfirmationDialogComponent,
 } from '../../../../../_shared';
 import {
@@ -72,9 +72,9 @@ export class ImportComponent implements OnInit, OnDestroy {
   prevCursor?: string;
   nextCursor?: string;
 
-  defaultEvent: TournamentEvent | CompetitionEvent = { id: '-1' } as
-    | TournamentEvent
-    | CompetitionEvent;
+  defaultEvent: EventTournament | EventCompetition = { id: '-1' } as
+    | EventTournament
+    | EventCompetition;
 
   @ViewChild(MatSort) sort!: MatSort;
 

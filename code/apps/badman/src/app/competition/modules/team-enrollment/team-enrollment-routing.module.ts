@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../../_shared';
+import { TeamEnrollmentComponent, TeamEnrollmentsComponent } from './pages';
 
-import { TeamEnrollmentComponent } from './pages/team-enrollment/team-enrollment.component';
 
 const routes: Routes = [
   {
@@ -11,10 +11,17 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       claims: {
-        any: [
-          // '*_enlist:team',
-          'enlist-any:team',
-        ],
+        any: ['*_enlist:team', 'enlist-any:team'],
+      },
+    },
+  },
+  {
+    path: 'list',
+    component: TeamEnrollmentsComponent,
+    canActivate: [AuthGuard],
+    data: {
+      claims: {
+        any: ['view:entries'],
       },
     },
   },

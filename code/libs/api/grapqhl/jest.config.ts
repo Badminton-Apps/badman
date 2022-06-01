@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'api-grapqhl',
+  displayName: 'api/grapqhl',
   preset: '../../../jest.preset.ts',
   globals: {
     'ts-jest': {
