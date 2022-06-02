@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { RankingSystem, RankingSystemGroup } from '../../../../../_shared';
+import { RankingSystem, RankingGroup } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-ranking-system-fields',
@@ -20,7 +20,7 @@ export class RankingSystemFieldsComponent implements OnInit {
   system: RankingSystem = {} as RankingSystem;
   
   @Input()
-  groups!: RankingSystemGroup[] | null;
+  groups!: RankingGroup[] | null;
 
   @Output() save = new EventEmitter<RankingSystem>();
 
@@ -99,7 +99,7 @@ export class RankingSystemFieldsComponent implements OnInit {
       gamesForInactivty: new FormControl(this.system.gamesForInactivty),
       inactivityAmount: new FormControl(this.system.inactivityAmount),
       inactivityUnit: new FormControl(this.system.inactivityUnit),
-      groups: new FormControl(this.system.groups),
+      groups: new FormControl(this.system.rankingGroups),
     });
   }
 
@@ -109,7 +109,9 @@ export class RankingSystemFieldsComponent implements OnInit {
     }
   }
 
-  groupCompare(option: RankingSystemGroup, value: RankingSystemGroup) {
+  groupCompare(option: RankingGroup, value: RankingGroup) {
+    console.log(option, value);
+
     return option.id === value.id
   }
 }

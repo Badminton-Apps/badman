@@ -15,9 +15,9 @@ import {
 import { ListArgs } from '../../utils';
 
 @Resolver(() => RankingGroups)
-export class RankingSystemGroupResolver {
+export class RankingGroupsResolver {
   @Query(() => RankingGroups)
-  async rankingSystemGroup(
+  async rankingGroup(
     @Args('id', { type: () => ID }) id: string
   ): Promise<RankingGroups> {
     let rankingSystemGroup = await RankingGroups.findByPk(id);
@@ -37,7 +37,7 @@ export class RankingSystemGroupResolver {
   }
 
   @Query(() => [RankingGroups])
-  async RankingGroups(
+  async rankingGroups(
     @Args() listArgs: ListArgs
   ): Promise<RankingGroups[]> {
     return RankingGroups.findAll(ListArgs.toFindOptions(listArgs));

@@ -49,7 +49,14 @@ import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
@@ -244,3 +251,15 @@ export class Club extends Model {
 
   // #endregion
 }
+
+@InputType()
+export class ClubUpdateInput extends PartialType(
+  OmitType(Club, ['createdAt', 'updatedAt'] as const),
+  InputType
+) {}
+
+@InputType()
+export class ClubNewInput extends PartialType(
+  OmitType(ClubUpdateInput, ['id'] as const),
+  InputType
+) {}

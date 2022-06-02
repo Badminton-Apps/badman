@@ -95,8 +95,8 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
           return this.apollo.query<{ rankingSystems: RankingSystem[] }>({
             fetchPolicy: update ? 'network-only' : 'cache-first',
             query: gql`
-              query GetSystemsQuery($order: String, $offset: Int, $limit: Int) {
-                rankingSystems(order: $order, offset: $offset, limit: $limit) {
+              query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
+                rankingSystems(order: $order, skip: $skip, take: $take) {
                   id
                   primary
                   runCurrently
@@ -109,13 +109,14 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
               }
             `,
             variables: {
-              order: `${this.sort.direction == 'asc' ? '' : 'reverse:'}${
-                this.sort.active
-              }`,
-              offset:
+              order: {
+                field: this.sort.active,
+                direction: this.sort.direction,
+              }, // `${this.sort.direction == 'asc' ? '' : 'reverse:'}${this.sort.active}`,
+              skip:
                 (this.paginator.pageIndex ?? 0) *
                 (this.paginator.pageSize ?? 15),
-              limit: this.paginator.pageSize,
+              take: this.paginator.pageSize,
             },
           });
         }),

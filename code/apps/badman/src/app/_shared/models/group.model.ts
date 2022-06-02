@@ -1,7 +1,7 @@
 import { CompetitionSubEvent, TournamentSubEvent } from './events';
 import { RankingSystem } from './ranking-system.model';
 
-export class RankingSystemGroup {
+export class RankingGroup {
   id?: string;
   name?: string;
 
@@ -9,7 +9,7 @@ export class RankingSystemGroup {
   subEventTournament?: TournamentSubEvent[];
   systems?: RankingSystem[];
 
-  constructor({ ...args }: Partial<RankingSystemGroup>) {
+  constructor({ ...args }: Partial<RankingGroup>) {
     this.name = args.name;
     this.id = args.id;
 

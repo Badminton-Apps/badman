@@ -1,5 +1,5 @@
 query GetSystemQuery($id: ID!) {
-  system(id: $id) {
+  rankingSystem(id: $id) {
     id
     name
     rankingSystem
@@ -24,7 +24,7 @@ query GetSystemQuery($id: ID!) {
     gamesForInactivty
     inactivityAmount
     inactivityUnit
-    groups {
+    rankingGroups {
       id
       name
     }

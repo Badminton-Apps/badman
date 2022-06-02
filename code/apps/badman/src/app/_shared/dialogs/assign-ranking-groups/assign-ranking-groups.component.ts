@@ -17,7 +17,7 @@ import {
 import { apolloCache } from '../../../graphql.module';
 import {
   EventCompetition,
-  RankingSystemGroup,
+  RankingGroup,
   SubEvent,
   EventTournament,
   Event,
@@ -30,7 +30,7 @@ import {
 export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   dataSource!: MatTableDataSource<SubEvent>;
 
-  groups$!: Observable<RankingSystemGroup[]>;
+  groups$!: Observable<RankingGroup[]>;
   useSame = true;
   selectedGroups: FormControl = new FormControl();
   selection = new Map<string, SelectionModel<SubEvent>>();
@@ -50,7 +50,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource(this.data.event.subEvents);
     this.selectedGroups.valueChanges.subscribe(
-      (groups: RankingSystemGroup[]) => {
+      (groups: RankingGroup[]) => {
         const groupNames = groups.map((g) => `group-${g.id}`);
 
         // Delete removed
@@ -71,7 +71,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
     );
 
     this.groups$ = this.apollo
-      .query<{ rankingSystemGroup: RankingSystemGroup[] }>({
+      .query<{ rankingSystemGroup: RankingGroup[] }>({
         query: gql`
           query RankingSystemGroup {
             rankingSystemGroup {
@@ -87,7 +87,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
           const unique = [
             ...new Set(
               this.data.event.subEvents
-                ?.map((s) => s.groups?.map((r: RankingSystemGroup) => r.id))
+                ?.map((s) => s.groups?.map((r: RankingGroup) => r.id))
                 .flat()
             ),
           ];
@@ -102,7 +102,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
               this.selection.get(key)?.select(subEvent);
             }
           } else {
-            const initialGroups: RankingSystemGroup[] = [];
+            const initialGroups: RankingGroup[] = [];
             for (const subEvent of this.data.event.subEvents ?? []) {
               if (subEvent.groups && (subEvent.groups ?? []).length > 0) {
                 for (const group of subEvent.groups) {
@@ -176,7 +176,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
       for (const subEvent of this.data.event.subEvents ?? []) {
         const hasGroup =
           (subEvent.groups ?? []).find(
-            (g: RankingSystemGroup) => g.id == key
+            (g: RankingGroup) => g.id == key
           ) == null;
         if (hasGroup) {
           if (group.selected?.map((r) => r.id).includes(subEvent.id)) {
@@ -282,6 +282,6 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
       });
   }
 
-  compareGroups = (a: RankingSystemGroup, b: RankingSystemGroup) =>
+  compareGroups = (a: RankingGroup, b: RankingGroup) =>
     a.id == b.id;
 }

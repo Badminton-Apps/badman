@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Imported, RankingSystemGroup } from '../../../../../../../_shared';
+import { Imported, RankingGroup } from '../../../../../../../_shared';
 
 @Component({
   templateUrl: './add-event.dialog.component.html',
@@ -11,7 +11,7 @@ export class AddEventDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<AddEventDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    private data: { imported: Imported; groups: RankingSystemGroup[] }
+    private data: { imported: Imported; groups: RankingGroup[] }
   ) {}
 
   eventForm!: FormGroup;

@@ -1,15 +1,30 @@
-import { Club, Team } from '@badman/api/database';
-import { NotFoundException } from '@nestjs/common';
+import {
+  Club,
+  Location,
+  Role,
+  Team,
+  ClubUpdateInput,
+  Player,
+} from '@badman/api/database';
+import {
+  Inject,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
+  Mutation,
   ObjectType,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Sequelize } from 'sequelize-typescript';
+import { User } from '../../decorators';
 import { ListArgs } from '../../utils';
 
 @ObjectType()
@@ -23,6 +38,10 @@ export class PagedClub {
 
 @Resolver(() => Club)
 export class ClubsResolver {
+  private readonly logger = new Logger(ClubsResolver.name);
+
+  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+
   @Query(() => Club)
   async club(@Args('id', { type: () => ID }) id: string): Promise<Club> {
     let club = await Club.findByPk(id);
@@ -41,7 +60,6 @@ export class ClubsResolver {
     return club;
   }
 
-
   @Query(() => PagedClub)
   async clubs(
     @Args() listArgs: ListArgs
@@ -52,9 +70,25 @@ export class ClubsResolver {
   @ResolveField(() => [Team])
   async teams(
     @Parent() club: Club,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<Team[]> {
     return club.getTeams(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [Location])
+  async locations(
+    @Parent() club: Club,
+    @Args() listArgs: ListArgs
+  ): Promise<Location[]> {
+    return club.getLocations(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [Role])
+  async roles(
+    @Parent() club: Club,
+    @Args() listArgs: ListArgs
+  ): Promise<Role[]> {
+    return club.getRoles(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Club)
@@ -69,4 +103,58 @@ export class ClubsResolver {
   // async removeClub(@Args('id') id: string) {
   //   return this.recipesService.remove(id);
   // }
+
+  @Mutation(() => Club)
+  async updateClub(
+    @User() user: Player,
+    @Args('updateClubData') updateClubData: ClubUpdateInput
+  ) {
+    if (
+      !user.hasAnyPermission([
+        `${updateClubData.id}_edit:club`,
+        'edit-any:club',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      let club = await Club.findByPk(updateClubData.id, { transaction });
+
+      if (!club) {
+        throw new NotFoundException(updateClubData.id);
+      }
+
+      // If the abbreviation is changed, we need to update the teams
+      if (updateClubData.abbreviation !== club.abbreviation) {
+        const teams = await club.getTeams({
+          where: { active: true },
+          transaction,
+        });
+        this.logger.debug(`updating teams ${teams.length}`);
+        for (const team of teams) {
+          await Team.generateAbbreviation(team, { transaction });
+          await team.save({ transaction });
+        }
+      }
+
+      // Update club
+      const result = await club.update(updateClubData, { transaction });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+
+    Logger.debug('transaction complete');
+  }
 }

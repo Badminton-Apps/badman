@@ -1,4 +1,4 @@
-import { RankingSystemGroup } from './group.model';
+import { RankingGroup as RankingGroup } from './group.model';
 
 export class RankingSystem {
   id?: string;
@@ -34,7 +34,7 @@ export class RankingSystem {
   pointsWhenWinningAgainst?: number[];
   pointsToGoDown?: number[];
 
-  groups?: RankingSystemGroup[];
+  rankingGroups?: RankingGroup[];
 
   constructor(args?: Partial<RankingSystem>) {
     this.id = args?.id;
@@ -70,7 +70,7 @@ export class RankingSystem {
     this.pointsWhenWinningAgainst = args?.pointsWhenWinningAgainst;
     this.pointsToGoDown = args?.pointsToGoDown;
 
-    this.groups = args?.groups?.map((g) => new RankingSystemGroup(g));
+    this.rankingGroups = args?.rankingGroups?.map((g) => new RankingGroup(g));
   }
 }
 

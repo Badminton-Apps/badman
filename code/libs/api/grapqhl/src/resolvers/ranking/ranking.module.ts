@@ -4,13 +4,13 @@ import { LastRankingPlaceResolver } from './lastRankingPlace.resolver';
 import { RankingPlaceResolver } from './rankingPlace.resolver';
 import { RankingPointResolver } from './rankingPoint.resolver';
 import { RankingSystemResolver } from './rankingSystem.resolver';
-import { RankingSystemGroupResolver } from './rankingSystemGroup.resolver';
+import { RankingGroupsResolver } from './rankingSystemGroup.resolver';
 
 @Module({
   imports: [DatabaseModule],
   providers: [
     RankingSystemResolver,
-    RankingSystemGroupResolver,
+    RankingGroupsResolver,
     RankingPointResolver,
     RankingPlaceResolver,
     LastRankingPlaceResolver,

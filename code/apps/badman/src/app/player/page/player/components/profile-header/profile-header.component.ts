@@ -180,7 +180,8 @@ export class ProfileHeaderComponent implements OnChanges {
         }
 
         const lastNames = this.player.lastName?.split(' ');
-        if ((lastNames ?? []).length > 1) {
+
+        if ((lastNames ?? []).length > 0) {
           this.initials = `${this.player.firstName?.[0]}${
             lastNames?.[lastNames.length - 1][0]
           }`.toUpperCase();

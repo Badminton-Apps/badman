@@ -1,5 +1,5 @@
-mutation UpdateClub($club: ClubInput!) {
-  updateClub(club: $club) {
+mutation UpdateClub($club: ClubUpdateInput!) {
+  updateClub(updateClubData: $club) {
     id
     name
     fullName
