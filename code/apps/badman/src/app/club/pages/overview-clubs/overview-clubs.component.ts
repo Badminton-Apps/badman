@@ -5,7 +5,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, merge, of } from 'rxjs';
-import { catchError, debounceTime, map, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  map,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { Club, ClubService, pageArgs } from '../../../_shared';
 import { SortDirection } from '@angular/material/sort';
 
@@ -124,7 +131,11 @@ export class OverviewClubsComponent implements OnInit, AfterViewInit {
           return of([]);
         })
       )
-      .subscribe((data) => (this.dataSource.data = data));
+      .subscribe((data) => {
+        console.log(data);
+
+        this.dataSource.data = data;
+      });
   }
 
   applyFilter(event: Event) {

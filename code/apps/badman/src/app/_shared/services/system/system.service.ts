@@ -9,7 +9,7 @@ import * as systemsGroupsQuery from '../../graphql/rankingSystem/queries/GetSyst
 import * as systemQuery from '../../graphql/rankingSystem/queries/GetSystemQuery.graphql';
 import * as systemCapsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryCaps.graphql';
 import * as systemWithCountsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql';
-import { RankingSystem, RankingSystemGroup } from './../../models';
+import { RankingSystem, RankingGroup as RankingGroup } from './../../models';
 
 const WATCH_SYSTEM_KEY = 'system.id';
 @Injectable({
@@ -37,13 +37,13 @@ export class SystemService {
 
   getSystem(systemId: string) {
     return this.apollo
-      .query<{ system: RankingSystem }>({
+      .query<{ rankingSystem: RankingSystem }>({
         query: systemQuery,
         variables: {
           id: systemId,
         },
       })
-      .pipe(map((x) => new RankingSystem(x.data.system)));
+      .pipe(map((x) => new RankingSystem(x.data.rankingSystem)));
   }
 
   getSystemCaps(systemId: string) {
@@ -111,7 +111,11 @@ export class SystemService {
             },
           })
           .pipe(
-            map((x) => (x.data?.rankingSystems?.length > 0 ? new RankingSystem(x.data.rankingSystems[0]) : null)),
+            map((x) =>
+              x.data?.rankingSystems?.length > 0
+                ? new RankingSystem(x.data.rankingSystems[0])
+                : null
+            ),
             shareReplay(1)
           )
       )
@@ -132,11 +136,11 @@ export class SystemService {
     );
   }
 
-  getSystemsGroups(): Observable<RankingSystemGroup[]> {
+  getSystemsGroups(): Observable<RankingGroup[]> {
     return this.apollo
-      .query<{ rankingSystemGroup: RankingSystemGroup[] }>({
+      .query<{ rankingGroups: RankingGroup[] }>({
         query: systemsGroupsQuery,
       })
-      .pipe(map((x) => x.data.rankingSystemGroup?.map((g) => new RankingSystemGroup(g))));
+      .pipe(map((x) => x.data.rankingGroups?.map((g) => new RankingGroup(g))));
   }
 }

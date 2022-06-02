@@ -1,5 +1,5 @@
 query GetRankingSystemGroups {
-  rankingSystemGroup {
+  rankingGroups {
     id
     name
   }

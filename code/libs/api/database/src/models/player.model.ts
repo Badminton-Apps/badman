@@ -343,4 +343,26 @@ export class Player extends Model {
       mix: placesInSystem.sort((a, b) => a.mix - b.mix)?.[0]?.mix || max,
     } as RankingPlace;
   }
+
+  async hasAnyPermission (requiredPermissions: string[]) {
+    const claims = await this.getClaims();
+    if (claims === null) {
+      return false;
+    }
+
+    return requiredPermissions.some(perm =>
+      claims.some(claim => claim.name === perm)      
+    );
+  }
+
+  async hasAllPermission (requiredPermissions: string[]) {
+    const claims = await this.getClaims();
+    if (claims === null) {
+      return false;
+    }
+
+    return requiredPermissions.every(perm =>
+      claims.some(claim => claim.name === perm)
+    );
+  }
 }

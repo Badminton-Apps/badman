@@ -22,7 +22,10 @@ import {
 } from '@angular/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  MatSnackBarModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+} from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -162,6 +165,7 @@ const cookieConfig: NgcCookieConsentConfig = {
       multi: true,
     },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
     {
       provide: SOCKET_URL,
       useValue: environment.api,
@@ -171,13 +175,15 @@ const cookieConfig: NgcCookieConsentConfig = {
 })
 export class AppModule {
   constructor(apmService: ApmService) {
-    // Agent API is exposed through this apm instance
-    apmService.init({
-      serviceName: 'badman-client',
-      serviceVersion: environment.version,
-      serverUrl: environment.apmServer,
-      environment: environment.production ? 'production' : 'development',
-    });
+    if (environment.production) {
+      // Agent API is exposed through this apm instance
+      apmService.init({
+        serviceName: 'badman-client',
+        serviceVersion: environment.version,
+        serverUrl: environment.apmServer,
+        environment: environment.production ? 'production' : 'development',
+      });
+    }
   }
 }
 

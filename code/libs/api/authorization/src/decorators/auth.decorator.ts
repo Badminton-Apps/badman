@@ -1,0 +1,18 @@
+import { ExecutionContext, Injectable, Logger, Optional } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { AuthGuard as Passport } from '@nestjs/passport';
+import { SetMetadata } from '@nestjs/common';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class PermGuard extends Passport('jwt') {
+  // Override handleRequest so it never throws an error
+  handleRequest(err, user, info, context) {
+    return user;
+  }
+
+  getRequest(context: ExecutionContext) {
+    const ctx = GqlExecutionContext.create(context);
+    return ctx.getContext().req;
+  }
+}

@@ -88,9 +88,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
       map(([player, user]) => {
-        console.log('player', player);
-        console.log('user', user);
-
         if (!player) {
           return { canClaim: false, isUser: false };
         }

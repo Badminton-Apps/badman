@@ -58,11 +58,11 @@ export class RankingSystemResolver {
   }
 
   @ResolveField(() => [RankingGroups])
-  async groups(
+  async rankingGroups(
     @Parent() system: RankingSystem,
     @Args() listArgs: ListArgs
   ): Promise<RankingGroups[]> {
-    return system.getGroups(ListArgs.toFindOptions(listArgs));
+    return system.getRankingGroups(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => RankingSystem)

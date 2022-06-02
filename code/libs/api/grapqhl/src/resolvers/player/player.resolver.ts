@@ -1,4 +1,3 @@
-import { GqlGuard } from '@badman/api/authorization';
 import {
   Claim,
   Club,
@@ -57,7 +56,6 @@ export class PlayersResolver {
   }
 
   @Query(() => Player, { nullable: true })
-  @UseGuards(GqlGuard)
   async me(@User() user: Player): Promise<Player> {
     if (user?.id) {
       return user;
@@ -74,8 +72,11 @@ export class PlayersResolver {
   }
 
   @ResolveField(() => [Claim])
-  async claims(@Parent() player: Player): Promise<Claim[]> {
-    return player.getClaims();
+  async claims(
+    @Parent() player: Player,
+    @Args() listArgs: ListArgs
+  ): Promise<Claim[]> {
+    return player.getClaims(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [RankingLastPlace])
@@ -100,18 +101,30 @@ export class PlayersResolver {
   @ResolveField(() => [Team])
   async teams(
     @Parent() player: Player,
-    @Args('includeDisabled', { nullable: true }) disabled?: boolean
+    @Args() listArgs: ListArgs,
+    @Args('includeDisabled', {
+      nullable: true,
+      description:
+        'Include the inactive teams (this overwrites the active filter if given)',
+    })
+    disabled?: boolean
   ): Promise<Team[]> {
-    return player.getTeams({
-      where: {
-        active: disabled === undefined ? true : undefined,
-      },
-    });
+    const args = ListArgs.toFindOptions(listArgs);
+
+    args.where = {
+      ...args.where,
+      active: disabled === undefined ? true : (args.where ?? undefined),
+    };
+
+    return player.getTeams(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Club])
-  async clubs(@Parent() player: Player): Promise<Club[]> {
-    return player.getClubs();
+  async clubs(
+    @Parent() player: Player,
+    @Args() listArgs: ListArgs
+  ): Promise<Club[]> {
+    return player.getClubs(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Player)
@@ -128,7 +141,6 @@ export class PlayersResolver {
   // }
 
   @Mutation(() => Player)
-  @UseGuards(GqlGuard)
   async claim(
     @User() user: LoggedInUser,
     @Args('playerId') playerId: string

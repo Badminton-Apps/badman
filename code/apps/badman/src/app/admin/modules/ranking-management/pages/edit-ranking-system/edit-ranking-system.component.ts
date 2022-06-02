@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { RankingSystem, RankingSystemGroup, SystemService } from '../../../../../_shared';
+import { map, switchMap } from 'rxjs/operators';
+import { RankingSystem, RankingGroup, SystemService } from '../../../../../_shared';
 
 @Component({
   templateUrl: './edit-ranking-system.component.html',
@@ -10,7 +10,7 @@ import { RankingSystem, RankingSystemGroup, SystemService } from '../../../../..
 })
 export class EditRankingSystemComponent implements OnInit {
   system$!: Observable<RankingSystem>;
-  rankingGroups$!: Observable<RankingSystemGroup[]>;
+  rankingGroups$!: Observable<RankingGroup[]>;
 
   constructor(
     private systemService: SystemService,

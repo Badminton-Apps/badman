@@ -16,7 +16,7 @@ import {
   EventService,
   EventType,
   Imported,
-  RankingSystemGroup,
+  RankingGroup,
   SystemService,
   EventTournament,
   ConfirmationDialogComponent,
@@ -78,7 +78,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  rankingGroups!: RankingSystemGroup[];
+  rankingGroups!: RankingGroup[];
 
   constructor(
     public eventService: EventService,

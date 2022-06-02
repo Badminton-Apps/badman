@@ -205,7 +205,7 @@ export class RankingSystem extends Model {
   lastPlaces: RankingLastPlace;
 
   @BelongsToMany(() => RankingGroups, () => RankingSystemRankingGroupMembership)
-  groups: RankingGroups[];
+  rankingGroups: RankingGroups[];
 
   // Has many RankingPoint
   getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;
@@ -219,18 +219,18 @@ export class RankingSystem extends Model {
   countRankingPoints!: HasManyCountAssociationsMixin;
 
   // Belongs to many Group
-  getGroups!: BelongsToManyGetAssociationsMixin<RankingGroups>;
-  setGroups!: BelongsToManySetAssociationsMixin<RankingGroups, string>;
-  addGroups!: BelongsToManyAddAssociationsMixin<RankingGroups, string>;
-  addGroup!: BelongsToManyAddAssociationMixin<RankingGroups, string>;
-  removeGroup!: BelongsToManyRemoveAssociationMixin<RankingGroups, string>;
-  removeGroups!: BelongsToManyRemoveAssociationsMixin<
+  getRankingGroups: BelongsToManyGetAssociationsMixin<RankingGroups>;
+  setRankingGroups: BelongsToManySetAssociationsMixin<RankingGroups, string>;
+  addRankingGroups: BelongsToManyAddAssociationsMixin<RankingGroups, string>;
+  addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroups, string>;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroups, string>;
+  removeRankingGroups: BelongsToManyRemoveAssociationsMixin<
     RankingGroups,
     string
   >;
-  hasGroup!: BelongsToManyHasAssociationMixin<RankingGroups, string>;
-  hasGroups!: BelongsToManyHasAssociationsMixin<RankingGroups, string>;
-  countGroup!: BelongsToManyCountAssociationsMixin;
+  hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroups, string>;
+  hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroups, string>;
+  countRankingGroup!: BelongsToManyCountAssociationsMixin;
 
 
   // Has many LastPlace
