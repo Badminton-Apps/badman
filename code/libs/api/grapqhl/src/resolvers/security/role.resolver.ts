@@ -1,6 +1,13 @@
-import { Role } from '@badman/api/database';
+import { Player, Role } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  ID,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { ListArgs, queryFixer } from '../../utils';
 
 @Resolver(() => Role)
@@ -26,6 +33,14 @@ export class RoleResolver {
   @Query(() => [Role])
   async roles(@Args() listArgs: ListArgs): Promise<Role[]> {
     return Role.findAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [Player])
+  async players(
+    @Parent() role: Role,
+    @Args() listArgs: ListArgs
+  ): Promise<Player[]> {
+    return role.getPlayers(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Role)

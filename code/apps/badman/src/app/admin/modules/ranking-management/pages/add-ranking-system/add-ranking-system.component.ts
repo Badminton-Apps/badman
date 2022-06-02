@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import {
   RankingSystem,
-  RankingSystemGroup,
+  RankingGroup,
   SystemService,
 } from '../../../../../_shared';
 
@@ -12,7 +12,7 @@ import {
   styleUrls: ['./add-ranking-system.component.scss'],
 })
 export class AddRankingSystemComponent {
-  rankingGroups$: Observable<RankingSystemGroup[]>;
+  rankingGroups$: Observable<RankingGroup[]>;
 
   constructor(private systemSerice: SystemService, private router: Router) {
     this.rankingGroups$ = this.systemSerice.getSystemsGroups();

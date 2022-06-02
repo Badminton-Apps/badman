@@ -60,7 +60,6 @@ import { SearchModule } from '@badman/search';
       ],
     }),
     ApiAuthorizationModule,
-    SearchModule,
     PlayerModule,
     TeamModule,
     ClubModule,

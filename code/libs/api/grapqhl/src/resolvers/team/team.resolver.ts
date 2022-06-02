@@ -1,8 +1,7 @@
-import { Player, Team, TeamPlayerMembership } from '@badman/api/database';
+import { EventEntry, Player, Team, TeamPlayerMembership } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
-import { TeamsArgs } from './dto/team.args';
 
 @Resolver(() => Team)
 export class TeamsResolver {
@@ -16,11 +15,8 @@ export class TeamsResolver {
   }
 
   @Query(() => [Team])
-  async teams(@Args() teamsArgs: TeamsArgs): Promise<Team[]> {
-    return Team.findAll({
-      limit: teamsArgs.take,
-      offset: teamsArgs.skip,
-    });
+  async teams(@Args() listArgs: ListArgs): Promise<Team[]> {
+    return Team.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   // @ResolveField(() => [Player])
@@ -50,6 +46,14 @@ export class TeamsResolver {
         };
       }
     );
+  }
+
+  @ResolveField(() => [EventEntry])
+  async entries(
+    @Parent() team: Team,
+    @Args() listArgs: ListArgs
+  ): Promise<EventEntry[]> {
+    return team.getEntries(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Team)

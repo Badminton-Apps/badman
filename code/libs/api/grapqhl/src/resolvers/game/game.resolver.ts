@@ -1,4 +1,3 @@
-import { GqlGuard } from '@badman/api/authorization';
 import {
   DrawTournament,
   EncounterCompetition,

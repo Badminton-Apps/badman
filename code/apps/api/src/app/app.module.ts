@@ -6,12 +6,14 @@ import { AppController } from './controllers';
 
 import { ApiGrapqhlModule } from '@badman/api/grapqhl';
 import { DatabaseModule } from '@badman/api/database';
+import { SearchModule } from '@badman/search';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     DatabaseModule,
     ApiGrapqhlModule,
+    SearchModule,
     BullModule.registerQueue({
       name: 'ranking-queue',
       redis: {

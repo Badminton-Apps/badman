@@ -1,6 +1,6 @@
 import { Entry } from '../entry.model';
 import { Game } from '../game.model';
-import { RankingSystemGroup } from '../group.model';
+import { RankingGroup } from '../group.model';
 import { Player } from '../player.model';
 import { Draw } from './draw.model';
 
@@ -16,7 +16,7 @@ export class SubEvent {
 
   draws?: Draw[];
   games?: Game[];
-  groups?: RankingSystemGroup[];
+  groups?: RankingGroup[];
   meta?: SubEventMeta;
 
   constructor(args: Partial<SubEvent>) {
@@ -27,7 +27,7 @@ export class SubEvent {
     this.level = args?.level;
     this.draws = args?.draws?.map((g) => new Draw(g));
     this.games = args?.games?.map((g) => new Game(g));
-    this.groups = args?.groups?.map((g) => new RankingSystemGroup(g));
+    this.groups = args?.groups?.map((g) => new RankingGroup(g));
     this.entries = args?.entries?.map((e) => new Entry(e));
     this.maxLevel = args?.maxLevel;
     this.minBaseIndex = args?.minBaseIndex;

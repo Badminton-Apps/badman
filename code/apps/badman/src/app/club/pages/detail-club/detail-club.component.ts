@@ -49,7 +49,7 @@ export class DetailClubComponent implements OnInit {
       // Triggers refresh
       this.update$,
     ]).pipe(
-      switchMap(([params, activeTeams, primarySystem,]) => {
+      switchMap(([params, activeTeams, primarySystem]) => {
         const clubId = params.get('id');
         if (!clubId) {
           throw new Error('No club id');
@@ -65,7 +65,8 @@ export class DetailClubComponent implements OnInit {
               $id: ID!
               $order: [SortOrderType!]
               $teamsWhere: JSONObject
-              $lastRankingWhere: JSONObject
+              $lastRankingPlaceWhere: JSONObject
+              $lastRankingPlacesOrder: [SortOrderType!]
             ) {
               club(id: $id) {
                 id
