@@ -4,14 +4,14 @@ import { TournamentDraw } from './draw.model';
 import { EventTournament } from './event.model';
 
 export class TournamentSubEvent extends SubEvent {
-  event?: EventTournament;
+  eventTournament?: EventTournament;
   gameType?: GameType | string;
 
   constructor({ ...args }: Partial<TournamentSubEvent>) {
     super(args);
 
-    this.event =
-      args?.event != null ? new EventTournament(args.event) : undefined;
+    this.eventTournament =
+      args?.eventTournament != null ? new EventTournament(args.eventTournament) : undefined;
     this.draws = args?.draws?.map((d) => new TournamentDraw(d));
     this.gameType =
       (args?.gameType ?? null) != null

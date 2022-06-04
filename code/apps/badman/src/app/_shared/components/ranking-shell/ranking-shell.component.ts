@@ -28,13 +28,13 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 
     this.profile$ = this.user.profile$.pipe(
-      filter((x) => x !== null),
+      filter((x) => x !== null)
     ) as Observable<Player>;
 
     this.canEnroll$ = this.apollo
       .query<{
-        tournamentEvents: { total: number };
-        competitionEvents: { total: number };
+        tournamentEvents: { count: number };
+        competitionEvents: { count: number };
       }>({
         query: gql`
           # we request only first one, because if it's more that means it's open
@@ -46,7 +46,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
             #   }
             # }
             eventCompetitions(take: 1, where: $where) {
-              id
+              count
             }
           }
         `,
@@ -59,8 +59,8 @@ export class RankingShellComponent implements OnDestroy, OnInit {
       .pipe(
         map(
           (events) =>
-            events?.data?.tournamentEvents?.total != 0 ||
-            events?.data?.competitionEvents?.total != 0
+            events?.data?.tournamentEvents?.count != 0 ||
+            events?.data?.competitionEvents?.count != 0
         )
       );
   }

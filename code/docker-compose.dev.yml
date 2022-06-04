@@ -69,9 +69,6 @@ services:
       - MAIL_PASS=${MAIL_PASS}
       - MAIL_USER=${MAIL_USER}
       - MAIL_HOST=${MAIL_HOST}
-      - VR_API=${VR_API}
-      - VR_API_USER=${VR_API_USER}
-      - VR_API_PASS=${VR_API_PASS}
     depends_on:
       - postgres
       - redis
@@ -79,7 +76,59 @@ services:
       - ./:/usr/src
       - ./user/src/node_modules
     restart: unless-stopped 
-    # entrypoint: ["cd /usr/src/database/ && npx --yes sequelize-cli db:migrate"]
+
+  worker-ranking:
+    build:
+      context: .
+      dockerfile: apps/worker/ranking/Dockerfile.dev
+    image: worker-dev
+    networks:
+      - api
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_IP=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_DIALECT=${DB_DIALECT}
+      - APM_SERVER_URL=${APM_SERVER_URL}
+      - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
+      - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
+    depends_on:
+      - redis
+    volumes:
+      - ./:/usr/src
+      - ./user/src/node_modules
+    restart: unless-stopped 
+  
+  worker-sync:
+    build:
+      context: .
+      dockerfile: apps/worker/sync/Dockerfile.dev
+    image: worker-ranking-dev
+    networks:
+      - api
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_IP=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_DIALECT=${DB_DIALECT}
+      - APM_SERVER_URL=${APM_SERVER_URL}
+      - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
+      - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
+      - VR_API=${VR_API}
+      - VR_API_USER=${VR_API_USER}
+      - VR_API_PASS=${VR_API_PASS}
+    depends_on:
+      - redis
+    volumes:
+      - ./:/usr/src
+      - ./user/src/node_modules
+    restart: unless-stopped 
 
   # Tools
   pgadmin:
@@ -93,6 +142,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
        - db-admin:/var/lib/pgadmin
+       - ./database/backup:/home/backup
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     depends_on:

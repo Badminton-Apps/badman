@@ -94,7 +94,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     event.preventDefault();
     const date = moment();
     const compEvent =
-      this.data.system?.rankingGroups?.[0]?.subEventCompetitions?.[0].event;
+      this.data.system?.rankingGroups?.[0]?.subEventCompetitions?.[0].eventCompetition;
 
     if (
       !compEvent?.startYear ||

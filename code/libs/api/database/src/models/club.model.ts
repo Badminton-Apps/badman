@@ -101,18 +101,23 @@ export class Club extends Model {
   @Column
   clubId?: number;
 
+  @Field(() => [Team], { nullable: true })
   @HasMany(() => Team, 'clubId')
   teams?: Team[];
 
+  @Field(() => [Role], { nullable: true })
   @HasMany(() => Role)
   roles?: Role[];
 
+  @Field(() => [Player], { nullable: true })
   @BelongsToMany(() => Player, () => ClubPlayerMembership)
   players: Player[];
 
+  @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment)
   comments?: Comment[];
 
+  @Field(() => [Location], { nullable: true })
   @HasMany(() => Location)
   locations: Location[];
 
@@ -254,7 +259,16 @@ export class Club extends Model {
 
 @InputType()
 export class ClubUpdateInput extends PartialType(
-  OmitType(Club, ['createdAt', 'updatedAt'] as const),
+  OmitType(Club, [
+    'createdAt',
+    'updatedAt',
+    'teams',
+    'roles',
+    'comments',
+    'roles',
+    'players',
+    'locations',
+  ] as const),
   InputType
 ) {}
 

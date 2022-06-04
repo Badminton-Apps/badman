@@ -1,7 +1,16 @@
 import { EventTournament, SubEventTournament } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
-import { Args, ID, Parent, Query, Resolver } from '@nestjs/graphql';
+import { Args, Field, ID, ObjectType, Parent, Query, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
+
+@ObjectType()
+export class PagedEventTournament {
+  @Field()
+  count: number;
+
+  @Field(() => [EventTournament])
+  rows: EventTournament[];
+}
 
 @Resolver(() => EventTournament)
 export class EventTournamentResolver {
@@ -25,15 +34,15 @@ export class EventTournamentResolver {
     return eventTournament;
   }
 
-  @Query(() => [EventTournament])
+  @Query(() => PagedEventTournament)
   async eventTournaments(
     @Args() listArgs: ListArgs
-  ): Promise<EventTournament[]> {
-    return EventTournament.findAll(ListArgs.toFindOptions(listArgs));
+  ):  Promise<{ count: number; rows: EventTournament[] }> {
+    return EventTournament.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
   @Query(() => [SubEventTournament])
-  async subEvents(
+  async subEventTournaments(
     @Parent() event: EventTournament,
     @Args() listArgs: ListArgs
   ): Promise<SubEventTournament[]> {

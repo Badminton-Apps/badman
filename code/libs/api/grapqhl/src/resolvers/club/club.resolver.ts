@@ -5,6 +5,10 @@ import {
   Team,
   ClubUpdateInput,
   Player,
+  ClubPlayer,
+  ClubPlayerMembership,
+  ClubPlayerMembershipNewInput,
+  ClubPlayerMembershipUpdateInput,
 } from '@badman/api/database';
 import {
   Inject,
@@ -107,7 +111,7 @@ export class ClubsResolver {
   @Mutation(() => Club)
   async updateClub(
     @User() user: Player,
-    @Args('updateClubData') updateClubData: ClubUpdateInput
+    @Args('data') updateClubData: ClubUpdateInput
   ) {
     if (
       !user.hasAnyPermission([
@@ -154,7 +158,165 @@ export class ClubsResolver {
       await transaction.rollback();
       throw error;
     }
+  }
 
-    Logger.debug('transaction complete');
+  @Mutation(() => Boolean)
+  async addPlayerToClub(
+    @User() user: Player,
+    @Args('data') addPlayerToClubData: ClubPlayerMembershipNewInput
+  ) {
+    if (
+      !user.hasAnyPermission([
+        `${addPlayerToClubData.clubId}_edit:club`,
+        'edit-any:club',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      let club = await Club.findByPk(addPlayerToClubData.clubId, {
+        transaction,
+      });
+      let player = await Player.findByPk(addPlayerToClubData.playerId, {
+        transaction,
+      });
+
+      if (!club) {
+        throw new NotFoundException(
+          `${Club.name}: ${addPlayerToClubData.clubId}`
+        );
+      }
+      if (!player) {
+        throw new NotFoundException(
+          `${Player.name}: ${addPlayerToClubData.playerId}`
+        );
+      }
+
+      // Add player to club
+      await club.addPlayer(player, {
+        transaction,
+        through: {
+          start: addPlayerToClubData.start,
+          end: addPlayerToClubData.end,
+        },
+      });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+  @Mutation(() => Boolean)
+  async updatePlayerClubMembership(
+    @User() user: Player,
+    @Args('data')
+    updatePlayerClubMembershipData: ClubPlayerMembershipUpdateInput
+  ) {
+    const membership = await ClubPlayerMembership.findByPk(
+      updatePlayerClubMembershipData.id
+    );
+
+    if (!membership) {
+      throw new NotFoundException(
+        `${ClubPlayerMembership.name}: ${updatePlayerClubMembershipData.id}`
+      );
+    }
+
+    if (
+      !user.hasAnyPermission([
+        `${membership.clubId}_edit:club`,
+        'edit-any:club',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const result = await membership.update(updatePlayerClubMembershipData, {
+        transaction,
+      });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async removePlayerFromClub(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string
+  ) {
+    const membership = await ClubPlayerMembership.findByPk(id);
+
+    if (!membership) {
+      throw new NotFoundException(`${ClubPlayerMembership.name}: ${id}`);
+    }
+
+    if (
+      !user.hasAnyPermission([
+        `${membership.clubId}_edit:club`,
+        'edit-any:club',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      let club = await Club.findByPk(membership.clubId, { transaction });
+      let player = await Player.findByPk(membership.playerId, { transaction });
+
+      if (!club) {
+        throw new NotFoundException(`${Club.name}: ${membership.clubId}`);
+      }
+      if (!player) {
+        throw new NotFoundException(`${Player.name}: ${membership.playerId}`);
+      }
+
+      // Remove player from club
+      await club.removePlayer(player, { transaction });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+}
+
+@Resolver(() => ClubPlayer)
+export class ClubPlayerResolver extends ClubsResolver {
+  @ResolveField(() => ClubPlayerMembership)
+  async clubMembership(
+    @Parent() club: Club & { ClubPlayerMembership: ClubPlayerMembership }
+  ): Promise<ClubPlayerMembership> {
+    return club.ClubPlayerMembership;
   }
 }

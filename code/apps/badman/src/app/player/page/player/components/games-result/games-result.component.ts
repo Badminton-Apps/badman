@@ -47,10 +47,10 @@ export class GamesResultComponent implements OnInit {
                 | TournamentSubEvent
                 | undefined;
 
-              if (cur.competition?.draw?.subEvent) {
-                subEvent = cur.competition.draw.subEvent;
-              } else if (cur.tournament?.subEvent) {
-                subEvent = cur.tournament.subEvent;
+              if (cur.competition?.drawCompetition?.subEventCompetition) {
+                subEvent = cur.competition.drawCompetition.subEventCompetition;
+              } else if (cur.tournament?.subEventTournament) {
+                subEvent = cur.tournament.subEventTournament;
               }
 
               if (!subEvent?.id) {

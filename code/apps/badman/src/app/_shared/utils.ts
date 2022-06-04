@@ -43,4 +43,89 @@ export interface pageArgs {
   query?: string;
   order?: { field: string; direction: SortDirection | 'ASC' | 'DESC' }[];
   ids?: string[];
+  where?: { [key: string]: unknown };
 }
+
+export const getQueryParamsFromPageArgs = (
+  args: pageArgs,
+  defaultArgs: pageArgs
+) => {
+  // Check if order is same as default:
+  const order = args.order?.map((x) => `${x.field}-${x.direction}`).join(',');
+  const defaultOrder = defaultArgs.order
+    ?.map((x) => `${x.field}-${x.direction}`)
+    .join(',');
+
+  const getKeys = (key: string, value: unknown, parent?: string) => {
+    key = parent ? `${parent}.${key}` : key;
+
+    if (value == null || value == undefined) {
+      return '';
+    } else if (Array.isArray(value)) {
+      return `${key}=${value.join(',')}`;
+    } else if (typeof value === 'object') {
+      const keys = Object.keys(value as object);
+      const values = keys.map((k) => getKeys(k, value?.[k], key));
+      return values.join('&');
+    } else {
+      return `${key}=${value}`;
+    }
+  };
+
+  const getWhere = (where: { [key: string]: unknown }) => {
+    const keys = Object.keys(where);
+    const values = keys
+      .map((k) => getKeys(k, where[k]))
+      ?.filter((v) => v.length > 0);
+    return values.join('&');
+  };
+
+  // Convert where to dot notation
+  const where = getWhere(args.where ?? {});
+  const defaultWhere = getWhere(defaultArgs.where ?? {});
+
+  return {
+    take: args.take == (defaultArgs.take ?? 15) ? undefined : args.take,
+    skip: args.skip == (defaultArgs.skip ?? 0) ? undefined : args.skip,
+    order: order == defaultOrder ? undefined : order,
+    where: where == defaultWhere ? undefined : where,
+  };
+};
+
+export const getPageArgsFromQueryParams = (queryParams: {
+  [key: string]: string;
+}) => {
+  const pageArgs: pageArgs = {};
+
+  const order = queryParams['order'];
+  if (order?.length > 0) {
+    pageArgs.order = [];
+    for (const o of order.split(',')) {
+      const [field, direction] = o.split('-');
+      pageArgs.order.push({ field, direction: direction as SortDirection });
+    }
+  }
+
+  if (queryParams['where']) {
+    const where = queryParams['where'].split('&').reduce((acc, cur) => {
+      const [key, value] = cur.split('=');
+      const parts = key.split('.');
+      if (parts.length > 1) {
+        const parent = parts.slice(0, -1).join('.');
+        const child = parts.slice(-1)[0];
+        if (!acc[parent]) {
+          acc[parent] = {};
+        }
+        acc[parent][child] = value;
+      } else {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    pageArgs.where = where;
+  }
+
+  pageArgs.skip = parseInt(queryParams['skip'], 10) || 0;
+  pageArgs.take = parseInt(queryParams['take'], 10) || (15 as number);
+  return pageArgs;
+};

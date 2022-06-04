@@ -1,13 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Player, Team } from './../../models';
 
 import * as teamQuery from '../../graphql/teams/queries/GetTeamQuery.graphql';
-import * as teamsQuery from '../../graphql/teams/queries/GetTeamsQuery.graphql';
 
 import * as addTeamMutation from '../../graphql/teams/mutations/addTeam.graphql';
 import * as updateTeamMutation from '../../graphql/teams/mutations/updateTeam.graphql';
@@ -24,7 +21,6 @@ import * as removeBasePlayerForSubEvent from '../../graphql/teams/mutations/remo
 export class TeamService {
   constructor(private apollo: Apollo) {}
 
-
   addTeam(team: Partial<Team>, clubId: string) {
     return this.apollo
       .mutate<{ addTeam: Team }>({
@@ -34,7 +30,7 @@ export class TeamService {
           clubId,
         },
       })
-      .pipe(map((x) => new Team(x.data!.addTeam)));
+      .pipe(map((x) => new Team(x.data?.addTeam)));
   }
 
   addPlayer(team: Team, player: Player, personal = false) {
@@ -46,7 +42,7 @@ export class TeamService {
           query: teamQuery,
           variables: {
             id: team.id,
-            personal
+            personal,
           },
         },
       ],
@@ -66,7 +62,7 @@ export class TeamService {
           query: teamQuery,
           variables: {
             id: team.id,
-            personal
+            personal,
           },
         },
       ],
@@ -84,7 +80,7 @@ export class TeamService {
           query: teamQuery,
           variables: {
             id: team.id,
-            personal
+            personal,
           },
         },
       ],
@@ -106,7 +102,7 @@ export class TeamService {
             query: teamQuery,
             variables: {
               id: team.id,
-              personal
+              personal,
             },
           },
         ],
@@ -114,7 +110,7 @@ export class TeamService {
           team,
         },
       })
-      .pipe(map((x) => new Team(x.data!['updateTeam'])));
+      .pipe(map((x) => new Team(x.data?.['updateTeam'])));
   }
 
   deleteTeam(teamId: string) {
@@ -125,18 +121,6 @@ export class TeamService {
       },
     });
   }
-
-  getTeams(clubId: string, active: boolean = true): Observable<Team[]> {
-    return this.apollo
-      .query({
-        query: teamsQuery,
-        variables: {
-          where: { active, clubId },
-        },
-      })
-      .pipe(map((x: any) => x.data?.teams?.map((t: Partial<Team>) => new Team(t))));
-  }
-
 
   addBasePlayer(teamId: string, playerId: string, subEventId: string) {
     return this.apollo.mutate<{ addPlayerBaseSubEventMutation: Team }>({

@@ -11,7 +11,5 @@ export * from './encounter';
 export * from './location';
 export * from './profile';
 export * from './pdf';
-
-export * from './guid';
 // end:ng42.barrel
 

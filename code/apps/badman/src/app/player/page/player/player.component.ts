@@ -110,7 +110,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       this.apollo.mutate<{ claim: Player }>({
         mutation: gql`
           mutation ClaimAccount($playerId: String!) {
-            claim(playerId: $playerId) {
+            claimAccount(playerId: $playerId) {
               id
               fullName
               sub

@@ -2,12 +2,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { apolloCache } from '../../../graphql.module';
 import * as addPlayerMutation from '../../graphql/players/mutations/AddPlayerMutation.graphql';
 import * as updatePlayerMutation from '../../graphql/players/mutations/UpdatePlayerMutation.graphql';
-import * as updatePlayerRankingMutation from '../../graphql/players/mutations/UpdatePlayerRankingMutation.graphql';
 import * as getBasePlayers from '../../graphql/players/queries/GetBasePlayersQuery.graphql';
 import * as searchClubQuery from '../../graphql/players/queries/GetClubPlayersQuery.graphql';
 import * as evolutionQuery from '../../graphql/players/queries/GetPlayerEvolutionQuery.graphql';
@@ -233,50 +232,39 @@ export class PlayerService {
       .mutate<{ updatePlayer: Player }>({
         mutation: updatePlayerMutation,
         variables: {
-          player,
+          data: player,
         },
       })
       .pipe(map((r) => new Player(r.data?.updatePlayer)));
   }
 
-  updatePlayerRanking(rankingPlace: Partial<RankingPlace>, playerId: string) {
-    return this.apollo
-      .mutate<{ updatePlayerRanking: Player }>({
-        mutation: updatePlayerRankingMutation,
-        variables: {
-          rankingPlace,
-          playerId,
-        },
-      })
-      .pipe(
-        tap((result) => {
-          const player = result.data?.updatePlayerRanking;
 
-          const normalizedIdPlayer = apolloCache.identify({
-            id: player?.id,
-            __typename: 'Player',
-          });
-          apolloCache.evict({ id: normalizedIdPlayer });
+  invalidatePlayerRanking(player: Player) {
+    const normalizedIdPlayer = apolloCache.identify({
+      id: player?.id,
+      __typename: 'Player',
+    });
+    apolloCache.evict({ id: normalizedIdPlayer });
 
-          // Clear from cache
-          const normalizedIdLastRanking = apolloCache.identify({
-            id: player?.lastRanking?.id,
-            __typename: 'LastRankingPlace',
-          });
-          apolloCache.evict({ id: normalizedIdLastRanking });
+    // Clear from cache
+    const normalizedIdLastRanking = apolloCache.identify({
+      id: player?.lastRanking?.id,
+      __typename: 'LastRankingPlace',
+    });
+    apolloCache.evict({ id: normalizedIdLastRanking });
 
-          for (const ranking of player?.rankingPlaces ?? []) {
-            const normalizedId = apolloCache.identify({
-              id: ranking?.id,
-              __typename: 'RankingPlace',
-            });
-            apolloCache.evict({ id: normalizedId });
-          }
+    for (const ranking of player?.rankingPlaces ?? []) {
+      const normalizedId = apolloCache.identify({
+        id: ranking?.id,
+        __typename: 'RankingPlace',
+      });
+      apolloCache.evict({ id: normalizedId });
+    }
 
-          apolloCache.gc();
-        })
-      );
+    apolloCache.gc();
   }
+
+  
 
   getBasePlayers(clubId: string, type: string) {
     return this.apollo.query<{ club: Club }>({

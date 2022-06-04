@@ -2,10 +2,7 @@
 query GetPlayerEvolutionQuery($playerId: ID!, $rankingType: ID!) {
   player(id: $playerId) {
     id
-    rankingPlaces(
-      order: "rankingDate"
-      where: { systemId: $rankingType }
-    ) {
+    rankingPlaces(where: { systemId: $rankingType }) {
       id
       rankingDate
       singlePoints

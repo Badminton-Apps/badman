@@ -4,6 +4,8 @@ import {
   Player,
   GamePlayer,
   RankingPlace,
+  ClubPlayerMembership,
+  Club,
 } from './models';
 
 @ObjectType()
@@ -18,3 +20,10 @@ export class GamePlayers extends IntersectionType(GamePlayer, Player) {
   @Field(() => RankingPlace, { nullable: true })
   rankingPlace: RankingPlace;
 }
+
+
+@ObjectType()
+export class ClubPlayer extends IntersectionType(
+  ClubPlayerMembership,
+  Club
+) {}

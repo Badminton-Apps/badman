@@ -2,6 +2,7 @@ import {
   RankingLastPlace,
   RankingSystem,
   RankingGroups,
+  PagedRankingLastPlaces,
 } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
@@ -41,8 +42,8 @@ export class RankingSystemResolver {
     return RankingSystem.findAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [RankingLastPlace])
-  async lastPlaces(
+  @ResolveField(() => PagedRankingLastPlaces)
+  async rankingLastPlaces(
     @Parent() system: RankingSystem,
     @Args() listArgs: ListArgs
   ): Promise<{

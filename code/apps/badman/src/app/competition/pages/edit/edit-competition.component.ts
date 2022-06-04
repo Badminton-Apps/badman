@@ -192,7 +192,7 @@ export class EditEventCompetitionComponent implements OnInit {
 
     event.subEvents?.push(
       new CompetitionSubEvent({
-        event,
+        eventCompetition: event,
       })
     );
   }

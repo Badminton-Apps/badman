@@ -1,12 +1,26 @@
-import { EventEntry, Player, Team, TeamPlayerMembership } from '@badman/api/database';
-import { NotFoundException } from '@nestjs/common';
-import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  EventEntry,
+  Location,
+  Player,
+  Team,
+  TeamPlayerMembership,
+} from '@badman/api/database';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Args,
+  ID,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { User } from '../../decorators';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => Team)
 export class TeamsResolver {
   @Query(() => Team)
-  async team(@Args('id') id: string): Promise<Team> {
+  async team(@Args('id', { type: () => ID }) id: string): Promise<Team> {
     const team = await Team.findByPk(id);
     if (!team) {
       throw new NotFoundException(id);
@@ -48,12 +62,40 @@ export class TeamsResolver {
     );
   }
 
+  @ResolveField(() => String)
+  async phone(@User() user: Player, @Parent() team: Team) {
+    const perm = [`details-any:team`, `${team.clubId}_details:team`];
+    if (user.hasAnyPermission(perm)) {
+      return team.phone;
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @ResolveField(() => String)
+  async email(@User() user: Player, @Parent() team: Team) {
+    const perm = [`details-any:team`, `${team.clubId}_details:team`];
+    if (user.hasAnyPermission(perm)) {
+      return team.email;
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
   @ResolveField(() => [EventEntry])
   async entries(
     @Parent() team: Team,
     @Args() listArgs: ListArgs
   ): Promise<EventEntry[]> {
     return team.getEntries(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [Location])
+  async locations(
+    @Parent() team: Team,
+    @Args() listArgs: ListArgs
+  ): Promise<Location[]> {
+    return team.getLocations(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => Team)

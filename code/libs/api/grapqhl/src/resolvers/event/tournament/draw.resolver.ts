@@ -13,7 +13,7 @@ import { ListArgs } from '../../../utils';
 @Resolver(() => DrawTournament)
 export class DrawTournamentResolver {
   @Query(() => DrawTournament)
-  async draw(
+  async drawTournament(
     @Args('id', { type: () => ID }) id: string
   ): Promise<DrawTournament> {
     let draw = await DrawTournament.findByPk(id);
@@ -33,14 +33,14 @@ export class DrawTournamentResolver {
   }
 
   @Query(() => [DrawTournament])
-  async encounterTournaments(
-    @Args() listArgs: ListArgs
-  ): Promise<DrawTournament[]> {
+  async drawTournaments(@Args() listArgs: ListArgs): Promise<DrawTournament[]> {
     return DrawTournament.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => SubEventTournament)
-  async subEvent(@Parent() draw: DrawTournament): Promise<SubEventTournament> {
+  async subEventTournament(
+    @Parent() draw: DrawTournament
+  ): Promise<SubEventTournament> {
     return draw.getSubEvent();
   }
 

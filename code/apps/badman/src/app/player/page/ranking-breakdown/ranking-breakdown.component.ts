@@ -112,6 +112,7 @@ export class RankingBreakdownComponent implements OnInit {
       if (x.gameType) {
         this.router.navigate([`../${x.gameType}`], {
           relativeTo: this.route,
+          replaceUrl: true,
           queryParams: {
             end: x.period.end ? x.period.end.toISOString() : undefined,
             includedIgnored: x.includedIgnored,
@@ -119,6 +120,7 @@ export class RankingBreakdownComponent implements OnInit {
             includedDowngrade: x.includedDowngrade,
             includeOutOfScope: x.includeOutOfScope,
           },
+          queryParamsHandling: 'merge'
         });
       }
     });
@@ -160,7 +162,7 @@ export class RankingBreakdownComponent implements OnInit {
     );
 
     this.data$ = combineLatest([player$, system$, type$, end$]).pipe(
-      tap((r) => {
+      tap(() => {
         this.loadingData = true;
       }),
       delay(1),
@@ -198,35 +200,39 @@ export class RankingBreakdownComponent implements OnInit {
           .query<{ player: Player }>({
             fetchPolicy: 'no-cache',
             query: gql`
-                query PlayerGames($where: JSONObject, $playerId: ID!, $rankingType: ID!) {
-                  player(id: $playerId) {
+              query PlayerGames(
+                $where: JSONObject
+                $playerId: ID!
+                $rankingType: ID!
+              ) {
+                player(id: $playerId) {
+                  id
+                  games(where: $where) {
                     id
-                    games(where: $where) {
+                    playedAt
+                    winner
+                    status
+                    players {
                       id
-                      playedAt
-                      winner
-                      status
-                      players {
+                      team
+                      player
+                      fullName
+                      rankingPlace(where: { systemId: $rankingType }) {
                         id
-                        team
-                        player
-                        fullName
-                        rankingPlace(where: { systemId: $rankingType }, limit: 1, order: "reverse:rankingDate") {
-                          id
-                          rankingDate
-                          ${type}
-                        }
+                        rankingDate
+                        single
                       }
-                      rankingPoints(where: { systemId: $rankingType }) {
-                        id
-                        differenceInLevel
-                        playerId
-                        points
-                      }
+                    }
+                    rankingPoints(where: { systemId: $rankingType }) {
+                      id
+                      differenceInLevel
+                      playerId
+                      points
                     }
                   }
                 }
-              `,
+              }
+            `,
             variables: {
               where: {
                 gameType:
@@ -251,7 +257,7 @@ export class RankingBreakdownComponent implements OnInit {
         this.titleService.setTitle(`${player?.fullName} - ${type}`);
         return { system, player, games, type };
       }),
-      tap((r) => {
+      tap(() => {
         this.loadingData = false;
       })
     );

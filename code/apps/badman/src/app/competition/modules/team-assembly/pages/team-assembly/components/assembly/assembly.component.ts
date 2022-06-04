@@ -6,7 +6,7 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import {
@@ -65,7 +65,7 @@ export class AssemblyComponent implements OnInit {
   substitude: Player[] = [];
   players: Player[] = [];
 
-  wherePlayer = {} as any;
+  wherePlayer: { [key: string]: unknown } = {};
 
   captionSingle1Prefix = '';
   captionSingle2Prefix = '';
@@ -388,27 +388,32 @@ export class AssemblyComponent implements OnInit {
 
     // Ignore ids
     this.ignorePlayers = [];
-    const ignoredLevels: any = [];
-    if (this.entry.competitionSubEvent?.event?.type == LevelType.PROV) {
+    const ignoredLevels: LevelType[] = [];
+    if (
+      this.entry.competitionSubEvent?.eventCompetition?.type == LevelType.PROV
+    ) {
       ignoredLevels.push(LevelType.LIGA);
       ignoredLevels.push(LevelType.NATIONAL);
-    } else if (this.entry.competitionSubEvent?.event?.type == LevelType.LIGA) {
+    } else if (
+      this.entry.competitionSubEvent?.eventCompetition?.type == LevelType.LIGA
+    ) {
       ignoredLevels.push(LevelType.NATIONAL);
     }
 
     for (const dbTeam of teams) {
       if (dbTeam.type == team.type && dbTeam.id != teamId) {
         if (
-          (dbTeam.entries?.[0]?.competitionSubEvent?.event?.type ?? null) ==
-          null
+          (dbTeam.entries?.[0]?.competitionSubEvent?.eventCompetition?.type ??
+            null) == null
         ) {
           continue;
         }
 
         // Base players
         if (
+          dbTeam.entries?.[0].competitionSubEvent?.eventCompetition?.type &&
           ignoredLevels.includes(
-            dbTeam.entries?.[0].competitionSubEvent?.event?.type
+            dbTeam.entries?.[0].competitionSubEvent?.eventCompetition?.type
           )
         ) {
           this.ignorePlayers.push(
@@ -417,8 +422,8 @@ export class AssemblyComponent implements OnInit {
             }) ?? [])
           );
         } else if (
-          dbTeam.entries?.[0].competitionSubEvent?.event?.type ==
-          team.entries?.[0].competitionSubEvent?.event?.type
+          dbTeam.entries?.[0].competitionSubEvent?.eventCompetition?.type ==
+          team.entries?.[0].competitionSubEvent?.eventCompetition?.type
         ) {
           if (!dbTeam || !dbTeam.teamNumber) {
             throw new Error('dbTeam is not set');
@@ -476,7 +481,7 @@ export class AssemblyComponent implements OnInit {
   addPlayer(player: Player) {
     this.players.push(player);
 
-    this.wherePlayer.id = {
+    this.wherePlayer['id'] = {
       $notIn: this.players?.map((p) => p.id),
     };
   }
@@ -666,7 +671,11 @@ export class AssemblyComponent implements OnInit {
     };
 
     const sortMix = (a: Player, b: Player) => {
-      return a.gender == 'F' ? -1 : 1;
+      if (a.gender == b.gender) {
+        return sortDouble(a, b);
+      } else {
+        return a.gender == 'F' ? -1 : 1;
+      }
     };
 
     this.players = this.players.sort(sortList);

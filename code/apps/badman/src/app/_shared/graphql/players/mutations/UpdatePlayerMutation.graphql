@@ -1,5 +1,5 @@
-mutation UpdatePlayer($player: PlayerInput!) {
-  updatePlayer(player: $player) {
+mutation UpdatePlayer($data: PlayerUpdateInput!) {
+  updatePlayer(data: $data) {
     id
     firstName
     lastName

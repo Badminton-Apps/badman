@@ -39,7 +39,7 @@ export class UserService {
               id
               slug
               fullName
-              claims {
+              claims(take: 99999) {
                 name
               }
               clubs {
@@ -89,16 +89,20 @@ export class UserService {
       })
       .pipe(
         tap(() => {
-          // Clear from cache
-          source.forEach((id) => {
-            const normalizedId = apolloCache.identify({
-              id,
-              __typename: 'Player',
-            });
-            apolloCache.evict({ id: normalizedId });
-          });
-          apolloCache.gc();
+          this.clearUserCache(source);
         })
       );
+  }
+
+  clearUserCache(users: string[]): void {
+    // Clear from cache
+    users.forEach((id) => {
+      const normalizedId = apolloCache.identify({
+        id,
+        __typename: 'Player',
+      });
+      apolloCache.evict({ id: normalizedId });
+    });
+    apolloCache.gc();
   }
 }

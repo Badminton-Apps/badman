@@ -151,3 +151,13 @@ export class RankingLastPlace extends Model {
   getRankingSystem!: BelongsToGetAssociationMixin<RankingSystem>;
   setRankingSystem!: BelongsToSetAssociationMixin<RankingSystem, string>;
 }
+
+
+@ObjectType()
+export class PagedRankingLastPlaces {
+  @Field()
+  count: number;
+
+  @Field(() => [RankingLastPlace])
+  rows: RankingLastPlace[];
+}

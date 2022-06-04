@@ -1,6 +1,10 @@
 <div class="mat-subheading-1">Events <badman-beta></badman-beta></div>
 
-<form [formGroup]="this.formGroup" layout="row" layout-fill layout-margin layout-align="start center">
+<form
+  [formGroup]="this.filter"
+  fxLayout="row"
+  fxFlexAlign="start center"
+>
   <mat-form-field fxFlex>
     <mat-label>Filter</mat-label>
     <input matInput placeholder="Ex. ium" #inputName formControlName="query" />
@@ -8,13 +12,21 @@
 
   <mat-form-field fxFlex>
     <mat-label>{{ 'input.year' | translate }}</mat-label>
-    <input matInput type="number" formControlName="startYear" placeholder="2019" #inputYear />
+    <input
+      matInput
+      type="number"
+      formControlName="startYear"
+      placeholder="2019"
+      #inputYear
+    />
   </mat-form-field>
 
   <mat-form-field fxFlex>
     <mat-label>Type</mat-label>
     <mat-select [value]="eventTypes[0].value" formControlName="type">
-      <mat-option *ngFor="let eventType of this.eventTypes" [value]="eventType.value"
+      <mat-option
+        *ngFor="let eventType of this.eventTypes"
+        [value]="eventType.value"
         >{{ 'event.types.' + eventType.label | translate }}
       </mat-option>
     </mat-select>
@@ -39,8 +51,8 @@
   </mat-form-field>
 </form>
 
-<div *ngIf="isLoadingResults">
-  <mat-progress-bar mode="indeterminate" *ngIf="isLoadingResults"></mat-progress-bar>
+<div *ngIf="dataSource.loading$ | async">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </div>
 
 <table
@@ -72,7 +84,9 @@
         <ng-container *ngSwitchCase="'TOURNAMENT'">
           {{ element.firstDay | amLocal | amDateFormat: 'LL' }}
         </ng-container>
-        <ng-container *ngSwitchCase="'COMPETITION'"> {{ element.startYear }}-{{ element.startYear + 1 }} </ng-container>
+        <ng-container *ngSwitchCase="'COMPETITION'">
+          {{ element.startYear }}-{{ element.startYear + 1 }}
+        </ng-container>
       </ng-container>
     </td>
   </ng-container>
@@ -92,16 +106,26 @@
 
   <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
   <ng-container matColumnDef="expandedDetail">
-    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-      <div class="event-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-        <ng-container *ngIf="element.eventType == 'TOURNAMENT'">
+    <td
+      mat-cell
+      *matCellDef="let element"
+      [attr.colspan]="displayedColumns.length"
+    >
+      <div
+        class="event-element-detail"
+        [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'"
+      >
+        <ng-container *ngIf="element.eventType === 'TOURNAMENT'">
           <badman-tournaments-data [data]="element"></badman-tournaments-data>
         </ng-container>
-        <ng-container *ngIf="element.eventType == 'COMPETITION'">
+        <ng-container *ngIf="element.eventType === 'COMPETITION'">
           <badman-competition-data [data]="element"></badman-competition-data>
         </ng-container>
 
-        <button mat-button [routerLink]="['/', element.eventType.toLowerCase(), element.slug]">
+        <button
+          mat-button
+          [routerLink]="['/', element.eventType.toLowerCase(), element.slug]"
+        >
           {{ 'button.detail' | translate }}
         </button>
       </div>
@@ -118,19 +142,26 @@
   >
     >
   </tr>
-  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="event-detail-row"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    class="event-detail-row"
+  ></tr>
 </table>
 
 <div class="toolbar">
   <button mat-button (click)="setOpenState(true)">Open selected</button>
   <button mat-button (click)="setOpenState(false)">Colse selected</button>
-  <button mat-button *ngIf="formGroup.value.type == 'COMPETITION_CP'" (click)="copy(year)">Copy selected</button>
+  <button
+    mat-button
+    *ngIf="filter.value.type === 'COMPETITION_CP'"
+    (click)="copy(year)"
+  >
+    Copy selected
+  </button>
   <mat-paginator
-    [length]="this.resultsLength$ | async"
-    [pageSize]="this.pageSize$ | async"
-    [pageIndex]="this.pageIndex$ | async"
-    [pageSizeOptions]="[5, 10, 25, 100]"
-    (page)="this.onPaginateChange.next($event)"
+    [length]="this.dataSource.count$ | async"
+    [pageSizeOptions]="[5, 10, 15, 25, 50, 100]"
   ></mat-paginator>
 </div>
 
@@ -144,8 +175,12 @@
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
-    <button mat-button [mat-dialog-close]>{{ 'button.close' | translate }}</button>
+    <button mat-button [mat-dialog-close]>
+      {{ 'button.close' | translate }}
+    </button>
 
-    <button mat-raised-button color="primary" [mat-dialog-close]="2022">Create</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="2022">
+      Create
+    </button>
   </mat-dialog-actions>
 </ng-template>

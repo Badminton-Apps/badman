@@ -1,4 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -156,6 +163,7 @@ export class RankingPlace extends Model {
   @Column
   systemId: string;
 
+  @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
   player: Player;
 
@@ -353,3 +361,20 @@ export class RankingPlace extends Model {
     } as Partial<RankingLastPlace>;
   }
 }
+
+@InputType()
+export class RankingPlaceUpdateInput extends PartialType(
+  OmitType(RankingPlace, [
+    'createdAt',
+    'updatedAt',
+    'player',
+    'rankingSystem',
+  ] as const),
+  InputType
+) {}
+
+@InputType()
+export class RankingPlaceNewInput extends PartialType(
+  OmitType(RankingPlaceUpdateInput, ['id'] as const),
+  InputType
+) {}

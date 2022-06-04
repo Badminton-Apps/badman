@@ -27,7 +27,7 @@
   <td-chart-tooltip [trigger]="'item'" [triggerOn]="'mousemove'">
     <ng-template let-params let-i="index" let-ticket="ticket" tdTooltipFormatter>
       <ng-container *ngIf="params">
-        <div layout="row" layout-align="start center">
+        <div fxLayout="row" fxFlexAlign="start center">
           <span class="mat-caption pad-left-sm">
             {{ params.name.top }} <br />
             {{ params.name.bottom }}

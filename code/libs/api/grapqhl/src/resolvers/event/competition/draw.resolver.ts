@@ -16,37 +16,37 @@ import { ListArgs } from '../../../utils';
 @Resolver(() => DrawCompetition)
 export class DrawCompetitionResolver {
   @Query(() => DrawCompetition)
-  async encounterCompetition(
+  async drawCompetition(
     @Args('id', { type: () => ID }) id: string
   ): Promise<DrawCompetition> {
-    let encounterCompetition = await DrawCompetition.findByPk(id);
+    let drawCompetition = await DrawCompetition.findByPk(id);
 
-    if (!encounterCompetition) {
-      encounterCompetition = await DrawCompetition.findOne({
+    if (!drawCompetition) {
+      drawCompetition = await DrawCompetition.findOne({
         where: {
           slug: id,
         },
       });
     }
 
-    if (!encounterCompetition) {
+    if (!drawCompetition) {
       throw new NotFoundException(id);
     }
-    return encounterCompetition;
+    return drawCompetition;
   }
 
   @Query(() => [DrawCompetition])
-  async encounterCompetitions(
+  async drawCompetitions(
     @Args() listArgs: ListArgs
   ): Promise<DrawCompetition[]> {
     return DrawCompetition.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => SubEventCompetition)
-  async subEvent(
-    @Parent() encounter: DrawCompetition
+  async subEventCompetition(
+    @Parent() draw: DrawCompetition
   ): Promise<SubEventCompetition> {
-    return encounter.getSubEvent();
+    return draw.getSubEvent();
   }
 
   // @Mutation(returns => DrawCompetition)
