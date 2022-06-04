@@ -78,7 +78,7 @@ export class AssignTeamComponent implements OnChanges {
 
   ngOnChanges(): void {
     this.subEvents = this.subEvents.sort((a, b) => {
-      if (!a.event || !b.event) {
+      if (!a.eventCompetition || !b.eventCompetition) {
         return 0;
       }
 
@@ -87,23 +87,23 @@ export class AssignTeamComponent implements OnChanges {
       //  2. LIGA
       //  3. PROV
       // If equal sort by level
-      if (a.event.type === b.event.type) {
+      if (a.eventCompetition.type === b.eventCompetition.type) {
         return (a.level ?? 0) - (b.level ?? 0);
       }
 
-      if (a.event.type == LevelType.NATIONAL) {
+      if (a.eventCompetition.type == LevelType.NATIONAL) {
         return -1;
       }
 
-      if (b.event.type == LevelType.NATIONAL) {
+      if (b.eventCompetition.type == LevelType.NATIONAL) {
         return 1;
       }
 
-      if (a.event.type == LevelType.PROV) {
+      if (a.eventCompetition.type == LevelType.PROV) {
         return 1;
       }
 
-      if (b.event.type == LevelType.PROV) {
+      if (b.eventCompetition.type == LevelType.PROV) {
         return -1;
       }
       return 0;
@@ -470,13 +470,13 @@ export class AssignTeamComponent implements OnChanges {
     }
 
     const natSubEvents = localInstanceSubEvents
-      .filter((a) => a.event?.type == 'NATIONAL')
+      .filter((a) => a.eventCompetition?.type == 'NATIONAL')
       .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
     const ligaSubEvents = localInstanceSubEvents
-      .filter((a) => a.event?.type == 'LIGA')
+      .filter((a) => a.eventCompetition?.type == 'LIGA')
       .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
     const provSubEvents = localInstanceSubEvents
-      .filter((a) => a.event?.type == 'PROV')
+      .filter((a) => a.eventCompetition?.type == 'PROV')
       .sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
 
     this.subEvents = [...natSubEvents, ...ligaSubEvents, ...provSubEvents];

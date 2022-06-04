@@ -21,7 +21,6 @@ import { User } from '../../decorators';
 import { ListArgs, queryFixer } from '../../utils';
 
 @Resolver(() => Game)
-@Resolver(() => GamePlayer)
 export class GamesResolver {
   @Query(() => Game)
   async game(@Args('id', { type: () => ID }) id: string): Promise<Game> {

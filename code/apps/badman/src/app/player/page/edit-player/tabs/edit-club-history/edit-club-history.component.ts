@@ -1,9 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
 import { Club, Player } from '../../../../../_shared';
-import { BehaviorSubject,  map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
 import { EditClubHistoryDialogComponent } from '../../dialogs';
 
 @Component({
@@ -32,13 +37,19 @@ export class EditClubHistoryComponent implements OnInit {
             start
             end
             active
+            playerId
+            clubId
           }
         }
       }
     }
   `;
 
-  constructor(private appollo: Apollo, private dialog: MatDialog, private _snackBar: MatSnackBar) {}
+  constructor(
+    private appollo: Apollo,
+    private dialog: MatDialog,
+    private _snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.clubs$ = this.update$.pipe(
@@ -53,79 +64,88 @@ export class EditClubHistoryComponent implements OnInit {
       ),
       map((r) => r?.data?.player?.clubs.map((c) => new Club(c))),
       map((r) =>
-        r.sort((a, b) => (b?.clubMembership?.start?.getTime() ?? 0) - (a?.clubMembership?.start?.getTime() ?? 0))
+        r.sort(
+          (a, b) =>
+            (b?.clubMembership?.start?.getTime() ?? 0) -
+            (a?.clubMembership?.start?.getTime() ?? 0)
+        )
       )
     );
   }
 
   editClubMembership(club?: Club) {
     this.dialog
-      .open(EditClubHistoryDialogComponent, { data: { club }, autoFocus: false })
+      .open(EditClubHistoryDialogComponent, {
+        data: { club },
+        autoFocus: false,
+      })
       .afterClosed()
       .subscribe((r) => {
-        if (r?.action == 'update') {
-          this.appollo
-            .mutate<any>({
-              mutation: gql`
-                mutation UpdateClubMembership($clubMembership: ClubMembershipInput) {
-                  updateClubMembership(clubMembership: $clubMembership) {
-                    id
+        switch (r?.action) {
+          case 'update':
+            this.appollo
+              .mutate<{ updatePlayerClubMembership: boolean }>({
+                mutation: gql`
+                  mutation UpdatePlayerClubMembership(
+                    $data: ClubPlayerMembershipUpdateInput!
+                  ) {
+                    updatePlayerClubMembership(data: $data)
                   }
-                }
-              `,
-              variables: {
-                clubMembership: r.data,
-              },
-            })
-            .subscribe(() => {
-              this.update$.next(null);
-              this._snackBar.open('Saved', undefined, {
-                duration: 1000,
-                panelClass: 'success',
+                `,
+                variables: {
+                  data: r.data,
+                },
+              })
+              .subscribe(() => {
+                this.update$.next(null);
+                this._snackBar.open('Saved', undefined, {
+                  duration: 1000,
+                  panelClass: 'success',
+                });
               });
-            });
-        } else if (r?.action == 'delete') {
-          this.appollo
-            .mutate<any>({
-              mutation: gql`
-                mutation DeleteClubMembership($clubMembershipId: ID!) {
-                  deleteClubMembership(clubMembershipId: $clubMembershipId) {
-                    id
+            break;
+          case 'delete':
+            this.appollo
+              .mutate<{ deleteClubMembership: boolean }>({
+                mutation: gql`
+                  mutation RemovePlayerFromClub($id: ID!) {
+                    removePlayerFromClub(id: $id)
                   }
-                }
-              `,
-              variables: {
-                clubMembershipId: r.data.id,
-              },
-            })
-            .subscribe(() => {
-              this.update$.next(null);
-              this._snackBar.open('removed', undefined, {
-                duration: 1000,
-                panelClass: 'success',
+                `,
+                variables: {
+                  id: r.data.id,
+                },
+              })
+              .subscribe(() => {
+                this.update$.next(null);
+                this._snackBar.open('removed', undefined, {
+                  duration: 1000,
+                  panelClass: 'success',
+                });
               });
-            });
-        } else if (r?.action == 'create') {
-          this.appollo
-            .mutate<any>({
-              mutation: gql`
-                mutation AddClubMembership($clubMembership: ClubMembershipInput!) {
-                  addClubMembership(clubMembership: $clubMembership) {
-                    id
+            break;
+          case 'create':
+            this.appollo
+              .mutate<{ addPlayerToClub: boolean }>({
+                mutation: gql`
+                  mutation AddPlayerToClub(
+                    $data: ClubPlayerMembershipNewInput!
+                  ) {
+                    addPlayerToClub(data: $data)
                   }
-                }
-              `,
-              variables: {
-                clubMembership: { ...r.data, playerId: this.player.id },
-              },
-            })
-            .subscribe(() => {
-              this.update$.next(null);
-              this._snackBar.open('Created', undefined, {
-                duration: 1000,
-                panelClass: 'success',
+                `,
+                variables: {
+                  data: { ...r.data, playerId: this.player.id },
+                },
+              })
+              .subscribe(() => {
+                this.update$.next(null);
+                this._snackBar.open('Created', undefined, {
+                  duration: 1000,
+                  panelClass: 'success',
+                });
               });
-            });
+            break;
         }
       });
   }

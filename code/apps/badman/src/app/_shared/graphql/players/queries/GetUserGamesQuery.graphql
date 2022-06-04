@@ -42,15 +42,15 @@ query GetUserGamesQuery(
           id
           name
         }
-        draw {
+        drawCompetition {
           id
           name
-          subEvent {
+          subEventCompetition {
             id
             name
             level
             eventType
-            event {
+            eventCompetition {
               id
               slug
               type
@@ -63,13 +63,13 @@ query GetUserGamesQuery(
       tournament {
         id
         name
-        subEvent {
+        subEventTournament {
           id
           name
           level
           gameType
           eventType
-          event {
+          eventTournament {
             id
             slug
             name

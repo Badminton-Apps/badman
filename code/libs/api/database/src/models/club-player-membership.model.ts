@@ -14,7 +14,14 @@ import {
 import { BuildOptions } from 'sequelize';
 import { Club } from './club.model';
 import { Player } from './player.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 
 @Table({
   schema: 'public',
@@ -65,6 +72,16 @@ export class ClubPlayerMembership extends Model {
   @Field({ nullable: true })
   @Column
   start: Date;
-
-
 }
+
+@InputType()
+export class ClubPlayerMembershipUpdateInput extends PartialType(
+  OmitType(ClubPlayerMembership, ['createdAt', 'updatedAt'] as const),
+  InputType
+) {}
+
+@InputType()
+export class ClubPlayerMembershipNewInput extends PartialType(
+  OmitType(ClubPlayerMembershipUpdateInput, ['id'] as const),
+  InputType
+) {}

@@ -21,7 +21,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
   BeforeBulkCreate,
@@ -38,7 +38,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { SubEventType } from '../enums';
 import { UseForTeamName } from '../enums/useForTeams.enum';
@@ -141,9 +141,15 @@ export class Team extends Model {
   @BelongsTo(() => Player, 'captainId')
   captain: Player;
 
+  @Field({ nullable: true })
+  @Column
+  captainId: string;
+
+  @Field({ nullable: true })
   @Column
   email: string;
 
+  @Field({ nullable: true })
   @Column
   phone: string;
 
@@ -439,4 +445,3 @@ export class Team extends Model {
     }
   }
 }
-

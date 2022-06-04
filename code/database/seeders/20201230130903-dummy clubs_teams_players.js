@@ -114,7 +114,7 @@ module.exports = {
           });
         }
 
-        const [dbPlaces] = await queryInterface.bulkInsert(
+        await queryInterface.bulkInsert(
           {
             tableName: 'RankingPlaces',
             schema: 'ranking',
@@ -124,6 +124,18 @@ module.exports = {
             transaction: t,
           }
         );
+
+        await queryInterface.bulkInsert(
+          {
+            tableName: 'RankingLastPlaces',
+            schema: 'ranking',
+          },
+          playersRanking.flat(),
+          {
+            transaction: t,
+          }
+        );
+
 
         const clubMemberships = dummyPlayers.map((r) => {
           return {

@@ -3,6 +3,25 @@
   "sourceRoot": "apps/worker/ranking/src",
   "projectType": "application",
   "targets": {
+    "deploy": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build worker-ranking",
+          "docker build -f ./apps/worker/ranking/Dockerfile . -t worker-ranking"
+        ],
+        "parallel": false
+      }
+    },
+    "deploy-dev": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "docker build -f ./apps/worker/ranking/Dockerfile.dev . -t worker-ranking-dev"
+        ],
+        "parallel": false
+      }
+    },
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
@@ -29,8 +48,16 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
+        "buildTarget": "worker-ranking:build"
+      }
+    },
+    "serve-dev": {
+      "executor": "@nrwl/node:node",
+      "options": {
         "buildTarget": "worker-ranking:build",
-        "port": 9231
+        "inspect": "inspect",
+        "port": 9231,
+        "host": "0.0.0.0"
       }
     },
     "lint": {

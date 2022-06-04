@@ -1,25 +1,22 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PageEvent } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, SortDirection } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
+import { merge, of } from 'rxjs';
 import {
   catchError,
   debounceTime,
+  filter,
   map,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs/operators';
-import { RankingPlace, SystemService } from '../../../_shared';
+import { pageArgs, RankingPlace, SystemService } from '../../../_shared';
 
 @Component({
   templateUrl: './top-players.component.html',
@@ -36,111 +33,135 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
     'mixRank',
     'mix',
   ];
-
-  resultsLength$ = new BehaviorSubject(0);
-  pageIndex$ = new BehaviorSubject(0);
-  pageSize$ = new BehaviorSubject(10);
   filter!: FormGroup;
-  onPaginateChange = new EventEmitter<PageEvent>();
 
-  totalItems?: number;
+  resultsLength = 0;
   isLoadingResults = true;
-  cursor?: string;
-  prevCursor?: string;
-  nextCursor?: string;
+
+  pageIndex = 0;
+  pageSize = 15;
+  active = 'name';
+  direction: SortDirection = 'asc';
+
+  private manualSettingParams = false;
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private apollo: Apollo,
-    private systemService: SystemService
-  ) {}
+    private systemService: SystemService,
+    titleService: Title
+  ) {
+    titleService.setTitle('Players');
+  }
 
   ngOnInit() {
     this.filter = new FormGroup({
       gender: new FormControl('M'),
     });
+
+    this.activatedRoute.queryParams
+      .pipe(filter(() => !this.manualSettingParams))
+      .subscribe((queryParams) => {
+        this.filter.setValue({ gender: queryParams['gender'] ?? 'M' });
+
+        const order = queryParams['order'];
+        if (order?.length > 0) {
+          const [field, direction] = order.split('-');
+          this.active = field || 'name';
+          this.direction = direction || 'asc';
+        }
+
+        this.pageIndex = queryParams['page'] ?? 0;
+        this.pageSize = queryParams['take'] ?? 15;
+      });
   }
 
   ngAfterViewInit() {
+    // Link data
     this.dataSource.sort = this.sort;
-    // Reset when any filter changes
 
-    this.sort.sortChange.subscribe((r) => {
-      this.pageIndex$.next(0);
-      this.cursor = undefined;
-      this.router.navigate([], {
-        relativeTo: this.activatedRoute,
-        queryParams: { active: r.active, direction: r.direction },
-        queryParamsHandling: 'merge',
-      });
+    // Reset paginator when sort changes
+    this.sort.sortChange.subscribe(() => {
+      return this.paginator.firstPage();
     });
 
-    this.pageSize$.subscribe((r) => {
-      this.pageIndex$.next(0);
-      this.cursor = undefined;
-      this.router.navigate([], {
-        relativeTo: this.activatedRoute,
-        queryParams: { size: r },
-        queryParamsHandling: 'merge',
-      });
-    });
-
+    // Reset paginator when filter changes
     this.filter.valueChanges.subscribe(() => {
-      this.pageIndex$.next(0);
-      this.cursor = undefined;
-      this.router.navigate([], {
-        relativeTo: this.activatedRoute,
-        queryParams: { ...this.filter.value },
-        queryParamsHandling: 'merge',
-      });
+      return this.paginator.firstPage();
     });
 
-    this.onPaginateChange.subscribe((newPage: PageEvent) => {
-      this.pageSize$.next(newPage.pageSize);
-
-      const prev = newPage.previousPageIndex;
-      if (!prev) {
-        throw new Error('Previous Page Index is undefined');
-      }
-
-      if (prev < newPage.pageIndex) {
-        // We are going to the next page
-        this.prevCursor = this.cursor;
-        this.cursor = this.nextCursor;
-      } else if (prev > newPage.pageIndex) {
-        // We are going to the prev page
-        this.cursor = this.prevCursor;
-      }
-    });
-
-    combineLatest([
-      this.filter.valueChanges.pipe(startWith(this.filter.value)),
-      this.sort.sortChange.pipe(
-        startWith({ active: this.sort.active, direction: this.sort.direction })
-      ),
-      this.onPaginateChange.pipe(startWith({})),
-    ])
+    // Set the data
+    merge(this.sort.sortChange, this.paginator.page, this.filter.valueChanges)
       .pipe(
-        debounceTime(300),
-        switchMap(([filterChange, sortChange, pageChange]) => {
+        debounceTime(100),
+        tap(() => {
           this.isLoadingResults = true;
+        }),
+        startWith({}),
+        map(() => {
+          const direction = this.sort.direction === 'asc' ? 'asc' : 'desc';
+          return {
+            where: {
+              gender: this.filter.value?.gender,
+            },
+            take: this.paginator.pageSize,
+            skip: this.paginator.pageIndex * this.paginator.pageSize,
+            order: [
+              {
+                field: this.sort.active ?? 'singleRank',
+                direction,
+              },
+            ],
+          } as pageArgs;
+        }),
+        tap((args) => {
+          let order: { field: string; direction: string } | undefined =
+            undefined;
+          let orderSort: string | undefined = undefined;
 
-          // Build where query
-          const where: { [key: string]: object } = {};
-          where['gender'] = filterChange?.gender;
+          if (args.order) {
+            order = args.order[0];
+            if (order.direction !== 'asc' || order.field != 'singleRank') {
+              orderSort = order?.field
+                ? `${order.field}-${order.direction}`
+                : undefined;
+            }
+          }
 
-          // Query graph
+          this.manualSettingParams = true;
+          this.router
+            .navigate([], {
+              relativeTo: this.activatedRoute,
+              replaceUrl: true,
+              queryParams: {
+                gender: args.where?.['gender'] ,
+                take: args.take == 15 ? undefined : args.take,
+                page:
+                  this.paginator.pageIndex == 0
+                    ? undefined
+                    : this.paginator.pageIndex,
+                order: orderSort,
+              },
+              queryParamsHandling: 'merge',
+            })
+            .then(() => {
+              this.manualSettingParams = false;
+            });
+        }),
+        switchMap((args: pageArgs) => {
           return this.systemService.getPrimarySystemsWhere().pipe(
             switchMap((query) =>
               this.apollo.query<{
                 rankingSystems: {
                   id: string;
-                  lastPlaces: {
-                    total: number;
-                    edges: { cursor: string; node: RankingPlace }[];
+                  name: string;
+                  rankingLastPlaces: {
+                    count: number;
+                    rows: RankingPlace[];
                   };
                 }[];
               }>({
@@ -148,34 +169,31 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
                   query PlayerRankings(
                     $systemsWhere: JSONObject
                     $where: JSONObject
-                    $after: String
-                    $first: Int
-                    $orderBy: [RankingOrderBy]
+                    $skip: Int
+                    $take: Int
+                    $order: [SortOrderType!]
                   ) {
-                    systems(where: $systemsWhere) {
+                    rankingSystems(where: $systemsWhere) {
                       id
                       name
-                      lastPlaces(
+                      rankingLastPlaces(
                         where: $where
-                        after: $after
-                        first: $first
-                        orderBy: $orderBy
+                        skip: $skip
+                        take: $take
+                        order: $order
                       ) {
-                        total
-                        edges {
-                          cursor
-                          node {
-                            single
-                            mix
-                            double
-                            singleRank
-                            mixRank
-                            doubleRank
-                            player {
-                              fullName
-                              slug
-                              gender
-                            }
+                        count
+                        rows {
+                          single
+                          mix
+                          double
+                          singleRank
+                          mixRank
+                          doubleRank
+                          player {
+                            fullName
+                            slug
+                            gender
                           }
                         }
                       }
@@ -183,12 +201,7 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
                   }
                 `,
                 variables: {
-                  first: this.pageSize$.value,
-                  after: this.cursor,
-                  orderBy: `${sortChange.direction == 'asc' ? '' : 'reverse_'}${
-                    sortChange.active
-                  }`,
-                  where,
+                  ...args,
                   systemsWhere: query,
                 },
               })
@@ -196,27 +209,22 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
           );
         }),
         map((result) => {
-          const count = result.data.rankingSystems[0]?.lastPlaces.total || 0;
-          this.isLoadingResults = false;
-          this.resultsLength$.next(count);
-
-          if (count) {
-            this.nextCursor =
-              result.data.rankingSystems[0]?.lastPlaces.edges[
-                result.data.rankingSystems[0]?.lastPlaces.edges.length - 1
-              ].cursor;
-
-            return result.data.rankingSystems[0]?.lastPlaces.edges.map((x) => x.node);
-          } else {
-            return [];
+          this.resultsLength =
+            result?.data?.rankingSystems?.[0]?.rankingLastPlaces.count ?? 0;
+          if (this.resultsLength > 0) {
+            return result?.data?.rankingSystems?.[0]?.rankingLastPlaces.rows?.map(
+              (r) => new RankingPlace(r)
+            );
           }
+          return [];
         }),
-        catchError((error) => {
-          this.isLoadingResults = false;
-          console.error(error);
+        catchError(() => {
           return of([]);
         })
       )
-      .subscribe((data) => (this.dataSource.data = data));
+      .subscribe((data) => {
+        this.dataSource.data = data;
+        this.isLoadingResults = false;
+      });
   }
 }

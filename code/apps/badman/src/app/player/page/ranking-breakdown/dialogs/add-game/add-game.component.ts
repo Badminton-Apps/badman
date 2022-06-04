@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { v4 } from 'uuid';
 import { gql } from 'apollo-angular';
 import {
   ConfirmationDialogComponent,
   Game,
-  Guid,
   Player,
   PlayerGame,
   RankingPoint,
@@ -185,7 +185,7 @@ export class AddGameComponent implements OnInit {
     }
 
     const game = new Game({
-      id: Guid.newGuid(),
+      id: v4(),
       winner: t1won ? 1 : 0,
       rankingPoints,
       players,

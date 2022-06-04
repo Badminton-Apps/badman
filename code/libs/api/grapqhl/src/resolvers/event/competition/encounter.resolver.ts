@@ -44,7 +44,7 @@ export class EncounterCompetitionResolver {
   }
 
   @ResolveField(() => DrawCompetition)
-  async draw(
+  async drawCompetition(
     @Parent() encounter: EncounterCompetition
   ): Promise<DrawCompetition> {
     return encounter.getDraw();

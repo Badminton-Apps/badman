@@ -50,7 +50,7 @@ export class LocationService {
           clubId,
         },
       })
-      .pipe(map((x) => new Location(x.data!.addLocation)));
+      .pipe(map((x) => new Location(x.data?.addLocation)));
   }
 
   updateLocation(location: Partial<Location>) {
@@ -61,7 +61,7 @@ export class LocationService {
           location,
         },
       })
-      .pipe(map((x) => new Location(x.data!.updateLocation)));
+      .pipe(map((x) => new Location(x.data?.updateLocation)));
   }
 
   deleteLocation(locationId: string) {

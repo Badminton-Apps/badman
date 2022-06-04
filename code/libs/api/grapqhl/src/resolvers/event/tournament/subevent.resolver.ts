@@ -13,34 +13,34 @@ import { ListArgs } from '../../../utils';
 @Resolver(() => SubEventTournament)
 export class SubEventTournamentResolver {
   @Query(() => SubEventTournament)
-  async encounterTournament(
+  async subEventTournament(
     @Args('id', { type: () => ID }) id: string
   ): Promise<SubEventTournament> {
-    let encounterTournament = await SubEventTournament.findByPk(id);
+    let subEventTournament = await SubEventTournament.findByPk(id);
 
-    if (!encounterTournament) {
-      encounterTournament = await SubEventTournament.findOne({
+    if (!subEventTournament) {
+      subEventTournament = await SubEventTournament.findOne({
         where: {
           slug: id,
         },
       });
     }
 
-    if (!encounterTournament) {
+    if (!subEventTournament) {
       throw new NotFoundException(id);
     }
-    return encounterTournament;
+    return subEventTournament;
   }
 
   @Query(() => [SubEventTournament])
-  async encounterTournaments(
+  async subEventTournaments(
     @Args() listArgs: ListArgs
   ): Promise<SubEventTournament[]> {
     return SubEventTournament.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => EventTournament)
-  async event(
+  async eventTournament(
     @Parent() subEvent: SubEventTournament
   ): Promise<EventTournament> {
     return subEvent.getEvent();

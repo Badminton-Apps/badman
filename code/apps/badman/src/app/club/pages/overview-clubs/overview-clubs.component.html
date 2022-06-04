@@ -1,27 +1,19 @@
 <div class="mat-subheading-1">Clubs <badman-beta></badman-beta></div>
 
-<div layout="row" layout-fill layout-margin layout-align="start center">
-  <mat-form-field appearance="outline" fxFlex>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input />
-  </mat-form-field>
+<div fxLayout="row" fxFlexAlign="start center">
+  <form [formGroup]="this.filter" fxflex fxLayoutGap="16px">
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>Filter</mat-label>
+      <input matInput formControlName="query" placeholder="Search" #input />
+    </mat-form-field>
+  </form>
 </div>
 
-<div *ngIf="isLoadingResults">
-  <mat-progress-bar
-    mode="indeterminate"
-    *ngIf="isLoadingResults"
-  ></mat-progress-bar>
+<div *ngIf="dataSource.loading$ | async">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </div>
 
-<table
-  mat-table
-  [dataSource]="dataSource"
-  multiTemplateDataRows
-  matSort
-  [matSortActive]="active"
-  [matSortDirection]="direction"
->
+<table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort>
   <ng-container matColumnDef="name">
     <th mat-sort-header="name" mat-header-cell *matHeaderCellDef>
       {{ 'input.name' | translate }}
@@ -50,10 +42,8 @@
 </table>
 
 <mat-paginator
-  [length]="resultsLength"
-  [pageIndex]="pageIndex"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="[5, 10, 25, 50, 100]"
+  [length]="this.dataSource.count$ | async"
+  [pageSizeOptions]="[5, 10, 15, 25, 50, 100]"
 ></mat-paginator>
 
 <badman-has-claim [any]="['add:club']">

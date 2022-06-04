@@ -1,8 +1,24 @@
 import { EventCompetition, SubEventCompetition } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
-import { Args, ID, Parent, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Field,
+  ID,
+  ObjectType,
+  Parent,
+  Query,
+  Resolver,
+} from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 
+@ObjectType()
+export class PagedEventCompetition {
+  @Field()
+  count: number;
+
+  @Field(() => [EventCompetition])
+  rows: EventCompetition[];
+}
 @Resolver(() => EventCompetition)
 export class EventCompetitionResolver {
   @Query(() => EventCompetition)
@@ -25,15 +41,15 @@ export class EventCompetitionResolver {
     return eventCompetition;
   }
 
-  @Query(() => [EventCompetition])
+  @Query(() => PagedEventCompetition)
   async eventCompetitions(
     @Args() listArgs: ListArgs
-  ): Promise<EventCompetition[]> {
-    return EventCompetition.findAll(ListArgs.toFindOptions(listArgs));
+  ): Promise<{ count: number; rows: EventCompetition[] }> {
+    return EventCompetition.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
   @Query(() => [SubEventCompetition])
-  async subEvents(
+  async subEventCompetitions(
     @Parent() event: EventCompetition,
     @Args() listArgs: ListArgs
   ): Promise<SubEventCompetition[]> {
