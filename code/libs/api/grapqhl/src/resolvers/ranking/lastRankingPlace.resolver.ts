@@ -1,4 +1,4 @@
-import { RankingLastPlace, RankingSystem } from '@badman/api/database';
+import { Player, RankingLastPlace, RankingSystem } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -55,6 +55,11 @@ export class LastRankingPlaceResolver {
     @Parent() rankingPlace: RankingLastPlace
   ): Promise<RankingSystem> {
     return rankingPlace.getRankingSystem();
+  }
+
+  @ResolveField(() => Player)
+  async player(@Parent() rankingPlace: RankingLastPlace): Promise<Player> {
+    return rankingPlace.getPlayer();
   }
 
   // @Mutation(returns => LastRankingPlace)

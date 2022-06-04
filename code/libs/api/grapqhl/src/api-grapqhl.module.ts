@@ -22,7 +22,6 @@ import {
 } from './resolvers';
 import * as apm from 'elastic-apm-node';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
-import { SearchModule } from '@badman/search';
 
 @Module({
   imports: [

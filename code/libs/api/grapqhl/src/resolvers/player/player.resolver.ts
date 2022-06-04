@@ -9,8 +9,18 @@ import {
   RankingPlace,
   Team,
   TeamPlayer,
+  PagedPlayer,
+  ClubPlayer,
+  ClubPlayerMembership,
+  PlayerUpdateInput,
 } from '@badman/api/database';
-import { Logger, NotFoundException, UseGuards } from '@nestjs/common';
+import {
+  Inject,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import {
   Args,
   Field,
@@ -22,21 +32,16 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { LoggedInUser, User } from '../../decorators';
 import { ListArgs, queryFixer, WhereArgs } from '../../utils';
 
-@ObjectType()
-export class PagedPlayer {
-  @Field()
-  count: number;
-
-  @Field(() => [Player])
-  rows: Player[];
-}
-
 @Resolver(() => Player)
 export class PlayersResolver {
+  private readonly logger = new Logger(PlayersResolver.name);
+
+  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+
   @Query(() => Player)
   async player(@Args('id', { type: () => ID }) id: string): Promise<Player> {
     let player = await Player.findByPk(id);
@@ -71,6 +76,36 @@ export class PlayersResolver {
     return Player.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
+  @ResolveField(() => String)
+  async phone(@User() user: Player, @Parent() player: Player) {
+    const perm = [`details-any:player`, `${player.id}_details:player`];
+    if (user.hasAnyPermission(perm)) {
+      return player.phone;
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @ResolveField(() => String)
+  async email(@User() user: Player, @Parent() player: Player) {
+    const perm = [`details-any:player`, `${player.id}_details:player`];
+    if (user.hasAnyPermission(perm)) {
+      return player.email;
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @ResolveField(() => String)
+  async birthDate(@User() user: Player, @Parent() player: Player) {
+    const perm = [`details-any:player`, `${player.id}_details:player`];
+    if (user.hasAnyPermission(perm)) {
+      return player.birthDate;
+    } else {
+      throw new UnauthorizedException();
+    }
+  }
+
   @ResolveField(() => [Claim])
   async claims(
     @Parent() player: Player,
@@ -79,7 +114,19 @@ export class PlayersResolver {
     return player.getClaims(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [RankingLastPlace])
+  @ResolveField(() => [RankingPlace], { description: 'Default sorting: DESC' })
+  async rankingPlaces(
+    @Parent() player: Player,
+    @Args() listArgs: ListArgs
+  ): Promise<RankingPlace[]> {
+    return player.getRankingPlaces({
+      order: [['rankingDate', 'DESC']],
+      ...ListArgs.toFindOptions(listArgs),
+    });
+  }
+  @ResolveField(() => [RankingLastPlace], {
+    description: 'Default sorting: DESC',
+  })
   async rankingLastPlaces(
     @Parent() player: Player,
     @Args() listArgs: ListArgs
@@ -113,7 +160,7 @@ export class PlayersResolver {
 
     args.where = {
       ...args.where,
-      active: disabled === undefined ? true : (args.where ?? undefined),
+      active: disabled === undefined ? true : args.where ?? undefined,
     };
 
     return player.getTeams(ListArgs.toFindOptions(listArgs));
@@ -141,7 +188,46 @@ export class PlayersResolver {
   // }
 
   @Mutation(() => Player)
-  async claim(
+  async updatePlayer(
+    @User() user: Player,
+    @Args('data') data: PlayerUpdateInput
+  ) {
+    if (
+      !user.hasAnyPermission([
+        `${data.id}_edit:player`,
+        'edit-any:player',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      let club = await Player.findByPk(data.id, { transaction });
+
+      if (!club) {
+        throw new NotFoundException(data.id);
+      }
+
+      // Update club
+      const result = await club.update(data, { transaction });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
+  @Mutation(() => Player)
+  async claimAccount(
     @User() user: LoggedInUser,
     @Args('playerId') playerId: string
   ): Promise<Player> {
@@ -150,7 +236,7 @@ export class PlayersResolver {
       throw new NotFoundException(playerId);
     }
 
-    if (player.sub === user.context.sub) {
+    if (player.sub === user.sub) {
       throw new Error('You are already claimed ');
     }
 
@@ -158,7 +244,7 @@ export class PlayersResolver {
       throw new Error('Player is already claimed by someone else');
     }
 
-    player.sub = user.context.sub;
+    player.sub = user.sub;
     await player.save();
 
     return player;
@@ -188,13 +274,6 @@ export class GamePlayersResolver extends PlayersResolver {
 
     return places[0];
   }
-
-  // //   // Team Player Fields
-  // @Field({ nullable: true })
-  // end?: Date;
-  // @Field({ nullable: true })
-  // base?: boolean;
-  // @ResolveField(() => )
 }
 
 @Resolver(() => TeamPlayer)
@@ -214,3 +293,4 @@ export class TeamPlayerResolver extends PlayersResolver {
     return await RankingLastPlace.findAll(args);
   }
 }
+

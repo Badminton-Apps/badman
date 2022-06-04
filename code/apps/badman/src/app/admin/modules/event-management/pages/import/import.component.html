@@ -1,7 +1,7 @@
 <div class="mat-subheading-1">Import</div>
 <badman-upload-field (fileAdded)="this.fileAdded($event)" [status]="this.eventService.importStatus$"></badman-upload-field>
 
-<div layout="row" layout-fill layout-margin layout-align="start center">
+<div fxLayout="row" fxFill layout-margin fxFlexAlign="start center">
   <div class="progress">
     <mat-progress-bar *ngIf="!dataSource.data" mode="indeterminate"></mat-progress-bar>
   </div>

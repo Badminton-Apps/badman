@@ -7,10 +7,11 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, map, share } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Team } from '../../../models';
 import { TeamService, UserService } from '../../../services';
+import { Apollo, gql } from 'apollo-angular';
 
 @Component({
   selector: 'badman-select-team',
@@ -44,6 +45,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
 
   constructor(
     private teamService: TeamService,
+    private apollo: Apollo,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private user: UserService
@@ -74,8 +76,30 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
           if (!this.formControl.enabled) {
             this.formControl.enable();
           }
-
-          const team$ = this.teamService.getTeams(clubId).pipe(share());
+          const team$ = this.apollo
+            .query<{
+              teams: Team[];
+            }>({
+              query: gql`
+                query GetTeamsQuery($where: JSONObject) {
+                  teams(where: $where) {
+                    id
+                    slug
+                    name
+                    abbreviation
+                    type
+                    teamNumber
+                    captainId
+                  }
+                }
+              `,
+              variables: {
+                where: {
+                  active: true,
+                },
+              },
+            })
+            ?.pipe(map((x) => x.data.teams?.map((y) => new Team(y))));
 
           this.teamsF$ = team$.pipe(
             map((teams) => teams.filter((team) => team.type === 'F')),

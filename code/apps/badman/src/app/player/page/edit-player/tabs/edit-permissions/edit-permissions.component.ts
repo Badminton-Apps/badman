@@ -5,16 +5,15 @@ import {
   OnInit,
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Apollo, gql } from 'apollo-angular';
 import { combineLatest, Observable } from 'rxjs';
+import { groupBy, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 import {
-  debounceTime,
-  groupBy,
-  map,
-  mergeMap,
-  take,
-  toArray,
-} from 'rxjs/operators';
-import { Claim, ClaimService, Player } from '../../../../../_shared';
+  Claim,
+  ClaimService,
+  Player,
+  UserService,
+} from '../../../../../_shared';
 
 @Component({
   selector: 'badman-edit-permissions',
@@ -30,6 +29,8 @@ export class EditPermissionsComponent implements OnInit {
 
   constructor(
     private claimService: ClaimService,
+    private apollo: Apollo,
+    private userService: UserService,
     private _snackBar: MatSnackBar
   ) {}
 
@@ -38,10 +39,54 @@ export class EditPermissionsComponent implements OnInit {
       throw new Error('No player');
     }
 
-    this.claims$ = combineLatest([
-      this.claimService.globalUserClaims(this.player.id),
-      this.claimService.globalClaims(),
-    ]).pipe(
+    const claims$ = this.apollo
+      .query<{ claims: Claim[] }>({
+        fetchPolicy: 'no-cache',
+        query: gql`
+          query Claims($where: JSONObject) {
+            claims(where: $where) {
+              name
+              description
+              category
+              type
+              id
+            }
+          }
+        `,
+        variables: {
+          where: {
+            type: 'GLOBAL',
+          },
+        },
+      })
+      .pipe(map((x) => x.data?.claims?.map((c) => new Claim(c))));
+
+    const playerClaims$ = this.apollo
+      .query<{
+        player: { claims: Claim[] };
+      }>({
+        fetchPolicy: 'no-cache',
+        query: gql`
+          query PlayerClaims($playerId: ID!) {
+            player(id: $playerId) {
+              id
+              claims {
+                id
+                name
+                category
+                description
+                type
+              }
+            }
+          }
+        `,
+        variables: {
+          playerId: this.player.id,
+        },
+      })
+      .pipe(map((x) => x.data?.player?.claims?.map((c) => new Claim(c))));
+
+    this.claims$ = combineLatest([playerClaims$, claims$]).pipe(
       take(1),
       map(([userPerm, globalClaims]) =>
         globalClaims.map((c) => {
@@ -50,7 +95,7 @@ export class EditPermissionsComponent implements OnInit {
         })
       ),
       mergeMap((res) => res),
-      groupBy((person) => person.category ?? 'Other'),
+      groupBy((claim) => claim.category ?? 'Other'),
       mergeMap((obs) => {
         return obs.pipe(
           toArray(),
@@ -71,9 +116,30 @@ export class EditPermissionsComponent implements OnInit {
       throw new Error('No claim');
     }
 
-    this.claimService
-      .updateGlobalUserClaim(this.player.id, claim.id, checked)
-      .pipe(debounceTime(600))
+    this.apollo
+      .mutate<{ claims: Claim[] }>({
+        mutation: gql`
+          mutation ClaimPlayer(
+            $playerId: ID!
+            $claimId: ID!
+            $active: Boolean!
+          ) {
+            assignClaim(claimId: $claimId, playerId: $playerId, active: $active)
+          }
+        `,
+        variables: {
+          claimId: claim.id,
+          playerId: this.player.id,
+          active: checked,
+        },
+      })
+      .pipe(
+        take(1),
+        tap(() => {
+          this.userService.clearUserCache([this.player?.id ?? '']);
+          this.userService.reloadProfile();
+        })
+      )
       .subscribe(() => {
         this._snackBar.open('Saved', undefined, {
           duration: 1000,

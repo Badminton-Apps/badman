@@ -55,20 +55,18 @@ export class TeamAssemblyComponent implements OnInit {
 
     this.apollo
       .query<{
-        competitionEvents: { edges: { node: Partial<EventCompetition> }[] };
+        competitionEvents: { rows: Partial<EventCompetition>[] };
       }>({
         query: gql`
           query GetSubevents($year: Int!) {
             eventCompetitions(where: { startYear: $year }) {
-              edges {
-                node {
+              rows {
+                id
+                startYear
+                usedRankingAmount
+                usedRankingUnit
+                subEvents {
                   id
-                  startYear
-                  usedRankingAmount
-                  usedRankingUnit
-                  subEvents {
-                    id
-                  }
                 }
               }
             }
@@ -80,8 +78,8 @@ export class TeamAssemblyComponent implements OnInit {
       })
       .pipe(
         map((result) =>
-          result.data.competitionEvents?.edges?.map(
-            (c) => new EventCompetition(c.node)
+          result.data.competitionEvents?.rows?.map(
+            (c) => new EventCompetition(c)
           )
         )
       )
@@ -94,7 +92,7 @@ export class TeamAssemblyComponent implements OnInit {
   encounterSelected(encounter: CompetitionEncounter) {
     this.selectedEventControl?.setValue(
       this.events?.find((e) =>
-        e.subEvents?.find((s) => s.id === encounter.draw?.subeventId)
+        e.subEvents?.find((s) => s.id === encounter.drawCompetition?.subeventId)
       )
     );
   }

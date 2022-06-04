@@ -1,10 +1,20 @@
-import { Claim } from '@badman/api/database';
-import { NotFoundException } from '@nestjs/common';
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
+import { Claim, Player } from '@badman/api/database';
+import {
+  Inject,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Sequelize } from 'sequelize-typescript';
+import { User } from '../../decorators';
 import { ListArgs, queryFixer } from '../../utils';
 
 @Resolver(() => Claim)
 export class ClaimResolver {
+  private readonly logger = new Logger(ClaimResolver.name);
+  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+
   @Query(() => Claim)
   async claim(@Args('id', { type: () => ID }) id: string): Promise<Claim> {
     let claim = await Claim.findByPk(id);
@@ -23,9 +33,48 @@ export class ClaimResolver {
     return claim;
   }
 
-  @Query(() => [Claim])
+  @Query(() => [Claim]) 
   async claims(@Args() listArgs: ListArgs): Promise<Claim[]> {
     return Claim.findAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @Mutation(() => Boolean)
+  async assignClaim(
+    @User() user: Player,
+    @Args('claimId', { type: () => ID }) claimId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('active') active: boolean
+  ): Promise<boolean> {
+    if (!user.hasAnyPermission([`edit:claims`])) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit claims`
+      );
+    }
+
+    const transaction = await this._sequelize.transaction();
+    try {
+      let player = await Player.findByPk(playerId, {
+        transaction,
+      });
+
+      if (!player) {
+        throw new NotFoundException(`${Player.name}: ${playerId}`);
+      }
+
+      if (active) {
+        await player.addClaim(claimId, { transaction });
+      } else {
+        await player.removeClaim(claimId, { transaction });
+      }
+
+      await transaction.commit();
+      return true;
+
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
   }
 
   // @Mutation(returns => Claim)

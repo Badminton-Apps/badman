@@ -48,7 +48,15 @@ import {
 } from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { Team } from './team.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
+import { ClubPlayer } from '../_interception';
 
 @Table({
   timestamps: true,
@@ -161,7 +169,7 @@ export class Player extends Model {
   @BelongsToMany(() => Team, () => TeamPlayerMembership)
   teams: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
-  @Field(() => [Club], { nullable: true })
+  @Field(() => [ClubPlayer], { nullable: true })
   @BelongsToMany(() => Club, () => ClubPlayerMembership)
   clubs: (Club & { ClubMembership: ClubPlayerMembership })[];
 
@@ -180,7 +188,7 @@ export class Player extends Model {
   // Team Player Fields
   @Field({ nullable: true, description: 'Team Player end date' })
   end?: Date;
-  @Field({ nullable: true, description: 'Team Player start date'  })
+  @Field({ nullable: true, description: 'Team Player start date' })
   base?: boolean;
 
   // Has many RankingPoints
@@ -344,25 +352,60 @@ export class Player extends Model {
     } as RankingPlace;
   }
 
-  async hasAnyPermission (requiredPermissions: string[]) {
+  async hasAnyPermission(requiredPermissions: string[]) {
     const claims = await this.getClaims();
     if (claims === null) {
       return false;
     }
 
-    return requiredPermissions.some(perm =>
-      claims.some(claim => claim.name === perm)      
+    return requiredPermissions.some((perm) =>
+      claims.some((claim) => claim.name === perm)
     );
   }
 
-  async hasAllPermission (requiredPermissions: string[]) {
+  async hasAllPermission(requiredPermissions: string[]) {
     const claims = await this.getClaims();
     if (claims === null) {
       return false;
     }
 
-    return requiredPermissions.every(perm =>
-      claims.some(claim => claim.name === perm)
+    return requiredPermissions.every((perm) =>
+      claims.some((claim) => claim.name === perm)
     );
   }
 }
+
+@ObjectType()
+export class PagedPlayer {
+  @Field()
+  count: number;
+
+  @Field(() => [Player])
+  rows: Player[];
+}
+
+@InputType()
+export class PlayerUpdateInput extends PartialType(
+  OmitType(Player, [
+    'createdAt',
+    'updatedAt',
+    'teams',
+    'myTeams',
+    'clubs',
+    'roles',
+    'claims',
+    'comments',
+    'rankingPlaces',
+    'rankingPoints',
+    'rankingLastPlaces',
+    'entries',
+    'games',
+  ] as const),
+  InputType
+) {}
+
+@InputType()
+export class PlayerNewInput extends PartialType(
+  OmitType(PlayerUpdateInput, ['id'] as const),
+  InputType
+) {}

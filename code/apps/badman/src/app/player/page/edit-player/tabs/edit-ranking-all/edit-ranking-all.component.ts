@@ -48,7 +48,7 @@ export class EditRankingAllComponent implements OnInit {
                     id
                     rankingSystem
                     updateIntervalAmount
-                    groups {
+                    rankingGroups {
                       id
                       name
                       subEventCompetitions(take: 1) {

@@ -15,7 +15,7 @@ export class EventCompetition extends Event {
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
     this.subEvents = args?.subEvents
-      ?.map((s) => new CompetitionSubEvent({ ...s, event: this }))
+      ?.map((s) => new CompetitionSubEvent({ ...s, eventCompetition: this }))
       .sort((a, b) => {
         return (a?.level ?? 0) - (b?.level ?? 0);
       })

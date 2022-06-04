@@ -11,7 +11,7 @@ module.exports = {
 
       const globalClaims = [
         ['add', 'club', 'Create new club', 'club', 'GLOBAL'],
-        [`remove`, `club`, 'Delete a club', 'CLUB', 'GLOBAL'],
+        [`remove`, `club`, 'Delete a club', 'club', 'GLOBAL'],
         ['edit-any', 'club', 'Edit any club', 'club', 'GLOBAL'],
         ['add-any', 'role', 'Add any role to club', 'club', 'GLOBAL'],
         ['edit-any', 'role', 'Edits any role of club', 'club', 'GLOBAL'],
@@ -33,6 +33,7 @@ module.exports = {
           'GLOBAL',
         ],
 
+        
         ['link', 'player', 'Can link players to login', 'player', 'GLOBAL'],
         ['add', 'player', 'Manually add player', 'player', 'GLOBAL'],
         ['merge', 'player', 'Can merge players', 'player', 'GLOBAL'],
@@ -53,8 +54,8 @@ module.exports = {
           'GLOBAL',
         ],
         [
-          'competition-status',
-          'player',
+          'status',
+          'competition',
           'Can change competition status',
           'player',
           'GLOBAL',
@@ -120,7 +121,7 @@ module.exports = {
           'enlist-any',
           'team',
           'Enlist any team in to competition',
-          'team',
+          'enlist',
           'GLOBAL',
         ],
         [
@@ -139,6 +140,13 @@ module.exports = {
           'GLOBAL',
         ],
         ['view', 'entries', 'Can view the entries', 'competition', 'GLOBAL'],
+        [
+          'change-any',
+          'encounter',
+          'Change the date/time of a encounter',
+          'event',
+          'GLOBAL',
+        ],
       ];
 
       const clubClaims = [
@@ -174,12 +182,12 @@ module.exports = {
         ['enter', 'results', 'Enters competition results', 'club', 'TEAM'],
         ['edit', 'team', 'Edit competition team', 'club', 'TEAM'],
         ['add', 'team', 'Adds competition team to club', 'club', 'TEAM'],
-        ['enlist', 'team', 'Enlists competition team', 'club', 'TEAM'],
+        ['enlist', 'team', 'Enlists competition team', 'enlist', 'TEAM'],
         [
           'change',
           'encounter',
           'Change the date/time of a encounter',
-          'club',
+          'event',
           'TEAM',
         ],
       ];
