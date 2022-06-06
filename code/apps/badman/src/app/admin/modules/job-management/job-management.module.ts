@@ -14,10 +14,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CovalentDataTableModule } from '@covalent/core/data-table';
-import { CovalentBarEchartsModule } from '@covalent/echarts/bar';
-import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
-import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
 import { SharedModule } from '../../../_shared';
 import { JobManagementRoutingModule } from './job-management-routing.module';
 import { OverviewJobsComponent } from './pages/overview-jobs/overview-jobs.component';
@@ -37,18 +33,11 @@ const materialModules = [
   MatOptionModule,
   MatSelectModule,
   MatDatepickerModule,
-  MatTooltipModule
-];
-
-const covalentModules = [
-  CovalentBaseEchartsModule,
-  CovalentBarEchartsModule,
-  CovalentTooltipEchartsModule,
-  CovalentDataTableModule,
+  MatTooltipModule,
 ];
 
 @NgModule({
   declarations: [OverviewJobsComponent],
-  imports: [SharedModule, ...materialModules, ...covalentModules, JobManagementRoutingModule],
+  imports: [SharedModule, ...materialModules, JobManagementRoutingModule],
 })
 export class JobManagementModule {}

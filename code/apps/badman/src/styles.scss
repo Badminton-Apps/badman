@@ -1,6 +1,8 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @import 'app/_shared/variables.scss';
+@import '@covalent/core/theming/all-theme';
+
 // Plus imports for other components in your app.
 
 
@@ -29,7 +31,7 @@ $client-angular-theme: mat-light-theme((color: (primary: $client-angular-primary
 */
 
 @import './app/modules/';
-@include app-competition-encounter-theme($client-angular-theme);
+@include badman-competition-encounter-theme($client-angular-theme);
 
 /* You can add global styles to this file, and also import other style files */
 html {

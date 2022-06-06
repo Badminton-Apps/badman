@@ -1,4 +1,8 @@
-import { EventCompetition, SubEventCompetition } from '@badman/api/database';
+import {
+  Comment,
+  EventCompetition,
+  SubEventCompetition,
+} from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -55,6 +59,14 @@ export class EventCompetitionResolver {
     @Args() listArgs: ListArgs
   ): Promise<SubEventCompetition[]> {
     return event.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [Comment])
+  async comments(
+    @Parent() event: EventCompetition,
+    @Args() listArgs: ListArgs
+  ): Promise<Comment[]> {
+    return event.getComments(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => EventCompetition)

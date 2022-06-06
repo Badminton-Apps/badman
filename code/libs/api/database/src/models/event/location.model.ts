@@ -119,16 +119,16 @@ export class Location extends Model {
   @HasMany(() => Availability)
   availabilities: Availability[];
 
-  // Has many Availibilty
-  getAvailibilties!: HasManyGetAssociationsMixin<Availability>;
-  setAvailibilties!: HasManySetAssociationsMixin<Availability, string>;
-  addAvailibilties!: HasManyAddAssociationsMixin<Availability, string>;
-  addAvailibilty!: HasManyAddAssociationMixin<Availability, string>;
-  removeAvailibilty!: HasManyRemoveAssociationMixin<Availability, string>;
-  removeAvailibilties!: HasManyRemoveAssociationsMixin<Availability, string>;
-  hasAvailibilty!: HasManyHasAssociationMixin<Availability, string>;
-  hasAvailibilties!: HasManyHasAssociationsMixin<Availability, string>;
-  countAvailibilties!: HasManyCountAssociationsMixin;
+  // Has many Availability
+  getAvailabilities!: HasManyGetAssociationsMixin<Availability>;
+  setAvailabilities!: HasManySetAssociationsMixin<Availability, string>;
+  addAvailabilities!: HasManyAddAssociationsMixin<Availability, string>;
+  addAvailability!: HasManyAddAssociationMixin<Availability, string>;
+  removeAvailability!: HasManyRemoveAssociationMixin<Availability, string>;
+  removeAvailabilities!: HasManyRemoveAssociationsMixin<Availability, string>;
+  hasAvailability!: HasManyHasAssociationMixin<Availability, string>;
+  hasAvailabilities!: HasManyHasAssociationsMixin<Availability, string>;
+  countAvailabilities!: HasManyCountAssociationsMixin;
 
   // Belongs to many Team
   getTeams!: BelongsToManyGetAssociationsMixin<Team>;

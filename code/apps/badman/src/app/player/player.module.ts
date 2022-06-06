@@ -17,12 +17,13 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
-import { CovalentLineEchartsModule } from '@covalent/echarts/line';
-import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { MomentModule } from 'ngx-moment';
-import { GameResultModule, SelctionComponentsModule, SharedModule } from '../_shared';
+import {
+  GameResultModule,
+  SelctionComponentsModule,
+  SharedModule,
+} from '../_shared';
 import {
   ChartComponent,
   EditClubHistoryComponent,
@@ -42,10 +43,14 @@ import {
   TopPlayersComponent,
   GamesResultComponent,
   GroupCompetitionComponent,
-  GroupTournamentComponent
+  GroupTournamentComponent,
 } from './page';
 import { EditRankingPlaceDialogComponent } from './page/edit-player/dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
-import { ListGamesComponent, PeriodSelectionComponent, RankingBreakdownComponent } from './page/ranking-breakdown';
+import {
+  ListGamesComponent,
+  PeriodSelectionComponent,
+  RankingBreakdownComponent,
+} from './page/ranking-breakdown';
 import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
 import { PlayerRoutingModule } from './player-routing.module';
 import { ShowRankingComponent } from './page/player';
@@ -70,9 +75,12 @@ const materialModules = [
   MatDatepickerModule,
 ];
 
-const covalentModules = [CovalentBaseEchartsModule, CovalentLineEchartsModule, CovalentTooltipEchartsModule];
-
-const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, SelctionComponentsModule];
+const otherModules = [
+  MomentDateModule,
+  MomentModule,
+  InfiniteScrollModule,
+  SelctionComponentsModule,
+];
 
 @NgModule({
   declarations: [
@@ -105,7 +113,6 @@ const otherModules = [MomentDateModule, MomentModule, InfiniteScrollModule, Selc
   imports: [
     SharedModule,
     ...materialModules,
-    ...covalentModules,
     ...otherModules,
     GameResultModule,
     PlayerRoutingModule,

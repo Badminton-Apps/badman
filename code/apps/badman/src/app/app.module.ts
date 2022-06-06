@@ -41,6 +41,7 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ApolloModule } from 'apollo-angular';
 import { CookieService } from 'ngx-cookie-service';
 import {
   NgcCookieConsentConfig,
@@ -119,6 +120,7 @@ const cookieConfig: NgcCookieConsentConfig = {
     ...appModules,
     ...translateModules,
     NgcCookieConsentModule.forRoot(cookieConfig),
+    ApolloModule,
     ApmModule,
     MarkdownModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {

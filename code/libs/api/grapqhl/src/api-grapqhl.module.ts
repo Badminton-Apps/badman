@@ -11,10 +11,12 @@ import {
 import * as Redis from 'ioredis';
 import { join } from 'path';
 import {
+  AvailabilityModule,
   ClubModule,
   CommentModule,
   EventModule,
   GameModule,
+  LocationModule,
   PlayerModule,
   RankingModule,
   SecurityModule,
@@ -64,6 +66,8 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
     ClubModule,
     CommentModule,
     RankingModule,
+    LocationModule,
+    AvailabilityModule,
     EventModule,
     SecurityModule,
     GameModule,

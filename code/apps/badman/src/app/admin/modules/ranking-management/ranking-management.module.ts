@@ -13,10 +13,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { CovalentDataTableModule } from '@covalent/core/data-table';
-import { CovalentBarEchartsModule } from '@covalent/echarts/bar';
-import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
-import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
 import { SharedModule } from '../../../_shared';
 import { RankingSystemFieldsComponent } from './components/ranking-system-fields/ranking-system-fields.component';
 import {
@@ -46,12 +42,6 @@ const materialModules = [
   MatDatepickerModule
 ];
 
-const covalentModules = [
-  CovalentBaseEchartsModule,
-  CovalentBarEchartsModule,
-  CovalentTooltipEchartsModule,
-  CovalentDataTableModule,
-];
 
 @NgModule({
   declarations: [
@@ -63,6 +53,6 @@ const covalentModules = [
     GraphsComponent,
     GraphComponent,
   ],
-  imports: [SharedModule, ...materialModules, ...covalentModules, RankingManagementRoutingModule],
+  imports: [SharedModule, ...materialModules, RankingManagementRoutingModule],
 })
 export class RankingManagementModule {}
