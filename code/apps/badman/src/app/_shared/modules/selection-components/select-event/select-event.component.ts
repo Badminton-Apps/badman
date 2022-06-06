@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EventCompetition, EventType } from '../../../models';
@@ -22,18 +29,31 @@ export class SelectEventComponent implements OnInit, OnDestroy {
 
   events$!: Observable<EventCompetition[]>;
 
-  constructor(private eventService: EventService) {}
+  constructor(private apollo: Apollo) {}
 
   ngOnInit() {
     this.formGroup.addControl(this.controlName, this.formControl);
 
-    this.events$ = this.eventService
-      .getEvents({
-        first: 100,
-        type: EventType.COMPETITION,
-        where: { allowEnlisting: true, type: 'PROV' },
+    this.events$ = this.apollo
+      .query<{
+        eventCompetitions: {
+          count: number;
+          rows: Partial<EventCompetition>[];
+        };
+      }>({
+        query: gql`
+        query GetEventsOpenForEnlisting {
+          eventCompetitions(where: { allowEnlisting: true, type: 'PROV' }) {
+            id
+            name
+          }
+        }`,
       })
-      .pipe(map((r) => r?.events.map((r) => r.node) ?? []));
+      .pipe(
+        map(({ data }) =>
+          data.eventCompetitions.rows?.map((e) => new EventCompetition(e))
+        )
+      );
   }
 
   ngOnDestroy() {

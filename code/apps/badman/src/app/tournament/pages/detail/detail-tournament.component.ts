@@ -84,21 +84,21 @@ export class DetailTournamentComponent implements OnInit {
 
     this.subEventsM_S$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'M' && se.gameType === GameType.S
         )
       )
     );
     this.subEventsF_S$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'F' && se.gameType === GameType.S
         )
       )
     );
     this.subEventsMX_S$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'MX' && se.gameType === GameType.S
         )
       )
@@ -106,21 +106,21 @@ export class DetailTournamentComponent implements OnInit {
 
     this.subEventsM_D$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'M' && se.gameType === GameType.D
         )
       )
     );
     this.subEventsF_D$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'F' && se.gameType === GameType.D
         )
       )
     );
     this.subEventsMX_D$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'MX' && se.gameType === GameType.D
         )
       )
@@ -128,21 +128,21 @@ export class DetailTournamentComponent implements OnInit {
 
     this.subEventsM_MX$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'M' && se.gameType === GameType.MX
         )
       )
     );
     this.subEventsF_MX$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'F' && se.gameType === GameType.MX
         )
       )
     );
     this.subEventsMX_MX$ = this.event$.pipe(
       map((event) =>
-        event.subEvents?.filter(
+        event.subEventCompetitions?.filter(
           (se) => se.eventType === 'MX' && se.gameType === GameType.MX
         )
       )

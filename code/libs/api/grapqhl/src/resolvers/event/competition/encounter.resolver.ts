@@ -6,13 +6,24 @@ import {
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,
+  Field,
   ID,
+  ObjectType,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
+
+@ObjectType()
+export class PagedEncounterCompetition {
+  @Field()
+  count: number;
+
+  @Field(() => [EncounterCompetition])
+  rows: EncounterCompetition[];
+}
 
 @Resolver(() => EncounterCompetition)
 export class EncounterCompetitionResolver {
@@ -36,18 +47,20 @@ export class EncounterCompetitionResolver {
     return encounterCompetition;
   }
 
-  @Query(() => [EncounterCompetition])
+  @Query(() => PagedEncounterCompetition)
   async encounterCompetitions(
     @Args() listArgs: ListArgs
-  ): Promise<EncounterCompetition[]> {
-    return EncounterCompetition.findAll(ListArgs.toFindOptions(listArgs));
+  ): Promise<{ count: number; rows: EncounterCompetition[] }> {
+    return EncounterCompetition.findAndCountAll(
+      ListArgs.toFindOptions(listArgs)
+    );
   }
 
   @ResolveField(() => DrawCompetition)
   async drawCompetition(
     @Parent() encounter: EncounterCompetition
   ): Promise<DrawCompetition> {
-    return encounter.getDraw();
+    return encounter.getDrawCompetition();
   }
 
   @ResolveField(() => Team)

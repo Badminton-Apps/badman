@@ -63,18 +63,18 @@ export class TeamEnrollmentsComponent implements OnInit {
       ),
       map((result) => new EventCompetition(result.data.competitionEvent)),
       map((event) => {
-        event.subEvents = event.subEvents ?? [];
+        event.subEventCompetitions = event.subEventCompetitions ?? [];
 
         // Sort by level
-        event.subEvents = event.subEvents.sort(sortSubEvents);
+        event.subEventCompetitions = event.subEventCompetitions.sort(sortSubEvents);
 
         // Filter entries
-        event.subEvents = event.subEvents.map((subEvent) => {
+        event.subEventCompetitions = event.subEventCompetitions.map((subEvent) => {
           subEvent.entries = subEvent.entries?.filter((entry) => entry.meta !== null);
           return subEvent;
         });
 
-        return event.subEvents;
+        return event.subEventCompetitions;
       }),
       tap((e) => console.log(e))
     );

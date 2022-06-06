@@ -72,7 +72,7 @@ export class EncounterCompetition extends Model {
     foreignKey: 'drawId',
     onDelete: 'CASCADE',
   })
-  draw?: DrawCompetition;
+  drawCompetition?: DrawCompetition;
 
   @ForeignKey(() => DrawCompetition)
   @Field({ nullable: true })
@@ -132,8 +132,8 @@ export class EncounterCompetition extends Model {
   countGames!: HasManyCountAssociationsMixin;
 
   // Belongs to Draw
-  getDraw!: BelongsToGetAssociationMixin<DrawCompetition>;
-  setDraw!: BelongsToSetAssociationMixin<DrawCompetition, string>;
+  getDrawCompetition!: BelongsToGetAssociationMixin<DrawCompetition>;
+  setDrawCompetition!: BelongsToSetAssociationMixin<DrawCompetition, string>;
 
   // Belongs to Home
   getHome!: BelongsToGetAssociationMixin<Team>;

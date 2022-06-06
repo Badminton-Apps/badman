@@ -43,7 +43,7 @@ export class EventEntryResolver {
     return EventEntry.findAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [SubEventCompetition])
+  @ResolveField(() => SubEventCompetition)
   async competitionSubEvent(
     @Parent() eventEntry: EventEntry
   ): Promise<SubEventCompetition> {

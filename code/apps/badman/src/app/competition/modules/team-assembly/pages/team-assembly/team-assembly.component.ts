@@ -30,7 +30,6 @@ export class TeamAssemblyComponent implements OnInit {
   constructor(
     private assemblyService: TeamAssemblyService,
     private apollo: Apollo,
-    private encoutnerService: EncounterService,
     private systemService: SystemService,
     private pdfService: PdfService,
     private titleService: Title,
@@ -55,7 +54,7 @@ export class TeamAssemblyComponent implements OnInit {
 
     this.apollo
       .query<{
-        competitionEvents: { rows: Partial<EventCompetition>[] };
+        eventCompetitions: { rows: Partial<EventCompetition>[] };
       }>({
         query: gql`
           query GetSubevents($year: Int!) {
@@ -65,7 +64,7 @@ export class TeamAssemblyComponent implements OnInit {
                 startYear
                 usedRankingAmount
                 usedRankingUnit
-                subEvents {
+                subEventCompetitions {
                   id
                 }
               }
@@ -78,7 +77,7 @@ export class TeamAssemblyComponent implements OnInit {
       })
       .pipe(
         map((result) =>
-          result.data.competitionEvents?.rows?.map(
+          result.data.eventCompetitions?.rows?.map(
             (c) => new EventCompetition(c)
           )
         )
@@ -92,7 +91,9 @@ export class TeamAssemblyComponent implements OnInit {
   encounterSelected(encounter: CompetitionEncounter) {
     this.selectedEventControl?.setValue(
       this.events?.find((e) =>
-        e.subEvents?.find((s) => s.id === encounter.drawCompetition?.subeventId)
+        e.subEventCompetitions?.find(
+          (s) => s.id === encounter.drawCompetition?.subeventId
+        )
       )
     );
   }
@@ -108,8 +109,33 @@ export class TeamAssemblyComponent implements OnInit {
 
     // Get info
     const encounterId = this.formGroup.get('encounter')?.value;
-    const encounter = await lastValueFrom(
-      this.encoutnerService.getEncounter(encounterId)
+    const result = await lastValueFrom(
+      this.apollo.query<{
+        encounterCompetition: Partial<CompetitionEncounter>;
+      }>({
+        query: gql`
+          query GetEncounterQuery($id: ID!) {
+            encounterCompetition(id: $id) {
+              id
+              home {
+                id
+                name
+              }
+              away {
+                id
+                name
+              }
+            }
+          }
+        `,
+        variables: {
+          id: encounterId,
+        },
+      })
+    );
+
+    const encounter = new CompetitionEncounter(
+      result.data.encounterCompetition
     );
     const fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${
       encounter?.home?.name

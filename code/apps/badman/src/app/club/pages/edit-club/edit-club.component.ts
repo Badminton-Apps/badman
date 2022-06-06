@@ -8,6 +8,7 @@ import { Apollo, gql } from 'apollo-angular';
 import {
   Club,
   ClubService,
+  EventCompetition,
   EventService,
   Location,
   LocationService,
@@ -125,18 +126,36 @@ export class EditClubComponent implements OnInit {
       this.updateClub$.pipe(debounceTime(600)),
     ]).pipe(
       switchMap(([clubId, year, update]) => {
-        return this.eventService.getSubEventsCompetition(year).pipe(
-          map((events) => {
-            return [
-              clubId,
-              year,
-              update,
-              events?.flatMap((event) =>
-                event?.subEvents?.flatMap((s) => s.id)
-              ),
-            ];
+        return this.apollo
+          .query<{ eventCompetitions: { rows: EventCompetition[] } }>({
+            query: gql`
+              query GetSubevents($year: Int!) {
+                eventCompetitions(where: { startYear: $year }) {
+                  rows {
+                    id
+                    subEvents {
+                      id
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              year: year || undefined,
+            },
           })
-        );
+          .pipe(
+            map((events) => {
+              return [
+                clubId,
+                year,
+                update,
+                events.data.eventCompetitions?.rows.flatMap((event) =>
+                  event?.subEventCompetitions?.flatMap((s) => s.id)
+                ),
+              ];
+            })
+          );
       }),
       switchMap(([clubId, year, update, subEvents]) => {
         return this.clubService.getTeamsForSubEvents(clubId, subEvents);

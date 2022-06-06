@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { map } from 'rxjs/operators';
 import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
-import * as encounterQuery from '../../graphql/encounters/queries/GetEncounterQuery.graphql';
 import * as encountersQuery from '../../graphql/encounters/queries/GetEncountersQuery.graphql';
 import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.graphql';
 import { CompetitionEncounter, EncounterChange } from '../../models';
@@ -44,23 +43,7 @@ export class EncounterService {
       );
   }
 
-  getEncounter(encounterId: string) {
-    return this.apollo
-      .query<{
-        competitionEncounter: CompetitionEncounter;
-      }>({
-        query: encounterQuery,
-        variables: {
-          id: encounterId,
-        },
-      })
-      .pipe(
-        map((x) => {
-          return new CompetitionEncounter(x.data.competitionEncounter);
-        })
-      );
-  }
-
+  
   getRequests(encounterId: string) {
     return this.apollo
       .query<{

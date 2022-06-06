@@ -120,7 +120,7 @@ export class EditEventCompetitionComponent implements OnInit {
       ]),
 
       subEvents: new FormArray(
-        event.subEvents?.map((subEvent) => {
+        event.subEventCompetitions?.map((subEvent) => {
           return new FormGroup({
             id: new FormControl(subEvent.id),
             name: new FormControl(subEvent.name, Validators.required),
@@ -190,7 +190,7 @@ export class EditEventCompetitionComponent implements OnInit {
       })
     );
 
-    event.subEvents?.push(
+    event.subEventCompetitions?.push(
       new CompetitionSubEvent({
         eventCompetition: event,
       })
@@ -202,6 +202,6 @@ export class EditEventCompetitionComponent implements OnInit {
 
     subEvents.removeAt(subEvents.value.indexOf(subEvent));
 
-    event.subEvents?.splice(event.subEvents.indexOf(subEvent), 1);
+    event.subEventCompetitions?.splice(event.subEventCompetitions.indexOf(subEvent), 1);
   }
 }

@@ -8,7 +8,7 @@
 
     <div class="mat-subheading-1">Sub events</div>
 
-    <div *ngFor="let subEvent of event.subEvents; index as i">
+    <div *ngFor="let subEvent of event.subEventCompetitions; index as i">
       <badman-event-competition-level-fields
         [type]="event.type"
         [subEvent]="subEvent"

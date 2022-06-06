@@ -1,11 +1,32 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
-import { Apollo } from 'apollo-angular';
-import { Club, Comment, EventCompetition, EventService, EventType, SubEvent, Team } from '../../../../../_shared';
-import { BehaviorSubject, combineLatest, lastValueFrom, Observable, of, Subject, withLatestFrom } from 'rxjs';
+import { Apollo, gql } from 'apollo-angular';
+import {
+  Club,
+  Comment,
+  EventCompetition,
+  EventService,
+  EventType,
+  SubEvent,
+  Team,
+} from '../../../../../_shared';
+import {
+  BehaviorSubject,
+  combineLatest,
+  lastValueFrom,
+  Observable,
+  of,
+  Subject,
+  withLatestFrom,
+} from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -71,7 +92,11 @@ export class TeamEnrollmentComponent implements OnInit {
   }>;
   form$!: Observable<any>;
 
-  constructor(private eventService: EventService, private apollo: Apollo, private snackbar: MatSnackBar) {}
+  constructor(
+    private eventService: EventService,
+    private apollo: Apollo,
+    private snackbar: MatSnackBar
+  ) {}
 
   async ngOnInit() {
     this.enabledProvincialControl = new FormControl(false);
@@ -94,13 +119,18 @@ export class TeamEnrollmentComponent implements OnInit {
       { validators: this.hasAnyLevelSelected }
     );
 
-    this.form$ = this.formGroup.valueChanges.pipe(debounceTime(500), shareReplay(1));
+    this.form$ = this.formGroup.valueChanges.pipe(
+      debounceTime(500),
+      shareReplay(1)
+    );
 
     this.setTeams();
 
     this.show$ = combineLatest([
       this.updateSubEvents.pipe(
-        withLatestFrom(combineLatest([this.subEventM$, this.subEventF$, this.subEventMX$])),
+        withLatestFrom(
+          combineLatest([this.subEventM$, this.subEventF$, this.subEventMX$])
+        ),
         shareReplay(1)
       ),
       this.teamsM$,
@@ -108,17 +138,25 @@ export class TeamEnrollmentComponent implements OnInit {
       this.teamsMX$,
       this.club$,
     ]).pipe(
-      map(([[_, [subEventM, subEventF, subEventMX]], teamsM, teamsF, teamsMX, club]) => {
-        return {
+      map(
+        ([
+          [_, [subEventM, subEventF, subEventMX]],
           teamsM,
           teamsF,
           teamsMX,
-          subEventM,
-          subEventF,
-          subEventMX,
           club,
-        };
-      })
+        ]) => {
+          return {
+            teamsM,
+            teamsF,
+            teamsMX,
+            subEventM,
+            subEventF,
+            subEventMX,
+            club,
+          };
+        }
+      )
     );
   }
 
@@ -138,15 +176,17 @@ export class TeamEnrollmentComponent implements OnInit {
             subEventId: event.subEventId,
           },
         })
-        .pipe(tap(() => {
-          // Invalidate Club Cache
-          const normalized = apolloCache.identify({
-            id: event.team.clubId,
-            __typename: 'Club',
-          });
-          apolloCache.evict({ id: normalized });
-          apolloCache.gc();
-        }))
+        .pipe(
+          tap(() => {
+            // Invalidate Club Cache
+            const normalized = apolloCache.identify({
+              id: event.team.clubId,
+              __typename: 'Club',
+            });
+            apolloCache.evict({ id: normalized });
+            apolloCache.gc();
+          })
+        )
     );
   }
 
@@ -155,19 +195,31 @@ export class TeamEnrollmentComponent implements OnInit {
     try {
       await lastValueFrom(
         this.club$.pipe(
-          switchMap((club) => this.eventService.finishEnrollment(club, this.competitionYear)),
+          switchMap((club) =>
+            this.eventService.finishEnrollment(club, this.competitionYear)
+          ),
           take(1)
         )
       );
-      this.snackbar.open('Submitted', undefined, { panelClass: 'success', duration: 2000 });
+      this.snackbar.open('Submitted', undefined, {
+        panelClass: 'success',
+        duration: 2000,
+      });
     } catch (e) {
-      this.snackbar.open('Error', undefined, { panelClass: 'error', duration: 2000 });
+      this.snackbar.open('Error', undefined, {
+        panelClass: 'error',
+        duration: 2000,
+      });
     } finally {
       this.enrolling = false;
     }
   }
 
-  async locationAssigned(event: { locationId: string; eventId: string; use: boolean }) {
+  async locationAssigned(event: {
+    locationId: string;
+    eventId: string;
+    use: boolean;
+  }) {
     await this.apollo
       .mutate({
         mutation: AssignLocationEvent,
@@ -210,91 +262,56 @@ export class TeamEnrollmentComponent implements OnInit {
       shareReplay(1)
     );
 
-    this.teamsF$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'F') ?? []));
+    this.teamsF$ = this.club$.pipe(
+      map((r) => r.teams?.filter((s) => s.type == 'F') ?? [])
+    );
 
-    this.teamsM$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'M') ?? []));
+    this.teamsM$ = this.club$.pipe(
+      map((r) => r.teams?.filter((s) => s.type == 'M') ?? [])
+    );
 
-    this.teamsMX$ = this.club$.pipe(map((r) => r.teams?.filter((s) => s.type == 'MX') ?? []));
+    this.teamsMX$ = this.club$.pipe(
+      map((r) => r.teams?.filter((s) => s.type == 'MX') ?? [])
+    );
   }
 
   private async initializeEvents() {
     const club = await lastValueFrom(this.club$.pipe(take(1)));
 
     if (!club || !club.id) {
-      return
+      return;
     }
 
-    const provEvent$ = this.formGroup.get('enabledProvincial')?.value
-      ? this.eventService
-          .getCompetitionEvent(this.formGroup.value.event.id, {
-            clubId: club.id,
-            includeComments: true,
-          })
-          .pipe(take(1))
-      : of(null);
+    const provEvent$ = this._getProvEvent(club.id);
+    const ligaEvent$ = this._getLigaEvent(club.id);
+    const natEvent$ = this._getNatEvent(club.id);
 
-    const ligaEvent$ = this.formGroup.get('enabledLiga')?.value
-      ? this.eventService
-          .getEvents({
-            type: EventType.COMPETITION,
-            first: 1,
-            where: {
-              type: 'LIGA',
-              allowEnlisting: true,
-            },
-            clubId: club.id,
-            includeComments: true,
-            includeSubEvents: true,
-          })
-          .pipe(
-            map((events) => ((events?.total ?? 0) > 0 ? (events?.events[0].node as EventCompetition) : null)),
-            take(1)
-          )
-      : of(null);
-
-    const natEvent$ = this.formGroup.get('enabledNational')?.value
-      ? this.eventService
-          .getEvents({
-            type: EventType.COMPETITION,
-            first: 1,
-            where: {
-              type: 'NATIONAL',
-              allowEnlisting: true,
-            },
-            clubId: club.id,
-            includeComments: true,
-            includeSubEvents: true,
-          })
-          .pipe(
-            map((events) => ((events?.total ?? 0) > 0 ? (events?.events[0].node as EventCompetition) : null)),
-            take(1)
-          )
-      : of(null);
-
-    const [prov, liga, nat] = await lastValueFrom(combineLatest([provEvent$, ligaEvent$, natEvent$]));
+    const [[prov], [liga], [nat]] = await lastValueFrom(
+      combineLatest([provEvent$, ligaEvent$, natEvent$])
+    );
 
     const year = prov?.startYear ?? liga?.startYear ?? nat?.startYear;
-    if (!year){
+    if (!year) {
       throw new Error('No year found');
     }
     this.competitionYear = year;
 
     this.subEventF$.next([
-      ...(nat?.subEvents?.filter((s) => s.eventType == 'F') ?? []),
-      ...(liga?.subEvents?.filter((s) => s.eventType == 'F') ?? []),
-      ...(prov?.subEvents?.filter((s) => s.eventType == 'F') ?? []),
+      ...(nat?.subEventCompetitions?.filter((s) => s.eventType == 'F') ?? []),
+      ...(liga?.subEventCompetitions?.filter((s) => s.eventType == 'F') ?? []),
+      ...(prov?.subEventCompetitions?.filter((s) => s.eventType == 'F') ?? []),
     ]);
 
     this.subEventM$.next([
-      ...(nat?.subEvents?.filter((s) => s.eventType == 'M') ?? []),
-      ...(liga?.subEvents?.filter((s) => s.eventType == 'M') ?? []),
-      ...(prov?.subEvents?.filter((s) => s.eventType == 'M') ?? []),
+      ...(nat?.subEventCompetitions?.filter((s) => s.eventType == 'M') ?? []),
+      ...(liga?.subEventCompetitions?.filter((s) => s.eventType == 'M') ?? []),
+      ...(prov?.subEventCompetitions?.filter((s) => s.eventType == 'M') ?? []),
     ]);
 
     this.subEventMX$.next([
-      ...(nat?.subEvents?.filter((s) => s.eventType == 'MX') ?? []),
-      ...(liga?.subEvents?.filter((s) => s.eventType == 'MX') ?? []),
-      ...(prov?.subEvents?.filter((s) => s.eventType == 'MX') ?? []),
+      ...(nat?.subEventCompetitions?.filter((s) => s.eventType == 'MX') ?? []),
+      ...(liga?.subEventCompetitions?.filter((s) => s.eventType == 'MX') ?? []),
+      ...(prov?.subEventCompetitions?.filter((s) => s.eventType == 'MX') ?? []),
     ]);
     this.updateSubEvents.next(0);
 
@@ -389,5 +406,162 @@ export class TeamEnrollmentComponent implements OnInit {
       .toPromise();
 
     return result?.data?.addComment?.id ?? comment.id;
+  }
+
+  private _getNatEvent(clubId) {
+    if (this.formGroup.get('enabledNational')?.value) {
+      return of();
+    }
+
+    return this.apollo
+      .query<{
+        count: number;
+        rows: Partial<EventCompetition>[];
+      }>({
+        query: gql`
+          query GetEvents($clubId: ID!) {
+            eventCompetitions(
+              first: 1
+              where: { type: "NATIONAL", allowEnlisting: true }
+            ) {
+              rows {
+                id
+                slug
+                name
+                startYear
+                allowEnlisting
+                started
+                type
+                comments(where: { clubId: $clubId }) {
+                  id
+                  name
+                }
+                subEventCompetitions {
+                  id
+                  name
+                  eventType
+                  level
+                  maxLevel
+                  minBaseIndex
+                  maxBaseIndex
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          clubId,
+        },
+      })
+      .pipe(
+        map((result) =>
+          result?.data?.rows?.map((r) => new EventCompetition(r))
+        ),
+        take(1)
+      );
+  }
+
+  private _getLigaEvent(clubId) {
+    if (this.formGroup.get('enabledLiga')?.value) {
+      return of();
+    }
+
+    return this.apollo
+      .query<{
+        count: number;
+        rows: Partial<EventCompetition>[];
+      }>({
+        query: gql`
+          query GetEvents($clubId: ID!) {
+            eventCompetitions(
+              first: 1
+              where: { type: "LIGA", allowEnlisting: true }
+            ) {
+              rows {
+                id
+                slug
+                name
+                startYear
+                allowEnlisting
+                started
+                type
+                comments(where: { clubId: $clubId }) {
+                  id
+                  name
+                }
+                subEventCompetitions {
+                  id
+                  name
+                  eventType
+                  level
+                  maxLevel
+                  minBaseIndex
+                  maxBaseIndex
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          clubId,
+        },
+      })
+      .pipe(
+        map((result) =>
+          result?.data?.rows?.map((r) => new EventCompetition(r))
+        ),
+        take(1)
+      );
+  }
+
+  private _getProvEvent(clubId) {
+    if (this.formGroup.get('enabledProvincial')?.value) {
+      return of();
+    }
+
+    return this.apollo
+      .query<{ count: number; rows: Partial<EventCompetition>[] }>({
+        query: gql`
+          query GetEvents($clubId: ID!) {
+            eventCompetitions(
+              first: 1
+              where: { type: "PROV", allowEnlisting: true }
+            ) {
+              count
+              rows {
+                id
+                slug
+                name
+                startYear
+                allowEnlisting
+                started
+                type
+                comments(where: { clubId: $clubId }) {
+                  id
+                  name
+                }
+                subEventCompetitions {
+                  id
+                  name
+                  eventType
+                  level
+                  maxLevel
+                  minBaseIndex
+                  maxBaseIndex
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          clubId,
+        },
+      })
+      .pipe(
+        map((result) =>
+          result?.data?.rows?.map((r) => new EventCompetition(r))
+        ),
+        take(1)
+      );
   }
 }
