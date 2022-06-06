@@ -1,5 +1,3 @@
-import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -40,7 +38,7 @@ import {
   RankingShellComponent,
   TimePickerInput,
   UserInfoComponent,
-  WatchSystemInfoComponent,
+  WatchSystemInfoComponent
 } from './components';
 import { AssignRankingGroupsComponent } from './dialogs';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
@@ -67,7 +65,7 @@ const materialModules = [
   MatChipsModule,
 
   MatCheckboxModule,
-  MatTableModule
+  MatTableModule,
 ];
 
 const exportedComponents = [
@@ -88,7 +86,7 @@ const exportedComponents = [
   PlayerSearchComponent,
   ReactiveFormsModule,
   TranslateModule,
-  TimePickerInput
+  TimePickerInput,
 ];
 
 @NgModule({
@@ -113,14 +111,14 @@ const exportedComponents = [
     TimePickerInput,
   ],
   imports: [
-    CommonModule,
     RouterModule,
+    CommonModule,
     NgcCookieConsentModule,
     FlexLayoutModule,
     TranslateModule.forChild(),
     ...materialModules,
   ],
 
-  exports: [...exportedComponents],
+  exports: [...exportedComponents, RouterModule],
 })
 export class SharedModule {}

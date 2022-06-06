@@ -191,6 +191,15 @@ type EntryCompetitionPlayersType {
   gender: String
 }
 
+"""A Availability"""
+type Availability {
+  id: ID!
+  year: Float
+  days: AvailiblyDayType
+  exceptions: ExceptionType
+  locationId: String
+}
+
 """A EventTournament"""
 type EventTournament {
   id: ID!
@@ -243,6 +252,7 @@ type Location {
   phone: String
   fax: String
   clubId: String
+  availibilities(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Availability!]!
 }
 
 """A Team"""
@@ -346,7 +356,7 @@ type EventCompetition {
   id: ID!
   name: String
   startYear: Float
-  comments: [Comment!]
+  comments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Comment!]
   subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]
   type: String
   visualCode: String
@@ -625,6 +635,10 @@ type Query {
   rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]!
   lastRankingPlace(id: ID!): RankingLastPlace!
   rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]!
+  location(id: ID!): Location!
+  locations(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Location!]!
+  availability(id: ID!): Availability!
+  availabilities(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Availability!]!
   eventEntry(id: ID!): EventEntry!
   eventEntries(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [EventEntry!]!
   eventCompetition(id: ID!): EventCompetition!

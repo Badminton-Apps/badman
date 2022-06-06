@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ITdDataTableColumn } from '@covalent/core/data-table';
 import { switchMap, map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -14,31 +13,31 @@ import { RankingSystem, SystemService } from '../../../_shared';
 export class LandingComponent implements OnInit {
   caps$!: Observable<any>;
 
-  capsColumns: ITdDataTableColumn[];
+  // capsColumns: ITdDataTableColumn[];
 
   constructor(
     private systemService: SystemService,
     private apollo: Apollo,
     translateService: TranslateService
   ) {
-    this.capsColumns = [
-      {
-        name: 'level',
-        label: translateService.instant('faq.points.table.level'),
-      },
-      {
-        name: 'pointsWhenWinningAgainst',
-        label: translateService.instant('faq.points.table.points-won'),
-      },
-      {
-        name: 'pointsToGoUp',
-        label: translateService.instant('faq.points.table.points-needed-up'),
-      },
-      {
-        name: 'pointsToGoDown',
-        label: translateService.instant('faq.points.table.points-needed-down'),
-      },
-    ];
+    // this.capsColumns = [
+    //   {
+    //     name: 'level',
+    //     label: translateService.instant('faq.points.table.level'),
+    //   },
+    //   {
+    //     name: 'pointsWhenWinningAgainst',
+    //     label: translateService.instant('faq.points.table.points-won'),
+    //   },
+    //   {
+    //     name: 'pointsToGoUp',
+    //     label: translateService.instant('faq.points.table.points-needed-up'),
+    //   },
+    //   {
+    //     name: 'pointsToGoDown',
+    //     label: translateService.instant('faq.points.table.points-needed-down'),
+    //   },
+    // ];
   }
 
   ngOnInit(): void {

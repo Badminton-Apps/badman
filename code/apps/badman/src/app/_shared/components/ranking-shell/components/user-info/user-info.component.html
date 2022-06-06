@@ -3,15 +3,21 @@
 </ng-container>
 
 <ng-container *ngIf="auth.user$ | async as authUser">
-  <ng-container *ngIf="this.user.profile$ | async as user">
-    <button mat-icon-button class="avatar" [matMenuTriggerFor]="profileMenu">
-      <img [src]="authUser?.picture" />
-    </button>
+  <button mat-icon-button class="avatar" [matMenuTriggerFor]="profileMenu">
+    <img [src]="authUser?.picture" />
+  </button>
 
-    <mat-menu #profileMenu="matMenu">
+  <mat-menu #profileMenu="matMenu">
+    <ng-container *ngIf="this.user.profile$ | async as user">
       <a mat-menu-item [routerLink]="['/', 'player', user?.slug]">Profile</a>
-      <button mat-menu-item *ngIf="auth.isAuthenticated$ | async" (click)="logout()">Log Out</button>
-      <badman-language></badman-language>
-    </mat-menu>
-  </ng-container>
+    </ng-container>
+    <button
+      mat-menu-item
+      *ngIf="auth.isAuthenticated$ | async"
+      (click)="logout()"
+    >
+      Log Out
+    </button>
+    <badman-language></badman-language>
+  </mat-menu>
 </ng-container>
