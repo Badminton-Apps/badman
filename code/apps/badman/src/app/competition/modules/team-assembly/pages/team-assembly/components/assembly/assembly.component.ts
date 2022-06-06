@@ -201,6 +201,7 @@ export class AssemblyComponent implements OnInit {
                     $clubId: ID!
                     $rankingWhere: JSONObject
                     $entryWhere: JSONObject
+                    $lastRankginWhere: JSONObject
                   ) {
                     club(id: $clubId) {
                       id
@@ -236,17 +237,13 @@ export class AssemblyComponent implements OnInit {
                           gender
                           competitionPlayer
                           base
-                          lastRanking {
+                          rankingLastPlaces(where: $lastRankginWhere) {
                             id
                             single
                             double
                             mix
                           }
-                          rankingPlaces(
-                            where: $rankingWhere
-                            limit: 1
-                            order: "rankingDate"
-                          ) {
+                          rankingPlaces(where: $rankingWhere) {
                             id
                             rankingDate
                             single
@@ -270,9 +267,13 @@ export class AssemblyComponent implements OnInit {
                     },
                     systemId: system?.id,
                   },
-
+                  lastRankginWhere: {
+                    systemId: system?.id,
+                  },
                   entryWhere: {
-                    subEventId: { $in: event.subEvents?.map((r) => r.id) },
+                    subEventId: {
+                      $in: event.subEventCompetitions?.map((r) => r.id),
+                    },
                   },
                 },
               })

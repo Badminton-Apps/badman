@@ -70,10 +70,10 @@ export class EventCompetition extends Model {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  subEvents: SubEventCompetition[];
+  subEventCompetitions: SubEventCompetition[];
 
-  @Unique('EventCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
+  @Unique('EventCompetitions_unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
   type: LevelType;
 
@@ -114,15 +114,15 @@ export class EventCompetition extends Model {
   regenerateSlug!: Slugify<EventCompetition>;
 
   // Has many SubEvent
-  getSubEvents!: HasManyGetAssociationsMixin<SubEventCompetition>;
-  setSubEvents!: HasManySetAssociationsMixin<SubEventCompetition, string>;
-  addSubEvents!: HasManyAddAssociationsMixin<SubEventCompetition, string>;
-  addSubEvent!: HasManyAddAssociationMixin<SubEventCompetition, string>;
-  removeSubEvent!: HasManyRemoveAssociationMixin<SubEventCompetition, string>;
-  removeSubEvents!: HasManyRemoveAssociationsMixin<SubEventCompetition, string>;
-  hasSubEvent!: HasManyHasAssociationMixin<SubEventCompetition, string>;
-  hasSubEvents!: HasManyHasAssociationsMixin<SubEventCompetition, string>;
-  countSubEvents!: HasManyCountAssociationsMixin;
+  getSubEventCompetitions!: HasManyGetAssociationsMixin<SubEventCompetition>;
+  setSubEventCompetitions!: HasManySetAssociationsMixin<SubEventCompetition, string>;
+  addSubEventCompetitions!: HasManyAddAssociationsMixin<SubEventCompetition, string>;
+  addSubEvenCompetitiont!: HasManyAddAssociationMixin<SubEventCompetition, string>;
+  removeSubEventCompetition!: HasManyRemoveAssociationMixin<SubEventCompetition, string>;
+  removeSubEventCompetitions!: HasManyRemoveAssociationsMixin<SubEventCompetition, string>;
+  hasSubEventCompetition!: HasManyHasAssociationMixin<SubEventCompetition, string>;
+  hasSubEventCompetitions!: HasManyHasAssociationsMixin<SubEventCompetition, string>;
+  countSubEventCompetitions!: HasManyCountAssociationsMixin;
 
   // Has many Comment
   getComments!: HasManyGetAssociationsMixin<Comment>;

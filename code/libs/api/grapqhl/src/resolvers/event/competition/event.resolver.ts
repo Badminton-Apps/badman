@@ -7,6 +7,7 @@ import {
   ObjectType,
   Parent,
   Query,
+  ResolveField,
   Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
@@ -48,12 +49,12 @@ export class EventCompetitionResolver {
     return EventCompetition.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @Query(() => [SubEventCompetition])
+  @ResolveField(() => [SubEventCompetition])
   async subEventCompetitions(
     @Parent() event: EventCompetition,
     @Args() listArgs: ListArgs
   ): Promise<SubEventCompetition[]> {
-    return event.getSubEvents(ListArgs.toFindOptions(listArgs));
+    return event.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
   }
 
   // @Mutation(returns => EventCompetition)

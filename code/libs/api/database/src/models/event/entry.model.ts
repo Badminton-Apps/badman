@@ -77,12 +77,14 @@ export class EventEntry extends Model {
   /**
    * Draw get's deciede upon draw
    */
-  @BelongsTo(() => DrawTournament, {
+   @Field(() => DrawTournament, { nullable: true })
+   @BelongsTo(() => DrawTournament, {
     foreignKey: 'drawId',
     constraints: false,
   })
   tournamentDraw?: DrawTournament;
 
+  @Field(() => SubEventCompetition, { nullable: true })
   @BelongsTo(() => SubEventCompetition, {
     foreignKey: 'subEventId',
     constraints: false,

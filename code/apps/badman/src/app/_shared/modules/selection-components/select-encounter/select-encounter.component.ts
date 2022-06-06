@@ -1,6 +1,15 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
@@ -24,13 +33,14 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
   dependsOn = 'team';
 
   @Output()
-  onSelectEncounter = new EventEmitter<CompetitionEncounter>();
+  encounterSelected = new EventEmitter<CompetitionEncounter>();
 
   formControl = new FormControl();
 
   encounters$?: Observable<CompetitionEncounter[]>;
 
   constructor(
+    private apollo: Apollo,
     private encounterService: EncounterService,
     private activatedRoute: ActivatedRoute,
     private router: Router
@@ -51,18 +61,67 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             this.formControl.enable();
           }
 
-          this.formControl.valueChanges.pipe(filter((r) => !!r)).subscribe((r) => {
-            this.router.navigate([], {
-              relativeTo: this.activatedRoute,
-              queryParams: { encounter: r },
-              queryParamsHandling: 'merge',
+          this.formControl.valueChanges
+            .pipe(filter((r) => !!r))
+            .subscribe((r) => {
+              this.router.navigate([], {
+                relativeTo: this.activatedRoute,
+                queryParams: { encounter: r },
+                queryParamsHandling: 'merge',
+              });
             });
-          });
 
           this.encounters$ = this.formGroup.get('year')?.valueChanges.pipe(
             startWith(this.formGroup.get('year')?.value),
-            switchMap((year) => this.encounterService.getEncounters(teamId, [`${year}-08-01`, `${year + 1}-07-01`])),
-            map((c) => c.encounters.map((r) => r.node)),
+            switchMap((year) =>
+              this.apollo.query<{
+                encounterCompetitions: { rows: CompetitionEncounter[] };
+              }>({
+                query: gql`
+                  query GetEncounterQuery($where: JSONObject) {
+                    encounterCompetitions(where: $where) {
+                      rows {
+                        id
+                        date
+                        originalDate
+                        home {
+                          id
+                          name
+                        }
+                        away {
+                          id
+                          name
+                        }
+                        encounterChange {
+                          id
+                          accepted
+                        }
+                        drawCompetition {
+                          id
+                          subeventId
+                        }
+                      }
+                    }
+                  }
+                `,
+                variables: {
+                  where: {
+                    $or: {
+                      homeTeamId: teamId,
+                      awayTeamId: teamId,
+                    },
+                    date: {
+                      $between: [`${year}-08-01`, `${year + 1}-07-01`],
+                    },
+                  },
+                },
+              })
+            ),
+            map((result) =>
+              result.data.encounterCompetitions?.rows.map(
+                (r) => new CompetitionEncounter(r)
+              )
+            ),
             map((c) => {
               return c.map((r) => {
                 if (r.home?.id === teamId) {
@@ -79,14 +138,18 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
 
           this.encounters$?.subscribe((encounters) => {
             let foundEncounter: CompetitionEncounter | null = null;
-            const encounterId = this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
+            const encounterId =
+              this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
 
             if (encounterId && encounters.length > 0) {
-              foundEncounter = encounters.find((r) => r.id == encounterId) ?? null;
+              foundEncounter =
+                encounters.find((r) => r.id == encounterId) ?? null;
             }
 
             if (!foundEncounter) {
-              const future = encounters.filter((r) => moment(r.date).isSameOrAfter());
+              const future = encounters.filter((r) =>
+                moment(r.date).isSameOrAfter()
+              );
               if (future.length > 0) {
                 foundEncounter = future[0];
               }
@@ -97,7 +160,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             }
 
             if (foundEncounter) {
-              this.onSelectEncounter.emit(foundEncounter);
+              this.encounterSelected.emit(foundEncounter);
               this.formControl.setValue(foundEncounter.id, { onlySelf: true });
             } else {
               this.router.navigate([], {

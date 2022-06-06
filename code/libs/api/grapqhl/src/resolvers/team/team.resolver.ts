@@ -98,6 +98,11 @@ export class TeamsResolver {
     return team.getLocations(ListArgs.toFindOptions(listArgs));
   }
 
+  @ResolveField(() => Player)
+  async captain(@Parent() team: Team): Promise<Player> {
+    return team.getCaptain();
+  }
+
   // @Mutation(returns => Team)
   // async addTeam(
   //   @Args('newTeamData') newTeamData: NewTeamInput,

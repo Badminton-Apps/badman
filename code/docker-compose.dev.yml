@@ -31,6 +31,7 @@ services:
     image: badman-dev
     environment:
       - API_URL=http://api:5000
+      - CHOKIDAR_USEPOLLING=true
     expose:
       - 4200
     ports:
@@ -41,7 +42,6 @@ services:
       - ./:/usr/src
       - ./user/src/node_modules
     restart: unless-stopped 
-
   api:
     build:
       context: .

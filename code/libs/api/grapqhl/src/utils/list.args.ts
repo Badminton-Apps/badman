@@ -32,8 +32,7 @@ export class ListArgs extends WhereArgs {
 
   @Field(() => Int, { nullable: true })
   @Min(1)
-  @Max(50)
-  take = 25;
+  take: number;
 
   @Field(() => [SortOrderType], { nullable: true })
   order?: SortOrderType[];

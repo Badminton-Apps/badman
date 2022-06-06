@@ -16,7 +16,7 @@ export class Event {
   usedRankingUnit?: 'days' | 'weeks' | 'months';
   usedRankingAmount?: number;
 
-  subEvents?: SubEvent[];
+  subEventCompetitions?: SubEvent[];
   entries?: Entry[];
 
   constructor({ ...args }: Partial<Event>) {
