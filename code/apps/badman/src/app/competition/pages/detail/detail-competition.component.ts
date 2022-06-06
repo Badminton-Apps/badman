@@ -62,9 +62,9 @@ export class DetailCompetitionComponent implements OnInit {
       map(({ data }) => new EventCompetition(data.competitionEvent))
     );
 
-    this.subEventsM$ = this.event$.pipe(map((event) => event.subEvents?.filter((se) => se.eventType === 'M')));
-    this.subEventsF$ = this.event$.pipe(map((event) => event.subEvents?.filter((se) => se.eventType === 'F')));
-    this.subEventsMX$ = this.event$.pipe(map((event) => event.subEvents?.filter((se) => se.eventType === 'MX')));
+    this.subEventsM$ = this.event$.pipe(map((event) => event.subEventCompetitions?.filter((se) => se.eventType === 'M')));
+    this.subEventsF$ = this.event$.pipe(map((event) => event.subEventCompetitions?.filter((se) => se.eventType === 'F')));
+    this.subEventsMX$ = this.event$.pipe(map((event) => event.subEventCompetitions?.filter((se) => se.eventType === 'MX')));
   }
 
   assignRankingGroups(event: Partial<EventCompetition>) {

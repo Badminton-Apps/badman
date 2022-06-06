@@ -192,12 +192,7 @@ export class PlayersResolver {
     @User() user: Player,
     @Args('data') data: PlayerUpdateInput
   ) {
-    if (
-      !user.hasAnyPermission([
-        `${data.id}_edit:player`,
-        'edit-any:player',
-      ])
-    ) {
+    if (!user.hasAnyPermission([`${data.id}_edit:player`, 'edit-any:player'])) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
       );
@@ -292,5 +287,25 @@ export class TeamPlayerResolver extends PlayersResolver {
 
     return await RankingLastPlace.findAll(args);
   }
-}
 
+  @ResolveField(() => [RankingPlace], {
+    description: '(Default) sorting: DESC \n\r(Default) take: 1',
+  })
+  async rankingPlaces(
+    @Parent() player: Player,
+    @Args() listArgs: ListArgs
+  ): Promise<RankingPlace[]> {
+    const args = ListArgs.toFindOptions({
+      order: [{ direction: 'DESC', field: 'rankingDate' }],
+      take: 1,
+      ...listArgs,
+    });
+
+    args.where = {
+      ...args.where,
+      playerId: player.id,
+    };
+
+    return await RankingPlace.findAll(args);
+  }
+}

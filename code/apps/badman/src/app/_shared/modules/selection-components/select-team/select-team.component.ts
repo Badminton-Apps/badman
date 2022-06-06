@@ -96,6 +96,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
               variables: {
                 where: {
                   active: true,
+                  clubId: clubId,
                 },
               },
             })

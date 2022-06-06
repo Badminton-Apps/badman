@@ -1,5 +1,5 @@
 query GetEncounterQuery($id: ID!) {
-  competitionEncounter(id: $id) {
+  encounterCompetitions(id: $id) {
     id
     date
     originalDate

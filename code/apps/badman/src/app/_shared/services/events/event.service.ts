@@ -8,7 +8,6 @@ import * as getCompetitionEventQuery from '../../graphql/events/queries/GetCompe
 import * as getTournamentEventQuery from '../../graphql/events/queries/GetTournament.graphql';
 
 import * as getCompetitionEventsQuery from '../../graphql/events/queries/GetCompetitions.graphql';
-import * as getSubEvents from '../../graphql/events/queries/GetSubEventsCompetition.graphql';
 import * as getTournamentEventsQuery from '../../graphql/events/queries/GetTournaments.graphql';
 
 import * as importedQuery from '../../graphql/importedEvents/queries/GetImported.graphql';
@@ -112,22 +111,6 @@ export class EventService {
         },
       })
       .pipe(map((x) => new EventCompetition(x.data.competitionEvent)));
-  }
-
-  getSubEventsCompetition(year: number) {
-    return this.apollo
-      .query<{
-        competitionEvents?: {
-          total: number;
-          edges: { cursor: string; node: EventCompetition }[];
-        };
-      }>({
-        query: getSubEvents,
-        variables: {
-          year,
-        },
-      })
-      .pipe(map((x) => x?.data?.competitionEvents?.edges.map((x) => new EventCompetition(x.node))));
   }
 
   getTournamentEvent(id: string) {

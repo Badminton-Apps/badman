@@ -48,7 +48,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.dataSource = new MatTableDataSource(this.data.event.subEvents);
+    this.dataSource = new MatTableDataSource(this.data.event.subEventCompetitions);
     this.selectedGroups.valueChanges.subscribe(
       (groups: RankingGroup[]) => {
         const groupNames = groups.map((g) => `group-${g.id}`);
@@ -86,7 +86,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         tap((groups) => {
           const unique = [
             ...new Set(
-              this.data.event.subEvents
+              this.data.event.subEventCompetitions
                 ?.map((s) => s.groups?.map((r: RankingGroup) => r.id))
                 .flat()
             ),
@@ -98,12 +98,12 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
             const key = `group-${adults?.id}`;
             this.selectedGroups.setValue([adults]);
             this.selection.set(key, new SelectionModel<SubEvent>(true, []));
-            for (const subEvent of this.data.event.subEvents ?? []) {
+            for (const subEvent of this.data.event.subEventCompetitions ?? []) {
               this.selection.get(key)?.select(subEvent);
             }
           } else {
             const initialGroups: RankingGroup[] = [];
-            for (const subEvent of this.data.event.subEvents ?? []) {
+            for (const subEvent of this.data.event.subEventCompetitions ?? []) {
               if (subEvent.groups && (subEvent.groups ?? []).length > 0) {
                 for (const group of subEvent.groups) {
                   if (initialGroups.findIndex((g) => g.id == group.id) === -1) {
@@ -137,7 +137,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected(group: string) {
     const numSelected = this.selection.get(group)?.selected.length;
-    const numRows = this.data.event.subEvents?.length ?? 0;
+    const numRows = this.data.event.subEventCompetitions?.length ?? 0;
     return numSelected === numRows;
   }
 
@@ -145,7 +145,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   masterToggle(group: string) {
     this.isAllSelected(group)
       ? this.selection.get(group)?.clear()
-      : this.data.event.subEvents?.forEach((row) =>
+      : this.data.event.subEventCompetitions?.forEach((row) =>
           this.selection.get(group)?.select(row)
         );
   }
@@ -173,7 +173,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
       const removed: any = [];
       const added: any = [];
 
-      for (const subEvent of this.data.event.subEvents ?? []) {
+      for (const subEvent of this.data.event.subEventCompetitions ?? []) {
         const hasGroup =
           (subEvent.groups ?? []).find(
             (g: RankingGroup) => g.id == key

@@ -32,8 +32,8 @@ export class ClubViewComponent implements OnInit {
             map((e) => {
               return {
                 data: {
-                  competitionEvent: {
-                    subEvents: e.map((e) => e.subEvents).flat(),
+                  eventCompetition: {
+                    subEventCompetitions: e.map((e) => e.subEventCompetitions).flat(),
                   },
                 },
               };
@@ -41,13 +41,13 @@ export class ClubViewComponent implements OnInit {
           );
         } else {
           return this._apollo.query<{
-            competitionEvent: Partial<EventCompetition>;
+            eventCompetition: Partial<EventCompetition>;
           }>({
             query: gql`
               query CompetitionEvent($id: ID!) {
-                competitionEvent(id: $id) {
+                eventCompetition(id: $id) {
                   id
-                  subEvents {
+                  subEventCompetitions {
                     id
                     entries {
                       team {
@@ -66,10 +66,10 @@ export class ClubViewComponent implements OnInit {
       }),
       map((result) => {
         return {
-          subEventIds: [...new Set(result.data.competitionEvent.subEvents?.map((s) => s.id)?.flat())],
+          subEventIds: [...new Set(result.data.eventCompetition.subEventCompetitions?.map((s) => s.id)?.flat())],
           clubIds: [
             ...new Set(
-              result.data.competitionEvent.subEvents?.map((s) => s.entries?.map((e) => e.team?.clubId))?.flat()
+              result.data.eventCompetition.subEventCompetitions?.map((s) => s.entries?.map((e) => e.team?.clubId))?.flat()
             ),
           ],
         };

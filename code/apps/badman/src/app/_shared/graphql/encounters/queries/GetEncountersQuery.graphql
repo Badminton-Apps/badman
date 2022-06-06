@@ -1,26 +1,24 @@
 query GetEncounterQuery($id: ID!, $where: JSONObject) {
-  competitionEncounters(team: $id, where: $where) {
-    edges {
-      node {
+  encounterCompetitions(team: $id, where: $where) {
+    rows {
+      id
+      date
+      originalDate
+      home {
         id
-        date
-        originalDate
-        home {
-          id
-          name
-        }
-        away {
-          id
-          name
-        }
-        encounterChange {
-          id
-          accepted
-        }
-        draw {
-          id
-          subeventId
-        }
+        name
+      }
+      away {
+        id
+        name
+      }
+      encounterChange {
+        id
+        accepted
+      }
+      draw {
+        id
+        subeventId
       }
     }
   }

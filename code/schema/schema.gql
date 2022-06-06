@@ -6,8 +6,8 @@
 type RankingGroups {
   id: ID!
   name: String
-  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventCompetition!]!
-  subEventTournaments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventTournament!]!
+  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]!
+  subEventTournaments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventTournament!]!
 }
 
 """
@@ -146,8 +146,8 @@ type RankingSystem {
   pointsToGoDown: [Int!]
   levelArray: [Int!]
   levelArrayOneMinus: [Int!]
-  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): PagedRankingLastPlaces!
-  rankingGroups(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingGroups!]!
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedRankingLastPlaces!
+  rankingGroups(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingGroups!]!
 }
 
 """A AvailiblyDay"""
@@ -257,7 +257,7 @@ type Team {
   club: Club
   clubId: String
   slug: String
-  players(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [TeamPlayer!]
+  players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [TeamPlayer!]
   type: String
   captain: Player
   captainId: String
@@ -265,8 +265,8 @@ type Team {
   phone: String
   teamNumber: Float
   active: Boolean
-  entries(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [EventEntry!]!
-  locations(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Location!]!
+  entries(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [EventEntry!]!
+  locations(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Location!]!
 }
 
 """A EncounterChange"""
@@ -281,7 +281,7 @@ type EncounterCompetition {
   id: ID!
   date: DateTime
   originalDate: DateTime
-  draw: DrawCompetition
+  drawCompetition: DrawCompetition
   drawId: String
   home: Team
   homeScore: Float
@@ -292,7 +292,6 @@ type EncounterCompetition {
   synced: DateTime
   visualCode: String
   encounterChange: EncounterChange
-  drawCompetition: DrawCompetition!
 }
 
 """A EventEntry"""
@@ -301,11 +300,12 @@ type EventEntry {
   teamId: String
   player1Id: String
   player2Id: String
+  tournamentDraw: DrawTournament
+  competitionSubEvent: SubEventCompetition
   subEventId: String
   drawId: String
   entryType: String
   meta: MetaType
-  competitionSubEvent: [SubEventCompetition!]!
   getCompetitionDraw: [DrawCompetition!]!
   getTournamentDraw: [DrawTournament!]!
   getTournamentSubEvent: [DrawTournament!]!
@@ -347,7 +347,7 @@ type EventCompetition {
   name: String
   startYear: Float
   comments: [Comment!]
-  subEvents: [SubEventCompetition!]
+  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]
   type: String
   visualCode: String
   allowEnlisting: Boolean
@@ -374,7 +374,7 @@ type Role {
   description: String
   type: String
   clubId: String
-  players(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Player!]!
+  players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Player!]!
 }
 
 """A Claim"""
@@ -394,11 +394,11 @@ type Club {
   useForTeamName: String
   abbreviation: String
   clubId: Float
-  teams(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Team!]
-  roles(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Role!]
+  teams(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Team!]
+  roles(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Role!]
   players: [Player!]
   comments: [Comment!]
-  locations(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Location!]
+  locations(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Location!]
   slug: String
 }
 
@@ -431,13 +431,13 @@ type Player {
   slug: String
   memberId: String
   rankingPoints: [RankingPoint!]
-  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingPlace!]
-  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingLastPlace!]
+  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]
   comments: [Comment!]
   teams(
     where: JSONObject
     skip: Int = 0
-    take: Int = 25
+    take: Int
     order: [SortOrderType!]
 
     """
@@ -445,10 +445,10 @@ type Player {
     """
     includeDisabled: Boolean
   ): [Team!]
-  clubs(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [ClubPlayer!]
-  games(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Game!]
+  clubs(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [ClubPlayer!]
+  games(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Game!]
   roles: [Role!]
-  claims(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Claim!]
+  claims(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Claim!]
 
   """Team Player end date"""
   end: DateTime
@@ -477,7 +477,7 @@ type Game {
   winner: Float
   order: Float
   round: String
-  rankingPoints(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingPoint!]
+  rankingPoints(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPoint!]
   tournament: DrawTournament
   competition: EncounterCompetition
   linkId: String
@@ -508,8 +508,13 @@ type TeamPlayer {
   slug: String
   memberId: String
   rankingPoints: RankingPoint
-  rankingPlaces: RankingPlace
-  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingLastPlace!]!
+
+  """
+  (Default) sorting: DESC 
+  (Default) take: 1
+  """
+  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]!
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]!
   comments: Comment
   teams: Team
   clubs: ClubPlayer
@@ -585,6 +590,11 @@ type PagedClub {
   rows: [Club!]!
 }
 
+type PagedEncounterCompetition {
+  count: Float!
+  rows: [EncounterCompetition!]!
+}
+
 type PagedEventCompetition {
   count: Float!
   rows: [EventCompetition!]!
@@ -598,45 +608,45 @@ type PagedEventTournament {
 type Query {
   player(id: ID!): Player!
   me: Player
-  players(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): PagedPlayer!
+  players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedPlayer!
   team(id: ID!): Team!
-  teams(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Team!]!
+  teams(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Team!]!
   club(id: ID!): Club!
-  clubs(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): PagedClub!
+  clubs(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedClub!
   comment(id: ID!): Comment!
-  comments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Comment!]!
+  comments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Comment!]!
   rankingSystem(id: ID!): RankingSystem!
-  rankingSystems(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingSystem!]!
+  rankingSystems(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingSystem!]!
   rankingGroup(id: ID!): RankingGroups!
-  rankingGroups(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingGroups!]!
+  rankingGroups(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingGroups!]!
   rankingPoint(id: ID!): RankingPoint!
-  rankingPoints(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingPoint!]!
+  rankingPoints(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPoint!]!
   rankingPlace(id: ID!): RankingPlace!
-  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingPlace!]!
+  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]!
   lastRankingPlace(id: ID!): RankingLastPlace!
-  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [RankingLastPlace!]!
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]!
   eventEntry(id: ID!): EventEntry!
-  eventEntries(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [EventEntry!]!
+  eventEntries(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [EventEntry!]!
   eventCompetition(id: ID!): EventCompetition!
-  eventCompetitions(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): PagedEventCompetition!
-  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventCompetition!]!
+  eventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedEventCompetition!
   encounterCompetition(id: ID!): EncounterCompetition!
-  encounterCompetitions(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [EncounterCompetition!]!
+  encounterCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedEncounterCompetition!
   drawCompetition(id: ID!): DrawCompetition!
-  drawCompetitions(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [DrawCompetition!]!
+  drawCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [DrawCompetition!]!
   subEventCompetition(id: ID!): SubEventCompetition!
+  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]!
   eventTournament(id: ID!): EventTournament!
-  eventTournaments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): PagedEventTournament!
-  subEventTournaments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [SubEventTournament!]!
+  eventTournaments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedEventTournament!
+  subEventTournaments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventTournament!]!
   drawTournament(id: ID!): DrawTournament!
-  drawTournaments(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [DrawTournament!]!
+  drawTournaments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [DrawTournament!]!
   subEventTournament(id: ID!): SubEventTournament!
   claim(id: ID!): Claim!
-  claims(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Claim!]!
+  claims(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Claim!]!
   role(id: ID!): Role!
-  roles(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Role!]!
+  roles(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Role!]!
   game(id: ID!): Game!
-  games(where: JSONObject, skip: Int = 0, take: Int = 25, order: [SortOrderType!]): [Game!]!
+  games(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Game!]!
   search(query: String!): [Search!]!
 }
 

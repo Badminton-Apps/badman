@@ -101,7 +101,6 @@ export class HeaderSearchComponent implements OnInit {
   }
 
   selectedPlayer(event: MatAutocompleteSelectedEvent) {
-    console.log(event.option.value);
     this.formControl.setValue(null);
     switch (event.option.value.__typename) {
       case 'Player':
