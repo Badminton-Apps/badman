@@ -56,8 +56,8 @@ export class ChartComponent implements OnInit {
       .forEach((x) => {
         const rankingDate = moment(x.rankingDate).tz('Europe/Brussels');
 
-        var topText = `Level ${x.level} on ${rankingDate.format('DD-MM-Y')}`;
-        var bottomText = ``;
+        const topText = `Level ${x.level} on ${rankingDate.format('DD-MM-Y')}`;
+        let bottomText = ``;
         if (x.points) {
           bottomText += `${x.points} upgrade`;
         }
@@ -96,7 +96,7 @@ export class ChartComponent implements OnInit {
   }
 
   calcaulteforecast() {
-    let values = this.rankingPlaces.map((item, i) => [i, item.level]) as DataPoint[];
-    let result = logarithmic(values);
+    // let values = this.rankingPlaces.map((item, i) => [i, item.level]) as DataPoint[];
+    // let result = logarithmic(values);
   }
 }

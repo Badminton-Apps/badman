@@ -7,6 +7,7 @@
     "deploy": {
       "builder": "@nrwl/workspace:run-commands",
       "options": {
+        
         "commands": [
           "nx build badman",
           "docker build -f ./apps/badman/Dockerfile . -t badman"
@@ -110,7 +111,13 @@
       },
       "defaultConfiguration": "development",
       "options": {
-        "proxyConfig": "apps/badman/proxy.conf.json"
+        "proxyConfig": "apps/badman/proxy.conf.json",
+        "host": "0.0.0.0",
+        "disableHostCheck": true,
+        "verbose": false,
+        "liveReload": true,
+        "hmr": true,
+        "watch": true
       }
     },
     "extract-i18n": {

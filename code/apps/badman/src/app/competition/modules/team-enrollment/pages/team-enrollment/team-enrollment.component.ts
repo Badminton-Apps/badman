@@ -10,15 +10,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
 import { Apollo, gql } from 'apollo-angular';
 import {
-  Club,
-  Comment,
-  EventCompetition,
-  EventService,
-  EventType,
-  SubEvent,
-  Team,
-} from '../../../../../_shared';
-import {
   BehaviorSubject,
   combineLatest,
   lastValueFrom,
@@ -38,12 +29,21 @@ import {
   take,
   tap,
 } from 'rxjs/operators';
+import { apolloCache } from '../../../../../graphql.module';
+import {
+  Club,
+  Comment,
+  EventCompetition,
+  EventService,
+  RankingSystem,
+  SubEvent,
+  SystemService,
+  Team,
+} from '../../../../../_shared';
 import * as addComment from './graphql/AddComment.graphql';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
-import * as GetClub from './graphql/GetClub.graphql';
-import * as updateComment from './graphql/UpdateComment.graphql';
 import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
-import { apolloCache } from '../../../../../graphql.module';
+import * as updateComment from './graphql/UpdateComment.graphql';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -90,9 +90,9 @@ export class TeamEnrollmentComponent implements OnInit {
     subEventMX: SubEvent[];
     club: Club;
   }>;
-  form$!: Observable<any>;
 
   constructor(
+    private systemService: SystemService,
     private eventService: EventService,
     private apollo: Apollo,
     private snackbar: MatSnackBar
@@ -119,11 +119,6 @@ export class TeamEnrollmentComponent implements OnInit {
       { validators: this.hasAnyLevelSelected }
     );
 
-    this.form$ = this.formGroup.valueChanges.pipe(
-      debounceTime(500),
-      shareReplay(1)
-    );
-
     this.setTeams();
 
     this.show$ = combineLatest([
@@ -140,7 +135,7 @@ export class TeamEnrollmentComponent implements OnInit {
     ]).pipe(
       map(
         ([
-          [_, [subEventM, subEventF, subEventMX]],
+          [, [subEventM, subEventF, subEventMX]],
           teamsM,
           teamsF,
           teamsMX,
@@ -244,17 +239,95 @@ export class TeamEnrollmentComponent implements OnInit {
   };
 
   private setTeams() {
-    this.club$ = this.form$.pipe(
-      startWith(this.formGroup.value),
-      map((group) => group?.club),
-      filter((id) => !!id),
-      distinctUntilChanged(),
-      switchMap((id) =>
+    this.club$ = combineLatest([
+      this.formGroup.valueChanges.pipe(
+        startWith(this.formGroup.value),
+        map((group) => group?.club),
+        filter((id) => !!id),
+        distinctUntilChanged()
+      ),
+      this.systemService.getPrimarySystemsWhere().pipe(
+        switchMap((where) =>
+          this.apollo.query<{ rankingSystems: Partial<RankingSystem>[] }>({
+            query: gql`
+              query getPrimarySystems($where: JSONObject!) {
+                rankingSystems(where: $where) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              where,
+            },
+          })
+        ),
+        map(({ data }) => {
+          if ((data?.rankingSystems?.length ?? 0) == 0) {
+            throw new Error('No Primary Ranking System');
+          }
+          return data?.rankingSystems[0].id;
+        })
+      ),
+    ]).pipe(
+      switchMap(([id, systemId]) =>
         this.apollo
           .query<{ club: Club }>({
-            query: GetClub,
+            query: gql`
+              query GetClubInfo($id: ID!, $rankingSystemId: ID!) {
+                club(id: $id) {
+                  id
+                  teams(where: { active: true }) {
+                    id
+                    slug
+                    name
+                    abbreviation
+                    active
+                    teamNumber
+                    type
+                    preferredTime
+                    preferredDay
+                    captain {
+                      id
+                    }
+                    locations {
+                      id
+                      name
+                    }
+                    players {
+                      id
+                      slug
+                      firstName
+                      lastName
+                      base
+                      gender
+                      rankingLastPlaces(where: { systemId: $rankingSystemId }) {
+                        id
+                        single
+                        double
+                        mix
+                      }
+                    }
+                    entries {
+                      id
+                      competitionSubEvent {
+                        id
+                        event {
+                          name
+                        }
+                      }
+                    }
+                  }
+
+                  locations {
+                    id
+                    name
+                  }
+                }
+              }
+            `,
             variables: {
               id,
+              rankingSystemId: systemId,
             },
           })
           .pipe(map((x) => new Club(x.data.club)))
@@ -282,12 +355,12 @@ export class TeamEnrollmentComponent implements OnInit {
       return;
     }
 
-    const provEvent$ = this._getProvEvent(club.id);
-    const ligaEvent$ = this._getLigaEvent(club.id);
-    const natEvent$ = this._getNatEvent(club.id);
-
-    const [[prov], [liga], [nat]] = await lastValueFrom(
-      combineLatest([provEvent$, ligaEvent$, natEvent$])
+    const [prov, liga, nat] = await lastValueFrom(
+      combineLatest([
+        this._getProvEvent(club.id),
+        this._getLigaEvent(club.id),
+        this._getNatEvent(club.id),
+      ])
     );
 
     const year = prov?.startYear ?? liga?.startYear ?? nat?.startYear;
@@ -395,33 +468,35 @@ export class TeamEnrollmentComponent implements OnInit {
     // player get's set via authenticated user
     const { player, eventId, ...commentMessage } = comment;
 
-    const result = await this.apollo
-      .mutate<any>({
+    const result = await lastValueFrom(
+      this.apollo.mutate<{ updateComment?: Comment; addComment: Comment }>({
         mutation: commentMessage.id ? updateComment : addComment,
         variables: {
           comment: commentMessage,
           eventId,
         },
       })
-      .toPromise();
+    );
 
-    return result?.data?.addComment?.id ?? comment.id;
+    return result?.data?.addComment?.id ?? comment.id ?? '';
   }
 
-  private _getNatEvent(clubId) {
-    if (this.formGroup.get('enabledNational')?.value) {
-      return of();
+  private _getNatEvent(clubId: string) {
+    if (!this.formGroup.get('enabledNational')?.value) {
+      return of(undefined).pipe(take(1));
     }
 
     return this.apollo
       .query<{
-        count: number;
-        rows: Partial<EventCompetition>[];
+        eventCompetitions: {
+          count: number;
+          rows: Partial<EventCompetition>[];
+        };
       }>({
         query: gql`
-          query GetEvents($clubId: ID!) {
+          query GetNatEvents($clubId: ID!) {
             eventCompetitions(
-              first: 1
+              take: 1
               where: { type: "NATIONAL", allowEnlisting: true }
             ) {
               rows {
@@ -434,7 +509,7 @@ export class TeamEnrollmentComponent implements OnInit {
                 type
                 comments(where: { clubId: $clubId }) {
                   id
-                  name
+                  message
                 }
                 subEventCompetitions {
                   id
@@ -454,78 +529,35 @@ export class TeamEnrollmentComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) =>
-          result?.data?.rows?.map((r) => new EventCompetition(r))
-        ),
+        map((result) => {
+          if (result?.data?.eventCompetitions?.count != 1) {
+            throw new Error(
+              `${result?.data?.eventCompetitions?.count} events found`
+            );
+          }
+          return new EventCompetition(result?.data?.eventCompetitions?.rows[0]);
+        }),
         take(1)
       );
   }
 
-  private _getLigaEvent(clubId) {
-    if (this.formGroup.get('enabledLiga')?.value) {
-      return of();
+  private _getLigaEvent(clubId: string) {
+    if (!this.formGroup.get('enabledLiga')?.value) {
+      return of(undefined);
     }
 
     return this.apollo
       .query<{
-        count: number;
-        rows: Partial<EventCompetition>[];
+        eventCompetitions: {
+          count: number;
+          rows: Partial<EventCompetition>[];
+        };
       }>({
         query: gql`
-          query GetEvents($clubId: ID!) {
+          query GetLigaEvents($clubId: ID!) {
             eventCompetitions(
-              first: 1
+              take: 1
               where: { type: "LIGA", allowEnlisting: true }
-            ) {
-              rows {
-                id
-                slug
-                name
-                startYear
-                allowEnlisting
-                started
-                type
-                comments(where: { clubId: $clubId }) {
-                  id
-                  name
-                }
-                subEventCompetitions {
-                  id
-                  name
-                  eventType
-                  level
-                  maxLevel
-                  minBaseIndex
-                  maxBaseIndex
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          clubId,
-        },
-      })
-      .pipe(
-        map((result) =>
-          result?.data?.rows?.map((r) => new EventCompetition(r))
-        ),
-        take(1)
-      );
-  }
-
-  private _getProvEvent(clubId) {
-    if (this.formGroup.get('enabledProvincial')?.value) {
-      return of();
-    }
-
-    return this.apollo
-      .query<{ count: number; rows: Partial<EventCompetition>[] }>({
-        query: gql`
-          query GetEvents($clubId: ID!) {
-            eventCompetitions(
-              first: 1
-              where: { type: "PROV", allowEnlisting: true }
             ) {
               count
               rows {
@@ -538,7 +570,7 @@ export class TeamEnrollmentComponent implements OnInit {
                 type
                 comments(where: { clubId: $clubId }) {
                   id
-                  name
+                  message
                 }
                 subEventCompetitions {
                   id
@@ -558,9 +590,58 @@ export class TeamEnrollmentComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) =>
-          result?.data?.rows?.map((r) => new EventCompetition(r))
-        ),
+        map((result) => {
+          if (result?.data?.eventCompetitions?.count != 1) {
+            throw new Error(
+              `${result?.data?.eventCompetitions?.count} events found`
+            );
+          }
+          return new EventCompetition(result?.data?.eventCompetitions?.rows[0]);
+        }),
+        take(1)
+      );
+  }
+
+  private _getProvEvent(clubId: string) {
+    if (!this.formGroup.get('enabledProvincial')?.value) {
+      return of(undefined);
+    }
+
+    return this.apollo
+      .query<{ eventCompetition: EventCompetition }>({
+        query: gql`
+          query GetProvEvent($id: ID!, $clubId: ID!) {
+            eventCompetition(id: $id) {
+              id
+              slug
+              name
+              startYear
+              allowEnlisting
+              started
+              type
+              comments(where: { clubId: $clubId }) {
+                id
+                message
+              }
+              subEventCompetitions {
+                id
+                name
+                eventType
+                level
+                maxLevel
+                minBaseIndex
+                maxBaseIndex
+              }
+            }
+          }
+        `,
+        variables: {
+          id: this.formGroup.value.event.id,
+          clubId,
+        },
+      })
+      .pipe(
+        map(({ data }) => new EventCompetition(data?.eventCompetition)),
         take(1)
       );
   }

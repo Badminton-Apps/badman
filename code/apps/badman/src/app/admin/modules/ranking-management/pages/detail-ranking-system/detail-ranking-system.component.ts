@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ITdDataTableColumn } from '@covalent/core/data-table';
 import * as moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
@@ -20,12 +19,12 @@ export class DetailRankingSystemComponent implements OnInit {
   start$!: Observable<any>;
   levels!: number[];
 
-  capsColumns: ITdDataTableColumn[] = [
-    { name: 'level', label: 'Level' },
-    { name: 'pointsWhenWinningAgainst', label: 'Points won Against' },
-    { name: 'pointsToGoUp', label: 'Points needed to go up' },
-    { name: 'pointsToGoDown', label: 'Points needed to go down' },
-  ];
+  // capsColumns: ITdDataTableColumn[] = [
+  //   { name: 'level', label: 'Level' },
+  //   { name: 'pointsWhenWinningAgainst', label: 'Points won Against' },
+  //   { name: 'pointsToGoUp', label: 'Points needed to go up' },
+  //   { name: 'pointsToGoDown', label: 'Points needed to go down' },
+  // ];
 
   config = {
     title: {

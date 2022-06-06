@@ -9,8 +9,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EventCompetition, EventType } from '../../../models';
-import { EventService } from '../../../services';
+import { EventCompetition } from '../../../models';
 
 @Component({
   selector: 'badman-select-event',
@@ -42,12 +41,15 @@ export class SelectEventComponent implements OnInit, OnDestroy {
         };
       }>({
         query: gql`
-        query GetEventsOpenForEnlisting {
-          eventCompetitions(where: { allowEnlisting: true, type: 'PROV' }) {
-            id
-            name
+          query GetEventsOpenForEnlisting {
+            eventCompetitions(where: { allowEnlisting: true, type: "PROV" }) {
+              rows {
+                id
+                name
+              }
+            }
           }
-        }`,
+        `,
       })
       .pipe(
         map(({ data }) =>
