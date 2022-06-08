@@ -1,4 +1,10 @@
-import { Availability, AvailabilityException, AvailiblyDay, AvailiblyDayType, ExceptionType } from '@badman/api/database';
+import {
+  Availability,
+  AvailabilityException,
+  AvailiblyDay,
+  AvailiblyDayType,
+  ExceptionType,
+} from '@badman/api/database';
 import { Inject, Logger } from '@nestjs/common';
 import {
   Args,
@@ -33,10 +39,13 @@ export class AvailabilitysResolver {
 
   // @ResolveField(() => [AvailiblyDayType])
   // async days(@Parent() availability: Availability): Promise<AvailiblyDay[]> {
-  //   return availability.days
+  //   return availability.days;
   // }
+
   // @ResolveField(() => [ExceptionType])
-  // async exceptions(@Parent() availability: Availability): Promise<AvailabilityException[]> {
+  // async exceptions(
+  //   @Parent() availability: Availability
+  // ): Promise<AvailabilityException[]> {
   //   return availability.exceptions;
   // }
 }

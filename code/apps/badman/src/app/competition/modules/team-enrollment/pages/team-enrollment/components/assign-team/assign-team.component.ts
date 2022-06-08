@@ -14,16 +14,18 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import { map, switchMap } from 'rxjs/operators';
 import {
   Club,
   CompetitionSubEvent,
   LevelType,
+  SystemService,
   Team,
 } from '../../../../../../../_shared';
 import { TeamDialogComponent } from '../../../../../../../club/dialogs';
 import * as teamQuery from '../../../../../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
+import { combineLatest } from 'rxjs';
 
 interface Issues {
   level: string[];
@@ -73,7 +75,8 @@ export class AssignTeamComponent implements OnChanges {
     private dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
     private translation: TranslateService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private systemService: SystemService
   ) {}
 
   ngOnChanges(): void {
@@ -140,15 +143,53 @@ export class AssignTeamComponent implements OnChanges {
       data: { team, club: this.club, allowEditType: false },
     });
 
-    dialogRef
-      .afterClosed()
+    combineLatest([
+      dialogRef.afterClosed(),
+      this.systemService.getPrimarySystemId(),
+    ])
       .pipe(
-        switchMap(() =>
+        switchMap(([, systemId]) =>
           this.apollo.query<{ team: Team }>({
-            query: teamQuery,
+            query: gql`
+              query GetTeamQuery($id: ID!, $systemId: ID!) {
+                team(id: $id) {
+                  id
+                  name
+                  teamNumber
+                  abbreviation
+                  type
+                  preferredTime
+                  preferredDay
+                  active
+                  captain {
+                    id
+                    fullName
+                  }
+                  locations {
+                    id
+                    name
+                  }
+                  players {
+                    id
+                    slug
+                    firstName
+                    lastName
+                    competitionPlayer
+                    base
+                    gender
+                    rankingLastPlaces(take: 1, where: { systemId: $systemId }) {
+                      id
+                      single
+                      double
+                      mix
+                    }
+                  }
+                }
+              }
+            `,
             variables: {
               id: team?.id,
-              personal: false,
+              systemId: systemId,
             },
           })
         ),
@@ -156,13 +197,14 @@ export class AssignTeamComponent implements OnChanges {
       )
       .subscribe(async (newTeam) => {
         let index = subEvent.teams?.findIndex((t) => t.id == team.id);
-        if (!index) {
-          throw new Error('Team not found in subEvent');
-        }
 
         if (!subEvent.teams) {
           subEvent.teams = [];
           index = 0;
+        }
+
+        if (index == -1 || index == undefined) {
+          throw new Error('Team not found in subEvent');
         }
 
         await this.validate(newTeam, subEvent);
@@ -454,7 +496,7 @@ export class AssignTeamComponent implements OnChanges {
         }
 
         const subEventId = subEventsSorted[subEventIndex].id;
-        if (!subEventId){
+        if (!subEventId) {
           throw new Error('No subEventId');
         }
 

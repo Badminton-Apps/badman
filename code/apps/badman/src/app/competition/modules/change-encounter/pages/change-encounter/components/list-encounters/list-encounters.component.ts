@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import {
@@ -29,6 +30,7 @@ export class ListEncountersComponent implements OnInit {
   encountersSem2!: CompetitionEncounter[];
 
   constructor(
+    private apollo: Apollo,
     private encounterService: EncounterService,
     private router: Router,
     private activatedRoute: ActivatedRoute
@@ -63,12 +65,54 @@ export class ListEncountersComponent implements OnInit {
             contrl.valueChanges.pipe(
               startWith(contrl.value),
               switchMap((year) =>
-                this.encounterService.getEncounters(teamId, [
-                  `${year}-08-01`,
-                  `${year + 1}-07-01`,
-                ])
+                this.apollo.query<{
+                  encounterCompetitions: { rows: CompetitionEncounter[] };
+                }>({
+                  query: gql`
+                    query GetEncounterQuery($where: JSONObject) {
+                      encounterCompetitions(where: $where) {
+                        rows {
+                          id
+                          date
+                          originalDate
+                          home {
+                            id
+                            name
+                          }
+                          away {
+                            id
+                            name
+                          }
+                          encounterChange {
+                            id
+                            accepted
+                          }
+                          drawCompetition {
+                            id
+                            subeventId
+                          }
+                        }
+                      }
+                    }
+                  `,
+                  variables: {
+                    where: {
+                      $or: {
+                        homeTeamId: teamId,
+                        awayTeamId: teamId,
+                      },
+                      date: {
+                        $between: [`${year}-08-01`, `${year + 1}-07-01`],
+                      },
+                    },
+                  },
+                })
               ),
-              map((c) => c.encounters.map((r) => r.node)),
+              map((result) =>
+                result.data.encounterCompetitions?.rows.map(
+                  (r) => new CompetitionEncounter(r)
+                )
+              ),
               map((e) =>
                 e.sort((a, b) => {
                   if (!a.date || !b.date) {
@@ -79,6 +123,7 @@ export class ListEncountersComponent implements OnInit {
                 })
               ),
               map((e) => {
+                console.log(e);
                 e = e.map((r) => {
                   r.showingForHomeTeam = r.home?.id == teamId;
                   return r;
@@ -89,23 +134,19 @@ export class ListEncountersComponent implements OnInit {
             )
           );
 
-          this.encountersSem1 = encounters.filter((r) =>
-            {
-              if (!r.date) {
-                throw new Error('No date');
-              }
-              return [8, 9, 10, 11, 12].includes(r.date.getMonth());
+          this.encountersSem1 = encounters.filter((r) => {
+            if (!r.date) {
+              throw new Error('No date');
             }
-          );
-          this.encountersSem2 = encounters.filter((r) =>
-            {
-              if (!r.date) {
-                throw new Error('No date');
-              }
-              
-              return [0, 1, 2, 3, 4, 5].includes(r.date.getMonth());
+            return [8, 9, 10, 11, 12].includes(r.date.getMonth());
+          });
+          this.encountersSem2 = encounters.filter((r) => {
+            if (!r.date) {
+              throw new Error('No date');
             }
-          );
+
+            return [0, 1, 2, 3, 4, 5].includes(r.date.getMonth());
+          });
 
           const params = this.activatedRoute.snapshot.queryParams;
           if (params && params['encounter'] && this.encountersSem1.length > 0) {

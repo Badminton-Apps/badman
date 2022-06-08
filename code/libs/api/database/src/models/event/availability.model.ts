@@ -41,13 +41,13 @@ export class Availability extends Model {
   @Column
   year: number;
 
-  @Field(() => AvailiblyDayType, { nullable: true })
+  @Field(() => [AvailiblyDayType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })
   days: AvailiblyDay[];
 
-  @Field(() => ExceptionType, { nullable: true })
+  @Field(() => [ExceptionType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })

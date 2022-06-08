@@ -9,6 +9,7 @@ import {
   ClubPlayerMembership,
   ClubPlayerMembershipNewInput,
   ClubPlayerMembershipUpdateInput,
+  ClubNewInput,
 } from '@badman/api/database';
 import {
   Inject,
@@ -95,18 +96,62 @@ export class ClubsResolver {
     return club.getRoles(ListArgs.toFindOptions(listArgs));
   }
 
-  // @Mutation(returns => Club)
-  // async addClub(
-  //   @Args('newClubData') newClubData: NewClubInput,
-  // ): Promise<Club> {
-  //   const recipe = await this.recipesService.create(newClubData);
-  //   return recipe;
-  // }
+  @Mutation(() => Club)
+  async addClub(@User() user: Player, @Args('data') newClubData: ClubNewInput) {
+    if (!user.hasAnyPermission(['add:club'])) {
+      throw new UnauthorizedException(
+        `You do not have permission to add a club`
+      );
+    }
 
-  // @Mutation(returns => Boolean)
-  // async removeClub(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const clubDb = await Club.create({ ...newClubData }, { transaction });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return clubDb;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
+  @Mutation(() => Club)
+  async removeClub(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string
+  ) {
+    if (!user.hasAnyPermission(['remove:club'])) {
+      throw new UnauthorizedException(
+        `You do not have permission to add a club`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const clubDb = await Club.findByPk(id, { transaction });
+
+      if (!clubDb) {
+        throw new NotFoundException(`${Club.name}: ${id}`);
+      }
+
+      await clubDb.destroy({ transaction });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return clubDb;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
 
   @Mutation(() => Club)
   async updateClub(
@@ -127,15 +172,15 @@ export class ClubsResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      let club = await Club.findByPk(updateClubData.id, { transaction });
+      let clubDb = await Club.findByPk(updateClubData.id, { transaction });
 
-      if (!club) {
-        throw new NotFoundException(updateClubData.id);
+      if (!clubDb) {
+        throw new NotFoundException(`${Club.name}: ${updateClubData.id}`);
       }
 
       // If the abbreviation is changed, we need to update the teams
-      if (updateClubData.abbreviation !== club.abbreviation) {
-        const teams = await club.getTeams({
+      if (updateClubData.abbreviation !== clubDb.abbreviation) {
+        const teams = await clubDb.getTeams({
           where: { active: true },
           transaction,
         });
@@ -147,7 +192,7 @@ export class ClubsResolver {
       }
 
       // Update club
-      const result = await club.update(updateClubData, { transaction });
+      const result = await clubDb.update(updateClubData, { transaction });
 
       // Commit transaction
       await transaction.commit();

@@ -195,8 +195,8 @@ type EntryCompetitionPlayersType {
 type Availability {
   id: ID!
   year: Float
-  days: AvailiblyDayType
-  exceptions: ExceptionType
+  days: [AvailiblyDayType!]
+  exceptions: [ExceptionType!]
   locationId: String
 }
 
@@ -261,7 +261,7 @@ type Team {
   createdAt: DateTime
   id: ID!
   name: String
-  preferredTime: DateTime
+  preferredTime: String
   preferredDay: String
   abbreviation: String
   club: Club
@@ -279,11 +279,24 @@ type Team {
   locations(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Location!]!
 }
 
+"""A EncounterChangeDate"""
+type EncounterChangeDate {
+  id: ID!
+  selected: Boolean
+  encounterChangeId: String
+  date: DateTime
+  availabilityHome: String
+  availabilityAway: String
+}
+
 """A EncounterChange"""
 type EncounterChange {
   id: ID!
   accepted: Boolean
   encounterId: String
+  dates: [EncounterChangeDate!]
+  homeComment: Comment
+  awayComment: Comment
 }
 
 """A EncounterCompetition"""
@@ -669,12 +682,17 @@ union Search = Player | EventCompetition | EventTournament | Club
 type Mutation {
   updatePlayer(data: PlayerUpdateInput!): Player!
   claimAccount(playerId: String!): Player!
+  addClub(data: ClubNewInput!): Club!
+  removeClub(id: ID!): Club!
   updateClub(data: ClubUpdateInput!): Club!
   addPlayerToClub(data: ClubPlayerMembershipNewInput!): Boolean!
   updatePlayerClubMembership(data: ClubPlayerMembershipUpdateInput!): Boolean!
   removePlayerFromClub(id: ID!): Boolean!
+  addComment(data: CommentNewInput!): Comment!
+  updateComment(data: CommentUpdateInput!): Comment!
   updateRankingPlace(data: RankingPlaceUpdateInput!): Player!
   newRankingPlace(data: RankingPlaceNewInput!): Player!
+  addChangeEncounter(data: EncounterChangeNewInput!): Boolean!
   assignClaim(claimId: ID!, playerId: ID!, active: Boolean!): Boolean!
 }
 
@@ -697,6 +715,15 @@ input PlayerUpdateInput {
 
   """Team Player start date"""
   base: Boolean
+}
+
+input ClubNewInput {
+  name: String
+  fullName: String
+  useForTeamName: String
+  abbreviation: String
+  clubId: Float
+  slug: String
 }
 
 input ClubUpdateInput {
@@ -724,6 +751,23 @@ input ClubPlayerMembershipUpdateInput {
   end: DateTime
   active: Boolean
   start: DateTime
+}
+
+input CommentNewInput {
+  message: String
+  playerId: String
+  clubId: String
+  linkId: String
+  linkType: String
+}
+
+input CommentUpdateInput {
+  id: ID
+  message: String
+  playerId: String
+  clubId: String
+  linkId: String
+  linkType: String
 }
 
 input RankingPlaceUpdateInput {
@@ -783,4 +827,20 @@ input RankingPlaceNewInput {
   updatePossible: Boolean
   playerId: String
   systemId: String
+}
+
+input EncounterChangeNewInput {
+  accepted: Boolean
+  encounterId: String
+  home: Boolean
+  dates: [EncounterChangeDateNewInput!]
+  comment: CommentNewInput
+}
+
+input EncounterChangeDateNewInput {
+  selected: Boolean
+  encounterChangeId: String
+  date: DateTime
+  availabilityHome: String
+  availabilityAway: String
 }

@@ -1,4 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -66,3 +73,19 @@ export class EncounterChangeDate extends Model {
   getEncounterChange!: BelongsToGetAssociationMixin<EncounterChange>;
   setEncounterChange!: BelongsToSetAssociationMixin<EncounterChange, string>;
 }
+
+@InputType()
+export class EncounterChangeDateUpdateInput extends PartialType(
+  OmitType(EncounterChangeDate, [
+    'createdAt',
+    'updatedAt',
+    'encounterChange',
+  ] as const),
+  InputType
+) {}
+
+@InputType()
+export class EncounterChangeDateNewInput extends PartialType(
+  OmitType(EncounterChangeDateUpdateInput, ['id'] as const),
+  InputType
+) {}
