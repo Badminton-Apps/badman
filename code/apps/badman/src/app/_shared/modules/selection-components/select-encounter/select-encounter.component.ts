@@ -41,7 +41,6 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
 
   constructor(
     private apollo: Apollo,
-    private encounterService: EncounterService,
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {}
@@ -83,7 +82,6 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
                       rows {
                         id
                         date
-                        originalDate
                         home {
                           id
                           name
@@ -91,10 +89,6 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
                         away {
                           id
                           name
-                        }
-                        encounterChange {
-                          id
-                          accepted
                         }
                         drawCompetition {
                           id

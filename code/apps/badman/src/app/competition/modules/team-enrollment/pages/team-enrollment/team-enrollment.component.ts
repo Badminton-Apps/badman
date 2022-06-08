@@ -40,10 +40,10 @@ import {
   SystemService,
   Team,
 } from '../../../../../_shared';
-import * as addComment from './graphql/AddComment.graphql';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
 import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
 import * as updateComment from './graphql/UpdateComment.graphql';
+import * as addComment from './graphql/AddComment.graphql';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -246,28 +246,7 @@ export class TeamEnrollmentComponent implements OnInit {
         filter((id) => !!id),
         distinctUntilChanged()
       ),
-      this.systemService.getPrimarySystemsWhere().pipe(
-        switchMap((where) =>
-          this.apollo.query<{ rankingSystems: Partial<RankingSystem>[] }>({
-            query: gql`
-              query getPrimarySystems($where: JSONObject!) {
-                rankingSystems(where: $where) {
-                  id
-                }
-              }
-            `,
-            variables: {
-              where,
-            },
-          })
-        ),
-        map(({ data }) => {
-          if ((data?.rankingSystems?.length ?? 0) == 0) {
-            throw new Error('No Primary Ranking System');
-          }
-          return data?.rankingSystems[0].id;
-        })
-      ),
+      this.systemService.getPrimarySystemId(),
     ]).pipe(
       switchMap(([id, systemId]) =>
         this.apollo
@@ -394,7 +373,8 @@ export class TeamEnrollmentComponent implements OnInit {
           ? prov.comments?.[0]
           : new Comment({
               clubId: club?.id,
-              eventId: prov.id,
+              linkId: prov.id,
+              linkType: 'competition',
             });
       this.commentProvControl.patchValue(this.commentProv?.message);
       this.commentProvControl.valueChanges
@@ -419,7 +399,8 @@ export class TeamEnrollmentComponent implements OnInit {
           ? liga?.comments?.[0]
           : new Comment({
               clubId: club?.id,
-              eventId: liga.id,
+              linkId: liga.id,
+              linkType: 'competition',
             });
       this.commentLigaControl.patchValue(this.commentLiga?.message);
       this.commentLigaControl.valueChanges
@@ -444,7 +425,8 @@ export class TeamEnrollmentComponent implements OnInit {
           ? nat?.comments?.[0]
           : new Comment({
               clubId: club?.id,
-              eventId: nat.id,
+              linkId: nat.id,
+              linkType: 'competition',
             });
       this.commentNatControl.patchValue(this.commentNat?.message);
       this.commentNatControl.valueChanges
@@ -466,14 +448,13 @@ export class TeamEnrollmentComponent implements OnInit {
 
   private async _updateComment(comment: Comment): Promise<string> {
     // player get's set via authenticated user
-    const { player, eventId, ...commentMessage } = comment;
+    const { player, ...commentMessage } = comment;
 
     const result = await lastValueFrom(
       this.apollo.mutate<{ updateComment?: Comment; addComment: Comment }>({
         mutation: commentMessage.id ? updateComment : addComment,
         variables: {
-          comment: commentMessage,
-          eventId,
+          data: commentMessage,
         },
       })
     );
@@ -510,6 +491,8 @@ export class TeamEnrollmentComponent implements OnInit {
                 comments(where: { clubId: $clubId }) {
                   id
                   message
+                  linkId
+                  linkType
                 }
                 subEventCompetitions {
                   id
@@ -571,6 +554,8 @@ export class TeamEnrollmentComponent implements OnInit {
                 comments(where: { clubId: $clubId }) {
                   id
                   message
+                  linkId
+                  linkType
                 }
                 subEventCompetitions {
                   id
@@ -622,6 +607,8 @@ export class TeamEnrollmentComponent implements OnInit {
               comments(where: { clubId: $clubId }) {
                 id
                 message
+                linkId
+                linkType
               }
               subEventCompetitions {
                 id

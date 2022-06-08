@@ -84,7 +84,7 @@ export class Team extends Model {
   @Column
   name: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.TIME)
   preferredTime: Date;
 

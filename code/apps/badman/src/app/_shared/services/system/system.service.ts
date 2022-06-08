@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import * as addRankingSystemMutation from '../../graphql/rankingSystem/mutations/addRankingSystem.graphql';
@@ -116,6 +116,30 @@ export class SystemService {
                 ? new RankingSystem(x.data.rankingSystems[0])
                 : null
             ),
+            shareReplay(1)
+          )
+      )
+    );
+  }
+
+  getPrimarySystemId() {
+    return this.getPrimarySystemsWhere().pipe(
+      switchMap((query) =>
+        this.apollo
+          .query<{ rankingSystems: { id: string }[] }>({
+            query: gql`
+              query GetPrimarySystemsQuery($where: JSONObject) {
+                rankingSystems(where: $where) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              where: query,
+            },
+          })
+          .pipe(
+            map((x) => x.data?.rankingSystems?.[0]?.id),
             shareReplay(1)
           )
       )

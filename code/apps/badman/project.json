@@ -1,13 +1,11 @@
 {
   "projectType": "application",
-  "root": "apps/badman",
   "sourceRoot": "apps/badman/src",
   "prefix": "badman",
   "targets": {
     "deploy": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
-        
         "commands": [
           "nx build badman",
           "docker build -f ./apps/badman/Dockerfile . -t badman"
@@ -16,7 +14,7 @@
       }
     },
     "deploy-dev": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "docker build -f ./apps/badman/Dockerfile.dev . -t badman-dev"

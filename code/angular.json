@@ -4,6 +4,7 @@
     "api": "apps/api",
     "api-authorization": "libs/api/authorization",
     "api-database": "libs/api/database",
+    "api-generator": "libs/api/generator",
     "api-grapqhl": "libs/api/grapqhl",
     "badman": "apps/badman",
     "badman-e2e": "apps/badman-e2e",

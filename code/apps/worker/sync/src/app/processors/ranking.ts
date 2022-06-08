@@ -4,13 +4,14 @@ import { Job } from 'bull';
 
 @Processor('sync-queue')
 export class RankingComsumer {
+  public static SyncRanking = 'SyncRanking';
   private readonly logger = new Logger(RankingComsumer.name);
 
-  constructor(){
+  constructor() {
     this.logger.debug('SyncConsumer');
   }
 
-  @Process('namedjob')
+  @Process(RankingComsumer.SyncRanking)
   async processNamedJob(job: Job<string>): Promise<void> {
     this.logger.debug('Named job processed', job.data);
   }

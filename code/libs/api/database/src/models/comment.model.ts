@@ -20,7 +20,14 @@ import {
 } from 'sequelize-typescript';
 import { EncounterChange } from './event';
 import { Club } from './club.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
@@ -86,3 +93,21 @@ export class Comment extends Model {
   getCompetition!: BelongsToGetAssociationMixin<EventCompetition>;
   setCompetition!: BelongsToSetAssociationMixin<EventCompetition, string>;
 }
+
+@InputType()
+export class CommentUpdateInput extends PartialType(
+  OmitType(Comment, [
+    'createdAt',
+    'updatedAt',
+    'club',
+    'competition',
+    'encounter',
+  ] as const),
+  InputType
+) {}
+
+@InputType()
+export class CommentNewInput extends PartialType(
+  OmitType(CommentUpdateInput, ['id'] as const),
+  InputType
+) {}

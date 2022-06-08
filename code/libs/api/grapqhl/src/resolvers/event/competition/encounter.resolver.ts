@@ -1,19 +1,36 @@
 import {
+  Comment,
   DrawCompetition,
+  EncounterChange,
+  EncounterChangeDate,
+  EncounterChangeNewInput,
   EncounterCompetition,
+  Player,
   Team,
 } from '@badman/api/database';
-import { NotFoundException } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import {
+  Inject,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
+  Mutation,
   ObjectType,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Queue } from 'bull';
+import * as moment from 'moment';
+import { Sequelize } from 'sequelize-typescript';
+import { Transaction } from 'sequelize/types';
+import { User } from '../../../decorators';
 import { ListArgs } from '../../../utils';
 
 @ObjectType()
@@ -27,6 +44,13 @@ export class PagedEncounterCompetition {
 
 @Resolver(() => EncounterCompetition)
 export class EncounterCompetitionResolver {
+  private readonly logger = new Logger(EncounterCompetitionResolver.name);
+
+  constructor(
+    @Inject('SEQUELIZE') private _sequelize: Sequelize,
+    @InjectQueue('sync-queue') private syncQ: Queue
+  ) {}
+
   @Query(() => EncounterCompetition)
   async encounterCompetition(
     @Args('id', { type: () => ID }) id: string
@@ -73,16 +97,181 @@ export class EncounterCompetitionResolver {
     return encounter.getAway();
   }
 
-  // @Mutation(returns => EncounterCompetition)
-  // async addEncounterCompetition(
-  //   @Args('newEncounterCompetitionData') newEncounterCompetitionData: NewEncounterCompetitionInput,
-  // ): Promise<EncounterCompetition> {
-  //   const recipe = await this.recipesService.create(newEncounterCompetitionData);
-  //   return recipe;
-  // }
+  @ResolveField(() => EncounterChange)
+  async encounterChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<EncounterChange> {
+    return encounter.getEncounterChange();
+  }
+
+  @Mutation(() => Boolean)
+  async addChangeEncounter(
+    @User() user: Player,
+    @Args('data') newChangeEncounter: EncounterChangeNewInput
+  ): Promise<boolean> {
+    const encounter = await EncounterCompetition.findByPk(
+      newChangeEncounter.encounterId
+    );
+    const team = newChangeEncounter.home
+      ? await encounter.getHome()
+      : await encounter.getAway();
+
+    if (
+      !user.hasAnyPermission([
+        // `${team.clubId}_change:encounter`,
+        'change-any:encounter',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+    const transaction = await this._sequelize.transaction();
+    let encounterChange: EncounterChange;
+
+    try {
+      // Check if encounter has change
+      encounterChange = await encounter.getEncounterChange({ transaction });
+
+      // If not create a new one
+      if (encounterChange === null || encounterChange === undefined) {
+        encounterChange = new EncounterChange({
+          encounterId: encounter.id,
+        });
+      }
+
+      const dates = await encounterChange.getDates();
+      await encounterChange.save({ transaction });
+
+      // Set the state
+      if (newChangeEncounter.accepted) {
+        const selectedDates = newChangeEncounter.dates.filter(
+          (r) => r.selected === true
+        );
+        if (selectedDates.length !== 1) {
+          // Multiple dates were selected
+          throw new Error('Multiple dates selected');
+        }
+        // Copy original date
+        if (encounter.originalDate === null) {
+          encounter.originalDate = encounter.date;
+        }
+        // Set date to the selected date
+        encounter.date = selectedDates[0].date;
+
+        // Accept
+        await this.syncQ.add('change-date', { encounterId: encounter.id });
+
+        // Save cahnges
+        encounter.save({ transaction });
+
+        // Destroy the requets
+        await encounterChange.destroy({ transaction });
+      } else {
+        await this.changeOrUpdate(
+          encounterChange,
+          newChangeEncounter,
+          transaction,
+          user,
+          team,
+          dates
+        );
+      }
+
+      // find if any date was selected
+      await transaction.commit();
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+
+    return true;
+  }
 
   // @Mutation(returns => Boolean)
   // async removeEncounterCompetition(@Args('id') id: string) {
   //   return this.recipesService.remove(id);
   // }
+
+  private async changeOrUpdate(
+    encounterChange: EncounterChange,
+    change: EncounterChangeNewInput,
+    transaction: Transaction,
+    player: Player,
+    team: Team,
+    dates: EncounterChangeDate[]
+  ) {
+    encounterChange.accepted = false;
+
+    let comment: Comment;
+    if (change.home) {
+      comment = await encounterChange.getHomeComment({ transaction });
+
+      if (comment === null) {
+        comment = new Comment({
+          playerId: player?.id,
+          clubId: team.clubId,
+        });
+
+        await encounterChange.setHomeComment(comment, { transaction });
+      }
+    } else {
+      comment = await encounterChange.getAwayComment({ transaction });
+      if (comment === null) {
+        comment = new Comment({
+          playerId: player?.id,
+          clubId: team.clubId,
+        });
+        await encounterChange.setAwayComment(comment, { transaction });
+      }
+    }
+
+    comment.message = change.comment?.message;
+    await comment.save({ transaction });
+
+    change.dates = change.dates
+      .map((r) => {
+        const parsedDate = moment(r.date);
+        r.date = parsedDate.isValid() ? parsedDate.toDate() : null;
+        return r;
+      })
+      .filter((r) => r.date !== null);
+
+    // Add new dates
+    for (const date of change.dates) {
+      // Check if the encounter has alredy a change for this date
+      let encounterChangeDate = dates.find(
+        (r) => r.date.getTime() === date.date.getTime()
+      );
+
+      // If not create new one
+      if (!encounterChangeDate) {
+        encounterChangeDate = new EncounterChangeDate({
+          date: date.date,
+          encounterChangeId: encounterChange.id,
+        });
+      }
+
+      // Set the availibily to the date
+      if (change.home) {
+        encounterChangeDate.availabilityHome = date.availabilityHome;
+      } else {
+        encounterChangeDate.availabilityAway = date.availabilityAway;
+      }
+
+      // Save the date
+      await encounterChangeDate.save({ transaction });
+    }
+
+    // remove old dates
+    for (const date of dates) {
+      if (
+        change.dates.find((r) => r.date.getTime() === date.date.getTime()) ===
+        null
+      ) {
+        await date.destroy({ transaction });
+      }
+    }
+  }
 }

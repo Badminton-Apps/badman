@@ -1,8 +1,29 @@
-FROM node:17.9.0-alpine
+# FROM node:17.9.0-alpine
 
-WORKDIR /usr/src
+# WORKDIR /usr/src
 
-EXPOSE 5000 9229
+# EXPOSE 5000 9229
 
-CMD ["npx", "nx", "serve-dev", "api"]
-  
+# CMD ["npx", "nx", "serve-dev", "api"] 
+
+  # Get base Windows OS image
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
+
+# Set environment variables
+ENV NPM_CONFIG_LOGLEVEL info
+ENV NODEJS_VERSION 12.9.1
+
+# Download & Install 2010 Access Driver
+RUN powershell -Command "wget -Uri https://download.microsoft.com/download/2/4/3/24375141-E08D-4803-AB0E-10F2E3A07AAA/AccessDatabaseEngine.exe -OutFile AccessDatabaseEngine.exe -UseBasicParsing"
+RUN powershell -Command "Start-Process -NoNewWindow -FilePath \"AccessDatabaseEngine.exe\""
+
+# Download & Install 2016 Access Driver
+RUN powershell -Command "wget -Uri https://download.microsoft.com/download/3/5/C/35C84C36-661A-44E6-9324-8786B8DBE231/accessdatabaseengine_X64.exe -OutFile accessdatabaseengine_X64.exe -UseBasicParsing"
+RUN powershell -Command "Start-Process -NoNewWindow -FilePath \"accessdatabaseengine_X64.exe\""
+
+# Download and install Node.js
+RUN powershell -Command "wget -Uri https://nodejs.org/dist/v%NODEJS_VERSION%/node-v%NODEJS_VERSION%-x64.msi -OutFile node.msi -UseBasicParsing"
+RUN msiexec.exe /q /i node.msi
+
+
+CMD ["npx", "nx", "serve-dev", "api"] 

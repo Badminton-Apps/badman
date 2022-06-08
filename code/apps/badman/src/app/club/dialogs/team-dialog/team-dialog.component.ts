@@ -17,6 +17,7 @@ import {
   ClaimService,
   Club,
   Player,
+  SystemService,
   Team,
   TeamService,
 } from '../../../_shared';
@@ -36,6 +37,7 @@ export class TeamDialogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: { team: Team; club: Club; allowEditType: boolean },
+    private systemService: SystemService,
     private teamService: TeamService,
     private apollo: Apollo,
     private auth: ClaimService
@@ -59,52 +61,65 @@ export class TeamDialogComponent implements OnInit {
           apolloCache.gc();
         }
         if (this.data.team?.id) {
-          return this.apollo
-            .query<{ team: Team }>({
-              query: gql`
-                query GetTeamQuery($id: ID!, $personal: Boolean!) {
-                  team(id: $id) {
-                    id
-                    name
-                    teamNumber
-                    abbreviation
-                    type
-                    preferredTime
-                    preferredDay
-                    active
-                    phone @include(if: $personal)
-                    email @include(if: $personal)
-                    captain {
-                      id
-                      fullName
-                    }
-                    locations {
-                      id
-                      name
-                    }
-                    players {
-                      id
-                      slug
-                      firstName
-                      lastName
-                      competitionPlayer
-                      base
-                      gender
-                      rankingLastPlaces (take: 1) {
+          return this.systemService
+            .getPrimarySystemId()
+            .pipe(
+              switchMap((systemId) =>
+                this.apollo.query<{ team: Team }>({
+                  query: gql`
+                    query GetTeamQuery(
+                      $id: ID!
+                      $personal: Boolean!
+                      $systemId: ID!
+                    ) {
+                      team(id: $id) {
                         id
-                        single
-                        double
-                        mix
+                        name
+                        teamNumber
+                        abbreviation
+                        type
+                        preferredTime
+                        preferredDay
+                        active
+                        phone @include(if: $personal)
+                        email @include(if: $personal)
+                        captain {
+                          id
+                          fullName
+                        }
+                        locations {
+                          id
+                          name
+                        }
+                        players {
+                          id
+                          slug
+                          firstName
+                          lastName
+                          competitionPlayer
+                          base
+                          gender
+                          rankingLastPlaces(
+                            take: 1
+                            where: { systemId: $systemId }
+                          ) {
+                            id
+                            single
+                            double
+                            mix
+                          }
+                        }
                       }
                     }
-                  }
-                }
-              `,
-              variables: {
-                id: this.data.team?.id,
-                personal: canViewPersonalData,
-              },
-            })
+                  `,
+                  variables: {
+                    id: this.data.team?.id,
+                    personal: canViewPersonalData,
+                    systemId: systemId,
+                  },
+                })
+              )
+            )
             .pipe(map((x) => new Team(x.data.team)));
         } else {
           return of(null);

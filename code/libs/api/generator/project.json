@@ -1,19 +1,20 @@
 {
-  "sourceRoot": "libs/api/database/src",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/generator/src",
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/api/database/**/*.ts"]
+        "lintFilePatterns": ["libs/api/generator/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/api/database"],
+      "outputs": ["coverage/libs/api/generator"],
       "options": {
-        "jestConfig": "libs/api/database/jest.config.ts",
+        "jestConfig": "libs/api/generator/jest.config.ts",
         "passWithNoTests": true
       }
     }

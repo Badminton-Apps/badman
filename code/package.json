@@ -79,6 +79,7 @@
     "cronstrue": "^1.125.0",
     "echarts": "~4.9.0",
     "elastic-apm-node": "^3.35.0",
+    "fast-xml-parser": "^4.0.8",
     "graphql": "^15.8.0",
     "graphql-type-json": "^0.3.2",
     "html2pdf.js": "^0.10.1",

@@ -1,5 +1,4 @@
 {
-  "root": "libs/search",
   "sourceRoot": "libs/search/src",
   "targets": {
     "lint": {
