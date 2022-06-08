@@ -1,10 +1,9 @@
 {
-  "root": "apps/worker/sync",
   "sourceRoot": "apps/worker/sync/src",
   "projectType": "application",
   "targets": {
     "deploy": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "nx build worker-sync",
@@ -14,7 +13,7 @@
       }
     },
     "deploy-dev": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "docker build -f ./apps/worker/sync/Dockerfile.dev . -t worker-sync-dev"

@@ -27,7 +27,7 @@ export class CompetitionEncounter {
     this.id = args?.id;
     this.date = args.date != null ? new Date(args.date) : undefined;
     this.originalDate =
-      args.originalDate != null ? new Date(args.originalDate) : undefined;
+      (args.originalDate) != null ? new Date(args.originalDate) : undefined;
     this.drawCompetition =
       args?.drawCompetition != null
         ? new CompetitionDraw(args.drawCompetition)

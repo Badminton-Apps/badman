@@ -1,4 +1,16 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  CommentNewInput,
+  CommentUpdateInput,
+  EncounterChangeDateNewInput,
+} from '@badman/api/database';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -30,7 +42,10 @@ import {
 } from 'sequelize-typescript';
 import { Comment } from '../../../comment.model';
 import { EncounterCompetition } from '../encounter-competition.model';
-import { EncounterChangeDate } from './encounter-change-date.model';
+import {
+  EncounterChangeDate,
+  EncounterChangeDateUpdateInput,
+} from './encounter-change-date.model';
 
 @Table({
   timestamps: true,
@@ -64,12 +79,14 @@ export class EncounterChange extends Model {
   @Column
   encounterId: string;
 
+  @Field(() => [EncounterChangeDate], { nullable: true })
   @HasMany(() => EncounterChangeDate, {
     foreignKey: 'encounterChangeId',
     onDelete: 'CASCADE',
   })
   dates: EncounterChangeDate[];
 
+  @Field(() => Comment, { nullable: true })
   @HasOne(() => Comment, {
     foreignKey: 'linkId',
     constraints: false,
@@ -79,6 +96,7 @@ export class EncounterChange extends Model {
   })
   homeComment: Comment;
 
+  @Field(() => Comment, { nullable: true })
   @HasOne(() => Comment, {
     foreignKey: 'linkId',
     constraints: false,
@@ -110,4 +128,37 @@ export class EncounterChange extends Model {
   // Has one AwayComment
   getAwayComment!: HasOneGetAssociationMixin<Comment>;
   setAwayComment!: HasOneSetAssociationMixin<Comment, string>;
+}
+
+@InputType()
+export class EncounterChangeUpdateInput extends PartialType(
+  OmitType(EncounterChange, [
+    'createdAt',
+    'updatedAt',
+    'dates',
+    'homeComment',
+    'awayComment',
+  ] as const),
+  InputType
+) {
+  @Field()
+  home: boolean;
+
+  @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })
+  dates: EncounterChangeDate[];
+
+  @Field(() => CommentUpdateInput, { nullable: true })
+  comment: Comment;
+}
+
+@InputType()
+export class EncounterChangeNewInput extends PartialType(
+  OmitType(EncounterChangeUpdateInput, ['id', 'dates', 'comment'] as const),
+  InputType
+) {
+  @Field(() => [EncounterChangeDateNewInput], { nullable: true })
+  dates: EncounterChangeDate[];
+
+  @Field(() => CommentNewInput, { nullable: true })
+  comment: Comment;
 }

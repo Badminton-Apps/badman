@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { RankingComsumer } from './processors/ranking';
 import { ScheduleModule } from '@nestjs/schedule';
-import { SyncService } from './services/sync.service';
+import { JobService } from './crons/jobs';
 
 @Module({
-  providers: [RankingComsumer, SyncService],
+  providers: [RankingComsumer, JobService],
   imports: [
     ScheduleModule.forRoot(),
     BullModule.registerQueue({

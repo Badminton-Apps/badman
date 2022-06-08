@@ -16,8 +16,9 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { Apollo, gql } from 'apollo-angular';
 import * as moment from 'moment';
-import { Observable, of } from 'rxjs';
+import { lastValueFrom, Observable, of } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import {
   ChangeEncounterAvailability,
@@ -57,6 +58,7 @@ export class ShowRequestsComponent implements OnInit {
 
   constructor(
     private _encounterService: EncounterService,
+    private _apollo: Apollo,
     private _dialog: MatDialog,
     private _snackBar: MatSnackBar,
     private _cd: ChangeDetectorRef,
@@ -230,9 +232,36 @@ export class ShowRequestsComponent implements OnInit {
 
     const success = async () => {
       try {
-        await this._encounterService
-          .addEncounterChange(change, this.home)
-          .toPromise();
+        await lastValueFrom(
+          this._apollo
+            .mutate<{
+              addChangeEncounter: EncounterChange;
+            }>({
+              mutation: gql`
+                mutation AddChangeEncounter($data: EncounterChangeNewInput!) {
+                  addChangeEncounter(data: $data)
+                }
+              `,
+              variables: {
+                data: {
+                  accepted: change.accepted,
+                  encounterId: change.encounter?.id,
+                  home: this.home,
+                  dates: change.dates,
+                  comment: {
+                    message: this.home
+                      ? change.homeComment?.message
+                      : change.awayComment?.message,
+                  },
+                },
+              },
+            })
+            .pipe()
+        );
+
+        // await this._encounterService
+        //   .addEncounterChange(change, this.home)
+        //   .toPromise();
         const teamControl = this.formGroup.get('team');
         if (!teamControl) {
           throw new Error('Team control not found');

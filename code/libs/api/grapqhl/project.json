@@ -1,5 +1,4 @@
 {
-  "root": "libs/api/grapqhl",
   "sourceRoot": "libs/api/grapqhl/src",
   "targets": {
     "lint": {

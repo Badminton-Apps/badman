@@ -5,13 +5,15 @@ export class Comment {
   message?: string;
   player?: Player;
   clubId?: string;
-  eventId?: string;
+  linkId?: string;
+  linkType?: string;
 
   constructor(args: Partial<Comment>) {
     this.id = args?.id;
     this.message = args?.message ?? '';
     this.player = args?.player != null ? new Player(args?.player) : undefined;
     this.clubId = args?.clubId;
-    this.eventId = args?.eventId;
+    this.linkId = args?.linkId;
+    this.linkType = args?.linkType;
   }
 }
