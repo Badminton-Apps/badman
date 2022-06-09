@@ -1,9 +1,13 @@
 import {
   DrawCompetition,
   DrawTournament,
+  EntryCompetitionPlayers,
+  EntryCompetitionPlayersType,
   EventEntry,
+  Player,
   SubEventCompetition,
   SubEventTournament,
+  Team,
 } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
@@ -49,6 +53,10 @@ export class EventEntryResolver {
   ): Promise<SubEventCompetition> {
     return eventEntry.getCompetitionSubEvent();
   }
+  @ResolveField(() => Team)
+  async team(@Parent() eventEntry: EventEntry): Promise<Team> {
+    return eventEntry.getTeam();
+  }
 
   @ResolveField(() => [DrawCompetition])
   async getCompetitionDraw(
@@ -82,4 +90,17 @@ export class EventEntryResolver {
   // async removeEventEntry(@Args('id') id: string) {
   //   return this.recipesService.remove(id);
   // }
+}
+
+
+@Resolver(() => EntryCompetitionPlayersType)
+export class EntryCompetitionPlayersResolver {
+
+  @ResolveField(() => Player)
+  async player(
+    @Parent() eventEntry: EntryCompetitionPlayers
+  ): Promise<Player> {
+
+    return await Player.findByPk(eventEntry.id);
+  }
 }

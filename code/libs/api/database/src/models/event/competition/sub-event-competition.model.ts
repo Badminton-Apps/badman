@@ -38,7 +38,7 @@ import {
 } from 'sequelize-typescript';
 import { EventEntry } from '..';
 import { SubEventType } from '../../../enums';
-import { RankingGroups } from '../../ranking';
+import { RankingGroup } from '../../ranking';
 import { DrawCompetition } from './draw-competition.model';
 import { EventCompetition } from './event-competition.model';
 import { RankingGroupSubEventCompetitionMembership } from './group-subevent-membership.model';
@@ -66,7 +66,7 @@ export class SubEventCompetition extends Model {
   name: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field(() => String,{ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType: SubEventType;
 
@@ -94,25 +94,28 @@ export class SubEventCompetition extends Model {
       entryType: 'competition',
     },
   })
-  entries: EventEntry[];
+  eventEntries: EventEntry[];
 
-  @Field(() => [RankingGroups], { nullable: true })
-  @BelongsToMany(() => RankingGroups, () => RankingGroupSubEventCompetitionMembership)
-  groups: RankingGroups[];
+  @Field(() => [RankingGroup], { nullable: true })
+  @BelongsToMany(
+    () => RankingGroup,
+    () => RankingGroupSubEventCompetitionMembership
+  )
+  rankingGroups: RankingGroup[];
 
   @Field(() => [DrawCompetition], { nullable: true })
   @HasMany(() => DrawCompetition, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  draws: DrawCompetition[];
+  drawCompetitions: DrawCompetition[];
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  event?: EventCompetition;
+  eventCompetition?: EventCompetition;
 
   @Unique('SubEventCompetitions_unique_constraint')
   @ForeignKey(() => EventCompetition)
@@ -126,42 +129,51 @@ export class SubEventCompetition extends Model {
   visualCode: string;
 
   // Belongs to many Group
-  getGroups!: BelongsToManyGetAssociationsMixin<RankingGroups>;
-  setGroups!: BelongsToManySetAssociationsMixin<RankingGroups, string>;
-  addGroups!: BelongsToManyAddAssociationsMixin<RankingGroups, string>;
-  addGroup!: BelongsToManyAddAssociationMixin<RankingGroups, string>;
-  removeGroup!: BelongsToManyRemoveAssociationMixin<RankingGroups, string>;
-  removeGroups!: BelongsToManyRemoveAssociationsMixin<
-    RankingGroups,
+  getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
+  setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
+  addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
+  addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
+    RankingGroup,
     string
   >;
-  hasGroup!: BelongsToManyHasAssociationMixin<RankingGroups, string>;
-  hasGroups!: BelongsToManyHasAssociationsMixin<RankingGroups, string>;
-  countGroup!: BelongsToManyCountAssociationsMixin;
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
+    RankingGroup,
+    string
+  >;
+  hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
+  hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
+  countRankingGroup!: BelongsToManyCountAssociationsMixin;
 
   // Has many EventEntry
-  getEventEntrys!: HasManyGetAssociationsMixin<EventEntry>;
-  setEventEntrys!: HasManySetAssociationsMixin<EventEntry, string>;
-  addEventEntrys!: HasManyAddAssociationsMixin<EventEntry, string>;
+  getEventEntries!: HasManyGetAssociationsMixin<EventEntry>;
+  setEventEntries!: HasManySetAssociationsMixin<EventEntry, string>;
+  addEventEntries!: HasManyAddAssociationsMixin<EventEntry, string>;
   addEventEntry!: HasManyAddAssociationMixin<EventEntry, string>;
   removeEventEntry!: HasManyRemoveAssociationMixin<EventEntry, string>;
-  removeEventEntrys!: HasManyRemoveAssociationsMixin<EventEntry, string>;
+  removeEventEntries!: HasManyRemoveAssociationsMixin<EventEntry, string>;
   hasEventEntry!: HasManyHasAssociationMixin<EventEntry, string>;
-  hasEventEntrys!: HasManyHasAssociationsMixin<EventEntry, string>;
-  countEventEntrys!: HasManyCountAssociationsMixin;
+  hasEventEntries!: HasManyHasAssociationsMixin<EventEntry, string>;
+  countEventEntries!: HasManyCountAssociationsMixin;
 
   // Has many Draw
-  getDraws!: HasManyGetAssociationsMixin<DrawCompetition>;
-  setDraws!: HasManySetAssociationsMixin<DrawCompetition, string>;
-  addDraws!: HasManyAddAssociationsMixin<DrawCompetition, string>;
-  addDraw!: HasManyAddAssociationMixin<DrawCompetition, string>;
-  removeDraw!: HasManyRemoveAssociationMixin<DrawCompetition, string>;
-  removeDraws!: HasManyRemoveAssociationsMixin<DrawCompetition, string>;
-  hasDraw!: HasManyHasAssociationMixin<DrawCompetition, string>;
-  hasDraws!: HasManyHasAssociationsMixin<DrawCompetition, string>;
-  countDraws!: HasManyCountAssociationsMixin;
+  getDrawCompetitions!: HasManyGetAssociationsMixin<DrawCompetition>;
+  setDrawCompetitions!: HasManySetAssociationsMixin<DrawCompetition, string>;
+  addDrawCompetitions!: HasManyAddAssociationsMixin<DrawCompetition, string>;
+  addDrawCompetition!: HasManyAddAssociationMixin<DrawCompetition, string>;
+  removeDrawCompetition!: HasManyRemoveAssociationMixin<
+    DrawCompetition,
+    string
+  >;
+  removeDrawCompetitions!: HasManyRemoveAssociationsMixin<
+    DrawCompetition,
+    string
+  >;
+  hasDrawCompetition!: HasManyHasAssociationMixin<DrawCompetition, string>;
+  hasDrawCompetitions!: HasManyHasAssociationsMixin<DrawCompetition, string>;
+  countDrawCompetitions!: HasManyCountAssociationsMixin;
 
   // Belongs to Event
-  getEvent!: BelongsToGetAssociationMixin<EventCompetition>;
-  setEvent!: BelongsToSetAssociationMixin<EventCompetition, string>;
+  getEventCompetition!: BelongsToGetAssociationMixin<EventCompetition>;
+  setEventCompetition!: BelongsToSetAssociationMixin<EventCompetition, string>;
 }

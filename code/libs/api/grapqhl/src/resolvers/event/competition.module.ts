@@ -1,14 +1,21 @@
 import { DatabaseModule } from '@badman/api/database';
-import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
+import { forwardRef, Module } from '@nestjs/common';
 import {
   EncounterCompetitionResolver,
   EventCompetitionResolver,
   DrawCompetitionResolver,
   SubEventCompetitionResolver,
 } from './competition';
+import { SyncQueue } from '@badman/queue';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    DatabaseModule,
+    BullModule.registerQueue({
+      name: SyncQueue,
+    }),
+  ],
   providers: [
     EventCompetitionResolver,
     EncounterCompetitionResolver,

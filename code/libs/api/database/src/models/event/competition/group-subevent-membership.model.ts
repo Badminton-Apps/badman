@@ -6,7 +6,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { RankingGroups } from '../../ranking';
+import { RankingGroup } from '../../ranking';
 import { SubEventCompetition } from './sub-event-competition.model';
 
 @Table({
@@ -21,7 +21,7 @@ export class RankingGroupSubEventCompetitionMembership extends Model {
   subEventId: string;
 
   @PrimaryKey
-  @ForeignKey(() => RankingGroups)
+  @ForeignKey(() => RankingGroup)
   @Field({ nullable: true })
   @Column
   groupId: string;

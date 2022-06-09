@@ -19,7 +19,7 @@ import {
   ListEncountersComponent,
   ShowRequestsComponent,
 } from './pages';
-import { CalendarComponent } from './components/calendar/calendar.component';
+import { CalendarComponent, DateSelectorComponent } from './components';
 import { FlexModule } from '@angular/flex-layout';
 import { MatChipsModule } from '@angular/material/chips';
 import { SelctionComponentsModule, SharedModule } from '../../../_shared';
@@ -49,6 +49,7 @@ const materialModules = [
     ListEncountersComponent,
     ShowRequestsComponent,
     CalendarComponent,
+    DateSelectorComponent
   ],
   imports: [
     SharedModule,

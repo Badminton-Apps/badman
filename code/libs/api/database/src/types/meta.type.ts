@@ -1,5 +1,10 @@
+import {
+  EntryCompetition,
+  EntryCompetitionPlayers,
+  EntryTournament,
+  Player,
+} from '@badman/api/database';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { EntryCompetition, EntryCompetitionPlayers, EntryTournament } from '../models';
 
 @ObjectType({ description: 'A Meta' })
 export class MetaType {
@@ -38,7 +43,10 @@ export class EntryCompetitionPlayersType {
 
   @Field({ nullable: true })
   mix: number;
-  
+
   @Field({ nullable: true })
   gender: string;
+
+  @Field(() => Player, { nullable: true })
+  player: Player;
 }

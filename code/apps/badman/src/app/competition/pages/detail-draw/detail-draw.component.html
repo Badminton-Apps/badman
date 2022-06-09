@@ -8,7 +8,7 @@
   </div>
 
   <div class="mat-subheading-2">{{ 'event.standing.title' | translate }}</div>
-  <badman-standing [type]="'team'" [entries]="draw.entries!"></badman-standing>
+  <badman-standing [type]="'team'" [entries]="draw.eventEntries!"></badman-standing>
   
   <div class="mat-subheading-2">{{ 'competition.draw.encounters' | translate }}</div>
   <badman-sub-event *ngFor="let encounter of draw.encounters" [competition]="encounter"></badman-sub-event>

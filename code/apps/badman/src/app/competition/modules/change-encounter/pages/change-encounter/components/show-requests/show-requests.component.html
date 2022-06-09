@@ -1,5 +1,5 @@
 <div *ngIf="this.requests$ | async as request" fxFlex>
-  <ng-container *ngIf="this.encounter != null">
+  <ng-container *ngIf="this.encounter !== null">
     <form [formGroup]="this.formGroupRequest" novalidate (ngSubmit)="save()">
       <div class="mat-subheading-1">
         {{ encounter.home!.name }} {{ 'competition.vs' | translate }} {{ encounter.away!.name }}
@@ -34,21 +34,12 @@
             fxLayoutGap="8px"
             [formGroupName]="i"
           >
-            <div fxFlex="40">
-              <!-- TODO: investigagte <input type="datetime-local"> -->
-              <mat-form-field>
-                <input
-                  matInput
-                  [ngxMatDatetimePicker]="picker"
-                  (focus)="picker.open()"
-                  placeholder="Choose a date"
+              <div fxFlex="40">
+                <badman-date-selector
+                  *ngIf="formGroup.get('club')?.value as club"
+                  [club]="club"
                   formControlName="date"
-                  [min]="this.minDate"
-                  [max]="this.maxDate"
-                />
-                <mat-datepicker-toggle matSuffix [for]="$any(picker)"></mat-datepicker-toggle> 
-                <ngx-mat-datetime-picker #picker> </ngx-mat-datetime-picker>
-              </mat-form-field>
+                ></badman-date-selector>
             </div>
 
             <mat-form-field fxFlex="22">

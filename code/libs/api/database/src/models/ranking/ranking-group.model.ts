@@ -35,9 +35,9 @@ import { RankingSystem } from './ranking-system.model';
   timestamps: true,
   schema: 'ranking',
 })
-@ObjectType({ description: 'A RankingGroups' })
-export class RankingGroups extends Model {
-  constructor(values?: Partial<RankingGroups>, options?: BuildOptions) {
+@ObjectType({ description: 'A RankingGroup' })
+export class RankingGroup extends Model {
+  constructor(values?: Partial<RankingGroup>, options?: BuildOptions) {
     super(values, options);
   }
 

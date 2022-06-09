@@ -7,12 +7,14 @@ export class TournamentSubEvent extends SubEvent {
   eventTournament?: EventTournament;
   gameType?: GameType | string;
 
+  drawTournaments?: TournamentDraw[];
+
   constructor({ ...args }: Partial<TournamentSubEvent>) {
     super(args);
 
     this.eventTournament =
       args?.eventTournament != null ? new EventTournament(args.eventTournament) : undefined;
-    this.draws = args?.draws?.map((d) => new TournamentDraw(d));
+    this.drawTournaments = args?.drawTournaments?.map((d) => new TournamentDraw(d));
     this.gameType =
       (args?.gameType ?? null) != null
         ? (<any>GameType)[args.gameType ?? '']

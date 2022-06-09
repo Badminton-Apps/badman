@@ -5,13 +5,13 @@ export class Draw {
   name?: string;
   type?: string;
   size?: number;
-  entries: Entry[];
+  eventEntries: Entry[];
 
   constructor(args: Partial<Draw>) {
     this.id = args?.id;
     this.name = args?.name;
     this.type = args?.type;
     this.size = args?.size;
-    this.entries = args?.entries?.map((e) => new Entry(e)) ?? [];
+    this.eventEntries = args?.eventEntries?.map((e) => new Entry(e)) ?? [];
   }
 }

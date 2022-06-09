@@ -20,15 +20,19 @@ export class DetailCompetitionComponent implements OnInit {
 
   update$ = new BehaviorSubject(0);
 
-  constructor(private apollo: Apollo, private route: ActivatedRoute, private dialog: MatDialog) {}
+  constructor(
+    private apollo: Apollo,
+    private route: ActivatedRoute,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.event$ = combineLatest([this.route.paramMap, this.update$]).pipe(
       switchMap(([params]) =>
-        this.apollo.query<{ competitionEvent: EventCompetition }>({
+        this.apollo.query<{ eventCompetition: EventCompetition }>({
           query: gql`
             query GetCompetitionDetails($id: ID!) {
-              competitionEvent(id: $id) {
+              eventCompetition(id: $id) {
                 id
                 slug
                 name
@@ -37,16 +41,20 @@ export class DetailCompetitionComponent implements OnInit {
                 started
                 type
                 updatedAt
-                subEvents(order: "eventType") {
+                subEventCompetitions(
+                  order: { field: "eventType", direction: "desc" }
+                ) {
                   id
                   name
                   eventType
                   level
-                  groups {
+                  rankingGroups {
                     id
                     name
                   }
-                  draws(order: "name") {
+                  drawCompetitions(
+                    order: [{ field: "name", direction: "desc" }]
+                  ) {
                     id
                     name
                   }
@@ -59,12 +67,24 @@ export class DetailCompetitionComponent implements OnInit {
           },
         })
       ),
-      map(({ data }) => new EventCompetition(data.competitionEvent))
+      map(({ data }) => new EventCompetition(data.eventCompetition))
     );
 
-    this.subEventsM$ = this.event$.pipe(map((event) => event.subEventCompetitions?.filter((se) => se.eventType === 'M')));
-    this.subEventsF$ = this.event$.pipe(map((event) => event.subEventCompetitions?.filter((se) => se.eventType === 'F')));
-    this.subEventsMX$ = this.event$.pipe(map((event) => event.subEventCompetitions?.filter((se) => se.eventType === 'MX')));
+    this.subEventsM$ = this.event$.pipe(
+      map((event) =>
+        event.subEventCompetitions?.filter((se) => se.eventType === 'M')
+      )
+    );
+    this.subEventsF$ = this.event$.pipe(
+      map((event) =>
+        event.subEventCompetitions?.filter((se) => se.eventType === 'F')
+      )
+    );
+    this.subEventsMX$ = this.event$.pipe(
+      map((event) =>
+        event.subEventCompetitions?.filter((se) => se.eventType === 'MX')
+      )
+    );
   }
 
   assignRankingGroups(event: Partial<EventCompetition>) {

@@ -87,7 +87,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
           const unique = [
             ...new Set(
               this.data.event.subEventCompetitions
-                ?.map((s) => s.groups?.map((r: RankingGroup) => r.id))
+                ?.map((s) => s.rankingGroups?.map((r: RankingGroup) => r.id))
                 .flat()
             ),
           ];
@@ -104,8 +104,8 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
           } else {
             const initialGroups: RankingGroup[] = [];
             for (const subEvent of this.data.event.subEventCompetitions ?? []) {
-              if (subEvent.groups && (subEvent.groups ?? []).length > 0) {
-                for (const group of subEvent.groups) {
+              if (subEvent.rankingGroups && (subEvent.rankingGroups ?? []).length > 0) {
+                for (const group of subEvent.rankingGroups) {
                   if (initialGroups.findIndex((g) => g.id == group.id) === -1) {
                     initialGroups.push(group);
                   }
@@ -175,7 +175,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
       for (const subEvent of this.data.event.subEventCompetitions ?? []) {
         const hasGroup =
-          (subEvent.groups ?? []).find(
+          (subEvent.rankingGroups ?? []).find(
             (g: RankingGroup) => g.id == key
           ) == null;
         if (hasGroup) {

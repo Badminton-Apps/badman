@@ -38,7 +38,7 @@ import {
 import { EventTournament } from './event-tournament.model';
 import { RankingGroupSubEventTournamentMembership } from './group-subevent-membership.model';
 import { DrawTournament } from './draw-tournament.model';
-import { RankingGroups } from '../../ranking';
+import { RankingGroup } from '../../ranking';
 import { GameType, SubEventType } from '../../../enums';
 import { EventEntry } from '../entry.model';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
@@ -85,16 +85,17 @@ export class SubEventTournament extends Model {
   visualCode: string;
 
   @BelongsToMany(
-    () => RankingGroups,
+    () => RankingGroup,
     () => RankingGroupSubEventTournamentMembership
   )
-  groups: RankingGroups[];
+  groups: RankingGroup[];
 
+  @Field(() => [DrawTournament], { nullable: true })
   @HasMany(() => DrawTournament, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  draws: DrawTournament[];
+  drawTournaments: DrawTournament[];
 
   @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
@@ -119,29 +120,29 @@ export class SubEventTournament extends Model {
   entries: EventEntry[];
 
   // Belongs to many Group
-  getGroups!: BelongsToManyGetAssociationsMixin<RankingGroups>;
-  setGroups!: BelongsToManySetAssociationsMixin<RankingGroups, string>;
-  addGroups!: BelongsToManyAddAssociationsMixin<RankingGroups, string>;
-  addGroup!: BelongsToManyAddAssociationMixin<RankingGroups, string>;
-  removeGroup!: BelongsToManyRemoveAssociationMixin<RankingGroups, string>;
+  getGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
+  setGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
+  addGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
+  addGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
+  removeGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
   removeGroups!: BelongsToManyRemoveAssociationsMixin<
-    RankingGroups,
+    RankingGroup,
     string
   >;
-  hasGroup!: BelongsToManyHasAssociationMixin<RankingGroups, string>;
-  hasGroups!: BelongsToManyHasAssociationsMixin<RankingGroups, string>;
+  hasGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
+  hasGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
   countGroup!: BelongsToManyCountAssociationsMixin;
 
   // Has many Draw
-  getDraws!: HasManyGetAssociationsMixin<DrawTournament>;
-  setDraws!: HasManySetAssociationsMixin<DrawTournament, string>;
-  addDraws!: HasManyAddAssociationsMixin<DrawTournament, string>;
-  addDraw!: HasManyAddAssociationMixin<DrawTournament, string>;
-  removeDraw!: HasManyRemoveAssociationMixin<DrawTournament, string>;
-  removeDraws!: HasManyRemoveAssociationsMixin<DrawTournament, string>;
-  hasDraw!: HasManyHasAssociationMixin<DrawTournament, string>;
-  hasDraws!: HasManyHasAssociationsMixin<DrawTournament, string>;
-  countDraws!: HasManyCountAssociationsMixin;
+  getDrawTournaments!: HasManyGetAssociationsMixin<DrawTournament>;
+  setDrawTournaments!: HasManySetAssociationsMixin<DrawTournament, string>;
+  addDrawTournaments!: HasManyAddAssociationsMixin<DrawTournament, string>;
+  addDrawTournament!: HasManyAddAssociationMixin<DrawTournament, string>;
+  removeDrawTournament!: HasManyRemoveAssociationMixin<DrawTournament, string>;
+  removeDrawTournaments!: HasManyRemoveAssociationsMixin<DrawTournament, string>;
+  hasDrawTournament!: HasManyHasAssociationMixin<DrawTournament, string>;
+  hasDrawTournaments!: HasManyHasAssociationsMixin<DrawTournament, string>;
+  countDrawTournaments!: HasManyCountAssociationsMixin;
 
   // Belongs to Event
   getEvent!: BelongsToGetAssociationMixin<EventTournament>;

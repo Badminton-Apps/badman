@@ -15,7 +15,7 @@
   </div>
 </div>
 
-<div class="calendar-table" *ngIf="calendar">
+<div class="calendar-table" *ngIf="calendar; else loading">
   <div class="calendar-day weekday" *ngFor="let weekDay of weekDayNames">{{ weekDay | titlecase }}</div>
 
   <div
@@ -25,9 +25,9 @@
   >
     <div class="calendar-day-header" [ngClass]="{ 'blue-date': row.isToday }">
       <div fxFlex>
-        <strong>{{ row.date.getDate() }}</strong>
-        <strong *ngIf="row.isToday || row.date.getDate() == 1">
-          {{ monthNames[row.date.getMonth()] | titlecase }}</strong
+        <strong>{{ row.date?.getDate() }}</strong>
+        <strong *ngIf="row.isToday || row.date?.getDate() === 1">
+          {{ monthNames[row.date?.getMonth() ?? 0] | titlecase }}</strong
         >
       </div>
       <div class="location-availibilty">
@@ -44,3 +44,7 @@
     </div>
   </div>
 </div>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>

@@ -19,6 +19,7 @@
       "@badman/api/database": ["libs/api/database/src/index.ts"],
       "@badman/api/generator": ["libs/api/generator/src/index.ts"],
       "@badman/api/grapqhl": ["libs/api/grapqhl/src/index.ts"],
+      "@badman/queue": ["libs/queue/src/index.ts"],
       "@badman/search": ["libs/search/src/index.ts"]
     }
   },

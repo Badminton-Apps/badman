@@ -17,7 +17,7 @@ export class Event {
   usedRankingAmount?: number;
 
   subEventCompetitions?: SubEvent[];
-  entries?: Entry[];
+  eventEntries?: Entry[];
 
   constructor({ ...args }: Partial<Event>) {
     this.name = args.name;
@@ -28,7 +28,7 @@ export class Event {
     this.allowEnlisting = args.allowEnlisting;
     this.updatedAt = args.updatedAt;
     this.players = args?.players?.map((p) => new Player(p));
-    this.entries = args?.entries?.map((p) => new Entry(p));
+    this.eventEntries = args?.eventEntries?.map((p) => new Entry(p));
 
     this.usedRankingUnit = args.usedRankingUnit;
     this.usedRankingAmount = args.usedRankingAmount;

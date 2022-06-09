@@ -1,15 +1,18 @@
 import {
   EncounterCompetition
 } from '@badman/api/database';
+import { SyncQueue } from '@badman/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import * as moment from 'moment';
 
-@Processor('sync-queue')
-export class ChangeDateComsumer {
-  private readonly logger = new Logger(ChangeDateComsumer.name);
+@Processor({
+  name: SyncQueue
+})
+export class SyncDateProcessor {
+  private readonly logger = new Logger(SyncDateProcessor.name);
   private visualFormat = 'YYYY-MM-DDTHH:mm:ss';
 
   constructor() {
@@ -91,7 +94,7 @@ export class ChangeDateComsumer {
 /* eslint-disable @typescript-eslint/naming-convention */
 interface Result {
   TournamentMatch?: TournamentMatch;
-  Error?: XmlError;
+  Error?: XmlError; 
   _Version: string;
 }
 

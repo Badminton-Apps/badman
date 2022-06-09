@@ -7,6 +7,7 @@ export class CompetitionSubEvent extends SubEvent {
   teams?: Team[];
 
   eventCompetition?: EventCompetition;
+  drawCompetitions?: CompetitionDraw[];
 
   constructor({ ...args }: Partial<CompetitionSubEvent>) {
     super(args);
@@ -16,6 +17,6 @@ export class CompetitionSubEvent extends SubEvent {
     this.teams = [];
 
     this.eventCompetition = args?.eventCompetition != null ? new EventCompetition(args.eventCompetition) : undefined;
-    this.draws = args?.draws?.map((d) => new CompetitionDraw(d));
+    this.drawCompetitions = args?.drawCompetitions?.map((d) => new CompetitionDraw(d));
   }
 }

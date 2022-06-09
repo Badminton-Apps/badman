@@ -35,15 +35,16 @@ import {
   Comment,
   EventCompetition,
   EventService,
-  RankingSystem,
   SubEvent,
   SystemService,
   Team,
 } from '../../../../../_shared';
+import * as addComment from './graphql/AddComment.graphql';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
 import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
 import * as updateComment from './graphql/UpdateComment.graphql';
-import * as addComment from './graphql/AddComment.graphql';
+
+export const STEP_AVAILIBILTY = 1;
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -54,6 +55,7 @@ export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
   competitionYear!: number;
+  asigned = false;
 
   formGroup!: FormGroup;
 
@@ -156,8 +158,9 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async changStepper(event: StepperSelectionEvent) {
-    if (event.selectedIndex == 1) {
+    if (event.selectedIndex == 1 && !this.asigned) {
       await this.initializeEvents();
+      this.asigned = true;
     }
   }
 
@@ -290,7 +293,7 @@ export class TeamEnrollmentComponent implements OnInit {
                       id
                       competitionSubEvent {
                         id
-                        event {
+                        eventCompetition {
                           name
                         }
                       }

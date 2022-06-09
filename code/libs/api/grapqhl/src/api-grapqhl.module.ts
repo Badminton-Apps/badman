@@ -70,7 +70,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
     AvailabilityModule,
     EventModule,
     SecurityModule,
-    GameModule,
+    GameModule, 
   ],
   providers: [],
 })

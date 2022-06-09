@@ -10,7 +10,7 @@ module.exports = {
             tableName: 'GroupSubEventTournaments',
             schema: 'ranking',
           },
-          'RankingGroupSubEventTournamentMembership',
+          'RankingGroupSubEventTournamentMemberships',
           { transaction: t }
         );
 
@@ -19,7 +19,7 @@ module.exports = {
             tableName: 'GroupSubEventCompetitions',
             schema: 'ranking',
           },
-          'RankingGroupSubEventCompetitionMembership',
+          'RankingGroupSubEventCompetitionMemberships',
           { transaction: t }
         );
         await queryInterface.renameTable(
@@ -27,7 +27,7 @@ module.exports = {
             tableName: 'GroupSystems',
             schema: 'ranking',
           },
-          'RankingSystemRankingGroupMembership',
+          'RankingSystemRankingGroupMemberships',
           { transaction: t }
         );
         await queryInterface.renameTable(
@@ -153,7 +153,7 @@ module.exports = {
           );
           await queryInterface.renameTable(
             {
-              tableName: 'RankingSystemRankingGroupMembership',
+              tableName: 'RankingSystemRankingGroupMemberships',
               schema: 'ranking',
             },
             'GroupSystems',
@@ -205,7 +205,7 @@ module.exports = {
           );
           await queryInterface.renameTable(
             {
-              tableName: 'RankingGroupSubEventTournamentMembership',
+              tableName: 'RankingGroupSubEventTournamentMemberships',
               schema: 'ranking',
             },
             'GroupSubEventTournaments',
@@ -214,7 +214,7 @@ module.exports = {
   
           await queryInterface.renameTable(
             {
-              tableName: 'RankingGroupSubEventCompetitionMembership',
+              tableName: 'RankingGroupSubEventCompetitionMemberships',
               schema: 'ranking',
             },
             'GroupSubEventCompetitions',
