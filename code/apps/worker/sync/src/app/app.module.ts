@@ -1,20 +1,18 @@
-import { Module } from '@nestjs/common';
+import { QueueModule, SyncQueue } from '@badman/queue';
 import { BullModule } from '@nestjs/bull';
-import { RankingComsumer } from './processors/ranking';
+import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
-import { JobService } from './crons/jobs';
+import { JobService } from './crons';
+import { SyncDateProcessor, SyncRankingProcessor } from './processors';
 
 @Module({
-  providers: [RankingComsumer, JobService],
+  providers: [SyncDateProcessor, SyncRankingProcessor, JobService],
   imports: [
-    ScheduleModule.forRoot(),
+    QueueModule,
     BullModule.registerQueue({
-      name: 'sync-queue',
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT, 10),
-      },
+      name: SyncQueue,
     }),
+    ScheduleModule.forRoot(),
   ],
 })
 export class SyncModule {}

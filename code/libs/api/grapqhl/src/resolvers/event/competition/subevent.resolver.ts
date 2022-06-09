@@ -1,4 +1,10 @@
-import { EventCompetition, SubEventCompetition } from '@badman/api/database';
+import {
+  DrawCompetition,
+  EventCompetition,
+  EventEntry,
+  RankingGroup,
+  SubEventCompetition,
+} from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -43,7 +49,29 @@ export class SubEventCompetitionResolver {
   async eventCompetition(
     @Parent() subEvent: SubEventCompetition
   ): Promise<EventCompetition> {
-    return subEvent.getEvent();
+    return subEvent.getEventCompetition();
+  }
+
+  @ResolveField(() => [DrawCompetition])
+  async drawCompetitions(
+    @Parent() subEvent: SubEventCompetition,
+    @Args() listArgs: ListArgs
+  ): Promise<DrawCompetition[]> {
+    return subEvent.getDrawCompetitions(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [RankingGroup])
+  async rankingGroups(
+    @Parent() subEvent: SubEventCompetition
+  ): Promise<RankingGroup[]> {
+    return subEvent.getRankingGroups();
+  }
+
+  @ResolveField(() => [EventEntry])
+  async eventEntries(
+    @Parent() subEvent: SubEventCompetition
+  ): Promise<EventEntry[]> {
+    return subEvent.getEventEntries();
   }
 
   // @Mutation(returns => SubEventCompetition)

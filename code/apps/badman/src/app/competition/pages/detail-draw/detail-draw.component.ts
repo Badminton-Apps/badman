@@ -73,10 +73,10 @@ export class DetailDrawCompetitionComponent implements OnInit {
         const draw = new CompetitionDraw(data.competitionDraw);
 
         draw.encounters?.forEach((encounter) => {
-          encounter.home = draw.entries.find(
+          encounter.home = draw.eventEntries.find(
             (e) => e.team?.id === encounter.homeTeamId
           )?.team;
-          encounter.away = draw.entries.find(
+          encounter.away = draw.eventEntries.find(
             (e) => e.team?.id === encounter.awayTeamId
           )?.team;
         });

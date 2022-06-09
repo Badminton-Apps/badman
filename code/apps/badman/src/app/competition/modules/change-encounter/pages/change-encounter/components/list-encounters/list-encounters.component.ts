@@ -6,7 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import {
   CompetitionEncounter,
-  EncounterService,
+  compPeriod
 } from '../../../../../../../_shared';
 
 @Component({
@@ -31,7 +31,6 @@ export class ListEncountersComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    private encounterService: EncounterService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
@@ -102,7 +101,7 @@ export class ListEncountersComponent implements OnInit {
                         awayTeamId: teamId,
                       },
                       date: {
-                        $between: [`${year}-08-01`, `${year + 1}-07-01`],
+                        $between: compPeriod(year),
                       },
                     },
                   },
@@ -123,7 +122,6 @@ export class ListEncountersComponent implements OnInit {
                 })
               ),
               map((e) => {
-                console.log(e);
                 e = e.map((r) => {
                   r.showingForHomeTeam = r.home?.id == teamId;
                   return r;

@@ -33,7 +33,7 @@ import {
   Unique,
 } from 'sequelize-typescript';
 import { RankingSystems, RankingTiming, StartingType } from '../../enums/';
-import { RankingGroups } from './ranking-group.model';
+import { RankingGroup } from './ranking-group.model';
 import { RankingSystemRankingGroupMembership } from './ranking-group-ranking-system-membership.model';
 import { RankingLastPlace } from './ranking-last-place.model';
 import { RankingPlace } from './ranking-place.model';
@@ -204,8 +204,8 @@ export class RankingSystem extends Model {
   @HasMany(() => RankingLastPlace, 'systemId')
   lastPlaces: RankingLastPlace;
 
-  @BelongsToMany(() => RankingGroups, () => RankingSystemRankingGroupMembership)
-  rankingGroups: RankingGroups[];
+  @BelongsToMany(() => RankingGroup, () => RankingSystemRankingGroupMembership)
+  rankingGroups: RankingGroup[];
 
   // Has many RankingPoint
   getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;
@@ -219,17 +219,17 @@ export class RankingSystem extends Model {
   countRankingPoints!: HasManyCountAssociationsMixin;
 
   // Belongs to many Group
-  getRankingGroups: BelongsToManyGetAssociationsMixin<RankingGroups>;
-  setRankingGroups: BelongsToManySetAssociationsMixin<RankingGroups, string>;
-  addRankingGroups: BelongsToManyAddAssociationsMixin<RankingGroups, string>;
-  addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroups, string>;
-  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroups, string>;
+  getRankingGroups: BelongsToManyGetAssociationsMixin<RankingGroup>;
+  setRankingGroups: BelongsToManySetAssociationsMixin<RankingGroup, string>;
+  addRankingGroups: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
+  addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
   removeRankingGroups: BelongsToManyRemoveAssociationsMixin<
-    RankingGroups,
+    RankingGroup,
     string
   >;
-  hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroups, string>;
-  hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroups, string>;
+  hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
+  hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
   countRankingGroup!: BelongsToManyCountAssociationsMixin;
 
 

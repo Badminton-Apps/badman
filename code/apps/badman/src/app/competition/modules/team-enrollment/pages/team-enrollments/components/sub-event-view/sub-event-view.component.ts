@@ -20,25 +20,25 @@ export class SubEventViewComponent implements OnInit {
   yearControl: FormControl = new FormControl(2022);
   eventControl: FormControl = new FormControl();
 
-  entries$!: Observable<CompetitionSubEvent[]>;
+  subEvents$!: Observable<CompetitionSubEvent[]>;
   events$!: Observable<EventCompetition[]>;
 
   constructor(private _apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.entries$ = this.eventControl.valueChanges.pipe(
+    this.subEvents$ = this.eventControl.valueChanges.pipe(
       switchMap((eventId) =>
-        this._apollo.query<{ competitionEvent: EventCompetition }>({
+        this._apollo.query<{ eventCompetition: EventCompetition }>({
           query: gql`
             query CompetitionEvent($competitionEventId: ID!) {
-              competitionEvent(id: $competitionEventId) {
+              eventCompetition(id: $competitionEventId) {
                 id
-                subEvents {
+                subEventCompetitions {
                   id
                   name
                   level
                   eventType
-                  entries {
+                  eventEntries {
                     id
                     meta {
                       competition {
@@ -68,20 +68,23 @@ export class SubEventViewComponent implements OnInit {
           },
         })
       ),
-      map((result) => new EventCompetition(result.data.competitionEvent)),
+      map((result) => new EventCompetition(result.data.eventCompetition)),
       map((event) => {
         event.subEventCompetitions = event.subEventCompetitions ?? [];
 
         // Sort by level
-        event.subEventCompetitions = event.subEventCompetitions.sort(sortSubEvents);
+        event.subEventCompetitions =
+          event.subEventCompetitions.sort(sortSubEvents);
 
         // Filter entries
-        event.subEventCompetitions = event.subEventCompetitions.map((subEvent) => {
-          subEvent.entries = subEvent.entries?.filter(
-            (entry) => entry.meta !== null
-          );
-          return subEvent;
-        });
+        event.subEventCompetitions = event.subEventCompetitions.map(
+          (subEvent) => {
+            subEvent.eventEntries = subEvent.eventEntries?.filter(
+              (entry) => entry.meta !== null
+            );
+            return subEvent;
+          }
+        );
 
         return event.subEventCompetitions;
       })
@@ -91,20 +94,16 @@ export class SubEventViewComponent implements OnInit {
       startWith(this.yearControl.value),
       switchMap((year) =>
         this._apollo.query<{
-          competitionEvents: {
-            edges: {
-              node: Partial<EventCompetition>;
-            }[];
+          eventCompetitions: {
+            rows:Partial<EventCompetition>[];
           };
         }>({
           query: gql`
-            query CompetitionEvents($where: SequelizeJSON) {
-              competitionEvents(where: $where) {
-                edges {
-                  node {
-                    id
-                    name
-                  }
+            query CompetitionEvents($where: JSONObject) {
+              eventCompetitions(where: $where) {
+                rows {
+                  id
+                  name
                 }
               }
             }
@@ -118,9 +117,9 @@ export class SubEventViewComponent implements OnInit {
         })
       ),
       map((result) =>
-        result.data.competitionEvents.edges.map(
-          ({ node }) => new EventCompetition(node)
-        )
+      result.data.eventCompetitions.rows.map(
+        (node) => new EventCompetition(node)
+      )
       )
     );
   }

@@ -1,8 +1,11 @@
+import { RankingQueue } from '@badman/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
-@Processor('ranking-queue')
+@Processor({
+  name: RankingQueue
+})
 export class RankingConsumer {
   private readonly logger = new Logger(RankingConsumer.name);
 
@@ -10,8 +13,8 @@ export class RankingConsumer {
     this.logger.debug('RankingConsumer');
   }
 
-  @Process('namedjob')
-  async processNamedJob(job: Job<string>): Promise<void> {
+  @Process('calculate-points')
+  async calculatePoints(job: Job<string>): Promise<void> {
     this.logger.debug('Named job processed', job);
   }
 }

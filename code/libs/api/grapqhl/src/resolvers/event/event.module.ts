@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { CompetitionModule } from './competition.module';
-import { EventEntryResolver } from './entry.resolver';
+import { EventEntryResolver, EntryCompetitionPlayersResolver } from './entry.resolver';
 import { TournamentModule } from './tournament.module';
 
 @Module({
   imports: [CompetitionModule, TournamentModule],
-  providers: [EventEntryResolver],
+  providers: [EventEntryResolver, EntryCompetitionPlayersResolver],
 })
 export class EventModule {}

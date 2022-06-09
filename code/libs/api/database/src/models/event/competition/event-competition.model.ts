@@ -45,6 +45,12 @@ export class EventCompetition extends Model {
   @Column
   id: string;
 
+  @Field({ nullable: true })
+  updatedAt?: Date;
+
+  @Field({ nullable: true })
+  createdAt?: Date;
+
   @Unique('EventCompetitions_unique_constraint')
   @Field({ nullable: true })
   @Column

@@ -2,8 +2,8 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-"""A RankingGroups"""
-type RankingGroups {
+"""A RankingGroup"""
+type RankingGroup {
   id: ID!
   name: String
   subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]!
@@ -147,7 +147,7 @@ type RankingSystem {
   levelArray: [Int!]
   levelArrayOneMinus: [Int!]
   rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedRankingLastPlaces!
-  rankingGroups(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingGroups!]!
+  rankingGroups(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingGroup!]!
 }
 
 """A AvailiblyDay"""
@@ -189,6 +189,7 @@ type EntryCompetitionPlayersType {
   double: Float
   mix: Float
   gender: String
+  player: Player
 }
 
 """A Availability"""
@@ -202,6 +203,8 @@ type Availability {
 
 """A EventTournament"""
 type EventTournament {
+  updatedAt: DateTime
+  createdAt: DateTime
   id: ID!
   tournamentNumber: String
   name: String
@@ -222,6 +225,7 @@ type SubEventTournament {
   gameType: String
   level: Float
   visualCode: String
+  drawTournaments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [DrawTournament!]
   event: EventTournament
   eventId: String
   eventTournament: EventTournament!
@@ -329,6 +333,7 @@ type EventEntry {
   drawId: String
   entryType: String
   meta: MetaType
+  team: Team!
   getCompetitionDraw: [DrawCompetition!]!
   getTournamentDraw: [DrawTournament!]!
   getTournamentSubEvent: [DrawTournament!]!
@@ -355,18 +360,19 @@ type SubEventCompetition {
   maxLevel: Float
   minBaseIndex: Float
   maxBaseIndex: Float
-  entries: [EventEntry!]
-  groups: [RankingGroups!]
-  draws: [DrawCompetition!]
-  event: EventCompetition
+  eventEntries: [EventEntry!]
+  rankingGroups: [RankingGroup!]
+  drawCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [DrawCompetition!]
+  eventCompetition: EventCompetition
   eventId: String
   visualCode: String
-  eventCompetition: EventCompetition!
 }
 
 """A EventCompetition"""
 type EventCompetition {
   id: ID!
+  updatedAt: DateTime
+  createdAt: DateTime
   name: String
   startYear: Float
   comments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Comment!]
@@ -640,8 +646,8 @@ type Query {
   comments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Comment!]!
   rankingSystem(id: ID!): RankingSystem!
   rankingSystems(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingSystem!]!
-  rankingGroup(id: ID!): RankingGroups!
-  rankingGroups(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingGroups!]!
+  rankingGroup(id: ID!): RankingGroup!
+  rankingGroups(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingGroup!]!
   rankingPoint(id: ID!): RankingPoint!
   rankingPoints(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPoint!]!
   rankingPlace(id: ID!): RankingPlace!
