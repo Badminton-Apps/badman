@@ -32,6 +32,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize/types';
 import { User } from '../../../decorators';
 import { ListArgs } from '../../../utils';
+import { SyncQueue } from '@badman/queue';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -48,7 +49,7 @@ export class EncounterCompetitionResolver {
 
   constructor(
     @Inject('SEQUELIZE') private _sequelize: Sequelize,
-    @InjectQueue('sync-queue') private syncQ: Queue
+    @InjectQueue(SyncQueue) private syncQueue: Queue
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -160,7 +161,7 @@ export class EncounterCompetitionResolver {
         encounter.date = selectedDates[0].date;
 
         // Accept
-        await this.syncQ.add('change-date', { encounterId: encounter.id });
+        await this.syncQueue.add('change-date', { encounterId: encounter.id });
 
         // Save cahnges
         encounter.save({ transaction });

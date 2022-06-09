@@ -49,6 +49,12 @@ export class EventTournament extends Model {
     super(values, options);
   }
 
+  @Field({ nullable: true })
+  updatedAt?: Date;
+
+  @Field({ nullable: true })
+  createdAt?: Date;
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey

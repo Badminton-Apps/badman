@@ -36,10 +36,10 @@ export class EditEventCompetitionComponent implements OnInit {
     ]).pipe(
       map(([params]) => params.get('id')),
       switchMap((id) =>
-        this.apollo.query<{ competitionEvent: EventCompetition }>({
+        this.apollo.query<{ eventCompetition: EventCompetition }>({
           query: gql`
             query GetEvent($id: ID!) {
-              competitionEvent(id: $id) {
+              eventCompetition(id: $id) {
                 id
                 slug
                 name
@@ -50,7 +50,7 @@ export class EditEventCompetitionComponent implements OnInit {
                 started
                 type
                 updatedAt
-                subEvents(order: "eventType") {
+                subEventCompetitions(order: { field: "eventType", direction: "desc" }) {
                   id
                   name
                   eventType
@@ -58,7 +58,7 @@ export class EditEventCompetitionComponent implements OnInit {
                   maxLevel
                   minBaseIndex
                   maxBaseIndex
-                  groups {
+                  rankingGroups {
                     id
                     name
                   }
@@ -69,7 +69,7 @@ export class EditEventCompetitionComponent implements OnInit {
           variables: { id },
         })
       ),
-      map((result) => result.data.competitionEvent),
+      map((result) => result.data.eventCompetition),
       map((event) => new EventCompetition(event))
     );
 

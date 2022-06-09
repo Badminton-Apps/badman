@@ -25,7 +25,7 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { Subject } from 'rxjs';
 
-/** Custom `MatFormFieldControl` for telephone number input. */
+const selector = 'app-time-picker-input';
 @Component({
   selector: 'badman-time-picker-input',
   templateUrl: './time-picker-input.html',
@@ -45,8 +45,8 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
   stateChanges = new Subject<void>();
   focused = false;
   touched = false;
-  controlType = 'app-time-picker-input';
-  id = `app-time-picker-input-${TimePickerInput.nextId++}`;
+  id = `${selector}-${TimePickerInput.nextId++}`;
+
   onChange = (_: any) => {};
   onTouched = () => {};
 
@@ -62,7 +62,6 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
     return this.focused || !this.empty;
   }
 
-  @Input('aria-describedby') userAriaDescribedBy?: string;
 
   @Input()
   get placeholder(): string {

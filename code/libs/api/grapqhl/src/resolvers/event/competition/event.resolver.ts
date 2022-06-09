@@ -61,6 +61,8 @@ export class EventCompetitionResolver {
     return event.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
   }
 
+
+
   @ResolveField(() => [Comment])
   async comments(
     @Parent() event: EventCompetition,

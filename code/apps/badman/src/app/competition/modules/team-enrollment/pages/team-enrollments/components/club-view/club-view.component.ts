@@ -33,7 +33,9 @@ export class ClubViewComponent implements OnInit {
               return {
                 data: {
                   eventCompetition: {
-                    subEventCompetitions: e.map((e) => e.subEventCompetitions).flat(),
+                    subEventCompetitions: e
+                      .map((e) => e.subEventCompetitions)
+                      .flat(),
                   },
                 },
               };
@@ -49,8 +51,10 @@ export class ClubViewComponent implements OnInit {
                   id
                   subEventCompetitions {
                     id
-                    entries {
+                    eventEntries {
+                      id
                       team {
+                        id
                         clubId
                       }
                     }
@@ -66,10 +70,18 @@ export class ClubViewComponent implements OnInit {
       }),
       map((result) => {
         return {
-          subEventIds: [...new Set(result.data.eventCompetition.subEventCompetitions?.map((s) => s.id)?.flat())],
+          subEventIds: [
+            ...new Set(
+              result.data.eventCompetition.subEventCompetitions
+                ?.map((s) => s.id)
+                ?.flat()
+            ),
+          ],
           clubIds: [
             ...new Set(
-              result.data.eventCompetition.subEventCompetitions?.map((s) => s.entries?.map((e) => e.team?.clubId))?.flat()
+              result.data.eventCompetition.subEventCompetitions
+                ?.map((s) => s.eventEntries?.map((e) => e.team?.clubId))
+                ?.flat()
             ),
           ],
         };
@@ -85,60 +97,60 @@ export class ClubViewComponent implements OnInit {
 
         return this._apollo.query<{
           clubs: {
-            edges: {
-              node: Partial<Club>;
-            }[];
+            rows: Partial<Club>[];
           };
         }>({
           query: gql`
-            query Clubs($where: SequelizeJSON, $teamWhere: SequelizeJSON, $availabilityWhere: SequelizeJSON) {
+            query Clubs(
+              $where: JSONObject
+              $teamWhere: JSONObject
+              $availabilityWhere: JSONObject
+            ) {
               clubs(where: $where) {
-                edges {
-                  node {
+                rows {
+                  id
+                  name
+                  locations {
                     id
                     name
-                    locations {
+                    availibilities(where: $availabilityWhere) {
                       id
-                      name
-                      availibilities(where: $availabilityWhere) {
-                        id
-                        days {
-                          day
-                          endTime
-                          startTime
-                          courts
-                        }
-                        exceptions {
-                          courts
-                          end
-                          start
-                        }
+                      days {
+                        day
+                        endTime
+                        startTime
+                        courts
+                      }
+                      exceptions {
+                        courts
+                        end
+                        start
                       }
                     }
-                    teams(where: { active: true }) {
+                  }
+                  teams(where: { active: true }) {
+                    id
+                    name
+                    entries(where: $teamWhere) {
                       id
-                      name
-                      entries(where: $teamWhere) {
-                        id
-                        meta {
-                          competition {
-                            teamIndex
-                            players {
-                              id
-                              single
-                              double
-                              mix
-                              player {
-                                fullName
-                              }
+                      meta {
+                        competition {
+                          teamIndex
+                          players {
+                            id
+                            single
+                            double
+                            mix
+                            player {
+                              fullName
                             }
                           }
                         }
-                        competitionSubEvent {
-                          id
-                          name
-                          eventType
-                        }
+                      }
+                      competitionSubEvent {
+                        id
+                        name
+                        eventType
                       }
                     }
                   }
@@ -158,20 +170,34 @@ export class ClubViewComponent implements OnInit {
         });
       }),
 
-      map((result) => result.data.clubs.edges.map(({ node }) => new Club(node) as Club & { hasLocation: boolean })),
+      map((result) =>
+        result.data.clubs?.rows.map(
+          (node) => new Club(node) as Club & { hasLocation: boolean }
+        )
+      ),
       map((clubs) => {
         // Sort by name
-        clubs = clubs.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+        clubs = clubs.sort((a, b) =>
+          (a.name ?? '').localeCompare(b.name ?? '')
+        );
 
         clubs = clubs.map?.((club) => {
-          club.hasLocation = club?.locations?.some((location) => location?.availibilities?.[0]?.days?.length ?? 0 <= 0) ?? false;
+          club.hasLocation =
+            club?.locations?.some(
+              (location) =>
+                location?.availibilities?.[0]?.days?.length ?? 0 <= 0
+            ) ?? false;
 
           club.teams = club.teams?.filter((team) => {
             if ((team.entries?.length ?? 0) == 0) {
               return false;
             }
 
-            if (!team?.entries?.some((r) => (r.meta?.competition?.teamIndex ?? 0) > 0)) {
+            if (
+              !team?.entries?.some(
+                (r) => (r.meta?.competition?.teamIndex ?? 0) > 0
+              )
+            ) {
               return false;
             }
             return true;
@@ -190,22 +216,18 @@ export class ClubViewComponent implements OnInit {
       startWith(this.yearControl.value),
       switchMap((year) =>
         this._apollo.query<{
-          competitionEvents: {
-            edges: {
-              node: Partial<EventCompetition>;
-            }[];
+          eventCompetitions: {
+            rows: Partial<EventCompetition>[];
           };
         }>({
           query: gql`
-            query CompetitionEvents($where: SequelizeJSON) {
-              competitionEvents(where: $where) {
-                edges {
-                  node {
+            query CompetitionEvents($where: JSONObject) {
+              eventCompetitions(where: $where) {
+                rows {
+                  id
+                  name
+                  subEventCompetitions {
                     id
-                    name
-                    subEvents {
-                      id
-                    }
                   }
                 }
               }
@@ -219,7 +241,11 @@ export class ClubViewComponent implements OnInit {
           },
         })
       ),
-      map((result) => result.data.competitionEvents.edges.map(({ node }) => new EventCompetition(node)))
+      map((result) =>
+        result.data.eventCompetitions.rows.map(
+          (node) => new EventCompetition(node)
+        )
+      )
     );
   }
 }

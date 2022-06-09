@@ -19,16 +19,16 @@
     </mat-form-field>
   </div>
 
-  <mat-card *ngIf="this.entries$ | async as subEvents">
+  <mat-card *ngIf="this.subEvents$ | async as subEvents">
     <mat-accordion>
       <mat-expansion-panel *ngFor="let subEvent of subEvents">
         <mat-expansion-panel-header>
           <mat-panel-title fxFlex="200px">{{ subEvent.name }} {{ subEvent.eventType }}</mat-panel-title>
-          <mat-panel-description>{{ subEvent.entries?.length }} Teams</mat-panel-description>
+          <mat-panel-description>{{ subEvent.eventEntries?.length }} Teams</mat-panel-description>
         </mat-expansion-panel-header>
         <ul>
           <li
-            *ngFor="let entry of subEvent.entries"
+            *ngFor="let entry of subEvent.eventEntries"
             cdkOverlayOrigin
             #trigger="cdkOverlayOrigin"
             (click)="overlayOpen = entry.team?.id ?? ''"
@@ -40,7 +40,7 @@
               cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
               [cdkConnectedOverlayHasBackdrop]="true"
               [cdkConnectedOverlayOrigin]="trigger"
-              [cdkConnectedOverlayOpen]="overlayOpen == entry?.team?.id"
+              [cdkConnectedOverlayOpen]="overlayOpen === entry?.team?.id"
               (detach)="overlayOpen = ''"
               (backdropClick)="overlayOpen = ''"
             >

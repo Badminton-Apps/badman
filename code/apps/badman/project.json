@@ -112,9 +112,6 @@
         "proxyConfig": "apps/badman/proxy.conf.json",
         "host": "0.0.0.0",
         "disableHostCheck": true,
-        "verbose": false,
-        "liveReload": true,
-        "hmr": true,
         "watch": true
       }
     },

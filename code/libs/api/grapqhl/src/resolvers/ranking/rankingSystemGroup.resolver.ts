@@ -1,5 +1,5 @@
 import {
-  RankingGroups,
+  RankingGroup,
   SubEventCompetition,
   SubEventTournament,
 } from '@badman/api/database';
@@ -14,16 +14,16 @@ import {
 } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
 
-@Resolver(() => RankingGroups)
+@Resolver(() => RankingGroup)
 export class RankingGroupsResolver {
-  @Query(() => RankingGroups)
+  @Query(() => RankingGroup)
   async rankingGroup(
     @Args('id', { type: () => ID }) id: string
-  ): Promise<RankingGroups> {
-    let rankingSystemGroup = await RankingGroups.findByPk(id);
+  ): Promise<RankingGroup> {
+    let rankingSystemGroup = await RankingGroup.findByPk(id);
 
     if (!rankingSystemGroup) {
-      rankingSystemGroup = await RankingGroups.findOne({
+      rankingSystemGroup = await RankingGroup.findOne({
         where: {
           slug: id,
         },
@@ -36,16 +36,16 @@ export class RankingGroupsResolver {
     return rankingSystemGroup;
   }
 
-  @Query(() => [RankingGroups])
+  @Query(() => [RankingGroup])
   async rankingGroups(
     @Args() listArgs: ListArgs
-  ): Promise<RankingGroups[]> {
-    return RankingGroups.findAll(ListArgs.toFindOptions(listArgs));
+  ): Promise<RankingGroup[]> {
+    return RankingGroup.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [SubEventCompetition])
   async subEventCompetitions(
-    @Parent() group: RankingGroups,
+    @Parent() group: RankingGroup,
     @Args() listArgs: ListArgs
   ): Promise<SubEventCompetition[]> {
     return group.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
@@ -53,7 +53,7 @@ export class RankingGroupsResolver {
 
   @ResolveField(() => [SubEventTournament])
   async subEventTournaments(
-    @Parent() group: RankingGroups,
+    @Parent() group: RankingGroup,
     @Args() listArgs: ListArgs
   ): Promise<SubEventTournament[]> {
     return group.getSubEventTournaments(ListArgs.toFindOptions(listArgs));

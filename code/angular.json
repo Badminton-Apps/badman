@@ -8,6 +8,7 @@
     "api-grapqhl": "libs/api/grapqhl",
     "badman": "apps/badman",
     "badman-e2e": "apps/badman-e2e",
+    "queue": "libs/queue",
     "search": "libs/search",
     "worker-ranking": "apps/worker/ranking",
     "worker-sync": "apps/worker/sync"

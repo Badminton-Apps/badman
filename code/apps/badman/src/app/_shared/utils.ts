@@ -1,5 +1,6 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
+import * as moment from 'moment';
 import { CompetitionSubEvent } from './models';
 
 export const validateAllFormFields = (formGroup: FormGroup) => {
@@ -128,4 +129,22 @@ export const getPageArgsFromQueryParams = (queryParams: {
   pageArgs.skip = parseInt(queryParams['skip'], 10) || 0;
   pageArgs.take = parseInt(queryParams['take'], 10) || (15 as number);
   return pageArgs;
+};
+
+
+export const compPeriod = (year?: number) => {
+  if (!year) {
+    year = currentCompetitionYear();
+  }
+  return [`${year}-08-01`, `${year + 1}-07-01`];
+};
+
+export const currentCompetitionYear = (override?: number) => {
+  if (override) {
+    return override;
+  }
+
+  const today = moment();
+
+  return today.month() >= 6 ? today.year() : today.year() - 1;
 };
