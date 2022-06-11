@@ -297,22 +297,6 @@ export class Team extends Model {
   hasPlayers!: BelongsToManyHasAssociationsMixin<Player, string>;
   countPlayer!: BelongsToManyCountAssociationsMixin;
 
-  // Belongs to many SubEvent
-  getSubEvents!: BelongsToManyGetAssociationsMixin<SubEventCompetition>;
-  setSubEvents!: BelongsToManySetAssociationsMixin<SubEventCompetition, string>;
-  addSubEvents!: BelongsToManyAddAssociationsMixin<SubEventCompetition, string>;
-  addSubEvent!: BelongsToManyAddAssociationMixin<SubEventCompetition, string>;
-  removeSubEvent!: BelongsToManyRemoveAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEvents!: BelongsToManyRemoveAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  hasSubEvent!: BelongsToManyHasAssociationMixin<SubEventCompetition, string>;
-  hasSubEvents!: BelongsToManyHasAssociationsMixin<SubEventCompetition, string>;
-  countSubEvent!: BelongsToManyCountAssociationsMixin;
 
   // Has many HomeEncounter
   getHomeEncounters!: HasManyGetAssociationsMixin<EncounterCompetition>;

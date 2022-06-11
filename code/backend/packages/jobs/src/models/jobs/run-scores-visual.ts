@@ -108,7 +108,7 @@ export class GetScoresVisual extends CronJob {
 
     newEvents = newEvents.sort((a, b) => {
       return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
-    }); 
+    });
 
     if (args?.startDate) {
       newEvents = newEvents.filter((e) => {
@@ -237,6 +237,7 @@ export class GetScoresVisual extends CronJob {
     //   tournaments.concat(await this._getChangeEvents(date, page + 1));
     // }
 
-    return tournaments;
+    // Temp fix for competition
+    return tournaments.filter((t) => !t.Name.toLowerCase().includes('2022-2023'));
   }
 }
