@@ -1,3 +1,13 @@
+## [4.42.1](https://github.com/Badminton-Apps/badman/compare/v4.42.0...v4.42.1) (2022-06-11)
+
+
+### Bug Fixes
+
+* mutations ([91a7e60](https://github.com/Badminton-Apps/badman/commit/91a7e60f799cbee0dd11eb5a2cd3028cd11a9dae))
+* PBA already uploaded the competition ([b42fcc2](https://github.com/Badminton-Apps/badman/commit/b42fcc282277617c3b21eddc7075969a5f0ed7cb))
+
+
+
 # [4.42.0](https://github.com/Badminton-Apps/badman/compare/v4.41.3...v4.42.0) (2022-05-26)
 
 
