@@ -11,6 +11,7 @@ import {
   LastRankingPlace,
   Comment,
   RankingSystem,
+  EventEntry,
 } from '@badvlasim/shared';
 import * as dbConfig from '@badvlasim/shared/database/database.config.js';
 
@@ -22,35 +23,37 @@ import { copyFile, unlink } from 'fs/promises';
 import { Op } from 'sequelize';
 
 interface csvPlayer {
-  code: string;
-  dob: string;
-  phone: string;
-  email: string;
-  TypeName: string;
-  PlayerLevelSingle: string;
-  PlayerLevelDouble: string;
-  PlayerLevelMixed: string;
+  Club: string;
+  Lidnummer: string;
+  Voornaam: string;
+  Achternaam: string;
+  Geslacht: string;
+  Type: string;
+  KlassementEnkel: string;
+  KlassementDubbel: string;
+  KlassementGemengd: string;
 }
 
-const YEAR = 2021;
+const YEAR = 2022;
 const ROOT = `D:\\Programming\\Code\\Badminton-Vlaanderen\\files\\competition\\`;
 
 const provs: { file: string; event: string }[] = [
-  { file: 'PBA competitie 2021-2022', event: 'PBA competitie 2021-2022' },
-  {
-    file: 'VVBBC interclubcompetitie 2021-2022',
-    event: 'VVBBC interclubcompetitie 2021-2022',
-  },
-  { file: 'PBO competitie 2021-2022', event: 'PBO competitie 2021-2022' },
-  {
-    file: 'Limburgse interclubcompetitie 2021-2022',
-    event: 'Limburgse interclubcompetitie 2021-2022',
-  },
   { file: 'WVBF Competitie 2021-2022', event: 'WVBF Competitie 2021-2022' },
-  {
-    file: 'Vlaamse interclubcompetitie 2021-2022',
-    event: 'Vlaamse interclubcompetitie 2021-2022',
-  },
+
+  // { file: 'PBA competitie 2021-2022', event: 'PBA competitie 2021-2022' },
+  // {
+  //   file: 'VVBBC interclubcompetitie 2021-2022',
+  //   event: 'VVBBC interclubcompetitie 2021-2022',
+  // },
+  // { file: 'PBO competitie 2021-2022', event: 'PBO competitie 2021-2022' },
+  // {
+  //   file: 'Limburgse interclubcompetitie 2021-2022',
+  //   event: 'Limburgse interclubcompetitie 2021-2022',
+  // },
+  // {
+  //   file: 'Vlaamse interclubcompetitie 2021-2022',
+  //   event: 'Vlaamse interclubcompetitie 2021-2022',
+  // },
 ];
 
 (async () => {
@@ -86,21 +89,21 @@ async function processProv(
 async function readCsvPlayers() {
   return new Promise<Map<string, csvPlayer>>(async (resolve, reject) => {
     readFile(
-      `${ROOT}\\${YEAR}-${YEAR + 1}\\ledenlijst_5_20_2021.csv`,
+      `${ROOT}\\${YEAR}-${YEAR + 1}\\Lijst_index_seizoen_2022-2023.csv`,
       'utf8',
       (err, csv) => {
         const stream = parseString(csv, {
           headers: true,
-          delimiter: ';',
+          delimiter: ',',
           ignoreEmpty: true,
         });
         const code_players: Map<string, csvPlayer> = new Map();
-        stream.on('data', (row) => {
-          if (code_players.get(row.memberid) != null) {
-            logger.warn('Player exists twice?', row.memberid);
+        stream.on('data', (row: csvPlayer) => {
+          if (code_players.get(row.Lidnummer) != null) {
+            logger.warn('Player exists twice?', row.Lidnummer);
           }
 
-          code_players.set(row.memberid, row);
+          code_players.set(row.Lidnummer, row);
         });
         stream.on('error', (error) => {
           logger.error(error);
@@ -135,20 +138,27 @@ async function updateCpFile(
         },
         include: [
           {
-            model: SubEventCompetition,
+            model: EventEntry,
             required: true,
             include: [
               {
+                model: SubEventCompetition,
                 required: true,
-                model: EventCompetition,
-                attributes: [],
-                where: {
-                  startYear: YEAR,
-                  name,
-                },
+                include: [
+                  {
+                    required: true,
+                    model: EventCompetition,
+                    attributes: [],
+                    where: {
+                      startYear: YEAR,
+                      name,
+                    },
+                  },
+                ],
               },
             ],
           },
+
           {
             model: Location,
           },
@@ -224,10 +234,10 @@ async function updateCpFile(
 
   async function linkTeamsToEvents() {
     for (const [teamId, team] of teams) {
-      if (team.subEvents.length > 1) {
+      if (team.entries.length > 1) {
         logger.warn('More events?');
       }
-      if (team.subEvents.length === 0) {
+      if (team.entries.length === 0) {
         logger.warn('no events?');
       }
 
@@ -245,7 +255,7 @@ async function updateCpFile(
       }
 
       const myEvent = events.find(
-        (r) => r.name === team.subEvents[0].name && r.gender === gender
+        (r) => r.name === team.entries[0].competitionSubEvent.event.name && r.gender === gender
       );
       if (!myEvent) {
         throw new Error('No event found');
@@ -267,7 +277,7 @@ async function updateCpFile(
         `SELECT @@Identity AS id`
       );
 
-      const dbEventIds = [...team.subEvents?.map((r) => r.eventId)];
+      const dbEventIds = [...team.entries?.map(e => e.competitionSubEvent.eventId)];
       const where = {
         clubId: team.clubId,
         linkId: {
@@ -280,7 +290,7 @@ async function updateCpFile(
       try {
         let memo = `Index: ${team.baseIndex(system)}`;
 
-        const issues = validate(team, team.subEvents[0], code_players);
+        const issues = validate(team, team.entries[0].competitionSubEvent, code_players);
 
         let teamName = sql_escaped(team.name);
         if (issues.hasIssues) {
@@ -340,9 +350,9 @@ async function updateCpFile(
         ...p.toJSON(),
         lastRankingPlaces: [
           {
-            single: parseInt(csvPlayer?.PlayerLevelSingle, 10) || 12,
-            double: parseInt(csvPlayer?.PlayerLevelDouble, 10) || 12,
-            mix: parseInt(csvPlayer?.PlayerLevelMixed, 10) || 12,
+            single: parseInt(csvPlayer?.KlassementEnkel, 10) || 12,
+            double: parseInt(csvPlayer?.KlassementDubbel, 10) || 12,
+            mix: parseInt(csvPlayer?.KlassementGemengd, 10) || 12,
           },
         ],
       } as Partial<Player>;
@@ -457,20 +467,18 @@ async function updateCpFile(
       let playerId = players.get(player.memberId);
       if (!playerId) {
         const csvPlayer = code_players.get(player.memberId);
-        const code = csvPlayer?.code ?? '';
-        const dob = csvPlayer?.dob ? `#${csvPlayer?.dob}#` : 'NULL';
         const single =
-          parseInt(csvPlayer?.PlayerLevelSingle, 10) ||
+          parseInt(csvPlayer?.KlassementEnkel, 10) ||
           (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
             ?.single ??
             12);
         const double =
-          parseInt(csvPlayer?.PlayerLevelDouble, 10) ||
+          parseInt(csvPlayer?.KlassementDubbel, 10) ||
           (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
             ?.double ??
             12);
         const mix =
-          parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
+          parseInt(csvPlayer?.KlassementGemengd, 10) ||
           (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
             ?.mix ??
             12);
@@ -480,7 +488,7 @@ async function updateCpFile(
         const queryPlayer = `INSERT INTO Player(name, firstname, gender, memberid, club, foreignid, dob) VALUES (
           "${sql_escaped(player.lastName)}", "${sql_escaped(
           player.firstName
-        )}", ${gender}, ${memberid}, ${internalClubId}, "${code}", ${dob})`;
+        )}", ${gender}, ${memberid}, ${internalClubId}, NULL, NULL)`;
 
         try {
           const playerRes = await connection.execute(
@@ -550,21 +558,21 @@ async function updateCpFile(
     for (const player of team.basePlayers(system)) {
       const csvPlayer = code_players.get(player.memberId);
       const single =
-        parseInt(csvPlayer?.PlayerLevelSingle, 10) ||
+        parseInt(csvPlayer?.KlassementEnkel, 10) ||
         (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
           ?.single ??
           12);
       const double =
-        parseInt(csvPlayer?.PlayerLevelDouble, 10) ||
+        parseInt(csvPlayer?.KlassementDubbel, 10) ||
         (player.lastRankingPlaces?.find((p) => p.systemId === system.id)
           ?.double ??
           12);
       const mix =
-        parseInt(csvPlayer?.PlayerLevelMixed, 10) ||
+        parseInt(csvPlayer?.KlassementGemengd, 10) ||
         (player.lastRankingPlaces?.find((p) => p.systemId === system.id)?.mix ??
           12);
 
-      if (csvPlayer?.TypeName != 'Competitiespeler') {
+      if (csvPlayer?.Type != 'Competitiespeler') {
         issues.hasIssues = true;
         issues.status.push(`${player.fullName} is geen competitie speler`);
       }
