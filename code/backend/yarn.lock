@@ -2607,16 +2607,16 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
-"@socket.io/postgres-adapter@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@socket.io/postgres-adapter/-/postgres-adapter-0.2.0.tgz#8330c523e168b4bfde1ea7c69c32c7fbc8ff4f45"
-  integrity sha512-vIjOxo/u98RMNK4ttgDYN4cwFJWeFKlcvyyoiNv55ByeogdobaLFojc6eqygvFL34ahk+aTa3hddVw4gbiSvxQ==
+"@socket.io/postgres-adapter@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@socket.io/postgres-adapter/-/postgres-adapter-0.3.0.tgz#44da249ec759a3c4bbf19bb35209584191cb467e"
+  integrity sha512-G9MrTCgSrO/Z5JDYIB2H4CI/baRwR/kQgwOfMNp39FvuPgKQ6I9iUM/mn6OhI5N6rMl8nzWNg4P8SiBa7kUtAQ==
   dependencies:
     "@msgpack/msgpack" "~2.7.0"
     "@types/pg" "^8.6.1"
     debug "~4.3.1"
     pg "^8.0.0"
-    socket.io-adapter "~2.3.0"
+    socket.io-adapter "~2.4.0"
 
 "@socket.io/postgres-emitter@^0.1.0":
   version "0.1.0"
@@ -11150,11 +11150,6 @@ smtp-connection@2.12.0:
   dependencies:
     httpntlm "1.6.1"
     nodemailer-shared "1.1.0"
-
-socket.io-adapter@~2.3.0:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/socket.io-adapter/-/socket.io-adapter-2.3.3.tgz#4d6111e4d42e9f7646e365b4f578269821f13486"
-  integrity sha512-Qd/iwn3VskrpNO60BeRyCyr8ZWw9CPZyitW4AQwmRZ8zCiyDiL+znRnWX6tDHXnWn1sJrM1+b6Mn6wEDJJ4aYQ==
 
 socket.io-adapter@~2.4.0:
   version "2.4.0"
