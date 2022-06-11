@@ -38,7 +38,7 @@ export const addTeamMutation = {
     context: { req: AuthenticatedRequest }
   ) => {
     canExecute(context?.req?.user, {
-      anyPermissions: [`${clubId}_add:team`, 'add-any:club']
+      anyPermissions: [`${clubId}_add:team`, 'edit-any:club']
     });
 
     const transaction = await DataBaseHandler.sequelizeInstance.transaction();
