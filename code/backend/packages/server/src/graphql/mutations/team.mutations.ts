@@ -510,10 +510,10 @@ export const updateSubEventTeamMutationOld = {
         });
       }
 
-      if (subEvents !== null && subEvents.length > 0) {
-        await dbTeam.removeSubEvents(subEvents, { transaction });
-      }
-      await dbTeam.addSubEvent(dbNewSubEvent.id, { transaction });
+      // if (subEvents !== null && subEvents.length > 0) {
+      //   await dbTeam.removeSubEvents(subEvents, { transaction });
+      // }
+      // await dbTeam.addSubEvent(dbNewSubEvent.id, { transaction });
 
       await transaction.commit();
       return dbTeam;
