@@ -1,3 +1,13 @@
+## [4.42.2](https://github.com/Badminton-Apps/badman/compare/v4.42.1...v4.42.2) (2022-06-11)
+
+
+### Bug Fixes
+
+* add uuid dependency ([c0a9115](https://github.com/Badminton-Apps/badman/commit/c0a91157644d4ee2c23f2f004b5976cc525fa353))
+* version ([77f18f6](https://github.com/Badminton-Apps/badman/commit/77f18f6d5d827e4b36579f3ac4aedde9ed7d1180))
+
+
+
 ## [4.42.1](https://github.com/Badminton-Apps/badman/compare/v4.42.0...v4.42.1) (2022-06-11)
 
 
