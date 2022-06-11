@@ -1,3 +1,12 @@
+## [4.42.3](https://github.com/Badminton-Apps/badman/compare/v4.42.2...v4.42.3) (2022-06-11)
+
+
+### Bug Fixes
+
+* permissions for editting clubs ([b12cd05](https://github.com/Badminton-Apps/badman/commit/b12cd05cf13476911dd31d249ba36dab875c42c2))
+
+
+
 ## [4.42.2](https://github.com/Badminton-Apps/badman/compare/v4.42.1...v4.42.2) (2022-06-11)
 
 
