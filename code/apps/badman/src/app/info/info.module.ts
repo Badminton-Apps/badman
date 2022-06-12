@@ -7,8 +7,9 @@ import { LandingComponent } from './pages/landing/landing.component';
 import { CookiesComponent } from './pages/cookies/cookies.component';
 import { FaqComponent } from './pages/pages/faq/faq.component';
 import { SharedModule } from '../_shared';
+import { MatTableModule } from '@angular/material/table';
 
-const materialModules = [MatExpansionModule];
+const materialModules = [MatExpansionModule, MatTableModule];
 
 @NgModule({
   declarations: [

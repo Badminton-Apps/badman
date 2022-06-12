@@ -25,7 +25,7 @@ export class SyncDateProcessor {
     // Check if visual reality has same date stored
     const draw = await encounter.getDrawCompetition();
     const subEvent = await draw.getSubEvent();
-    const event = await subEvent.getEvent();
+    const event = await subEvent.getEventCompetition();
 
     if (event.visualCode === null) {
       this.logger.error(`No visual code found for ${event?.name}`);

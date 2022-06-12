@@ -425,7 +425,7 @@ type Club {
   clubId: Float
   teams(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Team!]
   roles(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Role!]
-  players: [Player!]
+  players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Player!]
   comments: [Comment!]
   locations(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Location!]
   slug: String
@@ -688,6 +688,8 @@ union Search = Player | EventCompetition | EventTournament | Club
 type Mutation {
   updatePlayer(data: PlayerUpdateInput!): Player!
   claimAccount(playerId: String!): Player!
+  addPlayerToTeam(teamId: ID!, playerId: ID!): Team!
+  updateBasePlayerTeam(teamId: ID!, playerId: ID!, base: Boolean!): Team!
   addClub(data: ClubNewInput!): Club!
   removeClub(id: ID!): Club!
   updateClub(data: ClubUpdateInput!): Club!

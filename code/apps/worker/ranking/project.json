@@ -47,7 +47,8 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "worker-ranking:build"
+        "buildTarget": "worker-ranking:build",
+        "port": 9231
       }
     },
     "serve-dev": {

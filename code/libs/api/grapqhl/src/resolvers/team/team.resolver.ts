@@ -9,6 +9,7 @@ import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   ID,
+  Mutation,
   Parent,
   Query,
   ResolveField,
@@ -75,11 +76,11 @@ export class TeamsResolver {
   @ResolveField(() => String)
   async email(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
-    if (user.hasAnyPermission(perm)) {
-      return team.email;
-    } else {
+    if (!user.hasAnyPermission(perm)) {
       throw new UnauthorizedException();
     }
+
+    return team.email;
   }
 
   @ResolveField(() => [EventEntry])
@@ -103,6 +104,70 @@ export class TeamsResolver {
     return team.getCaptain();
   }
 
+  @Mutation(() => Team)
+  async addPlayerToTeam(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @User() user: Player
+  ) {
+    const team = await Team.findByPk(teamId);
+
+    if (!team) {
+      throw new NotFoundException(`Team ${teamId}`);
+    }
+
+    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
+    if (!user.hasAnyPermission(perm)) {
+      throw new UnauthorizedException();
+    }
+
+    const player = await Player.findByPk(playerId);
+    if (!player) {
+      throw new NotFoundException(playerId);
+    }
+
+    await team.addPlayer(player, {
+      through: {
+        start: new Date(),
+      },
+    });
+    return team;
+  }
+
+  @Mutation(() => Team)
+  async updateBasePlayerTeam(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('base') base: boolean,
+    @User() user: Player
+  ) {
+    const team = await Team.findByPk(teamId);
+
+    if (!team) {
+      throw new NotFoundException(`Team ${teamId}`);
+    }
+
+    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
+    if (!user.hasAnyPermission(perm)) {
+      throw new UnauthorizedException();
+    }
+
+    const player = await Player.findByPk(playerId);
+    if (!player) {
+      throw new NotFoundException(playerId);
+    }
+
+    await TeamPlayerMembership.update(
+      {
+        teamId: team.id,
+        playerId: player.id,
+        base,
+      },
+      { where: { teamId: team.id, playerId: player.id } }
+    );
+
+    return team;
+  }
   // @Mutation(returns => Team)
   // async addTeam(
   //   @Args('newTeamData') newTeamData: NewTeamInput,

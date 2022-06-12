@@ -6,32 +6,25 @@ export const RankingQueue = 'ranking';
 export const SyncQueue = 'sync';
 
 const BullQueueModules = [
-  BullModule.forRootAsync({
-    imports: [ConfigModule],
-    useFactory: async (configService: ConfigService) => ({
-      name: RankingQueue,
-      redis: {
-        host: configService.get('REDIS_HOST'),
-        port: +configService.get('REDIS_PORT'),
-      },
-    }),
-    inject: [ConfigService],
-  }),
-  BullModule.forRootAsync({
-    imports: [ConfigModule],
-    useFactory: async (configService: ConfigService) => ({
-      name: SyncQueue,
-      redis: {
-        host: configService.get('REDIS_HOST'),
-        port: +configService.get('REDIS_PORT'),
-      },
-    }),
-    inject: [ConfigService],
-  }),
+  BullModule.registerQueue({ name: RankingQueue }),
+  BullModule.registerQueue({ name: SyncQueue }),
 ];
 
+BullModule.registerQueueAsync;
 @Module({
-  imports: BullQueueModules,
+  imports: [
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: +configService.get('REDIS_PORT'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    ...BullQueueModules,
+  ],
   exports: BullQueueModules,
 })
 export class QueueModule {}

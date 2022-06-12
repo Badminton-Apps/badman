@@ -1,109 +1,98 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, gql } from 'apollo-angular';
+import { map, switchMap, take } from 'rxjs/operators';
 import { RankingSystem, SystemService } from '../../../_shared';
 
 @Component({
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent implements OnInit {
-  caps$!: Observable<any>;
+  dataSource?: MatTableDataSource<any>;
 
-  // capsColumns: ITdDataTableColumn[];
+  displayedColumns = [
+    'level',
+    'pointsToGoUp',
+    'pointsToGoDown',
+    'pointsWhenWinningAgainst',
+  ];
 
-  constructor(
-    private systemService: SystemService,
-    private apollo: Apollo,
-    translateService: TranslateService
-  ) {
-    // this.capsColumns = [
-    //   {
-    //     name: 'level',
-    //     label: translateService.instant('faq.points.table.level'),
-    //   },
-    //   {
-    //     name: 'pointsWhenWinningAgainst',
-    //     label: translateService.instant('faq.points.table.points-won'),
-    //   },
-    //   {
-    //     name: 'pointsToGoUp',
-    //     label: translateService.instant('faq.points.table.points-needed-up'),
-    //   },
-    //   {
-    //     name: 'pointsToGoDown',
-    //     label: translateService.instant('faq.points.table.points-needed-down'),
-    //   },
-    // ];
-  }
+  constructor(private systemService: SystemService, private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.caps$ = this.systemService.getPrimarySystemsWhere().pipe(
-      switchMap((query) => {
-        const where: { [key: string]: unknown } = {};
+    this.systemService
+      .getPrimarySystemsWhere()
+      .pipe(
+        switchMap((query) => {
+          const where: { [key: string]: unknown } = {};
 
-        if (!query.primary) {
-          where['$or'] = [
-            {
-              primary: true,
-            },
-            {
-              id: query.id,
-            },
-          ];
-        } else {
-          where['primary'] = true;
-        }
-
-        return this.apollo.query<{ rankingSystems: Partial<RankingSystem>[] }>({
-          query: gql`
-            query GetSystems($where: JSONObject) {
-              rankingSystems(where: $where) {
-                id
-                name
-                amountOfLevels
-                pointsToGoUp
-                pointsToGoDown
-                pointsWhenWinningAgainst
-                primary
-              }
-            }
-          `,
-          variables: {
-            where,
-          },
-        });
-      }),
-      map((x) => x.data.rankingSystems?.map((x) => new RankingSystem(x))),
-      map((s) => {
-        if (s.length > 1) {
-          return s.find((x) => x.primary == false);
-        } else if (s.length == 1) {
-          return s[0];
-        } else {
-          throw 'No systems found';
-        }
-      }),
-      map((system: any) => {
-        let level = system.amountOfLevels;
-        return system.pointsWhenWinningAgainst.map(
-          (winning: number, index: number) => {
-            return {
-              level: level--,
-              pointsToGoUp:
-                level !== 0 ? Math.round(system.pointsToGoUp[index]) : null,
-              pointsToGoDown:
-                index === 0
-                  ? null
-                  : Math.round(system.pointsToGoDown[index - 1]),
-              pointsWhenWinningAgainst: Math.round(winning),
-            };
+          if (!query.primary) {
+            where['$or'] = [
+              {
+                primary: true,
+              },
+              {
+                id: query.id,
+              },
+            ];
+          } else {
+            where['primary'] = true;
           }
-        );
-      })
-    );
+
+          return this.apollo.query<{
+            rankingSystems: Partial<RankingSystem>[];
+          }>({
+            query: gql`
+              query GetSystems($where: JSONObject) {
+                rankingSystems(where: $where) {
+                  id
+                  name
+                  amountOfLevels
+                  pointsToGoUp
+                  pointsToGoDown
+                  pointsWhenWinningAgainst
+                  primary
+                }
+              }
+            `,
+            variables: {
+              where,
+            },
+          });
+        }),
+        map((x) => x.data.rankingSystems?.map((x) => new RankingSystem(x))),
+        map((s) => {
+          if (s.length > 1) {
+            return s.find((x) => x.primary == false);
+          } else if (s.length == 1) {
+            return s[0];
+          } else {
+            throw 'No systems found';
+          }
+        }),
+        map((system: any) => {
+          let level = system.amountOfLevels;
+          return system.pointsWhenWinningAgainst.map(
+            (winning: number, index: number) => {
+              return {
+                level: level--,
+                pointsToGoUp:
+                  level !== 0 ? Math.round(system.pointsToGoUp[index]) : null,
+                pointsToGoDown:
+                  index === 0
+                    ? null
+                    : Math.round(system.pointsToGoDown[index - 1]),
+                pointsWhenWinningAgainst: Math.round(winning),
+              };
+            }
+          );
+        }),
+        take(1)
+      )
+      .subscribe((data) => {
+        this.dataSource = new MatTableDataSource(data);
+      });
   }
 }

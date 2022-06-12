@@ -133,7 +133,7 @@ export class EditClubComponent implements OnInit {
                 eventCompetitions(where: { startYear: $year }) {
                   rows {
                     id
-                    subEvents {
+                    subEventCompetitions {
                       id
                     }
                   }

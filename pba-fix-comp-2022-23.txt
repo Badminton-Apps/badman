@@ -1,0 +1,7 @@
+update "event"."SubEventCompetitions" set "visualCode" = NULL where "eventId" = '9ef69337-7931-4e4d-96ae-4054952bbd2a';
+update "event"."SubEventCompetitions" set "level" = 5, "maxLevel" = 9, "minBaseIndex" =120, "maxBaseIndex"= 144, "name"= '5e provinciale' where id ='1ea48363-9def-46c9-82a6-e0411b9afa05';
+update "event"."SubEventCompetitions" set "level" = 5, "maxLevel" = 9, "minBaseIndex" = 80, "maxBaseIndex"= 96, "name"= '5e provinciale' where id ='761b6f7d-f3c1-4380-9630-ab8cce225990';
+delete from "event"."SubEventCompetitions"  where "eventId" = '9ef69337-7931-4e4d-96ae-4054952bbd2a' and level is null;
+
+update "event"."Entries" set "subEventId" = '1ea48363-9def-46c9-82a6-e0411b9afa05' where "subEventId" = '77ba5bd8-a09b-4533-b5d5-53045f7b92c2';
+update "event"."Entries" set "subEventId" = '761b6f7d-f3c1-4380-9630-ab8cce225990' where "subEventId" = '33cd47d4-50bf-4a0a-bd13-eaebf0bd8398';
