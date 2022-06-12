@@ -10,7 +10,7 @@ query GetCompYearsQuery($id: ID!) {
         id
         competitionSubEvent {
           id
-          event {
+          eventCompetition {
             id
             startYear
           }

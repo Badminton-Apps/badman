@@ -96,6 +96,14 @@ export class ClubsResolver {
     return club.getRoles(ListArgs.toFindOptions(listArgs));
   }
 
+  @ResolveField(() => [Player])
+  async players(
+    @Parent() club: Club,
+    @Args() listArgs: ListArgs
+  ): Promise<Player[]> {
+    return club.getPlayers(ListArgs.toFindOptions(listArgs));
+  }
+
   @Mutation(() => Club)
   async addClub(@User() user: Player, @Args('data') newClubData: ClubNewInput) {
     if (!user.hasAnyPermission(['add:club'])) {

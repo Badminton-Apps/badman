@@ -1,7 +1,6 @@
-import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
-import { RankingConsumer } from './processors/ranking';
 import { QueueModule } from '@badman/queue';
+import { Module } from '@nestjs/common';
+import { RankingConsumer } from './processors/ranking';
 
 @Module({
   imports: [QueueModule],

@@ -1,15 +1,2 @@
 @import '../../../_shared/variables.scss';
 
-:host {
-  max-width: 900px;
-  display: block;
-  @media only screen and (max-width: 600px) {
-    max-width: 100vw;
-    padding: 0 10px;
-  }
-}
-
-
-td-data-table {
-  border-bottom: none;
-}
