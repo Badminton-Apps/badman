@@ -95,7 +95,7 @@ export class PlayerService {
     };
 
     return this.apollo
-      .query<{ players: Player[] }>({
+      .query<{ players: {rows: Player[]} }>({
         query: searchQuery,
         variables: {
           where: PlayerService.playerSearchWhere(args),
@@ -104,7 +104,7 @@ export class PlayerService {
           includeClub: args.includeClub,
         },
       })
-      .pipe(map((x) => x.data?.players?.map((r) => new Player(r))));
+      .pipe(map((x) => x.data?.players?.rows?.map((r) => new Player(r))));
   }
 
   searchClubPlayers(
