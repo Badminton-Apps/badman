@@ -10,14 +10,16 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   Inject,
+  ChangeDetectorRef,
 } from '@angular/core';
 import * as moment from 'moment';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom, map, forkJoin } from 'rxjs';
+import { lastValueFrom, map, forkJoin, tap } from 'rxjs';
+import seedColor from 'seed-color';
+import { v4 } from 'uuid';
 
 @Component({
-  selector: 'badman-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,13 +30,17 @@ export class CalendarComponent implements OnInit {
   public monthNames!: string[];
   public weekDayNames!: string[];
 
-  public currentMonth?: string;
+  public currentMonth?: moment.Moment;
   private encounters: CompetitionEncounter[] = [];
   private monthIndex: number = moment().get('month');
   private year: number = currentCompetitionYear();
 
+  private teamColors = new Map<string, string>();
+  overlayOpen = '';
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { clubId: string },
+    private ref: ChangeDetectorRef,
     private apollo: Apollo
   ) {}
 
@@ -60,11 +66,13 @@ export class CalendarComponent implements OnInit {
     this.encounters = await this._getEncoutners(teams);
 
     this.generateCalendarDays(this.monthIndex);
+
+    this.ref.detectChanges();
   }
 
   private async _getLocations() {
-    const locations: Map<number, Location> = new Map()
-    
+    const locations: Map<number, Location> = new Map();
+
     const loc = await lastValueFrom(
       this.apollo
         .query<{ locations: Location[] }>({
@@ -97,7 +105,7 @@ export class CalendarComponent implements OnInit {
             });
           })
         )
-    )
+    );
 
     for (const location of loc) {
       locations.set(this.locations.size + 1, location);
@@ -126,12 +134,20 @@ export class CalendarComponent implements OnInit {
             return result.data.teams?.map((team) => {
               return new Team(team);
             });
+          }),
+          tap((teams) => {
+            for (const team of teams) {
+              this.teamColors.set(
+                team?.id ?? '',
+                seedColor(team?.name ?? '').toHex()
+              );
+            }
           })
         )
     );
   }
 
-  private async _getEncoutners(teams: Team[]) {
+  private async _getEncoutners(teams: Team[], showAway = false) {
     const encounters: CompetitionEncounter[] = [];
 
     // load teams parallel
@@ -163,7 +179,10 @@ export class CalendarComponent implements OnInit {
               date: {
                 $between: compPeriod(this.year),
               },
-              $or: { homeTeamId: team.id, awayTeamId: team.id },
+              $or: {
+                homeTeamId: team.id,
+                awayTeamId: showAway ? team.id : undefined,
+              },
             },
           },
         })
@@ -193,7 +212,8 @@ export class CalendarComponent implements OnInit {
     const calendar: CalendarDay[] = [];
 
     // Get first day of month
-    const day = moment().set('month', monthIndex).startOf('month');
+    this.currentMonth = moment().set('month', monthIndex).startOf('month');
+    const day = this.currentMonth.clone();
 
     // Go back untill we get to the first day of the week
     while (day.day() != 1) {
@@ -218,7 +238,9 @@ export class CalendarComponent implements OnInit {
         })
         .map((e) => {
           return {
-            name: e.home?.abbreviation,
+            id: v4(),
+            team: e.home,
+            color: this.teamColors.get(e.home?.id ?? ''),
             locationId: 1,
           };
         });
@@ -244,7 +266,7 @@ export class CalendarComponent implements OnInit {
   }
 
   public setCurrentMonth() {
-    this.monthIndex = 0;
+    this.monthIndex = moment().month();
     this.generateCalendarDays(this.monthIndex);
   }
 }
@@ -261,12 +283,13 @@ export class CalendarDay {
 
   constructor(
     date?: moment.Moment,
-    public events?: { name?: string; locationId?: number }[],
+    public events?: { id: string; team?: Team; locationId?: number; color?: string }[],
     locations?: Map<number, Location>
   ) {
     if (!date) {
       throw new Error('Date is required');
     }
+
 
     this.date = date.toDate();
     this.isPastDate = date.isBefore();

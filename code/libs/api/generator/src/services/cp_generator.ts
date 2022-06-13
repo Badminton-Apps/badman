@@ -15,15 +15,13 @@ import { ConfigService } from '@nestjs/config';
 import { existsSync } from 'fs';
 import { copyFile, readFile, unlink } from 'fs/promises';
 import * as moment from 'moment';
-import ADODB = require('node-adodb');
 import { resolve } from 'path';
 import path = require('path');
-import { Op } from 'sequelize';
 
 @Injectable()
 export class CpGeneratorService {
   private readonly logger = new Logger(CpGeneratorService.name);
-  private connection: ADODB.open;
+  private connection;
   private stages = [
     { name: 'Main Draw', displayOrder: 1, stagetype: 1 },
     { name: 'Reserves', displayOrder: 9998, stagetype: 9998 },
@@ -35,6 +33,14 @@ export class CpGeneratorService {
   }
 
   public async generateCpFile(eventId: string) {
+    let ADODB = null;
+    try {
+      ADODB = require('node-adodb');
+    } catch (er) {
+      this.logger.warn(`ADODB not found`);
+      return;
+    }
+
     this.logger.log('Started generating CP file');
     const event = await EventCompetition.findByPk(eventId);
     if (!event) {
@@ -42,7 +48,7 @@ export class CpGeneratorService {
       throw new Error('Event not found');
     }
     this.logger.debug(`Event found: ${event.name}`);
-    const file = await this._prepCPfile(event);
+    const file = await this._prepCPfile(event, ADODB);
 
     this.logger.debug('Reading players');
     const csvPlayers = await this._readCsvPlayers(event.startYear);
@@ -109,7 +115,7 @@ export class CpGeneratorService {
     });
   }
 
-  private async _prepCPfile(event: EventCompetition) {
+  private async _prepCPfile(event: EventCompetition, ADODB: any) {
     const original = path.join(
       process.cwd(),
       `libs/api/generator/assets/${event.name}_empty.cp`
@@ -442,12 +448,11 @@ export class CpGeneratorService {
     for (const [clubId, players] of distinctPlayers) {
       const dbPlayers = await Player.findAll({
         where: {
-          id: players
+          id: players,
         },
       });
 
       for (const dbPlayer of dbPlayers) {
-
         const gender = this._getGender(dbPlayer.gender);
         const internalClubId = clubs.get(clubId);
         const queryPlayer = `INSERT INTO Player(name, firstname, gender, memberid, club, foreignid, dob) VALUES (
@@ -492,8 +497,10 @@ export class CpGeneratorService {
       const query = players?.map((p) => {
         const player = playerList.get(p.id);
 
-        if (!player?.cpId){
-          this.logger.error(`Team ${dbTeam.name}(${dbTeam.id}) has invalid players`);
+        if (!player?.cpId) {
+          this.logger.error(
+            `Team ${dbTeam.name}(${dbTeam.id}) has invalid players`
+          );
         }
 
         return [
@@ -512,7 +519,7 @@ export class CpGeneratorService {
     events: Map<
       string,
       {
-      cpId: string;
+        cpId: string;
         dbSubEvent: SubEventCompetition;
         'Main Draw': number;
         Reserves: number;
