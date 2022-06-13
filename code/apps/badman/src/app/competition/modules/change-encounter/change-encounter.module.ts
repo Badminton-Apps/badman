@@ -23,6 +23,7 @@ import { CalendarComponent, DateSelectorComponent } from './components';
 import { FlexModule } from '@angular/flex-layout';
 import { MatChipsModule } from '@angular/material/chips';
 import { SelctionComponentsModule, SharedModule } from '../../../_shared';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 const materialModules = [
   DragDropModule,
@@ -41,6 +42,8 @@ const materialModules = [
   MatDatepickerModule,
   NgxMatDatetimePickerModule,
   FlexModule,
+
+  OverlayModule
 ];
 
 @NgModule({

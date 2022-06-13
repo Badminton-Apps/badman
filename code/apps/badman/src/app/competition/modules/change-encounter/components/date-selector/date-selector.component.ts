@@ -144,6 +144,7 @@ export class DateSelectorComponent
 
   onClick(event: Event) {
     this._dialog.open(CalendarComponent, {
+      width: '80vw',
       data: {
         clubId: this.club,
       },

@@ -13393,6 +13393,18 @@ secure-compare@3.0.1:
   resolved "https://registry.yarnpkg.com/secure-compare/-/secure-compare-3.0.1.tgz#f1a0329b308b221fae37b9974f3d578d0ca999e3"
   integrity sha1-8aAymzCLIh+uN7mXTz1XjQypmeM=
 
+seed-color@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/seed-color/-/seed-color-2.0.1.tgz#af87a1867a13abf95542d72e7ffdcf09fcb677a1"
+  integrity sha512-SfBpG/n4xbhk8CuykaGgKJXgp+Px1uPdYSOVWgiez6tb7fA7YPf6vMQKyQY7b3Ccbtn8iAoV//pMpFYFTPWnxw==
+  dependencies:
+    seedrandom "2.4.2"
+
+seedrandom@2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-2.4.2.tgz#18d78c41287d13aff8eadb29e235938b248aa9ff"
+  integrity sha512-uQ72txMoObtuJooiBLSVs5Yu2e9d/lHQz0boaqHjW8runXB9vR8nFtaZV54wYii613N0C8ZqTBLsfwDhAdpvqQ==
+
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
