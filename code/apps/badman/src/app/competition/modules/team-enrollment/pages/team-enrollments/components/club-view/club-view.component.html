@@ -13,7 +13,10 @@
       <mat-label>Event</mat-label>
       <mat-select [formControl]="this.eventControl">
         <mat-option [value]="'all'"> All (warning: slow) </mat-option>
-        <mat-option *ngFor="let event of this.events$ | async" [value]="event.id">
+        <mat-option
+          *ngFor="let event of this.events$ | async"
+          [value]="event.id"
+        >
           {{ event.name }}
         </mat-option>
       </mat-select>
@@ -36,7 +39,9 @@
               >warning</mat-icon
             >
           </mat-panel-title>
-          <mat-panel-description>{{ club.teams?.length }} Teams</mat-panel-description>
+          <mat-panel-description
+            >{{ club.teams?.length }} Teams</mat-panel-description
+          >
         </mat-expansion-panel-header>
         <div class="mat-subheading-2">Locations</div>
         <div *ngFor="let location of club.locations">
@@ -47,24 +52,35 @@
             </div>
             <div *ngIf="(location.availibilities?.[0]?.days?.length ?? 0) > 0">
               <div *ngFor="let availibilty of location.availibilities">
-                <span class="location-sub-title">{{ 'competition.enrollment.play-day' | translate }}</span>
+                <span class="location-sub-title">{{
+                  'competition.enrollment.play-day' | translate
+                }}</span>
                 <ul>
                   <li *ngFor="let day of availibilty.days">
-                    {{ 'days.' + day.day | translate }}, {{ day.startTime }} {{ 'breakdown.untill' | translate }}
-                    {{ day.endTime }}:
+                    {{ 'days.' + day.day | translate }}, {{ day.startTime }}
+                    {{ 'breakdown.untill' | translate }} {{ day.endTime }}:
                     {{ day.courts }}
                     {{ 'input.courts' | translate }}
                   </li>
                 </ul>
 
-                <span class="location-sub-title">{{ 'competition.enrollment.exceptions' | translate }}</span>
-                <small *ngIf="!availibilty.exceptions || availibilty.exceptions.length == 0">
+                <span class="location-sub-title">{{
+                  'competition.enrollment.exceptions' | translate
+                }}</span>
+                <small
+                  *ngIf="
+                    !availibilty.exceptions ||
+                    availibilty.exceptions.length === 0
+                  "
+                >
                   <br />Geen uitzonderingen
                 </small>
                 <ul>
                   <li *ngFor="let exception of availibilty.exceptions">
-                    {{ exception.start | amDateFormat: 'LL' }} {{ 'breakdown.untill' | translate }}
-                    {{ exception.end | amDateFormat: 'LL' }}: {{ exception.courts }} {{ 'input.courts' | translate }}
+                    {{ exception.start | amDateFormat: 'LL' }}
+                    {{ 'breakdown.untill' | translate }}
+                    {{ exception.end | amDateFormat: 'LL' }}:
+                    {{ exception.courts }} {{ 'input.courts' | translate }}
                   </li>
                 </ul>
               </div>
@@ -73,8 +89,14 @@
         </div>
         <div class="mat-subheading-2">Teams</div>
         <div *ngFor="let team of club.teams">
-          <div class="team-description" cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="overlayOpen = team.id ?? ''">
-            {{ team.name }} ({{team.entries?.[0]?.meta?.competition?.teamIndex}}) -
+          <div
+            class="team-description"
+            cdkOverlayOrigin
+            #trigger="cdkOverlayOrigin"
+            (click)="overlayOpen = team.id ?? ''"
+          >
+            {{ team.name }} ({{team.entries?.[0]?.meta?.competition?.teamIndex
+            }}) -
             {{ team.entries?.[0]?.competitionSubEvent?.name }}
             {{ team.entries?.[0]?.competitionSubEvent?.eventType }}
           </div>
@@ -84,7 +106,7 @@
             cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
             [cdkConnectedOverlayHasBackdrop]="true"
             [cdkConnectedOverlayOrigin]="trigger"
-            [cdkConnectedOverlayOpen]="overlayOpen == team.id"
+            [cdkConnectedOverlayOpen]="overlayOpen === team.id"
             (detach)="overlayOpen = ''"
             (backdropClick)="overlayOpen = ''"
           >
@@ -93,7 +115,8 @@
                 index: {{ entry.meta?.competition?.teamIndex }}
                 <ul>
                   <li *ngFor="let player of entry.meta?.competition?.players">
-                    {{ player?.player?.fullName }} ({{ player?.single }} - {{ player?.double }} - {{ player?.mix }})
+                    {{ player?.player?.fullName }} ({{ player?.single }} -
+                    {{ player?.double }} - {{ player?.mix }})
                   </li>
                 </ul>
               </ng-container>

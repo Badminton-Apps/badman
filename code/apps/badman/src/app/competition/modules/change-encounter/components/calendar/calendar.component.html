@@ -1,11 +1,24 @@
 <div fxLayout="row">
-  <div>
-    <button mat-button (click)="decreaseMonth()">-</button>
-    <button mat-button (click)="setCurrentMonth()">Today</button>
-    <button mat-button (click)="increaseMonth()">+</button>
-    <strong>{{ currentMonth }}</strong>
+  <div
+    class="buttons"
+    fxLayout="row"
+    fxLayoutGap="3px"
+    fxLayoutAlign="center center"
+  >
+    <div>
+      <button mat-stroked-button (click)="setCurrentMonth()">Today</button>
+    </div>
+    <button mat-icon-button (click)="decreaseMonth()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-icon-button (click)="increaseMonth()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+    <div>
+      {{ currentMonth | amDateFormat: 'MMM YYYY' }}
+    </div>
   </div>
-  <div>
+  <div class="locations">
     <mat-chip-list aria-label="Locatin selection">
       <mat-chip *ngFor="let loc of locations | keyvalue">
         <mat-chip-avatar>{{ loc.key }}</mat-chip-avatar>
@@ -16,7 +29,9 @@
 </div>
 
 <div class="calendar-table" *ngIf="calendar; else loading">
-  <div class="calendar-day weekday" *ngFor="let weekDay of weekDayNames">{{ weekDay | titlecase }}</div>
+  <div class="calendar-day weekday" *ngFor="let weekDay of weekDayNames">
+    {{ weekDay | titlecase }}
+  </div>
 
   <div
     *ngFor="let row of calendar"
@@ -31,15 +46,55 @@
         >
       </div>
       <div class="location-availibilty">
-        <span *ngFor="let courts of row.remainingCourts">{{ courts }}</span>
+        <span *ngFor="let courts of row.remainingCourts" matTooltip="">{{
+          courts
+        }}</span>
       </div>
     </div>
 
-    <div class="calendar-day-content" fxLayout="column" fxLayoutAlign="center">
-      <div fxFlex *ngFor="let calEvent of row.events">
-        <span class="event-location">{{ calEvent?.locationId }}</span>
-        <span class="event-name">{{ calEvent?.name }}</span>
-        <span class="event-time">19:00</span>
+    <div class="calendar-day-content" fxLayout="column">
+      <div
+        role="button"
+        fxFlex
+        fxLayoutGap="3px"
+        class="event"
+        *ngFor="let calEvent of row.events"
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin"
+        (click)="overlayOpen = calEvent.id"
+      >
+        <div class="event-team">
+          <div
+            [ngStyle]="{ 'border-color': calEvent.color }"
+            class="event-color"
+          ></div>
+        </div>
+        <span fxFlex>
+          <span class="event-time" fxFlex="none">19:00</span>
+          <span class="event-name" fxFlex="0 1 auto">{{
+            calEvent?.team?.abbreviation
+          }}</span>
+        </span>
+        <!-- <span class="event-location">{{ calEvent?.locationId }}</span> -->
+
+        <ng-template
+          cdkConnectedOverlay
+          cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+          [cdkConnectedOverlayHasBackdrop]="true"
+          [cdkConnectedOverlayOrigin]="trigger"
+          [cdkConnectedOverlayOpen]="overlayOpen === calEvent.id"
+          (detach)="overlayOpen = ''"
+          (backdropClick)="overlayOpen = ''"
+        >
+          <div class="event-detail">
+            {{ calEvent.team?.name }}
+            <ul>
+              <li>Item 1</li>
+              <li>Item 2</li>
+              <li>Item 3</li>
+            </ul>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>

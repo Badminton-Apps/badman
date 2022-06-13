@@ -116,8 +116,8 @@
                   </mat-nav-list>
                 </badman-has-claim>
 
-                <badman-has-claim [any]="['change-any:encounter']">
-                  <!-- <badman-has-claim [any]="['*_change:encounter', 'change-any:encounter']"> -->
+                <!-- <badman-has-claim [any]="['change-any:encounter']"> -->
+                  <badman-has-claim [any]="['*_change:encounter', 'change-any:encounter']">
                   <mat-nav-list>
                     <a mat-list-item routerLink="/competition/change-encounter" routerLinkActive="active">
                       {{ 'competition.change-encounter.title' | translate }}
