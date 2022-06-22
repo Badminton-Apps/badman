@@ -81,7 +81,7 @@ export class ShowRequestsComponent implements OnInit {
             this._cd.detectChanges();
           } else {
             this.home =
-              this.formGroup.get('team')?.value?.id == encounter?.home?.id;
+              this.formGroup.get('team')?.value == encounter?.home?.id;
           }
         }),
         filter((value) => value !== null),

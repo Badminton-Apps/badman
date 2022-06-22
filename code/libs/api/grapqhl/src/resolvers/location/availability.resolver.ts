@@ -14,6 +14,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import e = require('express');
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
 
@@ -42,10 +43,16 @@ export class AvailabilitysResolver {
   //   return availability.days;
   // }
 
-  // @ResolveField(() => [ExceptionType])
-  // async exceptions(
-  //   @Parent() availability: Availability
-  // ): Promise<AvailabilityException[]> {
-  //   return availability.exceptions;
-  // }
+  @ResolveField(() => [ExceptionType])
+  async exceptions(
+    @Parent() availability: Availability
+  ): Promise<AvailabilityException[]> {
+    return availability.exceptions?.map((e) => {
+      return {
+        ...e,
+        start: new Date(e.start),
+        end: new Date(e.end),
+      };
+    });
+  }
 }

@@ -24,8 +24,8 @@ export class AvailabilityException {
   courts?: number;
 
   constructor(args?: Partial<AvailabilityException>) {
-    this.start = args?.start;
-    this.end = args?.end;
+    this.start = args?.start ? new Date(args.start) : undefined;
+    this.end = args?.end ? new Date(args.end) : undefined;
     this.courts = args?.courts;
   }
 }

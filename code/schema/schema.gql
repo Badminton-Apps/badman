@@ -624,6 +624,11 @@ type PagedEncounterCompetition {
   rows: [EncounterCompetition!]!
 }
 
+type PagedEncounterChange {
+  count: Float!
+  rows: [EncounterChange!]!
+}
+
 type PagedEventCompetition {
   count: Float!
   rows: [EventCompetition!]!
@@ -664,6 +669,8 @@ type Query {
   eventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedEventCompetition!
   encounterCompetition(id: ID!): EncounterCompetition!
   encounterCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedEncounterCompetition!
+  encounterChange(id: ID!): EncounterChange!
+  encounterChanges(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedEncounterChange!
   drawCompetition(id: ID!): DrawCompetition!
   drawCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [DrawCompetition!]!
   subEventCompetition(id: ID!): SubEventCompetition!
