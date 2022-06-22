@@ -1,7 +1,7 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
 import * as moment from 'moment';
-import { CompetitionSubEvent } from './models';
+import { CompetitionSubEvent, Team } from './models';
 
 export const validateAllFormFields = (formGroup: FormGroup) => {
   Object.keys(formGroup.controls).forEach((field) => {
@@ -36,6 +36,14 @@ export const sortSubEvents = (
   }
 
   return (a.eventType ?? '').localeCompare(b.eventType ?? '');
+};
+
+export const sortTeams = (a: Team, b: Team) => {
+  if (a.type === b.type) {
+    return (a.teamNumber ?? 0) - (b.teamNumber ?? 0);
+  }
+
+  return (a.type ?? '').localeCompare(b.type ?? '');
 };
 
 export interface pageArgs {
@@ -131,20 +139,18 @@ export const getPageArgsFromQueryParams = (queryParams: {
   return pageArgs;
 };
 
-
 export const compPeriod = (year?: number) => {
   if (!year) {
-    year = currentCompetitionYear();
+    year = getCompetitionYear();
   }
   return [`${year}-08-01`, `${year + 1}-07-01`];
 };
 
-export const currentCompetitionYear = (override?: number) => {
-  if (override) {
-    return override;
+export const getCompetitionYear = (inputDate?: Date | moment.Moment) => {
+  let date = moment(inputDate);
+  if (!date.isValid()) {
+    date = moment();
   }
 
-  const today = moment();
-
-  return today.month() >= 6 ? today.year() : today.year() - 1;
+  return date.month() >= 6 ? date.year() : date.year() - 1;
 };

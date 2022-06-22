@@ -1,105 +1,161 @@
-<div fxLayout="row">
-  <div
-    class="buttons"
-    fxLayout="row"
-    fxLayoutGap="3px"
-    fxLayoutAlign="center center"
-  >
-    <div>
-      <button mat-stroked-button (click)="setCurrentMonth()">Today</button>
+<div fxLayout="column">
+  <div fxLayout="row">
+    <div class="buttons" fxLayoutGap="3px" fxLayoutAlign="center center">
+      <div>
+        <button mat-stroked-button (click)="setCurrentMonth()">Today</button>
+      </div>
+      <button mat-icon-button (click)="decreaseMonth()">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button mat-icon-button (click)="increaseMonth()">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <div>
+        {{ firstDayOfMonth | amDateFormat: 'MMM YYYY' }}
+      </div>
     </div>
-    <button mat-icon-button (click)="decreaseMonth()">
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-    <button mat-icon-button (click)="increaseMonth()">
-      <mat-icon>chevron_right</mat-icon>
-    </button>
-    <div>
-      {{ currentMonth | amDateFormat: 'MMM YYYY' }}
+    <div class="locations" fxLayoutAlign="center center">
+      <mat-chip-list aria-label="Locatin selection">
+        <mat-chip *ngFor="let loc of locations | keyvalue">
+          <mat-chip-avatar>{{ loc.key }}</mat-chip-avatar>
+          {{ loc.value?.name }}</mat-chip
+        >
+      </mat-chip-list>
+    </div>
+    <div fxFlex></div>
+    <div *ngIf="this.data.allowManualEntry">
+      <mat-form-field>
+        <input
+          matInput
+          readonly
+          [ngxMatDatetimePicker]="picker"
+          (focus)="picker.open()"
+          placeholder="Manually choose a date"
+          [formControl]="this.manualControl"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="$any(picker)"
+        ></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #picker> </ngx-mat-datetime-picker>
+      </mat-form-field>
     </div>
   </div>
-  <div class="locations">
-    <mat-chip-list aria-label="Locatin selection">
-      <mat-chip *ngFor="let loc of locations | keyvalue">
-        <mat-chip-avatar>{{ loc.key }}</mat-chip-avatar>
-        {{ loc.value?.name }}</mat-chip
-      >
-    </mat-chip-list>
+  <div>
+    <small>Klik op een uur om deze te selecteren</small>
   </div>
 </div>
 
-<div class="calendar-table" *ngIf="calendar; else loading">
-  <div class="calendar-day weekday" *ngFor="let weekDay of weekDayNames">
-    {{ weekDay | titlecase }}
-  </div>
-
-  <div
-    *ngFor="let row of calendar"
-    class="calendar-day"
-    [ngClass]="{ 'past-date': row.isPastDate, today: row.isToday }"
-  >
-    <div class="calendar-day-header" [ngClass]="{ 'blue-date': row.isToday }">
-      <div fxFlex>
-        <strong>{{ row.date?.getDate() }}</strong>
-        <strong *ngIf="row.isToday || row.date?.getDate() === 1">
-          {{ monthNames[row.date?.getMonth() ?? 0] | titlecase }}</strong
-        >
-      </div>
-      <div class="location-availibilty">
-        <span *ngFor="let courts of row.remainingCourts" matTooltip="">{{
-          courts
-        }}</span>
-      </div>
+<div *ngIf="calendar; else loading" fxLayout="row">
+  <div class="calendar-table" fxFlex>
+    <div class="calendar-day weekday" *ngFor="let weekDay of weekDayNames">
+      {{ weekDay | titlecase }}
     </div>
 
-    <div class="calendar-day-content" fxLayout="column">
-      <div
-        role="button"
-        fxFlex
-        fxLayoutGap="3px"
-        class="event"
-        *ngFor="let calEvent of row.events"
-        cdkOverlayOrigin
-        #trigger="cdkOverlayOrigin"
-        (click)="overlayOpen = calEvent.id"
-      >
-        <div class="event-team">
-          <div
-            [ngStyle]="{ 'border-color': calEvent.color }"
-            class="event-color"
-          ></div>
-        </div>
-        <span fxFlex>
-          <span class="event-time" fxFlex="none">19:00</span>
-          <span class="event-name" fxFlex="0 1 auto">{{
-            calEvent?.team?.abbreviation
-          }}</span>
-        </span>
-        <!-- <span class="event-location">{{ calEvent?.locationId }}</span> -->
-
-        <ng-template
-          cdkConnectedOverlay
-          cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-          [cdkConnectedOverlayHasBackdrop]="true"
-          [cdkConnectedOverlayOrigin]="trigger"
-          [cdkConnectedOverlayOpen]="overlayOpen === calEvent.id"
-          (detach)="overlayOpen = ''"
-          (backdropClick)="overlayOpen = ''"
-        >
-          <div class="event-detail">
-            {{ calEvent.team?.name }}
-            <ul>
-              <li>Item 1</li>
-              <li>Item 2</li>
-              <li>Item 3</li>
-            </ul>
+    <div
+      *ngFor="let row of calendar"
+      class="calendar-day"
+      [ngClass]="{ 'past-date': row.isPastDate, today: row.isToday }"
+    >
+      <div class="calendar-day-header">
+        <div fxFlex>
+          <div class="selection">
+            <span class="day">{{ row.date?.getDate() }}</span>
+            <span
+              class="momth"
+              *ngIf="row.isToday || row.date?.getDate() === 1"
+            >
+              {{ monthNames[row.date?.getMonth() ?? 0] | titlecase }}</span
+            >
           </div>
-        </ng-template>
+        </div>
+      </div>
+
+      <div class="calendar-day-content">
+        <div
+          *ngFor="let loc of row.locations"
+          fxLayout="column"
+          fxLayoutGap="5px"
+        >
+          <div *ngFor="let av of loc.availibility" fxLayout="column">
+            <div
+              class="location"
+              fxFlex
+              (click)="selectDay(row.date)"
+              matTooltip="Pick this moment"
+            >
+              <span class="id">{{ loc.id }}</span>
+              <span class="time">{{ av.startTime }} - </span>
+              <span class="courts">
+                {{ av.remainingEncounters }}
+                {{ 'competition.change-encounter.remaining' | translate }}
+              </span>
+            </div>
+
+            <div
+              role="button"
+              fxFlex
+              fxLayoutGap="3px"
+              class="event"
+              *ngFor="let calEvent of av.events"
+              cdkOverlayOrigin
+              #trigger="cdkOverlayOrigin"
+              (click)="overlayOpen = calEvent.id"
+              [ngClass]="{
+                removed: calEvent.removed
+              }"
+            >
+              <div class="event-team">
+                <div
+                  [ngStyle]="{ 'border-color': calEvent.color }"
+                  class="event-color"
+                ></div>
+              </div>
+              <span fxFlex>
+                <span class="event-name" fxFlex="0 1 auto">{{
+                  calEvent?.encounter?.home?.name
+                }}</span>
+              </span>
+
+              <ng-template
+                cdkConnectedOverlay
+                cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+                [cdkConnectedOverlayHasBackdrop]="true"
+                [cdkConnectedOverlayOrigin]="trigger"
+                [cdkConnectedOverlayOpen]="overlayOpen === calEvent.id"
+                (detach)="overlayOpen = ''"
+                (backdropClick)="overlayOpen = ''"
+              >
+                <div class="event-detail">
+                  {{ calEvent?.encounter?.home?.name }}
+                  <ul>
+                    <li>Item 1</li>
+                    <li>Item 2</li>
+                    <li>Item 3</li>
+                  </ul>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
+  <div>
+    <div fxLayout="row" fxLayoutGap="6px">
+      <button mat-stroked-button (click)="showAllTeams()">Show all</button>
+      <button mat-stroked-button (click)="hideAllTeams()">Hide all</button>
+    </div>
+    <div *ngFor="let team of teams">
+      <mat-checkbox
+        (change)="changeVisibleTeams($event, team.id)"
+        [checked]="visibleTeams?.includes(team.id ?? '')"
+        >{{ team.name }}</mat-checkbox
+      >
+    </div>
+  </div>
+</div>
 <ng-template #loading>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>
