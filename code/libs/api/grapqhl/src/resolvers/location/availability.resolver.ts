@@ -1,8 +1,6 @@
 import {
   Availability,
   AvailabilityException,
-  AvailiblyDay,
-  AvailiblyDayType,
   ExceptionType,
 } from '@badman/api/database';
 import { Inject, Logger } from '@nestjs/common';
@@ -14,7 +12,6 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import e = require('express');
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
 

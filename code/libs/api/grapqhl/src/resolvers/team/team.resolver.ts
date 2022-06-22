@@ -1,4 +1,5 @@
 import {
+  Club,
   EventEntry,
   Location,
   Player,
@@ -104,6 +105,11 @@ export class TeamsResolver {
     return team.getCaptain();
   }
 
+  @ResolveField(() => Club)
+  async club(@Parent() team: Team): Promise<Club> {
+    return team.getClub();
+  }
+
   @Mutation(() => Team)
   async addPlayerToTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
@@ -168,6 +174,33 @@ export class TeamsResolver {
 
     return team;
   }
+
+  @Mutation(() => Team)
+  async removePlayerFromTeam(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @User() user: Player
+  ){
+    const team = await Team.findByPk(teamId);
+
+    if (!team) {
+      throw new NotFoundException(`Team ${teamId}`);
+    }
+    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
+    if (!user.hasAnyPermission(perm)) {
+      throw new UnauthorizedException();
+    }
+
+    const player = await Player.findByPk(playerId);
+    if (!player) {
+      throw new NotFoundException(playerId);
+    }
+
+    await team.removePlayer(player);
+    return team;
+  }
+
+
   // @Mutation(returns => Team)
   // async addTeam(
   //   @Args('newTeamData') newTeamData: NewTeamInput,

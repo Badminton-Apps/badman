@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
+import { RankingQueue, SyncQueue } from './queues';
 
-export const RankingQueue = 'ranking';
-export const SyncQueue = 'sync';
+
 
 const BullQueueModules = [
   BullModule.registerQueue({ name: RankingQueue }),

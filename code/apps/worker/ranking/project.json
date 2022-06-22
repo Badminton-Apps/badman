@@ -48,7 +48,9 @@
       "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "worker-ranking:build",
-        "port": 9231
+        "port": 9231,
+        "inspect": "inspect",
+        "host": "0.0.0.0"
       }
     },
     "serve-dev": {

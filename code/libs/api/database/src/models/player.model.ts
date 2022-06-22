@@ -268,7 +268,7 @@ export class Player extends Model {
   hasRoles!: BelongsToManyHasAssociationsMixin<Role, string>;
   countRole!: BelongsToManyCountAssociationsMixin;
 
-  // Has many LastRankingPlace
+  // Has many RankingLastPlace
   getRankingLastPlaces!: HasManyGetAssociationsMixin<RankingLastPlace>;
   setRankingLastPlaces!: HasManySetAssociationsMixin<RankingLastPlace, string>;
   addRankingLastPlaces!: HasManyAddAssociationsMixin<RankingLastPlace, string>;

@@ -48,7 +48,9 @@
       "executor": "@nrwl/node:node",
       "options": {
         "buildTarget": "worker-sync:build",
-        "port": 9230
+        "port": 9230,
+        "inspect": "inspect",
+        "host": "0.0.0.0"
       }
     },
     "serve-dev": {

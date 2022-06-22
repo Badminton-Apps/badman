@@ -10,7 +10,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Observable } from 'rxjs';
 import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { CompetitionEncounter } from '../../../models';

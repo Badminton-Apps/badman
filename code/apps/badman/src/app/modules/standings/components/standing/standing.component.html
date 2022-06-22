@@ -6,12 +6,12 @@
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef>{{ 'event.standing.name' | translate }}</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <ng-container *ngIf="type == 'team'">
+      <ng-container *ngIf="type === 'team'">
         <a class="has-team" [routerLink]="['/club', element.team?.club?.slug]">
           {{ element.team?.name }}
         </a>
       </ng-container>
-      <ng-container *ngIf="type == 'players'">
+      <ng-container *ngIf="type === 'players'">
         <div>
           <a class="has-user" [routerLink]="['/player', element.players[0]?.slug]">
             <!-- Name -->

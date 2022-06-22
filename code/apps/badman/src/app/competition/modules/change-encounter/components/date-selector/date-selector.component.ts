@@ -24,7 +24,7 @@ import {
   MatFormFieldControl,
   MAT_FORM_FIELD,
 } from '@angular/material/form-field';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Moment } from 'moment';
 import { Subject } from 'rxjs';
 import { CalendarComponent } from '../calendar';

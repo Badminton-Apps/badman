@@ -5,6 +5,7 @@ import {
   EntryCompetitionPlayersType,
   EventEntry,
   Player,
+  Standing,
   SubEventCompetition,
   SubEventTournament,
   Team,
@@ -18,7 +19,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { ListArgs, queryFixer } from '../../utils';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
@@ -58,6 +59,13 @@ export class EventEntryResolver {
     return eventEntry.getTeam();
   }
 
+  @ResolveField(() => [Player])
+  async players(@Parent() eventEntry: EventEntry): Promise<Player[]> {
+    return eventEntry.getPlayers();
+  }
+
+
+
   @ResolveField(() => [DrawCompetition])
   async getCompetitionDraw(
     @Parent() eventEntry: EventEntry
@@ -66,16 +74,21 @@ export class EventEntryResolver {
   }
 
   @ResolveField(() => [DrawTournament])
-  async getTournamentDraw(
+  async tournamentDraw(
     @Parent() eventEntry: EventEntry
   ): Promise<DrawTournament> {
     return eventEntry.getTournamentDraw();
   }
   @ResolveField(() => [DrawTournament])
-  async getTournamentSubEvent(
+  async tournamentSubEvent(
     @Parent() eventEntry: EventEntry
   ): Promise<SubEventTournament> {
     return eventEntry.getTournamentSubEvent();
+  }
+
+  @ResolveField(() => Standing)
+  async standing(@Parent() eventEntry: EventEntry): Promise<Standing> {
+    return eventEntry.getStanding();
   }
 
   // @Mutation(returns => EventEntry)
@@ -92,15 +105,10 @@ export class EventEntryResolver {
   // }
 }
 
-
 @Resolver(() => EntryCompetitionPlayersType)
 export class EntryCompetitionPlayersResolver {
-
   @ResolveField(() => Player)
-  async player(
-    @Parent() eventEntry: EntryCompetitionPlayers
-  ): Promise<Player> {
-
+  async player(@Parent() eventEntry: EntryCompetitionPlayers): Promise<Player> {
     return await Player.findByPk(eventEntry.id);
   }
 }
