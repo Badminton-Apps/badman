@@ -36,6 +36,6 @@ export class LocationsResolver {
     @Parent() location: Location,
     @Args() listArgs: ListArgs
   ): Promise<Availability[]> {
-    return await location.getAvailabilities(ListArgs.toFindOptions(listArgs));
+    return location.getAvailabilities(ListArgs.toFindOptions(listArgs));
   }
 }

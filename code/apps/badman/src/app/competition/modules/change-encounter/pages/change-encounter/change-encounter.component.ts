@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { currentCompetitionYear } from '../../../../../_shared';
+import { getCompetitionYear } from '../../../../../_shared';
 import * as moment from 'moment';
 
 @Component({
@@ -15,7 +15,7 @@ export class ChangeEncounterComponent implements OnInit {
 
   ngOnInit(): void {
     const queryYear = parseInt(this.activatedRoute.snapshot.queryParams['year'], 10);
-    const year = isNaN(queryYear) ? currentCompetitionYear() : queryYear;
+    const year = isNaN(queryYear) ? getCompetitionYear() : queryYear;
     
     this.formGroup.addControl('year', new FormControl(year));
     this.formGroup.addControl('mayRankingDate', new FormControl(moment(`${year}-05-15`).toDate()));

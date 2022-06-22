@@ -3,6 +3,7 @@ import { QueueModule } from '@badman/queue';
 import { Module } from '@nestjs/common';
 import {
   DrawCompetitionResolver,
+  EncounterChangeCompetitionResolver,
   EncounterCompetitionResolver,
   EventCompetitionResolver,
   SubEventCompetitionResolver,
@@ -13,6 +14,7 @@ import {
   providers: [
     EventCompetitionResolver,
     EncounterCompetitionResolver,
+    EncounterChangeCompetitionResolver,
     DrawCompetitionResolver,
     SubEventCompetitionResolver,
   ],

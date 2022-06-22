@@ -2,6 +2,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
@@ -45,8 +46,12 @@ export class DateSelectorComponent
   private _disabled = false;
 
   @Input()
+  allowManualEntry = false;
+
+  @Input()
   club?: string;
 
+  // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby')
   userAriaDescribedBy?: string;
 
@@ -106,9 +111,9 @@ export class DateSelectorComponent
     }
     return null;
   }
-  set value(tel: Moment | null) {
-    const t = tel || moment();
-    this.dateControl.setValue(t);
+  set value(dateInput: Moment | null) {
+    const date = dateInput || moment();
+    this.dateControl.setValue(date);
     this.stateChanges.next();
   }
 
@@ -119,6 +124,7 @@ export class DateSelectorComponent
   constructor(
     private _focusMonitor: FocusMonitor,
     private _elementRef: ElementRef<HTMLElement>,
+    private ref: ChangeDetectorRef,
     @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl,
     private _dialog: MatDialog
@@ -128,6 +134,8 @@ export class DateSelectorComponent
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+
+    this.stateChanges.subscribe(() => this.ref.markForCheck());
   }
 
   ngOnDestroy() {
@@ -143,12 +151,23 @@ export class DateSelectorComponent
   }
 
   onClick(event: Event) {
-    this._dialog.open(CalendarComponent, {
-      width: '80vw',
-      data: {
-        clubId: this.club,
-      },
-    });
+    const date = moment(this.value);
+
+    this._dialog
+      .open(CalendarComponent, {
+        width: '80vw',
+        data: {
+          clubId: this.club,
+          date,
+          allowManualEntry: this.allowManualEntry
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.value = moment(result);
+        }
+      });
   }
 
   onFocusOut(event: FocusEvent) {
@@ -190,10 +209,12 @@ export class DateSelectorComponent
     }
   }
 
-  onContainerClick() {}
+  onContainerClick() {
+    this.dateControl.markAsTouched();
+  }
 
-  writeValue(tel: Moment | null): void {
-    this.value = tel;
+  writeValue(date: Moment | null): void {
+    this.value = date;
   }
 
   registerOnChange(fn: any): void {

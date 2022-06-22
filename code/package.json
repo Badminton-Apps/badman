@@ -78,6 +78,7 @@
     "class-validator": "^0.13.2",
     "cookieconsent": "^3.1.1",
     "cronstrue": "^1.125.0",
+    "crypto-browserify": "^3.12.0",
     "echarts": "~4.9.0",
     "elastic-apm-node": "^3.35.0",
     "fast-xml-parser": "^4.0.8",
