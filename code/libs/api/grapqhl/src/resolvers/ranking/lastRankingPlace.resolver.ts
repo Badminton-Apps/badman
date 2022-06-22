@@ -62,16 +62,16 @@ export class LastRankingPlaceResolver {
     return rankingPlace.getPlayer();
   }
 
-  // @Mutation(returns => LastRankingPlace)
-  // async LastRankingPlace(
+  // @Mutation(returns => RankingLastPlace)
+  // async RankingLastPlace(
   //   @Args('LastRankingPlaceData') LastRankingPlaceData: LastRankingPlaceInput,
-  // ): Promise<LastRankingPlace> {
+  // ): Promise<RankingLastPlace> {
   //   const recipe = await this.recipesService.create(LastRankingPlaceData);
   //   return recipe;
   // }
 
   // @Mutation(returns => Boolean)
-  // async LastRankingPlace(@Args('id') id: string) {
+  // async RankingLastPlace(@Args('id') id: string) {
   //   return this.recipesService.remove(id);
   // }
 }

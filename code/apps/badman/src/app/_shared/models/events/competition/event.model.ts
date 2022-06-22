@@ -4,7 +4,7 @@ import { CompetitionSubEvent } from './sub-event.model';
 
 export class EventCompetition extends Event {
   startYear?: number;
-  override subEventCompetitions?: CompetitionSubEvent[];
+  subEventCompetitions?: CompetitionSubEvent[];
   comments?: Comment[];
   type?: LevelType;
 

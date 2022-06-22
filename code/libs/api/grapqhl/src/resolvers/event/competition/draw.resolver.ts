@@ -1,6 +1,8 @@
 import {
   DrawCompetition,
-  SubEventCompetition
+  EncounterCompetition,
+  EventEntry,
+  SubEventCompetition,
 } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
@@ -9,7 +11,7 @@ import {
   Parent,
   Query,
   ResolveField,
-  Resolver
+  Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 
@@ -46,7 +48,17 @@ export class DrawCompetitionResolver {
   async subEventCompetition(
     @Parent() draw: DrawCompetition
   ): Promise<SubEventCompetition> {
-    return draw.getSubEvent();
+    return draw.getSubEventCompetition();
+  }
+
+  @ResolveField(() => [EventEntry])
+  async eventEntries(@Parent() draw: DrawCompetition): Promise<EventEntry[]> {
+    return draw.getEntries();
+  }
+
+  @ResolveField(() => [EncounterCompetition])
+  async encounterCompetitions(@Parent() draw: DrawCompetition): Promise<EncounterCompetition[]> {
+    return draw.getEncounterCompetitions();
   }
 
   // @Mutation(returns => DrawCompetition)

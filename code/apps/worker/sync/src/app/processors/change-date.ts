@@ -6,7 +6,7 @@ import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
-import * as moment from 'moment';
+import  moment from 'moment';
 
 @Processor({
   name: SyncQueue
@@ -16,7 +16,7 @@ export class SyncDateProcessor {
   private visualFormat = 'YYYY-MM-DDTHH:mm:ss';
 
   constructor() {
-    this.logger.debug('SyncConsumer');
+    this.logger.debug('SyncDateConsumer');
   }
 
   @Process('change-date')
@@ -24,7 +24,7 @@ export class SyncDateProcessor {
     const encounter = await EncounterCompetition.findByPk(encounterId);
     // Check if visual reality has same date stored
     const draw = await encounter.getDrawCompetition();
-    const subEvent = await draw.getSubEvent();
+    const subEvent = await draw.getSubEventCompetition();
     const event = await subEvent.getEventCompetition();
 
     if (event.visualCode === null) {

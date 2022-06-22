@@ -88,7 +88,7 @@ export class SubEventTournament extends Model {
     () => RankingGroup,
     () => RankingGroupSubEventTournamentMembership
   )
-  groups: RankingGroup[];
+  rankingGroups: RankingGroup[];
 
   @Field(() => [DrawTournament], { nullable: true })
   @HasMany(() => DrawTournament, {
@@ -117,7 +117,7 @@ export class SubEventTournament extends Model {
       entryType: 'tournament',
     },
   })
-  entries: EventEntry[];
+  eventEntries: EventEntry[];
 
   // Belongs to many Group
   getGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
@@ -125,10 +125,7 @@ export class SubEventTournament extends Model {
   addGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
   addGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
   removeGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
-  removeGroups!: BelongsToManyRemoveAssociationsMixin<
-    RankingGroup,
-    string
-  >;
+  removeGroups!: BelongsToManyRemoveAssociationsMixin<RankingGroup, string>;
   hasGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
   hasGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
   countGroup!: BelongsToManyCountAssociationsMixin;
@@ -139,7 +136,10 @@ export class SubEventTournament extends Model {
   addDrawTournaments!: HasManyAddAssociationsMixin<DrawTournament, string>;
   addDrawTournament!: HasManyAddAssociationMixin<DrawTournament, string>;
   removeDrawTournament!: HasManyRemoveAssociationMixin<DrawTournament, string>;
-  removeDrawTournaments!: HasManyRemoveAssociationsMixin<DrawTournament, string>;
+  removeDrawTournaments!: HasManyRemoveAssociationsMixin<
+    DrawTournament,
+    string
+  >;
   hasDrawTournament!: HasManyHasAssociationMixin<DrawTournament, string>;
   hasDrawTournaments!: HasManyHasAssociationsMixin<DrawTournament, string>;
   countDrawTournaments!: HasManyCountAssociationsMixin;
@@ -147,4 +147,32 @@ export class SubEventTournament extends Model {
   // Belongs to Event
   getEvent!: BelongsToGetAssociationMixin<EventTournament>;
   setEvent!: BelongsToSetAssociationMixin<EventTournament, string>;
+
+  // Belongs to many RankingGroup
+  getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
+  setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
+  addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
+  addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
+    RankingGroup,
+    string
+  >;
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
+    RankingGroup,
+    string
+  >;
+  hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
+  hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
+  countRankingGroup!: BelongsToManyCountAssociationsMixin;
+
+  // Has many EventEntry
+  getEventEntrys!: HasManyGetAssociationsMixin<EventEntry>;
+  setEventEntrys!: HasManySetAssociationsMixin<EventEntry, string>;
+  addEventEntrys!: HasManyAddAssociationsMixin<EventEntry, string>;
+  addEventEntry!: HasManyAddAssociationMixin<EventEntry, string>;
+  removeEventEntry!: HasManyRemoveAssociationMixin<EventEntry, string>;
+  removeEventEntrys!: HasManyRemoveAssociationsMixin<EventEntry, string>;
+  hasEventEntry!: HasManyHasAssociationMixin<EventEntry, string>;
+  hasEventEntrys!: HasManyHasAssociationsMixin<EventEntry, string>;
+  countEventEntrys!: HasManyCountAssociationsMixin;
 }

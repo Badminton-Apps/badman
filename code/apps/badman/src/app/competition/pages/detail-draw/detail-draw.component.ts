@@ -20,13 +20,13 @@ export class DetailDrawCompetitionComponent implements OnInit {
     this.draw$ = this.route.paramMap.pipe(
       tap((params) => (this.competitionId = params.get('id') ?? undefined)),
       switchMap((params) =>
-        this.apollo.query<{ competitionDraw: CompetitionDraw }>({
+        this.apollo.query<{ drawCompetition: CompetitionDraw }>({
           query: gql`
             query GetDraw($competitionDrawId: ID!) {
-              competitionDraw(id: $competitionDrawId) {
+              drawCompetition(id: $competitionDrawId) {
                 id # needed for caching
                 name
-                entries {
+                eventEntries {
                   id
                   team {
                     id
@@ -53,7 +53,7 @@ export class DetailDrawCompetitionComponent implements OnInit {
                     lost
                   }
                 }
-                encounters {
+                encounterCompetitions {
                   id
                   date
                   homeScore
@@ -70,9 +70,9 @@ export class DetailDrawCompetitionComponent implements OnInit {
         })
       ),
       map(({ data }) => {
-        const draw = new CompetitionDraw(data.competitionDraw);
+        const draw = new CompetitionDraw(data.drawCompetition);
 
-        draw.encounters?.forEach((encounter) => {
+        draw.encounterCompetitions?.forEach((encounter) => {
           encounter.home = draw.eventEntries.find(
             (e) => e.team?.id === encounter.homeTeamId
           )?.team;

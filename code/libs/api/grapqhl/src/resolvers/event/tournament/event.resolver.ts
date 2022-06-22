@@ -1,6 +1,19 @@
-import { EventTournament, SubEventTournament } from '@badman/api/database';
+import {
+  EventTournament,
+  RankingGroup,
+  SubEventTournament,
+} from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
-import { Args, Field, ID, ObjectType, Parent, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Field,
+  ID,
+  ObjectType,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 
 @ObjectType()
@@ -37,17 +50,18 @@ export class EventTournamentResolver {
   @Query(() => PagedEventTournament)
   async eventTournaments(
     @Args() listArgs: ListArgs
-  ):  Promise<{ count: number; rows: EventTournament[] }> {
+  ): Promise<{ count: number; rows: EventTournament[] }> {
     return EventTournament.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @Query(() => [SubEventTournament])
+  @ResolveField(() => [SubEventTournament])
   async subEventTournaments(
     @Parent() event: EventTournament,
     @Args() listArgs: ListArgs
   ): Promise<SubEventTournament[]> {
-    return event.getSubEvents(ListArgs.toFindOptions(listArgs));
+    return event.getSubEventTournaments(ListArgs.toFindOptions(listArgs));
   }
+
 
   // @Mutation(returns => EventTournament)
   // async addEventTournament(

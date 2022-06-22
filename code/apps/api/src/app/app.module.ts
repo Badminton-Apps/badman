@@ -1,13 +1,15 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { AppController } from './controllers';
+import { AppController, PdfController } from './controllers';
 
 import { DatabaseModule } from '@badman/api/database';
 import { GeneratorModule } from '@badman/api/generator';
 import { ApiGrapqhlModule } from '@badman/api/grapqhl';
 import { QueueModule } from '@badman/queue';
 import { SearchModule } from '@badman/search';
+import { EventsModule } from './events/events.module';
+import { PdfService } from './services';
 
 @Module({
   imports: [
@@ -17,9 +19,10 @@ import { SearchModule } from '@badman/search';
     ApiGrapqhlModule,
     SearchModule,
     QueueModule,
+    EventsModule,
   ],
-  controllers: [AppController],
-  providers: [],
+  controllers: [AppController, PdfController],
+  providers: [PdfService],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);

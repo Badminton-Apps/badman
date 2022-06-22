@@ -24,7 +24,7 @@ import { RankingSystem } from './ranking-system.model';
   timestamps: true,
   schema: 'ranking',
 })
-@ObjectType({ description: 'A LastRankingPlace' })
+@ObjectType({ description: 'A RankingLastPlace' })
 export class RankingLastPlace extends Model {
   constructor(values?: Partial<RankingLastPlace>, options?: BuildOptions) {
     super(values, options);

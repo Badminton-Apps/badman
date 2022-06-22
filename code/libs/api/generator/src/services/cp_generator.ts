@@ -14,7 +14,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { existsSync } from 'fs';
 import { copyFile, readFile, unlink } from 'fs/promises';
-import * as moment from 'moment';
+import moment from 'moment';
 import { resolve } from 'path';
 import path = require('path');
 

@@ -87,7 +87,7 @@ export class RankingPlaceResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      let rankingPlace = await RankingPlace.findByPk(
+      const rankingPlace = await RankingPlace.findByPk(
         updateRankingPlaceData.id,
         {
           transaction,

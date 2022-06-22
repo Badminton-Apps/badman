@@ -1,4 +1,9 @@
-import { DrawTournament, SubEventTournament } from '@badman/api/database';
+import {
+  DrawTournament,
+  EventEntry,
+  Game,
+  SubEventTournament,
+} from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -41,7 +46,17 @@ export class DrawTournamentResolver {
   async subEventTournament(
     @Parent() draw: DrawTournament
   ): Promise<SubEventTournament> {
-    return draw.getSubEvent();
+    return draw.getSubEventTournament();
+  }
+
+  @ResolveField(() => [EventEntry])
+  async eventEntries(@Parent() draw: DrawTournament): Promise<EventEntry[]> {
+    return draw.getEventEntries();
+  }
+
+  @ResolveField(() => [Game])
+  async games(@Parent() draw: DrawTournament): Promise<Game[]> {
+    return draw.getGames();
   }
 
   // @Mutation(returns => DrawTournament)

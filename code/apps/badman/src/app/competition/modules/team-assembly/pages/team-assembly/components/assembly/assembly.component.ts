@@ -18,7 +18,7 @@ import {
   SystemService,
   Team,
 } from '../../../../../../../_shared';
-import * as moment from 'moment';
+import moment from 'moment';
 import {
   combineLatest,
   distinctUntilChanged,
@@ -216,7 +216,7 @@ export class AssemblyComponent implements OnInit {
                             maxLevel
                             minBaseIndex
                             maxBaseIndex
-                            event {
+                            eventCompetition {
                               id
                               type
                             }

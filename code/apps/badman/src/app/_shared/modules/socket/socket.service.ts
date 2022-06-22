@@ -6,8 +6,9 @@ export const SOCKET_PREFIX = new InjectionToken<string>('prefix');
 
 @Injectable()
 export class SocketService {
-  private services: Map<string, SocketNameSpace> = new Map();
   static instance: SocketService;
+
+  private services: Map<string, SocketNameSpace> = new Map();
 
   constructor(@Inject(SOCKET_URL) private url: string, @Optional() @Inject(SOCKET_PREFIX) private prefix: string) {
     SocketService.instance = this;

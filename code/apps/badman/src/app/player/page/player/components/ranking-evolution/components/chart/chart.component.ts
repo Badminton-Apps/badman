@@ -1,6 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import * as moment from 'moment-timezone';
-import { DataPoint, logarithmic } from 'regression';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
+import moment from 'moment';
 
 @Component({
   selector: 'badman-chart',
@@ -24,8 +28,16 @@ export class ChartComponent implements OnInit {
   @Input()
   probablyInacurate: moment.Moment = moment('2018-07-31T22:00:00.000Z');
 
-  seriesData: { name: { top: string; bottom: string }; subName?: string; value: [Date, number] }[] = [];
-  seriesDataInacc: { name: { top: string; bottom: string }; subName?: string; value: [Date, number] }[] = [];
+  seriesData: {
+    name: { top: string; bottom: string };
+    subName?: string;
+    value: [Date, number];
+  }[] = [];
+  seriesDataInacc: {
+    name: { top: string; bottom: string };
+    subName?: string;
+    value: [Date, number];
+  }[] = [];
   axisData = [];
   firstDay!: Date;
   lastDay!: Date;
@@ -36,15 +48,20 @@ export class ChartComponent implements OnInit {
 
   ngOnInit() {
     this.rankingPlaces = this.rankingPlaces.sort(
-      (a, b) => new Date(b.rankingDate).getTime() - new Date(a.rankingDate).getTime()
+      (a, b) =>
+        new Date(b.rankingDate).getTime() - new Date(a.rankingDate).getTime()
     );
     this.calcaulteforecast();
     this.createSeries();
 
     // Get the years for start / end to space them in year basis
     if (this.rankingPlaces && this.rankingPlaces.length > 0) {
-      const lastDay = moment(this.rankingPlaces[0].rankingDate).startOf('year').add(1, 'year');
-      const firstDay = moment(this.rankingPlaces[this.rankingPlaces?.length - 1].rankingDate).startOf('year');
+      const lastDay = moment(this.rankingPlaces[0].rankingDate)
+        .startOf('year')
+        .add(1, 'year');
+      const firstDay = moment(
+        this.rankingPlaces[this.rankingPlaces?.length - 1].rankingDate
+      ).startOf('year');
       this.firstDay = firstDay.toDate();
       this.lastDay = lastDay.toDate();
     }
@@ -54,7 +71,7 @@ export class ChartComponent implements OnInit {
     this.rankingPlaces
       .filter((places) => places.updatePossible)
       .forEach((x) => {
-        const rankingDate = moment(x.rankingDate).tz('Europe/Brussels');
+        const rankingDate = moment(x.rankingDate);
 
         const topText = `Level ${x.level} on ${rankingDate.format('DD-MM-Y')}`;
         let bottomText = ``;

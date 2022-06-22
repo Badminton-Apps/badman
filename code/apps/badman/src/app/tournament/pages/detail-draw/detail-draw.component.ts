@@ -28,15 +28,15 @@ export class DetailDrawTournamentComponent implements OnInit {
             throw new Error('No id');
           }
 
-          return this.apollo.query<{ tournamentDraw: TournamentDraw; }>({
+          return this.apollo.query<{ drawTournament: TournamentDraw; }>({
             query: gql`
             ${GAME_INFO}
             query GetTournamentDraw($tournamentDrawId: ID!) {
-              tournamentDraw(id: $tournamentDrawId) {
+              drawTournament(id: $tournamentDrawId) {
                 id
                 name
                 type
-                entries {
+                eventEntries {
                   id
                   players {
                     id
@@ -71,7 +71,7 @@ export class DetailDrawTournamentComponent implements OnInit {
           });
         }
       ),
-      map(({ data }) => new TournamentDraw(data.tournamentDraw))
+      map(({ data }) => new TournamentDraw(data.drawTournament))
     );
   }
 }

@@ -19,5 +19,8 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "nx": {
+    "implicitDependencies": ["https://github.com/nuintun/node-adodb"]
+  }
 }

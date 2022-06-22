@@ -249,7 +249,7 @@ export class PlayerService {
     // Clear from cache
     const normalizedIdLastRanking = apolloCache.identify({
       id: player?.lastRanking?.id,
-      __typename: 'LastRankingPlace',
+      __typename: 'RankingLastPlace',
     });
     apolloCache.evict({ id: normalizedIdLastRanking });
 

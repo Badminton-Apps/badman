@@ -62,11 +62,11 @@ export class CompetitionEncounterComponent {
 
   private _getFullEncounter() {
     return this.apollo
-      .query<{ competitionEncounter: CompetitionEncounter }>({
+      .query<{ encounterCompetition: CompetitionEncounter }>({
         query: gql`
           ${GAME_INFO}
           query GetGamesEncoutner($competitionEncounterId: ID!) {
-            competitionEncounter(id: $competitionEncounterId) {
+            encounterCompetition(id: $competitionEncounterId) {
               id
               games {
                 ...GameInfo
@@ -78,7 +78,7 @@ export class CompetitionEncounterComponent {
       })
       .pipe(
         map((result) =>
-          result?.data?.competitionEncounter?.games?.map(
+          result?.data?.encounterCompetition?.games?.map(
             (game) => new Game(game)
           )
         )

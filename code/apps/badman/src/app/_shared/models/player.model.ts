@@ -1,6 +1,6 @@
 import { Game } from './game.model';
 import { RankingPlace } from './ranking-place.model';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Club } from './club.model';
 import { RankingSystem } from './ranking-system.model';
 import { Claim } from './security';

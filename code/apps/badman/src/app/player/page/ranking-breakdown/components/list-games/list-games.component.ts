@@ -14,7 +14,7 @@ import {
   PlayerGame,
   RankingSystem,
 } from '../../../../../_shared';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Moment } from 'moment';
 import { distinctUntilChanged, map } from 'rxjs';
 import { AddGameComponent } from '../../dialogs/add-game/add-game.component';

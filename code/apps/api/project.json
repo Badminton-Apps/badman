@@ -15,7 +15,9 @@
     "deploy-dev": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": ["docker build -f ./apps/api/Dockerfile.windows.dev . -t api-dev"],
+        "commands": [
+          "docker build -f ./apps/api/Dockerfile.dev . -t api-dev"
+        ],
         "parallel": false
       }
     },

@@ -13,7 +13,7 @@ import {
   resetAllFormFields,
   validateAllFormFields,
 } from '../../../../../../../_shared';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MatStepper } from '@angular/material/stepper';
 import { STEP_AVAILIBILTY } from '../../team-enrollment.component';
 

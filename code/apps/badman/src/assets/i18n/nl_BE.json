@@ -1,4 +1,3 @@
-
 {
   "languages": {
     "en": "English",
@@ -119,7 +118,7 @@
       "away-comment": "Opmerkingen uitploeg",
       "dates": "Data",
       "add-date": "Voeg datum toe",
-      "remaining": "Resterend",
+      "remaining": "mogelijk",
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "submit": {
         "title": "Verzenden",
@@ -168,6 +167,7 @@
     },
     "last-updated": "Gewijzigd op",
     "vs": "tegen",
+    "vs-short": "vs",
     "draw": {
       "title": "Poule",
       "encounters": "Ontmoetingen"
@@ -427,5 +427,10 @@
     "october": "Oktober",
     "november": "November",
     "december": "December"
+  },
+  "type-short": {
+    "M": "H",
+    "MX": "G",
+    "F": "D"
   }
 }

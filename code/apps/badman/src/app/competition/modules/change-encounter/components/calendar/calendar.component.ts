@@ -1,7 +1,6 @@
 import {
   CompetitionEncounter,
   compPeriod,
-  EncounterChange,
   getCompetitionYear,
   Location,
   sortTeams,
@@ -14,11 +13,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from '@angular/core';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map, forkJoin, tap } from 'rxjs';
-import seedColor from 'seed-color';
+import { randomLightColor } from 'seed-to-color';
 import { v4 } from 'uuid';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FormControl } from '@angular/forms';
@@ -42,7 +41,8 @@ export class CalendarComponent implements OnInit {
   private year: number;
 
   private teamColors = new Map<string, string>();
-  overlayOpen = '';
+
+  public gridTemplateColumns = '';
 
   constructor(
     private dialogRef: MatDialogRef<CalendarComponent>,
@@ -181,7 +181,7 @@ export class CalendarComponent implements OnInit {
             for (const team of teams) {
               this.teamColors.set(
                 team?.id ?? '',
-                seedColor(team?.name ?? '').toHex()
+                `#${randomLightColor(team?.name ?? '')}`
               );
             }
           })
@@ -217,6 +217,8 @@ export class CalendarComponent implements OnInit {
                   home {
                     id
                     name
+                    teamNumber
+                    type
                   }
                   away {
                     id
@@ -280,6 +282,16 @@ export class CalendarComponent implements OnInit {
     // Calculate amount of weeks we need to display
     const weeks = Math.ceil(daysBetween / 7);
 
+    const eventsOnDay = {
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0,
+      '6': 0,
+      '7': 0,
+    };
+
     // Loop through the encounters
     for (let i = 0; i < weeks * 7; i++) {
       // Find any encounters on day
@@ -294,24 +306,42 @@ export class CalendarComponent implements OnInit {
             color: this.teamColors.get(e.home?.id ?? ''),
             startTime: moment(e.date).format('HH:mm'),
             locationId: 1,
+            requested: false,
+            removed: !!e.encounterChange,
           };
         });
 
-      // const changedEncounters = this.encounters
-      //   .map(e => e.encounterChange);
-      //   .filter((e) => {
-      //     e.dates.forEach((d) => {
-      //     return moment().isSame(day, 'day');
-      //   })
-      //   .map((e) => {
-      //     return {
-      //       id: v4(),
-      //       encounter: e,
-      //       color: this.teamColors.get(e.home?.id ?? ''),
-      //       startTime: moment(e.date).format('HH:mm'),
-      //       locationId: 1,
-      //     };
-      //   });
+      this.encounters
+        ?.map((e) => {
+          return e.encounterChange?.dates?.map((d) => {
+            return {
+              id: v4(),
+              ...e,
+              date: d.date,
+            } as CompetitionEncounter;
+          });
+        })
+        ?.flat()
+        ?.filter((e) => {
+          return moment(e?.date).isSame(day, 'day');
+        })
+        ?.map((e) => {
+          if (!e) {
+            return;
+          }
+          dayEncounters.push({
+            id: v4(),
+            encounter: {
+              ...e,
+              encounterChange: undefined,
+            },
+            color: this.teamColors.get(e.home?.id ?? '') ?? '',
+            startTime: moment(e.date).format('HH:mm'),
+            locationId: 1,
+            requested: true,
+            removed: false,
+          });
+        });
 
       calendar.push(
         new CalendarDay(
@@ -322,8 +352,14 @@ export class CalendarComponent implements OnInit {
         )
       );
 
+      eventsOnDay[day.isoWeekday()] += dayEncounters.length;
+
       day.add(1, 'days');
     }
+
+    console.log(eventsOnDay);
+
+    this.gridTemplateColumns = this._genGridTemplateColumns(eventsOnDay);
 
     this.calendar = calendar;
     this.ref.detectChanges();
@@ -384,6 +420,21 @@ export class CalendarComponent implements OnInit {
   public selectDay(date?: Date) {
     this.dialogRef.close(date);
   }
+
+  private _genGridTemplateColumns(eventsOnDay: { [key: string]: number }) {
+    // Devide occuping space for each day
+    const gridTemplate: string[] = [];
+
+    for (const day of [...Array(7).keys()]) {
+      if (eventsOnDay[day + 1] > 0) {
+        gridTemplate.push(`1fr`);
+      } else {
+        gridTemplate.push(`0.60fr`);
+      }
+    }
+
+    return gridTemplate.join(' ');
+  }
 }
 
 export class CalendarDay {
@@ -404,6 +455,7 @@ export class CalendarDay {
         encounter: CompetitionEncounter;
         color?: string;
         removed: boolean;
+        requested: boolean;
       }[];
     }[];
   }[];
@@ -420,6 +472,7 @@ export class CalendarDay {
       locationId?: number;
       startTime?: string;
       color?: string;
+      requested: boolean;
     }[],
     locations?: Map<number, Location>,
     private visibleTeams?: string[]
@@ -486,7 +539,7 @@ export class CalendarDay {
       (l) => l.id === event.locationId
     );
 
-    const removed = !!event.encounter?.encounterChange;
+    const skipRemaining = !!event.encounter?.encounterChange || event.requested;
 
     // Update the location availibility
     if (locationIndex >= 0) {
@@ -495,7 +548,7 @@ export class CalendarDay {
       ].availibility?.findIndex((a) => a.startTime === event.startTime);
 
       if (availibilityIndex >= 0) {
-        if (!removed) {
+        if (!skipRemaining) {
           this.locations[locationIndex].availibility[availibilityIndex]
             .remainingEncounters--;
         }
@@ -513,7 +566,7 @@ export class CalendarDay {
             availibilityIndex
           ].events?.push({
             ...event,
-            removed,
+            skipRemaining,
           });
         }
       } else {
@@ -528,7 +581,7 @@ export class CalendarDay {
           events: [
             {
               ...event,
-              removed,
+              skipRemaining,
             },
           ],
         });

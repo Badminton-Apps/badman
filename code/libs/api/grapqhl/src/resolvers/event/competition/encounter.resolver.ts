@@ -5,6 +5,7 @@ import {
   EncounterChangeDate,
   EncounterChangeNewInput,
   EncounterCompetition,
+  Game,
   Player,
   Team,
 } from '@badman/api/database';
@@ -27,7 +28,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Queue } from 'bull';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize/types';
 import { User } from '../../../decorators';
@@ -103,6 +104,11 @@ export class EncounterCompetitionResolver {
     @Parent() encounter: EncounterCompetition
   ): Promise<EncounterChange> {
     return encounter.getEncounterChange();
+  }
+
+  @ResolveField(() => [Game])
+  async games(@Parent() encounter: EncounterCompetition): Promise<Game[]> {
+    return encounter.getGames();
   }
 
   @Mutation(() => Boolean)

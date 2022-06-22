@@ -11,7 +11,8 @@
         <mat-icon>chevron_right</mat-icon>
       </button>
       <div>
-        {{ firstDayOfMonth | amDateFormat: 'MMM YYYY' }}
+        {{ monthNames[firstDayOfMonth?.get('month') ?? 0] | titlecase }}
+        {{ firstDayOfMonth?.get('year') ?? 0 }}
       </div>
     </div>
     <div class="locations" fxLayoutAlign="center center">
@@ -47,7 +48,11 @@
 </div>
 
 <div *ngIf="calendar; else loading" fxLayout="row">
-  <div class="calendar-table" fxFlex>
+  <div
+    fxFlex
+    class="calendar-table"
+    [ngStyle]="{ 'grid-template-columns': gridTemplateColumns }"
+  >
     <div class="calendar-day weekday" *ngFor="let weekDay of weekDayNames">
       {{ weekDay | titlecase }}
     </div>
@@ -79,10 +84,24 @@
         >
           <div *ngFor="let av of loc.availibility" fxLayout="column">
             <div
-              class="location"
+              *ngIf="av.remainingEncounters > 0 || this.data.allowManualEntry"
+              class="location picable"
               fxFlex
               (click)="selectDay(row.date)"
               matTooltip="Pick this moment"
+            >
+              <span class="id">{{ loc.id }}</span>
+              <span class="time">{{ av.startTime }} - </span>
+              <span class="courts">
+                {{ av.remainingEncounters }}
+                {{ 'competition.change-encounter.remaining' | translate }}
+              </span>
+            </div>
+
+            <div
+              *ngIf="av.remainingEncounters <= 0 && !this.data.allowManualEntry"
+              class="location"
+              fxFlex
             >
               <span class="id">{{ loc.id }}</span>
               <span class="time">{{ av.startTime }} - </span>
@@ -98,9 +117,6 @@
               fxLayoutGap="3px"
               class="event"
               *ngFor="let calEvent of av.events"
-              cdkOverlayOrigin
-              #trigger="cdkOverlayOrigin"
-              (click)="overlayOpen = calEvent.id"
               [ngClass]="{
                 removed: calEvent.removed
               }"
@@ -112,29 +128,16 @@
                 ></div>
               </div>
               <span fxFlex>
-                <span class="event-name" fxFlex="0 1 auto">{{
-                  calEvent?.encounter?.home?.name
-                }}</span>
+                <span class="event-name" fxFlex="0 1 auto">
+                  {{ calEvent?.encounter?.home?.teamNumber
+                  }}{{
+                    'type-short.' + calEvent?.encounter?.home?.type | translate
+                  }}
+                  {{ 'competition.vs-short' | translate }}
+                  {{ calEvent?.encounter?.away?.name
+                  }}<span *ngIf="calEvent.requested">*</span>
+                </span>
               </span>
-
-              <ng-template
-                cdkConnectedOverlay
-                cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-                [cdkConnectedOverlayHasBackdrop]="true"
-                [cdkConnectedOverlayOrigin]="trigger"
-                [cdkConnectedOverlayOpen]="overlayOpen === calEvent.id"
-                (detach)="overlayOpen = ''"
-                (backdropClick)="overlayOpen = ''"
-              >
-                <div class="event-detail">
-                  {{ calEvent?.encounter?.home?.name }}
-                  <ul>
-                    <li>Item 1</li>
-                    <li>Item 2</li>
-                    <li>Item 3</li>
-                  </ul>
-                </div>
-              </ng-template>
             </div>
           </div>
         </div>

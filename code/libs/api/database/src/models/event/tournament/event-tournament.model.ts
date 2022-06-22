@@ -38,6 +38,8 @@ import { SubEventTournament } from './sub-event-tournament.model';
 import { Slugify } from '../../../types';
 import { UsedRankingTiming } from '../../../enums/';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { RankingGroup } from '../../ranking';
+import { RankingGroupSubEventTournamentMembership } from './group-subevent-membership.model';
 
 @Table({
   timestamps: true,
@@ -87,10 +89,7 @@ export class EventTournament extends Model {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  subEvents: SubEventTournament[];
-
-  @BelongsToMany(() => Location, () => LocationEventTournamentMembership)
-  groups: Location[];
+  subEventTournaments: SubEventTournament[];
 
   @Default(false)
   @Field({ nullable: true })
@@ -124,15 +123,36 @@ export class EventTournament extends Model {
   regenerateSlug!: Slugify<EventTournament>;
 
   // Has many subEvent
-  getSubEvents!: HasManyGetAssociationsMixin<SubEventTournament>;
-  setSubEvents!: HasManySetAssociationsMixin<SubEventTournament, string>;
-  addSubEvents!: HasManyAddAssociationsMixin<SubEventTournament, string>;
-  addsubEvent!: HasManyAddAssociationMixin<SubEventTournament, string>;
-  removesubEvent!: HasManyRemoveAssociationMixin<SubEventTournament, string>;
-  removeSubEvents!: HasManyRemoveAssociationsMixin<SubEventTournament, string>;
-  hassubEvent!: HasManyHasAssociationMixin<SubEventTournament, string>;
-  hasSubEvents!: HasManyHasAssociationsMixin<SubEventTournament, string>;
-  countSubEvents!: HasManyCountAssociationsMixin;
+  getSubEventTournaments!: HasManyGetAssociationsMixin<SubEventTournament>;
+  setSubEventTournaments!: HasManySetAssociationsMixin<
+    SubEventTournament,
+    string
+  >;
+  addSubEventTournaments!: HasManyAddAssociationsMixin<
+    SubEventTournament,
+    string
+  >;
+  addsubEventTournament!: HasManyAddAssociationMixin<
+    SubEventTournament,
+    string
+  >;
+  removesubEventTournament!: HasManyRemoveAssociationMixin<
+    SubEventTournament,
+    string
+  >;
+  removeSubEventTournaments!: HasManyRemoveAssociationsMixin<
+    SubEventTournament,
+    string
+  >;
+  hassubEventTournament!: HasManyHasAssociationMixin<
+    SubEventTournament,
+    string
+  >;
+  hasSubEventTournaments!: HasManyHasAssociationsMixin<
+    SubEventTournament,
+    string
+  >;
+  countSubEventTournaments!: HasManyCountAssociationsMixin;
 
   // Belongs to many Location
   getLocations!: BelongsToManyGetAssociationsMixin<Location>;

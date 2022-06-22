@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
-import * as moment from 'moment';
+import moment from 'moment';
 import { AvailabilityDay } from '../../../../../../../_shared';
 import { STEP_AVAILIBILTY } from '../../team-enrollment.component';
 

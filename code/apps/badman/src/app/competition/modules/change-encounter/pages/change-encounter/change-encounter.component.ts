@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { getCompetitionYear } from '../../../../../_shared';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Component({
   templateUrl: './change-encounter.component.html',

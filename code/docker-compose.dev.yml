@@ -22,114 +22,114 @@ services:
       - '6379:6379'
     networks:
       - api
-     
+
   # My Apps
-  # badman:
-  #   build:
-  #     context: .
-  #     dockerfile: apps/badman/Dockerfile.dev
-  #   image: badman-dev
-  #   environment:
-  #     - API_URL=http://api:5000
-  #     - CHOKIDAR_USEPOLLING=true
-  #   expose:
-  #     - 4200
-  #   ports:
-  #     - 4200:4200
-  #   # depends_on:
-  #   #   - api
-  #   volumes:
-  #     - ./:/usr/src
-  #     - ./user/src/node_modules
-  #   restart: unless-stopped 
+  badman:
+    build:
+      context: .
+      dockerfile: apps/badman/Dockerfile.dev
+    image: badman-dev
+    environment:
+      - API_URL=http://api:5000
+      - CHOKIDAR_USEPOLLING=true
+    expose:
+      - 4200
+    ports:
+      - 4200:4200
+    depends_on:
+      - api
+    volumes:
+      - ./:/usr/src
+      - ./user/src/node_modules
+    restart: unless-stopped
 
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: apps/api/Dockerfile.dev
-  #   image: api-dev
-  #   ports:
-  #     - '5000:5000'
-  #     - '9229:9229'
-  #   networks:
-  #     - api
-  #   environment:
-  #     - REDIS_HOST=redis
-  #     - REDIS_PORT=6379
-  #     - DB_IP=postgres
-  #     - DB_PASSWORD=${DB_PASSWORD}
-  #     - DB_USER=${DB_USER}
-  #     - DB_DATABASE=${DB_DATABASE}
-  #     - DB_DIALECT=${DB_DIALECT}
-  #     - APM_SERVER_URL=${APM_SERVER_URL}
-  #     - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
-  #     - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
-  #     - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
-  #     - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
-  #     - CLIENT_URL=${CLIENT_URL}
-  #     - MAIL_PASS=${MAIL_PASS}
-  #     - MAIL_USER=${MAIL_USER}
-  #     - MAIL_HOST=${MAIL_HOST}
-  #   depends_on:
-  #     - postgres
-  #     - redis
-  #   volumes:
-  #     - ./:/usr/src
-  #     - ./user/src/node_modules
-  #   restart: unless-stopped 
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.dev
+    image: api-dev
+    ports:
+      - '5000:5000'
+      - '9229:9229'
+    networks:
+      - api
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_IP=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_DIALECT=${DB_DIALECT}
+      - APM_SERVER_URL=${APM_SERVER_URL}
+      - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
+      - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
+      - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - CLIENT_URL=${CLIENT_URL}
+      - MAIL_PASS=${MAIL_PASS}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_HOST=${MAIL_HOST}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./:/usr/src
+      - ./user/src/node_modules
+    restart: unless-stopped
 
-  # worker-ranking:
-  #   build:
-  #     context: .
-  #     dockerfile: apps/worker/ranking/Dockerfile.dev
-  #   image: worker-ranking-dev
-  #   networks:
-  #     - api
-  #   environment:
-  #     - REDIS_HOST=redis
-  #     - REDIS_PORT=6379
-  #     - DB_IP=postgres
-  #     - DB_PASSWORD=${DB_PASSWORD}
-  #     - DB_USER=${DB_USER}
-  #     - DB_DATABASE=${DB_DATABASE}
-  #     - DB_DIALECT=${DB_DIALECT}
-  #     - APM_SERVER_URL=${APM_SERVER_URL}
-  #     - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
-  #     - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
-  #   depends_on:
-  #     - redis
-  #   volumes:
-  #     - ./:/usr/src
-  #     - ./user/src/node_modules
-  #   restart: unless-stopped 
-  
-  # worker-sync:
-  #   build:
-  #     context: .
-  #     dockerfile: apps/worker/sync/Dockerfile.dev
-  #   image: worker-sync-dev
-  #   networks:
-  #     - api
-  #   environment:
-  #     - REDIS_HOST=redis
-  #     - REDIS_PORT=6379
-  #     - DB_IP=postgres
-  #     - DB_PASSWORD=${DB_PASSWORD}
-  #     - DB_USER=${DB_USER}
-  #     - DB_DATABASE=${DB_DATABASE}
-  #     - DB_DIALECT=${DB_DIALECT}
-  #     - APM_SERVER_URL=${APM_SERVER_URL}
-  #     - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
-  #     - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
-  #     - VR_API=${VR_API}
-  #     - VR_API_USER=${VR_API_USER}
-  #     - VR_API_PASS=${VR_API_PASS}
-  #   depends_on:
-  #     - redis
-  #   volumes:
-  #     - ./:/usr/src
-  #     - ./user/src/node_modules
-  #   restart: unless-stopped 
+  worker-ranking:
+    build:
+      context: .
+      dockerfile: apps/worker/ranking/Dockerfile.dev
+    image: worker-ranking-dev
+    networks:
+      - api
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_IP=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_DIALECT=${DB_DIALECT}
+      - APM_SERVER_URL=${APM_SERVER_URL}
+      - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
+      - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
+    depends_on:
+      - redis
+    volumes:
+      - ./:/usr/src
+      - ./user/src/node_modules
+    restart: unless-stopped
+
+  worker-sync:
+    build:
+      context: .
+      dockerfile: apps/worker/sync/Dockerfile.dev
+    image: worker-sync-dev
+    networks:
+      - api
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_IP=postgres
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_DIALECT=${DB_DIALECT}
+      - APM_SERVER_URL=${APM_SERVER_URL}
+      - APM_SERVER_TOKEN=${APM_SERVER_TOKEN}
+      - APM_SERVER_ACTIVE=${APM_SERVER_ACTIVE}
+      - VR_API=${VR_API}
+      - VR_API_USER=${VR_API_USER}
+      - VR_API_PASS=${VR_API_PASS}
+    depends_on:
+      - redis
+    volumes:
+      - ./:/usr/src
+      - ./user/src/node_modules
+    restart: unless-stopped
 
   # Tools
   pgadmin:
@@ -142,17 +142,17 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-       - db-admin:/var/lib/pgadmin
-       - ./database/backup:/home/backup
+      - db-admin:/var/lib/pgadmin
+      - ./database/backup:/home/backup
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - '${PGADMIN_PORT:-5050}:80'
     depends_on:
       - postgres
     networks:
       - postgres
-    restart: unless-stopped 
+    restart: unless-stopped
     logging:
-      driver: "none"
+      driver: 'none'
 
 networks:
   api:

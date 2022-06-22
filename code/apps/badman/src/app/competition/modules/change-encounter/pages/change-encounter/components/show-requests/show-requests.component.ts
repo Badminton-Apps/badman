@@ -17,7 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import * as moment from 'moment';
+import moment from 'moment';
 import { lastValueFrom, Observable, of } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import {

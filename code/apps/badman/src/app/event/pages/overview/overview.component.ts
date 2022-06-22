@@ -14,7 +14,7 @@ import { MatSort, SortDirection } from '@angular/material/sort';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import * as moment from 'moment';
+import moment from 'moment';
 import { BehaviorSubject, forkJoin, merge, Observable, tap } from 'rxjs';
 import { debounceTime, filter, map } from 'rxjs/operators';
 import { apolloCache } from '../../../graphql.module';

@@ -1,7 +1,7 @@
-import { Injector, ModuleWithProviders, NgModule } from '@angular/core';
-import { environment } from '../../../../environments/environment';
+import { Injector, NgModule } from '@angular/core';
 import { SocketIoModule } from 'ngx-socket-io';
-import { SocketService, SOCKET_PREFIX, SOCKET_URL } from './socket.service';
+import { environment } from '../../../../environments/environment';
+import { SocketService } from './socket.service';
 
 @NgModule({
   declarations: [],

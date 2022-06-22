@@ -79,7 +79,7 @@ export class DrawTournament extends Model {
       entryType: 'tournament',
     },
   })
-  entries: EventEntry[];
+  eventEntries: EventEntry[];
 
   @Unique('DrawTournaments_unique_constraint')
   @Field({ nullable: true })
@@ -91,7 +91,7 @@ export class DrawTournament extends Model {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  subEvent?: SubEventTournament;
+  subEventTournament?: SubEventTournament;
 
   @Unique('DrawTournaments_unique_constraint')
   @ForeignKey(() => SubEventTournament)
@@ -122,6 +122,20 @@ export class DrawTournament extends Model {
   countStandings!: HasManyCountAssociationsMixin;
 
   // Belongs to SubEvent
-  getSubEvent!: BelongsToGetAssociationMixin<SubEventTournament>;
-  setSubEvent!: BelongsToSetAssociationMixin<SubEventTournament, string>;
+  getSubEventTournament!: BelongsToGetAssociationMixin<SubEventTournament>;
+  setSubEventTournament!: BelongsToSetAssociationMixin<
+    SubEventTournament,
+    string
+  >;
+
+  // Has many EventEntries
+  getEventEntries!: HasManyGetAssociationsMixin<EventEntry>;
+  setEventEntries!: HasManySetAssociationsMixin<EventEntry, string>;
+  addEventEntries!: HasManyAddAssociationsMixin<EventEntry, string>;
+  addEventEntry!: HasManyAddAssociationMixin<EventEntry, string>;
+  removeEventEntry!: HasManyRemoveAssociationMixin<EventEntry, string>;
+  removeEventEntries!: HasManyRemoveAssociationsMixin<EventEntry, string>;
+  hasEventEntry!: HasManyHasAssociationMixin<EventEntry, string>;
+  hasEventEntries!: HasManyHasAssociationsMixin<EventEntry, string>;
+  countEventEntries!: HasManyCountAssociationsMixin;
 }
