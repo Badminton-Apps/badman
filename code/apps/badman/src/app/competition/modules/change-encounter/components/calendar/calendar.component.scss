@@ -20,7 +20,6 @@
 .calendar-table {
   margin-right: 12px;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
   border-collapse: collapse;
   margin-bottom: 1rem;
   border: 1px solid #dee2e6;
@@ -89,7 +88,12 @@ mat-chip-avatar {
   padding: 3px;
 
   .location {
-    cursor: pointer;
+    &.picable {
+      cursor: pointer;
+    }
+
+    padding-bottom: 3px;
+
     .id {
       display: inline-block;
       width: 18px;
@@ -99,15 +103,19 @@ mat-chip-avatar {
       border: 1px solid black;
       margin-right: 6px;
     }
+
+    .courts {
+      font-size: 0.8em;
+    }
   }
 
   .event {
     padding: 0 4px;
     line-height: 16px;
     font-size: 12px;
-    cursor: pointer;
 
     &.removed {
+      opacity: 0.5;
       .event-name {
         text-decoration: line-through;
       }

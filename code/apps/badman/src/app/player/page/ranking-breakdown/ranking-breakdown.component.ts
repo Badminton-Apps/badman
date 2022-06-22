@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import * as moment from 'moment';
+import moment from 'moment';
 import {
   combineLatest,
   delay,

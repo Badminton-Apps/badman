@@ -8,7 +8,7 @@ import {
   BaseContext,
   GraphQLRequestContextDidResolveOperation,
 } from 'apollo-server-plugin-base';
-import * as Redis from 'ioredis';
+import Redis from 'ioredis';
 import { join } from 'path';
 import {
   AvailabilityModule,
@@ -22,7 +22,7 @@ import {
   SecurityModule,
   TeamModule,
 } from './resolvers';
-import * as apm from 'elastic-apm-node';
+import apm from 'elastic-apm-node';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 
 @Module({

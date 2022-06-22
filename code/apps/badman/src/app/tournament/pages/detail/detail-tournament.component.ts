@@ -38,34 +38,37 @@ export class DetailTournamentComponent implements OnInit {
 
   ngOnInit(): void {
     this.event$ = combineLatest([this.route.paramMap, this.update$]).pipe(
-      switchMap(([params]) =>
-        {
-          const id = params.get('id');
-          if (!id) {
-            throw new Error('No id');	
-          }
-          return this.apollo.query<{ tournamentEvent: EventTournament; }>({
-            query: gql`
+      switchMap(([params]) => {
+        const id = params.get('id');
+        if (!id) {
+          throw new Error('No id');
+        }
+        return this.apollo.query<{ eventTournament: EventTournament }>({
+          query: gql`
             query GetTournamentDetails($id: ID!) {
-              tournamentEvent(id: $id) {
+              eventTournament(id: $id) {
                 id
                 slug
                 name
                 dates
                 firstDay
                 updatedAt
-                subEvents(order: "eventType") {
+                subEventTournaments(
+                  order: [{ field: "eventType", direction: "desc" }]
+                ) {
                   id
                   name
                   eventType
                   level
                   eventType
                   gameType
-                  groups {
+                  rankingGroups {
                     id
                     name
                   }
-                  draws(order: "name") {
+                  drawTournaments(
+                    order: [{ field: "name", direction: "desc" }]
+                  ) {
                     id
                     name
                   }
@@ -73,32 +76,31 @@ export class DetailTournamentComponent implements OnInit {
               }
             }
           `,
-            variables: {
-              id,
-            },
-          });
-        }
-      ),
-      map(({ data }) => new EventTournament(data.tournamentEvent))
+          variables: {
+            id,
+          },
+        });
+      }),
+      map(({ data }) => new EventTournament(data.eventTournament))
     );
 
     this.subEventsM_S$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'M' && se.gameType === GameType.S
         )
       )
     );
     this.subEventsF_S$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'F' && se.gameType === GameType.S
         )
       )
     );
     this.subEventsMX_S$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'MX' && se.gameType === GameType.S
         )
       )
@@ -106,21 +108,21 @@ export class DetailTournamentComponent implements OnInit {
 
     this.subEventsM_D$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'M' && se.gameType === GameType.D
         )
       )
     );
     this.subEventsF_D$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'F' && se.gameType === GameType.D
         )
       )
     );
     this.subEventsMX_D$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'MX' && se.gameType === GameType.D
         )
       )
@@ -128,21 +130,21 @@ export class DetailTournamentComponent implements OnInit {
 
     this.subEventsM_MX$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'M' && se.gameType === GameType.MX
         )
       )
     );
     this.subEventsF_MX$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'F' && se.gameType === GameType.MX
         )
       )
     );
     this.subEventsMX_MX$ = this.event$.pipe(
       map((event) =>
-        event.subEventCompetitions?.filter(
+        event.subEventTournaments?.filter(
           (se) => se.eventType === 'MX' && se.gameType === GameType.MX
         )
       )

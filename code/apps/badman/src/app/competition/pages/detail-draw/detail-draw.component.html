@@ -11,5 +11,5 @@
   <badman-standing [type]="'team'" [entries]="draw.eventEntries!"></badman-standing>
   
   <div class="mat-subheading-2">{{ 'competition.draw.encounters' | translate }}</div>
-  <badman-sub-event *ngFor="let encounter of draw.encounters" [competition]="encounter"></badman-sub-event>
+  <badman-sub-event *ngFor="let encounter of draw.encounterCompetitions" [competition]="encounter"></badman-sub-event>
 </div>

@@ -3,7 +3,7 @@ import { AppInjector } from './socket.module';
 import { SocketService } from './socket.service';
 
 export function ListenTopic(topic: string, options?: DecoratorOptions) {
-  return function (target: Object, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: object, propertyKey: string, descriptor: PropertyDescriptor) {
     if (options?.path) {
       console.warn('Path is not supported for ListenTopic decorator right now');
     }

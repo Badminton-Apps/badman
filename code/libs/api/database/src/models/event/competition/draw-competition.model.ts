@@ -72,7 +72,7 @@ export class DrawCompetition extends Model {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  subEvent?: SubEventCompetition;
+  subEventCompetition?: SubEventCompetition;
 
   @Unique('DrawCompetitions_unique_constraint')
   @ForeignKey(() => SubEventCompetition)
@@ -84,7 +84,7 @@ export class DrawCompetition extends Model {
     foreignKey: 'drawId',
     onDelete: 'CASCADE',
   })
-  encounters: EncounterCompetition[];
+  encounterCompetitions: EncounterCompetition[];
 
   @HasMany(() => EventEntry, {
     foreignKey: 'drawId',
@@ -96,22 +96,22 @@ export class DrawCompetition extends Model {
   entries: EventEntry[];
 
   // Belongs to SubEvent
-  getSubEvent!: BelongsToGetAssociationMixin<SubEventCompetition>;
-  setSubEvent!: BelongsToSetAssociationMixin<SubEventCompetition, string>;
+  getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;
+  setSubEventCompetition!: BelongsToSetAssociationMixin<SubEventCompetition, string>;
 
   // Has many Encounter
-  getEncounters!: HasManyGetAssociationsMixin<EncounterCompetition>;
-  setEncounters!: HasManySetAssociationsMixin<EncounterCompetition, string>;
-  addEncounters!: HasManyAddAssociationsMixin<EncounterCompetition, string>;
-  addEncounter!: HasManyAddAssociationMixin<EncounterCompetition, string>;
-  removeEncounter!: HasManyRemoveAssociationMixin<EncounterCompetition, string>;
-  removeEncounters!: HasManyRemoveAssociationsMixin<
+  getEncounterCompetitions!: HasManyGetAssociationsMixin<EncounterCompetition>;
+  setEncounterCompetitions!: HasManySetAssociationsMixin<EncounterCompetition, string>;
+  addEncounterCompetitions!: HasManyAddAssociationsMixin<EncounterCompetition, string>;
+  addEncounterCompetition!: HasManyAddAssociationMixin<EncounterCompetition, string>;
+  removeEncounterCompetition!: HasManyRemoveAssociationMixin<EncounterCompetition, string>;
+  removeEncounterCompetitions!: HasManyRemoveAssociationsMixin<
     EncounterCompetition,
     string
   >;
   hasEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
-  hasEncounters!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
-  countEncounters!: HasManyCountAssociationsMixin;
+  hasEncounterCompetitions!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
+  countEncounterCompetitions!: HasManyCountAssociationsMixin;
 
   // Has many Entries
   getEntries!: HasManyGetAssociationsMixin<EventEntry>;

@@ -2,7 +2,7 @@ import { LOCATION_INITIALIZED } from '@angular/common';
 import { Injector } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { TranslateService } from '@ngx-translate/core';
-import * as moment from 'moment';
+import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 
 export const language_map: Map<string, { translate: string; adapter: string; moment: string }> = new Map([

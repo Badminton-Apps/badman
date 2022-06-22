@@ -13,7 +13,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Apollo, gql } from 'apollo-angular';
-import * as moment from 'moment';
+import moment from 'moment';
 import { BehaviorSubject, combineLatest, lastValueFrom, of } from 'rxjs';
 import {
   catchError,

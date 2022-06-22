@@ -132,7 +132,7 @@ export class EventEntry extends Model {
   getPlayer2!: BelongsToGetAssociationMixin<Player>;
   setPlayer2!: BelongsToSetAssociationMixin<Player, string>;
 
-  players() {
+  getPlayers() {
     if (this.player1Id && this.player2Id) {
       return Promise.all([this.getPlayer1(), this.getPlayer2()]);
     } else {
