@@ -177,7 +177,7 @@ export class LfbbRankingCalc extends RankingCalc {
     (
       await RankingPoint.findAll({
         where: {
-          SystemId: this.rankingType.id,
+          systemId: this.rankingType.id,
           points: {
             [Op.ne]: null,
           },
@@ -186,7 +186,7 @@ export class LfbbRankingCalc extends RankingCalc {
         include: [
           {
             model: Game,
-            attributes: ['id', 'gameType'],
+            attributes: ['id', 'gameType', 'playedAt'],
             where: {
               playedAt: {
                 [Op.and]: [{ [Op.gt]: startDate }, { [Op.lte]: endDate }],
@@ -233,13 +233,14 @@ export class LfbbRankingCalc extends RankingCalc {
           double: false,
           mix: false,
         },
-        updateRankings
+        updateRankings,
+        player.gender
       );
 
       places.push({
         ...newPlace,
         playerId: player.id,
-        SystemId: this.rankingType.id,
+        systemId: this.rankingType.id,
         rankingDate: endDate,
       });
     });

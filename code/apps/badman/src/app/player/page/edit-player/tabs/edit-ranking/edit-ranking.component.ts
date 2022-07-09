@@ -7,7 +7,6 @@ import {
   PlayerService,
   RankingPlace,
   RankingSystem,
-  SystemService,
 } from '../../../../../_shared';
 import { BehaviorSubject, combineLatest, debounceTime, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';

@@ -1,8 +1,4 @@
-import {
-  EventTournament,
-  RankingGroup,
-  SubEventTournament,
-} from '@badman/api/database';
+import { EventTournament, SubEventTournament } from '@badman/api/database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -61,7 +57,6 @@ export class EventTournamentResolver {
   ): Promise<SubEventTournament[]> {
     return event.getSubEventTournaments(ListArgs.toFindOptions(listArgs));
   }
-
 
   // @Mutation(returns => EventTournament)
   // async addEventTournament(

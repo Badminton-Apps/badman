@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -109,6 +109,10 @@ export class RankingSystem extends Model {
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   inactivityUnit: 'months' | 'weeks' | 'days';
 
+  @Field(() => String, { nullable: true })
+  @Column(DataType.ENUM('freeze', 'decrease'))
+  inactiveBehavior: 'freeze' | 'decrease';
+
   get inactivity(): RankingTiming {
     return {
       amount: this.inactivityAmount,
@@ -119,6 +123,7 @@ export class RankingSystem extends Model {
   @Field({ nullable: true })
   @Column
   caluclationIntervalLastUpdate: Date;
+  
   @Field({ nullable: true })
   @Column
   caluclationIntervalAmount: number;
@@ -223,7 +228,10 @@ export class RankingSystem extends Model {
   setRankingGroups: BelongsToManySetAssociationsMixin<RankingGroup, string>;
   addRankingGroups: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
   addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
-  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
+    RankingGroup,
+    string
+  >;
   removeRankingGroups: BelongsToManyRemoveAssociationsMixin<
     RankingGroup,
     string
@@ -231,7 +239,6 @@ export class RankingSystem extends Model {
   hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
   hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
   countRankingGroup!: BelongsToManyCountAssociationsMixin;
-
 
   // Has many LastPlace
   getLastPlaces!: HasManyGetAssociationsMixin<RankingLastPlace>;
@@ -347,3 +354,19 @@ export class RankingSystem extends Model {
     throw new Error('Not implementd');
   }
 }
+
+
+@InputType()
+export class RankingSystemUpdateInput extends PartialType(
+  OmitType(RankingSystem, [
+    'createdAt',
+    'updatedAt',
+  ] as const),
+  InputType
+) {}
+
+@InputType()
+export class RankingSystemNewInput extends PartialType(
+  OmitType(RankingSystemUpdateInput, ['id'] as const),
+  InputType
+) {}

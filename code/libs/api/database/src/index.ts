@@ -7,4 +7,3 @@ export * from './types';
 export * from './models';
 export * from './enums';
 // end:ng42.barrel
-

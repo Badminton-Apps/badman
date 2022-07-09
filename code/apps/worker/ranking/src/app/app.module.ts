@@ -1,9 +1,10 @@
+import { DatabaseModule } from '@badman/api/database';
 import { QueueModule } from '@badman/queue';
 import { Module } from '@nestjs/common';
-import { RankingConsumer } from './processors/ranking';
+import { SimulationProcessor, SimulationV2Processor } from './processors';
 
 @Module({
-  imports: [QueueModule],
-  providers: [RankingConsumer],
+  imports: [QueueModule, DatabaseModule],
+  providers: [SimulationProcessor, SimulationV2Processor],
 })
 export class RankingModule {}

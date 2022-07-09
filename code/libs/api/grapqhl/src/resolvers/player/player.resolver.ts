@@ -3,30 +3,25 @@ import {
   Club,
   Game,
   GamePlayer,
-  GamePlayers,
-  RankingLastPlace,
+  GamePlayerMembership,
+  PagedPlayer,
   Player,
+  PlayerUpdateInput,
+  RankingLastPlace,
   RankingPlace,
   Team,
   TeamPlayer,
-  PagedPlayer,
-  ClubPlayer,
-  ClubPlayerMembership,
-  PlayerUpdateInput,
 } from '@badman/api/database';
 import {
   Inject,
   Logger,
   NotFoundException,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import {
   Args,
-  Field,
   ID,
   Mutation,
-  ObjectType,
   Parent,
   Query,
   ResolveField,
@@ -246,14 +241,14 @@ export class PlayersResolver {
   }
 }
 
-@Resolver(() => GamePlayers)
+@Resolver(() => GamePlayer)
 export class GamePlayersResolver extends PlayersResolver {
   @ResolveField(() => RankingPlace)
   async rankingPlace(
-    @Parent() player: Player & { GamePlayer: GamePlayer },
+    @Parent() player: Player & { GamePlayerMembership: GamePlayerMembership },
     @Args() listArgs: WhereArgs
   ): Promise<RankingPlace> {
-    const game = await Game.findByPk(player.GamePlayer.gameId, {
+    const game = await Game.findByPk(player.GamePlayerMembership.gameId, {
       attributes: ['playedAt'],
     });
 

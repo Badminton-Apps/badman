@@ -63,11 +63,11 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
       }
 
       const playert1p1 = game.players?.find(
-        (e) => e.GamePlayer.team == 1 && e.GamePlayer.player == 1
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
       );
 
       const playert2p1 = game.players?.find(
-        (e) => e.GamePlayer.team == 2 && e.GamePlayer.player == 1
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
       );
 
       if (!playert1p1 || !playert2p1) {
@@ -326,17 +326,17 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     // must be in for loop, standings can be set in parallel
     for (const game of games) {
       const playert1p1 = game.players?.find(
-        (e) => e.GamePlayer.team == 1 && e.GamePlayer.player == 1
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
       );
       const playert1p2 = game.players?.find(
-        (e) => e.GamePlayer.team == 1 && e.GamePlayer.player == 2
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 2
       );
 
       const playert2p1 = game.players?.find(
-        (e) => e.GamePlayer.team == 2 && e.GamePlayer.player == 1
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
       );
       const playert2p2 = game.players?.find(
-        (e) => e.GamePlayer.team == 2 && e.GamePlayer.player == 2
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 2
       );
 
       // we run on the first player as this should always be present (partner isn't availible in single)

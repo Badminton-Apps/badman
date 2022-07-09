@@ -38,7 +38,7 @@ import {
 import { ClubPlayerMembership } from './club-player-membership.model';
 import { Club } from './club.model';
 import { Comment } from './comment.model';
-import { EventEntry, Game, GamePlayer } from './event';
+import { EventEntry, Game, GamePlayerMembership } from './event';
 import { RankingLastPlace, RankingPlace, RankingPoint } from './ranking';
 import {
   Claim,
@@ -174,8 +174,8 @@ export class Player extends Model {
   clubs: (Club & { ClubMembership: ClubPlayerMembership })[];
 
   @Field(() => [Game], { nullable: true })
-  @BelongsToMany(() => Game, () => GamePlayer)
-  games: (Game & { GamePlayer: GamePlayer })[];
+  @BelongsToMany(() => Game, () => GamePlayerMembership)
+  games: (Game & { GamePlayerMembership: GamePlayerMembership })[];
 
   @Field(() => [Role], { nullable: true })
   @BelongsToMany(() => Role, () => PlayerRoleMembership)

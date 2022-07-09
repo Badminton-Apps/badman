@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
-import { RankingQueue, SyncQueue } from './queues';
+import { RankingQueue, SimulationQueue, SyncQueue } from './queues';
 
 
 
 const BullQueueModules = [
   BullModule.registerQueue({ name: RankingQueue }),
   BullModule.registerQueue({ name: SyncQueue }),
+  BullModule.registerQueue({ name: SimulationQueue }),
 ];
 
 BullModule.registerQueueAsync;

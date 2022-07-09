@@ -79,6 +79,9 @@ export class ListGamesComponent implements OnInit {
     this.fillGames();
     this.fillLostGames();
 
+
+
+
     this.formGroup.valueChanges
       .pipe(
         map((value) => {
@@ -213,6 +216,7 @@ export class ListGamesComponent implements OnInit {
 
       const type = this.getGameResultType(game);
 
+
       gameBreakdownPrev.push({
         id: game.id,
         playedAt: game.playedAt,
@@ -300,6 +304,7 @@ export class ListGamesComponent implements OnInit {
     if (this.formGroup?.get('includedIgnored')?.value) {
       this.addLostGames(this.lostGamesIgnored);
     }
+
     this.dataSource.data = this.gameBreakdown;
   }
 

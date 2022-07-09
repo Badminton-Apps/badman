@@ -33,6 +33,7 @@ export class Game {
     const parsedType = (args?.gameType as unknown as GameType) ?? null;
     const parsedStatus = (args?.status as unknown as GameStatus) ?? GameStatus.NORMAL;
 
+   
     this.id = args?.id;
     this.playedAt = args.playedAt ? new Date(args.playedAt) : undefined;
     this.gameType = parsedType != null ? GameType[parsedType] : undefined;

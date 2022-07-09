@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
+import { lastValueFrom, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { RankingSystem, RankingGroup, SystemService } from '../../../../../_shared';
+import {
+  RankingSystem,
+  RankingGroup,
+  SystemService,
+} from '../../../../../_shared';
 
 @Component({
   templateUrl: './edit-ranking-system.component.html',
@@ -15,7 +21,8 @@ export class EditRankingSystemComponent implements OnInit {
   constructor(
     private systemService: SystemService,
     private route: ActivatedRoute,
-    private router: Router
+    private apollo: Apollo,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -27,12 +34,89 @@ export class EditRankingSystemComponent implements OnInit {
         }
         return this.systemService.getSystem(id);
       })
-    ); 
+    );
     this.rankingGroups$ = this.systemService.getSystemsGroups();
   }
 
   async save(system: RankingSystem) {
-    await this.systemService.updateSystem(system).toPromise();
-    await this.router.navigate(['admin', 'ranking']);
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation UpdateRankingSystem($data: RankingSystemUpdateInput!) {
+            updateRankingSystem(data: $data) {
+              id
+            }
+          }
+        `,
+        variables: {
+          data: system,
+        },
+      })
+    );
+    this.snackBar.open('Saved', undefined, {
+      duration: 1000,
+      panelClass: 'success',
+    });
+  }
+
+  async addGroup({ systemId, groupId }: { systemId: string; groupId: string }) {
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation AddRankingGroupToRankingSystem(
+            $rankingSystemId: ID!
+            $rankingGroupId: ID!
+          ) {
+            addRankingGroupToRankingSystem(
+              rankingSystemId: $rankingSystemId
+              rankingGroupId: $rankingGroupId
+            ) {
+              id
+            }
+          }
+        `,
+        variables: {
+          rankingSystemId: systemId,
+          rankingGroupId: groupId,
+        },
+      })
+    );
+    this.snackBar.open('Saved', undefined, {
+      duration: 1000,
+      panelClass: 'success',
+    });
+  }
+  async removeGroup({
+    systemId,
+    groupId,
+  }: {
+    systemId: string;
+    groupId: string;
+  }) {
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation RemoveRankingGroupToRankingSystem(
+            $rankingSystemId: ID!
+            $rankingGroupId: ID!
+          ) {
+            removeRankingGroupToRankingSystem(
+              rankingSystemId: $rankingSystemId
+              rankingGroupId: $rankingGroupId
+            ) {
+              id
+            }
+          }
+        `,
+        variables: {
+          rankingSystemId: systemId,
+          rankingGroupId: groupId,
+        },
+      })
+    );
+    this.snackBar.open('Saved', undefined, {
+      duration: 1000,
+      panelClass: 'success',
+    });
   }
 }

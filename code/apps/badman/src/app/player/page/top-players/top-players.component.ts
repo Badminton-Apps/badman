@@ -184,6 +184,7 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
                       ) {
                         count
                         rows {
+                          id
                           single
                           mix
                           double
@@ -191,6 +192,7 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
                           mixRank
                           doubleRank
                           player {
+                            id
                             fullName
                             slug
                             gender

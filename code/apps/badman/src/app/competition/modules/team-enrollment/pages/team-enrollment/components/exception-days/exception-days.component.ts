@@ -76,13 +76,6 @@ export class ExceptionDaysComponent implements OnInit {
   }
 
   addException() {
-    console.log(
-      !this.fg.value?.courts || !this.fg.value?.start || !this.fg.value?.end,
-      this.fg.value?.courts,
-      this.fg.value?.start,
-      this.fg.value?.end
-    );
-
     // Validate all fields (we can't use the FG valiate because this also checks on submit)
     if (
       !this.fg.value?.courts ||

@@ -1,15 +1,14 @@
-import {
-  EncounterCompetition
-} from '@badman/api/database';
-import { SyncQueue } from '@badman/queue';
+import { EncounterCompetition } from '@badman/api/database';
+import { Sync, SyncQueue } from '@badman/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import axios from 'axios';
+import { Job } from 'bull';
 import { XMLParser } from 'fast-xml-parser';
-import  moment from 'moment';
+import moment from 'moment';
 
 @Processor({
-  name: SyncQueue
+  name: SyncQueue,
 })
 export class SyncDateProcessor {
   private readonly logger = new Logger(SyncDateProcessor.name);
@@ -19,9 +18,11 @@ export class SyncDateProcessor {
     this.logger.debug('SyncDateConsumer');
   }
 
-  @Process('change-date')
-  async acceptDate(encounterId: string) {
-    const encounter = await EncounterCompetition.findByPk(encounterId);
+  @Process(Sync.ChangeDate)
+  async acceptDate(job: Job<{ encounterId: string }>) {
+    this.logger.log(`Changing date for encounter ${job.data.encounterId}`);
+
+    const encounter = await EncounterCompetition.findByPk(job.data.encounterId);
     // Check if visual reality has same date stored
     const draw = await encounter.getDrawCompetition();
     const subEvent = await draw.getSubEventCompetition();
@@ -94,7 +95,7 @@ export class SyncDateProcessor {
 /* eslint-disable @typescript-eslint/naming-convention */
 interface Result {
   TournamentMatch?: TournamentMatch;
-  Error?: XmlError; 
+  Error?: XmlError;
   _Version: string;
 }
 

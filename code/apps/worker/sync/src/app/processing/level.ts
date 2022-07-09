@@ -33,7 +33,7 @@ export class RankingProcessor {
       const place = await RankingPlace.findOne({
         attributes: ['id', 'single', 'singleInactive'],
         where: {
-          SystemId: instance.systemId,
+          systemId: instance.systemId,
           playerId: instance.playerId,
           single: {
             [Op.not]: null,
@@ -77,7 +77,7 @@ export class RankingProcessor {
       const place = await RankingPlace.findOne({
         attributes: ['id', 'double', 'doubleInactive'],
         where: {
-          SystemId: instance.systemId,
+          systemId: instance.systemId,
           playerId: instance.playerId,
           double: {
             [Op.not]: null,
@@ -121,7 +121,7 @@ export class RankingProcessor {
       const place = await RankingPlace.findOne({
         attributes: ['id', 'mix', 'mixInactive'],
         where: {
-          SystemId: instance.systemId,
+          systemId: instance.systemId,
           playerId: instance.playerId,
           mix: {
             [Op.not]: null,
