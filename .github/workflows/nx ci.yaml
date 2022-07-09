@@ -6,6 +6,14 @@ on:
       - main
   pull_request:
 
+defaults:
+ run:
+  working-directory: ./code
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   main:
     name: Nx Cloud - Main Job
