@@ -10,7 +10,8 @@
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "types": ["node"]
   },
   "exclude": ["node_modules", ".vscode"]
 }
