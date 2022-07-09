@@ -142,7 +142,7 @@ export class BvlRankingCalc extends RankingCalc {
     (
       await RankingPoint.findAll({
         where: {
-          SystemId: this.rankingType.id,
+          systemId: this.rankingType.id,
           points: {
             [Op.ne]: null,
           },
@@ -215,6 +215,7 @@ export class BvlRankingCalc extends RankingCalc {
         lastRanking = new RankingLastPlace({
           systemId: this.rankingType.id,
           playerId: player.id,
+          gender: player.gender,
           single: this.rankingType.amountOfLevels,
           double: this.rankingType.amountOfLevels,
           mix: this.rankingType.amountOfLevels,
@@ -233,10 +234,11 @@ export class BvlRankingCalc extends RankingCalc {
       }
 
       const newPlace = await this.findNewPlacePlayer(
-        rankingPoints,
+        rankingPoints ?? [],
         lastRanking,
         inactive,
-        updateRankings
+        updateRankings,
+        player.gender
       );
       newPlace.playerId = player.id;
       newPlace.systemId = this.rankingType.id;
@@ -259,31 +261,6 @@ export class BvlRankingCalc extends RankingCalc {
       let totalRanking = 1;
       let totalRankingAcc = 1;
 
-      const sortFunc = (a, b) => {
-        // First sort by level
-        if (a[`${type}`] > b[`${type}`]) {
-          return 1;
-        } else if (a[`${type}`] < b[`${type}`]) {
-          return -1;
-        } else {
-          // Level are equal, sort by points
-          if (a[`${type}Points`] < b[`${type}Points`]) {
-            return 1;
-          } else if (a[`${type}Points`] > b[`${type}Points`]) {
-            return -1;
-          } else {
-            // points are equal, try sorting on downgrade points
-            return a[`${type}PointsDowngrade`] === b[`${type}PointsDowngrade`]
-              ? // Still the same, so we give them same place
-                0
-              : a[`${type}PointsDowngrade`] < b[`${type}PointsDowngrade`]
-              ? // More downgrade points = higher place
-                1
-              : // Less downgrade points = lower place
-                -1;
-          }
-        }
-      };
       const mapFunction = (value, index, places: RankingPlace[], counts) => {
         // check previous one (except first one)
         if (index !== 0) {
@@ -329,7 +306,7 @@ export class BvlRankingCalc extends RankingCalc {
 
       // Sort and map
       placesMen = placesMen
-        .sort(sortFunc)
+        .sort((a, b) => this.sortByPoints(a, b, type))
         .map((value, index) =>
           mapFunction(value, index, placesMen, countsMale)
         );
@@ -343,7 +320,7 @@ export class BvlRankingCalc extends RankingCalc {
 
       // Sort and map
       placesWomen = placesWomen
-        .sort(sortFunc)
+        .sort((a, b) => this.sortByPoints(a, b, type))
         .map((value, index) =>
           mapFunction(value, index, placesWomen, countsFemale)
         );
@@ -465,7 +442,7 @@ export class BvlRankingCalc extends RankingCalc {
 
     const counts = await RankingPoint.count({
       where: {
-        SystemId: rankingType.id,
+        systemId: rankingType.id,
         playerId: {
           [Op.in]: Array.from(players.keys()),
         },
@@ -523,5 +500,31 @@ export class BvlRankingCalc extends RankingCalc {
     );
 
     return results;
+  }
+
+  private sortByPoints(a, b, type) {
+    // First sort by level
+    if (a[`${type}`] > b[`${type}`]) {
+      return 1;
+    } else if (a[`${type}`] < b[`${type}`]) {
+      return -1;
+    } else {
+      // Level are equal, sort by points
+      if (a[`${type}Points`] < b[`${type}Points`]) {
+        return 1;
+      } else if (a[`${type}Points`] > b[`${type}Points`]) {
+        return -1;
+      } else {
+        // points are equal, try sorting on downgrade points
+        return a[`${type}PointsDowngrade`] === b[`${type}PointsDowngrade`]
+          ? // Still the same, so we give them same place
+            0
+          : a[`${type}PointsDowngrade`] < b[`${type}PointsDowngrade`]
+          ? // More downgrade points = higher place
+            1
+          : // Less downgrade points = lower place
+            -1;
+      }
+    }
   }
 }

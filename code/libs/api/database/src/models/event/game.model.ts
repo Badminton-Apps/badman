@@ -45,12 +45,12 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import { GameStatus, GameType } from '../../enums';
-import { GamePlayers } from '../../_interception';
+import { GamePlayer } from '../../_interception';
 import { Player } from '../player.model';
 import { RankingPoint } from '../ranking';
 import { EncounterCompetition } from './competition/encounter-competition.model';
 import { Court } from './court.model';
-import { GamePlayer } from './game-player.model';
+import { GamePlayerMembership } from './game-player.model';
 import { DrawTournament } from './tournament';
 
 @Table({
@@ -161,9 +161,9 @@ export class Game extends Model {
   @Column
   visualCode: string;
 
-  @Field(() => [GamePlayers], { nullable: true })
-  @BelongsToMany(() => Player, () => GamePlayer)
-  players: (Player & { GamePlayer: GamePlayer })[];
+  @Field(() => [GamePlayer], { nullable: true })
+  @BelongsToMany(() => Player, () => GamePlayerMembership)
+  players: (Player & { GamePlayerMembership: GamePlayerMembership })[];
 
   @AfterCreate
   @AfterUpdate

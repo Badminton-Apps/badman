@@ -24,7 +24,7 @@ export class PagedLastRankingPlace {
 @Resolver(() => RankingLastPlace)
 export class LastRankingPlaceResolver {
   @Query(() => RankingLastPlace)
-  async lastRankingPlace(
+  async rankingLastPlace(
     @Args('id', { type: () => ID }) id: string
   ): Promise<RankingLastPlace> {
     let lastRankingPlace = await RankingLastPlace.findByPk(id);

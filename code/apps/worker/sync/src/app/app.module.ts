@@ -3,9 +3,11 @@ import { QueueModule } from '@badman/queue';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { JobService } from './crons';
+import { CronService } from './crons';
 import {
+  EnterScoresProcessor,
   SyncDateProcessor,
+  CheckEncounterProcessor,
   SyncEventsProcessor,
   SyncRankingProcessor,
 } from './processors';
@@ -16,7 +18,11 @@ import { VisualService } from './services';
     SyncDateProcessor,
     SyncRankingProcessor,
     SyncEventsProcessor,
-    JobService,
+    EnterScoresProcessor,
+    CheckEncounterProcessor,
+
+    CronService,
+
     VisualService,
   ],
   imports: [

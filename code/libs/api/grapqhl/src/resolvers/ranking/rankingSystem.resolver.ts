@@ -3,20 +3,34 @@ import {
   RankingSystem,
   RankingGroup,
   PagedRankingLastPlaces,
+  Player,
+  RankingSystemUpdateInput,
 } from '@badman/api/database';
-import { NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   Args,
   ID,
+  Mutation,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Sequelize } from 'sequelize-typescript';
+import { User } from '../../decorators';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => RankingSystem)
 export class RankingSystemResolver {
+  private readonly logger = new Logger(RankingSystemResolver.name);
+
+  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+
   @Query(() => RankingSystem)
   async rankingSystem(
     @Args('id', { type: () => ID }) id: string
@@ -50,12 +64,12 @@ export class RankingSystemResolver {
     count: number;
     rows: RankingLastPlace[];
   }> {
-    return RankingLastPlace.findAndCountAll({
-      ...ListArgs.toFindOptions(listArgs),
-      where: {
-        systemId: system.id,
-      },
-    });
+    const options = ListArgs.toFindOptions(listArgs);
+    options.where = {
+      systemId: system.id,
+      ...options.where,
+    };
+    return RankingLastPlace.findAndCountAll(options);
   }
 
   @ResolveField(() => [RankingGroup])
@@ -66,16 +80,144 @@ export class RankingSystemResolver {
     return system.getRankingGroups(ListArgs.toFindOptions(listArgs));
   }
 
-  // @Mutation(returns => RankingSystem)
-  // async RankingSystem(
-  //   @Args('RankingSystemData') RankingSystemData: RankingSystemInput,
-  // ): Promise<RankingSystem> {
-  //   const recipe = await this.recipesService.create(RankingSystemData);
-  //   return recipe;
-  // }
+  @Mutation(() => RankingSystem)
+  async updateRankingSystem(
+    @User() user: Player,
+    @Args('data') updateRankingSystemData: RankingSystemUpdateInput
+  ) {
+    if (!user.hasAnyPermission(['edit:ranking'])) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
 
-  // @Mutation(returns => Boolean)
-  // async RankingSystem(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+    try {
+      const dbSystem = await RankingSystem.findByPk(updateRankingSystemData.id);
+      if (!dbSystem) {
+        throw new NotFoundException(
+          `${RankingSystem.name}: ${updateRankingSystemData.id}`
+        );
+      }
+
+      // New system is now primary
+      if (updateRankingSystemData.primary == true) {
+        // Set other systems to false
+        await RankingSystem.update(
+          { primary: false },
+          {
+            where: {
+              primary: true,
+            },
+            transaction,
+          }
+        );
+      }
+
+      // Update system
+      await dbSystem.update(updateRankingSystemData, {
+        transaction,
+      });
+
+      const dbEvent = await RankingSystem.findByPk(updateRankingSystemData.id, {
+        transaction,
+      });
+
+      await transaction.commit();
+      return dbEvent;
+    } catch (e) {
+      this.logger.error('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => RankingSystem)
+  async addRankingGroupToRankingSystem(
+    @User() user: Player,
+    @Args('rankingSystemId', { type: () => ID }) rankingSystemId: string,
+    @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string
+  ) {
+    if (!user.hasAnyPermission(['edit:ranking'])) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const dbSystem = await RankingSystem.findByPk(rankingSystemId);
+      if (!dbSystem) {
+        throw new NotFoundException(
+          `${RankingSystem.name}: ${rankingSystemId}`
+        );
+      }
+
+      const dbGroup = await RankingGroup.findByPk(rankingGroupId);
+      if (!dbSystem) {
+        throw new NotFoundException(`${RankingGroup.name}: ${rankingGroupId}`);
+      }
+
+      await dbSystem.addRankingGroup(dbGroup, {
+        transaction,
+      });
+
+      const dbEvent = await RankingSystem.findByPk(rankingSystemId, {
+        transaction,
+      });
+
+      await transaction.commit();
+      return dbEvent;
+    } catch (e) {
+      this.logger.error('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => RankingSystem)
+  async removeRankingGroupToRankingSystem(
+    @User() user: Player,
+    @Args('rankingSystemId', { type: () => ID }) rankingSystemId: string,
+    @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string
+  ) {
+    if (!user.hasAnyPermission(['edit:ranking'])) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const dbSystem = await RankingSystem.findByPk(rankingSystemId);
+      if (!dbSystem) {
+        throw new NotFoundException(
+          `${RankingSystem.name}: ${rankingSystemId}`
+        );
+      }
+
+      const dbGroup = await RankingGroup.findByPk(rankingGroupId);
+      if (!dbSystem) {
+        throw new NotFoundException(`${RankingGroup.name}: ${rankingGroupId}`);
+      }
+
+      await dbSystem.removeRankingGroup(dbGroup, {
+        transaction,
+      });
+
+      const dbEvent = await RankingSystem.findByPk(rankingSystemId, {
+        transaction,
+      });
+
+      await transaction.commit();
+      return dbEvent;
+    } catch (e) {
+      this.logger.error('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
 }

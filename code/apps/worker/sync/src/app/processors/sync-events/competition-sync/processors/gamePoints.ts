@@ -2,7 +2,7 @@ import {
   EncounterCompetition,
   EventCompetition,
   Game,
-  GamePlayer,
+  GamePlayerMembership,
   Player,
   RankingPlace,
   RankingPoint,
@@ -62,7 +62,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
                 model: RankingPoint,
                 attributes: ['id'],
                 required: false,
-                where: { SystemId: rankingSystem.id },
+                where: { systemId: rankingSystem.id },
               },
               {
                 model: Player,
@@ -78,7 +78,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
 
           if (gamesWithoutPoints.length > 0) {
             const system = getSystemCalc(rankingSystem);
-            const gamePlayers = await GamePlayer.findAll({
+            const gamePlayers = await GamePlayerMembership.findAll({
               where: {
                 gameId: {
                   [Op.in]: gamesWithoutPoints.map((game) => game.id),
@@ -97,14 +97,26 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
                   required: false,
                   model: RankingPlace,
                   where: {
-                    SystemId: rankingSystem.id,
+                    systemId: rankingSystem.id,
                   },
                 },
               ],
               transaction: this.transaction,
             });
 
-            const hash = new Map<string, Player>(players.map((e) => [e.id, e]));
+            const hash = new Map<
+              string,
+              Player & {
+                GamePlayerMembership: GamePlayerMembership;
+              }
+            >(
+              players.map((e) => [
+                e.id,
+                e as Player & {
+                  GamePlayerMembership: GamePlayerMembership;
+                },
+              ])
+            );
 
             await system.calculateRankingPointsPerGameAsync(
               gamesWithoutPoints,

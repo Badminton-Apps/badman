@@ -12,6 +12,7 @@ import {
   RankingPoint,
   RankingSystem,
   GameType,
+  GamePlayerMembership,
 } from '@badman/api/database';
 import { PointCalculator } from './point-calculator';
 
@@ -22,12 +23,12 @@ export class RankingCalc {
   constructor(public rankingType: RankingSystem, protected _logger: Logger) {}
 
   async beforeCalculationAsync(start?: Moment) {
-    const SystemId = this.rankingType.id;
+    const systemId = this.rankingType.id;
     const startingDate =
       start ?? moment(this.rankingType.caluclationIntervalLastUpdate);
 
     const where = {
-      SystemId,
+      systemId,
       rankingDate: {
         [Op.gte]: startingDate.toDate(),
       },
@@ -40,34 +41,34 @@ export class RankingCalc {
         const deleted = await RankingPlace.destroy({ where });
         this._logger.verbose(
           `Truncated ${deleted} RankingPlace for system ${
-            where.SystemId
+            where.systemId
           } and after ${startingDate.toISOString()}`
         );
       }
 
-      const newWhere = {
-        systemId: SystemId,
-        rankingDate: {
-          [Op.gte]: startingDate.toDate(),
-        },
-      };
-      const placeLastCount = await RankingLastPlace.count({ where: newWhere });
+      // const newWhere = {
+      //   systemId: systemId,
+      //   rankingDate: {
+      //     [Op.gte]: startingDate.toDate(),
+      //   },
+      // };
+      // const placeLastCount = await RankingLastPlace.count({ where: newWhere });
 
-      if (placeLastCount > 0) {
-        const deleted = await RankingLastPlace.destroy({ where: newWhere });
-        this._logger.verbose(
-          `Truncated ${deleted} RankingLastPlace for system ${
-            where.SystemId
-          } and after ${startingDate.toISOString()}`
-        );
-      }
+      // if (placeLastCount > 0) {
+      //   const deleted = await RankingLastPlace.destroy({ where: newWhere });
+      //   this._logger.verbose(
+      //     `Truncated ${deleted} RankingLastPlace for system ${
+      //       where.systemId
+      //     } and after ${startingDate.toISOString()}`
+      //   );
+      // }
 
       const pointCount = await RankingPoint.count({ where });
       if (pointCount > 0) {
         const deleted = await RankingPoint.destroy({ where });
         this._logger.verbose(
           `Truncated ${deleted} RankingPoint for system ${
-            where.SystemId
+            where.systemId
           } and after ${startingDate.toISOString()}`
         );
       }
@@ -179,7 +180,10 @@ export class RankingCalc {
 
   public processGame(
     game: Game,
-    players: Map<string, Player>,
+    players: Map<
+      string,
+      Player & { GamePlayerMembership: GamePlayerMembership }
+    >,
     rankingDate?: Date
   ): RankingPoint[] {
     const rankings: RankingPoint[] = [];
@@ -199,29 +203,29 @@ export class RankingCalc {
     const player1Team1 = players.get(
       game.players.find(
         (player) =>
-          player.getDataValue('GamePlayer').team === 1 &&
-          player.getDataValue('GamePlayer').player === 1
+          player.GamePlayerMembership.team === 1 &&
+          player.GamePlayerMembership.player === 1
       )?.id
     );
     const player2Team1 = players.get(
       game.players.find(
         (player) =>
-          player.getDataValue('GamePlayer').team === 1 &&
-          player.getDataValue('GamePlayer').player === 2
+          player.GamePlayerMembership.team === 1 &&
+          player.GamePlayerMembership.player === 2
       )?.id
     );
     const player1Team2 = players.get(
       game.players.find(
         (player) =>
-          player.getDataValue('GamePlayer').team === 2 &&
-          player.getDataValue('GamePlayer').player === 1
+          player.GamePlayerMembership.team === 2 &&
+          player.GamePlayerMembership.player === 1
       )?.id
     );
     const player2Team2 = players.get(
       game.players.find(
         (player) =>
-          player.getDataValue('GamePlayer').team === 2 &&
-          player.getDataValue('GamePlayer').player === 2
+          player.GamePlayerMembership.team === 2 &&
+          player.GamePlayerMembership.player === 2
       )?.id
     );
 
@@ -454,7 +458,14 @@ export class RankingCalc {
     options: {
       transaction?: Transaction;
     }
-  ): Promise<Map<string, Player>> {
+  ): Promise<
+    Map<
+      string,
+      Player & {
+        GamePlayerMembership: GamePlayerMembership;
+      }
+    >
+  > {
     // Get players
     const players = new Map();
     this._logger.debug(`getPlayersAsync for games`);
@@ -483,9 +494,9 @@ export class RankingCalc {
           {
             required: false,
             model: RankingPlace,
-            attributes: ['single', 'double', 'mix', 'rankingDate', 'SystemId'],
+            attributes: ['single', 'double', 'mix', 'rankingDate', 'systemId'],
             where: {
-              SystemId: this.rankingType.id,
+              systemId: this.rankingType.id,
               // Start date = last update
               rankingDate: {
                 [Op.between]: [rankingstart, end],
@@ -523,7 +534,7 @@ export class RankingCalc {
           {
             model: Game,
             required: true,
-            attributes: [],
+            attributes: ['id'],
             where: {
               playedAt: {
                 [Op.between]: [start, end],
@@ -558,7 +569,12 @@ export class RankingCalc {
 
   public async calculateRankingPointsPerGameAsync(
     games: Game[],
-    players: Map<string, Player>,
+    players: Map<
+      string,
+      Player & {
+        GamePlayerMembership: GamePlayerMembership;
+      }
+    >,
     rankingDate?: Date,
     options?: { transaction?: Transaction }
   ) {
@@ -604,15 +620,17 @@ export class RankingCalc {
       double: boolean;
       mix: boolean;
     },
-    updateRankings: boolean
+    updateRankings: boolean,
+    gender: string
   ): Promise<RankingPlace> {
     const singleRankingPoints: RankingPoint[] = [];
     const doubleRankingPoints: RankingPoint[] = [];
     const mixRankingPoints: RankingPoint[] = [];
 
+
     // Sort the points by their played date
     points.sort(
-      (a, b) => b.game.playedAt.getTime() - a.game.playedAt.getTime()
+      (a, b) => b.game?.playedAt?.getTime() - a.game?.playedAt?.getTime()
     );
 
     // Push to their respective arrays
@@ -719,9 +737,17 @@ export class RankingCalc {
     if (singleLevel > lastRanking.single) {
       // If you are marked as inactive
       if (inactive.single) {
-        singleLevel = lastRanking.singleInactive
-          ? lastRanking.single
-          : lastRanking.single + 2;
+        switch (this.rankingType.inactiveBehavior) {
+          case 'freeze':
+            singleLevel = lastRanking.single;
+            break;
+          default:
+          case 'decrease':
+            singleLevel = lastRanking.singleInactive
+              ? lastRanking.single
+              : lastRanking.single + 2;
+            break;
+        }
       }
       // if not inactive but not have enough points, you remain the same
       else if (
@@ -734,9 +760,17 @@ export class RankingCalc {
     if (doubleLevel > lastRanking.double) {
       // If you are marked as inactive
       if (inactive.double) {
-        doubleLevel = lastRanking.doubleInactive
-          ? lastRanking.double
-          : lastRanking.double + 2;
+        switch (this.rankingType.inactiveBehavior) {
+          case 'freeze':
+            doubleLevel = lastRanking.double;
+            break;
+          default:
+          case 'decrease':
+            doubleLevel = lastRanking.doubleInactive
+              ? lastRanking.double
+              : lastRanking.double + 2;
+            break;
+        }
       }
       // if not inactive but not have enough points, you remain the same
       else if (
@@ -749,9 +783,17 @@ export class RankingCalc {
     if (mixLevel > lastRanking.mix) {
       // If you are marked as inactive
       if (inactive.mix) {
-        mixLevel = lastRanking.mixInactive
-          ? lastRanking.mix
-          : lastRanking.mix + 2;
+        switch (this.rankingType.inactiveBehavior) {
+          case 'freeze':
+            mixLevel = lastRanking.mix;
+            break;
+          default:
+          case 'decrease':
+            mixLevel = lastRanking.mixInactive
+              ? lastRanking.mix
+              : lastRanking.mix + 2;
+            break;
+        }
       }
       // if not inactive but not have enough points, you remain the same
       else if (mixRankingPoints.length <= this.rankingType.gamesForInactivty) {
@@ -775,6 +817,7 @@ export class RankingCalc {
         double: doubleLevel,
         updatePossible: true,
         systemId: this.rankingType.id,
+        gender,
       });
 
       return this.protectRanking(newRanking);
@@ -795,6 +838,7 @@ export class RankingCalc {
       double: lastRanking.double,
       updatePossible: false,
       systemId: this.rankingType.id,
+      gender,
     });
   }
 

@@ -1,7 +1,4 @@
 {
-  "cli": {
-    "analytics": "8b9839cf-d742-451a-ae65-82f173706dc2"
-  },
   "version": 2,
   "projects": {
     "api": "apps/api",
@@ -11,8 +8,12 @@
     "api-grapqhl": "libs/api/grapqhl",
     "badman": "apps/badman",
     "badman-e2e": "apps/badman-e2e",
+    "mailing": "libs/mailing",
+    "notifications": "libs/notifications",
+    "pupeteer": "libs/pupeteer",
     "queue": "libs/queue",
     "ranking-calc": "libs/ranking-calc",
+    "scripts": "apps/scripts",
     "search": "libs/search",
     "worker-ranking": "apps/worker/ranking",
     "worker-sync": "apps/worker/sync"

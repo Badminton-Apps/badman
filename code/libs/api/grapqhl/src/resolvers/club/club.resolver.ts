@@ -180,7 +180,7 @@ export class ClubsResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      let clubDb = await Club.findByPk(updateClubData.id, { transaction });
+      const clubDb = await Club.findByPk(updateClubData.id, { transaction });
 
       if (!clubDb) {
         throw new NotFoundException(`${Club.name}: ${updateClubData.id}`);
@@ -232,10 +232,10 @@ export class ClubsResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      let club = await Club.findByPk(addPlayerToClubData.clubId, {
+      const club = await Club.findByPk(addPlayerToClubData.clubId, {
         transaction,
       });
-      let player = await Player.findByPk(addPlayerToClubData.playerId, {
+      const player = await Player.findByPk(addPlayerToClubData.playerId, {
         transaction,
       });
 
@@ -339,8 +339,8 @@ export class ClubsResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      let club = await Club.findByPk(membership.clubId, { transaction });
-      let player = await Player.findByPk(membership.playerId, { transaction });
+      const club = await Club.findByPk(membership.clubId, { transaction });
+      const player = await Player.findByPk(membership.playerId, { transaction });
 
       if (!club) {
         throw new NotFoundException(`${Club.name}: ${membership.clubId}`);

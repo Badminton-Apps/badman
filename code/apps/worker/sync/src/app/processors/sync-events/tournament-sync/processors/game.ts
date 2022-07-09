@@ -1,7 +1,7 @@
 import {
   DrawTournament,
   Game,
-  GamePlayer,
+  GamePlayerMembership,
   GameStatus,
   Player,
 } from '@badman/api/database';
@@ -172,7 +172,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       }
 
       await game.save({ transaction: this.transaction });
-      await GamePlayer.bulkCreate(this._createGamePlayers(xmlMatch, game), {
+      await GamePlayerMembership.bulkCreate(this._createGamePlayers(xmlMatch, game), {
         transaction: this.transaction,
         ignoreDuplicates: true
       });
@@ -198,7 +198,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
 
     if (t1p1) {
-      const gp = new GamePlayer({
+      const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t1p1.id,
         team: 1,
@@ -209,12 +209,12 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       // Push to list
       game.players.push({
         ...t1p1.toJSON(),
-        GamePlayer: gp
-      } as Player & { GamePlayer: GamePlayer });
+        GamePlayerMembership: gp
+      } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
     if (t1p2 && t1p2?.id !== t1p1?.id) {
-      const gp = new GamePlayer({
+      const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t1p2.id,
         team: 1,
@@ -224,12 +224,12 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       // Push to list
       game.players.push({
         ...t1p2.toJSON(),
-        GamePlayer: gp
-      } as Player & { GamePlayer: GamePlayer });
+        GamePlayerMembership: gp
+      } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
     if (t2p1) {
-      const gp = new GamePlayer({
+      const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p1.id,
         team: 2,
@@ -239,12 +239,12 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       // Push to list
       game.players.push({
         ...t2p1.toJSON(),
-        GamePlayer: gp
-      } as Player & { GamePlayer: GamePlayer });
+        GamePlayerMembership: gp
+      } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
     if (t2p2 && t2p2?.id !== t2p1?.id) {
-      const gp = new GamePlayer({
+      const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p2.id,
         team: 2,
@@ -254,8 +254,8 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       // Push to list
       game.players.push({
         ...t2p2.toJSON(),
-        GamePlayer: gp
-      } as Player & { GamePlayer: GamePlayer });
+        GamePlayerMembership: gp
+      } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
     return gamePlayers;

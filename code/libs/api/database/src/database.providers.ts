@@ -10,29 +10,24 @@ import {
   Team,
 } from './models';
 
-export const databaseProviders = [
-  {
-    provide: 'SEQUELIZE',
-    useFactory: async () => {
-      const sequelize = new Sequelize({
-        host: process.env.DB_IP,
-        port: parseInt(process.env.DB_PORT ?? '5432', 10),
-        database: process.env.DB_DATABASE,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        dialect: process.env.DB_DIALECT as Dialect,
-        logging: false,
-      });
-      const models = Object.values(sequelizeModels).filter(
-        (m) => m.prototype instanceof Model
-      );
-      sequelize.addModels(models as []);
-      initAddons();
+export const creatSequelizeInstance = async () => {
+  const sequelize = new Sequelize({
+    host: process.env.DB_IP,
+    port: parseInt(process.env.DB_PORT ?? '5432', 10),
+    database: process.env.DB_DATABASE,
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    dialect: process.env.DB_DIALECT as Dialect,
+    logging: false,
+  });
+  const models = Object.values(sequelizeModels).filter(
+    (m) => m.prototype instanceof Model
+  );
+  sequelize.addModels(models as []);
+  initAddons();
 
-      return sequelize;
-    },
-  },
-];
+  return sequelize;
+};
 
 const initAddons = () => {
   // Addons & Plugins
@@ -52,3 +47,10 @@ const initAddons = () => {
     source: ['name'],
   });
 };
+
+export const databaseProviders = [
+  {
+    provide: 'SEQUELIZE',
+    useFactory: creatSequelizeInstance,
+  },
+];

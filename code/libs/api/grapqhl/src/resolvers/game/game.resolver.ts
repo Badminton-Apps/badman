@@ -3,12 +3,11 @@ import {
   EncounterCompetition,
   Game,
   GamePlayer,
-  GamePlayers,
+  GamePlayerMembership,
   Player,
-  RankingPlace,
   RankingPoint,
 } from '@badman/api/database';
-import { NotFoundException, UseGuards } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import {
   Args,
   ID,
@@ -17,8 +16,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { User } from '../../decorators';
-import { ListArgs, queryFixer } from '../../utils';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => Game)
 export class GamesResolver {
@@ -67,15 +65,19 @@ export class GamesResolver {
     }
   }
 
-  @ResolveField(() => [Player])
-  async players(@Parent() game: Game): Promise<(Player & GamePlayer)[][]> {
+  @ResolveField(() => [GamePlayer])
+  async players(
+    @Parent() game: Game
+  ): Promise<(Player & GamePlayerMembership)[][]> {
     const players = await game.getPlayers();
 
-    return players?.map((gamePlayer: Player & { GamePlayer: GamePlayer }) => {
-      return {
-        ...gamePlayer.GamePlayer.toJSON(),
-        ...gamePlayer.toJSON(),
-      };
-    });
+    return players?.map(
+      (gamePlayer: Player & { GamePlayerMembership: GamePlayerMembership }) => {
+        return {
+          ...gamePlayer.GamePlayerMembership.toJSON(),
+          ...gamePlayer.toJSON(),
+        };
+      }
+    );
   }
 }
