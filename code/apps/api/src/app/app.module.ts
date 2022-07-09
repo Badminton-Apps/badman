@@ -1,14 +1,14 @@
 import { Logger, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { AppController, PdfController } from './controllers';
+import { AppController, PdfController, RankingController } from './controllers';
 
 import { DatabaseModule } from '@badman/api/database';
 import { GeneratorModule } from '@badman/api/generator';
 import { ApiGrapqhlModule } from '@badman/api/grapqhl';
 import { QueueModule } from '@badman/queue';
 import { SearchModule } from '@badman/search';
-import { EventsModule } from './events/events.module';
+import { EventsModule } from './events';
 import { PdfService } from './services';
 
 @Module({
@@ -21,12 +21,14 @@ import { PdfService } from './services';
     QueueModule,
     EventsModule,
   ],
-  controllers: [AppController, PdfController],
+  controllers: [AppController, PdfController, RankingController],
   providers: [PdfService],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
-  constructor() {
-    this.logger.log(`${AppModule.name} loaded, env: ${process.env.NODE_ENV}`);
+  constructor(configService: ConfigService) {
+    this.logger.log(
+      `${AppModule.name} loaded, env: ${configService.get('NODE_ENV')}`
+    );
   }
 }

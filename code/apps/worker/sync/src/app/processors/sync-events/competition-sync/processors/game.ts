@@ -1,7 +1,7 @@
 import {
   EncounterCompetition,
   Game,
-  GamePlayer,
+  GamePlayerMembership,
   GameStatus,
   GameType,
   Player,
@@ -10,7 +10,14 @@ import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService } from '../../../../services';
-import { XmlTournament, XmlMatch, XmlScoreStatus, XmlMatchTypeID, XmlPlayer, correctWrongPlayers } from '../../../../utils';
+import {
+  XmlTournament,
+  XmlMatch,
+  XmlScoreStatus,
+  XmlMatchTypeID,
+  XmlPlayer,
+  correctWrongPlayers,
+} from '../../../../utils';
 import { EncounterStepData } from './encounter';
 
 export class CompetitionSyncGameProcessor extends StepProcessor {
@@ -31,10 +38,12 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     const games = await Game.findAll({
       where: {
         linkId: {
-          [Op.in]: this.encounters.map((encounter) => encounter?.encounter.id).flat()
-        }
+          [Op.in]: this.encounters
+            .map((encounter) => encounter?.encounter.id)
+            .flat(),
+        },
       },
-      transaction: this.transaction
+      transaction: this.transaction,
     });
 
     await Promise.all(
@@ -55,12 +64,17 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     const isLastWeek = moment().subtract(1, 'week').isBefore(encounter.date);
 
     const visualMatch = (
-      await this.visualService.getMatch(this.visualTournament.Code, internalId, !isLastWeek)
+      await this.visualService.getMatch(
+        this.visualTournament.Code,
+        internalId,
+        !isLastWeek
+      )
     ).filter((m) => !m || m?.Winner !== 0) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
       let game = games.find(
-        (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
+        (r) =>
+          r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
       );
 
       let gameStatus = GameStatus.NORMAL;
@@ -98,7 +112,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           set2Team1: xmlMatch?.Sets?.Set[1]?.Team1,
           set2Team2: xmlMatch?.Sets?.Set[1]?.Team2,
           set3Team1: xmlMatch?.Sets?.Set[2]?.Team1,
-          set3Team2: xmlMatch?.Sets?.Set[2]?.Team2
+          set3Team2: xmlMatch?.Sets?.Set[2]?.Team2,
         });
       } else {
         if (game.playedAt != encounter.date) {
@@ -146,10 +160,13 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         }
       }
       await game.save({ transaction: this.transaction });
-      await GamePlayer.bulkCreate(this._createGamePlayers(xmlMatch, game), {
-        transaction: this.transaction,
-        ignoreDuplicates: true
-      });
+      await GamePlayerMembership.bulkCreate(
+        this._createGamePlayers(xmlMatch, game),
+        {
+          transaction: this.transaction,
+          ignoreDuplicates: true,
+        }
+      );
     }
 
     // Remove draw that are not in the xml
@@ -172,64 +189,64 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
 
     if (t1p1) {
-      const gp = new GamePlayer({
+      const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t1p1.id,
         team: 1,
-        player: 1
+        player: 1,
       });
       gamePlayers.push(gp.toJSON());
 
       // Push to list
       game.players.push({
         ...t1p1.toJSON(),
-        GamePlayer: gp
-      } as Player & { GamePlayer: GamePlayer });
+        GamePlayerMembership: gp,
+      } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
     if (t1p2 && t1p2?.id !== t1p1?.id) {
-      const gp = new GamePlayer({
+      const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t1p2.id,
         team: 1,
-        player: 2
+        player: 2,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
       game.players.push({
         ...t1p2.toJSON(),
-        GamePlayer: gp
-      } as Player & { GamePlayer: GamePlayer });
+        GamePlayerMembership: gp,
+      } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
     if (t2p1) {
-      const gp = new GamePlayer({
+      const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p1.id,
         team: 2,
-        player: 1
+        player: 1,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
       game.players.push({
         ...t2p1.toJSON(),
-        GamePlayer: gp
-      } as Player & { GamePlayer: GamePlayer });
+        GamePlayerMembership: gp,
+      } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
     if (t2p2 && t2p2?.id !== t2p1?.id) {
-      const gp = new GamePlayer({
+      const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p2.id,
         team: 2,
-        player: 2
+        player: 2,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
       game.players.push({
         ...t2p2.toJSON(),
-        GamePlayer: gp
-      } as Player & { GamePlayer: GamePlayer });
+        GamePlayerMembership: gp,
+      } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
     return gamePlayers;
@@ -262,13 +279,15 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       // Search our map for unkowns
       const corrected = correctWrongPlayers({
         firstName: player.Firstname,
-        lastName: player.Lastname
+        lastName: player.Lastname,
       });
 
       returnPlayer = [...this.players.values()].find(
         (p) =>
-          (p.firstName === corrected.firstName && p.lastName === corrected.lastName) ||
-          (p.firstName === corrected.lastName && p.lastName === corrected.firstName)
+          (p.firstName === corrected.firstName &&
+            p.lastName === corrected.lastName) ||
+          (p.firstName === corrected.lastName &&
+            p.lastName === corrected.firstName)
       );
     }
     return returnPlayer;

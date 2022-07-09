@@ -126,6 +126,7 @@ type RankingSystem {
   gamesForInactivty: Float
   inactivityAmount: Float
   inactivityUnit: String
+  inactiveBehavior: String
   caluclationIntervalLastUpdate: DateTime
   caluclationIntervalAmount: Float
   calculationIntervalUnit: String
@@ -321,6 +322,14 @@ type EncounterCompetition {
   awayTeamId: String
   synced: DateTime
   visualCode: String
+  gameLeader: Player
+  enteredBy: Player
+  acceptedBy: Player
+  enteredOn: DateTime
+  acceptedOn: DateTime
+  shuttle: String
+  startHour: String
+  endHour: String
   encounterChange: EncounterChange
   games: [Game!]!
 }
@@ -519,7 +528,7 @@ type Game {
   linkType: String
   courtId: String
   visualCode: String
-  players: [GamePlayers!]
+  players: [GamePlayer!]
 }
 
 """A Standing"""
@@ -579,7 +588,7 @@ type TeamPlayer {
   end: DateTime
 }
 
-type GamePlayers {
+type GamePlayer {
   playerId: String
   gameId: String
   team: Float
@@ -681,7 +690,7 @@ type Query {
   rankingPoints(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPoint!]!
   rankingPlace(id: ID!): RankingPlace!
   rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]!
-  lastRankingPlace(id: ID!): RankingLastPlace!
+  rankingLastPlace(id: ID!): RankingLastPlace!
   rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]!
   location(id: ID!): Location!
   locations(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Location!]!
@@ -730,8 +739,12 @@ type Mutation {
   removePlayerFromClub(id: ID!): Boolean!
   addComment(data: CommentNewInput!): Comment!
   updateComment(data: CommentUpdateInput!): Comment!
+  updateRankingSystem(data: RankingSystemUpdateInput!): RankingSystem!
+  addRankingGroupToRankingSystem(rankingSystemId: ID!, rankingGroupId: ID!): RankingSystem!
+  removeRankingGroupToRankingSystem(rankingSystemId: ID!, rankingGroupId: ID!): RankingSystem!
   updateRankingPlace(data: RankingPlaceUpdateInput!): Player!
   newRankingPlace(data: RankingPlaceNewInput!): Player!
+  copyEventCompetition(id: ID!, number: Float!): EventCompetition!
   addChangeEncounter(data: EncounterChangeNewInput!): Boolean!
   assignClaim(claimId: ID!, playerId: ID!, active: Boolean!): Boolean!
 }
@@ -808,6 +821,45 @@ input CommentUpdateInput {
   clubId: String
   linkId: String
   linkType: String
+}
+
+input RankingSystemUpdateInput {
+  id: ID
+  name: String
+  amountOfLevels: Float
+  procentWinning: Float
+  procentWinningPlus1: Float
+  procentLosing: Float
+  minNumberOfGamesUsedForUpgrade: Float
+  maxDiffLevels: Float
+  maxDiffLevelsHighest: Float
+  latestXGamesToUse: Float
+  maxLevelUpPerChange: Float
+  maxLevelDownPerChange: Float
+  gamesForInactivty: Float
+  inactivityAmount: Float
+  inactivityUnit: String
+  inactiveBehavior: String
+  caluclationIntervalLastUpdate: DateTime
+  caluclationIntervalAmount: Float
+  calculationIntervalUnit: String
+  periodAmount: Float
+  periodUnit: String
+  updateIntervalAmountLastUpdate: DateTime
+  updateIntervalAmount: Float
+  updateIntervalUnit: String
+  rankingSystem: String
+  primary: Boolean
+  runCurrently: Boolean
+  runDate: DateTime
+  differenceForUpgrade: Float
+  differenceForDowngrade: Float
+  startingType: String
+  pointsToGoUp: [Int!]
+  pointsWhenWinningAgainst: [Int!]
+  pointsToGoDown: [Int!]
+  levelArray: [Int!]
+  levelArrayOneMinus: [Int!]
 }
 
 input RankingPlaceUpdateInput {

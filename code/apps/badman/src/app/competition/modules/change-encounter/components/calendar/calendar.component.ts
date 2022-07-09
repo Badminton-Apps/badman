@@ -357,8 +357,6 @@ export class CalendarComponent implements OnInit {
       day.add(1, 'days');
     }
 
-    console.log(eventsOnDay);
-
     this.gridTemplateColumns = this._genGridTemplateColumns(eventsOnDay);
 
     this.calendar = calendar;

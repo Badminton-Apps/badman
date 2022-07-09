@@ -4,6 +4,7 @@
  */
 
 import { Logger, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule, RedisIoAdapter } from './app';
@@ -12,7 +13,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   const redisIoAdapter = new RedisIoAdapter(app);
-  await redisIoAdapter.connectToRedis();
+  const configService = app.get<ConfigService>(ConfigService);
+
+  await redisIoAdapter.connectToRedis(
+    `redis://${configService.get('REDIS_HOST')}:${configService.get(
+      'REDIS_PORT'
+    )}`
+  );
 
   app.useWebSocketAdapter(redisIoAdapter);
 
@@ -26,7 +33,7 @@ async function bootstrap() {
     defaultVersion: '1',
   });
 
-  const port = process.env.PORT || 5000;
+  const port = configService.get('PORT') || 5000;
   await app.listen(port);
 
   Logger.log(

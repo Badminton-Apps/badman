@@ -7,6 +7,8 @@ import {
   Output,
 } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { MatSelectChange } from '@angular/material/select';
+import { debounceTime } from 'rxjs';
 import { RankingSystem, RankingGroup } from '../../../../../_shared';
 
 @Component({
@@ -18,16 +20,26 @@ import { RankingSystem, RankingGroup } from '../../../../../_shared';
 export class RankingSystemFieldsComponent implements OnInit {
   @Input()
   system: RankingSystem = {} as RankingSystem;
-  
+
   @Input()
   groups!: RankingGroup[] | null;
 
-  @Output() save = new EventEmitter<RankingSystem>();
+  @Output() whenUpdated = new EventEmitter<RankingSystem>();
+  @Output() whenGroupAdded = new EventEmitter<{
+    groupId: string;
+    systemId: string;
+  }>();
+  @Output() whenGroupRemoved = new EventEmitter<{
+    groupId: string;
+    systemId: string;
+  }>();
 
   rankingSystemForm!: FormGroup;
+  rakingGroupForm!: FormControl;
 
   ngOnInit() {
     this.rankingSystemForm = new FormGroup({
+      id: new FormControl(this.system.id, Validators.required),
       name: new FormControl(this.system.name, Validators.required),
       rankingSystem: new FormControl(
         this.system.rankingSystem,
@@ -70,10 +82,7 @@ export class RankingSystemFieldsComponent implements OnInit {
         this.system.periodAmount,
         Validators.required
       ),
-      periodUnit: new FormControl(
-        this.system.periodUnit,
-        Validators.required
-      ),
+      periodUnit: new FormControl(this.system.periodUnit, Validators.required),
       caluclationIntervalAmount: new FormControl(
         this.system.caluclationIntervalAmount,
         Validators.required
@@ -99,19 +108,68 @@ export class RankingSystemFieldsComponent implements OnInit {
       gamesForInactivty: new FormControl(this.system.gamesForInactivty),
       inactivityAmount: new FormControl(this.system.inactivityAmount),
       inactivityUnit: new FormControl(this.system.inactivityUnit),
-      groups: new FormControl(this.system.rankingGroups),
+    });
+
+    this.rakingGroupForm = new FormControl(this.system.rankingGroups);
+
+    this.rankingSystemForm.valueChanges
+      .pipe(debounceTime(600))
+      .subscribe((value) => {
+        if (this.rankingSystemForm.valid) {
+          this.whenUpdated.next(value);
+        }
+      });
+  }
+
+  onGroupChange(event: MatSelectChange) {
+    // find groups added
+    const addedGroups = event.value.filter(
+      (group) => !this.system.rankingGroups?.includes(group)
+    );
+    // find groups removed
+    const removedGroups = this.system.rankingGroups?.filter(
+      (group) => !event.value.includes(group)
+    );
+
+    // emit events
+    addedGroups?.forEach((group) => {
+      if (!this.system.id) {
+        throw new Error('System id is not set');
+      }
+      if (!group.id) {
+        throw new Error('System id is not set');
+      }
+
+      this.whenGroupAdded.emit({
+        groupId: group.id,
+        systemId: this.system.id,
+      });
+
+      this.system.rankingGroups?.push(group);
+    });
+    removedGroups?.forEach((group) => {
+      if (!this.system.id) {
+        throw new Error('System id is not set');
+      }
+      if (!group.id) {
+        throw new Error('System id is not set');
+      }
+      this.whenGroupRemoved.emit({
+        groupId: group.id,
+        systemId: this.system.id,
+      });
+
+      this.system.rankingGroups?.splice(
+        this.system.rankingGroups?.indexOf(group),
+        1
+      );
     });
   }
 
-  update() {
-    if (this.rankingSystemForm.valid) {
-      this.save.next({ id: this.system.id, ...this.rankingSystemForm.value });
-    }
-  }
-
   groupCompare(option: RankingGroup, value: RankingGroup) {
-    console.log(option, value);
-
-    return option.id === value.id
+    if (!option?.id || !value?.id) {
+      return false;
+    }
+    return option.id === value.id;
   }
 }

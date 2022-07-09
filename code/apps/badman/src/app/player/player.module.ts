@@ -55,6 +55,11 @@ import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-
 import { PlayerRoutingModule } from './player-routing.module';
 import { ShowRankingComponent } from './page/player';
 
+import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
+import { CovalentLineEchartsModule } from '@covalent/echarts/line';
+import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
+
+
 const materialModules = [
   MatCardModule,
   MatIconModule,
@@ -80,6 +85,9 @@ const otherModules = [
   MomentModule,
   InfiniteScrollModule,
   SelctionComponentsModule,
+  CovalentBaseEchartsModule,
+  CovalentLineEchartsModule ,
+  CovalentTooltipEchartsModule
 ];
 
 @NgModule({

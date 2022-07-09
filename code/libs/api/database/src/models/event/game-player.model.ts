@@ -16,8 +16,8 @@ import { Game } from './game.model';
   schema: 'event',
 } as TableOptions)
 @ObjectType({ description: 'A GamePlayer' })
-export class GamePlayer extends Model {
-  constructor(values?: Partial<GamePlayer>, options?: BuildOptions) {
+export class GamePlayerMembership extends Model {
+  constructor(values?: Partial<GamePlayerMembership>, options?: BuildOptions) {
     super(values, options);
   }
 

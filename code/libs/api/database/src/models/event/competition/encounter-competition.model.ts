@@ -28,6 +28,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import { Player } from '../../player.model';
 import { Team } from '../../team.model';
 import { Game } from '../game.model';
 import { DrawCompetition } from './draw-competition.model';
@@ -113,6 +114,38 @@ export class EncounterCompetition extends Model {
   @Column
   visualCode: string;
 
+  @Field(() => Player, { nullable: true })
+  @BelongsTo(() => Player, 'gameLeaderId')
+  gameLeader: Player;
+
+  @Field(() => Player, { nullable: true })
+  @BelongsTo(() => Player, 'enteredById')
+  enteredBy: Player;
+
+  @Field(() => Player, { nullable: true })
+  @BelongsTo(() => Player, 'acceptedById')
+  acceptedBy: Player;
+
+  @Field(() => Date, { nullable: true })
+  @Column
+  enteredOn: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column
+  acceptedOn: Date;
+
+  @Field({ nullable: true })
+  @Column
+  shuttle: string;
+
+  @Field({ nullable: true })
+  @Column
+  startHour: string;
+
+  @Field({ nullable: true })
+  @Column
+  endHour: string;
+
   @Field(() => EncounterChange, { nullable: true })
   @HasOne(() => EncounterChange, {
     foreignKey: 'encounterId',
@@ -146,4 +179,8 @@ export class EncounterCompetition extends Model {
   // Has one EncounterChange
   getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
   setEncounterChange!: HasOneSetAssociationMixin<EncounterChange, string>;
+
+  // Belongs to GameLeader
+  getGameLeader!: BelongsToGetAssociationMixin<Player>;
+  setGameLeader!: BelongsToSetAssociationMixin<Player, string>;
 }

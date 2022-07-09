@@ -220,7 +220,7 @@ export class RankingBreakdownComponent implements OnInit {
                       rankingPlace(where: { systemId: $rankingType }) {
                         id
                         rankingDate
-                        single
+                        ${type}
                       }
                     }
                     rankingPoints(where: { systemId: $rankingType }) {

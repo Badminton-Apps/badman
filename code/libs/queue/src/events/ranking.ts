@@ -1,3 +1,5 @@
 export const Ranking = {
-  SyncRanking: 'SyncRanking',
+  steps: {
+    step1: 'step1',
+  }
 };

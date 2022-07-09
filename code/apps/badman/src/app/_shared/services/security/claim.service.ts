@@ -1,14 +1,20 @@
 import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 
-import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  share,
+  shareReplay,
+  tap,
+} from 'rxjs/operators';
 
 import * as globalClaimsQuery from '../../graphql/security/queries/GetGlobalClaims.graphql';
 import * as globalUserClaimsQuery from '../../graphql/security/queries/GetGlobalUserClaims.graphql';
 import * as clubClaimsQuery from '../../graphql/security/queries/GetClubClaims.graphql';
 
 import * as updateGlobalUserClaimQuery from '../../graphql/security/mutations/UpdateClaimUser.graphql';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { Claim } from '../../models';
 import { UserService } from '../profile';
 
@@ -16,17 +22,24 @@ import { UserService } from '../profile';
   providedIn: 'root',
 })
 export class ClaimService {
-  claims$!: Observable<Claim[]>;
+  claims$ = new ReplaySubject<Claim[]>(1);
 
   constructor(private apollo: Apollo, private userService: UserService) {
-    this.claims$ = userService.profile$.pipe(
-      map((player) => player?.claims ?? []),
-      distinctUntilChanged()
-    );
+    userService.profile$
+      .pipe(
+        map((player) => player?.claims ?? []),
+        distinctUntilChanged((a, b) => a.length === b.length),
+        shareReplay()
+      )
+      .subscribe((claims) => {
+        this.claims$.next(claims);
+      });
   }
 
   hasClaim$(claim: string): Observable<boolean> {
-    return this.claims$.pipe(map((claims) => this.includes(claims, claim)));
+    return this.claims$.pipe(
+      map((userClaims) => this.includes(userClaims, claim))
+    );
   }
 
   hasAllClaims$(claims: string[]): Observable<boolean> {

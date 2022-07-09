@@ -1,4 +1,7 @@
 export const Sync = {
   SyncEvents: 'SyncEvents',
-  GetChangeEvents: 'GetChangeEvents',
+  SyncRanking: 'SyncRanking',
+  CheckEncounters: 'CheckEncounters',
+  ChangeDate: 'ChangeDate',
+  EnterScores: 'EnterScores',
 };

@@ -28,9 +28,7 @@ export class CpGeneratorService {
     { name: 'Uitloten', displayOrder: 9999, stagetype: 9999 },
   ];
 
-  constructor(private _configService: ConfigService) {
-    this.logger.log(`CP_PASS: ${this._configService.get('CP_PASS')}`);
-  }
+  constructor(private _configService: ConfigService) {}
 
   public async generateCpFile(eventId: string) {
     let ADODB = null;

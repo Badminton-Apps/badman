@@ -1,8 +1,18 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { Player, PlayerService, RankingSystem, SystemService } from '../../../../../_shared';
+import {
+  Player,
+  PlayerService,
+  RankingSystem,
+  SystemService,
+} from '../../../../../_shared';
 
 @Component({
   selector: 'badman-ranking-evolution',
@@ -15,9 +25,27 @@ export class RankingEvolutionComponent implements OnInit {
   player!: Player;
 
   rankingPlaces$?: Observable<{
-    single: { level: number; rankingDate: Date; points: number; pointsDowngrade: number; updatePossible: boolean }[];
-    mix: { level: number; rankingDate: Date; points: number; pointsDowngrade: number; updatePossible: boolean }[];
-    double: { level: number; rankingDate: Date; points: number; pointsDowngrade: number; updatePossible: boolean }[];
+    single: {
+      level: number;
+      rankingDate: Date;
+      points: number;
+      pointsDowngrade: number;
+      updatePossible: boolean;
+    }[];
+    mix: {
+      level: number;
+      rankingDate: Date;
+      points: number;
+      pointsDowngrade: number;
+      updatePossible: boolean;
+    }[];
+    double: {
+      level: number;
+      rankingDate: Date;
+      points: number;
+      pointsDowngrade: number;
+      updatePossible: boolean;
+    }[];
   }>;
   request$!: Observable<any>;
   rankingSystem!: RankingSystem;
@@ -37,14 +65,23 @@ export class RankingEvolutionComponent implements OnInit {
       shareReplay(1)
     );
 
-    const system$ = this.systemService.getPrimarySystem().pipe(filter((x) => !!x));
-    
-    
-
+    const system$ = this.systemService
+      .getPrimarySystem()
+      .pipe(filter((x) => !!x));
 
     this.rankingPlaces$ = combineLatest([id$, system$]).pipe(
-      tap(([playerId, system]) => (this.rankingSystem = system!)),
-      switchMap(([playerId, system]) => this.playerService.getPlayerEvolution(playerId!, system!.id!)),
+      tap(([, system]) => {
+        if (system?.id != null) {
+          this.rankingSystem = system;
+        }
+      }),
+      switchMap(([playerId, system]) => {
+        if (system?.id == null || playerId == null) {
+          throw new Error('Invalid player or system');
+        }
+
+        return this.playerService.getPlayerEvolution(playerId, system.id);
+      }),
       map((x) => {
         return x.reduce(
           (acc: any, value) => {

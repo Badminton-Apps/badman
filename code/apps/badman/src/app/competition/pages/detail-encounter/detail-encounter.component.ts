@@ -29,15 +29,15 @@ export class DetailEncounterComponent implements OnInit {
           throw new Error('No system');
         }
         return this.apollo
-          .query<{ competitionEncounter: CompetitionEncounter }>({
+          .query<{ encounterCompetition: CompetitionEncounter }>({
             query: gql`
               query GetEncounter($id: ID!, $system: ID!) {
-                competitionEncounter(id: $id) {
+                encounterCompetition(id: $id) {
                   homeScore
                   awayScore
                   date
-                  draw {
-                    subEvent {
+                  drawCompetition {
+                    subEventCompetition {
                       eventType
                     }
                   }
@@ -87,7 +87,7 @@ export class DetailEncounterComponent implements OnInit {
             },
           })
           .pipe(
-            map((result) => result.data.competitionEncounter),
+            map((result) => result.data.encounterCompetition),
             map((encounter) => new CompetitionEncounter(encounter)),
             tap((encounter) =>
               this.titleService.setTitle(

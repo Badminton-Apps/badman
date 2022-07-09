@@ -30,10 +30,10 @@ import {
 import { Queue } from 'bull';
 import moment from 'moment';
 import { Sequelize } from 'sequelize-typescript';
-import { Transaction } from 'sequelize/types';
+import { Transaction } from 'sequelize';
 import { User } from '../../../decorators';
 import { ListArgs } from '../../../utils';
-import { SyncQueue } from '@badman/queue';
+import { Sync, SyncQueue } from '@badman/queue';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -167,7 +167,7 @@ export class EncounterCompetitionResolver {
         encounter.date = selectedDates[0].date;
 
         // Accept
-        await this.syncQueue.add('change-date', { encounterId: encounter.id });
+        await this.syncQueue.add(Sync.ChangeDate, { encounterId: encounter.id });
 
         // Save cahnges
         encounter.save({ transaction });

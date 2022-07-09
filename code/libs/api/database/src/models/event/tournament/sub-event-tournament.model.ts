@@ -120,15 +120,15 @@ export class SubEventTournament extends Model {
   eventEntries: EventEntry[];
 
   // Belongs to many Group
-  getGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
-  setGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
-  addGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
-  addGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
-  removeGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
-  removeGroups!: BelongsToManyRemoveAssociationsMixin<RankingGroup, string>;
-  hasGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
-  hasGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
-  countGroup!: BelongsToManyCountAssociationsMixin;
+  getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
+  setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
+  addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
+  addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<RankingGroup, string>;
+  hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
+  hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
+  countRankingGroup!: BelongsToManyCountAssociationsMixin;
 
   // Has many Draw
   getDrawTournaments!: HasManyGetAssociationsMixin<DrawTournament>;
@@ -147,23 +147,6 @@ export class SubEventTournament extends Model {
   // Belongs to Event
   getEvent!: BelongsToGetAssociationMixin<EventTournament>;
   setEvent!: BelongsToSetAssociationMixin<EventTournament, string>;
-
-  // Belongs to many RankingGroup
-  getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
-  setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
-  addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
-  addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
-  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
-    RankingGroup,
-    string
-  >;
-  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
-    RankingGroup,
-    string
-  >;
-  hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
-  hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
-  countRankingGroup!: BelongsToManyCountAssociationsMixin;
 
   // Has many EventEntry
   getEventEntrys!: HasManyGetAssociationsMixin<EventEntry>;
