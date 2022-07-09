@@ -3,8 +3,8 @@ FROM node:lts-alpine
 WORKDIR /app
 COPY ./dist/apps/worker/ranking .
 
-RUN npx -y yarn install --production
+RUN npx -y yarn --production
 # dependencies that nestjs needs
-RUN npx -y yarn install reflect-metadata tslib rxjs @nestjs/platform-express
+RUN npx -y yarn add reflect-metadata tslib rxjs @nestjs/platform-express
 
 CMD node ./main.js

@@ -28,7 +28,8 @@
         "outputPath": "dist/apps/worker/ranking",
         "main": "apps/worker/ranking/src/main.ts",
         "tsConfig": "apps/worker/ranking/tsconfig.app.json",
-        "assets": ["apps/worker/ranking/src/assets"]
+        "assets": ["apps/worker/ranking/src/assets"],
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {
