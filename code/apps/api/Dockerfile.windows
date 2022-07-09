@@ -1,0 +1,36 @@
+# Get base Windows OS image
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
+
+# Set environment variables
+ENV NPM_CONFIG_LOGLEVEL info
+ENV NODEJS_VERSION 17.9.0
+
+# Download & Install 2010 Access Driver
+RUN echo Downloading DB Access 2010
+RUN powershell -Command "wget -Uri https://download.microsoft.com/download/2/4/3/24375141-E08D-4803-AB0E-10F2E3A07AAA/AccessDatabaseEngine.exe -OutFile AccessDatabaseEngine.exe -UseBasicParsing"
+RUN powershell -Command "Start-Process -NoNewWindow -FilePath \"AccessDatabaseEngine.exe\""
+
+# # Download & Install 2016 Access Driver
+# CMD echo Downloading DB Access 2016
+# RUN powershell -Command "wget -Uri https://download.microsoft.com/download/3/5/C/35C84C36-661A-44E6-9324-8786B8DBE231/accessdatabaseengine_X64.exe -OutFile accessdatabaseengine_X64.exe -UseBasicParsing"
+# RUN powershell -Command "Start-Process -NoNewWindow -FilePath \"accessdatabaseengine_X64.exe\""
+
+# Install Chocolatey, Git
+RUN echo Installing Chocolatey
+RUN powershell -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'));" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+RUN choco install -y git
+
+# Download and install Node.js
+RUN echo Downloading node %NODEJS_VERSION%
+RUN powershell -Command "wget -Uri https://nodejs.org/dist/v%NODEJS_VERSION%/node-v%NODEJS_VERSION%-x64.msi -OutFile node.msi -UseBasicParsing"
+RUN msiexec.exe /q /i node.msi
+
+WORKDIR /app
+COPY ./dist/apps/api .
+ENV PORT=5000
+EXPOSE ${PORT} 9229
+RUN npx -y yarn --production
+# dependencies that nestjs needs
+RUN npx -y yarn add reflect-metadata tslib rxjs @nestjs/platform-express
+
+CMD node ./main.js

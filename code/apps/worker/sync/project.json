@@ -28,7 +28,8 @@
         "outputPath": "dist/apps/worker/sync",
         "main": "apps/worker/sync/src/main.ts",
         "tsConfig": "apps/worker/sync/tsconfig.app.json",
-        "assets": ["apps/worker/sync/src/assets"]
+        "assets": ["apps/worker/sync/src/assets"],
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {
