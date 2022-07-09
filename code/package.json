@@ -187,7 +187,7 @@
     "@babel/core": "7.x",
     "apollo-server-core": "3.x",
     "apollo-server-plugin-base": "3.x",
-    "express": "7.x",
+    "express": "5.x",
     "prismjs": "1.x"
   },
   "volta": {
