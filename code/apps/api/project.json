@@ -2,6 +2,26 @@
   "sourceRoot": "apps/api/src",
   "projectType": "application",
   "targets": {
+    "docker": {
+      "executor": "@nx-tools/nx-docker:build",
+      "options": {
+        "push": true,
+        "metadata": {
+          "images": [
+            "badman/api",
+            "ghcr.io/badminton-apps/badman/api"
+          ],
+          "tags": [
+            "type=schedule",
+            "type=ref,event=tag",
+            "type=semver,pattern={{version}}",
+            "type=semver,pattern={{major}}.{{minor}}",
+            "type=semver,pattern={{major}}",
+            "type=sha,prefix=sha-"
+          ]
+        }
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
@@ -15,12 +35,11 @@
     "deploy-dev": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": [
-          "docker build -f ./apps/api/Dockerfile.dev . -t api-dev"
-        ],
+        "commands": ["docker build -f ./apps/api/Dockerfile.dev . -t api-dev"],
         "parallel": false
       }
     },
+
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],

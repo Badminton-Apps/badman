@@ -2,6 +2,26 @@
   "sourceRoot": "apps/worker/sync/src",
   "projectType": "application",
   "targets": {
+    "docker": {
+      "executor": "@nx-tools/nx-docker:build",
+      "options": {
+        "push": true,
+        "metadata": {
+          "images": [
+            "badman/worker/sync",
+            "ghcr.io/badminton-apps/badman/worker/sync"
+          ],
+          "tags": [
+            "type=schedule",
+            "type=ref,event=tag",
+            "type=semver,pattern={{version}}",
+            "type=semver,pattern={{major}}.{{minor}}",
+            "type=semver,pattern={{major}}",
+            "type=sha,prefix=sha-"
+          ]
+        }
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
