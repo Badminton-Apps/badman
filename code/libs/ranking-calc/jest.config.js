@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'ranking-calc',
   preset: '../../jest.preset.js',
   globals: {
