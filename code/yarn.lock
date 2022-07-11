@@ -403,7 +403,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@apollo/client@^3.6.6":
+"@apollo/client@3.6.9":
   version "3.6.9"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.6.9.tgz#ad0ee2e3a3c92dbed4acd6917b6158a492739d94"
   integrity sha512-Y1yu8qa2YeaCUBVuw08x8NHenFi0sw2I3KCu7Kw9mDSu86HmmtHJkCAifKVrN2iPgDTW/BbP3EpSV8/EQCcxZA==
@@ -4974,7 +4974,7 @@ apollo-reporting-protobuf@^3.3.1:
   dependencies:
     "@apollo/protobufjs" "1.2.2"
 
-apollo-server-cache-redis@^3.3.1:
+apollo-server-cache-redis@3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/apollo-server-cache-redis/-/apollo-server-cache-redis-3.3.1.tgz#fb2e7f243a624179dce9e2b93a559313c78dea72"
   integrity sha512-z+WX74PKM8Epsyd+cjRq789b2RtgARcdQ/u8acs+T5nf32Qt7eYhumKemUZf7lkwnKfh0nCNf81+e1Ll4xckAA==
@@ -5031,7 +5031,7 @@ apollo-server-errors@^3.3.1:
   resolved "https://registry.yarnpkg.com/apollo-server-errors/-/apollo-server-errors-3.3.1.tgz#ba5c00cdaa33d4cbd09779f8cb6f47475d1cd655"
   integrity sha512-xnZJ5QWs6FixHICXHxUfm+ZWqqxrNuPlQ+kj5m6RtEgIpekOPssH/SD9gf2B4HuWV0QozorrygwZnux8POvyPA==
 
-apollo-server-express@^3.8.2:
+apollo-server-express@3.9.0:
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/apollo-server-express/-/apollo-server-express-3.9.0.tgz#1ff3b53fe76e4e8be04b8477ea8a3d9586313af1"
   integrity sha512-scSeHy9iB7W3OiF3uLQEzad9Jm9tEfDF8ACsJb2P+xX69uqg6zizsrQvj3qRhazCO7FKMcMu9zQFR0hy7zKbUA==
