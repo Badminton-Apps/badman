@@ -89,7 +89,7 @@ export class GamesComponent implements OnChanges {
                     gameType: filter?.gameType ?? undefined,
                     linkType: filter?.eventType ?? undefined,
                   }
-                ) 
+                )
                 .pipe(
                   share(),
                   finalize(() => this.onFinalize())
