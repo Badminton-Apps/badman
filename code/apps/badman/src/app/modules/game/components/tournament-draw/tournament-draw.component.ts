@@ -9,5 +9,4 @@ import { TournamentDraw } from '../../../../_shared';
 })
 export class TournamentDrawComponent {
   @Input() draw!: TournamentDraw;
-
 }

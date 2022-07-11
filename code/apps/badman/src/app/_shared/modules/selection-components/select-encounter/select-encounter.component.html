@@ -6,8 +6,12 @@
         <mat-option *ngFor="let encounter of encounters" [value]="encounter.id">
           <span>{{ encounter.date | amDateFormat: 'llll' }} </span>
           <span translate="competition.vs"></span>
-          <span *ngIf="encounter.showingForHomeTeam"> {{ encounter.away?.name }}</span>
-          <span *ngIf="!encounter.showingForHomeTeam"> {{ encounter.home?.name }}</span>
+          <span *ngIf="encounter.showingForHomeTeam">
+            {{ encounter.away?.name }}</span
+          >
+          <span *ngIf="!encounter.showingForHomeTeam">
+            {{ encounter.home?.name }}</span
+          >
         </mat-option>
       </ng-container>
     </mat-select>

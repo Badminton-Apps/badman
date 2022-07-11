@@ -35,13 +35,18 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
 
   private async _processDraws({
     subEvent,
-    internalId
+    internalId,
   }: {
     subEvent: SubEventCompetition;
     internalId: number;
   }) {
-    const draws = await subEvent.getDrawCompetitions({ transaction: this.transaction });
-    const visualDraws = await this.visualService.getDraws(this.visualTournament.Code, internalId);
+    const draws = await subEvent.getDrawCompetitions({
+      transaction: this.transaction,
+    });
+    const visualDraws = await this.visualService.getDraws(
+      this.visualTournament.Code,
+      internalId
+    );
     for (const xmlDraw of visualDraws) {
       if (!xmlDraw) {
         continue;
@@ -61,10 +66,10 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
         await DrawCompetition.destroy({
           where: {
             id: {
-              [Op.in]: rest.map((e) => e.id)
-            }
+              [Op.in]: rest.map((e) => e.id),
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
 
@@ -80,11 +85,14 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
               : xmlDraw.TypeID === XmlDrawTypeID.RoundRobin ||
                 xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
               ? DrawType.POULE
-              : DrawType.QUALIFICATION
+              : DrawType.QUALIFICATION,
         }).save({ transaction: this.transaction });
       }
 
-      this._dbDraws.push({ draw: dbDraw, internalId: parseInt(xmlDraw.Code, 10) });
+      this._dbDraws.push({
+        draw: dbDraw,
+        internalId: parseInt(xmlDraw.Code, 10),
+      });
     }
 
     // Remove draw that have no visual code
@@ -99,11 +107,11 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
               model: EncounterCompetition,
               required: true,
               where: {
-                drawId: removed.id
-              }
-            }
+                drawId: removed.id,
+              },
+            },
           ],
-          transaction: this.transaction
+          transaction: this.transaction,
         })
       )
         ?.map((g) => g.id)
@@ -113,10 +121,10 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
         await Game.destroy({
           where: {
             id: {
-              [Op.in]: gameIds
-            }
+              [Op.in]: gameIds,
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
       await removed.destroy({ transaction: this.transaction });

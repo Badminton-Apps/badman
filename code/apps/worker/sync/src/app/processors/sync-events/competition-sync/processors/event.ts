@@ -1,6 +1,4 @@
-import {
-  EventCompetition,
-} from '@badman/api/database';
+import { EventCompetition } from '@badman/api/database';
 import moment, { Moment } from 'moment';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService } from '../../../../services';
@@ -24,8 +22,8 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
   public async process(): Promise<EventStepData> {
     this.logger.debug(`Searching for ${this.visualTournament.Name}`);
     let event = await EventCompetition.findOne({
-      where: { name: `${this.visualTournament.Name}` }, 
-      transaction: this.transaction
+      where: { name: `${this.visualTournament.Name}` },
+      transaction: this.transaction,
     });
     let existed = true;
 
@@ -40,13 +38,17 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
         dates.push(date.clone());
       }
 
-      const visualTournament = await this.visualService.getTournament(this.visualTournament.Code);
+      const visualTournament = await this.visualService.getTournament(
+        this.visualTournament.Code
+      );
 
-      this.logger.debug(`EventCompetition ${visualTournament.Name} not found, creating`);
+      this.logger.debug(
+        `EventCompetition ${visualTournament.Name} not found, creating`
+      );
       event = await new EventCompetition({
         name: visualTournament.Name,
         visualCode: visualTournament.Code,
-        startYear: moment(visualTournament.StartDate).year()
+        startYear: moment(visualTournament.StartDate).year(),
       }).save({ transaction: this.transaction });
     } else {
       // Later we will change the search function to use the tournament code
@@ -60,7 +62,7 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
       // stop: existed,
       existed,
       event,
-      internalId: parseInt(this.visualTournament.Code, 10)
+      internalId: parseInt(this.visualTournament.Code, 10),
     };
   }
 }

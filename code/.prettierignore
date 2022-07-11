@@ -2,4 +2,11 @@
 
 /dist
 /coverage
+/scripts
+/schema
+/.vscode
+/.angular
+
 **/charts
+*.handlebars
+changelog.md

@@ -66,18 +66,15 @@ $config: mat-typography-config();
     margin-right: 16px;
   }
 
-
   .up {
     @include mat-typography-level-to-styles($config, headline);
   }
 
   .down {
-
     &,
     a {
       font-size: 0.8rem;
       color: #aaaaaa;
     }
   }
-
 }

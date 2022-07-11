@@ -1,4 +1,4 @@
-@use '@angular/material'as mat;
+@use '@angular/material' as mat;
 
 .location-item {
   padding-left: 12px;
@@ -13,7 +13,6 @@
   text-decoration: underline;
 }
 
-
 .team-detail {
   @include mat.elevation(8);
   background-color: white;
@@ -24,11 +23,10 @@
     padding: 0;
 
     li {
-      list-style-type: none
+      list-style-type: none;
     }
   }
 }
-
 
 .team-description {
   cursor: pointer;

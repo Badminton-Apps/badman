@@ -11,7 +11,11 @@ import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService } from '../../../../services';
-import { XmlTournament, XmlTournamentEvent, XmlGenderID } from '../../../../utils';
+import {
+  XmlTournament,
+  XmlTournamentEvent,
+  XmlGenderID,
+} from '../../../../utils';
 
 export interface SubEventStepData {
   subEvent: SubEventCompetition;
@@ -37,10 +41,15 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       throw new Error('No Event');
     }
 
-    const subEvents = await this.event.getSubEventCompetitions({ transaction: this.transaction });
+    const subEvents = await this.event.getSubEventCompetitions({
+      transaction: this.transaction,
+    });
     const canChange = moment().isBefore(`${this.event.startYear}-09-01`);
 
-    const visualEvents = await this.visualService.getEvents(this.visualTournament.Code, !canChange);
+    const visualEvents = await this.visualService.getEvents(
+      this.visualTournament.Code,
+      !canChange
+    );
     const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events
@@ -48,7 +57,9 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       if (!xmlEvent) {
         continue;
       }
-      const dbSubEvents = subEvents.filter((r) => r.visualCode === `${xmlEvent.Code}`);
+      const dbSubEvents = subEvents.filter(
+        (r) => r.visualCode === `${xmlEvent.Code}`
+      );
       let dbSubEvent: SubEventCompetition = null;
 
       if (dbSubEvents.length === 1) {
@@ -62,10 +73,10 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         await SubEventCompetition.destroy({
           where: {
             id: {
-              [Op.in]: rest.map((e) => e.id)
-            }
+              [Op.in]: rest.map((e) => e.id),
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
 
@@ -77,7 +88,9 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
 
         // Hopefully with this we can link with the correct subEvent so our link isn't lost
         dbSubEvent = subEvents.find(
-          (r) => r.name === xmlEvent.Name.replace(/[ABCDE]+$/gm, '').trim() && r.eventType === type
+          (r) =>
+            r.name === xmlEvent.Name.replace(/[ABCDE]+$/gm, '').trim() &&
+            r.eventType === type
         );
       }
 
@@ -93,7 +106,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
           name: xmlEvent.Name,
           eventType: type,
           eventId: this.event.id,
-          level: xmlEvent.LevelID
+          level: xmlEvent.LevelID,
         }).save({ transaction: this.transaction });
       } else {
         if (dbSubEvent.visualCode === null) {
@@ -102,7 +115,10 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         }
       }
 
-      returnSubEvents.push({ subEvent: dbSubEvent, internalId: parseInt(xmlEvent.Code, 10) });
+      returnSubEvents.push({
+        subEvent: dbSubEvent,
+        internalId: parseInt(xmlEvent.Code, 10),
+      });
     }
 
     // Remove subEvents that are not in the xml
@@ -122,13 +138,13 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
                   required: true,
                   model: DrawCompetition,
                   where: {
-                    subeventId: removed.id
-                  }
-                }
-              ]
-            }
+                    subeventId: removed.id,
+                  },
+                },
+              ],
+            },
           ],
-          transaction: this.transaction
+          transaction: this.transaction,
         })
       )
         ?.map((g) => g.id)
@@ -138,10 +154,10 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         await Game.destroy({
           where: {
             id: {
-              [Op.in]: gameIds
-            }
+              [Op.in]: gameIds,
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
 

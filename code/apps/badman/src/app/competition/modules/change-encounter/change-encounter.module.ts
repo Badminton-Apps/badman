@@ -43,7 +43,7 @@ const materialModules = [
   NgxMatDatetimePickerModule,
   FlexModule,
 
-  OverlayModule
+  OverlayModule,
 ];
 
 @NgModule({
@@ -52,7 +52,7 @@ const materialModules = [
     ListEncountersComponent,
     ShowRequestsComponent,
     CalendarComponent,
-    DateSelectorComponent
+    DateSelectorComponent,
   ],
   imports: [
     SharedModule,

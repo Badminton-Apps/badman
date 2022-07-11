@@ -59,7 +59,6 @@ export class SubEventTournamentResolver {
     return subEvent.getEvent();
   }
 
-  
   @ResolveField(() => [RankingGroup])
   async rankingGroups(
     @Parent() subEvent: SubEventTournament

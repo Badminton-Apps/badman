@@ -35,8 +35,11 @@ export class TeamPlayersComponent implements OnInit {
   ngOnInit() {
     this.checkIfBaseComplete();
     this.where = {
-      gender: this.team.type == "MX" || this.team.type == "NATIONAL" ? undefined : this.team.type
-    }
+      gender:
+        this.team.type == 'MX' || this.team.type == 'NATIONAL'
+          ? undefined
+          : this.team.type,
+    };
   }
 
   playerRemoved(player: Player) {
@@ -54,6 +57,7 @@ export class TeamPlayersComponent implements OnInit {
   }
 
   private checkIfBaseComplete() {
-    this.baseComplete = this.team?.players?.filter((p) => p.base).length >= 8 ?? false;
+    this.baseComplete =
+      this.team?.players?.filter((p) => p.base).length >= 8 ?? false;
   }
 }

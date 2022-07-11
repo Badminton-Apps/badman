@@ -53,10 +53,16 @@ export class RankingGroup extends Model {
   @Column
   name: string;
 
-  @BelongsToMany(() => SubEventCompetition, () => RankingGroupSubEventCompetitionMembership)
+  @BelongsToMany(
+    () => SubEventCompetition,
+    () => RankingGroupSubEventCompetitionMembership
+  )
   subEventCompetitions: SubEventCompetition[];
 
-  @BelongsToMany(() => SubEventTournament, () => RankingGroupSubEventTournamentMembership)
+  @BelongsToMany(
+    () => SubEventTournament,
+    () => RankingGroupSubEventTournamentMembership
+  )
   subEventTournaments: SubEventTournament[];
 
   @BelongsToMany(() => RankingSystem, () => RankingSystemRankingGroupMembership)

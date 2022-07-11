@@ -41,7 +41,6 @@ module.exports = {
           }
         );
 
-
         const [adminRoles] = await queryInterface.sequelize.query(
           `select id from "security"."Claims" where "type" = 'GLOBAL'`,
           { transaction: t }

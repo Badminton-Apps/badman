@@ -1,14 +1,13 @@
 import { Page } from 'puppeteer';
 import { waitForSelectors } from './shared';
 
-
 export async function signIn(
   pupeteer: {
     page: Page;
     timeout?: number;
   } = {
     page: null,
-    timeout: 5000
+    timeout: 5000,
   },
   username: string,
   password: string
@@ -23,7 +22,9 @@ export async function signIn(
     const element = await waitForSelectors(
       [
         ['aria/Log in'],
-        ['body > div.content > div.masthead.masthead--fixed > div.masthead__user > a']
+        [
+          'body > div.content > div.masthead.masthead--fixed > div.masthead__user > a',
+        ],
       ],
       targetPage,
       timeout
@@ -34,7 +35,11 @@ export async function signIn(
 
   {
     const targetPage = page;
-    const element = await waitForSelectors([['aria/Loginnaam'], ['#Login']], targetPage, timeout);
+    const element = await waitForSelectors(
+      [['aria/Loginnaam'], ['#Login']],
+      targetPage,
+      timeout
+    );
     await element.type(username);
   }
   {
@@ -50,7 +55,11 @@ export async function signIn(
     const targetPage = page;
     const promises = [];
     promises.push(targetPage.waitForNavigation());
-    const element = await waitForSelectors([['aria/INLOGGEN'], ['#btnLogin']], targetPage, timeout);
+    const element = await waitForSelectors(
+      [['aria/INLOGGEN'], ['#btnLogin']],
+      targetPage,
+      timeout
+    );
     await element.click({ offset: { x: 50.046875, y: 6.359375 } });
     await Promise.all(promises);
   }
@@ -74,8 +83,8 @@ export async function signIn(
       [
         ['aria/Badminton[role="button"]'],
         [
-          'body > div.content > div.masthead.masthead--fixed > div.masthead__main > div.sport-selection.dropdown.open > div > ul > li:nth-child(3) > a'
-        ]
+          'body > div.content > div.masthead.masthead--fixed > div.masthead__main > div.sport-selection.dropdown.open > div > ul > li:nth-child(3) > a',
+        ],
       ],
       targetPage,
       timeout

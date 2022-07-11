@@ -3,10 +3,9 @@ export class Claim {
   name!: string;
   description?: string;
   category?: string;
-  type?: string
+  type?: string;
 
-  hasPermission?: boolean
-
+  hasPermission?: boolean;
 
   constructor({ ...args }: Partial<Claim>) {
     this.id = args.id;

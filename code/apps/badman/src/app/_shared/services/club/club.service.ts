@@ -232,7 +232,9 @@ export class ClubService {
           (x) =>
             x.data.club.teams
               ?.map((r) =>
-                r.entries?.map((r) => r.competitionSubEvent?.eventCompetition?.startYear)
+                r.entries?.map(
+                  (r) => r.competitionSubEvent?.eventCompetition?.startYear
+                )
               )
               .flat()
               .filter((x, i, a) => a.indexOf(x) === i)

@@ -5,4 +5,3 @@ export * from './enterExtra';
 export * from './enterScores';
 export * from './selectPlayer';
 // end:ng42.barrel
-

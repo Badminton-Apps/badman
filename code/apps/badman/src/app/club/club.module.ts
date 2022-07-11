@@ -63,7 +63,7 @@ const materialModules = [
   MatSnackBarModule,
 
   // AgmCoreModule,
-  MatGoogleMapsAutocompleteModule
+  MatGoogleMapsAutocompleteModule,
 ];
 
 @NgModule({

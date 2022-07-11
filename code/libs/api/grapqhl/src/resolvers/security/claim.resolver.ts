@@ -33,7 +33,7 @@ export class ClaimResolver {
     return claim;
   }
 
-  @Query(() => [Claim]) 
+  @Query(() => [Claim])
   async claims(@Args() listArgs: ListArgs): Promise<Claim[]> {
     return Claim.findAll(ListArgs.toFindOptions(listArgs));
   }
@@ -69,7 +69,6 @@ export class ClaimResolver {
 
       await transaction.commit();
       return true;
-
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();

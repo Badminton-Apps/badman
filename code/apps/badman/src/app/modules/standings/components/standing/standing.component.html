@@ -1,10 +1,14 @@
 <mat-table [dataSource]="entries">
   <ng-container matColumnDef="position">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.position }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.position
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.name' | translate }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.name' | translate
+    }}</mat-header-cell>
     <mat-cell *matCellDef="let element">
       <ng-container *ngIf="type === 'team'">
         <a class="has-team" [routerLink]="['/club', element.team?.club?.slug]">
@@ -13,13 +17,19 @@
       </ng-container>
       <ng-container *ngIf="type === 'players'">
         <div>
-          <a class="has-user" [routerLink]="['/player', element.players[0]?.slug]">
+          <a
+            class="has-user"
+            [routerLink]="['/player', element.players[0]?.slug]"
+          >
             <!-- Name -->
             <span>{{ element.players[0]?.fullName }}</span>
           </a>
           <ng-container *ngIf="element.players[1]">
             <br />
-            <a class="has-user" [routerLink]="['/player', element.players[1]?.slug]">
+            <a
+              class="has-user"
+              [routerLink]="['/player', element.players[1]?.slug]"
+            >
               <!-- Name -->
               <span>{{ element.players[1]?.fullName }}</span>
             </a>
@@ -29,52 +39,90 @@
     </mat-cell>
   </ng-container>
   <ng-container matColumnDef="points">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.points' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.points || 0 }}</mat-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.points' | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.points || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="played">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.played' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.played || 0 }}</mat-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.played' | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.played || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="won">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.won' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.won || 0 }}</mat-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.won' | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.won || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="tied">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.tied' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.tied || 0 }}</mat-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.tied' | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.tied || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="lost">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.lost' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{ element.standing?.lost || 0 }}</mat-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.lost' | translate
+    }}</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.lost || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="gamesWon">
-    <mat-cell *matCellDef="let element">{{ element.standing?.gamesWon || 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.gamesWon || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="gamesLost">
-    <mat-cell *matCellDef="let element">{{ element.standing?.gamesLost || 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.gamesLost || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="setsWon">
-    <mat-cell *matCellDef="let element">{{ element.standing?.setsWon || 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.setsWon || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="setsLost">
-    <mat-cell *matCellDef="let element">{{ element.standing?.setsLost || 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.setsLost || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="totalPointsWon">
-    <mat-cell *matCellDef="let element">{{ element.standing?.totalPointsWon || 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.totalPointsWon || 0
+    }}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="totalPointsLost">
-    <mat-cell *matCellDef="let element">{{ element.standing?.totalPointsLost || 0 }}</mat-cell>
+    <mat-cell *matCellDef="let element">{{
+      element.standing?.totalPointsLost || 0
+    }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="games">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.games' | translate }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.games' | translate
+    }}</mat-header-cell>
   </ng-container>
   <ng-container matColumnDef="sets">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.sets' | translate }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.sets' | translate
+    }}</mat-header-cell>
   </ng-container>
   <ng-container matColumnDef="totalPoints">
-    <mat-header-cell *matHeaderCellDef>{{ 'event.standing.totalPoints' | translate }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{
+      'event.standing.totalPoints' | translate
+    }}</mat-header-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumnsHeaders"></mat-header-row>

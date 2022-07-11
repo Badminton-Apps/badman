@@ -110,9 +110,7 @@ export class RankingPlaceResolver {
       });
 
       if (!player) {
-        throw new NotFoundException(
-          `${Player.name}: ${rankingPlace.playerId}`
-        );
+        throw new NotFoundException(`${Player.name}: ${rankingPlace.playerId}`);
       }
 
       // Commit transaction

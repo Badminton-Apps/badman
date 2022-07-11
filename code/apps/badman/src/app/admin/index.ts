@@ -3,4 +3,3 @@
 export * from './services';
 export * from './admin.module';
 // end:ng42.barrel
-

@@ -1,4 +1,11 @@
-import { Controller, Get, Logger, Post, Req, StreamableFile } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Logger,
+  Post,
+  Req,
+  StreamableFile,
+} from '@nestjs/common';
 import { Readable } from 'stream';
 import { PdfService } from '../services';
 

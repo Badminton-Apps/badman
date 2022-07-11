@@ -25,7 +25,15 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
   isLoadingResults = false;
   isRateLimitReached = false;
 
-  displayedColumns: string[] = ['running', 'name', 'scheduled', 'cron', 'done', 'lastRun', 'options'];
+  displayedColumns: string[] = [
+    'running',
+    'name',
+    'scheduled',
+    'cron',
+    'done',
+    'lastRun',
+    'options',
+  ];
 
   private querySubscription!: Subscription;
 
@@ -66,7 +74,9 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
   }
 
   runJob(cronJob: Cron) {
-    this.httpClient.post(`${this.urlBase}/single-run?type=${cronJob.type}`, {}).subscribe(() => {});
+    this.httpClient
+      .post(`${this.urlBase}/single-run?type=${cronJob.type}`, {})
+      .subscribe(() => {});
   }
 
   ngOnDestroy() {

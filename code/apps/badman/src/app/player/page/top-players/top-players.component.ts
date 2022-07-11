@@ -138,7 +138,7 @@ export class TopPlayersComponent implements OnInit, AfterViewInit {
               relativeTo: this.activatedRoute,
               replaceUrl: true,
               queryParams: {
-                gender: args.where?.['gender'] ,
+                gender: args.where?.['gender'],
                 take: args.take == 15 ? undefined : args.take,
                 page:
                   this.paginator.pageIndex == 0

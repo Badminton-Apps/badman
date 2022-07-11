@@ -15,7 +15,10 @@ import { Club, Team } from '../../../../../_shared';
 })
 export class TeamOverviewComponent {
   @Output() onEdit = new EventEmitter<Team>();
-  @Output() onActiveChange = new EventEmitter<{team: Team, active: boolean}>();
+  @Output() onActiveChange = new EventEmitter<{
+    team: Team;
+    active: boolean;
+  }>();
   @Output() onDelete = new EventEmitter<Team>();
 
   @Input()

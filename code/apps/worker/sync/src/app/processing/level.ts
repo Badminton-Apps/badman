@@ -1,6 +1,12 @@
 import moment from 'moment';
 import { Op, SaveOptions, Transaction } from 'sequelize';
-import { Game, GameType, Player, RankingPlace, RankingSystem } from '@badman/api/database';
+import {
+  Game,
+  GameType,
+  Player,
+  RankingPlace,
+  RankingSystem,
+} from '@badman/api/database';
 
 export class RankingProcessor {
   static async checkInactive(instances: RankingPlace[], options: SaveOptions) {
@@ -165,7 +171,7 @@ export class RankingProcessor {
     rankingPoints: RankingPlace[],
     rankingSystems?: RankingSystem[],
     args?: {
-      transaction?: Transaction,
+      transaction?: Transaction;
     }
   ): Promise<RankingPlace[]> {
     if (

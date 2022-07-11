@@ -1,9 +1,31 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
-import { lastValueFrom, merge, Observable, of, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
+import {
+  lastValueFrom,
+  merge,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject,
+} from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs/operators';
 import { PlayerService } from '../../../../services/player/player.service';
 import { NewPlayerComponent } from '../new-player/new-player.component';
 import { Club, Player } from './../../../../models';
@@ -55,16 +77,19 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
 
-  constructor(private playerService: PlayerService, private dialog: MatDialog) {}
+  constructor(
+    private playerService: PlayerService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (!(changes['player']?.isFirstChange() ?? true)) {
       this.setPlayer();
     }
     if (changes['ignorePlayers']) {
-      this.ignorePlayersIds = (this.ignorePlayers?.map((r) => r.id) ?? []).filter(
-        (v, i, a) => a.indexOf(v) === i
-      ) as string[];
+      this.ignorePlayersIds = (
+        this.ignorePlayers?.map((r) => r.id) ?? []
+      ).filter((v, i, a) => a.indexOf(v) === i) as string[];
     }
   }
 
@@ -79,7 +104,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       filter((x) => x?.length > 3),
       debounceTime(600),
       switchMap((r) => {
-        this.clubId = this.club instanceof Club ? this.club?.id : this.club ?? undefined;
+        this.clubId =
+          this.club instanceof Club ? this.club?.id : this.club ?? undefined;
 
         const obs = this.clubId
           ? this.playerService.searchClubPlayers(this.clubId, {
@@ -87,7 +113,6 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
               where: this.where,
               ranking: this.ranking,
               personal: this.includePersonal,
-
             })
           : of([]);
 
@@ -115,7 +140,12 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
         }
       }),
       // Distinct by id
-      map((result) => result?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index))
+      map((result) =>
+        result?.filter(
+          (value, index, self) =>
+            self.findIndex((m) => m.id === value.id) === index
+        )
+      )
     );
 
     this.filteredOptions$ = merge(search$, this.clear$);

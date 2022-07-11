@@ -2,4 +2,3 @@
 export * from './components';
 export * from './team-enrollment.component';
 // end:ng42.barrel
-

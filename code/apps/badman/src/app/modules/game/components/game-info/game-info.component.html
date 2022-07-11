@@ -1,12 +1,21 @@
 <div fxFlex fxLayout="row" fxLayoutalign="space-between">
   <div fxFlex fxLayout="column" class="players">
-    <div fxFlex fxLayout="column" fxLayoutAlign="end start" [ngClass]="{ won: game.winner == 1 }">
+    <div
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="end start"
+      [ngClass]="{ won: game.winner == 1 }"
+    >
       <ng-container [ngSwitch]="game.status">
         <ng-container *ngSwitchCase="'NO_MATCH'">
-          <div class="bye" *ngIf="!this.playerT1P1">{{ 'games.unkown' | translate }}</div>
+          <div class="bye" *ngIf="!this.playerT1P1">
+            {{ 'games.unkown' | translate }}
+          </div>
         </ng-container>
         <ng-container *ngSwitchCase="'WALKOVER'">
-          <div class="bye" *ngIf="!this.playerT1P1">{{ 'games.unkown' | translate }}</div>
+          <div class="bye" *ngIf="!this.playerT1P1">
+            {{ 'games.unkown' | translate }}
+          </div>
         </ng-container>
       </ng-container>
 
@@ -26,14 +35,23 @@
       </div>
     </div>
 
-    <div fxFlex fxLayout="column" fxLayoutAlign="start start" [ngClass]="{ won: game.winner == 2 }">
+    <div
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start start"
+      [ngClass]="{ won: game.winner == 2 }"
+    >
       <ng-container [ngSwitch]="game.status">
         <ng-container *ngSwitchCase="'NO_MATCH'">
-          <div class="bye" *ngIf="!this.playerT2P1">{{ 'games.unkown' | translate }}</div>
+          <div class="bye" *ngIf="!this.playerT2P1">
+            {{ 'games.unkown' | translate }}
+          </div>
         </ng-container>
 
         <ng-container *ngSwitchCase="'WALKOVER'">
-          <div class="bye" *ngIf="!this.playerT2P1">{{ 'games.unkown' | translate }}</div>
+          <div class="bye" *ngIf="!this.playerT2P1">
+            {{ 'games.unkown' | translate }}
+          </div>
         </ng-container>
       </ng-container>
 

@@ -15,9 +15,7 @@ import { PointCalculator, splitInChunks } from '../utils';
 export class LfbbRankingCalc extends RankingCalc {
   private _gameSplitInterval = 30 * 24 * 60 * 60 * 1000; // 30 days max
 
-  constructor(
-    public rankingType: RankingSystem,
-  ) {
+  constructor(public rankingType: RankingSystem) {
     super(rankingType, new Logger(LfbbRankingCalc.name));
     this.pointCalculator = new PointCalculator(this.rankingType);
   }

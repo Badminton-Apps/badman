@@ -1,12 +1,18 @@
 <ng-container *ngIf="this.data$ | async as data; else loading">
   <div class="mat-subheading-1">
-    <button mat-icon-button [routerLink]="['/player', data.player.slug]"><mat-icon>arrow_back</mat-icon></button
+    <button mat-icon-button [routerLink]="['/player', data.player.slug]">
+      <mat-icon>arrow_back</mat-icon></button
     >{{ 'breakdown.title' | translate }}
   </div>
 
   <div fxLayout="column">
     <div class="mat-subheading-2">{{ 'breakdown.evolution' | translate }}</div>
-    <badman-ranking-evolution [player]="data.player" fxLayout="row" fxLayout.lt-md="column"> </badman-ranking-evolution>
+    <badman-ranking-evolution
+      [player]="data.player"
+      fxLayout="row"
+      fxLayout.lt-md="column"
+    >
+    </badman-ranking-evolution>
 
     <div class="mat-subheading-2">
       {{ 'breakdown.pointsPerGame' | translate }}
@@ -16,12 +22,22 @@
       {{ 'breakdown.disclaimer' | translate }}
     </p>
 
-    <form [formGroup]="this.gameFilter" fxFlex fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px">
+    <form
+      [formGroup]="this.gameFilter"
+      fxFlex
+      fxLayout="row"
+      fxLayout.lt-md="column"
+      fxLayoutGap="10px"
+    >
       <mat-form-field appearance="outline" fxFlex="200px" fxFlex.lt-md>
         <mat-label>{{ 'game.type' | translate }}</mat-label>
         <mat-select formControlName="gameType">
-          <mat-option value="single">{{ 'ranking.single' | translate }}</mat-option>
-          <mat-option value="double">{{ 'ranking.double' | translate }}</mat-option>
+          <mat-option value="single">{{
+            'ranking.single' | translate
+          }}</mat-option>
+          <mat-option value="double">{{
+            'ranking.double' | translate
+          }}</mat-option>
           <mat-option value="mix">{{ 'ranking.mix' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>

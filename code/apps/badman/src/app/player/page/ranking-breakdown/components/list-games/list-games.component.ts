@@ -79,9 +79,6 @@ export class ListGamesComponent implements OnInit {
     this.fillGames();
     this.fillLostGames();
 
-
-
-
     this.formGroup.valueChanges
       .pipe(
         map((value) => {
@@ -215,7 +212,6 @@ export class ListGamesComponent implements OnInit {
       );
 
       const type = this.getGameResultType(game);
-
 
       gameBreakdownPrev.push({
         id: game.id,

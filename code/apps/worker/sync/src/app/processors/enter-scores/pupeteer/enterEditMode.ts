@@ -7,13 +7,14 @@ export async function enterEditMode(
     timeout?: number;
   } = {
     page: null,
-    timeout: 5000
+    timeout: 5000,
   },
   encounter: EncounterCompetition
 ) {
   const { page } = pupeteer;
   const matchId = encounter.visualCode;
-  const eventId = encounter.drawCompetition.subEventCompetition.eventCompetition.visualCode;
+  const eventId =
+    encounter.drawCompetition.subEventCompetition.eventCompetition.visualCode;
 
   {
     const targetPage = page;

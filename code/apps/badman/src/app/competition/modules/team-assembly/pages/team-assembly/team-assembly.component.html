@@ -1,6 +1,9 @@
 <div *ngIf="loaded; else loading" fxLayout="column" fxLayoutGap="16px">
   <div>
-    <div class="mat-subheading-1">{{ 'competition.team-assembly.title' | translate }} <badman-beta></badman-beta></div>
+    <div class="mat-subheading-1">
+      {{ 'competition.team-assembly.title' | translate }}
+      <badman-beta></badman-beta>
+    </div>
     <small>{{ 'competition.team-assembly.disclaimer' | translate }}</small>
   </div>
 
@@ -12,8 +15,16 @@
     fxLayoutAlign="space-between center"
     fxLayoutGap="16px"
   >
-    <badman-select-club fxFlex="25" [needsPermission]="false" [formGroup]="formGroup" [updateUrl]="true"></badman-select-club>
-    <badman-select-team fxFlex="25" [formGroup]="formGroup"></badman-select-team>
+    <badman-select-club
+      fxFlex="25"
+      [needsPermission]="false"
+      [formGroup]="formGroup"
+      [updateUrl]="true"
+    ></badman-select-club>
+    <badman-select-team
+      fxFlex="25"
+      [formGroup]="formGroup"
+    ></badman-select-team>
     <badman-select-encounter
       fxFlex="50"
       [formGroup]="formGroup"

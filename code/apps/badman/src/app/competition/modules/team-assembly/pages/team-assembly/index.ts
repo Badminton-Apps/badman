@@ -2,4 +2,3 @@
 export * from './team-assembly.component';
 export * from './components';
 // end:ng42.barrel
-

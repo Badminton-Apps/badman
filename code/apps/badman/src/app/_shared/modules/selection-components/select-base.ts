@@ -1,5 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AbstractControlOptions, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import {
+  AbstractControl,
+  AbstractControlOptions,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+} from '@angular/forms';
 
 @Component({
   selector: 'badman-select-base',

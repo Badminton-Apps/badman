@@ -111,8 +111,6 @@ module.exports = {
           'systemId',
           { transaction: t }
         );
-
-       
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();
@@ -211,7 +209,7 @@ module.exports = {
             'GroupSubEventTournaments',
             { transaction: t }
           );
-  
+
           await queryInterface.renameTable(
             {
               tableName: 'RankingGroupSubEventCompetitionMemberships',
@@ -229,7 +227,6 @@ module.exports = {
             'ClubMemberships',
             { transaction: t }
           );
-         
         } catch (err) {
           console.error('We errored with', err);
           t.rollback();

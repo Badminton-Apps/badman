@@ -2,7 +2,8 @@
   display: block;
 }
 
-.teams, .roles {
+.teams,
+.roles {
   display: flex;
   flex-flow: row wrap;
 }

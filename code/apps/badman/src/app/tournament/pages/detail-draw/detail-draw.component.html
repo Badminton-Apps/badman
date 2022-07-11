@@ -8,8 +8,13 @@
   </div>
 
   <div class="mat-subheading-2">{{ 'event.standing.title' | translate }}</div>
-  <ng-container *ngIf="draw.type === 'KO'">{{ 'event.standing.spoiler' | translate }}</ng-container>
-  <badman-standing [type]="'players'" [entries]="draw.eventEntries!"></badman-standing>
+  <ng-container *ngIf="draw.type === 'KO'">{{
+    'event.standing.spoiler' | translate
+  }}</ng-container>
+  <badman-standing
+    [type]="'players'"
+    [entries]="draw.eventEntries!"
+  ></badman-standing>
 
   <div class="mat-subheading-2">{{ 'tournament.draw.games' | translate }}</div>
   <badman-sub-event [tournament]="draw"></badman-sub-event>

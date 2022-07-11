@@ -61,7 +61,7 @@ export class EncounterChangeCompetitionResolver {
   ): Promise<Comment> {
     return encounterChange.getHomeComment();
   }
-  
+
   @ResolveField(() => Comment)
   async awayComment(
     @Parent() encounterChange: EncounterChange

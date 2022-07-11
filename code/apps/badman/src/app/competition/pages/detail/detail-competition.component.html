@@ -18,7 +18,10 @@
           <button mat-menu-item>{{ 'button.delete' | translate }}</button>
         </mat-menu>
       </badman-has-claim>
-      <img src="../../assets/images//user-profile-bg.jpg" alt="Background image" />
+      <img
+        src="../../assets/images//user-profile-bg.jpg"
+        alt="Background image"
+      />
     </div>
     <div class="info">
       <div class="picture"></div>
@@ -27,7 +30,8 @@
         <span class="down" *ngIf="event.startYear">
           {{ event.startYear! }} - {{ event.startYear! + 1 }}
           <span *ngIf="event.updatedAt"
-            >- {{ 'competition.last-updated' | translate }}: {{ event.updatedAt | date }}</span
+            >- {{ 'competition.last-updated' | translate }}:
+            {{ event.updatedAt | date }}</span
           >
         </span>
       </div>
@@ -41,12 +45,16 @@
         <ng-container *ngFor="let subEvent of this.subEventsM$ | async">
           <mat-list-item
             >{{ subEvent.name }} {{ subEvent.eventType
-            }}<span *ngIf="(subEvent?.rankingGroups?.length ?? 0) > 0">*</span></mat-list-item
+            }}<span *ngIf="(subEvent?.rankingGroups?.length ?? 0) > 0"
+              >*</span
+            ></mat-list-item
           >
           <mat-list style="margin-left: 30px">
             <div *ngFor="let draw of subEvent.drawCompetitions">
               <a [routerLink]="[draw.id]"
-                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+                ><mat-list-item class="competition-draw">{{
+                  draw.name
+                }}</mat-list-item></a
               >
             </div>
           </mat-list>
@@ -58,12 +66,16 @@
         <ng-container *ngFor="let subEvent of this.subEventsF$ | async">
           <mat-list-item
             >{{ subEvent.name }} {{ subEvent.eventType
-            }}<span *ngIf="(subEvent?.rankingGroups?.length ?? 0) > 0">*</span></mat-list-item
+            }}<span *ngIf="(subEvent?.rankingGroups?.length ?? 0) > 0"
+              >*</span
+            ></mat-list-item
           >
           <mat-list style="margin-left: 30px">
             <div *ngFor="let draw of subEvent.drawCompetitions">
               <a [routerLink]="[draw.id]"
-                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+                ><mat-list-item class="competition-draw">{{
+                  draw.name
+                }}</mat-list-item></a
               >
             </div>
           </mat-list>
@@ -75,12 +87,16 @@
         <ng-container *ngFor="let subEvent of this.subEventsMX$ | async">
           <mat-list-item
             >{{ subEvent.name }} {{ subEvent.eventType
-            }}<span *ngIf="(subEvent?.rankingGroups?.length ?? 0) > 0">*</span></mat-list-item
+            }}<span *ngIf="(subEvent?.rankingGroups?.length ?? 0) > 0"
+              >*</span
+            ></mat-list-item
           >
           <mat-list style="margin-left: 30px">
             <div *ngFor="let draw of subEvent.drawCompetitions">
               <a [routerLink]="[draw.id]"
-                ><mat-list-item class="competition-draw">{{ draw.name }}</mat-list-item></a
+                ><mat-list-item class="competition-draw">{{
+                  draw.name
+                }}</mat-list-item></a
               >
             </div>
           </mat-list>

@@ -2,4 +2,3 @@
 export * from './club-fields';
 export * from './role-fields';
 // end:ng42.barrel
-

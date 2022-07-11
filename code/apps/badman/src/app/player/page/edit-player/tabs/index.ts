@@ -6,4 +6,3 @@ export * from './edit-player-fields';
 export * from './edit-ranking';
 export * from './edit-ranking-all';
 // end:ng42.barrel
-

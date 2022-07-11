@@ -37,14 +37,22 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
 
   private async _processDraws({
     subEvent,
-    internalId
+    internalId,
   }: {
     subEvent: SubEventTournament;
     internalId: number;
   }) {
-    const draws = await subEvent.getDrawTournaments({ transaction: this.transaction });
-    const canChange = moment().subtract(1, 'month').isBefore(this.event.firstDay);
-    const visualDraws = await this.visualService.getDraws(this.visualTournament.Code, internalId, !canChange);
+    const draws = await subEvent.getDrawTournaments({
+      transaction: this.transaction,
+    });
+    const canChange = moment()
+      .subtract(1, 'month')
+      .isBefore(this.event.firstDay);
+    const visualDraws = await this.visualService.getDraws(
+      this.visualTournament.Code,
+      internalId,
+      !canChange
+    );
     for (const xmlDraw of visualDraws) {
       if (!xmlDraw) {
         continue;
@@ -64,10 +72,10 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
         await DrawTournament.destroy({
           where: {
             id: {
-              [Op.in]: rest.map((e) => e.id)
-            }
+              [Op.in]: rest.map((e) => e.id),
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
 
@@ -83,10 +91,13 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
               : xmlDraw.TypeID === XmlDrawTypeID.RoundRobin ||
                 xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
               ? DrawType.POULE
-              : DrawType.QUALIFICATION
+              : DrawType.QUALIFICATION,
         }).save({ transaction: this.transaction });
       }
-      this._dbDraws.push({ draw: dbDraw, internalId: parseInt(xmlDraw.Code, 10) });
+      this._dbDraws.push({
+        draw: dbDraw,
+        internalId: parseInt(xmlDraw.Code, 10),
+      });
     }
 
     // Remove draw that have no visual code
@@ -96,9 +107,9 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
         await Game.findAll({
           attributes: ['id'],
           where: {
-            drawId: removed.id
+            drawId: removed.id,
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         })
       )
         ?.map((g) => g.id)
@@ -108,10 +119,10 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
         await Game.destroy({
           where: {
             id: {
-              [Op.in]: gameIds
-            }
+              [Op.in]: gameIds,
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
       await removed.destroy({ transaction: this.transaction });

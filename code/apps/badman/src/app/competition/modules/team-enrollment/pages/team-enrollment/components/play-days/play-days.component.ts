@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import moment from 'moment';
@@ -24,9 +31,7 @@ export class PlayDaysComponent implements OnInit {
 
   isNew = false;
 
-  constructor(
-    @Inject(MatStepper) private _stepper: MatStepper,
-  ) {
+  constructor(@Inject(MatStepper) private _stepper: MatStepper) {
     if (!_stepper) {
       throw new Error('Stepper is not provided');
     }

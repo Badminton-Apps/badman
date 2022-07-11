@@ -26,7 +26,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50110338'
+      memberId: '50110338',
     };
   }
 
@@ -41,7 +41,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50108104'
+      memberId: '50108104',
     };
   }
 
@@ -56,7 +56,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50111020'
+      memberId: '50111020',
     };
   }
 
@@ -71,7 +71,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50110337'
+      memberId: '50110337',
     };
   }
 
@@ -86,7 +86,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50116742'
+      memberId: '50116742',
     };
   }
 
@@ -101,7 +101,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50716581'
+      memberId: '50716581',
     };
   }
 
@@ -116,7 +116,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50108141'
+      memberId: '50108141',
     };
   }
 
@@ -131,7 +131,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50114827'
+      memberId: '50114827',
     };
   }
 
@@ -146,7 +146,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50110011'
+      memberId: '50110011',
     };
   }
 
@@ -164,7 +164,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50104587'
+      memberId: '50104587',
     };
   }
 
@@ -176,7 +176,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50130927'
+      memberId: '50130927',
     };
   }
 
@@ -191,7 +191,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50073670'
+      memberId: '50073670',
     };
   }
 
@@ -203,7 +203,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Van Herteryck'
+      lastName: 'Van Herteryck',
     };
   }
 
@@ -211,7 +211,7 @@ export const correctWrongPlayers = (player: {
   if (player.memberId === '50100297') {
     return {
       ...player,
-      firstName: 'Cy-Jay'
+      firstName: 'Cy-Jay',
     };
   }
 
@@ -223,7 +223,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Hild'
+      firstName: 'Hild',
     };
   }
 
@@ -239,7 +239,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       memberId: '30007379',
-      lastName: 'Dauphinais'
+      lastName: 'Dauphinais',
     };
   }
   // Léa Dauphinais
@@ -251,7 +251,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Léa',
-      lastName: 'Dauphinais'
+      lastName: 'Dauphinais',
     };
   }
   // Jean-Pierre Benjamin
@@ -262,7 +262,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Jean-Pierre'
+      firstName: 'Jean-Pierre',
     };
   }
   // Birthe Van Den Berg
@@ -274,7 +274,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Birthe',
-      lastName: 'Van Den Berg'
+      lastName: 'Van Den Berg',
     };
   }
   // Fae Boonen
@@ -285,7 +285,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50417193'
+      memberId: '50417193',
     };
   }
   // Amber Boonen
@@ -296,7 +296,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50281089'
+      memberId: '50281089',
     };
   }
   // Eloime Bossuwé
@@ -307,7 +307,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Bossuwé'
+      lastName: 'Bossuwé',
     };
   }
   // Margot Bossuwé
@@ -318,7 +318,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Bossuwé'
+      lastName: 'Bossuwé',
     };
   }
   // Merel Braeckman
@@ -329,7 +329,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Braeckman'
+      lastName: 'Braeckman',
     };
   }
   // Eubil Shannon Cabije
@@ -344,7 +344,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       memberId: '50115058',
-      firstName: 'Eubil Shannon'
+      firstName: 'Eubil Shannon',
     };
   }
   // Leila De Cabooter
@@ -355,7 +355,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'De Cabooter'
+      lastName: 'De Cabooter',
     };
   }
   // Steve Aylott
@@ -366,7 +366,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Aylott'
+      lastName: 'Aylott',
     };
   }
 
@@ -378,7 +378,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Celine'
+      firstName: 'Celine',
     };
   }
   // Jude Ashman
@@ -389,7 +389,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Jude'
+      firstName: 'Jude',
     };
   }
   // Farid Fouaad
@@ -400,7 +400,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Fouaad'
+      lastName: 'Fouaad',
     };
   }
   // Matisse Ghesquiere
@@ -415,7 +415,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Matisse',
-      lastName: 'GhesquièRe'
+      lastName: 'GhesquièRe',
     };
   }
   // Wolf Hoebeke
@@ -426,7 +426,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50414194'
+      memberId: '50414194',
     };
   }
   // Hamzah Anees Mahmood
@@ -451,7 +451,7 @@ export const correctWrongPlayers = (player: {
       ...player,
       memberId: '1290451',
       firstName: 'Hamzah',
-      lastName: 'Anees Mahmood'
+      lastName: 'Anees Mahmood',
     };
   }
 
@@ -464,7 +464,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Umair',
-      lastName: 'Javaid'
+      lastName: 'Javaid',
     };
   }
   // Kaat Keymolen
@@ -475,7 +475,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50923374'
+      memberId: '50923374',
     };
   }
   // Ine Lanckriet
@@ -487,7 +487,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Ine',
-      lastName: 'Lanckriet'
+      lastName: 'Lanckriet',
     };
   }
   // Seung Woo (Peter) Lee
@@ -499,7 +499,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Seung Woo (Peter)',
-      memberId: '30074516'
+      memberId: '30074516',
     };
   }
   // Maarten Lenaerts
@@ -510,7 +510,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Lenaerts'
+      lastName: 'Lenaerts',
     };
   }
   // Pieter Barbé
@@ -521,7 +521,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Barbé'
+      lastName: 'Barbé',
     };
   }
   // Sielke Barrez
@@ -532,7 +532,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Sielke'
+      firstName: 'Sielke',
     };
   }
   // Aurélie Baijot
@@ -546,7 +546,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Aurélie'
+      firstName: 'Aurélie',
     };
   }
   // Louise Balthazar
@@ -557,7 +557,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Balthazar'
+      lastName: 'Balthazar',
     };
   }
   // Jimmy Beliën
@@ -571,7 +571,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Beliën'
+      lastName: 'Beliën',
     };
   }
   //  Mélanie Bergamo
@@ -585,7 +585,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Mélanie'
+      firstName: 'Mélanie',
     };
   }
 
@@ -600,7 +600,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Célestine'
+      firstName: 'Célestine',
     };
   }
   //  Sébastien Binet
@@ -614,7 +614,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Sébastien'
+      firstName: 'Sébastien',
     };
   }
   //  Stéphane Bol
@@ -628,7 +628,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Stéphane'
+      firstName: 'Stéphane',
     };
   }
   //  Céline Bonnet
@@ -642,7 +642,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Céline'
+      firstName: 'Céline',
     };
   }
   //  François Boucherie
@@ -656,7 +656,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'François'
+      firstName: 'François',
     };
   }
   //  Mackenzie Bougelet
@@ -667,7 +667,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Mackenzie'
+      firstName: 'Mackenzie',
     };
   }
   //  Serge Bouhière
@@ -681,14 +681,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Bouhière'
+      lastName: 'Bouhière',
     };
   }
   //  Jean-Michel Bourgois
   if (player.memberId === '30046508' && player.lastName === 'Bourgois') {
     return {
       ...player,
-      firstName: 'Jean-Michel'
+      firstName: 'Jean-Michel',
     };
   }
 
@@ -696,7 +696,7 @@ export const correctWrongPlayers = (player: {
   if (player.memberId === '30033462' && player.lastName === 'Wiltgen') {
     return {
       ...player,
-      firstName: 'Benoît'
+      firstName: 'Benoît',
     };
   }
 
@@ -704,14 +704,14 @@ export const correctWrongPlayers = (player: {
   if (player.memberId === '30021686' && player.lastName === 'Boursoit') {
     return {
       ...player,
-      firstName: 'Benoît'
+      firstName: 'Benoît',
     };
   }
   //  Jérôme Braziewicz
   if (player.memberId === '30023601' && player.lastName === 'Braziewicz') {
     return {
       ...player,
-      firstName: 'Jérôme'
+      firstName: 'Jérôme',
     };
   }
   //  Marie Laure Brimbois
@@ -723,7 +723,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Marie Laure',
-      lastName: 'Brimbois'
+      lastName: 'Brimbois',
     };
   }
   //  Kay-Leigh Bruers
@@ -734,7 +734,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Kay-Leigh'
+      firstName: 'Kay-Leigh',
     };
   }
   //  Loria Buccoleri
@@ -745,14 +745,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Loria'
+      firstName: 'Loria',
     };
   }
   //  Louise Buckinx
   if (player.memberId === '50115212' && player.firstName === 'Louise') {
     return {
       ...player,
-      lastName: 'Buckinx'
+      lastName: 'Buckinx',
     };
   }
   //  Gauthier Calus
@@ -763,7 +763,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Gauthier'
+      firstName: 'Gauthier',
     };
   }
 
@@ -775,7 +775,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Alexandre'
+      firstName: 'Alexandre',
     };
   }
   //  Adrian Ciscato
@@ -787,7 +787,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Adrian',
-      lastName: 'Ciscatto'
+      lastName: 'Ciscatto',
     };
   }
   //  Arne Bossaert
@@ -798,7 +798,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Bossaert'
+      lastName: 'Bossaert',
     };
   }
   //  Fabian Colard
@@ -809,14 +809,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Fabian'
+      firstName: 'Fabian',
     };
   }
   //  Mathieu Coppée
   if (player.memberId === '30006294' && player.firstName === 'Mathieu') {
     return {
       ...player,
-      lastName: 'Coppée'
+      lastName: 'Coppée',
     };
   }
   //  Anne Declerck
@@ -827,7 +827,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Declerck'
+      lastName: 'Declerck',
     };
   }
   //  Geoffrey De Ketelaere
@@ -838,7 +838,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Geoffrey'
+      firstName: 'Geoffrey',
     };
   }
   //  Cédric De Leeuw
@@ -849,7 +849,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Cédric'
+      firstName: 'Cédric',
     };
   }
   //  Mathias De Meyer
@@ -860,14 +860,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Mathias'
+      firstName: 'Mathias',
     };
   }
   //  Michaël De Rechter
   if (player.memberId === '50071454' && player.lastName === 'De Rechter') {
     return {
       ...player,
-      firstName: 'Michaël'
+      firstName: 'Michaël',
     };
   }
   //  Daan De Vrij
@@ -878,7 +878,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'De Vrij'
+      lastName: 'De Vrij',
     };
   }
   //  Ofelie De Wel
@@ -889,7 +889,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Ofelie'
+      firstName: 'Ofelie',
     };
   }
   //  Luka De Wilde
@@ -900,7 +900,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Luka'
+      firstName: 'Luka',
     };
   }
   //  Peter Decaluwé
@@ -911,7 +911,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Decaluwé'
+      lastName: 'Decaluwé',
     };
   }
   //  Jean-Pierre Delplanque
@@ -922,7 +922,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Jean-Pierre'
+      firstName: 'Jean-Pierre',
     };
   }
 
@@ -934,28 +934,28 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Marie'
+      firstName: 'Marie',
     };
   }
   //  Jérémie Denis
   if (player.memberId === '30049255' && player.lastName === 'Denis') {
     return {
       ...player,
-      firstName: 'Jérémie'
+      firstName: 'Jérémie',
     };
   }
   //  Stephanie Deroo
   if (player.memberId === '30036428' && player.lastName === 'Deroo') {
     return {
       ...player,
-      firstName: 'Stéphanie'
+      firstName: 'Stéphanie',
     };
   }
   //  Jan Deschagt
   if (player.memberId === '50022254' && player.firstName === 'Jan') {
     return {
       ...player,
-      lastName: 'Deschagt'
+      lastName: 'Deschagt',
     };
   }
   //  Sam Dewaegenaere
@@ -966,7 +966,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Dewaegenaere'
+      lastName: 'Dewaegenaere',
     };
   }
 
@@ -978,7 +978,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Noé'
+      firstName: 'Noé',
     };
   }
   //  Karyn Duggan
@@ -989,14 +989,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Karyn'
+      firstName: 'Karyn',
     };
   }
   //  Eddy Duprée
   if (player.memberId === '890356' && player.firstName === 'Eddy') {
     return {
       ...player,
-      lastName: 'Duprée'
+      lastName: 'Duprée',
     };
   }
   //  Els Duré
@@ -1007,7 +1007,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Duré'
+      lastName: 'Duré',
     };
   }
   //  François Dusart
@@ -1019,7 +1019,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'François',
-      lastName: 'Dusart'
+      lastName: 'Dusart',
     };
   }
   //  Sarina Eerdekens
@@ -1030,7 +1030,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Sarina'
+      firstName: 'Sarina',
     };
   }
   //  Edwin Ekiring
@@ -1041,7 +1041,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Ekiring'
+      lastName: 'Ekiring',
     };
   }
   //  Manikandan Elumalai
@@ -1052,7 +1052,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Elumalai'
+      lastName: 'Elumalai',
     };
   }
   //  Marie Pierre Even
@@ -1063,14 +1063,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Marie Pierre'
+      firstName: 'Marie Pierre',
     };
   }
   //  Cédric Falter
   if (player.memberId === '30051179' && player.lastName === 'Falter') {
     return {
       ...player,
-      firstName: 'Cédric'
+      firstName: 'Cédric',
     };
   }
   //  Michael Fedoroff
@@ -1081,14 +1081,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Fedoroff'
+      lastName: 'Fedoroff',
     };
   }
   //  Lukas Félix
   if (player.memberId === '50098113' && player.firstName === 'Lukas') {
     return {
       ...player,
-      lastName: 'Félix'
+      lastName: 'Félix',
     };
   }
   //  Marie Anne Fieve
@@ -1100,7 +1100,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Marie Anne',
-      lastName: 'Fieve'
+      lastName: 'Fieve',
     };
   }
   //  Mathieu Flamé
@@ -1111,7 +1111,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Flamé'
+      lastName: 'Flamé',
     };
   }
   //  Michaël Floré
@@ -1122,7 +1122,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Michaël',
-      lastName: 'Floré'
+      lastName: 'Floré',
     };
   }
   //  Grégory Frecourt
@@ -1136,7 +1136,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Grégory'
+      firstName: 'Grégory',
     };
   }
   //  Christine Gabriel
@@ -1147,7 +1147,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Christine'
+      firstName: 'Christine',
     };
   }
   //  Jurgen Gabriëls
@@ -1158,7 +1158,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Gabriëls'
+      lastName: 'Gabriëls',
     };
   }
   //  Heide Gabriëls
@@ -1169,7 +1169,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Gabriëls'
+      lastName: 'Gabriëls',
     };
   }
   //  Maude Galloy
@@ -1180,7 +1180,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Galloy'
+      lastName: 'Galloy',
     };
   }
   //  Tomas Garcia Soler
@@ -1191,7 +1191,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Tomas'
+      firstName: 'Tomas',
     };
   }
   //  Niels Garrein
@@ -1202,7 +1202,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Garrein'
+      lastName: 'Garrein',
     };
   }
   //  Frédéric Gaston
@@ -1216,7 +1216,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Fréderic'
+      firstName: 'Fréderic',
     };
   }
   //  Wout Geldhof
@@ -1227,7 +1227,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Geldhof'
+      lastName: 'Geldhof',
     };
   }
   //  Maïté Lamont
@@ -1244,7 +1244,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Maïté'
+      firstName: 'Maïté',
     };
   }
 
@@ -1259,7 +1259,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Björge'
+      firstName: 'Björge',
     };
   }
 
@@ -1271,7 +1271,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Robberecht'
+      lastName: 'Robberecht',
     };
   }
 
@@ -1284,7 +1284,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       lastName: 'Rajkumar',
-      firstName: 'Saravana'
+      firstName: 'Saravana',
     };
   }
 
@@ -1296,14 +1296,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Ilé'
+      firstName: 'Ilé',
     };
   }
   //  Glenn Van der Avoort
   if (player.memberId === '50100530' && player.firstName === 'Glenn') {
     return {
       ...player,
-      lastName: 'Van Der Avoort'
+      lastName: 'Van Der Avoort',
     };
   }
 
@@ -1315,14 +1315,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Liese'
+      firstName: 'Liese',
     };
   }
   //  Jürgen voet
   if (player.memberId === '50082610' && player.lastName === 'Voet') {
     return {
       ...player,
-      firstName: 'Jürgen'
+      firstName: 'Jürgen',
     };
   }
 
@@ -1337,7 +1337,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Jérémy'
+      firstName: 'Jérémy',
     };
   }
 
@@ -1352,7 +1352,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'François'
+      firstName: 'François',
     };
   }
 
@@ -1367,7 +1367,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Cécile'
+      firstName: 'Cécile',
     };
   }
 
@@ -1379,7 +1379,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Nagels'
+      lastName: 'Nagels',
     };
   }
 
@@ -1391,7 +1391,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Nazarova'
+      lastName: 'Nazarova',
     };
   }
 
@@ -1404,7 +1404,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       lastName: 'Poniyah',
-      firstName: 'Nia'
+      firstName: 'Nia',
     };
   }
 
@@ -1419,7 +1419,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Léon'
+      firstName: 'Léon',
     };
   }
 
@@ -1431,7 +1431,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Erik'
+      firstName: 'Erik',
     };
   }
 
@@ -1443,7 +1443,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Henrik'
+      firstName: 'Henrik',
     };
   }
 
@@ -1459,7 +1459,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Luisa',
-      memberId: '30081368'
+      memberId: '30081368',
     };
   }
 
@@ -1475,7 +1475,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Kilaïm',
-      lastName: 'Panggih Purwoko'
+      lastName: 'Panggih Purwoko',
     };
   }
   //  Hélène Poncelet
@@ -1486,7 +1486,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'HéLèNe'
+      firstName: 'HéLèNe',
     };
   }
   //  Claire Pollak
@@ -1497,7 +1497,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Pollak'
+      lastName: 'Pollak',
     };
   }
 
@@ -1509,7 +1509,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Anne-Laure'
+      firstName: 'Anne-Laure',
     };
   }
 
@@ -1521,7 +1521,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Quang Ham'
+      firstName: 'Quang Ham',
     };
   }
 
@@ -1536,7 +1536,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'François'
+      firstName: 'François',
     };
   }
 
@@ -1551,7 +1551,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Rémi'
+      firstName: 'Rémi',
     };
   }
 
@@ -1563,7 +1563,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Natalia'
+      firstName: 'Natalia',
     };
   }
 
@@ -1575,7 +1575,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Leonie'
+      firstName: 'Leonie',
     };
   }
 
@@ -1587,7 +1587,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Erik Jr.'
+      firstName: 'Erik Jr.',
     };
   }
 
@@ -1600,7 +1600,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Daniel',
-      lastName: 'Ducat'
+      lastName: 'Ducat',
     };
   }
 
@@ -1612,7 +1612,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Brys'
+      lastName: 'Brys',
     };
   }
 
@@ -1624,7 +1624,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'De Nolf'
+      lastName: 'De Nolf',
     };
   }
 
@@ -1636,7 +1636,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50057535'
+      memberId: '50057535',
     };
   }
   //  Serge Rusak
@@ -1647,7 +1647,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '30035358'
+      memberId: '30035358',
     };
   }
 
@@ -1659,7 +1659,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Zulfiqar Ali'
+      firstName: 'Zulfiqar Ali',
     };
   }
 
@@ -1668,7 +1668,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Björn',
-      lastName: 'Van Nieuwenhuyse'
+      lastName: 'Van Nieuwenhuyse',
     };
   }
 
@@ -1680,7 +1680,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Pleysier'
+      lastName: 'Pleysier',
     };
   }
 
@@ -1692,7 +1692,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Tourné'
+      lastName: 'Tourné',
     };
   }
 
@@ -1704,7 +1704,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Van Dyck'
+      lastName: 'Van Dyck',
     };
   }
 
@@ -1717,7 +1717,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Mathieu',
-      lastName: 'Dekeyser'
+      lastName: 'Dekeyser',
     };
   }
 
@@ -1729,7 +1729,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Sylvie'
+      firstName: 'Sylvie',
     };
   }
 
@@ -1741,7 +1741,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Annelore'
+      firstName: 'Annelore',
     };
   }
 
@@ -1753,7 +1753,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Charlot'
+      firstName: 'Charlot',
     };
   }
 
@@ -1765,7 +1765,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Vanoirbeek'
+      lastName: 'Vanoirbeek',
     };
   }
 
@@ -1778,7 +1778,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Pieter',
-      lastName: 'De Bleeckere'
+      lastName: 'De Bleeckere',
     };
   }
 
@@ -1790,7 +1790,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'StéPhanie'
+      firstName: 'StéPhanie',
     };
   }
 
@@ -1802,7 +1802,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Vanhulle'
+      lastName: 'Vanhulle',
     };
   }
 
@@ -1815,7 +1815,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Lieselot',
-      lastName: 'De Bleeckere'
+      lastName: 'De Bleeckere',
     };
   }
 
@@ -1827,7 +1827,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Dianika'
+      lastName: 'Dianika',
     };
   }
 
@@ -1840,7 +1840,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Lobke',
-      lastName: 'Van Den Berg'
+      lastName: 'Van Den Berg',
     };
   }
 
@@ -1852,7 +1852,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Vandekinderen'
+      lastName: 'Vandekinderen',
     };
   }
 
@@ -1864,7 +1864,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Noel'
+      firstName: 'Noel',
     };
   }
 
@@ -1876,7 +1876,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'CéLine'
+      firstName: 'CéLine',
     };
   }
 
@@ -1888,7 +1888,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Lies'
+      firstName: 'Lies',
     };
   }
 
@@ -1900,7 +1900,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Jordi'
+      firstName: 'Jordi',
     };
   }
 
@@ -1912,7 +1912,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'De Graeve'
+      lastName: 'De Graeve',
     };
   }
 
@@ -1924,7 +1924,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Beatrice'
+      firstName: 'Beatrice',
     };
   }
 
@@ -1936,7 +1936,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Vandecandelaere'
+      lastName: 'Vandecandelaere',
     };
   }
 
@@ -1949,7 +1949,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Shashvat',
-      lastName: 'Shash'
+      lastName: 'Shash',
     };
   }
 
@@ -1961,7 +1961,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'StéPhan'
+      firstName: 'StéPhan',
     };
   }
 
@@ -1973,7 +1973,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Van Haver'
+      lastName: 'Van Haver',
     };
   }
 
@@ -1986,7 +1986,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Nicolas',
-      lastName: 'Van Den Branden'
+      lastName: 'Van Den Branden',
     };
   }
 
@@ -1998,7 +1998,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Janseghers'
+      lastName: 'Janseghers',
     };
   }
 
@@ -2010,7 +2010,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Janseghers'
+      lastName: 'Janseghers',
     };
   }
 
@@ -2022,7 +2022,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'åSberg'
+      lastName: 'åSberg',
     };
   }
 
@@ -2034,7 +2034,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Vannoppen'
+      lastName: 'Vannoppen',
     };
   }
 
@@ -2046,7 +2046,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'CéDric'
+      firstName: 'CéDric',
     };
   }
 
@@ -2058,7 +2058,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Van Dael'
+      lastName: 'Van Dael',
     };
   }
 
@@ -2070,7 +2070,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Vanlerberghe'
+      lastName: 'Vanlerberghe',
     };
   }
 
@@ -2082,7 +2082,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Lea'
+      firstName: 'Lea',
     };
   }
 
@@ -2094,7 +2094,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Gabor'
+      firstName: 'Gabor',
     };
   }
 
@@ -2106,2645 +2106,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Rindertsma'
-    };
-  }
-
-  // Dirkjan Slijkoord
-  if (
-    player.memberId === '539953' &&
-    player.firstName === 'Dirkjan' &&
-    player.lastName === 'Slijkoord'
-  ) {
-    return {
-      ...player,
-      firstName: 'Dirk Jan'
-    };
-  }
-
-  // Sanne Custers-Meijers
-  if (
-    player.memberId === '592353' &&
-    player.firstName === 'Sanne' &&
-    player.lastName === 'Custers-Meijers'
-  ) {
-    return {
-      ...player,
-      lastName: 'Meijers'
-    };
-  }
-
-  // Angelique Hoogstate De Vos
-  if (
-    player.memberId === '813217' &&
-    player.firstName === 'Angelique' &&
-    player.lastName === 'Hoogstate De Vos'
-  ) {
-    return {
-      ...player,
-      lastName: 'De Vos'
-    };
-  }
-
-  // Angelique Hoogstrate - De Vos
-  if (
-    player.memberId === '813217' &&
-    player.firstName === 'Angelique' &&
-    player.lastName === 'Hoogstrate - De Vos'
-  ) {
-    return {
-      ...player,
-      lastName: 'De Vos'
-    };
-  }
-
-  // Evelien Straaijer
-  if (
-    player.memberId === '813749' &&
-    player.firstName === 'Evelien' &&
-    player.lastName === 'Straaijer'
-  ) {
-    return {
-      ...player,
-      firstName: 'Eveline'
-    };
-  }
-
-  // Levy Mathieu
-  if (
-    player.memberId === '30003453' &&
-    player.firstName === 'Levy' &&
-    player.lastName === 'Mathieu'
-  ) {
-    return {
-      ...player,
-      firstName: 'LéVy'
-    };
-  }
-
-  // Valery Grotte
-  if (
-    player.memberId === '30004574' &&
-    player.firstName === 'Valery' &&
-    player.lastName === 'Grotte'
-  ) {
-    return {
-      ...player,
-      lastName: 'Grote'
-    };
-  }
-
-  // Jean  Francois Lagasse
-  if (
-    player.memberId === '30017529' &&
-    player.firstName === 'Jean  Francois' &&
-    player.lastName === 'Lagasse'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jean-FrançOis'
-    };
-  }
-
-  // Didier Sacre
-  if (
-    player.memberId === '30020393' &&
-    player.firstName === 'Didier' &&
-    player.lastName === 'Sacre'
-  ) {
-    return {
-      ...player,
-      lastName: 'Sacré'
-    };
-  }
-
-  // Amelie Pierre
-  if (
-    player.memberId === '30021882' &&
-    player.firstName === 'Amelie' &&
-    player.lastName === 'Pierre'
-  ) {
-    return {
-      ...player,
-      firstName: 'AméLie'
-    };
-  }
-
-  // BenoîT Tielmance
-  if (
-    player.memberId === '30022519' &&
-    player.firstName === 'BenoîT' &&
-    player.lastName === 'Tielmance'
-  ) {
-    return {
-      ...player,
-      firstName: 'Benoit'
-    };
-  }
-
-  // Benoit Lefevre
-  if (
-    player.memberId === '30026092' &&
-    player.firstName === 'Benoit' &&
-    player.lastName === 'Lefevre'
-  ) {
-    return {
-      ...player,
-      firstName: 'BenoîT',
-      lastName: 'LefèVre'
-    };
-  }
-
-  // Stephanie Gerard
-  if (
-    player.memberId === '30027712' &&
-    player.firstName === 'Stephanie' &&
-    player.lastName === 'Gerard'
-  ) {
-    return {
-      ...player,
-      firstName: 'StéPhanie',
-      lastName: 'GéRard'
-    };
-  }
-
-  // Pierre  Manuel Wauthier
-  if (player.memberId === '30028879') {
-    return {
-      ...player,
-      firstName: 'Pierre-Manuel',
-      lastName: 'Wauthier'
-    };
-  }
-
-  // Jean  Benoit Verbeke
-  if (
-    player.memberId === '30030887' &&
-    player.firstName === 'Jean  Benoit' &&
-    player.lastName === 'Verbeke'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jean-Benoit',
-      lastName: 'Verbeke'
-    };
-  }
-
-  // Stephane Martinage
-  if (
-    player.memberId === '30032619' &&
-    player.firstName === 'Stephane' &&
-    player.lastName === 'Martinage'
-  ) {
-    return {
-      ...player,
-      firstName: 'StéPhane'
-    };
-  }
-
-  // EléOnore Trepant
-  if (
-    player.memberId === '30033241' &&
-    player.firstName === 'EléOnore' &&
-    player.lastName === 'Trepant'
-  ) {
-    return {
-      ...player,
-      firstName: 'Eleonore'
-    };
-  }
-
-  // Lejoint Amaury
-  if (
-    player.memberId === '30034823' &&
-    player.firstName === 'Lejoint' &&
-    player.lastName === 'Amaury'
-  ) {
-    return {
-      ...player,
-      firstName: 'Amaury',
-      lastName: 'Lejoint'
-    };
-  }
-
-  // Christopher Witgens
-  if (
-    player.memberId === '30038053' &&
-    player.firstName === 'Christopher' &&
-    player.lastName === 'Witgens'
-  ) {
-    return {
-      ...player,
-      lastName: 'Wintgens'
-    };
-  }
-
-  // Cedric Batsle
-  if (
-    player.memberId === '30038192' &&
-    player.firstName === 'Cedric' &&
-    player.lastName === 'Batsle'
-  ) {
-    return {
-      ...player,
-      firstName: 'CéDric'
-    };
-  }
-
-  // Pierre-Yves GéRard
-  if (
-    player.memberId === '30039140' &&
-    player.firstName === 'Pierre-Yves' &&
-    player.lastName === 'GéRard'
-  ) {
-    return {
-      ...player,
-      lastName: 'Gerard'
-    };
-  }
-
-  // Pierre  Yves Soille
-  if (
-    player.memberId === '30043113' &&
-    player.firstName === 'Pierre  Yves' &&
-    player.lastName === 'Soille'
-  ) {
-    return {
-      ...player,
-      firstName: 'Pierre-Yves'
-    };
-  }
-
-  // AuréLie Deblandre
-  if (
-    player.memberId === '30044089' &&
-    player.firstName === 'AuréLie' &&
-    player.lastName === 'Deblandre'
-  ) {
-    return {
-      ...player,
-      firstName: 'Aurelie'
-    };
-  }
-
-  // Maite Wouters
-  if (
-    player.memberId === '30046220' &&
-    player.firstName === 'Maite' &&
-    player.lastName === 'Wouters'
-  ) {
-    return {
-      ...player,
-      firstName: 'MaïTé'
-    };
-  }
-
-  // Gregoire Gosin
-  if (
-    player.memberId === '30047443' &&
-    player.firstName === 'Gregoire' &&
-    player.lastName === 'Gosin'
-  ) {
-    return {
-      ...player,
-      firstName: 'GréGoire'
-    };
-  }
-
-  // Selena Kaye
-  if (player.memberId === '30052363') {
-    return {
-      ...player,
-      firstName: 'Séléna'
-    };
-  }
-
-  // Stephanie Tuerlinckx
-  if (
-    player.memberId === '30053891' &&
-    player.firstName === 'Stephanie' &&
-    player.lastName === 'Tuerlinckx'
-  ) {
-    return {
-      ...player,
-      firstName: 'Stéphanie'
-    };
-  }
-
-  // Boune Ratsamy
-  if (
-    player.memberId === '30053996' &&
-    player.firstName === 'Boune' &&
-    player.lastName === 'Ratsamy'
-  ) {
-    return {
-      ...player,
-      firstName: 'Som Boune'
-    };
-  }
-
-  // Alberic De Coster
-  if (player.memberId === '30054627') {
-    return {
-      ...player,
-      firstName: 'Albéric',
-      lastName: 'De Coster'
-    };
-  }
-
-  // Aurelien Vermylen
-  if (
-    player.memberId === '30056330' &&
-    player.firstName === 'Aurelien' &&
-    player.lastName === 'Vermylen'
-  ) {
-    return {
-      ...player,
-      firstName: 'AuréLien'
-    };
-  }
-
-  // StéPhane Vannitsen
-  if (
-    player.memberId === '30056343' &&
-    player.firstName === 'StéPhane' &&
-    player.lastName === 'Vannitsen'
-  ) {
-    return {
-      ...player,
-      lastName: 'Vannitsem'
-    };
-  }
-
-  // Isaac LéOnard
-  if (
-    player.memberId === '30061211' &&
-    player.firstName === 'Isaac' &&
-    player.lastName === 'LéOnard'
-  ) {
-    return {
-      ...player,
-      lastName: 'Leonard'
-    };
-  }
-
-  // Klels Adrien
-  if (
-    player.memberId === '30062249' &&
-    player.firstName === 'Klels' &&
-    player.lastName === 'Adrien'
-  ) {
-    return {
-      ...player,
-      firstName: 'Adrien',
-      lastName: 'Klels'
-    };
-  }
-
-  // Antoine Docquier
-  if (
-    player.memberId === '30062852' &&
-    player.firstName === 'Antoine' &&
-    player.lastName === 'Docquier'
-  ) {
-    return {
-      ...player,
-      lastName: 'Dockier'
-    };
-  }
-
-  // Nathalia Jasik
-  if (
-    player.memberId === '30063170' &&
-    player.firstName === 'Nathalia' &&
-    player.lastName === 'Jasik'
-  ) {
-    return {
-      ...player,
-      firstName: 'Natalia'
-    };
-  }
-
-  // Wang Ting Ting
-  if (
-    player.memberId === '30063557' &&
-    player.firstName === 'Wang' &&
-    player.lastName === 'Ting Ting'
-  ) {
-    return {
-      ...player,
-      firstName: 'Ting Ting',
-      lastName: 'Wang'
-    };
-  }
-
-  // Armand Frameree
-  if (
-    player.memberId === '30065484' &&
-    player.firstName === 'Armand' &&
-    player.lastName === 'Frameree'
-  ) {
-    return {
-      ...player,
-      lastName: 'Fameree'
-    };
-  }
-
-  // Lucas Jorrissen
-  if (
-    player.memberId === '30069214' &&
-    player.firstName === 'Lucas' &&
-    player.lastName === 'Jorrissen'
-  ) {
-    return {
-      ...player,
-      lastName: 'Jorissen'
-    };
-  }
-
-  // Gilis Thomas
-  if (
-    player.memberId === '30069334' &&
-    player.firstName === 'Gilis' &&
-    player.lastName === 'Thomas'
-  ) {
-    return {
-      ...player,
-      firstName: 'Thomas',
-      lastName: 'Gilis'
-    };
-  }
-
-  // Vervier Sarah
-  if (
-    player.memberId === '30070106' &&
-    player.firstName === 'Vervier' &&
-    player.lastName === 'Sarah'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sarah',
-      lastName: 'Vervier'
-    };
-  }
-
-  // Kilian Mine
-  if (
-    player.memberId === '30070837' &&
-    player.firstName === 'Kilian' &&
-    player.lastName === 'Mine'
-  ) {
-    return {
-      ...player,
-      firstName: 'Killian'
-    };
-  }
-
-  // Aymane Zaki
-  if (
-    player.memberId === '30073630' &&
-    player.firstName === 'Aymane' &&
-    player.lastName === 'Zaki'
-  ) {
-    return {
-      ...player,
-      lastName: 'Zaihi'
-    };
-  }
-
-  // JéRéMy Giltaire
-  if (
-    player.memberId === '30075748' &&
-    player.firstName === 'JéRéMy' &&
-    player.lastName === 'Giltaire'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jeremy'
-    };
-  }
-
-  // Hannah Koe N Gono
-  if (
-    player.memberId === '30078704' &&
-    player.firstName === 'Hannah' &&
-    player.lastName === 'Koe N Gono'
-  ) {
-    return {
-      ...player,
-      firstName: 'Hannah-Gabrielle'
-    };
-  }
-
-  // Eymen Zararsiz
-  if (
-    player.memberId === '30078949' &&
-    player.firstName === 'Eymen' &&
-    player.lastName === 'Zararsiz'
-  ) {
-    return {
-      ...player,
-      lastName: 'Zararsik'
-    };
-  }
-
-  // Maximilien Whitof
-  if (
-    player.memberId === '30079665' &&
-    player.firstName === 'Maximilien' &&
-    player.lastName === 'Whitof'
-  ) {
-    return {
-      ...player,
-      lastName: 'Withof'
-    };
-  }
-
-  // Pierre Serge
-  if (
-    player.memberId === '30079890' &&
-    player.firstName === 'Pierre' &&
-    player.lastName === 'Serge'
-  ) {
-    return {
-      ...player,
-      lastName: 'Segers'
-    };
-  }
-
-  // Rose Gulbin Kocak
-  if (
-    player.memberId === '30080660' &&
-    player.firstName === 'Rose Gulbin' &&
-    player.lastName === 'Kocak'
-  ) {
-    return {
-      ...player,
-      firstName: 'Rose'
-    };
-  }
-
-  // Carroll Elliot
-  if (
-    player.memberId === '30082851' &&
-    player.firstName === 'Carroll' &&
-    player.lastName === 'Elliot'
-  ) {
-    return {
-      ...player,
-      firstName: 'Elliot',
-      lastName: 'Carroll'
-    };
-  }
-
-  // AnaïS Leveaux
-  if (
-    player.memberId === '30084608' &&
-    player.firstName === 'AnaïS' &&
-    player.lastName === 'Leveaux'
-  ) {
-    return {
-      ...player,
-      lastName: 'Levaux'
-    };
-  }
-
-  // Ophelie Buntinx
-  if (
-    player.memberId === '30084731' &&
-    player.firstName === 'Ophelie' &&
-    player.lastName === 'Buntinx'
-  ) {
-    return {
-      ...player,
-      firstName: 'Ophélie'
-    };
-  }
-
-  // Victor Standaert
-  if (
-    player.memberId === '30088517' &&
-    player.firstName === 'Victor' &&
-    player.lastName === 'Standaert'
-  ) {
-    return {
-      ...player,
-      lastName: 'Standard'
-    };
-  }
-
-  // Sasha Juchelka
-  if (
-    player.memberId === '30096325' &&
-    player.firstName === 'Sasha' &&
-    player.lastName === 'Juchelka'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sacha'
-    };
-  }
-
-  // Line Xia Ruoya
-  if (
-    player.memberId === '30099095' &&
-    player.firstName === 'Line' &&
-    player.lastName === 'Xia Ruoya'
-  ) {
-    return {
-      ...player,
-      lastName: 'Xia'
-    };
-  }
-
-  // SöRen Lowie
-  if (
-    player.memberId === '50113368' &&
-    player.firstName === 'SöRen' &&
-    player.lastName === 'Lowie'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sören'
-    };
-  }
-
-  // Lowie SöRen
-  if (
-    player.memberId === '50113368' &&
-    player.firstName === 'Lowie' &&
-    player.lastName === 'SöRen'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sören',
-      lastName: 'Lowie'
-    };
-  }
-
-  // Boss Phatthanaphong
-  if (
-    player.memberId === '50115219' &&
-    player.firstName === 'Boss' &&
-    player.lastName === 'Phatthanaphong'
-  ) {
-    return {
-      ...player,
-      firstName: 'Rupchang'
-    };
-  }
-
-  // Birgit Van Acker
-  if (
-    player.memberId === '50115980' &&
-    player.firstName === 'Birgit' &&
-    player.lastName === 'Van Acker'
-  ) {
-    return {
-      ...player,
-      lastName: 'Van Ackere'
-    };
-  }
-
-  // Myrthe Van Parys
-  if (
-    player.memberId === '50116104' &&
-    player.firstName === 'Myrthe' &&
-    player.lastName === 'Van Parys'
-  ) {
-    return {
-      ...player,
-      firstName: 'Mirthe'
-    };
-  }
-
-  // Maelle Salmon
-  if (
-    player.memberId === '50116292' &&
-    player.firstName === 'Maelle' &&
-    player.lastName === 'Salmon'
-  ) {
-    return {
-      ...player,
-      firstName: 'Maëlle'
-    };
-  }
-
-  // MaëLle Salmon
-  if (
-    player.memberId === '50116292' &&
-    player.firstName === 'MaëLle' &&
-    player.lastName === 'Salmon'
-  ) {
-    return {
-      ...player,
-      firstName: 'Maëlle'
-    };
-  }
-
-  // Delsaert Lotte
-  if (
-    player.memberId === '50121383' &&
-    player.firstName === 'Delsaert' &&
-    player.lastName === 'Lotte'
-  ) {
-    return {
-      ...player,
-      firstName: 'Lotte',
-      lastName: 'Delsaert'
-    };
-  }
-
-  // Robbe Brees
-  if (
-    player.memberId === '50130927' &&
-    player.firstName === 'Robbe' &&
-    player.lastName === 'Brees'
-  ) {
-    return {
-      ...player,
-      memberId: '50103721'
-    };
-  }
-
-  // Mayil Vahanen
-  if (
-    player.memberId === '50153536' &&
-    player.firstName === 'Mayil' &&
-    player.lastName === 'Vahanen'
-  ) {
-    return {
-      ...player,
-      lastName: 'Vahanan'
-    };
-  }
-
-  // Margot Tuyvaerts
-  if (
-    player.memberId === '50192108' &&
-    player.firstName === 'Margot' &&
-    player.lastName === 'Tuyvaerts'
-  ) {
-    return {
-      ...player,
-      lastName: 'Tuyaerts'
-    };
-  }
-
-  // Sarkar Suvankar
-  if (
-    player.memberId === '50204378' &&
-    player.firstName === 'Sarkar' &&
-    player.lastName === 'Suvankar'
-  ) {
-    return {
-      ...player,
-      firstName: 'Suvankar',
-      lastName: 'Sarkar'
-    };
-  }
-
-  // Ciscato Adrian
-  if (
-    player.memberId === '50261126' &&
-    player.firstName === 'Ciscato' &&
-    player.lastName === 'Adrian'
-  ) {
-    return {
-      ...player,
-      firstName: 'Adrian',
-      lastName: 'Ciscato'
-    };
-  }
-
-  // Naveen Ale
-  if (
-    player.memberId === '50274201' &&
-    player.firstName === 'Naveen' &&
-    player.lastName === 'Ale'
-  ) {
-    return {
-      ...player,
-      firstName: 'Ale',
-      lastName: 'Naveen'
-    };
-  }
-
-  // Azeem Fowad Shahid
-  if (
-    player.memberId === '50307193' &&
-    player.firstName === 'Azeem Fowad' &&
-    player.lastName === 'Shahid'
-  ) {
-    return {
-      ...player,
-      firstName: 'Azeem Fawad'
-    };
-  }
-
-  // Kumar Vivek
-  if (
-    player.memberId === '50312138' &&
-    player.firstName === 'Kumar' &&
-    player.lastName === 'Vivek'
-  ) {
-    return {
-      ...player,
-      firstName: 'Vivek',
-      lastName: 'Kumar'
-    };
-  }
-
-  // Laszo Van Holder
-  if (
-    player.memberId === '50336606' &&
-    player.firstName === 'Laszo' &&
-    player.lastName === 'Van Holder'
-  ) {
-    return {
-      ...player,
-      firstName: 'Laszlo'
-    };
-  }
-
-  // Thonisone Saimpholphakdy
-  if (
-    player.memberId === '50346970' &&
-    player.firstName === 'Thonisone' &&
-    player.lastName === 'Saimpholphakdy'
-  ) {
-    return {
-      ...player,
-      firstName: 'Thanisone'
-    };
-  }
-
-  // Yana Wenzlauski
-  if (
-    player.memberId === '50402021' &&
-    player.firstName === 'Yana' &&
-    player.lastName === 'Wenzlauski'
-  ) {
-    return {
-      ...player,
-      lastName: 'Wenzlawski'
-    };
-  }
-
-  // Stefaan Herderweirt
-  if (
-    player.memberId === '50478672' &&
-    player.firstName === 'Stefaan' &&
-    player.lastName === 'Herderweirt'
-  ) {
-    return {
-      ...player,
-      lastName: 'Helderweirt'
-    };
-  }
-
-  // Evelien Kempes
-  if (
-    player.memberId === '50481312' &&
-    player.firstName === 'Evelien' &&
-    player.lastName === 'Kempes'
-  ) {
-    return {
-      ...player,
-      lastName: 'Kempkes'
-    };
-  }
-
-  // Po Liu Wan
-  if (
-    player.memberId === '50487671' &&
-    player.firstName === 'Po' &&
-    player.lastName === 'Liu Wan'
-  ) {
-    return {
-      ...player,
-      firstName: 'Wan Po',
-      lastName: 'Liu'
-    };
-  }
-
-  // Mirthe Higgins
-  if (
-    player.memberId === '50495186' &&
-    player.firstName === 'Mirthe' &&
-    player.lastName === 'Higgins'
-  ) {
-    return {
-      ...player,
-      firstName: 'Myrthe'
-    };
-  }
-
-  // Tim Peirlynck
-  if (
-    player.memberId === '50529986' &&
-    player.firstName === 'Tim' &&
-    player.lastName === 'Peirlynck'
-  ) {
-    return {
-      ...player,
-      lastName: 'Peirlinck'
-    };
-  }
-
-  // Tratsaert Nikita
-  if (
-    player.memberId === '50535366' &&
-    player.firstName === 'Tratsaert' &&
-    player.lastName === 'Nikita'
-  ) {
-    return {
-      ...player,
-      firstName: 'Nikita',
-      lastName: 'Tratsaert'
-    };
-  }
-
-  // Anne-Laure Heirebaut
-  if (
-    player.memberId === '50549537' &&
-    player.firstName === 'Anne-Laure' &&
-    player.lastName === 'Heirebaut'
-  ) {
-    return {
-      ...player,
-      lastName: 'Heirbaut'
-    };
-  }
-
-  // Vijayabaskar Selvaraj
-  if (player.memberId === '50596063') {
-    return {
-      ...player,
-      firstName: 'Vijaya baskar',
-      lastName: 'Selvaraj'
-    };
-  }
-
-  // Jelle Vandessel
-  if (
-    player.memberId === '50605909' &&
-    player.firstName === 'Jelle' &&
-    player.lastName === 'Vandessel'
-  ) {
-    return {
-      ...player,
-      lastName: 'Van Dessel'
-    };
-  }
-
-  // Tom Greven Donk
-  if (
-    player.memberId === '50630121' &&
-    player.firstName === 'Tom' &&
-    player.lastName === 'Greven Donk'
-  ) {
-    return {
-      ...player,
-      lastName: 'Grevendonk'
-    };
-  }
-
-  // Ines Sommers
-  if (
-    player.memberId === '50714465' &&
-    player.firstName === 'Ines' &&
-    player.lastName === 'Sommers'
-  ) {
-    return {
-      ...player,
-      lastName: 'Somers'
-    };
-  }
-
-  // Tim Verstraeten
-  if (
-    player.memberId === '50729292' &&
-    player.firstName === 'Tim' &&
-    player.lastName === 'Verstraeten'
-  ) {
-    return {
-      ...player,
-      lastName: 'Verstraete'
-    };
-  }
-
-  // Chandana Basavarajaiah
-  if (
-    player.memberId === '50780131' &&
-    player.firstName === 'Chandana' &&
-    player.lastName === 'Basavarajaiah'
-  ) {
-    return {
-      ...player,
-      firstName: 'Basavarajaiah',
-      lastName: 'Chandana'
-    };
-  }
-
-  // Brit Lemmens
-  if (
-    player.memberId === '50836676' &&
-    player.firstName === 'Brit' &&
-    player.lastName === 'Lemmens'
-  ) {
-    return {
-      ...player,
-      firstName: 'Britt'
-    };
-  }
-
-  // Renilde Sneyers
-  if (
-    player.memberId === '50932411' &&
-    player.firstName === 'Renilde' &&
-    player.lastName === 'Sneyers'
-  ) {
-    return {
-      ...player,
-      lastName: 'Snyers'
-    };
-  }
-
-  // Lui Wanpok
-  if (
-    player.memberId === '50946358' &&
-    player.firstName === 'Lui' &&
-    player.lastName === 'Wanpok'
-  ) {
-    return {
-      ...player,
-      firstName: 'Wan Pok',
-      lastName: 'Liu'
-    };
-  }
-
-  // Sanaullah Safiullah
-  if (
-    player.memberId === '50948539' &&
-    player.firstName === 'Sanaullah' &&
-    player.lastName === 'Safiullah'
-  ) {
-    return {
-      ...player,
-      firstName: 'Safiullah',
-      lastName: 'Sanaullah'
-    };
-  }
-
-  // Vik Van Der Sijpt
-  if (
-    player.memberId === '50971344' &&
-    player.firstName === 'Vik' &&
-    player.lastName === 'Van Der Sijpt'
-  ) {
-    return {
-      ...player,
-      lastName: 'Van Der Sypt'
-    };
-  }
-
-  // Monten Lindsey
-  if (
-    player.memberId === '50998625' &&
-    player.firstName === 'Monten' &&
-    player.lastName === 'Lindsey'
-  ) {
-    return {
-      ...player,
-      firstName: 'Lindsey',
-      lastName: 'Monten'
-    };
-  }
-
-  // Christopher Beron
-  if (player.firstName === 'Chris' && player.lastName === 'Beron') {
-    return {
-      ...player,
-      firstName: 'Christopher',
-      lastName: 'Beron',
-      memberId: '6461219'
-    };
-  }
-
-  // Yau Dan
-  if (
-    player.memberId === '1297262' &&
-    player.firstName === 'Yau' &&
-    player.lastName === 'Dan'
-  ) {
-    return {
-      ...player,
-      firstName: 'Dan',
-      lastName: 'You'
-    };
-  }
-
-  // Yana Wenzlauski
-  if (
-    player.memberId === '50402021' &&
-    player.firstName === 'Yana' &&
-    player.lastName === 'Wenzlauski'
-  ) {
-    return {
-      ...player,
-      lastName: 'Wenzlawski'
-    };
-  }
-
-  // Wilfried Janssen
-  if (
-    player.memberId === '1154272' &&
-    player.firstName === 'Wilfried' &&
-    player.lastName === 'Janssen'
-  ) {
-    return {
-      ...player,
-      firstName: 'Wilf'
-    };
-  }
-
-  // Wilf Janssens
-  if (
-    player.memberId === '1154272' &&
-    player.firstName === 'Wilf' &&
-    player.lastName === 'Janssens'
-  ) {
-    return {
-      ...player,
-      lastName: 'Janssen'
-    };
-  }
-
-  // Wang Ting Ting
-  if (
-    player.memberId === '30063557' &&
-    player.firstName === 'Wang' &&
-    player.lastName === 'Ting Ting'
-  ) {
-    return {
-      ...player,
-      firstName: 'Ting Ting',
-      lastName: 'Wang'
-    };
-  }
-
-  // Victoria Norris
-  if (
-    player.memberId === '1244126' &&
-    player.firstName === 'Victoria' &&
-    player.lastName === 'Norris'
-  ) {
-    return {
-      ...player,
-      firstName: 'Vicky'
-    };
-  }
-
-  // Victor Standaert
-  if (
-    player.memberId === '30088517' &&
-    player.firstName === 'Victor' &&
-    player.lastName === 'Standaert'
-  ) {
-    return {
-      ...player,
-      lastName: 'Standard'
-    };
-  }
-
-  // Vervier Sarah
-  if (
-    player.memberId === '30070106' &&
-    player.firstName === 'Vervier' &&
-    player.lastName === 'Sarah'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sarah',
-      lastName: 'Vervier'
-    };
-  }
-
-  // Valery Grotte
-  if (
-    player.memberId === '30004574' &&
-    player.firstName === 'Valery' &&
-    player.lastName === 'Grotte'
-  ) {
-    return {
-      ...player,
-      lastName: 'Grote'
-    };
-  }
-
-  // Usamah Hussain
-  if (
-    player.memberId === '1340752' &&
-    player.firstName === 'Usamah' &&
-    player.lastName === 'Hussain'
-  ) {
-    return {
-      ...player,
-      firstName: 'Usamah Ali',
-      lastName: 'Hussain'
-    };
-  }
-
-  // Tratsaert Nikita
-  if (
-    player.memberId === '50535366' &&
-    player.firstName === 'Tratsaert' &&
-    player.lastName === 'Nikita'
-  ) {
-    return {
-      ...player,
-      firstName: 'Nikita',
-      lastName: 'Tratsaert'
-    };
-  }
-
-  // Tomas Lowry
-  if (
-    player.memberId === '1318117' &&
-    player.firstName === 'Tomas' &&
-    player.lastName === 'Lowry'
-  ) {
-    return {
-      ...player,
-      firstName: 'Thomas',
-      lastName: 'Lowry'
-    };
-  }
-
-  // Tom Greven Donk
-  if (
-    player.memberId === '50630121' &&
-    player.firstName === 'Tom' &&
-    player.lastName === 'Greven Donk'
-  ) {
-    return {
-      ...player,
-      lastName: 'Grevendonk'
-    };
-  }
-
-  // Tom Ellis
-  if (
-    player.memberId === '1290946' &&
-    player.firstName === 'Tom' &&
-    player.lastName === 'Ellis'
-  ) {
-    return {
-      ...player,
-      firstName: 'Thomas',
-      lastName: 'Ellis'
-    };
-  }
-
-  // Tjioe Lilièn
-  if (
-    player.memberId === '809295' &&
-    player.firstName === 'Tjioe' &&
-    player.lastName === 'Lilièn'
-  ) {
-    return {
-      ...player,
-      firstName: 'Lilièn',
-      lastName: 'Tjioe'
-    };
-  }
-
-  // Timms Ben
-  if (
-    player.memberId === '1236607' &&
-    player.firstName === 'Timms' &&
-    player.lastName === 'Ben'
-  ) {
-    return {
-      ...player,
-      firstName: 'Ben',
-      lastName: 'Timms'
-    };
-  }
-
-  // Tim Verstraeten
-  if (
-    player.memberId === '50729292' &&
-    player.firstName === 'Tim' &&
-    player.lastName === 'Verstraeten'
-  ) {
-    return {
-      ...player,
-      lastName: 'Verstraete'
-    };
-  }
-
-  // Tim Peirlynck
-  if (
-    player.memberId === '50529986' &&
-    player.firstName === 'Tim' &&
-    player.lastName === 'Peirlynck'
-  ) {
-    return {
-      ...player,
-      lastName: 'Peirlinck'
-    };
-  }
-
-  // Thonisone Saimpholphakdy
-  if (
-    player.memberId === '50346970' &&
-    player.firstName === 'Thonisone' &&
-    player.lastName === 'Saimpholphakdy'
-  ) {
-    return {
-      ...player,
-      firstName: 'Thanisone',
-      lastName: 'Soumpholphakdy'
-    };
-  }
-
-  // Thomas Burdett
-  if (
-    player.memberId === '1181973' &&
-    player.firstName === 'Thomas' &&
-    player.lastName === 'Burdett'
-  ) {
-    return {
-      ...player,
-      firstName: 'Tom'
-    };
-  }
-
-  // Theophile Vicart
-  if (
-    player.memberId === '6899637' &&
-    player.firstName === 'Theophile' &&
-    player.lastName === 'Vicart'
-  ) {
-    return {
-      ...player,
-      firstName: 'Théophile',
-      lastName: 'Vicart'
-    };
-  }
-
-  // Talia Bonanno
-  if (
-    player.memberId === '6750331' &&
-    player.firstName === 'Talia' &&
-    player.lastName === 'Bonanno'
-  ) {
-    return {
-      ...player,
-      firstName: 'Talia',
-      lastName: 'Bonnano'
-    };
-  }
-
-  // Suvankar Sarkar
-  if (
-    player.memberId === '50204378' &&
-    player.firstName === 'Suvankar' &&
-    player.lastName === 'Sarkar'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sarkar',
-      lastName: 'Suvankar'
-    };
-  }
-
-  // Stephanie Tuerlinckx
-  if (
-    player.memberId === '30053891' &&
-    player.firstName === 'Stephanie' &&
-    player.lastName === 'Tuerlinckx'
-  ) {
-    return {
-      ...player,
-      firstName: 'Stéphanie'
-    };
-  }
-
-  // Stephanie Gerard
-  if (
-    player.memberId === '30027712' &&
-    player.firstName === 'Stephanie' &&
-    player.lastName === 'Gerard'
-  ) {
-    return {
-      ...player,
-      firstName: 'Stéphanie',
-      lastName: 'Gérard'
-    };
-  }
-
-  // Stéphane Vannitsen
-  if (
-    player.memberId === '30056343' &&
-    player.firstName === 'Stéphane' &&
-    player.lastName === 'Vannitsen'
-  ) {
-    return {
-      ...player,
-      firstName: 'Stéphane',
-      lastName: 'Vannitsem'
-    };
-  }
-
-  // Stefaan Herderweirt
-  if (
-    player.memberId === '50478672' &&
-    player.firstName === 'Stefaan' &&
-    player.lastName === 'Herderweirt'
-  ) {
-    return {
-      ...player,
-      lastName: 'Helderweirt'
-    };
-  }
-
-  // Shashvat Shash
-  if (
-    player.memberId === '50097074' &&
-    player.firstName === 'Shashvat' &&
-    player.lastName === 'Shash'
-  ) {
-    return {
-      ...player,
-      lastName: 'Shah'
-    };
-  }
-
-  // Serve Peulen
-  if (
-    player.memberId === '804862' &&
-    player.firstName === 'Serve' &&
-    player.lastName === 'Peulen'
-  ) {
-    return {
-      ...player,
-      firstName: 'Servé'
-    };
-  }
-
-  // Sanne Custers-Meijers
-  if (
-    player.memberId === '592353' &&
-    player.firstName === 'Sanne' &&
-    player.lastName === 'Custers-Meijers'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sanne',
-      lastName: 'Meijers'
-    };
-  }
-
-  // Samuel Shepherd
-  if (
-    player.memberId === '1230660' &&
-    player.firstName === 'Samuel' &&
-    player.lastName === 'Shepherd'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sam'
-    };
-  }
-
-  // Sam Dewaegenare
-  if (
-    player.memberId === '50987119' &&
-    player.firstName === 'Sam' &&
-    player.lastName === 'Dewaegenare'
-  ) {
-    return {
-      ...player,
-      lastName: 'Dewaegenaere'
-    };
-  }
-
-  // Safiullah Sanaullah
-  if (
-    player.memberId === '50948539' &&
-    player.firstName === 'Safiullah' &&
-    player.lastName === 'Sanaullah'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sanaullah',
-      lastName: 'Safiullah'
-    };
-  }
-
-  // Sacha Juchelka
-  if (
-    player.memberId === '30096325' &&
-    player.firstName === 'Sacha' &&
-    player.lastName === 'Juchelka'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sasha'
-    };
-  }
-
-  // Ruth Le Fevre
-  if (
-    player.memberId === '1247800' &&
-    player.firstName === 'Ruth' &&
-    player.lastName === 'Le Fevre'
-  ) {
-    return {
-      ...player,
-      firstName: 'Ruth',
-      lastName: 'Le-Fevre'
-    };
-  }
-
-  // Rose Kocak
-  if (
-    player.memberId === '30080660' &&
-    player.firstName === 'Rose' &&
-    player.lastName === 'Kocak'
-  ) {
-    return {
-      ...player,
-      firstName: 'Rose Gulbin',
-      lastName: 'Kocak'
-    };
-  }
-
-  // Ritzen Beau
-  if (
-    player.memberId === '863754' &&
-    player.firstName === 'Ritzen' &&
-    player.lastName === 'Beau'
-  ) {
-    return {
-      ...player,
-      firstName: 'Beau',
-      lastName: 'Ritzen'
-    };
-  }
-
-  // Renilde Sneyers
-  if (
-    player.memberId === '50932411' &&
-    player.firstName === 'Renilde' &&
-    player.lastName === 'Sneyers'
-  ) {
-    return {
-      ...player,
-      lastName: 'Snyers'
-    };
-  }
-
-  // Po Liu Wan
-  if (
-    player.memberId === '50487671' &&
-    player.firstName === 'Po' &&
-    player.lastName === 'Liu Wan'
-  ) {
-    return {
-      ...player,
-      firstName: 'Wan Po',
-      lastName: 'Liu'
-    };
-  }
-
-  // Pierre-Yves GéRard
-  if (
-    player.memberId === '30039140' &&
-    player.firstName === 'Pierre-Yves' &&
-    player.lastName === 'GéRard'
-  ) {
-    return {
-      ...player,
-      firstName: 'Pierre-Yves',
-      lastName: 'Gerard'
-    };
-  }
-
-  // Pierre Serge
-  if (
-    player.memberId === '30079890' &&
-    player.firstName === 'Pierre' &&
-    player.lastName === 'Serge'
-  ) {
-    return {
-      ...player,
-      lastName: 'Segers'
-    };
-  }
-
-  // Pierre  Yves Soille
-  if (
-    player.memberId === '30043113' &&
-    player.firstName === 'Pierre  Yves' &&
-    player.lastName === 'Soille'
-  ) {
-    return {
-      ...player,
-      firstName: 'Pierre-Yves'
-    };
-  }
-
-  // Philip Clarke
-  if (player.memberId === '1251533') {
-    return {
-      ...player,
-      firstName: 'Phil',
-      lastName: 'Clarke'
-    };
-  }
-
-  // Pedro Petrus Perecaya
-  if (
-    player.memberId === '50247123' &&
-    player.firstName === 'Pedro' &&
-    player.lastName === 'Petrus Perecaya'
-  ) {
-    return {
-      ...player,
-      firstName: 'Petrus',
-      lastName: 'Perecaya'
-    };
-  }
-
-  // Noee Delannoy
-  if (
-    player.memberId === '6864100' &&
-    player.firstName === 'Noee' &&
-    player.lastName === 'Delannoy'
-  ) {
-    return {
-      ...player,
-      firstName: 'Noée',
-      lastName: 'Delannoy'
-    };
-  }
-
-  // Noach Warning
-  if (
-    player.memberId === '13-052' &&
-    player.firstName === 'Noach' &&
-    player.lastName === 'Warning'
-  ) {
-    return {
-      ...player,
-      firstName: 'Noah',
-      lastName: 'Warning'
-    };
-  }
-
-  // Nina Fliesher
-  if (
-    player.memberId === '882620' &&
-    player.firstName === 'Nina' &&
-    player.lastName === 'Fliesher'
-  ) {
-    return {
-      ...player,
-      lastName: 'Fliescher'
-    };
-  }
-
-  // Nicholson Darren
-  if (
-    player.memberId === '1068222' &&
-    player.firstName === 'Nicholson' &&
-    player.lastName === 'Darren'
-  ) {
-    return {
-      ...player,
-      firstName: 'Darren',
-      lastName: 'Nicholson'
-    };
-  }
-
-  // Nathan N'Guyen
-  if (player.memberId === '6864095' && player.firstName === 'Nathan') {
-    return {
-      ...player,
-      lastName: 'Nguyen'
-    };
-  }
-
-  // Nathalie Yoko Genet
-  if (
-    player.memberId === '30031977' &&
-    player.firstName === 'Nathalie Yoko' &&
-    player.lastName === 'Genet'
-  ) {
-    return {
-      ...player,
-      firstName: 'Nathalie',
-      lastName: 'Genet'
-    };
-  }
-
-  // Nathalia Jasik
-  if (
-    player.memberId === '30063170' &&
-    player.firstName === 'Nathalia' &&
-    player.lastName === 'Jasik'
-  ) {
-    return {
-      ...player,
-      firstName: 'Natalia'
-    };
-  }
-
-  // Naidoo Kesh
-  if (
-    player.memberId === '1145232' &&
-    player.firstName === 'Naidoo' &&
-    player.lastName === 'Kesh'
-  ) {
-    return {
-      ...player,
-      firstName: 'Kesh',
-      lastName: 'Naidoo'
-    };
-  }
-
-  // Myrthe Van Parys
-  if (
-    player.memberId === '50116104' &&
-    player.firstName === 'Myrthe' &&
-    player.lastName === 'Van Parys'
-  ) {
-    return {
-      ...player,
-      firstName: 'Mirthe'
-    };
-  }
-
-  // Monten Lindsey
-  if (
-    player.memberId === '50998625' &&
-    player.firstName === 'Monten' &&
-    player.lastName === 'Lindsey'
-  ) {
-    return {
-      ...player,
-      firstName: 'Lindsey',
-      lastName: 'Monten'
-    };
-  }
-
-  // Mirthe Higgins
-  if (
-    player.memberId === '50495186' &&
-    player.firstName === 'Mirthe' &&
-    player.lastName === 'Higgins'
-  ) {
-    return {
-      ...player,
-      firstName: 'Myrthe'
-    };
-  }
-
-  // Mike Parker
-  if (
-    player.memberId === '1244301' &&
-    player.firstName === 'Mike' &&
-    player.lastName === 'Parker'
-  ) {
-    return {
-      ...player,
-      firstName: 'Michael',
-      lastName: 'Parker'
-    };
-  }
-
-  // Mikael Le Grives
-  if (
-    player.memberId === 'FR31723' &&
-    player.firstName === 'Mikael' &&
-    player.lastName === 'Le Grives'
-  ) {
-    return {
-      ...player,
-      firstName: 'Mikael',
-      lastName: 'Le Grivès'
-    };
-  }
-
-  // Michaël De Rechter
-  if (
-    player.memberId === '50071454' &&
-    player.firstName === 'Michaël' &&
-    player.lastName === 'De Rechter'
-  ) {
-    return {
-      ...player,
-      firstName: 'Michaël',
-      lastName: 'De Rechter'
-    };
-  }
-
-  // Michael Bruinesse
-  if (
-    player.memberId === '892424' &&
-    player.firstName === 'Michael' &&
-    player.lastName === 'Bruinesse'
-  ) {
-    return {
-      ...player,
-      firstName: 'Michael',
-      lastName: 'Van Bruinessen'
-    };
-  }
-
-  // Memee Jurgen
-  if (
-    player.memberId === '764379' &&
-    player.firstName === 'Memee' &&
-    player.lastName === 'Jurgen'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jurgen',
-      lastName: 'Memee'
-    };
-  }
-
-  // Melissa Willigen
-  if (
-    player.memberId === '701610' &&
-    player.firstName === 'Melissa' &&
-    player.lastName === 'Willigen'
-  ) {
-    return {
-      ...player,
-      firstName: 'Melissa',
-      lastName: 'Van Willigen'
-    };
-  }
-
-  // Meijer Bianca
-  if (
-    player.memberId === '729799' &&
-    player.firstName === 'Meijer' &&
-    player.lastName === 'Bianca'
-  ) {
-    return {
-      ...player,
-      firstName: 'Bianca',
-      lastName: 'Meijer'
-    };
-  }
-
-  // Mayil Vahanan
-  if (
-    player.memberId === '50153536' &&
-    player.firstName === 'Mayil' &&
-    player.lastName === 'Vahanan'
-  ) {
-    return {
-      ...player,
-      lastName: 'Vahanen'
-    };
-  }
-
-  // Maximilien Whitof
-  if (
-    player.memberId === '30079665' &&
-    player.firstName === 'Maximilien' &&
-    player.lastName === 'Whitof'
-  ) {
-    return {
-      ...player,
-      lastName: 'Withof'
-    };
-  }
-
-  // Matthijs Van Lelieveld
-  if (
-    player.memberId === '828643' &&
-    player.firstName === 'Matthijs' &&
-    player.lastName === 'Van Lelieveld'
-  ) {
-    return {
-      ...player,
-      firstName: 'Mathijs'
-    };
-  }
-
-  // Mathijs Van Leleiveld
-  if (
-    player.memberId === '828643' &&
-    player.firstName === 'Mathijs' &&
-    player.lastName === 'Van Leleiveld'
-  ) {
-    return {
-      ...player,
-      lastName: 'Van Lelieveld'
-    };
-  }
-
-  // Martyn Clarck
-  if (
-    player.memberId === '1008700' &&
-    player.firstName === 'Martyn' &&
-    player.lastName === 'Clarck'
-  ) {
-    return {
-      ...player,
-      lastName: 'Clark'
-    };
-  }
-
-  // Martin Thierry
-  if (
-    player.memberId === '6810359' &&
-    player.firstName === 'Martin' &&
-    player.lastName === 'Thierry'
-  ) {
-    return {
-      ...player,
-      memberId: '06909096',
-      lastName: 'Thiery'
-    };
-  }
-
-  // Martin Thierry
-  if (
-    player.memberId === '6909096' &&
-    player.firstName === 'Martin' &&
-    player.lastName === 'Thiery'
-  ) {
-    return {
-      ...player,
-      memberId: '06909096'
-    };
-  }
-
-  // Margot Tuyvaerts
-  if (
-    player.memberId === '50192108' &&
-    player.firstName === 'Margot' &&
-    player.lastName === 'Tuyvaerts'
-  ) {
-    return {
-      ...player,
-      lastName: 'Tuyaerts'
-    };
-  }
-
-  // Maite Wouters
-  if (
-    player.memberId === '30046220' &&
-    player.firstName === 'Maite' &&
-    player.lastName === 'Wouters'
-  ) {
-    return {
-      ...player,
-      firstName: 'Maïté'
-    };
-  }
-
-  // Maeve Delannoy Seillier
-  if (
-    player.memberId === '6817059' &&
-    player.firstName === 'Maeve' &&
-    player.lastName === 'Delannoy Seillier'
-  ) {
-    return {
-      ...player,
-      memberId: '6895030'
-    };
-  }
-
-  // Maelle Salmon
-  if (
-    player.memberId === '50116292' &&
-    player.firstName === 'Maelle' &&
-    player.lastName === 'Salmon'
-  ) {
-    return {
-      ...player,
-      firstName: 'Maëlle'
-    };
-  }
-
-  // Lui Wanpok
-  if (
-    player.memberId === '50946358' &&
-    player.firstName === 'Lui' &&
-    player.lastName === 'Wanpok'
-  ) {
-    return {
-      ...player,
-      firstName: 'Wan Pok',
-      lastName: 'Liu'
-    };
-  }
-
-  // Lucas Jorrissen
-  if (
-    player.memberId === '30069214' &&
-    player.firstName === 'Lucas' &&
-    player.lastName === 'Jorrissen'
-  ) {
-    return {
-      ...player,
-      lastName: 'Jorissen'
-    };
-  }
-
-  // Lowie Sören
-  if (
-    player.memberId === '50113368' &&
-    player.firstName === 'Lowie' &&
-    player.lastName === 'Sören'
-  ) {
-    return {
-      ...player,
-      firstName: 'Sören',
-      lastName: 'Lowie'
-    };
-  }
-
-  // Louise Hugé
-  if (
-    player.memberId === '6696097' &&
-    player.firstName === 'Louise' &&
-    player.lastName === 'Hugé'
-  ) {
-    return {
-      ...player,
-      memberId: '6915603',
-      lastName: 'Huge'
-    };
-  }
-
-  // Loic De Leeuw
-  if (
-    player.memberId === '807834' &&
-    player.firstName === 'Loic' &&
-    player.lastName === 'De Leeuw'
-  ) {
-    return {
-      ...player,
-      firstName: 'Loïc'
-    };
-  }
-
-  // Line Xia
-  if (
-    player.memberId === '30099095' &&
-    player.firstName === 'Line' &&
-    player.lastName === 'Xia'
-  ) {
-    return {
-      ...player,
-      firstName: 'Line',
-      lastName: 'Xia Ruoya'
-    };
-  }
-
-  // Levy Mathieu
-  if (
-    player.memberId === '30003453' &&
-    player.firstName === 'Levy' &&
-    player.lastName === 'Mathieu'
-  ) {
-    return {
-      ...player,
-      firstName: 'Lévy',
-      lastName: 'Mathieu'
-    };
-  }
-
-  // Lejoint Amaury
-  if (
-    player.memberId === '30034823' &&
-    player.firstName === 'Lejoint' &&
-    player.lastName === 'Amaury'
-  ) {
-    return {
-      ...player,
-      firstName: 'Amaury',
-      lastName: 'Lejoint'
-    };
-  }
-
-  // Lee Ka Wing
-  if (
-    player.memberId === '807115' &&
-    player.firstName === 'Lee' &&
-    player.lastName === 'Ka Wing'
-  ) {
-    return {
-      ...player,
-      firstName: 'Ka',
-      lastName: 'Wing Lee'
-    };
-  }
-
-  // Laszo Van Holder
-  if (
-    player.memberId === '50336606' &&
-    player.firstName === 'Laszo' &&
-    player.lastName === 'Van Holder'
-  ) {
-    return {
-      ...player,
-      firstName: 'Laszlo'
-    };
-  }
-
-  // Kumar Vivek
-  if (
-    player.memberId === '50312138' &&
-    player.firstName === 'Kumar' &&
-    player.lastName === 'Vivek'
-  ) {
-    return {
-      ...player,
-      firstName: 'Vivek',
-      lastName: 'Kumar'
-    };
-  }
-
-  // Klels Adrien
-  if (
-    player.memberId === '30062249' &&
-    player.firstName === 'Klels' &&
-    player.lastName === 'Adrien'
-  ) {
-    return {
-      ...player,
-      firstName: 'Adrien',
-      lastName: 'Klels'
-    };
-  }
-
-  // Kilaïm Purwoko
-  if (
-    player.memberId === '50100601' &&
-    player.firstName === 'Kilaïm' &&
-    player.lastName === 'Purwoko'
-  ) {
-    return {
-      ...player,
-      lastName: 'Panggih Purwoko'
-    };
-  }
-
-  // Kevin Van Dieen
-  if (
-    player.memberId === '820072' &&
-    player.firstName === 'Kevin' &&
-    player.lastName === 'Van Dieen'
-  ) {
-    return {
-      ...player,
-      lastName: 'Van Dieën'
-    };
-  }
-
-  // Kerry Halbrook
-  if (
-    player.memberId === '1246969' &&
-    player.firstName === 'Kerry' &&
-    player.lastName === 'Halbrook'
-  ) {
-    return {
-      ...player,
-      firstName: 'Kerry',
-      lastName: 'Hallbrook'
-    };
-  }
-
-  // Kawing Lee
-  if (player.memberId === '807115' && player.lastName === 'Lee') {
-    return {
-      ...player,
-      firstName: 'Ka',
-      lastName: 'Wing Lee'
-    };
-  }
-
-  // Karryn Duggan
-  if (
-    player.memberId === '1107256' &&
-    player.firstName === 'Karryn' &&
-    player.lastName === 'Duggan'
-  ) {
-    return {
-      ...player,
-      firstName: 'Karyn'
-    };
-  }
-
-  // Jurgen Gabriels
-  if (
-    player.memberId === '50048396' &&
-    player.firstName === 'Jurgen' &&
-    player.lastName === 'Gabriels'
-  ) {
-    return {
-      ...player,
-      lastName: 'Gabriëls'
-    };
-  }
-
-  // Jeroen Rinderstma
-  if (
-    player.memberId === '523060' &&
-    player.firstName === 'Jeroen' &&
-    player.lastName === 'Rinderstma'
-  ) {
-    return {
-      ...player,
-      lastName: 'Rindertsma'
-    };
-  }
-
-  // Jeremy Giltaire
-  if (
-    player.memberId === '30075748' &&
-    player.firstName === 'Jeremy' &&
-    player.lastName === 'Giltaire'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jeremy',
-      lastName: 'Giltaire'
-    };
-  }
-
-  // Jelle Vandessel
-  if (
-    player.memberId === '50605909' &&
-    player.firstName === 'Jelle' &&
-    player.lastName === 'Vandessel'
-  ) {
-    return {
-      ...player,
-      lastName: 'Van Dessel'
-    };
-  }
-
-  // Jean-Pierre Benjamin
-  if (
-    player.memberId === '30047681' &&
-    player.firstName === 'Jean-Pierre' &&
-    player.lastName === 'Benjamin'
-  ) {
-    return {
-      ...player,
-      firstName: 'Benjamin',
-      lastName: 'Jean Pierre'
-    };
-  }
-
-  // Jean  Pierre Delplanque
-  if (
-    player.memberId === '30034088' &&
-    player.firstName === 'Jean  Pierre' &&
-    player.lastName === 'Delplanque'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jean-Pierre'
-    };
-  }
-
-  // Jean  Francois Lagasse
-  if (
-    player.memberId === '30017529' &&
-    player.firstName === 'Jean  Francois' &&
-    player.lastName === 'Lagasse'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jean-François',
-      lastName: 'Lagasse'
-    };
-  }
-
-  // Jean  Benoit Verbeke
-  if (
-    player.memberId === '30030887' &&
-    player.firstName === 'Jean  Benoit' &&
-    player.lastName === 'Verbeke'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jean-Benoit',
-      lastName: 'Verbeke'
-    };
-  }
-
-  // Jamie Cooper
-  if (
-    player.memberId === '1299040' &&
-    player.firstName === 'Jamie' &&
-    player.lastName === 'Cooper'
-  ) {
-    return {
-      ...player,
-      firstName: 'James',
-      lastName: 'Cooper'
-    };
-  }
-
-  // Jacek Kolumbajew
-  if (
-    player.memberId === 'K1963' &&
-    player.firstName === 'Jacek' &&
-    player.lastName === 'Kolumbajew'
-  ) {
-    return {
-      ...player,
-      firstName: 'Jacek',
-      lastName: 'Kołumbajew'
-    };
-  }
-
-  // Isaac Léonard
-  if (
-    player.memberId === '30061211' &&
-    player.firstName === 'Isaac' &&
-    player.lastName === 'Léonard'
-  ) {
-    return {
-      ...player,
-      lastName: 'Leonard'
-    };
-  }
-
-  // Ines Sommers
-  if (
-    player.memberId === '50714465' &&
-    player.firstName === 'Ines' &&
-    player.lastName === 'Sommers'
-  ) {
-    return {
-      ...player,
-      lastName: 'Somers'
-    };
-  }
-
-  // Hippolyte Hautefeuile
-  if (
-    player.memberId === '6754119' &&
-    player.firstName === 'Hippolyte' &&
-    player.lastName === 'Hautefeuile'
-  ) {
-    return {
-      ...player,
-      firstName: 'Hippolyte',
-      lastName: 'Hautefeuille'
-    };
-  }
-
-  // Helene Ulens
-  if (player.memberId === '30049299') {
-    return {
-      ...player,
-      firstName: 'Hélène',
-      lastName: 'Ulens'
-    };
-  }
-
-  // Heidi Gabriels
-  if (
-    player.memberId === '50047802' &&
-    player.firstName === 'Heidi' &&
-    player.lastName === 'Gabriels'
-  ) {
-    return {
-      ...player,
-      lastName: 'Gabriëls'
-    };
-  }
-
-  // Hannah Koe N Gono
-  if (
-    player.memberId === '30078704' &&
-    player.firstName === 'Hannah' &&
-    player.lastName === 'Koe N Gono'
-  ) {
-    return {
-      ...player,
-      firstName: 'Hannah-Gabrielle',
-      lastName: 'Koe N Gono'
-    };
-  }
-
-  // Gregoire Gosin
-  if (
-    player.memberId === '30047443' &&
-    player.firstName === 'Gregoire' &&
-    player.lastName === 'Gosin'
-  ) {
-    return {
-      ...player,
-      firstName: 'Grégoire',
-      lastName: 'Gosin'
-    };
-  }
-
-  // Gitta Djajawasito
-  if (
-    player.memberId === '859000' &&
-    player.firstName === 'Gitta' &&
-    player.lastName === 'Djajawasito'
-  ) {
-    return {
-      ...player,
-      firstName: 'Gita'
-    };
-  }
-
-  // Gilis Thomas
-  if (
-    player.memberId === '30069334' &&
-    player.firstName === 'Gilis' &&
-    player.lastName === 'Thomas'
-  ) {
-    return {
-      ...player,
-      firstName: 'Thomas',
-      lastName: 'Gilis'
-    };
-  }
-
-  // Gilbert Harry
-  if (
-    player.memberId === '1236595' &&
-    player.firstName === 'Gilbert' &&
-    player.lastName === 'Harry'
-  ) {
-    return {
-      ...player,
-      firstName: 'Harry',
-      lastName: 'Gilbert'
-    };
-  }
-
-  // Gabriel Hoevers
-  if (
-    player.memberId === '759985' &&
-    player.firstName === 'Gabriel' &&
-    player.lastName === 'Hoevers'
-  ) {
-    return {
-      ...player,
-      firstName: 'Gabriël'
-    };
-  }
-
-  // François Dusart
-  if (
-    player.memberId === '30060989' &&
-    player.firstName === 'François' &&
-    player.lastName === 'Dusart'
-  ) {
-    return {
-      ...player,
-      firstName: 'François',
-      lastName: 'Dusart'
-    };
-  }
-
-  // Eymen Zararsik
-  if (
-    player.memberId === '30078949' &&
-    player.firstName === 'Eymen' &&
-    player.lastName === 'Zararsik'
-  ) {
-    return {
-      ...player,
-      lastName: 'Zararsiz'
-    };
-  }
-
-  // Evelien Straaijer
-  if (
-    player.memberId === '813749' &&
-    player.firstName === 'Evelien' &&
-    player.lastName === 'Straaijer'
-  ) {
-    return {
-      ...player,
-      firstName: 'Eveline'
-    };
-  }
-
-  // Evelien Kempes
-  if (
-    player.memberId === '50481312' &&
-    player.firstName === 'Evelien' &&
-    player.lastName === 'Kempes'
-  ) {
-    return {
-      ...player,
-      lastName: 'Kempkes'
-    };
-  }
-
-  // Ethan Oliver Dalley
-  if (
-    player.memberId === '1243998' &&
-    player.firstName === 'Ethan' &&
-    player.lastName === 'Oliver Dalley'
-  ) {
-    return {
-      ...player,
-      firstName: 'Ethan',
-      lastName: 'Dalley'
-    };
-  }
-
-  // Esteban Bourleau
-  if (
-    player.memberId === '30006052' &&
-    player.firstName === 'Esteban' &&
-    player.lastName === 'Bourleau'
-  ) {
-    return {
-      ...player,
-      firstName: 'Estéban',
-      lastName: 'Bourleau'
-    };
-  }
-
-  // éric Demay
-  if (
-    player.memberId === '6602425' &&
-    player.firstName === 'éric' &&
-    player.lastName === 'Demay'
-  ) {
-    return {
-      ...player,
-      firstName: 'Eric',
-      lastName: 'Demay'
-    };
-  }
-
-  // Ellen Kania
-  if (
-    player.memberId === '554831' &&
-    player.firstName === 'Ellen' &&
-    player.lastName === 'Kania'
-  ) {
-    return {
-      ...player,
-      firstName: 'Mirella',
-      lastName: 'De Vijlder'
-    };
-  }
-
-  // Eleonore Trepant
-  if (
-    player.memberId === '30033241' &&
-    player.firstName === 'Eleonore' &&
-    player.lastName === 'Trepant'
-  ) {
-    return {
-      ...player,
-      firstName: 'Eléonore',
-      lastName: 'Trepant'
-    };
-  }
-
-  // Dusan Gombos
-  if (
-    player.memberId === '30064028' &&
-    player.firstName === 'Dusan' &&
-    player.lastName === 'Gombos'
-  ) {
-    return {
-      ...player,
-      firstName: 'Dušan'
-    };
-  }
-
-  // Dom Smith
-  if (
-    player.memberId === '1250420' &&
-    player.firstName === 'Dom' &&
-    player.lastName === 'Smith'
-  ) {
-    return {
-      ...player,
-      firstName: 'Dominique',
-      lastName: 'Smith'
+      lastName: 'Rindertsma',
     };
   }
 
@@ -4757,7 +2119,90 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Dirk Jan',
-      lastName: 'Slijkoord'
+    };
+  }
+
+  // Sanne Custers-Meijers
+  if (
+    player.memberId === '592353' &&
+    player.firstName === 'Sanne' &&
+    player.lastName === 'Custers-Meijers'
+  ) {
+    return {
+      ...player,
+      lastName: 'Meijers',
+    };
+  }
+
+  // Angelique Hoogstate De Vos
+  if (
+    player.memberId === '813217' &&
+    player.firstName === 'Angelique' &&
+    player.lastName === 'Hoogstate De Vos'
+  ) {
+    return {
+      ...player,
+      lastName: 'De Vos',
+    };
+  }
+
+  // Angelique Hoogstrate - De Vos
+  if (
+    player.memberId === '813217' &&
+    player.firstName === 'Angelique' &&
+    player.lastName === 'Hoogstrate - De Vos'
+  ) {
+    return {
+      ...player,
+      lastName: 'De Vos',
+    };
+  }
+
+  // Evelien Straaijer
+  if (
+    player.memberId === '813749' &&
+    player.firstName === 'Evelien' &&
+    player.lastName === 'Straaijer'
+  ) {
+    return {
+      ...player,
+      firstName: 'Eveline',
+    };
+  }
+
+  // Levy Mathieu
+  if (
+    player.memberId === '30003453' &&
+    player.firstName === 'Levy' &&
+    player.lastName === 'Mathieu'
+  ) {
+    return {
+      ...player,
+      firstName: 'LéVy',
+    };
+  }
+
+  // Valery Grotte
+  if (
+    player.memberId === '30004574' &&
+    player.firstName === 'Valery' &&
+    player.lastName === 'Grotte'
+  ) {
+    return {
+      ...player,
+      lastName: 'Grote',
+    };
+  }
+
+  // Jean  Francois Lagasse
+  if (
+    player.memberId === '30017529' &&
+    player.firstName === 'Jean  Francois' &&
+    player.lastName === 'Lagasse'
+  ) {
+    return {
+      ...player,
+      firstName: 'Jean-FrançOis',
     };
   }
 
@@ -4769,234 +2214,31 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Didier',
-      lastName: 'Sacré'
+      lastName: 'Sacré',
     };
   }
 
-  // Diane Dianika
+  // Amelie Pierre
   if (
-    player.memberId === '50085065' &&
-    player.firstName === 'Diane' &&
-    player.lastName === 'Dianika'
+    player.memberId === '30021882' &&
+    player.firstName === 'Amelie' &&
+    player.lastName === 'Pierre'
   ) {
     return {
       ...player,
-      firstName: 'Dianika',
-      lastName: 'Lestari'
+      firstName: 'AméLie',
     };
   }
 
-  // Denis Peters
-  if (
-    player.memberId === '840336' &&
-    player.firstName === 'Denis' &&
-    player.lastName === 'Peters'
-  ) {
-    return {
-      ...player,
-      firstName: 'Dennis',
-      lastName: 'Peters'
-    };
-  }
-
-  // Delsaert Lotte
-  if (
-    player.memberId === '50121383' &&
-    player.firstName === 'Delsaert' &&
-    player.lastName === 'Lotte'
-  ) {
-    return {
-      ...player,
-      firstName: 'Lotte',
-      lastName: 'Delsaert'
-    };
-  }
-
-  // Cristian Nauta
-  if (
-    player.memberId === '984597' &&
-    player.firstName === 'Cristian' &&
-    player.lastName === 'Nauta'
-  ) {
-    return {
-      ...player,
-      firstName: 'Christian'
-    };
-  }
-
-  // Coralie Thomas
-  if (
-    player.memberId === '6584987' &&
-    player.firstName === 'Coralie' &&
-    player.lastName === 'Thomas'
-  ) {
-    return {
-      ...player,
-      memberId: '06584987'
-    };
-  }
-
-  // Christopher Witgens
-  if (
-    player.memberId === '30038053' &&
-    player.firstName === 'Christopher' &&
-    player.lastName === 'Witgens'
-  ) {
-    return {
-      ...player,
-      lastName: 'Wintgens'
-    };
-  }
-
-  // Christophe Lafon
-  if (
-    player.memberId === '5902975' &&
-    player.firstName === 'Christophe' &&
-    player.lastName === 'Lafon'
-  ) {
-    return {
-      ...player,
-      firstName: 'Christophe',
-      lastName: 'Degroote'
-    };
-  }
-
-  // Chandana Basavarajaiah
-  if (
-    player.memberId === '50780131' &&
-    player.firstName === 'Chandana' &&
-    player.lastName === 'Basavarajaiah'
-  ) {
-    return {
-      ...player,
-      firstName: 'Basavarajaiah',
-      lastName: 'Chandana'
-    };
-  }
-
-  // Cedric De Leeuw
-  if (
-    player.memberId === '50104883' &&
-    player.firstName === 'Cedric' &&
-    player.lastName === 'De Leeuw'
-  ) {
-    return {
-      ...player,
-      firstName: 'Cédric'
-    };
-  }
-
-  // Cédric Batsle
-  if (
-    player.memberId === '30038192' &&
-    player.firstName === 'Cédric' &&
-    player.lastName === 'Batsle'
-  ) {
-    return {
-      ...player,
-      lastName: 'Batslé'
-    };
-  }
-
-  // Cedric Batsle
-  if (
-    player.memberId === '30038192' &&
-    player.firstName === 'Cedric' &&
-    player.lastName === 'Batsle'
-  ) {
-    return {
-      ...player,
-      firstName: 'Cédric',
-      lastName: 'Batslé'
-    };
-  }
-
-  // Cecile Mabillon
-  if (
-    player.memberId === '6543559' &&
-    player.firstName === 'Cecile' &&
-    player.lastName === 'Mabillon'
-  ) {
-    return {
-      ...player,
-      firstName: 'Cécile',
-      lastName: 'Mabillon'
-    };
-  }
-
-  // Carroll Elliot
-  if (
-    player.memberId === '30082851' &&
-    player.firstName === 'Carroll' &&
-    player.lastName === 'Elliot'
-  ) {
-    return {
-      ...player,
-      firstName: 'Elliot',
-      lastName: 'Carroll'
-    };
-  }
-
-  // Brit Lemmens
-  if (
-    player.memberId === '50836676' &&
-    player.firstName === 'Brit' &&
-    player.lastName === 'Lemmens'
-  ) {
-    return {
-      ...player,
-      firstName: 'Britt'
-    };
-  }
-
-  // Boune Ratsamy
-  if (
-    player.memberId === '30053996' &&
-    player.firstName === 'Boune' &&
-    player.lastName === 'Ratsamy'
-  ) {
-    return {
-      ...player,
-      firstName: 'Som Boune',
-      lastName: 'Ratsamy'
-    };
-  }
-
-  // Boss Phatthanaphong
-  if (
-    player.memberId === '50115219' &&
-    player.firstName === 'Boss' &&
-    player.lastName === 'Phatthanaphong'
-  ) {
-    return {
-      ...player,
-      firstName: 'Rupchang',
-      lastName: 'Phatthanaphong'
-    };
-  }
-
-  // Birgit Van Acker
-  if (
-    player.memberId === '50115980' &&
-    player.firstName === 'Birgit' &&
-    player.lastName === 'Van Acker'
-  ) {
-    return {
-      ...player,
-      lastName: 'Van Ackere'
-    };
-  }
-
-  // Benoît Tielmance
+  // BenoîT Tielmance
   if (
     player.memberId === '30022519' &&
-    player.firstName === 'Benoît' &&
+    player.firstName === 'BenoîT' &&
     player.lastName === 'Tielmance'
   ) {
     return {
       ...player,
-      firstName: 'Benoit'
+      firstName: 'Benoit',
     };
   }
 
@@ -5008,69 +2250,128 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Benoît',
-      lastName: 'Lefèvre'
+      firstName: 'BenoîT',
+      lastName: 'LefèVre',
     };
   }
 
-  // Benoit Close Lecocq
+  // Stephanie Gerard
   if (
-    player.memberId === '30025363' &&
-    player.firstName === 'Benoit' &&
-    player.lastName === 'Close Lecocq'
+    player.memberId === '30027712' &&
+    player.firstName === 'Stephanie' &&
+    player.lastName === 'Gerard'
   ) {
     return {
       ...player,
-      lastName: 'Close-Lecocq'
+      firstName: 'StéPhanie',
+      lastName: 'GéRard',
     };
   }
 
-  // Benoît Close Lecocq
-  if (
-    player.memberId === '30025363' &&
-    player.firstName === 'Benoît' &&
-    player.lastName === 'Close Lecocq'
-  ) {
+  // Pierre  Manuel Wauthier
+  if (player.memberId === '30028879') {
     return {
       ...player,
-      firstName: 'Benoit',
-      lastName: 'Close-Lecocq'
+      firstName: 'Pierre-Manuel',
+      lastName: 'Wauthier',
     };
   }
 
-  // Azeem Fowad Shahid
+  // Jean  Benoit Verbeke
   if (
-    player.memberId === '50307193' &&
-    player.firstName === 'Azeem Fowad' &&
-    player.lastName === 'Shahid'
+    player.memberId === '30030887' &&
+    player.firstName === 'Jean  Benoit' &&
+    player.lastName === 'Verbeke'
   ) {
     return {
       ...player,
-      firstName: 'Azeem Fawad'
+      firstName: 'Jean-Benoit',
+      lastName: 'Verbeke',
     };
   }
 
-  // Aymane Zaki
+  // Stephane Martinage
   if (
-    player.memberId === '30073630' &&
-    player.firstName === 'Aymane' &&
-    player.lastName === 'Zaki'
+    player.memberId === '30032619' &&
+    player.firstName === 'Stephane' &&
+    player.lastName === 'Martinage'
   ) {
     return {
       ...player,
-      lastName: 'Zaihi'
+      firstName: 'StéPhane',
     };
   }
 
-  // Aurelien Vermylen
+  // EléOnore Trepant
   if (
-    player.memberId === '30056330' &&
-    player.firstName === 'Aurelien' &&
-    player.lastName === 'Vermylen'
+    player.memberId === '30033241' &&
+    player.firstName === 'EléOnore' &&
+    player.lastName === 'Trepant'
   ) {
     return {
       ...player,
-      firstName: 'Aurélien'
+      firstName: 'Eleonore',
+    };
+  }
+
+  // Lejoint Amaury
+  if (
+    player.memberId === '30034823' &&
+    player.firstName === 'Lejoint' &&
+    player.lastName === 'Amaury'
+  ) {
+    return {
+      ...player,
+      firstName: 'Amaury',
+      lastName: 'Lejoint',
+    };
+  }
+
+  // Christopher Witgens
+  if (
+    player.memberId === '30038053' &&
+    player.firstName === 'Christopher' &&
+    player.lastName === 'Witgens'
+  ) {
+    return {
+      ...player,
+      lastName: 'Wintgens',
+    };
+  }
+
+  // Cedric Batsle
+  if (
+    player.memberId === '30038192' &&
+    player.firstName === 'Cedric' &&
+    player.lastName === 'Batsle'
+  ) {
+    return {
+      ...player,
+      firstName: 'CéDric',
+    };
+  }
+
+  // Pierre-Yves GéRard
+  if (
+    player.memberId === '30039140' &&
+    player.firstName === 'Pierre-Yves' &&
+    player.lastName === 'GéRard'
+  ) {
+    return {
+      ...player,
+      lastName: 'Gerard',
+    };
+  }
+
+  // Pierre  Yves Soille
+  if (
+    player.memberId === '30043113' &&
+    player.firstName === 'Pierre  Yves' &&
+    player.lastName === 'Soille'
+  ) {
+    return {
+      ...player,
+      firstName: 'Pierre-Yves',
     };
   }
 
@@ -5083,7 +2384,2706 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Aurelie',
-      lastName: 'Deblandre'
+    };
+  }
+
+  // Maite Wouters
+  if (
+    player.memberId === '30046220' &&
+    player.firstName === 'Maite' &&
+    player.lastName === 'Wouters'
+  ) {
+    return {
+      ...player,
+      firstName: 'MaïTé',
+    };
+  }
+
+  // Gregoire Gosin
+  if (
+    player.memberId === '30047443' &&
+    player.firstName === 'Gregoire' &&
+    player.lastName === 'Gosin'
+  ) {
+    return {
+      ...player,
+      firstName: 'GréGoire',
+    };
+  }
+
+  // Selena Kaye
+  if (player.memberId === '30052363') {
+    return {
+      ...player,
+      firstName: 'Séléna',
+    };
+  }
+
+  // Stephanie Tuerlinckx
+  if (
+    player.memberId === '30053891' &&
+    player.firstName === 'Stephanie' &&
+    player.lastName === 'Tuerlinckx'
+  ) {
+    return {
+      ...player,
+      firstName: 'Stéphanie',
+    };
+  }
+
+  // Boune Ratsamy
+  if (
+    player.memberId === '30053996' &&
+    player.firstName === 'Boune' &&
+    player.lastName === 'Ratsamy'
+  ) {
+    return {
+      ...player,
+      firstName: 'Som Boune',
+    };
+  }
+
+  // Alberic De Coster
+  if (player.memberId === '30054627') {
+    return {
+      ...player,
+      firstName: 'Albéric',
+      lastName: 'De Coster',
+    };
+  }
+
+  // Aurelien Vermylen
+  if (
+    player.memberId === '30056330' &&
+    player.firstName === 'Aurelien' &&
+    player.lastName === 'Vermylen'
+  ) {
+    return {
+      ...player,
+      firstName: 'AuréLien',
+    };
+  }
+
+  // StéPhane Vannitsen
+  if (
+    player.memberId === '30056343' &&
+    player.firstName === 'StéPhane' &&
+    player.lastName === 'Vannitsen'
+  ) {
+    return {
+      ...player,
+      lastName: 'Vannitsem',
+    };
+  }
+
+  // Isaac LéOnard
+  if (
+    player.memberId === '30061211' &&
+    player.firstName === 'Isaac' &&
+    player.lastName === 'LéOnard'
+  ) {
+    return {
+      ...player,
+      lastName: 'Leonard',
+    };
+  }
+
+  // Klels Adrien
+  if (
+    player.memberId === '30062249' &&
+    player.firstName === 'Klels' &&
+    player.lastName === 'Adrien'
+  ) {
+    return {
+      ...player,
+      firstName: 'Adrien',
+      lastName: 'Klels',
+    };
+  }
+
+  // Antoine Docquier
+  if (
+    player.memberId === '30062852' &&
+    player.firstName === 'Antoine' &&
+    player.lastName === 'Docquier'
+  ) {
+    return {
+      ...player,
+      lastName: 'Dockier',
+    };
+  }
+
+  // Nathalia Jasik
+  if (
+    player.memberId === '30063170' &&
+    player.firstName === 'Nathalia' &&
+    player.lastName === 'Jasik'
+  ) {
+    return {
+      ...player,
+      firstName: 'Natalia',
+    };
+  }
+
+  // Wang Ting Ting
+  if (
+    player.memberId === '30063557' &&
+    player.firstName === 'Wang' &&
+    player.lastName === 'Ting Ting'
+  ) {
+    return {
+      ...player,
+      firstName: 'Ting Ting',
+      lastName: 'Wang',
+    };
+  }
+
+  // Armand Frameree
+  if (
+    player.memberId === '30065484' &&
+    player.firstName === 'Armand' &&
+    player.lastName === 'Frameree'
+  ) {
+    return {
+      ...player,
+      lastName: 'Fameree',
+    };
+  }
+
+  // Lucas Jorrissen
+  if (
+    player.memberId === '30069214' &&
+    player.firstName === 'Lucas' &&
+    player.lastName === 'Jorrissen'
+  ) {
+    return {
+      ...player,
+      lastName: 'Jorissen',
+    };
+  }
+
+  // Gilis Thomas
+  if (
+    player.memberId === '30069334' &&
+    player.firstName === 'Gilis' &&
+    player.lastName === 'Thomas'
+  ) {
+    return {
+      ...player,
+      firstName: 'Thomas',
+      lastName: 'Gilis',
+    };
+  }
+
+  // Vervier Sarah
+  if (
+    player.memberId === '30070106' &&
+    player.firstName === 'Vervier' &&
+    player.lastName === 'Sarah'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sarah',
+      lastName: 'Vervier',
+    };
+  }
+
+  // Kilian Mine
+  if (
+    player.memberId === '30070837' &&
+    player.firstName === 'Kilian' &&
+    player.lastName === 'Mine'
+  ) {
+    return {
+      ...player,
+      firstName: 'Killian',
+    };
+  }
+
+  // Aymane Zaki
+  if (
+    player.memberId === '30073630' &&
+    player.firstName === 'Aymane' &&
+    player.lastName === 'Zaki'
+  ) {
+    return {
+      ...player,
+      lastName: 'Zaihi',
+    };
+  }
+
+  // JéRéMy Giltaire
+  if (
+    player.memberId === '30075748' &&
+    player.firstName === 'JéRéMy' &&
+    player.lastName === 'Giltaire'
+  ) {
+    return {
+      ...player,
+      firstName: 'Jeremy',
+    };
+  }
+
+  // Hannah Koe N Gono
+  if (
+    player.memberId === '30078704' &&
+    player.firstName === 'Hannah' &&
+    player.lastName === 'Koe N Gono'
+  ) {
+    return {
+      ...player,
+      firstName: 'Hannah-Gabrielle',
+    };
+  }
+
+  // Eymen Zararsiz
+  if (
+    player.memberId === '30078949' &&
+    player.firstName === 'Eymen' &&
+    player.lastName === 'Zararsiz'
+  ) {
+    return {
+      ...player,
+      lastName: 'Zararsik',
+    };
+  }
+
+  // Maximilien Whitof
+  if (
+    player.memberId === '30079665' &&
+    player.firstName === 'Maximilien' &&
+    player.lastName === 'Whitof'
+  ) {
+    return {
+      ...player,
+      lastName: 'Withof',
+    };
+  }
+
+  // Pierre Serge
+  if (
+    player.memberId === '30079890' &&
+    player.firstName === 'Pierre' &&
+    player.lastName === 'Serge'
+  ) {
+    return {
+      ...player,
+      lastName: 'Segers',
+    };
+  }
+
+  // Rose Gulbin Kocak
+  if (
+    player.memberId === '30080660' &&
+    player.firstName === 'Rose Gulbin' &&
+    player.lastName === 'Kocak'
+  ) {
+    return {
+      ...player,
+      firstName: 'Rose',
+    };
+  }
+
+  // Carroll Elliot
+  if (
+    player.memberId === '30082851' &&
+    player.firstName === 'Carroll' &&
+    player.lastName === 'Elliot'
+  ) {
+    return {
+      ...player,
+      firstName: 'Elliot',
+      lastName: 'Carroll',
+    };
+  }
+
+  // AnaïS Leveaux
+  if (
+    player.memberId === '30084608' &&
+    player.firstName === 'AnaïS' &&
+    player.lastName === 'Leveaux'
+  ) {
+    return {
+      ...player,
+      lastName: 'Levaux',
+    };
+  }
+
+  // Ophelie Buntinx
+  if (
+    player.memberId === '30084731' &&
+    player.firstName === 'Ophelie' &&
+    player.lastName === 'Buntinx'
+  ) {
+    return {
+      ...player,
+      firstName: 'Ophélie',
+    };
+  }
+
+  // Victor Standaert
+  if (
+    player.memberId === '30088517' &&
+    player.firstName === 'Victor' &&
+    player.lastName === 'Standaert'
+  ) {
+    return {
+      ...player,
+      lastName: 'Standard',
+    };
+  }
+
+  // Sasha Juchelka
+  if (
+    player.memberId === '30096325' &&
+    player.firstName === 'Sasha' &&
+    player.lastName === 'Juchelka'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sacha',
+    };
+  }
+
+  // Line Xia Ruoya
+  if (
+    player.memberId === '30099095' &&
+    player.firstName === 'Line' &&
+    player.lastName === 'Xia Ruoya'
+  ) {
+    return {
+      ...player,
+      lastName: 'Xia',
+    };
+  }
+
+  // SöRen Lowie
+  if (
+    player.memberId === '50113368' &&
+    player.firstName === 'SöRen' &&
+    player.lastName === 'Lowie'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sören',
+    };
+  }
+
+  // Lowie SöRen
+  if (
+    player.memberId === '50113368' &&
+    player.firstName === 'Lowie' &&
+    player.lastName === 'SöRen'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sören',
+      lastName: 'Lowie',
+    };
+  }
+
+  // Boss Phatthanaphong
+  if (
+    player.memberId === '50115219' &&
+    player.firstName === 'Boss' &&
+    player.lastName === 'Phatthanaphong'
+  ) {
+    return {
+      ...player,
+      firstName: 'Rupchang',
+    };
+  }
+
+  // Birgit Van Acker
+  if (
+    player.memberId === '50115980' &&
+    player.firstName === 'Birgit' &&
+    player.lastName === 'Van Acker'
+  ) {
+    return {
+      ...player,
+      lastName: 'Van Ackere',
+    };
+  }
+
+  // Myrthe Van Parys
+  if (
+    player.memberId === '50116104' &&
+    player.firstName === 'Myrthe' &&
+    player.lastName === 'Van Parys'
+  ) {
+    return {
+      ...player,
+      firstName: 'Mirthe',
+    };
+  }
+
+  // Maelle Salmon
+  if (
+    player.memberId === '50116292' &&
+    player.firstName === 'Maelle' &&
+    player.lastName === 'Salmon'
+  ) {
+    return {
+      ...player,
+      firstName: 'Maëlle',
+    };
+  }
+
+  // MaëLle Salmon
+  if (
+    player.memberId === '50116292' &&
+    player.firstName === 'MaëLle' &&
+    player.lastName === 'Salmon'
+  ) {
+    return {
+      ...player,
+      firstName: 'Maëlle',
+    };
+  }
+
+  // Delsaert Lotte
+  if (
+    player.memberId === '50121383' &&
+    player.firstName === 'Delsaert' &&
+    player.lastName === 'Lotte'
+  ) {
+    return {
+      ...player,
+      firstName: 'Lotte',
+      lastName: 'Delsaert',
+    };
+  }
+
+  // Robbe Brees
+  if (
+    player.memberId === '50130927' &&
+    player.firstName === 'Robbe' &&
+    player.lastName === 'Brees'
+  ) {
+    return {
+      ...player,
+      memberId: '50103721',
+    };
+  }
+
+  // Mayil Vahanen
+  if (
+    player.memberId === '50153536' &&
+    player.firstName === 'Mayil' &&
+    player.lastName === 'Vahanen'
+  ) {
+    return {
+      ...player,
+      lastName: 'Vahanan',
+    };
+  }
+
+  // Margot Tuyvaerts
+  if (
+    player.memberId === '50192108' &&
+    player.firstName === 'Margot' &&
+    player.lastName === 'Tuyvaerts'
+  ) {
+    return {
+      ...player,
+      lastName: 'Tuyaerts',
+    };
+  }
+
+  // Sarkar Suvankar
+  if (
+    player.memberId === '50204378' &&
+    player.firstName === 'Sarkar' &&
+    player.lastName === 'Suvankar'
+  ) {
+    return {
+      ...player,
+      firstName: 'Suvankar',
+      lastName: 'Sarkar',
+    };
+  }
+
+  // Ciscato Adrian
+  if (
+    player.memberId === '50261126' &&
+    player.firstName === 'Ciscato' &&
+    player.lastName === 'Adrian'
+  ) {
+    return {
+      ...player,
+      firstName: 'Adrian',
+      lastName: 'Ciscato',
+    };
+  }
+
+  // Naveen Ale
+  if (
+    player.memberId === '50274201' &&
+    player.firstName === 'Naveen' &&
+    player.lastName === 'Ale'
+  ) {
+    return {
+      ...player,
+      firstName: 'Ale',
+      lastName: 'Naveen',
+    };
+  }
+
+  // Azeem Fowad Shahid
+  if (
+    player.memberId === '50307193' &&
+    player.firstName === 'Azeem Fowad' &&
+    player.lastName === 'Shahid'
+  ) {
+    return {
+      ...player,
+      firstName: 'Azeem Fawad',
+    };
+  }
+
+  // Kumar Vivek
+  if (
+    player.memberId === '50312138' &&
+    player.firstName === 'Kumar' &&
+    player.lastName === 'Vivek'
+  ) {
+    return {
+      ...player,
+      firstName: 'Vivek',
+      lastName: 'Kumar',
+    };
+  }
+
+  // Laszo Van Holder
+  if (
+    player.memberId === '50336606' &&
+    player.firstName === 'Laszo' &&
+    player.lastName === 'Van Holder'
+  ) {
+    return {
+      ...player,
+      firstName: 'Laszlo',
+    };
+  }
+
+  // Thonisone Saimpholphakdy
+  if (
+    player.memberId === '50346970' &&
+    player.firstName === 'Thonisone' &&
+    player.lastName === 'Saimpholphakdy'
+  ) {
+    return {
+      ...player,
+      firstName: 'Thanisone',
+    };
+  }
+
+  // Yana Wenzlauski
+  if (
+    player.memberId === '50402021' &&
+    player.firstName === 'Yana' &&
+    player.lastName === 'Wenzlauski'
+  ) {
+    return {
+      ...player,
+      lastName: 'Wenzlawski',
+    };
+  }
+
+  // Stefaan Herderweirt
+  if (
+    player.memberId === '50478672' &&
+    player.firstName === 'Stefaan' &&
+    player.lastName === 'Herderweirt'
+  ) {
+    return {
+      ...player,
+      lastName: 'Helderweirt',
+    };
+  }
+
+  // Evelien Kempes
+  if (
+    player.memberId === '50481312' &&
+    player.firstName === 'Evelien' &&
+    player.lastName === 'Kempes'
+  ) {
+    return {
+      ...player,
+      lastName: 'Kempkes',
+    };
+  }
+
+  // Po Liu Wan
+  if (
+    player.memberId === '50487671' &&
+    player.firstName === 'Po' &&
+    player.lastName === 'Liu Wan'
+  ) {
+    return {
+      ...player,
+      firstName: 'Wan Po',
+      lastName: 'Liu',
+    };
+  }
+
+  // Mirthe Higgins
+  if (
+    player.memberId === '50495186' &&
+    player.firstName === 'Mirthe' &&
+    player.lastName === 'Higgins'
+  ) {
+    return {
+      ...player,
+      firstName: 'Myrthe',
+    };
+  }
+
+  // Tim Peirlynck
+  if (
+    player.memberId === '50529986' &&
+    player.firstName === 'Tim' &&
+    player.lastName === 'Peirlynck'
+  ) {
+    return {
+      ...player,
+      lastName: 'Peirlinck',
+    };
+  }
+
+  // Tratsaert Nikita
+  if (
+    player.memberId === '50535366' &&
+    player.firstName === 'Tratsaert' &&
+    player.lastName === 'Nikita'
+  ) {
+    return {
+      ...player,
+      firstName: 'Nikita',
+      lastName: 'Tratsaert',
+    };
+  }
+
+  // Anne-Laure Heirebaut
+  if (
+    player.memberId === '50549537' &&
+    player.firstName === 'Anne-Laure' &&
+    player.lastName === 'Heirebaut'
+  ) {
+    return {
+      ...player,
+      lastName: 'Heirbaut',
+    };
+  }
+
+  // Vijayabaskar Selvaraj
+  if (player.memberId === '50596063') {
+    return {
+      ...player,
+      firstName: 'Vijaya baskar',
+      lastName: 'Selvaraj',
+    };
+  }
+
+  // Jelle Vandessel
+  if (
+    player.memberId === '50605909' &&
+    player.firstName === 'Jelle' &&
+    player.lastName === 'Vandessel'
+  ) {
+    return {
+      ...player,
+      lastName: 'Van Dessel',
+    };
+  }
+
+  // Tom Greven Donk
+  if (
+    player.memberId === '50630121' &&
+    player.firstName === 'Tom' &&
+    player.lastName === 'Greven Donk'
+  ) {
+    return {
+      ...player,
+      lastName: 'Grevendonk',
+    };
+  }
+
+  // Ines Sommers
+  if (
+    player.memberId === '50714465' &&
+    player.firstName === 'Ines' &&
+    player.lastName === 'Sommers'
+  ) {
+    return {
+      ...player,
+      lastName: 'Somers',
+    };
+  }
+
+  // Tim Verstraeten
+  if (
+    player.memberId === '50729292' &&
+    player.firstName === 'Tim' &&
+    player.lastName === 'Verstraeten'
+  ) {
+    return {
+      ...player,
+      lastName: 'Verstraete',
+    };
+  }
+
+  // Chandana Basavarajaiah
+  if (
+    player.memberId === '50780131' &&
+    player.firstName === 'Chandana' &&
+    player.lastName === 'Basavarajaiah'
+  ) {
+    return {
+      ...player,
+      firstName: 'Basavarajaiah',
+      lastName: 'Chandana',
+    };
+  }
+
+  // Brit Lemmens
+  if (
+    player.memberId === '50836676' &&
+    player.firstName === 'Brit' &&
+    player.lastName === 'Lemmens'
+  ) {
+    return {
+      ...player,
+      firstName: 'Britt',
+    };
+  }
+
+  // Renilde Sneyers
+  if (
+    player.memberId === '50932411' &&
+    player.firstName === 'Renilde' &&
+    player.lastName === 'Sneyers'
+  ) {
+    return {
+      ...player,
+      lastName: 'Snyers',
+    };
+  }
+
+  // Lui Wanpok
+  if (
+    player.memberId === '50946358' &&
+    player.firstName === 'Lui' &&
+    player.lastName === 'Wanpok'
+  ) {
+    return {
+      ...player,
+      firstName: 'Wan Pok',
+      lastName: 'Liu',
+    };
+  }
+
+  // Sanaullah Safiullah
+  if (
+    player.memberId === '50948539' &&
+    player.firstName === 'Sanaullah' &&
+    player.lastName === 'Safiullah'
+  ) {
+    return {
+      ...player,
+      firstName: 'Safiullah',
+      lastName: 'Sanaullah',
+    };
+  }
+
+  // Vik Van Der Sijpt
+  if (
+    player.memberId === '50971344' &&
+    player.firstName === 'Vik' &&
+    player.lastName === 'Van Der Sijpt'
+  ) {
+    return {
+      ...player,
+      lastName: 'Van Der Sypt',
+    };
+  }
+
+  // Monten Lindsey
+  if (
+    player.memberId === '50998625' &&
+    player.firstName === 'Monten' &&
+    player.lastName === 'Lindsey'
+  ) {
+    return {
+      ...player,
+      firstName: 'Lindsey',
+      lastName: 'Monten',
+    };
+  }
+
+  // Christopher Beron
+  if (player.firstName === 'Chris' && player.lastName === 'Beron') {
+    return {
+      ...player,
+      firstName: 'Christopher',
+      lastName: 'Beron',
+      memberId: '6461219',
+    };
+  }
+
+  // Yau Dan
+  if (
+    player.memberId === '1297262' &&
+    player.firstName === 'Yau' &&
+    player.lastName === 'Dan'
+  ) {
+    return {
+      ...player,
+      firstName: 'Dan',
+      lastName: 'You',
+    };
+  }
+
+  // Yana Wenzlauski
+  if (
+    player.memberId === '50402021' &&
+    player.firstName === 'Yana' &&
+    player.lastName === 'Wenzlauski'
+  ) {
+    return {
+      ...player,
+      lastName: 'Wenzlawski',
+    };
+  }
+
+  // Wilfried Janssen
+  if (
+    player.memberId === '1154272' &&
+    player.firstName === 'Wilfried' &&
+    player.lastName === 'Janssen'
+  ) {
+    return {
+      ...player,
+      firstName: 'Wilf',
+    };
+  }
+
+  // Wilf Janssens
+  if (
+    player.memberId === '1154272' &&
+    player.firstName === 'Wilf' &&
+    player.lastName === 'Janssens'
+  ) {
+    return {
+      ...player,
+      lastName: 'Janssen',
+    };
+  }
+
+  // Wang Ting Ting
+  if (
+    player.memberId === '30063557' &&
+    player.firstName === 'Wang' &&
+    player.lastName === 'Ting Ting'
+  ) {
+    return {
+      ...player,
+      firstName: 'Ting Ting',
+      lastName: 'Wang',
+    };
+  }
+
+  // Victoria Norris
+  if (
+    player.memberId === '1244126' &&
+    player.firstName === 'Victoria' &&
+    player.lastName === 'Norris'
+  ) {
+    return {
+      ...player,
+      firstName: 'Vicky',
+    };
+  }
+
+  // Victor Standaert
+  if (
+    player.memberId === '30088517' &&
+    player.firstName === 'Victor' &&
+    player.lastName === 'Standaert'
+  ) {
+    return {
+      ...player,
+      lastName: 'Standard',
+    };
+  }
+
+  // Vervier Sarah
+  if (
+    player.memberId === '30070106' &&
+    player.firstName === 'Vervier' &&
+    player.lastName === 'Sarah'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sarah',
+      lastName: 'Vervier',
+    };
+  }
+
+  // Valery Grotte
+  if (
+    player.memberId === '30004574' &&
+    player.firstName === 'Valery' &&
+    player.lastName === 'Grotte'
+  ) {
+    return {
+      ...player,
+      lastName: 'Grote',
+    };
+  }
+
+  // Usamah Hussain
+  if (
+    player.memberId === '1340752' &&
+    player.firstName === 'Usamah' &&
+    player.lastName === 'Hussain'
+  ) {
+    return {
+      ...player,
+      firstName: 'Usamah Ali',
+      lastName: 'Hussain',
+    };
+  }
+
+  // Tratsaert Nikita
+  if (
+    player.memberId === '50535366' &&
+    player.firstName === 'Tratsaert' &&
+    player.lastName === 'Nikita'
+  ) {
+    return {
+      ...player,
+      firstName: 'Nikita',
+      lastName: 'Tratsaert',
+    };
+  }
+
+  // Tomas Lowry
+  if (
+    player.memberId === '1318117' &&
+    player.firstName === 'Tomas' &&
+    player.lastName === 'Lowry'
+  ) {
+    return {
+      ...player,
+      firstName: 'Thomas',
+      lastName: 'Lowry',
+    };
+  }
+
+  // Tom Greven Donk
+  if (
+    player.memberId === '50630121' &&
+    player.firstName === 'Tom' &&
+    player.lastName === 'Greven Donk'
+  ) {
+    return {
+      ...player,
+      lastName: 'Grevendonk',
+    };
+  }
+
+  // Tom Ellis
+  if (
+    player.memberId === '1290946' &&
+    player.firstName === 'Tom' &&
+    player.lastName === 'Ellis'
+  ) {
+    return {
+      ...player,
+      firstName: 'Thomas',
+      lastName: 'Ellis',
+    };
+  }
+
+  // Tjioe Lilièn
+  if (
+    player.memberId === '809295' &&
+    player.firstName === 'Tjioe' &&
+    player.lastName === 'Lilièn'
+  ) {
+    return {
+      ...player,
+      firstName: 'Lilièn',
+      lastName: 'Tjioe',
+    };
+  }
+
+  // Timms Ben
+  if (
+    player.memberId === '1236607' &&
+    player.firstName === 'Timms' &&
+    player.lastName === 'Ben'
+  ) {
+    return {
+      ...player,
+      firstName: 'Ben',
+      lastName: 'Timms',
+    };
+  }
+
+  // Tim Verstraeten
+  if (
+    player.memberId === '50729292' &&
+    player.firstName === 'Tim' &&
+    player.lastName === 'Verstraeten'
+  ) {
+    return {
+      ...player,
+      lastName: 'Verstraete',
+    };
+  }
+
+  // Tim Peirlynck
+  if (
+    player.memberId === '50529986' &&
+    player.firstName === 'Tim' &&
+    player.lastName === 'Peirlynck'
+  ) {
+    return {
+      ...player,
+      lastName: 'Peirlinck',
+    };
+  }
+
+  // Thonisone Saimpholphakdy
+  if (
+    player.memberId === '50346970' &&
+    player.firstName === 'Thonisone' &&
+    player.lastName === 'Saimpholphakdy'
+  ) {
+    return {
+      ...player,
+      firstName: 'Thanisone',
+      lastName: 'Soumpholphakdy',
+    };
+  }
+
+  // Thomas Burdett
+  if (
+    player.memberId === '1181973' &&
+    player.firstName === 'Thomas' &&
+    player.lastName === 'Burdett'
+  ) {
+    return {
+      ...player,
+      firstName: 'Tom',
+    };
+  }
+
+  // Theophile Vicart
+  if (
+    player.memberId === '6899637' &&
+    player.firstName === 'Theophile' &&
+    player.lastName === 'Vicart'
+  ) {
+    return {
+      ...player,
+      firstName: 'Théophile',
+      lastName: 'Vicart',
+    };
+  }
+
+  // Talia Bonanno
+  if (
+    player.memberId === '6750331' &&
+    player.firstName === 'Talia' &&
+    player.lastName === 'Bonanno'
+  ) {
+    return {
+      ...player,
+      firstName: 'Talia',
+      lastName: 'Bonnano',
+    };
+  }
+
+  // Suvankar Sarkar
+  if (
+    player.memberId === '50204378' &&
+    player.firstName === 'Suvankar' &&
+    player.lastName === 'Sarkar'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sarkar',
+      lastName: 'Suvankar',
+    };
+  }
+
+  // Stephanie Tuerlinckx
+  if (
+    player.memberId === '30053891' &&
+    player.firstName === 'Stephanie' &&
+    player.lastName === 'Tuerlinckx'
+  ) {
+    return {
+      ...player,
+      firstName: 'Stéphanie',
+    };
+  }
+
+  // Stephanie Gerard
+  if (
+    player.memberId === '30027712' &&
+    player.firstName === 'Stephanie' &&
+    player.lastName === 'Gerard'
+  ) {
+    return {
+      ...player,
+      firstName: 'Stéphanie',
+      lastName: 'Gérard',
+    };
+  }
+
+  // Stéphane Vannitsen
+  if (
+    player.memberId === '30056343' &&
+    player.firstName === 'Stéphane' &&
+    player.lastName === 'Vannitsen'
+  ) {
+    return {
+      ...player,
+      firstName: 'Stéphane',
+      lastName: 'Vannitsem',
+    };
+  }
+
+  // Stefaan Herderweirt
+  if (
+    player.memberId === '50478672' &&
+    player.firstName === 'Stefaan' &&
+    player.lastName === 'Herderweirt'
+  ) {
+    return {
+      ...player,
+      lastName: 'Helderweirt',
+    };
+  }
+
+  // Shashvat Shash
+  if (
+    player.memberId === '50097074' &&
+    player.firstName === 'Shashvat' &&
+    player.lastName === 'Shash'
+  ) {
+    return {
+      ...player,
+      lastName: 'Shah',
+    };
+  }
+
+  // Serve Peulen
+  if (
+    player.memberId === '804862' &&
+    player.firstName === 'Serve' &&
+    player.lastName === 'Peulen'
+  ) {
+    return {
+      ...player,
+      firstName: 'Servé',
+    };
+  }
+
+  // Sanne Custers-Meijers
+  if (
+    player.memberId === '592353' &&
+    player.firstName === 'Sanne' &&
+    player.lastName === 'Custers-Meijers'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sanne',
+      lastName: 'Meijers',
+    };
+  }
+
+  // Samuel Shepherd
+  if (
+    player.memberId === '1230660' &&
+    player.firstName === 'Samuel' &&
+    player.lastName === 'Shepherd'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sam',
+    };
+  }
+
+  // Sam Dewaegenare
+  if (
+    player.memberId === '50987119' &&
+    player.firstName === 'Sam' &&
+    player.lastName === 'Dewaegenare'
+  ) {
+    return {
+      ...player,
+      lastName: 'Dewaegenaere',
+    };
+  }
+
+  // Safiullah Sanaullah
+  if (
+    player.memberId === '50948539' &&
+    player.firstName === 'Safiullah' &&
+    player.lastName === 'Sanaullah'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sanaullah',
+      lastName: 'Safiullah',
+    };
+  }
+
+  // Sacha Juchelka
+  if (
+    player.memberId === '30096325' &&
+    player.firstName === 'Sacha' &&
+    player.lastName === 'Juchelka'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sasha',
+    };
+  }
+
+  // Ruth Le Fevre
+  if (
+    player.memberId === '1247800' &&
+    player.firstName === 'Ruth' &&
+    player.lastName === 'Le Fevre'
+  ) {
+    return {
+      ...player,
+      firstName: 'Ruth',
+      lastName: 'Le-Fevre',
+    };
+  }
+
+  // Rose Kocak
+  if (
+    player.memberId === '30080660' &&
+    player.firstName === 'Rose' &&
+    player.lastName === 'Kocak'
+  ) {
+    return {
+      ...player,
+      firstName: 'Rose Gulbin',
+      lastName: 'Kocak',
+    };
+  }
+
+  // Ritzen Beau
+  if (
+    player.memberId === '863754' &&
+    player.firstName === 'Ritzen' &&
+    player.lastName === 'Beau'
+  ) {
+    return {
+      ...player,
+      firstName: 'Beau',
+      lastName: 'Ritzen',
+    };
+  }
+
+  // Renilde Sneyers
+  if (
+    player.memberId === '50932411' &&
+    player.firstName === 'Renilde' &&
+    player.lastName === 'Sneyers'
+  ) {
+    return {
+      ...player,
+      lastName: 'Snyers',
+    };
+  }
+
+  // Po Liu Wan
+  if (
+    player.memberId === '50487671' &&
+    player.firstName === 'Po' &&
+    player.lastName === 'Liu Wan'
+  ) {
+    return {
+      ...player,
+      firstName: 'Wan Po',
+      lastName: 'Liu',
+    };
+  }
+
+  // Pierre-Yves GéRard
+  if (
+    player.memberId === '30039140' &&
+    player.firstName === 'Pierre-Yves' &&
+    player.lastName === 'GéRard'
+  ) {
+    return {
+      ...player,
+      firstName: 'Pierre-Yves',
+      lastName: 'Gerard',
+    };
+  }
+
+  // Pierre Serge
+  if (
+    player.memberId === '30079890' &&
+    player.firstName === 'Pierre' &&
+    player.lastName === 'Serge'
+  ) {
+    return {
+      ...player,
+      lastName: 'Segers',
+    };
+  }
+
+  // Pierre  Yves Soille
+  if (
+    player.memberId === '30043113' &&
+    player.firstName === 'Pierre  Yves' &&
+    player.lastName === 'Soille'
+  ) {
+    return {
+      ...player,
+      firstName: 'Pierre-Yves',
+    };
+  }
+
+  // Philip Clarke
+  if (player.memberId === '1251533') {
+    return {
+      ...player,
+      firstName: 'Phil',
+      lastName: 'Clarke',
+    };
+  }
+
+  // Pedro Petrus Perecaya
+  if (
+    player.memberId === '50247123' &&
+    player.firstName === 'Pedro' &&
+    player.lastName === 'Petrus Perecaya'
+  ) {
+    return {
+      ...player,
+      firstName: 'Petrus',
+      lastName: 'Perecaya',
+    };
+  }
+
+  // Noee Delannoy
+  if (
+    player.memberId === '6864100' &&
+    player.firstName === 'Noee' &&
+    player.lastName === 'Delannoy'
+  ) {
+    return {
+      ...player,
+      firstName: 'Noée',
+      lastName: 'Delannoy',
+    };
+  }
+
+  // Noach Warning
+  if (
+    player.memberId === '13-052' &&
+    player.firstName === 'Noach' &&
+    player.lastName === 'Warning'
+  ) {
+    return {
+      ...player,
+      firstName: 'Noah',
+      lastName: 'Warning',
+    };
+  }
+
+  // Nina Fliesher
+  if (
+    player.memberId === '882620' &&
+    player.firstName === 'Nina' &&
+    player.lastName === 'Fliesher'
+  ) {
+    return {
+      ...player,
+      lastName: 'Fliescher',
+    };
+  }
+
+  // Nicholson Darren
+  if (
+    player.memberId === '1068222' &&
+    player.firstName === 'Nicholson' &&
+    player.lastName === 'Darren'
+  ) {
+    return {
+      ...player,
+      firstName: 'Darren',
+      lastName: 'Nicholson',
+    };
+  }
+
+  // Nathan N'Guyen
+  if (player.memberId === '6864095' && player.firstName === 'Nathan') {
+    return {
+      ...player,
+      lastName: 'Nguyen',
+    };
+  }
+
+  // Nathalie Yoko Genet
+  if (
+    player.memberId === '30031977' &&
+    player.firstName === 'Nathalie Yoko' &&
+    player.lastName === 'Genet'
+  ) {
+    return {
+      ...player,
+      firstName: 'Nathalie',
+      lastName: 'Genet',
+    };
+  }
+
+  // Nathalia Jasik
+  if (
+    player.memberId === '30063170' &&
+    player.firstName === 'Nathalia' &&
+    player.lastName === 'Jasik'
+  ) {
+    return {
+      ...player,
+      firstName: 'Natalia',
+    };
+  }
+
+  // Naidoo Kesh
+  if (
+    player.memberId === '1145232' &&
+    player.firstName === 'Naidoo' &&
+    player.lastName === 'Kesh'
+  ) {
+    return {
+      ...player,
+      firstName: 'Kesh',
+      lastName: 'Naidoo',
+    };
+  }
+
+  // Myrthe Van Parys
+  if (
+    player.memberId === '50116104' &&
+    player.firstName === 'Myrthe' &&
+    player.lastName === 'Van Parys'
+  ) {
+    return {
+      ...player,
+      firstName: 'Mirthe',
+    };
+  }
+
+  // Monten Lindsey
+  if (
+    player.memberId === '50998625' &&
+    player.firstName === 'Monten' &&
+    player.lastName === 'Lindsey'
+  ) {
+    return {
+      ...player,
+      firstName: 'Lindsey',
+      lastName: 'Monten',
+    };
+  }
+
+  // Mirthe Higgins
+  if (
+    player.memberId === '50495186' &&
+    player.firstName === 'Mirthe' &&
+    player.lastName === 'Higgins'
+  ) {
+    return {
+      ...player,
+      firstName: 'Myrthe',
+    };
+  }
+
+  // Mike Parker
+  if (
+    player.memberId === '1244301' &&
+    player.firstName === 'Mike' &&
+    player.lastName === 'Parker'
+  ) {
+    return {
+      ...player,
+      firstName: 'Michael',
+      lastName: 'Parker',
+    };
+  }
+
+  // Mikael Le Grives
+  if (
+    player.memberId === 'FR31723' &&
+    player.firstName === 'Mikael' &&
+    player.lastName === 'Le Grives'
+  ) {
+    return {
+      ...player,
+      firstName: 'Mikael',
+      lastName: 'Le Grivès',
+    };
+  }
+
+  // Michaël De Rechter
+  if (
+    player.memberId === '50071454' &&
+    player.firstName === 'Michaël' &&
+    player.lastName === 'De Rechter'
+  ) {
+    return {
+      ...player,
+      firstName: 'Michaël',
+      lastName: 'De Rechter',
+    };
+  }
+
+  // Michael Bruinesse
+  if (
+    player.memberId === '892424' &&
+    player.firstName === 'Michael' &&
+    player.lastName === 'Bruinesse'
+  ) {
+    return {
+      ...player,
+      firstName: 'Michael',
+      lastName: 'Van Bruinessen',
+    };
+  }
+
+  // Memee Jurgen
+  if (
+    player.memberId === '764379' &&
+    player.firstName === 'Memee' &&
+    player.lastName === 'Jurgen'
+  ) {
+    return {
+      ...player,
+      firstName: 'Jurgen',
+      lastName: 'Memee',
+    };
+  }
+
+  // Melissa Willigen
+  if (
+    player.memberId === '701610' &&
+    player.firstName === 'Melissa' &&
+    player.lastName === 'Willigen'
+  ) {
+    return {
+      ...player,
+      firstName: 'Melissa',
+      lastName: 'Van Willigen',
+    };
+  }
+
+  // Meijer Bianca
+  if (
+    player.memberId === '729799' &&
+    player.firstName === 'Meijer' &&
+    player.lastName === 'Bianca'
+  ) {
+    return {
+      ...player,
+      firstName: 'Bianca',
+      lastName: 'Meijer',
+    };
+  }
+
+  // Mayil Vahanan
+  if (
+    player.memberId === '50153536' &&
+    player.firstName === 'Mayil' &&
+    player.lastName === 'Vahanan'
+  ) {
+    return {
+      ...player,
+      lastName: 'Vahanen',
+    };
+  }
+
+  // Maximilien Whitof
+  if (
+    player.memberId === '30079665' &&
+    player.firstName === 'Maximilien' &&
+    player.lastName === 'Whitof'
+  ) {
+    return {
+      ...player,
+      lastName: 'Withof',
+    };
+  }
+
+  // Matthijs Van Lelieveld
+  if (
+    player.memberId === '828643' &&
+    player.firstName === 'Matthijs' &&
+    player.lastName === 'Van Lelieveld'
+  ) {
+    return {
+      ...player,
+      firstName: 'Mathijs',
+    };
+  }
+
+  // Mathijs Van Leleiveld
+  if (
+    player.memberId === '828643' &&
+    player.firstName === 'Mathijs' &&
+    player.lastName === 'Van Leleiveld'
+  ) {
+    return {
+      ...player,
+      lastName: 'Van Lelieveld',
+    };
+  }
+
+  // Martyn Clarck
+  if (
+    player.memberId === '1008700' &&
+    player.firstName === 'Martyn' &&
+    player.lastName === 'Clarck'
+  ) {
+    return {
+      ...player,
+      lastName: 'Clark',
+    };
+  }
+
+  // Martin Thierry
+  if (
+    player.memberId === '6810359' &&
+    player.firstName === 'Martin' &&
+    player.lastName === 'Thierry'
+  ) {
+    return {
+      ...player,
+      memberId: '06909096',
+      lastName: 'Thiery',
+    };
+  }
+
+  // Martin Thierry
+  if (
+    player.memberId === '6909096' &&
+    player.firstName === 'Martin' &&
+    player.lastName === 'Thiery'
+  ) {
+    return {
+      ...player,
+      memberId: '06909096',
+    };
+  }
+
+  // Margot Tuyvaerts
+  if (
+    player.memberId === '50192108' &&
+    player.firstName === 'Margot' &&
+    player.lastName === 'Tuyvaerts'
+  ) {
+    return {
+      ...player,
+      lastName: 'Tuyaerts',
+    };
+  }
+
+  // Maite Wouters
+  if (
+    player.memberId === '30046220' &&
+    player.firstName === 'Maite' &&
+    player.lastName === 'Wouters'
+  ) {
+    return {
+      ...player,
+      firstName: 'Maïté',
+    };
+  }
+
+  // Maeve Delannoy Seillier
+  if (
+    player.memberId === '6817059' &&
+    player.firstName === 'Maeve' &&
+    player.lastName === 'Delannoy Seillier'
+  ) {
+    return {
+      ...player,
+      memberId: '6895030',
+    };
+  }
+
+  // Maelle Salmon
+  if (
+    player.memberId === '50116292' &&
+    player.firstName === 'Maelle' &&
+    player.lastName === 'Salmon'
+  ) {
+    return {
+      ...player,
+      firstName: 'Maëlle',
+    };
+  }
+
+  // Lui Wanpok
+  if (
+    player.memberId === '50946358' &&
+    player.firstName === 'Lui' &&
+    player.lastName === 'Wanpok'
+  ) {
+    return {
+      ...player,
+      firstName: 'Wan Pok',
+      lastName: 'Liu',
+    };
+  }
+
+  // Lucas Jorrissen
+  if (
+    player.memberId === '30069214' &&
+    player.firstName === 'Lucas' &&
+    player.lastName === 'Jorrissen'
+  ) {
+    return {
+      ...player,
+      lastName: 'Jorissen',
+    };
+  }
+
+  // Lowie Sören
+  if (
+    player.memberId === '50113368' &&
+    player.firstName === 'Lowie' &&
+    player.lastName === 'Sören'
+  ) {
+    return {
+      ...player,
+      firstName: 'Sören',
+      lastName: 'Lowie',
+    };
+  }
+
+  // Louise Hugé
+  if (
+    player.memberId === '6696097' &&
+    player.firstName === 'Louise' &&
+    player.lastName === 'Hugé'
+  ) {
+    return {
+      ...player,
+      memberId: '6915603',
+      lastName: 'Huge',
+    };
+  }
+
+  // Loic De Leeuw
+  if (
+    player.memberId === '807834' &&
+    player.firstName === 'Loic' &&
+    player.lastName === 'De Leeuw'
+  ) {
+    return {
+      ...player,
+      firstName: 'Loïc',
+    };
+  }
+
+  // Line Xia
+  if (
+    player.memberId === '30099095' &&
+    player.firstName === 'Line' &&
+    player.lastName === 'Xia'
+  ) {
+    return {
+      ...player,
+      firstName: 'Line',
+      lastName: 'Xia Ruoya',
+    };
+  }
+
+  // Levy Mathieu
+  if (
+    player.memberId === '30003453' &&
+    player.firstName === 'Levy' &&
+    player.lastName === 'Mathieu'
+  ) {
+    return {
+      ...player,
+      firstName: 'Lévy',
+      lastName: 'Mathieu',
+    };
+  }
+
+  // Lejoint Amaury
+  if (
+    player.memberId === '30034823' &&
+    player.firstName === 'Lejoint' &&
+    player.lastName === 'Amaury'
+  ) {
+    return {
+      ...player,
+      firstName: 'Amaury',
+      lastName: 'Lejoint',
+    };
+  }
+
+  // Lee Ka Wing
+  if (
+    player.memberId === '807115' &&
+    player.firstName === 'Lee' &&
+    player.lastName === 'Ka Wing'
+  ) {
+    return {
+      ...player,
+      firstName: 'Ka',
+      lastName: 'Wing Lee',
+    };
+  }
+
+  // Laszo Van Holder
+  if (
+    player.memberId === '50336606' &&
+    player.firstName === 'Laszo' &&
+    player.lastName === 'Van Holder'
+  ) {
+    return {
+      ...player,
+      firstName: 'Laszlo',
+    };
+  }
+
+  // Kumar Vivek
+  if (
+    player.memberId === '50312138' &&
+    player.firstName === 'Kumar' &&
+    player.lastName === 'Vivek'
+  ) {
+    return {
+      ...player,
+      firstName: 'Vivek',
+      lastName: 'Kumar',
+    };
+  }
+
+  // Klels Adrien
+  if (
+    player.memberId === '30062249' &&
+    player.firstName === 'Klels' &&
+    player.lastName === 'Adrien'
+  ) {
+    return {
+      ...player,
+      firstName: 'Adrien',
+      lastName: 'Klels',
+    };
+  }
+
+  // Kilaïm Purwoko
+  if (
+    player.memberId === '50100601' &&
+    player.firstName === 'Kilaïm' &&
+    player.lastName === 'Purwoko'
+  ) {
+    return {
+      ...player,
+      lastName: 'Panggih Purwoko',
+    };
+  }
+
+  // Kevin Van Dieen
+  if (
+    player.memberId === '820072' &&
+    player.firstName === 'Kevin' &&
+    player.lastName === 'Van Dieen'
+  ) {
+    return {
+      ...player,
+      lastName: 'Van Dieën',
+    };
+  }
+
+  // Kerry Halbrook
+  if (
+    player.memberId === '1246969' &&
+    player.firstName === 'Kerry' &&
+    player.lastName === 'Halbrook'
+  ) {
+    return {
+      ...player,
+      firstName: 'Kerry',
+      lastName: 'Hallbrook',
+    };
+  }
+
+  // Kawing Lee
+  if (player.memberId === '807115' && player.lastName === 'Lee') {
+    return {
+      ...player,
+      firstName: 'Ka',
+      lastName: 'Wing Lee',
+    };
+  }
+
+  // Karryn Duggan
+  if (
+    player.memberId === '1107256' &&
+    player.firstName === 'Karryn' &&
+    player.lastName === 'Duggan'
+  ) {
+    return {
+      ...player,
+      firstName: 'Karyn',
+    };
+  }
+
+  // Jurgen Gabriels
+  if (
+    player.memberId === '50048396' &&
+    player.firstName === 'Jurgen' &&
+    player.lastName === 'Gabriels'
+  ) {
+    return {
+      ...player,
+      lastName: 'Gabriëls',
+    };
+  }
+
+  // Jeroen Rinderstma
+  if (
+    player.memberId === '523060' &&
+    player.firstName === 'Jeroen' &&
+    player.lastName === 'Rinderstma'
+  ) {
+    return {
+      ...player,
+      lastName: 'Rindertsma',
+    };
+  }
+
+  // Jeremy Giltaire
+  if (
+    player.memberId === '30075748' &&
+    player.firstName === 'Jeremy' &&
+    player.lastName === 'Giltaire'
+  ) {
+    return {
+      ...player,
+      firstName: 'Jeremy',
+      lastName: 'Giltaire',
+    };
+  }
+
+  // Jelle Vandessel
+  if (
+    player.memberId === '50605909' &&
+    player.firstName === 'Jelle' &&
+    player.lastName === 'Vandessel'
+  ) {
+    return {
+      ...player,
+      lastName: 'Van Dessel',
+    };
+  }
+
+  // Jean-Pierre Benjamin
+  if (
+    player.memberId === '30047681' &&
+    player.firstName === 'Jean-Pierre' &&
+    player.lastName === 'Benjamin'
+  ) {
+    return {
+      ...player,
+      firstName: 'Benjamin',
+      lastName: 'Jean Pierre',
+    };
+  }
+
+  // Jean  Pierre Delplanque
+  if (
+    player.memberId === '30034088' &&
+    player.firstName === 'Jean  Pierre' &&
+    player.lastName === 'Delplanque'
+  ) {
+    return {
+      ...player,
+      firstName: 'Jean-Pierre',
+    };
+  }
+
+  // Jean  Francois Lagasse
+  if (
+    player.memberId === '30017529' &&
+    player.firstName === 'Jean  Francois' &&
+    player.lastName === 'Lagasse'
+  ) {
+    return {
+      ...player,
+      firstName: 'Jean-François',
+      lastName: 'Lagasse',
+    };
+  }
+
+  // Jean  Benoit Verbeke
+  if (
+    player.memberId === '30030887' &&
+    player.firstName === 'Jean  Benoit' &&
+    player.lastName === 'Verbeke'
+  ) {
+    return {
+      ...player,
+      firstName: 'Jean-Benoit',
+      lastName: 'Verbeke',
+    };
+  }
+
+  // Jamie Cooper
+  if (
+    player.memberId === '1299040' &&
+    player.firstName === 'Jamie' &&
+    player.lastName === 'Cooper'
+  ) {
+    return {
+      ...player,
+      firstName: 'James',
+      lastName: 'Cooper',
+    };
+  }
+
+  // Jacek Kolumbajew
+  if (
+    player.memberId === 'K1963' &&
+    player.firstName === 'Jacek' &&
+    player.lastName === 'Kolumbajew'
+  ) {
+    return {
+      ...player,
+      firstName: 'Jacek',
+      lastName: 'Kołumbajew',
+    };
+  }
+
+  // Isaac Léonard
+  if (
+    player.memberId === '30061211' &&
+    player.firstName === 'Isaac' &&
+    player.lastName === 'Léonard'
+  ) {
+    return {
+      ...player,
+      lastName: 'Leonard',
+    };
+  }
+
+  // Ines Sommers
+  if (
+    player.memberId === '50714465' &&
+    player.firstName === 'Ines' &&
+    player.lastName === 'Sommers'
+  ) {
+    return {
+      ...player,
+      lastName: 'Somers',
+    };
+  }
+
+  // Hippolyte Hautefeuile
+  if (
+    player.memberId === '6754119' &&
+    player.firstName === 'Hippolyte' &&
+    player.lastName === 'Hautefeuile'
+  ) {
+    return {
+      ...player,
+      firstName: 'Hippolyte',
+      lastName: 'Hautefeuille',
+    };
+  }
+
+  // Helene Ulens
+  if (player.memberId === '30049299') {
+    return {
+      ...player,
+      firstName: 'Hélène',
+      lastName: 'Ulens',
+    };
+  }
+
+  // Heidi Gabriels
+  if (
+    player.memberId === '50047802' &&
+    player.firstName === 'Heidi' &&
+    player.lastName === 'Gabriels'
+  ) {
+    return {
+      ...player,
+      lastName: 'Gabriëls',
+    };
+  }
+
+  // Hannah Koe N Gono
+  if (
+    player.memberId === '30078704' &&
+    player.firstName === 'Hannah' &&
+    player.lastName === 'Koe N Gono'
+  ) {
+    return {
+      ...player,
+      firstName: 'Hannah-Gabrielle',
+      lastName: 'Koe N Gono',
+    };
+  }
+
+  // Gregoire Gosin
+  if (
+    player.memberId === '30047443' &&
+    player.firstName === 'Gregoire' &&
+    player.lastName === 'Gosin'
+  ) {
+    return {
+      ...player,
+      firstName: 'Grégoire',
+      lastName: 'Gosin',
+    };
+  }
+
+  // Gitta Djajawasito
+  if (
+    player.memberId === '859000' &&
+    player.firstName === 'Gitta' &&
+    player.lastName === 'Djajawasito'
+  ) {
+    return {
+      ...player,
+      firstName: 'Gita',
+    };
+  }
+
+  // Gilis Thomas
+  if (
+    player.memberId === '30069334' &&
+    player.firstName === 'Gilis' &&
+    player.lastName === 'Thomas'
+  ) {
+    return {
+      ...player,
+      firstName: 'Thomas',
+      lastName: 'Gilis',
+    };
+  }
+
+  // Gilbert Harry
+  if (
+    player.memberId === '1236595' &&
+    player.firstName === 'Gilbert' &&
+    player.lastName === 'Harry'
+  ) {
+    return {
+      ...player,
+      firstName: 'Harry',
+      lastName: 'Gilbert',
+    };
+  }
+
+  // Gabriel Hoevers
+  if (
+    player.memberId === '759985' &&
+    player.firstName === 'Gabriel' &&
+    player.lastName === 'Hoevers'
+  ) {
+    return {
+      ...player,
+      firstName: 'Gabriël',
+    };
+  }
+
+  // François Dusart
+  if (
+    player.memberId === '30060989' &&
+    player.firstName === 'François' &&
+    player.lastName === 'Dusart'
+  ) {
+    return {
+      ...player,
+      firstName: 'François',
+      lastName: 'Dusart',
+    };
+  }
+
+  // Eymen Zararsik
+  if (
+    player.memberId === '30078949' &&
+    player.firstName === 'Eymen' &&
+    player.lastName === 'Zararsik'
+  ) {
+    return {
+      ...player,
+      lastName: 'Zararsiz',
+    };
+  }
+
+  // Evelien Straaijer
+  if (
+    player.memberId === '813749' &&
+    player.firstName === 'Evelien' &&
+    player.lastName === 'Straaijer'
+  ) {
+    return {
+      ...player,
+      firstName: 'Eveline',
+    };
+  }
+
+  // Evelien Kempes
+  if (
+    player.memberId === '50481312' &&
+    player.firstName === 'Evelien' &&
+    player.lastName === 'Kempes'
+  ) {
+    return {
+      ...player,
+      lastName: 'Kempkes',
+    };
+  }
+
+  // Ethan Oliver Dalley
+  if (
+    player.memberId === '1243998' &&
+    player.firstName === 'Ethan' &&
+    player.lastName === 'Oliver Dalley'
+  ) {
+    return {
+      ...player,
+      firstName: 'Ethan',
+      lastName: 'Dalley',
+    };
+  }
+
+  // Esteban Bourleau
+  if (
+    player.memberId === '30006052' &&
+    player.firstName === 'Esteban' &&
+    player.lastName === 'Bourleau'
+  ) {
+    return {
+      ...player,
+      firstName: 'Estéban',
+      lastName: 'Bourleau',
+    };
+  }
+
+  // éric Demay
+  if (
+    player.memberId === '6602425' &&
+    player.firstName === 'éric' &&
+    player.lastName === 'Demay'
+  ) {
+    return {
+      ...player,
+      firstName: 'Eric',
+      lastName: 'Demay',
+    };
+  }
+
+  // Ellen Kania
+  if (
+    player.memberId === '554831' &&
+    player.firstName === 'Ellen' &&
+    player.lastName === 'Kania'
+  ) {
+    return {
+      ...player,
+      firstName: 'Mirella',
+      lastName: 'De Vijlder',
+    };
+  }
+
+  // Eleonore Trepant
+  if (
+    player.memberId === '30033241' &&
+    player.firstName === 'Eleonore' &&
+    player.lastName === 'Trepant'
+  ) {
+    return {
+      ...player,
+      firstName: 'Eléonore',
+      lastName: 'Trepant',
+    };
+  }
+
+  // Dusan Gombos
+  if (
+    player.memberId === '30064028' &&
+    player.firstName === 'Dusan' &&
+    player.lastName === 'Gombos'
+  ) {
+    return {
+      ...player,
+      firstName: 'Dušan',
+    };
+  }
+
+  // Dom Smith
+  if (
+    player.memberId === '1250420' &&
+    player.firstName === 'Dom' &&
+    player.lastName === 'Smith'
+  ) {
+    return {
+      ...player,
+      firstName: 'Dominique',
+      lastName: 'Smith',
+    };
+  }
+
+  // Dirkjan Slijkoord
+  if (
+    player.memberId === '539953' &&
+    player.firstName === 'Dirkjan' &&
+    player.lastName === 'Slijkoord'
+  ) {
+    return {
+      ...player,
+      firstName: 'Dirk Jan',
+      lastName: 'Slijkoord',
+    };
+  }
+
+  // Didier Sacre
+  if (
+    player.memberId === '30020393' &&
+    player.firstName === 'Didier' &&
+    player.lastName === 'Sacre'
+  ) {
+    return {
+      ...player,
+      firstName: 'Didier',
+      lastName: 'Sacré',
+    };
+  }
+
+  // Diane Dianika
+  if (
+    player.memberId === '50085065' &&
+    player.firstName === 'Diane' &&
+    player.lastName === 'Dianika'
+  ) {
+    return {
+      ...player,
+      firstName: 'Dianika',
+      lastName: 'Lestari',
+    };
+  }
+
+  // Denis Peters
+  if (
+    player.memberId === '840336' &&
+    player.firstName === 'Denis' &&
+    player.lastName === 'Peters'
+  ) {
+    return {
+      ...player,
+      firstName: 'Dennis',
+      lastName: 'Peters',
+    };
+  }
+
+  // Delsaert Lotte
+  if (
+    player.memberId === '50121383' &&
+    player.firstName === 'Delsaert' &&
+    player.lastName === 'Lotte'
+  ) {
+    return {
+      ...player,
+      firstName: 'Lotte',
+      lastName: 'Delsaert',
+    };
+  }
+
+  // Cristian Nauta
+  if (
+    player.memberId === '984597' &&
+    player.firstName === 'Cristian' &&
+    player.lastName === 'Nauta'
+  ) {
+    return {
+      ...player,
+      firstName: 'Christian',
+    };
+  }
+
+  // Coralie Thomas
+  if (
+    player.memberId === '6584987' &&
+    player.firstName === 'Coralie' &&
+    player.lastName === 'Thomas'
+  ) {
+    return {
+      ...player,
+      memberId: '06584987',
+    };
+  }
+
+  // Christopher Witgens
+  if (
+    player.memberId === '30038053' &&
+    player.firstName === 'Christopher' &&
+    player.lastName === 'Witgens'
+  ) {
+    return {
+      ...player,
+      lastName: 'Wintgens',
+    };
+  }
+
+  // Christophe Lafon
+  if (
+    player.memberId === '5902975' &&
+    player.firstName === 'Christophe' &&
+    player.lastName === 'Lafon'
+  ) {
+    return {
+      ...player,
+      firstName: 'Christophe',
+      lastName: 'Degroote',
+    };
+  }
+
+  // Chandana Basavarajaiah
+  if (
+    player.memberId === '50780131' &&
+    player.firstName === 'Chandana' &&
+    player.lastName === 'Basavarajaiah'
+  ) {
+    return {
+      ...player,
+      firstName: 'Basavarajaiah',
+      lastName: 'Chandana',
+    };
+  }
+
+  // Cedric De Leeuw
+  if (
+    player.memberId === '50104883' &&
+    player.firstName === 'Cedric' &&
+    player.lastName === 'De Leeuw'
+  ) {
+    return {
+      ...player,
+      firstName: 'Cédric',
+    };
+  }
+
+  // Cédric Batsle
+  if (
+    player.memberId === '30038192' &&
+    player.firstName === 'Cédric' &&
+    player.lastName === 'Batsle'
+  ) {
+    return {
+      ...player,
+      lastName: 'Batslé',
+    };
+  }
+
+  // Cedric Batsle
+  if (
+    player.memberId === '30038192' &&
+    player.firstName === 'Cedric' &&
+    player.lastName === 'Batsle'
+  ) {
+    return {
+      ...player,
+      firstName: 'Cédric',
+      lastName: 'Batslé',
+    };
+  }
+
+  // Cecile Mabillon
+  if (
+    player.memberId === '6543559' &&
+    player.firstName === 'Cecile' &&
+    player.lastName === 'Mabillon'
+  ) {
+    return {
+      ...player,
+      firstName: 'Cécile',
+      lastName: 'Mabillon',
+    };
+  }
+
+  // Carroll Elliot
+  if (
+    player.memberId === '30082851' &&
+    player.firstName === 'Carroll' &&
+    player.lastName === 'Elliot'
+  ) {
+    return {
+      ...player,
+      firstName: 'Elliot',
+      lastName: 'Carroll',
+    };
+  }
+
+  // Brit Lemmens
+  if (
+    player.memberId === '50836676' &&
+    player.firstName === 'Brit' &&
+    player.lastName === 'Lemmens'
+  ) {
+    return {
+      ...player,
+      firstName: 'Britt',
+    };
+  }
+
+  // Boune Ratsamy
+  if (
+    player.memberId === '30053996' &&
+    player.firstName === 'Boune' &&
+    player.lastName === 'Ratsamy'
+  ) {
+    return {
+      ...player,
+      firstName: 'Som Boune',
+      lastName: 'Ratsamy',
+    };
+  }
+
+  // Boss Phatthanaphong
+  if (
+    player.memberId === '50115219' &&
+    player.firstName === 'Boss' &&
+    player.lastName === 'Phatthanaphong'
+  ) {
+    return {
+      ...player,
+      firstName: 'Rupchang',
+      lastName: 'Phatthanaphong',
+    };
+  }
+
+  // Birgit Van Acker
+  if (
+    player.memberId === '50115980' &&
+    player.firstName === 'Birgit' &&
+    player.lastName === 'Van Acker'
+  ) {
+    return {
+      ...player,
+      lastName: 'Van Ackere',
+    };
+  }
+
+  // Benoît Tielmance
+  if (
+    player.memberId === '30022519' &&
+    player.firstName === 'Benoît' &&
+    player.lastName === 'Tielmance'
+  ) {
+    return {
+      ...player,
+      firstName: 'Benoit',
+    };
+  }
+
+  // Benoit Lefevre
+  if (
+    player.memberId === '30026092' &&
+    player.firstName === 'Benoit' &&
+    player.lastName === 'Lefevre'
+  ) {
+    return {
+      ...player,
+      firstName: 'Benoît',
+      lastName: 'Lefèvre',
+    };
+  }
+
+  // Benoit Close Lecocq
+  if (
+    player.memberId === '30025363' &&
+    player.firstName === 'Benoit' &&
+    player.lastName === 'Close Lecocq'
+  ) {
+    return {
+      ...player,
+      lastName: 'Close-Lecocq',
+    };
+  }
+
+  // Benoît Close Lecocq
+  if (
+    player.memberId === '30025363' &&
+    player.firstName === 'Benoît' &&
+    player.lastName === 'Close Lecocq'
+  ) {
+    return {
+      ...player,
+      firstName: 'Benoit',
+      lastName: 'Close-Lecocq',
+    };
+  }
+
+  // Azeem Fowad Shahid
+  if (
+    player.memberId === '50307193' &&
+    player.firstName === 'Azeem Fowad' &&
+    player.lastName === 'Shahid'
+  ) {
+    return {
+      ...player,
+      firstName: 'Azeem Fawad',
+    };
+  }
+
+  // Aymane Zaki
+  if (
+    player.memberId === '30073630' &&
+    player.firstName === 'Aymane' &&
+    player.lastName === 'Zaki'
+  ) {
+    return {
+      ...player,
+      lastName: 'Zaihi',
+    };
+  }
+
+  // Aurelien Vermylen
+  if (
+    player.memberId === '30056330' &&
+    player.firstName === 'Aurelien' &&
+    player.lastName === 'Vermylen'
+  ) {
+    return {
+      ...player,
+      firstName: 'Aurélien',
+    };
+  }
+
+  // AuréLie Deblandre
+  if (
+    player.memberId === '30044089' &&
+    player.firstName === 'AuréLie' &&
+    player.lastName === 'Deblandre'
+  ) {
+    return {
+      ...player,
+      firstName: 'Aurelie',
+      lastName: 'Deblandre',
     };
   }
 
@@ -5096,7 +5096,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Aubanne',
-      lastName: 'Moura'
+      lastName: 'Moura',
     };
   }
 
@@ -5108,7 +5108,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'De Baere'
+      lastName: 'De Baere',
     };
   }
 
@@ -5120,7 +5120,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Frameree'
+      lastName: 'Frameree',
     };
   }
 
@@ -5133,7 +5133,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Mohammed',
-      lastName: 'Aquib'
+      lastName: 'Aquib',
     };
   }
 
@@ -5145,7 +5145,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Dockier'
+      lastName: 'Dockier',
     };
   }
 
@@ -5157,7 +5157,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Heirbaut'
+      lastName: 'Heirbaut',
     };
   }
 
@@ -5169,7 +5169,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Declerck'
+      lastName: 'Declerck',
     };
   }
 
@@ -5177,7 +5177,7 @@ export const correctWrongPlayers = (player: {
   if (player.memberId === '813217' && player.firstName === 'Angelique') {
     return {
       ...player,
-      lastName: 'Hoogstrate - De Vos'
+      lastName: 'Hoogstrate - De Vos',
     };
   }
 
@@ -5190,7 +5190,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Anaïs',
-      lastName: 'Levaux'
+      lastName: 'Levaux',
     };
   }
 
@@ -5202,7 +5202,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Amélie'
+      firstName: 'Amélie',
     };
   }
 
@@ -5214,7 +5214,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      firstName: 'Amélie'
+      firstName: 'Amélie',
     };
   }
 
@@ -5227,7 +5227,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Alisha',
-      lastName: 'Johnson'
+      lastName: 'Johnson',
     };
   }
 
@@ -5239,7 +5239,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      lastName: 'Ciscato'
+      lastName: 'Ciscato',
     };
   }
 
@@ -5252,7 +5252,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Indra Bagus',
-      lastName: 'Ade Chandra'
+      lastName: 'Ade Chandra',
     };
   }
 
@@ -5265,7 +5265,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Abdul',
-      lastName: 'Raheem Ali'
+      lastName: 'Raheem Ali',
     };
   }
   // Abdul Raheem
@@ -5273,7 +5273,7 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Ade',
-      lastName: 'Chandra Indra Bagus'
+      lastName: 'Chandra Indra Bagus',
     };
   }
 
@@ -5285,7 +5285,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '267665'
+      memberId: '267665',
     };
   }
 
@@ -5297,7 +5297,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '883398'
+      memberId: '883398',
     };
   }
   // Novi Wieland
@@ -5308,7 +5308,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '887043'
+      memberId: '887043',
     };
   }
 
@@ -5320,7 +5320,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '66737'
+      memberId: '66737',
     };
   }
 
@@ -5328,7 +5328,7 @@ export const correctWrongPlayers = (player: {
   if (player.firstName === 'Thijs' && player.lastName === 'Van Den Berg') {
     return {
       ...player,
-      memberId: '851092'
+      memberId: '851092',
     };
   }
 
@@ -5336,7 +5336,7 @@ export const correctWrongPlayers = (player: {
   if (player.firstName === 'Justine' && player.lastName === 'Lambrechts') {
     return {
       ...player,
-      memberId: '50084753'
+      memberId: '50084753',
     };
   }
 
@@ -5344,7 +5344,7 @@ export const correctWrongPlayers = (player: {
   if (player.firstName === 'Iris' && player.lastName === 'Van Leijsen') {
     return {
       ...player,
-      memberId: '832127'
+      memberId: '832127',
     };
   }
 
@@ -5355,7 +5355,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: null
+      memberId: null,
     };
   }
   if (
@@ -5365,7 +5365,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: null
+      memberId: null,
     };
   }
   if (
@@ -5375,7 +5375,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: null
+      memberId: null,
     };
   }
   if (
@@ -5385,7 +5385,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: null
+      memberId: null,
     };
   }
   if (
@@ -5394,14 +5394,14 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: '50529021'
+      memberId: '50529021',
     };
   }
 
   if (player.memberId === '30026445') {
     return {
       ...player,
-      firstName: 'Grégory'
+      firstName: 'Grégory',
     };
   }
 
@@ -5409,28 +5409,28 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       firstName: 'Chahrazade',
-      lastName: 'Serraj'
+      lastName: 'Serraj',
     };
   }
 
   if (player.firstName === 'Lindsey' && player.lastName === 'Wenzlawski') {
     return {
       ...player,
-      memberId: '50588737'
+      memberId: '50588737',
     };
   }
 
   if (player.memberId === '50711059') {
     return {
       ...player,
-      memberId: '50090114'
+      memberId: '50090114',
     };
   }
 
   if (player.firstName === 'Sarina' && player.lastName === 'Eerdekens') {
     return {
       ...player,
-      memberId: '50219812'
+      memberId: '50219812',
     };
   }
 

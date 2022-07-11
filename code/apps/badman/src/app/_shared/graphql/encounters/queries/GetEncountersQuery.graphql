@@ -1,5 +1,5 @@
-query GetEncounterQuery( $where: JSONObject) {
-  encounterCompetitions( where: $where) {
+query GetEncounterQuery($where: JSONObject) {
+  encounterCompetitions(where: $where) {
     rows {
       id
       date

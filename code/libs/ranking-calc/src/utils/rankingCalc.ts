@@ -627,7 +627,6 @@ export class RankingCalc {
     const doubleRankingPoints: RankingPoint[] = [];
     const mixRankingPoints: RankingPoint[] = [];
 
-
     // Sort the points by their played date
     points.sort(
       (a, b) => b.game?.playedAt?.getTime() - a.game?.playedAt?.getTime()

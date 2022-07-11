@@ -1,7 +1,8 @@
 <div fxLayout="column">
   <div class="mat-subheading-2" fxLayout="column">
     <div>
-      {{ 'team.title.players' | translate }} <small>index: {{ this.team.baseIndex }}</small>
+      {{ 'team.title.players' | translate }}
+      <small>index: {{ this.team.baseIndex }}</small>
     </div>
     <div class="mat-caption">
       {{ 'team.check-players' | translate }}
@@ -20,7 +21,10 @@
     <mat-list-item *ngFor="let player of this.team.players">
       <mat-checkbox
         [checked]="player.base ?? false"
-        [disabled]="(!player.base && this.baseComplete) || disableIds!.indexOf(player.id!) >= 0"
+        [disabled]="
+          (!player.base && this.baseComplete) ||
+          disableIds!.indexOf(player.id!) >= 0
+        "
         mat-line
         (change)="clicked(player, $event.checked)"
       >
@@ -28,14 +32,19 @@
         <small
           >({{ player.indexSplit }} {{ player.index }})
           <ng-container *ngIf="disableIds!.indexOf(player.id!) >= 0"
-            >&nbsp; ({{ 'competition.enrollment.player-base' | translate }})</ng-container
+            >&nbsp; ({{
+              'competition.enrollment.player-base' | translate
+            }})</ng-container
           ></small
         >
       </mat-checkbox>
 
       <mat-icon
         *ngIf="!player.competitionPlayer"
-        matTooltip="{{ 'competition.enrollment.errors.not-comp' | translate: { player: player.fullName } }}"
+        matTooltip="{{
+          'competition.enrollment.errors.not-comp'
+            | translate: { player: player.fullName }
+        }}"
       >
         warning
       </mat-icon>

@@ -10,7 +10,12 @@ import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
 import { VisualService } from '../../../../services';
-import { XmlTournament, XmlTournamentEvent, XmlGameTypeID, XmlGenderID } from '../../../../utils';
+import {
+  XmlTournament,
+  XmlTournamentEvent,
+  XmlGameTypeID,
+  XmlGenderID,
+} from '../../../../utils';
 
 export interface SubEventStepData {
   subEvent: SubEventTournament;
@@ -36,9 +41,16 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       throw new Error('No Event');
     }
 
-    const subEvents = await this.event.getSubEventTournaments({ transaction: this.transaction });
-    const canChange = moment().subtract(2, 'months').isBefore(this.event.firstDay);
-    const visualEvents = await this.visualService.getEvents(this.visualTournament.Code, !canChange);
+    const subEvents = await this.event.getSubEventTournaments({
+      transaction: this.transaction,
+    });
+    const canChange = moment()
+      .subtract(2, 'months')
+      .isBefore(this.event.firstDay);
+    const visualEvents = await this.visualService.getEvents(
+      this.visualTournament.Code,
+      !canChange
+    );
     const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events
@@ -46,7 +58,9 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       if (!xmlEvent) {
         continue;
       }
-      const dbSubEvents = subEvents.filter((r) => r.visualCode === `${xmlEvent.Code}`);
+      const dbSubEvents = subEvents.filter(
+        (r) => r.visualCode === `${xmlEvent.Code}`
+      );
       let dbSubEvent: SubEventTournament = null;
 
       if (dbSubEvents.length === 1) {
@@ -60,10 +74,10 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
         await SubEventTournament.destroy({
           where: {
             id: {
-              [Op.in]: rest.map((e) => e.id)
-            }
+              [Op.in]: rest.map((e) => e.id),
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
 
@@ -79,7 +93,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
           eventType: this.getEventType(xmlEvent),
           gameType: this.getGameType(xmlEvent),
           eventId: this.event.id,
-          level: xmlEvent.LevelID
+          level: xmlEvent.LevelID,
         }).save({ transaction: this.transaction });
       } else {
         if (dbSubEvent.visualCode === null) {
@@ -88,7 +102,10 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
         }
       }
 
-      returnSubEvents.push({ subEvent: dbSubEvent, internalId: parseInt(xmlEvent.Code, 10) });
+      returnSubEvents.push({
+        subEvent: dbSubEvent,
+        internalId: parseInt(xmlEvent.Code, 10),
+      });
     }
 
     // Remove subEvents that are not in the xml
@@ -103,11 +120,11 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
               model: DrawTournament,
               required: true,
               where: {
-                subeventId: removed.id
-              }
-            }
+                subeventId: removed.id,
+              },
+            },
           ],
-          transaction: this.transaction
+          transaction: this.transaction,
         })
       )
         ?.map((g) => g.id)
@@ -117,10 +134,10 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
         await Game.destroy({
           where: {
             id: {
-              [Op.in]: gameIds
-            }
+              [Op.in]: gameIds,
+            },
           },
-          transaction: this.transaction
+          transaction: this.transaction,
         });
       }
 

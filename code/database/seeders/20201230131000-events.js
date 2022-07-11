@@ -45,7 +45,6 @@ module.exports = {
           transaction: t,
         }
       );
-
     });
   },
 

@@ -52,12 +52,16 @@ export class RankingSystem {
     this.gamesForInactivty = args?.gamesForInactivty;
     this.inactivityAmount = args?.inactivityAmount;
     this.inactivityUnit = args?.inactivityUnit;
-    this.caluclationIntervalLastUpdate = new Date(args?.caluclationIntervalLastUpdate as unknown as string);
+    this.caluclationIntervalLastUpdate = new Date(
+      args?.caluclationIntervalLastUpdate as unknown as string
+    );
     this.caluclationIntervalAmount = args?.caluclationIntervalAmount;
     this.calculationIntervalUnit = args?.calculationIntervalUnit;
     this.periodAmount = args?.periodAmount;
     this.periodUnit = args?.periodUnit;
-    this.updateIntervalAmountLastUpdate = new Date(args?.updateIntervalAmountLastUpdate as unknown as string);
+    this.updateIntervalAmountLastUpdate = new Date(
+      args?.updateIntervalAmountLastUpdate as unknown as string
+    );
     this.updateIntervalAmount = args?.updateIntervalAmount;
     this.updateIntervalUnit = args?.updateIntervalUnit;
     this.rankingSystem = args?.rankingSystem;
