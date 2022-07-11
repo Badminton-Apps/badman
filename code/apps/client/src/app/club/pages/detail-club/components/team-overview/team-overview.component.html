@@ -16,20 +16,20 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #options="matMenu">
-        <button mat-menu-item (click)="this.onEdit.next(this.team)">
+        <button mat-menu-item (click)="this.whenEdit.next(this.team)">
           {{ 'button.edit' | translate }}
         </button>
         <button
           mat-menu-item
           *ngIf="this.team.active"
-          (click)="this.onActiveChange.next({ team: this.team, active: false })"
+          (click)="this.whenActiveChange.next({ team: this.team, active: false })"
         >
           Deactivate
         </button>
         <button
           mat-menu-item
           *ngIf="!this.team.active"
-          (click)="this.onActiveChange.next({ team: this.team, active: true })"
+          (click)="this.whenActiveChange.next({ team: this.team, active: true })"
         >
           Activate
         </button>
@@ -37,7 +37,7 @@
           <mat-divider></mat-divider>
 
           <badman-has-claim [all]="['delete-any:team']">
-            <button mat-menu-item (click)="this.onDelete.next(this.team)">
+            <button mat-menu-item (click)="this.whenDelete.next(this.team)">
               {{ 'button.delete' | translate }}
             </button>
           </badman-has-claim>

@@ -39,8 +39,8 @@
         *ngFor="let location of locations$ | async"
         [location]="location"
         [club]="club"
-        (onEdit)="this.onEditLocation($event, club)"
-        (onDelete)="this.onDeleteLocation($event)"
+        (whenEdit)="this.onEditLocation($event, club)"
+        (whenDelete)="this.onDeleteLocation($event)"
       >
       </badman-club-edit-location>
     </div>
@@ -67,10 +67,10 @@
         *ngFor="let role of roles$ | async"
         [role]="role"
         [club]="club"
-        (onPlayerAdded)="this.onPlayerAddedToRole($event, role)"
-        (onPlayerRemoved)="this.onPlayerRemovedFromRole($event, role)"
-        (onEdit)="this.onEditRole($event)"
-        (onDelete)="this.onDeleteRole($event)"
+        (whenPlayerAdded)="this.onPlayerAddedToRole($event, role)"
+        (whenPlayerRemoved)="this.onPlayerRemovedFromRole($event, role)"
+        (whenEdit)="this.onEditRole($event)"
+        (whenDelete)="this.onDeleteRole($event)"
       >
       </badman-club-edit-role>
     </div>
@@ -95,8 +95,8 @@
         *ngFor="let team of this.teamsForYear$ | async"
         [team]="team"
         [club]="club"
-        (onPlayerAdded)="this.onAddBasePlayer($event, team)"
-        (onPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
+        (whenPlayerAdded)="this.onAddBasePlayer($event, team)"
+        (whenPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
       >
       </badman-club-edit-team>
     </div>

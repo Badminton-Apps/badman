@@ -68,9 +68,9 @@
       *ngFor="let team of club.teams"
       [team]="team"
       [club]="club"
-      (onEdit)="this.editTeam($event, club)"
-      (onDelete)="this.deleteTeam($event)"
-      (onActiveChange)="this.setActiveTeam($event)"
+      (whenEdit)="this.editTeam($event, club)"
+      (whenDelete)="this.deleteTeam($event)"
+      (whenActiveChange)="this.setActiveTeam($event)"
     >
     </badman-team-overview>
   </div>
