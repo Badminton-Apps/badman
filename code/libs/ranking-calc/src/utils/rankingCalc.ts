@@ -451,9 +451,7 @@ export class RankingCalc {
     return games;
   }
 
-  protected async getPlayers(options: {
-    transaction?: Transaction;
-  }): Promise<
+  protected async getPlayers(options: { transaction?: Transaction }): Promise<
     Map<
       string,
       Player & {
@@ -487,8 +485,6 @@ export class RankingCalc {
 
     return players;
   }
-
-
 
   public async calculateRankingPointsPerGameAsync(
     games: Game[],

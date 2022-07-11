@@ -1,18 +1,13 @@
-import {
-  SyncQueue,
-  Simulation,
-  SimulationQueue,
-  Sync,
-} from '@badman/queue';
+import { Game } from '@badman/api/database';
 import { CpGeneratorService } from '@badman/api/generator';
+import { Simulation, SimulationQueue, Sync, SyncQueue } from '@badman/queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
 import { Queue } from 'bull';
-import { createReadStream } from 'fs';
 import { Response } from 'express';
+import { createReadStream } from 'fs';
 import { basename, extname } from 'path';
 import { EventsGateway } from '../events';
-import { Game } from '@badman/api/database';
 @Controller()
 export class AppController {
   private readonly logger = new Logger(AppController.name);
