@@ -94,7 +94,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/worker/ranking"],
       "options": {
-        "jestConfig": "apps/worker/ranking/jest.config.ts",
+        "jestConfig": "apps/worker/ranking/jest.config.js",
         "passWithNoTests": true
       }
     }

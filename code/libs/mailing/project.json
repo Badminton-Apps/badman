@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/mailing"],
       "options": {
-        "jestConfig": "libs/mailing/jest.config.ts",
+        "jestConfig": "libs/mailing/jest.config.js",
         "passWithNoTests": true
       }
     }

@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'worker-ranking',
-  preset: '../../../jest.preset.ts',
+  displayName: 'api-authorization',
+  preset: '../../../jest.preset.js',
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
@@ -11,5 +11,5 @@ module.exports = {
     '^.+\\.[tj]s$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../coverage/apps/worker/ranking',
+  coverageDirectory: '../../../coverage/libs/api/authorization',
 };
