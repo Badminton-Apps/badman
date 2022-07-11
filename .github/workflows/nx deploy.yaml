@@ -18,7 +18,7 @@ jobs:
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           npx -y standard-version
-          git push
+          git push --follow-tags origin main
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -36,8 +36,11 @@ jobs:
       - name: 'Install Dependencies'
         run: npm ci
         
-      - name: 'Install Dependencies'
+      - name: 'Build project'
         run: npx nx affected --target=build
 
-      - name: 'nx build'
+      - name: 'Build docker'
         run: npx nx affected --target=docker
+
+      - name: 'Deploy'
+        run: npx nx affected --target=deploy        
