@@ -8,7 +8,7 @@ import {
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '../../decorators';
-import { ListArgs, queryFixer } from '../../utils';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => Claim)
 export class ClaimResolver {
@@ -53,7 +53,7 @@ export class ClaimResolver {
 
     const transaction = await this._sequelize.transaction();
     try {
-      let player = await Player.findByPk(playerId, {
+      const player = await Player.findByPk(playerId, {
         transaction,
       });
 
