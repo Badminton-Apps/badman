@@ -31,13 +31,13 @@ export class PointCalculator {
     };
 
     const rankingPlayer1Team1 =
-      this._getRankingPlace(player1Team1, game.playedAt) ?? maxRanking;
+      player1Team1.rankingLastPlaces?.[0] ?? maxRanking;
     const rankingPlayer2Team1 =
-      this._getRankingPlace(player2Team1, game.playedAt) ?? maxRanking;
+      player2Team1.rankingLastPlaces?.[0] ?? maxRanking;
     const rankingPlayer1Team2 =
-      this._getRankingPlace(player1Team2, game.playedAt) ?? maxRanking;
+      player1Team2.rankingLastPlaces?.[0] ?? maxRanking;
     const rankingPlayer2Team2 =
-      this._getRankingPlace(player2Team2, game.playedAt) ?? maxRanking;
+      player2Team2.rankingLastPlaces?.[0] ?? maxRanking;
 
     let pointsFrom: string;
 
@@ -118,13 +118,5 @@ export class PointCalculator {
   private _getWinningPoints(level: number): number {
     const index = this._type.pointsWhenWinningAgainst.length - level;
     return Math.round(this._type.pointsWhenWinningAgainst[index]);
-  }
-
-  private _getRankingPlace(player: Player, date: Date) {
-    // Sort the rankings by date
-    // Get the closest ranking before the game was played
-    return player?.rankingPlaces
-      ?.sort((a, b) => a.rankingDate.getTime() - b.rankingDate.getTime())
-      ?.filter((place) => place.rankingDate.getTime() <= date.getTime())[0];
   }
 }
