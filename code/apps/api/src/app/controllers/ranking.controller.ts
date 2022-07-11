@@ -91,6 +91,10 @@ export class RankingController {
       );
 
       const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
+      // remove old files
+      if (existsSync(outputFile)) {
+        unlinkSync(outputFile);
+      }
       writeFileSync(
         outputFile,
         `single, single points, single points downgrade, single inactive, double, double points, double points downgrade, double inactive, mix, mix points, mix points downgrade, mix inactive, rankingDate, name, gender, memberId\n${mapped.join(
@@ -189,6 +193,10 @@ export class RankingController {
         .flat();
 
       const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
+      // remove old files
+      if (existsSync(outputFile)) {
+        unlinkSync(outputFile);
+      }
       writeFileSync(
         outputFile,
         `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join(
@@ -288,6 +296,12 @@ export class RankingController {
         .flat();
 
       const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
+
+      // remove old files
+      if (existsSync(outputFile)) {
+        unlinkSync(outputFile);
+      }
+
       writeFileSync(
         outputFile,
         `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join(
@@ -334,7 +348,7 @@ export class RankingController {
       response.header('Content-Type', 'text/csv');
       response.header(
         'Content-Disposition',
-        `attachment; filename="${filename}.csv"`
+        `attachment; filename="${filename + files[0]}.csv"`
       );
       const outputFile = join(this._resultFolder, `${files[0]}.csv`);
       const stream = fs.createReadStream(outputFile);

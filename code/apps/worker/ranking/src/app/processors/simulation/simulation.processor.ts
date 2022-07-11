@@ -6,7 +6,6 @@ import { Inject, Logger } from '@nestjs/common';
 import { DoneCallback, Job } from 'bull';
 import moment from 'moment';
 import { Sequelize } from 'sequelize-typescript';
-import { setTimeout } from 'timers/promises';
 
 @Processor({
   name: SimulationQueue,
