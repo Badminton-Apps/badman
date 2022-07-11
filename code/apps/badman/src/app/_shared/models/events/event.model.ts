@@ -1,6 +1,5 @@
 import { Entry } from '../entry.model';
 import { Player } from '../player.model';
-import { SubEvent } from './sub-event.model';
 
 export class Event {
   id?: string;

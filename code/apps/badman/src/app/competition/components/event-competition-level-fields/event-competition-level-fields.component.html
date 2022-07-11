@@ -1,7 +1,7 @@
 <form [formGroup]="this.formGroup">
   <div class="mat-subheading-2">
     {{ this.formGroup.value.name }}
-    <button mat-icon-button (click)="onDelete.next(this.subEvent)">
+    <button mat-icon-button (click)="whenDelete.next(this.subEvent)">
       <mat-icon>delete</mat-icon>
     </button>
   </div>

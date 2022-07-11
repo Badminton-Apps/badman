@@ -1,8 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpParams,
+  HttpRequest,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, concat, of } from 'rxjs';
+import { BehaviorSubject, concat } from 'rxjs';
 import { map, share, tap, toArray } from 'rxjs/operators';
 import * as getCompetitionEventQuery from '../../graphql/events/queries/GetCompetition.graphql';
 import * as getTournamentEventQuery from '../../graphql/events/queries/GetTournament.graphql';
@@ -45,7 +49,7 @@ export class EventService {
     includeSubEvents?: boolean;
     includeComments?: boolean;
     clubId?: string;
-    where?: { [key: string]: any };
+    where?: { [key: string]: unknown };
   }) {
     args = {
       includeSubEvents: false,
@@ -227,7 +231,7 @@ export class EventService {
       })
       .pipe(
         map((x) => {
-          const events: any = [];
+          const events: (EventCompetition | EventTournament)[] = [];
           if (x.data.competitionEvents) {
             events.push(
               ...(x.data.competitionEvents.edges?.map(
@@ -276,8 +280,9 @@ export class EventService {
       finished: 0,
       total: files.length,
     });
-    const fileArray: any = [];
-    const requests: any = [];
+    const fileArray: File[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const requests: any[] = [];
 
     // copy to usable array
     for (let i = 0; i < files.length; i++) {
@@ -289,7 +294,7 @@ export class EventService {
       const chunk = fileArray.splice(0, 5);
 
       const formData = new FormData();
-      chunk.forEach((file: string) => {
+      chunk.forEach((file: File) => {
         formData.append('upload', file);
       });
 
@@ -310,7 +315,7 @@ export class EventService {
       requests.push(
         this.httpClient.request(req).pipe(
           share(),
-          tap((r) => {
+          tap(() => {
             const finished = this.importStatus$.value.finished + 1;
             this.importStatus$.next({
               total: this.importStatus$.value.total,

@@ -6,7 +6,7 @@ import {
   Input,
   ElementRef,
 } from '@angular/core';
-import { environment } from 'apps/badman/src/environments/environment';
+import { environment } from '../../../../environments/environment';
 import { Banner } from '../../models';
 
 @Component({
@@ -34,7 +34,7 @@ export class BannerComponent implements OnInit, AfterViewInit {
     );
 
     // Google no touchy
-    const observer = new MutationObserver((mutations, observer) => {
+    const observer = new MutationObserver(() => {
       this.elementRef.nativeElement.style.height = '';
       this.elementRef.nativeElement.style.minHeight = '';
     });
@@ -48,7 +48,9 @@ export class BannerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ((window as any)['adsbygoogle'] =
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (window as any)['adsbygoogle'] || []).push({});
       } catch (e) {
         console.error(e);

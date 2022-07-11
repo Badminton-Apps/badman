@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { RankingSystem, SystemService } from '../../../../../_shared';
+import {
+  SystemCounts,
+  RankingSystem,
+  SystemService,
+} from '../../../../../_shared';
 
 @Component({
   templateUrl: './detail-ranking-system.component.html',
@@ -11,12 +15,24 @@ import { RankingSystem, SystemService } from '../../../../../_shared';
 })
 export class DetailRankingSystemComponent implements OnInit {
   system!: RankingSystem;
-  allGenders$!: Observable<any>;
-  male$!: Observable<any>;
-  female$!: Observable<any>;
-  final$!: Observable<any>;
-  caps$!: Observable<any>;
-  start$!: Observable<any>;
+  allGenders$!: Observable<SerieData>;
+  male$!: Observable<SerieData>;
+  female$!: Observable<SerieData>;
+  final$!: Observable<
+    { name: string; values: { name: number; value: number }[] }[]
+  >;
+  start$!: Observable<
+    { name: string; values: { name: number; value: number }[] }[]
+  >;
+  caps$!: Observable<
+    {
+      level: number;
+      pointsToGoUp: number | null;
+      pointsToGoDown: number | null;
+      pointsWhenWinningAgainst: number;
+    }[]
+  >;
+
   levels!: number[];
 
   // capsColumns: ITdDataTableColumn[] = [
@@ -171,16 +187,23 @@ export class DetailRankingSystemComponent implements OnInit {
     );
   }
 
-  private getSeriesData(system: any) {
-    console.warn('Fix me type!');
+  private getSeriesData(
+    system: RankingSystem & {
+      counts: {
+        single: SystemCounts[];
+        double: SystemCounts[];
+        mix: SystemCounts[];
+      };
+    }
+  ) {
     const seriesData = {
       single: [],
       double: [],
       mix: [],
-    };
+    } as SerieData;
 
-    seriesData.single = system.counts.single.map((x: any) => {
-      const points = x.points.map((point: any) => {
+    seriesData.single = system.counts.single.map((x) => {
+      const points = x.points.map((point) => {
         return {
           name: point.level,
           value: point.amount,
@@ -192,8 +215,8 @@ export class DetailRankingSystemComponent implements OnInit {
         points,
       };
     });
-    seriesData.double = system.counts.double.map((x: any) => {
-      const points = x.points.map((point: any) => {
+    seriesData.double = system.counts.double.map((x) => {
+      const points = x.points.map((point) => {
         return {
           name: point.level,
           value: point.amount,
@@ -205,8 +228,8 @@ export class DetailRankingSystemComponent implements OnInit {
         points,
       };
     });
-    seriesData.mix = system.counts.mix.map((x: any) => {
-      const points = x.points.map((point: any) => {
+    seriesData.mix = system.counts.mix.map((x) => {
+      const points = x.points.map((point) => {
         return {
           name: point.level,
           value: point.amount,
@@ -220,4 +243,10 @@ export class DetailRankingSystemComponent implements OnInit {
     });
     return seriesData;
   }
+}
+
+interface SerieData {
+  single: { points: { name: number; value: number }[]; date: Moment }[];
+  double: { points: { name: number; value: number }[]; date: Moment }[];
+  mix: { points: { name: number; value: number }[]; date: Moment }[];
 }

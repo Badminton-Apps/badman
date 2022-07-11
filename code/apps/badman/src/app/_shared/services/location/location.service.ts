@@ -26,7 +26,7 @@ export class LocationService {
       })
       .pipe(map((x) => new Location(x.data.location)));
   }
-  getLocations(where?: { [key: string]: any }) {
+  getLocations(where?: { [key: string]: unknown }) {
     return this.apollo
       .query<{ locations: Location[] }>({
         query: locationsQuery,

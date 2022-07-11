@@ -14,8 +14,8 @@ import { Club, Location } from '../../../../../_shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubEditLocationComponent {
-  @Output() onEdit = new EventEmitter<Location>();
-  @Output() onDelete = new EventEmitter<Location>();
+  @Output() whenEdit = new EventEmitter<Location>();
+  @Output() whenDelete = new EventEmitter<Location>();
 
   @Input()
   club!: Club;

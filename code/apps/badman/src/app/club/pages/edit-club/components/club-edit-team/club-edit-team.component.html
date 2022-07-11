@@ -18,20 +18,20 @@
       <ng-container *ngIf="this.players && this.players.length > 0">
         <mat-list-item *ngFor="let player of this.players">
           <div mat-line>{{ player.fullName }}</div>
-          <button mat-icon-button (click)="this.onPlayerRemoved.next(player)">
+          <button mat-icon-button (click)="this.whenPlayerRemoved.next(player)">
             <mat-icon>delete</mat-icon>
           </button>
         </mat-list-item>
       </ng-container>
     </mat-list>
     <badman-player-search
-      (onSelectPlayer)="this.onPlayerAdded.next($event)"
+      (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
       [ignorePlayers]="this.players"
       [allowCreation]="true"
       [where]="this.where"
       [club]="this.club"
       label="Add player"
     ></badman-player-search>
-    <!-- <badman-player-search (onSelectPlayer)="this.onPlayerAdded.next($event)" [club]="this.club"></badman-player-search> -->
+    <!-- <badman-player-search (whenSelectPlayer)="this.whenPlayerAdded.next($event)" [club]="this.club"></badman-player-search> -->
   </div>
 </div>

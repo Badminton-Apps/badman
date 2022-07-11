@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'badman-game-entry',
@@ -6,8 +6,4 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./game-entry.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GameEntryComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class GameEntryComponent {}

@@ -202,7 +202,7 @@ export class LocationAvailabilityComponent implements OnInit {
           },
         })
         .pipe(
-          tap((result) => {
+          tap(() => {
             const normalizedAvailibility = apolloCache.identify({
               id: availabilityDay.id,
               __typename: 'Availability',
@@ -251,7 +251,7 @@ export class LocationAvailabilityComponent implements OnInit {
           },
         })
         .pipe(
-          tap((result) => {
+          tap(() => {
             const normalizedAvailibility = apolloCache.identify({
               id: availabilityDay.id,
               __typename: 'Availability',

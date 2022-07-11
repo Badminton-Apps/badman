@@ -9,7 +9,7 @@ import { Player } from '../../../_shared';
 export class AddPlayerComponent {
   constructor(
     public dialogRef: MatDialogRef<AddPlayerComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: Partial<Player>
   ) {}
 
   selectPlayer(player: Player) {

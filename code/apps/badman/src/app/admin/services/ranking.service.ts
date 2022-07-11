@@ -50,14 +50,20 @@ export class RankingService {
 
           // IE doesn't allow using a blob object directly as link href
           // instead it is necessary to use msSaveOrOpenBlob
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           if ((window.navigator as any)?.msSaveOrOpenBlob && response.body) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (window.navigator as any).msSaveOrOpenBlob(response.body, fileName);
             return null;
           }
 
+          if (response.body == null){
+            throw Error('No data');
+          }
+
           // For other browsers:
           // Create a link pointing to the ObjectURL containing the blob.
-          const downloadURL = URL.createObjectURL(response.body!);
+          const downloadURL = URL.createObjectURL(response.body);
 
           const link = document.createElement('a');
           link.href = downloadURL;

@@ -5,7 +5,7 @@ import * as html2pdf from 'html2pdf.js';
   providedIn: 'root',
 })
 export class PdfService {
-  public async generatePdf(data: any, filename: string) {
+  public async generatePdf(data: string, filename: string) {
     return html2pdf()
       .from(data)
       .set({

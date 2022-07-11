@@ -57,7 +57,7 @@
 </mat-list>
 
 <badman-player-search
-  (onSelectPlayer)="this.playerAdded($event)"
+  (whenSelectPlayer)="this.playerAdded($event)"
   [ignorePlayers]="this.team.players"
   [allowCreation]="true"
   [where]="this.where"

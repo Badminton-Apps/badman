@@ -19,10 +19,10 @@ import { Club, Player, Team } from '../../../../../_shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamFieldsComponent implements OnInit, OnChanges {
-  @Output() onTeamUpdated = new EventEmitter<Partial<Team>>();
-  @Output() onCaptainUpdated = new EventEmitter<Partial<Player>>();
-  @Output() onLocationAdded = new EventEmitter<string>();
-  @Output() onLocationRemoved = new EventEmitter<string>();
+  @Output() whenTeamUpdated = new EventEmitter<Partial<Team>>();
+  @Output() whenCaptainUpdated = new EventEmitter<Partial<Player>>();
+  @Output() whenLocationAdded = new EventEmitter<string>();
+  @Output() whenLocationRemoved = new EventEmitter<string>();
 
   @Input()
   team: Team = {} as Team;
@@ -106,21 +106,21 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
         startWith(this.team.locations?.map((r) => r.id) ?? []),
         pairwise()
       )
-      .subscribe(async ([prev, next]) => {
-        const removed = prev.filter((item: any) => next.indexOf(item) < 0);
-        const added = next.filter((item: any) => prev.indexOf(item) < 0);
+      .subscribe(async ([prev, next]: string[][]) => {
+        const removed = prev.filter((item) => next.indexOf(item) < 0);
+        const added = next.filter((item) => prev.indexOf(item) < 0);
 
         for (const add of added) {
-          this.onLocationAdded.next(add);
+          this.whenLocationAdded.next(add);
         }
         for (const remove of removed) {
-          this.onLocationRemoved.next(remove);
+          this.whenLocationRemoved.next(remove);
         }
       });
 
     this.teamForm.valueChanges.pipe(debounceTime(600)).subscribe(async (e) => {
       if (this.team?.id != null) {
-        this.onTeamUpdated.next({
+        this.whenTeamUpdated.next({
           id: this.team?.id,
           type: e?.type,
           teamNumber: e?.teamNumber,

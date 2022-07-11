@@ -1,20 +1,18 @@
-import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
+import { Apollo } from 'apollo-angular';
 
 import {
   distinctUntilChanged,
-  map,
-  share,
-  shareReplay,
-  tap,
+  map, shareReplay,
+  tap
 } from 'rxjs/operators';
 
+import * as clubClaimsQuery from '../../graphql/security/queries/GetClubClaims.graphql';
 import * as globalClaimsQuery from '../../graphql/security/queries/GetGlobalClaims.graphql';
 import * as globalUserClaimsQuery from '../../graphql/security/queries/GetGlobalUserClaims.graphql';
-import * as clubClaimsQuery from '../../graphql/security/queries/GetClubClaims.graphql';
 
-import * as updateGlobalUserClaimQuery from '../../graphql/security/mutations/UpdateClaimUser.graphql';
 import { Observable, ReplaySubject } from 'rxjs';
+import * as updateGlobalUserClaimQuery from '../../graphql/security/mutations/UpdateClaimUser.graphql';
 import { Claim } from '../../models';
 import { UserService } from '../profile';
 
