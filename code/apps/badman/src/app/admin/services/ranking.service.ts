@@ -57,7 +57,7 @@ export class RankingService {
             return null;
           }
 
-          if (response.body == null){
+          if (response.body == null) {
             throw Error('No data');
           }
 

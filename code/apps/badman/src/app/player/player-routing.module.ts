@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {
   EditPlayerComponent,
   PlayerComponent,
-  TopPlayersComponent
+  TopPlayersComponent,
 } from './page';
 import { RankingBreakdownComponent } from './page/ranking-breakdown/ranking-breakdown.component';
 

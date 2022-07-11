@@ -1,12 +1,18 @@
 import {
-  ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnInit,
+  Output,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import moment from 'moment';
 import {
   AvailabilityException,
-  resetAllFormFields
+  resetAllFormFields,
 } from '../../../../../../../_shared';
 import { STEP_AVAILIBILTY } from '../../team-enrollment.component';
 

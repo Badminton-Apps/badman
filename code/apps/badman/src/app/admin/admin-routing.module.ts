@@ -35,7 +35,7 @@ const routes: Routes = [
         all: 'change:job',
       },
     },
-  }
+  },
 ];
 
 @NgModule({

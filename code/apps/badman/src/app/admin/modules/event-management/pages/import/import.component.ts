@@ -39,7 +39,6 @@ import {
   switchMap,
   takeUntil,
   tap,
-  
 } from 'rxjs/operators';
 
 @Component({

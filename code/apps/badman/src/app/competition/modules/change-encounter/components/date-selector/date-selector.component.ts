@@ -61,7 +61,7 @@ export class DateSelectorComponent
   focused = false;
   touched = false;
   id = `${selector}-${DateSelectorComponent.nextId++}`;
-  
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onChange = (_: unknown) => {
     //
