@@ -299,7 +299,7 @@ export class ClubsResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const result = await membership.update(updatePlayerClubMembershipData, {
+      await membership.update(updatePlayerClubMembershipData, {
         transaction,
       });
 

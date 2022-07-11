@@ -8,7 +8,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { ListArgs, queryFixer } from '../../utils';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => Role)
 export class RoleResolver {

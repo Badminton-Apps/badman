@@ -1,5 +1,5 @@
 import { ArgsType, Field, Int, InputType } from '@nestjs/graphql';
-import { Max, Min } from 'class-validator';
+import { Min } from 'class-validator';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { FindOptions, WhereOptions } from 'sequelize';
 import { queryFixer } from './queryFixer';
