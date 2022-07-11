@@ -1,19 +1,13 @@
-const yaml = require('js-yaml');
+const { writeFileSync, readFileSync } = require('fs');
+const { argv } = require('process');
+const appVersionRegex =
+  /^appVersion: \"([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?\"$/gim;
 
-module.exports.readVersion = function (contents) {
-  let chart;
-  try {
-    chart = yaml.load(contents, 'utf-8');
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-  return chart.version;
-};
+// Read chart file
+let chart = readFileSync('./charts/Chart.yaml').toString();
 
-module.exports.writeVersion = function (contents, version) {
-  let chart = yaml.load(contents, 'utf8');
-  chart.version = version;
-  chart.appVersion = version;
-  return yaml.dump(chart, { indent: 2 });
-};
+// Replace appVersion
+chart = chart.replace(appVersionRegex, `appVersion: "${argv[2]}"`);
+
+// Write chart file
+writeFileSync('./charts/Chart.yaml', chart);
