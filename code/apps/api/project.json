@@ -7,10 +7,7 @@
       "options": {
         "push": true,
         "metadata": {
-          "images": [
-            "badman/api",
-            "ghcr.io/badminton-apps/badman/api"
-          ],
+          "images": ["badman/api", "ghcr.io/badminton-apps/badman/api"],
           "tags": [
             "type=schedule",
             "type=ref,event=tag",
@@ -22,12 +19,21 @@
         }
       }
     },
+    "update-version": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../scripts/update-helm.js {args.newVersion}",
+        "cwd": "apps/api",
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "echo \"helm dep update charts/\""
+          "helm upgrade --install --namespace badman api ./charts"
         ],
+        "cwd": "apps/api",
         "parallel": false
       }
     },
