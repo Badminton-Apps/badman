@@ -2,6 +2,11 @@ name: Deploy nx
 
 on: workflow_dispatch
 
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: badman # Add your cluster name here.
+  GKE_ZONE: europe-west1 # Add your cluster zone here.
+
 jobs:
   build:
     name: Docker build
@@ -22,13 +27,23 @@ jobs:
           git config --global user.name "Badman Releaser"
           yarn run standard-version
 
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
       - name: kubectl - Google Cloud GKE cluster.
-        uses: ameydev/gke-kubectl-action@master
+        uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
         env:
-          PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
-          APPLICATION_CREDENTIALS: ${{ secrets.GKE_APPLICATION_CREDENTIALS }}
-          CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
-          ZONE_NAME: europe-west1
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
