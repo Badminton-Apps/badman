@@ -10,6 +10,8 @@ module.exports = {
       2,
       'always',
       [
+        'docs',
+        'ci',
         ...(
           await getProjects(
             ctx,
