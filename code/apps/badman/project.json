@@ -23,22 +23,21 @@
         }
       }
     },
+    "update-version": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../scripts/update-helm.js {args.newVersion}",
+        "cwd": "apps/badman",
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx build badman",
-          "docker build -f ./apps/badman/Dockerfile . -t badman"
+          "helm upgrade --install --namespace badman client ./charts"
         ],
-        "parallel": false
-      }
-    },
-    "deploy-dev": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": [
-          "docker build -f ./apps/badman/Dockerfile.dev . -t badman-dev"
-        ],
+        "cwd": "apps/badman",
         "parallel": false
       }
     },

@@ -20,6 +20,17 @@ jobs:
           npx -y standard-version
           git push --follow-tags origin main
 
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: kubectl - Google Cloud GKE cluster.
+        uses: ameydev/gke-kubectl-action@master
+        env:
+          PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+          APPLICATION_CREDENTIALS: ${{ secrets.GKE_APPLICATION_CREDENTIALS }}
+          CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
+          ZONE_NAME: europe-west1
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -35,12 +46,15 @@ jobs:
 
       - name: 'Install Dependencies'
         run: npm ci
-        
+
       - name: 'Build project'
         run: npx nx affected --target=build
 
       - name: 'Build docker'
         run: npx nx affected --target=docker
 
+      - name: 'Update chart version'
+        run: npx nx affected --target=update-version  --version=${{ env.RELEASE_VERSION }}
+
       - name: 'Deploy'
-        run: npx nx affected --target=deploy        
+        run: npx nx affected --target=deploy
