@@ -23,7 +23,7 @@ export class LocationFieldsComponent implements OnInit {
   @Input()
   club!: Club;
 
-  @Output() onLocationUpdate = new EventEmitter<Location>();
+  @Output() whenLocationUpdate = new EventEmitter<Location>();
 
   locationForm!: FormGroup;
   adressForm!: FormControl;
@@ -57,11 +57,11 @@ export class LocationFieldsComponent implements OnInit {
     this.locationForm.valueChanges.pipe(debounceTime(600)).subscribe((e) => {
       if (!this.location?.id) {
         if (this.locationForm.valid) {
-          this.onLocationUpdate.next({ id: this.location?.id, ...e });
+          this.whenLocationUpdate.next({ id: this.location?.id, ...e });
         }
       } else {
         // always update if valid id
-        this.onLocationUpdate.next({ id: this.location?.id, ...e });
+        this.whenLocationUpdate.next({ id: this.location?.id, ...e });
       }
     });
   }

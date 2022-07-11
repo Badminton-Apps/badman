@@ -61,7 +61,9 @@ export class DateSelectorComponent
   focused = false;
   touched = false;
   id = `${selector}-${DateSelectorComponent.nextId++}`;
-  onChange = (_: any) => {
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onChange = (_: unknown) => {
     //
   };
   onTouched = () => {
@@ -143,14 +145,14 @@ export class DateSelectorComponent
     this._focusMonitor.stopMonitoring(this._elementRef);
   }
 
-  onFocusIn(event: FocusEvent) {
+  onFocusIn() {
     if (!this.focused) {
       this.focused = true;
       this.stateChanges.next();
     }
   }
 
-  onClick(event: Event) {
+  onClick() {
     const date = moment(this.value);
 
     this._dialog
@@ -217,11 +219,11 @@ export class DateSelectorComponent
     this.value = date;
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: unknown) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -229,7 +231,7 @@ export class DateSelectorComponent
     this.disabled = isDisabled;
   }
 
-  _handleInput(control: AbstractControl): void {
+  _handleInput(): void {
     this.onChange(this.value);
   }
 }

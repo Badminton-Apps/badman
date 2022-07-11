@@ -9,7 +9,7 @@
     <mat-form-field
       appearance="outline"
       fxFlex="200px"
-      *ngIf="this.team.id == null"
+      *ngIf="this.team.id === null"
     >
       <mat-label>Type</mat-label>
       <mat-select formControlName="type">
@@ -22,7 +22,7 @@
       </mat-select>
     </mat-form-field>
 
-    <div fxLayout="column" fxFlex="150px" *ngIf="this.team.id != null">
+    <div fxLayout="column" fxFlex="150px" *ngIf="this.team.id !== null">
       <mat-form-field appearance="outline">
         <mat-label>Number</mat-label>
         <mat-select formControlName="teamNumber">
@@ -34,7 +34,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="this.team.id != null">
+  <ng-container *ngIf="this.team.id !== null">
     <div fxLayout="row">
       <div class="mat-subheading-2">
         {{ 'team.title.prefferd-encounter' | translate }}
@@ -97,7 +97,7 @@
         [includePersonal]="true"
         [allowCreation]="true"
         [club]="this.club"
-        (onSelectPlayer)="this.selectedCaptain($event)"
+        (whenSelectPlayer)="this.selectedCaptain($event)"
         [clearOnSelection]="false"
       ></badman-player-search>
     </div>

@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   ChangeDetectionStrategy,
   Input,
   Output,
@@ -18,7 +17,7 @@ export class PeriodSelectionComponent {
   @Input() formGroup!: FormGroup;
 
   @Output()
-  onNext = new EventEmitter<void>();
+  whenNext = new EventEmitter<void>();
   @Output()
-  onPrev = new EventEmitter<void>();
+  whenPrev = new EventEmitter<void>();
 }

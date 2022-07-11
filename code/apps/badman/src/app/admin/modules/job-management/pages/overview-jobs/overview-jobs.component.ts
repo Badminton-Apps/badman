@@ -1,20 +1,18 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo } from 'apollo-angular';
-import { Cron, EVENTS, ListenTopic } from '../../../../../_shared';
-import cronstrue from 'cronstrue';
+import { lastValueFrom, Subscription } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
-import { map, Subscription, take } from 'rxjs';
-import * as cronQuery from './graphql/getCronStatusQuery.graphql';
+import { Cron, EVENTS, ListenTopic } from '../../../../../_shared';
 
 @Component({
   templateUrl: './overview-jobs.component.html',
   styleUrls: ['./overview-jobs.component.scss'],
 })
-export class OverviewJobsComponent implements OnInit, OnDestroy {
+export class OverviewJobsComponent implements OnDestroy {
   private urlBase = `${environment.api}/api/${environment.apiVersion}/job`;
 
   dataSource = new MatTableDataSource<Cron>();
@@ -39,21 +37,21 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
 
   constructor(private apollo: Apollo, private httpClient: HttpClient) {}
 
-  ngOnInit(): void {
-    this.querySubscription = this.apollo
-      .query<{ crons: Cron[] }>({
-        query: cronQuery,
-      })
-      .pipe(
-        take(1),
-        map((results) => results.data.crons?.map((c) => new Cron(c)))
-      )
-      .subscribe((crons) => {
-        this.dataSource.data = crons?.map((cron: any) => {
-          return { ...cron, tooltip: cronstrue.toString(cron.cron) };
-        });
-      });
-  }
+  // ngOnInit(): void {
+  //   this.querySubscription = this.apollo
+  //     .query<{ crons: Cron[] }>({
+  //       query: cronQuery,
+  //     })
+  //     .pipe(
+  //       take(1),
+  //       map((results) => results.data.crons?.map((c) => new Cron(c)))
+  //     )
+  //     .subscribe((crons) => {
+  //       this.dataSource.data = crons?.map((cron: any) => {
+  //         return { ...cron, tooltip: cronstrue.toString(cron.cron) };
+  //       });
+  //     });
+  // }
 
   @ListenTopic(EVENTS.JOB.CRON_STARTED)
   jobStarted(data: Cron) {
@@ -74,9 +72,12 @@ export class OverviewJobsComponent implements OnInit, OnDestroy {
   }
 
   runJob(cronJob: Cron) {
-    this.httpClient
-      .post(`${this.urlBase}/single-run?type=${cronJob.type}`, {})
-      .subscribe(() => {});
+    lastValueFrom(
+      this.httpClient.post(
+        `${this.urlBase}/single-run?type=${cronJob.type}`,
+        {}
+      )
+    );
   }
 
   ngOnDestroy() {

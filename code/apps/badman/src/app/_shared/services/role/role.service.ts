@@ -29,7 +29,7 @@ export class RoleService {
       .pipe(map((x) => new Role(x.data.role)));
   }
 
-  getRoles(where?: { [key: string]: any }) {
+  getRoles(where?: { [key: string]: unknown }) {
     return this.apollo
       .query<{ roles: Role[] }>({
         query: rolesQuery,

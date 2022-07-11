@@ -1,3 +1,4 @@
+import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { LOCATION_INITIALIZED } from '@angular/common';
 import { Injector } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
@@ -17,7 +18,7 @@ export const language_map: Map<
 export function appInitializerFactory(
   translate: TranslateService,
   injector: Injector,
-  adapter: DateAdapter<any>
+  adapter: DateAdapter<NgxMatMomentAdapter>
 ) {
   return async () => {
     try {
@@ -42,7 +43,7 @@ export function appInitializerFactory(
 export async function setLanguage(
   translateFormat: string,
   momentFormat: string,
-  dateAdapater: DateAdapter<any>,
+  dateAdapater: DateAdapter<NgxMatMomentAdapter>,
   translateService: TranslateService
 ) {
   // Set values

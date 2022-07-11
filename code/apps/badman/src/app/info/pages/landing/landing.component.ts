@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, gql } from 'apollo-angular';
 import { map, switchMap, take } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { RankingSystem, SystemService } from '../../../_shared';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent implements OnInit {
-  dataSource?: MatTableDataSource<any>;
+  dataSource?: MatTableDataSource<RankingScoreTable>;
 
   displayedColumns = [
     'level',
@@ -68,24 +68,30 @@ export class LandingComponent implements OnInit {
             return s.find((x) => x.primary == false);
           } else if (s.length == 1) {
             return s[0];
-          } else {
-            throw 'No systems found';
           }
+
+          return;
         }),
-        map((system: any) => {
-          let level = system.amountOfLevels;
-          return system.pointsWhenWinningAgainst.map(
+        map((system?: RankingSystem) => {
+          if (!system) {
+            throw 'No system found';
+          }
+
+          let level = system.amountOfLevels ?? 0;
+          return system.pointsWhenWinningAgainst?.map(
             (winning: number, index: number) => {
               return {
                 level: level--,
                 pointsToGoUp:
-                  level !== 0 ? Math.round(system.pointsToGoUp[index]) : null,
+                  level !== 0
+                    ? Math.round(system.pointsToGoUp?.[index] ?? 0)
+                    : null,
                 pointsToGoDown:
                   index === 0
                     ? null
-                    : Math.round(system.pointsToGoDown[index - 1]),
+                    : Math.round(system.pointsToGoDown?.[index - 1] ?? 0),
                 pointsWhenWinningAgainst: Math.round(winning),
-              };
+              } as RankingScoreTable;
             }
           );
         }),
@@ -95,4 +101,11 @@ export class LandingComponent implements OnInit {
         this.dataSource = new MatTableDataSource(data);
       });
   }
+}
+
+interface RankingScoreTable {
+  level: number;
+  pointsToGoUp: number;
+  pointsToGoDown: number;
+  pointsWhenWinningAgainst: number;
 }

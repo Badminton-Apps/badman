@@ -3,7 +3,7 @@ import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   Component,
   ElementRef,
-  HostListener,
+  HostBinding,
   Inject,
   Input,
   OnDestroy,
@@ -15,7 +15,6 @@ import {
   AbstractControl,
   ControlValueAccessor,
   FormBuilder,
-  FormControl,
   FormGroup,
   NgControl,
   Validators,
@@ -34,16 +33,19 @@ const selector = 'app-time-picker-input';
   selector: 'badman-time-picker-input',
   templateUrl: './time-picker-input.html',
   styleUrls: ['./time-picker-input.scss'],
-  providers: [{ provide: MatFormFieldControl, useExisting: TimePickerInput }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-  },
+  providers: [
+    { provide: MatFormFieldControl, useExisting: TimePickerInputComponent },
+  ],
 })
-export class TimePickerInput
+export class TimePickerInputComponent
   implements ControlValueAccessor, MatFormFieldControl<Moment>, OnDestroy
 {
   static nextId = 0;
+
+  private _placeholder!: string;
+  private _required = false;
+  private _disabled = false;
+
   @ViewChild('hours') hoursInput!: HTMLInputElement;
   @ViewChild('minutes') minutesInput!: HTMLInputElement;
 
@@ -51,10 +53,17 @@ export class TimePickerInput
   stateChanges = new Subject<void>();
   focused = false;
   touched = false;
-  id = `${selector}-${TimePickerInput.nextId++}`;
 
-  onChange = (_: any) => {};
-  onTouched = () => {};
+  @HostBinding('id')
+  id = `${selector}-${TimePickerInputComponent.nextId++}`;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onChange = (_: unknown) => {
+    //
+  };
+  onTouched = () => {
+    //
+  };
 
   get empty() {
     const {
@@ -64,6 +73,7 @@ export class TimePickerInput
     return !hours && !minutes;
   }
 
+  @HostBinding('class.time-picker-floating')
   get shouldLabelFloat() {
     return this.focused || !this.empty;
   }
@@ -76,7 +86,6 @@ export class TimePickerInput
     this._placeholder = value;
     this.stateChanges.next();
   }
-  private _placeholder!: string;
 
   @Input()
   get required(): boolean {
@@ -86,7 +95,6 @@ export class TimePickerInput
     this._required = coerceBooleanProperty(value);
     this.stateChanges.next();
   }
-  private _required = false;
 
   @Input()
   get disabled(): boolean {
@@ -97,7 +105,6 @@ export class TimePickerInput
     this._disabled ? this.parts.disable() : this.parts.enable();
     this.stateChanges.next();
   }
-  private _disabled = false;
 
   @Input()
   get value(): Moment | null {
@@ -159,7 +166,7 @@ export class TimePickerInput
     this._focusMonitor.stopMonitoring(this._elementRef);
   }
 
-  onFocusIn(event: FocusEvent) {
+  onFocusIn() {
     if (!this.focused) {
       this.focused = true;
       this.stateChanges.next();
@@ -199,8 +206,10 @@ export class TimePickerInput
   setDescribedByIds(ids: string[]) {
     const controlElement = this._elementRef.nativeElement.querySelector(
       '.app-time-picker-input-container'
-    )!;
-    controlElement.setAttribute('aria-describedby', ids.join(' '));
+    );
+    if (controlElement) {
+      controlElement.setAttribute('aria-describedby', ids.join(' '));
+    }
   }
 
   onContainerClick() {
@@ -217,11 +226,11 @@ export class TimePickerInput
     this.value = tel;
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: unknown) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -229,7 +238,7 @@ export class TimePickerInput
     this.disabled = isDisabled;
   }
 
-  _handleInput(control: AbstractControl): void {
+  _handleInput(): void {
     this.onChange(this.value);
   }
 }

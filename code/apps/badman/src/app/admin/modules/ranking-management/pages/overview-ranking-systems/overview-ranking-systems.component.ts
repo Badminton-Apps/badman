@@ -198,7 +198,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
       });
   }
 
-  async reset(templateRef: TemplateRef<any>) {
+  async reset(templateRef: TemplateRef<unknown>) {
     const dialogRef = this.dialog.open(templateRef);
 
     dialogRef.afterClosed().subscribe(async (result) => {

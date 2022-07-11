@@ -1,18 +1,17 @@
 import {
   Directive,
   Output,
-  Input,
   EventEmitter,
   HostBinding,
   HostListener,
 } from '@angular/core';
 
 @Directive({
-  selector: '[drag-over]',
+  selector: '[badmanDragOver]',
 })
 export class DragOverDirective {
   @HostBinding('class.fileover') fileOver!: boolean;
-  @Output() fileDropped = new EventEmitter<any>();
+  @Output() fileDropped = new EventEmitter<FileList>();
 
   // Dragover listener
   @HostListener('dragover', ['$event']) onDragOver(evt: DragEvent) {
@@ -33,7 +32,7 @@ export class DragOverDirective {
     evt.preventDefault();
     evt.stopPropagation();
     this.fileOver = false;
-    let files = evt.dataTransfer?.files;
+    const files = evt.dataTransfer?.files;
     if ((files?.length ?? 0) > 0) {
       this.fileDropped.emit(files);
     }

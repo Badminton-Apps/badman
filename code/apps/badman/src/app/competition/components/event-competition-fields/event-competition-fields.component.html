@@ -57,7 +57,7 @@
 
       <mat-form-field
         appearance="outline"
-        *ngIf="this.formGroup.get('usedRankingUnit')?.value == 'weeks'"
+        *ngIf="this.formGroup.get('usedRankingUnit')?.value === 'weeks'"
         fxFlex="200px"
       >
         <mat-label>Week nbr</mat-label>
@@ -72,7 +72,7 @@
 
       <mat-form-field
         appearance="outline"
-        *ngIf="this.formGroup.get('usedRankingUnit')?.value == 'months'"
+        *ngIf="this.formGroup.get('usedRankingUnit')?.value === 'months'"
         fxFlex="200px"
       >
         <mat-label>Month</mat-label>

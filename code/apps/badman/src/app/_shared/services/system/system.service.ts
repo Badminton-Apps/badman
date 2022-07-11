@@ -68,14 +68,25 @@ export class SystemService {
 
   getSystemWithCount(systemId: string, gender?: string) {
     return this.apollo
-      .query({
+      .query<{ system: Partial<RankingSystem> }>({
         query: systemWithCountsQuery,
         variables: {
           id: systemId,
           gender,
         },
       })
-      .pipe(map((x: any) => x.data?.system as RankingSystem));
+      .pipe(
+        map(
+          (x) =>
+            x.data?.system as RankingSystem & {
+              counts: {
+                single: SystemCounts[];
+                double: SystemCounts[];
+                mix: SystemCounts[];
+              };
+            }
+        )
+      );
   }
 
   addSystem(rankingSystem: RankingSystem) {
@@ -167,4 +178,12 @@ export class SystemService {
       })
       .pipe(map((x) => x.data.rankingGroups?.map((g) => new RankingGroup(g))));
   }
+}
+
+export interface SystemCounts {
+  points: {
+    level: number;
+    amount: number;
+  }[];
+  date: string;
 }

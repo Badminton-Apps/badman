@@ -3,22 +3,14 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { AbstractControl, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  lastValueFrom,
-  merge,
-  Observable,
-  of,
-  ReplaySubject,
-  Subject,
-} from 'rxjs';
+import { lastValueFrom, merge, Observable, of, ReplaySubject } from 'rxjs';
 import {
   debounceTime,
   filter,
@@ -36,19 +28,19 @@ import { Club, Player } from './../../../../models';
   styleUrls: ['./player-search.component.scss'],
 })
 export class PlayerSearchComponent implements OnChanges, OnInit {
-  @Output() onSelectPlayer = new EventEmitter<Player>();
+  @Output() whenSelectPlayer = new EventEmitter<Player>();
 
   @Input()
-  label: string = 'players.search.label';
+  label = 'players.search.label';
 
   @Input()
-  allowCreation: boolean = false;
+  allowCreation = false;
 
   @Input()
-  clearOnSelection: boolean = true;
+  clearOnSelection = true;
 
   @Input()
-  where?: {};
+  where?: { [key: string]: unknown };
 
   @Input()
   player?: string | Player;
@@ -174,7 +166,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
   selectedPlayer(event: MatAutocompleteSelectedEvent) {
     if (event.option.value?.id == null) {
-      let dialogRef = this.dialog.open(NewPlayerComponent, {
+      const dialogRef = this.dialog.open(NewPlayerComponent, {
         data: { input: event.option.value },
       });
 
@@ -200,7 +192,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   }
 
   private _selectPlayer(player: Player) {
-    this.onSelectPlayer.next(player);
+    this.whenSelectPlayer.next(player);
     if (this.clearOnSelection) {
       this.formControl.reset();
       this.clear$.next([]);

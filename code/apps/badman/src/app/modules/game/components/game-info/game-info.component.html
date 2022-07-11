@@ -4,7 +4,7 @@
       fxFlex
       fxLayout="column"
       fxLayoutAlign="end start"
-      [ngClass]="{ won: game.winner == 1 }"
+      [ngClass]="{ won: game.winner === 1 }"
     >
       <ng-container [ngSwitch]="game.status">
         <ng-container *ngSwitchCase="'NO_MATCH'">
@@ -39,7 +39,7 @@
       fxFlex
       fxLayout="column"
       fxLayoutAlign="start start"
-      [ngClass]="{ won: game.winner == 2 }"
+      [ngClass]="{ won: game.winner === 2 }"
     >
       <ng-container [ngSwitch]="game.status">
         <ng-container *ngSwitchCase="'NO_MATCH'">
@@ -74,25 +74,25 @@
 
   <div fxLayout="column" class="scores">
     <div fxFlex fxLayout="row" fxLayoutAlign="end end">
-      <div fxFlex="25px" [ngClass]="{ won: game.set1Winner == 1 }">
+      <div fxFlex="25px" [ngClass]="{ won: game.set1Winner === 1 }">
         {{ this.game?.set1Team1 }}
       </div>
-      <div fxFlex="25px" [ngClass]="{ won: game.set2Winner == 1 }">
+      <div fxFlex="25px" [ngClass]="{ won: game.set2Winner === 1 }">
         {{ this.game?.set2Team1 }}
       </div>
-      <div fxFlex="25px" [ngClass]="{ won: game.set3Winner == 1 }">
+      <div fxFlex="25px" [ngClass]="{ won: game.set3Winner === 1 }">
         {{ this.game?.set3Team1 }}
       </div>
     </div>
 
     <div fxFlex fxLayout="row" fxLayoutAlign="start start">
-      <div fxFlex="25px" [ngClass]="{ won: game.set1Winner == 2 }">
+      <div fxFlex="25px" [ngClass]="{ won: game.set1Winner === 2 }">
         {{ this.game?.set1Team2 }}
       </div>
-      <div fxFlex="25px" [ngClass]="{ won: game.set2Winner == 2 }">
+      <div fxFlex="25px" [ngClass]="{ won: game.set2Winner === 2 }">
         {{ this.game?.set2Team2 }}
       </div>
-      <div fxFlex="25px" [ngClass]="{ won: game.set3Winner == 2 }">
+      <div fxFlex="25px" [ngClass]="{ won: game.set3Winner === 2 }">
         {{ this.game?.set3Team2 }}
       </div>
     </div>

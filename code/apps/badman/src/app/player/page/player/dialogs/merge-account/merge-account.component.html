@@ -49,7 +49,7 @@
       <div fxFlex id="toMergePlayers" fxLayout="column" fxLayoutGap="5px">
         <div
           class="empty"
-          *ngIf="this.toMergePlayers.length == 0"
+          *ngIf="this.toMergePlayers.length === 0"
           fxFlex="75px"
           fxLayoutAlign="center center"
         >
@@ -67,7 +67,7 @@
         *ngIf="this.rankingDate"
         [ranking]="this.rankingDate"
         [ignorePlayers]="this.ignorePlayers"
-        (onSelectPlayer)="this.addPlayer($event)"
+        (whenSelectPlayer)="this.addPlayer($event)"
       ></badman-player-search>
     </div>
 

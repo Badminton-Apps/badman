@@ -29,13 +29,13 @@
     <ng-container matColumnDef="dates">
       <th mat-header-cell *matHeaderCellDef mat-sort-header="firstDay">Date</th>
       <td mat-cell *matCellDef="let element">
-        <ng-container *ngIf="element.type == 'TOURNAMENT'">
+        <ng-container *ngIf="element.type === 'TOURNAMENT'">
           {{ element.firstDay | date }}
         </ng-container>
         <ng-container
           *ngIf="
-            element.type == 'COMPETITION_CP' ||
-            element.type == 'COMPETITION_XML'
+            element.type === 'COMPETITION_CP' ||
+            element.type === 'COMPETITION_XML'
           "
         >
           {{ element.firstDay.getFullYear() }}-{{
@@ -65,7 +65,7 @@
           </mat-select>
         </mat-form-field>
 
-        <div *ngIf="element.type == 'COMPETITION_XML'">
+        <div *ngIf="element.type === 'COMPETITION_XML'">
           <ng-container *ngIf="element.event?.name">{{
             element.event.name
           }}</ng-container>

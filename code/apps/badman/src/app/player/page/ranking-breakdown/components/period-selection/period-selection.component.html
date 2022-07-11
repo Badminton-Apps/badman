@@ -5,7 +5,7 @@
     <button
       [matTooltip]="'breakdown.prevPeriod' | translate"
       mat-icon-button
-      (click)="this.onPrev.next()"
+      (click)="this.whenPrev.next()"
     >
       <mat-icon>chevron_left</mat-icon>
     </button>
@@ -19,7 +19,7 @@
       [matTooltip]="'breakdown.nextPeriod' | translate"
       mat-icon-button
       id="next-period"
-      (click)="this.onNext.next()"
+      (click)="this.whenNext.next()"
     >
       <mat-icon>chevron_right</mat-icon>
     </button>

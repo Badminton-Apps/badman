@@ -180,6 +180,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   }
 
   async setOpenState(state: boolean) {
+    console.log('setOpenState', state);
     // for (const selected of this.selection.selected) {
     //   this.eventService
     //     .updateCompetitionEvent({
@@ -196,7 +197,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     // }
   }
 
-  async copy(templateRef: any) {
+  async copy(templateRef) {
     this._dialog
       .open(templateRef, {
         width: '300px',

@@ -9,7 +9,6 @@ import {
   Club,
   ClubService,
   EventCompetition,
-  EventService,
   Location,
   LocationService,
   Player,
@@ -49,7 +48,6 @@ export class EditClubComponent implements OnInit {
     private teamService: TeamService,
     private roleService: RoleService,
     private clubService: ClubService,
-    private eventService: EventService,
     private locationService: LocationService,
     private titleService: Title,
     private route: ActivatedRoute,
@@ -157,7 +155,7 @@ export class EditClubComponent implements OnInit {
             })
           );
       }),
-      switchMap(([clubId, year, update, subEvents]) => {
+      switchMap(([clubId, , , subEvents]) => {
         return this.clubService.getTeamsForSubEvents(clubId, subEvents);
       })
     );

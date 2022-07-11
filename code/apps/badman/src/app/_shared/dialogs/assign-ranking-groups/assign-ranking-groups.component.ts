@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo, gql, MutationResult } from 'apollo-angular';
 import {
   BehaviorSubject,
   catchError,
@@ -170,7 +170,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
   async assignRankingGroups() {
     this.loading = true;
-    const mutations: any = [];
+    const mutations: Observable<MutationResult>[] = [];
 
     for (const [groupKey, group] of this.selection) {
       const key = groupKey.replace('group-', '');
@@ -178,8 +178,8 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         rankingSystemGroupId: key,
       };
 
-      const removed: any = [];
-      const added: any = [];
+      const removed: string[] = [];
+      const added: string[] = [];
 
       for (const subEvent of this.dataSource.data ?? []) {
         const hasGroup =
@@ -188,11 +188,15 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
           ) == null;
         if (hasGroup) {
           if (group.selected?.map((r) => r.id).includes(subEvent.id)) {
-            removed.push(subEvent.id);
+            if (subEvent.id) {
+              removed.push(subEvent.id);
+            }
           }
         } else {
           if (group.selected?.map((r) => r.id).includes(subEvent.id)) {
-            added.push(subEvent.id);
+            if (subEvent.id) {
+              added.push(subEvent.id);
+            }
           }
         }
       }
@@ -262,7 +266,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
     forkJoin(mutations)
       .pipe(
-        catchError((err, caught) => {
+        catchError((err) => {
           console.error('error', err);
           this.snackbar.open(err.message, 'OK', { duration: 5000 });
           throw err;

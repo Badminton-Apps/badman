@@ -1,20 +1,13 @@
 import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  EventEmitter,
-  Input,
-  Output,
-  Inject,
+  ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Output
 } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
+import moment from 'moment';
 import {
   AvailabilityException,
-  resetAllFormFields,
-  validateAllFormFields,
+  resetAllFormFields
 } from '../../../../../../../_shared';
-import moment from 'moment';
-import { MatStepper } from '@angular/material/stepper';
 import { STEP_AVAILIBILTY } from '../../team-enrollment.component';
 
 @Component({

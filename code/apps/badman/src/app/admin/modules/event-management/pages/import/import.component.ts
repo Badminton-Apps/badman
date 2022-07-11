@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   OnDestroy,
@@ -38,13 +39,14 @@ import {
   switchMap,
   takeUntil,
   tap,
+  
 } from 'rxjs/operators';
 
 @Component({
   templateUrl: './import.component.html',
   styleUrls: ['./import.component.scss'],
 })
-export class ImportComponent implements OnInit, OnDestroy {
+export class ImportComponent implements OnInit, OnDestroy, AfterViewInit {
   dataSource = new MatTableDataSource<Imported>();
   lastIds!: string;
   displayedColumns: string[] = ['dates', 'name', 'event', 'import', 'delete'];
@@ -133,7 +135,7 @@ export class ImportComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed$),
         debounceTime(300),
-        switchMap(([filterChange, sortChange, pageChange, update]) => {
+        switchMap(() => {
           this.isLoadingResults = true;
 
           return this.eventService.getImported(
@@ -230,8 +232,8 @@ export class ImportComponent implements OnInit, OnDestroy {
     }
   }
 
-  async fileAdded(fileInputEvent: any) {
-    await this.eventService.upload(fileInputEvent).toPromise();
+  async fileAdded(fileInputEvent: FileList) {
+    lastValueFrom(this.eventService.upload(fileInputEvent));
     this.filterChange$.next(this.filterChange$.value);
   }
 

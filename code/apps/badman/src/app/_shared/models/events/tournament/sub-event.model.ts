@@ -21,7 +21,7 @@ export class TournamentSubEvent extends SubEvent {
     );
     this.gameType =
       (args?.gameType ?? null) != null
-        ? (<any>GameType)[args.gameType ?? '']
+        ? GameType[args.gameType ?? '']
         : undefined;
   }
 }

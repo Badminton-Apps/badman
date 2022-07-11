@@ -68,7 +68,7 @@ export class ClubFieldsComponent implements OnInit {
       }
     });
 
-    this.clubForm.valueChanges.pipe(debounceTime(600)).subscribe((r) => {
+    this.clubForm.valueChanges.pipe(debounceTime(600)).subscribe(() => {
       if (this.clubForm.valid) {
         this.save.next({ id: this.club.id, ...this.clubForm.value });
       }

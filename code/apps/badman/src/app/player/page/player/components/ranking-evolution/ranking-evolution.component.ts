@@ -25,29 +25,10 @@ export class RankingEvolutionComponent implements OnInit {
   player!: Player;
 
   rankingPlaces$?: Observable<{
-    single: {
-      level: number;
-      rankingDate: Date;
-      points: number;
-      pointsDowngrade: number;
-      updatePossible: boolean;
-    }[];
-    mix: {
-      level: number;
-      rankingDate: Date;
-      points: number;
-      pointsDowngrade: number;
-      updatePossible: boolean;
-    }[];
-    double: {
-      level: number;
-      rankingDate: Date;
-      points: number;
-      pointsDowngrade: number;
-      updatePossible: boolean;
-    }[];
+    single: rankingPlace[];
+    mix: rankingPlace[];
+    double: rankingPlace[];
   }>;
-  request$!: Observable<any>;
   rankingSystem!: RankingSystem;
 
   constructor(
@@ -84,7 +65,14 @@ export class RankingEvolutionComponent implements OnInit {
       }),
       map((x) => {
         return x.reduce(
-          (acc: any, value) => {
+          (
+            acc: {
+              single: rankingPlace[];
+              mix: rankingPlace[];
+              double: rankingPlace[];
+            },
+            value
+          ) => {
             return {
               single: [
                 ...acc.single,
@@ -94,7 +82,7 @@ export class RankingEvolutionComponent implements OnInit {
                   points: value.singlePoints,
                   pointsDowngrade: value.singlePointsDowngrade,
                   updatePossible: value.updatePossible,
-                },
+                } as rankingPlace,
               ],
               double: [
                 ...acc.double,
@@ -104,7 +92,7 @@ export class RankingEvolutionComponent implements OnInit {
                   points: value.doublePoints,
                   pointsDowngrade: value.doublePointsDowngrade,
                   updatePossible: value.updatePossible,
-                },
+                } as rankingPlace,
               ],
               mix: [
                 ...acc.mix,
@@ -114,7 +102,7 @@ export class RankingEvolutionComponent implements OnInit {
                   points: value.mixPoints,
                   pointsDowngrade: value.mixPointsDowngrade,
                   updatePossible: value.updatePossible,
-                },
+                } as rankingPlace,
               ],
             };
           },
@@ -123,4 +111,12 @@ export class RankingEvolutionComponent implements OnInit {
       })
     );
   }
+}
+
+interface rankingPlace {
+  level: number;
+  rankingDate: Date;
+  points: number;
+  pointsDowngrade: number;
+  updatePossible: boolean;
 }

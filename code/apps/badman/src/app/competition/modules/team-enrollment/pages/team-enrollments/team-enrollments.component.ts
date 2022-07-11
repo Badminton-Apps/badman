@@ -1,13 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Apollo, gql } from 'apollo-angular';
-import {
-  Club,
-  EventCompetition,
-  CompetitionSubEvent,
-  sortSubEvents,
-} from '../../../../../_shared';
-import { map, Observable, switchMap, tap } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 
 @Component({

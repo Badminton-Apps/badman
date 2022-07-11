@@ -17,22 +17,25 @@ import {
   Club,
   EventCompetition,
   Game,
-  Player,
   RankingPlace,
   RankingSystem,
   EventTournament,
+  Player,
 } from '../../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlayerService {
-  public static playerSearchWhere(args?: { query?: string; where?: any }) {
+  public static playerSearchWhere(args?: {
+    query?: string;
+    where?: { [key: string]: unknown };
+  }) {
     const parts = args?.query
       ?.toLowerCase()
       .replace(/[;\\\\/:*?"<>|&',]/, ' ')
       .split(' ');
-    const queries: any = [];
+    const queries: unknown[] = [];
     if (!parts) {
       return;
     }
@@ -85,7 +88,7 @@ export class PlayerService {
 
   searchPlayers(args?: {
     query?: string;
-    where?: any;
+    where?: { [key: string]: unknown };
     includeClub?: boolean;
     ranking?: Date;
   }) {
@@ -109,7 +112,12 @@ export class PlayerService {
 
   searchClubPlayers(
     clubsId: string,
-    args?: { query?: string; where?: any; ranking?: Date; personal?: boolean }
+    args?: {
+      query?: string;
+      where?: { [key: string]: unknown };
+      ranking?: Date;
+      personal?: boolean;
+    }
   ) {
     return this.apollo
       .query<{ club: { players: Player[] } }>({
@@ -128,13 +136,13 @@ export class PlayerService {
 
   getPlayer(id?: string): Observable<Player> {
     return this.apollo
-      .query({
+      .query<{ player: Partial<Player> }>({
         query: playerBasicQuery,
         variables: {
           id,
         },
       })
-      .pipe(map((x: any) => new Player(x.data?.player)));
+      .pipe(map((x) => new Player(x.data?.player)));
   }
 
   getPlayerGames(
@@ -142,10 +150,10 @@ export class PlayerService {
     rankingType: RankingSystem,
     offset: number,
     limit: number,
-    where?: { [key: string]: any }
-  ): Observable<Game[]> {
+    where?: { [key: string]: unknown }
+  ): Observable<Game[] | undefined> {
     return this.apollo
-      .query({
+      .query<{ player: Partial<Player> }>({
         query: gamesQuery,
         variables: {
           playerId,
@@ -157,27 +165,23 @@ export class PlayerService {
         fetchPolicy: 'no-cache',
       })
       .pipe(
-        map((x: any) =>
-          x.data?.player?.games?.map(
-            (g: Partial<Game>) => new Game(g, rankingType)
-          )
-        )
+        map((x) => x.data?.player?.games?.map((g) => new Game(g, rankingType)))
       );
   }
 
   getPlayerEvolution(
     playerId: string,
     rankingType: string
-  ): Observable<RankingPlace[]> {
+  ): Observable<RankingPlace[] | undefined> {
     return this.apollo
-      .query({
+      .query<{ player: Partial<Player> }>({
         query: evolutionQuery,
         variables: {
           playerId,
           rankingType,
         },
       })
-      .pipe(map((x: any) => x.data?.player?.rankingPlaces));
+      .pipe(map((x) => x.data?.player?.rankingPlaces));
   }
 
   getTopPlayers(
@@ -203,7 +207,7 @@ export class PlayerService {
         total: number;
         rankingPlaces: RankingPlace[];
       }>(`${environment.api}/api/${environment.apiVersion}/ranking/top`, {
-        params: params as any,
+        params: params,
       })
       .pipe(
         map((r) => {
