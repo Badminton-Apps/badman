@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 
-import {
-  distinctUntilChanged,
-  map, shareReplay,
-  tap
-} from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 
 import * as clubClaimsQuery from '../../graphql/security/queries/GetClubClaims.graphql';
 import * as globalClaimsQuery from '../../graphql/security/queries/GetGlobalClaims.graphql';
