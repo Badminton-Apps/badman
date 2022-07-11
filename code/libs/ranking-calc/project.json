@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/ranking-calc"],
       "options": {
-        "jestConfig": "libs/ranking-calc/jest.config.ts",
+        "jestConfig": "libs/ranking-calc/jest.config.js",
         "passWithNoTests": true
       }
     }

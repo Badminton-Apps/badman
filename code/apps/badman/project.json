@@ -148,7 +148,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/badman"],
       "options": {
-        "jestConfig": "apps/badman/jest.config.ts",
+        "jestConfig": "apps/badman/jest.config.js",
         "passWithNoTests": true
       }
     }
