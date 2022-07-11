@@ -1,7 +1,6 @@
 import { Player } from '@badman/api/database';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { retry } from 'rxjs';
 
 export const User = createParamDecorator(
   async (data: unknown, context: ExecutionContext) => {
