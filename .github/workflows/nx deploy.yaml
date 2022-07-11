@@ -26,7 +26,7 @@ jobs:
       - name: Get latest Tag
         id: get-latest-tag
         run: |
-           echo "LAST_TAG=$(git rev-parse $(git describe --match "v*" --abbrev=0 --tags $(git rev-list --tags --max-count=1)))" >> $GITHUB_ENV
+           echo "LAST_TAG=$(git rev-parse $(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1)))" >> $GITHUB_ENV
 
       - name: Standard Version
         run: |
