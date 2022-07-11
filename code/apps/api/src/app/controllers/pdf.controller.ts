@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Logger,
   Post,
   Req,

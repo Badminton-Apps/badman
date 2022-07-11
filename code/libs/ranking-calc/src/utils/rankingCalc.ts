@@ -451,14 +451,9 @@ export class RankingCalc {
     return games;
   }
 
-  protected async getPlayersForGamesAsync(
-    games: Game[],
-    start: Date,
-    end: Date,
-    options: {
-      transaction?: Transaction;
-    }
-  ): Promise<
+  protected async getPlayers(options: {
+    transaction?: Transaction;
+  }): Promise<
     Map<
       string,
       Player & {
@@ -470,37 +465,17 @@ export class RankingCalc {
     const players = new Map();
     this._logger.debug(`getPlayersAsync for games`);
 
-    // Subtract one update interval so we have last ranking for first games
-    const rankingstart = moment(start)
-      .subtract(
-        this.rankingType.updateIntervalAmount,
-        this.rankingType.updateIntervalUnit
-      )
-      .toDate();
-
     // Get all players with relevant info
     (
       await Player.findAll({
         attributes: ['id', 'gender'],
         include: [
           {
-            model: Game,
             required: true,
-            attributes: [],
-            where: {
-              id: games?.map((g) => g.id),
-            },
-          },
-          {
-            required: false,
-            model: RankingPlace,
+            model: RankingLastPlace,
             attributes: ['single', 'double', 'mix', 'rankingDate', 'systemId'],
             where: {
               systemId: this.rankingType.id,
-              // Start date = last update
-              rankingDate: {
-                [Op.between]: [rankingstart, end],
-              },
             },
           },
         ],
@@ -513,59 +488,7 @@ export class RankingCalc {
     return players;
   }
 
-  protected async getPlayersAsync(
-    start: Date,
-    end: Date,
-    options: {
-      transaction?: Transaction;
-    }
-  ): Promise<Map<string, Player>> {
-    // Get players
-    const players = new Map();
-    this._logger.debug(
-      `getPlayersAsync for preiod ${start.toDateString()} - ${end.toDateString()}`
-    );
 
-    // Get all players with relevant info
-    (
-      await Player.findAll({
-        attributes: ['id', 'gender'],
-        include: [
-          {
-            model: Game,
-            required: true,
-            attributes: ['id'],
-            where: {
-              playedAt: {
-                [Op.between]: [start, end],
-              },
-            },
-          },
-          {
-            required: false,
-            model: RankingLastPlace,
-            attributes: [
-              'single',
-              'double',
-              'mix',
-              'singleInactive',
-              'doubleInactive',
-              'mixInactive',
-              'systemId',
-            ],
-            where: {
-              systemId: this.rankingType.id,
-            },
-          },
-        ],
-        transaction: options?.transaction,
-      })
-    ).map((x) => {
-      players.set(x.id, x);
-    });
-
-    return players;
-  }
 
   public async calculateRankingPointsPerGameAsync(
     games: Game[],
