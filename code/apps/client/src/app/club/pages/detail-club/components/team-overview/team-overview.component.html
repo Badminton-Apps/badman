@@ -22,14 +22,18 @@
         <button
           mat-menu-item
           *ngIf="this.team.active"
-          (click)="this.whenActiveChange.next({ team: this.team, active: false })"
+          (click)="
+            this.whenActiveChange.next({ team: this.team, active: false })
+          "
         >
           Deactivate
         </button>
         <button
           mat-menu-item
           *ngIf="!this.team.active"
-          (click)="this.whenActiveChange.next({ team: this.team, active: true })"
+          (click)="
+            this.whenActiveChange.next({ team: this.team, active: true })
+          "
         >
           Activate
         </button>
