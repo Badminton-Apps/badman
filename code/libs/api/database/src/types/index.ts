@@ -4,4 +4,3 @@ export * from './availibilty.type';
 export * from './exception.type';
 export * from './meta.type';
 // end:ng42.barrel
-

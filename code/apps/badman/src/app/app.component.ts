@@ -23,7 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     updates: SwUpdate,
     snackBar: MatSnackBar,
-    private ccService: NgcCookieConsentService, 
+    private ccService: NgcCookieConsentService,
     private cookieService: CookieService,
     public authGuard: AuthGuard
   ) {

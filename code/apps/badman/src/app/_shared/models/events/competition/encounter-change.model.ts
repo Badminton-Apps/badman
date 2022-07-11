@@ -17,7 +17,9 @@ export class EncounterChange {
     this.dates = args?.dates?.map((d) => new EncounterChangeDate(d)) ?? [];
     this.accepted = args?.accepted;
 
-    this.homeComment = args?.homeComment != null ? new Comment(args.homeComment) : undefined;
-    this.awayComment = args?.awayComment != null ? new Comment(args.awayComment) : undefined;
+    this.homeComment =
+      args?.homeComment != null ? new Comment(args.homeComment) : undefined;
+    this.awayComment =
+      args?.awayComment != null ? new Comment(args.awayComment) : undefined;
   }
 }

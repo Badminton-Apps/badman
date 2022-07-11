@@ -8,10 +8,7 @@
       "options": {
         "push": true,
         "metadata": {
-          "images": [
-            "badman/client",
-            "ghcr.io/badminton-apps/badman/client"
-          ],
+          "images": ["badman/client", "ghcr.io/badminton-apps/badman/client"],
           "tags": [
             "type=schedule",
             "type=ref,event=tag",

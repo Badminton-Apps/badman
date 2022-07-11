@@ -4,7 +4,7 @@ import {
   EventEntry,
   Game,
   Standing,
-  Team
+  Team,
 } from '@badman/api/database';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { DrawStepData } from './draw';
@@ -44,7 +44,10 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
     );
   }
 
-  private async _processEncounters(draw: DrawCompetition, encounters: EncounterCompetition[]) {
+  private async _processEncounters(
+    draw: DrawCompetition,
+    encounters: EncounterCompetition[]
+  ) {
     if (encounters.length === 0) {
       return;
     }
@@ -101,7 +104,9 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         awayStanding.points++;
       }
 
-      const encoutnerGames = this.games.filter((g) => g.linkId === encounter.id);
+      const encoutnerGames = this.games.filter(
+        (g) => g.linkId === encounter.id
+      );
 
       for (const game of encoutnerGames ?? []) {
         if (game.winner == 1) {
@@ -209,9 +214,15 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
           return 1;
         }
 
-        if (a.totalPointsWon - a.totalPointsLost > b.totalPointsWon - b.totalPointsLost) {
+        if (
+          a.totalPointsWon - a.totalPointsLost >
+          b.totalPointsWon - b.totalPointsLost
+        ) {
           return -1;
-        } else if (a.totalPointsWon - a.totalPointsLost < b.totalPointsWon - b.totalPointsLost) {
+        } else if (
+          a.totalPointsWon - a.totalPointsLost <
+          b.totalPointsWon - b.totalPointsLost
+        ) {
           return 1;
         }
 
@@ -239,13 +250,16 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
           'setsWon',
           'setsLost',
           'totalPointsWon',
-          'totalPointsLost'
-        ]
+          'totalPointsLost',
+        ],
       }
     );
   }
 
-  private async _getTeams(draw: DrawCompetition, encounters: EncounterCompetition[]) {
+  private async _getTeams(
+    draw: DrawCompetition,
+    encounters: EncounterCompetition[]
+  ) {
     const teams = new Map<string, Team>();
 
     await Promise.all(
@@ -259,9 +273,9 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
                   model: EventEntry,
                   as: 'entries',
                   required: false,
-                  where: { subEventId: draw.subeventId }
-                }
-              ]
+                  where: { subEventId: draw.subeventId },
+                },
+              ],
             });
             teams.set(homeTeam.id, homeTeam);
           }
@@ -274,14 +288,17 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
                   model: EventEntry,
                   as: 'entries',
                   required: false,
-                  where: { subEventId: draw.subeventId }
-                }
-              ]
+                  where: { subEventId: draw.subeventId },
+                },
+              ],
             });
             teams.set(awayTeam.id, awayTeam);
           }
         } catch (error) {
-          this.logger.error(`Error fetching teams for encounter ${e.id}`, error);
+          this.logger.error(
+            `Error fetching teams for encounter ${e.id}`,
+            error
+          );
           throw error;
         }
       })
@@ -306,7 +323,9 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
   }
 
   private async _standingTeam(draw: DrawCompetition, team: Team) {
-    const entriesSubevent = team.entries.filter((e) => e.subEventId === draw.subeventId);
+    const entriesSubevent = team.entries.filter(
+      (e) => e.subEventId === draw.subeventId
+    );
     const entriesDraw = entriesSubevent.filter((e) => e.drawId === draw.id);
     let entryDraw: EventEntry;
 
@@ -322,7 +341,9 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
           entryDraw = entriesDraw[0];
 
           // Destroy other entries
-          for (const entry of entriesDraw.filter((d) => d.drawId === null).slice(1)) {
+          for (const entry of entriesDraw
+            .filter((d) => d.drawId === null)
+            .slice(1)) {
             await entry.destroy({ transaction: this.transaction });
           }
         }
@@ -336,9 +357,9 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
             subEventId: draw.subeventId,
             drawId: draw.id,
             entryType: 'competition',
-            teamId: team.id
+            teamId: team.id,
           }).save({
-            transaction: this.transaction
+            transaction: this.transaction,
           });
         } else if (entriesSubevent.length == 1) {
           // We only have one subevent. Lets use that :)
@@ -348,15 +369,19 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
           entryDraw.drawId = draw.id;
 
           await entryDraw.save({
-            transaction: this.transaction
+            transaction: this.transaction,
           });
         } else {
           // We have multiple (usually KO/Playoff) entries for this subEvent
           // As we can't know which one is the right one, we'll just use the first one
-          const meta = entriesSubevent.find((e) => e.meta?.competition != null)?.meta;
+          const meta = entriesSubevent.find(
+            (e) => e.meta?.competition != null
+          )?.meta;
 
           // Delete all entries for this subEvent (except the one we may have created in previous step = drawId  is filled in)
-          for (const entry of entriesSubevent?.filter((e) => e.drawId === null) ?? []) {
+          for (const entry of entriesSubevent?.filter(
+            (e) => e.drawId === null
+          ) ?? []) {
             await entry.destroy({ transaction: this.transaction });
           }
 
@@ -365,9 +390,9 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
             entryType: 'competition',
             drawId: draw.id,
             teamId: team.id,
-            meta: meta
+            meta: meta,
           }).save({
-            transaction: this.transaction
+            transaction: this.transaction,
           });
         }
       }
@@ -376,11 +401,13 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
       throw error;
     }
 
-    let teamStanding = await entryDraw?.getStanding({ transaction: this.transaction });
+    let teamStanding = await entryDraw?.getStanding({
+      transaction: this.transaction,
+    });
 
     if (!teamStanding) {
       teamStanding = await new Standing({
-        entryId: entryDraw.id
+        entryId: entryDraw.id,
       }).save({ transaction: this.transaction });
     }
 

@@ -13,17 +13,27 @@
 
     <mat-form-field appearance="outline" fxFlex="200px">
       <mat-label>{{ 'input.abbreviation' | translate }}</mat-label>
-      <input matInput formControlName="abbreviation" alt="abbreviation" required />
+      <input
+        matInput
+        formControlName="abbreviation"
+        alt="abbreviation"
+        required
+      />
     </mat-form-field>
   </div>
 
   <div fxLayout="row" fxLayoutGap="10px">
     <mat-form-field appearance="outline" fxFlex="">
       <mat-label>{{ 'club.number' | translate }}</mat-label>
-      <input matInput formControlName="clubId" alt="clubId" required type="number" />
+      <input
+        matInput
+        formControlName="clubId"
+        alt="clubId"
+        required
+        type="number"
+      />
     </mat-form-field>
   </div>
-
 
   <div class="mat-subheading-2">{{ 'usedForTeam.title' | translate }}</div>
   <div fxLayout="row" id="explanation">
@@ -35,13 +45,19 @@
       <mat-label>{{ 'usedForTeam.select' | translate }}</mat-label>
       <mat-select formControlName="useForTeamName" required>
         <mat-option value="name">{{ 'input.name' | translate }}</mat-option>
-        <mat-option value="fullName">{{ 'input.fullName' | translate }}</mat-option>
-        <mat-option value="abbreviation">{{ 'input.abbreviation' | translate }}</mat-option>
+        <mat-option value="fullName">{{
+          'input.fullName' | translate
+        }}</mat-option>
+        <mat-option value="abbreviation">{{
+          'input.abbreviation' | translate
+        }}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <div fxFlex id="example">
-      <span>{{ 'usedForTeam.example' | translate: { teamName: this.exampleTeamName } }}</span>
+      <span>{{
+        'usedForTeam.example' | translate: { teamName: this.exampleTeamName }
+      }}</span>
     </div>
   </div>
 </form>

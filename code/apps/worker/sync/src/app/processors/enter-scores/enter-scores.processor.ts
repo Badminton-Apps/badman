@@ -96,7 +96,7 @@ export class EnterScoresProcessor {
           },
           {
             model: Player,
-            as: 'gameLeader'
+            as: 'gameLeader',
           },
         ],
       });
@@ -116,28 +116,36 @@ export class EnterScoresProcessor {
       for (const game of encounter.games) {
         this.logger.debug(`Processing game ${game.order}`);
         const t1p1 = game.players?.find(
-          (p) => p.GamePlayerMembership.team === 1 && p.GamePlayerMembership.player === 1
+          (p) =>
+            p.GamePlayerMembership.team === 1 &&
+            p.GamePlayerMembership.player === 1
         );
         if (t1p1) {
           await selectPlayer({ page }, t1p1.memberId, 't1p1', game.visualCode);
         }
 
         const t1p2 = game.players?.find(
-          (p) => p.GamePlayerMembership.team === 1 && p.GamePlayerMembership.player === 2
+          (p) =>
+            p.GamePlayerMembership.team === 1 &&
+            p.GamePlayerMembership.player === 2
         );
         if (t1p2) {
           await selectPlayer({ page }, t1p2.memberId, 't1p2', game.visualCode);
         }
 
         const t2p1 = game.players?.find(
-          (p) => p.GamePlayerMembership.team === 2 && p.GamePlayerMembership.player === 1
+          (p) =>
+            p.GamePlayerMembership.team === 2 &&
+            p.GamePlayerMembership.player === 1
         );
         if (t2p1) {
           await selectPlayer({ page }, t2p1.memberId, 't2p1', game.visualCode);
         }
 
         const t2p2 = game.players?.find(
-          (p) => p.GamePlayerMembership.team === 2 && p.GamePlayerMembership.player === 2
+          (p) =>
+            p.GamePlayerMembership.team === 2 &&
+            p.GamePlayerMembership.player === 2
         );
         if (t2p2) {
           await selectPlayer({ page }, t2p2.memberId, 't2p2', game.visualCode);
@@ -171,7 +179,9 @@ export class EnterScoresProcessor {
         }
       }
 
-      this.logger.debug(`Entering game leader ${encounter.gameLeader?.fullName}`);
+      this.logger.debug(
+        `Entering game leader ${encounter.gameLeader?.fullName}`
+      );
       await enterGameLeader({ page }, encounter.gameLeader?.fullName);
 
       this.logger.debug(`Entering shuttle ${encounter.shuttle}`);

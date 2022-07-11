@@ -5,12 +5,13 @@
       <div class="name">{{ subEvent.name }}</div>
 
       <div class="min-max">
-        <small> {{ 'competition.enrollment.max' | translate }} {{ subEvent.maxLevel }}</small
+        <small>
+          {{ 'competition.enrollment.max' | translate }}
+          {{ subEvent.maxLevel }}</small
         >&nbsp;
         <small
-          >{{ 'competition.enrollment.base' | translate }}: {{ subEvent.minBaseIndex }}-{{
-            subEvent.maxBaseIndex
-          }}</small
+          >{{ 'competition.enrollment.base' | translate }}:
+          {{ subEvent.minBaseIndex }}-{{ subEvent.maxBaseIndex }}</small
         >
       </div>
     </div>
@@ -35,7 +36,9 @@
           <div class="team-description">
             {{ team.name }} <small>({{ team.baseIndex }})</small>
           </div>
-          <div class="team-encounter" *ngIf="team.preferredDay">{{ team.preferredDay }} @ {{ team.preferredTime }}</div>
+          <div class="team-encounter" *ngIf="team.preferredDay">
+            {{ team.preferredDay }} @ {{ team.preferredTime }}
+          </div>
           <div class="team-encounter" *ngIf="!team.preferredDay">
             {{ 'competition.enrollment.errors.no-day' | translate }}
           </div>

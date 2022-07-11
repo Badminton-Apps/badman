@@ -21,15 +21,14 @@ export class DetailDrawTournamentComponent implements OnInit {
   ngOnInit(): void {
     this.draw$ = this.route.paramMap.pipe(
       tap((params) => (this.tournamentId = params.get('id') ?? undefined)),
-      switchMap((params) =>
-        {
-          const tournamentDrawId = params.get('drawId');
-          if (!tournamentDrawId) {
-            throw new Error('No id');
-          }
+      switchMap((params) => {
+        const tournamentDrawId = params.get('drawId');
+        if (!tournamentDrawId) {
+          throw new Error('No id');
+        }
 
-          return this.apollo.query<{ drawTournament: TournamentDraw; }>({
-            query: gql`
+        return this.apollo.query<{ drawTournament: TournamentDraw }>({
+          query: gql`
             ${GAME_INFO}
             query GetTournamentDraw($tournamentDrawId: ID!) {
               drawTournament(id: $tournamentDrawId) {
@@ -65,12 +64,11 @@ export class DetailDrawTournamentComponent implements OnInit {
               }
             }
           `,
-            variables: {
-              tournamentDrawId ,
-            },
-          });
-        }
-      ),
+          variables: {
+            tournamentDrawId,
+          },
+        });
+      }),
       map(({ data }) => new TournamentDraw(data.drawTournament))
     );
   }

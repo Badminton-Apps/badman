@@ -123,7 +123,10 @@ export class Team {
         missingIndex = (4 - bestPlayers.length - 4) * 36;
       }
 
-      this.baseIndex = bestPlayers.reduce((a, b) => (a ?? 0) + (b ?? 0), missingIndex);
+      this.baseIndex = bestPlayers.reduce(
+        (a, b) => (a ?? 0) + (b ?? 0),
+        missingIndex
+      );
     }
   }
 }

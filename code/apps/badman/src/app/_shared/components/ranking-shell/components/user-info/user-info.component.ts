@@ -8,10 +8,7 @@ import { UserService } from '../../../../services';
   styleUrls: ['./user-info.component.scss'],
 })
 export class UserInfoComponent {
-  constructor(
-    public auth: AuthService,
-    public user: UserService,
-  ) {}
+  constructor(public auth: AuthService, public user: UserService) {}
 
   login(): void {
     // Call this to redirect the user to the login page

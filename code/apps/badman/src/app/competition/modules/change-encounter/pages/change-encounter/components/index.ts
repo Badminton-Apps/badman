@@ -2,4 +2,3 @@
 export * from './show-requests';
 export * from './list-encounters';
 // end:ng42.barrel
-

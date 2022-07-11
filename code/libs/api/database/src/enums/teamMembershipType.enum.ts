@@ -1,5 +1,4 @@
 export enum TeamMembershipType {
-    BASE,
-    NORMAL
-  }
-  
+  BASE,
+  NORMAL,
+}

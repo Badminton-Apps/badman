@@ -23,9 +23,7 @@ const materialModules = [
 ];
 
 @NgModule({
-  declarations: [
-    LinkAccountComponent,
-  ],
+  declarations: [LinkAccountComponent],
   imports: [SharedModule, ...materialModules, PlayerManagementRoutingModule],
 })
 export class PlayerManagementModule {}

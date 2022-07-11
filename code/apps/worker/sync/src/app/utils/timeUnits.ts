@@ -27,7 +27,9 @@ export const timeUnits = (ms) => {
     seconds: allocate(1000),
     ms: ms, // remainder
     toString: () => {
-      return Object.values(timeUnits(ms)).filter((v) => v > 0).join(', ');
-    }
+      return Object.values(timeUnits(ms))
+        .filter((v) => v > 0)
+        .join(', ');
+    },
   };
 };

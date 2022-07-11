@@ -43,7 +43,6 @@ export class EncounterService {
       );
   }
 
-  
   getRequests(encounterId: string) {
     return this.apollo
       .query<{

@@ -2,7 +2,14 @@
 
 <div class="mat-subheading-2">Jobs</div>
 
-<table mat-table matSort matSortActive="id" matSortDisableClear matSortDirection="asc" [dataSource]="this.dataSource">
+<table
+  mat-table
+  matSort
+  matSortActive="id"
+  matSortDisableClear
+  matSortDirection="asc"
+  [dataSource]="this.dataSource"
+>
   <ng-container matColumnDef="running">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
@@ -11,13 +18,17 @@
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'input.name' | translate }}</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      {{ 'input.name' | translate }}
+    </th>
     <td mat-cell *matCellDef="let element">{{ element.type }}</td>
   </ng-container>
 
   <ng-container matColumnDef="scheduled">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Scheduled</th>
-    <td mat-cell *matCellDef="let element"><mat-icon *ngIf="element.scheduled">check</mat-icon></td>
+    <td mat-cell *matCellDef="let element">
+      <mat-icon *ngIf="element.scheduled">check</mat-icon>
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="cron">
@@ -33,7 +44,9 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
     <td mat-cell *matCellDef="let element">
       <span *ngIf="element.meta?.percent"
-        >{{ element.meta.percent }}% ({{ element.meta.current }}/{{ element.meta.total }})</span
+        >{{ element.meta.percent }}% ({{ element.meta.current }}/{{
+          element.meta.total
+        }})</span
       >
     </td>
   </ng-container>
@@ -41,7 +54,9 @@
   <ng-container matColumnDef="lastRun">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Last run</th>
     <td mat-cell *matCellDef="let element">
-      <span *ngIf="element.lastRun">{{ element.lastRun | amDateFormat: 'LLL' }}</span>
+      <span *ngIf="element.lastRun">{{
+        element.lastRun | amDateFormat: 'LLL'
+      }}</span>
     </td>
   </ng-container>
 

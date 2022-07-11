@@ -10,7 +10,13 @@ import { PlayerInfoComponent } from './player-info';
 
 @NgModule({
   declarations: [GameResultComponent, PlayerInfoComponent, GameEntryComponent],
-  imports: [CommonModule, MatTooltipModule, RouterModule, TranslateModule, FlexModule],
+  imports: [
+    CommonModule,
+    MatTooltipModule,
+    RouterModule,
+    TranslateModule,
+    FlexModule,
+  ],
   exports: [GameResultComponent, GameEntryComponent],
 })
 export class GameResultModule {}

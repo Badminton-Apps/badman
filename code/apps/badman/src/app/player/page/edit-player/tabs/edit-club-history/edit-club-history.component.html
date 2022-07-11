@@ -3,20 +3,29 @@
 </button>
 
 <mat-list>
-  <mat-list-item *ngFor="let club of this.clubs$ | async" (click)="this.editClubMembership(club)">
+  <mat-list-item
+    *ngFor="let club of this.clubs$ | async"
+    (click)="this.editClubMembership(club)"
+  >
     <h3 matLine>
       {{ club.fullName }}
     </h3>
 
     <p matLine>
-      <span>{{ 'club.start' | translate }}: {{ club.clubMembership?.start | amLocal | amDateFormat: 'LL' }}</span>
+      <span
+        >{{ 'club.start' | translate }}:
+        {{ club.clubMembership?.start | amLocal | amDateFormat: 'LL' }}</span
+      >
     </p>
 
     <p matLine>
       <span *ngIf="club.clubMembership?.end != null">
-        {{ 'club.end' | translate }}: {{ club.clubMembership?.end | amLocal | amDateFormat: 'LL' }}
+        {{ 'club.end' | translate }}:
+        {{ club.clubMembership?.end | amLocal | amDateFormat: 'LL' }}
       </span>
-      <span *ngIf="club.clubMembership?.end == null">{{ 'club.current' | translate }}</span>
+      <span *ngIf="club.clubMembership?.end == null">{{
+        'club.current' | translate
+      }}</span>
     </p>
   </mat-list-item>
 </mat-list>

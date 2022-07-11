@@ -1,20 +1,32 @@
 <ng-container *ngIf="gotRequired">
   <div *ngIf="loaded; else loading" fxLayout="column" fxLayoutGap="16px">
     <div class="information">
-      <label class="mat-caption">{{ 'competition.team-assembly.info' | translate }}</label>
+      <label class="mat-caption">{{
+        'competition.team-assembly.info' | translate
+      }}</label>
       <div>
         <div
           class="team-index"
-          [ngClass]="{ 'team-index-ignored': teamNumber == 1 }"
-          [matTooltip]="'competition.team-assembly.team-index-ignored' | translate"
+          [ngClass]="{ 'team-index-ignored': teamNumber === 1 }"
+          [matTooltip]="
+            'competition.team-assembly.team-index-ignored' | translate
+          "
           [matTooltipDisabled]="teamNumber !== 1"
           [innerHtml]="
             'competition.team-assembly.team-index'
-              | translate: { current: teamIndex, team: entry?.meta?.competition?.teamIndex ?? 0 }
+              | translate
+                : {
+                    current: teamIndex,
+                    team: entry?.meta?.competition?.teamIndex ?? 0
+                  }
           "
         ></div>
 
-        <div *ngIf="totalPlayers < 12">{{ 'competition.team-assembly.errors.not-enough-players' | translate }}</div>
+        <div *ngIf="totalPlayers < 12">
+          {{
+            'competition.team-assembly.errors.not-enough-players' | translate
+          }}
+        </div>
       </div>
     </div>
 
@@ -40,7 +52,9 @@
           (cdkDropListDropped)="drop($event)"
           [cdkDropListSortingDisabled]="true"
         >
-          <label class="mat-caption">{{ 'competition.team-assembly.players.title' | translate }}</label>
+          <label class="mat-caption">{{
+            'competition.team-assembly.players.title' | translate
+          }}</label>
           <badman-team-assembly-player
             class="drag-item"
             *ngFor="let item of players"
@@ -52,9 +66,12 @@
         </div>
 
         <div class="add-player">
-          <small [matTooltip]="'competition.team-assembly.permanent-dialog' | translate">{{
-            'competition.team-assembly.permanent' | translate
-          }}</small>
+          <small
+            [matTooltip]="
+              'competition.team-assembly.permanent-dialog' | translate
+            "
+            >{{ 'competition.team-assembly.permanent' | translate }}</small
+          >
           <badman-player-search
             [allowCreation]="false"
             [searchOutsideClub]="false"
@@ -81,7 +98,8 @@
           [ngClass]="{ error: this.errors['double1'] }"
         >
           <label class="mat-caption"
-            >{{ this.captionDouble1Prefix | translate }} {{ this.captionDouble1 | translate }}</label
+            >{{ this.captionDouble1Prefix | translate }}
+            {{ this.captionDouble1 | translate }}</label
           >
           <badman-team-assembly-player
             class="drag-item"
@@ -107,7 +125,8 @@
           [ngClass]="{ error: this.errors['double2'] }"
         >
           <label class="mat-caption"
-            >{{ this.captionDouble2Prefix | translate }} {{ this.captionDouble2 | translate }}</label
+            >{{ this.captionDouble2Prefix | translate }}
+            {{ this.captionDouble2 | translate }}</label
           >
           <badman-team-assembly-player
             class="drag-item"
@@ -133,7 +152,8 @@
           [ngClass]="{ error: this.errors['double3'] }"
         >
           <label class="mat-caption"
-            >{{ this.captionDouble3Prefix | translate }} {{ this.captionDouble3 | translate }}</label
+            >{{ this.captionDouble3Prefix | translate }}
+            {{ this.captionDouble3 | translate }}</label
           >
           <badman-team-assembly-player
             class="drag-item"
@@ -159,7 +179,8 @@
           [ngClass]="{ error: this.errors['double4'] }"
         >
           <label class="mat-caption"
-            >{{ this.captionDouble4Prefix | translate }} {{ this.captionDouble4 | translate }}</label
+            >{{ this.captionDouble4Prefix | translate }}
+            {{ this.captionDouble4 | translate }}</label
           >
           <badman-team-assembly-player
             class="drag-item"
@@ -185,7 +206,8 @@
           [ngClass]="{ error: this.errors['single1'] }"
         >
           <label class="mat-caption"
-            >{{ this.captionSingle1Prefix | translate }} {{ this.captionSingle1 | translate }}</label
+            >{{ this.captionSingle1Prefix | translate }}
+            {{ this.captionSingle1 | translate }}</label
           >
           <badman-team-assembly-player
             class="drag-item"
@@ -211,7 +233,8 @@
           [ngClass]="{ error: this.errors['single2'] }"
         >
           <label class="mat-caption"
-            >{{ this.captionSingle2Prefix | translate }} {{ this.captionSingle2 | translate }}</label
+            >{{ this.captionSingle2Prefix | translate }}
+            {{ this.captionSingle2 | translate }}</label
           >
           <badman-team-assembly-player
             class="drag-item"
@@ -237,7 +260,8 @@
           [ngClass]="{ error: this.errors['single3'] }"
         >
           <label class="mat-caption"
-            >{{ this.captionSingle3Prefix | translate }} {{ this.captionSingle3 | translate }}</label
+            >{{ this.captionSingle3Prefix | translate }}
+            {{ this.captionSingle3 | translate }}</label
           >
           <badman-team-assembly-player
             class="drag-item"
@@ -263,7 +287,8 @@
           [ngClass]="{ error: this.errors['single4'] }"
         >
           <label class="mat-caption"
-            >{{ this.captionSingle4Prefix | translate }} {{ this.captionSingle4 | translate }}</label
+            >{{ this.captionSingle4Prefix | translate }}
+            {{ this.captionSingle4 | translate }}</label
           >
           <badman-team-assembly-player
             class="drag-item"
@@ -287,7 +312,9 @@
           [cdkDropListEnterPredicate]="this.canDropPredicate"
           (cdkDropListDropped)="drop($event)"
         >
-          <label class="mat-caption">{{ 'competition.team-assembly.substitude' | translate }}</label>
+          <label class="mat-caption">{{
+            'competition.team-assembly.substitude' | translate
+          }}</label>
           <badman-team-assembly-player
             class="drag-item"
             *ngFor="let item of substitude"

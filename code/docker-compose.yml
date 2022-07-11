@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   # My Apps
   badman:
     image: badman/client

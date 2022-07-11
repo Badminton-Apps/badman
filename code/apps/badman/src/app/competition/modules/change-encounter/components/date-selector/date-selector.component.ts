@@ -159,7 +159,7 @@ export class DateSelectorComponent
         data: {
           clubId: this.club,
           date,
-          allowManualEntry: this.allowManualEntry
+          allowManualEntry: this.allowManualEntry,
         },
       })
       .afterClosed()

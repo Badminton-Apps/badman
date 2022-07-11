@@ -1,4 +1,10 @@
-query GetClubPlayers($id: ID!, $ranking: DateTime, $includeRanking: Boolean!, $where: JSONObject, $personal: Boolean!) {
+query GetClubPlayers(
+  $id: ID!
+  $ranking: DateTime
+  $includeRanking: Boolean!
+  $where: JSONObject
+  $personal: Boolean!
+) {
   club(id: $id) {
     id
     players(where: $where) {
@@ -17,7 +23,8 @@ query GetClubPlayers($id: ID!, $ranking: DateTime, $includeRanking: Boolean!, $w
         double
         mix
       }
-      rankingPlaces(where: { rankingDate: $ranking }) @include(if: $includeRanking) {
+      rankingPlaces(where: { rankingDate: $ranking })
+        @include(if: $includeRanking) {
         id
         rankingDate
         single

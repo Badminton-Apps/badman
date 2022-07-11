@@ -4,20 +4,16 @@ import { TrainingRoutingModule } from './training-routing.module';
 
 import { CurriculumComponent } from './pages/';
 import { MatStepperModule } from '@angular/material/stepper';
-import {MatRadioModule} from '@angular/material/radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { SharedModule } from '../_shared';
 
-
-
 @NgModule({
-  declarations: [
-    CurriculumComponent
-  ],
+  declarations: [CurriculumComponent],
   imports: [
     MatStepperModule,
     MatRadioModule,
     SharedModule,
-    TrainingRoutingModule
-  ]
+    TrainingRoutingModule,
+  ],
 })
-export class TrainingModule { }
+export class TrainingModule {}

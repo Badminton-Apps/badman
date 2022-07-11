@@ -152,7 +152,6 @@ export class RankingLastPlace extends Model {
   setRankingSystem!: BelongsToSetAssociationMixin<RankingSystem, string>;
 }
 
-
 @ObjectType()
 export class PagedRankingLastPlaces {
   @Field()

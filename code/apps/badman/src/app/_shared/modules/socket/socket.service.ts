@@ -10,7 +10,10 @@ export class SocketService {
 
   private services: Map<string, SocketNameSpace> = new Map();
 
-  constructor(@Inject(SOCKET_URL) private url: string, @Optional() @Inject(SOCKET_PREFIX) private prefix: string) {
+  constructor(
+    @Inject(SOCKET_URL) private url: string,
+    @Optional() @Inject(SOCKET_PREFIX) private prefix: string
+  ) {
     SocketService.instance = this;
   }
 

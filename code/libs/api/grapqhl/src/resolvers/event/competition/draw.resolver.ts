@@ -57,7 +57,9 @@ export class DrawCompetitionResolver {
   }
 
   @ResolveField(() => [EncounterCompetition])
-  async encounterCompetitions(@Parent() draw: DrawCompetition): Promise<EncounterCompetition[]> {
+  async encounterCompetitions(
+    @Parent() draw: DrawCompetition
+  ): Promise<EncounterCompetition[]> {
     return draw.getEncounterCompetitions();
   }
 

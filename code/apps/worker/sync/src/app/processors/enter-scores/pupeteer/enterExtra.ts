@@ -1,7 +1,6 @@
 import { Page } from 'puppeteer';
 import { waitForSelectors } from '@badman/pupeteer';
 
-
 export async function enterGameLeader(
   pupeteer: {
     page: Page;
@@ -21,7 +20,7 @@ export async function enterGameLeader(
   {
     const targetPage = page;
     const element = await waitForSelectors([[selector]], targetPage, timeout);
-    await element.type(leader );
+    await element.type(leader);
   }
 }
 
@@ -61,7 +60,7 @@ export async function enterStartHour(
   if (!startHour) {
     return;
   }
-  
+
   const { page, timeout } = pupeteer;
   const selector = `#matchfield_5`;
   {

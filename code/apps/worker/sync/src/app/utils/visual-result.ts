@@ -21,7 +21,7 @@ interface XmlTournamentMatch {
   MatchID: string;
   MatchDate: Date;
 }
- 
+
 export interface XmlRanking {
   Code: string;
   Name: string;

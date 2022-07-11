@@ -2,4 +2,3 @@
 export * from './team-fields';
 export * from './team-players';
 // end:ng42.barrel
-

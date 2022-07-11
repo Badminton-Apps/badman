@@ -68,7 +68,11 @@ export class EditRankingAllComponent implements OnInit {
                 where,
               },
             })
-            .pipe(map((result) => new RankingSystem(result.data.rankingSystems?.[0])))
+            .pipe(
+              map(
+                (result) => new RankingSystem(result.data.rankingSystems?.[0])
+              )
+            )
         )
       )
       .subscribe((system) => {
@@ -156,8 +160,7 @@ export class EditRankingAllComponent implements OnInit {
               }
             }
 
-            const returnBlock: [RankingPlace, RankingPlace[]][] =
-              [];
+            const returnBlock: [RankingPlace, RankingPlace[]][] = [];
 
             for (const [, places] of allPlaces) {
               if (!places) {
@@ -165,7 +168,7 @@ export class EditRankingAllComponent implements OnInit {
               }
 
               const place = places.find((p) => p.updatePossible);
-              if (!place){
+              if (!place) {
                 throw new Error('Place is not set');
               }
 

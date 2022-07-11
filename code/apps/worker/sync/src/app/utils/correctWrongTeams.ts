@@ -17,23 +17,21 @@ export const correctWrongTeams = (team: {
     team.name = team.name.replace('Haneveld', 'Haeneveld');
     return team;
   }
-  
+
   if (team.name?.indexOf('Gitse1D') > -1) {
     team.name = team.name.replace('Gitse1D', 'Gitse 1D');
-    return team; 
+    return team;
   }
 
-  
   if (team.name?.indexOf('DZ 99') > -1) {
     team.name = team.name.replace('DZ 99', 'DZ99');
-    return team; 
+    return team;
   }
 
   if (team.name?.indexOf('Nivelles') > -1) {
     team.name = team.name.replace('Nivelles', 'BC Nivellois');
-    return team; 
+    return team;
   }
-
 
   return team;
 };

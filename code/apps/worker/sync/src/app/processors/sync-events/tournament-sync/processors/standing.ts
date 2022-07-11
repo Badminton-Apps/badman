@@ -58,16 +58,21 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     for (const game of games) {
       // Skip if game isn't played yet
       // And skip on bye
-      if ((game.winner ?? 0) == 0 || ((game.set1Team1 ?? 0) == 0 && (game.set1Team2 ?? 0) == 0)) {
+      if (
+        (game.winner ?? 0) == 0 ||
+        ((game.set1Team1 ?? 0) == 0 && (game.set1Team2 ?? 0) == 0)
+      ) {
         continue;
       }
 
       const playert1p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
+        (e) =>
+          e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
       );
 
       const playert2p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
+        (e) =>
+          e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
       );
 
       if (!playert1p1 || !playert2p1) {
@@ -162,13 +167,17 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     let position = 1;
 
     if (standings.size > 0) {
-      let sorted = [...standings.values()]?.sort(this.sortStandings())?.map((acc) => {
-        acc.position = position;
-        position++;
-        return acc;
-      });
+      let sorted = [...standings.values()]
+        ?.sort(this.sortStandings())
+        ?.map((acc) => {
+          acc.position = position;
+          position++;
+          return acc;
+        });
 
-      sorted = sorted.filter((a, i) => sorted.findIndex((s) => a.id === s.id) === i);
+      sorted = sorted.filter(
+        (a, i) => sorted.findIndex((s) => a.id === s.id) === i
+      );
 
       await Standing.bulkCreate(
         sorted?.map((e) => e.toJSON()),
@@ -186,8 +195,8 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
             'setsWon',
             'setsLost',
             'totalPointsWon',
-            'totalPointsLost'
-          ]
+            'totalPointsLost',
+          ],
         }
       );
     }
@@ -224,29 +233,42 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
   }
 
   private async _getEntries(games: Game[], subEventId: string) {
-    const keys = [...new Set(games?.map((g) => g.players?.map((p) => p?.id))?.flat())];
+    const keys = [
+      ...new Set(games?.map((g) => g.players?.map((p) => p?.id))?.flat()),
+    ];
     return await EventEntry.findAll({
-      attributes: ['id', 'drawId', 'subEventId', 'meta', 'player1Id', 'player2Id'],
+      attributes: [
+        'id',
+        'drawId',
+        'subEventId',
+        'meta',
+        'player1Id',
+        'player2Id',
+      ],
       where: {
         subEventId,
         [Op.or]: [
           {
             player1Id: {
-              [Op.in]: keys
-            }
+              [Op.in]: keys,
+            },
           },
           {
             player2Id: {
-              [Op.in]: keys
-            }
-          }
-        ]
+              [Op.in]: keys,
+            },
+          },
+        ],
       },
-      transaction: this.transaction
+      transaction: this.transaction,
     });
   }
 
-  private async _getStanding2(draw: DrawTournament, games: Game[], entries: EventEntry[]) {
+  private async _getStanding2(
+    draw: DrawTournament,
+    games: Game[],
+    entries: EventEntry[]
+  ) {
     const playerStandings = new Map<string, Standing>();
     const setStandingTeam = async (
       entriesSubevent: EventEntry[],
@@ -264,7 +286,9 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
           entryDraw = entriesDraw[0];
 
           // Destroy other entries
-          for (const entry of entriesDraw.filter((d) => d.drawId === null).slice(1)) {
+          for (const entry of entriesDraw
+            .filter((d) => d.drawId === null)
+            .slice(1)) {
             await entry.destroy({ transaction: this.transaction });
           }
         }
@@ -276,9 +300,9 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
             entryType: 'tournament',
             drawId: draw.id,
             player1Id,
-            player2Id
+            player2Id,
           }).save({
-            transaction: this.transaction
+            transaction: this.transaction,
           });
         } else if (entriesSubevent.length == 1) {
           entryDraw = entriesSubevent[0];
@@ -287,7 +311,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
           entryDraw.drawId = draw.id;
 
           await entryDraw.save({
-            transaction: this.transaction
+            transaction: this.transaction,
           });
         } else {
           // We have multiple (usually KO/Playoff) entries for this subEvent
@@ -295,7 +319,9 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
           const meta = entriesSubevent.find((e) => e.meta != null)?.meta;
 
           // Delete all entries for this subEvent (except the one we may have created in previous step = drawId  is filled in)
-          for (const entry of entriesSubevent?.filter((e) => e.drawId === null) ?? []) {
+          for (const entry of entriesSubevent?.filter(
+            (e) => e.drawId === null
+          ) ?? []) {
             await entry.destroy({ transaction: this.transaction });
           }
 
@@ -305,18 +331,20 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
             drawId: draw.id,
             player1Id,
             player2Id,
-            meta: meta
+            meta: meta,
           }).save({
-            transaction: this.transaction
+            transaction: this.transaction,
           });
         }
       }
 
-      let teamStanding = await entryDraw?.getStanding({ transaction: this.transaction });
+      let teamStanding = await entryDraw?.getStanding({
+        transaction: this.transaction,
+      });
 
       if (!teamStanding) {
         teamStanding = await new Standing({
-          entryId: entryDraw.id
+          entryId: entryDraw.id,
         }).save({ transaction: this.transaction });
       }
 
@@ -326,17 +354,21 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     // must be in for loop, standings can be set in parallel
     for (const game of games) {
       const playert1p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
+        (e) =>
+          e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
       );
       const playert1p2 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 2
+        (e) =>
+          e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 2
       );
 
       const playert2p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
+        (e) =>
+          e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
       );
       const playert2p2 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 2
+        (e) =>
+          e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 2
       );
 
       // we run on the first player as this should always be present (partner isn't availible in single)

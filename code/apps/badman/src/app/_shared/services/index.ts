@@ -12,4 +12,3 @@ export * from './location';
 export * from './profile';
 export * from './pdf';
 // end:ng42.barrel
-

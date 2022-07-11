@@ -6,13 +6,19 @@
   </div>
 
   <div fxLayout="row" fxLayoutGap="10px">
-    <mat-form-field appearance="outline" fxFlex="200px" *ngIf="this.team.id == null">
+    <mat-form-field
+      appearance="outline"
+      fxFlex="200px"
+      *ngIf="this.team.id == null"
+    >
       <mat-label>Type</mat-label>
       <mat-select formControlName="type">
         <mat-option value="M">{{ 'gender.male' | translate }}</mat-option>
         <mat-option value="F">{{ 'gender.female' | translate }}</mat-option>
         <mat-option value="MX">{{ 'gender.mix' | translate }}</mat-option>
-        <mat-option value="NATIONAL">{{ 'gender.national' | translate }}</mat-option>
+        <mat-option value="NATIONAL">{{
+          'gender.national' | translate
+        }}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -20,7 +26,9 @@
       <mat-form-field appearance="outline">
         <mat-label>Number</mat-label>
         <mat-select formControlName="teamNumber">
-          <mat-option *ngFor="let tn of this.teamNumbers" [value]="tn">{{ tn }}</mat-option>
+          <mat-option *ngFor="let tn of this.teamNumbers" [value]="tn">{{
+            tn
+          }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -28,31 +36,54 @@
 
   <ng-container *ngIf="this.team.id != null">
     <div fxLayout="row">
-      <div class="mat-subheading-2">{{ 'team.title.prefferd-encounter' | translate }}</div>
+      <div class="mat-subheading-2">
+        {{ 'team.title.prefferd-encounter' | translate }}
+      </div>
     </div>
     <div fxLayout="row" fxLayoutGap="10px">
       <mat-form-field appearance="outline" fxFlex="200px">
         <mat-label>{{ 'input.day' | translate }}</mat-label>
         <mat-select formControlName="preferredDay">
           <mat-option>-- {{ 'input.select' | translate }} --</mat-option>
-          <mat-option value="monday">{{ 'days.monday' | translate }}</mat-option>
-          <mat-option value="tuesday">{{ 'days.tuesday' | translate }}</mat-option>
-          <mat-option value="wednesday">{{ 'days.wednesday' | translate }}</mat-option>
-          <mat-option value="thursday">{{ 'days.thursday' | translate }}</mat-option>
-          <mat-option value="friday">{{ 'days.friday' | translate }}</mat-option>
-          <mat-option value="saturday">{{ 'days.saturday' | translate }}</mat-option>
-          <mat-option value="sunday">{{ 'days.sunday' | translate }}</mat-option>
+          <mat-option value="monday">{{
+            'days.monday' | translate
+          }}</mat-option>
+          <mat-option value="tuesday">{{
+            'days.tuesday' | translate
+          }}</mat-option>
+          <mat-option value="wednesday">{{
+            'days.wednesday' | translate
+          }}</mat-option>
+          <mat-option value="thursday">{{
+            'days.thursday' | translate
+          }}</mat-option>
+          <mat-option value="friday">{{
+            'days.friday' | translate
+          }}</mat-option>
+          <mat-option value="saturday">{{
+            'days.saturday' | translate
+          }}</mat-option>
+          <mat-option value="sunday">{{
+            'days.sunday' | translate
+          }}</mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline" fxFlex="200px">
-        <input matInput type="time" placeholder="Choose a date" formControlName="preferredTime" />
+        <input
+          matInput
+          type="time"
+          placeholder="Choose a date"
+          formControlName="preferredTime"
+        />
       </mat-form-field>
 
       <mat-form-field appearance="outline" fxFlex="200px">
         <mat-label>{{ 'team.location' | translate }}</mat-label>
         <mat-select [formControl]="this.locationControl" multiple>
-          <mat-option *ngFor="let loc of club.locations" [value]="loc.id">{{ loc.name }}</mat-option>
+          <mat-option *ngFor="let loc of club.locations" [value]="loc.id">{{
+            loc.name
+          }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -71,16 +102,28 @@
       ></badman-player-search>
     </div>
 
-    <badman-has-claim [any]="['details-any:team', this.club.id + '_details:team']">
+    <badman-has-claim
+      [any]="['details-any:team', this.club.id + '_details:team']"
+    >
       <div fxLayout="row" fxLayoutGap="10px">
         <mat-form-field appearance="outline" fxFlex="200px">
           <mat-label>{{ 'input.email' | translate }}</mat-label>
-          <input matInput formControlName="email" alt="email" autocomplete="email" />
+          <input
+            matInput
+            formControlName="email"
+            alt="email"
+            autocomplete="email"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline" fxFlex="200px">
           <mat-label>{{ 'input.phone' | translate }}</mat-label>
-          <input matInput formControlName="phone" alt="phone" autocomplete="phone" />
+          <input
+            matInput
+            formControlName="phone"
+            alt="phone"
+            autocomplete="phone"
+          />
         </mat-form-field>
       </div>
       <div noPerm>

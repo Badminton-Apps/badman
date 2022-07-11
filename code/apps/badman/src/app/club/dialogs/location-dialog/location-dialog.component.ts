@@ -23,7 +23,6 @@ export class LocationDialogComponent implements OnInit {
       throw new Error('No location');
     }
 
-
     this.location$ = this.update$.pipe(
       startWith(0),
       switchMap(() => {

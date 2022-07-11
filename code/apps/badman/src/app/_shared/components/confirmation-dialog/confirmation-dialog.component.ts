@@ -9,9 +9,11 @@ import { ConfirmDialogModel } from './confirm-dialog.model';
 export class ConfirmationDialogComponent {
   title: string;
   message: string;
- 
-  constructor(private dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel) {
+
+  constructor(
+    private dialogRef: MatDialogRef<ConfirmationDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel
+  ) {
     // Update view with given values
     this.title = data.title;
     this.message = data.message;
@@ -25,4 +27,3 @@ export class ConfirmationDialogComponent {
     this.dialogRef.close(false);
   }
 }
-

@@ -2,22 +2,40 @@
   <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px">
     <mat-form-field appearance="outline" fxFlex>
       <mat-label>{{ 'input.firstname' | translate }}</mat-label>
-      <input matInput formControlName="firstName" alt="firstName" autocomplete="firstName" required />
+      <input
+        matInput
+        formControlName="firstName"
+        alt="firstName"
+        autocomplete="firstName"
+        required
+      />
     </mat-form-field>
 
     <mat-form-field appearance="outline" fxFlex>
       <mat-label>{{ 'input.lastname' | translate }}</mat-label>
-      <input matInput formControlName="lastName" alt="lastName" autocomplete="lastName" required />
+      <input
+        matInput
+        formControlName="lastName"
+        alt="lastName"
+        autocomplete="lastName"
+        required
+      />
     </mat-form-field>
 
     <mat-form-field appearance="outline" fxFlex>
       <mat-label>{{ 'input.memberId' | translate }}</mat-label>
-      <input matInput formControlName="memberId" alt="memberId" autocomplete="memberId" required />
+      <input
+        matInput
+        formControlName="memberId"
+        alt="memberId"
+        autocomplete="memberId"
+        required
+      />
     </mat-form-field>
   </div>
 
   <badman-has-claim [all]="['subscription:player']">
-    <div fxLayout="row"  fxLayoutGap="10px">
+    <div fxLayout="row" fxLayoutGap="10px">
       <mat-form-field appearance="outline" fxFlex>
         <mat-label>{{ 'input.sub' | translate }}</mat-label>
         <input matInput formControlName="sub" alt="sub" autocomplete="sub" />

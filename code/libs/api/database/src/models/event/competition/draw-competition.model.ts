@@ -59,7 +59,7 @@ export class DrawCompetition extends Model {
   visualCode: string;
 
   @Unique('DrawCompetitions_unique_constraint')
-  @Field(() => String,{ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
   type: DrawType;
 
@@ -97,20 +97,38 @@ export class DrawCompetition extends Model {
 
   // Belongs to SubEvent
   getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;
-  setSubEventCompetition!: BelongsToSetAssociationMixin<SubEventCompetition, string>;
+  setSubEventCompetition!: BelongsToSetAssociationMixin<
+    SubEventCompetition,
+    string
+  >;
 
   // Has many Encounter
   getEncounterCompetitions!: HasManyGetAssociationsMixin<EncounterCompetition>;
-  setEncounterCompetitions!: HasManySetAssociationsMixin<EncounterCompetition, string>;
-  addEncounterCompetitions!: HasManyAddAssociationsMixin<EncounterCompetition, string>;
-  addEncounterCompetition!: HasManyAddAssociationMixin<EncounterCompetition, string>;
-  removeEncounterCompetition!: HasManyRemoveAssociationMixin<EncounterCompetition, string>;
+  setEncounterCompetitions!: HasManySetAssociationsMixin<
+    EncounterCompetition,
+    string
+  >;
+  addEncounterCompetitions!: HasManyAddAssociationsMixin<
+    EncounterCompetition,
+    string
+  >;
+  addEncounterCompetition!: HasManyAddAssociationMixin<
+    EncounterCompetition,
+    string
+  >;
+  removeEncounterCompetition!: HasManyRemoveAssociationMixin<
+    EncounterCompetition,
+    string
+  >;
   removeEncounterCompetitions!: HasManyRemoveAssociationsMixin<
     EncounterCompetition,
     string
   >;
   hasEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
-  hasEncounterCompetitions!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
+  hasEncounterCompetitions!: HasManyHasAssociationsMixin<
+    EncounterCompetition,
+    string
+  >;
   countEncounterCompetitions!: HasManyCountAssociationsMixin;
 
   // Has many Entries

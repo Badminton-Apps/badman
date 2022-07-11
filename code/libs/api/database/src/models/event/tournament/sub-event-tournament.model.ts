@@ -124,8 +124,14 @@ export class SubEventTournament extends Model {
   setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
   addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
   addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
-  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
-  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<RankingGroup, string>;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
+    RankingGroup,
+    string
+  >;
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
+    RankingGroup,
+    string
+  >;
   hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
   hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
   countRankingGroup!: BelongsToManyCountAssociationsMixin;

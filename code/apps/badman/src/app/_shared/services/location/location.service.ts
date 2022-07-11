@@ -8,9 +8,6 @@ import * as locationQuery from '../../graphql/locations/queries/GetLocationQuery
 import * as locationsQuery from '../../graphql/locations/queries/GetLocationsQuery.graphql';
 import { Location } from './../../models';
 
-
-
-
 @Injectable({
   providedIn: 'root',
 })
@@ -25,7 +22,7 @@ export class LocationService {
           id: locationId,
           rankingType,
         },
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
       })
       .pipe(map((x) => new Location(x.data.location)));
   }
@@ -36,7 +33,7 @@ export class LocationService {
         variables: {
           where,
         },
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
       })
       .pipe(map((x) => x.data.locations.map((l) => new Location(l))));
   }

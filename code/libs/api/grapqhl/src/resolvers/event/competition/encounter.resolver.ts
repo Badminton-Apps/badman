@@ -167,7 +167,9 @@ export class EncounterCompetitionResolver {
         encounter.date = selectedDates[0].date;
 
         // Accept
-        await this.syncQueue.add(Sync.ChangeDate, { encounterId: encounter.id });
+        await this.syncQueue.add(Sync.ChangeDate, {
+          encounterId: encounter.id,
+        });
 
         // Save cahnges
         encounter.save({ transaction });

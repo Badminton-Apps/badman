@@ -50,7 +50,9 @@ export class EditEventCompetitionComponent implements OnInit {
                 started
                 type
                 updatedAt
-                subEventCompetitions(order: { field: "eventType", direction: "desc" }) {
+                subEventCompetitions(
+                  order: { field: "eventType", direction: "desc" }
+                ) {
                   id
                   name
                   eventType
@@ -202,6 +204,9 @@ export class EditEventCompetitionComponent implements OnInit {
 
     subEvents.removeAt(subEvents.value.indexOf(subEvent));
 
-    event.subEventCompetitions?.splice(event.subEventCompetitions.indexOf(subEvent), 1);
+    event.subEventCompetitions?.splice(
+      event.subEventCompetitions.indexOf(subEvent),
+      1
+    );
   }
 }

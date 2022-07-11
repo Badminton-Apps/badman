@@ -7,5 +7,5 @@ export const EVENTS = {
   CONNECT: 'connect',
   GAME,
   JOB,
-  CLUB
+  CLUB,
 };

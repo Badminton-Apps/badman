@@ -2,4 +2,3 @@
 export * from './event-competition-fields';
 export * from './event-competition-level-fields';
 // end:ng42.barrel
-

@@ -5,23 +5,27 @@
 
 // Plus imports for other components in your app.
 
-
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
 // Create the theme object (a Sass map containing all of the palettes).
-$client-angular-theme: mat-light-theme((color: (primary: $client-angular-primary,
+$client-angular-theme: mat-light-theme(
+  (
+    color: (
+      primary: $client-angular-primary,
       accent: $client-angular-accent,
-      warn: $client-angular-warn)));
+      warn: $client-angular-warn,
+    ),
+  )
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($client-angular-theme);
 @include covalent-theme($client-angular-theme);
-
 
 /*
   * App Styles
@@ -54,7 +58,7 @@ body {
   display: flex;
   flex-direction: row;
 
-  >div:first-child {
+  > div:first-child {
     flex: 1;
     align-items: center;
     display: flex;
@@ -87,7 +91,6 @@ body {
   margin-top: -10px;
 }
 
-
 .mat-form-field {
   div.mat-form-field-wrapper {
     .mat-form-field-infix {
@@ -104,7 +107,7 @@ body {
       }
 
       .mat-form-field-label {
-        top: 2.2em
+        top: 2.2em;
       }
 
       div.mat-form-field-underline {
@@ -127,7 +130,7 @@ ngx-mat-timepicker.ngx-mat-timepicker form {
   margin: 0.25em 0;
   padding-bottom: 1.34375em;
 
-  &>div {
+  & > div {
     padding: 0 0.75em 0 0.75em;
     border: solid 1px #ccc;
     background: white;
@@ -143,10 +146,10 @@ ngx-mat-timepicker.ngx-mat-timepicker form {
     font-weight: 400;
     line-height: 1.125;
     background: white;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
     letter-spacing: normal;
     padding: 0 5px;
-    left: -5px
+    left: -5px;
   }
 }
 
@@ -156,7 +159,6 @@ snack-bar-container.success {
 }
 
 button {
-
   @keyframes spinner {
     to {
       transform: rotate(360deg);
@@ -176,16 +178,14 @@ button {
     border-radius: 50%;
     border: 2px solid #ffffff;
     border-top-color: #000000;
-    animation: spinner .8s linear infinite;
+    animation: spinner 0.8s linear infinite;
   }
 }
-
 
 a {
   color: initial;
   text-decoration: none;
 }
-
 
 ::-webkit-scrollbar {
   width: 20px;

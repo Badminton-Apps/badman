@@ -1,7 +1,11 @@
 <div fxLayout="row" fxLayoutGap="10px">
   <mat-form-field fxFlex="auto" appearance="outline" fxFlex="auto">
     <mat-label>Search</mat-label>
-    <input (onAutocompleteSelected)="syncAutoComplete($event)" matGoogleMapsAutocomplete matInput />
+    <input
+      (onAutocompleteSelected)="syncAutoComplete($event)"
+      matGoogleMapsAutocomplete
+      matInput
+    />
     <mat-icon color="primary" matSuffix>search</mat-icon>
   </mat-form-field>
 </div>
@@ -12,7 +16,13 @@
   <div fxLayout="row" fxLayoutGap="10px">
     <mat-form-field appearance="outline" fxFlex="auto">
       <mat-label>{{ 'input.name' | translate }}</mat-label>
-      <input matInput formControlName="name" alt="name" autocomplete="name" required />
+      <input
+        matInput
+        formControlName="name"
+        alt="name"
+        autocomplete="name"
+        required
+      />
     </mat-form-field>
   </div>
 
@@ -44,7 +54,12 @@
   <div fxLayout="row" fxLayoutGap="10px">
     <mat-form-field appearance="outline" class="flex">
       <mat-label>{{ 'input.phone' | translate }}</mat-label>
-      <input matInput formControlName="phone" alt="phone" autocomplete="phone" />
+      <input
+        matInput
+        formControlName="phone"
+        alt="phone"
+        autocomplete="phone"
+      />
     </mat-form-field>
     <mat-form-field appearance="outline" class="flex">
       <mat-label>{{ 'input.fax' | translate }}</mat-label>

@@ -8,7 +8,6 @@ export class EventCompetition extends Event {
   comments?: Comment[];
   type?: LevelType;
 
-
   constructor({ ...args }: Partial<EventCompetition>) {
     super(args);
     this.startYear = args.startYear;
@@ -18,7 +17,7 @@ export class EventCompetition extends Event {
       ?.map((s) => new CompetitionSubEvent({ ...s, eventCompetition: this }))
       .sort((a, b) => {
         return (a?.level ?? 0) - (b?.level ?? 0);
-      })
+      });
     this.comments = args?.comments?.map((c) => new Comment(c));
   }
 }

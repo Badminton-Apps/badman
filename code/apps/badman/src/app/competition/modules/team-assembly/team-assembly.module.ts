@@ -21,11 +21,20 @@ const materialModules = [
   MatDividerModule,
   MatTooltipModule,
   MatProgressBarModule,
-  MatIconModule
+  MatIconModule,
 ];
 
 @NgModule({
-  declarations: [TeamAssemblyComponent, AssemblyComponent, TeamAssemblyPlayerComponent],
-  imports: [SharedModule, ...materialModules, TeamAssemblyRoutingModule, SelctionComponentsModule],
+  declarations: [
+    TeamAssemblyComponent,
+    AssemblyComponent,
+    TeamAssemblyPlayerComponent,
+  ],
+  imports: [
+    SharedModule,
+    ...materialModules,
+    TeamAssemblyRoutingModule,
+    SelctionComponentsModule,
+  ],
 })
 export class TeamAssemblyModule {}

@@ -321,7 +321,7 @@ export class RankingSyncer {
               }
             }
           }
-        }; 
+        };
 
         for (const publication of publications) {
           const rankingPlaces = new Map<string, RankingPlace>();
