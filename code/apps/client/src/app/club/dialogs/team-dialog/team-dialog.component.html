@@ -6,9 +6,9 @@
         [club]="this.data.club"
         [team]="team"
         [form]="this.form"
-        (whenTeamUpdated)="this.onTeamUpdated($event)"
-        (whenLocationAdded)="this.onLocationAdded($event, team)"
-        (whenLocationRemoved)="this.onLocationRemoved($event, team)"
+        (onTeamUpdated)="this.onTeamUpdated($event)"
+        (onLocationAdded)="this.onLocationAdded($event, team)"
+        (onLocationRemoved)="this.onLocationRemoved($event, team)"
       ></badman-team-fields>
       <badman-team-players
         fxLayout="column"
@@ -16,9 +16,9 @@
         [club]="this.data.club"
         [team]="team"
         [disableIds]="this.alreadyUsed$ | async"
-        (whenPlayerAdded)="this.onPlayerAddedToTeam($event, team)"
-        (whenPlayerRemoved)="this.onPlayerRemovedFromTeam($event, team)"
-        (whenPlayerUpdated)="this.onPlayerUpdatedFromTeam($event, team)"
+        (onPlayerAdded)="this.onPlayerAddedToTeam($event, team)"
+        (onPlayerRemoved)="this.onPlayerRemovedFromTeam($event, team)"
+        (onPlayerUpdated)="this.onPlayerUpdatedFromTeam($event, team)"
       >
       </badman-team-players>
     </mat-dialog-content>
