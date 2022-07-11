@@ -1,6 +1,6 @@
 module.exports = {
-  displayName: 'search',
-  preset: '../../jest.preset.ts',
+  displayName: 'api',
+  preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
@@ -11,5 +11,5 @@ module.exports = {
     '^.+\\.[tj]s$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/libs/search',
+  coverageDirectory: '../../coverage/apps/api',
 };

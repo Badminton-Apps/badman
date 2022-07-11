@@ -12,7 +12,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/api/grapqhl"],
       "options": {
-        "jestConfig": "libs/api/grapqhl/jest.config.ts",
+        "jestConfig": "libs/api/grapqhl/jest.config.js",
         "passWithNoTests": true
       }
     }

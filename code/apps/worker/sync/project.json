@@ -94,7 +94,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/worker/sync"],
       "options": {
-        "jestConfig": "apps/worker/sync/jest.config.ts",
+        "jestConfig": "apps/worker/sync/jest.config.js",
         "passWithNoTests": true
       }
     }
