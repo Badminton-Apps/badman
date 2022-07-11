@@ -184,7 +184,8 @@
     "protractor": "^7.0.0",
     "ts-jest": "27.1.5",
     "ts-node": "^10.8.1",
-    "typescript": "~4.6.4"
+    "typescript": "~4.6.4",
+    "js-yaml": "^4.1.0"
   },
   "optionalDependencies": {
     "node-adodb": "https://github.com/nuintun/node-adodb"

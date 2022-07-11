@@ -1,9 +1,4 @@
 import {
-  CommentNewInput,
-  CommentUpdateInput,
-  EncounterChangeDateNewInput,
-} from '@badman/api/database';
-import {
   Field,
   ID,
   InputType,
@@ -40,10 +35,11 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { Comment } from '../../../comment.model';
+import { Comment, CommentNewInput, CommentUpdateInput } from '../../../comment.model';
 import { EncounterCompetition } from '../encounter-competition.model';
 import {
   EncounterChangeDate,
+  EncounterChangeDateNewInput,
   EncounterChangeDateUpdateInput,
 } from './encounter-change-date.model';
 

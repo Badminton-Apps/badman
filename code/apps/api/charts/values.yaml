@@ -1,0 +1,72 @@
+# Default values for api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/badminton-apps/badman/api
+  pullPolicy: IfNotPresent
+  useImagePullSecrets: true
+
+service:
+  name: badman-server
+  internalPort: 4000
+  externalPort: 80
+
+env:
+  - name: 'REDIS_HOST'
+    value: redis
+  - name: 'REDIS_PORT'
+    value: 6379
+  - name: 'DB_IP'
+    value: postgres
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: server-postgresql-ha-postgresql
+        key: postgresql-password
+  - name: 'DB_USER'
+    value: postgres
+  - name: 'DB_DATABASE'
+    value: badman
+  - name: 'DB_DIALECT'
+    value: postgres
+  - name: 'APM_SERVER_URL'
+    value: ${APM_SERVER_URL}
+  - name: APM_SERVER_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: apm
+        key: token
+  - name: 'APM_SERVER_ACTIVE'
+    value: false
+  - name: 'AUTH0_ISSUER_URL'
+    value: https://badvlasim.eu.auth0.com
+  - name: 'AUTH0_AUDIENCE'
+    value: ranking-simulation
+  - name: 'CLIENT_URL'
+    value: beta.badman.app
+  - name: MAIL_PASS
+    valueFrom:
+      secretKeyRef:
+        name: mail-auth
+        key: pass
+  - name: MAIL_USER
+    valueFrom:
+      secretKeyRef:
+        name: mail-auth
+        key: user
+  - name: MAIL_HOST
+    valueFrom:
+      secretKeyRef:
+        name: mail-auth
+        key: host
+
+
+# autoscaling:
+#   enabled: false
+#   minReplicas: 1
+#   maxReplicas: 100
+#   targetCPUUtilizationPercentage: 80
+#   # targetMemoryUtilizationPercentage: 80

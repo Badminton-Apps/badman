@@ -38,8 +38,6 @@ import { SubEventTournament } from './sub-event-tournament.model';
 import { Slugify } from '../../../types';
 import { UsedRankingTiming } from '../../../enums/';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { RankingGroup } from '../../ranking';
-import { RankingGroupSubEventTournamentMembership } from './group-subevent-membership.model';
 
 @Table({
   timestamps: true,

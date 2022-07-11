@@ -26,20 +26,11 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx build api",
-          "docker build -f ./apps/api/Dockerfile . -t api"
+          "echo \"helm dep update charts/\""
         ],
         "parallel": false
       }
     },
-    "deploy-dev": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": ["docker build -f ./apps/api/Dockerfile.dev . -t api-dev"],
-        "parallel": false
-      }
-    },
-
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
