@@ -19,11 +19,11 @@
     </p>
 
     <p matLine>
-      <span *ngIf="club.clubMembership?.end != null">
+      <span *ngIf="club.clubMembership?.end !== null">
         {{ 'club.end' | translate }}:
         {{ club.clubMembership?.end | amLocal | amDateFormat: 'LL' }}
       </span>
-      <span *ngIf="club.clubMembership?.end == null">{{
+      <span *ngIf="club.clubMembership?.end === null">{{
         'club.current' | translate
       }}</span>
     </p>

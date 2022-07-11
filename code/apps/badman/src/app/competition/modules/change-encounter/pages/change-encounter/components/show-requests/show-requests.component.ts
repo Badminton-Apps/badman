@@ -57,7 +57,7 @@ export class ShowRequestsComponent implements OnInit {
   maxDate: Date = new Date('2022-05-01');
 
   requests$!: Observable<EncounterChange>;
-  @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<any>;
+  @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<unknown>;
 
   constructor(
     private _encounterService: EncounterService,

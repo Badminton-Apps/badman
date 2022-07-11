@@ -1,3 +1,4 @@
+import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { Component, OnInit } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,7 +15,7 @@ export class LanguageComponent implements OnInit {
 
   constructor(
     public translate: TranslateService,
-    private _adapter: DateAdapter<any>
+    private _adapter: DateAdapter<NgxMatMomentAdapter>
   ) {}
 
   ngOnInit(): void {

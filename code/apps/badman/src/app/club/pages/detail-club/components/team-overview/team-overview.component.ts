@@ -14,12 +14,12 @@ import { Club, Team } from '../../../../../_shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamOverviewComponent {
-  @Output() onEdit = new EventEmitter<Team>();
-  @Output() onActiveChange = new EventEmitter<{
+  @Output() whenEdit = new EventEmitter<Team>();
+  @Output() whenActiveChange = new EventEmitter<{
     team: Team;
     active: boolean;
   }>();
-  @Output() onDelete = new EventEmitter<Team>();
+  @Output() whenDelete = new EventEmitter<Team>();
 
   @Input()
   team!: Team;

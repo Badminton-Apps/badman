@@ -43,8 +43,8 @@
       </mat-form-field>
 
       <badman-period-selection
-        (onNext)="this.nextPeriod(data.system)"
-        (onPrev)="this.prevPeriod(data.system)"
+        (whenNext)="this.nextPeriod(data.system)"
+        (whenPrev)="this.prevPeriod(data.system)"
         [formGroup]="this.period"
       ></badman-period-selection>
     </form>

@@ -34,14 +34,17 @@ export abstract class SelectBaseComponent implements OnInit, OnDestroy {
     if (!this.formControl) {
       this.formControl = new FormControl(null, this.validators);
     }
-    if (this.formGroup.get(this.controlName) === null) {
+
+    const fc = this.formGroup.get(this.controlName);
+
+    if (fc === null) {
       this.formGroup.addControl(this.controlName, this.formControl);
     } else {
-      this.formControl = this.formGroup.get(this.controlName)!;
+      this.formControl = fc;
     }
 
-    if ((this.dependsOn?.length ?? 0) > 0) {
-      const previous = this.formGroup.get(this.dependsOn!);
+    if (this.dependsOn) {
+      const previous = this.formGroup.get(this.dependsOn);
       if (!previous) {
         console.error(`Dependency ${this.dependsOn} not found`, previous);
         throw Error(`Dependency ${this.dependsOn} not found`);

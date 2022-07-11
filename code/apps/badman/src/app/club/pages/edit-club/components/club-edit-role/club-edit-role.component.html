@@ -9,14 +9,14 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #options="matMenu">
-        <button mat-menu-item (click)="this.onEdit.next(role)">
+        <button mat-menu-item (click)="this.whenEdit.next(role)">
           {{ 'button.edit' | translate }}
         </button>
         <badman-has-claim
           [any]="[club.id + '_remove:location', 'edit-any:club']"
         >
           <mat-divider></mat-divider>
-          <button mat-menu-item (click)="this.onDelete.next(role)">
+          <button mat-menu-item (click)="this.whenDelete.next(role)">
             {{ 'button.delete' | translate }}
           </button>
         </badman-has-claim>
@@ -37,14 +37,14 @@
       <ng-container *ngIf="this.role.players && this.role.players.length > 0">
         <mat-list-item *ngFor="let player of this.role.players">
           <div mat-line>{{ player.fullName }}</div>
-          <button mat-icon-button (click)="this.onPlayerRemoved.next(player)">
+          <button mat-icon-button (click)="this.whenPlayerRemoved.next(player)">
             <mat-icon>delete</mat-icon>
           </button>
         </mat-list-item>
       </ng-container>
     </mat-list>
     <badman-player-search
-      (onSelectPlayer)="this.onPlayerAdded.next($event)"
+      (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
     ></badman-player-search>
   </div>
 </div>

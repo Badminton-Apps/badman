@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, map, startWith, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-upload-field',
@@ -11,8 +11,8 @@ export class UploadFieldComponent implements OnInit {
   @Output()
   fileAdded: EventEmitter<FileList> = new EventEmitter<FileList>();
 
-  @Input('status')
-  status$!: Observable<{
+  @Input()
+  status!: Observable<{
     completed: boolean;
     finished: number;
     total: number;
@@ -21,7 +21,7 @@ export class UploadFieldComponent implements OnInit {
   canImport$ = new BehaviorSubject(true);
 
   ngOnInit(): void {
-    this.status$
+    this.status
       .pipe(
         map((x) => x.completed),
         distinctUntilChanged()

@@ -35,14 +35,7 @@ const routes: Routes = [
         all: 'change:job',
       },
     },
-  },
-  {
-    path: 'player',
-    loadChildren: () =>
-      import('./modules/player-management/player-management.module').then(
-        (m) => m.PlayerManagementModule
-      ),
-  },
+  }
 ];
 
 @NgModule({

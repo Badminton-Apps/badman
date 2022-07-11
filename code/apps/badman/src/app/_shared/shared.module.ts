@@ -36,7 +36,7 @@ import {
   NotificationComponent,
   PlayerSearchComponent,
   RankingShellComponent,
-  TimePickerInput,
+  TimePickerInputComponent,
   UserInfoComponent,
   WatchSystemInfoComponent,
 } from './components';
@@ -86,7 +86,7 @@ const exportedComponents = [
   PlayerSearchComponent,
   ReactiveFormsModule,
   TranslateModule,
-  TimePickerInput,
+  TimePickerInputComponent,
 ];
 
 @NgModule({
@@ -108,7 +108,7 @@ const exportedComponents = [
     UserInfoComponent,
     AssignRankingGroupsComponent,
     WatchSystemInfoComponent,
-    TimePickerInput,
+    TimePickerInputComponent,
   ],
   imports: [
     RouterModule,

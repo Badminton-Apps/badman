@@ -1,6 +1,6 @@
-<div class="container" drag-over (fileDropped)="addFiles($event)">
+<div class="container" badmanDragOver (fileDropped)="addFiles($event)">
   <input
-    [disabled]="!(canImport$ | async)"
+    [disabled]="(canImport$ | async) === false"
     type="file"
     #fileDropRef
     id="fileDropRef"
@@ -31,13 +31,13 @@
   <button
     mat-raised-button
     for="fileDropRef"
-    [disabled]="!(canImport$ | async)"
+    [disabled]="(canImport$ | async) === false"
   >
     Browse file
   </button>
 </div>
 
-<ng-container *ngIf="status$ | async as status">
+<ng-container *ngIf="status | async as status">
   <mat-progress-bar
     *ngIf="!status.completed"
     mode="determinate"

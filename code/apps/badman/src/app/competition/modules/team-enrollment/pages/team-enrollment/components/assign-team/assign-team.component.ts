@@ -24,7 +24,6 @@ import {
   Team,
 } from '../../../../../../../_shared';
 import { TeamDialogComponent } from '../../../../../../../club/dialogs';
-import * as teamQuery from '../../../../../../../_shared/graphql/teams/queries/GetTeamQuery.graphql';
 import { combineLatest } from 'rxjs';
 
 interface Issues {

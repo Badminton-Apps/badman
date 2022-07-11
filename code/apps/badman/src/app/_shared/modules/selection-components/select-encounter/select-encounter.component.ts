@@ -14,7 +14,6 @@ import moment from 'moment';
 import { Observable } from 'rxjs';
 import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { CompetitionEncounter } from '../../../models';
-import { EncounterService } from '../../../services';
 
 @Component({
   selector: 'badman-select-encounter',

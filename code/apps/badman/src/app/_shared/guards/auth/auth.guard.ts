@@ -3,8 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   ActivatedRouteSnapshot,
   CanActivate,
+  Params,
   Router,
-  RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
@@ -34,8 +34,7 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    next: ActivatedRouteSnapshot
   ): Observable<boolean> | Promise<boolean | UrlTree> | boolean {
     this.loader$.next(true);
     const canActivateObservables$: Observable<boolean>[] = [];
@@ -102,7 +101,7 @@ export class AuthGuard implements CanActivate {
     );
   }
 
-  private replaceParams(params: any, claims: string[]): string[] {
+  private replaceParams(params: Params, claims: string[]): string[] {
     // replace with params
     for (const [key, value] of Object.entries(params)) {
       claims = claims.map((c) => c.replace(`[:${key}]`, value as string));

@@ -18,5 +18,5 @@ export class ClaimComponent {
   claim!: Claim;
 
   @Output()
-  onChange = new EventEmitter<boolean>();
+  whenChange = new EventEmitter<boolean>();
 }

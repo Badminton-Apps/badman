@@ -26,10 +26,10 @@ export class EventCompetitionLevelFieldsComponent implements OnInit {
   formGroup!: FormGroup;
 
   @Output()
-  onDelete = new EventEmitter<CompetitionSubEvent>();
+  whenDelete = new EventEmitter<CompetitionSubEvent>();
 
   ngOnInit(): void {
-    this.formGroup.get('level')!.valueChanges.subscribe((r) => {
+    this.formGroup.get('level')?.valueChanges.subscribe((r) => {
       const type =
         this.type === LevelType.PROV
           ? 'Provinciale'

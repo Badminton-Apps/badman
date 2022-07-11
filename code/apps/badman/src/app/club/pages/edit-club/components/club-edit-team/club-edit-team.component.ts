@@ -15,8 +15,8 @@ import { Club, Player, Team } from '../../../../../_shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubEditTeamComponent implements OnInit {
-  @Output() onPlayerAdded = new EventEmitter<Player>();
-  @Output() onPlayerRemoved = new EventEmitter<Player>();
+  @Output() whenPlayerAdded = new EventEmitter<Player>();
+  @Output() whenPlayerRemoved = new EventEmitter<Player>();
 
   @Input()
   club!: Club;
