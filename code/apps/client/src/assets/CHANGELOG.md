@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 5.1.6 (2022-07-11)
+
+
+### Bug Fixes
+
+* **ci:** switch double to single quotes ([303ff80](https://github.com/Badminton-Apps/badman/commit/303ff80ba64f3af51c92f069d00ceee12684a7cc))
+
 ### 5.1.5 (2022-07-11)
 
 
