@@ -6,6 +6,8 @@ const appVersionRegex =
 // Read chart file
 let chart = readFileSync('./charts/Chart.yaml').toString();
 
+console.log(`Updating chart version to ${argv[2]}`);
+
 // Replace appVersion
 chart = chart.replace(appVersionRegex, `appVersion: "${argv[2]}"`);
 

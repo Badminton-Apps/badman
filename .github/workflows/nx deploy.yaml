@@ -17,8 +17,8 @@ jobs:
         run: |
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
-          npx -y standard-version
-          git push --follow-tags origin main
+          yarn run standard-version
+          
 
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
@@ -52,9 +52,6 @@ jobs:
 
       - name: 'Build docker'
         run: npx nx affected --target=docker
-
-      - name: 'Update chart version'
-        run: npx nx affected --target=update-version  --version=${{ env.RELEASE_VERSION }}
 
       - name: 'Deploy'
         run: npx nx affected --target=deploy
