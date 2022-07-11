@@ -3,8 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { RankingQueue, SimulationQueue, SyncQueue } from './queues';
 
-
-
 const BullQueueModules = [
   BullModule.registerQueue({ name: RankingQueue }),
   BullModule.registerQueue({ name: SyncQueue }),

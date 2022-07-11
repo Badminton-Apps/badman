@@ -95,7 +95,11 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
           return this.apollo.query<{ rankingSystems: RankingSystem[] }>({
             fetchPolicy: update ? 'network-only' : 'cache-first',
             query: gql`
-              query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
+              query GetSystemsQuery(
+                $order: [SortOrderType!]
+                $skip: Int
+                $take: Int
+              ) {
                 rankingSystems(order: $order, skip: $skip, take: $take) {
                   id
                   primary

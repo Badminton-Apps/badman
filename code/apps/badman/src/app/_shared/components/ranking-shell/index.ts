@@ -2,4 +2,3 @@
 export * from './ranking-shell.component';
 export * from './components';
 // end:ng42.barrel
-

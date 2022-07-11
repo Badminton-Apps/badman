@@ -21,6 +21,6 @@ export class GraphComponent {
   @Input()
   seriesData!: {
     date: Date;
-    points: number[]
+    points: number[];
   }[];
 }

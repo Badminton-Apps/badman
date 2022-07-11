@@ -1,4 +1,12 @@
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -123,7 +131,7 @@ export class RankingSystem extends Model {
   @Field({ nullable: true })
   @Column
   caluclationIntervalLastUpdate: Date;
-  
+
   @Field({ nullable: true })
   @Column
   caluclationIntervalAmount: number;
@@ -355,13 +363,9 @@ export class RankingSystem extends Model {
   }
 }
 
-
 @InputType()
 export class RankingSystemUpdateInput extends PartialType(
-  OmitType(RankingSystem, [
-    'createdAt',
-    'updatedAt',
-  ] as const),
+  OmitType(RankingSystem, ['createdAt', 'updatedAt'] as const),
   InputType
 ) {}
 

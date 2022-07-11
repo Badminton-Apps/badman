@@ -8,7 +8,13 @@ import {
 import moment from 'moment';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService } from '../../../../services';
-import { XmlTournament, XmlMatch, XmlScoreStatus, XmlPlayer, correctWrongPlayers } from '../../../../utils';
+import {
+  XmlTournament,
+  XmlMatch,
+  XmlScoreStatus,
+  XmlPlayer,
+  correctWrongPlayers,
+} from '../../../../utils';
 import { DrawStepData } from './draw';
 import { EventStepData } from './event';
 import { SubEventStepData } from './subEvent';
@@ -37,19 +43,25 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   }
 
   public async process(): Promise<Game[]> {
-    await Promise.all(this.draws.map((e) => this._processSubevent(e.draw, e.internalId)));
+    await Promise.all(
+      this.draws.map((e) => this._processSubevent(e.draw, e.internalId))
+    );
 
     return this._games;
   }
 
   private async _processSubevent(draw: DrawTournament, internalId: number) {
     const games = await draw.getGames({
-      transaction: this.transaction
+      transaction: this.transaction,
       // include: [Player]
     });
-    const subEvent = this.subEvents.find((sub) => draw.subeventId === sub.subEvent.id).subEvent;
+    const subEvent = this.subEvents.find(
+      (sub) => draw.subeventId === sub.subEvent.id
+    ).subEvent;
 
-    const isLastWeek = moment().subtract(2, 'week').isBefore(this.event.event.firstDay)
+    const isLastWeek = moment()
+      .subtract(2, 'week')
+      .isBefore(this.event.event.firstDay);
 
     const visualMatch = (await this.visualService.getMatches(
       this.visualTournament.Code,
@@ -123,7 +135,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           set2Team1: xmlMatch?.Sets?.Set[1]?.Team1,
           set2Team2: xmlMatch?.Sets?.Set[1]?.Team2,
           set3Team1: xmlMatch?.Sets?.Set[2]?.Team1,
-          set3Team2: xmlMatch?.Sets?.Set[2]?.Team2
+          set3Team2: xmlMatch?.Sets?.Set[2]?.Team2,
         });
       } else {
         if (game.playedAt != playedAt) {
@@ -172,10 +184,13 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       }
 
       await game.save({ transaction: this.transaction });
-      await GamePlayerMembership.bulkCreate(this._createGamePlayers(xmlMatch, game), {
-        transaction: this.transaction,
-        ignoreDuplicates: true
-      });
+      await GamePlayerMembership.bulkCreate(
+        this._createGamePlayers(xmlMatch, game),
+        {
+          transaction: this.transaction,
+          ignoreDuplicates: true,
+        }
+      );
     }
 
     // Remove draw that are not in the xml
@@ -202,14 +217,14 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         gameId: game.id,
         playerId: t1p1.id,
         team: 1,
-        player: 1
+        player: 1,
       });
       gamePlayers.push(gp.toJSON());
 
       // Push to list
       game.players.push({
         ...t1p1.toJSON(),
-        GamePlayerMembership: gp
+        GamePlayerMembership: gp,
       } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
@@ -218,13 +233,13 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         gameId: game.id,
         playerId: t1p2.id,
         team: 1,
-        player: 2
+        player: 2,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
       game.players.push({
         ...t1p2.toJSON(),
-        GamePlayerMembership: gp
+        GamePlayerMembership: gp,
       } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
@@ -233,13 +248,13 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         gameId: game.id,
         playerId: t2p1.id,
         team: 2,
-        player: 1
+        player: 1,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
       game.players.push({
         ...t2p1.toJSON(),
-        GamePlayerMembership: gp
+        GamePlayerMembership: gp,
       } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
@@ -248,13 +263,13 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         gameId: game.id,
         playerId: t2p2.id,
         team: 2,
-        player: 2
+        player: 2,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
       game.players.push({
         ...t2p2.toJSON(),
-        GamePlayerMembership: gp
+        GamePlayerMembership: gp,
       } as Player & { GamePlayerMembership: GamePlayerMembership });
     }
 
@@ -268,13 +283,15 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       // Search our map for unkowns
       const corrected = correctWrongPlayers({
         firstName: player.Firstname,
-        lastName: player.Lastname
+        lastName: player.Lastname,
       });
 
       returnPlayer = [...this.players.values()].find(
         (p) =>
-          (p.firstName === corrected.firstName && p.lastName === corrected.lastName) ||
-          (p.firstName === corrected.lastName && p.lastName === corrected.firstName)
+          (p.firstName === corrected.firstName &&
+            p.lastName === corrected.lastName) ||
+          (p.firstName === corrected.lastName &&
+            p.lastName === corrected.firstName)
       );
     }
     return returnPlayer;

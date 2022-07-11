@@ -59,7 +59,6 @@ import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentLineEchartsModule } from '@covalent/echarts/line';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
 
-
 const materialModules = [
   MatCardModule,
   MatIconModule,
@@ -86,8 +85,8 @@ const otherModules = [
   InfiniteScrollModule,
   SelctionComponentsModule,
   CovalentBaseEchartsModule,
-  CovalentLineEchartsModule ,
-  CovalentTooltipEchartsModule
+  CovalentLineEchartsModule,
+  CovalentTooltipEchartsModule,
 ];
 
 @NgModule({

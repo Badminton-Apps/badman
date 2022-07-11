@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+} from '@angular/core';
 import { Entry } from '../../../../_shared';
 
 @Component({
@@ -18,7 +23,9 @@ export class StandingComponent implements OnInit {
   displayedColumnsHeaders!: string[];
 
   ngOnInit(): void {
-    this.entries?.sort((a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0));
+    this.entries?.sort(
+      (a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0)
+    );
 
     if (this.type == 'players') {
       this.displayedColumns = [
@@ -33,7 +40,15 @@ export class StandingComponent implements OnInit {
         'totalPointsWon',
         'totalPointsLost',
       ];
-      this.displayedColumnsHeaders = ['position', 'name', 'points', 'played', 'games', 'sets', 'totalPoints'];
+      this.displayedColumnsHeaders = [
+        'position',
+        'name',
+        'points',
+        'played',
+        'games',
+        'sets',
+        'totalPoints',
+      ];
     } else {
       this.displayedColumns = [
         'position',

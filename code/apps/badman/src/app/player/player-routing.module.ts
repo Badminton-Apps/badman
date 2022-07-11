@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './../_shared';
-import { EditPlayerComponent, PlayerComponent, TopPlayersComponent } from './page';
+import {
+  EditPlayerComponent,
+  PlayerComponent,
+  TopPlayersComponent,
+} from './page';
 import { RankingBreakdownComponent } from './page/ranking-breakdown/ranking-breakdown.component';
 
 const routes: Routes = [

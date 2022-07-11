@@ -51,7 +51,7 @@ module.exports = {
               slug: 'dummy-club-1',
               name: dummyClubName,
               fullName: dummyClubName,
-              abbreviation: "dummy",
+              abbreviation: 'dummy',
               clubId: 0,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -102,7 +102,6 @@ module.exports = {
 
         for (const [i, playerRanking] of playersRanking.entries()) {
           playersRanking[i] = playerRanking.map((r) => {
-
             return {
               id: uuidv4(),
               ...r,
@@ -135,7 +134,6 @@ module.exports = {
             transaction: t,
           }
         );
-
 
         const clubMemberships = dummyPlayers.map((r) => {
           return {

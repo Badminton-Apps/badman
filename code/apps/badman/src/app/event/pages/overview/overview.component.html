@@ -1,10 +1,6 @@
 <div class="mat-subheading-1">Events <badman-beta></badman-beta></div>
 
-<form
-  [formGroup]="this.filter"
-  fxLayout="row"
-  fxFlexAlign="start center"
->
+<form [formGroup]="this.filter" fxLayout="row" fxFlexAlign="start center">
   <mat-form-field fxFlex>
     <mat-label>Filter</mat-label>
     <input matInput placeholder="Ex. ium" #inputName formControlName="query" />

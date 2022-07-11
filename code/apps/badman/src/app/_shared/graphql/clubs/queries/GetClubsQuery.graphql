@@ -1,4 +1,9 @@
-query GetClubs($take: Int, $skip: Int, $where: JSONObject, $order: [SortOrderType!]) {
+query GetClubs(
+  $take: Int
+  $skip: Int
+  $where: JSONObject
+  $order: [SortOrderType!]
+) {
   clubs(take: $take, skip: $skip, where: $where, order: $order) {
     count
     rows {

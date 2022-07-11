@@ -50,7 +50,6 @@ export class PlayerInfoComponent implements OnInit {
       }
     }
 
-
     if (this.rankingPoint) {
       this.wonIsUsedForUpgrade = this.won;
 

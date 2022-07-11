@@ -1,8 +1,26 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControlOptions, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import {
+  AbstractControlOptions,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+} from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import { DocumentNode, FragmentDefinitionNode } from 'graphql';
-import { debounceTime, filter, lastValueFrom, map, Observable, switchMap } from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  lastValueFrom,
+  map,
+  Observable,
+  switchMap,
+} from 'rxjs';
 import { Player } from '../../../models';
 import { PlayerService } from '../../../services';
 
@@ -35,7 +53,7 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
    * Extra where queries for the player
    */
   @Input()
-  where?: {[key: string]: unknown};
+  where?: { [key: string]: unknown };
 
   /**
    * Allows to extend the query with a fragemnt, the root must be of type Player
@@ -106,7 +124,10 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
         }),
         // Distinct by id
         map((result) =>
-          result?.data?.players?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index)
+          result?.data?.players?.filter(
+            (value, index, self) =>
+              self.findIndex((m) => m.id === value.id) === index
+          )
         )
       );
     });

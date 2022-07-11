@@ -48,7 +48,7 @@ const materialModules = [
   MatDatepickerModule,
   MatTabsModule,
   MatExpansionModule,
-  OverlayModule
+  OverlayModule,
 ];
 
 @NgModule({
@@ -62,7 +62,12 @@ const materialModules = [
     ClubViewComponent,
     SubEventViewComponent,
   ],
-  imports: [SharedModule, TeamEnrolmentRoutingModule, SelctionComponentsModule, ...materialModules],
+  imports: [
+    SharedModule,
+    TeamEnrolmentRoutingModule,
+    SelctionComponentsModule,
+    ...materialModules,
+  ],
   bootstrap: [PlayDaysComponent],
 })
 export class TeamEnrolmentModule {}

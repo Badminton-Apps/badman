@@ -8,11 +8,14 @@ export class CompetitionDraw extends Draw {
 
   encounterCompetitions?: CompetitionEncounter[];
 
-
   constructor(args: Partial<CompetitionDraw>) {
     super(args);
     this.subeventId = args?.subeventId;
-    this.subEventCompetition = args?.subEventCompetition ? new CompetitionSubEvent(args.subEventCompetition) : undefined;
-    this.encounterCompetitions = args?.encounterCompetitions?.map((e) => new CompetitionEncounter(e))?.sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0));
+    this.subEventCompetition = args?.subEventCompetition
+      ? new CompetitionSubEvent(args.subEventCompetition)
+      : undefined;
+    this.encounterCompetitions = args?.encounterCompetitions
+      ?.map((e) => new CompetitionEncounter(e))
+      ?.sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0));
   }
 }

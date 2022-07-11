@@ -120,7 +120,7 @@ export class RankingBreakdownComponent implements OnInit {
             includedDowngrade: x.includedDowngrade,
             includeOutOfScope: x.includeOutOfScope,
           },
-          queryParamsHandling: 'merge'
+          queryParamsHandling: 'merge',
         });
       }
     });

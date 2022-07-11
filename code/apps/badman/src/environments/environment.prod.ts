@@ -7,9 +7,8 @@ export const environment = {
   apmServer: 'https://apm.badman.app',
   adsense: {
     adClient: 'ca-pub-2426855871474715',
-    show: true
+    show: true,
   },
-  version: '0.0.0'
+  version: '0.0.0',
   // version: packages.version
 };
- 

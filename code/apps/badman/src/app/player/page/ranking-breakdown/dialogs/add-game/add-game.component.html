@@ -6,7 +6,9 @@
   <form [formGroup]="this.formGroup">
     <div fxLayout="column" fxLayoutGap="10px">
       <div fxLayout="column">
-        <mat-slide-toggle formControlName="won">{{ 'breakdown.add-game.won' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle formControlName="won">{{
+          'breakdown.add-game.won' | translate
+        }}</mat-slide-toggle>
       </div>
 
       <div fxLayout="row" fxLayout.lt-md="column" fxFlex>
@@ -101,8 +103,15 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-button (click)="onDismiss()">{{ 'button.no' | translate }}</button>
-  <button mat-raised-button cdkFocusInitial color="primary" (click)="onConfirm()">
+  <button mat-button (click)="onDismiss()">
+    {{ 'button.no' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    cdkFocusInitial
+    color="primary"
+    (click)="onConfirm()"
+  >
     {{ 'button.yes' | translate }}
   </button>
 </mat-dialog-actions>

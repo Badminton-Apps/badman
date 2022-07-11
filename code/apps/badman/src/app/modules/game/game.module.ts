@@ -14,7 +14,12 @@ import { SubEventComponent } from './components/sub-event/sub-event.component';
 import { TournamentDrawComponent } from './components/tournament-draw/tournament-draw.component';
 
 @NgModule({
-  declarations: [GameInfoComponent, SubEventComponent, TournamentDrawComponent, CompetitionEncounterComponent],
+  declarations: [
+    GameInfoComponent,
+    SubEventComponent,
+    TournamentDrawComponent,
+    CompetitionEncounterComponent,
+  ],
   imports: [
     SharedModule,
     PlayerInfoModule,
@@ -24,7 +29,7 @@ import { TournamentDrawComponent } from './components/tournament-draw/tournament
     MatIconModule,
     MatButtonModule,
     TranslateModule,
-    RouterModule
+    RouterModule,
   ],
   exports: [SubEventComponent, MatExpansionModule],
 })

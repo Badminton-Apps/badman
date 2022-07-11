@@ -1,10 +1,9 @@
-$breakpoints: (800px: 125px,
+$breakpoints: (
+  800px: 125px,
 );
 
-@each $width,
-$size in $breakpoints {
+@each $width, $size in $breakpoints {
   @media screen and (max-width: $width) {
-
     div.selection-button {
       height: $size;
       width: $size;

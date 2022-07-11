@@ -1,4 +1,10 @@
-import { Ranking, SyncQueue, Simulation, SimulationQueue, Sync } from '@badman/queue';
+import {
+  Ranking,
+  SyncQueue,
+  Simulation,
+  SimulationQueue,
+  Sync,
+} from '@badman/queue';
 import { CpGeneratorService } from '@badman/api/generator';
 import { InjectQueue } from '@nestjs/bull';
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
@@ -29,7 +35,7 @@ export class AppController {
 
   @Get('queue-sim')
   getQueueSim() {
-    this.logger.debug('Queue'); 
+    this.logger.debug('Queue');
     // // 20 Games
     // this.rankingSim.add(Simulation.Start, {
     //   systemIds: ['ee720b52-cdd6-4bbe-bf19-976a3750cda3'],
@@ -38,7 +44,7 @@ export class AppController {
 
     // 25 Games
     this.rankingSim.add(Simulation.Start, {
-      systemIds: ['1a69c5a8-7c72-47fe-8646-3018a7c53a5a'], 
+      systemIds: ['1a69c5a8-7c72-47fe-8646-3018a7c53a5a'],
       stop: '2022-07-03 22:00:00+00',
     });
 

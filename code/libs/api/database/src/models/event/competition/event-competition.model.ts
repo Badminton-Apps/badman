@@ -106,7 +106,7 @@ export class EventCompetition extends Model {
   @Column
   usedRankingAmount: number;
 
-  @Field(() => String,{ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   usedRankingUnit: 'months' | 'weeks' | 'days';
 
@@ -121,13 +121,34 @@ export class EventCompetition extends Model {
 
   // Has many SubEvent
   getSubEventCompetitions!: HasManyGetAssociationsMixin<SubEventCompetition>;
-  setSubEventCompetitions!: HasManySetAssociationsMixin<SubEventCompetition, string>;
-  addSubEventCompetitions!: HasManyAddAssociationsMixin<SubEventCompetition, string>;
-  addSubEvenCompetitiont!: HasManyAddAssociationMixin<SubEventCompetition, string>;
-  removeSubEventCompetition!: HasManyRemoveAssociationMixin<SubEventCompetition, string>;
-  removeSubEventCompetitions!: HasManyRemoveAssociationsMixin<SubEventCompetition, string>;
-  hasSubEventCompetition!: HasManyHasAssociationMixin<SubEventCompetition, string>;
-  hasSubEventCompetitions!: HasManyHasAssociationsMixin<SubEventCompetition, string>;
+  setSubEventCompetitions!: HasManySetAssociationsMixin<
+    SubEventCompetition,
+    string
+  >;
+  addSubEventCompetitions!: HasManyAddAssociationsMixin<
+    SubEventCompetition,
+    string
+  >;
+  addSubEvenCompetitiont!: HasManyAddAssociationMixin<
+    SubEventCompetition,
+    string
+  >;
+  removeSubEventCompetition!: HasManyRemoveAssociationMixin<
+    SubEventCompetition,
+    string
+  >;
+  removeSubEventCompetitions!: HasManyRemoveAssociationsMixin<
+    SubEventCompetition,
+    string
+  >;
+  hasSubEventCompetition!: HasManyHasAssociationMixin<
+    SubEventCompetition,
+    string
+  >;
+  hasSubEventCompetitions!: HasManyHasAssociationsMixin<
+    SubEventCompetition,
+    string
+  >;
   countSubEventCompetitions!: HasManyCountAssociationsMixin;
 
   // Has many Comment

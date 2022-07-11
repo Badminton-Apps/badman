@@ -64,8 +64,6 @@ export class EventEntryResolver {
     return eventEntry.getPlayers();
   }
 
-
-
   @ResolveField(() => [DrawCompetition])
   async getCompetitionDraw(
     @Parent() eventEntry: EventEntry

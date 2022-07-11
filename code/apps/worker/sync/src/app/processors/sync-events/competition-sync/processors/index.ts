@@ -8,4 +8,3 @@ export * from './subEvent';
 export * from './gamePoints';
 export * from './standing';
 // end:ng42.barrel
-

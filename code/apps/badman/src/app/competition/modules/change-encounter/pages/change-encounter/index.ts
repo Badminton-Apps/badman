@@ -2,4 +2,3 @@
 export * from './change-encounter.component';
 export * from './components';
 // end:ng42.barrel
-

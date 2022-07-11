@@ -16,7 +16,7 @@ import {
 
 export class CompetitionSyncer {
   private readonly logger = new Logger(CompetitionSyncer.name);
-  
+
   protected visualTournament: XmlTournament;
   protected transaction: Transaction;
 

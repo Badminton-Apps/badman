@@ -16,7 +16,14 @@ import * as addEventMutation from '../../graphql/events/mutations/addEvent.graph
 import * as deleteEventMutation from '../../graphql/importedEvents/mutations/DeleteImportedEvent.graphql';
 
 import * as updateCompetitionEvent from '../../graphql/events/mutations/UpdateCompetitionEvent.graphql';
-import { Club, EventCompetition, EventType, Imported, EventTournament, Event } from '../../models';
+import {
+  Club,
+  EventCompetition,
+  EventType,
+  Imported,
+  EventTournament,
+  Event,
+} from '../../models';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -57,7 +64,10 @@ export class EventService {
           edges: { cursor: string; node: EventTournament }[];
         };
       }>({
-        query: args.type == EventType.TOURNAMENT ? getTournamentEventsQuery : getCompetitionEventsQuery,
+        query:
+          args.type == EventType.TOURNAMENT
+            ? getTournamentEventsQuery
+            : getCompetitionEventsQuery,
         variables: {
           first: args.first,
           after: args.after,
@@ -79,7 +89,6 @@ export class EventService {
                 };
               }),
             };
-         
           }
           if (x.data.tournamentEvents) {
             return {
@@ -98,7 +107,10 @@ export class EventService {
       );
   }
 
-  getCompetitionEvent(id: string, args?: { clubId: string; includeComments: boolean }) {
+  getCompetitionEvent(
+    id: string,
+    args?: { clubId: string; includeComments: boolean }
+  ) {
     return this.apollo
       .query<{
         competitionEvent: EventCompetition;
@@ -106,7 +118,8 @@ export class EventService {
         query: getCompetitionEventQuery,
         variables: {
           id,
-          includeComments: (args?.includeComments ?? false) && args?.clubId != null,
+          includeComments:
+            (args?.includeComments ?? false) && args?.clubId != null,
           clubId: args?.clubId,
         },
       })
@@ -136,13 +149,15 @@ export class EventService {
           event,
         },
       })
-      .pipe(map((x) => {
-        if (!x.data?.updateEventCompetition) {
-          return;
-        }
+      .pipe(
+        map((x) => {
+          if (!x.data?.updateEventCompetition) {
+            return;
+          }
 
-        return new EventCompetition(x.data.updateEventCompetition);
-      }));
+          return new EventCompetition(x.data.updateEventCompetition);
+        })
+      );
   }
 
   getImported(order: string, first: number, after?: string) {
@@ -192,7 +207,10 @@ export class EventService {
           edges?: { cursor: string; node: Event }[];
         };
       }>({
-        query: type == EventType.TOURNAMENT ? getTournamentEventsQuery : getCompetitionEventsQuery,
+        query:
+          type == EventType.TOURNAMENT
+            ? getTournamentEventsQuery
+            : getCompetitionEventsQuery,
         variables: {
           includeSubEvents: true,
           where: {
@@ -211,11 +229,19 @@ export class EventService {
         map((x) => {
           const events: any = [];
           if (x.data.competitionEvents) {
-            events.push(...x.data.competitionEvents.edges?.map((e) => new EventCompetition(e.node)) ?? []);
+            events.push(
+              ...(x.data.competitionEvents.edges?.map(
+                (e) => new EventCompetition(e.node)
+              ) ?? [])
+            );
           }
 
           if (x.data.tournamentEvents) {
-            events.push(...x.data.tournamentEvents.edges?.map((e) => new EventTournament(e.node)) ?? []);
+            events.push(
+              ...(x.data.tournamentEvents.edges?.map(
+                (e) => new EventTournament(e.node)
+              ) ?? [])
+            );
           }
 
           return events;
@@ -234,12 +260,14 @@ export class EventService {
           },
         },
       })
-      .pipe(map((x) => {
-        if (!x.data?.addEvent) {
-          return;
-        }
-        return new Event(x.data.addEvent);
-      }));
+      .pipe(
+        map((x) => {
+          if (!x.data?.addEvent) {
+            return;
+          }
+          return new Event(x.data.addEvent);
+        })
+      );
   }
 
   upload(files: FileList) {

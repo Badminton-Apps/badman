@@ -25,9 +25,7 @@ export class LocationsResolver {
   }
 
   @Query(() => [Location])
-  async locations(
-    @Args() listArgs: ListArgs
-  ): Promise<Location[]> {
+  async locations(@Args() listArgs: ListArgs): Promise<Location[]> {
     return Location.findAll(ListArgs.toFindOptions(listArgs));
   }
 

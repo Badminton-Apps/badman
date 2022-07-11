@@ -2,4 +2,3 @@
 export * from './calendar';
 export * from './date-selector';
 // end:ng42.barrel
-

@@ -1,22 +1,34 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../_shared';
-import { DetailCompetitionComponent, DetailDrawCompetitionComponent, EditEventCompetitionComponent } from './pages';
+import {
+  DetailCompetitionComponent,
+  DetailDrawCompetitionComponent,
+  EditEventCompetitionComponent,
+} from './pages';
 import { DetailEncounterComponent } from './pages/detail-encounter/detail-encounter.component';
 
 const routes: Routes = [
   {
     path: 'team-assembly',
-    loadChildren: () => import('./modules/team-assembly/team-assembly.module').then((m) => m.TeamAssemblyModule),
+    loadChildren: () =>
+      import('./modules/team-assembly/team-assembly.module').then(
+        (m) => m.TeamAssemblyModule
+      ),
   },
   {
     path: 'team-enrollment',
-    loadChildren: () => import('./modules/team-enrollment/team-enrollment.module').then((m) => m.TeamEnrolmentModule),
+    loadChildren: () =>
+      import('./modules/team-enrollment/team-enrollment.module').then(
+        (m) => m.TeamEnrolmentModule
+      ),
   },
   {
     path: 'change-encounter',
     loadChildren: () =>
-      import('./modules/change-encounter/change-encounter.module').then((m) => m.ChangeEncoutnerModule),
+      import('./modules/change-encounter/change-encounter.module').then(
+        (m) => m.ChangeEncoutnerModule
+      ),
   },
   {
     path: ':id',
@@ -51,8 +63,8 @@ const routes: Routes = [
           },
           {
             path: ':encounterId',
-            component: DetailEncounterComponent
-          }
+            component: DetailEncounterComponent,
+          },
         ],
       },
     ],

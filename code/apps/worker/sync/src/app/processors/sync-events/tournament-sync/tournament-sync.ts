@@ -10,12 +10,12 @@ import {
   TournamentSyncPlayerProcessor,
   TournamentSyncPointProcessor,
   TournamentSyncStandingProcessor,
-  TournamentSyncSubEventProcessor
+  TournamentSyncSubEventProcessor,
 } from './processors';
 
 export class TournamentSyncer {
   private readonly logger = new Logger(TournamentSyncer.name);
- 
+
   protected visualTournament: XmlTournament;
   protected transaction: Transaction;
 
@@ -46,7 +46,7 @@ export class TournamentSyncer {
   ) {
     this.options = {
       newGames: false,
-      ...this.options
+      ...this.options,
     };
 
     this.processor = new Processor(null, { logger: this.logger });
@@ -69,7 +69,7 @@ export class TournamentSyncer {
     const options = {
       logger: this.logger,
       transaction: args.transaction,
-      lastRun: args.options.lastRun as Date
+      lastRun: args.options.lastRun as Date,
     };
 
     this._eventStep = new TournamentSyncEventProcessor(
@@ -95,15 +95,19 @@ export class TournamentSyncer {
       options
     );
 
-    this._gameStep = new TournamentSyncGameProcessor(args.xmlTournament, this.visualService, {
-      ...options,
-      newGames: this.options.newGames
-    });
+    this._gameStep = new TournamentSyncGameProcessor(
+      args.xmlTournament,
+      this.visualService,
+      {
+        ...options,
+        newGames: this.options.newGames,
+      }
+    );
 
     this._pointStep = new TournamentSyncPointProcessor(options);
     this._standingStep = new TournamentSyncStandingProcessor({
       ...options,
-      newGames: this.options.newGames
+      newGames: this.options.newGames,
     });
 
     return this.processor.process();

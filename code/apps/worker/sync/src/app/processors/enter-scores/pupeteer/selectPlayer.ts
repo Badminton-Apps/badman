@@ -2,14 +2,13 @@ import { logger } from 'elastic-apm-node';
 import { Page } from 'puppeteer';
 import { waitForSelectors } from '@badman/pupeteer';
 
-
 export async function selectPlayer(
   pupeteer: {
     page: Page;
     timeout?: number;
   } = {
     page: null,
-    timeout: 5000
+    timeout: 5000,
   },
   memberId: string,
   player: 't1p1' | 't1p2' | 't2p1' | 't2p2',
@@ -31,7 +30,10 @@ export async function selectPlayer(
 
     // pass the single handle below
     for (const currentOption of options) {
-      const optionContent = await page.evaluate((el) => el.textContent, currentOption);
+      const optionContent = await page.evaluate(
+        (el) => el.textContent,
+        currentOption
+      );
 
       if (optionContent.indexOf(memberId) > -1) {
         selectedOption = currentOption;
@@ -41,7 +43,10 @@ export async function selectPlayer(
       logger.error(`Could not find player ${memberId} in select`);
     }
 
-    const optionValue = await page.evaluate((el) => el.value, selectedOption ?? options[3]);
+    const optionValue = await page.evaluate(
+      (el) => el.value,
+      selectedOption ?? options[3]
+    );
     // await option.type(optionValue);
 
     await option.focus();

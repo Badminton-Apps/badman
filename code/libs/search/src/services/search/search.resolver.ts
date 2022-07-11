@@ -8,8 +8,8 @@ import { Args, createUnionType, Query, Resolver } from '@nestjs/graphql';
 import { SearchService } from './search.service';
 
 export const Search = createUnionType({
-  name: 'Search',
-  types: () => [Player, EventCompetition, EventTournament, Club] as const
+  name: 'search',
+  types: () => [Player, EventCompetition, EventTournament, Club] as const,
 });
 
 @Resolver(() => Search)

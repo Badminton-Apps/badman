@@ -95,7 +95,7 @@ export class PlayerService {
     };
 
     return this.apollo
-      .query<{ players: {rows: Player[]} }>({
+      .query<{ players: { rows: Player[] } }>({
         query: searchQuery,
         variables: {
           where: PlayerService.playerSearchWhere(args),
@@ -238,7 +238,6 @@ export class PlayerService {
       .pipe(map((r) => new Player(r.data?.updatePlayer)));
   }
 
-
   invalidatePlayerRanking(player: Player) {
     const normalizedIdPlayer = apolloCache.identify({
       id: player?.id,
@@ -263,8 +262,6 @@ export class PlayerService {
 
     apolloCache.gc();
   }
-
-  
 
   getBasePlayers(clubId: string, type: string) {
     return this.apollo.query<{ club: Club }>({

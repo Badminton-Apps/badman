@@ -2,4 +2,3 @@
 export * from './team-enrollment';
 export * from './team-enrollments';
 // end:ng42.barrel
-

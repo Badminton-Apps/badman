@@ -2,4 +2,3 @@
 export * from './list.args';
 export * from './queryFixer';
 // end:ng42.barrel
-

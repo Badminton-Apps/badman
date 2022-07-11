@@ -15,10 +15,7 @@ import { Player, Role } from './../../models';
   providedIn: 'root',
 })
 export class RoleService {
-  constructor(
-    private apollo: Apollo,
-    private userService: UserService
-  ) {}
+  constructor(private apollo: Apollo, private userService: UserService) {}
 
   getRole(roleId: string) {
     return this.apollo

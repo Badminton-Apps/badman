@@ -1,14 +1,13 @@
 import { Page } from 'puppeteer';
 import { waitForSelectors } from '@badman/pupeteer';
 
-
 export async function enterScores(
   pupeteer: {
     page: Page;
     timeout?: number;
   } = {
     page: null,
-    timeout: 5000
+    timeout: 5000,
   },
   set: number,
   scores: string,

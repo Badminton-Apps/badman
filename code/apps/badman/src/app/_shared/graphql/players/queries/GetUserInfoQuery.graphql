@@ -8,7 +8,7 @@ query GetUserInfoQuery($id: ID!, $system: String) {
     sub
     gender
     competitionPlayer
-    club { 
+    club {
       id
       slug
       name

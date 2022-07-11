@@ -33,7 +33,6 @@ module.exports = {
           'GLOBAL',
         ],
 
-        
         ['link', 'player', 'Can link players to login', 'player', 'GLOBAL'],
         ['add', 'player', 'Manually add player', 'player', 'GLOBAL'],
         ['merge', 'player', 'Can merge players', 'player', 'GLOBAL'],

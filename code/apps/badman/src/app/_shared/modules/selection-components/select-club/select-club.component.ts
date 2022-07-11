@@ -4,11 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
 import { Club } from '../../../models';
-import {
-  ClaimService,
-  ClubService,
-  UserService,
-} from '../../../services';
+import { ClaimService, ClubService, UserService } from '../../../services';
 
 @Component({
   selector: 'badman-select-club',
@@ -77,10 +73,14 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           } else if (single) {
             return this.claimSerice.claims$.pipe(
               map((r) =>
-                r.filter((x) => x?.name?.indexOf(this.singleClubPermission) != -1)
+                r.filter(
+                  (x) => x?.name?.indexOf(this.singleClubPermission) != -1
+                )
               ),
               map((r) =>
-                r.map((c) => c?.name?.replace(`_${this.singleClubPermission}`, ''))
+                r.map((c) =>
+                  c?.name?.replace(`_${this.singleClubPermission}`, '')
+                )
               ),
               switchMap((ids) =>
                 this.clubService.getClubs({ ids, take: ids.length })

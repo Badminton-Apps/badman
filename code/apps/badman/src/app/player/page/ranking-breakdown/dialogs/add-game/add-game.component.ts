@@ -200,7 +200,8 @@ export class AddGameComponent implements OnInit {
   }
 
   private _getWinningPoints(level: number): number {
-    const index = this.data?.system?.pointsWhenWinningAgainst?.length ?? 0 - level;
+    const index =
+      this.data?.system?.pointsWhenWinningAgainst?.length ?? 0 - level;
     return this.data?.system?.pointsWhenWinningAgainst?.[index] ?? 0;
   }
 }

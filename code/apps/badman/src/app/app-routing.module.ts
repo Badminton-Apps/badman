@@ -9,36 +9,48 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./info/info.module').then((m) => m.InfoModule),
+        loadChildren: () =>
+          import('./info/info.module').then((m) => m.InfoModule),
       },
 
       {
         path: 'admin',
-        loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
+        loadChildren: () =>
+          import('./admin/admin.module').then((m) => m.AdminModule),
       },
       {
         path: 'player',
-        loadChildren: () => import('./player/player.module').then((m) => m.PlayerModule),
+        loadChildren: () =>
+          import('./player/player.module').then((m) => m.PlayerModule),
       },
       {
         path: 'club',
-        loadChildren: () => import('./club/club.module').then((m) => m.ClubModule),
+        loadChildren: () =>
+          import('./club/club.module').then((m) => m.ClubModule),
       },
       {
         path: 'tournament',
-        loadChildren: () => import('./tournament/tournament.module').then((m) => m.tournamentModule),
+        loadChildren: () =>
+          import('./tournament/tournament.module').then(
+            (m) => m.tournamentModule
+          ),
       },
       {
         path: 'competition',
-        loadChildren: () => import('./competition/competition.module').then((m) => m.CompetitionModule),
+        loadChildren: () =>
+          import('./competition/competition.module').then(
+            (m) => m.CompetitionModule
+          ),
       },
       {
         path: 'event',
-        loadChildren: () => import('./event/event.module').then((m) => m.EventModule),
+        loadChildren: () =>
+          import('./event/event.module').then((m) => m.EventModule),
       },
       {
         path: 'training',
-        loadChildren: () => import('./training/training.module').then((m) => m.TrainingModule),
+        loadChildren: () =>
+          import('./training/training.module').then((m) => m.TrainingModule),
       },
     ],
   },

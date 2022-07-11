@@ -4,10 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
-import {
-  CompetitionEncounter,
-  compPeriod
-} from '../../../../../../../_shared';
+import { CompetitionEncounter, compPeriod } from '../../../../../../../_shared';
 
 @Component({
   selector: 'badman-list-encounters',

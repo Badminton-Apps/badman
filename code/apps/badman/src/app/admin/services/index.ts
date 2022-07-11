@@ -2,4 +2,3 @@
 export * from './admin.service';
 export * from './ranking.service';
 // end:ng42.barrel
-

@@ -3,11 +3,15 @@
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
       <mat-label>{{ 'input.name' | translate }}</mat-label>
-      <input matInput formControlName="name" alt="name" autocomplete="name" required />
+      <input
+        matInput
+        formControlName="name"
+        alt="name"
+        autocomplete="name"
+        required
+      />
     </mat-form-field>
   </div>
-
-  
 
   <!-- <mat-list *ngIf="this.subEvents && !this.useSame">
     <mat-list-item *ngFor="let subEvent of this.subEvents">
@@ -25,6 +29,8 @@
   </mat-list> -->
 
   <div class="row">
-    <button mat-raised-button color="primary" type="submit" cdkFocusInitial>{{ 'button.save' | translate }}</button>
+    <button mat-raised-button color="primary" type="submit" cdkFocusInitial>
+      {{ 'button.save' | translate }}
+    </button>
   </div>
 </form>

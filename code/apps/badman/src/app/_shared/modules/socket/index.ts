@@ -4,4 +4,3 @@ export * from './socket.module';
 export * from './socket.service';
 export * from './events';
 // end:ng42.barrel
-

@@ -15,4 +15,3 @@ export class TypedModel<T> extends Model<
     return this as any;
   }
 }
- 

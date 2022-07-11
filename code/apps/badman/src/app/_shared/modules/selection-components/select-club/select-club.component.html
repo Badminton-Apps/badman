@@ -1,5 +1,10 @@
 <ng-container [formGroup]="formGroup" *ngIf="this.clubs">
-  <mat-form-field appearance="outline" fxFlex *ngIf="!this.useAutocomplete" class="dense">
+  <mat-form-field
+    appearance="outline"
+    fxFlex
+    *ngIf="!this.useAutocomplete"
+    class="dense"
+  >
     <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
 
     <mat-select formControlName="club" required>
@@ -9,11 +14,22 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline" *ngIf="this.useAutocomplete" fxFlex class="dense">
+  <mat-form-field
+    appearance="outline"
+    *ngIf="this.useAutocomplete"
+    fxFlex
+    class="dense"
+  >
     <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
     <input matInput formControlName="club" [matAutocomplete]="auto" />
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="this.displayFn.bind(this)">
-      <mat-option *ngFor="let option of filteredClubs | async" [value]="option.id">
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="this.displayFn.bind(this)"
+    >
+      <mat-option
+        *ngFor="let option of filteredClubs | async"
+        [value]="option.id"
+      >
         {{ option.name }}
       </mat-option>
     </mat-autocomplete>

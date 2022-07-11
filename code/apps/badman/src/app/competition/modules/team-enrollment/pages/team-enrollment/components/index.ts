@@ -4,4 +4,3 @@ export * from './exception-days';
 export * from './location-availability';
 export * from './play-days';
 // end:ng42.barrel
-

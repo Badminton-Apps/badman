@@ -5,4 +5,3 @@ export * from './sub-event.model';
 export * from './competition';
 export * from './tournament';
 // end:ng42.barrel
-

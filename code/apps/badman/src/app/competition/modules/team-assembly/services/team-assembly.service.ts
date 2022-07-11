@@ -20,6 +20,8 @@ export class TeamAssemblyService {
       subtitude: string[];
     };
   }) {
-    return this.httpClient.post(`${this.urlBase}/team-assembly`, input, { responseType: 'text' });
+    return this.httpClient.post(`${this.urlBase}/team-assembly`, input, {
+      responseType: 'text',
+    });
   }
 }

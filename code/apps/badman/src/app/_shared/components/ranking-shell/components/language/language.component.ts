@@ -12,7 +12,10 @@ export class LanguageComponent implements OnInit {
   current!: string;
   langs!: string[];
 
-  constructor(public translate: TranslateService, private _adapter: DateAdapter<any>) {}
+  constructor(
+    public translate: TranslateService,
+    private _adapter: DateAdapter<any>
+  ) {}
 
   ngOnInit(): void {
     this.langs = [...language_map.keys()];
@@ -26,7 +29,12 @@ export class LanguageComponent implements OnInit {
       return;
     }
 
-    await setLanguage(values.translate, values.moment, this._adapter, this.translate);
+    await setLanguage(
+      values.translate,
+      values.moment,
+      this._adapter,
+      this.translate
+    );
 
     // Store
     this.current = lang;

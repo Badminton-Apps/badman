@@ -6,4 +6,3 @@ export * from './edit-club';
 export * from './edit-role';
 export * from './overview-clubs';
 // end:ng42.barrel
-

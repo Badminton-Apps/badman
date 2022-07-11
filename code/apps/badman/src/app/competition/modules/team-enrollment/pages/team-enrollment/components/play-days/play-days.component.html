@@ -4,10 +4,16 @@
     <mat-select formControlName="day">
       <mat-option value="monday">{{ 'days.monday' | translate }}</mat-option>
       <mat-option value="tuesday">{{ 'days.tuesday' | translate }}</mat-option>
-      <mat-option value="wednesday">{{ 'days.wednesday' | translate }}</mat-option>
-      <mat-option value="thursday">{{ 'days.thursday' | translate }}</mat-option>
+      <mat-option value="wednesday">{{
+        'days.wednesday' | translate
+      }}</mat-option>
+      <mat-option value="thursday">{{
+        'days.thursday' | translate
+      }}</mat-option>
       <mat-option value="friday">{{ 'days.friday' | translate }}</mat-option>
-      <mat-option value="saturday">{{ 'days.saturday' | translate }}</mat-option>
+      <mat-option value="saturday">{{
+        'days.saturday' | translate
+      }}</mat-option>
       <mat-option value="sunday">{{ 'days.sunday' | translate }}</mat-option>
     </mat-select>
   </mat-form-field>
@@ -32,7 +38,12 @@
       <mat-icon>add</mat-icon>
     </button>
 
-    <button type="button" *ngIf="!isNew" (click)="deletePlayDay()" mat-icon-button>
+    <button
+      type="button"
+      *ngIf="!isNew"
+      (click)="deletePlayDay()"
+      mat-icon-button
+    >
       <mat-icon>delete</mat-icon>
     </button>
   </div>

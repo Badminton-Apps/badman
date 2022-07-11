@@ -4,7 +4,7 @@
     border-left: 1px solid lightgray;
 
     &::before {
-      content: "vs";
+      content: 'vs';
       font-size: 12px;
       position: relative;
       top: calc(50% - 12px);
@@ -23,7 +23,6 @@
         left: calc(50% - 12px);
       }
     }
-
   }
 
   .mat-form-field-wrapper {

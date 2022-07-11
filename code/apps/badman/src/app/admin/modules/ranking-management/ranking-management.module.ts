@@ -39,9 +39,8 @@ const materialModules = [
   MatTableModule,
   MatOptionModule,
   MatSelectModule,
-  MatDatepickerModule
+  MatDatepickerModule,
 ];
-
 
 @NgModule({
   declarations: [

@@ -95,7 +95,7 @@ export class SubEventViewComponent implements OnInit {
       switchMap((year) =>
         this._apollo.query<{
           eventCompetitions: {
-            rows:Partial<EventCompetition>[];
+            rows: Partial<EventCompetition>[];
           };
         }>({
           query: gql`
@@ -117,9 +117,9 @@ export class SubEventViewComponent implements OnInit {
         })
       ),
       map((result) =>
-      result.data.eventCompetitions.rows.map(
-        (node) => new EventCompetition(node)
-      )
+        result.data.eventCompetitions.rows.map(
+          (node) => new EventCompetition(node)
+        )
       )
     );
   }

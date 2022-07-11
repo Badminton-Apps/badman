@@ -1,17 +1,34 @@
 <ng-container *ngIf="this.club$ | async as club; loading">
   <div class="mat-subheading-1">
-    <button mat-icon-button [routerLink]="['/club', club.id]"><mat-icon>arrow_back</mat-icon></button>Edit Club
+    <button mat-icon-button [routerLink]="['/club', club.id]">
+      <mat-icon>arrow_back</mat-icon></button
+    >Edit Club
   </div>
 
   <badman-has-claim [any]="[club.id + '_edit:club', 'edit-any:club']">
-    <badman-club-fields [club]="club" (save)="this.save($event)"></badman-club-fields>
+    <badman-club-fields
+      [club]="club"
+      (save)="this.save($event)"
+    ></badman-club-fields>
     <div noPerm>{{ club.name }}</div>
   </badman-has-claim>
 
-  <badman-has-claim [any]="[club.id + '_edit:location', club.id + '_edit:club', 'edit-any:club']">
+  <badman-has-claim
+    [any]="[
+      club.id + '_edit:location',
+      club.id + '_edit:club',
+      'edit-any:club'
+    ]"
+  >
     <div class="mat-subheading-1">
       Locations
-      <badman-has-claim [any]="[club.id + '_add:locations', club.id + '_edit:club', 'edit-any:club']">
+      <badman-has-claim
+        [any]="[
+          club.id + '_add:locations',
+          club.id + '_edit:club',
+          'edit-any:club'
+        ]"
+      >
         <button mat-icon-button (click)="this.onEditLocation(undefined, club)">
           <mat-icon>add</mat-icon>
         </button>
@@ -29,11 +46,18 @@
     </div>
   </badman-has-claim>
 
-  <badman-has-claim [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']">
+  <badman-has-claim
+    [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']"
+  >
     <div class="mat-subheading-1">
       Roles
-      <badman-has-claim [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']">
-        <button mat-icon-button [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'role', 'add']">
+      <badman-has-claim
+        [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']"
+      >
+        <button
+          mat-icon-button
+          [routerLink]="['/', 'admin', 'club', club.id, 'edit', 'role', 'add']"
+        >
           <mat-icon>add</mat-icon>
         </button>
       </badman-has-claim>
@@ -57,7 +81,10 @@
     <mat-form-field appearance="outline" fxFlex="300px">
       <mat-label>{{ 'pickers.select-year' | translate }}</mat-label>
       <mat-select [formControl]="this.competitionYear">
-        <mat-option *ngFor="let option of this.compYears$ | async" [value]="option">
+        <mat-option
+          *ngFor="let option of this.compYears$ | async"
+          [value]="option"
+        >
           {{ option }}
         </mat-option>
       </mat-select>

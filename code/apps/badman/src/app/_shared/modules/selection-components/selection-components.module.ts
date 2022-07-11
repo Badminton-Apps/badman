@@ -10,7 +10,12 @@ import { SelectTeamComponent } from './select-team';
 import { SharedModule } from '../../shared.module';
 import { SelectPlayerComponent } from './select-player/select-player.component';
 
-const materialModules = [MatAutocompleteModule, MatInputModule, MatOptionModule, MatSelectModule];
+const materialModules = [
+  MatAutocompleteModule,
+  MatInputModule,
+  MatOptionModule,
+  MatSelectModule,
+];
 
 const components = [
   SelectEncounterComponent,

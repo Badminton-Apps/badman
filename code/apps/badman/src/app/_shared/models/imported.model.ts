@@ -9,13 +9,13 @@ export class Imported {
   firstDay?: Date;
   fileName?: string;
   importing?: boolean;
-  subEvents?: ImporterSubEvent[]
+  subEvents?: ImporterSubEvent[];
 
   uniCode?: string;
   tournamentNumber?: number;
 
   suggestions?: (EventTournament | EventCompetition)[];
-  event?: (EventTournament | EventCompetition);
+  event?: EventTournament | EventCompetition;
 
   constructor({ ...args }: Partial<Imported>) {
     const dateString = args?.dates as unknown as string;
@@ -30,6 +30,6 @@ export class Imported {
     this.uniCode = args.uniCode;
     this.tournamentNumber = args.tournamentNumber;
     this.importing = args.importing;
-    this.subEvents = args.subEvents?.map(r => new ImporterSubEvent(r)) ?? []
+    this.subEvents = args.subEvents?.map((r) => new ImporterSubEvent(r)) ?? [];
   }
 }

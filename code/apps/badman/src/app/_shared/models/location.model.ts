@@ -12,11 +12,10 @@ export class Location {
   fax?: string;
   street?: string;
   streetNumber?: string;
-  competitionEvents?: EventCompetition[]
-  eventTournements?: EventTournament[]
+  competitionEvents?: EventCompetition[];
+  eventTournements?: EventTournament[];
   availibilities: Availability[];
   courts?: number;
-
 
   constructor(args?: Partial<Location>) {
     this.id = args?.id;
@@ -29,9 +28,14 @@ export class Location {
     this.fax = args?.fax;
     this.street = args?.street;
     this.streetNumber = args?.streetNumber;
-    this.competitionEvents = args?.competitionEvents?.map(r => new EventCompetition(r));
-    this.eventTournements = args?.eventTournements?.map(r => new EventTournament(r));
-    this.availibilities = args?.availibilities?.map(r => new Availability(r)) ?? [];
+    this.competitionEvents = args?.competitionEvents?.map(
+      (r) => new EventCompetition(r)
+    );
+    this.eventTournements = args?.eventTournements?.map(
+      (r) => new EventTournament(r)
+    );
+    this.availibilities =
+      args?.availibilities?.map((r) => new Availability(r)) ?? [];
     this.courts = args?.courts;
   }
 }

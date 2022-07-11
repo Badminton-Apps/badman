@@ -2,4 +2,3 @@
 export * from './components';
 export * from './edit-club.component';
 // end:ng42.barrel
-

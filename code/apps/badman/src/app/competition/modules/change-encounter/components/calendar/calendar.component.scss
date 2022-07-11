@@ -1,4 +1,4 @@
-@use '@angular/material'as mat;
+@use '@angular/material' as mat;
 
 :host {
   height: 100%;
@@ -49,10 +49,7 @@
   //     background-color: #f5f5f5;
   //     border: 1px solid #dee2e6;
   //   }}
-
 }
-
-
 
 .calendar-day:not(.weekday) {
   min-height: 100px;
@@ -150,14 +147,12 @@ mat-chip-avatar {
       font-weight: 500;
     }
 
-
     .event-time {
       margin-right: 3px;
       font-weight: 400;
     }
   }
 }
-
 
 .event-detail {
   @include mat.elevation(8);

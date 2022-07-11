@@ -1,5 +1,13 @@
-mutation AddBasePlayerForSubEvent($teamId: ID!, $playerId: ID!, $subEventId: ID!) {
-  addPlayerBaseSubEvent(teamId: $teamId, playerId: $playerId, subEventId: $subEventId) {
+mutation AddBasePlayerForSubEvent(
+  $teamId: ID!
+  $playerId: ID!
+  $subEventId: ID!
+) {
+  addPlayerBaseSubEvent(
+    teamId: $teamId
+    playerId: $playerId
+    subEventId: $subEventId
+  ) {
     id
   }
 }

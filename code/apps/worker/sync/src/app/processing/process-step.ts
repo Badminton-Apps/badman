@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class ProcessStep<T = void> {
-  private _data: T ;
+  private _data: T;
   private _ran = false;
   constructor(
     public name: string,

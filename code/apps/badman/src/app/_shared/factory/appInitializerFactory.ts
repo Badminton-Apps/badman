@@ -5,13 +5,20 @@ import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 
-export const language_map: Map<string, { translate: string; adapter: string; moment: string }> = new Map([
+export const language_map: Map<
+  string,
+  { translate: string; adapter: string; moment: string }
+> = new Map([
   ['en', { translate: 'en', adapter: 'en', moment: 'en' }],
   ['fr_BE', { translate: 'fr_BE', adapter: 'fr', moment: 'fr' }],
   ['nl_BE', { translate: 'nl_BE', adapter: 'nl-be', moment: 'nl-be' }],
 ]);
 
-export function appInitializerFactory(translate: TranslateService, injector: Injector, adapter: DateAdapter<any>) {
+export function appInitializerFactory(
+  translate: TranslateService,
+  injector: Injector,
+  adapter: DateAdapter<any>
+) {
   return async () => {
     try {
       await injector.get(LOCATION_INITIALIZED, Promise.resolve(null));

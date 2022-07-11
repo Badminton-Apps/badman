@@ -21,7 +21,7 @@ export class EditPlayerFieldsComponent implements OnInit {
   @Input()
   player!: Player;
 
-  @Output() 
+  @Output()
   playerChanged = new EventEmitter<Partial<Player>>();
 
   fg!: FormGroup;

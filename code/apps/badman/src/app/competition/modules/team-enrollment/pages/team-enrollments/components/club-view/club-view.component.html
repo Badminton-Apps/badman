@@ -95,10 +95,14 @@
             #trigger="cdkOverlayOrigin"
             (click)="overlayOpen = team.id ?? ''"
           >
-            {{ team.name }} ({{team.entries?.[0]?.meta?.competition?.teamIndex
-            }}) -
-            {{ team.entries?.[0]?.competitionSubEvent?.name }}
-            {{ team.entries?.[0]?.competitionSubEvent?.eventType }}
+            <span
+              >{{
+                team.name
+              }}
+              ({{team.entries?.[0]?.meta?.competition?.teamIndex}}) -
+              {{ team.entries?.[0]?.competitionSubEvent?.name }}
+              {{ team.entries?.[0]?.competitionSubEvent?.eventType }}</span
+            >
           </div>
 
           <ng-template

@@ -16,7 +16,12 @@ export class CompetitionSubEvent extends SubEvent {
     this.maxBaseIndex = args.maxBaseIndex ?? 0;
     this.teams = [];
 
-    this.eventCompetition = args?.eventCompetition != null ? new EventCompetition(args.eventCompetition) : undefined;
-    this.drawCompetitions = args?.drawCompetitions?.map((d) => new CompetitionDraw(d));
+    this.eventCompetition =
+      args?.eventCompetition != null
+        ? new EventCompetition(args.eventCompetition)
+        : undefined;
+    this.drawCompetitions = args?.drawCompetitions?.map(
+      (d) => new CompetitionDraw(d)
+    );
   }
 }

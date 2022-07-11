@@ -5,4 +5,3 @@ export * from './claim.model';
 export * from './role-player-membership.model';
 export * from './role.model';
 // end:ng42.barrel
-

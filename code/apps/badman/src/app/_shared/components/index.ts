@@ -7,4 +7,3 @@ export * from './ranking-shell';
 export * from './security';
 export * from './time-picker-input';
 // end:ng42.barrel
-

@@ -12,7 +12,10 @@
     <mat-form-field appearance="outline" fxFlex="300px">
       <mat-label>Event</mat-label>
       <mat-select [formControl]="this.eventControl">
-        <mat-option *ngFor="let event of this.events$ | async" [value]="event.id">
+        <mat-option
+          *ngFor="let event of this.events$ | async"
+          [value]="event.id"
+        >
           {{ event.name }}
         </mat-option>
       </mat-select>
@@ -23,8 +26,12 @@
     <mat-accordion>
       <mat-expansion-panel *ngFor="let subEvent of subEvents">
         <mat-expansion-panel-header>
-          <mat-panel-title fxFlex="200px">{{ subEvent.name }} {{ subEvent.eventType }}</mat-panel-title>
-          <mat-panel-description>{{ subEvent.eventEntries?.length }} Teams</mat-panel-description>
+          <mat-panel-title fxFlex="200px"
+            >{{ subEvent.name }} {{ subEvent.eventType }}</mat-panel-title
+          >
+          <mat-panel-description
+            >{{ subEvent.eventEntries?.length }} Teams</mat-panel-description
+          >
         </mat-expansion-panel-header>
         <ul>
           <li
@@ -48,7 +55,8 @@
                 index: {{ entry.meta?.competition?.teamIndex }}
                 <ul>
                   <li *ngFor="let player of entry.meta?.competition?.players">
-                    {{ player?.player?.fullName }} ({{ player?.single }} - {{ player?.double }} - {{ player?.mix }})
+                    {{ player?.player?.fullName }} ({{ player?.single }} -
+                    {{ player?.double }} - {{ player?.mix }})
                   </li>
                 </ul>
               </div>

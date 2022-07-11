@@ -1,7 +1,14 @@
-<div fxLayout="column" fxLayoutAlign="center center" fxFlex [routerLink]="['ranking', this.type]">
+<div
+  fxLayout="column"
+  fxLayoutAlign="center center"
+  fxFlex
+  [routerLink]="['ranking', this.type]"
+>
   <div class="up">
     <ng-container *ngIf="!this.viewingRankingPlace">
-      <span>{{ this.rankingPlace?.[this.type!] ?? this.usedSystem?.amountOfLevels }}</span>
+      <span
+        >{{ this.rankingPlace?.[this.type!] ?? this.usedSystem?.amountOfLevels }}</span
+      >
 
       <mat-icon
         *ngIf="this.rankingPlace?.[this.type + 'Inactive']"
@@ -9,17 +16,24 @@
         >warning
       </mat-icon>
 
-      <mat-icon *ngIf="this.nextUp === 'upgrade'" [matTooltip]="'ranking.trending_up' | translate"
+      <mat-icon
+        *ngIf="this.nextUp === 'upgrade'"
+        [matTooltip]="'ranking.trending_up' | translate"
         >trending_up</mat-icon
       >
-      <mat-icon *ngIf="this.nextUp === 'downgrade'" [matTooltip]="'ranking.trending_down' | translate"
+      <mat-icon
+        *ngIf="this.nextUp === 'downgrade'"
+        [matTooltip]="'ranking.trending_down' | translate"
         >trending_down</mat-icon
       >
     </ng-container>
 
     <ng-container *ngIf="this.viewingRankingPlace">
       <span class="viewing">{{ this.rankingPlace?.[this.type!] }}</span>
-      <span> <span class="viewing">➔</span> {{ this.viewingRankingPlace?.[this.type!] }} </span>
+      <span>
+        <span class="viewing">➔</span>
+        {{ this.viewingRankingPlace?.[this.type!] }}
+      </span>
       <mat-icon
         *ngIf="this.viewingRankingPlace?.[this.type + 'Inactive']"
         [matTooltip]="'ranking.inactive.' + this.type | translate"
@@ -30,8 +44,14 @@
 
   <div class="down">
     <ng-container *ngIf="this.viewingRankingPlace">
-      <span class="viewing">{{ this.rankingPlace?.[this.type + 'Points'] }}</span>
-      <span> <span class="viewing">➔</span> {{ this.viewingRankingPlace?.[this.type + 'Points'] }} </span>
+      <span
+        class="viewing"
+        >{{ this.rankingPlace?.[this.type + 'Points'] }}</span
+      >
+      <span>
+        <span class="viewing">➔</span>
+        {{ this.viewingRankingPlace?.[this.type + 'Points'] }}
+      </span>
     </ng-container>
 
     <ng-container *ngIf="!this.viewingRankingPlace">

@@ -3,7 +3,10 @@
     <mat-label>{{ 'pickers.select-team' | translate }}</mat-label>
     <mat-select formControlName="team" required>
       <ng-container *ngIf="this.teamsF$ | async as teamsF">
-        <mat-optgroup *ngIf="teamsF && teamsF.length > 0" [label]="'pickers.select-team-groups.F' | translate">
+        <mat-optgroup
+          *ngIf="teamsF && teamsF.length > 0"
+          [label]="'pickers.select-team-groups.F' | translate"
+        >
           <mat-option *ngFor="let option of teamsF" [value]="option.id">
             {{ option.name }}
           </mat-option>
@@ -11,7 +14,10 @@
       </ng-container>
 
       <ng-container *ngIf="this.teamsM$ | async as teamsM">
-        <mat-optgroup *ngIf="teamsM && teamsM.length > 0" [label]="'pickers.select-team-groups.M' | translate">
+        <mat-optgroup
+          *ngIf="teamsM && teamsM.length > 0"
+          [label]="'pickers.select-team-groups.M' | translate"
+        >
           <mat-option *ngFor="let option of teamsM" [value]="option.id">
             {{ option.name }}
           </mat-option>
@@ -19,22 +25,26 @@
       </ng-container>
 
       <ng-container *ngIf="this.teamsMX$ | async as teamsMX">
-        <mat-optgroup *ngIf="teamsMX && teamsMX.length > 0" [label]="'pickers.select-team-groups.MX' | translate">
+        <mat-optgroup
+          *ngIf="teamsMX && teamsMX.length > 0"
+          [label]="'pickers.select-team-groups.MX' | translate"
+        >
           <mat-option *ngFor="let option of teamsMX" [value]="option.id">
             {{ option.name }}
           </mat-option>
         </mat-optgroup>
       </ng-container>
 
-
       <ng-container *ngIf="this.teamsNAT$ | async as teamsNAT">
-        <mat-optgroup *ngIf="teamsNAT && teamsNAT.length > 0" [label]="'pickers.select-team-groups.NATIONAL' | translate">
+        <mat-optgroup
+          *ngIf="teamsNAT && teamsNAT.length > 0"
+          [label]="'pickers.select-team-groups.NATIONAL' | translate"
+        >
           <mat-option *ngFor="let option of teamsNAT" [value]="option.id">
             {{ option.name }}
           </mat-option>
         </mat-optgroup>
       </ng-container>
-
     </mat-select>
   </mat-form-field>
 </ng-container>

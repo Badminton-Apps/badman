@@ -18,7 +18,11 @@ export class RankingService {
     return this.httpClient
       .get<Blob>(
         `${this.urlBase}/${
-          type === 'visual' ? 'exportVisual' : type === 'visual-nonBVL_LFBB' ? 'exportNotVisual' : 'export'
+          type === 'visual'
+            ? 'exportVisual'
+            : type === 'visual-nonBVL_LFBB'
+            ? 'exportNotVisual'
+            : 'export'
         }`,
         {
           params: {
@@ -33,7 +37,9 @@ export class RankingService {
         map((response) => {
           let fileName = 'file';
 
-          const contentDisposition = response.headers.get('Content-Disposition');
+          const contentDisposition = response.headers.get(
+            'Content-Disposition'
+          );
           if (contentDisposition) {
             const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
             const matches = fileNameRegex.exec(contentDisposition);
@@ -57,7 +63,13 @@ export class RankingService {
           link.href = downloadURL;
           link.download = fileName;
           // this is necessary as link.click() does not work on the latest firefox
-          link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+          link.dispatchEvent(
+            new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+              view: window,
+            })
+          );
 
           return { link, downloadURL };
 

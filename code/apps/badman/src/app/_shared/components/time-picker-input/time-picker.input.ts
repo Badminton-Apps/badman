@@ -20,7 +20,11 @@ import {
   NgControl,
   Validators,
 } from '@angular/forms';
-import { MAT_FORM_FIELD, MatFormField, MatFormFieldControl } from '@angular/material/form-field';
+import {
+  MAT_FORM_FIELD,
+  MatFormField,
+  MatFormFieldControl,
+} from '@angular/material/form-field';
 import moment from 'moment';
 import { Moment } from 'moment';
 import { Subject } from 'rxjs';
@@ -36,7 +40,9 @@ const selector = 'app-time-picker-input';
     '[id]': 'id',
   },
 })
-export class TimePickerInput implements ControlValueAccessor, MatFormFieldControl<Moment>, OnDestroy {
+export class TimePickerInput
+  implements ControlValueAccessor, MatFormFieldControl<Moment>, OnDestroy
+{
   static nextId = 0;
   @ViewChild('hours') hoursInput!: HTMLInputElement;
   @ViewChild('minutes') minutesInput!: HTMLInputElement;
@@ -61,7 +67,6 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
   get shouldLabelFloat() {
     return this.focused || !this.empty;
   }
-
 
   @Input()
   get placeholder(): string {
@@ -124,11 +129,23 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
     this.parts = formBuilder.group({
       hours: [
         null,
-        [Validators.required, Validators.min(0), Validators.max(24), Validators.minLength(0), Validators.maxLength(2)],
+        [
+          Validators.required,
+          Validators.min(0),
+          Validators.max(24),
+          Validators.minLength(0),
+          Validators.maxLength(2),
+        ],
       ],
       minutes: [
         null,
-        [Validators.required, Validators.min(0), Validators.max(59), Validators.minLength(0), Validators.maxLength(2)],
+        [
+          Validators.required,
+          Validators.min(0),
+          Validators.max(59),
+          Validators.minLength(0),
+          Validators.maxLength(2),
+        ],
       ],
     });
 
@@ -150,7 +167,9 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
   }
 
   onFocusOut(event: FocusEvent) {
-    if (!this._elementRef.nativeElement.contains(event.relatedTarget as Element)) {
+    if (
+      !this._elementRef.nativeElement.contains(event.relatedTarget as Element)
+    ) {
       this.touched = true;
       this.focused = false;
       this.onTouched();
@@ -158,20 +177,29 @@ export class TimePickerInput implements ControlValueAccessor, MatFormFieldContro
     }
   }
 
-  autoFocusNext(control: AbstractControl, nextElement?: HTMLInputElement): void {
+  autoFocusNext(
+    control: AbstractControl,
+    nextElement?: HTMLInputElement
+  ): void {
     if (!control.errors && nextElement) {
       this._focusMonitor.focusVia(nextElement, 'program');
     }
   }
 
-  autoFocusPrev(control: AbstractControl, prevElement: HTMLInputElement, minLength = 1): void {
+  autoFocusPrev(
+    control: AbstractControl,
+    prevElement: HTMLInputElement,
+    minLength = 1
+  ): void {
     if ((control.value?.length ?? 0) < minLength) {
       this._focusMonitor.focusVia(prevElement, 'program');
     }
   }
 
   setDescribedByIds(ids: string[]) {
-    const controlElement = this._elementRef.nativeElement.querySelector('.app-time-picker-input-container')!;
+    const controlElement = this._elementRef.nativeElement.querySelector(
+      '.app-time-picker-input-container'
+    )!;
     controlElement.setAttribute('aria-describedby', ids.join(' '));
   }
 

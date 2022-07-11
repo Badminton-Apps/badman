@@ -1,13 +1,20 @@
 <mat-stepper orientation="vertical" [linear]="true" #stepper>
   <mat-step [stepControl]="this.gameTypeControl">
     <ng-template matStepLabel>
-      <ng-container *ngIf="this.gameTypeControl.value.length === 0">Game</ng-container>
-      <ng-container *ngIf="this.gameTypeControl.value.length > 0">{{ this.gameTypeControl.value }}</ng-container>
+      <ng-container *ngIf="this.gameTypeControl.value.length === 0"
+        >Game</ng-container
+      >
+      <ng-container *ngIf="this.gameTypeControl.value.length > 0">{{
+        this.gameTypeControl.value
+      }}</ng-container>
     </ng-template>
 
     <div fxLayout="row wrap" fxLayoutGap="16px grid">
       <div *ngFor="let gameType of this.gameTypes">
-        <div class="selection-button" (click)="this.selectOption(this.gameTypeControl, gameType)">
+        <div
+          class="selection-button"
+          (click)="this.selectOption(this.gameTypeControl, gameType)"
+        >
           {{ gameType }}
         </div>
       </div>
@@ -15,13 +22,20 @@
   </mat-step>
   <mat-step [stepControl]="this.offenseTypeControl">
     <ng-template matStepLabel>
-      <ng-container *ngIf="this.offenseTypeControl.value.length === 0">Situatie</ng-container>
-      <ng-container *ngIf="this.offenseTypeControl.value.length > 0">{{ this.offenseTypeControl.value }}</ng-container>
+      <ng-container *ngIf="this.offenseTypeControl.value.length === 0"
+        >Situatie</ng-container
+      >
+      <ng-container *ngIf="this.offenseTypeControl.value.length > 0">{{
+        this.offenseTypeControl.value
+      }}</ng-container>
     </ng-template>
 
     <div fxLayout="row wrap" fxLayoutGap="16px grid">
       <div *ngFor="let offenseType of this.offenseTypes">
-        <div class="selection-button" (click)="this.selectOption(this.offenseTypeControl, offenseType)">
+        <div
+          class="selection-button"
+          (click)="this.selectOption(this.offenseTypeControl, offenseType)"
+        >
           {{ offenseType }}
         </div>
       </div>
@@ -29,13 +43,20 @@
   </mat-step>
   <mat-step [stepControl]="this.placeControl">
     <ng-template matStepLabel>
-      <ng-container *ngIf="this.placeControl.value.length === 0">Terreinzone</ng-container>
-      <ng-container *ngIf="this.placeControl.value.length > 0">{{ this.placeControl.value }}</ng-container>
+      <ng-container *ngIf="this.placeControl.value.length === 0"
+        >Terreinzone</ng-container
+      >
+      <ng-container *ngIf="this.placeControl.value.length > 0">{{
+        this.placeControl.value
+      }}</ng-container>
     </ng-template>
 
     <div fxLayout="row wrap" fxLayoutGap="16px grid">
       <div *ngFor="let placeType of this.placeTypes">
-        <div class="selection-button" (click)="this.selectOption(this.placeControl, placeType)">
+        <div
+          class="selection-button"
+          (click)="this.selectOption(this.placeControl, placeType)"
+        >
           {{ placeType }}
         </div>
       </div>
@@ -43,13 +64,20 @@
   </mat-step>
   <mat-step [stepControl]="this.actionControl">
     <ng-template matStepLabel>
-      <ng-container *ngIf="this.actionControl.value.length === 0">Slagen</ng-container>
-      <ng-container *ngIf="this.actionControl.value.length > 0">{{ this.actionControl.value }}</ng-container>
+      <ng-container *ngIf="this.actionControl.value.length === 0"
+        >Slagen</ng-container
+      >
+      <ng-container *ngIf="this.actionControl.value.length > 0">{{
+        this.actionControl.value
+      }}</ng-container>
     </ng-template>
 
     <div fxLayout="row wrap" fxLayoutGap="16px grid">
       <div *ngFor="let action of this.actions">
-        <div class="selection-button" (click)="this.selectOption(this.actionControl, action)">
+        <div
+          class="selection-button"
+          (click)="this.selectOption(this.actionControl, action)"
+        >
           {{ action }}
         </div>
       </div>

@@ -31,9 +31,9 @@ export class Game {
 
   constructor({ ...args }: Partial<Game>, rankingType?: RankingSystem) {
     const parsedType = (args?.gameType as unknown as GameType) ?? null;
-    const parsedStatus = (args?.status as unknown as GameStatus) ?? GameStatus.NORMAL;
+    const parsedStatus =
+      (args?.status as unknown as GameStatus) ?? GameStatus.NORMAL;
 
-   
     this.id = args?.id;
     this.playedAt = args.playedAt ? new Date(args.playedAt) : undefined;
     this.gameType = parsedType != null ? GameType[parsedType] : undefined;
@@ -49,7 +49,9 @@ export class Game {
     this.order = args?.order;
     this.winner = args.winner;
     this.linkType = args?.linkType;
-    this.rankingPoints = args.rankingPoints?.map((r) => new RankingPoint({ ...r, type: rankingType }));
+    this.rankingPoints = args.rankingPoints?.map(
+      (r) => new RankingPoint({ ...r, type: rankingType })
+    );
 
     if (args?.set1Team1 && args?.set1Team2) {
       this.set1Winner = args.set1Team1 > args.set1Team2 ? 1 : 2;

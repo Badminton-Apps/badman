@@ -9,10 +9,16 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #options="matMenu">
-        <button mat-menu-item (click)="this.onEdit.next(location)">{{ 'button.edit' | translate }}</button>
-        <badman-has-claim [any]="[club.id + '_remove:location', 'edit-any:club']">
+        <button mat-menu-item (click)="this.onEdit.next(location)">
+          {{ 'button.edit' | translate }}
+        </button>
+        <badman-has-claim
+          [any]="[club.id + '_remove:location', 'edit-any:club']"
+        >
           <mat-divider></mat-divider>
-          <button mat-menu-item (click)="this.onDelete.next(location)">{{ 'button.delete' | translate }}</button>
+          <button mat-menu-item (click)="this.onDelete.next(location)">
+            {{ 'button.delete' | translate }}
+          </button>
         </badman-has-claim>
       </mat-menu>
     </ng-container>
@@ -20,8 +26,13 @@
 
   <div class="content">
     <span *ngIf="this.location.street">{{ this.location.street }} </span>
-    <span *ngIf="this.location.streetNumber">{{ this.location.streetNumber }}</span> <br />
-    <span *ngIf="this.location.postalcode">{{ this.location.postalcode }} </span>
+    <span *ngIf="this.location.streetNumber">{{
+      this.location.streetNumber
+    }}</span>
+    <br />
+    <span *ngIf="this.location.postalcode"
+      >{{ this.location.postalcode }}
+    </span>
     <span *ngIf="this.location.city">{{ this.location.city }}</span
     ><br />
     <span *ngIf="this.location.state">{{ this.location.state }}</span

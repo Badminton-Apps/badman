@@ -38,7 +38,7 @@ import {
   RankingShellComponent,
   TimePickerInput,
   UserInfoComponent,
-  WatchSystemInfoComponent
+  WatchSystemInfoComponent,
 } from './components';
 import { AssignRankingGroupsComponent } from './dialogs';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';

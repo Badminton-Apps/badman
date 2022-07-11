@@ -180,7 +180,7 @@ export class TeamsResolver {
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
     @User() user: Player
-  ){
+  ) {
     const team = await Team.findByPk(teamId);
 
     if (!team) {
@@ -199,7 +199,6 @@ export class TeamsResolver {
     await team.removePlayer(player);
     return team;
   }
-
 
   // @Mutation(returns => Team)
   // async addTeam(

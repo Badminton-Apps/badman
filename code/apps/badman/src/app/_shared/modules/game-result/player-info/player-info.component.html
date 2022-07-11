@@ -1,4 +1,3 @@
-
 <ng-container [ngSwitch]="this.status">
   <ng-container *ngSwitchCase="'NO_MATCH'">
     <div class="bye">{{ 'games.unkown' | translate }}</div>
@@ -16,7 +15,12 @@
       </div>
 
       <!-- Points -->
-      <div class="points" *ngIf="rankingPoint" [ngClass]="this.class" [matTooltip]="this.tooltip">
+      <div
+        class="points"
+        *ngIf="rankingPoint"
+        [ngClass]="this.class"
+        [matTooltip]="this.tooltip"
+      >
         {{ rankingPoint.points }}
       </div>
     </ng-container>

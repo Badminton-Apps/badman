@@ -340,7 +340,9 @@ export class ClubsResolver {
     const transaction = await this._sequelize.transaction();
     try {
       const club = await Club.findByPk(membership.clubId, { transaction });
-      const player = await Player.findByPk(membership.playerId, { transaction });
+      const player = await Player.findByPk(membership.playerId, {
+        transaction,
+      });
 
       if (!club) {
         throw new NotFoundException(`${Club.name}: ${membership.clubId}`);

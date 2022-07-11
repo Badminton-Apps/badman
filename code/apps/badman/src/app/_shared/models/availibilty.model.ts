@@ -11,8 +11,9 @@ export class Availability {
   constructor(args?: Partial<Availability>) {
     this.id = args?.id;
     this.year = args?.year;
-    this.days = args?.days?.map(d => new AvailabilityDay(d)) || [];
-    this.exceptions = args?.exceptions?.map(e => new AvailabilityException(e)) || [];
+    this.days = args?.days?.map((d) => new AvailabilityDay(d)) || [];
+    this.exceptions =
+      args?.exceptions?.map((e) => new AvailabilityException(e)) || [];
     this.location = args?.location;
     this.locationId = args?.locationId;
   }
@@ -31,7 +32,14 @@ export class AvailabilityException {
 }
 
 export class AvailabilityDay {
-  day?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  day?:
+    | 'monday'
+    | 'tuesday'
+    | 'wednesday'
+    | 'thursday'
+    | 'friday'
+    | 'saturday'
+    | 'sunday';
   startTime?: string;
   endTime?: string;
   courts?: number;

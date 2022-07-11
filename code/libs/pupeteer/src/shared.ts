@@ -1,6 +1,10 @@
 import { ElementHandle, Page } from 'puppeteer';
 
-export async function waitForSelector(selector: string[] | string, frame: Page, timeout: number) {
+export async function waitForSelector(
+  selector: string[] | string,
+  frame: Page,
+  timeout: number
+) {
   if (selector instanceof Array) {
     let element: ElementHandle<Element> = null;
     for (const part of selector) {
@@ -13,7 +17,9 @@ export async function waitForSelector(selector: string[] | string, frame: Page, 
         throw new Error('Could not find element: ' + part);
       }
       element = (
-        await element.evaluateHandle((el) => (el.shadowRoot ? el.shadowRoot : el))
+        await element.evaluateHandle((el) =>
+          el.shadowRoot ? el.shadowRoot : el
+        )
       ).asElement();
     }
     if (!element) {
@@ -34,7 +40,7 @@ export async function waitForElement(step, frame: Page, timeout: number) {
   const comp = {
     '==': (a, b) => a === b,
     '>=': (a, b) => a >= b,
-    '<=': (a, b) => a <= b
+    '<=': (a, b) => a <= b,
   };
   const compFn = comp[operator];
   await waitForFunction(async () => {
@@ -106,7 +112,11 @@ export async function waitForFunction(fn, timeout) {
   throw new Error('Timed out');
 }
 
-export async function waitForSelectors(selectors: string[][], frame: Page, timeout: number) {
+export async function waitForSelectors(
+  selectors: string[][],
+  frame: Page,
+  timeout: number
+) {
   for (const selector of selectors) {
     try {
       return await waitForSelector(selector, frame, timeout);
@@ -114,5 +124,7 @@ export async function waitForSelectors(selectors: string[][], frame: Page, timeo
       console.error(err);
     }
   }
-  throw new Error('Could not find element for selectors: ' + JSON.stringify(selectors));
+  throw new Error(
+    'Could not find element for selectors: ' + JSON.stringify(selectors)
+  );
 }

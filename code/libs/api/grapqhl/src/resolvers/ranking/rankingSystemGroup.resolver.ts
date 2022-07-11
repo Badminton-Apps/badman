@@ -37,9 +37,7 @@ export class RankingGroupsResolver {
   }
 
   @Query(() => [RankingGroup])
-  async rankingGroups(
-    @Args() listArgs: ListArgs
-  ): Promise<RankingGroup[]> {
+  async rankingGroups(@Args() listArgs: ListArgs): Promise<RankingGroup[]> {
     return RankingGroup.findAll(ListArgs.toFindOptions(listArgs));
   }
 

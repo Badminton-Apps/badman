@@ -3,7 +3,11 @@ import { AppInjector } from './socket.module';
 import { SocketService } from './socket.service';
 
 export function ListenTopic(topic: string, options?: DecoratorOptions) {
-  return function (target: object, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: object,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
     if (options?.path) {
       console.warn('Path is not supported for ListenTopic decorator right now');
     }
@@ -34,7 +38,9 @@ export function ListenTopic(topic: string, options?: DecoratorOptions) {
     const _originalOnInit = target['ngOnInit'];
     target['ngOnInit'] = function () {
       // Get the socket service
-      const service = AppInjector.get(SocketService)?.getService({ path: config.path });
+      const service = AppInjector.get(SocketService)?.getService({
+        path: config.path,
+      });
 
       // Subscribe to the topic
       subscription = service.fromEvent(topic).subscribe((args) => {

@@ -4,7 +4,11 @@ import {
   Player,
   SubEventCompetition,
 } from '@badman/api/database';
-import { Inject, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   Args,
   Field,
@@ -31,10 +35,8 @@ export class PagedEventCompetition {
 }
 @Resolver(() => EventCompetition)
 export class EventCompetitionResolver {
-  
   constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
-  
-  
+
   @Query(() => EventCompetition)
   async eventCompetition(
     @Args('id', { type: () => ID }) id: string
@@ -70,8 +72,6 @@ export class EventCompetitionResolver {
     return event.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
   }
 
-
-
   @ResolveField(() => [Comment])
   async comments(
     @Parent() event: EventCompetition,
@@ -85,7 +85,7 @@ export class EventCompetitionResolver {
     @User() user: Player,
     @Args('id', { type: () => ID }) id: string,
     @Args('number') year: number
-  ){
+  ) {
     if (!user.hasAnyPermission([`add:competition`])) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
@@ -95,21 +95,23 @@ export class EventCompetitionResolver {
     try {
       const eventCompetitionDb = await EventCompetition.findByPk(id, {
         transaction,
-        include: [{ model: SubEventCompetition }]
+        include: [{ model: SubEventCompetition }],
       });
-      const newName = `${eventCompetitionDb.name.replace(/(\d{4}-\d{4})/gi, '').trim()} ${year}-${
-        year + 1
-      }`;
+      const newName = `${eventCompetitionDb.name
+        .replace(/(\d{4}-\d{4})/gi, '')
+        .trim()} ${year}-${year + 1}`;
 
       const newEventCompetitionDb = new EventCompetition({
         ...eventCompetitionDb.toJSON(),
         id: undefined,
         visualCode: undefined,
         startYear: year,
-        name: newName
+        name: newName,
       });
 
-      const newEventCompetitionDbSaved = await newEventCompetitionDb.save({ transaction });
+      const newEventCompetitionDbSaved = await newEventCompetitionDb.save({
+        transaction,
+      });
       const newSubEvents = [];
       for (const subEventCompetition of eventCompetitionDb.subEventCompetitions) {
         const newSubEventCompetitionDb = new SubEventCompetition({
@@ -131,7 +133,6 @@ export class EventCompetitionResolver {
       await transaction.rollback();
       throw e;
     }
-
   }
 
   // @Mutation(returns => EventCompetition)

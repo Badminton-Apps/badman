@@ -3,32 +3,62 @@
 
   <ng-container *ngFor="let availabilityDay of loc.availibilities">
     <div class="location-days">
-      <div class="location-days-title mat-subheading-2">{{ 'competition.enrollment.play-day' | translate }}</div>
-      <div class="location-days-item" *ngFor="let day of availabilityDay.days; let i = index">
+      <div class="location-days-title mat-subheading-2">
+        {{ 'competition.enrollment.play-day' | translate }}
+      </div>
+      <div
+        class="location-days-item"
+        *ngFor="let day of availabilityDay.days; let i = index"
+      >
         <badman-play-days
-          (playDayChanged)="this.uppdateAvailabilityDay($event, i, availabilityDay)"
-          (playDayDeleted)="this.deleteAvailabilityDay('day', i, availabilityDay)"
+          (playDayChanged)="
+            this.uppdateAvailabilityDay($event, i, availabilityDay)
+          "
+          (playDayDeleted)="
+            this.deleteAvailabilityDay('day', i, availabilityDay)
+          "
           [day]="day"
         ></badman-play-days>
       </div>
       <div class="location-days-item">
-        <mat-label>{{ 'competition.enrollment.new-play-day' | translate }}</mat-label>
-        <badman-play-days (playDayDeleted)="this.uppdateAvailabilityDay($event, -1, availabilityDay)"></badman-play-days>
+        <mat-label>{{
+          'competition.enrollment.new-play-day' | translate
+        }}</mat-label>
+        <badman-play-days
+          (playDayDeleted)="
+            this.uppdateAvailabilityDay($event, -1, availabilityDay)
+          "
+        ></badman-play-days>
       </div>
     </div>
 
     <div class="location-exceptions">
-      <div class="location-exceptions-title mat-subheading-2">{{ 'competition.enrollment.exceptions' | translate }}</div>
-      <div class="location-exceptions-item" *ngFor="let exception of availabilityDay.exceptions; let i = index">
+      <div class="location-exceptions-title mat-subheading-2">
+        {{ 'competition.enrollment.exceptions' | translate }}
+      </div>
+      <div
+        class="location-exceptions-item"
+        *ngFor="let exception of availabilityDay.exceptions; let i = index"
+      >
         <badman-exception-days
-          (exeptionChanged)="this.uppdateAvailabilityDay($event, i, availabilityDay)"
-          (exeptionDeleted)="this.deleteAvailabilityDay('exception', i, availabilityDay)"
+          (exeptionChanged)="
+            this.uppdateAvailabilityDay($event, i, availabilityDay)
+          "
+          (exeptionDeleted)="
+            this.deleteAvailabilityDay('exception', i, availabilityDay)
+          "
           [exception]="exception"
         ></badman-exception-days>
       </div>
       <div class="location-exceptions-item">
-        <mat-label>{{ 'competition.enrollment.new-exception' | translate }}</mat-label>
-        <badman-exception-days (exeptionChanged)="this.uppdateAvailabilityDay($event, -1, availabilityDay)"></badman-exception-days>
+        <mat-label>{{
+          'competition.enrollment.new-exception' | translate
+        }}</mat-label>
+        <badman-exception-days
+          (exeptionChanged)="
+            this.uppdateAvailabilityDay($event, -1, availabilityDay)
+          "
+        ></badman-exception-days>
       </div>
     </div>
   </ng-container>
