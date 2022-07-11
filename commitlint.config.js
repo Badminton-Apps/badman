@@ -1,21 +1,26 @@
+const {
+  utils: { getProjects },
+} = require('./code/node_modules/@commitlint/config-nx-scopes');
+
 module.exports = {
   extends: ['./code/node_modules/@commitlint/config-conventional'],
   rules: {
-    "scope-enum": [
-      "api",
-      "client",
-      "scripts",
-      "worker-sync",
-      "worker-ranking",
-      "lib-authorization",
-      "lib-database",
-      "lib-generator",
-      "lib-mailing",
-      "lib-notification",
-      "lib-pupeteer",
-      "lib-queue",
-      "lib-search",
-      "lib-ranking-calc",
+    'scope-empty': [2, 'never'],
+    'scope-enum': async (ctx) => [
+      2,
+      'always',
+      [
+        ...(
+          await getProjects(
+            ctx,
+            ({ name, projectType }) => !name.includes('e2e')
+          )
+        )?.map((r) =>
+          r
+            ?.replace('code-apps-', '')
+            ?.replace('code-libs', 'lib')
+        ),
+      ],
     ],
-  }
+  },
 };
