@@ -83,7 +83,7 @@ export class EditEventCompetitionComponent implements OnInit {
           filter(() => this.formGroup.valid)
         )
         .subscribe((form) => {
-          const newEvent = { ...event, ...form } ;
+          const newEvent = { ...event, ...form };
           this.save(newEvent);
         });
     });
