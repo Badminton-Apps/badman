@@ -64,6 +64,10 @@ export class RankingEvolutionComponent implements OnInit {
         return this.playerService.getPlayerEvolution(playerId, system.id);
       }),
       map((x) => {
+        if (x == null) {
+          throw new Error('invalid evolution');
+        }
+
         return x.reduce(
           (
             acc: {

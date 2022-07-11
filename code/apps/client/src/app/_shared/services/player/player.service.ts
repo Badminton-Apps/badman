@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { apolloCache } from '../../../graphql.module';
 import * as addPlayerMutation from '../../graphql/players/mutations/AddPlayerMutation.graphql';
@@ -151,7 +151,7 @@ export class PlayerService {
     offset: number,
     limit: number,
     where?: { [key: string]: unknown }
-  ): Observable<Game[] | undefined> {
+  ): Observable<Game[]> {
     return this.apollo
       .query<{ player: Partial<Player> }>({
         query: gamesQuery,
@@ -165,8 +165,9 @@ export class PlayerService {
         fetchPolicy: 'no-cache',
       })
       .pipe(
-        map((x) => x.data?.player?.games?.map((g) => new Game(g, rankingType)))
-      );
+        map((x) => x.data?.player?.games?.map((g) => new Game(g, rankingType))),
+        filter((x) => x !== null)
+      ) as Observable<Game[]>;
   }
 
   getPlayerEvolution(

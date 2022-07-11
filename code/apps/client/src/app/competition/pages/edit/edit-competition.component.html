@@ -16,7 +16,7 @@
         [type]="event.type"
         [subEvent]="subEvent"
         [formGroup]="$any(this.formGroup.get('subEvents'))?.at(i)"
-        (onDelete)="this.removeSubEvent(event, $event)"
+        (whenDelete)="this.removeSubEvent(event, $event)"
       ></badman-event-competition-level-fields>
     </div>
 

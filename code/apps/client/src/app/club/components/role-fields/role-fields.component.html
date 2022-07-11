@@ -20,7 +20,7 @@
     <ng-container *ngFor="let claim of group.claims">
       <badman-claim
         [claim]="claim"
-        (onChange)="claimChanged(claim, $event)"
+        (whenChange)="claimChanged(claim, $event)"
       ></badman-claim>
     </ng-container>
   </ng-container>
