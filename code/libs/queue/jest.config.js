@@ -1,5 +1,5 @@
 /* eslint-disable */
-export default {
+module.exports = {
   displayName: 'queue',
   preset: '../../jest.preset.js',
   globals: {
