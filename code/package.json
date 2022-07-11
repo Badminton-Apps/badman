@@ -1,6 +1,6 @@
 {
   "name": "badman",
-  "version": "5.0.1",
+  "version": "5.1.1",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
@@ -29,7 +29,7 @@
     "update": "nx migrate latest",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
-    "help": "nx help",
+    "standard-version": "node ./scripts/standard-version.js",
     "prepare": "cd .. && husky install"
   },
   "private": true,
@@ -159,6 +159,7 @@
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
+    "chalk": "^5.0.1",
     "codelyzer": "^6.0.2",
     "cypress": "^9.7.0",
     "eslint": "^8.17.0",
@@ -183,6 +184,7 @@
     "nx": "14.1.9",
     "prettier": "^2.6.2",
     "protractor": "^7.0.0",
+    "standard-version": "^9.5.0",
     "ts-jest": "27.1.5",
     "ts-node": "^10.8.1",
     "typescript": "~4.6.4"

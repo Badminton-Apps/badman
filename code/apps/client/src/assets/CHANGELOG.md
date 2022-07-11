@@ -1,3 +1,48 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [5.1.1](https://github.com/Badminton-Apps/badman/compare/v5.1.0...v5.1.1) (2022-07-11)
+
+## [5.1.0](https://github.com/Badminton-Apps/badman/compare/v5.0.0...v5.1.0) (2022-07-11)
+
+
+### Features
+
+* **lib-ranking-calc:** calculate update for all players ([7c0200b](https://github.com/Badminton-Apps/badman/commit/7c0200b12695c721bb68b6c09b1a3c7bba851bca))
+
+
+### Bug Fixes
+
+* **ci:** jest config wasn't configured correctly ([def39a7](https://github.com/Badminton-Apps/badman/commit/def39a74b320b122c87da462a7aec743e4809e9a))
+* **lib-api-grapqhl:** resolved linting errors ([50320e7](https://github.com/Badminton-Apps/badman/commit/50320e7df6f8c4fed0cce50e83609ab159521cba))
+
+## [5.4.0](https://github.com/Badminton-Apps/badman/compare/v5.0.0...v5.4.0) (2022-07-11)
+
+
+### Features
+
+* **lib-ranking-calc:** calculate update for all players ([7c0200b](https://github.com/Badminton-Apps/badman/commit/7c0200b12695c721bb68b6c09b1a3c7bba851bca))
+
+
+### Bug Fixes
+
+* **ci:** jest config wasn't configured correctly ([def39a7](https://github.com/Badminton-Apps/badman/commit/def39a74b320b122c87da462a7aec743e4809e9a))
+* **lib-api-grapqhl:** resolved linting errors ([50320e7](https://github.com/Badminton-Apps/badman/commit/50320e7df6f8c4fed0cce50e83609ab159521cba))
+
+## [5.3.0](https://github.com/Badminton-Apps/badman/compare/v5.0.0...v5.3.0) (2022-07-11)
+
+
+### Features
+
+* **lib-ranking-calc:** calculate update for all players ([7c0200b](https://github.com/Badminton-Apps/badman/commit/7c0200b12695c721bb68b6c09b1a3c7bba851bca))
+
+
+### Bug Fixes
+
+* **ci:** jest config wasn't configured correctly ([def39a7](https://github.com/Badminton-Apps/badman/commit/def39a74b320b122c87da462a7aec743e4809e9a))
+* **lib-api-grapqhl:** resolved linting errors ([50320e7](https://github.com/Badminton-Apps/badman/commit/50320e7df6f8c4fed0cce50e83609ab159521cba))
+
 # [4.38.0](https://github.com/Badminton-Apps/badman/compare/v4.37.2...v4.38.0) (2022-05-02)
 
 ### Features
