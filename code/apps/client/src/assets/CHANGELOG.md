@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 5.1.3 (2022-07-11)
+
+
+### Bug Fixes
+
+* **ci:** using latest config ([56f6605](https://github.com/Badminton-Apps/badman/commit/56f6605754e638cf15a7b3bd77cf644212bdaccf))
+
 ### 5.1.2 (2022-07-11)
 
 
