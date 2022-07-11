@@ -7,6 +7,7 @@ standardVersion({
   silent: false,
   skip: {
     commit: true,
+    tag: true,
   },
 })
   .then(async () => {
@@ -32,6 +33,14 @@ standardVersion({
     await runExecFile('', 'git', [
       'commit',
       '-m',
+      `chore(release): ${version}`,
+    ]);
+
+    // Git tag with annotation
+    await runExecFile('', 'git', [
+      'tag',
+      `${version}`,
+      `-m`,
       `chore(release): ${version}`,
     ]);
 
