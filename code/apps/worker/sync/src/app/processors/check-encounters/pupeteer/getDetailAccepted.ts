@@ -9,7 +9,7 @@ export async function detailAccepted(
     timeout: 5000,
   }
 ) {
-  const { page, timeout } = pupeteer;
+  const { page, } = pupeteer;
   const selector = `.content .wrapper--legacy tbody .icon_rowcheck`;
   {
     const targetPage = page;
