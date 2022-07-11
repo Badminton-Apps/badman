@@ -8,7 +8,6 @@
         "push": true,
         "metadata": {
           "images": [
-            "badman/worker/sync",
             "ghcr.io/badminton-apps/badman/worker/sync"
           ],
           "tags": [
