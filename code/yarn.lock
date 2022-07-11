@@ -1555,7 +1555,7 @@
 
 "@commitlint/cli@^17.0.3":
   version "17.0.3"
-  resolved "https://registry.npmjs.org/@commitlint/cli/-/cli-17.0.3.tgz"
+  resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-17.0.3.tgz#50be9d9a8d79f6c47bfd2703638fe65215eb2526"
   integrity sha512-oAo2vi5d8QZnAbtU5+0cR2j+A7PO8zuccux65R/EycwvsZrDVyW518FFrnJK2UQxbRtHFFIG+NjQ6vOiJV0Q8A==
   dependencies:
     "@commitlint/format" "^17.0.0"
@@ -1575,6 +1575,11 @@
   integrity sha512-HCnzTm5ATwwwzNVq5Y57poS0a1oOOcd5pc1MmBpLbGmSysc4i7F/++JuwtdFPu16sgM3H9J/j2zznRLOSGVO2A==
   dependencies:
     conventional-changelog-conventionalcommits "^5.0.0"
+
+"@commitlint/config-nx-scopes@^17.0.0":
+  version "17.0.0"
+  resolved "https://registry.yarnpkg.com/@commitlint/config-nx-scopes/-/config-nx-scopes-17.0.0.tgz#094d1b2a7af6c3126d3b0d9e95907406c37c80c2"
+  integrity sha512-kpBtCtB3jzBqznltVQza4AnE0ZnHgG7t+n+0Yl746IuSGnVKmfiQ+XpYGi7kJqIxc1VqSGS7PHl/jQgrQ4PLQQ==
 
 "@commitlint/config-validator@^17.0.3":
   version "17.0.3"

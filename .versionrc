@@ -3,44 +3,6 @@
     {
       "filename": "/code/apps/api/charts/Chart.yaml",
       "updater": "/code/scripts/update-helm.js"
-    },
-    {
-      "filename": "/code/apps/api/charts/Chart.yaml",
-      "updater": "/code/scripts/update-helm.js"
-    }
-  ],
-  "types": [
-    {
-      "type": "feat",
-      "section": "Added"
-    },
-    {
-      "type": "fix",
-      "section": "Fixed"
-    },
-    {
-      "type": "change",
-      "section": "Changed"
-    },
-    {
-      "type": "chore",
-      "hidden": true
-    },
-    {
-      "type": "docs",
-      "hidden": true
-    },
-    {
-      "type": "style",
-      "hidden": true
-    },
-    {
-      "type": "perf",
-      "hidden": true
-    },
-    {
-      "type": "test",
-      "hidden": true
     }
   ]
 }
