@@ -9,7 +9,7 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/api/database';
-import { RankingCalc, PointCalculator } from '../utils';
+import { RankingCalc, PointCalculator, splitInChunks } from '../utils';
 import { Logger } from '@nestjs/common';
 
 export class BvlRankingCalc extends RankingCalc {
@@ -87,6 +87,11 @@ export class BvlRankingCalc extends RankingCalc {
       gamesStartDate = slice.end;
     }
 
+    // Get all players (with latest ranking)
+    const players = await this.getPlayers({
+      transaction: options?.transaction,
+    });
+
     for (const range of dateRanges) {
       // Get all relevant games and players
       const gamesRange = await this.getGamesAsync(range.start, range.end, {
@@ -94,19 +99,10 @@ export class BvlRankingCalc extends RankingCalc {
         logger: this._logger,
       });
 
-      const playersRange = await this.getPlayersForGamesAsync(
-        gamesRange,
-        range.start,
-        range.end,
-        {
-          transaction: options?.transaction,
-        }
-      );
-
       // Calculate new points
       await this.calculateRankingPointsPerGameAsync(
         gamesRange,
-        playersRange,
+        players,
         range.end,
         { transaction: options.transaction }
       );
@@ -115,9 +111,6 @@ export class BvlRankingCalc extends RankingCalc {
     this._logger.debug('Updating ranking');
 
     // Calculate places for new period
-    const players = await this.getPlayersAsync(originalStart, originalEnd, {
-      transaction: options?.transaction,
-    });
     await this._calculateRankingPlacesAsync(
       originalStart,
       originalEnd,
@@ -157,7 +150,6 @@ export class BvlRankingCalc extends RankingCalc {
                 [Op.and]: [{ [Op.gt]: startDate }, { [Op.lte]: endDate }],
               },
             },
-            required: true,
           },
         ],
         transaction,
@@ -180,7 +172,7 @@ export class BvlRankingCalc extends RankingCalc {
       amountSinceStart > this.rankingType.inactivityAmount && updateRankings;
 
     if (canBeInactive) {
-      this._logger.verbose('Checking inactive');
+      this._logger.verbose(`Checking inactive for ${players.size} players`);
       gameCount = await this.countGames(
         players,
         endDate,
@@ -189,6 +181,7 @@ export class BvlRankingCalc extends RankingCalc {
       );
     }
 
+    this._logger.debug('Getting new places');
     for (const [, player] of players) {
       const rankingPoints = eligbleForRanking.get(player.id) || [];
       const inactive = { single: false, double: false, mix: false };
@@ -363,82 +356,6 @@ export class BvlRankingCalc extends RankingCalc {
     const startDate = moment(endDate)
       .subtract(rankingType.inactivityAmount, rankingType.inactivityUnit)
       .toDate();
-
-    // const linkIds = (
-    //   await rankingType.getGroups({
-    //     attributes: [],
-    //     transaction,
-    //     include: [
-    //       {
-    //         attributes: [],
-    //         model: SubEventCompetition,
-    //         include: [
-    //           {
-    //             attributes: [],
-    //             model: DrawCompetition,
-    //             include: [
-    //               {
-    //                 model: EncounterCompetition,
-    //                 attributes: [],
-    //               },
-    //             ],
-    //           },
-    //         ],
-    //       },
-    //       {
-    //         attributes: [],
-    //         model: SubEventTournament,
-    //         include: [
-    //           {
-    //             attributes: [],
-    //             model: DrawTournament,
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   })
-    // )
-    //   ?.map((group) => {
-    //     const comppids = group?.subEventCompetitions
-    //       ?.map((subEvent) =>
-    //         subEvent.draws?.map((draw) =>
-    //           draw?.encounters?.map((encounter) => encounter?.id)
-    //         )
-    //       )
-    //       .flat(2);
-    //     const tourids = group?.subEventTournaments
-    //       ?.map((subEvent) => subEvent.draws?.map((draw) => draw?.id))
-    //       .flat(1);
-    //     return [...comppids, ...tourids];
-    //   })
-    //   ?.flat();
-
-    // const counts = await Player.count({
-    //   where: {
-    //     playerId: {
-    //       [Op.in]: Array.from(players.keys()),
-    //     },
-    //   },
-    //   include: [
-    //     {
-    //       model: Game,
-    //       attributes: ['gameType'],
-    //       where: {
-    //         linkId: { [Op.in]: linkIds },
-    //         playedAt: {
-    //           [Op.and]: [
-    //             {
-    //               [Op.gt]: startDate,
-    //             },
-    //             { [Op.lte]: endDate },
-    //           ],
-    //         },
-    //       },
-    //       required: true,
-    //     },
-    //   ],
-    //   group: ['RankingPoint.playerId', 'game.gameType'],
-    // });
 
     const counts = await RankingPoint.count({
       where: {

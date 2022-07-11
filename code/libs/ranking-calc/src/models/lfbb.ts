@@ -126,6 +126,11 @@ export class LfbbRankingCalc extends RankingCalc {
       gamesStartDate = slice.end;
     }
 
+    // Get all players (with latest ranking)
+    const players = await this.getPlayers({
+      transaction: options?.transaction,
+    });
+
     for (const range of dateRanges) {
       // Get all relevant games and players
       const gamesRange = await this.getGamesAsync(range.start, range.end, {
@@ -133,19 +138,10 @@ export class LfbbRankingCalc extends RankingCalc {
         logger: this._logger,
       });
 
-      const playersRange = await this.getPlayersForGamesAsync(
-        gamesRange,
-        range.start,
-        range.end,
-        {
-          transaction: options?.transaction,
-        }
-      );
-
       // Calculate new points
       await this.calculateRankingPointsPerGameAsync(
         gamesRange,
-        playersRange,
+        players,
         range.end,
         { transaction: options.transaction }
       );
@@ -154,9 +150,6 @@ export class LfbbRankingCalc extends RankingCalc {
     this._logger.debug('Updating ranking');
 
     // Calculate places for new period
-    const players = await this.getPlayersAsync(originalStart, originalEnd, {
-      transaction: options?.transaction,
-    });
     await this._calculateRankingPlacesAsync(
       originalStart,
       originalEnd,
