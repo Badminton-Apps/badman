@@ -3,9 +3,7 @@ export const splitInChunks = (array, sizeChunks = 500) => {
     array = [array];
   }
 
-
   const newArray = [];
-
 
   while (array.length) {
     const chunk = array.splice(0, sizeChunks);
