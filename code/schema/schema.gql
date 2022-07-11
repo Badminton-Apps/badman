@@ -561,15 +561,15 @@ type TeamPlayer {
   gender: String
   birthDate: DateTime
   sub: String
-  myTeams: Team
-  entries: EventEntry
+  myTeams: [Team!]
+  entries: [EventEntry!]
   firstName: String
   lastName: String
   fullName: String
   competitionPlayer: Boolean
   slug: String
   memberId: String
-  rankingPoints: RankingPoint
+  rankingPoints: [RankingPoint!]
 
   """
   (Default) sorting: DESC 
@@ -577,12 +577,12 @@ type TeamPlayer {
   """
   rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]!
   rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]!
-  comments: Comment
-  teams: Team
-  clubs: ClubPlayer
-  games: Game
-  roles: Role
-  claims: Claim
+  comments: [Comment!]
+  teams: [Team!]
+  clubs: [ClubPlayer!]
+  games: [Game!]
+  roles: [Role!]
+  claims: [Claim!]
 
   """Team Player end date"""
   end: DateTime
@@ -601,23 +601,23 @@ type GamePlayer {
   gender: String
   birthDate: DateTime
   sub: String
-  myTeams: Team
-  entries: EventEntry
+  myTeams: [Team!]
+  entries: [EventEntry!]
   firstName: String
   lastName: String
   fullName: String
   competitionPlayer: Boolean
   slug: String
   memberId: String
-  rankingPoints: RankingPoint
-  rankingPlaces: RankingPlace
-  rankingLastPlaces: RankingLastPlace
-  comments: Comment
-  teams: Team
-  clubs: ClubPlayer
-  games: Game
-  roles: Role
-  claims: Claim
+  rankingPoints: [RankingPoint!]
+  rankingPlaces: [RankingPlace!]
+  rankingLastPlaces: [RankingLastPlace!]
+  comments: [Comment!]
+  teams: [Team!]
+  clubs: [ClubPlayer!]
+  games: [Game!]
+  roles: [Role!]
+  claims: [Claim!]
 
   """Team Player end date"""
   end: DateTime
@@ -638,11 +638,11 @@ type ClubPlayer {
   fullName: String
   useForTeamName: String
   abbreviation: String
-  teams: Team
-  roles: Role
-  players: Player
-  comments: Comment
-  locations: Location
+  teams: [Team!]
+  roles: [Role!]
+  players: [Player!]
+  comments: [Comment!]
+  locations: [Location!]
   slug: String
   clubMembership: ClubPlayerMembership!
 }
@@ -720,10 +720,10 @@ type Query {
   roles(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Role!]!
   game(id: ID!): Game!
   games(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Game!]!
-  search(query: String!): [Search!]!
+  search(query: String!): [search!]!
 }
 
-union Search = Player | EventCompetition | EventTournament | Club
+union search = Player | EventCompetition | EventTournament | Club
 
 type Mutation {
   updatePlayer(data: PlayerUpdateInput!): Player!

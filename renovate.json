@@ -1,5 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "schedule:nonOfficeHours"],
+  "extends": [
+    "config:base",
+    "schedule:nonOfficeHours",
+    ":preserveSemverRanges"
+  ],
   "ignoreDeps": ["@agm/core"]
 }
