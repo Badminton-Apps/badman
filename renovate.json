@@ -5,5 +5,22 @@
     "schedule:nonOfficeHours",
     ":preserveSemverRanges"
   ],
-  "ignoreDeps": ["@agm/core"]
+  "ignoreDeps": [
+    "@agm/core"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "automerge": true
+    }
+  ]
 }
