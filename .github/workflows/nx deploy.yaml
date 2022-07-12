@@ -27,10 +27,6 @@ jobs:
         agent: [1, 2]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          cache: 'npm'
-          node-version-file: '.nvmrc'
       - uses: c-hive/gha-yarn-cache@v2
       - run: yarn install --frozen-lockfile
       - name: Start Nx Agent ${{ matrix.agent }}
