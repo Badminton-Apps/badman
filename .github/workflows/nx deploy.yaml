@@ -31,6 +31,8 @@ jobs:
           echo "Found hash: $LAST_TAG_HASH"
           echo "LAST_TAG_HASH=$LAST_TAG_HASH" >> $GITHUB_ENV
 
+      - uses: c-hive/gha-yarn-cache@v2
+  
       - name: 'Install Dependencies'
         run: yarn install --frozen-lockfile
 
@@ -50,6 +52,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - uses: c-hive/gha-yarn-cache@v2
 
       - name: 'Install Dependencies'
         run: yarn install --frozen-lockfile
