@@ -11,7 +11,6 @@
             "ghcr.io/badminton-apps/badman/worker/sync"
           ],
           "tags": [
-            "type=schedule",
             "type=ref,event=tag",
             "type=semver,pattern={{version}}",
             "type=semver,pattern={{major}}.{{minor}}",
