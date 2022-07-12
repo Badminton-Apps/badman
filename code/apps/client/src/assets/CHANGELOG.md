@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.2.0](https://github.com/Badminton-Apps/badman/compare/v5.1.7...v5.2.0) (2022-07-12)
+
+
+### Features
+
+* **ci:** adding caching for yarn ([6e6280c](https://github.com/Badminton-Apps/badman/commit/6e6280cebcbdd81f04a274caf14946064850228f))
+
 ### [5.1.7](https://github.com/Badminton-Apps/badman/compare/v5.1.6...v5.1.7) (2022-07-12)
 
 ### [5.1.6](https://github.com/Badminton-Apps/badman/compare/v5.1.5...v5.1.6) (2022-07-12)
