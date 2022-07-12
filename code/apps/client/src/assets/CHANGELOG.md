@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.5](https://github.com/Badminton-Apps/badman/compare/v5.1.4...v5.1.5) (2022-07-12)
+
+
+### Bug Fixes
+
+* **ci:** docker meta data tags ([6391e44](https://github.com/Badminton-Apps/badman/commit/6391e448985f6de8b71fae1202db48d3a228384f))
+* **ci:** typo in client image ([cc16228](https://github.com/Badminton-Apps/badman/commit/cc16228cbc1322a47145cbc84627bff37a0d14a4))
+
 ### [5.1.4](https://github.com/Badminton-Apps/badman/compare/v5.1.3...v5.1.4) (2022-07-12)
 
 
