@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.4.0](https://github.com/Badminton-Apps/badman/compare/v5.0.0...v5.4.0) (2022-07-12)
+
+
+### Features
+
+* **lib-ranking-calc:** calculate update for all players ([7c0200b](https://github.com/Badminton-Apps/badman/commit/7c0200b12695c721bb68b6c09b1a3c7bba851bca))
+
+
+### Bug Fixes
+
+* **ci:** base and head ([871665a](https://github.com/Badminton-Apps/badman/commit/871665afb5c9ded6bf3e6d35b8752b882ba5d75a))
+* **ci:** fetch dept ([24d0e35](https://github.com/Badminton-Apps/badman/commit/24d0e35029569da2ee4951939c9d48a15b5465dc))
+* **ci:** get last ([9233087](https://github.com/Badminton-Apps/badman/commit/9233087c201e88f4b08e53004f75a4d3815fae21))
+* **ci:** install deps before running commands ([ed36c6c](https://github.com/Badminton-Apps/badman/commit/ed36c6c058d60791987e4849db35090b46fd15bb))
+* **ci:** install via yarn ([219b0f4](https://github.com/Badminton-Apps/badman/commit/219b0f4774f38f8896bf6f5c1074f00b31fa7d7f))
+* **ci:** jest config wasn't configured correctly ([def39a7](https://github.com/Badminton-Apps/badman/commit/def39a74b320b122c87da462a7aec743e4809e9a))
+* **ci:** moving tag to after commit ([d2f2a58](https://github.com/Badminton-Apps/badman/commit/d2f2a580b187d15fe3d7d3007233b7752387aeea))
+* **ci:** switch double to single quotes ([303ff80](https://github.com/Badminton-Apps/badman/commit/303ff80ba64f3af51c92f069d00ceee12684a7cc))
+* **ci:** using latest config ([56f6605](https://github.com/Badminton-Apps/badman/commit/56f6605754e638cf15a7b3bd77cf644212bdaccf))
+* **deps:** update nrwl monorepo to v14.4.2 ([79bd8ec](https://github.com/Badminton-Apps/badman/commit/79bd8ec9ffaf46e4c24d7988f938eaf4908aec3a))
+* **lib-api-grapqhl:** resolved linting errors ([50320e7](https://github.com/Badminton-Apps/badman/commit/50320e7df6f8c4fed0cce50e83609ab159521cba))
+
 ## [5.3.0](https://github.com/Badminton-Apps/badman/compare/v5.0.0...v5.3.0) (2022-07-11)
 
 
