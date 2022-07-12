@@ -25,7 +25,10 @@ jobs:
       - name: Get latest Tag
         id: get-latest-tag
         run: |
-          echo "LAST_TAG=$(git rev-list -n 1 $(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1)))" >> $GITHUB_ENV
+          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          echo "Found tag: $TAG_VERSION"
+          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+          echo "$LAST_TAG_HASH" >> $GITHUB_ENV
 
       - name: 'Install Dependencies'
         run: yarn install --frozen-lockfile
@@ -61,10 +64,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Build project'
-        run: npx nx affected --target=build --base=${{ env.LAST_TAG }} --head= origin/main
+        run: npx nx affected --target=build --base=${{ env.LAST_TAG_HASH }} --head= origin/main
 
       - name: 'Build docker'
-        run: npx nx affected --target=docker --base=${{ env.LAST_TAG }} --head= origin/main
+        run: npx nx affected --target=docker --base=${{ env.LAST_TAG_HASH }} --head= origin/main
 
       - name: 'Deploy'
-        run: npx nx affected --target=deploy --base=${{ env.LAST_TAG }} --head= origin/main
+        run: npx nx affected --target=deploy --base=${{ env.LAST_TAG_HASH }} --head= origin/main
