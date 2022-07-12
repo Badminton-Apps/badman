@@ -9,7 +9,7 @@ env:
   GKE_ZONE: europe-west1 # Add your cluster zone here.
 
 jobs:
-  build:
+  version:
     name: Docker build
     runs-on: ubuntu-latest
 
@@ -39,7 +39,17 @@ jobs:
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           yarn run standard-version
+  build:
+    name: Docker build
+    runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./code
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
       - id: 'auth'
         uses: 'google-github-actions/auth@v0.8.0'
         with:
