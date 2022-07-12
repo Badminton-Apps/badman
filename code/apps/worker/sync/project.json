@@ -7,11 +7,8 @@
       "options": {
         "push": true,
         "metadata": {
-          "images": [
-            "ghcr.io/badminton-apps/badman/worker/sync"
-          ],
+          "images": ["ghcr.io/badminton-apps/badman/worker/sync"],
           "tags": [
-            "type=sha,prefix=sha-",
             "type=semver,pattern={{version}}",
             "type=semver,pattern={{major}}.{{minor}}",
             "type=semver,pattern={{major}}",
