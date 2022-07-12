@@ -2395,20 +2395,20 @@
     lodash.omit "4.5.0"
     tslib "2.4.0"
 
-"@nestjs/bull-shared@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@nestjs/bull-shared/-/bull-shared-0.0.5.tgz#5cd9907fdc99cdd2a2088406bcae086e13918c4a"
-  integrity sha512-MPkl1q7N/ZlzLq4SC/NWdZ+7pIOF9x70+92xBcUPx7J6mewqVR1gzADHzEexErZEgg+K/n5nwJGe+BLlYFTUgg==
+"@nestjs/bull-shared@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/bull-shared/-/bull-shared-0.1.0.tgz#3f2b21432b716944fbd35f9fb22c059a0b9c0395"
+  integrity sha512-BVVLj0HeLZ3bj9G/AXW+43AVT8BSSgP+s+9+YHrkGSLLgXNc5G2lRL20zOTqMO1gPiKRwOOvO8r3//5Ijyaikg==
   dependencies:
-    tslib "2.3.1"
+    tslib "2.4.0"
 
-"@nestjs/bull@^0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@nestjs/bull/-/bull-0.5.5.tgz#1ee9b7d8b78a52af58c4654de8d765a2a2b16862"
-  integrity sha512-g42/KH8YJmJE60kQVzQucWm5xEfyOj8iwXp2s3Ox3Yu6B/mmzNmqmXLnACnaD15q3WtH84vOhME41CJANxbQeQ==
+"@nestjs/bull@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/bull/-/bull-0.6.0.tgz#45a26806fd3797b572d09bf4bc3fd1e7e573f062"
+  integrity sha512-QiuCEwwJ9ahENAS4NEaa3sFWZrasjYRuQrFRV5Z64YeQOj1c+IH3PJ3oq2BIUL3m9sNXPVeJrKkRjS3OByX0ng==
   dependencies:
-    "@nestjs/bull-shared" "^0.0.5"
-    tslib "2.3.1"
+    "@nestjs/bull-shared" "^0.1.0"
+    tslib "2.4.0"
 
 "@nestjs/common@^8.4.6":
   version "8.4.7"
