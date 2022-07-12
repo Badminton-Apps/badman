@@ -12,5 +12,8 @@ module.exports = async function (args, cmd) {
   if (stderr) {
     throw new Error(stderr);
   }
+  if (stdout) {
+    core.debug(stdout)
+  }
   return stdout;
 };

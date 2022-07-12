@@ -57,8 +57,7 @@ standardVersion({
         currentBranch.trim(),
       ]);
     } catch (err) {
-      core.error(err);
-      core.setFailed(`Action failed with error: ${err.message}`);
+      core.setFailed(err);
     }
   })
   .catch((err) => {
