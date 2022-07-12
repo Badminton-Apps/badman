@@ -9,7 +9,7 @@
       "options": {
         "push": true,
         "metadata": {
-          "images": ["ghcr.io/badminton-apps/client/client"],
+          "images": ["ghcr.io/badminton-apps/badman/client"],
           "tags": [
             "type=semver,pattern={{version}}",
             "type=semver,pattern={{major}}.{{minor}}",
