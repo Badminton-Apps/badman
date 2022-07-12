@@ -48,23 +48,15 @@ jobs:
           fetch-depth: 0
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
-      - name: Get latest Tag
-        id: get-latest-tag
-        run: |
-          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          echo "Found tag: $TAG_VERSION"
-          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
-          echo "Found hash: $LAST_TAG_HASH"
-          echo "LAST_TAG_HASH=$LAST_TAG_HASH" >> $GITHUB_ENV        
+      - uses: c-hive/gha-yarn-cache@v2
+        with:
+          directory: ./code
+      - run: yarn install --frozen-lockfile
       - name: Standard Version
         run: |
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           yarn run standard-version
-      - uses: c-hive/gha-yarn-cache@v2
-        with:
-          directory: ./code
-      - run: yarn install --frozen-lockfile
       - run: npx nx-cloud start-ci-run
       - run: npx nx affected --target=build --parallel --max-parallel=3
       - run: npx nx affected --target=lint  --parallel --max-parallel=3
