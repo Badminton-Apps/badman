@@ -26,7 +26,7 @@ standardVersion({
     // run `nx update helm` to update the helm chart
     await runExec(
       '',
-      `npx nx affected --target=update-version  --newVersion=${version} --base=${base} --head=${head}`
+      `npx nx affected --target=update-version  --newVersion=${version} ${base} ${head}`
     );
 
     // Git add .
