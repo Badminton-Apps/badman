@@ -11,10 +11,6 @@ env:
   NX_BRANCH: ${{ github.event.number || github.ref }}
   NX_RUN_GROUP: ${{ github.run_id }}
   NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
-  GKE_CREDENTIALS: ${{ secrets.GKE_CREDENTIALS }} # Add your cluster zone here.
-  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: badman # Add your cluster name here.
-  GKE_ZONE: europe-west1 # Add your cluster zone here
 
 jobs:
   base:
@@ -118,10 +114,24 @@ jobs:
     env:
       NX_CLOUD_DISTRIBUTED_EXECUTION: false
       INPUT_PUSH: true
+      GKE_CREDENTIALS: ${{ secrets.GKE_CREDENTIALS }}
+      PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+      GKE_CLUSTER: badman
+      GKE_ZONE: europe-west1
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v0.8.0'
+        with:
+          credentials_json: '${{ env.GKE_CREDENTIALS }}'
+
+      - id: 'get-credentials'
+        uses: 'google-github-actions/get-gke-credentials@v0.7.0'
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}          
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
