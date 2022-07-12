@@ -136,6 +136,7 @@ jobs:
         with:
           directory: ./code
       - run: yarn install --frozen-lockfile
+      - run: npx nx affected --target=build  --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx affected --target=docker --base=${{ needs.base.outputs.base }} --head=origin/main
         env:
           INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
