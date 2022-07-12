@@ -7,19 +7,19 @@ const exec = promisify(require('child_process').exec);
 
 module.exports = async function (args, cmd) {
   core.debug(`Running: ${cmd}`, args);
-  try {
-    const { stderr, stdout } = await exec(cmd);
-    // If exec returns content in stderr, but no error, print it as a warning
-    if (stderr) {
-      core.warning(stderr);
-    }
-    if (stdout) {
-      core.debug(stdout);
-    }
-    return stdout;
-  } catch (error) {
-    // If execFile returns an error, print it and exit with return code 1
-    core.error(error.stderr || error.message);
-    throw error;
-  }
+
+  const promise = exec(cmd);
+  const child = promise.child;
+
+  child.stdout.on('data', function (data) {
+    core.debug('stdout: ' + data);
+  });
+  child.stderr.on('data', function (data) {
+    core.error('stderr: ' + data);
+  });
+  child.on('close', function (code) {
+    core.debug('closing code: ' + code);
+  });
+
+  return promise;
 };
