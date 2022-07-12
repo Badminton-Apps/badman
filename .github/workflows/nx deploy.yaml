@@ -24,18 +24,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       base: ${{ steps.nx_hash.outputs.base }}
-      head: ${{ steps.nx_hash.outputs.head }}
     steps:
       - name: Checkout [main]
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v2
       - id: nx_hash
-        run: | 
-          echo "::set-output name=base::${{env.NX_BASE}}"
-          echo "::set-output name=head::${{env.NX_HEAD}}"  
+        run: |
+          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          echo "Found tag: $TAG_VERSION"
+          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+          echo "Found hash: $LAST_TAG_HASH"
+          echo "::set-output name=base::$LAST_TAG_HASH"
 
   agents:
     name: Agent ${{ matrix.agent }}
