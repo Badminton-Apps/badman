@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.1](https://github.com/Badminton-Apps/badman/compare/v5.1.0...v5.1.1) (2022-07-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/bull to ^0.6.0 ([0a0f198](https://github.com/Badminton-Apps/badman/commit/0a0f19818777c909ddc6d82ee99cfe09a52d87ff))
+
 ## [5.1.0](https://github.com/Badminton-Apps/badman/compare/v5.0.0...v5.1.0) (2022-07-12)
 
 
