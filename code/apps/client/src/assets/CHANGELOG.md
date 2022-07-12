@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.1](https://github.com/Badminton-Apps/badman/compare/v5.1.0...v5.1.1) (2022-07-12)
+
+
+### Bug Fixes
+
+* **ci:** downgrading chalk to 4.0.0 ([ec10164](https://github.com/Badminton-Apps/badman/commit/ec10164202e023a7b819536306d4e6feb11d3b33))
+
 ## [5.1.0](https://github.com/Badminton-Apps/badman/compare/v5.0.0...v5.1.0) (2022-07-12)
 
 
