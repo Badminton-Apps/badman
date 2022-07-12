@@ -39,7 +39,7 @@ standardVersion({
     // Git tag with annotation
     await runExecFile('', 'git', [
       'tag',
-      `${version}`,
+      `v${version}`,
       `-m`,
       `chore(release): ${version}`,
     ]);
