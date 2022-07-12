@@ -42,6 +42,7 @@ jobs:
   build:
     name: Docker build
     runs-on: ubuntu-latest
+    needs: version
 
     defaults:
       run:
