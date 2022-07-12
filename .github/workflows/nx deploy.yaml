@@ -46,7 +46,7 @@ jobs:
         working-directory: ./code
     strategy:
       matrix:
-        agent: [1, 2]
+        agent: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v3
       - uses: c-hive/gha-yarn-cache@v2
@@ -78,9 +78,9 @@ jobs:
           git config --global user.name "Badman Releaser"
           yarn run standard-version -- --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx-cloud start-ci-run
-      - run: npx nx affected --target=build --parallel --max-parallel=3 --base=${{ needs.base.outputs.base }} --head=origin/main
-      - run: npx nx affected --target=lint  --parallel --max-parallel=3 --base=${{ needs.base.outputs.base }} --head=origin/main
-      - run: npx nx affected --target=test  --parallel --max-parallel=2 --code-coverage --base=${{ needs.base.outputs.base }} --head=origin/main
+      - run: npx nx affected --target=build --parallel=4 --base=${{ needs.base.outputs.base }} --head=origin/main
+      - run: npx nx affected --target=lint  --parallel=4 --base=${{ needs.base.outputs.base }} --head=origin/main
+      - run: npx nx affected --target=test  --parallel=4 --code-coverage --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx-cloud stop-all-agents
 
   pr:
@@ -101,14 +101,14 @@ jobs:
           directory: ./code
       - run: yarn install --frozen-lockfile
       - run: npx nx-cloud start-ci-run
-      - run: npx nx affected --target=build --parallel --max-parallel=3 --base=${{ needs.base.outputs.base }} --head=origin/main
-      - run: npx nx affected --target=lint  --parallel --max-parallel=3 --base=${{ needs.base.outputs.base }} --head=origin/main
-      - run: npx nx affected --target=test  --parallel --max-parallel=2 --code-coverage --base=${{ needs.base.outputs.base }} --head=origin/main
+      - run: npx nx affected --target=build --parallel=4 --base=${{ needs.base.outputs.base }} --head=origin/main
+      - run: npx nx affected --target=lint  --parallel=4 --base=${{ needs.base.outputs.base }} --head=origin/main
+      - run: npx nx affected --target=test  --parallel=4 --code-coverage --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx-cloud stop-all-agents
 
   docker-build:
     if: ${{ github.event_name != 'pull_request' }}
-    needs: 
+    needs:
       - main
       - base
     runs-on: ubuntu-latest
