@@ -49,13 +49,13 @@ standardVersion({
         `chore(release): ${version}`,
       ]);
 
-      // Git push
-      await runExecFile('', 'git', [
-        'push',
-        '--follow-tags',
-        'origin',
-        currentBranch.trim(),
-      ]);
+      // // Git push
+      // await runExecFile('', 'git', [
+      //   'push',
+      //   '--follow-tags',
+      //   'origin',
+      //   currentBranch.trim(),
+      // ]);
     } catch (err) {
       core.setFailed(err);
     }
