@@ -78,6 +78,7 @@ jobs:
       - run: npx nx affected --target=lint  --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx affected --target=test  --code-coverage --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx-cloud stop-all-agents
+        if: always()
 
   pr:
     runs-on: ubuntu-latest
@@ -101,6 +102,7 @@ jobs:
       - run: npx nx affected --target=lint  --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx affected --target=test  --code-coverage --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx-cloud stop-all-agents
+        if: always()
 
   docker-build:
     if: ${{ github.event_name != 'pull_request' }}
