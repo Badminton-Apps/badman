@@ -5,4 +5,4 @@ ENV NODE_OPTIONS=--max-old-space-size=${MAX_OLD_SPACE_SIZE}
 WORKDIR /usr/src
 
 EXPOSE 4200
-CMD ["npx", "-y", "nx", "serve", "badman"]
+CMD ["npx", "-y", "nx", "serve", "client"]
