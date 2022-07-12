@@ -1,6 +1,6 @@
 {
   "name": "badman",
-  "version": "5.1.1",
+  "version": "5.0.0",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
@@ -187,7 +187,7 @@
     "standard-version": "^9.5.0",
     "ts-jest": "27.1.5",
     "ts-node": "^10.8.1",
-    "typescript": "~4.7.0"
+    "typescript": "~4.6.4"
   },
   "optionalDependencies": {
     "node-adodb": "https://github.com/nuintun/node-adodb"
