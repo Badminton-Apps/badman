@@ -2,14 +2,14 @@
 # yarn lockfile v1
 
 
-"@actions/exec@^1.1.1":
+"@actions/exec@^1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@actions/exec/-/exec-1.1.1.tgz#2e43f28c54022537172819a7cf886c844221a611"
   integrity sha512-+sCcHHbVdk93a0XT19ECtO/gIXoxvdsgQLzb2fE2/5sIZmWQuluYyjPQtrtTHdU1YzTZ7bAPN4sITq2xi1679w==
   dependencies:
     "@actions/io" "^1.0.1"
 
-"@actions/github@^5.0.3":
+"@actions/github@^5.0.0":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@actions/github/-/github-5.0.3.tgz#b305765d6173962d113451ea324ff675aa674f35"
   integrity sha512-myjA/pdLQfhUGLtRZC/J4L1RXOG4o6aYdiEq+zr5wVVKljzbFld+xv10k1FX6IkIJtNxbAq44BdwSNpQ015P0A==
@@ -2981,51 +2981,47 @@
     consola "^2.15.0"
     node-fetch "^2.6.1"
 
-"@nx-tools/ci-context@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@nx-tools/ci-context/-/ci-context-3.0.1.tgz#44bdc071363700e0718fd1bbb89b88832b8e19ec"
-  integrity sha512-GyjPijR1UwnnFfBDSdYJBhjMk27LL/KrXr2nHXzw+u1hfzt0wjtHp1QXQqyxi+D6fkeM69j5JqpUFGVEVUiRzQ==
+"@nx-tools/ci-context@2.2.0", "@nx-tools/ci-context@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@nx-tools/ci-context/-/ci-context-2.2.0.tgz#b08c6e4155ffc401e120f22708b1247a2eb50568"
+  integrity sha512-nKH5TX/a1gFOZFbBtFqoJNqOJ6XaB8Uht0L8B1myWFhpxrbZ2XLbE05OxyJRC4JMeOggMqD2EiIycQ0fCKtYLw==
   dependencies:
-    "@actions/github" "^5.0.3"
-    "@nx-tools/core" "^3.0.1"
-    "@swc/helpers" "^0.4.3"
-    ci-info "^3.3.2"
+    "@actions/github" "^5.0.0"
+    "@nx-tools/core" "^2.2.0"
+    ci-info "^3.2.0"
 
-"@nx-tools/core@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@nx-tools/core/-/core-3.0.1.tgz#116ad90c49435cb761bc006353665b5769bc76ce"
-  integrity sha512-eFDmVSMZtqQCwCkkU49ZfbUewy8VCWfylp9GgCfbtMfbHDRCkgZXoX+iDrMH1rgQhSdv7KW83W2kT3XeFFj2fg==
+"@nx-tools/core@^2.2.0", "@nx-tools/core@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@nx-tools/core/-/core-2.3.1.tgz#f87036c7f7b8b4666591e7a000de9922fc6f7a1b"
+  integrity sha512-OPTRnFtiyR4loNJr/zf7jq7vtDqdJBOtUmRuRE5holB06VCT+chR8hWmArkegdJEYaOvlDSSd0OT5uLtT4A2Uw==
   dependencies:
-    "@actions/exec" "^1.1.1"
-    "@swc/helpers" "^0.4.3"
-    colorette "^2.0.19"
+    "@actions/exec" "^1.1.0"
 
-"@nx-tools/docker-metadata@^3.0.0":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@nx-tools/docker-metadata/-/docker-metadata-3.0.1.tgz#481838db64877428dfa440e696bf9fa82aada5a3"
-  integrity sha512-wzFrLuvfYbpBOz7bIvjQF+vDsFM2CHDMUyp5ueXptRpqq0+69jW3wkohpJsNRO67j1baqM1EhUgl7ETY19fhnQ==
+"@nx-tools/docker-metadata@2.2.1", "@nx-tools/docker-metadata@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@nx-tools/docker-metadata/-/docker-metadata-2.2.1.tgz#46592d9843ad53f55983c83bdaf31f786bb40aea"
+  integrity sha512-MMQuDNarjOX9weg2+frBeIb2bVO+Fjlmf2Fl2yoGxB02MJl8NYao3MFjRZxt7pKKmPdiGiNGswF2xqJz+55FKQ==
   dependencies:
-    "@nx-tools/ci-context" "^3.0.1"
-    "@nx-tools/core" "^3.0.1"
+    "@nx-tools/ci-context" "^2.2.0"
+    "@nx-tools/core" "^2.3.1"
     "@renovate/pep440" "^1.0.0"
-    "@swc/helpers" "^0.4.3"
     csv-parse "^4.16.3"
     handlebars "^4.7.7"
-    moment "^2.29.4"
-    semver "^7.3.7"
+    moment "^2.29.1"
+    semver "^7.3.5"
 
-"@nx-tools/nx-docker@^3.0.0":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@nx-tools/nx-docker/-/nx-docker-3.0.1.tgz#25f0b3cb7c30c863041a1793e20ea39c8a9cb342"
-  integrity sha512-xk0GcY9j4hZl2cgeRXjbCHjTWD3/p2NBvgJK/wBKwIOjYxmQ9vAC3YHly9WWYmZXGx5Z0FD0j2T/KWQCwqW5Pg==
+"@nx-tools/nx-docker@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@nx-tools/nx-docker/-/nx-docker-2.3.0.tgz#738aa16b39a6add55caf0f95cb5055e3b45ca2f7"
+  integrity sha512-47EECPQhRO04gqw21YCeS1c4znWcLjXIxhLAG1bcXVVHLOImKxqWIVqjzRfeH8+VbRkiwwkREPJ+3O2kvIKkNw==
   dependencies:
-    "@nx-tools/core" "^3.0.1"
-    "@swc/helpers" "^0.4.3"
+    "@nx-tools/ci-context" "2.2.0"
+    "@nx-tools/core" "^2.3.1"
     csv-parse "^4.16.3"
-    semver "^7.3.7"
+    semver "^7.3.5"
     tmp "^0.2.1"
   optionalDependencies:
-    "@nx-tools/docker-metadata" "^3.0.0"
+    "@nx-tools/docker-metadata" "^2.2.1"
 
 "@octokit/auth-token@^2.4.4":
   version "2.5.0"
@@ -3358,13 +3354,6 @@
     notepack.io "~2.2.0"
     socket.io-adapter "^2.4.0"
     uid2 "0.0.3"
-
-"@swc/helpers@^0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@swc/helpers/-/helpers-0.4.3.tgz#16593dfc248c53b699d4b5026040f88ddb497012"
-  integrity sha512-6JrF+fdUK2zbGpJIlN7G3v966PQjyx/dPt1T9km2wj+EUBqgrxCk3uX4Kct16MIm9gGxfKRcfax2hVf5jvlTzA==
-  dependencies:
-    tslib "^2.4.0"
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -5566,7 +5555,7 @@ chrome-trace-event@^1.0.2:
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.3.tgz#1015eced4741e15d06664a957dbbf50d041e26ac"
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
-ci-info@^3.2.0, ci-info@^3.3.2:
+ci-info@^3.2.0:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.3.2.tgz#6d2967ffa407466481c6c90b6e16b3098f080128"
   integrity sha512-xmDt/QIAdeZ9+nfdPsaBCpMvHNLFiLdjj59qjqn+6iPe6YmHGQ35sBnQ8uslRBXFmXkiZQOJRjvQeoGppoTjjg==
@@ -5734,7 +5723,7 @@ colorette@^1.1.0:
   resolved "https://registry.yarnpkg.com/colorette/-/colorette-1.4.0.tgz#5190fbb87276259a86ad700bff2c6d6faa3fca40"
   integrity sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==
 
-colorette@^2.0.10, colorette@^2.0.16, colorette@^2.0.19:
+colorette@^2.0.10, colorette@^2.0.16:
   version "2.0.19"
   resolved "https://registry.yarnpkg.com/colorette/-/colorette-2.0.19.tgz#cdf044f47ad41a0f4b56b3a0d5b4e6e1a2d5a798"
   integrity sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==
@@ -11227,7 +11216,7 @@ moment-timezone@^0.5.34, moment-timezone@^0.5.x:
   dependencies:
     moment ">= 2.9.0"
 
-"moment@>= 2.9.0", moment@>=2.14.0, moment@^2.29.1, moment@^2.29.3, moment@^2.29.4:
+"moment@>= 2.9.0", moment@>=2.14.0, moment@^2.29.1, moment@^2.29.3:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
