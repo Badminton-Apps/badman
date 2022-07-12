@@ -24,7 +24,7 @@
     "update-version": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "node ../../scripts/update-helm.js {args.newVersion}",
+        "command": "node ../../../scripts/update-helm.js {args.newVersion}",
         "cwd": "apps/worker/ranking",
         "parallel": false
       }
