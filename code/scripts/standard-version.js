@@ -11,6 +11,9 @@ standardVersion({
   },
 })
   .then(async () => {
+    // get base and head from input args
+    const [, , base, head] = process.argv;
+
     // get the version number from the package.json
     const pkg = require('../package.json');
     const version = pkg.version;
@@ -23,7 +26,7 @@ standardVersion({
     // run `nx update helm` to update the helm chart
     await runExec(
       '',
-      `npx nx affected --target=update-version  --newVersion=${version}`
+      `npx nx affected --target=update-version  --newVersion=${version} --base=${base} --head=${head}`
     );
 
     // Git add .

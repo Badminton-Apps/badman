@@ -76,7 +76,7 @@ jobs:
         run: |
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
-          yarn run standard-version
+          yarn run standard-version -- --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx-cloud start-ci-run
       - run: npx nx affected --target=build --parallel --max-parallel=3 --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx affected --target=lint  --parallel --max-parallel=3 --base=${{ needs.base.outputs.base }} --head=origin/main
