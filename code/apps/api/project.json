@@ -9,7 +9,6 @@
         "metadata": {
           "images": ["ghcr.io/badminton-apps/badman/api"],
           "tags": [
-            "type=sha,prefix=sha-",
             "type=semver,pattern={{version}}",
             "type=semver,pattern={{major}}.{{minor}}",
             "type=semver,pattern={{major}}",
