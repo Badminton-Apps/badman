@@ -69,8 +69,8 @@ jobs:
 
       - name: 'Build docker'
         run: npx nx affected --target=docker --base=${{ env.LAST_TAG_HASH }} --head= origin/main
-
-      - name: 'Deploy'
-        run: npx nx affected --target=deploy --base=${{ env.LAST_TAG_HASH }} --head= origin/main
         env:
           INPUT_GITHUB-TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: 'Deploy'
+        run: npx nx affected --target=deploy --base=${{ env.LAST_TAG_HASH }} --head= origin/main
