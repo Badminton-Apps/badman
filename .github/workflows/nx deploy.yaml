@@ -72,3 +72,5 @@ jobs:
 
       - name: 'Deploy'
         run: npx nx affected --target=deploy --base=${{ env.LAST_TAG_HASH }} --head= origin/main
+        env:
+          INPUT_GITHUB-TOKEN: ${{ secrets.GITHUB_TOKEN }}
