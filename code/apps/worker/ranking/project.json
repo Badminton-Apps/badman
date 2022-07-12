@@ -11,11 +11,11 @@
             "ghcr.io/badminton-apps/badman/worker/ranking"
           ],
           "tags": [
-            "type=ref,event=tag",
+            "type=sha,prefix=sha-",
             "type=semver,pattern={{version}}",
             "type=semver,pattern={{major}}.{{minor}}",
             "type=semver,pattern={{major}}",
-            "type=sha,prefix=sha-"
+            "type=ref,event=tag"
           ]
         }
       }
