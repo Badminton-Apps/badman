@@ -28,6 +28,7 @@ jobs:
           TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
           echo "Found tag: $TAG_VERSION"
           LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+          echo "Found hash: $LAST_TAG_HASH"
           echo "$LAST_TAG_HASH" >> $GITHUB_ENV
 
       - name: 'Install Dependencies'
