@@ -121,3 +121,4 @@ jobs:
       - run: npx nx affected --target=docker
         env:
           INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: npx nx affected --target=deploy
