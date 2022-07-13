@@ -3,6 +3,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/badminton-apps/badman/api
   pullPolicy: IfNotPresent
+  tag: latest
 
 imagePullSecrets:
   - name: api-acr-secret
@@ -34,7 +35,7 @@ env:
   - name: REDIS_HOST
     value: redis
   - name: REDIS_PORT
-    value: 6379
+    value: "6379"
   - name: DB_IP
     value: postgres
   - name: DB_PASSWORD
@@ -50,13 +51,13 @@ env:
     value: postgres
   - name: APM_SERVER_URL
     value: temp
-  - name: APM_SERVER_TOKEN
-    valueFrom:
-      secretKeyRef:
-        name: apm
-        key: token
+  # - name: APM_SERVER_TOKEN
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: apm
+  #       key: token
   - name: APM_SERVER_ACTIVE
-    value: false
+    value: "false"
   - name: AUTH0_ISSUER_URL
     value: https://badvlasim.eu.auth0.com
   - name: AUTH0_AUDIENCE
