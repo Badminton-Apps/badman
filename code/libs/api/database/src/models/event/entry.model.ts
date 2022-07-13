@@ -19,7 +19,7 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { Standing } from '.';
+import { Standing } from './standing.model';
 import { MetaType } from '../../types';
 import { Player } from '../player.model';
 import { Team } from '../team.model';
