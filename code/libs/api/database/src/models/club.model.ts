@@ -68,7 +68,6 @@ export class Club extends Model {
     super(values, options);
   }
 
-  // #region fields
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -195,9 +194,6 @@ export class Club extends Model {
     }
   }
 
-  // #endregion
-
-  // #region mixins
 
   // Belongs to many Player
   getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
@@ -253,8 +249,6 @@ export class Club extends Model {
   hasComment!: HasManyHasAssociationMixin<Comment, string>;
   hasComments!: HasManyHasAssociationsMixin<Comment, string>;
   countComments!: HasManyCountAssociationsMixin;
-
-  // #endregion
 }
 
 @InputType()
