@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14
           registry-url: 'https://npm.pkg.github.com'
@@ -45,7 +45,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Node ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14
           registry-url: 'https://npm.pkg.github.com'
