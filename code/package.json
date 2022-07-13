@@ -154,6 +154,7 @@
     "@types/node": "^18.0.3",
     "@types/passport": "^1.0.8",
     "@types/passport-jwt": "^3.0.6",
+    "@types/pg": "^8.6.5",
     "@types/regression": "^2.0.2",
     "@types/sequelize": "^4.28.13",
     "@types/uuid": "8.3.4",
