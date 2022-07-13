@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.21](https://github.com/Badminton-Apps/badman/compare/v5.2.20...v5.2.21) (2022-07-13)
+
+
+### Bug Fixes
+
+* **worker-ranking,worker-sync:** fixing container name ([17b6d3b](https://github.com/Badminton-Apps/badman/commit/17b6d3bcf1dea28db33d4f69494fde2a783c1035))
+
 ### [5.2.20](https://github.com/Badminton-Apps/badman/compare/v5.2.19...v5.2.20) (2022-07-13)
 
 ### [5.2.19](https://github.com/Badminton-Apps/badman/compare/v5.2.18...v5.2.19) (2022-07-13)
