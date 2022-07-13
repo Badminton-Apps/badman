@@ -35,7 +35,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "helm upgrade --install --namespace badman client ./charts"
+          "helm upgrade --create-namespace --install --namespace badman client ./charts"
         ],
         "cwd": "apps/client",
         "parallel": false
