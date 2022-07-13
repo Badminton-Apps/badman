@@ -35,16 +35,7 @@
         "commands": [
           "helm upgrade --create-namespace --install --namespace badman client ./charts"
         ],
-        "cwd": "apps/client",
-        "parallel": false
-      }
-    },
-    "deploy-dev": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": [
-          "docker build -f ./apps/worker/ranking/Dockerfile.dev . -t worker-ranking-dev"
-        ],
+        "cwd": "apps/worker/ranking",
         "parallel": false
       }
     },

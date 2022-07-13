@@ -2,6 +2,7 @@ const standardVersion = require('standard-version');
 const runExecFile = require('./run-execFile');
 const runExec = require('./run-exec');
 const core = require('@actions/core');
+const conventionalChangelog = require('conventional-changelog');
 
 standardVersion({
   infile: 'apps/client/src/assets/CHANGELOG.md',

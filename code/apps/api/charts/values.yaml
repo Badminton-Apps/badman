@@ -25,43 +25,43 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: 'api'
+  name: api
 
 ingress:
   enabled: false
 
 env:
-  - name: 'REDIS_HOST'
+  - name: REDIS_HOST
     value: redis
-  - name: 'REDIS_PORT'
+  - name: REDIS_PORT
     value: 6379
-  - name: 'DB_IP'
+  - name: DB_IP
     value: postgres
   - name: DB_PASSWORD
     valueFrom:
       secretKeyRef:
         name: server-postgresql-ha-postgresql
         key: postgresql-password
-  - name: 'DB_USER'
+  - name: DB_USER
     value: postgres
-  - name: 'DB_DATABASE'
+  - name: DB_DATABASE
     value: badman
-  - name: 'DB_DIALECT'
+  - name: DB_DIALECT
     value: postgres
-  - name: 'APM_SERVER_URL'
-    value: ${APM_SERVER_URL}
+  - name: APM_SERVER_URL
+    value: temp
   - name: APM_SERVER_TOKEN
     valueFrom:
       secretKeyRef:
         name: apm
         key: token
-  - name: 'APM_SERVER_ACTIVE'
+  - name: APM_SERVER_ACTIVE
     value: false
-  - name: 'AUTH0_ISSUER_URL'
+  - name: AUTH0_ISSUER_URL
     value: https://badvlasim.eu.auth0.com
-  - name: 'AUTH0_AUDIENCE'
+  - name: AUTH0_AUDIENCE
     value: ranking-simulation
-  - name: 'CLIENT_URL'
+  - name: CLIENT_URL
     value: beta.badman.app
   - name: MAIL_PASS
     valueFrom:

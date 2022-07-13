@@ -31,29 +31,29 @@ ingress:
   enabled: false
 
 env:
-  - name: 'REDIS_HOST'
+  - name: REDIS_HOST
     value: redis
-  - name: 'REDIS_PORT'
+  - name: REDIS_PORT
     value: 6379
-  - name: 'DB_IP'
+  - name: DB_IP
     value: postgres
   - name: DB_PASSWORD
     valueFrom:
       secretKeyRef:
         name: server-postgresql-ha-postgresql
         key: postgresql-password
-  - name: 'DB_USER'
+  - name: DB_USER
     value: postgres
-  - name: 'DB_DATABASE'
+  - name: DB_DATABASE
     value: badman
-  - name: 'DB_DIALECT'
+  - name: DB_DIALECT
     value: postgres
-  - name: 'APM_SERVER_URL'
-    value: ${APM_SERVER_URL}
+  - name: APM_SERVER_URL
+    value: temp
   - name: APM_SERVER_TOKEN
     valueFrom:
       secretKeyRef:
         name: apm
         key: token
-  - name: 'APM_SERVER_ACTIVE'
+  - name: APM_SERVER_ACTIVE
     value: false
