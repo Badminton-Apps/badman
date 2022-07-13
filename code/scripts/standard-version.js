@@ -29,48 +29,48 @@ const config = require('conventional-changelog-conventionalcommits');
     core.info(`changelog: ${changelog}`);
     core.exportVariable('changelog', changelog);
 
-    await standardVersion({
-      infile: 'apps/client/src/assets/CHANGELOG.md',
-      silent: false,
-      skip: {
-        commit: true,
-        tag: true,
-      },
-    });
+    // await standardVersion({
+    //   infile: 'apps/client/src/assets/CHANGELOG.md',
+    //   silent: false,
+    //   skip: {
+    //     commit: true,
+    //     tag: true,
+    //   },
+    // });
 
-    // run `nx update helm` to update the helm chart
-    await runExec(
-      '',
-      `npx nx affected --target=update-version  --newVersion=${newVersion} ${base} ${head}`
-    );
+    // // run `nx update helm` to update the helm chart
+    // await runExec(
+    //   '',
+    //   `npx nx affected --target=update-version  --newVersion=${newVersion} ${base} ${head}`
+    // );
 
-    // Git add .
-    await runExecFile('', 'git', ['add', '.']);
+    // // Git add .
+    // await runExecFile('', 'git', ['add', '.']);
 
-    // Git commit
-    await runExecFile('', 'git', [
-      'commit',
-      '-m',
-      `chore(release): ${newVersion}`,
-    ]);
+    // // Git commit
+    // await runExecFile('', 'git', [
+    //   'commit',
+    //   '-m',
+    //   `chore(release): ${newVersion}`,
+    // ]);
 
-    // Git tag with annotation
-    await runExecFile('', 'git', [
-      'tag',
-      `v${newVersion}`,
-      `-m`,
-      `chore(release): ${newVersion}`,
-    ]);
+    // // Git tag with annotation
+    // await runExecFile('', 'git', [
+    //   'tag',
+    //   `v${newVersion}`,
+    //   `-m`,
+    //   `chore(release): ${newVersion}`,
+    // ]);
 
-    // Git push
-    await runExecFile('', 'git', [
-      'push',
-      '--follow-tags',
-      'origin',
-      currentBranch,
-    ]);
+    // // Git push
+    // await runExecFile('', 'git', [
+    //   'push',
+    //   '--follow-tags',
+    //   'origin',
+    //   currentBranch,
+    // ]);
 
-    core.exportVariable('version', newVersion);
+    // core.exportVariable('version', newVersion);
   } catch (err) {
     core.setFailed(err);
   }

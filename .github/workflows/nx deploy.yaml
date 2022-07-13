@@ -132,15 +132,13 @@ jobs:
       GKE_CLUSTER: badman
       GKE_ZONE: europe-west1
     steps:
-      - id: 'tag'
-        run: |
-          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          echo "::set-output name=tag::$TAG_VERSION"
-
       - uses: actions/checkout@v3
         with:
-          ref: ${{ steps.tag.outputs.tag }}
           fetch-depth: 0
+      - name: Checkout latest release tag
+        run: |
+          LATEST_TAG=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          git checkout $LATEST_TAG
       - id: 'auth'
         uses: 'google-github-actions/auth@v0.8.0'
         with:
