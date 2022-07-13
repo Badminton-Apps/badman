@@ -26,6 +26,10 @@ export const creatSequelizeInstance = async () => {
   sequelize.addModels(models as []);
   initAddons();
 
+  if (process.env.DB_DIALECT as Dialect){
+    require('pg');
+  }
+
   return sequelize;
 };
 
