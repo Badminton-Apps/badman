@@ -66,7 +66,7 @@ const conventionalChangelog = require('conventional-changelog');
 
     core.exportVariable('changelog', changelog);
     core.exportVariable('version', version);
-
+    core.info(`changelog: ${changelog}`);
 
   } catch (err) {
     core.setFailed(err);

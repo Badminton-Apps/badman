@@ -8,6 +8,7 @@
         "push": true,
         "metadata": {
           "images": ["ghcr.io/badminton-apps/badman/api"],
+          "flavor": ["latest"],
           "tags": [
             "type=schedule",
             "type=ref,event=branch",
