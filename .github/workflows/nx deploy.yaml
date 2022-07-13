@@ -19,13 +19,13 @@ jobs:
         working-directory: ./code
     runs-on: ubuntu-latest
     outputs:
-      base: ${{ steps.nx_hash.outputs.base }}
+      base: ${{ steps.tag.outputs.base }}
     steps:
       - name: Checkout [main]
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - id: nx_hash
+      - id: tag
         run: |
           TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
           echo "Found tag: $TAG_VERSION"
@@ -59,8 +59,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: base
     if: ${{ github.event_name != 'pull_request' }}
-    outputs:
-      version: ${{ steps.out.outputs.version }}
     steps:
       - name: Checkout [main]
         uses: actions/checkout@v3
@@ -92,8 +90,6 @@ jobs:
           tag_name: ${{ env.version }}
           release_name: ${{ env.version }}
           body: ${{ env.changelog  }}
-      - name: out
-        run: echo "::set-output name=version::${{ env.version }}"
 
   pr:
     runs-on: ubuntu-latest
@@ -136,9 +132,14 @@ jobs:
       GKE_CLUSTER: badman
       GKE_ZONE: europe-west1
     steps:
+      - id: 'tag'
+        run: |
+          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          echo "::set-output name=tag::$TAG_VERSION"
+
       - uses: actions/checkout@v3
         with:
-          ref: 'refs/tags/${{ needs.main.outputs.version }}'
+          ref: ${{ steps.tag.outputs.tag }}
           fetch-depth: 0
       - id: 'auth'
         uses: 'google-github-actions/auth@v0.8.0'

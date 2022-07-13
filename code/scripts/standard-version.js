@@ -2,24 +2,19 @@ const standardVersion = require('standard-version');
 const runExecFile = require('./run-execFile');
 const runExec = require('./run-exec');
 const core = require('@actions/core');
-const presetLoader = require('standard-version/lib/preset-loader');
 const conventionalChangelog = require('conventional-changelog');
+const config = require('conventional-changelog-conventionalcommits');
 
 (async () => {
   try {
     // get base and head from input args
     const [, , base, head] = process.argv;
 
-    // generate the full changelog
-    const changelog = await extractChangelogEntry();
-    await standardVersion({
-      infile: 'apps/client/src/assets/CHANGELOG.md',
-      silent: false,
-      skip: {
-        commit: true,
-        tag: true,
-      },
-    });
+    // get next version
+    const result = await runExec(
+      '',
+      "standard-version --dry-run | sed -e '1!d' -e 's/.*to //g'"
+    );
 
     // get the version number from the package.json
     const pkg = require('../package.json');
@@ -28,6 +23,20 @@ const conventionalChangelog = require('conventional-changelog');
       'branch',
       '--show-current',
     ]);
+
+    // generate the full changelog
+    const changelog = await extractChangelogEntry({ version: result.stdout.trim() });
+    core.info(`changelog: ${changelog}`);
+    core.exportVariable('changelog', changelog);
+
+    await standardVersion({
+      infile: 'apps/client/src/assets/CHANGELOG.md',
+      silent: false,
+      skip: {
+        commit: true,
+        tag: true,
+      },
+    });
 
     // get the current branch
     const currentBranch = stdout.trim();
@@ -64,10 +73,7 @@ const conventionalChangelog = require('conventional-changelog');
       currentBranch,
     ]);
 
-    core.exportVariable('changelog', changelog);
     core.exportVariable('version', version);
-    core.info(`changelog: ${changelog}`);
-
   } catch (err) {
     core.setFailed(err);
   }
@@ -75,18 +81,14 @@ const conventionalChangelog = require('conventional-changelog');
   function extractChangelogEntry(args = {}) {
     return new Promise((resolve, reject) => {
       let content = '';
-      const changelogStream = conventionalChangelog({
-        debug:
-          args.verbose && core.info.bind(console, 'conventional-changelog'),
-        preset: {
-          name: 'conventional-changelog-conventionalcommits',
+      const changelogStream = conventionalChangelog(
+        config({
           skip: {
             tag: true,
             commit: true,
-            bump: true,
           },
           types: [
-            { type: 'feat', section: 'Features' },
+            { type: 'feat', section: 'Features', hidden: false },
             { type: 'feature', section: 'Features' },
             { type: 'fix', section: 'Bug Fixes' },
             { type: 'perf', section: 'Performance Improvements' },
@@ -99,8 +101,11 @@ const conventionalChangelog = require('conventional-changelog');
             { type: 'build', section: 'Build System' },
             { type: 'ci', section: 'Continuous Integration' },
           ],
-        },
-      }).on('error', function (err) {
+        }),
+        { version: args.version }
+      );
+
+      changelogStream.on('error', function (err) {
         return reject(err);
       });
 
