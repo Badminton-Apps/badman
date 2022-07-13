@@ -20,10 +20,11 @@ standardVersion({
       const pkg = require('../package.json');
       const version = pkg.version;
       const currentBranch = await runExecFile('', 'git', [
-        'rev-parse',
-        '--abbrev-ref',
-        'HEAD',
+        'branch',
+        '--show-current',
       ]);
+
+      core.debug(`currentBranch: ${currentBranch}`);
 
       // run `nx update helm` to update the helm chart
       await runExec(
