@@ -33,9 +33,9 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx build worker-ranking",
-          "docker build -f ./apps/worker/ranking/Dockerfile . -t worker-ranking"
+          "helm upgrade --create-namespace --install --namespace badman client ./charts"
         ],
+        "cwd": "apps/client",
         "parallel": false
       }
     },

@@ -72,6 +72,7 @@ jobs:
         run: |
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
+          git config advice.ignoredHook false
           yarn run standard-version -- --base=${{ needs.base.outputs.base }} --head=origin/main
         env:
           NX_CLOUD_DISTRIBUTED_EXECUTION: false

@@ -26,13 +26,14 @@
         "parallel": false
       }
     },
+   
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          "nx build worker-sync",
-          "docker build -f ./apps/worker/sync/Dockerfile . -t worker-sync"
+          "helm upgrade --create-namespace --install --namespace badman client ./charts"
         ],
+        "cwd": "apps/client",
         "parallel": false
       }
     },
