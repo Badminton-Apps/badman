@@ -82,6 +82,14 @@ jobs:
       - run: npx nx affected --target=test  --code-coverage --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx-cloud stop-all-agents
         if: always()
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ env.version }}
+          release_name: ${{ env.version }}
+          body: ${{ env.changelog  }}
 
   pr:
     runs-on: ubuntu-latest
@@ -136,7 +144,7 @@ jobs:
         uses: 'google-github-actions/get-gke-credentials@v0.7.0'
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_ZONE }}          
+          location: ${{ env.GKE_ZONE }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
