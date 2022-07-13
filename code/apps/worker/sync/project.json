@@ -33,16 +33,7 @@
         "commands": [
           "helm upgrade --create-namespace --install --namespace badman client ./charts"
         ],
-        "cwd": "apps/client",
-        "parallel": false
-      }
-    },
-    "deploy-dev": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": [
-          "docker build -f ./apps/worker/sync/Dockerfile.dev . -t worker-sync-dev"
-        ],
+        "cwd": "apps/worker/sync",
         "parallel": false
       }
     },
