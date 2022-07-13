@@ -11,21 +11,21 @@ const config = require('conventional-changelog-conventionalcommits');
     const [, , base, head] = process.argv;
 
     // get next version
-    const result = await runExec(
+    const versionExec = await runExec(
       '',
       "standard-version --dry-run | sed -e '1!d' -e 's/.*to //g'"
     );
+    const newVersion = versionExec.stdout.trim();
 
-    // get the version number from the package.json
-    const pkg = require('../package.json');
-    const version = pkg.version;
-    const { stdout, stderr } = await runExecFile('', 'git', [
+    // get the current branch
+    const branchExec = await runExecFile('', 'git', [
       'branch',
       '--show-current',
     ]);
+    const currentBranch = branchExec.stdout.trim();
 
     // generate the full changelog
-    const changelog = await extractChangelogEntry({ version: result.stdout.trim() });
+    const changelog = await extractChangelogEntry({ version: newVersion });
     core.info(`changelog: ${changelog}`);
     core.exportVariable('changelog', changelog);
 
@@ -38,13 +38,10 @@ const config = require('conventional-changelog-conventionalcommits');
       },
     });
 
-    // get the current branch
-    const currentBranch = stdout.trim();
-
     // run `nx update helm` to update the helm chart
     await runExec(
       '',
-      `npx nx affected --target=update-version  --newVersion=${version} ${base} ${head}`
+      `npx nx affected --target=update-version  --newVersion=${newVersion} ${base} ${head}`
     );
 
     // Git add .
@@ -54,15 +51,15 @@ const config = require('conventional-changelog-conventionalcommits');
     await runExecFile('', 'git', [
       'commit',
       '-m',
-      `chore(release): ${version}`,
+      `chore(release): ${newVersion}`,
     ]);
 
     // Git tag with annotation
     await runExecFile('', 'git', [
       'tag',
-      `v${version}`,
+      `v${newVersion}`,
       `-m`,
-      `chore(release): ${version}`,
+      `chore(release): ${newVersion}`,
     ]);
 
     // Git push
@@ -73,7 +70,7 @@ const config = require('conventional-changelog-conventionalcommits');
       currentBranch,
     ]);
 
-    core.exportVariable('version', version);
+    core.exportVariable('version', newVersion);
   } catch (err) {
     core.setFailed(err);
   }
@@ -86,7 +83,7 @@ const config = require('conventional-changelog-conventionalcommits');
           skip: {
             tag: true,
             commit: true,
-            bump: true
+            bump: true,
           },
           types: [
             { type: 'feat', section: 'Features', hidden: false },
