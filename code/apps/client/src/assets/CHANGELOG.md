@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.18](https://github.com/Badminton-Apps/badman/compare/v5.2.17...v5.2.18) (2022-07-13)
+
+
+### Bug Fixes
+
+* **ci:** flavor should be set to auto ([289263a](https://github.com/Badminton-Apps/badman/commit/289263ae766a8e5bbf1bdd8090902d262759d2b7))
+
 ### [5.2.17](https://github.com/Badminton-Apps/badman/compare/v5.2.16...v5.2.17) (2022-07-13)
 
 ### [5.2.16](https://github.com/Badminton-Apps/badman/compare/v5.2.15...v5.2.16) (2022-07-13)
