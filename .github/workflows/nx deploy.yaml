@@ -93,7 +93,7 @@ jobs:
           release_name: ${{ env.version }}
           body: ${{ env.changelog  }}
       - name: out
-        run: echo "::set-output name=version::${{ env.version }}
+        run: echo "::set-output name=version::${{ env.version }}"
 
   pr:
     runs-on: ubuntu-latest
