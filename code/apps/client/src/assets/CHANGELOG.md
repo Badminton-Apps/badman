@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.20](https://github.com/Badminton-Apps/badman/compare/v5.2.19...v5.2.20) (2022-07-13)
+
 ### [5.2.19](https://github.com/Badminton-Apps/badman/compare/v5.2.18...v5.2.19) (2022-07-13)
 
 ### [5.2.18](https://github.com/Badminton-Apps/badman/compare/v5.2.17...v5.2.18) (2022-07-13)
