@@ -123,7 +123,7 @@ jobs:
       GKE_CLUSTER: badman
       GKE_ZONE: europe-west1
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - id: 'auth'
