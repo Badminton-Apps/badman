@@ -7,7 +7,7 @@
       "options": {
         "push": true,
         "metadata": {
-          "images": ["ghcr.io/badminton-apps/badman/worker/sync"],
+          "images": ["ghcr.io/badminton-apps/badman/worker-sync"],
           "flavor": ["latest=auto"],
           "tags": [
             "type=schedule",

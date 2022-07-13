@@ -3,6 +3,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/badminton-apps/badman/worker-sync
   pullPolicy: IfNotPresent
+  tag: latest
 
 imagePullSecrets:
   - name: worker-sync-acr-secret
