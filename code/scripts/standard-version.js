@@ -86,6 +86,7 @@ const config = require('conventional-changelog-conventionalcommits');
           skip: {
             tag: true,
             commit: true,
+            bump: true
           },
           types: [
             { type: 'feat', section: 'Features', hidden: false },
