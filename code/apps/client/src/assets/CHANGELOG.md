@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.13](https://github.com/Badminton-Apps/badman/compare/v5.2.12...v5.2.13) (2022-07-13)
+
+
+### Bug Fixes
+
+* **ci:** env variables arn't passed ([696d7e1](https://github.com/Badminton-Apps/badman/commit/696d7e14cda8ddef80aa804131e1b6fde480a556))
+
 ### [5.2.12](https://github.com/Badminton-Apps/badman/compare/v5.2.11...v5.2.12) (2022-07-13)
 
 ### [5.2.11](https://github.com/Badminton-Apps/badman/compare/v5.2.10...v5.2.11) (2022-07-13)
