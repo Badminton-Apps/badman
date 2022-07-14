@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.23](https://github.com/Badminton-Apps/badman/compare/v5.2.22...v5.2.23) (2022-07-14)
+
+
+### Bug Fixes
+
+* **api,worker-ranking,worker-sync:** setting redis and db url ([cd7d0c7](https://github.com/Badminton-Apps/badman/commit/cd7d0c7052a06cf525413a24afb4769cfb7ce21d))
+
 ### [5.2.22](https://github.com/Badminton-Apps/badman/compare/v5.2.21...v5.2.22) (2022-07-13)
 
 
