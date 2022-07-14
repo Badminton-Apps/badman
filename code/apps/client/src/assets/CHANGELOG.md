@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.25](https://github.com/Badminton-Apps/badman/compare/v5.2.24...v5.2.25) (2022-07-14)
+
+
+### Bug Fixes
+
+* forgot setting port variable ([b7e6dd2](https://github.com/Badminton-Apps/badman/commit/b7e6dd220d8ddad084fcddd492aac015c4acc91b))
+
 ### [5.2.24](https://github.com/Badminton-Apps/badman/compare/v5.2.23...v5.2.24) (2022-07-14)
 
 
