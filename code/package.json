@@ -1,6 +1,6 @@
 {
   "name": "badman",
-  "version": "5.2.21",
+  "version": "5.2.22",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
@@ -130,7 +130,7 @@
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
     "@commitlint/config-nx-scopes": "^17.0.0",
-    "@nestjs/schematics": "^8.0.11",
+    "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^8.4.6",
     "@nrwl/cli": "14.4.2",
     "@nrwl/cypress": "14.4.2",
@@ -145,7 +145,7 @@
     "@nx-tools/nx-docker": "^3.0.1",
     "@types/archiver": "^5.3.1",
     "@types/bull": "^3.15.8",
-    "@types/cron": "^1.7.3",
+    "@types/cron": "^2.0.0",
     "@types/elastic-apm-node": "^2.7.0",
     "@types/googlemaps": "3.43.3",
     "@types/jasmine": "^3.10.6",
