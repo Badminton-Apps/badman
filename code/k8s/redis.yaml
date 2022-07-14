@@ -1,4 +1,4 @@
 cluster:
-  nodes: 1
+  nodes: 3
 
 existingSecret: server-redis
