@@ -1,4 +1,13 @@
 
+# Pull config
+
+run for each:
+- api-acr-secret
+- client-acr-secret
+- worker-sync-acr-secret
+- worker-ranking-acr-secret
+
+`kubectl create secret docker-registry <type> --docker-server=https://ghcr.io --docker-username=<username> --docker-password=<PAT> --docker-email=<email>`
 
 # Databases
 
@@ -45,3 +54,9 @@ upgrade replica count (in psql.yaml) and appy:
 
 upgrade replica count (in redis.yaml) and appy:
 `helm upgrade --install redis --namespace badman bitnami/redis-cluster -f redis.yaml`
+
+
+
+
+# Email
+`kubectl create secret generic mail-auth --from-literal=host="mail.privateemail.com" --from-literal=pass="<super-pass>" --from-literal=user="info@badman.app" --namespace badman`
