@@ -169,6 +169,8 @@ export class EncounterCompetitionResolver {
         // Accept
         await this.syncQueue.add(Sync.ChangeDate, {
           encounterId: encounter.id,
+        }, {
+          removeOnComplete: true,
         });
 
         // Save cahnges

@@ -33,11 +33,11 @@ ingress:
 
 env:
   - name: REDIS_HOST
-    value: redis
+    value: redis-redis-cluster.badman.svc.cluster.local
   - name: REDIS_PORT
     value: "6379"
   - name: DB_IP
-    value: postgres
+    value: postgresql-postgresql-ha-pgpool.badman.svc.cluster.local
   - name: DB_PASSWORD
     valueFrom:
       secretKeyRef:
