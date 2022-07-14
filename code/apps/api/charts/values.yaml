@@ -10,7 +10,8 @@ imagePullSecrets:
 
 service:
   type: ClusterIP
-  port: 80
+  internalPort: 4000
+  externalPort: 80
 
 autoscaling:
   enabled: false
@@ -32,6 +33,8 @@ ingress:
   enabled: false
 
 env:
+  - name: PORT
+    value: 8080
   - name: REDIS_HOST
     value: redis-redis-cluster.badman.svc.cluster.local
   - name: REDIS_PORT
