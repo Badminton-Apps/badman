@@ -34,7 +34,7 @@ ingress:
 
 env:
   - name: PORT
-    value: 8080
+    value: "4000"
   - name: REDIS_HOST
     value: redis-redis-cluster.badman.svc.cluster.local
   - name: REDIS_PORT

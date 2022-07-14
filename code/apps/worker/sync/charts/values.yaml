@@ -33,6 +33,8 @@ ingress:
   enabled: false
 
 env:
+  - name: PORT
+    value: "4000"
   - name: REDIS_HOST
     value: redis-redis-cluster.badman.svc.cluster.local
   - name: REDIS_PORT
