@@ -47,7 +47,7 @@ export class ShowRequestsComponent implements OnInit {
 
   formGroupRequest!: FormGroup;
   previous?: AbstractControl;
-  dateControls = new FormArray([]);
+  dateControls = new FormArray<FormGroup>([]);
 
   encounter!: CompetitionEncounter;
   home!: boolean;
@@ -94,7 +94,7 @@ export class ShowRequestsComponent implements OnInit {
           );
         }),
         tap((encounterChange) => {
-          this.dateControls = new FormArray([]);
+          this.dateControls = new FormArray<FormGroup>([]);
 
           const homeComment = new FormControl(
             encounterChange?.homeComment?.message
@@ -313,13 +313,13 @@ export class ShowRequestsComponent implements OnInit {
   private _updateSelected() {
     const selected = this.dateControls
       .getRawValue()
-      .find((r) => r.selected == true);
+      .find((r) => r['selected'] == true);
 
     for (const control of this.dateControls.controls) {
       control.get('selected')?.disable({ emitEvent: false });
 
       if (
-        (selected == null || selected?.date == control.get('date')?.value) &&
+        (selected == null || selected?.['date'] == control.get('date')?.value) &&
         control.get('availabilityHome')?.value ==
           ChangeEncounterAvailability.POSSIBLE &&
         control.get('availabilityAway')?.value ==
