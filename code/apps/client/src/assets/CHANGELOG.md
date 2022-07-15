@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.26](https://github.com/Badminton-Apps/badman/compare/v5.2.25...v5.2.26) (2022-07-15)
+
+
+### Bug Fixes
+
+* **api,worker-ranking,worker-sync:** added redis password ([720dd45](https://github.com/Badminton-Apps/badman/commit/720dd45b7ac797458feba79ed76afedbde82c0c5))
+* **client:** chart should be in double quotes ([4b1721d](https://github.com/Badminton-Apps/badman/commit/4b1721d13360a491f5700a7d0a6eefaa14f157a3))
+
 ### [5.2.25](https://github.com/Badminton-Apps/badman/compare/v5.2.24...v5.2.25) (2022-07-14)
 
 
