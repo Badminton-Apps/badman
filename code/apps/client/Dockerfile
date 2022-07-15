@@ -4,6 +4,4 @@ WORKDIR /app
 COPY ./dist/apps/client /usr/share/nginx/html
 COPY ./apps/client/nginx/.nginx /etc/nginx/conf.d/default.conf
 
-ENV PORT=4000
-EXPOSE ${PORT}
 CMD ["nginx", "-g", "daemon off;"]
