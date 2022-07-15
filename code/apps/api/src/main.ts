@@ -14,12 +14,15 @@ async function bootstrap() {
   const globalPrefix = 'api';
   const redisIoAdapter = new RedisIoAdapter(app);
   const configService = app.get<ConfigService>(ConfigService);
+  const redisPass = configService.get('REDIS_PASSWORD');
 
-  await redisIoAdapter.connectToRedis(
-    `redis://${configService.get('REDIS_HOST')}:${configService.get(
-      'REDIS_PORT'
-    )}`
-  );
+  let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://';
+
+  redisUrl += `${configService.get('REDIS_HOST')}:${configService.get(
+    'REDIS_PORT'
+  )}`;
+
+  await redisIoAdapter.connectToRedis(redisUrl);
 
   app.useWebSocketAdapter(redisIoAdapter);
 
