@@ -188,10 +188,7 @@ export class VisualService {
     //   tournaments.concat(await this._getChangeEvents(date, page + 1));
     // }
 
-    // Temp fix for competition
-    return tournaments.filter(
-      (t) => !t.Name.toLowerCase().includes('2022-2023')
-    );
+    return tournaments;
   }
 
   private _getFromApi(url: string, useCache = true) {
@@ -207,29 +204,6 @@ export class VisualService {
           password: `${this.configService.get('VR_API_PASS')}`,
         },
         timeout: 1000000,
-        // raxConfig: {
-        //   statusCodesToRetry: [
-        //     [100, 199],
-        //     [429, 429],
-        //     [500, 599],
-        //   ],
-        //   retry: this._retries,
-        //   noResponseRetries: this._retries / 2,
-        //   onRetryAttempt: (error) => {
-        //     const cfg = getConfig(error);
-        //     if (cfg.currentRetryAttempt > this._retries * 0.75) {
-        //       VisualService.logger.warn(
-        //         `Retry attempt #${cfg.currentRetryAttempt}`,
-        //         error
-        //       );
-        //     } else {
-        //       VisualService.logger.debug(
-        //         `Retry attempt #${cfg.currentRetryAttempt}`,
-        //         error
-        //       );
-        //     }
-        //   },
-        // },
         headers: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           'Content-Type': 'application/xml',
