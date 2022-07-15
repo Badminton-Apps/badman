@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import {
   AvailabilityException,
   resetAllFormFields,
@@ -47,8 +47,8 @@ export class ExceptionDaysComponent implements OnInit {
       this.isNew = true;
     }
 
-    const startControl = new FormControl(null);
-    const endControl = new FormControl(null);
+    const startControl = new FormControl<Moment | null>(null);
+    const endControl = new FormControl<Moment | null>(null);
 
     if (this.exception) {
       startControl.setValue(moment(this.exception?.start));
