@@ -1,0 +1,74 @@
+server {
+    listen       80;
+    server_name  localhost;
+    add_header "X-UA-Compatible" "IE=Edge,chrome=1";
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location /robots.txt {
+        alias   /usr/share/nginx/html/assets/robots.txt;
+    }
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+
+        try_files $uri $uri/ /index.html?$args;
+        add_header Cache-Control "no-store, no-cache, must-revalidate";
+    }
+
+    location ~* \.(?:css|js|jpg)$ {
+        root   /usr/share/nginx/html;
+        expires 1y; 
+        add_header Cache-Control "public";
+    }
+
+    # enable gzip compression
+
+    # Turns on/off the gzip compression.
+    gzip on;
+
+    # Compression level (1-9).
+    # 5 is a perfect compromise between size and cpu usage, offering about
+    # 75% reduction for most ascii files (almost identical to level 9).
+    gzip_comp_level    5;
+
+    # The minimum size file to compress the files.
+    gzip_min_length  1100;
+
+    # Set the buffer size of gzip, 4 32k is good enough for almost everybody.
+    gzip_buffers  4 32k;
+
+    # Compress data even for clients that are connecting to us via proxies,
+    # identified by the "Via" header (required for CloudFront).
+    gzip_proxied       any;
+
+    # This directive let you specify which file types should be compressed, in this case plain text, js files, xml and #css.
+    gzip_types
+        text/plain
+        text/css
+        text/js
+        text/xml
+        text/javascript
+        application/javascript
+        application/x-javascript
+        application/json
+        application/xml
+        application/rss+xml
+        image/svg+xml;
+
+    # Enables response header of “Vary: Accept-Encoding
+    gzip_vary on;
+
+    # end gzip configuration
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
