@@ -10,7 +10,7 @@ imagePullSecrets:
 
 service:
   type: ClusterIP
-  internalPort: 4000
+  internalPort: 80
   externalPort: 80
 
 autoscaling:
