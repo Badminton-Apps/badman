@@ -1,4 +1,2 @@
-cluster:
-  nodes: 3
-
 existingSecret: server-redis
+existingSecretPasswordKey: redis-password
