@@ -34,11 +34,16 @@ ingress:
 
 env:
   - name: PORT
-    value: "4000"
+    value: '4000'
   - name: REDIS_HOST
     value: redis-redis-cluster.badman.svc.cluster.local
   - name: REDIS_PORT
-    value: "6379"
+    value: '6379'
+  - name: REDIS_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: server-redis
+        key: redis-password
   - name: DB_IP
     value: postgresql-postgresql-ha-pgpool.badman.svc.cluster.local
   - name: DB_PASSWORD
@@ -60,4 +65,4 @@ env:
   #       name: apm
   #       key: token
   - name: APM_SERVER_ACTIVE
-    value: "false"
+    value: 'false'

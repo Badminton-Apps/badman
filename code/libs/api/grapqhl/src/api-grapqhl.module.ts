@@ -35,6 +35,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
         client: new Redis({
           host: process.env.REDIS_HOST,
           port: parseInt(process.env.REDIS_PORT, 10),
+          password: process.env.REDIS_PASSWORD,
         }),
       }),
       context: ({ request }) => {
