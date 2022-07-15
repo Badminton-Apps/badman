@@ -30,7 +30,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   @Input()
   updateUrl = false;
 
-  formControl = new FormControl(null, [Validators.required]);
+  formControl = new FormControl<string | undefined>(undefined, [Validators.required]);
   clubs!: Club[];
 
   filteredClubs?: Observable<Club[]>;

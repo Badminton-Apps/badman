@@ -151,6 +151,24 @@ type RankingSystem {
   rankingGroups(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingGroup!]!
 }
 
+"""A Standing"""
+type Standing {
+  id: ID!
+  entryId: String
+  position: Float
+  points: Float
+  played: Float
+  gamesWon: Float
+  gamesLost: Float
+  setsWon: Float
+  setsLost: Float
+  totalPointsWon: Float
+  totalPointsLost: Float
+  won: Float
+  tied: Float
+  lost: Float
+}
+
 """A AvailiblyDay"""
 type AvailiblyDayType {
   day: String
@@ -529,24 +547,6 @@ type Game {
   courtId: String
   visualCode: String
   players: [GamePlayer!]
-}
-
-"""A Standing"""
-type Standing {
-  id: ID!
-  entryId: String
-  position: Float
-  points: Float
-  played: Float
-  gamesWon: Float
-  gamesLost: Float
-  setsWon: Float
-  setsLost: Float
-  totalPointsWon: Float
-  totalPointsLost: Float
-  won: Float
-  tied: Float
-  lost: Float
 }
 
 type TeamPlayer {

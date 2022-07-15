@@ -114,7 +114,7 @@ export class RankingBreakdownComponent implements OnInit {
           relativeTo: this.route,
           replaceUrl: true,
           queryParams: {
-            end: x.period.end ? x.period.end.toISOString() : undefined,
+            end: x.period?.end ? x.period.end.toISOString() : undefined,
             includedIgnored: x.includedIgnored,
             includedUpgrade: x.includedUpgrade,
             includedDowngrade: x.includedDowngrade,

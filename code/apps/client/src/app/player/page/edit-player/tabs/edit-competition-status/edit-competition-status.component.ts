@@ -34,7 +34,7 @@ export class EditCompetitionStatusComponent implements OnInit {
     });
 
     compPlayer.valueChanges.pipe(debounceTime(600)).subscribe(() => {
-      if (compPlayer.valid) {
+      if (compPlayer.valid && compPlayer.value) {
         this.playerService
           .updatePlayer({
             id: this.player.id,

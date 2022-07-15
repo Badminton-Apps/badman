@@ -97,7 +97,9 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
     }
 
     typeControl.valueChanges.subscribe((type) => {
-      this.calcTeamsOfType(type);
+      if (type) {
+        this.calcTeamsOfType(type);
+      }
     });
 
     this.locationControl.valueChanges
