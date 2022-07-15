@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.3.0](https://github.com/Badminton-Apps/badman/compare/v5.2.28...v5.3.0) (2022-07-15)
+
+
+### Features
+
+* **worker-sync:** enabeling sync of 2022-2023 events ([c7b4274](https://github.com/Badminton-Apps/badman/commit/c7b4274091cbd137a51419fe7e066f031472da22))
+
 ### [5.2.28](https://github.com/Badminton-Apps/badman/compare/v5.2.27...v5.2.28) (2022-07-15)
 
 
