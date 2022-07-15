@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.27](https://github.com/Badminton-Apps/badman/compare/v5.2.26...v5.2.27) (2022-07-15)
+
+
+### Bug Fixes
+
+* **api:** reddis connection should include password ([32bbeea](https://github.com/Badminton-Apps/badman/commit/32bbeea53ffb604c10e85f1b2a4a3eb95d265771))
+* **client:** copying nginx to the correct location ([f25b398](https://github.com/Badminton-Apps/badman/commit/f25b39843228684459bc41cbba84335343d85ad5))
+
 ### [5.2.26](https://github.com/Badminton-Apps/badman/compare/v5.2.25...v5.2.26) (2022-07-15)
 
 
