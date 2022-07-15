@@ -27,7 +27,7 @@ jobs:
         working-directory: code/${{ matrix.folder }}
       - run: npm run test
         working-directory: code/${{ matrix.folder }}
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v3
         with:
           name: codecov-${{ matrix.folder }}
           directory: code/${{ matrix.folder }}
