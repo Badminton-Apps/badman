@@ -1,11 +1,13 @@
 import {
   Comment,
   EventCompetition,
+  EventCompetitionUpdateInput,
   Player,
   SubEventCompetition,
 } from '@badman/api/database';
 import {
   Inject,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -35,6 +37,8 @@ export class PagedEventCompetition {
 }
 @Resolver(() => EventCompetition)
 export class EventCompetitionResolver {
+  private readonly logger = new Logger(EventCompetitionResolver.name);
+  
   constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
 
   @Query(() => EventCompetition)
@@ -78,6 +82,43 @@ export class EventCompetitionResolver {
     @Args() listArgs: ListArgs
   ): Promise<Comment[]> {
     return event.getComments(ListArgs.toFindOptions(listArgs));
+  }
+
+  @Mutation(() => EventCompetition)
+  async updateEventCompetition(
+    @User() user: Player,
+    @Args('data') updateEventCompetitionData: EventCompetitionUpdateInput
+  ): Promise<EventCompetition> {
+    if (!user.hasAnyPermission([`edit:competition`])) {
+      throw new UnauthorizedException(
+        `You do not have permission to add a competition`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const eventCompetitionDb = await EventCompetition.findByPk(
+        updateEventCompetitionData.id
+      );
+
+      if (!eventCompetitionDb) {
+        throw new NotFoundException(
+          `${EventCompetition.name}: ${updateEventCompetitionData.id}`
+        );
+      }
+      // Update club
+      const result = await eventCompetitionDb.update(updateEventCompetitionData, { transaction });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
   }
 
   @Mutation(() => EventCompetition)

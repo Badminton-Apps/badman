@@ -1,6 +1,4 @@
-<div class="location" *ngFor="let loc of locations$ | async">
-  <div class="mat-subheading-1">{{ loc.name }}</div>
-
+<ng-container *ngIf="location$ | async as loc">
   <ng-container *ngFor="let availabilityDay of loc.availibilities">
     <div class="location-days">
       <div class="location-days-title mat-subheading-2">
@@ -17,6 +15,7 @@
           (playDayDeleted)="
             this.deleteAvailabilityDay('day', i, availabilityDay)
           "
+          (whenChangedFocus)="(this.whenChangedFocus)"
           [day]="day"
         ></badman-play-days>
       </div>
@@ -28,6 +27,7 @@
           (playDayDeleted)="
             this.uppdateAvailabilityDay($event, -1, availabilityDay)
           "
+          (whenChangedFocus)="(this.whenChangedFocus)"
         ></badman-play-days>
       </div>
     </div>
@@ -48,6 +48,7 @@
             this.deleteAvailabilityDay('exception', i, availabilityDay)
           "
           [exception]="exception"
+          (whenChangedFocus)="(this.whenChangedFocus)"
         ></badman-exception-days>
       </div>
       <div class="location-exceptions-item">
@@ -58,8 +59,9 @@
           (exeptionChanged)="
             this.uppdateAvailabilityDay($event, -1, availabilityDay)
           "
+          (whenChangedFocus)="(this.whenChangedFocus)"
         ></badman-exception-days>
       </div>
     </div>
   </ng-container>
-</div>
+</ng-container>

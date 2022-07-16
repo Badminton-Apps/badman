@@ -22,7 +22,7 @@ module.exports = {
             `truncate table "SequelizeMeta";`,
             { transaction: t }
           );
-        } else if (false) {
+        } else {
           await queryInterface.sequelize.query(
             `
                 --
@@ -2450,12 +2450,7 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        try {
-          console.warn('Just delete the DB');
-        } catch (err) {
-          console.error('We errored with', err);
-          t.rollback();
-        }
+        console.warn('Just delete the DB');
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

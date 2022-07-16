@@ -58,10 +58,11 @@
 
     <ng-container *ngIf="club$ | async as club; else loading">
       <ng-container *ngIf="this.competitionYear; else loading">
-        <badman-location-availability
+        <badman-locations-availability
           [club]="club!"
           [year]="this.competitionYear!"
-        ></badman-location-availability>
+          (whenChangedFocus)="this.vert_stepper.selectionChange"
+        ></badman-locations-availability>
       </ng-container>
     </ng-container>
     <div>
