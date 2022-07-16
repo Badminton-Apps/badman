@@ -31,12 +31,16 @@ export class AppController {
   getQueueSim() {
     this.logger.debug('Queue');
     // 20 Games
-    this.rankingSim.add(Simulation.Start, {
-      systemIds: ['ee720b52-cdd6-4bbe-bf19-976a3750cda3'],
-      stop: '2022-07-03 22:00:00+00',
-    }, {
-      removeOnComplete: true
-    });
+    this.rankingSim.add(
+      Simulation.Start,
+      {
+        systemIds: ['ee720b52-cdd6-4bbe-bf19-976a3750cda3'],
+        stop: '2022-07-03 22:00:00+00',
+      },
+      {
+        removeOnComplete: true,
+      }
+    );
 
     // // 25 Games
     // this.rankingSim.add(Simulation.Start, {
@@ -58,7 +62,11 @@ export class AppController {
   @Get('queue-sync')
   getQueueSync() {
     this.logger.debug('Queue');
-    return this.rankingSync.add(Sync.SyncEvents);
+    return this.rankingSync.add(
+      Sync.SyncEvents,
+      { date: '2022-07-14', only: ['Vlaamse interclubcompetitie 2022-2023'] },
+      { removeOnComplete: true }
+    );
   }
 
   @Get('cp')

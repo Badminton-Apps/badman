@@ -214,7 +214,7 @@ export class EditClubComponent implements OnInit {
 
   async onEditLocation(location?: Location, club?: Club) {
     const dialogRef = this.dialog.open(LocationDialogComponent, {
-      data: { location, club },
+      data: { location, club, compYears: [2022, 2021, 2020] },
       autoFocus: false,
     });
 

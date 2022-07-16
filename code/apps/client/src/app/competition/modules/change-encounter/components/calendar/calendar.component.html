@@ -43,7 +43,23 @@
     </div>
   </div>
   <div>
-    <small>Klik op een uur om deze te selecteren</small>
+    <small>Klik op een uur om deze te selecteren</small> <br />
+    <badman-has-claim
+      [any]="[this.data.clubId + '_edit:club', 'edit-any:club']"
+    >
+      <small noPerm
+        >Vraag aan de club verantwoordelijke om een Speelmomenten toe te
+        voegen</small
+      >
+      <small
+        >Speelmomenten wijzigen:
+        <a
+          [routerLink]="['/', 'club', this.data.clubId, 'edit']"
+          (click)="this.dialogRef.close()"
+          >Club > Edit > Locatie
+        </a></small
+      >
+    </badman-has-claim>
   </div>
 </div>
 

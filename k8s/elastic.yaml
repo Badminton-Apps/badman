@@ -141,7 +141,7 @@ spec:
       autodiscover:
         providers:
           - type: kubernetes
-            namespace: badvla
+            namespace: badman
             node: ${NODE_NAME}
             templates:
               - condition:

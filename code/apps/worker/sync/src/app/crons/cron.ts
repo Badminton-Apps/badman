@@ -15,6 +15,7 @@ export class CronService {
     this.logger.debug(`${CronExpression.EVERY_DAY_AT_2PM} Cron triggered`);
     this.rankingQ.add(Sync.SyncEvents, {
       removeOnComplete: true,
+      removeOnFail: true,
     });
   }
 
@@ -23,14 +24,17 @@ export class CronService {
     this.logger.debug(`${CronExpression.EVERY_DAY_AT_2PM} Cron triggered`);
     this.rankingQ.add(Sync.SyncRanking, {
       removeOnComplete: true,
+      removeOnFail: true,
+
     });
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
-  syncEncounter() {
-    this.logger.debug(`${CronExpression.EVERY_HOUR} Cron triggered`);
-    this.rankingQ.add(Sync.CheckEncounters, {
-      removeOnComplete: true,
-    });
-  }
+  // @Cron(CronExpression.EVERY_HOUR)
+  // syncEncounter() {
+  //   this.logger.debug(`${CronExpression.EVERY_HOUR} Cron triggered`);
+  //   this.rankingQ.add(Sync.CheckEncounters, {
+  //     removeOnComplete: true,
+  //     removeOnFail: true,
+  //   });
+  // }
 }

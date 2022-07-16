@@ -26,7 +26,14 @@ import {
 import { LevelType, UsedRankingTiming } from '../../../enums';
 import { Comment } from './../../comment.model';
 import { SubEventCompetition } from './sub-event-competition.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
@@ -162,3 +169,20 @@ export class EventCompetition extends Model {
   hasComments!: HasManyHasAssociationsMixin<Comment, string>;
   countComments!: HasManyCountAssociationsMixin;
 }
+
+@InputType()
+export class EventCompetitionUpdateInput extends PartialType(
+  OmitType(EventCompetition, [
+    'createdAt',
+    'updatedAt',
+    'comments',
+    'subEventCompetitions',
+  ] as const),
+  InputType
+) {}
+
+@InputType()
+export class EventCompetitionNewInput extends PartialType(
+  OmitType(EventCompetitionUpdateInput, ['id'] as const),
+  InputType
+) {}

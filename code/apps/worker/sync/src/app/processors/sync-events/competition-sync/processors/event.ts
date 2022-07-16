@@ -5,6 +5,7 @@ import { VisualService } from '../../../../services';
 import { XmlTournament } from '../../../../utils';
 
 export interface EventStepData {
+  stop: boolean;
   existed: boolean;
   event: EventCompetition;
   internalId: number;
@@ -58,8 +59,14 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
       }
     }
 
+    if (event.allowEnlisting) {
+      this.logger.debug(
+        `EventCompetition ${event.name} is open, skipping processing`
+      );
+    }
+
     return {
-      // stop: existed,
+      stop: event.allowEnlisting,
       existed,
       event,
       internalId: parseInt(this.visualTournament.Code, 10),

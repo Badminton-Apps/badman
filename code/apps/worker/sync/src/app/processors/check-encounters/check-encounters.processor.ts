@@ -23,7 +23,7 @@ export class CheckEncounterProcessor {
     this.logger.debug('Check encounter processor initialized');
   }
 
-  @Process(Sync.CheckEncounters)
+  // @Process(Sync.CheckEncounters)
   async syncEncounters(): Promise<void> {
     this.logger.log('Syncing encounters');
     let browser: Browser;

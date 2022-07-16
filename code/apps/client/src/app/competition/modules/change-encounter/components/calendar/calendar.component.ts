@@ -45,7 +45,7 @@ export class CalendarComponent implements OnInit {
   public gridTemplateColumns = '';
 
   constructor(
-    private dialogRef: MatDialogRef<CalendarComponent>,
+    public dialogRef: MatDialogRef<CalendarComponent>,
     private ref: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA)
     public data: {

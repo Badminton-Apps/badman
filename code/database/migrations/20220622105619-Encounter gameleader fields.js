@@ -73,44 +73,39 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        try {
-          await queryInterface.removeColumn(
-            {
-              tableName: 'EncounterCompetitions',
-              schema: 'event',
-            },
-            'gameLeaderId',
-            { transaction: t }
-          );
+        await queryInterface.removeColumn(
+          {
+            tableName: 'EncounterCompetitions',
+            schema: 'event',
+          },
+          'gameLeaderId',
+          { transaction: t }
+        );
 
-          await queryInterface.removeColumn(
-            {
-              tableName: 'EncounterCompetitions',
-              schema: 'event',
-            },
-            'shuttle',
-            { transaction: t }
-          );
-          await queryInterface.removeColumn(
-            {
-              tableName: 'EncounterCompetitions',
-              schema: 'event',
-            },
-            'startHour',
-            { transaction: t }
-          );
-          await queryInterface.removeColumn(
-            {
-              tableName: 'EncounterCompetitions',
-              schema: 'event',
-            },
-            'endHour',
-            { transaction: t }
-          );
-        } catch (err) {
-          console.error('We errored with', err);
-          t.rollback();
-        }
+        await queryInterface.removeColumn(
+          {
+            tableName: 'EncounterCompetitions',
+            schema: 'event',
+          },
+          'shuttle',
+          { transaction: t }
+        );
+        await queryInterface.removeColumn(
+          {
+            tableName: 'EncounterCompetitions',
+            schema: 'event',
+          },
+          'startHour',
+          { transaction: t }
+        );
+        await queryInterface.removeColumn(
+          {
+            tableName: 'EncounterCompetitions',
+            schema: 'event',
+          },
+          'endHour',
+          { transaction: t }
+        );
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();
