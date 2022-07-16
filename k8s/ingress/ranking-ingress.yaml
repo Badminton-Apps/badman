@@ -10,7 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: '0'
     nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
     nginx.ingress.kubernetes.io/proxy-send-timeout: '600'
-    # cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
 spec:
   tls:
     - hosts:
@@ -41,6 +41,3 @@ spec:
                 name: api
                 port:
                   number: 80
-
-
-# curl -kivL -H 'Host: badman.app' 'http://34.140.190.61'
