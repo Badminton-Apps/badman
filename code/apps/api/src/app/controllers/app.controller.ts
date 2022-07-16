@@ -30,11 +30,11 @@ export class AppController {
   @Get('queue-sim')
   getQueueSim() {
     this.logger.debug('Queue');
-    // 20 Games
+    // BVL 25w 75up 35down
     this.rankingSim.add(
       Simulation.Start,
       {
-        systemIds: ['ee720b52-cdd6-4bbe-bf19-976a3750cda3'],
+        systemIds: ['98d5aeee-973e-4bdb-8087-290e480df53f'],
         stop: '2022-07-03 22:00:00+00',
       },
       {
@@ -42,17 +42,17 @@ export class AppController {
       }
     );
 
-    // // 25 Games
+    // // BVL 25w 67up 30down
     // this.rankingSim.add(Simulation.Start, {
-    //   systemIds: ['1a69c5a8-7c72-47fe-8646-3018a7c53a5a'],
+    //   systemIds: ['c1c7e8e2-5d1b-42d7-a109-a249884c0b13'],
     //   stop: '2022-07-03 22:00:00+00',
     // }, {
     //   removeOnComplete: true
     // });
 
-    // // All Games
+    // // BVL 25w 75up 35down
     // this.rankingSim.add(Simulation.Start, {
-    //   systemIds: ['bdb91081-3549-49d9-9ac9-67a4c1320977'],
+    //   systemIds: ['b91cbdc1-85b0-4065-9039-f3e90e210979'],
     //   stop: '2022-07-03 22:00:00+00',
     // }, {
     //   removeOnComplete: true

@@ -169,27 +169,27 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async teamsAssigned(event: { team: Team; subEventId: string }) {
-    // await lastValueFrom(
-    //   this.apollo
-    //     .mutate({
-    //       mutation: AssignTeamSubEvent,
-    //       variables: {
-    //         teamId: event.team.id,
-    //         subEventId: event.subEventId,
-    //       },
-    //     })
-    //     .pipe(
-    //       tap(() => {
-    //         // Invalidate Club Cache
-    //         const normalized = apolloCache.identify({
-    //           id: event.team.clubId,
-    //           __typename: 'Club',
-    //         });
-    //         apolloCache.evict({ id: normalized });
-    //         apolloCache.gc();
-    //       })
-    //     )
-    // );
+    await lastValueFrom(
+      this.apollo
+        .mutate({
+          mutation: AssignTeamSubEvent,
+          variables: {
+            teamId: event.team.id,
+            subEventId: event.subEventId,
+          },
+        })
+        .pipe(
+          tap(() => {
+            // Invalidate Club Cache
+            const normalized = apolloCache.identify({
+              id: event.team.clubId,
+              __typename: 'Club',
+            });
+            apolloCache.evict({ id: normalized });
+            apolloCache.gc();
+          })
+        )
+    );
   }
 
   async submit() {
