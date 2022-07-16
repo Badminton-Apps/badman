@@ -2,13 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [5.5.0](https://github.com/Badminton-Apps/badman/compare/v5.4.2...v5.5.0) (2022-07-16)
-
-
-### Features
-
-* **api:** adding health endpoint ([d0b9b66](https://github.com/Badminton-Apps/badman/commit/d0b9b66f28bbaba0d0c646fcd7acc985fa51643b))
-
 ### [5.4.2](https://github.com/Badminton-Apps/badman/compare/v5.4.1...v5.4.2) (2022-07-16)
 
 
