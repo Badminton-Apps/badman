@@ -62,7 +62,7 @@ import { ClubPlayer } from '../_interception';
   timestamps: true,
   schema: 'public',
 })
-@ObjectType('Player', { description: 'A Player' })
+@ObjectType('Player', { description: 'A player is also a logged in user' })
 export class Player extends Model {
   constructor(values?: Partial<Player>, options?: BuildOptions) {
     super(values, options);
