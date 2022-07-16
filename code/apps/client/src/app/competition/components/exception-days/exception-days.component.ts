@@ -2,19 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnInit,
   Output,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import moment, { Moment } from 'moment';
-import {
-  AvailabilityException,
-  resetAllFormFields,
-} from '../../../../../../../_shared';
-import { STEP_AVAILIBILTY } from '../../team-enrollment.component';
+import { AvailabilityException, resetAllFormFields } from '../../../_shared';
 
 @Component({
   selector: 'badman-exception-days',
@@ -28,6 +23,9 @@ export class ExceptionDaysComponent implements OnInit {
   @Input()
   exception?: AvailabilityException | null;
 
+  @Input()
+  whenChangedFocus?: EventEmitter<void>;
+
   @Output()
   exeptionChanged = new EventEmitter<AvailabilityException>();
 
@@ -36,11 +34,7 @@ export class ExceptionDaysComponent implements OnInit {
 
   isNew = false;
 
-  constructor(@Inject(MatStepper) private _stepper: MatStepper) {
-    if (!_stepper) {
-      throw new Error('Stepper is not provided');
-    }
-  }
+  constructor(private _snackbar: MatSnackBar) {}
 
   ngOnInit(): void {
     if (!this.exception) {
@@ -61,11 +55,13 @@ export class ExceptionDaysComponent implements OnInit {
       end: endControl,
     });
 
+    this.whenChangedFocus?.subscribe(() => {
+      console.log('focus');
+    });
+
     if (this.isNew) {
-      this._stepper.selectionChange.subscribe((r) => {
-        if (r.previouslySelectedIndex == STEP_AVAILIBILTY) {
-          this.addException();
-        }
+      this.whenChangedFocus?.subscribe(() => {
+        this.addException(false);
       });
     } else {
       this.fg.valueChanges.subscribe(() => {
@@ -74,13 +70,20 @@ export class ExceptionDaysComponent implements OnInit {
     }
   }
 
-  addException() {
+  addException(showNotification: boolean = true) {
     // Validate all fields (we can't use the FG valiate because this also checks on submit)
     if (
-      !this.fg.value?.courts ||
+      (this.fg.value?.courts ?? -1) < 0 ||
       !this.fg.value?.start ||
       !this.fg.value?.end
     ) {
+      console.log(this.fg.value);
+
+      if (showNotification) {
+        this._snackbar.open('Please fill in all fields', 'OK', {
+          duration: 2000,
+        });
+      }
       return;
     }
 

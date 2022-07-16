@@ -10,8 +10,12 @@ import { GameModule, StandingsModule } from '../modules';
 import { GameResultModule, SharedModule } from '../_shared';
 import { CompetitionRoutingModule } from './competition-routing.module';
 import {
+  CompetitionComponentsModule,
   EventCompetitionFieldsComponent,
   EventCompetitionLevelFieldsComponent,
+  ExceptionDaysComponent,
+  LocationAvailabilityComponent,
+  PlayDaysComponent,
 } from './components';
 import {
   DetailCompetitionComponent,
@@ -35,14 +39,13 @@ const materialModules = [
     DetailCompetitionComponent,
     DetailDrawCompetitionComponent,
     EditEventCompetitionComponent,
-    EventCompetitionFieldsComponent,
     EditEventCompetitionComponent,
-    EventCompetitionLevelFieldsComponent,
     DetailEncounterComponent,
   ],
   imports: [
     SharedModule,
     ...materialModules,
+    CompetitionComponentsModule,
     GameResultModule,
     CompetitionRoutingModule,
     GameModule,
