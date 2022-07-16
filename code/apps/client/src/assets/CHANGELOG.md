@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.4.0](https://github.com/Badminton-Apps/badman/compare/v5.3.0...v5.4.0) (2022-07-16)
+
+
+### Features
+
+* **client:** edit location from club edit screen ([3920c34](https://github.com/Badminton-Apps/badman/commit/3920c34d130c5913849aa6af750f1948ed8758f6))
+
+
+### Bug Fixes
+
+* **ci:** should check internal service port for livelyness ([d083e31](https://github.com/Badminton-Apps/badman/commit/d083e31727d4951497abce7aec9141a3d2c0705e))
+* **deps:** update angular monorepo to v14 ([e4598d6](https://github.com/Badminton-Apps/badman/commit/e4598d64b54173fbe3262ce6e8a831b4e63f6dcf))
+* **deps:** update angularmaterial monorepo to v14 ([651798b](https://github.com/Badminton-Apps/badman/commit/651798b2d8d8cb2b327b263c434135026227246e))
+* **deps:** update nest monorepo to v9 ([834f0a6](https://github.com/Badminton-Apps/badman/commit/834f0a620e2fb699ca9f467e815b64ca937eaa0b))
+
 ## [5.3.0](https://github.com/Badminton-Apps/badman/compare/v5.2.28...v5.3.0) (2022-07-15)
 
 
