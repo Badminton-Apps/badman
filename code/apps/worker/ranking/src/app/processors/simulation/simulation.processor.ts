@@ -26,7 +26,7 @@ export class SimulationProcessor {
     callback?: DoneCallback
   ) {
     try {
-      this.logger.log('Start Simulation', job.data);
+      this.logger.log(`Start Simulation`, job.data);
       const systems = await RankingSystem.findAll({
         where: {
           id: job.data.systemIds,
@@ -41,6 +41,7 @@ export class SimulationProcessor {
       }
 
       for (const system of systems) {
+        this.logger.log(`Start Simulation of ${system.name}`);
         const stop = job.data.stop
           ? moment(job.data.stop)
           : moment(system.caluclationIntervalLastUpdate).add(
@@ -68,22 +69,22 @@ export class SimulationProcessor {
 }
 
 /*
-delete from   "ranking"."RankingPlaces" where "systemId" = 'ee720b52-cdd6-4bbe-bf19-976a3750cda3';
-delete from   "ranking"."RankingLastPlaces" where "systemId" = 'ee720b52-cdd6-4bbe-bf19-976a3750cda3';
-delete from   "ranking"."RankingPoints" where "systemId" = 'ee720b52-cdd6-4bbe-bf19-976a3750cda3';
+delete from   "ranking"."RankingPlaces" where "systemId" = 'c1c7e8e2-5d1b-42d7-a109-a249884c0b13';
+delete from   "ranking"."RankingLastPlaces" where "systemId" = 'c1c7e8e2-5d1b-42d7-a109-a249884c0b13';
+delete from   "ranking"."RankingPoints" where "systemId" = 'c1c7e8e2-5d1b-42d7-a109-a249884c0b13';
 
 INSERT INTO "ranking"."RankingPlaces" (id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", "updatePossible", gender, "systemId")
-  SELECT gen_random_uuid() as id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", "updatePossible", gender, 'ee720b52-cdd6-4bbe-bf19-976a3750cda3' as "systemId"   
+  SELECT gen_random_uuid() as id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", "updatePossible", gender, 'c1c7e8e2-5d1b-42d7-a109-a249884c0b13' as "systemId"   
   FROM "ranking"."RankingPlaces" 
   WHERE "systemId" = '934116c8-ee7e-4f3c-9c8b-6de579c3686f';
 
 INSERT INTO "ranking"."RankingLastPlaces" (id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", gender, "systemId")
-  SELECT gen_random_uuid() as id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", gender, 'ee720b52-cdd6-4bbe-bf19-976a3750cda3' as "systemId"
+  SELECT gen_random_uuid() as id, "rankingDate", "singlePoints", "mixPoints", "doublePoints", "singleRank", "mixRank", "doubleRank", single, mix, double, "singlePointsDowngrade", "doublePointsDowngrade", "mixPointsDowngrade", "singleInactive", "doubleInactive", "mixInactive", "totalSingleRanking", "totalDoubleRanking", "totalMixRanking", "totalWithinSingleLevel", "totalWithinDoubleLevel", "totalWithinMixLevel", "playerId", "createdAt", "updatedAt", gender, 'c1c7e8e2-5d1b-42d7-a109-a249884c0b13' as "systemId"
   FROM "ranking"."RankingLastPlaces" 
   WHERE "systemId" = '934116c8-ee7e-4f3c-9c8b-6de579c3686f';
 
 INSERT INTO "ranking"."RankingPoints" (id, points, "rankingDate", "differenceInLevel", "playerId", "gameId", "createdAt", "updatedAt", "systemId" )
-  SELECT gen_random_uuid() as id, points, "rankingDate", "differenceInLevel", "playerId", "gameId", "createdAt", "updatedAt", 'ee720b52-cdd6-4bbe-bf19-976a3750cda3' as "systemId"
+  SELECT gen_random_uuid() as id, points, "rankingDate", "differenceInLevel", "playerId", "gameId", "createdAt", "updatedAt", 'c1c7e8e2-5d1b-42d7-a109-a249884c0b13' as "systemId"
   FROM "ranking"."RankingPoints" 
   WHERE "systemId" = '934116c8-ee7e-4f3c-9c8b-6de579c3686f';
 */
