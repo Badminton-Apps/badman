@@ -66,7 +66,10 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "api:build"
+        "buildTarget": "api:build",
+        "inspect": "inspect",
+        "port": 9229,
+        "host": "0.0.0.0"
       }
     },
     "serve-dev": {

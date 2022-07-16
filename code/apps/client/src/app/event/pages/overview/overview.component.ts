@@ -15,7 +15,14 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
-import { BehaviorSubject, forkJoin, merge, Observable, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  forkJoin,
+  lastValueFrom,
+  merge,
+  Observable,
+  tap,
+} from 'rxjs';
 import { debounceTime, filter, map } from 'rxjs/operators';
 import { apolloCache } from '../../../graphql.module';
 import {
@@ -181,20 +188,28 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
   async setOpenState(state: boolean) {
     console.log('setOpenState', state);
-    // for (const selected of this.selection.selected) {
-    //   this.eventService
-    //     .updateCompetitionEvent({
-    //       id: selected,
-    //       allowEnlisting: state,
-    //     })
-    //     .subscribe(() => {
-    //       // trigger update
-    //       this.filter.updateValueAndValidity({
-    //         onlySelf: false,
-    //         emitEvent: true,
-    //       });
-    //     });
-    // }
+
+    for (const selected of this.selection.selected) {
+      await lastValueFrom(
+        this._apollo.mutate({
+          mutation: gql`
+            mutation UpdateEventCompetition(
+              $data: EventCompetitionUpdateInput!
+            ) {
+              updateEventCompetition(data: $data) {
+                id
+              }
+            }
+          `,
+          variables: {
+            data: {
+              id: selected,
+              allowEnlisting: state,
+            },
+          },
+        })
+      );
+    }
   }
 
   async copy(templateRef) {

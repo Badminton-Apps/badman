@@ -121,116 +121,111 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        try {
-          await queryInterface.renameColumn(
-            {
-              tableName: 'RankingPoints',
-              schema: 'ranking',
-            },
-            'systemId',
-            'SystemId',
-            { transaction: t }
-          );
-          await queryInterface.renameColumn(
-            {
-              tableName: 'RankingPoints',
-              schema: 'ranking',
-            },
-            'gameId',
-            'GameId',
-            { transaction: t }
-          );
-          await queryInterface.renameColumn(
-            {
-              tableName: 'RankingPlaces',
-              schema: 'ranking',
-            },
-            'systemId',
-            'SystemId',
-            { transaction: t }
-          );
-          await queryInterface.renameTable(
-            {
-              tableName: 'RankingSystemRankingGroupMemberships',
-              schema: 'ranking',
-            },
-            'GroupSystems',
-            { transaction: t }
-          );
-          await queryInterface.renameTable(
-            {
-              tableName: 'RankingGroups',
-              schema: 'ranking',
-            },
-            'Groups',
-            { transaction: t }
-          );
+        await queryInterface.renameColumn(
+          {
+            tableName: 'RankingPoints',
+            schema: 'ranking',
+          },
+          'systemId',
+          'SystemId',
+          { transaction: t }
+        );
+        await queryInterface.renameColumn(
+          {
+            tableName: 'RankingPoints',
+            schema: 'ranking',
+          },
+          'gameId',
+          'GameId',
+          { transaction: t }
+        );
+        await queryInterface.renameColumn(
+          {
+            tableName: 'RankingPlaces',
+            schema: 'ranking',
+          },
+          'systemId',
+          'SystemId',
+          { transaction: t }
+        );
+        await queryInterface.renameTable(
+          {
+            tableName: 'RankingSystemRankingGroupMemberships',
+            schema: 'ranking',
+          },
+          'GroupSystems',
+          { transaction: t }
+        );
+        await queryInterface.renameTable(
+          {
+            tableName: 'RankingGroups',
+            schema: 'ranking',
+          },
+          'Groups',
+          { transaction: t }
+        );
 
-          await queryInterface.renameTable(
-            {
-              tableName: 'RankingLastPlaces',
-              schema: 'ranking',
-            },
-            'LastPlaces',
-            { transaction: t }
-          );
+        await queryInterface.renameTable(
+          {
+            tableName: 'RankingLastPlaces',
+            schema: 'ranking',
+          },
+          'LastPlaces',
+          { transaction: t }
+        );
 
-          await queryInterface.renameTable(
-            {
-              tableName: 'RankingPlaces',
-              schema: 'ranking',
-            },
-            'Places',
-            { transaction: t }
-          );
+        await queryInterface.renameTable(
+          {
+            tableName: 'RankingPlaces',
+            schema: 'ranking',
+          },
+          'Places',
+          { transaction: t }
+        );
 
-          await queryInterface.renameTable(
-            {
-              tableName: 'RankingPoints',
-              schema: 'ranking',
-            },
-            'Points',
-            { transaction: t }
-          );
+        await queryInterface.renameTable(
+          {
+            tableName: 'RankingPoints',
+            schema: 'ranking',
+          },
+          'Points',
+          { transaction: t }
+        );
 
-          await queryInterface.renameTable(
-            {
-              tableName: 'RankingSystems',
-              schema: 'ranking',
-            },
-            'Systems',
-            { transaction: t }
-          );
-          await queryInterface.renameTable(
-            {
-              tableName: 'RankingGroupSubEventTournamentMemberships',
-              schema: 'ranking',
-            },
-            'GroupSubEventTournaments',
-            { transaction: t }
-          );
+        await queryInterface.renameTable(
+          {
+            tableName: 'RankingSystems',
+            schema: 'ranking',
+          },
+          'Systems',
+          { transaction: t }
+        );
+        await queryInterface.renameTable(
+          {
+            tableName: 'RankingGroupSubEventTournamentMemberships',
+            schema: 'ranking',
+          },
+          'GroupSubEventTournaments',
+          { transaction: t }
+        );
 
-          await queryInterface.renameTable(
-            {
-              tableName: 'RankingGroupSubEventCompetitionMemberships',
-              schema: 'ranking',
-            },
-            'GroupSubEventCompetitions',
-            { transaction: t }
-          );
+        await queryInterface.renameTable(
+          {
+            tableName: 'RankingGroupSubEventCompetitionMemberships',
+            schema: 'ranking',
+          },
+          'GroupSubEventCompetitions',
+          { transaction: t }
+        );
 
-          await queryInterface.renameTable(
-            {
-              tableName: 'ClubPlayerMemberships',
-              schema: 'public',
-            },
-            'ClubMemberships',
-            { transaction: t }
-          );
-        } catch (err) {
-          console.error('We errored with', err);
-          t.rollback();
-        }
+        await queryInterface.renameTable(
+          {
+            tableName: 'ClubPlayerMemberships',
+            schema: 'public',
+          },
+          'ClubMemberships',
+          { transaction: t }
+        );
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

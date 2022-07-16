@@ -5,7 +5,7 @@ export const correctWrongTeams = (team: {
   id?: string;
   name: string;
 } => {
-  team.name = team.name?.replace(/(\\ +\(\d+\))/gi, '');
+  team.name = team.name?.replace(/( +\(\d+\))/gi, '');
   team.name = team.name?.trim();
 
   if (team.name?.indexOf('W&amp;L') > -1) {

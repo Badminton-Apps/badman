@@ -744,6 +744,11 @@ type Mutation {
   removeRankingGroupToRankingSystem(rankingSystemId: ID!, rankingGroupId: ID!): RankingSystem!
   updateRankingPlace(data: RankingPlaceUpdateInput!): Player!
   newRankingPlace(data: RankingPlaceNewInput!): Player!
+  createLocation(data: LocationNewInput!): Location!
+  updateLocation(data: LocationUpdateInput!): Location!
+  createAvailability(data: AvailabilityNewInput!): Availability!
+  updateAvailability(data: AvailabilityUpdateInput!): Availability!
+  updateEventCompetition(data: EventCompetitionUpdateInput!): EventCompetition!
   copyEventCompetition(id: ID!, number: Float!): EventCompetition!
   addChangeEncounter(data: EncounterChangeNewInput!): Boolean!
   assignClaim(claimId: ID!, playerId: ID!, active: Boolean!): Boolean!
@@ -919,6 +924,76 @@ input RankingPlaceNewInput {
   updatePossible: Boolean
   playerId: String
   systemId: String
+}
+
+input LocationNewInput {
+  name: String
+  address: String
+  street: String
+  streetNumber: String
+  postalcode: String
+  city: String
+  state: String
+  phone: String
+  fax: String
+  clubId: String
+}
+
+input LocationUpdateInput {
+  id: ID
+  name: String
+  address: String
+  street: String
+  streetNumber: String
+  postalcode: String
+  city: String
+  state: String
+  phone: String
+  fax: String
+  clubId: String
+}
+
+input AvailabilityNewInput {
+  year: Float
+  locationId: String
+  days: [AvailiblyDayInputType!]
+  exceptions: [ExceptionInputType!]
+}
+
+"""A AvailiblyDay"""
+input AvailiblyDayInputType {
+  day: String
+  startTime: String
+  endTime: String
+  courts: Float
+}
+
+"""An Exception"""
+input ExceptionInputType {
+  start: DateTime
+  end: DateTime
+  courts: Float
+}
+
+input AvailabilityUpdateInput {
+  id: ID
+  year: Float
+  locationId: String
+  days: [AvailiblyDayInputType!]!
+  exceptions: [ExceptionInputType!]!
+}
+
+input EventCompetitionUpdateInput {
+  id: ID
+  name: String
+  startYear: Float
+  type: String
+  visualCode: String
+  allowEnlisting: Boolean
+  started: Boolean
+  slug: String
+  usedRankingAmount: Float
+  usedRankingUnit: String
 }
 
 input EncounterChangeNewInput {

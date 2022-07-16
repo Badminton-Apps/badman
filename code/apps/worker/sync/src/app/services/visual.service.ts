@@ -130,6 +130,21 @@ export class VisualService {
     return this._asArray(parsed.TournamentDraw);
   }
 
+  async getDraw(
+    tourneyId: string,
+    drawId: string | number,
+    useCache = true
+  ): Promise<XmlTournamentDraw> {
+    const result = await this._getFromApi(
+      `${this.configService.get(
+        'VR_API'
+      )}/Tournament/${tourneyId}/Draw/${drawId}`,
+      useCache
+    );
+    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    return parsed.TournamentDraw as XmlTournamentDraw;
+  }
+
   async getEvents(
     tourneyId: string | number,
     useCache = true
@@ -192,7 +207,7 @@ export class VisualService {
   }
 
   private _getFromApi(url: string, useCache = true) {
-    if (useCache && VisualService.cache.has(url)) {
+    if ((useCache || true) && VisualService.cache.has(url)) {
       return Promise.resolve({ data: VisualService.cache.get(url) });
     } else {
       const t0 = performance.now();
