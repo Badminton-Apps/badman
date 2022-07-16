@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.4.2](https://github.com/Badminton-Apps/badman/compare/v5.4.1...v5.4.2) (2022-07-16)
+
+
+### Bug Fixes
+
+* **client:** team assign shouldn't have been commented ([5e40327](https://github.com/Badminton-Apps/badman/commit/5e40327c333f26949c0f5405e865dc89acf19694))
+
 ### [5.4.1](https://github.com/Badminton-Apps/badman/compare/v5.4.0...v5.4.1) (2022-07-16)
 
 ## [5.4.0](https://github.com/Badminton-Apps/badman/compare/v5.3.0...v5.4.0) (2022-07-16)
