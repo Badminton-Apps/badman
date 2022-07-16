@@ -5,12 +5,12 @@ module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.renameTable(
-          {
-            tableName: 'GamePlayers',
-            schema: 'event',
-          },
-          'GamePlayerMemberships',
+        await queryInterface.sequelize.query(
+          `update  "event"."SubEventCompetitions"
+            set "visualCode" = null
+            where id in(select "SubEventCompetitions".id from "event"."SubEventCompetitions"
+                      inner join "event"."EventCompetitions" on "EventCompetitions".id = "SubEventCompetitions"."eventId"
+                      where "event"."EventCompetitions"."startYear" = 2022)`,
           { transaction: t }
         );
       } catch (err) {
@@ -23,14 +23,6 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.renameTable(
-          {
-            tableName: 'GamePlayerMemberships',
-            schema: 'event',
-          },
-          'GamePlayers',
-          { transaction: t }
-        );
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

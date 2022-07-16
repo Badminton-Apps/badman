@@ -113,8 +113,8 @@ export class TournamentSyncer {
     return this.processor.process();
   }
 
-  protected getEvent(): ProcessStep {
-    return new ProcessStep(this.STEP_EVENT, async () => {
+  protected getEvent(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_EVENT, async () => {
       // Process step
       const data = await this._eventStep.process();
 
@@ -124,62 +124,76 @@ export class TournamentSyncer {
       this._subEventStep.existed = data.existed;
       this._pointStep.event = data.event;
       this._gameStep.event = data;
+
+      return data;
     });
   }
 
-  protected addSubEvents(): ProcessStep {
-    return new ProcessStep(this.STEP_SUBEVENT, async () => {
+  protected addSubEvents(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_SUBEVENT, async () => {
       // Process step
       const data = await this._subEventStep.process();
 
       // Pass data to other steps
       this._drawStep.subEvents = data;
       this._gameStep.subEvents = data;
+
+      return data;
     });
   }
 
-  protected addDraws(): ProcessStep {
-    return new ProcessStep(this.STEP_DRAW, async () => {
+  protected addDraws(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_DRAW, async () => {
       // Process step
       const data = await this._drawStep.process();
 
       // Pass data to other steps
       this._gameStep.draws = data;
       this._standingStep.draws = data;
+
+      return data;
     });
   }
 
-  protected addPlayers(): ProcessStep {
-    return new ProcessStep(this.STEP_PLAYER, async () => {
+  protected addPlayers(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_PLAYER, async () => {
       // Process step
       const data = await this._playerStep.process();
 
       // Pass data to other steps
       this._gameStep.players = data;
+
+      return data;
     });
   }
 
-  protected addGames(): ProcessStep {
-    return new ProcessStep(this.STEP_GAME, async () => {
+  protected addGames(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_GAME, async () => {
       // Process step
       const data = await this._gameStep.process();
 
       // Pass data to other steps
       this._standingStep.games = data;
+
+      return data;
     });
   }
 
-  protected addPoints(): ProcessStep {
-    return new ProcessStep(this.STEP_POINT, async () => {
+  protected addPoints(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_POINT, async () => {
       // Process step
-      await this._pointStep.process();
+      const data = await this._pointStep.process();
+
+      return data;
     });
   }
 
-  protected updateStanding(): ProcessStep {
-    return new ProcessStep(this.STEP_STANDING, async () => {
+  protected updateStanding(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_STANDING, async () => {
       // Process step
-      await this._standingStep.process();
+      const data = await this._standingStep.process();
+
+      return data;
     });
   }
 }

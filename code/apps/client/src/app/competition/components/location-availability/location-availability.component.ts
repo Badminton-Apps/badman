@@ -1,6 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import {
+  BehaviorSubject,
   combineLatest,
   lastValueFrom,
   map,
@@ -10,115 +18,103 @@ import {
   take,
   tap,
 } from 'rxjs';
-import { apolloCache } from '../../../../../../../graphql.module';
+import { apolloCache } from '../../../graphql.module';
 import {
   Availability,
   AvailabilityDay,
   AvailabilityException,
   Club,
   Location,
-} from '../../../../../../../_shared';
+} from '../../../_shared';
 
 @Component({
   selector: 'badman-location-availability',
   templateUrl: './location-availability.component.html',
   styleUrls: ['./location-availability.component.scss'],
 })
-export class LocationAvailabilityComponent implements OnInit {
+export class LocationAvailabilityComponent implements OnInit, OnChanges {
+  private update$ = new BehaviorSubject(null);
+
   @Input()
   club!: Club;
 
   @Input()
   year!: number;
 
-  locations$!: Observable<Location[]>;
+  @Input()
+  location!: Location;
+
+  location$?: Observable<Location>;
+
+  @Input()
+  whenChangedFocus?: EventEmitter<void>;
+
   constructor(private apollo: Apollo) {}
 
-  ngOnInit(): void {
-    this.locations$ = this.apollo
-      .query<{ locations: Partial<Location>[] }>({
-        query: gql`
-          query getLocationAvailability($clubId: ID!, $year: Int!) {
-            locations(where: { clubId: $clubId }) {
-              id
-              name
-              availibilities(where: { year: $year }) {
+  ngOnInit() {
+    this.location$ = this.update$.pipe(
+      switchMap(() =>
+        this.apollo.query<{ location: Partial<Location> }>({
+          query: gql`
+            query getLocationAvailability($locationId: ID!, $year: Int!) {
+              location(id: $locationId) {
                 id
-                year
-                days {
-                  courts
-                  day
-                  endTime
-                  startTime
-                }
-                exceptions {
-                  courts
-                  start
-                  end
+                availibilities(where: { year: $year }) {
+                  id
+                  year
+                  days {
+                    courts
+                    day
+                    endTime
+                    startTime
+                  }
+                  exceptions {
+                    courts
+                    start
+                    end
+                  }
                 }
               }
             }
-          }
-        `,
-        variables: {
-          clubId: this.club.id,
-          year: this.year,
-        },
-      })
-      .pipe(
-        map((result) =>
-          result.data.locations.map((location) => new Location(location))
-        ),
-        switchMap((locations) => {
-          const curr = locations as Location[];
-          const toCreateDays: Observable<Availability>[] = [];
-
-          for (const loc of curr) {
-            if (!loc?.id) {
-              continue;
-            }
-            // If no availibilties are found, create one
-            if (!loc.availibilities || loc.availibilities.length === 0) {
-              toCreateDays.push(this.addAvailabilityDay(loc.id));
-            }
-          }
-
-          if (toCreateDays.length > 0) {
-            return combineLatest(toCreateDays).pipe(
-              take(1),
-              map((newAvailibilties) => {
-                for (const newAvailibilty of newAvailibilties) {
-                  const location = curr.find(
-                    (location) => location.id === newAvailibilty.locationId
-                  );
-                  if (!location) {
-                    throw new Error('Location not found');
-                  }
-                  location.availibilities.push(newAvailibilty);
-                }
-
-                return curr;
-              })
-            );
-          }
-
-          return of(curr);
+          `,
+          variables: {
+            locationId: this.location.id,
+            year: this.year,
+          },
         })
-      );
+      ),
+      map(({ data }) => new Location(data.location)),
+      switchMap((loc) => {
+        if (!loc.id) {
+          throw new Error('Location has no id');
+        }
+        if (!loc.availibilities || loc.availibilities.length === 0) {
+          return this.addAvailabilityDay(loc.id).pipe(
+            map((availability) => {
+              loc.availibilities = [availability];
+              return loc;
+            })
+          );
+        }
+
+        return of(loc);
+      })
+    );
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const yearChanged = changes['year'];
+    if (yearChanged.previousValue != yearChanged.currentValue) {
+      this.update$.next(null);
+    }
   }
 
   addAvailabilityDay(locationId: string) {
     return this.apollo
       .mutate<{ addLocationAvailibilty: Partial<Availability> }>({
         mutation: gql`
-          mutation AddAvailibilty(
-            $locationId: ID!
-            $availibilty: AvailabilityInput
-          ) {
-            addLocationAvailibilty(
-              locationId: $locationId
-              availibilty: $availibilty
-            ) {
+          mutation AddAvailibilty($availibilty: AvailabilityNewInput!) {
+            createAvailability(data: $availibilty) {
               id
               locationId
               days {
@@ -136,8 +132,8 @@ export class LocationAvailabilityComponent implements OnInit {
           }
         `,
         variables: {
-          locationId,
           availibilty: {
+            locationId,
             year: this.year,
             days: [],
             exceptions: [],
@@ -180,8 +176,10 @@ export class LocationAvailabilityComponent implements OnInit {
       this.apollo
         .mutate<{ updateLocationAvailibilty: Partial<Availability> }>({
           mutation: gql`
-            mutation updateAvailability($availibilty: AvailabilityInput!) {
-              updateLocationAvailibilty(availibilty: $availibilty) {
+            mutation updateAvailability(
+              $availibilty: AvailabilityUpdateInput!
+            ) {
+              updateAvailability(data: $availibilty) {
                 id
                 days {
                   day
@@ -229,8 +227,10 @@ export class LocationAvailabilityComponent implements OnInit {
       this.apollo
         .mutate<{ updateLocationAvailibilty: Partial<Availability> }>({
           mutation: gql`
-            mutation updateAvailability($availibilty: AvailabilityInput!) {
-              updateLocationAvailibilty(availibilty: $availibilty) {
+            mutation updateAvailability(
+              $availibilty: AvailabilityUpdateInput!
+            ) {
+              updateAvailability(data: $availibilty) {
                 id
                 days {
                   day

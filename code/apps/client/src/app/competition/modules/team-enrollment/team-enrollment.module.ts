@@ -18,15 +18,13 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SelctionComponentsModule, SharedModule } from '../../../_shared';
+import { CompetitionComponentsModule } from '../../components';
 import {
   AssignTeamComponent,
   ClubViewComponent,
-  ExceptionDaysComponent,
-  LocationAvailabilityComponent,
-  PlayDaysComponent,
   SubEventViewComponent,
   TeamEnrollmentComponent,
-  TeamEnrollmentsComponent,
+  TeamEnrollmentsComponent
 } from './pages';
 import { TeamEnrolmentRoutingModule } from './team-enrollment-routing.module';
 
@@ -56,18 +54,17 @@ const materialModules = [
     TeamEnrollmentComponent,
     TeamEnrollmentsComponent,
     AssignTeamComponent,
-    LocationAvailabilityComponent,
-    PlayDaysComponent,
-    ExceptionDaysComponent,
+
     ClubViewComponent,
     SubEventViewComponent,
   ],
   imports: [
     SharedModule,
+    CompetitionComponentsModule,
     TeamEnrolmentRoutingModule,
     SelctionComponentsModule,
     ...materialModules,
   ],
-  bootstrap: [PlayDaysComponent],
+  bootstrap: [],
 })
 export class TeamEnrolmentModule {}
