@@ -1,9 +1,9 @@
 import { DatabaseModule } from '@badman/api/database';
 import { Module } from '@nestjs/common';
-import { RankingResolver } from './comment.resolver';
+import { CommentResolver } from './comment.resolver';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [RankingResolver],
+  providers: [CommentResolver],
 })
 export class CommentModule {}

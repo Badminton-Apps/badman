@@ -1,3 +1,5 @@
+import { Logger } from '@nestjs/common';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class ProcessStep<T = void> {
   private _data: T;

@@ -1,16 +1,8 @@
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import moment from 'moment';
-import { AvailabilityDay } from '../../../../../../../_shared';
-import { STEP_AVAILIBILTY } from '../../team-enrollment.component';
+import { AvailabilityDay } from '../../../_shared';
 
 @Component({
   selector: 'badman-play-days',
@@ -23,6 +15,9 @@ export class PlayDaysComponent implements OnInit {
   @Input()
   day?: AvailabilityDay | null;
 
+  @Input()
+  whenChangedFocus?: EventEmitter<void>;
+
   @Output()
   playDayChanged = new EventEmitter<AvailabilityDay>();
 
@@ -31,11 +26,7 @@ export class PlayDaysComponent implements OnInit {
 
   isNew = false;
 
-  constructor(@Inject(MatStepper) private _stepper: MatStepper) {
-    if (!_stepper) {
-      throw new Error('Stepper is not provided');
-    }
-  }
+  constructor(private _snackbar: MatSnackBar) {}
 
   ngOnInit(): void {
     if (!this.day) {
@@ -53,12 +44,9 @@ export class PlayDaysComponent implements OnInit {
       ),
     });
 
-    // Add entered data when leaving this step
     if (this.isNew) {
-      this._stepper.selectionChange.subscribe((r) => {
-        if (r.previouslySelectedIndex == STEP_AVAILIBILTY) {
-          this.addPlayDay();
-        }
+      this.whenChangedFocus?.subscribe(() => {
+        this.addPlayDay(false);
       });
     } else {
       this.fg.valueChanges.subscribe(() => {
@@ -67,14 +55,19 @@ export class PlayDaysComponent implements OnInit {
     }
   }
 
-  addPlayDay() {
+  addPlayDay(showNotification: boolean = true) {
     // Validate all fields (we can't use the FG valiate because this also checks on submit)
     if (
+      ((this.fg.value?.courts ?? -1) < 0) ||
       !this.fg.value?.day ||
-      !this.fg.value?.courts ||
       !this.fg.value?.startTime ||
       !this.fg.value?.endTime
     ) {
+      if (showNotification) {
+        this._snackbar.open('Please fill in all fields', 'OK', {
+          duration: 2000,
+        });
+      }
       return;
     }
 

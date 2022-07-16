@@ -83,6 +83,8 @@ export class TeamEnrollmentComponent implements OnInit {
 
   enrolling = false;
 
+
+
   show$?: Observable<{
     teamsM: Team[];
     teamsF: Team[];
@@ -97,7 +99,7 @@ export class TeamEnrollmentComponent implements OnInit {
     private systemService: SystemService,
     private eventService: EventService,
     private apollo: Apollo,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
   ) {}
 
   async ngOnInit() {
@@ -155,6 +157,8 @@ export class TeamEnrollmentComponent implements OnInit {
         }
       )
     );
+
+    
   }
 
   async changStepper(event: StepperSelectionEvent) {
@@ -165,27 +169,27 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async teamsAssigned(event: { team: Team; subEventId: string }) {
-    await lastValueFrom(
-      this.apollo
-        .mutate({
-          mutation: AssignTeamSubEvent,
-          variables: {
-            teamId: event.team.id,
-            subEventId: event.subEventId,
-          },
-        })
-        .pipe(
-          tap(() => {
-            // Invalidate Club Cache
-            const normalized = apolloCache.identify({
-              id: event.team.clubId,
-              __typename: 'Club',
-            });
-            apolloCache.evict({ id: normalized });
-            apolloCache.gc();
-          })
-        )
-    );
+    // await lastValueFrom(
+    //   this.apollo
+    //     .mutate({
+    //       mutation: AssignTeamSubEvent,
+    //       variables: {
+    //         teamId: event.team.id,
+    //         subEventId: event.subEventId,
+    //       },
+    //     })
+    //     .pipe(
+    //       tap(() => {
+    //         // Invalidate Club Cache
+    //         const normalized = apolloCache.identify({
+    //           id: event.team.clubId,
+    //           __typename: 'Club',
+    //         });
+    //         apolloCache.evict({ id: normalized });
+    //         apolloCache.gc();
+    //       })
+    //     )
+    // );
   }
 
   async submit() {

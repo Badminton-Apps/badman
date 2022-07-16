@@ -63,6 +63,8 @@ export class SyncEventsProcessor {
       toProcess = job.data?.offset ?? 0 + job.data?.limit;
     }
 
+    this.logger.debug(`Processing ${toProcess} events`);
+
     for (let i = job.data?.offset ?? 0; i < toProcess; i++) {
       const xmlTournament = newEvents[i];
       const current = i + 1;

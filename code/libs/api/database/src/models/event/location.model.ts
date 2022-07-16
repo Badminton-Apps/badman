@@ -1,4 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -188,3 +195,15 @@ export class Location extends Model {
   getClub!: BelongsToGetAssociationMixin<Club>;
   setClub!: BelongsToSetAssociationMixin<Club, string>;
 }
+
+@InputType()
+export class LocationUpdateInput extends PartialType(
+  OmitType(Location, ['createdAt', 'updatedAt'] as const),
+  InputType
+) {}
+
+@InputType()
+export class LocationNewInput extends PartialType(
+  OmitType(LocationUpdateInput, ['id'] as const),
+  InputType
+) {}

@@ -1,4 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -16,7 +23,12 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { AvailiblyDayType, ExceptionType } from '../../types';
+import {
+  AvailiblyDayInputType,
+  AvailiblyDayType,
+  ExceptionInputType,
+  ExceptionType as AvailabilityExceptionType,
+} from '../../types';
 import { Location } from './location.model';
 
 @Table({
@@ -45,9 +57,9 @@ export class Availability extends Model {
   @Column({
     type: DataType.JSON,
   })
-  days: AvailiblyDay[];
+  days: AvailabilityDay[];
 
-  @Field(() => [ExceptionType], { nullable: true })
+  @Field(() => [AvailabilityExceptionType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })
@@ -75,7 +87,7 @@ export interface AvailabilityException {
   courts: number;
 }
 
-export interface AvailiblyDay {
+export interface AvailabilityDay {
   day:
     | 'monday'
     | 'tuesday'
@@ -88,3 +100,27 @@ export interface AvailiblyDay {
   endTime: string;
   courts: number;
 }
+
+@InputType()
+export class AvailabilityUpdateInput extends PartialType(
+  OmitType(Availability, [
+    'createdAt',
+    'updatedAt',
+    'location',
+    'days',
+    'exceptions',
+  ] as const),
+  InputType
+) {
+  @Field(() => [AvailiblyDayInputType])
+  days: AvailabilityDay[];
+
+  @Field(() => [ExceptionInputType])
+  exceptions: AvailabilityException[];
+}
+
+@InputType()
+export class AvailabilityNewInput extends PartialType(
+  OmitType(AvailabilityUpdateInput, ['id'] as const),
+  InputType
+) {}

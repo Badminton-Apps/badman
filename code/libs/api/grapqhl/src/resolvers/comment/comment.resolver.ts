@@ -15,11 +15,10 @@ import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '../../decorators';
 import { ListArgs } from '../../utils';
-import { AvailabilitysResolver } from '../location';
 
 @Resolver(() => Comment)
-export class RankingResolver {
-  private readonly logger = new Logger(AvailabilitysResolver.name);
+export class CommentResolver {
+  private readonly logger = new Logger(CommentResolver.name);
 
   constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
   @Query(() => Comment)
@@ -112,7 +111,7 @@ export class RankingResolver {
       }
 
       await dbComment.update(
-        { ...dbComment, ...updateCommentData },
+        { ...dbComment.toJSON(), ...updateCommentData },
         {
           transaction,
         }

@@ -83,44 +83,39 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        try {
-          await queryInterface.removeColumn(
-            {
-              tableName: 'EncounterCompetitions',
-              schema: 'event',
-            },
-            'enteredById',
-            { transaction: t }
-          );
+        await queryInterface.removeColumn(
+          {
+            tableName: 'EncounterCompetitions',
+            schema: 'event',
+          },
+          'enteredById',
+          { transaction: t }
+        );
 
-          await queryInterface.removeColumn(
-            {
-              tableName: 'EncounterCompetitions',
-              schema: 'event',
-            },
-            'acceptedById',
-            { transaction: t }
-          );
-          await queryInterface.removeColumn(
-            {
-              tableName: 'EncounterCompetitions',
-              schema: 'event',
-            },
-            'enteredOn',
-            { transaction: t }
-          );
-          await queryInterface.removeColumn(
-            {
-              tableName: 'EncounterCompetitions',
-              schema: 'event',
-            },
-            'acceptedOn',
-            { transaction: t }
-          );
-        } catch (err) {
-          console.error('We errored with', err);
-          t.rollback();
-        }
+        await queryInterface.removeColumn(
+          {
+            tableName: 'EncounterCompetitions',
+            schema: 'event',
+          },
+          'acceptedById',
+          { transaction: t }
+        );
+        await queryInterface.removeColumn(
+          {
+            tableName: 'EncounterCompetitions',
+            schema: 'event',
+          },
+          'enteredOn',
+          { transaction: t }
+        );
+        await queryInterface.removeColumn(
+          {
+            tableName: 'EncounterCompetitions',
+            schema: 'event',
+          },
+          'acceptedOn',
+          { transaction: t }
+        );
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

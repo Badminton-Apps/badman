@@ -22,4 +22,5 @@ export class ClubEditLocationComponent {
 
   @Input()
   location!: Location;
+
 }

@@ -9,13 +9,15 @@ import { Club, LocationService, Location } from '../../../_shared';
   styleUrls: ['./location-dialog.component.scss'],
 })
 export class LocationDialogComponent implements OnInit {
+  selectedYear?: number;
+
   location$?: Observable<Location>;
 
   update$ = new BehaviorSubject(0);
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { location: Location; club: Club },
-    private locationService: LocationService
+    @Inject(MAT_DIALOG_DATA) public data: { location: Location; club: Club, compYears: number[] },
+    private locationService: LocationService,
   ) {}
 
   ngOnInit(): void {
