@@ -2422,6 +2422,13 @@
     lodash.omit "4.5.0"
     tslib "2.4.0"
 
+"@nestjs/axios@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/axios/-/axios-0.1.0.tgz#6cf93df11ef93b598b3c7411adb980eedd13b3e3"
+  integrity sha512-b2TT2X6BFbnNoeteiaxCIiHaFcSbVW+S5yygYqiIq5i6H77yIU3IVuLdpQkHq8/EqOWFwMopLN8jdkUT71Am9w==
+  dependencies:
+    axios "0.27.2"
+
 "@nestjs/bull-shared@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@nestjs/bull-shared/-/bull-shared-0.1.0.tgz#3f2b21432b716944fbd35f9fb22c059a0b9c0395"
@@ -2554,6 +2561,13 @@
   integrity sha512-nO1Pipvl1Msvb3h0wQusbIDDz5713Qlc4EIZFaVenNXwktbuPNqbmbNlclWmfBhnJNjs9cOWWDLPE1wm7uvlqQ==
   dependencies:
     uuid "8.3.2"
+
+"@nestjs/terminus@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/terminus/-/terminus-9.0.0.tgz#cf1a74f3294590f88947a5da3dd2602ca76d51f5"
+  integrity sha512-Yqx310ld2JwWgFFQyw0Cri+Y4yfG9gq66BLZ37vdOgZeKFS4wHdJZG6PlYeO3ztvE+vVZCKxvORLtaNa4u2bSQ==
+  dependencies:
+    check-disk-space "3.3.0"
 
 "@nestjs/testing@^9.0.0":
   version "9.0.3"
@@ -4887,6 +4901,14 @@ axios-retry@^3.2.5:
     "@babel/runtime" "^7.15.4"
     is-retry-allowed "^2.2.0"
 
+axios@0.27.2, axios@^0.27.2:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
+  integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
+  dependencies:
+    follow-redirects "^1.14.9"
+    form-data "^4.0.0"
+
 axios@^0.21.1:
   version "0.21.4"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
@@ -5503,6 +5525,11 @@ chardet@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
+
+check-disk-space@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/check-disk-space/-/check-disk-space-3.3.0.tgz#2a8f4c9542ed71a70878fc28fda7e265d40942ec"
+  integrity sha512-Hvr+Nr01xSSvuCpXvJ8oZ2iXjIu4XT3uHbw3g7F/Uiw6O5xk8c/Ot7ZGFDaTRDf2Bz8AdWA4DvpAgCJVKt8arw==
 
 check-more-types@^2.24.0:
   version "2.24.0"
@@ -8076,7 +8103,7 @@ flatted@^3.1.0, flatted@^3.2.5:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.6.tgz#022e9218c637f9f3fc9c35ab9c9193f05add60b2"
   integrity sha512-0sQoMh9s0BYsm+12Huy/rkKxVu4R1+r96YX5cG44rHV0pQ6iC3Q+mkoMFaGWObMFYQxCVT+ssG1ksneA2MI9KQ==
 
-follow-redirects@^1.0.0, follow-redirects@^1.14.0:
+follow-redirects@^1.0.0, follow-redirects@^1.14.0, follow-redirects@^1.14.9:
   version "1.15.1"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
   integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
@@ -8109,6 +8136,15 @@ form-data@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.1.tgz#ebd53791b78356a99af9a300d4282c4d5eb9755f"
   integrity sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.8"
+    mime-types "^2.1.12"
+
+form-data@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.0.tgz#93919daeaf361ee529584b9b31664dc12c9fa452"
+  integrity sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"

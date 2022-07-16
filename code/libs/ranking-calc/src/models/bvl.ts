@@ -9,7 +9,7 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/api/database';
-import { RankingCalc, PointCalculator, splitInChunks } from '../utils';
+import { RankingCalc, PointCalculator } from '../utils';
 import { Logger } from '@nestjs/common';
 
 export class BvlRankingCalc extends RankingCalc {
@@ -26,21 +26,6 @@ export class BvlRankingCalc extends RankingCalc {
 
   async beforeCalculationAsync(start?: Moment) {
     await super.beforeCalculationAsync(start);
-  }
-
-  private _initialPlayers(
-    player: {
-      [key: string]: string;
-    },
-    place: RankingPlace,
-    type: string,
-    startPlaces: number[]
-  ) {
-    // Set type specific stuff
-    place[`${type}Points`] = parseInt(player['Totaal punten'], 10);
-    place[`${type}Rank`] = parseInt(player.Rank, 10);
-    place[type] = this.getStartRanking(parseInt(player.Rank, 10), startPlaces);
-    return place;
   }
 
   async calculatePeriodAsync(
