@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.6.0](https://github.com/Badminton-Apps/badman/compare/v5.5.0...v5.6.0) (2022-07-18)
+
+
+### Features
+
+* **lib-api-database:** make use of nestjs's sequelize module ([69ba856](https://github.com/Badminton-Apps/badman/commit/69ba85603d6f25fc39260e24bb06b647e7b38564))
+
+
+### Bug Fixes
+
+* **client,lib-api-database:** adding/removing teams wasn't working ([5291700](https://github.com/Badminton-Apps/badman/commit/5291700f5dd17dd89ccb2d219c9f0361cee67c4d))
+
 ## [5.5.0](https://github.com/Badminton-Apps/badman/compare/v5.4.3...v5.5.0) (2022-07-18)
 
 
