@@ -24,12 +24,17 @@ const conventionalChangelog = require('conventional-changelog');
     const currentBranch = branchExec.stdout.trim();
 
     // generate the full changelog
-    const changelog = await extractChangelogEntry({ version: newVersion });
-    core.info(`changelog: ${changelog}`);
-    core.exportVariable('changelog', changelog);
+    // const changelog = await extractChangelogEntry({ version: newVersion });
+    // core.info(`changelog: ${changelog}`);
+    // core.exportVariable('changelog', changelog);
 
     await standardVersion({
       infile: 'apps/client/src/assets/CHANGELOG.md',
+      packageFiles: ['package.json'],
+      bumpFiles: [
+        { filename: 'package.json', type: 'json' },
+        { filename: 'apps/client/src/version.json', type: 'json' },
+      ],
       silent: false,
       skip: {
         commit: true,
@@ -72,6 +77,7 @@ const conventionalChangelog = require('conventional-changelog');
     core.exportVariable('version', `v${newVersion}`);
   } catch (err) {
     core.setFailed(err);
+    console.error(err);
   }
 
   function extractChangelogEntry(args = {}) {
