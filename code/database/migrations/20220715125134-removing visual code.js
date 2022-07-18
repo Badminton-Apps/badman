@@ -13,6 +13,21 @@ module.exports = {
                       where "event"."EventCompetitions"."startYear" = 2022)`,
           { transaction: t }
         );
+
+        // fixing team with wrong name
+        await queryInterface.sequelize.query(
+          `update  "Teams"
+            set "name" = 'BaZo 1G'
+            where "name" = 'Zoutleeuw 1G'`,
+          { transaction: t }
+        );
+
+        // Just disable all
+        await queryInterface.sequelize.query(
+          `update  "event"."SubEventCompetitions"
+            set "allowEnlisting" = false`,
+          { transaction: t }
+        );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();

@@ -1,20 +1,15 @@
 import {
-  DrawCompetition,
-  EncounterCompetition,
-  EventCompetition,
-  Game,
-  LevelType,
+  EventCompetition, LevelType,
   SubEventCompetition,
-  SubEventType,
+  SubEventType
 } from '@badman/api/database';
 import moment from 'moment';
 import { Op } from 'sequelize';
-import { StepProcessor, StepOptions } from '../../../../processing';
+import { StepOptions, StepProcessor } from '../../../../processing';
 import { VisualService } from '../../../../services';
 import {
-  XmlTournament,
-  XmlTournamentEvent,
-  XmlGenderID,
+  XmlGenderID, XmlTournament,
+  XmlTournamentEvent
 } from '../../../../utils';
 
 export interface SubEventStepData {
@@ -35,8 +30,6 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
   }
 
   public async process(): Promise<SubEventStepData[]> {
-    // deconstructing
-
     if (!this.event) {
       throw new Error('No Event');
     }
@@ -89,8 +82,10 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         // Hopefully with this we can link with the correct subEvent so our link isn't lost
         dbSubEvent = subEvents.find(
           (r) =>
-            r.name === xmlEvent.Name.replace(/[ABCDE]+$/gm, '').trim() &&
-            r.eventType === type
+            r.name?.toLowerCase()?.trim() ===
+              xmlEvent.Name.replace(/[ABCDE]+$/gm, '')
+                .trim()
+                ?.toLowerCase() && r.eventType === type
         );
       }
 
