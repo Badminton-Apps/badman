@@ -9,13 +9,11 @@ import {
 import { Apollo, gql } from 'apollo-angular';
 import {
   BehaviorSubject,
-  combineLatest,
   lastValueFrom,
   map,
   Observable,
   of,
   switchMap,
-  take,
   tap,
 } from 'rxjs';
 import { apolloCache } from '../../../graphql.module';
