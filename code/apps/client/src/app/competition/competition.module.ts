@@ -9,14 +9,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { GameModule, StandingsModule } from '../modules';
 import { GameResultModule, SharedModule } from '../_shared';
 import { CompetitionRoutingModule } from './competition-routing.module';
-import {
-  CompetitionComponentsModule,
-  EventCompetitionFieldsComponent,
-  EventCompetitionLevelFieldsComponent,
-  ExceptionDaysComponent,
-  LocationAvailabilityComponent,
-  PlayDaysComponent,
-} from './components';
+import { CompetitionComponentsModule } from './components';
 import {
   DetailCompetitionComponent,
   DetailDrawCompetitionComponent,
