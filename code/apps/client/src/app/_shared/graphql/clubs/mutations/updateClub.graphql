@@ -1,5 +1,5 @@
 mutation UpdateClub($club: ClubUpdateInput!) {
-  updateClub(updateClubData: $club) {
+  updateClub(data: $club) {
     id
     name
     fullName
