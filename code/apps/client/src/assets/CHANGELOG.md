@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.7.0](https://github.com/Badminton-Apps/badman/compare/v5.6.0...v5.7.0) (2022-07-18)
+
+
+### Features
+
+* **client:** added tooltips and show when requests are in option ([6b8fe8e](https://github.com/Badminton-Apps/badman/commit/6b8fe8ee7553011e99a2f688aa6995e1895cda6d))
+* **worker-sync:** only sync encounters that have happend ([3633ac0](https://github.com/Badminton-Apps/badman/commit/3633ac0ddca8ffdcc1ef4365a968b1be52162cc4))
+
+
+### Bug Fixes
+
+* **api:** subevent don't have slugs ([5b8ee4e](https://github.com/Badminton-Apps/badman/commit/5b8ee4e715fc363c9436b5d14b038e3196575868))
+* **client:** updating club ([9dc4dd9](https://github.com/Badminton-Apps/badman/commit/9dc4dd9d77cebba74ab0a53c141dd72a1443dfac))
+* **worker-sync:** axios-retry should be on the instance ([e6e09cb](https://github.com/Badminton-Apps/badman/commit/e6e09cb302dd74b7256b15bace52360492406eb0))
+* **worker-sync:** only cleanup subevents after all teams entries are moved to correct subevent ([2044cdb](https://github.com/Badminton-Apps/badman/commit/2044cdb83db2e668f90cbfce9b70c40594fc2e2b))
+
 ## [5.6.0](https://github.com/Badminton-Apps/badman/compare/v5.5.0...v5.6.0) (2022-07-18)
 
 
