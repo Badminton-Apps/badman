@@ -33,7 +33,9 @@
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": ["helm upgrade --create-namespace --install --namespace badman  api ./charts"],
+        "commands": [
+          "helm upgrade --create-namespace --install --namespace badman  api ./charts"
+        ],
         "cwd": "apps/api",
         "parallel": false
       }

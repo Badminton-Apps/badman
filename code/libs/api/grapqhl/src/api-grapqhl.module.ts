@@ -62,7 +62,6 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
       ],
     }),
     ApiAuthorizationModule,
-    PlayerModule,
     TeamModule,
     ClubModule,
     CommentModule,
@@ -72,6 +71,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
     EventModule,
     SecurityModule,
     GameModule,
+    PlayerModule,
   ],
   providers: [],
 })

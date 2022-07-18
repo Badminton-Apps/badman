@@ -13,7 +13,6 @@ import {
   TeamPlayer,
 } from '@badman/api/database';
 import {
-  Inject,
   Logger,
   NotFoundException,
   UnauthorizedException,
@@ -27,15 +26,16 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 import { LoggedInUser, User } from '../../decorators';
 import { ListArgs, queryFixer, WhereArgs } from '../../utils';
+import { Sequelize } from 'sequelize-typescript';
 
 @Resolver(() => Player)
 export class PlayersResolver {
   private readonly logger = new Logger(PlayersResolver.name);
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Player)
   async player(@Args('id', { type: () => ID }) id: string): Promise<Player> {

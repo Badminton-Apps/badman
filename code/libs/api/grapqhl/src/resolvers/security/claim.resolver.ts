@@ -13,7 +13,7 @@ import { ListArgs } from '../../utils';
 @Resolver(() => Claim)
 export class ClaimResolver {
   private readonly logger = new Logger(ClaimResolver.name);
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Claim)
   async claim(@Args('id', { type: () => ID }) id: string): Promise<Claim> {

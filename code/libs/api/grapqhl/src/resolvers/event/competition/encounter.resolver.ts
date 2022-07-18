@@ -11,7 +11,6 @@ import {
 } from '@badman/api/database';
 import { InjectQueue } from '@nestjs/bull';
 import {
-  Inject,
   Logger,
   NotFoundException,
   UnauthorizedException,
@@ -49,7 +48,7 @@ export class EncounterCompetitionResolver {
   private readonly logger = new Logger(EncounterCompetitionResolver.name);
 
   constructor(
-    @Inject('SEQUELIZE') private _sequelize: Sequelize,
+    private _sequelize: Sequelize,
     @InjectQueue(SyncQueue) private syncQueue: Queue
   ) {}
 

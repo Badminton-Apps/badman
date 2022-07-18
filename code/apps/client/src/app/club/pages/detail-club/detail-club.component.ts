@@ -10,6 +10,7 @@ import {
   Observable,
 } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { apolloCache } from '../../../graphql.module';
 import {
   Club,
   ClubService,
@@ -75,11 +76,16 @@ export class DetailClubComponent implements OnInit {
                 useForTeamName
                 abbreviation
                 clubId
+                locations {
+                  id
+                  name
+                }
                 teams(order: $order, where: $teamsWhere) {
                   id
                   slug
                   name
                   active
+                  type
                   players {
                     id
                     slug
@@ -169,8 +175,39 @@ export class DetailClubComponent implements OnInit {
 
   async setActiveTeam(data: { team: Team; active: boolean }) {
     await lastValueFrom(
-      this.teamService.updateTeam({ id: data.team.id, active: data.active })
+      this.apollo.mutate<{ updateTeam: Partial<Team> }>({
+        mutation: gql`
+          mutation UpdateTeam($team: TeamUpdateInput!) {
+            updateTeam(data: $team) {
+              id
+              name
+              active
+              teamNumber
+              abbreviation
+            }
+          }
+        `,
+        variables: {
+          team: {
+            id: data.team.id,
+            active: data.active,
+          },
+        },
+      })
     );
+    // Evict cache
+    const teamCache = apolloCache.identify({
+      id: data.team.id,
+      __typename: 'Tean',
+    });
+    apolloCache.evict({ id: teamCache });
+    const clubCache = apolloCache.identify({
+      id: data.team.clubId,
+      __typename: 'Club',
+    });
+    apolloCache.evict({ id: clubCache });
+    apolloCache.gc();
+
     this.update$.next(true);
   }
 

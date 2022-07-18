@@ -4,9 +4,15 @@ import {
   Location,
   Player,
   Team,
+  TeamNewInput,
   TeamPlayerMembership,
+  TeamUpdateInput,
 } from '@badman/api/database';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   Args,
   ID,
@@ -16,11 +22,17 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Sequelize } from 'sequelize-typescript';
+import { Op } from 'sequelize';
 import { User } from '../../decorators';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => Team)
 export class TeamsResolver {
+  private readonly logger = new Logger(TeamsResolver.name);
+
+  constructor(private _sequelize: Sequelize) {}
+
   @Query(() => Team)
   async team(@Args('id', { type: () => ID }) id: string): Promise<Team> {
     const team = await Team.findByPk(id);
@@ -34,18 +46,6 @@ export class TeamsResolver {
   async teams(@Args() listArgs: ListArgs): Promise<Team[]> {
     return Team.findAll(ListArgs.toFindOptions(listArgs));
   }
-
-  // @ResolveField(() => [Player])
-  // async players(
-  //   @Parent() team: Team,
-  //   @Args() listArgs: ListArgs
-  // ): Promise<Player[]> {
-  //   const test = await team.getPlayers({ ...ListArgs.toFindOptions(listArgs) });
-
-  //   return test.filter(
-  //     (p) => p.getDataValue('TeamPlayerMembership')?.end === null
-  //   );
-  // }
 
   @ResolveField(() => [Player])
   async players(
@@ -184,7 +184,7 @@ export class TeamsResolver {
     const team = await Team.findByPk(teamId);
 
     if (!team) {
-      throw new NotFoundException(`Team ${teamId}`);
+      throw new NotFoundException(`${Team.name}: ${teamId}`);
     }
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
     if (!user.hasAnyPermission(perm)) {
@@ -193,23 +193,227 @@ export class TeamsResolver {
 
     const player = await Player.findByPk(playerId);
     if (!player) {
-      throw new NotFoundException(playerId);
+      throw new NotFoundException(`${Player.name}: ${playerId}`);
     }
 
     await team.removePlayer(player);
     return team;
   }
+  @Mutation(() => Team)
+  async createTeam(
+    @Args('data') newTeamData: TeamNewInput,
+    @User() user: Player
+  ): Promise<Team> {
+    const transaction = await this._sequelize.transaction();
+    try {
+      const dbClub = await Club.findByPk(newTeamData.clubId, {
+        transaction,
+      });
 
-  // @Mutation(returns => Team)
-  // async addTeam(
-  //   @Args('newTeamData') newTeamData: NewTeamInput,
-  // ): Promise<Team> {
-  //   const recipe = await this.recipesService.create(newTeamData);
-  //   return recipe;
-  // }
+      if (!dbClub) {
+        throw new NotFoundException(`${Club.name}: ${newTeamData.clubId}`);
+      }
 
-  // @Mutation(returns => Boolean)
-  // async removeTeam(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+      if (
+        !user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club'])
+      ) {
+        throw new UnauthorizedException(
+          `You do not have permission to add a competition`
+        );
+      }
+
+      // Find the highst active team number for the club
+      const highestNumber = (await Team.max('teamNumber', {
+        where: { clubId: dbClub.id, type: newTeamData.type, active: true },
+      })) as number;
+
+      // Increase by one (because we create new)
+      newTeamData.teamNumber = highestNumber + 1;
+
+      // Create or find the team (that was inactive)
+      const [teamDb, created] = await Team.findOrCreate({
+        where: {
+          type: newTeamData.type,
+          teamNumber: newTeamData.teamNumber,
+          clubId: newTeamData.clubId,
+        },
+        defaults: { ...newTeamData },
+        transaction,
+      });
+
+      if (created) {
+        await teamDb.setClub(dbClub, { transaction });
+      } else {
+        // Re-activate team
+        teamDb.active = true;
+        await teamDb.save({ transaction });
+      }
+
+      await transaction.commit();
+      return teamDb;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Team)
+  async updateTeam(
+    @Args('data') updateTeamData: TeamUpdateInput,
+    @User() user: Player
+  ): Promise<Team> {
+    const transaction = await this._sequelize.transaction();
+    try {
+      const dbTeam = await Team.findByPk(updateTeamData.id);
+
+      if (!dbTeam) {
+        throw new NotFoundException(`${Team.name}: ${updateTeamData.id}`);
+      }
+
+      if (
+        !user.hasAnyPermission([
+          `${dbTeam.clubId}_edit:location`,
+          'edit-any:club',
+        ])
+      ) {
+        throw new UnauthorizedException(
+          `You do not have permission to add a competition`
+        );
+      }
+
+      const changedTeams = [];
+
+      if (
+        updateTeamData.teamNumber &&
+        updateTeamData.teamNumber !== dbTeam.teamNumber
+      ) {
+        updateTeamData.name = `${dbTeam.club.name} ${
+          updateTeamData.teamNumber
+        }${Team.getLetterForRegion(dbTeam.type, 'vl')}`;
+        updateTeamData.abbreviation = `${dbTeam.club.abbreviation} ${
+          updateTeamData.teamNumber
+        }${Team.getLetterForRegion(dbTeam.type, 'vl')}`;
+
+        if (updateTeamData.teamNumber > dbTeam.teamNumber) {
+          // Number was increased
+          const dbLowerTeams = await Team.findAll({
+            where: {
+              clubId: dbTeam.clubId,
+              teamNumber: {
+                [Op.and]: [
+                  { [Op.gt]: dbTeam.teamNumber },
+                  { [Op.lte]: updateTeamData.teamNumber },
+                ],
+              },
+              type: dbTeam.type,
+            },
+            transaction,
+          });
+          // unique contraints
+          for (const dbLteam of dbLowerTeams) {
+            dbLteam.teamNumber--;
+            // set teams to temp name for unique constraint
+            dbLteam.name = `${dbTeam.club.name} ${
+              dbLteam.teamNumber
+            }${Team.getLetterForRegion(dbLteam.type, 'vl')}_temp`;
+            dbLteam.abbreviation = `${dbTeam.club.abbreviation} ${
+              dbLteam.teamNumber
+            }${Team.getLetterForRegion(dbLteam.type, 'vl')}`;
+            await dbLteam.save({ transaction });
+            changedTeams.push(dbLteam);
+          }
+        } else if (updateTeamData.teamNumber < dbTeam.teamNumber) {
+          // number was decreased
+          const dbHigherTeams = await Team.findAll({
+            where: {
+              clubId: dbTeam.clubId,
+              teamNumber: {
+                [Op.and]: [
+                  { [Op.lt]: dbTeam.teamNumber },
+                  { [Op.gte]: updateTeamData.teamNumber },
+                ],
+              },
+              type: dbTeam.type,
+            },
+            transaction,
+          });
+          for (const dbHteam of dbHigherTeams) {
+            dbHteam.teamNumber++;
+            // set teams to temp name for unique constraint
+            dbHteam.name = `${dbTeam.club.name} ${
+              dbHteam.teamNumber
+            }${Team.getLetterForRegion(dbHteam.type, 'vl')}_temp`;
+            dbHteam.abbreviation = `${dbTeam.club.abbreviation} ${
+              dbHteam.teamNumber
+            }${Team.getLetterForRegion(dbHteam.type, 'vl')}`;
+            await dbHteam.save({ transaction });
+            changedTeams.push(dbHteam);
+          }
+        }
+      }
+
+      await dbTeam.update(
+        { ...dbTeam.toJSON(), ...updateTeamData },
+        { transaction }
+      );
+
+      // await dbTeam.update(location, { transaction });
+      await transaction.commit();
+      return dbTeam;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Team)
+  async removeLocationFromTeam(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('locationId', { type: () => ID }) locationId: string,
+    @User() user: Player
+  ) {
+    const team = await Team.findByPk(teamId);
+
+    if (!team) {
+      throw new NotFoundException(`${Team.name}: ${teamId}`);
+    }
+    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
+    if (!user.hasAnyPermission(perm)) {
+      throw new UnauthorizedException();
+    }
+
+    const location = await Location.findByPk(locationId);
+    if (!location) {
+      throw new NotFoundException(`${Location.name}: ${locationId}`);
+    }
+
+    await team.removeLocation(location);
+    return team;
+  }
+  @Mutation(() => Team)
+  async addLocationFromTeam(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('locationId', { type: () => ID }) locationId: string,
+    @User() user: Player
+  ) {
+    const team = await Team.findByPk(teamId);
+
+    if (!team) {
+      throw new NotFoundException(`${Team.name}: ${teamId}`);
+    }
+    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
+    if (!user.hasAnyPermission(perm)) {
+      throw new UnauthorizedException();
+    }
+
+    const location = await Location.findByPk(locationId);
+    if (!location) {
+      throw new NotFoundException(`${Location.name}: ${locationId}`);
+    }
+
+    await team.addLocation(location);
+    return team;
+  }
 }

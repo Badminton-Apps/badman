@@ -30,7 +30,7 @@ import { ListArgs } from '../../utils';
 export class AvailabilitysResolver {
   private readonly logger = new Logger(AvailabilitysResolver.name);
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Availability)
   async availability(

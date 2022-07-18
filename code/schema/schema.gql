@@ -673,9 +673,6 @@ type PagedEventTournament {
 }
 
 type Query {
-  player(id: ID!): Player!
-  me: Player
-  players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedPlayer!
   team(id: ID!): Team!
   teams(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Team!]!
   club(id: ID!): Club!
@@ -720,17 +717,22 @@ type Query {
   roles(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Role!]!
   game(id: ID!): Game!
   games(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Game!]!
+  player(id: ID!): Player!
+  me: Player
+  players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedPlayer!
   search(query: String!): [search!]!
 }
 
 union search = Player | EventCompetition | EventTournament | Club
 
 type Mutation {
-  updatePlayer(data: PlayerUpdateInput!): Player!
-  claimAccount(playerId: String!): Player!
   addPlayerToTeam(teamId: ID!, playerId: ID!): Team!
   updateBasePlayerTeam(teamId: ID!, playerId: ID!, base: Boolean!): Team!
   removePlayerFromTeam(teamId: ID!, playerId: ID!): Team!
+  createTeam(data: TeamNewInput!): Team!
+  updateTeam(data: TeamUpdateInput!): Team!
+  removeLocationFromTeam(teamId: ID!, locationId: ID!): Team!
+  addLocationFromTeam(teamId: ID!, locationId: ID!): Team!
   addClub(data: ClubNewInput!): Club!
   removeClub(id: ID!): Club!
   updateClub(data: ClubUpdateInput!): Club!
@@ -752,27 +754,39 @@ type Mutation {
   copyEventCompetition(id: ID!, number: Float!): EventCompetition!
   addChangeEncounter(data: EncounterChangeNewInput!): Boolean!
   assignClaim(claimId: ID!, playerId: ID!, active: Boolean!): Boolean!
+  updatePlayer(data: PlayerUpdateInput!): Player!
+  claimAccount(playerId: String!): Player!
 }
 
-input PlayerUpdateInput {
-  id: ID
+input TeamNewInput {
+  name: String
+  preferredTime: String
+  preferredDay: String
+  abbreviation: String
+  clubId: String
+  slug: String
+  type: String
+  captainId: String
   email: String
   phone: String
-  gender: String
-  birthDate: DateTime
-  sub: String
-  firstName: String
-  lastName: String
-  fullName: String
-  competitionPlayer: Boolean
+  teamNumber: Float
+  active: Boolean
+}
+
+input TeamUpdateInput {
+  id: ID
+  name: String
+  preferredTime: String
+  preferredDay: String
+  abbreviation: String
+  clubId: String
   slug: String
-  memberId: String
-
-  """Team Player end date"""
-  end: DateTime
-
-  """Team Player start date"""
-  base: Boolean
+  type: String
+  captainId: String
+  email: String
+  phone: String
+  teamNumber: Float
+  active: Boolean
 }
 
 input ClubNewInput {
@@ -1010,4 +1024,25 @@ input EncounterChangeDateNewInput {
   date: DateTime
   availabilityHome: String
   availabilityAway: String
+}
+
+input PlayerUpdateInput {
+  id: ID
+  email: String
+  phone: String
+  gender: String
+  birthDate: DateTime
+  sub: String
+  firstName: String
+  lastName: String
+  fullName: String
+  competitionPlayer: Boolean
+  slug: String
+  memberId: String
+
+  """Team Player end date"""
+  end: DateTime
+
+  """Team Player start date"""
+  base: Boolean
 }
