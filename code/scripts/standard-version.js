@@ -50,7 +50,7 @@ const conventionalChangelog = require('conventional-changelog');
     await runExecFile('', 'git', [
       'commit',
       '-m',
-      `chore(release): ${newVersion}`,
+      `chore(release): v${newVersion}`,
     ]);
 
     // Git tag with annotation
@@ -58,7 +58,7 @@ const conventionalChangelog = require('conventional-changelog');
       'tag',
       `v${newVersion}`,
       `-m`,
-      `chore(release): ${newVersion}`,
+      `chore(release): v${newVersion}`,
     ]);
 
     // Git push
@@ -69,7 +69,7 @@ const conventionalChangelog = require('conventional-changelog');
       currentBranch,
     ]);
 
-    core.exportVariable('version', newVersion);
+    core.exportVariable('version', `v${newVersion}`);
   } catch (err) {
     core.setFailed(err);
   }
