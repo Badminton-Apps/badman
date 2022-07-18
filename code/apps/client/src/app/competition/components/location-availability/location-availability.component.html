@@ -24,7 +24,7 @@
           'competition.enrollment.new-play-day' | translate
         }}</mat-label>
         <badman-play-days
-          (playDayDeleted)="
+          (playDayChanged)="
             this.uppdateAvailabilityDay($event, -1, availabilityDay)
           "
           (whenChangedFocus)="(this.whenChangedFocus)"

@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import moment from 'moment';
@@ -8,6 +15,7 @@ import { AvailabilityDay } from '../../../_shared';
   selector: 'badman-play-days',
   templateUrl: './play-days.component.html',
   styleUrls: ['./play-days.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayDaysComponent implements OnInit {
   fg!: FormGroup;
@@ -58,7 +66,7 @@ export class PlayDaysComponent implements OnInit {
   addPlayDay(showNotification: boolean = true) {
     // Validate all fields (we can't use the FG valiate because this also checks on submit)
     if (
-      ((this.fg.value?.courts ?? -1) < 0) ||
+      (this.fg.value?.courts ?? -1) < 0 ||
       !this.fg.value?.day ||
       !this.fg.value?.startTime ||
       !this.fg.value?.endTime
@@ -70,8 +78,9 @@ export class PlayDaysComponent implements OnInit {
       }
       return;
     }
+    const newDay = new AvailabilityDay({ ...this.fg.value });
+    this.playDayChanged.next(newDay);
 
-    this.playDayChanged.next(new AvailabilityDay(this.fg.value));
     this.fg = new FormGroup({
       day: new FormControl(this.day?.day),
       courts: new FormControl(this.day?.courts),
