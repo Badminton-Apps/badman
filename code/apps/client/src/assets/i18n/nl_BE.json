@@ -118,7 +118,12 @@
       "away-comment": "Opmerkingen uitploeg",
       "dates": "Data",
       "add-date": "Voeg datum toe",
-      "remaining": "mogelijk",
+      "calendar": {
+        "remaining": "nog {{amount}} mogelijk",
+        "requested": "Voorstel",
+        "removed": "Wordt verplaatst",
+        "option": "{{amount}} in optie"
+      },
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "submit": {
         "title": "Verzenden",

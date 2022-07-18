@@ -448,6 +448,7 @@ export class CalendarDay {
       startTime?: string;
       totalCourts: number;
       remainingEncounters: number;
+      option: number;
       events: {
         id: string;
         encounter: CompetitionEncounter;
@@ -493,14 +494,14 @@ export class CalendarDay {
 
         const av =
           availibilityDays.map((day) => {
-            day.courts =
+            let courts =
               availability.exceptions.find((exception) =>
                 date.isBetween(exception.start, exception.end, 'day', '[]')
-              )?.courts ?? day.courts;
+              )?.courts ??
+              day.courts ??
+              0;
 
             // use 2 courts for each encounter, if uneven skip last court
-            let courts = day.courts ?? 0;
-
             if (courts % 2 != 0) {
               courts--;
             }
@@ -508,9 +509,14 @@ export class CalendarDay {
               startTime: day.startTime,
               totalCourts: day.courts ?? 0,
               remainingEncounters: courts / 2,
+              option: 0,
               events: [],
             };
           }) ?? [];
+
+        av.sort((a, b) => {
+          return a.startTime?.localeCompare(b.startTime ?? '') ?? 0;
+        });
 
         this.locations.push({
           id: loc[0],
@@ -549,6 +555,9 @@ export class CalendarDay {
         if (!skipRemaining) {
           this.locations[locationIndex].availibility[availibilityIndex]
             .remainingEncounters--;
+        } else if (event.requested) {
+          this.locations[locationIndex].availibility[availibilityIndex]
+            .option++;
         }
 
         if (
@@ -576,6 +585,7 @@ export class CalendarDay {
           startTime: event.startTime,
           totalCourts: 0,
           remainingEncounters: 0,
+          option: 0,
           events: [
             {
               ...event,
