@@ -29,7 +29,7 @@ import { ListArgs } from '../../utils';
 export class RankingSystemResolver {
   private readonly logger = new Logger(RankingSystemResolver.name);
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => RankingSystem)
   async rankingSystem(

@@ -10,6 +10,7 @@
         (whenLocationAdded)="this.onLocationAdded($event, team)"
         (whenLocationRemoved)="this.onLocationRemoved($event, team)"
       ></badman-team-fields>
+
       <badman-team-players
         fxLayout="column"
         *ngIf="team.id"

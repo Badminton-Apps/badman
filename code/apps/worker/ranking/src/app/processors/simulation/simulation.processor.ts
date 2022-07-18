@@ -2,10 +2,9 @@ import { RankingGroup, RankingSystem } from '@badman/api/database';
 import { Simulation, SimulationQueue } from '@badman/queue';
 import { getSystemCalc } from '@badman/ranking-calc';
 import { Process, Processor } from '@nestjs/bull';
-import { Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { DoneCallback, Job } from 'bull';
 import moment from 'moment';
-import { Sequelize } from 'sequelize-typescript';
 
 @Processor({
   name: SimulationQueue,
@@ -13,7 +12,7 @@ import { Sequelize } from 'sequelize-typescript';
 export class SimulationProcessor {
   private readonly logger = new Logger(SimulationProcessor.name);
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {
+  constructor() {
     this.logger.debug('SyncSimulation');
   }
 

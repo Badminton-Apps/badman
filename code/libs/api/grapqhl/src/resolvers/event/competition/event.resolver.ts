@@ -39,7 +39,7 @@ export class PagedEventCompetition {
 export class EventCompetitionResolver {
   private readonly logger = new Logger(EventCompetitionResolver.name);
   
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => EventCompetition)
   async eventCompetition(

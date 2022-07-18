@@ -45,7 +45,7 @@ export class PagedClub {
 export class ClubsResolver {
   private readonly logger = new Logger(ClubsResolver.name);
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Club)
   async club(@Args('id', { type: () => ID }) id: string): Promise<Club> {

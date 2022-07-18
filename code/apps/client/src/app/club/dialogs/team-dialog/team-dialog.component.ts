@@ -12,7 +12,6 @@ import {
 } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import * as updatePlayerMutation from '../../../_shared/graphql/players/mutations/UpdatePlayerMutation.graphql';
-import * as updateTeamLocation from './graphql/UpdateTeamLocation.graphql';
 import {
   ClaimService,
   Club,
@@ -20,6 +19,7 @@ import {
   SystemService,
   Team,
   TeamService,
+  Location,
 } from '../../../_shared';
 
 @Component({
@@ -28,6 +28,7 @@ import {
 })
 export class TeamDialogComponent implements OnInit {
   team$!: Observable<Team>;
+  locations$!: Observable<Location[]>;
   alreadyUsed$!: Observable<string[]>;
 
   update$ = new BehaviorSubject(0);
@@ -54,11 +55,7 @@ export class TeamDialogComponent implements OnInit {
       switchMap(([canViewPersonalData, u]) => {
         if (u >= 0 && this.data.team?.id) {
           // Evict cache
-          const normalizedAvailibility = apolloCache.identify({
-            id: this.data.team.id,
-          });
-          apolloCache.evict({ id: normalizedAvailibility });
-          apolloCache.gc();
+          this.evictCache();
         }
         if (this.data.team?.id) {
           return this.systemService
@@ -151,6 +148,15 @@ export class TeamDialogComponent implements OnInit {
     this.form = new FormGroup({});
   }
 
+  private evictCache() {
+    const normalizedAvailibility = apolloCache.identify({
+      id: this.data.team.id,
+      __typename: 'Team',
+    });
+    apolloCache.evict({ id: normalizedAvailibility });
+    apolloCache.gc();
+  }
+
   async onPlayerAddedToTeam(player: Player, team: Team) {
     if (player) {
       await lastValueFrom(this.teamService.addPlayer(team, player));
@@ -179,15 +185,53 @@ export class TeamDialogComponent implements OnInit {
     }
 
     const newTeam = await lastValueFrom(
-      this.teamService.addTeam(team, this.data.club.id)
+      this.apollo
+        .mutate<{ createTeam: Partial<Team> }>({
+          mutation: gql`
+            mutation AddTeam($team: TeamNewInput!) {
+              createTeam(data: $team) {
+                id
+                name
+                teamNumber
+                abbreviation
+              }
+            }
+          `,
+          variables: {
+            team: {
+              ...team,
+              clubId: this.data.club.id,
+            },
+          },
+        })
+        .pipe(map(({ data }) => new Team(data?.createTeam)))
     );
 
     this.data.team = newTeam;
+    const club = this.data.club;
+    club.teams = [...(club.teams ?? []), newTeam];
+    this.data.club = { ...club };
     this.update$.next(0);
   }
 
   async onTeamUpdated(team: Partial<Team>) {
-    await this.teamService.updateTeam(team).toPromise();
+    await lastValueFrom(
+      this.apollo.mutate<{ createTeam: Partial<Team> }>({
+        mutation: gql`
+          mutation UpdateTeam($team: TeamUpdateInput!) {
+            updateTeam(data: $team) {
+              id
+              name
+              teamNumber
+              abbreviation
+            }
+          }
+        `,
+        variables: {
+          team,
+        },
+      })
+    );
     this.update$.next(0);
   }
 
@@ -208,11 +252,16 @@ export class TeamDialogComponent implements OnInit {
   async onLocationAdded(location: string, team: Team) {
     await lastValueFrom(
       this.apollo.mutate({
-        mutation: updateTeamLocation,
+        mutation: gql`
+          mutation AddTeamLocation($teamId: ID!, $locationId: ID!) {
+            addLocationFromTeam(teamId: $teamId, locationId: $locationId) {
+              id
+            }
+          }
+        `,
         variables: {
           teamId: team.id,
           locationId: location,
-          use: true,
         },
       })
     );
@@ -223,11 +272,16 @@ export class TeamDialogComponent implements OnInit {
   async onLocationRemoved(location: string, team: Team) {
     await lastValueFrom(
       this.apollo.mutate({
-        mutation: updateTeamLocation,
+        mutation: gql`
+          mutation RemoveTeamLocation($teamId: ID!, $locationId: ID!) {
+            removeLocationFromTeam(teamId: $teamId, locationId: $locationId) {
+              id
+            }
+          }
+        `,
         variables: {
           teamId: team.id,
           locationId: location,
-          use: false,
         },
       })
     );

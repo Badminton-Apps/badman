@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -445,3 +445,16 @@ export class Team extends Model {
     }
   }
 }
+
+
+@InputType()
+export class TeamUpdateInput extends PartialType(
+  OmitType(Team, ['createdAt', 'updatedAt', 'club', 'players', 'captain'] as const),
+  InputType
+) {}
+
+@InputType()
+export class TeamNewInput extends PartialType(
+  OmitType(TeamUpdateInput, ['id'] as const),
+  InputType
+) {}

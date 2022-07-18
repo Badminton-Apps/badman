@@ -1,6 +1,12 @@
-import { Availability, Club, Location, LocationNewInput, LocationUpdateInput, Player } from '@badman/api/database';
 import {
-  Inject,
+  Availability,
+  Club,
+  Location,
+  LocationNewInput,
+  LocationUpdateInput,
+  Player,
+} from '@badman/api/database';
+import {
   Logger,
   NotFoundException,
   UnauthorizedException,
@@ -22,7 +28,7 @@ import { ListArgs } from '../../utils';
 export class LocationResolver {
   private readonly logger = new Logger(LocationResolver.name);
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Location)
   async location(
@@ -51,24 +57,16 @@ export class LocationResolver {
   ): Promise<Location> {
     const transaction = await this._sequelize.transaction();
     try {
-      const dbClub = await Club.findByPk(
-        newLocationData.clubId,
-        {
-          transaction,
-        }
-      );
+      const dbClub = await Club.findByPk(newLocationData.clubId, {
+        transaction,
+      });
 
       if (!dbClub) {
-        throw new NotFoundException(
-          `${Club.name}: ${newLocationData.clubId}`
-        );
+        throw new NotFoundException(`${Club.name}: ${newLocationData.clubId}`);
       }
 
       if (
-        !user.hasAnyPermission([
-          `${dbClub.id}_edit:location`,
-          'edit-any:club',
-        ])
+        !user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club'])
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`
