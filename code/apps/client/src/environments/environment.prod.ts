@@ -1,4 +1,4 @@
-// import packages from '../../package.json';
+import packages from '../version.json';
 
 export const environment = {
   production: true,
@@ -9,6 +9,5 @@ export const environment = {
     adClient: 'ca-pub-2426855871474715',
     show: true,
   },
-  version: '0.0.0',
-  // version: packages.version
+  version: packages.version
 };
