@@ -10,7 +10,7 @@ import { QueueModule } from '@badman/queue';
 import { SearchModule } from '@badman/search';
 import { EventsModule } from './events';
 import { PdfService } from './services';
-import { HealthModule } from 'libs/health/src';
+import { HealthModule } from '@badman/health';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { HealthModule } from 'libs/health/src';
     SearchModule,
     QueueModule,
     EventsModule,
-    HealthModule
+    HealthModule,
   ],
   controllers: [AppController, PdfController, RankingController],
   providers: [PdfService],
