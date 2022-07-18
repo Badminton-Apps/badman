@@ -160,6 +160,7 @@
     "@types/pg": "^8.6.5",
     "@types/regression": "^2.0.2",
     "@types/sequelize": "^4.28.13",
+    "@types/supertest": "^2.0.12",
     "@types/uuid": "8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.27.0",
@@ -191,6 +192,7 @@
     "prettier": "^2.6.2",
     "protractor": "^7.0.0",
     "standard-version": "^9.5.0",
+    "supertest": "^6.2.4",
     "ts-jest": "27.1.5",
     "ts-node": "^10.8.1",
     "typescript": "~4.6.4"
