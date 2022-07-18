@@ -13,7 +13,7 @@ export class SyncRankingProcessor {
 
   private _rankingSync: RankingSyncer;
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {
+  constructor(private _sequelize: Sequelize) {
     this.logger.debug('SyncRanking');
     this._rankingSync = new RankingSyncer();
   }

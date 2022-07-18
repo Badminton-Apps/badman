@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, pairwise, startWith } from 'rxjs/operators';
-import { Club, Player, Team } from '../../../../../_shared';
+import { Club, Location, Player, Team } from '../../../../../_shared';
 
 @Component({
   selector: 'badman-team-fields',
@@ -42,10 +42,14 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
   teamNumbers!: number[];
 
   ngOnChanges(changes: SimpleChanges) {
-    const teamChanges = changes['team'];
-    if (teamChanges.previousValue?.id != teamChanges.currentValue?.id) {
+    const teamChanges = changes?.['team'];
+    if (teamChanges?.previousValue?.id != teamChanges?.currentValue?.id) {
       if (this.team.id) {
+        this.calcTeamsOfType(this.team.type, true);
         this.teamForm?.get('teamNumber')?.enable();
+        this.teamForm?.patchValue({
+          ...teamChanges?.currentValue
+        });
       } else {
         this.teamForm?.get('teamNumber')?.disable();
       }
@@ -97,8 +101,8 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
     }
 
     typeControl.valueChanges.subscribe((type) => {
-      if (type) {
-        this.calcTeamsOfType(type);
+      if (!type) {
+        throw new Error('Type is required');
       }
     });
 
@@ -108,9 +112,9 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
         startWith(this.team.locations?.map((r) => r.id) ?? []),
         pairwise()
       )
-      .subscribe(async ([prev, next]: string[][]) => {
-        const removed = prev.filter((item) => next.indexOf(item) < 0);
-        const added = next.filter((item) => prev.indexOf(item) < 0);
+      .subscribe(async ([prev, next]) => {
+        const removed = prev.filter((item: Location) => next.indexOf(item) < 0);
+        const added = next.filter((item: Location) => prev.indexOf(item) < 0);
 
         for (const add of added) {
           this.whenLocationAdded.next(add);
@@ -137,13 +141,18 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
     });
   }
 
-  private calcTeamsOfType(type?: string) {
+  private calcTeamsOfType(type?: string, wasCreated: boolean = false) {
+    if (!type) {
+      throw new Error('Type is required');
+    }
+
     let teamsOfType =
       this.club.teams?.filter((r) => r.type == type).length ?? 0;
-    if (this.team.id == null) {
+
+    if (wasCreated) {
       teamsOfType++;
-      this.teamForm.patchValue({ teamNumber: teamsOfType });
     }
+
     this.teamNumbers = [...Array(teamsOfType).keys()].map((a) => a + 1);
   }
 

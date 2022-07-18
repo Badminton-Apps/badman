@@ -16,7 +16,7 @@ export class SimulationV2Processor {
   private readonly logger = new Logger(SimulationV2Processor.name);
 
   constructor(
-    @Inject('SEQUELIZE') private _sequelize: Sequelize,
+    private _sequelize: Sequelize,
     @InjectQueue(SimulationQueue) private rankingS: Queue
   ) {
     this.logger.debug('SyncRanking');

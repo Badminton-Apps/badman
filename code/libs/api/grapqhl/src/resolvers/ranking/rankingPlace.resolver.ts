@@ -28,7 +28,7 @@ import { ListArgs } from '../../utils';
 export class RankingPlaceResolver {
   private readonly logger = new Logger(RankingPlaceResolver.name);
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => RankingPlace)
   async rankingPlace(

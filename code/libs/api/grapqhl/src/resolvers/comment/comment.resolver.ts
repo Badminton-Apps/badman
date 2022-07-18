@@ -20,7 +20,7 @@ import { ListArgs } from '../../utils';
 export class CommentResolver {
   private readonly logger = new Logger(CommentResolver.name);
 
-  constructor(@Inject('SEQUELIZE') private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) {}
   @Query(() => Comment)
   async comment(@Args('id', { type: () => ID }) id: string): Promise<Comment> {
     let comment = await Comment.findByPk(id);

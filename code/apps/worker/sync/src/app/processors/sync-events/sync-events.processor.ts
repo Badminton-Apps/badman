@@ -20,7 +20,7 @@ export class SyncEventsProcessor {
 
   constructor(
     private visualService: VisualService,
-    @Inject('SEQUELIZE') private _sequelize: Sequelize
+    private _sequelize: Sequelize
   ) {
     this.logger.debug('SyncEvents');
 
