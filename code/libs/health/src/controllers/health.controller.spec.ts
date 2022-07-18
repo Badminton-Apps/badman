@@ -1,18 +1,29 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { HealthController } from './health.controller';
+import { INestApplication } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import request from 'supertest';
+import { HealthModule } from '../health.module';
 
 describe('HealthController', () => {
-  let controller: HealthController;
+  let app: INestApplication;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [HealthController],
+  beforeAll(async () => {
+    const moduleFixture = await Test.createTestingModule({
+      imports: [HealthModule],
     }).compile();
 
-    controller = module.get<HealthController>(HealthController);
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
+  it('should be defined', () => {
+    expect(app).toBeDefined();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('/health (GET)', () => {
+    return request(app.getHttpServer()).get('/health').expect(200).expect({
+      status: 'ok',
+      info: {},
+      error: {},
+      details: {},
+    });
   });
 });

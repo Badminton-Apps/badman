@@ -39,7 +39,7 @@ export class AppController {
       },
       {
         removeOnComplete: true,
-      }
+      } 
     );
 
     // // BVL 25w 67up 30down
