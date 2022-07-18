@@ -21,15 +21,7 @@ export class SubEventTournamentResolver {
   async subEventTournament(
     @Args('id', { type: () => ID }) id: string
   ): Promise<SubEventTournament> {
-    let subEventTournament = await SubEventTournament.findByPk(id);
-
-    if (!subEventTournament) {
-      subEventTournament = await SubEventTournament.findOne({
-        where: {
-          slug: id,
-        },
-      });
-    }
+    const subEventTournament = await SubEventTournament.findByPk(id);
 
     if (!subEventTournament) {
       throw new NotFoundException(id);
