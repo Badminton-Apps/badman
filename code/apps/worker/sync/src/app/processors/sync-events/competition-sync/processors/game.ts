@@ -61,6 +61,11 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     internalId: number,
     games: Game[]
   ) {
+    // only get match if encounter is in future
+    if (moment(encounter.date).isAfter(moment())) {
+      return;
+    }
+
     const isLastWeek = moment().subtract(1, 'week').isBefore(encounter.date);
 
     const visualMatch = (
