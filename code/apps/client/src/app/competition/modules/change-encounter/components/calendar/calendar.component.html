@@ -109,8 +109,16 @@
               <span class="id">{{ loc.id }}</span>
               <span class="time">{{ av.startTime }} - </span>
               <span class="courts">
-                {{ av.remainingEncounters }}
-                {{ 'competition.change-encounter.remaining' | translate }}
+                {{
+                  'competition.change-encounter.calendar.remaining'
+                    | translate: { amount: av.remainingEncounters }
+                }}
+                <ng-container *ngIf="av.option">
+                  ({{
+                    'competition.change-encounter.calendar.option'
+                      | translate: { amount: av.option }
+                  }})
+                </ng-container>
               </span>
             </div>
 
@@ -122,8 +130,16 @@
               <span class="id">{{ loc.id }}</span>
               <span class="time">{{ av.startTime }} - </span>
               <span class="courts">
-                {{ av.remainingEncounters }}
-                {{ 'competition.change-encounter.remaining' | translate }}
+                {{
+                  'competition.change-encounter.calendar.remaining'
+                    | translate: { amount: av.remainingEncounters }
+                }}
+                <ng-container *ngIf="av.option">
+                  ({{
+                    'competition.change-encounter.calendar.option'
+                      | translate: { amount: av.option }
+                  }})
+                </ng-container>
               </span>
             </div>
 
@@ -133,6 +149,10 @@
               fxLayoutGap="3px"
               class="event"
               *ngFor="let calEvent of av.events"
+              [matTooltip]="
+                'competition.change-encounter.calendar.removed' | translate
+              "
+              [matTooltipDisabled]="!calEvent.removed"
               [ngClass]="{
                 removed: calEvent.removed
               }"
@@ -144,7 +164,15 @@
                 ></div>
               </div>
               <span fxFlex>
-                <span class="event-name" fxFlex="0 1 auto">
+                <span
+                  class="event-name"
+                  fxFlex="0 1 auto"
+                  [matTooltip]="
+                    'competition.change-encounter.calendar.requested'
+                      | translate
+                  "
+                  [matTooltipDisabled]="!calEvent.requested"
+                >
                   {{ calEvent?.encounter?.home?.teamNumber
                   }}{{
                     'type-short.' + calEvent?.encounter?.home?.type | translate
