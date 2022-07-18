@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd code && npx --yes nx affected lint
+cd code && npx --yes nx affected --target=lint
