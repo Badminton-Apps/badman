@@ -64,7 +64,7 @@ export class AppController {
     this.logger.debug('Queue');
     return this.rankingSync.add(
       Sync.SyncEvents,
-      { date: '2022-07-10', only: ['Limburgse interclubcompetitie 2022-202'] },
+      { date: '2022-07-10', skip: ['tournament'] },
       { removeOnComplete: true }
     );
   }

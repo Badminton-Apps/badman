@@ -4,6 +4,7 @@ import { Processor, ProcessStep } from '../../../processing';
 import { VisualService } from '../../../services';
 import { XmlTournament } from '../../../utils';
 import {
+  CompetitionSyncCleanupProcessor,
   CompetitionSyncDrawProcessor,
   CompetitionSyncEncounterProcessor,
   CompetitionSyncEventProcessor,
@@ -32,6 +33,7 @@ export class CompetitionSyncer {
   readonly STEP_GAME = 'game';
   readonly STEP_POINT = 'point';
   readonly STEP_STANDING = 'standing';
+  readonly STEP_CLEANUP = 'cleanup';
 
   private _eventStep: CompetitionSyncEventProcessor;
   private _subEventStep: CompetitionSyncSubEventProcessor;
@@ -42,6 +44,7 @@ export class CompetitionSyncer {
   private _gameStep: CompetitionSyncGameProcessor;
   private _pointStep: CompetitionSyncPointProcessor;
   private _standingStep: CompetitionSyncStandingProcessor;
+  private _cleanupStep: CompetitionSyncCleanupProcessor;
 
   constructor(
     private visualService: VisualService,
@@ -62,10 +65,11 @@ export class CompetitionSyncer {
     this.processor.addStep(this.addEntries());
     this.processor.addStep(this.addEncounters());
     this.processor.addStep(this.addPlayers());
-    // this.processor.addStep(this.addGames());
+    this.processor.addStep(this.addGames());
     this.processor.addStep(this.addPoints());
 
     this.processor.addStep(this.updateStanding());
+    this.processor.addStep(this.addCleanup());
   }
 
   process(args: {
@@ -121,9 +125,15 @@ export class CompetitionSyncer {
     );
 
     this._pointStep = new CompetitionSyncPointProcessor(options);
+    
     this._standingStep = new CompetitionSyncStandingProcessor({
       ...options,
       newGames: this.options.newGames,
+    });
+
+    
+    this._cleanupStep = new CompetitionSyncCleanupProcessor({
+      ...options
     });
 
     return this.processor.process();
@@ -139,6 +149,7 @@ export class CompetitionSyncer {
       this._subEventStep.existed = data.existed;
       this._encounterStep.event = data.event;
       this._pointStep.event = data.event;
+      this._cleanupStep.event = data.event;
 
       return data;
     });
@@ -223,6 +234,14 @@ export class CompetitionSyncer {
     return new ProcessStep<unknown>(this.STEP_POINT, async () => {
       // Process step
       const data = await this._pointStep.process();
+      return data;
+    });
+  }
+
+  protected addCleanup(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_CLEANUP, async () => {
+      // Process step
+      const data = await this._cleanupStep.process();
       return data;
     });
   }

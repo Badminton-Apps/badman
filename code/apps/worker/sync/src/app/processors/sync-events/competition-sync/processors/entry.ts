@@ -26,12 +26,6 @@ export class EntryProcessor extends StepProcessor {
   }
 
   private async _processEntries({ draw, internalId }: DrawStepData) {
-    const drawEntries = await draw.getEntries({
-      include: [{ model: Team }],
-      transaction: this.transaction,
-    });
-
-    // if (drawEntries.length === 0) {
     const subEvent = await draw.getSubEventCompetition({
       transaction: this.transaction,
     });
@@ -90,11 +84,12 @@ export class EntryProcessor extends StepProcessor {
 
           if (foundTeam.length == 1) {
             const team = foundTeam[0];
-           
             const entries = await this._getEntriesForTeam(team, year);
 
             if (entries.length === 0) {
-              throw new Error(`Teams entry not found ${teamName}`);
+              throw new Error(
+                `Teams entry not found ${teamName} (${team.id})`
+              );
             }
 
             if (entries.length > 1) {
@@ -127,7 +122,6 @@ export class EntryProcessor extends StepProcessor {
         });
       }
     }
-    // }
   }
 
   private _getEntriesForTeam(team: Team, startYear: number) {
