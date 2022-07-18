@@ -16,7 +16,7 @@ export class EntryProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions 
   ) {
     super(options);
   }
@@ -87,9 +87,7 @@ export class EntryProcessor extends StepProcessor {
             const entries = await this._getEntriesForTeam(team, year);
 
             if (entries.length === 0) {
-              throw new Error(
-                `Teams entry not found ${teamName} (${team.id})`
-              );
+              throw new Error(`Teams entry not found ${teamName} (${team.id})`);
             }
 
             if (entries.length > 1) {

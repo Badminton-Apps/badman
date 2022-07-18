@@ -22,15 +22,8 @@ export class SubEventCompetitionResolver {
   async subEventCompetition(
     @Args('id', { type: () => ID }) id: string
   ): Promise<SubEventCompetition> {
-    let subEventCompetition = await SubEventCompetition.findByPk(id);
+    const subEventCompetition = await SubEventCompetition.findByPk(id);
 
-    if (!subEventCompetition) {
-      subEventCompetition = await SubEventCompetition.findOne({
-        where: {
-          slug: id,
-        },
-      });
-    }
 
     if (!subEventCompetition) {
       throw new NotFoundException(id);
