@@ -31,7 +31,7 @@ export class VisualService {
 
   constructor(private configService: ConfigService) {
     this.http = axiosRateLimit(axios.create(), { maxRPS: 15 });
-    axiosRetry(axios, { retries: this._retries });
+    axiosRetry(this.http, { retries: this._retries });
     this.parser = new XMLParser();
   }
 

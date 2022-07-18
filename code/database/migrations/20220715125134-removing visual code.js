@@ -22,10 +22,32 @@ module.exports = {
           { transaction: t }
         );
 
+        // fixing team with wrong name
+        await queryInterface.sequelize.query(
+          `update  "event"."Entries"
+            set "subEventId" = '0a50a16c-dee4-480d-9d8a-33000c3968ec'
+            where "subEventId" = '46257fa6-f634-421f-b1e1-b6298722b8c4'`,
+          { transaction: t }
+        );
+
         // Just disable all
         await queryInterface.sequelize.query(
-          `update  "event"."SubEventCompetitions"
+          `update  "event"."EventCompetitions"
             set "allowEnlisting" = false`,
+          { transaction: t }
+        );
+
+        // fixing club with wrong name
+        await queryInterface.sequelize.query(
+          `update  "Clubs"
+            set "name" = 'Spinners'
+            where "name" = ' Spinners'`,
+          { transaction: t }
+        );
+        await queryInterface.sequelize.query(
+          `update  "Teams"
+          set "name" = 'Spinners 1G'
+          where "name" = ' Spinners 1G'`,
           { transaction: t }
         );
       } catch (err) {

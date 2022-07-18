@@ -1,15 +1,17 @@
 import {
-  EventCompetition, LevelType,
+  EventCompetition,
+  LevelType,
   SubEventCompetition,
-  SubEventType
+  SubEventType,
 } from '@badman/api/database';
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
 import { VisualService } from '../../../../services';
 import {
-  XmlGenderID, XmlTournament,
-  XmlTournamentEvent
+  XmlGenderID,
+  XmlTournament,
+  XmlTournamentEvent,
 } from '../../../../utils';
 
 export interface SubEventStepData {
