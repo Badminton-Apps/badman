@@ -4,9 +4,9 @@
  */
 
 import { NestFactory } from '@nestjs/core';
-import { SyncModule } from './app/app.module';
+import { WorkerSyncModule } from './app/app.module';
 
 async function bootstrap() {
-  await NestFactory.createApplicationContext(SyncModule);
+  await NestFactory.createApplicationContext(WorkerSyncModule);
 }
 bootstrap();

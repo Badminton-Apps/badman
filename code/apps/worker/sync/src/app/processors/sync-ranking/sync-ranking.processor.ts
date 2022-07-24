@@ -1,6 +1,6 @@
 import { SyncQueue, Sync } from '@badman/queue';
 import { Process, Processor } from '@nestjs/bull';
-import { Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { Sequelize } from 'sequelize-typescript';
 import { RankingSyncer } from './ranking-sync';

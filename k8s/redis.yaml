@@ -1,2 +1,4 @@
 existingSecret: server-redis
 existingSecretPasswordKey: redis-password
+replica:
+  replicaCount: 1

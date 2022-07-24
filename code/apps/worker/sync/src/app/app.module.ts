@@ -32,4 +32,4 @@ import { VisualService } from './services';
     QueueModule,
   ],
 })
-export class SyncModule {}
+export class WorkerSyncModule {}
