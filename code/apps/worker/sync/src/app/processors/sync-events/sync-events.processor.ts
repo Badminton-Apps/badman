@@ -1,6 +1,6 @@
 import { Sync, SyncQueue } from '@badman/queue';
 import { Process, Processor } from '@nestjs/bull';
-import { Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import moment = require('moment');
 import { Sequelize } from 'sequelize-typescript';
