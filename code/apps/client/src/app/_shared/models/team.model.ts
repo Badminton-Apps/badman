@@ -41,6 +41,7 @@ export class Team {
     this.abbreviation = args?.abbreviation;
     this.type = args?.type;
     this.active = args?.active;
+    this.clubId = args?.clubId;
 
     this.preferredTime = args?.preferredTime;
     this.preferredDay = args?.preferredDay;
