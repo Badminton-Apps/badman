@@ -74,10 +74,12 @@ export class ListEncountersComponent implements OnInit {
                           home {
                             id
                             name
+                            clubId
                           }
                           away {
                             id
                             name
+                            clubId
                           }
                           encounterChange {
                             id

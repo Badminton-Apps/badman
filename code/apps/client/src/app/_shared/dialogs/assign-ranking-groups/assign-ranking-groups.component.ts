@@ -76,10 +76,10 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
     });
 
     this.groups$ = this.apollo
-      .query<{ rankingSystemGroup: RankingGroup[] }>({
+      .query<{ rankingGroups: RankingGroup[] }>({
         query: gql`
-          query RankingSystemGroup {
-            rankingSystemGroup {
+          query rankingGroups {
+            rankingGroups {
               name
               id
             }
@@ -87,7 +87,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         `,
       })
       .pipe(
-        map((result) => result.data.rankingSystemGroup),
+        map((result) => result.data.rankingGroups),
         tap((groups) => {
           const unique = [
             ...new Set(
@@ -117,9 +117,8 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
                   if (initialGroups.findIndex((g) => g.id == group.id) === -1) {
                     initialGroups.push(group);
                   }
-
                   const key = `group-${group.id}`;
-                  if (this.selection.has(key)) {
+                  if (!this.selection.has(key)) {
                     this.selection.set(
                       key,
                       new SelectionModel<SubEvent>(true, [])
@@ -171,6 +170,8 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   async assignRankingGroups() {
     this.loading = true;
     const mutations: Observable<MutationResult>[] = [];
+
+    console.log(this.selection);
 
     for (const [groupKey, group] of this.selection) {
       const key = groupKey.replace('group-', '');

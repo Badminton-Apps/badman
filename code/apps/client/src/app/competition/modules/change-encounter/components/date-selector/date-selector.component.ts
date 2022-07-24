@@ -46,10 +46,13 @@ export class DateSelectorComponent
   private _disabled = false;
 
   @Input()
-  allowManualEntry = false;
+  home = false;
 
   @Input()
-  club?: string;
+  homeClubId?: string;
+
+  @Input()
+  awayClubId?: string;
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby')
@@ -159,9 +162,10 @@ export class DateSelectorComponent
       .open(CalendarComponent, {
         width: '80vw',
         data: {
-          clubId: this.club,
+          homeClubId: this.homeClubId,
+          awayClubId: this.awayClubId,
           date,
-          allowManualEntry: this.allowManualEntry,
+          home: this.home,
         },
       })
       .afterClosed()

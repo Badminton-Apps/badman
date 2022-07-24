@@ -22,7 +22,6 @@ import { lastValueFrom, Observable, of } from 'rxjs';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import {
   ChangeEncounterAvailability,
-  Club,
   Comment,
   CompetitionEncounter,
   EncounterChange,
@@ -42,8 +41,6 @@ export class ShowRequestsComponent implements OnInit {
 
   @Input()
   dependsOn = 'encounter';
-
-  club$?: Observable<Club>;
 
   formGroupRequest!: FormGroup;
   previous?: AbstractControl;
