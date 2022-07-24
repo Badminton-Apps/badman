@@ -16,7 +16,7 @@ import {
 import moment from 'moment';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom, map, forkJoin, tap } from 'rxjs';
+import { lastValueFrom, map, forkJoin } from 'rxjs';
 import { randomLightColor } from 'seed-to-color';
 import { v4 } from 'uuid';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -34,9 +34,12 @@ export class CalendarComponent implements OnInit {
   public monthNames!: string[];
   public weekDayNames!: string[];
 
-  private encounters: CompetitionEncounter[] = [];
-  public teams: Team[] = [];
-  public visibleTeams?: string[];
+  private homeEncounters: CompetitionEncounter[] = [];
+  private awayEncounters: CompetitionEncounter[] = [];
+  public homeTeams: Team[] = [];
+  public awayTeams: Team[] = [];
+  public visibleTeamsOwn?: string[];
+  public visibleTeamsOther?: string[];
   public firstDayOfMonth: moment.Moment;
   private year: number;
 
@@ -49,9 +52,10 @@ export class CalendarComponent implements OnInit {
     private ref: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      clubId: string;
+      homeClubId: string;
+      awayClubId: string;
       date?: Date;
-      allowManualEntry?: boolean;
+      home?: boolean;
     },
     private apollo: Apollo
   ) {
@@ -84,8 +88,21 @@ export class CalendarComponent implements OnInit {
 
   private async _setupCalendar() {
     this.locations = await this._getLocations();
-    this.teams = await this._getTeams();
-    this.encounters = await this._getEncoutners();
+    this.homeTeams = await this._getTeams(this.data.homeClubId);
+    this.awayTeams = await this._getTeams(this.data.awayClubId);
+
+    this.setColors(this.homeTeams);
+
+    this.homeEncounters = await this._getEncoutners(
+      this.homeTeams?.map((t) => t.id)
+    );
+    this.awayEncounters = await this._getEncoutners(
+      this.awayTeams?.map((t) => t.id)
+    );
+
+    this.setColors([...this.homeTeams, ...this.awayTeams]);
+    this.showVisible([...this.homeTeams, ...this.awayTeams]);
+
     this.generateCalendarDays();
   }
 
@@ -118,7 +135,7 @@ export class CalendarComponent implements OnInit {
             }
           `,
           variables: {
-            clubId: this.data.clubId,
+            clubId: this.data.homeClubId,
             year: this.year,
           },
         })
@@ -137,7 +154,7 @@ export class CalendarComponent implements OnInit {
     return locations;
   }
 
-  private async _getTeams() {
+  private async _getTeams(clubid: string) {
     return lastValueFrom(
       this.apollo
         .query<{ teams: Team[] }>({
@@ -152,48 +169,26 @@ export class CalendarComponent implements OnInit {
             }
           `,
           variables: {
-            clubId: this.data.clubId,
+            clubId: clubid,
           },
         })
         .pipe(
           map((result) => {
             return result.data.teams?.map((team) => new Team(team));
           }),
-          map((teams) => teams.sort(sortTeams)),
-          tap((teams) => {
-            const visibleTeams = localStorage
-              .getItem(`visible_teams_${this.data.clubId}`)
-              ?.split(',');
-            this.visibleTeams = teams
-              ?.filter((team) => {
-                if (visibleTeams && visibleTeams.length > 0 && team.id) {
-                  return visibleTeams.includes(team.id);
-                }
-                return true;
-              })
-              ?.map((team) => {
-                if (!team.id) {
-                  throw new Error('Team has no id');
-                }
-
-                return team.id;
-              });
-            for (const team of teams) {
-              this.teamColors.set(
-                team?.id ?? '',
-                `#${randomLightColor(team?.name ?? '')}`
-              );
-            }
-          })
+          map((teams) => teams.sort(sortTeams))
         )
     );
   }
 
-  private async _getEncoutners(showAway = false) {
+  private async _getEncoutners(
+    teamIds?: (string | undefined)[],
+    showAway = false
+  ) {
     const encounters: CompetitionEncounter[] = [];
 
     // load teams parallel
-    const teamEncounter$ = this.teams.map((team) => {
+    const teamEncounter$ = teamIds?.map((team) => {
       return this.apollo
         .query<{
           encounterCompetitions: {
@@ -234,8 +229,8 @@ export class CalendarComponent implements OnInit {
                 $between: compPeriod(this.year),
               },
               $or: {
-                homeTeamId: team.id,
-                awayTeamId: showAway ? team.id : undefined,
+                homeTeamId: team,
+                awayTeamId: showAway ? team : undefined,
               },
             },
           },
@@ -253,12 +248,61 @@ export class CalendarComponent implements OnInit {
         );
     });
 
-    const result = await lastValueFrom(forkJoin(teamEncounter$));
-    for (const e of result) {
-      encounters.push(...(e.encounters?.map((e) => e) ?? []));
+    if (teamEncounter$) {
+      const result = await lastValueFrom(forkJoin(teamEncounter$));
+      for (const e of result) {
+        encounters.push(...(e.encounters?.map((e) => e) ?? []));
+      }
     }
 
     return encounters;
+  }
+
+  private setColors(teams: Team[]) {
+    for (const team of teams) {
+      this.teamColors.set(
+        team?.id ?? '',
+        `#${randomLightColor(team?.name ?? '')}`
+      );
+    }
+  }
+
+  private showVisible(teams: Team[]) {
+    const visibleTeamsOwn = localStorage
+      .getItem(`visible_teams_${this.data.homeClubId}`)
+      ?.split(',');
+    this.visibleTeamsOwn = teams
+      ?.filter((team) => {
+        if (visibleTeamsOwn && visibleTeamsOwn.length > 0 && team.id) {
+          return visibleTeamsOwn.includes(team.id);
+        }
+        return this.data.home;
+      })
+      ?.map((team) => {
+        if (!team.id) {
+          throw new Error('Team has no id');
+        }
+
+        return team.id;
+      });
+
+    const visibleTeamsOther = localStorage
+      .getItem(`visible_teams_${this.data.homeClubId}`)
+      ?.split(',');
+    this.visibleTeamsOther = teams
+      ?.filter((team) => {
+        if (visibleTeamsOther && visibleTeamsOther.length > 0 && team.id) {
+          return visibleTeamsOther.includes(team.id);
+        }
+        return !this.data.home;
+      })
+      ?.map((team) => {
+        if (!team.id) {
+          throw new Error('Team has no id');
+        }
+
+        return team.id;
+      });
   }
 
   private generateCalendarDays(): void {
@@ -295,7 +339,7 @@ export class CalendarComponent implements OnInit {
     // Loop through the encounters
     for (let i = 0; i < weeks * 7; i++) {
       // Find any encounters on day
-      const dayEncounters = this.encounters
+      const homeEnc = this.homeEncounters
         .filter((e) => {
           return moment(e.date).isSame(day, 'day');
         })
@@ -311,7 +355,8 @@ export class CalendarComponent implements OnInit {
           };
         });
 
-      this.encounters
+      // Find any encounters requestd for day
+      this.homeEncounters
         ?.map((e) => {
           return e.encounterChange?.dates?.map((d) => {
             return {
@@ -329,7 +374,7 @@ export class CalendarComponent implements OnInit {
           if (!e) {
             return;
           }
-          dayEncounters.push({
+          homeEnc.push({
             id: v4(),
             encounter: {
               ...e,
@@ -343,16 +388,65 @@ export class CalendarComponent implements OnInit {
           });
         });
 
+      // Find any encounters on day
+      const awayEnc = this.awayEncounters
+        .filter((e) => {
+          return moment(e.date).isSame(day, 'day');
+        })
+        .map((e) => {
+          return {
+            id: v4(),
+            encounter: e,
+            color: this.teamColors.get(e.home?.id ?? ''),
+            startTime: moment(e.date).format('HH:mm'),
+            locationId: 1,
+            requested: false,
+            removed: !!e.encounterChange,
+          };
+        });
+
+      this.awayEncounters
+        ?.map((e) => {
+          return e.encounterChange?.dates?.map((d) => {
+            return {
+              id: v4(),
+              ...e,
+              date: d.date,
+            } as CompetitionEncounter;
+          });
+        })
+        ?.flat()
+        ?.filter((e) => {
+          return moment(e?.date).isSame(day, 'day');
+        })
+        ?.map((e) => {
+          if (!e) {
+            return;
+          }
+          awayEnc.push({
+            id: v4(),
+            encounter: {
+              ...e,
+              encounterChange: undefined,
+            },
+            color: this.teamColors.get(e.home?.id ?? '') ?? '',
+            startTime: moment(e.date).format('HH:mm'),
+            locationId: 1,
+            requested: true,
+            removed: false,
+          });
+        });
+
+      console.log(this.homeEncounters, this.awayEncounters);
+
       calendar.push(
-        new CalendarDay(
-          day.clone(),
-          dayEncounters,
-          this.locations,
-          this.visibleTeams
-        )
+        new CalendarDay(day.clone(), homeEnc, awayEnc, this.locations, [
+          ...(this.visibleTeamsOther ?? []),
+          ...(this.visibleTeamsOwn ?? []),
+        ])
       );
 
-      eventsOnDay[day.isoWeekday()] += dayEncounters.length;
+      eventsOnDay[day.isoWeekday()] += homeEnc.length + awayEnc.length;
 
       day.add(1, 'days');
     }
@@ -378,40 +472,65 @@ export class CalendarComponent implements OnInit {
     this.generateCalendarDays();
   }
 
-  public changeVisibleTeams(event: MatCheckboxChange, teamId?: string) {
+  public changeVisibleTeams(
+    event: MatCheckboxChange,
+    teamId?: string,
+    own?: boolean
+  ) {
     if (!teamId) {
       return;
     }
 
-    if (event.checked) {
-      this.visibleTeams?.push(teamId);
+    if (own) {
+      if (event.checked) {
+        this.visibleTeamsOwn?.push(teamId);
+      } else {
+        this.visibleTeamsOwn?.splice(this.visibleTeamsOwn?.indexOf(teamId), 1);
+      }
+
+      localStorage.setItem(
+        `visible_teams_${this.data.homeClubId}`,
+        this.visibleTeamsOwn?.join(',') ?? ''
+      );
     } else {
-      this.visibleTeams = this.visibleTeams?.filter((t) => t !== teamId);
+      if (event.checked) {
+        this.visibleTeamsOther?.push(teamId);
+      } else {
+        this.visibleTeamsOther?.splice(
+          this.visibleTeamsOther?.indexOf(teamId),
+          1
+        );
+      }
+
+      localStorage.setItem(
+        `visible_teams_${this.data.homeClubId}`,
+        this.visibleTeamsOther?.join(',') ?? ''
+      );
     }
 
-    localStorage.setItem(
-      `visible_teams_${this.data.clubId}`,
-      this.visibleTeams?.join(',') ?? ''
-    );
     this.generateCalendarDays();
   }
 
-  public showAllTeams() {
-    this.visibleTeams = this.teams.map((t) => {
+  public showAllTeams(teams: Team[], clubId: string) {
+    this.visibleTeamsOther = teams.map((t) => {
       if (!t.id) {
         throw new Error('Team has no id');
       }
       return t.id;
     });
     localStorage.setItem(
-      `visible_teams_${this.data.clubId}`,
-      this.visibleTeams?.join(',')
+      `visible_teams_${clubId}`,
+      this.visibleTeamsOther?.join(',')
     );
     this.generateCalendarDays();
   }
 
-  public hideAllTeams() {
-    this.visibleTeams = [];
+  public hideAllTeams(clubId: string) {
+    this.visibleTeamsOther = [];
+    localStorage.setItem(
+      `visible_teams_${clubId}`,
+      this.visibleTeamsOther?.join(',')
+    );
     this.generateCalendarDays();
   }
 
@@ -465,14 +584,28 @@ export class CalendarDay {
 
   constructor(
     date?: moment.Moment,
-    events?: {
-      id: string;
-      encounter: CompetitionEncounter;
-      locationId?: number;
-      startTime?: string;
-      color?: string;
-      requested: boolean;
-    }[],
+    homeEvents?: (
+      | {
+          id: string;
+          encounter: CompetitionEncounter;
+          locationId?: number;
+          startTime?: string;
+          color?: string;
+          requested: boolean;
+        }
+      | undefined
+    )[],
+    awayEvents?: (
+      | {
+          id: string;
+          encounter: CompetitionEncounter;
+          locationId?: number;
+          startTime?: string;
+          color?: string;
+          requested: boolean;
+        }
+      | undefined
+    )[],
     locations?: Map<number, Location>,
     private visibleTeams?: string[]
   ) {
@@ -526,15 +659,21 @@ export class CalendarDay {
       }
     }
 
-    for (const event of events ?? []) {
-      if (!event.locationId) {
+    for (const event of homeEvents ?? []) {
+      if (!event?.locationId) {
         throw new Error('LocationId is required');
       }
-      this.addEvent(event);
+      this.addEvent(event, true);
+    }
+    for (const event of awayEvents ?? []) {
+      if (!event?.locationId) {
+        throw new Error('LocationId is required');
+      }
+      this.addEvent(event, false);
     }
   }
 
-  private addEvent(event) {
+  private addEvent(event, countsForLocation?: boolean) {
     if (!this.locations) {
       return;
     }
@@ -551,7 +690,7 @@ export class CalendarDay {
         locationIndex
       ].availibility?.findIndex((a) => a.startTime === event.startTime);
 
-      if (availibilityIndex >= 0) {
+      if (availibilityIndex >= 0 && countsForLocation) {
         if (!skipRemaining) {
           this.locations[locationIndex].availibility[availibilityIndex]
             .remainingEncounters--;
