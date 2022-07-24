@@ -1,6 +1,12 @@
 import { Game } from '@badman/api/database';
 import { CpGeneratorService } from '@badman/api/generator';
-import { Simulation, SimulationQueue, Sync, SyncQueue } from '@badman/queue';
+import {
+  Simulation,
+  SimulationQueue,
+  Sync,
+  SyncQueue,
+  SimulationV2Job,
+} from '@badman/queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
 import { Queue } from 'bull';
@@ -28,40 +34,62 @@ export class AppController {
   }
 
   @Get('queue-sim')
-  getQueueSim() {
-    this.logger.debug('Queue');
-    // BVL 25w 75up 35down
+  async getQueueSim() {
+    // 
     this.rankingSim.add(
-      Simulation.Start,
+      Simulation.StartV2,
       {
-        systemIds: ['98d5aeee-973e-4bdb-8087-290e480df53f'],
-        stop: '2022-07-03 22:00:00+00',
-      },
+        systemId: '8f660b40-bc31-47d1-af36-f713c37467fd',
+        calcDate: '2022-07-03 22:00:00+00',
+        periods: 1,
+      } as SimulationV2Job,
       {
         removeOnComplete: true,
-      } 
+      }
     );
 
-    // // BVL 25w 67up 30down
-    // this.rankingSim.add(Simulation.Start, {
-    //   systemIds: ['c1c7e8e2-5d1b-42d7-a109-a249884c0b13'],
-    //   stop: '2022-07-03 22:00:00+00',
-    // }, {
-    //   removeOnComplete: true
-    // });
+    // 
+    this.rankingSim.add(
+      Simulation.StartV2,
+      {
+        systemId: 'c6d33db8-a688-42f6-ae9e-f4516d30fd3f',
+        calcDate: '2022-07-03 22:00:00+00',
+        periods: 1,
+      } as SimulationV2Job,
+      {
+        removeOnComplete: true,
+      }
+    );
+    // 
+    this.rankingSim.add(
+      Simulation.StartV2,
+      {
+        systemId: 'e6e4c0a8-8403-4ad6-9d0c-f56bd7bdf553',
+        calcDate: '2022-07-03 22:00:00+00',
+        periods: 1,
+      } as SimulationV2Job,
+      {
+        removeOnComplete: true,
+      }
+    );
 
-    // // BVL 25w 75up 35down
-    // this.rankingSim.add(Simulation.Start, {
-    //   systemIds: ['b91cbdc1-85b0-4065-9039-f3e90e210979'],
-    //   stop: '2022-07-03 22:00:00+00',
-    // }, {
-    //   removeOnComplete: true
-    // });
+    // DONE
+    // // 52 weeks - last 25 - 70% up - 30% down
+    // return this.rankingSim.add(
+    //   Simulation.StartV2,
+    //   {
+    //     systemId: '33c447df-b32d-4981-b515-22f37a22a326',
+    //     calcDate: '2022-07-03 22:00:00+00',
+    //     periods: 1,
+    //   } as SimulationV2Job,
+    //   {
+    //     removeOnComplete: true,
+    //   }
+    // );
   }
 
   @Get('queue-sync')
   getQueueSync() {
-    this.logger.debug('Queue');
     return this.rankingSync.add(
       Sync.SyncEvents,
       { date: '2022-07-10', skip: ['tournament'] },

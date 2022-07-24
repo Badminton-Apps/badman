@@ -4,9 +4,9 @@
  */
 
 import { NestFactory } from '@nestjs/core';
-import { RankingModule } from './app/app.module';
+import { WorkerRankingModule } from './app/app.module';
 
 async function bootstrap() {
-  await NestFactory.createApplicationContext(RankingModule);
+  await NestFactory.createApplicationContext(WorkerRankingModule);
 }
 bootstrap();

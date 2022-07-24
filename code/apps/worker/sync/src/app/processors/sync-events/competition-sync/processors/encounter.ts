@@ -2,8 +2,6 @@ import {
   EncounterCompetition,
   EventCompetition,
   Game,
-  LevelType,
-  SubEventType,
   Team,
 } from '@badman/api/database';
 import moment from 'moment';

@@ -6,7 +6,6 @@ import {
   RankingSystem,
 } from '@badman/api/database';
 import {
-  Inject,
   Logger,
   NotFoundException,
   UnauthorizedException,

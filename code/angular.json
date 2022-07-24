@@ -13,6 +13,7 @@
     "notifications": "libs/notifications",
     "pupeteer": "libs/pupeteer",
     "queue": "libs/queue",
+    "ranking": "libs/ranking",
     "ranking-calc": "libs/ranking-calc",
     "scripts": "apps/scripts",
     "search": "libs/search",

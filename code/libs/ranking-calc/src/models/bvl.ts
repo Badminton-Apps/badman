@@ -46,6 +46,8 @@ export class BvlRankingCalc extends RankingCalc {
     const originalStart = new Date(start);
     let gamesStartDate = this.rankingType.caluclationIntervalLastUpdate;
 
+    this._logger.log(`${gamesStartDate.toISOString()} - ${end.toISOString()}`); 
+
     // If running from start, we are reimporting evertyhing,
     // so the game points need to be caculated for those previous period
     if (options?.hasHistoricalGames) {

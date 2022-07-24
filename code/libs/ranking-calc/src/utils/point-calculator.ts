@@ -31,13 +31,13 @@ export class PointCalculator {
     };
 
     const rankingPlayer1Team1 =
-      player1Team1.rankingLastPlaces?.[0] ?? maxRanking;
+      player1Team1?.rankingLastPlaces?.[0] ?? maxRanking;
     const rankingPlayer2Team1 =
-      player2Team1.rankingLastPlaces?.[0] ?? maxRanking;
+      player2Team1?.rankingLastPlaces?.[0] ?? maxRanking;
     const rankingPlayer1Team2 =
-      player1Team2.rankingLastPlaces?.[0] ?? maxRanking;
+      player1Team2?.rankingLastPlaces?.[0] ?? maxRanking;
     const rankingPlayer2Team2 =
-      player2Team2.rankingLastPlaces?.[0] ?? maxRanking;
+      player2Team2?.rankingLastPlaces?.[0] ?? maxRanking;
 
     let pointsFrom: string;
 

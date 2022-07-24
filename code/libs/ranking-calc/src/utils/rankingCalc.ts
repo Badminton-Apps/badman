@@ -46,23 +46,6 @@ export class RankingCalc {
         );
       }
 
-      // const newWhere = {
-      //   systemId: systemId,
-      //   rankingDate: {
-      //     [Op.gte]: startingDate.toDate(),
-      //   },
-      // };
-      // const placeLastCount = await RankingLastPlace.count({ where: newWhere });
-
-      // if (placeLastCount > 0) {
-      //   const deleted = await RankingLastPlace.destroy({ where: newWhere });
-      //   this._logger.verbose(
-      //     `Truncated ${deleted} RankingLastPlace for system ${
-      //       where.systemId
-      //     } and after ${startingDate.toISOString()}`
-      //   );
-      // }
-
       const pointCount = await RankingPoint.count({ where });
       if (pointCount > 0) {
         const deleted = await RankingPoint.destroy({ where });
@@ -114,12 +97,12 @@ export class RankingCalc {
         .subtract(this.rankingType.period.amount, this.rankingType.period.unit)
         .toDate();
       const periodStop = lastPeriod.toDate();
-      const updateRankings = lastUpdateRanking.isSameOrBefore(lastPeriod);
+      const updateRankings = false; // lastUpdateRanking.isSameOrBefore(lastPeriod) ;
 
       await this.calculatePeriodAsync(
         periodStart,
         periodStop,
-        updateRankings,
+        updateRankings, 
         {}
       );
 
@@ -143,14 +126,6 @@ export class RankingCalc {
         );
       await this.rankingType.save();
     }
-
-    // await this.rankingType.save();
-
-    // for (const { start, end } of this.periods) {
-    //   await this.calculatePeriodAsync(start, end, first);
-
-    //   first = false;
-    // }
   }
 
   async calculatePeriodAsync(
@@ -159,6 +134,7 @@ export class RankingCalc {
     updateRankings: boolean,
     options: {
       transaction?: Transaction;
+      hasHistoricalGames?: boolean;
     }
   ) {
     options = {
@@ -340,7 +316,7 @@ export class RankingCalc {
     return newRanking;
   }
 
-  protected async getGamesAsync(
+  public async getGamesAsync(
     start: Date,
     end: Date,
     options?: { transaction?: Transaction; logger?: Logger }
@@ -366,7 +342,7 @@ export class RankingCalc {
       transaction: options.transaction,
     });
 
-    const subEventsC: string[] = [];
+    let subEventsC: string[] = [];
     for (const group of groups) {
       const subEvents = await group.getSubEventCompetitions({
         transaction: options.transaction,
@@ -374,20 +350,24 @@ export class RankingCalc {
       });
 
       if ((subEvents?.length ?? 0) > 0) {
-        subEventsC.concat(subEvents?.map((s) => s.id));
+        subEventsC = subEventsC.concat(subEvents?.map((s) => s.id));
       }
     }
 
-    const subEventsT: string[] = [];
+    let subEventsT: string[] = [];
     for (const group of groups) {
       const subEvents = await group.getSubEventTournaments({
         transaction: options.transaction,
         attributes: ['id'],
       });
       if ((subEvents?.length ?? 0) > 0) {
-        subEventsT.concat(subEvents?.map((s) => s.id));
+        subEventsT = subEventsT.concat(subEvents?.map((s) => s.id));
       }
     }
+
+    this._logger.debug(
+      `SubEventsC: ${subEventsC.length}, SubEventsT: ${subEventsT.length}`
+    );
 
     const gamesC = await Game.findAll({
       where,
@@ -451,7 +431,7 @@ export class RankingCalc {
     return games;
   }
 
-  protected async getPlayers(options: { transaction?: Transaction }): Promise<
+  async getPlayers(options?: { transaction?: Transaction }): Promise<
     Map<
       string,
       Player & {
@@ -469,12 +449,11 @@ export class RankingCalc {
         attributes: ['id', 'gender'],
         include: [
           {
-            required: true,
             model: RankingLastPlace,
             attributes: ['single', 'double', 'mix', 'rankingDate', 'systemId'],
             where: {
               systemId: this.rankingType.id,
-            },
+            }, 
           },
         ],
         transaction: options?.transaction,

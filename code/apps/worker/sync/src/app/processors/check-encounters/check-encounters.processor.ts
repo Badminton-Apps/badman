@@ -5,8 +5,8 @@ import {
   SubEventCompetition,
 } from '@badman/api/database';
 import { accepCookies } from '@badman/pupeteer';
-import { SyncQueue, Sync } from '@badman/queue';
-import { Process, Processor } from '@nestjs/bull';
+import { SyncQueue } from '@badman/queue';
+import { Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Browser, launch } from 'puppeteer';

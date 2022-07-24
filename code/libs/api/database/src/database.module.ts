@@ -1,6 +1,6 @@
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { Model, ModelCtor } from 'sequelize-typescript';
 import * as sequelizeModels from './models';
 import { slugifyModel } from 'sequelize-slugify';
@@ -16,18 +16,34 @@ import { Dialect } from 'sequelize';
   imports: [
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        dialect: configService.get('DB_DIALECT'),
-        host: configService.get('DB_IP'),
-        port: +configService.get('DB_PORT'),
-        username: configService.get('DB_USER'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
-        models: Object.values(sequelizeModels).filter(
-          (m) => m.prototype instanceof Model
-        ) as ModelCtor[],
-        logging: configService.get('DB_LOGGING') === 'true',
-      }),
+      useFactory: (configService: ConfigService) => {
+        let options: SequelizeModuleOptions = {
+          models: Object.values(sequelizeModels).filter(
+            (m) => m.prototype instanceof Model
+          ) as ModelCtor[],
+          logging: configService.get('DB_LOGGING') === 'true',
+        };
+
+        if (configService.get('DB_DIALECT') === 'postgres') {
+          options = {
+            ...options,
+            dialect: configService.get('DB_DIALECT'),
+            host: configService.get('DB_IP'),
+            port: +configService.get('DB_PORT'),
+            username: configService.get('DB_USER'),
+            password: configService.get('DB_PASSWORD'),
+            database: configService.get('DB_DATABASE'),
+          };
+        } else if (configService.get('DB_DIALECT') === 'sqlite') {
+          options = {
+            ...options,
+            dialect: configService.get('DB_DIALECT'),
+            storage: configService.get('DB_STORAGE'),
+          };
+        }
+
+        return options;
+      },
       inject: [ConfigService],
     }),
   ],

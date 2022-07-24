@@ -54,10 +54,10 @@ upgrade replica count (in psql.yaml) and appy:
 
 ### create DB
 
-`helm install redis --namespace badman bitnami/redis-cluster -f redis.yaml`
+`helm install redis --namespace badman bitnami/redis -f redis.yaml`
 
 upgrade replica count (in redis.yaml) and appy:
-`helm upgrade --install redis --namespace badman bitnami/redis-cluster -f redis.yaml`
+`helm upgrade --install redis --namespace badman bitnami/redis -f redis.yaml`
 
 # Email
 

@@ -25,6 +25,7 @@
       "@badman/notifications": ["libs/notifications/src/index.ts"],
       "@badman/pupeteer": ["libs/pupeteer/src/index.ts"],
       "@badman/queue": ["libs/queue/src/index.ts"],
+      "@badman/ranking": ["libs/ranking/src/index.ts"],
       "@badman/ranking-calc": ["libs/ranking-calc/src/index.ts"],
       "@badman/search": ["libs/search/src/index.ts"]
     }
