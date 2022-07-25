@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.8.2](https://github.com/Badminton-Apps/badman/compare/v5.8.1...v5.8.2) (2022-07-25)
+
+
+### Bug Fixes
+
+* redis cluster host ([38f4d3a](https://github.com/Badminton-Apps/badman/commit/38f4d3a9e3c4f9efbc4090014ccfa1393a216d95))
+
 ### [5.8.1](https://github.com/Badminton-Apps/badman/compare/v5.8.0...v5.8.1) (2022-07-25)
 
 
