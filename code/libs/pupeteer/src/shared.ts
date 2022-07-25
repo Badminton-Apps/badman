@@ -6,7 +6,7 @@ export async function waitForSelector(
   timeout: number
 ) {
   if (selector instanceof Array) {
-    let element: ElementHandle<Element> | ElementHandle<ShadowRoot> = null;
+    let element: ElementHandle<Element> = null;
     for (const part of selector) {
       if (!element) {
         element = await frame.waitForSelector(part, { timeout });
@@ -20,7 +20,7 @@ export async function waitForSelector(
         await element.evaluateHandle((el) =>
           el.shadowRoot ? el.shadowRoot : el
         )
-      ).asElement() ;
+      ).asElement() as ElementHandle<Element>;
     }
     if (!element) {
       throw new Error('Could not find element: ' + selector.join('|'));
