@@ -11969,10 +11969,10 @@ next-line@^1.1.0:
   resolved "https://registry.yarnpkg.com/next-line/-/next-line-1.1.0.tgz#fcae57853052b6a9bae8208e40dd7d3c2d304603"
   integrity sha512-+I10J3wKNoKddNxn0CNpoZ3eTZuqxjNM3b1GImVx22+ePI+Y15P8g/j3WsbP0fhzzrFzrtjOAoq5NCCucswXOQ==
 
-ngx-cookie-service@^13.2.1:
-  version "13.2.1"
-  resolved "https://registry.yarnpkg.com/ngx-cookie-service/-/ngx-cookie-service-13.2.1.tgz#4b62263b855c4d938f4f0be00ef0bff1c0b251be"
-  integrity sha512-whl7sYcSlAmPa12zoBfBeSn+9ENxRjKAzuwRPRTL6Oe/f9dtSui2lBmOgoPfSD1umiTV38JpJee9nu3WbGsgwg==
+ngx-cookie-service@^14.0.0:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-cookie-service/-/ngx-cookie-service-14.0.1.tgz#0c0f8a7ba91dbb68d3f8ad0f8808bbde4f6e55aa"
+  integrity sha512-PHjpA/bpp1ZgvQ2AWdXA6oxPQgE9k0WljQ7tvUH/u0Acl6p6akzF8kWlQiWxkgR3hBs7xB3paIsTk6GKdtakMg==
   dependencies:
     tslib "^2.0.0"
 
