@@ -139,6 +139,9 @@ jobs:
         run: |
           LATEST_TAG=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{env.LATEST_TAG}}
       - id: 'auth'
         uses: 'google-github-actions/auth@v0.8.0'
         with:
