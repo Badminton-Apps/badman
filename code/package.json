@@ -87,7 +87,7 @@
     "bull": "^4.8.3",
     "class-validator": "^0.13.2",
     "cookieconsent": "^3.1.1",
-    "cronstrue": "^1.125.0",
+    "cronstrue": "^2.0.0",
     "echarts": "^5.3.3",
     "elastic-apm-node": "^3.35.0",
     "fast-xml-parser": "^4.0.8",
