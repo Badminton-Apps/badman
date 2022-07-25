@@ -100,7 +100,7 @@
     "moment-timezone": "^0.5.34",
     "ngx-cookie-service": "^14.0.0",
     "ngx-cookieconsent": "^2.2.3",
-    "ngx-infinite-scroll": "^13.1.0",
+    "ngx-infinite-scroll": "^14.0.0",
     "ngx-markdown": "^14.0.0",
     "ngx-moment": "^6.0.2",
     "ngx-socket-io": "^4.3.0",
