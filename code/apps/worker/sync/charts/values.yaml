@@ -51,6 +51,23 @@ env:
       secretKeyRef:
         name: server-postgresql-ha-postgresql
         key: postgresql-password
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: server-postgresql-ha-postgresql
+        key: postgresql-password
+  - name: VR_API_USER
+    valueFrom:
+      secretKeyRef:
+        name: visual-reality
+        key: user
+  - name: VR_API_PASS
+    valueFrom:
+      secretKeyRef:
+        name: visual-reality
+        key: pass
+  - name: VR_API
+    value: https://api.tournamentsoftware.com/1.0
   - name: DB_USER
     value: postgres
   - name: DB_DATABASE

@@ -72,3 +72,7 @@ upgrade replica count (in redis.yaml) and appy:
 `helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.8.2 --set installCRDs=true --set global.leaderElection.namespace=cert-manager`
 
 `kubectl apply -f /k8s/ingress/issuer-staging.yaml`
+
+# Visual Reality secrets
+
+`kubectl create secret generic visual-reality --from-literal=user="<user>" --from-literal=pass="<password>" --namespace badman`
