@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.10.2](https://github.com/Badminton-Apps/badman/compare/v5.10.1...v5.10.2) (2022-07-25)
+
+
+### Bug Fixes
+
+* **worker-sync:** should include the visual reality stuff if I want to use them ([388ad47](https://github.com/Badminton-Apps/badman/commit/388ad47288c419c59159d71bc52b6e51734b44de))
+
 ### [5.10.1](https://github.com/Badminton-Apps/badman/compare/v5.10.0...v5.10.1) (2022-07-25)
 
 
