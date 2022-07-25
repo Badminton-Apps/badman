@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.8.1](https://github.com/Badminton-Apps/badman/compare/v5.8.0...v5.8.1) (2022-07-25)
+
+
+### Bug Fixes
+
+* **ci:** update version in chart ([be88a77](https://github.com/Badminton-Apps/badman/commit/be88a77269660180f0288e42d327fbece85bd65c))
+* manually setting the version ([2110a01](https://github.com/Badminton-Apps/badman/commit/2110a019857a46c12a686c62884e4f94c232b8e9))
+
 ## [5.8.0](https://github.com/Badminton-Apps/badman/compare/v5.7.0...v5.8.0) (2022-07-25)
 
 
