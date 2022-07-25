@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.9.1](https://github.com/Badminton-Apps/badman/compare/v5.9.0...v5.9.1) (2022-07-25)
+
+
+### Bug Fixes
+
+* **ci:** checkout tag ([42df6b3](https://github.com/Badminton-Apps/badman/commit/42df6b350a353c0fe1ee947354be8b4070c782d9))
+* use redis master ([df7abfe](https://github.com/Badminton-Apps/badman/commit/df7abfecc63d92e60cd01893935a78f65a16b070))
+
 ## [5.9.0](https://github.com/Badminton-Apps/badman/compare/v5.8.2...v5.9.0) (2022-07-25)
 
 
