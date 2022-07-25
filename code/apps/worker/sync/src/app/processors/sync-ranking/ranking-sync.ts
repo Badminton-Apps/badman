@@ -80,10 +80,9 @@ export class RankingSyncer {
           transaction: args.transaction,
         });
 
-        const lastDate = await RankingPlace.max('rankingDate', {
-          transaction: args.transaction,
-          where: { systemId: system.id },
-        });
+
+        // Default sync 1 week
+        const lastDate = moment().subtract(1, 'week');
 
         return {
           stop: system == null,

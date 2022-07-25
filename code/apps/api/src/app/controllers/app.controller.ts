@@ -25,74 +25,11 @@ export class AppController {
     private cpGen: CpGeneratorService
   ) {}
 
-  @Get('event')
-  async socketTest(): Promise<string> {
-    const game = await Game.findByPk('ea427354-39ed-462c-ae00-dc0cc2dacd3e');
-    game.set1Team1 = 99;
-    this.gateway.server.emit('game:game_updated', game.toJSON());
-    return 'Hello World!';
-  }
-
-  @Get('queue-sim')
-  async getQueueSim() {
-    // 
-    this.rankingSim.add(
-      Simulation.StartV2,
-      {
-        systemId: '8f660b40-bc31-47d1-af36-f713c37467fd',
-        calcDate: '2022-07-03 22:00:00+00',
-        periods: 1,
-      } as SimulationV2Job,
-      {
-        removeOnComplete: true,
-      }
-    );
-
-    // 
-    this.rankingSim.add(
-      Simulation.StartV2,
-      {
-        systemId: 'c6d33db8-a688-42f6-ae9e-f4516d30fd3f',
-        calcDate: '2022-07-03 22:00:00+00',
-        periods: 1,
-      } as SimulationV2Job,
-      {
-        removeOnComplete: true,
-      }
-    );
-    // 
-    this.rankingSim.add(
-      Simulation.StartV2,
-      {
-        systemId: 'e6e4c0a8-8403-4ad6-9d0c-f56bd7bdf553',
-        calcDate: '2022-07-03 22:00:00+00',
-        periods: 1,
-      } as SimulationV2Job,
-      {
-        removeOnComplete: true,
-      }
-    );
-
-    // DONE
-    // // 52 weeks - last 25 - 70% up - 30% down
-    // return this.rankingSim.add(
-    //   Simulation.StartV2,
-    //   {
-    //     systemId: '33c447df-b32d-4981-b515-22f37a22a326',
-    //     calcDate: '2022-07-03 22:00:00+00',
-    //     periods: 1,
-    //   } as SimulationV2Job,
-    //   {
-    //     removeOnComplete: true,
-    //   }
-    // );
-  }
-
   @Get('queue-sync')
-  getQueueSync() {
+  getQueueSync(@Query() { date }: { date: string }) {
     return this.rankingSync.add(
       Sync.SyncEvents,
-      { date: '2022-07-10', skip: ['tournament'] },
+      { date },
       { removeOnComplete: true }
     );
   }
