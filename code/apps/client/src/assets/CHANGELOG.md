@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.8.0](https://github.com/Badminton-Apps/badman/compare/v5.7.0...v5.8.0) (2022-07-25)
+
+
+### Features
+
+* **client:** calendar first draft of including both teams ([9b9d254](https://github.com/Badminton-Apps/badman/commit/9b9d254f392c62ea118253fa5396dd5969705135))
+* **client:** enabeling change encounter only for admins ([673c9d8](https://github.com/Badminton-Apps/badman/commit/673c9d83e321ec14b71b313e82f76175342f5f4d))
+* **client:** include version into app ([c3794cf](https://github.com/Badminton-Apps/badman/commit/c3794cf2bf9a58d9d6218bf0391f556e9453a175))
+* **worker-ranking:** reworked ranking (and thus simulations) in new services ([4c2ebfd](https://github.com/Badminton-Apps/badman/commit/4c2ebfdb036c1eea22f85a7c6df653dae2fba8c8))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @angular-material-extensions/google-maps-autocomplete to v8 ([862c0bf](https://github.com/Badminton-Apps/badman/commit/862c0bf7eeb96c2b7e16608c028c644b7212eee3))
+* **deps:** update dependency cronstrue to v2 ([42c1fc1](https://github.com/Badminton-Apps/badman/commit/42c1fc1a69b67e7163e1ec57a12128f9bd8b7a80))
+* **deps:** update dependency ngx-cookie-service to v14 ([03a72cd](https://github.com/Badminton-Apps/badman/commit/03a72cd372873d5c74cd1b9fffef0bbe9c4e5637))
+* **deps:** update dependency ngx-markdown to v14 ([7baed3d](https://github.com/Badminton-Apps/badman/commit/7baed3d9467482f12a4b281040bd14c3b4088a27))
+* **deps:** update dependency puppeteer to v15 ([8603dd5](https://github.com/Badminton-Apps/badman/commit/8603dd5e071605e6ec82e95bf5591b4e8ecef950))
+* **deps:** update SocketIio to compatible version ([742f2eb](https://github.com/Badminton-Apps/badman/commit/742f2eb16efca2577aa1fd0bdd2733c0ad7a73b7))
+* **lib-pupeteer:** updated typing for new version ([468d9b2](https://github.com/Badminton-Apps/badman/commit/468d9b21b7decf0c821325c7edb7d6bd16d01fc1))
+
 ## [5.7.0](https://github.com/Badminton-Apps/badman/compare/v5.6.0...v5.7.0) (2022-07-18)
 
 
