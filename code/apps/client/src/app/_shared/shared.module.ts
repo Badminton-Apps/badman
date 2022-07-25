@@ -22,7 +22,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 import { MomentModule } from 'ngx-moment';
 import {
   BannerComponent,
@@ -113,7 +112,6 @@ const exportedComponents = [
   imports: [
     RouterModule,
     CommonModule,
-    NgcCookieConsentModule,
     FlexLayoutModule,
     TranslateModule.forChild(),
     ...materialModules,

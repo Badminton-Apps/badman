@@ -13,6 +13,7 @@ module.exports = {
         '*',
         'docs',
         'ci',
+        'deps',
         ...(
           await getProjects(
             ctx,
