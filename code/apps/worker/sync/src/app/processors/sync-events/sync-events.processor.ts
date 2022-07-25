@@ -45,7 +45,6 @@ export class SyncEventsProcessor {
       limit: number;
     }>
   ) {
-    throw new Error('Not implemented');
     const newDate = moment(job.data?.date);
     let newEvents = await this.visualService.getChangeEvents(newDate);
 
