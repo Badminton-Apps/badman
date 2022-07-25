@@ -172,6 +172,9 @@ export class VisualService {
     )}/Tournament?list=1&refdate=${date.format(
       'YYYY-MM-DD'
     )}&pagesize=${pageSize}&pageno=${page}`;
+
+    VisualService.logger.debug(`Getting changes from ${url}, user: ${this.configService.get('VR_USER')}, pass: ${this.configService.get('VR_PASS')}`);
+
     const result = await axios.get(url, {
       withCredentials: true,
       auth: {
