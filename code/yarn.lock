@@ -237,12 +237,12 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular-material-extensions/google-maps-autocomplete@^6.2.2":
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/@angular-material-extensions/google-maps-autocomplete/-/google-maps-autocomplete-6.2.2.tgz#3aaff985f1b4b4683d3febc7a853515ea1ef4f31"
-  integrity sha512-lDgV7YOD0XwUcqfW+iw3t2e/FYq/7Z28ImvDi+LxDRoiK1WbVpvqGHm+zz8270NSZcKNMgeu8pEbgiuJAjUXtg==
+"@angular-material-extensions/google-maps-autocomplete@^8.0.0":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@angular-material-extensions/google-maps-autocomplete/-/google-maps-autocomplete-8.1.1.tgz#e26507bc4983e2c849e7d9d9ef8f94d8fc5177d3"
+  integrity sha512-Mwrt3BsvdE8372EQiFXeFMVi+LYSIHs9OPHJX3LO7SIvpFSRRj3VRHdJ6ECzKsgbr36yYNyMEnZV/7FIyoPUVw==
   dependencies:
-    tslib "^2.2.0"
+    tslib "^2.3.0"
 
 "@angular/animations@^14.0.0":
   version "14.0.6"
@@ -15094,7 +15094,7 @@ tslib@2.3.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
   integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
-tslib@2.4.0, tslib@^2, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0:
+tslib@2.4.0, tslib@^2, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
