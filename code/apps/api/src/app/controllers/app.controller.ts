@@ -1,12 +1,5 @@
-import { Game } from '@badman/api/database';
 import { CpGeneratorService } from '@badman/api/generator';
-import {
-  Simulation,
-  SimulationQueue,
-  Sync,
-  SyncQueue,
-  SimulationV2Job,
-} from '@badman/queue';
+import { SimulationQueue, Sync, SyncQueue } from '@badman/queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
 import { Queue } from 'bull';
