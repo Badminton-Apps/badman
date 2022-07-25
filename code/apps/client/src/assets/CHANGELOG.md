@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.9.0](https://github.com/Badminton-Apps/badman/compare/v5.8.2...v5.9.0) (2022-07-25)
+
+
+### Features
+
+* **api:** allowing sync from controller ([cd06511](https://github.com/Badminton-Apps/badman/commit/cd06511a0c2eec96dfa413ebca995447fed2bbfa))
+
 ### [5.8.2](https://github.com/Badminton-Apps/badman/compare/v5.8.1...v5.8.2) (2022-07-25)
 
 
