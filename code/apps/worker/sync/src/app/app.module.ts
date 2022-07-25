@@ -10,11 +10,14 @@ import {
   CheckEncounterProcessor,
   SyncEventsProcessor,
   SyncRankingProcessor,
+  GlobalConsumer,
 } from './processors';
 import { VisualService } from './services';
 
 @Module({
   providers: [
+    GlobalConsumer, 
+    
     SyncDateProcessor,
     SyncRankingProcessor,
     SyncEventsProcessor,

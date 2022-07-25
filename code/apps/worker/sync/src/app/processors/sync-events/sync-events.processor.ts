@@ -2,12 +2,12 @@ import { Sync, SyncQueue } from '@badman/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
-import moment = require('moment');
 import { Sequelize } from 'sequelize-typescript';
 import { VisualService } from '../../services';
 import { XmlTournamentTypeID } from '../../utils';
 import { CompetitionSyncer } from './competition-sync';
 import { TournamentSyncer } from './tournament-sync';
+import moment = require('moment');
 
 @Processor({
   name: SyncQueue,
@@ -45,6 +45,7 @@ export class SyncEventsProcessor {
       limit: number;
     }>
   ) {
+    throw new Error('Not implemented');
     const newDate = moment(job.data?.date);
     let newEvents = await this.visualService.getChangeEvents(newDate);
 
