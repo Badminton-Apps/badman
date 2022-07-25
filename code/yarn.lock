@@ -12009,7 +12009,7 @@ ngx-moment@^6.0.2:
   dependencies:
     tslib "^2.3.0"
 
-ngx-socket-io@^4.2.0:
+ngx-socket-io@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/ngx-socket-io/-/ngx-socket-io-4.3.0.tgz#fe64d0d7fedc41e0d046d721e8fa925129e3db6d"
   integrity sha512-H9JG1ePQZI9QnrlfniaR5ghOKvLWCqYoPM9+7zz8EpW9fEXiJJPB9Y/EKFJtoMMlrSM4+D9hXxuvyZXZPFNWPg==

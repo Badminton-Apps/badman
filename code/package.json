@@ -103,7 +103,7 @@
     "ngx-infinite-scroll": "^13.1.0",
     "ngx-markdown": "^14.0.0",
     "ngx-moment": "^6.0.2",
-    "ngx-socket-io": "^4.2.0",
+    "ngx-socket-io": "^4.3.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "pg": "^8.7.3",
