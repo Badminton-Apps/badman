@@ -32,7 +32,7 @@
       <span class="viewing">{{ this.rankingPlace?.[this.type!] }}</span>
       <span>
         <span class="viewing">➔</span>
-        {{ this.viewingRankingPlace?.[this.type!] }}
+        {{ this.viewingRankingPlace[this.type!] }}
       </span>
       <mat-icon
         *ngIf="this.viewingRankingPlace?.[this.type + 'Inactive']"
@@ -50,7 +50,7 @@
       >
       <span>
         <span class="viewing">➔</span>
-        {{ this.viewingRankingPlace?.[this.type + 'Points'] }}
+        {{ this.viewingRankingPlace[this.type + 'Points'] }}
       </span>
     </ng-container>
 
