@@ -1,10 +1,10 @@
 <div
   role="group"
   class="app-date-selector-container"
-  [attr.aria-labelledby]="_formField?.getLabelId()"
+  [attr.aria-labelledby]="_formField.getLabelId()"
   (focusin)="onFocusIn()"
   (focusout)="onFocusOut($event)"
   (click)="onClick()"
 >
-  {{ dateControl?.value | amDateFormat: 'llll' }}
+  {{ dateControl.value | amDateFormat: 'llll' }}
 </div>

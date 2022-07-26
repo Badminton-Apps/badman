@@ -11,15 +11,15 @@
         <mat-icon>chevron_right</mat-icon>
       </button>
       <div>
-        {{ monthNames[firstDayOfMonth?.get('month') ?? 0] | titlecase }}
-        {{ firstDayOfMonth?.get('year') ?? 0 }}
+        {{ monthNames[firstDayOfMonth.get('month')] | titlecase }}
+        {{ firstDayOfMonth.get('year') }}
       </div>
     </div>
     <div class="locations" fxLayoutAlign="center center">
       <mat-chip-list aria-label="Locatin selection">
         <mat-chip *ngFor="let loc of locations | keyvalue">
           <mat-chip-avatar>{{ loc.key }}</mat-chip-avatar>
-          {{ loc.value?.name }}</mat-chip
+          {{ loc.value.name }}</mat-chip
         >
       </mat-chip-list>
     </div>

@@ -2,7 +2,7 @@
   role="group"
   class="badman-time-picker-input-container"
   [formGroup]="parts"
-  [attr.aria-labelledby]="_formField?.getLabelId()"
+  [attr.aria-labelledby]="_formField.getLabelId()"
   (focusin)="onFocusIn($event)"
   (focusout)="onFocusOut($event)"
 >

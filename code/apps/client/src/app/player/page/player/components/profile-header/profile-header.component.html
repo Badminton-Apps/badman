@@ -56,8 +56,8 @@
         fxLayoutGap="3px"
       >
         <div *ngIf="this.player.club">
-          <a [routerLink]="['/', 'club', this.player.club?.slug]">{{
-            this.player.club?.name
+          <a [routerLink]="['/', 'club', this.player.club.slug]">{{
+            this.player.club.name
           }}</a>
           <span fxHide.lt-md> - </span>
         </div>
