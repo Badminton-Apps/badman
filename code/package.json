@@ -165,7 +165,7 @@
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
-    "chalk": "^4.0.0",
+    "chalk": "^5.0.0",
     "codelyzer": "^6.0.2",
     "conventional-changelog": "^3.1.25",
     "cypress": "^9.7.0",
