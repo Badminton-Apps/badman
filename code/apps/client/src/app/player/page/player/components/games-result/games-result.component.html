@@ -3,11 +3,11 @@
     <a
       [routerLink]="[
         '/competition',
-        this.competition?.drawCompetition?.subEventCompetition?.eventCompetition
+        this.competition.drawCompetition?.subEventCompetition?.eventCompetition
           ?.slug
       ]"
       >{{
-        this.competition?.drawCompetition?.subEventCompetition?.eventCompetition
+        this.competition.drawCompetition?.subEventCompetition?.eventCompetition
           ?.name
       }}</a
     >
@@ -17,9 +17,9 @@
     <a
       [routerLink]="[
         '/tournament',
-        this.tournament?.subEventTournament?.eventTournament?.slug
+        this.tournament.subEventTournament?.eventTournament?.slug
       ]"
-      >{{ this.tournament?.subEventTournament?.eventTournament?.name }}</a
+      >{{ this.tournament.subEventTournament?.eventTournament?.name }}</a
     >
   </ng-container>
 </div>
