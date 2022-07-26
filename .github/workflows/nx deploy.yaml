@@ -195,6 +195,7 @@ jobs:
         with:
           path: "./code/node_modules"
           key: node-modules-${{ hashFiles('code/package.json') }}
+      - run: yarn install --frozen-lockfile --prefer-offline
       - run: npx nx affected --target=build --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx affected --target=docker --base=${{ needs.base.outputs.base }} --head=origin/main
         env:
