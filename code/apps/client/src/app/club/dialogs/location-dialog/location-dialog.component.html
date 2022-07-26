@@ -35,7 +35,7 @@
       mat-raised-button
       color="primary"
       *ngIf="!location.id"
-      [disabled]="!this.data.location?.name"
+      [disabled]="!this.data.location.name"
       (click)="this.create()"
     >
       {{ 'button.create' | translate }}
