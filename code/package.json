@@ -151,7 +151,7 @@
     "@types/cron": "^2.0.0",
     "@types/elastic-apm-node": "^2.7.0",
     "@types/googlemaps": "3.43.3",
-    "@types/jasmine": "^3.10.6",
+    "@types/jasmine": "^4.0.0",
     "@types/jasminewd2": "^2.0.10",
     "@types/jest": "27.5.2",
     "@types/node": "^18.0.3",
