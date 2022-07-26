@@ -1,5 +1,17 @@
 auth:
   existingSecret: server-redis
   existingSecretPasswordKey: redis-password
+
+master:
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+      ephemeral-storage: "2Gi"
 replica:
   replicaCount: 1
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+      ephemeral-storage: "2Gi"
