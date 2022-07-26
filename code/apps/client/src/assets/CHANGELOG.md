@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.10.4](https://github.com/Badminton-Apps/badman/compare/v5.10.3...v5.10.4) (2022-07-26)
+
+
+### Bug Fixes
+
+* **ci:** adding changelogs again ([002e49c](https://github.com/Badminton-Apps/badman/commit/002e49c086d3f685089043f9e966f2b3ca010b5b))
+* **ci:** agents needs base ([045b4e2](https://github.com/Badminton-Apps/badman/commit/045b4e21997f4aab2d41b06aeb3c66285b2e48ba))
+* **ci:** jest needs some magic for uuid ([76b5ba5](https://github.com/Badminton-Apps/badman/commit/76b5ba5e41175afd96877350ee2cf549b93f5636))
+* **deps:** update dependency @angular-material-components/datetime-picker to v8 ([bfc1955](https://github.com/Badminton-Apps/badman/commit/bfc1955f387aef81089cdbec69d6100b93c993bc))
+* **deps:** update dependency @angular-material-components/moment-adapter to v8 ([f645010](https://github.com/Badminton-Apps/badman/commit/f6450107a0aafaffd42f54370b781278b8589304))
+* **deps:** update dependency @nestjs/schedule to v2 ([e2500b5](https://github.com/Badminton-Apps/badman/commit/e2500b54224435f7f66d831b1e08a0cd069b2c9b))
+* **deps:** update dependency @nestjs/sequelize to v9 ([a92a81d](https://github.com/Badminton-Apps/badman/commit/a92a81df553df7797f66e08eb7f3a4eaa483d7ff))
+* **deps:** update dependency graphql to v16 ([8f3aa70](https://github.com/Badminton-Apps/badman/commit/8f3aa70461e3c926fdfc4011b206e640ec5cc2e0))
+* **deps:** update dependency ngx-infinite-scroll to v14 ([f6b8f1a](https://github.com/Badminton-Apps/badman/commit/f6b8f1ad4a99b52295439344320b163e9feca9f0))
+* **deps:** update nrwl monorepo to v14.4.3 ([4fc5697](https://github.com/Badminton-Apps/badman/commit/4fc5697df09e6f2663ed29b79501b4d71be23896))
+* lowering request of nodes ([5488efa](https://github.com/Badminton-Apps/badman/commit/5488efaf8d25d07055d4bb4d8cf2f3d7197c8e34))
+
 ### [5.10.3](https://github.com/Badminton-Apps/badman/compare/v5.10.2...v5.10.3) (2022-07-25)
 
 ### [5.10.2](https://github.com/Badminton-Apps/badman/compare/v5.10.1...v5.10.2) (2022-07-25)
