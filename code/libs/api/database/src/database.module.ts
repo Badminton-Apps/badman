@@ -42,6 +42,8 @@ import { Dialect } from 'sequelize';
           };
         }
 
+        Logger.log(`DB_DIALECT: ${configService.get('DB_DIALECT')}`);
+
         return options;
       },
       inject: [ConfigService],
