@@ -35,8 +35,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '17.9.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+      - name : Cache
+        uses: actions/cache@v2
+        with:
+          path: "./code/node_modules"
+          key: node-modules-${{ hashFiles('code/package.json') }}
       - run: yarn install --frozen-lockfile --prefer-offline
 
   agents:
@@ -55,8 +58,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '17.9.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+      - name : Cache
+        uses: actions/cache@v2
+        with:
+          path: "./code/node_modules"
+          key: node-modules-${{ hashFiles('code/package.json') }}
       - run: yarn install --frozen-lockfile --prefer-offline
       - name: Start Nx Agent ${{ matrix.agent }}
         run: npx nx-cloud start-agent
@@ -76,8 +82,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '17.9.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+      - name : Cache
+        uses: actions/cache@v2
+        with:
+          path: "./code/node_modules"
+          key: node-modules-${{ hashFiles('code/package.json') }}
       - run: yarn install --frozen-lockfile --prefer-offline
       - run: npx nx-cloud start-ci-run
       - run: npx nx affected --target=build --base=${{ needs.base.outputs.base }} --head=origin/main
@@ -118,8 +127,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '17.9.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+      - name : Cache
+        uses: actions/cache@v2
+        with:
+          path: "./code/node_modules"
+          key: node-modules-${{ hashFiles('code/package.json') }}
       - run: yarn install --frozen-lockfile --prefer-offline
       - run: npx nx-cloud start-ci-run
       - run: npx nx affected --target=build --base=${{ needs.base.outputs.base }} --head=origin/main
@@ -175,10 +187,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: c-hive/gha-yarn-cache@v2
+      - uses: actions/setup-node@v2
         with:
-          directory: ./code
-      - run: yarn install --frozen-lockfile
+          node-version: '17.9.0'
+      - name : Cache
+        uses: actions/cache@v2
+        with:
+          path: "./code/node_modules"
+          key: node-modules-${{ hashFiles('code/package.json') }}
       - run: npx nx affected --target=build --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx affected --target=docker --base=${{ needs.base.outputs.base }} --head=origin/main
         env:
