@@ -36,6 +36,7 @@ jobs:
         with:
           node-version: '17.9.0'
           cache: 'yarn'
+          cache-dependency-path: code/yarn.lock
 
   agents:
     name: Agent ${{ matrix.agent }}
@@ -53,6 +54,7 @@ jobs:
         with:
           node-version: '17.9.0'
           cache: 'yarn'
+          cache-dependency-path: code/yarn.lock
       - run: yarn install --frozen-lockfile --prefer-offline
       - name: Start Nx Agent ${{ matrix.agent }}
         run: npx nx-cloud start-agent
@@ -73,6 +75,7 @@ jobs:
         with:
           node-version: '17.9.0'
           cache: 'yarn'
+          cache-dependency-path: code/yarn.lock
       - run: yarn install --frozen-lockfile --prefer-offline
       - run: npx nx-cloud start-ci-run
       - run: npx nx affected --target=build --base=${{ needs.base.outputs.base }} --head=origin/main
@@ -114,6 +117,7 @@ jobs:
         with:
           node-version: '17.9.0'
           cache: 'yarn'
+          cache-dependency-path: code/yarn.lock
       - run: yarn install --frozen-lockfile --prefer-offline
       - run: npx nx-cloud start-ci-run
       - run: npx nx affected --target=build --base=${{ needs.base.outputs.base }} --head=origin/main
