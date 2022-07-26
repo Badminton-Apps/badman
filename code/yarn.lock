@@ -12184,10 +12184,10 @@ ngx-cookieconsent@^2.2.3:
   resolved "https://registry.yarnpkg.com/ngx-cookieconsent/-/ngx-cookieconsent-2.2.3.tgz#52b44f37557b74841cd332905c94b72bb29fdd82"
   integrity sha512-vg7M4XZSTFRAQq20M0YVJdz5OkXIu0t0MSYos0vvu7oblaEivQstA1Mg5bO7OJYp+oFoTEefWhvO2nCiyHn9SQ==
 
-ngx-infinite-scroll@^13.1.0:
-  version "13.1.0"
-  resolved "https://registry.yarnpkg.com/ngx-infinite-scroll/-/ngx-infinite-scroll-13.1.0.tgz#68e7a6c4101a30328d48fa43a85894d019097a4f"
-  integrity sha512-9KAP62uJBAcVH6ZsmVCBORMLn6k+xwn8/LwEQqKq/ciWt1Bu2zRqxUhB9MDyT7dfStny7RTRU7neIA6LrnprDQ==
+ngx-infinite-scroll@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-infinite-scroll/-/ngx-infinite-scroll-14.0.0.tgz#395b15be5f451c3e3d2ad7ce2aeb66f8c66aba5d"
+  integrity sha512-YZB5PBPXSERNtCGQRZTVflbgkh5asp01NPfC8KPItemmQik1Ip8ZCCbcyHA77TDTdilmaiu8TbguA3geg/LMWw==
   dependencies:
     tslib "^2.3.0"
 
