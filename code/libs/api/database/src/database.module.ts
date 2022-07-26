@@ -11,7 +11,6 @@ import {
   Player,
   Team,
 } from './models';
-import { Dialect } from 'sequelize';
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
@@ -25,6 +24,8 @@ import { Dialect } from 'sequelize';
         };
 
         if (configService.get('DB_DIALECT') === 'postgres') {
+          require('pg');
+
           options = {
             ...options,
             dialect: configService.get('DB_DIALECT'),
@@ -52,13 +53,6 @@ import { Dialect } from 'sequelize';
 })
 export class DatabaseModule implements OnModuleInit {
   private readonly logger = new Logger(DatabaseModule.name);
-
-  constructor() {
-    if (process.env.DB_DIALECT as Dialect) {
-      require('pg');
-    }
-  }
-
   onModuleInit() {
     this.logger.debug('initialize addons');
     slugifyModel(Player as unknown as Model, {
