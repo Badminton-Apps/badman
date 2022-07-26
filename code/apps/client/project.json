@@ -105,7 +105,9 @@
               "with": "apps/client/src/environments/environment.prod.ts"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "serviceWorker": true,
+          "ngswConfigPath": "ngsw-config.json"
         },
         "development": {
           "buildOptimizer": false,
