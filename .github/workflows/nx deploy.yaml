@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: '17.9.0'
       - name : Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: "./code/node_modules"
           key: node-modules-${{ hashFiles('code/package.json') }}
@@ -59,7 +59,7 @@ jobs:
         with:
           node-version: '17.9.0'
       - name : Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: "./code/node_modules"
           key: node-modules-${{ hashFiles('code/package.json') }}
@@ -83,7 +83,7 @@ jobs:
         with:
           node-version: '17.9.0'
       - name : Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: "./code/node_modules"
           key: node-modules-${{ hashFiles('code/package.json') }}
@@ -128,7 +128,7 @@ jobs:
         with:
           node-version: '17.9.0'
       - name : Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: "./code/node_modules"
           key: node-modules-${{ hashFiles('code/package.json') }}
@@ -191,7 +191,7 @@ jobs:
         with:
           node-version: '17.9.0'
       - name : Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: "./code/node_modules"
           key: node-modules-${{ hashFiles('code/package.json') }}
