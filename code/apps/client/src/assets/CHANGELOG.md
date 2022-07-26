@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.10.6](https://github.com/Badminton-Apps/badman/compare/v5.10.5...v5.10.6) (2022-07-26)
+
+
+### Bug Fixes
+
+* **lib-api-database:** adding `pg` req in factory ([26f78d5](https://github.com/Badminton-Apps/badman/commit/26f78d51797539cfaf70aab8a4945588c20d015b))
+
 ### [5.10.5](https://github.com/Badminton-Apps/badman/compare/v5.10.4...v5.10.5) (2022-07-26)
 
 
