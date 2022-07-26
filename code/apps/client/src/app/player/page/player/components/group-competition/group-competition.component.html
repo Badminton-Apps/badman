@@ -4,7 +4,7 @@
     [routerLink]="[
       '/competition',
       this.subEvent?.eventCompetition?.slug,
-      encounter?.drawId,
+      encounter.drawId,
       encounter.id
     ]"
   >
@@ -36,10 +36,10 @@
         [routerLink]="[
           '/competition',
           this.subEvent?.eventCompetition?.slug,
-          encounter?.drawId
+          encounter.drawId
         ]"
       >
-        {{ encounter?.drawCompetition?.name }}</a
+        {{ encounter.drawCompetition?.name }}</a
       >
     </span>
     <span class="spacer">-</span>
