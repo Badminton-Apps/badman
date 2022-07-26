@@ -11,10 +11,12 @@ import { SearchModule } from '@badman/search';
 import { EventsModule } from './events';
 import { PdfService } from './services';
 import { HealthModule } from '@badman/health';
+import { HandlebarModule } from '@badman/handlebar';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    HandlebarModule,
     GeneratorModule,
     DatabaseModule,
     ApiGrapqhlModule,
