@@ -13,6 +13,11 @@ service:
   internalPort: 80
   externalPort: 80
 
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+
 autoscaling:
   enabled: false
   minReplicas: 1
