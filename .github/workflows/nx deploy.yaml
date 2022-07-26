@@ -72,7 +72,7 @@ jobs:
       run:
         working-directory: ./code
     runs-on: ubuntu-latest
-    needs: agents
+    needs: base
     if: ${{ github.event_name != 'pull_request' }}
     steps:
       - name: Checkout [main]
@@ -117,7 +117,7 @@ jobs:
       run:
         working-directory: ./code
     if: ${{ github.event_name == 'pull_request' }}
-    needs: agents
+    needs: base
     steps:
       - name: Checkout [pr]
         uses: actions/checkout@v3
