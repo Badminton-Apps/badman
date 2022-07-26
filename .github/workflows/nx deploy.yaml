@@ -37,6 +37,7 @@ jobs:
           node-version: '17.9.0'
           cache: 'yarn'
           cache-dependency-path: code/yarn.lock
+      - run: yarn install --frozen-lockfile --prefer-offline
 
   agents:
     name: Agent ${{ matrix.agent }}
