@@ -24,9 +24,9 @@ const conventionalChangelog = require('conventional-changelog');
     const currentBranch = branchExec.stdout.trim();
 
     // generate the full changelog
-    // const changelog = await extractChangelogEntry({ version: newVersion });
-    // core.info(`changelog: ${changelog}`);
-    // core.exportVariable('changelog', changelog);
+    const changelog = await extractChangelogEntry({ version: newVersion });
+    core.info(`changelog: ${changelog}`);
+    core.exportVariable('changelog', changelog);
 
     await standardVersion({
       infile: 'apps/client/src/assets/CHANGELOG.md',
