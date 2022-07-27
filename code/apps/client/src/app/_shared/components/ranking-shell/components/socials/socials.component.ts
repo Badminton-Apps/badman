@@ -7,6 +7,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SocialsComponent {
-  discord = 'https://discord.gg/dWMHrRrEgb';
+  discord = 'https://discord.gg/gEYj93Bnyy';
   github = 'https://github.com/Badminton-Apps/badman';
 }
