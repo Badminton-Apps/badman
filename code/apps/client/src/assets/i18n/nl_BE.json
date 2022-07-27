@@ -122,7 +122,8 @@
         "remaining": "nog {{amount}} mogelijk",
         "requested": "Voorstel",
         "removed": "Wordt verplaatst",
-        "option": "{{amount}} in optie"
+        "option": "{{amount}} in optie",
+        "other-games": "Andere partijen die dag"
       },
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "submit": {

@@ -194,7 +194,7 @@
           </div>
         </div>
 
-        <small *ngIf="row.otherEvents.length > 0">Other games</small>
+        <small *ngIf="row.otherEvents.length > 0">{{'competition.change-encounter.calendar.other-games' | translate}}</small>
         <div
           *ngFor="let calEvent of row.otherEvents"
           fxLayout="column"
