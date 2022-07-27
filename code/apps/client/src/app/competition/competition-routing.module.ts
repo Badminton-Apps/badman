@@ -4,9 +4,9 @@ import { AuthGuard } from '../_shared';
 import {
   DetailCompetitionComponent,
   DetailDrawCompetitionComponent,
+  DetailEncounterComponent,
   EditEventCompetitionComponent,
 } from './pages';
-import { DetailEncounterComponent } from './pages/detail-encounter/detail-encounter.component';
 
 const routes: Routes = [
   {
