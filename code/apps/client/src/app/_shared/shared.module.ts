@@ -41,6 +41,7 @@ import {
 } from './components';
 import { AssignRankingGroupsComponent } from './dialogs';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
+import { SocialsComponent } from './components/ranking-shell/components/socials/socials.component';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -108,6 +109,7 @@ const exportedComponents = [
     AssignRankingGroupsComponent,
     WatchSystemInfoComponent,
     TimePickerInputComponent,
+    SocialsComponent,
   ],
   imports: [
     RouterModule,
