@@ -76,7 +76,7 @@ env:
   - name: AUTH0_AUDIENCE
     value: ranking-simulation
   - name: CLIENT_URL
-    value: beta.badman.app
+    value: badman.app
   - name: MAIL_PASS
     valueFrom:
       secretKeyRef:
