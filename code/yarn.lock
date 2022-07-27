@@ -377,10 +377,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/flex-layout@^13.0.0-beta.38":
-  version "13.0.0-beta.38"
-  resolved "https://registry.yarnpkg.com/@angular/flex-layout/-/flex-layout-13.0.0-beta.38.tgz#b0993a255ba51d2cfd16537ba8a8d88c3adf6587"
-  integrity sha512-kcWb7CcoHbvw7fjo/knizWVmSSmvaTnr8v1ML6zOdxu1PK9UPPOcOS8RTm6fy61zoC2LABivP1/6Z2jF5XfpdQ==
+"@angular/flex-layout@^14.0.0-beta.40":
+  version "14.0.0-beta.40"
+  resolved "https://registry.yarnpkg.com/@angular/flex-layout/-/flex-layout-14.0.0-beta.40.tgz#ec3c09389f5ae277d09aebcb2a0c8bf7c1329967"
+  integrity sha512-lYi2BKovNk5u2wmj/AMIMqfUzCBEt99Wu/Gfa+1mUIlw3voKCmIsV2XYBhX4adRdD+dRagY3Opger43JR7PXEw==
   dependencies:
     tslib "^2.3.0"
 
@@ -432,6 +432,15 @@
   integrity sha512-axNXUSqxsP0QSdNskd1pFo2uMo1UNoFaSAB02eDWwLkWQ1pWel+T78HiQY2bNeI3elgzjwPTT4vCCDQKNVTNig==
   dependencies:
     tslib "^2.3.0"
+
+"@angular/pwa@^14.1.0":
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/pwa/-/pwa-14.1.0.tgz#b651a15af2a05b1a15514a2cc39040fd897fd32b"
+  integrity sha512-T+uON9aWEeKoIZmk3ZyTK7TWWj9sKC1qNh+xg8LCEvPOpMNE6VTi2eipMjST6uQhrDazYSXBMO9o9iiVzBkYaw==
+  dependencies:
+    "@angular-devkit/schematics" "14.1.0"
+    "@schematics/angular" "14.1.0"
+    parse5-html-rewriting-stream "6.0.1"
 
 "@angular/router@^14.0.0":
   version "14.1.0"

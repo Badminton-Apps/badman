@@ -1,6 +1,6 @@
 {
   "name": "badman",
-  "version": "5.10.4",
+  "version": "5.12.0",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
@@ -43,13 +43,14 @@
     "@angular/common": "^14.0.0",
     "@angular/compiler": "^14.0.0",
     "@angular/core": "^14.0.0",
-    "@angular/flex-layout": "^13.0.0-beta.38",
+    "@angular/flex-layout": "^14.0.0-beta.40",
     "@angular/forms": "^14.0.0",
     "@angular/localize": "^14.0.0",
     "@angular/material": "^14.0.0",
     "@angular/material-moment-adapter": "^14.0.0",
     "@angular/platform-browser": "^14.0.0",
     "@angular/platform-browser-dynamic": "^14.0.0",
+    "@angular/pwa": "^14.1.0",
     "@angular/router": "^14.0.0",
     "@angular/service-worker": "^14.0.0",
     "@apollo/client": "^3.6.6",

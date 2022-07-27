@@ -83,7 +83,9 @@
           "zen-observable",
           "moment-timezone",
           "zrender"
-        ]
+        ],
+        "serviceWorker": true,
+        "ngswConfigPath": "apps/client/ngsw-config.json"
       },
       "configurations": {
         "production": {

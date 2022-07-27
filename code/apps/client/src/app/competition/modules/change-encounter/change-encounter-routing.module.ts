@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../../_shared';
-import { CalendarComponent } from './components/calendar/calendar.component';
 
 import { ChangeEncounterComponent } from './pages/change-encounter/change-encounter.component';
 
@@ -18,11 +17,7 @@ const routes: Routes = [
         ],
       },
     },
-  },
-  {
-    path: 'calendar',
-    component: CalendarComponent,
-  },
+  }
 ];
 
 @NgModule({
