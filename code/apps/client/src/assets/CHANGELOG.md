@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.11.0](https://github.com/Badminton-Apps/badman/compare/v5.10.6...v5.11.0) (2022-07-27)
+
+
+### Features
+
+* **client:** add pwa code back ([d3e9648](https://github.com/Badminton-Apps/badman/commit/d3e96486ee6b59b278d2469cd9bdd0eee6112831))
+* **client:** adding service worker code ([e7cacbf](https://github.com/Badminton-Apps/badman/commit/e7cacbf9ec13b4d8368334c4f9731c20ef9cda84))
+* **client:** adding social links ([8a7897b](https://github.com/Badminton-Apps/badman/commit/8a7897b8d022817c9c5b7688354b4477ab7067cb))
+
 ### [5.10.6](https://github.com/Badminton-Apps/badman/compare/v5.10.5...v5.10.6) (2022-07-26)
 
 
