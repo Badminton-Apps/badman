@@ -56,6 +56,16 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'NORMAL'">
+          <ng-container *ngTemplateOutlet="normal1"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'RETIREMENT'">
+          <ng-container *ngTemplateOutlet="normal1"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <div class="set">&nbsp;</div>
+        </ng-container>
+        <ng-template #normal1>
           <div class="set" [ngClass]="{ won: this.game.set1Winner === 1 }">
             {{ this.game.set1Team1 }}
           </div>
@@ -69,10 +79,7 @@
           >
             {{ this.game.set3Team1 }}
           </div>
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-          <div class="set">&nbsp;</div>
-        </ng-container>
+        </ng-template>
       </ng-container>
     </div>
     <div class="divider"></div>
@@ -86,8 +93,19 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'NO_MATCH'"> </ng-container>
-
+        
         <ng-container *ngSwitchCase="'NORMAL'">
+          <ng-container *ngTemplateOutlet="normal2"></ng-container>
+        </ng-container>
+        <ng-container *ngSwitchCase="'RETIREMENT'">
+          <ng-container *ngTemplateOutlet="normal2"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <div class="set">&nbsp;</div>
+        </ng-container>
+
+        <ng-template #normal2>
           <div class="set" [ngClass]="{ won: this.game.set1Winner === 2 }">
             {{ this.game.set1Team2 }}
           </div>
@@ -101,11 +119,7 @@
           >
             {{ this.game.set3Team2 }}
           </div>
-        </ng-container>
-
-        <ng-container *ngSwitchDefault>
-          <div class="set">&nbsp;</div>
-        </ng-container>
+        </ng-template>
       </ng-container>
     </div>
   </div>
