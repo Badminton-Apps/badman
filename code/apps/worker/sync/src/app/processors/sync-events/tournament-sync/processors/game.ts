@@ -74,7 +74,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
 
       const playedAt =
         xmlMatch.MatchTime != null
-          ? moment(xmlMatch.MatchTime).tz('Europe/Brussels').toDate()
+          ? moment.tz(xmlMatch.MatchTime, 'Europe/Brussels').toDate()
           : this.event.event.firstDay;
 
       // Check if encounter was before last run, skip if only process new events
