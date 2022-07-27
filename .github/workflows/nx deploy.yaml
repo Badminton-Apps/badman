@@ -163,10 +163,11 @@ jobs:
       - name: Checkout latest release tag
         run: |
           LATEST_TAG=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "LATEST_TAG=${LATEST_TAG:1}" >> $GITHUB_ENV
+          echo "LATEST_TAG_V=$LATEST_TAG" >> $GITHUB_ENV
       - uses: actions/checkout@v3
         with:
-          ref: ${{env.LATEST_TAG}}
+          ref: ${{env.LATEST_TAG_V}}
       - id: 'auth'
         uses: 'google-github-actions/auth@v0.8.0'
         with:
@@ -200,5 +201,5 @@ jobs:
       - run: npx nx affected --target=docker --base=${{ needs.base.outputs.base }} --head=origin/main
         env:
           INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_TAGS: ${{env.LATEST_TAG:1}}
+          INPUT_TAGS: ${{env.LATEST_TAG}}
       - run: npx nx affected --target=deploy --base=${{ needs.base.outputs.base }} --head=origin/main
