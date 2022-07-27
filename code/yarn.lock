@@ -433,6 +433,15 @@
   dependencies:
     tslib "^2.3.0"
 
+"@angular/pwa@^14.1.0":
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/pwa/-/pwa-14.1.0.tgz#b651a15af2a05b1a15514a2cc39040fd897fd32b"
+  integrity sha512-T+uON9aWEeKoIZmk3ZyTK7TWWj9sKC1qNh+xg8LCEvPOpMNE6VTi2eipMjST6uQhrDazYSXBMO9o9iiVzBkYaw==
+  dependencies:
+    "@angular-devkit/schematics" "14.1.0"
+    "@schematics/angular" "14.1.0"
+    parse5-html-rewriting-stream "6.0.1"
+
 "@angular/router@^14.0.0":
   version "14.1.0"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-14.1.0.tgz#a377dc8fee53f84657af260442183c7b9526a4d0"
