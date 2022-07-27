@@ -123,10 +123,6 @@ const cookieConfig: NgcCookieConsentConfig = {
     ApolloModule,
     ApmModule,
     MarkdownModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      registrationStrategy: 'registerImmediately',
-    }),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
       libraries: ['places'],
@@ -146,6 +142,10 @@ const cookieConfig: NgcCookieConsentConfig = {
       },
     }),
     SocketModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      registrationStrategy: 'registerImmediately'
+    }),
   ],
   providers: [
     CookieService,
