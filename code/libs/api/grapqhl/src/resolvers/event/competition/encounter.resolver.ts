@@ -33,6 +33,10 @@ import { Transaction } from 'sequelize';
 import { User } from '../../../decorators';
 import { ListArgs } from '../../../utils';
 import { Sync, SyncQueue } from '@badman/queue';
+import {
+  EncounterNotifications,
+  NotificationService,
+} from '@badman/notifications';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -49,7 +53,8 @@ export class EncounterCompetitionResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    @InjectQueue(SyncQueue) private syncQueue: Queue
+    @InjectQueue(SyncQueue) private syncQueue: Queue,
+    private notificationService: NotificationService
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -124,7 +129,7 @@ export class EncounterCompetitionResolver {
 
     if (
       !user.hasAnyPermission([
-        // `${team.clubId}_change:encounter`,
+        `${team.clubId}_change:encounter`,
         'change-any:encounter',
       ])
     ) {
@@ -166,11 +171,15 @@ export class EncounterCompetitionResolver {
         encounter.date = selectedDates[0].date;
 
         // Accept
-        await this.syncQueue.add(Sync.ChangeDate, {
-          encounterId: encounter.id,
-        }, {
-          removeOnComplete: true,
-        });
+        await this.syncQueue.add(
+          Sync.ChangeDate,
+          {
+            encounterId: encounter.id,
+          },
+          {
+            removeOnComplete: true,
+          }
+        );
 
         // Save cahnges
         encounter.save({ transaction });
@@ -194,6 +203,18 @@ export class EncounterCompetitionResolver {
       this.logger.warn('rollback', e);
       await transaction.rollback();
       throw e;
+    }
+
+    // Notify the user
+    if (newChangeEncounter.accepted) {
+      this.notificationService.notify(EncounterNotifications.accepted, {
+        changeRequest: encounterChange,
+      });
+    } else {
+      this.notificationService.notify(EncounterNotifications.requested, {
+        changeRequest: encounterChange,
+        homeTeamRequests: newChangeEncounter.home,
+      });
     }
 
     return true;

@@ -113,6 +113,7 @@ export class CpGeneratorService {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async _prepCPfile(event: EventCompetition, ADODB: any) {
     const original = path.join(
       process.cwd(),
@@ -282,7 +283,7 @@ export class CpGeneratorService {
       }
     >();
 
-    for (const [clubId, { dbClub, cpId }] of clubs) {
+    for (const [, { dbClub, cpId }] of clubs) {
       // Insert location into cp file
       const locations = await dbClub.getLocations();
       for (const location of locations) {
@@ -428,7 +429,7 @@ export class CpGeneratorService {
     >();
 
     const distinctPlayers = new Map<string, string[]>();
-    for (const [teamId, { dbTeam, dbEntry }] of teams) {
+    for (const [, { dbTeam, dbEntry }] of teams) {
       const players = dbEntry?.meta?.competition?.players ?? [];
       if (distinctPlayers.has(dbTeam.clubId)) {
         distinctPlayers
@@ -489,7 +490,7 @@ export class CpGeneratorService {
       }
     }
 
-    for (const [teamId, { dbTeam, dbEntry, cpId }] of teams) {
+    for (const [, { dbTeam, dbEntry, cpId }] of teams) {
       const players = dbEntry?.meta?.competition?.players ?? [];
 
       const query = players?.map((p) => {
@@ -876,7 +877,7 @@ export class CpGeneratorService {
 
     if (index != entry?.meta?.competition?.teamIndex) {
       // difference between index and teamIndex not bigger then 10
-      const diff = Math.abs(index - entry?.meta?.competition?.teamIndex);
+      // const diff = Math.abs(index - entry?.meta?.competition?.teamIndex);
 
       this.logger.warn(
         `Team index ${index} does not match ${entry?.meta?.competition?.teamIndex}`

@@ -1,6 +1,6 @@
 import { RankingSystem, RankingPlace } from '@badman/api/database';
 import { Logger } from '@nestjs/common';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { RankingCalc } from '../utils';
 
 export class OriginalRankingCalc extends RankingCalc {
@@ -8,7 +8,7 @@ export class OriginalRankingCalc extends RankingCalc {
     super(rankingType, new Logger(OriginalRankingCalc.name));
   }
 
-  async beforeCalculationAsync(start?: Moment) {
+  async beforeCalculationAsync() {
     await super.beforeCalculationAsync(
       moment(this.rankingType.caluclationIntervalLastUpdate)
     );

@@ -1,4 +1,5 @@
 import { DatabaseModule } from '@badman/api/database';
+import { NotificationsModule } from '@badman/notifications';
 import { QueueModule } from '@badman/queue';
 import { Module } from '@nestjs/common';
 import {
@@ -10,7 +11,7 @@ import {
 } from './competition';
 
 @Module({
-  imports: [DatabaseModule, QueueModule],
+  imports: [DatabaseModule, NotificationsModule, QueueModule],
   providers: [
     EventCompetitionResolver,
     EncounterCompetitionResolver,

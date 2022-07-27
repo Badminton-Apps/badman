@@ -137,6 +137,7 @@ export class RankingCalc {
       hasHistoricalGames?: boolean;
     }
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options = {
       transaction: undefined,
       ...options,
