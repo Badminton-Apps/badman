@@ -3,7 +3,6 @@ replicaCount: 1
 image:
   repository: ghcr.io/badminton-apps/badman/client
   pullPolicy: Always
-  tag: latest
 
 imagePullSecrets:
   - name: client-acr-secret

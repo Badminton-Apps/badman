@@ -3,7 +3,6 @@ replicaCount: 1
 image:
   repository: ghcr.io/badminton-apps/badman/worker-ranking
   pullPolicy: Always
-  tag: latest
 
 imagePullSecrets:
   - name: worker-ranking-acr-secret
