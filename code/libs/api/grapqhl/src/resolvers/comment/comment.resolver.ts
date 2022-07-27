@@ -6,7 +6,6 @@ import {
   Player,
 } from '@badman/api/database';
 import {
-  Inject,
   Logger,
   NotFoundException,
   UnauthorizedException,

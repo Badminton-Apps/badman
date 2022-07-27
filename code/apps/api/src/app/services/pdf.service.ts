@@ -1,16 +1,4 @@
 /* eslint-disable prefer-rest-params */
-import { Injectable } from '@nestjs/common';
-import {
-  lstatSync,
-  promises,
-  readdirSync,
-  readFileSync,
-  writeFileSync,
-} from 'fs';
-import Handlebars from 'handlebars';
-import moment from 'moment';
-import path from 'path';
-import { Op } from 'sequelize';
 import {
   DrawCompetition,
   EncounterCompetition,
@@ -21,9 +9,15 @@ import {
   RankingPlace,
   SubEventCompetition,
   SubEventType,
-  Team,
+  Team
 } from '@badman/api/database';
 import { HandlebarService } from '@badman/handlebar';
+import { Injectable } from '@nestjs/common';
+import {
+  promises
+} from 'fs';
+import moment from 'moment';
+import { Op } from 'sequelize';
 const { readFile } = promises;
 
 @Injectable()
@@ -250,7 +244,7 @@ export class PdfService {
       logo: `data:image/png;base64, ${logo}`,
     };
 
-    return await this.handlebarService.getHtml('assembly', context, 'assembly');
+    return await this.handlebarService.getHtml('pdf/assembly', context, 'assembly');
   }
 
   private _addPlayer(
