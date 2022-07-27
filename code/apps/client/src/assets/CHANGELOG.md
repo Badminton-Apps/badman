@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.13.3](https://github.com/Badminton-Apps/badman/compare/v5.13.2...v5.13.3) (2022-07-27)
+
+
+### Bug Fixes
+
+* **client:** discord url udpate ([cc1109c](https://github.com/Badminton-Apps/badman/commit/cc1109ce672c07165738ae17258dab4d9e464bf1))
+* **worker-sync:** continue on no team found ([260221c](https://github.com/Badminton-Apps/badman/commit/260221cbd530fa38fd709b3268e2785b2bdf6afd))
+
 ### [5.13.2](https://github.com/Badminton-Apps/badman/compare/v5.13.1...v5.13.2) (2022-07-27)
 
 
