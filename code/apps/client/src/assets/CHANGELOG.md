@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.13.1](https://github.com/Badminton-Apps/badman/compare/v5.13.0...v5.13.1) (2022-07-27)
+
+
+### Bug Fixes
+
+* **worker-sync:** parsing dates in belgian timezone ([0fb5687](https://github.com/Badminton-Apps/badman/commit/0fb5687d60c296287ab15776ad52931376fe5766))
+
 ## [5.13.0](https://github.com/Badminton-Apps/badman/compare/v5.12.0...v5.13.0) (2022-07-27)
 
 
