@@ -31,7 +31,6 @@
         "parallel": false
       }
     },
-   
     "deploy": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
