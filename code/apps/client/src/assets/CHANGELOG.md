@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.12.0](https://github.com/Badminton-Apps/badman/compare/v5.11.2...v5.12.0) (2022-07-27)
+
+
+### Features
+
+* **client:** showing games in calendar ([ffd51ea](https://github.com/Badminton-Apps/badman/commit/ffd51eaf7d55f23ea29dc5d6a3ded25f1da00769))
+
 ### [5.11.2](https://github.com/Badminton-Apps/badman/compare/v5.11.1...v5.11.2) (2022-07-27)
 
 
