@@ -13,11 +13,13 @@ export class AdminService {
       `${environment.api}/api/${environment.apiVersion}/import`
     );
   }
+  
   cleanup() {
     return this.httpClient.get(
       `${environment.api}/api/${environment.apiVersion}/import/cleanup`
     );
   }
+
   sync(force: boolean = false) {
     return this.httpClient.get(
       `${environment.api}/api/${environment.apiVersion}/import/sync`,
