@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.13.0](https://github.com/Badminton-Apps/badman/compare/v5.12.0...v5.13.0) (2022-07-27)
+
+
+### Features
+
+* **client:** first draft of mailing ([163ac9d](https://github.com/Badminton-Apps/badman/commit/163ac9d8a9ed538f92aecba7127f7295b25f4baa))
+* **lib-mailing:** mailing on request ([9e10034](https://github.com/Badminton-Apps/badman/commit/9e100346b458875e874681a6d9c32539d9bc34fc))
+
+
+### Bug Fixes
+
+* **ci:** always do a roll update ([a47937f](https://github.com/Badminton-Apps/badman/commit/a47937fca6d38fb3f9726069224a989ef532c2f4))
+* **ci:** pr run affected ([f1ce86b](https://github.com/Badminton-Apps/badman/commit/f1ce86b6a6c829650fbefbe028a42e85c94af572))
+
 ## [5.12.0](https://github.com/Badminton-Apps/badman/compare/v5.11.2...v5.12.0) (2022-07-27)
 
 
