@@ -18,7 +18,7 @@ server {
         add_header Cache-Control "no-store, no-cache, must-revalidate";
     }
 
-    location ~* \.(?:css|js|jpg)$ {
+    location ~* \.(?:css|js|jpg|json)$ {
         root   /usr/share/nginx/html;
         expires 1y; 
         add_header Cache-Control "public";
@@ -30,7 +30,7 @@ server {
     gzip on;
 
     # Compression level (1-9).
-    # 5 is a perfect compromise between size and cpu usage, offering about
+    # 5 is a perfect compromise between size and cpu ufsage, offering about
     # 75% reduction for most ascii files (almost identical to level 9).
     gzip_comp_level    5;
 
