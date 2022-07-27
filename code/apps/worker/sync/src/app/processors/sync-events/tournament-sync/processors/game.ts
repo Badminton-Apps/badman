@@ -5,7 +5,7 @@ import {
   GameStatus,
   Player,
 } from '@badman/api/database';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService } from '../../../../services';
 import {
@@ -74,7 +74,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
 
       const playedAt =
         xmlMatch.MatchTime != null
-          ? moment(xmlMatch.MatchTime).toDate()
+          ? moment(xmlMatch.MatchTime).tz('Europe/Brussels').toDate()
           : this.event.event.firstDay;
 
       // Check if encounter was before last run, skip if only process new events
