@@ -123,10 +123,6 @@ const cookieConfig: NgcCookieConsentConfig = {
     ApolloModule,
     ApmModule,
     MarkdownModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      registrationStrategy: 'registerImmediately',
-    }),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
       libraries: ['places'],
@@ -148,9 +144,7 @@ const cookieConfig: NgcCookieConsentConfig = {
     SocketModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerImmediately'
     }),
   ],
   providers: [
