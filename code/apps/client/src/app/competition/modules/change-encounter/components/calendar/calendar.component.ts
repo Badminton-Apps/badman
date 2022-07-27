@@ -1,26 +1,23 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef, Component, Inject, OnInit
+} from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Apollo, gql } from 'apollo-angular';
+import moment from 'moment';
+import { forkJoin, lastValueFrom, map } from 'rxjs';
+import { randomLightColor } from 'seed-to-color';
+import { v4 } from 'uuid';
+import {
   CompetitionEncounter,
   compPeriod,
   getCompetitionYear,
   Location,
   sortTeams,
-  Team,
+  Team
 } from '../../../../../_shared';
-import {
-  Component,
-  OnInit,
-  Inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
-import moment from 'moment';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom, map, forkJoin } from 'rxjs';
-import { randomLightColor } from 'seed-to-color';
-import { v4 } from 'uuid';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { FormControl } from '@angular/forms';
 
 @Component({
   templateUrl: './calendar.component.html',
@@ -91,6 +88,7 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this._setupCalendar();
+
   }
 
   private async _setupCalendar() {

@@ -184,12 +184,7 @@
                   </ng-container>
 
                   <ng-container *ngIf="!calEvent.ownTeam">
-                    <ng-container *ngIf="this.data.home">
-                      {{ calEvent?.encounter?.home?.name }}
-                    </ng-container>
-                    <ng-container *ngIf="!this.data.home">
-                      {{ calEvent?.encounter?.away?.name }}
-                    </ng-container>
+                    {{ calEvent?.encounter?.home?.name }}
                   </ng-container>
 
                   <span *ngIf="calEvent.requested">*</span>
@@ -242,12 +237,7 @@
                 </ng-container>
 
                 <ng-container *ngIf="!calEvent.ownTeam">
-                  <ng-container *ngIf="this.data.home">
-                    {{ calEvent?.encounter?.home?.name }}
-                  </ng-container>
-                  <ng-container *ngIf="!this.data.home">
-                    {{ calEvent?.encounter?.away?.name }}
-                  </ng-container>
+                  {{ calEvent?.encounter?.home?.name }}
                 </ng-container>
 
                 <span *ngIf="calEvent.requested">*</span>
