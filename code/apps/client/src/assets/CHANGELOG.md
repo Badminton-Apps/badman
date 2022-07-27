@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.13.6](https://github.com/Badminton-Apps/badman/compare/v5.13.5...v5.13.6) (2022-07-27)
+
+
+### Bug Fixes
+
+* **ci:** this should tag correctly ([4d75c75](https://github.com/Badminton-Apps/badman/commit/4d75c75b126f89b81e50b53c938bfc7dfe8b8343))
+* **worker-sync:** parsing timezone  should work now ([9c104de](https://github.com/Badminton-Apps/badman/commit/9c104de7d5ffdd0cbb0fd000944892c0353b3654))
+
 ### [5.13.5](https://github.com/Badminton-Apps/badman/compare/v5.13.4...v5.13.5) (2022-07-27)
 
 
