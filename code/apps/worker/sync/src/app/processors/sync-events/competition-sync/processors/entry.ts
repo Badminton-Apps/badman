@@ -73,7 +73,7 @@ export class EntryProcessor extends StepProcessor {
 
           if (foundTeam.length === 0) {
             this.logger.warn(`Team not found ${teamName}`);
-            throw new Error(`Team not found ${teamName}`);
+            continue;
           }
 
           const year = (
