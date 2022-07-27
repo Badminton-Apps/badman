@@ -4,28 +4,23 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
-  Inject,
-  Input,
+  ElementRef, Input,
   OnDestroy,
   Optional,
-  Self,
+  Self
 } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
   FormControl,
   NgControl,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
-  MatFormField,
-  MatFormFieldControl,
-  MAT_FORM_FIELD,
+  MatFormFieldControl
 } from '@angular/material/form-field';
-import moment from 'moment';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import { Subject } from 'rxjs';
 import { CalendarComponent } from '../calendar';
 
@@ -53,6 +48,12 @@ export class DateSelectorComponent
 
   @Input()
   awayClubId?: string;
+
+  @Input()
+  homeTeamId?: string;
+
+  @Input()
+  awayTeamId?: string;
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby')
@@ -130,10 +131,10 @@ export class DateSelectorComponent
     private _focusMonitor: FocusMonitor,
     private _elementRef: ElementRef<HTMLElement>,
     private ref: ChangeDetectorRef,
-    @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl,
     private _dialog: MatDialog
   ) {
+
     this.dateControl = new FormControl(null, [Validators.required]);
 
     if (this.ngControl != null) {
@@ -164,6 +165,8 @@ export class DateSelectorComponent
         data: {
           homeClubId: this.homeClubId,
           awayClubId: this.awayClubId,
+          awayTeamId: this.awayTeamId,
+          homeTeamId: this.homeTeamId,
           date,
           home: this.home,
         },

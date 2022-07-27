@@ -38,8 +38,13 @@ export class CalendarComponent implements OnInit {
   private awayEncounters: CompetitionEncounter[] = [];
   public homeTeams: Team[] = [];
   public awayTeams: Team[] = [];
-  public visibleTeamsOwn?: string[];
-  public visibleTeamsOther?: string[];
+
+  public visibleTeams?: {
+    [key: string]: string[];
+  };
+
+  // public visibleTeamsOwn?: string[];
+  // public visibleTeamsOther?: string[];
   public firstDayOfMonth: moment.Moment;
   private year: number;
 
@@ -54,6 +59,8 @@ export class CalendarComponent implements OnInit {
     public data: {
       homeClubId: string;
       awayClubId: string;
+      awayTeamId: string;
+      homeTeamId: string;
       date?: Date;
       home?: boolean;
     },
@@ -111,24 +118,28 @@ export class CalendarComponent implements OnInit {
 
     const loc = await lastValueFrom(
       this.apollo
-        .query<{ locations: Location[] }>({
+        .query<{ club: { locations: Location[] } }>({
+          fetchPolicy: 'cache-first',
           query: gql`
-            query GetClubLocation($clubId: String!, $year: Int!) {
-              locations(where: { clubId: $clubId }) {
+            query GetClubLocation($clubId: ID!, $year: Int!) {
+              club(id: $clubId) {
                 id
-                name
-                availibilities(where: { year: $year }) {
-                  year
-                  days {
-                    courts
-                    startTime
-                    endTime
-                    day
-                  }
-                  exceptions {
-                    start
-                    end
-                    courts
+                locations {
+                  id
+                  name
+                  availibilities(where: { year: $year }) {
+                    year
+                    days {
+                      courts
+                      startTime
+                      endTime
+                      day
+                    }
+                    exceptions {
+                      start
+                      end
+                      courts
+                    }
                   }
                 }
               }
@@ -141,30 +152,36 @@ export class CalendarComponent implements OnInit {
         })
         .pipe(
           map((result) => {
-            return result.data.locations?.map((location) => {
+            return result.data?.club?.locations?.map((location) => {
               return new Location(location);
             });
           })
         )
     );
 
+    let index = 0;
     for (const location of loc) {
-      locations.set(this.locations.size + 1, location);
+      locations.set(++index, location);
     }
+
     return locations;
   }
 
   private async _getTeams(clubid: string) {
     return lastValueFrom(
       this.apollo
-        .query<{ teams: Team[] }>({
+        .query<{ club: { teams: Team[] } }>({
+          fetchPolicy: 'cache-first',
           query: gql`
-            query GetClubTeams($clubId: String!) {
-              teams(where: { clubId: $clubId, active: true }) {
+            query GetClubTeams($clubId: ID!) {
+              club(id: $clubId) {
                 id
-                name
-                type
-                teamNumber
+                teams(where: { active: true }) {
+                  id
+                  name
+                  type
+                  teamNumber
+                }
               }
             }
           `,
@@ -174,7 +191,7 @@ export class CalendarComponent implements OnInit {
         })
         .pipe(
           map((result) => {
-            return result.data.teams?.map((team) => new Team(team));
+            return result.data?.club.teams?.map((team) => new Team(team));
           }),
           map((teams) => teams.sort(sortTeams))
         )
@@ -196,6 +213,7 @@ export class CalendarComponent implements OnInit {
             rows: Partial<CompetitionEncounter>[];
           };
         }>({
+          fetchPolicy: 'cache-first',
           query: gql`
             query GetEncountersForTeams($where: JSONObject) {
               encounterCompetitions(where: $where) {
@@ -268,15 +286,17 @@ export class CalendarComponent implements OnInit {
   }
 
   private showVisible(teams: Team[]) {
-    const visibleTeamsOwn = localStorage
+    const homeTeamsStorage = localStorage
       .getItem(`visible_teams_${this.data.homeClubId}`)
       ?.split(',');
-    this.visibleTeamsOwn = teams
+
+    const homeTeams = teams
       ?.filter((team) => {
-        if (visibleTeamsOwn && visibleTeamsOwn.length > 0 && team.id) {
-          return visibleTeamsOwn.includes(team.id);
+        if (homeTeamsStorage && homeTeamsStorage.length > 0 && team.id) {
+          return homeTeamsStorage.includes(team.id);
         }
-        return this.data.home;
+        // Show own team by default
+        return team.id === this.data.homeTeamId;
       })
       ?.map((team) => {
         if (!team.id) {
@@ -286,15 +306,17 @@ export class CalendarComponent implements OnInit {
         return team.id;
       });
 
-    const visibleTeamsOther = localStorage
-      .getItem(`visible_teams_${this.data.homeClubId}`)
+    const awayTeamsStorage = localStorage
+      .getItem(`visible_teams_${this.data.awayClubId}`)
       ?.split(',');
-    this.visibleTeamsOther = teams
+    const awayTeams = teams
       ?.filter((team) => {
-        if (visibleTeamsOther && visibleTeamsOther.length > 0 && team.id) {
-          return visibleTeamsOther.includes(team.id);
+        if (awayTeamsStorage && awayTeamsStorage.length > 0 && team.id) {
+          return awayTeamsStorage.includes(team.id);
         }
-        return !this.data.home;
+
+        // Show own team by default
+        return team.id === this.data.awayTeamId;
       })
       ?.map((team) => {
         if (!team.id) {
@@ -303,6 +325,11 @@ export class CalendarComponent implements OnInit {
 
         return team.id;
       });
+
+    this.visibleTeams = {
+      [this.data.homeClubId]: homeTeams,
+      [this.data.awayClubId]: awayTeams,
+    };
   }
 
   private generateCalendarDays(): void {
@@ -352,6 +379,7 @@ export class CalendarComponent implements OnInit {
             locationId: 1,
             requested: false,
             removed: !!e.encounterChange,
+            ownTeam: this.data.home,
           };
         });
 
@@ -385,6 +413,7 @@ export class CalendarComponent implements OnInit {
             locationId: 1,
             requested: true,
             removed: false,
+            ownTeam: this.data.home,
           });
         });
 
@@ -402,6 +431,7 @@ export class CalendarComponent implements OnInit {
             locationId: 1,
             requested: false,
             removed: !!e.encounterChange,
+            ownTeam: !this.data.home,
           };
         });
 
@@ -434,15 +464,14 @@ export class CalendarComponent implements OnInit {
             locationId: 1,
             requested: true,
             removed: false,
+            ownTeam: !this.data.home,
           });
         });
 
-      console.log(this.homeEncounters, this.awayEncounters);
-
       calendar.push(
         new CalendarDay(day.clone(), homeEnc, awayEnc, this.locations, [
-          ...(this.visibleTeamsOther ?? []),
-          ...(this.visibleTeamsOwn ?? []),
+          ...(this.visibleTeams?.[this.data.homeClubId] ?? []),
+          ...(this.visibleTeams?.[this.data.awayClubId] ?? []),
         ])
       );
 
@@ -474,45 +503,39 @@ export class CalendarComponent implements OnInit {
 
   public changeVisibleTeams(
     event: MatCheckboxChange,
-    teamId?: string,
-    own?: boolean
+    teamId: string,
+    clubId: string
   ) {
     if (!teamId) {
       return;
     }
+    if (!this.visibleTeams?.[clubId]) {
+      return;
+    }
 
-    if (own) {
-      if (event.checked) {
-        this.visibleTeamsOwn?.push(teamId);
-      } else {
-        this.visibleTeamsOwn?.splice(this.visibleTeamsOwn?.indexOf(teamId), 1);
-      }
-
-      localStorage.setItem(
-        `visible_teams_${this.data.homeClubId}`,
-        this.visibleTeamsOwn?.join(',') ?? ''
-      );
+    if (event.checked) {
+      this.visibleTeams?.[clubId].push(teamId);
     } else {
-      if (event.checked) {
-        this.visibleTeamsOther?.push(teamId);
-      } else {
-        this.visibleTeamsOther?.splice(
-          this.visibleTeamsOther?.indexOf(teamId),
-          1
-        );
-      }
-
-      localStorage.setItem(
-        `visible_teams_${this.data.homeClubId}`,
-        this.visibleTeamsOther?.join(',') ?? ''
+      this.visibleTeams?.[clubId].splice(
+        this.visibleTeams?.[clubId].indexOf(teamId),
+        1
       );
     }
+
+    localStorage.setItem(
+      `visible_teams_${clubId}`,
+      this.visibleTeams?.[clubId]?.join(',') ?? ''
+    );
 
     this.generateCalendarDays();
   }
 
   public showAllTeams(teams: Team[], clubId: string) {
-    this.visibleTeamsOther = teams.map((t) => {
+    if (!this.visibleTeams?.[clubId]) {
+      throw new Error('Club not found');
+    }
+
+    this.visibleTeams[clubId] = teams.map((t) => {
       if (!t.id) {
         throw new Error('Team has no id');
       }
@@ -520,17 +543,18 @@ export class CalendarComponent implements OnInit {
     });
     localStorage.setItem(
       `visible_teams_${clubId}`,
-      this.visibleTeamsOther?.join(',')
+      this.visibleTeams?.[clubId]?.join(',')
     );
+
     this.generateCalendarDays();
   }
 
   public hideAllTeams(clubId: string) {
-    this.visibleTeamsOther = [];
-    localStorage.setItem(
-      `visible_teams_${clubId}`,
-      this.visibleTeamsOther?.join(',')
-    );
+    if (!this.visibleTeams?.[clubId]) {
+      throw new Error('Club not found');
+    }
+    this.visibleTeams[clubId] = [];
+    localStorage.setItem(`visible_teams_${clubId}`, '');
     this.generateCalendarDays();
   }
 
@@ -574,9 +598,21 @@ export class CalendarDay {
         color?: string;
         removed: boolean;
         requested: boolean;
+        ownTeam?: boolean;
       }[];
     }[];
   }[];
+
+  otherEvents: {
+    id: string;
+    encounter: CompetitionEncounter;
+    locationId?: number;
+    startTime?: string;
+    color?: string;
+    removed: boolean;
+    requested: boolean;
+    ownTeam?: boolean;
+  }[] = [];
 
   public getDateString() {
     return this.date?.toISOString().split('T')[0];
@@ -591,7 +627,9 @@ export class CalendarDay {
           locationId?: number;
           startTime?: string;
           color?: string;
+          removed: boolean;
           requested: boolean;
+          ownTeam?: boolean;
         }
       | undefined
     )[],
@@ -602,7 +640,9 @@ export class CalendarDay {
           locationId?: number;
           startTime?: string;
           color?: string;
+          removed: boolean;
           requested: boolean;
+          ownTeam?: boolean;
         }
       | undefined
     )[],
@@ -669,7 +709,12 @@ export class CalendarDay {
       if (!event?.locationId) {
         throw new Error('LocationId is required');
       }
-      this.addEvent(event, false);
+      if (
+        event.encounter?.home?.id &&
+        this.visibleTeams?.includes(event.encounter?.home?.id)
+      ) {
+        this.otherEvents.push(event);
+      }
     }
   }
 
@@ -690,23 +735,26 @@ export class CalendarDay {
         locationIndex
       ].availibility?.findIndex((a) => a.startTime === event.startTime);
 
-      if (availibilityIndex >= 0 && countsForLocation) {
-        if (!skipRemaining) {
-          this.locations[locationIndex].availibility[availibilityIndex]
-            .remainingEncounters--;
-        } else if (event.requested) {
-          this.locations[locationIndex].availibility[availibilityIndex]
-            .option++;
+      if (availibilityIndex >= 0) {
+        if (countsForLocation) {
+          if (!skipRemaining) {
+            this.locations[locationIndex].availibility[availibilityIndex]
+              .remainingEncounters--;
+          } else if (event.requested) {
+            this.locations[locationIndex].availibility[availibilityIndex]
+              .option++;
+          }
+
+          if (
+            this.locations[locationIndex].availibility[availibilityIndex]
+              .remainingEncounters < 0
+          ) {
+            this.locations[locationIndex].availibility[
+              availibilityIndex
+            ].remainingEncounters = 0;
+          }
         }
 
-        if (
-          this.locations[locationIndex].availibility[availibilityIndex]
-            .remainingEncounters < 0
-        ) {
-          this.locations[locationIndex].availibility[
-            availibilityIndex
-          ].remainingEncounters = 0;
-        }
         if (this.visibleTeams?.includes(event.encounter?.home?.id)) {
           this.locations[locationIndex].availibility[
             availibilityIndex
@@ -716,9 +764,10 @@ export class CalendarDay {
           });
         }
       } else {
-        if (this.visibleTeams?.includes(event.encounter?.home?.id)) {
+        if (!this.visibleTeams?.includes(event.encounter?.home?.id)) {
           return;
         }
+
         // We have no availibility for this time
         this.locations[locationIndex]?.availibility?.push({
           startTime: event.startTime,
