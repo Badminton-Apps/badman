@@ -14,7 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from '../../../_shared';
-import { RankingSystemFieldsComponent } from './components/ranking-system-fields/ranking-system-fields.component';
+import { RankingSystemFieldsComponent } from './components';
 import {
   AddRankingSystemComponent,
   DetailRankingSystemComponent,
