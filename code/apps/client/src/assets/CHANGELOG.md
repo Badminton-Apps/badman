@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.14.0](https://github.com/Badminton-Apps/badman/compare/v5.13.9...v5.14.0) (2022-07-27)
+
+
+### Features
+
+* **client:** show retirement scores ([62d8986](https://github.com/Badminton-Apps/badman/commit/62d8986fb65e55d1619d2bf67b5bfae7e769938a))
+* **client:** updated name for change encounter ([262a3b4](https://github.com/Badminton-Apps/badman/commit/262a3b42e0da8b53cbcc0f95b34d76df38d96212))
+
 ### [5.13.9](https://github.com/Badminton-Apps/badman/compare/v5.13.8...v5.13.9) (2022-07-27)
 
 
