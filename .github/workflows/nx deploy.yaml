@@ -200,5 +200,6 @@ jobs:
       - run: npx nx affected --target=docker --base=${{ needs.base.outputs.base }} --head=origin/main
         env:
           INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_TAGS: ${{env.LATEST_TAG}},latest
+        with:          
+          tags: ${{env.LATEST_TAG}},latest
       - run: npx nx affected --target=deploy --base=${{ needs.base.outputs.base }} --head=origin/main
