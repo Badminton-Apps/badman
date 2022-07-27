@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.13.2](https://github.com/Badminton-Apps/badman/compare/v5.13.1...v5.13.2) (2022-07-27)
+
+
+### Bug Fixes
+
+* **client:** expand collumns when there is activiy ([0067f8e](https://github.com/Badminton-Apps/badman/commit/0067f8ee606cd4d0c6db2e1b7f9f0110fd2cbfd3))
+* **client:** not showing correct teamname ([6c0fb78](https://github.com/Badminton-Apps/badman/commit/6c0fb7845dc363e4e40b68e053eb766ec2ad68f5))
+
 ### [5.13.1](https://github.com/Badminton-Apps/badman/compare/v5.13.0...v5.13.1) (2022-07-27)
 
 
