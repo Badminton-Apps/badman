@@ -8,6 +8,7 @@
     "api-grapqhl": "libs/api/grapqhl",
     "client": "apps/client",
     "client-e2e": "apps/client-e2e",
+    "handlebar": "libs/handlebar",
     "health": "libs/health",
     "mailing": "libs/mailing",
     "notifications": "libs/notifications",
