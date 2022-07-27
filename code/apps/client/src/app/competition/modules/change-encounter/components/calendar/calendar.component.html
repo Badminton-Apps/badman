@@ -173,16 +173,86 @@
                   "
                   [matTooltipDisabled]="!calEvent.requested"
                 >
+                  <ng-container *ngIf="calEvent.ownTeam">
+                    {{ calEvent?.encounter?.home?.teamNumber
+                    }}{{
+                      'type-short.' + calEvent?.encounter?.home?.type
+                        | translate
+                    }}
+                    {{ 'competition.vs-short' | translate }}
+                    {{ calEvent?.encounter?.away?.name }}
+                  </ng-container>
+
+                  <ng-container *ngIf="!calEvent.ownTeam">
+                    <ng-container *ngIf="this.data.home">
+                      {{ calEvent?.encounter?.home?.name }}
+                    </ng-container>
+                    <ng-container *ngIf="!this.data.home">
+                      {{ calEvent?.encounter?.away?.name }}
+                    </ng-container>
+                  </ng-container>
+
+                  <span *ngIf="calEvent.requested">*</span>
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <small *ngIf="row.otherEvents.length > 0">Other games</small>
+        <div
+          *ngFor="let calEvent of row.otherEvents"
+          fxLayout="column"
+          fxLayoutGap="5px"
+        >
+          <div
+            fxFlex
+            fxLayoutGap="3px"
+            class="event"
+            [matTooltip]="
+              'competition.change-encounter.calendar.removed' | translate
+            "
+            [matTooltipDisabled]="!calEvent.removed"
+            [ngClass]="{
+              removed: calEvent.removed
+            }"
+          >
+            <div class="event-team">
+              <div
+                [ngStyle]="{ 'border-color': calEvent.color }"
+                class="event-color"
+              ></div>
+            </div>
+            <span fxFlex>
+              <span
+                class="event-name"
+                fxFlex="0 1 auto"
+                [matTooltip]="
+                  'competition.change-encounter.calendar.requested' | translate
+                "
+                [matTooltipDisabled]="!calEvent.requested"
+              >
+                <ng-container *ngIf="calEvent.ownTeam">
                   {{ calEvent?.encounter?.home?.teamNumber
                   }}{{
                     'type-short.' + calEvent?.encounter?.home?.type | translate
                   }}
                   {{ 'competition.vs-short' | translate }}
-                  {{ calEvent?.encounter?.away?.name
-                  }}<span *ngIf="calEvent.requested">*</span>
-                </span>
+                  {{ calEvent?.encounter?.away?.name }}
+                </ng-container>
+
+                <ng-container *ngIf="!calEvent.ownTeam">
+                  <ng-container *ngIf="this.data.home">
+                    {{ calEvent?.encounter?.home?.name }}
+                  </ng-container>
+                  <ng-container *ngIf="!this.data.home">
+                    {{ calEvent?.encounter?.away?.name }}
+                  </ng-container>
+                </ng-container>
+
+                <span *ngIf="calEvent.requested">*</span>
               </span>
-            </div>
+            </span>
           </div>
         </div>
       </div>
@@ -203,8 +273,8 @@
       </div>
       <div *ngFor="let team of this.homeTeams">
         <mat-checkbox
-          (change)="changeVisibleTeams($event, team.id)"
-          [checked]="visibleTeamsOwn?.includes(team.id ?? '')"
+          (change)="changeVisibleTeams($event, team.id!, this.data.homeClubId)"
+          [checked]="visibleTeams?.[this.data.homeClubId]?.includes(team.id ?? '')"
           >{{ team.name }}</mat-checkbox
         >
       </div>
@@ -224,8 +294,8 @@
       </div>
       <div *ngFor="let team of this.awayTeams">
         <mat-checkbox
-          (change)="changeVisibleTeams($event, team.id)"
-          [checked]="visibleTeamsOther?.includes(team.id ?? '')"
+          (change)="changeVisibleTeams($event, team.id!, this.data.awayClubId)"
+          [checked]="visibleTeams?.[this.data.awayClubId]?.includes(team.id ?? '')"
           >{{ team.name }}</mat-checkbox
         >
       </div>
@@ -246,8 +316,8 @@
       </div>
       <div *ngFor="let team of this.awayTeams">
         <mat-checkbox
-          (change)="changeVisibleTeams($event, team.id)"
-          [checked]="visibleTeamsOther?.includes(team.id ?? '')"
+          (change)="changeVisibleTeams($event, team.id!, this.data.awayClubId)"
+          [checked]="visibleTeams?.[this.data.awayClubId]?.includes(team.id ?? '')"
           >{{ team.name }}</mat-checkbox
         >
       </div>
@@ -266,8 +336,8 @@
       </div>
       <div *ngFor="let team of this.homeTeams">
         <mat-checkbox
-          (change)="changeVisibleTeams($event, team.id)"
-          [checked]="visibleTeamsOwn?.includes(team.id ?? '')"
+          (change)="changeVisibleTeams($event, team.id!, this.data.homeClubId)"
+          [checked]="visibleTeams?.[this.data.homeClubId]?.includes(team.id ?? '')"
           >{{ team.name }}</mat-checkbox
         >
       </div>

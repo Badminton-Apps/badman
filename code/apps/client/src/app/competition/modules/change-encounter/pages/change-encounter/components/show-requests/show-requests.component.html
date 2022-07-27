@@ -43,8 +43,10 @@
           >
             <div fxFlex="40">
               <badman-date-selector
-                [homeClubId]="encounter.home!.clubId "
-                [awayClubId]="encounter.away!.clubId "
+                [homeClubId]="encounter.home!.clubId"
+                [awayClubId]="encounter.away!.clubId"
+                [homeTeamId]="encounter.home!.id"
+                [awayTeamId]="encounter.away!.id"
                 [home]="this.home"
                 formControlName="date"
               ></badman-date-selector>
