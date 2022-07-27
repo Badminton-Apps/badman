@@ -62,7 +62,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         continue;
       }
 
-      const matchDate = moment(xmlTeamMatch.MatchTime).tz('Europe/Brussels').toDate();
+      const matchDate = moment.tz(xmlTeamMatch.MatchTime, 'Europe/Brussels').toDate();
       const dbEncounters = encounters.filter(
         (r) => r.visualCode === `${xmlTeamMatch.Code}`
       );
