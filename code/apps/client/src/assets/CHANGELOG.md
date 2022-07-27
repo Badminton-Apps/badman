@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.12.0](https://github.com/Badminton-Apps/badman/compare/v5.11.2...v5.12.0) (2022-07-27)
+
+
+### Features
+
+* **client:** showing games in calendar ([ffd51ea](https://github.com/Badminton-Apps/badman/commit/ffd51eaf7d55f23ea29dc5d6a3ded25f1da00769))
+
+### [5.11.2](https://github.com/Badminton-Apps/badman/compare/v5.11.1...v5.11.2) (2022-07-27)
+
+
+### Bug Fixes
+
+* **client:** include json ([8c51ca5](https://github.com/Badminton-Apps/badman/commit/8c51ca506c19e58398f4b0e89b7cf129b8965a13))
+
+### [5.11.1](https://github.com/Badminton-Apps/badman/compare/v5.11.0...v5.11.1) (2022-07-27)
+
+
+### Bug Fixes
+
+* **client:** register service worker immediately ([d818ab5](https://github.com/Badminton-Apps/badman/commit/d818ab5a18e71dcbcded67e8e8a267e4896e43cd))
+
+## [5.11.0](https://github.com/Badminton-Apps/badman/compare/v5.10.6...v5.11.0) (2022-07-27)
+
+
+### Features
+
+* **client:** add pwa code back ([d3e9648](https://github.com/Badminton-Apps/badman/commit/d3e96486ee6b59b278d2469cd9bdd0eee6112831))
+* **client:** adding service worker code ([e7cacbf](https://github.com/Badminton-Apps/badman/commit/e7cacbf9ec13b4d8368334c4f9731c20ef9cda84))
+* **client:** adding social links ([8a7897b](https://github.com/Badminton-Apps/badman/commit/8a7897b8d022817c9c5b7688354b4477ab7067cb))
+
+### [5.10.6](https://github.com/Badminton-Apps/badman/compare/v5.10.5...v5.10.6) (2022-07-26)
+
+
+### Bug Fixes
+
+* **lib-api-database:** adding `pg` req in factory ([26f78d5](https://github.com/Badminton-Apps/badman/commit/26f78d51797539cfaf70aab8a4945588c20d015b))
+
+### [5.10.5](https://github.com/Badminton-Apps/badman/compare/v5.10.4...v5.10.5) (2022-07-26)
+
+
+### Bug Fixes
+
+* **ci:** install packages ([665e97f](https://github.com/Badminton-Apps/badman/commit/665e97f502cefb0d4dafd77f4df1c4804e950b80))
+
 ### [5.10.4](https://github.com/Badminton-Apps/badman/compare/v5.10.3...v5.10.4) (2022-07-26)
 
 
