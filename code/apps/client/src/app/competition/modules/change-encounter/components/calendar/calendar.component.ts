@@ -1,6 +1,9 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef, Component, Inject, OnInit
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -16,7 +19,7 @@ import {
   getCompetitionYear,
   Location,
   sortTeams,
-  Team
+  Team,
 } from '../../../../../_shared';
 
 @Component({
@@ -88,7 +91,6 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this._setupCalendar();
-
   }
 
   private async _setupCalendar() {
@@ -351,14 +353,14 @@ export class CalendarComponent implements OnInit {
     // Calculate amount of weeks we need to display
     const weeks = Math.ceil(daysBetween / 7);
 
-    const eventsOnDay = {
-      '1': 0,
-      '2': 0,
-      '3': 0,
-      '4': 0,
-      '5': 0,
-      '6': 0,
-      '7': 0,
+    const hasActivityOnDay = {
+      '1': false,
+      '2': false,
+      '3': false,
+      '4': false,
+      '5': false,
+      '6': false,
+      '7': false,
     };
 
     // Loop through the encounters
@@ -466,19 +468,25 @@ export class CalendarComponent implements OnInit {
           });
         });
 
-      calendar.push(
-        new CalendarDay(day.clone(), homeEnc, awayEnc, this.locations, [
+      const calDay = new CalendarDay(
+        day.clone(),
+        homeEnc,
+        awayEnc,
+        this.locations,
+        [
           ...(this.visibleTeams?.[this.data.homeClubId] ?? []),
           ...(this.visibleTeams?.[this.data.awayClubId] ?? []),
-        ])
+        ]
       );
+      calendar.push(calDay);
 
-      eventsOnDay[day.isoWeekday()] += homeEnc.length + awayEnc.length;
+      hasActivityOnDay[day.isoWeekday()] =
+        hasActivityOnDay[day.isoWeekday()] || calDay.hasSomeActivity;
 
       day.add(1, 'days');
     }
 
-    this.gridTemplateColumns = this._genGridTemplateColumns(eventsOnDay);
+    this.gridTemplateColumns = this._genGridTemplateColumns(hasActivityOnDay);
 
     this.calendar = calendar;
     this.ref.detectChanges();
@@ -560,12 +568,12 @@ export class CalendarComponent implements OnInit {
     this.dialogRef.close(date);
   }
 
-  private _genGridTemplateColumns(eventsOnDay: { [key: string]: number }) {
+  private _genGridTemplateColumns(hasActivityOnDay: { [key: string]: boolean }) {
     // Devide occuping space for each day
     const gridTemplate: string[] = [];
 
     for (const day of [...Array(7).keys()]) {
-      if (eventsOnDay[day + 1] > 0) {
+      if (hasActivityOnDay[day + 1]) {
         gridTemplate.push(`1fr`);
       } else {
         gridTemplate.push(`0.60fr`);
@@ -601,6 +609,8 @@ export class CalendarDay {
     }[];
   }[];
 
+  public hasSomeActivity?: boolean = false;
+
   otherEvents: {
     id: string;
     encounter: CompetitionEncounter;
@@ -618,34 +628,10 @@ export class CalendarDay {
 
   constructor(
     date?: moment.Moment,
-    homeEvents?: (
-      | {
-          id: string;
-          encounter: CompetitionEncounter;
-          locationId?: number;
-          startTime?: string;
-          color?: string;
-          removed: boolean;
-          requested: boolean;
-          ownTeam?: boolean;
-        }
-      | undefined
-    )[],
-    awayEvents?: (
-      | {
-          id: string;
-          encounter: CompetitionEncounter;
-          locationId?: number;
-          startTime?: string;
-          color?: string;
-          removed: boolean;
-          requested: boolean;
-          ownTeam?: boolean;
-        }
-      | undefined
-    )[],
+    homeEvents?: DayEvent[],
+    awayEvents?: DayEvent[],
     locations?: Map<number, Location>,
-    private visibleTeams?: string[]
+    visibleTeams?: string[]
   ) {
     if (!date) {
       throw new Error('Date is required');
@@ -662,6 +648,10 @@ export class CalendarDay {
           (day) =>
             date.locale('en').format('dddd').toLocaleLowerCase() === day.day
         );
+
+        if (availibilityDays.length > 0){
+          this.hasSomeActivity = true;
+        }
 
         const av =
           availibilityDays.map((day) => {
@@ -701,7 +691,7 @@ export class CalendarDay {
       if (!event?.locationId) {
         throw new Error('LocationId is required');
       }
-      this.addEvent(event, true);
+      this.addEvent(event, visibleTeams);
     }
     for (const event of awayEvents ?? []) {
       if (!event?.locationId) {
@@ -709,14 +699,15 @@ export class CalendarDay {
       }
       if (
         event.encounter?.home?.id &&
-        this.visibleTeams?.includes(event.encounter?.home?.id)
+        visibleTeams?.includes(event.encounter?.home?.id)
       ) {
+        this.hasSomeActivity = true;
         this.otherEvents.push(event);
       }
     }
   }
 
-  private addEvent(event, countsForLocation?: boolean) {
+  private addEvent(event: DayEvent, visibleTeams?: string[]) {
     if (!this.locations) {
       return;
     }
@@ -734,52 +725,63 @@ export class CalendarDay {
       ].availibility?.findIndex((a) => a.startTime === event.startTime);
 
       if (availibilityIndex >= 0) {
-        if (countsForLocation) {
-          if (!skipRemaining) {
-            this.locations[locationIndex].availibility[availibilityIndex]
-              .remainingEncounters--;
-          } else if (event.requested) {
-            this.locations[locationIndex].availibility[availibilityIndex]
-              .option++;
-          }
-
-          if (
-            this.locations[locationIndex].availibility[availibilityIndex]
-              .remainingEncounters < 0
-          ) {
-            this.locations[locationIndex].availibility[
-              availibilityIndex
-            ].remainingEncounters = 0;
-          }
+        if (!skipRemaining) {
+          this.locations[locationIndex].availibility[availibilityIndex]
+            .remainingEncounters--;
+        } else if (event.requested) {
+          this.locations[locationIndex].availibility[availibilityIndex]
+            .option++;
         }
 
-        if (this.visibleTeams?.includes(event.encounter?.home?.id)) {
+        if (
+          this.locations[locationIndex].availibility[availibilityIndex]
+            .remainingEncounters < 0
+        ) {
           this.locations[locationIndex].availibility[
             availibilityIndex
-          ].events?.push({
-            ...event,
-            skipRemaining,
-          });
+          ].remainingEncounters = 0;
+        }
+
+        if (!event.encounter?.home?.id) {
+          throw new Error('Home team is required');
+        }
+
+        if (visibleTeams?.includes(event.encounter?.home?.id)) {
+
+          this.locations[locationIndex].availibility[
+            availibilityIndex
+          ].events?.push(event);
         }
       } else {
-        if (!this.visibleTeams?.includes(event.encounter?.home?.id)) {
+        if (!event.encounter?.home?.id) {
+          throw new Error('away team is required');
+        }
+
+        if (!visibleTeams?.includes(event.encounter?.home?.id)) {
           return;
         }
 
+        this.hasSomeActivity = true;
         // We have no availibility for this time
         this.locations[locationIndex]?.availibility?.push({
           startTime: event.startTime,
           totalCourts: 0,
           remainingEncounters: 0,
           option: 0,
-          events: [
-            {
-              ...event,
-              skipRemaining,
-            },
-          ],
+          events: [event],
         });
       }
     }
   }
+}
+
+interface DayEvent {
+  id: string;
+  encounter: CompetitionEncounter;
+  locationId?: number | undefined;
+  startTime?: string | undefined;
+  color?: string | undefined;
+  removed: boolean;
+  requested: boolean;
+  ownTeam?: boolean | undefined;
 }
