@@ -103,7 +103,7 @@
               *ngIf="av.remainingEncounters > 0 || this.data.home"
               class="location picable"
               fxFlex
-              (click)="selectDay(row.date)"
+              (click)="selectDay(row.date, av.startTime)"
               matTooltip="Pick this moment"
             >
               <span class="id">{{ loc.id }}</span>
