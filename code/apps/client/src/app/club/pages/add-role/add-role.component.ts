@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, Observable } from 'rxjs';
 import { groupBy, map, mergeMap, switchMap, toArray } from 'rxjs/operators';
-import {
-  Claim,
-  ClaimService,
-  Club,
-  ClubService,
-  Role,
-  RoleService,
-} from '../../../_shared';
+import { Claim, Club, Role, RoleService } from '../../../_shared';
 
 @Component({
   templateUrl: './add-role.component.html',
@@ -21,9 +15,8 @@ export class AddRoleComponent implements OnInit {
   claims$!: Observable<{ category: string; claims: Claim[] }[]>;
 
   constructor(
+    private apollo: Apollo,
     private roleSerice: RoleService,
-    private clubService: ClubService,
-    private claimService: ClaimService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -35,24 +28,55 @@ export class AddRoleComponent implements OnInit {
         if (!id) {
           throw new Error('No club id');
         }
-
-        return this.clubService.getClub(id);
-      })
-    );
-
-    this.claims$ = this.claimService.clubClaims().pipe(
-      mergeMap((res) => res),
-      groupBy((person) => person.category ?? 'Other'),
-      mergeMap((obs) => {
-        return obs.pipe(
-          toArray(),
-          map((items) => {
-            return { category: obs.key, claims: items };
-          })
-        );
+        return this.apollo.query<{ club: Partial<Club> }>({
+          query: gql`
+            query Club($id: ID!) {
+              club(id: $id) {
+                id
+              }
+            }
+          `,
+          variables: {
+            id,
+          },
+        });
       }),
-      toArray()
+      map((x) => x.data.club)
     );
+
+    this.claims$ = this.apollo
+      .query<{ claims: Claim[] }>({
+        query: gql`
+          query Claims($where: JSONObject) {
+            claims(where: $where) {
+              id
+              name
+              category
+              description
+              type
+            }
+          }
+        `,
+        variables: {
+          where: {
+            type: ['CLUB', 'TEAM'],
+          },
+        },
+      })
+      .pipe(
+        map((x) => x.data.claims?.map((c) => new Claim(c))),
+        mergeMap((res) => res),
+        groupBy((person) => person.category ?? 'Other'),
+        mergeMap((obs) => {
+          return obs.pipe(
+            toArray(),
+            map((items) => {
+              return { category: obs.key, claims: items };
+            })
+          );
+        }),
+        toArray()
+      );
   }
 
   async add(role: Role, club: Club) {

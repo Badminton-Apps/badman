@@ -3,7 +3,6 @@ import { Apollo } from 'apollo-angular';
 
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 
-import * as clubClaimsQuery from '../../graphql/security/queries/GetClubClaims.graphql';
 import * as globalClaimsQuery from '../../graphql/security/queries/GetGlobalClaims.graphql';
 import * as globalUserClaimsQuery from '../../graphql/security/queries/GetGlobalUserClaims.graphql';
 
@@ -79,14 +78,7 @@ export class ClaimService {
       .pipe(map((x) => x.data?.player?.claims?.map((c) => new Claim(c))));
   }
 
-  clubClaims() {
-    return this.apollo
-      .query<{ claims: Claim[] }>({
-        query: clubClaimsQuery,
-      })
-      .pipe(map((x) => x.data?.claims?.map((c) => new Claim(c))));
-  }
-
+ 
   updateGlobalUserClaim(playerId: string, claimId: string, active: boolean) {
     return this.apollo
       .mutate<{ claims: Claim[] }>({

@@ -437,6 +437,7 @@ type Role {
   type: String
   clubId: String
   players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Player!]!
+  claims(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Claim!]!
 }
 
 """A Claim"""
@@ -754,6 +755,7 @@ type Mutation {
   copyEventCompetition(id: ID!, number: Float!): EventCompetition!
   addChangeEncounter(data: EncounterChangeNewInput!): Boolean!
   assignClaim(claimId: ID!, playerId: ID!, active: Boolean!): Boolean!
+  updateRole(data: RoleUpdateInput!): Role!
   addPlayerToRole(roleId: ID!, playerId: ID!): Role!
   removePlayerFromRole(roleId: ID!, playerId: ID!): Role!
   updatePlayer(data: PlayerUpdateInput!): Player!
@@ -1026,6 +1028,23 @@ input EncounterChangeDateNewInput {
   date: DateTime
   availabilityHome: String
   availabilityAway: String
+}
+
+input RoleUpdateInput {
+  id: ID
+  name: String
+  description: String
+  type: String
+  clubId: String
+  claims: [ClaimUpdateInput!]!
+}
+
+input ClaimUpdateInput {
+  id: ID
+  name: String
+  description: String
+  category: String
+  type: String
 }
 
 input PlayerUpdateInput {
