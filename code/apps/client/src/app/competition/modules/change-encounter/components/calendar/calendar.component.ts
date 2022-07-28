@@ -68,8 +68,6 @@ export class CalendarComponent implements OnInit {
   ) {
     this.manualControl = new FormControl(data?.date);
     this.manualControl.valueChanges.subscribe((date) => {
-      console.log(date);
-
       this.selectDay(date);
     });
     this.firstDayOfMonth = moment(data.date);
