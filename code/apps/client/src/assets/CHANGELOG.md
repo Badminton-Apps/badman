@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.16.0](https://github.com/Badminton-Apps/badman/compare/v5.15.2...v5.16.0) (2022-07-28)
+
+
+### Features
+
+* **client:** delete cache on update ([da2d66b](https://github.com/Badminton-Apps/badman/commit/da2d66bcdc545fc218d8eb4e8c7dad6f14009007))
+
+
+### Bug Fixes
+
+* **client:** temporary disabeling apm ([387414f](https://github.com/Badminton-Apps/badman/commit/387414ffb5061306adad5a2825c1c304e8437227))
+
 ### [5.15.2](https://github.com/Badminton-Apps/badman/compare/v5.15.1...v5.15.2) (2022-07-28)
 
 ### [5.15.1](https://github.com/Badminton-Apps/badman/compare/v5.15.0...v5.15.1) (2022-07-28)
