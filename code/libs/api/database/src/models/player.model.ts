@@ -353,24 +353,24 @@ export class Player extends Model {
   }
 
   async hasAnyPermission(requiredPermissions: string[]) {
-    const claims = await this.getClaims();
+    const claims = await this.getUserClaims();
     if (claims === null) {
       return false;
     }
 
     return requiredPermissions.some((perm) =>
-      claims.some((claim) => claim.name === perm)
+      claims.some((claim) => claim === perm)
     );
   }
 
   async hasAllPermission(requiredPermissions: string[]) {
-    const claims = await this.getClaims();
+    const claims = await this.getUserClaims();
     if (claims === null) {
       return false;
     }
 
     return requiredPermissions.every((perm) =>
-      claims.some((claim) => claim.name === perm)
+      claims.some((claim) => claim === perm)
     );
   }
 }
