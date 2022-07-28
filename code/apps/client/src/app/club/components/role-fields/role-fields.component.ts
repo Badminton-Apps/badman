@@ -2,12 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  OnInit,
   Input,
+  OnInit,
   Output,
 } from '@angular/core';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
-import { Claim, Club, Role } from '../../../_shared';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Claim, Role } from '../../../_shared';
 
 @Component({
   selector: 'badman-role-fields',
@@ -18,9 +18,6 @@ import { Claim, Club, Role } from '../../../_shared';
 export class RoleFieldsComponent implements OnInit {
   @Input()
   role: Role = {} as Role;
-
-  @Input()
-  club!: Club;
 
   @Input()
   claims!: { category: string; claims: Claim[] }[];
@@ -42,6 +39,7 @@ export class RoleFieldsComponent implements OnInit {
       this.selectedClaims.push(...cat.claims.filter((c) => c.hasPermission));
     }
   }
+
   claimChanged(claim: Claim, checked: boolean) {
     if (checked) {
       this.selectedClaims.push(claim);

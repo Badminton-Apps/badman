@@ -1,4 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -29,7 +36,7 @@ import {
 import { Club } from '../club.model';
 import { Player } from '../player.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
-import { Claim } from './claim.model';
+import { Claim, ClaimUpdateInput } from './claim.model';
 import { PlayerRoleMembership } from './role-player-membership.model';
 import { SecurityType } from '../../enums/security-types.enum';
 
@@ -106,3 +113,18 @@ export class Role extends Model {
   getClub!: BelongsToGetAssociationMixin<Club>;
   setClub!: BelongsToSetAssociationMixin<Club, string>;
 }
+
+@InputType()
+export class RoleUpdateInput extends PartialType(
+  OmitType(Role, ['createdAt', 'updatedAt', 'claims'] as const),
+  InputType
+) {
+  @Field(() => [ClaimUpdateInput])
+  claims: Claim[];
+}
+
+@InputType()
+export class RoleNewInput extends PartialType(
+  OmitType(RoleUpdateInput, ['id'] as const),
+  InputType
+) {}
