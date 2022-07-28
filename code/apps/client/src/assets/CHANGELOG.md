@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.16.1](https://github.com/Badminton-Apps/badman/compare/v5.16.0...v5.16.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* getting claims should give list of all permission ([d792375](https://github.com/Badminton-Apps/badman/commit/d7923751266787e06baf1281cd84e02997eed865))
+
 ## [5.16.0](https://github.com/Badminton-Apps/badman/compare/v5.15.2...v5.16.0) (2022-07-28)
 
 
