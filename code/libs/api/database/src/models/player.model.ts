@@ -185,6 +185,9 @@ export class Player extends Model {
   @BelongsToMany(() => Claim, () => PlayerClaimMembership)
   claims: (Claim & { PlayerClaimMembership: PlayerClaimMembership })[];
 
+  @Field(() => [String])
+  permissions: string[];
+
   // Team Player Fields
   @Field({ nullable: true, description: 'Team Player end date' })
   end?: Date;
@@ -314,7 +317,7 @@ export class Player extends Model {
     }
   }
 
-  async getUserClaims(): Promise<string[]> {
+  async getPermissions(): Promise<string[]> {
     let claims = (await this.getClaims()).map((r) => r.name);
     const roles = await this.getRoles({
       include: [Claim],
