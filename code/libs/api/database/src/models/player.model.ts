@@ -314,7 +314,7 @@ export class Player extends Model {
     }
   }
 
-  async getUserClaims(): Promise<string[]> {
+  async getPermissions(): Promise<string[]> {
     let claims = (await this.getClaims()).map((r) => r.name);
     const roles = await this.getRoles({
       include: [Claim],
