@@ -157,9 +157,7 @@ export class ClubService {
 
     if (args?.ids) {
       where = {
-        id: {
-          in: args.ids,
-        },
+        id: args.ids,
       };
     }
 

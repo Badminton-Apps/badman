@@ -167,7 +167,7 @@ const cookieConfig: NgcCookieConsentConfig = {
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(apmService: ApmService) {
+  // constructor(apmService: ApmService) {
     // if (environment.production) {
     //   // Agent API is exposed through this apm instance
     //   apmService.init({
@@ -177,7 +177,7 @@ export class AppModule {
     //     environment: environment.production ? 'production' : 'development',
     //   });
     // }
-  }
+  // }
 }
 
 // required for AOT compilation
