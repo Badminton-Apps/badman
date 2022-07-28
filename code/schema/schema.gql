@@ -511,6 +511,7 @@ type Player {
   games(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Game!]
   roles: [Role!]
   claims(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Claim!]
+  permissions: [String!]!
 
   """Team Player end date"""
   end: DateTime
@@ -580,6 +581,7 @@ type TeamPlayer {
   games: [Game!]
   roles: [Role!]
   claims: [Claim!]
+  permissions: [String!]!
 
   """Team Player end date"""
   end: DateTime
@@ -615,6 +617,7 @@ type GamePlayer {
   games: [Game!]
   roles: [Role!]
   claims: [Claim!]
+  permissions: [String!]!
 
   """Team Player end date"""
   end: DateTime
@@ -751,6 +754,8 @@ type Mutation {
   copyEventCompetition(id: ID!, number: Float!): EventCompetition!
   addChangeEncounter(data: EncounterChangeNewInput!): Boolean!
   assignClaim(claimId: ID!, playerId: ID!, active: Boolean!): Boolean!
+  addPlayerToRole(roleId: ID!, playerId: ID!): Role!
+  removePlayerFromRole(roleId: ID!, playerId: ID!): Role!
   updatePlayer(data: PlayerUpdateInput!): Player!
   claimAccount(playerId: String!): Player!
 }
@@ -1036,6 +1041,7 @@ input PlayerUpdateInput {
   competitionPlayer: Boolean
   slug: String
   memberId: String
+  permissions: [String!]
 
   """Team Player end date"""
   end: DateTime
