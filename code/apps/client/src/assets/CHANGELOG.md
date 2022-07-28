@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.16.6](https://github.com/Badminton-Apps/badman/compare/v5.16.5...v5.16.6) (2022-07-28)
+
+
+### Bug Fixes
+
+* **client:** fix selecting date ([ad6eed4](https://github.com/Badminton-Apps/badman/commit/ad6eed4b0490c7a466d01b57d3595e61d371e11c))
+* moved to value files, didn't work on docker ([dd27930](https://github.com/Badminton-Apps/badman/commit/dd2793000dad124652ef4e967dca3afb8d926b9e))
+
 ### [5.16.5](https://github.com/Badminton-Apps/badman/compare/v5.16.4...v5.16.5) (2022-07-28)
 
 
