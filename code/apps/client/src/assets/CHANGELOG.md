@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.16.5](https://github.com/Badminton-Apps/badman/compare/v5.16.4...v5.16.5) (2022-07-28)
+
+
+### Bug Fixes
+
+* **api,worker-sync,worker-ranking:** setting node environment ([258d591](https://github.com/Badminton-Apps/badman/commit/258d5918927c37304537ceac9b83e8be5013fb2b))
+
 ### [5.16.4](https://github.com/Badminton-Apps/badman/compare/v5.16.3...v5.16.4) (2022-07-28)
 
 
