@@ -356,7 +356,7 @@ export class Player extends Model {
   }
 
   async hasAnyPermission(requiredPermissions: string[]) {
-    const claims = await this.getUserClaims();
+    const claims = await this.getPermissions();
     if (claims === null) {
       return false;
     }
@@ -367,7 +367,7 @@ export class Player extends Model {
   }
 
   async hasAllPermission(requiredPermissions: string[]) {
-    const claims = await this.getUserClaims();
+    const claims = await this.getPermissions();
     if (claims === null) {
       return false;
     }
