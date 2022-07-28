@@ -564,8 +564,17 @@ export class CalendarComponent implements OnInit {
     this.generateCalendarDays();
   }
 
-  public selectDay(date?: Date) {
-    this.dialogRef.close(date);
+  public selectDay(d?: Date, time?: string) {
+    const date = moment(d);
+    // splite time to hour and minute
+    const timeSplit = time?.split(':');
+    const hour = timeSplit?.[0]?.trim() ?? '00';
+    const minute = timeSplit?.[1]?.trim() ?? '00';
+
+    date.set('hour', +hour);
+    date.set('minute', +minute);
+
+    this.dialogRef.close(date.toDate());
   }
 
   private _genGridTemplateColumns(hasActivityOnDay: { [key: string]: boolean }) {
