@@ -32,6 +32,7 @@ export class Player {
   clubs?: Club[];
   club?: Club;
   claims?: Claim[];
+  permissions?: string[];
 
   constructor(args?: Partial<Player>) {
     this.id = args?.id;
@@ -63,6 +64,7 @@ export class Player {
     this.updatedAt =
       args?.updatedAt != null ? new Date(args.updatedAt) : undefined;
     this.claims = args?.claims ?? [];
+    this.permissions = args?.permissions ?? [];
 
     this.rankingPlaces = args?.rankingPlaces?.map((r) => new RankingPlace(r));
     this.rankingLastPlaces = args?.rankingLastPlaces?.map(

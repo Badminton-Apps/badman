@@ -16,12 +16,12 @@ import { UserService } from '../profile';
   providedIn: 'root',
 })
 export class ClaimService {
-  claims$ = new ReplaySubject<Claim[]>(1);
+  claims$ = new ReplaySubject<string[]>(1);
 
   constructor(private apollo: Apollo, private userService: UserService) {
     userService.profile$
       .pipe(
-        map((player) => player?.claims ?? []),
+        map((player) => player?.permissions ?? []),
         distinctUntilChanged((a, b) => a.length === b.length),
         shareReplay()
       )
@@ -100,14 +100,14 @@ export class ClaimService {
       .pipe(tap(() => this.userService.reloadProfile()));
   }
 
-  private includes(claims: Claim[], claim: string): boolean {
+  private includes(claims: string[], claim: string): boolean {
     if (claim.indexOf('*') >= 0) {
       const found = claims.find(
-        (r) => r.name?.indexOf(claim.replace('*', '')) != -1
+        (r) => r?.indexOf(claim.replace('*', '')) != -1
       );
       return found != null && found != undefined;
     } else {
-      return claims?.map((c) => c.name).includes(claim);
+      return claims?.includes(claim);
     }
   }
 }

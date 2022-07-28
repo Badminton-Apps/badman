@@ -109,6 +109,11 @@ export class PlayersResolver {
     return player.getClaims(ListArgs.toFindOptions(listArgs));
   }
 
+  @ResolveField(() => [Claim])
+  async permissions(@Parent() player: Player): Promise<string[]> {
+    return player.getPermissions();
+  }
+
   @ResolveField(() => [RankingPlace], { description: 'Default sorting: DESC' })
   async rankingPlaces(
     @Parent() player: Player,

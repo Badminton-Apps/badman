@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.16.2](https://github.com/Badminton-Apps/badman/compare/v5.16.1...v5.16.2) (2022-07-28)
+
+### [5.16.1](https://github.com/Badminton-Apps/badman/compare/v5.16.0...v5.16.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* getting claims should give list of all permission ([d792375](https://github.com/Badminton-Apps/badman/commit/d7923751266787e06baf1281cd84e02997eed865))
+
+## [5.16.0](https://github.com/Badminton-Apps/badman/compare/v5.15.2...v5.16.0) (2022-07-28)
+
+
+### Features
+
+* **client:** delete cache on update ([da2d66b](https://github.com/Badminton-Apps/badman/commit/da2d66bcdc545fc218d8eb4e8c7dad6f14009007))
+
+
+### Bug Fixes
+
+* **client:** temporary disabeling apm ([387414f](https://github.com/Badminton-Apps/badman/commit/387414ffb5061306adad5a2825c1c304e8437227))
+
+### [5.15.2](https://github.com/Badminton-Apps/badman/compare/v5.15.1...v5.15.2) (2022-07-28)
+
+### [5.15.1](https://github.com/Badminton-Apps/badman/compare/v5.15.0...v5.15.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* **client:** adding/removing players from role ([0af6a07](https://github.com/Badminton-Apps/badman/commit/0af6a07099240957258fe2f53942f93cbe5e6e0f))
+
+## [5.15.0](https://github.com/Badminton-Apps/badman/compare/v5.14.0...v5.15.0) (2022-07-28)
+
+
+### Features
+
+* **client:** allowing changing of encounters ([b97d071](https://github.com/Badminton-Apps/badman/commit/b97d0718dd715234ee82e4bd64a35281dd4f95e2))
+
+## [5.14.0](https://github.com/Badminton-Apps/badman/compare/v5.13.9...v5.14.0) (2022-07-27)
+
+
+### Features
+
+* **client:** show retirement scores ([62d8986](https://github.com/Badminton-Apps/badman/commit/62d8986fb65e55d1619d2bf67b5bfae7e769938a))
+* **client:** updated name for change encounter ([262a3b4](https://github.com/Badminton-Apps/badman/commit/262a3b42e0da8b53cbcc0f95b34d76df38d96212))
+
 ### [5.13.9](https://github.com/Badminton-Apps/badman/compare/v5.13.8...v5.13.9) (2022-07-27)
 
 

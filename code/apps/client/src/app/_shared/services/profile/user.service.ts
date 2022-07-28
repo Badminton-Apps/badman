@@ -39,9 +39,7 @@ export class UserService {
               id
               slug
               fullName
-              claims(take: 99999) {
-                name
-              }
+              permissions
               clubs {
                 id
                 name

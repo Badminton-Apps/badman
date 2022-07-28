@@ -14,12 +14,7 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import {
-  APP_INITIALIZER,
-  ErrorHandler,
-  Injector,
-  NgModule,
-} from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import {
@@ -30,11 +25,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
-import {
-  ApmErrorHandler,
-  ApmModule,
-  ApmService,
-} from '@elastic/apm-rum-angular';
+import { ApmModule, ApmService } from '@elastic/apm-rum-angular';
 import {
   TranslateLoader,
   TranslateModule,
@@ -144,16 +135,16 @@ const cookieConfig: NgcCookieConsentConfig = {
     SocketModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
-      registrationStrategy: 'registerImmediately'
+      registrationStrategy: 'registerImmediately',
     }),
   ],
   providers: [
     CookieService,
     ApmService,
-    {
-      provide: ErrorHandler,
-      useClass: ApmErrorHandler,
-    },
+    // {
+    //   provide: ErrorHandler,
+    //   useClass: ApmErrorHandler,
+    // },
     {
       provide: NgxMatDateAdapter,
       useClass: NgxMatMomentAdapter,
@@ -177,15 +168,15 @@ const cookieConfig: NgcCookieConsentConfig = {
 })
 export class AppModule {
   constructor(apmService: ApmService) {
-    if (environment.production) {
-      // Agent API is exposed through this apm instance
-      apmService.init({
-        serviceName: 'badman-client',
-        serviceVersion: environment.version,
-        serverUrl: environment.apmServer,
-        environment: environment.production ? 'production' : 'development',
-      });
-    }
+    // if (environment.production) {
+    //   // Agent API is exposed through this apm instance
+    //   apmService.init({
+    //     serviceName: 'badman-client',
+    //     serviceVersion: environment.version,
+    //     serverUrl: environment.apmServer,
+    //     environment: environment.production ? 'production' : 'development',
+    //   });
+    // }
   }
 }
 
