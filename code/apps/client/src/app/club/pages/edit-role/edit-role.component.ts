@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
+import { Apollo, gql } from 'apollo-angular';
+import { forkJoin, lastValueFrom, Observable } from 'rxjs';
 import {
   groupBy,
   map,
@@ -10,14 +11,7 @@ import {
   take,
   toArray,
 } from 'rxjs/operators';
-import {
-  Claim,
-  ClaimService,
-  Club,
-  ClubService,
-  Role,
-  RoleService,
-} from '../../../_shared';
+import { Claim, Club, Role, RoleService } from '../../../_shared';
 
 @Component({
   templateUrl: './edit-role.component.html',
@@ -29,9 +23,8 @@ export class EditRoleComponent implements OnInit {
   claims$!: Observable<{ category: string; claims: Claim[] }[]>;
 
   constructor(
-    private clubSerice: ClubService,
+    private apollo: Apollo,
     private roleSerice: RoleService,
-    private claimService: ClaimService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -43,8 +36,20 @@ export class EditRoleComponent implements OnInit {
         if (!id) {
           throw new Error('No club id');
         }
-        return this.clubSerice.getClub(id);
-      })
+        return this.apollo.query<{ club: Partial<Club> }>({
+          query: gql`
+            query Club($id: ID!) {
+              club(id: $id) {
+                id
+              }
+            }
+          `,
+          variables: {
+            id,
+          },
+        });
+      }),
+      map((x) => x.data.club)
     );
     this.role$ = this.route.paramMap.pipe(
       map((x) => x.get('roleId')),
@@ -60,7 +65,26 @@ export class EditRoleComponent implements OnInit {
 
     this.claims$ = forkJoin([
       this.role$.pipe(map((r) => r.claims)),
-      this.claimService.clubClaims(),
+      this.apollo
+        .query<{ claims: Claim[] }>({
+          query: gql`
+            query Claims($where: JSONObject) {
+              claims(where: $where) {
+                id
+                name
+                category
+                description
+                type
+              }
+            }
+          `,
+          variables: {
+            where: {
+              type: ['CLUB', 'TEAM'],
+            },
+          },
+        })
+        .pipe(map((x) => x.data.claims?.map((c) => new Claim(c)))),
     ]).pipe(
       take(1),
       map(([userPerm, clubClaims]) =>
@@ -85,7 +109,23 @@ export class EditRoleComponent implements OnInit {
   }
 
   async update(role: Role, club: Club) {
-    await this.roleSerice.updateRole(role).toPromise();
-    await this.router.navigate(['/', 'admin', 'club', club.id, 'edit']);
+    await lastValueFrom(
+      this.apollo.mutate<{ role: Partial<Role> }>({
+        mutation: gql`
+          mutation UpdateRole($data: RoleUpdateInput!) {
+            updateRole(data: $data) {
+              id
+              name
+            }
+          }
+        `,
+        variables: {
+          data: role,
+        },
+      })
+    );
+
+    // await this.roleSerice.updateRole(role).toPromise();
+    await this.router.navigate(['/', 'club', club.id, 'edit']);
   }
 }
