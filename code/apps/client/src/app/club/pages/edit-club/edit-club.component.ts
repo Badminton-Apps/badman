@@ -25,6 +25,7 @@ import {
 } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { LocationDialogComponent } from '../../dialogs';
+import { apolloCache } from '../../../graphql.module';
 
 @Component({
   templateUrl: './edit-club.component.html',
@@ -72,7 +73,12 @@ export class EditClubComponent implements OnInit {
       })
     );
 
-    const query = combineLatest([clubid$, this.updateClub$]).pipe(
+    const query = combineLatest([
+      clubid$,
+      this.updateClub$,
+      this.updateRoles$,
+      this.updateLocation$,
+    ]).pipe(
       debounceTime(600),
       switchMap(([id]) =>
         this.apollo.query<{ club: Club }>({
@@ -182,6 +188,7 @@ export class EditClubComponent implements OnInit {
         duration: 1000,
         panelClass: 'success',
       });
+      this._deleteTeamFromCache(team.id);
       this.updateClub$.next(null);
     }
   }
@@ -193,6 +200,7 @@ export class EditClubComponent implements OnInit {
         duration: 1000,
         panelClass: 'success',
       });
+      this._deleteRoleFromCache(role.id);
       this.updateRoles$.next(null);
     }
   }
@@ -204,6 +212,7 @@ export class EditClubComponent implements OnInit {
         duration: 1000,
         panelClass: 'success',
       });
+      this._deleteRoleFromCache(role.id);
       this.updateRoles$.next(null);
     }
   }
@@ -235,6 +244,7 @@ export class EditClubComponent implements OnInit {
       throw new Error('No location id');
     }
     await lastValueFrom(this.roleService.deleteRole(role.id));
+    this._deleteRoleFromCache(role.id);
     this.updateRoles$.next(null);
   }
 
@@ -257,6 +267,7 @@ export class EditClubComponent implements OnInit {
         team.entries[0].competitionSubEvent.id
       )
     );
+    this._deleteTeamFromCache(team.id);
     this.updateClub$.next(null);
   }
   async onDeleteBasePlayer(player: Player, team: Team) {
@@ -278,6 +289,25 @@ export class EditClubComponent implements OnInit {
         team.entries[0].competitionSubEvent.id
       )
     );
+    this._deleteTeamFromCache(team.id);
     this.updateClub$.next(null);
+  }
+
+  private _deleteRoleFromCache(role?: string) {
+    const normalizedAvailibility = apolloCache.identify({
+      id: role,
+      __typename: 'Role',
+    });
+    apolloCache.evict({ id: normalizedAvailibility });
+    apolloCache.gc();
+  }
+
+  private _deleteTeamFromCache(teamId?: string) {
+    const normalizedAvailibility = apolloCache.identify({
+      id: teamId,
+      __typename: 'Team',
+    });
+    apolloCache.evict({ id: normalizedAvailibility });
+    apolloCache.gc();
   }
 }
