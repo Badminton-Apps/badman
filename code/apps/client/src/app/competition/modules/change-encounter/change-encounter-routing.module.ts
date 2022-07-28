@@ -12,7 +12,7 @@ const routes: Routes = [
     data: {
       claims: {
         any: [
-          // '*_change:encounter',
+          '*_change:encounter',
           'change-any:encounter',
         ],
       },
