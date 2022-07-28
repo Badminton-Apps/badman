@@ -74,12 +74,12 @@ export class SelectClubComponent implements OnInit, OnDestroy {
             return this.claimSerice.claims$.pipe(
               map((r) =>
                 r.filter(
-                  (x) => x?.name?.indexOf(this.singleClubPermission) != -1
+                  (x) => x?.indexOf(this.singleClubPermission) != -1
                 )
               ),
               map((r) =>
                 r.map((c) =>
-                  c?.name?.replace(`_${this.singleClubPermission}`, '')
+                  c?.replace(`_${this.singleClubPermission}`, '')
                 )
               ),
               switchMap((ids) =>
