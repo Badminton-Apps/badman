@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.16.4](https://github.com/Badminton-Apps/badman/compare/v5.16.3...v5.16.4) (2022-07-28)
+
+
+### Bug Fixes
+
+* **api:** adding role resolver endpoints ([acd5e69](https://github.com/Badminton-Apps/badman/commit/acd5e69066f4347734f99d4a20239b3b1d007450))
+* **client:** selecting club wasn't working ([669e5d3](https://github.com/Badminton-Apps/badman/commit/669e5d3269b160ae338f287ac5cb3df95aaedfbe))
+
 ### [5.16.3](https://github.com/Badminton-Apps/badman/compare/v5.16.2...v5.16.3) (2022-07-28)
 
 
