@@ -68,6 +68,8 @@ export class CalendarComponent implements OnInit {
   ) {
     this.manualControl = new FormControl(data?.date);
     this.manualControl.valueChanges.subscribe((date) => {
+      console.log(date);
+
       this.selectDay(date);
     });
     this.firstDayOfMonth = moment(data.date);
@@ -566,18 +568,23 @@ export class CalendarComponent implements OnInit {
 
   public selectDay(d?: Date, time?: string) {
     const date = moment(d);
-    // splite time to hour and minute
-    const timeSplit = time?.split(':');
-    const hour = timeSplit?.[0]?.trim() ?? '00';
-    const minute = timeSplit?.[1]?.trim() ?? '00';
 
-    date.set('hour', +hour);
-    date.set('minute', +minute);
+    if (time) {
+      // splite time to hour and minute
+      const timeSplit = time?.split(':');
+      const hour = timeSplit?.[0]?.trim() ?? '00';
+      const minute = timeSplit?.[1]?.trim() ?? '00';
+
+      date.set('hour', +hour);
+      date.set('minute', +minute);
+    }
 
     this.dialogRef.close(date.toDate());
   }
 
-  private _genGridTemplateColumns(hasActivityOnDay: { [key: string]: boolean }) {
+  private _genGridTemplateColumns(hasActivityOnDay: {
+    [key: string]: boolean;
+  }) {
     // Devide occuping space for each day
     const gridTemplate: string[] = [];
 
@@ -658,7 +665,7 @@ export class CalendarDay {
             date.locale('en').format('dddd').toLocaleLowerCase() === day.day
         );
 
-        if (availibilityDays.length > 0){
+        if (availibilityDays.length > 0) {
           this.hasSomeActivity = true;
         }
 
@@ -756,7 +763,6 @@ export class CalendarDay {
         }
 
         if (visibleTeams?.includes(event.encounter?.home?.id)) {
-
           this.locations[locationIndex].availibility[
             availibilityIndex
           ].events?.push(event);
