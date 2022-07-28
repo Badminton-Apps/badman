@@ -7,6 +7,7 @@ import { readFile, writeFile } from 'fs/promises';
 import moment from 'moment';
 import path from 'path';
 import nodemailer, { Transporter } from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailingService {
@@ -15,7 +16,7 @@ export class MailingService {
   private _mailingEnabled = false;
   private initialized = false;
 
-  constructor(private handleBarService: HandlebarService) {
+  constructor(private handleBarService: HandlebarService, private configService: ConfigService) {
     this.handleBarService.registerPartials(
       path.join(__dirname, 'assets', 'templates', 'mail', 'partials')
     );
@@ -106,11 +107,11 @@ export class MailingService {
     try {
       this._transporter = nodemailer.createTransport(
         smtpTransport({
-          host: process.env.MAIL_HOST,
+          host: this.configService.get('MAIL_HOST'),
           port: 465,
           auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS,
+            user: this.configService.get('MAIL_USER'),
+            pass: this.configService.get('MAIL_PASS'),
           },
         })
       );
@@ -127,17 +128,19 @@ export class MailingService {
       });
 
       this._transporter.use('compile', hbsOptions);
-      this._mailingEnabled = process.env.NODE_ENV === 'production';
+      this._mailingEnabled = this.configService.get('NODE_ENV') === 'production';
     } catch (e) {
       this._mailingEnabled = false;
       this.logger.warn('Mailing disabled due to config setup failing', e);
+    } finally {
+      this.logger.debug(`Mailing enabled: ${this._mailingEnabled}`);
     }
   }
 
   private async _sendMail(options: MailOptions) {
     await this._setupMailing();
     // add clientUrl to context
-    options['context']['clientUrl'] = process.env.CLIENT_URL;
+    options['context']['clientUrl'] = this.configService.get('CLIENT_URL');
 
     try {
       if (this._mailingEnabled === false) {

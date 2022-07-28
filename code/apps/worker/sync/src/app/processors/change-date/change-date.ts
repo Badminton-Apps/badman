@@ -2,6 +2,7 @@ import { EncounterCompetition } from '@badman/api/database';
 import { Sync, SyncQueue } from '@badman/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { Job } from 'bull';
 import { XMLParser } from 'fast-xml-parser';
@@ -14,7 +15,7 @@ export class SyncDateProcessor {
   private readonly logger = new Logger(SyncDateProcessor.name);
   private visualFormat = 'YYYY-MM-DDTHH:mm:ss';
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     this.logger.debug('SyncDateConsumer');
   }
 
@@ -33,14 +34,16 @@ export class SyncDateProcessor {
       return;
     }
 
-    if (process.env.NODE_ENV === 'production') {
+    if (this.configService.get('NODE_ENV') === 'production') {
       const resultPut = await axios.put(
-        `${process.env.VR_API}/Tournament/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+        `${this.configService.get('VR_API')}/Tournament/${
+          event.visualCode
+        }/Match/${encounter.visualCode}/Date`,
         {
           withCredentials: true,
           auth: {
-            username: `${process.env.VR_API_USER}`,
-            password: `${process.env.VR_API_PASS}`,
+            username: `${this.configService.get('VR_API_USER')}`,
+            password: `${this.configService.get('VR_API_PASS')}`,
           },
           headers: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -62,7 +65,9 @@ export class SyncDateProcessor {
       const bodyPut = parser.parse(resultPut.data).Result as Result;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
         this.logger.error(
-          `${process.env.VR_API}/Tournament/${event.visualCode}/Match/${encounter.visualCode}/Date`,
+          `${this.configService.get('VR_API')}/Tournament/${
+            event.visualCode
+          }/Match/${encounter.visualCode}/Date`,
           `<TournamentMatch>
             <TournamentID>${event.visualCode}</TournamentID>
             <MatchID>${encounter.visualCode}</MatchID>
@@ -84,7 +89,9 @@ export class SyncDateProcessor {
               this.visualFormat
             )}</MatchDate>
         </TournamentMatch>`,
-        `${process.env.VR_API}/Tournament/${event.visualCode}/Match/${encounter.visualCode}/Date`
+        `${this.configService.get('VR_API')}/Tournament/${
+          event.visualCode
+        }/Match/${encounter.visualCode}/Date`
       );
     }
 
