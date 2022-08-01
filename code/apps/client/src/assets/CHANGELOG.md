@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.18.0](https://github.com/Badminton-Apps/badman/compare/v5.17.2...v5.18.0) (2022-08-01)
+
+
+### Features
+
+* **backend:** improved logging ([a6918ad](https://github.com/Badminton-Apps/badman/commit/a6918ad1ae38e4b3a4dcbc5a156f41e772fb7dd0))
+
+
+### Bug Fixes
+
+* **worker-sync:** save synced state when date has been changed ([9a177d6](https://github.com/Badminton-Apps/badman/commit/9a177d6ece6ae5227493a06bc8085755e71bdad3))
+
 ### [5.17.2](https://github.com/Badminton-Apps/badman/compare/v5.17.1...v5.17.2) (2022-08-01)
 
 
