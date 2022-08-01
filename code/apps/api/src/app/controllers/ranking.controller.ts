@@ -43,7 +43,7 @@ export class RankingController {
       const endDate = moment(
         await RankingPlace.max('rankingDate', {
           where: { systemId: system, updatePossible: true },
-        })
+        }) 
       );
 
       const results = await RankingPlace.findAll({

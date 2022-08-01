@@ -26,7 +26,7 @@ export class CalculationService {
       const system = await RankingSystem.findByPk(systemId, {
         include: [{ model: RankingGroup }],
       });
-      if (!system) {
+      if (!system) { 
         throw new NotFoundException(`${RankingSystem.name}: ${systemId}`);
       }
 

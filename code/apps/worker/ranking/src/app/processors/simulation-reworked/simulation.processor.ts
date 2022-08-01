@@ -23,7 +23,7 @@ export class SimulationV2Processor {
       job.data.calcDate,
       job.data.periods,
       true,
-      true,
+      false,
     );
   }
 } 
