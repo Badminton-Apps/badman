@@ -29,7 +29,8 @@ export class SimulationProcessor {
     callback?: DoneCallback
   ) {
     try {
-      this.logger.log(`Start Simulation`, job.data);
+      this.logger.log(`Start Simulation`);
+      this.logger.debug(job.data);
       const systems = await RankingSystem.findAll({
         where: {
           id: job.data.systemIds,
@@ -90,7 +91,6 @@ INSERT INTO "ranking"."RankingPoints" (id, points, "rankingDate", "differenceInL
   FROM "ranking"."RankingPoints" 
   WHERE "systemId" = '934116c8-ee7e-4f3c-9c8b-6de579c3686f';  
 */
-
 
 /*
 delete from   "ranking"."RankingPlaces" where "systemId" = 'c6d33db8-a688-42f6-ae9e-f4516d30fd3f';

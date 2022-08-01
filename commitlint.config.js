@@ -14,6 +14,8 @@ module.exports = {
         'docs',
         'ci',
         'deps',
+        'backend',
+        'frontend',
         ...(
           await getProjects(
             ctx,
