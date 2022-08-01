@@ -21,5 +21,5 @@
     "search": "libs/search",
     "worker-ranking": "apps/worker/ranking",
     "worker-sync": "apps/worker/sync"
-  }  
+  }
 }

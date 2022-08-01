@@ -3,10 +3,15 @@
  * This is only a minimal backend to get started.
  */
 
-import { NestFactory } from '@nestjs/core';
 import { WorkerSyncModule } from './app/app.module';
 
+import { NestFactory } from '@nestjs/core';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+
 async function bootstrap() {
-  await NestFactory.createApplicationContext(WorkerSyncModule);
+  const app = await NestFactory.createApplicationContext(WorkerSyncModule, {
+    bufferLogs: true,
+  });
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 }
 bootstrap();
