@@ -16,14 +16,15 @@ export class SimulationV2Processor {
 
   @Process(Simulation.StartV2)
   async startSimulation(job: Job<SimulationV2Job>): Promise<void> {
-    this.logger.log('Start Simulation v2', job.data);
+    this.logger.log('Start Simulation v2');
+    this.logger.debug(job.data);
 
     await this.calculationService.simulation(
       job.data.systemId,
       job.data.calcDate,
       job.data.periods,
       true,
-      false,
+      false
     );
   }
-} 
+}
