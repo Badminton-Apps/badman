@@ -21,24 +21,31 @@ export class SyncDateProcessor {
 
   @Process(Sync.ChangeDate)
   async acceptDate(job: Job<{ encounterId: string }>) {
-    this.logger.log(`Changing date for encounter ${job.data.encounterId}`);
-
     const encounter = await EncounterCompetition.findByPk(job.data.encounterId);
-    // Check if visual reality has same date stored
-    const draw = await encounter.getDrawCompetition();
-    const subEvent = await draw.getSubEventCompetition();
-    const event = await subEvent.getEventCompetition();
 
-    if (event.visualCode === null) {
-      this.logger.error(`No visual code found for ${event?.name}`);
+    if (!encounter) {
+      this.logger.error(`Encounter ${job.data.encounterId} not found`);
       return;
     }
 
-    const url = `${this.configService.get('VR_API')}/Tournament/${
-      event.visualCode
-    }/Match/${encounter.visualCode}/Date`;
+    try {
+      this.logger.log(`Changing date for encounter ${job.data.encounterId}`);
 
-    const body = `
+      // Check if visual reality has same date stored
+      const draw = await encounter.getDrawCompetition();
+      const subEvent = await draw.getSubEventCompetition();
+      const event = await subEvent.getEventCompetition();
+
+      if (event.visualCode === null) {
+        this.logger.error(`No visual code found for ${event?.name}`);
+        return;
+      }
+
+      const url = `${this.configService.get('VR_API')}/Tournament/${
+        event.visualCode
+      }/Match/${encounter.visualCode}/Date`;
+
+      const body = `
     <TournamentMatch>
         <TournamentID>${event.visualCode}</TournamentID>
         <MatchID>${encounter.visualCode}</MatchID>
@@ -48,34 +55,37 @@ export class SyncDateProcessor {
     </TournamentMatch>
   `;
 
-    if (this.configService.get('NODE_ENV') === 'production') {
-      const resultPut = await axios.put(url, {
-        withCredentials: true,
-        auth: {
-          username: `${this.configService.get('VR_API_USER')}`,
-          password: `${this.configService.get('VR_API_PASS')}`,
-        },
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          'Content-Type': 'application/xml',
-        },
-        body,
-      });
-      const parser = new XMLParser();
+      if (this.configService.get('NODE_ENV') === 'production') {
+        const resultPut = await axios.put(url, {
+          withCredentials: true,
+          auth: {
+            username: `${this.configService.get('VR_API_USER')}`,
+            password: `${this.configService.get('VR_API_PASS')}`,
+          },
+          headers: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'Content-Type': 'application/xml',
+          },
+          body,
+        });
+        const parser = new XMLParser();
 
-      const bodyPut = parser.parse(resultPut.data).Result as Result;
-      if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
-        this.logger.error(url, body);
+        const bodyPut = parser.parse(resultPut.data).Result as Result;
+        if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
+          this.logger.error(url, body);
 
-        throw new Error(bodyPut.Error.Message);
+          throw new Error(bodyPut.Error.Message);
+        }
+      } else {
+        this.logger.debug(url, body);
       }
-    } else {
-      this.logger.debug(url, body);
-
+      encounter.synced = new Date();
+    } catch (error) {
+      this.logger.error(error);
+      encounter.synced = null;
+    } finally {
+      await encounter.save();
     }
-
-    encounter.synced = new Date();
-    // encounter.save();
   }
 }
 
