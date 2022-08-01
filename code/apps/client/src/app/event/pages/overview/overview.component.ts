@@ -187,8 +187,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   }
 
   async setOpenState(state: boolean) {
-    console.log('setOpenState', state);
-
     for (const selected of this.selection.selected) {
       await lastValueFrom(
         this._apollo.mutate({

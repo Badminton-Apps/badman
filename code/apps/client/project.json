@@ -81,8 +81,12 @@
           "core-js",
           "echarts",
           "zen-observable",
+          "moment",
           "moment-timezone",
-          "zrender"
+          "zrender",
+          "seed-to-color",
+          "error-stack-parser",
+          "rgbcolor"
         ],
         "serviceWorker": true,
         "ngswConfigPath": "apps/client/ngsw-config.json"
@@ -130,13 +134,7 @@
           "browserTarget": "client:build:development"
         }
       },
-      "defaultConfiguration": "development",
-      "options": {
-        "proxyConfig": "apps/client/proxy.conf.json",
-        "host": "0.0.0.0",
-        "disableHostCheck": true,
-        "watch": true
-      }
+      "defaultConfiguration": "development"
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",

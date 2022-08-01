@@ -7,3 +7,13 @@
 .app-date-selector-container {
   border-bottom: solid 1px #ccc;
 }
+
+
+span {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+:host.floating span {
+  opacity: 1;
+}

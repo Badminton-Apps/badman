@@ -4,21 +4,25 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef, Input,
+  ElementRef,
+  HostBinding,
+  Inject,
+  Input,
   OnDestroy,
   Optional,
-  Self
+  Self,
 } from '@angular/core';
 import {
-  AbstractControl,
   ControlValueAccessor,
   FormControl,
   NgControl,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {
-  MatFormFieldControl
+  MatFormField,
+  MatFormFieldControl,
+  MAT_FORM_FIELD,
 } from '@angular/material/form-field';
 import moment, { Moment } from 'moment';
 import { Subject } from 'rxjs';
@@ -31,6 +35,9 @@ const selector = 'badman-date-selector';
   templateUrl: './date-selector.component.html',
   styleUrls: ['./date-selector.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: MatFormFieldControl, useExisting: DateSelectorComponent },
+  ],
 })
 export class DateSelectorComponent
   implements ControlValueAccessor, MatFormFieldControl<Moment>, OnDestroy
@@ -64,6 +71,7 @@ export class DateSelectorComponent
   stateChanges = new Subject<void>();
   focused = false;
   touched = false;
+  controlType = selector;
   id = `${selector}-${DateSelectorComponent.nextId++}`;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -78,6 +86,7 @@ export class DateSelectorComponent
     return !this.dateControl;
   }
 
+  @HostBinding('class.floating')
   get shouldLabelFloat() {
     return this.focused || !this.empty;
   }
@@ -117,6 +126,7 @@ export class DateSelectorComponent
     }
     return null;
   }
+
   set value(dateInput: Moment | null) {
     const date = dateInput || moment();
     this.dateControl.setValue(date);
@@ -131,10 +141,10 @@ export class DateSelectorComponent
     private _focusMonitor: FocusMonitor,
     private _elementRef: ElementRef<HTMLElement>,
     private ref: ChangeDetectorRef,
+    @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl,
     private _dialog: MatDialog
   ) {
-
     this.dateControl = new FormControl(null, [Validators.required]);
 
     if (this.ngControl != null) {
@@ -175,6 +185,7 @@ export class DateSelectorComponent
       .subscribe((result) => {
         if (result) {
           this.value = moment(result);
+          this._handleInput();
         }
       });
   }
@@ -190,28 +201,9 @@ export class DateSelectorComponent
     }
   }
 
-  autoFocusNext(
-    control: AbstractControl,
-    nextElement?: HTMLInputElement
-  ): void {
-    if (!control.errors && nextElement) {
-      this._focusMonitor.focusVia(nextElement, 'program');
-    }
-  }
-
-  autoFocusPrev(
-    control: AbstractControl,
-    prevElement: HTMLInputElement,
-    minLength = 1
-  ): void {
-    if ((control.value?.length ?? 0) < minLength) {
-      this._focusMonitor.focusVia(prevElement, 'program');
-    }
-  }
-
   setDescribedByIds(ids: string[]) {
     const controlElement = this._elementRef.nativeElement.querySelector(
-      '.app-time-picker-input-container'
+      '.app-date-selector-container'
     );
     if (controlElement) {
       controlElement.setAttribute('aria-describedby', ids.join(' '));

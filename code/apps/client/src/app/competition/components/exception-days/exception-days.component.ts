@@ -55,10 +55,6 @@ export class ExceptionDaysComponent implements OnInit {
       end: endControl,
     });
 
-    this.whenChangedFocus?.subscribe(() => {
-      console.log('focus');
-    });
-
     if (this.isNew) {
       this.whenChangedFocus?.subscribe(() => {
         this.addException(false);
@@ -77,8 +73,6 @@ export class ExceptionDaysComponent implements OnInit {
       !this.fg.value?.start ||
       !this.fg.value?.end
     ) {
-      console.log(this.fg.value);
-
       if (showNotification) {
         this._snackbar.open('Please fill in all fields', 'OK', {
           duration: 2000,

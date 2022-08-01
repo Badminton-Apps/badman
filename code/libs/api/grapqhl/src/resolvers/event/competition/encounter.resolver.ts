@@ -231,7 +231,7 @@ export class EncounterCompetitionResolver {
     transaction: Transaction,
     player: Player,
     team: Team,
-    dates: EncounterChangeDate[]
+    existingDates: EncounterChangeDate[]
   ) {
     encounterChange.accepted = false;
 
@@ -272,7 +272,7 @@ export class EncounterCompetitionResolver {
     // Add new dates
     for (const date of change.dates) {
       // Check if the encounter has alredy a change for this date
-      let encounterChangeDate = dates.find(
+      let encounterChangeDate = existingDates.find(
         (r) => r.date.getTime() === date.date.getTime()
       );
 
@@ -295,12 +295,9 @@ export class EncounterCompetitionResolver {
       await encounterChangeDate.save({ transaction });
     }
 
-    // remove old dates
-    for (const date of dates) {
-      if (
-        change.dates.find((r) => r.date.getTime() === date.date.getTime()) ===
-        null
-      ) {
+    // Remove dates in the change request but not in existing dates
+    for (const date of existingDates) {
+      if (!change.dates.find((r) => r.date.getTime() === date.date.getTime())) {
         await date.destroy({ transaction });
       }
     }
