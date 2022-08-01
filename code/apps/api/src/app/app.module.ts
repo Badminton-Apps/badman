@@ -12,10 +12,42 @@ import { EventsModule } from './events';
 import { PdfService } from './services';
 import { HealthModule } from '@badman/health';
 import { HandlebarModule } from '@badman/handlebar';
+import {
+  utilities as nestWinstonModuleUtilities,
+  WinstonModule,
+} from 'nest-winston';
+import * as winston from 'winston';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    WinstonModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        if (configService.get('NODE_ENV') === 'production') {
+          console.log('development');
+          return {
+            transports: [
+              new winston.transports.Console({
+                format: winston.format.combine(winston.format.json()),
+              }),
+            ],
+          };
+        } else {
+          return {
+            transports: [
+              new winston.transports.Console({
+                format: winston.format.combine(
+                  winston.format.timestamp(),
+                  nestWinstonModuleUtilities.format.nestLike()
+                ),
+              }),
+            ],
+          };
+        }
+      },
+      inject: [ConfigService],
+    }),
     HandlebarModule,
     GeneratorModule,
     DatabaseModule,
@@ -26,7 +58,7 @@ import { HandlebarModule } from '@badman/handlebar';
     HealthModule,
   ],
   controllers: [AppController, PdfController, RankingController],
-  providers: [PdfService],
+  providers: [Logger, PdfService],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);

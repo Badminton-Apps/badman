@@ -1,8 +1,8 @@
 import { DatabaseModule } from '@badman/api/database';
 import { QueueModule } from '@badman/queue';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CronService } from './crons';
 import {
   EnterScoresProcessor,
@@ -13,9 +13,15 @@ import {
   GlobalConsumer,
 } from './processors';
 import { VisualService } from './services';
+import {
+  utilities as nestWinstonModuleUtilities,
+  WinstonModule,
+} from 'nest-winston';
+import * as winston from 'winston';
 
 @Module({
   providers: [
+
     GlobalConsumer, 
     
     SyncDateProcessor,
@@ -29,7 +35,33 @@ import { VisualService } from './services';
     VisualService,
   ],
   imports: [
-    ConfigModule,
+    ConfigModule.forRoot(),
+    WinstonModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        if (configService.get('NODE_ENV') === 'production') {
+          return {
+            transports: [
+              new winston.transports.Console({
+                format: winston.format.combine(winston.format.json()),
+              }),
+            ],
+          };
+        } else {
+          return {
+            transports: [
+              new winston.transports.Console({
+                format: winston.format.combine(
+                  winston.format.timestamp(),
+                  nestWinstonModuleUtilities.format.nestLike()
+                ),
+              }),
+            ],
+          };
+        }
+      },
+      inject: [ConfigService],
+    }),
     DatabaseModule,
     ScheduleModule.forRoot(),
     QueueModule,
