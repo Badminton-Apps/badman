@@ -1,6 +1,6 @@
 {
   "name": "badman",
-  "version": "5.16.9",
+  "version": "5.17.0",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
@@ -33,7 +33,7 @@
     "prepare": "cd .. && husky install"
   },
   "private": true,
-"dependencies": {
+  "dependencies": {
     "@agm/core": "^3.0.0-beta.0",
     "@angular-material-components/datetime-picker": "^8.0.0",
     "@angular-material-components/moment-adapter": "^8.0.0",
