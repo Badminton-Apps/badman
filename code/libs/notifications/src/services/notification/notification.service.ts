@@ -1,13 +1,16 @@
 import { EncounterChange } from '@badman/api/database';
 import { MailingService } from '@badman/mailing';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { EncounterNotifications } from '../../types';
 
 @Injectable()
 export class NotificationService {
+  private readonly logger = new Logger(NotificationService.name);
   constructor(private mailing: MailingService) {}
 
   notify(type: EncounterNotifications, data: unknown) {
+    this.logger.debug(`Notifying ${EncounterNotifications[type]}`, { data });
+
     if (type === EncounterNotifications.requested) {
       const { changeRequest, homeTeamRequests } = data as {
         changeRequest: EncounterChange;

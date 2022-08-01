@@ -138,6 +138,7 @@ export class MailingService {
 
       this._transporter.use('compile', hbsOptions);
       this._mailingEnabled = true;
+      this.initialized = true
     } catch (e) {
       this._mailingEnabled = false;
       this.logger.warn('Mailing disabled due to config setup failing', e);
@@ -188,9 +189,10 @@ export class MailingService {
         )}, cc: ${cc.join(',')}) `;
       }
 
-      const info = await this._transporter.sendMail(options);
-      this.logger.debug('Message sent: %s', info.messageId);
-      this.logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      await this._transporter.sendMail(options);
+      // this.logger.debug('Message sent: %s', info.messageId);
+      // this.logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      this.logger.debug(`Message sent: ${options.subject}, to: ${options.to}`);
     } catch (e) {
       this.logger.error('Hello', e);
     }
