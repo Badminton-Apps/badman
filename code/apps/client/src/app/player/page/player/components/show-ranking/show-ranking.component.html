@@ -11,7 +11,7 @@
       >
 
       <mat-icon
-        *ngIf="this.rankingPlace?.[this.type + 'Inactive']"
+        *ngIf="this.inactive"
         [matTooltip]="'ranking.inactive.' + this.type | translate"
         >warning
       </mat-icon>
@@ -35,7 +35,7 @@
         {{ this.viewingRankingPlace[this.type!] }}
       </span>
       <mat-icon
-        *ngIf="this.viewingRankingPlace?.[this.type + 'Inactive']"
+        *ngIf="this.viewingInactive"
         [matTooltip]="'ranking.inactive.' + this.type | translate"
         >warning
       </mat-icon>
@@ -44,18 +44,15 @@
 
   <div class="down">
     <ng-container *ngIf="this.viewingRankingPlace">
-      <span
-        class="viewing"
-        >{{ this.rankingPlace?.[this.type + 'Points'] }}</span
-      >
+      <span class="viewing">{{ this.points }}</span>
       <span>
         <span class="viewing">➔</span>
-        {{ this.viewingRankingPlace[this.type + 'Points'] }}
+        {{ viewingPoints }}
       </span>
     </ng-container>
 
     <ng-container *ngIf="!this.viewingRankingPlace">
-      <span>{{ this.rankingPlace?.[this.type + 'Points'] }}</span>
+      <span>{{ this.points }}</span>
     </ng-container>
   </div>
 </div>

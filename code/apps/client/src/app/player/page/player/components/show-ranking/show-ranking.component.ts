@@ -16,6 +16,12 @@ export class ShowRankingComponent implements OnInit {
   @Input()
   rankingPlace?: RankingPlace;
 
+  inactive = false;
+  points = 0;
+
+  viewingInactive = false;
+  viewingPoints = 0;
+
   @Input()
   viewingRankingPlace?: RankingPlace;
 
@@ -36,7 +42,15 @@ export class ShowRankingComponent implements OnInit {
           (s) => s.id === this.rankingPlace?.rankingSystem?.id
         );
         const level = this.rankingPlace[this.type];
-        const raningPlace = this.rankingPlace[`${this.type}Points`] ?? 0;
+        this.points = this.rankingPlace[`${this.type}Points`] ?? 0;
+        this.inactive = this.rankingPlace[`${this.type}Inactive`] as boolean;
+        if (this.viewingRankingPlace) {
+          this.viewingPoints =
+            this.viewingRankingPlace[`${this.type}Points`] ?? 0;
+          this.viewingInactive = this.viewingRankingPlace[
+            `${this.type}Inactive`
+          ] as boolean;
+        }
 
         if (
           !this.usedSystem ||
@@ -53,7 +67,7 @@ export class ShowRankingComponent implements OnInit {
             this.usedSystem.pointsToGoUp[
               this.usedSystem.amountOfLevels - level
             ];
-          if (raningPlace >= poitnsNeeded) {
+          if (this.points >= poitnsNeeded) {
             this.nextUp = 'upgrade';
           }
         }
@@ -69,7 +83,7 @@ export class ShowRankingComponent implements OnInit {
               this.usedSystem.amountOfLevels - level - 1
             ];
 
-          if (raningPlace < poitnsNeeded) {
+          if (this.points < poitnsNeeded) {
             this.nextUp = 'downgrade';
           }
         }
