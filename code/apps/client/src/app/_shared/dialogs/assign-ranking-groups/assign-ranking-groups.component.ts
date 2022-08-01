@@ -171,8 +171,6 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
     this.loading = true;
     const mutations: Observable<MutationResult>[] = [];
 
-    console.log(this.selection);
-
     for (const [groupKey, group] of this.selection) {
       const key = groupKey.replace('group-', '');
       const variables: { [key: string]: string[] | string } = {

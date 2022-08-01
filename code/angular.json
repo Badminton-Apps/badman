@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
     "api": "apps/api",
@@ -20,5 +21,5 @@
     "search": "libs/search",
     "worker-ranking": "apps/worker/ranking",
     "worker-sync": "apps/worker/sync"
-  }
+  }  
 }

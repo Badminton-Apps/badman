@@ -114,6 +114,7 @@ export class ShowRequestsComponent implements OnInit {
           });
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
+
           // Set initial
           this._updateSelected();
 
@@ -316,7 +317,8 @@ export class ShowRequestsComponent implements OnInit {
       control.get('selected')?.disable({ emitEvent: false });
 
       if (
-        (selected == null || selected?.['date'] == control.get('date')?.value) &&
+        (selected == null ||
+          selected?.['date'] == control.get('date')?.value) &&
         control.get('availabilityHome')?.value ==
           ChangeEncounterAvailability.POSSIBLE &&
         control.get('availabilityAway')?.value ==
