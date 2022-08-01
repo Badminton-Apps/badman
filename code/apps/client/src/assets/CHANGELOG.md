@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.17.2](https://github.com/Badminton-Apps/badman/compare/v5.17.1...v5.17.2) (2022-08-01)
+
+
+### Bug Fixes
+
+* **api:** moiving logger to winston ([c10fa2c](https://github.com/Badminton-Apps/badman/commit/c10fa2c992161d7bbbad98dcf84d92640c8290d5))
+* **worker-sync:** setting visual code ([fbff795](https://github.com/Badminton-Apps/badman/commit/fbff7952344ebaa3b9a11fcb3497e2a4729ca2c3))
+
 ### [5.17.1](https://github.com/Badminton-Apps/badman/compare/v5.17.0...v5.17.1) (2022-08-01)
 
 ## [5.17.0](https://github.com/Badminton-Apps/badman/compare/v5.16.9...v5.17.0) (2022-08-01)
