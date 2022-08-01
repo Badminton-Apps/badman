@@ -16,7 +16,10 @@ export class MailingService {
   private _mailingEnabled = false;
   private initialized = false;
 
-  constructor(private handleBarService: HandlebarService, private configService: ConfigService) {
+  constructor(
+    private handleBarService: HandlebarService,
+    private configService: ConfigService
+  ) {
     this.handleBarService.registerPartials(
       path.join(__dirname, 'assets', 'templates', 'mail', 'partials')
     );
@@ -43,24 +46,30 @@ export class MailingService {
 
     const otherTeam = homeTeamRequests ? encounter.away : encounter.home;
     const clubTeam = homeTeamRequests ? encounter.home : encounter.away;
-    const captain = homeTeamRequests
-      ? encounter.away.captain
-      : encounter.home.captain;
 
-    const options = {
-      from: 'info@badman.app',
-      to: otherTeam.email,
-      subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name}`,
-      template: 'encounterchange',
-      context: {
-        captain: captain.toJSON(),
-        otherTeam: otherTeam.toJSON(),
-        clubTeam: clubTeam.toJSON(),
-        encounter: encounter.toJSON(),
-      },
-    } as MailOptions;
+    const sendMail = async (team: Team, captain: Player, template: string) => {
+      moment.locale('nl-be');
+      const options = {
+        from: 'info@badman.app',
+        to: team.email,
+        subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name}`,
+        template,
+        context: {
+          captain: captain.toJSON(),
+          otherTeam: otherTeam.toJSON(),
+          clubTeam: clubTeam.toJSON(),
+          encounter: encounter.toJSON(),
+          date: moment(encounter.date).format('LLLL'),
+        },
+      } as MailOptions;
 
-    await this._sendMail(options);
+      await this._sendMail(options);
+    };
+
+    // Send mail to the other team
+    await sendMail(otherTeam, otherTeam.captain, 'encounterchange');
+    // Send mail to the requester
+    await sendMail(clubTeam, clubTeam.captain, 'encounterchange-requester');
   }
 
   async sendRequestFinishedMail(changeRequest: EncounterChange) {
@@ -128,7 +137,7 @@ export class MailingService {
       });
 
       this._transporter.use('compile', hbsOptions);
-      this._mailingEnabled = this.configService.get('NODE_ENV') === 'production';
+      this._mailingEnabled = true;
     } catch (e) {
       this._mailingEnabled = false;
       this.logger.warn('Mailing disabled due to config setup failing', e);
@@ -160,11 +169,23 @@ export class MailingService {
         return;
       }
 
-      // Check if the to is filled in
-      options.to = Array.isArray(options.to) ? options.to : [options.to];
-      if (options.to === null || options.to.length === 0) {
-        this.logger.error('no mail adress?', { error: options });
-        return;
+      if (this.configService.get('NODE_ENV') !== 'production') {
+        // Check if the to is filled in
+        options.to = Array.isArray(options.to) ? options.to : [options.to];
+        if (options.to === null || options.to.length === 0) {
+          this.logger.error('no mail adress?', { error: options });
+          return;
+        }
+        const to = options.to ?? [];
+        const cc = (
+          Array.isArray(options.cc) ? options.cc : [options.cc] ?? []
+        ) as string[];
+        options.to = ['glenn.latomme@gmail.com'];
+        options.cc = [];
+
+        options.subject += `overwritten email original(to: ${to?.join(
+          ','
+        )}, cc: ${cc.join(',')}) `;
       }
 
       const info = await this._transporter.sendMail(options);
