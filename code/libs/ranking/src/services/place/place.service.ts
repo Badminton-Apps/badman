@@ -146,6 +146,7 @@ export class PlaceService {
           system.maxDiffLevels,
           system.amountOfLevels
         );
+        newRanking.updatePossible = true;
       }
 
       // Save the new ranking
