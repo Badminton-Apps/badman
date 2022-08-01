@@ -54,7 +54,10 @@ export class TournamentSyncEventProcessor extends StepProcessor {
       }).save({ transaction: this.transaction });
     } else {
       // Later we will change the search function to use the tournament code
-      if (event.visualCode === null) {
+      if (
+        event.visualCode === null ||
+        event.visualCode !== this.visualTournament.Code
+      ) {
         event.visualCode = this.visualTournament.Code;
         await event.save({ transaction: this.transaction });
       }
