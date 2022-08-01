@@ -55,29 +55,29 @@ export class SyncDateProcessor {
     </TournamentMatch>
   `;
 
+      const options = {
+        url,
+        method: 'PUT',
+        withCredentials: true,
+        auth: {
+          username: `${this.configService.get('VR_API_USER')}`,
+          password: `${this.configService.get('VR_API_PASS')}`,
+        },
+        headers: { 'Content-Type': 'application/xml' },
+        data: body,
+      };
+
       if (this.configService.get('NODE_ENV') === 'production') {
-        const resultPut = await axios.put(url, {
-          withCredentials: true,
-          auth: {
-            username: `${this.configService.get('VR_API_USER')}`,
-            password: `${this.configService.get('VR_API_PASS')}`,
-          },
-          headers: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            'Content-Type': 'application/xml',
-          },
-          body,
-        });
+        const resultPut = await axios(options);
         const parser = new XMLParser();
 
         const bodyPut = parser.parse(resultPut.data).Result as Result;
         if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
-          this.logger.error(url, body);
-
+          this.logger.error(options);
           throw new Error(bodyPut.Error.Message);
         }
       } else {
-        this.logger.debug(url, body);
+        this.logger.debug(options);
       }
       encounter.synced = new Date();
     } catch (error) {
