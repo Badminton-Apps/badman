@@ -34,68 +34,48 @@ export class SyncDateProcessor {
       return;
     }
 
+    const url = `${this.configService.get('VR_API')}/Tournament/${
+      event.visualCode
+    }/Match/${encounter.visualCode}/Date`;
+
+    const body = `
+    <TournamentMatch>
+        <TournamentID>${event.visualCode}</TournamentID>
+        <MatchID>${encounter.visualCode}</MatchID>
+        <MatchDate>${moment(encounter.date).format(
+          this.visualFormat
+        )}</MatchDate>
+    </TournamentMatch>
+  `;
+
     if (this.configService.get('NODE_ENV') === 'production') {
-      const resultPut = await axios.put(
-        `${this.configService.get('VR_API')}/Tournament/${
-          event.visualCode
-        }/Match/${encounter.visualCode}/Date`,
-        {
-          withCredentials: true,
-          auth: {
-            username: `${this.configService.get('VR_API_USER')}`,
-            password: `${this.configService.get('VR_API_PASS')}`,
-          },
-          headers: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            'Content-Type': 'application/xml',
-          },
-          body: `
-            <TournamentMatch>
-                <TournamentID>${event.visualCode}</TournamentID>
-                <MatchID>${encounter.visualCode}</MatchID>
-                <MatchDate>${moment(encounter.date).format(
-                  this.visualFormat
-                )}</MatchDate>
-            </TournamentMatch>
-          `,
-        }
-      );
+      const resultPut = await axios.put(url, {
+        withCredentials: true,
+        auth: {
+          username: `${this.configService.get('VR_API_USER')}`,
+          password: `${this.configService.get('VR_API_PASS')}`,
+        },
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'Content-Type': 'application/xml',
+        },
+        body,
+      });
       const parser = new XMLParser();
 
       const bodyPut = parser.parse(resultPut.data).Result as Result;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
-        this.logger.error(
-          `${this.configService.get('VR_API')}/Tournament/${
-            event.visualCode
-          }/Match/${encounter.visualCode}/Date`,
-          `<TournamentMatch>
-            <TournamentID>${event.visualCode}</TournamentID>
-            <MatchID>${encounter.visualCode}</MatchID>
-            <MatchDate>${moment(encounter.date).format(
-              this.visualFormat
-            )}</MatchDate>
-        </TournamentMatch>`
-        );
+        this.logger.error(url, body);
 
         throw new Error(bodyPut.Error.Message);
       }
     } else {
-      this.logger.debug(
-        'Putting the following',
-        `<TournamentMatch>
-            <TournamentID>${event.visualCode}</TournamentID>
-            <MatchID>${encounter.visualCode}</MatchID>
-            <MatchDate>${moment(encounter.date).format(
-              this.visualFormat
-            )}</MatchDate>
-        </TournamentMatch>`,
-        `${this.configService.get('VR_API')}/Tournament/${
-          event.visualCode
-        }/Match/${encounter.visualCode}/Date`
-      );
+      this.logger.debug(url, body);
+
     }
 
     encounter.synced = new Date();
+    // encounter.save();
   }
 }
 

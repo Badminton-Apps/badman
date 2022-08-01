@@ -34,6 +34,9 @@ const conventionalChangelog = require('conventional-changelog');
       bumpFiles: [
         { filename: 'package.json', type: 'json' },
         { filename: 'apps/client/src/version.json', type: 'json' },
+        { filename: 'apps/api/src/version.json', type: 'json' },
+        { filename: 'apps/worker/sync/src/version.json', type: 'json' },
+        { filename: 'apps/worker/ranking/src/version.json', type: 'json' },
       ],
       silent: false,
       skip: {

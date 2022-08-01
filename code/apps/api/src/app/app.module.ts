@@ -6,18 +6,18 @@ import { AppController, PdfController, RankingController } from './controllers';
 import { DatabaseModule } from '@badman/api/database';
 import { GeneratorModule } from '@badman/api/generator';
 import { ApiGrapqhlModule } from '@badman/api/grapqhl';
+import { HandlebarModule } from '@badman/handlebar';
+import { HealthModule } from '@badman/health';
 import { QueueModule } from '@badman/queue';
 import { SearchModule } from '@badman/search';
-import { EventsModule } from './events';
-import { PdfService } from './services';
-import { HealthModule } from '@badman/health';
-import { HandlebarModule } from '@badman/handlebar';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import * as winston from 'winston';
-
+import { format, transports } from 'winston';
+import versionPackage from '../version.json';
+import { EventsModule } from './events';
+import { PdfService } from './services';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -25,21 +25,29 @@ import * as winston from 'winston';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         if (configService.get('NODE_ENV') === 'production') {
-          console.log('development');
           return {
+            level: 'silly',
             transports: [
-              new winston.transports.Console({
-                format: winston.format.combine(winston.format.json()),
+              new transports.Console({
+                level: 'silly',
+                format: format.combine(
+                  format.label({ label: versionPackage.version }),
+                  format.json()
+                ),
               }),
             ],
           };
         } else {
           return {
+            level: 'silly',
             transports: [
-              new winston.transports.Console({
-                format: winston.format.combine(
-                  winston.format.timestamp(),
-                  nestWinstonModuleUtilities.format.nestLike()
+              new transports.Console({
+                level: 'silly',
+                format: format.combine(
+                  format.label({ label: versionPackage.version }),
+                  format.timestamp(),
+                  format.ms(),
+                  nestWinstonModuleUtilities.format.nestLike('Badman')
                 ),
               }),
             ],
