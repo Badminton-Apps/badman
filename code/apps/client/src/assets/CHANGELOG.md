@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.17.0](https://github.com/Badminton-Apps/badman/compare/v5.16.9...v5.17.0) (2022-08-01)
+
+
+### Features
+
+* **lib-mailing:** change encounter request requesting club in cc ([cd915c5](https://github.com/Badminton-Apps/badman/commit/cd915c565c1c22e338ba137517da310dec497fa1))
+
+
+### Bug Fixes
+
+* **client:** changing encounters ([0e6de3c](https://github.com/Badminton-Apps/badman/commit/0e6de3cd961664aaf15c07c63c9b9c10cc744854))
+* **lib-ranking:** simulations should set updated possible when running update ([43bb211](https://github.com/Badminton-Apps/badman/commit/43bb2111a0ca3881e30a6698d30040f5630d9393))
+
 ### [5.16.9](https://github.com/Badminton-Apps/badman/compare/v5.16.8...v5.16.9) (2022-07-29)
 
 
