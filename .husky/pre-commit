@@ -1,4 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd code && npx --yes nx affected --target=lint
+if [[ -t 1 && -t 2 ]]; then exec >/dev/tty 2>&1; fi
+
+cd code && yarn lint-staged
+
