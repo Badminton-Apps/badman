@@ -138,7 +138,9 @@ export class ShowRequestsComponent implements OnInit {
           if (!a.date || !b.date) {
             throw new Error('Date is null');
           }
-          return b.date?.getTime() - a.date?.getTime();
+
+          // sort for newest date
+          return moment(b.date).diff(moment(a.date));
         }
       )[0].date;
     }
