@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.20.0](https://github.com/Badminton-Apps/badman/compare/v5.19.0...v5.20.0) (2022-08-02)
+
+
+### Features
+
+* **client:** adding google analytics ([18bbbf4](https://github.com/Badminton-Apps/badman/commit/18bbbf4ae6a680ccf90bb206d8863e76e25a19f0))
+
 ## [5.19.0](https://github.com/Badminton-Apps/badman/compare/v5.18.2...v5.19.0) (2022-08-02)
 
 
