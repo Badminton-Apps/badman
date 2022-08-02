@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.18.2](https://github.com/Badminton-Apps/badman/compare/v5.18.1...v5.18.2) (2022-08-02)
+
+
+### Bug Fixes
+
+* **client:** adding new dates after selection would break the sorting ([093983e](https://github.com/Badminton-Apps/badman/commit/093983e2afc42e39c2dd7fffa0ca651b29cb41c0))
+
 ### [5.18.1](https://github.com/Badminton-Apps/badman/compare/v5.18.0...v5.18.1) (2022-08-01)
 
 
