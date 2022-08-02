@@ -43,8 +43,6 @@ export class CalendarComponent implements OnInit {
     [key: string]: string[];
   };
 
-  // public visibleTeamsOwn?: string[];
-  // public visibleTeamsOther?: string[];
   public firstDayOfMonth: moment.Moment;
   private year: number;
 
