@@ -9,6 +9,9 @@ server {
     location /robots.txt {
         alias   /usr/share/nginx/html/assets/robots.txt;
     }
+    location /ads.txt {
+        alias   /usr/share/nginx/html/assets/ads.txt;
+    }
 
     location / {
         root   /usr/share/nginx/html;
