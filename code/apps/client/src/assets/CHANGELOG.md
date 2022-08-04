@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.21.0](https://github.com/Badminton-Apps/badman/compare/v5.20.2...v5.21.0) (2022-08-04)
+
+
+### Features
+
+* **client:** move ads.txt to assets folder ([79fb001](https://github.com/Badminton-Apps/badman/commit/79fb001ad5b022d5deef847390c4c47229a7b0e6))
+
 ### [5.20.2](https://github.com/Badminton-Apps/badman/compare/v5.20.1...v5.20.2) (2022-08-04)
 
 ### [5.20.1](https://github.com/Badminton-Apps/badman/compare/v5.20.0...v5.20.1) (2022-08-04)
