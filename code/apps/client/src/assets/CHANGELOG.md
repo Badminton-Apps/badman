@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.20.1](https://github.com/Badminton-Apps/badman/compare/v5.20.0...v5.20.1) (2022-08-04)
+
+
+### Bug Fixes
+
+* **client:** disable translations for title ([493e69e](https://github.com/Badminton-Apps/badman/commit/493e69e950e11e37a031f86d98ab39f8d08f73e7))
+* **deps:** update nrwl monorepo to v14.5.2 ([28a17dd](https://github.com/Badminton-Apps/badman/commit/28a17dd7ddb1a4c9795eb2bd265f5d78b198c2ed))
+* **worker-sync:** visual doesn't work with timezones ([1dfe64c](https://github.com/Badminton-Apps/badman/commit/1dfe64c9220240df52fd60a7c085c5e14ea8d682))
+
 ## [5.20.0](https://github.com/Badminton-Apps/badman/compare/v5.19.0...v5.20.0) (2022-08-02)
 
 
