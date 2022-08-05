@@ -23,7 +23,7 @@ import {
 } from '@nestjs/graphql';
 import { logger } from 'elastic-apm-node';
 import { Sequelize } from 'sequelize-typescript';
-import { User } from '../../../decorators';
+import { User } from '@badman/api/authorization';
 import { ListArgs } from '../../../utils';
 
 @ObjectType()
@@ -37,7 +37,7 @@ export class PagedEventCompetition {
 @Resolver(() => EventCompetition)
 export class EventCompetitionResolver {
   private readonly logger = new Logger(EventCompetitionResolver.name);
-  
+
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => EventCompetition)
@@ -107,7 +107,10 @@ export class EventCompetitionResolver {
         );
       }
       // Update club
-      const result = await eventCompetitionDb.update(updateEventCompetitionData, { transaction });
+      const result = await eventCompetitionDb.update(
+        updateEventCompetitionData,
+        { transaction }
+      );
 
       // Commit transaction
       await transaction.commit();
