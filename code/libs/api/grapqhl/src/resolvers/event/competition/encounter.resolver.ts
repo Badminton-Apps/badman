@@ -30,7 +30,7 @@ import { Queue } from 'bull';
 import moment from 'moment';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize';
-import { User } from '../../../decorators';
+import { User } from '@badman/api/authorization';
 import { ListArgs } from '../../../utils';
 import { Sync, SyncQueue } from '@badman/queue';
 import {

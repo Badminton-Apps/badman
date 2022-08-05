@@ -2,18 +2,13 @@ import { ApiAuthorizationModule } from '@badman/api/authorization';
 import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { BaseRedisCache } from 'apollo-server-cache-redis';
-import {
-  ApolloServerPluginCacheControl,
-  ApolloServerPluginLandingPageLocalDefault,
-} from 'apollo-server-core';
+import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import {
   ApolloServerPlugin,
   BaseContext,
   GraphQLRequestContextDidResolveOperation,
 } from 'apollo-server-plugin-base';
 import apm from 'elastic-apm-node';
-import Redis from 'ioredis';
 import { join } from 'path';
 import {
   AvailabilityModule,
@@ -27,7 +22,6 @@ import {
   SecurityModule,
   TeamModule,
 } from './resolvers';
-import responseCachePlugin from 'apollo-server-plugin-response-cache';
 
 @Module({
   imports: [
@@ -35,26 +29,21 @@ import responseCachePlugin from 'apollo-server-plugin-response-cache';
       driver: ApolloDriver,
       playground: false,
       autoSchemaFile: join('schema/schema.gql'),
+      csrfPrevention: true,
+      // cache: GRAPHQL_CACHE,
       cache: 'bounded',
       context: ({ request }) => {
         return { req: request };
       },
       plugins: [
-        responseCachePlugin({
-          cache: new BaseRedisCache({
-            client: new Redis({
-              host: process.env.REDIS_HOST,
-              port: parseInt(process.env.REDIS_PORT, 10),
-              password: process.env.REDIS_PASSWORD,
-              db: 1,
-            }),
-          }),
-        }),
-        ApolloServerPluginCacheControl({
-          defaultMaxAge: 60,
-          calculateHttpHeaders: true,
-        }),
-        ApolloServerPluginLandingPageLocalDefault(),
+        // responseCachePlugin({
+        //   cache: GRAPHQL_CACHE,
+        // }),
+        // ApolloServerPluginCacheControl({
+        //   defaultMaxAge: 600,
+        //   calculateHttpHeaders: true,
+        // }),
+        ApolloServerPluginLandingPageLocalDefault({ embed: true }),
         // Add the operation name to transaction
         (): ApolloServerPlugin => ({
           async requestDidStart() {
