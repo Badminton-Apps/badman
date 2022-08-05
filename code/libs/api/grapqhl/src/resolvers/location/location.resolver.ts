@@ -21,7 +21,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
-import { User } from '../../decorators';
+import { User } from '@badman/api/authorization';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => Location)

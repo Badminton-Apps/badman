@@ -7,6 +7,7 @@ import {
   Location,
   Player,
 } from '@badman/api/database';
+import { User } from '@badman/api/authorization';
 import {
   Logger,
   NotFoundException,
@@ -22,7 +23,6 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
-import { User } from '../../decorators';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => Availability)

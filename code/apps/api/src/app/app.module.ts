@@ -18,6 +18,7 @@ import { format, transports } from 'winston';
 import versionPackage from '../version.json';
 import { EventsModule } from './events';
 import { PdfService } from './services';
+import { ApiAuthorizationModule } from '@badman/api/authorization';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -56,6 +57,7 @@ import { PdfService } from './services';
       },
       inject: [ConfigService],
     }),
+    ApiAuthorizationModule,
     HandlebarModule,
     GeneratorModule,
     DatabaseModule,

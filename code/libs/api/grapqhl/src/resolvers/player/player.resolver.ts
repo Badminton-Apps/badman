@@ -27,7 +27,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Op } from 'sequelize';
-import { LoggedInUser, User } from '../../decorators';
+import { LoggedInUser, User } from '@badman/api/authorization';
 import { ListArgs, queryFixer, WhereArgs } from '../../utils';
 import { Sequelize } from 'sequelize-typescript';
 

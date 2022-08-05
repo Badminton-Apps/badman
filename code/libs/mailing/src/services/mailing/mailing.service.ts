@@ -21,7 +21,7 @@ export class MailingService {
     private configService: ConfigService
   ) {
     this.handleBarService.registerPartials(
-      path.join(__dirname, 'assets', 'templates', 'mail', 'partials')
+      path.join(__dirname, './assets/templates/mail/partials')
     );
   }
 
@@ -138,7 +138,7 @@ export class MailingService {
 
       this._transporter.use('compile', hbsOptions);
       this._mailingEnabled = true;
-      this.initialized = true
+      this.initialized = true;
     } catch (e) {
       this._mailingEnabled = false;
       this.logger.warn('Mailing disabled due to config setup failing', e);

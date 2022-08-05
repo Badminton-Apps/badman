@@ -1,3 +1,5 @@
+import { User } from '@badman/api/authorization';
+import { Player } from '@badman/api/database';
 import { CpGeneratorService } from '@badman/api/generator';
 import {
   Simulation,
@@ -12,6 +14,7 @@ import { Queue } from 'bull';
 import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { basename, extname } from 'path';
+
 @Controller()
 export class AppController {
   private readonly logger = new Logger(AppController.name);
@@ -23,7 +26,14 @@ export class AppController {
   ) {}
 
   @Get('queue-sim')
-  async getQueueSim() {
+  async getQueueSim(
+    @User()
+    user: Player
+  ) {
+    if (!user.hasAnyPermission(['calculate:ranking'])) {
+      throw new Error('You do not have permission to do this');
+    }
+
     // //
     // this.rankingSim.add(
     //   Simulation.StartV2,
@@ -76,13 +86,35 @@ export class AppController {
       }
     );
   }
+
   @Get('queue-sync')
-  getQueueSync(@Query() { date }: { date: string }) {
-    return this.rankingSync.add(
-      Sync.SyncEvents,
-      { date },
-      { removeOnComplete: true }
-    );
+  getQueueSync(
+    @User()
+    user: Player,
+
+    @Query()
+    args: {
+      // Changed after date
+      date?: Date;
+      // Start from certain date
+      startDate?: Date;
+      // Skip types / event names
+      skip: string[];
+      // Only types / event names
+      only: string[];
+      // Continue from a previous (failed) run
+      offset: number;
+      // Only process a certain number of events
+      limit: number;
+    }
+  ) {
+    if (!user.hasAnyPermission(['calculate:ranking'])) {
+      throw new Error('You do not have permission to do this');
+    }
+
+    return this.rankingSync.add(Sync.SyncEvents, args, {
+      removeOnComplete: true,
+    });
   }
 
   @Get('cp')

@@ -1,3 +1,4 @@
+import { User } from '@badman/api/authorization';
 import {
   Club,
   EventEntry,
@@ -22,9 +23,8 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
 import { Op } from 'sequelize';
-import { User } from '../../decorators';
+import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => Team)
@@ -137,6 +137,7 @@ export class TeamsResolver {
         start: new Date(),
       },
     });
+
     return team;
   }
 
@@ -171,6 +172,7 @@ export class TeamsResolver {
       },
       { where: { teamId: team.id, playerId: player.id } }
     );
+    // const test = await GRAPHQL_CACHE.get('fqc:07b1794c5e168e308111a50f3c9d1935754344876843076b8654d69c3bd581ce');
 
     return team;
   }
