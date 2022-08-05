@@ -1,0 +1,21 @@
+installCRDs: true
+global:
+  leaderElection:
+    namespace: cert-manager
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
+webhook:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+cainjector:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
