@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.22.2](https://github.com/Badminton-Apps/badman/compare/v5.22.1...v5.22.2) (2022-08-05)
+
+
+### Bug Fixes
+
+* **backend:** increasing memory usage for backend ([5a9e69c](https://github.com/Badminton-Apps/badman/commit/5a9e69c5980651ba052683910213f7689bade0c5))
+
 ### [5.22.1](https://github.com/Badminton-Apps/badman/compare/v5.22.0...v5.22.1) (2022-08-05)
 
 
