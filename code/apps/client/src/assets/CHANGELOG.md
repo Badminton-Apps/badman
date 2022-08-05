@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.22.0](https://github.com/Badminton-Apps/badman/compare/v5.21.0...v5.22.0) (2022-08-05)
+
+
+### Features
+
+* **api:** caching grapqhl ([1d1c28b](https://github.com/Badminton-Apps/badman/commit/1d1c28be3cfeff3668e53b4ae36163d1d91b6faa))
+* lower resources requets ([8b256db](https://github.com/Badminton-Apps/badman/commit/8b256db02a371779335d45bf06c6699ef1961277))
+
+
+### Bug Fixes
+
+* **api:** disabeling cache again, wans't working correctly ([057bd02](https://github.com/Badminton-Apps/badman/commit/057bd024313542b06695511af88d490b45614148))
+* **deps:** update dependency puppeteer to v16 ([5fb64b9](https://github.com/Badminton-Apps/badman/commit/5fb64b90e26e4c6b4e6995408ad13908484342a8))
+* **deps:** update nrwl monorepo to v14.5.4 ([80d7eb9](https://github.com/Badminton-Apps/badman/commit/80d7eb9f5f9cf34460da9897cab91dc467a67a3e))
+
 ## [5.21.0](https://github.com/Badminton-Apps/badman/compare/v5.20.2...v5.21.0) (2022-08-04)
 
 
