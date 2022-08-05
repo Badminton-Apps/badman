@@ -122,7 +122,6 @@ jobs:
       - name: Checkout [pr]
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:

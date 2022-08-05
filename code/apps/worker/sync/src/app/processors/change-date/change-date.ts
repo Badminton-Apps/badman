@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { Job } from 'bull';
 import { XMLParser } from 'fast-xml-parser';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 @Processor({
   name: SyncQueue,
@@ -49,9 +49,9 @@ export class SyncDateProcessor {
     <TournamentMatch>
         <TournamentID>${event.visualCode}</TournamentID>
         <MatchID>${encounter.visualCode}</MatchID>
-        <MatchDate>${moment(encounter.date).format(
-          this.visualFormat
-        )}</MatchDate>
+        <MatchDate>${moment(encounter.date)
+          .tz('Europe/Brussels')
+          .format(this.visualFormat)}</MatchDate>
     </TournamentMatch>
   `;
 

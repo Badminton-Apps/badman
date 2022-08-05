@@ -2,9 +2,9 @@
 
 ## dev
 
-We greatly improved the development of the bodman.
+We greatly improved the development of the badman.
 
-you now only need docker installed
+You now only need docker installed.
 
 ### 1. Environment values
 
@@ -29,7 +29,7 @@ run: `npm run dev:up`
 
 ### 4. Profit
 
-badman should be availible @ http://localhost:4000
+Badman should be availible @ http://localhost:4000
 
 ### Debugging
 
