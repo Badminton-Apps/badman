@@ -133,9 +133,9 @@ jobs:
           key: node-modules-${{ hashFiles('code/package.json') }}
       - run: yarn install --frozen-lockfile --prefer-offline
       - run: npx nx-cloud start-ci-run
-      - run: npx nx affected --target=build --base=origin/main --head=${{ github.event.pull_request.head.ref }}
-      - run: npx nx affected --target=lint  --base=origin/main --head=${{ github.event.pull_request.head.ref }}
-      - run: npx nx affected --target=test  --base=origin/main --head=${{ github.event.pull_request.head.ref }}
+      - run: npx nx affected --target=build --base=remotes/origin/main
+      - run: npx nx affected --target=lint  --base=remotes/origin/main
+      - run: npx nx affected --target=test  --base=remotes/origin/main
       - run: npx nx-cloud stop-all-agents
         if: always()
 
