@@ -69,7 +69,7 @@ upgrade replica count (in redis.yaml) and appy:
 `helm repo update`
 `helm install ingress-controller ingress-nginx/ingress-nginx --namespace badman`
 
-`helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.8.2 --set installCRDs=true --set global.leaderElection.namespace=cert-manager`
+`helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.9.1 -f cert-manager.yaml`
 
 `kubectl apply -f /k8s/ingress/issuer-staging.yaml`
 
