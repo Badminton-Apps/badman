@@ -35,7 +35,7 @@
             class="badman-name"
           >
             <h1>Badman</h1>
-            <small>v{{ version }}</small>
+            <small data-clarity-unmask="true">v{{ version }}</small>
           </a>
         </div>
       </ng-container>
@@ -137,7 +137,7 @@
                 </mat-nav-list>
 
                 <badman-has-claim [any]="['enlist-any:team']">
-                <!-- <badman-has-claim [any]="['*_enlist:team', 'enlist-any:team']"> -->
+                  <!-- <badman-has-claim [any]="['*_enlist:team', 'enlist-any:team']"> -->
                   <mat-nav-list *ngIf="this.canEnroll$ | async">
                     <a
                       mat-list-item
@@ -239,7 +239,7 @@
             </badman-has-claim>
           </div>
         </mat-nav-list>
-        
+
         <badman-socials></badman-socials>
         <badman-banner [adSlot]="4690724012"></badman-banner>
       </div>

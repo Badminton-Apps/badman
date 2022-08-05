@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.21.0](https://github.com/Badminton-Apps/badman/compare/v5.20.2...v5.21.0) (2022-08-04)
+
+
+### Features
+
+* **client:** move ads.txt to assets folder ([79fb001](https://github.com/Badminton-Apps/badman/commit/79fb001ad5b022d5deef847390c4c47229a7b0e6))
+
+### [5.20.2](https://github.com/Badminton-Apps/badman/compare/v5.20.1...v5.20.2) (2022-08-04)
+
+### [5.20.1](https://github.com/Badminton-Apps/badman/compare/v5.20.0...v5.20.1) (2022-08-04)
+
+
+### Bug Fixes
+
+* **client:** disable translations for title ([493e69e](https://github.com/Badminton-Apps/badman/commit/493e69e950e11e37a031f86d98ab39f8d08f73e7))
+* **deps:** update nrwl monorepo to v14.5.2 ([28a17dd](https://github.com/Badminton-Apps/badman/commit/28a17dd7ddb1a4c9795eb2bd265f5d78b198c2ed))
+* **worker-sync:** visual doesn't work with timezones ([1dfe64c](https://github.com/Badminton-Apps/badman/commit/1dfe64c9220240df52fd60a7c085c5e14ea8d682))
+
+## [5.20.0](https://github.com/Badminton-Apps/badman/compare/v5.19.0...v5.20.0) (2022-08-02)
+
+
+### Features
+
+* **client:** adding google analytics ([18bbbf4](https://github.com/Badminton-Apps/badman/commit/18bbbf4ae6a680ccf90bb206d8863e76e25a19f0))
+
+## [5.19.0](https://github.com/Badminton-Apps/badman/compare/v5.18.2...v5.19.0) (2022-08-02)
+
+
+### Features
+
+* **client:** adding clarity ([bc72fce](https://github.com/Badminton-Apps/badman/commit/bc72fce87af2fc5777366ec13e7685ad79e95240))
+
+### [5.18.2](https://github.com/Badminton-Apps/badman/compare/v5.18.1...v5.18.2) (2022-08-02)
+
+
+### Bug Fixes
+
+* **client:** adding new dates after selection would break the sorting ([093983e](https://github.com/Badminton-Apps/badman/commit/093983e2afc42e39c2dd7fffa0ca651b29cb41c0))
+
+### [5.18.1](https://github.com/Badminton-Apps/badman/compare/v5.18.0...v5.18.1) (2022-08-01)
+
+
+### Bug Fixes
+
+* **worker-sync:** change encounter using a different format ([b4c6e58](https://github.com/Badminton-Apps/badman/commit/b4c6e589afe44bb8bd3c1ab96bf2f3625dc8ae61))
+
 ## [5.18.0](https://github.com/Badminton-Apps/badman/compare/v5.17.2...v5.18.0) (2022-08-01)
 
 
