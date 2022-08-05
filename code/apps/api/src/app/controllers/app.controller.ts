@@ -9,7 +9,15 @@ import {
   SyncQueue,
 } from '@badman/queue';
 import { InjectQueue } from '@nestjs/bull';
-import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { Queue } from 'bull';
 import { Response } from 'express';
 import { createReadStream } from 'fs';
@@ -87,12 +95,12 @@ export class AppController {
     );
   }
 
-  @Get('queue-sync')
+  @Post('queue-sync')
   getQueueSync(
     @User()
     user: Player,
 
-    @Query()
+    @Body()
     args: {
       // Changed after date
       date?: Date;
