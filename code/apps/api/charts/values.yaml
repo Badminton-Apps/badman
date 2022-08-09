@@ -95,3 +95,11 @@ env:
       secretKeyRef:
         name: mail-auth
         key: host
+  - name: APOLLO_KEY
+    value: service:Badman-PROD:DdwlGfdehSYN_RVG99YiQw
+  - name: APOLLO_GRAPH_ID
+    value: Badman-PROD
+  - name: APOLLO_GRAPH_VARIANT
+    value: current
+  - name: APOLLO_SCHEMA_REPORTING
+    value: "true"
