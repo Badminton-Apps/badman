@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.22.3](https://github.com/Badminton-Apps/badman/compare/v5.22.2...v5.22.3) (2022-08-09)
+
+
+### Bug Fixes
+
+* **worker-sync:** should be enough CPU for the sync ([77cab71](https://github.com/Badminton-Apps/badman/commit/77cab711eb4cb3a42cd7c3963425d08f82131c32))
+
 ### [5.22.2](https://github.com/Badminton-Apps/badman/compare/v5.22.1...v5.22.2) (2022-08-05)
 
 
