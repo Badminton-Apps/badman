@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.22.4](https://github.com/Badminton-Apps/badman/compare/v5.22.3...v5.22.4) (2022-08-09)
+
+
+### Bug Fixes
+
+* **api:** graph reporting to apollo ([8882610](https://github.com/Badminton-Apps/badman/commit/88826101e49388dd3ddd52bdf36b61416e61ea73))
+
 ### [5.22.3](https://github.com/Badminton-Apps/badman/compare/v5.22.2...v5.22.3) (2022-08-09)
 
 
