@@ -1,6 +1,6 @@
 {
   "name": "badman",
-  "version": "5.22.2",
+  "version": "5.22.3",
   "license": "MIT",
   "scripts": {
     "nx": "nx",
