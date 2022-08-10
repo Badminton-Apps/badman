@@ -3,9 +3,9 @@ import {
   EncounterCompetition,
   EventCompetition,
   SubEventCompetition,
-} from '@badman/api/database';
-import { accepCookies } from '@badman/pupeteer';
-import { SyncQueue } from '@badman/queue';
+} from '@badman/backend/database';
+import { accepCookies } from '@badman/backend/pupeteer';
+import { SyncQueue } from '@badman/backend/queue';
 import { Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import moment from 'moment';

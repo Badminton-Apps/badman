@@ -6,7 +6,7 @@ import {
   Player,
   RankingPlace,
   RankingSystem,
-} from '@badman/api/database';
+} from '@badman/backend/database';
 
 export class RankingProcessor {
   static async checkInactive(instances: RankingPlace[], options: SaveOptions) {

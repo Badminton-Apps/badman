@@ -4,7 +4,7 @@ import {
   EncounterCompetition,
   Game,
   SubEventCompetition,
-} from '@badman/api/database';
+} from '@badman/backend/database';
 import { Op } from 'sequelize';
 import { SubEventStepData } from '.';
 import { StepProcessor, StepOptions } from '../../../../processing';

@@ -4,7 +4,7 @@ import {
   Processor,
 } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { SyncQueue } from '@badman/queue';
+import { SyncQueue } from '@badman/backend/queue';
 
 @Processor({
   name: SyncQueue,

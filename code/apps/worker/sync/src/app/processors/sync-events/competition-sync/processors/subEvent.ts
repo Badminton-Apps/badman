@@ -3,7 +3,7 @@ import {
   LevelType,
   SubEventCompetition,
   SubEventType,
-} from '@badman/api/database';
+} from '@badman/backend/database';
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
