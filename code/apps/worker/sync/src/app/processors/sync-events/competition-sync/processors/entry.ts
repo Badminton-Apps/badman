@@ -2,7 +2,7 @@ import {
   EventCompetition,
   SubEventCompetition,
   Team,
-} from '@badman/api/database';
+} from '@badman/backend/database';
 import { isArray } from 'class-validator';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
@@ -16,7 +16,7 @@ export class EntryProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions 
+    options?: StepOptions
   ) {
     super(options);
   }

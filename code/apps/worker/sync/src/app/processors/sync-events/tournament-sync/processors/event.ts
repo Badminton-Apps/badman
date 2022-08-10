@@ -1,4 +1,4 @@
-import { EventTournament } from '@badman/api/database';
+import { EventTournament } from '@badman/backend/database';
 import moment, { Moment } from 'moment';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService } from '../../../../services';

@@ -5,7 +5,7 @@ import {
   GameStatus,
   GameType,
   Player,
-} from '@badman/api/database';
+} from '@badman/backend/database';
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
