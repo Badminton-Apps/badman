@@ -1,0 +1,69 @@
+<div fxLayout="row" fxLayoutGap="10px">
+  <mat-form-field fxFlex="auto" appearance="outline" fxFlex="auto">
+    <mat-label>Search</mat-label>
+    <input
+      (onAutocompleteSelected)="syncAutoComplete($event)"
+      matGoogleMapsAutocomplete
+      matInput
+    />
+    <mat-icon color="primary" matSuffix>search</mat-icon>
+  </mat-form-field>
+</div>
+
+<mat-divider></mat-divider>
+
+<form [formGroup]="this.locationForm">
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="auto">
+      <mat-label>{{ 'input.name' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        alt="name"
+        autocomplete="name"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="80">
+      <mat-label>{{ 'input.street' | translate }}</mat-label>
+      <input formControlName="street" matInput required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="20">
+      <mat-label>{{ 'input.streetnumber' | translate }}</mat-label>
+      <input formControlName="streetNumber" matInput required />
+    </mat-form-field>
+  </div>
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="20">
+      <mat-label>{{ 'input.postalcode' | translate }}</mat-label>
+      <input formControlName="postalcode" matInput required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="40">
+      <mat-label>{{ 'input.city' | translate }}</mat-label>
+      <input formControlName="city" matInput required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="40">
+      <mat-label>{{ 'input.state' | translate }}</mat-label>
+      <input formControlName="state" matInput required />
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'input.phone' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="phone"
+        alt="phone"
+        autocomplete="phone"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'input.fax' | translate }}</mat-label>
+      <input matInput formControlName="fax" alt="fax" autocomplete="fax" />
+    </mat-form-field>
+  </div>
+</form>
