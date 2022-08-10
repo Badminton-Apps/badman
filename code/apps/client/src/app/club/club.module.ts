@@ -18,7 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CompetitionComponentsModule } from '../competition/components';
-import { SharedModule } from '../_shared';
+import { SharedModule } from '@badman/frontend/shared';
 import { ClubRoutingModule } from './club-routing.module';
 import { ClubFieldsComponent, RoleFieldsComponent } from './components';
 import {

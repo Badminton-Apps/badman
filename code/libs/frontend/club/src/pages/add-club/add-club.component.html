@@ -1,0 +1,7 @@
+<div class="mat-subheading-1">Add Club</div>
+
+<badman-club-fields (save)="this.add($event)"></badman-club-fields>
+
+<button mat-raised-button color="primary" (click)="this.save()">
+  {{ 'button.save' | translate }}
+</button>

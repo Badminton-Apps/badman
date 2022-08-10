@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { SharedModule } from '../../_shared';
+import { SharedModule } from '@badman/frontend/shared';
 import { PlayerInfoModule } from '../player-info/player-info.module';
 import { CompetitionEncounterComponent } from './components/competition-encounter/competition-encounter.component';
 import { GameInfoComponent } from './components/game-info/game-info.component';

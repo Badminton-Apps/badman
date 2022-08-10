@@ -26,7 +26,7 @@ const routes: Routes = [
       {
         path: 'club',
         loadChildren: () =>
-          import('./club/club.module').then((m) => m.ClubModule),
+          import('@badman/frontend/club').then((m) => m.ClubModule),
       },
       {
         path: 'tournament',
