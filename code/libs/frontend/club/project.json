@@ -1,0 +1,25 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/club/src",
+  "prefix": "badman",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/frontend/club"],
+      "options": {
+        "jestConfig": "libs/frontend/club/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/club/**/*.ts",
+          "libs/frontend/club/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

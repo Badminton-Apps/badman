@@ -1,0 +1,63 @@
+<form [formGroup]="clubForm">
+  <div class="mat-subheading-2">{{ 'input.required' | translate }}</div>
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ 'input.name' | translate }}</mat-label>
+      <input matInput formControlName="name" alt="name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ 'input.fullName' | translate }}</mat-label>
+      <input matInput formControlName="fullName" alt="fullName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="200px">
+      <mat-label>{{ 'input.abbreviation' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="abbreviation"
+        alt="abbreviation"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex="">
+      <mat-label>{{ 'club.number' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="clubId"
+        alt="clubId"
+        required
+        type="number"
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="mat-subheading-2">{{ 'usedForTeam.title' | translate }}</div>
+  <div fxLayout="row" id="explanation">
+    <span>{{ 'usedForTeam.description' | translate }}</span>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="10px">
+    <mat-form-field appearance="outline" fxFlex>
+      <mat-label>{{ 'usedForTeam.select' | translate }}</mat-label>
+      <mat-select formControlName="useForTeamName" required>
+        <mat-option value="name">{{ 'input.name' | translate }}</mat-option>
+        <mat-option value="fullName">{{
+          'input.fullName' | translate
+        }}</mat-option>
+        <mat-option value="abbreviation">{{
+          'input.abbreviation' | translate
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div fxFlex id="example">
+      <span>{{
+        'usedForTeam.example' | translate: { teamName: this.exampleTeamName }
+      }}</span>
+    </div>
+  </div>
+</form>

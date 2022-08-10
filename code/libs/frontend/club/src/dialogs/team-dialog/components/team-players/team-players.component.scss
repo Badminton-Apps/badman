@@ -1,0 +1,17 @@
+@import '@angular/material/theming';
+$config: mat-typography-config();
+
+.mat-subheading-2 {
+  small {
+    font-size: 10px;
+    margin-left: 5px;
+  }
+}
+
+app-player-search {
+  padding: 0 16px;
+}
+
+.no-players {
+  color: #aaaaaa;
+}

@@ -7,7 +7,7 @@ import {
   NgcStatusChangeEvent,
 } from 'ngx-cookieconsent';
 import { filter, map, Subscription } from 'rxjs';
-import { AuthGuard } from './_shared';
+import { AuthGuard } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-root',

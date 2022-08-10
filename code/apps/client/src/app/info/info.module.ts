@@ -6,7 +6,7 @@ import { ChangelogComponent } from './pages/changelog/changelog.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { CookiesComponent } from './pages/cookies/cookies.component';
 import { FaqComponent } from './pages/pages/faq/faq.component';
-import { SharedModule } from '../_shared';
+import { SharedModule } from '@badman/frontend/shared';
 import { MatTableModule } from '@angular/material/table';
 
 const materialModules = [MatExpansionModule, MatTableModule];

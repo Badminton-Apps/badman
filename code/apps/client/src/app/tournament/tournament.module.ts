@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { GameModule, StandingsModule } from '../modules';
-import { SharedModule } from '../_shared';
+import { SharedModule } from '@badman/frontend/shared';
 import {
   DetailDrawTournamentComponent,
   DetailTournamentComponent,

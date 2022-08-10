@@ -35,7 +35,11 @@
       "@badman/backend/ranking-calc": [
         "libs/backend/ranking-calc/src/index.ts"
       ],
-      "@badman/backend/search": ["libs/backend/search/src/index.ts"]
+      "@badman/backend/search": ["libs/backend/search/src/index.ts"],
+      "@badman/frontend/club": ["libs/frontend/club/src/index.ts"],
+      "@badman/frontend/config": ["libs/frontend/config/src/index.ts"],
+      "@badman/frontend/graphql": ["libs/frontend/graphql/src/index.ts"],
+      "@badman/frontend/shared": ["libs/frontend/shared/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
