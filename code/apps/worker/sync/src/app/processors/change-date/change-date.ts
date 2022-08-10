@@ -1,5 +1,5 @@
-import { EncounterCompetition } from '@badman/api/database';
-import { Sync, SyncQueue } from '@badman/queue';
+import { EncounterCompetition } from '@badman/backend/database';
+import { Sync, SyncQueue } from '@badman/backend/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

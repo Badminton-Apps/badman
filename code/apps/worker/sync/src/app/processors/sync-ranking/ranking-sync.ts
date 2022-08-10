@@ -4,7 +4,7 @@ import {
   RankingPlace,
   RankingSystem,
   RankingSystems,
-} from '@badman/api/database';
+} from '@badman/backend/database';
 import { Logger } from '@nestjs/common';
 import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
@@ -79,7 +79,6 @@ export class RankingSyncer {
           },
           transaction: args.transaction,
         });
-
 
         // Default sync 1 week
         const lastDate = moment().subtract(1, 'week');

@@ -4,7 +4,7 @@ import {
   GamePlayerMembership,
   GameStatus,
   Player,
-} from '@badman/api/database';
+} from '@badman/backend/database';
 import moment from 'moment-timezone';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService } from '../../../../services';

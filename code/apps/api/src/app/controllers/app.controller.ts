@@ -1,13 +1,13 @@
-import { User } from '@badman/api/authorization';
-import { Player } from '@badman/api/database';
-import { CpGeneratorService } from '@badman/api/generator';
+import { User } from '@badman/backend/authorization';
+import { Player } from '@badman/backend/database';
+import { CpGeneratorService } from '@badman/backend/generator';
 import {
   Simulation,
   SimulationQueue,
   SimulationV2Job,
   Sync,
   SyncQueue,
-} from '@badman/queue';
+} from '@badman/backend/queue';
 import { InjectQueue } from '@nestjs/bull';
 import {
   Body,

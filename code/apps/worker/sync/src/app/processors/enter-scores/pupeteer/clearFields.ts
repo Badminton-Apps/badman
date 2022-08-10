@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { waitForSelectors } from '@badman/pupeteer';
+import { waitForSelectors } from '@badman/backend/pupeteer';
 
 export async function clearFields(
   pupeteer: {

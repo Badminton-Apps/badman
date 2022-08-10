@@ -1,5 +1,9 @@
-import { Simulation, SimulationQueue, SimulationV2Job } from '@badman/queue';
-import { CalculationService } from '@badman/ranking';
+import {
+  Simulation,
+  SimulationQueue,
+  SimulationV2Job,
+} from '@badman/backend/queue';
+import { CalculationService } from '@badman/backend/ranking';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
