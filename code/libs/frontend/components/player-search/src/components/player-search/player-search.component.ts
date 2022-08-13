@@ -10,6 +10,12 @@ import {
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
+import {
+  Club,
+  NewPlayerComponent,
+  Player,
+  PlayerService,
+} from '@badman/frontend/shared';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, merge, Observable, of, ReplaySubject } from 'rxjs';
 import {
@@ -19,9 +25,6 @@ import {
   startWith,
   switchMap,
 } from 'rxjs/operators';
-import { PlayerService } from '../../../../services/player/player.service';
-import { NewPlayerComponent } from '../new-player/new-player.component';
-import { Club, Player } from './../../../../models';
 
 @Component({
   selector: 'badman-player-search',

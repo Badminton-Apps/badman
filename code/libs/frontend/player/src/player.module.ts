@@ -58,6 +58,7 @@ import { ShowRankingComponent } from './page/player';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentLineEchartsModule } from '@covalent/echarts/line';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
+import { PlayerSearchModule } from '@badman/frontend/components/player-search';
 
 const materialModules = [
   MatCardModule,
@@ -88,6 +89,8 @@ const otherModules = [
   CovalentLineEchartsModule,
   CovalentTooltipEchartsModule,
 ];
+
+const ownModules = [PlayerSearchModule];
 
 @NgModule({
   declarations: [
@@ -121,6 +124,7 @@ const otherModules = [
     SharedModule,
     ...materialModules,
     ...otherModules,
+    ...ownModules,
     GameResultModule,
     PlayerRoutingModule,
   ],
