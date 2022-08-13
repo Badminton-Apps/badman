@@ -16,7 +16,7 @@ import {
   RoleService,
   Team,
   TeamService,
-} from '../../../_shared';
+} from '@badman/frontend/shared';
 import {
   BehaviorSubject,
   combineLatest,
@@ -25,7 +25,7 @@ import {
 } from 'rxjs';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { LocationDialogComponent } from '../../dialogs';
-import { apolloCache } from '../../../graphql.module';
+import { apolloCache } from '@badman/frontend/graphql';
 
 @Component({
   templateUrl: './edit-club.component.html',

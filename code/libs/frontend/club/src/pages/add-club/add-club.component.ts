@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
-import { Club, ClubService } from '../../../_shared';
+import { Club, ClubService } from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './add-club.component.html',

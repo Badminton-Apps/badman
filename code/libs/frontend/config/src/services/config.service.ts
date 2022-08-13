@@ -1,21 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
+import { lastValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
 export class ConfigService {
-  private appConfig: any;
+  public appConfig?: AppConfig;
 
   constructor(private http: HttpClient) {}
 
-  loadAppConfig() {
-    return this.http
-      .get('/assets/config.json')
-      .toPromise()
-      .then((data) => {
-        this.appConfig = data;
-      });
+  async loadAppConfig() {
+    const data = await lastValueFrom(this.http.get('/assets/config.json'));
+    this.appConfig = data as AppConfig;
   }
 
   // This is an example property ... you can make it however you want.
@@ -24,7 +20,7 @@ export class ConfigService {
       throw Error('Config file not loaded!');
     }
 
-    return `${this.appConfig.api}/api/${this.appConfig.apiVersion}`
+    return `${this.appConfig.api}/api/${this.appConfig.apiVersion}`;
   }
 
   get graphqlUrl() {
@@ -32,14 +28,36 @@ export class ConfigService {
       throw Error('Config file not loaded!');
     }
 
-    return `${this.appConfig.api}/graphql`
+    return `${this.appConfig.api}/graphql`;
   }
 
-  get isProduction(){
+  get socketUrl() {
     if (!this.appConfig) {
       throw Error('Config file not loaded!');
     }
 
-    return this.appConfig.production == true 
+    return `${this.appConfig.api}/socket.io`;
   }
+
+  get isProduction() {
+    if (!this.appConfig) {
+      throw Error('Config file not loaded!');
+    }
+
+    return this.appConfig.production == true;
+  }
+}
+
+export interface Adsense {
+  adClient: string;
+  show: boolean;
+}
+
+export interface AppConfig {
+  production: boolean;
+  version: string;
+  api: string;
+  apiVersion: string;
+  apmServer: string;
+  adsense: Adsense;
 }

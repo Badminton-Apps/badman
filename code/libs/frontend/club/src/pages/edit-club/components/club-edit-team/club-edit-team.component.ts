@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { Club, Player, Team } from '../../../../../_shared';
+import { Club, Player, Team } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-club-edit-team',

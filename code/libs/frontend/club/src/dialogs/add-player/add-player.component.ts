@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Player } from '../../../_shared';
+import { Player } from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './add-player.component.html',

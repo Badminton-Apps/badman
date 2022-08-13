@@ -10,14 +10,14 @@ import {
   Observable,
 } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { apolloCache } from '../../../graphql.module';
+import { apolloCache } from '@badman/frontend/graphql';
 import {
   Club,
   ClubService,
   SystemService,
   Team,
   TeamService,
-} from '../../../_shared';
+} from '@badman/frontend/shared';
 import { AddPlayerComponent, TeamDialogComponent } from '../../dialogs';
 
 @Component({

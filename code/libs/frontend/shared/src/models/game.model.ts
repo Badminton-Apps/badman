@@ -1,4 +1,4 @@
-import { PlayerGame } from '../../_shared';
+import { PlayerGame } from '@badman/frontend/shared';
 import { CompetitionEncounter, TournamentDraw } from './events';
 import { RankingPoint } from './ranking-point.model';
 import { RankingSystem } from './ranking-system.model';

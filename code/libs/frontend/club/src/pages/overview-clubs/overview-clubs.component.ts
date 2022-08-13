@@ -13,7 +13,7 @@ import {
   getPageArgsFromQueryParams,
   getQueryParamsFromPageArgs,
   pageArgs,
-} from '../../../_shared';
+} from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './overview-clubs.component.html',
