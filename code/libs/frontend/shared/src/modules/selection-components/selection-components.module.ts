@@ -7,8 +7,8 @@ import { SelectClubComponent } from './select-club';
 import { SelectEventComponent } from './select-event/select-event.component';
 import { SelectEncounterComponent } from './select-encounter';
 import { SelectTeamComponent } from './select-team';
-import { SharedModule } from '@badman/frontend/shared';
 import { SelectPlayerComponent } from './select-player/select-player.component';
+import { SharedModule } from '../../shared.module';
 
 const materialModules = [
   MatAutocompleteModule,

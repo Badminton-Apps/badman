@@ -35,14 +35,13 @@ import {
   NotificationComponent,
   PlayerSearchComponent,
   RankingShellComponent,
+  SocialsComponent,
   TimePickerInputComponent,
   UserInfoComponent,
   WatchSystemInfoComponent,
 } from './components';
 import { AssignRankingGroupsComponent } from './dialogs';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
-import { SocialsComponent } from './components/ranking-shell/components/socials/socials.component';
-import { ConfigModule } from '@badman/frontend/config';
 
 const materialModules = [
   MatAutocompleteModule,
@@ -113,7 +112,6 @@ const exportedComponents = [
     SocialsComponent,
   ],
   imports: [
-    ConfigModule,
     RouterModule,
     CommonModule,
     FlexLayoutModule,
@@ -121,6 +119,6 @@ const exportedComponents = [
     ...materialModules,
   ],
 
-  exports: [...exportedComponents, RouterModule],
+  exports: [...exportedComponents],
 })
 export class SharedModule {}
