@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Claim, Role } from '../../../_shared';
+import { Claim, Role } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-role-fields',

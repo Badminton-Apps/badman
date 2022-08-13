@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
-import { apolloCache } from '../../../graphql.module';
+import { apolloCache } from '@badman/frontend/graphql';
 import {
   BehaviorSubject,
   combineLatest,
@@ -11,7 +11,6 @@ import {
   of,
 } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
-import * as updatePlayerMutation from '../../../_shared/graphql/players/mutations/UpdatePlayerMutation.graphql';
 import {
   ClaimService,
   Club,
@@ -20,7 +19,7 @@ import {
   Team,
   TeamService,
   Location,
-} from '../../../_shared';
+} from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './team-dialog.component.html',
@@ -239,7 +238,15 @@ export class TeamDialogComponent implements OnInit {
     await lastValueFrom(
       this.apollo
         .mutate<{ updatePlayer: Player }>({
-          mutation: updatePlayerMutation,
+          mutation: gql`
+            mutation UpdatePlayer($data: PlayerUpdateInput!) {
+              updatePlayer(data: $data) {
+                id
+                firstName
+                lastName
+              }
+            }
+          `,
           variables: {
             data: player,
           },

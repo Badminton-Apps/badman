@@ -14,9 +14,9 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import {
   MatSnackBarModule,
   MAT_SNACK_BAR_DEFAULT_OPTIONS,
@@ -25,12 +25,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
-import { ApmModule, ApmService } from '@elastic/apm-rum-angular';
+import { ConfigService } from '@badman/frontend/config';
 import {
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
+  SharedModule,
+  SocketModule,
+  SOCKET_URL,
+} from '@badman/frontend/shared';
+import { ApmModule, ApmService } from '@elastic/apm-rum-angular';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ApolloModule } from 'apollo-angular';
 import { CookieService } from 'ngx-cookie-service';
@@ -43,8 +45,8 @@ import { MomentModule } from 'ngx-moment';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GraphQLModule } from './graphql.module';
-import { SharedModule, ConfigService, SOCKET_URL } from '@badman/frontend/shared';
+import { GraphQLModule } from '@badman/frontend/graphql';
+
 const baseModules = [
   BrowserModule,
   AppRoutingModule,

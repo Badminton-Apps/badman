@@ -1,0 +1,19 @@
+yarn run v1.22.19
+$ nx run client:build:development
+
+> nx run client:build:development
+
+
+ 
+
+ >  NX   Running target "client:build" failed
+
+   Failed tasks:
+   
+   - client:build:development
+   
+   Hint: run the command with --verbose for more details.
+
+   See Nx Cloud run details at https://nx.app/runs/85feCLlrj3U
+
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

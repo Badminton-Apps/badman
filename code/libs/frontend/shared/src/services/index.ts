@@ -1,6 +1,5 @@
 // start:ng42.barrel
 export * from './security';
-export * from './config';
 export * from './device';
 export * from './events';
 export * from './player';

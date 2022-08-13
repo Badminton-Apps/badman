@@ -1,0 +1,25 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/info/src",
+  "prefix": "badman",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/frontend/info"],
+      "options": {
+        "jestConfig": "libs/frontend/info/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/info/**/*.ts",
+          "libs/frontend/info/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -24,7 +24,7 @@ import {
   EventTournament,
   Event,
 } from '../../models';
-import { environment } from '../../../../environments/environment';
+import { ConfigService } from '@badman/frontend/config';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +36,11 @@ export class EventService {
     total: number;
   }>({ completed: true, finished: 0, total: 0 });
 
-  constructor(private apollo: Apollo, private httpClient: HttpClient) {}
+  constructor(
+    private apollo: Apollo,
+    private httpClient: HttpClient,
+    private configService: ConfigService
+  ) {}
 
   getEvents(args?: {
     type?: EventType;
@@ -190,7 +194,7 @@ export class EventService {
 
   startImport(imported: Imported) {
     return this.httpClient.put(
-      `${environment.api}/api/${environment.apiVersion}/import/start/${imported.id}/${imported.event?.id}`,
+      `${this.configService.apiBaseUrl}/import/start/${imported.id}/${imported.event?.id}`,
       null
     );
   }
@@ -303,7 +307,7 @@ export class EventService {
 
       const req = new HttpRequest(
         'POST',
-        `${environment.api}/api/${environment.apiVersion}/import/file`,
+        `${this.configService.apiBaseUrl}/import/file`,
         formData,
         options
       );
@@ -337,7 +341,7 @@ export class EventService {
 
   finishEnrollment(club: Club, year: number) {
     return this.httpClient.post(
-      `${environment.api}/api/${environment.apiVersion}/enrollment/finish/${club.id}/${year}`,
+      `${this.configService.apiBaseUrl}/enrollment/finish/${club.id}/${year}`,
       null
     );
   }

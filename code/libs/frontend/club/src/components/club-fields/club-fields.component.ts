@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
-import { ClaimService, Club, UseForTeamName } from '../../../_shared';
+import { ClaimService, Club, UseForTeamName } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-club-fields',

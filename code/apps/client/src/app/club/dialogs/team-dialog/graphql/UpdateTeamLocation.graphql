@@ -1,5 +1,0 @@
-mutation UpdateLocation($locationId: ID!, $teamId: ID!, $use: Boolean!) {
-  updateTeamLocation(locationId: $locationId, teamId: $teamId, use: $use) {
-    id
-  }
-}

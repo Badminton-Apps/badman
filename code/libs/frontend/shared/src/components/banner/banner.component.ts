@@ -6,7 +6,7 @@ import {
   Input,
   ElementRef,
 } from '@angular/core';
-import { environment } from '../../../../environments/environment';
+import { ConfigService } from '@badman/frontend/config';
 import { Banner } from '../../models';
 
 @Component({
@@ -18,16 +18,21 @@ import { Banner } from '../../models';
 export class BannerComponent implements OnInit, AfterViewInit {
   banner!: Banner;
 
-  showAd = environment.adsense.show;
+  showAd = false;
 
   @Input()
   adSlot!: number;
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(
+    private elementRef: ElementRef,
+    private configService: ConfigService
+  ) {}
 
   ngOnInit() {
+    this.showAd = this.configService.appConfig?.adsense?.show ?? false;
+
     this.banner = new Banner(
-      environment.adsense.adClient,
+      this.configService.appConfig?.adsense.adClient,
       this.adSlot,
       'rectangle',
       false

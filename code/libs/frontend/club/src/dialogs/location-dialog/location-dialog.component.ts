@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
-import { Club, LocationService, Location } from '../../../_shared';
+import { Club, LocationService, Location } from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './location-dialog.component.html',
@@ -16,8 +16,9 @@ export class LocationDialogComponent implements OnInit {
   update$ = new BehaviorSubject(0);
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { location: Location; club: Club, compYears: number[] },
-    private locationService: LocationService,
+    @Inject(MAT_DIALOG_DATA)
+    public data: { location: Location; club: Club; compYears: number[] },
+    private locationService: LocationService
   ) {}
 
   ngOnInit(): void {

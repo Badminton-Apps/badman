@@ -52,6 +52,9 @@
         "polyfills": "apps/client/src/polyfills.ts",
         "tsConfig": "apps/client/tsconfig.app.json",
         "buildLibsFromSource": false,
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/frontend"]
+        },
         "customWebpackConfig": {
           "path": "apps/client/webpack.config.js"
         },

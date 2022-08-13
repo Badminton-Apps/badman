@@ -14,7 +14,7 @@ import {
   Observable,
   tap,
 } from 'rxjs';
-import { apolloCache } from '../../../graphql.module';
+import { apolloCache } from '@badman/frontend/graphql';
 import {
   EventCompetition,
   RankingGroup,

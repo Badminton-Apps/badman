@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, pairwise, startWith } from 'rxjs/operators';
-import { Club, Location, Player, Team } from '../../../../../_shared';
+import { Club, Location, Player, Team } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-team-fields',
@@ -48,7 +48,7 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
         this.calcTeamsOfType(this.team.type, true);
         this.teamForm?.get('teamNumber')?.enable();
         this.teamForm?.patchValue({
-          ...teamChanges?.currentValue
+          ...teamChanges?.currentValue,
         });
       } else {
         this.teamForm?.get('teamNumber')?.disable();
