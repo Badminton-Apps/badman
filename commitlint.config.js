@@ -16,16 +16,10 @@ module.exports = {
         'deps',
         'backend',
         'frontend',
-        ...(
-          await getProjects(
-            ctx,
-            ({ name, projectType }) => !name.includes('e2e')
-          )
-        )?.map((r) =>
-          r
-            ?.replace('code-apps-', '')
-            ?.replace('code-libs', 'lib')
-        ),
+        ...(await getProjects(
+          ctx,
+          ({ name, projectType }) => !name.includes('e2e')
+        )),
       ],
     ],
   },
