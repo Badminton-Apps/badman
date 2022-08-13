@@ -4,7 +4,7 @@ import { SocketService } from './socket.service';
 
 export function ListenTopic(topic: string, options?: DecoratorOptions) {
   return function (
-    target: object,
+    target: unknown,
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
@@ -19,15 +19,24 @@ export function ListenTopic(topic: string, options?: DecoratorOptions) {
 
     // overwrite any keys passed in to our decorator in the config object
     if (options) {
-      Object.keys(options).forEach((x) => (config[x] = options[x]));
+      Object.keys(options).forEach(
+        (x) =>
+          (config[x as keyof DecoratorOptions] =
+            options[x as keyof DecoratorOptions])
+      );
     }
 
     // Create subscription object
     let subscription: Subscription;
 
+    const typedTarget = target as {
+      ngOnDestroy: () => void;
+      ngOnInit: () => void;
+    };
+
     // Destroy subscription on component destroy
-    const _originalOnDestroy = target['ngOnDestroy'];
-    target['ngOnDestroy'] = function () {
+    const _originalOnDestroy = typedTarget['ngOnDestroy'];
+    typedTarget['ngOnDestroy'] = function () {
       subscription?.unsubscribe();
       if (_originalOnDestroy) {
         _originalOnDestroy?.apply(this);
@@ -35,8 +44,8 @@ export function ListenTopic(topic: string, options?: DecoratorOptions) {
     };
 
     // Store original context
-    const _originalOnInit = target['ngOnInit'];
-    target['ngOnInit'] = function () {
+    const _originalOnInit = typedTarget['ngOnInit'];
+    typedTarget['ngOnInit'] = function () {
       // Get the socket service
       const service = AppInjector.get(SocketService)?.getService({
         path: config.path,
