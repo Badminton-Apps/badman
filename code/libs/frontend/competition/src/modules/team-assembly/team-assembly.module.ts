@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { PlayerSearchModule } from '@badman/frontend/components/player-search';
 import {
   SelctionComponentsModule,
   SharedModule,
@@ -27,6 +28,8 @@ const materialModules = [
   MatIconModule,
 ];
 
+const ownModules = [PlayerSearchModule];
+
 @NgModule({
   declarations: [
     TeamAssemblyComponent,
@@ -36,6 +39,7 @@ const materialModules = [
   imports: [
     SharedModule,
     ...materialModules,
+    ...ownModules,
     TeamAssemblyRoutingModule,
     SelctionComponentsModule,
   ],

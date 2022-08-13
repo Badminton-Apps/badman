@@ -18,7 +18,8 @@ import {
   Team,
   TeamService,
 } from '@badman/frontend/shared';
-import { AddPlayerComponent, TeamDialogComponent } from '../../dialogs';
+import { AddPlayerComponent } from '../../dialogs';
+import { TeamDialogComponent } from '@badman/frontend/team';
 
 @Component({
   templateUrl: './detail-club.component.html',

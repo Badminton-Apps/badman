@@ -22,18 +22,17 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { HasClaimModule } from 'libs/frontend/components/has-claim/src';
 import { MomentModule } from 'ngx-moment';
 import {
   BannerComponent,
   BetaComponent,
   ClaimComponent,
   ConfirmationDialogComponent,
-  HasClaimComponent,
   HeaderSearchComponent,
   LanguageComponent,
   NewPlayerComponent,
   NotificationComponent,
-  PlayerSearchComponent,
   RankingShellComponent,
   SocialsComponent,
   TimePickerInputComponent,
@@ -68,6 +67,8 @@ const materialModules = [
   MatTableModule,
 ];
 
+const ownModules = [HasClaimModule];
+
 const exportedComponents = [
   AssignRankingGroupsComponent,
   BetaComponent,
@@ -76,24 +77,23 @@ const exportedComponents = [
   EnumToArrayPipe,
   FlexLayoutModule,
   FormsModule,
-  HasClaimComponent,
   LevelToLetterPipe,
   LoadingPipe,
   MatButtonModule,
   MatFormFieldModule,
   MatInputModule,
   MomentModule,
-  PlayerSearchComponent,
   ReactiveFormsModule,
   TranslateModule,
   TimePickerInputComponent,
+  // Temp putting this here so we don't break compatibility with other modules
+  HasClaimModule,
 ];
 
 @NgModule({
   declarations: [
     BannerComponent,
     RankingShellComponent,
-    PlayerSearchComponent,
     HeaderSearchComponent,
     NotificationComponent,
     LoadingPipe,
@@ -103,7 +103,6 @@ const exportedComponents = [
     ConfirmationDialogComponent,
     BetaComponent,
     ClaimComponent,
-    HasClaimComponent,
     NewPlayerComponent,
     UserInfoComponent,
     AssignRankingGroupsComponent,
@@ -117,6 +116,7 @@ const exportedComponents = [
     FlexLayoutModule,
     TranslateModule.forChild(),
     ...materialModules,
+    ...ownModules,
   ],
 
   exports: [...exportedComponents],
