@@ -10,8 +10,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PlayerSearchModule } from '@badman/frontend/components/player-search';
+import { HasClaimModule } from '@badman/frontend/components/has-claim';
 import { TranslateModule } from '@ngx-translate/core';
-import { HasClaimModule } from 'libs/frontend/components/has-claim/src';
 import {
   TeamDialogComponent,
   TeamFieldsComponent,
