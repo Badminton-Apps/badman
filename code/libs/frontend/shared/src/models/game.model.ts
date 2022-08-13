@@ -1,5 +1,5 @@
-import { PlayerGame } from '@badman/frontend/shared';
 import { CompetitionEncounter, TournamentDraw } from './events';
+import { PlayerGame } from './player.model';
 import { RankingPoint } from './ranking-point.model';
 import { RankingSystem } from './ranking-system.model';
 
@@ -30,7 +30,7 @@ export class Game {
   tournament?: TournamentDraw;
 
   constructor({ ...args }: Partial<Game>, rankingType?: RankingSystem) {
-    const parsedType = (args?.gameType as unknown as GameType) ?? null;
+    const parsedType = (args?.gameType as unknown as 'D' | 'MX' | 'S') ?? null;
     const parsedStatus =
       (args?.status as unknown as GameStatus) ?? GameStatus.NORMAL;
 
