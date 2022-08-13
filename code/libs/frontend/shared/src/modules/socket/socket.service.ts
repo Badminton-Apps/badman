@@ -1,4 +1,5 @@
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
+import { ConfigService } from '@badman/frontend/config';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 
 export const SOCKET_URL = new InjectionToken<string>('url');
@@ -11,7 +12,7 @@ export class SocketService {
   private services: Map<string, SocketNameSpace> = new Map();
 
   constructor(
-    @Inject(SOCKET_URL) private url: string,
+    private configService: ConfigService,
     @Optional() @Inject(SOCKET_PREFIX) private prefix: string
   ) {
     SocketService.instance = this;
@@ -25,7 +26,7 @@ export class SocketService {
     let service = this.services.get(path);
     if (!service) {
       service = new SocketNameSpace({
-        url: this.url,
+        url: this.configService.socketUrl,
         options: {
           path,
         },

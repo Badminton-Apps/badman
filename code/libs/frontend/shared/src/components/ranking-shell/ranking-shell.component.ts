@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ConfigService } from '@badman/frontend/config';
 import { Apollo, gql } from 'apollo-angular';
-import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Player } from '../../models';
@@ -14,16 +14,18 @@ export class RankingShellComponent implements OnDestroy, OnInit {
   private mobileQueryListener!: () => void;
   profile$!: Observable<Player>;
   canEnroll$!: Observable<boolean>;
-  version: string = environment.version;
+  version?: string;
 
   constructor(
     private user: UserService,
     public device: DeviceService,
     private changeDetectorRef: ChangeDetectorRef,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private config: ConfigService
   ) {}
 
   ngOnInit() {
+    this.version = this.config.appConfig?.version ?? '0.0.0';
     this.device.addEvent('change', this.mobileQueryListener);
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 

@@ -1,0 +1,25 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/competition/src",
+  "prefix": "badman",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/frontend/competition"],
+      "options": {
+        "jestConfig": "libs/frontend/competition/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/competition/**/*.ts",
+          "libs/frontend/competition/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

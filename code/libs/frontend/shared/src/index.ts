@@ -3,6 +3,7 @@ export * from './modules';
 export * from './factory';
 export * from './guards';
 export * from './models';
+export * from './dialogs';
 export * from './pipes';
 export * from './services';
 export * from './shared.module';

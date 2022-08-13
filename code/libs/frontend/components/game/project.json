@@ -1,0 +1,25 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/components/game/src",
+  "prefix": "badman",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/frontend/components/game"],
+      "options": {
+        "jestConfig": "libs/frontend/components/game/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/components/game/**/*.ts",
+          "libs/frontend/components/game/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

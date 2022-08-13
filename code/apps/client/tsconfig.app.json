@@ -4,12 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "types": []
   },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts",
-    "src/@types/graphql.d.ts",
-    "src/@types/json.d.ts"
-  ],
-  "include": ["src/**/*.d.ts"],
+  "files": ["src/main.ts", "src/polyfills.ts"],
+  "include": ["../../types/*.d.ts"],
   "exclude": ["**/*.test.ts", "**/*.spec.ts"]
 }

@@ -8,10 +8,10 @@ import {
   UrlTree,
 } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
+import { ConfigService } from '@badman/frontend/config';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, tap } from 'rxjs/operators';
-import { environment } from '../../../../environments/environment';
 import { ClaimService } from '../../services';
 
 @Injectable({
@@ -26,7 +26,8 @@ export class AuthGuard implements CanActivate {
     private claimService: ClaimService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private configService: ConfigService
   ) {
     this.loader$.pipe(debounceTime(300)).subscribe((loader) => {
       this.loader = loader;
@@ -88,7 +89,7 @@ export class AuthGuard implements CanActivate {
       }),
       tap((r) => {
         if (r == false) {
-          if (environment.production == false) {
+          if (this.configService.isProduction) {
             console.warn('No permissions', next.data?.['claims']);
           }
           this.snackBar.open(this.translate.instant('permission.no-perm'));

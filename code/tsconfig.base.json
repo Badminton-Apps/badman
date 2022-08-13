@@ -37,10 +37,28 @@
       ],
       "@badman/backend/search": ["libs/backend/search/src/index.ts"],
       "@badman/frontend/club": ["libs/frontend/club/src/index.ts"],
+      "@badman/frontend/competition": [
+        "libs/frontend/competition/src/index.ts"
+      ],
+      "@badman/frontend/components/game": [
+        "libs/frontend/components/game/src/index.ts"
+      ],
+      "@badman/frontend/components/player-info": [
+        "libs/frontend/components/player-info/src/index.ts"
+      ],
+      "@badman/frontend/components/standings": [
+        "libs/frontend/components/standings/src/index.ts"
+      ],
       "@badman/frontend/config": ["libs/frontend/config/src/index.ts"],
+      "@badman/frontend/event": ["libs/frontend/event/src/index.ts"],
       "@badman/frontend/graphql": ["libs/frontend/graphql/src/index.ts"],
-      "@badman/frontend/shared": ["libs/frontend/shared/src/index.ts"]
+      "@badman/frontend/info": ["libs/frontend/info/src/index.ts"],
+      "@badman/frontend/player": ["libs/frontend/player/src/index.ts"],
+      "@badman/frontend/shared": ["libs/frontend/shared/src/index.ts"],
+      "@badman/frontend/tournament": ["libs/frontend/tournament/src/index.ts"],
+      "@badman/frontend/training": ["libs/frontend/training/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+  "files": ["types/graphql.d.ts", "types/json.d.ts"]
 }

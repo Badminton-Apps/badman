@@ -17,9 +17,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CompetitionComponentsModule } from '@badman/frontend/competition';
+import { SharedModule } from '@badman/frontend/shared';
 import { ClubRoutingModule } from './club-routing.module';
 import { ClubFieldsComponent, RoleFieldsComponent } from './components';
-import { SharedModule } from '@badman/frontend/shared';
 import {
   AddPlayerComponent,
   LocationDialogComponent,
@@ -90,6 +91,11 @@ const materialModules = [
     ClubEditTeamComponent,
   ],
 
-  imports: [SharedModule, ...materialModules, ClubRoutingModule],
+  imports: [
+    SharedModule,
+    ...materialModules,
+    CompetitionComponentsModule,
+    ClubRoutingModule,
+  ],
 })
 export class ClubModule {}

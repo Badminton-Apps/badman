@@ -10,6 +10,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
+import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, merge, Observable, of, ReplaySubject } from 'rxjs';
 import {
   debounceTime,
@@ -69,10 +70,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
 
-  constructor(
-    private playerService: PlayerService,
-    private dialog: MatDialog
-  ) {}
+  constructor(private apollo: Apollo, private dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (!(changes['player']?.isFirstChange() ?? true)) {
@@ -98,14 +96,61 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       switchMap((r) => {
         this.clubId =
           this.club instanceof Club ? this.club?.id : this.club ?? undefined;
-
         const obs = this.clubId
-          ? this.playerService.searchClubPlayers(this.clubId, {
-              query: r,
-              where: this.where,
-              ranking: this.ranking,
-              personal: this.includePersonal,
-            })
+          ? this.apollo
+              .query<{ club: { players: Player[] } }>({
+                query: gql`
+                  query GetClubPlayers(
+                    $id: ID!
+                    $ranking: DateTime
+                    $includeRanking: Boolean!
+                    $where: JSONObject
+                    $personal: Boolean!
+                  ) {
+                    club(id: $id) {
+                      id
+                      players(where: $where) {
+                        id
+                        slug
+                        memberId
+                        firstName
+                        lastName
+                        gender
+                        competitionPlayer
+                        phone @include(if: $personal)
+                        email @include(if: $personal)
+                        rankingLastPlaces {
+                          id
+                          single
+                          double
+                          mix
+                        }
+                        rankingPlaces(where: { rankingDate: $ranking })
+                          @include(if: $includeRanking) {
+                          id
+                          rankingDate
+                          single
+                          double
+                          mix
+                        }
+                      }
+                    }
+                  }
+                `,
+                variables: {
+                  where: PlayerService.playerSearchWhere({
+                    query: r,
+                    where: this.where,
+                  }),
+                  id: this.clubId,
+                  includeRanking: this.ranking !== null,
+                  ranking: this.ranking ?? null,
+                  personal: this.includePersonal ?? false,
+                },
+              })
+              .pipe(
+                map((x) => x.data?.club?.players?.map((r) => new Player(r)))
+              )
           : of([]);
 
         return obs.pipe(
@@ -121,12 +166,48 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
         if (response?.results?.length && response?.results?.length > 0) {
           return of(response.results);
         } else if (this.searchOutsideClub) {
-          return this.playerService.searchPlayers({
-            query: response.query,
-            where: this.where,
-            includeClub: true,
-            ranking: this.ranking ?? undefined,
-          });
+          return this.apollo
+            .query<{ players: { rows: Player[] } }>({
+              query: gql`
+                query GetPlayers(
+                  $where: JSONObject
+                  $ranking: DateTime
+                  $includeRanking: Boolean!
+                ) {
+                  players(where: $where) {
+                    rows {
+                      id
+                      slug
+                      memberId
+                      firstName
+                      lastName
+                      competitionPlayer
+                      clubs {
+                        id
+                        name
+                      }
+                      rankingPlaces(where: { rankingDate: $ranking })
+                        @include(if: $includeRanking) {
+                        id
+                        rankingDate
+                        single
+                        double
+                        mix
+                      }
+                    }
+                  }
+                }
+              `,
+              variables: {
+                where: PlayerService.playerSearchWhere({
+                  query: response.query,
+                  where: this.where,
+                }),
+                includeRanking: this.ranking !== null,
+                ranking: this.ranking ?? null,
+              },
+            })
+            .pipe(map((x) => x.data?.players?.rows?.map((r) => new Player(r))));
         } else {
           return of([]);
         }
@@ -148,7 +229,29 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       .pipe(
         switchMap((p) => {
           if (typeof p == 'string') {
-            return lastValueFrom(this.playerService.getPlayer(p));
+            return lastValueFrom(
+              this.apollo.query({
+                query: gql`
+                  # Write your query or mutation here
+                  query GetUserInfoQuery($id: ID!) {
+                    player(id: $id) {
+                      id
+                      slug
+                      memberId
+                      firstName
+                      lastName
+                      sub
+                      gender
+                      competitionPlayer
+                      updatedAt
+                    }
+                  }
+                `,
+                variables: {
+                  id: p,
+                },
+              })
+            );
           }
           return of(p);
         })
@@ -173,12 +276,29 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       dialogRef.afterClosed().subscribe(async (player: Partial<Player>) => {
         if (player) {
           const dbPlayer = await lastValueFrom(
-            this.playerService.addPlayer({
-              memberId: player.memberId,
-              firstName: player.firstName,
-              lastName: player.lastName,
-              gender: player.gender,
-            })
+            this.apollo
+              .mutate<{ player: Partial<Player> }>({
+                mutation: gql`
+                  mutation AddPlayer($player: PlayerInput!) {
+                    addPlayer(player: $player) {
+                      id
+                      slug
+                      memberId
+                      firstName
+                      lastName
+                    }
+                  }
+                `,
+                variables: {
+                  player: {
+                    memberId: player.memberId,
+                    firstName: player.firstName,
+                    lastName: player.lastName,
+                    gender: player.gender,
+                  },
+                },
+              })
+              .pipe(map((x) => new Player(x.data?.player)))
           );
           if (!this.clearOnSelection) {
             this.formControl.setValue(player);

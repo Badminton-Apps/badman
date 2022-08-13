@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Club, Location } from '../../../../../_shared';
+import { Club, Location } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-club-edit-location',
@@ -22,5 +22,4 @@ export class ClubEditLocationComponent {
 
   @Input()
   location!: Location;
-
 }
