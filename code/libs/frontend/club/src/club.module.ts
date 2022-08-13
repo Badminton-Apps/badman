@@ -17,6 +17,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TeamModule } from '@badman/frontend/team';
 import { CompetitionComponentsModule } from '@badman/frontend/competition';
 import { SharedModule } from '@badman/frontend/shared';
 import { ClubRoutingModule } from './club-routing.module';
@@ -25,9 +26,6 @@ import {
   AddPlayerComponent,
   LocationDialogComponent,
   LocationFieldsComponent,
-  TeamDialogComponent,
-  TeamFieldsComponent,
-  TeamPlayersComponent,
 } from './dialogs';
 import {
   AddClubComponent,
@@ -41,6 +39,7 @@ import {
   OverviewClubsComponent,
   TeamOverviewComponent,
 } from './pages';
+import { PlayerSearchModule } from '@badman/frontend/components/player-search';
 
 const materialModules = [
   MatButtonModule,
@@ -66,6 +65,8 @@ const materialModules = [
   MatGoogleMapsAutocompleteModule,
 ];
 
+const ownModules = [PlayerSearchModule];
+
 @NgModule({
   declarations: [
     OverviewClubsComponent,
@@ -74,10 +75,6 @@ const materialModules = [
 
     LocationDialogComponent,
     LocationFieldsComponent,
-
-    TeamDialogComponent,
-    TeamFieldsComponent,
-    TeamPlayersComponent,
 
     AddClubComponent,
     EditClubComponent,
@@ -94,8 +91,10 @@ const materialModules = [
   imports: [
     SharedModule,
     ...materialModules,
+    ...ownModules,
     CompetitionComponentsModule,
     ClubRoutingModule,
+    TeamModule,
   ],
 })
 export class ClubModule {}

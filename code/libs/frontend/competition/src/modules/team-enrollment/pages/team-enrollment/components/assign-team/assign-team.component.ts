@@ -24,7 +24,7 @@ import {
   Team,
 } from '@badman/frontend/shared';
 import { combineLatest } from 'rxjs';
-import { TeamDialogComponent } from '@badman/frontend/club';
+import { TeamDialogComponent } from '@badman/frontend/team';
 
 interface Issues {
   level: string[];
