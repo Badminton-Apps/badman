@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RankingShellComponent } from './_shared';
+import { RankingShellComponent } from '@badman/frontend/shared';
 
 const routes: Routes = [
   {
@@ -10,47 +10,45 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./info/info.module').then((m) => m.InfoModule),
+          import('@badman/frontend/info').then((m) => m.InfoModule),
       },
 
-      {
-        path: 'admin',
-        loadChildren: () =>
-          import('./admin/admin.module').then((m) => m.AdminModule),
-      },
+      // {
+      //   path: 'admin',
+      //   loadChildren: () =>
+      //     import('@badman/frontend/admin').then((m) => m.AdminModule),
+      // },
       {
         path: 'player',
         loadChildren: () =>
-          import('./player/player.module').then((m) => m.PlayerModule),
+          import('@badman/frontend/player').then((m) => m.PlayerModule),
       },
       {
         path: 'club',
         loadChildren: () =>
-          import('./club/club.module').then((m) => m.ClubModule),
+          import('@badman/frontend/club').then((m) => m.ClubModule),
       },
       {
         path: 'tournament',
         loadChildren: () =>
-          import('./tournament/tournament.module').then(
-            (m) => m.tournamentModule
-          ),
+          import('@badman/frontend/tournament').then((m) => m.tournamentModule),
       },
       {
         path: 'competition',
         loadChildren: () =>
-          import('./competition/competition.module').then(
+          import('@badman/frontend/competition').then(
             (m) => m.CompetitionModule
           ),
       },
       {
         path: 'event',
         loadChildren: () =>
-          import('./event/event.module').then((m) => m.EventModule),
+          import('@badman/frontend/event').then((m) => m.EventModule),
       },
       {
         path: 'training',
         loadChildren: () =>
-          import('./training/training.module').then((m) => m.TrainingModule),
+          import('@badman/frontend/training').then((m) => m.TrainingModule),
       },
     ],
   },

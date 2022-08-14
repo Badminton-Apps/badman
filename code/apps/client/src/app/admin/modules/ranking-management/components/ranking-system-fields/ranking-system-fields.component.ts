@@ -9,7 +9,7 @@ import {
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime } from 'rxjs';
-import { RankingSystem, RankingGroup } from '../../../../../_shared';
+import { RankingSystem, RankingGroup } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-ranking-system-fields',

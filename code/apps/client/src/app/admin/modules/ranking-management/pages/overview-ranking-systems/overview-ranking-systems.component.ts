@@ -25,7 +25,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { RankingSystem, SystemService } from '../../../../../_shared';
+import { RankingSystem, SystemService } from '@badman/frontend/shared';
 import { RankingService } from '../../../../services';
 import { SimulateService } from '../../../../services/simulate.service';
 

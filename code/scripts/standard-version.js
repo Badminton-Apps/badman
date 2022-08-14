@@ -33,7 +33,7 @@ const conventionalChangelog = require('conventional-changelog');
       packageFiles: ['package.json'],
       bumpFiles: [
         { filename: 'package.json', type: 'json' },
-        { filename: 'apps/client/src/version.json', type: 'json' },
+        { filename: 'apps/client/src/assets/config.json', type: 'json' },
         { filename: 'apps/api/src/version.json', type: 'json' },
         { filename: 'apps/worker/sync/src/version.json', type: 'json' },
         { filename: 'apps/worker/ranking/src/version.json', type: 'json' },
