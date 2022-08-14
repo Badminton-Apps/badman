@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { ClaimService, Player, RankingSystem } from '@badman/frontend/shared';
+import { Player, RankingSystem } from '@badman/frontend/models';
+import { ClaimService } from '@badman/frontend/shared';
 @Component({
   templateUrl: './edit-player.component.html',
   styleUrls: ['./edit-player.component.scss'],

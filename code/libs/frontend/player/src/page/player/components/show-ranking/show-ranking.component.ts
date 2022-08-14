@@ -4,7 +4,7 @@ import {
   ChangeDetectionStrategy,
   Input,
 } from '@angular/core';
-import { RankingPlace, RankingSystem } from '@badman/frontend/shared';
+import { RankingPlace, RankingSystem } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-show-ranking',

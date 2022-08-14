@@ -7,12 +7,8 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import {
-  Player,
-  PlayerService,
-  RankingSystem,
-  SystemService,
-} from '@badman/frontend/shared';
+import { PlayerService, SystemService } from '@badman/frontend/shared';
+import { Player, RankingSystem } from '@badman/frontend/models';
 import { Apollo, gql } from 'apollo-angular';
 
 @Component({

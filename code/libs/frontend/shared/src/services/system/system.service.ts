@@ -9,7 +9,10 @@ import * as systemsGroupsQuery from '../../graphql/rankingSystem/queries/GetSyst
 import * as systemQuery from '../../graphql/rankingSystem/queries/GetSystemQuery.graphql';
 import * as systemCapsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryCaps.graphql';
 import * as systemWithCountsQuery from '../../graphql/rankingSystem/queries/GetSystemQueryWithCounts.graphql';
-import { RankingSystem, RankingGroup as RankingGroup } from './../../models';
+import {
+  RankingSystem,
+  RankingGroup as RankingGroup,
+} from '@badman/frontend/models';
 
 const WATCH_SYSTEM_KEY = 'system.id';
 @Injectable({

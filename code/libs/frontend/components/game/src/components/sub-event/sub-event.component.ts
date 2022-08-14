@@ -3,7 +3,7 @@ import {
   CompetitionEncounter,
   Player,
   TournamentDraw,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-sub-event',

@@ -4,7 +4,7 @@ import {
   ChangeDetectionStrategy,
   Input,
 } from '@angular/core';
-import { Entry } from '@badman/frontend/shared';
+import { Entry } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-standing',

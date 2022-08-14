@@ -8,7 +8,7 @@ import * as globalUserClaimsQuery from '../../graphql/security/queries/GetGlobal
 
 import { Observable, ReplaySubject } from 'rxjs';
 import * as updateGlobalUserClaimQuery from '../../graphql/security/mutations/UpdateClaimUser.graphql';
-import { Claim } from '../../models';
+import { Claim } from '@badman/frontend/models';
 import { UserService } from '../profile';
 
 @Injectable({
@@ -78,7 +78,6 @@ export class ClaimService {
       .pipe(map((x) => x.data?.player?.claims?.map((c) => new Claim(c))));
   }
 
- 
   updateGlobalUserClaim(playerId: string, claimId: string, active: boolean) {
     return this.apollo
       .mutate<{ claims: Claim[] }>({

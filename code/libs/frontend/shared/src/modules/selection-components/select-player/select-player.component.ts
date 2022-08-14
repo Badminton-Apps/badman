@@ -21,7 +21,7 @@ import {
   Observable,
   switchMap,
 } from 'rxjs';
-import { Player } from '../../../models';
+import { Player } from '@badman/frontend/models';
 import { PlayerService } from '../../../services';
 
 @Component({

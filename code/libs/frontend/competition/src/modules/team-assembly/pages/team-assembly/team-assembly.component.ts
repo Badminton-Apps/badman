@@ -8,11 +8,10 @@ import { lastValueFrom, map, switchMap } from 'rxjs';
 import {
   CompetitionEncounter,
   EventCompetition,
-  PdfService,
   Player,
-  SystemService,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 import { TeamAssemblyService } from '../../services/team-assembly.service';
+import { SystemService, PdfService } from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './team-assembly.component.html',

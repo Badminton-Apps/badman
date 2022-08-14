@@ -2,7 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
-import { Club, LocationService, Location } from '@badman/frontend/shared';
+import { LocationService } from '@badman/frontend/shared';
+import { Club, Location } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './location-dialog.component.html',

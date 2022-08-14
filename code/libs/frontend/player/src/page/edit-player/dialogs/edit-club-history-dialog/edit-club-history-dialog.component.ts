@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Club } from '@badman/frontend/shared';
+import { Club } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './edit-club-history-dialog.component.html',

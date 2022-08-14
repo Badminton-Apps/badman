@@ -22,7 +22,7 @@ import {
   EventTournament,
   CompetitionSubEvent,
   TournamentSubEvent,
-} from '../../models';
+} from '@badman/frontend/models';
 
 @Component({
   templateUrl: './assign-ranking-groups.component.html',

@@ -29,6 +29,7 @@
     "frontend-event": "libs/frontend/event",
     "frontend-graphql": "libs/frontend/graphql",
     "frontend-info": "libs/frontend/info",
+    "frontend-models": "libs/frontend/models",
     "frontend-player": "libs/frontend/player",
     "frontend-shared": "libs/frontend/shared",
     "frontend-team": "libs/frontend/team",

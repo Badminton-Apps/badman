@@ -11,7 +11,7 @@ import {
   shareReplay,
   tap,
 } from 'rxjs/operators';
-import { Player } from '../../models';
+import { Player } from '@badman/frontend/models';
 import { ConfigService } from '@badman/frontend/config';
 import { apolloCache } from '@badman/frontend/graphql';
 

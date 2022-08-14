@@ -20,11 +20,11 @@ import {
   Club,
   CompetitionSubEvent,
   LevelType,
-  SystemService,
   Team,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 import { combineLatest } from 'rxjs';
 import { TeamDialogComponent } from '@badman/frontend/team';
+import { SystemService } from '@badman/frontend/shared';
 
 interface Issues {
   level: string[];

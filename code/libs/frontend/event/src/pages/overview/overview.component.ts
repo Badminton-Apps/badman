@@ -6,7 +6,13 @@ import {
   trigger,
 } from '@angular/animations';
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -26,14 +32,16 @@ import {
 import { debounceTime, filter, map } from 'rxjs/operators';
 import { apolloCache } from '@badman/frontend/graphql';
 import {
-  Event,
-  EventCompetition,
-  EventTournament,
-  EventType,
   getPageArgsFromQueryParams,
   getQueryParamsFromPageArgs,
   pageArgs,
 } from '@badman/frontend/shared';
+import {
+  Event,
+  EventCompetition,
+  EventTournament,
+  EventType,
+} from '@badman/frontend/models';
 
 @Component({
   templateUrl: './overview.component.html',
@@ -210,7 +218,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async copy(templateRef) {
+  async copy(templateRef: TemplateRef<object>) {
     this._dialog
       .open(templateRef, {
         width: '300px',
@@ -342,7 +350,17 @@ class EventDataSeource
     this.loadingSubject.complete();
   }
 
-  private _getCompetitions(variables) {
+  private _getCompetitions(variables: {
+    take?: number;
+    skip?: number;
+    where: {
+      [key: string]: unknown;
+    };
+    order: {
+      field: string;
+      direction: SortDirection | 'ASC' | 'DESC';
+    }[];
+  }) {
     return this.aollo
       .query<{
         eventCompetitions: {
@@ -390,7 +408,17 @@ class EventDataSeource
         })
       );
   }
-  private _getTournaments(variables) {
+  private _getTournaments(variables: {
+    take?: number;
+    skip?: number;
+    where: {
+      [key: string]: unknown;
+    };
+    order: {
+      field: string;
+      direction: SortDirection | 'ASC' | 'DESC';
+    }[];
+  }) {
     return this.aollo
       .query<{
         eventTournaments: {

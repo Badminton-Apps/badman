@@ -11,15 +11,14 @@ import {
 } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { apolloCache } from '@badman/frontend/graphql';
-import {
-  Club,
-  ClubService,
-  SystemService,
-  Team,
-  TeamService,
-} from '@badman/frontend/shared';
+import { Club, Team } from '@badman/frontend/models';
 import { AddPlayerComponent } from '../../dialogs';
 import { TeamDialogComponent } from '@badman/frontend/team';
+import {
+  ClubService,
+  TeamService,
+  SystemService,
+} from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './detail-club.component.html',

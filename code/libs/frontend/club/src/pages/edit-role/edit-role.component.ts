@@ -11,8 +11,8 @@ import {
   take,
   toArray,
 } from 'rxjs/operators';
-import { Claim, Club, Role, RoleService } from '@badman/frontend/shared';
-
+import { Claim, Club, Role } from '@badman/frontend/models';
+import { RoleService } from '@badman/frontend/shared';
 @Component({
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss'],

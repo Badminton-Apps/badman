@@ -13,7 +13,7 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { Observable } from 'rxjs';
 import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
-import { CompetitionEncounter } from '../../../models';
+import { CompetitionEncounter } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-select-encounter',

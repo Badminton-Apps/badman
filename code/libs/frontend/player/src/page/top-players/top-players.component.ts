@@ -16,7 +16,8 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { pageArgs, RankingPlace, SystemService } from '@badman/frontend/shared';
+import { pageArgs, SystemService } from '@badman/frontend/shared';
+import { RankingPlace } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './top-players.component.html',
