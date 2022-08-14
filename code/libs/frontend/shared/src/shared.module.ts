@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -7,7 +7,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatOptionModule } from '@angular/material/core';
+import { DateAdapter, MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,7 +21,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HasClaimModule } from 'libs/frontend/components/has-claim/src';
 import { MomentModule } from 'ngx-moment';
 import {
@@ -40,6 +40,7 @@ import {
   WatchSystemInfoComponent,
 } from './components';
 import { AssignRankingGroupsComponent } from './dialogs';
+import { appInitializerFactory } from './factory';
 import { EnumToArrayPipe, LevelToLetterPipe, LoadingPipe } from './pipes';
 
 const materialModules = [
@@ -117,6 +118,14 @@ const exportedComponents = [
     TranslateModule.forChild(),
     ...materialModules,
     ...ownModules,
+  ],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFactory,
+      deps: [TranslateService, Injector, DateAdapter],
+      multi: true,
+    },
   ],
 
   exports: [...exportedComponents],
