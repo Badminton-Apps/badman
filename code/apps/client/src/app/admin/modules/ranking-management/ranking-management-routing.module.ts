@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from '../../../_shared';
+import { AuthGuard } from '@badman/frontend/shared';
 import {
   AddRankingSystemComponent,
   DetailRankingSystemComponent,

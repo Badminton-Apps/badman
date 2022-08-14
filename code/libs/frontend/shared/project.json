@@ -1,0 +1,25 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/shared/src",
+  "prefix": "badman",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/frontend/shared"],
+      "options": {
+        "jestConfig": "libs/frontend/shared/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/shared/**/*.ts",
+          "libs/frontend/shared/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

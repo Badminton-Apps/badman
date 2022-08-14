@@ -21,7 +21,7 @@ import {
   SystemService,
   EventTournament,
   ConfirmationDialogComponent,
-} from '../../../../../_shared';
+} from '@badman/frontend/shared';
 import {
   BehaviorSubject,
   combineLatest,

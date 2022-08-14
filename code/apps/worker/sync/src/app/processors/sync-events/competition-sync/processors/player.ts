@@ -1,4 +1,4 @@
-import { EventCompetition, Player } from '@badman/api/database';
+import { EventCompetition, Player } from '@badman/backend/database';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService } from '../../../../services';

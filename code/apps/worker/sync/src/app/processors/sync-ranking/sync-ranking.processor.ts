@@ -1,4 +1,4 @@
-import { SyncQueue, Sync } from '@badman/queue';
+import { SyncQueue, Sync } from '@badman/backend/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';

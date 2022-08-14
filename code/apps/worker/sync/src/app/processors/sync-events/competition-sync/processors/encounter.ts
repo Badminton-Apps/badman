@@ -3,7 +3,7 @@ import {
   EventCompetition,
   Game,
   Team,
-} from '@badman/api/database';
+} from '@badman/backend/database';
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
@@ -62,7 +62,9 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         continue;
       }
 
-      const matchDate = moment.tz(xmlTeamMatch.MatchTime, 'Europe/Brussels').toDate();
+      const matchDate = moment
+        .tz(xmlTeamMatch.MatchTime, 'Europe/Brussels')
+        .toDate();
       const dbEncounters = encounters.filter(
         (r) => r.visualCode === `${xmlTeamMatch.Code}`
       );

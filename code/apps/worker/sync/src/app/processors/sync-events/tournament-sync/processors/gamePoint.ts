@@ -6,8 +6,8 @@ import {
   RankingPlace,
   RankingPoint,
   RankingSystem,
-} from '@badman/api/database';
-import { getSystemCalc } from '@badman/ranking-calc';
+} from '@badman/backend/database';
+import { getSystemCalc } from '@badman/backend/ranking-calc';
 import { Op } from 'sequelize';
 import { StepProcessor } from '../../../../processing';
 import { StartVisualRankingDate } from '../../../../utils/visual';
