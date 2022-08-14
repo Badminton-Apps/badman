@@ -7,7 +7,7 @@ import {
   Player,
   TournamentDraw,
   TournamentSubEvent,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-games-result',

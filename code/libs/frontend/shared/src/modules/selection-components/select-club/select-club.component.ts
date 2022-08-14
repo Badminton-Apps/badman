@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
-import { Club } from '../../../models';
+import { Club } from '@badman/frontend/models';
 import { ClaimService, ClubService, UserService } from '../../../services';
 
 @Component({
@@ -30,7 +30,9 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   @Input()
   updateUrl = false;
 
-  formControl = new FormControl<string | undefined>(undefined, [Validators.required]);
+  formControl = new FormControl<string | undefined>(undefined, [
+    Validators.required,
+  ]);
   clubs!: Club[];
 
   filteredClubs?: Observable<Club[]>;
@@ -73,14 +75,10 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           } else if (single) {
             return this.claimSerice.claims$.pipe(
               map((r) =>
-                r.filter(
-                  (x) => x?.indexOf(this.singleClubPermission) != -1
-                )
+                r.filter((x) => x?.indexOf(this.singleClubPermission) != -1)
               ),
               map((r) =>
-                r.map((c) =>
-                  c?.replace(`_${this.singleClubPermission}`, '')
-                )
+                r.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))
               ),
               switchMap((ids) =>
                 this.clubService.getClubs({ ids, take: ids.length })

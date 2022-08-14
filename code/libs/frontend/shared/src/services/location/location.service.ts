@@ -6,7 +6,7 @@ import * as deleteLocationMutation from '../../graphql/locations/mutations/remov
 import * as updateLocationMutation from '../../graphql/locations/mutations/updateLocation.graphql';
 import * as locationQuery from '../../graphql/locations/queries/GetLocationQuery.graphql';
 import * as locationsQuery from '../../graphql/locations/queries/GetLocationsQuery.graphql';
-import { Location } from './../../models';
+import { Location } from '@badman/frontend/models';
 
 @Injectable({
   providedIn: 'root',

@@ -10,7 +10,7 @@ import * as clubQuery from '../../graphql/clubs/queries/GetClubQuery.graphql';
 import * as clubsQuery from '../../graphql/clubs/queries/GetClubsQuery.graphql';
 import * as clubGetCompYearsQuery from '../../graphql/clubs/queries/GetCompYearsQuery.graphql';
 import { pageArgs } from '../../utils';
-import { Club, Player } from './../../models';
+import { Club, Player } from '@badman/frontend/models';
 
 @Injectable({
   providedIn: 'root',

@@ -3,14 +3,14 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { v4 } from 'uuid';
 import { gql } from 'apollo-angular';
+import { ConfirmationDialogComponent } from '@badman/frontend/shared';
 import {
-  ConfirmationDialogComponent,
   Game,
   Player,
   PlayerGame,
   RankingPoint,
   RankingSystem,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 import { DocumentNode } from 'graphql';
 
 @Component({

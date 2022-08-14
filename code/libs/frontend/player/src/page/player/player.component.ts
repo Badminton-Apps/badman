@@ -21,10 +21,11 @@ import {
 import { apolloCache } from '@badman/frontend/graphql';
 import {
   DeviceService,
-  Player,
   PlayerService,
   UserService,
 } from '@badman/frontend/shared';
+
+import { Player } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './player.component.html',

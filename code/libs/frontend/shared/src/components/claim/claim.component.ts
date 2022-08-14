@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Claim } from '../../models';
+import { Claim } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-claim',

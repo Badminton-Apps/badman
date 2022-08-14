@@ -8,12 +8,8 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
-import {
-  Player,
-  RankingPlace,
-  RankingSystem,
-  SystemService,
-} from '@badman/frontend/shared';
+import { Player, RankingPlace, RankingSystem } from '@badman/frontend/models';
+import { SystemService } from '@badman/frontend/shared';
 import { map, Observable, switchMap } from 'rxjs';
 import { MergeAccountComponent } from '../../dialogs';
 

@@ -7,7 +7,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { ConfigService } from '@badman/frontend/config';
-import { Banner } from '../../models';
+import { Banner } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-banner',

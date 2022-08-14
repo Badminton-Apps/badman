@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EventCompetition } from '../../../models';
+import { EventCompetition } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-select-event',

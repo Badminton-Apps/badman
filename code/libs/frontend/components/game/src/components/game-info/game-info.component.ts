@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { Game, Player } from '@badman/frontend/shared';
+import { Game, Player } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-game-info',

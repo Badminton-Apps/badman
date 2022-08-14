@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable } from 'rxjs';
-import { Club, Location } from '@badman/frontend/shared';
+import { Club, Location } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-locations-availability',

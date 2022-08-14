@@ -4,12 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { AssignRankingGroupsComponent } from '@badman/frontend/shared';
 import {
+  TournamentSubEvent,
   GameType,
   EventTournament,
-  TournamentSubEvent,
-  AssignRankingGroupsComponent,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 
 @Component({
   templateUrl: './detail-tournament.component.html',
