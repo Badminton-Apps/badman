@@ -1,6 +1,6 @@
 import { logger } from 'elastic-apm-node';
 import { Page } from 'puppeteer';
-import { waitForSelectors } from '@badman/pupeteer';
+import { waitForSelectors } from '@badman/backend/pupeteer';
 
 export async function selectPlayer(
   pupeteer: {

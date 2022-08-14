@@ -1,4 +1,8 @@
-import { Player, RankingLastPlace, RankingPlace } from '@badman/api/database';
+import {
+  Player,
+  RankingLastPlace,
+  RankingPlace,
+} from '@badman/backend/database';
 import { Logger } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 

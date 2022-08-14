@@ -7,7 +7,7 @@ import {
   SystemCounts,
   RankingSystem,
   SystemService,
-} from '../../../../../_shared';
+} from '@badman/frontend/shared';
 import { SerieData } from './interfaces';
 
 @Component({

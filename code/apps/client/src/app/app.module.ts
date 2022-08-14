@@ -14,9 +14,9 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import {
   MatSnackBarModule,
   MAT_SNACK_BAR_DEFAULT_OPTIONS,
@@ -25,12 +25,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
-import { ApmModule, ApmService } from '@elastic/apm-rum-angular';
+import { ConfigService } from '@badman/frontend/config';
 import {
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
+  SharedModule,
+  SocketModule,
+  SOCKET_URL,
+} from '@badman/frontend/shared';
+import { ApmModule, ApmService } from '@elastic/apm-rum-angular';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ApolloModule } from 'apollo-angular';
 import { CookieService } from 'ngx-cookie-service';
@@ -43,10 +45,7 @@ import { MomentModule } from 'ngx-moment';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GraphQLModule } from './graphql.module';
-import { SocketModule, SOCKET_URL } from './_shared';
-import { appInitializerFactory } from './_shared/factory/appInitializerFactory';
-import { SharedModule } from './_shared/shared.module';
+import { GraphQLModule } from '@badman/frontend/graphql';
 
 const baseModules = [
   BrowserModule,
@@ -141,22 +140,23 @@ const cookieConfig: NgcCookieConsentConfig = {
   providers: [
     CookieService,
     ApmService,
-    // {
-    //   provide: ErrorHandler,
-    //   useClass: ApmErrorHandler,
-    // },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [ConfigService],
+      useFactory: (appConfigService: ConfigService) => {
+        return () => {
+          //Make sure to return a promise!
+          return appConfigService.loadAppConfig();
+        };
+      },
+    },
     {
       provide: NgxMatDateAdapter,
       useClass: NgxMatMomentAdapter,
       deps: [MAT_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
     { provide: NGX_MAT_DATE_FORMATS, useValue: NGX_MAT_MOMENT_FORMATS },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [TranslateService, Injector, DateAdapter],
-      multi: true,
-    },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
     {
@@ -168,15 +168,15 @@ const cookieConfig: NgcCookieConsentConfig = {
 })
 export class AppModule {
   // constructor(apmService: ApmService) {
-    // if (environment.production) {
-    //   // Agent API is exposed through this apm instance
-    //   apmService.init({
-    //     serviceName: 'badman-client',
-    //     serviceVersion: environment.version,
-    //     serverUrl: environment.apmServer,
-    //     environment: environment.production ? 'production' : 'development',
-    //   });
-    // }
+  // if (environment.production) {
+  //   // Agent API is exposed through this apm instance
+  //   apmService.init({
+  //     serviceName: 'badman-client',
+  //     serviceVersion: environment.version,
+  //     serverUrl: environment.apmServer,
+  //     environment: environment.production ? 'production' : 'development',
+  //   });
+  // }
   // }
 }
 

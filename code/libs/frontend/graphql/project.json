@@ -1,0 +1,25 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/graphql/src",
+  "prefix": "badman",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/frontend/graphql"],
+      "options": {
+        "jestConfig": "libs/frontend/graphql/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/graphql/**/*.ts",
+          "libs/frontend/graphql/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

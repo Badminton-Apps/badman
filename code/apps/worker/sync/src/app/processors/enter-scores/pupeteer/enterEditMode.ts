@@ -1,4 +1,4 @@
-import { EncounterCompetition } from '@badman/api/database';
+import { EncounterCompetition } from '@badman/backend/database';
 import { Page } from 'puppeteer';
 
 export async function enterEditMode(

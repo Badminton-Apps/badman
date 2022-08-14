@@ -3,13 +3,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppController, PdfController, RankingController } from './controllers';
 
-import { DatabaseModule } from '@badman/api/database';
-import { GeneratorModule } from '@badman/api/generator';
-import { ApiGrapqhlModule } from '@badman/api/grapqhl';
-import { HandlebarModule } from '@badman/handlebar';
-import { HealthModule } from '@badman/health';
-import { QueueModule } from '@badman/queue';
-import { SearchModule } from '@badman/search';
+import { DatabaseModule } from '@badman/backend/database';
+import { GeneratorModule } from '@badman/backend/generator';
+import { ApiGrapqhlModule } from '@badman/backend/grapqhl';
+import { HandlebarModule } from '@badman/backend/handlebar';
+import { HealthModule } from '@badman/backend/health';
+import { QueueModule } from '@badman/backend/queue';
+import { SearchModule } from '@badman/backend/search';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
@@ -18,7 +18,7 @@ import { format, transports } from 'winston';
 import versionPackage from '../version.json';
 import { EventsModule } from './events';
 import { PdfService } from './services';
-import { ApiAuthorizationModule } from '@badman/api/authorization';
+import { ApiAuthorizationModule } from '@badman/backend/authorization';
 @Module({
   imports: [
     ConfigModule.forRoot(),

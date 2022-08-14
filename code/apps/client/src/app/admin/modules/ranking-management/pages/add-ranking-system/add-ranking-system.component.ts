@@ -5,7 +5,7 @@ import {
   RankingSystem,
   RankingGroup,
   SystemService,
-} from '../../../../../_shared';
+} from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './add-ranking-system.component.html',

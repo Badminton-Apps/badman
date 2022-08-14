@@ -1,0 +1,9 @@
+<div class="location" *ngFor="let loc of locations$ | async">
+  <div class="mat-subheading-1">{{ loc.name }}</div>
+
+  <badman-location-availability
+    [location]="loc"
+    [club]="club"
+    [year]="year"
+  ></badman-location-availability>
+</div>

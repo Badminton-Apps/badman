@@ -1,5 +1,5 @@
-import { DatabaseModule } from '@badman/api/database';
-import { QueueModule } from '@badman/queue';
+import { DatabaseModule } from '@badman/backend/database';
+import { QueueModule } from '@badman/backend/queue';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -22,9 +22,8 @@ import versionPackage from '../version.json';
 
 @Module({
   providers: [
+    GlobalConsumer,
 
-    GlobalConsumer, 
-    
     SyncDateProcessor,
     SyncRankingProcessor,
     SyncEventsProcessor,

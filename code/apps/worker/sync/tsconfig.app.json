@@ -9,7 +9,7 @@
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
   "include": [
     "**/*.ts",
-    "../../../libs/pupeteer/src/shared.ts",
-    "../../../libs/pupeteer/src/signIn.ts"
+    "../../../libs-backend/pupeteer/src/shared.ts",
+    "../../../libs-backend/pupeteer/src/signIn.ts"
   ]
 }

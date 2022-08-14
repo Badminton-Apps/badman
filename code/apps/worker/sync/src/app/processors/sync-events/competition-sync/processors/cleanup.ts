@@ -2,18 +2,15 @@ import {
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
-  Game
-} from '@badman/api/database';
+  Game,
+} from '@badman/backend/database';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-
 
 export class CompetitionSyncCleanupProcessor extends StepProcessor {
   public event: EventCompetition;
 
-  constructor(
-    options?: StepOptions
-  ) {
+  constructor(options?: StepOptions) {
     super(options);
   }
 
@@ -69,5 +66,4 @@ export class CompetitionSyncCleanupProcessor extends StepProcessor {
       await removed.destroy({ transaction: this.transaction });
     }
   }
-
 }

@@ -1,6 +1,6 @@
-import { RankingGroup, RankingSystem } from '@badman/api/database';
-import { Simulation, SimulationQueue } from '@badman/queue';
-import { getSystemCalc } from '@badman/ranking-calc';
+import { RankingGroup, RankingSystem } from '@badman/backend/database';
+import { Simulation, SimulationQueue } from '@badman/backend/queue';
+import { getSystemCalc } from '@badman/backend/ranking-calc';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { DoneCallback, Job } from 'bull';

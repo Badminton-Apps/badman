@@ -8,7 +8,7 @@ import {
   RankingSystem,
   RankingGroup,
   SystemService,
-} from '../../../../../_shared';
+} from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './edit-ranking-system.component.html',
