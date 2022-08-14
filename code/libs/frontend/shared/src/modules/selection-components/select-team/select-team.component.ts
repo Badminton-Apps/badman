@@ -9,7 +9,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Team } from '../../../models';
+import { Team } from '@badman/frontend/models';
 import { TeamService, UserService } from '../../../services';
 import { Apollo, gql } from 'apollo-angular';
 

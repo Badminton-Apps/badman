@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { apolloCache } from '@badman/frontend/graphql';
 import { Apollo } from 'apollo-angular';
 import * as getBasePlayers from '../../graphql/players/queries/GetBasePlayersQuery.graphql';
-import { Club, Player } from '../../models';
+import { Club, Player } from '@badman/frontend/models';
 
 @Injectable({
   providedIn: 'root',

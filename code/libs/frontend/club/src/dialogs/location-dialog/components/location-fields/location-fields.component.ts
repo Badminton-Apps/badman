@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
-import { Club, Location } from '@badman/frontend/shared';
+import { Club, Location } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-location-fields',

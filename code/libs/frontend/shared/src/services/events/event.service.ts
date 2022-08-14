@@ -23,7 +23,7 @@ import {
   Imported,
   EventTournament,
   Event,
-} from '../../models';
+} from '@badman/frontend/models';
 import { ConfigService } from '@badman/frontend/config';
 
 @Injectable({

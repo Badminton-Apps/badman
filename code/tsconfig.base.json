@@ -59,6 +59,7 @@
       "@badman/frontend/event": ["libs/frontend/event/src/index.ts"],
       "@badman/frontend/graphql": ["libs/frontend/graphql/src/index.ts"],
       "@badman/frontend/info": ["libs/frontend/info/src/index.ts"],
+      "@badman/frontend/models": ["libs/frontend/models/src/index.ts"],
       "@badman/frontend/player": ["libs/frontend/player/src/index.ts"],
       "@badman/frontend/shared": ["libs/frontend/shared/src/index.ts"],
       "@badman/frontend/team": ["libs/frontend/team/src/index.ts"],

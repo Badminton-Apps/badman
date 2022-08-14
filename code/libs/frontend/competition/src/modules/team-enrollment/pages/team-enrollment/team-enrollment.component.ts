@@ -34,15 +34,14 @@ import {
   Club,
   Comment,
   EventCompetition,
-  EventService,
   SubEvent,
-  SystemService,
   Team,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 import * as addComment from './graphql/AddComment.graphql';
 import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
 import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
 import * as updateComment from './graphql/UpdateComment.graphql';
+import { SystemService, EventService } from '@badman/frontend/shared';
 
 export const STEP_AVAILIBILTY = 1;
 

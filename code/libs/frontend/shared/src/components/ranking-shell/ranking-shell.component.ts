@@ -3,7 +3,7 @@ import { ConfigService } from '@badman/frontend/config';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { Player } from '../../models';
+import { Player } from '@badman/frontend/models';
 import { DeviceService, UserService } from '../../services';
 
 @Component({

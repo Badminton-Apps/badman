@@ -4,7 +4,7 @@ import {
   ChangeDetectionStrategy,
   Input,
 } from '@angular/core';
-import { Club, Player } from '@badman/frontend/shared';
+import { Club, Player } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-merge-player',

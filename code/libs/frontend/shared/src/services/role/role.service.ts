@@ -9,7 +9,7 @@ import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.gr
 import * as roleQuery from '../../graphql/roles/queries/GetRoleQuery.graphql';
 import * as rolesQuery from '../../graphql/roles/queries/GetRolesQuery.graphql';
 import { UserService } from '../profile';
-import { Player, Role } from './../../models';
+import { Player, Role } from '@badman/frontend/models';
 
 @Injectable({
   providedIn: 'root',

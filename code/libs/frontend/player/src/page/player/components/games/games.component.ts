@@ -8,21 +8,9 @@ import {
   startWith,
   Subject,
 } from 'rxjs';
-import {
-  filter,
-  finalize,
-  map,
-  scan,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
-import {
-  Game,
-  Player,
-  PlayerService,
-  SystemService,
-} from '@badman/frontend/shared';
+import { filter, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { Game, Player } from '@badman/frontend/models';
+import { SystemService } from '@badman/frontend/shared';
 import { Apollo } from 'apollo-angular';
 import { UserGameQuery } from './UserGamesQuery';
 
@@ -47,7 +35,6 @@ export class GamesComponent implements OnChanges {
 
   constructor(
     private route: ActivatedRoute,
-    private playerService: PlayerService,
     private systemService: SystemService,
     private apollo: Apollo
   ) {}

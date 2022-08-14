@@ -8,12 +8,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
 import { combineLatest, Observable } from 'rxjs';
 import { groupBy, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
-import {
-  Claim,
-  ClaimService,
-  Player,
-  UserService,
-} from '@badman/frontend/shared';
+import { Claim, Player } from '@badman/frontend/models';
+import { ClaimService, UserService } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-edit-permissions',

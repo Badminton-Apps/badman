@@ -11,14 +11,12 @@ import {
   of,
 } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
+import { Club, Player, Team, Location } from '@badman/frontend/models';
+
 import {
   ClaimService,
-  Club,
-  Player,
   SystemService,
-  Team,
   TeamService,
-  Location,
 } from '@badman/frontend/shared';
 
 @Component({

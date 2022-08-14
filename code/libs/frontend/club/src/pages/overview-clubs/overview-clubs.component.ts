@@ -9,11 +9,11 @@ import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { debounceTime, filter, map, tap } from 'rxjs/operators';
 import {
-  Club,
   getPageArgsFromQueryParams,
   getQueryParamsFromPageArgs,
   pageArgs,
 } from '@badman/frontend/shared';
+import { Club } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './overview-clubs.component.html',

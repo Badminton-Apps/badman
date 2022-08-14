@@ -4,7 +4,7 @@ import {
   ChangeDetectionStrategy,
   Input,
 } from '@angular/core';
-import { Player } from '@badman/frontend/shared';
+import { Player } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-team-assembly-player',

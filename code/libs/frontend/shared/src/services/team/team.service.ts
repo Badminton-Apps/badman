@@ -2,7 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 
 import { map } from 'rxjs/operators';
-import { Player, Team } from './../../models';
+import { Player, Team } from '@badman/frontend/models';
 
 import * as teamQuery from '../../graphql/teams/queries/GetTeamQuery.graphql';
 

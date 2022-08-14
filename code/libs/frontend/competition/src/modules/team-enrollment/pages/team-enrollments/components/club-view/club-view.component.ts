@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
-import { Club, EventCompetition } from '@badman/frontend/shared';
+import { Club, EventCompetition } from '@badman/frontend/models';
 import { map, Observable, startWith, switchMap, tap } from 'rxjs';
 
 @Component({
@@ -73,14 +73,14 @@ export class ClubViewComponent implements OnInit {
           subEventIds: [
             ...new Set(
               result.data.eventCompetition.subEventCompetitions
-                ?.map((s) => s.id)
+                ?.map((s) => s?.id)
                 ?.flat()
             ),
           ],
           clubIds: [
             ...new Set(
               result.data.eventCompetition.subEventCompetitions
-                ?.map((s) => s.eventEntries?.map((e) => e.team?.clubId))
+                ?.map((s) => s?.eventEntries?.map((e) => e.team?.clubId))
                 ?.flat()
             ),
           ],

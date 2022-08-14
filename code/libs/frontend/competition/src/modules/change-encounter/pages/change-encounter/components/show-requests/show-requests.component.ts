@@ -26,8 +26,8 @@ import {
   CompetitionEncounter,
   EncounterChange,
   EncounterChangeDate,
-  EncounterService,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
+import { EncounterService } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-show-requests',

@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Apollo, gql } from 'apollo-angular';
 import { map, switchMap, take } from 'rxjs/operators';
-import { RankingSystem, SystemService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/shared';
+import { RankingSystem } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './landing.component.html',

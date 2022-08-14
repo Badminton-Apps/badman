@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, Observable } from 'rxjs';
 import { groupBy, map, mergeMap, switchMap, toArray } from 'rxjs/operators';
-import { Claim, Club, Role, RoleService } from '@badman/frontend/shared';
+import { Claim, Club, Role } from '@badman/frontend/models';
+import { RoleService } from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './add-role.component.html',

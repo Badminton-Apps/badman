@@ -14,13 +14,11 @@ import { forkJoin, lastValueFrom, map } from 'rxjs';
 import { randomLightColor } from 'seed-to-color';
 import { v4 } from 'uuid';
 import {
-  CompetitionEncounter,
   compPeriod,
   getCompetitionYear,
-  Location,
   sortTeams,
-  Team,
 } from '@badman/frontend/shared';
+import { CompetitionEncounter, Team, Location } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './calendar.component.html',

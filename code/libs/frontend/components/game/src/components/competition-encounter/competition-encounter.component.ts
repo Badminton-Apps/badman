@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map } from 'rxjs';
-import { CompetitionEncounter, Game } from '@badman/frontend/shared';
+import { CompetitionEncounter, Game } from '@badman/frontend/models';
 import { GAME_INFO } from '../../fragments';
 const DEFAULT_DURATION = 300;
 

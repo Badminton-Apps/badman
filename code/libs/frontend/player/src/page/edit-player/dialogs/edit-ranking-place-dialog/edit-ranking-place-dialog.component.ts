@@ -8,7 +8,7 @@ import {
   RankingPlace,
   RankingSystem,
   RankingSystems,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 
 @Component({
   templateUrl: './edit-ranking-place-dialog.component.html',

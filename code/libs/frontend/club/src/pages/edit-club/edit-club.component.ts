@@ -7,16 +7,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import {
   Club,
-  ClubService,
   EventCompetition,
   Location,
-  LocationService,
   Player,
   Role,
-  RoleService,
   Team,
-  TeamService,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 import {
   BehaviorSubject,
   combineLatest,
@@ -26,6 +22,12 @@ import {
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { LocationDialogComponent } from '../../dialogs';
 import { apolloCache } from '@badman/frontend/graphql';
+import {
+  TeamService,
+  RoleService,
+  ClubService,
+  LocationService,
+} from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './edit-club.component.html',

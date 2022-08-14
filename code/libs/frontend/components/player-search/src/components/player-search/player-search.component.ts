@@ -10,12 +10,8 @@ import {
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  Club,
-  NewPlayerComponent,
-  Player,
-  PlayerService,
-} from '@badman/frontend/shared';
+import { Player, Club } from '@badman/frontend/models';
+import { NewPlayerComponent, PlayerService } from '@badman/frontend/shared';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, merge, Observable, of, ReplaySubject } from 'rxjs';
 import {

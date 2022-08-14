@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
 import * as encountersQuery from '../../graphql/encounters/queries/GetEncountersQuery.graphql';
 import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.graphql';
-import { CompetitionEncounter, EncounterChange } from '../../models';
+import { CompetitionEncounter, EncounterChange } from '@badman/frontend/models';
 
 @Injectable({
   providedIn: 'root',

@@ -2,14 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
-import {
-  Player,
-  PlayerService,
-  RankingPlace,
-  RankingSystem,
-} from '@badman/frontend/shared';
+import { Player, RankingPlace, RankingSystem } from '@badman/frontend/models';
 import { BehaviorSubject, combineLatest, debounceTime, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import { PlayerService } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-edit-ranking',

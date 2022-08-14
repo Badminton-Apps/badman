@@ -9,7 +9,7 @@ import {
   CompetitionSubEvent,
   Game,
   Player,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-group-competition',

@@ -15,9 +15,8 @@ import {
   Entry,
   LevelType,
   Player,
-  SystemService,
   Team,
-} from '@badman/frontend/shared';
+} from '@badman/frontend/models';
 import moment from 'moment';
 import {
   combineLatest,
@@ -29,6 +28,7 @@ import {
   switchMap,
   take,
 } from 'rxjs';
+import { SystemService } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-assembly',
