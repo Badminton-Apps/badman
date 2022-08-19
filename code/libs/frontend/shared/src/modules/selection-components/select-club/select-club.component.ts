@@ -4,7 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
 import { Club } from '@badman/frontend/models';
-import { ClaimService, ClubService, UserService } from '../../../services';
+import { ClubService } from '../../../services';
+import { ClaimService, UserService } from '@badman/frontend/authentication';
 
 @Component({
   selector: 'badman-select-club',
