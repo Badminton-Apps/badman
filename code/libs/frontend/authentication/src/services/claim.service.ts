@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 
-import * as globalClaimsQuery from '../../graphql/security/queries/GetGlobalClaims.graphql';
-import * as globalUserClaimsQuery from '../../graphql/security/queries/GetGlobalUserClaims.graphql';
 
 import { Observable, ReplaySubject } from 'rxjs';
-import * as updateGlobalUserClaimQuery from '../../graphql/security/mutations/UpdateClaimUser.graphql';
 import { Claim } from '@badman/frontend/models';
-import { UserService } from '../profile';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -62,7 +59,16 @@ export class ClaimService {
   globalClaims() {
     return this.apollo
       .query<{ claims: Claim[] }>({
-        query: globalClaimsQuery,
+        query: gql`
+          query GetClaims {
+            claims(where: { type: "GLOBAL" }) {
+              id
+              name
+              description
+              category
+            }
+          }
+        `,
       })
       .pipe(map((x) => x.data?.claims?.map((c) => new Claim(c))));
   }
@@ -70,7 +76,19 @@ export class ClaimService {
   globalUserClaims(playerId: string) {
     return this.apollo
       .query<{ player: { claims: Claim[] } }>({
-        query: globalUserClaimsQuery,
+        query: gql`
+          query GetUserClaims($id: ID!) {
+            player(id: $id) {
+              id
+              claims {
+                id
+                name
+                description
+                category
+              }
+            }
+          }
+        `,
         variables: {
           id: playerId,
         },
@@ -81,7 +99,21 @@ export class ClaimService {
   updateGlobalUserClaim(playerId: string, claimId: string, active: boolean) {
     return this.apollo
       .mutate<{ claims: Claim[] }>({
-        mutation: updateGlobalUserClaimQuery,
+        mutation: gql`
+          mutation UpdateClaimUser(
+            $claimId: ID!
+            $playerId: ID!
+            $active: Boolean!
+          ) {
+            updateGlobalClaimUser(
+              claimId: $claimId
+              playerId: $playerId
+              active: $active
+            ) {
+              id
+            }
+          }
+        `,
         variables: {
           claimId,
           playerId,
