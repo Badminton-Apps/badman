@@ -131,7 +131,7 @@ export class ShowRequestsComponent implements OnInit {
 
   addDate() {
     let lastDate = this.encounter.date;
-    const dates = this.dateControls.value;
+    const dates = this.dateControls.getRawValue();
     if (dates && dates.length > 0) {
       lastDate = dates.sort(
         (a: EncounterChangeDate, b: EncounterChangeDate) => {
@@ -142,7 +142,7 @@ export class ShowRequestsComponent implements OnInit {
           // sort for newest date
           return moment(b.date).diff(moment(a.date));
         }
-      )[0].date;
+      )[0]['date'];
     }
 
     const newDate = new EncounterChangeDate({
@@ -335,7 +335,12 @@ export class ShowRequestsComponent implements OnInit {
     const id = new FormControl(dateChange?.id);
     const availabilityHome = new FormControl(dateChange.availabilityHome);
     const availabilityAway = new FormControl(dateChange.availabilityAway);
-    const selectedControl = new FormControl(false);
+    const selected = new FormControl(false);
+    const date = new FormControl(dateChange.date);
+
+    if (dateChange.id) {
+      date.disable();
+    }
 
     if (this.home) {
       availabilityAway.disable();
@@ -345,10 +350,10 @@ export class ShowRequestsComponent implements OnInit {
 
     const dateControl = new FormGroup({
       id,
-      date: new FormControl(dateChange.date),
+      date,
       availabilityHome,
       availabilityAway,
-      selected: selectedControl,
+      selected,
     });
 
     this.dateControls.push(dateControl);
