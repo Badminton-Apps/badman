@@ -117,12 +117,12 @@ export class EventCompetition extends Model {
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   usedRankingUnit: 'months' | 'weeks' | 'days';
 
-  get usedRankingg(): UsedRankingTiming {
-    return {
-      amount: this.usedRankingAmount,
-      unit: this.usedRankingUnit,
-    };
-  }
+  // get usedRanking(): UsedRankingTiming {
+  //   return {
+  //     amount: this.usedRankingAmount,
+  //     unit: this.usedRankingUnit,
+  //   };
+  // }
 
   regenerateSlug!: Slugify<EventCompetition>;
 
