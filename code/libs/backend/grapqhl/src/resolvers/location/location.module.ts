@@ -6,4 +6,4 @@ import { LocationResolver } from './location.resolver';
   imports: [DatabaseModule],
   providers: [LocationResolver],
 })
-export class LocationModule {}
+export class LocationResolverModule {}

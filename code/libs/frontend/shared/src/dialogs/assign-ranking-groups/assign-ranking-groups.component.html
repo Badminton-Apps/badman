@@ -1,32 +1,26 @@
 <h2 mat-dialog-title>Edit Ranking</h2>
 <mat-dialog-content>
   <div fxLayout="column" fxLayoutGap="10px">
-    <div>
-      <mat-checkbox
-        [checked]="this.useSame"
-        (change)="this.useSame = !this.useSame"
-        >Use same group for all sub events</mat-checkbox
+    <mat-checkbox
+      fxFlex
+      [checked]="this.useSame"
+      (change)="this.useSame = !this.useSame"
+      >Use same group for all sub events</mat-checkbox
+    >
+
+    <mat-form-field appearance="fill" fxFlex="100">
+      <mat-label>Ranking system group</mat-label>
+
+      <mat-select
+        multiple
+        [formControl]="selectedGroups"
+        [compareWith]="this.compareGroups"
       >
-    </div>
-
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Ranking system group</mat-label>
-
-        <mat-select
-          multiple
-          [formControl]="selectedGroups"
-          [compareWith]="this.compareGroups"
-        >
-          <mat-option
-            *ngFor="let group of this.groups$ | async"
-            [value]="group"
-          >
-            {{ group.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+        <mat-option *ngFor="let group of this.groups$ | async" [value]="group">
+          {{ group.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
     <div *ngIf="this.dataSource && !this.useSame" class="table-container">
       <table mat-table [dataSource]="this.dataSource" fxFill>

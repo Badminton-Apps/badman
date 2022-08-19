@@ -14,4 +14,4 @@ import {
     SubEventTournamentResolver,
   ],
 })
-export class TournamentModule {}
+export class TournamentResolverModule {}

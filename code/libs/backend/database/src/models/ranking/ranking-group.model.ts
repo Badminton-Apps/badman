@@ -132,14 +132,14 @@ export class RankingGroup extends Model {
   >;
   countSubEventCompetition!: BelongsToManyCountAssociationsMixin;
 
-  // Belongs to many System
-  getSystems!: BelongsToManyGetAssociationsMixin<RankingSystem>;
-  setSystem!: BelongsToManySetAssociationsMixin<RankingSystem, string>;
-  addSystems!: BelongsToManyAddAssociationsMixin<RankingSystem, string>;
-  addSystem!: BelongsToManyAddAssociationMixin<RankingSystem, string>;
-  removeSystem!: BelongsToManyRemoveAssociationMixin<RankingSystem, string>;
-  removeSystems!: BelongsToManyRemoveAssociationsMixin<RankingSystem, string>;
-  hasSystem!: BelongsToManyHasAssociationMixin<RankingSystem, string>;
-  hasSystems!: BelongsToManyHasAssociationsMixin<RankingSystem, string>;
-  countSystem!: BelongsToManyCountAssociationsMixin;
+  // Belongs to many RankingSystem
+  getRankingSystems!: BelongsToManyGetAssociationsMixin<RankingSystem>;
+  setRankingSystems!: BelongsToManySetAssociationsMixin<RankingSystem, string>;
+  addRankingSystems!: BelongsToManyAddAssociationsMixin<RankingSystem, string>;
+  addRankingSystem!: BelongsToManyAddAssociationMixin<RankingSystem, string>;
+  removeRankingSystem!: BelongsToManyRemoveAssociationMixin<RankingSystem, string>;
+  removeRankingSystems!: BelongsToManyRemoveAssociationsMixin<RankingSystem, string>;
+  hasRankingSystem!: BelongsToManyHasAssociationMixin<RankingSystem, string>;
+  hasRankingSystems!: BelongsToManyHasAssociationsMixin<RankingSystem, string>;
+  countRankingSystem!: BelongsToManyCountAssociationsMixin;
 }
