@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ClaimService } from '@badman/frontend/shared';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ClaimService } from '../../services';
 
 @Component({
   selector: 'badman-has-claim',

@@ -21,8 +21,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
+import { HasClaimModule } from '@badman/frontend/authentication';
 import { TranslateModule } from '@ngx-translate/core';
-import { HasClaimModule } from 'libs/frontend/components/has-claim/src';
 import { MomentModule } from 'ngx-moment';
 import {
   BannerComponent,

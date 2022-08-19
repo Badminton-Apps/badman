@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
+import { isDevMode } from '@angular/core';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -12,6 +14,10 @@ export class ConfigService {
   async loadAppConfig() {
     const data = await lastValueFrom(this.http.get('/assets/config.json'));
     this.appConfig = data as AppConfig;
+
+    if(isDevMode()) {
+      this.appConfig.api = 'http://localhost:5000';
+    }
   }
 
   // This is an example property ... you can make it however you want.
