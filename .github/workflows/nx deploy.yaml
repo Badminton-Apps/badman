@@ -139,8 +139,8 @@ jobs:
       - run: yarn install --frozen-lockfile --prefer-offline
       - run: npx nx-cloud start-ci-run
       - run: npx nx affected --target=build --base=remotes/origin/main --parallel=3
-      - run: npx nx affected --target=lint  --base=remotes/origin/main --parallel=3 --ci --code-coverage
-      - run: npx nx affected --target=test  --base=remotes/origin/main --parallel=3
+      - run: npx nx affected --target=lint  --base=remotes/origin/main --parallel=3
+      - run: npx nx affected --target=test  --base=remotes/origin/main --parallel=3 --ci --code-coverage
       - run: npx nx affected --target=send-coverage-reports --base=${{ needs.base.outputs.base }} --head=origin/main  --parallel=3
         env:
           NX_CLOUD_DISTRIBUTED_EXECUTION: false
