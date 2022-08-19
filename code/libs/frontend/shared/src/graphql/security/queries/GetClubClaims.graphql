@@ -1,8 +1,0 @@
-query GetClaims {
-  claims(where: { type: { $ne: "GLOBAL" } }) {
-    id
-    name
-    description
-    category
-  }
-}

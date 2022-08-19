@@ -170,7 +170,7 @@ export class DateSelectorComponent
     if (this.disabled) {
       return;
     }
-    
+
     const date = moment(this.value);
 
     this._dialog
