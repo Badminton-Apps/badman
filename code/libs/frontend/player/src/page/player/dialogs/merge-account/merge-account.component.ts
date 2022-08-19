@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SystemService, UserService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/shared';
 import { Player } from '@badman/frontend/models';
 import { lastValueFrom } from 'rxjs';
+import { UserService } from '@badman/frontend/authentication';
 
 @Component({
   templateUrl: './merge-account.component.html',

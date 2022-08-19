@@ -36,15 +36,15 @@
         "libs/backend/ranking-calc/src/index.ts"
       ],
       "@badman/backend/search": ["libs/backend/search/src/index.ts"],
+      "@badman/frontend/authentication": [
+        "libs/frontend/authentication/src/index.ts"
+      ],
       "@badman/frontend/club": ["libs/frontend/club/src/index.ts"],
       "@badman/frontend/competition": [
         "libs/frontend/competition/src/index.ts"
       ],
       "@badman/frontend/components/game": [
         "libs/frontend/components/game/src/index.ts"
-      ],
-      "@badman/frontend/components/has-claim": [
-        "libs/frontend/components/has-claim/src/index.ts"
       ],
       "@badman/frontend/components/player-info": [
         "libs/frontend/components/player-info/src/index.ts"

@@ -1,7 +1,7 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-components-has-claim',
-  preset: '../../../../jest.preset.js',
+  displayName: 'frontend-authentication',
+  preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
@@ -9,7 +9,7 @@ export default {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../../../coverage/libs/frontend/components/has-claim',
+  coverageDirectory: '../../../coverage/libs/frontend/authentication',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },
