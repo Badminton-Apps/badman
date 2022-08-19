@@ -1,6 +1,0 @@
-{
-  "*.{js,jsx,ts,tsx,json,md}": [
-    "yarn nx affected:lint --fix --parallel --uncommitted",
-    "yarn nx format:write --uncommitted"
-  ]
-}
