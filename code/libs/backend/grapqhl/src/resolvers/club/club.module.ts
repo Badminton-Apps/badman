@@ -6,4 +6,4 @@ import { ClubPlayerResolver, ClubsResolver } from './club.resolver';
   imports: [DatabaseModule],
   providers: [ClubsResolver, ClubPlayerResolver],
 })
-export class ClubModule {}
+export class ClubResolverModule {}

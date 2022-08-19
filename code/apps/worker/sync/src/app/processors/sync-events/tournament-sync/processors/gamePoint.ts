@@ -10,7 +10,7 @@ import {
 import { getSystemCalc } from '@badman/backend/ranking-calc';
 import { Op } from 'sequelize';
 import { StepProcessor } from '../../../../processing';
-import { StartVisualRankingDate } from '../../../../utils/visual';
+import { StartVisualRankingDate } from '@badman/backend/ranking';
 
 export class TournamentSyncPointProcessor extends StepProcessor {
   public event: EventTournament;

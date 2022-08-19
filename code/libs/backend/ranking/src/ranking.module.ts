@@ -7,6 +7,6 @@ import { PointsService, CalculationService, PlaceService } from './services';
   controllers: [],
   imports: [DatabaseModule, QueueModule],
   providers: [PointsService, CalculationService, PlaceService],
-  exports: [CalculationService],
+  exports: [CalculationService, PointsService],
 })
 export class RankingModule {}
