@@ -476,8 +476,9 @@ export class CalendarComponent implements OnInit {
       );
       calendar.push(calDay);
 
-      hasActivityOnDay[day.isoWeekday()] =
-        hasActivityOnDay[day.isoWeekday()] || calDay.hasSomeActivity;
+      const isoDay = `${day.isoWeekday()}` as keyof typeof hasActivityOnDay;
+      hasActivityOnDay[isoDay] =
+        (hasActivityOnDay[isoDay] || calDay.hasSomeActivity) ?? false;
 
       day.add(1, 'days');
     }
