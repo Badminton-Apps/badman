@@ -81,7 +81,7 @@
     "@nrwl/angular": "14.5.7",
     "@socket.io/redis-adapter": "^7.2.0",
     "@types/uuid": "^8.3.4",
-    "apollo-angular": "^3.0.1",
+    "apollo-angular": "^4.0.0",
     "apollo-server-express": "^3.8.2",
     "apollo-server-plugin-response-cache": "^3.7.0",
     "archiver": "^5.3.1",
