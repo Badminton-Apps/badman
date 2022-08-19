@@ -8,8 +8,8 @@ import * as deleteRoleMutation from '../../graphql/roles/mutations/removeRole.gr
 import * as updateRoleMutation from '../../graphql/roles/mutations/updateRole.graphql';
 import * as roleQuery from '../../graphql/roles/queries/GetRoleQuery.graphql';
 import * as rolesQuery from '../../graphql/roles/queries/GetRolesQuery.graphql';
-import { UserService } from '../profile';
 import { Player, Role } from '@badman/frontend/models';
+import { UserService } from '@badman/frontend/authentication';
 
 @Injectable({
   providedIn: 'root',
