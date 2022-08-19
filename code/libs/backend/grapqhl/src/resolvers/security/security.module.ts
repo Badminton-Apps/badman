@@ -7,4 +7,4 @@ import { RoleResolver } from './role.resolver';
   imports: [DatabaseModule],
   providers: [ClaimResolver, RoleResolver],
 })
-export class SecurityModule {}
+export class SecurityResolverModule {}
