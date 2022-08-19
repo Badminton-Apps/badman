@@ -13,7 +13,7 @@ import { SystemService } from '@badman/frontend/shared';
   styleUrls: ['./edit-ranking-all.component.scss'],
 })
 export class EditRankingAllComponent implements OnInit {
-  allPlaces$?: Observable<[RankingPlace, RankingPlace[]][]>;
+  allPlaces$?: Observable<[RankingPlace | undefined, RankingPlace[]][]>;
   query$?: QueryRef<
     { player: Partial<Player> },
     { playerId: string; system: string }
@@ -49,7 +49,7 @@ export class EditRankingAllComponent implements OnInit {
                       name
                       subEventCompetitions(take: 1) {
                         id
-                        event {
+                        eventCompetition {
                           id
                           startYear
                           usedRankingAmount
@@ -156,7 +156,8 @@ export class EditRankingAllComponent implements OnInit {
               }
             }
 
-            const returnBlock: [RankingPlace, RankingPlace[]][] = [];
+            const returnBlock: [RankingPlace | undefined, RankingPlace[]][] =
+              [];
 
             for (const [, places] of allPlaces) {
               if (!places) {
@@ -164,10 +165,6 @@ export class EditRankingAllComponent implements OnInit {
               }
 
               const place = places.find((p) => p.updatePossible);
-              if (!place) {
-                throw new Error('Place is not set');
-              }
-
               returnBlock.push([place, places]);
             }
 

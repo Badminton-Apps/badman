@@ -25,7 +25,7 @@
     "affected": "nx affected",
     "format": "nx format:write",
     "format:write": "nx format:write",
-    "format:check": "nx format:check",
+    "format:check": "nx format:write",
     "update": "nx migrate latest",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
