@@ -39,42 +39,41 @@ export class PdfService {
     ];
     const idSubs = input.team?.subtitude;
 
-    const encounter = await EncounterCompetition.findByPk(input.encounterId, {
-      include: [
-        { model: Team, as: 'home' },
-        { model: Team, as: 'away' },
-        {
-          model: DrawCompetition,
-          include: [
-            {
-              model: SubEventCompetition,
-              include: [{ model: EventCompetition }],
-            },
-          ],
-        },
-      ],
+    const encounter = await EncounterCompetition.findByPk(input.encounterId);
+    const homeTeam = await encounter.getHome({
+      attributes: ['id', 'name', 'type'],
     });
-    const type = encounter.home.type;
+
+    const awayTeam = await encounter.getAway({
+      attributes: ['id', 'name'],
+    });
+
+    const draw = await encounter.getDrawCompetition({
+      attributes: ['id', 'name', 'subeventId'],
+    });
+
+    const subEvent = await draw.getSubEventCompetition({
+      attributes: ['id', 'eventId'],
+    });
+    const event = await subEvent.getEventCompetition({
+      attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'startYear'],
+    });
+
+    const type = homeTeam.type;
 
     const membership = await EventEntry.findOne({
       where: {
         teamId: input.teamId,
-        subEventId: encounter?.drawCompetition?.subEventCompetition?.id,
+        subEventId: subEvent.id,
       },
     });
 
     const meta = membership?.meta;
-    const year =
-      encounter.drawCompetition.subEventCompetition.eventCompetition.startYear;
+    const year = event.startYear;
 
     const usedRankingDate = moment();
     usedRankingDate.set('year', year);
-    usedRankingDate.set(
-      encounter.drawCompetition.subEventCompetition.eventCompetition
-        .usedRankingUnit,
-      encounter.drawCompetition.subEventCompetition.eventCompetition
-        .usedRankingAmount
-    );
+    usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);
 
     const startRanking = usedRankingDate.clone().set('date', 0);
     const endRanking = usedRankingDate.clone().clone().endOf('month');
@@ -226,17 +225,17 @@ export class PdfService {
       date: moment(encounter.date).format('DD-MM-YYYY HH:mm'),
       baseIndex: meta?.competition?.teamIndex,
       teamIndex: teamIndex.index,
-      homeTeam: encounter.home.name,
-      awayTeam: encounter.away.name,
+      homeTeam: homeTeam.name,
+      awayTeam: awayTeam.name,
       captain: captain?.fullName,
       doubles,
       singles,
       subtitudes,
       type,
       event: `${type === 'M' ? 'Heren' : type === 'F' ? 'Dames' : 'Gemengd'} ${
-        encounter.drawCompetition.name
+        draw.name
       }`,
-      isHomeTeam: encounter.homeTeamId === input.teamId,
+      isHomeTeam: homeTeam.id === input.teamId,
       logo: `data:image/png;base64, ${logo}`,
     };
 
