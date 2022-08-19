@@ -4857,10 +4857,10 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-apollo-angular@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/apollo-angular/-/apollo-angular-3.0.1.tgz#e2cea7502fbacda3337db92c2fac8878814ef9e0"
-  integrity sha512-gMUa+XdNXYtc4bwK/XFELnYptOKHAW6DYDlQUjxjWlrzqbmiHb49bFI/IT3EK5sR4sukCyYb8rbC4jfsztd/Qg==
+apollo-angular@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/apollo-angular/-/apollo-angular-4.0.1.tgz#d265b6ca60ede956c9efc42494051ace789a4c91"
+  integrity sha512-hnM2zbYORcqwLI8YBVAVvOuCIc3a6rDGUFlzB9pHudaoqYT5NkP8L/2IAGnMFQ1izzcLemcISw02yiEIf0WO3A==
   dependencies:
     tslib "^2.0.0"
 
