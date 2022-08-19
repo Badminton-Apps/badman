@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
 import { Club, Player } from '@badman/frontend/models';
-import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 import { EditClubHistoryDialogComponent } from '../../dialogs';
 
 @Component({
@@ -63,6 +63,9 @@ export class EditClubHistoryComponent implements OnInit {
         })
       ),
       map((r) => r?.data?.player?.clubs.map((c) => new Club(c))),
+      tap((r) => {
+        console.log('clubs', r);
+      }),
       map((r) =>
         r.sort(
           (a, b) =>
