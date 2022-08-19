@@ -4,7 +4,7 @@ import exphbs from 'nodemailer-express-handlebars';
 import smtpTransport from 'nodemailer-smtp-transport';
 import { Injectable, Logger } from '@nestjs/common';
 import { readFile, writeFile } from 'fs/promises';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import path from 'path';
 import nodemailer, { Transporter } from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
@@ -59,7 +59,7 @@ export class MailingService {
           otherTeam: otherTeam.toJSON(),
           clubTeam: clubTeam.toJSON(),
           encounter: encounter.toJSON(),
-          date: moment(encounter.date).format('LLLL'),
+          date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
         },
       } as MailOptions;
 
@@ -99,7 +99,7 @@ export class MailingService {
           captain: captain.toJSON(),
           team: team.toJSON(),
           encounter: encounter.toJSON(),
-          newDate: moment(encounter.date).format('LLLL'),
+          newDate: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
         },
       } as MailOptions;
 
