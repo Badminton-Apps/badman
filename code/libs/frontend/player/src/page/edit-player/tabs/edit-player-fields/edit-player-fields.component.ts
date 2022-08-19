@@ -9,9 +9,9 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { debounceTime, filter, switchMap } from 'rxjs/operators';
-import { ClaimService, PlayerService } from '@badman/frontend/shared';
 import { Apollo, gql } from 'apollo-angular';
 import { Player } from '@badman/frontend/models';
+import { ClaimService } from '@badman/frontend/authentication';
 
 @Component({
   selector: 'badman-player-fields',
@@ -31,7 +31,6 @@ export class EditPlayerFieldsComponent implements OnInit {
   constructor(
     private claimService: ClaimService,
     private apollo: Apollo,
-    private playerService: PlayerService,
     private _snackBar: MatSnackBar
   ) {}
 

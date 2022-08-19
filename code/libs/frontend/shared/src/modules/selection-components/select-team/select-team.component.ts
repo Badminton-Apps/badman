@@ -10,8 +10,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Team } from '@badman/frontend/models';
-import { TeamService, UserService } from '../../../services';
 import { Apollo, gql } from 'apollo-angular';
+import { UserService } from '@badman/frontend/authentication';
 
 @Component({
   selector: 'badman-select-team',
@@ -44,7 +44,6 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   options?: Team[];
 
   constructor(
-    private teamService: TeamService,
     private apollo: Apollo,
     private router: Router,
     private activatedRoute: ActivatedRoute,

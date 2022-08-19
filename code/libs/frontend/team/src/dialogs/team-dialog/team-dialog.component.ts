@@ -14,10 +14,10 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 import { Club, Player, Team, Location } from '@badman/frontend/models';
 
 import {
-  ClaimService,
   SystemService,
   TeamService,
 } from '@badman/frontend/shared';
+import { ClaimService } from '@badman/frontend/authentication';
 
 @Component({
   templateUrl: './team-dialog.component.html',
