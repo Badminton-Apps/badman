@@ -93,6 +93,7 @@ export class DetailClubComponent implements OnInit {
                     firstName
                     lastName
                     competitionPlayer
+                    gender
                     rankingLastPlaces(
                       take: 1
                       where: $lastRankingPlaceWhere
