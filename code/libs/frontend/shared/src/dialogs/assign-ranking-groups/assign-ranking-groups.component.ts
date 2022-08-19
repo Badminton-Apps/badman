@@ -32,6 +32,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   dataSource!: MatTableDataSource<CompetitionSubEvent | TournamentSubEvent>;
 
   groups$!: Observable<RankingGroup[]>;
+  groups: RankingGroup[] = [];
   useSame = true;
   selectedGroups: FormControl = new FormControl();
   selection = new Map<string, SelectionModel<SubEvent>>();
@@ -67,6 +68,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
       // Initialize new
       groupNames.forEach((element) => {
+        console.log(element);
         if (this.selection.has(element)) {
           this.selection.set(element, new SelectionModel<SubEvent>(true, []));
         }
@@ -89,6 +91,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
       .pipe(
         map((result) => result.data.rankingGroups),
         tap((groups) => {
+          this.groups = groups;
           const unique = [
             ...new Set(
               subEvents
@@ -171,31 +174,51 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
     this.loading = true;
     const mutations: Observable<MutationResult>[] = [];
 
-    for (const [groupKey, group] of this.selection) {
-      const key = groupKey.replace('group-', '');
-      const variables: { [key: string]: string[] | string } = {
-        rankingSystemGroupId: key,
-      };
+    const selectedGroups: string[] = this.selectedGroups.value?.map(
+      (r: RankingGroup) => r.id
+    );
 
+    for (const group of this.groups) {
+      if (!group.id) {
+        throw new Error('Group has no id');
+      }
+      const variables: { [key: string]: string[] | string } = {
+        rankingGroupId: group.id,
+      };
       const removed: string[] = [];
       const added: string[] = [];
-
       for (const subEvent of this.dataSource.data ?? []) {
-        const hasGroup =
-          (subEvent.rankingGroups ?? []).find(
-            (g: RankingGroup) => g.id == key
-          ) == null;
-        if (hasGroup) {
-          if (group.selected?.map((r) => r.id).includes(subEvent.id)) {
-            if (subEvent.id) {
-              removed.push(subEvent.id);
-            }
+        if (!subEvent.id) {
+          throw new Error('SubEvent has no id');
+        }
+
+        if (this.useSame) {
+          if (
+            subEvent.rankingGroups?.find((r) => r.id == group.id) &&
+            !selectedGroups.includes(group.id)
+          ) {
+            removed.push(subEvent.id);
+          }
+
+          if (
+            !subEvent.rankingGroups?.find((r) => r.id == group.id) &&
+            selectedGroups.includes(group.id)
+          ) {
+            added.push(subEvent.id);
           }
         } else {
-          if (group.selected?.map((r) => r.id).includes(subEvent.id)) {
-            if (subEvent.id) {
-              added.push(subEvent.id);
-            }
+          if (
+            !this.selection.get(`group-${group.id}`)?.isSelected(subEvent) &&
+            subEvent.rankingGroups?.find((r) => r.id == group.id)
+          ) {
+            removed.push(subEvent.id);
+          }
+
+          if (
+            this.selection.get(`group-${group.id}`)?.isSelected(subEvent) &&
+            !subEvent.rankingGroups?.find((r) => r.id == group.id)
+          ) {
+            added.push(subEvent.id);
           }
         }
       }
@@ -211,13 +234,13 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         mutations.push(
           this.apollo.mutate({
             mutation: gql`
-              mutation RemoveSubEventToRankingSystemGroup(
-                $rankingSystemGroupId: ID
-                $competitions: [ID]
-                $tournaments: [ID]
+              mutation RemoveSubEventsToRankingGroup(
+                $rankingGroupId: ID!
+                $competitions: [ID!]
+                $tournaments: [ID!]
               ) {
-                removeSubEventToRankingSystemGroup(
-                  rankingSystemGroupId: $rankingSystemGroupId
+                removeSubEventsToRankingGroup(
+                  rankingGroupId: $rankingGroupId
                   competitions: $competitions
                   tournaments: $tournaments
                 ) {
@@ -242,13 +265,13 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         mutations.push(
           this.apollo.mutate({
             mutation: gql`
-              mutation AddSubEventToRankingSystemGroup(
-                $rankingSystemGroupId: ID
-                $competitions: [ID]
-                $tournaments: [ID]
+              mutation AddSubEventsToRankingGroup(
+                $rankingGroupId: ID!
+                $competitions: [ID!]
+                $tournaments: [ID!]
               ) {
-                addSubEventToRankingSystemGroup(
-                  rankingSystemGroupId: $rankingSystemGroupId
+                addSubEventsToRankingGroup(
+                  rankingGroupId: $rankingGroupId
                   competitions: $competitions
                   tournaments: $tournaments
                 ) {
