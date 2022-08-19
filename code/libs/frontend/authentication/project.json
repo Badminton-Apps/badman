@@ -1,13 +1,13 @@
 {
   "projectType": "library",
-  "sourceRoot": "libs/frontend/components/has-claim/src",
+  "sourceRoot": "libs/frontend/authentication/src",
   "prefix": "badman",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/frontend/components/has-claim"],
+      "outputs": ["coverage/libs/frontend/authentication"],
       "options": {
-        "jestConfig": "libs/frontend/components/has-claim/jest.config.ts",
+        "jestConfig": "libs/frontend/authentication/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -15,8 +15,8 @@
       "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": [
-          "libs/frontend/components/has-claim/**/*.ts",
-          "libs/frontend/components/has-claim/**/*.html"
+          "libs/frontend/authentication/**/*.ts",
+          "libs/frontend/authentication/**/*.html"
         ]
       }
     }

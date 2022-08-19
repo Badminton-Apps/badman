@@ -19,13 +19,10 @@ import {
   tap,
 } from 'rxjs/operators';
 import { apolloCache } from '@badman/frontend/graphql';
-import {
-  DeviceService,
-  PlayerService,
-  UserService,
-} from '@badman/frontend/shared';
+import { DeviceService } from '@badman/frontend/shared';
 
 import { Player } from '@badman/frontend/models';
+import { UserService } from '@badman/frontend/authentication';
 
 @Component({
   templateUrl: './player.component.html',
@@ -47,7 +44,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private playerService: PlayerService,
     private userService: UserService,
     private snackbar: MatSnackBar,
     private titleService: Title,

@@ -4,7 +4,8 @@ import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Player } from '@badman/frontend/models';
-import { DeviceService, UserService } from '../../services';
+import { DeviceService } from '../../services';
+import { UserService } from '@badman/frontend/authentication';
 
 @Component({
   templateUrl: './ranking-shell.component.html',
