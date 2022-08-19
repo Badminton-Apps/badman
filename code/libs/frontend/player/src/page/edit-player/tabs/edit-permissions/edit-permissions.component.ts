@@ -9,7 +9,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { combineLatest, Observable } from 'rxjs';
 import { groupBy, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 import { Claim, Player } from '@badman/frontend/models';
-import { ClaimService, UserService } from '@badman/frontend/shared';
+import { UserService } from '@badman/frontend/authentication';
 
 @Component({
   selector: 'badman-edit-permissions',
@@ -24,7 +24,6 @@ export class EditPermissionsComponent implements OnInit {
   player!: Player;
 
   constructor(
-    private claimService: ClaimService,
     private apollo: Apollo,
     private userService: UserService,
     private _snackBar: MatSnackBar
