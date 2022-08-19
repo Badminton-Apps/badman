@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.23.0](https://github.com/Badminton-Apps/badman/compare/v5.22.4...v5.23.0) (2022-08-19)
+
+
+### Features
+
+* **frontend-shared:** moved more shared components to own module ([8c50dcd](https://github.com/Badminton-Apps/badman/commit/8c50dcd3786816f088e9300c632dd3dad0f499eb))
+* **frontend:** moving all modules to different nx libraries ([37ef182](https://github.com/Badminton-Apps/badman/commit/37ef182584ca8ad9322629da9a1d07469156c2a8))
+
+
+### Bug Fixes
+
+* **api:** fetching only the needed data ([b6c7cd4](https://github.com/Badminton-Apps/badman/commit/b6c7cd46203824e8e6996da4eb7abee6c474abc4))
+* **api:** slightly increase resources ([7951c50](https://github.com/Badminton-Apps/badman/commit/7951c5096b04b1ff95c5f6bac10409831842003a))
+* **backend-generator:** removing unused item in project.json ([1cf2bb8](https://github.com/Badminton-Apps/badman/commit/1cf2bb8767d947d8e9c2d4d6e0fec4495dda509c))
+* **backend-mailing:** send mails with belgian timezone ([1330888](https://github.com/Badminton-Apps/badman/commit/13308885789c28297a42a60493c985c57f4370a2))
+* **ci:** coverage should be on the test command ([618f868](https://github.com/Badminton-Apps/badman/commit/618f868e4019ed5d8ba4490770428588c303a754))
+* **ci:** fixes build ([5571d51](https://github.com/Badminton-Apps/badman/commit/5571d51656e66ce27b6564a637a7ec457f1e499c))
+* **ci:** moving options to correct command ([b39f87d](https://github.com/Badminton-Apps/badman/commit/b39f87d0beb3834c58ce602a7b9d97e429d443e5))
+* **deps:** update dependency apollo-angular to v4 ([b81ef9e](https://github.com/Badminton-Apps/badman/commit/b81ef9e78887ceb81f572902cb2fe8ddfcba7a0c))
+* **deps:** update nrwl monorepo to v14.5.5 ([cab56bc](https://github.com/Badminton-Apps/badman/commit/cab56bc8b3f86e846d87607b9079289f55fe2012))
+* **deps:** update nrwl monorepo to v14.5.6 ([bdf6b4c](https://github.com/Badminton-Apps/badman/commit/bdf6b4cfc5773bfcd22a3dfaba425f8586e29887))
+* **deps:** update nrwl monorepo to v14.5.7 ([44d4aa3](https://github.com/Badminton-Apps/badman/commit/44d4aa3f9d225872d3e6a401ad7ee9e280174283))
+* **frontend-authentication:** create package combining authentication items ([db2cf8a](https://github.com/Badminton-Apps/badman/commit/db2cf8a9fa7b6f069f60a0a8f1d980963a72006b))
+* **frontend-club:** mixed teams had no index ([8df444d](https://github.com/Badminton-Apps/badman/commit/8df444daba994c9169a4bd1b0c7c58d1759ee4ac))
+* **frontend-competition:** disable selection of date for submitted dates ([a7aa3a9](https://github.com/Badminton-Apps/badman/commit/a7aa3a9c753b8329e6bdc974cc1688df3c77318f))
+* **frontend-components-game:** include components stylesheet ([0fee007](https://github.com/Badminton-Apps/badman/commit/0fee0072315bab0e10ac64d346c1a7bd3e6b7a2b))
+* **frontend-config:** when running in devmode use localhost url ([33cdd3d](https://github.com/Badminton-Apps/badman/commit/33cdd3d2c313e030731d880bb4d7f7b27ad95f9d))
+* **frontend-player:** label current club ([a4bced6](https://github.com/Badminton-Apps/badman/commit/a4bced6fec931fff92d793ca73de7466dd9690cb))
+* **frontend-player:** ranking history wasn't loaded correctly ([3cab095](https://github.com/Badminton-Apps/badman/commit/3cab095f24fc8754072d2e3f79eb7120760ba2c5))
+* **frontend-shared:** loading language initializer ([dbcbfde](https://github.com/Badminton-Apps/badman/commit/dbcbfde206598d664ec1498f23a00ba7cb49a40d))
+* **frontend-shared:** parsed to correct format ([2ea6962](https://github.com/Badminton-Apps/badman/commit/2ea6962961c4f2480e3c487457be3fac3e33114e))
+* **frontend,backend:** linking events to ranking groups ([fb781d8](https://github.com/Badminton-Apps/badman/commit/fb781d8984c6f2f426ef40c873b52242e6c8eedb))
+
 ### [5.22.4](https://github.com/Badminton-Apps/badman/compare/v5.22.3...v5.22.4) (2022-08-09)
 
 
