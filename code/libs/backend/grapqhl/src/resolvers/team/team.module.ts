@@ -6,4 +6,4 @@ import { TeamsResolver } from './team.resolver';
   imports: [DatabaseModule],
   providers: [TeamsResolver],
 })
-export class TeamModule {}
+export class TeamResolverModule {}

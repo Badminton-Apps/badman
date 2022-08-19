@@ -20,4 +20,4 @@ import {
     SubEventCompetitionResolver,
   ],
 })
-export class CompetitionModule {}
+export class CompetitionResolverModule {}
