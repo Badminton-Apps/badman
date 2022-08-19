@@ -156,7 +156,8 @@ export class EditRankingAllComponent implements OnInit {
               }
             }
 
-            const returnBlock: [RankingPlace | undefined, RankingPlace[]][] = [];
+            const returnBlock: [RankingPlace | undefined, RankingPlace[]][] =
+              [];
 
             for (const [, places] of allPlaces) {
               if (!places) {
