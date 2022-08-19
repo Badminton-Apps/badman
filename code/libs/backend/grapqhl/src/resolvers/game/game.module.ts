@@ -6,4 +6,4 @@ import { GamesResolver } from './game.resolver';
   imports: [DatabaseModule],
   providers: [GamesResolver],
 })
-export class GameModule {}
+export class GameResolverModule {}

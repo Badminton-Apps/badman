@@ -6,4 +6,4 @@ import { CommentResolver } from './comment.resolver';
   imports: [DatabaseModule],
   providers: [CommentResolver],
 })
-export class CommentModule {}
+export class CommentResolverModule {}
