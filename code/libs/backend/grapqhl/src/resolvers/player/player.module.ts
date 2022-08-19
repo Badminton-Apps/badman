@@ -10,4 +10,4 @@ import {
   imports: [DatabaseModule],
   providers: [PlayersResolver, GamePlayersResolver, TeamPlayerResolver],
 })
-export class PlayerModule {}
+export class PlayerResolverModule {}
