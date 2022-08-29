@@ -727,6 +727,8 @@ union search = Player | EventCompetition | EventTournament | Club
 type Mutation {
   addPlayerToTeam(teamId: ID!, playerId: ID!): Team!
   updateBasePlayerTeam(teamId: ID!, playerId: ID!, base: Boolean!): Team!
+  removeBasePlayerForSubEvent(teamId: ID!, playerId: ID!, subEventId: ID!): Team!
+  addBasePlayerForSubEvent(teamId: ID!, playerId: ID!, subEventId: ID!): Team!
   removePlayerFromTeam(teamId: ID!, playerId: ID!): Team!
   createTeam(data: TeamNewInput!): Team!
   updateTeam(data: TeamUpdateInput!): Team!

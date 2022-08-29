@@ -3,7 +3,7 @@ mutation AddBasePlayerForSubEvent(
   $playerId: ID!
   $subEventId: ID!
 ) {
-  addPlayerBaseSubEvent(
+  addBasePlayerForSubEvent(
     teamId: $teamId
     playerId: $playerId
     subEventId: $subEventId

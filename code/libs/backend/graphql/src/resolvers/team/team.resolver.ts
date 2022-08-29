@@ -1,9 +1,14 @@
 import { User } from '@badman/backend/authorization';
 import {
   Club,
+  EventCompetition,
   EventEntry,
   Location,
   Player,
+  RankingPlace,
+  RankingSystem,
+  SubEventCompetition,
+  SubEventType,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
@@ -23,6 +28,8 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Exception } from 'handlebars';
+import moment from 'moment';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
@@ -151,7 +158,7 @@ export class TeamsResolver {
     const team = await Team.findByPk(teamId);
 
     if (!team) {
-      throw new NotFoundException(`Team ${teamId}`);
+      throw new NotFoundException(`${Team.name}: ${teamId}`);
     }
 
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
@@ -178,6 +185,261 @@ export class TeamsResolver {
   }
 
   @Mutation(() => Team)
+  async removeBasePlayerForSubEvent(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('subEventId', { type: () => ID }) subEventId: string,
+    @User() user: Player
+  ) {
+    const perm = [`change-base:team`, 'edit-any:club'];
+    const transaction = await this._sequelize.transaction();
+    try {
+      const team = await Team.findByPk(teamId);
+
+      if (!team) {
+        throw new NotFoundException(`${Team.name}: ${teamId}`);
+      }
+
+      if (!user.hasAnyPermission(perm)) {
+        throw new UnauthorizedException();
+      }
+
+      const player = await Player.findByPk(playerId);
+      if (!player) {
+        throw new NotFoundException(`${Player.name}: ${playerId}`);
+      }
+
+      const entry = await EventEntry.findOne({
+        where: {
+          teamId: teamId,
+          subEventId,
+        },
+        transaction,
+      });
+      if (!entry) {
+        throw new NotFoundException(
+          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
+        );
+      }
+
+      const meta = entry.meta;
+      const removedPlayer = meta?.competition?.players.filter(
+        (p) => p.id === playerId
+      )[0];
+      if (!removedPlayer) {
+        throw new Exception('Player not part of base?');
+      }
+
+      meta.competition.players = meta?.competition.players.filter(
+        (p) => p.id !== playerId
+      );
+
+      let bestPlayers = meta?.competition.players;
+      if (meta?.competition.players.length > 4) {
+        if (team.type === SubEventType.MX) {
+          const male = meta?.competition.players
+            .filter((p) => p.gender === 'M')
+            .sort(
+              (b, a) =>
+                (b?.single ?? 12) +
+                (b?.double ?? 12) +
+                (b?.mix ?? 12) -
+                ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+            )
+            .slice(0, 2);
+          const female = meta?.competition.players
+            .filter((p) => p.gender === 'F')
+            .sort(
+              (b, a) =>
+                (b?.single ?? 12) +
+                (b?.double ?? 12) +
+                (b?.mix ?? 12) -
+                ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+            )
+            .slice(0, 2);
+          bestPlayers = [...male, ...female];
+        } else {
+          bestPlayers = meta?.competition.players
+            .sort(
+              (b, a) =>
+                (b?.single ?? 12) +
+                (b?.double ?? 12) -
+                ((a?.single ?? 12) + (a?.double ?? 12))
+            )
+            .slice(0, 4);
+        }
+      }
+
+      meta.competition.teamIndex = Team.getIndexFromPlayers(
+        team.type,
+        bestPlayers.map((p) => {
+          return {
+            single: p.single,
+            double: p.double,
+            mix: p.mix,
+          };
+        })
+      );
+
+      entry.meta = meta;
+      entry.changed('meta', true);
+
+      await entry.save({ transaction });
+
+      await transaction.commit();
+      return team;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Team)
+  async addBasePlayerForSubEvent(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('subEventId', { type: () => ID }) subEventId: string,
+    @User() user: Player
+  ) {
+    const perm = [`change-base:team`, 'edit-any:club'];
+    const transaction = await this._sequelize.transaction();
+    try {
+      const team = await Team.findByPk(teamId);
+
+      if (!team) {
+        throw new NotFoundException(`${Team.name}: ${teamId}`);
+      }
+
+      if (!user.hasAnyPermission(perm)) {
+        throw new UnauthorizedException();
+      }
+
+      const player = await Player.findByPk(playerId);
+      if (!player) {
+        throw new NotFoundException(`${Player.name}: ${playerId}`);
+      }
+
+      const entry = await EventEntry.findOne({
+        where: {
+          teamId: teamId,
+          subEventId,
+        },
+        transaction,
+      });
+      if (!entry) {
+        throw new NotFoundException(
+          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
+        );
+      }
+
+      const dbSubEvent = await SubEventCompetition.findByPk(subEventId, {
+        attributes: [],
+        include: [{ model: EventCompetition, attributes: ['startYear'] }],
+      });
+
+      const dbSystem = await RankingSystem.findOne({
+        where: {
+          primary: true,
+        },
+        transaction,
+      });
+
+      if (!dbSystem) {
+        throw new NotFoundException(`${RankingSystem.name}: primary`);
+      }
+
+      const usedRankingDate = moment();
+      usedRankingDate.set('year', dbSubEvent.eventCompetition.startYear);
+      usedRankingDate.set(
+        dbSubEvent.eventCompetition.usedRankingUnit,
+        dbSubEvent.eventCompetition.usedRankingAmount
+      );
+
+      const startRanking = usedRankingDate.clone().set('date', 0);
+      const endRanking = usedRankingDate.clone().clone().endOf('month');
+
+      const dbRanking = await RankingPlace.findOne({
+        where: {
+          playerId: player.id,
+          systemId: dbSystem.id,
+          rankingDate: { [Op.between]: [startRanking, endRanking] },
+        },
+        transaction,
+      });
+
+      const meta = entry.meta;
+      meta?.competition.players.push({
+        id: player.id,
+        single: dbRanking?.single ?? 12,
+        double: dbRanking?.double ?? 12,
+        mix: dbRanking?.mix ?? 12,
+        gender: player.gender,
+      });
+
+      let bestPlayers = meta?.competition.players;
+      if (meta?.competition.players.length > 4) {
+        if (team.type === SubEventType.MX) {
+          const male = meta?.competition.players
+            .filter((p) => p.gender === 'M')
+            .sort(
+              (b, a) =>
+                (b?.single ?? 12) +
+                (b?.double ?? 12) +
+                (b?.mix ?? 12) -
+                ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+            )
+            .slice(0, 2);
+
+          const female = meta?.competition.players
+            .filter((p) => p.gender === 'F')
+            .sort(
+              (b, a) =>
+                (b?.single ?? 12) +
+                (b?.double ?? 12) +
+                (b?.mix ?? 12) -
+                ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+            )
+            .slice(0, 2);
+          bestPlayers = [...male, ...female];
+        } else {
+          bestPlayers = meta?.competition.players
+            .sort(
+              (b, a) =>
+                (b?.single ?? 12) +
+                (b?.double ?? 12) -
+                ((a?.single ?? 12) + (a?.double ?? 12))
+            )
+            .slice(0, 4);
+        }
+      }
+
+      meta.competition.teamIndex = Team.getIndexFromPlayers(
+        team.type,
+        bestPlayers.map((p) => {
+          return {
+            single: p.single,
+            double: p.double,
+            mix: p.mix,
+          };
+        })
+      );
+
+      entry.meta = meta;
+      entry.changed('meta', true);
+
+      await entry.save({ transaction });
+
+      await transaction.commit();
+      return team;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Team)
   async removePlayerFromTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
@@ -201,6 +463,7 @@ export class TeamsResolver {
     await team.removePlayer(player);
     return team;
   }
+
   @Mutation(() => Team)
   async createTeam(
     @Args('data') newTeamData: TeamNewInput,
@@ -394,6 +657,7 @@ export class TeamsResolver {
     await team.removeLocation(location);
     return team;
   }
+
   @Mutation(() => Team)
   async addLocationFromTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
