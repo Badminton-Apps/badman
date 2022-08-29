@@ -126,12 +126,6 @@ export class EditRankingComponent implements OnInit {
                   mutation UpdateRanking($data: RankingPlaceUpdateInput!) {
                     updateRankingPlace(data: $data) {
                       id
-                      rankingLastPlaces {
-                        id
-                      }
-                      rankingPlaces {
-                        id
-                      }
                     }
                   }
                 `,
@@ -150,12 +144,6 @@ export class EditRankingComponent implements OnInit {
                   mutation NewRanking($data: RankingPlaceNewInput!) {
                     newRankingPlace(data: $data) {
                       id
-                      rankingLastPlaces {
-                        id
-                      }
-                      rankingPlaces {
-                        id
-                      }
                     }
                   }
                 `,
