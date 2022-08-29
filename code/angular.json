@@ -6,7 +6,7 @@
     "backend-authorization": "libs/backend/authorization",
     "backend-database": "libs/backend/database",
     "backend-generator": "libs/backend/generator",
-    "backend-grapqhl": "libs/backend/grapqhl",
+    "backend-graphql": "libs/backend/graphql",
     "backend-handlebar": "libs/backend/handlebar",
     "backend-health": "libs/backend/health",
     "backend-mailing": "libs/backend/mailing",
