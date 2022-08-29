@@ -5,7 +5,7 @@ import { AppController, PdfController, RankingController } from './controllers';
 
 import { DatabaseModule } from '@badman/backend/database';
 import { GeneratorModule } from '@badman/backend/generator';
-import { ApiGrapqhlModule } from '@badman/backend/grapqhl';
+import { ApiGrapqhlModule } from '@badman/backend/graphql';
 import { HandlebarModule } from '@badman/backend/handlebar';
 import { HealthModule } from '@badman/backend/health';
 import { QueueModule } from '@badman/backend/queue';

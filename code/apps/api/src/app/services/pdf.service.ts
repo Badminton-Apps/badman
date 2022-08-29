@@ -134,7 +134,7 @@ export class PdfService {
       Partial<Player> & {
         base: boolean;
         team: boolean;
-        RankingLastPlace: RankingLastPlace;
+        rankingLastPlace: RankingLastPlace;
         sum: number;
         highest: number;
       }
@@ -149,7 +149,7 @@ export class PdfService {
 
       preppedMap.set(player.id, {
         ...player.toJSON(),
-        RankingLastPlace: player.rankingLastPlaces?.[0].toJSON(),
+        rankingLastPlace: player.rankingLastPlaces?.[0].toJSON(),
         base: !!meta?.competition?.players?.find((p) => p?.id === player.id)
           ?.id,
         team: !!teamIndex.players.find((p) => p?.id === player.id),
@@ -166,52 +166,52 @@ export class PdfService {
     });
 
     const based: string[] = [];
-    const teamed: string[] = [];
+    const titularis: string[] = [];
 
     const doubles = [
       this._addPlayer(
         preppedMap,
         based,
-        teamed,
+        titularis,
         input.team.double?.[0]?.[0],
         input.team.double?.[0]?.[1]
       ),
       this._addPlayer(
         preppedMap,
         based,
-        teamed,
+        titularis,
         input.team.double?.[1]?.[0],
         input.team.double?.[1]?.[1]
       ),
       this._addPlayer(
         preppedMap,
         based,
-        teamed,
+        titularis,
         input.team.double?.[2]?.[0],
         input.team.double?.[2]?.[1]
       ),
       this._addPlayer(
         preppedMap,
         based,
-        teamed,
+        titularis,
         input.team.double?.[3]?.[0],
         input.team.double?.[3]?.[1]
       ),
     ];
 
     const singles = [
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[0])
+      this._addPlayer(preppedMap, based, titularis, input.team.single?.[0])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[1])
+      this._addPlayer(preppedMap, based, titularis, input.team.single?.[1])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[2])
+      this._addPlayer(preppedMap, based, titularis, input.team.single?.[2])
         .player1,
-      this._addPlayer(preppedMap, based, teamed, input.team.single?.[3])
+      this._addPlayer(preppedMap, based, titularis, input.team.single?.[3])
         .player1,
     ];
 
     const subtitudes = input.team.subtitude.map(
-      (r) => this._addPlayer(preppedMap, based, teamed, r)?.player1
+      (r) => this._addPlayer(preppedMap, based, titularis, r)?.player1
     );
 
     const logo = await readFile(`${__dirname}/assets/logo.png`, {
@@ -248,13 +248,13 @@ export class PdfService {
       Partial<Player> & {
         base: boolean;
         team: boolean;
-        RankingLastPlace: RankingLastPlace;
+        rankingLastPlace: RankingLastPlace;
         sum: number;
         highest: number;
       }
     >,
     based: string[],
-    teamed: string[],
+    titularis: string[],
     player1Id = '',
     player2Id = ''
   ) {
@@ -268,8 +268,8 @@ export class PdfService {
         player1.base = false;
       }
 
-      if (player1.team && teamed.indexOf(player1.id) === -1) {
-        teamed.push(player1.id);
+      if (player1.team && titularis.indexOf(player1.id) === -1) {
+        titularis.push(player1.id);
       } else {
         player1.team = false;
       }
@@ -282,8 +282,8 @@ export class PdfService {
         player2.base = false;
       }
 
-      if (player2.team && teamed.indexOf(player2.id) === -1) {
-        teamed.push(player2.id);
+      if (player2.team && titularis.indexOf(player2.id) === -1) {
+        titularis.push(player2.id);
       } else {
         player2.team = false;
       }
