@@ -3,7 +3,7 @@ mutation RemoveBasePlayerForSubEvent(
   $playerId: ID!
   $subEventId: ID!
 ) {
-  removePlayerBaseSubEvent(
+  removeBasePlayerForSubEvent(
     teamId: $teamId
     playerId: $playerId
     subEventId: $subEventId
