@@ -572,10 +572,8 @@ type TeamPlayer {
   slug: String
   memberId: String
   rankingPoints: [RankingPoint!]
-
-  "(Default) sorting: DESC \n\r(Default) take: 1"
-  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]!
-  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]!
+  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]
   comments: [Comment!]
   teams: [Team!]
   clubs: [ClubPlayer!]
