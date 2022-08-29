@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { Transaction } from 'sequelize';
 import { Processor, ProcessStep } from '../../../processing';
-import { VisualService } from '../../../services';
+import { VisualService } from '@badman/backend/visual';
 import { XmlTournament } from '../../../utils';
 import {
   TournamentSyncDrawProcessor,

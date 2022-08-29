@@ -12,13 +12,13 @@ import {
   SyncRankingProcessor,
   GlobalConsumer,
 } from './processors';
-import { VisualService } from './services';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
 import { transports, format } from 'winston';
 import versionPackage from '../version.json';
+import { VisualModule } from 'libs/backend/visual/src';
 
 @Module({
   providers: [
@@ -32,7 +32,6 @@ import versionPackage from '../version.json';
 
     CronService,
 
-    VisualService,
   ],
   imports: [
     ConfigModule.forRoot(),
@@ -71,6 +70,7 @@ import versionPackage from '../version.json';
       },
       inject: [ConfigService],
     }),
+    VisualModule,
     DatabaseModule,
     ScheduleModule.forRoot(),
     QueueModule,

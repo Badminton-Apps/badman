@@ -17,12 +17,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@badman/backend/graphql": ["libs/backend/graphql/src/index.ts"],
       "@badman/backend/authorization": [
         "libs/backend/authorization/src/index.ts"
       ],
       "@badman/backend/database": ["libs/backend/database/src/index.ts"],
       "@badman/backend/generator": ["libs/backend/generator/src/index.ts"],
+      "@badman/backend/graphql": ["libs/backend/graphql/src/index.ts"],
       "@badman/backend/handlebar": ["libs/backend/handlebar/src/index.ts"],
       "@badman/backend/health": ["libs/backend/health/src/index.ts"],
       "@badman/backend/mailing": ["libs/backend/mailing/src/index.ts"],
@@ -36,6 +36,7 @@
         "libs/backend/ranking-calc/src/index.ts"
       ],
       "@badman/backend/search": ["libs/backend/search/src/index.ts"],
+      "@badman/backend/visual": ["libs/backend/visual/src/index.ts"],
       "@badman/frontend/authentication": [
         "libs/frontend/authentication/src/index.ts"
       ],

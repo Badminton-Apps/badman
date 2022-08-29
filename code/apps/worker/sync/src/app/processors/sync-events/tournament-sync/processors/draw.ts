@@ -8,7 +8,7 @@ import {
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-import { VisualService } from '../../../../services';
+import { VisualService } from '@badman/backend/visual';
 import { XmlTournament, XmlDrawTypeID } from '../../../../utils';
 import { SubEventStepData } from './subEvent';
 

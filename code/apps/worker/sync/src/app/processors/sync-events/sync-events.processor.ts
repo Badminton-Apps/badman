@@ -1,9 +1,9 @@
 import { Sync, SyncQueue } from '@badman/backend/queue';
+import { VisualService } from '@badman/backend/visual';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { Sequelize } from 'sequelize-typescript';
-import { VisualService } from '../../services';
 import { XmlTournamentTypeID } from '../../utils';
 import { CompetitionSyncer } from './competition-sync';
 import { TournamentSyncer } from './tournament-sync';
