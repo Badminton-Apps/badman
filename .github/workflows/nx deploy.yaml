@@ -11,6 +11,7 @@ env:
   NX_BRANCH: ${{ github.event.number || github.ref }}
   NX_RUN_GROUP: ${{ github.run_id }}
   NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
+  NODE_ENV: '18.8.0'
 
 jobs:
   base:
@@ -34,7 +35,7 @@ jobs:
           echo "::set-output name=base::$LAST_TAG_HASH"
       - uses: actions/setup-node@v3
         with:
-          node-version: '17.9.0'
+          node-version: ${{ env.NODE_ENV }}
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -57,7 +58,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '17.9.0'
+          node-version: ${{ env.NODE_ENV }}
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -81,7 +82,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
-          node-version: '17.9.0'
+          node-version: ${{ env.NODE_ENV }}
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -130,7 +131,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
-          node-version: '17.9.0'
+          node-version: ${{ env.NODE_ENV }}
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -199,7 +200,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v3
         with:
-          node-version: '17.9.0'
+          node-version: ${{ env.NODE_ENV }}
       - name: Cache
         uses: actions/cache@v3
         with:
