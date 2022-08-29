@@ -1,15 +1,11 @@
 /* eslint-disable prefer-rest-params */
 import {
-  DrawCompetition,
   EncounterCompetition,
-  EventCompetition,
   EventEntry,
   Player,
   RankingLastPlace,
   RankingPlace,
-  SubEventCompetition,
   SubEventType,
-  Team,
 } from '@badman/backend/database';
 import { HandlebarService } from '@badman/backend/handlebar';
 import { Injectable } from '@nestjs/common';
