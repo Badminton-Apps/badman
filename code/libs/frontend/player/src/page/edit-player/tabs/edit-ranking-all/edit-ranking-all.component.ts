@@ -192,20 +192,41 @@ export class EditRankingAllComponent implements OnInit {
           place: RankingPlace;
         }) => {
           if (result?.action) {
-            lastValueFrom(
-              this.appollo.mutate({
-                mutation: gql`
-                mutation UpdateRankingPlace($rankingPlace: RankingPlaceInput!) {
-                  ${result.action}RankingPlace(rankingPlace: $rankingPlace) {
-                    id
+            let mutation;
+
+            switch (result.action) {
+              case 'update':
+              case 'add':
+                mutation = this.appollo.mutate({
+                  mutation: gql`
+                  mutation UpdateRankingPlace($rankingPlace: RankingPlaceUpdateInput!) {
+                    ${result.action}RankingPlace(data: $rankingPlace) {
+                      id
+                    }
                   }
-                }
-              `,
-                variables: {
-                  rankingPlace: result.place,
-                },
-              })
-            ).then(() => this.query$?.refetch());
+                `,
+                  variables: {
+                    rankingPlace: result.place,
+                  },
+                });
+                break;
+
+              case 'remove':
+                mutation = this.appollo.mutate({
+                  mutation: gql`
+                    mutation RemoveRankingPlace($id: ID!) {
+                      removeRankingPlace(id: $id)
+                    }
+                  `,
+                  variables: {
+                    id: result.place.id,
+                  },
+                });
+
+                break;
+            }
+
+            lastValueFrom(mutation).then(() => this.query$?.refetch());
           }
         }
       );

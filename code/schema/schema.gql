@@ -745,8 +745,9 @@ type Mutation {
   removeRankingGroupToRankingSystem(rankingSystemId: ID!, rankingGroupId: ID!): RankingSystem!
   addSubEventsToRankingGroup(rankingGroupId: ID!, competitions: [ID!], tournaments: [ID!]): RankingGroup!
   removeSubEventsToRankingGroup(rankingGroupId: ID!, competitions: [ID!], tournaments: [ID!]): RankingGroup!
-  updateRankingPlace(data: RankingPlaceUpdateInput!): Player!
-  newRankingPlace(data: RankingPlaceNewInput!): Player!
+  updateRankingPlace(data: RankingPlaceUpdateInput!): RankingPlace!
+  newRankingPlace(data: RankingPlaceNewInput!): RankingPlace!
+  removeRankingPlace(id: ID!): Boolean!
   createLocation(data: LocationNewInput!): Location!
   updateLocation(data: LocationUpdateInput!): Location!
   createAvailability(data: AvailabilityNewInput!): Availability!
