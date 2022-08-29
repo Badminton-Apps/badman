@@ -66,7 +66,7 @@ export class RankingPlaceResolver {
     return rankingPlace.getPlayer();
   }
 
-  @Mutation(() => Player)
+  @Mutation(() => RankingPlace)
   async updateRankingPlace(
     @User() user: Player,
     @Args('data')
@@ -115,7 +115,7 @@ export class RankingPlaceResolver {
       // Commit transaction
       await transaction.commit();
 
-      return player;
+      return rankingPlace;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
@@ -123,7 +123,7 @@ export class RankingPlaceResolver {
     }
   }
 
-  @Mutation(() => Player)
+  @Mutation(() => RankingPlace)
   async newRankingPlace(
     @User() user: Player,
     @Args('data') newRankingPlaceData: RankingPlaceNewInput
@@ -153,29 +153,59 @@ export class RankingPlaceResolver {
       }
 
       // Update club
-      await RankingPlace.create({ ...newRankingPlaceData }, { transaction });
+      const place = await RankingPlace.create(
+        { ...newRankingPlaceData },
+        { transaction }
+      );
 
       // Commit transaction
       await transaction.commit();
 
-      return player;
+      return place;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
       throw error;
     }
   }
+  @Mutation(() => Boolean)
+  async removeRankingPlace(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string
+  ) {
+    const rankingPlace = await RankingPlace.findByPk(id);
 
-  // @Mutation(returns => RankingPlace)
-  // async RankingPlace(
-  //   @Args('RankingPlaceData') RankingPlaceData: RankingPlaceInput,
-  // ): Promise<RankingPlace> {
-  //   const recipe = await this.recipesService.create(RankingPlaceData);
-  //   return recipe;
-  // }
+    if (!rankingPlace) {
+      throw new NotFoundException(`${RankingPlace.name}: ${id}`);
+    }
 
-  // @Mutation(returns => Boolean)
-  // async RankingPlace(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+    if (
+      !user.hasAnyPermission([
+        `${rankingPlace.playerId}_edit:player`,
+        'edit-any:player',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      // Update rankingPlace
+      await rankingPlace.destroy({
+        transaction,
+      });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
 }
