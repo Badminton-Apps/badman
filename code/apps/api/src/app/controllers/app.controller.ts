@@ -125,6 +125,38 @@ export class AppController {
     });
   }
 
+  @Post('queue-job')
+  async getQueueJob(
+    @User() user: Player,
+    @Body()
+    args: {
+      job: string;
+      queue: typeof SimulationQueue | typeof SyncQueue | typeof SimulationQueue;
+      jobArs: unknown;
+      removeOnComplete: boolean;
+      removeOnFail: boolean;
+    }
+  ) {
+    if (!user.hasAnyPermission(['change:job'])) {
+      throw new Error('You do not have permission to do this');
+    }
+
+    switch (args.queue) {
+      case SimulationQueue:
+        return this.rankingSim.add(args.job, args.jobArs, {
+          removeOnComplete: args.removeOnComplete,
+          removeOnFail: args.removeOnFail,
+        });
+      case SyncQueue:
+        return this.rankingSync.add(args.job, args.jobArs, {
+          removeOnComplete: args.removeOnComplete,
+          removeOnFail: args.removeOnFail,
+        });
+      default:
+        throw new Error('Unknown queue');
+    }
+  }
+
   @Get('cp')
   async getCp(@Res() res: Response, @Query() query: { eventId: string }) {
     this.logger.debug('Generating CP');
