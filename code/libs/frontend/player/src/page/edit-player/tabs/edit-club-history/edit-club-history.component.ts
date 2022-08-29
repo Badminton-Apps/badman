@@ -63,9 +63,6 @@ export class EditClubHistoryComponent implements OnInit {
         })
       ),
       map((r) => r?.data?.player?.clubs.map((c) => new Club(c))),
-      tap((r) => {
-        console.log('clubs', r);
-      }),
       map((r) =>
         r.sort(
           (a, b) =>

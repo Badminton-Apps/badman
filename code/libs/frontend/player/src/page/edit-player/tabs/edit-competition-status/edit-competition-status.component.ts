@@ -41,11 +41,15 @@ export class EditCompetitionStatusComponent implements OnInit {
                   id
                   firstName
                   lastName
+                  competitionPlayer
                 }
               }
             `,
             variables: {
-              data: compPlayer,
+              data: {
+                id: this.player.id,
+                competitionPlayer: compPlayer.value,
+              },
             },
           })
           .pipe(
