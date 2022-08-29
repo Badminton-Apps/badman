@@ -8,7 +8,8 @@ import {
 import { Op } from 'sequelize';
 import { SubEventStepData } from '.';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '../../../../services';
+import { VisualService } from '@badman/backend/visual';
+
 import { XmlTournament, XmlDrawTypeID } from '../../../../utils';
 
 export interface DrawStepData {

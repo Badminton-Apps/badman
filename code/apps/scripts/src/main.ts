@@ -1,17 +1,12 @@
-import { Logger } from '@nestjs/common';
+/**
+ * This is not a production server yet!
+ * This is only a minimal backend to get started.
+ */
 
-(async () => {
-  const logger = new Logger('Scripts');
-  logger.log('Starting script');
+import { NestFactory } from '@nestjs/core';
+import { ScriptModule } from './app/app.module';
 
-  logger.debug('Creating sequelize instance');
-  // const sequelize = await creatSequelizeInstance();
-
-  logger.debug('Creating Runner');
-  // const genders = new FixGendersRunner(sequelize);
-
-  logger.debug('Processing');
-  // await genders.process();
-
-  logger.log('Done');
-})();
+async function bootstrap() {
+  await NestFactory.createApplicationContext(ScriptModule);
+}
+bootstrap();

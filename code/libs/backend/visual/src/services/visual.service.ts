@@ -16,6 +16,7 @@ import {
 } from '../utils';
 import { Moment } from 'moment';
 import { ConfigService } from '@nestjs/config';
+import moment from 'moment-timezone';
 
 @Injectable()
 export class VisualService {
@@ -33,6 +34,7 @@ export class VisualService {
     this.http = axiosRateLimit(axios.create(), { maxRPS: 15 });
     axiosRetry(this.http, { retries: this._retries });
     this.parser = new XMLParser();
+    VisualService.initializeCache();
   }
 
   static initializeCache() {
@@ -173,7 +175,11 @@ export class VisualService {
       'YYYY-MM-DD'
     )}&pagesize=${pageSize}&pageno=${page}`;
 
-    VisualService.logger.debug(`Getting changes from ${url}, user: ${this.configService.get('VR_API_USER')}, pass: ${this.configService.get('VR_API_PASS')}`);
+    VisualService.logger.debug(
+      `Getting changes from ${url}, user: ${this.configService.get(
+        'VR_API_USER'
+      )}, pass: ${this.configService.get('VR_API_PASS')}`
+    );
 
     const result = await axios.get(url, {
       withCredentials: true,
@@ -209,8 +215,61 @@ export class VisualService {
     return tournaments;
   }
 
+  async getDate(tourneyId: string, encounterId: string, useCache = true) {
+    const result = await this._getFromApi(
+      `${this.configService.get(
+        'VR_API'
+      )}/Tournament/${tourneyId}/Match/${encounterId}/Date`,
+      useCache
+    );
+    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    return parsed.TournamentMatch.MatchDate;
+  }
+
+  async changeDate(tourneyId: string, encounterId: string, newDate: Date) {
+    const url = `${this.configService.get(
+      'VR_API'
+    )}/Tournament/${tourneyId}/Match/${encounterId}/Date`;
+
+    const body = `
+    <TournamentMatch>
+        <TournamentID>${tourneyId}</TournamentID>
+        <MatchID>${encounterId}</MatchID>
+        <MatchDate>${moment(newDate)
+          .tz('Europe/Brussels')
+          .format(VisualService.visualFormat)}</MatchDate>
+    </TournamentMatch>
+  `;
+
+    const options = {
+      url,
+      method: 'PUT',
+      withCredentials: true,
+      auth: {
+        username: `${this.configService.get('VR_API_USER')}`,
+        password: `${this.configService.get('VR_API_PASS')}`,
+      },
+      headers: { 'Content-Type': 'application/xml' },
+      data: body,
+    };
+
+    if (this.configService.get('NODE_ENV') === 'production') {
+      const resultPut = await axios(options);
+      const parser = new XMLParser();
+
+      const bodyPut = parser.parse(resultPut.data).Result as XmlResult;
+      if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
+        VisualService.logger.error(options);
+        throw new Error(bodyPut.Error.Message);
+      }
+      VisualService.cache.delete(url);
+    } else {
+      VisualService.logger.debug(options);
+    }
+  }
+
   private _getFromApi(url: string, useCache = true) {
-    if ((useCache || true) && VisualService.cache.has(url)) {
+    if (useCache && VisualService.cache.has(url)) {
       return Promise.resolve({ data: VisualService.cache.get(url) });
     } else {
       const t0 = performance.now();

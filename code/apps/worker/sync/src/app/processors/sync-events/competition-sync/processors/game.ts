@@ -9,7 +9,7 @@ import {
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '../../../../services';
+import { VisualService } from '@badman/backend/visual';
 import {
   XmlTournament,
   XmlMatch,
