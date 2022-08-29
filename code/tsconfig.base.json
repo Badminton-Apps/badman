@@ -17,12 +17,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@badman/backend/graphql": ["libs/backend/graphql/src/index.ts"],
       "@badman/backend/authorization": [
         "libs/backend/authorization/src/index.ts"
       ],
       "@badman/backend/database": ["libs/backend/database/src/index.ts"],
       "@badman/backend/generator": ["libs/backend/generator/src/index.ts"],
-      "@badman/backend/grapqhl": ["libs/backend/grapqhl/src/index.ts"],
       "@badman/backend/handlebar": ["libs/backend/handlebar/src/index.ts"],
       "@badman/backend/health": ["libs/backend/health/src/index.ts"],
       "@badman/backend/mailing": ["libs/backend/mailing/src/index.ts"],
