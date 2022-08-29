@@ -4,9 +4,9 @@ import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import { Job } from 'bull';
 import { XMLParser } from 'fast-xml-parser';
 import moment from 'moment-timezone';
+import { Job } from 'bull';
 
 @Processor({
   name: SyncQueue,
