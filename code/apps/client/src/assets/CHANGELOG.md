@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.24.0](https://github.com/Badminton-Apps/badman/compare/v5.23.1...v5.24.0) (2022-08-30)
+
+
+### Features
+
+* **api:** allow all jobs to be run via api ([fa68470](https://github.com/Badminton-Apps/badman/commit/fa6847056e56f59ae689635e26e73eeba407b6da))
+* **ci:** close stale branches only on 1st of the month ([55a2311](https://github.com/Badminton-Apps/badman/commit/55a23114a944a4e4fef5e58fb263f793d35a5529))
+* **scripts:** added scripts for moving of BVL games ([d2ecb78](https://github.com/Badminton-Apps/badman/commit/d2ecb786e1e7d1b38d437829fb3420e4cfa2fe10))
+* updating to node v18 ([d633f5f](https://github.com/Badminton-Apps/badman/commit/d633f5f27f8bc1d5edbc9b95715d9ce66f3dcac3))
+
+
+### Bug Fixes
+
+* **backend-graphql,frontend-player:** editing ranking ([08b0d2b](https://github.com/Badminton-Apps/badman/commit/08b0d2bac4ca142c90e2be1d46c5c461623e60b8))
+* **backend-graphql:** adding/removing base players ([a5515f7](https://github.com/Badminton-Apps/badman/commit/a5515f71f4c8e9eaed359639debb326f3e3340ba))
+* **backend-graphql:** typo in naming ([190d157](https://github.com/Badminton-Apps/badman/commit/190d157d6024b3aaa1efde4e0f0ffb8ef03971bf))
+* **backend-grapqhl:** don't remove on fail ([c46c33d](https://github.com/Badminton-Apps/badman/commit/c46c33d9b3d8d16fa80d9083c5a576871795376e))
+* **ci:** node version workflow to v18.8 ([7e40882](https://github.com/Badminton-Apps/badman/commit/7e40882bc3b7798f69bf59e5ada7fce1b26ee0ac))
+* **deps:** update nrwl monorepo to v14.5.10 ([8248e7e](https://github.com/Badminton-Apps/badman/commit/8248e7e8eb1c48bfe49e080d41911cd96b6df651))
+* **deps:** update nrwl monorepo to v14.5.8 ([c149ccd](https://github.com/Badminton-Apps/badman/commit/c149ccd93ebadd5b2165478825c23f928563b3b4))
+* **frontend-player:** updating competition status ([3864931](https://github.com/Badminton-Apps/badman/commit/38649319004d976b2c38171729f98d8231c966e6))
+
 ### [5.23.1](https://github.com/Badminton-Apps/badman/compare/v5.23.0...v5.23.1) (2022-08-19)
 
 
