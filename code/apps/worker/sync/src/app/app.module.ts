@@ -18,7 +18,7 @@ import {
 } from 'nest-winston';
 import { transports, format } from 'winston';
 import versionPackage from '../version.json';
-import { VisualModule } from 'libs/backend/visual/src';
+import { VisualModule } from '@badman/backend/visual';
 
 @Module({
   providers: [
