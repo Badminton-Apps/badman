@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.25.1](https://github.com/Badminton-Apps/badman/compare/v5.25.0...v5.25.1) (2022-08-31)
+
+
+### Bug Fixes
+
+* **backend-visual:** redis uses auth in production ([cc0f59b](https://github.com/Badminton-Apps/badman/commit/cc0f59b47030af3960e4adf583a2b3a7cbc63348))
+
 ## [5.25.0](https://github.com/Badminton-Apps/badman/compare/v5.24.0...v5.25.0) (2022-08-31)
 
 
