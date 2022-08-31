@@ -1,4 +1,5 @@
 import { SyncQueue, Sync } from '@badman/backend/queue';
+import { VisualService } from '@badman/backend/visual';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
@@ -13,19 +14,24 @@ export class SyncRankingProcessor {
 
   private _rankingSync: RankingSyncer;
 
-  constructor(private _sequelize: Sequelize) {
+  constructor(private _sequelize: Sequelize, visualService: VisualService) {
     this.logger.debug('SyncRanking');
-    this._rankingSync = new RankingSyncer();
+    this._rankingSync = new RankingSyncer(visualService);
   }
 
   @Process(Sync.SyncRanking)
-  async syncRanking(job: Job<string>): Promise<void> {
+  async syncRanking(
+    job: Job<{
+      start: string;
+    }>
+  ): Promise<void> {
     this.logger.debug('Syncing Ranking', job.data);
 
     const transaction = await this._sequelize.transaction();
 
     await this._rankingSync.process({
       transaction,
+      ...job.data,
     });
 
     await transaction.commit();

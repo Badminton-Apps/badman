@@ -5,14 +5,14 @@ import {
   RankingSystem,
   RankingSystems,
 } from '@badman/backend/database';
+import { VisualService } from '@badman/backend/visual';
 import { Logger } from '@nestjs/common';
-import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 
 import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { Processor, ProcessStep } from '../../processing';
-import { correctWrongPlayers, XmlResult } from '../../utils';
+import { correctWrongPlayers } from '../../utils';
 
 export class RankingSyncer {
   private readonly logger = new Logger(RankingSyncer.name);
@@ -30,7 +30,7 @@ export class RankingSyncer {
 
   readonly xmlParser: XMLParser;
 
-  constructor() {
+  constructor(private readonly _visualService: VisualService) {
     this.processor = new Processor(null, { logger: this.logger });
     this.xmlParser = new XMLParser();
 
@@ -50,27 +50,8 @@ export class RankingSyncer {
   }> {
     return new ProcessStep(
       this.STEP_RANKING,
-      async (args: { transaction: Transaction }) => {
-        const resultTournament = await axios.get(
-          `${process.env.VR_API}/Ranking`,
-          {
-            withCredentials: true,
-            auth: {
-              username: `${process.env.VR_API_USER}`,
-              password: `${process.env.VR_API_PASS}`,
-            },
-            headers: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              'Content-Type': 'application/xml',
-            },
-          }
-        );
-
-        const bodyTournament = this.xmlParser.parse(resultTournament.data, {})
-          .Result as XmlResult;
-        const rankingDetail = Array.isArray(bodyTournament.Ranking)
-          ? bodyTournament.Ranking
-          : [bodyTournament.Ranking];
+      async (args: { transaction: Transaction; start: Date }) => {
+        const rankingDetail = await this._visualService.getRanking();
 
         const system = await RankingSystem.findOne({
           where: {
@@ -81,13 +62,15 @@ export class RankingSyncer {
         });
 
         // Default sync 1 week
-        const lastDate = moment().subtract(1, 'week');
+        const lastDate = args.start
+          ? moment(args.start)
+          : moment().subtract(1, 'week');
 
         return {
           stop: system == null,
           system,
           visualCode: rankingDetail[0].Code,
-          lastDate: lastDate ? moment(lastDate).toDate() : null,
+          lastDate: lastDate.toDate(),
         };
       }
     );
@@ -98,25 +81,11 @@ export class RankingSyncer {
       const ranking: { visualCode: string; system: RankingSystem } =
         this.processor.getData(this.STEP_RANKING);
 
-      const resultTournament = await axios.get(
-        `${process.env.VR_API}/Ranking/${ranking.visualCode}/Category`,
-        {
-          withCredentials: true,
-          auth: {
-            username: `${process.env.VR_API_USER}`,
-            password: `${process.env.VR_API_PASS}`,
-          },
-          headers: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            'Content-Type': 'application/xml',
-          },
-        }
+      const categories = await this._visualService.getCategories(
+        ranking.visualCode
       );
 
-      const bodyTournament = this.xmlParser.parse(resultTournament.data)
-        .Result as XmlResult;
-
-      return bodyTournament.RankingCategory.map((c) => {
+      return categories.map((c) => {
         return {
           code: c.Code,
           name: c.Name,
@@ -130,61 +99,47 @@ export class RankingSyncer {
       const ranking: { visualCode: string; system: RankingSystem } =
         this.processor.getData(this.STEP_RANKING);
 
-      const resultTournament = await axios.get(
-        `${process.env.VR_API}/Ranking/${ranking.visualCode}/Publication`,
-        {
-          withCredentials: true,
-          auth: {
-            username: `${process.env.VR_API_USER}`,
-            password: `${process.env.VR_API_PASS}`,
-          },
-          headers: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            'Content-Type': 'application/xml',
-          },
-        }
+      const publications = await this._visualService.getPublications(
+        ranking.visualCode
       );
 
-      const bodyTournament = this.xmlParser.parse(resultTournament.data)
-        .Result as XmlResult;
+      let pubs = publications
+        .filter((publication) => publication.Visible)
+        .map((publication) => {
+          const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
+          let canUpdate = false;
 
-      let pubs = bodyTournament.RankingPublication.filter(
-        (publication) => publication.Visible
-      ).map((publication) => {
-        const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
-        let canUpdate = false;
+          if (this.updateMonths.includes(momentDate.month())) {
+            const firstMondayOfMonth = momentDate.clone().date(1).day(8);
+            if (firstMondayOfMonth.date() > 7) {
+              firstMondayOfMonth.day(-6);
+            }
 
-        if (this.updateMonths.includes(momentDate.month())) {
-          const firstMondayOfMonth = momentDate.clone().date(1).day(8);
-          if (firstMondayOfMonth.date() > 7) {
-            firstMondayOfMonth.day(-6);
+            // Create some margin
+            const margin = firstMondayOfMonth.clone().add(2, 'days');
+            canUpdate =
+              momentDate.isSame(firstMondayOfMonth) ||
+              momentDate.isBetween(firstMondayOfMonth, margin);
           }
 
-          // Create some margin
-          const margin = firstMondayOfMonth.clone().add(2, 'days');
-          canUpdate =
-            momentDate.isSame(firstMondayOfMonth) ||
-            momentDate.isBetween(firstMondayOfMonth, margin);
-        }
+          if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
+            canUpdate = true;
+          }
+          if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
+            canUpdate = false;
+          }
 
-        if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
-          canUpdate = true;
-        }
-        if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
-          canUpdate = false;
-        }
-
-        return {
-          usedForUpdate: canUpdate,
-          code: publication.Code,
-          name: publication.Name,
-          year: publication.Year,
-          week: publication.Week,
-          publicationDate: publication.PublicationDate,
-          visible: publication.Visible,
-          date: momentDate,
-        } as VisualPublication;
-      });
+          return {
+            usedForUpdate: canUpdate,
+            code: publication.Code,
+            name: publication.Name,
+            year: publication.Year,
+            week: publication.Week,
+            publicationDate: publication.PublicationDate,
+            visible: publication.Visible,
+            date: momentDate,
+          } as VisualPublication;
+        });
       pubs = pubs.sort((a, b) => a.date.diff(b.date));
       return pubs;
     });
@@ -214,24 +169,13 @@ export class RankingSyncer {
           type: 'single' | 'double' | 'mix',
           gender: 'M' | 'F'
         ) => {
-          const resultTournament = await axios.get(
-            `${process.env.VR_API}/Ranking/${ranking.visualCode}/Publication/${publication.code}/Category/${category}`,
-            {
-              withCredentials: true,
-              auth: {
-                username: `${process.env.VR_API_USER}`,
-                password: `${process.env.VR_API_PASS}`,
-              },
-              headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Content-Type': 'application/xml',
-              },
-            }
+          const rankingPoints = await this._visualService.getPoints(
+            ranking.visualCode,
+            publication.code,
+            category
           );
-          const bodyTournament = this.xmlParser.parse(resultTournament.data)
-            .Result as XmlResult;
 
-          const memberIds = bodyTournament.RankingPublicationPoints.map(
+          const memberIds = rankingPoints.map(
             (points) =>
               correctWrongPlayers({ memberId: `${points.Player1.MemberID}` })
                 .memberId
@@ -261,7 +205,7 @@ export class RankingSyncer {
             transaction: args.transaction,
           });
 
-          for (const points of bodyTournament.RankingPublicationPoints) {
+          for (const points of rankingPoints) {
             let foundPlayer = players.find(
               (p) =>
                 p.memberId ===
