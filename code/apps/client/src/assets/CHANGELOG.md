@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.25.0](https://github.com/Badminton-Apps/badman/compare/v5.24.0...v5.25.0) (2022-08-31)
+
+
+### Features
+
+* **backend-visual:** moved all of visual service caching to redis ([4b71e5b](https://github.com/Badminton-Apps/badman/commit/4b71e5b412d59b0561cc6bc9cffc8efa3d2edf57))
+
+
+### Bug Fixes
+
+* **deps:** update dependency puppeteer to v17 ([72a2c14](https://github.com/Badminton-Apps/badman/commit/72a2c14c426b0014e649ff606b9e83743e3f6f13))
+
 ## [5.24.0](https://github.com/Badminton-Apps/badman/compare/v5.23.1...v5.24.0) (2022-08-30)
 
 
