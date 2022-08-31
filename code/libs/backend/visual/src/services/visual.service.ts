@@ -1,11 +1,13 @@
 import axios, { AxiosInstance } from 'axios';
-import { XMLParser } from 'fast-xml-parser';
 import axiosRetry from 'axios-retry';
+import { XMLParser } from 'fast-xml-parser';
 
-import { performance } from 'perf_hooks';
+import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axiosRateLimit from 'axios-rate-limit';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { Injectable, Logger } from '@nestjs/common';
+import { Moment } from 'moment';
+import moment from 'moment-timezone';
+import { performance } from 'perf_hooks';
 import {
   XmlMatch,
   XmlResult,
@@ -14,74 +16,44 @@ import {
   XmlTournamentDraw,
   XmlTournamentEvent,
 } from '../utils';
-import { Moment } from 'moment';
-import { ConfigService } from '@nestjs/config';
-import moment from 'moment-timezone';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class VisualService {
-  private static readonly logger = new Logger(VisualService.name);
+  private readonly logger = new Logger(VisualService.name);
   public static visualFormat = 'YYYY-MM-DDTHH:mm:ss';
+  private static CACHE_KEY = 'visual';
 
   private _retries = 25;
-  private http: AxiosInstance;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private static cache: Map<string, any> = new Map();
-  private static lastSaveSize = -1;
-  private parser: XMLParser;
+  private _http: AxiosInstance;
+  private _parser: XMLParser;
 
-  constructor(private configService: ConfigService) {
-    this.http = axiosRateLimit(axios.create(), { maxRPS: 15 });
-    axiosRetry(this.http, { retries: this._retries });
-    this.parser = new XMLParser();
-    VisualService.initializeCache();
-  }
-
-  static initializeCache() {
-    if (existsSync('./visalCache.json')) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      VisualService.cache = new Map<string, any>(
-        JSON.parse(readFileSync('./visalCache.json', 'utf-8'))
-      );
-      this.logger.debug(`Loaded ${VisualService.cache.size} items from cache`);
-    }
-
-    setTimeout(this.writeCacheToDisk.bind(this), 5000);
-  }
-
-  static writeCacheToDisk() {
-    if (this.lastSaveSize !== this.cache.size && this.cache.size > 0) {
-      this.lastSaveSize = this.cache.size;
-
-      writeFileSync(
-        './visalCache.json',
-        JSON.stringify([...VisualService.cache]),
-        {
-          encoding: 'utf-8',
-          flag: 'w',
-        }
-      );
-    }
-    setTimeout(this.writeCacheToDisk.bind(this), 5000);
+  constructor(
+    private _configService: ConfigService,
+    @Inject(CACHE_MANAGER) private _cacheManager: Cache
+  ) {
+    this._http = axiosRateLimit(axios.create(), { maxRPS: 15 });
+    axiosRetry(this._http, { retries: this._retries });
+    this._parser = new XMLParser();
   }
 
   async getPlayers(tourneyId: string, useCache = true) {
     const result = await this._getFromApi(
-      `${this.configService.get('VR_API')}/Tournament/${tourneyId}/Player`,
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Player`,
       useCache
     );
-    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.Player);
   }
 
   async getMatch(tourneyId: string, matchId: string | number, useCache = true) {
     const result = await this._getFromApi(
-      `${this.configService.get(
+      `${this._configService.get(
         'VR_API'
       )}/Tournament/${tourneyId}/TeamMatch/${matchId}`,
       useCache
     );
-    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    const parsed = this._parser.parse(result).Result as XmlResult;
     if (parsed.Match) {
       return this._asArray(parsed.Match);
     }
@@ -89,7 +61,7 @@ export class VisualService {
       return this._asArray(parsed.TeamMatch);
     }
 
-    VisualService.logger.warn('No matches');
+    this.logger.warn('No matches');
     return [];
   }
 
@@ -99,12 +71,12 @@ export class VisualService {
     useCache = true
   ): Promise<(XmlTeamMatch | XmlMatch)[]> {
     const result = await this._getFromApi(
-      `${this.configService.get(
+      `${this._configService.get(
         'VR_API'
       )}/Tournament/${tourneyId}/Draw/${drawId}/Match`,
       useCache
     );
-    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    const parsed = this._parser.parse(result).Result as XmlResult;
 
     if (parsed.Match) {
       return this._asArray(parsed.Match);
@@ -113,7 +85,7 @@ export class VisualService {
       return this._asArray(parsed.TeamMatch);
     }
 
-    VisualService.logger.warn('No matches');
+    this.logger.warn('No matches');
     return [];
   }
 
@@ -123,12 +95,12 @@ export class VisualService {
     useCache = true
   ): Promise<XmlTournamentDraw[]> {
     const result = await this._getFromApi(
-      `${this.configService.get(
+      `${this._configService.get(
         'VR_API'
       )}/Tournament/${tourneyId}/Event/${eventId}/Draw`,
       useCache
     );
-    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.TournamentDraw);
   }
 
@@ -138,12 +110,12 @@ export class VisualService {
     useCache = true
   ): Promise<XmlTournamentDraw> {
     const result = await this._getFromApi(
-      `${this.configService.get(
+      `${this._configService.get(
         'VR_API'
       )}/Tournament/${tourneyId}/Draw/${drawId}`,
       useCache
     );
-    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.TournamentDraw as XmlTournamentDraw;
   }
 
@@ -152,52 +124,31 @@ export class VisualService {
     useCache = true
   ): Promise<XmlTournamentEvent[]> {
     const result = await this._getFromApi(
-      `${this.configService.get('VR_API')}/Tournament/${tourneyId}/Event`,
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Event`,
       useCache
     );
-    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.TournamentEvent);
   }
 
   async getTournament(tourneyId: string, useCache = true) {
     const result = await this._getFromApi(
-      `${this.configService.get('VR_API')}/Tournament/${tourneyId}`,
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}`,
       useCache
     );
-    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.Tournament as XmlTournament;
   }
 
   async getChangeEvents(date: Moment, page = 0, pageSize = 100) {
-    const url = `${this.configService.get(
+    const url = `${this._configService.get(
       'VR_API'
     )}/Tournament?list=1&refdate=${date.format(
       'YYYY-MM-DD'
     )}&pagesize=${pageSize}&pageno=${page}`;
 
-    VisualService.logger.debug(
-      `Getting changes from ${url}, user: ${this.configService.get(
-        'VR_API_USER'
-      )}, pass: ${this.configService.get('VR_API_PASS')}`
-    );
-
-    const result = await axios.get(url, {
-      withCredentials: true,
-      auth: {
-        username: `${this.configService.get('VR_API_USER')}`,
-        password: `${this.configService.get('VR_API_PASS')}`,
-      },
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        'Content-Type': 'application/xml',
-      },
-    });
-
-    if (result.status !== 200) {
-      throw new Error(`Cannot get changed tournaments: ${result.status}`);
-    }
-
-    const body = this.parser.parse(result.data).Result as XmlResult;
+    const result = await this._getFromApi(url, false);
+    const body = this._parser.parse(result).Result as XmlResult;
 
     if (body.Tournament === undefined) {
       return [];
@@ -217,17 +168,17 @@ export class VisualService {
 
   async getDate(tourneyId: string, encounterId: string, useCache = true) {
     const result = await this._getFromApi(
-      `${this.configService.get(
+      `${this._configService.get(
         'VR_API'
       )}/Tournament/${tourneyId}/Match/${encounterId}/Date`,
       useCache
     );
-    const parsed = this.parser.parse(result.data).Result as XmlResult;
+    const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.TournamentMatch.MatchDate;
   }
 
   async changeDate(tourneyId: string, encounterId: string, newDate: Date) {
-    const url = `${this.configService.get(
+    const url = `${this._configService.get(
       'VR_API'
     )}/Tournament/${tourneyId}/Match/${encounterId}/Date`;
 
@@ -246,59 +197,106 @@ export class VisualService {
       method: 'PUT',
       withCredentials: true,
       auth: {
-        username: `${this.configService.get('VR_API_USER')}`,
-        password: `${this.configService.get('VR_API_PASS')}`,
+        username: `${this._configService.get('VR_API_USER')}`,
+        password: `${this._configService.get('VR_API_PASS')}`,
       },
       headers: { 'Content-Type': 'application/xml' },
       data: body,
     };
 
-    if (this.configService.get('NODE_ENV') === 'production') {
+    if (this._configService.get('NODE_ENV') === 'production') {
       const resultPut = await axios(options);
       const parser = new XMLParser();
 
       const bodyPut = parser.parse(resultPut.data).Result as XmlResult;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
-        VisualService.logger.error(options);
+        this.logger.error(options);
         throw new Error(bodyPut.Error.Message);
       }
-      VisualService.cache.delete(url);
+
+      await this._cacheManager.del(`${VisualService.CACHE_KEY}:${url}`);
     } else {
-      VisualService.logger.debug(options);
+      this.logger.debug(options);
     }
   }
 
-  private _getFromApi(url: string, useCache = true) {
-    if (useCache && VisualService.cache.has(url)) {
-      return Promise.resolve({ data: VisualService.cache.get(url) });
-    } else {
-      const t0 = performance.now();
-      // logger.silly(`Getting from ${url}, max requests per second: ${(this.http as any).getMaxRPS()}`);
-      const request = this.http.get(url, {
-        withCredentials: true,
-        auth: {
-          username: `${this.configService.get('VR_API_USER')}`,
-          password: `${this.configService.get('VR_API_PASS')}`,
-        },
-        timeout: 1000000,
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          'Content-Type': 'application/xml',
-        },
-      });
+  async getRanking(useCache = true) {
+    const result = await this._getFromApi(
+      `${this._configService.get('VR_API')}/Ranking`,
+      useCache
+    );
+    const parsed = this._parser.parse(result).Result as XmlResult;
+    return this._asArray(parsed.Ranking);
+  }
 
-      request.then(() => {
+  async getCategories(rankingId: string, useCache = true) {
+    const result = await this._getFromApi(
+      `${this._configService.get('VR_API')}/Ranking/${rankingId}/Category`,
+      useCache
+    );
+    const parsed = this._parser.parse(result).Result as XmlResult;
+    return parsed.RankingCategory;
+  }
+
+  async getPublications(rankingId: string, useCache = true) {
+    const result = await this._getFromApi(
+      `${this._configService.get('VR_API')}/Ranking/${rankingId}/Publication`,
+      useCache
+    );
+    const parsed = this._parser.parse(result).Result as XmlResult;
+    return parsed.RankingPublication;
+  }
+
+  async getPoints(
+    rankingId: string,
+    publicationId: string,
+    categoryId: string,
+    useCache = true
+  ) {
+    const result = await this._getFromApi(
+      `${this._configService.get(
+        'VR_API'
+      )}/Ranking/${rankingId}/Publication/${publicationId}/Category/${categoryId}`,
+      useCache
+    );
+    const parsed = this._parser.parse(result).Result as XmlResult;
+    return parsed.RankingPublicationPoints;
+  }
+
+  private async _getFromApi(url: string, useCache = true) {
+    const t0 = performance.now();
+    if (useCache) {
+      const cached = await this._cacheManager.get(`${VisualService.CACHE_KEY}:${url}`);
+      if (cached) {
         const t1 = performance.now();
-        VisualService.logger.verbose(
-          `Got from ${url} in ${(t1 - t0).toFixed(2)}ms`
+        this.logger.verbose(
+          `Getting from (cache) ${url} took ${(t1 - t0).toFixed(2)}ms`
         );
-      });
-
-      request.then((r) => {
-        VisualService.cache.set(url, r.data);
-      });
-      return request;
+        return cached;
+      }
     }
+
+    // logger.silly(`Getting from ${url}, max requests per second: ${(this.http as any).getMaxRPS()}`);
+    const result = await this._http.get(url, {
+      withCredentials: true,
+      auth: {
+        username: `${this._configService.get('VR_API_USER')}`,
+        password: `${this._configService.get('VR_API_PASS')}`,
+      },
+      timeout: 1000000,
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'Content-Type': 'application/xml',
+      },
+    });
+
+    // Store for 1 week
+    await this._cacheManager.set(`${VisualService.CACHE_KEY}:${url}`, result.data, { ttl: 60 * 60 * 24 * 7 });
+
+    const t1 = performance.now();
+    this.logger.verbose(`Getting from ${url} took ${(t1 - t0).toFixed(2)}ms`);
+
+    return result.data;
   }
 
   private _asArray(obj) {
