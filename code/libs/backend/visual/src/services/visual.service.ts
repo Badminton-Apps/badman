@@ -32,8 +32,6 @@ export class VisualService {
     private _configService: ConfigService,
     @Inject(CACHE_MANAGER) private _cacheManager: Cache
   ) {
-    console.log(_cacheManager);
-
     this._http = axiosRateLimit(axios.create(), { maxRPS: 15 });
     axiosRetry(this._http, { retries: this._retries });
     this._parser = new XMLParser();
