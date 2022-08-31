@@ -15,7 +15,7 @@ import * as redisStore from 'cache-manager-redis-store';
           store: redisStore,
           host: configService.get('REDIS_HOST'), //default host
           port: configService.get('REDIS_PORT'), //default port,
-
+          password: configService.get('REDIS_PASSWORD'),
         };
       },
       inject: [ConfigService],
