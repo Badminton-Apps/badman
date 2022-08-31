@@ -13,10 +13,12 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
   Logger,
   Post,
   Query,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Response } from 'express';
@@ -39,7 +41,7 @@ export class AppController {
     user: Player
   ) {
     if (!user.hasAnyPermission(['calculate:ranking'])) {
-      throw new Error('You do not have permission to do this');
+      throw new UnauthorizedException('You do not have permission to do this');
     }
 
     // //
@@ -117,7 +119,7 @@ export class AppController {
     }
   ) {
     if (!user.hasAnyPermission(['calculate:ranking'])) {
-      throw new Error('You do not have permission to do this');
+      throw new UnauthorizedException('You do not have permission to do this');
     }
 
     return this.rankingSync.add(Sync.SyncEvents, args, {
@@ -132,28 +134,28 @@ export class AppController {
     args: {
       job: string;
       queue: typeof SimulationQueue | typeof SyncQueue | typeof SimulationQueue;
-      jobArs: unknown;
+      jobArgs: unknown;
       removeOnComplete: boolean;
       removeOnFail: boolean;
     }
   ) {
     if (!user.hasAnyPermission(['change:job'])) {
-      throw new Error('You do not have permission to do this');
+      throw  new UnauthorizedException('You do not have permission to do this');
     }
-
+ 
     switch (args.queue) {
       case SimulationQueue:
-        return this.rankingSim.add(args.job, args.jobArs, {
+        return this.rankingSim.add(args.job, args.jobArgs, {
           removeOnComplete: args.removeOnComplete,
           removeOnFail: args.removeOnFail,
         });
       case SyncQueue:
-        return this.rankingSync.add(args.job, args.jobArs, {
+        return this.rankingSync.add(args.job, args.jobArgs, {
           removeOnComplete: args.removeOnComplete,
           removeOnFail: args.removeOnFail,
         });
       default:
-        throw new Error('Unknown queue');
+        throw new HttpException('Unknown queue', 500);
     }
   }
 
