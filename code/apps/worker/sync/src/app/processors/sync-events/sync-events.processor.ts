@@ -101,7 +101,7 @@ export class SyncEventsProcessor {
         ) {
           if (job.data?.skip?.includes('competition')) {
             await transaction.commit();
-            continue;
+            continue; 
           }
 
           await this._competitionSync.process({
