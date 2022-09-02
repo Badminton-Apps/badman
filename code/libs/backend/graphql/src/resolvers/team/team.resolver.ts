@@ -335,7 +335,7 @@ export class TeamsResolver {
 
       const dbSubEvent = await SubEventCompetition.findByPk(subEventId, {
         attributes: [],
-        include: [{ model: EventCompetition, attributes: ['startYear'] }],
+        include: [{ model: EventCompetition, attributes: ['startYear', 'usedRankingUnit', 'usedRankingAmount'] }],
       });
 
       const dbSystem = await RankingSystem.findOne({
