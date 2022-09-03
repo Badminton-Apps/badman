@@ -27,6 +27,21 @@
             'competition.team-assembly.errors.not-enough-players' | translate
           }}
         </div>
+
+        <div
+          *ngIf="
+            this.teamIndex <
+            (this.entry?.competitionSubEvent?.minBaseIndex ?? 999)
+          "
+        >
+          {{
+            'competition.team-assembly.errors.team-to-strong'
+              | translate
+                : {
+                    minBase: this.entry?.competitionSubEvent?.minBaseIndex ?? 0
+                  }
+          }}
+        </div>
       </div>
     </div>
 
