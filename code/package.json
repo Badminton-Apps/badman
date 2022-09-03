@@ -132,6 +132,7 @@
     "tslib": "^2.4.0",
     "uuid": "^8.3.2",
     "winston": "^3.8.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.18.10/xlsx-0.18.10.tgz",
     "zone.js": "^0.11.5"
   },
   "devDependencies": {
