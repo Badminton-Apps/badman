@@ -52,18 +52,18 @@ export class ResyncBaseTeamsService {
       });
 
       if (!p) {
-        if (row['Type'] == 'Competitie') {
+        if (row['Type'] == 'Competitiespeler') {
           // We don't care if a recreational player is not found
           this.logger.debug('Player not found', row['Lidnummer']);
         }
         continue;
       }
 
-      if (row['Type'] == 'Competitie') {
+      if (row['Type'] == 'Competitiespeler') {
         p.competitionPlayer = true;
       } else {
         p.competitionPlayer = false;
-      }
+      } 
 
       const place = await p.getRankingPlaces({
         where: {
