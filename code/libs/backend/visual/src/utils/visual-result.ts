@@ -51,7 +51,7 @@ export interface XmlRankingPublication {
   Year: string;
   Week: string;
   PublicationDate: Date;
-  Visible: string;
+  Visible: boolean;
 }
 
 interface XmlError {
