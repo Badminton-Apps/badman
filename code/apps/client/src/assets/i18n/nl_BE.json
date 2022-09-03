@@ -154,7 +154,8 @@
         "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen.",
         "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld.",
         "player-above-lower": "Speler met hogere opstellingsindex staat voor deze speler opgesteld.",
-        "not-enough-players": "Te weinig titularissen zijn momenteel opgesteld voor de ontmoeting."
+        "not-enough-players": "Te weinig titularissen zijn momenteel opgesteld voor de ontmoeting.",
+        "team-to-strong": "Ploegindex titularissen mag niet onder de gerns van de reeks ({{minBase}}) komen"
       },
       "team-index": "Ploegindex titularissen is <strong>{{current}}</strong> en mag minimaal <strong>{{team}}</strong> zijn",
       "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
