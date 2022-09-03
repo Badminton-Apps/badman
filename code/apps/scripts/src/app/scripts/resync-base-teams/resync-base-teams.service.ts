@@ -1,6 +1,5 @@
 import {
   EventCompetition,
-  EventEntry,
   Player,
   RankingPlace,
   RankingSystem,
