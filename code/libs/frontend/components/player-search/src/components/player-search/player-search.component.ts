@@ -72,6 +72,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   constructor(private apollo: Apollo, private dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges) {
+    
+
     if (!(changes['player']?.isFirstChange() ?? true)) {
       this.setPlayer();
     }
@@ -85,6 +87,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   ngOnInit() {
     this.formControl = new FormControl();
     this.setPlayer();
+    
 
     const search$ = this.formControl.valueChanges.pipe(
       startWith(''),
@@ -229,7 +232,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
         switchMap((p) => {
           if (typeof p == 'string') {
             return lastValueFrom(
-              this.apollo.query({
+              this.apollo.query<{player: Partial<Player>}>({
                 query: gql`
                   # Write your query or mutation here
                   query GetUserInfoQuery($id: ID!) {
@@ -249,7 +252,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                 variables: {
                   id: p,
                 },
-              })
+              }).pipe(map((x) => new Player(x.data?.player)))
             );
           }
           return of(p);

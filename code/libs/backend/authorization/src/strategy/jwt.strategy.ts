@@ -1,5 +1,5 @@
 import { Player } from '@badman/backend/database';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { passportJwtSecret } from 'jwks-rsa';
@@ -7,6 +7,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+  private readonly Logger = new Logger(JwtStrategy.name);
   constructor(configService: ConfigService) {
     super({
       secretOrKeyProvider: passportJwtSecret({
@@ -26,9 +27,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: { sub?: string }) {
     if (payload.sub) {
-      const user = await Player.findOne({ where: { sub: payload.sub } });
-      if (user) {
-        return user;
+      try {
+        const user = await Player.findOne({
+          where: { sub: payload.sub },
+        });
+        if (user) {
+          return user;
+        }
+      } catch (e) {
+        this.Logger.error(e);
       }
     }
     return payload;

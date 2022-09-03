@@ -7,7 +7,7 @@ export const User = createParamDecorator(
     const ctx = GqlExecutionContext.create(context);
     const user = ctx.getContext().req.user;
     // If we have a user in the request, return it
-    if (user.sub) {
+    if (user && user.sub) {
       return user;
     }
     // If we don't have a user in the request, set the permissions to return false;
