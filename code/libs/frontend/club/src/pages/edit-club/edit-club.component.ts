@@ -250,7 +250,7 @@ export class EditClubComponent implements OnInit {
     this.updateRoles$.next(null);
   }
 
-  async onAddBasePlayer(player: Player, team: Team) {
+  async onAddBasePlayer(player: Partial<Player>, team: Team) {
     if (!team?.id) {
       throw new Error('No team id');
     }
@@ -272,7 +272,7 @@ export class EditClubComponent implements OnInit {
     this._deleteTeamFromCache(team.id);
     this.updateClub$.next(null);
   }
-  async onDeleteBasePlayer(player: Player, team: Team) {
+  async onDeleteBasePlayer(player: Partial<Player>, team: Team) {
     if (!team?.id) {
       throw new Error('No team id');
     }
