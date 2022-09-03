@@ -25,9 +25,10 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { RankingSystem, SystemService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/shared';
 import { RankingService } from '../../../../services';
 import { SimulateService } from '../../../../services/simulate.service';
+import { RankingSystem } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './overview-ranking-systems.component.html',

@@ -63,7 +63,11 @@ export class EditRankingComponent implements OnInit {
               query LastRanking($playerId: ID!, $system: String) {
                 player(id: $playerId) {
                   id
-                  rankingPlaces(take: 1, where: { systemId: $system }) {
+                  rankingPlaces(
+                    take: 1
+                    order: { field: "rankingDate", direction: "desc" }
+                    where: { systemId: $system }
+                  ) {
                     id
                     single
                     mix
