@@ -60,7 +60,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   clubId?: string;
 
   @Input()
-  ignorePlayers?: Player[];
+  ignorePlayers?: Partial<Player>[];
 
   ignorePlayersIds?: string[] = [];
 
