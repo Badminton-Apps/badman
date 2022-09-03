@@ -265,8 +265,17 @@ export class VisualService {
 
   private async _getFromApi(url: string, useCache = true) {
     const t0 = performance.now();
+    
+    if (this._configService.get('NODE_ENV') !== 'production') {
+      useCache = true;
+      this.logger.debug(`Always using cache on dev`);
+    }
+
+
     if (useCache) {
-      const cached = await this._cacheManager.get(`${VisualService.CACHE_KEY}:${url}`);
+      const cached = await this._cacheManager.get(
+        `${VisualService.CACHE_KEY}:${url}`
+      );
       if (cached) {
         const t1 = performance.now();
         this.logger.verbose(
@@ -291,7 +300,11 @@ export class VisualService {
     });
 
     // Store for 1 week
-    await this._cacheManager.set(`${VisualService.CACHE_KEY}:${url}`, result.data, { ttl: 60 * 60 * 24 * 7 });
+    await this._cacheManager.set(
+      `${VisualService.CACHE_KEY}:${url}`,
+      result.data,
+      { ttl: 60 * 60 * 24 * 7 }
+    );
 
     const t1 = performance.now();
     this.logger.verbose(`Getting from ${url} took ${(t1 - t0).toFixed(2)}ms`);
