@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.26.0](https://github.com/Badminton-Apps/badman/compare/v5.25.2...v5.26.0) (2022-09-03)
+
+
+### Features
+
+* **backend-database:** improve calulation of teamindex ([fce72fe](https://github.com/Badminton-Apps/badman/commit/fce72fe707b72c2d6bcdecd6c219c531db09d30f))
+* **frontend-club:** show ranking for base players ([ee4a1da](https://github.com/Badminton-Apps/badman/commit/ee4a1daa1eb0a951301a2df1911aafe082fb40cf))
+* **frontend-competition:** added new rule for 1st team in assembly (min base index) ([5403723](https://github.com/Badminton-Apps/badman/commit/540372323550fa0b1fbb061889d1747e05efa76f))
+* **frontend-shared:** disable change encounters ([30d5db1](https://github.com/Badminton-Apps/badman/commit/30d5db1a284a5682a688124467cd87f50b7c66f3))
+* **scripts:** added option to manually import excel file with ranking + perform update base players ([c55724c](https://github.com/Badminton-Apps/badman/commit/c55724c57bf2612089ad6a8b5d800fabbe015ece))
+* **scripts:** create unkown players and ranking palces ([be34fc0](https://github.com/Badminton-Apps/badman/commit/be34fc008f37292a58b5bc861628e1f5573e85b6))
+* **worker-sync:** remove unpublished ranking publications ([6744656](https://github.com/Badminton-Apps/badman/commit/6744656f0ee3b4236e7e5fb51244a88735094fd2))
+
+
+### Bug Fixes
+
+* **api:** improved language mailing ([07714eb](https://github.com/Badminton-Apps/badman/commit/07714eb132d3a2eceb656540d972c024d4546e8a))
+* **deps:** update nrwl monorepo to v14.6.4 ([3081fdd](https://github.com/Badminton-Apps/badman/commit/3081fdd9bd289386e7d35a009b0950b177a0172f))
+* **frontend-player:** showing correct ranking place ([355521a](https://github.com/Badminton-Apps/badman/commit/355521a9bfe35c43158f22df87e4c83345855bcd))
+
 ### [5.25.2](https://github.com/Badminton-Apps/badman/compare/v5.25.1...v5.25.2) (2022-09-02)
 
 
