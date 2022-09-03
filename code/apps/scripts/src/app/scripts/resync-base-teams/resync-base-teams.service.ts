@@ -2,16 +2,19 @@ import {
   EventCompetition,
   EventEntry,
   Player,
+  RankingPlace,
   RankingSystem,
 } from '@badman/backend/database';
 import { Injectable, Logger } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize';
+import moment from 'moment';
 
 @Injectable()
 export class ResyncBaseTeamsService {
   private readonly logger = new Logger(ResyncBaseTeamsService.name);
+  private readonly rankingDate = moment('2022-05-09').toDate();
 
   constructor(private _sequelize: Sequelize) {}
 
@@ -44,7 +47,7 @@ export class ResyncBaseTeamsService {
     });
 
     for (const row of rows) {
-      const p = await Player.findOne({
+      let p = await Player.findOne({
         where: {
           memberId: row['Lidnummer'],
         },
@@ -53,22 +56,33 @@ export class ResyncBaseTeamsService {
 
       if (!p) {
         if (row['Type'] == 'Competitiespeler') {
+          this.logger.debug(`Player ${row['Lidnummer']} not found`);
+          p = new Player({
+            memberId: row['Lidnummer'],
+            firstName: row['Voornaam'],
+            lastName: row['Achternaam'],
+          });
+          // await p.save({ transaction });
+        } else {
           // We don't care if a recreational player is not found
-          this.logger.debug('Player not found', row['Lidnummer']);
+          continue;
         }
-        continue;
       }
 
       if (row['Type'] == 'Competitiespeler') {
         p.competitionPlayer = true;
       } else {
         p.competitionPlayer = false;
-      } 
+      }
+
+      await p.save({
+        transaction,
+      });
 
       const place = await p.getRankingPlaces({
         where: {
           systemId: primarySystem.id,
-          rankingDate: '2022-05-09',
+          rankingDate: this.rankingDate,
         },
       });
 
@@ -79,13 +93,19 @@ export class ResyncBaseTeamsService {
         await place[0].save({ transaction });
       } else {
         if (p.competitionPlayer) {
-          this.logger.debug('No ranking place found for', p.memberId);
+          const rankingPlace = new RankingPlace({
+            playerId: p.id,
+            systemId: primarySystem.id,
+            rankingDate: this.rankingDate,
+            single: row['Klassement enkel'],
+            double: row['Klassement dubbel'],
+            mix: row['Klassement gemengd'],
+          });
+          await rankingPlace.save({ transaction });
         }
       }
 
-      await p.save({
-        transaction,
-      });
+    
     }
   }
 

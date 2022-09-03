@@ -246,9 +246,9 @@ export class RankingPlace extends Model {
     // Find where the last ranking place is not the same as the current one
     const current = await RankingLastPlace.findAll({
       where: {
-        [Op.or]: rankingLastPlaces.map((r) => {
+        [Op.or]: rankingLastPlaces?.map((r) => {
           if (!r || !r.playerId || !r.systemId) {
-            throw new Error('RankingPlace is undefined');
+            throw new Error('RankingPlace is undefined'); 
           }
 
           const filter: {
@@ -270,7 +270,7 @@ export class RankingPlace extends Model {
         }),
       },
       transaction: options.transaction,
-    });
+    }); 
 
     // Filter out if the last ranking is not newer than the current one
     const updateInstances =
