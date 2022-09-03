@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.26.1](https://github.com/Badminton-Apps/badman/compare/v5.26.0...v5.26.1) (2022-09-03)
+
+
+### Bug Fixes
+
+* **api:** put timezone for assembly in brussels time ([3c8d59b](https://github.com/Badminton-Apps/badman/commit/3c8d59b68190d6b79371104dbd538a57188ec8e6))
+* **frontend-competition:** teamcaptain wasn't showing ([111bccc](https://github.com/Badminton-Apps/badman/commit/111bccc8de1d44cb0a83e546fb3ba1ae81844257))
+
 ## [5.26.0](https://github.com/Badminton-Apps/badman/compare/v5.25.2...v5.26.0) (2022-09-03)
 
 
