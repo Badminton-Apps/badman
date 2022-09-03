@@ -218,7 +218,7 @@ export class PdfService {
       encoding: 'base64',
     });
     const context = {
-      date: moment(encounter.date).format('DD-MM-YYYY HH:mm'),
+      date: moment(encounter.date).tz('Europe/Brussels').format('DD-MM-YYYY HH:mm'),
       baseIndex: meta?.competition?.teamIndex,
       teamIndex: teamIndex.index,
       homeTeam: homeTeam.name,
