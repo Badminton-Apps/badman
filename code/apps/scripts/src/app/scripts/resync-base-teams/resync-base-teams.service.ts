@@ -18,7 +18,7 @@ export class ResyncBaseTeamsService {
   constructor(private _sequelize: Sequelize) {}
 
   async resyncBaseTeams() {
-    const transaction = await this._sequelize.transaction();
+    const transaction = await this._sequelize.transaction(); 
 
     try {
       this.logger.log('Starting resync');
