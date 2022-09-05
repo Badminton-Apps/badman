@@ -4,6 +4,7 @@ import {
   RankingPlace,
   RankingSystem,
   RankingSystems,
+  RankingPoint,
 } from '@badman/backend/database';
 import { VisualService } from '@badman/backend/visual';
 import { Logger } from '@nestjs/common';
@@ -27,6 +28,7 @@ export class RankingSyncer {
   readonly STEP_PUBLICATIONS = 'publications';
   readonly STEP_POINTS = 'points';
   readonly STEP_INACTIVE = 'inactive';
+  readonly STEP_REMOVED = 'removed';
 
   readonly xmlParser: XMLParser;
 
@@ -38,6 +40,7 @@ export class RankingSyncer {
     this.processor.addStep(this.getCategories());
     this.processor.addStep(this.getPublications());
     this.processor.addStep(this.getPoints());
+    this.processor.addStep(this.removeInvisiblePublications());
   }
 
   async process(args: { transaction: Transaction }) {
@@ -94,7 +97,10 @@ export class RankingSyncer {
     });
   }
 
-  protected getPublications(): ProcessStep<VisualPublication[]> {
+  protected getPublications(): ProcessStep<{
+    visiblePublications: VisualPublication[];
+    hiddenPublications?: Moment[];
+  }> {
     return new ProcessStep(this.STEP_PUBLICATIONS, async () => {
       const ranking: { visualCode: string; system: RankingSystem } =
         this.processor.getData(this.STEP_RANKING);
@@ -141,7 +147,19 @@ export class RankingSyncer {
           } as VisualPublication;
         });
       pubs = pubs.sort((a, b) => a.date.diff(b.date));
-      return pubs;
+
+      return {
+        visiblePublications: pubs,
+        hiddenPublications: publications
+          .filter((publication) => publication.Visible == false)
+          ?.map((publication) => {
+            const momentDate = moment(
+              publication.PublicationDate,
+              'YYYY-MM-DD'
+            );
+            return momentDate;
+          }),
+      };
     });
   }
 
@@ -155,7 +173,7 @@ export class RankingSyncer {
           lastDate: Date;
         } = this.processor.getData(this.STEP_RANKING);
 
-        const publications: VisualPublication[] = this.processor.getData(
+        const { visiblePublications } = this.processor.getData(
           this.STEP_PUBLICATIONS
         );
 
@@ -265,7 +283,7 @@ export class RankingSyncer {
           }
         };
 
-        for (const publication of publications) {
+        for (const publication of visiblePublications) {
           const rankingPlaces = new Map<string, RankingPlace>();
 
           if (publication.date.isAfter(ranking.lastDate)) {
@@ -361,6 +379,48 @@ export class RankingSyncer {
       }
     );
   }
+
+  protected removeInvisiblePublications(): ProcessStep {
+    return new ProcessStep(
+      this.STEP_REMOVED,
+      async (args: { transaction: Transaction }) => {
+        const { hiddenPublications } = this.processor.getData(
+          this.STEP_PUBLICATIONS
+        );
+
+        const ranking: {
+          visualCode: string;
+          system: RankingSystem;
+          lastDate: Date;
+        } = this.processor.getData(this.STEP_RANKING);
+
+        for (const publication of hiddenPublications) {
+          const points = await RankingPlace.count({
+            where: {
+              rankingDate: publication.toDate(),
+              systemId: ranking.system.id,
+            },
+            transaction: args.transaction,
+          });
+
+          if (points > 0) {
+            this.logger.log(
+              `Removing points for ${publication.format(
+                'LLL'
+              )} because it is not visible anymore`
+            );
+            await RankingPlace.destroy({
+              where: {
+                rankingDate: publication.toDate(),
+                systemId: ranking.system.id,
+              },
+              transaction: args.transaction,
+            });
+          }
+        }
+      }
+    );
+  }
 }
 
 interface VisualPublication {
@@ -370,6 +430,6 @@ interface VisualPublication {
   year: string;
   week: string;
   publicationDate: Date;
-  visible: string;
+  visible: boolean;
   date: Moment;
 }

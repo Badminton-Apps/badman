@@ -5,6 +5,7 @@ import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { writeFile } from 'fs/promises';
 import { ChangedEncountersService } from './scripts';
+import { ResyncBaseTeamsService } from './scripts/resync-base-teams/resync-base-teams.service';
 import { WrongDatesService } from './scripts/wrong-dates/wrong-dates.service';
 
 @Module({

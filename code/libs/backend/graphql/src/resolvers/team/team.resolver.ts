@@ -1,23 +1,16 @@
 import { User } from '@badman/backend/authorization';
 import {
-  Club,
-  EventCompetition,
-  EventEntry,
+  Club, EventEntry,
   Location,
-  Player,
-  RankingPlace,
-  RankingSystem,
-  SubEventCompetition,
-  SubEventType,
-  Team,
+  Player, Team,
   TeamNewInput,
   TeamPlayerMembership,
-  TeamUpdateInput,
+  TeamUpdateInput
 } from '@badman/backend/database';
 import {
   Logger,
   NotFoundException,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import {
   Args,
@@ -26,10 +19,9 @@ import {
   Parent,
   Query,
   ResolveField,
-  Resolver,
+  Resolver
 } from '@nestjs/graphql';
 import { Exception } from 'handlebars';
-import moment from 'moment';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
@@ -234,53 +226,6 @@ export class TeamsResolver {
         (p) => p.id !== playerId
       );
 
-      let bestPlayers = meta?.competition.players;
-      if (meta?.competition.players.length > 4) {
-        if (team.type === SubEventType.MX) {
-          const male = meta?.competition.players
-            .filter((p) => p.gender === 'M')
-            .sort(
-              (b, a) =>
-                (b?.single ?? 12) +
-                (b?.double ?? 12) +
-                (b?.mix ?? 12) -
-                ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
-            )
-            .slice(0, 2);
-          const female = meta?.competition.players
-            .filter((p) => p.gender === 'F')
-            .sort(
-              (b, a) =>
-                (b?.single ?? 12) +
-                (b?.double ?? 12) +
-                (b?.mix ?? 12) -
-                ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
-            )
-            .slice(0, 2);
-          bestPlayers = [...male, ...female];
-        } else {
-          bestPlayers = meta?.competition.players
-            .sort(
-              (b, a) =>
-                (b?.single ?? 12) +
-                (b?.double ?? 12) -
-                ((a?.single ?? 12) + (a?.double ?? 12))
-            )
-            .slice(0, 4);
-        }
-      }
-
-      meta.competition.teamIndex = Team.getIndexFromPlayers(
-        team.type,
-        bestPlayers.map((p) => {
-          return {
-            single: p.single,
-            double: p.double,
-            mix: p.mix,
-          };
-        })
-      );
-
       entry.meta = meta;
       entry.changed('meta', true);
 
@@ -333,101 +278,15 @@ export class TeamsResolver {
         );
       }
 
-      const dbSubEvent = await SubEventCompetition.findByPk(subEventId, {
-        attributes: [],
-        include: [{ model: EventCompetition, attributes: ['startYear'] }],
-      });
-
-      const dbSystem = await RankingSystem.findOne({
-        where: {
-          primary: true,
-        },
-        transaction,
-      });
-
-      if (!dbSystem) {
-        throw new NotFoundException(`${RankingSystem.name}: primary`);
-      }
-
-      const usedRankingDate = moment();
-      usedRankingDate.set('year', dbSubEvent.eventCompetition.startYear);
-      usedRankingDate.set(
-        dbSubEvent.eventCompetition.usedRankingUnit,
-        dbSubEvent.eventCompetition.usedRankingAmount
-      );
-
-      const startRanking = usedRankingDate.clone().set('date', 0);
-      const endRanking = usedRankingDate.clone().clone().endOf('month');
-
-      const dbRanking = await RankingPlace.findOne({
-        where: {
-          playerId: player.id,
-          systemId: dbSystem.id,
-          rankingDate: { [Op.between]: [startRanking, endRanking] },
-        },
-        transaction,
-      });
-
-      const meta = entry.meta;
-      meta?.competition.players.push({
+      entry.meta?.competition.players.push({
         id: player.id,
-        single: dbRanking?.single ?? 12,
-        double: dbRanking?.double ?? 12,
-        mix: dbRanking?.mix ?? 12,
+        single: -1,
+        double: -1,
+        mix: -1,
         gender: player.gender,
       });
 
-      let bestPlayers = meta?.competition.players;
-      if (meta?.competition.players.length > 4) {
-        if (team.type === SubEventType.MX) {
-          const male = meta?.competition.players
-            .filter((p) => p.gender === 'M')
-            .sort(
-              (b, a) =>
-                (b?.single ?? 12) +
-                (b?.double ?? 12) +
-                (b?.mix ?? 12) -
-                ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
-            )
-            .slice(0, 2);
-
-          const female = meta?.competition.players
-            .filter((p) => p.gender === 'F')
-            .sort(
-              (b, a) =>
-                (b?.single ?? 12) +
-                (b?.double ?? 12) +
-                (b?.mix ?? 12) -
-                ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
-            )
-            .slice(0, 2);
-          bestPlayers = [...male, ...female];
-        } else {
-          bestPlayers = meta?.competition.players
-            .sort(
-              (b, a) =>
-                (b?.single ?? 12) +
-                (b?.double ?? 12) -
-                ((a?.single ?? 12) + (a?.double ?? 12))
-            )
-            .slice(0, 4);
-        }
-      }
-
-      meta.competition.teamIndex = Team.getIndexFromPlayers(
-        team.type,
-        bestPlayers.map((p) => {
-          return {
-            single: p.single,
-            double: p.double,
-            mix: p.mix,
-          };
-        })
-      );
-
-      entry.meta = meta;
       entry.changed('meta', true);
-
       await entry.save({ transaction });
 
       await transaction.commit();

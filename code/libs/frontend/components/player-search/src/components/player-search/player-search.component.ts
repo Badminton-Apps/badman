@@ -46,9 +46,6 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   player?: string | Player;
 
   @Input()
-  ranking?: Date;
-
-  @Input()
   club?: string | Club;
 
   @Input()
@@ -60,7 +57,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   clubId?: string;
 
   @Input()
-  ignorePlayers?: Player[];
+  ignorePlayers?: Partial<Player>[];
 
   ignorePlayersIds?: string[] = [];
 
@@ -101,8 +98,6 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                 query: gql`
                   query GetClubPlayers(
                     $id: ID!
-                    $ranking: DateTime
-                    $includeRanking: Boolean!
                     $where: JSONObject
                     $personal: Boolean!
                   ) {
@@ -118,20 +113,6 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                         competitionPlayer
                         phone @include(if: $personal)
                         email @include(if: $personal)
-                        rankingLastPlaces {
-                          id
-                          single
-                          double
-                          mix
-                        }
-                        rankingPlaces(where: { rankingDate: $ranking })
-                          @include(if: $includeRanking) {
-                          id
-                          rankingDate
-                          single
-                          double
-                          mix
-                        }
                       }
                     }
                   }
@@ -142,8 +123,6 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                     where: this.where,
                   }),
                   id: this.clubId,
-                  includeRanking: this.ranking !== null,
-                  ranking: this.ranking ?? null,
                   personal: this.includePersonal ?? false,
                 },
               })
@@ -168,11 +147,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
           return this.apollo
             .query<{ players: { rows: Player[] } }>({
               query: gql`
-                query GetPlayers(
-                  $where: JSONObject
-                  $ranking: DateTime
-                  $includeRanking: Boolean!
-                ) {
+                query GetPlayers($where: JSONObject, $ranking: DateTime) {
                   players(where: $where) {
                     rows {
                       id
@@ -185,14 +160,6 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                         id
                         name
                       }
-                      rankingPlaces(where: { rankingDate: $ranking })
-                        @include(if: $includeRanking) {
-                        id
-                        rankingDate
-                        single
-                        double
-                        mix
-                      }
                     }
                   }
                 }
@@ -202,8 +169,6 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                   query: response.query,
                   where: this.where,
                 }),
-                includeRanking: this.ranking !== null,
-                ranking: this.ranking ?? null,
               },
             })
             .pipe(map((x) => x.data?.players?.rows?.map((r) => new Player(r))));
@@ -229,27 +194,29 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
         switchMap((p) => {
           if (typeof p == 'string') {
             return lastValueFrom(
-              this.apollo.query({
-                query: gql`
-                  # Write your query or mutation here
-                  query GetUserInfoQuery($id: ID!) {
-                    player(id: $id) {
-                      id
-                      slug
-                      memberId
-                      firstName
-                      lastName
-                      sub
-                      gender
-                      competitionPlayer
-                      updatedAt
+              this.apollo
+                .query<{ player: Partial<Player> }>({
+                  query: gql`
+                    # Write your query or mutation here
+                    query GetUserInfoQuery($id: ID!) {
+                      player(id: $id) {
+                        id
+                        slug
+                        memberId
+                        firstName
+                        lastName
+                        sub
+                        gender
+                        competitionPlayer
+                        updatedAt
+                      }
                     }
-                  }
-                `,
-                variables: {
-                  id: p,
-                },
-              })
+                  `,
+                  variables: {
+                    id: p,
+                  },
+                })
+                .pipe(map((x) => new Player(x.data?.player)))
             );
           }
           return of(p);

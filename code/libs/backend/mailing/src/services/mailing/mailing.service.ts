@@ -1,7 +1,6 @@
 import { EncounterChange, Player, Team } from '@badman/backend/database';
 import { HandlebarService } from '@badman/backend/handlebar';
 import exphbs from 'nodemailer-express-handlebars';
-import smtpTransport from 'nodemailer-smtp-transport';
 import { Injectable, Logger } from '@nestjs/common';
 import { readFile, writeFile } from 'fs/promises';
 import moment from 'moment-timezone';
@@ -114,16 +113,14 @@ export class MailingService {
     if (this.initialized) return;
 
     try {
-      this._transporter = nodemailer.createTransport(
-        smtpTransport({
-          host: this.configService.get('MAIL_HOST'),
-          port: 465,
-          auth: {
-            user: this.configService.get('MAIL_USER'),
-            pass: this.configService.get('MAIL_PASS'),
-          },
-        })
-      );
+      this._transporter = nodemailer.createTransport({
+        host: this.configService.get('MAIL_HOST'),
+        port: 465,
+        auth: {
+          user: this.configService.get('MAIL_USER'),
+          pass: this.configService.get('MAIL_PASS'),
+        }, 
+      });
 
       await this._transporter.verify();
 
