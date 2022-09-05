@@ -65,7 +65,6 @@
     <div fxFlex>
       <badman-player-search
         *ngIf="this.rankingDate"
-        [ranking]="this.rankingDate"
         [ignorePlayers]="this.ignorePlayers"
         (whenSelectPlayer)="this.addPlayer($event)"
       ></badman-player-search>
