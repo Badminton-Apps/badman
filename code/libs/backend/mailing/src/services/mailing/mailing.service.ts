@@ -119,17 +119,10 @@ export class MailingService {
         auth: {
           user: this.configService.get('MAIL_USER'),
           pass: this.configService.get('MAIL_PASS'),
-        },
+        }, 
       });
 
-      await this._transporter.verify(function (error, success) {
-        if (error) {
-          this.logger.log(error);
-        } else {
-          this.logger.error("Server is ready to take our messages");
-        }
-      });
-      
+      await this._transporter.verify();
 
       const hbsOptions = exphbs({
         viewEngine: {
