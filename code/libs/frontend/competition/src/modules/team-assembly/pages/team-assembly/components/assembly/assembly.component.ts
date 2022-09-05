@@ -17,7 +17,7 @@ import {
   Player,
   Team,
 } from '@badman/frontend/models';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import {
   combineLatest,
   distinctUntilChanged,
@@ -99,6 +99,9 @@ export class AssemblyComponent implements OnInit {
   gotRequired = false;
   errors = {} as { [key: string]: string };
   totalPlayers = 0;
+
+  startRanking?: Moment;
+  endRanking?: Moment;
 
   constructor(private apollo: Apollo, private systemService: SystemService) {}
 
@@ -185,8 +188,8 @@ export class AssemblyComponent implements OnInit {
     usedRankingDate.set('year', event.startYear);
     usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);
 
-    const startRanking = usedRankingDate.clone().set('date', 0);
-    const endRanking = usedRankingDate.clone().clone().endOf('month');
+    this.startRanking = usedRankingDate.clone().set('date', 0);
+    this.endRanking = usedRankingDate.clone().clone().endOf('month');
 
     const teams =
       (await lastValueFrom(
@@ -263,7 +266,7 @@ export class AssemblyComponent implements OnInit {
                   clubId: this.club,
                   rankingWhere: {
                     rankingDate: {
-                      $between: [startRanking, endRanking],
+                      $between: [this.startRanking, this.endRanking],
                     },
                     systemId: system?.id,
                   },
@@ -479,8 +482,62 @@ export class AssemblyComponent implements OnInit {
     this.loaded = true;
   }
 
-  addPlayer(player: Player) {
-    this.players.push(player);
+  async addPlayer(player: Player) {
+    const playerRankings = await lastValueFrom(
+      this.systemService
+        .getPrimarySystem()
+        .pipe(
+          take(1),
+          switchMap((system) =>
+            this.apollo.query<{ player: Player }>({
+              query: gql`
+                query getPlayerInfo(
+                  $playerId: ID!
+                  $rankingWhere: JSONObject
+                  $lastRankginWhere: JSONObject
+                ) {
+                  player(id: $playerId) {
+                    id
+                    slug
+                    fullName
+                    gender
+                    competitionPlayer
+                    base
+                    rankingLastPlaces(where: $lastRankginWhere) {
+                      id
+                      single
+                      double
+                      mix
+                    }
+                    rankingPlaces(where: $rankingWhere) {
+                      id
+                      rankingDate
+                      single
+                      double
+                      mix
+                    }
+                  }
+                }
+              `,
+              variables: {
+                playerId: player.id,
+                rankingWhere: {
+                  rankingDate: {
+                    $between: [this.startRanking, this.endRanking],
+                  },
+                  systemId: system?.id,
+                },
+                lastRankginWhere: {
+                  systemId: system?.id,
+                },
+              },
+            })
+          )
+        )
+        .pipe(map((x) => new Player(x.data?.player)))
+    );
+
+    this.players.push(playerRankings);
 
     this.wherePlayer['id'] = {
       $notIn: this.players?.map((p) => p.id),
