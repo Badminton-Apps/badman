@@ -132,3 +132,4 @@ avg-level-*.json
 
 
 *.backup
+code/*.xlsx
