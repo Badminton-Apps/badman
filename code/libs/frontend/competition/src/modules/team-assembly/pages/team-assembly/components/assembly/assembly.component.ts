@@ -100,7 +100,7 @@ export class AssemblyComponent implements OnInit {
   errors = {} as { [key: string]: string };
   totalPlayers = 0;
 
-  constructor(private apollo: Apollo, private systemService: SystemService) {}
+  constructor(private apollo: Apollo, private systemService: SystemService) { }
 
   ngOnInit() {
     this.formGroup.addControl('single1', new FormControl());
@@ -452,12 +452,12 @@ export class AssemblyComponent implements OnInit {
 
           return (
             (p.rankingPlaces?.[0]?.single ?? 12) <
-              this.entry.competitionSubEvent.maxLevel ||
+            this.entry.competitionSubEvent.maxLevel ||
             (p.rankingPlaces?.[0]?.double ?? 12) <
-              this.entry?.competitionSubEvent.maxLevel ||
+            this.entry?.competitionSubEvent.maxLevel ||
             (this.type == 'MX' &&
               (p.rankingPlaces?.[0]?.mix ?? 12) <
-                this.entry.competitionSubEvent.maxLevel)
+              this.entry.competitionSubEvent.maxLevel)
           );
         });
         if (levelRestirced.length > 0) {
@@ -479,7 +479,61 @@ export class AssemblyComponent implements OnInit {
     this.loaded = true;
   }
 
-  addPlayer(player: Player) {
+  async addPlayer(player: Player) {
+    const playerRankings =
+      (await lastValueFrom(
+        this.systemService
+          .getPrimarySystem()
+          .pipe(
+            take(1),
+            switchMap((system) =>
+              this.apollo.query<{ player: Player }>({
+                query: gql`
+                query getPlayerInfo(
+                  $playerId: ID!
+                  $rankingWhere: JSONObject
+                  $lastRankginWhere: JSONObject
+                ) {
+                  player(id: $id) {
+                    id
+                    rankingLastPlaces(where: $lastRankginWhere) {
+                      id
+                      single
+                      double
+                      mix
+                    }
+                    rankingPlaces(where: $rankingWhere) {
+                      id
+                      rankingDate
+                      single
+                      double
+                      mix
+                    }
+                  }
+                }
+              `,
+                variables: {
+                  playerId: player.id,
+                  rankingWhere: {
+                    rankingDate: {
+                      $between: [startRanking, endRanking],
+                    },
+                    systemId: system?.id,
+                  },
+                  lastRankginWhere: {
+                    systemId: system?.id,
+                  },
+                },
+              })
+            )
+          )
+          .pipe(
+            map((x) =>
+              new Player(x.data?.player))
+          )
+      )
+      );
+
     this.players.push(player);
 
     this.wherePlayer['id'] = {
@@ -715,13 +769,13 @@ export class AssemblyComponent implements OnInit {
         if (double1 == double2) {
           const dl1 =
             (list1[0]?.lastRanking?.[type] ?? 12) <
-            (list1[1]?.lastRanking?.[type] ?? 12)
+              (list1[1]?.lastRanking?.[type] ?? 12)
               ? list1[0]?.lastRanking?.[type] ?? 12
               : list1[1]?.lastRanking?.[type] ?? 12;
 
           const dl2 =
             (list2[0]?.lastRanking?.[type] ?? 12) <
-            (list2[1]?.lastRanking?.[type] ?? 12)
+              (list2[1]?.lastRanking?.[type] ?? 12)
               ? list2[0]?.lastRanking?.[type] ?? 12
               : list2[1]?.lastRanking?.[type] ?? 12;
           if (dl1 > dl2) {
