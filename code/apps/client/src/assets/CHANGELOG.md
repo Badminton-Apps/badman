@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.26.2](https://github.com/Badminton-Apps/badman/compare/v5.26.1...v5.26.2) (2022-09-05)
+
+
+### Bug Fixes
+
+* **client:** typo in error message ([141b62b](https://github.com/Badminton-Apps/badman/commit/141b62bf3132910910aaa2f0e98c9f5bf5d646f1))
+* **frontend-competition:** fix for assembly adding players ([1fd09e8](https://github.com/Badminton-Apps/badman/commit/1fd09e8e0e86ccf29d64abba9094e7fb11529a11))
+
 ### [5.26.1](https://github.com/Badminton-Apps/badman/compare/v5.26.0...v5.26.1) (2022-09-03)
 
 
