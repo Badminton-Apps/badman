@@ -15,8 +15,8 @@ import { Club, Player, Team } from '@badman/frontend/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubEditTeamComponent implements OnInit {
-  @Output() whenPlayerAdded = new EventEmitter<Player>();
-  @Output() whenPlayerRemoved = new EventEmitter<Player>();
+  @Output() whenPlayerAdded = new EventEmitter<Partial<Player>>();
+  @Output() whenPlayerRemoved = new EventEmitter<Partial<Player>>();
 
   @Input()
   club!: Club;
@@ -24,7 +24,11 @@ export class ClubEditTeamComponent implements OnInit {
   @Input()
   team!: Team;
 
-  players?: Player[];
+  players?: (Partial<Player> & {
+    single: number;
+    double: number;
+    mix: number;
+  })[];
   teamIndex?: number;
 
   where!: { [key: string]: unknown };
@@ -35,9 +39,19 @@ export class ClubEditTeamComponent implements OnInit {
     }
 
     this.teamIndex = this.team.entries[0].meta?.competition?.teamIndex;
-    this.players = this.team.entries[0].meta?.competition?.players.map(
-      (p) => new Player(p.player)
-    );
+    this.players = this.team.entries[0].meta?.competition?.players.map((p) => {
+      const player = new Player(p.player) as (Partial<Player> & {
+        single: number;
+        double: number;
+        mix: number;
+      });
+      player.single = p.single;
+      player.double = p.double;
+      player.mix = p.mix;
+
+
+      return player;
+    });
 
     this.where = {
       gender:
