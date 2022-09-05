@@ -16,6 +16,9 @@ query GetBasePlayersQuery($id: ID!, $subEventsWhere: JSONObject) {
             teamIndex
             players {
               id
+              single
+              double
+              mix
               player {
                 id
                 slug
