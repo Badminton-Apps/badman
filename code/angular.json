@@ -16,6 +16,7 @@
     "backend-ranking": "libs/backend/ranking",
     "backend-ranking-calc": "libs/backend/ranking-calc",
     "backend-search": "libs/backend/search",
+    "backend-twizzit": "libs/backend/twizzit",
     "backend-visual": "libs/backend/visual",
     "client": "apps/client",
     "client-e2e": "apps/client-e2e",
