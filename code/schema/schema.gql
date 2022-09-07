@@ -761,6 +761,7 @@ type Mutation {
   updateRole(data: RoleUpdateInput!): Role!
   addPlayerToRole(roleId: ID!, playerId: ID!): Role!
   removePlayerFromRole(roleId: ID!, playerId: ID!): Role!
+  addPlayer(data: PlayerNewInput!): Player!
   updatePlayer(data: PlayerUpdateInput!): Player!
   claimAccount(playerId: String!): Player!
 }
@@ -1048,6 +1049,27 @@ input ClaimUpdateInput {
   description: String
   category: String
   type: String
+}
+
+input PlayerNewInput {
+  email: String
+  phone: String
+  gender: String
+  birthDate: DateTime
+  sub: String
+  firstName: String
+  lastName: String
+  fullName: String
+  competitionPlayer: Boolean
+  slug: String
+  memberId: String
+  permissions: [String!]
+
+  """Team Player end date"""
+  end: DateTime
+
+  """Team Player start date"""
+  base: Boolean
 }
 
 input PlayerUpdateInput {
