@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.29.1](https://github.com/Badminton-Apps/badman/compare/v5.29.0...v5.29.1) (2022-09-07)
+
+
+### Bug Fixes
+
+* **worker-sync:** log full error ([10046eb](https://github.com/Badminton-Apps/badman/commit/10046eb73260546f3cc524d01594fce3a6eb2839))
+
 ## [5.29.0](https://github.com/Badminton-Apps/badman/compare/v5.28.0...v5.29.0) (2022-09-07)
 
 
