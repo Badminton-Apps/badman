@@ -62,9 +62,7 @@ export class CheckEncounterProcessor {
 
       if (encounters.count > 0) {
         // Create browser
-        browser = await launch({
-          // headless: false,
-        });
+        browser = await getBrowser();
 
         const page = await browser.newPage();
         page.setDefaultTimeout(10000);
