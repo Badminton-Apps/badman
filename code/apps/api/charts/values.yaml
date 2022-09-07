@@ -14,7 +14,7 @@ service:
 
 resources:
   requests:
-    cpu: "150m"
+    cpu: "500m"
     memory: "500Mi"
 
 autoscaling:

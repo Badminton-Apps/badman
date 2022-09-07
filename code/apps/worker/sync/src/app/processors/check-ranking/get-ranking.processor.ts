@@ -79,7 +79,8 @@ export class CheckRankingProcessor {
       place.mix = mix;
       await place.save();
     } catch (error) {
-      this.logger.error(`Error while processing player ${player.id}`, error);
+      this.logger.error(error);
+      this.logger.error(`Error while processing player ${player.id}`);
     } finally {
       // Close browser
       if (browser) {
