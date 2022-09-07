@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.28.0](https://github.com/Badminton-Apps/badman/compare/v5.27.0...v5.28.0) (2022-09-07)
+
+
+### Features
+
+* **backend-database:** fill in the blanks with last value ([d78f394](https://github.com/Badminton-Apps/badman/commit/d78f3942d89f1a2c257f437fb128bcbbaadca973))
+
+
+### Bug Fixes
+
+* **api:** increase memory ([b13deba](https://github.com/Badminton-Apps/badman/commit/b13debaa278e311aea0440676451b66f62da16fc))
+
 ## [5.27.0](https://github.com/Badminton-Apps/badman/compare/v5.26.2...v5.27.0) (2022-09-07)
 
 
