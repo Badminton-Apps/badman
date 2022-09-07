@@ -1,4 +1,11 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { ElementHandle, launch, Page } from 'puppeteer';
+
+export async function getBrowser(headless = true){
+  return await launch({
+    headless,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--single-process'],
+  });
+}
 
 export async function waitForSelector(
   selector: string[] | string,

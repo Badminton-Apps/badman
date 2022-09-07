@@ -6,7 +6,7 @@ import {
   SubEventCompetition,
   EventCompetition,
 } from '@badman/backend/database';
-import { accepCookies, signIn } from '@badman/backend/pupeteer';
+import { accepCookies, getBrowser, signIn } from '@badman/backend/pupeteer';
 import { SyncQueue, Sync } from '@badman/backend/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
@@ -45,9 +45,7 @@ export class EnterScoresProcessor {
     const encounterId = job.data.encounterId;
 
     this.logger.debug('Creating browser');
-    const browser = await launch({
-      headless: false,
-    });
+    const browser = await getBrowser();
 
     try {
       const page = await browser.newPage();

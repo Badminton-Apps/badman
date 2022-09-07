@@ -1,5 +1,5 @@
 import { Player, RankingPlace, RankingSystem } from '@badman/backend/database';
-import { accepCookies } from '@badman/backend/pupeteer';
+import { accepCookies, getBrowser } from '@badman/backend/pupeteer';
 import { Sync, SyncQueue } from '@badman/backend/queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
@@ -56,9 +56,7 @@ export class CheckRankingProcessor {
       const place = places[0];
 
       // Create browser
-      browser = await launch({
-        // headless: false,
-      });
+      browser = await getBrowser();
 
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
