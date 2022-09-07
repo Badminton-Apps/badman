@@ -398,16 +398,28 @@ export class PointsService {
         break;
     }
     if (rankingPlayer1Team2) {
-      levelP1T2 = parseInt(rankingPlayer1Team2[pointsFrom], 10);
+      levelP1T2 = parseInt(
+        rankingPlayer1Team2[pointsFrom] ?? system.amountOfLevels,
+        10
+      );
     }
     if (rankingPlayer2Team2) {
-      levelP2T2 = parseInt(rankingPlayer2Team2[pointsFrom], 10);
+      levelP2T2 = parseInt(
+        rankingPlayer2Team2[pointsFrom] ?? system.amountOfLevels,
+        10
+      );
     }
     if (rankingPlayer1Team1) {
-      levelP1T1 = parseInt(rankingPlayer1Team1[pointsFrom], 10);
+      levelP1T1 = parseInt(
+        rankingPlayer1Team1[pointsFrom] ?? system.amountOfLevels,
+        10
+      );
     }
     if (rankingPlayer2Team1) {
-      levelP2T1 = parseInt(rankingPlayer2Team1[pointsFrom], 10);
+      levelP2T1 = parseInt(
+        rankingPlayer2Team1[pointsFrom] ?? system.amountOfLevels,
+        10
+      );
     }
 
     if (game.gameType === GameType.S) {
