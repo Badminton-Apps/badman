@@ -4,7 +4,7 @@ import {
   EventCompetition,
   SubEventCompetition,
 } from '@badman/backend/database';
-import { accepCookies } from '@badman/backend/pupeteer';
+import { accepCookies, getBrowser } from '@badman/backend/pupeteer';
 import { SyncQueue } from '@badman/backend/queue';
 import { Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
