@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.27.0](https://github.com/Badminton-Apps/badman/compare/v5.26.2...v5.27.0) (2022-09-07)
+
+
+### Features
+
+* **backend-twizzit,frontend-club:** allowing download of twizzit file ([1e8045c](https://github.com/Badminton-Apps/badman/commit/1e8045c5f58bda65e73341da4674dc8229cc669a))
+* **backend-twizzit:** adding export for games ([dee61f4](https://github.com/Badminton-Apps/badman/commit/dee61f437c99cd4931ae8f3f6453ab5c1e01e23b))
+
+
+### Bug Fixes
+
+* **deps:** update dependency uuid to v9 ([6407db6](https://github.com/Badminton-Apps/badman/commit/6407db6893967de38bf3dea4d4cbf31f8f4a21b8))
+* **deps:** update nrwl monorepo to v14.6.5 ([9ca1150](https://github.com/Badminton-Apps/badman/commit/9ca11500d314145a5336420b41a9f750e3dd478f))
+* **frontend-club:** adding player to a club ([e6b99d9](https://github.com/Badminton-Apps/badman/commit/e6b99d99dc4cf8a942d0cee6fb09902d0f7255df))
+
 ### [5.26.2](https://github.com/Badminton-Apps/badman/compare/v5.26.1...v5.26.2) (2022-09-05)
 
 
