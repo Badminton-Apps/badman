@@ -11,6 +11,7 @@ import {
   SyncEventsProcessor,
   SyncRankingProcessor,
   GlobalConsumer,
+  CheckRankingProcessor,
 } from './processors';
 import {
   utilities as nestWinstonModuleUtilities,
@@ -29,6 +30,7 @@ import { VisualModule } from '@badman/backend/visual';
     SyncEventsProcessor,
     EnterScoresProcessor,
     CheckEncounterProcessor,
+    CheckRankingProcessor,
 
     CronService,
 
