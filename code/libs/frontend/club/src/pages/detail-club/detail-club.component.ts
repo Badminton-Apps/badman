@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +19,9 @@ import {
   TeamService,
   SystemService,
 } from '@badman/frontend/shared';
+import { ConfigService } from '@badman/frontend/config';
+import { HttpClient } from '@angular/common/http';
+import { saveAs } from 'file-saver';
 
 @Component({
   templateUrl: './detail-club.component.html',
@@ -38,7 +41,9 @@ export class DetailClubComponent implements OnInit {
     private titleService: Title,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private httpClient: HttpClient,
+    private configService: ConfigService
   ) {}
 
   ngOnInit() {
@@ -150,6 +155,30 @@ export class DetailClubComponent implements OnInit {
       if (player) {
         await lastValueFrom(this.clubService.addPlayer(club, player));
         this.update$.next(true);
+      }
+    });
+  }
+
+  downloadTwizzit(club: Club, yearSelect: TemplateRef<unknown>) {
+    const dialogRef = this.dialog.open(yearSelect);
+
+    dialogRef.afterClosed().subscribe(async (year) => {
+      console.log(year);
+
+      if (year && club.id) {
+        const result = await lastValueFrom(
+          this.httpClient.get(
+            `${this.configService.apiBaseUrl}/twizzit/games`,
+            {
+              params: {
+                clubId: club.id,
+                year,
+              },
+              responseType: 'blob',
+            }
+          )
+        );
+        saveAs(result, `twizzit-${club.slug}-${year}.xlsx`);
       }
     });
   }

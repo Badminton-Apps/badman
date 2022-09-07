@@ -5,9 +5,7 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend/database';
-import { SubEvent } from '@badman/frontend/models';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { writeFile } from 'fs/promises';
 import moment from 'moment';
 import { Op } from 'sequelize';
 
@@ -62,7 +60,6 @@ export class GameExportService {
         },
       ],
       order: [['date', 'ASC']],
-      logging: true,
     });
 
     this.logger.log(`Found ${encounters.length} games`);
@@ -71,40 +68,28 @@ export class GameExportService {
 
   async gamesExport(year: number, clubId: string) {
     const games = await this.getGames(year, clubId);
-    const headers = [
-      'Game id',
-      'Type',
-      'Seizoen',
-      'Datum',
-      'Start tijdstip',
-      'Eind tijdstip',
-      'Tijdstip afspraak',
-      'Thuisteam',
-      'Uitteam',
-      'Resource',
-      'Part (%)',
-      'Omschrijving',
-      'Score',
-      'Score details',
-    ];
 
     // Write to csv file
-    const csv =
-      `${headers.join(',')}\n` +
-      games
-        .map((g) => {
-          const date = moment(g.date).format('DD/MM/YYYY');
-          const startTime = moment(g.date).format('HH:mm');
-          const endTime = moment(g.date).add(2, 'hours').format('HH:mm');
+    return games.map((game) => {
+      const homeTeam = game.home as Team;
+      const awayTeam = game.away as Team;
 
-          return `${g.id}, Competitie, ${year}-${
-            year + 1
-          } ,${date},${startTime},${endTime},,${g.home.name},${
-            g.away.name
-          },,,,,`;
-        })
-        .join('\n');
-
-    await writeFile(`${year}-games.csv`, csv);
+      return {
+        'Game id': game.id,
+        Type: 'Competitie',
+        Seizoen: `${year}-${year + 1}`,
+        Datum: null,
+        'Start tijdstip': moment(game.date).format('DD/MM/YYYY'),
+        'Eind tijdstip': moment(game.date).format('HH:mm'),
+        'Tijdstip afspraak': moment(game.date).add(2, 'hours').format('HH:mm'),
+        Thuisteam: homeTeam.name,
+        Uitteam: awayTeam.name,
+        Resource: null,
+        'Part (%)': null,
+        Omschrijving: null,
+        Score: null,
+        'Score details': null,
+      };
+    });
   }
 }
