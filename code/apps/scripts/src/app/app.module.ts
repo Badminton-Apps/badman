@@ -1,17 +1,19 @@
 import { DatabaseModule } from '@badman/backend/database';
-import { GameExportService, TwizzitModule } from '@badman/backend/twizzit';
+import { QueueModule, Sync, SyncQueue } from '@badman/backend/queue';
+import { TwizzitModule } from '@badman/backend/twizzit';
 import { VisualModule } from '@badman/backend/visual';
+import { InjectQueue } from '@nestjs/bull';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { writeFile } from 'fs/promises';
+import { Queue } from 'bull';
 import { ChangedEncountersService } from './scripts';
-import { ResyncBaseTeamsService } from './scripts/resync-base-teams/resync-base-teams.service';
-import { WrongDatesService } from './scripts/wrong-dates/wrong-dates.service';
+import { SyncRankingService } from './scripts/sync-ranking/sync-ranking.service';
 
 @Module({
-  providers: [ChangedEncountersService, WrongDatesService],
+  providers: [ChangedEncountersService, SyncRankingService],
   imports: [
     ConfigModule.forRoot(),
+    QueueModule,
     DatabaseModule,
     VisualModule,
     TwizzitModule,
@@ -19,14 +21,27 @@ import { WrongDatesService } from './scripts/wrong-dates/wrong-dates.service';
 })
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
-  constructor(private _export: GameExportService) {}
+  constructor(
+    private _sync: SyncRankingService,
+    @InjectQueue(SyncQueue) private rankingSync: Queue
+  ) {}
 
   async onModuleInit() {
     this.logger.log('Running script');
-    const games = await this._export.gamesExport(2022, 'cb0cfc70-d93c-4e81-92e6-07b5724d40b0');
+    const todo = await this._sync.findPlayersWithNoRanking();
 
-   
+    for (const place of todo) { 
+      this.logger.log(`Player ${place.playerId}`);
+      this.rankingSync.add(
+        Sync.CheckRanking,
+        {
+          playerId: place.playerId,
+        },
+        {
+          removeOnComplete: true,
+          removeOnFail: true,
+        }
+      );
+    }
   }
-
-  
 }
