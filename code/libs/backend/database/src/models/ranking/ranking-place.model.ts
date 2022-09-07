@@ -20,6 +20,8 @@ import {
   AfterCreate,
   AfterDestroy,
   AfterUpdate,
+  BeforeBulkCreate,
+  BeforeCreate,
   BelongsTo,
   Column,
   DataType,
@@ -195,6 +197,47 @@ export class RankingPlace extends Model {
     await this.updateLatestRankings(instances, options, 'update');
   }
 
+  @BeforeCreate
+  @BeforeBulkCreate
+  static async addEmptyValues(
+    instances: RankingPlace[] | RankingPlace,
+    options: SaveOptions
+  ) {
+    if (!Array.isArray(instances)) {
+      instances = [instances];
+    }
+
+    for (const instance of instances) {
+      // We are missing values
+      if (!instance.single || !instance.double || !instance.mix) {
+        const prevRankingPlace = await RankingPlace.findOne({
+          where: {
+            playerId: instance.playerId,
+            systemId: instance.systemId,
+            rankingDate: {
+              [Op.lt]: instance.rankingDate,
+            }
+          },
+          limit: 1,
+          order: [['rankingDate', 'DESC']],
+          transaction: options?.transaction,
+        });
+
+        if (prevRankingPlace) {
+          if (!instance.single) {
+            instance.single = prevRankingPlace.single;
+          }
+          if (!instance.double) {
+            instance.double = prevRankingPlace.double;
+          }
+          if (!instance.mix) {
+            instance.mix = prevRankingPlace.mix;
+          }
+        }
+      }
+    }
+  }
+
   @AfterCreate
   @AfterBulkCreate
   static async updateLatestRankingsCreate(
@@ -204,6 +247,7 @@ export class RankingPlace extends Model {
     if (!Array.isArray(instances)) {
       instances = [instances];
     }
+
     await this.updateLatestRankings(instances, options, 'create');
   }
 
@@ -248,7 +292,7 @@ export class RankingPlace extends Model {
       where: {
         [Op.or]: rankingLastPlaces?.map((r) => {
           if (!r || !r.playerId || !r.systemId) {
-            throw new Error('RankingPlace is undefined'); 
+            throw new Error('RankingPlace is undefined');
           }
 
           const filter: {
@@ -270,7 +314,7 @@ export class RankingPlace extends Model {
         }),
       },
       transaction: options.transaction,
-    }); 
+    });
 
     // Filter out if the last ranking is not newer than the current one
     const updateInstances =
