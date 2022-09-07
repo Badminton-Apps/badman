@@ -31,7 +31,7 @@ export class ChangedEncountersService {
           attributes: ['id'],
           model: EncounterChange,
           required: true,
-        },
+        }, 
       ],
     });
 

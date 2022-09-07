@@ -19,6 +19,7 @@ import versionPackage from '../version.json';
 import { EventsModule } from './events';
 import { PdfService } from './services';
 import { ApiAuthorizationModule } from '@badman/backend/authorization';
+import { TwizzitModule } from '@badman/backend/twizzit';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -61,6 +62,9 @@ import { ApiAuthorizationModule } from '@badman/backend/authorization';
     HandlebarModule,
     GeneratorModule,
     DatabaseModule,
+
+    // Lib modules
+    TwizzitModule,
     ApiGrapqhlModule,
     SearchModule,
     QueueModule,

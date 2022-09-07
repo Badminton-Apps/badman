@@ -16,6 +16,12 @@
               {{ 'button.delete' | translate }}
             </button>
           </badman-has-claim>
+          <button
+            mat-menu-item
+            (click)="downloadTwizzit(club, twizzitYearSelect)"
+          >
+            Download twizzit games
+          </button>
         </mat-menu>
       </badman-has-claim>
       <img
@@ -86,3 +92,19 @@
 <ng-template #loading>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar
 ></ng-template>
+
+<ng-template #twizzitYearSelect>
+  <h2 mat-dialog-title>Select year</h2>
+  <mat-dialog-content class="mat-typography">
+    <mat-form-field appearance="fill">
+      <mat-label>Year</mat-label>
+      <input type="number" matInput #year />
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="year.value" cdkFocusInitial>
+      Download
+    </button>
+  </mat-dialog-actions>
+</ng-template>
