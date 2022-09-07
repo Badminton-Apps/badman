@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
-import { XMLParser } from 'fast-xml-parser';
+import { validationOptions, XMLParser } from 'fast-xml-parser';
 
 import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -34,7 +34,11 @@ export class VisualService {
   ) {
     this._http = axiosRateLimit(axios.create(), { maxRPS: 15 });
     axiosRetry(this._http, { retries: this._retries });
-    this._parser = new XMLParser();
+    this._parser = new XMLParser({
+      ignoreAttributes: false,
+      attributeNamePrefix: '',
+      parseAttributeValue: true,
+    });
   }
 
   async getPlayers(tourneyId: string, useCache = true) {
@@ -265,12 +269,11 @@ export class VisualService {
 
   private async _getFromApi(url: string, useCache = true) {
     const t0 = performance.now();
-    
+
     if (this._configService.get('NODE_ENV') !== 'production') {
       useCache = true;
       this.logger.debug(`Always using cache on dev`);
     }
-
 
     if (useCache) {
       const cached = await this._cacheManager.get(
