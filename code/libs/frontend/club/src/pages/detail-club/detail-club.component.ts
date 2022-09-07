@@ -148,7 +148,22 @@ export class DetailClubComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (player) => {
       if (player) {
-        await lastValueFrom(this.clubService.addPlayer(club, player));
+        await lastValueFrom(
+          this.apollo.mutate<{ addPlayerToClub: boolean }>({
+            mutation: gql`
+              mutation AddPlayerToClub($data: ClubPlayerMembershipNewInput!) {
+                addPlayerToClub(data: $data)
+              }
+            `,
+            variables: {
+              data: {
+                clubId: club.id,
+                playerId: player.id,
+                start: new Date(),
+              },
+            },
+          })
+        );
         this.update$.next(true);
       }
     });

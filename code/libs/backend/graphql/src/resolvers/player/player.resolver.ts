@@ -6,6 +6,7 @@ import {
   GamePlayerMembership,
   PagedPlayer,
   Player,
+  PlayerNewInput,
   PlayerUpdateInput,
   RankingLastPlace,
   RankingPlace,
@@ -173,14 +174,33 @@ export class PlayersResolver {
   ): Promise<Club[]> {
     return player.getClubs(ListArgs.toFindOptions(listArgs));
   }
+  @Mutation(() => Player)
+  async addPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
+    if (!user.hasAnyPermission(['add:player'])) {
+      throw new UnauthorizedException(
+        `You do not have permission to create a player`
+      );
+    }
 
-  // @Mutation(returns => Player)
-  // async addPlayer(
-  //   @Args('newPlayerData') newPlayerData: NewPlayerInput,
-  // ): Promise<Player> {
-  //   const recipe = await this.recipesService.create(newPlayerData);
-  //   return recipe;
-  // }
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const player = await Player.create(
+        {
+          ...data,
+        },
+        { transaction }
+      );
+
+      await transaction.commit();
+
+      return player;
+    } catch (e) {
+      await transaction.rollback();
+      throw e;
+    }
+  }
 
   // @Mutation(returns => Boolean)
   // async removePlayer(@Args('id') id: string) {
@@ -194,7 +214,7 @@ export class PlayersResolver {
   ) {
     if (!user.hasAnyPermission([`${data.id}_edit:player`, 'edit-any:player'])) {
       throw new UnauthorizedException(
-        `You do not have permission to edit this club`
+        `You do not have permission to edit this player`
       );
     }
 
