@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.29.2](https://github.com/Badminton-Apps/badman/compare/v5.29.1...v5.29.2) (2022-09-07)
+
+
+### Bug Fixes
+
+* **backend-pupeteer:** sharing browser creation code ([e839def](https://github.com/Badminton-Apps/badman/commit/e839def99890f8a24baff326d50be678886ea46d))
+
 ### [5.29.1](https://github.com/Badminton-Apps/badman/compare/v5.29.0...v5.29.1) (2022-09-07)
 
 
