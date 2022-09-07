@@ -89,8 +89,20 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
         memberId = foundPlayer.memberId;
       }
 
+      let key = memberId;
+      if (!key) {
+        key = `${xmlPlayer?.player?.firstName} ${xmlPlayer?.player?.lastName}`;
+      }
+
+      if (!key) {
+        this.logger.warn(
+          `Could not find key for player ${xmlPlayer?.player?.firstName} ${xmlPlayer?.player?.lastName}`
+        );
+        continue;
+      }
+
       // Set with memberId
-      mapPlayers.set(`${memberId}`, foundPlayer);
+      mapPlayers.set(key, foundPlayer);
     }
     return mapPlayers;
   }

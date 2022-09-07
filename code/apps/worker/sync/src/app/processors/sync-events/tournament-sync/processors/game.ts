@@ -92,7 +92,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           break;
         case XmlScoreStatus['No Match']:
           gameStatus = GameStatus.NO_MATCH;
-          break;
+          break; 
         case XmlScoreStatus.Walkover:
           gameStatus = GameStatus.WALKOVER;
           break;
@@ -184,6 +184,10 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       }
 
       await game.save({ transaction: this.transaction });
+      await GamePlayerMembership.destroy({
+        where: { gameId: game.id },
+        transaction: this.transaction,
+      })
       await GamePlayerMembership.bulkCreate(
         this._createGamePlayers(xmlMatch, game),
         {
@@ -277,7 +281,16 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   }
 
   private _getPlayer(player: XmlPlayer) {
-    let returnPlayer = this.players.get(`${player?.MemberID}`);
+    let key = player?.MemberID
+    if (!key) {
+      key = `${player?.Firstname} ${player?.Lastname}`;
+    }
+
+    if (!key) {
+      return null;
+    }
+
+    let returnPlayer = this.players.get(key);
 
     if ((returnPlayer ?? null) == null && (player ?? null) != null) {
       // Search our map for unkowns
