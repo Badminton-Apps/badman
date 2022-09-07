@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.29.0](https://github.com/Badminton-Apps/badman/compare/v5.28.0...v5.29.0) (2022-09-07)
+
+
+### Features
+
+* **client:** adding the option to manually sync ([2135f03](https://github.com/Badminton-Apps/badman/commit/2135f03d5a02f852b718ee8a5daedc36a0a6f474))
+* **worker-sync:** adding sync of player ranking ([29f8078](https://github.com/Badminton-Apps/badman/commit/29f807857ae212bc2d18861a09ad2d2e34a1249f))
+
+
+### Bug Fixes
+
+* **api:** assembly for players without ranking ([c4dd284](https://github.com/Badminton-Apps/badman/commit/c4dd2840204dd040023266a81214012e4970ce17))
+* **backend-ranking:** point parsing with unkown rankings ([01bcdf1](https://github.com/Badminton-Apps/badman/commit/01bcdf1461b28c6f5f900768498b81d17a2272a3))
+* **backend-visual:** parser wasn't reading attributes ([7f557d4](https://github.com/Badminton-Apps/badman/commit/7f557d4e06c74b5fec3f7874e4fabba061b27b7c))
+
 ## [5.28.0](https://github.com/Badminton-Apps/badman/compare/v5.27.0...v5.28.0) (2022-09-07)
 
 
