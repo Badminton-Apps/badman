@@ -82,12 +82,14 @@ export class PdfService {
       },
       include: [
         {
+          required: false,
           model: RankingLastPlace,
           where: {
             systemId: input.systemId,
           },
         },
         {
+          required: false,
           model: RankingPlace,
           limit: 1,
           where: {
@@ -108,12 +110,14 @@ export class PdfService {
       },
       include: [
         {
+          required: false,
           model: RankingLastPlace,
           where: {
             systemId: input.systemId,
           },
         },
         {
+          required: false,
           model: RankingPlace,
           limit: 1,
           where: {
@@ -149,7 +153,7 @@ export class PdfService {
 
       preppedMap.set(player.id, {
         ...player.toJSON(),
-        rankingLastPlace: player.rankingLastPlaces?.[0].toJSON(),
+        rankingLastPlace: player.rankingLastPlaces?.[0]?.toJSON(),
         base: !!meta?.competition?.players?.find((p) => p?.id === player.id)
           ?.id,
         team: !!teamIndex.players.find((p) => p?.id === player.id),
