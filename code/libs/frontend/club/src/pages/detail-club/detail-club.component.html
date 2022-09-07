@@ -9,7 +9,9 @@
           <button mat-menu-item [routerLink]="['edit']">
             {{ 'button.edit' | translate }}
           </button>
-          <button mat-menu-item (click)="addPlayer(club)">Add player</button>
+          <badman-has-claim [any]="['add:player']">
+            <button mat-menu-item (click)="addPlayer(club)">Add player</button>
+          </badman-has-claim>
           <badman-has-claim [any]="['remove:club']">
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="deleteClub(club)">
