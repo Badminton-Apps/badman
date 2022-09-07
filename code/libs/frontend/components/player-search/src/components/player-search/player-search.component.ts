@@ -147,7 +147,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
           return this.apollo
             .query<{ players: { rows: Player[] } }>({
               query: gql`
-                query GetPlayers($where: JSONObject, $ranking: DateTime) {
+                query GetPlayers($where: JSONObject) {
                   players(where: $where) {
                     rows {
                       id
@@ -243,10 +243,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
         if (player) {
           const dbPlayer = await lastValueFrom(
             this.apollo
-              .mutate<{ player: Partial<Player> }>({
+              .mutate<{ addPlayer: Partial<Player> }>({
                 mutation: gql`
-                  mutation AddPlayer($player: PlayerInput!) {
-                    addPlayer(player: $player) {
+                  mutation AddPlayer($data: PlayerNewInput!) {
+                    addPlayer(data: $data) {
                       id
                       slug
                       memberId
@@ -256,15 +256,15 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                   }
                 `,
                 variables: {
-                  player: {
-                    memberId: player.memberId,
-                    firstName: player.firstName,
-                    lastName: player.lastName,
-                    gender: player.gender,
+                  data: {
+                    memberId: player.memberId?.trim(),
+                    firstName: player.firstName?.trim(),
+                    lastName: player.lastName?.trim(),
+                    gender: player.gender?.trim(),
                   },
                 },
               })
-              .pipe(map((x) => new Player(x.data?.player)))
+              .pipe(map((x) => new Player(x.data?.addPlayer)))
           );
           if (!this.clearOnSelection) {
             this.formControl.setValue(player);
