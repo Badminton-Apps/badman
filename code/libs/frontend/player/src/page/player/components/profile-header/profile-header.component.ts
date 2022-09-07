@@ -12,6 +12,8 @@ import { Player, RankingPlace, RankingSystem } from '@badman/frontend/models';
 import { SystemService } from '@badman/frontend/shared';
 import { map, Observable, switchMap } from 'rxjs';
 import { MergeAccountComponent } from '../../dialogs';
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from '@badman/frontend/config';
 
 @Component({
   selector: 'badman-profile-header',
@@ -45,6 +47,8 @@ export class ProfileHeaderComponent implements OnChanges {
 
   constructor(
     private dialog: MatDialog,
+    private configService: ConfigService,
+    private httpClient: HttpClient,
     private apollo: Apollo,
     private systemService: SystemService
   ) {}
@@ -206,5 +210,23 @@ export class ProfileHeaderComponent implements OnChanges {
           this.accountMerged.emit();
         }
       });
+  }
+
+  syncRanking() {
+    this.httpClient
+      .post(
+        `${this.configService.apiBaseUrl}/queue-job`,
+
+        {
+          queue: 'sync',
+          job: 'CheckRanking',
+          jobArgs: {
+            playerId: this.player.id,
+          },
+          removeOnFail: true,
+          removeOnComplete: true,
+        }
+      )
+      .subscribe();
   }
 }

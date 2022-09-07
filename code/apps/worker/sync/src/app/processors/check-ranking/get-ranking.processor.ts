@@ -22,11 +22,12 @@ export class CheckRankingProcessor {
     concurrency: 1,
   })
   async syncEncounters(job: Job<{ playerId: string }>): Promise<void> {
-    
     let browser: Browser;
 
     const player = await Player.findByPk(job.data.playerId);
-    this.logger.log(`Syncing ranking for ${player.fullName} (${player.memberId})`);
+    this.logger.log(
+      `Syncing ranking for ${player.fullName} (${player.memberId})`
+    );
     const primary = await RankingSystem.findOne({
       where: {
         primary: true,
@@ -34,6 +35,7 @@ export class CheckRankingProcessor {
     });
 
     if (!player.memberId) {
+      this.logger.log(`Player ${player.fullName} has no memberId`);
       return;
     }
 
@@ -42,10 +44,11 @@ export class CheckRankingProcessor {
         systemId: primary.id,
       },
       limit: 1,
-      order: [['rankingDate', 'DESC']], 
+      order: [['rankingDate', 'DESC']],
     });
 
     if (places.length === 0) {
+      this.logger.log(`Player ${player.fullName} has no ranking`);
       return;
     }
 
@@ -81,9 +84,8 @@ export class CheckRankingProcessor {
       // Close browser
       if (browser) {
         browser.close();
+        this.logger.log('Syned');
       }
     }
-
-    this.logger.log('Syned');
   }
 }

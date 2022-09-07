@@ -29,6 +29,12 @@
           </button>
         </badman-has-claim>
 
+        <badman-has-claim [any]="['change:job']">
+          <button mat-menu-item (click)="this.syncRanking()">
+            {{ 'button.sync-ranking' | translate }}
+          </button>
+        </badman-has-claim>
+
         <badman-has-claim [any]="['delete:player']">
           <button mat-menu-item>{{ 'button.delete' | translate }}</button>
         </badman-has-claim>

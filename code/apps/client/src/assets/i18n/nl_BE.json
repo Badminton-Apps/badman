@@ -268,7 +268,8 @@
     "merge-accounts": "Combineer accounts",
     "set-ranking-groups": "Set ranking",
     "set-primary": "Maak primair",
-    "watch-system": "Bekijk systeem"
+    "watch-system": "Bekijk systeem",
+    "sync-ranking": "Synchroniseer ranking"
   },
   "days": {
     "monday": "Maandag",
