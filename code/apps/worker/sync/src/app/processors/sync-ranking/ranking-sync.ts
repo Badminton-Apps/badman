@@ -106,7 +106,8 @@ export class RankingSyncer {
         this.processor.getData(this.STEP_RANKING);
 
       const publications = await this._visualService.getPublications(
-        ranking.visualCode
+        ranking.visualCode,
+        false
       );
 
       let pubs = publications
