@@ -16,6 +16,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "traceResolution": false,
     "paths": {
       "@badman/backend/authorization": [
         "libs/backend/authorization/src/index.ts"
@@ -38,6 +39,7 @@
       "@badman/backend/search": ["libs/backend/search/src/index.ts"],
       "@badman/backend/twizzit": ["libs/backend/twizzit/src/index.ts"],
       "@badman/backend/visual": ["libs/backend/visual/src/index.ts"],
+      "@badman/frontend/models": ["libs/frontend/models/src/index.ts"],
       "@badman/frontend/authentication": [
         "libs/frontend/authentication/src/index.ts"
       ],
@@ -47,6 +49,9 @@
       ],
       "@badman/frontend/components/game": [
         "libs/frontend/components/game/src/index.ts"
+      ],
+      "@badman/frontend/components/game-history": [
+        "libs/frontend/components/game-history/src/index.ts"
       ],
       "@badman/frontend/components/player-info": [
         "libs/frontend/components/player-info/src/index.ts"
@@ -61,8 +66,8 @@
       "@badman/frontend/event": ["libs/frontend/event/src/index.ts"],
       "@badman/frontend/graphql": ["libs/frontend/graphql/src/index.ts"],
       "@badman/frontend/info": ["libs/frontend/info/src/index.ts"],
-      "@badman/frontend/models": ["libs/frontend/models/src/index.ts"],
       "@badman/frontend/player": ["libs/frontend/player/src/index.ts"],
+      "@badman/frontend/ranking": ["libs/frontend/ranking/src/index.ts"],
       "@badman/frontend/shared": ["libs/frontend/shared/src/index.ts"],
       "@badman/frontend/team": ["libs/frontend/team/src/index.ts"],
       "@badman/frontend/tournament": ["libs/frontend/tournament/src/index.ts"],

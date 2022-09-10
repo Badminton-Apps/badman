@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
-import { CompetitionEncounter } from '@badman/frontend/models';
+import { EncounterCompetition } from '@badman/frontend/models';
 import { compPeriod } from '@badman/frontend/shared';
 
 @Component({
@@ -24,8 +24,8 @@ export class ListEncountersComponent implements OnInit {
 
   formControl = new FormControl();
 
-  encountersSem1!: CompetitionEncounter[];
-  encountersSem2!: CompetitionEncounter[];
+  encountersSem1!: EncounterCompetition[];
+  encountersSem2!: EncounterCompetition[];
 
   constructor(
     private apollo: Apollo,
@@ -63,7 +63,7 @@ export class ListEncountersComponent implements OnInit {
               startWith(contrl.value),
               switchMap((year) =>
                 this.apollo.query<{
-                  encounterCompetitions: { rows: CompetitionEncounter[] };
+                  encounterCompetitions: { rows: EncounterCompetition[] };
                 }>({
                   query: gql`
                     query GetEncounterQuery($where: JSONObject) {
@@ -109,7 +109,7 @@ export class ListEncountersComponent implements OnInit {
               ),
               map((result) =>
                 result.data.encounterCompetitions?.rows.map(
-                  (r) => new CompetitionEncounter(r)
+                  (r) => new EncounterCompetition(r)
                 )
               ),
               map((e) =>

@@ -13,7 +13,7 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { Observable } from 'rxjs';
 import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
-import { CompetitionEncounter } from '@badman/frontend/models';
+import { EncounterCompetition } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-select-encounter',
@@ -32,11 +32,11 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
   dependsOn = 'team';
 
   @Output()
-  encounterSelected = new EventEmitter<CompetitionEncounter>();
+  encounterSelected = new EventEmitter<EncounterCompetition>();
 
   formControl = new FormControl();
 
-  encounters$?: Observable<CompetitionEncounter[]>;
+  encounters$?: Observable<EncounterCompetition[]>;
 
   constructor(
     private apollo: Apollo,
@@ -73,7 +73,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             startWith(this.formGroup.get('year')?.value),
             switchMap((year) =>
               this.apollo.query<{
-                encounterCompetitions: { rows: CompetitionEncounter[] };
+                encounterCompetitions: { rows: EncounterCompetition[] };
               }>({
                 query: gql`
                   query GetEncounterQuery($where: JSONObject) {
@@ -112,7 +112,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
             ),
             map((result) =>
               result.data.encounterCompetitions?.rows.map(
-                (r) => new CompetitionEncounter(r)
+                (r) => new EncounterCompetition(r)
               )
             ),
             map((c) => {
@@ -130,7 +130,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
           );
 
           this.encounters$?.subscribe((encounters) => {
-            let foundEncounter: CompetitionEncounter | null = null;
+            let foundEncounter: EncounterCompetition | null = null;
             const encounterId =
               this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
 

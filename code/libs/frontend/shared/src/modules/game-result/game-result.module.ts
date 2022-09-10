@@ -17,6 +17,6 @@ import { PlayerInfoComponent } from './player-info';
     TranslateModule,
     FlexModule,
   ],
-  exports: [GameResultComponent, GameEntryComponent],
+  exports: [GameResultComponent, PlayerInfoComponent, GameEntryComponent],
 })
 export class GameResultModule {}
