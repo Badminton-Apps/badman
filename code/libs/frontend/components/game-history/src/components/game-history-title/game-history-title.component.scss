@@ -1,0 +1,31 @@
+:host {
+  margin-top: 16px;
+}
+
+.mat-subheading-1 {
+  flex-direction: column;
+  display: block;
+
+  .bottom {
+    line-height: 1em;
+    font-size: 0.75em;
+  }
+
+  .spacer {
+    margin: 0 5px;
+  }
+
+  .top {
+    cursor: pointer;
+    text-align: left;
+
+    .won {
+      font-weight: 500;
+    }
+
+    .vs,
+    .score {
+      margin: 0 5px;
+    }
+  }
+}

@@ -18,7 +18,7 @@ import {
   getCompetitionYear,
   sortTeams,
 } from '@badman/frontend/shared';
-import { CompetitionEncounter, Team, Location } from '@badman/frontend/models';
+import { EncounterCompetition, Team, Location } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './calendar.component.html',
@@ -32,8 +32,8 @@ export class CalendarComponent implements OnInit {
   public monthNames!: string[];
   public weekDayNames!: string[];
 
-  private homeEncounters: CompetitionEncounter[] = [];
-  private awayEncounters: CompetitionEncounter[] = [];
+  private homeEncounters: EncounterCompetition[] = [];
+  private awayEncounters: EncounterCompetition[] = [];
   public homeTeams: Team[] = [];
   public awayTeams: Team[] = [];
 
@@ -198,7 +198,7 @@ export class CalendarComponent implements OnInit {
     teamIds?: (string | undefined)[],
     showAway = false
   ) {
-    const encounters: CompetitionEncounter[] = [];
+    const encounters: EncounterCompetition[] = [];
 
     // load teams parallel
     const teamEncounter$ = teamIds?.map((team) => {
@@ -206,7 +206,7 @@ export class CalendarComponent implements OnInit {
         .query<{
           encounterCompetitions: {
             count: number;
-            rows: Partial<CompetitionEncounter>[];
+            rows: Partial<EncounterCompetition>[];
           };
         }>({
           fetchPolicy: 'cache-first',
@@ -255,7 +255,7 @@ export class CalendarComponent implements OnInit {
               total: x.data.encounterCompetitions?.count,
               encounters:
                 x.data.encounterCompetitions?.rows?.map((e) => {
-                  return new CompetitionEncounter(e);
+                  return new EncounterCompetition(e);
                 }) ?? [],
             };
           })
@@ -387,7 +387,7 @@ export class CalendarComponent implements OnInit {
               id: v4(),
               ...e,
               date: d.date,
-            } as CompetitionEncounter;
+            } as EncounterCompetition;
           });
         })
         ?.flat()
@@ -438,7 +438,7 @@ export class CalendarComponent implements OnInit {
               id: v4(),
               ...e,
               date: d.date,
-            } as CompetitionEncounter;
+            } as EncounterCompetition;
           });
         })
         ?.flat()
@@ -611,7 +611,7 @@ export class CalendarDay {
       option: number;
       events: {
         id: string;
-        encounter: CompetitionEncounter;
+        encounter: EncounterCompetition;
         color?: string;
         removed: boolean;
         requested: boolean;
@@ -624,7 +624,7 @@ export class CalendarDay {
 
   otherEvents: {
     id: string;
-    encounter: CompetitionEncounter;
+    encounter: EncounterCompetition;
     locationId?: number;
     startTime?: string;
     color?: string;
@@ -787,7 +787,7 @@ export class CalendarDay {
 
 interface DayEvent {
   id: string;
-  encounter: CompetitionEncounter;
+  encounter: EncounterCompetition;
   locationId?: number | undefined;
   startTime?: string | undefined;
   color?: string | undefined;

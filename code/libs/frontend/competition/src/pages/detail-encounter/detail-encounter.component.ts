@@ -4,14 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { combineLatest, map, Observable, switchMap, tap } from 'rxjs';
 import { SystemService } from '@badman/frontend/shared';
-import { CompetitionEncounter } from '@badman/frontend/models';
+import { EncounterCompetition } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './detail-encounter.component.html',
   styleUrls: ['./detail-encounter.component.scss'],
 })
 export class DetailEncounterComponent implements OnInit {
-  encounter$!: Observable<CompetitionEncounter>;
+  encounter$!: Observable<EncounterCompetition>;
 
   constructor(
     private apollo: Apollo,
@@ -30,7 +30,7 @@ export class DetailEncounterComponent implements OnInit {
           throw new Error('No system');
         }
         return this.apollo
-          .query<{ encounterCompetition: CompetitionEncounter }>({
+          .query<{ encounterCompetition: EncounterCompetition }>({
             query: gql`
               query GetEncounter($id: ID!, $system: ID!) {
                 encounterCompetition(id: $id) {
@@ -89,7 +89,7 @@ export class DetailEncounterComponent implements OnInit {
           })
           .pipe(
             map((result) => result.data.encounterCompetition),
-            map((encounter) => new CompetitionEncounter(encounter)),
+            map((encounter) => new EncounterCompetition(encounter)),
             tap((encounter) =>
               this.titleService.setTitle(
                 `${encounter.home?.name} vs ${encounter.away?.name} (${encounter.homeScore} - ${encounter.awayScore})`

@@ -1,8 +1,8 @@
 import {
   CompetitionDraw,
-  CompetitionSubEvent,
-  TournamentDraw,
-  TournamentSubEvent,
+  SubEventCompetition,
+  DrawTournament,
+  SubEventTournament,
 } from './events';
 import { Player } from './player.model';
 import { Standing } from './standing.model';
@@ -11,11 +11,11 @@ import { Team } from './team.model';
 export class Entry {
   id?: string;
 
-  competitionSubEvent?: CompetitionSubEvent;
+  competitionSubEvent?: SubEventCompetition;
   competitionDraw?: CompetitionDraw;
 
-  tournamentSubEvent?: TournamentSubEvent;
-  tournamentDraw?: TournamentDraw;
+  tournamentSubEvent?: SubEventTournament;
+  tournamentDraw?: DrawTournament;
 
   standing?: Standing;
 
@@ -30,7 +30,7 @@ export class Entry {
 
     this.competitionSubEvent =
       args?.competitionSubEvent != null
-        ? new CompetitionSubEvent(args?.competitionSubEvent)
+        ? new SubEventCompetition(args?.competitionSubEvent)
         : undefined;
     this.competitionDraw =
       args?.competitionDraw != null
@@ -38,11 +38,11 @@ export class Entry {
         : undefined;
     this.tournamentSubEvent =
       args?.tournamentSubEvent != null
-        ? new TournamentSubEvent(args?.tournamentSubEvent)
+        ? new SubEventTournament(args?.tournamentSubEvent)
         : undefined;
     this.tournamentDraw =
       args?.tournamentDraw != null
-        ? new TournamentDraw(args?.tournamentDraw)
+        ? new DrawTournament(args?.tournamentDraw)
         : undefined;
 
     this.team = args?.team != null ? new Team(args?.team) : undefined;

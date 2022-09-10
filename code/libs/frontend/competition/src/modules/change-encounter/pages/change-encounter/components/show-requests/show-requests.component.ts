@@ -23,7 +23,7 @@ import { filter, switchMap, tap } from 'rxjs/operators';
 import {
   ChangeEncounterAvailability,
   Comment,
-  CompetitionEncounter,
+  EncounterCompetition,
   EncounterChange,
   EncounterChangeDate,
 } from '@badman/frontend/models';
@@ -46,7 +46,7 @@ export class ShowRequestsComponent implements OnInit {
   previous?: AbstractControl;
   dateControls = new FormArray<FormGroup>([]);
 
-  encounter!: CompetitionEncounter;
+  encounter!: EncounterCompetition;
   home!: boolean;
   running = false;
 
@@ -82,7 +82,7 @@ export class ShowRequestsComponent implements OnInit {
           }
         }),
         filter((value) => value !== null),
-        switchMap((encounter: CompetitionEncounter) => {
+        switchMap((encounter: EncounterCompetition) => {
           if (encounter?.encounterChange?.id == undefined) {
             return of(new EncounterChange());
           }

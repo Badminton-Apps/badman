@@ -6,7 +6,7 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { lastValueFrom, map, switchMap } from 'rxjs';
 import {
-  CompetitionEncounter,
+  EncounterCompetition,
   EventCompetition,
   Player,
 } from '@badman/frontend/models';
@@ -86,7 +86,7 @@ export class TeamAssemblyComponent implements OnInit {
       });
   }
 
-  encounterSelected(encounter: CompetitionEncounter) {
+  encounterSelected(encounter: EncounterCompetition) {
     this.selectedEventControl?.setValue(
       this.events?.find((e) =>
         e.subEventCompetitions?.find(
@@ -109,7 +109,7 @@ export class TeamAssemblyComponent implements OnInit {
     const encounterId = this.formGroup.get('encounter')?.value;
     const result = await lastValueFrom(
       this.apollo.query<{
-        encounterCompetition: Partial<CompetitionEncounter>;
+        encounterCompetition: Partial<EncounterCompetition>;
       }>({
         query: gql`
           query GetEncounterQuery($id: ID!) {
@@ -132,7 +132,7 @@ export class TeamAssemblyComponent implements OnInit {
       })
     );
 
-    const encounter = new CompetitionEncounter(
+    const encounter = new EncounterCompetition(
       result.data.encounterCompetition
     );
     const fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${

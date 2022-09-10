@@ -3,7 +3,7 @@ import { Team } from '../../team.model';
 import { CompetitionDraw } from './draw.model';
 import { EncounterChange } from './encounter-change.model';
 
-export class CompetitionEncounter {
+export class EncounterCompetition {
   id?: string;
   date?: Date;
   originalDate?: Date;
@@ -23,7 +23,7 @@ export class CompetitionEncounter {
 
   finished = true;
 
-  constructor(args: Partial<CompetitionEncounter>) {
+  constructor(args: Partial<EncounterCompetition>) {
     this.id = args?.id;
     this.date = args.date != null ? new Date(args.date) : undefined;
     this.originalDate =

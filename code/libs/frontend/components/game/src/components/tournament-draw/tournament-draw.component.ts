@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TournamentDraw } from '@badman/frontend/models';
+import { DrawTournament } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-tournament-draw',
@@ -8,5 +8,5 @@ import { TournamentDraw } from '@badman/frontend/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentDrawComponent {
-  @Input() draw!: TournamentDraw;
+  @Input() draw!: DrawTournament;
 }

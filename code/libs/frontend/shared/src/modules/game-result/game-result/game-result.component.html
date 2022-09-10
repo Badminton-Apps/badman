@@ -1,8 +1,4 @@
 <div class="game-info" fxLayout="row">
-  <!-- <div class="round" fxFlex="10px" *ngIf="this.game.order || this.game.round" fxLayoutAlign="start center">
-    {{ this.game.linkType === 'competition' ? this.game.order : this.game.round }}
-  </div> -->
-
   <div class="players">
     <div class="player" [ngClass]="{ won: this.game.winner === 1 }">
       <badman-player-info

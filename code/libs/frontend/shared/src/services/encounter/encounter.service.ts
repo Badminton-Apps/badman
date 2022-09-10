@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import * as changeEncounterRequestMutation from '../../graphql/encounters/mutations/ChangeEncounterRequest.graphql';
 import * as encountersQuery from '../../graphql/encounters/queries/GetEncountersQuery.graphql';
 import * as requestsQuery from '../../graphql/encounters/queries/GetRequests.graphql';
-import { CompetitionEncounter, EncounterChange } from '@badman/frontend/models';
+import { EncounterCompetition, EncounterChange } from '@badman/frontend/models';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class EncounterService {
       .query<{
         competitionEncounters: {
           total: number;
-          edges: { cursor: string; node: CompetitionEncounter }[];
+          edges: { cursor: string; node: EncounterCompetition }[];
         };
       }>({
         query: encountersQuery,
@@ -35,7 +35,7 @@ export class EncounterService {
             encounters: x.data.competitionEncounters?.edges?.map((e) => {
               return {
                 cursor: e.cursor,
-                node: new CompetitionEncounter(e.node),
+                node: new EncounterCompetition(e.node),
               };
             }),
           };

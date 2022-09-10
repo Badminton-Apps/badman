@@ -1,6 +1,6 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
-import { CompetitionSubEvent, Team } from '@badman/frontend/models';
+import { SubEventCompetition, Team } from '@badman/frontend/models';
 import moment from 'moment';
 
 export const validateAllFormFields = (formGroup: FormGroup) => {
@@ -28,8 +28,8 @@ export const resetAllFormFields = (formGroup: FormGroup) => {
 };
 
 export const sortSubEvents = (
-  a: CompetitionSubEvent,
-  b: CompetitionSubEvent
+  a: SubEventCompetition,
+  b: SubEventCompetition
 ) => {
   if (a.eventType === b.eventType) {
     return (a.level ?? 0) - (b.level ?? 0);

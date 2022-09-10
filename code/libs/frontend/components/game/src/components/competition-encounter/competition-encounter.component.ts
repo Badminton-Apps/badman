@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map } from 'rxjs';
-import { CompetitionEncounter, Game } from '@badman/frontend/models';
+import { EncounterCompetition, Game } from '@badman/frontend/models';
 import { GAME_INFO } from '../../fragments';
 const DEFAULT_DURATION = 300;
 
@@ -40,7 +40,7 @@ const DEFAULT_DURATION = 300;
   ],
 })
 export class CompetitionEncounterComponent {
-  @Input() encounter!: CompetitionEncounter;
+  @Input() encounter!: EncounterCompetition;
 
   collapsed = true;
 
@@ -62,7 +62,7 @@ export class CompetitionEncounterComponent {
 
   private _getFullEncounter() {
     return this.apollo
-      .query<{ encounterCompetition: CompetitionEncounter }>({
+      .query<{ encounterCompetition: EncounterCompetition }>({
         query: gql`
           ${GAME_INFO}
           query GetGamesEncoutner($competitionEncounterId: ID!) {
