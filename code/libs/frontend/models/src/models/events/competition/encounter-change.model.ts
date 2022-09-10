@@ -1,6 +1,6 @@
 import { Comment } from '../../comment.model';
 import { EncounterChangeDate } from './encounter-change-date.model';
-import { CompetitionEncounter } from './encounter.model';
+import { EncounterCompetition } from './encounter.model';
 
 export class EncounterChange {
   id?: string;
@@ -10,7 +10,7 @@ export class EncounterChange {
   homeComment?: Comment;
   awayComment?: Comment;
 
-  encounter?: CompetitionEncounter;
+  encounter?: EncounterCompetition;
 
   constructor(args?: Partial<EncounterChange>) {
     this.id = args?.id;

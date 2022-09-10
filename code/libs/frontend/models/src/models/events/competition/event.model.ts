@@ -1,10 +1,10 @@
 import { Comment } from '../../comment.model';
 import { Event, EventType } from '../event.model';
-import { CompetitionSubEvent } from './sub-event.model';
+import { SubEventCompetition } from './sub-event.model';
 
 export class EventCompetition extends Event {
   startYear?: number;
-  subEventCompetitions?: CompetitionSubEvent[];
+  subEventCompetitions?: SubEventCompetition[];
   comments?: Comment[];
   type?: LevelType;
 
@@ -14,7 +14,7 @@ export class EventCompetition extends Event {
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
     this.subEventCompetitions = args?.subEventCompetitions
-      ?.map((s) => new CompetitionSubEvent({ ...s, eventCompetition: this }))
+      ?.map((s) => new SubEventCompetition({ ...s, eventCompetition: this }))
       .sort((a, b) => {
         return (a?.level ?? 0) - (b?.level ?? 0);
       });

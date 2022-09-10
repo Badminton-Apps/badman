@@ -3,13 +3,13 @@ import { Team } from '../../team.model';
 import { SubEvent } from '../sub-event.model';
 import { CompetitionDraw } from './draw.model';
 
-export class CompetitionSubEvent extends SubEvent {
+export class SubEventCompetition extends SubEvent {
   teams?: Team[];
 
   eventCompetition?: EventCompetition;
   drawCompetitions?: CompetitionDraw[];
 
-  constructor({ ...args }: Partial<CompetitionSubEvent>) {
+  constructor({ ...args }: Partial<SubEventCompetition>) {
     super(args);
     this.maxLevel = args.maxLevel ?? 0;
     this.minBaseIndex = args.minBaseIndex ?? 0;

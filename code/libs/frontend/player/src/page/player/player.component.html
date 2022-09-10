@@ -6,7 +6,7 @@
     (accountMerged)="this.updateHappend$.next(null)"
   ></badman-profile-header>
 
-  <badman-games [player]="player"></badman-games>
+  <badman-games-history [playerId]="player.id!"></badman-games-history>
 </ng-container>
 
 <ng-template #loading>
