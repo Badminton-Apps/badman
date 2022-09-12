@@ -17,13 +17,12 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { MomentModule } from 'ngx-moment';
 import {
   GameResultModule,
   SelctionComponentsModule,
   SharedModule,
 } from '@badman/frontend/shared';
+import { MomentModule } from 'ngx-moment';
 import {
   ChartComponent,
   EditClubHistoryComponent,
@@ -34,18 +33,15 @@ import {
   EditPlayerFieldsComponent,
   EditRankingAllComponent,
   EditRankingComponent,
-  GamesComponent,
   MergeAccountComponent,
   MergePlayerComponent,
   PlayerComponent,
   ProfileHeaderComponent,
   RankingEvolutionComponent,
   TopPlayersComponent,
-  GamesResultComponent,
-  GroupCompetitionComponent,
-  GroupTournamentComponent,
 } from './page';
 import { EditRankingPlaceDialogComponent } from './page/edit-player/dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
+import { ShowRankingComponent } from './page/player';
 import {
   ListGamesComponent,
   PeriodSelectionComponent,
@@ -53,12 +49,12 @@ import {
 } from './page/ranking-breakdown';
 import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
 import { PlayerRoutingModule } from './player-routing.module';
-import { ShowRankingComponent } from './page/player';
 
+import { GameHistoryModule } from '@badman/frontend/components/game-history';
+import { PlayerSearchModule } from '@badman/frontend/components/player-search';
 import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
 import { CovalentLineEchartsModule } from '@covalent/echarts/line';
 import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
-import { PlayerSearchModule } from '@badman/frontend/components/player-search';
 
 const materialModules = [
   MatCardModule,
@@ -83,14 +79,13 @@ const materialModules = [
 const otherModules = [
   MomentDateModule,
   MomentModule,
-  InfiniteScrollModule,
   SelctionComponentsModule,
   CovalentBaseEchartsModule,
   CovalentLineEchartsModule,
   CovalentTooltipEchartsModule,
 ];
 
-const ownModules = [PlayerSearchModule];
+const ownModules = [PlayerSearchModule, GameHistoryModule];
 
 @NgModule({
   declarations: [
@@ -103,7 +98,6 @@ const ownModules = [PlayerSearchModule];
     ProfileHeaderComponent,
     RankingEvolutionComponent,
     TopPlayersComponent,
-    GamesComponent,
     ChartComponent,
     MergeAccountComponent,
     MergePlayerComponent,
@@ -112,9 +106,6 @@ const ownModules = [PlayerSearchModule];
     EditClubHistoryDialogComponent,
     RankingBreakdownComponent,
     ListGamesComponent,
-    GamesResultComponent,
-    GroupCompetitionComponent,
-    GroupTournamentComponent,
     PeriodSelectionComponent,
     AddGameComponent,
     EditRankingPlaceDialogComponent,

@@ -20,8 +20,8 @@ import {
   RankingGroup,
   SubEvent,
   EventTournament,
-  CompetitionSubEvent,
-  TournamentSubEvent,
+  SubEventCompetition,
+  SubEventTournament,
 } from '@badman/frontend/models';
 
 @Component({
@@ -29,7 +29,7 @@ import {
   styleUrls: ['./assign-ranking-groups.component.scss'],
 })
 export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
-  dataSource!: MatTableDataSource<CompetitionSubEvent | TournamentSubEvent>;
+  dataSource!: MatTableDataSource<SubEventCompetition | SubEventTournament>;
 
   groups$!: Observable<RankingGroup[]>;
   groups: RankingGroup[] = [];

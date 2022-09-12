@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  padding-right: 25px;
+  width: 350px;
+}
+
+// Set min heights of scores and player
+.game-info {
+
+  .player,
+  .result {
+    min-height: 20px;
+  }
+}
+
+.game-doubles.game-info {
+
+  .player,
+  .result {
+    min-height: 40px;
+  }
+}
+
+.game-info {
+  max-width: 350px;
+
+  .round {
+    border-right: 1px solid rgba($color: #000000, $alpha: 0.3);
+  }
+
+  .players {
+    flex: 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: lighter;
+    height: 95px;
+
+    .player {
+      &.won {
+        font-weight: 500;
+      }
+    }
+
+    // first child must be pushed to bottom
+    .player:first-child {
+      app-player-info:only-child {
+        padding-top: 20px;
+        display: block;
+      }
+    }
+
+    // last child  must be pushed to top
+    .player:last-child {
+      app-player-info:only-child {
+        padding-bottom: 20px;
+        display: block;
+      }
+    }
+  }
+}
+
+.divider {
+  border-top: 1px solid rgba($color: #000000, $alpha: 0.3);
+}
+
+.results {
+  height: 95px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  & .result.top {
+    align-items: flex-end;
+  }
+
+  .result {
+    display: flex;
+
+    .set {
+      width: 20px;
+      text-align: right;
+      font-weight: lighter;
+
+      &.won {
+        font-weight: 500;
+      }
+
+      &.walkover {
+        width: 120px;
+      }
+    }
+  }
+}
+
+.loading {
+  width: 350px;
+  height: 95px;
+}
+
+
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -468px 0
+  }
+
+  100% {
+    background-position: 468px 0
+  }
+}
+
+.loading {
+  animation-duration: 1.25s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: darkgray;
+  background: linear-gradient(to right, #eeeeee 10%, #dddddd 18%, #eeeeee 33%);
+  background-size: 800px 104px;
+  height: 95px;
+  width: 350px;
+  position: relative;
+}

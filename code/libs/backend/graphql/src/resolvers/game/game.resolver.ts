@@ -22,15 +22,7 @@ import { ListArgs } from '../../utils';
 export class GamesResolver {
   @Query(() => Game)
   async game(@Args('id', { type: () => ID }) id: string): Promise<Game> {
-    let game = await Game.findByPk(id);
-
-    if (!game) {
-      game = await Game.findOne({
-        where: {
-          slug: id,
-        },
-      });
-    }
+    const game = await Game.findByPk(id);
 
     if (!game) {
       throw new NotFoundException(id);

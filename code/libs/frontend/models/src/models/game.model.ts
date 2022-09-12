@@ -1,4 +1,4 @@
-import { CompetitionEncounter, TournamentDraw } from './events';
+import { EncounterCompetition, DrawTournament } from './events';
 import { PlayerGame } from './player.model';
 import { RankingPoint } from './ranking-point.model';
 import { RankingSystem } from './ranking-system.model';
@@ -10,6 +10,7 @@ export class Game {
   round?: string;
   order?: number;
   linkType?: string;
+  linkId?: string;
   players?: PlayerGame[];
   set1Team1?: number;
   set1Team2?: number;
@@ -26,8 +27,8 @@ export class Game {
   winner?: number;
   rankingPoints?: RankingPoint[];
 
-  competition?: CompetitionEncounter;
-  tournament?: TournamentDraw;
+  competition?: EncounterCompetition;
+  tournament?: DrawTournament;
 
   constructor({ ...args }: Partial<Game>, rankingType?: RankingSystem) {
     const parsedType = (args?.gameType as unknown as 'D' | 'MX' | 'S') ?? null;
@@ -49,6 +50,7 @@ export class Game {
     this.order = args?.order;
     this.winner = args.winner;
     this.linkType = args?.linkType;
+    this.linkId = args?.linkId;
     this.rankingPoints = args.rankingPoints?.map(
       (r) => new RankingPoint({ ...r, type: rankingType })
     );
@@ -68,9 +70,9 @@ export class Game {
     // it's should be one or the other
     // Temporary doing this before finding a better way
     if (args.competition) {
-      this.competition = new CompetitionEncounter(args.competition);
+      this.competition = new EncounterCompetition(args.competition);
     } else if (args.tournament) {
-      this.tournament = new TournamentDraw(args.tournament);
+      this.tournament = new DrawTournament(args.tournament);
     }
   }
 }

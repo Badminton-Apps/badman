@@ -1,0 +1,18 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/components/game-history/src",
+  "prefix": "badman",
+  "targets": {
+    
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/components/game-history/**/*.ts",
+          "libs/frontend/components/game-history/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

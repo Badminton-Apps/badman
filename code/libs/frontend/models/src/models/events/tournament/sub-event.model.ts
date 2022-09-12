@@ -1,15 +1,15 @@
 import { GameType } from '../../game.model';
 import { SubEvent } from '../sub-event.model';
-import { TournamentDraw } from './draw.model';
+import { DrawTournament } from './draw.model';
 import { EventTournament } from './event.model';
 
-export class TournamentSubEvent extends SubEvent {
+export class SubEventTournament extends SubEvent {
   eventTournament?: EventTournament;
   gameType?: GameType | string;
 
-  drawTournaments?: TournamentDraw[];
+  drawTournaments?: DrawTournament[];
 
-  constructor({ ...args }: Partial<TournamentSubEvent>) {
+  constructor({ ...args }: Partial<SubEventTournament>) {
     super(args);
 
     this.eventTournament =
@@ -17,11 +17,11 @@ export class TournamentSubEvent extends SubEvent {
         ? new EventTournament(args.eventTournament)
         : undefined;
     this.drawTournaments = args?.drawTournaments?.map(
-      (d) => new TournamentDraw(d)
+      (d) => new DrawTournament(d)
     );
     this.gameType =
       (args?.gameType ?? null) != null
-        ? GameType[args.gameType ?? '']
+        ? GameType[args.gameType as keyof typeof GameType]
         : undefined;
   }
 }

@@ -1,12 +1,12 @@
-import { CompetitionSubEvent, TournamentSubEvent } from './events';
+import { SubEventCompetition, SubEventTournament } from './events';
 import { RankingSystem } from './ranking-system.model';
 
 export class RankingGroup {
   id?: string;
   name?: string;
 
-  subEventCompetitions?: CompetitionSubEvent[];
-  subEventTournament?: TournamentSubEvent[];
+  subEventCompetitions?: SubEventCompetition[];
+  subEventTournament?: SubEventTournament[];
   systems?: RankingSystem[];
 
   constructor({ ...args }: Partial<RankingGroup>) {
@@ -14,10 +14,10 @@ export class RankingGroup {
     this.id = args.id;
 
     this.subEventCompetitions = args?.subEventCompetitions?.map(
-      (g) => new CompetitionSubEvent(g)
+      (g) => new SubEventCompetition(g)
     );
     this.subEventTournament = args?.subEventTournament?.map(
-      (g) => new TournamentSubEvent(g)
+      (g) => new SubEventTournament(g)
     );
     this.systems = args?.systems?.map((g) => new RankingSystem(g));
   }

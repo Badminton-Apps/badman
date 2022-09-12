@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { AssignRankingGroupsComponent } from '@badman/frontend/shared';
 import {
-  TournamentSubEvent,
+  SubEventTournament,
   GameType,
   EventTournament,
 } from '@badman/frontend/models';
@@ -18,15 +18,15 @@ import {
 export class DetailTournamentComponent implements OnInit {
   event$!: Observable<EventTournament>;
 
-  subEventsM_S$!: Observable<TournamentSubEvent[] | undefined>;
-  subEventsF_S$!: Observable<TournamentSubEvent[] | undefined>;
-  subEventsMX_S$!: Observable<TournamentSubEvent[] | undefined>;
-  subEventsM_D$!: Observable<TournamentSubEvent[] | undefined>;
-  subEventsF_D$!: Observable<TournamentSubEvent[] | undefined>;
-  subEventsMX_D$!: Observable<TournamentSubEvent[] | undefined>;
-  subEventsM_MX$!: Observable<TournamentSubEvent[] | undefined>;
-  subEventsF_MX$!: Observable<TournamentSubEvent[] | undefined>;
-  subEventsMX_MX$!: Observable<TournamentSubEvent[] | undefined>;
+  subEventsM_S$!: Observable<SubEventTournament[] | undefined>;
+  subEventsF_S$!: Observable<SubEventTournament[] | undefined>;
+  subEventsMX_S$!: Observable<SubEventTournament[] | undefined>;
+  subEventsM_D$!: Observable<SubEventTournament[] | undefined>;
+  subEventsF_D$!: Observable<SubEventTournament[] | undefined>;
+  subEventsMX_D$!: Observable<SubEventTournament[] | undefined>;
+  subEventsM_MX$!: Observable<SubEventTournament[] | undefined>;
+  subEventsF_MX$!: Observable<SubEventTournament[] | undefined>;
+  subEventsMX_MX$!: Observable<SubEventTournament[] | undefined>;
 
   update$ = new BehaviorSubject(0);
 
