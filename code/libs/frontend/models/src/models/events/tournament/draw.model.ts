@@ -1,15 +1,15 @@
 import { Game } from '../../game.model';
 import { Draw } from '../draw.model';
-import { TournamentSubEvent } from './sub-event.model';
+import { SubEventTournament } from './sub-event.model';
 
-export class TournamentDraw extends Draw {
-  subEventTournament?: TournamentSubEvent;
+export class DrawTournament extends Draw {
+  subEventTournament?: SubEventTournament;
   games?: Game[];
 
-  constructor(args: Partial<TournamentDraw>) {
+  constructor(args: Partial<DrawTournament>) {
     super(args);
     this.subEventTournament = args.subEventTournament
-      ? new TournamentSubEvent(args.subEventTournament)
+      ? new SubEventTournament(args.subEventTournament)
       : undefined;
     this.games = args.games?.map((g) => new Game(g));
   }

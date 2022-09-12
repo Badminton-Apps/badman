@@ -1,10 +1,10 @@
 import { Event, EventType } from '../event.model';
-import { TournamentSubEvent } from './sub-event.model';
+import { SubEventTournament } from './sub-event.model';
 
 export class EventTournament extends Event {
   firstDay?: Date;
   dates: Date[];
-  subEventTournaments?: TournamentSubEvent[];
+  subEventTournaments?: SubEventTournament[];
   tournamentNumber?: number;
 
   constructor({ ...args }: Partial<EventTournament>) {
@@ -17,7 +17,7 @@ export class EventTournament extends Event {
     this.tournamentNumber = args.tournamentNumber;
     this.eventType = args.eventType ?? EventType.TOURNAMENT;
     this.subEventTournaments = args?.subEventTournaments
-      ?.map((s) => new TournamentSubEvent(s))
+      ?.map((s) => new SubEventTournament(s))
       .sort((a, b) => (a?.level ?? 0) - (b?.level ?? 0))
       .sort((a, b) => (a?.eventType ?? 'A').localeCompare(b?.eventType ?? 'A'))
       .sort((a, b) => (a?.gameType ?? 'A').localeCompare(b?.gameType ?? 'A'));

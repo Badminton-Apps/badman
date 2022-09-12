@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import {
-  CompetitionEncounter,
+  EncounterCompetition,
   Player,
-  TournamentDraw,
+  DrawTournament,
 } from '@badman/frontend/models';
 
 @Component({
@@ -12,7 +12,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubEventComponent {
-  @Input() competition?: CompetitionEncounter;
-  @Input() tournament?: TournamentDraw;
+  @Input() competition?: EncounterCompetition;
+  @Input() tournament?: DrawTournament;
   @Input() player?: Player;
 }
