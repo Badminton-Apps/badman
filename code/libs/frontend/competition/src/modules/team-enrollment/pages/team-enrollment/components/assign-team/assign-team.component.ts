@@ -18,7 +18,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { map, switchMap } from 'rxjs/operators';
 import {
   Club,
-  CompetitionSubEvent,
+  SubEventCompetition,
   LevelType,
   Team,
 } from '@badman/frontend/models';
@@ -54,7 +54,7 @@ export class AssignTeamComponent implements OnChanges {
   club!: Club;
 
   @Input()
-  subEvents!: CompetitionSubEvent[];
+  subEvents!: SubEventCompetition[];
 
   @Input()
   type!: string;
@@ -114,7 +114,7 @@ export class AssignTeamComponent implements OnChanges {
   }
 
   async drop(
-    event: CdkDragDrop<CompetitionSubEvent, CompetitionSubEvent, Team>
+    event: CdkDragDrop<SubEventCompetition, SubEventCompetition, Team>
   ) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -137,7 +137,7 @@ export class AssignTeamComponent implements OnChanges {
     }
   }
 
-  editTeam(team: Team, subEvent: CompetitionSubEvent) {
+  editTeam(team: Team, subEvent: SubEventCompetition) {
     const dialogRef = this.dialog.open(TeamDialogComponent, {
       data: { team, club: this.club, allowEditType: false },
     });
@@ -212,7 +212,7 @@ export class AssignTeamComponent implements OnChanges {
       });
   }
 
-  private async validate(team: Team, subEvent: CompetitionSubEvent) {
+  private async validate(team: Team, subEvent: SubEventCompetition) {
     if (
       !subEvent?.maxLevel ||
       !subEvent?.maxBaseIndex ||

@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { EventCompetition, CompetitionSubEvent } from '@badman/frontend/models';
+import { EventCompetition, SubEventCompetition } from '@badman/frontend/models';
 import { AssignRankingGroupsComponent } from '@badman/frontend/shared';
 
 @Component({
@@ -14,9 +14,9 @@ import { AssignRankingGroupsComponent } from '@badman/frontend/shared';
 export class DetailCompetitionComponent implements OnInit {
   event$!: Observable<EventCompetition>;
 
-  subEventsM$!: Observable<CompetitionSubEvent[] | undefined>;
-  subEventsF$!: Observable<CompetitionSubEvent[] | undefined>;
-  subEventsMX$!: Observable<CompetitionSubEvent[] | undefined>;
+  subEventsM$!: Observable<SubEventCompetition[] | undefined>;
+  subEventsF$!: Observable<SubEventCompetition[] | undefined>;
+  subEventsMX$!: Observable<SubEventCompetition[] | undefined>;
 
   update$ = new BehaviorSubject(0);
 

@@ -10,7 +10,7 @@ import {
   Observable,
 } from 'rxjs';
 import { debounceTime, filter, map, skip, switchMap } from 'rxjs/operators';
-import { EventCompetition, CompetitionSubEvent } from '@badman/frontend/models';
+import { EventCompetition, SubEventCompetition } from '@badman/frontend/models';
 
 @Component({
   templateUrl: './edit-competition.component.html',
@@ -193,13 +193,13 @@ export class EditEventCompetitionComponent implements OnInit {
     );
 
     event.subEventCompetitions?.push(
-      new CompetitionSubEvent({
+      new SubEventCompetition({
         eventCompetition: event,
       })
     );
   }
 
-  async removeSubEvent(event: EventCompetition, subEvent: CompetitionSubEvent) {
+  async removeSubEvent(event: EventCompetition, subEvent: SubEventCompetition) {
     const subEvents = this.formGroup.get('subEvents') as FormArray;
 
     subEvents.removeAt(subEvents.value.indexOf(subEvent));

@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CompetitionSubEvent, LevelType } from '@badman/frontend/models';
+import { SubEventCompetition, LevelType } from '@badman/frontend/models';
 
 @Component({
   selector: 'badman-event-competition-level-fields',
@@ -17,7 +17,7 @@ import { CompetitionSubEvent, LevelType } from '@badman/frontend/models';
 })
 export class EventCompetitionLevelFieldsComponent implements OnInit {
   @Input()
-  subEvent: CompetitionSubEvent = {} as CompetitionSubEvent;
+  subEvent: SubEventCompetition = {} as SubEventCompetition;
 
   @Input()
   type?: LevelType;
@@ -26,7 +26,7 @@ export class EventCompetitionLevelFieldsComponent implements OnInit {
   formGroup!: FormGroup;
 
   @Output()
-  whenDelete = new EventEmitter<CompetitionSubEvent>();
+  whenDelete = new EventEmitter<SubEventCompetition>();
 
   ngOnInit(): void {
     this.formGroup.get('level')?.valueChanges.subscribe((r) => {

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable, switchMap, tap } from 'rxjs';
-import { TournamentDraw } from '@badman/frontend/models';
+import { DrawTournament } from '@badman/frontend/models';
 import { GAME_INFO } from '@badman/frontend/components/game';
 
 @Component({
@@ -12,7 +12,7 @@ import { GAME_INFO } from '@badman/frontend/components/game';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailDrawTournamentComponent implements OnInit {
-  draw$!: Observable<TournamentDraw>;
+  draw$!: Observable<DrawTournament>;
 
   tournamentId?: string;
 
@@ -27,7 +27,7 @@ export class DetailDrawTournamentComponent implements OnInit {
           throw new Error('No id');
         }
 
-        return this.apollo.query<{ drawTournament: TournamentDraw }>({
+        return this.apollo.query<{ drawTournament: DrawTournament }>({
           query: gql`
             ${GAME_INFO}
             query GetTournamentDraw($tournamentDrawId: ID!) {
@@ -69,7 +69,7 @@ export class DetailDrawTournamentComponent implements OnInit {
           },
         });
       }),
-      map(({ data }) => new TournamentDraw(data.drawTournament))
+      map(({ data }) => new DrawTournament(data.drawTournament))
     );
   }
 }
