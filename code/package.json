@@ -208,7 +208,7 @@
     "ng-packagr": "~14.2.0",
      "nx": "14.7.5",
     "postcss": "^8.4.5",
-    "postcss-import": "~14.1.0",
+    "postcss-import": "~15.0.0",
     "postcss-preset-env": "~7.8.0",
     "postcss-url": "~10.1.3",
 
