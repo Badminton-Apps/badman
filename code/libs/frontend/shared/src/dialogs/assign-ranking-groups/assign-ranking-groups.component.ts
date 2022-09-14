@@ -68,7 +68,6 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
       // Initialize new
       groupNames.forEach((element) => {
-        console.log(element);
         if (this.selection.has(element)) {
           this.selection.set(element, new SelectionModel<SubEvent>(true, []));
         }
