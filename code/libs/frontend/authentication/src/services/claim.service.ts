@@ -12,7 +12,7 @@ import { UserService } from './user.service';
   providedIn: 'root',
 })
 export class ClaimService {
-  claims$ = new ReplaySubject<string[]>(1);
+  claims$ = new ReplaySubject<string[] | undefined>(1);
 
   constructor(private apollo: Apollo, private userService: UserService) {
     userService.profile$
@@ -123,7 +123,11 @@ export class ClaimService {
       .pipe(tap(() => this.userService.reloadProfile()));
   }
 
-  private includes(claims: string[], claim: string): boolean {
+  private includes(claims: string[] | undefined, claim: string): boolean {
+    if (!claims) {
+      return false;
+    }
+
     if (claim.indexOf('*') >= 0) {
       const found = claims.find(
         (r) => r?.indexOf(claim.replace('*', '')) != -1

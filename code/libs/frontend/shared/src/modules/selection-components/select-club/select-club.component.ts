@@ -76,13 +76,13 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           } else if (single) {
             return this.claimSerice.claims$.pipe(
               map((r) =>
-                r.filter((x) => x?.indexOf(this.singleClubPermission) != -1)
+                r?.filter((x) => x?.indexOf(this.singleClubPermission) != -1)
               ),
               map((r) =>
-                r.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))
+                r?.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))
               ),
               switchMap((ids) =>
-                this.clubService.getClubs({ ids, take: ids.length })
+                this.clubService.getClubs({ ids, take: ids?.length })
               )
             );
           } else if (this.needsPermission) {

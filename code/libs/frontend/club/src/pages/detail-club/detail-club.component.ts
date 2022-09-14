@@ -178,8 +178,6 @@ export class DetailClubComponent implements OnInit {
     const dialogRef = this.dialog.open(yearSelect);
 
     dialogRef.afterClosed().subscribe(async (year) => {
-      console.log(year);
-
       if (year && club.id) {
         const result = await lastValueFrom(
           this.httpClient.get(
