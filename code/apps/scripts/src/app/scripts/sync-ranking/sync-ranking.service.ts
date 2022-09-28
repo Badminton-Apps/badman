@@ -1,6 +1,6 @@
 import { RankingPlace } from '@badman/backend/database';
 import { Injectable, Logger } from '@nestjs/common';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class SyncRankingService {
@@ -11,22 +11,22 @@ export class SyncRankingService {
       where: {
         [Op.or]: [
           {
-            single: null,
+            single: null, 
           },
-          {
+          { 
             double: null,
           },
           {
             mix: null,
           },
         ],
-        rankingDate: '2022-08-29T00:00:00.000Z',
+        rankingDate: '2022-09-05T00:00:00.000Z',
       },
     });
 
     this.logger.log(`Found ${rankings.length} players with no ranking`);
 
     // return last 10
-    return rankings.slice(0, 100);
+    return rankings
   }
 }

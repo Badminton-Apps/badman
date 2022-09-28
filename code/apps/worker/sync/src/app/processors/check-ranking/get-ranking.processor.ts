@@ -75,6 +75,11 @@ export class CheckRankingProcessor {
       place.single = single;
       place.double = double;
       place.mix = mix;
+
+      place.changed('single', true);
+      place.changed('double', true);
+      place.changed('mix', true);
+
       await place.save();
     } catch (error) {
       this.logger.error(error);
