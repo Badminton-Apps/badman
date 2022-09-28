@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.30.0](https://github.com/Badminton-Apps/badman/compare/v5.29.4...v5.30.0) (2022-09-15)
+
+
+### Features
+
+* **frontend-components-game:** new game screen ([4416dca](https://github.com/Badminton-Apps/badman/commit/4416dca3a7fe070bbb0abd06bdb54561b291035d))
+
+
+### Bug Fixes
+
+* **ci:** zone.js import was changed in latest version ([66f51ab](https://github.com/Badminton-Apps/badman/commit/66f51abc1a75c8d839f5a2b68541af8fea93f31c))
+* **deps:** update nrwl monorepo to v14.7.3 ([602cfe2](https://github.com/Badminton-Apps/badman/commit/602cfe251208aa3d66fcb9970d2dcfee7e0ecf94))
+* **deps:** update nrwl monorepo to v14.7.5 ([3b9880d](https://github.com/Badminton-Apps/badman/commit/3b9880d6f391cc4759ba4ee7199a7a979f61e2fb))
+* **frontend-authentication:** links to guarded page would result in "no permissions" error ([302c928](https://github.com/Badminton-Apps/badman/commit/302c928a7f7b989c698ca862740013d4d03f4747))
+
 ### [5.29.4](https://github.com/Badminton-Apps/badman/compare/v5.29.3...v5.29.4) (2022-09-08)
 
 
