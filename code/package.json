@@ -156,7 +156,7 @@
     "@nrwl/linter": "14.7.17",
     "@nrwl/nest": "14.7.17",
     "@nrwl/node": "14.7.17",
-    "@nrwl/nx-cloud": "14.6.2",
+    "@nrwl/nx-cloud": "14.7.0",
     "@nrwl/workspace": "14.7.17",
     "@nx-tools/docker-metadata": "^3.0.1",
     "@nx-tools/nx-docker": "^3.0.1",
