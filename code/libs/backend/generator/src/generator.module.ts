@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { CpGeneratorService } from './services/cp_generator';
+import { CpGeneratorService, PlannerService } from './services';
 
 @Module({
   imports: [ConfigModule.forRoot()],
   controllers: [],
-  providers: [CpGeneratorService],
-  exports: [CpGeneratorService],
+  providers: [CpGeneratorService, PlannerService],
+  exports: [CpGeneratorService, PlannerService],
 })
 export class GeneratorModule {}

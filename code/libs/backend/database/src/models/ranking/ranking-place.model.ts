@@ -216,7 +216,7 @@ export class RankingPlace extends Model {
             systemId: instance.systemId,
             rankingDate: {
               [Op.lt]: instance.rankingDate,
-            }
+            },
           },
           limit: 1,
           order: [['rankingDate', 'DESC']],
@@ -286,32 +286,28 @@ export class RankingPlace extends Model {
     type: 'create' | 'update' | 'destroy'
   ) {
     const rankingLastPlaces = instances.map((r) => r.asLastRankingPlace());
+    const whereOr = rankingLastPlaces?.map((r) => {
+      if (!r || !r.playerId || !r.systemId) {
+        throw new Error('RankingPlace is undefined');
+      }
+
+      const filter: {
+        playerId: string;
+        systemId: string;
+        rankingDate?: unknown;
+      } = {
+        playerId: r.playerId,
+        systemId: r.systemId,
+        rankingDate: { [Op.lte]: r.rankingDate?.toISOString() },
+      };
+
+      return filter;
+    });
 
     // Find where the last ranking place is not the same as the current one
     const current = await RankingLastPlace.findAll({
       where: {
-        [Op.or]: rankingLastPlaces?.map((r) => {
-          if (!r || !r.playerId || !r.systemId) {
-            throw new Error('RankingPlace is undefined');
-          }
-
-          const filter: {
-            playerId: string;
-            systemId: string;
-            rankingDate?: unknown;
-          } = {
-            playerId: r.playerId,
-            systemId: r.systemId,
-          };
-
-          if (type === 'create') {
-            filter.rankingDate = { [Op.lte]: r.rankingDate };
-          } else if (type === 'update') {
-            filter.rankingDate = r.rankingDate;
-          }
-
-          return filter;
-        }),
+        [Op.or]: whereOr,
       },
       transaction: options.transaction,
     });
