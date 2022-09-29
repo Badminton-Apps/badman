@@ -57,7 +57,7 @@
     "@apollo/utils.keyvadapter": "^1.1.1",
     "@auth0/auth0-angular": "^1.9.0",
     "@covalent/core": "3.2.4",
-    "@covalent/echarts": "3.2.4",
+    "@covalent/echarts": "4.8.0",
     "@elastic/apm-rum-angular": "^2.1.6",
     "@fast-csv/parse": "^4.3.6",
     "@graphql-tools/webpack-loader": "^6.6.2",
