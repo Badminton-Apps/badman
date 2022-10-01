@@ -46,7 +46,7 @@ export class AddGameComponent implements OnInit {
   ) {
     this.fragment = gql`
       fragment AddGameInfo on Player {
-        lastRanking {
+        rankingLastPlaces {
           id
           ${this.data.type}
         }
@@ -66,25 +66,25 @@ export class AddGameComponent implements OnInit {
     this.p2t2Level = new FormControl(null);
 
     this.p1t1.valueChanges.subscribe((r: Partial<Player>) => {
-      if (r.lastRanking?.[this.data.type] != null) {
+      if (r?.lastRanking?.[this.data.type] != null) {
         this.p1t1Level.setValue(r.lastRanking?.[this.data.type]);
       }
     });
 
     this.p1t2.valueChanges.subscribe((r: Partial<Player>) => {
-      if (r.lastRanking?.[this.data.type] != null) {
+      if (r?.lastRanking?.[this.data.type] != null) {
         this.p1t2Level.setValue(r.lastRanking?.[this.data.type]);
       }
     });
 
     this.p2t1.valueChanges.subscribe((r: Partial<Player>) => {
-      if (r.lastRanking?.[this.data.type] != null) {
+      if (r?.lastRanking?.[this.data.type] != null) {
         this.p2t1Level.setValue(r.lastRanking?.[this.data.type]);
       }
     });
 
     this.p2t2.valueChanges.subscribe((r: Partial<Player>) => {
-      if (r.lastRanking?.[this.data.type] != null) {
+      if (r?.lastRanking?.[this.data.type] != null) {
         this.p2t2Level.setValue(r.lastRanking?.[this.data.type]);
       }
     });

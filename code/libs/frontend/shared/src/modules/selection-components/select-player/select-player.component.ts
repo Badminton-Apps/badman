@@ -20,6 +20,7 @@ import {
   map,
   Observable,
   switchMap,
+  tap,
 } from 'rxjs';
 import { Player } from '@badman/frontend/models';
 import { PlayerService } from '../../../services';
@@ -115,7 +116,7 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
             ...PlayerService.playerSearchWhere({ query }),
           };
 
-          return this.apollo.query<{ players: Player[] }>({
+          return this.apollo.query<{ players: { rows: Player[] } }>({
             query: this.query,
             variables: {
               where: this.where,
@@ -124,11 +125,12 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
         }),
         // Distinct by id
         map((result) =>
-          result?.data?.players?.filter(
+          result?.data?.players?.rows?.filter(
             (value, index, self) =>
               self.findIndex((m) => m.id === value.id) === index
           )
-        )
+        ),
+        map((players) => players?.map((p) => new Player(p)))
       );
     });
   }
@@ -137,14 +139,14 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
     if (this.formControl.value) {
       if (typeof this.formControl.value === 'string') {
         const player = await lastValueFrom(
-          this.apollo.query<{ players: Player[] }>({
+          this.apollo.query<{ players: { rows: Player[] } }>({
             query: this.query,
             variables: {
               where: { id: this.formControl.value },
             },
           })
         );
-        this.formControl.setValue(player?.data?.players[0]);
+        this.formControl.setValue(new Player(player?.data?.players?.rows[0]));
       } else if (this.formControl.value instanceof Player) {
         this.formControl.setValue(this.formControl.value);
       }
@@ -174,8 +176,10 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
         ${this.fragment}
         query Players($where: JSONObject) {
           players(where: $where) {
-            ...PlayerInfo
-            ...${names.join('\n...')}
+            rows {
+              ...PlayerInfo
+              ...${names.join('\n...')}
+            }
           }
         }
       `;
@@ -184,7 +188,9 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
         ${this.defaultUserInfoFragment}
         query Players($where: JSONObject) {
           players(where: $where) {
-            ...PlayerInfo
+            row {
+              ...PlayerInfo
+            }
           }
         }
       `;
