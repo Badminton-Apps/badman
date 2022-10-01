@@ -88,6 +88,8 @@ export class Player {
         })[0];
       }
     }
+
+    console.log(this._fullName, args)
   }
 
   indexOfDate(type?: string, date?: Date) {
@@ -101,6 +103,7 @@ export class Player {
   }
 
   get fullName() {
+
     if (this._fullName != null) {
       return this._fullName;
     }
