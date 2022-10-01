@@ -1,8 +1,26 @@
 {
+  "name": "frontend-graphql",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/graphql/src",
   "prefix": "badman",
   "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/graphql"],
+      "options": {
+        "project": "libs/frontend/graphql/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/graphql/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/graphql/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/graphql"],

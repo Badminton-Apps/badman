@@ -182,7 +182,8 @@ export class ShowRequestsComponent implements OnInit {
     });
     const dates: EncounterChangeDate[] = this.formGroupRequest
       .get('dates')
-      ?.getRawValue()?.map(
+      ?.getRawValue()
+      ?.map(
         (d: {
           availabilityAway: ChangeEncounterAvailability;
           availabilityHome: ChangeEncounterAvailability;

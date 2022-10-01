@@ -3,7 +3,6 @@ import { Apollo, gql } from 'apollo-angular';
 
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 
-
 import { Observable, ReplaySubject } from 'rxjs';
 import { Claim } from '@badman/frontend/models';
 import { UserService } from './user.service';

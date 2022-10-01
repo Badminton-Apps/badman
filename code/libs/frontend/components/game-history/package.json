@@ -4,7 +4,9 @@
   "peerDependencies": {
     "@angular/common": "^14.0.0",
     "@angular/core": "^14.0.0",
-    "@angular/material": "^14.0.0"
+    "@angular/material": "^14.0.0",
+    "@badman/frontend/models": "^0.0.1",
+    "@badman/frontend/player-info": "^0.0.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"

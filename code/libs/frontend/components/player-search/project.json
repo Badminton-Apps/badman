@@ -1,8 +1,26 @@
 {
+  "name": "frontend-components-player-search",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/components/player-search/src",
   "prefix": "badman",
   "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/components/player-search"],
+      "options": {
+        "project": "libs/frontend/components/player-search/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/components/player-search/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/components/player-search/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/components/player-search"],

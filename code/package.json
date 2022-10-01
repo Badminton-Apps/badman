@@ -160,6 +160,7 @@
     "@nrwl/workspace": "14.8.2",
     "@nx-tools/docker-metadata": "^3.0.1",
     "@nx-tools/nx-docker": "^3.0.1",
+    "@trellisorg/make-buildable": "^0.0.12",
     "@types/archiver": "^5.3.1",
     "@types/bull": "^3.15.8",
     "@types/cache-manager": "^4.0.1",

@@ -1,8 +1,26 @@
 {
+  "name": "frontend-shared",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/shared/src",
   "prefix": "badman",
   "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/shared"],
+      "options": {
+        "project": "libs/frontend/shared/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/shared/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/shared/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/shared"],

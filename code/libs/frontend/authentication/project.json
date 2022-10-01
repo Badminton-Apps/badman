@@ -1,8 +1,26 @@
 {
+  "name": "frontend-authentication",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/authentication/src",
   "prefix": "badman",
   "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/authentication"],
+      "options": {
+        "project": "libs/frontend/authentication/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/authentication/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/authentication/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/authentication"],

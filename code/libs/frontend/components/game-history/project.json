@@ -1,9 +1,26 @@
 {
+  "name": "frontend-components-game-history",
   "projectType": "library",
   "sourceRoot": "libs/frontend/components/game-history/src",
   "prefix": "badman",
   "targets": {
-    
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/components/game-history"],
+      "options": {
+        "tsConfig": "libs/frontend/components/game-history/tsconfig.lib.json",
+        "project": "libs/frontend/components/game-history/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/components/game-history/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/components/game-history/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {

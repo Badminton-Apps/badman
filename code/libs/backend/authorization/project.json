@@ -1,4 +1,5 @@
 {
+  "name": "backend-authorization",
   "sourceRoot": "libs/backend/authorization/src",
   "targets": {
     "lint": {

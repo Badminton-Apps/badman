@@ -1,8 +1,26 @@
 {
+  "name": "frontend-competition",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/competition/src",
   "prefix": "badman",
   "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/competition"],
+      "options": {
+        "project": "libs/frontend/competition/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/competition/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/competition/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/competition"],

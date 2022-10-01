@@ -68,6 +68,7 @@
       "@badman/frontend/models": ["libs/frontend/models/src/index.ts"],
       "@badman/frontend/player": ["libs/frontend/player/src/index.ts"],
       "@badman/frontend/ranking": ["libs/frontend/ranking/src/index.ts"],
+      "@badman/frontend/settings": ["libs/frontend/settings/src/index.ts"],
       "@badman/frontend/shared": ["libs/frontend/shared/src/index.ts"],
       "@badman/frontend/team": ["libs/frontend/team/src/index.ts"],
       "@badman/frontend/tournament": ["libs/frontend/tournament/src/index.ts"],

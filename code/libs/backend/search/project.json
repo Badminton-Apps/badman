@@ -1,4 +1,5 @@
 {
+  "name": "backend-search",
   "sourceRoot": "libs/backend/search/src",
   "targets": {
     "lint": {

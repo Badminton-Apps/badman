@@ -1,9 +1,26 @@
 {
+  "name": "frontend-ranking",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/ranking/src",
   "prefix": "badman",
   "targets": {
-    
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/ranking"],
+      "options": {
+        "project": "libs/frontend/ranking/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/ranking/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/ranking/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/ranking"],

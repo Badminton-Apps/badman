@@ -1,4 +1,5 @@
 {
+  "name": "worker-sync",
   "sourceRoot": "apps/worker/sync/src",
   "projectType": "application",
   "targets": {

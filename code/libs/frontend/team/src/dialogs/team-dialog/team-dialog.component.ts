@@ -13,10 +13,7 @@ import {
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { Club, Player, Team, Location } from '@badman/frontend/models';
 
-import {
-  SystemService,
-  TeamService,
-} from '@badman/frontend/shared';
+import { SystemService, TeamService } from '@badman/frontend/shared';
 import { ClaimService } from '@badman/frontend/authentication';
 
 @Component({

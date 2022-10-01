@@ -40,15 +40,14 @@ export class ClubEditTeamComponent implements OnInit {
 
     this.teamIndex = this.team.entries[0].meta?.competition?.teamIndex;
     this.players = this.team.entries[0].meta?.competition?.players.map((p) => {
-      const player = new Player(p.player) as (Partial<Player> & {
+      const player = new Player(p.player) as Partial<Player> & {
         single: number;
         double: number;
         mix: number;
-      });
+      };
       player.single = p.single;
       player.double = p.double;
       player.mix = p.mix;
-
 
       return player;
     });
