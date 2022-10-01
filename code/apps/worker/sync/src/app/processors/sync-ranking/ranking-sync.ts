@@ -244,6 +244,7 @@ export class RankingSyncer {
                   gender,
                 })
               ).save({ transaction: args.transaction });
+              players.push(foundPlayer);
             }
             if (places.has(foundPlayer.id)) {
               places.get(foundPlayer.id)[type] = points.Level;
