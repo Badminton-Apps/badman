@@ -1,8 +1,26 @@
 {
+  "name": "frontend-components-player-info",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/components/player-info/src",
   "prefix": "badman",
   "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/components/player-info"],
+      "options": {
+        "project": "libs/frontend/components/player-info/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/components/player-info/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/components/player-info/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/components/player-info"],

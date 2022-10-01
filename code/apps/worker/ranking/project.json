@@ -1,4 +1,5 @@
 {
+  "name": "worker-ranking",
   "sourceRoot": "apps/worker/ranking/src",
   "projectType": "application",
   "targets": {
