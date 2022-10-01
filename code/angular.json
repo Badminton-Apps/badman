@@ -35,6 +35,7 @@
     "frontend-models": "libs/frontend/models",
     "frontend-player": "libs/frontend/player",
     "frontend-ranking": "libs/frontend/ranking",
+    "frontend-settings": "libs/frontend/settings",
     "frontend-shared": "libs/frontend/shared",
     "frontend-team": "libs/frontend/team",
     "frontend-tournament": "libs/frontend/tournament",

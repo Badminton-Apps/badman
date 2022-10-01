@@ -1,8 +1,26 @@
 {
+  "name": "frontend-config",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/config/src",
   "prefix": "badman",
   "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/config"],
+      "options": {
+        "project": "libs/frontend/config/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/config/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/config/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/config"],

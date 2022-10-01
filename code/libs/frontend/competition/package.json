@@ -1,0 +1,18 @@
+{
+  "name": "@badman/frontend/competition",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^14.2.0",
+    "@angular/core": "^14.2.0",
+    "@badman/frontend/components/game": "^0.0.1",
+    "@badman/frontend/components/standing": "^0.0.1",
+    "@badman/frontend/components/player-info": "^0.0.1",
+    "@badman/frontend/shared": "^0.0.1",
+    "@badman/frontend/models": "^0.0.1",
+    "@badman/frontend/authentication": "^0.0.1",
+    "@badman/frontend/graphql": "^0.0.1"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

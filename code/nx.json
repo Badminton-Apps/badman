@@ -47,5 +47,11 @@
       "style": "scss"
     }
   },
+  "extends": "nx/presets/npm.json",
+  "pluginsConfig": {
+    "@nrwl/js": {
+      "analyzeSourceFiles": true
+    }
+  },
   "defaultProject": "client"
 }

@@ -9,8 +9,7 @@ export default {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory:
-    '../../../../coverage/libs/frontend/components/player-info',
+  coverageDirectory: '../../../../coverage/libs/frontend/components/player-info',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },

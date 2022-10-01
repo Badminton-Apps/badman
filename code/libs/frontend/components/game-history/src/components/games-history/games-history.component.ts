@@ -81,7 +81,6 @@ export class GamesHistoryComponent implements OnInit, OnChanges {
   }
 
   getBatch(offset: number) {
-
     return this.apollo
       .query<{ player: Partial<Player> }>({
         fetchPolicy: 'network-only',

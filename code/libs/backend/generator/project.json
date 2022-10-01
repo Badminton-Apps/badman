@@ -1,4 +1,5 @@
 {
+  "name": "backend-generator",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/generator/src",
   "projectType": "library",

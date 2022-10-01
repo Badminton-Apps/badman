@@ -1,8 +1,26 @@
 {
+  "name": "frontend-components-standings",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/components/standings/src",
   "prefix": "badman",
   "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["dist/libs/frontend/components/standings"],
+      "options": {
+        "project": "libs/frontend/components/standings/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/components/standings/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/components/standings/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/frontend/components/standings"],
