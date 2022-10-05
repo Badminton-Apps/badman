@@ -79,14 +79,16 @@ export class SelectClubComponent implements OnInit, OnDestroy {
               };
             }>({
               query: gql`
-            clubs {
-              count
-              rows {
-                id
-                name
-              }
-            }
-          `,
+                query clubs {
+                  clubs {
+                    count
+                    rows {
+                      id
+                      name
+                    }
+                  }
+                }
+              `,
             })
             .pipe(
               map((x) => {
