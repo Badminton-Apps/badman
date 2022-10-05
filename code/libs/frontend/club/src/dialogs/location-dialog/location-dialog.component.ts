@@ -23,7 +23,7 @@ export class LocationDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.data.location) {
-      throw new Error('No location');
+      this.data.location = new Location();
     }
 
     this.location$ = this.update$.pipe(

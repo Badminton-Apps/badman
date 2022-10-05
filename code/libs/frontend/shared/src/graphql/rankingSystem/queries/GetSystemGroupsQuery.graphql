@@ -1,6 +1,0 @@
-query GetRankingSystemGroups {
-  rankingGroups {
-    id
-    name
-  }
-}

@@ -25,6 +25,13 @@ export class LocationFieldsComponent implements OnInit {
 
   @Output() whenLocationUpdate = new EventEmitter<Location>();
 
+  placesConfig: google.maps.places.AutocompleteOptions = {
+    componentRestrictions: {
+      country: 'BE',
+    },
+    types: ['establishment'],
+  };
+
   locationForm!: FormGroup;
   adressForm!: FormControl;
 

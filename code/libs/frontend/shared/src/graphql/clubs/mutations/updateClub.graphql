@@ -1,9 +1,0 @@
-mutation UpdateClub($club: ClubUpdateInput!) {
-  updateClub(data: $club) {
-    id
-    name
-    fullName
-    abbreviation
-    clubId
-  }
-}

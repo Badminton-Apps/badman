@@ -1,5 +1,0 @@
-mutation ChangeEncounter($change: EncounterChangeInput!) {
-  addChangeEncounter(change: $change) {
-    id
-  }
-}

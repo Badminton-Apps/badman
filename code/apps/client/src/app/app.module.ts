@@ -1,4 +1,3 @@
-import { AgmCoreModule } from '@agm/core';
 import {
   NgxMatDateAdapter,
   NGX_MAT_DATE_FORMATS,
@@ -26,11 +25,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { ConfigService } from '@badman/frontend/config';
+import { GraphQLModule } from '@badman/frontend/graphql';
 import {
   SharedModule,
   SocketModule,
   SOCKET_URL,
 } from '@badman/frontend/shared';
+import { GOOGLE_MAPS_API_CONFIG, NgMapsGoogleModule } from '@ng-maps/google';
+import { NgMapsCoreModule } from '@ng-maps/core';
+import { NgMapsPlacesModule } from '@ng-maps/places';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ApolloModule } from 'apollo-angular';
@@ -44,7 +47,6 @@ import { MomentModule } from 'ngx-moment';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GraphQLModule } from '@badman/frontend/graphql';
 
 const baseModules = [
   BrowserModule,
@@ -111,10 +113,10 @@ const cookieConfig: NgcCookieConsentConfig = {
     NgcCookieConsentModule.forRoot(cookieConfig),
     ApolloModule,
     MarkdownModule.forRoot(),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
-      libraries: ['places'],
-    }),
+    NgMapsCoreModule,
+    NgMapsGoogleModule,
+    NgMapsPlacesModule.forRoot({ autocomplete: {} }),
+
     AuthModule.forRoot({
       domain: 'badvlasim.eu.auth0.com',
       clientId: '2LqkYZMbrTTXEE0OMkQJLmpRrOVQheoF',
@@ -152,6 +154,13 @@ const cookieConfig: NgcCookieConsentConfig = {
       provide: NgxMatDateAdapter,
       useClass: NgxMatMomentAdapter,
       deps: [MAT_DATE_LOCALE, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    {
+      provide: GOOGLE_MAPS_API_CONFIG,
+      useValue: {
+        apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
+        libraries: ['places'],
+      },
     },
     { provide: NGX_MAT_DATE_FORMATS, useValue: NGX_MAT_MOMENT_FORMATS },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },

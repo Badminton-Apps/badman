@@ -1,5 +1,0 @@
-mutation UpdateBasePlayerTeam($teamId: ID!, $playerId: ID!, $base: Boolean!) {
-  updateBasePlayerTeam(teamId: $teamId, playerId: $playerId, base: $base) {
-    id
-  }
-}

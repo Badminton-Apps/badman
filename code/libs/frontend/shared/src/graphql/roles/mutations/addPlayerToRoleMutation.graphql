@@ -1,5 +1,0 @@
-mutation AddPlayerToRole($roleId: ID!, $playerId: ID!) {
-  addPlayerToRole(roleId: $roleId, playerId: $playerId) {
-    id
-  }
-}

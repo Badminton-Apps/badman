@@ -2,8 +2,8 @@
   <mat-form-field fxFlex="auto" appearance="outline" fxFlex="auto">
     <mat-label>Search</mat-label>
     <input
-      (onAutocompleteSelected)="syncAutoComplete($event)"
-      matGoogleMapsAutocomplete
+      (placeResult)="syncAutoComplete($event)"
+      [mapAutocomplete]="placesConfig"
       matInput
     />
     <mat-icon color="primary" matSuffix>search</mat-icon>
