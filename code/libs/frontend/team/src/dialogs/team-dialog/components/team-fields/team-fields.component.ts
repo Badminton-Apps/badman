@@ -139,6 +139,8 @@ export class TeamFieldsComponent implements OnInit, OnChanges {
         });
       }
     });
+
+    console.log(this.teamForm);
   }
 
   private calcTeamsOfType(type?: string, wasCreated: boolean = false) {

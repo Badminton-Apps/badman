@@ -52,7 +52,7 @@
         "main": "apps/client/src/main.ts",
         "polyfills": "apps/client/src/polyfills.ts",
         "tsConfig": "apps/client/tsconfig.app.json",
-        "buildLibsFromSource": false,
+        "buildLibsFromSource": true,
         "stylePreprocessorOptions": {
           "includePaths": ["libs/frontend"]
         },

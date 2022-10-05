@@ -20,7 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
   //keep refs to subscriptions to be able to unsubscribe later
   private statusChangeSubscription!: Subscription;
 
-  constructor(
+  constructor( 
     updates: SwUpdate,
     snackBar: MatSnackBar,
     private ccService: NgcCookieConsentService,
