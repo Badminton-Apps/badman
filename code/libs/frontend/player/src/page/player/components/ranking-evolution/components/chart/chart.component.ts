@@ -1,18 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import moment from 'moment';
+import { EChartsOption } from 'echarts';
 
 @Component({
   selector: 'badman-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChartComponent implements OnInit {
+  options!: EChartsOption;
+
   @Input()
   rankingPlaces!: {
     level: number;
@@ -23,48 +20,97 @@ export class ChartComponent implements OnInit {
   }[];
 
   @Input()
+  title!: string;
+
+  @Input()
   maxLevels?: number;
 
   @Input()
   probablyInacurate: moment.Moment = moment('2018-07-31T22:00:00.000Z');
 
+  firstDay!: Date;
+  lastDay!: Date;
+
   seriesData: {
     name: { top: string; bottom: string };
-    subName?: string;
     value: [Date, number];
   }[] = [];
   seriesDataInacc: {
     name: { top: string; bottom: string };
-    subName?: string;
     value: [Date, number];
   }[] = [];
-  axisData = [];
-  firstDay!: Date;
-  lastDay!: Date;
 
-  interval() {
-    return false;
-  }
-
-  ngOnInit() {
-    this.rankingPlaces = this.rankingPlaces.sort(
-      (a, b) =>
-        new Date(b.rankingDate).getTime() - new Date(a.rankingDate).getTime()
-    );
-    this.calcaulteforecast();
-    this.createSeries();
-
+  ngOnInit(): void {
     // Get the years for start / end to space them in year basis
     if (this.rankingPlaces && this.rankingPlaces.length > 0) {
-      const lastDay = moment(this.rankingPlaces[0].rankingDate)
+      const lastDay = moment(
+        this.rankingPlaces.reduce((prev, current) =>
+          prev.rankingDate > current.rankingDate ? prev : current
+        ).rankingDate
+      )
         .startOf('year')
         .add(1, 'year');
       const firstDay = moment(
-        this.rankingPlaces[this.rankingPlaces?.length - 1].rankingDate
+        this.rankingPlaces.reduce((prev, current) =>
+          prev.rankingDate < current.rankingDate ? prev : current
+        ).rankingDate
       ).startOf('year');
       this.firstDay = firstDay.toDate();
       this.lastDay = lastDay.toDate();
     }
+
+    this.createSeries();
+
+    this.options = {
+      autoResize: true,
+      title: {
+        text: this.title,
+      },
+      grid: {
+        left: 25,
+        top: 30,
+        right: 0,
+        bottom: 25,
+      },
+      tooltip: {
+        formatter: (params: any) => {
+          return ` 
+          <div fxLayout="row" fxFlexAlign="start center">
+            <span class="mat-caption pad-left-sm">
+              ${params?.data?.name?.top} <br />
+              ${params?.data?.name?.bottom}
+            </span>
+          </div>`;
+        },
+      },
+      xAxis: {
+        type: 'time',
+        min: this.firstDay,
+        max: this.lastDay,
+      },
+      yAxis: {
+        type: 'value',
+        max: 0,
+        min: this.maxLevels,
+        inverse: true,
+        interval: 2,
+      },
+      series: [
+        {
+          type: 'line',
+          name: 'acc',
+          data: this.seriesData as any,
+          color: '#F2724B',
+        },
+        {
+          type: 'line',
+          name: 'inacc',
+          color: '#F2724B',
+          data: this.seriesDataInacc as any,
+        },
+      ],
+      animationEasing: 'elasticOut',
+    };
   }
 
   createSeries() {
@@ -93,7 +139,6 @@ export class ChartComponent implements OnInit {
               top: topText,
               bottom: bottomText,
             },
-            subName: bottomText,
             value: [rankingDate.toDate(), x.level],
           });
         } else {
@@ -110,10 +155,5 @@ export class ChartComponent implements OnInit {
     // adding the last value from series data to inacc to complete the line
     // the last value because that's how the sorting was configured
     this.seriesDataInacc.unshift(this.seriesData[this.seriesData.length - 1]);
-  }
-
-  calcaulteforecast() {
-    // let values = this.rankingPlaces.map((item, i) => [i, item.level]) as DataPoint[];
-    // let result = logarithmic(values);
   }
 }

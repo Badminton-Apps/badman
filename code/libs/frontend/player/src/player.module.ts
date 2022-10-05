@@ -33,15 +33,15 @@ import {
   EditPlayerFieldsComponent,
   EditRankingAllComponent,
   EditRankingComponent,
+  EditRankingPlaceDialogComponent,
   MergeAccountComponent,
   MergePlayerComponent,
   PlayerComponent,
   ProfileHeaderComponent,
   RankingEvolutionComponent,
+  ShowRankingComponent,
   TopPlayersComponent,
 } from './page';
-import { EditRankingPlaceDialogComponent } from './page/edit-player/dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
-import { ShowRankingComponent } from './page/player';
 import {
   ListGamesComponent,
   PeriodSelectionComponent,
@@ -52,9 +52,7 @@ import { PlayerRoutingModule } from './player-routing.module';
 
 import { GameHistoryModule } from '@badman/frontend/components/game-history';
 import { PlayerSearchModule } from '@badman/frontend/components/player-search';
-import { CovalentBaseEchartsModule } from '@covalent/echarts/base';
-import { CovalentLineEchartsModule } from '@covalent/echarts/line';
-import { CovalentTooltipEchartsModule } from '@covalent/echarts/tooltip';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 const materialModules = [
   MatCardModule,
@@ -80,9 +78,9 @@ const otherModules = [
   MomentDateModule,
   MomentModule,
   SelctionComponentsModule,
-  CovalentBaseEchartsModule,
-  CovalentLineEchartsModule,
-  CovalentTooltipEchartsModule,
+  NgxEchartsModule.forRoot({
+    echarts: () => import('echarts'),
+  }),
 ];
 
 const ownModules = [PlayerSearchModule, GameHistoryModule];
@@ -98,7 +96,6 @@ const ownModules = [PlayerSearchModule, GameHistoryModule];
     ProfileHeaderComponent,
     RankingEvolutionComponent,
     TopPlayersComponent,
-    ChartComponent,
     MergeAccountComponent,
     MergePlayerComponent,
     EditCompetitionStatusComponent,
@@ -110,6 +107,7 @@ const ownModules = [PlayerSearchModule, GameHistoryModule];
     AddGameComponent,
     EditRankingPlaceDialogComponent,
     ShowRankingComponent,
+    ChartComponent
   ],
   imports: [
     SharedModule,
