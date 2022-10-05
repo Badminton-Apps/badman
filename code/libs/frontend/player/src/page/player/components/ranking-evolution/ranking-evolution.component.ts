@@ -2,15 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit,
+  OnInit
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { PlayerService } from '@badman/frontend/shared';
 import { Player, RankingSystem } from '@badman/frontend/models';
-import { Apollo, gql } from 'apollo-angular';
 import { SystemService } from '@badman/frontend/ranking';
+import { Apollo, gql } from 'apollo-angular';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-ranking-evolution',
