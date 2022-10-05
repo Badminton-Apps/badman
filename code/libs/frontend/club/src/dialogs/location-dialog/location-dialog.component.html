@@ -7,26 +7,28 @@
       (whenLocationUpdate)="this.update($event)"
     ></badman-location-fields>
 
-    <h3 mat-dialog-title>
-      {{ 'competition.enrollment.availability' | translate }}
-    </h3>
-    <div class="availibilty" fxLayout="column">
-      <mat-form-field appearance="outline" fxFlex>
-        <mat-label>{{ 'pickers.select-year' | translate }}</mat-label>
-        <mat-select [(value)]="selectedYear">
-          <mat-option *ngFor="let year of this.data.compYears" [value]="year">
-            {{ year }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <ng-container *ngIf="location.id">
+      <h3 mat-dialog-title>
+        {{ 'competition.enrollment.availability' | translate }}
+      </h3>
+      <div class="availibilty" fxLayout="column">
+        <mat-form-field appearance="outline" fxFlex>
+          <mat-label>{{ 'pickers.select-year' | translate }}</mat-label>
+          <mat-select [(value)]="selectedYear">
+            <mat-option *ngFor="let year of this.data.compYears" [value]="year">
+              {{ year }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <badman-location-availability
-        *ngIf="selectedYear"
-        [location]="location"
-        [year]="selectedYear!"
-        [club]="this.data.club"
-      ></badman-location-availability>
-    </div>
+        <badman-location-availability
+          *ngIf="selectedYear"
+          [location]="location"
+          [year]="selectedYear!"
+          [club]="this.data.club"
+        ></badman-location-availability>
+      </div>
+    </ng-container>
   </mat-dialog-content>
 
   <mat-dialog-actions>
