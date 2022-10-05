@@ -1,7 +1,9 @@
-:host {
-  display: block;
+.echart {
+  height: 200px;
 }
 
-td-chart {
-  height: 200px;
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

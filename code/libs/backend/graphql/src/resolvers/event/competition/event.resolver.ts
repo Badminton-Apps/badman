@@ -21,7 +21,6 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { logger } from 'elastic-apm-node';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend/authorization';
 import { ListArgs } from '../../../utils';
@@ -172,7 +171,7 @@ export class EventCompetitionResolver {
       await transaction.commit();
       return newEventCompetitionDb;
     } catch (e) {
-      logger.error('rollback', e);
+      this.logger.error('rollback', e);
       await transaction.rollback();
       throw e;
     }

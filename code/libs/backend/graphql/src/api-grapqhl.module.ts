@@ -8,7 +8,6 @@ import {
   BaseContext,
   GraphQLRequestContextDidResolveOperation,
 } from 'apollo-server-plugin-base';
-import apm from 'elastic-apm-node';
 import { join } from 'path';
 import {
   AvailabilityModule,
@@ -45,21 +44,21 @@ import {
         // }),
         ApolloServerPluginLandingPageLocalDefault({ embed: true }),
         // Add the operation name to transaction
-        (): ApolloServerPlugin => ({
-          async requestDidStart() {
-            return {
-              async didResolveOperation(
-                context: GraphQLRequestContextDidResolveOperation<BaseContext>
-              ) {
-                apm.setTransactionName(
-                  `${context?.operation?.operation?.toUpperCase()} ${
-                    context.operation.name?.value ?? 'UNKOWN'
-                  }`
-                );
-              },
-            };
-          },
-        }),
+        // (): ApolloServerPlugin => ({
+        //   async requestDidStart() {
+        //     return {
+        //       async didResolveOperation(
+        //         context: GraphQLRequestContextDidResolveOperation<BaseContext>
+        //       ) {
+        //         apm.setTransactionName(
+        //           `${context?.operation?.operation?.toUpperCase()} ${
+        //             context.operation.name?.value ?? 'UNKOWN'
+        //           }`
+        //         );
+        //       },
+        //     };
+        //   },
+        // }),
       ],
     }),
     ApiAuthorizationModule,

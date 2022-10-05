@@ -1,4 +1,3 @@
-import { logger } from 'elastic-apm-node';
 import { Page } from 'puppeteer';
 import { waitForSelectors } from '@badman/backend/pupeteer';
 
@@ -40,7 +39,7 @@ export async function selectPlayer(
       }
     }
     if (!selectedOption) {
-      logger.error(`Could not find player ${memberId} in select`);
+      console.error(`Could not find player ${memberId} in select`);
     }
 
     const optionValue = await page.evaluate(

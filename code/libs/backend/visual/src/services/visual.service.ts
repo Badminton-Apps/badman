@@ -306,7 +306,7 @@ export class VisualService {
     await this._cacheManager.set(
       `${VisualService.CACHE_KEY}:${url}`,
       result.data,
-      { ttl: 60 * 60 * 24 * 7 }
+      60 * 60 * 24 * 7
     );
 
     const t1 = performance.now();
