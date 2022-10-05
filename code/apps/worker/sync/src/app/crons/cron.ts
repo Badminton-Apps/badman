@@ -10,9 +10,9 @@ export class CronService {
 
   constructor(@InjectQueue(SyncQueue) private rankingQ: Queue) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_2PM)
+  @Cron(CronExpression.EVERY_DAY_AT_3PM)
   syncEvents() {
-    this.logger.debug(`${CronExpression.EVERY_DAY_AT_2PM} Cron triggered`);
+    this.logger.debug(`${CronExpression.EVERY_DAY_AT_3PM} Cron triggered`);
     this.rankingQ.add(Sync.SyncEvents, {
       removeOnComplete: true,
       removeOnFail: true,
