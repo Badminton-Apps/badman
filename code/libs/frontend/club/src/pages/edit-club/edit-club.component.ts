@@ -70,9 +70,6 @@ export class EditClubComponent implements OnInit {
                   id
                   teams {
                     id
-                    slug
-                    name
-                    clubId
                     entries {
                       id
                       competitionSubEvent {
@@ -102,7 +99,8 @@ export class EditClubComponent implements OnInit {
                   )
                   .flat()
                   .filter((x, i, a) => a.indexOf(x) === i)
-                  .sort() ?? []
+                  // reverse sort
+                  .sort((a, b) => (b ?? 0) - (a ?? 0)) ?? []
             )
           );
       })
@@ -201,29 +199,31 @@ export class EditClubComponent implements OnInit {
           .query<{ club: Club }>({
             query: gql`
               query GetBasePlayersQuery($id: ID!, $subEventsWhere: JSONObject) {
-                id
-                teams {
+                club(id: $id) {
                   id
-                  name
-                  clubId
-                  type
-                  entries(where: $subEventsWhere) {
+                  teams {
                     id
-                    competitionSubEvent {
+                    name
+                    clubId
+                    type
+                    entries(where: $subEventsWhere) {
                       id
-                    }
-                    meta {
-                      competition {
-                        teamIndex
-                        players {
-                          id
-                          single
-                          double
-                          mix
-                          player {
+                      competitionSubEvent {
+                        id
+                      }
+                      meta {
+                        competition {
+                          teamIndex
+                          players {
                             id
-                            slug
-                            fullName
+                            single
+                            double
+                            mix
+                            player {
+                              id
+                              slug
+                              fullName
+                            }
                           }
                         }
                       }

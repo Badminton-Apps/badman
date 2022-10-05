@@ -1,7 +1,0 @@
-mutation UpdatePlayer($data: PlayerUpdateInput!) {
-  updatePlayer(data: $data) {
-    id
-    firstName
-    lastName
-  }
-}

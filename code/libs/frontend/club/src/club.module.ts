@@ -1,4 +1,3 @@
-import { MatGoogleMapsAutocompleteModule } from '@angular-material-extensions/google-maps-autocomplete';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -22,6 +21,7 @@ import { CompetitionComponentsModule } from '@badman/frontend/competition';
 import { SharedModule } from '@badman/frontend/shared';
 import { ClubRoutingModule } from './club-routing.module';
 import { ClubFieldsComponent, RoleFieldsComponent } from './components';
+import { NgMapsPlacesModule } from '@ng-maps/places';
 import {
   AddPlayerComponent,
   LocationDialogComponent,
@@ -62,7 +62,7 @@ const materialModules = [
   MatSnackBarModule,
 
   // AgmCoreModule,
-  MatGoogleMapsAutocompleteModule,
+  NgMapsPlacesModule,
 ];
 
 const ownModules = [PlayerSearchModule];
