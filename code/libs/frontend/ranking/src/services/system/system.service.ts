@@ -67,3 +67,11 @@ export class SystemService {
     );
   }
 }
+
+export interface SystemCounts {
+  points: {
+    level: number;
+    amount: number;
+  }[];
+  date: string;
+}

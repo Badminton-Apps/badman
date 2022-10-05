@@ -18,6 +18,7 @@
     "baseUrl": ".",
     "traceResolution": false,
     "paths": {
+      "*": ["./types/*"],
       "@badman/backend/authorization": [
         "libs/backend/authorization/src/index.ts"
       ],
@@ -75,6 +76,5 @@
       "@badman/frontend/training": ["libs/frontend/training/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"],
-  "files": ["types/graphql.d.ts", "types/json.d.ts"]
+  "exclude": ["node_modules", "tmp"]
 }

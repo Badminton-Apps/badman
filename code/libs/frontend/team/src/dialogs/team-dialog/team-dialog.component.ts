@@ -13,8 +13,8 @@ import {
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { Club, Player, Team, Location } from '@badman/frontend/models';
 
-import { SystemService, TeamService } from '@badman/frontend/shared';
 import { ClaimService } from '@badman/frontend/authentication';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   templateUrl: './team-dialog.component.html',
@@ -33,7 +33,6 @@ export class TeamDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA)
     public data: { team: Team; club: Club; allowEditType: boolean },
     private systemService: SystemService,
-    private teamService: TeamService,
     private apollo: Apollo,
     private auth: ClaimService
   ) {}
@@ -153,7 +152,19 @@ export class TeamDialogComponent implements OnInit {
 
   async onPlayerAddedToTeam(player: Player, team: Team) {
     if (player) {
-      await lastValueFrom(this.teamService.addPlayer(team, player));
+      await lastValueFrom(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation AddPlayerToTeamMutation($playerId: ID!, $teamId: ID!) {
+              addPlayerToTeam(playerId: $playerId, teamId: $teamId)
+            }
+          `,
+          variables: {
+            playerId: player.id,
+            teamId: team.id,
+          },
+        })
+      );
 
       this.update$.next(0);
     }
@@ -161,14 +172,50 @@ export class TeamDialogComponent implements OnInit {
 
   async onPlayerRemovedFromTeam(player: Player, team: Team) {
     if (player && team.id) {
-      await lastValueFrom(this.teamService.removePlayer(team, player));
+      await lastValueFrom(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation RemovePlayerFromTeamMutation(
+              $playerId: ID!
+              $teamId: ID!
+            ) {
+              removePlayerFromTeam(playerId: $playerId, teamId: $teamId)
+            }
+          `,
+          variables: {
+            playerId: player.id,
+            teamId: team.id,
+          },
+        })
+      );
       this.update$.next(0);
     }
   }
 
   async onPlayerUpdatedFromTeam(player: Player, team: Team) {
     if (player && team.id) {
-      await lastValueFrom(this.teamService.updatePlayer(team, player));
+      await lastValueFrom(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation UpdatePlayerFromTeamMutation(
+              $playerId: ID!
+              $teamId: ID!
+              $base: Boolean!
+            ) {
+              updatePlayerFromTeam(
+                playerId: $playerId
+                teamId: $teamId
+                base: $base
+              )
+            }
+          `,
+          variables: {
+            playerId: player.id,
+            teamId: team.id,
+            base: player.base,
+          },
+        })
+      );
       this.update$.next(0);
     }
   }

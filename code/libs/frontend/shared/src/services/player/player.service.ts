@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apolloCache } from '@badman/frontend/graphql';
 import { Apollo } from 'apollo-angular';
-import * as getBasePlayers from '../../graphql/players/queries/GetBasePlayersQuery.graphql';
-import { Club, Player } from '@badman/frontend/models';
+import { Player } from '@badman/frontend/models';
 
 @Injectable({
   providedIn: 'root',
@@ -37,8 +36,6 @@ export class PlayerService {
     };
   }
 
-  constructor(private apollo: Apollo, private httpClient: HttpClient) {}
-
   invalidatePlayerRanking(player: Player) {
     const normalizedIdPlayer = apolloCache.identify({
       id: player?.id,
@@ -62,15 +59,5 @@ export class PlayerService {
     }
 
     apolloCache.gc();
-  }
-
-  getBasePlayers(clubId: string, type: string) {
-    return this.apollo.query<{ club: Club }>({
-      query: getBasePlayers,
-      variables: {
-        type,
-        clubId,
-      },
-    });
   }
 }
