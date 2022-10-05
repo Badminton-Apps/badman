@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.31.1](https://github.com/Badminton-Apps/badman/compare/v5.31.0...v5.31.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* **frontend-shared:** queries should have proper syntax ([8087ad4](https://github.com/Badminton-Apps/badman/commit/8087ad4619b8f227cba4e3030549923002a1f4b8))
+
 ## [5.31.0](https://github.com/Badminton-Apps/badman/compare/v5.30.0...v5.31.0) (2022-10-05)
 
 
