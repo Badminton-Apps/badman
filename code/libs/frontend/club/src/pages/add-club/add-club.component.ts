@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
-import { ClubService } from '@badman/frontend/shared';
 import { Club } from '@badman/frontend/models';
+import { Apollo, gql } from 'apollo-angular';
 
 @Component({
   templateUrl: './add-club.component.html',
@@ -11,14 +11,29 @@ import { Club } from '@badman/frontend/models';
 export class AddClubComponent {
   club!: Club;
 
-  constructor(private clubSerice: ClubService, private router: Router) {}
+  constructor(private apollo: Apollo, private router: Router) {}
 
   async add(club: Club) {
     this.club = club;
   }
 
   async save() {
-    const newClub = await lastValueFrom(this.clubSerice.addClub(this.club));
-    this.router.navigate(['club', newClub.id]);
+    const newClub = await lastValueFrom(
+      this.apollo.mutate<{ createClub: Club }>({
+        mutation: gql`
+          mutation CreateClub($data: ClubCreateInput!) {
+            createClub(data: $data) {
+              id
+            }
+          }
+        `,
+        variables: {
+          data: {
+            ...this.club,
+          },
+        },
+      })
+    );
+    this.router.navigate(['club', newClub.data?.createClub.id]);
   }
 }

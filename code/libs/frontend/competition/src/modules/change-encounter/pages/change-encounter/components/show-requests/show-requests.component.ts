@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { lastValueFrom, Observable, of } from 'rxjs';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import {
   ChangeEncounterAvailability,
   Comment,
@@ -27,7 +27,6 @@ import {
   EncounterChange,
   EncounterChangeDate,
 } from '@badman/frontend/models';
-import { EncounterService } from '@badman/frontend/shared';
 
 @Component({
   selector: 'badman-show-requests',
@@ -57,7 +56,6 @@ export class ShowRequestsComponent implements OnInit {
   @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<unknown>;
 
   constructor(
-    private _encounterService: EncounterService,
     private _apollo: Apollo,
     private _dialog: MatDialog,
     private _snackBar: MatSnackBar,
@@ -86,9 +84,40 @@ export class ShowRequestsComponent implements OnInit {
           if (encounter?.encounterChange?.id == undefined) {
             return of(new EncounterChange());
           }
-          return this._encounterService.getRequests(
-            encounter.encounterChange?.id
-          );
+
+          return this._apollo
+            .query<{
+              encounterChange: EncounterChange;
+            }>({
+              query: gql`
+                query EncounterChange($id: ID!) {
+                  encounterChange(id: $id) {
+                    id
+                    accepted
+                    dates {
+                      id
+                      date
+                      availabilityHome
+                      availabilityAway
+                    }
+
+                    homeComment {
+                      id
+                      message
+                    }
+
+                    awayComment {
+                      id
+                      message
+                    }
+                  }
+                }
+              `,
+              variables: {
+                id: encounter?.encounterChange?.id,
+              },
+            })
+            .pipe(map((x) => new EncounterChange(x.data?.encounterChange)));
         }),
         tap((encounterChange) => {
           this.dateControls = new FormArray<FormGroup>([]);

@@ -7,9 +7,10 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { PlayerService, SystemService } from '@badman/frontend/shared';
+import { PlayerService } from '@badman/frontend/shared';
 import { Player, RankingSystem } from '@badman/frontend/models';
 import { Apollo, gql } from 'apollo-angular';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   selector: 'badman-ranking-evolution',
@@ -30,7 +31,6 @@ export class RankingEvolutionComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private playerService: PlayerService,
     private systemService: SystemService,
     private apollo: Apollo
   ) {}
@@ -44,9 +44,27 @@ export class RankingEvolutionComponent implements OnInit {
       shareReplay(1)
     );
 
-    const system$ = this.systemService
-      .getPrimarySystem()
-      .pipe(filter((x) => !!x));
+    const system$ = this.systemService.getPrimarySystemsWhere().pipe(
+      switchMap((query) =>
+        this.apollo.query<{
+          rankingSystems: Partial<RankingSystem>[];
+        }>({
+          query: gql`
+            query GetSystems($where: JSONObject) {
+              rankingSystems(where: $where) {
+                id
+                name
+                amountOfLevels
+              }
+            }
+          `,
+          variables: {
+            where: query,
+          },
+        })
+      ),
+      map((x) => x.data.rankingSystems[0])
+    );
 
     this.rankingPlaces$ = combineLatest([id$, system$]).pipe(
       tap(([, system]) => {

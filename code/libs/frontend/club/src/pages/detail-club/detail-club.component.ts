@@ -14,14 +14,11 @@ import { apolloCache } from '@badman/frontend/graphql';
 import { Club, Team } from '@badman/frontend/models';
 import { AddPlayerComponent } from '../../dialogs';
 import { TeamDialogComponent } from '@badman/frontend/team';
-import {
-  ClubService,
-  TeamService,
-  SystemService,
-} from '@badman/frontend/shared';
+
 import { ConfigService } from '@badman/frontend/config';
 import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   templateUrl: './detail-club.component.html',
@@ -35,8 +32,6 @@ export class DetailClubComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    private clubService: ClubService,
-    private teamService: TeamService,
     private systemService: SystemService,
     private titleService: Title,
     private router: Router,
@@ -50,7 +45,7 @@ export class DetailClubComponent implements OnInit {
     this.club$ = combineLatest([
       this.route.paramMap,
       this.activeTeams$,
-      this.systemService.getPrimarySystem(),
+      this.systemService.getPrimarySystemId(),
 
       // Triggers refresh
       this.update$,
@@ -128,7 +123,7 @@ export class DetailClubComponent implements OnInit {
               },
             ],
             teamsWhere: { active: activeTeams == false ? undefined : true },
-            lastRankingPlaceWhere: { systemId: primarySystem.id },
+            lastRankingPlaceWhere: { systemId: primarySystem },
             lastRankingPlacesOrder: [
               {
                 field: 'rankingDate',
@@ -144,7 +139,18 @@ export class DetailClubComponent implements OnInit {
   }
 
   async deleteClub(club: Club) {
-    await lastValueFrom(this.clubService.removeClub(club));
+    await lastValueFrom(
+      this.apollo.mutate<{ deleteClub: boolean }>({
+        mutation: gql`
+          mutation DeleteClub($id: ID!) {
+            deleteClub(id: $id)
+          }
+        `,
+        variables: {
+          id: club.id,
+        },
+      })
+    );
     await this.router.navigate(['..']);
   }
 
@@ -258,7 +264,18 @@ export class DetailClubComponent implements OnInit {
     if (!team.id) {
       throw new Error('No team id');
     }
-    await lastValueFrom(this.teamService.deleteTeam(team.id));
+    await lastValueFrom(
+      this.apollo.mutate<{ deleteTeam: boolean }>({
+        mutation: gql`
+          mutation DeleteTeam($id: ID!) {
+            deleteTeam(id: $id)
+          }
+        `,
+        variables: {
+          id: team.id,
+        },
+      })
+    );
     this.update$.next(true);
   }
 }

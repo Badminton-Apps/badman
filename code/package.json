@@ -157,7 +157,7 @@
     "@nrwl/nest": "14.8.3",
     "@nrwl/node": "14.8.3",
     "@nrwl/nx-cloud": "14.7.0",
-    "@nrwl/workspace": "14.8.3",
+    "@nrwl/workspace": "^14.8.3",
     "@nx-tools/docker-metadata": "^3.0.1",
     "@nx-tools/nx-docker": "^3.0.1",
     "@trellisorg/make-buildable": "^0.0.12",
@@ -228,6 +228,7 @@
     "apollo-server-core": "3.x",
     "apollo-server-plugin-base": "3.x",
     "express": "4.x",
+    "mermaid": "9.x",
     "prismjs": "1.x"
   },
   "volta": {

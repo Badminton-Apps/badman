@@ -4,13 +4,6 @@ import { AuthGuard } from '@badman/frontend/authentication';
 
 const routes: Routes = [
   {
-    path: 'event',
-    loadChildren: () =>
-      import('./modules/event-management/event-management.module').then(
-        (m) => m.EventManagementModule
-      ),
-  },
-  {
     path: 'ranking',
     loadChildren: () =>
       import('./modules/ranking-management/ranking-management.module').then(

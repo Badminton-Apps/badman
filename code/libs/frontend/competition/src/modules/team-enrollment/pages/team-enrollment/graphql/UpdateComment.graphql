@@ -1,5 +1,0 @@
-mutation UpdateComment($data: CommentUpdateInput!) {
-  updateComment(data: $data) {
-    id
-  }
-}

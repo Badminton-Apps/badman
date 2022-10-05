@@ -25,10 +25,10 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { SystemService } from '@badman/frontend/shared';
 import { RankingService } from '../../../../services';
 import { SimulateService } from '../../../../services/simulate.service';
 import { RankingSystem } from '@badman/frontend/models';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   templateUrl: './overview-ranking-systems.component.html',
@@ -228,12 +228,21 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
 
   async makePrimary(systemId: RankingSystem) {
     await lastValueFrom(
-      this.systemsService
-        .updateSystem({
-          id: systemId.id,
-          primary: true,
-        })
-        .pipe(tap(() => this.updateHappend.next(true)))
+      this.apollo.mutate({
+        mutation: gql`
+          mutation UpdateRankingSystem($rankingSystem: RankingSystemInput!) {
+            updateRankingSystem(rankingSystem: $rankingSystem) {
+              id
+            }
+          }
+        `,
+        variables: {
+          rankingSystem: {
+            id: systemId.id,
+            primary: true,
+          },
+        },
+      })
     );
   }
   async deleteSystem(systemId: string) {

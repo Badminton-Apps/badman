@@ -1,13 +1,13 @@
 {
   "name": "frontend-components-game",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/components/game/src",
   "prefix": "badman",
   "targets": {
     "build": {
       "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["dist/libs/frontend/settings"],
+      "outputs": ["dist/libs/frontend/components/game"],
       "options": {
         "project": "libs/frontend/components/game/ng-package.json"
       },

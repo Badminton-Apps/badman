@@ -22,12 +22,6 @@ import {
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { LocationDialogComponent } from '../../dialogs';
 import { apolloCache } from '@badman/frontend/graphql';
-import {
-  TeamService,
-  RoleService,
-  ClubService,
-  LocationService,
-} from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './edit-club.component.html',
@@ -48,10 +42,6 @@ export class EditClubComponent implements OnInit {
   competitionYear = new FormControl();
 
   constructor(
-    private teamService: TeamService,
-    private roleService: RoleService,
-    private clubService: ClubService,
-    private locationService: LocationService,
     private titleService: Title,
     private route: ActivatedRoute,
     private router: Router,
@@ -71,7 +61,50 @@ export class EditClubComponent implements OnInit {
         if (!id) {
           throw new Error('No club id');
         }
-        return this.clubService.getCompetitionYears(id);
+
+        return this.apollo
+          .query<{ club: Club }>({
+            query: gql`
+              query GetCompYearsQuery($id: ID!) {
+                club(id: $id) {
+                  id
+                  teams {
+                    id
+                    slug
+                    name
+                    clubId
+                    entries {
+                      id
+                      competitionSubEvent {
+                        id
+                        eventCompetition {
+                          id
+                          startYear
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              id,
+            },
+          })
+          .pipe(
+            map(
+              (x) =>
+                x.data.club.teams
+                  ?.map((r) =>
+                    r.entries?.map(
+                      (r) => r.competitionSubEvent?.eventCompetition?.startYear
+                    )
+                  )
+                  .flat()
+                  .filter((x, i, a) => a.indexOf(x) === i)
+                  .sort() ?? []
+            )
+          );
       })
     );
 
@@ -164,7 +197,60 @@ export class EditClubComponent implements OnInit {
           );
       }),
       switchMap(([clubId, , , subEvents]) => {
-        return this.clubService.getTeamsForSubEvents(clubId, subEvents);
+        return this.apollo
+          .query<{ club: Club }>({
+            query: gql`
+              query GetBasePlayersQuery($id: ID!, $subEventsWhere: JSONObject) {
+                id
+                teams {
+                  id
+                  name
+                  clubId
+                  type
+                  entries(where: $subEventsWhere) {
+                    id
+                    competitionSubEvent {
+                      id
+                    }
+                    meta {
+                      competition {
+                        teamIndex
+                        players {
+                          id
+                          single
+                          double
+                          mix
+                          player {
+                            id
+                            slug
+                            fullName
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              id: clubId,
+              subEventsWhere: {
+                subEventId: subEvents,
+              },
+            },
+          })
+          .pipe(
+            map((x) => {
+              return (
+                x.data.club.teams?.filter(
+                  (r) =>
+                    (r.entries?.length ?? 0) > 0 &&
+                    (r.entries?.[0].meta?.competition != null ||
+                      r.entries?.[0].meta?.tournament != null)
+                ) ?? []
+              );
+            })
+          );
       })
     );
 
@@ -176,28 +262,54 @@ export class EditClubComponent implements OnInit {
   }
 
   async save(club: Club) {
-    await this.clubService.updateClub(club).toPromise();
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation UpdateClub($data: ClubUpdateInput!) {
+            updateClub(data: $data) {
+              id
+            }
+          }
+        `,
+        variables: {
+          data: club,
+        },
+      })
+    );
     this._snackBar.open('Saved', undefined, {
       duration: 1000,
       panelClass: 'success',
     });
   }
 
-  async onPlayerUpdatedFromTeam(player: Player, team: Team) {
-    if (player && team) {
-      await lastValueFrom(this.teamService.updatePlayer(team, player));
-      this._snackBar.open('Player updated', undefined, {
-        duration: 1000,
-        panelClass: 'success',
-      });
-      this._deleteTeamFromCache(team.id);
-      this.updateClub$.next(null);
-    }
-  }
+  // TODO: Check if this is still used
+  // async onPlayerUpdatedFromTeam(player: Player, team: Team) {
+  //   if (player && team) {
+  //     await lastValueFrom(this.teamService.updatePlayer(team, player));
+  //     this._snackBar.open('Player updated', undefined, {
+  //       duration: 1000,
+  //       panelClass: 'success',
+  //     });
+  //     this._deleteTeamFromCache(team.id);
+  //     this.updateClub$.next(null);
+  //   }
+  // }
 
   async onPlayerAddedToRole(player: Player, role: Role) {
     if (player && role) {
-      await lastValueFrom(this.roleService.addPlayer(role, player));
+      await lastValueFrom(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation AddPlayerToRole($playerId: ID!, $roleId: ID!) {
+              addPlayerToRole(playerId: $playerId, roleId: $roleId)
+            }
+          `,
+          variables: {
+            playerId: player.id,
+            roleId: role.id,
+          },
+        })
+      );
       this._snackBar.open('Player added', undefined, {
         duration: 1000,
         panelClass: 'success',
@@ -209,7 +321,19 @@ export class EditClubComponent implements OnInit {
 
   async onPlayerRemovedFromRole(player: Player, role: Role) {
     if (player && role) {
-      await lastValueFrom(this.roleService.removePlayer(role, player));
+      await lastValueFrom(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation RemovePlayerFromRole($playerId: ID!, $roleId: ID!) {
+              removePlayerFromRole(playerId: $playerId, roleId: $roleId)
+            }
+          `,
+          variables: {
+            playerId: player.id,
+            roleId: role.id,
+          },
+        })
+      );
       this._snackBar.open('Player removed', undefined, {
         duration: 1000,
         panelClass: 'success',
@@ -238,14 +362,33 @@ export class EditClubComponent implements OnInit {
     if (!location?.id) {
       throw new Error('No location id');
     }
-    await lastValueFrom(this.locationService.deleteLocation(location.id));
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation DeleteLocation($id: ID!) {
+            deleteLocation(id: $id)
+          }
+        `,
+        variables: { id: location.id },
+      })
+    );
+
     this.updateLocation$.next(null);
   }
   async onDeleteRole(role: Role) {
     if (!role?.id) {
       throw new Error('No location id');
     }
-    await lastValueFrom(this.roleService.deleteRole(role.id));
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation DeleteRole($id: ID!) {
+            deleteRole(id: $id)
+          }
+        `,
+        variables: { id: role.id },
+      })
+    );
     this._deleteRoleFromCache(role.id);
     this.updateRoles$.next(null);
   }
@@ -263,11 +406,26 @@ export class EditClubComponent implements OnInit {
     }
 
     await lastValueFrom(
-      this.teamService.addBasePlayer(
-        team.id,
-        player.id,
-        team.entries[0].competitionSubEvent.id
-      )
+      this.apollo.mutate({
+        mutation: gql`
+          mutation AddBasePlayer(
+            $playerId: ID!
+            $subEventId: ID!
+            $teamId: ID!
+          ) {
+            addBasePlayer(
+              playerId: $playerId
+              subEventId: $subEventId
+              teamId: $teamId
+            )
+          }
+        `,
+        variables: {
+          playerId: player.id,
+          subEventId: team.entries[0].competitionSubEvent.id,
+          teamId: team.id,
+        },
+      })
     );
     this._deleteTeamFromCache(team.id);
     this.updateClub$.next(null);
@@ -285,11 +443,26 @@ export class EditClubComponent implements OnInit {
     }
 
     await lastValueFrom(
-      this.teamService.removeBasePlayer(
-        team.id,
-        player.id,
-        team.entries[0].competitionSubEvent.id
-      )
+      this.apollo.mutate({
+        mutation: gql`
+          mutation DeleteBasePlayer(
+            $playerId: ID!
+            $subEventId: ID!
+            $teamId: ID!
+          ) {
+            deleteBasePlayer(
+              playerId: $playerId
+              subEventId: $subEventId
+              teamId: $teamId
+            )
+          }
+        `,
+        variables: {
+          playerId: player.id,
+          subEventId: team.entries[0].competitionSubEvent.id,
+          teamId: team.id,
+        },
+      })
     );
     this._deleteTeamFromCache(team.id);
     this.updateClub$.next(null);

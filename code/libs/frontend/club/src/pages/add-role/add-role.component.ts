@@ -4,7 +4,6 @@ import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, Observable } from 'rxjs';
 import { groupBy, map, mergeMap, switchMap, toArray } from 'rxjs/operators';
 import { Claim, Club, Role } from '@badman/frontend/models';
-import { RoleService } from '@badman/frontend/shared';
 
 @Component({
   templateUrl: './add-role.component.html',
@@ -17,7 +16,6 @@ export class AddRoleComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    private roleSerice: RoleService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -84,7 +82,20 @@ export class AddRoleComponent implements OnInit {
     if (!club?.id) {
       throw new Error('No role id');
     }
-    await lastValueFrom(this.roleSerice.addRole(role, club.id));
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation AddRole($data: RoleInput!) {
+            addRole(data: $data) {
+              id
+            }
+          }
+        `,
+        variables: {
+          data: { ...role, clubId: club.id },
+        },
+      })
+    );
     await this.router.navigate(['/', 'admin', 'club', club.id, 'edit']);
   }
 }

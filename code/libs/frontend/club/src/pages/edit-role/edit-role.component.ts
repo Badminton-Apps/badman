@@ -12,7 +12,6 @@ import {
   toArray,
 } from 'rxjs/operators';
 import { Claim, Club, Role } from '@badman/frontend/models';
-import { RoleService } from '@badman/frontend/shared';
 @Component({
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss'],
@@ -24,7 +23,6 @@ export class EditRoleComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    private roleSerice: RoleService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -57,7 +55,22 @@ export class EditRoleComponent implements OnInit {
         if (!id) {
           throw new Error('No role id');
         }
-        return this.roleSerice.getRole(id);
+        return this.apollo
+          .query<{ role: Partial<Role> }>({
+            query: gql`
+              query Role($id: ID!) {
+                role(id: $id) {
+                  id
+                  name
+                }
+              }
+            `,
+            variables: {
+              id: id,
+            },
+            fetchPolicy: 'network-only',
+          })
+          .pipe(map((x) => new Role(x.data.role)));
       }),
       share(),
       take(1)

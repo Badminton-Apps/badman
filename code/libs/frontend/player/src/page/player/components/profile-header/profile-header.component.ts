@@ -9,11 +9,11 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend/models';
-import { SystemService } from '@badman/frontend/shared';
 import { map, Observable, switchMap } from 'rxjs';
 import { MergeAccountComponent } from '../../dialogs';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '@badman/frontend/config';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   selector: 'badman-profile-header',

@@ -5,7 +5,7 @@ import { lastValueFrom, Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend/models';
 import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
-import { SystemService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   selector: 'badman-edit-ranking-all',

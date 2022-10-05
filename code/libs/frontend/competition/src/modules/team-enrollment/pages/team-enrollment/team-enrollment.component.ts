@@ -37,11 +37,14 @@ import {
   SubEvent,
   Team,
 } from '@badman/frontend/models';
-import * as addComment from './graphql/AddComment.graphql';
-import * as AssignLocationEvent from './graphql/AssignLocationEventMutation.graphql';
-import * as AssignTeamSubEvent from './graphql/AssignTeamSubEventMutation.graphql';
-import * as updateComment from './graphql/UpdateComment.graphql';
-import { SystemService, EventService } from '@badman/frontend/shared';
+import { EventService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/ranking';
+import {
+  AddComment,
+  AssignLocationEvent,
+  AssignTeamSubEvent,
+  UpdateComment,
+} from './graphql';
 
 export const STEP_AVAILIBILTY = 1;
 
@@ -454,7 +457,7 @@ export class TeamEnrollmentComponent implements OnInit {
 
     const result = await lastValueFrom(
       this.apollo.mutate<{ updateComment?: Comment; addComment: Comment }>({
-        mutation: commentMessage.id ? updateComment : addComment,
+        mutation: commentMessage.id ? UpdateComment : AddComment,
         variables: {
           data: commentMessage,
         },

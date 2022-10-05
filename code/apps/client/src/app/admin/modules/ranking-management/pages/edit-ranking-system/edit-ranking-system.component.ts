@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { RankingSystem, RankingGroup } from '@badman/frontend/models';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import {
-  RankingSystem,
-  RankingGroup,
-  SystemService,
-} from '@badman/frontend/shared';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './edit-ranking-system.component.html',
@@ -19,7 +15,6 @@ export class EditRankingSystemComponent implements OnInit {
   rankingGroups$!: Observable<RankingGroup[]>;
 
   constructor(
-    private systemService: SystemService,
     private route: ActivatedRoute,
     private apollo: Apollo,
     private snackBar: MatSnackBar
@@ -32,10 +27,37 @@ export class EditRankingSystemComponent implements OnInit {
         if (!id) {
           throw new Error('No id');
         }
-        return this.systemService.getSystem(id);
-      })
+        return this.apollo.query<{ rankingSystem: RankingSystem }>({
+          query: gql`
+            query RankingSystemQuery($id: ID!) {
+              rankingSystem(id: $id) {
+                id
+                name
+              }
+            }
+          `,
+          variables: {
+            id,
+          },
+        });
+      }),
+      map((x) => new RankingSystem(x.data.rankingSystem))
     );
-    this.rankingGroups$ = this.systemService.getSystemsGroups();
+    this.rankingGroups$ = this.apollo
+      .query<{ rankingGroups: RankingGroup[] }>({
+        query: gql`
+          query RankingGroupsQuery {
+            rankingGroups {
+              id
+              name
+            }
+          }
+        `,
+      })
+      .pipe(
+        map((x) => x.data?.rankingGroups ?? []),
+        shareReplay(1)
+      );
   }
 
   async save(system: RankingSystem) {

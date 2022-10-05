@@ -1,10 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SystemService } from '@badman/frontend/shared';
-import { Player } from '@badman/frontend/models';
-import { lastValueFrom } from 'rxjs';
+import { Player, RankingSystem } from '@badman/frontend/models';
+import { lastValueFrom, map, switchMap } from 'rxjs';
 import { UserService } from '@badman/frontend/authentication';
+import { SystemService } from '@badman/frontend/ranking';
+import { Apollo, gql } from 'apollo-angular';
 
 @Component({
   templateUrl: './merge-account.component.html',
@@ -20,6 +21,7 @@ export class MergeAccountComponent implements OnInit {
 
   constructor(
     private systemService: SystemService,
+    private apollo: Apollo,
     private userSerive: UserService,
     private _snackBar: MatSnackBar,
     private dialogRef: MatDialogRef<MergeAccountComponent>,
@@ -28,9 +30,32 @@ export class MergeAccountComponent implements OnInit {
 
   ngOnInit(): void {
     this.ignorePlayers = [this.data.player];
-    this.systemService.getPrimarySystem().subscribe((system) => {
-      this.rankingDate = system?.caluclationIntervalLastUpdate;
-    });
+    this.systemService
+      .getPrimarySystemsWhere()
+      .pipe(
+        switchMap((query) =>
+          this.apollo.query<{
+            rankingSystems: Partial<RankingSystem>[];
+          }>({
+            query: gql`
+              query GetSystems($where: JSONObject) {
+                rankingSystems(where: $where) {
+                  id
+                  name
+                  amountOfLevels
+                }
+              }
+            `,
+            variables: {
+              where: query,
+            },
+          })
+        ),
+        map((x) => x.data.rankingSystems[0])
+      )
+      .subscribe((system) => {
+        this.rankingDate = system?.caluclationIntervalLastUpdate;
+      });
   }
 
   addPlayer(player: Player) {

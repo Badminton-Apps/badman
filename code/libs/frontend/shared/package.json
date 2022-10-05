@@ -1,6 +1,14 @@
 {
   "name": "@badman/frontend/shared",
   "version": "0.0.1",
+  "exports": {
+    "./theming": {
+      "sass": "./_theming.scss"
+    },
+    "./_theming": {
+      "sass": "./_theming.scss"
+    }
+  },
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
@@ -8,8 +16,8 @@
     "@badman/frontend/authentication": "^0.0.1",
     "@badman/frontend/graphql": "^0.0.1",
     "@badman/frontend/shared": "^0.0.1",
-    "@badman/frontend/config": "^0.0.1"
-
+    "@badman/frontend/config": "^0.0.1",
+    "@badman/frontend/ranking": "^0.0.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"

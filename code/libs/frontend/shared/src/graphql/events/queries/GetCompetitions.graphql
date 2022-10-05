@@ -1,4 +1,4 @@
-#import "./subEventsFragment.graphql"
+#import "./subEventsFragment.gql"
 
 query GetEvents(
   $first: Int

@@ -3,5 +3,6 @@
   "dest": "../../../dist/libs/frontend/shared",
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "assets": ["./styles"]
 }
