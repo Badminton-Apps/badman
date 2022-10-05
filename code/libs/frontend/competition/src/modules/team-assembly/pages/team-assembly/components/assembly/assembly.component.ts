@@ -28,7 +28,7 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { SystemService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   selector: 'badman-assembly',
@@ -194,10 +194,10 @@ export class AssemblyComponent implements OnInit {
     const teams =
       (await lastValueFrom(
         this.systemService
-          .getPrimarySystem()
+          .getPrimarySystemId()
           .pipe(
             take(1),
-            switchMap((system) =>
+            switchMap((systemId) =>
               this.apollo.query<{ club: Club }>({
                 query: gql`
                   query GetTeamInfo(
@@ -268,10 +268,10 @@ export class AssemblyComponent implements OnInit {
                     rankingDate: {
                       $between: [this.startRanking, this.endRanking],
                     },
-                    systemId: system?.id,
+                    systemId,
                   },
                   lastRankginWhere: {
-                    systemId: system?.id,
+                    systemId,
                   },
                   entryWhere: {
                     subEventId: {
@@ -485,10 +485,10 @@ export class AssemblyComponent implements OnInit {
   async addPlayer(player: Player) {
     const playerRankings = await lastValueFrom(
       this.systemService
-        .getPrimarySystem()
+        .getPrimarySystemId()
         .pipe(
           take(1),
-          switchMap((system) =>
+          switchMap((systemId) =>
             this.apollo.query<{ player: Player }>({
               query: gql`
                 query getPlayerInfo(
@@ -525,10 +525,10 @@ export class AssemblyComponent implements OnInit {
                   rankingDate: {
                     $between: [this.startRanking, this.endRanking],
                   },
-                  systemId: system?.id,
+                  systemId,
                 },
                 lastRankginWhere: {
-                  systemId: system?.id,
+                  systemId,
                 },
               },
             })

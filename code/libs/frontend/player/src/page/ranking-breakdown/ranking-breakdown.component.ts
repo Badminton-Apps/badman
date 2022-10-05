@@ -19,7 +19,8 @@ import {
   tap,
 } from 'rxjs';
 import { Game, Player, RankingSystem } from '@badman/frontend/models';
-import { PlayerService, SystemService } from '@badman/frontend/shared';
+import { PlayerService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   templateUrl: './ranking-breakdown.component.html',
@@ -54,7 +55,6 @@ export class RankingBreakdownComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private playerService: PlayerService,
     private titleService: Title,
     private systemService: SystemService,
     private apollo: Apollo

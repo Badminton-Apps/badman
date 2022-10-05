@@ -65,7 +65,7 @@ export const getQueryParamsFromPageArgs = (
     ?.map((x) => `${x.field}-${x.direction}`)
     .join(',');
 
-  const getKeys = (key: string, value: unknown, parent?: string) => {
+  const getKeys = (key: string, value: unknown, parent?: string): string => {
     key = parent ? `${parent}.${key}` : key;
 
     if (value == null || value == undefined) {
@@ -74,7 +74,9 @@ export const getQueryParamsFromPageArgs = (
       return `${key}=${value.join(',')}`;
     } else if (typeof value === 'object') {
       const keys = Object.keys(value as object);
-      const values = keys.map((k) => getKeys(k, value?.[k], key));
+      const values = keys.map((k) => {
+        return getKeys(k, (value as { [key: string]: unknown })[k], key);
+      });
       return values.join('&');
     } else {
       return `${key}=${value}`;
@@ -116,21 +118,23 @@ export const getPageArgsFromQueryParams = (queryParams: {
   }
 
   if (queryParams['where']) {
-    const where = queryParams['where'].split('&').reduce((acc, cur) => {
-      const [key, value] = cur.split('=');
-      const parts = key.split('.');
-      if (parts.length > 1) {
-        const parent = parts.slice(0, -1).join('.');
-        const child = parts.slice(-1)[0];
-        if (!acc[parent]) {
-          acc[parent] = {};
+    const where = queryParams['where']
+      .split('&')
+      .reduce((acc: { [key: string]: unknown }, cur) => {
+        const [key, value] = cur.split('=');
+        const parts = key.split('.');
+        if (parts.length > 1) {
+          const parent = parts.slice(0, -1).join('.');
+          const child = parts.slice(-1)[0];
+          if (!acc[parent]) {
+            acc[parent] = {};
+          }
+          (acc[parent] as { [key: string]: unknown })[child] = value;
+        } else {
+          acc[key] = value;
         }
-        acc[parent][child] = value;
-      } else {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
+        return acc;
+      }, {});
     pageArgs.where = where;
   }
 

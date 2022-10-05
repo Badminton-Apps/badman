@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { RankingSystem } from '@badman/frontend/models';
+import { SystemCounts } from '@badman/frontend/ranking';
+import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
-import {
-  SystemCounts,
-  RankingSystem,
-  SystemService,
-} from '@badman/frontend/shared';
 import { SerieData } from './interfaces';
 
 @Component({
@@ -57,7 +55,7 @@ export class DetailRankingSystemComponent implements OnInit {
   };
 
   constructor(
-    private systemService: SystemService,
+    private apollo: Apollo,
     private route: ActivatedRoute
   ) {}
 
@@ -75,8 +73,25 @@ export class DetailRankingSystemComponent implements OnInit {
 
     this.caps$ = id$.pipe(
       switchMap((id) => {
-        return this.systemService.getSystemCaps(id);
+        return this.apollo.query<{ system: Partial<RankingSystem> }>({
+          query: gql`
+            query GetSystemQuery($id: ID!) {
+              system(id: $id) {
+                id
+                name
+                amountOfLevels
+                pointsToGoUp
+                pointsToGoDown
+                pointsWhenWinningAgainst
+              }
+            }
+          `,
+          variables: {
+            id,
+          },
+        });
       }),
+      map((x) => new RankingSystem(x.data.system)),
       map((system) => {
         if (
           !system ||
@@ -107,7 +122,7 @@ export class DetailRankingSystemComponent implements OnInit {
     );
 
     this.allGenders$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemWithCount(id)),
+      switchMap((id) => this.getSystemWithCount(id)),
       tap(
         (system) =>
           (this.levels = Array(system.amountOfLevels)
@@ -118,11 +133,11 @@ export class DetailRankingSystemComponent implements OnInit {
       map((system) => this.getSeriesData(system))
     );
     this.male$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemWithCount(id, 'M')),
+      switchMap((id) => this.getSystemWithCount(id, 'M')),
       map((system) => this.getSeriesData(system))
     );
     this.female$ = id$.pipe(
-      switchMap((id) => this.systemService.getSystemWithCount(id, 'F')),
+      switchMap((id) => this.getSystemWithCount(id, 'F')),
       map((system) => this.getSeriesData(system))
     );
 
@@ -243,5 +258,61 @@ export class DetailRankingSystemComponent implements OnInit {
       };
     });
     return seriesData;
+  }
+
+  private getSystemWithCount(systemId: string, gender?: string) {
+    return this.apollo
+      .query<{ system: Partial<RankingSystem> }>({
+        query: gql`
+          query GetSystemsQuery($id: ID!, $gender: String) {
+            rankingSystems(id: $id) {
+              id
+              name
+              primary
+              runCurrently
+              amountOfLevels
+              counts(gender: $gender) {
+                single {
+                  date
+                  points {
+                    level
+                    amount
+                  }
+                }
+                double {
+                  date
+                  points {
+                    level
+                    amount
+                  }
+                }
+                mix {
+                  date
+                  points {
+                    level
+                    amount
+                  }
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          id: systemId,
+          gender,
+        },
+      })
+      .pipe(
+        map(
+          (x) =>
+            x.data?.system as RankingSystem & {
+              counts: {
+                single: SystemCounts[];
+                double: SystemCounts[];
+                mix: SystemCounts[];
+              };
+            }
+        )
+      );
   }
 }

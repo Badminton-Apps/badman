@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
 import { Club } from '@badman/frontend/models';
-import { ClubService } from '../../../services';
 import { ClaimService, UserService } from '@badman/frontend/authentication';
+import { Apollo, gql } from 'apollo-angular';
 
 @Component({
   selector: 'badman-select-club',
@@ -45,7 +45,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   autoCompleteTreshold = 5;
 
   constructor(
-    private clubService: ClubService,
+    private appolo: Apollo,
     private claimSerice: ClaimService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -71,24 +71,81 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         switchMap(([single, all]) => {
-          if (all) {
-            return this.clubService.getClubs({ take: 999 });
-          } else if (single) {
-            return this.claimSerice.claims$.pipe(
-              map((r) =>
-                r?.filter((x) => x?.indexOf(this.singleClubPermission) != -1)
-              ),
-              map((r) =>
-                r?.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))
-              ),
-              switchMap((ids) =>
-                this.clubService.getClubs({ ids, take: ids?.length })
-              )
+          const allClubs = this.appolo
+            .query<{
+              clubs: {
+                count: number;
+                rows: Club[];
+              };
+            }>({
+              query: gql`
+            clubs {
+              count
+              rows {
+                id
+                name
+              }
+            }
+          `,
+            })
+            .pipe(
+              map((x) => {
+                return {
+                  count: x.data.clubs.count,
+                  rows: x.data.clubs.rows.map((c) => new Club(c)),
+                };
+              })
             );
-          } else if (this.needsPermission) {
-            return of({ rows: [], count: 0 });
+
+          if (this.needsPermission) {
+            if (all) {
+              return allClubs;
+            } else if (single) {
+              return this.claimSerice.claims$.pipe(
+                map((r) =>
+                  r?.filter((x) => x?.indexOf(this.singleClubPermission) != -1)
+                ),
+                map((r) =>
+                  r?.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))
+                ),
+                switchMap((ids) =>
+                  this.appolo
+                    .query<{
+                      clubs: {
+                        count: number;
+                        rows: Club[];
+                      };
+                    }>({
+                      query: gql`
+                      clubs($where: JSONObject) {
+                        count
+                        rows {
+                          id
+                          name
+                        }
+                      }
+                    `,
+                      variables: {
+                        where: {
+                          id: ids,
+                        },
+                      },
+                    })
+                    .pipe(
+                      map((x) => {
+                        return {
+                          count: x.data.clubs.count,
+                          rows: x.data.clubs.rows.map((c) => new Club(c)),
+                        };
+                      })
+                    )
+                )
+              );
+            } else {
+              return of({ rows: [], count: 0 });
+            }
           } else {
-            return this.clubService.getClubs({ take: 999 });
+            return allClubs;
           }
         }),
         take(1),

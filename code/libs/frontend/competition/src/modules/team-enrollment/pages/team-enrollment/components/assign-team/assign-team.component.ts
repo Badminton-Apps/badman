@@ -24,7 +24,7 @@ import {
 } from '@badman/frontend/models';
 import { combineLatest } from 'rxjs';
 import { TeamDialogComponent } from '@badman/frontend/team';
-import { SystemService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/ranking';
 
 interface Issues {
   level: string[];

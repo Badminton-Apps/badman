@@ -11,7 +11,8 @@ import {
   Player,
 } from '@badman/frontend/models';
 import { TeamAssemblyService } from '../../services/team-assembly.service';
-import { SystemService, PdfService } from '@badman/frontend/shared';
+import { PdfService } from '@badman/frontend/shared';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   templateUrl: './team-assembly.component.html',
@@ -141,14 +142,14 @@ export class TeamAssemblyComponent implements OnInit {
 
     // Generate pdf
     await lastValueFrom(
-      this.systemService.getPrimarySystem().pipe(
-        switchMap((system) => {
-          if (!system || !system.id) {
+      this.systemService.getPrimarySystemId().pipe(
+        switchMap((systemId) => {
+          if (!systemId) {
             throw new Error('No system found');
           }
 
           return this.assemblyService.getTeamAssembly({
-            systemId: system.id,
+            systemId,
             captainId: this.formGroup.get('captain')?.value,
             teamId: this.formGroup.get('team')?.value,
             encounterId: encounterId,

@@ -11,19 +11,19 @@ export class DeviceService {
     this.mobileQuery = media.matchMedia('screen and (max-width: 600px)');
   }
 
-  addEvent(evnt: string, func: (ev: unknown) => unknown) {
+  addEvent(evnt: 'change', func: (ev: unknown) => unknown) {
     if (this.mobileQuery.addEventListener) {
       this.mobileQuery.addEventListener(evnt, func, false);
     } else {
-      this.mobileQuery['on' + evnt] = func;
+      this.mobileQuery[`on${evnt}`] = func;
     }
   }
 
-  removeEvent(evnt: string, func: (ev: unknown) => unknown) {
+  removeEvent(evnt: 'change', func: (ev: unknown) => unknown) {
     if (this.mobileQuery.removeEventListener) {
       this.mobileQuery.removeEventListener(evnt, func, false);
     } else {
-      this.mobileQuery['on' + evnt] = func;
+      this.mobileQuery[`on${evnt}`] = func;
     }
   }
 }

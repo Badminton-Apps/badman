@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { SystemService } from '../../../../services';
+import { SystemService } from '@badman/frontend/ranking';
 
 @Component({
   selector: 'badman-watch-system-info',
