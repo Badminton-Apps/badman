@@ -88,8 +88,6 @@ export class Player {
         })[0];
       }
     }
-
-    console.log(this._fullName, args)
   }
 
   indexOfDate(type?: string, date?: Date) {
