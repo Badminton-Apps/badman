@@ -1,6 +1,6 @@
 {
   "production": true,
-  "version": "5.30.0",
+  "version": "5.31.0",
   "api": "https://badman.app",
   "apiVersion": "v1",
   "apmServer": "https://apm.badman.app",

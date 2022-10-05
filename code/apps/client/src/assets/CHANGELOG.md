@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.31.0](https://github.com/Badminton-Apps/badman/compare/v5.30.0...v5.31.0) (2022-10-05)
+
+
+### Features
+
+* **backend-generator:** generate info for planner service ([aa0d9d9](https://github.com/Badminton-Apps/badman/commit/aa0d9d99b200cf1b1b15c8c67619b615ef711728))
+* **frontend:** making libraries buildable ([fb41d97](https://github.com/Badminton-Apps/badman/commit/fb41d978f3eb9808d480a98aa250d432602971a7))
+* **worker-sync:** move one cron job to 3 pm ([0be42a8](https://github.com/Badminton-Apps/badman/commit/0be42a857d4116ffc4ecfea9c8a3a73ae7d34423))
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1 ([4d811fd](https://github.com/Badminton-Apps/badman/commit/4d811fd0cd09954f0c7e2b3799f4ecd1d8416e58))
+* **deps:** update dependency puppeteer to v18 ([5bbbcaf](https://github.com/Badminton-Apps/badman/commit/5bbbcaf1bb28283a7562c825884f21630db45b20))
+* **deps:** update nrwl monorepo to v14.7.11 ([96e5967](https://github.com/Badminton-Apps/badman/commit/96e59671d254f8f259aa0befe540986f52acd453))
+* **deps:** update nrwl monorepo to v14.7.13 ([ca80cc4](https://github.com/Badminton-Apps/badman/commit/ca80cc43f69a2272bbff1baa4740e6768f155c32))
+* **deps:** update nrwl monorepo to v14.7.17 ([db23032](https://github.com/Badminton-Apps/badman/commit/db2303212998bf4f9dacd09acfdeb87cb033eda0))
+* **deps:** update nrwl monorepo to v14.8.1 ([8765f7a](https://github.com/Badminton-Apps/badman/commit/8765f7a293241d658d08987cfe6c88ad76a0a7ae))
+* **deps:** update nrwl monorepo to v14.8.2 ([ccd3b52](https://github.com/Badminton-Apps/badman/commit/ccd3b5284a5ac7bb0d73f75551a8911c9c7a5fb7))
+* **deps:** update nrwl monorepo to v14.8.3 ([406dfae](https://github.com/Badminton-Apps/badman/commit/406dfae2ac52fb8b772f4f5dc1c6955b7094da0d))
+* **frontend-club:** switch to more active google maps component ([28c5eb2](https://github.com/Badminton-Apps/badman/commit/28c5eb2c6c1c14d3345c4ba5c10b9060f17f52c7))
+* **frontend-player:** adding game wans't loading players ([ae9ae5a](https://github.com/Badminton-Apps/badman/commit/ae9ae5a00bc1e9cf51eb6d6c439ac25894b1a931))
+* **frontend-team:** team edit dialog was broken ([bffc8c7](https://github.com/Badminton-Apps/badman/commit/bffc8c7900848a8c7fb8a3c048063c8eb879a8a0))
+* **worker-sync:** new created player wasn't added to list ([5b3ec74](https://github.com/Badminton-Apps/badman/commit/5b3ec748527fa0a32400e61b06824055fd545c5c))
+
 ## [5.30.0](https://github.com/Badminton-Apps/badman/compare/v5.29.4...v5.30.0) (2022-09-15)
 
 
