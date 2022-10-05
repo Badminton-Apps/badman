@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-import { ApmService } from '@elastic/apm-rum-angular';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, combineLatest, iif, Observable, of } from 'rxjs';
 import {
@@ -30,7 +29,6 @@ export class UserService {
     private httpClient: HttpClient,
     apollo: Apollo,
     private auth: AuthService,
-    private apmService: ApmService
   ) {
     this.urlBase = `${this.configService.apiBaseUrl}/user`;
 
@@ -58,13 +56,6 @@ export class UserService {
       );
 
     this.profile$ = combineLatest([this.auth.user$, this.update$]).pipe(
-      tap(([user]) => {
-        this.apmService.apm.setUserContext({
-          username: user?.name,
-          email: user?.email,
-          id: user?.sub,
-        });
-      }),
       mergeMap((x) =>
         iif(() => x != null && x != undefined, whenAuthenticated, of(null))
       ),

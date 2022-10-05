@@ -31,7 +31,6 @@ import {
   SocketModule,
   SOCKET_URL,
 } from '@badman/frontend/shared';
-import { ApmModule, ApmService } from '@elastic/apm-rum-angular';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ApolloModule } from 'apollo-angular';
@@ -111,7 +110,6 @@ const cookieConfig: NgcCookieConsentConfig = {
     ...translateModules,
     NgcCookieConsentModule.forRoot(cookieConfig),
     ApolloModule,
-    ApmModule,
     MarkdownModule.forRoot(),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
@@ -139,7 +137,6 @@ const cookieConfig: NgcCookieConsentConfig = {
   ],
   providers: [
     CookieService,
-    ApmService,
     {
       provide: APP_INITIALIZER,
       multi: true,
