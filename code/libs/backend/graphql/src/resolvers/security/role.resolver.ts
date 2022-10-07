@@ -100,7 +100,7 @@ export class RoleResolver {
     }
   }
 
-  @Mutation(() => Role)
+  @Mutation()
   async addPlayerToRole(
     @User() user: Player,
     @Args('roleId', { type: () => ID }) roleId: string,
@@ -141,8 +141,6 @@ export class RoleResolver {
 
       // Commit transaction
       await transaction.commit();
-
-      return dbRole;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
@@ -150,7 +148,7 @@ export class RoleResolver {
     }
   }
 
-  @Mutation(() => Role)
+  @Mutation()
   async removePlayerFromRole(
     @User() user: Player,
     @Args('roleId', { type: () => ID }) roleId: string,
@@ -191,8 +189,6 @@ export class RoleResolver {
 
       // Commit transaction
       await transaction.commit();
-
-      return dbRole;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
