@@ -8,6 +8,7 @@ import { XmlTournamentTypeID } from '../../utils';
 import { CompetitionSyncer } from './competition-sync';
 import { TournamentSyncer } from './tournament-sync';
 import moment = require('moment');
+import { PointsService } from '@badman/backend/ranking';
 
 @Processor({
   name: SyncQueue,
@@ -20,12 +21,19 @@ export class SyncEventsProcessor {
 
   constructor(
     private visualService: VisualService,
+    pointService: PointsService,
     private _sequelize: Sequelize
   ) {
     this.logger.debug('SyncEvents');
 
-    this._competitionSync = new CompetitionSyncer(this.visualService);
-    this._tournamentSync = new TournamentSyncer(this.visualService);
+    this._competitionSync = new CompetitionSyncer(
+      this.visualService,
+      pointService
+    );
+    this._tournamentSync = new TournamentSyncer(
+      this.visualService,
+      pointService
+    );
   }
 
   @Process(Sync.SyncEvents)
@@ -45,89 +53,94 @@ export class SyncEventsProcessor {
       limit: number;
     }>
   ) {
-    const newDate = moment(job.data?.date);
-    let newEvents = await this.visualService.getChangeEvents(newDate);
+    try {
+      const newDate = moment(job.data?.date);
+      let newEvents = await this.visualService.getChangeEvents(newDate);
 
-    newEvents = newEvents.sort((a, b) => {
-      return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
-    });
-
-    if (job.data?.startDate) {
-      newEvents = newEvents.filter((e) => {
-        return moment(e.StartDate).isSameOrAfter(job.data?.startDate);
+      newEvents = newEvents.sort((a, b) => {
+        return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
       });
-    }
 
-    let toProcess = newEvents.length;
-    if (job.data?.limit) {
-      toProcess = job.data?.offset ?? 0 + job.data?.limit;
-    }
+      if (job.data?.startDate) {
+        newEvents = newEvents.filter((e) => {
+          return moment(e.StartDate).isSameOrAfter(job.data?.startDate);
+        });
+      }
 
-    this.logger.debug(`Processing ${toProcess} events`);
+      let toProcess = newEvents.length;
+      if (job.data?.limit) {
+        toProcess = job.data?.offset ?? 0 + job.data?.limit;
+      }
 
-    for (let i = job.data?.offset ?? 0; i < toProcess; i++) {
-      const xmlTournament = newEvents[i];
-      const current = i + 1;
-      const total = toProcess;
-      const percent = Math.round((current / total) * 10000) / 100;
-      job.progress(percent);
-      this.logger.log(
-        `Processing ${xmlTournament.Name}, ${percent}% (${i}/${total})`
-      );
-      const transaction = await this._sequelize.transaction();
+      this.logger.debug(`Processing ${toProcess} events`);
 
-      try {
-        // Skip certain events
-        if (
-          (job.data?.skip?.length ?? 0) > 0 &&
-          job.data?.skip?.includes(xmlTournament.Name)
-        ) {
-          await transaction.commit();
-          continue;
-        }
+      for (let i = job.data?.offset ?? 0; i < toProcess; i++) {
+        const xmlTournament = newEvents[i];
+        const current = i + 1;
+        const total = toProcess;
+        const percent = Math.round((current / total) * 10000) / 100;
+        job.progress(percent);
+        this.logger.log(
+          `Processing ${xmlTournament.Name}, ${percent}% (${i}/${total})`
+        );
+        const transaction = await this._sequelize.transaction();
 
-        // Only process certain events
-        if (
-          (job.data?.only?.length ?? 0) > 0 &&
-          !job.data?.only?.includes(xmlTournament.Name)
-        ) {
-          await transaction.commit();
-          continue;
-        }
-
-        if (
-          xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
-          xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
-        ) {
-          if (job.data?.skip?.includes('competition')) {
-            await transaction.commit();
-            continue; 
-          }
-
-          await this._competitionSync.process({
-            transaction,
-            xmlTournament,
-            options: { ...job.data },
-          });
-        } else {
-          if (job.data?.skip?.includes('tournament')) {
+        try {
+          // Skip certain events
+          if (
+            (job.data?.skip?.length ?? 0) > 0 &&
+            job.data?.skip?.includes(xmlTournament.Name)
+          ) {
             await transaction.commit();
             continue;
           }
 
-          await this._tournamentSync.process({
-            transaction,
-            xmlTournament,
-            options: { ...job.data },
-          });
+          // Only process certain events
+          if (
+            (job.data?.only?.length ?? 0) > 0 &&
+            !job.data?.only?.includes(xmlTournament.Name)
+          ) {
+            await transaction.commit();
+            continue;
+          }
+
+          if (
+            xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
+            xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
+          ) {
+            if (job.data?.skip?.includes('competition')) {
+              await transaction.commit();
+              continue;
+            }
+
+            await this._competitionSync.process({
+              transaction,
+              xmlTournament,
+              options: { ...job.data },
+            });
+          } else {
+            if (job.data?.skip?.includes('tournament')) {
+              await transaction.commit();
+              continue;
+            }
+
+            await this._tournamentSync.process({
+              transaction,
+              xmlTournament,
+              options: { ...job.data },
+            });
+          }
+          await transaction.commit();
+          this.logger.log(`Finished ${xmlTournament.Name}`);
+        } catch (e) {
+          this.logger.error('Rollback', e);
+          await transaction.rollback();
+          throw e;
         }
-        await transaction.commit();
-        this.logger.log(`Finished ${xmlTournament.Name}`);
-      } catch (e) {
-        this.logger.error('Rollback', e);
-        await transaction.rollback();
-        throw e;
       }
+    } catch (e) {
+      this.logger.error('Error', e);
+      throw e;
     }
 
     this.logger.log('Finished sync of Visual scores');
