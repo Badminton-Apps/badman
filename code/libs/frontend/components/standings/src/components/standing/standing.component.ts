@@ -5,6 +5,7 @@ import {
   Input,
 } from '@angular/core';
 import { Entry } from '@badman/frontend/models';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'badman-standing',
@@ -23,6 +24,10 @@ export class StandingComponent implements OnInit {
   displayedColumnsHeaders!: string[];
 
   ngOnInit(): void {
+    // Filter out those without standing
+    this.entries = this.entries.filter((e) => e.standing);
+    
+    // Sort by postion
     this.entries?.sort(
       (a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0)
     );
