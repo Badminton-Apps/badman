@@ -20,6 +20,7 @@ import {
 import { transports, format } from 'winston';
 import versionPackage from '../version.json';
 import { VisualModule } from '@badman/backend/visual';
+import { RankingModule } from '@badman/backend/ranking';
 
 @Module({
   providers: [
@@ -74,6 +75,7 @@ import { VisualModule } from '@badman/backend/visual';
     }),
     VisualModule,
     DatabaseModule,
+    RankingModule,
     ScheduleModule.forRoot(),
     QueueModule,
   ],
