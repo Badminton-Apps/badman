@@ -5,7 +5,6 @@ import {
   Input,
 } from '@angular/core';
 import { Entry } from '@badman/frontend/models';
-import { filter } from 'rxjs';
 
 @Component({
   selector: 'badman-standing',
