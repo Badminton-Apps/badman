@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.31.3](https://github.com/Badminton-Apps/badman/compare/v5.31.2...v5.31.3) (2022-10-07)
+
+
+### Bug Fixes
+
+* **backend-graphql:** adding/removing from role shouldn't return role ([3475b47](https://github.com/Badminton-Apps/badman/commit/3475b471d7309a27fe8bb355454f2da2ab6b3b9a))
+
 ### [5.31.2](https://github.com/Badminton-Apps/badman/compare/v5.31.1...v5.31.2) (2022-10-07)
 
 
