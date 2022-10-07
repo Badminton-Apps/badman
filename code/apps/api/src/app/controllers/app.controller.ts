@@ -38,7 +38,7 @@ export class AppController {
     @Body()
     args: {
       job: string;
-      queue: typeof SimulationQueue | typeof SyncQueue | typeof SimulationQueue;
+      queue: typeof SimulationQueue | typeof SyncQueue;
       jobArgs: unknown;
       removeOnComplete: boolean;
       removeOnFail: boolean;

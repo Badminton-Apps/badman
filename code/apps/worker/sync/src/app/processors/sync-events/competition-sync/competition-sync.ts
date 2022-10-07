@@ -1,3 +1,4 @@
+import { PointsService } from '@badman/backend/ranking';
 import { VisualService } from '@badman/backend/visual';
 import { Logger } from '@nestjs/common';
 import { Transaction } from 'sequelize';
@@ -48,6 +49,7 @@ export class CompetitionSyncer {
 
   constructor(
     private visualService: VisualService,
+    private pointService: PointsService,
     protected options?: {
       newGames?: boolean;
     }
@@ -124,7 +126,7 @@ export class CompetitionSyncer {
       options
     );
 
-    this._pointStep = new CompetitionSyncPointProcessor(options);
+    this._pointStep = new CompetitionSyncPointProcessor(this.pointService, options);
     
     this._standingStep = new CompetitionSyncStandingProcessor({
       ...options,

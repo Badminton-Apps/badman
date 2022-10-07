@@ -275,7 +275,7 @@ export class VisualService {
       this.logger.debug(`Always using cache on dev`);
     }
 
-    if (useCache) {
+    if (useCache && this._cacheManager) {
       const cached = await this._cacheManager.get(
         `${VisualService.CACHE_KEY}:${url}`
       );

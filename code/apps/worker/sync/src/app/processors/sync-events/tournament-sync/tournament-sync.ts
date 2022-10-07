@@ -12,6 +12,7 @@ import {
   TournamentSyncStandingProcessor,
   TournamentSyncSubEventProcessor,
 } from './processors';
+import { PointsService } from '@badman/backend/ranking';
 
 export class TournamentSyncer {
   private readonly logger = new Logger(TournamentSyncer.name);
@@ -40,6 +41,7 @@ export class TournamentSyncer {
 
   constructor(
     private visualService: VisualService,
+    private pointService: PointsService,
     protected options?: {
       newGames?: boolean;
     }
@@ -104,7 +106,7 @@ export class TournamentSyncer {
       }
     );
 
-    this._pointStep = new TournamentSyncPointProcessor(options);
+    this._pointStep = new TournamentSyncPointProcessor(this.pointService, options);
     this._standingStep = new TournamentSyncStandingProcessor({
       ...options,
       newGames: this.options.newGames,
