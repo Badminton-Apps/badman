@@ -84,7 +84,7 @@ export class EventEntryResolver {
     return eventEntry.getTournamentSubEvent();
   }
 
-  @ResolveField(() => Standing)
+  @ResolveField(() => Standing, {nullable: true})
   async standing(@Parent() eventEntry: EventEntry): Promise<Standing> {
     return eventEntry.getStanding();
   }

@@ -368,7 +368,7 @@ type EventEntry {
   players: [Player!]!
   getCompetitionDraw: [DrawCompetition!]!
   tournamentSubEvent: [DrawTournament!]!
-  standing: Standing!
+  standing: Standing
 }
 
 """A DrawCompetition"""

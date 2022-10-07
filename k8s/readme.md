@@ -41,10 +41,10 @@ Default we run on a 3 node cluster
 
 ### create DB
 
-`helm install postgresql --namespace badman bitnami/postgresql-ha --version=8.3.1 -f psql.yaml`
+`helm install postgresql --namespace badman bitnami/postgresql-ha --version=9.4.6 -f psql.yaml`
 
 upgrade replica count (in psql.yaml) and appy:
-`helm upgrade --install postgresql --namespace badman bitnami/postgresql-ha --version=8.3.1 -f psql.yaml`
+`helm upgrade --install postgresql --namespace badman bitnami/postgresql-ha --version=9.4.6 -f psql.yaml`
 
 ## reddis
 

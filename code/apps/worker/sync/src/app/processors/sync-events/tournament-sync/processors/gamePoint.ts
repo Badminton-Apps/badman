@@ -1,19 +1,20 @@
 import {
   EventTournament,
   Game,
-  GamePlayerMembership,
   Player,
-  RankingPlace,
   RankingPoint,
   RankingSystem,
 } from '@badman/backend/database';
-import { getSystemCalc } from '@badman/backend/ranking-calc';
+import { PointsService, StartVisualRankingDate } from '@badman/backend/ranking';
 import { Op } from 'sequelize';
-import { StepProcessor } from '../../../../processing';
-import { StartVisualRankingDate } from '@badman/backend/ranking';
+import { StepOptions, StepProcessor } from '../../../../processing';
 
 export class TournamentSyncPointProcessor extends StepProcessor {
   public event: EventTournament;
+
+  constructor(private pointService: PointsService, options?: StepOptions) {
+    super(options);
+  }
 
   public async process(): Promise<void> {
     const subEvents = await this.event.getSubEventTournaments({
@@ -70,55 +71,16 @@ export class TournamentSyncPointProcessor extends StepProcessor {
           );
 
           if (gamesWithoutPoints.length > 0) {
-            const system = getSystemCalc(rankingSystem);
-            const gamePlayers = await GamePlayerMembership.findAll({
-              where: {
-                gameId: {
-                  [Op.in]: gamesWithoutPoints.map((game) => game.id),
-                },
-              },
-              transaction: this.transaction,
-            });
-            const players = await Player.findAll({
-              where: {
-                id: {
-                  [Op.in]: gamePlayers.map((gp) => gp.playerId),
-                },
-              },
-              include: [
+            for (const game of gamesWithoutPoints) {
+              await this.pointService.createRankingPointforGame(
+                rankingSystem,
+                game,
                 {
-                  required: false,
-                  model: RankingPlace,
-                  where: {
-                    systemId: rankingSystem.id,
-                  },
-                },
-              ],
-              transaction: this.transaction,
-            });
-
-            const hash = new Map<
-              string,
-              Player & {
-                GamePlayerMembership: GamePlayerMembership;
-              }
-            >(
-              players.map((e) => [
-                e.id,
-                e as Player & {
-                  GamePlayerMembership: GamePlayerMembership;
-                },
-              ])
-            );
-
-            await system.calculateRankingPointsPerGameAsync(
-              gamesWithoutPoints,
-              hash,
-              null,
-              {
-                transaction: this.transaction,
-              }
-            );
+                  createRankingPoints: true,
+                  transaction: this.transaction,
+                }
+              );
+            }
           }
           totalGames += games.length;
           totalWithoutPoints += gamesWithoutPoints.length;
