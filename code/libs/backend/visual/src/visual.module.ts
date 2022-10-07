@@ -1,9 +1,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { VisualService } from './services';
-//import CacheModule from '@neskjs/common/cache';
 import { Module, CacheModule } from '@nestjs/common';
 
-//import redisStore from 'cache-manager-redis-store';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
