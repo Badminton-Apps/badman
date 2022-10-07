@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.31.4](https://github.com/Badminton-Apps/badman/compare/v5.31.3...v5.31.4) (2022-10-07)
+
+
+### Bug Fixes
+
+* **backend-graphql:** helps if you do the correct return ([ddcaff0](https://github.com/Badminton-Apps/badman/commit/ddcaff0144a3eb86638f1039de195d7de62a3033))
+
 ### [5.31.3](https://github.com/Badminton-Apps/badman/compare/v5.31.2...v5.31.3) (2022-10-07)
 
 
