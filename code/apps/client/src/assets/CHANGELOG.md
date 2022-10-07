@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.31.2](https://github.com/Badminton-Apps/badman/compare/v5.31.1...v5.31.2) (2022-10-07)
+
+
+### Bug Fixes
+
+* **ci:** rollback axios and cachemanager due to breaking ([3c3f4bb](https://github.com/Badminton-Apps/badman/commit/3c3f4bbdf943cf9b3349b4e307144e8cedd9cd96))
+* **deps:** update dependency cache-manager to v5 ([45b6c1c](https://github.com/Badminton-Apps/badman/commit/45b6c1cb175962ab2504e2a06b78a18392b4886a))
+* **frontend-graphql:** hide standing for removed teams ([9731071](https://github.com/Badminton-Apps/badman/commit/9731071a9a16d331c53f3fc397a332897efeab33))
+* **worker-sync:** updating point calc to new service ([1fc96e9](https://github.com/Badminton-Apps/badman/commit/1fc96e9ce571f9c25f31059ae4eccd32d9a5a23f))
+
 ### [5.31.1](https://github.com/Badminton-Apps/badman/compare/v5.31.0...v5.31.1) (2022-10-05)
 
 
