@@ -189,8 +189,8 @@ export class RoleResolver {
       });
 
       // Commit transaction
-      return true;
       await transaction.commit();
+      return true;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
