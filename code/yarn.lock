@@ -12353,10 +12353,12 @@ ngx-cookie-service@^14.0.0:
   dependencies:
     tslib "^2.0.0"
 
-ngx-cookieconsent@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/ngx-cookieconsent/-/ngx-cookieconsent-2.2.3.tgz#52b44f37557b74841cd332905c94b72bb29fdd82"
-  integrity sha512-vg7M4XZSTFRAQq20M0YVJdz5OkXIu0t0MSYos0vvu7oblaEivQstA1Mg5bO7OJYp+oFoTEefWhvO2nCiyHn9SQ==
+ngx-cookieconsent@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-cookieconsent/-/ngx-cookieconsent-4.0.0.tgz#b348976b61dd72f5913d3453a487074723bdd3f0"
+  integrity sha512-l9WimehMt0zaBdyQk3Q1P9kBhgavI6f2f05MwS79BmiLZ/rnLUDEdoPRz3Rj2vnXSHpVk1O6APdWogvX0uRMgA==
+  dependencies:
+    tslib "^2.1.0"
 
 ngx-echarts@^14.0.0:
   version "14.0.0"
