@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.32.0](https://github.com/Badminton-Apps/badman/compare/v5.31.6...v5.32.0) (2022-10-11)
+
+
+### Features
+
+* **frontend-club:** sort teams by name and team ([8d9a198](https://github.com/Badminton-Apps/badman/commit/8d9a198354f3937ffb9f469c83631fdc3c9f1c9b))
+
 ### [5.31.6](https://github.com/Badminton-Apps/badman/compare/v5.31.5...v5.31.6) (2022-10-11)
 
 
