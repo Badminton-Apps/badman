@@ -428,7 +428,7 @@ export class TeamsResolver {
       await entry.save({ transaction });
 
       await transaction.commit();
-      return team;
+      return true;
     } catch (e) {
       this.logger.warn('rollback', e);
       await transaction.rollback();
