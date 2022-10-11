@@ -109,219 +109,7 @@ export class TeamsResolver {
     return team.getClub();
   }
 
-  @Mutation(() => Team)
-  async addPlayerToTeam(
-    @Args('teamId', { type: () => ID }) teamId: string,
-    @Args('playerId', { type: () => ID }) playerId: string,
-    @User() user: Player
-  ) {
-    const team = await Team.findByPk(teamId);
-
-    if (!team) {
-      throw new NotFoundException(`Team ${teamId}`);
-    }
-
-    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!user.hasAnyPermission(perm)) {
-      throw new UnauthorizedException();
-    }
-
-    const player = await Player.findByPk(playerId);
-    if (!player) {
-      throw new NotFoundException(playerId);
-    }
-
-    await team.addPlayer(player, {
-      through: {
-        start: new Date(),
-      },
-    });
-
-    return team;
-  }
-
-  @Mutation(() => Team)
-  async updateBasePlayerTeam(
-    @Args('teamId', { type: () => ID }) teamId: string,
-    @Args('playerId', { type: () => ID }) playerId: string,
-    @Args('base') base: boolean,
-    @User() user: Player
-  ) {
-    const team = await Team.findByPk(teamId);
-
-    if (!team) {
-      throw new NotFoundException(`${Team.name}: ${teamId}`);
-    }
-
-    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!user.hasAnyPermission(perm)) {
-      throw new UnauthorizedException();
-    }
-
-    const player = await Player.findByPk(playerId);
-    if (!player) {
-      throw new NotFoundException(playerId);
-    }
-
-    await TeamPlayerMembership.update(
-      {
-        teamId: team.id,
-        playerId: player.id,
-        base,
-      },
-      { where: { teamId: team.id, playerId: player.id } }
-    );
-    // const test = await GRAPHQL_CACHE.get('fqc:07b1794c5e168e308111a50f3c9d1935754344876843076b8654d69c3bd581ce');
-
-    return team;
-  }
-
-  @Mutation(() => Team)
-  async removeBasePlayerForSubEvent(
-    @Args('teamId', { type: () => ID }) teamId: string,
-    @Args('playerId', { type: () => ID }) playerId: string,
-    @Args('subEventId', { type: () => ID }) subEventId: string,
-    @User() user: Player
-  ) {
-    const perm = [`change-base:team`, 'edit-any:club'];
-    const transaction = await this._sequelize.transaction();
-    try {
-      const team = await Team.findByPk(teamId);
-
-      if (!team) {
-        throw new NotFoundException(`${Team.name}: ${teamId}`);
-      }
-
-      if (!user.hasAnyPermission(perm)) {
-        throw new UnauthorizedException();
-      }
-
-      const player = await Player.findByPk(playerId);
-      if (!player) {
-        throw new NotFoundException(`${Player.name}: ${playerId}`);
-      }
-
-      const entry = await EventEntry.findOne({
-        where: {
-          teamId: teamId,
-          subEventId,
-        },
-        transaction,
-      });
-      if (!entry) {
-        throw new NotFoundException(
-          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
-        );
-      }
-
-      const meta = entry.meta;
-      const removedPlayer = meta?.competition?.players.filter(
-        (p) => p.id === playerId
-      )[0];
-      if (!removedPlayer) {
-        throw new Exception('Player not part of base?');
-      }
-
-      meta.competition.players = meta?.competition.players.filter(
-        (p) => p.id !== playerId
-      );
-
-      entry.meta = meta;
-      entry.changed('meta', true);
-
-      await entry.save({ transaction });
-
-      await transaction.commit();
-      return team;
-    } catch (e) {
-      this.logger.warn('rollback', e);
-      await transaction.rollback();
-      throw e;
-    }
-  }
-
-  @Mutation(() => Team)
-  async addBasePlayerForSubEvent(
-    @Args('teamId', { type: () => ID }) teamId: string,
-    @Args('playerId', { type: () => ID }) playerId: string,
-    @Args('subEventId', { type: () => ID }) subEventId: string,
-    @User() user: Player
-  ) {
-    const perm = [`change-base:team`, 'edit-any:club'];
-    const transaction = await this._sequelize.transaction();
-    try {
-      const team = await Team.findByPk(teamId);
-
-      if (!team) {
-        throw new NotFoundException(`${Team.name}: ${teamId}`);
-      }
-
-      if (!user.hasAnyPermission(perm)) {
-        throw new UnauthorizedException();
-      }
-
-      const player = await Player.findByPk(playerId);
-      if (!player) {
-        throw new NotFoundException(`${Player.name}: ${playerId}`);
-      }
-
-      const entry = await EventEntry.findOne({
-        where: {
-          teamId: teamId,
-          subEventId,
-        },
-        transaction,
-      });
-      if (!entry) {
-        throw new NotFoundException(
-          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
-        );
-      }
-
-      entry.meta?.competition.players.push({
-        id: player.id,
-        single: -1,
-        double: -1,
-        mix: -1,
-        gender: player.gender,
-      });
-
-      entry.changed('meta', true);
-      await entry.save({ transaction });
-
-      await transaction.commit();
-      return team;
-    } catch (e) {
-      this.logger.warn('rollback', e);
-      await transaction.rollback();
-      throw e;
-    }
-  }
-
-  @Mutation(() => Team)
-  async removePlayerFromTeam(
-    @Args('teamId', { type: () => ID }) teamId: string,
-    @Args('playerId', { type: () => ID }) playerId: string,
-    @User() user: Player
-  ) {
-    const team = await Team.findByPk(teamId);
-
-    if (!team) {
-      throw new NotFoundException(`${Team.name}: ${teamId}`);
-    }
-    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!user.hasAnyPermission(perm)) {
-      throw new UnauthorizedException();
-    }
-
-    const player = await Player.findByPk(playerId);
-    if (!player) {
-      throw new NotFoundException(`${Player.name}: ${playerId}`);
-    }
-
-    await team.removePlayer(player);
-    return team;
-  }
+  // Object
 
   @Mutation(() => Team)
   async createTeam(
@@ -492,7 +280,221 @@ export class TeamsResolver {
     }
   }
 
-  @Mutation(() => Team)
+  // Adding / removing links
+  @Mutation(() => Boolean)
+  async addPlayerFromTeam(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @User() user: Player
+  ) {
+    const team = await Team.findByPk(teamId);
+
+    if (!team) {
+      throw new NotFoundException(`Team ${teamId}`);
+    }
+
+    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
+    if (!user.hasAnyPermission(perm)) {
+      throw new UnauthorizedException();
+    }
+
+    const player = await Player.findByPk(playerId);
+    if (!player) {
+      throw new NotFoundException(playerId);
+    }
+
+    await team.addPlayer(player, {
+      through: {
+        start: new Date(),
+      },
+    });
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async removePlayerFromTeam(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @User() user: Player
+  ) {
+    const team = await Team.findByPk(teamId);
+
+    if (!team) {
+      throw new NotFoundException(`${Team.name}: ${teamId}`);
+    }
+    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
+    if (!user.hasAnyPermission(perm)) {
+      throw new UnauthorizedException();
+    }
+
+    const player = await Player.findByPk(playerId);
+    if (!player) {
+      throw new NotFoundException(`${Player.name}: ${playerId}`);
+    }
+
+    await team.removePlayer(player);
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async updateBasePlayerTeam(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('base') base: boolean,
+    @User() user: Player
+  ) {
+    const team = await Team.findByPk(teamId);
+
+    if (!team) {
+      throw new NotFoundException(`${Team.name}: ${teamId}`);
+    }
+
+    const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
+    if (!user.hasAnyPermission(perm)) {
+      throw new UnauthorizedException();
+    }
+
+    const player = await Player.findByPk(playerId);
+    if (!player) {
+      throw new NotFoundException(playerId);
+    }
+
+    await TeamPlayerMembership.update(
+      {
+        teamId: team.id,
+        playerId: player.id,
+        base,
+      },
+      { where: { teamId: team.id, playerId: player.id } }
+    );
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async removeBasePlayerForSubEvent(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('subEventId', { type: () => ID }) subEventId: string,
+    @User() user: Player
+  ) {
+    const perm = [`change-base:team`, 'edit-any:club'];
+    const transaction = await this._sequelize.transaction();
+    try {
+      const team = await Team.findByPk(teamId);
+
+      if (!team) {
+        throw new NotFoundException(`${Team.name}: ${teamId}`);
+      }
+
+      if (!user.hasAnyPermission(perm)) {
+        throw new UnauthorizedException();
+      }
+
+      const player = await Player.findByPk(playerId);
+      if (!player) {
+        throw new NotFoundException(`${Player.name}: ${playerId}`);
+      }
+
+      const entry = await EventEntry.findOne({
+        where: {
+          teamId: teamId,
+          subEventId,
+        },
+        transaction,
+      });
+      if (!entry) {
+        throw new NotFoundException(
+          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
+        );
+      }
+
+      const meta = entry.meta;
+      const removedPlayer = meta?.competition?.players.filter(
+        (p) => p.id === playerId
+      )[0];
+      if (!removedPlayer) {
+        throw new Exception('Player not part of base?');
+      }
+
+      meta.competition.players = meta?.competition.players.filter(
+        (p) => p.id !== playerId
+      );
+
+      entry.meta = meta;
+      entry.changed('meta', true);
+
+      await entry.save({ transaction });
+
+      await transaction.commit();
+      return team;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async addBasePlayerForSubEvent(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('subEventId', { type: () => ID }) subEventId: string,
+    @User() user: Player
+  ) {
+    const perm = [`change-base:team`, 'edit-any:club'];
+    const transaction = await this._sequelize.transaction();
+    try {
+      const team = await Team.findByPk(teamId);
+
+      if (!team) {
+        throw new NotFoundException(`${Team.name}: ${teamId}`);
+      }
+
+      if (!user.hasAnyPermission(perm)) {
+        throw new UnauthorizedException();
+      }
+
+      const player = await Player.findByPk(playerId);
+      if (!player) {
+        throw new NotFoundException(`${Player.name}: ${playerId}`);
+      }
+
+      const entry = await EventEntry.findOne({
+        where: {
+          teamId: teamId,
+          subEventId,
+        },
+        transaction,
+      });
+      if (!entry) {
+        throw new NotFoundException(
+          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
+        );
+      }
+
+      entry.meta?.competition.players.push({
+        id: player.id,
+        single: -1,
+        double: -1,
+        mix: -1,
+        gender: player.gender,
+      });
+
+      entry.changed('meta', true);
+      await entry.save({ transaction });
+
+      await transaction.commit();
+      return true;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Boolean)
   async removeLocationFromTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('locationId', { type: () => ID }) locationId: string,
@@ -514,10 +516,10 @@ export class TeamsResolver {
     }
 
     await team.removeLocation(location);
-    return team;
+    return Boolean;
   }
 
-  @Mutation(() => Team)
+  @Mutation(() => Boolean)
   async addLocationFromTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('locationId', { type: () => ID }) locationId: string,
@@ -539,6 +541,6 @@ export class TeamsResolver {
     }
 
     await team.addLocation(location);
-    return team;
+    return true;
   }
 }
