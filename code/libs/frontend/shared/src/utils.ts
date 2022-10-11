@@ -43,7 +43,7 @@ export const sortTeams = (a: Team, b: Team) => {
     return (a.teamNumber ?? 0) - (b.teamNumber ?? 0);
   }
 
-  return (a.type ?? '').localeCompare(b.type ?? '');
+  return (a.type ?? a.name ?? '').localeCompare(b.type ?? b.name ?? '');
 };
 
 export interface pageArgs {
