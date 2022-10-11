@@ -408,12 +408,12 @@ export class EditClubComponent implements OnInit {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation AddBasePlayer(
+          mutation AddBasePlayerForSubEvent(
             $playerId: ID!
             $subEventId: ID!
             $teamId: ID!
           ) {
-            addBasePlayer(
+            addBasePlayerForSubEvent(
               playerId: $playerId
               subEventId: $subEventId
               teamId: $teamId
@@ -445,12 +445,12 @@ export class EditClubComponent implements OnInit {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation DeleteBasePlayer(
+          mutation removeBasePlayerForSubEvent(
             $playerId: ID!
             $subEventId: ID!
             $teamId: ID!
           ) {
-            deleteBasePlayer(
+            removeBasePlayerForSubEvent(
               playerId: $playerId
               subEventId: $subEventId
               teamId: $teamId

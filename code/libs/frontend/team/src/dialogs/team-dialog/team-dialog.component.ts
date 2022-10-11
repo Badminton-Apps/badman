@@ -155,8 +155,8 @@ export class TeamDialogComponent implements OnInit {
       await lastValueFrom(
         this.apollo.mutate({
           mutation: gql`
-            mutation AddPlayerToTeamMutation($playerId: ID!, $teamId: ID!) {
-              addPlayerToTeam(playerId: $playerId, teamId: $teamId)
+            mutation addPlayerFromTeamMutation($playerId: ID!, $teamId: ID!) {
+              addPlayerFromTeam(playerId: $playerId, teamId: $teamId)
             }
           `,
           variables: {
@@ -202,7 +202,7 @@ export class TeamDialogComponent implements OnInit {
               $teamId: ID!
               $base: Boolean!
             ) {
-              updatePlayerFromTeam(
+              updateBasePlayerTeam(
                 playerId: $playerId
                 teamId: $teamId
                 base: $base
@@ -323,9 +323,7 @@ export class TeamDialogComponent implements OnInit {
       this.apollo.mutate({
         mutation: gql`
           mutation RemoveTeamLocation($teamId: ID!, $locationId: ID!) {
-            removeLocationFromTeam(teamId: $teamId, locationId: $locationId) {
-              id
-            }
+            removeLocationFromTeam(teamId: $teamId, locationId: $locationId)
           }
         `,
         variables: {
