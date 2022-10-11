@@ -6,6 +6,9 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import {
+  sortTeams,
+} from '@badman/frontend/shared';
+import {
   Club,
   EventCompetition,
   Location,
@@ -48,7 +51,7 @@ export class EditClubComponent implements OnInit {
     private dialog: MatDialog,
     private _snackBar: MatSnackBar,
     private apollo: Apollo
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const clubid$ = this.route.paramMap.pipe(map((params) => params.get('id')));
@@ -206,6 +209,7 @@ export class EditClubComponent implements OnInit {
                     name
                     clubId
                     type
+                    teamNumber
                     entries(where: $subEventsWhere) {
                       id
                       competitionSubEvent {
@@ -251,7 +255,8 @@ export class EditClubComponent implements OnInit {
               );
             })
           );
-      })
+      }),
+      map((teams) => teams.sort(sortTeams))
     );
 
     this.club$ = query.pipe(
