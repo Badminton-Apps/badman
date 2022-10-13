@@ -1,4 +1,4 @@
 {
-    "startCommand": "cd code && yarn"
+    "startCommand": "cd code && yarn && nx run-many --target=serve --projects=api,client --parallel"
   }
   
