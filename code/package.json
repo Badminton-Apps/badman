@@ -1,5 +1,10 @@
 {
   "name": "badman",
+  "description": "A central place for all badminton data",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Badminton-Apps/badman"
+  },
   "version": "5.32.0",
   "license": "MIT",
   "scripts": {
@@ -132,7 +137,7 @@
     "tslib": "^2.4.0",
     "uuid": "^9.0.0",
     "winston": "^3.8.1",
-    "xlsx": "^0.18.10",
+    "xlsx": "^0.18.5",
     "yarn": "^1.22.19",
     "zone.js": "^0.11.5"
   },
