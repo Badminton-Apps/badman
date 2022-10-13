@@ -132,7 +132,7 @@
     "tslib": "^2.4.0",
     "uuid": "^9.0.0",
     "winston": "^3.8.1",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.18.10/xlsx-0.18.10.tgz",
+    "xlsx": "^0.18.10",
     "yarn": "^1.22.19",
     "zone.js": "^0.11.5"
   },
