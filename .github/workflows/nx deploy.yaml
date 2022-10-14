@@ -184,7 +184,7 @@ jobs:
           credentials_json: '${{ env.GKE_CREDENTIALS }}'
 
       - id: 'get-credentials'
-        uses: 'google-github-actions/get-gke-credentials@v0.8.0'
+        uses: 'google-github-actions/get-gke-credentials@v0.8.1'
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
