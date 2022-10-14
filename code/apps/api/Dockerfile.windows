@@ -1,5 +1,6 @@
 # Get base Windows OS image
 FROM mcr.microsoft.com/windows/servercore:ltsc2019
+RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
 
 # Set environment variables
 ENV NPM_CONFIG_LOGLEVEL info
@@ -29,8 +30,6 @@ WORKDIR /app
 COPY ./dist/apps/api .
 ENV PORT=5000
 EXPOSE ${PORT} 9229
-RUN npx -y yarn --production
-# dependencies that nestjs needs
-RUN npx -y yarn add reflect-metadata tslib rxjs @nestjs/platform-express
+RUN pnpm install --frozen-lockfile --prod
 
 CMD node ./main.js
