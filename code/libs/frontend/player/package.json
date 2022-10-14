@@ -4,11 +4,11 @@
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "@badman/frontend/components/game-history": "^0.0.1",
-    "@badman/frontend/components/player-search": "^0.0.1",
-    "@badman/frontend/authentication": "^0.0.1",
-    "@badman/frontend/shared": "^0.0.1",
-    "@badman/frontend/model": "^0.0.1"
+    "@badman/frontend/components/game-history": "workspace:*",
+    "@badman/frontend/components/player-search": "workspace:*",
+    "@badman/frontend/authentication": "workspace:*",
+    "@badman/frontend/shared": "workspace:*",
+    "@badman/frontend/models": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

@@ -9,7 +9,6 @@
       "executor": "@nrwl/angular:ng-packagr-lite",
       "outputs": ["dist/libs/frontend/player"],
       "dependsOn": ["^build"],
-
       "options": {
         "project": "libs/frontend/player/ng-package.json"
       },

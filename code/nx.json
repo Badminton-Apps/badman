@@ -6,7 +6,7 @@
   },
   "cli": {
     "defaultCollection": "@nrwl/angular",
-    "packageManager": "yarn"
+    "packageManager": "pnpm"
   },
   "implicitDependencies": {
     "package.json": {
@@ -46,6 +46,10 @@
     "@nrwl/angular:component": {
       "style": "scss"
     }
+  },
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": ""
   },
   "extends": "nx/presets/npm.json",
   "pluginsConfig": {

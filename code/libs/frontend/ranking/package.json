@@ -4,7 +4,7 @@
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "@badman/frontend/models": "^0.0.1"
+    "@badman/frontend/models": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"
