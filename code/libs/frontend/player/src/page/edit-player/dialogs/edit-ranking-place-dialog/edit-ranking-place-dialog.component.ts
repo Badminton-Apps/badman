@@ -9,6 +9,7 @@ import {
   RankingSystem,
   RankingSystems,
 } from '@badman/frontend/models';
+import { Apollo } from 'apollo-angular';
 
 @Component({
   templateUrl: './edit-ranking-place-dialog.component.html',
@@ -21,6 +22,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<EditRankingPlaceDialogComponent>,
+    private apollo: Apollo,
     @Inject(MAT_DIALOG_DATA)
     public data: { place: RankingPlace; system: RankingSystem }
   ) {}
@@ -93,9 +95,18 @@ export class EditRankingPlaceDialogComponent implements OnInit {
   mayRanking(event: Event) {
     event.preventDefault();
     const date = moment();
-    const compEvent =
-      this.data.system?.rankingGroups?.[0]?.subEventCompetitions?.[0]
-        .eventCompetition;
+
+    // Get event from group whith highest eventCompetition startyear
+    const compEvent = this.data.system?.rankingGroups?.[0].subEventCompetitions
+      ?.map((group) => group.eventCompetition)
+      .reduce((prev, current) => {
+        console.log(prev?.startYear, current?.startYear);
+        if ((prev?.startYear ?? 0) > (current?.startYear ?? 0)) {
+          return prev;
+        } else {
+          return current;
+        }
+      });
 
     if (
       !compEvent?.startYear ||
@@ -117,7 +128,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
   onUpdate() {
     this.dialogRef.close({
-      action: this.data.place?.id ? 'update' : 'add',
+      action: this.data.place?.id ? 'update' : 'new',
       place: {
         systemId: this.data.system.id,
         ...this.data.place,
