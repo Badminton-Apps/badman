@@ -26,7 +26,7 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import { SubEventType } from '../../enums';
-import { MetaType } from '../../types';
+import { EntryMetaType } from '../../types';
 import { Player } from '../player.model';
 import { RankingPlace, RankingSystem } from '../ranking';
 import { Team } from '../team.model';
@@ -126,7 +126,7 @@ export class EventEntry extends Model {
   @HasOne(() => Standing)
   standing?: Standing;
 
-  @Field(() => MetaType, { nullable: true })
+  @Field(() => EntryMetaType, { nullable: true })
   @Column({
     type: DataType.JSON,
   })

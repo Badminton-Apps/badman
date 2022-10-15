@@ -1,9 +1,8 @@
 import { User } from '@badman/backend/authorization';
 import { Player } from '@badman/backend/database';
 import { CpGeneratorService, PlannerService } from '@badman/backend/generator';
-import {
-  SimulationQueue, SyncQueue
-} from '@badman/backend/queue';
+import { NotificationService } from '@badman/backend/notifications';
+import { SimulationQueue, SyncQueue } from '@badman/backend/queue';
 import { InjectQueue } from '@nestjs/bull';
 import {
   Body,
@@ -14,7 +13,7 @@ import {
   Post,
   Query,
   Res,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Queue } from 'bull';
 import { Response } from 'express';
@@ -29,6 +28,7 @@ export class AppController {
     @InjectQueue(SimulationQueue) private rankingSim: Queue,
     @InjectQueue(SyncQueue) private rankingSync: Queue,
     private cpGen: CpGeneratorService,
+    private notificationService: NotificationService,
     private planner: PlannerService
   ) {}
 
@@ -94,4 +94,17 @@ export class AppController {
     // Respond ok for now
     res.status(200).send(result);
   }
+
+  // @Get('save-subscriotion')
+  // async saveSubscription(
+  //   @Res() res: Response,
+  //   @Query() query: { subscription:  }
+  // ) {
+  //   this.logger.debug('Saving subscription');
+  //   this.logger.debug(query);
+
+  //   // Respond ok for now
+  //   res.status(200).send();
+  // }
+
 }
