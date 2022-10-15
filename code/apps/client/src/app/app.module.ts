@@ -47,6 +47,7 @@ import { MomentModule } from 'ngx-moment';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NotificationsModule } from '@badman/frontend/notifications';
 
 const baseModules = [
   BrowserModule,
@@ -132,8 +133,9 @@ const cookieConfig: NgcCookieConsentConfig = {
       },
     }),
     SocketModule,
+    NotificationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
+      enabled: true,
       registrationStrategy: 'registerImmediately',
     }),
   ],
@@ -157,7 +159,7 @@ const cookieConfig: NgcCookieConsentConfig = {
     },
     {
       provide: GOOGLE_MAPS_API_CONFIG,
-      useValue: {
+      useValue: { 
         apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
         libraries: ['places'],
       },

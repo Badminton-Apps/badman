@@ -8,14 +8,15 @@ import {
   SubEventType,
 } from '@badman/backend/database';
 import { HandlebarService } from '@badman/backend/handlebar';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { promises } from 'fs';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 const { readFile } = promises;
 
 @Injectable()
 export class PdfService {
+  private readonly logger = new Logger(PdfService.name);
   constructor(private handlebarService: HandlebarService) {}
 
   async getTeamAssemblyPdf(input: {
@@ -221,8 +222,17 @@ export class PdfService {
     const logo = await readFile(`${__dirname}/assets/logo.png`, {
       encoding: 'base64',
     });
+
+    const date = moment(encounter.date)
+      .tz('Europe/Brussels')
+      .format('DD-MM-YYYY HH:mm');
+
+    this.logger.debug(
+      `Generating assembly for ${homeTeam.name} vs ${awayTeam.name} on ${date}`
+    );
+
     const context = {
-      date: moment(encounter.date).tz('Europe/Brussels').format('DD-MM-YYYY HH:mm'),
+      date,
       baseIndex: meta?.competition?.teamIndex,
       teamIndex: teamIndex.index,
       homeTeam: homeTeam.name,

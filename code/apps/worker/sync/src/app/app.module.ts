@@ -21,6 +21,7 @@ import { transports, format } from 'winston';
 import versionPackage from '../version.json';
 import { VisualModule } from '@badman/backend/visual';
 import { RankingModule } from '@badman/backend/ranking';
+import { NotificationsModule } from '@badman/backend/notifications';
 
 @Module({
   providers: [
@@ -78,6 +79,7 @@ import { RankingModule } from '@badman/backend/ranking';
     RankingModule,
     ScheduleModule.forRoot(),
     QueueModule,
+    NotificationsModule
   ],
 })
 export class WorkerSyncModule {}

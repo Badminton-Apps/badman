@@ -13,13 +13,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import {
   debounceTime,
-  delayWhen,
   filter,
   finalize,
   first,
-  last,
   map,
-  skipUntil,
   switchMap,
   tap,
 } from 'rxjs/operators';

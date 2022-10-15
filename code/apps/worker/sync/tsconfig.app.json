@@ -7,9 +7,5 @@
     "emitDecoratorMetadata": true
   },
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
-  "include": [
-    "**/*.ts",
-    "../../../libs-backend/pupeteer/src/shared.ts",
-    "../../../libs-backend/pupeteer/src/signIn.ts"
-  ]
+  "include": ["**/*.ts"]
 }

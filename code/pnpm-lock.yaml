@@ -116,6 +116,7 @@ importers:
       cookieconsent: ^3.1.1
       cronstrue: ^2.0.0
       cypress: ^10.7.0
+      dotenv: ^16.0.3
       echarts: ^5.4.0
       eslint: ^8.17.0
       eslint-config-prettier: ^8.5.0
@@ -260,6 +261,7 @@ importers:
       class-validator: 0.13.2
       cookieconsent: 3.1.1
       cronstrue: 2.11.0
+      dotenv: 16.0.3
       echarts: 5.4.0
       express: 4.18.2
       fast-xml-parser: 4.0.9
@@ -331,7 +333,7 @@ importers:
       '@nrwl/nx-cloud': 14.7.0
       '@nrwl/workspace': 14.8.4_2wek3opiedkinfixu2zhumspe4
       '@nx-tools/docker-metadata': 3.0.1_xxgaxo5bslynlssjkrgn7nsrjm
-      '@nx-tools/nx-docker': 3.0.3_hpq53f6mpz66mrmsvvrewfoyi4
+      '@nx-tools/nx-docker': 3.0.3_3yw6cly4tllpwctnsieqmbo2iu
       '@types/archiver': 5.3.1
       '@types/bull': 3.15.9
       '@types/cache-manager': 4.0.2
@@ -5839,7 +5841,7 @@ packages:
       - encoding
     dev: true
 
-  /@nx-tools/nx-docker/3.0.3_hpq53f6mpz66mrmsvvrewfoyi4:
+  /@nx-tools/nx-docker/3.0.3_3yw6cly4tllpwctnsieqmbo2iu:
     resolution: {integrity: sha512-OoVJgis2216OZ5Co2yeKLD7czlzWTDmZRksaxUS2wjidOx89AOr5EsYRynxAHoELbzNsCW6P+D0bHo+96g+JPQ==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -5849,7 +5851,7 @@ packages:
       '@nx-tools/core': 3.0.1_@nrwl+devkit@14.8.4
       '@swc/helpers': 0.4.11
       csv-parse: 4.16.3
-      dotenv: 16.0.1
+      dotenv: 16.0.3
       semver: 7.3.7
       tmp: 0.2.1
       tslib: 2.4.0
@@ -10057,6 +10059,11 @@ packages:
 
   /dotenv/16.0.1:
     resolution: {integrity: sha512-1K6hR6wtk2FviQ4kEiSjFiH5rpzEVi8WW0x96aztHVMhEspNpc4DVOUTEHtEva5VThQ8IaBX1Pe4gSzpVVUsKQ==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
 
   /dotgitignore/2.1.0:

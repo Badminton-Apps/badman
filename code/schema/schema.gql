@@ -167,7 +167,7 @@ type ExceptionType {
 }
 
 """A Meta"""
-type MetaType {
+type EntryMetaType {
   tournament: EntryTournamentType
   competition: EntryCompetitionType
 }
@@ -327,6 +327,7 @@ type EncounterCompetition {
   acceptedBy: Player
   enteredOn: DateTime
   acceptedOn: DateTime
+  accepted: Boolean
   shuttle: String
   startHour: String
   endHour: String
@@ -363,7 +364,7 @@ type EventEntry {
   subEventId: String
   drawId: String
   entryType: String
-  meta: MetaType
+  meta: EntryMetaType
   team: Team!
   players: [Player!]!
   getCompetitionDraw: [DrawCompetition!]!
@@ -725,15 +726,15 @@ type Query {
 union search = Player | EventCompetition | EventTournament | Club
 
 type Mutation {
-  addPlayerFromTeam(teamId: ID!, playerId: ID!): Team!
-  updateBasePlayerTeam(teamId: ID!, playerId: ID!, base: Boolean!): Team!
-  removeBasePlayerForSubEvent(teamId: ID!, playerId: ID!, subEventId: ID!): Team!
-  addBasePlayerForSubEvent(teamId: ID!, playerId: ID!, subEventId: ID!): Team!
-  removePlayerFromTeam(teamId: ID!, playerId: ID!): Team!
   createTeam(data: TeamNewInput!): Team!
   updateTeam(data: TeamUpdateInput!): Team!
-  removeLocationFromTeam(teamId: ID!, locationId: ID!): Team!
-  addLocationFromTeam(teamId: ID!, locationId: ID!): Team!
+  addPlayerFromTeam(teamId: ID!, playerId: ID!): Boolean!
+  removePlayerFromTeam(teamId: ID!, playerId: ID!): Boolean!
+  updateBasePlayerTeam(teamId: ID!, playerId: ID!, base: Boolean!): Boolean!
+  removeBasePlayerForSubEvent(teamId: ID!, playerId: ID!, subEventId: ID!): Boolean!
+  addBasePlayerForSubEvent(teamId: ID!, playerId: ID!, subEventId: ID!): Boolean!
+  removeLocationFromTeam(teamId: ID!, locationId: ID!): Boolean!
+  addLocationFromTeam(teamId: ID!, locationId: ID!): Boolean!
   addClub(data: ClubNewInput!): Club!
   removeClub(id: ID!): Club!
   updateClub(data: ClubUpdateInput!): Club!
@@ -759,8 +760,8 @@ type Mutation {
   addChangeEncounter(data: EncounterChangeNewInput!): Boolean!
   assignClaim(claimId: ID!, playerId: ID!, active: Boolean!): Boolean!
   updateRole(data: RoleUpdateInput!): Role!
-  addPlayerToRole(roleId: ID!, playerId: ID!): Role!
-  removePlayerFromRole(roleId: ID!, playerId: ID!): Role!
+  addPlayerToRole(roleId: ID!, playerId: ID!): Boolean!
+  removePlayerFromRole(roleId: ID!, playerId: ID!): Boolean!
   addPlayer(data: PlayerNewInput!): Player!
   updatePlayer(data: PlayerUpdateInput!): Player!
   claimAccount(playerId: String!): Player!
