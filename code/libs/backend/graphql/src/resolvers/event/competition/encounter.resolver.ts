@@ -33,10 +33,7 @@ import { Transaction } from 'sequelize';
 import { User } from '@badman/backend/authorization';
 import { ListArgs } from '../../../utils';
 import { Sync, SyncQueue } from '@badman/backend/queue';
-import {
-  EncounterNotifications,
-  NotificationService,
-} from '@badman/backend/notifications';
+import { NotificationService } from '@badman/backend/notifications';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -208,14 +205,12 @@ export class EncounterCompetitionResolver {
 
     // Notify the user
     if (newChangeEncounter.accepted) {
-      this.notificationService.notify(EncounterNotifications.accepted, {
-        changeRequest: encounterChange,
-      });
+      this.notificationService.notifyEncounterChangeFinished(encounter);
     } else {
-      this.notificationService.notify(EncounterNotifications.requested, {
-        changeRequest: encounterChange,
-        homeTeamRequests: newChangeEncounter.home,
-      });
+      this.notificationService.notifyEncounterChange(
+        encounter,
+        newChangeEncounter.home
+      );
     }
 
     return true;

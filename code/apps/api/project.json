@@ -49,7 +49,19 @@
         "outputPath": "dist/apps/api",
         "main": "apps/api/src/main.ts",
         "tsConfig": "apps/api/tsconfig.app.json",
-        "assets": ["apps/api/src/assets"],
+        "assets": [
+          "apps/api/src/assets",
+          {
+            "glob": "**/*",
+            "input": "libs/backend/pdf/src/assets",
+            "output": "assets/pdf"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/backend/mailing/src/assets",
+            "output": "assets/mailing"
+          }
+        ],
         "generatePackageJson": true
       },
       "configurations": {

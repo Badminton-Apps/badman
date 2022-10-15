@@ -3,6 +3,17 @@
   "sourceRoot": "libs/backend/database/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/database",
+        "tsConfig": "libs/backend/database/tsconfig.lib.json",
+        "packageJson": "libs/backend/database/package.json",
+        "main": "libs/backend/database/src/index.ts",
+        "assets": ["libs/backend/database/src/assets/**/*"]
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

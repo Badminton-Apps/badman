@@ -97,6 +97,7 @@
     "class-validator": "^0.13.2",
     "cookieconsent": "^3.1.1",
     "cronstrue": "^2.0.0",
+    "dotenv": "^16.0.3",
     "echarts": "^5.4.0",
     "express": "^4.18.2",
     "fast-xml-parser": "^4.0.8",

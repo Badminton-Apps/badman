@@ -33,6 +33,7 @@
     "frontend-graphql": "libs/frontend/graphql",
     "frontend-info": "libs/frontend/info",
     "frontend-models": "libs/frontend/models",
+    "frontend-notifications": "libs/frontend/notifications",
     "frontend-player": "libs/frontend/player",
     "frontend-ranking": "libs/frontend/ranking",
     "frontend-settings": "libs/frontend/settings",
@@ -40,6 +41,7 @@
     "frontend-team": "libs/frontend/team",
     "frontend-tournament": "libs/frontend/tournament",
     "frontend-training": "libs/frontend/training",
+    "backend-pdf": "libs/backend/pdf",
     "scripts": "apps/scripts",
     "worker-ranking": "apps/worker/ranking",
     "worker-sync": "apps/worker/sync"

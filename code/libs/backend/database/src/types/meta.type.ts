@@ -7,7 +7,7 @@ import {
 } from '../models';
 
 @ObjectType({ description: 'A Meta' })
-export class MetaType {
+export class EntryMetaType {
   @Field(() => EntryTournamentType, { nullable: true })
   tournament?: EntryTournament;
 
