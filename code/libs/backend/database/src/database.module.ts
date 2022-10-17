@@ -35,11 +35,11 @@ import {
             password: configService.get('DB_PASSWORD'),
             database: configService.get('DB_DATABASE'),
           };
-        } else if (configService.get('DB_DIALECT') === 'sqlite') {
+        } else if ((!configService.get('DB_DIALECT')) || configService.get('DB_DIALECT') === 'sqlite') {
           options = {
             ...options,
-            dialect: configService.get('DB_DIALECT'),
-            storage: configService.get('DB_STORAGE'),
+            dialect: configService.get('DB_DIALECT') ?? 'sqlite',
+            storage: configService.get('DB_STORAGE') ?? 'database.sqlite',
           };
         }
 

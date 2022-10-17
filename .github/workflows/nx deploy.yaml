@@ -172,12 +172,12 @@ jobs:
         with:
           ref: ${{env.LATEST_TAG_V}}
       - id: 'auth'
-        uses: 'google-github-actions/auth@v0.8.1'
+        uses: 'google-github-actions/auth@v0.8.3'
         with:
           credentials_json: '${{ env.GKE_CREDENTIALS }}'
 
       - id: 'get-credentials'
-        uses: 'google-github-actions/get-gke-credentials@v0.8.0'
+        uses: 'google-github-actions/get-gke-credentials@v0.8.2'
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
