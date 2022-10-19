@@ -28,12 +28,12 @@ export class CronService {
     });
   }
 
-  // @Cron(CronExpression.EVERY_HOUR)
-  // syncEncounter() {
-  //   this.logger.debug(`${CronExpression.EVERY_HOUR} Cron triggered`);
-  //   this.rankingQ.add(Sync.CheckEncounters, {
-  //     removeOnComplete: true,
-  //     removeOnFail: true,
-  //   });
-  // }
+  @Cron(CronExpression.EVERY_4_HOURS)
+  syncEncounter() {
+    this.logger.debug(`${CronExpression.EVERY_4_HOURS} Cron triggered`);
+    this.rankingQ.add(Sync.CheckEncounters, {
+      removeOnComplete: true,
+      removeOnFail: true,
+    });
+  }
 }

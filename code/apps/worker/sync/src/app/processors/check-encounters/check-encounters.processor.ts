@@ -21,6 +21,7 @@ import {
 } from './pupeteer';
 
 const TEST_TEAMS = [
+  // Smash For Fun
   '25ac5f2b-af0d-4cac-8410-4a066c991596',
   '20da7b3c-ceb6-495f-bae6-8fc486c85955',
   'b56b5220-975d-4f12-9553-7caba4ea3d6d',
@@ -30,6 +31,22 @@ const TEST_TEAMS = [
   '7367a857-b3fc-4fc0-8fbb-02d1c57806e0',
   'e1033a44-a543-45a5-b123-9d7901ef8f07',
   '316c819c-afd8-4336-b648-2da9cc99a01d',
+
+  // BD Opslag
+  'b2673d7e-807c-44b8-a6bc-5c726a995158', // 1G
+  'f9906ec5-591a-45c7-8ab5-d0ffd49095db', // 4G
+  '436d26f3-1afa-4b48-9994-0e0967872f54', // 1H
+
+  // Herne
+  '028b6262-9f05-41e0-92af-3915f766c29d',
+  'c4736c19-5543-427f-a287-fb9df013b269',
+  '794f86de-165c-4b72-8b35-beb7f7cd60c0',
+  '3a988bdd-8af1-4a04-858e-2b72f8ae16e7',
+  '2e288173-43b5-4b20-b0b9-bdcae4ee4a31',
+  '283ec422-375e-4fb3-9583-0841a8fb6b47',
+  '988c072a-35dc-458a-a4b1-4b58be968540',
+  '5df3e122-f027-4bcb-a671-79a8d5f32120',
+  '11880680-183b-4fb3-9367-17f70a12b809',
 ];
 
 @Processor({
@@ -154,7 +171,6 @@ export class CheckEncounterProcessor {
             this.notificationService.notifyEncounterNotAccepted(encounter);
           }
 
-          return;
           // Update our local data
           if (entered) {
             encounter.enteredOn = moment('2000-08-27').toDate();
