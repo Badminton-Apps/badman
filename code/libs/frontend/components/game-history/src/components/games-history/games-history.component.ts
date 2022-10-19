@@ -51,7 +51,7 @@ export class GamesHistoryComponent implements OnInit, OnChanges {
 
   constructor(private apollo: Apollo) {}
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     const batchMap = this.offset.pipe(
       throttleTime(500),
       mergeMap((n) => this.getBatch(n)),

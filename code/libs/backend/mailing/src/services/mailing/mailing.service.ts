@@ -115,40 +115,41 @@ export class MailingService {
   }
 
   async sendNotEnterdMail(
-    to: string,
+    to: Partial<Player>,
     encounter: EncounterCompetition,
     url: string
   ) {
     moment.locale('nl-be');
     const options = {
       from: 'info@badman.app',
-      to,
+      to: to.email,
       subject: `Niet ingegeven resultaat ${encounter.home.name} vs ${encounter.away.name}`,
       template: 'notentered',
       context: {
         encounter: encounter.toJSON(),
         url,
+        captain: to,
       },
     } as MailOptions;
 
     await this._sendMail(options);
   }
 
-  
   async sendNotAcceptedMail(
-    to: string,
+    to: Partial<Player>,
     encounter: EncounterCompetition,
     url: string
   ) {
     moment.locale('nl-be');
     const options = {
       from: 'info@badman.app',
-      to,
+      to: to.email,
       subject: `Niet geaccepteerd resultaat ${encounter.home.name} vs ${encounter.away.name}`,
       template: 'notaccepted',
       context: {
         encounter: encounter.toJSON(),
         url,
+        captain: to,
       },
     } as MailOptions;
 

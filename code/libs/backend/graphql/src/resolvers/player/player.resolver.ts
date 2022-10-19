@@ -8,10 +8,14 @@ import {
   Player,
   PlayerNewInput,
   PlayerUpdateInput,
+  PushSubscriptionInputType,
+  PushSubscription,
   RankingLastPlace,
   RankingPlace,
+  Setting,
   Team,
   TeamPlayer,
+  SettingUpdateInput,
 } from '@badman/backend/database';
 import {
   Logger,
@@ -125,6 +129,7 @@ export class PlayersResolver {
       ...ListArgs.toFindOptions(listArgs),
     });
   }
+
   @ResolveField(() => [RankingLastPlace], {
     description: 'Default sorting: DESC',
   })
@@ -174,6 +179,12 @@ export class PlayersResolver {
   ): Promise<Club[]> {
     return player.getClubs(ListArgs.toFindOptions(listArgs));
   }
+
+  @ResolveField(() => Setting)
+  async setting(@Parent() player: Player): Promise<Setting> {
+    return player.getSetting();
+  }
+
   @Mutation(() => Player)
   async addPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
     if (!user.hasAnyPermission(['add:player'])) {
@@ -201,11 +212,6 @@ export class PlayersResolver {
       throw e;
     }
   }
-
-  // @Mutation(returns => Boolean)
-  // async removePlayer(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
 
   @Mutation(() => Player)
   async updatePlayer(
@@ -248,7 +254,7 @@ export class PlayersResolver {
   ): Promise<Player> {
     const player = await Player.findByPk(playerId);
     if (!player) {
-      throw new NotFoundException(playerId);
+      throw new NotFoundException(`${Player.name}: ${playerId}`);
     }
 
     if (player.sub === user.sub) {
@@ -263,6 +269,75 @@ export class PlayersResolver {
     await player.save();
 
     return player;
+  }
+
+  @Mutation(() => Boolean)
+  async updateSetting(
+    @User() user: Player,
+    @Args('settings') settingsInput: SettingUpdateInput
+  ): Promise<boolean> {
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const setting = await user.getSetting({ transaction });
+
+      if (!setting) {
+        throw new NotFoundException(`${Setting.name}: ${user.id}`);
+      }
+
+      // Update club
+      const result = await setting.update(settingsInput, { transaction });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async addPushSubScription(
+    @User() user: Player,
+    @Args('subscription') subscription: PushSubscriptionInputType
+  ): Promise<boolean> {
+    let settings = await user.getSetting();
+
+    if (!settings) {
+      settings = new Setting({
+        playerId: user.id,
+      });
+    }
+
+    // check if the subscription already exists
+    const existing = settings?.pushSubscriptions?.find(
+      (sub) => sub.endpoint === subscription.endpoint
+    );
+
+    if (!existing) {
+      this.logger.debug(
+        `Adding subscription for player ${user.fullName} (${subscription.endpoint})`
+      );
+      settings.pushSubscriptions.push({
+        endpoint: subscription.endpoint,
+        expirationTime: subscription.expirationTime,
+        keys: {
+          p256dh: subscription.keys.p256dh,
+          auth: subscription.keys.auth,
+        },
+      } as PushSubscription);
+      settings.changed('pushSubscriptions', true);
+      await settings.save();
+    }
+
+    return true;
   }
 }
 

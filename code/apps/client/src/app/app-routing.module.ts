@@ -50,6 +50,13 @@ const routes: Routes = [
         loadChildren: () =>
           import('@badman/frontend/training').then((m) => m.TrainingModule),
       },
+      {
+        path: 'notifications',
+        loadChildren: () =>
+          import('@badman/frontend/notifications').then(
+            (m) => m.NotificationsModule
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '/' },

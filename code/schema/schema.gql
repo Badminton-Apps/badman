@@ -193,6 +193,19 @@ type EntryCompetitionPlayersType {
   player: Player
 }
 
+"""An Exception"""
+type PushSubscriptionKeysType {
+  p256dh: String
+  auth: String
+}
+
+"""An Exception"""
+type PushSubscriptionType {
+  endpoint: String
+  expirationTime: String
+  keys: PushSubscriptionKeysType
+}
+
 """A Availability"""
 type Availability {
   id: ID!
@@ -305,6 +318,19 @@ type EncounterChange {
   dates: [EncounterChangeDate!]
   homeComment: Comment
   awayComment: Comment
+}
+
+"""The settings"""
+type Setting {
+  id: ID!
+  player: Player
+  playerId: String
+  pushSubscriptions: PushSubscriptionType
+  encounterNotEnteredNotification: Int!
+  encounterNotAcceptedNotification: Int!
+  encounterChangeNewNotification: Int!
+  encounterChangeConformationNotification: Int!
+  encounterChangeFinishedNotification: Int!
 }
 
 """A EncounterCompetition"""
@@ -514,6 +540,7 @@ type Player {
   roles: [Role!]
   claims(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Claim!]
   permissions: [String!]!
+  setting: Setting!
 
   """Team Player end date"""
   end: DateTime
@@ -582,6 +609,7 @@ type TeamPlayer {
   roles: [Role!]
   claims: [Claim!]
   permissions: [String!]!
+  setting: Setting!
 
   """Team Player end date"""
   end: DateTime
@@ -618,6 +646,7 @@ type GamePlayer {
   roles: [Role!]
   claims: [Claim!]
   permissions: [String!]!
+  setting: Setting!
 
   """Team Player end date"""
   end: DateTime
@@ -765,6 +794,8 @@ type Mutation {
   addPlayer(data: PlayerNewInput!): Player!
   updatePlayer(data: PlayerUpdateInput!): Player!
   claimAccount(playerId: String!): Player!
+  updateSetting(settings: SettingUpdateInput!): Boolean!
+  addPushSubScription(subscription: PushSubscriptionInputType!): Boolean!
 }
 
 input TeamNewInput {
@@ -991,7 +1022,6 @@ input AvailiblyDayInputType {
   courts: Float
 }
 
-"""An Exception"""
 input ExceptionInputType {
   start: DateTime
   end: DateTime
@@ -1093,4 +1123,25 @@ input PlayerUpdateInput {
 
   """Team Player start date"""
   base: Boolean
+}
+
+input SettingUpdateInput {
+  id: ID
+  playerId: String
+  encounterNotEnteredNotification: Int
+  encounterNotAcceptedNotification: Int
+  encounterChangeNewNotification: Int
+  encounterChangeConformationNotification: Int
+  encounterChangeFinishedNotification: Int
+}
+
+input PushSubscriptionInputType {
+  endpoint: String
+  expirationTime: String
+  keys: PushSubscriptionKeysInputType
+}
+
+input PushSubscriptionKeysInputType {
+  p256dh: String
+  auth: String
 }
