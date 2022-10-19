@@ -10,6 +10,7 @@
   <mat-menu #profileMenu="matMenu">
     <ng-container *ngIf="this.user.profile$ | async as user">
       <a mat-menu-item [routerLink]="['/', 'player', user?.slug]">Profile</a>
+      <a mat-menu-item [routerLink]="['/', 'notifications']">Notificaties</a>
     </ng-container>
     <button
       mat-menu-item

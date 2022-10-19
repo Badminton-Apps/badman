@@ -13,7 +13,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
 > {
   protected linkType = 'encounterCompetition';
   protected type = 'encounterNotEnteredNotification';
-  
+
   private readonly options = (url: string, encounter: EncounterCompetition) => {
     return {
       notification: {
@@ -42,13 +42,25 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
 
     const settings = await player.getSetting();
 
-    try {
-      await webPush.sendNotification(
-        settings.pushSubscription,
-        JSON.stringify(this.options(args.url, data.encounter))
-      );
-    } catch (error) {
-      this.logger.error(error);
+    for (const sub of settings.pushSubscriptions) {
+      try {
+        await webPush.sendNotification(
+          sub,
+          JSON.stringify(this.options(args.url, data.encounter))
+        );
+      } catch (error) {
+        if (error.statusCode === 410) {
+          // Remove unused subscription
+          settings.pushSubscriptions = settings.pushSubscriptions.filter(
+            (s) => s.endpoint !== sub.endpoint
+          );
+          settings.changed('pushSubscriptions', true);
+          this.logger.debug(`Removed subscription for player ${player.fullName} (${sub.endpoint})`);
+          await settings.save();
+        } else {
+          this.logger.error(error);
+        }
+      }
     }
   }
 
@@ -59,9 +71,16 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
 
-    await this.mailing.sendNotEnterdMail(args.email, data.encounter, args.url);
+    await this.mailing.sendNotEnterdMail(
+      {
+        ...player,
+        email: args.email ?? player.email,
+      },
+      data.encounter,
+      args.url
+    );
   }
-  
+
   notifySms(
     player: Player,
     data: { encounter: EncounterCompetition },

@@ -30,7 +30,7 @@ module.exports = {
                 key: 'id',
               },
             },
-            pushSubscription: {
+            pushSubscriptions: {
               type: sequelize.DataTypes.JSON,
               allowNull: true,
             },

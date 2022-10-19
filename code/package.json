@@ -83,6 +83,7 @@
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@nrwl/angular": "14.8.6",
+    "@schematics/angular": "^14.2.6",
     "@socket.io/redis-adapter": "^7.2.0",
     "@types/echarts": "^4.9.16",
     "@types/uuid": "^8.3.4",

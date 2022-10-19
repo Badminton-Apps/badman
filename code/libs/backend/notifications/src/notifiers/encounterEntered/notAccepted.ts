@@ -43,10 +43,12 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
     const settings = await player.getSetting();
 
     try {
-      await webPush.sendNotification(
-        settings.pushSubscription,
-        JSON.stringify(this.options(args.url, data.encounter))
-      );
+      for (const sub of settings.pushSubscriptions) {
+        await webPush.sendNotification(
+          sub,
+          JSON.stringify(this.options(args.url, data.encounter))
+        );
+      }
     } catch (error) {
       this.logger.error(error);
     }
@@ -58,7 +60,14 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
 
-    await this.mailing.sendNotAcceptedMail(args.email, data.encounter, args.url);
+    await this.mailing.sendNotAcceptedMail(
+      {
+        ...player,
+        email: args.email ?? player.email,
+      },
+      data.encounter,
+      args.url
+    );
   }
 
   notifySms(
