@@ -16,9 +16,9 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TeamModule } from '@badman/frontend/team';
-import { CompetitionComponentsModule } from '@badman/frontend/competition';
-import { SharedModule } from '@badman/frontend/shared';
+import { TeamModule } from '@badman/frontend-team';
+import { CompetitionComponentsModule } from '@badman/frontend-competition';
+import { SharedModule } from '@badman/frontend-shared';
 import { ClubRoutingModule } from './club-routing.module';
 import { ClubFieldsComponent, RoleFieldsComponent } from './components';
 import { NgMapsPlacesModule } from '@ng-maps/places';
@@ -39,7 +39,7 @@ import {
   OverviewClubsComponent,
   TeamOverviewComponent,
 } from './pages';
-import { PlayerSearchModule } from '@badman/frontend/components/player-search';
+import { PlayerSearchModule } from '@badman/frontend-components-player-search';
 
 const materialModules = [
   MatButtonModule,

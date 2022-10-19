@@ -1,5 +1,5 @@
-import { SyncQueue, Sync } from '@badman/backend/queue';
-import { VisualService } from '@badman/backend/visual';
+import { SyncQueue, Sync } from '@badman/backend-queue';
+import { VisualService } from '@badman/backend-visual';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';

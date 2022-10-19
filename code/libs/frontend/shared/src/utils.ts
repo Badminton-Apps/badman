@@ -1,6 +1,6 @@
 import { FormGroup, FormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
-import { SubEventCompetition, Team } from '@badman/frontend/models';
+import { SubEventCompetition, Team } from '@badman/frontend-models';
 import moment from 'moment';
 
 export const validateAllFormFields = (formGroup: FormGroup) => {

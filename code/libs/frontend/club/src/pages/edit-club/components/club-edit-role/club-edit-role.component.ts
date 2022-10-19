@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Club, Player, Role } from '@badman/frontend/models';
+import { Club, Player, Role } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-club-edit-role',

@@ -1,12 +1,12 @@
 {
-  "name": "frontend-components-game-history",
+  "name": "@badman/frontend-components-game-history",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.0.0",
     "@angular/core": "^14.0.0",
     "@angular/material": "^14.0.0",
-    "frontend-models": "workspace:*",
-    "frontend-components-player-info": "workspace:*"
+    "@badman/frontend-models": "workspace:*",
+    "@badman/frontend-components-player-info": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

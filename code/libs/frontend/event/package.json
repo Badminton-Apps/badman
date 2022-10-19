@@ -1,12 +1,12 @@
 {
-  "name": "frontend-event",
+  "name": "@badman/frontend-event",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "frontend-models": "workspace:*",
-    "frontend-shared": "workspace:*",
-    "frontend-graphql": "workspace:*"
+    "@badman/frontend-models": "workspace:*",
+    "@badman/frontend-shared": "workspace:*",
+    "@badman/frontend-graphql": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

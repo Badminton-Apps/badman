@@ -3,7 +3,7 @@ import {
   EventCompetition,
   EventTournament,
   Player,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { Injectable } from '@nestjs/common';
 import { Op } from 'sequelize';
 

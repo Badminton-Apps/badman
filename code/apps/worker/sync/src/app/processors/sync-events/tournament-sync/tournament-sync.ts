@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { Transaction } from 'sequelize';
 import { Processor, ProcessStep } from '../../../processing';
-import { VisualService } from '@badman/backend/visual';
+import { VisualService } from '@badman/backend-visual';
 import { XmlTournament } from '../../../utils';
 import {
   TournamentSyncDrawProcessor,
@@ -12,7 +12,7 @@ import {
   TournamentSyncStandingProcessor,
   TournamentSyncSubEventProcessor,
 } from './processors';
-import { PointsService } from '@badman/backend/ranking';
+import { PointsService } from '@badman/backend-ranking';
 
 export class TournamentSyncer {
   private readonly logger = new Logger(TournamentSyncer.name);

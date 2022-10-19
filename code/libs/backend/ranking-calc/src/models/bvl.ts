@@ -8,7 +8,7 @@ import {
   RankingPlace,
   RankingPoint,
   RankingSystem,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { RankingCalc, PointCalculator } from '../utils';
 import { Logger } from '@nestjs/common';
 

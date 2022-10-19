@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Club, Team } from '@badman/frontend/models';
+import { Club, Team } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-team-overview',

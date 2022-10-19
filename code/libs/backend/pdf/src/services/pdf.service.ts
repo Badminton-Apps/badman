@@ -6,8 +6,8 @@ import {
   RankingLastPlace,
   RankingPlace,
   SubEventType,
-} from '@badman/backend/database';
-import { HandlebarService } from '@badman/backend/handlebar';
+} from '@badman/backend-database';
+import { HandlebarService } from '@badman/backend-handlebar';
 import { Injectable, Logger } from '@nestjs/common';
 import { promises } from 'fs';
 import moment from 'moment-timezone';

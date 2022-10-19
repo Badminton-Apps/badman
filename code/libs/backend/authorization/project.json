@@ -1,7 +1,17 @@
 {
-  "name": "backend-authorization",
+  "name": "@badman/backend-authorization",
   "sourceRoot": "libs/backend/authorization/src",
   "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/authorization",
+        "tsConfig": "libs/backend/authorization/tsconfig.lib.json",
+        "packageJson": "libs/backend/authorization/package.json",
+        "main": "libs/backend/authorization/src/index.ts"
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

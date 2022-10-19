@@ -1,4 +1,4 @@
-import { Player, RankingPlace, RankingSystem } from '@badman/backend/database';
+import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import fs, {

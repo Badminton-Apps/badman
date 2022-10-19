@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-pdf',
+  displayName: '@badman/backend-pdf',
   preset: '../../../jest.preset.js',
   globals: {
     'ts-jest': {

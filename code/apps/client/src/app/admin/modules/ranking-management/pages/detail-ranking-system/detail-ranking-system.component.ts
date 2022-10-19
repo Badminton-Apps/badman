@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RankingSystem } from '@badman/frontend/models';
-import { SystemCounts } from '@badman/frontend/ranking';
+import { RankingSystem } from '@badman/frontend-models';
+import { SystemCounts } from '@badman/frontend-ranking';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { combineLatest, Observable } from 'rxjs';

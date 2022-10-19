@@ -1,4 +1,4 @@
-import { EncounterCompetition, Player } from '@badman/backend/database';
+import { EncounterCompetition, Player } from '@badman/backend-database';
 import { Notifier } from '../notifier.base';
 import * as webPush from 'web-push';
 

@@ -1,5 +1,5 @@
 {
-  "name": "backend-graphql",
+  "name": "@badman/backend-graphql",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/graphql/src",
   "targets": {

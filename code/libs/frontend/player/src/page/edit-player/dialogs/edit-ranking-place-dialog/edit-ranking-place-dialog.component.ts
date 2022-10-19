@@ -8,7 +8,7 @@ import {
   RankingPlace,
   RankingSystem,
   RankingSystems,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 import { Apollo } from 'apollo-angular';
 
 @Component({

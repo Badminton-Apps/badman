@@ -16,7 +16,7 @@ import {
   LevelType,
   Player,
   Team,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 import moment, { Moment } from 'moment';
 import {
   combineLatest,
@@ -28,7 +28,7 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { SystemService } from '@badman/frontend/ranking';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   selector: 'badman-assembly',

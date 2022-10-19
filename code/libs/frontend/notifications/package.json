@@ -1,5 +1,5 @@
 {
-  "name": "frontend-notifications",
+  "name": "@badman/frontend-notifications",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
