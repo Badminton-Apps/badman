@@ -1,5 +1,5 @@
 {
-  "name": "backend-database",
+  "name": "@badman/backend-database",
   "sourceRoot": "libs/backend/database/src",
   "projectType": "library",
   "targets": {

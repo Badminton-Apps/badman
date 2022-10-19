@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
-import { Club } from '@badman/frontend/models';
+import { Club } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 
 @Component({

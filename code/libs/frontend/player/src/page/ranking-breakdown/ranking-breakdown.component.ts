@@ -18,9 +18,9 @@ import {
   take,
   tap,
 } from 'rxjs';
-import { Game, Player, RankingSystem } from '@badman/frontend/models';
-import { PlayerService } from '@badman/frontend/shared';
-import { SystemService } from '@badman/frontend/ranking';
+import { Game, Player, RankingSystem } from '@badman/frontend-models';
+import { PlayerService } from '@badman/frontend-shared';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   templateUrl: './ranking-breakdown.component.html',

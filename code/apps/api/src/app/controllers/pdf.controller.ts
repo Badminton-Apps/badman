@@ -1,4 +1,4 @@
-import { PdfService } from '@badman/backend/pdf';
+import { PdfService } from '@badman/backend-pdf';
 import { Controller, Logger, Post, Req, StreamableFile } from '@nestjs/common';
 import { Readable } from 'stream';
 

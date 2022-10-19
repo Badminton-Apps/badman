@@ -6,9 +6,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { GameModule } from '@badman/frontend/components/game';
-import { StandingsModule } from '@badman/frontend/components/standings';
-import { GameResultModule, SharedModule } from '@badman/frontend/shared';
+import { GameModule } from '@badman/frontend-components-game';
+import { StandingsModule } from '@badman/frontend-components-standings';
+import { GameResultModule, SharedModule } from '@badman/frontend-shared';
 import { CompetitionRoutingModule } from './competition-routing.module';
 import { CompetitionComponentsModule } from './components';
 import {

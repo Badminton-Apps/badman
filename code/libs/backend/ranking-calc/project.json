@@ -1,5 +1,5 @@
 {
-  "name": "backend-ranking-calc",
+  "name": "@badman/backend-ranking-calc",
   "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
   "sourceRoot": "libs/backend/ranking-calc/src",
   "projectType": "library",

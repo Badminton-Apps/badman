@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Player } from '@badman/frontend/models';
+import { Player } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-view',

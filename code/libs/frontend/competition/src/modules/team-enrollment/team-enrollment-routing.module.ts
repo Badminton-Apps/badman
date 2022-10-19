@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '@badman/frontend/authentication';
+import { AuthGuard } from '@badman/frontend-authentication';
 import { TeamEnrollmentComponent, TeamEnrollmentsComponent } from './pages';
 
 const routes: Routes = [

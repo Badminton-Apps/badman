@@ -1,9 +1,9 @@
 {
-  "name": "backend-mailing",
+  "name": "@badman/backend-mailing",
   "version": "0.0.1",
   "type": "commonjs",
   "dependencies": {
-    "backend-database": "workspace:*",
-    "backend-handlebar": "workspace:*"
+    "@badman/backend-database": "workspace:*",
+    "@badman/backend-handlebar": "workspace:*"
   }
 }

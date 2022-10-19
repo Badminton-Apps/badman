@@ -1,8 +1,8 @@
-import { User } from '@badman/backend/authorization';
-import { Player } from '@badman/backend/database';
-import { CpGeneratorService, PlannerService } from '@badman/backend/generator';
-import { NotificationService } from '@badman/backend/notifications';
-import { SimulationQueue, SyncQueue } from '@badman/backend/queue';
+import { User } from '@badman/backend-authorization';
+import { Player } from '@badman/backend-database';
+import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
+import { NotificationService } from '@badman/backend-notifications';
+import { SimulationQueue, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import {
   Body,

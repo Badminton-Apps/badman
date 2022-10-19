@@ -8,7 +8,7 @@ import {
   SubEventCompetition,
   SubEventType,
   Team,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { parseString } from '@fast-csv/parse';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

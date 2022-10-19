@@ -2,7 +2,7 @@ import {
   Player,
   RankingLastPlace,
   RankingPlace,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { Logger } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 

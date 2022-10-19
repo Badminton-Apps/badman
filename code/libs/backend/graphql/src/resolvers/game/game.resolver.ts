@@ -6,7 +6,7 @@ import {
   GamePlayerMembership,
   Player,
   RankingPoint,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,

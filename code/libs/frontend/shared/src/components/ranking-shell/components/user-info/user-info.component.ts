@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
-import { UserService } from '@badman/frontend/authentication';
+import { UserService } from '@badman/frontend-authentication';
 
 @Component({
   selector: 'badman-user-info',

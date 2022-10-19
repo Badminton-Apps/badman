@@ -1,4 +1,4 @@
-import { User } from '@badman/backend/authorization';
+import { User } from '@badman/backend-authorization';
 import {
   DrawCompetition,
   DrawTournament,
@@ -9,8 +9,8 @@ import {
   RankingPoint,
   SubEventCompetition,
   SubEventTournament,
-} from '@badman/backend/database';
-import { PointsService, StartVisualRankingDate } from '@badman/backend/ranking';
+} from '@badman/backend-database';
+import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import {
   Logger,
   NotFoundException,

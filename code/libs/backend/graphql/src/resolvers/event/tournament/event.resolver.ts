@@ -1,4 +1,4 @@
-import { EventTournament, SubEventTournament } from '@badman/backend/database';
+import { EventTournament, SubEventTournament } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,

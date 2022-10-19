@@ -8,7 +8,7 @@ import {
   RankingSystems,
   SystemBuilder,
   SystemGroupBuilder,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';

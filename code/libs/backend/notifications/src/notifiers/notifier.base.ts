@@ -2,8 +2,8 @@ import {
   NotificationType,
   Player,
   Notification,
-} from '@badman/backend/database';
-import { MailingService } from '@badman/backend/mailing';
+} from '@badman/backend-database';
+import { MailingService } from '@badman/backend-mailing';
 import { Logger } from '@nestjs/common';
 
 export abstract class Notifier<T, A = { email: string }> {

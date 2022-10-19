@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { waitForSelectors } from '@badman/backend/pupeteer';
+import { waitForSelectors } from '@badman/backend-pupeteer';
 
 export async function enterScores(
   pupeteer: {

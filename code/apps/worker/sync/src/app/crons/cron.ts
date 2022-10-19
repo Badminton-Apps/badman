@@ -1,4 +1,4 @@
-import { SyncQueue, Sync } from '@badman/backend/queue';
+import { SyncQueue, Sync } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';

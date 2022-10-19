@@ -1,5 +1,5 @@
-import { Sync, SyncQueue } from '@badman/backend/queue';
-import { VisualService } from '@badman/backend/visual';
+import { Sync, SyncQueue } from '@badman/backend-queue';
+import { VisualService } from '@badman/backend-visual';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
@@ -8,7 +8,7 @@ import { XmlTournamentTypeID } from '../../utils';
 import { CompetitionSyncer } from './competition-sync';
 import { TournamentSyncer } from './tournament-sync';
 import moment = require('moment');
-import { PointsService } from '@badman/backend/ranking';
+import { PointsService } from '@badman/backend-ranking';
 
 @Processor({
   name: SyncQueue,

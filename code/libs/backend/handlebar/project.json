@@ -1,5 +1,5 @@
 {
-  "name": "backend-handlebar",
+  "name": "@badman/backend-handlebar",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/handlebar/src",
   "projectType": "library",

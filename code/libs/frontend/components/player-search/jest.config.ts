@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-components-player-search',
+  displayName: '@badman/frontend-components-player-search',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {

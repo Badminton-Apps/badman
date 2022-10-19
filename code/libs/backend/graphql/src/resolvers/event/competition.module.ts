@@ -1,6 +1,6 @@
-import { DatabaseModule } from '@badman/backend/database';
-import { NotificationsModule } from '@badman/backend/notifications';
-import { QueueModule } from '@badman/backend/queue';
+import { DatabaseModule } from '@badman/backend-database';
+import { NotificationsModule } from '@badman/backend-notifications';
+import { QueueModule } from '@badman/backend-queue';
 import { Module } from '@nestjs/common';
 import {
   DrawCompetitionResolver,

@@ -3,8 +3,8 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { combineLatest, map, Observable, switchMap, tap } from 'rxjs';
-import { EncounterCompetition } from '@badman/frontend/models';
-import { SystemService } from '@badman/frontend/ranking';
+import { EncounterCompetition } from '@badman/frontend-models';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   templateUrl: './detail-encounter.component.html',

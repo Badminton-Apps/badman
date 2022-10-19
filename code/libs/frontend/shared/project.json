@@ -1,5 +1,5 @@
 {
-  "name": "frontend-shared",
+  "name": "@badman/frontend-shared",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/shared/src",

@@ -3,12 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppController, PdfController, RankingController } from './controllers';
 
-import { DatabaseModule } from '@badman/backend/database';
-import { GeneratorModule } from '@badman/backend/generator';
-import { ApiGrapqhlModule } from '@badman/backend/graphql';
-import { HealthModule } from '@badman/backend/health';
-import { QueueModule } from '@badman/backend/queue';
-import { SearchModule } from '@badman/backend/search';
+import { DatabaseModule } from '@badman/backend-database';
+import { GeneratorModule } from '@badman/backend-generator';
+import { ApiGrapqhlModule } from '@badman/backend-graphql';
+import { HealthModule } from '@badman/backend-health';
+import { QueueModule } from '@badman/backend-queue';
+import { SearchModule } from '@badman/backend-search';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
@@ -16,10 +16,10 @@ import {
 import { format, transports } from 'winston';
 import versionPackage from '../version.json';
 import { EventsModule } from './events';
-import { ApiAuthorizationModule } from '@badman/backend/authorization';
-import { TwizzitModule } from '@badman/backend/twizzit'; 
-import { NotificationsModule } from '@badman/backend/notifications';
-import { PdfModule } from '@badman/backend/pdf';
+import { ApiAuthorizationModule } from '@badman/backend-authorization';
+import { TwizzitModule } from '@badman/backend-twizzit'; 
+import { NotificationsModule } from '@badman/backend-notifications';
+import { PdfModule } from '@badman/backend-pdf';
 @Module({
   imports: [
     ConfigModule.forRoot(),

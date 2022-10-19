@@ -27,8 +27,8 @@ import {
 } from 'rxjs/operators';
 import { RankingService } from '../../../../services';
 import { SimulateService } from '../../../../services/simulate.service';
-import { RankingSystem } from '@badman/frontend/models';
-import { SystemService } from '@badman/frontend/ranking';
+import { RankingSystem } from '@badman/frontend-models';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   templateUrl: './overview-ranking-systems.component.html',

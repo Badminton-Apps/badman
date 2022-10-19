@@ -17,8 +17,8 @@ import {
   compPeriod,
   getCompetitionYear,
   sortTeams,
-} from '@badman/frontend/shared';
-import { EncounterCompetition, Team, Location } from '@badman/frontend/models';
+} from '@badman/frontend-shared';
+import { EncounterCompetition, Team, Location } from '@badman/frontend-models';
 
 @Component({
   templateUrl: './calendar.component.html',
