@@ -43,7 +43,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: './code/pnpm-lock.yaml'
       - name: pnpm-install
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile --no-frozen-lockfile
 
   agents:
     name: Agent ${{ matrix.agent }}
@@ -69,7 +69,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: './code/pnpm-lock.yaml'
       - name: pnpm-install
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
       - name: Start Nx Agent ${{ matrix.agent }}
         run: npx nx-cloud start-agent
 
@@ -96,7 +96,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: './code/pnpm-lock.yaml'
       - name: pnpm-install
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
       - run: npx nx-cloud start-ci-run
       - run: npx nx workspace-lint
       - run: npx nx format:write
@@ -148,7 +148,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: './code/pnpm-lock.yaml'
       - name: pnpm-install
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
       - run: npx nx-cloud start-ci-run
       - run: npx nx workspace-lint
       - run: npx nx format:write
@@ -220,7 +220,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: './code/pnpm-lock.yaml'
       - name: pnpm-install
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - run: npx nx affected --target=build --base=${{ needs.base.outputs.base }} --head=origin/main
       - run: npx nx affected --target=docker --base=${{ needs.base.outputs.base }} --head=origin/main
