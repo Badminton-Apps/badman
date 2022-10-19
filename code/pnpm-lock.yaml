@@ -101,7 +101,7 @@ importers:
       apollo-angular: ^4.0.0
       apollo-server-core: ^3.10.3
       apollo-server-express: ^3.8.2
-      apollo-server-plugin-base: 3.x
+      apollo-server-plugin-base: ^3.6.3
       apollo-server-plugin-response-cache: ^3.7.0
       archiver: ^5.3.1
       axios: 0.27.2
