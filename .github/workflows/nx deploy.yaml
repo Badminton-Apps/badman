@@ -43,7 +43,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: './code/pnpm-lock.yaml'
       - name: pnpm-install
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
   agents:
     name: Agent ${{ matrix.agent }}
