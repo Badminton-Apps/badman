@@ -1,12 +1,12 @@
 {
-  "name": "@badman/frontend/authentication",
+  "name": "frontend-authentication",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "@badman/frontend/models": "workspace:*",
-    "@badman/frontend/config": "workspace:*",
-    "@badman/frontend/graphql": "workspace:*"
+    "frontend-models": "workspace:*",
+    "frontend-config": "workspace:*",
+    "frontend-graphql": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

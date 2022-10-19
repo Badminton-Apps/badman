@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { NotificationType, Player, Setting } from '@badman/frontend/models';
 import { Apollo, gql } from 'apollo-angular';
 import { map } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'badman-edit-settings',
@@ -21,8 +22,8 @@ export class EditSettingsComponent implements OnInit {
     // { value: NotificationType.SMS, viewValue: 'notifications.types.sms' },
   ];
 
-  constructor(private apollo: Apollo, private titleService: Title) {
-    this.titleService.setTitle('notifications.title');
+  constructor(private apollo: Apollo, titleService: Title, translate: TranslateService ) {
+    titleService.setTitle(translate.instant('notifications.title'));
   }
 
   ngOnInit(): void {

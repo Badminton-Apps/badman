@@ -1,10 +1,10 @@
 {
-  "name": "@badman/frontend/training",
+  "name": "frontend-training",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "@badman/frontend/shared": "workspace:*"
+    "frontend-shared": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"
