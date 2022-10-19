@@ -224,13 +224,13 @@ export class RankingPlace extends Model {
         });
 
         if (prevRankingPlace) {
-          if (!instance.single) {
+          if ((instance.single ?? 0) === 0) {
             instance.single = prevRankingPlace.single;
           }
-          if (!instance.double) {
+          if ((instance.double ?? 0) === 0) {
             instance.double = prevRankingPlace.double;
           }
-          if (!instance.mix) {
+          if ((instance.mix ?? 0) === 0) {
             instance.mix = prevRankingPlace.mix;
           }
         }
