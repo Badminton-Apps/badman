@@ -1,4 +1,12 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import { BuildOptions } from 'sequelize';
 import {
   BelongsTo,
@@ -12,6 +20,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { NotificationType } from '../../enums';
+import { PushSubscription, PushSubscriptionType } from '../../types';
 import { Player } from '../player.model';
 
 @Table({
@@ -22,6 +31,8 @@ import { Player } from '../player.model';
 export class Setting extends Model {
   constructor(values?: Partial<Setting>, options?: BuildOptions) {
     super(values, options);
+
+    this.pushSubscriptions = values?.pushSubscriptions ?? [];
   }
 
   @Default(DataType.UUIDV4)
@@ -40,49 +51,59 @@ export class Setting extends Model {
   @Column
   playerId: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => PushSubscriptionType, { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  pushSubscription: PushSubscription;
+  pushSubscriptions: PushSubscription[];
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
+    defaultValue: NotificationType.NONE,
   })
   encounterNotEnteredNotification: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
+    defaultValue: NotificationType.NONE,
   })
   encounterNotAcceptedNotification: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
+    defaultValue: NotificationType.NONE,
   })
   encounterChangeNewNotification: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
+    defaultValue: NotificationType.NONE,
   })
   encounterChangeConformationNotification: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
+    defaultValue: NotificationType.NONE,
   })
   encounterChangeFinishedNotification: NotificationType;
 }
 
-export interface PushSubscription {
-  endpoint: string;
-  expirationTime: string;
-  keys: {
-    p256dh: string;
-    auth: string;
-  };
-}
+@InputType()
+export class SettingUpdateInput extends PartialType(
+  OmitType(Setting, [
+    'player',
+    'pushSubscriptions'
+  ] as const),
+  InputType
+) {}
 
+@InputType()
+export class SettingNewInput extends PartialType(
+  OmitType(SettingUpdateInput, ['id'] as const),
+  InputType
+) {}

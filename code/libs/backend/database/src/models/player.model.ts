@@ -192,6 +192,7 @@ export class Player extends Model {
   @Field(() => [String])
   permissions: string[];
 
+  @Field(() => Setting)
   @HasOne(() => Setting)
   setting?: Setting;
 
@@ -414,6 +415,7 @@ export class PlayerUpdateInput extends PartialType(
     'rankingLastPlaces',
     'entries',
     'games',
+    'setting'
   ] as const),
   InputType
 ) {}

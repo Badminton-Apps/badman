@@ -8,7 +8,6 @@ import {
 } from 'ngx-cookieconsent';
 import { filter, map, Subscription } from 'rxjs';
 import { AuthGuard } from '@badman/frontend/authentication';
-import { NotificationsService } from '@badman/frontend/notifications';
 
 @Component({
   selector: 'badman-root',
@@ -24,12 +23,10 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     updates: SwUpdate,
     snackBar: MatSnackBar,
-    notifications: NotificationsService,
     private ccService: NgcCookieConsentService,
     private cookieService: CookieService,
     public authGuard: AuthGuard
   ) {
-    notifications.subscribeToNotifications();
     updates.versionUpdates
       .pipe(
         filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),

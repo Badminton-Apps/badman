@@ -422,5 +422,26 @@
     "october": "",
     "november": "",
     "december": ""
+  },
+  "notifications": {
+    "title": "Notificaties",
+    "disclaimer": "Notificaties is alleen beschikbaar voor een test groep",
+    "encounterChange": {
+      "title": "Verplaatsings aanvragen",
+      "conformationNotification": "Bevestiging aanvraag",
+      "finishedNotification": "Verplaatsing afgewerkt",
+      "newNotification": "Nieuwe aanvraag"
+    },
+    "encounter": {
+      "title": "Invullen ontmoetingen",
+      "notAcceptedNotification": "Ontmoeting is nog niet geaccepteerd",
+      "notEnteredNotification": "Ontmoeting is nog niet ingevuld"
+    },
+    "types": {
+      "none": "Geen",
+      "email": "Email",
+      "push": "Push",
+      "sms": "SMS"
+    }
   }
 }
