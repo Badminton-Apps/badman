@@ -103,19 +103,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
       shareReplay()
     );
 
-    this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
-      map(([player, user]) => {
-        if (!player) {
-          return { canClaim: false, isUser: false };
-        }
+    // this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
+    //   map(([player, user]) => {
+    //     if (!player) {
+    //       return { canClaim: false, isUser: false };
+    //     }
 
-        return {
-          canClaim: !player.sub && !user,
-          isUser: user?.id === player?.id,
-        };
-      }),
-      startWith({ canClaim: false, isUser: false })
-    );
+    //     return {
+    //       canClaim: !player.sub && !user,
+    //       isUser: user?.id === player?.id,
+    //     };
+    //   }),
+    //   startWith({ canClaim: false, isUser: false })
+    // );
   }
 
   ngOnDestroy(): void {
