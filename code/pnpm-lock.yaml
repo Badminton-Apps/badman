@@ -160,7 +160,6 @@ importers:
       ngx-infinite-scroll: ^14.0.0
       ngx-markdown: ^14.0.0
       ngx-moment: ^6.0.2
-      ngx-socket-io: ^4.3.1
       node-adodb: https://github.com/nuintun/node-adodb
       nodemailer: ^6.7.7
       nodemailer-express-handlebars: ^5.0.0
@@ -285,7 +284,6 @@ importers:
       ngx-infinite-scroll: 14.0.0_hziutw63p6srxucgucaytgznoq
       ngx-markdown: 14.0.1_rnhoysqbuwid3aavx3kikvghze
       ngx-moment: 6.0.2_moment@2.29.4
-      ngx-socket-io: 4.3.1_bdnnqok5r7kasvbmdf4tyesgce
       nodemailer: 6.8.0
       nodemailer-express-handlebars: 5.0.0
       passport: 0.6.0
@@ -678,6 +676,7 @@ importers:
       '@badman/frontend-models': workspace:*
       '@badman/frontend-ranking': workspace:*
       '@badman/frontend-shared': workspace:*
+      ngx-socket-io: ^4.3.1
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
@@ -688,6 +687,7 @@ importers:
       '@badman/frontend-models': link:../models
       '@badman/frontend-ranking': link:../ranking
       '@badman/frontend-shared': 'link:'
+      ngx-socket-io: 4.3.1_bdnnqok5r7kasvbmdf4tyesgce
       tslib: 2.4.0
 
   libs/frontend/team:
