@@ -7,8 +7,8 @@ import {
   Output,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Club, UseForTeamName } from '@badman/frontend/models';
-import { ClaimService } from '@badman/frontend/authentication';
+import { Club, UseForTeamName } from '@badman/frontend-models';
+import { ClaimService } from '@badman/frontend-authentication';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({

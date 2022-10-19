@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ConfigService } from '@badman/frontend/config';
+import { ConfigService } from '@badman/frontend-config';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
-import { Player } from '@badman/frontend/models';
+import { Player } from '@badman/frontend-models';
 import { DeviceService } from '../../services';
-import { UserService } from '@badman/frontend/authentication';
-import { NotificationsService } from '@badman/frontend/notifications';
+import { UserService } from '@badman/frontend-authentication';
+import { NotificationsService } from '@badman/frontend-notifications';
 
 @Component({
   templateUrl: './ranking-shell.component.html',

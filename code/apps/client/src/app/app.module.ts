@@ -24,13 +24,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
-import { ConfigService } from '@badman/frontend/config';
-import { GraphQLModule } from '@badman/frontend/graphql';
+import { ConfigService } from '@badman/frontend-config';
+import { GraphQLModule } from '@badman/frontend-graphql';
 import {
   SharedModule,
   SocketModule,
   SOCKET_URL,
-} from '@badman/frontend/shared';
+} from '@badman/frontend-shared';
 import { GOOGLE_MAPS_API_CONFIG, NgMapsGoogleModule } from '@ng-maps/google';
 import { NgMapsCoreModule } from '@ng-maps/core';
 import { NgMapsPlacesModule } from '@ng-maps/places';
@@ -47,7 +47,7 @@ import { MomentModule } from 'ngx-moment';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NotificationsModule } from '@badman/frontend/notifications';
+import { NotificationsModule } from '@badman/frontend-notifications';
 
 const baseModules = [
   BrowserModule,

@@ -2,7 +2,7 @@ import {
   EncounterChange,
   EncounterChangeDate,
   Comment,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,

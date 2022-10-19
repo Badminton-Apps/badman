@@ -10,9 +10,9 @@ import {
   shareReplay,
   tap,
 } from 'rxjs/operators';
-import { Player } from '@badman/frontend/models';
-import { ConfigService } from '@badman/frontend/config';
-import { apolloCache } from '@badman/frontend/graphql';
+import { Player } from '@badman/frontend-models';
+import { ConfigService } from '@badman/frontend-config';
+import { apolloCache } from '@badman/frontend-graphql';
 
 @Injectable({
   providedIn: 'root',

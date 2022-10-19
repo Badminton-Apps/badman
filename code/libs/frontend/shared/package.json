@@ -1,5 +1,5 @@
 {
-  "name": "frontend-shared",
+  "name": "@badman/frontend-shared",
   "version": "0.0.1",
   "exports": {
     "./theming": {
@@ -12,12 +12,13 @@
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "frontend-models": "workspace:*",
-    "frontend-authentication": "workspace:*",
-    "frontend-graphql": "workspace:*",
-    "frontend-shared": "workspace:*",
-    "frontend-config": "workspace:*",
-    "frontend-ranking": "workspace:*"
+    "ngx-socket-io": "^4.3.1",
+    "@badman/frontend-models": "workspace:*",
+    "@badman/frontend-authentication": "workspace:*",
+    "@badman/frontend-graphql": "workspace:*",
+    "@badman/frontend-shared": "workspace:*",
+    "@badman/frontend-config": "workspace:*",
+    "@badman/frontend-ranking": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

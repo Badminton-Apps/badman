@@ -8,7 +8,7 @@ import {
   UrlTree,
 } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
-import { ConfigService } from '@badman/frontend/config';
+import { ConfigService } from '@badman/frontend-config';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import {

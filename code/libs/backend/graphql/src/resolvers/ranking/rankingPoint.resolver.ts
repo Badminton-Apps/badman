@@ -1,4 +1,4 @@
-import { Player, RankingPoint } from '@badman/backend/database';
+import { Player, RankingPoint } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,

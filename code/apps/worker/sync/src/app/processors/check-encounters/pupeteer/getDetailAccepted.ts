@@ -1,4 +1,4 @@
-import { waitForSelector } from '@badman/backend/pupeteer';
+import { waitForSelector } from '@badman/backend-pupeteer';
 import { Page } from 'puppeteer';
 import { Logger } from '@nestjs/common';
 

@@ -5,7 +5,7 @@ import { TrainingRoutingModule } from './training-routing.module';
 import { CurriculumComponent } from './pages/';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatRadioModule } from '@angular/material/radio';
-import { SharedModule } from '@badman/frontend/shared';
+import { SharedModule } from '@badman/frontend-shared';
 
 @NgModule({
   declarations: [CurriculumComponent],

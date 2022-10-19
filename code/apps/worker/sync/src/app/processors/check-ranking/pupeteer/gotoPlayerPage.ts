@@ -1,5 +1,5 @@
-import { Player } from '@badman/backend/database';
-import { waitForSelector } from '@badman/backend/pupeteer';
+import { Player } from '@badman/backend-database';
+import { waitForSelector } from '@badman/backend-pupeteer';
 import { Page } from 'puppeteer';
 
 export async function searchPlayer(

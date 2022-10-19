@@ -1,5 +1,5 @@
 {
-  "name": "backend-twizzit",
+  "name": "@badman/backend-twizzit",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/twizzit/src",
   "projectType": "library",

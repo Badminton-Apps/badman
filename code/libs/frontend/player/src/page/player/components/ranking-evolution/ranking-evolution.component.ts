@@ -5,8 +5,8 @@ import {
   OnInit
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Player, RankingSystem } from '@badman/frontend/models';
-import { SystemService } from '@badman/frontend/ranking';
+import { Player, RankingSystem } from '@badman/frontend-models';
+import { SystemService } from '@badman/frontend-ranking';
 import { Apollo, gql } from 'apollo-angular';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';

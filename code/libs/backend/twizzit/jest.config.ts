@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-twizzit',
+  displayName: '@badman/backend-twizzit',
   preset: '../../../jest.preset.js',
   globals: {
     'ts-jest': {

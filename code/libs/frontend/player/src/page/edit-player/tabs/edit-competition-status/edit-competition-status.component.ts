@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Player } from '@badman/frontend/models';
+import { Player } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { debounceTime, map } from 'rxjs';
 

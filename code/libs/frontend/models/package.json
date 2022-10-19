@@ -1,5 +1,5 @@
 {
-  "name": "frontend-models",
+  "name": "@badman/frontend-models",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",

@@ -1,8 +1,9 @@
 {
-  "name": "backend-pdf",
+  "name": "@badman/backend-pdf",
   "version": "0.0.1",
   "type": "commonjs",
   "dependencies": {
-    "backend-database": "workspace:*"
+    "@badman/backend-database": "workspace:*",
+    "@badman/backend-handlebar": "workspace:*"
   }
 }

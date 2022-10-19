@@ -1,7 +1,7 @@
-import { EventCompetition, Player } from '@badman/backend/database';
+import { EventCompetition, Player } from '@badman/backend-database';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '@badman/backend/visual';
+import { VisualService } from '@badman/backend-visual';
 import {
   XmlTournament,
   correctWrongPlayers,

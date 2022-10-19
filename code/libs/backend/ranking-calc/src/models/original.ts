@@ -1,4 +1,4 @@
-import { RankingSystem, RankingPlace } from '@badman/backend/database';
+import { RankingSystem, RankingPlace } from '@badman/backend-database';
 import { Logger } from '@nestjs/common';
 import moment from 'moment';
 import { RankingCalc } from '../utils';

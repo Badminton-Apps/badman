@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { NotificationType, Player, Setting } from '@badman/frontend/models';
+import { NotificationType, Player, Setting } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';

@@ -10,7 +10,7 @@ import {
   ClubPlayerMembershipNewInput,
   ClubPlayerMembershipUpdateInput,
   ClubNewInput,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import {
   Logger,
   NotFoundException,
@@ -28,7 +28,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
-import { User } from '@badman/backend/authorization';
+import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
 
 @ObjectType()

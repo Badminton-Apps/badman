@@ -2,11 +2,11 @@ import {
   EventCompetition,
   SubEventCompetition,
   Team,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { isArray } from 'class-validator';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-import { VisualService } from '@badman/backend/visual';
+import { VisualService } from '@badman/backend-visual';
 import { correctWrongTeams, XmlItem, XmlTournament } from '../../../../utils';
 import { DrawStepData } from './draw';
 

@@ -1,7 +1,7 @@
-import { EventCompetition } from '.';
 import { Team } from '../../team.model';
 import { SubEvent } from '../sub-event.model';
 import { CompetitionDraw } from './draw.model';
+import { EventCompetition } from './event.model';
 
 export class SubEventCompetition extends SubEvent {
   teams?: Team[];

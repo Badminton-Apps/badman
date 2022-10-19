@@ -10,8 +10,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { debounceTime, filter, switchMap } from 'rxjs/operators';
 import { Apollo, gql } from 'apollo-angular';
-import { Player } from '@badman/frontend/models';
-import { ClaimService } from '@badman/frontend/authentication';
+import { Player } from '@badman/frontend-models';
+import { ClaimService } from '@badman/frontend-authentication';
 
 @Component({
   selector: 'badman-player-fields',

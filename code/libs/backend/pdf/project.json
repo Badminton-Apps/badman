@@ -1,5 +1,5 @@
 {
-  "name": "backend-pdf",
+  "name": "@badman/backend-pdf",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/pdf/src",
   "projectType": "library",

@@ -5,8 +5,8 @@ import {
   RankingSystem,
   RankingSystems,
   RankingPoint,
-} from '@badman/backend/database';
-import { VisualService } from '@badman/backend/visual';
+} from '@badman/backend-database';
+import { VisualService } from '@badman/backend-visual';
 import { Logger } from '@nestjs/common';
 import { XMLParser } from 'fast-xml-parser';
 

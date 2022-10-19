@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Player, RankingSystem } from '@badman/frontend/models';
+import { Player, RankingSystem } from '@badman/frontend-models';
 import { lastValueFrom, map, switchMap } from 'rxjs';
-import { UserService } from '@badman/frontend/authentication';
-import { SystemService } from '@badman/frontend/ranking';
+import { UserService } from '@badman/frontend-authentication';
+import { SystemService } from '@badman/frontend-ranking';
 import { Apollo, gql } from 'apollo-angular';
 
 @Component({

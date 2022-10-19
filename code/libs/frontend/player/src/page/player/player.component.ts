@@ -18,11 +18,11 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { apolloCache } from '@badman/frontend/graphql';
-import { DeviceService } from '@badman/frontend/shared';
+import { apolloCache } from '@badman/frontend-graphql';
+import { DeviceService } from '@badman/frontend-shared';
 
-import { Player } from '@badman/frontend/models';
-import { UserService } from '@badman/frontend/authentication';
+import { Player } from '@badman/frontend-models';
+import { UserService } from '@badman/frontend-authentication';
 
 @Component({
   templateUrl: './player.component.html',

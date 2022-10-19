@@ -16,14 +16,14 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { apolloCache } from '@badman/frontend/graphql';
+import { apolloCache } from '@badman/frontend-graphql';
 import {
   Availability,
   AvailabilityDay,
   AvailabilityException,
   Club,
   Location,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-location-availability',

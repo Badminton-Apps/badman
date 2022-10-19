@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PdfService } from './services';
-import { HandlebarModule } from '@badman/backend/handlebar';
+import { HandlebarModule } from '@badman/backend-handlebar';
 
 @Module({
   controllers: [],

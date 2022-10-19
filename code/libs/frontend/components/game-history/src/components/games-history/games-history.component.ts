@@ -7,7 +7,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Game, Player } from '@badman/frontend/models';
+import { Game, Player } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import {
   BehaviorSubject,

@@ -1,10 +1,11 @@
 import { Injector, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { SocketIoModule } from 'ngx-socket-io';
 import { SocketService } from './socket.service';
 
 @NgModule({
   declarations: [],
-  imports: [SocketIoModule],
+  imports: [BrowserModule, SocketIoModule],
   exports: [],
   providers: [SocketService],
 })

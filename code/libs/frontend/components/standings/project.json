@@ -1,5 +1,5 @@
 {
-  "name": "frontend-components-standings",
+  "name": "@badman/frontend-components-standings",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/components/standings/src",

@@ -8,7 +8,7 @@ import {
   Game,
   Player,
   Team,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { InjectQueue } from '@nestjs/bull';
 import {
   Logger,
@@ -30,10 +30,10 @@ import { Queue } from 'bull';
 import moment from 'moment';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize';
-import { User } from '@badman/backend/authorization';
+import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../../utils';
-import { Sync, SyncQueue } from '@badman/backend/queue';
-import { NotificationService } from '@badman/backend/notifications';
+import { Sync, SyncQueue } from '@badman/backend-queue';
+import { NotificationService } from '@badman/backend-notifications';
 
 @ObjectType()
 export class PagedEncounterCompetition {

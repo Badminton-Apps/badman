@@ -16,7 +16,7 @@ import {
   Team,
   TeamPlayer,
   SettingUpdateInput,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import {
   Logger,
   NotFoundException,
@@ -32,7 +32,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Op } from 'sequelize';
-import { LoggedInUser, User } from '@badman/backend/authorization';
+import { LoggedInUser, User } from '@badman/backend-authorization';
 import { ListArgs, queryFixer, WhereArgs } from '../../utils';
 import { Sequelize } from 'sequelize-typescript';
 

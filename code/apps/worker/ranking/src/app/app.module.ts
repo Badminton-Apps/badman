@@ -1,6 +1,6 @@
-import { DatabaseModule } from '@badman/backend/database';
-import { QueueModule } from '@badman/backend/queue';
-import { RankingModule } from '@badman/backend/ranking';
+import { DatabaseModule } from '@badman/backend-database';
+import { QueueModule } from '@badman/backend-queue';
+import { RankingModule } from '@badman/backend-ranking';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SimulationProcessor, SimulationV2Processor } from './processors';

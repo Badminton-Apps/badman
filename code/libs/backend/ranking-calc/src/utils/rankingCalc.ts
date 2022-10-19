@@ -13,7 +13,7 @@ import {
   RankingSystem,
   GameType,
   GamePlayerMembership,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { PointCalculator } from './point-calculator';
 
 export class RankingCalc {

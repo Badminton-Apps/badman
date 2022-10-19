@@ -1,0 +1,8 @@
+{
+  "name": "@badman/backend-authorization",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {
+    "@badman/backend-database": "workspace:*"
+  }
+}

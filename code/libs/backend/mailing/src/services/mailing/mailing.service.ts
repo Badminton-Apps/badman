@@ -3,8 +3,8 @@ import {
   EncounterCompetition,
   Player,
   Team,
-} from '@badman/backend/database';
-import { HandlebarService } from '@badman/backend/handlebar';
+} from '@badman/backend-database';
+import { HandlebarService } from '@badman/backend-handlebar';
 import exphbs from 'nodemailer-express-handlebars';
 import { Injectable, Logger } from '@nestjs/common';
 import { readFile, writeFile } from 'fs/promises';

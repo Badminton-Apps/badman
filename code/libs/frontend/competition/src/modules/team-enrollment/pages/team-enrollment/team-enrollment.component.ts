@@ -29,16 +29,16 @@ import {
   take,
   tap,
 } from 'rxjs/operators';
-import { apolloCache } from '@badman/frontend/graphql';
+import { apolloCache } from '@badman/frontend-graphql';
 import {
   Club,
   Comment,
   EventCompetition,
   SubEvent,
   Team,
-} from '@badman/frontend/models';
-import { EventService } from '@badman/frontend/shared';
-import { SystemService } from '@badman/frontend/ranking';
+} from '@badman/frontend-models';
+import { EventService } from '@badman/frontend-shared';
+import { SystemService } from '@badman/frontend-ranking';
 import {
   AddComment,
   AssignLocationEvent,

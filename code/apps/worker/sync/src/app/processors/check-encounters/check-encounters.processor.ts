@@ -4,10 +4,10 @@ import {
   EventCompetition,
   SubEventCompetition,
   Team,
-} from '@badman/backend/database';
-import { NotificationService } from '@badman/backend/notifications';
-import { accepCookies, getBrowser } from '@badman/backend/pupeteer';
-import { Sync, SyncQueue } from '@badman/backend/queue';
+} from '@badman/backend-database';
+import { NotificationService } from '@badman/backend-notifications';
+import { accepCookies, getBrowser } from '@badman/backend-pupeteer';
+import { Sync, SyncQueue } from '@badman/backend-queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import moment from 'moment';

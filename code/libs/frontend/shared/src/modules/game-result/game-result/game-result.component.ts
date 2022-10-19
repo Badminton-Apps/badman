@@ -5,7 +5,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { Game, Player, RankingPoint } from '@badman/frontend/models';
+import { Game, Player, RankingPoint } from '@badman/frontend-models';
 import { ListenTopic, EVENTS } from '../../socket';
 
 @Component({

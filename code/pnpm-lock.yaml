@@ -394,6 +394,12 @@ importers:
       ts-node: 10.9.1_id5sxmpllzol2kp2zgqrnepaum
       typescript: 4.8.4
 
+  libs/backend/authorization:
+    specifiers:
+      '@badman/backend-database': workspace:*
+    dependencies:
+      '@badman/backend-database': link:../database
+
   libs/backend/database:
     specifiers: {}
 
@@ -402,92 +408,94 @@ importers:
 
   libs/backend/mailing:
     specifiers:
-      backend-database: workspace:*
-      backend-handlebar: workspace:*
+      '@badman/backend-database': workspace:*
+      '@badman/backend-handlebar': workspace:*
     dependencies:
-      backend-database: link:../database
-      backend-handlebar: link:../handlebar
+      '@badman/backend-database': link:../database
+      '@badman/backend-handlebar': link:../handlebar
 
   libs/backend/pdf:
     specifiers:
-      backend-database: workspace:*
+      '@badman/backend-database': workspace:*
+      '@badman/backend-handlebar': workspace:*
     dependencies:
-      backend-database: link:../database
+      '@badman/backend-database': link:../database
+      '@badman/backend-handlebar': link:../handlebar
 
   libs/frontend/authentication:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-config: workspace:*
-      frontend-graphql: workspace:*
-      frontend-models: workspace:*
+      '@badman/frontend-config': workspace:*
+      '@badman/frontend-graphql': workspace:*
+      '@badman/frontend-models': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-config: link:../config
-      frontend-graphql: link:../graphql
-      frontend-models: link:../models
+      '@badman/frontend-config': link:../config
+      '@badman/frontend-graphql': link:../graphql
+      '@badman/frontend-models': link:../models
       tslib: 2.4.0
 
   libs/frontend/club:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-authentication: workspace:*
-      frontend-competition: workspace:*
-      frontend-graphql: workspace:*
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
-      frontend-team: workspace:*
+      '@badman/frontend-authentication': workspace:*
+      '@badman/frontend-competition': workspace:*
+      '@badman/frontend-graphql': workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
+      '@badman/frontend-team': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-authentication: link:../authentication
-      frontend-competition: link:../competition
-      frontend-graphql: link:../graphql
-      frontend-models: link:../models
-      frontend-shared: link:../shared
-      frontend-team: link:../team
+      '@badman/frontend-authentication': link:../authentication
+      '@badman/frontend-competition': link:../competition
+      '@badman/frontend-graphql': link:../graphql
+      '@badman/frontend-models': link:../models
+      '@badman/frontend-shared': link:../shared
+      '@badman/frontend-team': link:../team
       tslib: 2.4.0
 
   libs/frontend/competition:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-authentication: workspace:*
-      frontend-components-game: workspace:*
-      frontend-components-player-info: workspace:*
-      frontend-components-standings: workspace:*
-      frontend-graphql: workspace:*
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-authentication': workspace:*
+      '@badman/frontend-components-game': workspace:*
+      '@badman/frontend-components-player-info': workspace:*
+      '@badman/frontend-components-standings': workspace:*
+      '@badman/frontend-graphql': workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-authentication: link:../authentication
-      frontend-components-game: link:../components/game
-      frontend-components-player-info: link:../components/player-info
-      frontend-components-standings: link:../components/standings
-      frontend-graphql: link:../graphql
-      frontend-models: link:../models
-      frontend-shared: link:../shared
+      '@badman/frontend-authentication': link:../authentication
+      '@badman/frontend-components-game': link:../components/game
+      '@badman/frontend-components-player-info': link:../components/player-info
+      '@badman/frontend-components-standings': link:../components/standings
+      '@badman/frontend-graphql': link:../graphql
+      '@badman/frontend-models': link:../models
+      '@badman/frontend-shared': link:../shared
       tslib: 2.4.0
 
   libs/frontend/components/game:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-models: link:../../models
-      frontend-shared: link:../../shared
+      '@badman/frontend-models': link:../../models
+      '@badman/frontend-shared': link:../../shared
       tslib: 2.4.0
 
   libs/frontend/components/game-history:
@@ -495,55 +503,55 @@ importers:
       '@angular/common': ^14.0.0
       '@angular/core': ^14.0.0
       '@angular/material': ^14.0.0
-      frontend-components-player-info: workspace:*
-      frontend-models: workspace:*
+      '@badman/frontend-components-player-info': workspace:*
+      '@badman/frontend-models': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
       '@angular/material': 14.2.5_ljubwqdsnivjbqopfvxzgoribu
-      frontend-components-player-info: link:../player-info
-      frontend-models: link:../../models
+      '@badman/frontend-components-player-info': link:../player-info
+      '@badman/frontend-models': link:../../models
       tslib: 2.4.0
 
   libs/frontend/components/player-info:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-models: workspace:*
+      '@badman/frontend-models': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-models: link:../../models
+      '@badman/frontend-models': link:../../models
       tslib: 2.4.0
 
   libs/frontend/components/player-search:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-models: link:../../models
-      frontend-shared: link:../../shared
+      '@badman/frontend-models': link:../../models
+      '@badman/frontend-shared': link:../../shared
       tslib: 2.4.0
 
   libs/frontend/components/standings:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-models: link:../../models
-      frontend-shared: link:../../shared
+      '@badman/frontend-models': link:../../models
+      '@badman/frontend-shared': link:../../shared
       tslib: 2.4.0
 
   libs/frontend/config:
@@ -560,42 +568,42 @@ importers:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-graphql: workspace:*
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-graphql': workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-graphql: link:../graphql
-      frontend-models: link:../models
-      frontend-shared: link:../shared
+      '@badman/frontend-graphql': link:../graphql
+      '@badman/frontend-models': link:../models
+      '@badman/frontend-shared': link:../shared
       tslib: 2.4.0
 
   libs/frontend/graphql:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-config: workspace:*
+      '@badman/frontend-config': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-config: link:../config
+      '@badman/frontend-config': link:../config
       tslib: 2.4.0
 
   libs/frontend/info:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-models: link:../models
-      frontend-shared: link:../shared
+      '@badman/frontend-models': link:../models
+      '@badman/frontend-shared': link:../shared
       tslib: 2.4.0
 
   libs/frontend/models:
@@ -622,32 +630,32 @@ importers:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-authentication: workspace:*
-      frontend-components-game-history: workspace:*
-      frontend-components-player-search: workspace:*
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-authentication': workspace:*
+      '@badman/frontend-components-game-history': workspace:*
+      '@badman/frontend-components-player-search': workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-authentication: link:../authentication
-      frontend-components-game-history: link:../components/game-history
-      frontend-components-player-search: link:../components/player-search
-      frontend-models: link:../models
-      frontend-shared: link:../shared
+      '@badman/frontend-authentication': link:../authentication
+      '@badman/frontend-components-game-history': link:../components/game-history
+      '@badman/frontend-components-player-search': link:../components/player-search
+      '@badman/frontend-models': link:../models
+      '@badman/frontend-shared': link:../shared
       tslib: 2.4.0
 
   libs/frontend/ranking:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-models: workspace:*
+      '@badman/frontend-models': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-models: link:../models
+      '@badman/frontend-models': link:../models
       tslib: 2.4.0
 
   libs/frontend/settings:
@@ -664,76 +672,78 @@ importers:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-authentication: workspace:*
-      frontend-config: workspace:*
-      frontend-graphql: workspace:*
-      frontend-models: workspace:*
-      frontend-ranking: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-authentication': workspace:*
+      '@badman/frontend-config': workspace:*
+      '@badman/frontend-graphql': workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-ranking': workspace:*
+      '@badman/frontend-shared': workspace:*
+      ngx-socket-io: ^4.3.1
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-authentication: link:../authentication
-      frontend-config: link:../config
-      frontend-graphql: link:../graphql
-      frontend-models: link:../models
-      frontend-ranking: link:../ranking
-      frontend-shared: 'link:'
+      '@badman/frontend-authentication': link:../authentication
+      '@badman/frontend-config': link:../config
+      '@badman/frontend-graphql': link:../graphql
+      '@badman/frontend-models': link:../models
+      '@badman/frontend-ranking': link:../ranking
+      '@badman/frontend-shared': 'link:'
+      ngx-socket-io: 4.3.1_bdnnqok5r7kasvbmdf4tyesgce
       tslib: 2.4.0
 
   libs/frontend/team:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-authentication: workspace:*
-      frontend-components-player-search: workspace:*
-      frontend-graphql: workspace:*
-      frontend-models: workspace:*
-      frontend-ranking: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-authentication': workspace:*
+      '@badman/frontend-components-player-search': workspace:*
+      '@badman/frontend-graphql': workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-ranking': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-authentication: link:../authentication
-      frontend-components-player-search: link:../components/player-search
-      frontend-graphql: link:../graphql
-      frontend-models: link:../models
-      frontend-ranking: link:../ranking
-      frontend-shared: link:../shared
+      '@badman/frontend-authentication': link:../authentication
+      '@badman/frontend-components-player-search': link:../components/player-search
+      '@badman/frontend-graphql': link:../graphql
+      '@badman/frontend-models': link:../models
+      '@badman/frontend-ranking': link:../ranking
+      '@badman/frontend-shared': link:../shared
       tslib: 2.4.0
 
   libs/frontend/tournament:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-components-game: workspace:*
-      frontend-components-standings: workspace:*
-      frontend-graphql: workspace:*
-      frontend-models: workspace:*
-      frontend-shared: workspace:*
+      '@badman/frontend-components-game': workspace:*
+      '@badman/frontend-components-standings': workspace:*
+      '@badman/frontend-graphql': workspace:*
+      '@badman/frontend-models': workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-components-game: link:../components/game
-      frontend-components-standings: link:../components/standings
-      frontend-graphql: link:../graphql
-      frontend-models: link:../models
-      frontend-shared: link:../shared
+      '@badman/frontend-components-game': link:../components/game
+      '@badman/frontend-components-standings': link:../components/standings
+      '@badman/frontend-graphql': link:../graphql
+      '@badman/frontend-models': link:../models
+      '@badman/frontend-shared': link:../shared
       tslib: 2.4.0
 
   libs/frontend/training:
     specifiers:
       '@angular/common': ^14.2.0
       '@angular/core': ^14.2.0
-      frontend-shared: workspace:*
+      '@badman/frontend-shared': workspace:*
       tslib: ^2.3.0
     dependencies:
       '@angular/common': 14.2.6_rqdmvia4mum3ur2pbfifmb6sby
       '@angular/core': 14.2.6_rxjs@7.5.7+zone.js@0.11.8
-      frontend-shared: link:../shared
+      '@badman/frontend-shared': link:../shared
       tslib: 2.4.0
 
 packages:

@@ -4,10 +4,10 @@ import {
   GamePlayerMembership,
   GameStatus,
   Player,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import moment from 'moment-timezone';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '@badman/backend/visual';
+import { VisualService } from '@badman/backend-visual';
 import {
   XmlTournament,
   XmlMatch,
