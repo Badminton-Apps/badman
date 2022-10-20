@@ -6,7 +6,7 @@ import { setContext } from '@apollo/client/link/context';
 import { AuthService } from '@auth0/auth0-angular';
 
 import { lastValueFrom, take } from 'rxjs';
-import { ConfigService } from '@badman/frontend/config';
+import { ConfigService } from '@badman/frontend-config';
 
 export const apolloCache = new InMemoryCache({
   typePolicies: {

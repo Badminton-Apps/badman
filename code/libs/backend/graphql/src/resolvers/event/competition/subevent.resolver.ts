@@ -4,7 +4,7 @@ import {
   EventEntry,
   RankingGroup,
   SubEventCompetition,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,

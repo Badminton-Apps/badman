@@ -20,7 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   SelctionComponentsModule,
   SharedModule,
-} from '@badman/frontend/shared';
+} from '@badman/frontend-shared';
 import { CompetitionComponentsModule } from '../../components';
 import {
   AssignTeamComponent,

@@ -6,7 +6,7 @@
   },
   "cli": {
     "defaultCollection": "@nrwl/angular",
-    "packageManager": "yarn"
+    "packageManager": "pnpm"
   },
   "implicitDependencies": {
     "package.json": {
@@ -47,11 +47,26 @@
       "style": "scss"
     }
   },
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "libs"
+  },
   "extends": "nx/presets/npm.json",
   "pluginsConfig": {
     "@nrwl/js": {
       "analyzeSourceFiles": true
     }
   },
-  "defaultProject": "client"
+  "defaultProject": "client",
+  "targetDefaults": {
+    "e2e": {
+      "inputs": ["default", "^default"]
+    },
+    "test": {
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
+    },
+    "lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+    }
+  }
 }

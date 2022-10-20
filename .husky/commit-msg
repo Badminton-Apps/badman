@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-cd code && yarn commitlint --edit "${1}"
+cd code && commitlint --edit "${1}"

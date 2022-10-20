@@ -5,9 +5,9 @@ import {
   Player,
   RankingPoint,
   RankingSystem,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 
-import { PointsService, StartVisualRankingDate } from '@badman/backend/ranking';
+import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
 

@@ -1,7 +1,7 @@
-import { DatabaseModule, Player } from '@badman/backend/database';
-import { QueueModule, Sync, SyncQueue } from '@badman/backend/queue';
-import { TwizzitModule } from '@badman/backend/twizzit';
-import { VisualModule } from '@badman/backend/visual';
+import { DatabaseModule, Player } from '@badman/backend-database';
+import { QueueModule, Sync, SyncQueue } from '@badman/backend-queue';
+import { TwizzitModule } from '@badman/backend-twizzit';
+import { VisualModule } from '@badman/backend-visual';
 import { InjectQueue } from '@nestjs/bull';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';

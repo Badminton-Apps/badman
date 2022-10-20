@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DrawTournament, EncounterCompetition } from '@badman/frontend/models';
+import { DrawTournament, EncounterCompetition } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

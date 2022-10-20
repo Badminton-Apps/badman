@@ -33,12 +33,12 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import { SecurityType } from '../../enums';
 import { Club } from '../club.model';
 import { Player } from '../player.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Claim, ClaimUpdateInput } from './claim.model';
 import { PlayerRoleMembership } from './role-player-membership.model';
-import { SecurityType } from '../../enums/security-types.enum';
 
 @Table({
   timestamps: true,

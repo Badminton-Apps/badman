@@ -30,18 +30,18 @@ import {
   tap,
 } from 'rxjs';
 import { debounceTime, filter, map } from 'rxjs/operators';
-import { apolloCache } from '@badman/frontend/graphql';
+import { apolloCache } from '@badman/frontend-graphql';
 import {
   getPageArgsFromQueryParams,
   getQueryParamsFromPageArgs,
   pageArgs,
-} from '@badman/frontend/shared';
+} from '@badman/frontend-shared';
 import {
   Event,
   EventCompetition,
   EventTournament,
   EventType,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 
 @Component({
   templateUrl: './overview.component.html',

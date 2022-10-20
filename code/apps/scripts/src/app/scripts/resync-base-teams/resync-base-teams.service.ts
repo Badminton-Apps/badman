@@ -3,7 +3,7 @@ import {
   Player,
   RankingPlace,
   RankingSystem,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import { Sequelize } from 'sequelize-typescript';

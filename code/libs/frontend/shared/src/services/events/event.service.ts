@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { ConfigService } from '@badman/frontend/config';
-import { Club } from '@badman/frontend/models';
+import { ConfigService } from '@badman/frontend-config';
+import { Club } from '@badman/frontend-models';
 
 @Injectable({
   providedIn: 'root',

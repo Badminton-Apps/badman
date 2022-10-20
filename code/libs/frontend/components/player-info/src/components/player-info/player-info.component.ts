@@ -9,7 +9,7 @@ import {
   GameType,
   GameStatus,
   RankingPoint,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-player-info',

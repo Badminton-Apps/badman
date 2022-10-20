@@ -1,4 +1,4 @@
-import { RankingSystem, RankingSystems } from '@badman/backend/database';
+import { RankingSystem, RankingSystems } from '@badman/backend-database';
 import {
   BvlRankingCalc,
   LfbbRankingCalc,

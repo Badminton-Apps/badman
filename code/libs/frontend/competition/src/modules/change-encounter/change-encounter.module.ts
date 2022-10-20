@@ -25,7 +25,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import {
   SelctionComponentsModule,
   SharedModule,
-} from '@badman/frontend/shared';
+} from '@badman/frontend-shared';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 const materialModules = [

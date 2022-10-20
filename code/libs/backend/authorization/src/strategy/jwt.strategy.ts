@@ -1,4 +1,4 @@
-import { Player } from '@badman/backend/database';
+import { Player } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';

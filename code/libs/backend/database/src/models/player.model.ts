@@ -20,6 +20,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
+  HasOneGetAssociationMixin,
+  HasOneSetAssociationMixin,
 } from 'sequelize';
 import {
   BeforeCreate,
@@ -28,6 +30,7 @@ import {
   DataType,
   Default,
   HasMany,
+  HasOne,
   Index,
   IsUUID,
   Model,
@@ -57,6 +60,7 @@ import {
   PartialType,
 } from '@nestjs/graphql';
 import { ClubPlayer } from '../_interception';
+import { Setting } from './personal';
 
 @Table({
   timestamps: true,
@@ -188,6 +192,10 @@ export class Player extends Model {
   @Field(() => [String])
   permissions: string[];
 
+  @Field(() => Setting)
+  @HasOne(() => Setting)
+  setting?: Setting;
+
   // Team Player Fields
   @Field({ nullable: true, description: 'Team Player end date' })
   end?: Date;
@@ -287,6 +295,10 @@ export class Player extends Model {
   hasLastRankingPlace!: HasManyHasAssociationMixin<RankingLastPlace, string>;
   hasRankingLastPlaces!: HasManyHasAssociationsMixin<RankingLastPlace, string>;
   countRankingLastPlaces!: HasManyCountAssociationsMixin;
+
+  // Has one Setting
+  getSetting!: HasOneGetAssociationMixin<Setting>;
+  setSetting!: HasOneSetAssociationMixin<Setting, string>;
 
   regenerateSlug!: Slugify<Player>;
 
@@ -403,6 +415,7 @@ export class PlayerUpdateInput extends PartialType(
     'rankingLastPlaces',
     'entries',
     'games',
+    'setting'
   ] as const),
   InputType
 ) {}

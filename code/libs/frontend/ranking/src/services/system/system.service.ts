@@ -3,7 +3,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 
-import { RankingSystem } from '@badman/frontend/models';
+import { RankingSystem } from '@badman/frontend-models';
 
 const WATCH_SYSTEM_KEY = 'system.id';
 @Injectable({

@@ -5,7 +5,7 @@ import {
   Game,
   Standing,
   Team,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { DrawStepData } from './draw';
 import { EncounterStepData } from './encounter';

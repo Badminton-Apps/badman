@@ -1,4 +1,4 @@
-import { RankingGroup, RankingSystem } from '@badman/backend/database';
+import { RankingGroup, RankingSystem } from '@badman/backend-database';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { PlaceService } from '../place';

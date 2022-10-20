@@ -117,7 +117,6 @@ export class HandlebarService {
     const filePath = path.join(
       __dirname,
       'assets',
-      'templates',
       `${templateName}.handlebars`
     );
     if (!filePath) {

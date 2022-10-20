@@ -7,7 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["dist/libs/frontend/components/standings"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/components/standings"],
       "options": {
         "project": "libs/frontend/components/standings/ng-package.json"
       },
@@ -23,7 +23,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/frontend/components/standings"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/frontend/components/standings"
+      ],
       "options": {
         "jestConfig": "libs/frontend/components/standings/jest.config.ts",
         "passWithNoTests": true

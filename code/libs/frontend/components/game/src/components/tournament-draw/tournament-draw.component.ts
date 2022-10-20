@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DrawTournament } from '@badman/frontend/models';
+import { DrawTournament } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-tournament-draw',

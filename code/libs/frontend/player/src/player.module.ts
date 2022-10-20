@@ -21,7 +21,7 @@ import {
   GameResultModule,
   SelctionComponentsModule,
   SharedModule,
-} from '@badman/frontend/shared';
+} from '@badman/frontend-shared';
 import { MomentModule } from 'ngx-moment';
 import {
   ChartComponent,
@@ -50,8 +50,8 @@ import {
 import { AddGameComponent } from './page/ranking-breakdown/dialogs/add-game/add-game.component';
 import { PlayerRoutingModule } from './player-routing.module';
 
-import { GameHistoryModule } from '@badman/frontend/components/game-history';
-import { PlayerSearchModule } from '@badman/frontend/components/player-search';
+import { GameHistoryModule } from '@badman/frontend-components-game-history';
+import { PlayerSearchModule } from '@badman/frontend-components-player-search';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 const materialModules = [

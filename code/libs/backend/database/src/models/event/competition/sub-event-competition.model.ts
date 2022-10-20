@@ -36,9 +36,9 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { EventEntry } from '..';
 import { SubEventType } from '../../../enums';
 import { RankingGroup } from '../../ranking';
+import { EventEntry } from '../entry.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EventCompetition } from './event-competition.model';
 import { RankingGroupSubEventCompetitionMembership } from './group-subevent-membership.model';

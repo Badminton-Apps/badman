@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable, startWith, switchMap } from 'rxjs';
-import { EventCompetition, SubEventCompetition } from '@badman/frontend/models';
-import { sortSubEvents } from '@badman/frontend/shared';
+import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
+import { sortSubEvents } from '@badman/frontend-shared';
 
 @Component({
   selector: 'badman-sub-event-view',

@@ -9,8 +9,8 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import moment, { Moment } from 'moment';
-import { AvailabilityException } from '@badman/frontend/models';
-import { resetAllFormFields } from '@badman/frontend/shared';
+import { AvailabilityException } from '@badman/frontend-models';
+import { resetAllFormFields } from '@badman/frontend-shared';
 
 @Component({
   selector: 'badman-exception-days',

@@ -3,7 +3,7 @@ import {
   Standing,
   EventEntry,
   Game,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { DrawStepData } from './draw';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';

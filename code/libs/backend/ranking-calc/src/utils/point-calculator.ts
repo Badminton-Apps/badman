@@ -3,7 +3,7 @@ import {
   Game,
   Player,
   GameType,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 
 export class PointCalculator {
   constructor(private _type: RankingSystem) {}

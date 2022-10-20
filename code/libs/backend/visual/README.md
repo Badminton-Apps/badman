@@ -1,7 +1,7 @@
-# backend-visual
+# @badman/backend/visual
 
 This library was generated with [Nx](https://nx.dev).
 
 ## Running unit tests
 
-Run `nx test backend-visual` to execute the unit tests via [Jest](https://jestjs.io).
+Run `nx test @badman/backend/visual` to execute the unit tests via [Jest](https://jestjs.io).

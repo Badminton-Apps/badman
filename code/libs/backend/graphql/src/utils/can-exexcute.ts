@@ -1,4 +1,4 @@
-import { Player } from '@badman/backend/database';
+import { Player } from '@badman/backend-database';
 import { Logger, UnauthorizedException } from '@nestjs/common';
 
 export const canExecute = (

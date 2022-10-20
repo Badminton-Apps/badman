@@ -1,4 +1,4 @@
-import { RankingPlace } from '@badman/backend/database';
+import { RankingPlace } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { Op } from 'sequelize';
 
