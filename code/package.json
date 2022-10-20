@@ -100,7 +100,7 @@
     "axios-retry": "^3.2.5",
     "bull": "^4.8.5",
     "cache-manager": "4",
-    "cache-manager-redis-store": "^2.0.0",
+    "cache-manager-redis-store": "^3.0.0",
     "class-validator": "^0.13.2",
     "cookieconsent": "^3.1.1",
     "cronstrue": "^2.0.0",
