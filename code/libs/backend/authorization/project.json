@@ -1,5 +1,5 @@
 {
-  "name": "@badman/backend-authorization",
+  "name": "backend-authorization",
   "sourceRoot": "libs/backend/authorization/src",
   "targets": {
     "build": {

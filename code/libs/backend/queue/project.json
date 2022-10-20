@@ -1,5 +1,5 @@
 {
-  "name": "@badman/backend-queue",
+  "name": "backend-queue",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/queue/src",
   "projectType": "library",

@@ -1,5 +1,5 @@
 {
-  "name": "@badman/backend-mailing",
+  "name": "backend-mailing",
   "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
   "sourceRoot": "libs/backend/mailing/src",
   "projectType": "library",

@@ -1,0 +1,16 @@
+{
+  "name": "@badman/frontend-socket",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/core": "^14.2.0",
+    "@badman/frontend-config": "workspace:*"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "socket.io-client": "^4.5.1"
+  },
+  "devDependencies": {
+    "@types/socket.io": "^2.1.2",
+    "@types/socket.io-client": "^1.4.32"
+  }
+}

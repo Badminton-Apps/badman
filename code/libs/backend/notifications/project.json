@@ -1,5 +1,5 @@
 {
-  "name": "@badman/backend-notifications",
+  "name": "backend-notifications",
   "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
   "sourceRoot": "libs/backend/notifications/src",
   "projectType": "library",

@@ -39,6 +39,7 @@
     "frontend-ranking": "libs/frontend/ranking",
     "frontend-settings": "libs/frontend/settings",
     "frontend-shared": "libs/frontend/shared",
+    "frontend-socket": "libs/frontend/socket",
     "frontend-team": "libs/frontend/team",
     "frontend-tournament": "libs/frontend/tournament",
     "frontend-training": "libs/frontend/training",
