@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 
@@ -19,7 +20,7 @@ export class WrappedSocket {
       config = this.emptyConfig;
     }
     const url: string = config.url;
-    const options: any = config.options;
+    const options: unknown = config.options;
     const ioFunc = (io as any).default ? (io as any).default : io;
     this.ioSocket = ioFunc(url, options);
   }

@@ -1,4 +1,3 @@
-/** Config interface */
 export interface SocketConfig {
     url: string;
     /**

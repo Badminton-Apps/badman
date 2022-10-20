@@ -1,6 +1,13 @@
 {
   "extends": ["../../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*"],
+  "ignorePatterns": [
+    "!**/*",
+    "node_modules",
+    // Ignore copied files
+    "config/socket.config.ts",
+    "internal-socket.module.ts",
+    "services/wrapped.service.ts"
+  ],
   "overrides": [
     {
       "files": ["*.ts"],
