@@ -112,7 +112,7 @@ jobs:
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
-          npx --yes standard-version -- --base=${{ needs.base.outputs.base }} --head=origin/main
+          npx --yes standard-version --base=${{ needs.base.outputs.base }} --head=origin/main
         env:
           NX_CLOUD_DISTRIBUTED_EXECUTION: false
       - run: npx nx-cloud stop-all-agents
