@@ -18,11 +18,11 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators';
-import { apolloCache } from '@badman/frontend/graphql';
-import { DeviceService } from '@badman/frontend/shared';
+import { apolloCache } from '@badman/frontend-graphql';
+import { DeviceService } from '@badman/frontend-shared';
 
-import { Player } from '@badman/frontend/models';
-import { UserService } from '@badman/frontend/authentication';
+import { Player } from '@badman/frontend-models';
+import { UserService } from '@badman/frontend-authentication';
 
 @Component({
   templateUrl: './player.component.html',
@@ -103,19 +103,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
       shareReplay()
     );
 
-    this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
-      map(([player, user]) => {
-        if (!player) {
-          return { canClaim: false, isUser: false };
-        }
+    // this.canClaimAccount$ = combineLatest([this.player$, this.user$]).pipe(
+    //   map(([player, user]) => {
+    //     if (!player) {
+    //       return { canClaim: false, isUser: false };
+    //     }
 
-        return {
-          canClaim: !player.sub && !user,
-          isUser: user?.id === player?.id,
-        };
-      }),
-      startWith({ canClaim: false, isUser: false })
-    );
+    //     return {
+    //       canClaim: !player.sub && !user,
+    //       isUser: user?.id === player?.id,
+    //     };
+    //   }),
+    //   startWith({ canClaim: false, isUser: false })
+    // );
   }
 
   ngOnDestroy(): void {

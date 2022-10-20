@@ -1,11 +1,10 @@
 FROM node:lts-alpine
+RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
 
 WORKDIR /app
 COPY ./dist/apps/worker/ranking .
 
-RUN npx -y yarn --production
-# dependencies that nestjs needs
-RUN npx -y yarn add reflect-metadata tslib rxjs @nestjs/platform-express
+RUN pnpm install --frozen-lockfile --prod
 
 EXPOSE 4000
 

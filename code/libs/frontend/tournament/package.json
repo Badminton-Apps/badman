@@ -1,14 +1,14 @@
 {
-  "name": "@badman/frontend/tournament",
+  "name": "@badman/frontend-tournament",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "@badman/frontend/models": "^0.0.1",
-    "@badman/frontend/shared": "^0.0.1",
-    "@badman/frontend/graphql": "^0.0.1",
-    "@badman/frontend/components/standing": "^0.0.1",
-    "@badman/frontend/components/game": "^0.0.1"
+    "@badman/frontend-models": "workspace:*",
+    "@badman/frontend-shared": "workspace:*",
+    "@badman/frontend-graphql": "workspace:*",
+    "@badman/frontend-components-standings": "workspace:*",
+    "@badman/frontend-components-game": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

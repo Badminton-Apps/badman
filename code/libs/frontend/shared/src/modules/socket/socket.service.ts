@@ -1,5 +1,5 @@
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
-import { ConfigService } from '@badman/frontend/config';
+import { ConfigService } from '@badman/frontend-config';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
 
 export const SOCKET_URL = new InjectionToken<string>('url');

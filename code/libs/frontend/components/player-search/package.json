@@ -1,11 +1,11 @@
 {
-  "name": "@badman/frontend/components/player-search",
+  "name": "@badman/frontend-components-player-search",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "@badman/frontend/models": "^0.0.1",
-    "@badman/frontend/shared": "^0.0.1"
+    "@badman/frontend-models": "workspace:*",
+    "@badman/frontend-shared": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

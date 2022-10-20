@@ -1,6 +1,6 @@
-import { Player, RankingPlace, RankingSystem } from '@badman/backend/database';
-import { accepCookies, getBrowser } from '@badman/backend/pupeteer';
-import { Sync, SyncQueue } from '@badman/backend/queue';
+import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
+import { accepCookies, getBrowser } from '@badman/backend-pupeteer';
+import { Sync, SyncQueue } from '@badman/backend-queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';

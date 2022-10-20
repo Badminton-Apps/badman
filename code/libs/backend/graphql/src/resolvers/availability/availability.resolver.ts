@@ -6,8 +6,8 @@ import {
   ExceptionType,
   Location,
   Player,
-} from '@badman/backend/database';
-import { User } from '@badman/backend/authorization';
+} from '@badman/backend-database';
+import { User } from '@badman/backend-authorization';
 import {
   Logger,
   NotFoundException,

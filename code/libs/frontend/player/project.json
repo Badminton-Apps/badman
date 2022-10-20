@@ -7,9 +7,8 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["dist/libs/frontend/player"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/player"],
       "dependsOn": ["^build"],
-
       "options": {
         "project": "libs/frontend/player/ng-package.json"
       },
@@ -25,7 +24,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/frontend/player"],
+      "outputs": ["{workspaceRoot}/coverage/libs/frontend/player"],
       "options": {
         "jestConfig": "libs/frontend/player/jest.config.ts",
         "passWithNoTests": true

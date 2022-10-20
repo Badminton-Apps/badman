@@ -9,10 +9,10 @@ import {
   EncounterCompetition,
   EventCompetition,
   Player,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 import { TeamAssemblyService } from '../../services/team-assembly.service';
-import { PdfService } from '@badman/frontend/shared';
-import { SystemService } from '@badman/frontend/ranking';
+import { PdfService } from '@badman/frontend-shared';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   templateUrl: './team-assembly.component.html',

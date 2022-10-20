@@ -1,4 +1,4 @@
-import { Player } from '@badman/backend/database';
+import { Player } from '@badman/backend-database';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 

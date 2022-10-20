@@ -22,7 +22,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { Player } from '@badman/frontend/models';
+import { Player } from '@badman/frontend-models';
 import { PlayerService } from '../../../services';
 
 @Component({

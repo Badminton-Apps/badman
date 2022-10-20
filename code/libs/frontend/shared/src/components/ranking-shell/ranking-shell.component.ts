@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ConfigService } from '@badman/frontend/config';
+import { ConfigService } from '@badman/frontend-config';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { Player } from '@badman/frontend/models';
+import { filter, map, tap } from 'rxjs/operators';
+import { Player } from '@badman/frontend-models';
 import { DeviceService } from '../../services';
-import { UserService } from '@badman/frontend/authentication';
+import { UserService } from '@badman/frontend-authentication';
+import { NotificationsService } from '@badman/frontend-notifications';
 
 @Component({
   templateUrl: './ranking-shell.component.html',
@@ -20,6 +21,7 @@ export class RankingShellComponent implements OnDestroy, OnInit {
   constructor(
     private user: UserService,
     public device: DeviceService,
+    private notificationService: NotificationsService,
     private changeDetectorRef: ChangeDetectorRef,
     private apollo: Apollo,
     private config: ConfigService
@@ -31,7 +33,10 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     this.mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 
     this.profile$ = this.user.profile$.pipe(
-      filter((x) => x !== null)
+      filter((x: Player) => !!x) as never,
+      tap(() => {
+        this.notificationService.subscribeToNotifications();
+      })
     ) as Observable<Player>;
 
     this.canEnroll$ = this.apollo

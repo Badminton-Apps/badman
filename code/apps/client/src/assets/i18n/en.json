@@ -422,5 +422,26 @@
     "october": "October",
     "november": "November",
     "december": "December"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "disclaimer": "Notifications are currently not available for all users.",
+    "encounterChange": {
+      "title": "Encounter change requests",
+      "conformationNotification": "Conformation request",
+      "finishedNotification": "Encounter changed",
+      "newNotification": "New request"
+    },
+    "encounter": {
+      "title": "Enter encounter results",
+      "notAcceptedNotification": "Results not accepted",
+      "notEnteredNotification": "Results not entered"
+    },
+    "types": {
+      "none": "None",
+      "email": "Email",
+      "push": "Push",
+      "sms": "SMS"
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { EncounterCompetition } from '@badman/backend/database';
+import { EncounterCompetition } from '@badman/backend-database';
 import { Page } from 'puppeteer';
 
 export async function gotoEncounterPage(

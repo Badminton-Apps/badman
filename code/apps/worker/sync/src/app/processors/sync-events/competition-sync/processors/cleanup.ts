@@ -3,7 +3,7 @@ import {
   EncounterCompetition,
   EventCompetition,
   Game,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
 

@@ -4,6 +4,17 @@
   "sourceRoot": "libs/backend/mailing/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/mailing",
+        "tsConfig": "libs/backend/mailing/tsconfig.lib.json",
+        "packageJson": "libs/backend/mailing/package.json",
+        "main": "libs/backend/mailing/src/index.ts",
+        "assets": ["libs/backend/mailing/src/assets/**/*"]
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
@@ -13,7 +24,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/mailing"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/mailing"],
       "options": {
         "jestConfig": "libs/backend/mailing/jest.config.js",
         "passWithNoTests": true

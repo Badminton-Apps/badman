@@ -4,7 +4,7 @@ import {
   InputType,
   ObjectType,
   OmitType,
-  PartialType,
+  PartialType
 } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
@@ -28,7 +28,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin,
+  HasManySetAssociationsMixin
 } from 'sequelize';
 import {
   BeforeBulkCreate,
@@ -45,10 +45,9 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique,
+  Unique
 } from 'sequelize-typescript';
-import { SubEventType } from '../enums';
-import { UseForTeamName } from '../enums/useForTeams.enum';
+import { SubEventType, UseForTeamName } from '../enums';
 import { Slugify } from '../types';
 import { TeamPlayer } from '../_interception';
 import { Club } from './club.model';
@@ -56,7 +55,7 @@ import {
   EncounterCompetition,
   EventEntry,
   Location,
-  SubEventCompetition,
+  SubEventCompetition
 } from './event';
 import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player } from './player.model';

@@ -1,5 +1,10 @@
-import { EncounterChange, Player, Team } from '@badman/backend/database';
-import { HandlebarService } from '@badman/backend/handlebar';
+import {
+  EncounterChange,
+  EncounterCompetition,
+  Player,
+  Team,
+} from '@badman/backend-database';
+import { HandlebarService } from '@badman/backend-handlebar';
 import exphbs from 'nodemailer-express-handlebars';
 import { Injectable, Logger } from '@nestjs/common';
 import { readFile, writeFile } from 'fs/promises';
@@ -20,7 +25,7 @@ export class MailingService {
     private configService: ConfigService
   ) {
     this.handleBarService.registerPartials(
-      path.join(__dirname, './assets/templates/mail/partials')
+      path.join(__dirname, './assets/mailing/partials')
     );
   }
 
@@ -109,6 +114,48 @@ export class MailingService {
     await sendMail(encounter.away, encounter.away.captain);
   }
 
+  async sendNotEnterdMail(
+    to: Partial<Player>,
+    encounter: EncounterCompetition,
+    url: string
+  ) {
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Niet ingegeven resultaat ${encounter.home.name} vs ${encounter.away.name}`,
+      template: 'notentered',
+      context: {
+        encounter: encounter.toJSON(),
+        url,
+        captain: to,
+      },
+    } as MailOptions;
+
+    await this._sendMail(options);
+  }
+
+  async sendNotAcceptedMail(
+    to: Partial<Player>,
+    encounter: EncounterCompetition,
+    url: string
+  ) {
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Niet geaccepteerd resultaat ${encounter.home.name} vs ${encounter.away.name}`,
+      template: 'notaccepted',
+      context: {
+        encounter: encounter.toJSON(),
+        url,
+        captain: to,
+      },
+    } as MailOptions;
+
+    await this._sendMail(options);
+  }
+
   private async _setupMailing() {
     if (this.initialized) return;
 
@@ -119,18 +166,18 @@ export class MailingService {
         auth: {
           user: this.configService.get('MAIL_USER'),
           pass: this.configService.get('MAIL_PASS'),
-        }, 
+        },
       });
 
       await this._transporter.verify();
 
       const hbsOptions = exphbs({
         viewEngine: {
-          partialsDir: path.join(__dirname, './assets/templates/mail/partials'),
-          layoutsDir: path.join(__dirname, './assets/templates/mail/layouts'),
+          partialsDir: path.join(__dirname, './assets/mailing/partials'),
+          layoutsDir: path.join(__dirname, './assets/mailing/layouts'),
           defaultLayout: 'layout.handlebars',
         },
-        viewPath: path.join(__dirname, './assets/templates/mail'),
+        viewPath: path.join(__dirname, './assets/mailing'),
       });
 
       this._transporter.use('compile', hbsOptions);
@@ -154,7 +201,7 @@ export class MailingService {
         this.logger.debug('Mailing disabled', { data: options });
         const filePath = path.join(
           __dirname,
-          './assets/templates/mail/',
+          './assets/mailing/',
           `${options.template}.handlebars`
         );
         const template = await readFile(filePath, 'utf-8');

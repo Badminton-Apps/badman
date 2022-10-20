@@ -10,15 +10,15 @@ import {
   Observable,
 } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { apolloCache } from '@badman/frontend/graphql';
-import { Club, Team } from '@badman/frontend/models';
+import { apolloCache } from '@badman/frontend-graphql';
+import { Club, Team } from '@badman/frontend-models';
 import { AddPlayerComponent } from '../../dialogs';
-import { TeamDialogComponent } from '@badman/frontend/team';
+import { TeamDialogComponent } from '@badman/frontend-team';
 
-import { ConfigService } from '@badman/frontend/config';
+import { ConfigService } from '@badman/frontend-config';
 import { HttpClient } from '@angular/common/http';
 import { saveAs } from 'file-saver';
-import { SystemService } from '@badman/frontend/ranking';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   templateUrl: './detail-club.component.html',

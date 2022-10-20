@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { RankingGroup, RankingSystem } from '@badman/frontend/models';
+import { RankingGroup, RankingSystem } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map, Observable, shareReplay } from 'rxjs';
 

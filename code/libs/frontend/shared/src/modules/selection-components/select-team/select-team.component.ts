@@ -9,9 +9,9 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Team } from '@badman/frontend/models';
+import { Team } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { UserService } from '@badman/frontend/authentication';
+import { UserService } from '@badman/frontend-authentication';
 
 @Component({
   selector: 'badman-select-team',

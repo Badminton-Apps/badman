@@ -92,7 +92,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/worker/ranking"],
+      "outputs": ["{workspaceRoot}/coverage/apps/worker/ranking"],
       "options": {
         "jestConfig": "apps/worker/ranking/jest.config.js",
         "passWithNoTests": true

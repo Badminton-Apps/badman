@@ -1,15 +1,15 @@
 {
-  "name": "@badman/frontend/club",
+  "name": "@badman/frontend-club",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "@badman/frontend/team": "^0.0.1",
-    "@badman/frontend/competition": "^0.0.1",
-    "@badman/frontend/shared": "^0.0.1",
-    "@badman/frontend/models": "^0.0.1",
-    "@badman/frontend/authentication": "^0.0.1",
-    "@badman/frontend/graphql": "^0.0.1"
+    "@badman/frontend-team": "workspace:*",
+    "@badman/frontend-competition": "workspace:*",
+    "@badman/frontend-shared": "workspace:*",
+    "@badman/frontend-models": "workspace:*",
+    "@badman/frontend-authentication": "workspace:*",
+    "@badman/frontend-graphql": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

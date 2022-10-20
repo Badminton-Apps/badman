@@ -4,6 +4,17 @@
   "sourceRoot": "libs/backend/handlebar/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/handlebar",
+        "tsConfig": "libs/backend/handlebar/tsconfig.lib.json",
+        "packageJson": "libs/backend/handlebar/package.json",
+        "main": "libs/backend/handlebar/src/index.ts",
+        "assets": ["libs/backend/handlebar/src/assets/**/*"]
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
@@ -13,7 +24,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/handlebar"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/handlebar"],
       "options": {
         "jestConfig": "libs/backend/handlebar/jest.config.ts",
         "passWithNoTests": true
