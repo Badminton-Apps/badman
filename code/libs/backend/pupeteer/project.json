@@ -1,5 +1,5 @@
 {
-  "name": "@badman/backend-pupeteer",
+  "name": "backend-pupeteer",
   "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
   "sourceRoot": "libs/backend/pupeteer/src",
   "projectType": "library",

@@ -1,5 +1,5 @@
 {
-  "name": "@badman/frontend-graphql",
+  "name": "frontend-graphql",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/graphql/src",

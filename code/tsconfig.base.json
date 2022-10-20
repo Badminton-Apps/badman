@@ -10,9 +10,9 @@
     "importHelpers": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "target": "es2020",
+    "target": "es2015",
     "module": "esnext",
-    "lib": ["ES2021", "dom"],
+    "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -77,7 +77,8 @@
       "@badman/frontend-shared": ["libs/frontend/shared/src/index.ts"],
       "@badman/frontend-team": ["libs/frontend/team/src/index.ts"],
       "@badman/frontend-tournament": ["libs/frontend/tournament/src/index.ts"],
-      "@badman/frontend-training": ["libs/frontend/training/src/index.ts"]
+      "@badman/frontend-training": ["libs/frontend/training/src/index.ts"],
+      "@badman/frontend-socket": ["libs/frontend/socket/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
