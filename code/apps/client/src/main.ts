@@ -7,7 +7,7 @@ import { environment } from './environments/environment';
 if (environment.production) {
   enableProdMode();
 } else {
-  (window as any)?.clarity('stop');
+  window?.['clarity']?.('stop');
 }
 
 platformBrowserDynamic()
