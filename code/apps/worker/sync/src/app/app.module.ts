@@ -1,5 +1,5 @@
-import { DatabaseModule } from '@badman/backend/database';
-import { QueueModule } from '@badman/backend/queue';
+import { DatabaseModule } from '@badman/backend-database';
+import { QueueModule } from '@badman/backend-queue';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -19,8 +19,9 @@ import {
 } from 'nest-winston';
 import { transports, format } from 'winston';
 import versionPackage from '../version.json';
-import { VisualModule } from '@badman/backend/visual';
-import { RankingModule } from '@badman/backend/ranking';
+import { VisualModule } from '@badman/backend-visual';
+import { RankingModule } from '@badman/backend-ranking';
+import { NotificationsModule } from '@badman/backend-notifications';
 
 @Module({
   providers: [
@@ -78,6 +79,7 @@ import { RankingModule } from '@badman/backend/ranking';
     RankingModule,
     ScheduleModule.forRoot(),
     QueueModule,
+    NotificationsModule
   ],
 })
 export class WorkerSyncModule {}

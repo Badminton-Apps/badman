@@ -9,7 +9,7 @@ import {
   SubEventCompetition,
   SubEventTournament,
   Team,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,

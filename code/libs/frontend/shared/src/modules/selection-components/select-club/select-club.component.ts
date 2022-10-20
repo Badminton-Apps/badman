@@ -3,8 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { filter, map, startWith, switchMap, take } from 'rxjs/operators';
-import { Club } from '@badman/frontend/models';
-import { ClaimService, UserService } from '@badman/frontend/authentication';
+import { Club } from '@badman/frontend-models';
+import { ClaimService, UserService } from '@badman/frontend-authentication';
 import { Apollo, gql } from 'apollo-angular';
 
 @Component({

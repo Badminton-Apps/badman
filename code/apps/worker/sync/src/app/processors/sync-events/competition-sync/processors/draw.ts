@@ -4,13 +4,13 @@ import {
   EncounterCompetition,
   Game,
   SubEventCompetition,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { Op } from 'sequelize';
-import { SubEventStepData } from '.';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '@badman/backend/visual';
+import { VisualService } from '@badman/backend-visual';
 
 import { XmlTournament, XmlDrawTypeID } from '../../../../utils';
+import { SubEventStepData } from './subEvent';
 
 export interface DrawStepData {
   draw: DrawCompetition;

@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
-import { Club, Location } from '@badman/frontend/models';
+import { Club, Location } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 @Component({
   templateUrl: './location-dialog.component.html',

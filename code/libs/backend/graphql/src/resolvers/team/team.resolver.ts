@@ -1,4 +1,4 @@
-import { User } from '@badman/backend/authorization';
+import { User } from '@badman/backend-authorization';
 import {
   Club, EventEntry,
   Location,
@@ -6,7 +6,7 @@ import {
   TeamNewInput,
   TeamPlayerMembership,
   TeamUpdateInput
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import {
   Logger,
   NotFoundException,

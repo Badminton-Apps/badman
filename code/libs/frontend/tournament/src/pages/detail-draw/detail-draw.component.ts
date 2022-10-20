@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable, switchMap, tap } from 'rxjs';
-import { DrawTournament } from '@badman/frontend/models';
-import { GAME_INFO } from '@badman/frontend/components/game';
+import { DrawTournament } from '@badman/frontend-models';
+import { GAME_INFO } from '@badman/frontend-components-game';
 
 @Component({
   selector: 'badman-detail-draw',

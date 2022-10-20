@@ -3,9 +3,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
-import { GameModule } from '@badman/frontend/components/game';
-import { StandingsModule } from '@badman/frontend/components/standings';
-import { SharedModule } from '@badman/frontend/shared';
+import { GameModule } from '@badman/frontend-components-game';
+import { StandingsModule } from '@badman/frontend-components-standings';
+import { SharedModule } from '@badman/frontend-shared';
 import { EventTournamentFieldsComponent } from './components';
 import {
   DetailDrawTournamentComponent,

@@ -10,7 +10,7 @@ import {
   Observable,
 } from 'rxjs';
 import { debounceTime, filter, map, skip, switchMap } from 'rxjs/operators';
-import { EventCompetition, SubEventCompetition } from '@badman/frontend/models';
+import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 
 @Component({
   templateUrl: './edit-competition.component.html',

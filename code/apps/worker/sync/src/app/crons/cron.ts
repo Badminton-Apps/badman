@@ -1,4 +1,4 @@
-import { SyncQueue, Sync } from '@badman/backend/queue';
+import { SyncQueue, Sync } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
@@ -28,12 +28,12 @@ export class CronService {
     });
   }
 
-  // @Cron(CronExpression.EVERY_HOUR)
-  // syncEncounter() {
-  //   this.logger.debug(`${CronExpression.EVERY_HOUR} Cron triggered`);
-  //   this.rankingQ.add(Sync.CheckEncounters, {
-  //     removeOnComplete: true,
-  //     removeOnFail: true,
-  //   });
-  // }
+  @Cron(CronExpression.EVERY_4_HOURS)
+  syncEncounter() {
+    this.logger.debug(`${CronExpression.EVERY_4_HOURS} Cron triggered`);
+    this.rankingQ.add(Sync.CheckEncounters, {
+      removeOnComplete: true,
+      removeOnFail: true,
+    });
+  }
 }

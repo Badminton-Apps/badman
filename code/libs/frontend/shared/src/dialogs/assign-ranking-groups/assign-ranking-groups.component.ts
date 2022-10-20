@@ -14,7 +14,7 @@ import {
   Observable,
   tap,
 } from 'rxjs';
-import { apolloCache } from '@badman/frontend/graphql';
+import { apolloCache } from '@badman/frontend-graphql';
 import {
   EventCompetition,
   RankingGroup,
@@ -22,7 +22,7 @@ import {
   EventTournament,
   SubEventCompetition,
   SubEventTournament,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 
 @Component({
   templateUrl: './assign-ranking-groups.component.html',

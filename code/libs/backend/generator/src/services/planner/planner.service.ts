@@ -1,4 +1,4 @@
-import { Availability, EventCompetition } from '@badman/backend/database';
+import { Availability, EventCompetition } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()

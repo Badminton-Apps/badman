@@ -7,7 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["dist/libs/frontend/tournament"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/tournament"],
       "options": {
         "project": "libs/frontend/tournament/ng-package.json"
       },
@@ -23,7 +23,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/frontend/tournament"],
+      "outputs": ["{workspaceRoot}/coverage/libs/frontend/tournament"],
       "options": {
         "jestConfig": "libs/frontend/tournament/jest.config.ts",
         "passWithNoTests": true

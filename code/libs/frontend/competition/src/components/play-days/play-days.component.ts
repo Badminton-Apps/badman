@@ -9,7 +9,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import moment from 'moment';
-import { AvailabilityDay } from '@badman/frontend/models';
+import { AvailabilityDay } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-play-days',

@@ -1,4 +1,4 @@
-import { Claim, Player } from '@badman/backend/database';
+import { Claim, Player } from '@badman/backend-database';
 import {
   Logger,
   NotFoundException,
@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
-import { User } from '@badman/backend/authorization';
+import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => Claim)

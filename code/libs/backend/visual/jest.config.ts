@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-visual',
+  displayName: '@badman/backend/visual',
   preset: '../../../jest.preset.js',
   globals: {
     'ts-jest': {

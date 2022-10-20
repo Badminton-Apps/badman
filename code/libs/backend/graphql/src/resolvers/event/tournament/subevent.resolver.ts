@@ -3,7 +3,7 @@ import {
   EventTournament,
   RankingGroup,
   SubEventTournament,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,

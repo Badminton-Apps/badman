@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SubEventCompetition, LevelType } from '@badman/frontend/models';
+import { SubEventCompetition, LevelType } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-event-competition-level-fields',

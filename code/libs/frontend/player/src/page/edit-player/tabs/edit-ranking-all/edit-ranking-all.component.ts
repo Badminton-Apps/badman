@@ -3,9 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Apollo, gql, QueryRef } from 'apollo-angular';
 import { lastValueFrom, Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { Player, RankingPlace, RankingSystem } from '@badman/frontend/models';
+import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
-import { SystemService } from '@badman/frontend/ranking';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   selector: 'badman-edit-ranking-all',
@@ -47,7 +47,7 @@ export class EditRankingAllComponent implements OnInit {
                     rankingGroups {
                       id
                       name
-                      subEventCompetitions(take: 1) {
+                      subEventCompetitions{
                         id
                         eventCompetition {
                           id
@@ -188,7 +188,7 @@ export class EditRankingAllComponent implements OnInit {
       .afterClosed()
       .subscribe(
         (result: {
-          action?: 'update' | 'remove' | 'add';
+          action?: 'update' | 'remove' | 'new';
           place: RankingPlace;
         }) => {
           if (result?.action) {
@@ -196,11 +196,24 @@ export class EditRankingAllComponent implements OnInit {
 
             switch (result.action) {
               case 'update':
-              case 'add':
                 mutation = this.appollo.mutate({
                   mutation: gql`
                   mutation UpdateRankingPlace($rankingPlace: RankingPlaceUpdateInput!) {
-                    ${result.action}RankingPlace(data: $rankingPlace) {
+                    updateRankingPlace(data: $rankingPlace) {
+                      id
+                    }
+                  }
+                `,
+                  variables: {
+                    rankingPlace: result.place,
+                  },
+                });
+                break;
+              case 'new':
+                mutation = this.appollo.mutate({
+                  mutation: gql`
+                  mutation UpdateRankingPlace($rankingPlace: RankingPlaceNewInput!) {
+                    newRankingPlace(data: $rankingPlace) {
                       id
                     }
                   }

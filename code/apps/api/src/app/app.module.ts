@@ -3,13 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppController, PdfController, RankingController } from './controllers';
 
-import { DatabaseModule } from '@badman/backend/database';
-import { GeneratorModule } from '@badman/backend/generator';
-import { ApiGrapqhlModule } from '@badman/backend/graphql';
-import { HandlebarModule } from '@badman/backend/handlebar';
-import { HealthModule } from '@badman/backend/health';
-import { QueueModule } from '@badman/backend/queue';
-import { SearchModule } from '@badman/backend/search';
+import { DatabaseModule } from '@badman/backend-database';
+import { GeneratorModule } from '@badman/backend-generator';
+import { ApiGrapqhlModule } from '@badman/backend-graphql';
+import { HealthModule } from '@badman/backend-health';
+import { QueueModule } from '@badman/backend-queue';
+import { SearchModule } from '@badman/backend-search';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
@@ -17,9 +16,10 @@ import {
 import { format, transports } from 'winston';
 import versionPackage from '../version.json';
 import { EventsModule } from './events';
-import { PdfService } from './services';
-import { ApiAuthorizationModule } from '@badman/backend/authorization';
-import { TwizzitModule } from '@badman/backend/twizzit'; 
+import { ApiAuthorizationModule } from '@badman/backend-authorization';
+import { TwizzitModule } from '@badman/backend-twizzit'; 
+import { NotificationsModule } from '@badman/backend-notifications';
+import { PdfModule } from '@badman/backend-pdf';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -59,12 +59,13 @@ import { TwizzitModule } from '@badman/backend/twizzit';
       inject: [ConfigService],
     }),
     ApiAuthorizationModule,
-    HandlebarModule,
     DatabaseModule,
 
     // Lib modules
     TwizzitModule,
     ApiGrapqhlModule,
+    NotificationsModule,
+    PdfModule,
     GeneratorModule,
     SearchModule,
     QueueModule,
@@ -72,7 +73,7 @@ import { TwizzitModule } from '@badman/backend/twizzit';
     HealthModule,
   ],
   controllers: [AppController, PdfController, RankingController],
-  providers: [Logger, PdfService],
+  providers: [Logger],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);

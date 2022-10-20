@@ -33,6 +33,7 @@ import { Team } from '../../team.model';
 import { Game } from '../game.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EncounterChange } from './encounter-change';
+import { Notification } from '../../personal';
 
 @Table({
   timestamps: true,
@@ -134,6 +135,10 @@ export class EncounterCompetition extends Model {
   @Column
   acceptedOn: Date;
 
+  @Field(() => Boolean, { nullable: true })
+  @Column
+  accepted: boolean;
+
   @Field({ nullable: true })
   @Column
   shuttle: string;
@@ -152,6 +157,15 @@ export class EncounterCompetition extends Model {
     onDelete: 'CASCADE',
   })
   encounterChange: EncounterChange;
+
+  @HasMany(() => Notification, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'encounter',
+    },
+  })
+  notifications: Notification[];
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;

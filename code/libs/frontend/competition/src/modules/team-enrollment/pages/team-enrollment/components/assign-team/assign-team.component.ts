@@ -21,10 +21,10 @@ import {
   SubEventCompetition,
   LevelType,
   Team,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 import { combineLatest } from 'rxjs';
-import { TeamDialogComponent } from '@badman/frontend/team';
-import { SystemService } from '@badman/frontend/ranking';
+import { TeamDialogComponent } from '@badman/frontend-team';
+import { SystemService } from '@badman/frontend-ranking';
 
 interface Issues {
   level: string[];

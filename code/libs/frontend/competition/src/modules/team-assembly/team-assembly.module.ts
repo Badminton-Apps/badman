@@ -7,11 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { PlayerSearchModule } from '@badman/frontend/components/player-search';
+import { PlayerSearchModule } from '@badman/frontend-components-player-search';
 import {
   SelctionComponentsModule,
   SharedModule,
-} from '@badman/frontend/shared';
+} from '@badman/frontend-shared';
 import { TeamAssemblyComponent } from './pages';
 import { AssemblyComponent } from './pages/team-assembly/components/assembly/assembly.component';
 import { TeamAssemblyPlayerComponent } from './pages/team-assembly/components/team-assembly-player/team-assembly-player.component';

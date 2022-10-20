@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { debounceTime, pairwise, startWith } from 'rxjs/operators';
-import { Club, Location, Player, Team } from '@badman/frontend/models';
+import { Club, Location, Player, Team } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-team-fields',

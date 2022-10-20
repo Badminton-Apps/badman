@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
-import { apolloCache } from '@badman/frontend/graphql';
+import { apolloCache } from '@badman/frontend-graphql';
 import {
   BehaviorSubject,
   combineLatest,
@@ -11,10 +11,10 @@ import {
   of,
 } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
-import { Club, Player, Team, Location } from '@badman/frontend/models';
+import { Club, Player, Team, Location } from '@badman/frontend-models';
 
-import { ClaimService } from '@badman/frontend/authentication';
-import { SystemService } from '@badman/frontend/ranking';
+import { ClaimService } from '@badman/frontend-authentication';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   templateUrl: './team-dialog.component.html',

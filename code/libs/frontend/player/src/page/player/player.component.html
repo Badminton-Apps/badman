@@ -1,6 +1,6 @@
 <ng-container *ngIf="this.player$ | async as player; else loading">
   <badman-profile-header
-    [canClaimAccount]="this.canClaimAccount$ | async"
+    [user]="this.user$ | async"
     [player]="this.player"
     (claimAccount)="this.claimAccount($event)"
     (accountMerged)="this.updateHappend$.next(null)"

@@ -4,16 +4,17 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
-import { Player, RankingPlace, RankingSystem } from '@badman/frontend/models';
+import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { map, Observable, switchMap } from 'rxjs';
 import { MergeAccountComponent } from '../../dialogs';
 import { HttpClient } from '@angular/common/http';
-import { ConfigService } from '@badman/frontend/config';
-import { SystemService } from '@badman/frontend/ranking';
+import { ConfigService } from '@badman/frontend-config';
+import { SystemService } from '@badman/frontend-ranking';
 
 @Component({
   selector: 'badman-profile-header',
@@ -26,16 +27,16 @@ export class ProfileHeaderComponent implements OnChanges {
   player!: Player;
 
   @Input()
-  canClaimAccount!: {
-    canClaim?: boolean;
-    isUser?: boolean;
-  } | null;
+  user?: Player | null | undefined;
 
   @Output()
   claimAccount = new EventEmitter<string>();
 
   @Output()
   accountMerged = new EventEmitter<void>();
+
+  canClaim = false;
+  isUser = false;
 
   places$?: Observable<{
     shownRankingPrimary?: RankingPlace;
@@ -195,6 +196,9 @@ export class ProfileHeaderComponent implements OnChanges {
         };
       })
     );
+
+    this.canClaim = !this.player.sub && !this.user;
+    this.isUser = this.user?.id === this.player?.id;
   }
 
   mergePlayer() {

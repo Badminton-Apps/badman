@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Club, Location } from '@badman/frontend/models';
+import { Club, Location } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-club-edit-location',

@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Club } from './club.model';
 import { RankingSystem } from './ranking-system.model';
 import { Claim } from './security';
+import { Setting } from './personal';
 
 export class Player {
   id?: string;
@@ -33,6 +34,7 @@ export class Player {
   club?: Club;
   claims?: Claim[];
   permissions?: string[];
+  setting?: Setting;
 
   constructor(args?: Partial<Player>) {
     this.id = args?.id;
@@ -61,6 +63,7 @@ export class Player {
     this.competitionPlayer = args?.competitionPlayer ?? false;
     this.clubs = args?.clubs?.map((club) => new Club(club));
     this.club = args?.club != null ? new Club(args?.club) : undefined;
+    this.setting = args?.setting != null ? new Setting(args?.setting) : undefined;
     this.updatedAt =
       args?.updatedAt != null ? new Date(args.updatedAt) : undefined;
     this.claims = args?.claims ?? [];

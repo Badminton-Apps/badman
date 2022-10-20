@@ -3,7 +3,7 @@ import {
   EventCompetition,
   EventTournament,
   Player,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { Args, createUnionType, Query, Resolver } from '@nestjs/graphql';
 import { SearchService } from './search.service';
 

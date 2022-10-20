@@ -1,15 +1,15 @@
 {
-  "name": "@badman/frontend/team",
+  "name": "@badman/frontend-team",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0",
-    "@badman/frontend/models": "^0.0.1",
-    "@badman/frontend/graphql": "^0.0.1",
-    "@badman/frontend/shared": "^0.0.1",
-    "@badman/frontend/ranking": "^0.0.1",
-    "@badman/frontend/authentication": "^0.0.1",
-    "@badman/frontend/components/player-search": "^0.0.1"
+    "@badman/frontend-models": "workspace:*",
+    "@badman/frontend-graphql": "workspace:*",
+    "@badman/frontend-shared": "workspace:*",
+    "@badman/frontend-ranking": "workspace:*",
+    "@badman/frontend-authentication": "workspace:*",
+    "@badman/frontend-components-player-search": "workspace:*"
   },
   "dependencies": {
     "tslib": "^2.3.0"

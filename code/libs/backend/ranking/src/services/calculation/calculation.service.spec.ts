@@ -1,4 +1,4 @@
-import { DatabaseModule } from '@badman/backend/database';
+import { DatabaseModule } from '@badman/backend-database';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PlaceService } from '../place';
 import { PointsService } from '../points';

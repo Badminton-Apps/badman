@@ -1,0 +1,43 @@
+{
+  "name": "frontend-notifications",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/notifications/src",
+  "prefix": "badman",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:ng-packagr-lite",
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/notifications"],
+      "options": {
+        "project": "libs/frontend/notifications/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/notifications/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/notifications/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/frontend/notifications"],
+      "options": {
+        "jestConfig": "libs/frontend/notifications/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/notifications/**/*.ts",
+          "libs/frontend/notifications/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

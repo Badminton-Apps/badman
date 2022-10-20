@@ -1,5 +1,5 @@
-import { PointsService } from '@badman/backend/ranking';
-import { VisualService } from '@badman/backend/visual';
+import { PointsService } from '@badman/backend-ranking';
+import { VisualService } from '@badman/backend-visual';
 import { Logger } from '@nestjs/common';
 import { Transaction } from 'sequelize';
 import { Processor, ProcessStep } from '../../../processing';

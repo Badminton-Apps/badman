@@ -1,5 +1,5 @@
-import { DatabaseModule } from '@badman/backend/database';
-import { QueueModule } from '@badman/backend/queue';
+import { DatabaseModule } from '@badman/backend-database';
+import { QueueModule } from '@badman/backend-queue';
 import { Module } from '@nestjs/common';
 import { PointsService, CalculationService, PlaceService } from './services';
 

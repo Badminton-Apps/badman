@@ -5,7 +5,7 @@ import {
   RankingPlace,
   RankingPoint,
   RankingSystem,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';

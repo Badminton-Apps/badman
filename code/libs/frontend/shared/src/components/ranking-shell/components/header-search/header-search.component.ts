@@ -16,7 +16,7 @@ import {
   EventCompetition,
   Player,
   EventTournament,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-header-search',

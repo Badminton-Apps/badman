@@ -7,7 +7,7 @@ import {
   NgcStatusChangeEvent,
 } from 'ngx-cookieconsent';
 import { filter, map, Subscription } from 'rxjs';
-import { AuthGuard } from '@badman/frontend/authentication';
+import { AuthGuard } from '@badman/frontend-authentication';
 
 @Component({
   selector: 'badman-root',
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
   //keep refs to subscriptions to be able to unsubscribe later
   private statusChangeSubscription!: Subscription;
 
-  constructor( 
+  constructor(
     updates: SwUpdate,
     snackBar: MatSnackBar,
     private ccService: NgcCookieConsentService,
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         snackBar
-          .open(`New version available.`, 'refresh')
+          .open(`New version available.`, 'refresh', { duration: 10000 })
           .onAction()
           .subscribe(() => {
             document.location.reload();

@@ -1,6 +1,7 @@
 // start:ng42.barrel
 export * from './security';
 export * from './events';
+export * from './personal';
 
 export * from './club.model';
 export * from './game.model';

@@ -11,7 +11,7 @@ import {
   TableOptions,
   Unique,
 } from 'sequelize-typescript';
-import { EventImportType } from '../../enums/eventType.enum';
+import { EventImportType } from '../../enums';
 
 @Table({
   timestamps: true,

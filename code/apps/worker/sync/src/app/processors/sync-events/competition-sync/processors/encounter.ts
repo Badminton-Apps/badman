@@ -3,11 +3,11 @@ import {
   EventCompetition,
   Game,
   Team,
-} from '@badman/backend/database';
+} from '@badman/backend-database';
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '@badman/backend/visual';
+import { VisualService } from '@badman/backend-visual';
 import {
   XmlTournament,
   XmlTeamMatch,

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { RankingSystem, RankingGroup } from '@badman/frontend/models';
+import { RankingSystem, RankingGroup } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, Observable } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';

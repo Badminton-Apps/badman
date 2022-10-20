@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { getCompetitionYear } from '@badman/frontend/shared';
+import { getCompetitionYear } from '@badman/frontend-shared';
 import moment from 'moment';
 
 @Component({

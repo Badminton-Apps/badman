@@ -7,7 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["dist/libs/frontend/info"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/info"],
       "options": {
         "project": "libs/frontend/info/ng-package.json"
       },
@@ -23,7 +23,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/frontend/info"],
+      "outputs": ["{workspaceRoot}/coverage/libs/frontend/info"],
       "options": {
         "jestConfig": "libs/frontend/info/jest.config.ts",
         "passWithNoTests": true

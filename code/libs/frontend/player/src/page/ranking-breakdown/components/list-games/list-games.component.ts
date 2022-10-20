@@ -13,7 +13,7 @@ import {
   GameStatus,
   PlayerGame,
   RankingSystem,
-} from '@badman/frontend/models';
+} from '@badman/frontend-models';
 import moment from 'moment';
 import { Moment } from 'moment';
 import { distinctUntilChanged, map } from 'rxjs';

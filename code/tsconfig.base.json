@@ -10,70 +10,75 @@
     "importHelpers": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "target": "es2020",
+    "target": "es2015",
     "module": "esnext",
-    "lib": ["ES2021", "dom"],
+    "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "traceResolution": false,
     "paths": {
       "*": ["./types/*"],
-      "@badman/backend/authorization": [
+      "@badman/backend-authorization": [
         "libs/backend/authorization/src/index.ts"
       ],
-      "@badman/backend/database": ["libs/backend/database/src/index.ts"],
-      "@badman/backend/generator": ["libs/backend/generator/src/index.ts"],
-      "@badman/backend/graphql": ["libs/backend/graphql/src/index.ts"],
-      "@badman/backend/handlebar": ["libs/backend/handlebar/src/index.ts"],
-      "@badman/backend/health": ["libs/backend/health/src/index.ts"],
-      "@badman/backend/mailing": ["libs/backend/mailing/src/index.ts"],
-      "@badman/backend/notifications": [
+      "@badman/backend-database": ["libs/backend/database/src/index.ts"],
+      "@badman/backend-generator": ["libs/backend/generator/src/index.ts"],
+      "@badman/backend-graphql": ["libs/backend/graphql/src/index.ts"],
+      "@badman/backend-handlebar": ["libs/backend/handlebar/src/index.ts"],
+      "@badman/backend-health": ["libs/backend/health/src/index.ts"],
+      "@badman/backend-mailing": ["libs/backend/mailing/src/index.ts"],
+      "@badman/backend-notifications": [
         "libs/backend/notifications/src/index.ts"
       ],
-      "@badman/backend/pupeteer": ["libs/backend/pupeteer/src/index.ts"],
-      "@badman/backend/queue": ["libs/backend/queue/src/index.ts"],
-      "@badman/backend/ranking": ["libs/backend/ranking/src/index.ts"],
-      "@badman/backend/ranking-calc": [
+      "@badman/backend-pdf": ["libs/backend/pdf/src/index.ts"],
+      "@badman/backend-pupeteer": ["libs/backend/pupeteer/src/index.ts"],
+      "@badman/backend-queue": ["libs/backend/queue/src/index.ts"],
+      "@badman/backend-ranking": ["libs/backend/ranking/src/index.ts"],
+      "@badman/backend-ranking-calc": [
         "libs/backend/ranking-calc/src/index.ts"
       ],
-      "@badman/backend/search": ["libs/backend/search/src/index.ts"],
-      "@badman/backend/twizzit": ["libs/backend/twizzit/src/index.ts"],
-      "@badman/backend/visual": ["libs/backend/visual/src/index.ts"],
-      "@badman/frontend/authentication": [
+      "@badman/backend-search": ["libs/backend/search/src/index.ts"],
+      "@badman/backend-twizzit": ["libs/backend/twizzit/src/index.ts"],
+      "@badman/backend-visual": ["libs/backend/visual/src/index.ts"],
+      "@badman/frontend-authentication": [
         "libs/frontend/authentication/src/index.ts"
       ],
-      "@badman/frontend/club": ["libs/frontend/club/src/index.ts"],
-      "@badman/frontend/competition": [
+      "@badman/frontend-club": ["libs/frontend/club/src/index.ts"],
+      "@badman/frontend-competition": [
         "libs/frontend/competition/src/index.ts"
       ],
-      "@badman/frontend/components/game": [
+      "@badman/frontend-components-game": [
         "libs/frontend/components/game/src/index.ts"
       ],
-      "@badman/frontend/components/game-history": [
+      "@badman/frontend-components-game-history": [
         "libs/frontend/components/game-history/src/index.ts"
       ],
-      "@badman/frontend/components/player-info": [
+      "@badman/frontend-components-player-info": [
         "libs/frontend/components/player-info/src/index.ts"
       ],
-      "@badman/frontend/components/player-search": [
+      "@badman/frontend-components-player-search": [
         "libs/frontend/components/player-search/src/index.ts"
       ],
-      "@badman/frontend/components/standings": [
+      "@badman/frontend-components-standings": [
         "libs/frontend/components/standings/src/index.ts"
       ],
-      "@badman/frontend/config": ["libs/frontend/config/src/index.ts"],
-      "@badman/frontend/event": ["libs/frontend/event/src/index.ts"],
-      "@badman/frontend/graphql": ["libs/frontend/graphql/src/index.ts"],
-      "@badman/frontend/info": ["libs/frontend/info/src/index.ts"],
-      "@badman/frontend/models": ["libs/frontend/models/src/index.ts"],
-      "@badman/frontend/player": ["libs/frontend/player/src/index.ts"],
-      "@badman/frontend/ranking": ["libs/frontend/ranking/src/index.ts"],
-      "@badman/frontend/settings": ["libs/frontend/settings/src/index.ts"],
-      "@badman/frontend/shared": ["libs/frontend/shared/src/index.ts"],
-      "@badman/frontend/team": ["libs/frontend/team/src/index.ts"],
-      "@badman/frontend/tournament": ["libs/frontend/tournament/src/index.ts"],
-      "@badman/frontend/training": ["libs/frontend/training/src/index.ts"]
+      "@badman/frontend-config": ["libs/frontend/config/src/index.ts"],
+      "@badman/frontend-event": ["libs/frontend/event/src/index.ts"],
+      "@badman/frontend-graphql": ["libs/frontend/graphql/src/index.ts"],
+      "@badman/frontend-info": ["libs/frontend/info/src/index.ts"],
+      "@badman/frontend-models": ["libs/frontend/models/src/index.ts"],
+      "@badman/frontend-notifications": [
+        "libs/frontend/notifications/src/index.ts"
+      ],
+      "@badman/frontend-player": ["libs/frontend/player/src/index.ts"],
+      "@badman/frontend-ranking": ["libs/frontend/ranking/src/index.ts"],
+      "@badman/frontend-settings": ["libs/frontend/settings/src/index.ts"],
+      "@badman/frontend-shared": ["libs/frontend/shared/src/index.ts"],
+      "@badman/frontend-team": ["libs/frontend/team/src/index.ts"],
+      "@badman/frontend-tournament": ["libs/frontend/tournament/src/index.ts"],
+      "@badman/frontend-training": ["libs/frontend/training/src/index.ts"],
+      "@badman/frontend-socket": ["libs/frontend/socket/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

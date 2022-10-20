@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { Club, Player, Team } from '@badman/frontend/models';
+import { Club, Player, Team } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-team-players',

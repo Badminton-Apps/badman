@@ -4,8 +4,8 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { Game } from '@badman/frontend/models';
-import { SystemService } from '@badman/frontend/ranking';
+import { Game } from '@badman/frontend-models';
+import { SystemService } from '@badman/frontend-ranking';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';

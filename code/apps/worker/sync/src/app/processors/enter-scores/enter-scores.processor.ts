@@ -5,9 +5,9 @@ import {
   DrawCompetition,
   SubEventCompetition,
   EventCompetition,
-} from '@badman/backend/database';
-import { accepCookies, getBrowser, signIn } from '@badman/backend/pupeteer';
-import { SyncQueue, Sync } from '@badman/backend/queue';
+} from '@badman/backend-database';
+import { accepCookies, getBrowser, signIn } from '@badman/backend-pupeteer';
+import { SyncQueue, Sync } from '@badman/backend-queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

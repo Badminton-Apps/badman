@@ -13,7 +13,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/twizzit"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/twizzit"],
       "options": {
         "jestConfig": "libs/backend/twizzit/jest.config.ts",
         "passWithNoTests": true

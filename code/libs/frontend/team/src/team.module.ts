@@ -13,8 +13,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { HasClaimModule } from '@badman/frontend/authentication';
-import { PlayerSearchModule } from '@badman/frontend/components/player-search';
+import { HasClaimModule } from '@badman/frontend-authentication';
+import { PlayerSearchModule } from '@badman/frontend-components-player-search';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   TeamDialogComponent,

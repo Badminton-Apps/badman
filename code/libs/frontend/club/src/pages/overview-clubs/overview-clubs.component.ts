@@ -12,8 +12,8 @@ import {
   getPageArgsFromQueryParams,
   getQueryParamsFromPageArgs,
   pageArgs,
-} from '@badman/frontend/shared';
-import { Club } from '@badman/frontend/models';
+} from '@badman/frontend-shared';
+import { Club } from '@badman/frontend-models';
 
 @Component({
   templateUrl: './overview-clubs.component.html',
