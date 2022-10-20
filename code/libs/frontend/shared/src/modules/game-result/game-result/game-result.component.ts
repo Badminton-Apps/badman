@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { Game, Player, RankingPoint } from '@badman/frontend-models';
-import { ListenTopic, EVENTS } from '../../socket';
+import { ListenTopic, EVENTS } from '@badman/frontend-socket';
 
 @Component({
   selector: 'badman-game-result',

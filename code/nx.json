@@ -49,7 +49,7 @@
   },
   "workspaceLayout": {
     "appsDir": "apps",
-    "libsDir": ""
+    "libsDir": "libs"
   },
   "extends": "nx/presets/npm.json",
   "pluginsConfig": {

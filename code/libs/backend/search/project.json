@@ -1,5 +1,5 @@
 {
-  "name": "@badman/backend-search",
+  "name": "backend-search",
   "sourceRoot": "libs/backend/search/src",
   "targets": {
     "lint": {

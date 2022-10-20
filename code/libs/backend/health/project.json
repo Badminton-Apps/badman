@@ -1,5 +1,5 @@
 {
-  "name": "@badman/backend-health",
+  "name": "backend-health",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/health/src",
   "projectType": "library",

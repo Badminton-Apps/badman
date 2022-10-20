@@ -1,11 +1,10 @@
 import { Injector, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { SocketIoModule } from 'ngx-socket-io';
-import { SocketService } from './socket.service';
+import { SocketInternalModule } from './internal-socket.module';
+import { SocketService } from './services';
 
 @NgModule({
   declarations: [],
-  imports: [BrowserModule, SocketIoModule],
+  imports: [SocketInternalModule],
   exports: [],
   providers: [SocketService],
 })
@@ -16,4 +15,3 @@ export class SocketModule {
 }
 
 export let AppInjector: Injector;
- 
