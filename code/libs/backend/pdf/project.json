@@ -23,7 +23,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/pdf"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/pdf"],
       "options": {
         "jestConfig": "libs/backend/pdf/jest.config.ts",
         "passWithNoTests": true

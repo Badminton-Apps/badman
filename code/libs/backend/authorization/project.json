@@ -21,7 +21,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/authorization"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/authorization"],
       "options": {
         "jestConfig": "libs/backend/authorization/jest.config.js",
         "passWithNoTests": true

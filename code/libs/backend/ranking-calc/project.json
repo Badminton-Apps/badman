@@ -13,7 +13,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/ranking-calc"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/ranking-calc"],
       "options": {
         "jestConfig": "libs/backend/ranking-calc/jest.config.js",
         "passWithNoTests": true

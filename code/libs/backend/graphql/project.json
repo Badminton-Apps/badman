@@ -12,7 +12,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/graphql"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/graphql"],
       "options": {
         "jestConfig": "libs/backend/graphql/jest.config.js",
         "passWithNoTests": true
