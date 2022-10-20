@@ -7,7 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["dist/libs/frontend/components/player-info"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/components/player-info"],
       "options": {
         "project": "libs/frontend/components/player-info/ng-package.json"
       },
@@ -23,7 +23,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/frontend/components/player-info"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/frontend/components/player-info"
+      ],
       "options": {
         "jestConfig": "libs/frontend/components/player-info/jest.config.ts",
         "passWithNoTests": true

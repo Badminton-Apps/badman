@@ -24,7 +24,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/mailing"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/mailing"],
       "options": {
         "jestConfig": "libs/backend/mailing/jest.config.js",
         "passWithNoTests": true

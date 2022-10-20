@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/search"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/search"],
       "options": {
         "jestConfig": "libs/backend/search/jest.config.js",
         "passWithNoTests": true

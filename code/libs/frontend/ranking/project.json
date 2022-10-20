@@ -7,7 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["dist/libs/frontend/ranking"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/ranking"],
       "options": {
         "project": "libs/frontend/ranking/ng-package.json"
       },
@@ -23,7 +23,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/frontend/ranking"],
+      "outputs": ["{workspaceRoot}/coverage/libs/frontend/ranking"],
       "options": {
         "jestConfig": "libs/frontend/ranking/jest.config.ts",
         "passWithNoTests": true

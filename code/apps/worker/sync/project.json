@@ -100,7 +100,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/worker/sync"],
+      "outputs": ["{workspaceRoot}/coverage/apps/worker/sync"],
       "options": {
         "jestConfig": "apps/worker/sync/jest.config.js",
         "passWithNoTests": true

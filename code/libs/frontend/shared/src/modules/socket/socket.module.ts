@@ -16,3 +16,4 @@ export class SocketModule {
 }
 
 export let AppInjector: Injector;
+ 

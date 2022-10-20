@@ -13,7 +13,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/backend/visual"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/visual"],
       "options": {
         "jestConfig": "libs/backend/visual/jest.config.ts",
         "passWithNoTests": true

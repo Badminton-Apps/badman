@@ -7,7 +7,9 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["dist/libs/frontend/components/player-search"],
+      "outputs": [
+        "{workspaceRoot}/dist/libs/frontend/components/player-search"
+      ],
       "options": {
         "project": "libs/frontend/components/player-search/ng-package.json"
       },
@@ -23,7 +25,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/frontend/components/player-search"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/frontend/components/player-search"
+      ],
       "options": {
         "jestConfig": "libs/frontend/components/player-search/jest.config.ts",
         "passWithNoTests": true
