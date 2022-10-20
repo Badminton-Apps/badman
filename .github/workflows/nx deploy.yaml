@@ -32,7 +32,8 @@ jobs:
           echo "Found tag: $TAG_VERSION"
           LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
           echo "Found hash: $LAST_TAG_HASH"
-          echo "::set-output name=base::$LAST_TAG_HASH"
+          echo "base=$LAST_TAG_HASH" >> $GITHUB_OUTPUT
+          echo "version=$TAG_VERSION" >> $GITHUB_ENV
       - uses: pnpm/action-setup@v2
         with:
           version: latest
