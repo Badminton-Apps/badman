@@ -115,7 +115,10 @@ export class MailingService {
   }
 
   async sendNotEnterdMail(
-    to: Partial<Player>,
+    to: {
+      fullName: string;
+      email: string;
+    },
     encounter: EncounterCompetition,
     url: string
   ) {
@@ -137,7 +140,10 @@ export class MailingService {
   }
 
   async sendNotAcceptedMail(
-    to: Partial<Player>,
+    to: {
+      fullName: string;
+      email: string;
+    },
     encounter: EncounterCompetition,
     url: string
   ) {
