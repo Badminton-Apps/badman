@@ -2,12 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-"""A RankingGroup"""
-type RankingGroup {
+"""A Role"""
+type Role {
   id: ID!
   name: String
-  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]!
-  subEventTournaments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventTournament!]!
+  description: String
+  type: String
+  clubId: String
+  players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Player!]!
+  claims(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Claim!]!
 }
 
 """
@@ -18,6 +21,92 @@ scalar JSONObject
 input SortOrderType {
   field: String!
   direction: String!
+}
+
+"""A Claim"""
+type Claim {
+  id: ID!
+  name: String
+  description: String
+  category: String
+  type: String
+}
+
+"""A AvailiblyDay"""
+type AvailiblyDayType {
+  day: String
+  startTime: String
+  endTime: String
+  courts: Float
+}
+
+"""An Exception"""
+type ExceptionType {
+  start: DateTime
+  end: DateTime
+  courts: Float
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+"""A Meta"""
+type EntryMetaType {
+  tournament: EntryTournamentType
+  competition: EntryCompetitionType
+}
+
+"""A EntryTournament"""
+type EntryTournamentType {
+  place: Float
+}
+
+"""A EntryCompetition"""
+type EntryCompetitionType {
+  teamIndex: Float
+  players: [EntryCompetitionPlayersType!]
+}
+
+"""A EntryCompetitionPlayers"""
+type EntryCompetitionPlayersType {
+  id: String
+  single: Float
+  double: Float
+  mix: Float
+  gender: String
+  player: Player
+}
+
+"""An Exception"""
+type PushSubscriptionKeysType {
+  p256dh: String
+  auth: String
+}
+
+"""An Exception"""
+type PushSubscriptionType {
+  endpoint: String
+  expirationTime: String
+  keys: PushSubscriptionKeysType
+}
+
+"""A Availability"""
+type Availability {
+  id: ID!
+  year: Float
+  days: [AvailiblyDayType!]
+  exceptions: [ExceptionType!]
+  locationId: String
+}
+
+"""A RankingGroup"""
+type RankingGroup {
+  id: ID!
+  name: String
+  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]!
+  subEventTournaments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventTournament!]!
 }
 
 """A RankingLastPlace"""
@@ -51,11 +140,6 @@ type RankingLastPlace {
   player: Player
   rankingSystem: RankingSystem
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type PagedRankingLastPlaces {
   count: Float!
@@ -151,68 +235,22 @@ type RankingSystem {
   rankingGroups(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingGroup!]!
 }
 
-"""A AvailiblyDay"""
-type AvailiblyDayType {
-  day: String
-  startTime: String
-  endTime: String
-  courts: Float
-}
-
-"""An Exception"""
-type ExceptionType {
-  start: DateTime
-  end: DateTime
-  courts: Float
-}
-
-"""A Meta"""
-type EntryMetaType {
-  tournament: EntryTournamentType
-  competition: EntryCompetitionType
-}
-
-"""A EntryTournament"""
-type EntryTournamentType {
-  place: Float
-}
-
-"""A EntryCompetition"""
-type EntryCompetitionType {
-  teamIndex: Float
-  players: [EntryCompetitionPlayersType!]
-}
-
-"""A EntryCompetitionPlayers"""
-type EntryCompetitionPlayersType {
-  id: String
-  single: Float
-  double: Float
-  mix: Float
-  gender: String
-  player: Player
-}
-
-"""An Exception"""
-type PushSubscriptionKeysType {
-  p256dh: String
-  auth: String
-}
-
-"""An Exception"""
-type PushSubscriptionType {
-  endpoint: String
-  expirationTime: String
-  keys: PushSubscriptionKeysType
-}
-
-"""A Availability"""
-type Availability {
+"""A Standing"""
+type Standing {
   id: ID!
-  year: Float
-  days: [AvailiblyDayType!]
-  exceptions: [ExceptionType!]
-  locationId: String
+  entryId: String
+  position: Float
+  points: Float
+  played: Float
+  gamesWon: Float
+  gamesLost: Float
+  setsWon: Float
+  setsLost: Float
+  totalPointsWon: Float
+  totalPointsLost: Float
+  won: Float
+  tied: Float
+  lost: Float
 }
 
 """A EventTournament"""
@@ -260,6 +298,126 @@ type DrawTournament {
   games: [Game!]!
 }
 
+"""A EventEntry"""
+type EventEntry {
+  id: ID!
+  teamId: String
+  player1Id: String
+  player2Id: String
+  tournamentDraw: DrawTournament
+  competitionSubEvent: SubEventCompetition
+  subEventId: String
+  drawId: String
+  entryType: String
+  meta: EntryMetaType
+  team: Team!
+  players: [Player!]!
+  getCompetitionDraw: [DrawCompetition!]!
+  tournamentSubEvent: [DrawTournament!]!
+  standing: Standing
+}
+
+"""A EventCompetition"""
+type EventCompetition {
+  id: ID!
+  updatedAt: DateTime
+  createdAt: DateTime
+  name: String
+  startYear: Float
+  comments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Comment!]
+  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]
+  type: String
+  visualCode: String
+  allowEnlisting: Boolean
+  started: Boolean
+  slug: String
+  usedRankingAmount: Float
+  usedRankingUnit: String
+}
+
+"""A SubEventCompetition"""
+type SubEventCompetition {
+  id: ID!
+  name: String
+  eventType: String
+  level: Float
+  maxLevel: Float
+  minBaseIndex: Float
+  maxBaseIndex: Float
+  eventEntries: [EventEntry!]
+  rankingGroups: [RankingGroup!]
+  drawCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [DrawCompetition!]
+  eventCompetition: EventCompetition
+  eventId: String
+  visualCode: String
+}
+
+"""A DrawCompetition"""
+type DrawCompetition {
+  id: ID!
+  name: String
+  visualCode: String
+  type: String
+  size: Float
+  subEventCompetition: SubEventCompetition
+  subeventId: String
+  eventEntries: [EventEntry!]!
+  encounterCompetitions: [EncounterCompetition!]!
+}
+
+"""A EncounterCompetition"""
+type EncounterCompetition {
+  id: ID!
+  date: DateTime
+  originalDate: DateTime
+  drawCompetition: DrawCompetition
+  drawId: String
+  home: Team
+  homeScore: Float
+  homeTeamId: String
+  away: Team
+  awayScore: Float
+  awayTeamId: String
+  synced: DateTime
+  visualCode: String
+  gameLeader: Player
+  enteredBy: Player
+  acceptedBy: Player
+  enteredOn: DateTime
+  acceptedOn: DateTime
+  accepted: Boolean
+  shuttle: String
+  startHour: String
+  endHour: String
+  encounterChange: EncounterChange
+  games: [Game!]!
+}
+
+"""A Game"""
+type Game {
+  id: ID!
+  playedAt: DateTime
+  gameType: String
+  status: String
+  set1Team1: Float
+  set1Team2: Float
+  set2Team1: Float
+  set2Team2: Float
+  set3Team1: Float
+  set3Team2: Float
+  winner: Float
+  order: Float
+  round: String
+  rankingPoints(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPoint!]
+  tournament: DrawTournament
+  competition: EncounterCompetition
+  linkId: String
+  linkType: String
+  courtId: String
+  visualCode: String
+  players: [GamePlayer!]
+}
+
 """A Location"""
 type Location {
   id: ID!
@@ -298,182 +456,6 @@ type Team {
   active: Boolean
   entries(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [EventEntry!]!
   locations(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Location!]!
-}
-
-"""A EncounterChangeDate"""
-type EncounterChangeDate {
-  id: ID!
-  selected: Boolean
-  encounterChangeId: String
-  date: DateTime
-  availabilityHome: String
-  availabilityAway: String
-}
-
-"""A EncounterChange"""
-type EncounterChange {
-  id: ID!
-  accepted: Boolean
-  encounterId: String
-  dates: [EncounterChangeDate!]
-  homeComment: Comment
-  awayComment: Comment
-}
-
-"""The settings"""
-type Setting {
-  id: ID!
-  player: Player
-  playerId: String
-  pushSubscriptions: PushSubscriptionType
-  encounterNotEnteredNotification: Int!
-  encounterNotAcceptedNotification: Int!
-  encounterChangeNewNotification: Int!
-  encounterChangeConformationNotification: Int!
-  encounterChangeFinishedNotification: Int!
-}
-
-"""A EncounterCompetition"""
-type EncounterCompetition {
-  id: ID!
-  date: DateTime
-  originalDate: DateTime
-  drawCompetition: DrawCompetition
-  drawId: String
-  home: Team
-  homeScore: Float
-  homeTeamId: String
-  away: Team
-  awayScore: Float
-  awayTeamId: String
-  synced: DateTime
-  visualCode: String
-  gameLeader: Player
-  enteredBy: Player
-  acceptedBy: Player
-  enteredOn: DateTime
-  acceptedOn: DateTime
-  accepted: Boolean
-  shuttle: String
-  startHour: String
-  endHour: String
-  encounterChange: EncounterChange
-  games: [Game!]!
-}
-
-"""A Standing"""
-type Standing {
-  id: ID!
-  entryId: String
-  position: Float
-  points: Float
-  played: Float
-  gamesWon: Float
-  gamesLost: Float
-  setsWon: Float
-  setsLost: Float
-  totalPointsWon: Float
-  totalPointsLost: Float
-  won: Float
-  tied: Float
-  lost: Float
-}
-
-"""A EventEntry"""
-type EventEntry {
-  id: ID!
-  teamId: String
-  player1Id: String
-  player2Id: String
-  tournamentDraw: DrawTournament
-  competitionSubEvent: SubEventCompetition
-  subEventId: String
-  drawId: String
-  entryType: String
-  meta: EntryMetaType
-  team: Team!
-  players: [Player!]!
-  getCompetitionDraw: [DrawCompetition!]!
-  tournamentSubEvent: [DrawTournament!]!
-  standing: Standing
-}
-
-"""A DrawCompetition"""
-type DrawCompetition {
-  id: ID!
-  name: String
-  visualCode: String
-  type: String
-  size: Float
-  subEventCompetition: SubEventCompetition
-  subeventId: String
-  eventEntries: [EventEntry!]!
-  encounterCompetitions: [EncounterCompetition!]!
-}
-
-"""A SubEventCompetition"""
-type SubEventCompetition {
-  id: ID!
-  name: String
-  eventType: String
-  level: Float
-  maxLevel: Float
-  minBaseIndex: Float
-  maxBaseIndex: Float
-  eventEntries: [EventEntry!]
-  rankingGroups: [RankingGroup!]
-  drawCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [DrawCompetition!]
-  eventCompetition: EventCompetition
-  eventId: String
-  visualCode: String
-}
-
-"""A EventCompetition"""
-type EventCompetition {
-  id: ID!
-  updatedAt: DateTime
-  createdAt: DateTime
-  name: String
-  startYear: Float
-  comments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Comment!]
-  subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]
-  type: String
-  visualCode: String
-  allowEnlisting: Boolean
-  started: Boolean
-  slug: String
-  usedRankingAmount: Float
-  usedRankingUnit: String
-}
-
-"""A Comment"""
-type Comment {
-  id: ID!
-  message: String
-  playerId: String
-  clubId: String
-  linkId: String
-  linkType: String
-}
-
-"""A Role"""
-type Role {
-  id: ID!
-  name: String
-  description: String
-  type: String
-  clubId: String
-  players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Player!]!
-  claims(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [Claim!]!
-}
-
-"""A Claim"""
-type Claim {
-  id: ID!
-  name: String
-  description: String
-  category: String
-  type: String
 }
 
 """A Club"""
@@ -554,65 +536,47 @@ type PagedPlayer {
   rows: [Player!]!
 }
 
-"""A Game"""
-type Game {
+"""A Comment"""
+type Comment {
   id: ID!
-  playedAt: DateTime
-  gameType: String
-  status: String
-  set1Team1: Float
-  set1Team2: Float
-  set2Team1: Float
-  set2Team2: Float
-  set3Team1: Float
-  set3Team2: Float
-  winner: Float
-  order: Float
-  round: String
-  rankingPoints(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPoint!]
-  tournament: DrawTournament
-  competition: EncounterCompetition
+  message: String
+  playerId: String
+  clubId: String
   linkId: String
   linkType: String
-  courtId: String
-  visualCode: String
-  players: [GamePlayer!]
 }
 
-type TeamPlayer {
-  playerId: String
-  teamId: String
-  base: Boolean
-  updatedAt: DateTime
-  createdAt: DateTime
+"""A EncounterChangeDate"""
+type EncounterChangeDate {
   id: ID!
-  email: String
-  phone: String
-  gender: String
-  birthDate: DateTime
-  sub: String
-  myTeams: [Team!]
-  entries: [EventEntry!]
-  firstName: String
-  lastName: String
-  fullName: String
-  competitionPlayer: Boolean
-  slug: String
-  memberId: String
-  rankingPoints: [RankingPoint!]
-  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]
-  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]
-  comments: [Comment!]
-  teams: [Team!]
-  clubs: [ClubPlayer!]
-  games: [Game!]
-  roles: [Role!]
-  claims: [Claim!]
-  permissions: [String!]!
-  setting: Setting!
+  selected: Boolean
+  encounterChangeId: String
+  date: DateTime
+  availabilityHome: String
+  availabilityAway: String
+}
 
-  """Team Player end date"""
-  end: DateTime
+"""A EncounterChange"""
+type EncounterChange {
+  id: ID!
+  accepted: Boolean
+  encounterId: String
+  dates: [EncounterChangeDate!]
+  homeComment: Comment
+  awayComment: Comment
+}
+
+"""The settings"""
+type Setting {
+  id: ID!
+  player: Player
+  playerId: String
+  pushSubscriptions: PushSubscriptionType
+  encounterNotEnteredNotification: Int!
+  encounterNotAcceptedNotification: Int!
+  encounterChangeNewNotification: Int!
+  encounterChangeConformationNotification: Int!
+  encounterChangeFinishedNotification: Int!
 }
 
 type GamePlayer {
@@ -674,6 +638,42 @@ type ClubPlayer {
   locations: [Location!]
   slug: String
   clubMembership: ClubPlayerMembership!
+}
+
+type TeamPlayer {
+  playerId: String
+  teamId: String
+  base: Boolean
+  updatedAt: DateTime
+  createdAt: DateTime
+  id: ID!
+  email: String
+  phone: String
+  gender: String
+  birthDate: DateTime
+  sub: String
+  myTeams: [Team!]
+  entries: [EventEntry!]
+  firstName: String
+  lastName: String
+  fullName: String
+  competitionPlayer: Boolean
+  slug: String
+  memberId: String
+  rankingPoints: [RankingPoint!]
+  rankingPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingPlace!]
+  rankingLastPlaces(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [RankingLastPlace!]
+  comments: [Comment!]
+  teams: [Team!]
+  clubs: [ClubPlayer!]
+  games: [Game!]
+  roles: [Role!]
+  claims: [Claim!]
+  permissions: [String!]!
+  setting: Setting!
+
+  """Team Player end date"""
+  end: DateTime
 }
 
 type PagedClub {
