@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.33.0](https://github.com/Badminton-Apps/badman/compare/v5.32.0...v5.33.0) (2022-10-21)
+
+
+### Features
+
+* **backend-notifications:** check encounters pt. 1 ([8304566](https://github.com/Badminton-Apps/badman/commit/8304566c6e92b5f283ad8b6414f23d881fd53151))
+* **frontend-settings:** configuration page settings ([03378f7](https://github.com/Badminton-Apps/badman/commit/03378f7cfb0d3ce98cba019bad22930504c23071))
+* **frontend-socket:** create own package ([be1effc](https://github.com/Badminton-Apps/badman/commit/be1effc6aa9573104ea8fff106ed8ff913aa44bd))
+* **worker-sync:** activiating check encounter for test teams ([9ad6156](https://github.com/Badminton-Apps/badman/commit/9ad61563477fcb15be8b29cfafde4454ca5b07ef))
+
+
+### Bug Fixes
+
+* **backend-database:** better check if an empty ranking place comes ([86985f7](https://github.com/Badminton-Apps/badman/commit/86985f7de996581bfa2d9afbad8911fba62f24e0))
+* **backend-graphql:** missing package ([9da0c03](https://github.com/Badminton-Apps/badman/commit/9da0c03b9a91bc9d50b4d3e200f8c77da4e57efe))
+* **ci:** make it more clear that it is a script to be run ([6bfa18b](https://github.com/Badminton-Apps/badman/commit/6bfa18bb84cc97f1c58daece6736ae5c4e50b950))
+* **ci:** moving to npx should ommit the `--` ([750f487](https://github.com/Badminton-Apps/badman/commit/750f4874780ba227ca0a1abbd2903f722e197d55))
+* **ci:** running standard-version locally might fix tagging issue ([ebfe3f5](https://github.com/Badminton-Apps/badman/commit/ebfe3f55f24d470770a67fab8a68b31641db5978))
+* **ci:** storing the version in the env ([fcb1c3c](https://github.com/Badminton-Apps/badman/commit/fcb1c3c37bfc47b207f8e64b372c7940a180c602))
+* **deps:** update dependency ngx-cookieconsent to v4 ([e265881](https://github.com/Badminton-Apps/badman/commit/e26588107d809c8360860db127ed0fd7625a95de))
+* **deps:** update nrwl monorepo to v14.8.4 ([df04019](https://github.com/Badminton-Apps/badman/commit/df040198707d0f6199aba71afb1114d8b7b0918f))
+* **deps:** update nrwl monorepo to v14.8.5 ([6a0b86c](https://github.com/Badminton-Apps/badman/commit/6a0b86cde63833f570f483aaf8de012189b52999))
+* **deps:** update nrwl monorepo to v14.8.6 ([c21ce54](https://github.com/Badminton-Apps/badman/commit/c21ce54bc8ce1af63c772e244d19dd899cbcb024))
+* **deps:** update nrwl monorepo to v15 (major) ([70ee33a](https://github.com/Badminton-Apps/badman/commit/70ee33a00c74a1ddff7906bf552d30bf31d74c4e))
+* **frontend-player:** adding ranking, may ranking didn't go to latest year ([9371add](https://github.com/Badminton-Apps/badman/commit/9371adddaf0f13fe65f49c1f6d0d7de67132490d))
+* **frontend-player:** allowing adding rankings again ([05034d5](https://github.com/Badminton-Apps/badman/commit/05034d5a0d1f7239411384d2af03baf86f87e560))
+* **frontend-player:** remove claim button if not logged in ([bdc7f1a](https://github.com/Badminton-Apps/badman/commit/bdc7f1a6e6b4ee766008c0eb0bcc7b78212fb904))
+* linting was changed since `pnpm` ([ff84f84](https://github.com/Badminton-Apps/badman/commit/ff84f84dad2af7bf3f228f921a4727793399eb38))
+
 ## [5.32.0](https://github.com/Badminton-Apps/badman/compare/v5.31.6...v5.32.0) (2022-10-11)
 
 
