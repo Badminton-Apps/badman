@@ -63,6 +63,9 @@ upgrade replica count (in redis.yaml) and appy:
 
 `kubectl create secret generic mail-auth --from-literal=host="mail.privateemail.com" --from-literal=pass="<super-pass>" --from-literal=user="info@badman.app" --namespace badman`
 
+# push
+`kubectl create secret generic vapid --from-literal=private="<private_key>" --from-literal=public="<public_key>" --namespace badman`
+
 # Ingress
 
 `helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx`
