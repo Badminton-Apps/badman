@@ -159,32 +159,43 @@ export class MailingService {
   private async _setupMailing() {
     if (this.initialized) return;
 
+    const mailConfig = {
+      host: this.configService.get('MAIL_HOST'),
+      port: 465,
+      auth: {
+        user: this.configService.get('MAIL_USER'),
+        pass: this.configService.get('MAIL_PASS'),
+      },
+    };
+
+    const hbsConfig = {
+      viewEngine: {
+        partialsDir: path.join(__dirname, './assets/mailing/partials'),
+        layoutsDir: path.join(__dirname, './assets/mailing/layouts'),
+        defaultLayout: 'layout.handlebars',
+      },
+      viewPath: path.join(__dirname, './assets/mailing'),
+    }
+
     try {
-      this._transporter = nodemailer.createTransport({
-        host: this.configService.get('MAIL_HOST'),
-        port: 465,
-        auth: {
-          user: this.configService.get('MAIL_USER'),
-          pass: this.configService.get('MAIL_PASS'),
-        },
-      });
+      this._transporter = nodemailer.createTransport(mailConfig);
 
       await this._transporter.verify();
 
-      const hbsOptions = exphbs({
-        viewEngine: {
-          partialsDir: path.join(__dirname, './assets/mailing/partials'),
-          layoutsDir: path.join(__dirname, './assets/mailing/layouts'),
-          defaultLayout: 'layout.handlebars',
-        },
-        viewPath: path.join(__dirname, './assets/mailing'),
-      });
+      const hbsOptions = exphbs(hbsConfig);
 
       this._transporter.use('compile', hbsOptions);
       this._mailingEnabled = true;
       this.initialized = true;
     } catch (e) {
       this._mailingEnabled = false;
+      this.logger.debug({
+        message: 'Mailing not enabled',
+        error: e,
+        mailConfig,
+        hbsConfig
+      });
+
       this.logger.warn('Mailing disabled due to config setup failing', e);
     } finally {
       this.logger.debug(`Mailing enabled: ${this._mailingEnabled}`);
