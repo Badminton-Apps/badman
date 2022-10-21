@@ -95,6 +95,16 @@ env:
       secretKeyRef:
         name: mail-auth
         key: host
+  - name: VAPID_PRIVATE_KEY
+    valueFrom:
+      secretKeyRef:
+        name: vapid
+        key: private
+  - name: VAPID_PUBLIC_KEY
+    valueFrom:
+      secretKeyRef:
+        name: vapid
+        key: public
   - name: APOLLO_KEY
     value: service:Badman-PROD:DdwlGfdehSYN_RVG99YiQw
   - name: APOLLO_GRAPH_ID
