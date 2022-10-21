@@ -9,7 +9,6 @@ import {
   SystemBuilder,
   SystemGroupBuilder,
 } from '@badman/backend-database';
-import { ApiGrapqhlModule } from '@badman/backend-graphql';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';
@@ -24,7 +23,6 @@ describe('PointsService', () => {
     module = await Test.createTestingModule({
       providers: [PointsService],
       imports: [
-        ApiGrapqhlModule,
         DatabaseModule,
         ConfigModule.forRoot({
           envFilePath: '.test.env',
