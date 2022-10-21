@@ -128,7 +128,8 @@ export class MailingService {
       context: {
         encounter: encounter.toJSON(),
         url,
-        captain: to,
+        captain: to.fullName,
+        date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
       },
     } as MailOptions;
 
@@ -149,7 +150,8 @@ export class MailingService {
       context: {
         encounter: encounter.toJSON(),
         url,
-        captain: to,
+        captain: to.fullName,
+        date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
       },
     } as MailOptions;
 
