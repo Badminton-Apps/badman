@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apolloCache } from '@badman/frontend-graphql';
-import { Apollo } from 'apollo-angular';
 import { Player } from '@badman/frontend-models';
 
 @Injectable({

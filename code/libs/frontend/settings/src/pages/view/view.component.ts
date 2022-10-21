@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Player } from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-view',
@@ -8,7 +7,6 @@ import { Player } from '@badman/frontend-models';
 })
 export class ViewComponent implements OnInit {
   ngOnInit(): void {
-    const test = new Player();
     console.log('Hello');
   }
 }

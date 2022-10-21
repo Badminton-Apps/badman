@@ -1,9 +1,4 @@
-import {
-  EncounterCompetition,
-  EventCompetition,
-  Player,
-  SubEventCompetition,
-} from '@badman/backend-database';
+import { EncounterCompetition, Player } from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
 import { Injectable, Logger } from '@nestjs/common';
 import {

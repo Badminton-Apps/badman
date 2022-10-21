@@ -9,7 +9,9 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
 
   notifyPush(
     player: Player,
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
@@ -17,7 +19,9 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
   }
   notifyEmail(
     player: Player,
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
@@ -25,7 +29,9 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
   }
   notifySms(
     player: Player,
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
-import { validationOptions, XMLParser } from 'fast-xml-parser';
+import { XMLParser } from 'fast-xml-parser';
 
 import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -265,7 +265,7 @@ export class VisualService {
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.RankingPublicationPoints;
-  }
+  } 
 
   private async _getFromApi(url: string, useCache = true) {
     const t0 = performance.now();
