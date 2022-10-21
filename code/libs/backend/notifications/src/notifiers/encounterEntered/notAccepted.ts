@@ -62,7 +62,7 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
 
     await this.mailing.sendNotAcceptedMail(
       {
-        ...player,
+        fullName: player.fullName,
         email: args.email ?? player.email,
       },
       data.encounter,
