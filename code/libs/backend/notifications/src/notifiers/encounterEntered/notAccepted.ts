@@ -19,7 +19,7 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
       notification: {
         title: 'Accepteren uitslag',
         body: `Resultaat ${encounter.home.name} tegen ${encounter.away.name} nog niet geaccepteerd`,
-        actions: [{ action: 'goto', title: 'Go naar wedstrijd' }],
+        actions: [{ action: 'goto', title: 'Ga naar wedstrijd' }],
         data: {
           onActionClick: {
             default: { operation: 'openWindow' },
