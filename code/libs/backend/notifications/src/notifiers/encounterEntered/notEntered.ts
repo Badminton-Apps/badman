@@ -19,7 +19,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
       notification: {
         title: 'Invullen uitslag',
         body: `Resultaat ${encounter.home.name} tegen ${encounter.away.name} nog niet ingevuld`,
-        actions: [{ action: 'goto', title: 'Go naar wedstrijd' }],
+        actions: [{ action: 'goto', title: 'Ga naar wedstrijd' }],
         data: {
           onActionClick: {
             default: { operation: 'openWindow' },
