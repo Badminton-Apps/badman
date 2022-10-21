@@ -74,12 +74,12 @@ import { NotificationsModule } from '@badman/backend-notifications';
       },
       inject: [ConfigService],
     }),
-    VisualModule,
     DatabaseModule,
     RankingModule,
     ScheduleModule.forRoot(),
     QueueModule,
-    NotificationsModule
+    NotificationsModule,
+    VisualModule,
   ],
 })
 export class WorkerSyncModule {}

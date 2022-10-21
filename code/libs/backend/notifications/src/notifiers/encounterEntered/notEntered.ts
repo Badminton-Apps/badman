@@ -83,7 +83,9 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
 
   notifySms(
     player: Player,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);

@@ -4,7 +4,6 @@ import {
   RankingPlace,
   RankingSystem,
   RankingSystems,
-  RankingPoint,
 } from '@badman/backend-database';
 import { VisualService } from '@badman/backend-visual';
 import { Logger } from '@nestjs/common';

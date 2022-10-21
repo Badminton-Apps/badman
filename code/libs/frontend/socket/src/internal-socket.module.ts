@@ -1,7 +1,7 @@
 // Modules are from https://github.com/rodgc/ngx-socket-io
 // NPM install didn't work, so I copied the files into the project
 
-import { InjectionToken, Injector, ModuleWithProviders, NgModule } from '@angular/core';
+import { InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
 import { SocketConfig } from './config';
 import { WrappedSocket } from './services';
 

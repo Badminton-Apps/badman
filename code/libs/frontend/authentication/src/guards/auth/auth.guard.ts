@@ -15,7 +15,6 @@ import {
   debounceTime,
   filter,
   finalize,
-  first,
   map,
   switchMap,
   tap,
@@ -130,12 +129,4 @@ export class AuthGuard implements CanActivate {
 
     return claims;
   }
-}
-
-function waitFor<T>(signal: Observable<any>) {
-  return (source: Observable<T>) =>
-    signal.pipe(
-      first(),
-      switchMap((_) => source)
-    );
 }

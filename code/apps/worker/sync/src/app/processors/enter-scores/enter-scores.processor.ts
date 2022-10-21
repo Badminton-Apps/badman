@@ -12,7 +12,6 @@ import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Job } from 'bull';
-import { launch } from 'puppeteer';
 import {
   enterEditMode,
   clearFields,
