@@ -59,11 +59,11 @@ import { PdfModule } from '@badman/backend-pdf';
       inject: [ConfigService],
     }),
     ApiAuthorizationModule,
+    ApiGrapqhlModule,
     DatabaseModule,
 
     // Lib modules
     TwizzitModule,
-    ApiGrapqhlModule,
     NotificationsModule,
     PdfModule,
     GeneratorModule,

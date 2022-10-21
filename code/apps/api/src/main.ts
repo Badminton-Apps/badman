@@ -18,21 +18,19 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   const redisHost = configService.get('REDIS_HOST');
-  if (redisHost){
+  if (redisHost) {
     const redisPass = configService.get('REDIS_PASSWORD');
     const redisIoAdapter = new RedisIoAdapter(app);
 
     let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://';
 
-    redisUrl += `${redisHost}:${configService.get(
-      'REDIS_PORT'
-    )}`;
+    redisUrl += `${redisHost}:${configService.get('REDIS_PORT')}`;
 
     await redisIoAdapter.connectToRedis(redisUrl);
 
     app.useWebSocketAdapter(redisIoAdapter);
   }
-  
+
   app.setGlobalPrefix(globalPrefix);
   app.enableCors({
     origin: '*',
