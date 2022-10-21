@@ -290,7 +290,7 @@ export class PlayersResolver {
       }
 
       // Update club
-      const result = await setting.update(settingsInput, { transaction });
+      await setting.update(settingsInput, { transaction });
 
       // Commit transaction
       await transaction.commit();

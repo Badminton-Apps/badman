@@ -14,7 +14,6 @@ import {
   map,
   share,
   shareReplay,
-  startWith,
   switchMap,
   tap,
 } from 'rxjs/operators';

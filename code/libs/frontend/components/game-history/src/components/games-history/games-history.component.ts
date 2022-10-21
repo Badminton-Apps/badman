@@ -4,7 +4,6 @@ import {
   Input,
   OnInit,
   OnChanges,
-  SimpleChanges,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Game, Player } from '@badman/frontend-models';

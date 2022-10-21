@@ -3,11 +3,11 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
-import {
-  ApolloServerPlugin,
-  BaseContext,
-  GraphQLRequestContextDidResolveOperation,
-} from 'apollo-server-plugin-base';
+// import {
+//   ApolloServerPlugin,
+//   BaseContext,
+//   GraphQLRequestContextDidResolveOperation,
+// } from 'apollo-server-plugin-base';
 import { join } from 'path';
 import {
   AvailabilityModule,
