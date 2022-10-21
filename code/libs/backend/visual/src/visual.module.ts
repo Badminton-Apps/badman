@@ -9,13 +9,13 @@ import { redisStore } from 'cache-manager-redis-store';
   imports: [
     CacheModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (config: ConfigService) => {
+      useFactory: async (configService: ConfigService) => {
         const store = await redisStore({
           socket: {
-            host: config.get('REDIS_HOST'),
-            port: +config.get('REDIS_PORT'),
-            passphrase: config.get('REDIS_PASSWORD'),
+            host: configService.get('REDIS_HOST'),
+            port: +configService.get('REDIS_PORT'),
           },
+          password: configService.get('REDIS_PASSWORD'),
         });
 
         return {
