@@ -82,6 +82,16 @@ env:
     value: badman
   - name: DB_DIALECT
     value: postgres
+  - name: VAPID_PRIVATE_KEY
+    valueFrom:
+      secretKeyRef:
+        name: vapid
+        key: private
+  - name: VAPID_PUBLIC_KEY
+    valueFrom:
+      secretKeyRef:
+        name: vapid
+        key: public    
   - name: APM_SERVER_URL
     value: temp
   # - name: APM_SERVER_TOKEN
