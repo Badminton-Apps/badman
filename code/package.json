@@ -35,7 +35,7 @@
     "update": "nx migrate latest",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
-    "standard-version": "node ./scripts/standard-version.js",
+    "create-release": "node ./scripts/standard-version.js",
     "prepare": "cd .. && husky install"
   },
   "private": true,
