@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.33.1](https://github.com/Badminton-Apps/badman/compare/v5.33.0...v5.33.1) (2022-10-21)
+
+
+### Bug Fixes
+
+* **ci:** docker files can use yarn ([9e8ac14](https://github.com/Badminton-Apps/badman/commit/9e8ac1419ce3cd9dc6edc69eeee9dcc832989e0a))
+* **ci:** removing `worker-ranking` from deploy ([b7a3518](https://github.com/Badminton-Apps/badman/commit/b7a3518984dd96c8374803cb00eb3f9682b832c2))
+
 ## [5.33.0](https://github.com/Badminton-Apps/badman/compare/v5.32.0...v5.33.0) (2022-10-21)
 
 
