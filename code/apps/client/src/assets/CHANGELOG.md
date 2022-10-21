@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.34.0](https://github.com/Badminton-Apps/badman/compare/v5.33.6...v5.34.0) (2022-10-21)
+
+
+### Features
+
+* **api:** temporary testing for mail- and push notifications ([8c170e0](https://github.com/Badminton-Apps/badman/commit/8c170e06258c43633eee8b04f1c91ae8776b885f))
+
 ### [5.33.6](https://github.com/Badminton-Apps/badman/compare/v5.33.5...v5.33.6) (2022-10-21)
 
 
