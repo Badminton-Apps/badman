@@ -7,6 +7,7 @@ import { environment } from './environments/environment';
 if (environment.production) {
   enableProdMode();
 } else {
+  // Disabeling clarity on dev
   window?.['clarity']?.('stop');
 }
 
