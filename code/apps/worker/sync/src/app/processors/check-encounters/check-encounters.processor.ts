@@ -158,7 +158,7 @@ export class CheckEncounterProcessor {
             `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}`
           );
 
-          if (entered && hoursPassed > 24) {
+          if (!entered && hoursPassed > 24) {
             this.logger.verbose(
               `Sending reminder for entering ${encounter.id} (${url})`
             );
