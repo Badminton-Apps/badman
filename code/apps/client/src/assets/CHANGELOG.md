@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.33.3](https://github.com/Badminton-Apps/badman/compare/v5.33.2...v5.33.3) (2022-10-21)
+
+
+### Bug Fixes
+
+* **api:** forgot vapid keys ([a83b9b7](https://github.com/Badminton-Apps/badman/commit/a83b9b7df4dfebc419368cfe53347474f0185ccc))
+
 ### [5.33.2](https://github.com/Badminton-Apps/badman/compare/v5.33.1...v5.33.2) (2022-10-21)
 
 
