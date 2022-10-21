@@ -1,5 +1,12 @@
 import { User } from '@badman/backend-authorization';
-import { Player } from '@badman/backend-database';
+import {
+  DrawCompetition,
+  EncounterCompetition,
+  EventCompetition,
+  Player,
+  SubEventCompetition,
+  Team,
+} from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
 import { NotificationService } from '@badman/backend-notifications';
 import { SimulationQueue, SyncQueue } from '@badman/backend-queue';
@@ -95,16 +102,56 @@ export class AppController {
     res.status(200).send(result);
   }
 
-  // @Get('save-subscriotion')
-  // async saveSubscription(
-  //   @Res() res: Response,
-  //   @Query() query: { subscription:  }
-  // ) {
-  //   this.logger.debug('Saving subscription');
-  //   this.logger.debug(query);
+  @Get('test-glenn')
+  async saveSubscription(@User() user: Player, @Res() res: Response) {
+    if (!user.hasAnyPermission(['change:job'])) {
+      throw new UnauthorizedException('You do not have permission to do this');
+    }
 
-  //   // Respond ok for now
-  //   res.status(200).send();
-  // }
+    const encounter = await EncounterCompetition.findByPk(
+      'b89fc82b-2322-4330-8599-9a26d7607b1c',
+      {
+        attributes: ['id', 'visualCode', 'date', 'homeTeamId', 'awayTeamId'],
+        include: [
+          {
+            model: Team,
+            as: 'home',
+            attributes: ['id', 'name'],
+          },
+          {
+            model: Team,
+            as: 'away',
+            attributes: ['id', 'name'],
+          },
+          {
+            required: true,
+            attributes: ['id'],
+            model: DrawCompetition,
+            include: [
+              {
+                required: true,
+                attributes: ['id'],
+                model: SubEventCompetition,
+                include: [
+                  {
+                    required: true,
+                    attributes: ['id', 'visualCode'],
+                    model: EventCompetition,
+                    where: {
+                      checkEncounterForFilledIn: true,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }
+    );
 
+    await this.notificationService.notifyEncounterNotEntered(encounter);
+
+    // Respond ok for now
+    res.status(200).send();
+  }
 }
