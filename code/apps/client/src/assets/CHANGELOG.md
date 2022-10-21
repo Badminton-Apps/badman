@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.33.6](https://github.com/Badminton-Apps/badman/compare/v5.33.5...v5.33.6) (2022-10-21)
+
+
+### Bug Fixes
+
+* **backend-visual:** password should be here? ([f43cbb9](https://github.com/Badminton-Apps/badman/commit/f43cbb9ab93b755d7809e173d4fda6e7df7ce10d))
+* **frontend-notifications:** auth guard for notifications settings ([6426214](https://github.com/Badminton-Apps/badman/commit/642621401e1641b2cf1dfcfbe545c7f6b1700df2))
+
 ### [5.33.5](https://github.com/Badminton-Apps/badman/compare/v5.33.4...v5.33.5) (2022-10-21)
 
 
