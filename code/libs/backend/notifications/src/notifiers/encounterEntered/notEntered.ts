@@ -55,7 +55,9 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
             (s) => s.endpoint !== sub.endpoint
           );
           settings.changed('pushSubscriptions', true);
-          this.logger.debug(`Removed subscription for player ${player.fullName} (${sub.endpoint})`);
+          this.logger.debug(
+            `Removed subscription for player ${player.fullName} (${sub.endpoint})`
+          );
           await settings.save();
         } else {
           this.logger.error(error);
@@ -73,7 +75,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
 
     await this.mailing.sendNotEnterdMail(
       {
-        ...player,
+        fullName: player.fullName,
         email: args.email ?? player.email,
       },
       data.encounter,
