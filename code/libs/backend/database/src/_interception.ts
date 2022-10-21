@@ -1,18 +1,12 @@
-import { ObjectType, IntersectionType, Field } from '@nestjs/graphql';
+import { Field, IntersectionType, ObjectType } from '@nestjs/graphql';
 import {
-  TeamPlayerMembership,
-  Player,
-  GamePlayerMembership,
-  RankingPlace,
-  ClubPlayerMembership,
   Club,
-} from './models';
-
-@ObjectType()
-export class TeamPlayer extends IntersectionType(
+  ClubPlayerMembership,
+  GamePlayerMembership,
+  Player,
+  RankingPlace,
   TeamPlayerMembership,
-  Player
-) {}
+} from './models';
 
 @ObjectType()
 export class GamePlayer extends IntersectionType(GamePlayerMembership, Player) {
@@ -23,3 +17,9 @@ export class GamePlayer extends IntersectionType(GamePlayerMembership, Player) {
 
 @ObjectType()
 export class ClubPlayer extends IntersectionType(ClubPlayerMembership, Club) {}
+
+@ObjectType()
+export class TeamPlayer extends IntersectionType(
+  TeamPlayerMembership,
+  Player
+) {}
