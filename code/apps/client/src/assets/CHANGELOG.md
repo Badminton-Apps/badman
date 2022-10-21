@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.33.5](https://github.com/Badminton-Apps/badman/compare/v5.33.4...v5.33.5) (2022-10-21)
+
+
+### Bug Fixes
+
+* **backend-notifications:** typo in push notification ([ba9e129](https://github.com/Badminton-Apps/badman/commit/ba9e12975188d152a810be42345d2e27342bad24))
+* **worker-sync:** this was a debugging thingy ([ec5bf5a](https://github.com/Badminton-Apps/badman/commit/ec5bf5aa29ff8544f9ce76dfe016549ffd9766eb))
+
 ### [5.33.4](https://github.com/Badminton-Apps/badman/compare/v5.33.3...v5.33.4) (2022-10-21)
 
 
