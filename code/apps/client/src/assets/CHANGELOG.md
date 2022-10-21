@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.33.4](https://github.com/Badminton-Apps/badman/compare/v5.33.3...v5.33.4) (2022-10-21)
+
+
+### Bug Fixes
+
+* **api:** updated redis to be in sync ([fcee4e6](https://github.com/Badminton-Apps/badman/commit/fcee4e680b2a04bc59b33b49cdc2084360b1bea7))
+* **worker-sync:** adding vapid info ([81fee21](https://github.com/Badminton-Apps/badman/commit/81fee21fa94e91daaa16bc3abfc1eae203ed7ca0))
+* **worker-sync:** cache updated ([dceae40](https://github.com/Badminton-Apps/badman/commit/dceae4082aa1f79cc0d6427ed8ac80c43e990e0e))
+
 ### [5.33.3](https://github.com/Badminton-Apps/badman/compare/v5.33.2...v5.33.3) (2022-10-21)
 
 
