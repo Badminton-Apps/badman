@@ -188,7 +188,7 @@
     "@types/passport": "^1.0.8",
     "@types/passport-jwt": "^3.0.6",
     "@types/pg": "^8.6.5",
-    "@types/socket.io": "^2.1.2",
+    "@types/socket.io": "^3.0.0",
     "@types/socket.io-client": "^1.4.32",
     "@types/regression": "^2.0.2",
     "@types/sequelize": "^4.28.13",

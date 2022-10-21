@@ -89,7 +89,7 @@ importers:
       '@types/pg': ^8.6.5
       '@types/regression': ^2.0.2
       '@types/sequelize': ^4.28.13
-      '@types/socket.io': ^2.1.2
+      '@types/socket.io': ^3.0.0
       '@types/socket.io-client': ^1.4.32
       '@types/supertest': ^2.0.12
       '@types/uuid': ^8.3.4
@@ -352,7 +352,7 @@ importers:
       '@types/pg': 8.6.5
       '@types/regression': 2.0.2
       '@types/sequelize': 4.28.14
-      '@types/socket.io': 2.1.13
+      '@types/socket.io': 3.0.2
       '@types/socket.io-client': 1.4.36
       '@types/supertest': 2.0.12
       '@typescript-eslint/eslint-plugin': 5.40.1_ukgdydjtebaxmxfqp5v5ulh64y
@@ -698,7 +698,7 @@ importers:
     specifiers:
       '@angular/core': ^14.2.0
       '@badman/frontend-config': workspace:*
-      '@types/socket.io': ^2.1.2
+      '@types/socket.io': ^3.0.0
       '@types/socket.io-client': ^1.4.32
       socket.io-client: ^4.5.1
       tslib: ^2.3.0
@@ -708,7 +708,7 @@ importers:
       socket.io-client: 4.5.3
       tslib: 2.4.0
     devDependencies:
-      '@types/socket.io': 2.1.13
+      '@types/socket.io': 3.0.2
       '@types/socket.io-client': 1.4.36
 
   libs/frontend/team:
@@ -6327,12 +6327,6 @@ packages:
       '@types/zrender': 4.0.3
     dev: false
 
-  /@types/engine.io/3.1.7:
-    resolution: {integrity: sha512-qNjVXcrp+1sS8YpRUa714r0pgzOwESdW5UjHL7D/2ZFdBX0BXUXtg1LUrp+ylvqbvMcMWUy73YpRoxPN2VoKAQ==}
-    dependencies:
-      '@types/node': 18.11.2
-    dev: true
-
   /@types/eslint-scope/3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
@@ -6593,23 +6587,15 @@ packages:
     resolution: {integrity: sha512-ZJWjtFBeBy1kRSYpVbeGYTElf6BqPQUkXDlHHD4k/42byCN5Rh027f4yARHCink9sKAkbtGZXEAmR0ZCnc2/Ag==}
     dev: true
 
-  /@types/socket.io-parser/3.0.0:
-    resolution: {integrity: sha512-Ry/rbTE6HQNL9eu3LpL1Ocup5VexXu1bSSGlSho/IR5LuRc8YvxwSNJ3JxqTltVJEATLbZkMQETSbxfKNgp4Ew==}
-    deprecated: This is a stub types definition. socket.io-parser provides its own type definitions, so you do not need this installed.
+  /@types/socket.io/3.0.2:
+    resolution: {integrity: sha512-pu0sN9m5VjCxBZVK8hW37ZcMe8rjn4HHggBN5CbaRTvFwv5jOmuIRZEuddsBPa9Th0ts0SIo3Niukq+95cMBbQ==}
+    deprecated: This is a stub types definition. socket.io provides its own type definitions, so you do not need this installed.
     dependencies:
-      socket.io-parser: 4.2.1
+      socket.io: 4.5.3
     transitivePeerDependencies:
+      - bufferutil
       - supports-color
-    dev: true
-
-  /@types/socket.io/2.1.13:
-    resolution: {integrity: sha512-JRgH3nCgsWel4OPANkhH8TelpXvacAJ9VeryjuqCDiaVDMpLysd6sbt0dr6Z15pqH3p2YpOT3T1C5vQ+O/7uyg==}
-    dependencies:
-      '@types/engine.io': 3.1.7
-      '@types/node': 18.11.2
-      '@types/socket.io-parser': 3.0.0
-    transitivePeerDependencies:
-      - supports-color
+      - utf-8-validate
     dev: true
 
   /@types/sockjs/0.3.33:
