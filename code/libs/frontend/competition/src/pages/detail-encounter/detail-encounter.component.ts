@@ -34,6 +34,7 @@ export class DetailEncounterComponent implements OnInit {
             query: gql`
               query GetEncounter($id: ID!, $system: ID!) {
                 encounterCompetition(id: $id) {
+                  id
                   homeScore
                   awayScore
                   date

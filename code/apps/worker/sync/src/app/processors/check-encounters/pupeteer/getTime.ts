@@ -15,7 +15,7 @@ export async function hasTime(
   }
 ) {
   const { logger } = args;
-  logger?.debug('hasTime');
+  logger?.verbose('checkTime');
   const { page, timeout } = pupeteer;
   const selector = `.content .wrapper--legacy tbody`;
   {
