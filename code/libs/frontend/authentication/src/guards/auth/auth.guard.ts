@@ -95,6 +95,8 @@ export class AuthGuard implements CanActivate {
                 );
               }
             }
+          } else {
+            permissionObsrevables$.push(of(true));
           }
 
           return combineLatest(permissionObsrevables$).pipe(
