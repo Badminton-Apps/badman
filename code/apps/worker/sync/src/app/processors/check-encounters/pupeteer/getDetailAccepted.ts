@@ -1,6 +1,7 @@
 import { waitForSelector } from '@badman/backend-pupeteer';
 import { Page } from 'puppeteer';
 import { Logger } from '@nestjs/common';
+import moment from 'moment';
 
 export async function detailAccepted(
   pupeteer: {
@@ -15,7 +16,8 @@ export async function detailAccepted(
   }
 ) {
   const { logger } = args;
-  logger?.debug('detailAccepted');
+  logger?.verbose('detailAccepted');
+  const timeFinder = /(\d{1,2}-\d{1,2}-\d{4} \d{1,2}:\d{1,2})/gim;
   const { page, timeout } = pupeteer;
   const selector = `.content .wrapper--legacy tbody`;
   {
@@ -26,18 +28,26 @@ export async function detailAccepted(
 
     // find if a row has header 'Teamwedstrijd bevestigd' and td with 'Ja'
     let hasAccepted = false;
+    let acceptedOn: Date;
+    let acceptedBy: string;
     for (const row of rows) {
-      const header = await row.$('th');
-      if (header) {
+      const th = await row.$('th'); 
+      if (th) {
         // logger.verbose(`Processing row`);
-        const text = await header.evaluate((el) => el.textContent);
-        if (text.indexOf('Teamwedstrijd bevestigd') !== -1) {
+        const thTxt = await th.evaluate((el) => el.textContent);
+        if (thTxt.indexOf('Teamwedstrijd bevestigd') !== -1) {
           const td = await row.$('td');
           if (td) {
-            const text = await td.evaluate((el) => el.textContent);
+            const tdTxt = await td.evaluate((el) => el.textContent);
             // logger.verbose(`Processing td: ${text}`);
-            if (text !== 'Nee') {
+            if (tdTxt !== 'Nee') {
               hasAccepted = true;
+
+              const match = timeFinder.exec(tdTxt);
+
+              if (match) {
+                acceptedOn = moment(match[1], 'D-M-YYYY HH:mm').toDate();
+              }
             }
           }
         }
@@ -48,6 +58,6 @@ export async function detailAccepted(
       }
     }
 
-    return hasAccepted ? true : false;
+    return { accepted: hasAccepted ? true : false, acceptedOn, acceptedBy };
   }
 }

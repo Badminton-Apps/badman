@@ -1,5 +1,6 @@
 import { waitForSelector } from '@badman/backend-pupeteer';
 import { Logger } from '@nestjs/common';
+import moment from 'moment';
 import { Page } from 'puppeteer';
 
 export async function detailEntered(
@@ -15,8 +16,10 @@ export async function detailEntered(
   }
 ) {
   const { logger } = args;
-  logger?.debug('detailEntered');
+  logger?.verbose('detailEntered');
   const { page, timeout } = pupeteer;
+  // regex to find 12-10-2022 19:46 format in text
+  const timeFinder = /(\d{1,2}-\d{1,2}-\d{4} \d{1,2}:\d{1,2})/gim;
   const selector = `.content .wrapper--legacy tbody`;
   {
     const targetPage = page;
@@ -25,13 +28,24 @@ export async function detailEntered(
     const rows = await body.$$('tr');
 
     let hasEntered = false;
+    let enteredOn: Date;
+    let enteredBy: string;
     for (const row of rows) {
       // logger.verbose(`Processing row`);
-      const header = await row.$('th');
-      if (header) {
-        const text = await header.evaluate((el) => el.textContent);
-        if (text.indexOf('Detailuitslag ingevoerd') !== -1) {
+      const th = await row.$('th');
+      if (th) {
+        const headerTxt = await th.evaluate((el) => el.textContent);
+        if (headerTxt.indexOf('Detailuitslag ingevoerd') !== -1) {
           hasEntered = true;
+
+          const td = await row.$('td');
+          const tdTxt = await td.evaluate((el) => el.textContent);
+
+          const match = timeFinder.exec(tdTxt);
+
+          if (match) {
+            enteredOn = moment(match[1], 'D-M-YYYY HH:mm').toDate();
+          }
         }
       }
 
@@ -40,6 +54,10 @@ export async function detailEntered(
       }
     }
 
-    return hasEntered ? true : false;
+    return {
+      entered: hasEntered ? true : false,
+      enteredOn,
+      enteredBy,
+    };
   }
 }

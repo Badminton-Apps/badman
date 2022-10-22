@@ -144,23 +144,23 @@ export class CheckEncounterProcessor {
             );
             continue;
           }
-          const entered = await detailEntered(
+          const { entered, enteredOn } = await detailEntered(
             { page },
             { logger: this.logger }
           );
-          const accepted = await detailAccepted(
+          const { accepted, acceptedOn } = await detailAccepted(
             { page },
             { logger: this.logger }
           );
 
           const hoursPassed = moment().diff(encounter.date, 'hour');
           this.logger.debug(
-            `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}`
+            `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, ( ${url} )`
           );
 
           if (!entered && hoursPassed > 24) {
             this.logger.verbose(
-              `Sending reminder for entering ${encounter.id} (${url})`
+              `Sending reminder for entering ${encounter.id} ( ${url} )`
             );
 
             // Only send reminders if the team is in the testers group
@@ -169,7 +169,7 @@ export class CheckEncounterProcessor {
             }
           } else if (!accepted && hoursPassed > 48) {
             this.logger.verbose(
-              `Sending reminder for accepting encounter ${encounter.id} (${url})`
+              `Sending reminder for accepting encounter ${encounter.id} ( ${url} )`
             );
 
             // Only send reminders if the team is in the testers group
@@ -180,12 +180,12 @@ export class CheckEncounterProcessor {
 
           // Update our local data
           if (entered) {
-            encounter.enteredOn = moment('2000-08-27').toDate();
+            encounter.enteredOn = moment(enteredOn ?? '2000-08-27').toDate();
             await encounter.save();
           }
 
           if (accepted) {
-            encounter.acceptedOn = moment('2000-08-27').toDate();
+            encounter.acceptedOn = moment(acceptedOn ?? '2000-08-27').toDate();
             encounter.accepted = true;
             await encounter.save();
           }
@@ -200,6 +200,8 @@ export class CheckEncounterProcessor {
       if (browser) {
         browser.close();
       }
+
+      this.logger.log('Synced encounters');
     }
   }
 }
