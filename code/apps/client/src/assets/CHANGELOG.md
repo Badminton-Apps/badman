@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.35.0](https://github.com/Badminton-Apps/badman/compare/v5.34.1...v5.35.0) (2022-10-22)
+
+
+### Features
+
+* **worker-sync:** getting more info from encounters ([716ff9e](https://github.com/Badminton-Apps/badman/commit/716ff9ea39941c556f33d12eee21a549925f1dce))
+
+
+### Bug Fixes
+
+* **deps:** update nrwl monorepo to v15.0.1 ([61d59a7](https://github.com/Badminton-Apps/badman/commit/61d59a713f116b952a106ed511194b071151acf7))
+* **frontend-authentication:** allow guard without claims spec ([a303adb](https://github.com/Badminton-Apps/badman/commit/a303adb1cc8f9ba29d9e7cccbbe415a1805aee2f))
+
 ### [5.34.1](https://github.com/Badminton-Apps/badman/compare/v5.34.0...v5.34.1) (2022-10-21)
 
 
