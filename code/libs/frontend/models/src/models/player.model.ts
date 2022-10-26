@@ -45,7 +45,7 @@ export class Player {
     this.avatar = args?.avatar;
     this.firstName = args?.firstName;
     this.lastName = args?.lastName;
-    this._fullName = args?.fullName;
+    this._fullName = args?._fullName ?? args?.fullName;
     this.lastRanking =
       (args?.lastRanking ?? null) != null
         ? new RankingPlace(args?.lastRanking)
