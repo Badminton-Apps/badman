@@ -3,9 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { EditSettingsComponent } from './pages';
 import { AuthGuard } from '@badman/frontend-authentication';
 
-const routes: Routes = [
-  { path: '', component: EditSettingsComponent, canActivate: [AuthGuard] },
-];
+const routes: Routes = [{ path: '', component: EditSettingsComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
