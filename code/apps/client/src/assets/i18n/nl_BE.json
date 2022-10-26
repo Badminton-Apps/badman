@@ -362,8 +362,8 @@
     "ignored": "Niet meegeteld",
     "nextPeriod": "Volgende periode",
     "prevPeriod": "Vorige periode",
-    "usedForDowngrade": "Gebruikt voor downgrade",
-    "usedForUpgrade": "Gebruikt voor upgrade en downgrade",
+    "usedForDowngrade": "Gebruikt voor downgrade en upgrade",
+    "usedForUpgrade": "Gebruikt enkel voor upgrade",
     "notUsed": "Niet gebruikt",
     "no-tean": "Geen team",
     "add-game": {

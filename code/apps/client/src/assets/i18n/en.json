@@ -349,8 +349,8 @@
     "ignored": "Doesn't count",
     "nextPeriod": "Next period",
     "prevPeriod": "Previous period",
-    "usedForDowngrade": "Used for downgrade",
-    "usedForUpgrade": "Used for up and downgrade",
+    "usedForDowngrade": "Used for up- and downgrade",
+    "usedForUpgrade": "Used for upgrade",
     "notUsed": "Not used",
     "no-tean": "No team",
     "add-game": {
