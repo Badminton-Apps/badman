@@ -195,7 +195,9 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           }
 
           if (foundClub == null) {
-            const clubIds = this.user?.profile?.clubs?.map((r) => r.id);
+            const clubIds = this.user?.profile?.clubs
+              ?.filter((c) => c.clubMembership?.end == null)
+              ?.map((r) => r.id);
             if (clubIds) {
               foundClub =
                 this.clubs.find((r) => clubIds.includes(r.id)) ?? null;
