@@ -382,8 +382,6 @@ export class ListGamesComponent implements OnInit {
       })
       .afterClosed()
       .subscribe((game: Game) => {
-        console.log(game);
-
         if (game) {
           this.games.push(game);
           this.calculateAvg();
