@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.37.0](https://github.com/Badminton-Apps/badman/compare/v5.36.0...v5.37.0) (2022-10-26)
+
+
+### Features
+
+* **frontend-shared:** select the active club ([20ecf3d](https://github.com/Badminton-Apps/badman/commit/20ecf3d0ad4ef690440728976ffa4d6c218372e8))
+
 ## [5.36.0](https://github.com/Badminton-Apps/badman/compare/v5.35.1...v5.36.0) (2022-10-26)
 
 
