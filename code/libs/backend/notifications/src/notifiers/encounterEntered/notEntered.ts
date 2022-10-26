@@ -23,10 +23,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
         data: {
           onActionClick: {
             default: { operation: 'openWindow', url: url },
-            goto: {
-              operation: 'openWindow',
-              url,
-            },
+            goto: { operation: 'openWindow', url: url },
           },
         },
       },
