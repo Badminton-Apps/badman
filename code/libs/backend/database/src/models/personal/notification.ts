@@ -50,7 +50,6 @@ export class Notification extends Model {
   @Column
   linkType: string;
 
-
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
@@ -59,8 +58,8 @@ export class Notification extends Model {
   encounter: EncounterCompetition;
 
   @Field({ nullable: true, defaultValue: false })
-  @Column
-  read = false;
+  @Column({ defaultValue: false })
+  read: boolean;
 
   @Field({ nullable: true })
   @Column({
@@ -68,4 +67,3 @@ export class Notification extends Model {
   })
   meta: string;
 }
-
