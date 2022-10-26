@@ -60,7 +60,7 @@ export class Notification extends Model {
 
   @Field({ nullable: true, defaultValue: false })
   @Column
-  read: boolean = false;
+  read = false;
 
   @Field({ nullable: true })
   @Column({
