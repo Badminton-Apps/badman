@@ -26,7 +26,7 @@ export class TeamBulder {
     try {
       await this.team.save();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
     return this.team;

@@ -35,7 +35,6 @@ export class RankingShellComponent implements OnDestroy, OnInit {
     this.profile$ = this.user.profile$.pipe(
       filter((x: Player) => !!x) as never,
       tap(async () => {
-        console.log('subscribing to notifications');
         await this.notificationService.subscribeToNotifications();
       })
     ) as Observable<Player>;
