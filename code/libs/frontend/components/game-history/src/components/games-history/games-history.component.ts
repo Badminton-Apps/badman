@@ -129,7 +129,7 @@ export class GamesHistoryComponent implements OnInit, OnChanges {
           if (!arr) {
             return [];
           }
-          this.curr = arr.length;
+          this.curr += arr.length;
 
           return arr.reduce(
             (acc, curr) => {

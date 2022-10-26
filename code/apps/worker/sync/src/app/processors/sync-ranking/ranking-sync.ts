@@ -245,6 +245,8 @@ export class RankingSyncer {
               ).save({ transaction: args.transaction });
               players.push(foundPlayer);
             }
+
+            // Check if other publication has create the ranking place
             if (places.has(foundPlayer.id)) {
               places.get(foundPlayer.id)[type] = points.Level;
               places.get(foundPlayer.id)[`${type}Points`] = points.Totalpoints;
@@ -354,7 +356,7 @@ export class RankingSyncer {
               categories.find((category) => category.name === 'GD D/DX D').code,
               rankingPlaces,
               'mix',
-              'F'
+              'F' 
             );
 
             const instances = Array.from(rankingPlaces).map(([, place]) =>
