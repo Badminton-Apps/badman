@@ -159,21 +159,21 @@ export class CheckEncounterProcessor {
           );
 
           if (!entered && hoursPassed > 24) {
-            this.logger.verbose(
-              `Sending reminder for entering ${encounter.id} ( ${url} )`
-            );
-
             // Only send reminders if the team is in the testers group
             if (TEST_TEAMS.includes(encounter.homeTeamId)) {
+              this.logger.verbose(
+                `Sending reminder for entering ${encounter.id} ( ${url} )`
+              );
+
               this.notificationService.notifyEncounterNotEntered(encounter);
             }
           } else if (!accepted && hoursPassed > 48) {
-            this.logger.verbose(
-              `Sending reminder for accepting encounter ${encounter.id} ( ${url} )`
-            );
-
             // Only send reminders if the team is in the testers group
             if (TEST_TEAMS.includes(encounter.awayTeamId)) {
+              this.logger.verbose(
+                `Sending reminder for accepting encounter ${encounter.id} ( ${url} )`
+              );
+
               this.notificationService.notifyEncounterNotAccepted(encounter);
             }
           }
