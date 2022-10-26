@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.35.1](https://github.com/Badminton-Apps/badman/compare/v5.35.0...v5.35.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* **backend-notifications:** notifications weren't saved ([b8423da](https://github.com/Badminton-Apps/badman/commit/b8423dad7630182485f89d2de27bbe6e5fdd2366))
+* **client:** correcting labels for breakdown ([bf5e7a8](https://github.com/Badminton-Apps/badman/commit/bf5e7a87177455144536aa1af1b5f9fcfcc2a1c1))
+* **deps:** update nrwl monorepo to v15.0.2 ([2e4143b](https://github.com/Badminton-Apps/badman/commit/2e4143b3879db1fdfbd96bf999b4d3e85a2afad0))
+* **deps:** update nrwl monorepo to v15.0.3 ([afcdf8c](https://github.com/Badminton-Apps/badman/commit/afcdf8c25dc5e44a06bd7811aa807a378d5e67ab))
+* **frontend-components-game-history:** history wouldn't get new games after first fetch ([36e5a77](https://github.com/Badminton-Apps/badman/commit/36e5a775db1122ad7affb6c85e5aa9c8adce7df8))
+* **frontend-player:** breakdown adding game didn't work ([99ce288](https://github.com/Badminton-Apps/badman/commit/99ce288a34ccdd84854155e72abe0e24519e5b3e))
+
 ## [5.35.0](https://github.com/Badminton-Apps/badman/compare/v5.34.1...v5.35.0) (2022-10-22)
 
 
