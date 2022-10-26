@@ -28,7 +28,7 @@ export class UserService {
     private configService: ConfigService,
     private httpClient: HttpClient,
     apollo: Apollo,
-    private auth: AuthService,
+    private auth: AuthService
   ) {
     this.urlBase = `${this.configService.apiBaseUrl}/user`;
 

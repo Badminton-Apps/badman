@@ -51,11 +51,9 @@ const routes: Routes = [
           import('@badman/frontend-training').then((m) => m.TrainingModule),
       },
       {
-        path: 'notifications',
+        path: 'settings',
         loadChildren: () =>
-          import('@badman/frontend-notifications').then(
-            (m) => m.NotificationsModule
-          ),
+          import('@badman/frontend-settings').then((m) => m.SettingsModule),
       },
     ],
   },
