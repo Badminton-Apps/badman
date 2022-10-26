@@ -45,6 +45,10 @@ export class UserService {
                 id
                 name
                 slug
+                clubMembership {
+                  active
+                  end
+                }
               }
             }
           }
