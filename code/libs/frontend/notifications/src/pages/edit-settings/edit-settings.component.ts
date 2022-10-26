@@ -81,8 +81,6 @@ export class EditSettingsComponent implements OnInit {
           encounterNotEnteredNotification:
             encounterNotEnteredNotificationControl,
         });
-
-        console.log(this.settingsForm?.value);
       });
   }
 
@@ -105,7 +103,6 @@ export class EditSettingsComponent implements OnInit {
   }
 
   save() {
-    console.log(this.settingsForm?.value);
     this.saving = true;
     this.apollo
       .mutate({

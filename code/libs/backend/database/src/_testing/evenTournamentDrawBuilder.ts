@@ -44,7 +44,7 @@ export class DrawTournamentBuilder {
         await game.Build();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
     return this.draw;

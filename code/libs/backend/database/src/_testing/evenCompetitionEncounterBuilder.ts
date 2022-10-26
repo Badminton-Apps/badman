@@ -63,7 +63,7 @@ export class EncounterCompetitionBuilder {
         this.encounter.awayTeamId = (await this.awayTeam.Build()).id;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
 

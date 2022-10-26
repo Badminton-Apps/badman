@@ -50,7 +50,7 @@ export class SubEventCompetitionBuilder {
         await draw.Build();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
 

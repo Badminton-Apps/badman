@@ -53,7 +53,7 @@ export class PlayerBuilder {
         await rankingPlace.save();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
     return this.player;

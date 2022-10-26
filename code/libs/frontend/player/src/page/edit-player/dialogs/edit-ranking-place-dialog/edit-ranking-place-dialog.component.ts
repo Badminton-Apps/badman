@@ -100,7 +100,6 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     const compEvent = this.data.system?.rankingGroups?.[0].subEventCompetitions
       ?.map((group) => group.eventCompetition)
       .reduce((prev, current) => {
-        console.log(prev?.startYear, current?.startYear);
         if ((prev?.startYear ?? 0) > (current?.startYear ?? 0)) {
           return prev;
         } else {

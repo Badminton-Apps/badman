@@ -46,7 +46,7 @@ export class DrawCompetitionBuilder {
         await encounter.Build();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
     return this.draw;
