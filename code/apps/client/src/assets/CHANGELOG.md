@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.36.0](https://github.com/Badminton-Apps/badman/compare/v5.35.1...v5.36.0) (2022-10-26)
+
+
+### Features
+
+* **frontend-notifications:** allow unsubscribe from mailing ([3605f4f](https://github.com/Badminton-Apps/badman/commit/3605f4f58c17edbb398b3fb8d4d56c37d63134f7))
+* **scripts:** adding all settings for teams ([ad57cd7](https://github.com/Badminton-Apps/badman/commit/ad57cd7ad778016e6d46f9f98754be900b367980))
+
 ### [5.35.1](https://github.com/Badminton-Apps/badman/compare/v5.35.0...v5.35.1) (2022-10-26)
 
 
