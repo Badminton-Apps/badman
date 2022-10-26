@@ -44,14 +44,6 @@ export class Notification extends Model {
 
   @Field({ nullable: true })
   @Column
-  title: string;
-
-  @Field({ nullable: true })
-  @Column
-  message: string;
-
-  @Field({ nullable: true })
-  @Column
   linkId: string;
 
   @Field({ nullable: true })
@@ -66,9 +58,9 @@ export class Notification extends Model {
   })
   encounter: EncounterCompetition;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, defaultValue: false })
   @Column
-  read: boolean;
+  read: boolean = false;
 
   @Field({ nullable: true })
   @Column({
