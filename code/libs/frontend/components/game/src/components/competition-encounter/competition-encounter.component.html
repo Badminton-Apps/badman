@@ -29,6 +29,8 @@
   </div>
 
   <div [@collapse]="collapsed" class="games">
+
+    <!-- TODO:  replace with general component -->
     <badman-game-info
       *ngFor="let game of this.encounter.games"
       [game]="game"

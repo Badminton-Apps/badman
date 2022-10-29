@@ -13,12 +13,16 @@ export const GAME_INFO = gql`
     order
     round
     status
+    gameType
     players {
       id
       team
       player
       slug
       fullName
+      single
+      double
+      mix
     }
   }
 `;

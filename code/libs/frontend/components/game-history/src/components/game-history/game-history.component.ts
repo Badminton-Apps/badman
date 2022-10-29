@@ -5,10 +5,9 @@ import {
   OnInit,
 } from '@angular/core';
 import { Game } from '@badman/frontend-models';
-import { SystemService } from '@badman/frontend-ranking';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-game-history',
@@ -22,56 +21,48 @@ export class GameHistoryComponent implements OnInit {
 
   game$?: Observable<Partial<Game>>;
 
-  constructor(private apollo: Apollo, private systemService: SystemService) {}
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.game$ = this.systemService.getPrimarySystemId().pipe(
-      switchMap((system) =>
-        this.apollo.query<{ game: Partial<Game> }>({
-          query: gql`
-            query Game($gameId: ID!, $systemId: ID!) {
-              game(id: $gameId) {
+    this.game$ = this.apollo
+      .query<{ game: Partial<Game> }>({
+        query: gql`
+          query Game($gameId: ID!) {
+            game(id: $gameId) {
+              id
+              gameType
+              set1Team1
+              set1Team2
+              set2Team1
+              set2Team2
+              set3Team1
+              set3Team2
+              winner
+              playedAt
+              rankingPoints {
                 id
-                gameType
-                set1Team1
-                set1Team2
-                set2Team1
-                set2Team2
-                set3Team1
-                set3Team2
-                winner
-                playedAt
-                rankingPoints {
-                  id
-                  points
-                  differenceInLevel
-                  playerId
-                }
-                players {
-                  id
-                  team
-                  player
-                  fullName
-                  slug
-                  rankingPlace(where: { systemId: $systemId }) {
-                    id
-                    single
-                    double
-                    mix
-                    rankingDate
-                  }
-                }
+                points
+                differenceInLevel
+                playerId
+              }
+              players {
+                id
+                team
+                player
+                fullName
+                slug
+                single
+                double
+                mix
               }
             }
-          `,
-          variables: {
-            gameId: this.gameId,
-            systemId: system,
-          },
-        })
-      ),
-      map((result) => new Game(result.data.game))
-    );
+          }
+        `,
+        variables: {
+          gameId: this.gameId,
+        },
+      })
+      .pipe(map((result) => new Game(result.data.game)));
   }
 
   getPlayer(game: Game, player: number, team: number) {
