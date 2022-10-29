@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.38.0](https://github.com/Badminton-Apps/badman/compare/v5.37.0...v5.38.0) (2022-10-29)
+
+
+### Features
+
+* adding ranking to the link table ([5bad9b0](https://github.com/Badminton-Apps/badman/commit/5bad9b061dba0ff029754b06d97b952035089cfe))
+* **frontend-competition,frontend-info:** adding titles ([30acaa9](https://github.com/Badminton-Apps/badman/commit/30acaa921170e625ec90021251cebfad67746a46))
+* **frontend-player:** added back button for edit screen ([2558e7f](https://github.com/Badminton-Apps/badman/commit/2558e7fe92dea2d0238d727c1194344901b6f171))
+* **frontend-ranking:** move to own package ([06e84af](https://github.com/Badminton-Apps/badman/commit/06e84af8d6904b86e11bb69f4a610d94dac01d72))
+
+
+### Bug Fixes
+
+* **deps:** update nrwl monorepo to v15.0.4 ([34bbdc6](https://github.com/Badminton-Apps/badman/commit/34bbdc6013a3453ee503fe99ef02437b929ea70c))
+* **frontend-info:** style was bleeding to full app ([bff8bbd](https://github.com/Badminton-Apps/badman/commit/bff8bbdd8a8205752609cff9ab1bf889300ad568))
+* **frontend-player:** update variables must be in data ([a0200dc](https://github.com/Badminton-Apps/badman/commit/a0200dc9d73ed2b6bd1947ff1ca11cfed5320f98))
+
 ## [5.37.0](https://github.com/Badminton-Apps/badman/compare/v5.36.0...v5.37.0) (2022-10-26)
 
 
