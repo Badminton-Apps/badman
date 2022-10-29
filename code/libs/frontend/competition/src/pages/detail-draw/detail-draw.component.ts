@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable, switchMap, tap } from 'rxjs';
 import { CompetitionDraw } from '@badman/frontend-models';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'badman-detail-draw',
@@ -14,7 +15,8 @@ export class DetailDrawCompetitionComponent implements OnInit {
   draw$!: Observable<CompetitionDraw>;
   competitionId?: string;
 
-  constructor(private apollo: Apollo, private route: ActivatedRoute) {}
+  constructor(private apollo: Apollo, private route: ActivatedRoute,
+    private titleService: Title) {}
 
   ngOnInit(): void {
     this.draw$ = this.route.paramMap.pipe(
@@ -80,6 +82,8 @@ export class DetailDrawCompetitionComponent implements OnInit {
             (e) => e.team?.id === encounter.awayTeamId
           )?.team;
         });
+
+        this.titleService.setTitle(`${draw.name}`);
 
         return draw;
       })
