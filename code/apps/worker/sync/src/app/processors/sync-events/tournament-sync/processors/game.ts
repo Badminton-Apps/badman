@@ -4,6 +4,7 @@ import {
   GamePlayerMembership,
   GameStatus,
   Player,
+  RankingSystem,
 } from '@badman/backend-database';
 import moment from 'moment-timezone';
 import { StepProcessor, StepOptions } from '../../../../processing';
@@ -18,6 +19,7 @@ import {
 import { DrawStepData } from './draw';
 import { EventStepData } from './event';
 import { SubEventStepData } from './subEvent';
+import { Op } from 'sequelize';
 
 export interface GameStepOptions {
   newGames?: boolean;
@@ -29,6 +31,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   public subEvents: SubEventStepData[];
   public event: EventStepData;
   private _games: Game[] = [];
+  private _system: RankingSystem;
 
   private gameOptions: GameStepOptions;
 
@@ -43,6 +46,13 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   }
 
   public async process(): Promise<Game[]> {
+    this._system = await RankingSystem.findOne({
+      where: {
+        primary: true,
+      },
+      transaction: this.transaction,
+    });
+
     await Promise.all(
       this.draws.map((e) => this._processSubevent(e.draw, e.internalId))
     );
@@ -92,7 +102,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           break;
         case XmlScoreStatus['No Match']:
           gameStatus = GameStatus.NO_MATCH;
-          break; 
+          break;
         case XmlScoreStatus.Walkover:
           gameStatus = GameStatus.WALKOVER;
           break;
@@ -187,14 +197,12 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       await GamePlayerMembership.destroy({
         where: { gameId: game.id },
         transaction: this.transaction,
-      })
-      await GamePlayerMembership.bulkCreate(
-        this._createGamePlayers(xmlMatch, game),
-        {
-          transaction: this.transaction,
-          ignoreDuplicates: true,
-        }
-      );
+      });
+      const memberships = await this._createGamePlayers(xmlMatch, game);
+      await GamePlayerMembership.bulkCreate(memberships, {
+        transaction: this.transaction,
+        ignoreDuplicates: true,
+      });
     }
 
     // Remove draw that are not in the xml
@@ -207,7 +215,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     this._games = this._games.concat(games);
   }
 
-  private _createGamePlayers(xmlMatch: XmlMatch, game: Game) {
+  private async _createGamePlayers(xmlMatch: XmlMatch, game: Game) {
     const gamePlayers = [];
     game.players = [];
 
@@ -217,11 +225,26 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
 
     if (t1p1) {
+      const rankingt1p1 = await t1p1.getRankingPlaces({
+        where: {
+          systemId: this._system.id,
+          rankingDate: {
+            [Op.lte]: game.playedAt,
+          },
+        },
+        order: [['rankingDate', 'DESC']],
+        limit: 1,
+      });
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t1p1.id,
         team: 1,
         player: 1,
+        single: rankingt1p1.length > 0 ? rankingt1p1[0].single : null,
+        double: rankingt1p1.length > 0 ? rankingt1p1[0].double : null,
+        mix: rankingt1p1.length > 0 ? rankingt1p1[0].mix : null,
+        systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
 
@@ -233,11 +256,26 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     }
 
     if (t1p2 && t1p2?.id !== t1p1?.id) {
+      const rankingt1p2 = await t1p2.getRankingPlaces({
+        where: {
+          systemId: this._system.id,
+          rankingDate: {
+            [Op.lte]: game.playedAt,
+          },
+        },
+        order: [['rankingDate', 'DESC']],
+        limit: 1,
+      });
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t1p2.id,
         team: 1,
         player: 2,
+        single: rankingt1p2.length > 0 ? rankingt1p2[0].single : null,
+        double: rankingt1p2.length > 0 ? rankingt1p2[0].double : null,
+        mix: rankingt1p2.length > 0 ? rankingt1p2[0].mix : null,
+        systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
@@ -248,11 +286,26 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     }
 
     if (t2p1) {
+      const rankingtt2p1 = await t2p1.getRankingPlaces({
+        where: {
+          systemId: this._system.id,
+          rankingDate: {
+            [Op.lte]: game.playedAt,
+          },
+        },
+        order: [['rankingDate', 'DESC']],
+        limit: 1,
+      });
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p1.id,
         team: 2,
         player: 1,
+        single: rankingtt2p1.length > 0 ? rankingtt2p1[0].single : null,
+        double: rankingtt2p1.length > 0 ? rankingtt2p1[0].double : null,
+        mix: rankingtt2p1.length > 0 ? rankingtt2p1[0].mix : null,
+        systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
@@ -263,11 +316,26 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     }
 
     if (t2p2 && t2p2?.id !== t2p1?.id) {
+      const rankingtt2p2 = await t2p2.getRankingPlaces({
+        where: {
+          systemId: this._system.id,
+          rankingDate: {
+            [Op.lte]: game.playedAt,
+          },
+        },
+        order: [['rankingDate', 'DESC']],
+        limit: 1,
+      });
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p2.id,
         team: 2,
         player: 2,
+        single: rankingtt2p2.length > 0 ? rankingtt2p2[0].single : null,
+        double: rankingtt2p2.length > 0 ? rankingtt2p2[0].double : null,
+        mix: rankingtt2p2.length > 0 ? rankingtt2p2[0].mix : null,
+        systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
@@ -281,7 +349,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   }
 
   private _getPlayer(player: XmlPlayer) {
-    let key = player?.MemberID
+    let key = player?.MemberID;
     if (!key) {
       key = `${player?.Firstname} ${player?.Lastname}`;
     }

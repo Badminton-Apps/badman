@@ -5,6 +5,7 @@ import {
   GameStatus,
   GameType,
   Player,
+  RankingSystem,
 } from '@badman/backend-database';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -25,6 +26,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   public encounters: EncounterStepData[];
 
   private _games: Game[] = [];
+  private _system: RankingSystem;
 
   constructor(
     protected readonly visualTournament: XmlTournament,
@@ -35,6 +37,13 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   }
 
   public async process(): Promise<Game[]> {
+    this._system = await RankingSystem.findOne({
+      where: {
+        primary: true,
+      },
+      transaction: this.transaction,
+    });
+
     const games = await Game.findAll({
       where: {
         linkId: {
@@ -165,13 +174,15 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         }
       }
       await game.save({ transaction: this.transaction });
-      await GamePlayerMembership.bulkCreate(
-        this._createGamePlayers(xmlMatch, game),
-        {
-          transaction: this.transaction,
-          ignoreDuplicates: true,
-        }
-      );
+      await GamePlayerMembership.destroy({
+        where: { gameId: game.id },
+        transaction: this.transaction,
+      });
+      const memberships = await this._createGamePlayers(xmlMatch, game);
+      await GamePlayerMembership.bulkCreate(memberships, {
+        transaction: this.transaction,
+        ignoreDuplicates: true,
+      });
     }
 
     // Remove draw that are not in the xml
@@ -184,7 +195,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     this._games = this._games.concat(games);
   }
 
-  private _createGamePlayers(xmlMatch: XmlMatch, game: Game) {
+  private async _createGamePlayers(xmlMatch: XmlMatch, game: Game) {
     const gamePlayers = [];
     game.players = [];
 
@@ -194,11 +205,26 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
 
     if (t1p1) {
+      const rankingt1p1 = await t1p1.getRankingPlaces({
+        where: {
+          systemId: this._system.id,
+          rankingDate: {
+            [Op.lte]: game.playedAt,
+          },
+        },
+        order: [['rankingDate', 'DESC']],
+        limit: 1,
+      });
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t1p1.id,
         team: 1,
         player: 1,
+        single: rankingt1p1.length > 0 ? rankingt1p1[0].single : null,
+        double: rankingt1p1.length > 0 ? rankingt1p1[0].double : null,
+        mix: rankingt1p1.length > 0 ? rankingt1p1[0].mix : null,
+        systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
 
@@ -210,11 +236,26 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     }
 
     if (t1p2 && t1p2?.id !== t1p1?.id) {
+      const rankingt1p2 = await t1p2.getRankingPlaces({
+        where: {
+          systemId: this._system.id,
+          rankingDate: {
+            [Op.lte]: game.playedAt,
+          },
+        },
+        order: [['rankingDate', 'DESC']],
+        limit: 1,
+      });
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t1p2.id,
         team: 1,
         player: 2,
+        single: rankingt1p2.length > 0 ? rankingt1p2[0].single : null,
+        double: rankingt1p2.length > 0 ? rankingt1p2[0].double : null,
+        mix: rankingt1p2.length > 0 ? rankingt1p2[0].mix : null,
+        systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
@@ -225,11 +266,26 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     }
 
     if (t2p1) {
+      const rankingt2p1 = await t2p1.getRankingPlaces({
+        where: {
+          systemId: this._system.id,
+          rankingDate: {
+            [Op.lte]: game.playedAt,
+          },
+        },
+        order: [['rankingDate', 'DESC']],
+        limit: 1,
+      });
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p1.id,
         team: 2,
         player: 1,
+        single: rankingt2p1.length > 0 ? rankingt2p1[0].single : null,
+        double: rankingt2p1.length > 0 ? rankingt2p1[0].double : null,
+        mix: rankingt2p1.length > 0 ? rankingt2p1[0].mix : null,
+        systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
@@ -240,11 +296,26 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     }
 
     if (t2p2 && t2p2?.id !== t2p1?.id) {
+      const rankingtt2p2 = await t2p2.getRankingPlaces({
+        where: {
+          systemId: this._system.id,
+          rankingDate: {
+            [Op.lte]: game.playedAt,
+          },
+        },
+        order: [['rankingDate', 'DESC']],
+        limit: 1,
+      });
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p2.id,
         team: 2,
         player: 2,
+        single: rankingtt2p2.length > 0 ? rankingtt2p2[0].single : null,
+        double: rankingtt2p2.length > 0 ? rankingtt2p2[0].double : null,
+        mix: rankingtt2p2.length > 0 ? rankingtt2p2[0].mix : null,
+        systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
       // Push to list
@@ -277,7 +348,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     }
   }
 
-  private _getPlayer(player: XmlPlayer) {
+  private _getPlayer(player: XmlPlayer): Player | null {
     let returnPlayer = this.players.get(`${player?.MemberID}`);
 
     if ((returnPlayer ?? null) == null && (player ?? null) != null) {
