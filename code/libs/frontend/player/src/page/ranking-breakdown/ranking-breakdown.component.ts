@@ -211,11 +211,9 @@ export class RankingBreakdownComponent implements OnInit {
                       team
                       player
                       fullName
-                      rankingPlace(where: { systemId: $rankingType }) {
-                        id
-                        rankingDate
-                        ${type}
-                      }
+                      single
+                      double
+                      mix
                     }
                     rankingPoints(where: { systemId: $rankingType }) {
                       id

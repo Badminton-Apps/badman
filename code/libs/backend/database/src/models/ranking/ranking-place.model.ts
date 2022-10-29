@@ -17,6 +17,7 @@ import {
 } from 'sequelize';
 import {
   AfterBulkCreate,
+  AfterBulkUpdate,
   AfterCreate,
   AfterDestroy,
   AfterUpdate,
@@ -34,6 +35,8 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
+import { GamePlayer } from '../../_interception';
+import { GamePlayerMembership } from '../event';
 import { Player } from '../player.model';
 import { RankingLastPlace } from './ranking-last-place.model';
 import { RankingSystem } from './ranking-system.model';
@@ -238,6 +241,19 @@ export class RankingPlace extends Model {
     }
   }
 
+  @AfterUpdate
+  @AfterBulkUpdate
+  static async updateGames(
+    instances: RankingPlace[] | RankingPlace,
+    options: UpdateOptions
+  ) {
+    if (!Array.isArray(instances)) {
+      instances = [instances];
+    }
+
+    await this.updateGameRanking(instances, options);
+  }
+
   @AfterCreate
   @AfterBulkCreate
   static async updateLatestRankingsCreate(
@@ -354,22 +370,73 @@ export class RankingPlace extends Model {
     });
   }
 
-  // @BeforeBulkCreate
-  // static async protectRankings(
-  //   instances: RankingPlace[],
-  //   options: SaveOptions
-  // ) {
-  //   await RankingProcessor.checkInactive(instances, options);
-  //   await RankingProcessor.protectRanking(instances, null, options);
-  // }
+  static async updateGameRanking(
+    instances: RankingPlace[],
+    options: UpdateOptions
+  ) {
+    try {
+      for (const instance of instances) {
+        // find next ranking place
+        const nextRankingPlace = await RankingPlace.findOne({
+          where: {
+            playerId: instance.playerId,
+            systemId: instance.systemId,
+            rankingDate: {
+              [Op.gt]: instance.rankingDate,
+            },
+          },
+          limit: 1,
+          order: [['rankingDate', 'ASC']],
+          transaction: options?.transaction,
+        });
 
-  // @BeforeCreate
-  // static async protectRanking(instance: RankingPlace, options: SaveOptions) {
-  //   await RankingProcessor.checkInactive([instance], options);
-  //   await RankingProcessor.protectRanking([instance], null, options);
-  // }
+        const endDate = nextRankingPlace?.rankingDate;
+        const dates: { [key: string]: unknown }[] = [
+          {
+            playedAt: {
+              [Op.gte]: instance.rankingDate,
+            },
+          },
+        ];
 
-  // #endregion
+        if (endDate) {
+          dates.push({
+            playedAt: {
+              [Op.lt]: endDate,
+            },
+          });
+        }
+
+        const p = await instance.getPlayer();
+        const games = await p.getGames({
+          where: {
+            [Op.and]: dates,
+          },
+
+          transaction: options?.transaction,
+        });
+
+        await GamePlayerMembership.bulkCreate(
+          games?.map((g) => {
+            return {
+              gameId: g.id,
+              playerId: p.id,
+              systemId: instance.systemId,
+              single: instance.single,
+              double: instance.double,
+              mix: instance.mix,
+            };
+          }),
+          {
+            updateOnDuplicate: ['single', 'double', 'mix'],
+            transaction: options?.transaction,
+          }
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   asLastRankingPlace() {
     return {

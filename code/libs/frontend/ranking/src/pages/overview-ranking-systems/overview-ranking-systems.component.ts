@@ -1,18 +1,14 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ViewChild,
+  ChangeDetectionStrategy, Component,
+  ViewChild
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { RankingSystem } from '@badman/frontend-models';
-import { SystemService } from '@badman/frontend-ranking';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { BehaviorSubject, combineLatest, lastValueFrom, of } from 'rxjs';
@@ -23,8 +19,9 @@ import {
   shareReplay,
   startWith,
   switchMap,
-  tap,
+  tap
 } from 'rxjs/operators';
+import { SystemService } from '../../services';
 
 @Component({
   templateUrl: './overview-ranking-systems.component.html',
@@ -65,12 +62,7 @@ export class OverviewRankingSystemsComponent implements AfterViewInit {
   forceStartDate = false;
   startingRankings = false;
 
-  constructor(
-    private systemsService: SystemService,
-    private apollo: Apollo,
-    private changeDetectorRef: ChangeDetectorRef,
-    private dialog: MatDialog
-  ) {
+  constructor(private systemsService: SystemService, private apollo: Apollo) {
     this.minDate = new FormControl(moment([2017, 8, 1]), [Validators.required]);
     this.maxDate = new FormControl(moment([2020, 3, 1]), [Validators.required]);
   }
