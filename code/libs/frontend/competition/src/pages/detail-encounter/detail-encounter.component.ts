@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { Apollo, gql } from 'apollo-angular';
-import { combineLatest, map, Observable, switchMap, tap } from 'rxjs';
 import { EncounterCompetition } from '@badman/frontend-models';
-import { SystemService } from '@badman/frontend-ranking';
+import { Apollo, gql } from 'apollo-angular';
+import { map, Observable, switchMap, tap } from 'rxjs';
 
 @Component({
   templateUrl: './detail-encounter.component.html',
@@ -16,23 +15,16 @@ export class DetailEncounterComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private titleService: Title,
-    private systemService: SystemService
+    private titleService: Title
   ) {}
 
   ngOnInit(): void {
-    this.encounter$ = combineLatest([
-      this.route.paramMap,
-      this.systemService.getPrimarySystemId(),
-    ]).pipe(
-      switchMap(([q, system]) => {
-        if (!system) {
-          throw new Error('No system');
-        }
+    this.encounter$ = this.route.paramMap.pipe(
+      switchMap((q) => {
         return this.apollo
           .query<{ encounterCompetition: EncounterCompetition }>({
             query: gql`
-              query GetEncounter($id: ID!, $system: ID!) {
+              query GetEncounter($id: ID!) {
                 encounterCompetition(id: $id) {
                   id
                   homeScore
@@ -71,13 +63,9 @@ export class DetailEncounterComponent implements OnInit {
                       fullName
                       team
                       player
-                      rankingPlace(where: { systemId: $system }) {
-                        id
-                        single
-                        double
-                        mix
-                        rankingDate
-                      }
+                      single
+                      double
+                      mix
                     }
                   }
                 }
@@ -85,7 +73,6 @@ export class DetailEncounterComponent implements OnInit {
             `,
             variables: {
               id: q.get('encounterId'),
-              system,
             },
           })
           .pipe(
