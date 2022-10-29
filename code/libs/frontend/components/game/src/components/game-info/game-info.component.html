@@ -23,14 +23,22 @@
         <!-- User -->
         <div class="has-user" [routerLink]="['/player', this.playerT1P1.slug]">
           <!-- Name -->
-          <span>{{ this.playerT1P1.fullName }}</span>
+          <span
+            >{{ this.playerT1P1.fullName }} ({{
+              this.getRanking(this.playerT1P1)
+            }})</span
+          >
         </div>
       </div>
       <div fxFlex *ngIf="this.playerT1P2">
         <!-- User -->
         <div class="has-user" [routerLink]="['/player', this.playerT1P2.slug]">
           <!-- Name -->
-          <span>{{ this.playerT1P2.fullName }}</span>
+          <span
+            >{{ this.playerT1P2.fullName }} ({{
+              this.getRanking(this.playerT1P2)
+            }})</span
+          >
         </div>
       </div>
     </div>
@@ -59,14 +67,22 @@
         <!-- User -->
         <div class="has-user" [routerLink]="['/player', this.playerT2P1.slug]">
           <!-- Name -->
-          <span>{{ this.playerT2P1.fullName }}</span>
+          <span
+            >{{ this.playerT2P1.fullName }} ({{
+              this.getRanking(this.playerT2P1)
+            }})</span
+          >
         </div>
       </div>
       <div fxFlex *ngIf="this.playerT2P2">
         <!-- User -->
         <div class="has-user" [routerLink]="['/player', this.playerT2P2.slug]">
           <!-- Name -->
-          <span>{{ this.playerT2P2.fullName }}</span>
+          <span
+            >{{ this.playerT2P2.fullName }} ({{
+              this.getRanking(this.playerT2P2)
+            }})</span
+          >
         </div>
       </div>
     </div>
