@@ -1,0 +1,313 @@
+<form [formGroup]="rankingSystemForm">
+  <div class="mat-subheading-1">System</div>
+  <div class="mat-subheading-2">
+    When field isn't required (see '*') leave empty for disable limitation
+  </div>
+  <div class="row">
+    <mat-form-field appearance="outline" class="flex">
+      <mat-label>{{ 'input.name' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        alt="name"
+        autocomplete="name"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Type</mat-label>
+      <mat-select
+        formControlName="rankingSystem"
+        alt="rankingSystem"
+        autocomplete="rankingSystem"
+        required
+      >
+        <mat-option value="BVL">BVL</mat-option>
+        <mat-option value="LFBB">LFBB</mat-option>
+        <mat-option value="Original">Original</mat-option>
+        <mat-option value="VISUAL">Visual</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Amount of levels</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="amountOfLevels"
+        alt="amountOfLevels"
+        autocomplete="amountOfLevels"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>% Winning</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="procentWinning"
+        alt="procentWinning"
+        autocomplete="procentWinning"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>% Winning + 1</mat-label>
+      <input
+        type="number"
+        min="0"
+        max="100"
+        matInput
+        formControlName="procentWinningPlus1"
+        alt="procentWinningPlus1"
+        autocomplete="procentWinningPlus1"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>% Losing</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="procentLosing"
+        alt="procentLosing"
+        autocomplete="procentLosing"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Games to use</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="latestXGamesToUse"
+        alt="latestXGamesToUse"
+        autocomplete="latestXGamesToUse"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Min number of games to use for upgrade</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="minNumberOfGamesUsedForUpgrade"
+        alt="minNumberOfGamesUsedForUpgrade"
+        autocomplete="minNumberOfGamesUsedForUpgrade"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Diff levels</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="maxDiffLevels"
+        alt="maxDiffLevels"
+        autocomplete="maxDiffLevels"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Point update</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="caluclationIntervalAmount"
+        alt="caluclationIntervalAmount"
+        autocomplete="caluclationIntervalAmount"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Point update</mat-label>
+      <mat-select
+        formControlName="calculationIntervalUnit"
+        alt="calculationIntervalUnit"
+        autocomplete="calculationIntervalUnit"
+        required
+      >
+        <mat-option value="months">Months</mat-option>
+        <mat-option value="weeks">Weeks</mat-option>
+        <mat-option value="days">Days</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Ranking update</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="updateIntervalAmount"
+        alt="updateIntervalAmount"
+        autocomplete="updateIntervalAmount"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Ranking update</mat-label>
+      <mat-select
+        formControlName="updateIntervalUnit"
+        alt="updateIntervalUnit"
+        autocomplete="updateIntervalUnit"
+        required
+      >
+        <mat-option value="months">Months</mat-option>
+        <mat-option value="weeks">Weeks</mat-option>
+        <mat-option value="days">Days</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Period games</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="periodAmount"
+        alt="periodAmount"
+        autocomplete="periodAmount"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Period games</mat-label>
+      <mat-select
+        formControlName="periodUnit"
+        alt="periodUnit"
+        autocomplete="periodUnit"
+        required
+      >
+        <mat-option value="months">Months</mat-option>
+        <mat-option value="weeks">Weeks</mat-option>
+        <mat-option value="days">Days</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Level diff used for upgrade</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="differenceForUpgrade"
+        alt="differenceForUpgrade"
+        autocomplete="differenceForUpgrade"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Level diff used for downgrade</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="differenceForDowngrade"
+        alt="differenceForDowngrade"
+        autocomplete="differenceForDowngrade"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Starting Type</mat-label>
+      <mat-select
+        formControlName="startingType"
+        alt="startingType"
+        autocomplete="startingType"
+        required
+      >
+        <mat-option value="formula">Formula</mat-option>
+        <mat-option value="tableLFBB">Table LFBB</mat-option>
+        <mat-option value="tableBVL">Table BVL</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Max # levels up per change</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="maxLevelUpPerChange"
+        alt="maxLevelUpPerChange"
+        autocomplete="maxLevelUpPerChange"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Max # levels down per change</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="maxLevelDownPerChange"
+        alt="maxLevelDownPerChange"
+        autocomplete="maxLevelDownPerChange"
+      />
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Inactivity period</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="inactivityAmount"
+        alt="inactivityAmount"
+        autocomplete="inactivityAmount"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Inactivity period</mat-label>
+      <mat-select
+        formControlName="inactivityUnit"
+        alt="inactivityUnit"
+        autocomplete="inactivityUnit"
+        required
+      >
+        <mat-option value="months">Months</mat-option>
+        <mat-option value="weeks">Weeks</mat-option>
+        <mat-option value="days">Days</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Games for inactivty</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="gamesForInactivty"
+        alt="gamesForInactivty"
+        autocomplete="gamesForInactivty"
+        required
+      />
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field appearance="outline" fxFlex="250px">
+      <mat-label>Groups</mat-label>
+      <mat-select
+        [formControl]="this.rakingGroupForm"
+        (selectionChange)="onGroupChange($event)"
+        alt="group"
+        multiple
+        required
+        [compareWith]="this.groupCompare"
+      >
+        <mat-option [value]="group" *ngFor="let group of this.groups">{{
+          group.name
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</form>

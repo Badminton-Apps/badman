@@ -12,12 +12,6 @@ const routes: Routes = [
         loadChildren: () =>
           import('@badman/frontend-info').then((m) => m.InfoModule),
       },
-
-      // {
-      //   path: 'admin',
-      //   loadChildren: () =>
-      //     import('@badman/frontend-admin').then((m) => m.AdminModule),
-      // },
       {
         path: 'player',
         loadChildren: () =>
@@ -44,6 +38,11 @@ const routes: Routes = [
         path: 'event',
         loadChildren: () =>
           import('@badman/frontend-event').then((m) => m.EventModule),
+      },
+      {
+        path: 'ranking',
+        loadChildren: () =>
+          import('@badman/frontend-ranking').then((m) => m.RankingModule),
       },
       {
         path: 'training',
