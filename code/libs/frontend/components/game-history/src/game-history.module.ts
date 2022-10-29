@@ -7,7 +7,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { PlayerInfoModule } from '@badman/frontend-components-player-info';
-import { RankingModule } from '@badman/frontend-ranking';
 import { TranslateModule } from '@ngx-translate/core';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import {
@@ -40,7 +39,6 @@ const materialModules = [
     ...materialModules,
     InfiniteScrollModule,
     TranslateModule,
-    RankingModule,
     PlayerInfoModule,
   ],
   exports: [GamesHistoryComponent],
