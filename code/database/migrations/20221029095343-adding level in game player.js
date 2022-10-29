@@ -72,6 +72,7 @@ module.exports = {
         );
 
         console.log(`Found ${games.length} games`);
+        const queries = [];
         for (const game of games) {
           const [players] = await queryInterface.sequelize.query(
             `select * from "event"."GamePlayerMemberships" where "gameId" = '${game.id}'`,
@@ -104,7 +105,7 @@ module.exports = {
             );
 
             if (level[0].length > 0) {
-              await queryInterface.sequelize.query(
+              queries.push(
                 `update "event"."GamePlayerMemberships" set "single" = ${level[0][0].single}, "double" = ${level[0][0].double}, "mix" = ${level[0][0].mix}, "systemId" = '${primarySystem.id}' where "gameId" = '${game.id}' and "playerId" = '${player.playerId}';`,
                 {
                   transaction: t,
@@ -113,6 +114,10 @@ module.exports = {
             }
           }
         }
+
+        await queryInterface.sequelize.query(queries.join(''), {
+          transaction: t,
+        });
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();
