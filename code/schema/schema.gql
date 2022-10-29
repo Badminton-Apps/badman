@@ -582,8 +582,12 @@ type Setting {
 type GamePlayer {
   playerId: String
   gameId: String
+  systemId: String
   team: Float
   player: Float
+  single: Float
+  double: Float
+  mix: Float
   updatedAt: DateTime
   createdAt: DateTime
   id: ID!

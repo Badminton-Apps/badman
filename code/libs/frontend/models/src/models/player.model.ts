@@ -122,6 +122,10 @@ export class PlayerGame extends Player {
   team?: number;
   player?: number;
 
+  single?: number;
+  double?: number;
+  mix?: number;
+
   constructor(args: Partial<PlayerGame>) {
     super(args);
 
@@ -130,5 +134,8 @@ export class PlayerGame extends Player {
       : undefined;
     this.team = args?.team;
     this.player = args?.player;
+    this.single = args?.single;
+    this.double = args?.double;
+    this.mix = args?.mix;
   }
 }
