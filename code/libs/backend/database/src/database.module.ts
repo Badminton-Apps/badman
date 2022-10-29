@@ -48,8 +48,6 @@ import {
 
         Logger.log(`DB_DIALECT: ${configService.get('DB_DIALECT')}`);
 
-        options.logging = true;
-
         return options;
       },
       inject: [ConfigService],
