@@ -89,11 +89,13 @@ export class EditPlayerFieldsComponent implements OnInit {
               }
             `,
             variables: {
-              id: this.player.id,
-              firstName: this.fg.value.firstName,
-              lastName: this.fg.value.lastName,
-              memberId: this.fg.value.memberId,
-              sub: this.fg.value.sub,
+              data: {
+                id: this.player.id,
+                firstName: this.fg.value.firstName,
+                lastName: this.fg.value.lastName,
+                memberId: this.fg.value.memberId,
+                sub: this.fg.value.sub,
+              },
             },
           })
         )
