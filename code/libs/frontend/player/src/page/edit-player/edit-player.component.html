@@ -1,5 +1,10 @@
 <ng-container *ngIf="this.player$ | async as player">
-  <div class="mat-subheading-1">Edit {{ player.fullName }}</div>
+  <div class="mat-subheading-1">
+    <button mat-icon-button [routerLink]="['/player', player.slug]">
+      <mat-icon>arrow_back</mat-icon></button
+    >Edit {{ player.fullName }}
+  </div>
+
 
   <mat-tab-group
     dynamicHeight
