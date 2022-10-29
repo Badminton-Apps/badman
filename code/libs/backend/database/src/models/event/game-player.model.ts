@@ -9,6 +9,7 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import { Player } from '../player.model';
+import { RankingSystem } from '../ranking';
 import { Game } from './game.model';
 
 @Table({
@@ -34,10 +35,28 @@ export class GamePlayerMembership extends Model {
   gameId: string;
 
   @Field({ nullable: true })
+  @ForeignKey(() => RankingSystem)
+  @Index
+  @Column
+  systemId: string;
+
+  @Field({ nullable: true })
   @Column
   team: number;
 
   @Field({ nullable: true })
   @Column
   player: number;
+
+  @Field({ nullable: true })
+  @Column
+  single: number;
+
+  @Field({ nullable: true })
+  @Column
+  double: number;
+
+  @Field({ nullable: true })
+  @Column
+  mix: number;
 }

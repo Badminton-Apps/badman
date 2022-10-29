@@ -85,7 +85,7 @@ export class GamesHistoryComponent implements OnInit, OnChanges {
         fetchPolicy: 'network-only',
         query: gql`
           query Games(
-            $playerId: ID!
+            $playerId: ID! 
             $where: JSONObject
             $skip: Int
             $take: Int

@@ -44,9 +44,9 @@ export class PlayerInfoComponent implements OnInit {
   ngOnInit() {
     this.status = this.status || GameStatus.NORMAL;
 
-    if (this.player) {
-      if (this.player.rankingPlace && this.type) {
-        this.ranking = this.player.rankingPlace[this.type];
+    if (this.player && this.type) {
+      if (this.player[this.type]) {
+        this.ranking = this.player[this.type];
       }
     }
 
