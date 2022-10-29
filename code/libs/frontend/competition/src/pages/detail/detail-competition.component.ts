@@ -3,9 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { AssignRankingGroupsComponent } from '@badman/frontend-shared';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   templateUrl: './detail-competition.component.html',
@@ -23,7 +24,8 @@ export class DetailCompetitionComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private titleService: Title
   ) {}
 
   ngOnInit(): void {
@@ -67,7 +69,10 @@ export class DetailCompetitionComponent implements OnInit {
           },
         })
       ),
-      map(({ data }) => new EventCompetition(data.eventCompetition))
+      map(({ data }) => new EventCompetition(data.eventCompetition)),
+      tap((event) => {
+        this.titleService.setTitle(event.name ?? 'Competition');
+      })
     );
 
     this.subEventsM$ = this.event$.pipe(
