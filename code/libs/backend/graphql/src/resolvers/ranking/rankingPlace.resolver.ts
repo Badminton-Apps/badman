@@ -104,13 +104,6 @@ export class RankingPlaceResolver {
         transaction,
       });
 
-      const player = await Player.findByPk(rankingPlace.playerId, {
-        transaction,
-      });
-
-      if (!player) {
-        throw new NotFoundException(`${Player.name}: ${rankingPlace.playerId}`);
-      }
 
       // Commit transaction
       await transaction.commit();
