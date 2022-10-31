@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.39.0](https://github.com/Badminton-Apps/badman/compare/v5.38.1...v5.39.0) (2022-10-31)
+
+
+### Features
+
+* **worker-sync:** backup search for profile ([9d608f5](https://github.com/Badminton-Apps/badman/commit/9d608f589b864460f8c6419566a71402b522c6e1))
+
 ### [5.38.1](https://github.com/Badminton-Apps/badman/compare/v5.38.0...v5.38.1) (2022-10-31)
 
 
