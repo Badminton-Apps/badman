@@ -83,55 +83,50 @@ export class SyncEventsProcessor {
         this.logger.log(
           `Processing ${xmlTournament.Name}, ${percent}% (${i}/${total})`
         );
+
+        // Skip certain events
+        if (
+          (job.data?.skip?.length ?? 0) > 0 &&
+          job.data?.skip?.includes(xmlTournament.Name)
+        ) {
+          continue;
+        }
+
+        // Only process certain events
+        if (
+          (job.data?.only?.length ?? 0) > 0 &&
+          !job.data?.only?.includes(xmlTournament.Name)
+        ) {
+          continue;
+        }
+
         const transaction = await this._sequelize.transaction();
 
         try {
-          // Skip certain events
-          if (
-            (job.data?.skip?.length ?? 0) > 0 &&
-            job.data?.skip?.includes(xmlTournament.Name)
-          ) {
-            await transaction.commit();
-            continue;
-          }
-
-          // Only process certain events
-          if (
-            (job.data?.only?.length ?? 0) > 0 &&
-            !job.data?.only?.includes(xmlTournament.Name)
-          ) {
-            await transaction.commit();
-            continue;
-          }
-
           if (
             xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
             xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
           ) {
-            if (job.data?.skip?.includes('competition')) {
-              await transaction.commit();
-              continue;
+            if (!job.data?.skip?.includes('competition')) {
+              await this._competitionSync.process({
+                transaction,
+                xmlTournament,
+                options: { ...job.data },
+              });
             }
-
-            await this._competitionSync.process({
-              transaction,
-              xmlTournament,
-              options: { ...job.data },
-            });
           } else {
-            if (job.data?.skip?.includes('tournament')) {
-              await transaction.commit();
-              continue;
+            if (!job.data?.skip?.includes('tournament')) {
+              await this._tournamentSync.process({
+                transaction,
+                xmlTournament,
+                options: { ...job.data },
+              });
             }
-
-            await this._tournamentSync.process({
-              transaction,
-              xmlTournament,
-              options: { ...job.data },
-            });
           }
+          this.logger.debug(`Committing transactin`);
           await transaction.commit();
           this.logger.log(`Finished ${xmlTournament.Name}`);
+
         } catch (e) {
           this.logger.error('Rollback', e);
           await transaction.rollback();
