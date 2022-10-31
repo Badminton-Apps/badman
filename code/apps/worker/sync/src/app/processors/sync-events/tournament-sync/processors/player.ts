@@ -22,7 +22,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
   public async process(): Promise<Map<string, Player>> {
     const mapPlayers = new Map<string, Player>();
     const visualPlayers = (
-      await this.visualService.getPlayers(this.visualTournament.Code)
+      await this.visualService.getPlayers(this.visualTournament.Code, false)
     ).map((xmlPlayer) => {
       if (!xmlPlayer) {
         return null;
