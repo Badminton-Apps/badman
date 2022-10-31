@@ -29,7 +29,7 @@ import { basename, extname } from 'path';
 
 @Controller()
 export class AppController {
-  private readonly logger = new Logger(AppController.name);
+  private readonly logger = new Logger(AppController.name); 
 
   constructor(
     @InjectQueue(SimulationQueue) private rankingSim: Queue,

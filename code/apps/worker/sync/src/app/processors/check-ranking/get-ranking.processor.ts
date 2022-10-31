@@ -1,11 +1,16 @@
-import { Player, RankingSystem } from '@badman/backend-database';
-import { accepCookies, getBrowser } from '@badman/backend-pupeteer';
+import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
+import {
+  accepCookies,
+  getBrowser,
+  selectBadmninton,
+} from '@badman/backend-pupeteer';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
+import { writeFile } from 'fs/promises';
 import { Browser } from 'puppeteer';
-import { getRanking, searchPlayer } from './pupeteer';
+import { getRanking, getViaRanking, searchPlayer } from './pupeteer';
 
 @Processor({
   name: SyncQueue,
@@ -21,10 +26,14 @@ export class CheckRankingProcessor {
     name: Sync.CheckRanking,
     concurrency: 1,
   })
-  async syncEncounters(job: Job<{ playerId: string }>): Promise<void> {
+  async syncRankingJob(job: Job<{ playerId: string }>): Promise<void> {
+    this.syncRanking(job.data.playerId);
+  }
+
+  async syncRanking(playerId: string): Promise<void> {
     let browser: Browser;
 
-    const player = await Player.findByPk(job.data.playerId);
+    const player = await Player.findByPk(playerId);
     this.logger.log(
       `Syncing ranking for ${player.fullName} (${player.memberId})`
     );
@@ -39,22 +48,21 @@ export class CheckRankingProcessor {
       return;
     }
 
-    const places = await player.getRankingPlaces({
+    // Find all rankingplaces since the last update
+    const rankingPlaces = await RankingPlace.findAll({
       where: {
         systemId: primary.id,
+        playerId: player.id,
       },
-      limit: 1,
       order: [['rankingDate', 'DESC']],
     });
 
-    if (places.length === 0) {
+    if (rankingPlaces.length === 0) {
       this.logger.log(`Player ${player.fullName} has no ranking`);
       return;
     }
 
     try {
-      const place = places[0];
-
       // Create browser
       browser = await getBrowser();
 
@@ -64,31 +72,81 @@ export class CheckRankingProcessor {
 
       // Accept cookies
       await accepCookies({ page });
+      await selectBadmninton({ page });
 
       // Processing player
-      await searchPlayer({ page }, player);
+      const result = await getViaRanking({ page }, player);
 
-      // Get Ranking
-      const { single, double, mix } = await getRanking({ page });
+      let single: number;
+      let double: number;
+      let mix: number;
 
-      // Update player
-      place.single = single;
-      place.double = double;
-      place.mix = mix;
+      if (!result) {
+        // ranking was not found
+        const links = await searchPlayer({ page }, player);
+        if (links.length === 0) {
+          this.logger.log(`Player ${player.fullName} not found`);
+          return;
+        }
 
-      place.changed('single', true);
-      place.changed('double', true);
-      place.changed('mix', true);
+        // iterate over links and extract ranking
+        for (const url of links) {
+          await page.goto(`https://www.toernooi.nl/${url}`);
+          // Get Ranking and set local variables
+          try {
+            // Extract ranking
+            const ranking = await getRanking({ page, timeout: 200 });
 
-      await place.save();
+            // We found our player
+            if (ranking.single) {
+              single = ranking.single;
+            }
+            if (ranking.double) {
+              double = ranking.double;
+            }
+            if (ranking.mix) {
+              mix = ranking.mix;
+            }
+            break;
+          } catch (error) {
+            continue;
+          }
+        }
+      }
+
+      if (!single || !double || !mix) {
+        this.logger.log(`No ranking found for ${player.fullName}`);
+        return;
+      }
+
+      this.logger.log(
+        `Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`
+      );
+
+      for (const rankingPlace of rankingPlaces) {
+        // Update player
+        rankingPlace.single = single;
+        rankingPlace.double = double;
+        rankingPlace.mix = mix;
+
+        rankingPlace.changed('single', true);
+        rankingPlace.changed('double', true);
+        rankingPlace.changed('mix', true);
+
+        await rankingPlace.save();
+
+        if (rankingPlace.updatePossible) {
+          break;
+        }
+      }
     } catch (error) {
       this.logger.error(error);
-      this.logger.error(`Error while processing player ${player.id}`);
+      this.logger.error(`Error while processing player ${player.fullName}`);
     } finally {
       // Close browser
       if (browser) {
         browser.close();
-        this.logger.log('Syned');
+        this.logger.log(`Syned ${player.fullName}`);
       }
     }
   }

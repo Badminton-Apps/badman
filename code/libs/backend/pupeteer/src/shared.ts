@@ -1,22 +1,53 @@
 import { ElementHandle, launch, Page } from 'puppeteer';
 
-export async function getBrowser(headless = true){
+export async function getBrowser(headless = true) {
   return await launch({
     headless,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--single-process'],
   });
 }
 
+export async function selectBadmninton(
+  pupeteer: {
+    page: Page;
+    timeout?: number;
+  } = {
+    page: null,
+    timeout: 5000,
+  }
+) {
+  const { page, timeout } = pupeteer;
+
+  {
+    const targetPage = page;
+
+    await targetPage.goto(
+      'https://www.toernooi.nl/sportselection/setsportselection/2?returnUrl=%2F',
+      {
+        timeout,
+      }
+    );
+  }
+}
+
 export async function waitForSelector(
   selector: string[] | string,
   frame: Page,
-  timeout: number
+  timeout: number,
+  options: {
+    visible?: boolean;
+  } = {
+    visible: false,
+  }
 ) {
   if (selector instanceof Array) {
     let element: ElementHandle<Element> = null;
     for (const part of selector) {
       if (!element) {
-        element = await frame.waitForSelector(part, { timeout });
+        element = await frame.waitForSelector(part, {
+          timeout,
+          visible: options.visible,
+        });
       } else {
         element = await element.$(part);
       }

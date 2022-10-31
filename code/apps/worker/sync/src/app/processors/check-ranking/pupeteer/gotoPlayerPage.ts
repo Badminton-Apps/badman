@@ -2,7 +2,7 @@ import { Player } from '@badman/backend-database';
 import { waitForSelector } from '@badman/backend-pupeteer';
 import { Page } from 'puppeteer';
 
-export async function searchPlayer(
+export async function getViaRanking(
   pupeteer: {
     page: Page;
     timeout?: number;
@@ -14,6 +14,7 @@ export async function searchPlayer(
 ) {
   const { page, timeout } = pupeteer;
   const url = `https://www.toernooi.nl/ranking/`;
+  let count = 0;
 
   {
     const targetPage = page;
@@ -53,6 +54,19 @@ export async function searchPlayer(
 
   {
     const targetPage = page;
+
+    // count li items
+    count = await targetPage.evaluate(() => {
+      return document.querySelectorAll('#ulSearchSuggest > li').length;
+    });
+  }
+  // If no results are found, return
+  if (count === 0) {
+    return;
+  }
+  
+  {
+    const targetPage = page;
     const selector = ['#ulSearchSuggest > li:nth-child(1) > a'];
     const element = await waitForSelector(selector, targetPage, timeout);
     await element.click({
@@ -63,6 +77,20 @@ export async function searchPlayer(
     });
     await targetPage.waitForNavigation();
   }
+
+  {
+    const targetPage = page;
+    const selector = ['aria/Profiel'];
+    const element = await waitForSelector(selector, targetPage, timeout);
+    await element.click({
+      offset: {
+        x: 16.453125,
+        y: 9.90625,
+      },
+    });
+    await targetPage.waitForNavigation();
+  }
+
 
   return url;
 }
