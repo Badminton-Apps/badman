@@ -14,19 +14,7 @@ export async function getRanking(
   let single: number = undefined;
   let double: number = undefined;
   let mix: number = undefined;
-  {
-    const targetPage = page;
-    const selector = ['aria/Profiel'];
-    const element = await waitForSelector(selector, targetPage, timeout);
-    await element.click({
-      offset: {
-        x: 16.453125,
-        y: 9.90625,
-      },
-    });
-    await targetPage.waitForNavigation();
-  }
-
+  
   {
     const targetPage = page;
     const selector = ["#mediaContentSubinfo > ul > li > span[title='Single']"];

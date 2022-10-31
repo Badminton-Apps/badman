@@ -358,6 +358,8 @@ export class RankingSyncer {
               'mix',
               'F' 
             );
+            
+            this.logger.debug(`Creating ranking places`);
 
             const instances = Array.from(rankingPlaces).map(([, place]) =>
               place.toJSON()

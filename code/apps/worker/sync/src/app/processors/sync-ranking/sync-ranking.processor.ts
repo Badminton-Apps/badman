@@ -25,7 +25,7 @@ export class SyncRankingProcessor {
       start: string;
     }>
   ): Promise<void> {
-    this.logger.debug('Syncing Ranking', job.data);
+    this.logger.debug(`Syncing Ranking, data: ${JSON.stringify(job.data)}`);
 
     const transaction = await this._sequelize.transaction();
 
@@ -34,6 +34,9 @@ export class SyncRankingProcessor {
       ...job.data,
     });
 
+    this.logger.debug('Commiting');
+
     await transaction.commit();
+    this.logger.debug('Syncing Ranking done');
   }
 }
