@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.39.2](https://github.com/Badminton-Apps/badman/compare/v5.39.1...v5.39.2) (2022-11-04)
+
+
+### Bug Fixes
+
+* **frontend-player:** ranking wasn't shown correctly ([5f59e98](https://github.com/Badminton-Apps/badman/commit/5f59e98607e26cdc7a41071ccbc49c799f206bbd))
+
 ### [5.39.1](https://github.com/Badminton-Apps/badman/compare/v5.39.0...v5.39.1) (2022-11-04)
 
 
