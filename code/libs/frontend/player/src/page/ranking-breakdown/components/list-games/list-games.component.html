@@ -105,11 +105,11 @@
       >
         <div *ngIf="game.team?.[0]">
           {{ game.team?.[0].fullName }}
-          ({{game.team?.[0]?.rankingPlace?.[type] || 'N/A'}})
+          ({{game.team?.[0]?.[type] || 'N/A'}})
         </div>
         <div *ngIf="game.team?.[1]">
           {{ game.team?.[1].fullName }}
-          ({{game.team?.[1]?.rankingPlace?.[type] || 'N/A'}})
+          ({{game.team?.[1]?.[type] || 'N/A'}})
         </div>
 
         <div *ngIf="!game.team?.[0] && !game.team?.[1]">
@@ -130,11 +130,11 @@
       >
         <div *ngIf="game.opponent?.[0]">
           {{ game.opponent?.[0].fullName }}
-          ({{game.opponent?.[0]?.rankingPlace?.[type] || 'N/A'}})
+          ({{game.opponent?.[0]?.[type] || 'N/A'}})
         </div>
         <div *ngIf="game.opponent?.[1]">
           {{ game.opponent?.[1].fullName }}
-          ({{game.opponent?.[1]?.rankingPlace?.[type] || 'N/A'}})
+          ({{game.opponent?.[1]?.[type] || 'N/A'}})
         </div>
 
         <div *ngIf="!game.team?.[0] && !game.team?.[1]">
