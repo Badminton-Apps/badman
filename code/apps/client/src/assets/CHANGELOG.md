@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.39.1](https://github.com/Badminton-Apps/badman/compare/v5.39.0...v5.39.1) (2022-11-04)
+
+
+### Bug Fixes
+
+* **deps:** update nrwl monorepo to v15.0.6 ([6e0ac46](https://github.com/Badminton-Apps/badman/commit/6e0ac46a3036c2215fc75d73c037951730ef1c58))
+* **deps:** update nrwl monorepo to v15.0.7 ([c0d989c](https://github.com/Badminton-Apps/badman/commit/c0d989ce694025af3f4d5231f2512f0abdd209b1))
+* **deps:** update nrwl monorepo to v15.0.8 ([ae79031](https://github.com/Badminton-Apps/badman/commit/ae790317462bc3b4a59a6a4ec207cac7956de29a))
+
 ## [5.39.0](https://github.com/Badminton-Apps/badman/compare/v5.38.1...v5.39.0) (2022-10-31)
 
 
