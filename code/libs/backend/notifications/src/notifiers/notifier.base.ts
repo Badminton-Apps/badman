@@ -51,7 +51,6 @@ export abstract class Notifier<T, A = { email: string }> {
       await this.notifySms(player, data, args);
     }
 
-    return;
     // Create notification once
     const notif = new Notification({
       sendToId: player.id,
