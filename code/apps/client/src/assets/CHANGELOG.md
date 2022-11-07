@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.39.3](https://github.com/Badminton-Apps/badman/compare/v5.39.2...v5.39.3) (2022-11-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/axios to v1 ([20ef9be](https://github.com/Badminton-Apps/badman/commit/20ef9be8cdfbe88b640c859c42f4a56f9ad2193c))
+* **deps:** update dependency jwks-rsa to v3 ([edcc38a](https://github.com/Badminton-Apps/badman/commit/edcc38afdf417f3cf39e3ea48bc56ffc7d89225d))
+* **deps:** update nrwl monorepo to v15.0.10 ([2b83266](https://github.com/Badminton-Apps/badman/commit/2b8326689503b76b37652b0e9fea816503b312c7))
+
 ### [5.39.2](https://github.com/Badminton-Apps/badman/compare/v5.39.1...v5.39.2) (2022-11-04)
 
 
