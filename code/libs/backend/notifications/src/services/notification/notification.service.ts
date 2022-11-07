@@ -127,7 +127,7 @@ export class NotificationService {
     const notifierNotAccepted = new CompetitionEncounterNotAcceptedNotifier(
       this.mailing
     );
-    const homeTeam = await encounter.getHome({
+    const awayTeam = await encounter.getAway({
       include: [
         {
           model: Player,
@@ -143,10 +143,10 @@ export class NotificationService {
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
     notifierNotAccepted.notify(
-      homeTeam.captain,
+      awayTeam.captain,
       encounter.id,
       { encounter },
-      { email: homeTeam.email, url }
+      { email: awayTeam.email, url }
     );
   }
 }
