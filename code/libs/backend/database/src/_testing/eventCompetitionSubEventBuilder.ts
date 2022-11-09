@@ -1,8 +1,10 @@
 import { EventCompetition, SubEventCompetition } from '../models';
-import { DrawCompetitionBuilder } from './evenCompetitionDrawBuilder';
+import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
 import { SystemGroupBuilder } from './systemGroupBuilder';
 
 export class SubEventCompetitionBuilder {
+  private build = false;
+
   private subEvent: SubEventCompetition;
 
   private draws: DrawCompetitionBuilder[] = [];
@@ -26,6 +28,20 @@ export class SubEventCompetitionBuilder {
     return this;
   }
 
+  WithIndex(
+    minBaseIndex: number,
+    maxBaseIndex: number
+  ): SubEventCompetitionBuilder {
+    this.subEvent.minBaseIndex = minBaseIndex;
+    this.subEvent.maxBaseIndex = maxBaseIndex;
+    return this;
+  }
+
+  WitnMaxLevel(maxLevel: number): SubEventCompetitionBuilder {
+    this.subEvent.maxLevel = maxLevel;
+    return this;
+  }
+
   ForEvent(event: EventCompetition): SubEventCompetitionBuilder {
     this.subEvent.eventId = event.id;
     return this;
@@ -42,7 +58,11 @@ export class SubEventCompetitionBuilder {
     return this;
   }
 
-  async Build(): Promise<SubEventCompetition> {
+  async Build(rebuild = false): Promise<SubEventCompetition> {
+    if (this.build && !rebuild) {
+      return this.subEvent;
+    }
+
     try {
       await this.subEvent.save();
 
@@ -54,6 +74,7 @@ export class SubEventCompetitionBuilder {
       throw error;
     }
 
+    this.build = true;
     return this.subEvent;
   }
 }

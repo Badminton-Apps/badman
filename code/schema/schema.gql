@@ -536,6 +536,23 @@ type PagedPlayer {
   rows: [Player!]!
 }
 
+type PlayerRankingType {
+  id: ID
+  email: String
+  phone: String
+  gender: String
+  birthDate: DateTime
+  firstName: String
+  lastName: String
+  fullName: String
+  competitionPlayer: Boolean
+  slug: String
+  memberId: String
+  single: Float!
+  double: Float!
+  mix: Float!
+}
+
 """A Comment"""
 type Comment {
   id: ID!
@@ -680,6 +697,20 @@ type TeamPlayer {
   end: DateTime
 }
 
+type ValidationError {
+  message: String
+  params: JSONObject
+}
+
+type AssemblyOutput {
+  errors: [ValidationError]
+  valid: Boolean
+  baseTeamIndex: Int
+  teamIndex: Int
+  baseTeamPlayers: [PlayerRankingType]
+  teamPlayers: [PlayerRankingType]
+}
+
 type PagedClub {
   count: Float!
   rows: [Club!]!
@@ -738,6 +769,9 @@ type Query {
   drawCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [DrawCompetition!]!
   subEventCompetition(id: ID!): SubEventCompetition!
   subEventCompetitions(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): [SubEventCompetition!]!
+
+  "Validate the assembly\n\r**note**: the levels are the ones from may!"
+  assemblyValidation(assembly: AssemblyInput!): AssemblyOutput!
   eventTournament(id: ID!): EventTournament!
   eventTournaments(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedEventTournament!
   drawTournament(id: ID!): DrawTournament!
@@ -754,6 +788,22 @@ type Query {
   me: Player
   players(where: JSONObject, skip: Int = 0, take: Int, order: [SortOrderType!]): PagedPlayer!
   search(query: String!): [search!]!
+}
+
+input AssemblyInput {
+  encounterId: ID!
+  teamId: ID!
+  systemId: ID
+  captainId: ID
+  single1: ID
+  single2: ID
+  single3: ID
+  single4: ID
+  double1: [ID]
+  double2: [ID]
+  double3: [ID]
+  double4: [ID]
+  subtitudes: [ID]
 }
 
 union search = Player | EventCompetition | EventTournament | Club

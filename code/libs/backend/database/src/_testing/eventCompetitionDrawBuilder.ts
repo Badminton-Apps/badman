@@ -1,7 +1,9 @@
 import { DrawCompetition, SubEventCompetition } from '../models';
-import { EncounterCompetitionBuilder } from './evenCompetitionEncounterBuilder';
+import { EncounterCompetitionBuilder } from './eventCompetitionEncounterBuilder';
 
 export class DrawCompetitionBuilder {
+  private build = false;
+  
   private draw: DrawCompetition;
 
   private encounters: EncounterCompetitionBuilder[] = [];
@@ -13,6 +15,8 @@ export class DrawCompetitionBuilder {
   static Create(): DrawCompetitionBuilder {
     return new DrawCompetitionBuilder();
   }
+
+  
 
   WithName(firstName: string): DrawCompetitionBuilder {
     this.draw.name = firstName;
@@ -38,7 +42,11 @@ export class DrawCompetitionBuilder {
     return this;
   }
 
-  async Build(): Promise<DrawCompetition> {
+  async Build(rebuild = false): Promise<DrawCompetition> {
+    if (this.build && !rebuild) {
+      return this.draw;
+    }
+
     try {
       await this.draw.save();
 
@@ -49,6 +57,8 @@ export class DrawCompetitionBuilder {
       console.error(error);
       throw error;
     }
+
+    this.build = true;
     return this.draw;
   }
 }

@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "backend-assembly": "libs/backend/assembly",
     "backend-authorization": "libs/backend/authorization",
     "backend-database": "libs/backend/database",
     "backend-generator": "libs/backend/generator",
