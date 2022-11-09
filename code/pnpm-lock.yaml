@@ -115,7 +115,7 @@ importers:
       conventional-changelog: ^3.1.25
       cookieconsent: ^3.1.1
       cronstrue: ^2.0.0
-      cypress: ^10.7.0
+      cypress: ^11.0.0
       dotenv: ^16.0.3
       echarts: ^5.4.0
       eslint: ^8.17.0
@@ -241,7 +241,7 @@ importers:
       '@ng-maps/places': 3.0.1_5wc3z4qplwc4kbjc5lnudzzdoq
       '@ngx-translate/core': 14.0.0_rqdmvia4mum3ur2pbfifmb6sby
       '@ngx-translate/http-loader': 7.0.0_wni4s6regsvhoo2ifcsquzulay
-      '@nrwl/angular': 15.0.13_qmeogfs233jwkwhin3mu2n6eha
+      '@nrwl/angular': 15.0.13_vqiibxjkdrfbdz7hjnwn5dfqvm
       '@schematics/angular': 14.2.6
       '@socket.io/redis-adapter': 7.2.0
       '@types/echarts': 4.9.16
@@ -327,7 +327,7 @@ importers:
       '@nestjs/schematics': 9.0.3_typescript@4.8.4
       '@nestjs/testing': 9.1.4_atqkzu3acujvho36dnj4dqtvde
       '@nrwl/cli': 15.0.13
-      '@nrwl/cypress': 15.0.13_nwrpkj3wtzvhfpd66yrhhr3ghq
+      '@nrwl/cypress': 15.0.13_tsyn45dziv2yl35c7cv4p7ogsi
       '@nrwl/eslint-plugin-nx': 15.0.13_j2bbcdvt45yl6obs64gisr2ysa
       '@nrwl/jest': 15.0.13_7nt3gaxrxhbj7lylmhubk32sim
       '@nrwl/linter': 15.0.13_4so5xbrk3x4nw7addbbgd2pady
@@ -359,7 +359,7 @@ importers:
       chalk: 5.1.2
       codelyzer: 6.0.2_53lyzxmjr7ebzew3ldqkcyej4q
       conventional-changelog: 3.1.25
-      cypress: 10.10.0
+      cypress: 11.0.0
       eslint: 8.25.0
       eslint-config-prettier: 8.5.0_eslint@8.25.0
       eslint-plugin-cypress: 2.12.1_eslint@8.25.0
@@ -5332,16 +5332,16 @@ packages:
       - bluebird
       - supports-color
 
-  /@nrwl/angular/15.0.13_qmeogfs233jwkwhin3mu2n6eha:
+  /@nrwl/angular/15.0.13_vqiibxjkdrfbdz7hjnwn5dfqvm:
     resolution: {integrity: sha512-3RMW67VNsM0l+3KXDHTUFpT/hWys6qzXey0ePVohTk/QHztBZM/YcWn+IcSSu5pL54/2dXKM+SyVncBQ4CbHlA==}
     requiresBuild: true
     dependencies:
       '@angular-devkit/schematics': 14.2.6_chokidar@3.5.3
-      '@nrwl/cypress': 15.0.13_nwrpkj3wtzvhfpd66yrhhr3ghq
+      '@nrwl/cypress': 15.0.13_tsyn45dziv2yl35c7cv4p7ogsi
       '@nrwl/devkit': 15.0.13_dtuttet22dxzt73ll2oxv2ugvu
       '@nrwl/jest': 15.0.13_7nt3gaxrxhbj7lylmhubk32sim
       '@nrwl/linter': 15.0.13_4so5xbrk3x4nw7addbbgd2pady
-      '@nrwl/storybook': 15.0.13_nwrpkj3wtzvhfpd66yrhhr3ghq
+      '@nrwl/storybook': 15.0.13_tsyn45dziv2yl35c7cv4p7ogsi
       '@nrwl/webpack': 15.0.13_w3zxlvslph6sjgxpgvjtzv7xpu
       '@nrwl/workspace': 15.0.13_rwwbazr7grcbkrlxipf5dtcqti
       '@phenomnomnominal/tsquery': 4.1.1_typescript@4.8.4
@@ -5396,7 +5396,7 @@ packages:
       - '@swc/core'
       - debug
 
-  /@nrwl/cypress/15.0.13_nwrpkj3wtzvhfpd66yrhhr3ghq:
+  /@nrwl/cypress/15.0.13_tsyn45dziv2yl35c7cv4p7ogsi:
     resolution: {integrity: sha512-KFopCs2XSMVGDby37RtmU1Os0ikbM+9EWwr+tuMahZ+EtXmBsbH4qK6ljiKKcUyMGMYEykRsRLHYfs+WBZA9Mg==}
     peerDependencies:
       cypress: '>= 3 < 11'
@@ -5413,7 +5413,7 @@ packages:
       '@phenomnomnominal/tsquery': 4.1.1_typescript@4.8.4
       babel-loader: 8.2.5_wfdvla2jorjoj23kkavho2upde
       chalk: 4.1.0
-      cypress: 10.10.0
+      cypress: 11.0.0
       dotenv: 10.0.0
       fork-ts-checker-webpack-plugin: 7.2.13_qqxisngxjbp7lstdk7boexbu3e
       semver: 7.3.4
@@ -5670,10 +5670,10 @@ packages:
       - debug
     dev: true
 
-  /@nrwl/storybook/15.0.13_nwrpkj3wtzvhfpd66yrhhr3ghq:
+  /@nrwl/storybook/15.0.13_tsyn45dziv2yl35c7cv4p7ogsi:
     resolution: {integrity: sha512-96OJu53SVYi8HllNe9TS/dJRVE2RywsscxhvWt9tOj2pdlunz07rGkyYcnwTxQOQKLe8NsMnjmIGgVMsQxlBQQ==}
     dependencies:
-      '@nrwl/cypress': 15.0.13_nwrpkj3wtzvhfpd66yrhhr3ghq
+      '@nrwl/cypress': 15.0.13_tsyn45dziv2yl35c7cv4p7ogsi
       '@nrwl/devkit': 15.0.13_dtuttet22dxzt73ll2oxv2ugvu
       '@nrwl/linter': 15.0.13_4so5xbrk3x4nw7addbbgd2pady
       '@nrwl/workspace': 15.0.13_rwwbazr7grcbkrlxipf5dtcqti
@@ -9250,8 +9250,8 @@ packages:
     resolution: {integrity: sha512-GAj5FOq0Hd+RsCGVJxZuKaIDXDf3h6GQoNEjFgbLLI/trgtavwUbSnZ5pVfg27DVCaWjIohryS0JFwIJyT2cMg==}
     dev: true
 
-  /cypress/10.10.0:
-    resolution: {integrity: sha512-bU8r44x1NIYAUNNXt3CwJpLOVth7HUv2hUhYCxZmgZ1IugowDvuHNpevnoZRQx1KKOEisLvIJW+Xen5Pjn41pg==}
+  /cypress/11.0.0:
+    resolution: {integrity: sha512-mYXGi2Wjmy9shRjAUDugSMOr4uuzE2nl7hXQi3oQkIQsnwwBx2HNB8Vbfsix3A0zyPXlL5jTcbb6rCVWKRaXbg==}
     engines: {node: '>=12.0.0'}
     hasBin: true
     requiresBuild: true
@@ -9266,7 +9266,7 @@ packages:
       bluebird: 3.7.2
       buffer: 5.7.1
       cachedir: 2.3.0
-      chalk: 4.1.0
+      chalk: 4.1.2
       check-more-types: 2.24.0
       cli-cursor: 3.1.0
       cli-table3: 0.6.3
@@ -18849,7 +18849,7 @@ packages:
     engines: {node: '>= 0.8'}
 
   /verror/1.10.0:
-    resolution: {integrity: sha1-OhBcoXBTr1XW4nDB+CiGguGNpAA=}
+    resolution: {integrity: sha512-ZZKSmDAEFOijERBLkmYfJ+vmk3w+7hOLYDNkRCuRuMJGEmqYNCNLyBBFwWKVMhfwaEF3WOd0Zlw86U/WC/+nYw==}
     engines: {'0': node >=0.6.0}
     dependencies:
       assert-plus: 1.0.0
