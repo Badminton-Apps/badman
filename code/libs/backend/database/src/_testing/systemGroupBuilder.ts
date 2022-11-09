@@ -9,6 +9,8 @@ import {
 } from '../models';
 
 export class SystemGroupBuilder {
+  private build = false;
+  
   private systemGroup: RankingGroup;
 
   private systems: string[] = [];
@@ -40,7 +42,11 @@ export class SystemGroupBuilder {
     return this;
   }
 
-  async Build() {
+  async Build(rebuild = false): Promise<RankingGroup> {
+    if (this.build && !rebuild) {
+      return this.systemGroup;
+    }
+
     try {
       await this.systemGroup.save();
 
@@ -69,6 +75,7 @@ export class SystemGroupBuilder {
       throw error;
     }
 
+    this.build = true;
     return this.systemGroup;
   }
 }

@@ -19,6 +19,7 @@
     "traceResolution": false,
     "paths": {
       "*": ["./types/*"],
+      "@badman/backend-assembly": ["libs/backend/assembly/src/index.ts"],
       "@badman/backend-authorization": [
         "libs/backend/authorization/src/index.ts"
       ],

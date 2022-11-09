@@ -16,11 +16,18 @@ export class TeamAssemblyService {
     captainId: string;
     teamId: string;
     encounterId: string;
-    team: {
-      single: string[];
-      double: string[][];
-      subtitude: string[];
-    };
+
+    single1?: string;
+    single2?: string;
+    single3?: string;
+    single4?: string;
+
+    double1?: string[];
+    double2?: string[];
+    double3?: string[];
+    double4?: string[];
+
+    subtitudes: string[];
   }) {
     return this.httpClient.post(
       `${this.configService.apiBaseUrl}/pdf/team-assembly`,

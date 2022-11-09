@@ -136,7 +136,7 @@ export class EventCompetition extends Model {
     SubEventCompetition,
     string
   >;
-  addSubEvenCompetitiont!: HasManyAddAssociationMixin<
+  addSubEventCompetitiont!: HasManyAddAssociationMixin<
     SubEventCompetition,
     string
   >;

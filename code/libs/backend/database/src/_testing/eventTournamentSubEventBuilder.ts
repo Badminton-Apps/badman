@@ -1,8 +1,10 @@
 import { EventTournament, SubEventTournament } from '../models';
-import { DrawTournamentBuilder } from './evenTournamentDrawBuilder';
+import { DrawTournamentBuilder } from './eventTournamentDrawBuilder';
 import { SystemGroupBuilder } from './systemGroupBuilder';
 
 export class SubEventTournamentBuilder {
+  private build = false;
+  
   private subEvent: SubEventTournament;
 
   private draws: DrawTournamentBuilder[] = [];
@@ -42,7 +44,11 @@ export class SubEventTournamentBuilder {
     return this;
   }
 
-  async Build(): Promise<SubEventTournament> {
+  async Build(rebuild = false): Promise<SubEventTournament> {
+    if (this.build && !rebuild) {
+      return this.subEvent;
+    }
+
     try {
       await this.subEvent.save();
 
@@ -54,6 +60,7 @@ export class SubEventTournamentBuilder {
       throw error;
     }
 
+    this.build = true;
     return this.subEvent;
   }
 }

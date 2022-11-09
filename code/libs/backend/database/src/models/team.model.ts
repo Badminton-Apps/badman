@@ -4,7 +4,7 @@ import {
   InputType,
   ObjectType,
   OmitType,
-  PartialType
+  PartialType,
 } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
@@ -28,7 +28,7 @@ import {
   HasManyHasAssociationsMixin,
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
-  HasManySetAssociationsMixin
+  HasManySetAssociationsMixin,
 } from 'sequelize';
 import {
   BeforeBulkCreate,
@@ -45,7 +45,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { SubEventType, UseForTeamName } from '../enums';
 import { Slugify } from '../types';
@@ -55,7 +55,7 @@ import {
   EncounterCompetition,
   EventEntry,
   Location,
-  SubEventCompetition
+  SubEventCompetition,
 } from './event';
 import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player } from './player.model';
@@ -236,12 +236,18 @@ export class Team extends Model {
       return -1;
     }
 
-    this._baseIndex = Team.getIndexFromPlayers(
-      this.type,
-      this.basePlayers(system).map((r) =>
-        r.rankingLastPlaces?.find((place) => place.systemId === system.id)
-      )
-    );
+    const players = this.basePlayers(system).map((r) => {
+      const place = r.rankingLastPlaces?.find(
+        (place) => place.systemId === system.id
+      );
+      return {
+        single: place?.single ?? system.amountOfLevels,
+        double: place?.double ?? system.amountOfLevels,
+        mix: place?.mix ?? system.amountOfLevels,
+      };
+    });
+
+    this._baseIndex = Team.getIndexFromPlayers(this.type, players);
     return this._baseIndex;
   }
 
@@ -436,6 +442,89 @@ export class Team extends Model {
 
       return bestPlayers.reduce((a, b) => a + b, missingIndex);
     }
+  }
+
+  static baseTeam(players: Player[], type: SubEventType) {
+    const bestPlayers = this.bestPlayers(players, type)?.filter((p) => !!p);
+
+    if (type !== 'MX') {
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (4 - bestPlayers.length) * 24;
+      }
+
+      return {
+        players: bestPlayers,
+        index: bestPlayers.reduce(
+          (a, b) =>
+            a +
+            (b?.rankingPlaces?.[0]?.single ?? 12) +
+            (b?.rankingPlaces?.[0]?.double ?? 12),
+          missingIndex
+        ),
+      };
+    } else {
+      let missingIndex = 0;
+      if (bestPlayers.length < 4) {
+        missingIndex = (4 - bestPlayers.length) * 36;
+      }
+
+      return {
+        players: bestPlayers,
+        index: bestPlayers.reduce(
+          (a, b) =>
+            a +
+            (b?.rankingPlaces?.[0]?.single ?? 12) +
+            (b?.rankingPlaces?.[0]?.double ?? 12) +
+            (b?.rankingPlaces?.[0]?.mix ?? 12),
+          missingIndex
+        ),
+      };
+    }
+  }
+
+  static bestPlayers(players: Player[], type: SubEventType) {
+    let bestPlayers = [];
+    if (type === SubEventType.MX) {
+      bestPlayers = [
+        ...players
+          .filter((p) => p.gender === 'M')
+          .sort(
+            (b, a) =>
+              (b.rankingPlaces?.[0]?.single ?? 12) +
+              (b.rankingPlaces?.[0]?.double ?? 12) +
+              (b.rankingPlaces?.[0]?.mix ?? 12) -
+              ((a.rankingPlaces?.[0]?.single ?? 12) +
+                (a.rankingPlaces?.[0]?.double ?? 12) +
+                (a.rankingPlaces?.[0]?.mix ?? 12))
+          )
+          .slice(0, 2),
+        ...players
+          .filter((p) => p.gender === 'F')
+          .sort(
+            (b, a) =>
+              (b.rankingPlaces?.[0]?.single ?? 12) +
+              (b.rankingPlaces?.[0]?.double ?? 12) +
+              (b.rankingPlaces?.[0]?.mix ?? 12) -
+              ((a.rankingPlaces?.[0]?.single ?? 12) +
+                (a.rankingPlaces?.[0]?.double ?? 12) +
+                (a.rankingPlaces?.[0]?.mix ?? 12))
+          )
+          .slice(0, 2),
+      ];
+    } else {
+      bestPlayers = players
+        .sort(
+          (b, a) =>
+            (b.rankingPlaces?.[0]?.single ?? 12) +
+            (b.rankingPlaces?.[0]?.double ?? 12) -
+            ((a.rankingPlaces?.[0]?.single ?? 12) +
+              (a.rankingPlaces?.[0]?.double ?? 12))
+        )
+        .slice(0, 4);
+    }
+
+    return bestPlayers;
   }
 
   static getLetterForRegion(type: SubEventType, region: 'vl' | 'wl') {

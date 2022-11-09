@@ -153,24 +153,28 @@ export class TeamAssemblyComponent implements OnInit {
             captainId: this.formGroup.get('captain')?.value,
             teamId: this.formGroup.get('team')?.value,
             encounterId: encounterId,
-            team: {
-              double: [
-                this.formGroup.get('double1')?.value?.map((r: Player) => r.id),
-                this.formGroup.get('double2')?.value?.map((r: Player) => r.id),
-                this.formGroup.get('double3')?.value?.map((r: Player) => r.id),
-                this.formGroup.get('double4')?.value?.map((r: Player) => r.id),
-              ],
-              single: [
-                this.formGroup.get('single1')?.value?.id,
-                this.formGroup.get('single2')?.value?.id,
-                this.formGroup.get('single3')?.value?.id,
-                this.formGroup.get('single4')?.value?.id,
-              ],
-              subtitude:
-                this.formGroup
-                  .get('substitude')
-                  ?.value?.map((r: Player) => r?.id) ?? [],
-            },
+
+            single1: this.formGroup.get('single1')?.value,
+            single2: this.formGroup.get('single2')?.value,
+            single3: this.formGroup.get('single3')?.value,
+            single4: this.formGroup.get('single4')?.value,
+
+            double1: this.formGroup
+              .get('double1')
+              ?.value?.map((r: Player) => r.id),
+            double2: this.formGroup
+              .get('double2')
+              ?.value?.map((r: Player) => r.id),
+            double3: this.formGroup
+              .get('double3')
+              ?.value?.map((r: Player) => r.id),
+            double4: this.formGroup
+              .get('double4')
+              ?.value?.map((r: Player) => r.id),
+
+            subtitudes: this.formGroup
+              .get('subtitudes')
+              ?.value?.map((r: Player) => r.id),
           });
         }),
         switchMap((html) => this.pdfService.generatePdf(html, fileName))

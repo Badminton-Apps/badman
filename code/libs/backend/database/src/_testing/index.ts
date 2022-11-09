@@ -1,14 +1,16 @@
 // start:ng42.barrel
-export * from './evenCompetitionBuilder';
-export * from './evenCompetitionDrawBuilder';
-export * from './evenCompetitionEncounterBuilder';
-export * from './evenCompetitionSubEventBuilder';
-export * from './evenTournamentBuilder';
-export * from './evenTournamentDrawBuilder';
-export * from './evenTournamentSubEventBuilder';
+export * from './eventCompetitionBuilder';
+export * from './eventCompetitionDrawBuilder';
+export * from './eventCompetitionEncounterBuilder';
+export * from './eventCompetitionSubEventBuilder';
+export * from './eventCompetitionEntryBuilder';
+export * from './eventTournamentBuilder';
+export * from './eventTournamentDrawBuilder';
+export * from './eventTournamentSubEventBuilder';
 export * from './GameBuilder';
 export * from './playerBuilder';
 export * from './systemBuilder';
 export * from './systemGroupBuilder';
 export * from './teamBuilder';
+export * from './clubBuilder';
 // end:ng42.barrel

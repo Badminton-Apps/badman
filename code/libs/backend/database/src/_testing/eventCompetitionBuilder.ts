@@ -1,7 +1,9 @@
 import { EventCompetition } from '../models';
-import { SubEventCompetitionBuilder } from './evenCompetitionSubEventBuilder';
+import { SubEventCompetitionBuilder } from './eventCompetitionSubEventBuilder';
 
 export class EventCompetitionBuilder {
+  private build = false;
+
   private event: EventCompetition;
 
   private subEvents: SubEventCompetitionBuilder[] = [];
@@ -28,7 +30,11 @@ export class EventCompetitionBuilder {
     return this;
   }
 
-  async Build(): Promise<EventCompetition> {
+  async Build(rebuild = false): Promise<EventCompetition> {
+    if (this.build && !rebuild) {
+      return this.event;
+    }
+
     try {
       await this.event.save();
 
@@ -40,6 +46,7 @@ export class EventCompetitionBuilder {
       throw error;
     }
 
+    this.build = true;
     return this.event;
   }
 }

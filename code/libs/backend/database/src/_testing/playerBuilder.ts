@@ -1,11 +1,11 @@
-import { Player, RankingPlace } from '../models';
-import { GameBuilder } from './GameBuilder';
+import { Player, RankingPlace, Team } from '../models';
 
 export class PlayerBuilder {
+  private build = false;
+
   private player: Player;
 
   private rankingPlaces: RankingPlace[] = [];
-  private games: GameBuilder[] = [];
 
   constructor(id?: string) {
     this.player = new Player({
@@ -45,7 +45,26 @@ export class PlayerBuilder {
     return this;
   }
 
-  async Build(): Promise<Player> {
+  WithCompetitionStatus(status: boolean): PlayerBuilder {
+    this.player.competitionPlayer = status;
+    return this;
+  }
+
+  WithGender(gender: 'M' | 'F'): PlayerBuilder {
+    this.player.gender = gender;
+    return this;
+  }
+
+  ForTeam(team: Team): PlayerBuilder {
+    this.player.hasTeam(team);
+    return this;
+  }
+
+  async Build(rebuild = false): Promise<Player> {
+    if (this.build && !rebuild) {
+      return this.player;
+    }
+
     try {
       await this.player.save();
 
@@ -56,6 +75,8 @@ export class PlayerBuilder {
       console.error(error);
       throw error;
     }
+
+    this.build = true;
     return this.player;
   }
 }

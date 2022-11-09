@@ -31,14 +31,16 @@ export class ChartComponent implements OnInit {
   firstDay!: Date;
   lastDay!: Date;
 
-  seriesData: {
+  seriesPointsData: {
     name: { top: string; bottom: string };
     value: [Date, number];
   }[] = [];
-  seriesDataInacc: {
+  
+  seriesPointsDataInacc: {
     name: { top: string; bottom: string };
     value: [Date, number];
   }[] = [];
+  
 
   ngOnInit(): void {
     // Get the years for start / end to space them in year basis
@@ -99,14 +101,14 @@ export class ChartComponent implements OnInit {
         {
           type: 'line',
           name: 'acc',
-          data: this.seriesData as any,
+          data: this.seriesPointsData as any,
           color: '#F2724B',
         },
         {
           type: 'line',
           name: 'inacc',
           color: '#F2724B',
-          data: this.seriesDataInacc as any,
+          data: this.seriesPointsDataInacc as any,
         },
       ],
       animationEasing: 'elasticOut',
@@ -114,11 +116,10 @@ export class ChartComponent implements OnInit {
   }
 
   createSeries() {
-    this.rankingPlaces
-      .filter((places) => places.updatePossible)
-      .forEach((x) => {
-        const rankingDate = moment(x.rankingDate);
+    this.rankingPlaces.forEach((x) => {
+      const rankingDate = moment(x.rankingDate);
 
+      if (x.updatePossible) {
         const topText = `Level ${x.level} on ${rankingDate.format('DD-MM-Y')}`;
         let bottomText = ``;
         if (x.points) {
@@ -134,7 +135,7 @@ export class ChartComponent implements OnInit {
         }
 
         if (rankingDate.isBefore(this.probablyInacurate)) {
-          this.seriesDataInacc.push({
+          this.seriesPointsDataInacc.push({
             name: {
               top: topText,
               bottom: bottomText,
@@ -142,7 +143,7 @@ export class ChartComponent implements OnInit {
             value: [rankingDate.toDate(), x.level],
           });
         } else {
-          this.seriesData.push({
+          this.seriesPointsData.push({
             name: {
               top: topText,
               bottom: bottomText,
@@ -150,10 +151,11 @@ export class ChartComponent implements OnInit {
             value: [rankingDate.toDate(), x.level],
           });
         }
-      });
+      }
+    });
 
     // adding the last value from series data to inacc to complete the line
     // the last value because that's how the sorting was configured
-    this.seriesDataInacc.unshift(this.seriesData[this.seriesData.length - 1]);
+    this.seriesPointsDataInacc.unshift(this.seriesPointsData[this.seriesPointsData.length - 1]);
   }
 }

@@ -1,13 +1,15 @@
 import { DrawCompetition, EncounterCompetition } from '../models';
-import { TeamBulder } from './teamBuilder';
+import { TeamBuilder } from './teamBuilder';
 import { GameBuilder } from './GameBuilder';
 
 export class EncounterCompetitionBuilder {
+  private build = false;
+  
   private encounter: EncounterCompetition;
 
   private games: GameBuilder[] = [];
-  private homeTeam: TeamBulder;
-  private awayTeam: TeamBulder;
+  private homeTeam: TeamBuilder;
+  private awayTeam: TeamBuilder;
 
   constructor() {
     this.encounter = new EncounterCompetition();
@@ -32,11 +34,11 @@ export class EncounterCompetitionBuilder {
     return this;
   }
 
-  WithHomeTeam(team: TeamBulder): EncounterCompetitionBuilder {
+  WithHomeTeam(team: TeamBuilder): EncounterCompetitionBuilder {
     this.homeTeam = team;
     return this;
   }
-  WithAwayTeam(team: TeamBulder): EncounterCompetitionBuilder {
+  WithAwayTeam(team: TeamBuilder): EncounterCompetitionBuilder {
     this.awayTeam = team;
     return this;
   }
@@ -47,7 +49,11 @@ export class EncounterCompetitionBuilder {
     return this;
   }
 
-  async Build(): Promise<EncounterCompetition> {
+  async Build(rebuild = false): Promise<EncounterCompetition> {
+    if (this.build && !rebuild) {
+      return this.encounter;
+    }
+
     try {
       await this.encounter.save();
 
@@ -67,6 +73,7 @@ export class EncounterCompetitionBuilder {
       throw error;
     }
 
+    this.build = true;
     return this.encounter;
   }
 }

@@ -1,7 +1,9 @@
 import { EventTournament } from '../models';
-import { SubEventTournamentBuilder } from './evenTournamentSubEventBuilder';
+import { SubEventTournamentBuilder } from './eventTournamentSubEventBuilder';
 
 export class EventTournamentBuilder {
+  private build = false;
+  
   private event: EventTournament;
 
   private subEvents: SubEventTournamentBuilder[] = [];
@@ -28,7 +30,11 @@ export class EventTournamentBuilder {
     return this;
   }
 
-  async Build(): Promise<EventTournament> {
+  async Build(rebuild = false): Promise<EventTournament> {
+    if (this.build && !rebuild) {
+      return this.event;
+    }
+
     try {
       await this.event.save();
 
@@ -40,6 +46,7 @@ export class EventTournamentBuilder {
       throw error;
     }
 
+    this.build = true;
     return this.event;
   }
 }

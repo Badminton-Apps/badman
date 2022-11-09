@@ -3,6 +3,8 @@ import { RankingSystem } from '../models';
 import { SystemGroupBuilder } from './systemGroupBuilder';
 
 export class SystemBuilder {
+  private build = false;
+  
   private system: RankingSystem;
 
   constructor(
@@ -123,13 +125,19 @@ export class SystemBuilder {
     return this;
   }
 
-  async Build(): Promise<RankingSystem> {
+  async Build(rebuild = false): Promise<RankingSystem> {
+    if (this.build && !rebuild) {
+      return this.system;
+    }
+
     try {
       await this.system.save();
     } catch (error) {
       console.error(error);
       throw error;
     }
+
+    this.build = true;
     return this.system;
   }
 }

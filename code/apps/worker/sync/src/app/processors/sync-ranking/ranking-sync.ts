@@ -53,7 +53,7 @@ export class RankingSyncer {
     return new ProcessStep(
       this.STEP_RANKING,
       async (args: { transaction: Transaction; start: Date }) => {
-        const rankingDetail = await this._visualService.getRanking();
+        const rankingDetail = await this._visualService.getRanking(false);
 
         const system = await RankingSystem.findOne({
           where: {
@@ -265,22 +265,22 @@ export class RankingSyncer {
                   gender,
                 })
               );
-
+            }
+            
+            if (
+              publication.usedForUpdate === false &&
+              foundPlayer.rankingLastPlaces != null
+            ) {
+              const place = foundPlayer.rankingLastPlaces.find(
+                (r) => r.systemId === ranking.system.id
+              );
               if (
-                publication.usedForUpdate === false &&
-                foundPlayer.rankingLastPlaces != null
+                place != null &&
+                place[type] != null &&
+                place[type] !== points.Level
               ) {
-                const place = foundPlayer.rankingLastPlaces.find(
-                  (r) => r.systemId === ranking.system.id
-                );
-                if (
-                  place != null &&
-                  place[type] != null &&
-                  place[type] !== points.Level
-                ) {
-                  place[type] = points.Level;
-                  await place.save({ transaction: args.transaction });
-                }
+                place[type] = points.Level;
+                await place.save({ transaction: args.transaction });
               }
             }
           }
@@ -356,9 +356,9 @@ export class RankingSyncer {
               categories.find((category) => category.name === 'GD D/DX D').code,
               rankingPlaces,
               'mix',
-              'F' 
+              'F'
             );
-            
+
             this.logger.debug(`Creating ranking places`);
 
             const instances = Array.from(rankingPlaces).map(([, place]) =>
