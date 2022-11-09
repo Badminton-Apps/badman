@@ -415,7 +415,7 @@ export class PlayerUpdateInput extends PartialType(
     'rankingLastPlaces',
     'entries',
     'games',
-    'setting'
+    'setting',
   ] as const),
   InputType
 ) {}
@@ -425,3 +425,18 @@ export class PlayerNewInput extends PartialType(
   OmitType(PlayerUpdateInput, ['id'] as const),
   InputType
 ) {}
+
+@ObjectType()
+export class PlayerRankingType extends PartialType(
+  OmitType(PlayerUpdateInput, ['sub', 'permissions', 'end', 'base'] as const),
+  ObjectType
+) {
+  @Field(() => Number)
+  single: number;
+
+  @Field(() => Number)
+  double: number;
+
+  @Field(() => Number)
+  mix: number;
+}

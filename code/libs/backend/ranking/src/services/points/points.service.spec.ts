@@ -12,6 +12,7 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';
+
 import { PointsService } from './points.service';
 
 describe('PointsService', () => {

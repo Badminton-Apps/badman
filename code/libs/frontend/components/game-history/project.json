@@ -6,8 +6,8 @@
   "prefix": "badman",
   "targets": {
     "build": {
-      "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/libs/frontend/components/game-history"],
+      "executor": "@nrwl/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/components/game-history/tsconfig.lib.json",
         "project": "libs/frontend/components/game-history/ng-package.json"

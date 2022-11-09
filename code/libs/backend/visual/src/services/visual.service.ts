@@ -211,7 +211,7 @@ export class VisualService {
     if (this._configService.get('NODE_ENV') === 'production') {
       const resultPut = await axios(options);
       const parser = new XMLParser();
-
+ 
       const bodyPut = parser.parse(resultPut.data).Result as XmlResult;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
         this.logger.error(options);

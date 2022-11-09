@@ -2,6 +2,8 @@ import { DrawTournament, SubEventTournament } from '../models';
 import { GameBuilder } from './GameBuilder';
 
 export class DrawTournamentBuilder {
+  private build = false;
+  
   private draw: DrawTournament;
 
   private games: GameBuilder[] = [];
@@ -36,7 +38,11 @@ export class DrawTournamentBuilder {
     return this;
   }
 
-  async Build(): Promise<DrawTournament> {
+  async Build(rebuild = false): Promise<DrawTournament> {
+    if (this.build && !rebuild) {
+      return this.draw;
+    }
+
     try {
       await this.draw.save();
 
@@ -47,6 +53,8 @@ export class DrawTournamentBuilder {
       console.error(error);
       throw error;
     }
+
+    this.build = true;
     return this.draw;
   }
 }

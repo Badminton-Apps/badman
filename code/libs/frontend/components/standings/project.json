@@ -6,8 +6,8 @@
   "prefix": "badman",
   "targets": {
     "build": {
-      "executor": "@nrwl/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/libs/frontend/components/standings"],
+      "executor": "@nrwl/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "project": "libs/frontend/components/standings/ng-package.json"
       },

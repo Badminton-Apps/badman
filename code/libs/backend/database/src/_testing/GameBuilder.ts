@@ -8,6 +8,8 @@ import {
 import { PlayerBuilder } from './playerBuilder';
 
 export class GameBuilder {
+  private build = false;
+  
   private game: Game;
 
   private players: {
@@ -84,7 +86,11 @@ export class GameBuilder {
     return this;
   }
 
-  async Build(): Promise<Game> {
+  async Build(rebuild = false): Promise<Game> {
+    if (this.build && !rebuild) {
+      return this.game;
+    }
+
     try {
       await this.game.save();
 
@@ -102,6 +108,7 @@ export class GameBuilder {
       throw error;
     }
 
+    this.build = true;
     return this.game;
   }
 }

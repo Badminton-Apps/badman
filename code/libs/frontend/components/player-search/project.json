@@ -6,7 +6,7 @@
   "prefix": "badman",
   "targets": {
     "build": {
-      "executor": "@nrwl/angular:ng-packagr-lite",
+      "executor": "@nrwl/angular:package",
       "outputs": [
         "{workspaceRoot}/dist/libs/frontend/components/player-search"
       ],

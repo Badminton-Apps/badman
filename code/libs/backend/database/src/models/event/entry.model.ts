@@ -295,16 +295,18 @@ export class EventEntry extends Model {
       }
     }
 
-    instance.meta.competition.teamIndex = Team.getIndexFromPlayers(
-      team.type,
-      bestPlayers.map((p) => {
-        return {
-          single: p.single,
-          double: p.double,
-          mix: p.mix,
-        };
-      })
-    );
+    if (!instance.meta.competition.teamIndex) {
+      instance.meta.competition.teamIndex = Team.getIndexFromPlayers(
+        team.type,
+        bestPlayers.map((p) => {
+          return {
+            single: p.single,
+            double: p.double,
+            mix: p.mix,
+          };
+        })
+      );
+    }
   }
 }
 
