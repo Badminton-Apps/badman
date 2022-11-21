@@ -2,8 +2,8 @@
   "name": "@badman/frontend-components-game-history",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0",
+    "@angular/common": "^15.0.0",
+    "@angular/core": "^15.0.0",
     "@angular/material": "^14.0.0",
     "@badman/frontend-models": "workspace:*",
     "@badman/frontend-components-player-info": "workspace:*"
