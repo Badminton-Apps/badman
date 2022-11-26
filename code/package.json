@@ -119,7 +119,7 @@
     "moment": "^2.29.3",
     "moment-timezone": "^0.5.34",
     "nest-winston": "^1.7.0",
-    "ngx-cookie-service": "^14.0.0",
+    "ngx-cookie-service": "^15.0.0",
     "ngx-cookieconsent": "^4.0.0",
     "ngx-echarts": "^14.0.0",
     "ngx-infinite-scroll": "^14.0.0",
