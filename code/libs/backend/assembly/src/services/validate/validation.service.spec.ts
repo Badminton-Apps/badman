@@ -33,6 +33,8 @@ import {
   PlayerMaxGamesRule,
   PlayerGenderRule,
   TeamClubBaseRule,
+  SubBaseIndexRule,
+  SubTeamIndexRule,
 } from './rules';
 
 describe('ValidationService', () => {
@@ -456,6 +458,67 @@ describe('ValidationService', () => {
         });
       });
     });
+
+    describe('Rule [SubTeamIndexRule]', () => {
+      describe('warning', () => {
+        it('should give warning if the sub is better than one of the players', async () => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              single1: player666.id,
+              single2: player777.id,
+              single3: player888.id,
+              single4: player999.id,
+              subtitudes: [player888.id],
+            },
+            [new SubTeamIndexRule()]
+          );
+
+          expect(validation).toBeDefined();
+
+          const warning = validation.warnings?.find(
+            (e) => e.message === 'team-assembly.warning.subtitute-team-index'
+          );
+
+          expect(warning).toBeDefined();
+          expect(warning?.params?.['sub']).toBe(player888.fullName);
+          expect(warning?.params?.['players']?.find((p) => p.id === player999.id)).toBeDefined();
+        });
+      });
+    });
+
+    describe('Rule [SubBaseIndexRule]', () => {
+      describe('warning', () => {
+        it('should give a warning if the player is better than one of the base players', async () => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              single1: player777.id,
+              single2: player777.id,
+              single3: player999.id,
+              single4: player999.id,
+              subtitudes: [player888.id],
+            },
+            [new SubBaseIndexRule()]
+          );
+
+          expect(validation).toBeDefined();
+
+          const warning = validation.warnings?.find(
+            (e) => e.message === 'team-assembly.warning.subtitute-base-index'
+          );
+
+          expect(warning).toBeDefined();
+          expect(warning?.params?.['sub']).toBe(player888.fullName);
+          expect(warning?.params?.['players']?.find((p) => p.id === player999.id)).toBeDefined();
+        });
+      });
+    });
+
 
     describe('Rule [CompetitionStatusRule]', () => {
       describe('valid', () => {
@@ -1329,7 +1392,7 @@ describe('ValidationService', () => {
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['teamIndex']).toBe(58);
+          expect(error?.params?.['baseTeamIndex']).toBe(58);
           expect(error?.params?.['baseIndex']).toBe(60);
         });
       });

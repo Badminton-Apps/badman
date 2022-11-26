@@ -14,6 +14,7 @@ export class PlayerMinLevelRule extends Rule {
       double2,
       double3,
       double4,
+      subtitudes,
       type,
       subEvent,
     } = assembly;
@@ -22,7 +23,7 @@ export class PlayerMinLevelRule extends Rule {
     let valid = true;
 
     if (team.teamNumber != 1) {
-      for (const player of [
+      const uniquePlayers = new Set([
         single1,
         single2,
         single3,
@@ -31,7 +32,11 @@ export class PlayerMinLevelRule extends Rule {
         ...double2,
         ...double3,
         ...double4,
-      ]) {
+
+        ...subtitudes,
+      ]);
+      
+      for (const player of uniquePlayers) {
         const ranking = player?.rankingPlaces?.[0];
 
         if (!ranking) {

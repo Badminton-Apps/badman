@@ -20,6 +20,9 @@ export class AssemblyOutput {
   @Field(() => [ValidationError], { nullable: 'itemsAndList' })
   errors?: ValidationError[];
 
+  @Field(() => [ValidationError], { nullable: 'itemsAndList' })
+  warnings?: ValidationError[];
+
   @Field(() => Boolean, { nullable: true })
   valid: boolean;
 
