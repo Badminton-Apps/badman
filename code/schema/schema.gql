@@ -704,6 +704,7 @@ type ValidationError {
 
 type AssemblyOutput {
   errors: [ValidationError]
+  warnings: [ValidationError]
   valid: Boolean
   baseTeamIndex: Int
   teamIndex: Int
