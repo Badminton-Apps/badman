@@ -157,7 +157,7 @@ importers:
       ngx-cookieconsent: ^4.0.0
       ngx-echarts: ^14.0.0
       ngx-infinite-scroll: ^14.0.0
-      ngx-markdown: ^14.0.0
+      ngx-markdown: ^15.0.0
       ngx-moment: ^6.0.2
       ngx-socket-io: ^4.3.1
       node-adodb: https://github.com/nuintun/node-adodb
@@ -283,7 +283,7 @@ importers:
       ngx-cookieconsent: 4.0.1_ik4k4id5bywz5nteyhrrd4yjgy
       ngx-echarts: 14.0.0_echarts@5.4.0
       ngx-infinite-scroll: 14.0.0_7psesmusmj4excifnjgc7jfosa
-      ngx-markdown: 14.0.1_qkulp66halrykbq6c2bmjxscxm
+      ngx-markdown: 15.0.0_2o32gw55ztactbfsh6bhmdoluy
       ngx-moment: 6.0.2_moment@2.29.4
       ngx-socket-io: 4.3.1_ln37ggahcnxg3erxazrbevf4pq
       nodemailer: 6.8.0
@@ -8335,11 +8335,13 @@ packages:
 
   /clipboard/2.0.11:
     resolution: {integrity: sha512-C+0bbOqkezLIsmWSvlsXS0Q0bmkugu7jcfMIACB+RDEntIzQIkdr148we28AfSloQLRdZlYL/QYyrq05j/3Faw==}
+    requiresBuild: true
     dependencies:
       good-listener: 1.2.2
       select: 1.1.2
       tiny-emitter: 2.1.0
     dev: false
+    optional: true
 
   /cliui/7.0.4:
     resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
@@ -8488,6 +8490,7 @@ packages:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
     engines: {node: '>= 12'}
     dev: false
+    optional: true
 
   /commander/9.4.1:
     resolution: {integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==}
@@ -9966,6 +9969,7 @@ packages:
   /delegate/3.2.0:
     resolution: {integrity: sha512-IofjkYBZaZivn0V8nnsMJGBr4jVLxHDheKSW88PyxS5QC4Vo9ZbZVvhzlSxY87fVq3STR6r+4cGepyHkcWOQSw==}
     dev: false
+    optional: true
 
   /delegates/1.0.0:
     resolution: {integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==}
@@ -10198,9 +10202,11 @@ packages:
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
-  /emoji-toolkit/6.6.0:
-    resolution: {integrity: sha512-pEu0kow2p1N8zCKnn/L6H0F3rWUBB3P3hVjr/O5yl1fK7N9jU4vO4G7EFapC5Y3XwZLUCY0FZbOPyTkH+4V2eQ==}
+  /emoji-toolkit/7.0.0:
+    resolution: {integrity: sha512-swoVbGlR/cyJ2ysrw1+axjRkEHAlH0myhbK1ybkv8zR6r9KpL4vzb96m3Y2j0hixUKj1Nb8YBQbk3ihB+XkpBw==}
+    requiresBuild: true
     dev: false
+    optional: true
 
   /emojis-list/3.0.0:
     resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
@@ -11895,6 +11901,7 @@ packages:
     dependencies:
       delegate: 3.2.0
     dev: false
+    optional: true
 
   /gopd/1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
@@ -13638,9 +13645,11 @@ packages:
   /katex/0.16.2:
     resolution: {integrity: sha512-70DJdQAyh9EMsthw3AaQlDyFf54X7nWEUIa5W+rq8XOpEk//w5Th7/8SqFqpvi/KZ2t6MHUj4f9wLmztBmAYQA==}
     hasBin: true
+    requiresBuild: true
     dependencies:
       commander: 8.3.0
     dev: false
+    optional: true
 
   /keyv/4.5.0:
     resolution: {integrity: sha512-2YvuMsA+jnFGtBareKqgANOEKe1mk3HKiXu2fRmAfyxG0MJAywNhi5ttWA3PMjl4NmpyjZNbFifR2vNjW1znfA==}
@@ -14612,28 +14621,31 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /ngx-markdown/14.0.1_qkulp66halrykbq6c2bmjxscxm:
-    resolution: {integrity: sha512-y5CY4e0QM0uR6+MvU1rnh1Ks+rku14309kVVojyXLcWl4zlrt8VAYCcf/+A+8z/IDOaz38yTrxNBnvYDJzNzYA==}
+  /ngx-markdown/15.0.0_2o32gw55ztactbfsh6bhmdoluy:
+    resolution: {integrity: sha512-/7IVkNwuukCK4ybI3Ag1RkkUgw5h1pA96OoOPgOCX0omeAv9dMkh5aPukQNPLtmqhkImZyXF29e4steGcjglcw==}
     peerDependencies:
-      '@angular/common': ^14.0.0
-      '@angular/core': ^14.0.0
-      '@angular/platform-browser': ^14.0.0
+      '@angular/common': ^15.0.0
+      '@angular/core': ^15.0.0
+      '@angular/platform-browser': ^15.0.0
+      '@types/marked': ^4.0.3
+      marked: ^4.0.17
       rxjs: ^6.5.3 || ^7.4.0
-      zone.js: ^0.11.4
+      zone.js: ~0.11.4 || ~0.12.0
     dependencies:
       '@angular/common': 15.0.0_m6rr3mnel36a2k7xtcfys3zh24
       '@angular/core': 15.0.0_rxjs@7.5.7+zone.js@0.12.0
       '@angular/platform-browser': 15.0.0_qbiqfif4udibgvsmhnccc7le2y
       '@types/marked': 4.0.7
-      clipboard: 2.0.11
-      emoji-toolkit: 6.6.0
-      katex: 0.16.2
       marked: 4.1.1
-      mermaid: 9.1.7
-      prismjs: 1.29.0
       rxjs: 7.5.7
       tslib: 2.4.0
       zone.js: 0.12.0
+    optionalDependencies:
+      clipboard: 2.0.11
+      emoji-toolkit: 7.0.0
+      katex: 0.16.2
+      mermaid: 9.1.7
+      prismjs: 1.29.0
     dev: false
 
   /ngx-moment/6.0.2_moment@2.29.4:
@@ -17287,6 +17299,7 @@ packages:
   /select/1.1.2:
     resolution: {integrity: sha512-OwpTSOfy6xSs1+pwcNrv0RBMOzI39Lp3qQKUTPVVPRjCdNa5JH/oPRiqsesIskK8TVgmRiHwO4KXlV2Li9dANA==}
     dev: false
+    optional: true
 
   /selfsigned/2.1.1:
     resolution: {integrity: sha512-GSL3aowiF7wa/WtSFwnUrludWFoNhftq8bUkH9pkzjpN2XSPOAYEgg6e0sS9s0rZwgJzJiQRPU18A6clnoW5wQ==}
@@ -18338,6 +18351,7 @@ packages:
   /tiny-emitter/2.1.0:
     resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
     dev: false
+    optional: true
 
   /tmp/0.0.33:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
