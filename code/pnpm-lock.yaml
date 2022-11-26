@@ -153,7 +153,7 @@ importers:
       moment-timezone: ^0.5.34
       nest-winston: ^1.7.0
       ng-packagr: ~15.0.0
-      ngx-cookie-service: ^14.0.0
+      ngx-cookie-service: ^15.0.0
       ngx-cookieconsent: ^4.0.0
       ngx-echarts: ^14.0.0
       ngx-infinite-scroll: ^14.0.0
@@ -279,7 +279,7 @@ importers:
       moment: 2.29.4
       moment-timezone: 0.5.38
       nest-winston: 1.8.0_2bjgr4ordwccbpqkkc2aeh7cxy
-      ngx-cookie-service: 14.0.1_7psesmusmj4excifnjgc7jfosa
+      ngx-cookie-service: 15.0.0_7psesmusmj4excifnjgc7jfosa
       ngx-cookieconsent: 4.0.1_ik4k4id5bywz5nteyhrrd4yjgy
       ngx-echarts: 14.0.0_echarts@5.4.0
       ngx-infinite-scroll: 14.0.0_7psesmusmj4excifnjgc7jfosa
@@ -14566,11 +14566,11 @@ packages:
       - supports-color
     dev: true
 
-  /ngx-cookie-service/14.0.1_7psesmusmj4excifnjgc7jfosa:
-    resolution: {integrity: sha512-PHjpA/bpp1ZgvQ2AWdXA6oxPQgE9k0WljQ7tvUH/u0Acl6p6akzF8kWlQiWxkgR3hBs7xB3paIsTk6GKdtakMg==}
+  /ngx-cookie-service/15.0.0_7psesmusmj4excifnjgc7jfosa:
+    resolution: {integrity: sha512-KU1JCjfpDTvD6L0FhHN9W/oP3Sue8yMAAK6XY3h/MEhrPS7vx6t3+h0ulY8l8R/9d1cmlQVyTHn1Jd1Jdf5K+g==}
     peerDependencies:
-      '@angular/common': ^14.0.0
-      '@angular/core': ^14.0.0
+      '@angular/common': ^15.0.0
+      '@angular/core': ^15.0.0
     dependencies:
       '@angular/common': 15.0.0_m6rr3mnel36a2k7xtcfys3zh24
       '@angular/core': 15.0.0_rxjs@7.5.7+zone.js@0.12.0
