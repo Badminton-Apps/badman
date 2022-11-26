@@ -2,6 +2,9 @@ import { Player, SubEventType } from '@badman/backend-database';
 import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
+/**
+ * Checks 
+ */
 export class PlayerGenderRule extends Rule {
   async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
     const {

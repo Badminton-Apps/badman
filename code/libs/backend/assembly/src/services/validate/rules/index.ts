@@ -5,6 +5,7 @@ export * from './player-gender.rule';
 export * from './player-max-games.rule';
 export * from './player-min-level.rule';
 export * from './player-order.rule';
+export * from './sub-team-index.rule';
 export * from './team-base-index.rule';
 export * from './team-club-base.rule';
 export * from './team-subevent-index.rule';

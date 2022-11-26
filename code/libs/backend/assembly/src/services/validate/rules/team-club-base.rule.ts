@@ -13,7 +13,7 @@ export class TeamClubBaseRule extends Rule {
       double2,
       double3,
       double4,
-      meta
+      subtitudes
     } = assembly;
 
     const players = [
@@ -28,6 +28,8 @@ export class TeamClubBaseRule extends Rule {
           ...double2,
           ...double3,
           ...double4,
+
+          ...subtitudes
         ].filter((p) => p != undefined)
       ),
     ];
