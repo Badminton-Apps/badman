@@ -30,7 +30,7 @@ importers:
       '@angular/router': ^15.0.0
       '@angular/service-worker': ^15.0.0
       '@apollo/client': ^3.6.6
-      '@apollo/utils.keyvadapter': ^1.1.1
+      '@apollo/utils.keyvadapter': ^2.0.0
       '@auth0/auth0-angular': ^1.10.1
       '@babel/core': 7.x
       '@commitlint/cli': ^17.0.3
@@ -91,7 +91,7 @@ importers:
       '@types/sequelize': ^4.28.13
       '@types/socket.io-client': ^1.4.32
       '@types/supertest': ^2.0.12
-      '@types/uuid': ^8.3.4
+      '@types/uuid': ^9.0.0
       '@types/web-push': ^3.3.2
       '@typescript-eslint/eslint-plugin': ^5.27.0
       '@typescript-eslint/eslint-plugin-tslint': ^5.27.0
@@ -216,7 +216,7 @@ importers:
       '@angular/router': 15.0.0_l57367eq3wdw5lfv4fnbnmcfu4
       '@angular/service-worker': 15.0.0_7psesmusmj4excifnjgc7jfosa
       '@apollo/client': 3.7.0_graphql@16.6.0
-      '@apollo/utils.keyvadapter': 1.1.2
+      '@apollo/utils.keyvadapter': 2.0.0
       '@auth0/auth0-angular': 1.11.0_nybaq2exg62cyci6pdxo432dr4
       '@babel/core': 7.19.3
       '@fast-csv/parse': 4.3.6
@@ -245,7 +245,7 @@ importers:
       '@schematics/angular': 15.0.0
       '@socket.io/redis-adapter': 7.2.0
       '@types/echarts': 4.9.16
-      '@types/uuid': 8.3.4
+      '@types/uuid': 9.0.0
       '@types/web-push': 3.3.2
       add: 2.0.6
       apollo-angular: 4.1.0_njkcbll2dtliob4dy2hyq7ct2e
@@ -1579,10 +1579,11 @@ packages:
       graphql: 16.6.0
     dev: false
 
-  /@apollo/utils.keyvadapter/1.1.2:
-    resolution: {integrity: sha512-vPC5e97uwHuZ2iMHVrEeRsV4dLw0lNx2UY9APhb7StC/RMR3BdnuPwS/+5yR9tUF5IUut+iJZocHkS4y6mR9aA==}
+  /@apollo/utils.keyvadapter/2.0.0:
+    resolution: {integrity: sha512-Ga2g2GWzdfYYHHSN+eoJo+546EHvgkDNYFrntBpE/qk2qXpV0L6BTCG1oBY+lyTtvYzUBJSzs5gD9jHpTimwEg==}
+    engines: {node: '>=14'}
     dependencies:
-      '@apollo/utils.keyvaluecache': 1.0.1
+      '@apollo/utils.keyvaluecache': 2.0.1
       dataloader: 2.1.0
       keyv: 4.5.0
     dev: false
@@ -1591,11 +1592,24 @@ packages:
     resolution: {integrity: sha512-nLgYLomqjVimEzQ4cdvVQkcryi970NDvcRVPfd0OPeXhBfda38WjBq+WhQFk+czSHrmrSp34YHBxpat0EtiowA==}
     dependencies:
       '@apollo/utils.logger': 1.0.1
-      lru-cache: 7.14.0
+      lru-cache: 7.14.1
+    dev: false
+
+  /@apollo/utils.keyvaluecache/2.0.1:
+    resolution: {integrity: sha512-F1v3m2pMXPD3rb2+F79qklBBFtNSWssV+8YJIAI0iLxRxoNdDAzfrBFUseUaBaeen/e5mR54QkeNCiq8EvQ/Eg==}
+    engines: {node: '>=14'}
+    dependencies:
+      '@apollo/utils.logger': 2.0.0
+      lru-cache: 7.14.1
     dev: false
 
   /@apollo/utils.logger/1.0.1:
     resolution: {integrity: sha512-XdlzoY7fYNK4OIcvMD2G94RoFZbzTQaNP0jozmqqMudmaGo2I/2Jx71xlDJ801mWA/mbYRihyaw6KJii7k5RVA==}
+    dev: false
+
+  /@apollo/utils.logger/2.0.0:
+    resolution: {integrity: sha512-o8qYwgV2sYg+PcGKIfwAZaZsQOTEfV8q3mH7Pw8GB/I/Uh2L9iaHdpiKuR++j7oe1K87lFm0z/JAezMOR9CGhg==}
+    engines: {node: '>=14'}
     dev: false
 
   /@apollo/utils.printwithreducedwhitespace/1.1.0_graphql@16.6.0:
@@ -5879,7 +5893,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
       '@npmcli/promise-spawn': 6.0.1
-      lru-cache: 7.14.0
+      lru-cache: 7.14.1
       mkdirp: 1.0.4
       npm-pick-manifest: 8.0.1
       proc-log: 3.0.0
@@ -7253,8 +7267,8 @@ packages:
     resolution: {integrity: sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==}
     dev: true
 
-  /@types/uuid/8.3.4:
-    resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
+  /@types/uuid/9.0.0:
+    resolution: {integrity: sha512-kr90f+ERiQtKWMz5rP32ltJ/BtULDI5RVO0uavn1HQUOwjx0R1h0rnDYNL0CepF1zL5bSY6FISAfd9tOdDhU5Q==}
     dev: false
 
   /@types/validator/13.7.8:
@@ -8751,7 +8765,7 @@ packages:
       fs-minipass: 2.1.0
       glob: 8.0.3
       infer-owner: 1.0.4
-      lru-cache: 7.14.0
+      lru-cache: 7.14.1
       minipass: 3.3.4
       minipass-collect: 1.0.2
       minipass-flush: 1.0.5
@@ -8773,7 +8787,7 @@ packages:
       '@npmcli/fs': 3.1.0
       fs-minipass: 2.1.0
       glob: 8.0.3
-      lru-cache: 7.14.0
+      lru-cache: 7.14.1
       minipass: 3.3.4
       minipass-collect: 1.0.2
       minipass-flush: 1.0.5
@@ -12430,13 +12444,13 @@ packages:
     resolution: {integrity: sha512-Ek+QmMEqZF8XrbFdwoDjSbm7rT23pCgEMOJmz6GPk/s4yH//RQfNPArhIxbguNxROq/+5lNBwCDHMhA903Kx1Q==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
     dependencies:
-      lru-cache: 7.14.0
+      lru-cache: 7.14.1
 
   /hosted-git-info/6.1.1:
     resolution: {integrity: sha512-r0EI+HBMcXadMrugk0GCQ+6BQV39PiWAZVfq7oIckeGiN7sjRGyQxPdft3nQekFTCQbYxLBH+/axZMeH8UX6+w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      lru-cache: 7.14.0
+      lru-cache: 7.14.1
 
   /hpack.js/2.1.6:
     resolution: {integrity: sha512-zJxVehUdMGIKsRaNt7apO2Gqp0BdqW5yaiGHXXmbpvxgBYVZnAql+BJb4RO5ad2MgpbZKn5G6nMnegrH1FcNYQ==}
@@ -14424,6 +14438,10 @@ packages:
     resolution: {integrity: sha512-EIRtP1GrSJny0dqb50QXRUNBxHJhcpxHC++M5tD7RYbvLLn5KVWKsbyswSSqDuU15UFi3bgTQIY8nhDMeF6aDQ==}
     engines: {node: '>=12'}
 
+  /lru-cache/7.14.1:
+    resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
+    engines: {node: '>=12'}
+
   /lru-memoizer/2.1.4:
     resolution: {integrity: sha512-IXAq50s4qwrOBrXJklY+KhgZF+5y98PDaNo0gi/v2KQBFLyWr+JyFvijZXkGKjQj/h9c0OwoE+JZbwUXce76hQ==}
     dependencies:
@@ -14481,7 +14499,7 @@ packages:
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
       is-lambda: 1.0.1
-      lru-cache: 7.14.0
+      lru-cache: 7.14.1
       minipass: 3.3.4
       minipass-collect: 1.0.2
       minipass-fetch: 2.1.2
@@ -14505,7 +14523,7 @@ packages:
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
       is-lambda: 1.0.1
-      lru-cache: 7.14.0
+      lru-cache: 7.14.1
       minipass: 3.3.4
       minipass-collect: 1.0.2
       minipass-fetch: 3.0.0
