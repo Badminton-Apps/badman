@@ -5,25 +5,35 @@
   "targets": {
     "build": {
       "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/database",
         "tsConfig": "libs/backend/database/tsconfig.lib.json",
         "packageJson": "libs/backend/database/package.json",
         "main": "libs/backend/database/src/index.ts",
-        "assets": ["libs/backend/database/src/assets/**/*"]
+        "assets": [
+          "libs/backend/database/src/assets/**/*"
+        ]
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/backend/database/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/backend/database/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/database"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/backend/database"
+      ],
       "options": {
         "jestConfig": "libs/backend/database/jest.config.js",
         "passWithNoTests": true

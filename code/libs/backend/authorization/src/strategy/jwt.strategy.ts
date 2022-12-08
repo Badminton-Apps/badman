@@ -27,6 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: { sub?: string }) {
     if (payload.sub) {
+
       try {
         const user = await Player.findOne({
           where: { sub: payload.sub },

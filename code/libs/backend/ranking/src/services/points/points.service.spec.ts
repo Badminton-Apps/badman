@@ -26,7 +26,7 @@ describe('PointsService', () => {
       imports: [
         DatabaseModule,
         ConfigModule.forRoot({
-          envFilePath: '.test.env',
+          envFilePath: '.env.test',
         }),
       ],
     }).compile();

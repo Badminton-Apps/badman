@@ -46,18 +46,21 @@ export class PlayersResolver {
   async player(@Args('id', { type: () => ID }) id: string): Promise<Player> {
     let player = await Player.findByPk(id);
 
-    if (!player) {
-      player = await Player.findOne({
-        where: {
-          slug: id,
-        },
-      });
+    if (player) {
+      return player;
     }
 
-    if (!player) {
-      throw new NotFoundException(id);
+    player = await Player.findOne({
+      where: {
+        slug: id,
+      },
+    });
+
+    if (player) {
+      return player;
     }
-    return player;
+
+    throw new NotFoundException(id);
   }
 
   @Query(() => Player, { nullable: true })

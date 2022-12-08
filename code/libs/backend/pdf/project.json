@@ -6,7 +6,9 @@
   "targets": {
     "build": {
       "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/pdf",
         "tsConfig": "libs/backend/pdf/tsconfig.lib.json",
@@ -16,14 +18,20 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/backend/pdf/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/backend/pdf/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/pdf"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/backend/pdf"
+      ],
       "options": {
         "jestConfig": "libs/backend/pdf/jest.config.ts",
         "passWithNoTests": true
