@@ -20,7 +20,7 @@
           "tsConfig": "libs/frontend/components/game-history/tsconfig.lib.json"
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "development"
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
