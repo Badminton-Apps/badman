@@ -84,7 +84,7 @@
     "@ngx-translate/http-loader": "^7.0.0",
     "@nrwl/angular": "~15.1.1",
     "@schematics/angular": "^14.0.0",
-    "@socket.io/redis-adapter": "^7.2.0",
+    "@socket.io/redis-adapter": "^8.0.0",
     "add": "^2.0.6",
     "apollo-angular": "^4.0.0",
     "apollo-server-core": "3.x",
