@@ -6,14 +6,20 @@
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/backend/visual/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/backend/visual/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/visual"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/backend/visual"
+      ],
       "options": {
         "jestConfig": "libs/backend/visual/jest.config.ts",
         "passWithNoTests": true

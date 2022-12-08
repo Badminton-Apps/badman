@@ -4,14 +4,20 @@
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/backend/search/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/backend/search/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/search"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/backend/search"
+      ],
       "options": {
         "jestConfig": "libs/backend/search/jest.config.js",
         "passWithNoTests": true

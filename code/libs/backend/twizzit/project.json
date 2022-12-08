@@ -6,14 +6,20 @@
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/backend/twizzit/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/backend/twizzit/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/twizzit"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/backend/twizzit"
+      ],
       "options": {
         "jestConfig": "libs/backend/twizzit/jest.config.ts",
         "passWithNoTests": true
