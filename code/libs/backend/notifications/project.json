@@ -6,14 +6,20 @@
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/backend/notifications/**/*.ts"]
+        "lintFilePatterns": [
+          "libs/backend/notifications/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/notifications"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/backend/notifications"
+      ],
       "options": {
         "jestConfig": "libs/backend/notifications/jest.config.js",
         "passWithNoTests": true
