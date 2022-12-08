@@ -119,7 +119,7 @@
     "nest-winston": "^1.7.0",
     "ngx-cookie-service": "^14.0.0",
     "ngx-cookieconsent": "^4.0.0",
-    "ngx-echarts": "^14.0.0",
+    "ngx-echarts": "^15.0.0",
     "ngx-infinite-scroll": "^14.0.0",
     "ngx-markdown": "^14.0.0",
     "ngx-moment": "^6.0.2",
