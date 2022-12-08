@@ -1,14 +1,24 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { AppController, PdfController, RankingController } from './controllers';
+import {
+  AppController,
+  ImageController,
+  PdfController,
+  RankingController,
+  TranslateController,
+} from './controllers';
 
+import { ApiAuthorizationModule } from '@badman/backend-authorization';
 import { DatabaseModule } from '@badman/backend-database';
 import { GeneratorModule } from '@badman/backend-generator';
 import { ApiGrapqhlModule } from '@badman/backend-graphql';
 import { HealthModule } from '@badman/backend-health';
+import { NotificationsModule } from '@badman/backend-notifications';
+import { PdfModule } from '@badman/backend-pdf';
 import { QueueModule } from '@badman/backend-queue';
 import { SearchModule } from '@badman/backend-search';
+import { TwizzitModule } from '@badman/backend-twizzit';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
@@ -16,10 +26,6 @@ import {
 import { format, transports } from 'winston';
 import versionPackage from '../version.json';
 import { EventsModule } from './events';
-import { ApiAuthorizationModule } from '@badman/backend-authorization';
-import { TwizzitModule } from '@badman/backend-twizzit'; 
-import { NotificationsModule } from '@badman/backend-notifications';
-import { PdfModule } from '@badman/backend-pdf';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -72,7 +78,13 @@ import { PdfModule } from '@badman/backend-pdf';
     EventsModule,
     HealthModule,
   ],
-  controllers: [AppController, PdfController, RankingController],
+  controllers: [
+    AppController,
+    PdfController,
+    RankingController,
+    ImageController,
+    TranslateController,
+  ],
   providers: [Logger],
 })
 export class AppModule {

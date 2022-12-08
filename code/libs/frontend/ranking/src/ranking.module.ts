@@ -27,7 +27,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 const materialModules = [
   MatButtonModule,
@@ -58,7 +57,6 @@ const materialModules = [
   ],
   imports: [
     ...materialModules,
-    FlexLayoutModule,
     ReactiveFormsModule,
     FormsModule,
     TranslateModule,
