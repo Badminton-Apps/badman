@@ -34,7 +34,16 @@ export class TeamsResolver {
 
   @Query(() => Team)
   async team(@Args('id', { type: () => ID }) id: string): Promise<Team> {
-    const team = await Team.findByPk(id);
+    let team = await Team.findByPk(id);
+
+    if (!team) {
+      team = await Team.findOne({
+        where: {
+          slug: id,
+        },
+      });
+    }
+
     if (!team) {
       throw new NotFoundException(id);
     }
