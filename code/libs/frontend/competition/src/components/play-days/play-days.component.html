@@ -1,5 +1,5 @@
 <form [formGroup]="this.fg" fxLayout="row" fxLayoutGap="16px" fxFlex>
-  <mat-form-field appearance="outline" fxFlex="250px" class="dense">
+  <mat-form-field appearance="outline" fxFlex="250px">
     <mat-label>{{ 'input.day' | translate }}</mat-label>
     <mat-select formControlName="day">
       <mat-option value="monday">{{ 'days.monday' | translate }}</mat-option>
@@ -18,17 +18,17 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline" fxFlex="150px" class="dense">
+  <mat-form-field appearance="outline" fxFlex="150px">
     <mat-label>Start hour</mat-label>
     <input matInput type="time" formControlName="startTime" />
   </mat-form-field>
 
-  <mat-form-field appearance="outline" fxFlex="150px" class="dense">
+  <mat-form-field appearance="outline" fxFlex="150px">
     <mat-label>End hour</mat-label>
     <input matInput type="time" formControlName="endTime" />
   </mat-form-field>
 
-  <mat-form-field appearance="outline" fxFlex="100px" class="dense">
+  <mat-form-field appearance="outline" fxFlex="100px">
     <mat-label>{{ 'input.courts' | translate }}</mat-label>
     <input matInput type="number" formControlName="courts" alt="courts" />
   </mat-form-field>
