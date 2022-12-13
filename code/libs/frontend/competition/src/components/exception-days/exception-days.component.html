@@ -1,5 +1,5 @@
 <form [formGroup]="this.fg" fxLayout="row" fxLayoutGap="16px" fxFlex>
-  <mat-form-field appearance="outline" fxFlex="250px" class="dense">
+  <mat-form-field appearance="outline" fxFlex="250px">
     <mat-label>{{ 'input.date-range' | translate }}</mat-label>
     <mat-date-range-input [formGroup]="fg" [rangePicker]="picker">
       <input matStartDate formControlName="start" placeholder="Start date" />
@@ -16,7 +16,7 @@
     >
   </mat-form-field>
 
-  <mat-form-field appearance="outline" fxFlex="100px" class="dense">
+  <mat-form-field appearance="outline" fxFlex="100px">
     <mat-label>{{ 'input.courts' | translate }}</mat-label>
     <input
       matInput

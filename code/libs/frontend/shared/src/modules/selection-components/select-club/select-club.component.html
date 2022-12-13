@@ -3,7 +3,7 @@
     appearance="outline"
     fxFlex
     *ngIf="!this.useAutocomplete"
-    class="dense"
+    class=""
   >
     <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
 
@@ -18,7 +18,6 @@
     appearance="outline"
     *ngIf="this.useAutocomplete"
     fxFlex
-    class="dense"
   >
     <mat-label>{{ 'pickers.select-club' | translate }}</mat-label>
     <input matInput formControlName="club" [matAutocomplete]="auto" />

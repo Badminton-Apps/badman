@@ -48,63 +48,91 @@ body {
 
 body {
   margin: 0;
-  font: 400 14px/20px Roboto, Helvetica Neue, sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-.mat-body-1 {
+.mat-subheading-1,
+.mat-subheading-2 {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: row;
+
+  > div:first-child {
+    flex: 1;
+    align-items: center;
+    display: flex;
+  }
+}
+
+.mat-subheading-1 {
+  align-items: center;
+  font-size: 20px;
+  padding-bottom: 8px;
+  margin-top: 15px;
   border-bottom: 1px solid mat-color($client-angular-accent);
 }
 
-.mat-subtitle-1 {
+.mat-subheading-2 {
   margin-top: 16px;
   border-left: 1px solid mat-color($client-angular-primary);
   padding-left: 10px;
 }
 
-// .mat-mdc-tooltip {
-//   white-space: pre-line;
-// }
+.mat-icon {
+  vertical-align: middle;
+}
 
+.mat-tooltip {
+  white-space: pre-line;
+}
 
-.mat-mdc-form-field {
-  width: 100%;
+.mat-select {
+  margin-top: -10px;
+}
+
+.mat-form-field {
+  div.mat-form-field-wrapper {
+    .mat-form-field-infix {
+      width: auto;
+    }
+  }
 }
 
 ngx-mat-timepicker.ngx-mat-timepicker form {
   min-width: initial;
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+
   .mat-form-field-wrapper {
     padding-bottom: 0.55em;
   }
 }
 
-// .outlined {
-//   display: block;
-//   margin: 0.25em 0;
-//   padding-bottom: 1.34375em;
+.outlined {
+  display: block;
+  margin: 0.25em 0;
+  padding-bottom: 1.34375em;
 
-//   & > div {
-//     padding: 0 0.75em 0 0.75em;
-//     border: solid 1px #ccc;
-//     background: white;
-//     border-radius: 4px;
-//     position: relative;
-//   }
+  & > div {
+    padding: 0 0.75em 0 0.75em;
+    border: solid 1px #ccc;
+    background: white;
+    border-radius: 4px;
+    position: relative;
+  }
 
-//   mat-label {
-//     position: absolute;
-//     color: rgba(0, 0, 0, 0.6);
-//     transform: scale(0.75);
-//     margin-top: -0.5em;
-//     font-weight: 400;
-//     line-height: 1.125;
-//     background: white;
-//     font-family: Roboto, 'Helvetica Neue', sans-serif;
-//     letter-spacing: normal;
-//     padding: 0 5px;
-//     left: -5px;
-//   }
-// }
+  mat-label {
+    position: absolute;
+    color: rgba(0, 0, 0, 0.6);
+    transform: scale(0.75);
+    margin-top: -0.5em;
+    font-weight: 400;
+    line-height: 1.125;
+    background: white;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    letter-spacing: normal;
+    padding: 0 5px;
+    left: -5px;
+  }
+}
 
 snack-bar-container.success {
   background-color: green;
@@ -157,55 +185,4 @@ a {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: lighten(mat-color($client-angular-primary), 5%);
-}
-
-[fxFlex] {
-  flex: 1 1 100%;
-}
-
-[fxLayout] {
-  display: flex;
-  flex-direction: row;
-}
-
-[fxLayout='row wrap'] {
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-[fxLayout='column'] {
-  flex-direction: column;
-}
-
-[fxLayout='column wrap'] {
-  flex-direction: column;
-  flex-wrap: wrap;
-}
-
-[fxLayoutAlign] {
-  align-items: center;
-}
-
-[fxLayoutAlign='start center'] {
-  align-items: flex-start;
-}
-
-[fxLayoutAlign='end center'] {
-  align-items: flex-end;
-}
-
-[fxLayoutAlign='space-between center'] {
-  justify-content: space-between;
-}
-
-[fxLayoutAlign='space-around center'] {
-  justify-content: space-around;
-}
-
-[fxLayoutAlign='space-evenly center'] {
-  justify-content: space-evenly;
-}
-
-[fxLayoutAlign='center center'] {
-  align-items: center;
 }

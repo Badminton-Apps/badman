@@ -1,5 +1,5 @@
 <ng-container [formGroup]="formGroup">
-  <mat-form-field appearance="outline" fxFlex class="dense">
+  <mat-form-field appearance="outline" fxFlex>
     <mat-label>{{ 'pickers.select-team' | translate }}</mat-label>
     <mat-select formControlName="team" required>
       <ng-container *ngIf="this.teamsF$ | async as teamsF">
