@@ -104,7 +104,6 @@ export class AssemblyValidationService {
       ?.filter((m) => m.teamId !== teamId)
       ?.map((m) => m.meta);
 
-
     const year = event.startYear;
     const usedRankingDate = moment();
     usedRankingDate.set('year', year);
@@ -121,6 +120,7 @@ export class AssemblyValidationService {
             'lastName',
             'gender',
             'competitionPlayer',
+            'memberId',
           ],
           where: {
             id: {
@@ -154,7 +154,7 @@ export class AssemblyValidationService {
 
     const subs = idSubs
       ? await Player.findAll({
-          attributes: ['id', 'firstName', 'lastName', 'gender'],
+          attributes: ['id', 'firstName', 'lastName', 'gender', 'memberId'],
           where: {
             id: {
               [Op.in]: idSubs,

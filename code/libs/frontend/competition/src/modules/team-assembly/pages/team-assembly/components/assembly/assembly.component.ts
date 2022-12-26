@@ -114,7 +114,7 @@ export class AssemblyComponent implements OnInit {
     this.formGroup.addControl('double2', new FormControl());
     this.formGroup.addControl('double3', new FormControl());
     this.formGroup.addControl('double4', new FormControl());
-    this.formGroup.addControl('substitude', new FormControl());
+    this.formGroup.addControl('subtitudes', new FormControl());
     this.formGroup.addControl('captain', new FormControl());
 
     const encounterCntrl = this.formGroup.get('encounter');
@@ -694,7 +694,7 @@ export class AssemblyComponent implements OnInit {
     this.formGroup.get('double2')?.setValue(this.double2);
     this.formGroup.get('double3')?.setValue(this.double3);
     this.formGroup.get('double4')?.setValue(this.double4);
-    this.formGroup.get('substitude')?.setValue(this.substitude);
+    this.formGroup.get('subtitudes')?.setValue(this.substitude);
   }
 
   private _sortLists() {
