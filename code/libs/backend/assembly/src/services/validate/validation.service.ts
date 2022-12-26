@@ -61,8 +61,6 @@ export class AssemblyValidationService {
       attributes: ['id', 'name', 'type', 'teamNumber', 'clubId'],
     });
 
-    const test = await Team.findAll();
-
     // Get the event info
     const draw = await encounter.getDrawCompetition({
       attributes: ['id', 'name', 'subeventId'],
