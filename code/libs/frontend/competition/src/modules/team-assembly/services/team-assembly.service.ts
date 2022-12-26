@@ -29,6 +29,8 @@ export class TeamAssemblyService {
 
     subtitudes: string[];
   }) {
+    console.log(input);
+
     return this.httpClient.post(
       `${this.configService.apiBaseUrl}/pdf/team-assembly`,
       input,

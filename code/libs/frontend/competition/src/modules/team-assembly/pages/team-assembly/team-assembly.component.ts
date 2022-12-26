@@ -154,10 +154,10 @@ export class TeamAssemblyComponent implements OnInit {
             teamId: this.formGroup.get('team')?.value,
             encounterId: encounterId,
 
-            single1: this.formGroup.get('single1')?.value,
-            single2: this.formGroup.get('single2')?.value,
-            single3: this.formGroup.get('single3')?.value,
-            single4: this.formGroup.get('single4')?.value,
+            single1: this.formGroup.get('single1')?.value?.id,
+            single2: this.formGroup.get('single2')?.value?.id,
+            single3: this.formGroup.get('single3')?.value?.id,
+            single4: this.formGroup.get('single4')?.value?.id,
 
             double1: this.formGroup
               .get('double1')
