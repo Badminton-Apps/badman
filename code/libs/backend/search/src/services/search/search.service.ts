@@ -5,7 +5,7 @@ import {
   Player,
 } from '@badman/backend-database';
 import { Injectable } from '@nestjs/common';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 
 @Injectable()
 export class SearchService {
@@ -36,7 +36,15 @@ export class SearchService {
   }
 
   private async _getPlayerResult(parts: string[]): Promise<Player[]> {
-    const queries = [];
+    const queries: WhereOptions = [
+      {
+        [Op.not]: {
+          firstName: 'admin',
+          lastName: 'super',
+          memberId: '000',
+        },
+      },
+    ];
     for (const part of parts) {
       queries.push({
         [Op.or]: [

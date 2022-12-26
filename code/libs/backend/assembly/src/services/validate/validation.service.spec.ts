@@ -23,7 +23,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 
-import { AssemblyValidationService } from './validation.Service';
+import { AssemblyValidationService } from './validation.service';
 import {
   TeamBaseIndexRule,
   CompetitionStatusRule,
