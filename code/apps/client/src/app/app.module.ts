@@ -145,7 +145,7 @@ const cookieConfig: NgcCookieConsentConfig = {
       useFactory: (appConfigService: ConfigService) => {
         return () => {
           //Make sure to return a promise!
-          return appConfigService.loadAppConfig();
+          return appConfigService.loadAppConfig(environment);
         };
       },
     },

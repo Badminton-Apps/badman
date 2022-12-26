@@ -1,23 +1,13 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
-import { isDevMode } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConfigService {
-  public appConfig?: AppConfig;
+  public appConfig?: AppConfiguration;
 
-  constructor(private http: HttpClient) {}
-
-  async loadAppConfig() {
-    const data = await lastValueFrom(this.http.get('/assets/config.json'));
-    this.appConfig = data as AppConfig;
-
-    if(isDevMode()) {
-      this.appConfig.api = 'http://localhost:5000';
-    }
+  async loadAppConfig(config: AppConfiguration) {
+    this.appConfig = config;
   }
 
   // This is an example property ... you can make it however you want.
@@ -54,16 +44,14 @@ export class ConfigService {
   }
 }
 
-export interface Adsense {
-  adClient: string;
-  show: boolean;
-}
-
-export interface AppConfig {
+export type AppConfiguration = Readonly<{
   production: boolean;
   version: string;
   api: string;
   apiVersion: string;
   apmServer: string;
-  adsense: Adsense;
-}
+  adsense: {
+    adClient: string;
+    show: boolean;
+  };
+}>;
