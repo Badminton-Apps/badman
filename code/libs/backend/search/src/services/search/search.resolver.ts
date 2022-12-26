@@ -14,12 +14,12 @@ export const Search = createUnionType({
 
 @Resolver(() => Search)
 export class SearchResolver {
-  constructor(private _SearchService: SearchService) {}
+  constructor(private _searchService: SearchService) {}
 
   @Query(() => [Search])
   async search(
     @Args('query') query: string
   ): Promise<(Player | Club | EventCompetition | EventTournament)[]> {
-    return this._SearchService.search(query);
+    return this._searchService.search(query);
   }
 }
