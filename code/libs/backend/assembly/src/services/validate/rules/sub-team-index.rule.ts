@@ -1,4 +1,4 @@
-import { SubEventType } from '@badman/backend-database';
+import { Player, SubEventType } from '@badman/backend-database';
 import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
@@ -25,6 +25,13 @@ export class SubTeamIndexRule extends Rule {
         .filter((p) => p)
         .sort((a, b) => b.sum - a.sum);
 
+      const basePlayers = await Player.findAll({
+        attributes: ['id', 'fullName', 'firstName', 'lastName'],
+        where: {
+          id: sortedPlayers.map((p) => p.player.id),
+        },
+      });
+
       for (const sub of subtitudes) {
         const subRanking = sub?.rankingPlaces?.[0];
         if (!subRanking) {
@@ -43,9 +50,12 @@ export class SubTeamIndexRule extends Rule {
           warnings.push({
             message: 'team-assembly.warning.subtitute-team-index',
             params: {
-              sub: sub.fullName,
+              sub: sub.id,
               players: higherPlayers?.map((p) => {
-                return { id: p.player.id };
+                const basePlayer = basePlayers.find(
+                  (bp) => bp.id == p.player.id
+                );
+                return { id: basePlayer.id, fullName: basePlayer.fullName };
               }),
             },
           });

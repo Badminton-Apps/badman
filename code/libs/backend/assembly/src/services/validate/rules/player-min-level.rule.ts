@@ -35,7 +35,7 @@ export class PlayerMinLevelRule extends Rule {
 
         ...subtitudes,
       ]);
-      
+
       for (const player of uniquePlayers) {
         const ranking = player?.rankingPlaces?.[0];
 
@@ -46,10 +46,14 @@ export class PlayerMinLevelRule extends Rule {
         if (ranking.single < subEvent.maxLevel) {
           valid = false;
           errors.push({
-            message: 'team-assembly.error.player-min-level',
+            message: 'competition.team-assembly.errors.player-min-level',
             params: {
-              fullName: player?.fullName,
-              ranking: ranking.single,
+              player: {
+                id: player?.id,
+                fullName: player.fullName,
+                ranking: ranking.single,
+              },
+              minLevel: subEvent.maxLevel,
               rankingType: 'single',
             },
           });
@@ -58,10 +62,14 @@ export class PlayerMinLevelRule extends Rule {
         if (ranking.double < subEvent.maxLevel) {
           valid = false;
           errors.push({
-            message: 'team-assembly.error.player-min-level',
+            message: 'competition.team-assembly.errors.player-min-level',
             params: {
-              fullName: player?.fullName,
-              ranking: ranking.double,
+              player: {
+                id: player?.id,
+                fullName: player.fullName,
+                ranking: ranking.double,
+              },
+              minLevel: subEvent.maxLevel,
               rankingType: 'double',
             },
           });
@@ -70,10 +78,14 @@ export class PlayerMinLevelRule extends Rule {
         if (type === SubEventType.MX && ranking.mix < subEvent.maxLevel) {
           valid = false;
           errors.push({
-            message: 'team-assembly.error.player-min-level',
+            message: 'competition.team-assembly.errors.player-min-level',
             params: {
-              fullName: player?.fullName,
-              ranking: ranking.mix,
+              player: {
+                id: player?.id,
+                fullName: player.fullName,
+                ranking: ranking.mix,
+              },
+              minLevel: subEvent.maxLevel,
               rankingType: 'mix',
             },
           });

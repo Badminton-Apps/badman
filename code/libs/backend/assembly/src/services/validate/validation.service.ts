@@ -1,12 +1,15 @@
 import {
   EncounterCompetition,
+  EventCompetition,
   EventEntry,
   Player,
   RankingLastPlace,
   RankingPlace,
   RankingSystem,
+  SubEventCompetition,
   Team,
 } from '@badman/backend-database';
+import { SubEvent } from '@badman/frontend-models';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -53,8 +56,9 @@ export class AssemblyValidationService {
       ...(double2?.flat(1) ?? []),
       ...(double3?.flat(1) ?? []),
       ...(double4?.flat(1) ?? []),
-    ];
-    const idSubs = subtitudes;
+    ]?.filter((p) => p !== undefined && p !== null);
+
+    const idSubs = subtitudes?.filter((p) => p !== undefined && p !== null);
 
     const encounter = await EncounterCompetition.findByPk(encounterId);
     const team = await Team.findByPk(teamId, {
@@ -73,6 +77,20 @@ export class AssemblyValidationService {
       attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'startYear'],
     });
 
+    const sameYearSubEvents = await EventCompetition.findAll({
+      attributes: ['id'],
+      where: {
+        startYear: event.startYear,
+      },
+      include: [
+        {
+          model: SubEventCompetition,
+          attributes: ['id'],
+          required: true,
+        },
+      ],
+    });
+
     const type = team.type;
 
     // find all same type team's ids for fetching the etnries
@@ -81,6 +99,9 @@ export class AssemblyValidationService {
       where: {
         clubId: team.clubId,
         type: type,
+        teamNumber: {
+          [Op.lte]: team.teamNumber,
+        },
       },
     });
 
@@ -88,7 +109,7 @@ export class AssemblyValidationService {
     const memberships = await EventEntry.findAll({
       where: {
         teamId: clubTeams?.map((t) => t.id),
-        subEventId: subEvent.id,
+        subEventId: sameYearSubEvents?.map((e) => e.subEventCompetitions?.map((s) => s.id)).flat(1),
       },
     });
 
@@ -99,6 +120,7 @@ export class AssemblyValidationService {
 
     // Filter out this team's meta
     const meta = memberships?.find((m) => m.teamId == teamId)?.meta;
+
     // Other teams meta
     const otherMeta = memberships
       ?.filter((m) => m.teamId !== teamId)
@@ -116,11 +138,11 @@ export class AssemblyValidationService {
       ? await Player.findAll({
           attributes: [
             'id',
-            'firstName',
-            'lastName',
             'gender',
             'competitionPlayer',
-            'memberId',
+            'fullName',
+            'firstName',
+            'lastName',
           ],
           where: {
             id: {
@@ -154,7 +176,14 @@ export class AssemblyValidationService {
 
     const subs = idSubs
       ? await Player.findAll({
-          attributes: ['id', 'firstName', 'lastName', 'gender', 'memberId'],
+          attributes: [
+            'id',
+            'gender',
+            'competitionPlayer',
+            'fullName',
+            'firstName',
+            'lastName',
+          ],
           where: {
             id: {
               [Op.in]: idSubs,
@@ -185,15 +214,15 @@ export class AssemblyValidationService {
         })
       : [];
 
-    const baseTeam = Team.baseTeam(players, type);
+    const titularsTeam = Team.baseTeam(players, type);
 
     return {
       type,
       meta,
       otherMeta,
 
-      teamIndex: baseTeam.index,
-      teamPlayers: baseTeam.players,
+      teamIndex: titularsTeam.index,
+      teamPlayers: titularsTeam.players,
 
       encounter,
       draw,
@@ -240,24 +269,29 @@ export class AssemblyValidationService {
     assembly: AssemblyData,
     validators: Rule[]
   ): Promise<AssemblyOutput> {
-    // Check all the rules and collect the errors
-    const errors = [];
-    for (const validator of validators) {
-      const result = await validator.validate(assembly);
-      if (!result.valid) {
-        errors.push(...result.errors);
-      }
-    }
+    // get all errors and warnings from the validators in parallel
+    const results = await Promise.all(
+      validators.map((v) => v.validate(assembly))
+    );
 
-    if (errors.length > 0) {
-      return {
-        valid: false,
-        errors: errors,
-      };
-    }
+    const errors = results
+      ?.map((r) => r.errors)
+      ?.flat(1)
+      ?.filter((e) => !!e);
+    const warnings = results
+      ?.map((r) => r.warnings)
+      ?.flat(1)
+      ?.filter((e) => !!e);
 
     return {
-      valid: true,
+      valid: errors.length === 0,
+      errors: errors,
+      warnings: warnings,
+      systemId: assembly.system.id,
+      titularsIndex: assembly.teamIndex,
+      titularsPlayerData: assembly.teamPlayers,
+      baseTeamIndex: assembly.meta?.competition?.teamIndex,
+      basePlayersData: assembly.meta?.competition?.players,
     };
   }
 
