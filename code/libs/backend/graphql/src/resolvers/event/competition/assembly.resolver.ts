@@ -3,7 +3,11 @@ import {
   AssemblyOutput,
   AssemblyValidationService,
 } from '@badman/backend-assembly';
-import { Player, PlayerRankingType } from '@badman/backend-database';
+import {
+  Player,
+  PlayerRankingType,
+  RankingLastPlace,
+} from '@badman/backend-database';
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 @Resolver(() => AssemblyOutput)
@@ -23,12 +27,34 @@ export class AssemblyResolver {
   }
 
   @ResolveField(() => [PlayerRankingType])
-  teamPlayers(@Parent() draw: AssemblyOutput): PlayerRankingType[] {
-    return draw.baseTeamPlayersData?.map((player) => ({
+  async titularsPlayers(
+    @Parent() assembly: AssemblyOutput
+  ): Promise<PlayerRankingType[]> {
+    if (!assembly.titularsPlayerData) return [];
+
+    const p = await Player.findAll({
+      where: {
+        id: assembly?.titularsPlayerData
+          ?.filter((player) => player != null || player != undefined)
+          ?.map((player) => player.id),
+      },
+      include: [
+        {
+          model: RankingLastPlace,
+          attributes: ['single', 'double', 'mix'],
+          where: {
+            systemId: assembly.systemId,
+          },
+          required: false,
+        },
+      ],
+    });
+
+    return p.map((player) => ({
       ...player.toJSON(),
-      single: player.rankingPlaces?.[0].single,
-      double: player.rankingPlaces?.[0].double,
-      mix: player.rankingPlaces?.[0].mix,
+      single: player.rankingLastPlaces?.[0]?.single,
+      double: player.rankingLastPlaces?.[0]?.double,
+      mix: player.rankingLastPlaces?.[0]?.mix,
     }));
   }
 
@@ -36,17 +62,19 @@ export class AssemblyResolver {
   async baseTeamPlayers(
     @Parent() draw: AssemblyOutput
   ): Promise<PlayerRankingType[]> {
+    if (!draw.basePlayersData) return [];
+
     const p = await Player.findAll({
       where: {
-        id: draw.teamPlayersData?.map((player) => player.id),
+        id: draw.basePlayersData?.map((player) => player.id),
       },
     });
 
     return p.map((player) => ({
       ...player.toJSON(),
-      single: draw.teamPlayersData?.find((p) => p.id === player.id)?.single,
-      double: draw.teamPlayersData?.find((p) => p.id === player.id)?.double,
-      mix: draw.teamPlayersData?.find((p) => p.id === player.id)?.mix,
+      single: draw.basePlayersData?.find((p) => p.id === player.id)?.single,
+      double: draw.basePlayersData?.find((p) => p.id === player.id)?.double,
+      mix: draw.basePlayersData?.find((p) => p.id === player.id)?.mix,
     }));
   }
 }

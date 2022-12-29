@@ -30,14 +30,15 @@ export class AssemblyOutput {
   baseTeamIndex?: number;
 
   @Field(() => Int, { nullable: true })
-  teamIndex?: number;
+  titularsIndex?: number;
 
   @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
   baseTeamPlayers?: PlayerRankingType[];
 
   @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
-  teamPlayers?: PlayerRankingType[];
+  titularsPlayers?: PlayerRankingType[];
 
-  baseTeamPlayersData?: Player[];
-  teamPlayersData?: EntryCompetitionPlayers[];
+  systemId?: string;
+  titularsPlayerData?: Player[];
+  basePlayersData?: EntryCompetitionPlayers[];
 }
