@@ -219,7 +219,7 @@ describe('ValidationService', () => {
             expect(validation).toBeDefined();
 
             const error = validation.errors?.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order'
             );
             expect(error).toBeUndefined();
           }
@@ -242,7 +242,7 @@ describe('ValidationService', () => {
             expect(validation).toBeDefined();
 
             const error = validation.errors?.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order'
             );
             expect(error).toBeUndefined();
           }
@@ -265,7 +265,7 @@ describe('ValidationService', () => {
             expect(validation).toBeDefined();
 
             const error = validation.errors?.find(
-              (e) => e.message === 'team-assembly.error.player-order-highest'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
             );
             expect(error).toBeUndefined();
           }
@@ -297,17 +297,17 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-single'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`single${p1}`);
-            expect(error?.params?.['player1']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['game']).toBe(`single${p2}`);
+            expect(error?.params?.['player1']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['player1']?.['ranking']).toBe(8);
 
-            expect(error?.params?.['player2']?.['fullName']).toBe(
-              player777.fullName
+            expect(error?.params?.['player2']?.['id']).toBe(
+              player777.id
             );
             expect(error?.params?.['player2']?.['ranking']).toBe(7);
           }
@@ -331,27 +331,27 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-doubles'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`double${p1}`);
+            expect(error?.params?.['game']).toBe(`double${p2}`);
             // Team 1
-            expect(error?.params?.['team1player1']?.['fullName']).toBe(
-              player777.fullName
+            expect(error?.params?.['team1player1']?.['id']).toBe(
+              player777.id
             );
             expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-            expect(error?.params?.['team1player2']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['team1player2']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
             // Team 2
-            expect(error?.params?.['team2player1']?.['fullName']).toBe(
-              player666.fullName
+            expect(error?.params?.['team2player1']?.['id']).toBe(
+              player666.id
             );
             expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-            expect(error?.params?.['team2player2']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['team2player2']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
           }
@@ -375,27 +375,27 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly.error.player-order-highest'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`double${p1}`);
+            expect(error?.params?.['game']).toBe(`double${p2}`);
             // Team 1
-            expect(error?.params?.['team1player1']?.['fullName']).toBe(
-              player777.fullName
+            expect(error?.params?.['team1player1']?.['id']).toBe(
+              player777.id
             );
             expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-            expect(error?.params?.['team1player2']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['team1player2']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
             // Team 2
-            expect(error?.params?.['team2player1']?.['fullName']).toBe(
-              player666.fullName
+            expect(error?.params?.['team2player1']?.['id']).toBe(
+              player666.id
             );
             expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-            expect(error?.params?.['team2player2']?.['fullName']).toBe(
-              player999.fullName
+            expect(error?.params?.['team2player2']?.['id']).toBe(
+              player999.id
             );
             expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
           }
@@ -422,7 +422,7 @@ describe('ValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.team-to-strong'
+            (e) => e.message === 'competition.team-assembly.errors.team-to-strong'
           );
           expect(error).toBeUndefined();
         });
@@ -447,11 +447,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.team-to-strong'
+            (e) => e.message === 'competition.team-assembly.errors.team-to-strong'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['baseTeamIndex']).toBe(50);
+          expect(error?.params?.['teamIndex']).toBe(50);
           expect(error?.params?.['minIndex']).toBe(53);
           expect(error?.params?.['maxIndex']).toBe(70);
         });
@@ -482,7 +482,7 @@ describe('ValidationService', () => {
           );
 
           expect(warning).toBeDefined();
-          expect(warning?.params?.['sub']).toBe(player888.fullName);
+          expect(warning?.params?.['sub']).toBe(player888.id);
           expect(warning?.params?.['players']?.find((p) => p.id === player999.id)).toBeDefined();
         });
       });
@@ -509,7 +509,7 @@ describe('ValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.competition-status'
+            (e) => e.message === 'competition.team-assembly.errors.competition-status'
           );
           expect(error).toBeUndefined();
         });
@@ -534,11 +534,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.competition-status'
+            (e) => e.message === 'competition.team-assembly.errors.competition-status'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player555.fullName);
+          expect(error?.params?.['id']).toBe(player555.id);
         });
 
         it("should be invalid if the players doesn't have competition status on true ", async () => {
@@ -559,7 +559,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const errors = validation.errors.filter(
-            (e) => e.message === 'team-assembly.error.competition-status'
+            (e) => e.message === 'competition.team-assembly.errors.competition-status'
           );
 
           expect(errors).toBeDefined();
@@ -588,7 +588,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.player-max-single-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-single-games'
           );
           expect(error).toBeUndefined();
         });
@@ -611,7 +611,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.player-max-double-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-double-games'
           );
           expect(error).toBeUndefined();
         });
@@ -636,11 +636,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-max-single-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-single-games'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player555.fullName);
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
         });
 
         it('should be invalid if the player has more then 2 doubles', async () => {
@@ -661,11 +661,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-max-double-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-double-games'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player666.fullName);
+          expect(error?.params?.['player']?.['id']).toBe(player666.id);
         });
       });
     });
@@ -695,8 +695,8 @@ describe('ValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'team-assembly.error.player-genders' ||
-              e.message === 'team-assembly.error.player-gender'
+              e.message === 'competition.team-assembly.errors.player-genders' ||
+              e.message === 'competition.team-assembly.errors.player-gender'
           );
           expect(error).toBeUndefined();
         });
@@ -723,11 +723,11 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly-error.player-gender'
+              (e) => e.message === 'competition.team-assembly.errors.player-gender'
             );
 
             expect(error).toBeDefined();
-            expect(error?.params?.['fullName']).toBe(player555.fullName);
+            expect(error?.params?.['player']?.['id']).toBe(player555.id);
           }
         );
 
@@ -748,11 +748,11 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly-error.player-gender'
+              (e) => e.message === 'competition.team-assembly.errors.player-gender'
             );
 
             expect(error).toBeDefined();
-            expect(error?.params?.['fullName']).toBe(player555.fullName);
+            expect(error?.params?.['player']?.['id']).toBe(player555.id);
           }
         );
       });
@@ -850,7 +850,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.player-order-highest'
+            (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
           );
           expect(error).toBeUndefined();
         });
@@ -880,17 +880,17 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-single'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`single${p1}`);
-            expect(error?.params?.['player1']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['game']).toBe(`single${p2}`);
+            expect(error?.params?.['player1']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['player1']?.['ranking']).toBe(8);
 
-            expect(error?.params?.['player2']?.['fullName']).toBe(
-              player777.fullName
+            expect(error?.params?.['player2']?.['id']).toBe(
+              player777.id
             );
             expect(error?.params?.['player2']?.['ranking']).toBe(7);
           }
@@ -912,27 +912,27 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-order'
+            (e) => e.message === 'competition.team-assembly.errors.player-order-doubles'
           );
           expect(error).toBeDefined();
-          expect(error?.params?.['game']).toBe(`double3`);
+          expect(error?.params?.['game']).toBe(`double4`);
           // Team 1
-          expect(error?.params?.['team1player1']?.['fullName']).toBe(
-            player777.fullName
+          expect(error?.params?.['team1player1']?.['id']).toBe(
+            player777.id
           );
           expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-          expect(error?.params?.['team1player2']?.['fullName']).toBe(
-            player888.fullName
+          expect(error?.params?.['team1player2']?.['id']).toBe(
+            player888.id
           );
           expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
           // Team 2
-          expect(error?.params?.['team2player1']?.['fullName']).toBe(
-            player666.fullName
+          expect(error?.params?.['team2player1']?.['id']).toBe(
+            player666.id
           );
           expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-          expect(error?.params?.['team2player2']?.['fullName']).toBe(
-            player888.fullName
+          expect(error?.params?.['team2player2']?.['id']).toBe(
+            player888.id
           );
           expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
         });
@@ -953,27 +953,27 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-order-highest'
+            (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
           );
           expect(error).toBeDefined();
-          expect(error?.params?.['game']).toBe(`double3`);
+          expect(error?.params?.['game']).toBe(`double4`);
           // Team 1
-          expect(error?.params?.['team1player1']?.['fullName']).toBe(
-            player777.fullName
+          expect(error?.params?.['team1player1']?.['id']).toBe(
+            player777.id
           );
           expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-          expect(error?.params?.['team1player2']?.['fullName']).toBe(
-            player888.fullName
+          expect(error?.params?.['team1player2']?.['id']).toBe(
+            player888.id
           );
           expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
           // Team 2
-          expect(error?.params?.['team2player1']?.['fullName']).toBe(
-            player666.fullName
+          expect(error?.params?.['team2player1']?.['id']).toBe(
+            player666.id
           );
           expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-          expect(error?.params?.['team2player2']?.['fullName']).toBe(
-            player999.fullName
+          expect(error?.params?.['team2player2']?.['id']).toBe(
+            player999.id
           );
           expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
         });
@@ -1000,7 +1000,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.player-max-double-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-double-games'
           );
           expect(error).toBeUndefined();
         });
@@ -1023,11 +1023,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-max-mix-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-mix-games'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player999.fullName);
+          expect(error?.params?.['player']?.['id']).toBe(player999.id);
         });
       });
     });
@@ -1053,8 +1053,8 @@ describe('ValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'team-assembly.error.player-genders' ||
-              e.message === 'team-assembly-error.player-gender'
+              e.message === 'competition.team-assembly.errors.player-genders' ||
+              e.message === 'competition.team-assembly.errors.player-gender'
           );
           expect(error).toBeUndefined();
         });
@@ -1077,11 +1077,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-genders'
+            (e) => e.message === 'competition.team-assembly.errors.player-genders'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['gender']).toBe(player777.gender);
+          expect(error?.params?.['player2']?.['gender']).toBe(player777.gender);
           expect(error?.params?.['game']).toBe('double3');
         });
 
@@ -1101,11 +1101,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-genders'
+            (e) => e.message === 'competition.team-assembly.errors.player-genders'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['gender']).toBe(player999.gender);
+          expect(error?.params?.['player2']?.['gender']).toBe(player999.gender);
           expect(error?.params?.['game']).toBe('double4');
         });
       });
@@ -1130,7 +1130,7 @@ describe('ValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.player-min-level'
+            (e) => e.message === 'competition.team-assembly.errors.player-min-level'
           );
           expect(error).toBeUndefined();
         });
@@ -1155,11 +1155,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-min-level'
+            (e) => e.message === 'competition.team-assembly.errors.player-min-level'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player555.fullName);
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
         });
       });
     });
@@ -1315,7 +1315,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.team-index'
+            (e) => e.message === 'competition.team-assembly.errors.team-index'
           );
           expect(error).toBeUndefined();
         });
@@ -1358,7 +1358,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.team-index'
+            (e) => e.message === 'competition.team-assembly.errors.team-index'
           );
 
           expect(error).toBeDefined();
@@ -1388,11 +1388,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.club-base-other-team'
+            (e) => e.message === 'competition.team-assembly.errors.club-base-other-team'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']).toBe(playerT2r666.fullName);
+          expect(error?.params?.['player']?.['id']).toBe(playerT2r666.id);
         });
       });
     });
@@ -1416,7 +1416,7 @@ describe('ValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.player-min-level'
+            (e) => e.message === 'competition.team-assembly.errors.player-min-level'
           );
           expect(error).toBeUndefined();
         });
@@ -1441,11 +1441,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-min-level'
+            (e) => e.message === 'competition.team-assembly.errors.player-min-level'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player555.fullName);
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
         });
       });
     });
@@ -1579,7 +1579,7 @@ describe('ValidationService', () => {
             expect(validation).toBeDefined();
 
             const error = validation.errors?.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order'
             );
             expect(error).toBeUndefined();
           }
@@ -1602,7 +1602,7 @@ describe('ValidationService', () => {
             expect(validation).toBeDefined();
 
             const error = validation.errors?.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order'
             );
             expect(error).toBeUndefined();
           }
@@ -1625,7 +1625,7 @@ describe('ValidationService', () => {
             expect(validation).toBeDefined();
 
             const error = validation.errors?.find(
-              (e) => e.message === 'team-assembly.error.player-order-highest'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
             );
             expect(error).toBeUndefined();
           }
@@ -1657,17 +1657,17 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-single'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`single${p1}`);
-            expect(error?.params?.['player1']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['game']).toBe(`single${p2}`);
+            expect(error?.params?.['player1']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['player1']?.['ranking']).toBe(8);
 
-            expect(error?.params?.['player2']?.['fullName']).toBe(
-              player777.fullName
+            expect(error?.params?.['player2']?.['id']).toBe(
+              player777.id
             );
             expect(error?.params?.['player2']?.['ranking']).toBe(7);
           }
@@ -1691,27 +1691,27 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly.error.player-order'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-doubles'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`double${p1}`);
+            expect(error?.params?.['game']).toBe(`double${p2}`);
             // Team 1
-            expect(error?.params?.['team1player1']?.['fullName']).toBe(
-              player777.fullName
+            expect(error?.params?.['team1player1']?.['id']).toBe(
+              player777.id
             );
             expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-            expect(error?.params?.['team1player2']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['team1player2']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
             // Team 2
-            expect(error?.params?.['team2player1']?.['fullName']).toBe(
-              player666.fullName
+            expect(error?.params?.['team2player1']?.['id']).toBe(
+              player666.id
             );
             expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-            expect(error?.params?.['team2player2']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['team2player2']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
           }
@@ -1735,27 +1735,27 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly.error.player-order-highest'
+              (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`double${p1}`);
+            expect(error?.params?.['game']).toBe(`double${p2}`);
             // Team 1
-            expect(error?.params?.['team1player1']?.['fullName']).toBe(
-              player777.fullName
+            expect(error?.params?.['team1player1']?.['id']).toBe(
+              player777.id
             );
             expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-            expect(error?.params?.['team1player2']?.['fullName']).toBe(
-              player888.fullName
+            expect(error?.params?.['team1player2']?.['id']).toBe(
+              player888.id
             );
             expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
             // Team 2
-            expect(error?.params?.['team2player1']?.['fullName']).toBe(
-              player666.fullName
+            expect(error?.params?.['team2player1']?.['id']).toBe(
+              player666.id
             );
             expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-            expect(error?.params?.['team2player2']?.['fullName']).toBe(
-              player999.fullName
+            expect(error?.params?.['team2player2']?.['id']).toBe(
+              player999.id
             );
             expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
           }
@@ -1782,7 +1782,7 @@ describe('ValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.team-to-strong'
+            (e) => e.message === 'competition.team-assembly.errors.team-to-strong'
           );
           expect(error).toBeUndefined();
         });
@@ -1807,11 +1807,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.team-to-strong'
+            (e) => e.message === 'competition.team-assembly.errors.team-to-strong'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['baseTeamIndex']).toBe(50);
+          expect(error?.params?.['teamIndex']).toBe(50);
           expect(error?.params?.['minIndex']).toBe(53);
           expect(error?.params?.['maxIndex']).toBe(70);
         });
@@ -1837,7 +1837,7 @@ describe('ValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.competition-status'
+            (e) => e.message === 'competition.team-assembly.errors.competition-status'
           );
           expect(error).toBeUndefined();
         });
@@ -1862,11 +1862,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.competition-status'
+            (e) => e.message === 'competition.team-assembly.errors.competition-status'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player555.fullName);
+          expect(error?.params?.['id']).toBe(player555.id);
         });
 
         it("should be invalid if the players doesn't have competition status on true ", async () => {
@@ -1887,7 +1887,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const errors = validation.errors.filter(
-            (e) => e.message === 'team-assembly.error.competition-status'
+            (e) => e.message === 'competition.team-assembly.errors.competition-status'
           );
 
           expect(errors).toBeDefined();
@@ -1916,7 +1916,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.player-max-single-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-single-games'
           );
           expect(error).toBeUndefined();
         });
@@ -1939,7 +1939,7 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'team-assembly.error.player-max-double-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-double-games'
           );
           expect(error).toBeUndefined();
         });
@@ -1964,11 +1964,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-max-single-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-single-games'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player555.fullName);
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
         });
 
         it('should be invalid if the player has more then 2 doubles', async () => {
@@ -1989,11 +1989,11 @@ describe('ValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors.find(
-            (e) => e.message === 'team-assembly.error.player-max-double-games'
+            (e) => e.message === 'competition.team-assembly.errors.player-max-double-games'
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['fullName']).toBe(player666.fullName);
+          expect(error?.params?.['player']?.['id']).toBe(player666.id);
         });
       });
     });
@@ -2023,8 +2023,8 @@ describe('ValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'team-assembly.error.player-genders' ||
-              e.message === 'team-assembly.error.player-gender'
+              e.message === 'competition.team-assembly.errors.player-genders' ||
+              e.message === 'competition.team-assembly.errors.player-gender'
           );
           expect(error).toBeUndefined();
         });
@@ -2051,11 +2051,11 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly-error.player-gender'
+              (e) => e.message === 'competition.team-assembly.errors.player-gender'
             );
 
             expect(error).toBeDefined();
-            expect(error?.params?.['fullName']).toBe(player555.fullName);
+            expect(error?.params?.['player']?.['id']).toBe(player555.id);
           }
         );
 
@@ -2076,11 +2076,11 @@ describe('ValidationService', () => {
             expect(validation.valid).toBeFalsy();
 
             const error = validation.errors.find(
-              (e) => e.message === 'team-assembly-error.player-gender'
+              (e) => e.message === 'competition.team-assembly.errors.player-gender'
             );
 
             expect(error).toBeDefined();
-            expect(error?.params?.['fullName']).toBe(player555.fullName);
+            expect(error?.params?.['player']?.['id']).toBe(player555.id);
           }
         );
       });

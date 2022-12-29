@@ -4,6 +4,10 @@
     "fr_BE": "Français",
     "nl_BE": "Nederlands"
   },
+  "themes": {
+    "light": "Light",
+    "dark": "Dark"
+  },
   "lists": {
     "name": "Name"
   },
@@ -140,6 +144,23 @@
       "mix1": "Men doubles",
       "mix2": "Women doubles",
       "errors": {
+        "title": "Errors",
+        "none": "No errors found",
+
+        "comp-status": "{{player}} is not marked as a competition player",
+        "player-gender": "{{player}} is a {{playergender}} but epected {{gender}}",
+        "player-genders": "{{player1}} ({{player1gender}}) and {{player2}} ({{player2gender}}) ar't of the currect gender for {{game}}",
+        "player-max-single-games": "{{player}} can only play a maximum of {{max}} singles",
+        "player-max-double-games": "{{player}} can only play a maximum of {{max}} doubles",
+        "player-max-mixed-games": "{{player}} can only play a maximum of {{max}} mixed doubles",
+        "player-min-level": "{{player}} has an index of <strong>{{playerranking}}</strong> in {{rankingType}} and may minimally be <strong>{{minLevel}}</strong>.",
+        "player-order-doubles": "{{team2player1}} and {{team2player2}} have a higher combined index than {{team1player1}} and {{team1player2}} on {{game}}.",
+        "player-order-single": "{{player2}} has a higher index than {{player1}} on {{game}}.",
+        "player-order-highest": "{{team2player1}} or {{team2player2}} has a better individual ranking then {{team1player1}} or {{team1player2}} on {{game}}",
+        "team-index": "Team index titulars equals <strong>{{teamIndex}}</strong> and is allowed to mimimally be <strong>{{baseIndex}}</strong>",
+        "club-base-other-team": "{{player}} is base player of other team",
+        "team-to-strong": "Teamindex <strong>{{teamIndex}}</strong> cannot be lower then allowed in the division <strong>{{minIndex}}</strong>",
+
         "already": "Player already present as titular.",
         "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single.",
         "players-above-lower": "Pair with higher lineup index is lined up in front of this pair.",
@@ -150,7 +171,9 @@
       "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team.",
       "captain": "Team captain",
       "players": {
-        "title": "Possible titulars"
+        "title": "Possible titulars",
+        "team": "Base players",
+        "base": "Titulars"
       },
       "info": "Remarks concerning the team assembly",
       "substitude": "Substitutes",

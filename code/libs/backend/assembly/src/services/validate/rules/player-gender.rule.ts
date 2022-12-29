@@ -3,7 +3,7 @@ import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
- * Checks 
+ * Checks
  */
 export class PlayerGenderRule extends Rule {
   async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
@@ -62,24 +62,38 @@ export class PlayerGenderRule extends Rule {
       // in doubles 3 and 4 we should have a F and M player
       if (double3[0] && double3[1] && double3[0].gender == double3[1].gender) {
         errors.push({
-          message: 'team-assembly.error.player-genders',
+          message: 'competition.team-assembly.errors.player-genders',
           params: {
             game: 'double3',
-            player1: double3[0]?.fullName,
-            player2: double3[1]?.fullName,
-            gender: double3[0]?.gender,
+            player1: {
+              id: double3[0]?.id,
+              fullName: double3[0]?.fullName,
+              gender: double3[0]?.gender,
+            },
+            player2: {
+              id: double3[1]?.id,
+              fullName: double3[1]?.fullName,
+              gender: double3[1]?.gender,
+            },
           },
         });
       }
 
       if (double4[0] && double4[1] && double4[0].gender == double4[1].gender) {
         errors.push({
-          message: 'team-assembly.error.player-genders',
+          message: 'competition.team-assembly.errors.player-genders',
           params: {
             game: 'double4',
-            player1: double4[0]?.fullName,
-            player2: double4[1]?.fullName,
-            gender: double4[0]?.gender,
+            player1: {
+              id: double4[0]?.id,
+              fullName: double4[0]?.fullName,
+              gender: double4[0]?.gender,
+            },
+            player2: {
+              id: double4[1]?.id,
+              fullName: double4[1]?.fullName,
+              gender: double4[1]?.gender,
+            },
           },
         });
       }
@@ -92,13 +106,19 @@ export class PlayerGenderRule extends Rule {
   }
 
   private _checkGender(players: Player[], gender: string): ValidationError[] {
-    const uniquePlayers = [...new Set(players?.filter((p) => p != undefined))];
+    const uniquePlayers = [
+      ...new Set(players?.filter((p) => p != undefined && p != null)),
+    ];
     const wrong = uniquePlayers?.filter((p) => p?.gender != gender);
     if (wrong) {
       return wrong.map((p) => ({
-        message: 'team-assembly-error.player-gender',
+        message: 'competition.team-assembly.errors.player-gender',
         params: {
-          fullName: p?.fullName,
+          player: {
+            id: p?.id,
+            fullName: p?.fullName,
+            gender: p?.gender,
+          },
           gender,
         },
       }));

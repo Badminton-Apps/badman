@@ -31,9 +31,13 @@ export class PlayerMaxGamesRule extends Rule {
       const found = singlePlayers.filter((p) => p.id === player.id);
       if (found.length > 1) {
         errors.push({
-          message: 'team-assembly.error.player-max-single-games',
+          message: 'competition.team-assembly.errors.player-max-single-games',
           params: {
-            fullName: player.fullName,
+            player: {
+              id: player.id,
+              fullName: player.fullName,
+            },
+            max: 1,
           },
         });
       }
@@ -47,14 +51,18 @@ export class PlayerMaxGamesRule extends Rule {
 
       const uniqueMixPlayers = [...new Set(mixedPlayers)];
 
-      // Check if a player has max 2 double game
+      // Check if a player has max 1 mixed game
       for (const player of uniqueMixPlayers) {
         const found = mixedPlayers.filter((p) => p.id === player.id);
         if (found.length > 1) {
           errors.push({
-            message: 'team-assembly.error.player-max-mix-games',
+            message: 'competition.team-assembly.errors.player-max-mix-games',
             params: {
-              fullName: player.fullName,
+              player: {
+                id: player.id,
+                fullName: player.fullName,
+              },
+              max: 1,
             },
           });
         }
@@ -72,9 +80,13 @@ export class PlayerMaxGamesRule extends Rule {
       const found = doublePlayers.filter((p) => p.id === player.id);
       if (found.length > 2) {
         errors.push({
-          message: 'team-assembly.error.player-max-double-games',
+          message: 'competition.team-assembly.errors.player-max-double-games',
           params: {
-            fullName: player.fullName,
+            player: {
+              id: player.id,
+              fullName: player.fullName,
+            },
+            max: 2,
           },
         });
       }

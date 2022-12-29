@@ -33,11 +33,16 @@ export class CompetitionStatusRule extends Rule {
       ...double4,
       ...subtitudes,
     ]) {
-      if (!player?.competitionPlayer) {
+      if (!player){
+        continue;
+      }
+
+      if (!player.competitionPlayer) {
         valid = false;
         errors.push({
-          message: 'team-assembly.error.competition-status',
+          message: 'competition.team-assembly.errors.competition-status',
           params: {
+            id: player?.id,
             fullName: player?.fullName,
           },
         });

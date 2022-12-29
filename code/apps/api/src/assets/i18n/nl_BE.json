@@ -4,6 +4,10 @@
     "fr_BE": "Français",
     "nl_BE": "Nederlands"
   },
+  "themes": {
+    "light": "Licht",
+    "dark": "Donker"
+  },
   "lists": {
     "name": "Naam"
   },
@@ -150,18 +154,36 @@
       "mix1": "Heren Dubbel",
       "mix2": "Dames Dubbel",
       "errors": {
+        "title": "Fouten",
+        "none": "Geen fouten gevonden",
+
+        "comp-status": "{{player}} staat niet ingeschreven voor de competitie",
+        "player-gender": "{{player}} is een {{playergender}} maar een {{gender}} was verwacht",
+        "player-genders": "{{player1}} ({{player1gender}}) en {{player2}} ({{player2gender}}) zijn niet het correcte geslacht voor {{game}}",
+        "player-max-single-games": "{{player}} mag maximaal {{max}} enkels spelen",
+        "player-max-double-games": "{{player}} mag maximaal {{max}} dubbels spelen",
+        "player-max-mix-games": "{{player}} mag maximaal {{max}} gemengde dubbels spelen",
+        "player-min-level": "{{player}} heeft een index van <strong>{{playerranking}}</strong> in {{rankingType}} en mag minimaal <strong>{{minLevel}}</strong> zijn.",
+        "player-order-doubles": "{{team2player1}} en {{team2player2}} hebben een beter gecombineerd klassement dan {{team1player1}} en {{team1player2}} op {{game}}",
+        "player-order-single": "{{player2}} heeft een beter klassement dan {{player1}} op {{game}}",
+        "player-order-highest": "{{team2player1}} of {{team2player2}} heeft een beter individueel klassement dan {{team1player1}} of {{team1player2}} op {{game}}",
+        "team-index": "Ploegindex titularissen is <strong>{{teamIndex}}</strong> en mag minimaal <strong>{{baseIndex}}</strong> zijn.",
+        "club-base-other-team": "{{player}} is basis speler van een andere team",
+        "team-to-strong": "Ploegindex <strong>{{teamIndex}}</strong> titularissen mag niet onder de grens van de reeks <strong>{{minIndex}}</strong> komen",
+
         "already": "Speler al als titualris aanwezig.",
         "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen.",
         "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld.",
         "player-above-lower": "Speler met hogere opstellingsindex staat voor deze speler opgesteld.",
-        "not-enough-players": "Te weinig titularissen zijn momenteel opgesteld voor de ontmoeting.",
-        "team-to-strong": "Ploegindex titularissen mag niet onder de grens van de reeks ({{minBase}}) komen"
+        "not-enough-players": "Te weinig titularissen zijn momenteel opgesteld voor de ontmoeting."
       },
       "team-index": "Ploegindex titularissen is <strong>{{current}}</strong> en mag minimaal <strong>{{team}}</strong> zijn",
       "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
       "captain": "Ploegkapitein",
       "players": {
-        "title": "Mogelijke titularissen"
+        "title": "Mogelijke titularissen",
+        "team": "Basisspelers",
+        "base": "Titularissen"
       },
       "info": "Opmerkingen bij opstelling",
       "substitude": "Invallers",

@@ -103,7 +103,6 @@ export class PdfService {
 
         preppedMap.set(player.id, {
           ...player.toJSON(),
-          fullName: player.fullName,
           rankingLastPlace: player.rankingLastPlaces?.[0]?.toJSON(),
           base: !!data.meta?.competition?.players?.find(
             (p) => p?.id === player.id

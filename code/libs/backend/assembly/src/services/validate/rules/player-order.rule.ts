@@ -18,16 +18,16 @@ export class PlayerOrderRule extends Rule {
 
     let errors = [] as ValidationError[];
 
-    errors.push(this._checkSingle(single1, single2, 'single1'));
-    errors.push(this._checkSingle(single3, single4, 'single3'));
+    errors.push(this._checkSingle(single1, single2, 'single2'));
+    errors.push(this._checkSingle(single3, single4, 'single4'));
 
-    errors.push(this._checkDouble(double1, double2, 'double1'));
-    errors.push(this._checkDouble(double3, double4, 'double3'));
+    errors.push(this._checkDouble(double1, double2, 'double2'));
+    errors.push(this._checkDouble(double3, double4, 'double4'));
 
     if (type !== SubEventType.MX) {
       // Non mixed check 2 with 3
-      errors.push(this._checkSingle(single2, single3, 'single2'));
-      errors.push(this._checkDouble(double2, double3, 'double2'));
+      errors.push(this._checkSingle(single2, single3, 'single3'));
+      errors.push(this._checkDouble(double2, double3, 'double3'));
     }
 
     errors = errors.filter((e) => e !== undefined);
@@ -48,15 +48,17 @@ export class PlayerOrderRule extends Rule {
 
     if (ranking2 < ranking1) {
       return {
-        message: 'team-assembly.error.player-order',
+        message: 'competition.team-assembly.errors.player-order-single',
         params: {
           game,
           player1: {
-            fullName: player1?.fullName,
+            id: player1?.id,
+            fullName: player1.fullName,
             ranking: ranking1,
           },
           player2: {
-            fullName: player2?.fullName,
+            id: player2?.id,
+            fullName: player2.fullName,
             ranking: ranking2,
           },
         },
@@ -98,22 +100,26 @@ export class PlayerOrderRule extends Rule {
 
     if (d2p1 + d2p2 < d1p1 + d1p2) {
       return {
-        message: 'team-assembly.error.player-order',
+        message: 'competition.team-assembly.errors.player-order-doubles',
         params: {
           game,
           team1player1: {
+            id: t1p1.id,
             fullName: t1p1.fullName,
             ranking: d1p1,
           },
           team1player2: {
+            id: t1p2.id,
             fullName: t1p2.fullName,
             ranking: d1p2,
           },
           team2player1: {
+            id: t2p1.id,
             fullName: t2p1.fullName,
             ranking: d2p1,
           },
           team2player2: {
+            id: t2p2.id,
             fullName: t2p2.fullName,
             ranking: d2p2,
           },
@@ -126,22 +132,26 @@ export class PlayerOrderRule extends Rule {
 
       if (highestd2 < highestd1) {
         return {
-          message: 'team-assembly.error.player-order-highest',
+          message: 'competition.team-assembly.errors.player-order-highest',
           params: {
             game,
             team1player1: {
+              id: t1p1.id,
               fullName: t1p1.fullName,
               ranking: d1p1,
             },
             team1player2: {
+              id: t1p2.id,
               fullName: t1p2.fullName,
               ranking: d1p2,
             },
             team2player1: {
+              id: t2p1.id,
               fullName: t2p1.fullName,
               ranking: d2p1,
             },
             team2player2: {
+              id: t2p2.id,
               fullName: t2p2.fullName,
               ranking: d2p2,
             },
