@@ -159,7 +159,7 @@
         "player-order-highest": "{{team2player1}} or {{team2player2}} has a better individual ranking then {{team1player1}} or {{team1player2}} on {{game}}",
         "team-index": "Team index titulars equals <strong>{{teamIndex}}</strong> and is allowed to mimimally be <strong>{{baseIndex}}</strong>",
         "club-base-other-team": "{{player}} is base player of other team",
-        "team-to-strong": "Teamindex <strong>{{teamIndex}}</strong> cannot be lower then allowed in the division <strong>{{minIndex}}</strong>",
+        "team-to-strong": "Team index titulars equals <strong>{{teamIndex}}</strong> cannot be lower then allowed in the division <strong>{{minIndex}}</strong>",
 
         "already": "Player already present as titular.",
         "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single.",
