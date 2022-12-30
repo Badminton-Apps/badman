@@ -169,7 +169,7 @@
         "player-order-highest": "{{team2player1}} of {{team2player2}} heeft een beter individueel klassement dan {{team1player1}} of {{team1player2}} op {{game}}",
         "team-index": "Ploegindex titularissen is <strong>{{teamIndex}}</strong> en mag minimaal <strong>{{baseIndex}}</strong> zijn.",
         "club-base-other-team": "{{player}} is basis speler van een andere team",
-        "team-to-strong": "Ploegindex <strong>{{teamIndex}}</strong> titularissen mag niet onder de grens van de reeks <strong>{{minIndex}}</strong> komen",
+        "team-to-strong": "Ploegindex titularissen is <strong>{{teamIndex}}</strong> en mag niet onder de grens van de reeks <strong>{{minIndex}}</strong> komen",
 
         "already": "Speler al als titualris aanwezig.",
         "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen.",
