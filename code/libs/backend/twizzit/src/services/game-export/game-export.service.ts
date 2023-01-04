@@ -6,7 +6,7 @@ import {
   Team,
 } from '@badman/backend-database';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 
 @Injectable()
@@ -77,11 +77,11 @@ export class GameExportService {
       return {
         'Game id': game.id,
         Type: 'Competitie',
-        Seizoen: `${year}-${year + 1}`,
-        Datum: null,
-        'Start tijdstip': moment(game.date).format('DD/MM/YYYY'),
-        'Eind tijdstip': moment(game.date).format('HH:mm'),
-        'Tijdstip afspraak': moment(game.date).add(2, 'hours').format('HH:mm'),
+        Seizoen: `${year}-${parseInt(`${year}`) + 1}`,
+        Datum: moment.tz(game.date, 'Europe/Brussels').format('DD/MM/YYYY'),
+        'Start tijdstip': moment.tz(game.date, 'Europe/Brussels').format('HH:mm'),
+        'Eind tijdstip': moment.tz(game.date, 'Europe/Brussels').add(2, 'hours').format('HH:mm'),
+        'Tijdstip afspraak': moment.tz(game.date, 'Europe/Brussels').subtract(15, 'minute').format('HH:mm'),
         Thuisteam: homeTeam.name,
         Uitteam: awayTeam.name,
         Resource: null,

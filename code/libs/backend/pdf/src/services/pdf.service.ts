@@ -1,5 +1,8 @@
 /* eslint-disable prefer-rest-params */
-import { AssemblyValidationService } from '@badman/backend-assembly';
+import {
+  AssemblyData,
+  AssemblyValidationService,
+} from '@badman/backend-assembly';
 import { Player, RankingLastPlace, Team } from '@badman/backend-database';
 import { HandlebarService } from '@badman/backend-handlebar';
 import { Injectable, Logger } from '@nestjs/common';
@@ -68,104 +71,6 @@ export class PdfService {
     }
 
     const captain = await Player.findByPk(input.captainId);
-    const players = [
-      data.single1,
-      data.single2,
-      data.single3,
-      data.single4,
-      ...data.double1,
-      ...data.double2,
-      ...data.double3,
-      ...data.double4,
-    ];
-
-    const teamIndex = Team.baseTeam(players, data.type);
-    const preppedMap = new Map<
-      string,
-      Partial<Player> & {
-        base: boolean;
-        team: boolean;
-        rankingLastPlace: RankingLastPlace;
-        sum: number;
-        highest: number;
-      }
-    >();
-
-    players
-      ?.concat(data.subtitudes)
-      ?.filter((p) => !!p)
-      ?.forEach((player) => {
-        const mayIndex = player.rankingPlaces[0] ?? {
-          single: 12,
-          double: 12,
-          mix: 12,
-        };
-
-        preppedMap.set(player.id, {
-          ...player.toJSON(),
-          rankingLastPlace: player.rankingLastPlaces?.[0]?.toJSON(),
-          base: !!data.meta?.competition?.players?.find(
-            (p) => p?.id === player.id
-          )?.id,
-          team: !!teamIndex.players.find((p) => p?.id === player.id),
-          sum:
-            mayIndex.single +
-            mayIndex.double +
-            (data.type === 'MX' ? mayIndex.mix : 0),
-          highest: Math.min(
-            mayIndex.single,
-            mayIndex.double,
-            data.type === 'MX' ? mayIndex.mix : 12
-          ),
-        });
-      });
-
-    const based: string[] = [];
-    const titularis: string[] = [];
-
-    const doubles = [
-      this._addPlayer(
-        preppedMap,
-        based,
-        titularis,
-        input.double1?.[0],
-        input.double1?.[1]
-      ),
-      this._addPlayer(
-        preppedMap,
-        based,
-        titularis,
-        input.double2?.[0],
-        input.double2?.[1]
-      ),
-      this._addPlayer(
-        preppedMap,
-        based,
-        titularis,
-        input.double3?.[0],
-        input.double3?.[1]
-      ),
-      this._addPlayer(
-        preppedMap,
-        based,
-        titularis,
-        input.double4?.[0],
-        input.double4?.[1]
-      ),
-    ];
-
-    const singles = [
-      this._addPlayer(preppedMap, based, titularis, input.single1).player1,
-      this._addPlayer(preppedMap, based, titularis, input.single2).player1,
-      this._addPlayer(preppedMap, based, titularis, input.single3).player1,
-      this._addPlayer(preppedMap, based, titularis, input.single4).player1,
-    ];
-
-    const subs =
-      input.subtitudes?.map(
-        (r) => this._addPlayer(preppedMap, based, titularis, r)?.player1
-      ) ?? [];
-
     const logo = await readFile(`${__dirname}/assets/logo.png`, {
       encoding: 'base64',
     });
@@ -178,16 +83,43 @@ export class PdfService {
       `Generating assembly for ${homeTeam.name} vs ${awayTeam.name} on ${date}`
     );
 
+    const indexed = [];
+    const based = [];
+
     const context = {
       date,
-      baseIndex: data.meta?.competition?.teamIndex,
-      teamIndex: teamIndex.index,
+      baseIndex: data.meta.competition.teamIndex,
+      teamIndex: data.teamIndex,
       homeTeam: homeTeam.name,
       awayTeam: awayTeam.name,
       captain: captain?.fullName,
-      doubles,
-      singles,
-      subtitudes: subs,
+      doubles: [
+        {
+          player1: this._processPlayer(data.double1[0], data, indexed, based),
+          player2: this._processPlayer(data.double1[1], data, indexed, based),
+        },
+        {
+          player1: this._processPlayer(data.double2[0], data, indexed, based),
+          player2: this._processPlayer(data.double2[1], data, indexed, based),
+        },
+        {
+          player1: this._processPlayer(data.double3[0], data, indexed, based),
+          player2: this._processPlayer(data.double3[1], data, indexed, based),
+        },
+        {
+          player1: this._processPlayer(data.double4[0], data, indexed, based),
+          player2: this._processPlayer(data.double4[1], data, indexed, based),
+        },
+      ],
+      singles: [
+        this._processPlayer(data.single1, data, indexed, based),
+        this._processPlayer(data.single2, data, indexed, based),
+        this._processPlayer(data.single3, data, indexed, based),
+        this._processPlayer(data.single4, data, indexed, based),
+      ],
+      subtitudes: data.subtitudes.map((player) =>
+        this._processPlayer(player, data, null, null)
+      ),
       type: data.type,
       event: `${
         data.type === 'M' ? 'Heren' : data.type === 'F' ? 'Dames' : 'Gemengd'
@@ -195,6 +127,8 @@ export class PdfService {
       isHomeTeam: isHomeTeam,
       logo: `data:image/png;base64, ${logo}`,
       validation,
+      errors: validation.errors,
+      warnings: validation.warnings,
     };
 
     return await this.handlebarService.getHtml(
@@ -204,55 +138,90 @@ export class PdfService {
     );
   }
 
-  private _addPlayer(
-    preppedMap: Map<
-      string,
-      Partial<Player> & {
-        base: boolean;
-        team: boolean;
-        rankingLastPlace: RankingLastPlace;
-        sum: number;
-        highest: number;
-      }
-    >,
-    based: string[],
-    titularis: string[],
-    player1Id = '',
-    player2Id = ''
-  ) {
-    const player1 = { ...preppedMap.get(player1Id) };
-    const player2 = { ...preppedMap.get(player2Id) };
-
-    if (player1) {
-      if (player1.base && based.indexOf(player1.id) === -1) {
-        based.push(player1.id);
-      } else {
-        player1.base = false;
-      }
-
-      if (player1.team && titularis.indexOf(player1.id) === -1) {
-        titularis.push(player1.id);
-      } else {
-        player1.team = false;
-      }
+  private _processPlayer(
+    player: Player,
+    data: AssemblyData,
+    indexed: string[],
+    based: string[]
+  ): Partial<Player> & {
+    base: boolean;
+    team: boolean;
+    rankingLastPlace: RankingLastPlace;
+    sum: number;
+    highest: number;
+  } {
+    if (!player || !player.id) {
+      return null;
     }
 
-    if (player2) {
-      if (player2.base && based.indexOf(player2.id) === -1) {
-        based.push(player2.id);
-      } else {
-        player2.base = false;
-      }
-
-      if (player2.team && titularis.indexOf(player2.id) === -1) {
-        titularis.push(player2.id);
-      } else {
-        player2.team = false;
-      }
-    }
-    return {
-      player1,
-      player2,
+    const prepped = {
+      ...player.toJSON(),
+      base: false,
+      team: false,
+      rankingLastPlace: null,
+      sum: 0,
+      highest: 0,
     };
+
+    if (
+      data.meta.competition.players?.map((p) => p.id).indexOf(player.id) !==
+        -1 &&
+      based &&
+      based.indexOf(player.id) === -1
+    ) {
+      prepped.base = true;
+      based.push(player.id);
+    }
+
+    if (
+      data.teamPlayers?.map((p) => p.id).indexOf(player.id) !== -1 &&
+      indexed &&
+      indexed.indexOf(player.id) === -1
+    ) {
+      prepped.team = true;
+      indexed.push(player.id);
+    }
+
+    if ((player.rankingPlaces?.length ?? 0) > 0) {
+      prepped.sum =
+        (player.rankingPlaces[0].single ?? 12) +
+        (player.rankingPlaces[0].double ?? 12) +
+        (data.type === 'MX' ? player.rankingPlaces[0].mix ?? 12 : 0);
+
+      prepped.highest =
+        Math.min(
+          player.rankingPlaces[0].single ?? 12,
+          player.rankingPlaces[0].double ?? 12,
+          data.type === 'MX' ? player.rankingPlaces[0].mix ?? 12 : 12
+        ) ?? 12;
+    }
+
+    const best = Math.min(
+      player.rankingLastPlaces?.[0]?.single ?? 12,
+      player.rankingLastPlaces?.[0]?.double ?? 12,
+      data.type === 'MX' ? player.rankingLastPlaces?.[0]?.mix ?? 12 : 12
+    );
+
+    // if a ranking is not availible use 2 higher then the best ranking but cannot be higher then 12
+    // if the best ranking is higher then 12 use 12
+    // if no ranking is availible use 12
+
+    const single =
+      player.rankingLastPlaces?.[0]?.single ??
+      (best < 12 ? (best == 11 ? 12 : best + 12) : 12);
+    const double =
+      player.rankingLastPlaces?.[0]?.double ??
+      (best < 12 ? (best == 11 ? 12 : best + 12) : 12);
+    const mix =
+      player.rankingLastPlaces?.[0]?.mix ??
+      (best < 12 ? (best == 11 ? 12 : best + 12) : 12);
+
+    prepped.rankingLastPlace = {
+      single,
+      double,
+      mix,
+    };
+
+    return prepped;
   }
 }

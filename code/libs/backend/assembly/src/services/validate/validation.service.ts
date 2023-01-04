@@ -95,22 +95,29 @@ export class AssemblyValidationService {
 
     // find all same type team's ids for fetching the etnries
     const clubTeams = await Team.findAll({
-      attributes: ['id', 'name'],
+      attributes: ['id', 'name', 'teamNumber'],
       where: {
         clubId: team.clubId,
         type: type,
-        teamNumber: {
-          [Op.lte]: team.teamNumber,
-        },
       },
     });
 
     // Fetch all the memberships for the same subEvent
     const memberships = await EventEntry.findAll({
+      attributes: ['id', 'teamId', 'subEventId', 'meta'],
       where: {
         teamId: clubTeams?.map((t) => t.id),
-        subEventId: sameYearSubEvents?.map((e) => e.subEventCompetitions?.map((s) => s.id)).flat(1),
+        subEventId: sameYearSubEvents
+          ?.map((e) => e.subEventCompetitions?.map((s) => s.id))
+          .flat(1),
       },
+    });
+
+    // filter out entries where the team has a lower or equal teamnumber,
+    // or where the subevent is the same as the entry where the team is playing
+    const filteredMemberships = memberships?.filter((m) => {
+      const t = clubTeams.find((t) => t.id === m.teamId);
+      return t.teamNumber <= team.teamNumber || m.subEventId == subEvent.id;
     });
 
     const system =
@@ -119,10 +126,10 @@ export class AssemblyValidationService {
         : await RankingSystem.findOne({ where: { primary: true } });
 
     // Filter out this team's meta
-    const meta = memberships?.find((m) => m.teamId == teamId)?.meta;
+    const meta = filteredMemberships?.find((m) => m.teamId == teamId)?.meta;
 
     // Other teams meta
-    const otherMeta = memberships
+    const otherMeta = filteredMemberships
       ?.filter((m) => m.teamId !== teamId)
       ?.map((m) => m.meta);
 
@@ -140,6 +147,7 @@ export class AssemblyValidationService {
             'id',
             'gender',
             'competitionPlayer',
+            'memberId',
             'fullName',
             'firstName',
             'lastName',
@@ -179,6 +187,7 @@ export class AssemblyValidationService {
           attributes: [
             'id',
             'gender',
+            'memberId',
             'competitionPlayer',
             'fullName',
             'firstName',

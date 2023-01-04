@@ -1,3 +1,4 @@
+import { Player } from '@badman/backend-database';
 import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
@@ -13,10 +14,10 @@ export class TeamClubBaseRule extends Rule {
       double2,
       double3,
       double4,
-      subtitudes
+      subtitudes,
     } = assembly;
 
-    const players = [
+    const playersError = [
       ...new Set(
         [
           single1,
@@ -28,34 +29,47 @@ export class TeamClubBaseRule extends Rule {
           ...double2,
           ...double3,
           ...double4,
-
-          ...subtitudes
         ].filter((p) => p != undefined)
       ),
     ];
 
+    const playersWarn = [
+      ...new Set([...subtitudes].filter((p) => p != undefined)),
+    ];
+
     const errors = [] as ValidationError[];
+    const warnings = [] as ValidationError[];
 
     for (const oMeta of otherMeta) {
-      const metaPlayers = oMeta.competition.players?.map((p) => p.id);
-      for (const player of players) {
-        if (metaPlayers?.includes(player.id)) {
-          errors.push({
-            message: 'competition.team-assembly.errors.club-base-other-team',
-            params: {
-              player: {
-                id: player.id,
-                fullName: player.fullName,
-              },
-            },
-          });
-        }
+      const metaPlayers = oMeta?.competition?.players?.map((p) => p.id);
+      if (metaPlayers) {
+        errors.push(...this.checkGroup(playersError, metaPlayers));
+        warnings.push(...this.checkGroup(playersWarn, metaPlayers));
       }
     }
 
     return {
       valid: errors.length === 0,
       errors,
+      warnings,
     };
+  }
+
+  private checkGroup(players: Player[], otherPlayers: string[]) {
+    const errors = [] as ValidationError[];
+    for (const player of players) {
+      if (otherPlayers.includes(player.id)) {
+        errors.push({
+          message: 'competition.team-assembly.errors.club-base-other-team',
+          params: {
+            player: {
+              id: player.id,
+              fullName: player.fullName,
+            },
+          },
+        });
+      }
+    }
+    return errors;
   }
 }
