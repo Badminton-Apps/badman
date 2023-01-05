@@ -9,7 +9,6 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
-import { SubEvent } from '@badman/frontend-models';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';

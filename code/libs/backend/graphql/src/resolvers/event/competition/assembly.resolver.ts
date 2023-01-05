@@ -7,6 +7,7 @@ import {
   Player,
   PlayerRankingType,
   RankingLastPlace,
+  RankingSystem,
 } from '@badman/backend-database';
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
@@ -50,11 +51,13 @@ export class AssemblyResolver {
       ],
     });
 
+    const system = await RankingSystem.findByPk(assembly.systemId);
+
     return p.map((player) => ({
       ...player.toJSON(),
-      single: player.rankingLastPlaces?.[0]?.single,
-      double: player.rankingLastPlaces?.[0]?.double,
-      mix: player.rankingLastPlaces?.[0]?.mix,
+      single: player.rankingLastPlaces?.[0]?.single ?? system.amountOfLevels,
+      double: player.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels,
+      mix: player.rankingLastPlaces?.[0]?.mix ?? system.amountOfLevels,
     }));
   }
 
