@@ -183,7 +183,7 @@ export class MailingService {
         defaultLayout: 'layout.handlebars',
       },
       viewPath: path.join(__dirname, './assets/mailing'),
-    }
+    };
 
     try {
       this._transporter = nodemailer.createTransport(mailConfig);
@@ -201,7 +201,7 @@ export class MailingService {
         message: 'Mailing not enabled',
         error: e,
         mailConfig,
-        hbsConfig
+        hbsConfig,
       });
 
       this.logger.warn('Mailing disabled due to config setup failing', e);
@@ -212,10 +212,14 @@ export class MailingService {
 
   private async _sendMail(options: MailOptions) {
     await this._setupMailing();
-    // add clientUrl to context
-    options['context']['clientUrl'] = this.configService.get('CLIENT_URL');
+
+    if (this.configService.get<boolean>('MAILING_ENABLED') ?? false) {
+      this._mailingEnabled = false;
+    }
 
     try {
+      // add clientUrl to context
+      options['context']['clientUrl'] = this.configService.get('CLIENT_URL');
       if (this._mailingEnabled === false) {
         this.logger.debug('Mailing disabled', { data: options });
         const filePath = path.join(

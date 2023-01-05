@@ -194,6 +194,9 @@ export class PdfService {
           player.rankingPlaces[0].double ?? 12,
           data.type === 'MX' ? player.rankingPlaces[0].mix ?? 12 : 12
         ) ?? 12;
+    } else {
+      prepped.sum = data.type === 'MX' ? 36 : 24;
+      prepped.highest = 12;
     }
 
     const best = Math.min(
@@ -208,13 +211,13 @@ export class PdfService {
 
     const single =
       player.rankingLastPlaces?.[0]?.single ??
-      (best < 12 ? (best == 11 ? 12 : best + 12) : 12);
+      (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
     const double =
       player.rankingLastPlaces?.[0]?.double ??
-      (best < 12 ? (best == 11 ? 12 : best + 12) : 12);
+      (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
     const mix =
       player.rankingLastPlaces?.[0]?.mix ??
-      (best < 12 ? (best == 11 ? 12 : best + 12) : 12);
+      (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
 
     prepped.rankingLastPlace = {
       single,
