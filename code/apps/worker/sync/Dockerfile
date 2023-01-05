@@ -44,6 +44,8 @@ RUN apk add --no-cache \
     nodejs \
     yarn
 
+ENV NODE_ENV=production
+
 
 # Copy the bundled code from the build stage to the production image
 COPY --from=build /usr/src/app/node_modules ./node_modules
