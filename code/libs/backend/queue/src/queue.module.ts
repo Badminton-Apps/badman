@@ -14,13 +14,16 @@ BullModule.registerQueueAsync;
   imports: [
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        redis: {
-          host: configService.get('REDIS_HOST'),
-          port: +configService.get('REDIS_PORT'),
-          password: configService.get('REDIS_PASSWORD'),
-        },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        return {
+          redis: {
+            host: configService.get('REDIS_HOST'),
+            port: parseInt(configService.get('REDIS_PORT')) ?? 6379,
+            password: configService.get('REDIS_PASSWORD'),
+            db: parseInt(configService.get('REDIS_DB')) ?? 0,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     ...BullQueueModules,

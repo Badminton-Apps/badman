@@ -300,7 +300,8 @@ describe('ValidationService', () => {
               (e) => e.message === 'competition.team-assembly.errors.player-order-single'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`single${p2}`);
+            expect(error?.params?.['game1']).toBe(`single${p1}`);
+            expect(error?.params?.['game2']).toBe(`single${p2}`);
             expect(error?.params?.['player1']?.['id']).toBe(
               player888.id
             );
@@ -334,7 +335,8 @@ describe('ValidationService', () => {
               (e) => e.message === 'competition.team-assembly.errors.player-order-doubles'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`double${p2}`);
+            expect(error?.params?.['game1']).toBe(`double${p1}`);
+            expect(error?.params?.['game2']).toBe(`double${p2}`);
             // Team 1
             expect(error?.params?.['team1player1']?.['id']).toBe(
               player777.id
@@ -378,7 +380,8 @@ describe('ValidationService', () => {
               (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`double${p2}`);
+            expect(error?.params?.['game1']).toBe(`double${p1}`);
+            expect(error?.params?.['game2']).toBe(`double${p2}`);
             // Team 1
             expect(error?.params?.['team1player1']?.['id']).toBe(
               player777.id
@@ -883,7 +886,8 @@ describe('ValidationService', () => {
               (e) => e.message === 'competition.team-assembly.errors.player-order-single'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`single${p2}`);
+            expect(error?.params?.['game1']).toBe(`single${p1}`);
+            expect(error?.params?.['game2']).toBe(`single${p2}`);
             expect(error?.params?.['player1']?.['id']).toBe(
               player888.id
             );
@@ -915,7 +919,8 @@ describe('ValidationService', () => {
             (e) => e.message === 'competition.team-assembly.errors.player-order-doubles'
           );
           expect(error).toBeDefined();
-          expect(error?.params?.['game']).toBe(`double4`);
+          expect(error?.params?.['game1']).toBe(`double3`);
+          expect(error?.params?.['game2']).toBe(`double4`);
           // Team 1
           expect(error?.params?.['team1player1']?.['id']).toBe(
             player777.id
@@ -956,7 +961,8 @@ describe('ValidationService', () => {
             (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
           );
           expect(error).toBeDefined();
-          expect(error?.params?.['game']).toBe(`double4`);
+          expect(error?.params?.['game1']).toBe(`double3`);
+          expect(error?.params?.['game2']).toBe(`double4`);
           // Team 1
           expect(error?.params?.['team1player1']?.['id']).toBe(
             player777.id
@@ -1660,7 +1666,8 @@ describe('ValidationService', () => {
               (e) => e.message === 'competition.team-assembly.errors.player-order-single'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`single${p2}`);
+            expect(error?.params?.['game1']).toBe(`single${p1}`);
+            expect(error?.params?.['game2']).toBe(`single${p2}`);
             expect(error?.params?.['player1']?.['id']).toBe(
               player888.id
             );
@@ -1694,7 +1701,8 @@ describe('ValidationService', () => {
               (e) => e.message === 'competition.team-assembly.errors.player-order-doubles'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`double${p2}`);
+            expect(error?.params?.['game1']).toBe(`double${p1}`);
+            expect(error?.params?.['game2']).toBe(`double${p2}`);
             // Team 1
             expect(error?.params?.['team1player1']?.['id']).toBe(
               player777.id
@@ -1738,7 +1746,8 @@ describe('ValidationService', () => {
               (e) => e.message === 'competition.team-assembly.errors.player-order-highest'
             );
             expect(error).toBeDefined();
-            expect(error?.params?.['game']).toBe(`double${p2}`);
+            expect(error?.params?.['game1']).toBe(`double${p1}`);
+            expect(error?.params?.['game2']).toBe(`double${p2}`);
             // Team 1
             expect(error?.params?.['team1player1']?.['id']).toBe(
               player777.id
