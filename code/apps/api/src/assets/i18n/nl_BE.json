@@ -259,6 +259,7 @@
     "phone": "Telefoon",
     "fax": "Fax",
     "required": "Velden met een sterretje (*) zijn verplicht",
+    "this-required": "Dit veld is verplicht",
     "gender": "Geslacht",
     "select": "Selecteer",
     "sub": "Inschrijving",

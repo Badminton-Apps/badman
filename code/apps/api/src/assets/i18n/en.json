@@ -248,6 +248,7 @@
     "phone": "Phone",
     "fax": "Fax",
     "required": "Fields with an asterisk (*) are required",
+    "this-required": "This field is required",
     "gender": "Gender",
     "select": "Select",
     "sub": "Subscription",
