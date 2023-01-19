@@ -5,22 +5,47 @@
     "schedule:nonOfficeHours",
     ":preserveSemverRanges"
   ],
+  "semanticCommits": "enabled",
+  "dependencyDashboardApproval": true,
+  "labels": ["dependencies"],
   "ignoreDeps": [
     "@agm/core"
   ],
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
+      "depTypeList": ["devDependencies"],
       "automerge": true
     },
     {
-      "matchDepTypes": [
-        "devDependencies"
+      "updateTypes": ["major"],
+      "labels": ["major-update", "dependencies"]
+    },
+    {
+      "updateTypes": ["minor"],
+      "labels": ["minor-update", "dependencies"]
+    },
+    {
+      "updateTypes": ["patch"],
+      "labels": ["patch-update", "dependencies"]
+    },
+    {
+      "groupName": "jest monorepo",
+      "matchSourceUrls": [
+        "https://github.com/kulshekhar/ts-jest"
       ],
-      "automerge": true
+      "matchPackageNames": [
+        "@types/jest",
+        "jest",
+        "jest-environment-jsdom",
+        "jest-preset-angular",
+        "ts-jest"
+      ]
+    },
+    {
+      "extends": "monorepo:angular",
+      "matchPackageNames": [
+        "ng-packagr"
+      ]
     }
   ]
 }
