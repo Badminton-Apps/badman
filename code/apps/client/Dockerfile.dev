@@ -1,4 +1,4 @@
-FROM node:19.1.0-alpine
+FROM node:19.6.0-alpine
 ARG MAX_OLD_SPACE_SIZE=4096
 ENV NODE_OPTIONS=--max-old-space-size=${MAX_OLD_SPACE_SIZE}
 

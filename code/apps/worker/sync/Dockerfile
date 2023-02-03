@@ -1,7 +1,7 @@
 ###################
 # BUILD FOR PRODUCTION
 ###################
-FROM node:18-alpine As build
+FROM node:19-alpine As build
 
 WORKDIR /usr/src/app
 
@@ -29,7 +29,7 @@ RUN npm run build worker-sync:build:production
 # PRODUCTION
 ###################
 
-FROM node:18-alpine As production
+FROM node:19-alpine As production
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
