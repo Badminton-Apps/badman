@@ -6,6 +6,7 @@
 
     <a
       mat-icon-button
+      *ngIf="this.eventTournament.visualCode"
       target="_blank"
       [href]="'https://www.toernooi.nl/tournament/'+this.eventTournament.visualCode"
       [matTooltip]="'all.button.open-in-new-tab' | translate"
