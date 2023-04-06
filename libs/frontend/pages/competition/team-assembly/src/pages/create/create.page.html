@@ -1,0 +1,69 @@
+<h1>Assembly</h1>
+
+<ng-container *ngIf="this.formGroup">
+  <section class="select-encounter">
+    <badman-select-club
+      [needsPermission]="false"
+      [group]="formGroup"
+      [updateUrl]="true"
+    ></badman-select-club>
+
+    <badman-select-team
+      [updateUrl]="true"
+      [group]="formGroup"
+    ></badman-select-team>
+
+    <badman-select-encounter
+      [group]="formGroup"
+      [updateUrl]="true"
+      (encounterSelected)="this.encounterSelected($event)"
+    ></badman-select-encounter>
+    <div class="download">
+      <button
+        mat-button
+        (click)="this.download()"
+        [class.spinner]="this.pdfLoading"
+        [disabled]="this.pdfLoading"
+      >
+        Download
+      </button>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button
+          mat-menu-item
+          [class.spinner]="this.saveLoading"
+          [disabled]="this.saveLoading"
+          (click)="this.save()"
+        >
+          <mat-icon>save</mat-icon>
+          Save
+        </button>
+      </mat-menu>
+    </div>
+  </section>
+
+  <section class="assembly">
+    <badman-assembly
+      (validationOverview)="this.templateUpdated($event)"
+      [group]="formGroup"
+    ></badman-assembly>
+  </section>
+
+  <ng-template #validationWarnings>
+    <h2 matDialogTitle>There are warnings</h2>
+    <mat-dialog-content>
+      <div *ngIf="this.validationOverview?.template">
+        <ng-container
+          *ngTemplateOutlet="this.validationOverview?.template!"
+        ></ng-container>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button [matDialogClose]="true">Accept</button>
+      <button mat-button matDialogClose color="primary">Dismiss</button>
+    </mat-dialog-actions>
+  </ng-template>
+</ng-container>

@@ -1,0 +1,72 @@
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit,
+} from '@angular/core';
+import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
+import { VERSION_INFO } from '@badman/frontend-html-injects';
+import { Team } from '@badman/frontend-models';
+import { Apollo, gql } from 'apollo-angular';
+import { Observable, switchMap } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
+import { UpcomingGamesComponent } from '../games';
+import { BetaComponent, ProfileOverviewComponent } from './components';
+
+@Component({
+  selector: 'badman-landing',
+  standalone: true,
+  imports: [
+    CommonModule,
+    BetaComponent,
+    ProfileOverviewComponent,
+    UpcomingGamesComponent,
+  ],
+  templateUrl: './landing.component.html',
+  styleUrls: ['./landing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class LandingComponent implements OnInit {
+  user$?: Observable<LoggedinUser>;
+  teams$?: Observable<Team[]>;
+
+  constructor(
+    @Inject(VERSION_INFO)
+    public versionInfo: {
+      beta: boolean;
+      version: string;
+    },
+    private authenticateService: AuthenticateService,
+    private apollo: Apollo
+  ) {}
+
+  ngOnInit() {
+    this.user$ = this.authenticateService.user$;
+    this.teams$ = this.user$.pipe(
+      filter((user) => user.loggedIn),
+      switchMap((user) =>
+        this.apollo
+          .query<{ player: { teams: Partial<Team>[] } }>({
+            query: gql`
+              query ClubsAndTeams($playerId: ID!) {
+                player(id: $playerId) {
+                  id
+                  teams {
+                    id
+                    clubId
+                  }
+                }
+              }
+            `,
+            variables: {
+              playerId: user.id,
+            },
+          })
+          .pipe(
+            map((result) => result.data.player.teams?.map((t) => new Team(t)))
+          )
+      )
+    );
+  }
+}

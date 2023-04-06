@@ -1,0 +1,108 @@
+<badman-page-header>
+  <div avatar>{{ this.club.abbreviation }}</div>
+  <div title>{{this.club.name}}</div>
+
+  <div actions>
+    <button mat-icon-button class="favorite" title="favorite">
+      <mat-icon>star_outline</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="downloadTwizzit(club)">
+        Download twizzit games for season
+      </button>
+      <badman-has-claim [any]="['edit-any:club', this.club.id + '_edit:club']">
+        <button mat-menu-item [routerLink]="'edit'">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+      </badman-has-claim>
+      <badman-has-claim [any]="['edit-any:club']">
+        <button mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </badman-has-claim>
+    </mat-menu>
+  </div>
+</badman-page-header>
+
+<form [formGroup]="filter" class="filter">
+  <mat-button-toggle-group
+    name="team types"
+    aria-label="team types"
+    multiple
+    formControlName="choices"
+  >
+    <mat-button-toggle value="M"
+      >{{'all.gender.male' | translate }}</mat-button-toggle
+    >
+    <mat-button-toggle value="F"
+      >{{'all.gender.female' | translate }}</mat-button-toggle
+    >
+    <mat-button-toggle value="MX"
+      >{{'all.gender.mix' | translate }}</mat-button-toggle
+    >
+  </mat-button-toggle-group>
+
+  <!-- year selection -->
+  <mat-form-field>
+    <mat-label>Season</mat-label>
+    <mat-select formControlName="season">
+      <mat-option *ngFor="let season of this.seasons" [value]="season">
+        {{ season }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<ng-container *ngIf="this.teams$ | async as teams">
+  <ng-container *ngIf="!this.loading">
+    <section class="teams">
+      <h3>Teams</h3>
+      <div class="teams-container">
+        <div class="team" *ngFor="let team of teams">
+          <div [routerLink]="['team',team.slug]">
+            <span class="name">{{team.name}}</span>
+            <span class="event" *ngIf="team.entry?.competitionSubEvent?.name"
+              >{{team.entry?.competitionSubEvent?.name}}</span
+            >
+          </div>
+
+          <button
+            mat-icon-button
+            aria-label="edit team"
+            class="edit-button"
+            (click)="this.editTeam(team)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="games">
+      <section class="recent-games">
+        <h3>Recent games</h3>
+
+        <badman-recent-games
+          *ngIf="isClient"
+          [clubId]="club.id"
+          [teams]="teams"
+        ></badman-recent-games>
+      </section>
+
+      <section class="upcomming-games">
+        <h3>Upcoming games</h3>
+        <badman-upcoming-games
+          [clubid]="club.id"
+          [teams]="teams"
+        ></badman-upcoming-games>
+      </section>
+    </section>
+  </ng-container>
+</ng-container>

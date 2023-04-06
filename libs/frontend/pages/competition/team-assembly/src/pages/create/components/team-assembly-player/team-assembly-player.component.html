@@ -1,0 +1,17 @@
+<div>
+  <mat-icon
+    *ngIf="(player.competitionPlayer ?? false) === false"
+    [matTooltip]="
+      'all.competition.enrollment.errors.not-comp'
+        | translate : { player: player.fullName }
+    "
+  >
+    warning
+  </mat-icon>
+  <div>
+    {{ player.fullName }}
+    <span class="ranking">
+      {{ ranking }}
+    </span>
+  </div>
+</div>

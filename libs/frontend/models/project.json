@@ -1,0 +1,36 @@
+{
+  "name": "frontend-models",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/models/src",
+  "prefix": "badman",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "libs/frontend/models/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/models/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/models/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/models/**/*.ts",
+          "libs/frontend/models/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

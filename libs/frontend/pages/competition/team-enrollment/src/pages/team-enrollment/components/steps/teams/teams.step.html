@@ -1,0 +1,84 @@
+<div class="description">
+  {{'all.competition.enrollment.select-teams-description' | translate}}
+</div>
+
+<ng-container *ngIf="subEvents$ | async as subEvents else loading">
+  <ng-container *ngFor="let type of eventTypes">
+    <div class="type">
+      <h3>{{'all.team.types.long.' + type | translate }}</h3>
+      <!-- add new team -->
+      <button mat-icon-button (click)="this.addTeam(type)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <div class="teams-container">
+      <ng-container *ngIf="this.control?.get(type)?.value as teams">
+        <ng-container *ngIf="teams.length > 0 else noTeams ">
+          <div class="team" *ngFor="let team of this.control?.get(type)?.value">
+            <badman-team
+              [attr.data-anchor]="team.id"
+              [team]="team"
+              (removeTeam)="this.removeTeam($event)"
+              (changeTeamNumber)="this.changeTeamNumber($event)"
+            ></badman-team>
+
+            <div class="event">
+              <mat-form-field>
+                <mat-label>Select</mat-label>
+                <mat-select [value]="team.entry?.competitionSubEventId">
+                  <mat-option
+                    *ngFor="let subEvent of subEvents[type]"
+                    [value]="subEvent.id"
+                  >
+                    {{subEvent.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-template #noTeams>
+    <div class="no-teams">
+      {{'all.competition.enrollment.no-teams' | translate}}
+    </div>
+  </ng-template>
+
+  <!-- dialog for swtihcing numbers, takes in the type and shows a select based on the value in the teamNumbers -->
+  <ng-template let-data #switch>
+    <h1 mat-dialog-title>{{'all.team.change-number.title' | translate}}</h1>
+    <div mat-dialog-content>
+      <p>{{'all.team.change-number.description' | translate}}</p>
+      <mat-form-field>
+        <mat-label>{{'all.team.change-number.number' | translate}}</mat-label>
+        <mat-select [value]="data.team.teamNumber" #newValue>
+          <mat-option *ngFor="let number of data.numbers" [value]="number">
+            {{ number }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+      <button mat-button [mat-dialog-close]="">
+        {{'all.button.cancel' | translate}}
+      </button>
+      <button
+        mat-button
+        [mat-dialog-close]="{
+      id: data.team.id,
+      newNumber: newValue.value
+    }"
+        cdkFocusInitial
+      >
+        {{'all.button.save' | translate}}
+      </button>
+    </div>
+  </ng-template>
+</ng-container>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar
+></ng-template>

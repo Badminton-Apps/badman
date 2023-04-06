@@ -1,0 +1,105 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+  >
+    <mat-toolbar class="logo">
+      <a routerLink="/">
+        <badman-logo></badman-logo>
+        <span class="version"
+          >{{ versionInfo.version
+          }}<ng-container *ngIf="versionInfo.beta"> - beta</ng-container></span
+        ></a
+      >
+    </mat-toolbar>
+    <div class="sidebar-items">
+      <div>
+        <badman-user-shortcuts></badman-user-shortcuts>
+        <mat-nav-list>
+          <mat-list-item (click)="expanded.general = !expanded.general">
+            <div class="expandable-item">
+              <div>{{ 'all.shell.sidebar.general.title' | translate }}</div>
+              <mat-icon *ngIf="!expanded.general">expand_more</mat-icon>
+              <mat-icon *ngIf="expanded.general">expand_less</mat-icon>
+            </div>
+          </mat-list-item>
+
+          <div [hidden]="!expanded.general">
+            <mat-nav-list>
+              <a mat-list-item [routerLink]="['/general', 'faq']">{{
+                'all.shell.sidebar.general.faq' | translate
+              }}</a>
+              <a mat-list-item [routerLink]="['/general', 'changelog']">{{
+                'all.shell.sidebar.general.changelog' | translate
+              }}</a>
+            </mat-nav-list>
+          </div>
+          <mat-list-item (click)="expanded.competition = !expanded.competition">
+            <div class="expandable-item">
+              <div>{{ 'all.shell.sidebar.competition.title' | translate }}</div>
+              <mat-icon *ngIf="!expanded.competition">expand_more</mat-icon>
+              <mat-icon *ngIf="expanded.competition">expand_less</mat-icon>
+            </div>
+          </mat-list-item>
+
+          <div [hidden]="!expanded.competition">
+            <mat-nav-list>
+              <a mat-list-item [routerLink]="['/competition']">{{
+                'all.shell.sidebar.competition.overview' | translate
+              }}</a>
+              <a mat-list-item [routerLink]="['/competition', 'assembly']">{{
+                'all.shell.sidebar.competition.assembly' | translate
+              }}</a>
+              <a mat-list-item [routerLink]="['/competition', 'enrollment']">{{
+                'all.shell.sidebar.competition.enrollment' | translate
+              }}</a>
+            </mat-nav-list>
+          </div>
+
+          <a mat-list-item [routerLink]="['/tournament']">{{
+            'all.shell.sidebar.tournament.title' | translate
+          }}</a>
+          <a mat-list-item [routerLink]="['/ranking']">{{
+            'all.shell.sidebar.ranking.title' | translate
+          }}</a>
+        </mat-nav-list>
+      </div>
+      <div class="spacer"></div>
+
+      <badman-banner [banner]="this.banner" *ngIf="this.banner"></badman-banner>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar class="app-toolbar">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async"
+      >
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+
+      <div class="center">
+        <badman-search-box></badman-search-box>
+      </div>
+
+      <badman-notifications></badman-notifications>
+      <badman-header-menu></badman-header-menu>
+    </mat-toolbar>
+
+    <div class="content">
+      <xng-breadcrumb>
+        <ng-container *xngBreadcrumbItem="let breadcrumb">
+          <span class="breadcrumb">{{ breadcrumb }}</span>
+        </ng-container>
+      </xng-breadcrumb>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

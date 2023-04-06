@@ -1,0 +1,26 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@use './components/team/teams.component.theme.scss' as team;
+
+@mixin color($theme) {
+  badman-teams-step {
+    @include team.color($theme);
+
+    $color-config: mat.get-color-config($theme);
+  }
+}
+
+@mixin typography($theme) {
+  badman-teams-step {
+    @include team.typography($theme);
+
+    $typography-config: mat.get-typography-config($theme);
+
+    .description {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+  }
+}

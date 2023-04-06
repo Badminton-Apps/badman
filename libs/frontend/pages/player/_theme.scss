@@ -1,0 +1,25 @@
+@use './src/pages/detail/detail.page.theme.scss' as detail;
+@use './src/pages/edit/edit.page.theme.scss' as edit;
+@use './src/pages/settings/settings.component.theme' as settings;
+@use './src/pages/ranking-breakdown/ranking-breakdown.page.theme.scss' as ranking-breakdown;
+
+@mixin theme($theme) {
+  @include detail.theme($theme);
+  @include edit.theme($theme);
+  @include settings.theme($theme);
+  @include ranking-breakdown.theme($theme);
+}
+
+@mixin typography($theme) {
+  @include detail.typography($theme);
+  @include edit.typography($theme);
+  @include settings.typography($theme);
+  @include ranking-breakdown.typography($theme);
+}
+
+@mixin colors($theme) {
+  @include detail.color($theme);
+  @include edit.color($theme);
+  @include settings.color($theme);
+  @include ranking-breakdown.color($theme);
+}

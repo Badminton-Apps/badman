@@ -1,0 +1,45 @@
+<form [formGroup]="this.fg">
+  <div class="row">
+    <mat-form-field>
+      <mat-label>{{ 'all.input.firstname' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="firstName"
+        alt="firstName"
+        autocomplete="firstName"
+        required
+      />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ 'all.input.lastname' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="lastName"
+        alt="lastName"
+        autocomplete="lastName"
+        required
+      />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ 'all.input.memberId' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="memberId"
+        alt="memberId"
+        autocomplete="memberId"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <badman-has-claim [all]="['subscription:player']">
+    <div class="row">
+      <mat-form-field>
+        <mat-label>{{ 'all.input.sub' | translate }}</mat-label>
+        <input matInput formControlName="sub" alt="sub" autocomplete="sub" />
+      </mat-form-field>
+    </div>
+  </badman-has-claim>
+</form>

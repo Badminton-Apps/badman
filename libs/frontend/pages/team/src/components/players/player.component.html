@@ -1,0 +1,30 @@
+<div *ngFor="let player of this.team.players" class="player">
+  <div class="name">{{ player.fullName }}</div>
+  <div class="type">
+    <mat-form-field>
+      <mat-label>Type</mat-label>
+      <mat-select
+        [(value)]="player.membershipType"
+        (selectionChange)="changePlayerMembershipType(player, $event)"
+      >
+        <mat-option *ngFor="let type of types" [value]="type">
+          {{ 'all.players.' + type | lowercase | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="delete">
+    <button mat-icon-button (click)="removePlayerFromTeam(player)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<badman-player-search
+  [allowCreation]="false"
+  [searchOutsideClub]="false"
+  [club]="this.team.clubId"
+  [label]="'Voeg speler toe'"
+  [where]="this.wherePlayer"
+  (whenSelectPlayer)="addPlayerToTeam($event)"
+></badman-player-search>

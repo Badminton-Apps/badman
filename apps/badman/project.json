@@ -1,0 +1,211 @@
+{
+  "name": "badman",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/badman/src",
+  "prefix": "badman",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/badman/browser",
+        "index": "apps/badman/src/index.html",
+        "main": "apps/badman/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/badman/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/badman/src/favicon.ico",
+          "apps/badman/src/assets",
+          "apps/badman/src/manifest.webmanifest",
+          "apps/badman/src/robots.txt",
+          "apps/badman/src/sitemap.xml",
+          "apps/badman/src/ads.txt",
+          {
+            "glob": "**/*",
+            "input": "node_modules/@builder.io/partytown/lib",
+            "output": "/~partytown"
+          }
+        ],
+        "allowedCommonJsDependencies": ["moment", "raf", "rgbcolor", "quill", "apexcharts"],
+        "styles": [
+          "apps/badman/src/styles.scss",
+          "node_modules/quill/dist/quill.snow.css"
+        ],
+        "scripts": ["node_modules/apexcharts/dist/apexcharts.js"],
+        "serviceWorker": true,
+        "ngswConfigPath": "apps/badman/ngsw-config.json"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "1mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "render": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "1mb",
+              "maximumError": "5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.render.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "port": 3000
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "badman:build:production"
+        },
+        "development": {
+          "browserTarget": "badman:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "badman:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["apps/badman/**/*.ts", "apps/badman/**/*.html"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/badman/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "server": {
+      "executor": "@angular-devkit/build-angular:server",
+      "options": {
+        "outputPath": "dist/badman/server",
+        "main": "apps/badman/server.ts",
+        "tsConfig": "apps/badman/tsconfig.server.json",
+        "inlineStyleLanguage": "scss"
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.prod.ts"
+            }
+          ],
+          "outputHashing": "media"
+        },
+        "render": {
+          "fileReplacements": [
+            {
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.render.ts"
+            }
+          ],
+          "outputHashing": "media"
+        },
+        "development": {
+          "optimization": false,
+          "sourceMap": true,
+          "extractLicenses": false,
+          "vendorChunk": true
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve-ssr": {
+      "executor": "@nguniversal/builders:ssr-dev-server",
+      "options": {
+        "port": 3000
+      },
+      "configurations": {
+        "development": {
+          "browserTarget": "badman:build:development",
+          "serverTarget": "badman:server:development"
+        },
+        "production": {
+          "browserTarget": "badman:build:production",
+          "serverTarget": "badman:server:production"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "prerender": {
+      "executor": "@nguniversal/builders:prerender",
+      "options": {
+        "routes": ["/"]
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "badman:build:production",
+          "serverTarget": "badman:server:production"
+        },
+        "development": {
+          "browserTarget": "badman:build:development",
+          "serverTarget": "badman:server:development"
+        },
+        "render": {
+          "browserTarget": "badman:build:render",
+          "serverTarget": "badman:server:render"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "collect-vars": {
+      "executor": "ng-process-env:collectVars",
+      "options": {
+        "environmentFile": "apps/badman/src/environments/environment.render.ts"
+      }
+    }
+  },
+  "tags": []
+}

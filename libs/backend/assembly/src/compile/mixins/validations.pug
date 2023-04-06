@@ -1,0 +1,6 @@
+mixin validations(validations)
+  if validations
+    div.text-sm(class!=attributes.class)
+      ul
+        each message in validations
+          li !{message}

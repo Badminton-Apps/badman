@@ -1,0 +1,127 @@
+<div class="general">
+  <div>
+    <span class="name">{{ team.name }}</span>
+  </div>
+
+  <div class="change">
+    <!-- change number -->
+    <button
+      mat-icon-button
+      class="change-button"
+      aria-label="Change team number"
+      (click)="this.changeTeamNumber.next(team)"
+      [matTooltip]="'all.team.change-number.tooltip' | translate"
+
+    >
+      <mat-icon>swap_horiz</mat-icon>
+    </button>
+
+    <!-- remove team -->
+    <button
+      mat-icon-button
+      class="remove-button"
+      aria-label="Remove team"
+      (click)="this.removeTeam.next(team)"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="normal-players">
+  <div class="expandable-item" (click)="expanded.regular = !expanded.regular">
+    <div>
+      {{ 'all.players.title' | translate }}
+      <span class="count">
+        - {{ baseCount }}
+        {{ 'all.competition.enrollment.players.regular' | translate }}
+        <ng-container *ngIf="backupCount > 0"
+          >, {{ backupCount }}
+          {{
+            'all.competition.enrollment.players.backup' | translate
+          }}</ng-container
+        ></span
+      >
+    </div>
+    <mat-icon *ngIf="!expanded.regular">expand_more</mat-icon>
+    <mat-icon *ngIf="expanded.regular">expand_less</mat-icon>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div *ngIf="expanded.regular">
+    <div *ngFor="let player of this.team.players" class="player">
+      <div class="name">{{ player.fullName }}</div>
+      <div class="type">
+        <mat-form-field>
+          <mat-label>Type</mat-label>
+          <mat-select
+            [(value)]="player.membershipType"
+            (selectionChange)="changePlayerType(player, $event.value)"
+          >
+            <mat-option *ngFor="let type of types" [value]="type">
+              {{ 'all.players.' + type | lowercase | translate }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="delete">
+        <button mat-icon-button (click)="removePlayerFromTeam(player)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <badman-player-search
+      [allowCreation]="false"
+      [searchOutsideClub]="true"
+      [club]="this.team.clubId"
+      [label]="'Voeg speler toe'"
+      (whenSelectPlayer)="addPlayerToTeam($event)"
+    ></badman-player-search>
+  </div>
+</div>
+
+
+
+
+
+<div class="base-players">
+  <div class="expandable-item" (click)="expanded.base = !expanded.base">
+    <div>
+      {{ 'all.competition.enrollment.players.base' | translate }}
+      <span class="index"
+        >team: {{ teamIndex }} - base index: {{ baseIndex }}</span
+      >
+    </div>
+    <mat-icon *ngIf="!expanded.base">expand_more</mat-icon>
+    <mat-icon *ngIf="expanded.base">expand_less</mat-icon>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div [hidden]="!expanded.base">
+    <div class="player" *ngFor="let b of base">
+      <div class="name">
+        {{ b.player.fullName }}
+        <span class="ranking">
+          {{ b.single }} - {{ b.double }}
+          <ng-container *ngIf="team.type === 'MX'"> - {{ b.mix }}</ng-container>
+          ({{ b.single + b.double + (team.type === 'MX' ? b.mix : 0) }})</span
+        >
+      </div>
+      <div class="delete">
+        <button mat-icon-button (click)="removeBasePlayerFromTeam(b.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <badman-player-search
+      [allowCreation]="false"
+      [searchOutsideClub]="true"
+      [club]="this.team.clubId"
+      [label]="'Voeg speler toe'"
+      (whenSelectPlayer)="addBasePlayerToTeam($event)"
+    ></badman-player-search>
+  </div>
+</div>

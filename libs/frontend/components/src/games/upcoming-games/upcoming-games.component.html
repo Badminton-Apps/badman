@@ -1,0 +1,106 @@
+<mat-list role="list">
+  <mat-list-item
+    role="listitem"
+    *ngFor="let upcoming of this.upcomingEncounters$ | async"
+  >
+    <span matListItemTitle>{{ upcoming?.date | amDateFormat : 'llll' }}</span>
+    <span matListItemLine>
+      <ng-container
+        *ngIf="this.hasHomeTeam"
+        [ngTemplateOutlet]="hasHome"
+        [ngTemplateOutletContext]="{ upcoming: upcoming }"
+      ></ng-container>
+
+      <ng-container
+        *ngIf="!this.hasHomeTeam"
+        [ngTemplateOutlet]="noHome"
+        [ngTemplateOutletContext]="{ upcoming: upcoming }"
+      ></ng-container>
+    </span>
+  </mat-list-item>
+
+  <mat-list-item role="listitem">
+    <!--  a button to load more -->
+    <ng-container *ngIf="this.hasMoreToLoad; else noMoreEncounters">
+      <button mat-button (click)="loadMore()">
+        {{ 'all.competition.load-more' | translate }}
+      </button>
+    </ng-container>
+  </mat-list-item>
+</mat-list>
+
+<ng-template #noMoreEncounters>
+  <span
+    matListItemLine
+    class="no-more-encounters"
+    translate="all.competition.no-more-encounters"
+  ></span>
+</ng-template>
+
+<ng-template #noHome let-upcoming="upcoming">
+  <span>
+    {{ upcoming.home?.name }}
+    <span translate="all.competition.vs"></span>
+    {{ upcoming.away?.name }}
+  </span>
+</ng-template>
+
+<ng-template #hasHome let-upcoming="upcoming">
+  <span class="location"
+    >{{
+      'all.competition.' + (upcoming.showingForHomeTeam ? 'home' : 'away')
+        | translate
+    }}
+    -
+  </span>
+
+  <ng-container *ngIf="upcoming.showingForHomeTeam">
+    <!-- link to hometeam -->
+    <a
+      [routerLink]="[
+        '/club',
+        upcoming.home.club.slug,
+        'team',
+        upcoming.home?.slug
+      ]"
+      >{{ upcoming.home?.abbreviation }}</a
+    >
+  </ng-container>
+  <ng-container *ngIf="!upcoming.showingForHomeTeam">
+    <a
+      [routerLink]="[
+        '/club',
+        upcoming.away.club.slug,
+        'team',
+        upcoming.away?.slug
+      ]"
+      >{{ upcoming.away?.abbreviation }}</a
+    >
+  </ng-container>
+
+  <span>&nbsp;{{ 'all.competition.vs' | translate }}&nbsp;</span>
+
+  <ng-container *ngIf="upcoming.showingForHomeTeam">
+    <a
+      [routerLink]="[
+        '/club',
+        upcoming.away.club.slug,
+        'team',
+        upcoming.away?.slug
+      ]"
+      >{{ upcoming.away?.name }}</a
+    >
+  </ng-container>
+
+  <ng-container *ngIf="!upcoming.showingForHomeTeam">
+    <a
+      [routerLink]="[
+        '/club',
+        upcoming.home.club.slug,
+        'team',
+        upcoming.home?.slug
+      ]"
+      >{{ upcoming.home?.name }}</a
+    >
+  </ng-container>
+</ng-template>

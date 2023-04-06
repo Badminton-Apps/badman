@@ -1,0 +1,28 @@
+<div class="row">
+  <mat-checkbox
+    [checked]="checkboxes.NATIONAL"
+    (change)="select($event, 'NATIONAL')"
+    >{{ 'all.competition.national' | translate }}</mat-checkbox
+  >
+</div>
+<div class="row">
+  <mat-checkbox [checked]="checkboxes.LIGA" (change)="select($event, 'LIGA')"
+    >{{ 'all.competition.liga' | translate }}</mat-checkbox
+  >
+</div>
+
+<div class="row">
+  <mat-checkbox [checked]="checkboxes.PROV" (change)="select($event, 'PROV')"
+    >{{ 'all.competition.prov' | translate }}</mat-checkbox
+  >
+</div>
+
+<div class="row">
+  <ng-container *ngIf="checkboxes.PROV">
+    <badman-select-event
+      [control]="this.provFormControl"
+      [where]="this.provWhere"
+      [initialId]="this.provInitialId"
+    ></badman-select-event>
+  </ng-container>
+</div>

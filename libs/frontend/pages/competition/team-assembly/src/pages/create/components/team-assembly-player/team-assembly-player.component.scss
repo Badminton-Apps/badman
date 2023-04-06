@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  padding: 8px;
+  > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    @media screen and (max-width: 600px) {
+      flex-direction: column;
+    }
+  }
+}
+
+.ranking {
+  padding-left: 8px;
+}

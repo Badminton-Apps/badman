@@ -1,0 +1,12 @@
+p
+  | Beste #{captain.fullName}, 
+  br
+  br
+  |   De verplaatsing aanvraag voor de wedstrijd op 
+  strong #{date}
+  | tegen
+  strong #{otherTeam.name}
+  | is aangevraagd.
+p
+  a(href=`${clientUrl}/competition/change-encounter?club=${otherTeam.clubId}&team=${otherTeam.id}&encounter=${encounter.id}`)
+    | Ga naar aanvraag

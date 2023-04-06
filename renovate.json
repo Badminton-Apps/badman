@@ -1,16 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
-    "schedule:nonOfficeHours",
-    ":preserveSemverRanges"
+    "config:base"
   ],
   "semanticCommits": "enabled",
   "dependencyDashboardApproval": true,
+  "baseBranches": ["develop"],
   "labels": ["dependencies"],
-  "ignoreDeps": [
-    "@agm/core"
-  ],
   "packageRules": [
     {
       "depTypeList": ["devDependencies"],
@@ -45,6 +41,12 @@
       "extends": "monorepo:angular",
       "matchPackageNames": [
         "ng-packagr"
+      ]
+    },
+    {
+      "groupName": "logtail monorepo",
+      "matchPackagePrefixes": [
+        "@logtail"
       ]
     }
   ]

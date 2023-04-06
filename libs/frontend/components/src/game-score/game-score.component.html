@@ -1,0 +1,13 @@
+<mat-form-field>
+  <mat-label *ngIf="label">{{ label | translate }}</mat-label>
+
+  <input
+    matInput
+    [formControl]="this.inputValue!"
+    (blur)="onBlur()"
+    [pattern]="this.pattern"
+  />
+  <mat-error *ngIf="this.inputValue?.valid === false"
+    >Invalid input value</mat-error
+  >
+</mat-form-field>

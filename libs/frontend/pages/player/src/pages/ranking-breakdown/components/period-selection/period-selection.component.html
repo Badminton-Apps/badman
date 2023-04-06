@@ -1,0 +1,26 @@
+<label>{{ 'all.breakdown.period' | translate }}</label>
+<div class="items">
+  <div>
+    <button
+      [matTooltip]="'all.breakdown.prevPeriod' | translate"
+      mat-icon-button
+      (click)="this.whenPrev.next()"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+  </div>
+  <div class="period">
+    {{ formGroup.value.start | amDateFormat : 'MMM YYYY' }} -
+    {{ formGroup.value.end | amDateFormat : 'MMM YYYY' }}
+  </div>
+  <div>
+    <button
+      [matTooltip]="'all.breakdown.nextPeriod' | translate"
+      mat-icon-button
+      id="next-period"
+      (click)="this.whenNext.next()"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>

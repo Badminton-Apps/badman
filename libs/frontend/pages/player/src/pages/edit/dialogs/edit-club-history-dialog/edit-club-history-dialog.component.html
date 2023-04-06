@@ -1,0 +1,69 @@
+<div>
+  <h2 mat-dialog-title>Edit</h2>
+  <mat-dialog-content>
+    <div class="row">
+      <badman-select-club
+        [formGroup]="this.clubFormGroup"
+        [controlName]="'club'"
+        [needsPermission]="false"
+      ></badman-select-club>
+    </div>
+
+    <div class="row">
+      <mat-slide-toggle
+        [(ngModel)]="this.currentClub"
+        (toggleChange)="this.toggleCurrentClub()"
+        >{{ 'all.club.current' | translate }}</mat-slide-toggle
+      >
+    </div>
+
+    <form [formGroup]="this.membershipFormGroup">
+      <div class="row">
+        <div>
+          <mat-form-field>
+            <mat-label>{{ 'all.club.start' | translate }}</mat-label>
+            <input matInput [matDatepicker]="start" formControlName="start" />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="start"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #start></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field *ngIf="!this.currentClub">
+            <mat-label>{{ 'all.club.end' | translate }}</mat-label>
+            <input matInput [matDatepicker]="end" formControlName="end" />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="end"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #end></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="this.onDelete()" color="warn">
+      {{ 'all.button.delete' | translate }}
+    </button>
+    <button mat-button [mat-dialog-close]="">
+      {{ 'all.button.close' | translate }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="this.onUpdate()"
+      [disabled]="!(this.clubFormGroup.valid && this.membershipFormGroup.valid)"
+      [matTooltip]="
+        this.clubFormGroup.valid && this.membershipFormGroup.valid
+          ? null
+          : ('all.club.form.invalid' | translate)
+      "
+    >
+      {{ 'all.button.save' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

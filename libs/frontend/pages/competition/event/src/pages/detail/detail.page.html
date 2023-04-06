@@ -1,0 +1,138 @@
+<badman-page-header>
+  <div actions>
+    <button mat-icon-button class="favorite" title="favorite">
+      <mat-icon>star_outline</mat-icon>
+    </button>
+    <a
+      mat-icon-button
+      *ngIf="eventCompetition.visualCode"
+      target="_blank"
+      [href]="'https://www.toernooi.nl/tournament/'+this.eventCompetition.visualCode"
+      [matTooltip]="'all.button.open-in-new-tab' | translate"
+    >
+      <mat-icon>open_in_new</mat-icon>
+    </a>
+    <badman-has-claim
+      [any]="['edit-any:competition', 'delete-any:competition','change:job']"
+    >
+      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <badman-has-claim [any]="['edit:competition']">
+          <button mat-menu-item [routerLink]="'edit'">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+
+          <button mat-menu-item [routerLink]="'avg-level'">
+            <mat-icon>equalizer</mat-icon>
+            <span>Average Level</span>
+          </button>
+
+          <button mat-menu-item (click)="this.copy(year)">
+            <mat-icon>content_copy</mat-icon>
+            <span>Copy</span>
+          </button>
+
+          <button mat-menu-item (click)="this.makeOfficial(!eventCompetition.official)">
+            <span>{{eventCompetition.official ? 'Unmake' : 'Make'}} official</span>
+          </button>
+        </badman-has-claim>
+
+        <badman-has-claim [any]="['change:job']">
+          <button mat-menu-item (click)="syncEvent()">
+            <mat-icon>sync</mat-icon>
+            <span>Sync</span>
+          </button>
+        </badman-has-claim>
+
+        <badman-has-claim [any]="['edit:competition']">
+          <button
+            mat-menu-item
+            (click)="this.setOpenState(!this.eventCompetition.allowEnlisting)"
+          >
+            <mat-icon>
+              {{this.eventCompetition.allowEnlisting ? 'lock' : 'lock_open'}}
+            </mat-icon>
+            <span
+              >{{(this.eventCompetition.allowEnlisting ?
+              'all.competition.enrollment.close':
+              'all.competition.enrollment.open') | translate}}</span
+            >
+          </button>
+        </badman-has-claim>
+        <badman-has-claim [any]="['delete:competition']">
+          <button mat-menu-item>
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+        </badman-has-claim>
+      </mat-menu>
+    </badman-has-claim>
+  </div>
+
+  <div title>{{eventCompetition.name}}</div>
+
+  <div subTitle>
+    <mat-chip-listbox>
+      <mat-chip
+        >{{'all.competition.enrollment.title' | translate}}:
+        {{(this.eventCompetition.allowEnlisting ?
+        'all.competition.enrollment.open': 'all.competition.enrollment.closed')
+        | translate}}</mat-chip
+      >
+      <mat-chip *ngIf="eventCompetition.lastSync">
+        {{'all.event.last-sync' | translate}}: {{eventCompetition.lastSync |
+        amCalendar}}
+      </mat-chip>
+    </mat-chip-listbox>
+  </div>
+</badman-page-header>
+
+<div *ngIf="subEvents" class="subEvents">
+  <div *ngFor="let type of subEvents" class="type">
+    <h3>{{ ('all.gender.long.' + type.eventType) | translate}}</h3>
+    <mat-card *ngFor="let sub of type.subEvents" class="subEvent">
+      <mat-card-header>
+        <mat-card-title>{{sub.name}} {{sub.eventType}}</mat-card-title>
+        <mat-card-subtitle
+          >Max Level: {{sub.maxLevel}}, index: {{sub.minBaseIndex}} -
+          {{sub.maxBaseIndex}}</mat-card-subtitle
+        >
+      </mat-card-header>
+      <div class="draw">
+        <div *ngFor="let draw of sub.drawCompetitions">
+          <button mat-button [routerLink]="['draw', draw.id]">
+            {{draw.name}} ({{draw.size}} teams)
+          </button>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #year>
+  <h2 mat-dialog-title>Copy subevent</h2>
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Copmetition year</mat-label>
+      <input [formControl]="this.copyYearControl" matInput placeholder="2025" />
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button [mat-dialog-close]>
+      {{ 'all.button.close' | translate }}
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      [mat-dialog-close]="this.copyYearControl.value"
+    >
+      {{ 'all.button.create' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

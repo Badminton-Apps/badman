@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+
+.name {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.usedForTeam {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .settings {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    #example {
+      width: 100%;
+      display: flex;
+    }
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}

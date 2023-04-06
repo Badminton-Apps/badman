@@ -1,0 +1,63 @@
+<mat-card *ngFor="let question of questions">
+  <mat-card-header>
+    <mat-card-title *ngIf="questionBeingEdited !== question.id">
+      <div>{{question.question}}</div>
+    </mat-card-title>
+    <badman-has-claim
+      [any]="['edit:faq', 'add:faq']"
+      *ngIf="questionBeingEdited === question.id"
+      [formGroup]="editForm"
+    >
+      <ng-container>
+        <mat-form-field>
+          <mat-label>Question</mat-label>
+          <input matInput formControlName="question" />
+        </mat-form-field>
+      </ng-container>
+    </badman-has-claim>
+
+    <badman-has-claim
+      [all]="['edit:faq']"
+      *ngIf="questionBeingEdited !== question.id"
+    >
+      <button class="edit" mat-icon-button (click)="editQuestion(question)">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </badman-has-claim>
+  </mat-card-header>
+  <mat-card-content>
+    <quill-view
+      *ngIf="questionBeingEdited !== question.id"
+      [content]="question.answer"
+      format="html"
+    ></quill-view>
+    <badman-has-claim
+      [any]="['edit:faq', 'add:faq']"
+      *ngIf="questionBeingEdited === question.id"
+    >
+      <ng-container [formGroup]="editForm">
+        <mat-form-field>
+          <badman-quill formControlName="answer"></badman-quill>
+        </mat-form-field>
+      </ng-container>
+    </badman-has-claim>
+  </mat-card-content>
+  <badman-has-claim
+    [any]="['edit:faq', 'add:faq']"
+    *ngIf="questionBeingEdited === question.id"
+  >
+    <mat-card-actions *ngIf="questionBeingEdited">
+      <button mat-raised-button color="primary" (click)="saveEdit(question)">
+        Save
+      </button>
+      <button mat-button (click)="cancelEdit()">Cancel</button>
+      <button mat-button (click)="deleteQuestion(question)">Delete</button>
+    </mat-card-actions>
+  </badman-has-claim>
+</mat-card>
+
+<badman-has-claim [all]="['add:faq']">
+  <button mat-fab (click)="addQuestion()" class="add-question-fab">
+    <mat-icon>add</mat-icon>
+  </button>
+</badman-has-claim>

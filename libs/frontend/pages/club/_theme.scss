@@ -1,0 +1,20 @@
+@use './src/pages/detail/detail.page.theme.scss' as detail;
+@use './src/components/components.theme.scss' as components;
+
+@mixin theme($theme) {
+  @include detail.theme($theme);
+  @include components.theme($theme);
+}
+
+
+@mixin typography($theme) {
+  @include detail.typography($theme);
+  @include components.typography($theme);
+}
+
+
+@mixin colors($theme) {
+  @include detail.color($theme);
+  @include components.colors($theme);
+}
+

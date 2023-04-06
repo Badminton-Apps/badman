@@ -1,0 +1,24 @@
+@use './src/pages/add/add.page.theme.scss' as add;
+@use './src/pages/edit/edit.page.theme.scss' as edit;
+@use './src/components/components.theme.scss' as components;
+
+@mixin theme($theme) {
+  @include add.theme($theme);
+  @include edit.theme($theme);
+  @include components.theme($theme);
+}
+
+
+@mixin typography($theme) {
+  @include add.typography($theme);
+  @include edit.typography($theme);
+  @include components.typography($theme);
+}
+
+
+@mixin colors($theme) {
+  @include add.color($theme);
+  @include edit.color($theme);
+  @include components.colors($theme);
+}
+

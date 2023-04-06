@@ -1,0 +1,12 @@
+p
+  | Beste #{captain.fullName}, 
+  br
+  br
+  |   De verplaatsing tegen 
+  strong #{otherTeam.name}
+  |  is verplaatst naar 
+  strong #{newDate}
+  | .
+p
+  a(href=`${clientUrl}/competition/change-encounter?club=${otherTeam.clubId}&team=${otherTeam.id}&encounter=${encounter.id}`)
+    | Ga naar aanvraag
