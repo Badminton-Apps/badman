@@ -8,6 +8,8 @@ import {
 } from 'ngx-cookieconsent';
 import { filter, map, Subscription } from 'rxjs';
 import { AuthGuard } from '@badman/frontend-authentication';
+import { inject } from '@vercel/analytics';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'badman-root',
@@ -27,6 +29,11 @@ export class AppComponent implements OnInit, OnDestroy {
     private cookieService: CookieService,
     public authGuard: AuthGuard
   ) {
+    inject({
+      mode: environment.production ?  "production": "development",
+      
+    })
+
     updates.versionUpdates
       .pipe(
         filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
