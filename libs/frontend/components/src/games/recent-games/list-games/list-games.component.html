@@ -108,6 +108,11 @@
     <div class="no-more-games" translate="all.competition.no-more-games"></div>
   </ng-container>
 
+  <div class="loading-block" *ngIf="!this.endOfList">
+    <div class="loading-row"></div>
+    <div class="loading-row"></div>
+  </div>
+
   <div #bottomObserver id="bottomObserver"></div>
 </ng-container>
 
