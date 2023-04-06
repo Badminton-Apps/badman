@@ -1,0 +1,633 @@
+{
+  "breakdown": {
+    "add-game": {
+      "p1t1": "Joueur 1 - Equipe 1",
+      "p1t2": "Joueur 1 - Equipe 2",
+      "p2t1": "Joueur 2 - Equipe 1",
+      "p2t2": "Joueur 2 - Equipe 2",
+      "title": "Ajouter une correspondance (fictive)",
+      "won": "L'équipe 1 a gagné ?"
+    },
+    "corrected": " {original} correspondances d'origine, la moyenne est calculée avec un minimum de {corrected} correspondances.",
+    "date": "Date",
+    "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
+    "downgrade": "Rétrograder",
+    "evolution": "Évolution",
+    "ignored": "Non compté",
+    "includeOutOfScope": "Hors champ",
+    "lostGames": {
+      "none": "Aucun jeu perdu",
+      "one": "1 match perdu",
+      "other": "{count} matchs perdus"
+    },
+    "nextPeriod": "Prochaine période",
+    "no-tean": "Pas d'équipe",
+    "noGames": "Pas de concours",
+    "notUsed": "Non utilisé",
+    "opponent": "Adversaire",
+    "outOfScope": {
+      "none": "Pas de concours",
+      "one": "1 match",
+      "other": "{count}  correspondances"
+    },
+    "period": "Période",
+    "points": "Points",
+    "pointsPerGame": "Points par match",
+    "prevPeriod": "Période précédente",
+    "removed-games": "Matchs de la période précédente qui ne comptent plus",
+    "team": "Équipe",
+    "title": "Répartition des niveaux",
+    "untill": "Tot",
+    "upgrade": "Surclassement",
+    "usedForDowngrade": "Utilisé pour la rétrogradation et la mise à niveau",
+    "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
+  },
+  "button": {
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "create": "Créer",
+    "delete": "Retirer",
+    "detail": "Détails",
+    "done": "Prêt",
+    "edit": "Modifier",
+    "all": "",
+    "none": "",
+    "merge-accounts": "Combiner les comptes",
+    "next": "Suivant",
+    "no": "Non",
+    "prev": "Précédent",
+    "save": "Enregistrer",
+    "save-and-continue": "",
+    "set-primary": "Rendre primaire",
+    "set-ranking-groups": "Définir le classement",
+    "submit": "Envoyer",
+    "sync-ranking": "Synchroniser le classement",
+    "watch-system": "Voir le système",
+    "open-in-new-tab": "Open in toernooi.nl",
+    "yes": "Oui"
+  },
+  "club": {
+    "current": "Club actuel",
+    "end": "Fin",
+    "number": "numéro de club",
+    "start": "Date de début"
+  },
+  "competition": {
+    "away": "De",
+    "change-encounter": {
+      "add-date": "Ajouter une date",
+      "away-comment": "Notes équipe à l'extérieur",
+      "calendar": {
+        "option": "{amount} facultatif",
+        "other-games": "Autres rencontres ce jour-là",
+        "remaining": "",
+        "removed": "",
+        "requested": ""
+      },
+      "choose-date": "",
+      "choose-encounter": "",
+      "choose-team": "",
+      "comments": "",
+      "dates": "",
+      "description": "",
+      "disclaimer-submit": "",
+      "errors": {
+        "select-one-date": "",
+        "select-one-date-or-comment": ""
+      },
+      "home-comment": "",
+      "not-possible": "",
+      "possible": "",
+      "requested": "",
+      "requested-failed": "",
+      "submit": {
+        "description": "",
+        "title": ""
+      },
+      "title": ""
+    },
+    "draw": {
+      "encounters": "",
+      "title": ""
+    },
+    "enrollment": {
+      "assign-team": "",
+      "availability": "",
+      "base": "",
+      "comment-liga": "",
+      "comment-nat": "",
+      "comment-prov": "",
+      "errors": {
+        "base-max": "",
+        "base-min": "",
+        "best-max": "",
+        "best-players": "",
+        "cant-play": "",
+        "no-captain": "",
+        "no-day": "",
+        "no-location": "",
+        "no-prefferd": "",
+        "not-allowed": "",
+        "not-comp": ""
+      },
+      "exceptions": "",
+      "max": "",
+      "new-exception": "",
+      "new-play-day": "",
+      "play-day": "",
+      "player-base": "",
+      "select-club": "",
+      "select-teams": "",
+      "transfer-teams": "",
+      "select-events": "",
+      "select-location": "",
+      "assign-teams": "",
+      "save-and-continue-tooltip": "",
+      "title": "",
+      "open": "Open",
+      "closed": "Gesloten",
+      "close": "Sluiten"
+    },
+    "home": "",
+    "last-updated": "",
+    "liga": "",
+    "load-more": "Charger plus",
+    "national": "",
+    "no-more-encounters": "Plus de rencontres",
+    "no-more-games": "Plus de games",
+    "note": "",
+    "prov": "",
+    "subevent": {
+      "max": "",
+      "max-base": "",
+      "min-base": ""
+    },
+    "team-assembly": {
+      "captain": "",
+      "disclaimer": "",
+      "double1": "",
+      "double2": "",
+      "double3": "",
+      "double4": "",
+      "download": "Télécharger",
+      "errors": {
+        "already": "Joueur déjà présent en tant que titualris.",
+        "club-base-other-team": "<strong>{player.fullName}</strong> est un joueur de base d'une autre équipe",
+        "comp-status": "<strong>{player.fullName}</strong> n'est pas inscrit au concours",
+        "none": "Aucune erreur trouvée",
+        "not-enough-players": "Trop peu de détenteurs de titres sont actuellement alignés pour la rencontre.",
+        "player-above-lower": "Le joueur avec l'indice de rédaction le plus élevé est aligné avant ce joueur.",
+        "player-gender": "<strong>{player.fullName}</strong> est un {player.gender} mais on attendait un {gender} .",
+        "player-genders": "<strong>{player1.fullName}</strong> ({player1.gender}) et {player2.gender} ({player2gender}) ne sont pas le genre correct pour <strong>{game}</strong>",
+        "player-max-double-games": "<strong>{player.fullName}</strong> peuvent jouer un maximum de {max} doubles.",
+        "player-max-mix-games": "<strong>{player.fullName}</strong> peut jouer un maximum de {max} doubles mixtes",
+        "player-max-mixed-games": "<strong>{player.fullName}</strong> ne peut jouer qu'un maximum de {max} matchs mixtes",
+        "player-max-single-games": "<strong>{player.fullName}</strong> peuvent jouer un maximum de {max} simples.",
+        "player-min-level": "<strong>{player.fullName}</strong> a un index de <strong>{player.ranking}</strong> dans {rankingType} et peut être au moins <strong>{minLevel}</strong> .",
+        "player-order-doubles": "<strong>{team2player1.fullName}</strong> et <strong>{team2player2.fullName}</strong> dans <strong>{game2}</strong> ont un meilleur classement combiné que {team1player1.fullName} et {team1player2.fullName} dans <strong>{game1}</strong>",
+        "player-order-highest": "<strong>{team2player1.fullName}</strong> ou <strong>{team2player2.fullName}</strong> dans <strong>{game2}</strong> a un meilleur classement individuel que {team1player1.fullName} ou {team1player2.fullName} dans <strong>{game1}</strong>",
+        "player-order-single": "<strong>{player2.fullName}</strong> dans <strong>{game2}</strong> a un meilleur classement que <strong>{player1.fullName}</strong> dans <strong>{game1}</strong>",
+        "players-above-lower": "La paire avec un indice de configuration plus élevé est alignée avant cette paire.",
+        "team-index": "L'indice de décalage des titulaires est <strong>{teamIndex}</strong> et peut être au moins <strong>{baseIndex}</strong> .",
+        "team-to-strong": "L'indice de décalage des titulaires est <strong>{teamIndex}</strong> et ne peut pas tomber en dessous de la limite de la fourchette <strong>{minIndex}</strong> ",
+        "title": "Erreurs",
+        "to-much": "Le joueur peut jouer un maximum de 2 doubles (mixtes) et 1 simple."
+      },
+      "info": "",
+      "mix1": "",
+      "mix2": "",
+      "mix3": "",
+      "mix4": "",
+      "permanent": "",
+      "permanent-dialog": "",
+      "players": {
+        "base": "",
+        "team": "",
+        "title": ""
+      },
+      "single1": "",
+      "single2": "",
+      "single3": "",
+      "single4": "",
+      "substitude": "",
+      "team-index": "",
+      "team-index-ignored": "",
+      "title": "",
+      "avg-level": "",
+      "warnings": {
+        "subtitute-team-index": "s"
+      }
+    },
+    "title": "",
+    "type": "",
+    "vs": "",
+    "vs-short": ""
+  },
+  "days": {
+    "friday": "",
+    "monday": "",
+    "saturday": "",
+    "sunday": "",
+    "thursday": "",
+    "tuesday": "",
+    "wednesday": ""
+  },
+  "event": {
+    "standing": {
+      "games": "",
+      "lost": "",
+      "name": "",
+      "played": "",
+      "points": "",
+      "sets": "",
+      "spoiler": "",
+      "tied": "",
+      "title": "",
+      "totalPoints": "",
+      "won": ""
+    },
+    "type": "",
+    "types": {
+      "competition": "",
+      "tournament": ""
+    },
+    "usedRankingNote": ""
+  },
+  "evolution": {
+    "warning": ""
+  },
+  "faq": {
+    "info": {
+      "description": "Informations détaillées sur le nouveau système",
+      "title": "Infos detaillées"
+    },
+    "legend": "Légende",
+    "overview": {
+      "description": "Lorsque vous recherchez un joueur dans la barre de recherche, vous accédez à une page où vous pouvez voir toutes sortes d'informations sur les résultats d'un joueur et les classements et rankings associés. Vous trouverez toutes les explications de ces pages ci-dessous.",
+      "evolution-1": "Le graphique d'évolution montre comment un joueur évolue au cours des années simulées. La période indiquée par une ligne pointillée est une période où les simulations se stabilisent, donc cette période est moins précise.",
+      "evolution-2": "De plus, par mois de changement de classement, la moyenne de la montée comme la moyenne de la descente est visible en déplaçant votre curseur sur le cercle correspondant au mois.",
+      "game-result": "Pour un joueur, tous ses résultats sont affichés (tournoi(s) / compétition(s)), quand il a été joué, les scores du match, quel classement les joueurs avaient au moment du match et qui était le vainqueur (indiqué en gras).",
+      "levels": "En haut à droite, vous obtenez le classement de la personne que vous recherchez. Si vous déplacez votre curseur sur un classement (ou sur votre téléphone portable en appuyant longuement), vous verrez la position du joueur dans son propre classement, ainsi que sa position dans le ranking belge total.",
+      "title": "Aperçu par joueur"
+    },
+    "points": {
+      "table": {
+        "level": "Classement",
+        "points-needed-down": "Palier de descente",
+        "points-needed-up": "Palier de montée",
+        "points-won": "Points en cas de victoire contre ce classement"
+      },
+      "title": "Tableau des points"
+    },
+    "ranking": {
+      "description": "Lorsque vous cliquez sur la catégorie de ranking en haut à gauche, vous verrez le ranking dans votre classement ainsi que votre classement par discipline et par genre, ainsi que le classement du joueur.",
+      "title": "Ranking"
+    },
+    "title": "Comment fonctionne le site internet",
+    "updates": {
+      "description": "Voir les changelogs",
+      "title": "Mise à jour"
+    }
+  },
+  "game": {
+    "bye": "",
+    "order": {
+      "double": "D",
+      "female": "D",
+      "male": "H",
+      "mix": "MX",
+      "mixed": "GD",
+      "single": "E"
+    },
+    "title": "",
+    "types": {
+      "female": "",
+      "male": "",
+      "mix": "",
+      "single": "",
+      "double": "",
+      "mixed": "",
+      "long": {
+        "F": "",
+        "M": "",
+        "MX": "",
+        "S": "",
+        "D": ""
+      },
+      "short": {
+        "female": "",
+        "male": "",
+        "double": "",
+        "mix": "",
+        "single": ""
+      },
+      "title": ""
+    },
+    "unkown": ""
+  },
+  "gender": {
+    "female": "",
+    "females": "",
+    "male": "",
+    "males": "",
+    "mix": "",
+    "national": "",
+    "select": "Sélectionner",
+    "short": {
+      "female": "D",
+      "male": "H",
+      "mix": "G"
+    },
+    "long": {
+      "F": "",
+      "M": "",
+      "MX": ""
+    },
+    "title": ""
+  },
+  "input": {
+    "abbreviation": "",
+    "city": "",
+    "competitionplayer": "",
+    "courts": "",
+    "date": "",
+    "date-range": "",
+    "day": "",
+    "email": "",
+    "fax": "",
+    "firstname": "",
+    "fullName": "Full nom",
+    "gender": "",
+    "lastname": "",
+    "memberId": "",
+    "name": "Nom",
+    "phone": "",
+    "postalcode": "",
+    "required": "",
+    "select": "Sélectionner",
+    "shuttle": "Shuttle",
+    "state": "",
+    "street": "",
+    "streetnumber": "",
+    "sub": "",
+    "this-required": "",
+    "type": "",
+    "year": ""
+  },
+  "landing": {
+    "description": ""
+  },
+  "lists": {
+    "name": "Nom"
+  },
+  "loading": "",
+  "locations": {
+    "title": ""
+  },
+  "management": {
+    "calculate": "calculer",
+    "cleanup": "Nettoyer",
+    "download": "Télécharger",
+    "end": "Fin",
+    "force": "Force",
+    "games-to-use": "Utilisation du match",
+    "import": "Importer",
+    "new-system": "Nouveau système",
+    "number-short": "Non.",
+    "procent-losing-short": "% Perte",
+    "procent-winning-short": "% Gagner",
+    "ranking": "Classement",
+    "reset": "Réinitialiser",
+    "select": "Sélectionner",
+    "start": "Commencer",
+    "sync": "Sync"
+  },
+  "months": {
+    "april": "",
+    "august": "",
+    "december": "",
+    "february": "",
+    "january": "",
+    "june": "",
+    "march": "",
+    "may": "",
+    "november": "",
+    "october": "",
+    "september": ""
+  },
+  "notifications": {
+    "noNotifications": "",
+    "types": {
+      "encounterNotAcceptedNotification": "",
+      "encounterNotEnteredNotification": ""
+    }
+  },
+  "permission": {
+    "no-perm": ""
+  },
+  "pickers": {
+    "end-time": "End time",
+    "select-club": "",
+    "select-encounter": "",
+    "select-end-time": "",
+    "select-start-time": "",
+    "select-team": "",
+    "select-team-groups": {
+      "F": "",
+      "M": "",
+      "MX": "",
+      "NATIONAL": ""
+    },
+    "select-year": "",
+    "start-time": "Start time"
+  },
+  "players": {
+    "no-memberid": "",
+    "search": {
+      "create": "",
+      "label": "",
+      "not-found": ""
+    },
+    "title": ""
+  },
+  "points": {
+    "title": ""
+  },
+  "ranking": {
+    "add-ranking": "Voeg ranking toe",
+    "all-ranking": "Alle updates",
+    "double": "Double",
+    "double-points": "Double points",
+    "double-rank": "Ranking classement",
+    "inactive": {
+      "double": "",
+      "mix": "",
+      "single": ""
+    },
+    "last-ranking": "Dernier classement",
+    "last-update": "Dernière mise à jour",
+    "list": "Ranking joueurs",
+    "may-ranking": "Mei ranking",
+    "mix": "Mixte",
+    "mix-points": "Mixte points",
+    "mix-rank": "Ranking classement",
+    "next-ranking": "Volgende ranking",
+    "single": "Simple",
+    "single-points": "Simple points",
+    "single-rank": "Ranking classement",
+    "trending_down": "",
+    "trending_up": "",
+    "update-happend": "Update plaatsgevonden",
+    "updates": "Updates",
+    "upload": {
+      "comp-status": "Définissez tous les joueurs de la \"Ligue\" selon le document actuel",
+      "description": "<p>Chargez le <strong>exportMembersRoleGroup</strong> du fichier Excel <strong>BBF+Rating</strong>  <br /><small>Remarque : cela peut prendre du temps<small></p>",
+      "hint": "Faites glisser votre fichier ici",
+      "preview": "Exemples de dates",
+      "ranking-date": "Mise à jour du classement",
+      "remove-current-ranking": "Supprimer tous les classements actuels à partir de la date de classement",
+      "title": "Téléchargement de fichiers",
+      "update-ranking": "Mettre à jour les classements"
+    }
+  },
+  "search": {
+    "placeholder": "",
+    "type": {
+      "club": "",
+      "eventcompetition": "",
+      "eventtournament": "",
+      "player": ""
+    }
+  },
+  "settings": {
+    "general": {
+      "title": "General"
+    },
+    "languages": {
+      "en": "English",
+      "fr_BE": "Français",
+      "nl_BE": "Nederlands",
+      "title": "Language"
+    },
+    "notifications": {
+      "disclaimer": "Notificaties is alleen beschikbaar voor een test groep",
+      "encounter": {
+        "notAcceptedNotification": "Ontmoeting is nog niet geaccepteerd",
+        "notEnteredNotification": "Ontmoeting is nog niet ingevuld",
+        "title": "Invullen ontmoetingen"
+      },
+      "encounterChange": {
+        "conformationNotification": "Bevestiging aanvraag",
+        "finishedNotification": "Verplaatsing afgewerkt",
+        "newNotification": "Nieuwe aanvraag",
+        "title": "Verplaatsings aanvragen"
+      },
+      "title": "Notificaties",
+      "types": {
+        "email": "Email",
+        "none": "Geen",
+        "push": "Push",
+        "sms": "SMS"
+      }
+    },
+    "title": "Paramètres"
+  },
+  "shell": {
+    "sidebar": {
+      "competition": {
+        "assembly": "S'aligner",
+        "overview": "Vue d'ensemble",
+        "title": "Compétitions",
+        "enrollment": "Inscription"
+      },
+      "general": {
+        "changelog": "Journal des modifications",
+        "faq": "FAQ",
+        "title": "Général"
+      },
+      "persnal": {
+        "club": "Mon club",
+        "games": "Mon profil"
+      },
+      "ranking": {
+        "title": "Classement"
+      },
+      "tournament": {
+        "title": "Tournois"
+      }
+    }
+  },
+  "team": {
+    "edit": "",
+    "change-number": {
+      "title": "",
+      "description": "",
+      "number": "",
+      "tooltip": ""
+    },
+    "check-players": "",
+    "location": "",
+    "no-perm": {
+      "email-phone": ""
+    },
+    "title": {
+      "base-fields": "",
+      "captain": "",
+      "players": "",
+      "prefferd-encounter": ""
+    },
+    "usedForTeam": {
+      "description": "Les noms d'équipe sont générés automatiquement, sélectionnez le préfixe que vous souhaitez utiliser",
+      "example": "",
+      "select": "",
+      "title": ""
+    },
+    "types": {
+      "female": "",
+      "male": "",
+      "mix": "",
+      "national": "",
+      "long": {
+        "F": "",
+        "M": "",
+        "MX": ""
+      },
+      "short": {
+        "female": "",
+        "male": "",
+        "mix": ""
+      }
+    }
+  },
+  "themes": {
+    "dark": "",
+    "light": ""
+  },
+  "tournament": {
+    "draw": {
+      "games": "",
+      "title": ""
+    },
+    "last-updated": "",
+    "title": "",
+    "home": "",
+    "liga": "",
+    "load-more": "Charger plus",
+    "note": "",
+    "prov": "",
+    "subevent": {
+      "max": "",
+      "max-base": "",
+      "min-base": ""
+    },
+    "type": "",
+    "vs": "",
+    "vs-short": "vs",
+    "enrollment": {
+      "open": "",
+      "closed": "",
+      "close": "",
+      "title": ""
+    }
+  }
+}

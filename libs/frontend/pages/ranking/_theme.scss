@@ -1,0 +1,20 @@
+@use './src/pages/detail/detail.page.theme.scss' as detail;
+@use './src/dialogs/dialogs.theme.scss' as dialogs;
+
+@mixin theme($theme) {
+  @include detail.theme($theme);
+  @include dialogs.theme($theme);
+}
+
+
+@mixin typography($theme) {
+  @include detail.typography($theme);
+  @include dialogs.typography($theme);
+}
+
+
+@mixin colors($theme) {
+  @include detail.color($theme);
+  @include dialogs.colors($theme);
+}
+

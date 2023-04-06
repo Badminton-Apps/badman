@@ -1,0 +1,43 @@
+include ./row.pug
+
+mixin players(singles, doubles)
+  .grid.text-xs(
+    class='grid-cols-[45px_30px_5fr_1.2fr_2fr_2fr_2fr_2fr_2fr] grid-rows-[1fr_repeat(12,26px)]'
+  )
+    .col-span-2.border.p-1.border-black
+    .border-y.p-1.border-r.border-black Naam
+    .border-y.p-1.border-r.border-black Klas.
+      br/
+      .text-gray-500.italic(class='text-[0.8em]')
+        | (huidig)
+    .border-y.p-1.border-r.border-black Lidnr.
+    .border-y.p-1.border-r.border-black
+      | Som index
+      br/
+      .text-gray-500.italic(class='text-[0.8em]')
+        | (mei vorig seizoen)
+    .border-y.p-1.border-r.border-black
+      | Hoogste klas.
+      br/
+      .text-gray-500.italic(class='text-[0.8em]')
+        | (mei vorig seizoen)
+    .border-y.p-1.border-r.border-black
+      | Titularis
+      br/
+      .text-gray-500.italic(class='text-[0.8em]')
+        | (titularis telt mee)
+    .border-y.p-1.border-r.border-black
+      | Basisspeler
+      br/
+      .text-gray-500.italic(class='text-[0.8em]')
+        | (mei vorig seizoen)
+
+    .col-start-2.row-start-2.border-solid.border-black.border.border-t-0.flex(
+      class='row-end-[14]'
+    )
+      .text-center.leading-6.m-auto(class='max-w-[1em] text-[2em]') T I T U L A R I S S E N
+
+    each double, index in doubles
+      +doublePlayer(double, 'double', index +1).p-1.border.border-solid.border-l-0.border-t-0.border-black.flex.h-full.items-center
+    each player, index in singles
+      +singlePlayer(player, 'single', index + 1).p-1.border.border-solid.border-l-0.border-black.flex.h-full.items-center

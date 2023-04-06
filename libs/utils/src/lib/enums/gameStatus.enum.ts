@@ -1,0 +1,8 @@
+export enum GameStatus {
+  NORMAL = 'NORMAL',
+  WALKOVER = 'WALKOVER',
+  RETIREMENT = 'RETIREMENT',
+  DISQUALIFIED = 'DISQUALIFIED',
+  NO_MATCH = 'NO_MATCH',
+}
+

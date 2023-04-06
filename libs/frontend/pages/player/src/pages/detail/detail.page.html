@@ -1,0 +1,83 @@
+<badman-page-header>
+  <div avatar>{{ this.initials }}</div>
+  <div title>{{player.fullName}}</div>
+  <div subTitle>
+    <div class="memberId">{{player.memberId}}</div>
+    <ng-container *ngIf="this.rankingPlaces$ | async as ranking">
+      <mat-chip-listbox>
+        <mat-chip
+          matTooltipClass="ranking-tooltip"
+          [routerLink]="['ranking', 'single']"
+          [matTooltip]="ranking.singlePoints ? 'Singles \n\r' + ranking.singlePoints: 'Singles'"
+          class="single"
+          >{{ranking.single}}</mat-chip
+        >
+        <mat-chip
+          matTooltipClass="ranking-tooltip"
+          [routerLink]="['ranking', 'double']"
+          [matTooltip]="ranking.doublePoints ? 'Double \n\r' + ranking.doublePoints: 'Double'"
+          class="double"
+          >{{ranking.double}}</mat-chip
+        >
+        <mat-chip
+          matTooltipClass="ranking-tooltip"
+          [routerLink]="['ranking', 'mix']"
+          [matTooltip]="ranking.mixPoints ? 'Mix \n\r' + ranking.mixPoints: 'Mix'"
+          class="mix"
+          >{{ranking.mix}}</mat-chip
+        >
+      </mat-chip-listbox></ng-container
+    >
+  </div>
+
+  <div actions>
+    <button mat-icon-button class="favorite" title="favorite">
+      <mat-icon>star_outline</mat-icon>
+    </button>
+
+    <badman-has-claim
+      [any]="['edit-any:player', this.player.id + '_edit:player']"
+    >
+      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <badman-has-claim
+          [any]="['edit-any:player', this.player.id + '_edit:player']"
+        >
+          <button mat-menu-item [routerLink]="'edit'">
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+        </badman-has-claim>
+        <badman-has-claim [any]="['edit-any:player']">
+          <button mat-menu-item>
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+        </badman-has-claim>
+      </mat-menu>
+    </badman-has-claim>
+  </div>
+</badman-page-header>
+
+<section class="games">
+  <section class="recent-games">
+    <h3>Recent games</h3>
+
+    <badman-recent-games [playerId]="this.player.id"></badman-recent-games>
+  </section>
+
+  <section class="upcomming-games">
+    <h3>upcoming games</h3>
+
+    <ng-container *ngIf="(teams$ | async) ?? [] as teams">
+      <badman-upcoming-games
+        *ngIf="teams.length>0"
+        [clubid]="this.player.clubs?.[0]?.id"
+        [teams]="teams"
+      ></badman-upcoming-games>
+    </ng-container>
+  </section>
+</section>

@@ -1,0 +1,27 @@
+<!-- notification list -->
+
+<mat-list>
+  <ng-container
+    *ngIf="notifications$ | async as notifications; else noNotifications"
+  >
+    <ng-container *ngFor="let notification of notifications; let last = last">
+      <div mat-list-item>
+        <span
+          matLine
+          [innerHTML]="'all.notifications.types.' + notification.type | translate: getParams(notification)"
+        ></span>
+        <button mat-icon-button (click)="readNotification(notification)">
+          <mat-icon>archive</mat-icon>
+        </button>
+      </div>
+      <mat-divider *ngIf="!last"></mat-divider>
+    </ng-container>
+  </ng-container>
+</mat-list>
+
+<ng-template #noNotifications>
+  <div mat-list-item>
+    <mat-icon>notifications_off</mat-icon>
+    <span matLine>{{ 'all.notifications.noNotifications' | translate }}</span>
+  </div>
+</ng-template>

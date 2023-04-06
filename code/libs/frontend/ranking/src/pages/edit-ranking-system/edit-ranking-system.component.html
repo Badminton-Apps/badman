@@ -1,8 +1,0 @@
-<badman-ranking-system-fields
-  *ngIf="this.system$ | async as system"
-  [system]="system"
-  [groups]="this.rankingGroups$ | async"
-  (whenUpdated)="this.save($event)"
-  (whenGroupAdded)="this.addGroup($event)"
-  (whenGroupRemoved)="this.removeGroup($event)"
-></badman-ranking-system-fields>

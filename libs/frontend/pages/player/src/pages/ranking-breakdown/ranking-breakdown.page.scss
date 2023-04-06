@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  padding: 1rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+
+.next-to-select {
+  padding-bottom: 20px;
+}
+
+.disclaimer {
+  font-size: 12px;
+  color: red;
+  margin: 0 0 16px 0;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media screen and (min-width: 600px) {
+    flex-direction: row;
+    gap: 2rem;
+  }
+}

@@ -1,0 +1,72 @@
+<form *ngIf="teamForm" [formGroup]="teamForm">
+  <h2>
+    <div>{{ 'all.team.title.base-fields' | translate }}</div>
+  </h2>
+
+  <div class="basic">
+    <mat-form-field *ngIf="!this.team.id">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option value="M">{{ 'all.gender.male' | translate }}</mat-option>
+        <mat-option value="F">{{ 'all.gender.female' | translate }}</mat-option>
+        <mat-option value="MX">{{ 'all.gender.mix' | translate }}</mat-option>
+        <mat-option value="NATIONAL">{{
+          'gender.national' | translate
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div *ngIf="(this.teamNumbers ?? []).length > 0">
+      <mat-form-field>
+        <mat-label>Number</mat-label>
+        <mat-select formControlName="teamNumber">
+          <mat-option *ngFor="let tn of this.teamNumbers" [value]="tn">{{
+            tn
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <ng-container *ngIf="this.team.id">
+    <h2>{{ 'all.team.title.captain' | translate }}</h2>
+    <badman-player-search
+      [player]="this.team.captain?.id"
+      [includePersonal]="true"
+      [allowCreation]="true"
+      [club]="this.team.clubId"
+      [clearOnSelection]="false"
+      (whenSelectPlayer)="this.onCaptainSelect($event)"
+    ></badman-player-search>
+
+    <badman-has-claim
+      [any]="['details-any:team', this.team.clubId + '_details:team']"
+    >
+      <div class="captain-info">
+        <mat-form-field class="email">
+          <mat-label>{{ 'all.input.email' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            alt="email"
+            autocomplete="email"
+          />
+        </mat-form-field>
+
+        <mat-form-field class="phone">
+          <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="phone"
+            alt="phone"
+            autocomplete="phone"
+          />
+        </mat-form-field>
+      </div>
+
+      <div noPerm>
+        {{ 'all.team.no-perm.email-phone' | translate }}
+      </div>
+    </badman-has-claim>
+  </ng-container>
+</form>

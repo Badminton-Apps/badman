@@ -1,0 +1,169 @@
+<form [formGroup]="this.settingsForm" *ngIf="this.settingsForm">
+  <div class="settings-title">
+    {{ 'all.settings.general.title' | translate }}
+  </div>
+  <div class="row">
+    <mat-form-field>
+      <mat-label>{{ 'all.settings.languages.title' | translate }}</mat-label>
+      <mat-select formControlName="language" alt="language">
+        <mat-option
+          *ngFor="let type of this.languageTypes"
+          [value]="type.value"
+        >
+          {{ type.viewValue | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="settings-title">
+    {{ 'all.settings.notifications.encounterChange.title' | translate }}
+  </div>
+  <div class="row">
+    <mat-form-field>
+      <mat-label>{{
+        'all.settings.notifications.encounterChange.conformationNotification'
+          | translate
+      }}</mat-label>
+      <mat-select
+        formControlName="encounterChangeConformationNotification"
+        alt="encounterChangeConformationNotification"
+        multiple
+      >
+        <mat-option
+          *ngFor="let type of this.notificationType"
+          [value]="type.value"
+        >
+          {{ type.viewValue | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{
+        'all.settings.notifications.encounterChange.finishedNotification'
+          | translate
+      }}</mat-label>
+      <mat-select
+        formControlName="encounterChangeFinishedNotification"
+        alt="encounterChangeFinishedNotification"
+        multiple
+      >
+        <mat-option
+          *ngFor="let type of this.notificationType"
+          [value]="type.value"
+        >
+          {{ type.viewValue | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{
+        'all.settings.notifications.encounterChange.newNotification' | translate
+      }}</mat-label>
+      <mat-select
+        formControlName="encounterChangeNewNotification"
+        alt="encounterChangeNewNotification"
+        multiple
+      >
+        <mat-option
+          *ngFor="let type of this.notificationType"
+          [value]="type.value"
+        >
+          {{ type.viewValue | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="settings-title">
+    {{ 'all.settings.notifications.encounter.title' | translate }}
+  </div>
+  <div class="row">
+    <mat-form-field>
+      <mat-label>{{
+        'all.settings.notifications.encounter.notAcceptedNotification'
+          | translate
+      }}</mat-label>
+      <mat-select
+        formControlName="encounterNotAcceptedNotification"
+        alt="encounterNotAcceptedNotification"
+        multiple
+      >
+        <mat-option
+          *ngFor="let type of this.notificationType"
+          [value]="type.value"
+        >
+          {{ type.viewValue | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{
+        'all.settings.notifications.encounter.notEnteredNotification'
+          | translate
+      }}</mat-label>
+      <mat-select
+        formControlName="encounterNotEnteredNotification"
+        alt="encounterNotEnteredNotification"
+        multiple
+      >
+        <mat-option
+          *ngFor="let type of this.notificationType"
+          [value]="type.value"
+        >
+          {{ type.viewValue | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="settings-title">
+    {{ 'all.settings.notifications.sync.title' | translate }}
+  </div>
+  <div class="row">
+    <mat-form-field>
+      <mat-label>{{
+        'all.settings.notifications.sync.succes' | translate
+      }}</mat-label>
+      <mat-select
+        formControlName="syncSuccessNotification"
+        alt="syncSuccessNotification"
+        multiple
+      >
+        <mat-option
+          *ngFor="let type of this.notificationType"
+          [value]="type.value"
+        >
+          {{ type.viewValue | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{
+        'all.settings.notifications.sync.failed' | translate
+      }}</mat-label>
+      <mat-select
+        formControlName="syncFailedNotification"
+        alt="syncFailedNotification"
+        multiple
+      >
+        <mat-option
+          *ngFor="let type of this.notificationType"
+          [value]="type.value"
+        >
+          {{ type.viewValue | translate }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</form>
+
+<button
+  mat-raised-button
+  color="primary"
+  (click)="save()"
+  [class.spinner]="this.saving"
+  [disabled]="this.saving"
+>
+  save
+</button>

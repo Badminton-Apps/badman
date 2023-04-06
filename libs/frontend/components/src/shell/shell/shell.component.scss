@@ -1,0 +1,74 @@
+.sidenav-container {
+  height: 100%;
+
+  // Sidenav
+  .sidenav {
+    width: 280px;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+
+    .version {
+      padding: 5px 0 0 5px;
+    }
+  }
+
+  // Sidenav Items
+  .sidebar-items {
+    display: flex;
+    flex-flow: column;
+    height: calc(100% - 64px);
+    justify-content: space-between;
+
+    .expandable-item {
+      display: flex;
+      flex-flow: row;
+      justify-items: center;
+      justify-content: space-between;
+    }
+
+    // If a parent has a mat-nav-list, then the children should be indented
+    mat-nav-list {
+      mat-nav-list {
+        margin-left: 30px;
+      }
+    }
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+  
+
+      span {
+        padding-top: 5px;
+      }
+    }
+  }
+
+  // Header
+  .center {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+
+    badman-search-box {
+      flex: 1;
+      max-width: 500px;
+    }
+  }
+
+  .content {
+    height: calc(100% - 37px);
+    overflow: scroll;
+  }
+}

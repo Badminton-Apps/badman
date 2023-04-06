@@ -1,0 +1,109 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  badman-quill {
+    $color-config: mat.get-color-config($theme);
+    $primary: map.get($color-config, 'primary');
+
+    $danger-palette: map.get($theme, danger);
+    $success-palette: map.get($theme, success);
+  }
+}
+
+@mixin typography($theme) {
+  badman-quill {
+    $typography-config: mat.get-typography-config($theme);
+  }
+}
+
+$otherIncluded: false;
+
+@mixin other($theme) {
+  @if $otherIncluded == false {
+    $color-config: mat.get-color-config($theme);
+    $foreground: map.get($color-config, 'foreground');
+    $background: map.get($color-config, 'background');
+    $primary-palette: map.get($color-config, 'primary');
+
+    badman-quill {
+      .ql-toolbar.ql-snow,
+      .ql-container.ql-snow {
+        border-width: 0;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .ql-editor{
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .ql-toolbar.ql-snow {
+        & .ql-stroke {
+          stroke: mat.get-color-from-palette($foreground, 'base');
+        }
+
+        & .ql-fill {
+          fill: mat.get-color-from-palette($foreground, 'base');
+        }
+
+        & .ql-picker-label {
+          color: mat.get-color-from-palette($foreground, 'base');
+        }
+
+        & .ql-picker-item:hover,
+        & .ql-picker-item.ql-selected {
+          color: mat.get-color-from-palette($foreground, 'base');
+        }
+
+        & .ql-picker-item.ql-selected svg {
+          fill: mat.get-color-from-palette($foreground, 'base');
+        }
+
+        & .ql-picker-item:hover svg {
+          fill: mat.get-color-from-palette($foreground, 'base');
+        }
+
+        & .ql-picker-options {
+          background-color: mat.get-color-from-palette(
+            $background,
+            'background'
+          );
+        }
+
+        & .ql-picker-options .ql-picker-item:hover,
+        & .ql-picker-options .ql-picker-item.ql-selected {
+          color: mat.get-color-from-palette($foreground, 'base');
+        }
+
+        & .ql-picker-options .ql-picker-item.ql-selected svg {
+          fill: mat.get-color-from-palette($foreground, 'base');
+        }
+
+        & .ql-picker-options .ql-picker-item:hover svg {
+          fill: mat.get-color-from-palette($foreground, 'base');
+        }
+      }
+    }
+
+    $otherIncluded: true;
+  }
+}
+
+@mixin theme($theme) {
+  // Only apply theme on the correct element
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+
+  $typography-config: mat.get-typography-config($theme);
+  @if $typography-config != null {
+    @include typography($theme);
+  }
+
+  @include other($theme);
+}
