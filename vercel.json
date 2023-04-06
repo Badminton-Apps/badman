@@ -4,5 +4,35 @@
         "deploymentEnabled": {
             "develop": false
         }
-    }
+    },
+      "rewrites": [
+        {
+          "source": "/api/:path*",
+          "destination": "https://api-8azq.onrender.com/:path*",
+          "has": [
+            {
+              "type": "host",
+              "value": "(dev|beta)"
+            }
+          ]
+        },
+        {
+          "source": "/graphql",
+          "destination": "https://api-8azq.onrender.com/graphql",
+          "has": [
+            {
+              "type": "host",
+              "value": "(dev|beta)"
+            }
+          ]
+        },
+        {
+          "source": "/api/:path*",
+          "destination": "https://server-2msl.onrender.com/:path*"
+        },
+        {
+          "source": "/graphql",
+          "destination": "https://server-2msl.onrender.com/graphql"
+        }
+      ]
 }
