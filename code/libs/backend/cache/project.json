@@ -1,0 +1,34 @@
+{
+  "name": "backend-cache",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/cache/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/cache",
+        "tsConfig": "libs/backend/cache/tsconfig.lib.json",
+        "packageJson": "libs/backend/cache/package.json",
+        "main": "libs/backend/cache/src/index.ts",
+        "assets": ["libs/backend/cache/*.md"]
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs backend-cache {args.ver} {args.tag}"
+      },
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/backend/cache/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}

@@ -23,6 +23,7 @@
       "@badman/backend-authorization": [
         "libs/backend/authorization/src/index.ts"
       ],
+      "@badman/backend-cache": ["libs/backend/cache/src/index.ts"],
       "@badman/backend-database": ["libs/backend/database/src/index.ts"],
       "@badman/backend-generator": ["libs/backend/generator/src/index.ts"],
       "@badman/backend-graphql": ["libs/backend/graphql/src/index.ts"],
