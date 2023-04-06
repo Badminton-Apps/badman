@@ -1,33 +1,39 @@
+import { CacheStore, Module, CacheModule as nestCache } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { VisualService } from './services';
-import { Module, CacheModule } from '@nestjs/common';
-import { CacheStore } from '@nestjs/common/cache/interfaces/cache-manager.interface';
 
 import { redisStore } from 'cache-manager-redis-store';
 
 @Module({
   imports: [
-    CacheModule.registerAsync({
+    nestCache.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const store = await redisStore({
-          socket: {
-            host: configService.get('REDIS_HOST'),
-            port: +configService.get('REDIS_PORT'),
-          },
-          password: configService.get('REDIS_PASSWORD'),
-        });
+        if (configService.get('DB_CACHE') === 'true') {
+          const redis = await redisStore({
+            socket: {
+              host: configService.get('REDIS_HOST'),
+              port: configService.get<number>('REDIS_PORT'),
+            },
+            password: configService.get('REDIS_PASSWORD'),
+            database: configService.get<number>('CACHE_DB') ?? 0,
+          }) as unknown as CacheStore;
 
-        return {
-          store: store as unknown as CacheStore,
-          ttl: 60 * 60 * 24 * 7,
-        };
+          return {
+            store: redis,
+            ttl: 60 * 60 * 24 * 7,
+          };
+        } else {
+          return {
+            ttl: 0,
+            store: 'memory',
+          };
+        }
       },
       inject: [ConfigService],
     }),
-    ConfigModule,
   ],
-  providers: [VisualService],
-  exports: [VisualService],
+  controllers: [],
+  providers: [],
+  exports: [nestCache],
 })
-export class VisualModule {}
+export class CacheModule {}
