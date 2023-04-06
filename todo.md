@@ -5,13 +5,13 @@ Here are some genreal TODO's that can be done in the project.
 - [ ] Show changelog
 
 ## Dashboard
-- [ ] Should show your latest games
-- [ ] Should show your future games
+- [x] Should show your latest games
+- [x] Should show your future games
 - [ ] Should show overview of your team
 
 ## Assembly
 - [x] Include newest version of assembly
-- [ ] Saving of assembly
+- [x] Saving of assembly
 
 ## Ranking
 - [ ] Manual upload of ranking
