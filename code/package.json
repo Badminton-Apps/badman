@@ -34,8 +34,7 @@
     "update": "nx migrate latest",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
-    "create-release": "node ./scripts/standard-version.js",
-    "prepare": "cd .. && husky install"
+    "create-release": "node ./scripts/standard-version.js"
   },
   "private": true,
   "dependencies": {
@@ -206,7 +205,6 @@
     "eslint-plugin-jsdoc": "^39.0.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.30.0",
-    "husky": "^8.0.0",
     "jasmine-core": "^4.0.0",
     "jasmine-spec-reporter": "^7.0.0",
     "jest": "28.1.3",
