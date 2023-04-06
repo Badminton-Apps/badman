@@ -29,9 +29,9 @@ export class AppComponent implements OnInit, OnDestroy {
     private cookieService: CookieService,
     public authGuard: AuthGuard
   ) {
+    console.log('environment', environment);
     inject({
       mode: environment.production ?  "production": "development",
-      
     })
 
     updates.versionUpdates
