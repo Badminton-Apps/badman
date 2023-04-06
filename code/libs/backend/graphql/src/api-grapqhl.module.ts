@@ -29,36 +29,12 @@ import {
       playground: false,
       autoSchemaFile: join('schema/schema.gql'),
       csrfPrevention: true,
-      // cache: GRAPHQL_CACHE,
       cache: 'bounded',
       context: ({ request }) => {
         return { req: request };
       },
       plugins: [
-        // responseCachePlugin({
-        //   cache: GRAPHQL_CACHE,
-        // }),
-        // ApolloServerPluginCacheControl({
-        //   defaultMaxAge: 600,
-        //   calculateHttpHeaders: true,
-        // }),
         ApolloServerPluginLandingPageLocalDefault({ embed: true }),
-        // Add the operation name to transaction
-        // (): ApolloServerPlugin => ({
-        //   async requestDidStart() {
-        //     return {
-        //       async didResolveOperation(
-        //         context: GraphQLRequestContextDidResolveOperation<BaseContext>
-        //       ) {
-        //         apm.setTransactionName(
-        //           `${context?.operation?.operation?.toUpperCase()} ${
-        //             context.operation.name?.value ?? 'UNKOWN'
-        //           }`
-        //         );
-        //       },
-        //     };
-        //   },
-        // }),
       ],
     }),
     ApiAuthorizationModule,
