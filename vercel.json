@@ -7,7 +7,7 @@
       "destination": "https://api-8azq.onrender.com/:path*",
       "has": {
         "type": "host",
-        "value": ".*\\.(dev|beta)\\..*"
+        "value": "(.*\\.(dev|beta)\\..*)"
       }
     },
     {
@@ -15,7 +15,7 @@
       "destination": "https://api-8azq.onrender.com/graphql",
       "has": {
         "type": "host",
-        "value": ".*\\.(dev|beta)\\..*"
+        "value": "(.*\\.(dev|beta)\\..*)"
       }
     },
     {
@@ -23,7 +23,7 @@
       "destination": "https://server-2msl.onrender.com/:path*",
       "has": {
         "type": "host",
-        "value": ".*\\.(dev|beta)\\..*"
+        "value": "(.*\\.(dev|beta)\\..*)"
       }
     },
     {
@@ -31,7 +31,7 @@
       "destination": "https://server-2msl.onrender.com/graphql",
       "has": {
         "type": "host",
-        "value": ".*\\.(dev|beta)\\..*"
+        "value": "(.*\\.(dev|beta)\\..*)"
       }
     }
   ]
