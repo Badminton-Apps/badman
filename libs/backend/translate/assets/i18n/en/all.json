@@ -519,6 +519,10 @@
     },
     "notifications": {
       "disclaimer": "Notifications are currently not available for all users.",
+      "messages": {
+        "syncSuccessNotification": "Sync success",
+        "syncFailedNotification": "Sync failed"
+      },
       "encounter": {
         "notAcceptedNotification": "Results not accepted",
         "notEnteredNotification": "Results not entered",
@@ -529,6 +533,11 @@
         "finishedNotification": "Encounter changed",
         "newNotification": "New request",
         "title": "Encounter change requests"
+      },
+      "sync": {
+        "title": "Sync",
+        "success": "Sync success",
+        "failed": "Sync failed"
       },
       "title": "Notifications",
       "types": {
