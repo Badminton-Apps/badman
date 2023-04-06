@@ -9,7 +9,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(dev|beta|next)"
+          "value": "(dev|beta|next)*"
         }
       ]
     },
@@ -19,7 +19,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(dev|beta|next)"
+          "value": "(dev|beta|next)*"
         }
       ]
     },
