@@ -9,7 +9,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(.*\\.(dev|beta)\\..*)"
+          "value": "(dev|beta)"
         }
       ]
     },
@@ -19,7 +19,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(.*\\.(dev|beta)\\..*)"
+          "value": "(dev|beta)"
         }
       ]
     },
