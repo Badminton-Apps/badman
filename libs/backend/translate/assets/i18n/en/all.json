@@ -1,0 +1,642 @@
+{
+  "breakdown": {
+    "add-game": {
+      "p1t1": "Player 1 - Team 1",
+      "p1t2": "Player 1 - Team 2",
+      "p2t1": "Player 2 - Team 1",
+      "p2t2": "Player 2 - Team 2",
+      "title": "Add (fictive) game",
+      "won": "Team 1 won?"
+    },
+    "corrected": "Originally {original} games, average is being calculated with minimum {corrected} games.",
+    "date": "Date",
+    "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",
+    "downgrade": "Downgrade",
+    "evolution": "Evolution",
+    "ignored": "Doesn't count",
+    "includeOutOfScope": "Out of scope",
+    "lostGames": {
+      "none": "No lost games",
+      "one": "1 lost game",
+      "other": "{count} lost games."
+    },
+    "nextPeriod": "Next period",
+    "no-tean": "No team",
+    "noGames": "No Games",
+    "notUsed": "Not used",
+    "opponent": "Opponent",
+    "outOfScope": {
+      "none": "No games",
+      "one": "One game",
+      "other": "{count} games"
+    },
+    "period": "Period",
+    "points": "Points",
+    "pointsPerGame": "Points per game",
+    "prevPeriod": "Previous period",
+    "removed-games": "Games of previous period that are removed",
+    "team": "Team",
+    "title": "Level breakdown",
+    "untill": "Until",
+    "upgrade": "Upgrade",
+    "usedForDowngrade": "Used for up- and downgrade",
+    "usedForUpgrade": "Used for upgrade"
+  },
+  "button": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "create": "Create",
+    "delete": "Delete",
+    "detail": "Details",
+    "done": "Done",
+    "edit": "Edit",
+    "all": "All",
+    "none": "None",
+    "merge-accounts": "Combine accounts",
+    "next": "Next",
+    "no": "No",
+    "prev": "Previous",
+    "save": "Save",
+    "save-and-continue": "Save and continue",
+    "set-primary": "Make primary",
+    "set-ranking-groups": "Set ranking",
+    "submit": "Submit",
+    "sync-ranking": "Sync ranking",
+    "watch-system": "Watch system",
+    "open-in-new-tab": "Open in toernooi.nl",
+    "yes": "Yes"
+  },
+  "club": {
+    "current": "Current club",
+    "end": "End",
+    "number": "club number",
+    "start": "Start date"
+  },
+  "competition": {
+    "away": "Away",
+    "change-encounter": {
+      "add-date": "Add date",
+      "away-comment": "Comments visiting team",
+      "calendar": {
+        "option": "{amount} optional",
+        "other-games": "Other encounters that day",
+        "remaining": "",
+        "removed": "",
+        "requested": ""
+      },
+      "choose-date": "Pick a date",
+      "choose-encounter": "Pick an encounter",
+      "choose-team": "Pick a team",
+      "comments": "Comments",
+      "dates": "Dates",
+      "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",
+      "disclaimer-submit": "Once both teams are available, the selected day can be chosen in the checkbox by then clicking on send",
+      "errors": {
+        "select-one-date": "Please select at least 1 day",
+        "select-one-date-or-comment": "Please comment (at least 15 characters) or choose a date."
+      },
+      "home-comment": "Comments home team",
+      "not-possible": "Not available",
+      "possible": "Available",
+      "requested": "Request submitted",
+      "requested-failed": "Request failed, contact Badminton Vlaanderen if the problem persists",
+      "submit": {
+        "description": "When you click yes, the current day will be replaced by the selected new day, are you sure?",
+        "title": "Send"
+      },
+      "title": "Encounters"
+    },
+    "draw": {
+      "encounters": "Encounters",
+      "title": "Draw"
+    },
+    "enrollment": {
+      "assign-team": "Assign teams",
+      "availability": "Availability",
+      "base": "Limits",
+      "comment-liga": "Comments League competition (for each team)",
+      "comment-nat": "Comments National competition (for each team)",
+      "comment-prov": "Comments Provincial competition (for each team)",
+      "errors": {
+        "base-max": "Team index too high for division",
+        "base-min": "Team index too low for division",
+        "best-max": "The Best 4 players too strong for this division",
+        "best-players": "Strongest 4 players can never play together",
+        "cant-play": "{player.fullName} is not allowed to play ({type}: {level}, max {max})",
+        "no-captain": "Please choose a team captain",
+        "no-day": "Please select an encounter moment",
+        "no-location": "Please choose a location",
+        "no-prefferd": "Please choose a match time",
+        "not-allowed": "{player.fullName} is not allowed in basis ({type}: {level}, max {max})",
+        "not-comp": "{player.fullName} is not registered as CT-player (note: it takes a couple of days before the request for conversion to CT-player is completed)"
+      },
+      "exceptions": "Exceptions",
+      "max": "Max",
+      "new-exception": "New Exception",
+      "new-play-day": "New match time",
+      "play-day": "Match time",
+      "player-base": "Player is already basis player of other team",
+      "players": {
+        "base": "Base player(s)",
+        "regular": "Regular player(s)",
+        "backup": "Backup player(s)"
+      },
+      "select-club": "Select club",
+      "select-teams": "Select teams",
+      "select-teams-description": "Below you customize your teams according to your preferences.\n\nYou can optionally define your regular and backup players for each team. By doing so, you ensure that all players are eligible to play for their respective teams, and the team can function smoothly without any last-minute changes or confusion.",
+      "transfer-teams": "Transfer teams (optional)",
+      "transfer-teams-description": "If you wish to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you will be able to transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nYou can change the teamnumbers in the next step",
+      "select-events": "Select events",
+      "select-location": "Select locations",
+      "assign-teams": "Assign teams",
+      "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your base players",
+      "title": "Team enrollment",
+      "open": "Open",
+      "closed": "Closed",
+      "close": "Close"
+    },
+    "home": "Home",
+    "last-updated": "Changed on",
+    "liga": "League",
+    "load-more": "load more",
+    "national": "National",
+    "no-more-encounters": "No more encounters",
+    "no-more-games": "No more games",
+    "note": "note: Changes are saved directly",
+    "prov": "Provincial",
+    "subevent": {
+      "max": "Max level",
+      "max-base": "Max basis team index",
+      "min-base": "Min basis team index"
+    },
+    "team-assembly": {
+      "captain": "Team captain",
+      "disclaimer": "Disclaimer: This formationtool is currently in beta and can exceptionally contain errors. Always critically check your formation against the C320 rules.",
+      "double1": "Double 1",
+      "double2": "Double 2",
+      "double3": "Double 3",
+      "double4": "Double 4",
+      "download": "Download",
+      "errors": {
+        "already": "Player already present as titular.",
+        "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
+        "comp-status": "<strong>{player.fullName}</strong> is not marked as a competition player",
+        "none": "No errors found",
+        "not-enough-players": "Too few titulars are currently lined up for the meeting.",
+        "player-above-lower": "Player with higher formation index is lined up in front of this player",
+        "player-gender": "<strong>{player.fullName}</strong> is a {player.gender} but epected {gender}",
+        "player-genders": "<strong>{player1.fullName}</strong> ({player1.gender}) and <strong>{player2.fullName}</strong> ({player2.gender}) ar't of the currect gender for <strong>{game}</strong>",
+        "player-max-double-games": "<strong>{player.fullName}</strong> can only play a maximum of {max} doubles",
+        "player-max-mix-games": "<strong>{player.fullName}</strong> may play a maximum of {max} mixed doubles",
+        "player-max-mixed-games": "<strong>{player.fullName}</strong> can only play a maximum of {max} mixed doubles",
+        "player-max-single-games": "<strong>{player.fullName}</strong> can only play a maximum of {max} singles",
+        "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in {rankingType} and may minimally be <strong>{minLevel}</strong>.",
+        "player-order-doubles": "<strong>{team2player1.fullName}</strong> and <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> have a higher combined index than {team1player1.fullName} and {team1player2.fullName} in <strong>{game1}</strong>.",
+        "player-order-highest": "<strong>{team2player1.fullName}</strong> or <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> has a better individual ranking then {team1player1.fullName} or {team1player2.fullName} on <strong>{game1}</strong>",
+        "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> has a higher index than <strong>{player1.fullName}</strong> in <strong>{game1}</strong>.",
+        "players-above-lower": "Pair with higher lineup index is lined up in front of this pair.",
+        "team-index": "Team index titulars equals <strong>{teamIndex}</strong> and is allowed to mimimally be <strong>{baseIndex}</strong>",
+        "team-to-strong": "Team index titulars equals <strong>{teamIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
+        "title": "Errors",
+        "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single."
+      },
+      "info": "Remarks concerning the team assembly",
+      "mix1": "Men doubles",
+      "mix2": "Women doubles",
+      "mix3": "Mixed doubles 1",
+      "mix4": "Mixed doubles 2",
+      "change-team": "By editing the team you can change the default players shown, and who are the backups.",
+      "players": {
+        "base": "Titulars",
+        "backup": "Backup players",
+        "team": "Base players",
+        "title": "Possible titulars"
+      },
+      "single1": "Single 1",
+      "single2": "Single 2",
+      "single3": "Single 3",
+      "single4": "Single 1",
+      "substitude": "Substitutes",
+      "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
+      "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team.",
+      "title": "Team assembly",
+      "warnings": {
+        "subtitute-team-index": "s"
+      }
+    },
+    "title": "Competition",
+    "avg-level": "Average level",
+    "type": "Type",
+    "vs": "against",
+    "vs-short": "vs"
+  },
+  "days": {
+    "friday": "Friday",
+    "monday": "Monday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "thursday": "Thursday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday"
+  },
+  "event": {
+    "last-sync": "Last sync",
+    "standing": {
+      "games": "Games",
+      "lost": "Lost",
+      "name": "name",
+      "played": "Played",
+      "points": "Points",
+      "sets": "Sets",
+      "spoiler": "This is a KO draw. But due to the new design (spoiler alert!), we are holding off on designing this",
+      "tied": "Draw",
+      "title": "Standing",
+      "totalPoints": "Points",
+      "won": "Won"
+    },
+    "type": "Event type",
+    "types": {
+      "competition": "Competition",
+      "tournament": "Tournament"
+    },
+    "usedRankingNote": "Make sure there was an update this month"
+  },
+  "evolution": {
+    "warning": "Player evolution temporary not available"
+  },
+  "faq": {
+    "info": {
+      "description": "Via the following link you can find the info video explaining all the details of the new system:",
+      "title": "Info video"
+    },
+    "legend": "Table of contents",
+    "overview": {
+      "description": "When you search for a player in the search bar, you will be taken to a page where you can see all kinds of information about a player's results and his ranking. All sections of this page are explained below.",
+      "evolution-1": "The evolution graph on the right shows how a player evolves through the simulated years. The period marked with a dotted line is a period where the simulations are still stabilizing, so this period is less accurate.",
+      "evolution-2": "Each ranking evaluation is marked as a dot on the chart. Each dot shows your personal average ascending and descending points.",
+      "game-result": "For a player, all his results are displayed (tournament/competition), when it was played, the game scores, which ranking the players had at the time of the match and who the winner was (indicated in bold).",
+      "levels": "At the top right you will see the rankings of the person you are looking for. If you move your mouse over a ranking (or on your mobile phone when you press and hold) you will see the ranking of the player within his own classification, as well as his position within the national Belgian ranking.",
+      "title": "Overview by player"
+    },
+    "points": {
+      "table": {
+        "level": "Level",
+        "points-needed-down": "Points needed to go down",
+        "points-needed-up": "Points needed to go up",
+        "points-won": "Points won against this level"
+      },
+      "title": "Points table"
+    },
+    "ranking": {
+      "description": "When you click on the ranking category at the top left, you will see your ranking within your classification, as well as your ranking for each discipline and by gender, together with the player's ranking. Sorting by decreasing total ranking within a discipline is done by clicking on this discipline (or on your mobile phone when press and hold.) By default, the top 15 is given, but you can change this at the bottom of the page. You can also click through to the next page with the next players in the ranking. The discipline itself can also be selected at the bottom.",
+      "title": "Ranking"
+    },
+    "title": "FAQ",
+    "updates": {
+      "description": "View changelog",
+      "title": "Updates"
+    }
+  },
+  "game": {
+    "bye": "Bye",
+    "order": {
+      "double": "D",
+      "female": "F",
+      "male": "M",
+      "mix": "MX",
+      "mixed": "GD",
+      "single": "S"
+    },
+    "title": "Games",
+    "types": {
+      "female": "Female",
+      "male": "Male",
+      "mix": "Mixed",
+      "single": "Single",
+      "double": "Double",
+      "mixed": "Mixed",
+      "long": {
+        "F": "Female",
+        "M": "Male",
+        "MX": "Mixed",
+        "S": "Single",
+        "D": "Double"
+      },
+      "short": {
+        "female": "F",
+        "male": "M",
+        "double": "D",
+        "mix": "MX",
+        "single": "S"
+      },
+      "title": "Game type"
+    },
+    "unkown": "Unknown player"
+  },
+  "gender": {
+    "female": "Women",
+    "females": "Female",
+    "male": "Men",
+    "males": "Male",
+    "mix": "Mixed",
+    "select": "Select",
+    "short": {
+      "female": "F",
+      "male": "M"
+    },
+    "long": {
+      "F": "Female",
+      "M": "Male"
+    },
+    "title": "Gender"
+  },
+  "input": {
+    "abbreviation": "Abbreviation",
+    "city": "City",
+    "competitionplayer": "Competition player",
+    "courts": "Courts",
+    "date": "Date",
+    "date-range": "Period",
+    "day": "Match time",
+    "email": "Email",
+    "fax": "Fax",
+    "firstname": "First name",
+    "fullName": "Full name",
+    "gender": "Gender",
+    "lastname": "Last name",
+    "memberId": "Member id",
+    "name": "Name",
+    "phone": "Phone",
+    "postalcode": "Postal code",
+    "required": "Fields with an asterisk (*) are required",
+    "select": "Select",
+    "shuttle": "Shuttle",
+    "state": "Province",
+    "street": "Street",
+    "streetnumber": "House number",
+    "sub": "Subscription",
+    "this-required": "This field is required",
+    "type": "Type",
+    "year": "Year"
+  },
+  "landing": {
+    "description": "We are working on making a central place for all your badminton data."
+  },
+  "lists": {
+    "name": "Name"
+  },
+  "loading": "Loading",
+  "locations": {
+    "title": "Location(s)"
+  },
+  "management": {
+    "calculate": "Calculate",
+    "cleanup": "Cleanup",
+    "download": "Download",
+    "end": "End",
+    "force": "Force",
+    "games-to-use": "Games to use",
+    "import": "Import",
+    "new-system": "New system",
+    "number-short": "No.",
+    "procent-losing-short": "% Loss",
+    "procent-winning-short": "% Win",
+    "ranking": "Ranking",
+    "reset": "Reset",
+    "select": "Select",
+    "start": "Start",
+    "sync": "Sync"
+  },
+  "months": {
+    "april": "April",
+    "august": "August",
+    "december": "December",
+    "february": "February",
+    "january": "January",
+    "june": "June",
+    "march": "March",
+    "may": "May",
+    "november": "November",
+    "october": "October",
+    "september": "September"
+  },
+  "notifications": {
+    "noNotifications": "No notifications",
+    "types": {
+      "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not accepted yet.",
+      "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not entered yet."
+    }
+  },
+  "permission": {
+    "no-perm": "You do not have insufficient rights for this"
+  },
+  "pickers": {
+    "end-time": "End time",
+    "select-club": "Pick a club",
+    "select-encounter": "Pick an encounter",
+    "select-end-time": "",
+    "select-start-time": "",
+    "select-team": "Pick a team",
+    "select-team-groups": {
+      "F": "Women",
+      "M": "Men",
+      "MX": "Mixed",
+      "NATIONAL": "National"
+    },
+    "select-year": "Pick a competition season",
+    "start-time": "Start time"
+  },
+  "players": {
+    "no-memberid": "Unknown member id",
+    "search": {
+      "create": "Add new player",
+      "label": "Search player",
+      "not-found": "Player not found"
+    },
+    "title": "Players",
+    "backup": "Backup player",
+    "regular": "Regular player",
+    "base": "Base player"
+  },
+  "points": {
+    "title": "Points tabel"
+  },
+  "ranking": {
+    "add-ranking": "Add ranking",
+    "all-ranking": "All update",
+    "double": "Double",
+    "double-points": "Ranking points",
+    "double-rank": "Ranking place",
+    "inactive": {
+      "double": "Player inactive in double",
+      "mix": "Player inactive in mix",
+      "single": "Player inactive in single"
+    },
+    "last-ranking": "Last ranking",
+    "last-update": "last update",
+    "list": "Ranking players",
+    "may-ranking": "May ranking",
+    "mix": "Mixed",
+    "mix-points": "Ranking points",
+    "mix-rank": "Ranking place",
+    "next-ranking": "Next ranking",
+    "single": "Single",
+    "single-points": "Ranking points",
+    "single-rank": "Ranking place",
+    "trending_down": "Trending down",
+    "trending_up": "Trending up",
+    "update-happend": "Update happened",
+    "updates": "Updates",
+    "upload": {
+      "comp-status": "Set all 'Competition' players according to current document",
+      "description": "<p>Upload the <strong>exportMembersRoleGroup</strong> of <strong>BBF+Rating</strong> excel file <br /><small>Note: this might take a wile<small></p>",
+      "hint": "Drag your file here",
+      "preview": "Preview data",
+      "ranking-date": "Ranking update",
+      "remove-current-ranking": "Remove all current rankings from ranking date",
+      "title": "File upload",
+      "update-ranking": "Update Ranking"
+    }
+  },
+  "search": {
+    "placeholder": "Search",
+    "type": {
+      "club": "Club",
+      "eventcompetition": "Competition",
+      "eventtournament": "Tournament",
+      "player": "Player"
+    }
+  },
+  "settings": {
+    "general": {
+      "title": "General"
+    },
+    "languages": {
+      "en": "English",
+      "fr_BE": "Français",
+      "nl_BE": "Nederlands",
+      "title": "Language"
+    },
+    "notifications": {
+      "disclaimer": "Notifications are currently not available for all users.",
+      "encounter": {
+        "notAcceptedNotification": "Results not accepted",
+        "notEnteredNotification": "Results not entered",
+        "title": "Enter encounter results"
+      },
+      "encounterChange": {
+        "conformationNotification": "Conformation request",
+        "finishedNotification": "Encounter changed",
+        "newNotification": "New request",
+        "title": "Encounter change requests"
+      },
+      "title": "Notifications",
+      "types": {
+        "email": "Email",
+        "none": "None",
+        "push": "Push",
+        "sms": "SMS"
+      }
+    },
+    "title": "Settings"
+  },
+  "shell": {
+    "sidebar": {
+      "competition": {
+        "assembly": "Assembly",
+        "overview": "Overview",
+        "title": "Competition",
+        "enrollment": "Enrollment"
+      },
+      "general": {
+        "changelog": "Changelog",
+        "faq": "FAQ",
+        "title": "General"
+      },
+      "persnal": {
+        "club": "My Club",
+        "games": "My Profile"
+      },
+      "ranking": {
+        "title": "Ranking"
+      },
+      "tournament": {
+        "title": "Tournaments"
+      }
+    }
+  },
+  "team": {
+    "edit": "Edit",
+    "change-number": {
+      "title": "Change team number",
+      "description": "Changing of the team number, also update higher/lower teams",
+      "number": "Team number",
+      "tooltip": "Change the team number"
+    },
+    "check-players": "Tick off the basis players in the checkbox",
+    "location": "Location",
+    "no-perm": {
+      "email-phone": "You don't have permissions to edit emails or phone numbers."
+    },
+    "title": {
+      "base-fields": "General info",
+      "captain": "Team captain",
+      "players": "Players",
+      "prefferd-encounter": "Preferred match time"
+    },
+    "usedForTeam": {
+      "description": "Team names are automatically generated, select which prefix you want to use.",
+      "example": "Example: {teamName}",
+      "select": "Team prefix",
+      "title": "Team names"
+    },
+    "types": {
+      "female": "Female",
+      "male": "Male",
+      "mix": "Mixed",
+      "national": "National",
+      "long": {
+        "F": "Female",
+        "M": "Male",
+        "MX": "Mixed",
+        "NATIONAL": "National"
+      },
+      "short": {
+        "female": "F",
+        "male": "M",
+        "mix": "MX",
+        "national": "NATIONAL"
+      }
+    }
+  },
+  "themes": {
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "tournament": {
+    "draw": {
+      "games": "Games",
+      "title": "Draw"
+    },
+    "title": "Tournament",
+    "away": "Away",
+    "home": "Home",
+    "last-updated": "Changed on",
+    "load-more": "load more",
+    "note": "note: Changes are saved directly",
+    "subevent": {
+      "max": "Max level",
+      "max-base": "Max basis team index",
+      "min-base": "Min basis team index"
+    },
+    "type": "Type",
+    "vs": "against",
+    "vs-short": "vs",
+    "enrollment": {
+      "open": "Open",
+      "closed": "Closed",
+      "close": "Close",
+      "title": "Enrollments"
+    }
+  }
+}

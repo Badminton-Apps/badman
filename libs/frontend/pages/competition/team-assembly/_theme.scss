@@ -1,0 +1,13 @@
+@use './src/pages/create/create.page.theme.scss' as create;
+
+@mixin theme($theme) {
+  @include create.theme($theme);
+}
+
+@mixin typography($theme) {
+  @include create.typography($theme);
+}
+
+@mixin colors($theme) {
+  @include create.color($theme);
+}

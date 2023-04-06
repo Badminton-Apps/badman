@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+
+.captain-info {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+
+.basic{
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+badman-player-search {
+  padding-bottom: 1rem;
+}

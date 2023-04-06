@@ -1,0 +1,7 @@
+{
+  "name": "@badman/backend-queue",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {
+  }
+}

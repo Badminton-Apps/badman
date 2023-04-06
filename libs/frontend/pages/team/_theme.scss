@@ -1,0 +1,16 @@
+@use './src/pages/detail/detail.page.theme.scss' as detail;
+
+@mixin theme($theme) {
+  @include detail.theme($theme);
+}
+
+
+@mixin typography($theme) {
+  @include detail.typography($theme);
+}
+
+
+@mixin colors($theme) {
+  @include detail.color($theme);
+}
+

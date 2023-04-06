@@ -1,6 +1,0 @@
-FROM node:19.1.0-alpine
-
-WORKDIR /usr/src
-
-CMD ["npx", "nx", "serve-dev", "worker-sync"]
-  

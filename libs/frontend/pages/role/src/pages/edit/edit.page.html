@@ -1,0 +1,9 @@
+<ng-container *ngIf="claims$ | async as claims">
+  <h1>Edit Role</h1>
+
+  <badman-role-fields
+    [role]="role"
+    [claims]="claims"
+    (save)="this.update($event, club)"
+  ></badman-role-fields>
+</ng-container>

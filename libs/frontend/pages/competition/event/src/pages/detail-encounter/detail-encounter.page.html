@@ -1,0 +1,92 @@
+<badman-page-header>
+  <div title>{{this.encounterCompetitionName}}</div>
+
+  <div actions>
+    <button mat-icon-button class="favorite" title="favorite">
+      <mat-icon>star_outline</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item [routerLink]="'edit'">
+        <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </mat-menu>
+  </div>
+</badman-page-header>
+
+<div
+  class="game"
+  *ngFor="let game of encounterCompetition.games; let index = index"
+>
+  <div class="label">
+    <ng-container *ngFor="let label of getGameLabel(index)">
+      <span>{{ label | translate }}</span>
+    </ng-container>
+  </div>
+  <div class="team1" [ngClass]="{ winner: game.winner === 1 }">
+    <div
+      class="player player1"
+      *ngIf="this.getPlayer(game, 1, 1) as playerT1P1"
+      [routerLink]="['/player', playerT1P1?.slug]"
+    >
+      {{ playerT1P1.fullName }}
+      <span *ngIf="this.getRanking(playerT1P1, game) as ranking"
+        >({{ ranking }})</span
+      >
+    </div>
+    <div
+      class="player player2"
+      *ngIf="
+        this.game.gameType !== 'S' &&
+        this.getPlayer(game, 2, 1) as playerT1P2
+      "
+    >
+      {{ playerT1P2.fullName }}
+      <span *ngIf="this.getRanking(playerT1P2, game) as ranking"
+        >({{ ranking }})</span
+      >
+    </div>
+  </div>
+
+  <div class="sets">
+    <mat-chip>{{ game.set1Team1 }} - {{ game.set1Team2 }}</mat-chip>
+    <mat-chip>{{ game.set2Team1 }} - {{ game.set2Team2 }}</mat-chip>
+    <ng-container *ngIf="game.set3Team1 && game.set3Team2">
+      <mat-chip>{{ game.set3Team1 }} - {{ game.set3Team2 }}</mat-chip>
+    </ng-container>
+  </div>
+
+  <div class="team2" [ngClass]="{ winner: game.winner === 2 }">
+    <div
+      class="player player1"
+      *ngIf="this.getPlayer(game, 1, 2) as playerT2P1"
+      [routerLink]="['/player', playerT2P1?.slug]"
+    >
+      {{ playerT2P1.fullName }}
+      <span *ngIf="this.getRanking(playerT2P1, game) as ranking"
+        >({{ ranking }})</span
+      >
+    </div>
+    <div
+      class="player player2"
+      *ngIf="
+        this.game.gameType !== 'S' &&
+        this.getPlayer(game, 2, 2) as playerT2P2
+      "
+    >
+      {{ playerT2P2.fullName }}
+      <span *ngIf="this.getRanking(playerT2P2, game) as ranking"
+        >({{ ranking }})</span
+      >
+    </div>
+  </div>
+</div>

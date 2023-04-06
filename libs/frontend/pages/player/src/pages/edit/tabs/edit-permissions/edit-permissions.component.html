@@ -1,0 +1,10 @@
+<ng-container *ngFor="let group of this.claims$ | async">
+  <div class="group-category">{{ group.category | titlecase }}</div>
+  <ng-container *ngFor="let claim of group.claims">
+    <badman-claim
+      [claim]="claim"
+      [value]="this.selectedClaims.includes(claim.id!)"
+      (whenChange)="this.claimChanged(claim, $event)"
+    ></badman-claim>
+  </ng-container>
+</ng-container>

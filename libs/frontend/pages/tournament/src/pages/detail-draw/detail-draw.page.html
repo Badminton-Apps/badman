@@ -1,0 +1,8 @@
+<section class="standing" *ngIf="this.drawTournament">
+  <h3>Standing</h3>
+  <badman-standing
+    [type]="'players'"
+    [entries]="drawTournament.eventEntries!"
+  ></badman-standing>
+</section>
+

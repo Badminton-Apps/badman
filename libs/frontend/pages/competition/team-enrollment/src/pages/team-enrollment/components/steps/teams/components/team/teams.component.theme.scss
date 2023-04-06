@@ -1,0 +1,31 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  badman-team {
+    $color-config: mat.get-color-config($theme);
+    $foreground: map.get($color-config, 'foreground');
+    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    border-color: $border-color;
+  }
+}
+
+@mixin typography($theme) {
+  badman-team {
+    $typography-config: mat.get-typography-config($theme);
+
+    .general {
+      .name {
+        @include mat.typography-level($typography-config, 'headline-5');
+      }
+    }
+
+    .count,
+    .index,
+    .ranking {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+  }
+}
