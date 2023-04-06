@@ -1,4 +1,6 @@
 {
+  "outputDirectory": "dist/badman/browser",
+  "buildCommand" :"yarn build badman:build --configuration render",
   "rewrites": [
     {
       "source": "/api/:path*",
