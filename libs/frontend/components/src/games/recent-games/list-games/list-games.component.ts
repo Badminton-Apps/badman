@@ -19,6 +19,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TransferState, makeStateKey } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -45,6 +46,7 @@ import { map, startWith, tap } from 'rxjs/operators';
     MatChipsModule,
     MatTooltipModule,
     MatButtonToggleModule,
+    MatIconModule
   ],
   selector: 'badman-list-games',
   templateUrl: './list-games.component.html',
@@ -256,10 +258,10 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
         tooltip = 'all.breakdown.usedForDowngrade';
         break;
       case GameBreakdownType.LOST_DOWNGRADE:
-        tooltip = 'all.breakdown.usedForDowngrade';
+        tooltip = 'all.breakdown.usedForUpgrade';
         break;
       case GameBreakdownType.LOST_UPGRADE:
-        tooltip = 'all.breakdown.usedForUpgrade';
+        tooltip = 'all.breakdown.usedForDowngrade';
         break;
       case GameBreakdownType.LOST_IGNORED:
         tooltip = 'all.breakdown.notUsed';

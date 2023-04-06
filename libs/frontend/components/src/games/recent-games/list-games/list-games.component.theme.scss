@@ -26,7 +26,6 @@
       } @else {
         color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
       }
-      
     }
 
     a {
@@ -41,8 +40,15 @@
     $typography-config: mat.get-typography-config($theme);
 
     .game__points,
-    .game__extra {
+    .game__extra,
+    .game__date {
       @include mat.typography-level($typography-config, 'caption');
+    }
+
+    .game__points mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
     }
   }
 }
