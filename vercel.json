@@ -1,39 +1,39 @@
 {
-    "$schema": "https://openapi.vercel.sh/vercel.json",
-    "git": {
-        "deploymentEnabled": {
-            "develop": false
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "develop": false
+    }
+  },
+  "ignoreCommand": "if [ $VERCEL_GIT_COMMIT_REF == 'main' ]; then exit 1; fi",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://api-8azq.onrender.com/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "(dev|beta|next)"
         }
+      ]
     },
-    "ignoreCommand": "if [ $VERCEL_GIT_COMMIT_REF != 'main' ]; then exit 1; fi",
-    "rewrites": [
+    {
+      "source": "/graphql",
+      "destination": "https://api-8azq.onrender.com/graphql",
+      "has": [
         {
-          "source": "/api/:path*",
-          "destination": "https://api-8azq.onrender.com/:path*",
-          "has": [
-            {
-              "type": "host",
-              "value": "(dev|beta|next)"
-            }
-          ]
-        },
-        {
-          "source": "/graphql",
-          "destination": "https://api-8azq.onrender.com/graphql",
-          "has": [
-            {
-              "type": "host",
-              "value": "(dev|beta|next)"
-            }
-          ]
-        },
-        {
-          "source": "/api/:path*",
-          "destination": "https://server-2msl.onrender.com/:path*"
-        },
-        {
-          "source": "/graphql",
-          "destination": "https://server-2msl.onrender.com/graphql"
+          "type": "host",
+          "value": "(dev|beta|next)"
         }
+      ]
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://server-2msl.onrender.com/:path*"
+    },
+    {
+      "source": "/graphql",
+      "destination": "https://server-2msl.onrender.com/graphql"
+    }
   ]
 }
