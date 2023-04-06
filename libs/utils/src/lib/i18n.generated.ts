@@ -529,6 +529,10 @@ export type I18nTranslations = {
             };
             "notifications": {
                 "disclaimer": string;
+                "messages": {
+                    "syncSuccessNotification": string;
+                    "syncFailedNotification": string;
+                };
                 "encounter": {
                     "notAcceptedNotification": string;
                     "notEnteredNotification": string;
@@ -539,6 +543,11 @@ export type I18nTranslations = {
                     "finishedNotification": string;
                     "newNotification": string;
                     "title": string;
+                };
+                "sync": {
+                    "title": string;
+                    "success": string;
+                    "failed": string;
                 };
                 "title": string;
                 "types": {

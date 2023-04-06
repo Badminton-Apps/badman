@@ -521,6 +521,10 @@
     },
     "notifications": {
       "disclaimer": "Notificaties is alleen beschikbaar voor een test groep",
+      "messages": {
+        "syncSuccessNotification": "Sync success",
+        "syncFailedNotification": "Sync failed"
+      },
       "encounter": {
         "notAcceptedNotification": "Ontmoeting is nog niet geaccepteerd",
         "notEnteredNotification": "Ontmoeting is nog niet ingevuld",
@@ -533,6 +537,11 @@
         "title": "Verplaatsings aanvragen"
       },
       "title": "Notificaties",
+      "sync": {
+        "title": "Synchronisatie",
+        "success": "Sync succesvol",
+        "failed": "Sync mislukt"
+      },
       "types": {
         "email": "Email",
         "none": "Geen",
