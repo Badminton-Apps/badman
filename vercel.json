@@ -25,23 +25,11 @@
     },
     {
       "source": "/api/:path*",
-      "destination": "https://server-2msl.onrender.com/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "(.*\\.(dev|beta)\\..*)"
-        }
-      ]
+      "destination": "https://server-2msl.onrender.com/:path*"
     },
     {
       "source": "/graphql",
-      "destination": "https://server-2msl.onrender.com/graphql",
-      "has": [
-        {
-          "type": "host",
-          "value": "(.*\\.(dev|beta)\\..*)"
-        }
-      ]
+      "destination": "https://server-2msl.onrender.com/graphql"
     }
   ]
 }
