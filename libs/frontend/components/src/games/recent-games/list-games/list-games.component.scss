@@ -20,7 +20,7 @@
   border-radius: 5px;
 
   @media (max-width: 760px) {
-    padding: 1rem 0.5rem 1.25rem 0.5rem;
+    padding: 1.25rem 0.5rem 1.25rem 0.5rem;
   }
 
   .game__play {
@@ -36,14 +36,13 @@
       &.won .player {
         text-decoration: underline;
       }
-
-      .points {
-        margin-top: -20px;
-      }
     }
 
     .team1 {
       text-align: right;
+      .game__points > span {
+        justify-content: flex-end;
+      }
     }
 
     .scores {
@@ -64,9 +63,24 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+
+  // .game__date {
+  //   position: absolute;
+  //   padding: 0 0.5rem;
+  //   top: -12px;
+  //   max-width: calc(100% - 3rem);
+  //   overflow: hidden;
+  //   white-space: nowrap;
+  //   text-overflow: ellipsis;
+  // }
+
   .game__points {
     margin-bottom: -15px;
     min-height: 20px;
+    span {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 
