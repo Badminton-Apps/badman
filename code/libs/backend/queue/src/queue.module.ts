@@ -9,7 +9,6 @@ const BullQueueModules = [
   BullModule.registerQueue({ name: SimulationQueue }),
 ];
 
-BullModule.registerQueueAsync;
 @Module({
   imports: [
     BullModule.forRootAsync({
@@ -18,9 +17,9 @@ BullModule.registerQueueAsync;
         return {
           redis: {
             host: configService.get('REDIS_HOST'),
-            port: parseInt(configService.get('REDIS_PORT')) ?? 6379,
+            port: configService.get<number>('REDIS_PORT') ?? 6379,
             password: configService.get('REDIS_PASSWORD'),
-            db: parseInt(configService.get('REDIS_DB')) ?? 0,
+            db: configService.get<number>('QUEUE_DB') ?? 0,
           },
         };
       },
