@@ -5,14 +5,14 @@
             "develop": false
         }
     },
-      "rewrites": [
+    "rewrites": [
         {
           "source": "/api/:path*",
           "destination": "https://api-8azq.onrender.com/:path*",
           "has": [
             {
               "type": "host",
-              "value": "(dev|beta)"
+              "value": "(dev|beta|next)"
             }
           ]
         },
@@ -22,7 +22,7 @@
           "has": [
             {
               "type": "host",
-              "value": "(dev|beta)"
+              "value": "(dev|beta|next)"
             }
           ]
         },
@@ -34,5 +34,5 @@
           "source": "/graphql",
           "destination": "https://server-2msl.onrender.com/graphql"
         }
-      ]
+  ]
 }
