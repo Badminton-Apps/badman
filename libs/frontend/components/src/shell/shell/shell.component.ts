@@ -31,6 +31,7 @@ import { SearchBoxComponent } from '../components/search-box/search-box.componen
 import { UserShortcutsComponent } from '../components/user-shortcuts/user-shortcuts.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LogoComponent } from '../components/logo';
+import { Apollo, gql } from 'apollo-angular';
 
 @Component({
   selector: 'badman-shell',
@@ -77,6 +78,8 @@ export class ShellComponent {
       shareReplay()
     );
 
+    canEnroll$!: Observable<boolean>;
+
   constructor(
     @Inject(GOOGLEADS_CONFIG_TOKEN) public config: GoogleAdsConfiguration,
     private breakpointObserver: BreakpointObserver,
@@ -87,7 +90,7 @@ export class ShellComponent {
       beta: boolean;
       version: string;
     },
-
+    private apollo: Apollo,
     updates: SwUpdate,
     snackBar: MatSnackBar
   ) {
@@ -118,6 +121,39 @@ export class ShellComponent {
               document.location.reload();
             });
         });
+
+        this.canEnroll$ = this.apollo
+      .query<{
+        tournamentEvents: { count: number };
+        competitionEvents: { count: number };
+      }>({
+        query: gql`
+          # we request only first one, because if it's more that means it's open
+          query CanEnroll($where: JSONObject) {
+            # tournamentEvents(first: 1, where: $where) {
+            #   total
+            #   edges {
+            #     cursor
+            #   }
+            # }
+            eventCompetitions(take: 1, where: $where) {
+              count
+            }
+          }
+        `,
+        variables: {
+          where: {
+            allowEnlisting: true,
+          },
+        },
+      })
+      .pipe(
+        map(
+          (events) =>
+            events?.data?.tournamentEvents?.count != 0 ||
+            events?.data?.competitionEvents?.count != 0
+        )
+      );
     }
   }
 }
