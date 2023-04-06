@@ -34,7 +34,7 @@ import { NotificationsModule } from '@badman/backend-notifications';
     CheckEncounterProcessor,
     CheckRankingProcessor,
 
-    CronService,
+    CronService
 
   ],
   imports: [
