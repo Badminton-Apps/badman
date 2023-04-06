@@ -8,7 +8,7 @@
       <div mat-list-item>
         <span
           matLine
-          [innerHTML]="'all.notifications.types.' + notification.type | translate: getParams(notification)"
+          [innerHTML]="'all.settings.notifications.messages.' + notification.type | translate: getParams(notification)"
         ></span>
         <button mat-icon-button (click)="readNotification(notification)">
           <mat-icon>archive</mat-icon>
