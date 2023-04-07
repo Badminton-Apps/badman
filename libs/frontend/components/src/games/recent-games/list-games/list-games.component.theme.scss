@@ -16,7 +16,8 @@
       border-color: $border-color;
     }
 
-    .game__extra {
+    .game__extra,
+    .game__date {
       background-color: mat.get-color-from-palette($background, 'background');
     }
 
