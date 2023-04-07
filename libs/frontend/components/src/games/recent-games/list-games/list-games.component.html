@@ -18,13 +18,13 @@
 </form>
 
 <ng-container *ngIf="recentGames$ | async as games; else loading">
-  <div class="game" *ngFor="let game of games">
+  <div class="game" *ngFor="let game of games" >
     <div class="game__extra" *ngIf="getExtra(game) as extra">
       <a [routerLink]="extra.link">{{ extra.title }}</a>
     </div>
-    <!-- <div class="game__date">
+    <div class="game__date">
       <div>{{ game?.playedAt | amDateFormat : 'llll' }}</div>
-    </div> -->
+    </div>
     <div class="game__play">
       <div class="team team1" [ngClass]="{ won: game.winner === 1 }">
         <div class="player" *ngIf="this.getPlayer(game, 1, 1) as p1t1">
