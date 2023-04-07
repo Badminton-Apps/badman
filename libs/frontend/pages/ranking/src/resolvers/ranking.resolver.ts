@@ -54,10 +54,6 @@ export class RankingSystemResolver implements Resolve<RankingSystem> {
                   rankingSystem(id: $id) {
                     id
                     name
-                    amountOfLevels
-                    pointsToGoUp
-                    pointsToGoDown
-                    pointsWhenWinningAgainst
                     caluclationIntervalLastUpdate
                     primary
                   }
