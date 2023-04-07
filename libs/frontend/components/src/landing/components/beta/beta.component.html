@@ -1,6 +1,11 @@
-<mat-card>
+<mat-card *ngIf="!hideBetaMessage">
   <mat-card-header>
-    <mat-card-title>Beta webstite</mat-card-title>
+    <mat-card-title>
+      <div>Beta webstite</div>
+      <button mat-icon-button (click)="hideMessage()" title="hide beta message">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-title>
     <mat-card-subtitle>Version {{ this.version }}</mat-card-subtitle>
   </mat-card-header>
 
