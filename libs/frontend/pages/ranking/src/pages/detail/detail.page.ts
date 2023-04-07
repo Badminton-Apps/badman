@@ -1,24 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   PageHeaderComponent,
-  RecentGamesComponent,
-  UpcomingGamesComponent,
+  RankingTableComponent
 } from '@badman/frontend-components';
 import { RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
-import { BreadcrumbService } from 'xng-breadcrumb';
 import { MomentModule } from 'ngx-moment';
+import { BreadcrumbService } from 'xng-breadcrumb';
 import { UploadRankingDialogComponent } from '../../dialogs';
 
 @Component({
@@ -27,13 +25,11 @@ import { UploadRankingDialogComponent } from '../../dialogs';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     TranslateModule,
     RouterModule,
     MomentModule,
 
     // Material
-    MatTableModule,
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -42,21 +38,13 @@ import { UploadRankingDialogComponent } from '../../dialogs';
     MatDialogModule,
 
     // My Componments
-    RecentGamesComponent,
-    UpcomingGamesComponent,
     PageHeaderComponent,
+    RankingTableComponent
   ],
 })
 export class DetailPageComponent implements OnInit {
   rankingSystem!: RankingSystem;
-  dataSource?: MatTableDataSource<RankingScoreTable>;
 
-  displayedColumns = [
-    'level',
-    'pointsToGoUp',
-    'pointsToGoDown',
-    'pointsWhenWinningAgainst',
-  ];
 
   constructor(
     private seoService: SeoService,
@@ -75,26 +63,6 @@ export class DetailPageComponent implements OnInit {
       keywords: ['ranking', 'badminton'],
     });
     this.breadcrumbsService.set('ranking/:id', `${this.rankingSystem.name}`);
-
-    let level = this.rankingSystem.amountOfLevels ?? 0;
-    const data = this.rankingSystem.pointsWhenWinningAgainst?.map(
-      (winning: number, index: number) => {
-        return {
-          level: level--,
-          pointsToGoUp:
-            level !== 0
-              ? Math.round(this.rankingSystem.pointsToGoUp?.[index] ?? 0)
-              : null,
-          pointsToGoDown:
-            index === 0
-              ? null
-              : Math.round(this.rankingSystem.pointsToGoDown?.[index - 1] ?? 0),
-          pointsWhenWinningAgainst: Math.round(winning),
-        } as RankingScoreTable;
-      }
-    );
-
-    this.dataSource = new MatTableDataSource(data);
   }
 
   openUploadDialog() {
@@ -106,10 +74,3 @@ export class DetailPageComponent implements OnInit {
     });
   }
 }
-
-type RankingScoreTable = {
-  level: number;
-  pointsToGoUp: number;
-  pointsToGoDown: number;
-  pointsWhenWinningAgainst: number;
-};

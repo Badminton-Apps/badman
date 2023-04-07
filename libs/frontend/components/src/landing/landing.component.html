@@ -1,18 +1,20 @@
 <badman-beta [version]="this.versionInfo.version" *ngIf="this.versionInfo.beta">
 </badman-beta>
 
-<ng-container *ngIf="this.user$ | async as user; else notLoggedIn">
-  <ng-container *ngIf="user.loggedIn && ((teams$ | async) ?? []) as teams">
-    <section class="upcomming-games">
-      <h3>Your upcoming games</h3>
+<div class="content">
+  <badman-ranking-table></badman-ranking-table>
 
-      <badman-upcoming-games
-        *ngIf="teams.length > 0"
-        [clubid]="user.clubs?.[0]?.id"
-        [teams]="teams"
-      ></badman-upcoming-games>
-    </section>
-  </ng-container>
-</ng-container>
+  <div *ngIf="this.user$ | async as user">
+    <ng-container *ngIf="user.loggedIn && ((teams$ | async) ?? []) as teams">
+      <section class="upcomming-games">
+        <h3>Your upcoming games</h3>
 
-<ng-template #notLoggedIn> </ng-template>
+        <badman-upcoming-games
+          *ngIf="teams.length > 0"
+          [clubid]="user.clubs?.[0]?.id"
+          [teams]="teams"
+        ></badman-upcoming-games>
+      </section>
+    </ng-container>
+  </div>
+</div>
