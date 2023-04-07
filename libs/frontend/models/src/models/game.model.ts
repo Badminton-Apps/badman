@@ -1,8 +1,7 @@
 import { GameStatus, GameType } from '@badman/utils';
-import { EncounterCompetition, DrawTournament } from './events';
+import { DrawTournament, EncounterCompetition } from './events';
 import { GamePlayer } from './player.model';
 import { RankingPoint } from './ranking-point.model';
-import { RankingSystem } from './ranking-system.model';
 
 export class Game {
   id?: string;
