@@ -18,7 +18,15 @@
 </form>
 
 <ng-container *ngIf="recentGames$ | async as games; else loading">
-  <div class="game" *ngFor="let game of games" >
+  <div
+    class="game"
+    *ngFor="let game of games"
+    [ngClass]="{
+      double: game.gameType === 'D',
+      mix: game.gameType === 'MX',
+      single: game.gameType === 'S'
+    }"
+  >
     <div class="game__extra" *ngIf="getExtra(game) as extra">
       <a [routerLink]="extra.link">{{ extra.title }}</a>
     </div>
@@ -96,7 +104,7 @@
           >
             <ng-container *ngIf="points.show">
               {{ points.points }} points
-               <ng-container *ngIf="points.upgrade">
+              <ng-container *ngIf="points.upgrade">
                 <mat-icon>swap_vert</mat-icon>
               </ng-container>
               <ng-container *ngIf="points.downgrade">
