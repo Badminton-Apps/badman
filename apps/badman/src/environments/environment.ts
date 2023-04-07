@@ -6,11 +6,11 @@ import packages from "../version.json";
 export const environment = {
   production: false,
   apiVersion: "v1",
-  api:  'http://localhost:5000',
-  graphql: 'http://localhost:5000/graphql',
+  // api:  'http://localhost:5000',
+  // graphql: 'http://localhost:5000/graphql',
  
-  // graphql: 'https://beta.badman.app/graphql',
-  // api:  'https://beta.badman.app/api',
+  graphql: 'https://beta.badman.app/graphql',
+  api:  'https://beta.badman.app/api',
   adsense: {
     adClient: "ca-pub-2426855871474715",
     show: false,

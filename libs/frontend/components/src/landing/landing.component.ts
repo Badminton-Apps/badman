@@ -13,6 +13,7 @@ import { Observable, switchMap } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
 import { BetaComponent, ProfileOverviewComponent } from './components';
+import { RankingTableComponent } from '../ranking-table';
 
 @Component({
   selector: 'badman-landing',
@@ -22,6 +23,7 @@ import { BetaComponent, ProfileOverviewComponent } from './components';
     BetaComponent,
     ProfileOverviewComponent,
     UpcomingGamesComponent,
+    RankingTableComponent,
   ],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
