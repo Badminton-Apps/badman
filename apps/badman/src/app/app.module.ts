@@ -4,30 +4,30 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { ShellComponent } from '@badman/frontend-components';
 import { GraphQLModule } from '@badman/frontend-graphql';
-import { JobsModule } from '@badman/frontend-jobs';
 import {
   ClarityModule,
   GoogleAdsModule,
   GoogleAnalyticsModule,
   VERSION_INFO,
 } from '@badman/frontend-html-injects';
+import { JobsModule } from '@badman/frontend-jobs';
 
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { PdfModule } from '@badman/frontend-pdf';
+import { RANKING_CONFIG } from '@badman/frontend-ranking';
 import { SeoModule } from '@badman/frontend-seo';
 import { TranslationModule } from '@badman/frontend-translation';
+import { AnalyticsModule } from '@badman/frontend-vitals';
+import { NgMapsCoreModule } from '@ng-maps/core';
+import { GOOGLE_MAPS_API_CONFIG, NgMapsGoogleModule } from '@ng-maps/google';
+import { NgMapsPlacesModule } from '@ng-maps/places';
+import { MarkdownModule } from 'ngx-markdown';
+import { QuillModule } from 'ngx-quill';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
-import { GOOGLE_MAPS_API_CONFIG, NgMapsGoogleModule } from '@ng-maps/google';
-import { NgMapsCoreModule } from '@ng-maps/core';
-import { NgMapsPlacesModule } from '@ng-maps/places';
-import { RANKING_CONFIG } from '@badman/frontend-ranking';
-import { MarkdownModule } from 'ngx-markdown';
-import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { QuillModule } from 'ngx-quill';
-import { AnalyticsModule } from '@badman/frontend-vitals';
 
 const APP_ROUTES: Routes = [
   {
@@ -91,12 +91,12 @@ const APP_ROUTES: Routes = [
       maxAge: 60 * 60 * 24 * 7,
       useRefreshTokensFallback: true,
       authorizationParams: {
-        redirect_uri: window.location.origin
+        redirect_uri: window.location.origin,
       },
       httpInterceptor: {
         allowedList: [
           {
-            uriMatcher: (uri) => true,
+            uriMatcher: () => true,
             allowAnonymous: true,
           },
         ],
