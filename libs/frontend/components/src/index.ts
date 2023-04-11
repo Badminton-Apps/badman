@@ -1,5 +1,5 @@
 // start:ng42.barrel
-export * from './add-event';
+export * from './events';
 export * from './claim';
 export * from './game-score';
 export * from './games';

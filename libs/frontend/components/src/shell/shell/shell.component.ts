@@ -13,16 +13,16 @@ import { RouterModule } from '@angular/router';
 import {
   ServiceWorkerModule,
   SwUpdate,
-  VersionReadyEvent
+  VersionReadyEvent,
 } from '@angular/service-worker';
 import {
   GoogleAdsConfiguration,
   GOOGLEADS_CONFIG_TOKEN,
-  VERSION_INFO
+  VERSION_INFO,
 } from '@badman/frontend-html-injects';
 import { Banner } from '@badman/frontend-models';
 import { Observable } from 'rxjs';
-import { filter, map, shareReplay } from 'rxjs/operators';
+import { filter, map, shareReplay, tap } from 'rxjs/operators';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { BannerComponent } from '../components/banner/banner.component';
 import { HeaderMenuComponent } from '../components/header-menu';
@@ -38,7 +38,7 @@ import { Apollo, gql } from 'apollo-angular';
   imports: [
     CommonModule,
     RouterModule,
-    
+
     UserShortcutsComponent,
     HeaderMenuComponent,
     SearchBoxComponent,
@@ -56,7 +56,7 @@ import { Apollo, gql } from 'apollo-angular';
     MatIconModule,
     MatListModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   standalone: true,
   templateUrl: './shell.component.html',
@@ -78,7 +78,7 @@ export class ShellComponent {
       shareReplay()
     );
 
-    canEnroll$!: Observable<boolean>;
+  canEnroll$!: Observable<boolean>;
 
   constructor(
     @Inject(GOOGLEADS_CONFIG_TOKEN) public config: GoogleAdsConfiguration,
@@ -122,38 +122,33 @@ export class ShellComponent {
             });
         });
 
-        this.canEnroll$ = this.apollo
-      .query<{
-        tournamentEvents: { count: number };
-        competitionEvents: { count: number };
-      }>({
-        query: gql`
-          # we request only first one, because if it's more that means it's open
-          query CanEnroll($where: JSONObject) {
-            # tournamentEvents(first: 1, where: $where) {
-            #   total
-            #   edges {
-            #     cursor
-            #   }
-            # }
-            eventCompetitions(take: 1, where: $where) {
-              count
+      this.canEnroll$ = this.apollo
+        .query<{
+          eventTournaments: { count: number };
+          eventCompetitions: { count: number };
+        }>({
+          query: gql`
+            # we request only first one, because if it's more that means it's open
+            query CanEnroll($where: JSONObject) {
+              eventCompetitions(take: 1, where: $where) {
+                count
+              }
             }
-          }
-        `,
-        variables: {
-          where: {
-            allowEnlisting: true,
+          `,
+          variables: {
+            where: {
+              openDate: { $lte: new Date().toISOString() },
+              closeDate: { $gte: new Date().toISOString() },
+            },
           },
-        },
-      })
-      .pipe(
-        map(
-          (events) =>
-            events?.data?.tournamentEvents?.count != 0 ||
-            events?.data?.competitionEvents?.count != 0
-        )
-      );
+        })
+        .pipe(
+          map(
+            (events) =>
+              (events?.data?.eventTournaments?.count ?? 0) != 0 ||
+              (events?.data?.eventCompetitions?.count ?? 0) != 0
+          )
+        );
     }
   }
 }

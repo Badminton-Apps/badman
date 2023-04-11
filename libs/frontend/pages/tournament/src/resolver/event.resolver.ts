@@ -42,7 +42,8 @@ export class EventResolver implements Resolve<EventTournament | null> {
                 id
                 name
                 slug
-                allowEnlisting
+                openDate
+                closeDate
                 visualCode
                 lastSync
                 official
