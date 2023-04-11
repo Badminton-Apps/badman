@@ -1,5 +1,5 @@
 <div class="search">
-  <form [formGroup]="this.filter" *ngIf="this.filter" >
+  <form [formGroup]="this.filter" *ngIf="this.filter">
     <mat-form-field class="year">
       <mat-label>Year</mat-label>
       <input matInput type="number" formControlName="year" />
@@ -61,7 +61,15 @@
   <ng-container matColumnDef="open">
     <th mat-header-cell *matHeaderCellDef>Open</th>
     <td mat-cell *matCellDef="let row">
-      <mat-icon *ngIf="row.allowEnlisting">check</mat-icon>
+      {{row.openDate | amDateFormat: 'llll' }}
+    </td>
+  </ng-container>
+
+  <!-- close coumn -->
+  <ng-container matColumnDef="close">
+    <th mat-header-cell *matHeaderCellDef>Close</th>
+    <td mat-cell *matCellDef="let row">
+      {{row.closeDate | amDateFormat: 'llll' }}
     </td>
   </ng-container>
 
@@ -92,11 +100,16 @@
               <mat-icon>swap_vert</mat-icon>
               <span>Set risers/fallers</span>
             </button>
+            <button mat-menu-item (click)="this.setOpenClose(row)">
+              <mat-icon>lock</mat-icon>
+              <span>Set open/close date</span>
+            </button>
 
             <button
               mat-menu-item
               (click)="this.makeOfficial(row, !row.official)"
             >
+              <mat-icon>verified_user</mat-icon>
               <span>{{row.official ? 'Unmake' : 'Make'}} official</span>
             </button>
           </badman-has-claim>

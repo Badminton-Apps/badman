@@ -1,41 +1,38 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-import packages from "../version.json";
+import packages from '../version.json';
 
 export const environment = {
   production: false,
-  apiVersion: "v1",
-  // api:  'http://localhost:5000',
-  // graphql: 'http://localhost:5000/graphql',
- 
-  graphql: 'https://beta.badman.app/graphql',
-  api:  'https://beta.badman.app/api',
+  apiVersion: 'v1',
+  api: 'http://localhost:5000',
+  graphql: 'http://localhost:5000/graphql',
   adsense: {
-    adClient: "ca-pub-2426855871474715",
+    adClient: 'ca-pub-2426855871474715',
     show: false,
   },
   clarity: {
-    projectId: "eunlmikxb7",
+    projectId: 'eunlmikxb7',
   },
   google: {
     ads: {
-      publisherId: "ca-pub-2426855871474715",
+      publisherId: 'ca-pub-2426855871474715',
       debug: true,
       slots: {
         sidebar: 4690724012,
         beta: 4921531878,
-      }
+      },
     },
-    
+
     analytics: {
-      tag: "G-ZB8171V3HR0",
+      tag: 'G-ZB8171V3HR0',
     },
   },
   vitals: {
-    url: "https://vitals.vercel-analytics.com/v1/vitals",
+    url: 'https://vitals.vercel-analytics.com/v1/vitals',
     analyticsId: 'zKT4xSXr0gDIdX4JmvpaUPwJwMG',
-    enabled: false
+    enabled: false,
   },
   version: packages.version,
   beta: true,

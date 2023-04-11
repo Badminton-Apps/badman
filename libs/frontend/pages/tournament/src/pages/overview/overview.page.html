@@ -84,11 +84,16 @@
               <mat-icon>delete</mat-icon>
               <span>Delete</span>
             </button>
+            <button mat-menu-item (click)="this.setOpenClose(row)">
+              <mat-icon>lock</mat-icon>
+              <span>Set open/close date</span>
+            </button>
             <button
               mat-menu-item
               (click)="this.makeOfficial(row, !row.official)"
             >
-              <span>{{row.official ? 'Unmake' : 'Make'}} official</span>
+            <mat-icon>verified_user</mat-icon>
+            <span>{{row.official ? 'Unmake' : 'Make'}} official</span>
             </button>
           </badman-has-claim>
 

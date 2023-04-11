@@ -40,7 +40,11 @@ import { lastValueFrom, pairwise, startWith } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventsStepComponent implements OnInit {
-  provWhere = { allowEnlisting: true, type: 'PROV' };
+  provWhere = {
+    openDate: { $lte: new Date().toISOString() },
+    closeDate: { $gte: new Date().toISOString() },
+    type: 'PROV',
+  };
 
   @Input()
   group!: FormGroup;
@@ -134,7 +138,8 @@ export class EventsStepComponent implements OnInit {
         `,
         variables: {
           where: {
-            allowEnlisting: true,
+            openDate: { $lte: new Date().toISOString() },
+            closeDate: { $gte: new Date().toISOString() },
             type: name,
           },
         },

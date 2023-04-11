@@ -43,17 +43,18 @@ export class EventResolver implements Resolve<EventCompetition | null> {
                 name
                 slug
                 startYear
-                allowEnlisting
+                openDate
+                closeDate
                 visualCode
                 lastSync
                 subEventCompetitions {
                   id
                   name
                   eventType
-                  level,
+                  level
                   maxLevel
-                  minBaseIndex,
-                  maxBaseIndex,
+                  minBaseIndex
+                  maxBaseIndex
                   drawCompetitions {
                     id
                     name

@@ -73,14 +73,18 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
     event.lastSync = new Date();
     await event.save({ transaction: this.transaction });
 
-    if (event.allowEnlisting) {
+    const enlistingOpen =
+      moment(event.openDate).diff(moment(), 'days') > 0 &&
+      moment(event.closeDate).diff(moment(), 'days') < 0;
+
+    if (enlistingOpen) {
       this.logger.debug(
         `EventCompetition ${event.name} is open, skipping processing`
       );
     }
 
     return {
-      stop: event.allowEnlisting,
+      stop: enlistingOpen,
       existed,
       event,
       internalId: parseInt(this.visualTournament.Code, 10),

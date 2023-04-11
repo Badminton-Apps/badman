@@ -28,7 +28,11 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { TransferState, makeStateKey } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { HasClaimComponent, AddEventComponent } from '@badman/frontend-components';
+import {
+  HasClaimComponent,
+  AddEventComponent,
+  OpenCloseDateDialogComponent,
+} from '@badman/frontend-components';
 import { JobsService } from '@badman/frontend-jobs';
 import { EventCompetition } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -74,7 +78,7 @@ import { RisersFallersDialogComponent } from '../../dialogs';
   ],
 })
 export class OverviewPageComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['name', 'subEvents', 'open', 'menu'];
+  displayedColumns: string[] = ['name', 'subEvents', 'open', 'close', 'menu'];
   data: EventCompetition[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -256,7 +260,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
                   name
                   slug
                   official
-                  allowEnlisting
+                  openDate
+                  closeDate
                   subEventCompetitions {
                     id
                     drawCompetitions {
@@ -359,6 +364,50 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     // open dialog
     this.dialog.open(RisersFallersDialogComponent, {
       data: { event: competition },
+    });
+  }
+
+  setOpenClose(competition: EventCompetition) {
+    // open dialog
+    const ref = this.dialog.open(OpenCloseDateDialogComponent, {
+      data: { event: competition },
+      width: '400px',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        competition.openDate = result.openDate;
+        competition.closeDate = result.closeDate;
+
+        this.apollo
+          .mutate({
+            mutation: gql`
+              mutation UpdateEventCompetition(
+                $data: EventCompetitionUpdateInput!
+              ) {
+                updateEventCompetition(data: $data) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              data: {
+                id: competition.id,
+                openDate: competition.openDate,
+                closeDate: competition.closeDate,
+              },
+            },
+          })
+          .subscribe(() => {
+            this.matSnackBar.open(
+              `Competition ${competition.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              }
+            );
+          });
+      }
     });
   }
 }

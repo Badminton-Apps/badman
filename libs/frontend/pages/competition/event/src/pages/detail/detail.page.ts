@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   HasClaimComponent,
+  OpenCloseDateDialogComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
 import { JobsModule, JobsService } from '@badman/frontend-jobs';
@@ -153,25 +154,48 @@ export class DetailPageComponent implements OnInit {
     ]);
   }
 
-  async setOpenState(state: boolean) {
-    await lastValueFrom(
-      this.apollo.mutate({
-        mutation: gql`
-          mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
-            updateEventCompetition(data: $data) {
-              id
-            }
-          }
-        `,
-        variables: {
-          data: {
-            id: this.eventCompetition.id,
-            allowEnlisting: state,
-          },
-        },
-      })
-    );
-    this.eventCompetition.allowEnlisting = state;
+  setOpenClose() {
+     // open dialog
+     const ref = this.dialog.open(OpenCloseDateDialogComponent, {
+      data: { event: this.eventCompetition },
+      width: '400px',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        this.eventCompetition.openDate = result.openDate;
+        this.eventCompetition.closeDate = result.closeDate;
+
+        this.apollo
+          .mutate({
+            mutation: gql`
+              mutation UpdateEventCompetition(
+                $data: EventCompetitionUpdateInput!
+              ) {
+                updateEventCompetition(data: $data) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              data: {
+                id: this.eventCompetition.id,
+                openDate: this.eventCompetition.openDate,
+                closeDate: this.eventCompetition.closeDate,
+              },
+            },
+          })
+          .subscribe(() => {
+            this.matSnackBar.open(
+              `Competition ${this.eventCompetition.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              }
+            );
+          });
+      }
+    });
   }
 
   makeOfficial(offical: boolean) {
