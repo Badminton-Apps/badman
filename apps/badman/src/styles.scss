@@ -11,8 +11,7 @@
 @use '../../../libs/frontend/pages/club/theme' as frontend-club;
 @use '../../../libs/frontend/pages/competition/event/theme' as
   frontend-competition;
-  @use '../../../libs/frontend/pages/tournament/theme' as
-  frontend-tournament;
+@use '../../../libs/frontend/pages/tournament/theme' as frontend-tournament;
 @use '../../../libs/frontend/pages/competition/team-enrollment/theme' as
   frontend-team-enrollement;
 @use '../../../libs/frontend/pages/player/theme' as frontend-player;
@@ -53,6 +52,8 @@ $light-theme: theme.badman-light-theme(
 );
 
 @include mat.all-component-themes($dark-theme);
+// button is tempoarly because of mat-date-picker
+@include mat.legacy-button-theme($dark-theme);
 @include root-theme.theme($dark-theme);
 // Own components
 @include frontend-assembly.theme($dark-theme);
@@ -69,6 +70,8 @@ $light-theme: theme.badman-light-theme(
 
 .color-scheme-light {
   @include mat.all-component-colors($light-theme);
+  // button is tempoarly because of mat-date-picker
+  @include mat.legacy-button-color($light-theme);
   @include root-theme.color($light-theme);
   // Own components
   @include frontend-assembly.colors($light-theme);
