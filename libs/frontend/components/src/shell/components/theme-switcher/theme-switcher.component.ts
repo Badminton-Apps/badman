@@ -22,21 +22,19 @@ import { ThemeSwitcherService } from './theme-switcher.service';
 })
 export class ThemeSwitcherComponent implements OnInit {
   title = 'Angular material dark mode';
-  current!: string;
-  themes!: string[];
+  current!: 'light' | 'dark';
 
-  constructor(private colorSchemaService: ThemeSwitcherService) {
+  constructor(public colorSchemaService: ThemeSwitcherService) {
     this.colorSchemaService.load();
   }
 
   ngOnInit(): void {
     this.current =
-      this.colorSchemaService.currentActive() ??
+      this.colorSchemaService.currentActive ??
       this.colorSchemaService.defaultScheme;
-    this.themes = this.colorSchemaService.schemes;
   }
 
-  setTheme(theme: string) {
+  setTheme(theme: 'light' | 'dark') {
     this.colorSchemaService.update(theme);
     this.current = theme;
   }

@@ -5,10 +5,10 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
   providedIn: 'root',
 })
 export class ThemeSwitcherService {
-  public defaultScheme = 'dark';
-  public schemes = ['dark', 'light'];
+  public defaultScheme: 'dark' | 'light' = 'dark';
+  public schemes = ['dark', 'light'] as const;
 
-  private colorScheme?: string;
+  private colorScheme?: 'dark' | 'light';
   // Define prefix for clearer and more readable class names in scss files
   private colorSchemePrefix = 'color-scheme-';
 
@@ -16,6 +16,10 @@ export class ThemeSwitcherService {
     @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private _platformId: string
   ) {}
+
+  get currentActive() {
+    return this.colorScheme;
+  }
 
   _detectPrefersColorScheme() {
     // Detect if prefers-color-scheme is supported
@@ -31,7 +35,7 @@ export class ThemeSwitcherService {
     }
   }
 
-  _setColorScheme(scheme: string) {
+  _setColorScheme(scheme: 'dark' | 'light') {
     this.colorScheme = scheme;
     // Save prefers-color-scheme to localStorage
     localStorage.setItem('prefers-color', scheme);
@@ -43,7 +47,7 @@ export class ThemeSwitcherService {
       return;
     }
 
-    const localStorageColorScheme = localStorage.getItem('prefers-color');
+    const localStorageColorScheme = localStorage.getItem('prefers-color') as 'dark' | 'light'
     // Check if any prefers-color-scheme is stored in localStorage
     if (localStorageColorScheme) {
       // Save prefers-color-scheme from localStorage
@@ -62,7 +66,7 @@ export class ThemeSwitcherService {
     this.document.body.classList.add(this.colorSchemePrefix + this.colorScheme);
   }
 
-  update(scheme: string) {
+  update(scheme: 'dark' | 'light') {
     this.document.body.classList.remove(
       this.colorSchemePrefix + this.colorScheme
     );
@@ -72,7 +76,5 @@ export class ThemeSwitcherService {
     this.document.body.classList.add(this.colorSchemePrefix + this.colorScheme);
   }
 
-  currentActive() {
-    return this.colorScheme;
-  }
+ 
 }
