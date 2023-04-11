@@ -134,8 +134,12 @@ export class TeamComponent implements OnInit {
 
   async addBasePlayerToTeam(player: Player) {
     // Check if player is already in team
-    if (this.team.players?.find((p) => p.id === player.id)) {
-      this.snackbar.open('Player is already in team', 'Close', {
+    if (
+      this.team.entry?.meta?.competition?.players?.find(
+        (p) => p.id === player.id
+      )
+    ) {
+      this.snackbar.open('Player is already in baseteam', 'Close', {
         duration: 3000,
       });
       return;
