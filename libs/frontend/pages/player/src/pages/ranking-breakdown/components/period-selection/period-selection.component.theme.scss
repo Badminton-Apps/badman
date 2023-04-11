@@ -23,21 +23,24 @@
     }
   }
 
-  button.point-update-date {
+  button.point-update-date,
+  button.point-update-date:not(.ranking-update-date) {
     border-color: mat.get-color-from-palette($accent-palette, 500);
     border-radius: 100%;
+    border-width: 1px;
     border-style: solid;
   }
 
   button.ranking-update-date {
     border-color: mat.get-color-from-palette($primary-palette, 500);
     border-radius: 100%;
+    border-width: 1px;
     border-style: solid;
   }
 
-  .hint {
+  .period-selection-calender-hint {
     .point {
-      color: mat.get-color-from-palette($accent-palette, 300);
+      color: mat.get-color-from-palette($accent-palette, 500);
     }
 
     .ranking {
@@ -47,15 +50,18 @@
 }
 
 @mixin typography($theme) {
+  $typography-config: mat.get-typography-config($theme);
   badman-period-selection {
-    $typography-config: mat.get-typography-config($theme);
-
     label {
       @include mat.typography-level($typography-config, 'caption');
     }
+  }
 
-    .hint {
-      @include mat.typography-level($typography-config, 'caption');
+  .period-selection-calender-hint {
+    @include mat.typography-level($typography-config, 'caption');
+    p {
+      margin: 0;
+      padding-left: 1rem;
     }
   }
 }

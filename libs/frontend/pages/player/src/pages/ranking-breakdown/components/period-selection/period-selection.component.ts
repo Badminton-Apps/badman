@@ -43,17 +43,31 @@ export class PeriodSelectionComponent {
 
   @Input() system!: RankingSystem;
 
+  updates: Moment[] = [];
+  minDateInUpdate?: Moment;
+
   dateClass: MatCalendarCellClassFunction<Moment> = (cellDate, view) => {
     // Only highligh dates inside the month view.
     if (view === 'month') {
-      const date = cellDate.day();
-
-      // highlight every monday
-      if (date === 1) {
-        return 'point-update-date';
+      if (cellDate.isAfter(this.system.caluclationIntervalLastUpdate)) {
+        return '';
       }
 
-      //
+      // is first monday of the month
+      let isFirstMonday = cellDate.clone().set('date', 1).isoWeekday(8);
+
+      if (isFirstMonday.date() > 7) {
+        isFirstMonday = isFirstMonday.isoWeekday(-6);
+      }
+
+      if (cellDate.isSame(isFirstMonday) && cellDate.month() % 2 === 0) {
+        // every first monday of a uneven month
+        return 'ranking-update-date';
+      }
+
+      if (cellDate.day() == 1) {
+        return 'point-update-date';
+      }
     }
 
     return '';
