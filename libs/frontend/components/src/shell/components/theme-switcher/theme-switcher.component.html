@@ -4,7 +4,7 @@
 <mat-menu #Lang="matMenu">
   <button
     mat-menu-item
-    *ngFor="let theme of themes"
+    *ngFor="let theme of this.colorSchemaService.schemes"
     [value]="theme"
     (click)="setTheme(theme)"
   >
