@@ -202,7 +202,9 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
               playedAt: {
                 $lte: moment().format('YYYY-MM-DD'),
               },
-              gameType: filter?.choices,
+              gameType: {
+                $in: filter?.choices ?? ['S', 'D', 'MX'],
+              },
             },
             order: [
               {
