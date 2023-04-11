@@ -146,8 +146,6 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  
-
   private _loadFilters(
     routeParam$: Observable<ParamMap>,
     queryParam$: Observable<Params>
@@ -176,7 +174,6 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
         if (queries['includeOutOfScope']) {
           filters['includeOutOfScope'] = queries['includeOutOfScope'] == 'true';
         }
-        
 
         this.gameFilter.patchValue(filters);
       })
@@ -302,7 +299,12 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
               rankingType: system?.id,
             },
           })
-          .pipe(map((x) => x.data.player.games?.map((g) => new Game(g)) ?? []));
+          .pipe(
+            map((x) => x.data.player.games?.map((g) => new Game(g)) ?? []),
+            map((games) =>
+              games.filter((game) => (game.rankingPoints?.length ?? 0) > 0)
+            )
+          );
       }),
       tap(() => (this.loadingGames = false))
     );
