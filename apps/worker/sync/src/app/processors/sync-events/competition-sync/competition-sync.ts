@@ -149,9 +149,10 @@ export class CompetitionSyncer {
       ...options,
     });
 
-    const result = await this.processor.process();
-    result['event'] = this.event;
-    return result;
+    await this.processor.process();
+    return {
+      event: this.event
+    };
   }
 
   protected getEvent(): ProcessStep<unknown> {

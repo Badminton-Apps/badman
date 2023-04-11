@@ -124,15 +124,11 @@ export class TournamentSyncer {
       newGames: this.options.newGames,
     });
 
-    const result = await this.processor.process();
+    await this.processor.process();
 
-    this.logger.log('TournamentSyncer finished 1');
-
-    result['event'] = this.event;
-
-    this.logger.log('TournamentSyncer finished 2');
-
-    return result;
+    return {
+      event: this.event
+    };
   }
 
   protected getEvent(): ProcessStep<unknown> {

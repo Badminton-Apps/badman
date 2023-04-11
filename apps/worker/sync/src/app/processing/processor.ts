@@ -45,7 +45,7 @@ export class Processor {
   async process(args?: unknown) {
     const totalStart = new Date().getTime();
 
-    this.logger.log(`Running process`);
+    this.logger.log(`Running process, with ${this.procesSteps.size} steps`);
     for (const [name, step] of this.procesSteps) {
       this.logger.log(`Running step: ${name}`);
       const start = new Date().getTime();
@@ -75,8 +75,6 @@ export class Processor {
           new Date().getTime() - start
         ).toString()}`
       );
-
-      return {};
     }
     this.logger.log(
       `Finished processing, time: ${timeUnits(
