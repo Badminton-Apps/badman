@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   HasClaimComponent,
+  OpenCloseDateDialogComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
 import { JobsModule, JobsService } from '@badman/frontend-jobs';
@@ -103,25 +104,48 @@ export class DetailPageComponent implements OnInit {
     });
   }
 
-  async setOpenState(state: boolean) {
-    await lastValueFrom(
-      this.apollo.mutate({
-        mutation: gql`
-          mutation UpdateEventTournament($data: EventTournamentUpdateInput!) {
-            updateEventTournament(data: $data) {
-              id
-            }
-          }
-        `,
-        variables: {
-          data: {
-            id: this.eventTournament.id,
-            allowEnlisting: state,
-          },
-        },
-      })
-    );
-    this.eventTournament.allowEnlisting = state;
+  setOpenClose() {
+    // open dialog
+    const ref = this.dialog.open(OpenCloseDateDialogComponent, {
+      data: { event: this.eventTournament },
+      width: '400px',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        this.eventTournament.openDate = result.openDate;
+        this.eventTournament.closeDate = result.closeDate;
+
+        this.apollo
+          .mutate({
+            mutation: gql`
+              mutation UpdateEventTournament(
+                $data: EventTournamentUpdateInput!
+              ) {
+                updateEventTournament(data: $data) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              data: {
+                id: this.eventTournament.id,
+                openDate: this.eventTournament.openDate,
+                closeDate: this.eventTournament.closeDate,
+              },
+            },
+          })
+          .subscribe(() => {
+            this.matSnackBar.open(
+              `Tournament ${this.eventTournament.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              }
+            );
+          });
+      }
+    });
   }
 
   makeOfficial() {

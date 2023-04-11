@@ -31,6 +31,7 @@ import { RouterModule } from '@angular/router';
 import {
   HasClaimComponent,
   AddEventComponent,
+  OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
 import { JobsModule, JobsService } from '@badman/frontend-jobs';
 import { EventTournament } from '@badman/frontend-models';
@@ -208,7 +209,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
                   name
                   slug
                   firstDay
-                  allowEnlisting
+                  openDate
+                  closeDate
                   official
                 }
               }
@@ -310,5 +312,49 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     if (result?.id) {
       await lastValueFrom(this.jobsService.syncEventById(result));
     }
+  }
+
+  setOpenClose(tournament: EventTournament) {
+    // open dialog
+    const ref = this.dialog.open(OpenCloseDateDialogComponent, {
+      data: { event: tournament },
+      width: '400px',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        tournament.openDate = result.openDate;
+        tournament.closeDate = result.closeDate;
+
+        this.apollo
+          .mutate({
+            mutation: gql`
+              mutation UpdateEventTournament(
+                $data: EventTournamentUpdateInput!
+              ) {
+                updateEventTournament(data: $data) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              data: {
+                id: tournament.id,
+                openDate: tournament.openDate,
+                closeDate: tournament.closeDate,
+              },
+            },
+          })
+          .subscribe(() => {
+            this.matSnackBar.open(
+              `Tournament ${tournament.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              }
+            );
+          });
+      }
+    });
   }
 }

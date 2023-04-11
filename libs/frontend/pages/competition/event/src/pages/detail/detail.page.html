@@ -36,8 +36,19 @@
             <span>Copy</span>
           </button>
 
-          <button mat-menu-item (click)="this.makeOfficial(!eventCompetition.official)">
-            <span>{{eventCompetition.official ? 'Unmake' : 'Make'}} official</span>
+          <button mat-menu-item (click)="this.setOpenClose()">
+            <mat-icon>lock</mat-icon>
+            <span>Set open/close date</span>
+          </button>
+
+          <button
+            mat-menu-item
+            (click)="this.makeOfficial(!eventCompetition.official)"
+          >
+            <mat-icon>verified_user</mat-icon>
+            <span
+              >{{eventCompetition.official ? 'Unmake' : 'Make'}} official</span
+            >
           </button>
         </badman-has-claim>
 
@@ -48,21 +59,6 @@
           </button>
         </badman-has-claim>
 
-        <badman-has-claim [any]="['edit:competition']">
-          <button
-            mat-menu-item
-            (click)="this.setOpenState(!this.eventCompetition.allowEnlisting)"
-          >
-            <mat-icon>
-              {{this.eventCompetition.allowEnlisting ? 'lock' : 'lock_open'}}
-            </mat-icon>
-            <span
-              >{{(this.eventCompetition.allowEnlisting ?
-              'all.competition.enrollment.close':
-              'all.competition.enrollment.open') | translate}}</span
-            >
-          </button>
-        </badman-has-claim>
         <badman-has-claim [any]="['delete:competition']">
           <button mat-menu-item>
             <mat-icon>delete</mat-icon>
@@ -79,7 +75,7 @@
     <mat-chip-listbox>
       <mat-chip
         >{{'all.competition.enrollment.title' | translate}}:
-        {{(this.eventCompetition.allowEnlisting ?
+        {{((this.eventCompetition.allowEnlisting ?? false) ?
         'all.competition.enrollment.open': 'all.competition.enrollment.closed')
         | translate}}</mat-chip
       >

@@ -72,6 +72,14 @@ export class EventCompetition extends Model {
   @Column
   lastSync: Date;
 
+  @Field({ nullable: true })
+  @Column
+  openDate?: Date;
+
+  @Field({ nullable: true })
+  @Column
+  closeDate?: Date;
+
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
     foreignKey: 'linkId',
@@ -98,11 +106,6 @@ export class EventCompetition extends Model {
   @Field({ nullable: true })
   @Column
   visualCode: string;
-
-  @Default(false)
-  @Field({ nullable: true })
-  @Column
-  allowEnlisting: boolean;
 
   @Default(false)
   @Field({ nullable: true })

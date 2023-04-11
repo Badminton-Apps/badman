@@ -82,6 +82,14 @@ export class EventTournament extends Model {
 
   @Field({ nullable: true })
   @Column
+  openDate?: Date;
+
+  @Field({ nullable: true })
+  @Column
+  closeDate?: Date;
+
+  @Field({ nullable: true })
+  @Column
   dates: string;
 
   @BelongsToMany(() => Location, () => LocationEventTournamentMembership)
@@ -93,10 +101,6 @@ export class EventTournament extends Model {
   })
   subEventTournaments: SubEventTournament[];
 
-  @Default(false)
-  @Field({ nullable: true })
-  @Column
-  allowEnlisting: boolean;
 
   @Unique('EventTournaments_unique_constraint')
   @Field({ nullable: true })

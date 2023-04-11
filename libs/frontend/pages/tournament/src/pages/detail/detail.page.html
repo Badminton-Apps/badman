@@ -29,6 +29,7 @@
           </button>
 
           <button mat-menu-item (click)="this.makeOfficial()">
+            <mat-icon>verified_user</mat-icon>
             <span
               >{{this.eventTournament.official ? 'Unmake' : 'Make'}}
               official</span
@@ -44,23 +45,15 @@
         </badman-has-claim>
 
         <badman-has-claim [any]="['edit-any:tournament']">
-          <button
-            mat-menu-item
-            (click)="this.setOpenState(!this.eventTournament.allowEnlisting)"
-          >
-            <mat-icon>
-              {{this.eventTournament.allowEnlisting ? 'lock' : 'lock_open'}}
-            </mat-icon>
-            <span
-              >{{(this.eventTournament.allowEnlisting ?
-              'all.tournament.enrollment.close':
-              'all.tournament.enrollment.open') | translate}}</span
-            >
+          <button mat-menu-item (click)="this.setOpenClose()">
+            <mat-icon>lock</mat-icon>
+            <span>Set open/close date</span>
           </button>
         </badman-has-claim>
         <badman-has-claim [any]="['add:event', 'remove:event']">
           <button mat-menu-item (click)="this.assignRankingGroups()">
-            {{ 'all.button.set-ranking-groups' | translate }}
+            <mat-icon>equalizer</mat-icon>
+            <span>{{ 'all.button.set-ranking-groups' | translate }}</span>
           </button>
         </badman-has-claim>
 
@@ -80,7 +73,7 @@
     <mat-chip-listbox>
       <mat-chip
         >{{'all.tournament.enrollment.title' | translate}}:
-        {{(this.eventTournament.allowEnlisting ?
+        {{((this.eventTournament.allowEnlisting ?? false) ?
         'all.tournament.enrollment.open': 'all.tournament.enrollment.closed') |
         translate}}</mat-chip
       >

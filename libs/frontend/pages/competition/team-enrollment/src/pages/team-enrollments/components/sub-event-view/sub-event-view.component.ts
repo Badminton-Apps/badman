@@ -128,7 +128,8 @@ export class SubEventViewComponent implements OnInit {
           variables: {
             where: {
               startYear: year,
-              allowEnlisting: true,
+              openDate: { $lte: new Date().toISOString() },
+              closeDate: { $gte: new Date().toISOString() },
             },
           },
         })
