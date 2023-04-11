@@ -98,6 +98,12 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+.cdk-overlay-pane {
+  div.mat-mdc-menu-panel {
+    max-width: none;
+  }
+}
+
 xng-breadcrumb .xng-breadcrumb-list {
   margin: 16px 16px 0 16px;
 }

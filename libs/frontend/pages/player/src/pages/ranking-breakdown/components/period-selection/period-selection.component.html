@@ -4,23 +4,46 @@
     <button
       [matTooltip]="'all.breakdown.prevPeriod' | translate"
       mat-icon-button
-      (click)="this.whenPrev.next()"
+      (click)="this.prevPeriod()"
     >
       <mat-icon>chevron_left</mat-icon>
     </button>
   </div>
   <div class="period">
-    {{ formGroup.value.start | amDateFormat : 'MMM YYYY' }} -
-    {{ formGroup.value.end | amDateFormat : 'MMM YYYY' }}
+    {{ period.value.start | amDateFormat : 'DD MMM YYYY' }} -
+    {{ period.value.end | amDateFormat : 'DD MMM YYYY' }}
   </div>
   <div>
     <button
       [matTooltip]="'all.breakdown.nextPeriod' | translate"
       mat-icon-button
       id="next-period"
-      (click)="this.whenNext.next()"
+      (click)="this.nextPeriod()"
     >
       <mat-icon>chevron_right</mat-icon>
     </button>
   </div>
+
+  <button mat-icon-button [matMenuTriggerFor]="appMenu">
+    <mat-icon>calendar_today</mat-icon>
+  </button>
+  <mat-menu #appMenu="matMenu">
+    <div
+      (click)="$event.stopPropagation()"
+      (keydown)="$event.stopPropagation()"
+    >
+      <mat-calendar
+        #calendar
+        (selectedChange)="customPeriod($event)"
+        [dateClass]="dateClass"
+      >
+      </mat-calendar>
+      <div class="hint">
+        <p class="point">Point update</p>
+        <p class="ranking">Ranking update</p>
+      </div>
+    </div>
+  </mat-menu>
 </div>
+
+<!--  (selectedChange)="select($event, calendar)" -->
