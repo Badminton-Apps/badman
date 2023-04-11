@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ThemeSwitcherService } from '@badman/frontend-components';
 import { RankingSystem } from '@badman/frontend-models';
 import moment from 'moment';
 // import { EChartsOption } from 'echarts';
 import {
+  ApexAnnotations,
   ApexAxisChartSeries,
   ApexChart,
+  ChartComponent as ApexChartComponent,
   ApexDataLabels,
   ApexFill,
   ApexForecastDataPoints,
@@ -17,8 +20,6 @@ import {
   ApexTooltip,
   ApexXAxis,
   ApexYAxis,
-  ChartComponent as ApexChartComponent,
-  ApexAnnotations,
   NgApexchartsModule,
   YAxisAnnotations,
 } from 'ng-apexcharts';
@@ -59,6 +60,8 @@ export class ChartComponent implements OnInit {
   // options!: EChartsOption;
   @ViewChild('chart') chart?: ApexChartComponent;
   public chartOptions?: Partial<ChartOptions>;
+
+  constructor(private themeSwitcher: ThemeSwitcherService) {}
 
   @Input()
   rankingPlaces!: {
@@ -108,6 +111,8 @@ export class ChartComponent implements OnInit {
         },
       });
     }
+
+    const isDark = this.themeSwitcher.currentActive == 'dark';
 
     // if ((this.prevLevel ?? 0) < upMax) {
     //   annotations.push({
@@ -187,7 +192,7 @@ export class ChartComponent implements OnInit {
         },
       ],
       theme: {
-        mode: 'dark',
+        mode: isDark ? 'dark' : 'light',
       },
       tooltip: {
         enabled: false,
