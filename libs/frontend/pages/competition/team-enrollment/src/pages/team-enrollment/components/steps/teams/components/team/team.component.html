@@ -11,7 +11,6 @@
       aria-label="Change team number"
       (click)="this.changeTeamNumber.next(team)"
       [matTooltip]="'all.team.change-number.tooltip' | translate"
-
     >
       <mat-icon>swap_horiz</mat-icon>
     </button>
@@ -51,7 +50,21 @@
 
   <div *ngIf="expanded.regular">
     <div *ngFor="let player of this.team.players" class="player">
-      <div class="name">{{ player.fullName }}</div>
+      <div class="name">
+        {{ player.fullName }}
+        <span class="ranking">
+          {{ player.lastRanking?.single }} -
+          {{ player.lastRanking?.double }}
+          <ng-container *ngIf="team.type === 'MX'">
+            - {{ player.lastRanking?.mix }}</ng-container
+          >
+          ({{
+            (player.lastRanking?.single ?? 12) +
+              (player.lastRanking?.double ?? 12) +
+              (team.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
+          }})</span
+        >
+      </div>
       <div class="type">
         <mat-form-field>
           <mat-label>Type</mat-label>
@@ -82,16 +95,12 @@
   </div>
 </div>
 
-
-
-
-
 <div class="base-players">
   <div class="expandable-item" (click)="expanded.base = !expanded.base">
     <div>
       {{ 'all.competition.enrollment.players.base' | translate }}
       <span class="index"
-        >team: {{ teamIndex }} - base index: {{ baseIndex }}</span
+        >Base index: {{ baseIndex }} (Team index: {{ teamIndex }})</span
       >
     </div>
     <mat-icon *ngIf="!expanded.base">expand_more</mat-icon>
