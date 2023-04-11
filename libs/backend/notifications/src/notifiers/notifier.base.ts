@@ -36,7 +36,6 @@ export abstract class Notifier<T, A = { email: string }> {
 
     if (!type){
       this.logger.debug(`Notification ${this.type} disabled for ${player.fullName}`);
-      this.logger.debug(settings.toJSON())
       return;
     }
 
