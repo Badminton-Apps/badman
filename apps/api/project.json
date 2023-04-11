@@ -21,7 +21,7 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/backend/assembly/src/compile",
+            "input": "libs/backend/competition/assembly/src/compile",
             "output": "compile/libs/assembly"
           },
           {

@@ -29,9 +29,8 @@
     </mat-form-field>
 
     <badman-period-selection
-      (whenNext)="this.nextPeriod(system)"
-      (whenPrev)="this.prevPeriod(system)"
-      [formGroup]="this.period"
+      [system]="system"
+      [period]="this.period"
     ></badman-period-selection>
   </form>
 

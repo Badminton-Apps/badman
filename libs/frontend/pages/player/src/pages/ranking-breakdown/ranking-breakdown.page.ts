@@ -125,10 +125,7 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
           // Default we take next update interval, if no end is given
           const endPeriod =
             (end ?? null) == null
-              ? moment(system.updateIntervalAmountLastUpdate).add(
-                  system.updateIntervalAmount,
-                  system.updateIntervalUnit
-                )
+              ? moment(system.updateIntervalAmountLastUpdate)
               : moment(end);
           const startPeriod = endPeriod
             .clone()
@@ -149,42 +146,7 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  nextPeriod(system: RankingSystem) {
-    const endPeriod = moment(this.period.get('end')?.value).add(
-      system.updateIntervalAmount,
-      system.updateIntervalUnit
-    );
-    const startPeriod = endPeriod
-      .clone()
-      .subtract(system.periodAmount, system.periodUnit);
-    const gamePeriod = startPeriod
-      .clone()
-      .subtract(system.updateIntervalAmount, system.updateIntervalUnit);
-
-    this.period.patchValue({
-      start: startPeriod,
-      end: endPeriod,
-      game: gamePeriod,
-    });
-  }
-  prevPeriod(system: RankingSystem) {
-    const endPeriod = moment(this.period.get('end')?.value).subtract(
-      system.updateIntervalAmount,
-      system.updateIntervalUnit
-    );
-    const startPeriod = endPeriod
-      .clone()
-      .subtract(system.periodAmount, system.periodUnit);
-    const gamePeriod = startPeriod
-      .clone()
-      .subtract(system.updateIntervalAmount, system.updateIntervalUnit);
-
-    this.period.patchValue({
-      start: startPeriod,
-      end: endPeriod,
-      game: gamePeriod,
-    });
-  }
+  
 
   private _loadFilters(
     routeParam$: Observable<ParamMap>,
@@ -214,6 +176,7 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
         if (queries['includeOutOfScope']) {
           filters['includeOutOfScope'] = queries['includeOutOfScope'] == 'true';
         }
+        
 
         this.gameFilter.patchValue(filters);
       })

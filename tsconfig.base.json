@@ -17,13 +17,15 @@
     "baseUrl": ".",
     "paths": {
       "*": ["./types/*"],
-      "@badman/backend-assembly": ["libs/backend/assembly/src/index.ts"],
       "@badman/backend-authorization": [
         "libs/backend/authorization/src/index.ts"
       ],
       "@badman/backend-cache": ["libs/backend/cache/src/index.ts"],
       "@badman/backend-compile": ["libs/backend/compile/src/index.ts"],
       "@badman/backend-database": ["libs/backend/database/src/index.ts"],
+      "@badman/backend-enrollment": [
+        "libs/backend/competition/enrollment/src/index.ts"
+      ],
       "@badman/backend-generator": ["libs/backend/generator/src/index.ts"],
       "@badman/backend-graphql": ["libs/backend/graphql/src/index.ts"],
       "@badman/backend-health": ["libs/backend/health/src/index.ts"],
@@ -43,6 +45,9 @@
       "@badman/backend-twizzit": ["libs/backend/twizzit/src/index.ts"],
       "@badman/backend-visual": ["libs/backend/visual/src/index.ts"],
       "@badman/backend/comp-tet": ["libs/backend/comp-tet/src/index.ts"],
+      "@badman/backend-assembly": [
+        "libs/backend/competition/assembly/src/index.ts"
+      ],
       "@badman/frontend-auth": ["libs/frontend/modules/auth/src/index.ts"],
       "@badman/frontend-change-encounter": [
         "libs/frontend/pages/competition/change-encounter/src/index.ts"
