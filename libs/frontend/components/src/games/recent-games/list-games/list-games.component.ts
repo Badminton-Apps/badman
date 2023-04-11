@@ -200,7 +200,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
             id: playerId,
             where: {
               playedAt: {
-                $lte: moment().subtract(1, 'month').format('YYYY-MM-DD'),
+                $lte: moment().format('YYYY-MM-DD'),
               },
               gameType: filter?.choices,
             },
