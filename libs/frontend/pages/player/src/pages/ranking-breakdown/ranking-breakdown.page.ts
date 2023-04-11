@@ -125,7 +125,7 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
           // Default we take next update interval, if no end is given
           const endPeriod =
             (end ?? null) == null
-              ? moment(system.updateIntervalAmountLastUpdate)
+              ? moment(system.caluclationIntervalLastUpdate)
               : moment(end);
           const startPeriod = endPeriod
             .clone()
@@ -207,6 +207,7 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
                     differenceForUpgrade
                     differenceForDowngrade
                     updateIntervalAmountLastUpdate
+                    caluclationIntervalLastUpdate
                     minNumberOfGamesUsedForUpgrade
                     updateIntervalAmount
                     updateIntervalUnit
