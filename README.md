@@ -69,12 +69,13 @@ https://github.com/elegantapp/pwa-asset-generator
 
 `npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.webmanifest" --icon-only --dark-mode  --opaque false --background "rgba(0, 0, 0, 1)"`
 
-
 ### speedtest
+
 https://github.com/rakyll/hey
 `hey -n 256 -c 8 -z 30s http://localhost:5001/api/v1/ > results.txt`
 
 ### Upgrade to latest packages
+
 1. `NX_MIGRATE_USE_LOCAL=true nx migrate latest`
 2. `yarn`
 3. `NX_MIGRATE_USE_LOCAL=true yarn exec nx migrate --run-migrations`
