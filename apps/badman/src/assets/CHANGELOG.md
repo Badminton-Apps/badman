@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.63.3](https://github.com/Badminton-Apps/badman/compare/v6.63.2...v6.63.3) (2023-04-12)
+
+
+### Bug Fixes
+
+* api is now at this endpoint ([4da1a38](https://github.com/Badminton-Apps/badman/commit/4da1a38ebfe96307826282968ee096f9ebaa19e5))
+
 ### [6.63.2](https://github.com/Badminton-Apps/badman/compare/v6.63.1...v6.63.2) (2023-04-12)
 
 ### [6.63.1](https://github.com/Badminton-Apps/badman/compare/v6.63.0...v6.63.1) (2023-04-12)
