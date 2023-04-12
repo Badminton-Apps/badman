@@ -148,7 +148,7 @@
           "fileReplacements": [
             {
               "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.render.ts"
+              "with": "apps/badman/src/environments/environment.beta.ts"
             }
           ],
           "outputHashing": "media"
@@ -203,7 +203,7 @@
     "collect-vars": {
       "executor": "ng-process-env:collectVars",
       "options": {
-        "environmentFile": "apps/badman/src/environments/environment.render.ts"
+        "environmentFile": "apps/badman/src/environments/environment.beta.ts"
       }
     }
   },
