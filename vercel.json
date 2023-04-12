@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "dist/badman/browser",
-  "buildCommand": "yarn build badman:build --configuration render",
+  "buildCommand": "yarn run vercel-build",
   "rewrites": [
     {
       "source": "/api/:path*",
