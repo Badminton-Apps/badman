@@ -8,9 +8,8 @@ You now only need docker installed.
 
 ### 1. Environment values
 
-copy `.env.example` to `.env`
-
-And fill in the values
+- copy `.env.example` to `.env`
+- And fill in the values
 
 ### 2. Install dependencies
 
