@@ -1,38 +1,35 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AssemblyData, AssemblyOutput } from '../../models';
+import { EnrollmentData, EnrollmentOutput } from '../../models';
 import {
   CompetitionStatusRule,
   PlayerGenderRule,
-  PlayerMaxGamesRule,
   PlayerMinLevelRule,
-  PlayerOrderRule,
   Rule,
   TeamBaseIndexRule,
-  TeamClubBaseRule,
   TeamSubeventIndexRule,
 } from './rules';
 
 @Injectable()
-export class AssemblyService {
-  private readonly _logger = new Logger(AssemblyService.name);
+export class EnrollmentService {
+  private readonly _logger = new Logger(EnrollmentService.name);
 
-  async getValidationData(systemId: string): Promise<AssemblyData> {
+  async getValidationData(systemId: string): Promise<EnrollmentData> {
     return null;
   }
 
   /**
-   * Validate the assembly
+   * Validate the enrollment
    *
-   * @param assembly Assembly configuaration
-   * @returns Whether the assembly is valid or not
+   * @param enrollment Enrollment configuaration
+   * @returns Whether the enrollment is valid or not
    */
   async validate(
-    assembly: AssemblyData,
+    enrollment: EnrollmentData,
     validators: Rule[]
-  ): Promise<AssemblyOutput> {
+  ): Promise<EnrollmentOutput> {
     // get all errors and warnings from the validators in parallel
     const results = await Promise.all(
-      validators.map((v) => v.validate(assembly))
+      validators.map((v) => v.validate(enrollment))
     );
 
     const errors = results
@@ -43,12 +40,29 @@ export class AssemblyService {
       ?.map((r) => r.warnings)
       ?.flat(1)
       ?.filter((e) => !!e);
+    const valids = results
+      ?.map((r) => r.valid)
+      ?.flat(1)
+      ?.filter((e) => !!e);
+
+    // valids is an array for each team's validitiy per validator
+    // if any of the validators return false, the team is invalid
+    const valid: {
+      teamId: string;
+      valid: boolean;
+    }[] = [];
+    for (const team of enrollment.teams) {
+      const teamValid = valids?.filter((v) => v.teamId == team.team.id);
+      valid.push({
+        teamId: team.team.id,
+        valid: teamValid?.every((v) => v.valid),
+      });
+    }
 
     return {
-      valid: errors.length === 0,
       errors: errors,
       warnings: warnings,
-      systemId: assembly.system.id,
+      valid,
     };
   }
 
@@ -56,19 +70,7 @@ export class AssemblyService {
     data: {
       systemId: string;
       teamId: string;
-      encounterId: string;
-
-      single1?: string;
-      single2?: string;
-      single3?: string;
-      single4?: string;
-
-      double1?: string[];
-      double2?: string[];
-      double3?: string[];
-      double4?: string[];
-
-      subtitudes?: string[];
+      subEventId: string;
     },
     validators: Rule[]
   ) {
@@ -78,13 +80,10 @@ export class AssemblyService {
 
   static defaultValidators(): Rule[] {
     return [
-      new PlayerOrderRule(),
       new TeamBaseIndexRule(),
-      new TeamClubBaseRule(),
       new TeamSubeventIndexRule(),
       new CompetitionStatusRule(),
       new PlayerMinLevelRule(),
-      new PlayerMaxGamesRule(),
       new PlayerGenderRule(),
     ];
   }

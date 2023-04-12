@@ -1,4 +1,4 @@
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -18,7 +18,7 @@ export class CompetitionStatusRule extends Rule {
       subtitudes,
     } = assembly;
 
-    const errors = [] as ValidationError[];
+    const errors = [] as AssemblyValidationError[];
     let valid = true;
 
     // If any of the players has competitionPlayer on false, the assembly is not valid

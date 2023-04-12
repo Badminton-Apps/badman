@@ -1,6 +1,6 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -20,7 +20,7 @@ export class PlayerGenderRule extends Rule {
       type,
     } = assembly;
 
-    const errors = [] as ValidationError[];
+    const errors = [] as AssemblyValidationError[];
 
     if (type == SubEventTypeEnum.M) {
       errors.push(
@@ -106,7 +106,7 @@ export class PlayerGenderRule extends Rule {
     };
   }
 
-  private _checkGender(players: Player[], gender: string): ValidationError[] {
+  private _checkGender(players: Player[], gender: string): AssemblyValidationError[] {
     const uniquePlayers = [
       ...new Set(players?.filter((p) => p != undefined && p != null)),
     ];

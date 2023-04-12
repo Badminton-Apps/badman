@@ -11,7 +11,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -20,27 +20,26 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Club, SubEventCompetition, Team } from '@badman/frontend-models';
 import {
-  getLetterForRegion,
+  Club,
+  EventEntry,
+  SubEventCompetition,
+  Team,
+} from '@badman/frontend-models';
+import {
   LevelType,
   SubEventType,
   SubEventTypeEnum,
   UseForTeamName,
+  getLetterForRegion,
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { combineLatest, lastValueFrom, Observable } from 'rxjs';
-import {
-  filter,
-  map,
-  shareReplay,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
+import { Observable, combineLatest, lastValueFrom } from 'rxjs';
+import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
-import { TeamComponent } from './components';
+import { TeamComponent, TeamEnrollmentComponent } from './components';
+import { TeamForm } from '../teams-transfer';
 
 @Component({
   selector: 'badman-teams-step',
@@ -59,8 +58,7 @@ import { TeamComponent } from './components';
     MatDividerModule,
     MatProgressBarModule,
 
-    // Own
-    TeamComponent,
+    TeamEnrollmentComponent,
   ],
   templateUrl: './teams.step.html',
   styleUrls: ['./teams.step.scss'],
@@ -75,7 +73,7 @@ export class TeamsStepComponent implements OnInit {
 
   @Input()
   control?: FormGroup<{
-    [key in SubEventType]: FormControl<Team[] | null | undefined>;
+    [key in SubEventType]: FormArray<TeamForm>;
   }>;
 
   @Input()
@@ -100,8 +98,11 @@ export class TeamsStepComponent implements OnInit {
     MX: [],
     NATIONAL: [],
   };
-
   clubs$!: Observable<Club>;
+
+  getTypeArray(type: SubEventType) {
+    return this.control?.controls[type] as FormArray<TeamForm>;
+  }
 
   constructor(
     private changedector: ChangeDetectorRef,
@@ -114,17 +115,18 @@ export class TeamsStepComponent implements OnInit {
     let existed = false;
     if (this.group) {
       this.control = this.group?.get(this.controlName) as FormGroup<{
-        [key in SubEventType]: FormControl<Team[] | null | undefined>;
+        [key in 'M' | 'F' | 'MX' | 'NATIONAL']: FormArray<TeamForm>;
       }>;
+
       existed = true;
     }
 
     if (!this.control) {
       this.control = new FormGroup({
-        M: new FormControl<Team[] | null | undefined>([]),
-        F: new FormControl<Team[] | null | undefined>([]),
-        MX: new FormControl<Team[] | null | undefined>([]),
-        NATIONAL: new FormControl<Team[] | null | undefined>([]),
+        M: new FormArray<TeamForm>([]),
+        F: new FormArray<TeamForm>([]),
+        MX: new FormArray<TeamForm>([]),
+        NATIONAL: new FormArray<TeamForm>([]),
       });
     }
 
@@ -132,15 +134,17 @@ export class TeamsStepComponent implements OnInit {
       this.group.addControl(this.controlName, this.control);
     }
 
+    console.log(this.control.controls['M']);
+
     // initial teamnumbers
     this.teamNumbers.M =
-      this.control?.value?.M?.map((t) => t.teamNumber ?? 0) ?? [];
+      this.control?.value?.M?.map((t) => t.team?.teamNumber ?? 0) ?? [];
     this.teamNumbers.F =
-      this.control?.value?.F?.map((t) => t.teamNumber ?? 0) ?? [];
+      this.control?.value?.F?.map((t) => t.team?.teamNumber ?? 0) ?? [];
     this.teamNumbers.MX =
-      this.control?.value?.MX?.map((t) => t.teamNumber ?? 0) ?? [];
+      this.control?.value?.MX?.map((t) => t.team?.teamNumber ?? 0) ?? [];
     this.teamNumbers.NATIONAL =
-      this.control?.value?.NATIONAL?.map((t) => t.teamNumber ?? 0) ?? [];
+      this.control?.value?.NATIONAL?.map((t) => t.team?.teamNumber ?? 0) ?? [];
 
     const clubId = this.group.get('club')?.value;
     this.clubs$ = this.apollo
@@ -229,7 +233,7 @@ export class TeamsStepComponent implements OnInit {
     }
 
     for (const type of this.eventTypes) {
-      const control = this.control?.get(type) as FormControl<Team[]>;
+      const control = this.control?.get(type) as FormArray<TeamForm>;
       if (!control) {
         continue;
       }
@@ -329,7 +333,7 @@ export class TeamsStepComponent implements OnInit {
   }
 
   async addTeam(type: SubEventType) {
-    const teams = this.control?.value?.[type] || ([] as Team[]);
+    const teams = this.control?.get(type) as FormArray<TeamForm>;
     const club = await lastValueFrom(this.clubs$);
 
     const teamNumber = teams.length + 1;
@@ -342,8 +346,16 @@ export class TeamsStepComponent implements OnInit {
     });
 
     team.name = this.getTeamName(team, club);
-    teams.push(team);
-    this.control?.get(type)?.setValue(teams, { emitEvent: true });
+    teams.push(
+      new FormGroup({
+        team: new FormControl(team),
+        entry: new FormControl(
+          new EventEntry({
+            teamId: team.id,
+          })
+        ),
+      }) as TeamForm
+    );
 
     const ref = this.snackBar.open(
       `Team ${team.name} added at the end`,
@@ -375,20 +387,21 @@ export class TeamsStepComponent implements OnInit {
     if (!team.type) return;
     const club = await lastValueFrom(this.clubs$);
 
-    const teams = this.control?.value?.[team.type] || ([] as Team[]);
-    const index = teams.findIndex((t) => t.teamNumber === team.teamNumber);
-    if (index > -1) {
-      teams.splice(index, 1);
-      this.control?.get(team.type)?.setValue(teams);
-    }
+    const teams = this.control?.get(team.type) as FormArray<TeamForm>;
+    const index = teams.controls.findIndex((t) => t.value.team?.id === team.id);
 
-    // update lower teamnumbers
-    teams
-      .filter((t) => (t.teamNumber ?? 0) > (team.teamNumber ?? 0))
-      .forEach((t) => {
-        t.teamNumber = (t.teamNumber ?? 0) - 1;
+    if (index < 0) return;
+
+    teams.removeAt(index);
+
+    // update lower team numbers
+    for (let i = index; i < teams.length; i++) {
+      const t = teams.at(i).value.team;
+      if (t) {
+        t.teamNumber = i + 1;
         t.name = this.getTeamName(t, club);
-      });
+      }
+    }
   }
 
   async changeTeamNumber(team: Team) {
@@ -409,13 +422,13 @@ export class TeamsStepComponent implements OnInit {
       if (!result.newNumber) return;
       if (!team.id) return;
       const teams = this.control?.value?.[type] || ([] as Team[]);
-      this.control
-        ?.get(type)
-        ?.setValue(
-          this.changeNumber(team.id, result.newNumber, club, teams)?.sort(
-            (a, b) => (a.teamNumber ?? 0) - (b.teamNumber ?? 0)
-          )
-        );
+      // this.control
+      //   ?.get(type)
+      //   ?.setValue(
+      //     this.changeNumber(team.id, result.newNumber, club, teams)?.sort(
+      //       (a, b) => (a.teamNumber ?? 0) - (b.teamNumber ?? 0)
+      //     )
+      //   );
       this.changedector.markForCheck();
     });
   }

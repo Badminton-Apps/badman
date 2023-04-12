@@ -1,5 +1,5 @@
 import { Player } from '@badman/backend-database';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamClubBaseRule extends Rule {
@@ -37,8 +37,8 @@ export class TeamClubBaseRule extends Rule {
       ...new Set([...subtitudes].filter((p) => p != undefined)),
     ];
 
-    const errors = [] as ValidationError[];
-    const warnings = [] as ValidationError[];
+    const errors = [] as AssemblyValidationError[];
+    const warnings = [] as AssemblyValidationError[];
 
     for (const oMeta of otherMeta) {
       const metaPlayers = oMeta?.competition?.players?.map((p) => p.id);
@@ -56,7 +56,7 @@ export class TeamClubBaseRule extends Rule {
   }
 
   private checkGroup(players: Player[], otherPlayers: string[]) {
-    const errors = [] as ValidationError[];
+    const errors = [] as AssemblyValidationError[];
     for (const player of players) {
       if (otherPlayers.includes(player.id)) {
         errors.push({

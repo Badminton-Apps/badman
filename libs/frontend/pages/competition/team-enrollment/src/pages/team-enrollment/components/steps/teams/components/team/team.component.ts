@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,6 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PlayerSearchComponent } from '@badman/frontend-components';
 import {
   EntryCompetitionPlayers,
+  EventEntry,
   Player,
   RankingPlace,
   Team,
@@ -54,7 +56,10 @@ import { lastValueFrom } from 'rxjs';
 })
 export class TeamComponent implements OnInit {
   @Input()
-  team!: Team;
+  team!: FormControl<Team>;
+
+  @Input()
+  entry!: FormControl<EventEntry>;
 
   @Input()
   systemId!: string;
@@ -77,13 +82,13 @@ export class TeamComponent implements OnInit {
 
   // easy access to base meta
   get base() {
-    return this.team.entry?.meta?.competition?.players;
+    return this.entry?.value?.meta?.competition?.players;
   }
 
   get baseIndex() {
-    return this.team.entry?.meta?.competition?.teamIndex;
+    return this.entry?.value?.meta?.competition?.teamIndex;
   }
-
+  
   baseCount = 0;
   backupCount = 0;
   teamIndex = 0;
@@ -100,19 +105,30 @@ export class TeamComponent implements OnInit {
   ngOnInit(): void {
     this.checkTeam();
 
-    if (this.team.type && this.team.players) {
-      this.teamIndex = getIndexFromPlayers(this.team.type, this.team.players);
+    if (this.team.value.type && this.team.value.players) {
+      this.teamIndex = getIndexFromPlayers(
+        this.team.value.type,
+        this.team.value.players
+      );
     }
   }
 
   removePlayerFromTeam(player: Player) {
-    this.team.players = this.team.players?.filter((p) => p.id !== player.id);
+    const newPlayers = this.team.value.players?.filter(
+      (p) => p.id !== player.id
+    );
+
+    this.team.patchValue({
+      ...this.team.value,
+      players: newPlayers,
+    } as Team);
+
     this.checkTeam();
   }
 
   async addPlayerToTeam(player: Player) {
     // Check if player is already in team
-    if (this.team.players?.find((p) => p.id === player.id)) {
+    if (this.team.value.players?.find((p) => p.id === player.id)) {
       this.snackbar.open('Player is already in team', 'Close', {
         duration: 3000,
       });
@@ -121,7 +137,7 @@ export class TeamComponent implements OnInit {
 
     const ranking = await this.getRanking(player);
 
-    this.team.players = this.team.players?.concat(
+    const newPlayers = this.team.value.players?.concat(
       new TeamPlayer({
         ...player,
         rankingPlaces: ranking.data?.rankingPlaces ?? [],
@@ -129,13 +145,18 @@ export class TeamComponent implements OnInit {
       })
     );
 
+    this.team.patchValue({
+      ...this.team.value,
+      players: newPlayers,
+    } as Team);
+
     this.checkTeam();
   }
 
   async addBasePlayerToTeam(player: Player) {
     // Check if player is already in team
     if (
-      this.team.entry?.meta?.competition?.players?.find(
+      this.entry?.value?.meta?.competition?.players?.find(
         (p) => p.id === player.id
       )
     ) {
@@ -147,24 +168,42 @@ export class TeamComponent implements OnInit {
 
     const ranking = await this.getRanking(player);
 
-    this.team.entry?.meta?.competition?.players?.push({
+    const newPlayers = this.entry?.value?.meta?.competition?.players?.concat({
       player,
       id: player.id,
       single: ranking.data.rankingPlaces?.[0].single,
       double: ranking.data.rankingPlaces?.[0].double,
       mix: ranking.data.rankingPlaces?.[0].mix,
     } as EntryCompetitionPlayers);
+
+    this.entry.patchValue({
+      ...this.entry.value,
+      meta: {
+        ...this.entry.value.meta,
+        competition: {
+          ...this.entry.value.meta?.competition,
+          players: newPlayers,
+        },
+      },
+    } as EventEntry);
+
     this.checkTeam();
   }
 
   removeBasePlayerFromTeam(id: string) {
-    if (!this.team.entry?.meta?.competition?.players) {
-      return;
-    }
+    this.entry.patchValue({
+      ...this.entry.value,
+      meta: {
+        ...this.entry.value.meta,
+        competition: {
+          ...this.entry.value.meta?.competition,
+          players: this.entry?.value?.meta?.competition?.players?.filter(
+            (p) => p.id !== id
+          ),
+        },
+      },
+    } as EventEntry);
 
-    this.team.entry.meta.competition.players =
-      this.team.entry?.meta?.competition?.players?.filter((p) => p.id !== id) ??
-      [];
     this.checkTeam();
   }
 
@@ -177,24 +216,35 @@ export class TeamComponent implements OnInit {
     this.hasWarning = false;
     this.warningMessage = '';
 
-    this.baseCount = this.team.players?.filter(
+    this.baseCount = this.team.value.players?.filter(
       (p) => p.membershipType === TeamMembershipType.REGULAR
     ).length;
 
-    this.backupCount = this.team.players?.filter(
+    this.backupCount = this.team.value.players?.filter(
       (p) => p.membershipType === TeamMembershipType.BACKUP
     ).length;
 
     // calculate index
     if (
-      this.team?.entry?.meta?.competition?.players != undefined &&
-      this.team?.entry?.meta?.competition?.teamIndex != undefined &&
-      this.team?.type
+      this.entry?.value?.meta?.competition?.players != undefined &&
+      this.entry?.value?.meta?.competition?.teamIndex != undefined &&
+      this.team?.value?.type
     ) {
-      this.team.entry.meta.competition.teamIndex = getIndexFromPlayers(
-        this.team.type,
-        this.team.entry.meta.competition.players
+      const index = getIndexFromPlayers(
+        this.team?.value?.type,
+        this.team?.value?.entry?.meta?.competition?.players ?? []
       );
+
+      this.entry.patchValue({
+        ...this.entry.value,
+        meta: {
+          ...this.entry.value.meta,
+          competition: {
+            ...this.entry.value.meta?.competition,
+            teamIndex: index,
+          },
+        },
+      } as EventEntry);
     }
 
     this.changeDetector.detectChanges();

@@ -1,5 +1,5 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class PlayerMinLevelRule extends Rule {
@@ -19,7 +19,7 @@ export class PlayerMinLevelRule extends Rule {
       subEvent,
     } = assembly;
 
-    const errors = [] as ValidationError[];
+    const errors = [] as AssemblyValidationError[];
     let valid = true;
 
     if (team.teamNumber != 1) {

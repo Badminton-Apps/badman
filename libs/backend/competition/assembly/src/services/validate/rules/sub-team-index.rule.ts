@@ -1,5 +1,5 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -8,7 +8,7 @@ import { Rule } from './_rule.base';
 export class SubTeamIndexRule extends Rule {
   async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
     const { meta, type, team, subtitudes } = assembly;
-    const warnings = [] as ValidationError[];
+    const warnings = [] as AssemblyValidationError[];
 
     if (team.teamNumber != 1) {
       // sort players by sum of their ranking places

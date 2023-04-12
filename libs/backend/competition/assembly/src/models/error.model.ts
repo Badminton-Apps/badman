@@ -9,7 +9,7 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { GraphQLJSONObject } from 'graphql-type-json';
 
 @ObjectType()
-export class ValidationError {
+export class AssemblyValidationError {
   @Field(() => String, { nullable: true })
   message: PathImpl2<I18nTranslations>;
 
@@ -19,11 +19,11 @@ export class ValidationError {
 
 @ObjectType()
 export class AssemblyOutput {
-  @Field(() => [ValidationError], { nullable: 'itemsAndList' })
-  errors?: ValidationError[];
+  @Field(() => [AssemblyValidationError], { nullable: 'itemsAndList' })
+  errors?: AssemblyValidationError[];
 
-  @Field(() => [ValidationError], { nullable: 'itemsAndList' })
-  warnings?: ValidationError[];
+  @Field(() => [AssemblyValidationError], { nullable: 'itemsAndList' })
+  warnings?: AssemblyValidationError[];
 
   @Field(() => Boolean, { nullable: true })
   valid: boolean;

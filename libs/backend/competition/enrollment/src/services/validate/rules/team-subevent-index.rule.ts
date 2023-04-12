@@ -1,28 +1,45 @@
-import { AssemblyData, AssemblyOutput } from '../../../models';
+import {
+  EnrollmentData,
+  EnrollmentOutput,
+  EnrollmentValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamSubeventIndexRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
-    const { teamIndex: baseTeamIndex, subEvent } = assembly;
+  async validate(enrollment: EnrollmentData): Promise<EnrollmentOutput> {
+    const errors = [] as EnrollmentValidationError[];
+    const valid: {
+      teamId: string;
+      valid: boolean;
+    }[] = [];
 
-    if (baseTeamIndex < subEvent.minBaseIndex) {
-      return {
-        valid: false,
-        errors: [
-          {
-            message: 'all.competition.team-assembly.errors.team-to-strong',
-            params: {
-              teamIndex: baseTeamIndex,
-              minIndex: subEvent.minBaseIndex,
-              maxIndex: subEvent.maxBaseIndex,
-            },
+    for (const {
+      teamIndex: baseTeamIndex,
+      subEvent,
+      team,
+    } of enrollment.teams) {
+      let teamValid = true;
+      if (baseTeamIndex < subEvent.minBaseIndex) {
+        teamValid = false;
+        errors.push({
+          message: 'all.competition.team-enrollment.errors.team-to-strong',
+          params: {
+            teamIndex: baseTeamIndex,
+            minIndex: subEvent.minBaseIndex,
+            maxIndex: subEvent.maxBaseIndex,
           },
-        ],
-      };
+        });
+      }
+
+      valid.push({
+        teamId: team.id,
+        valid: teamValid,
+      });
     }
 
     return {
-      valid: true,
+      valid,
+      errors,
     };
   }
 }

@@ -1,6 +1,6 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class PlayerOrderRule extends Rule {
@@ -18,7 +18,7 @@ export class PlayerOrderRule extends Rule {
       system,
     } = assembly;
 
-    let errors = [] as ValidationError[];
+    let errors = [] as AssemblyValidationError[];
 
     errors.push(
       this._checkSingle(
@@ -94,7 +94,7 @@ export class PlayerOrderRule extends Rule {
     game1: string,
     game2: string,
     defaultRanking = 12
-  ): ValidationError {
+  ): AssemblyValidationError {
     if (!player1 || !player2) return undefined;
 
     const ranking1 = player1?.rankingLastPlaces?.[0]?.single ?? defaultRanking;
@@ -128,7 +128,7 @@ export class PlayerOrderRule extends Rule {
     game1: string,
     game2: string,
     defaultRanking = 12
-  ): ValidationError {
+  ): AssemblyValidationError {
     if (!double1 || !double2) return undefined;
     if (!double1[0] || !double1[1] || !double2[0] || !double2[1])
       return undefined;
