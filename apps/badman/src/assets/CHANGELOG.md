@@ -2,6 +2,75 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.62.0](https://github.com/Badminton-Apps/badman/compare/v5.39.4...v6.62.0) (2023-04-12)
+
+
+### Features
+
+* add a small loading block on the bottom ([ca6730e](https://github.com/Badminton-Apps/badman/commit/ca6730ee95e2239fe22e0f6b50aa7b4aa254399b))
+* adding date time ([a7e0b1c](https://github.com/Badminton-Apps/badman/commit/a7e0b1c459ca9e8965432e6de46292300f6acae4))
+* adding icon for showing if your lost games count for something ([df14fbb](https://github.com/Badminton-Apps/badman/commit/df14fbb04960ca0bff2e0832638824e510d91426))
+* adding ranking to enrollement ([fa44f31](https://github.com/Badminton-Apps/badman/commit/fa44f31beeeec86025a5271aa0a946bde5c449c0))
+* adding some extra spacing for doubles and mix ([f7c2986](https://github.com/Badminton-Apps/badman/commit/f7c29867ab8d33d4bfedd69ba67d0dd402712882))
+* analytics ([7c47770](https://github.com/Badminton-Apps/badman/commit/7c4777029d61c5cb52b9ae8f9f1d5bdc75799174))
+* **backend-assembly:** adding dockerfile, locking mailing, fix order and pdf gen ([2a86662](https://github.com/Badminton-Apps/badman/commit/2a86662fec8556c9739b364c5392aae8ec17e62a))
+* **backend-assembly:** first set of rules ([18c8a13](https://github.com/Badminton-Apps/badman/commit/18c8a13152edfcb18565c5d68f759dcd3bd8ac6f))
+* **backend-assembly:** updated rules and validations ([a7cfaa8](https://github.com/Badminton-Apps/badman/commit/a7cfaa86700c92212278b8c42428cc9751427c29))
+* **backend-assembly:** validation assembly ([6dde3ed](https://github.com/Badminton-Apps/badman/commit/6dde3edaec46171a24e2568f904b5ce61835456b))
+* **backend:** adding caching for db ([30b5a02](https://github.com/Badminton-Apps/badman/commit/30b5a02e80c851e54ccc9d6cd746b6cc369288cc))
+* **backend:** updated redis packages ([b982218](https://github.com/Badminton-Apps/badman/commit/b982218b867d67cdad3582ef074eee56541a8645))
+* **ci:** removing charts ([82bcce4](https://github.com/Badminton-Apps/badman/commit/82bcce4dc9b0bd228e29af2235e357880fe698cc))
+* **client:** when in render use render config ([8c502b9](https://github.com/Badminton-Apps/badman/commit/8c502b949a8af62c7c284306dcfb922eefabb6c6))
+* hide beta message ([08d1e1e](https://github.com/Badminton-Apps/badman/commit/08d1e1e07a8d4a670ad9aa43863098df5de1d28e))
+* highlight ranking updates ([a2dd32c](https://github.com/Badminton-Apps/badman/commit/a2dd32cea4fc4afd954ce861822d18c45c23f4f0))
+* only deploy on production ([24d54b1](https://github.com/Badminton-Apps/badman/commit/24d54b1c543c13b253ac7b283d558e6cc37fc51a))
+* only deploy on production ([7397f90](https://github.com/Badminton-Apps/badman/commit/7397f90feda12de8a879c62677bcd9375b4ab57e))
+* only show enrollement when there are ([15d37f9](https://github.com/Badminton-Apps/badman/commit/15d37f94a47521607fe2201f9cdb1d872d1449bd))
+* only show open in toernooi.nl when it is possible ([6a99350](https://github.com/Badminton-Apps/badman/commit/6a99350b31132f9c44aecf98e9f62500f3c2bf22))
+* open/close of events ([265a0d8](https://github.com/Badminton-Apps/badman/commit/265a0d8b51f414ea7ec6963252f29af5be618ca2))
+* set the breakdown to last point update ([5521d4b](https://github.com/Badminton-Apps/badman/commit/5521d4bb5f65cbee2742bb4039fc6355f04a28d0))
+* should be all current games ([3bcaeb4](https://github.com/Badminton-Apps/badman/commit/3bcaeb4b30b2cc6d5e167e75af8897b27a8eae06))
+* showing ranking table on home page ([0d6f01a](https://github.com/Badminton-Apps/badman/commit/0d6f01a3db9ce0d1c84e9e0caa34a0ab40ea2f0a))
+* some notification translations ([ac1da4a](https://github.com/Badminton-Apps/badman/commit/ac1da4a2ecef2df6531bb28ed4a9d65db16d5c04))
+* the big move to a single repo ([48d6680](https://github.com/Badminton-Apps/badman/commit/48d668043fbe3d84fc1e6341ca702d687905390b))
+* the new actions ([3be5da7](https://github.com/Badminton-Apps/badman/commit/3be5da716b0c2ac02e8b015f47a804602a1ad030))
+* update on period ([bc15ce9](https://github.com/Badminton-Apps/badman/commit/bc15ce92701d802f4ce8a908c7476153eaabbf0d))
+
+
+### Bug Fixes
+
+* **backend-assembly,frontend-competition:** assembly setup for render.com ([b93a8b9](https://github.com/Badminton-Apps/badman/commit/b93a8b9b483a830e0ad1c36c1abfcdc0a267d805))
+* **backend-assembly:** twizzit export, pdf generation ([7ca1b99](https://github.com/Badminton-Apps/badman/commit/7ca1b996dc98ab43142aaf19cd1d6ae1443c9aaf))
+* **backend-assembly:** validation service typo ([d67ecb0](https://github.com/Badminton-Apps/badman/commit/d67ecb0e0090075093efbead8f8a6980877503cf))
+* **client:** loading the config from environment ([eeb8cbf](https://github.com/Badminton-Apps/badman/commit/eeb8cbfa74f36a55eab7e9c4dfc139bf4d8c58e9))
+* **client:** moving ads and robots to correct location ([a0001a5](https://github.com/Badminton-Apps/badman/commit/a0001a500111804b7eeabf1ca44f84be540d8998))
+* **client:** update url to new endpoint ([dea76eb](https://github.com/Badminton-Apps/badman/commit/dea76eb0527440c5175cca787a3f0bd004c7cb02))
+* **deps:** pinning node to 19 ([cdd95e2](https://github.com/Badminton-Apps/badman/commit/cdd95e2424f148660484372afaa0fd390d8fb034))
+* **deps:** update angular monorepo to v15 ([53ee05c](https://github.com/Badminton-Apps/badman/commit/53ee05cacb39c841784a9c4c9a926138fe6d930e))
+* **deps:** update angularmaterial monorepo to v15 (major) ([683eb99](https://github.com/Badminton-Apps/badman/commit/683eb99fb20b3042556a9ae80e6a031884e9c86e))
+* **deps:** update dependency @apollo/utils.keyvadapter to v2 ([4757675](https://github.com/Badminton-Apps/badman/commit/475767523136472fa98c047b0bc147b79f000a84))
+* **deps:** update dependency ngx-cookie-service to v15 ([238cf58](https://github.com/Badminton-Apps/badman/commit/238cf58074013e4bc9168b57c830e3234f10c836))
+* **deps:** update dependency ngx-markdown to v15 ([7320081](https://github.com/Badminton-Apps/badman/commit/73200817d22e58ac644d675484b43d5abdcbba19))
+* **deps:** update dependency puppeteer to v19 ([949c21a](https://github.com/Badminton-Apps/badman/commit/949c21a344d5d74d79992099818ae2b6146f0fed))
+* **deps:** update dependency zone.js to ~0.12.0 ([960cfdd](https://github.com/Badminton-Apps/badman/commit/960cfdda1df859e7a779db94da36f5c385e80b17))
+* **deps:** update nrwl monorepo to v15.0.11 ([9c9670f](https://github.com/Badminton-Apps/badman/commit/9c9670f909a3bb24f51a487ea9e7fe31b4af6535))
+* **deps:** update nrwl monorepo to v15.0.13 ([ef63613](https://github.com/Badminton-Apps/badman/commit/ef63613526c38db7e096d40bac257f1d8201ffe4))
+* **deps:** update nrwl monorepo to v15.1.0 ([dcf973b](https://github.com/Badminton-Apps/badman/commit/dcf973b928388d9404d411ae270f0cfbabac5e95))
+* **deps:** update nrwl monorepo to v15.1.1 ([dbee1da](https://github.com/Badminton-Apps/badman/commit/dbee1da9c9b7b4681494cd89d3e8f75a36809723))
+* **deps:** update nrwl monorepo to v15.2.0 ([565790e](https://github.com/Badminton-Apps/badman/commit/565790e98d30aaae8b10e5eb0741797a6ce80a02))
+* **deps:** update nrwl monorepo to v15.2.1 ([b3210eb](https://github.com/Badminton-Apps/badman/commit/b3210ebb4dba9a2b33169dfe9ba6c531eef7d7a4))
+* **fontend-tournament:** image url ([892b627](https://github.com/Badminton-Apps/badman/commit/892b627bfa8318e882e559c3673132db84cd2b84))
+* **frontend-club:** fix image url ([273be09](https://github.com/Badminton-Apps/badman/commit/273be0900dd40776df4fd32f1a09868f63959c86))
+* if a game has no ranking points it should count ([0159b4a](https://github.com/Badminton-Apps/badman/commit/0159b4a3409ad6cf68721a736e00a7c954036b76))
+* ignoring some folders ([d8f8e5e](https://github.com/Badminton-Apps/badman/commit/d8f8e5e665c37a422db8f3f02730a976595644a2))
+* label ([e96d92f](https://github.com/Badminton-Apps/badman/commit/e96d92f13d30e4770497cd38fbdaec40ce3643e5))
+* light/dark charts ([d21eb4d](https://github.com/Badminton-Apps/badman/commit/d21eb4d1365134f86f09251471bd632fd09fd5a8))
+* mat-date-picker styling ([1af490d](https://github.com/Badminton-Apps/badman/commit/1af490d663d8449ada898b003e27d8264eacfccf))
+* processing wasn't done properly ([6a39d17](https://github.com/Badminton-Apps/badman/commit/6a39d17d5cd1004d5c3e8c4e04d97995e77792bb))
+* should fix listing of games in overview ([440e5ca](https://github.com/Badminton-Apps/badman/commit/440e5cad40744e96dc3845b73760478dc62390ba))
+* visual module ([fe018b6](https://github.com/Badminton-Apps/badman/commit/fe018b6342580f428a8ad617d09080877554a478))
+* **worker-sync:** node env should be prod ([a76f7fc](https://github.com/Badminton-Apps/badman/commit/a76f7fc230d5654263e17b0b565355e33dc535c9))
+
 ## [6.61.0](https://github.com/Badminton-Apps/badman-next/compare/v6.60.1...v6.61.0) (2023-04-06)
 
 
