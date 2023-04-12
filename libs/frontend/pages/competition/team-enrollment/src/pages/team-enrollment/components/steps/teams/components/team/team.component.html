@@ -1,6 +1,6 @@
 <div class="general">
   <div>
-    <span class="name">{{ team.name }}</span>
+    <span class="name">{{ team.value.name }}</span>
   </div>
 
   <div class="change">
@@ -9,7 +9,7 @@
       mat-icon-button
       class="change-button"
       aria-label="Change team number"
-      (click)="this.changeTeamNumber.next(team)"
+      (click)="this.changeTeamNumber.next(team.value)"
       [matTooltip]="'all.team.change-number.tooltip' | translate"
     >
       <mat-icon>swap_horiz</mat-icon>
@@ -20,7 +20,7 @@
       mat-icon-button
       class="remove-button"
       aria-label="Remove team"
-      (click)="this.removeTeam.next(team)"
+      (click)="this.removeTeam.next(team.value)"
     >
       <mat-icon>delete</mat-icon>
     </button>
@@ -49,19 +49,19 @@
   <mat-divider></mat-divider>
 
   <div *ngIf="expanded.regular">
-    <div *ngFor="let player of this.team.players" class="player">
+    <div *ngFor="let player of this.team.value.players" class="player">
       <div class="name">
         {{ player.fullName }}
         <span class="ranking">
           {{ player.lastRanking?.single }} -
           {{ player.lastRanking?.double }}
-          <ng-container *ngIf="team.type === 'MX'">
+          <ng-container *ngIf="team.value.type === 'MX'">
             - {{ player.lastRanking?.mix }}</ng-container
           >
           ({{
             (player.lastRanking?.single ?? 12) +
               (player.lastRanking?.double ?? 12) +
-              (team.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
+              (team.value.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
           }})</span
         >
       </div>
@@ -88,7 +88,7 @@
     <badman-player-search
       [allowCreation]="false"
       [searchOutsideClub]="true"
-      [club]="this.team.clubId"
+      [club]="this.team.value.clubId"
       [label]="'Voeg speler toe'"
       (whenSelectPlayer)="addPlayerToTeam($event)"
     ></badman-player-search>
@@ -115,8 +115,8 @@
         {{ b.player.fullName }}
         <span class="ranking">
           {{ b.single }} - {{ b.double }}
-          <ng-container *ngIf="team.type === 'MX'"> - {{ b.mix }}</ng-container>
-          ({{ b.single + b.double + (team.type === 'MX' ? b.mix : 0) }})</span
+          <ng-container *ngIf="team.value.type === 'MX'"> - {{ b.mix }}</ng-container>
+          ({{ b.single + b.double + (team.value.type === 'MX' ? b.mix : 0) }})</span
         >
       </div>
       <div class="delete">
@@ -128,7 +128,7 @@
     <badman-player-search
       [allowCreation]="false"
       [searchOutsideClub]="true"
-      [club]="this.team.clubId"
+      [club]="this.team.value.clubId"
       [label]="'Voeg speler toe'"
       (whenSelectPlayer)="addBasePlayerToTeam($event)"
     ></badman-player-search>

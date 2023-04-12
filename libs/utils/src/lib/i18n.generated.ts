@@ -231,6 +231,36 @@ export type I18nTranslations = {
                 "permanent-dialog": string;
                 "avg-level": string;
             };
+            "team-enrollment": {
+                "captain": string;
+                "errors": {
+                    "already": string;
+                    "club-base-other-team": string;
+                    "comp-status": string;
+                    "none": string;
+                    "player-gender": string;
+                    "player-genders": string;
+                    "player-min-level": string;
+                    "team-index": string;
+                    "team-to-strong": string;
+                    "title": string;
+                };
+                "info": string;
+                "change-team": string;
+                "players": {
+                    "base": string;
+                    "backup": string;
+                    "team": string;
+                    "title": string;
+                };
+                "team-index": string;
+                "team-index-ignored": string;
+                "title": string;
+                "warnings": {
+                    "subtitute-team-index": string;
+                };
+                "substitude": string;
+            };
             "title": string;
             "avg-level": string;
             "type": string;
@@ -659,6 +689,35 @@ export type I18nTranslations = {
             };
             "liga": string;
             "prov": string;
+        };
+        "team-enrollment": {
+            "captain": string;
+            "errors": {
+                "already": string;
+                "club-base-other-team": string;
+                "comp-status": string;
+                "none": string;
+                "player-gender": string;
+                "player-genders": string;
+                "player-min-level": string;
+                "team-index": string;
+                "team-to-strong": string;
+                "title": string;
+            };
+            "change-team": string;
+            "players": {
+                "base": string;
+                "team": string;
+                "backup": string;
+                "title": string;
+            };
+            "substitude": string;
+            "team-index": string;
+            "team-index-ignored": string;
+            "title": string;
+            "warnings": {
+                "subtitute-team-index": string;
+            };
         };
     };
 };

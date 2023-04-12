@@ -224,6 +224,35 @@
         "subtitute-team-index": "s"
       }
     },
+    "team-enrollment": {
+      "captain": "Ploegkapitein",
+      "errors": {
+        "already": "Speler al als titualris aanwezig.",
+        "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
+        "comp-status": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
+        "none": "Geen fouten gevonden",
+        "player-gender": "<strong>{player.fullName}</strong> is een {player.gender} maar een {gender} was verwacht",
+        "player-genders": "<strong>{player1.fullName}</strong> ({player1.gender}) en {player2.gender} ({player2gender}) zijn niet het correcte geslacht voor <strong>{game}</strong>",
+        "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
+        "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
+        "team-to-strong": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
+        "title": "Fouten"
+      },
+      "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
+      "players": {
+        "base": "Titularissen",
+        "team": "Basisspelers",
+        "backup": "Reservespelers",
+        "title": "Mogelijke titularissen"
+      },
+      "substitude": "Invallers",
+      "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
+      "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
+      "title": "Ploegopstelling",
+      "warnings": {
+        "subtitute-team-index": "s"
+      }
+    },
     "title": "Competitie",
     "avg-level": "Gemiddeld niveau",
     "type": "Type",

@@ -27,6 +27,8 @@ export class EventEntry {
 
   entryType?: string;
 
+  teamId?: string;
+
   team?: Team;
   players?: Player[];
   meta?: Meta;
@@ -51,6 +53,10 @@ export class EventEntry {
         ? new DrawTournament(args?.tournamentDraw)
         : undefined;
 
+    this.competitionSubEventId = args?.competitionSubEventId;
+    this.competitionDrawId = args?.competitionDrawId;
+    this.teamId = args?.teamId;
+    
     this.team = args?.team != null ? new Team(args?.team) : undefined;
     this.standing =
       args?.standing != null ? new Standing(args?.standing) : undefined;

@@ -224,6 +224,35 @@
         "subtitute-team-index": "s"
       }
     },
+    "team-enrollment": {
+      "captain": "Team captain",
+      "errors": {
+        "already": "Player already present as titular.",
+        "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
+        "comp-status": "<strong>{player.fullName}</strong> is not marked as a competition player",
+        "none": "No errors found",
+        "player-gender": "<strong>{player.fullName}</strong> is a {player.gender} but epected {gender}",
+        "player-genders": "<strong>{player1.fullName}</strong> ({player1.gender}) and <strong>{player2.fullName}</strong> ({player2.gender}) ar't of the currect gender for <strong>{game}</strong>",
+        "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in {rankingType} and may minimally be <strong>{minLevel}</strong>.",
+        "team-index": "Team index titulars equals <strong>{teamIndex}</strong> and is allowed to mimimally be <strong>{baseIndex}</strong>",
+        "team-to-strong": "Team index titulars equals <strong>{teamIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
+        "title": "Errors"
+      },
+      "info": "Remarks concerning the team enrollment",
+      "change-team": "By editing the team you can change the default players shown, and who are the backups.",
+      "players": {
+        "base": "Titulars",
+        "backup": "Backup players",
+        "team": "Base players",
+        "title": "Possible titulars"
+      },
+      "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
+      "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team.",
+      "title": "Team enrollment",
+      "warnings": {
+        "subtitute-team-index": "s"
+      }
+    },
     "title": "Competition",
     "avg-level": "Average level",
     "type": "Type",

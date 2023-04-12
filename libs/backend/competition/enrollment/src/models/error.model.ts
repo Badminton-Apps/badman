@@ -1,15 +1,10 @@
-import {
-  EntryCompetitionPlayers,
-  PlayerRankingType,
-  Player,
-} from '@badman/backend-database';
 import { I18nTranslations } from '@badman/utils';
 import { PathImpl2 } from '@nestjs/config';
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { GraphQLJSONObject } from 'graphql-type-json';
 
 @ObjectType()
-export class ValidationError {
+export class EnrollmentValidationError {
   @Field(() => String, { nullable: true })
   message: PathImpl2<I18nTranslations>;
 
@@ -18,29 +13,34 @@ export class ValidationError {
 }
 
 @ObjectType()
-export class AssemblyOutput {
-  @Field(() => [ValidationError], { nullable: 'itemsAndList' })
-  errors?: ValidationError[];
+export class TeamInfo {
+  @Field(() => String, { nullable: true })
+  message: PathImpl2<I18nTranslations>;
 
-  @Field(() => [ValidationError], { nullable: 'itemsAndList' })
-  warnings?: ValidationError[];
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  params?: unknown;
+}
 
-  @Field(() => Boolean, { nullable: true })
+@ObjectType('TeamValidity')
+export class TeamValidity {
+  @Field(() => String)
+  teamId: string;
+
+  @Field(() => Boolean)
   valid: boolean;
+}
 
-  @Field(() => Int, { nullable: true })
-  baseTeamIndex?: number;
+@ObjectType()
+export class EnrollmentOutput {
+  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
+  errors?: EnrollmentValidationError[];
 
-  @Field(() => Int, { nullable: true })
-  titularsIndex?: number;
+  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
+  warnings?: EnrollmentValidationError[];
 
-  @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
-  baseTeamPlayers?: PlayerRankingType[];
-
-  @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
-  titularsPlayers?: PlayerRankingType[];
-
-  systemId?: string;
-  titularsPlayerData?: Player[];
-  basePlayersData?: EntryCompetitionPlayers[];
+  @Field(() => [TeamValidity], { nullable: true })
+  valid: {
+    teamId: string;
+    valid: boolean;
+  }[];
 }

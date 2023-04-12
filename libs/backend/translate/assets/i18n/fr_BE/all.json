@@ -223,6 +223,36 @@
     "vs": "",
     "vs-short": ""
   },
+  "team-enrollment": {
+    "captain": "",
+    "errors": {
+      "already": "",
+      "club-base-other-team": "",
+      "comp-status": "",
+      "none": "",
+      "player-gender": "",
+      "player-genders": "",
+      "player-min-level": "",
+      "team-index": "",
+      "team-to-strong": "",
+      "title": "n"
+    },
+    "change-team": "",
+    "players": {
+      "base": "",
+      "team": "",
+      "backup": "",
+      "title": "n"
+    },
+    "substitude": "",
+    "team-index": "",
+    "team-index-ignored": "",
+    "title": "",
+    "warnings": {
+      "subtitute-team-index": ""
+    }
+  },
+
   "days": {
     "friday": "",
     "monday": "",

@@ -1,1 +1,3 @@
-export * from './lib/backend-competition-enrollment.module';
+export * from './services';
+export * from './models';
+export * from './enrollment.module';

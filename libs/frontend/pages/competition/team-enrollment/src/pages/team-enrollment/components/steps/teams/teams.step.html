@@ -12,30 +12,19 @@
       </button>
     </div>
     <div class="teams-container">
-      <ng-container *ngIf="this.control?.get(type)?.value as teams">
-        <ng-container *ngIf="teams.length > 0 else noTeams ">
-          <div class="team" *ngFor="let team of this.control?.get(type)?.value">
-            <badman-team
-              [attr.data-anchor]="team.id"
-              [team]="team"
-              (removeTeam)="this.removeTeam($event)"
-              (changeTeamNumber)="this.changeTeamNumber($event)"
-            ></badman-team>
-
-            <div class="event">
-              <mat-form-field>
-                <mat-label>Select</mat-label>
-                <mat-select [value]="team.entry?.competitionSubEventId">
-                  <mat-option
-                    *ngFor="let subEvent of subEvents[type]"
-                    [value]="subEvent.id"
-                  >
-                    {{subEvent.name}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
+      <ng-container *ngIf="getTypeArray(type) as groups; else noTeams">
+        <ng-container *ngFor="let group of groups.controls">
+          <badman-team-enrollment
+            class="team"
+            [team]="$any(group.get('team'))"
+            [entry]="$any(group.get('entry'))"
+            [type]="type"
+            [group]="this.group"
+            [subEvents]="subEvents"
+            (changeTeamNumber)="this.changeTeamNumber($event)"
+            (removeTeam)="this.removeTeam($event)"
+          >
+          </badman-team-enrollment>
         </ng-container>
       </ng-container>
     </div>
