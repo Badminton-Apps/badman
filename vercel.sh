@@ -5,5 +5,5 @@ if [[ $VERCEL_GIT_COMMIT_REF == "main"  ]] ; then
   yarn build badman:build --configuration prod
 else 
   echo "This is not our main branch"
-  yarn build badman:build --configuration render
+  yarn build badman:build --configuration beta
 fi

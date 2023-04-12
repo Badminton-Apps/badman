@@ -59,7 +59,7 @@
           ],
           "outputHashing": "all"
         },
-        "render": {
+        "beta": {
           "budgets": [
             {
               "type": "initial",
@@ -87,20 +87,6 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
-        },
-        "beta": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "vendorChunk": true,
-          "extractLicenses": false,
-          "sourceMap": true,
-          "namedChunks": true,
-          "fileReplacements": [
-            {
-              "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.beta.ts"
-            }
-          ]
         }
       },
       "defaultConfiguration": "development"
@@ -158,7 +144,7 @@
           ],
           "outputHashing": "media"
         },
-        "render": {
+        "beta": {
           "fileReplacements": [
             {
               "replace": "apps/badman/src/environments/environment.ts",
@@ -208,12 +194,8 @@
           "serverTarget": "badman:server:development"
         },
         "beta": {
-          "browserTarget": "badman:build:development",
-          "serverTarget": "badman:server:development"
-        },
-        "render": {
-          "browserTarget": "badman:build:render",
-          "serverTarget": "badman:server:render"
+          "browserTarget": "badman:build:beta",
+          "serverTarget": "badman:server:beta"
         }
       },
       "defaultConfiguration": "development"
