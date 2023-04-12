@@ -29,8 +29,7 @@
     "format:write": "nx format:write",
     "format:check": "nx format:write",
     "update": "nx migrate latest",
-    "create-release": "node ./scripts/standard-version.js",
-    "vercel-build": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"main\" ]; then yarn build badman:build --configuration prod; else yarn build badman:build --configuration render; fi"
+    "create-release": "node ./scripts/standard-version.js"
   },
   "private": true,
   "dependencies": {
