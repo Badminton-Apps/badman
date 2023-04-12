@@ -75,7 +75,7 @@
           "fileReplacements": [
             {
               "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.render.ts"
+              "with": "apps/badman/src/environments/environment.beta.ts"
             }
           ],
           "outputHashing": "all"
