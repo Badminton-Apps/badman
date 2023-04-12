@@ -14,7 +14,7 @@ import { readFile } from 'fs/promises';
 import moment from 'moment-timezone';
 import { I18nService } from 'nestjs-i18n';
 import { lastValueFrom, take } from 'rxjs';
-import { AssemblyData, ValidationError } from '../models';
+import { AssemblyData, AssemblyValidationError } from '../models';
 import { AssemblyService } from '../services';
 
 type gameType =
@@ -209,7 +209,7 @@ export class AssemblyController {
       .pipe(take(1));
   }
 
-  private translateGame(warn: ValidationError) {
+  private translateGame(warn: AssemblyValidationError) {
     const games = warn?.params?.['game'] as gameType;
     if (games != undefined) {
       warn.params['game'] = this.i18nService

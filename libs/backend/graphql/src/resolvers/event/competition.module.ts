@@ -11,8 +11,10 @@ import {
   EventCompetitionResolver,
   SubEventCompetitionResolver,
   AssemblyResolver,
+  EnrollmentResolver,
 } from './competition';
 import { CacheModule } from '@badman/backend-cache';
+import { EnrollmentModule } from '@badman/backend-enrollment';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { CacheModule } from '@badman/backend-cache';
     NotificationsModule,
     QueueModule,
     AssemblyModule,
+    EnrollmentModule,
     RankingModule,
     CacheModule,
   ],
@@ -30,6 +33,7 @@ import { CacheModule } from '@badman/backend-cache';
     DrawCompetitionResolver,
     SubEventCompetitionResolver,
     AssemblyResolver,
+    EnrollmentResolver,
   ],
 })
 export class CompetitionResolverModule {}

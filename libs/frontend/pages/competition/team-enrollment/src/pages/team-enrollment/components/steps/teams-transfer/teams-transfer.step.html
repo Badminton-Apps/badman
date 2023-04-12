@@ -12,7 +12,7 @@
 </div>
 
 <ng-container *ngIf="teams$ | async as teams else loading">
-  <div class="teams" *ngFor="let team of   teams; let i = index ">
+  <div class="teams" *ngFor="let team of teams; let i = index ">
     <mat-checkbox [formControl]="this.teamsForm![i]"
       >{{ team.name }}</mat-checkbox
     >

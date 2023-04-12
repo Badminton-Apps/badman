@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -18,8 +19,9 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import {
   ClubStepComponent,
   EventsStepComponent,
+  TeamForm,
   TeamsStepComponent,
-  TeamsTransferStepComponent
+  TeamsTransferStepComponent,
 } from './components';
 
 export const STEP_AVAILIBILTY = 1;
@@ -55,10 +57,10 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
     events: new FormControl([], [Validators.required]),
     teams: new FormGroup(
       {
-        M: new FormControl([], [Validators.required]),
-        F: new FormControl([], [Validators.required]),
-        MX: new FormControl([], [Validators.required]),
-        NATIONAL: new FormControl([], [Validators.required]),
+        M: new FormArray<TeamForm>([]),
+        F: new FormArray<TeamForm>([]),
+        MX: new FormArray<TeamForm>([]),
+        NATIONAL: new FormArray<TeamForm>([]),
       },
       [Validators.required]
     ),

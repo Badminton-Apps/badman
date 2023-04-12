@@ -1,28 +1,42 @@
-import { AssemblyData, AssemblyOutput } from '../../../models';
+import {
+  EnrollmentData,
+  EnrollmentOutput,
+  EnrollmentValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamBaseIndexRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
-    const { team, teamIndex, meta } = assembly;
+  async validate(enrollment: EnrollmentData): Promise<EnrollmentOutput> {
+    const errors = [] as EnrollmentValidationError[];
+    const valid: {
+      teamId: string;
+      valid: boolean;
+    }[] = [];
 
-    if (team.teamNumber != 1 && teamIndex < meta?.competition?.teamIndex) {
-      return {
-        valid: false,
-        errors: [
-          {
-            message: 'all.competition.team-assembly.errors.team-index',
-            params: {
-              teamIndex,
-              baseIndex: meta.competition.teamIndex,
-            },
+
+    for (const { team, teamIndex, baseIndex } of enrollment.teams) {
+      let teamValid = true;
+      if (team.teamNumber != 1 && teamIndex < baseIndex) {
+        teamValid = false;
+        errors.push({
+          message: 'all.competition.team-enrollment.errors.team-index',
+          params: {
+            teamIndex,
+            baseIndex: baseIndex,
           },
-        ],
-      };
+        });
+      } 
+
+      valid.push({
+        teamId: team.id,
+        valid: teamValid,
+      });
+      
     }
 
     return {
-      valid: true,
-      errors: [],
+      valid,
+      errors,
     };
   }
 }

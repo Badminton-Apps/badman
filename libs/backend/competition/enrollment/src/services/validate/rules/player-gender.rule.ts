@@ -1,119 +1,65 @@
-import { Player } from '@badman/backend-database';
+import { Player, Team } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import {
+  EnrollmentData,
+  EnrollmentOutput,
+  EnrollmentValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
  * Checks
  */
 export class PlayerGenderRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
-    const {
-      single1,
-      single2,
-      single3,
-      single4,
-      double1,
-      double2,
-      double3,
-      double4,
-      type,
-    } = assembly;
+  async validate(enrollment: EnrollmentData): Promise<EnrollmentOutput> {
+    const errors = [] as EnrollmentValidationError[];
+    const valid: {
+      teamId: string;
+      valid: boolean;
+    }[] = [];
 
-    const errors = [] as ValidationError[];
-
-    if (type == SubEventTypeEnum.M) {
-      errors.push(
-        ...this._checkGender(
-          [
-            single1,
-            single2,
-            single3,
-            single4,
-
-            ...double1,
-            ...double2,
-            ...double3,
-            ...double4,
-          ],
-          'M'
-        )
-      );
-    } else if (type == SubEventTypeEnum.F) {
-      errors.push(
-        ...this._checkGender(
-          [
-            single1,
-            single2,
-            single3,
-            single4,
-
-            ...double1,
-            ...double2,
-            ...double3,
-            ...double4,
-          ],
-          'F'
-        )
-      );
-    } else {
-      errors.push(...this._checkGender([single1, single2, ...double1], 'M'));
-      errors.push(...this._checkGender([single3, single4, ...double2], 'F'));
-
-      // in doubles 3 and 4 we should have a F and M player
-      if (double3[0] && double3[1] && double3[0].gender == double3[1].gender) {
-        errors.push({
-          message: 'all.competition.team-assembly.errors.player-genders',
-          params: {
-            game: 'double3',
-            player1: {
-              id: double3[0]?.id,
-              fullName: double3[0]?.fullName,
-              gender: double3[0]?.gender,
-            },
-            player2: {
-              id: double3[1]?.id,
-              fullName: double3[1]?.fullName,
-              gender: double3[1]?.gender,
-            },
-          },
-        });
+    for (const { basePlayers, teamPlayers, team } of enrollment.teams) {
+      let teamValid = true;
+      const teamErrors = [] as EnrollmentValidationError[];
+      if (team.type == SubEventTypeEnum.M) {
+        teamErrors.push(
+          ...this._checkGender([...teamPlayers, ...basePlayers], 'M', team)
+        );
+      } else if (team.type == SubEventTypeEnum.F) {
+        teamErrors.push(
+          ...this._checkGender([...teamPlayers, ...basePlayers], 'F', team)
+        );
       }
 
-      if (double4[0] && double4[1] && double4[0].gender == double4[1].gender) {
-        errors.push({
-          message: 'all.competition.team-assembly.errors.player-genders',
-          params: {
-            game: 'double4',
-            player1: {
-              id: double4[0]?.id,
-              fullName: double4[0]?.fullName,
-              gender: double4[0]?.gender,
-            },
-            player2: {
-              id: double4[1]?.id,
-              fullName: double4[1]?.fullName,
-              gender: double4[1]?.gender,
-            },
-          },
-        });
+      if (teamErrors.length > 0) {
+        teamValid = false;
+        errors.push(...teamErrors);
       }
+
+      valid.push({
+        teamId: team.id,
+        valid: teamValid,
+      });
     }
 
     return {
-      valid: errors.length === 0,
       errors,
+      valid,
     };
   }
 
-  private _checkGender(players: Player[], gender: string): ValidationError[] {
+  private _checkGender(
+    players: Player[],
+    gender: string,
+    team: Team
+  ): EnrollmentValidationError[] {
     const uniquePlayers = [
       ...new Set(players?.filter((p) => p != undefined && p != null)),
     ];
     const wrong = uniquePlayers?.filter((p) => p?.gender != gender);
     if (wrong) {
       return wrong.map((p) => ({
-        message: 'all.competition.team-assembly.errors.player-gender',
+        message: 'all.competition.team-enrollment.errors.player-gender',
         params: {
           player: {
             id: p?.id,
@@ -121,6 +67,7 @@ export class PlayerGenderRule extends Rule {
             gender: p?.gender,
           },
           gender,
+          teamId: team.id,
         },
       }));
     }

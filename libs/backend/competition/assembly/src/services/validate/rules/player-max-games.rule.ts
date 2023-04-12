@@ -1,6 +1,6 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class PlayerMaxGamesRule extends Rule {
@@ -17,7 +17,7 @@ export class PlayerMaxGamesRule extends Rule {
       type,
     } = assembly;
 
-    const errors = [] as ValidationError[];
+    const errors = [] as AssemblyValidationError[];
 
     // Check if a player has max 1 single game and 2 double game
 
