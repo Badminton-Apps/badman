@@ -9,7 +9,7 @@
     $foreground: map.get($color-config, 'foreground');
     $isDark: map.get($color-config, 'is-dark');
 
-    .click-for-breakdown{
+    .click-for-breakdown {
       @if ($isDark) {
         color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
       } @else {
@@ -26,8 +26,12 @@
       @include mat.typography-level($typography-config, 'caption');
     }
 
-    .click-for-breakdown{
+    .click-for-breakdown {
       @include mat.typography-level($typography-config, 'caption');
+    }
+
+    .mdc-evolution-chip__action--presentational {
+      cursor: pointer;
     }
   }
 }
