@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.64.4](https://github.com/Badminton-Apps/badman/compare/v6.64.3...v6.64.4) (2023-04-13)
+
+
+### Bug Fixes
+
+* adding translations for landing page title ([ad2a949](https://github.com/Badminton-Apps/badman/commit/ad2a949c71182585311c302f96efbb575c067d1b))
+* should still change the flex direction ([e06237e](https://github.com/Badminton-Apps/badman/commit/e06237e9112a943a822e8f1241d96246306156c7))
+
 ### [6.64.3](https://github.com/Badminton-Apps/badman/compare/v6.64.2...v6.64.3) (2023-04-13)
 
 
