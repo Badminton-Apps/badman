@@ -10,7 +10,8 @@ RUN apk add --no-cache --virtual .build-deps \
 	pango-dev \
 	giflib-dev
 RUN npm ci
-RUN npm run build api:build -- --configuration=production
+RUN npm run build worker-sync:build -- --configuration=production
+
 # Production stage
 FROM node:19-alpine As production
 ENV NODE_ENV=production \
