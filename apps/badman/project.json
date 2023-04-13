@@ -55,6 +55,10 @@
             {
               "replace": "apps/badman/src/environments/environment.ts",
               "with": "apps/badman/src/environments/environment.prod.ts"
+            },
+            {
+              "replace": "apps/badman/src/manifest.webmanifest",
+              "with": "apps/badman/src/manifest.prod.webmanifest"
             }
           ],
           "outputHashing": "all"
