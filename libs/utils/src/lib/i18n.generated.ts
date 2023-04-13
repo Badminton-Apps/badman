@@ -315,6 +315,12 @@ export type I18nTranslations = {
                 "mixed": string;
                 "single": string;
             };
+            "recent": {
+                "title": string;
+            };
+            "upcoming": {
+                "title": string;
+            };
             "title": string;
             "types": {
                 "female": string;
