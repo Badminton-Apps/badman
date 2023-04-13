@@ -13,10 +13,6 @@
   flex-direction: row;
   gap: 1rem;
 
-  @media (max-width: 760px) {
-    flex-direction: column-reverse;
-  }
-
 
   badman-ranking-table {
     flex: 1 1 auto;
