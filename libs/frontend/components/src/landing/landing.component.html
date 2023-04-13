@@ -2,8 +2,6 @@
 </badman-beta>
 
 <div class="content">
-  <badman-ranking-table></badman-ranking-table>
-
   <div *ngIf="this.user$ | async as user">
     <ng-container *ngIf="user.loggedIn && ((teams$ | async) ?? []) as teams">
       <section class="upcoming-games">
@@ -17,4 +15,6 @@
       </section>
     </ng-container>
   </div>
+  
+  <badman-ranking-table></badman-ranking-table>
 </div>
