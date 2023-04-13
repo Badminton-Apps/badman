@@ -45,6 +45,7 @@ export type I18nTranslations = {
             "upgrade": string;
             "usedForDowngrade": string;
             "usedForUpgrade": string;
+            "hint": string;
         };
         "button": {
             "close": string;
