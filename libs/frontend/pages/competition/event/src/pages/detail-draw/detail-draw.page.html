@@ -23,13 +23,14 @@
 
 <section class="games" *ngIf="teams">
   <section class="recent-games">
-    <h3>Recent games</h3>
+    <h3>{{all.game.recent.title | title}}</h3>
 
     <badman-recent-games [teams]="teams"></badman-recent-games>
   </section>
 
   <section class="upcomming-games">
-    <h3>Upcoming games</h3>
+    <h3>{{all.game.upcomming.title | title}}</h3>
+
     <badman-upcoming-games [teams]="teams"></badman-upcoming-games>
   </section>
 </section>
