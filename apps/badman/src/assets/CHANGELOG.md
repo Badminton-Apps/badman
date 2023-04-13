@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.64.3](https://github.com/Badminton-Apps/badman/compare/v6.64.2...v6.64.3) (2023-04-13)
+
+
+### Bug Fixes
+
+* chip should be cursor ([6b40ea8](https://github.com/Badminton-Apps/badman/commit/6b40ea8f58d65fbd80dc39df82eb117683a0d46b))
+* manifest can be json ([e321511](https://github.com/Badminton-Apps/badman/commit/e321511d2d0974badde61ad18b05ab5b5e63470e))
+* more logical to have this left ([c9a221e](https://github.com/Badminton-Apps/badman/commit/c9a221eb9f75d77e4d0195b4be9fb7f33b421703))
+
 ### [6.64.2](https://github.com/Badminton-Apps/badman/compare/v6.64.1...v6.64.2) (2023-04-13)
 
 
