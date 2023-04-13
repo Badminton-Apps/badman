@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.67.0](https://github.com/Badminton-Apps/badman/compare/v6.66.0...v6.67.0) (2023-04-13)
+
+
+### Features
+
+* storing in filter ([c713721](https://github.com/Badminton-Apps/badman/commit/c713721d692967520afa29625f57e8288fe82401))
+
 ## [6.66.0](https://github.com/Badminton-Apps/badman/compare/v6.65.2...v6.66.0) (2023-04-13)
 
 
