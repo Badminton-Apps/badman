@@ -84,8 +84,8 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
     gameType: new FormControl(),
     period: this.period,
     includedIgnored: new FormControl(false),
-    includedUpgrade: new FormControl(false),
-    includedDowngrade: new FormControl(false),
+    includedUpgrade: new FormControl(true),
+    includedDowngrade: new FormControl(true),
     includeOutOfScope: new FormControl(false),
   });
 
