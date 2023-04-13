@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.65.0](https://github.com/Badminton-Apps/badman/compare/v6.64.4...v6.65.0) (2023-04-13)
+
+
+### Features
+
+* switching to npm for hopefully faster builds ([ba6b59d](https://github.com/Badminton-Apps/badman/commit/ba6b59d80bbc5580fc8abf90f573c9db3b3b908d))
+
+
+### Bug Fixes
+
+* npm run needs extra `--` ([c3fb137](https://github.com/Badminton-Apps/badman/commit/c3fb137ef003c86cfd21bb6e39818d380176f43a))
+
 ### [6.64.4](https://github.com/Badminton-Apps/badman/compare/v6.64.3...v6.64.4) (2023-04-13)
 
 
