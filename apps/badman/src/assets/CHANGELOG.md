@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.64.0](https://github.com/Badminton-Apps/badman/compare/v6.63.3...v6.64.0) (2023-04-13)
+
+
+### Features
+
+* adding upgrade and downgrade games in breakdown ([d7acd8b](https://github.com/Badminton-Apps/badman/commit/d7acd8b1f1bf0e0a2340e7b4b22675b482c4ed4c))
+
 ### [6.63.3](https://github.com/Badminton-Apps/badman/compare/v6.63.2...v6.63.3) (2023-04-12)
 
 
