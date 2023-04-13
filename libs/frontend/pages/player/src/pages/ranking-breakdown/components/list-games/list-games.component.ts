@@ -77,6 +77,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   gameBreakdown: GameBreakdown[] = [];
 
   displayedColumns: string[] = [
+    'dropsNextPeriod',
     'date',
     'team',
     'opponent',
@@ -366,6 +367,14 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       this.addLostGames(this.lostGamesIgnored);
     }
 
+    // mark all games that would dissapear  next period
+    const nextPeriod = this.formGroup.get('period')?.get('next')
+      ?.value as Moment;
+    this.gameBreakdown = this.gameBreakdown?.map((x) => ({
+      ...x,
+      dropsNextPeriod: moment(x.playedAt).isBefore(nextPeriod),
+    }));
+
     this.dataSource.data = this.gameBreakdown;
   }
 
@@ -388,10 +397,13 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     if (isForUpgrade) {
       devider = `${game.devideUpgradeCorrected}`;
       if ((game.devideUpgrade ?? 0) < (game.devideUpgradeCorrected ?? 0)) {
-        devider += `\n${this.translateService.instant('all.breakdown.corrected', {
-          original: game.devideUpgrade,
-          corrected: game.devideUpgradeCorrected,
-        })}`;
+        devider += `\n${this.translateService.instant(
+          'all.breakdown.corrected',
+          {
+            original: game.devideUpgrade,
+            corrected: game.devideUpgradeCorrected,
+          }
+        )}`;
       }
     } else {
       devider = `${game.devideDowngrade}`;
@@ -439,6 +451,7 @@ interface GameBreakdown {
   id: string;
   playedAt?: Date;
   points?: number;
+  dropsNextPeriod?: boolean;
   totalPoints?: number;
   avgUpgrade?: number;
   avgDowngrade?: number;
