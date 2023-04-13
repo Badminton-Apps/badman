@@ -73,50 +73,6 @@ export class PeriodSelectionComponent {
     return '';
   };
 
-  nextPeriod() {
-    const endPeriod = moment(this.period?.get('end')?.value).add(
-      this.system.updateIntervalAmount,
-      this.system.updateIntervalUnit
-    );
-    const startPeriod = endPeriod
-      .clone()
-      .subtract(this.system.periodAmount, this.system.periodUnit);
-    const gamePeriod = startPeriod
-      .clone()
-      .subtract(
-        this.system.updateIntervalAmount,
-        this.system.updateIntervalUnit
-      );
-
-    this.period?.patchValue({
-      start: startPeriod,
-      end: endPeriod,
-      game: gamePeriod,
-    });
-  }
-
-  prevPeriod() {
-    const endPeriod = moment(this.period?.get('end')?.value).subtract(
-      this.system.updateIntervalAmount,
-      this.system.updateIntervalUnit
-    );
-    const startPeriod = endPeriod
-      .clone()
-      .subtract(this.system.periodAmount, this.system.periodUnit);
-    const gamePeriod = startPeriod
-      .clone()
-      .subtract(
-        this.system.updateIntervalAmount,
-        this.system.updateIntervalUnit
-      );
-
-    this.period?.patchValue({
-      start: startPeriod,
-      end: endPeriod,
-      game: gamePeriod,
-    });
-  }
-
   customPeriod(targetDate: Moment | null) {
     if (!targetDate) {
       return;
@@ -133,20 +89,15 @@ export class PeriodSelectionComponent {
         this.system.updateIntervalUnit
       );
 
-    console.log(
-      'patching',
-      {
-        start: startPeriod.format('YYYY-MM-DD'),
-        end: endPeriod.format('YYYY-MM-DD'),
-        game: gamePeriod.format('YYYY-MM-DD'),
-      },
-      this.system
-    );
+    const nextPeriod = startPeriod
+      .clone()
+      .add(this.system.caluclationIntervalAmount, this.system.calculationIntervalUnit);
 
     this.period?.patchValue({
       start: startPeriod,
       end: endPeriod,
       game: gamePeriod,
+      next: nextPeriod,
     });
   }
 }
