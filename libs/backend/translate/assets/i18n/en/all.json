@@ -308,6 +308,12 @@
       "mixed": "GD",
       "single": "S"
     },
+    "recent": {
+      "title": "Recent games"
+    },
+    "upcomming": {
+      "title": "Upcomming games"
+    },
     "title": "Games",
     "types": {
       "female": "Female",
