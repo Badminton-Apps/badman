@@ -137,9 +137,11 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
 
           const nextPeriod = startPeriod
             .clone()
-            .add(system.caluclationIntervalAmount, system.calculationIntervalUnit);
+            .add(
+              system.caluclationIntervalAmount,
+              system.calculationIntervalUnit
+            );
 
-          console.log(nextPeriod.format('YYYY-MM-DD HH:mm:ss'));
 
           this.period.setValue({
             start: startPeriod,
