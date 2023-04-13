@@ -943,7 +943,7 @@ All notable changes to this project will be documented in this file. See [standa
 * first competition pages ([ae53013](https://github.com/Badminton-Apps/badman-next/commit/ae5301334583fb907487ab1ecfef7c457dc8aadb))
 * marking risers/fallers ([2258a04](https://github.com/Badminton-Apps/badman-next/commit/2258a046cbfa444c738bd4fc80a95c29710ed82f))
 * page header to component ([7dcdec1](https://github.com/Badminton-Apps/badman-next/commit/7dcdec11b7dffbec2ec8fe28e821ab8ba5b85fea))
-* standing and upcomming/recent games improvements ([f74b1f6](https://github.com/Badminton-Apps/badman-next/commit/f74b1f6bcfbd0fb7b25d2caad9c2ebaa066b22f0))
+* standing and upcoming/recent games improvements ([f74b1f6](https://github.com/Badminton-Apps/badman-next/commit/f74b1f6bcfbd0fb7b25d2caad9c2ebaa066b22f0))
 
 
 ### Bug Fixes
@@ -1096,7 +1096,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* showing upcomming games on the landing page ([9add928](https://github.com/Badminton-Apps/badman-next/commit/9add9282cfde1351c6cb40e304af02db72604a40))
+* showing upcoming games on the landing page ([9add928](https://github.com/Badminton-Apps/badman-next/commit/9add9282cfde1351c6cb40e304af02db72604a40))
 
 
 ### Bug Fixes

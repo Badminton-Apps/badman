@@ -6,7 +6,7 @@
 
   <div *ngIf="this.user$ | async as user">
     <ng-container *ngIf="user.loggedIn && ((teams$ | async) ?? []) as teams">
-      <section class="upcomming-games">
+      <section class="upcoming-games">
         <h3>Your upcoming games</h3>
 
         <badman-upcoming-games
