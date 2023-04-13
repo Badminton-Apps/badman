@@ -8,26 +8,29 @@
         <mat-chip
           matTooltipClass="ranking-tooltip"
           [routerLink]="['ranking', 'single']"
-          [matTooltip]="ranking.singlePoints ? 'Singles \n\r' + ranking.singlePoints: 'Singles'"
+          [matTooltip]="tooltip.single + (ranking.singlePoints ? '\n\r' + ranking.singlePoints: '')"
           class="single"
           >{{ranking.single}}</mat-chip
         >
         <mat-chip
           matTooltipClass="ranking-tooltip"
           [routerLink]="['ranking', 'double']"
-          [matTooltip]="ranking.doublePoints ? 'Double \n\r' + ranking.doublePoints: 'Double'"
+          [matTooltip]="tooltip.double + (ranking.doublePoints ? '\n\r' + ranking.doublePoints: '')"
           class="double"
           >{{ranking.double}}</mat-chip
         >
         <mat-chip
           matTooltipClass="ranking-tooltip"
           [routerLink]="['ranking', 'mix']"
-          [matTooltip]="ranking.mixPoints ? 'Mix \n\r' + ranking.mixPoints: 'Mix'"
+          [matTooltip]="tooltip.mix + (ranking.mixPoints ? '\n\r' + ranking.mixPoints: '')"
           class="mix"
           >{{ranking.mix}}</mat-chip
         >
       </mat-chip-listbox></ng-container
     >
+    <div class="click-for-breakdown">
+      {{ 'all.breakdown.hint' | translate }}
+    </div>
   </div>
 
   <div actions>
