@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.65.2](https://github.com/Badminton-Apps/badman/compare/v6.65.1...v6.65.2) (2023-04-13)
+
+
+### Bug Fixes
+
+* url should be set ([739ade0](https://github.com/Badminton-Apps/badman/commit/739ade0e0134e4e13724742a45fe6365d992414d))
+* worker-sync should be builded and not api :P ([aa2c73a](https://github.com/Badminton-Apps/badman/commit/aa2c73a72d41e329f4cec74767adb49adc7b9758))
+
 ### [6.65.1](https://github.com/Badminton-Apps/badman/compare/v6.65.0...v6.65.1) (2023-04-13)
 
 
