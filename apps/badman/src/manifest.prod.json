@@ -6,7 +6,7 @@
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
-  "homepage_url": "https://beta.badman.app",
+  "homepage_url": "https://badman.app",
   "icons": [
     {
       "src": "assets/icons/manifest-icon-192.maskable.png",
