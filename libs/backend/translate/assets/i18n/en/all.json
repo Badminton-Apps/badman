@@ -429,13 +429,6 @@
     "october": "October",
     "september": "September"
   },
-  "notifications": {
-    "noNotifications": "No notifications",
-    "types": {
-      "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not accepted yet.",
-      "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not entered yet."
-    }
-  },
   "permission": {
     "no-perm": "You do not have insufficient rights for this"
   },
@@ -529,8 +522,10 @@
     "notifications": {
       "disclaimer": "Notifications are currently not available for all users.",
       "messages": {
-        "syncSuccessNotification": "Sync success",
-        "syncFailedNotification": "Sync failed"
+        "syncSuccessNotification": "Sync of event <strong>{event.name}</strong> was successful",
+        "syncFailedNotification": "Sync for event <strong>{event.name}</strong> failed",
+        "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not accepted yet.",
+        "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not entered yet."
       },
       "encounter": {
         "notAcceptedNotification": "Results not accepted",

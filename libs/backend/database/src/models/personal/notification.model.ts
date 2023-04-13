@@ -21,7 +21,11 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { EncounterCompetition } from '../event';
+import {
+  EncounterCompetition,
+  EventCompetition,
+  EventTournament,
+} from '../event';
 import { Player } from '../player.model';
 
 @Table({
@@ -68,6 +72,20 @@ export class Notification extends Model {
   })
   encounter: EncounterCompetition;
 
+  @Field(() => EventCompetition, { nullable: true })
+  @BelongsTo(() => EventCompetition, {
+    foreignKey: 'linkId',
+    constraints: false,
+  })
+  competition: EventCompetition;
+
+  @Field(() => EventTournament, { nullable: true })
+  @BelongsTo(() => EventTournament, {
+    foreignKey: 'linkId',
+    constraints: false,
+  })
+  tournament: EventTournament;
+
   @Field({ nullable: true, defaultValue: false })
   @Column({ defaultValue: false })
   read: boolean;
@@ -81,11 +99,26 @@ export class Notification extends Model {
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;
   setEncounter!: BelongsToSetAssociationMixin<EncounterCompetition, string>;
+
+  // Belongs to EventCompetition
+  getCompetition!: BelongsToGetAssociationMixin<EventCompetition>;
+  setCompetition!: BelongsToSetAssociationMixin<EventCompetition, string>;
+
+  // Belongs to EventTournament
+  getTournament!: BelongsToGetAssociationMixin<EventTournament>;
+  setTournament!: BelongsToSetAssociationMixin<EventTournament, string>;
 }
 
 @InputType()
 export class NotificationUpdateInput extends PartialType(
-  OmitType(Notification, ['createdAt', 'updatedAt', 'encounter', 'sendTo'] as const),
+  OmitType(Notification, [
+    'createdAt',
+    'updatedAt',
+    'encounter',
+    'competition',
+    'tournament',
+    'sendTo',
+  ] as const),
   InputType
 ) {}
 
