@@ -522,7 +522,9 @@
       "disclaimer": "Notificaties is alleen beschikbaar voor een test groep",
       "messages": {
         "syncSuccessNotification": "",
-        "syncFailedNotification": ""
+        "syncFailedNotification": "",
+        "encounterNotAcceptedNotification": "",
+        "encounterNotEnteredNotification": ""
       },
       "encounter": {
         "notAcceptedNotification": "Ontmoeting is nog niet geaccepteerd",

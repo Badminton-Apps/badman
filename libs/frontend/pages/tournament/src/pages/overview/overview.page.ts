@@ -211,6 +211,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
                   firstDay
                   openDate
                   closeDate
+                  visualCode
                   official
                 }
               }
