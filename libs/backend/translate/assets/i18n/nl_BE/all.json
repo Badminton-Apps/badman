@@ -531,8 +531,11 @@
     "notifications": {
       "disclaimer": "Notificaties is alleen beschikbaar voor een test groep",
       "messages": {
-        "syncSuccessNotification": "Sync success",
-        "syncFailedNotification": "Sync failed"
+        "syncSuccessNotification": "Sync van event <strong>{event.name}</strong> is succesvol uitgevoerd",
+        "syncFailedNotification": "Sync van event <strong>{event.name}</strong> is mislukt",
+        "encounterNotAcceptedNotification":"De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet bevestigd.",
+        "encounterNotEnteredNotification":"De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven."
+        
       },
       "encounter": {
         "notAcceptedNotification": "Ontmoeting is nog niet geaccepteerd",

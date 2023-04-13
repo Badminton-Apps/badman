@@ -439,13 +439,6 @@ export type I18nTranslations = {
             "october": string;
             "september": string;
         };
-        "notifications": {
-            "noNotifications": string;
-            "types": {
-                "encounterNotAcceptedNotification": string;
-                "encounterNotEnteredNotification": string;
-            };
-        };
         "permission": {
             "no-perm": string;
         };
@@ -541,6 +534,8 @@ export type I18nTranslations = {
                 "messages": {
                     "syncSuccessNotification": string;
                     "syncFailedNotification": string;
+                    "encounterNotAcceptedNotification": string;
+                    "encounterNotEnteredNotification": string;
                 };
                 "encounter": {
                     "notAcceptedNotification": string;
@@ -668,6 +663,13 @@ export type I18nTranslations = {
             };
             "liga": string;
             "prov": string;
+        };
+        "notifications": {
+            "noNotifications": string;
+            "types": {
+                "encounterNotAcceptedNotification": string;
+                "encounterNotEnteredNotification": string;
+            };
         };
     };
 };

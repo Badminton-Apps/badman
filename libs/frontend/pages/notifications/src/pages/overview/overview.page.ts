@@ -27,6 +27,14 @@ const NOTIFICAION_QUERY = gql`
       read
       type
       meta
+      competition {
+        id
+        name
+      }
+      tournament {
+        id
+        name
+      }
       encounter {
         id
         date
@@ -128,6 +136,22 @@ export class OverviewPageComponent implements OnInit {
             ...notification.encounter,
             date: moment(notification.encounter?.date).format('YYYY-MM-DD'),
           },
+        };
+      case 'encounterNotAccepted':
+        return {
+          encounter: {
+            ...notification.encounter,
+            date: moment(notification.encounter?.date).format('YYYY-MM-DD'),
+          },
+        };
+
+      case 'syncSuccessNotification':
+        return {
+          event: notification.competition ?? notification.tournament,
+        };
+      case 'syncFailedNotification':
+        return {
+          event: notification.competition ?? notification.tournament,
         };
 
       default:
