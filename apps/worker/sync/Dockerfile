@@ -9,9 +9,8 @@ RUN apk add --no-cache --virtual .build-deps \
 	jpeg-dev \
 	pango-dev \
 	giflib-dev
-RUN yarn set version stable && \
-    yarn install --frozen-lockfile --immutable
-RUN yarn build worker-sync:build:production
+RUN npm ci
+RUN npm run build api:build --configuration=production
 # Production stage
 FROM node:19-alpine As production
 ENV NODE_ENV=production \

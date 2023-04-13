@@ -13,16 +13,16 @@ You now only need docker installed.
 
 ### 2. Install dependencies
 
-run: `yarn install`
+run: `npm install`
 
 ### 3. Start database/redis cache (if needed)
 
-run: `yarn dev:up`
+run: `npm run dev:up`
 
 ### 4. Start client and server
 
-- run: `yarn start` for the client
-- run: `yarn start api` for the api
+- run: `npm start` for the client
+- run: `npm start api` for the api
 
 #### 4.a First time running:
 
@@ -77,5 +77,5 @@ https://github.com/rakyll/hey
 ### Upgrade to latest packages
 
 1. `NX_MIGRATE_USE_LOCAL=true nx migrate latest`
-2. `yarn`
-3. `NX_MIGRATE_USE_LOCAL=true yarn exec nx migrate --run-migrations`
+2. `npm i`
+3. `NX_MIGRATE_USE_LOCAL=true nx migrate --run-migrations`
