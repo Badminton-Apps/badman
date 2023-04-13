@@ -26,7 +26,7 @@ import { Observable, of, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'badman-player-detail',
   templateUrl: './detail.page.html',
@@ -36,6 +36,7 @@ import { TranslateService } from '@ngx-translate/core';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
+    TranslateModule,
 
     // Material
     MatIconModule,

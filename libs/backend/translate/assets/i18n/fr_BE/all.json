@@ -40,7 +40,8 @@
     "untill": "Tot",
     "upgrade": "Surclassement",
     "usedForDowngrade": "Utilisé pour la rétrogradation et la mise à niveau",
-    "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
+    "usedForUpgrade": "Utilisé pour la mise à niveau uniquement",
+    "hint": ""
   },
   "button": {
     "close": "Fermer",

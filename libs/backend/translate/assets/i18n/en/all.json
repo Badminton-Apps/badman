@@ -40,7 +40,8 @@
     "untill": "Until",
     "upgrade": "Upgrade",
     "usedForDowngrade": "Used for up- and downgrade",
-    "usedForUpgrade": "Used for upgrade"
+    "usedForUpgrade": "Used for upgrade",
+    "hint": "Click on a level for simulation and breakdown"
   },
   "button": {
     "close": "Close",
