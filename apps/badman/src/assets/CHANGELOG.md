@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.66.0](https://github.com/Badminton-Apps/badman/compare/v6.65.2...v6.66.0) (2023-04-13)
+
+
+### Features
+
+* change the period selection to just calendar select ([875b7f8](https://github.com/Badminton-Apps/badman/commit/875b7f8cfd98dce1a6e1e4883a6e8be442d875da))
+* improved notifications ([e11e487](https://github.com/Badminton-Apps/badman/commit/e11e487bb56753eb92aab0936dd386a1f8058dea))
+* showing what games drops next period ([61657db](https://github.com/Badminton-Apps/badman/commit/61657db731d18d1cd1a926a668262f5e916bcafc))
+
+
+### Bug Fixes
+
+* arrows + translations of points ([21cf7dc](https://github.com/Badminton-Apps/badman/commit/21cf7dce4888f47ea967d7c39f5cd59ffd51a7a5))
+* should include official in query ([99b1f59](https://github.com/Badminton-Apps/badman/commit/99b1f5971cf8d77f7bfff0e598fe04667e9422f5))
+
 ### [6.65.2](https://github.com/Badminton-Apps/badman/compare/v6.65.1...v6.65.2) (2023-04-13)
 
 
