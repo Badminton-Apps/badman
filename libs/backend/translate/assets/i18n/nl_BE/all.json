@@ -308,6 +308,12 @@
       "mixed": "",
       "single": ""
     },
+    "recent": {
+      "title": "Recente wedstrijden"
+    },
+    "upcomming": {
+      "title": "Komende wedstrijden"
+    },
     "title": "Wedstrijden",
     "types": {
       "female": "Dames",
