@@ -87,7 +87,7 @@
 
     <section class="games">
       <section class="recent-games">
-        <h3>Recent games</h3>
+        <h3>{{all.game.recent.title | title}}</h3>
 
         <badman-recent-games
           *ngIf="isClient"
@@ -97,7 +97,7 @@
       </section>
 
       <section class="upcomming-games">
-        <h3>Upcoming games</h3>
+        <h3>{{all.game.upcomming.title | title}}</h3>
         <badman-upcoming-games
           [clubid]="club.id"
           [teams]="teams"
