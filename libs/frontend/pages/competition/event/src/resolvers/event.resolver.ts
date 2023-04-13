@@ -46,6 +46,7 @@ export class EventResolver implements Resolve<EventCompetition | null> {
                 openDate
                 closeDate
                 visualCode
+                official
                 lastSync
                 subEventCompetitions {
                   id
