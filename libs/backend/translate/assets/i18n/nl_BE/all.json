@@ -40,7 +40,8 @@
     "untill": "tot",
     "upgrade": "Upgrade",
     "usedForDowngrade": "Gebruikt voor downgrade en upgrade",
-    "usedForUpgrade": "Gebruikt enkel voor upgrade"
+    "usedForUpgrade": "Gebruikt enkel voor upgrade",
+    "hint": "Klik op een ranking voor simulatie en analyse"
   },
   "button": {
     "close": "Sluiten",
