@@ -39,6 +39,7 @@ export type I18nTranslations = {
             "pointsPerGame": string;
             "prevPeriod": string;
             "removed-games": string;
+            "drops-next-period": string;
             "team": string;
             "title": string;
             "untill": string;
@@ -345,6 +346,7 @@ export type I18nTranslations = {
                 };
                 "title": string;
             };
+            "points": string;
             "unkown": string;
         };
         "gender": {

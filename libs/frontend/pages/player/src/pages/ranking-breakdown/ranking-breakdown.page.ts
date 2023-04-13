@@ -78,6 +78,7 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
     start: new FormControl(),
     end: new FormControl(),
     game: new FormControl(),
+    next: new FormControl(),
   });
 
   gameFilter = new FormGroup({
@@ -134,10 +135,17 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
             .clone()
             .subtract(system.updateIntervalAmount, system.updateIntervalUnit);
 
+          const nextPeriod = startPeriod
+            .clone()
+            .add(system.caluclationIntervalAmount, system.calculationIntervalUnit);
+
+          console.log(nextPeriod.format('YYYY-MM-DD HH:mm:ss'));
+
           this.period.setValue({
             start: startPeriod,
             end: endPeriod,
             game: gamePeriod,
+            next: nextPeriod,
           });
         })
       );
@@ -205,6 +213,8 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
                     differenceForDowngrade
                     updateIntervalAmountLastUpdate
                     caluclationIntervalLastUpdate
+                    calculationIntervalUnit
+                    caluclationIntervalAmount
                     minNumberOfGamesUsedForUpgrade
                     updateIntervalAmount
                     updateIntervalUnit
