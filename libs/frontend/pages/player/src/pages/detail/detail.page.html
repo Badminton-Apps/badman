@@ -67,13 +67,13 @@
 
 <section class="games">
   <section class="recent-games">
-    <h3>{{all.game.recent.title | title}}</h3>
+    <h3>{{"all.game.recent.title" | translate}}</h3>
 
     <badman-recent-games [playerId]="this.player.id"></badman-recent-games>
   </section>
 
-  <section class="upcomming-games">
-    <h3>{{all.game.upcoming.title | title}}</h3>
+  <section class="upcoming-games">
+    <h3>{{"all.game.upcoming.title" | translate}}</h3>
 
     <ng-container *ngIf="(teams$ | async) ?? [] as teams">
       <badman-upcoming-games
