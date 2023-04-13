@@ -63,11 +63,11 @@ https://github.com/elegantapp/pwa-asset-generator
 
 ### splash
 
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.webmanifest" --dark-mode  --opaque false --background "#303030"`
+`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --dark-mode  --opaque false --background "#303030"`
 
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.webmanifest" --icon-only --favicon --dark-mode  --opaque false --background "rgba(0, 0, 0, 0)"`
+`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --icon-only --favicon --dark-mode  --opaque false --background "rgba(0, 0, 0, 0)"`
 
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.webmanifest" --icon-only --dark-mode  --opaque false --background "rgba(0, 0, 0, 1)"`
+`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --icon-only --dark-mode  --opaque false --background "rgba(0, 0, 0, 1)"`
 
 ### speedtest
 

@@ -1,6 +1,6 @@
 {
-  "name": "Badman (BETA)",
-  "short_name": "Badman (beta)",
+  "name": "Badman",
+  "short_name": "Badman",
   "theme_color": "#607d8b",
   "background_color": "#fafafa",
   "display": "standalone",
