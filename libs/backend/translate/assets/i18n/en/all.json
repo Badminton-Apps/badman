@@ -12,7 +12,9 @@
     "date": "Date",
     "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",
     "downgrade": "Downgrade",
+    "drops-next-period": "Drops next period",
     "evolution": "Evolution",
+    "hint": "Click on a level for simulation and breakdown",
     "ignored": "Doesn't count",
     "includeOutOfScope": "Out of scope",
     "lostGames": {
@@ -35,28 +37,27 @@
     "pointsPerGame": "Points per game",
     "prevPeriod": "Previous period",
     "removed-games": "Games of previous period that are removed",
-    "drops-next-period": "Drops next period",
     "team": "Team",
     "title": "Level breakdown",
     "untill": "Until",
     "upgrade": "Upgrade",
     "usedForDowngrade": "Used for up- and downgrade",
-    "usedForUpgrade": "Used for upgrade",
-    "hint": "Click on a level for simulation and breakdown"
+    "usedForUpgrade": "Used for upgrade"
   },
   "button": {
-    "close": "Close",
+    "all": "All",
     "cancel": "Cancel",
+    "close": "Close",
     "create": "Create",
     "delete": "Delete",
     "detail": "Details",
     "done": "Done",
     "edit": "Edit",
-    "all": "All",
-    "none": "None",
     "merge-accounts": "Combine accounts",
     "next": "Next",
     "no": "No",
+    "none": "None",
+    "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Previous",
     "save": "Save",
     "save-and-continue": "Save and continue",
@@ -65,7 +66,6 @@
     "submit": "Submit",
     "sync-ranking": "Sync ranking",
     "watch-system": "Watch system",
-    "open-in-new-tab": "Open in toernooi.nl",
     "yes": "Yes"
   },
   "club": {
@@ -75,6 +75,7 @@
     "start": "Start date"
   },
   "competition": {
+    "avg-level": "Average level",
     "away": "Away",
     "change-encounter": {
       "add-date": "Add date",
@@ -82,9 +83,9 @@
       "calendar": {
         "option": "{amount} optional",
         "other-games": "Other encounters that day",
-        "remaining": "",
-        "removed": "",
-        "requested": ""
+        "remaining": "still {amount} possible",
+        "removed": "To be moved",
+        "requested": "Proposal"
       },
       "choose-date": "Pick a date",
       "choose-encounter": "Pick an encounter",
@@ -116,6 +117,8 @@
       "assign-team": "Assign teams",
       "availability": "Availability",
       "base": "Limits",
+      "close": "Close",
+      "closed": "Closed",
       "comment-liga": "Comments League competition (for each team)",
       "comment-nat": "Comments National competition (for each team)",
       "comment-prov": "Comments Provincial competition (for each team)",
@@ -136,26 +139,23 @@
       "max": "Max",
       "new-exception": "New Exception",
       "new-play-day": "New match time",
+      "open": "Open",
       "play-day": "Match time",
       "player-base": "Player is already basis player of other team",
       "players": {
+        "backup": "Backup player(s)",
         "base": "Base player(s)",
-        "regular": "Regular player(s)",
-        "backup": "Backup player(s)"
+        "regular": "Regular player(s)"
       },
+      "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your base players",
       "select-club": "Select club",
-      "select-teams": "Select teams",
-      "select-teams-description": "Below you customize your teams according to your preferences.\n\nYou can optionally define your regular and backup players for each team. By doing so, you ensure that all players are eligible to play for their respective teams, and the team can function smoothly without any last-minute changes or confusion.",
-      "transfer-teams": "Transfer teams (optional)",
-      "transfer-teams-description": "If you wish to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you will be able to transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nYou can change the teamnumbers in the next step",
       "select-events": "Select events",
       "select-location": "Select locations",
-      "assign-teams": "Assign teams",
-      "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your base players",
+      "select-teams": "Select teams",
+      "select-teams-description": "Below you customize your teams according to your preferences.\n\nYou can optionally define your regular and backup players for each team. By doing so, you ensure that all players are eligible to play for their respective teams, and the team can function smoothly without any last-minute changes or confusion.",
       "title": "Team enrollment",
-      "open": "Open",
-      "closed": "Closed",
-      "close": "Close"
+      "transfer-teams": "Transfer teams (optional)",
+      "transfer-teams-description": "If you wish to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you will be able to transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nYou can change the teamnumbers in the next step"
     },
     "home": "Home",
     "last-updated": "Changed on",
@@ -172,7 +172,9 @@
       "min-base": "Min basis team index"
     },
     "team-assembly": {
+      "avg-level": "",
       "captain": "Team captain",
+      "change-team": "By editing the team you can change the default players shown, and who are the backups.",
       "disclaimer": "Disclaimer: This formationtool is currently in beta and can exceptionally contain errors. Always critically check your formation against the C320 rules.",
       "double1": "Double 1",
       "double2": "Double 2",
@@ -207,10 +209,9 @@
       "mix2": "Women doubles",
       "mix3": "Mixed doubles 1",
       "mix4": "Mixed doubles 2",
-      "change-team": "By editing the team you can change the default players shown, and who are the backups.",
       "players": {
-        "base": "Titulars",
         "backup": "Backup players",
+        "base": "Titulars",
         "team": "Base players",
         "title": "Possible titulars"
       },
@@ -227,7 +228,6 @@
       }
     },
     "title": "Competition",
-    "avg-level": "Average level",
     "type": "Type",
     "vs": "against",
     "vs-short": "vs"
@@ -309,53 +309,56 @@
       "mixed": "GD",
       "single": "S"
     },
+    "points": "points",
     "recent": {
       "title": "Recent games"
     },
-    "upcoming": {
-      "title": "Upcomming games"
-    },
     "title": "Games",
     "types": {
-      "female": "Female",
-      "male": "Male",
-      "mix": "Mixed",
-      "single": "Single",
       "double": "Double",
-      "mixed": "Mixed",
+      "female": "Female",
       "long": {
+        "D": "Double",
         "F": "Female",
         "M": "Male",
         "MX": "Mixed",
-        "S": "Single",
-        "D": "Double"
+        "S": "Single"
       },
+      "male": "Male",
+      "mix": "Mixed",
+      "mixed": "Mixed",
       "short": {
+        "double": "D",
         "female": "F",
         "male": "M",
-        "double": "D",
         "mix": "MX",
         "single": "S"
       },
+      "single": "Single",
       "title": "Game type"
     },
-    "points": "points",
-    "unkown": "Unknown player"
+    "unkown": "Unknown player",
+    "upcoming": {
+      "title": "Upcomming games"
+    }
   },
   "gender": {
     "female": "Women",
     "females": "Female",
+    "long": {
+      "F": "Female",
+      "M": "Male",
+      "MX": "Mixed"
+    },
     "male": "Men",
     "males": "Male",
     "mix": "Mixed",
+    "national": "National",
     "select": "Select",
     "short": {
       "female": "F",
-      "male": "M"
-    },
-    "long": {
-      "F": "Female",
-      "M": "Male"
+      "male": "M",
+      "mix": "MX"
     },
     "title": "Gender"
   },
@@ -429,6 +432,13 @@
     "october": "October",
     "september": "September"
   },
+  "notifications": {
+    "noNotifications": "No notifications",
+    "types": {
+      "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> has not yet been entered.",
+      "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> has not yet been entered."
+    }
+  },
   "permission": {
     "no-perm": "You do not have insufficient rights for this"
   },
@@ -436,8 +446,8 @@
     "end-time": "End time",
     "select-club": "Pick a club",
     "select-encounter": "Pick an encounter",
-    "select-end-time": "",
-    "select-start-time": "",
+    "select-end-time": "End time",
+    "select-start-time": "Start time",
     "select-team": "Pick a team",
     "select-team-groups": {
       "F": "Women",
@@ -449,16 +459,16 @@
     "start-time": "Start time"
   },
   "players": {
+    "backup": "Backup player",
+    "base": "Base player",
     "no-memberid": "Unknown member id",
+    "regular": "Regular player",
     "search": {
       "create": "Add new player",
       "label": "Search player",
       "not-found": "Player not found"
     },
-    "title": "Players",
-    "backup": "Backup player",
-    "regular": "Regular player",
-    "base": "Base player"
+    "title": "Players"
   },
   "points": {
     "title": "Points tabel"
@@ -521,12 +531,6 @@
     },
     "notifications": {
       "disclaimer": "Notifications are currently not available for all users.",
-      "messages": {
-        "syncSuccessNotification": "Sync of event <strong>{event.name}</strong> was successful",
-        "syncFailedNotification": "Sync for event <strong>{event.name}</strong> failed",
-        "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not accepted yet.",
-        "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not entered yet."
-      },
       "encounter": {
         "notAcceptedNotification": "Results not accepted",
         "notEnteredNotification": "Results not entered",
@@ -538,10 +542,16 @@
         "newNotification": "New request",
         "title": "Encounter change requests"
       },
+      "messages": {
+        "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not accepted yet.",
+        "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not entered yet.",
+        "syncFailedNotification": "Sync for event <strong>{event.name}</strong> failed",
+        "syncSuccessNotification": "Sync of event <strong>{event.name}</strong> was successful"
+      },
       "sync": {
-        "title": "Sync",
+        "failed": "Sync failed",
         "success": "Sync success",
-        "failed": "Sync failed"
+        "title": "Sync"
       },
       "title": "Notifications",
       "types": {
@@ -557,9 +567,9 @@
     "sidebar": {
       "competition": {
         "assembly": "Assembly",
+        "enrollment": "Enrollment",
         "overview": "Overview",
-        "title": "Competition",
-        "enrollment": "Enrollment"
+        "title": "Competition"
       },
       "general": {
         "changelog": "Changelog",
@@ -579,14 +589,14 @@
     }
   },
   "team": {
-    "edit": "Edit",
     "change-number": {
-      "title": "Change team number",
       "description": "Changing of the team number, also update higher/lower teams",
       "number": "Team number",
+      "title": "Change team number",
       "tooltip": "Change the team number"
     },
     "check-players": "Tick off the basis players in the checkbox",
+    "edit": "Edit",
     "location": "Location",
     "no-perm": {
       "email-phone": "You don't have permissions to edit emails or phone numbers."
@@ -597,29 +607,29 @@
       "players": "Players",
       "prefferd-encounter": "Preferred match time"
     },
-    "usedForTeam": {
-      "description": "Team names are automatically generated, select which prefix you want to use.",
-      "example": "Example: {teamName}",
-      "select": "Team prefix",
-      "title": "Team names"
-    },
     "types": {
       "female": "Female",
-      "male": "Male",
-      "mix": "Mixed",
-      "national": "National",
       "long": {
         "F": "Female",
         "M": "Male",
         "MX": "Mixed",
         "NATIONAL": "National"
       },
+      "male": "Male",
+      "mix": "Mixed",
+      "national": "National",
       "short": {
         "female": "F",
         "male": "M",
         "mix": "MX",
         "national": "NATIONAL"
       }
+    },
+    "usedForTeam": {
+      "description": "Team names are automatically generated, select which prefix you want to use.",
+      "example": "Example: {teamName}",
+      "select": "Team prefix",
+      "title": "Team names"
     }
   },
   "themes": {
@@ -627,29 +637,31 @@
     "light": "Light"
   },
   "tournament": {
+    "away": "Away",
     "draw": {
       "games": "Games",
       "title": "Draw"
     },
-    "title": "Tournament",
-    "away": "Away",
+    "enrollment": {
+      "close": "Close",
+      "closed": "Closed",
+      "open": "Open",
+      "title": "Enrollments"
+    },
     "home": "Home",
     "last-updated": "Changed on",
+    "liga": "",
     "load-more": "load more",
     "note": "note: Changes are saved directly",
+    "prov": "",
     "subevent": {
       "max": "Max level",
       "max-base": "Max basis team index",
       "min-base": "Min basis team index"
     },
+    "title": "Tournament",
     "type": "Type",
     "vs": "against",
-    "vs-short": "vs",
-    "enrollment": {
-      "open": "Open",
-      "closed": "Closed",
-      "close": "Close",
-      "title": "Enrollments"
-    }
+    "vs-short": "vs"
   }
 }

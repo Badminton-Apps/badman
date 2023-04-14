@@ -12,7 +12,9 @@
     "date": "Datum",
     "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
     "downgrade": "Downgrade",
+    "drops-next-period": "Telt niet meer mee in volgende periode",
     "evolution": "Evolutie",
+    "hint": "Klik op een ranking voor simulatie en analyse",
     "ignored": "Niet meegeteld",
     "includeOutOfScope": "Out of scope",
     "lostGames": {
@@ -35,28 +37,27 @@
     "pointsPerGame": "Punten per wedstrijd",
     "prevPeriod": "Vorige periode",
     "removed-games": "Wedstrijden van vorige periode dat niet meer meetellen",
-    "drops-next-period": "Telt niet meer mee in volgende periode",
     "team": "Team",
     "title": "Level breakdown",
     "untill": "tot",
     "upgrade": "Upgrade",
     "usedForDowngrade": "Gebruikt voor downgrade en upgrade",
-    "usedForUpgrade": "Gebruikt enkel voor upgrade",
-    "hint": "Klik op een ranking voor simulatie en analyse"
+    "usedForUpgrade": "Gebruikt enkel voor upgrade"
   },
   "button": {
-    "close": "Sluiten",
+    "all": "Alles",
     "cancel": "Annuleren",
+    "close": "Sluiten",
     "create": "Aanmaken",
     "delete": "Verwijderen",
     "detail": "Details",
     "done": "Klaar",
-    "all": "Alles",
-    "none": "Geen",
     "edit": "Bewerken",
     "merge-accounts": "Combineer accounts",
     "next": "Volgende",
     "no": "Nee",
+    "none": "Geen",
+    "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Vorige",
     "save": "Opslaan",
     "save-and-continue": "Opslaan en verdergaan",
@@ -65,7 +66,6 @@
     "submit": "Verzenden",
     "sync-ranking": "Synchroniseer ranking",
     "watch-system": "Bekijk systeem",
-    "open-in-new-tab": "Open in toernooi.nl",
     "yes": "Ja"
   },
   "club": {
@@ -75,6 +75,7 @@
     "start": "Begindatum"
   },
   "competition": {
+    "avg-level": "Gemiddeld niveau",
     "away": "Uit",
     "change-encounter": {
       "add-date": "Voeg datum toe",
@@ -116,6 +117,8 @@
       "assign-team": "Deel ploegen in",
       "availability": "Beschikbaarheid",
       "base": "Grenzen",
+      "close": "Sluiten",
+      "closed": "Gesloten",
       "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
       "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
       "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
@@ -136,26 +139,23 @@
       "max": "Max",
       "new-exception": "Nieuwe uitzondering",
       "new-play-day": "Nieuw speelmoment",
+      "open": "Open",
       "play-day": "Speelmoment",
       "player-base": "Speler is al basisspeler van andere ploeg",
       "players": {
+        "backup": "Reserve speler(s)",
         "base": "Basis spelers(s)",
-        "regular": "Vaste speler(s)",
-        "backup": "Reserve speler(s)"
+        "regular": "Vaste speler(s)"
       },
+      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten wet toe tussentijds op te slaan indien er nog onzekerheden zijn over je basis spelers",
       "select-club": "Selecteer club",
-      "select-teams": "Selecteer teams",
-      "select-teams-description": "Hieronder kunt u uw teams aanpassen volgens uw voorkeuren.\n\nU optioneel uw vaste en reserve spelers voor elk team definiëren. Door dit te doen, zorgt u ervoor dat alle spelers in aanmerking komen om voor hun respectievelijke teams te spelen en dat het team soepel kan functioneren zonder last-minute wijzigingen of verwarring.",
-      "transfer-teams": "Zet teams over (optioneel)",
-      "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de team nummers in volgende stap nog wijzigen",
       "select-events": "Selecteer onderdelen",
       "select-location": "Selecteer locaties",
-      "assign-teams": "Ken teams toe",
-      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten wet toe tussentijds op te slaan indien er nog onzekerheden zijn over je basis spelers",
+      "select-teams": "Selecteer teams",
+      "select-teams-description": "Hieronder kunt u uw teams aanpassen volgens uw voorkeuren.\n\nU optioneel uw vaste en reserve spelers voor elk team definiëren. Door dit te doen, zorgt u ervoor dat alle spelers in aanmerking komen om voor hun respectievelijke teams te spelen en dat het team soepel kan functioneren zonder last-minute wijzigingen of verwarring.",
       "title": "Ploeginschrijving",
-      "open": "Open",
-      "closed": "Gesloten",
-      "close": "Sluiten"
+      "transfer-teams": "Zet teams over (optioneel)",
+      "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de team nummers in volgende stap nog wijzigen"
     },
     "home": "Thuis",
     "last-updated": "Gewijzigd op",
@@ -172,7 +172,9 @@
       "min-base": "Min basis ploegindex"
     },
     "team-assembly": {
+      "avg-level": "",
       "captain": "Ploegkapitein",
+      "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
       "disclaimer": "Disclaimer: Deze opstellingsmodule is een betaversie en kan uitzonderlijk nog fouten bevatten. Controleer daarom altijd kritisch je opstelling rekening houdende met reglement C320.",
       "double1": "Dubbel 1",
       "double2": "Dubbel 2",
@@ -207,11 +209,10 @@
       "mix2": "Dames Dubbel",
       "mix3": "Gemengd dubbel 1",
       "mix4": "Gemengd dubbel 2",
-      "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
       "players": {
+        "backup": "Reservespelers",
         "base": "Titularissen",
         "team": "Basisspelers",
-        "backup": "Reservespelers",
         "title": "Mogelijke titularissen"
       },
       "single1": "Enkel 1",
@@ -227,7 +228,6 @@
       }
     },
     "title": "Competitie",
-    "avg-level": "Gemiddeld niveau",
     "type": "Type",
     "vs": "tegen",
     "vs-short": "vs"
@@ -309,41 +309,47 @@
       "mixed": "",
       "single": ""
     },
+    "points": "punten",
     "recent": {
       "title": "Recente wedstrijden"
     },
-    "upcoming": {
-      "title": "Komende wedstrijden"
-    },
     "title": "Wedstrijden",
     "types": {
-      "female": "Dames",
-      "male": "Heren",
-      "mix": "Gemengd",
-      "single": "Enkel",
       "double": "Dubbel",
+      "female": "Dames",
       "long": {
+        "D": "Dubbel",
         "F": "Dames",
         "M": "Heren",
         "MX": "Gemengd",
-        "S": "Enkel",
-        "D": "Dubbel"
+        "S": "Enkel"
       },
+      "male": "Heren",
+      "mix": "Gemengd",
+      "mixed": "",
       "short": {
+        "double": "D",
         "female": "D",
         "male": "H",
         "mix": "G",
-        "double": "D",
         "single": "E"
       },
+      "single": "Enkel",
       "title": "Spel type"
     },
-    "points": "punten",
-    "unkown": "Onbekende speler"
+    "unkown": "Onbekende speler",
+    "upcoming": {
+      "title": "Komende wedstrijden"
+    }
   },
   "gender": {
     "female": "Dames",
     "females": "Vrouw",
+    "long": {
+      "F": "Dames",
+      "M": "Heren",
+      "MX": "Gemengd"
+    },
     "male": "Heren",
     "males": "Man",
     "mix": "Gemengd",
@@ -352,12 +358,7 @@
     "short": {
       "female": "D",
       "male": "H",
-      "mix": "G"
-    },
-    "long": {
-      "F": "Dames",
-      "M": "Heren",
-      "MX": "Gemengd"
+      "mix": "MX"
     },
     "title": "Geslacht"
   },
@@ -458,15 +459,15 @@
     "start-time": ""
   },
   "players": {
+    "backup": "Reserve speler",
+    "base": "Basis speler",
     "no-memberid": "Onbekend lidnummer",
+    "regular": "Vaste speler",
     "search": {
       "create": "Voeg een nieuwe speler toe",
       "label": "Zoek speler",
       "not-found": "Speler niet gevonden"
     },
-    "backup": "Reserve speler",
-    "regular": "Vaste speler",
-    "base": "Basis speler",
     "title": "Spelers"
   },
   "points": {
@@ -530,13 +531,6 @@
     },
     "notifications": {
       "disclaimer": "Notificaties is alleen beschikbaar voor een test groep",
-      "messages": {
-        "syncSuccessNotification": "Sync van event <strong>{event.name}</strong> is succesvol uitgevoerd",
-        "syncFailedNotification": "Sync van event <strong>{event.name}</strong> is mislukt",
-        "encounterNotAcceptedNotification":"De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet bevestigd.",
-        "encounterNotEnteredNotification":"De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven."
-        
-      },
       "encounter": {
         "notAcceptedNotification": "Ontmoeting is nog niet geaccepteerd",
         "notEnteredNotification": "Ontmoeting is nog niet ingevuld",
@@ -548,12 +542,18 @@
         "newNotification": "Nieuwe aanvraag",
         "title": "Verplaatsings aanvragen"
       },
-      "title": "Notificaties",
-      "sync": {
-        "title": "Synchronisatie",
-        "success": "Sync succesvol",
-        "failed": "Sync mislukt"
+      "messages": {
+        "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet bevestigd.",
+        "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven.",
+        "syncFailedNotification": "Sync van event <strong>{event.name}</strong> is mislukt",
+        "syncSuccessNotification": "Sync van event <strong>{event.name}</strong> is succesvol uitgevoerd"
       },
+      "sync": {
+        "failed": "Sync mislukt",
+        "success": "Sync succesvol",
+        "title": "Synchronisatie"
+      },
+      "title": "Notificaties",
       "types": {
         "email": "Email",
         "none": "Geen",
@@ -567,9 +567,9 @@
     "sidebar": {
       "competition": {
         "assembly": "Opstelling",
+        "enrollment": "Inschrijven",
         "overview": "Overzicht",
-        "title": "Competitie",
-        "enrollment": "Inschrijven"
+        "title": "Competitie"
       },
       "general": {
         "changelog": "Changelog",
@@ -589,14 +589,14 @@
     }
   },
   "team": {
-    "edit": "Bewerken",
     "change-number": {
-      "title": "Wijzig ploegnummer",
       "description": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
       "number": "Ploegnummer",
+      "title": "Wijzig ploegnummer",
       "tooltip": "Verander het ploegnummer"
     },
     "check-players": "Vink bij de basisspelers de checkbox aan",
+    "edit": "Bewerken",
     "location": "Locatie",
     "no-perm": {
       "email-phone": "Je hebt geen toestemming om je e-mailadres of telefoonnummer te wijzigen."
@@ -607,28 +607,29 @@
       "players": "Spelers",
       "prefferd-encounter": "Voorkeur speelmoment"
     },
-    "usedForTeam": {
-      "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",
-      "example": "Vorbeeld: {teamName}",
-      "select": "Team prefix",
-      "title": "Team namen"
-    },
     "types": {
       "female": "Vrouwen",
-      "male": "Mannen",
-      "mix": "Gemengd",
-      "national": "National",
       "long": {
         "F": "Vrouwen",
         "M": "Mannen",
         "MX": "Gemengd",
         "NATIONAL": "National"
       },
+      "male": "Mannen",
+      "mix": "Gemengd",
+      "national": "National",
       "short": {
         "female": "D",
         "male": "H",
-        "mix": "G"
+        "mix": "G",
+        "national": ""
       }
+    },
+    "usedForTeam": {
+      "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",
+      "example": "Vorbeeld: {teamName}",
+      "select": "Team prefix",
+      "title": "Team namen"
     }
   },
   "themes": {
@@ -636,28 +637,31 @@
     "light": "Licht"
   },
   "tournament": {
+    "away": "",
     "draw": {
       "games": "Wedstrijden",
       "title": "Poule"
     },
-    "last-updated": "Gewijzigd op",
-    "title": "Toernooi",
+    "enrollment": {
+      "close": "Sluit",
+      "closed": "Gesloten",
+      "open": "Open",
+      "title": "Inschrijvingen"
+    },
     "home": "Thuis",
+    "last-updated": "Gewijzigd op",
+    "liga": "",
     "load-more": "Meer laden",
     "note": "opmerking: wijzigingen worden ogenblikkelijk opgeslagen",
+    "prov": "",
     "subevent": {
       "max": "Max klassement",
       "max-base": "Max basis ploegindex",
       "min-base": "Min basis ploegindex"
     },
+    "title": "Toernooi",
     "type": "Type",
     "vs": "tegen",
-    "vs-short": "vs",
-    "enrollment": {
-      "open": "Open",
-      "closed": "Gesloten",
-      "close": "Sluit",
-      "title": "Inschrijvingen"
-    }
+    "vs-short": "vs"
   }
 }

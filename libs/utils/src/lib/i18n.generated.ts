@@ -16,7 +16,9 @@ export type I18nTranslations = {
             "date": string;
             "disclaimer": string;
             "downgrade": string;
+            "drops-next-period": string;
             "evolution": string;
+            "hint": string;
             "ignored": string;
             "includeOutOfScope": string;
             "lostGames": {
@@ -39,28 +41,27 @@ export type I18nTranslations = {
             "pointsPerGame": string;
             "prevPeriod": string;
             "removed-games": string;
-            "drops-next-period": string;
             "team": string;
             "title": string;
             "untill": string;
             "upgrade": string;
             "usedForDowngrade": string;
             "usedForUpgrade": string;
-            "hint": string;
         };
         "button": {
-            "close": string;
+            "all": string;
             "cancel": string;
+            "close": string;
             "create": string;
             "delete": string;
             "detail": string;
             "done": string;
             "edit": string;
-            "all": string;
-            "none": string;
             "merge-accounts": string;
             "next": string;
             "no": string;
+            "none": string;
+            "open-in-new-tab": string;
             "prev": string;
             "save": string;
             "save-and-continue": string;
@@ -69,7 +70,6 @@ export type I18nTranslations = {
             "submit": string;
             "sync-ranking": string;
             "watch-system": string;
-            "open-in-new-tab": string;
             "yes": string;
         };
         "club": {
@@ -79,6 +79,7 @@ export type I18nTranslations = {
             "start": string;
         };
         "competition": {
+            "avg-level": string;
             "away": string;
             "change-encounter": {
                 "add-date": string;
@@ -120,6 +121,8 @@ export type I18nTranslations = {
                 "assign-team": string;
                 "availability": string;
                 "base": string;
+                "close": string;
+                "closed": string;
                 "comment-liga": string;
                 "comment-nat": string;
                 "comment-prov": string;
@@ -140,26 +143,23 @@ export type I18nTranslations = {
                 "max": string;
                 "new-exception": string;
                 "new-play-day": string;
+                "open": string;
                 "play-day": string;
                 "player-base": string;
                 "players": {
+                    "backup": string;
                     "base": string;
                     "regular": string;
-                    "backup": string;
                 };
+                "save-and-continue-tooltip": string;
                 "select-club": string;
-                "select-teams": string;
-                "select-teams-description": string;
-                "transfer-teams": string;
-                "transfer-teams-description": string;
                 "select-events": string;
                 "select-location": string;
-                "assign-teams": string;
-                "save-and-continue-tooltip": string;
+                "select-teams": string;
+                "select-teams-description": string;
                 "title": string;
-                "open": string;
-                "closed": string;
-                "close": string;
+                "transfer-teams": string;
+                "transfer-teams-description": string;
             };
             "home": string;
             "last-updated": string;
@@ -176,7 +176,9 @@ export type I18nTranslations = {
                 "min-base": string;
             };
             "team-assembly": {
+                "avg-level": string;
                 "captain": string;
+                "change-team": string;
                 "disclaimer": string;
                 "double1": string;
                 "double2": string;
@@ -211,10 +213,9 @@ export type I18nTranslations = {
                 "mix2": string;
                 "mix3": string;
                 "mix4": string;
-                "change-team": string;
                 "players": {
-                    "base": string;
                     "backup": string;
+                    "base": string;
                     "team": string;
                     "title": string;
                 };
@@ -229,12 +230,8 @@ export type I18nTranslations = {
                 "warnings": {
                     "subtitute-team-index": string;
                 };
-                "permanent": string;
-                "permanent-dialog": string;
-                "avg-level": string;
             };
             "title": string;
-            "avg-level": string;
             "type": string;
             "vs": string;
             "vs-short": string;
@@ -316,58 +313,58 @@ export type I18nTranslations = {
                 "mixed": string;
                 "single": string;
             };
+            "points": string;
             "recent": {
-                "title": string;
-            };
-            "upcoming": {
                 "title": string;
             };
             "title": string;
             "types": {
-                "female": string;
-                "male": string;
-                "mix": string;
-                "single": string;
                 "double": string;
-                "mixed": string;
+                "female": string;
                 "long": {
+                    "D": string;
                     "F": string;
                     "M": string;
                     "MX": string;
                     "S": string;
-                    "D": string;
                 };
+                "male": string;
+                "mix": string;
+                "mixed": string;
                 "short": {
+                    "double": string;
                     "female": string;
                     "male": string;
-                    "double": string;
                     "mix": string;
                     "single": string;
                 };
+                "single": string;
                 "title": string;
             };
-            "points": string;
             "unkown": string;
+            "upcoming": {
+                "title": string;
+            };
         };
         "gender": {
             "female": string;
             "females": string;
+            "long": {
+                "F": string;
+                "M": string;
+                "MX": string;
+            };
             "male": string;
             "males": string;
             "mix": string;
+            "national": string;
             "select": string;
             "short": {
                 "female": string;
                 "male": string;
                 "mix": string;
             };
-            "long": {
-                "F": string;
-                "M": string;
-                "MX": string;
-            };
             "title": string;
-            "national": string;
         };
         "input": {
             "abbreviation": string;
@@ -439,6 +436,13 @@ export type I18nTranslations = {
             "october": string;
             "september": string;
         };
+        "notifications": {
+            "noNotifications": string;
+            "types": {
+                "encounterNotAcceptedNotification": string;
+                "encounterNotEnteredNotification": string;
+            };
+        };
         "permission": {
             "no-perm": string;
         };
@@ -459,16 +463,16 @@ export type I18nTranslations = {
             "start-time": string;
         };
         "players": {
+            "backup": string;
+            "base": string;
             "no-memberid": string;
+            "regular": string;
             "search": {
                 "create": string;
                 "label": string;
                 "not-found": string;
             };
             "title": string;
-            "backup": string;
-            "regular": string;
-            "base": string;
         };
         "points": {
             "title": string;
@@ -531,12 +535,6 @@ export type I18nTranslations = {
             };
             "notifications": {
                 "disclaimer": string;
-                "messages": {
-                    "syncSuccessNotification": string;
-                    "syncFailedNotification": string;
-                    "encounterNotAcceptedNotification": string;
-                    "encounterNotEnteredNotification": string;
-                };
                 "encounter": {
                     "notAcceptedNotification": string;
                     "notEnteredNotification": string;
@@ -548,10 +546,16 @@ export type I18nTranslations = {
                     "newNotification": string;
                     "title": string;
                 };
+                "messages": {
+                    "encounterNotAcceptedNotification": string;
+                    "encounterNotEnteredNotification": string;
+                    "syncFailedNotification": string;
+                    "syncSuccessNotification": string;
+                };
                 "sync": {
-                    "title": string;
-                    "success": string;
                     "failed": string;
+                    "success": string;
+                    "title": string;
                 };
                 "title": string;
                 "types": {
@@ -567,9 +571,9 @@ export type I18nTranslations = {
             "sidebar": {
                 "competition": {
                     "assembly": string;
+                    "enrollment": string;
                     "overview": string;
                     "title": string;
-                    "enrollment": string;
                 };
                 "general": {
                     "changelog": string;
@@ -589,14 +593,14 @@ export type I18nTranslations = {
             };
         };
         "team": {
-            "edit": string;
             "change-number": {
-                "title": string;
                 "description": string;
                 "number": string;
+                "title": string;
                 "tooltip": string;
             };
             "check-players": string;
+            "edit": string;
             "location": string;
             "no-perm": {
                 "email-phone": string;
@@ -607,23 +611,17 @@ export type I18nTranslations = {
                 "players": string;
                 "prefferd-encounter": string;
             };
-            "usedForTeam": {
-                "description": string;
-                "example": string;
-                "select": string;
-                "title": string;
-            };
             "types": {
                 "female": string;
-                "male": string;
-                "mix": string;
-                "national": string;
                 "long": {
                     "F": string;
                     "M": string;
                     "MX": string;
                     "NATIONAL": string;
                 };
+                "male": string;
+                "mix": string;
+                "national": string;
                 "short": {
                     "female": string;
                     "male": string;
@@ -631,45 +629,44 @@ export type I18nTranslations = {
                     "national": string;
                 };
             };
+            "usedForTeam": {
+                "description": string;
+                "example": string;
+                "select": string;
+                "title": string;
+            };
         };
         "themes": {
             "dark": string;
             "light": string;
         };
         "tournament": {
+            "away": string;
             "draw": {
                 "games": string;
                 "title": string;
             };
-            "title": string;
-            "away": string;
+            "enrollment": {
+                "close": string;
+                "closed": string;
+                "open": string;
+                "title": string;
+            };
             "home": string;
             "last-updated": string;
+            "liga": string;
             "load-more": string;
             "note": string;
+            "prov": string;
             "subevent": {
                 "max": string;
                 "max-base": string;
                 "min-base": string;
             };
+            "title": string;
             "type": string;
             "vs": string;
             "vs-short": string;
-            "enrollment": {
-                "open": string;
-                "closed": string;
-                "close": string;
-                "title": string;
-            };
-            "liga": string;
-            "prov": string;
-        };
-        "notifications": {
-            "noNotifications": string;
-            "types": {
-                "encounterNotAcceptedNotification": string;
-                "encounterNotEnteredNotification": string;
-            };
         };
     };
 };
