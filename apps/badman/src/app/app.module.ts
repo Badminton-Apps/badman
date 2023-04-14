@@ -2,7 +2,6 @@ import { isDevMode, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
-import { ShellComponent } from '@badman/frontend-components';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import {
   ClarityModule,
@@ -17,7 +16,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { PdfModule } from '@badman/frontend-pdf';
-import { RANKING_CONFIG } from '@badman/frontend-ranking';
+
 import { SeoModule } from '@badman/frontend-seo';
 import { TranslationModule } from '@badman/frontend-translation';
 import { AnalyticsModule } from '@badman/frontend-vitals';
@@ -28,6 +27,11 @@ import { MarkdownModule } from 'ngx-markdown';
 import { QuillModule } from 'ngx-quill';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
+
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { RANKING_CONFIG } from '@badman/frontend-ranking';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { ShellComponent } from '@badman/frontend-components';
 
 const APP_ROUTES: Routes = [
   {
