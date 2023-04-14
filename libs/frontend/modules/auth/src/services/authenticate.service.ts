@@ -79,7 +79,11 @@ export class AuthenticateService {
 
   logout() {
     return from(this.apollo.client.resetStore()).pipe(
-      map(() => this.authService?.logout())
+      map(() => this.authService?.logout({
+        logoutParams: {
+          returnTo: window.location.origin,
+        }
+      }))
     );
   }
 
