@@ -54,7 +54,7 @@
     "@apollo/server-plugin-operation-registry": "^4.0.1",
     "@apollo/server-plugin-response-cache": "^4.1.0",
     "@apollo/utils.keyvadapter": "^2.0.0",
-    "@auth0/auth0-angular": "^1.11.1",
+    "@auth0/auth0-angular": "^2.0.0",
     "@builder.io/partytown": "^0.7.5",
     "@fast-csv/parse": "^4.3.6",
     "@keyv/redis": "^2.5.5",
@@ -240,4 +240,3 @@
     "defaults"
   ]
 }
-

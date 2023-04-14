@@ -55,7 +55,7 @@ export class NotificationService {
               query: UNREAD_QUERY,
               fetchPolicy: 'network-only',
             })
-            .pipe(map((result) => result.data.me.notifications));
+            .pipe(map((result) => result.data.me?.notifications));
         })
       )
       .subscribe((notifications) => {
