@@ -30,7 +30,6 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import {
-  debounceTime,
   distinctUntilChanged,
   map,
   shareReplay,
