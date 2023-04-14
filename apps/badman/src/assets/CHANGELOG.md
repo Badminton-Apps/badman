@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.68.0](https://github.com/Badminton-Apps/badman/compare/v6.67.0...v6.68.0) (2023-04-14)
+
+
+### Features
+
+* only logout locally ([854d5f1](https://github.com/Badminton-Apps/badman/commit/854d5f1d4d3ab17ae3fecb91e19dc69e01a0b4ca))
+* upgrade auth0 to latest package ([9ede9e7](https://github.com/Badminton-Apps/badman/commit/9ede9e701245bf21d5423d433e7e9109f92d242c))
+
+
+### Bug Fixes
+
+* removing not working buttons ([7c755e1](https://github.com/Badminton-Apps/badman/commit/7c755e15ce3eefc42b6cb3ec62e782adef8f3b9f))
+* setting returnToUrl ([36ea38c](https://github.com/Badminton-Apps/badman/commit/36ea38cfabd7c4daa857d08dead07cef0d50a0b8))
+* updated the translations ([9bb3746](https://github.com/Badminton-Apps/badman/commit/9bb37467cc1f142e54573a4323892498fa71a8cc))
+
 ## [6.67.0](https://github.com/Badminton-Apps/badman/compare/v6.66.0...v6.67.0) (2023-04-13)
 
 
