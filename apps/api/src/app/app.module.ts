@@ -2,10 +2,10 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController, ImageController } from './controllers';
 
-import { ApiAuthorizationModule } from '@badman/backend-authorization';
+import { AuthorizationModule } from '@badman/backend-authorization';
 import { DatabaseModule } from '@badman/backend-database';
 import { GeneratorModule } from '@badman/backend-generator';
-import { ApiGrapqhlModule } from '@badman/backend-graphql';
+import { GrapqhlModule } from '@badman/backend-graphql';
 import { HealthModule } from '@badman/backend-health';
 import { LoggingModule } from '@badman/backend-logging';
 import { MailingModule } from '@badman/backend-mailing';
@@ -19,8 +19,8 @@ import { EventsModule } from './events';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    ApiAuthorizationModule,
-    ApiGrapqhlModule,
+    AuthorizationModule,
+    GrapqhlModule,
     DatabaseModule,
 
     // Lib modules

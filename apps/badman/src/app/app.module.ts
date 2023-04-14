@@ -84,20 +84,11 @@ const APP_ROUTES: Routes = [
     AuthModule.forRoot({
       domain: 'badvlasim.eu.auth0.com',
       clientId: '2LqkYZMbrTTXEE0OMkQJLmpRrOVQheoF',
-      audience: `ranking-simulation`,
       useRefreshTokens: true,
-      maxAge: 60 * 60 * 24 * 7,
       useRefreshTokensFallback: true,
       authorizationParams: {
         redirect_uri: window.location.origin,
-      },
-      httpInterceptor: {
-        allowedList: [
-          {
-            uriMatcher: () => true,
-            allowAnonymous: true,
-          },
-        ],
+        audience: 'ranking-simulation',
       },
     }),
     BrowserAnimationsModule,
