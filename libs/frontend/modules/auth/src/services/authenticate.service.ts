@@ -80,6 +80,7 @@ export class AuthenticateService {
   logout() {
     return from(this.apollo.client.resetStore()).pipe(
       map(() => this.authService?.logout({
+        openUrl: false,
         logoutParams: {
           returnTo: window.location.origin,
         }
