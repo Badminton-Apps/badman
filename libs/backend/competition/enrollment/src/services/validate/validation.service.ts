@@ -10,8 +10,8 @@ import {
 } from './rules';
 
 @Injectable()
-export class EnrollmentService {
-  private readonly _logger = new Logger(EnrollmentService.name);
+export class ValidationService {
+  private readonly _logger = new Logger(ValidationService.name);
 
   async getValidationData(systemId: string): Promise<EnrollmentData> {
     return null;
