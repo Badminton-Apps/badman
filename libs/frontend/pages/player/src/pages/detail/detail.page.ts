@@ -22,11 +22,11 @@ import {
 import { Game, Player, RankingPlace, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'badman-player-detail',
   templateUrl: './detail.page.html',
@@ -36,6 +36,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
+    TranslateModule,
 
     // Material
     MatIconModule,
@@ -60,36 +61,55 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   teams$?: Observable<Team[]>;
   rankingPlaces$?: Observable<RankingPlace>;
 
+  tooltip = {
+    single: '',
+    double: '',
+    mix: '',
+  };
+
   constructor(
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
     private transferState: TransferState,
+    private translate: TranslateService,
     @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit(): void {
-    this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.player = data['player'];
-      const lastNames = `${this.player.lastName}`.split(' ');
-      if ((lastNames ?? []).length > 0) {
-        this.initials = `${this.player.firstName?.[0]}${
-          lastNames?.[lastNames.length - 1][0]
-        }`.toUpperCase();
-      }
+    combineLatest([
+      this.route.data,
+      this.translate.get('all.ranking.single'),
+      this.translate.get('all.ranking.double'),
+      this.translate.get('all.ranking.mix'),
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([data, single, double, mix]) => {
+        this.player = data['player'];
+        const lastNames = `${this.player.lastName}`.split(' ');
+        if ((lastNames ?? []).length > 0) {
+          this.initials = `${this.player.firstName?.[0]}${
+            lastNames?.[lastNames.length - 1][0]
+          }`.toUpperCase();
+        }
 
-      this.seoService.update({
-        title: `${this.player.fullName}`,
-        description: `Player ${this.player.fullName}`,
-        type: 'website',
-        keywords: ['player', 'badminton'],
+        this.tooltip.single = single;
+        this.tooltip.double = double;
+        this.tooltip.mix = mix;
+        
+
+        this.seoService.update({
+          title: `${this.player.fullName}`,
+          description: `Player ${this.player.fullName}`,
+          type: 'website',
+          keywords: ['player', 'badminton'],
+        });
+        this.breadcrumbsService.set('player/:id', this.player.fullName);
+
+        this.teams$ = this._loadTeamsForPlayer();
+        this.rankingPlaces$ = this._loadRankingForPlayer();
       });
-      this.breadcrumbsService.set('player/:id', this.player.fullName);
-
-      this.teams$ = this._loadTeamsForPlayer();
-      this.rankingPlaces$ = this._loadRankingForPlayer();
-    });
   }
 
   getPlayer(game: Game, player: number, team: number) {

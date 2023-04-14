@@ -2,7 +2,7 @@ import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault
 } from '@apollo/server/plugin/landingPage/default';
-import { ApiAuthorizationModule } from '@badman/backend-authorization';
+import { AuthorizationModule } from '@badman/backend-authorization';
 import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -54,7 +54,7 @@ import {
         } as Omit<GqlModuleOptions, 'driver'>;
       },
     }),
-    ApiAuthorizationModule,
+    AuthorizationModule,
     TeamResolverModule,
     FaqResolverModule,
     ClubResolverModule,
@@ -69,4 +69,4 @@ import {
     NotificationResolverModule,
   ],
 })
-export class ApiGrapqhlModule {}
+export class GrapqhlModule {}

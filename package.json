@@ -1,6 +1,6 @@
 {
   "name": "badman",
-  "version": "6.61.0",
+  "version": "6.68.0",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -54,7 +54,7 @@
     "@apollo/server-plugin-operation-registry": "^4.0.1",
     "@apollo/server-plugin-response-cache": "^4.1.0",
     "@apollo/utils.keyvadapter": "^2.0.0",
-    "@auth0/auth0-angular": "^1.11.1",
+    "@auth0/auth0-angular": "^2.0.0",
     "@builder.io/partytown": "^0.7.5",
     "@fast-csv/parse": "^4.3.6",
     "@keyv/redis": "^2.5.5",
@@ -225,14 +225,18 @@
   "overrides": {
     "apollo-angular": {
       "@angular/core": "^15.0.0"
+    },
+    "@ng-maps/core": {
+      "zone.js": "0.13.0"
+    },
+    "@storybook/angular": {
+      "zone.js": "0.13.0"
     }
   },
   "volta": {
-    "node": "19.4.0",
-    "yarn": "3.4.1"
+    "node": "19.4.0"
   },
   "browserslist": [
     "defaults"
-  ],
-  "packageManager": "yarn@3.4.1"
+  ]
 }

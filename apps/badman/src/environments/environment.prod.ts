@@ -3,8 +3,8 @@ import packages from '../version.json';
 export const environment = {
   production: true,
   apiVersion: 'v1',
-  api: 'https://badman.app',
-  graphql: 'https://badman.app/graphql',
+  api: '/api',
+  graphql: '/graphql',
   adsense: {
     adClient: 'ca-pub-2426855871474715',
     show: true,

@@ -1,5 +1,5 @@
 <ng-container *ngIf="this.user$ | async as user">
-  <ng-container *ngIf="user.loggedIn">
+  <ng-container *ngIf="user.loggedIn && user.slug">
     <mat-nav-list>
       <a
         mat-list-item

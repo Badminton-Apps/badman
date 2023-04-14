@@ -36,16 +36,16 @@ const config = {
     },
   },
   prod: {
-    host: process.env.DB_BETA_IP,
-    port: process.env.DB_BETA_PORT,
-    database: process.env.DB_BETA_DATABASE,
-    username: process.env.DB_BETA_USER,
-    password: process.env.DB_PROD_DATABASE,
-    dialect: process.env.DB_BETA_DIALECT,
+    host: process.env.DB_PROD_IP,
+    port: process.env.DB_PROD_PORT,
+    database: process.env.DB_PROD_DATABASE,
+    username: process.env.DB_PROD_USER,
+    password: process.env.DB_PROD_PASSWORD,
+    dialect: process.env.DB_PROD_DIALECT,
     migrationStorageTableSchema: 'public',
     logging: false,
     dialectOptions: {
-      ssl: process.env.DB_BETA_SSL === 'true',
+      ssl: process.env.DB_PROD_SSL === 'true',
     },
     retry: {
       max: retries,

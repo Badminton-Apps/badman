@@ -14,6 +14,7 @@ import { map, filter } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
 import { BetaComponent, ProfileOverviewComponent } from './components';
 import { RankingTableComponent } from '../ranking-table';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'badman-landing',
@@ -21,6 +22,9 @@ import { RankingTableComponent } from '../ranking-table';
   imports: [
     CommonModule,
     BetaComponent,
+
+    TranslateModule,
+
     ProfileOverviewComponent,
     UpcomingGamesComponent,
     RankingTableComponent,
@@ -47,6 +51,7 @@ export class LandingComponent implements OnInit {
     this.user$ = this.authenticateService.user$;
     this.teams$ = this.user$.pipe(
       filter((user) => user.loggedIn),
+      filter((user) => !!user.id),
       switchMap((user) =>
         this.apollo
           .query<{ player: { teams: Partial<Team>[] } }>({

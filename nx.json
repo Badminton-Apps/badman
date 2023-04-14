@@ -3,9 +3,9 @@
   "npmScope": "badman",
   "useDaemonProcess": false,
   "cli": {
-    "packageManager": "yarn"
+    "packageManager": "npm"
   },
-  "packageManager": "yarn",
+  "packageManager": "npm",
   "ci": "github",
   "tasksRunnerOptions": {
     "default": {

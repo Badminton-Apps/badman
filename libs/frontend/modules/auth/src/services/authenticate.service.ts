@@ -56,9 +56,9 @@ export class AuthenticateService {
       .pipe(
         switchMap((result) => {
           return (
-            this.authService
-              ?.getUser()
-              .pipe(map((user) => ({ ...user, ...result.data.me }))) ?? of({})
+            this.authService?.user$.pipe(
+              map((user) => ({ ...user, ...result.data.me }))
+            ) ?? of({})
           );
         }),
         map((result) => {
@@ -79,7 +79,12 @@ export class AuthenticateService {
 
   logout() {
     return from(this.apollo.client.resetStore()).pipe(
-      map(() => this.authService?.logout({ returnTo: window.location.origin }))
+      map(() => this.authService?.logout({
+        openUrl: false,
+        logoutParams: {
+          returnTo: window.location.origin,
+        }
+      }))
     );
   }
 

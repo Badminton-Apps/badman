@@ -22,7 +22,7 @@ import {
 } from '@badman/frontend-html-injects';
 import { Banner } from '@badman/frontend-models';
 import { Observable } from 'rxjs';
-import { filter, map, shareReplay, tap } from 'rxjs/operators';
+import { filter, map, shareReplay } from 'rxjs/operators';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { BannerComponent } from '../components/banner/banner.component';
 import { HeaderMenuComponent } from '../components/header-menu';
