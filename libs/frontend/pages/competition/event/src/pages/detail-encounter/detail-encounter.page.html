@@ -6,20 +6,22 @@
       <mat-icon>star_outline</mat-icon>
     </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-      <mat-icon>more_vert</mat-icon>
-    </button>
+    <badman-has-claim [any]="['edit:encounter']">
+      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
 
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item [routerLink]="'edit'">
-        <mat-icon>edit</mat-icon>
-        <span>Edit</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>delete</mat-icon>
-        <span>Delete</span>
-      </button>
-    </mat-menu>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item [routerLink]="'edit'">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </badman-has-claim>
   </div>
 </badman-page-header>
 
