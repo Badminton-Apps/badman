@@ -1,27 +1,8 @@
 <label>{{ 'all.breakdown.period' | translate }}</label>
 <div class="items">
-  <div>
-    <button
-      [matTooltip]="'all.breakdown.prevPeriod' | translate"
-      mat-icon-button
-      (click)="this.prevPeriod()"
-    >
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-  </div>
   <div class="period">
     {{ period.value.start | amDateFormat : 'DD MMM YYYY' }} -
     {{ period.value.end | amDateFormat : 'DD MMM YYYY' }}
-  </div>
-  <div>
-    <button
-      [matTooltip]="'all.breakdown.nextPeriod' | translate"
-      mat-icon-button
-      id="next-period"
-      (click)="this.nextPeriod()"
-    >
-      <mat-icon>chevron_right</mat-icon>
-    </button>
   </div>
 
   <button mat-icon-button [matMenuTriggerFor]="appMenu">

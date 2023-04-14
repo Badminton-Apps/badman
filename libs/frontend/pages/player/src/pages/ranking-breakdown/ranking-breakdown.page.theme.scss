@@ -5,12 +5,15 @@
 
 @use './components/period-selection/period-selection.component.theme.scss' as period-selection;
 @use './dialogs/add-game/add-game.component.theme.scss' as add-game;
+@use './components/list-games/list-games.component.theme.scss' as list-games;
+
 
 @mixin color($theme) {
   @include period-selection.color($theme);
   @include add-game.color($theme);
+  @include list-games.color($theme);
 
-  badman-assembly {
+  badman-ranking-breakdown {
     $color-config: mat.get-color-config($theme);
   }
 }
@@ -18,6 +21,7 @@
 @mixin typography($theme) {
   @include period-selection.typography($theme);
   @include add-game.typography($theme);
+  @include list-games.typography($theme);
 
   badman-ranking-breakdown {
     $typography-config: mat.get-typography-config($theme);

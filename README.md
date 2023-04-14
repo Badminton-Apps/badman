@@ -8,22 +8,21 @@ You now only need docker installed.
 
 ### 1. Environment values
 
-copy `.env.example` to `.env`
-
-And fill in the values
+- copy `.env.example` to `.env`
+- And fill in the values
 
 ### 2. Install dependencies
 
-run: `yarn install`
+run: `npm install`
 
 ### 3. Start database/redis cache (if needed)
 
-run: `yarn dev:up`
+run: `npm run dev:up`
 
 ### 4. Start client and server
 
-- run: `yarn start` for the client
-- run: `yarn start api` for the api
+- run: `npm start` for the client
+- run: `npm start api` for the api
 
 #### 4.a First time running:
 
@@ -64,18 +63,19 @@ https://github.com/elegantapp/pwa-asset-generator
 
 ### splash
 
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.webmanifest" --dark-mode  --opaque false --background "#303030"`
+`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --dark-mode  --opaque false --background "#303030"`
 
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.webmanifest" --icon-only --favicon --dark-mode  --opaque false --background "rgba(0, 0, 0, 0)"`
+`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --icon-only --favicon --dark-mode  --opaque false --background "rgba(0, 0, 0, 0)"`
 
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.webmanifest" --icon-only --dark-mode  --opaque false --background "rgba(0, 0, 0, 1)"`
-
+`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --icon-only --dark-mode  --opaque false --background "rgba(0, 0, 0, 1)"`
 
 ### speedtest
+
 https://github.com/rakyll/hey
 `hey -n 256 -c 8 -z 30s http://localhost:5001/api/v1/ > results.txt`
 
 ### Upgrade to latest packages
+
 1. `NX_MIGRATE_USE_LOCAL=true nx migrate latest`
-2. `yarn`
-3. `NX_MIGRATE_USE_LOCAL=true yarn exec nx migrate --run-migrations`
+2. `npm i`
+3. `NX_MIGRATE_USE_LOCAL=true nx migrate --run-migrations`

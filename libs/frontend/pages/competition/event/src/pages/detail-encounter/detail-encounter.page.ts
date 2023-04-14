@@ -17,6 +17,7 @@ import { TransferState } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   GameScoreComponentComponent,
+  HasClaimComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
 import {
@@ -55,6 +56,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     // Own components
     GameScoreComponentComponent,
     PageHeaderComponent,
+    HasClaimComponent,
   ],
 })
 export class DetailEncounterComponent implements OnInit {

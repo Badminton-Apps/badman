@@ -27,8 +27,8 @@ jobs:
         with:
           ref: develop
           fetch-depth: 0
-      - name: 📥 Monorepo install
-        uses: ./.github/actions/yarn-nm-install
+      - name: npm install
+        run: npm ci
       - id: tag
         run: |
           TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
@@ -40,7 +40,7 @@ jobs:
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
-          yarn create-release --base=$TAG_VERSION --head=origin/develop
+          npm run create-release -- --base=$TAG_VERSION --head=origin/develop
       - name: Create Release
         uses: actions/create-release@v1
         env:
