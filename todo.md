@@ -2,7 +2,7 @@
 Here are some genreal TODO's that can be done in the project.
 
 ## Badman general
-- [ ] Show changelog
+- [x] Show changelog
 
 ## Dashboard
 - [x] Should show your latest games

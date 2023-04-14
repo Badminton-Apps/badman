@@ -1,14 +1,16 @@
 import { User } from '@badman/backend-authorization';
 import {
   EncounterCompetition,
+  EventCompetition,
+  EventTournament,
   Notification,
   NotificationUpdateInput,
-  Player
+  Player,
 } from '@badman/backend-database';
 import {
   Logger,
   NotFoundException,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   Args,
@@ -17,7 +19,7 @@ import {
   Parent,
   Query,
   ResolveField,
-  Resolver
+  Resolver,
 } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
@@ -45,6 +47,20 @@ export class NotificationResolver {
     @Parent() notification: Notification
   ): Promise<EncounterCompetition> {
     return notification.getEncounter();
+  }
+
+  @ResolveField(() => EventCompetition)
+  async competition(
+    @Parent() notification: Notification
+  ): Promise<EventCompetition> {
+    return notification.getCompetition();
+  }
+  
+  @ResolveField(() => EventTournament)
+  async tournament(
+    @Parent() notification: Notification
+  ): Promise<EventTournament> {
+    return notification.getTournament();
   }
 
   @Mutation(() => Notification)

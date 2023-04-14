@@ -98,7 +98,7 @@
           </badman-has-claim>
 
           <badman-has-claim [any]="['change:job']">
-            <button mat-menu-item (click)="syncEvent(row)">
+            <button mat-menu-item (click)="syncEvent(row)" *ngIf="row.visualCode">
               <mat-icon>sync</mat-icon>
               <span>Sync</span>
             </button>

@@ -7,7 +7,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  private readonly Logger = new Logger(JwtStrategy.name);
+  private readonly _logger = new Logger(JwtStrategy.name);
   constructor(configService: ConfigService) {
     super({
       secretOrKeyProvider: passportJwtSecret({
@@ -35,7 +35,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           return user;
         }
       } catch (e) {
-        this.Logger.error(e);
+        this._logger.error(e);
       }
     }
     return payload;

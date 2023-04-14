@@ -67,6 +67,20 @@
 </form>
 
 <mat-table #breakdownTable [dataSource]="dataSource">
+  <!-- Drops next period -->
+  <ng-container matColumnDef="dropsNextPeriod">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let game">
+      <div
+        *ngIf="game?.dropsNextPeriod"
+        class="drops"
+        [matTooltip]="'all.breakdown.drops-next-period' | translate"
+      >
+        <mat-icon>update_disabled</mat-icon>
+      </div>
+    </mat-cell>
+  </ng-container>
+
   <!-- Item Column -->
   <ng-container matColumnDef="date">
     <mat-header-cell *matHeaderCellDef>{{
@@ -245,6 +259,12 @@
 </div>
 
 <mat-table [dataSource]="dataSourceRemoved">
+  <!-- dropsNextPeriod Column -->
+  <ng-container matColumnDef="dropsNextPeriod">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef=""></mat-cell>
+  </ng-container>
+
   <ng-container matColumnDef="date">
     <mat-header-cell *matHeaderCellDef>{{
       'all.breakdown.date' | translate

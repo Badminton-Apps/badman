@@ -19,6 +19,7 @@ import {
   ActivatedRoute,
   ParamMap,
   Params,
+  Router,
   RouterModule,
 } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
@@ -28,7 +29,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListGamesComponent, PeriodSelectionComponent } from './components';
 import { RankingEvolutionComponent } from './components/ranking-evolution';
@@ -78,19 +86,21 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
     start: new FormControl(),
     end: new FormControl(),
     game: new FormControl(),
+    next: new FormControl(),
   });
 
   gameFilter = new FormGroup({
     gameType: new FormControl(),
     period: this.period,
     includedIgnored: new FormControl(false),
-    includedUpgrade: new FormControl(false),
-    includedDowngrade: new FormControl(false),
+    includedUpgrade: new FormControl(true),
+    includedDowngrade: new FormControl(true),
     includeOutOfScope: new FormControl(false),
   });
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private seoService: SeoService,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
@@ -110,8 +120,14 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
       });
       this.breadcrumbsService.set('player/:id', this.player.fullName);
 
-      const routeParam$ = this.route.paramMap.pipe(shareReplay(1));
-      const queryParam$ = this.route.queryParams.pipe(shareReplay(1));
+      const routeParam$ = this.route.paramMap.pipe(
+        distinctUntilChanged(),
+        shareReplay(1)
+      );
+      const queryParam$ = this.route.queryParams.pipe(
+        distinctUntilChanged(),
+        shareReplay(1)
+      );
       const filters$ = this._loadFilters(routeParam$, queryParam$);
 
       this.system$ = filters$.pipe(
@@ -134,15 +150,63 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
             .clone()
             .subtract(system.updateIntervalAmount, system.updateIntervalUnit);
 
+          const nextPeriod = startPeriod
+            .clone()
+            .add(
+              system.caluclationIntervalAmount,
+              system.calculationIntervalUnit
+            );
+
           this.period.setValue({
             start: startPeriod,
             end: endPeriod,
             game: gamePeriod,
+            next: nextPeriod,
           });
         })
       );
 
       this.games$ = filters$.pipe(switchMap(() => this._loadGames()));
+
+      // if the filters change, we need to update the query params
+      this.gameFilter.valueChanges
+        .pipe(
+          takeUntil(this.destroy$),
+          distinctUntilChanged((a, b) => {
+            return JSON.stringify(a) === JSON.stringify(b);
+          })
+          // debounceTime(100)
+        )
+        .subscribe((filters) => {
+          const queryParams: Params = {};
+          if (filters['includedIgnored']) {
+            queryParams['includedIgnored'] = filters['includedIgnored'];
+          }
+          if (filters['includedUpgrade'] == false) {
+            queryParams['includedUpgrade'] = filters['includedUpgrade'];
+          }
+          if (filters['includedDowngrade'] == false) {
+            queryParams['includedDowngrade'] = filters['includedDowngrade'];
+          }
+          if (filters['includeOutOfScope']) {
+            queryParams['includeOutOfScope'] = filters['includeOutOfScope'];
+          }
+
+          // gameType is a route param, update the route if it changes
+          if (
+            filters['gameType'] !== this.route.snapshot.paramMap.get('type')
+          ) {
+            this.router.navigate(['..', filters['gameType']], {
+              relativeTo: this.route,
+              queryParams: queryParams,
+            });
+          } else {
+            this.router.navigate([], {
+              relativeTo: this.route,
+              queryParams: queryParams,
+            });
+          }
+        });
     });
   }
 
@@ -205,6 +269,8 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
                     differenceForDowngrade
                     updateIntervalAmountLastUpdate
                     caluclationIntervalLastUpdate
+                    calculationIntervalUnit
+                    caluclationIntervalAmount
                     minNumberOfGamesUsedForUpgrade
                     updateIntervalAmount
                     updateIntervalUnit
