@@ -22,4 +22,4 @@ import { JwtStrategy } from './strategy';
   ],
   exports: [PassportModule],
 })
-export class ApiAuthorizationModule {}
+export class AuthorizationModule {}
