@@ -15,8 +15,8 @@ export const User = createParamDecorator(
     // If we don't have a user in the request, set the permissions to return false;
     return {
       ...user,
-      hasAnyPermission: () => true,
-      hasAllPermissions: () => true,
+      hasAnyPermission: () => false,
+      hasAllPermissions: () => false,
     };
   }
 );
