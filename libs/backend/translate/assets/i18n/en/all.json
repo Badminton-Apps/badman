@@ -195,7 +195,7 @@
         "player-max-mixed-games": "<strong>{player.fullName}</strong> can only play a maximum of {max} mixed doubles",
         "player-max-single-games": "<strong>{player.fullName}</strong> can only play a maximum of {max} singles",
         "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in {rankingType} and may minimally be <strong>{minLevel}</strong>.",
-        "player-order-doubles": "<strong>{team2player1.fullName}</strong> and <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> have a higher combined index than {team1player1.fullName} and {team1player2.fullName} in <strong>{game1}</strong>.",
+        "player-order-doubles": "<strong>{team2player1.fullName}</strong> and <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> have a higher combined index than <strong>{team1player1.fullName}</strong> and <strong>{team1player2.fullName}</strong> in <strong>{game1}</strong>.",
         "player-order-highest": "<strong>{team2player1.fullName}</strong> or <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> has a better individual ranking then {team1player1.fullName} or {team1player2.fullName} on <strong>{game1}</strong>",
         "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> has a higher index than <strong>{player1.fullName}</strong> in <strong>{game1}</strong>.",
         "players-above-lower": "Pair with higher lineup index is lined up in front of this pair.",
@@ -229,6 +229,7 @@
     },
     "team-enrollment": {
       "captain": "Team captain",
+      "change-team": "By editing the team you can change the default players shown, and who are the backups.",
       "errors": {
         "already": "Player already present as titular.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
@@ -242,13 +243,13 @@
         "title": "Errors"
       },
       "info": "Remarks concerning the team enrollment",
-      "change-team": "By editing the team you can change the default players shown, and who are the backups.",
       "players": {
-        "base": "Titulars",
         "backup": "Backup players",
+        "base": "Titulars",
         "team": "Base players",
         "title": "Possible titulars"
       },
+      "substitude": "",
       "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
       "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team.",
       "title": "Team enrollment",
@@ -596,6 +597,7 @@
     "sidebar": {
       "competition": {
         "assembly": "Assembly",
+        "change-encounter": "Change encounter",
         "enrollment": "Enrollment",
         "overview": "Overview",
         "title": "Competition"
@@ -659,6 +661,35 @@
       "example": "Example: {teamName}",
       "select": "Team prefix",
       "title": "Team names"
+    }
+  },
+  "team-enrollment": {
+    "captain": "",
+    "change-team": "",
+    "errors": {
+      "already": "",
+      "club-base-other-team": "",
+      "comp-status": "",
+      "none": "",
+      "player-gender": "",
+      "player-genders": "",
+      "player-min-level": "",
+      "team-index": "",
+      "team-to-strong": "",
+      "title": ""
+    },
+    "players": {
+      "backup": "",
+      "base": "",
+      "team": "",
+      "title": ""
+    },
+    "substitude": "",
+    "team-index": "",
+    "team-index-ignored": "",
+    "title": "",
+    "warnings": {
+      "subtitute-team-index": ""
     }
   },
   "themes": {
