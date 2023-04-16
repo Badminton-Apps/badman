@@ -104,7 +104,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
     if (this.group) {
       this.group.addControl(this.controlName, this.control);
     }
-    const previous = this.group.get(this.dependsOn);
+    const previous = this.group?.get(this.dependsOn);
     if (!previous) {
       console.warn(`Dependency ${this.dependsOn} not found`, previous);
     } else {

@@ -88,7 +88,7 @@ export class TeamComponent implements OnInit {
   get baseIndex() {
     return this.entry?.value?.meta?.competition?.teamIndex;
   }
-  
+
   baseCount = 0;
   backupCount = 0;
   teamIndex = 0;
@@ -165,10 +165,11 @@ export class TeamComponent implements OnInit {
       });
       return;
     }
-
     const ranking = await this.getRanking(player);
 
-    const newPlayers = this.entry?.value?.meta?.competition?.players?.concat({
+    const newPlayers = (
+      this.entry?.value?.meta?.competition?.players ?? []
+    ).concat({
       player,
       id: player.id,
       single: ranking.data.rankingPlaces?.[0].single,
@@ -187,6 +188,7 @@ export class TeamComponent implements OnInit {
       },
     } as EventEntry);
 
+
     this.checkTeam();
   }
 
@@ -197,7 +199,7 @@ export class TeamComponent implements OnInit {
         ...this.entry.value.meta,
         competition: {
           ...this.entry.value.meta?.competition,
-          players: this.entry?.value?.meta?.competition?.players?.filter(
+          players: (this.entry?.value?.meta?.competition?.players ?? []).filter(
             (p) => p.id !== id
           ),
         },
@@ -227,12 +229,11 @@ export class TeamComponent implements OnInit {
     // calculate index
     if (
       this.entry?.value?.meta?.competition?.players != undefined &&
-      this.entry?.value?.meta?.competition?.teamIndex != undefined &&
       this.team?.value?.type
     ) {
       const index = getIndexFromPlayers(
         this.team?.value?.type,
-        this.team?.value?.entry?.meta?.competition?.players ?? []
+        this.entry?.value?.meta?.competition?.players ?? []
       );
 
       this.entry.patchValue({

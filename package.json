@@ -133,6 +133,7 @@
     "reflect-metadata": "^0.1.13",
     "rollup": "^3.7.5",
     "rxjs": "~7.8.0",
+    "seed-to-color": "^1.0.4",
     "sequelize": "^6.28.0",
     "sequelize-slugify": "^1.6.2",
     "sequelize-typescript": "^2.1.5",

@@ -51,7 +51,7 @@ export class PlayerGenderRule extends Rule {
   private _checkGender(
     players: Player[],
     gender: string,
-    team: Team
+    team: Partial<Team> | Team
   ): EnrollmentValidationError[] {
     const uniquePlayers = [
       ...new Set(players?.filter((p) => p != undefined && p != null)),
