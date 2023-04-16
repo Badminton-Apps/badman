@@ -23,10 +23,12 @@ export class EnrollmentData {
 }
 
 export class EnrollmentTeam {
-  team: Team;
+  team: Partial<Team>;
+  previousSeasonTeam: Partial<Team>;
 
   teamIndex: number;
   teamPlayers: Player[];
+  backupPlayers: Player[];
 
   baseIndex: number;
   basePlayers: Player[];

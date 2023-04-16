@@ -10,7 +10,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
@@ -33,6 +33,11 @@ export class CommentResolver {
   @Query(() => [Comment])
   async comments(@Args() listArgs: ListArgs): Promise<Comment[]> {
     return Comment.findAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => Player)
+  async player(@Parent() comment: Comment): Promise<Player> {
+    return comment.getPlayer();
   }
 
   @Mutation(() => Comment)

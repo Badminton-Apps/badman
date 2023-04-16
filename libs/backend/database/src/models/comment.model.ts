@@ -46,6 +46,13 @@ export class Comment extends Model {
   id: string;
 
   @Field({ nullable: true })
+  updatedAt?: Date;
+
+  @Field({ nullable: true })
+  createdAt?: Date;
+
+
+  @Field({ nullable: true })
   @Column(DataType.TEXT)
   message: string;
 
@@ -89,9 +96,14 @@ export class Comment extends Model {
   @Column
   linkType: string;
 
+
   // Belongs to Competition
   getCompetition!: BelongsToGetAssociationMixin<EventCompetition>;
   setCompetition!: BelongsToSetAssociationMixin<EventCompetition, string>;
+
+  // Belongs to Player
+  getPlayer!: BelongsToGetAssociationMixin<Player>;
+  setPlayer!: BelongsToSetAssociationMixin<Player, string>;
 }
 
 @InputType()

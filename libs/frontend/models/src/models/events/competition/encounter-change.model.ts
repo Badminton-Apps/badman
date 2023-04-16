@@ -7,8 +7,8 @@ export class EncounterChange {
   dates?: EncounterChangeDate[];
   accepted?: boolean;
 
-  homeComment?: Comment;
-  awayComment?: Comment;
+  homeComments?: Comment[];
+  awayComments?: Comment[];
 
   encounter?: EncounterCompetition;
 
@@ -17,9 +17,7 @@ export class EncounterChange {
     this.dates = args?.dates?.map((d) => new EncounterChangeDate(d)) ?? [];
     this.accepted = args?.accepted;
 
-    this.homeComment =
-      args?.homeComment != null ? new Comment(args.homeComment) : undefined;
-    this.awayComment =
-      args?.awayComment != null ? new Comment(args.awayComment) : undefined;
+    this.homeComments = args?.homeComments?.map((c) => new Comment(c)) ?? [];
+    this.awayComments = args?.awayComments?.map((c) => new Comment(c)) ?? [];
   }
 }

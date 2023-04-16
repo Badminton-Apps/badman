@@ -1,0 +1,13 @@
+@use './src/pages/change-encounter/change-encounter.component.theme.scss' as change-encounter;
+
+@mixin theme($theme) {
+  @include change-encounter.theme($theme);
+}
+
+@mixin typography($theme) {
+  @include change-encounter.typography($theme);
+}
+
+@mixin colors($theme) {
+  @include change-encounter.color($theme);
+}

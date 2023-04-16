@@ -1,6 +1,6 @@
+import { User } from '@badman/backend-authorization';
 import {
   Assembly,
-  Comment,
   DrawCompetition,
   EncounterChange,
   EncounterChangeDate,
@@ -10,6 +10,8 @@ import {
   Player,
   Team,
 } from '@badman/backend-database';
+import { NotificationService } from '@badman/backend-notifications';
+import { Sync, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import {
   Logger,
@@ -29,12 +31,9 @@ import {
 } from '@nestjs/graphql';
 import { Queue } from 'bull';
 import moment from 'moment';
-import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize';
-import { User } from '@badman/backend-authorization';
+import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { NotificationService } from '@badman/backend-notifications';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -190,8 +189,6 @@ export class EncounterCompetitionResolver {
           encounterChange,
           newChangeEncounter,
           transaction,
-          user,
-          team,
           dates
         );
       }
@@ -226,37 +223,9 @@ export class EncounterCompetitionResolver {
     encounterChange: EncounterChange,
     change: EncounterChangeNewInput,
     transaction: Transaction,
-    player: Player,
-    team: Team,
     existingDates: EncounterChangeDate[]
   ) {
     encounterChange.accepted = false;
-
-    let comment: Comment;
-    if (change.home) {
-      comment = await encounterChange.getHomeComment({ transaction });
-
-      if (comment === null) {
-        comment = new Comment({
-          playerId: player?.id,
-          clubId: team.clubId,
-        });
-
-        await encounterChange.setHomeComment(comment, { transaction });
-      }
-    } else {
-      comment = await encounterChange.getAwayComment({ transaction });
-      if (comment === null) {
-        comment = new Comment({
-          playerId: player?.id,
-          clubId: team.clubId,
-        });
-        await encounterChange.setAwayComment(comment, { transaction });
-      }
-    }
-
-    comment.message = change.comment?.message;
-    await comment.save({ transaction });
 
     change.dates = change.dates
       .map((r) => {

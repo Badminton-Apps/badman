@@ -4,8 +4,8 @@ import { AuthService } from '@auth0/auth0-angular';
 import { PopupLoginOptions, RedirectLoginOptions } from '@auth0/auth0-spa-js';
 import { Player } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, from, iif, of } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, from, iif, of } from 'rxjs';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 const PROFILE_QUERY = gql`
   query GetProfile {
@@ -35,6 +35,19 @@ export class AuthenticateService {
   user$!: Observable<LoggedinUser>;
   loggedIn$?: Observable<boolean>;
   authService?: AuthService;
+
+  #user: BehaviorSubject<LoggedinUser | null> =
+    new BehaviorSubject<LoggedinUser | null>(null);
+
+  get user() {
+    return this.#user.value;
+  }
+
+  #loggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  get loggedIn() {
+    return this.#loggedIn.value;
+  }
 
   constructor(
     private apollo: Apollo,
@@ -73,18 +86,24 @@ export class AuthenticateService {
       switchMap((loggedIn) =>
         iif(() => loggedIn, fetchInfo, of({ loggedIn: false } as LoggedinUser))
       ),
-      shareReplay()
+      shareReplay(),
+      tap((user) => {
+        this.#user.next(user);
+        this.#loggedIn.next(user.loggedIn);
+      })
     );
   }
 
   logout() {
     return from(this.apollo.client.resetStore()).pipe(
-      map(() => this.authService?.logout({
-        openUrl: false,
-        logoutParams: {
-          returnTo: window.location.origin,
-        }
-      }))
+      map(() =>
+        this.authService?.logout({
+          openUrl: false,
+          logoutParams: {
+            returnTo: window.location.origin,
+          },
+        })
+      )
     );
   }
 

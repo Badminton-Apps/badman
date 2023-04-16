@@ -38,8 +38,8 @@ import { Apollo, gql } from 'apollo-angular';
 import { Observable, combineLatest, lastValueFrom } from 'rxjs';
 import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
-import { TeamComponent, TeamEnrollmentComponent } from './components';
 import { TeamForm } from '../teams-transfer';
+import { TeamEnrollmentComponent } from './components';
 
 @Component({
   selector: 'badman-teams-step',
@@ -79,7 +79,7 @@ export class TeamsStepComponent implements OnInit {
   @Input()
   controlName = 'teams';
 
-  @ViewChildren(TeamComponent, { read: ElementRef })
+  @ViewChildren(TeamEnrollmentComponent, { read: ElementRef })
   teamReferences: QueryList<ElementRef<HTMLElement>> | undefined;
 
   // get temmplate ref for dialog
@@ -133,8 +133,6 @@ export class TeamsStepComponent implements OnInit {
     if (this.group && !existed) {
       this.group.addControl(this.controlName, this.control);
     }
-
-    console.log(this.control.controls['M']);
 
     // initial teamnumbers
     this.teamNumbers.M =
@@ -378,7 +376,7 @@ export class TeamsStepComponent implements OnInit {
             block: 'center',
           });
         }
-      }, 100);
+      }, 300);
     });
   }
 
@@ -498,5 +496,11 @@ export class TeamsStepComponent implements OnInit {
     }
 
     return teamName;
+  }
+
+  private validateEnrollment() {
+    this.apollo.query({
+      query: gql``,
+    });
   }
 }

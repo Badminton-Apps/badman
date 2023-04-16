@@ -15,6 +15,7 @@
       <ng-container *ngIf="getTypeArray(type) as groups; else noTeams">
         <ng-container *ngFor="let group of groups.controls">
           <badman-team-enrollment
+            [attr.data-anchor]="group.get('team')?.value?.id"
             class="team"
             [team]="$any(group.get('team'))"
             [entry]="$any(group.get('entry'))"
