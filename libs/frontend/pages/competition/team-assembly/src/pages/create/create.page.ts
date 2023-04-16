@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
@@ -26,7 +20,7 @@ import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
-import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AssemblyComponent } from './components';
 
@@ -53,7 +47,7 @@ import { AssemblyComponent } from './components';
   ],
 })
 export class CreatePageComponent implements OnInit {
-  formGroup: FormGroup = new FormGroup({});
+  formGroup?: FormGroup;
   selectedEventControl: FormControl = new FormControl();
   pdfLoading = false;
   saveLoading = false;
@@ -92,9 +86,11 @@ export class CreatePageComponent implements OnInit {
         : today.year() - 1
       : queryYear;
 
-    this.formGroup.addControl('year', new FormControl(year));
-    this.formGroup.addControl('event', this.selectedEventControl);
-    this.formGroup.addControl('club', new FormControl());
+    this.formGroup = new FormGroup({
+      year: new FormControl(year),
+      event: this.selectedEventControl,
+      club: new FormControl(),
+    });
   }
 
   encounterSelected(encounter: EncounterCompetition) {
@@ -136,7 +132,7 @@ export class CreatePageComponent implements OnInit {
     }, 5000);
 
     // Get info
-    const encounterId = this.formGroup.get('encounter')?.value;
+    const encounterId = this.formGroup?.get('encounter')?.value;
     const result = await lastValueFrom(
       this.apollo.query<{
         encounterCompetition: Partial<EncounterCompetition>;
@@ -180,30 +176,30 @@ export class CreatePageComponent implements OnInit {
 
           return this.pdfService.getTeamAssembly({
             systemId,
-            captainId: this.formGroup.get('captain')?.value,
-            teamId: this.formGroup.get('team')?.value,
+            captainId: this.formGroup?.get('captain')?.value,
+            teamId: this.formGroup?.get('team')?.value,
             encounterId: encounterId,
 
-            single1: this.formGroup.get('single1')?.value?.id,
-            single2: this.formGroup.get('single2')?.value?.id,
-            single3: this.formGroup.get('single3')?.value?.id,
-            single4: this.formGroup.get('single4')?.value?.id,
+            single1: this.formGroup?.get('single1')?.value?.id,
+            single2: this.formGroup?.get('single2')?.value?.id,
+            single3: this.formGroup?.get('single3')?.value?.id,
+            single4: this.formGroup?.get('single4')?.value?.id,
 
             double1: this.formGroup
-              .get('double1')
+              ?.get('double1')
               ?.value?.map((r: Player) => r.id),
             double2: this.formGroup
-              .get('double2')
+              ?.get('double2')
               ?.value?.map((r: Player) => r.id),
             double3: this.formGroup
-              .get('double3')
+              ?.get('double3')
               ?.value?.map((r: Player) => r.id),
             double4: this.formGroup
-              .get('double4')
+              ?.get('double4')
               ?.value?.map((r: Player) => r.id),
 
             subtitudes: this.formGroup
-              .get('subtitudes')
+              ?.get('subtitudes')
               ?.value?.map((r: Player) => r.id),
           });
         })
@@ -269,30 +265,30 @@ export class CreatePageComponent implements OnInit {
           variables: {
             assembly: {
               systemId,
-              captainId: this.formGroup.get('captain')?.value,
-              teamId: this.formGroup.get('team')?.value,
-              encounterId: this.formGroup.get('encounter')?.value,
+              captainId: this.formGroup?.get('captain')?.value,
+              teamId: this.formGroup?.get('team')?.value,
+              encounterId: this.formGroup?.get('encounter')?.value,
 
-              single1: this.formGroup.get('single1')?.value?.id,
-              single2: this.formGroup.get('single2')?.value?.id,
-              single3: this.formGroup.get('single3')?.value?.id,
-              single4: this.formGroup.get('single4')?.value?.id,
+              single1: this.formGroup?.get('single1')?.value?.id,
+              single2: this.formGroup?.get('single2')?.value?.id,
+              single3: this.formGroup?.get('single3')?.value?.id,
+              single4: this.formGroup?.get('single4')?.value?.id,
 
               double1: this.formGroup
-                .get('double1')
+                ?.get('double1')
                 ?.value?.map((r: Player) => r.id),
               double2: this.formGroup
-                .get('double2')
+                ?.get('double2')
                 ?.value?.map((r: Player) => r.id),
               double3: this.formGroup
-                .get('double3')
+                ?.get('double3')
                 ?.value?.map((r: Player) => r.id),
               double4: this.formGroup
-                .get('double4')
+                ?.get('double4')
                 ?.value?.map((r: Player) => r.id),
 
               subtitudes: this.formGroup
-                .get('subtitudes')
+                ?.get('subtitudes')
                 ?.value?.map((r: Player) => r.id),
             },
           },

@@ -8,13 +8,87 @@ import {
   TeamBaseIndexRule,
   TeamSubeventIndexRule,
 } from './rules';
+import {
+  Player,
+  RankingSystem,
+  SubEventCompetition,
+  Team,
+} from '@badman/backend-database';
 
 @Injectable()
 export class ValidationService {
   private readonly _logger = new Logger(ValidationService.name);
 
-  async getValidationData(systemId: string): Promise<EnrollmentData> {
-    return null;
+  async getValidationData({
+    systemId,
+    teams,
+    entries,
+  }: {
+    systemId: string;
+    teams: {
+      id: string;
+      basePlayers: string[];
+      players: string[];
+      backupPlayers: string[];
+      linkId: string;
+    }[];
+    entries: {
+      id: string;
+      teamId: string;
+      subEventId: string;
+    }[];
+  }): Promise<EnrollmentData> {
+    const system = await RankingSystem.findByPk(systemId);
+    let previousSeasonTeams = [];
+
+    const linkIds = teams.map((t) => t.linkId);
+    if (linkIds.length > 0) {
+      previousSeasonTeams = await Team.findAll({
+        where: {
+          linkId: linkIds,
+        },
+      });
+    }
+
+    const subEvents = await SubEventCompetition.findAll({
+      where: {
+        id: entries.map((e) => e.subEventId),
+      },
+    });
+
+    const playerIds = teams
+      .map((t) => t.players)
+      .concat(teams.map((t) => t.backupPlayers))
+      .concat(teams.map((t) => t.basePlayers))
+      .flat(1);
+    const players = await Player.findAll({
+      where: {
+        id: playerIds,
+      },
+    });
+
+    return {
+      teams: teams.map((t) => {
+        const entry = entries.find((e) => e.teamId === t.id);
+
+        return {
+          team: null,
+          previousSeasonTeam: previousSeasonTeams.find(
+            (p) => p.linkId === t.linkId
+          ),
+          id: t.id,
+          basePlayers: players.filter((p) => t.basePlayers.includes(p.id)),
+          teamPlayers: players.filter((p) => t.players.includes(p.id)),
+          backupPlayers: players.filter((p) => t.backupPlayers.includes(p.id)),
+
+          system,
+
+          baseIndex: 0,
+          teamIndex: 0,
+          subEvent: subEvents.find((s) => s.id === entry.subEventId),
+        };
+      }),
+    };
   }
 
   /**
@@ -74,7 +148,7 @@ export class ValidationService {
     },
     validators: Rule[]
   ) {
-    const dbData = await this.getValidationData(data.systemId);
+    const dbData = await this.getValidationData(null);
     return this.validate(dbData, validators);
   }
 

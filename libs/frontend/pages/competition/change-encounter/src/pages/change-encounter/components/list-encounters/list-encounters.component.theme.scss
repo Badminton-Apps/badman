@@ -1,0 +1,23 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+
+@mixin color($theme) {
+  badman-list-encounters {
+    $color-config: mat.get-color-config($theme);
+    $primary: map.get($color-config, 'primary');
+
+
+    .selected {
+      border-right-color: mat.get-color-from-palette($primary, default);
+    }
+  }
+}
+
+@mixin typography($theme) {
+  badman-list-encounters {
+    $typography-config: mat.get-typography-config($theme);
+  }
+}

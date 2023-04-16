@@ -233,6 +233,7 @@ export type I18nTranslations = {
             };
             "team-enrollment": {
                 "captain": string;
+                "change-team": string;
                 "errors": {
                     "already": string;
                     "club-base-other-team": string;
@@ -246,20 +247,19 @@ export type I18nTranslations = {
                     "title": string;
                 };
                 "info": string;
-                "change-team": string;
                 "players": {
-                    "base": string;
                     "backup": string;
+                    "base": string;
                     "team": string;
                     "title": string;
                 };
+                "substitude": string;
                 "team-index": string;
                 "team-index-ignored": string;
                 "title": string;
                 "warnings": {
                     "subtitute-team-index": string;
                 };
-                "substitude": string;
             };
             "title": string;
             "type": string;
@@ -601,6 +601,7 @@ export type I18nTranslations = {
             "sidebar": {
                 "competition": {
                     "assembly": string;
+                    "change-encounter": string;
                     "enrollment": string;
                     "overview": string;
                     "title": string;
@@ -666,6 +667,35 @@ export type I18nTranslations = {
                 "title": string;
             };
         };
+        "team-enrollment": {
+            "captain": string;
+            "change-team": string;
+            "errors": {
+                "already": string;
+                "club-base-other-team": string;
+                "comp-status": string;
+                "none": string;
+                "player-gender": string;
+                "player-genders": string;
+                "player-min-level": string;
+                "team-index": string;
+                "team-to-strong": string;
+                "title": string;
+            };
+            "players": {
+                "backup": string;
+                "base": string;
+                "team": string;
+                "title": string;
+            };
+            "substitude": string;
+            "team-index": string;
+            "team-index-ignored": string;
+            "title": string;
+            "warnings": {
+                "subtitute-team-index": string;
+            };
+        };
         "themes": {
             "dark": string;
             "light": string;
@@ -697,35 +727,6 @@ export type I18nTranslations = {
             "type": string;
             "vs": string;
             "vs-short": string;
-        };
-        "team-enrollment": {
-            "captain": string;
-            "errors": {
-                "already": string;
-                "club-base-other-team": string;
-                "comp-status": string;
-                "none": string;
-                "player-gender": string;
-                "player-genders": string;
-                "player-min-level": string;
-                "team-index": string;
-                "team-to-strong": string;
-                "title": string;
-            };
-            "change-team": string;
-            "players": {
-                "base": string;
-                "team": string;
-                "backup": string;
-                "title": string;
-            };
-            "substitude": string;
-            "team-index": string;
-            "team-index-ignored": string;
-            "title": string;
-            "warnings": {
-                "subtitute-team-index": string;
-            };
         };
     };
 };

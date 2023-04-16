@@ -1,0 +1,9 @@
+mat-form-field {
+  width: 100%;
+}
+
+.selected {
+  box-sizing: border-box;
+  border-right-width: 2px;
+  border-right-style: solid; // mat-color($client-angular-accent, 300);
+}
