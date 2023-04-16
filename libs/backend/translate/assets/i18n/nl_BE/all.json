@@ -195,7 +195,7 @@
         "player-max-mixed-games": "<strong>{player.fullName}</strong> kan maar een maximum van {max} mix wedstrijden spelen",
         "player-max-single-games": "<strong>{player.fullName}</strong> mag maximaal {max} enkels spelen",
         "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
-        "player-order-doubles": "<strong>{team2player1.fullName}</strong> en <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> hebben een beter gecombineerd klassement dan {team1player1.fullName} en {team1player2.fullName} in <strong>{game1}</strong>",
+        "player-order-doubles": "<strong>{team2player1.fullName}</strong> en <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> hebben een beter gecombineerd klassement dan <strong>{team1player1.fullName</strong>} en <strong>team1player2.fullName}</strong> in <strong>{game1}</strong>",
         "player-order-highest": "<strong>{team2player1.fullName}</strong> of <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter individueel klassement dan {team1player1.fullName} of {team1player2.fullName} in <strong>{game1}</strong>",
         "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter klassement dan <strong>{player1.fullName}</strong> in <strong>{game1}</strong>",
         "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld.",
@@ -229,6 +229,7 @@
     },
     "team-enrollment": {
       "captain": "Ploegkapitein",
+      "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
       "errors": {
         "already": "Speler al als titualris aanwezig.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
@@ -241,11 +242,11 @@
         "team-to-strong": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
         "title": "Fouten"
       },
-      "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
+      "info": "",
       "players": {
+        "backup": "Reservespelers",
         "base": "Titularissen",
         "team": "Basisspelers",
-        "backup": "Reservespelers",
         "title": "Mogelijke titularissen"
       },
       "substitude": "Invallers",
@@ -596,6 +597,7 @@
     "sidebar": {
       "competition": {
         "assembly": "Opstelling",
+        "change-encounter": "Verplaats ontmoeting",
         "enrollment": "Inschrijven",
         "overview": "Overzicht",
         "title": "Competitie"
@@ -659,6 +661,35 @@
       "example": "Vorbeeld: {teamName}",
       "select": "Team prefix",
       "title": "Team namen"
+    }
+  },
+  "team-enrollment": {
+    "captain": "",
+    "change-team": "",
+    "errors": {
+      "already": "",
+      "club-base-other-team": "",
+      "comp-status": "",
+      "none": "",
+      "player-gender": "",
+      "player-genders": "",
+      "player-min-level": "",
+      "team-index": "",
+      "team-to-strong": "",
+      "title": ""
+    },
+    "players": {
+      "backup": "",
+      "base": "",
+      "team": "",
+      "title": ""
+    },
+    "substitude": "",
+    "team-index": "",
+    "team-index-ignored": "",
+    "title": "",
+    "warnings": {
+      "subtitute-team-index": ""
     }
   },
   "themes": {
