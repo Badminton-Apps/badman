@@ -195,7 +195,7 @@
         "player-max-mixed-games": "<strong>{player.fullName}</strong> can only play a maximum of {max} mixed doubles",
         "player-max-single-games": "<strong>{player.fullName}</strong> can only play a maximum of {max} singles",
         "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in {rankingType} and may minimally be <strong>{minLevel}</strong>.",
-        "player-order-doubles": "<strong>{team2player1.fullName}</strong> and <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> have a higher combined index than {team1player1.fullName} and {team1player2.fullName} in <strong>{game1}</strong>.",
+        "player-order-doubles": "<strong>{team2player1.fullName}</strong> and <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> have a higher combined index than <strong>{team1player1.fullName}</strong> and <strong>{team1player2.fullName}</strong> in <strong>{game1}</strong>.",
         "player-order-highest": "<strong>{team2player1.fullName}</strong> or <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> has a better individual ranking then {team1player1.fullName} or {team1player2.fullName} on <strong>{game1}</strong>",
         "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> has a higher index than <strong>{player1.fullName}</strong> in <strong>{game1}</strong>.",
         "players-above-lower": "Pair with higher lineup index is lined up in front of this pair.",
