@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.69.2](https://github.com/Badminton-Apps/badman/compare/v6.69.1...v6.69.2) (2023-04-17)
+
+
+### Bug Fixes
+
+* adding name to button in case of no image ([d5052c7](https://github.com/Badminton-Apps/badman/commit/d5052c72d76a335a9d68740d9f3bf5b89501eb71))
+* CT status error message ([ca53c9c](https://github.com/Badminton-Apps/badman/commit/ca53c9c1c90cd1cb9b2aeb230c3da045a2531f23))
+* login button now shows name ([320669f](https://github.com/Badminton-Apps/badman/commit/320669ff253d80b768404e2165b38597a7c9df05))
+
 ### [6.69.1](https://github.com/Badminton-Apps/badman/compare/v6.69.0...v6.69.1) (2023-04-17)
 
 
