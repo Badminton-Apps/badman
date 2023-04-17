@@ -42,8 +42,10 @@ export class CompetitionStatusRule extends Rule {
         errors.push({
           message: 'all.competition.team-assembly.errors.comp-status',
           params: {
-            id: player?.id,
-            fullName: player?.fullName,
+            player: {
+              id: player?.id,
+              fullName: player?.fullName,
+            }
           },
         });
       }

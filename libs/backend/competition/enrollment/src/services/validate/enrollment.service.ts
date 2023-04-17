@@ -13,8 +13,8 @@ import {
 } from './rules';
 
 @Injectable()
-export class AssemblyService {
-  private readonly _logger = new Logger(AssemblyService.name);
+export class EnrollmentService {
+  private readonly _logger = new Logger(EnrollmentService.name);
 
   async getValidationData(systemId: string): Promise<AssemblyData> {
     return null;
