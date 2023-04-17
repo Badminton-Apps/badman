@@ -195,7 +195,7 @@
         "player-max-mixed-games": "<strong>{player.fullName}</strong> kan maar een maximum van {max} mix wedstrijden spelen",
         "player-max-single-games": "<strong>{player.fullName}</strong> mag maximaal {max} enkels spelen",
         "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
-        "player-order-doubles": "<strong>{team2player1.fullName}</strong> en <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> hebben een beter gecombineerd klassement dan {team1player1.fullName} en {team1player2.fullName} in <strong>{game1}</strong>",
+        "player-order-doubles": "<strong>{team2player1.fullName}</strong> en <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> hebben een beter gecombineerd klassement dan <strong>{team1player1.fullName</strong>} en <strong>team1player2.fullName}</strong> in <strong>{game1}</strong>",
         "player-order-highest": "<strong>{team2player1.fullName}</strong> of <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter individueel klassement dan {team1player1.fullName} of {team1player2.fullName} in <strong>{game1}</strong>",
         "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter klassement dan <strong>{player1.fullName}</strong> in <strong>{game1}</strong>",
         "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld.",

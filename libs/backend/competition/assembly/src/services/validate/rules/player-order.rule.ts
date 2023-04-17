@@ -41,15 +41,6 @@ export class PlayerOrderRule extends Rule {
 
     errors.push(
       this._checkDouble(
-        double1,
-        double2,
-        'double1',
-        'double2',
-        system.amountOfLevels
-      )
-    );
-    errors.push(
-      this._checkDouble(
         double3,
         double4,
         'double3',
@@ -59,6 +50,17 @@ export class PlayerOrderRule extends Rule {
     );
 
     if (type !== SubEventTypeEnum.MX) {
+      // double 1 and 2 are males/females doubles so no validation needed
+      errors.push(
+        this._checkDouble(
+          double1,
+          double2,
+          'double1',
+          'double2',
+          system.amountOfLevels
+        )
+      );
+
       // Non mixed check 2 with 3
       errors.push(
         this._checkSingle(
