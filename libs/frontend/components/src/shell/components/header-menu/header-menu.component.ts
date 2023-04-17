@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
-import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
+import { AuthenticateService } from '@badman/frontend-auth';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import { LanguageComponent } from '@badman/frontend-translation';
-import { Observable } from 'rxjs';
 import { ThemeSwitcherComponent } from '../theme-switcher';
 
 @Component({
@@ -28,14 +27,8 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
   templateUrl: './header-menu.component.html',
   styleUrls: ['./header-menu.component.scss'],
 })
-export class HeaderMenuComponent implements OnInit {
-  user$?: Observable<LoggedinUser>;
-
-  constructor(private authenticateService: AuthenticateService) {}
-
-  ngOnInit() {
-    this.user$ = this.authenticateService.user$;
-  }
+export class HeaderMenuComponent {
+  constructor(public authenticateService: AuthenticateService) {}
 
   logout() {
     this.authenticateService.logout().subscribe();

@@ -1,39 +1,46 @@
-<ng-container *ngIf="this.user$ | async as user">
-  <button mat-button *ngIf="!user.loggedIn" (click)="login()">Log in</button>
+<button
+  mat-button
+  *ngIf="!authenticateService.user?.loggedIn"
+  (click)="login()"
+>
+  Log in
+</button>
 
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="menu"
-    aria-label="icon-button with a menu"
-  >
-    <img
-      class="avatar"
-      *ngIf="user.loggedIn"
-      [src]="user?.picture"
-      [alt]="'profile picture' + user?.fullName"
-      loading="lazy"
-    />
-    <mat-icon *ngIf="!user.loggedIn">more_vert</mat-icon>
-  </button>
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="menu"
+  aria-label="icon-button with a menu"
+>
+  {{ authenticateService.user?.firstName }}
+  <img
+    class="avatar"
+    *ngIf="authenticateService.user?.loggedIn"
+    [src]="authenticateService.user?.picture"
+    [alt]="'profile picture' + authenticateService.user?.fullName"
+    loading="lazy"
+  />
+  <mat-icon *ngIf="!authenticateService.user?.loggedIn">more_vert</mat-icon>
+</button>
 
-  <mat-menu #menu="matMenu">
-    <ng-container *ngIf="user.loggedIn">
-      <div
-        mat-menu-item
-        *ngIf="user.fullName"
-        [routerLink]="['/', 'player', user.slug]"
-      >
-        {{ user?.fullName }}
-      </div>
+<mat-menu #menu="matMenu">
+  <ng-container *ngIf="authenticateService.user?.loggedIn">
+    <div
+      mat-menu-item
+      *ngIf="authenticateService.user?.fullName"
+      [routerLink]="['/', 'player', authenticateService.user?.slug]"
+    >
+      {{ authenticateService.user?.fullName }}
+    </div>
 
-      <button mat-menu-item (click)="logout()">Logout</button>
-      <a mat-menu-item [routerLink]="['/', 'player', user.slug, 'settings']"
-        >Settings</a
-      >
-      <mat-divider></mat-divider>
-    </ng-container>
+    <button mat-menu-item (click)="logout()">Logout</button>
+    <a
+      mat-menu-item
+      [routerLink]="['/', 'player', authenticateService.user?.slug, 'settings']"
+      >Settings</a
+    >
+    <mat-divider></mat-divider>
+  </ng-container>
 
-    <badman-language></badman-language>
-    <badman-theme-switcher></badman-theme-switcher>
-  </mat-menu>
-</ng-container>
+  <badman-language></badman-language>
+  <badman-theme-switcher></badman-theme-switcher>
+</mat-menu>
