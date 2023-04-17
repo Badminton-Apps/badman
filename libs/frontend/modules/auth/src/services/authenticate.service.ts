@@ -12,6 +12,7 @@ const PROFILE_QUERY = gql`
     me {
       id
       slug
+      firstName
       fullName
       permissions
       clubs {

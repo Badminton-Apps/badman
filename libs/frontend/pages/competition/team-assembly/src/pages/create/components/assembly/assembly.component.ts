@@ -34,6 +34,7 @@ import {
   PlayerSearchComponent,
 } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
+import { AuthenticateService } from '@badman/frontend-auth'
 import {
   Assembly,
   EncounterCompetition,
@@ -237,6 +238,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private systemService: RankingSystemService,
+    private authenticateService: AuthenticateService,
     private transferState: TransferState,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -1049,6 +1051,10 @@ export class AssemblyComponent implements OnInit, OnDestroy {
 
       return of([]);
     } else {
+      if (!this.authenticateService?.user?.id) {
+        return of([]);
+      }
+
       return this.apollo
         .query<{ encounterCompetition: Partial<EncounterCompetition> }>({
           query: gql`
@@ -1077,6 +1083,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
             id: encounterId,
             where: {
               captainId,
+              playerId: this.authenticateService?.user?.id
             },
           },
         })
