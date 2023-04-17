@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.69.1](https://github.com/Badminton-Apps/badman/compare/v6.69.0...v6.69.1) (2023-04-17)
+
+
+### Bug Fixes
+
+* link text ([f96986e](https://github.com/Badminton-Apps/badman/commit/f96986e451cbbd5f742e35412d012320c85e5fdc))
+* only show save button when you are loggedin ([276439f](https://github.com/Badminton-Apps/badman/commit/276439f2713b0562a6f9f6e1458d8bb8b1420700))
+
 ## [6.69.0](https://github.com/Badminton-Apps/badman/compare/v6.68.0...v6.69.0) (2023-04-17)
 
 
