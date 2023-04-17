@@ -123,6 +123,12 @@
         },
         "development": {
           "browserTarget": "badman:build:development"
+        },
+        "beta": {
+          "browserTarget": "badman:build:beta"
+        },
+        "dev-beta": {
+          "browserTarget": "badman:build:dev-beta"
         }
       },
       "defaultConfiguration": "development"

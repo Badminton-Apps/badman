@@ -1,26 +1,31 @@
-<button
-  mat-button
-  *ngIf="!authenticateService.user?.loggedIn"
-  (click)="login()"
->
-  Log in
-</button>
+<ng-container *ngIf="!authenticateService.user?.loggedIn">
+  <button mat-button (click)="login()">Log in</button>
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="menu"
+    aria-label="button for more option menu"
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</ng-container>
 
-<button
-  mat-icon-button
-  [matMenuTriggerFor]="menu"
-  aria-label="icon-button with a menu"
->
-  {{ authenticateService.user?.firstName }}
-  <img
-    class="avatar"
-    *ngIf="authenticateService.user?.loggedIn"
-    [src]="authenticateService.user?.picture"
-    [alt]="'profile picture' + authenticateService.user?.fullName"
-    loading="lazy"
-  />
-  <mat-icon *ngIf="!authenticateService.user?.loggedIn">more_vert</mat-icon>
-</button>
+<ng-container *ngIf="authenticateService.user?.loggedIn">
+  <button
+    mat-button
+    class="avatar-button"
+    [matMenuTriggerFor]="menu"
+    aria-label="button for more option menu"
+  >
+    <img
+      class="avatar"
+      [src]="authenticateService.user?.picture"
+      [alt]="'profile picture' + authenticateService.user?.fullName"
+      loading="lazy"
+    />
+
+    {{ authenticateService.user?.firstName }}
+  </button>
+</ng-container>
 
 <mat-menu #menu="matMenu">
   <ng-container *ngIf="authenticateService.user?.loggedIn">
