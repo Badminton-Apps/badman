@@ -94,6 +94,20 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
+        },
+        "dev-beta": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.dev-beta.ts"
+            }
+          ]
         }
       },
       "defaultConfiguration": "development"
@@ -109,6 +123,12 @@
         },
         "development": {
           "browserTarget": "badman:build:development"
+        },
+        "beta": {
+          "browserTarget": "badman:build:beta"
+        },
+        "dev-beta": {
+          "browserTarget": "badman:build:dev-beta"
         }
       },
       "defaultConfiguration": "development"
@@ -165,6 +185,18 @@
           "sourceMap": true,
           "extractLicenses": false,
           "vendorChunk": true
+        },
+        "dev-beta": {
+          "fileReplacements": [
+            {
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.dev-beta.ts"
+            }
+          ],
+          "optimization": false,
+          "sourceMap": true,
+          "extractLicenses": false,
+          "vendorChunk": true
         }
       },
       "defaultConfiguration": "development"
@@ -203,6 +235,10 @@
         "beta": {
           "browserTarget": "badman:build:beta",
           "serverTarget": "badman:server:beta"
+        },
+        "dev-beta": {
+          "browserTarget": "badman:build:dev-beta",
+          "serverTarget": "badman:server:dev-beta"
         }
       },
       "defaultConfiguration": "development"

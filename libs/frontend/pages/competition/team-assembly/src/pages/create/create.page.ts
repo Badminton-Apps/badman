@@ -23,6 +23,7 @@ import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AssemblyComponent } from './components';
+import { AuthenticateService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-assembly-create',
@@ -67,7 +68,8 @@ export class CreatePageComponent implements OnInit {
     private systemService: RankingSystemService,
     private pdfService: PdfService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    public authenticate: AuthenticateService
   ) {}
 
   ngOnInit(): void {

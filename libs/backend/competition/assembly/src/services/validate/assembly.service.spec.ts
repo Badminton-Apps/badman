@@ -21,7 +21,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 
-import { AssemblyService } from './validation.service';
+import { AssemblyService } from './assembly.service';
 import {
   TeamBaseIndexRule,
   CompetitionStatusRule,
@@ -35,7 +35,7 @@ import {
 } from './rules';
 import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
 
-describe('ValidationService', () => {
+describe('AssemblyService', () => {
   let service: AssemblyService;
   let system: RankingSystem;
   let draw: DrawCompetition;
@@ -542,7 +542,7 @@ describe('ValidationService', () => {
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['id']).toBe(player555.id);
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
         });
 
         it("should be invalid if the players doesn't have competition status on true ", async () => {
@@ -1897,7 +1897,7 @@ describe('ValidationService', () => {
           );
 
           expect(error).toBeDefined();
-          expect(error?.params?.['id']).toBe(player555.id);
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
         });
 
         it("should be invalid if the players doesn't have competition status on true ", async () => {
