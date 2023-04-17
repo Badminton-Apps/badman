@@ -56,7 +56,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
   @Input()
   dependsOn = 'team';
 
-  formControl?: FormControl<EncounterCompetition>;
+  formControl!: FormControl<EncounterCompetition | null>;
 
   encountersSem1!: EncounterCompetition[];
   encountersSem2!: EncounterCompetition[];
@@ -73,7 +73,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
     ) as FormControl<EncounterCompetition>;
 
     if (!this.formControl) {
-      this.group.addControl(this.controlName, new FormControl());
+      this.group.addControl(this.controlName, new FormControl(null));
     }
 
     const previous = this.group.get(this.dependsOn);
@@ -86,7 +86,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
         .subscribe((r) => {
           this.router.navigate([], {
             relativeTo: this.activatedRoute,
-            queryParams: { encounter: r.id },
+            queryParams: { encounter: r?.id },
             queryParamsHandling: 'merge',
           });
         });
@@ -194,11 +194,8 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
             });
 
             const params = this.activatedRoute.snapshot.queryParams;
-            if (
-              params &&
-              params['encounter'] &&
-              this.encountersSem1.length > 0
-            ) {
+
+            if (params && params['encounter']) {
               const foundEncounter = [
                 ...this.encountersSem1,
                 ...this.encountersSem2,

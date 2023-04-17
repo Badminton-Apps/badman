@@ -45,6 +45,7 @@
     "usedForUpgrade": "Gebruikt enkel voor upgrade"
   },
   "button": {
+    "add-comment": "Verstuur opmerking",
     "all": "Alles",
     "cancel": "Annuleren",
     "close": "Sluiten",
@@ -79,7 +80,6 @@
     "away": "Uit",
     "change-encounter": {
       "add-date": "Voeg datum toe",
-      "away-comment": "Opmerkingen uitploeg",
       "calendar": {
         "option": "{amount} in optie",
         "other-games": "Andere ontmoetingen die dag",
@@ -90,6 +90,7 @@
       "choose-date": "Kies een datum",
       "choose-encounter": "Kies een ontmoeting",
       "choose-team": "Kies een ploeg",
+      "comment": "Opmerking",
       "comments": "Opmerkingen",
       "dates": "Data",
       "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
@@ -98,7 +99,6 @@
         "select-one-date": "Gelieve minsten 1 dag te selecteren",
         "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
       },
-      "home-comment": "Opmerkingen thuisploeg",
       "not-possible": "Niet beschikbaar",
       "possible": "Beschikbaar",
       "requested": "Verzoek ingediend",

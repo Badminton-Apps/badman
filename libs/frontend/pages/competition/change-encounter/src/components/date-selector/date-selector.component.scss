@@ -4,7 +4,8 @@
 }
 
 .app-date-selector-container {
-  border-bottom: solid 1px #ccc;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
   cursor: pointer;
 }
 
@@ -18,10 +19,9 @@ span {
 }
 
 .disabled {
-  color: rgba(0, 0, 0, 0.38);
-
   &.app-date-selector-container {
-    border-bottom: solid 1px rgba(0, 0, 0, 0.38);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
     cursor: default;
   }
 }

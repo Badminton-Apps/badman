@@ -45,6 +45,7 @@
     "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
   },
   "button": {
+    "add-comment": "Envoyer un commentaire",
     "all": "Tout",
     "cancel": "Annuler",
     "close": "Fermer",
@@ -79,7 +80,6 @@
     "away": "De",
     "change-encounter": {
       "add-date": "Ajouter une date",
-      "away-comment": "Notes équipe à l'extérieur",
       "calendar": {
         "option": "{amount} facultatif",
         "other-games": "Autres rencontres ce jour-là",
@@ -90,6 +90,7 @@
       "choose-date": "Choisir une date",
       "choose-encounter": "Choisir une réunion",
       "choose-team": "Choisir une équipe",
+      "comment": "Remarque",
       "comments": "Notes",
       "dates": "Données",
       "description": "Clause de non-responsabilité : Il s'agit d'une version initiale du module de déplacement des réunions. Des améliorations seront apportées périodiquement.",
@@ -98,7 +99,6 @@
         "select-one-date": "Veuillez sélectionner au moins 1 jour",
         "select-one-date-or-comment": "Veuillez commenter (au moins 15 caractères) ou choisir une date."
       },
-      "home-comment": "Notes équipe locale",
       "not-possible": "Non disponible",
       "possible": "Disponible",
       "requested": "Demande soumise",

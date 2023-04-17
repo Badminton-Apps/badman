@@ -45,6 +45,7 @@
     "usedForUpgrade": "Used for upgrade"
   },
   "button": {
+    "add-comment": "Send comment",
     "all": "All",
     "cancel": "Cancel",
     "close": "Close",
@@ -79,7 +80,6 @@
     "away": "Away",
     "change-encounter": {
       "add-date": "Add date",
-      "away-comment": "Comments visiting team",
       "calendar": {
         "option": "{amount} optional",
         "other-games": "Other encounters that day",
@@ -90,6 +90,7 @@
       "choose-date": "Pick a date",
       "choose-encounter": "Pick an encounter",
       "choose-team": "Pick a team",
+      "comment": "Comments",
       "comments": "Comments",
       "dates": "Dates",
       "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",
@@ -98,7 +99,6 @@
         "select-one-date": "Please select at least 1 day",
         "select-one-date-or-comment": "Please comment (at least 15 characters) or choose a date."
       },
-      "home-comment": "Comments home team",
       "not-possible": "Not available",
       "possible": "Available",
       "requested": "Request submitted",

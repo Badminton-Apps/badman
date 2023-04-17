@@ -1,3 +1,9 @@
+import {
+  Player,
+  RankingSystem,
+  SubEventCompetition,
+  Team,
+} from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { EnrollmentData, EnrollmentOutput } from '../../models';
 import {
@@ -8,15 +14,8 @@ import {
   TeamBaseIndexRule,
   TeamSubeventIndexRule,
 } from './rules';
-import {
-  Player,
-  RankingSystem,
-  SubEventCompetition,
-  Team,
-} from '@badman/backend-database';
 
 @Injectable()
-<<<<<<< HEAD:libs/backend/competition/enrollment/src/services/validate/validation.service.ts
 export class ValidationService {
   private readonly _logger = new Logger(ValidationService.name);
 
@@ -81,11 +80,6 @@ export class ValidationService {
           basePlayers: players.filter((p) => t.basePlayers.includes(p.id)),
           teamPlayers: players.filter((p) => t.players.includes(p.id)),
           backupPlayers: players.filter((p) => t.backupPlayers.includes(p.id)),
-=======
-export class EnrollmentService {
-  private readonly _logger = new Logger(EnrollmentService.name);
->>>>>>> develop:libs/backend/competition/enrollment/src/services/validate/enrollment.service.ts
-
           system,
 
           baseIndex: 0,
