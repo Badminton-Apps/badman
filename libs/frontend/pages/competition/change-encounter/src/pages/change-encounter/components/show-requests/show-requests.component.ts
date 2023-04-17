@@ -422,7 +422,10 @@ export class ShowRequestsComponent implements OnInit {
     });
 
     this.dateControls.push(dateControl);
+  }
 
-    console.log(this.dateControls.getRawValue());
+
+  send() {
+    console.log('adding comment');
   }
 }

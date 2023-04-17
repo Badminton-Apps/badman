@@ -49,6 +49,7 @@ export type I18nTranslations = {
             "usedForUpgrade": string;
         };
         "button": {
+            "add-comment": string;
             "all": string;
             "cancel": string;
             "close": string;
@@ -83,7 +84,6 @@ export type I18nTranslations = {
             "away": string;
             "change-encounter": {
                 "add-date": string;
-                "away-comment": string;
                 "calendar": {
                     "option": string;
                     "other-games": string;
@@ -94,6 +94,7 @@ export type I18nTranslations = {
                 "choose-date": string;
                 "choose-encounter": string;
                 "choose-team": string;
+                "comment": string;
                 "comments": string;
                 "dates": string;
                 "description": string;
@@ -102,7 +103,6 @@ export type I18nTranslations = {
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
-                "home-comment": string;
                 "not-possible": string;
                 "possible": string;
                 "requested": string;

@@ -8,11 +8,11 @@
 badman-show-requests {
   border-left-width: 1px;
   border-left-style: solid;
-  min-width: 600px;
+  flex: 1;
 }
 
 badman-list-encounters {
-  width: 300px;
+  flex: 0 0 300px;
 }
 
 .list-encounters{
