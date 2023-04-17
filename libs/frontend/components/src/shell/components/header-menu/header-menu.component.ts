@@ -10,6 +10,7 @@ import { GraphQLModule } from '@badman/frontend-graphql';
 import { LanguageComponent } from '@badman/frontend-translation';
 import { ThemeSwitcherComponent } from '../theme-switcher';
 
+
 @Component({
   selector: 'badman-header-menu',
   standalone: true,
@@ -28,7 +29,9 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
   styleUrls: ['./header-menu.component.scss'],
 })
 export class HeaderMenuComponent {
-  constructor(public authenticateService: AuthenticateService) {}
+  constructor(
+    public authenticateService: AuthenticateService
+  ) {}
 
   logout() {
     this.authenticateService.logout().subscribe();
