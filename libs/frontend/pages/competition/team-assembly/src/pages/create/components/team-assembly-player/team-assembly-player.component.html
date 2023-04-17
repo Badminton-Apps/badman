@@ -3,7 +3,7 @@
     *ngIf="(player.competitionPlayer ?? false) === false"
     [matTooltip]="
       'all.competition.enrollment.errors.not-comp'
-        | translate : { player: player.fullName }
+        | translate : { player: player }
     "
   >
     warning
