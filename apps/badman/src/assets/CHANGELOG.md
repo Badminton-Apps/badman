@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.69.2](https://github.com/Badminton-Apps/badman/compare/v6.69.1...v6.69.2) (2023-04-17)
+
+
+### Bug Fixes
+
+* adding name to button in case of no image ([d5052c7](https://github.com/Badminton-Apps/badman/commit/d5052c72d76a335a9d68740d9f3bf5b89501eb71))
+* CT status error message ([ca53c9c](https://github.com/Badminton-Apps/badman/commit/ca53c9c1c90cd1cb9b2aeb230c3da045a2531f23))
+* login button now shows name ([320669f](https://github.com/Badminton-Apps/badman/commit/320669ff253d80b768404e2165b38597a7c9df05))
+
+### [6.69.1](https://github.com/Badminton-Apps/badman/compare/v6.69.0...v6.69.1) (2023-04-17)
+
+
+### Bug Fixes
+
+* link text ([f96986e](https://github.com/Badminton-Apps/badman/commit/f96986e451cbbd5f742e35412d012320c85e5fdc))
+* only show save button when you are loggedin ([276439f](https://github.com/Badminton-Apps/badman/commit/276439f2713b0562a6f9f6e1458d8bb8b1420700))
+
+## [6.69.0](https://github.com/Badminton-Apps/badman/compare/v6.68.0...v6.69.0) (2023-04-17)
+
+
+### Features
+
+* only load your own assemblies ([14dfa2b](https://github.com/Badminton-Apps/badman/commit/14dfa2b955e903db2e5ee3a6d294e8a7b131bd83))
+
+
+### Bug Fixes
+
+* comp status now shows playername ([f422116](https://github.com/Badminton-Apps/badman/commit/f422116c5429132d470fd09b08a612e4d1a355f8))
+* double ranking can be undefined ([f1dd790](https://github.com/Badminton-Apps/badman/commit/f1dd7902526e3febfc9ec9a2f34e0e82fa7f608c))
+* labels assembly mix ([c061a3c](https://github.com/Badminton-Apps/badman/commit/c061a3cb5560defa1318f83c9a80dc97fb91d695))
+* missing modules and some linting thingy ([6576841](https://github.com/Badminton-Apps/badman/commit/657684185e3b4e3ad5ebb459af119722ccb87b5d))
+* mix order check was inccorrectly checking MD and FD ([6e1fbb3](https://github.com/Badminton-Apps/badman/commit/6e1fbb3d6b6a33c353c9718633eef1559e3d6749))
+
 ## [6.68.0](https://github.com/Badminton-Apps/badman/compare/v6.67.0...v6.68.0) (2023-04-14)
 
 

@@ -54,7 +54,7 @@ export class PlayerOrderRule extends Rule {
     );
 
     if (type !== SubEventTypeEnum.MX) {
-      // double 1 and 2 are males/females doubles so not 
+      // double 1 and 2 are males/females doubles so no validation needed
       errors.push(
         this._checkDouble(
           double1,
@@ -142,27 +142,27 @@ export class PlayerOrderRule extends Rule {
     let t1p1 = double1?.[0];
     let t1p2 = double1?.[1];
 
-    let d1p1 = double1?.[0]?.rankingLastPlaces?.[0].double ?? defaultRanking;
-    let d1p2 = double1?.[1]?.rankingLastPlaces?.[0].double ?? defaultRanking;
+    let d1p1 = double1?.[0]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
+    let d1p2 = double1?.[1]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
 
     // p1 should always be the lowest ranking
     if (d1p1 > d1p2) {
       t1p1 = double1?.[1];
       t1p2 = double1?.[0];
-      d1p1 = double1?.[1]?.rankingLastPlaces?.[0].double ?? defaultRanking;
-      d1p2 = double1?.[0]?.rankingLastPlaces?.[0].double ?? defaultRanking;
+      d1p1 = double1?.[1]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
+      d1p2 = double1?.[0]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
     }
     let t2p1 = double2?.[0];
     let t2p2 = double2?.[1];
-    let d2p1 = double2?.[0]?.rankingLastPlaces?.[0].double ?? defaultRanking;
-    let d2p2 = double2?.[1]?.rankingLastPlaces?.[0].double ?? defaultRanking;
+    let d2p1 = double2?.[0]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
+    let d2p2 = double2?.[1]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
 
     // p1 should always be the lowest ranking
     if (d2p1 > d2p2) {
       t2p1 = double2?.[1];
       t2p2 = double2?.[0];
-      d2p1 = double2?.[1]?.rankingLastPlaces?.[0].double ?? defaultRanking;
-      d2p2 = double2?.[0]?.rankingLastPlaces?.[0].double ?? defaultRanking;
+      d2p1 = double2?.[1]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
+      d2p2 = double2?.[0]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
     }
 
     if (d2p1 + d2p2 < d1p1 + d1p2) {
