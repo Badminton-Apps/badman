@@ -210,7 +210,7 @@ export class PlayersResolver {
     }).then((player) => player.clubs);
   }
 
-  @ResolveField(() => Setting)
+  @ResolveField(() => Setting, { nullable: true })
   async setting(@Parent() player: Player): Promise<Setting> {
     return player.getSetting();
   }
