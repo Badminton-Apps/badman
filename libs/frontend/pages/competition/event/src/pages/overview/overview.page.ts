@@ -1,12 +1,5 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  ViewChild,
-} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -26,22 +19,22 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { TransferState, makeStateKey } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
-  HasClaimComponent,
   AddEventComponent,
+  HasClaimComponent,
   OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
 import { JobsService } from '@badman/frontend-jobs';
 import { EventCompetition } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
+import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { lastValueFrom, merge, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { lastValueFrom, merge } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { RisersFallersDialogComponent } from '../../dialogs';
 
@@ -96,10 +89,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     private translate: TranslateService,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
-    private transferState: TransferState,
     private jobsService: JobsService,
     private matSnackBar: MatSnackBar,
-    @Inject(PLATFORM_ID) private platformId: string,
     formBuilder: FormBuilder
   ) {
     this.filter = formBuilder.group({
@@ -216,97 +207,76 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       year?: number;
     }
   ) {
-    const STATE_KEY = makeStateKey<{
-      count: number;
-      items: EventCompetition[];
-    }>(
-      `competitions-${sort}-${direction}-${page}-${filter?.name}-${filter?.official}`
-    );
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, null);
-      if (state) {
-        this.transferState.remove(STATE_KEY);
-        return of({
-          count: state.count,
-          items: state.items.map((team) => new EventCompetition(team)),
-        });
-      }
-      return of(null);
-    } else {
-      return this.apollo
-        .query<{
-          eventCompetitions: {
-            rows: Partial<EventCompetition>[];
-            count: number;
-          };
-        }>({
-          query: gql`
-            query GetEventsCompetition(
-              $where: JSONObject
-              $order: [SortOrderType!]
-              $skip: Int
-              $take: Int
+    return this.apollo
+      .query<{
+        eventCompetitions: {
+          rows: Partial<EventCompetition>[];
+          count: number;
+        };
+      }>({
+        query: gql`
+          query GetEventsCompetition(
+            $where: JSONObject
+            $order: [SortOrderType!]
+            $skip: Int
+            $take: Int
+          ) {
+            eventCompetitions(
+              where: $where
+              order: $order
+              skip: $skip
+              take: $take
             ) {
-              eventCompetitions(
-                where: $where
-                order: $order
-                skip: $skip
-                take: $take
-              ) {
-                count
-                rows {
+              count
+              rows {
+                id
+                name
+                slug
+                official
+                openDate
+                closeDate
+                subEventCompetitions {
                   id
-                  name
-                  slug
-                  official
-                  openDate
-                  closeDate
-                  subEventCompetitions {
+                  drawCompetitions {
                     id
-                    drawCompetitions {
-                      id
-                    }
                   }
                 }
               }
             }
-          `,
-          variables: {
-            where: {
-              official: filter?.official == true ? true : undefined,
-              name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
-              startYear: filter?.year ? filter.year : undefined,
-            },
-            order: [
-              {
-                direction: direction || 'desc',
-                field: sort || 'startYear',
-              },
-            ],
-            take: size,
-            skip: page * size,
+          }
+        `,
+        variables: {
+          where: {
+            official: filter?.official == true ? true : undefined,
+            name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
+            startYear: filter?.year ? filter.year : undefined,
           },
+          order: [
+            {
+              direction: direction || 'desc',
+              field: sort || 'startYear',
+            },
+          ],
+          take: size,
+          skip: page * size,
+        },
+      })
+      .pipe(
+        transferState(
+          `competitions-${sort}-${direction}-${page}-${filter?.name}-${filter?.official}`
+        ),
+        map((result) => {
+          if (!result?.data.eventCompetitions) {
+            throw new Error('No competitions found');
+          }
+          return {
+            count: result.data.eventCompetitions.count,
+            items: result.data.eventCompetitions.rows.map(
+              (team) => new EventCompetition(team)
+            ),
+          };
         })
-        .pipe(
-          map((result) => {
-            if (!result.data.eventCompetitions) {
-              throw new Error('No competitions found');
-            }
-            return {
-              count: result.data.eventCompetitions.count,
-              items: result.data.eventCompetitions.rows.map(
-                (team) => new EventCompetition(team)
-              ),
-            };
-          }),
-          tap((eventCompetitions) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, eventCompetitions);
-            }
-          })
-        );
-    }
+      );
   }
 
   makeOfficial(competition: EventCompetition, offical: boolean) {

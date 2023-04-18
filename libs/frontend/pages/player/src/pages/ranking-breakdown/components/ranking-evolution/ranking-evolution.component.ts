@@ -1,8 +1,4 @@
-import {
-  CommonModule,
-  isPlatformBrowser,
-  isPlatformServer,
-} from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,12 +7,12 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ChartComponent } from './components';
 
 @Component({
@@ -45,7 +41,6 @@ export class RankingEvolutionComponent implements OnInit {
   }
 
   constructor(
-    private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: string,
     private apollo: Apollo
   ) {}
@@ -106,59 +101,46 @@ export class RankingEvolutionComponent implements OnInit {
   }
 
   private _loadRankingPlaces() {
-    const STATE_KEY = makeStateKey<RankingPlace[]>(
-      'player-ranking-places' + this.player.id + this.system.id + '-state'
-    );
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      this.transferState.remove(STATE_KEY);
-
-      return of(state?.map((x) => new RankingPlace(x)));
-    } else {
-      return this.apollo
-        .query<{ player: Partial<Player> }>({
-          query: gql`
-            # Write your query or mutation here
-            query GetPlayerEvolutionQuery($playerId: ID!, $rankingType: ID!) {
-              player(id: $playerId) {
+    return this.apollo
+      .query<{ player: Partial<Player> }>({
+        query: gql`
+          # Write your query or mutation here
+          query GetPlayerEvolutionQuery($playerId: ID!, $rankingType: ID!) {
+            player(id: $playerId) {
+              id
+              rankingPlaces(where: { systemId: $rankingType }) {
                 id
-                rankingPlaces(where: { systemId: $rankingType }) {
+                rankingDate
+                singlePoints
+                singlePointsDowngrade
+                single
+                mixPoints
+                mixPointsDowngrade
+                mix
+                doublePoints
+                doublePointsDowngrade
+                double
+                updatePossible
+                rankingSystem {
                   id
-                  rankingDate
-                  singlePoints
-                  singlePointsDowngrade
-                  single
-                  mixPoints
-                  mixPointsDowngrade
-                  mix
-                  doublePoints
-                  doublePointsDowngrade
-                  double
-                  updatePossible
-                  rankingSystem {
-                    id
-                    name
-                  }
+                  name
                 }
               }
             }
-          `,
-          variables: {
-            playerId: this.player.id,
-            rankingType: this.system.id,
-          },
-        })
-        .pipe(
-          map((x) => x.data?.player),
-          map((x) => x.rankingPlaces?.map((x) => new RankingPlace(x))),
-          tap((state) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, state);
-            }
-          })
-        );
-    }
+          }
+        `,
+        variables: {
+          playerId: this.player.id,
+          rankingType: this.system.id,
+        },
+      })
+      .pipe(
+        transferState(
+          'player-ranking-places' + this.player.id + this.system.id + '-state'
+        ),
+        map((x) => x?.data?.player),
+        map((x) => x?.rankingPlaces?.map((x) => new RankingPlace(x)))
+      );
   }
 }
 

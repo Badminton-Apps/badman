@@ -23,8 +23,6 @@ import { lastValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 export const APOLLO_CACHE = new InjectionToken<InMemoryCache>('apollo-cache');
-// const STATE_KEY = makeStateKey<NormalizedCacheObject | null>('apollo.state');
-
 export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>(
   'graphql.config'
 );
@@ -37,7 +35,6 @@ export type GraphqlConfiguration = Readonly<{
 export function createApollo(
   httpLink: HttpLink,
   cache: InMemoryCache,
-  transferState: TransferState,
   injector: Injector,
   platformId: string,
   config: GraphqlConfiguration
@@ -45,6 +42,8 @@ export function createApollo(
   if (config.api === '') {
     throw new Error('GraphQL API URL is not set');
   }
+
+  console.log(config.api)
 
   const basic = setContext(() => ({
     headers: {
@@ -87,22 +86,6 @@ export function createApollo(
     // console.log(`Platform: ${platformId}, hasKey: ${hasKey}`);
   }
 
-  // if (isBrowser) {
-  //   const state = transferState.get<NormalizedCacheObject | null>(
-  //     STATE_KEY,
-  //     null
-  //   );
-  //   // if we have value in our cache, restore it
-  //   if (state) {
-  //     cache.restore(state);
-  //   }
-  // } else {
-  //   transferState.onSerialize(STATE_KEY, () => {
-  //     return cache.extract();
-  //   });
-  //   // Reset cache after extraction to avoid sharing between requests
-  //   cache.reset();
-  // }
 
   const link = ApolloLink.from([
     basic,

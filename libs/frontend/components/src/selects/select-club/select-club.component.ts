@@ -1,12 +1,5 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
-import {
-  Component,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -20,10 +13,10 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { TransferState, makeStateKey } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import { Club } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import {
@@ -36,7 +29,6 @@ import {
   startWith,
   switchMap,
   takeUntil,
-  tap
 } from 'rxjs';
 
 @Component({
@@ -98,9 +90,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     private claimSerice: ClaimService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private authService: AuthenticateService,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    private authService: AuthenticateService
   ) {}
 
   ngOnInit() {
@@ -231,54 +221,36 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   }
 
   private _getClubs(): Observable<Club[]> {
-    const STATE_KEY = makeStateKey<Club[]>('clubsKey-');
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, null) as Partial<Club>[];
-
-      this.transferState.remove(STATE_KEY);
-
-      if (state) {
-        return of(state.map((c) => new Club(c)));
-      }
-
-      return of([]);
-    } else {
-      return this.apollo
-        .query<{
-          clubs: {
-            count: number;
-            rows: Club[];
-          };
-        }>({
-          query: gql`
-            query GetClubs {
-              clubs {
-                count
-                rows {
-                  id
-                  name
-                  slug
-                }
+    return this.apollo
+      .query<{
+        clubs: {
+          count: number;
+          rows: Club[];
+        };
+      }>({
+        query: gql`
+          query GetClubs {
+            clubs {
+              count
+              rows {
+                id
+                name
+                slug
               }
             }
-          `,
-        })
-        .pipe(
-          map((result) => {
-            if (!result.data.clubs) {
-              throw new Error('No clubs');
-            }
-            return result.data.clubs.rows.map((c) => new Club(c));
-          }),
-          first(),
-          tap((club) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, club);
-            }
-          })
-        );
-    }
+          }
+        `,
+      })
+      .pipe(
+        transferState(`clubsKey`),
+        map((result) => {
+          if (!result?.data.clubs) {
+            throw new Error('No clubs');
+          }
+          return result.data.clubs.rows.map((c) => new Club(c));
+        }),
+        first()
+      );
   }
 
   private _filter(value?: string | Club | null): Club[] {

@@ -1,11 +1,9 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   OnDestroy,
-  OnInit,
-  PLATFORM_ID,
+  OnInit
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -14,7 +12,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import {
   ActivatedRoute,
   ParamMap,
@@ -25,10 +22,11 @@ import {
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { Game, Player, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import {
   distinctUntilChanged,
   map,
@@ -104,9 +102,7 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
     private seoService: SeoService,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
-    private systemService: RankingSystemService,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    private systemService: RankingSystemService
   ) {}
 
   ngOnInit(): void {
@@ -245,64 +241,48 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
   }
 
   private _loadSystem() {
-    const STATE_KEY = makeStateKey<RankingSystem>('primarySystem');
 
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, null);
-
-      if (state) {
-        this.transferState.remove(STATE_KEY);
-        return of(new RankingSystem(state));
-      }
-
-      return of();
-    } else {
-      return this.systemService.getPrimarySystemsWhere().pipe(
-        switchMap((query) =>
-          this.apollo
-            .query<{ rankingSystems: RankingSystem[] }>({
-              query: gql`
-                query getPrimary($where: JSONObject) {
-                  rankingSystems(where: $where) {
-                    id
-                    differenceForUpgrade
-                    differenceForDowngrade
-                    updateIntervalAmountLastUpdate
-                    caluclationIntervalLastUpdate
-                    calculationIntervalUnit
-                    caluclationIntervalAmount
-                    minNumberOfGamesUsedForUpgrade
-                    updateIntervalAmount
-                    updateIntervalUnit
-                    periodAmount
-                    periodUnit
-                    pointsToGoUp
-                    pointsWhenWinningAgainst
-                    pointsToGoDown
-                    amountOfLevels
-                    latestXGamesToUse
-                  }
+    return this.systemService.getPrimarySystemsWhere().pipe(
+      switchMap((query) =>
+        this.apollo
+          .query<{ rankingSystems: RankingSystem[] }>({
+            query: gql`
+              query getPrimary($where: JSONObject) {
+                rankingSystems(where: $where) {
+                  id
+                  differenceForUpgrade
+                  differenceForDowngrade
+                  updateIntervalAmountLastUpdate
+                  caluclationIntervalLastUpdate
+                  calculationIntervalUnit
+                  caluclationIntervalAmount
+                  minNumberOfGamesUsedForUpgrade
+                  updateIntervalAmount
+                  updateIntervalUnit
+                  periodAmount
+                  periodUnit
+                  pointsToGoUp
+                  pointsWhenWinningAgainst
+                  pointsToGoDown
+                  amountOfLevels
+                  latestXGamesToUse
                 }
-              `,
-              variables: {
-                where: query,
-              },
-            })
-            .pipe(
-              map((x) =>
-                x.data.rankingSystems[0]
-                  ? new RankingSystem(x.data.rankingSystems[0])
-                  : null
-              ),
-              tap((system) => {
-                if (isPlatformServer(this.platformId)) {
-                  this.transferState.set(STATE_KEY, system);
-                }
-              })
+              }
+            `,
+            variables: {
+              where: query,
+            },
+          })
+          .pipe(
+            transferState('primarySystem'),
+            map((x) =>
+              x?.data.rankingSystems[0]
+                ? new RankingSystem(x.data.rankingSystems[0])
+                : null
             )
-        )
-      );
-    }
+          )
+      )
+    );
   }
 
   private _loadGames() {
