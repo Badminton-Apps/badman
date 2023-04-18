@@ -6,7 +6,7 @@
   "prefix": "badman",
   "targets": {
     "build": {
-      "executor": "@nx/angular:package",
+      "executor": "@nrwl/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "project": "libs/frontend/modules/seo/ng-package.json"
