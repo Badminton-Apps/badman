@@ -68,7 +68,6 @@ $light-theme: theme.badman-light-theme(
 
 .color-scheme-light {
   @include mat.all-component-colors($light-theme);
-  @include mat.legacy-button-color($light-theme);
   @include root-theme.color($light-theme);
   // Own components
   @include frontend-assembly.colors($light-theme);
