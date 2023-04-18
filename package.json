@@ -224,6 +224,11 @@
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.18"
   },
+  "overrides": {
+    "@angular-material-components/datetime-picker": {
+      "@angular/cdk": "16.0.0-rc.0"
+    }
+  },
   "volta": {
     "node": "19.4.0"
   },
