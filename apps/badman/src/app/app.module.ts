@@ -1,7 +1,6 @@
 import { isDevMode, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import {
   ClarityModule,
@@ -11,7 +10,7 @@ import {
 } from '@badman/frontend-html-injects';
 import { JobsModule } from '@badman/frontend-jobs';
 
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -31,6 +30,7 @@ import { AppComponent } from './app.component';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { AuthModule } from '@badman/frontend-auth';
 import { ShellComponent } from '@badman/frontend-components';
 
 const APP_ROUTES: Routes = [
@@ -91,7 +91,7 @@ const APP_ROUTES: Routes = [
       useRefreshTokens: true,
       useRefreshTokensFallback: true,
       authorizationParams: {
-        redirect_uri: window.location.origin,
+        redirect_uri: typeof window !== 'undefined' ? window.location.origin : '',
         audience: 'ranking-simulation',
       },
     }),
@@ -168,8 +168,6 @@ const APP_ROUTES: Routes = [
         libraries: ['places'],
       },
     },
-    // !!! CAN'T BE ENABLED, SERVER SIDE RENDERING DOESN'T WORK WITH IT
-    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })
