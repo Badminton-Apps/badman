@@ -6,9 +6,8 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
-import { TransferState } from '@angular/platform-browser';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   PageHeaderComponent,
@@ -16,10 +15,13 @@ import {
   StandingComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { DrawCompetition, EventCompetition, Team } from '@badman/frontend-models';
+import {
+  DrawCompetition,
+  EventCompetition,
+  Team,
+} from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -53,8 +55,6 @@ export class DetailDrawCompetitionComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
@@ -75,7 +75,10 @@ export class DetailDrawCompetitionComponent implements OnInit {
         type: 'website',
         keywords: ['event', 'competition', 'badminton'],
       });
-      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name || '');
+      this.breadcrumbsService.set(
+        '@eventCompetition',
+        this.eventCompetition.name || ''
+      );
       this.breadcrumbsService.set('@drawCompetition', drawCompetitionName);
 
       this.teams = this.drawCompetition?.eventEntries?.map((e) => {

@@ -1,14 +1,14 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Claim, Club, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom, Observable, of } from 'rxjs';
-import { groupBy, map, mergeMap, tap, toArray } from 'rxjs/operators';
+import { Observable, lastValueFrom } from 'rxjs';
+import { groupBy, map, mergeMap, toArray } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { RoleFieldsComponent } from '../../components';
 
@@ -36,8 +36,6 @@ export class EditPageComponent implements OnInit {
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
     private router: Router,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit(): void {
@@ -85,53 +83,39 @@ export class EditPageComponent implements OnInit {
   }
 
   private _loadClaims() {
-    const STATE_KEY = makeStateKey<Claim[]>('clubTeamsKey-' + this.club.id);
-    let obs$;
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      obs$ = of(state?.map((team) => new Claim(team)));
-    } else {
-      obs$ = this.apollo
-        .query<{ claims: Claim[] }>({
-          query: gql`
-            query Claims($where: JSONObject) {
-              claims(where: $where) {
-                id
-                name
-                category
-                description
-                type
-              }
+    return this.apollo
+      .query<{ claims: Claim[] }>({
+        query: gql`
+          query Claims($where: JSONObject) {
+            claims(where: $where) {
+              id
+              name
+              category
+              description
+              type
             }
-          `,
-          variables: {
-            where: {
-              type: ['CLUB', 'TEAM'],
-            },
+          }
+        `,
+        variables: {
+          where: {
+            type: ['CLUB', 'TEAM'],
           },
-        })
-        .pipe(
-          map((x) => x.data.claims?.map((c) => new Claim(c))),
-          tap((claims) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, claims);
-            }
-          })
-        );
-    }
-    return obs$.pipe(
-      mergeMap((claims) => claims),
-      groupBy((category) => category.category ?? 'Other'),
-      mergeMap((obs) => {
-        return obs.pipe(
-          toArray(),
-          map((items) => {
-            return { category: obs.key, claims: items };
-          })
-        );
-      }),
-      toArray()
-    );
+        },
+      })
+      .pipe(
+        transferState('clubTeamsKey-' + this.club.id),
+        map((x) => x?.data.claims?.map((c) => new Claim(c))),
+        mergeMap((claims) => claims ?? []),
+        groupBy((category) => category.category ?? 'Other'),
+        mergeMap((obs) => {
+          return obs.pipe(
+            toArray(),
+            map((items) => {
+              return { category: obs.key, claims: items };
+            })
+          );
+        }),
+        toArray()
+      );
   }
 }

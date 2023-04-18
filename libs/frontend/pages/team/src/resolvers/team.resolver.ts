@@ -1,62 +1,40 @@
-import { isPlatformServer } from '@angular/common';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Team } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
-import { first, map, tap } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 
 @Injectable()
-export class TeamResolver implements Resolve<Team | null> {
-  constructor(
-    private apollo: Apollo,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {}
+export class TeamResolver {
+  constructor(private apollo: Apollo) {}
 
   resolve(route: ActivatedRouteSnapshot) {
     const teamId = route.params['id'];
 
-    const STATE_KEY = makeStateKey<Team>('teamKey-' + teamId);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const team = this.transferState.get(STATE_KEY, null);
-
-      if (team) {
-        return of(new Team(team));
-      }
-
-      return of(null);
-    } else {
-      return this.apollo
-        .query<{ team: Partial<Team> }>({
-          query: gql`
-            query Team($id: ID!) {
-              team(id: $id) {
-                id
-                name
-              }
+    return this.apollo
+      .query<{ team: Partial<Team> }>({
+        query: gql`
+          query Team($id: ID!) {
+            team(id: $id) {
+              id
+              name
             }
-          `,
-          variables: {
-            id: teamId,
-          },
-        })
-        .pipe(
-          map((result) => {
-            if (!result.data.team) {
-              throw new Error('No team');
-            }
-            return new Team(result.data.team);
-          }),
-          first(),
-          tap((team) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, team);
-            }
-          })
-        );
-    }
+          }
+        `,
+        variables: {
+          id: teamId,
+        },
+      })
+      .pipe(
+        transferState('teamKey-' + teamId),
+        map((result) => {
+          if (!result?.data.team) {
+            throw new Error('No team');
+          }
+          return new Team(result.data.team);
+        }),
+        first()
+      );
   }
 }

@@ -2,5 +2,5 @@
   "name": "@badman/backend-graphql",
   "version": "0.0.1",
   "type": "commonjs",
-  "dependencies": { }
+  "dependencies": {}
 }

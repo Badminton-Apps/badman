@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { isPlatformServer } from '@angular/common';
 import { RootInjector } from '../root-injector';
 import { PLATFORM_ID } from '@angular/core';
+import { TransferState, makeStateKey } from '@angular/platform-browser';
 
 export function transferState<T>(key: string) {
   const transferStateService = RootInjector.get(TransferState);
