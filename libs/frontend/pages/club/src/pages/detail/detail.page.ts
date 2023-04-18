@@ -1,8 +1,4 @@
-import {
-  CommonModule,
-  isPlatformBrowser,
-  isPlatformServer,
-} from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   Component,
   Inject,
@@ -22,7 +18,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { TransferState, makeStateKey } from '@angular/platform-browser';
 import {
   HasClaimComponent,
   PageHeaderComponent,
@@ -30,11 +25,12 @@ import {
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { Club, EncounterCompetition, Team } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
 import { MomentModule } from 'ngx-moment';
-import { Observable, Subject, combineLatest, lastValueFrom, of } from 'rxjs';
+import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
 import {
   delay,
   map,
@@ -94,7 +90,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private transferState: TransferState,
     private httpClient: HttpClient,
     @Inject(PLATFORM_ID) private platformId: string
   ) {}
@@ -185,64 +180,53 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     choices: string[];
     season?: number;
   }): Observable<Team[]> {
-    const STATE_KEY = makeStateKey<Team[]>('clubTeamsKey-' + this.club.id);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(state?.map((team) => new Team(team)));
-    } else {
-      return this.apollo
-        .watchQuery<{ teams: Partial<Team>[] }>({
-          query: gql`
-            query Teams($order: [SortOrderType!], $teamsWhere: JSONObject) {
-              teams(order: $order, where: $teamsWhere) {
-                id
-                name
-                slug
-                teamNumber
-                type
-                entry {
-                  date
-                  competitionSubEvent {
-                    id
-                    name
-                  }
+    return this.apollo
+      .watchQuery<{ teams: Partial<Team>[] }>({
+        query: gql`
+          query Teams($order: [SortOrderType!], $teamsWhere: JSONObject) {
+            teams(order: $order, where: $teamsWhere) {
+              id
+              name
+              slug
+              teamNumber
+              type
+              entry {
+                date
+                competitionSubEvent {
+                  id
+                  name
                 }
               }
             }
-          `,
-          variables: {
-            teamsWhere: {
-              clubId: this.club.id,
-              season: filter?.season || getCurrentSeason(),
-              type: filter?.choices,
-            },
-            order: [
-              {
-                field: 'type',
-                direction: 'desc',
-              },
-              {
-                field: 'teamNumber',
-                direction: 'asc',
-              },
-            ],
+          }
+        `,
+        variables: {
+          teamsWhere: {
+            clubId: this.club.id,
+            season: filter?.season || getCurrentSeason(),
+            type: filter?.choices,
           },
+          order: [
+            {
+              field: 'type',
+              direction: 'desc',
+            },
+            {
+              field: 'teamNumber',
+              direction: 'asc',
+            },
+          ],
+        },
+      })
+      .valueChanges.pipe(
+        transferState(`clubTeamsKey-${this.club.id}`),
+        map((result) => {
+          if (!result?.data.teams) {
+            throw new Error('No club');
+          }
+          return result.data.teams?.map((team) => new Team(team));
         })
-        .valueChanges.pipe(
-          map((result) => {
-            if (!result.data.teams) {
-              throw new Error('No club');
-            }
-            return result.data.teams?.map((team) => new Team(team));
-          }),
-          tap((teams) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, teams);
-            }
-          })
-        );
-    }
+      );
   }
 
   editTeam(team: Team) {

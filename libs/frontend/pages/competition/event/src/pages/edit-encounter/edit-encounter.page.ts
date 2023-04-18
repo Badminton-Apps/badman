@@ -17,7 +17,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { TransferState } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { GameScoreComponentComponent } from '@badman/frontend-components';
 import {
@@ -68,7 +67,6 @@ export class EditEncounterComponent implements OnInit {
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
-    private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: string,
     private formBuilder: FormBuilder,
     private matdialog: MatDialog

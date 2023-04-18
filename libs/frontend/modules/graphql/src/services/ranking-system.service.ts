@@ -1,11 +1,11 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 import { RankingSystem } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 
 const WATCH_SYSTEM_KEY = 'system.id';
 @Injectable({
@@ -16,7 +16,6 @@ export class RankingSystemService {
 
   constructor(
     private apollo: Apollo,
-    private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: string
   ) {
     if (isPlatformBrowser(this.platformId)) {
@@ -38,42 +37,26 @@ export class RankingSystemService {
   }
 
   getPrimarySystemId() {
-    const STATE_KEY = makeStateKey<string>('primarySystemId');
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, null);
-
-      if (state) {
-        return of(state);
-      }
-
-      return of();
-    } else {
-      return this.getPrimarySystemsWhere().pipe(
-        switchMap((query) =>
-          this.apollo
-            .query<{ rankingSystems: { id: string }[] }>({
-              query: gql`
-                query GetPrimarySystemsQuery($where: JSONObject) {
-                  rankingSystems(where: $where) {
-                    id
-                  }
+    return this.getPrimarySystemsWhere().pipe(
+      transferState(`primarySystemId`),
+      switchMap((query) =>
+        this.apollo
+          .query<{ rankingSystems: { id: string }[] }>({
+            query: gql`
+              query GetPrimarySystemsQuery($where: JSONObject) {
+                rankingSystems(where: $where) {
+                  id
                 }
-              `,
-              variables: {
-                where: query,
-              },
-            })
-            .pipe(map((x) => x.data?.rankingSystems?.[0]?.id))
-        ),
-        map((result) => result),
-        tap((result) => {
-          if (isPlatformServer(this.platformId)) {
-            this.transferState.set(STATE_KEY, result);
-          }
-        })
-      );
-    }
+              }
+            `,
+            variables: {
+              where: query,
+            },
+          })
+          .pipe(map((x) => x.data?.rankingSystems?.[0]?.id))
+      ),
+      map((result) => result),
+    );
   }
 
   getPrimarySystemsWhere() {

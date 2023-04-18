@@ -1,12 +1,5 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
-import {
-  Component,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -20,10 +13,10 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { TransferState, makeStateKey } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { Team } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -40,7 +33,6 @@ import {
   switchMap,
   take,
   takeUntil,
-  tap,
 } from 'rxjs';
 
 @Component({
@@ -87,9 +79,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private transferState: TransferState,
-    private authenticateService: AuthenticateService,
-    @Inject(PLATFORM_ID) private platformId: string
+    private authenticateService: AuthenticateService
   ) {}
 
   ngOnInit() {
@@ -221,92 +211,70 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   }
 
   private _loadTeams(clubId: string) {
-    const STATE_KEY = makeStateKey<Team[]>('clubTeamsKey-' + clubId);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(state?.map((team) => new Team(team)));
-    } else {
-      return this.apollo
-        .query<{ teams: Partial<Team>[] }>({
-          query: gql`
-            query GetTeamsQuery($where: JSONObject, $order: [SortOrderType!]) {
-              teams(where: $where, order: $order) {
-                id
-                slug
-                name
-                abbreviation
-                type
-                teamNumber
-                captainId
-              }
+    return this.apollo
+      .query<{ teams: Partial<Team>[] }>({
+        query: gql`
+          query GetTeamsQuery($where: JSONObject, $order: [SortOrderType!]) {
+            teams(where: $where, order: $order) {
+              id
+              slug
+              name
+              abbreviation
+              type
+              teamNumber
+              captainId
             }
-          `,
-          variables: {
-            where: {
-              season: getCurrentSeason(),
-              clubId: clubId,
-            },
-            order: [
-              {
-                direction: 'ASC',
-                field: 'teamNumber',
-              },
-            ],
+          }
+        `,
+        variables: {
+          where: {
+            season: getCurrentSeason(),
+            clubId: clubId,
           },
+          order: [
+            {
+              direction: 'ASC',
+              field: 'teamNumber',
+            },
+          ],
+        },
+      })
+      .pipe(
+        transferState(`clubTeamsKey-${clubId}}`),
+        map((result) => {
+          if (!result?.data.teams) {
+            throw new Error('No club');
+          }
+          return result.data.teams?.map((team) => new Team(team));
         })
-        .pipe(
-          map((result) => {
-            if (!result.data.teams) {
-              throw new Error('No club');
-            }
-            return result.data.teams?.map((team) => new Team(team));
-          }),
-          tap((teams) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, teams);
-            }
-          })
-        );
-    }
+      );
   }
 
   private _findTeamsWhereUserIsCaptain(userId: string) {
-    const STATE_KEY = makeStateKey<string[]>('captainOfTeam-' + userId);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(state);
-    } else {
-      return this.apollo
-        .query<{ teams: Partial<Team[]> }>({
-          query: gql`
-            query GetTeamsForCaptain($where: JSONObject) {
-              teams(where: $where) {
-                id
-              }
+    return this.apollo
+      .query<{ teams: Partial<Team[]> }>({
+        query: gql`
+          query GetTeamsForCaptain($where: JSONObject) {
+            teams(where: $where) {
+              id
             }
-          `,
-          variables: {
-            where: {
-              captainId: userId,
-            },
+          }
+        `,
+        variables: {
+          where: {
+            captainId: userId,
           },
+        },
+      })
+      .pipe(
+        transferState(`captainOfTeam-${userId}`),
+        map((result) => {
+          if (!result?.data.teams) {
+            throw new Error('No club');
+          }
+          return result.data.teams?.map((team) => team?.id);
         })
-        .pipe(
-          map((result) => {
-            if (!result.data.teams) {
-              throw new Error('No club');
-            }
-            return result.data.teams?.map((team) => team?.id);
-          }),
-          tap((teams) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, teams);
-            }
-          })
-        );
-    }
+      );
   }
 
   ngOnDestroy() {

@@ -1,12 +1,5 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  ViewChild,
-} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -15,9 +8,9 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -26,21 +19,21 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import {
-  HasClaimComponent,
   AddEventComponent,
+  HasClaimComponent,
   OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
 import { JobsModule, JobsService } from '@badman/frontend-jobs';
 import { EventTournament } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { BehaviorSubject, lastValueFrom, merge, of } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, lastValueFrom, merge } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-tournament-overview',
@@ -93,10 +86,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     private seoService: SeoService,
     private jobsService: JobsService,
     private apollo: Apollo,
-    private transferState: TransferState,
     private dialog: MatDialog,
     private matSnackBar: MatSnackBar,
-    @Inject(PLATFORM_ID) private platformId: string,
     formBuilder: FormBuilder
   ) {
     this.filter = formBuilder.group({
@@ -168,89 +159,68 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       official?: boolean;
     }
   ) {
-    const STATE_KEY = makeStateKey<{
-      count: number;
-      items: EventTournament[];
-    }>(
-      `tournaments-${aort}-${direction}-${page}-${filter?.name}-${filter?.official}`
-    );
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, null);
-      if (state) {
-        this.transferState.remove(STATE_KEY);
-        return of({
-          count: state.count,
-          items: state.items.map((team) => new EventTournament(team)),
-        });
-      }
-      return of(null);
-    } else {
-      return this.apollo
-        .query<{
-          eventTournaments: { rows: Partial<EventTournament>[]; count: number };
-        }>({
-          query: gql`
-            query GetEventsTournament(
-              $where: JSONObject
-              $order: [SortOrderType!]
-              $skip: Int
-              $take: Int
+    return this.apollo
+      .query<{
+        eventTournaments: { rows: Partial<EventTournament>[]; count: number };
+      }>({
+        query: gql`
+          query GetEventsTournament(
+            $where: JSONObject
+            $order: [SortOrderType!]
+            $skip: Int
+            $take: Int
+          ) {
+            eventTournaments(
+              where: $where
+              order: $order
+              skip: $skip
+              take: $take
             ) {
-              eventTournaments(
-                where: $where
-                order: $order
-                skip: $skip
-                take: $take
-              ) {
-                count
-                rows {
-                  id
-                  name
-                  slug
-                  firstDay
-                  openDate
-                  closeDate
-                  visualCode
-                  official
-                }
+              count
+              rows {
+                id
+                name
+                slug
+                firstDay
+                openDate
+                closeDate
+                visualCode
+                official
               }
             }
-          `,
-          variables: {
-            where: {
-              official: filter?.official == true ? true : undefined,
-              name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
-            },
-            order: [
-              {
-                direction: direction || 'desc',
-                field: aort || 'firstDay',
-              },
-            ],
-            take: size,
-            skip: page * size,
+          }
+        `,
+        variables: {
+          where: {
+            official: filter?.official == true ? true : undefined,
+            name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
           },
+          order: [
+            {
+              direction: direction || 'desc',
+              field: aort || 'firstDay',
+            },
+          ],
+          take: size,
+          skip: page * size,
+        },
+      })
+      .pipe(
+        transferState(
+          `tournaments-${aort}-${direction}-${page}-${filter?.name}-${filter?.official}`
+        ),
+        map((result) => {
+          if (!result?.data.eventTournaments) {
+            throw new Error('No tournaments found');
+          }
+          return {
+            count: result.data.eventTournaments.count,
+            items: result.data.eventTournaments.rows.map(
+              (team) => new EventTournament(team)
+            ),
+          };
         })
-        .pipe(
-          map((result) => {
-            if (!result.data.eventTournaments) {
-              throw new Error('No tournaments found');
-            }
-            return {
-              count: result.data.eventTournaments.count,
-              items: result.data.eventTournaments.rows.map(
-                (team) => new EventTournament(team)
-              ),
-            };
-          }),
-          tap((eventTournaments) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, eventTournaments);
-            }
-          })
-        );
-    }
+      );
   }
 
   makeOfficial(tournament: EventTournament, offical: boolean) {

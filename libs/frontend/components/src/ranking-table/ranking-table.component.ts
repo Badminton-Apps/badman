@@ -1,19 +1,17 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   Input,
-  OnInit,
-  PLATFORM_ID,
+  OnInit
 } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { TransferState, makeStateKey } from '@angular/platform-browser';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, first, map, of, switchMap, take, tap } from 'rxjs';
+import { Observable, first, map, of, switchMap, take } from 'rxjs';
 
 @Component({
   selector: 'badman-ranking-table',
@@ -38,9 +36,7 @@ export class RankingTableComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    private raningSystemService: RankingSystemService,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    private raningSystemService: RankingSystemService
   ) {}
 
   ngOnInit() {
@@ -83,59 +79,38 @@ export class RankingTableComponent implements OnInit {
 
   _loadRanking(systemId: string) {
     {
-      const STATE_KEY = makeStateKey<RankingSystem>('rankingKey-' + systemId);
-
-      if (this.transferState.hasKey(STATE_KEY)) {
-        const player = this.transferState.get(
-          STATE_KEY,
-          null
-        ) as Partial<RankingSystem>;
-
-        this.transferState.remove(STATE_KEY);
-
-        if (player) {
-          return of(new RankingSystem(player));
-        }
-
-        return of();
-      } else {
-        return this.apollo
-          .query<{
-            rankingSystem: Partial<RankingSystem>;
-          }>({
-            query: gql`
-              query GetSystemForTable($id: ID!) {
-                rankingSystem(id: $id) {
-                  id
-                  name
-                  amountOfLevels
-                  pointsToGoUp
-                  pointsToGoDown
-                  pointsWhenWinningAgainst
-                  caluclationIntervalLastUpdate
-                  primary
-                }
+      return this.apollo
+        .query<{
+          rankingSystem: Partial<RankingSystem>;
+        }>({
+          query: gql`
+            query GetSystemForTable($id: ID!) {
+              rankingSystem(id: $id) {
+                id
+                name
+                amountOfLevels
+                pointsToGoUp
+                pointsToGoDown
+                pointsWhenWinningAgainst
+                caluclationIntervalLastUpdate
+                primary
               }
-            `,
-            variables: {
-              id: systemId,
-            },
-          })
-          .pipe(
-            map((result) => {
-              if (!result.data.rankingSystem) {
-                throw new Error('No player');
-              }
-              return new RankingSystem(result.data.rankingSystem);
-            }),
-            first(),
-            tap((player) => {
-              if (isPlatformServer(this.platformId)) {
-                this.transferState.set(STATE_KEY, player);
-              }
-            })
-          );
-      }
+            }
+          `,
+          variables: {
+            id: systemId,
+          },
+        })
+        .pipe(
+          transferState('rankingKey-' + systemId),
+          map((result) => {
+            if (!result?.data.rankingSystem) {
+              throw new Error('No player');
+            }
+            return new RankingSystem(result.data.rankingSystem);
+          }),
+          first()
+        );
     }
   }
 }

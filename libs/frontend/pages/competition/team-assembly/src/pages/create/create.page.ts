@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnDestroy,
   OnInit,
   TemplateRef,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { AuthenticateService } from '@badman/frontend-auth';
 import {
   SelectClubComponent,
   SelectEncounterComponent,
@@ -26,10 +26,9 @@ import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
-import {  lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AssemblyComponent } from './components';
-import { AuthenticateService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-assembly-create',

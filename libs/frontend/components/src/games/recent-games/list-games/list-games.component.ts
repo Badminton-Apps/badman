@@ -1,13 +1,11 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Inject,
   Input,
   OnInit,
-  PLATFORM_ID,
   ViewChild,
 } from '@angular/core';
 import {
@@ -21,15 +19,15 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TransferState, makeStateKey } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { Game, GamePlayer } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
-import { BehaviorSubject, Subject, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map, startWith, tap } from 'rxjs/operators';
 
 @Component({
@@ -46,7 +44,7 @@ import { map, startWith, tap } from 'rxjs/operators';
     MatChipsModule,
     MatTooltipModule,
     MatButtonToggleModule,
-    MatIconModule
+    MatIconModule,
   ],
   selector: 'badman-list-games',
   templateUrl: './list-games.component.html',
@@ -69,12 +67,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
 
   @ViewChild('bottomObserver', { static: false }) bottomObserver!: ElementRef;
 
-  constructor(
-    formBuilder: FormBuilder,
-    private apollo: Apollo,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {
+  constructor(formBuilder: FormBuilder, private apollo: Apollo) {
     this.filter = formBuilder.group({
       choices: [['S', 'D', 'MX']],
     });
@@ -104,135 +97,126 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
     page: number,
     filter?: Partial<{ choices: string[] | null }>
   ) {
-    const STATE_KEY = makeStateKey<Game[]>('recentGamesKey-' + this.playerId);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(state?.map((encounter) => new Game(encounter)));
-    } else {
-      return this.apollo
-        .query<{
-          player: {
-            games: Partial<Game>[];
-          };
-        }>({
-          query: gql`
-            query Games(
-              $id: ID!
-              $where: JSONObject
-              $take: Int
-              $skip: Int
-              $order: [SortOrderType!]
-            ) {
-              player(id: $id) {
+    return this.apollo
+      .query<{
+        player: {
+          games: Partial<Game>[];
+        };
+      }>({
+        query: gql`
+          query Games(
+            $id: ID!
+            $where: JSONObject
+            $take: Int
+            $skip: Int
+            $order: [SortOrderType!]
+          ) {
+            player(id: $id) {
+              id
+              games(where: $where, order: $order, take: $take, skip: $skip) {
                 id
-                games(where: $where, order: $order, take: $take, skip: $skip) {
+                playedAt
+                gameType
+                winner
+                players {
                   id
-                  playedAt
-                  gameType
-                  winner
-                  players {
+                  fullName
+                  team
+                  player
+                  single
+                  double
+                  mix
+                }
+                rankingPoints {
+                  id
+                  differenceInLevel
+                  points
+                  playerId
+                  system {
                     id
-                    fullName
-                    team
-                    player
-                    single
-                    double
-                    mix
+                    differenceForDowngrade
+                    differenceForUpgrade
                   }
-                  rankingPoints {
-                    id
-                    differenceInLevel
-                    points
-                    playerId
-                    system {
-                      id
-                      differenceForDowngrade
-                      differenceForUpgrade
-                    }
-                  }
-                  set1Team1
-                  set1Team2
-                  set2Team1
-                  set2Team2
-                  set3Team1
-                  set3Team2
-                  order
-                  competition {
-                    id
-                    drawCompetition {
-                      name
-                      id
-                      subEventCompetition {
-                        id
-                        name
-                        eventId
-                      }
-                    }
-
-                    home {
-                      id
-                      name
-                    }
-
-                    away {
-                      id
-                      name
-                    }
-                  }
-                  tournament {
+                }
+                set1Team1
+                set1Team2
+                set2Team1
+                set2Team2
+                set3Team1
+                set3Team2
+                order
+                competition {
+                  id
+                  drawCompetition {
                     name
-                    subEventTournament {
-                      name
-                      id
-                      eventTournament {
-                        id
-                        name
-                      }
-                    }
                     id
+                    subEventCompetition {
+                      id
+                      name
+                      eventId
+                    }
                   }
+
+                  home {
+                    id
+                    name
+                  }
+
+                  away {
+                    id
+                    name
+                  }
+                }
+                tournament {
+                  name
+                  subEventTournament {
+                    name
+                    id
+                    eventTournament {
+                      id
+                      name
+                    }
+                  }
+                  id
                 }
               }
             }
-          `,
-          variables: {
-            id: playerId,
-            where: {
-              playedAt: {
-                $lte: moment().format('YYYY-MM-DD'),
-              },
-              gameType: {
-                $in: filter?.choices ?? ['S', 'D', 'MX'],
-              },
+          }
+        `,
+        variables: {
+          id: playerId,
+          where: {
+            playedAt: {
+              $lte: moment().format('YYYY-MM-DD'),
             },
-            order: [
-              {
-                direction: 'desc',
-                field: 'playedAt',
-              },
-            ],
-            skip: (page - 1) * this.itemsPerPage, // Skip the previous pages
-            take: this.itemsPerPage, // Load only the current page
+            gameType: {
+              $in: filter?.choices ?? ['S', 'D', 'MX'],
+            },
           },
+          order: [
+            {
+              direction: 'desc',
+              field: 'playedAt',
+            },
+          ],
+          skip: (page - 1) * this.itemsPerPage, // Skip the previous pages
+          take: this.itemsPerPage, // Load only the current page
+        },
+      })
+      .pipe(
+        transferState(`recentGamesKey-${this.playerId}`),
+        map((result) => {
+          return (
+            result?.data.player?.games?.map((game) => new Game(game)) ?? []
+          );
+        }),
+        tap((games) => {
+          if (games.length < this.itemsPerPage) {
+            // If the current page has less items than the page size, we've reached the end of the list
+            this.endOfList = true;
+          }
         })
-        .pipe(
-          map((result) => {
-            return result.data.player?.games?.map((game) => new Game(game));
-          }),
-          tap((games) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, games);
-            }
-          }),
-          tap((games) => {
-            if (games.length < this.itemsPerPage) {
-              // If the current page has less items than the page size, we've reached the end of the list
-              this.endOfList = true;
-            }
-          })
-        );
-    }
+      );
   }
 
   getPlayer(game: Game, player: number, team: number) {
