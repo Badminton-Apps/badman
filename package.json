@@ -207,7 +207,7 @@
     "jest-environment-jsdom": "29.5.0",
     "jest-environment-node": "^29.4.1",
     "jest-preset-angular": "13.0.0",
-    "ng-packagr": "~15.2.2",
+    "ng-packagr": "^16.0.0-rc.0",
     "nx": "15.9.2",
     "postcss": "^8.4.21",
     "postcss-import": "^15.1.0",
@@ -223,17 +223,6 @@
   },
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.18"
-  },
-  "overrides": {
-    "apollo-angular": {
-      "@angular/core": "^16.0.0"
-    },
-    "@ng-maps/core": {
-      "zone.js": "0.13.0"
-    },
-    "@storybook/angular": {
-      "zone.js": "0.13.0"
-    }
   },
   "volta": {
     "node": "19.4.0"
