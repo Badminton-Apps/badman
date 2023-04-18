@@ -43,8 +43,6 @@ export function createApollo(
     throw new Error('GraphQL API URL is not set');
   }
 
-  console.log(config.api)
-
   const basic = setContext(() => ({
     headers: {
       Accept: 'charset=utf-8',
@@ -138,7 +136,6 @@ export function createApollo(
       deps: [
         HttpLink,
         APOLLO_CACHE,
-        TransferState,
         Injector,
         PLATFORM_ID,
         GRAPHQL_CONFIG_TOKEN,
