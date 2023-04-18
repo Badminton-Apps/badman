@@ -27,6 +27,7 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { transferState } from '@badman/frontend-utils';
 @Component({
   selector: 'badman-player-detail',
   templateUrl: './detail.page.html',
@@ -58,7 +59,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<void>();
 
-  teams$?: Observable<Team[]>;
+  teams$?: Observable<Team[] | null>;
   rankingPlaces$?: Observable<RankingPlace>;
 
   tooltip = {
@@ -97,7 +98,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         this.tooltip.single = single;
         this.tooltip.double = double;
         this.tooltip.mix = mix;
-        
 
         this.seoService.update({
           title: `${this.player.fullName}`,
@@ -120,38 +120,27 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   }
 
   private _loadTeamsForPlayer() {
-    const STATE_KEY = makeStateKey<Team[]>('teamsPlayer-' + this.player.id);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(state?.map((teams) => new Team(teams)));
-    } else {
-      return this.apollo
-        .query<{ player: { teams: Partial<Team>[] } }>({
-          query: gql`
-            query ClubsAndTeams($playerId: ID!) {
-              player(id: $playerId) {
+    return this.apollo
+      .query<{ player: { teams: Partial<Team>[] } }>({
+        query: gql`
+          query ClubsAndTeams($playerId: ID!) {
+            player(id: $playerId) {
+              id
+              teams {
                 id
-                teams {
-                  id
-                  clubId
-                }
+                clubId
               }
             }
-          `,
-          variables: {
-            playerId: this.player.id,
-          },
-        })
-        .pipe(
-          map((result) => result.data.player.teams?.map((t) => new Team(t))),
-          tap((teams) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, teams);
-            }
-          })
-        );
-    }
+          }
+        `,
+        variables: {
+          playerId: this.player.id,
+        },
+      })
+      .pipe(
+        map((result) => result.data.player.teams?.map((t) => new Team(t))),
+        transferState(`teamsPlayer-${this.player.id}`)
+      );
   }
 
   private _loadRankingForPlayer() {
