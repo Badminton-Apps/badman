@@ -1,26 +1,23 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnInit,
-  Output,
-  PLATFORM_ID
+  Output
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { PlayerSearchComponent } from '@badman/frontend-components';
 import { Player, Team, TeamPlayer } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 @Component({
@@ -64,12 +61,7 @@ export class TeamPlayersComponent implements OnInit {
 
   wherePlayer?: { [key: string]: unknown };
 
-  constructor(
-    private apollo: Apollo,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-    private snackBar: MatSnackBar
-  ) {}
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
     if (!this.team.players || this.team.players.length === 0) {
@@ -91,52 +83,36 @@ export class TeamPlayersComponent implements OnInit {
   }
 
   private _loadPlayers() {
-    const STATE_KEY = makeStateKey<TeamPlayer[]>(`teamPlayers-${this.team.id}`);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-
-      if (state && state.length > 0) {
-        this.transferState.remove(STATE_KEY);
-      }
-
-      return of(undefined);
-    } else {
-      return this.apollo
-        .watchQuery<{ team: Partial<Team> }>({
-          query: gql`
-            query TeamPlayers($teamId: ID!) {
-              team(id: $teamId) {
+    return this.apollo
+      .watchQuery<{ team: Partial<Team> }>({
+        query: gql`
+          query TeamPlayers($teamId: ID!) {
+            team(id: $teamId) {
+              id
+              players {
                 id
-                players {
-                  id
-                  fullName
-                  membershipType
-                  teamId
-                }
+                fullName
+                membershipType
+                teamId
               }
             }
-          `,
-          variables: {
-            teamId: this.team.id,
-          },
-        })
-        .valueChanges.pipe(
-          map((result) =>
-            result.data.team.players?.map((t) => new TeamPlayer(t))
-          ),
-          map(
-            (players) =>
-              players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ??
-              undefined
-          ),
-          tap((state) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, state);
-            }
-          })
-        );
-    }
+          }
+        `,
+        variables: {
+          teamId: this.team.id,
+        },
+      })
+      .valueChanges.pipe(
+        transferState(`teamPlayers-${this.team.id}`),
+        map((result) =>
+          result?.data.team.players?.map((t) => new TeamPlayer(t))
+        ),
+        map(
+          (players) =>
+            players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ??
+            undefined
+        )
+      );
   }
 
   async changePlayerMembershipType(

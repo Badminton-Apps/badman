@@ -54,8 +54,6 @@ $light-theme: theme.badman-light-theme(
 );
 
 @include mat.all-component-themes($dark-theme);
-// button is tempoarly because of mat-date-picker
-@include mat.legacy-button-theme($dark-theme);
 @include root-theme.theme($dark-theme);
 // Own components
 @include frontend-assembly.theme($dark-theme);

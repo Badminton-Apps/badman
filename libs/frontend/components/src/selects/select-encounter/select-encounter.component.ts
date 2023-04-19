@@ -2,12 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
-  PLATFORM_ID,
 } from '@angular/core';
 import {
   FormControl,
@@ -22,18 +20,18 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EncounterCompetition } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import {
+  Observable,
   Subject,
   distinctUntilChanged,
   map,
-  Observable,
   of,
   pairwise,
   shareReplay,
@@ -89,9 +87,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -200,71 +196,64 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
   }
 
   private _loadEncounters(year: string, teamId: string) {
-    const STATE_KEY = makeStateKey<EncounterCompetition[]>(
-      'teamEncounterKey-' + teamId
-    );
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(state?.map((team) => new EncounterCompetition(team)));
-    } else {
-      return this.apollo
-        .query<{
-          encounterCompetitions: { rows: EncounterCompetition[] };
-        }>({
-          query: gql`
-            query GetEncounterQuery($where: JSONObject) {
-              encounterCompetitions(where: $where) {
-                rows {
+    return this.apollo
+      .query<{
+        encounterCompetitions: { rows: EncounterCompetition[] };
+      }>({
+        query: gql`
+          query GetEncounterQuery($where: JSONObject) {
+            encounterCompetitions(where: $where) {
+              rows {
+                id
+                date
+                home {
                   id
-                  date
-                  home {
-                    id
-                    name
-                  }
-                  away {
-                    id
-                    name
-                  }
-                  drawCompetition {
-                    id
-                    subeventId
-                  }
+                  name
+                }
+                away {
+                  id
+                  name
+                }
+                drawCompetition {
+                  id
+                  subeventId
                 }
               }
             }
-          `,
-          variables: {
-            where: {
-              $or: {
-                homeTeamId: teamId,
-                awayTeamId: teamId,
-              },
-              date: {
-                $between: [`${year}-08-01`, `${year + 1}-07-01`],
-              },
+          }
+        `,
+        variables: {
+          where: {
+            $or: {
+              homeTeamId: teamId,
+              awayTeamId: teamId,
+            },
+            date: {
+              $between: [`${year}-08-01`, `${year + 1}-07-01`],
             },
           },
-        })
-        .pipe(
-          map((result) =>
-            result.data.encounterCompetitions?.rows.map(
+        },
+      })
+      .pipe(
+        transferState(`teamEncounterKey-${teamId}`),
+        map(
+          (result) =>
+            result?.data.encounterCompetitions?.rows.map(
               (r) => new EncounterCompetition(r)
-            )
-          ),
-          map((c) => {
-            return c.map((r) => {
-              if (r.home?.id === teamId) {
-                r.showingForHomeTeam = true;
-              } else {
-                r.showingForHomeTeam = false;
-              }
-              return r;
-            });
-          }),
-          map((e) => e.sort((a, b) => moment(a.date).diff(b.date)))
-        );
-    }
+            ) ?? []
+        ),
+        map((c) => {
+          return c?.map((r) => {
+            if (r.home?.id === teamId) {
+              r.showingForHomeTeam = true;
+            } else {
+              r.showingForHomeTeam = false;
+            }
+            return r;
+          });
+        }),
+        map((e) => e?.sort((a, b) => moment(a.date).diff(b.date)))
+      );
   }
 
   ngOnDestroy() {

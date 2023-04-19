@@ -7,16 +7,14 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
-  PLATFORM_ID,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
@@ -28,13 +26,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
+import { AuthenticateService } from '@badman/frontend-auth';
 import {
   HasClaimComponent,
   PlayerSearchComponent,
 } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import { AuthenticateService } from '@badman/frontend-auth'
 import {
   Assembly,
   EncounterCompetition,
@@ -45,7 +42,11 @@ import {
   TeamPlayer,
 } from '@badman/frontend-models';
 import { EditDialogComponent } from '@badman/frontend-team';
-import { ResizedEvent, UtilsModule } from '@badman/frontend-utils';
+import {
+  ResizedEvent,
+  transferState,
+  UtilsModule,
+} from '@badman/frontend-utils';
 import { TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -239,10 +240,8 @@ export class AssemblyComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private systemService: RankingSystemService,
     private authenticateService: AuthenticateService,
-    private transferState: TransferState,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog,
-    @Inject(PLATFORM_ID) private platformId: string
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -696,62 +695,45 @@ export class AssemblyComponent implements OnInit, OnDestroy {
   }
 
   private _getTeam(encounterId: string, teamId: string) {
-    const STATE_KEY = makeStateKey<Team>('assemblyTeamKey-' + teamId);
+    return this._getRankingWhere(encounterId).pipe(
+      distinctUntilChanged(),
+      switchMap((where) =>
+        this.apollo
+          .watchQuery<{ team: Partial<Team> }>({
+            query: gql`
+              ${TEAM_PLAYER_INFO}
 
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, null);
-
-      if (state) {
-        this.transferState.remove(STATE_KEY);
-        return of(new Team(state));
-      }
-
-      return of();
-    } else {
-      return this._getRankingWhere(encounterId).pipe(
-        distinctUntilChanged(),
-        switchMap((where) =>
-          this.apollo
-            .watchQuery<{ team: Partial<Team> }>({
-              query: gql`
-                ${TEAM_PLAYER_INFO}
-
-                query TeamInfo(
-                  $id: ID!
-                  $rankingWhere: JSONObject
-                  $lastRankginWhere: JSONObject
-                ) {
-                  team(id: $id) {
-                    id
-                    captainId
-                    players {
-                      ...TeamPlayerInfo
-                    }
+              query TeamInfo(
+                $id: ID!
+                $rankingWhere: JSONObject
+                $lastRankginWhere: JSONObject
+              ) {
+                team(id: $id) {
+                  id
+                  captainId
+                  players {
+                    ...TeamPlayerInfo
                   }
                 }
-              `,
-              variables: {
-                id: teamId,
-                ...where,
-              },
-            })
-            .valueChanges.pipe(
-              map((result) => {
-                if (!result.data.team) {
-                  throw new Error('No club');
-                }
+              }
+            `,
+            variables: {
+              id: teamId,
+              ...where,
+            },
+          })
+          .valueChanges.pipe(
+            transferState(`assemblyTeamKey-${teamId}`),
+            map((result) => {
+              if (!result?.data.team) {
+                throw new Error('No club');
+              }
 
-                return new Team(result.data.team);
-              }),
-              tap((team) => {
-                if (isPlatformServer(this.platformId)) {
-                  this.transferState.set(STATE_KEY, team);
-                }
-              })
-            )
-        )
-      );
-    }
+              return new Team(result.data.team);
+            })
+          )
+      )
+    );
   }
 
   private _getRankingWhere(encounterId: string) {
@@ -794,62 +776,49 @@ export class AssemblyComponent implements OnInit, OnDestroy {
   }
 
   private _getEvent(encounterCompetitionId: string) {
-    const STATE_KEY = makeStateKey<EventCompetition>(
-      'eventForEncounter-' + encounterCompetitionId
-    );
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, null);
-
-      if (state) {
-        return of(new EventCompetition(state));
-      }
-
-      return of();
-    } else {
-      return this.apollo
-        .query<{ encounterCompetition: Partial<EncounterCompetition> }>({
-          query: gql`
-            query EncounterCompetition($encounterCompetitionId: ID!) {
-              encounterCompetition(id: $encounterCompetitionId) {
+    return this.apollo
+      .query<{ encounterCompetition: Partial<EncounterCompetition> }>({
+        query: gql`
+          query EncounterCompetition($encounterCompetitionId: ID!) {
+            encounterCompetition(id: $encounterCompetitionId) {
+              id
+              drawCompetition {
                 id
-                drawCompetition {
+                subEventCompetition {
                   id
-                  subEventCompetition {
+                  eventType
+                  eventCompetition {
                     id
-                    eventType
-                    eventCompetition {
-                      id
-                      startYear
-                      usedRankingUnit
-                      usedRankingAmount
-                    }
+                    startYear
+                    usedRankingUnit
+                    usedRankingAmount
                   }
                 }
               }
             }
-          `,
-          variables: {
-            encounterCompetitionId,
-          },
+          }
+        `,
+        variables: {
+          encounterCompetitionId,
+        },
+      })
+      .pipe(
+        transferState(`eventForEncounter-${encounterCompetitionId}`),
+        map(
+          (result) =>
+            result?.data.encounterCompetition?.drawCompetition
+              ?.subEventCompetition
+        ),
+        map((result) => {
+          if (!result?.eventCompetition) {
+            throw new Error('No event');
+          }
+
+          this.type = result?.eventType;
+
+          return new EventCompetition(result?.eventCompetition);
         })
-        .pipe(
-          map(
-            (result) =>
-              result.data.encounterCompetition?.drawCompetition
-                ?.subEventCompetition
-          ),
-          map((result) => {
-            if (!result?.eventCompetition) {
-              throw new Error('No event');
-            }
-
-            this.type = result?.eventType;
-
-            return new EventCompetition(result?.eventCompetition);
-          })
-        );
-    }
+      );
   }
 
   private _checkAssembly() {
@@ -1039,70 +1008,53 @@ export class AssemblyComponent implements OnInit, OnDestroy {
   }
 
   private _loadSaved(encounterId: string, captainId?: string) {
-    const STATE_KEY = makeStateKey<Assembly[]>('savedAssembly-' + encounterId);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-
-      if (state && state.length > 0) {
-        this.transferState.remove(STATE_KEY);
-        return of(state?.map((assembly) => new Assembly(assembly)));
-      }
-
+    if (!this.authenticateService.loggedIn) {
       return of([]);
-    } else {
-      if (!this.authenticateService?.user?.id) {
-        return of([]);
-      }
+    }
 
-      return this.apollo
-        .query<{ encounterCompetition: Partial<EncounterCompetition> }>({
-          query: gql`
-            query SavedAssembly($id: ID!, $where: JSONObject) {
-              encounterCompetition(id: $id) {
+    return this.apollo
+      .query<{ encounterCompetition: Partial<EncounterCompetition> }>({
+        query: gql`
+          query SavedAssembly($id: ID!, $where: JSONObject) {
+            encounterCompetition(id: $id) {
+              id
+              assemblies(where: $where) {
                 id
-                assemblies(where: $where) {
-                  id
-                  assembly {
-                    single1
-                    single2
-                    single3
-                    single4
-                    double1
-                    double2
-                    double3
-                    double4
-                    subtitudes
-                  }
-                  captainId
+                assembly {
+                  single1
+                  single2
+                  single3
+                  single4
+                  double1
+                  double2
+                  double3
+                  double4
+                  subtitudes
                 }
+                captainId
               }
             }
-          `,
-          variables: {
-            id: encounterId,
-            where: {
-              captainId,
-              playerId: this.authenticateService?.user?.id
-            },
+          }
+        `,
+        variables: {
+          id: encounterId,
+          where: {
+            captainId,
+            playerId: this.authenticateService?.user?.id,
           },
+        },
+      })
+      .pipe(
+        transferState(`savedAssembly-${encounterId}`),
+        map((result) => {
+          if (!result?.data?.encounterCompetition) {
+            throw new Error('No encounterCompetition');
+          }
+          return result.data.encounterCompetition?.assemblies?.map(
+            (assembly) => new Assembly(assembly)
+          );
         })
-        .pipe(
-          map((result) => {
-            if (!result?.data?.encounterCompetition) {
-              throw new Error('No encounterCompetition');
-            }
-            return result.data.encounterCompetition?.assemblies?.map(
-              (assembly) => new Assembly(assembly)
-            );
-          }),
-          tap((assembly) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, assembly);
-            }
-          })
-        );
-    }
+      );
   }
 
   private _getPlayers(ids: string[]) {
