@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.69.3](https://github.com/Badminton-Apps/badman/compare/v6.69.2...v6.69.3) (2023-04-19)
+
+
+### Bug Fixes
+
+* allow null on settings ([92b06a5](https://github.com/Badminton-Apps/badman/commit/92b06a5084acb66db128643d9cd7a3f19e988fd3))
+* **deps:** update dependency [@builder](https://github.com/builder).io/partytown to ^0.8.0 ([1ea491d](https://github.com/Badminton-Apps/badman/commit/1ea491d7c256b2cad24062f72a44957ee2041f7c))
+* **deps:** update dependency @nguniversal/express-engine to v15.2.1 ([cc62634](https://github.com/Badminton-Apps/badman/commit/cc62634582f05a1efad565034b7502a7918ac8e8))
+* updating settings should also create a new one if non existed ([37001fa](https://github.com/Badminton-Apps/badman/commit/37001fafab63b6d8d0a0ea6812b7046610bb6f9a))
+
 ### [6.69.2](https://github.com/Badminton-Apps/badman/compare/v6.69.1...v6.69.2) (2023-04-17)
 
 
