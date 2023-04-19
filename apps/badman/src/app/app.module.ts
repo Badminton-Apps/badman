@@ -31,6 +31,7 @@ import { AppComponent } from './app.component';
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { AuthModule } from '@badman/frontend-auth';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { ShellComponent } from '@badman/frontend-components';
 
 const APP_ROUTES: Routes = [
