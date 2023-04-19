@@ -9,7 +9,7 @@
 @use './src/page-header/page-header.component.theme.scss' as page-header;
 @use './src/standing/standing.component.theme.scss' as standing;
 @use './src/player-search/player-search.component.theme.scss' as player-search;
-@use './src/quill/quill.component.theme.scss' as quill;
+// @use './src/quill/quill.component.theme.scss' as quill;
 
 @mixin theme($theme) {
   @include search-box.theme($theme);
@@ -20,7 +20,7 @@
   @include beta.theme($theme);
   @include page-header.theme($theme);
   @include standing.theme($theme);
-  @include quill.theme($theme);
+  // @include quill.theme($theme);
 }
 
 @mixin typography($theme) {
@@ -32,7 +32,7 @@
   @include beta.typography($theme);
   @include page-header.typography($theme);
   @include standing.typography($theme);
-  @include quill.typography($theme);
+  // @include quill.typography($theme);
 }
 
 @mixin colors($theme) {
@@ -44,5 +44,5 @@
   @include beta.color($theme);
   @include page-header.color($theme);
   @include standing.color($theme);
-  @include quill.color($theme);
+  // @include quill.color($theme);
 }

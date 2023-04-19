@@ -1,0 +1,55 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin colors($theme) {
+  $color-config: mat.get-color-config($theme);
+  $foreground: map.get($color-config, 'foreground');
+  $background: map.get($color-config, 'background');
+  $primary-palette: map.get($color-config, 'primary');
+
+  quill-editor {
+    .ql-toolbar.ql-snow {
+      & .ql-stroke {
+        stroke: mat.get-color-from-palette($foreground, 'base');
+      }
+
+      & .ql-fill {
+        fill: mat.get-color-from-palette($foreground, 'base');
+      }
+
+      & .ql-picker-label {
+        color: mat.get-color-from-palette($foreground, 'base');
+      }
+
+      & .ql-picker-item:hover,
+      & .ql-picker-item.ql-selected {
+        color: mat.get-color-from-palette($foreground, 'base');
+      }
+
+      & .ql-picker-item.ql-selected svg {
+        fill: mat.get-color-from-palette($foreground, 'base');
+      }
+
+      & .ql-picker-item:hover svg {
+        fill: mat.get-color-from-palette($foreground, 'base');
+      }
+
+      & .ql-picker-options {
+        background-color: mat.get-color-from-palette($background, 'background');
+      }
+
+      & .ql-picker-options .ql-picker-item:hover,
+      & .ql-picker-options .ql-picker-item.ql-selected {
+        color: mat.get-color-from-palette($foreground, 'base');
+      }
+
+      & .ql-picker-options .ql-picker-item.ql-selected svg {
+        fill: mat.get-color-from-palette($foreground, 'base');
+      }
+
+      & .ql-picker-options .ql-picker-item:hover svg {
+        fill: mat.get-color-from-palette($foreground, 'base');
+      }
+    }
+  }
+}

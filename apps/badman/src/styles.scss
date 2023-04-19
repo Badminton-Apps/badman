@@ -19,6 +19,7 @@
 @use '../../../libs/frontend/pages/role/theme' as frontend-role;
 @use '../../../libs/frontend/pages/team/theme' as frontend-team;
 @use '../../../libs/frontend/pages/general/theme' as frontend-general;
+@use './quill.scss' as quill;
 
 // Plus imports for other components in your app.
 
@@ -65,6 +66,7 @@ $light-theme: theme.badman-light-theme(
 @include frontend-role.theme($dark-theme);
 @include frontend-team.theme($dark-theme);
 @include frontend-general.theme($dark-theme);
+@include quill.colors($dark-theme);
 
 .color-scheme-light {
   @include mat.all-component-colors($light-theme);
@@ -81,6 +83,7 @@ $light-theme: theme.badman-light-theme(
   @include frontend-team.colors($light-theme);
   @include frontend-components.colors($light-theme);
   @include frontend-general.colors($light-theme);
+  @include quill.colors($light-theme);
 }
 
 /* You can add global styles to this file, and also import other style files */

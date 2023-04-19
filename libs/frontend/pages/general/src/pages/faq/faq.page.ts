@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
-import { HasClaimComponent, QuillComponent } from '@badman/frontend-components';
+import { HasClaimComponent } from '@badman/frontend-components';
 import { SeoService } from '@badman/frontend-seo';
 import { Apollo, gql } from 'apollo-angular';
 import { QuillModule } from 'ngx-quill';
@@ -31,7 +31,6 @@ import { lastValueFrom } from 'rxjs';
     // Core modules
     CommonModule,
     MatFormFieldModule,
-    QuillComponent,
 
     // Own modules
     HasClaimComponent,

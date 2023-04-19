@@ -36,9 +36,7 @@
       *ngIf="questionBeingEdited === question.id"
     >
       <ng-container [formGroup]="editForm">
-        <mat-form-field>
-          <badman-quill formControlName="answer"></badman-quill>
-        </mat-form-field>
+        <quill-editor formControlName="answer"></quill-editor>
       </ng-container>
     </badman-has-claim>
   </mat-card-content>

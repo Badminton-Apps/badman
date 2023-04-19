@@ -7,7 +7,7 @@ export * from './has-claim';
 export * from './landing';
 export * from './page-header';
 export * from './player-search';
-export * from './quill';
+// export * from './quill';
 export * from './ranking-table';
 export * from './selects';
 export * from './shell';
