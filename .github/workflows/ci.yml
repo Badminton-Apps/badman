@@ -4,12 +4,13 @@ on:
   pull_request:
   merge_group:
 
-env:
-  NODE_ENV: '19.3.0'
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true  
+
+env:
+  NODE_ENV: '19.3.0'
+
 
 jobs:
   main:
