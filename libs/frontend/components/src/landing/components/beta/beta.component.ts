@@ -1,10 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  Inject,
   Input,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { LoggedinUser, AuthenticateService } from '@badman/frontend-auth';
 import { Observable } from 'rxjs';
@@ -35,19 +37,24 @@ export class BetaComponent implements OnInit {
   // store the state of the beta message in local storage
   hideBetaMessage = false;
 
-  constructor(private authenticateService: AuthenticateService) {}
+  constructor(
+    private authenticateService: AuthenticateService,
+    @Inject(PLATFORM_ID) private platformId: string
+  ) {}
 
   ngOnInit() {
     this.user$ = this.authenticateService.user$;
 
-    const hideBetaMessage = localStorage.getItem('hideBetaMessage');
-    if (hideBetaMessage != undefined) {
-      this.hideBetaMessage = hideBetaMessage == 'true';
+    if (isPlatformBrowser(this.platformId)) {
+      const hideBetaMessage = localStorage.getItem('hideBetaMessage');
+      if (hideBetaMessage != undefined) {
+        this.hideBetaMessage = hideBetaMessage == 'true';
+      }
     }
   }
 
   hideMessage() {
     this.hideBetaMessage = true;
-    localStorage.setItem('hideBetaMessage', 'true');    
+    localStorage.setItem('hideBetaMessage', 'true');
   }
 }

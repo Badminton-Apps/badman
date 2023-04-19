@@ -6,17 +6,15 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
-import { TransferState } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   RecentGamesComponent,
   StandingComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { DrawTournament, Player, Team } from '@badman/frontend-models';
+import { DrawTournament, Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -43,8 +41,6 @@ export class DetailDrawComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: string
   ) {}
 

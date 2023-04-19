@@ -210,7 +210,7 @@ export class PlayersResolver {
     }).then((player) => player.clubs);
   }
 
-  @ResolveField(() => Setting)
+  @ResolveField(() => Setting, { nullable: true })
   async setting(@Parent() player: Player): Promise<Setting> {
     return player.getSetting();
   }
@@ -313,10 +313,12 @@ export class PlayersResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const setting = await user.getSetting({ transaction });
+      let setting = await user.getSetting({ transaction });
 
       if (!setting) {
-        throw new NotFoundException(`${Setting.name}: ${user.id}`);
+        setting = new Setting({
+          playerId: user.id,
+        });
       }
 
       // Update club
