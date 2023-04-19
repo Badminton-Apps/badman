@@ -13,7 +13,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { TransferState } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   GameScoreComponentComponent,
@@ -26,9 +25,8 @@ import {
   GamePlayer,
 } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { gameLabel, GameType } from '@badman/utils';
+import { GameType, gameLabel } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -67,8 +65,6 @@ export class DetailEncounterComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: string
   ) {}
 

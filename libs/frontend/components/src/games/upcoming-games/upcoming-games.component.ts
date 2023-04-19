@@ -1,23 +1,15 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
-import { Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { EncounterCompetition, Team } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
-import {
-  BehaviorSubject,
-  map,
-  Observable,
-  of,
-  scan,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, Observable, map, scan, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'badman-upcoming-games',
@@ -47,11 +39,7 @@ export class UpcomingGamesComponent implements OnInit {
 
   readonly pageSize = 10;
 
-  constructor(
-    private apollo: Apollo,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {}
+  constructor(private apollo: Apollo) {}
 
   ngOnInit() {
     this.upcomingEncounters$ = this.currentIndex$.pipe(
@@ -67,105 +55,90 @@ export class UpcomingGamesComponent implements OnInit {
   }
 
   private _loadUpcomingEncounters(teams: Team[], offset: number) {
-    const STATE_KEY = makeStateKey<EncounterCompetition[]>(
-      'upcommingKey-' + this.teamId ?? this.clubid
-    );
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(
-        state?.map((encounter) => new EncounterCompetition(encounter))
-      ).pipe(map((encounters) => this._setHome(encounters)));
-    } else {
-      return this.apollo
-        .query<{
-          encounterCompetitions: {
-            rows: Partial<EncounterCompetition>[];
-          };
-        }>({
-          query: gql`
-            query UpcomingGames(
-              $where: JSONObject
-              $take: Int
-              $skip: Int
-              $order: [SortOrderType!]
+    return this.apollo
+      .query<{
+        encounterCompetitions: {
+          rows: Partial<EncounterCompetition>[];
+        };
+      }>({
+        query: gql`
+          query UpcomingGames(
+            $where: JSONObject
+            $take: Int
+            $skip: Int
+            $order: [SortOrderType!]
+          ) {
+            encounterCompetitions(
+              where: $where
+              order: $order
+              take: $take
+              skip: $skip
             ) {
-              encounterCompetitions(
-                where: $where
-                order: $order
-                take: $take
-                skip: $skip
-              ) {
-                rows {
+              rows {
+                id
+                date
+                home {
                   id
-                  date
-                  home {
+                  name
+                  abbreviation
+                  slug
+                  club {
                     id
-                    name
-                    abbreviation
                     slug
-                    club {
-                      id
-                      slug
-                    }
                   }
-                  away {
+                }
+                away {
+                  id
+                  name
+                  abbreviation
+                  slug
+                  club {
                     id
-                    name
-                    abbreviation
                     slug
-                    club {
-                      id
-                      slug
-                    }
                   }
                 }
               }
             }
-          `,
-          variables: {
-            where: {
-              date: {
-                $gte: moment().format('YYYY-MM-DD'),
-              },
-              $or: [
-                {
-                  homeTeamId: teams.map((team) => team.id),
-                },
-                {
-                  awayTeamId: teams.map((team) => team.id),
-                },
-              ],
+          }
+        `,
+        variables: {
+          where: {
+            date: {
+              $gte: moment().format('YYYY-MM-DD'),
             },
-            order: [
+            $or: [
               {
-                direction: 'asc',
-                field: 'date',
+                homeTeamId: teams.map((team) => team.id),
+              },
+              {
+                awayTeamId: teams.map((team) => team.id),
               },
             ],
-            skip: offset,
-            take: this.pageSize,
           },
+          order: [
+            {
+              direction: 'asc',
+              field: 'date',
+            },
+          ],
+          skip: offset,
+          take: this.pageSize,
+        },
+      })
+      .pipe(
+        transferState('upcommingKey-' + this.teamId ?? this.clubid),
+        map((result) => {
+          return result?.data?.encounterCompetitions?.rows?.map(
+            (encounter) => new EncounterCompetition(encounter)
+          );
+        }),
+        map((encounters) => this._setHome(encounters ?? [])),
+        tap((encounters) => {
+          if (encounters.length < this.pageSize) {
+            this.hasMoreToLoad = false;
+          }
         })
-        .pipe(
-          map((result) => {
-            return result.data.encounterCompetitions.rows?.map(
-              (encounter) => new EncounterCompetition(encounter)
-            );
-          }),
-          map((encounters) => this._setHome(encounters)),
-          tap((encounters) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, encounters);
-            }
-          }),
-          tap((encounters) => {
-            if (encounters.length < this.pageSize) {
-              this.hasMoreToLoad = false;
-            }
-          })
-        );
-    }
+      );
   }
 
   private _setHome(encounters: EncounterCompetition[]) {

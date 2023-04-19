@@ -1,10 +1,9 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   Inject,
   OnDestroy,
-  OnInit,
-  PLATFORM_ID,
+  OnInit
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -20,15 +19,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { InMemoryCache } from '@apollo/client/cache';
 import { HasClaimComponent } from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { Club, Location, Player, Role, Team } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason, sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { BehaviorSubject, lastValueFrom, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, lastValueFrom } from 'rxjs';
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
@@ -99,9 +98,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private apollo: Apollo,
     @Inject(APOLLO_CACHE) private cache: InMemoryCache,
-    private route: ActivatedRoute,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -126,7 +123,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         switchMap(() => this._loadLocations())
       );
-      
+
       this._getYears().then((years) => {
         if (years.length > 0) {
           this.seasons = years;
@@ -199,13 +196,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
   }
 
   private _loadRoles() {
-    const STATE_KEY = makeStateKey<Role[]>('clubRolesKey-' + this.club.id);
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(state?.map((role) => new Role(role)));
-    }
-
     return this.apollo
       .query<{ club: Partial<Club> }>({
         query: gql`
@@ -230,8 +220,9 @@ export class EditPageComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
+        transferState(`clubRolesKey-${this.club.id}`),
         map((result) => {
-          if (!result.data.club) {
+          if (!result?.data.club) {
             throw new Error('No club');
           }
 
@@ -240,25 +231,11 @@ export class EditPageComponent implements OnInit, OnDestroy {
           }
 
           return result.data.club.roles.map((roles) => new Role(roles));
-        }),
-        tap((roles) => {
-          if (isPlatformServer(this.platformId)) {
-            this.transferState.set(STATE_KEY, roles);
-          }
         })
       );
   }
 
   private _loadLocations() {
-    const STATE_KEY = makeStateKey<Location[]>(
-      'clubLocationsKey-' + this.club.id
-    );
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, []);
-      return of(state?.map((location) => new Location(location)));
-    }
-
     return this.apollo
       .query<{ club: Partial<Club> }>({
         query: gql`
@@ -285,8 +262,9 @@ export class EditPageComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
+        transferState(`clubLocationsKey-${this.club.id}`),
         map((result) => {
-          if (!result.data.club) {
+          if (!result?.data.club) {
             throw new Error('No club');
           }
 
@@ -297,11 +275,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
           return result.data.club.locations.map(
             (location) => new Location(location)
           );
-        }),
-        tap((locations) => {
-          if (isPlatformServer(this.platformId)) {
-            this.transferState.set(STATE_KEY, locations);
-          }
         })
       );
   }

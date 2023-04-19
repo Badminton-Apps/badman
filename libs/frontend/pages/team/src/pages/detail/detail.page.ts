@@ -1,22 +1,22 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   PageHeaderComponent,
   RecentGamesComponent,
-  UpcomingGamesComponent
+  UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { EventEntry, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
+import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, Observable, of, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -48,9 +48,7 @@ export class DetailPageComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
@@ -74,60 +72,42 @@ export class DetailPageComponent implements OnInit {
 
   private _latestEntry() {
     const year = getCurrentSeason();
-    const STATE_KEY = makeStateKey<EventEntry>(
-      `teamEntries-${this.team.id}-${year}`
-    );
-
-    if (this.transferState.hasKey(STATE_KEY)) {
-      const state = this.transferState.get(STATE_KEY, undefined);
-
-      if (state) {
-        this.transferState.remove(STATE_KEY);
-      }
-
-      return of(undefined);
-    } else {
-      return this.apollo
-        .query<{ team: Partial<Team> }>({
-          query: gql`
-            query Entries($teamId: ID!) {
-              team(id: $teamId) {
+    return this.apollo
+      .query<{ team: Partial<Team> }>({
+        query: gql`
+          query Entries($teamId: ID!) {
+            team(id: $teamId) {
+              id
+              entry {
                 id
-                entry {
+                date
+                standing {
                   id
-                  date
-                  standing {
+                  position
+                  size
+                }
+                competitionDraw {
+                  id
+                }
+                competitionSubEvent {
+                  id
+                  eventCompetition {
                     id
-                    position
-                    size
-                  }
-                  competitionDraw {
-                    id
-                  }
-                  competitionSubEvent {
-                    id
-                    eventCompetition {
-                      id
-                      name
-                      slug
-                    }
+                    name
+                    slug
                   }
                 }
               }
             }
-          `,
-          variables: {
-            teamId: this.team.id,
-          },
-        })
-        .pipe(
-          map((result) => new EventEntry(result.data.team.entry as EventEntry)),
-          tap((teams) => {
-            if (isPlatformServer(this.platformId)) {
-              this.transferState.set(STATE_KEY, teams);
-            }
-          })
-        );
-    }
+          }
+        `,
+        variables: {
+          teamId: this.team.id,
+        },
+      })
+      .pipe(
+        transferState(`teamEntries-${this.team.id}-${year}`),
+        map((result) => new EventEntry(result?.data.team.entry as EventEntry))
+      );
   }
 }
