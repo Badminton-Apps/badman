@@ -10,10 +10,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NX_CLOUD_DISTRIBUTED_EXECUTION: true
-  NX_BRANCH: develop
-  NX_RUN_GROUP: ${{ github.run_id }}
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_TOKEN }}
   NODE_ENV: '19.3.0'
 
 jobs:
