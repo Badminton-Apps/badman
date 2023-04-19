@@ -5,18 +5,16 @@ on:
   merge_group:
 
 env:
-  NX_CLOUD_DISTRIBUTED_EXECUTION: true
-  NX_BRANCH: develop
-  NX_RUN_GROUP: ${{ github.run_id }}
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_TOKEN }}
   NODE_ENV: '19.3.0'
-  
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true  
+
 jobs:
   main:
     name: Nx Cloud - Main Job
     uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.11
-    secrets:
-      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_TOKEN }}
     with:
       number-of-agents: 3
       init-commands: |
@@ -32,7 +30,5 @@ jobs:
   agents:
     name: Nx Cloud - Agents
     uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.11
-    secrets:
-      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_TOKEN }}
     with:
       number-of-agents: 3
