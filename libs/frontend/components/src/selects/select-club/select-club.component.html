@@ -22,7 +22,7 @@
     (optionSelected)="this.selectClub($event)"
   >
     <mat-option
-      *ngFor="let option of filteredClubs | async"
+      *ngFor="let option of filteredClubs$ | async"
       [value]="option.id"
     >
       {{ option.name }}
