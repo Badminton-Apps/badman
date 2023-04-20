@@ -22,7 +22,7 @@ jobs:
           path-to-document: 'https://github.com/Badminton-Apps/core/blob/main/CLA.md' # e.g. a CLA or a DCO document
           # branch should not be protected
           branch: 'main'
-          allowlist: bot*,Badman
+          allowlist: bot*,Badman Releaser
           create-file-commit-message: 'chore(docs): Creating file for storing CLA Signatures'
           signed-commit-message: 'chore(docs): $contributorName has signed the CLA in #$pullRequestNo'
           custom-pr-sign-comment: 'ik heb de Contributor Licentie Overeenkomst gelezen en verklaar mij hiermee akkoord'
