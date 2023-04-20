@@ -115,10 +115,11 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
       this.claimSerice.hasAllClaims$([`${this.allClubPermission}`]),
       this.authService.user$.pipe(startWith(undefined)),
+      this.activatedRoute.queryParamMap,
     ])
       .pipe(
         takeUntil(this.destroy$),
-        switchMap(([allClubs, all, , user]) => {
+        switchMap(([allClubs, all, , user, params]) => {
           if (this.needsPermission && !all) {
             return this.claimSerice.claims$.pipe(
               map((r) =>
@@ -135,27 +136,41 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                   return ids?.indexOf(c.id) != -1;
                 });
 
-                return of({ rows: filtered, count: filtered.length, user });
+                return of({
+                  rows: filtered,
+                  count: filtered.length,
+                  user,
+                  params,
+                });
               })
             );
           }
 
-          return of({ rows: allClubs, count: allClubs.length, user });
+          return of({ rows: allClubs, count: allClubs.length, user, params });
         })
       )
-      .subscribe((result) => {
-        this.#clubs.next(result.rows ?? null);
+      .subscribe(({ rows, user, params }) => {
+        this.#clubs.next(rows ?? null);
 
-        // if no club is selected and the user has clubs, pick the first one
-        if (result.user?.clubs && this.control?.value == null) {
-          const clubIds = result.user?.clubs
-            ?.filter((c) => c.clubMembership?.end == null)
-            ?.map((r) => r.id);
+        if (this.control?.value == null) {
+          const paramClubId = params.get('club');
 
-          if (clubIds) {
-            this.selectClub(
-              this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null
-            );
+          if (paramClubId) {
+            this.selectClub(paramClubId, false);
+            return;
+          }
+
+          // if no club is selected and the user has clubs, pick the first one
+          if (user?.clubs) {
+            const clubIds = user?.clubs
+              ?.filter((c) => c.clubMembership?.end == null)
+              ?.map((r) => r.id);
+
+            if (clubIds) {
+              this.selectClub(
+                this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null, false
+              );
+            }
           }
         }
       });
@@ -174,13 +189,14 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           take(1)
         )
         .subscribe(() => {
-          this.selectClub(this.control?.value);
+          this.selectClub(this.control?.value, false);
         });
     }
   }
 
   selectClub(
-    event?: MatAutocompleteSelectedEvent | MatSelectChange | string | null
+    event?: MatAutocompleteSelectedEvent | MatSelectChange | string | null,
+    removeOtherParams = true
   ) {
     let id: string | undefined;
     if (event instanceof MatAutocompleteSelectedEvent) {
@@ -198,7 +214,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     this.control?.setValue(id);
 
     if (this.updateUrl && id) {
-      this._updateUrl(id, true);
+      this._updateUrl(id, removeOtherParams);
     }
   }
 
