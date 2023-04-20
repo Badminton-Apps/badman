@@ -71,8 +71,18 @@
   "club": {
     "current": "Current club",
     "end": "End",
+    "menu": {
+      "add-player": "Add Player",
+      "delete": "Delete",
+      "edit": "Edit",
+      "twizzit": "Twizzit overview"
+    },
     "number": "club number",
-    "start": "Start date"
+    "start": "Start date",
+    "titles": {
+      "players": "Players",
+      "teams": "Teams"
+    }
   },
   "competition": {
     "avg-level": "Average level",
@@ -343,15 +353,15 @@
     }
   },
   "gender": {
-    "female": "Women",
-    "females": "Female",
+    "female": "Female",
+    "females": "Women",
     "long": {
       "F": "Female",
       "M": "Male",
       "MX": "Mixed"
     },
-    "male": "Men",
-    "males": "Male",
+    "male": "Male",
+    "males": "Men",
     "mix": "Mixed",
     "national": "National",
     "select": "Select",
@@ -457,6 +467,12 @@
     },
     "select-year": "Pick a competition season",
     "start-time": "Start time"
+  },
+  "player": {
+    "menu": {
+      "delete": "Delete",
+      "edit": "Edit"
+    }
   },
   "players": {
     "backup": "Backup player",
@@ -601,6 +617,7 @@
     "no-perm": {
       "email-phone": "You don't have permissions to edit emails or phone numbers."
     },
+    "teams": "Teams",
     "title": {
       "base-fields": "General info",
       "captain": "Team captain",

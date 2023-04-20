@@ -947,28 +947,28 @@ export class AssemblyComponent implements OnInit, OnDestroy {
 
   private _setTranslations() {
     if (this.type == 'M') {
-      this.captionSingle1Prefix = 'all.gender.male';
-      this.captionSingle2Prefix = 'all.gender.male';
-      this.captionSingle3Prefix = 'all.gender.male';
-      this.captionSingle4Prefix = 'all.gender.male';
-      this.captionDouble1Prefix = 'all.gender.male';
-      this.captionDouble2Prefix = 'all.gender.male';
-      this.captionDouble3Prefix = 'all.gender.male';
-      this.captionDouble4Prefix = 'all.gender.male';
+      this.captionSingle1Prefix = 'all.gender.males';
+      this.captionSingle2Prefix = 'all.gender.males';
+      this.captionSingle3Prefix = 'all.gender.males';
+      this.captionSingle4Prefix = 'all.gender.males';
+      this.captionDouble1Prefix = 'all.gender.males';
+      this.captionDouble2Prefix = 'all.gender.males';
+      this.captionDouble3Prefix = 'all.gender.males';
+      this.captionDouble4Prefix = 'all.gender.males';
 
       this.captionDouble1 = `all.competition.team-assembly.double1`;
       this.captionDouble2 = `all.competition.team-assembly.double2`;
       this.captionDouble3 = `all.competition.team-assembly.double3`;
       this.captionDouble4 = `all.competition.team-assembly.double4`;
     } else if (this.type == 'F') {
-      this.captionSingle1Prefix = 'all.gender.female';
-      this.captionSingle2Prefix = 'all.gender.female';
-      this.captionSingle3Prefix = 'all.gender.female';
-      this.captionSingle4Prefix = 'all.gender.female';
-      this.captionDouble1Prefix = 'all.gender.female';
-      this.captionDouble2Prefix = 'all.gender.female';
-      this.captionDouble3Prefix = 'all.gender.female';
-      this.captionDouble4Prefix = 'all.gender.female';
+      this.captionSingle1Prefix = 'all.gender.females';
+      this.captionSingle2Prefix = 'all.gender.females';
+      this.captionSingle3Prefix = 'all.gender.females';
+      this.captionSingle4Prefix = 'all.gender.females';
+      this.captionDouble1Prefix = 'all.gender.females';
+      this.captionDouble2Prefix = 'all.gender.females';
+      this.captionDouble3Prefix = 'all.gender.females';
+      this.captionDouble4Prefix = 'all.gender.females';
 
       this.captionDouble1 = `all.competition.team-assembly.double1`;
       this.captionDouble2 = `all.competition.team-assembly.double2`;
@@ -980,11 +980,11 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       this.captionDouble3Prefix = '';
       this.captionDouble4Prefix = '';
 
-      this.captionSingle1Prefix = 'all.gender.male';
-      this.captionSingle2Prefix = 'all.gender.male';
+      this.captionSingle1Prefix = 'all.gender.males';
+      this.captionSingle2Prefix = 'all.gender.males';
 
-      this.captionSingle3Prefix = 'all.gender.female';
-      this.captionSingle4Prefix = 'all.gender.female';
+      this.captionSingle3Prefix = 'all.gender.femalse';
+      this.captionSingle4Prefix = 'all.gender.females';
 
       this.captionSingle3 = 'all.competition.team-assembly.single1';
       this.captionSingle4 = 'all.competition.team-assembly.single2';

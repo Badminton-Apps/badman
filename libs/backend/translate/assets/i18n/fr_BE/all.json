@@ -71,8 +71,18 @@
   "club": {
     "current": "Club actuel",
     "end": "Fin",
+    "menu": {
+      "add-player": "Ajouter un joueur",
+      "delete": "Enlever",
+      "edit": "Modifier",
+      "twizzit": "Présentation de Twizzit"
+    },
     "number": "numéro de club",
-    "start": "Date de début"
+    "start": "Date de début",
+    "titles": {
+      "players": "Joueurs",
+      "teams": "Équipes"
+    }
   },
   "competition": {
     "avg-level": "Niveau moyen",
@@ -343,15 +353,15 @@
     }
   },
   "gender": {
-    "female": "Femmes",
-    "females": "Femme",
+    "female": "Femme",
+    "females": "Femmes",
     "long": {
       "F": "Femmes",
       "M": "Hommes",
       "MX": "Mixte"
     },
-    "male": "Hommes",
-    "males": "Homme",
+    "male": "Homme",
+    "males": "Hommes",
     "mix": "Mixte",
     "national": "Nationales",
     "select": "Sélectionner",
@@ -457,6 +467,12 @@
     },
     "select-year": "Choisir une saison de championnat",
     "start-time": "Start time"
+  },
+  "player": {
+    "menu": {
+      "delete": "Enlever",
+      "edit": "Modifier"
+    }
   },
   "players": {
     "backup": "Joueur de réserve",
@@ -601,6 +617,7 @@
     "no-perm": {
       "email-phone": "Vous n'êtes pas autorisé à modifier votre adresse électronique ou votre numéro de téléphone."
     },
+    "teams": "Équipes",
     "title": {
       "base-fields": "Informations générales",
       "captain": "Capitaine de l'équipe",
