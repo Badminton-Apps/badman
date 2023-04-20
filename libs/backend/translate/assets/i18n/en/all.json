@@ -207,8 +207,8 @@
       "info": "Remarks concerning the team assembly",
       "mix1": "Men doubles",
       "mix2": "Women doubles",
-      "mix3": "Mixed doubles 1",
-      "mix4": "Mixed doubles 2",
+      "mix3": "Mixed 1",
+      "mix4": "Mixed 2",
       "players": {
         "backup": "Backup players",
         "base": "Titulars",
