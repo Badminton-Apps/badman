@@ -7,11 +7,22 @@
   badman-club-detail {
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
+    $isDark: map.get($color-config, 'is-dark');
 
     $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
 
-    .teams-container .team {
+    .teams-container .team,
+    .players-container .player {
       border-color: $border-color;
+
+      .event,
+      .playerteams {
+        @if ($isDark) {
+          color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+        } @else {
+          color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+        }
+      }
     }
   }
 }
@@ -21,6 +32,9 @@
     $typography-config: mat.get-typography-config($theme);
 
     .teams-container .team .event {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+    .players-container .player .playerteams {
       @include mat.typography-level($typography-config, 'caption');
     }
 
