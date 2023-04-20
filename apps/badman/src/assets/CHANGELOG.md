@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.70.0](https://github.com/Badminton-Apps/badman/compare/v6.69.7...v6.70.0) (2023-04-20)
+
+
+### Features
+
+* add/show players ([617550b](https://github.com/Badminton-Apps/badman/commit/617550b3390c0f899ff032506d066a3c6419ebcb))
+
 ### [6.69.7](https://github.com/Badminton-Apps/badman/compare/v6.69.6...v6.69.7) (2023-04-20)
 
 
