@@ -1,6 +1,6 @@
 include ./row.pug
 
-mixin players(singles, doubles)
+mixin players(singles, doubles, type)
   .grid.text-xs(
     class='grid-cols-[45px_30px_5fr_1.2fr_2fr_2fr_2fr_2fr_2fr] grid-rows-[1fr_repeat(12,26px)]'
   )
@@ -38,6 +38,11 @@ mixin players(singles, doubles)
       .text-center.leading-6.m-auto(class='max-w-[1em] text-[2em]') T I T U L A R I S S E N
 
     each double, index in doubles
-      +doublePlayer(double, 'double', index +1).p-1.border.border-solid.border-l-0.border-t-0.border-black.flex.h-full.items-center
+      //- if type == mix then double 3 and 4 are mixed
+      if type == 'mix' && (index == 2 || index == 3)
+        +doublePlayer(double, 'mix', index +1).p-1.border.border-solid.border-l-0.border-t-0.border-black.flex.h-full.items-center
+      else
+        +doublePlayer(double, 'double', index +1).p-1.border.border-solid.border-l-0.border-t-0.border-black.flex.h-full.items-center
+      
     each player, index in singles
       +singlePlayer(player, 'single', index + 1).p-1.border.border-solid.border-l-0.border-black.flex.h-full.items-center
