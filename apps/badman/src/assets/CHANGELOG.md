@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.69.7](https://github.com/Badminton-Apps/badman/compare/v6.69.6...v6.69.7) (2023-04-20)
+
+
+### Bug Fixes
+
+* should have used the mix ([4fef53a](https://github.com/Badminton-Apps/badman/commit/4fef53a9bf9a9dd10942a99de75416259f7aaab9))
+* showing correct ranking in mix column ([a48a22d](https://github.com/Badminton-Apps/badman/commit/a48a22dbb4be1a398ebdd15b55cca88622954301))
+* translate issues ([d355636](https://github.com/Badminton-Apps/badman/commit/d3556365702969eb2bcf7a119d7f0a873e411854))
+* translation ([412e25b](https://github.com/Badminton-Apps/badman/commit/412e25b2e1d60c8f091f8b9be4f8d67612720347))
+
 ### [6.69.6](https://github.com/Badminton-Apps/badman/compare/v6.69.5...v6.69.6) (2023-04-20)
 
 ### [6.69.5](https://github.com/Badminton-Apps/badman/compare/v6.69.4...v6.69.5) (2023-04-20)
