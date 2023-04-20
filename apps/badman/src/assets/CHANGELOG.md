@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.69.4](https://github.com/Badminton-Apps/badman/compare/v6.69.3...v6.69.4) (2023-04-20)
+
+
+### Bug Fixes
+
+* added other translations ([69af4cf](https://github.com/Badminton-Apps/badman/commit/69af4cf0028cb9a01b3f9b8c60bedf452aa9f7a0))
+* adding some padding in the assembyl generation ([7e315e6](https://github.com/Badminton-Apps/badman/commit/7e315e6f11e9b800837b8651ba8d8d6506265349))
+* **deps:** update angular monorepo to v15.2.7 ([65e9e11](https://github.com/Badminton-Apps/badman/commit/65e9e11d4c597324d4596746226ef24bb5c1e920))
+* **deps:** update angularmaterial monorepo to v15.2.7 ([475dee1](https://github.com/Badminton-Apps/badman/commit/475dee1556aa7c4dd84e4186877a9b32b0236bce))
+* not removing from control if not needed ([f2f73a1](https://github.com/Badminton-Apps/badman/commit/f2f73a1fda270ff6ee2b2fd9ae028ee502d0d5a3))
+* padding on the right axis ([79c3e39](https://github.com/Badminton-Apps/badman/commit/79c3e3910fa978b8a4d706357dba1f7868020b4c))
+* select club update ([ef662ee](https://github.com/Badminton-Apps/badman/commit/ef662ee7905201bc3d3cacde47247e95c01476f9))
+* showing mix and load club from param ([a780fc5](https://github.com/Badminton-Apps/badman/commit/a780fc5277d392a8e8793f77486a0f09d38e97a1))
+* translation updates ([d1850a0](https://github.com/Badminton-Apps/badman/commit/d1850a0cd5f7c73adb459b3fe097fa1856109aea))
+
 ### [6.69.3](https://github.com/Badminton-Apps/badman/compare/v6.69.2...v6.69.3) (2023-04-19)
 
 
