@@ -39,10 +39,10 @@ mixin players(singles, doubles, type)
 
     each double, index in doubles
       //- if type == mix then double 3 and 4 are mixed
-      if type == 'mix' && (index == 2 || index == 3)
+      if type == 'MX' && (index == 2 || index == 3)
         +doublePlayer(double, 'mix', index +1).p-1.border.border-solid.border-l-0.border-t-0.border-black.flex.h-full.items-center
       else
         +doublePlayer(double, 'double', index +1).p-1.border.border-solid.border-l-0.border-t-0.border-black.flex.h-full.items-center
-      
+
     each player, index in singles
       +singlePlayer(player, 'single', index + 1).p-1.border.border-solid.border-l-0.border-black.flex.h-full.items-center
