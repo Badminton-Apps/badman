@@ -7,6 +7,7 @@ import { Claim } from './security';
 import { Setting } from './personal';
 import { Notification } from './personal';
 import { TeamMembershipType } from '@badman/utils';
+import { Team } from './team.model';
 
 export class Player {
   id?: string;
@@ -34,6 +35,7 @@ export class Player {
   clubs?: Club[];
   club?: Club;
   claims?: Claim[];
+  teams?: Team[];
   permissions?: string[];
   notifications?: Notification[];
   setting?: Setting;
@@ -71,6 +73,7 @@ export class Player {
     this.updatedAt =
       args?.updatedAt != null ? new Date(args.updatedAt) : undefined;
     this.claims = args?.claims?.map((c) => new Claim(c));
+    this.teams = args?.teams?.map((t) => new Team(t));
     this.permissions = args?.permissions?.map((p) => p);
 
     this.rankingPlaces = args?.rankingPlaces?.map((r) => new RankingPlace(r));

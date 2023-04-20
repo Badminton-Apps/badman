@@ -30,6 +30,7 @@ import {
   startWith,
   switchMap,
 } from 'rxjs/operators';
+import { NewPlayerComponent } from '../new-player';
 
 @Component({
   standalone: true,
@@ -262,42 +263,42 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
   selectedPlayer(event: MatAutocompleteSelectedEvent) {
     if (event.option.value?.id == null) {
-      // const dialogRef = this.dialog.open(NewPlayerComponent, {
-      //   data: { input: event.option.value },
-      // });
-      // dialogRef.afterClosed().subscribe(async (player: Partial<Player>) => {
-      //   if (player) {
-      //     const dbPlayer = await lastValueFrom(
-      //       this.apollo
-      //         .mutate<{ addPlayer: Partial<Player> }>({
-      //           mutation: gql`
-      //             mutation AddPlayer($data: PlayerNewInput!) {
-      //               addPlayer(data: $data) {
-      //                 id
-      //                 slug
-      //                 memberId
-      //                 firstName
-      //                 lastName
-      //               }
-      //             }
-      //           `,
-      //           variables: {
-      //             data: {
-      //               memberId: player.memberId?.trim(),
-      //               firstName: player.firstName?.trim(),
-      //               lastName: player.lastName?.trim(),
-      //               gender: player.gender?.trim(),
-      //             },
-      //           },
-      //         })
-      //         .pipe(map((x) => new Player(x.data?.addPlayer)))
-      //     );
-      //     if (!this.clearOnSelection) {
-      //       this.formControl.setValue(player);
-      //     }
-      //     this._selectPlayer(dbPlayer);
-      //   }
-      // });
+      const dialogRef = this.dialog.open(NewPlayerComponent, {
+        data: { input: event.option.value },
+      });
+      dialogRef.afterClosed().subscribe(async (player: Partial<Player>) => {
+        if (player) {
+          const dbPlayer = await lastValueFrom(
+            this.apollo
+              .mutate<{ addPlayer: Partial<Player> }>({
+                mutation: gql`
+                  mutation AddPlayer($data: PlayerNewInput!) {
+                    addPlayer(data: $data) {
+                      id
+                      slug
+                      memberId
+                      firstName
+                      lastName
+                    }
+                  }
+                `,
+                variables: {
+                  data: {
+                    memberId: player.memberId?.trim(),
+                    firstName: player.firstName?.trim(),
+                    lastName: player.lastName?.trim(),
+                    gender: player.gender?.trim(),
+                  },
+                },
+              })
+              .pipe(map((x) => new Player(x.data?.addPlayer)))
+          );
+          if (!this.clearOnSelection) {
+            this.formControl.setValue(player);
+          }
+          this._selectPlayer(dbPlayer);
+        }
+      });
     } else {
       this._selectPlayer(event.option.value);
     }

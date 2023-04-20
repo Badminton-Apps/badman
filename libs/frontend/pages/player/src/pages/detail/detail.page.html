@@ -51,13 +51,13 @@
         >
           <button mat-menu-item [routerLink]="'edit'">
             <mat-icon>edit</mat-icon>
-            <span>Edit</span>
+            <span>{{'all.player.menu.edit' | translate}}</span>
           </button>
         </badman-has-claim>
         <badman-has-claim [any]="['edit-any:player']">
           <button mat-menu-item>
             <mat-icon>delete</mat-icon>
-            <span>Delete</span>
+            <span>{{'all.player.menu.delete' | translate}}</span>
           </button>
         </badman-has-claim>
       </mat-menu>
