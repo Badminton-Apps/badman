@@ -1,8 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PlayerSearchComponent } from '@badman/frontend-components';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
 import { Player } from '@badman/frontend-models';
+import { PlayerSearchComponent } from '../player-search';
 
 @Component({
   templateUrl: './add-player.component.html',
@@ -11,9 +17,16 @@ import { Player } from '@badman/frontend-models';
   imports: [
     // Core modules
     CommonModule,
+
     // Other modules
+    TranslateModule,
+
+    // Material Modules
+    MatDialogModule,
+    MatButtonModule,
+
     // My Modules
-    PlayerSearchComponent
+    PlayerSearchComponent,
   ],
 })
 export class AddPlayerComponent {
