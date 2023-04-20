@@ -972,8 +972,8 @@ describe('AssemblyService', () => {
               'all.competition.team-assembly.errors.player-order-highest'
           );
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`double3`);
-          expect(error?.params?.['game2']).toBe(`double4`);
+          expect(error?.params?.['game1']).toBe(`mix1`);
+          expect(error?.params?.['game2']).toBe(`mix2`);
           // Team 1
           expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
           expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
