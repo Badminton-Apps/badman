@@ -17,28 +17,28 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import {
+  AddPlayerComponent,
   HasClaimComponent,
   PageHeaderComponent,
   RecentGamesComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { Club, EncounterCompetition, Team } from '@badman/frontend-models';
+import {
+  Club,
+  EncounterCompetition,
+  Player,
+  Team,
+} from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
-import {
-  delay,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
+import { delay, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -69,6 +69,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatButtonModule,
     MatDialogModule,
     MatSelectModule,
+    MatProgressBarModule,
   ],
 })
 export class DetailPageComponent implements OnInit, OnDestroy {
@@ -78,10 +79,10 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   update$ = new Subject<void>();
   destroy$ = new Subject<void>();
   teams$!: Observable<Team[]>;
+  players$!: Observable<{ player: Player; teams: number }[]>;
   recentEncounters$!: Observable<EncounterCompetition[]>;
   upcomingEncounters$!: Observable<EncounterCompetition[]>;
   seasons = [getCurrentSeason()];
-  loading = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -123,16 +124,21 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.teams$ = combineLatest([
+      const filters$ = combineLatest([
         this.filter.valueChanges,
         this.update$,
       ]).pipe(
         startWith([this.filter.value]),
         takeUntil(this.destroy$),
-        tap(() => (this.loading = true)),
-        delay(0), // delay to prevent flickering and to show loading indicator
-        switchMap(([filter]) => this._loadTeams(filter)),
-        tap(() => (this.loading = false))
+        delay(0) // delay to prevent flickering and to show loading indicator
+      );
+
+      this.teams$ = filters$.pipe(
+        switchMap(([filter]) => this._loadTeams(filter))
+      );
+
+      this.players$ = filters$.pipe(
+        switchMap(([filter]) => this._loadPlayers(filter))
       );
     });
   }
@@ -229,6 +235,58 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       );
   }
 
+  private _loadPlayers(filter: {
+    choices: string[];
+    season?: number;
+  }): Observable<
+    {
+      player: Player;
+      teams: number;
+    }[]
+  > {
+    return this.apollo
+      .watchQuery<{ club: Partial<Club> }>({
+        query: gql`
+          query PlayersForTeams($teamsWhere: JSONObject, $clubId: ID!) {
+            club(id: $clubId) {
+              players {
+                id
+                fullName
+                slug
+                teams(where: $teamsWhere) {
+                  id
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          clubId: this.club.id,
+          teamsWhere: {
+            season: filter?.season || getCurrentSeason(),
+            type: filter?.choices,
+          },
+        },
+      })
+      .valueChanges.pipe(
+        transferState(`clubPlayerTeamsKey-${this.club.id}`),
+        map((result) => {
+          if (!result?.data.club) {
+            throw new Error('No club');
+          }
+          return new Club(result.data.club);
+        }),
+        map((club) => {
+          return (club.players ?? []).map((player) => {
+            return {
+              player,
+              teams: (player.teams ?? []).length,
+            };
+          });
+        })
+      );
+  }
+
   editTeam(team: Team) {
     import('@badman/frontend-team').then((m) => {
       this.dialog
@@ -247,6 +305,19 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  deletePlayer(player: Player) {
+    this.apollo.mutate({
+      mutation: gql`
+        mutation RemovePlayerFromClub($removePlayerFromClubId: ID!) {
+          removePlayerFromClub(id: $removePlayerFromClubId)
+        }
+      `,
+      variables: {
+        removePlayerFromClubId: player.id,
+      },
+    });
+  }
+
   downloadTwizzit(club: Club) {
     const season = this.filter.get('season')?.toString();
     this.httpClient
@@ -260,5 +331,13 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       .subscribe((result) => {
         saveAs(result, `twizzit-${club.slug}-${season}.xlsx`);
       });
+  }
+
+  addPlayer() {
+    this.dialog.open(AddPlayerComponent, {
+      data: {
+        clubId: this.club.id,
+      },
+    });
   }
 }

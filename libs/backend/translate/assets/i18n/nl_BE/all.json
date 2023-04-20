@@ -71,8 +71,18 @@
   "club": {
     "current": "Huidig club",
     "end": "Einde",
+    "menu": {
+      "add-player": "Voeg speler toe",
+      "delete": "Verwijder",
+      "edit": "Bewerken",
+      "twizzit": "Twizzit overview"
+    },
     "number": "club nummer",
-    "start": "Begindatum"
+    "start": "Begindatum",
+    "titles": {
+      "players": "Spelers",
+      "teams": "Teams"
+    }
   },
   "competition": {
     "avg-level": "Gemiddeld niveau",
@@ -343,15 +353,15 @@
     }
   },
   "gender": {
-    "female": "Dames",
-    "females": "Vrouw",
+    "female": "Vrouw",
+    "females": "Dames",
     "long": {
       "F": "Dames",
       "M": "Heren",
       "MX": "Gemengd"
     },
-    "male": "Heren",
-    "males": "Man",
+    "male": "Man",
+    "males": "Heren",
     "mix": "Gemengd",
     "national": "Nationale",
     "select": "Selecteer",
@@ -457,6 +467,12 @@
     },
     "select-year": "Kies een competitieseizoen",
     "start-time": ""
+  },
+  "player": {
+    "menu": {
+      "delete": "Verwijder",
+      "edit": "Bewerken"
+    }
   },
   "players": {
     "backup": "Reserve speler",
@@ -601,6 +617,7 @@
     "no-perm": {
       "email-phone": "Je hebt geen toestemming om je e-mailadres of telefoonnummer te wijzigen."
     },
+    "teams": "Teams",
     "title": {
       "base-fields": "Algemene info",
       "captain": "Ploegkapitein",
