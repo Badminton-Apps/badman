@@ -283,8 +283,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.group?.removeControl(this.controlName);
-
     this.destroy$.next();
     this.destroy$.complete();
   }
