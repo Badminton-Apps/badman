@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.70.1](https://github.com/Badminton-Apps/badman/compare/v6.70.0...v6.70.1) (2023-04-21)
+
+
+### Bug Fixes
+
+* typo in female label ([137339a](https://github.com/Badminton-Apps/badman/commit/137339add84d83a724152293907a9941002938b6))
+
 ## [6.70.0](https://github.com/Badminton-Apps/badman/compare/v6.69.7...v6.70.0) (2023-04-20)
 
 
