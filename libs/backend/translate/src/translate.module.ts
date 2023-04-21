@@ -8,6 +8,8 @@ import fs from 'fs';
   controllers: [TranslateController],
   imports: [
     I18nModule.forRootAsync({
+      resolvers: [{ use: QueryResolver, options: ['lang'] }],
+
       useFactory: () => {
         // check if generated director/file exists
         const dir = join(__dirname, '../../../libs/utils/src/lib/');
@@ -32,7 +34,6 @@ import fs from 'fs';
             path: join(__dirname, `./assets/i18n/`),
             watch: true,
           },
-          resolvers: [{ use: QueryResolver, options: ['lang'] }],
           typesOutputPath: file,
         };
       },

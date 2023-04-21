@@ -20,14 +20,17 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import {
+  BehaviorSubject,
   Observable,
   Subject,
   combineLatest,
+  filter,
   first,
   map,
   of,
   startWith,
   switchMap,
+  take,
   takeUntil,
 } from 'rxjs';
 
@@ -75,9 +78,11 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   @Input()
   updateUrl = false;
 
-  clubs!: Club[];
-
-  filteredClubs?: Observable<Club[]>;
+  #clubs = new BehaviorSubject<Club[] | null>(null);
+  get clubs() {
+    return this.#clubs.value;
+  }
+  filteredClubs$?: Observable<Club[]>;
 
   @Input()
   useAutocomplete: true | false | 'auto' = 'auto';
@@ -105,21 +110,16 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     if (this.group) {
       this.group.addControl(this.controlName, this.control);
     }
-
-    this.filteredClubs = this.control?.valueChanges.pipe(
-      startWith(this.control.value ?? ''),
-      map((value) => this._filter(value))
-    );
-
     combineLatest([
       this._getClubs(),
       this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
       this.claimSerice.hasAllClaims$([`${this.allClubPermission}`]),
       this.authService.user$.pipe(startWith(undefined)),
+      this.activatedRoute.queryParamMap,
     ])
       .pipe(
         takeUntil(this.destroy$),
-        switchMap(([allClubs, all, , user]) => {
+        switchMap(([allClubs, all, , user, params]) => {
           if (this.needsPermission && !all) {
             return this.claimSerice.claims$.pipe(
               map((r) =>
@@ -136,68 +136,85 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                   return ids?.indexOf(c.id) != -1;
                 });
 
-                return of({ rows: filtered, count: filtered.length, user });
+                return of({
+                  rows: filtered,
+                  count: filtered.length,
+                  user,
+                  params,
+                });
               })
             );
           }
 
-          return of({ rows: allClubs, count: allClubs.length, user });
+          return of({ rows: allClubs, count: allClubs.length, user, params });
         })
       )
-      .subscribe((result) => {
-        const params = this.activatedRoute.snapshot.queryParams;
-        let foundClub: Club | null = null;
-        this.clubs = result.rows?.sort((a, b) =>
-          `${a?.name}`.localeCompare(`${b?.name}`)
-        );
+      .subscribe(({ rows, user, params }) => {
+        this.#clubs.next(rows ?? null);
 
-        if (this.clubs.length <= 0) {
-          this.control?.disable();
-          return;
-        }
+        if (this.control?.value == null) {
+          const paramClubId = params.get('club');
 
-        if (params && params['club']) {
-          foundClub =
-            this.clubs.find(
-              (r) => r.slug === params['club'] || r.id === params['club']
-            ) ?? null;
-        }
+          if (paramClubId) {
+            this.selectClub(paramClubId, false);
+            return;
+          }
 
-        if (foundClub == null) {
-          const clubIds = result.user?.clubs
-            ?.filter((c) => c.clubMembership?.end == null)
-            ?.map((r) => r.id);
-          if (clubIds) {
-            foundClub = this.clubs.find((r) => clubIds.includes(r.id)) ?? null;
+          // if no club is selected and the user has clubs, pick the first one
+          if (user?.clubs) {
+            const clubIds = user?.clubs
+              ?.filter((c) => c.clubMembership?.end == null)
+              ?.map((r) => r.id);
+
+            if (clubIds) {
+              this.selectClub(
+                this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null, false
+              );
+            }
           }
         }
-
-        if (foundClub == null && this.clubs.length == 1) {
-          foundClub = this.clubs[0];
-          this.control?.disable();
-        }
-
-        setTimeout(() => {
-          if (foundClub && foundClub?.id) {
-            this.control?.setValue(foundClub.id);
-            this._updateUrl(foundClub.id);
-          }
-        });
       });
+
+    this.filteredClubs$ = this.control?.valueChanges.pipe(
+      takeUntil(this.destroy$),
+      startWith(undefined),
+      map((value) => this._filter(value))
+    );
+
+    // on startup and control is filled in, when the clubs are loaded select the club
+    if (this.control?.value) {
+      this.#clubs
+        .pipe(
+          filter((r) => r != null),
+          take(1)
+        )
+        .subscribe(() => {
+          this.selectClub(this.control?.value, false);
+        });
+    }
   }
 
-  selectClub(event: MatAutocompleteSelectedEvent | MatSelectChange) {
-    let id: string;
+  selectClub(
+    event?: MatAutocompleteSelectedEvent | MatSelectChange | string | null,
+    removeOtherParams = true
+  ) {
+    let id: string | undefined;
     if (event instanceof MatAutocompleteSelectedEvent) {
       id = event.option.value;
     } else if (event instanceof MatSelectChange) {
       id = event.value.id;
     } else {
+      id = event as string;
+    }
+
+    if (!id) {
       return;
     }
 
+    this.control?.setValue(id);
+
     if (this.updateUrl && id) {
-      this._updateUrl(id, true);
+      this._updateUrl(id, removeOtherParams);
     }
   }
 
@@ -277,13 +294,11 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     if (value instanceof Club) {
       return value?.name ?? '';
     } else {
-      return this.clubs?.find((r) => r.id === value)?.name ?? '';
+      return this.clubs?.find((r) => r.id === value)?.name ?? value ?? '';
     }
   }
 
   ngOnDestroy() {
-    this.group?.removeControl(this.controlName);
-
     this.destroy$.next();
     this.destroy$.complete();
   }

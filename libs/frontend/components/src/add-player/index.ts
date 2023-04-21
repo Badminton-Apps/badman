@@ -1,3 +1,3 @@
 // start:ng42.barrel
-export * from './location-dialog';
+export * from './add-player.component';
 // end:ng42.barrel

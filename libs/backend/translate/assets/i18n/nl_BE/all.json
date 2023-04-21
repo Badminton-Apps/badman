@@ -72,8 +72,18 @@
   "club": {
     "current": "Huidig club",
     "end": "Einde",
+    "menu": {
+      "add-player": "Voeg speler toe",
+      "delete": "Verwijder",
+      "edit": "Bewerken",
+      "twizzit": "Twizzit overview"
+    },
     "number": "club nummer",
-    "start": "Begindatum"
+    "start": "Begindatum",
+    "titles": {
+      "players": "Spelers",
+      "teams": "Teams"
+    }
   },
   "competition": {
     "avg-level": "Gemiddeld niveau",
@@ -195,8 +205,8 @@
         "player-max-mixed-games": "<strong>{player.fullName}</strong> kan maar een maximum van {max} mix wedstrijden spelen",
         "player-max-single-games": "<strong>{player.fullName}</strong> mag maximaal {max} enkels spelen",
         "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
-        "player-order-doubles": "<strong>{team2player1.fullName}</strong> en <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> hebben een beter gecombineerd klassement dan <strong>{team1player1.fullName</strong>} en <strong>team1player2.fullName}</strong> in <strong>{game1}</strong>",
-        "player-order-highest": "<strong>{team2player1.fullName}</strong> of <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter individueel klassement dan {team1player1.fullName} of {team1player2.fullName} in <strong>{game1}</strong>",
+        "player-order-doubles": "<strong>{team2player1.fullName}</strong> en <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> hebben een beter gecombineerd klassement dan <strong>{team1player1.fullName}</strong> en <strong>{team1player2.fullName}</strong> in <strong>{game1}</strong>.",
+        "player-order-highest": "<strong>{team2player1.fullName}</strong> of <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter individueel klassement dan <strong>{team1player1.fullName}</strong> of <strong>{team1player2.fullName}</strong> in <strong>{game1}</strong>",
         "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter klassement dan <strong>{player1.fullName}</strong> in <strong>{game1}</strong>",
         "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld.",
         "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
@@ -207,8 +217,8 @@
       "info": "Opmerkingen bij opstelling",
       "mix1": "Heren Dubbel",
       "mix2": "Dames Dubbel",
-      "mix3": "Gemengd dubbel 1",
-      "mix4": "Gemengd dubbel 2",
+      "mix3": "Gemengd 1",
+      "mix4": "Gemengd 2",
       "players": {
         "backup": "Reservespelers",
         "base": "Titularissen",
@@ -373,15 +383,15 @@
     }
   },
   "gender": {
-    "female": "Dames",
-    "females": "Vrouw",
+    "female": "Vrouw",
+    "females": "Dames",
     "long": {
       "F": "Dames",
       "M": "Heren",
       "MX": "Gemengd"
     },
-    "male": "Heren",
-    "males": "Man",
+    "male": "Man",
+    "males": "Heren",
     "mix": "Gemengd",
     "national": "Nationale",
     "select": "Selecteer",
@@ -487,6 +497,12 @@
     },
     "select-year": "Kies een competitieseizoen",
     "start-time": ""
+  },
+  "player": {
+    "menu": {
+      "delete": "Verwijder",
+      "edit": "Bewerken"
+    }
   },
   "players": {
     "backup": "Reserve speler",
@@ -632,6 +648,7 @@
     "no-perm": {
       "email-phone": "Je hebt geen toestemming om je e-mailadres of telefoonnummer te wijzigen."
     },
+    "teams": "Teams",
     "title": {
       "base-fields": "Algemene info",
       "captain": "Ploegkapitein",

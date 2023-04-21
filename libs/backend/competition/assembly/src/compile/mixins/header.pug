@@ -10,7 +10,7 @@ mixin header(captain, event, date, homeTeam, awayTeam, isHomeTeam, teamIndex, ba
       .text-center(class='w-6/12')
         h2.text-xl.font-medium
           span(class={ underline: isHomeTeam }) #{ homeTeam }
-          | vs
+          span(class='px-2') vs
           span(class={ underline: !isHomeTeam }) #{ awayTeam }
       .text-right(class='w-3/12')
         h3.font-medium 
