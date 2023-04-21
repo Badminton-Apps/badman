@@ -47,8 +47,8 @@ export class PlayerOrderRule extends Rule {
       this._checkDouble(
         double3,
         double4,
-        'double3',
-        'double4',
+        type == SubEventTypeEnum.MX ? 'mix3' : 'double3',
+        type == SubEventTypeEnum.MX ? 'mix4' : 'double4',
         system.amountOfLevels
       )
     );

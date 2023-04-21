@@ -72,8 +72,18 @@
   "club": {
     "current": "Current club",
     "end": "End",
+    "menu": {
+      "add-player": "Add Player",
+      "delete": "Delete",
+      "edit": "Edit",
+      "twizzit": "Twizzit overview"
+    },
     "number": "club number",
-    "start": "Start date"
+    "start": "Start date",
+    "titles": {
+      "players": "Players",
+      "teams": "Teams"
+    }
   },
   "competition": {
     "avg-level": "Average level",
@@ -196,7 +206,7 @@
         "player-max-single-games": "<strong>{player.fullName}</strong> can only play a maximum of {max} singles",
         "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in {rankingType} and may minimally be <strong>{minLevel}</strong>.",
         "player-order-doubles": "<strong>{team2player1.fullName}</strong> and <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> have a higher combined index than <strong>{team1player1.fullName}</strong> and <strong>{team1player2.fullName}</strong> in <strong>{game1}</strong>.",
-        "player-order-highest": "<strong>{team2player1.fullName}</strong> or <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> has a better individual ranking then {team1player1.fullName} or {team1player2.fullName} on <strong>{game1}</strong>",
+        "player-order-highest": "<strong>{team2player1.fullName}</strong> or <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> has a better individual ranking then <strong>{team1player1.fullName}</strong> or <strong>{team1player2.fullName}</strong> on <strong>{game1}</strong>",
         "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> has a higher index than <strong>{player1.fullName}</strong> in <strong>{game1}</strong>.",
         "players-above-lower": "Pair with higher lineup index is lined up in front of this pair.",
         "team-index": "Team index titulars equals <strong>{teamIndex}</strong> and is allowed to mimimally be <strong>{baseIndex}</strong>",
@@ -207,8 +217,8 @@
       "info": "Remarks concerning the team assembly",
       "mix1": "Men doubles",
       "mix2": "Women doubles",
-      "mix3": "Mixed doubles 1",
-      "mix4": "Mixed doubles 2",
+      "mix3": "Mixed 1",
+      "mix4": "Mixed 2",
       "players": {
         "backup": "Backup players",
         "base": "Titulars",
@@ -373,15 +383,15 @@
     }
   },
   "gender": {
-    "female": "Women",
-    "females": "Female",
+    "female": "Female",
+    "females": "Women",
     "long": {
       "F": "Female",
       "M": "Male",
       "MX": "Mixed"
     },
-    "male": "Men",
-    "males": "Male",
+    "male": "Male",
+    "males": "Men",
     "mix": "Mixed",
     "national": "National",
     "select": "Select",
@@ -487,6 +497,12 @@
     },
     "select-year": "Pick a competition season",
     "start-time": "Start time"
+  },
+  "player": {
+    "menu": {
+      "delete": "Delete",
+      "edit": "Edit"
+    }
   },
   "players": {
     "backup": "Backup player",
@@ -632,6 +648,7 @@
     "no-perm": {
       "email-phone": "You don't have permissions to edit emails or phone numbers."
     },
+    "teams": "Teams",
     "title": {
       "base-fields": "General info",
       "captain": "Team captain",

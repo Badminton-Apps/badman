@@ -14,8 +14,9 @@ Here are some genreal TODO's that can be done in the project.
 - [x] Saving of assembly
 
 ## Ranking
-- [ ] Manual upload of ranking
+- [x] Manual upload of ranking
 - [x] Sync ranking when the sync was not complete
+- [ ] Allow setting date for ranking
 
 ## Competition
 - [ ] Allow manual entry of scores

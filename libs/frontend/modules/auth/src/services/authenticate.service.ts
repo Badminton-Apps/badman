@@ -37,8 +37,7 @@ export class AuthenticateService {
   loggedIn$?: Observable<boolean>;
   authService?: AuthService;
 
-  #user: BehaviorSubject<LoggedinUser | null> =
-    new BehaviorSubject<LoggedinUser | null>(null);
+  #user = new BehaviorSubject<LoggedinUser | null>(null);
 
   get user() {
     return this.#user.value;

@@ -13,18 +13,23 @@
 
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="downloadTwizzit(club)">
-        Download twizzit games for season
+        <mat-icon>download</mat-icon>
+        <span> {{'all.club.menu.twizzit' | translate}}</span>
       </button>
       <badman-has-claim [any]="['edit-any:club', this.club.id + '_edit:club']">
         <button mat-menu-item [routerLink]="'edit'">
           <mat-icon>edit</mat-icon>
-          <span>Edit</span>
+          <span>{{'all.club.menu.edit' | translate}}</span>
+        </button>
+        <button mat-menu-item (click)="addPlayer()">
+          <mat-icon>add</mat-icon>
+          <span>{{'all.club.menu.add-player' | translate}}</span>
         </button>
       </badman-has-claim>
       <badman-has-claim [any]="['edit-any:club']">
         <button mat-menu-item>
           <mat-icon>delete</mat-icon>
-          <span>Delete</span>
+          <span>{{'all.club.menu.delete' | translate}}</span>
         </button>
       </badman-has-claim>
     </mat-menu>
@@ -60,19 +65,21 @@
   </mat-form-field>
 </form>
 
-<ng-container *ngIf="this.teams$ | async as teams">
-  <ng-container *ngIf="!this.loading">
-    <section class="teams">
-      <h3>Teams</h3>
-      <div class="teams-container">
-        <div class="team" *ngFor="let team of teams">
-          <div [routerLink]="['team',team.slug]">
-            <span class="name">{{team.name}}</span>
-            <span class="event" *ngIf="team.entry?.competitionSubEvent?.name"
-              >{{team.entry?.competitionSubEvent?.name}}</span
-            >
-          </div>
+<ng-container *ngIf="this.teams$ | async as teams; else loading">
+  <section class="teams">
+    <h3>{{'all.club.titles.teams' | translate}}</h3>
+    <div class="teams-container">
+      <div class="team" *ngFor="let team of teams">
+        <div [routerLink]="['team',team.slug]">
+          <span class="name">{{team.name}}</span>
+          <span class="event" *ngIf="team.entry?.competitionSubEvent?.name"
+            >{{team.entry?.competitionSubEvent?.name}}</span
+          >
+        </div>
 
+        <badman-has-claim
+          [any]="['edit-any:club', this.club.id + '_edit:club']"
+        >
           <button
             mat-icon-button
             aria-label="edit team"
@@ -81,28 +88,60 @@
           >
             <mat-icon>edit</mat-icon>
           </button>
-        </div>
+        </badman-has-claim>
       </div>
+    </div>
+  </section>
+
+  <section class="games">
+    <section class="recent-games">
+      <h3>{{"all.game.recent.title" | translate}}</h3>
+
+      <badman-recent-games
+        *ngIf="isClient"
+        [clubId]="club.id"
+        [teams]="teams"
+      ></badman-recent-games>
     </section>
 
-    <section class="games">
-      <section class="recent-games">
-        <h3>{{"all.game.recent.title" | translate}}</h3>
-
-        <badman-recent-games
-          *ngIf="isClient"
-          [clubId]="club.id"
-          [teams]="teams"
-        ></badman-recent-games>
-      </section>
-
-      <section class="upcoming-games">
-        <h3>{{"all.game.upcoming.title" | translate}}</h3>
-        <badman-upcoming-games
-          [clubid]="club.id"
-          [teams]="teams"
-        ></badman-upcoming-games>
-      </section>
+    <section class="upcoming-games">
+      <h3>{{"all.game.upcoming.title" | translate}}</h3>
+      <badman-upcoming-games
+        [clubid]="club.id"
+        [teams]="teams"
+      ></badman-upcoming-games>
     </section>
-  </ng-container>
+  </section>
 </ng-container>
+<ng-container *ngIf="this.players$ | async as players; else loading">
+  <section class="players">
+    <h3>{{'all.club.titles.players' | translate}}</h3>
+    <div class="players-container">
+      <div class="player" *ngFor="let player of players">
+        <div [routerLink]="['/player',player.player.slug]">
+          <span class="name">{{player.player.fullName}}</span>
+          <span class="playerteams"
+            >{{player.teams}} {{'all.team.teams' | translate}}</span
+          >
+        </div>
+        <!-- 
+        <badman-has-claim
+          [any]="['edit-any:club', this.club.id + '_edit:club']"
+        >
+          <button
+            mat-icon-button
+            aria-label="delete player"
+            class="edit-button"
+            (click)="this.deletePlayer(player.player)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </badman-has-claim> -->
+      </div>
+    </div>
+  </section>
+</ng-container>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar
+></ng-template>

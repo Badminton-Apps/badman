@@ -28,9 +28,9 @@ export class Club {
     this.abbreviation = args.abbreviation;
     this.useForTeamName = args.useForTeamName;
     this.clubId = args.clubId;
-    this.teams =
-      args.teams?.map((t) => new Team({ ...t, club: this, clubId: this.id })) ??
-      [];
+    this.teams = args.teams?.map(
+      (t) => new Team({ ...t, club: this, clubId: this.id })
+    );
     this.players = args.players?.map((p) => new Player(p));
     this.roles = args.roles?.map((p) => new Role(p));
     this.locations = args.locations?.map((p) => new Location(p));
