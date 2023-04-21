@@ -1,9 +1,7 @@
-<div fxLayout="column">
-  <div fxLayout="row">
-    <div class="buttons" fxLayoutGap="3px" fxLayoutAlign="center center">
-      <div>
-        <button mat-stroked-button (click)="setCurrentMonth()">Today</button>
-      </div>
+<div class="header">
+  <div class="top-row">
+    <div class="buttons">
+      <button mat-stroked-button (click)="setCurrentMonth()">Today</button>
       <button mat-icon-button (click)="decreaseMonth()">
         <mat-icon>chevron_left</mat-icon>
       </button>
@@ -23,26 +21,23 @@
         >
       </mat-chip-listbox>
     </div>
-    <div fxFlex></div>
+    <div class="spacer"></div>
     <div *ngIf="this.data.home">
-      <mat-form-field>
-        <input
-          matInput
-          readonly
-          [ngxMatDatetimePicker]="picker"
-          (focus)="picker.open()"
-          placeholder="Manually choose a date"
-          [formControl]="this.manualControl"
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="$any(picker)"
-        ></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker #picker> </ngx-mat-datetime-picker>
-      </mat-form-field>
+      <button mat-icon-button [matMenuTriggerFor]="appMenu">
+        <mat-icon>calendar_today</mat-icon>
+      </button>
+      <mat-menu #appMenu="matMenu">
+        <div
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+        >
+          <!-- <mat-calendar #calendar [formControl]="this.manualControl">
+          </mat-calendar> -->
+        </div>
+      </mat-menu>
     </div>
   </div>
-  <div>
+  <div class="botton-row">
     <small>Klik op een uur om deze te selecteren</small> <br />
     <badman-has-claim
       [any]="[this.data.homeClubId + '_edit:club', 'edit-any:club']"
@@ -63,9 +58,9 @@
   </div>
 </div>
 
-<div *ngIf="calendar; else loading" fxLayout="row">
+<div class="calendar">
   <div
-    fxFlex
+    *ngIf="calendar; else loading"
     class="calendar-table"
     [ngStyle]="{ 'grid-template-columns': gridTemplateColumns }"
   >
@@ -111,12 +106,12 @@
               <span class="courts">
                 {{
                   'all.competition.change-encounter.calendar.remaining'
-                    | translate: { amount: av.remainingEncounters }
+                    | translate : { amount: av.remainingEncounters }
                 }}
                 <ng-container *ngIf="av.option">
                   ({{
                     'all.competition.change-encounter.calendar.option'
-                      | translate: { amount: av.option }
+                      | translate : { amount: av.option }
                   }})
                 </ng-container>
               </span>
@@ -132,12 +127,12 @@
               <span class="courts">
                 {{
                   'all.competition.change-encounter.calendar.remaining'
-                    | translate: { amount: av.remainingEncounters }
+                    | translate : { amount: av.remainingEncounters }
                 }}
                 <ng-container *ngIf="av.option">
                   ({{
                     'all.competition.change-encounter.calendar.option'
-                      | translate: { amount: av.option }
+                      | translate : { amount: av.option }
                   }})
                 </ng-container>
               </span>
@@ -174,11 +169,7 @@
                   [matTooltipDisabled]="!calEvent.requested"
                 >
                   <ng-container *ngIf="calEvent.ownTeam">
-                    {{ calEvent?.encounter?.home?.teamNumber
-                    }}{{
-                      'all.type-short.' + calEvent?.encounter?.home?.type
-                        | translate
-                    }}
+                    {{ calEvent?.encounter?.home?.abbreviation }}
                     {{ 'all.competition.vs-short' | translate }}
                     {{ calEvent?.encounter?.away?.name }}
                   </ng-container>
@@ -225,15 +216,13 @@
                 class="event-name"
                 fxFlex="0 1 auto"
                 [matTooltip]="
-                  'all.competition.change-encounter.calendar.requested' | translate
+                  'all.competition.change-encounter.calendar.requested'
+                    | translate
                 "
                 [matTooltipDisabled]="!calEvent.requested"
               >
                 <ng-container *ngIf="calEvent.ownTeam">
-                  {{ calEvent?.encounter?.home?.teamNumber
-                  }}{{
-                    'all.type-short.' + calEvent?.encounter?.home?.type | translate
-                  }}
+                  {{ calEvent?.encounter?.home?.abbreviation }}
                   {{ 'all.competition.vs-short' | translate }}
                   {{ calEvent?.encounter?.away?.name }}
                 </ng-container>
