@@ -6,7 +6,10 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import {
+  MatCheckboxChange,
+  MatCheckboxModule,
+} from '@angular/material/checkbox';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -22,19 +25,25 @@ import { NgxMatDatetimePickerModule } from '@angular-material-components/datetim
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { getCurrentSeason, getCurrentSeasonPeriod, sortTeams } from '@badman/utils';
+import {
+  getCurrentSeason,
+  getCurrentSeasonPeriod,
+  sortTeams,
+} from '@badman/utils';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HasClaimComponent } from '@badman/frontend-components';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { RouterModule } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
+  selector: 'badman-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports:[
+  imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -54,11 +63,11 @@ import { MatInputModule } from '@angular/material/input';
     MatChipsModule,
     MatFormFieldModule,
     MatDatepickerModule,
+    MatMenuModule,
 
     // Own
     HasClaimComponent,
-
-  ]
+  ],
 })
 export class CalendarComponent implements OnInit {
   manualControl: FormControl;
@@ -212,6 +221,7 @@ export class CalendarComponent implements OnInit {
                   name
                   type
                   teamNumber
+                  abbreviation
                 }
               }
             }
@@ -263,6 +273,7 @@ export class CalendarComponent implements OnInit {
                     id
                     name
                     teamNumber
+                    abbreviation
                     type
                   }
                   away {
