@@ -17,7 +17,7 @@
   </mat-button-toggle-group>
 </form>
 
-<ng-container *ngIf="recentGames$ | async as games; else loading">
+<ng-container *ngIf="recentGames$ | async as games;">
   <div
     class="game"
     *ngFor="let game of games"
@@ -123,25 +123,7 @@
     <div class="no-more-games" translate="all.competition.no-more-games"></div>
   </ng-container>
 
-  <div class="loading-block" *ngIf="!this.endOfList">
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-  </div>
+  <badman-loading-block [items]="5" height="80px" *ngIf="!this.endOfList" />
 
   <div #bottomObserver id="bottomObserver"></div>
 </ng-container>
-
-<ng-template #loading>
-  <div class="loading-block" *ngIf="!this.endOfList">
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-    <div class="loading-row"></div>
-  </div>
-</ng-template>

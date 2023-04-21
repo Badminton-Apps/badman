@@ -28,7 +28,8 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
-import { map, startWith, tap } from 'rxjs/operators';
+import { delay, map, startWith, tap } from 'rxjs/operators';
+import { LoadingBlockComponent } from '../../../loading-block/';
 
 @Component({
   standalone: true,
@@ -45,6 +46,9 @@ import { map, startWith, tap } from 'rxjs/operators';
     MatTooltipModule,
     MatButtonToggleModule,
     MatIconModule,
+
+    // own modules
+    LoadingBlockComponent,
   ],
   selector: 'badman-list-games',
   templateUrl: './list-games.component.html',
