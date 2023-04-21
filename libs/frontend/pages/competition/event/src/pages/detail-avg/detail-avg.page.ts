@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -34,6 +35,9 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
+
+    // My modules
+    LoadingBlockComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
