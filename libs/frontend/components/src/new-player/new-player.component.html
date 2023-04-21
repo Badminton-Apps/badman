@@ -1,0 +1,57 @@
+<form (ngSubmit)="this.submit()" [formGroup]="this.playerForm">
+  <h2 mat-dialog-title>Add player to club</h2>
+  <mat-dialog-content>
+    <div class="row">
+      <mat-form-field appearance="outline" class="flex">
+        <mat-label>{{ 'all.input.firstname' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="firstName"
+          alt="firstName"
+          autocomplete="firstName"
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex">
+        <mat-label>{{ 'all.input.lastname' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="lastName"
+          alt="lastName"
+          autocomplete="lastName"
+          required
+        />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="flex">
+        <mat-label>{{ 'all.gender.title' | translate }}</mat-label>
+        <mat-select formControlName="gender" required>
+          <mat-option>-- {{ 'all.gender.select' | translate }} --</mat-option>
+          <mat-option value="M">{{ 'all.gender.male' | translate }}</mat-option>
+          <mat-option value="F">{{ 'all.gender.female' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex">
+        <mat-label>{{ 'all.input.memberId' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="memberId"
+          alt="memberId"
+          autocomplete="memberId"
+          required
+        />
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary" type="submit">
+      {{ 'all.button.create' | translate }}
+    </button>
+
+    <button mat-button [mat-dialog-close]="">Close</button>
+  </mat-dialog-actions>
+</form>
