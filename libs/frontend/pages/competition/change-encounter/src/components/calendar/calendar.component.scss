@@ -16,6 +16,7 @@
 .header {
   display: flex;
   flex-direction: column;
+  padding: .5rem 1rem;
   .top-row {
     display: flex;
     flex-direction: row;
@@ -39,10 +40,18 @@
 .calendar {
   display: flex;
   flex-direction: row;
+  padding: 0 1rem;
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
+}
 
 .calendar-table {
   margin-right: 12px;
+  flex: 1 1 auto;
   display: grid;
   border-collapse: collapse;
   margin-bottom: 1rem;
@@ -134,6 +143,8 @@ mat-chip-avatar {
     padding: 0 4px;
     line-height: 16px;
     font-size: 12px;
+    display: flex;
+    gap: 3px;
 
     &.removed {
       opacity: 0.5;

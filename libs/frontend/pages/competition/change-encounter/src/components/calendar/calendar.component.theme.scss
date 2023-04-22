@@ -11,10 +11,16 @@
 
     $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
 
-    .calendar-day-content{
+    .header,
+    .calender,
+    .calendar-day {
       color: mat.get-color-from-palette($foreground, 'base');
-      
-      .location .id{
+    }
+
+    .calendar-day-content {
+      color: mat.get-color-from-palette($foreground, 'base');
+
+      .location .id {
         border-color: mat.get-color-from-palette($foreground, 'base');
       }
     }
@@ -24,7 +30,6 @@
 @mixin typography($theme) {
   badman-calendar {
     $typography-config: mat.get-typography-config($theme);
-
   }
 }
 
