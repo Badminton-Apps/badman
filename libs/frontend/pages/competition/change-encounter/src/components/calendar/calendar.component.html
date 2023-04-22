@@ -140,8 +140,6 @@
 
             <div
               role="button"
-              fxFlex
-              fxLayoutGap="3px"
               class="event"
               *ngFor="let calEvent of av.events"
               [matTooltip]="
@@ -239,7 +237,7 @@
       </div>
     </div>
   </div>
-  <div fxLayoutGap="16px" *ngIf="this.data.home">
+  <div class="sidbar" *ngIf="this.data.home">
     <div>
       <div fxLayout="row" fxLayoutGap="6px">
         <button
@@ -282,7 +280,7 @@
       </div>
     </div>
   </div>
-  <div fxLayoutGap="16px" *ngIf="!this.data.home">
+  <div class="sidbar" *ngIf="!this.data.home">
     <div>
       <div fxLayout="row" fxLayoutGap="6px">
         <button
