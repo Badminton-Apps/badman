@@ -1,21 +1,16 @@
 import {
   EnrollmentValidationData,
-  EnrollmentOutput,
+  RuleResult,
   EnrollmentValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamBaseIndexRule extends Rule {
-  async validate(
-    enrollment: EnrollmentValidationData
-  ): Promise<EnrollmentOutput> {
-    const errors = [] as EnrollmentValidationError[];
-    const valid: {
-      teamId: string;
-      valid: boolean;
-    }[] = [];
+  async validate(enrollment: EnrollmentValidationData) {
+    const results = [] as RuleResult[];
 
     for (const { team, teamIndex, baseIndex } of enrollment.teams) {
+      const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
       if (team?.teamNumber != 1 && teamIndex < baseIndex) {
         teamValid = false;
@@ -28,15 +23,13 @@ export class TeamBaseIndexRule extends Rule {
         });
       }
 
-      valid.push({
-        teamId: team?.id,
+      results.push({
+        teamId: team.id,
+        errors,
         valid: teamValid,
       });
     }
 
-    return {
-      valid,
-      errors,
-    };
+    return results;
   }
 }

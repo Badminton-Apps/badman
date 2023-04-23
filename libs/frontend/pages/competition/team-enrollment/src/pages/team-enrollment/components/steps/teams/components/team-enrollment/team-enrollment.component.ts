@@ -15,7 +15,10 @@ import {
   Team,
 } from '@badman/frontend-models';
 import { SubEventType, SubEventTypeEnum } from '@badman/utils';
+import { TeamValidationResult } from '../../../../../models';
 import { TeamComponent } from '../team';
+import { EnrollmentMessageComponent } from '../enrollment-message';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -31,6 +34,8 @@ import { TeamComponent } from '../team';
 
     // Own
     TeamComponent,
+    EnrollmentMessageComponent,
+    TranslateModule,
   ],
   templateUrl: './team-enrollment.component.html',
   styleUrls: ['./team-enrollment.component.scss'],
@@ -46,6 +51,9 @@ export class TeamEnrollmentComponent implements OnInit {
 
   @Input()
   type!: SubEventTypeEnum;
+
+  @Input()
+  validation?: TeamValidationResult;
 
   @Output()
   removeTeam = new EventEmitter<Team>();

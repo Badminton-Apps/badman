@@ -4,7 +4,15 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
-import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+  PartialType,
+  PickType,
+} from '@nestjs/graphql';
 import { EnrollmentValidationError, TeamValidity } from './error.model';
 
 @InputType()
@@ -17,13 +25,10 @@ export class EnrollmentInput {
 }
 
 @InputType()
-export class EnrollmentInputTeam {
-  @Field(() => ID, { nullable: true })
-  id?: string;
-
-  @Field(() => ID, { nullable: true })
-  linkId?: string;
-
+export class EnrollmentInputTeam extends PartialType(
+  PickType(Team, ['id', 'type', 'link'] as const),
+  InputType
+) {
   @Field(() => [ID], { nullable: true })
   basePlayers?: string[];
 
@@ -39,18 +44,6 @@ export class EnrollmentInputTeam {
 
 @ObjectType()
 export class EnrollmentOutput {
-  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
-  errors?: EnrollmentValidationError[];
-
-  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
-  warnings?: EnrollmentValidationError[];
-
-  @Field(() => [TeamValidity], { nullable: true })
-  valid?: {
-    teamId: string;
-    valid: boolean;
-  }[];
-
   @Field(() => [TeamEnrollmentOutput], { nullable: true })
   teams?: TeamEnrollmentOutput[];
 }
@@ -84,7 +77,23 @@ export class TeamEnrollmentOutput {
 
   @Field(() => Int, { nullable: true })
   maxBaseIndex?: number;
+
+  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
+  errors?: EnrollmentValidationError[];
+
+  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
+  warnings?: EnrollmentValidationError[];
+
+  @Field(() => Boolean)
+  valid: boolean;
 }
+
+export type RuleResult = {
+  teamId: string;
+  warnings?: EnrollmentValidationError[];
+  errors?: EnrollmentValidationError[];
+  valid: boolean;
+};
 
 //  validation data
 export class EnrollmentValidationData {
@@ -94,6 +103,9 @@ export class EnrollmentValidationData {
 export class EnrollmentValidationTeam {
   team: Partial<Team>;
   previousSeasonTeam: Partial<Team>;
+
+  isNewTeam: boolean;
+  possibleOldTeam: boolean;
 
   teamIndex: number;
   teamPlayers: Player[];

@@ -2,7 +2,7 @@ import { Player, Team } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import {
   EnrollmentValidationData,
-  EnrollmentOutput,
+  RuleResult,
   EnrollmentValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
@@ -11,14 +11,11 @@ import { Rule } from './_rule.base';
  * Checks
  */
 export class PlayerGenderRule extends Rule {
-  async validate(enrollment: EnrollmentValidationData): Promise<EnrollmentOutput> {
-    const errors = [] as EnrollmentValidationError[];
-    const valid: {
-      teamId: string;
-      valid: boolean;
-    }[] = [];
+  async validate(enrollment: EnrollmentValidationData): Promise<RuleResult[]> {
+    const results = [] as RuleResult[];
 
     for (const { basePlayers, teamPlayers, team } of enrollment.teams) {
+      const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
       const teamErrors = [] as EnrollmentValidationError[];
       if (team?.type == SubEventTypeEnum.M) {
@@ -36,16 +33,14 @@ export class PlayerGenderRule extends Rule {
         errors.push(...teamErrors);
       }
 
-      valid.push({
-        teamId: team?.id,
+      results.push({
+        teamId: team.id,
+        errors,
         valid: teamValid,
       });
     }
 
-    return {
-      errors,
-      valid,
-    };
+    return results;
   }
 
   private _checkGender(

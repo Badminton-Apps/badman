@@ -4,10 +4,12 @@
 @use '@angular/material' as mat;
 
 @use './components/team/teams.component.theme.scss' as team;
+@use './components/team-enrollment/team-enrollment.component.theme.scss' as team-enrollment;
 
 @mixin color($theme) {
   badman-teams-step {
     @include team.color($theme);
+    @include team-enrollment.color($theme);
 
     $color-config: mat.get-color-config($theme);
   }
@@ -16,6 +18,7 @@
 @mixin typography($theme) {
   badman-teams-step {
     @include team.typography($theme);
+    @include team-enrollment.typography($theme);
 
     $typography-config: mat.get-typography-config($theme);
 

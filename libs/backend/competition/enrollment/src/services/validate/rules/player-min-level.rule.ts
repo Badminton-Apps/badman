@@ -1,21 +1,24 @@
 import { SubEventTypeEnum } from '@badman/utils';
 import {
   EnrollmentValidationData,
-  EnrollmentOutput,
+  RuleResult,
   EnrollmentValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class PlayerMinLevelRule extends Rule {
-  async validate(enrollment: EnrollmentValidationData): Promise<EnrollmentOutput> {
-    const errors = [] as EnrollmentValidationError[];
-    const valid: {
-      teamId: string;
-      valid: boolean;
-    }[] = [];
-    
-    for (const { team, teamPlayers, basePlayers, subEvent } of enrollment.teams) {
+  async validate(enrollment: EnrollmentValidationData) {
+    const results = [] as RuleResult[];
+
+    for (const {
+      team,
+      teamPlayers,
+      basePlayers,
+      subEvent,
+    } of enrollment.teams) {
+      const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
+      
       if (team?.teamNumber != 1) {
         const uniquePlayers = new Set([...teamPlayers, ...basePlayers]);
 
@@ -29,7 +32,8 @@ export class PlayerMinLevelRule extends Rule {
           if (ranking.single < subEvent.maxLevel) {
             teamValid = false;
             errors.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
+              message:
+                'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -46,7 +50,8 @@ export class PlayerMinLevelRule extends Rule {
             teamValid = false;
 
             errors.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
+              message:
+                'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -66,7 +71,8 @@ export class PlayerMinLevelRule extends Rule {
             teamValid = false;
 
             errors.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
+              message:
+                'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -81,15 +87,13 @@ export class PlayerMinLevelRule extends Rule {
         }
       }
 
-      valid.push({
-        teamId: team?.id,
+      results.push({
+        teamId: team.id,
+        errors,
         valid: teamValid,
       });
     }
 
-    return {
-      valid,
-      errors,
-    };
+    return results;
   }
 }
