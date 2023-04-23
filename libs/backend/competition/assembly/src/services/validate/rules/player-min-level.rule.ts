@@ -1,9 +1,9 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class PlayerMinLevelRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       team,
       single1,

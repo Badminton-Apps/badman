@@ -23,24 +23,9 @@ export class TeamInfo {
 
 @ObjectType('TeamValidity')
 export class TeamValidity {
-  @Field(() => String)
-  teamId: string;
+  @Field(() => String, { nullable: true })
+  teamId?: string;
 
-  @Field(() => Boolean)
-  valid: boolean;
-}
-
-@ObjectType()
-export class EnrollmentOutput {
-  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
-  errors?: EnrollmentValidationError[];
-
-  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
-  warnings?: EnrollmentValidationError[];
-
-  @Field(() => [TeamValidity], { nullable: true })
-  valid: {
-    teamId: string;
-    valid: boolean;
-  }[];
+  @Field(() => Boolean, { nullable: true })
+  valid?: boolean;
 }

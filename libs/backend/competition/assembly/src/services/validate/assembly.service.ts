@@ -17,7 +17,7 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
-import { AssemblyData, AssemblyOutput } from '../../models';
+import { AssemblyValidationData, AssemblyOutput } from '../../models';
 import {
   CompetitionStatusRule,
   PlayerGenderRule,
@@ -50,7 +50,7 @@ export class ValidationService {
     double4?: string[],
 
     subtitudes?: string[]
-  ): Promise<AssemblyData> {
+  ): Promise<AssemblyValidationData> {
     const idPlayers = [
       single1,
       single2,
@@ -326,7 +326,7 @@ export class ValidationService {
    * @returns Whether the assembly is valid or not
    */
   async validate(
-    assembly: AssemblyData,
+    assembly: AssemblyValidationData,
     validators: Rule[]
   ): Promise<AssemblyOutput> {
     // get all errors and warnings from the validators in parallel

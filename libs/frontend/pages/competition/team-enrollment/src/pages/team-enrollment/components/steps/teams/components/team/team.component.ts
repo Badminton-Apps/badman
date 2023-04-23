@@ -7,7 +7,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,17 +18,16 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PlayerSearchComponent } from '@badman/frontend-components';
 import {
-  EntryCompetitionPlayers,
-  EventEntry,
+  EntryCompetitionPlayer,
   Player,
   RankingPlace,
   Team,
   TeamPlayer,
 } from '@badman/frontend-models';
-import { getIndexFromPlayers, TeamMembershipType } from '@badman/utils';
+import { TeamMembershipType, getIndexFromPlayers } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom } from 'rxjs';
+import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'badman-team',
@@ -55,11 +54,13 @@ import { lastValueFrom } from 'rxjs';
   styleUrls: ['./team.component.scss'],
 })
 export class TeamComponent implements OnInit {
+  destroy$ = new Subject<void>();
+
   @Input()
   team!: FormControl<Team>;
 
   @Input()
-  entry!: FormControl<EventEntry>;
+  basePlayers!: FormArray<FormControl<EntryCompetitionPlayer>>;
 
   @Input()
   systemId!: string;
@@ -80,18 +81,10 @@ export class TeamComponent implements OnInit {
     base: true,
   };
 
-  // easy access to base meta
-  get base() {
-    return this.entry?.value?.meta?.competition?.players;
-  }
-
-  get baseIndex() {
-    return this.entry?.value?.meta?.competition?.teamIndex;
-  }
-
   baseCount = 0;
   backupCount = 0;
   teamIndex = 0;
+  baseIndex = 0;
 
   hasWarning = false;
   warningMessage = '';
@@ -99,18 +92,34 @@ export class TeamComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private snackbar: MatSnackBar,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.checkTeam();
 
-    if (this.team.value.type && this.team.value.players) {
-      this.teamIndex = getIndexFromPlayers(
-        this.team.value.type,
-        this.team.value.players
-      );
-    }
+    this.team.valueChanges
+      .pipe(takeUntil(this.destroy$), startWith(this.team.value))
+      .subscribe(() => {
+        if (this.team.value.type && this.team.value.players) {
+          this.teamIndex = getIndexFromPlayers(
+            this.team.value.type,
+            this.team.value.players
+          );
+        }
+      });
+
+    this.basePlayers.valueChanges
+      .pipe(takeUntil(this.destroy$), startWith(this.basePlayers.value))
+      .subscribe(() => {
+        if (this.basePlayers.value && this.team.value.type) {
+          this.baseIndex = getIndexFromPlayers(
+            this.team.value.type,
+            this.basePlayers.value
+          );
+        }
+      });
   }
 
   removePlayerFromTeam(player: Player) {
@@ -118,10 +127,8 @@ export class TeamComponent implements OnInit {
       (p) => p.id !== player.id
     );
 
-    this.team.patchValue({
-      ...this.team.value,
-      players: newPlayers,
-    } as Team);
+    this.team.value.players = newPlayers;
+    this.team.patchValue(this.team.value);
 
     this.checkTeam();
   }
@@ -145,67 +152,39 @@ export class TeamComponent implements OnInit {
       })
     );
 
-    this.team.patchValue({
-      ...this.team.value,
-      players: newPlayers,
-    } as Team);
+    this.team.value.players = newPlayers;
+    this.team.patchValue(this.team.value);
 
     this.checkTeam();
   }
 
   async addBasePlayerToTeam(player: Player) {
     // Check if player is already in team
-    if (
-      this.entry?.value?.meta?.competition?.players?.find(
-        (p) => p.id === player.id
-      )
-    ) {
+    if (this.basePlayers?.value.find((p) => p.id === player.id)) {
       this.snackbar.open('Player is already in baseteam', 'Close', {
         duration: 3000,
       });
       return;
     }
     const ranking = await this.getRanking(player);
-
-    const newPlayers = (
-      this.entry?.value?.meta?.competition?.players ?? []
-    ).concat({
+    const newPlayer = {
       player,
       id: player.id,
       single: ranking.data.rankingPlaces?.[0].single,
       double: ranking.data.rankingPlaces?.[0].double,
       mix: ranking.data.rankingPlaces?.[0].mix,
-    } as EntryCompetitionPlayers);
+    } as EntryCompetitionPlayer;
 
-    this.entry.patchValue({
-      ...this.entry.value,
-      meta: {
-        ...this.entry.value.meta,
-        competition: {
-          ...this.entry.value.meta?.competition,
-          players: newPlayers,
-        },
-      },
-    } as EventEntry);
-
+    this.basePlayers.push(
+      this.formBuilder.control(newPlayer) as FormControl<EntryCompetitionPlayer>
+    );
 
     this.checkTeam();
   }
 
   removeBasePlayerFromTeam(id: string) {
-    this.entry.patchValue({
-      ...this.entry.value,
-      meta: {
-        ...this.entry.value.meta,
-        competition: {
-          ...this.entry.value.meta?.competition,
-          players: (this.entry?.value?.meta?.competition?.players ?? []).filter(
-            (p) => p.id !== id
-          ),
-        },
-      },
-    } as EventEntry);
-
+    const index = this.basePlayers?.value.findIndex((p) => p.id === id);
+    this.basePlayers.removeAt(index);
     this.checkTeam();
   }
 
@@ -225,28 +204,6 @@ export class TeamComponent implements OnInit {
     this.backupCount = this.team.value.players?.filter(
       (p) => p.membershipType === TeamMembershipType.BACKUP
     ).length;
-
-    // calculate index
-    if (
-      this.entry?.value?.meta?.competition?.players != undefined &&
-      this.team?.value?.type
-    ) {
-      const index = getIndexFromPlayers(
-        this.team?.value?.type,
-        this.entry?.value?.meta?.competition?.players ?? []
-      );
-
-      this.entry.patchValue({
-        ...this.entry.value,
-        meta: {
-          ...this.entry.value.meta,
-          competition: {
-            ...this.entry.value.meta?.competition,
-            teamIndex: index,
-          },
-        },
-      } as EventEntry);
-    }
 
     this.changeDetector.detectChanges();
   }

@@ -4,25 +4,94 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { EnrollmentValidationError, TeamValidity } from './error.model';
 
 @InputType()
 export class EnrollmentInput {
-  @Field(() => ID)
-  subEventId: string;
-
-  @Field(() => ID)
-  teamId: string;
+  @Field(() => [EnrollmentInputTeam], { nullable: true })
+  teams: EnrollmentInputTeam[];
 
   @Field(() => ID, { nullable: true })
-  systemId: string;
+  systemId?: string;
 }
 
-export class EnrollmentData {
-  teams: EnrollmentTeam[];
+@InputType()
+export class EnrollmentInputTeam {
+  @Field(() => ID, { nullable: true })
+  id?: string;
+
+  @Field(() => ID, { nullable: true })
+  linkId?: string;
+
+  @Field(() => [ID], { nullable: true })
+  basePlayers?: string[];
+
+  @Field(() => [ID], { nullable: true })
+  players?: string[];
+
+  @Field(() => [ID], { nullable: true })
+  backupPlayers?: string[];
+
+  @Field(() => ID, { nullable: true })
+  subEventId?: string;
 }
 
-export class EnrollmentTeam {
+@ObjectType()
+export class EnrollmentOutput {
+  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
+  errors?: EnrollmentValidationError[];
+
+  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
+  warnings?: EnrollmentValidationError[];
+
+  @Field(() => [TeamValidity], { nullable: true })
+  valid?: {
+    teamId: string;
+    valid: boolean;
+  }[];
+
+  @Field(() => [TeamEnrollmentOutput], { nullable: true })
+  teams?: TeamEnrollmentOutput[];
+}
+
+// Team outut info
+@ObjectType()
+export class TeamEnrollmentOutput {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => ID, { nullable: true })
+  linkId?: string;
+
+  @Field(() => Int, { nullable: true })
+  teamIndex?: number;
+
+  @Field(() => Int, { nullable: true })
+  baseIndex?: number;
+
+  @Field(() => Boolean)
+  isNewTeam: boolean;
+
+  @Field(() => Boolean)
+  possibleOldTeam: boolean;
+
+  @Field(() => Int, { nullable: true })
+  maxLevel?: number;
+
+  @Field(() => Int, { nullable: true })
+  minBaseIndex?: number;
+
+  @Field(() => Int, { nullable: true })
+  maxBaseIndex?: number;
+}
+
+//  validation data
+export class EnrollmentValidationData {
+  teams: EnrollmentValidationTeam[];
+}
+
+export class EnrollmentValidationTeam {
   team: Partial<Team>;
   previousSeasonTeam: Partial<Team>;
 

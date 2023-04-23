@@ -1,7 +1,7 @@
 import { Player, Team } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import {
-  EnrollmentData,
+  EnrollmentValidationData,
   EnrollmentOutput,
   EnrollmentValidationError,
 } from '../../../models';
@@ -11,7 +11,7 @@ import { Rule } from './_rule.base';
  * Checks
  */
 export class PlayerGenderRule extends Rule {
-  async validate(enrollment: EnrollmentData): Promise<EnrollmentOutput> {
+  async validate(enrollment: EnrollmentValidationData): Promise<EnrollmentOutput> {
     const errors = [] as EnrollmentValidationError[];
     const valid: {
       teamId: string;
@@ -21,11 +21,11 @@ export class PlayerGenderRule extends Rule {
     for (const { basePlayers, teamPlayers, team } of enrollment.teams) {
       let teamValid = true;
       const teamErrors = [] as EnrollmentValidationError[];
-      if (team.type == SubEventTypeEnum.M) {
+      if (team?.type == SubEventTypeEnum.M) {
         teamErrors.push(
           ...this._checkGender([...teamPlayers, ...basePlayers], 'M', team)
         );
-      } else if (team.type == SubEventTypeEnum.F) {
+      } else if (team?.type == SubEventTypeEnum.F) {
         teamErrors.push(
           ...this._checkGender([...teamPlayers, ...basePlayers], 'F', team)
         );
@@ -37,7 +37,7 @@ export class PlayerGenderRule extends Rule {
       }
 
       valid.push({
-        teamId: team.id,
+        teamId: team?.id,
         valid: teamValid,
       });
     }
@@ -67,7 +67,7 @@ export class PlayerGenderRule extends Rule {
             gender: p?.gender,
           },
           gender,
-          teamId: team.id,
+          teamId: team?.id,
         },
       }));
     }

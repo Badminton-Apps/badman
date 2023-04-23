@@ -1,11 +1,11 @@
-import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
  * Checks if all players have the competition status active
  */
 export class CompetitionStatusRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       single1,
       single2,

@@ -5,7 +5,11 @@ import {
   Team,
 } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
-import { EnrollmentData, EnrollmentOutput } from '../../models';
+import {
+  EnrollmentValidationData,
+  EnrollmentOutput,
+  EnrollmentInput,
+} from '../../models';
 import {
   CompetitionStatusRule,
   PlayerGenderRule,
@@ -22,37 +26,22 @@ export class ValidationService {
   async getValidationData({
     systemId,
     teams,
-    entries,
-  }: {
-    systemId: string;
-    teams: {
-      id: string;
-      basePlayers: string[];
-      players: string[];
-      backupPlayers: string[];
-      linkId: string;
-    }[];
-    entries: {
-      id: string;
-      teamId: string;
-      subEventId: string;
-    }[];
-  }): Promise<EnrollmentData> {
+  }: EnrollmentInput): Promise<EnrollmentValidationData> {
     const system = await RankingSystem.findByPk(systemId);
     let previousSeasonTeams = [];
 
-    const linkIds = teams.map((t) => t.linkId);
-    if (linkIds.length > 0) {
+    const teamIdIds = teams.map((t) => t.linkId);
+    if (teamIdIds.length > 0) {
       previousSeasonTeams = await Team.findAll({
         where: {
-          linkId: linkIds,
+          id: teamIdIds,
         },
       });
     }
 
     const subEvents = await SubEventCompetition.findAll({
       where: {
-        id: entries.map((e) => e.subEventId),
+        id: teams.map((e) => e.subEventId),
       },
     });
 
@@ -69,22 +58,20 @@ export class ValidationService {
 
     return {
       teams: teams.map((t) => {
-        const entry = entries.find((e) => e.teamId === t.id);
-
         return {
           team: null,
           previousSeasonTeam: previousSeasonTeams.find(
             (p) => p.linkId === t.linkId
           ),
           id: t.id,
-          basePlayers: players.filter((p) => t.basePlayers.includes(p.id)),
-          teamPlayers: players.filter((p) => t.players.includes(p.id)),
-          backupPlayers: players.filter((p) => t.backupPlayers.includes(p.id)),
+          basePlayers: players.filter((p) => t.basePlayers?.includes(p.id)),
+          teamPlayers: players.filter((p) => t.players?.includes(p.id)),
+          backupPlayers: players.filter((p) => t.backupPlayers?.includes(p.id)),
           system,
 
           baseIndex: 0,
           teamIndex: 0,
-          subEvent: subEvents.find((s) => s.id === entry.subEventId),
+          subEvent: subEvents.find((s) => s.id === t.subEventId),
         };
       }),
     };
@@ -97,7 +84,7 @@ export class ValidationService {
    * @returns Whether the enrollment is valid or not
    */
   async validate(
-    enrollment: EnrollmentData,
+    enrollment: EnrollmentValidationData,
     validators: Rule[]
   ): Promise<EnrollmentOutput> {
     // get all errors and warnings from the validators in parallel
@@ -125,9 +112,9 @@ export class ValidationService {
       valid: boolean;
     }[] = [];
     for (const team of enrollment.teams) {
-      const teamValid = valids?.filter((v) => v.teamId == team.team.id);
+      const teamValid = valids?.filter((v) => v.teamId == team.team?.id);
       valid.push({
-        teamId: team.team.id,
+        teamId: team.team?.id,
         valid: teamValid?.every((v) => v.valid),
       });
     }
@@ -136,18 +123,12 @@ export class ValidationService {
       errors: errors,
       warnings: warnings,
       valid,
+      teams: []
     };
   }
 
-  async fetchAndValidate(
-    data: {
-      systemId: string;
-      teamId: string;
-      subEventId: string;
-    },
-    validators: Rule[]
-  ) {
-    const dbData = await this.getValidationData(null);
+  async fetchAndValidate(data: EnrollmentInput, validators: Rule[]) {
+    const dbData = await this.getValidationData(data);
     return this.validate(dbData, validators);
   }
 

@@ -18,7 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import { EventEntry, Team } from '@badman/frontend-models';
+import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
 import { sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -31,15 +31,24 @@ import {
   startWith,
   switchMap,
   takeUntil,
-  tap
+  tap,
 } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
-interface TeamFormValue {
-  team: FormControl<Team>;
-  entry: FormControl<EventEntry>;
+export type TeamFormValue = {
+  team: Team;
+  entry: {
+    players: EntryCompetitionPlayer[];
+    subEventId: string | null;
+  }
 }
 
-export type TeamForm = FormGroup<TeamFormValue>;
+export type TeamForm = FormGroup<{
+  team: FormControl<Team>;
+  entry: FormGroup<{
+    players: FormArray<FormControl<EntryCompetitionPlayer | null>>;
+    subEventId: FormControl<string | null>;
+  }>;
+}>;
 
 @Component({
   selector: 'badman-teams-transfer-step',
@@ -339,7 +348,9 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     const typedControl = this.control?.get(
       team.type ?? ''
     ) as FormArray<TeamForm>;
-    const index = typedControl.value?.findIndex((t) => t.team?.link == team.link);
+    const index = typedControl.value?.findIndex(
+      (t) => t.team?.link == team.link
+    );
 
     if (selected) {
       // if the team is already selected, we don't need to do anything
@@ -356,50 +367,57 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
         season: (rest.season ?? 0) + 1,
       });
 
-      let newEntry: EventEntry;
+      let entry: {
+        players: EntryCompetitionPlayer[];
+        subEventId: string | null;
+      };
 
       // convert entries
       if (newTeam.entry) {
-        newEntry = {
-          teamId: newTeam.id,
-          ...newTeam.entry,
-          meta: {
-            competition: {
-              teamIndex: 0, // get's calculated in next step
-              players:
-                newTeam.entry.meta?.competition?.players?.map((p) => {
-                  return {
-                    id: p.id,
-                    gender: p.gender,
-                    player: {
-                      id: p.player.id,
-                      fullName: p.player.fullName,
-                    },
-                    single: p.player.rankingPlaces?.[0].single ?? 0,
-                    double: p.player.rankingPlaces?.[0].double ?? 0,
-                    mix: p.player.rankingPlaces?.[0].mix ?? 0,
-                  };
-                }) ?? [],
-            },
-          },
+        entry = {
+          players: (newTeam.entry.meta?.competition?.players?.map((p) => {
+            return {
+              id: p.id,
+              gender: p.gender,
+              player: {
+                id: p.player.id,
+                fullName: p.player.fullName,
+              },
+              single: p.player.rankingPlaces?.[0].single ?? 0,
+              double: p.player.rankingPlaces?.[0].double ?? 0,
+              mix: p.player.rankingPlaces?.[0].mix ?? 0,
+            };
+          }) ?? []) as EntryCompetitionPlayer[],
+          subEventId: null,
         };
       } else {
-        newEntry = new EventEntry({
-          teamId: newTeam.id,
-        });
+        entry = {
+          players: [] as EntryCompetitionPlayer[],
+          subEventId: null,
+        };
       }
-
       if (typedControl) {
         if (index != null && index >= 0) {
           typedControl.at(index)?.get('team')?.patchValue(newTeam);
-          typedControl.at(index)?.get('entry')?.patchValue(newEntry);
+          typedControl.at(index)?.get('entry')?.patchValue(entry);
         } else {
+          const players = new FormArray<
+            FormControl<EntryCompetitionPlayer | null>
+          >([]);
+
+          for (const player of entry.players) {
+            players.push(new FormControl(player));
+          }
+
           const newGroup = new FormGroup({
             team: new FormControl(newTeam),
-            entry: new FormControl(newEntry),
-          });
+            entry: new FormGroup({
+              players,
+              subEventId: new FormControl(entry.subEventId),
+            }),
+          }) as TeamForm;
 
-          typedControl.push(newGroup as TeamForm);
+          typedControl.push(newGroup);
         }
       } else {
         throw new Error('No control found for type ' + team.type);

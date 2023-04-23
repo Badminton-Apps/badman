@@ -14,7 +14,7 @@ import { readFile } from 'fs/promises';
 import moment from 'moment-timezone';
 import { I18nService } from 'nestjs-i18n';
 import { lastValueFrom, take } from 'rxjs';
-import { AssemblyData, AssemblyValidationError } from '../models';
+import { AssemblyValidationData, AssemblyValidationError } from '../models';
 import { ValidationService } from '../services';
 
 type gameType =
@@ -232,7 +232,7 @@ export class AssemblyController {
     }
   }
 
-  private getLabels(data: AssemblyData): string[] {
+  private getLabels(data: AssemblyValidationData): string[] {
     const labels: string[] = [];
     for (let i = 0; i < 8; i++) {
       const gameLabels = gameLabel(
@@ -260,7 +260,7 @@ export class AssemblyController {
 
   private _processPlayer(
     player: Player,
-    data: AssemblyData,
+    data: AssemblyValidationData,
     indexed: string[],
     based: string[]
   ): Partial<Player> & {
