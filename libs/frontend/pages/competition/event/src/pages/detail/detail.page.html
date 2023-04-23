@@ -74,9 +74,9 @@
   <div subTitle>
     <mat-chip-listbox>
       <mat-chip
-        >{{'all.competition.enrollment.title' | translate}}:
+        >{{'all.competition.team-enrollment.title' | translate}}:
         {{((this.eventCompetition.allowEnlisting ?? false) ?
-        'all.competition.enrollment.open': 'all.competition.enrollment.closed')
+        'all.competition.team-enrollment.open': 'all.competition.team-enrollment.closed')
         | translate}}</mat-chip
       >
       <mat-chip *ngIf="eventCompetition.lastSync">

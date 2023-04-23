@@ -75,11 +75,11 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.translate
-      .get(['all.competition.enrollment.title', 'all.competition.title'])
+      .get(['all.competition.team-enrollment.title', 'all.competition.title'])
       .subscribe((enrollemnt) => {
         this.seoService.update({
-          title: enrollemnt['all.competition.enrollment.title'],
-          description: enrollemnt['all.competition.enrollment.title'],
+          title: enrollemnt['all.competition.team-enrollment.title'],
+          description: enrollemnt['all.competition.team-enrollment.title'],
           type: 'website',
           keywords: ['team', 'enrollemnt'],
         });
@@ -90,7 +90,7 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
         );
         this.breadcrumbService.set(
           'competition/enrollment',
-          enrollemnt['all.competition.enrollment.title']
+          enrollemnt['all.competition.team-enrollment.title']
         );
       });
   }
