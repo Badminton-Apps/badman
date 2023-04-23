@@ -1,11 +1,11 @@
-import { AssemblyData, AssemblyOutput } from '../../../models';
+import { AssemblyOutput, AssemblyValidationData } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamBaseIndexRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { team, teamIndex, meta } = assembly;
 
-    if (team.teamNumber != 1 && teamIndex < meta?.competition?.teamIndex) {
+    if (team?.teamNumber != 1 && teamIndex < meta?.competition?.teamIndex) {
       return {
         valid: false,
         errors: [
@@ -13,7 +13,7 @@ export class TeamBaseIndexRule extends Rule {
             message: 'all.competition.team-assembly.errors.team-index',
             params: {
               teamIndex,
-              baseIndex: meta.competition.teamIndex,
+              baseIndex: meta?.competition?.teamIndex,
             },
           },
         ],

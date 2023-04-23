@@ -1,9 +1,9 @@
 import { Player } from '@badman/backend-database';
-import { AssemblyData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamClubBaseRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       otherMeta,
       single1,

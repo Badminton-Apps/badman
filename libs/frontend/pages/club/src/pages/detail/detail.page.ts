@@ -40,12 +40,10 @@ import { saveAs } from 'file-saver';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
 import {
-  delay,
   map,
   startWith,
   switchMap,
-  takeUntil,
-  timeout,
+  takeUntil
 } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
@@ -162,6 +160,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           query: gql`
             query CompetitionYears($where: JSONObject) {
               teams(where: $where) {
+                id
                 season
               }
             }
@@ -202,6 +201,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
               teamNumber
               type
               entry {
+                id
                 date
                 competitionSubEvent {
                   id
@@ -254,6 +254,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         query: gql`
           query PlayersForTeams($teamsWhere: JSONObject, $clubId: ID!) {
             club(id: $clubId) {
+              id
               players {
                 id
                 fullName

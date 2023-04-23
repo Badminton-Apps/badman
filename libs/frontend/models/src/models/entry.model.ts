@@ -78,10 +78,10 @@ export interface EntryTournament {
 
 export interface EntryCompetition {
   teamIndex: number;
-  players: EntryCompetitionPlayers[];
+  players: EntryCompetitionPlayer[];
 }
 
-export interface EntryCompetitionPlayers {
+export interface  EntryCompetitionPlayer {
   id: string;
   single: number;
   double: number;

@@ -1,14 +1,14 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import {
-  AssemblyData,
+  AssemblyValidationData,
   AssemblyOutput,
   AssemblyValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class PlayerOrderRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       single1,
       single2,

@@ -1,8 +1,8 @@
-import { AssemblyData, AssemblyOutput } from '../../../models';
+import { AssemblyValidationData, AssemblyOutput } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamSubeventIndexRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { teamIndex: baseTeamIndex, subEvent } = assembly;
 
     if (baseTeamIndex < subEvent.minBaseIndex) {

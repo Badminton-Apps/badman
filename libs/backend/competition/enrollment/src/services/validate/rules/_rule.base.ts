@@ -1,5 +1,5 @@
-import { EnrollmentData, EnrollmentOutput } from '../../../models';
+import { EnrollmentValidationData, EnrollmentOutput } from '../../../models';
 
 export abstract class Rule {
-  abstract validate(enrollment: EnrollmentData): Promise<EnrollmentOutput>;
+  abstract validate(enrollment: EnrollmentValidationData): Promise<EnrollmentOutput>;
 }

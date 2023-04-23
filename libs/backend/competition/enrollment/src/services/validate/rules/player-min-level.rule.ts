@@ -1,13 +1,13 @@
 import { SubEventTypeEnum } from '@badman/utils';
 import {
-  EnrollmentData,
+  EnrollmentValidationData,
   EnrollmentOutput,
   EnrollmentValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class PlayerMinLevelRule extends Rule {
-  async validate(enrollment: EnrollmentData): Promise<EnrollmentOutput> {
+  async validate(enrollment: EnrollmentValidationData): Promise<EnrollmentOutput> {
     const errors = [] as EnrollmentValidationError[];
     const valid: {
       teamId: string;
@@ -16,7 +16,7 @@ export class PlayerMinLevelRule extends Rule {
     
     for (const { team, teamPlayers, basePlayers, subEvent } of enrollment.teams) {
       let teamValid = true;
-      if (team.teamNumber != 1) {
+      if (team?.teamNumber != 1) {
         const uniquePlayers = new Set([...teamPlayers, ...basePlayers]);
 
         for (const player of uniquePlayers) {
@@ -60,7 +60,7 @@ export class PlayerMinLevelRule extends Rule {
           }
 
           if (
-            team.type === SubEventTypeEnum.MX &&
+            team?.type === SubEventTypeEnum.MX &&
             ranking.mix < subEvent.maxLevel
           ) {
             teamValid = false;
@@ -82,7 +82,7 @@ export class PlayerMinLevelRule extends Rule {
       }
 
       valid.push({
-        teamId: team.id,
+        teamId: team?.id,
         valid: teamValid,
       });
     }

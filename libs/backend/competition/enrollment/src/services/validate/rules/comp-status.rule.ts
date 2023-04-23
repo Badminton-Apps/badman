@@ -1,5 +1,5 @@
 import {
-  EnrollmentData,
+  EnrollmentValidationData,
   EnrollmentOutput,
   EnrollmentValidationError,
 } from '../../../models';
@@ -9,7 +9,7 @@ import { Rule } from './_rule.base';
  * Checks if all players have the competition status active
  */
 export class CompetitionStatusRule extends Rule {
-  async validate(enrollment: EnrollmentData): Promise<EnrollmentOutput> {
+  async validate(enrollment: EnrollmentValidationData): Promise<EnrollmentOutput> {
     const valid: {
       teamId: string;
       valid: boolean;
@@ -59,7 +59,7 @@ export class CompetitionStatusRule extends Rule {
       }
 
       valid.push({
-        teamId: team.id,
+        teamId: team?.id,
         valid: teamValid,
       });
     }
