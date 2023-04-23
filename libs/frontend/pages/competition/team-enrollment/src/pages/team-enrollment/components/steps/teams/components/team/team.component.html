@@ -33,11 +33,11 @@
       {{ 'all.players.title' | translate }}
       <span class="count">
         - {{ baseCount }}
-        {{ 'all.competition.enrollment.players.regular' | translate }}
+        {{ 'all.competition.team-enrollment.players.regular' | translate }}
         <ng-container *ngIf="backupCount > 0"
           >, {{ backupCount }}
           {{
-            'all.competition.enrollment.players.backup' | translate
+            'all.competition.team-enrollment.players.backup' | translate
           }}</ng-container
         ></span
       >
@@ -98,7 +98,7 @@
 <div class="base-players">
   <div class="expandable-item" (click)="expanded.base = !expanded.base">
     <div>
-      {{ 'all.competition.enrollment.players.base' | translate }}
+      {{ 'all.competition.team-enrollment.players.base' | translate }}
       <span class="index"
         >Base index: {{ baseIndex }} (Team index: {{ teamIndex }})</span
       >

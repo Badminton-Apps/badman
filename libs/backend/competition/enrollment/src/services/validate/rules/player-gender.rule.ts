@@ -14,28 +14,39 @@ export class PlayerGenderRule extends Rule {
   async validate(enrollment: EnrollmentValidationData): Promise<RuleResult[]> {
     const results = [] as RuleResult[];
 
-    for (const { basePlayers, teamPlayers, team } of enrollment.teams) {
+    for (const { basePlayers, teamPlayers, team, backupPlayers } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
-      const teamErrors = [] as EnrollmentValidationError[];
+      const warnins = [] as EnrollmentValidationError[];
+
       if (team?.type == SubEventTypeEnum.M) {
-        teamErrors.push(
+        errors.push(
           ...this._checkGender([...teamPlayers, ...basePlayers], 'M', team)
         );
       } else if (team?.type == SubEventTypeEnum.F) {
-        teamErrors.push(
+        errors.push(
           ...this._checkGender([...teamPlayers, ...basePlayers], 'F', team)
         );
       }
 
-      if (teamErrors.length > 0) {
+      if (team?.type == SubEventTypeEnum.M) {
+        warnins.push(
+          ...this._checkGender(backupPlayers, 'M', team)
+        );
+      } else if (team?.type == SubEventTypeEnum.F) {
+        warnins.push(
+          ...this._checkGender(backupPlayers, 'F', team)
+        );
+      }
+
+      if (errors.length > 0) {
         teamValid = false;
-        errors.push(...teamErrors);
       }
 
       results.push({
         teamId: team.id,
         errors,
+        warnings: warnins,
         valid: teamValid,
       });
     }

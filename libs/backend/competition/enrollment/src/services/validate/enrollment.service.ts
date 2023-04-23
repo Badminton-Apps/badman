@@ -1,5 +1,6 @@
 import {
   Player,
+  RankingLastPlace,
   RankingSystem,
   SubEventCompetition,
   Team,
@@ -19,6 +20,7 @@ import {
   TeamBaseIndexRule,
   TeamSubeventIndexRule,
 } from './rules';
+import { SubEventTypeEnum, getIndexFromPlayers } from '@badman/utils';
 
 @Injectable()
 export class ValidationService {
@@ -28,7 +30,9 @@ export class ValidationService {
     systemId,
     teams,
   }: EnrollmentInput): Promise<EnrollmentValidationData> {
-    const system = await RankingSystem.findByPk(systemId);
+    const system = systemId
+      ? await RankingSystem.findByPk(systemId)
+      : await RankingSystem.findOne({ where: { primary: true } });
     let previousSeasonTeams = [];
 
     const teamIdIds = teams.map((t) => t.link);
@@ -55,10 +59,45 @@ export class ValidationService {
       where: {
         id: playerIds,
       },
+      include: [
+        {
+          model: RankingLastPlace,
+          where: {
+            systemId: system?.id,
+          },
+        },
+      ],
     });
 
     return {
       teams: teams.map((t) => {
+        const basePlayers = players.filter((p) =>
+          t.basePlayers?.includes(p.id)
+        );
+        const teamPlayers = players.filter((p) => t.players?.includes(p.id));
+        const backupPlayers = players.filter((p) =>
+          t.backupPlayers?.includes(p.id)
+        );
+
+        const teamIndex = getIndexFromPlayers(
+          t.type,
+          teamPlayers?.map((p) => ({
+            ...p.toJSON(),
+            lastRanking: p.rankingLastPlaces?.[0]?.toJSON(),
+          }))
+        );
+        const baseIndex = getIndexFromPlayers(
+          t.type,
+          basePlayers?.map((p) => ({
+            ...p.toJSON(),
+            lastRanking: p.rankingLastPlaces?.[0]?.toJSON(),
+          }))
+        );
+
+        if (t.teamNumber == 1 && t.type == SubEventTypeEnum.M) {
+          console.log('baseIndex', baseIndex);
+        }
+
         return {
           team: new Team({
             id: t.id,
@@ -70,13 +109,13 @@ export class ValidationService {
           isNewTeam: t.link === null,
           possibleOldTeam: false,
           id: t.id,
-          basePlayers: players.filter((p) => t.basePlayers?.includes(p.id)),
-          teamPlayers: players.filter((p) => t.players?.includes(p.id)),
-          backupPlayers: players.filter((p) => t.backupPlayers?.includes(p.id)),
+          basePlayers,
+          teamPlayers,
+          backupPlayers,
           system,
 
-          baseIndex: 0,
-          teamIndex: 0,
+          baseIndex,
+          teamIndex,
 
           subEvent: subEvents.find((s) => s.id === t.subEventId),
         };
