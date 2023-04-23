@@ -1,11 +1,21 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TeamComponent } from '../team';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { EventEntry, SubEventCompetition, Team } from '@badman/frontend-models';
+import {
+  EntryCompetitionPlayer,
+  SubEventCompetition,
+  Team,
+} from '@badman/frontend-models';
 import { SubEventType, SubEventTypeEnum } from '@badman/utils';
+import { TeamComponent } from '../team';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -16,6 +26,8 @@ import { SubEventType, SubEventTypeEnum } from '@badman/utils';
     // Material
     MatFormFieldModule,
     MatSelectModule,
+    ReactiveFormsModule,
+    FormsModule,
 
     // Own
     TeamComponent,
@@ -23,15 +35,9 @@ import { SubEventType, SubEventTypeEnum } from '@badman/utils';
   templateUrl: './team-enrollment.component.html',
   styleUrls: ['./team-enrollment.component.scss'],
 })
-export class TeamEnrollmentComponent {
+export class TeamEnrollmentComponent implements OnInit {
   @Input()
   group!: FormGroup;
-
-  @Input()
-  team!: FormControl<Team>;
-
-  @Input()
-  entry!: FormControl<EventEntry>;
 
   @Input()
   subEvents!: {
@@ -47,5 +53,18 @@ export class TeamEnrollmentComponent {
   @Output()
   changeTeamNumber = new EventEmitter<Team>();
 
-  
+  team!: FormControl<Team>;
+  subEvent!: FormControl<string>;
+  players!: FormArray<FormControl<EntryCompetitionPlayer>>;
+
+  ngOnInit(): void {
+    this.team = this.group.get('team') as FormControl<Team>;
+
+    const entry = this.group.get('entry');
+
+    this.subEvent = entry?.get('subEventId') as FormControl<string>;
+    this.players = entry?.get('players') as FormArray<
+      FormControl<EntryCompetitionPlayer>
+    >;
+  }
 }

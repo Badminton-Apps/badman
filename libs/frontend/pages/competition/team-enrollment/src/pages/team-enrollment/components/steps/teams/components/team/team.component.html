@@ -110,13 +110,17 @@
   <mat-divider></mat-divider>
 
   <div [hidden]="!expanded.base">
-    <div class="player" *ngFor="let b of base">
+    <div class="player" *ngFor="let b of basePlayers.value">
       <div class="name">
         {{ b.player.fullName }}
         <span class="ranking">
           {{ b.single }} - {{ b.double }}
-          <ng-container *ngIf="team.value.type === 'MX'"> - {{ b.mix }}</ng-container>
-          ({{ b.single + b.double + (team.value.type === 'MX' ? b.mix : 0) }})</span
+          <ng-container *ngIf="team.value.type === 'MX'">
+            - {{ b.mix }}</ng-container
+          >
+          ({{
+            b.single + b.double + (team.value.type === 'MX' ? b.mix : 0)
+          }})</span
         >
       </div>
       <div class="delete">

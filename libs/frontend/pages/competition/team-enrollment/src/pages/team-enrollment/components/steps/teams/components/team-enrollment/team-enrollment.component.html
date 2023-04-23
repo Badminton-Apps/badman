@@ -1,6 +1,6 @@
 <badman-team
   [team]="team"
-  [entry]="entry"
+  [basePlayers]="players"
   (removeTeam)="this.removeTeam.next($event)"
   (changeTeamNumber)="this.changeTeamNumber.next($event)"
 ></badman-team>
@@ -9,7 +9,7 @@
   <div class="event">
     <mat-form-field>
       <mat-label>Select</mat-label>
-      <mat-select [value]="entry.value.competitionSubEventId">
+      <mat-select [formControl]="subEvent">
         <mat-option
           *ngFor="let subEvent of subEvents[type]"
           [value]="subEvent.id"
@@ -21,6 +21,7 @@
   </div>
 
   <div class="info">
+    {{ subEvent.value }}
     <div>Min/max</div>
     <div class="errors">ERRORS:</div>
   </div>

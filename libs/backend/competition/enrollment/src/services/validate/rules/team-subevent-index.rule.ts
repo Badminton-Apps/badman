@@ -1,12 +1,12 @@
 import {
-  EnrollmentData,
+  EnrollmentValidationData,
   EnrollmentOutput,
   EnrollmentValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamSubeventIndexRule extends Rule {
-  async validate(enrollment: EnrollmentData): Promise<EnrollmentOutput> {
+  async validate(enrollment: EnrollmentValidationData): Promise<EnrollmentOutput> {
     const errors = [] as EnrollmentValidationError[];
     const valid: {
       teamId: string;
@@ -19,20 +19,20 @@ export class TeamSubeventIndexRule extends Rule {
       team,
     } of enrollment.teams) {
       let teamValid = true;
-      if (baseTeamIndex < subEvent.minBaseIndex) {
+      if (baseTeamIndex < subEvent?.minBaseIndex) {
         teamValid = false;
         errors.push({
           message: 'all.competition.team-enrollment.errors.team-to-strong',
           params: {
             teamIndex: baseTeamIndex,
-            minIndex: subEvent.minBaseIndex,
-            maxIndex: subEvent.maxBaseIndex,
+            minIndex: subEvent?.minBaseIndex,
+            maxIndex: subEvent?.maxBaseIndex,
           },
         });
       }
 
       valid.push({
-        teamId: team.id,
+        teamId: team?.id,
         valid: teamValid,
       });
     }
