@@ -20,9 +20,37 @@
     </mat-form-field>
   </div>
 
-  <div class="info">
-    {{ subEvent.value }}
-    <div>Min/max</div>
-    <div class="errors">ERRORS:</div>
+  <div class="information">
+    <div>
+      Min/max {{ validation?.minBaseIndex }} - {{ validation?.maxBaseIndex }}
+    </div>
+
+    <div class="validation-overview">
+      <ul class="error-list" *ngIf="(validation?.errors?.length ?? 0) > 0">
+        <li *ngFor="let error of validation?.errors">
+          <badman-enrollment-message
+            [validation]="error"
+          ></badman-enrollment-message>
+        </li>
+      </ul>
+
+      <ul class="warning-list" *ngIf="(validation?.warnings?.length ?? 0) > 0">
+        <li *ngFor="let warnings of validation?.warnings">
+          <badman-enrollment-message
+            [validation]="warnings"
+          ></badman-enrollment-message>
+        </li>
+      </ul>
+
+      <div
+        class="no-errors"
+        *ngIf="
+          (validation?.errors?.length ?? 0) === 0 &&
+          (validation?.warnings?.length ?? 0) === 0
+        "
+      >
+        {{ 'all.competition.team-assembly.errors.none' | translate }}
+      </div>
+    </div>
   </div>
 </div>
