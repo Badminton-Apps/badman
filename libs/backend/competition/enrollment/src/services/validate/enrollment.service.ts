@@ -9,6 +9,7 @@ import {
   EnrollmentValidationData,
   EnrollmentOutput,
   EnrollmentInput,
+  TeamEnrollmentOutput,
 } from '../../models';
 import {
   CompetitionStatusRule,
@@ -30,7 +31,7 @@ export class ValidationService {
     const system = await RankingSystem.findByPk(systemId);
     let previousSeasonTeams = [];
 
-    const teamIdIds = teams.map((t) => t.linkId);
+    const teamIdIds = teams.map((t) => t.link);
     if (teamIdIds.length > 0) {
       previousSeasonTeams = await Team.findAll({
         where: {
@@ -59,10 +60,15 @@ export class ValidationService {
     return {
       teams: teams.map((t) => {
         return {
-          team: null,
+          team: new Team({
+            id: t.id,
+            type: t.type,
+          }),
           previousSeasonTeam: previousSeasonTeams.find(
-            (p) => p.linkId === t.linkId
+            (p) => p.linkId === t.link
           ),
+          isNewTeam: t.link === null,
+          possibleOldTeam: false,
           id: t.id,
           basePlayers: players.filter((p) => t.basePlayers?.includes(p.id)),
           teamPlayers: players.filter((p) => t.players?.includes(p.id)),
@@ -71,6 +77,7 @@ export class ValidationService {
 
           baseIndex: 0,
           teamIndex: 0,
+
           subEvent: subEvents.find((s) => s.id === t.subEventId),
         };
       }),
@@ -92,38 +99,44 @@ export class ValidationService {
       validators.map((v) => v.validate(enrollment))
     );
 
-    const errors = results
-      ?.map((r) => r.errors)
-      ?.flat(1)
-      ?.filter((e) => !!e);
-    const warnings = results
-      ?.map((r) => r.warnings)
-      ?.flat(1)
-      ?.filter((e) => !!e);
-    const valids = results
-      ?.map((r) => r.valid)
-      ?.flat(1)
-      ?.filter((e) => !!e);
+    const teams: TeamEnrollmentOutput[] = [];
 
-    // valids is an array for each team's validitiy per validator
-    // if any of the validators return false, the team is invalid
-    const valid: {
-      teamId: string;
-      valid: boolean;
-    }[] = [];
     for (const team of enrollment.teams) {
-      const teamValid = valids?.filter((v) => v.teamId == team.team?.id);
-      valid.push({
-        teamId: team.team?.id,
-        valid: teamValid?.every((v) => v.valid),
+      const ruleResults = results?.map((r) =>
+        r?.find((t) => t.teamId === team.team?.id)
+      );
+
+      const errors =
+        ruleResults
+          ?.map((r) => r.errors)
+          ?.flat(1)
+          ?.filter((e) => !!e) ?? [];
+      const warnings =
+        ruleResults
+          ?.map((r) => r.warnings)
+          ?.flat(1)
+          ?.filter((e) => !!e) ?? [];
+      const valid = ruleResults?.every((r) => r.valid);
+
+      teams.push({
+        id: team.team?.id,
+        linkId: team.team?.link,
+        isNewTeam: team.isNewTeam,
+        possibleOldTeam: team.possibleOldTeam,
+
+        teamIndex: team.teamIndex,
+        baseIndex: team.baseIndex,
+        maxLevel: team.subEvent?.maxLevel,
+        minBaseIndex: team.subEvent?.minBaseIndex,
+        maxBaseIndex: team.subEvent?.maxBaseIndex,
+        errors: errors,
+        warnings: warnings,
+        valid,
       });
     }
 
     return {
-      errors: errors,
-      warnings: warnings,
-      valid,
-      teams: []
+      teams,
     };
   }
 

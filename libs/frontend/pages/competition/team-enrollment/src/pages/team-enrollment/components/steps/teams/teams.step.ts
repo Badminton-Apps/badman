@@ -38,7 +38,14 @@ import {
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, Subject, combineLatest, lastValueFrom, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  combineLatest,
+  lastValueFrom,
+  of,
+} from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -52,6 +59,7 @@ import {
   tap,
 } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
+import { ValidationResult } from '../../../models';
 import { TeamForm, TeamFormValue } from '../teams-transfer';
 import { TeamEnrollmentComponent } from './components';
 
@@ -95,6 +103,12 @@ type FormArrayOfTeamsValue = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsStepComponent implements OnInit, OnDestroy {
+  #validationResult = new BehaviorSubject<ValidationResult | null>(null);
+
+  get validationResult() {
+    return this.#validationResult.value;
+  }
+
   destroy$ = new Subject<void>();
 
   // get striug array  of event types
@@ -192,7 +206,10 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
               )
             )
             .subscribe((v) => {
-              // console.log(v);
+              if (v?.data?.enrollmentValidation) {
+                this.#validationResult.next(v?.data?.enrollmentValidation);
+                this.changedector.markForCheck();
+              }
             });
         });
     }
@@ -303,6 +320,13 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     });
   }
 
+  teamValidationResult(id?: string) {
+    if (!id) {
+      return undefined;
+    }
+    return this.validationResult?.teams?.find((t) => t.id === id);
+  }
+
   private changeNumber(
     teamId: string,
     newNumber: number,
@@ -401,7 +425,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       });
     }
 
-    return this.apollo.query({
+    return this.apollo.query<{ enrollmentValidation: ValidationResult }>({
       query: gql`
         query ValidateEnrollment($enrollment: EnrollmentInput!) {
           enrollmentValidation(enrollment: $enrollment) {
@@ -415,18 +439,15 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
               maxLevel
               minBaseIndex
               maxBaseIndex
-            }
-            errors {
-              message
-              params
-            }
-            valid {
-              teamId
               valid
-            }
-            warnings {
-              message
-              params
+              errors {
+                message
+                params
+              }
+              warnings {
+                message
+                params
+              }
             }
           }
         }
@@ -532,6 +553,26 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     );
   }
 
+  private _maxLevels(subs: SubEventCompetition[]) {
+    return {
+      PROV: Math.max(
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
+          .map((s) => s.level ?? 0) ?? [])
+      ),
+      LIGA: Math.max(
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
+          .map((s) => s.level ?? 0) ?? [])
+      ),
+      NATIONAL: Math.max(
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
+          .map((s) => s.level ?? 0) ?? [])
+      ),
+    };
+  }
+
   private setInitialSubEvents() {
     const obs = [];
 
@@ -586,26 +627,6 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     }
 
     return obs;
-  }
-
-  private _maxLevels(subs: SubEventCompetition[]) {
-    return {
-      PROV: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
-          .map((s) => s.level ?? 0) ?? [])
-      ),
-      LIGA: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
-          .map((s) => s.level ?? 0) ?? [])
-      ),
-      NATIONAL: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
-          .map((s) => s.level ?? 0) ?? [])
-      ),
-    };
   }
 
   private getInitialSubEvent(
