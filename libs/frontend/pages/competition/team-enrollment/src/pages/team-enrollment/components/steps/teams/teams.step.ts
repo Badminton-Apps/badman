@@ -398,6 +398,8 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     if (!input) return of();
     const teams: {
       id?: string;
+      type: SubEventTypeEnum;
+      teamNumber?: number;
       subEventId?: string;
       players?: string[];
       backupPlayers?: string[];
@@ -408,8 +410,12 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     for (const type in SubEventTypeEnum) {
       input[type as SubEventTypeEnum].forEach((team) => {
         if (!team) return;
+        if (!team.team) return;
+        if (!team.team.type) return;
         teams.push({
           id: team.team.id,
+          type: team.team.type,
+          teamNumber: team.team.teamNumber,
           subEventId: team.entry.subEventId,
           players: team.team?.players
             ?.map((p) => p.id)

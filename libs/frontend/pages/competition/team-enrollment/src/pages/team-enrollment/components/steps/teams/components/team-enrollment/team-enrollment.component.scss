@@ -2,6 +2,16 @@
   display: block;
 }
 
+badman-team {
+  flex: 0 1 650px;
+}
+
+.beside {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .information {
   display: flex;
   flex-direction: column;

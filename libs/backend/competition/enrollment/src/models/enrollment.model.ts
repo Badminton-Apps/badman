@@ -1,5 +1,6 @@
 import {
   Player,
+  PlayerUpdateInput,
   RankingSystem,
   SubEventCompetition,
   Team,
@@ -10,6 +11,7 @@ import {
   InputType,
   Int,
   ObjectType,
+  OmitType,
   PartialType,
   PickType,
 } from '@nestjs/graphql';
@@ -26,7 +28,7 @@ export class EnrollmentInput {
 
 @InputType()
 export class EnrollmentInputTeam extends PartialType(
-  PickType(Team, ['id', 'type', 'link'] as const),
+  PickType(Team, ['id', 'type', 'link', 'teamNumber'] as const),
   InputType
 ) {
   @Field(() => [ID], { nullable: true })
@@ -46,6 +48,21 @@ export class EnrollmentInputTeam extends PartialType(
 export class EnrollmentOutput {
   @Field(() => [TeamEnrollmentOutput], { nullable: true })
   teams?: TeamEnrollmentOutput[];
+}
+
+@ObjectType()
+export class PlayerRankingType extends PartialType(
+  OmitType(PlayerUpdateInput, ['sub', 'permissions'] as const),
+  ObjectType
+) {
+  @Field(() => Number)
+  single: number;
+
+  @Field(() => Number)
+  double: number;
+
+  @Field(() => Number)
+  mix: number;
 }
 
 // Team outut info
@@ -108,7 +125,7 @@ export class EnrollmentValidationTeam {
   possibleOldTeam: boolean;
 
   teamIndex: number;
-  teamPlayers: Player[];
+  teamPlayers: (Player)[];
   backupPlayers: Player[];
 
   baseIndex: number;
