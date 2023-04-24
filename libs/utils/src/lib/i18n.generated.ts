@@ -75,8 +75,18 @@ export type I18nTranslations = {
         "club": {
             "current": string;
             "end": string;
+            "menu": {
+                "add-player": string;
+                "delete": string;
+                "edit": string;
+                "twizzit": string;
+            };
             "number": string;
             "start": string;
+            "titles": {
+                "players": string;
+                "teams": string;
+            };
         };
         "competition": {
             "avg-level": string;
@@ -462,6 +472,12 @@ export type I18nTranslations = {
             "select-year": string;
             "start-time": string;
         };
+        "player": {
+            "menu": {
+                "delete": string;
+                "edit": string;
+            };
+        };
         "players": {
             "backup": string;
             "base": string;
@@ -605,6 +621,7 @@ export type I18nTranslations = {
             "no-perm": {
                 "email-phone": string;
             };
+            "teams": string;
             "title": {
                 "base-fields": string;
                 "captain": string;
