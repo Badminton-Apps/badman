@@ -280,7 +280,10 @@ export class MailingService {
         const compiled = await lastValueFrom(
           this.compileService.toHtml(options.template, options.context)
         );
-        await writeFile(`${options.template}.html`, compiled);
+
+        if (process.env.NODE_ENV === 'development') {
+          await writeFile(`${options.template}.html`, compiled);
+        }
 
         return;
       }
