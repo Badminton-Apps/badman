@@ -136,7 +136,7 @@ export class PlayerOrderRule extends Rule {
     game2: string,
     defaultRanking = 12,
     type: 'double' | 'mix' = 'double'
-  ): ValidationError {
+  ): AssemblyValidationError {
     if (!double1 || !double2) return undefined;
     if (!double1[0] || !double1[1] || !double2[0] || !double2[1])
       return undefined;
