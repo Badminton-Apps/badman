@@ -31,8 +31,8 @@ import {
 } from './rules';
 
 @Injectable()
-export class ValidationService {
-  private readonly _logger = new Logger(ValidationService.name);
+export class AssemblyValidationService {
+  private readonly _logger = new Logger(AssemblyValidationService.name);
 
   async getValidationData(
     systemId: string,
