@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const compPeriod = (year?: number) => {
+export const getCurrentSeasonPeriod = (year?: number) => {
   if (!year) {
     year = getCurrentSeason();
   }

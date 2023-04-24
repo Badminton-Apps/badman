@@ -55,17 +55,17 @@ export class EncounterChangeCompetitionResolver {
     return encounterChange.getDates();
   }
 
-  @ResolveField(() => Comment)
-  async homeComment(
+  @ResolveField(() => [Comment], { nullable: true })
+  async homeComments(
     @Parent() encounterChange: EncounterChange
-  ): Promise<Comment> {
-    return encounterChange.getHomeComment();
+  ): Promise<Comment[]> {
+    return encounterChange.getHomeComments();
   }
 
-  @ResolveField(() => Comment)
-  async awayComment(
+  @ResolveField(() => [Comment], { nullable: true })
+  async awayComments(
     @Parent() encounterChange: EncounterChange
-  ): Promise<Comment> {
-    return encounterChange.getAwayComment();
+  ): Promise<Comment[]> {
+    return encounterChange.getAwayComments();
   }
 }

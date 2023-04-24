@@ -12,7 +12,7 @@ export type AuthConfiguration = Readonly<AuthConfig | undefined>;
 @NgModule({
   imports: [auth0Module.forRoot()],
 })
-export class AuthModule {
+export class  AuthModule {
   static forRoot(config?: AuthConfiguration): ModuleWithProviders<AuthModule> {
     return {
       ngModule: AuthModule,

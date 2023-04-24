@@ -65,7 +65,7 @@
   </mat-form-field>
 </form>
 
-<ng-container *ngIf="this.teams$ | async as teams; else loading">
+<ng-container *ngIf="this.teams$ | async as teams; else loadingTeams">
   <section class="teams">
     <h3>{{'all.club.titles.teams' | translate}}</h3>
     <div class="teams-container">
@@ -96,7 +96,6 @@
   <section class="games">
     <section class="recent-games">
       <h3>{{"all.game.recent.title" | translate}}</h3>
-
       <badman-recent-games
         *ngIf="isClient"
         [clubId]="club.id"
@@ -113,7 +112,8 @@
     </section>
   </section>
 </ng-container>
-<ng-container *ngIf="this.players$ | async as players; else loading">
+
+<ng-container *ngIf="this.players$ | async as players; else loadingPlayers">
   <section class="players">
     <h3>{{'all.club.titles.players' | translate}}</h3>
     <div class="players-container">
@@ -142,6 +142,47 @@
   </section>
 </ng-container>
 
-<ng-template #loading>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar
-></ng-template>
+<ng-template #loadingTeams>
+  <section class="teams">
+    <h3>{{'all.club.titles.teams' | translate}}</h3>
+    <badman-loading-block
+      [items]="9"
+      height="74px"
+      width="250px"
+      direction="row"
+    />
+  </section>
+
+  <section class="games">
+    <section class="recent-games">
+      <h3>{{"all.game.recent.title" | translate}}</h3>
+      <badman-loading-block
+        height="24px"
+        subHeight="12px"
+        [items]="10"
+        width="400px"
+      />
+    </section>
+    <section class="upcoming-games">
+      <h3>{{"all.game.upcoming.title" | translate}}</h3>
+      <badman-loading-block
+        height="24px"
+        subHeight="12px"
+        [items]="10"
+        width="300px"
+      />
+    </section>
+  </section>
+</ng-template>
+
+<ng-template #loadingPlayers>
+  <section class="players">
+    <h3>{{'all.club.titles.players' | translate}}</h3>
+    <badman-loading-block
+      [items]="25"
+      height="74px"
+      width="250px"
+      direction="row"
+    />
+  </section>
+</ng-template>

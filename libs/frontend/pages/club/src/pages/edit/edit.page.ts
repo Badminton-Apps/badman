@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -28,7 +23,7 @@ import { getCurrentSeason, sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, Observable, Subject, lastValueFrom } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
@@ -182,9 +177,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
         map((x) => {
           return (x.data.club.teams ?? []).map((t) => new Team(t));
         }),
-        tap((teams) => {
-          console.log(teams);
-        }),
         map((teams) => teams.sort(sortTeams))
       );
     });
@@ -288,6 +280,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
           query: gql`
             query CompetitionYears($where: JSONObject) {
               teams(where: $where) {
+                id
                 season
               }
             }

@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import {
   AddPlayerComponent,
   HasClaimComponent,
+  LoadingBlockComponent,
   PageHeaderComponent,
   RecentGamesComponent,
   UpcomingGamesComponent,
@@ -38,7 +39,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
-import { delay, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import {
+  map,
+  startWith,
+  switchMap,
+  takeUntil
+} from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -61,6 +67,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     RecentGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
+    LoadingBlockComponent,
 
     // Material Modules
     MatButtonToggleModule,
@@ -127,11 +134,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       const filters$ = combineLatest([
         this.filter.valueChanges,
         this.update$,
-      ]).pipe(
-        startWith([this.filter.value]),
-        takeUntil(this.destroy$),
-        delay(0) // delay to prevent flickering and to show loading indicator
-      );
+      ]).pipe(startWith([this.filter.value]), takeUntil(this.destroy$));
 
       this.teams$ = filters$.pipe(
         switchMap(([filter]) => this._loadTeams(filter))
@@ -157,6 +160,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           query: gql`
             query CompetitionYears($where: JSONObject) {
               teams(where: $where) {
+                id
                 season
               }
             }
@@ -197,6 +201,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
               teamNumber
               type
               entry {
+                id
                 date
                 competitionSubEvent {
                   id
@@ -249,6 +254,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         query: gql`
           query PlayersForTeams($teamsWhere: JSONObject, $clubId: ID!) {
             club(id: $clubId) {
+              id
               players {
                 id
                 fullName

@@ -21,7 +21,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 
-import { AssemblyService } from './assembly.service';
+import { AssemblyValidationService } from './assembly.service';
 import {
   TeamBaseIndexRule,
   CompetitionStatusRule,
@@ -35,8 +35,8 @@ import {
 } from './rules';
 import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
 
-describe('AssemblyService', () => {
-  let service: AssemblyService;
+describe('AssemblyValidationService', () => {
+  let service: AssemblyValidationService;
   let system: RankingSystem;
   let draw: DrawCompetition;
   let subEvent: SubEventCompetition;
@@ -45,7 +45,7 @@ describe('AssemblyService', () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      providers: [AssemblyService],
+      providers: [AssemblyValidationService],
       imports: [
         DatabaseModule,
         ConfigModule.forRoot({
@@ -54,7 +54,7 @@ describe('AssemblyService', () => {
       ],
     }).compile();
 
-    service = module.get<AssemblyService>(AssemblyService);
+    service = module.get<AssemblyValidationService>(AssemblyValidationService);
 
     // Setup db
     const sequelize = module.get<Sequelize>(Sequelize);
@@ -188,7 +188,7 @@ describe('AssemblyService', () => {
           double3: [player777.id, player999.id],
           double4: [player888.id, player999.id],
         },
-        AssemblyService.defaultValidators()
+        AssemblyValidationService.defaultValidators()
       );
 
       expect(validation).toBeDefined();
@@ -1577,7 +1577,7 @@ describe('AssemblyService', () => {
           double3: [player777.id, player999.id],
           double4: [player888.id, player999.id],
         },
-        AssemblyService.defaultValidators()
+        AssemblyValidationService.defaultValidators()
       );
 
       expect(validation).toBeDefined();

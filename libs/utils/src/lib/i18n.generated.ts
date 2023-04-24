@@ -49,6 +49,7 @@ export type I18nTranslations = {
             "usedForUpgrade": string;
         };
         "button": {
+            "add-comment": string;
             "all": string;
             "cancel": string;
             "close": string;
@@ -93,7 +94,6 @@ export type I18nTranslations = {
             "away": string;
             "change-encounter": {
                 "add-date": string;
-                "away-comment": string;
                 "calendar": {
                     "option": string;
                     "other-games": string;
@@ -104,6 +104,7 @@ export type I18nTranslations = {
                 "choose-date": string;
                 "choose-encounter": string;
                 "choose-team": string;
+                "comment": string;
                 "comments": string;
                 "dates": string;
                 "description": string;
@@ -112,7 +113,6 @@ export type I18nTranslations = {
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
-                "home-comment": string;
                 "not-possible": string;
                 "possible": string;
                 "requested": string;
@@ -126,50 +126,6 @@ export type I18nTranslations = {
             "draw": {
                 "encounters": string;
                 "title": string;
-            };
-            "enrollment": {
-                "assign-team": string;
-                "availability": string;
-                "base": string;
-                "close": string;
-                "closed": string;
-                "comment-liga": string;
-                "comment-nat": string;
-                "comment-prov": string;
-                "errors": {
-                    "base-max": string;
-                    "base-min": string;
-                    "best-max": string;
-                    "best-players": string;
-                    "cant-play": string;
-                    "no-captain": string;
-                    "no-day": string;
-                    "no-location": string;
-                    "no-prefferd": string;
-                    "not-allowed": string;
-                    "not-comp": string;
-                };
-                "exceptions": string;
-                "max": string;
-                "new-exception": string;
-                "new-play-day": string;
-                "open": string;
-                "play-day": string;
-                "player-base": string;
-                "players": {
-                    "backup": string;
-                    "base": string;
-                    "regular": string;
-                };
-                "save-and-continue-tooltip": string;
-                "select-club": string;
-                "select-events": string;
-                "select-location": string;
-                "select-teams": string;
-                "select-teams-description": string;
-                "title": string;
-                "transfer-teams": string;
-                "transfer-teams-description": string;
             };
             "home": string;
             "last-updated": string;
@@ -237,6 +193,59 @@ export type I18nTranslations = {
                 "team-index": string;
                 "team-index-ignored": string;
                 "title": string;
+                "warnings": {
+                    "subtitute-team-index": string;
+                };
+            };
+            "team-enrollment": {
+                "availability": string;
+                "base": string;
+                "captain": string;
+                "change-team": string;
+                "close": string;
+                "closed": string;
+                "comment-liga": string;
+                "comment-nat": string;
+                "comment-prov": string;
+                "errors": {
+                    "already": string;
+                    "club-base-other-team": string;
+                    "comp-status-base": string;
+                    "comp-status-team": string;
+                    "none": string;
+                    "player-gender": string;
+                    "player-min-level": string;
+                    "team-index": string;
+                    "team-to-strong": string;
+                    "title": string;
+                };
+                "exceptions": string;
+                "info": string;
+                "max": string;
+                "new-exception": string;
+                "new-play-day": string;
+                "open": string;
+                "play-day": string;
+                "player-base": string;
+                "players": {
+                    "backup": string;
+                    "base": string;
+                    "regular": string;
+                    "team": string;
+                    "title": string;
+                };
+                "save-and-continue-tooltip": string;
+                "select-club": string;
+                "select-events": string;
+                "select-location": string;
+                "select-teams": string;
+                "select-teams-description": string;
+                "substitude": string;
+                "team-index": string;
+                "team-index-ignored": string;
+                "title": string;
+                "transfer-teams": string;
+                "transfer-teams-description": string;
                 "warnings": {
                     "subtitute-team-index": string;
                 };
@@ -587,6 +596,7 @@ export type I18nTranslations = {
             "sidebar": {
                 "competition": {
                     "assembly": string;
+                    "change-encounter": string;
                     "enrollment": string;
                     "overview": string;
                     "title": string;
@@ -651,6 +661,58 @@ export type I18nTranslations = {
                 "example": string;
                 "select": string;
                 "title": string;
+            };
+        };
+        "team-enrollment": {
+            "assign-team": string;
+            "availability": string;
+            "base": string;
+            "captain": string;
+            "change-team": string;
+            "close": string;
+            "closed": string;
+            "comment-liga": string;
+            "comment-nat": string;
+            "comment-prov": string;
+            "errors": {
+                "already": string;
+                "club-base-other-team": string;
+                "comp-status": string;
+                "none": string;
+                "player-gender": string;
+                "player-genders": string;
+                "player-min-level": string;
+                "team-index": string;
+                "team-to-strong": string;
+                "title": string;
+            };
+            "exceptions": string;
+            "max": string;
+            "new-exception": string;
+            "new-play-day": string;
+            "open": string;
+            "play-day": string;
+            "player-base": string;
+            "players": {
+                "backup": string;
+                "base": string;
+                "team": string;
+                "title": string;
+            };
+            "save-and-continue-tooltip": string;
+            "select-club": string;
+            "select-events": string;
+            "select-location": string;
+            "select-teams": string;
+            "select-teams-description": string;
+            "substitude": string;
+            "team-index": string;
+            "team-index-ignored": string;
+            "title": string;
+            "transfer-teams": string;
+            "transfer-teams-description": string;
+            "warnings": {
+                "subtitute-team-index": string;
             };
         };
         "themes": {

@@ -5,4 +5,6 @@ export * from './encounter-change.resolver';
 export * from './event.resolver';
 export * from './subevent.resolver';
 export * from './assembly.resolver';
+export * from './ennrollment.resolver';
+
 // end:ng42.barrel

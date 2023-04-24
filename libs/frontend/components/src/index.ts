@@ -15,5 +15,6 @@ export * from './selects';
 export * from './shell';
 export * from './shell';
 export * from './standing';
+export * from './loading-block';
 // end:ng42.barrel
 

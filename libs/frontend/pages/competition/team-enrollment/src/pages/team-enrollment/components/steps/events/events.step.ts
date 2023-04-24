@@ -7,6 +7,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -17,11 +18,12 @@ import {
   MatCheckboxModule,
 } from '@angular/material/checkbox';
 import { SelectEventComponent } from '@badman/frontend-components';
-import { EventCompetition, Team } from '@badman/frontend-models';
+import { EventCompetition } from '@badman/frontend-models';
 import { SubEventType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, pairwise, startWith } from 'rxjs';
+import { TeamForm } from '../teams-transfer';
 
 @Component({
   selector: 'badman-events-step',
@@ -162,7 +164,7 @@ export class EventsStepComponent implements OnInit {
 
   private _loadInitialEvents() {
     const teams = this.group.get('teams') as FormGroup<{
-      [key in SubEventType]: FormControl<Team[]>;
+      [key in SubEventType]: FormArray<TeamForm>;
     }>;
 
     teams?.valueChanges.pipe(startWith(teams.value)).subscribe((teams) => {
@@ -174,16 +176,18 @@ export class EventsStepComponent implements OnInit {
         ...(teams.M ?? []),
         ...(teams.MX ?? []),
         ...(teams.NATIONAL ?? []),
-      ].forEach((team) => {
-        if (team.entry?.competitionSubEvent?.eventCompetition) {
+      ].forEach((t) => {
+        if (t.team?.entry?.competitionSubEvent?.eventCompetition) {
           if (
             !competitions.find(
               (c) =>
                 c.id ==
-                (team.entry?.competitionSubEvent?.eventCompetition?.id ?? '')
+                (t.team?.entry?.competitionSubEvent?.eventCompetition?.id ?? '')
             )
           ) {
-            competitions.push(team.entry.competitionSubEvent.eventCompetition);
+            competitions.push(
+              t.team?.entry.competitionSubEvent.eventCompetition
+            );
           }
         }
       });

@@ -19,8 +19,6 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -29,7 +27,6 @@ import {
   Default,
   ForeignKey,
   HasMany,
-  HasOne,
   IsUUID,
   Model,
   PrimaryKey,
@@ -86,25 +83,25 @@ export class EncounterChange extends Model {
   })
   dates: EncounterChangeDate[];
 
-  @Field(() => Comment, { nullable: true })
-  @HasOne(() => Comment, {
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
     foreignKey: 'linkId',
     constraints: false,
     scope: {
       linkType: 'home_comment',
     },
   })
-  homeComment: Comment;
+  homeComments?: Comment[];
 
-  @Field(() => Comment, { nullable: true })
-  @HasOne(() => Comment, {
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
     foreignKey: 'linkId',
     constraints: false,
     scope: {
       linkType: 'away_comment',
     },
   })
-  awayComment: Comment;
+  awayComments?: Comment[];
 
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;
@@ -121,13 +118,27 @@ export class EncounterChange extends Model {
   hasDates!: HasManyHasAssociationsMixin<EncounterChangeDate, string>;
   countDates!: HasManyCountAssociationsMixin;
 
-  // Has one HomeComment
-  getHomeComment!: HasOneGetAssociationMixin<Comment>;
-  setHomeComment!: HasOneSetAssociationMixin<Comment, string>;
+  // Has many HomeComment
+  getHomeComments!: HasManyGetAssociationsMixin<Comment>;
+  setHomeComments!: HasManySetAssociationsMixin<Comment, string>;
+  addHomeComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addHomeComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeHomeComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeHomeComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasHomeComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasHomeComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countHomeComments!: HasManyCountAssociationsMixin;
 
-  // Has one AwayComment
-  getAwayComment!: HasOneGetAssociationMixin<Comment>;
-  setAwayComment!: HasOneSetAssociationMixin<Comment, string>;
+  // Has many AwayComment
+  getAwayComments!: HasManyGetAssociationsMixin<Comment>;
+  setAwayComments!: HasManySetAssociationsMixin<Comment, string>;
+  addAwayComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addAwayComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeAwayComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeAwayComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasAwayComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasAwayComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countAwayComments!: HasManyCountAssociationsMixin;
 }
 
 @InputType()
@@ -136,8 +147,8 @@ export class EncounterChangeUpdateInput extends PartialType(
     'createdAt',
     'updatedAt',
     'dates',
-    'homeComment',
-    'awayComment'
+    'homeComments',
+    'awayComments',
   ] as const),
   InputType
 ) {

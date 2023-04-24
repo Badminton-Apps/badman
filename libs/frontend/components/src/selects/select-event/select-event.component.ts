@@ -86,7 +86,6 @@ export class SelectEventComponent implements OnInit, OnDestroy {
           data.eventCompetitions.rows?.map((e) => new EventCompetition(e))
         ),
         tap((events) => {
-          console.log('initialEvent', this.initialId);
           if (this.initialId) {
             const initialEvent = events.find((e) => e.id === this.initialId);
             if (initialEvent) {

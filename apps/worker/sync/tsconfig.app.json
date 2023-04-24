@@ -6,6 +6,6 @@
     "types": ["node"],
     "emitDecoratorMetadata": true
   },
-  "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
+  "exclude": ["jest.config.ts",  "**/*.spec.ts", "**/*.test.ts", "**/*.generated.ts"],
   "include": ["**/*.ts"]
 }

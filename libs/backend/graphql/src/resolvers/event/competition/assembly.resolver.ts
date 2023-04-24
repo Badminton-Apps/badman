@@ -1,7 +1,7 @@
 import {
   AssemblyInput,
   AssemblyOutput,
-  AssemblyService,
+  AssemblyValidationService,
 } from '@badman/backend-assembly';
 import { User } from '@badman/backend-authorization';
 import {
@@ -24,7 +24,7 @@ import {
 @Resolver(() => AssemblyOutput)
 export class AssemblyResolver {
   private readonly logger = new Logger(AssemblyResolver.name);
-  constructor(private assemblyService: AssemblyService) {}
+  constructor(private assemblyService: AssemblyValidationService) {}
 
   @Query(() => AssemblyOutput, {
     description: `Validate the assembly\n\r**note**: the levels are the ones from may!`,
@@ -34,7 +34,7 @@ export class AssemblyResolver {
   ): Promise<AssemblyOutput> {
     return this.assemblyService.fetchAndValidate(
       assembly,
-      AssemblyService.defaultValidators()
+      AssemblyValidationService.defaultValidators()
     );
   }
 

@@ -1,0 +1,10 @@
+<div
+  role="group"
+  class="app-date-selector-container"
+  (focusin)="onFocusIn()"
+  (focusout)="onFocusOut($event)"
+  (click)="onClick()"
+  [class.disabled]="this.disabled"
+>
+  {{ dateControl.value | amDateFormat : 'llll' }}
+</div>

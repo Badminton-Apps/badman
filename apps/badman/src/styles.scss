@@ -11,6 +11,8 @@
 @use '../../../libs/frontend/pages/club/theme' as frontend-club;
 @use '../../../libs/frontend/pages/competition/event/theme' as
   frontend-competition;
+@use '../../../libs/frontend/pages/competition/change-encounter/theme' as
+  frontend-change-encounter;
 @use '../../../libs/frontend/pages/tournament/theme' as frontend-tournament;
 @use '../../../libs/frontend/pages/competition/team-enrollment/theme' as
   frontend-team-enrollement;
@@ -57,6 +59,7 @@ $light-theme: theme.badman-light-theme(
 @include frontend-assembly.theme($dark-theme);
 @include frontend-club.theme($dark-theme);
 @include frontend-competition.theme($dark-theme);
+@include frontend-change-encounter.theme($dark-theme);
 @include frontend-tournament.theme($dark-theme);
 @include frontend-team-enrollement.theme($dark-theme);
 @include frontend-components.theme($dark-theme);
@@ -73,6 +76,7 @@ $light-theme: theme.badman-light-theme(
   @include frontend-assembly.colors($light-theme);
   @include frontend-club.colors($light-theme);
   @include frontend-competition.colors($light-theme);
+  @include frontend-change-encounter.colors($light-theme);
   @include frontend-tournament.colors($light-theme);
   @include frontend-team-enrollement.colors($light-theme);
   @include frontend-player.colors($light-theme);

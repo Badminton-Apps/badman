@@ -1,8 +1,15 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ChangeEncounterComponent } from './pages';
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild([])],
+  declarations: [],
+  imports: [
+    CommonModule,
+    RouterModule.forChild([
+      { path: '', pathMatch: 'full', component: ChangeEncounterComponent },
+    ]),
+  ],
 })
 export class ChangeEncounterModule {}

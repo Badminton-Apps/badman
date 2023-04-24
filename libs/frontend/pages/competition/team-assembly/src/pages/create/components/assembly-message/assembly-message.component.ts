@@ -78,13 +78,13 @@ export class AssemblyMessageComponent implements OnInit {
     let genderTranslated: string;
     switch (gender) {
       case 'F':
-        genderTranslated = this.translate.instant(`gender.female`);
+        genderTranslated = this.translate.instant(`all.gender.female`);
         break;
       case 'M':
-        genderTranslated = this.translate.instant(`gender.male`);
+        genderTranslated = this.translate.instant(`all.gender.male`);
         break;
       default:
-        genderTranslated = this.translate.instant(`gender.${gender}`);
+        genderTranslated = this.translate.instant(`all.gender.${gender}`);
         break;
     }
 

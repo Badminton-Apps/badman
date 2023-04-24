@@ -11,14 +11,14 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
-      - name: Get render preview URL
+      - name: Get vercel preview URL
         id: get_preview_url
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const comment = context.payload.comment;
-            const regex = /https:\/\/[a-z0-9-]+\.render\.com/g;
+            const regex = /https:\/\/[a-z0-9-]+\.badman\.vercel\.app/g;
             const matches = comment.body.match(regex);
             let previewUrl = "";
             if (matches && matches.length) {
@@ -26,10 +26,10 @@ jobs:
               console.log('Preview url found:', previewUrl);
             }
             console.log("No preview url found.");
-            core.setOutput('render_preview_url', previewUrl);
+            core.setOutput('vercel_preview_url', previewUrl);
             
       - name: Add comment to PR
-        if: ${{ steps.get_preview_url.outputs.render_preview_url != '' }}
+        if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: loading_comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -40,20 +40,20 @@ jobs:
             Running Lighthouse audit...
 
       - name: Checkout repository
-        if: ${{ steps.get_preview_url.outputs.render_preview_url != '' }}
+        if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         uses: actions/checkout@v3
 
       - name: Audit preview URL with Lighthouse
-        if: ${{ steps.get_preview_url.outputs.render_preview_url != '' }}
+        if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v9
         with:
           urls: |
-            ${{ steps.get_preview_url.outputs.render_preview_url }}
+            ${{ steps.get_preview_url.outputs.vercel_preview_url }}
           uploadArtifacts: true
           temporaryPublicStorage: true
       - name: Format lighthouse score
-        if: ${{ steps.get_preview_url.outputs.render_preview_url != '' }}
+        if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: format_lighthouse_score
         uses: actions/github-script@v6
         with:
@@ -83,7 +83,7 @@ jobs:
              core.setOutput("comment", comment);
              
       - name: Add comment to PR
-        if: ${{ steps.get_preview_url.outputs.render_preview_url != '' }}
+        if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: comment_to_pr
         uses: marocchino/sticky-pull-request-comment@v2
         with:
