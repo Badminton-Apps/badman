@@ -28,8 +28,8 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
-import { delay, map, startWith, tap } from 'rxjs/operators';
-import { LoadingBlockComponent } from '../../../loading-block/';
+import { map, startWith, tap } from 'rxjs/operators';
+import { LoadingBlockComponent } from '../../../loading-block';
 
 @Component({
   standalone: true,
