@@ -49,7 +49,8 @@ export class PlayerOrderRule extends Rule {
         double4,
         type == SubEventTypeEnum.MX ? 'mix3' : 'double3',
         type == SubEventTypeEnum.MX ? 'mix4' : 'double4',
-        system.amountOfLevels
+        system.amountOfLevels,
+        type == SubEventTypeEnum.MX ? 'mix' : 'double'
       )
     );
 
@@ -133,8 +134,9 @@ export class PlayerOrderRule extends Rule {
     double2: [Player, Player],
     game1: string,
     game2: string,
-    defaultRanking = 12
-  ): AssemblyValidationError {
+    defaultRanking = 12,
+    type: 'double' | 'mix' = 'double'
+  ): ValidationError {
     if (!double1 || !double2) return undefined;
     if (!double1[0] || !double1[1] || !double2[0] || !double2[1])
       return undefined;
@@ -142,27 +144,27 @@ export class PlayerOrderRule extends Rule {
     let t1p1 = double1?.[0];
     let t1p2 = double1?.[1];
 
-    let d1p1 = double1?.[0]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
-    let d1p2 = double1?.[1]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
+    let d1p1 = double1?.[0]?.rankingLastPlaces?.[0]?.[type] ?? defaultRanking;
+    let d1p2 = double1?.[1]?.rankingLastPlaces?.[0]?.[type] ?? defaultRanking;
 
     // p1 should always be the lowest ranking
     if (d1p1 > d1p2) {
       t1p1 = double1?.[1];
       t1p2 = double1?.[0];
-      d1p1 = double1?.[1]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
-      d1p2 = double1?.[0]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
+      d1p1 = double1?.[1]?.rankingLastPlaces?.[0]?.[type] ?? defaultRanking;
+      d1p2 = double1?.[0]?.rankingLastPlaces?.[0]?.[type] ?? defaultRanking;
     }
     let t2p1 = double2?.[0];
     let t2p2 = double2?.[1];
-    let d2p1 = double2?.[0]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
-    let d2p2 = double2?.[1]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
+    let d2p1 = double2?.[0]?.rankingLastPlaces?.[0]?.[type] ?? defaultRanking;
+    let d2p2 = double2?.[1]?.rankingLastPlaces?.[0]?.[type] ?? defaultRanking;
 
     // p1 should always be the lowest ranking
     if (d2p1 > d2p2) {
       t2p1 = double2?.[1];
       t2p2 = double2?.[0];
-      d2p1 = double2?.[1]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
-      d2p2 = double2?.[0]?.rankingLastPlaces?.[0]?.double ?? defaultRanking;
+      d2p1 = double2?.[1]?.rankingLastPlaces?.[0]?.[type] ?? defaultRanking;
+      d2p2 = double2?.[0]?.rankingLastPlaces?.[0]?.[type] ?? defaultRanking;
     }
 
     if (d2p1 + d2p2 < d1p1 + d1p2) {

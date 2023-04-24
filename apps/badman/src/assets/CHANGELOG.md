@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.70.2](https://github.com/Badminton-Apps/badman/compare/v6.70.1...v6.70.2) (2023-04-24)
+
+
+### Bug Fixes
+
+* mixed ranking should be used when checking the ranking ([27cc993](https://github.com/Badminton-Apps/badman/commit/27cc9939711f85e6c2020177a470c4a5fc93d31f))
+* only generate HTML on dev ([9877517](https://github.com/Badminton-Apps/badman/commit/9877517376de1a4e3a4776b6a4069e2837cdeae2))
+
+### [6.70.1](https://github.com/Badminton-Apps/badman/compare/v6.70.0...v6.70.1) (2023-04-21)
+
+
+### Bug Fixes
+
+* typo in female label ([137339a](https://github.com/Badminton-Apps/badman/commit/137339add84d83a724152293907a9941002938b6))
+
 ## [6.70.0](https://github.com/Badminton-Apps/badman/compare/v6.69.7...v6.70.0) (2023-04-20)
 
 
