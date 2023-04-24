@@ -235,6 +235,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
                 official
                 openDate
                 closeDate
+                visualCode
                 subEventCompetitions {
                   id
                   drawCompetitions {
@@ -253,8 +254,12 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           },
           order: [
             {
+              direction: 'desc',
+              field: 'official'
+            },
+            {
               direction: direction || 'desc',
-              field: sort || 'startYear',
+              field: sort || 'name',
             },
           ],
           take: size,
@@ -311,6 +316,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
 
   async syncEvent(competition: EventCompetition) {
     if (!competition.visualCode) {
+      console.warn('No visual code');
       return;
     }
 

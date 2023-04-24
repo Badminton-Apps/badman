@@ -21,6 +21,7 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { Observable, map } from 'rxjs';
+import { LoadingBlockComponent } from '../../../loading-block';
 
 @Component({
   standalone: true,
@@ -33,6 +34,9 @@ import { Observable, map } from 'rxjs';
     // Material modules
     MatButtonModule,
     MatListModule,
+
+    // own modules
+    LoadingBlockComponent
   ],
   selector: 'badman-list-encounters',
   templateUrl: './list-encounters.component.html',

@@ -45,6 +45,7 @@
     "usedForUpgrade": "Gebruikt enkel voor upgrade"
   },
   "button": {
+    "add-comment": "Verstuur opmerking",
     "all": "Alles",
     "cancel": "Annuleren",
     "close": "Sluiten",
@@ -89,7 +90,6 @@
     "away": "Uit",
     "change-encounter": {
       "add-date": "Voeg datum toe",
-      "away-comment": "Opmerkingen uitploeg",
       "calendar": {
         "option": "{amount} in optie",
         "other-games": "Andere ontmoetingen die dag",
@@ -100,6 +100,7 @@
       "choose-date": "Kies een datum",
       "choose-encounter": "Kies een ontmoeting",
       "choose-team": "Kies een ploeg",
+      "comment": "Opmerking",
       "comments": "Opmerkingen",
       "dates": "Data",
       "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
@@ -108,7 +109,6 @@
         "select-one-date": "Gelieve minsten 1 dag te selecteren",
         "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
       },
-      "home-comment": "Opmerkingen thuisploeg",
       "not-possible": "Niet beschikbaar",
       "possible": "Beschikbaar",
       "requested": "Verzoek ingediend",
@@ -122,50 +122,6 @@
     "draw": {
       "encounters": "Ontmoetingen",
       "title": "Poule"
-    },
-    "enrollment": {
-      "assign-team": "Deel ploegen in",
-      "availability": "Beschikbaarheid",
-      "base": "Grenzen",
-      "close": "Sluiten",
-      "closed": "Gesloten",
-      "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
-      "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
-      "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
-      "errors": {
-        "base-max": "Ploegindex te hoog voor afdeling",
-        "base-min": "Ploegindex te laag voor afdeling",
-        "best-max": "Sterkste 4 spelers te hoog voor afdeling",
-        "best-players": "Sterkste 4 spelers kunnen nooit samen spelen",
-        "cant-play": "{player.fullName} mag nooit spelen ({type}: {level}, max {max})",
-        "no-captain": "Gelieve een ploegkapitein te kiezen",
-        "no-day": "Gelieve een speelmoment te kiezen",
-        "no-location": "Gelieve een locatie te kiezen",
-        "no-prefferd": "Gelieve een voorkeurs speelmoment te kiezen",
-        "not-allowed": "{player.fullName} mag niet in basis ({type}: {level}, max {max})",
-        "not-comp": "{player.fullName} is niet geregistreerd als een CT-speler (opmerking: het duurt enkele dagen voor de aanvraag tot CT-statuut verwerkt is)"
-      },
-      "exceptions": "Uitzonderingen",
-      "max": "Max",
-      "new-exception": "Nieuwe uitzondering",
-      "new-play-day": "Nieuw speelmoment",
-      "open": "Open",
-      "play-day": "Speelmoment",
-      "player-base": "Speler is al basisspeler van andere ploeg",
-      "players": {
-        "backup": "Reserve speler(s)",
-        "base": "Basis spelers(s)",
-        "regular": "Vaste speler(s)"
-      },
-      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten wet toe tussentijds op te slaan indien er nog onzekerheden zijn over je basis spelers",
-      "select-club": "Selecteer club",
-      "select-events": "Selecteer onderdelen",
-      "select-location": "Selecteer locaties",
-      "select-teams": "Selecteer teams",
-      "select-teams-description": "Hieronder kunt u uw teams aanpassen volgens uw voorkeuren.\n\nU optioneel uw vaste en reserve spelers voor elk team definiëren. Door dit te doen, zorgt u ervoor dat alle spelers in aanmerking komen om voor hun respectievelijke teams te spelen en dat het team soepel kan functioneren zonder last-minute wijzigingen of verwarring.",
-      "title": "Ploeginschrijving",
-      "transfer-teams": "Zet teams over (optioneel)",
-      "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de team nummers in volgende stap nog wijzigen"
     },
     "home": "Thuis",
     "last-updated": "Gewijzigd op",
@@ -233,6 +189,59 @@
       "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
       "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
       "title": "Ploegopstelling",
+      "warnings": {
+        "subtitute-team-index": "s"
+      }
+    },
+    "team-enrollment": {
+      "availability": "Beschikbaarheid",
+      "base": "Grenzen",
+      "captain": "Ploegkapitein",
+      "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
+      "close": "Sluiten",
+      "closed": "Gesloten",
+      "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
+      "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
+      "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
+      "errors": {
+        "already": "Speler al als titualris aanwezig.",
+        "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
+        "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
+        "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
+        "none": "Geen fouten gevonden",
+        "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
+        "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
+        "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
+        "team-to-strong": "Ploegindex titularissen is <strong>{baseIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
+        "title": "Fouten"
+      },
+      "exceptions": "Uitzonderingen",
+      "info": "",
+      "max": "Max",
+      "new-exception": "Nieuwe uitzondering",
+      "new-play-day": "Nieuw speelmoment",
+      "open": "Open",
+      "play-day": "Speelmoment",
+      "player-base": "Speler is al basisspeler van andere ploeg",
+      "players": {
+        "backup": "Reserve speler(s)",
+        "base": "Basis spelers(s)",
+        "regular": "Vaste speler(s)",
+        "team": "",
+        "title": "Mogelijke titularissen"
+      },
+      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten wet toe tussentijds op te slaan indien er nog onzekerheden zijn over je basis spelers",
+      "select-club": "Selecteer club",
+      "select-events": "Selecteer onderdelen",
+      "select-location": "Selecteer locaties",
+      "select-teams": "Selecteer teams",
+      "select-teams-description": "Hieronder kunt u uw teams aanpassen volgens uw voorkeuren.\n\nU kan optioneel uw vaste en reserve spelers voor elk team definiëren. Door dit te doen, zorgt u ervoor dat alle spelers in aanmerking komen om voor hun respectievelijke teams te spelen en dat het team soepel kan functioneren zonder last-minute wijzigingen of verwarring.",
+      "substitude": "Invallers",
+      "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
+      "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
+      "title": "Ploegopstelling",
+      "transfer-teams": "Zet teams over (optioneel)",
+      "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de team nummers in volgende stap nog wijzigen",
       "warnings": {
         "subtitute-team-index": "s"
       }
@@ -583,6 +592,7 @@
     "sidebar": {
       "competition": {
         "assembly": "Opstelling",
+        "change-encounter": "Verplaats ontmoeting",
         "enrollment": "Inschrijven",
         "overview": "Overzicht",
         "title": "Competitie"
@@ -647,6 +657,58 @@
       "example": "Vorbeeld: {teamName}",
       "select": "Team prefix",
       "title": "Team namen"
+    }
+  },
+  "team-enrollment": {
+    "assign-team": "",
+    "availability": "",
+    "base": "",
+    "captain": "",
+    "change-team": "",
+    "close": "",
+    "closed": "",
+    "comment-liga": "",
+    "comment-nat": "",
+    "comment-prov": "",
+    "errors": {
+      "already": "",
+      "club-base-other-team": "",
+      "comp-status": "",
+      "none": "",
+      "player-gender": "",
+      "player-genders": "",
+      "player-min-level": "",
+      "team-index": "",
+      "team-to-strong": "",
+      "title": ""
+    },
+    "exceptions": "",
+    "max": "",
+    "new-exception": "",
+    "new-play-day": "",
+    "open": "",
+    "play-day": "",
+    "player-base": "",
+    "players": {
+      "backup": "",
+      "base": "",
+      "team": "",
+      "title": ""
+    },
+    "save-and-continue-tooltip": "",
+    "select-club": "",
+    "select-events": "",
+    "select-location": "",
+    "select-teams": "",
+    "select-teams-description": "",
+    "substitude": "",
+    "team-index": "",
+    "team-index-ignored": "",
+    "title": "",
+    "transfer-teams": "",
+    "transfer-teams-description": "",
+    "warnings": {
+      "subtitute-team-index": ""
     }
   },
   "themes": {

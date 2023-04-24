@@ -1,5 +1,5 @@
 <div class="description">
-  {{'all.competition.enrollment.select-teams-description' | translate}}
+  {{'all.competition.team-enrollment.select-teams-description' | translate}}
 </div>
 
 <ng-container *ngIf="subEvents$ | async as subEvents else loading">
@@ -12,30 +12,19 @@
       </button>
     </div>
     <div class="teams-container">
-      <ng-container *ngIf="this.control?.get(type)?.value as teams">
-        <ng-container *ngIf="teams.length > 0 else noTeams ">
-          <div class="team" *ngFor="let team of this.control?.get(type)?.value">
-            <badman-team
-              [attr.data-anchor]="team.id"
-              [team]="team"
-              (removeTeam)="this.removeTeam($event)"
-              (changeTeamNumber)="this.changeTeamNumber($event)"
-            ></badman-team>
-
-            <div class="event">
-              <mat-form-field>
-                <mat-label>Select</mat-label>
-                <mat-select [value]="team.entry?.competitionSubEventId">
-                  <mat-option
-                    *ngFor="let subEvent of subEvents[type]"
-                    [value]="subEvent.id"
-                  >
-                    {{subEvent.name}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
+      <ng-container *ngIf="getTypeArray(type) as groups; else noTeams">
+        <ng-container *ngFor="let group of groups.controls">
+          <badman-team-enrollment
+            [attr.data-anchor]="group.get('team')?.value?.id"
+            class="team"
+            [type]="type"
+            [group]="this.group"
+            [subEvents]="subEvents"
+            [validation]="teamValidationResult( group.get('team')?.value?.id)"
+            (changeTeamNumber)="this.changeTeamNumber($event)"
+            (removeTeam)="this.removeTeam($event)"
+          >
+          </badman-team-enrollment>
         </ng-container>
       </ng-container>
     </div>
@@ -43,7 +32,7 @@
 
   <ng-template #noTeams>
     <div class="no-teams">
-      {{'all.competition.enrollment.no-teams' | translate}}
+      {{'all.competition.team-enrollment.no-teams' | translate}}
     </div>
   </ng-template>
 

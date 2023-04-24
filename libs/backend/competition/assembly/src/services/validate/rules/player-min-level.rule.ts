@@ -1,9 +1,9 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class PlayerMinLevelRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       team,
       single1,
@@ -19,7 +19,7 @@ export class PlayerMinLevelRule extends Rule {
       subEvent,
     } = assembly;
 
-    const errors = [] as ValidationError[];
+    const errors = [] as AssemblyValidationError[];
     let valid = true;
 
     if (team.teamNumber != 1) {

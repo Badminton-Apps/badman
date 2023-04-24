@@ -1,14 +1,14 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyData, AssemblyOutput, ValidationError } from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
  * Checks if the substitudes are not better then players from active team (titulars)
  */
 export class SubTeamIndexRule extends Rule {
-  async validate(assembly: AssemblyData): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { meta, type, team, subtitudes } = assembly;
-    const warnings = [] as ValidationError[];
+    const warnings = [] as AssemblyValidationError[];
 
     if (team.teamNumber != 1) {
       // sort players by sum of their ranking places

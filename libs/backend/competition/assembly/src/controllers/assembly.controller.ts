@@ -14,8 +14,8 @@ import { readFile } from 'fs/promises';
 import moment from 'moment-timezone';
 import { I18nService } from 'nestjs-i18n';
 import { lastValueFrom, take } from 'rxjs';
-import { AssemblyData, ValidationError } from '../models';
-import { AssemblyService } from '../services';
+import { AssemblyValidationData, AssemblyValidationError } from '../models';
+import { AssemblyValidationService } from '../services';
 
 type gameType =
   | 'single1'
@@ -35,7 +35,7 @@ export class AssemblyController {
 
   constructor(
     private readonly compileService: CompileService,
-    private readonly assemblyService: AssemblyService,
+    private readonly assemblyService: AssemblyValidationService,
     private readonly i18nService: I18nService<I18nTranslations>
   ) {}
 
@@ -91,7 +91,7 @@ export class AssemblyController {
 
     const validation = await this.assemblyService.validate(
       data,
-      AssemblyService.defaultValidators()
+      AssemblyValidationService.defaultValidators()
     );
 
     let homeTeam: Team;
@@ -209,7 +209,7 @@ export class AssemblyController {
       .pipe(take(1));
   }
 
-  private translateGame(warn: ValidationError) {
+  private translateGame(warn: AssemblyValidationError) {
     const games = warn?.params?.['game'] as gameType;
     if (games != undefined) {
       warn.params['game'] = this.i18nService
@@ -232,7 +232,7 @@ export class AssemblyController {
     }
   }
 
-  private getLabels(data: AssemblyData): string[] {
+  private getLabels(data: AssemblyValidationData): string[] {
     const labels: string[] = [];
     for (let i = 0; i < 8; i++) {
       const gameLabels = gameLabel(
@@ -260,7 +260,7 @@ export class AssemblyController {
 
   private _processPlayer(
     player: Player,
-    data: AssemblyData,
+    data: AssemblyValidationData,
     indexed: string[],
     based: string[]
   ): Partial<Player> & {

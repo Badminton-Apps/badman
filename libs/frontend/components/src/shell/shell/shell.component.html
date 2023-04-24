@@ -54,9 +54,19 @@
               <a mat-list-item [routerLink]="['/competition', 'assembly']">{{
                 'all.shell.sidebar.competition.assembly' | translate
               }}</a>
-              <a mat-list-item [routerLink]="['/competition', 'enrollment']" *ngIf="this.canEnroll$ | async">{{
-                'all.shell.sidebar.competition.enrollment' | translate
-              }}</a>
+              <a
+                mat-list-item
+                [routerLink]="['/competition', 'enrollment']"
+                *ngIf="this.canEnroll$ | async"
+                >{{ 'all.shell.sidebar.competition.enrollment' | translate }}</a
+              >
+              <a
+                mat-list-item
+                [routerLink]="['/competition', 'change-encounter']"
+                >{{
+                  'all.shell.sidebar.competition.change-encounter' | translate
+                }}</a
+              >
             </mat-nav-list>
           </div>
 
