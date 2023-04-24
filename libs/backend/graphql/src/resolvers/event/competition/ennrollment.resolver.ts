@@ -1,7 +1,7 @@
 import {
   EnrollmentInput,
   EnrollmentOutput,
-  ValidationService,
+  EnrollmentValidationService,
 } from '@badman/backend-enrollment';
 import { Logger } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
@@ -9,7 +9,7 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 @Resolver(() => EnrollmentOutput)
 export class EnrollmentResolver {
   private readonly logger = new Logger(EnrollmentResolver.name);
-  constructor(private enrollmentService: ValidationService) {}
+  constructor(private enrollmentService: EnrollmentValidationService) {}
 
   @Query(() => EnrollmentOutput, {
     description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
@@ -19,7 +19,7 @@ export class EnrollmentResolver {
   ): Promise<EnrollmentOutput> {
     return this.enrollmentService.fetchAndValidate(
       enrollment,
-      ValidationService.defaultValidators()
+      EnrollmentValidationService.defaultValidators()
     );
   }
 

@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { AssemblyController } from './controllers';
-import { ValidationService } from './services';
+import { AssemblyValidationService } from './services';
 
 @Module({
   imports: [
@@ -26,8 +26,8 @@ import { ValidationService } from './services';
       inject: [ConfigService],
     }),
   ],
-  providers: [ValidationService],
-  exports: [ValidationService],
+  providers: [AssemblyValidationService],
+  exports: [AssemblyValidationService],
   controllers: [AssemblyController],
 })
 export class AssemblyModule {}

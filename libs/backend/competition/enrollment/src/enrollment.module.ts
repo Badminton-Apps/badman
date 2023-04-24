@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ValidationService } from './services';
+import { EnrollmentValidationService } from './services';
 
 @Module({
   controllers: [],
-  providers: [ValidationService],
-  exports: [ValidationService],
+  providers: [EnrollmentValidationService],
+  exports: [EnrollmentValidationService],
 })
 export class EnrollmentModule {}

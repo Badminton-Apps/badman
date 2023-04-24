@@ -34,11 +34,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 // } from './rules';
 // import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
 import { DatabaseModule } from '@badman/backend-database';
-import { ValidationService } from './enrollment.service';
+import { EnrollmentValidationService } from './enrollment.service';
 import { ConfigModule } from '@nestjs/config';
 
-describe('ValidationService', () => {
-  let service: ValidationService;
+describe('EnrollmentValidationService', () => {
+  let service: EnrollmentValidationService;
   // let system: RankingSystem;
   // let draw: DrawCompetition;
   // let subEvent: SubEventCompetition;
@@ -47,7 +47,7 @@ describe('ValidationService', () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      providers: [ValidationService],
+      providers: [EnrollmentValidationService],
       imports: [
         DatabaseModule,
         ConfigModule.forRoot({
@@ -56,7 +56,7 @@ describe('ValidationService', () => {
       ],
     }).compile();
 
-    service = module.get<ValidationService>(ValidationService);
+    service = module.get<EnrollmentValidationService>(EnrollmentValidationService);
 
     //   // Setup db
     //   const sequelize = module.get<Sequelize>(Sequelize);
