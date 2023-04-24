@@ -1,15 +1,18 @@
 import {
   DrawCompetition,
   EncounterCompetition,
+  EntryCompetitionPlayers,
   EventCompetition,
   Meta,
   Player,
+  PlayerRankingType,
   RankingSystem,
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { AssemblyValidationError } from './error.model';
 
 @InputType()
 export class AssemblyInput {
@@ -56,7 +59,36 @@ export class AssemblyInput {
   description: string;
 }
 
-export class AssemblyData {
+@ObjectType()
+export class AssemblyOutput {
+  @Field(() => [AssemblyValidationError], { nullable: 'itemsAndList' })
+  errors?: AssemblyValidationError[];
+
+  @Field(() => [AssemblyValidationError], { nullable: 'itemsAndList' })
+  warnings?: AssemblyValidationError[];
+
+  @Field(() => Boolean, { nullable: true })
+  valid: boolean;
+
+  @Field(() => Int, { nullable: true })
+  baseTeamIndex?: number;
+
+  @Field(() => Int, { nullable: true })
+  titularsIndex?: number;
+
+  @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
+  baseTeamPlayers?: PlayerRankingType[];
+
+  @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
+  titularsPlayers?: PlayerRankingType[];
+
+  systemId?: string;
+  titularsPlayerData?: Player[];
+  basePlayersData?: EntryCompetitionPlayers[];
+}
+
+
+export class AssemblyValidationData {
   type: SubEventTypeEnum;
   meta: Meta;
   otherMeta: Meta[];

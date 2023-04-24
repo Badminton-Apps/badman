@@ -1,0 +1,52 @@
+<mat-nav-list
+  *ngIf="
+    this.encountersSem1 &&
+    this.encountersSem1.length > 0 &&
+    this.encountersSem2 &&
+    this.encountersSem2.length > 0
+  "
+>
+  <mat-list-item
+    *ngFor="let option of this.encountersSem1"
+    (click)="this.formControl.setValue(option)"
+    [ngClass]="{ selected: this.formControl.value?.id === option?.id }"
+  >
+    <mat-icon matListItemIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
+    <h3 matListItemTitle>
+      {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
+      <span *ngIf="option.originalDate">*</span>
+    </h3>
+    <p matListItemLine>
+      <span>
+        {{
+          'all.competition.' + (option.showingForHomeTeam ? 'home' : 'away')
+            | translate
+        }}
+        - {{ option.date | amDateFormat : 'llll' }}
+      </span>
+    </p>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+
+  <mat-list-item
+    *ngFor="let option of this.encountersSem2"
+    (click)="this.formControl.setValue(option)"
+    [ngClass]="{ selected: this.formControl.value?.id === option?.id }"
+  >
+    <mat-icon matListItemIcon>{{ option.finished ? 'done' : 'info' }}</mat-icon>
+    <h3 matListItemTitle>
+      {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
+      <span *ngIf="option.originalDate">*</span>
+    </h3>
+    <p matListItemLine>
+      <span>
+        {{
+          'all.competition.' + (option.showingForHomeTeam ? 'home' : 'away')
+            | translate
+        }}
+        - {{ option.date | amDateFormat : 'llll' }}
+      </span>
+    </p>
+  </mat-list-item>
+</mat-nav-list>

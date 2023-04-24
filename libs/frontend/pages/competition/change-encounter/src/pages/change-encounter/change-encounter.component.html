@@ -1,0 +1,35 @@
+<div *ngIf="this.formGroup">
+  <div>
+    <h3>
+      {{ 'all.competition.change-encounter.title' | translate }}
+    </h3>
+  </div>
+
+  <p>{{ 'all.competition.change-encounter.description' | translate }}</p>
+
+  <h4>
+    {{ 'all.competition.change-encounter.choose-date' | translate }}
+  </h4>
+  <div class="select-encounter">
+    <badman-select-club
+      singleClubPermission="change:encounter"
+      allClubPermission="change-any:encounter"
+      [updateUrl]="true"
+      [group]="this.formGroup"
+    ></badman-select-club>
+    <badman-select-team
+      [group]="this.formGroup"
+      [updateUrl]="true"
+    ></badman-select-team>
+  </div>
+
+  <div [hidden]="!formGroup.get('team')!.value">
+    <h3>
+      {{ 'all.competition.change-encounter.choose-encounter' | translate }}
+    </h3>
+    <div class="list-encounters">
+      <badman-list-encounters [group]="formGroup"></badman-list-encounters>
+      <badman-show-requests [group]="formGroup"></badman-show-requests>
+    </div>
+  </div>
+</div>

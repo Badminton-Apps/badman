@@ -45,6 +45,7 @@
     "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
   },
   "button": {
+    "add-comment": "Envoyer un commentaire",
     "all": "Tout",
     "cancel": "Annuler",
     "close": "Fermer",
@@ -89,7 +90,6 @@
     "away": "De",
     "change-encounter": {
       "add-date": "Ajouter une date",
-      "away-comment": "Notes équipe à l'extérieur",
       "calendar": {
         "option": "{amount} facultatif",
         "other-games": "Autres rencontres ce jour-là",
@@ -100,6 +100,7 @@
       "choose-date": "Choisir une date",
       "choose-encounter": "Choisir une réunion",
       "choose-team": "Choisir une équipe",
+      "comment": "Remarque",
       "comments": "Notes",
       "dates": "Données",
       "description": "Clause de non-responsabilité : Il s'agit d'une version initiale du module de déplacement des réunions. Des améliorations seront apportées périodiquement.",
@@ -108,7 +109,6 @@
         "select-one-date": "Veuillez sélectionner au moins 1 jour",
         "select-one-date-or-comment": "Veuillez commenter (au moins 15 caractères) ou choisir une date."
       },
-      "home-comment": "Notes équipe locale",
       "not-possible": "Non disponible",
       "possible": "Disponible",
       "requested": "Demande soumise",
@@ -122,50 +122,6 @@
     "draw": {
       "encounters": "Réunions",
       "title": "Piscine"
-    },
-    "enrollment": {
-      "assign-team": "Équipes de partage",
-      "availability": "Disponibilité",
-      "base": "Frontières",
-      "close": "Sluiten",
-      "closed": "Gesloten",
-      "comment-liga": "Notes Compétition de la ligue (par équipe)",
-      "comment-nat": "Notes Ligue nationale (par équipe)",
-      "comment-prov": "Notes Ligue provinciale (par équipe)",
-      "errors": {
-        "base-max": "L'indice de mutation est trop élevé pour le département",
-        "base-min": "L'indice d'affectation est trop bas pour le département",
-        "best-max": "Les quatre joueurs les plus forts sont trop haut placés pour la division",
-        "best-players": "Les 4 joueurs les plus forts ne peuvent jamais jouer ensemble",
-        "cant-play": "{player.fullName} ne peut jamais jouer ({type}: {level}, max {max})",
-        "no-captain": "Veuillez choisir un capitaine d'équipe",
-        "no-day": "Veuillez choisir un temps de jeu",
-        "no-location": "Veuillez choisir un lieu",
-        "no-prefferd": "Veuillez choisir une heure de jeu préférée",
-        "not-allowed": "{player.fullName} n'est pas autorisé dans la base ({type}: {level}, max {max})",
-        "not-comp": "{player.fullName} n'est pas enregistré en tant que joueur de CT (note : le traitement de la demande de statut de CT prend plusieurs jours)"
-      },
-      "exceptions": "Exceptions",
-      "max": "Max",
-      "new-exception": "Nouvelle exception",
-      "new-play-day": "Nouvelle récréation",
-      "open": "Open",
-      "play-day": "Temps de jeu",
-      "player-base": "Le joueur est déjà un joueur de base de l'autre équipe",
-      "players": {
-        "backup": "Joueur(s) de réserve",
-        "base": "Joueurs de base",
-        "regular": "Joueur(s) permanent(s)"
-      },
-      "save-and-continue-tooltip": "Vous pouvez continuer sans sauvegarder vos équipes, mais nous vous laissons sauvegarder entre-temps s'il y a encore des incertitudes concernant vos joueurs de base.",
-      "select-club": "Sélectionner un club",
-      "select-events": "Sélectionner les pièces",
-      "select-location": "Sélectionner les lieux",
-      "select-teams": "Sélectionner les équipes",
-      "select-teams-description": "Ci-dessous, vous pouvez personnaliser vos équipes en fonction de vos préférences.\n\nVous pouvez également définir les joueurs permanents et les joueurs de réserve de chaque équipe. Vous vous assurez ainsi que tous les joueurs peuvent jouer dans leurs équipes respectives et que l'équipe peut fonctionner sans problème, sans changement de dernière minute ni confusion.",
-      "title": "Inscription de l'équipe",
-      "transfer-teams": "Transfert d'équipes (facultatif)",
-      "transfer-teams-description": "Si vous souhaitez transférer votre (vos) équipe(s) à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre (vos) équipe(s) et la (les) placer automatiquement dans l'événement approprié en fonction de votre participation antérieure.\n\nVous pouvez encore modifier les numéros d'équipe à l'étape suivante."
     },
     "home": "Accueil",
     "last-updated": "Modifié le",
@@ -235,6 +191,59 @@
       "title": "Composition de l'équipe",
       "warnings": {
         "subtitute-team-index": "s"
+      }
+    },
+    "team-enrollment": {
+      "availability": "",
+      "base": "",
+      "captain": "",
+      "change-team": "",
+      "close": "",
+      "closed": "",
+      "comment-liga": "",
+      "comment-nat": "",
+      "comment-prov": "",
+      "errors": {
+        "already": "",
+        "club-base-other-team": "",
+        "comp-status-base": "Le joueur titulaire <strong>{player.fullName}</strong> n'est pas inscrit à la compétition",
+        "comp-status-team": "",
+        "none": "",
+        "player-gender": "<strong>{player.fullName}</strong> est un <strong>{player.gender}</strong> mais un <strong>{gender}</strong> était attendu",
+        "player-min-level": "",
+        "team-index": "Les titulaires de l'index d'équipe sont <strong>{teamIndex}</strong> et peuvent être au moins <strong>{baseIndex}</strong> .",
+        "team-to-strong": "Les titulaires de l'index d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas tomber en dessous de la limite de plage de <strong>{minIndex}</strong> ",
+        "title": ""
+      },
+      "exceptions": "",
+      "info": "",
+      "max": "",
+      "new-exception": "",
+      "new-play-day": "",
+      "open": "",
+      "play-day": "",
+      "player-base": "",
+      "players": {
+        "backup": "",
+        "base": "",
+        "regular": "",
+        "team": "",
+        "title": ""
+      },
+      "save-and-continue-tooltip": "",
+      "select-club": "",
+      "select-events": "",
+      "select-location": "",
+      "select-teams": "",
+      "select-teams-description": "",
+      "substitude": "",
+      "team-index": "",
+      "team-index-ignored": "",
+      "title": "",
+      "transfer-teams": "",
+      "transfer-teams-description": "",
+      "warnings": {
+        "subtitute-team-index": ""
       }
     },
     "title": "Concours",
@@ -583,6 +592,7 @@
     "sidebar": {
       "competition": {
         "assembly": "S'aligner",
+        "change-encounter": "Déplacer la rencontre",
         "enrollment": "Inscription",
         "overview": "Vue d'ensemble",
         "title": "Compétitions"
@@ -647,6 +657,58 @@
       "example": "Image d'avant-plan : {teamName}",
       "select": "Préfixe de l'équipe",
       "title": "Nom des équipes"
+    }
+  },
+  "team-enrollment": {
+    "assign-team": "",
+    "availability": "",
+    "base": "",
+    "captain": "",
+    "change-team": "",
+    "close": "",
+    "closed": "",
+    "comment-liga": "",
+    "comment-nat": "",
+    "comment-prov": "",
+    "errors": {
+      "already": "",
+      "club-base-other-team": "",
+      "comp-status": "",
+      "none": "",
+      "player-gender": "",
+      "player-genders": "",
+      "player-min-level": "",
+      "team-index": "",
+      "team-to-strong": "",
+      "title": "n"
+    },
+    "exceptions": "",
+    "max": "",
+    "new-exception": "",
+    "new-play-day": "",
+    "open": "",
+    "play-day": "",
+    "player-base": "",
+    "players": {
+      "backup": "",
+      "base": "",
+      "team": "",
+      "title": "n"
+    },
+    "save-and-continue-tooltip": "",
+    "select-club": "",
+    "select-events": "",
+    "select-location": "",
+    "select-teams": "",
+    "select-teams-description": "",
+    "substitude": "",
+    "team-index": "",
+    "team-index-ignored": "",
+    "title": "",
+    "transfer-teams": "",
+    "transfer-teams-description": "",
+    "warnings": {
+      "subtitute-team-index": ""
     }
   },
   "themes": {

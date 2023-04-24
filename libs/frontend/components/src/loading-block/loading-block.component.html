@@ -1,0 +1,23 @@
+<ng-container *ngFor="let i of [].constructor(this.items); let last = last">
+  <div>
+    <div
+      class="animation-block"
+      [ngStyle]="{
+        'border-radius': borderRadius,
+        height: height,
+        width: width
+      }"
+    ></div>
+
+    <div
+      class="animation-block sub-item"
+      *ngIf="subHeight"
+      [ngStyle]="{
+        'border-radius': borderRadius,
+        height: subHeight,
+        width: width,
+        'margin-top': subGap
+      }"
+    ></div>
+  </div>
+</ng-container>

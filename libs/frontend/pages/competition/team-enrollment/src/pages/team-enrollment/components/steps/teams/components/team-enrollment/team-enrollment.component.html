@@ -1,0 +1,56 @@
+<badman-team
+  [team]="team"
+  [basePlayers]="players"
+  (removeTeam)="this.removeTeam.next($event)"
+  (changeTeamNumber)="this.changeTeamNumber.next($event)"
+></badman-team>
+
+<div class="beside">
+  <div class="event">
+    <mat-form-field>
+      <mat-label>Select</mat-label>
+      <mat-select [formControl]="subEvent">
+        <mat-option
+          *ngFor="let subEvent of subEvents[type]"
+          [value]="subEvent.id"
+        >
+          {{ subEvent.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="information">
+    <div>
+      Min/max {{ validation?.minBaseIndex }} - {{ validation?.maxBaseIndex }}
+    </div>
+
+    <div class="validation-overview">
+      <ul class="error-list" *ngIf="(validation?.errors?.length ?? 0) > 0">
+        <li *ngFor="let error of validation?.errors">
+          <badman-enrollment-message
+            [validation]="error"
+          ></badman-enrollment-message>
+        </li>
+      </ul>
+
+      <ul class="warning-list" *ngIf="(validation?.warnings?.length ?? 0) > 0">
+        <li *ngFor="let warnings of validation?.warnings">
+          <badman-enrollment-message
+            [validation]="warnings"
+          ></badman-enrollment-message>
+        </li>
+      </ul>
+
+      <div
+        class="no-errors"
+        *ngIf="
+          (validation?.errors?.length ?? 0) === 0 &&
+          (validation?.warnings?.length ?? 0) === 0
+        "
+      >
+        {{ 'all.competition.team-assembly.errors.none' | translate }}
+      </div>
+    </div>
+  </div>
+</div>
