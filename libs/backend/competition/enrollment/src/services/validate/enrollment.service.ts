@@ -5,11 +5,12 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
+import { getIndexFromPlayers } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import {
-  EnrollmentValidationData,
-  EnrollmentOutput,
   EnrollmentInput,
+  EnrollmentOutput,
+  EnrollmentValidationData,
   TeamEnrollmentOutput,
 } from '../../models';
 import {
@@ -20,7 +21,6 @@ import {
   TeamBaseIndexRule,
   TeamSubeventIndexRule,
 } from './rules';
-import { SubEventTypeEnum, getIndexFromPlayers } from '@badman/utils';
 
 @Injectable()
 export class ValidationService {

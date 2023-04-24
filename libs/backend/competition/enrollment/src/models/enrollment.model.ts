@@ -15,7 +15,7 @@ import {
   PartialType,
   PickType,
 } from '@nestjs/graphql';
-import { EnrollmentValidationError, TeamValidity } from './error.model';
+import { EnrollmentValidationError } from './error.model';
 
 @InputType()
 export class EnrollmentInput {
