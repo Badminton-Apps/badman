@@ -45,7 +45,8 @@ export class PlayerOrderRule extends Rule {
         double4,
         type == SubEventTypeEnum.MX ? 'mix3' : 'double3',
         type == SubEventTypeEnum.MX ? 'mix4' : 'double4',
-        system.amountOfLevels
+        system.amountOfLevels,
+        type == SubEventTypeEnum.MX ? 'mix' : 'double'
       )
     );
 
