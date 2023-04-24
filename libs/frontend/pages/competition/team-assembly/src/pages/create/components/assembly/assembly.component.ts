@@ -983,7 +983,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       this.captionSingle1Prefix = 'all.gender.males';
       this.captionSingle2Prefix = 'all.gender.males';
 
-      this.captionSingle3Prefix = 'all.gender.femalse';
+      this.captionSingle3Prefix = 'all.gender.females';
       this.captionSingle4Prefix = 'all.gender.females';
 
       this.captionSingle3 = 'all.competition.team-assembly.single1';
