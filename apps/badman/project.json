@@ -34,7 +34,9 @@
           "raf",
           "rgbcolor",
           "quill",
-          "apexcharts"
+          "apexcharts",
+          "core-js",
+          "@storybook"
         ],
         "styles": [
           "apps/badman/src/styles.scss",

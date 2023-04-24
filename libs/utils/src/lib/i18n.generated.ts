@@ -210,7 +210,8 @@ export type I18nTranslations = {
                 "errors": {
                     "already": string;
                     "club-base-other-team": string;
-                    "comp-status": string;
+                    "comp-status-base": string;
+                    "comp-status-team": string;
                     "none": string;
                     "player-gender": string;
                     "player-min-level": string;
