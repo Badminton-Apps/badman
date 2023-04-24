@@ -23,8 +23,8 @@ import {
 } from './rules';
 
 @Injectable()
-export class ValidationService {
-  private readonly _logger = new Logger(ValidationService.name);
+export class EnrollmentValidationService {
+  private readonly _logger = new Logger(EnrollmentValidationService.name);
 
   async getValidationData({
     systemId,

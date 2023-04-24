@@ -15,7 +15,7 @@ import moment from 'moment-timezone';
 import { I18nService } from 'nestjs-i18n';
 import { lastValueFrom, take } from 'rxjs';
 import { AssemblyValidationData, AssemblyValidationError } from '../models';
-import { ValidationService } from '../services';
+import { AssemblyValidationService } from '../services';
 
 type gameType =
   | 'single1'
@@ -35,7 +35,7 @@ export class AssemblyController {
 
   constructor(
     private readonly compileService: CompileService,
-    private readonly assemblyService: ValidationService,
+    private readonly assemblyService: AssemblyValidationService,
     private readonly i18nService: I18nService<I18nTranslations>
   ) {}
 
@@ -91,7 +91,7 @@ export class AssemblyController {
 
     const validation = await this.assemblyService.validate(
       data,
-      ValidationService.defaultValidators()
+      AssemblyValidationService.defaultValidators()
     );
 
     let homeTeam: Team;
