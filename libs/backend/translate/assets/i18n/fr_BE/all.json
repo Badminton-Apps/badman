@@ -206,12 +206,13 @@
       "errors": {
         "already": "",
         "club-base-other-team": "",
-        "comp-status": "",
+        "comp-status-base": "Le joueur titulaire <strong>{player.fullName}</strong> n'est pas inscrit à la compétition",
+        "comp-status-team": "",
         "none": "",
         "player-gender": "<strong>{player.fullName}</strong> est un <strong>{player.gender}</strong> mais un <strong>{gender}</strong> était attendu",
         "player-min-level": "",
         "team-index": "Les titulaires de l'index d'équipe sont <strong>{teamIndex}</strong> et peuvent être au moins <strong>{baseIndex}</strong> .",
-        "team-to-strong": "",
+        "team-to-strong": "Les titulaires de l'index d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas tomber en dessous de la limite de plage de <strong>{minIndex}</strong> ",
         "title": ""
       },
       "exceptions": "",

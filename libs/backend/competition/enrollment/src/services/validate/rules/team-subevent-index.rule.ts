@@ -9,14 +9,7 @@ export class TeamSubeventIndexRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
 
-    for (const {
-      baseIndex,
-      subEvent,
-      team,
-    } of enrollment.teams) {
-      console.log('baseTeamIndex', baseIndex)
-      console.log('subEvent', subEvent.minBaseIndex)
-
+    for (const { baseIndex, subEvent, team } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
       if (baseIndex < subEvent?.minBaseIndex) {
@@ -24,7 +17,7 @@ export class TeamSubeventIndexRule extends Rule {
         errors.push({
           message: 'all.competition.team-enrollment.errors.team-to-strong',
           params: {
-            teamIndex: baseIndex,
+            baseIndex,
             minIndex: subEvent?.minBaseIndex,
             maxIndex: subEvent?.maxBaseIndex,
           },
