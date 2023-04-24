@@ -18,7 +18,7 @@ export class TeamBaseIndexRule extends Rule {
           message: 'all.competition.team-enrollment.errors.team-index',
           params: {
             teamIndex,
-            baseIndex: baseIndex,
+            baseIndex,
           },
         });
       }

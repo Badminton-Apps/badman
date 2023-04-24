@@ -1,7 +1,7 @@
 import {
   EnrollmentValidationData,
   EnrollmentValidationError,
-  RuleResult
+  RuleResult,
 } from '../../../models';
 import { Rule } from './_rule.base';
 
@@ -26,11 +26,12 @@ export class CompetitionStatusRule extends Rule {
         if (!player.competitionPlayer) {
           teamValid = false;
           errors.push({
-            message: 'all.competition.team-enrollment.errors.comp-status',
+            message: 'all.competition.team-enrollment.errors.comp-status-base',
             params: {
-              id: player?.id,
-              fullName: player?.fullName,
-              teamId: team.id,
+              player: {
+                id: player?.id,
+                fullName: player?.fullName,
+              },
             },
           });
         }
@@ -45,11 +46,12 @@ export class CompetitionStatusRule extends Rule {
         if (!player.competitionPlayer) {
           teamValid = false;
           warnings.push({
-            message: 'all.competition.team-enrollment.errors.comp-status',
+            message: 'all.competition.team-enrollment.errors.comp-status-team',
             params: {
-              id: player?.id,
-              fullName: player?.fullName,
-              teamId: team.id,
+              player: {
+                id: player?.id,
+                fullName: player?.fullName,
+              },
             },
           });
         }

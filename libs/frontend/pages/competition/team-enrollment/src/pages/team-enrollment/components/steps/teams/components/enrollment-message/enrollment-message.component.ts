@@ -52,10 +52,11 @@ export class EnrollmentMessageComponent implements OnInit {
 
   private _getIndex() {
     const teamIndex = this.validation?.params?.['teamIndex'] as string;
+    const baseIndex = this.validation?.params?.['baseIndex'] as string;
     const minIndex = this.validation?.params?.['minIndex'] as string;
     const maxIndex = this.validation?.params?.['maxIndex'] as string;
 
-    return of({ teamIndex, minIndex, maxIndex });
+    return of({ teamIndex, minIndex, maxIndex, baseIndex });
   }
 
   private _getPlayers() {

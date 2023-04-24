@@ -94,10 +94,6 @@ export class ValidationService {
           }))
         );
 
-        if (t.teamNumber == 1 && t.type == SubEventTypeEnum.M) {
-          console.log('baseIndex', baseIndex);
-        }
-
         return {
           team: new Team({
             id: t.id,

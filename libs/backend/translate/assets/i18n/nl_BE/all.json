@@ -206,12 +206,13 @@
       "errors": {
         "already": "Speler al als titualris aanwezig.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
-        "comp-status": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
+        "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
+        "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "none": "Geen fouten gevonden",
         "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
         "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
         "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
-        "team-to-strong": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
+        "team-to-strong": "Ploegindex titularissen is <strong>{baseIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
         "title": "Fouten"
       },
       "exceptions": "Uitzonderingen",

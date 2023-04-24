@@ -119,7 +119,7 @@ export class AppController {
   }
 
   @Get('test-glenn')
-  async saveSubscription(@User() user: Player, @Res() res: Response) {
+  async test(@User() user: Player, @Res() res: Response) {
     if (!user.hasAnyPermission(['change:job'])) {
       throw new UnauthorizedException('You do not have permission to do this');
     }

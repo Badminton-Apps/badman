@@ -206,12 +206,13 @@
       "errors": {
         "already": "Player already present as titular.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
-        "comp-status": "<strong>{player.fullName}</strong> is not marked as a competition player",
+        "comp-status-base": "Base player <strong>{player.fullName}</strong> is not marked as a competition player",
+        "comp-status-team": "<strong>{player.fullName}</strong> is not marked as a competition player",
         "none": "No errors found",
         "player-gender": "<strong>{player.fullName}</strong> is a <strong>{player.gender}</strong> but a <strong>{gender}</strong> was expected",
         "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in {rankingType} and may minimally be <strong>{minLevel}</strong>.",
         "team-index": "Team index titulars equals <strong>{teamIndex}</strong> and is allowed to mimimally be <strong>{baseIndex}</strong>",
-        "team-to-strong": "Team index titulars equals <strong>{teamIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
+        "team-to-strong": "Team index titulars equals <strong>{baseIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
         "title": "Errors"
       },
       "exceptions": "Exceptions",
