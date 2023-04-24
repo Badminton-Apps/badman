@@ -139,6 +139,8 @@ export class AssemblyValidationService {
     // Filter out this team's meta
     const meta = filteredMemberships?.find((m) => m.teamId == teamId)?.meta;
 
+    this._logger.debug(`Meta: ${JSON.stringify(meta)}`);
+
     meta.competition.players = getBestPlayers(
       team.type,
       meta.competition.players
