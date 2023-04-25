@@ -45,6 +45,7 @@
     "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
   },
   "button": {
+    "add": "Ajouter",
     "add-comment": "Envoyer un commentaire",
     "all": "Tout",
     "cancel": "Annuler",
@@ -478,14 +479,13 @@
     "start-time": "Start time"
   },
   "player": {
-    "menu": {
-      "delete": "Enlever",
-      "edit": "Modifier"
-    }
-  },
-  "players": {
     "backup": "Joueur de réserve",
     "base": "Joueur de base",
+    "menu": {
+      "add": "Nouveau joueur",
+      "delete": "Enlever",
+      "edit": "Modifier"
+    },
     "no-memberid": "Numéro de membre inconnu",
     "regular": "Joueur régulier",
     "search": {

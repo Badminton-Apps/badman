@@ -36,16 +36,19 @@ const APP_ROUTES: Routes = [
     path: '',
     loadComponent: () =>
       import('@badman/frontend-components').then((m) => m.LandingComponent),
+    data: { animation: 'HomePage' },
   },
   {
     path: 'club',
     loadChildren: () =>
       import('@badman/frontend-club').then((m) => m.ClubModule),
+    data: { animation: 'ClubPage' },
   },
   {
     path: 'player',
     loadChildren: () =>
       import('@badman/frontend-player').then((m) => m.PlayerModule),
+    data: { animation: 'openClosePage' },
   },
   {
     path: 'ranking',
@@ -78,6 +81,7 @@ const APP_ROUTES: Routes = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'badman' }),
     GraphQLModule.forRoot({
       api: environment.graphql,
@@ -89,11 +93,11 @@ const APP_ROUTES: Routes = [
       useRefreshTokens: true,
       useRefreshTokensFallback: true,
       authorizationParams: {
-        redirect_uri: typeof window !== 'undefined' ? window.location.origin : '',
+        redirect_uri:
+          typeof window !== 'undefined' ? window.location.origin : '',
         audience: 'ranking-simulation',
       },
     }),
-    BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable

@@ -49,6 +49,7 @@ export type I18nTranslations = {
             "usedForUpgrade": string;
         };
         "button": {
+            "add": string;
             "add-comment": string;
             "all": string;
             "cancel": string;
@@ -482,14 +483,13 @@ export type I18nTranslations = {
             "start-time": string;
         };
         "player": {
+            "backup": string;
+            "base": string;
             "menu": {
+                "add": string;
                 "delete": string;
                 "edit": string;
             };
-        };
-        "players": {
-            "backup": string;
-            "base": string;
             "no-memberid": string;
             "regular": string;
             "search": {

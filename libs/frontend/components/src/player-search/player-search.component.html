@@ -17,7 +17,7 @@
           [value]="this.formControl.value"
           *ngIf="options.length === 0 && this.allowCreation"
         >
-          {{ 'all.players.search.create' | translate }}
+          {{ 'all.player.search.create' | translate }}
         </mat-option>
 
         <mat-option
@@ -25,7 +25,7 @@
           *ngIf="options.length === 0 && !this.allowCreation"
           [disabled]="true"
         >
-          {{ 'all.players.search.not-found' | translate }}
+          {{ 'all.player.search.not-found' | translate }}
         </mat-option>
 
         <mat-option
@@ -48,3 +48,18 @@
     </mat-autocomplete>
   </mat-form-field>
 </form>
+
+<ng-template #newPlayer>
+  <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
+  <mat-dialog-content>
+    <badman-player-fields [group]="newPlayerFormGroup"></badman-player-fields>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button [matDialogClose]="true" color="primray">
+      {{ 'all.button.create' | translate }}
+    </button>
+    <button mat-button matDialogClose>
+      {{ 'all.button.cancel' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>
