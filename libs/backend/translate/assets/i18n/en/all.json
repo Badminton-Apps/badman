@@ -45,6 +45,7 @@
     "usedForUpgrade": "Used for upgrade"
   },
   "button": {
+    "add": "Add",
     "add-comment": "Send comment",
     "all": "All",
     "cancel": "Cancel",
@@ -478,14 +479,13 @@
     "start-time": "Start time"
   },
   "player": {
-    "menu": {
-      "delete": "Delete",
-      "edit": "Edit"
-    }
-  },
-  "players": {
     "backup": "Backup player",
     "base": "Base player",
+    "menu": {
+      "add": "New player",
+      "delete": "Delete",
+      "edit": "Edit"
+    },
     "no-memberid": "Unknown member id",
     "regular": "Regular player",
     "search": {

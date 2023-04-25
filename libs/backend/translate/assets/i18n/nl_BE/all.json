@@ -45,6 +45,7 @@
     "usedForUpgrade": "Gebruikt enkel voor upgrade"
   },
   "button": {
+    "add": "Voeg toe",
     "add-comment": "Verstuur opmerking",
     "all": "Alles",
     "cancel": "Annuleren",
@@ -478,14 +479,13 @@
     "start-time": ""
   },
   "player": {
-    "menu": {
-      "delete": "Verwijder",
-      "edit": "Bewerken"
-    }
-  },
-  "players": {
     "backup": "Reserve speler",
     "base": "Basis speler",
+    "menu": {
+      "add": "Nieuwe speler",
+      "delete": "Verwijder",
+      "edit": "Bewerken"
+    },
     "no-memberid": "Onbekend lidnummer",
     "regular": "Vaste speler",
     "search": {

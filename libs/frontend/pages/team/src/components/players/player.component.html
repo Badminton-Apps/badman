@@ -8,7 +8,7 @@
         (selectionChange)="changePlayerMembershipType(player, $event)"
       >
         <mat-option *ngFor="let type of types" [value]="type">
-          {{ 'all.players.' + type | lowercase | translate }}
+          {{ 'all.player.' + type | lowercase | translate }}
         </mat-option>
       </mat-select>
     </mat-form-field>
