@@ -12,7 +12,6 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SeoService } from '@badman/frontend-seo';
 import { Apollo, gql } from 'apollo-angular';
 
-import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,18 +32,13 @@ import {
   Player,
   Team,
 } from '@badman/frontend-models';
+import { TwizzitService } from '@badman/frontend-twizzit';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { saveAs } from 'file-saver';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
-import {
-  map,
-  startWith,
-  switchMap,
-  takeUntil
-} from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -98,7 +92,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private httpClient: HttpClient,
+    private twizzitService: TwizzitService,
     @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
@@ -324,19 +318,9 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  downloadTwizzit(club: Club) {
-    const season = this.filter.get('season')?.toString();
-    this.httpClient
-      .get(`/api/twizzit/games`, {
-        params: {
-          clubId: club.id ?? '',
-          year: `${season}`,
-        },
-        responseType: 'blob',
-      })
-      .subscribe((result) => {
-        saveAs(result, `twizzit-${club.slug}-${season}.xlsx`);
-      });
+  async downloadTwizzit() {
+    const season = this.filter.get('season')?.value;
+    await lastValueFrom(this.twizzitService.downloadTwizzit(this.club, season));
   }
 
   addPlayer() {
