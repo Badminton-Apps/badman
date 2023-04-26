@@ -71,18 +71,25 @@
 
 <badman-has-claim [any]="['change-base:team']">
   <h2>Base players</h2>
-  <mat-form-field fxFlex="300px">
-    <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
-    <mat-select [formControl]="this.competitionYear">
-      <mat-option
-        *ngFor="let option of this.seasons"
-        [value]="option"
-      >
-        {{ option }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
 
+  <div class="options">
+    <mat-form-field>
+      <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
+      <mat-select [formControl]="this.competitionYear">
+        <mat-option *ngFor="let option of this.seasons" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button
+      mat-icon-button
+      *ngIf="this.competitionYear.value"
+      (click)="addTeam()"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
   <div class="teams">
     <badman-club-edit-team
       *ngFor="let team of this.teamsForYear$ | async"
@@ -97,4 +104,36 @@
 
 <ng-template #loading>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
+
+<ng-template #newTeamTemplate>
+  <h2 matDialogTitle>{{'all.club.new-team' | translate}}</h2>
+
+  <!-- <mat-dialog-content *ngIf="this.newTeamForm" [formGroup]="this.newTeamForm">
+      <mat-form-field>
+        <mat-label>{{'all.team.types.title' | translate}}</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of eventTypes" [value]="type">
+            {{'all.team.types.long.' + type | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{'all.team.change-number.number' | translate}}</mat-label>
+        <mat-select formControlName="teamNumber">
+          <mat-option *ngFor="let number of selectNumbers" [value]="number">
+            {{ number }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  </mat-dialog-content> -->
+  <mat-dialog-actions align="end">
+    <button mat-button [matDialogClose]="true">
+      {{'all.button.add' | translate}}
+    </button>
+    <button mat-button matDialogClose color="primary">
+      {{'all.button.cancel' | translate}}
+    </button>
+  </mat-dialog-actions>
 </ng-template>

@@ -54,12 +54,8 @@ export class ClubEditTeamComponent implements OnInit {
   where!: { [key: string]: unknown };
 
   ngOnInit(): void {
-    if (!this.team.entry) {
-      throw new Error('Team has no entries');
-    }
-
-    this.teamIndex = this.team.entry.meta?.competition?.teamIndex;
-    this.players = this.team.entry.meta?.competition?.players.map((p) => {
+    this.teamIndex = this.team.entry?.meta?.competition?.teamIndex;
+    this.players = this.team.entry?.meta?.competition?.players.map((p) => {
       const player = new Player(p.player) as Partial<Player> & {
         single: number;
         double: number;
