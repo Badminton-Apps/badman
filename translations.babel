@@ -11585,7 +11585,7 @@
 		<copy_templates>
 			<copy_template>{{'all.%1' | translate}}</copy_template>
 			<copy_template>[translate]=&quot;'all.%1'&quot;</copy_template>
-			<copy_template>_('all.%1')</copy_template>
+			<copy_template>'all.%1'</copy_template>
 		</copy_templates>
 		<custom_languages/>
 	</editor_configuration>
