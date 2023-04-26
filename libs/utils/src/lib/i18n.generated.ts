@@ -49,6 +49,7 @@ export type I18nTranslations = {
             "usedForUpgrade": string;
         };
         "button": {
+            "add": string;
             "add-comment": string;
             "all": string;
             "cancel": string;
@@ -75,6 +76,12 @@ export type I18nTranslations = {
         };
         "club": {
             "current": string;
+            "delete": {
+                "team": {
+                    "description": string;
+                    "title": string;
+                };
+            };
             "end": string;
             "menu": {
                 "add-player": string;
@@ -82,6 +89,7 @@ export type I18nTranslations = {
                 "edit": string;
                 "twizzit": string;
             };
+            "new-team": string;
             "number": string;
             "start": string;
             "titles": {
@@ -655,6 +663,7 @@ export type I18nTranslations = {
                     "mix": string;
                     "national": string;
                 };
+                "title": string;
             };
             "usedForTeam": {
                 "description": string;
