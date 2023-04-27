@@ -52,6 +52,7 @@ import {
 } from './components';
 
 @Component({
+  selector: 'badman-club-edit',
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
   standalone: true,
@@ -176,8 +177,13 @@ export class EditPageComponent implements OnInit, OnDestroy {
                     teamNumber
                     entry {
                       id
-                      competitionSubEvent {
+                      subEventCompetition {
                         id
+                        name
+                        eventCompetition {
+                          id
+                          name
+                        }
                       }
                       meta {
                         competition {
@@ -487,7 +493,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       throw new Error('No player id');
     }
 
-    if (!team.entry?.competitionSubEvent?.id) {
+    if (!team.entry?.subEventCompetition?.id) {
       throw new Error('No sub event id');
     }
 
@@ -510,7 +516,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         `,
         variables: {
           playerId: player.id,
-          subEventId: team.entry.competitionSubEvent.id,
+          subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
       })
@@ -527,7 +533,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       throw new Error('No player id');
     }
 
-    if (!team.entry?.competitionSubEvent?.id) {
+    if (!team.entry?.subEventCompetition?.id) {
       throw new Error('No sub event id');
     }
 
@@ -550,7 +556,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         `,
         variables: {
           playerId: player.id,
-          subEventId: team.entry.competitionSubEvent.id,
+          subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
       })
