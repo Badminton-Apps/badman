@@ -166,7 +166,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
       this.logger.debug(`Processing entry ${item} - ${team.name}`);
 
-      await entry.setCompetitionDraw(draw, {
+      await entry.setDrawCompetition(draw, {
         transaction: this.transaction,
       });
       await entry.setTeam(team, {
