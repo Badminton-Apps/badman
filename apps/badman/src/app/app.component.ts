@@ -1,17 +1,21 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ChildrenOutletContexts } from '@angular/router';
-import { slideInAnimation } from './app.animations';
+import { otherAnimation } from './app.animations';
 
 @Component({
   selector: 'badman-root',
   template: `<badman-shell>
-    <div [@routerTransition]="getRouteAnimationData()">
+    
+    <main [@routerTransition]="getRouteAnimationData()">
       <router-outlet></router-outlet>
-    </div>
+    </main>
   </badman-shell>`,
-  animations: [slideInAnimation],
+  animations: [otherAnimation],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
+  loading = false;
+
   constructor(private contexts: ChildrenOutletContexts) {}
 
   getRouteAnimationData() {

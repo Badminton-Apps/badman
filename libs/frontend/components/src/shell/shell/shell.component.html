@@ -104,6 +104,14 @@
     </mat-toolbar>
 
     <div class="content">
+      <div class="loading">
+        <mat-progress-bar
+          *ngIf="loading"
+          color="accent"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      </div>
+
       <xng-breadcrumb>
         <ng-container *xngBreadcrumbItem="let breadcrumb">
           <span class="breadcrumb">{{ breadcrumb }}</span>

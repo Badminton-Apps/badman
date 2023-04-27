@@ -13,7 +13,7 @@ import { JobsModule } from '@badman/frontend-jobs';
 import { HttpClient } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RANKING_CONFIG} from '@badman/frontend-ranking';
+import { RANKING_CONFIG } from '@badman/frontend-ranking';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { PdfModule } from '@badman/frontend-pdf';
 import { TwizzitModule } from '@badman/frontend-twizzit';
@@ -36,24 +36,33 @@ const APP_ROUTES: Routes = [
     path: '',
     loadComponent: () =>
       import('@badman/frontend-components').then((m) => m.LandingComponent),
-    data: { animation: 'HomePage' },
+    data: {
+      animation: 'landing',
+    },
   },
   {
     path: 'club',
     loadChildren: () =>
       import('@badman/frontend-club').then((m) => m.ClubModule),
-    data: { animation: 'ClubPage' },
+    data: {
+      animation: 'club',
+    },
   },
   {
     path: 'player',
     loadChildren: () =>
       import('@badman/frontend-player').then((m) => m.PlayerModule),
-    data: { animation: 'openClosePage' },
+    data: {
+      animation: 'player',
+    },
   },
   {
     path: 'ranking',
     loadChildren: () =>
       import('@badman/frontend-ranking').then((m) => m.RankingModule),
+    data: {
+      animation: 'ranking',
+    }
   },
   {
     path: 'competition',
