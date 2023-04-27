@@ -113,7 +113,7 @@ export class ClubsResolver {
   }
 
   @Mutation(() => Club)
-  async addClub(@User() user: Player, @Args('data') newClubData: ClubNewInput) {
+  async createClub(@User() user: Player, @Args('data') newClubData: ClubNewInput) {
     if (!user.hasAnyPermission(['add:club'])) {
       throw new UnauthorizedException(
         `You do not have permission to add a club`

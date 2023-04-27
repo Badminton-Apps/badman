@@ -177,16 +177,16 @@ export class EventsStepComponent implements OnInit {
         ...(teams.MX ?? []),
         ...(teams.NATIONAL ?? []),
       ].forEach((t) => {
-        if (t.team?.entry?.competitionSubEvent?.eventCompetition) {
+        if (t.team?.entry?.subEventCompetition?.eventCompetition) {
           if (
             !competitions.find(
               (c) =>
                 c.id ==
-                (t.team?.entry?.competitionSubEvent?.eventCompetition?.id ?? '')
+                (t.team?.entry?.subEventCompetition?.eventCompetition?.id ?? '')
             )
           ) {
             competitions.push(
-              t.team?.entry.competitionSubEvent.eventCompetition
+              t.team?.entry.subEventCompetition.eventCompetition
             );
           }
         }

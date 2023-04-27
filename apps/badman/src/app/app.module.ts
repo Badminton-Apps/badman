@@ -15,7 +15,8 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { PdfModule } from '@badman/frontend-pdf';
-
+import { TwizzitModule } from '@badman/frontend-twizzit';
+import { AuthModule } from '@badman/frontend-auth';
 import { SeoModule } from '@badman/frontend-seo';
 import { TranslationModule } from '@badman/frontend-translation';
 import { AnalyticsModule } from '@badman/frontend-vitals';
@@ -28,32 +29,42 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { RANKING_CONFIG } from '@badman/frontend-ranking';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { AuthModule } from '@badman/frontend-auth';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { ShellComponent } from '@badman/frontend-components';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { RANKING_CONFIG } from '@badman/frontend-ranking';
 
 const APP_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
       import('@badman/frontend-components').then((m) => m.LandingComponent),
+    data: {
+      animation: 'landing',
+    },
   },
   {
     path: 'club',
     loadChildren: () =>
       import('@badman/frontend-club').then((m) => m.ClubModule),
+    data: {
+      animation: 'club',
+    },
   },
   {
     path: 'player',
     loadChildren: () =>
       import('@badman/frontend-player').then((m) => m.PlayerModule),
+    data: {
+      animation: 'player',
+    },
   },
   {
     path: 'ranking',
     loadChildren: () =>
       import('@badman/frontend-ranking').then((m) => m.RankingModule),
+    data: {
+      animation: 'ranking',
+    }
   },
   {
     path: 'competition',
@@ -81,6 +92,7 @@ const APP_ROUTES: Routes = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'badman' }),
     GraphQLModule.forRoot({
       api: environment.graphql,
@@ -92,11 +104,11 @@ const APP_ROUTES: Routes = [
       useRefreshTokens: true,
       useRefreshTokensFallback: true,
       authorizationParams: {
-        redirect_uri: typeof window !== 'undefined' ? window.location.origin : '',
+        redirect_uri:
+          typeof window !== 'undefined' ? window.location.origin : '',
         audience: 'ranking-simulation',
       },
     }),
-    BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
@@ -123,6 +135,9 @@ const APP_ROUTES: Routes = [
     }),
     PdfModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/pdf`,
+    }),
+    TwizzitModule.forRoot({
+      api: `${environment.api}/${environment.apiVersion}/twizzit`,
     }),
     TranslationModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/translate/i18n/`,

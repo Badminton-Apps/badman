@@ -20,7 +20,7 @@ export class PlannerService {
         const entries = await sub.getEventEntries();
         for (const entry of entries) {
           const team = await entry.getTeam();
-          const draw = await entry.getCompetitionDraw();
+          const draw = await entry.getDrawCompetition();
 
           const teaminfo = {
             id: team?.id,

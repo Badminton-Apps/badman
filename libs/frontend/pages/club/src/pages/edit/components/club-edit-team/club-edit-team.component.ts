@@ -12,7 +12,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { PlayerSearchComponent } from '@badman/frontend-components';
-import { Club, Player, Team } from '@badman/frontend-models';
+import {
+  Club,
+  Player,
+  SubEventCompetition,
+  Team,
+} from '@badman/frontend-models';
 
 @Component({
   selector: 'badman-club-edit-team',
@@ -44,6 +49,8 @@ export class ClubEditTeamComponent implements OnInit {
   @Input()
   team!: Team;
 
+  entry?: SubEventCompetition;
+
   players?: (Partial<Player> & {
     single: number;
     double: number;
@@ -54,12 +61,10 @@ export class ClubEditTeamComponent implements OnInit {
   where!: { [key: string]: unknown };
 
   ngOnInit(): void {
-    if (!this.team.entry) {
-      throw new Error('Team has no entries');
-    }
+    this.entry = this.team.entry?.subEventCompetition;
 
-    this.teamIndex = this.team.entry.meta?.competition?.teamIndex;
-    this.players = this.team.entry.meta?.competition?.players.map((p) => {
+    this.teamIndex = this.team.entry?.meta?.competition?.teamIndex;
+    this.players = this.team.entry?.meta?.competition?.players.map((p) => {
       const player = new Player(p.player) as Partial<Player> & {
         single: number;
         double: number;
@@ -78,5 +83,9 @@ export class ClubEditTeamComponent implements OnInit {
           ? undefined
           : this.team.type,
     };
+  }
+
+  changeSubEvent(){
+    //
   }
 }

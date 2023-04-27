@@ -45,6 +45,7 @@
     "usedForUpgrade": "Gebruikt enkel voor upgrade"
   },
   "button": {
+    "add": "Voeg toe",
     "add-comment": "Verstuur opmerking",
     "all": "Alles",
     "cancel": "Annuleren",
@@ -71,6 +72,12 @@
   },
   "club": {
     "current": "Huidig club",
+    "delete": {
+      "team": {
+        "description": "Weet u zeker dat je dit team wilt verwijderen?",
+        "title": "Team verwijderen"
+      }
+    },
     "end": "Einde",
     "menu": {
       "add-player": "Voeg speler toe",
@@ -78,6 +85,7 @@
       "edit": "Bewerken",
       "twizzit": "Twizzit overview"
     },
+    "new-team": "Nieuwe ploeg",
     "number": "club nummer",
     "start": "Begindatum",
     "titles": {
@@ -478,14 +486,13 @@
     "start-time": ""
   },
   "player": {
-    "menu": {
-      "delete": "Verwijder",
-      "edit": "Bewerken"
-    }
-  },
-  "players": {
     "backup": "Reserve speler",
     "base": "Basis speler",
+    "menu": {
+      "add": "Nieuwe speler",
+      "delete": "Verwijder",
+      "edit": "Bewerken"
+    },
     "no-memberid": "Onbekend lidnummer",
     "regular": "Vaste speler",
     "search": {
@@ -650,7 +657,8 @@
         "male": "H",
         "mix": "G",
         "national": ""
-      }
+      },
+      "title": "Reeks"
     },
     "usedForTeam": {
       "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",

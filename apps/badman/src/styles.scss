@@ -138,6 +138,10 @@ mat-sidenav-container {
   background-clip: content-box;
 }
 
+mat-dialog-content {
+  overflow: inherit;
+}
+
 // Spinner for button
 button.spinner {
   .mdc-button__label {
