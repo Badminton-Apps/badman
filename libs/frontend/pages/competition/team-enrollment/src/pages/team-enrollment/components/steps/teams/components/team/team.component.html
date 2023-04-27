@@ -30,7 +30,7 @@
 <div class="normal-players">
   <div class="expandable-item" (click)="expanded.regular = !expanded.regular">
     <div>
-      {{ 'all.players.title' | translate }}
+      {{ 'all.player.title' | translate }}
       <span class="count">
         - {{ baseCount }}
         {{ 'all.competition.team-enrollment.players.regular' | translate }}
@@ -73,7 +73,7 @@
             (selectionChange)="changePlayerType(player, $event.value)"
           >
             <mat-option *ngFor="let type of types" [value]="type">
-              {{ 'all.players.' + type | lowercase | translate }}
+              {{ 'all.player.' + type | lowercase | translate }}
             </mat-option>
           </mat-select>
         </mat-form-field>

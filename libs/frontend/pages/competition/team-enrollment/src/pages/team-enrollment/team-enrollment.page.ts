@@ -19,6 +19,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import {
   ClubStepComponent,
   EventsStepComponent,
+  LocationForm,
+  LocationsStepComponent,
   TeamForm,
   TeamsStepComponent,
   TeamsTransferStepComponent,
@@ -46,6 +48,7 @@ export const STEP_AVAILIBILTY = 1;
     EventsStepComponent,
     TeamsTransferStepComponent,
     TeamsStepComponent,
+    LocationsStepComponent,
   ],
 })
 export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
@@ -64,6 +67,7 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       },
       [Validators.required]
     ),
+    locations: new FormArray<LocationForm>([], [Validators.required]),
   });
 
   constructor(

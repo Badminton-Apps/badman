@@ -1,1 +1,1 @@
-<p>locations works!</p>
+<div *ngFor="let location of this.locations$ | async">{{ location.name}}</div>

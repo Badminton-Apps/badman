@@ -1,1 +1,7 @@
-<badman-edit-team [teamId]="this.team.id!"></badman-edit-team>
+<ng-container *ngIf="this.group">
+  <badman-team-fields
+    [group]="this.group"
+    [teamNumbers]="this.teamNumbers"
+  ></badman-team-fields>
+  <badman-team-player [group]="this.group"></badman-team-player>
+</ng-container>
