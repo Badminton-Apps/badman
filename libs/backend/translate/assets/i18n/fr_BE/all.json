@@ -72,6 +72,12 @@
   },
   "club": {
     "current": "Club actuel",
+    "delete": {
+      "team": {
+        "description": "Voulez-vous vraiment supprimer cette équipe ?",
+        "title": "Supprimer l'équipe"
+      }
+    },
     "end": "Fin",
     "menu": {
       "add-player": "Ajouter un joueur",
@@ -79,6 +85,7 @@
       "edit": "Modifier",
       "twizzit": "Présentation de Twizzit"
     },
+    "new-team": "Nouvelle Équipe",
     "number": "numéro de club",
     "start": "Date de début",
     "titles": {
@@ -650,7 +657,8 @@
         "male": "H",
         "mix": "G",
         "national": ""
-      }
+      },
+      "title": "Série"
     },
     "usedForTeam": {
       "description": "Les noms d'équipe sont générés automatiquement, sélectionnez le préfixe que vous souhaitez utiliser",

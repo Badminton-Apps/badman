@@ -429,6 +429,41 @@ export class TeamsResolver {
     }
   }
 
+  @Mutation(() => Boolean)
+  async deleteTeam(
+    @Args('id', { type: () => ID }) id: number,
+    @User() user: Player
+  ): Promise<boolean> {
+    const transaction = await this._sequelize.transaction();
+    try {
+      const dbTeam = await Team.findByPk(id, { transaction });
+
+      if (!dbTeam) {
+        throw new NotFoundException(`${Team.name}: ${id}`);
+      }
+
+      if (
+        !user.hasAnyPermission([
+          `${dbTeam.clubId}_edit:location`,
+          'edit-any:club',
+        ])
+      ) {
+        throw new UnauthorizedException(
+          `You do not have permission to add a competition`
+        );
+      }
+
+      await dbTeam.destroy({ transaction });
+
+      await transaction.commit();
+      return true;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
   /**
    * Sets the name and abbreviation for a team.
    * @param team The team to set the name and abbreviation for.

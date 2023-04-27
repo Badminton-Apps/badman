@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,9 +11,10 @@ import {
   HasClaimComponent,
   PlayerSearchComponent,
 } from '@badman/frontend-components';
-import { Player, Team } from '@badman/frontend-models';
+import { Player } from '@badman/frontend-models';
+import { SubEventType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { debounceTime, tap } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-team-fields',
@@ -47,70 +43,54 @@ import { debounceTime, tap } from 'rxjs';
 })
 export class TeamFieldComponent implements OnInit {
   @Input()
-  team!: Team;
+  teamNumbers?: {
+    [key in SubEventType]: number[];
+  };
+
+  options?: number[];
 
   @Input()
-  teamNumbers!: number[];
-
-  @Output()
-  teamUpdated = new EventEmitter<Team>();
-
-  @Output()
-  numberChanged = new EventEmitter<{
-    oldNumber: number;
-    newNumber: number;
-  }>();
-
-  teamForm?: FormGroup;
+  group?: FormGroup;
 
   ngOnInit(): void {
-    const numberControl = new FormControl(this.team.teamNumber);
-    const typeControl = new FormControl(this.team.type);
+    if (!this.group) {
+      throw new Error('No group provided');
+    }
 
-    const captainIdControl = new FormControl(this.team.captain?.id);
-    const phoneControl = new FormControl(this.team.phone);
-    const emailControl = new FormControl(this.team.email);
+    this.group.get('teamNumber')?.disable();
+    if (this.group.value.id) {
+      this.group.get('type')?.disable();
+    }
 
-    this.teamForm = new FormGroup({
-      teamNumber: numberControl,
-      type: typeControl,
-      captainId: captainIdControl,
-      phone: phoneControl,
-      email: emailControl,
-    });
+    this.group
+      .get('type')
+      ?.valueChanges.pipe(startWith(this.group.get('type')?.value))
+      .subscribe((type) => {
+        if (!this.teamNumbers) {
+          return;
+        }
 
-    numberControl.valueChanges.subscribe((r) => this.onNumberChange(r ?? -1));
+        if (type) {
+          this.options = [...(this.teamNumbers?.[type as SubEventType] ?? [])];
+          if (!this.group?.value.id) {
+            if (this.options?.length === 0) {
+              this.options?.push(0);
+            }
 
-    this.teamForm.valueChanges
-      .pipe(
-        tap((r) => {
-          this.team.teamNumber = r.teamNumber;
-          this.team.type = r.type;
-          this.team.captainId = r.captainId;
-          this.team.phone = r.phone;
-          this.team.email = r.email;
-        }),
-        debounceTime(600)
-      )
-      .subscribe(() => this.teamUpdated.emit(this.team));
+            this.options?.push(Math.max(...this.options) + 1);
+            this.group?.get('teamNumber')?.setValue(this.options?.at(-1));
+          }
+
+          this.group?.get('teamNumber')?.enable();
+        }
+      });
   }
 
   async onCaptainSelect(player: Partial<Player>) {
-    this.team.captainId = player.id;
-    this.team.captain = player as Player;
-
-    this.teamForm?.patchValue({
+    this.group?.patchValue({
       captainId: player.id,
       email: player.email,
       phone: player.phone,
-    });
-  }
-
-  onNumberChange(newNumber: number) {
-    console.log('onNumberChange', newNumber);
-    this.numberChanged.emit({
-      oldNumber: this.team.teamNumber ?? -1,
-      newNumber,
     });
   }
 }

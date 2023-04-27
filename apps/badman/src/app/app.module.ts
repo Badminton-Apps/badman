@@ -13,9 +13,11 @@ import { JobsModule } from '@badman/frontend-jobs';
 import { HttpClient } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RANKING_CONFIG} from '@badman/frontend-ranking';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { PdfModule } from '@badman/frontend-pdf';
-
+import { TwizzitModule } from '@badman/frontend-twizzit';
+import { AuthModule } from '@badman/frontend-auth';
 import { SeoModule } from '@badman/frontend-seo';
 import { TranslationModule } from '@badman/frontend-translation';
 import { AnalyticsModule } from '@badman/frontend-vitals';
@@ -27,8 +29,6 @@ import { QuillModule } from 'ngx-quill';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
-import { RANKING_CONFIG } from '@badman/frontend-ranking';
-import { AuthModule } from '@badman/frontend-auth';
 import { ShellComponent } from '@badman/frontend-components';
 
 const APP_ROUTES: Routes = [
@@ -124,6 +124,9 @@ const APP_ROUTES: Routes = [
     }),
     PdfModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/pdf`,
+    }),
+    TwizzitModule.forRoot({
+      api: `${environment.api}/${environment.apiVersion}/twizzit`,
     }),
     TranslationModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/translate/i18n/`,

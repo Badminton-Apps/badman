@@ -9,8 +9,7 @@ export class PdfService {
   constructor(
     private httpClient: HttpClient,
     @Inject(PDF_CONFIG)
-    private config: IPdfConfig,
-    @Inject(PLATFORM_ID) private platformId: string
+    private config: IPdfConfig
   ) {}
 
   getTeamAssembly(input: {

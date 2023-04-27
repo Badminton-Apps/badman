@@ -12,7 +12,6 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SeoService } from '@badman/frontend-seo';
 import { Apollo, gql } from 'apollo-angular';
 
-import { HttpClient } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,18 +32,13 @@ import {
   Player,
   Team,
 } from '@badman/frontend-models';
+import { TwizzitService } from '@badman/frontend-twizzit';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason } from '@badman/utils';
+import { SubEventTypeEnum, getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { saveAs } from 'file-saver';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
-import {
-  map,
-  startWith,
-  switchMap,
-  takeUntil
-} from 'rxjs/operators';
+import { map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -98,7 +92,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private httpClient: HttpClient,
+    private twizzitService: TwizzitService,
     @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
@@ -108,7 +102,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.filter = this.formBuilder.group({
-      choices: [['M', 'F', 'MX']],
+      choices: [['M', 'F', 'MX', 'NATIONAL']],
       season: getCurrentSeason(),
     });
 
@@ -199,6 +193,8 @@ export class DetailPageComponent implements OnInit, OnDestroy {
               name
               slug
               teamNumber
+              season
+              captainId
               type
               entry {
                 id
@@ -294,21 +290,75 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   }
 
   editTeam(team: Team) {
-    import('@badman/frontend-team').then((m) => {
-      this.dialog
-        .open(m.EditDialogComponent, {
-          data: {
-            teamId: team.id,
-          },
+    this.teams$
+      .pipe(
+        takeUntil(this.destroy$),
+        take(1),
+        switchMap((teams) =>
+          import('@badman/frontend-team').then((m) => {
+            this.dialog
+              .open(m.EditDialogComponent, {
+                data: {
+                  team: team,
+                  teamNumbers: {
+                    [team.type ?? 'M']: teams
+                      ?.filter((t) => t.type == team.type)
+                      ?.map((t) => t.teamNumber),
+                  },
+                },
 
-          width: '100%',
-          maxWidth: '600px',
-        })
-        .afterClosed()
-        .subscribe(() => {
-          this.update$.next();
-        });
-    });
+                width: '100%',
+                maxWidth: '600px',
+              })
+              .afterClosed();
+          })
+        )
+      )
+      .subscribe(() => {
+        this.update$.next();
+      });
+  }
+
+  addTeam() {
+    this.teams$
+      .pipe(
+        takeUntil(this.destroy$),
+        take(1),
+        switchMap((teams) =>
+          import('@badman/frontend-team').then((m) => {
+            this.dialog
+              .open(m.AddDialogComponent, {
+                data: {
+                  team: {
+                    clubId: this.club.id,
+                    season: this.filter.value.season,
+                  },
+                  teamNumbers: {
+                    [SubEventTypeEnum.M]: teams
+                      ?.filter((t) => t.type == SubEventTypeEnum.M)
+                      ?.map((t) => t.teamNumber),
+                    [SubEventTypeEnum.F]: teams
+                      ?.filter((t) => t.type == SubEventTypeEnum.F)
+                      ?.map((t) => t.teamNumber),
+                    [SubEventTypeEnum.MX]: teams
+                      ?.filter((t) => t.type == SubEventTypeEnum.MX)
+                      ?.map((t) => t.teamNumber),
+                    [SubEventTypeEnum.NATIONAL]: teams
+                      ?.filter((t) => t.type == SubEventTypeEnum.NATIONAL)
+                      ?.map((t) => t.teamNumber),
+                  },
+                },
+
+                width: '100%',
+                maxWidth: '600px',
+              })
+              .afterClosed();
+          })
+        )
+      )
+      .subscribe(() => {
+        this.update$.next();
+      });
   }
 
   deletePlayer(player: Player) {
@@ -324,19 +374,9 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  downloadTwizzit(club: Club) {
-    const season = this.filter.get('season')?.toString();
-    this.httpClient
-      .get(`/api/twizzit/games`, {
-        params: {
-          clubId: club.id ?? '',
-          year: `${season}`,
-        },
-        responseType: 'blob',
-      })
-      .subscribe((result) => {
-        saveAs(result, `twizzit-${club.slug}-${season}.xlsx`);
-      });
+  async downloadTwizzit() {
+    const season = this.filter.get('season')?.value;
+    await lastValueFrom(this.twizzitService.downloadTwizzit(this.club, season));
   }
 
   addPlayer() {

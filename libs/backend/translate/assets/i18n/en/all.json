@@ -72,6 +72,12 @@
   },
   "club": {
     "current": "Current club",
+    "delete": {
+      "team": {
+        "description": "Are you sure you want to delete this team?",
+        "title": "Delete team"
+      }
+    },
     "end": "End",
     "menu": {
       "add-player": "Add Player",
@@ -79,6 +85,7 @@
       "edit": "Edit",
       "twizzit": "Twizzit overview"
     },
+    "new-team": "New team",
     "number": "club number",
     "start": "Start date",
     "titles": {
@@ -650,7 +657,8 @@
         "male": "M",
         "mix": "MX",
         "national": "NATIONAL"
-      }
+      },
+      "title": "Series"
     },
     "usedForTeam": {
       "description": "Team names are automatically generated, select which prefix you want to use.",

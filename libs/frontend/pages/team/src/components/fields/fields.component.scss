@@ -9,10 +9,15 @@
   align-items: center;
 }
 
-.basic{
+.basic {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
+  flex-direction: column;
+  .number,
+  .season {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
 }
 
 mat-form-field {

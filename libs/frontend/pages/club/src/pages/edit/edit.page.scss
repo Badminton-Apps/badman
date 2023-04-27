@@ -26,7 +26,23 @@ h2 {
   align-items: center;
 }
 
+.options {
+  display: flex;
+  align-items: center;
+
+  .mat-mdc-icon-button {
+    margin-bottom: 22px;
+  }
+}
+
 .teams {
   display: flex;
   flex-wrap: wrap;
+}
+
+mat-dialog-content {
+  margin-top: 1rem;
+  overflow: initial;
+  display: flex;
+  gap: 1rem;
 }
