@@ -45,6 +45,7 @@
     "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
   },
   "button": {
+    "add": "Ajouter",
     "add-comment": "Envoyer un commentaire",
     "all": "Tout",
     "cancel": "Annuler",
@@ -71,6 +72,12 @@
   },
   "club": {
     "current": "Club actuel",
+    "delete": {
+      "team": {
+        "description": "Voulez-vous vraiment supprimer cette équipe ?",
+        "title": "Supprimer l'équipe"
+      }
+    },
     "end": "Fin",
     "menu": {
       "add-player": "Ajouter un joueur",
@@ -78,6 +85,7 @@
       "edit": "Modifier",
       "twizzit": "Présentation de Twizzit"
     },
+    "new-team": "Nouvelle Équipe",
     "number": "numéro de club",
     "start": "Date de début",
     "titles": {
@@ -478,14 +486,13 @@
     "start-time": "Start time"
   },
   "player": {
-    "menu": {
-      "delete": "Enlever",
-      "edit": "Modifier"
-    }
-  },
-  "players": {
     "backup": "Joueur de réserve",
     "base": "Joueur de base",
+    "menu": {
+      "add": "Nouveau joueur",
+      "delete": "Enlever",
+      "edit": "Modifier"
+    },
     "no-memberid": "Numéro de membre inconnu",
     "regular": "Joueur régulier",
     "search": {
@@ -650,7 +657,8 @@
         "male": "H",
         "mix": "G",
         "national": ""
-      }
+      },
+      "title": "Série"
     },
     "usedForTeam": {
       "description": "Les noms d'équipe sont générés automatiquement, sélectionnez le préfixe que vous souhaitez utiliser",
