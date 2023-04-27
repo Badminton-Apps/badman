@@ -40,7 +40,13 @@ import {
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { BehaviorSubject, Observable, Subject, lastValueFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  combineLatest,
+  lastValueFrom,
+} from 'rxjs';
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
@@ -145,11 +151,14 @@ export class EditPageComponent implements OnInit, OnDestroy {
       });
       this.breadcrumbsService.set('@club', clubName);
 
-      this.roles$ = this.updateClub$.pipe(
+      this.roles$ = combineLatest([this.updateClub$, this.updateRoles$]).pipe(
         takeUntil(this.destroy$),
         switchMap(() => this._loadRoles())
       );
-      this.locations$ = this.updateLocation$.pipe(
+      this.locations$ = combineLatest([
+        this.updateClub$,
+        this.updateLocation$,
+      ]).pipe(
         takeUntil(this.destroy$),
         switchMap(() => this._loadLocations())
       );

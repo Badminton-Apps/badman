@@ -295,10 +295,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
         if (player) {
           const dbPlayer = await lastValueFrom(
             this.apollo
-              .mutate<{ addPlayer: Partial<Player> }>({
+              .mutate<{ createPlayer: Partial<Player> }>({
                 mutation: gql`
-                  mutation AddPlayer($data: PlayerNewInput!) {
-                    addPlayer(data: $data) {
+                  mutation createPlayer($data: PlayerNewInput!) {
+                    createPlayer(data: $data) {
                       id
                       slug
                       memberId
@@ -316,7 +316,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                   },
                 },
               })
-              .pipe(map((x) => new Player(x.data?.addPlayer)))
+              .pipe(map((x) => new Player(x.data?.createPlayer)))
           );
           if (!this.clearOnSelection) {
             this.formControl.setValue(player);

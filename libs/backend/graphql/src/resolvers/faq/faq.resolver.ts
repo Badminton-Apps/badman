@@ -31,7 +31,7 @@ export class FaqResolver {
   }
 
   @Mutation(() => Faq)
-  async addFaq(@User() user: Player, @Args('data') data: FaqNewInput) {
+  async createFaq(@User() user: Player, @Args('data') data: FaqNewInput) {
     if (!user.hasAnyPermission(['add:faq'])) {
       throw new UnauthorizedException(
         `You do not have permission to create a faq`
