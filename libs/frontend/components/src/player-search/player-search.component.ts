@@ -277,10 +277,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       if (event.option.value != null) {
         const spaced = event.option.value.indexOf(' ');
         if (spaced != -1) {
-          firstName = event.option.value.slice(spaced);
-          lastName = event.option.value.substr(0, spaced);
+          firstName = event.option.value.slice(spaced).trim();
+          lastName = event.option.value.substr(0, spaced).trim();
         } else {
-          firstName = event.option.value;
+          firstName = event.option.value.trim();
         }
       }
 
@@ -291,8 +291,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
       const dialogRef = this.dialog.open(this.newPlayerTemplateRef);
 
-      dialogRef.afterClosed().subscribe(async (player: Partial<Player>) => {
-        if (player) {
+      dialogRef.afterClosed().subscribe(async () => {
+        if (this.newPlayerFormGroup?.value) {
           const dbPlayer = await lastValueFrom(
             this.apollo
               .mutate<{ createPlayer: Partial<Player> }>({
@@ -309,17 +309,17 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                 `,
                 variables: {
                   data: {
-                    memberId: player.memberId?.trim(),
-                    firstName: player.firstName?.trim(),
-                    lastName: player.lastName?.trim(),
-                    gender: player.gender?.trim(),
+                    memberId: this.newPlayerFormGroup?.value.memberId?.trim(),
+                    firstName: this.newPlayerFormGroup?.value.firstName?.trim(),
+                    lastName: this.newPlayerFormGroup?.value.lastName?.trim(),
+                    gender: this.newPlayerFormGroup?.value.gender?.trim(),
                   },
                 },
               })
               .pipe(map((x) => new Player(x.data?.createPlayer)))
           );
           if (!this.clearOnSelection) {
-            this.formControl.setValue(player);
+            this.formControl.setValue(this.newPlayerFormGroup?.value);
           }
           this._selectPlayer(dbPlayer);
         }

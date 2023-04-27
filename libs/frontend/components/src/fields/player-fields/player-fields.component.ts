@@ -3,7 +3,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -49,10 +48,6 @@ export class PlayerFieldsComponent implements OnInit {
     if (!group) {
       group = new FormGroup({});
     }
-
-    console.log('inputData', inputData);
-    console.log(group.get('firstName'))
-
 
     if (group.get('firstName') == null) {
       const firstNameControl = new FormControl(
