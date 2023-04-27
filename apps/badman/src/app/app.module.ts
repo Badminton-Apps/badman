@@ -13,7 +13,6 @@ import { JobsModule } from '@badman/frontend-jobs';
 import { HttpClient } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RANKING_CONFIG } from '@badman/frontend-ranking';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { PdfModule } from '@badman/frontend-pdf';
 import { TwizzitModule } from '@badman/frontend-twizzit';
@@ -29,7 +28,10 @@ import { QuillModule } from 'ngx-quill';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { ShellComponent } from '@badman/frontend-components';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { RANKING_CONFIG } from '@badman/frontend-ranking';
 
 const APP_ROUTES: Routes = [
   {
