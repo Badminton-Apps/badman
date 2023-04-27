@@ -38,7 +38,14 @@ import { SubEventTypeEnum, getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
-import { map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import {
+  filter,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -380,10 +387,35 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   }
 
   addPlayer() {
-    this.dialog.open(AddPlayerComponent, {
-      data: {
-        clubId: this.club.id,
-      },
-    });
+    this.dialog
+      .open(AddPlayerComponent, {
+        data: {
+          clubId: this.club.id,
+        },
+      })
+      .afterClosed()
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((player) => !!player),
+        switchMap((player) => {
+          return this.apollo.mutate<{ addPlayerToClub: boolean }>({
+            mutation: gql`
+              mutation AddPlayerToClub($data: ClubPlayerMembershipNewInput!) {
+                addPlayerToClub(data: $data)
+              }
+            `,
+            variables: {
+              data: {
+                clubId: this.club.id,
+                playerId: player.id,
+                start: new Date(),
+              },
+            },
+          });
+        })
+      )
+      .subscribe(() => {
+        this.update$.next();
+      });
   }
 }
