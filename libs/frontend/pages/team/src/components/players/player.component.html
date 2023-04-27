@@ -1,11 +1,11 @@
-<div *ngFor="let player of this.team.players" class="player">
+<div *ngFor="let player of this.group?.value?.players" class="player">
   <div class="name">{{ player.fullName }}</div>
   <div class="type">
     <mat-form-field>
       <mat-label>Type</mat-label>
       <mat-select
         [(value)]="player.membershipType"
-        (selectionChange)="changePlayerMembershipType(player, $event)"
+        (selectionChange)="playerMembershipTypeChanged(player, $event)"
       >
         <mat-option *ngFor="let type of types" [value]="type">
           {{ 'all.player.' + type | lowercase | translate }}
@@ -14,7 +14,7 @@
     </mat-form-field>
   </div>
   <div class="delete">
-    <button mat-icon-button (click)="removePlayerFromTeam(player)">
+    <button mat-icon-button (click)="playerRemoved(player)">
       <mat-icon>delete</mat-icon>
     </button>
   </div>
@@ -23,8 +23,8 @@
 <badman-player-search
   [allowCreation]="false"
   [searchOutsideClub]="false"
-  [club]="this.team.clubId"
+  [club]="this.group?.value?.clubId"
   [label]="'Voeg speler toe'"
   [where]="this.wherePlayer"
-  (whenSelectPlayer)="addPlayerToTeam($event)"
+  (whenSelectPlayer)="playerAdded($event)"
 ></badman-player-search>

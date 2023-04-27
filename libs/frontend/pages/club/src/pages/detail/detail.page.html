@@ -12,7 +12,7 @@
     </button>
 
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="downloadTwizzit(club)">
+      <button mat-menu-item (click)="downloadTwizzit()">
         <mat-icon>download</mat-icon>
         <span> {{'all.club.menu.twizzit' | translate}}</span>
       </button>
@@ -52,6 +52,9 @@
     <mat-button-toggle value="MX"
       >{{'all.gender.mix' | translate }}</mat-button-toggle
     >
+    <mat-button-toggle value="NATIONAL"
+      >{{'all.gender.national'| translate }}</mat-button-toggle
+    >
   </mat-button-toggle-group>
 
   <!-- year selection -->
@@ -67,7 +70,12 @@
 
 <ng-container *ngIf="this.teams$ | async as teams; else loadingTeams">
   <section class="teams">
-    <h3>{{'all.club.titles.teams' | translate}}</h3>
+    <div class="title">
+      <h3>{{'all.club.titles.teams' | translate}}</h3>
+      <button mat-icon-button (click)="addTeam()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
     <div class="teams-container">
       <div class="team" *ngFor="let team of teams">
         <div [routerLink]="['team',team.slug]">

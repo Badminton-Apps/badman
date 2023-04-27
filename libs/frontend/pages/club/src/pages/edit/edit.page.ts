@@ -1,6 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SeoService } from '@badman/frontend-seo';
@@ -19,11 +32,16 @@ import { HasClaimComponent } from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { Club, Location, Player, Role, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason, sortTeams } from '@badman/utils';
+import {
+  SubEventType,
+  SubEventTypeEnum,
+  getCurrentSeason,
+  sortTeams,
+} from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, Observable, Subject, lastValueFrom } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
@@ -82,8 +100,24 @@ export class EditPageComponent implements OnInit, OnDestroy {
   updateRoles$ = new BehaviorSubject(null);
 
   competitionYear = new FormControl();
+  newTeamForm?: FormGroup;
 
   seasons = [getCurrentSeason()];
+
+  eventTypes = Object.values(SubEventTypeEnum);
+  selectNumbers: number[] = [];
+  teamNumbers: {
+    [key in SubEventType]: number[];
+  } = {
+    F: [],
+    M: [],
+    MX: [],
+    NATIONAL: [],
+  };
+
+  // template ref for adding new team
+  @ViewChild('newTeamTemplate', { static: true })
+  teamTemplate?: TemplateRef<HTMLElement>;
 
   constructor(
     private seoService: SeoService,
@@ -176,6 +210,25 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }),
         map((x) => {
           return (x.data.club.teams ?? []).map((t) => new Team(t));
+        }),
+        tap((teams) => {
+          // initial teamnumbers
+          this.teamNumbers.M =
+            teams
+              ?.filter((t) => t.type === SubEventTypeEnum.M)
+              .map((t) => t.teamNumber ?? 0) ?? [];
+          this.teamNumbers.F =
+            teams
+              ?.filter((t) => t.type === SubEventTypeEnum.F)
+              .map((t) => t.teamNumber ?? 0) ?? [];
+          this.teamNumbers.MX =
+            teams
+              ?.filter((t) => t.type === SubEventTypeEnum.MX)
+              .map((t) => t.teamNumber ?? 0) ?? [];
+          this.teamNumbers.NATIONAL =
+            teams
+              ?.filter((t) => t.type === SubEventTypeEnum.NATIONAL)
+              .map((t) => t.teamNumber ?? 0) ?? [];
         }),
         map((teams) => teams.sort(sortTeams))
       );
@@ -504,6 +557,44 @@ export class EditPageComponent implements OnInit, OnDestroy {
     );
     this._deleteTeamFromCache(team.id);
     this.updateClub$.next(null);
+  }
+
+  addTeam() {
+    if (this.teamTemplate) {
+      const typeControl = new FormControl(undefined, [Validators.required]);
+      const teamNumberControl = new FormControl(
+        {
+          value: undefined,
+          disabled: true,
+        },
+        [Validators.required]
+      );
+
+      this.newTeamForm = new FormGroup({
+        type: typeControl,
+        teamNumber: teamNumberControl,
+      });
+
+      typeControl.valueChanges.subscribe((value) => {
+        // enable the team number control if the type is set
+        if (value) {
+          teamNumberControl.enable();
+          this.selectNumbers = this.teamNumbers[value];
+        }
+      });
+
+      const ref = this.dialog.open(this.teamTemplate);
+      ref.afterClosed().subscribe((result) => {
+        if (result) {
+          //
+        }
+      });
+    } else {
+      this.snackBar.open('No template', undefined, {
+        duration: 1000,
+        panelClass: 'error',
+      });
+    }
   }
 
   private _deleteRoleFromCache(role?: string) {

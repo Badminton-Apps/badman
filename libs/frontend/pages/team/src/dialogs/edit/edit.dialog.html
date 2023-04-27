@@ -1,8 +1,19 @@
-<div mat-dialog-content>
-  <badman-edit-team [teamId]="this.data.teamId"></badman-edit-team>
+<div mat-dialog-content *ngIf="this.group; else loading">
+  <badman-team-fields
+    [group]="this.group"
+    [teamNumbers]="this.data.teamNumbers"
+  ></badman-team-fields>
+  <badman-team-player [group]="this.group"></badman-team-player>
 </div>
 <mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]>
+  <button mat-button (click)="removeTeam()">
+    {{ 'all.button.delete' | translate }}
+  </button>
+  <button mat-raised-button [mat-dialog-close] color="primary">
     {{ 'all.button.close' | translate }}
   </button>
 </mat-dialog-actions>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar
+></ng-template>
