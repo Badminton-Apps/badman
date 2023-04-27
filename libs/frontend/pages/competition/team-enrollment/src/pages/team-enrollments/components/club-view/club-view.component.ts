@@ -169,7 +169,7 @@ export class ClubViewComponent implements OnInit {
                           }
                         }
                       }
-                      competitionSubEvent {
+                      subEventCompetition {
                         id
                         name
                         eventType

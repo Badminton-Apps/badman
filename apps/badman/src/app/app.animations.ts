@@ -24,9 +24,25 @@ export const slideInAnimation = trigger('routerTransition', [
     group([
       query(':leave', [
         animate('200ms ease-out', style({ left: '100%', opacity: 0 })),
-      ]),
+      ]), 
       query(':enter', [animate('300ms ease-out', style({ left: '0%' }))]),
       query('@*', animateChild()),
+    ]),
+  ]),
+]);
+
+export const otherAnimation = trigger('routerTransition', [
+  transition('* <=> *', [
+    query(':enter, :leave', style({ position: 'fixed', width: '100%' })),
+    group([
+      query(':enter', [
+        style({ transform: 'translateX(100%)' }),
+        animate('0.5s ease-in-out', style({ transform: 'translateX(0%)' })),
+      ]),
+      query(':leave', [
+        style({ transform: 'translateX(0%)' }),
+        animate('0.5s ease-in-out', style({ transform: 'translateX(-100%)' })),
+      ]),
     ]),
   ]),
 ]);

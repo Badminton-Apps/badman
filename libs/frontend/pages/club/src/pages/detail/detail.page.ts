@@ -199,7 +199,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
               entry {
                 id
                 date
-                competitionSubEvent {
+                subEventCompetition {
                   id
                   name
                 }

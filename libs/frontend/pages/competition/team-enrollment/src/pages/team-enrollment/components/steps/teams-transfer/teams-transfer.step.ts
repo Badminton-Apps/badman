@@ -240,7 +240,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                         riser
                         faller
                       }
-                      competitionSubEvent {
+                      subEventCompetition {
                         id
                         level
                         eventCompetition {

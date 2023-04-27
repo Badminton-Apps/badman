@@ -16,9 +16,9 @@
 }
 
 badman-club-edit-role,
-badman-club-edit-location,
-badman-club-edit-team {
+badman-club-edit-location {
   display: flex;
+  flex-direction: column;
 }
 
 h2 {

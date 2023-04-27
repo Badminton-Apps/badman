@@ -72,16 +72,18 @@
   <section class="teams">
     <div class="title">
       <h3>{{'all.club.titles.teams' | translate}}</h3>
-      <button mat-icon-button (click)="addTeam()">
-        <mat-icon>add</mat-icon>
-      </button>
+      <badman-has-claim [any]="['edit-any:club']">
+        <button mat-icon-button (click)="addTeam()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </badman-has-claim>
     </div>
     <div class="teams-container">
       <div class="team" *ngFor="let team of teams">
         <div [routerLink]="['team',team.slug]">
           <span class="name">{{team.name}}</span>
-          <span class="event" *ngIf="team.entry?.competitionSubEvent?.name"
-            >{{team.entry?.competitionSubEvent?.name}}</span
+          <span class="event" *ngIf="team.entry?.subEventCompetition?.name"
+            >{{team.entry?.subEventCompetition?.name}}</span
           >
         </div>
 

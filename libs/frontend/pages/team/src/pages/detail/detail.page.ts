@@ -86,10 +86,10 @@ export class DetailPageComponent implements OnInit {
                   position
                   size
                 }
-                competitionDraw {
+                drawCompetition {
                   id
                 }
-                competitionSubEvent {
+                subEventCompetition {
                   id
                   eventCompetition {
                     id
