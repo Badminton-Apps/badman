@@ -72,6 +72,12 @@
   },
   "club": {
     "current": "Huidig club",
+    "delete": {
+      "team": {
+        "description": "Weet u zeker dat je dit team wilt verwijderen?",
+        "title": "Team verwijderen"
+      }
+    },
     "end": "Einde",
     "menu": {
       "add-player": "Voeg speler toe",
@@ -79,6 +85,7 @@
       "edit": "Bewerken",
       "twizzit": "Twizzit overview"
     },
+    "new-team": "Nieuwe ploeg",
     "number": "club nummer",
     "start": "Begindatum",
     "titles": {
@@ -650,7 +657,8 @@
         "male": "H",
         "mix": "G",
         "national": ""
-      }
+      },
+      "title": "Reeks"
     },
     "usedForTeam": {
       "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",

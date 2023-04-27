@@ -21,6 +21,7 @@ export class ClubResolver  {
               club(id: $id) {
                 id
                 name
+                slug
                 fullName
                 abbreviation
                 clubId
