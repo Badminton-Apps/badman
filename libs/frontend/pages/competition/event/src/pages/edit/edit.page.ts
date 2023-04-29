@@ -82,7 +82,7 @@ export class EditPageComponent implements OnInit {
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
-      startYear: new FormControl(event.startYear, [
+      season: new FormControl(event.season, [
         Validators.required,
         Validators.min(2000),
         Validators.max(3000),

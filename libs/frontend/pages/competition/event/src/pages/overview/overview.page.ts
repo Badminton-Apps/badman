@@ -250,7 +250,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           where: {
             official: filter?.official == true ? true : undefined,
             name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
-            startYear: filter?.year ? filter.year : undefined,
+            season: filter?.year ? filter.year : undefined,
           },
           order: [
             {

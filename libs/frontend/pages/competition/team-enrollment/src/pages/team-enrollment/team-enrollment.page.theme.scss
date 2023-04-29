@@ -5,12 +5,14 @@
 
 @use './components/steps/teams-transfer/teams-transfer.step.theme.scss' as teams-transfer;
 @use './components/steps/teams/teams.step.theme.scss' as teams;
+@use './components/steps/locations/locations.step.theme.scss' as locations;
 
 
 @mixin color($theme) {
   badman-team-enrollment {
     @include teams-transfer.color($theme);
     @include teams.color($theme);
+    @include locations.color($theme);
 
     $color-config: mat.get-color-config($theme);
     // Background color
@@ -22,6 +24,7 @@
   badman-team-enrollment {
     @include teams-transfer.typography($theme);
     @include teams.typography($theme);
+    @include locations.typography($theme);
 
     $typography-config: mat.get-typography-config($theme);
 

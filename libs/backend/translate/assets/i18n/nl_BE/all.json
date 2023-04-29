@@ -211,6 +211,7 @@
       "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
       "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
       "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
+      "comments": "Opmerkingen",
       "errors": {
         "already": "Speler al als titualris aanwezig.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
@@ -426,7 +427,11 @@
   },
   "loading": "Aan het laden",
   "locations": {
-    "title": "Locatie(s)"
+    "add-day": "Voeg speeldag toe",
+    "add-exception": "Voeg uitzondering toe",
+    "days": "Speeldagen",
+    "title": "Locatie(s)",
+    "uitzonderingen": "Uitzonderingen"
   },
   "management": {
     "calculate": "Bereken",
@@ -474,7 +479,9 @@
     "select-club": "Kies een club",
     "select-encounter": "Kies een ontmoeting",
     "select-end-time": "Eind tijd",
+    "select-event-competition": "Selecteer competitie",
     "select-start-time": "Start tijd",
+    "select-subevent-competition": "Selecteer reeks",
     "select-team": "Kies een ploeg",
     "select-team-groups": {
       "F": "Dames",
@@ -622,6 +629,11 @@
     }
   },
   "team": {
+    "change-event": {
+      "change": "Kies reeks",
+      "pick": "Kies reeks",
+      "select-event-hint": "Gelieve eerst een reeks te kiezen vooraleer je spelers kan toevoegen"
+    },
     "change-number": {
       "description": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
       "number": "Ploegnummer",

@@ -58,7 +58,7 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
       event = new EventCompetition({
         name: visualTournament.Name,
         visualCode: visualTournament.Code,
-        startYear: moment(visualTournament.StartDate).year(),
+        season: moment(visualTournament.StartDate).year(),
       });
     } else {
       // Later we will change the search function to use the tournament code

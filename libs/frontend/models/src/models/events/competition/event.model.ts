@@ -4,14 +4,14 @@ import { Event } from '../event.model';
 import { SubEventCompetition } from './sub-event.model';
 
 export class EventCompetition extends Event {
-  startYear?: number;
+  season?: number;
   subEventCompetitions?: SubEventCompetition[];
   comments?: Comment[];
   type?: LevelType;
 
   constructor({ ...args }: Partial<EventCompetition>) {
     super(args);
-    this.startYear = args.startYear;
+    this.season = args.season;
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
     this.subEventCompetitions = args?.subEventCompetitions

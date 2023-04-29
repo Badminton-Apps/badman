@@ -8,7 +8,7 @@ export class PlannerService {
   async getPlannerData(year: string) {
     const events = await EventCompetition.findAll({
       where: {
-        startYear: year,
+        season: year,
       },
     });
 

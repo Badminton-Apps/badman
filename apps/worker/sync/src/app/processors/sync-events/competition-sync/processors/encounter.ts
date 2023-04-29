@@ -48,7 +48,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     const encounters = await draw.getEncounterCompetitions({
       transaction: this.transaction,
     });
-    const canChange = moment().isBefore(`${this.event.startYear + 1}-01-01`);
+    const canChange = moment().isBefore(`${this.event.season + 1}-01-01`);
 
     const visualMatches = (await this.visualService.getMatches(
       this.visualTournament.Code,

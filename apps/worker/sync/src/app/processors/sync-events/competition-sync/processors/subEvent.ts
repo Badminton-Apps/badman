@@ -42,7 +42,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     const subEvents = await this.event.getSubEventCompetitions({
       transaction: this.transaction,
     });
-    const canChange = moment().isBefore(`${this.event.startYear}-09-01`);
+    const canChange = moment().isBefore(`${this.event.season}-09-01`);
 
     const visualEvents = await this.visualService.getEvents(
       this.visualTournament.Code,
