@@ -478,7 +478,9 @@ export type I18nTranslations = {
             "select-club": string;
             "select-encounter": string;
             "select-end-time": string;
+            "select-event-competition": string;
             "select-start-time": string;
+            "select-subevent-competition": string;
             "select-team": string;
             "select-team-groups": {
                 "F": string;
@@ -626,6 +628,11 @@ export type I18nTranslations = {
             };
         };
         "team": {
+            "change-event": {
+                "change": string;
+                "pick": string;
+                "select-event-hint": string;
+            };
             "change-number": {
                 "description": string;
                 "number": string;

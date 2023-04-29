@@ -38,13 +38,11 @@ export class AuthenticateService {
   authService?: AuthService;
 
   #user = new BehaviorSubject<LoggedinUser | null>(null);
-
   get user() {
     return this.#user.value;
   }
 
   #loggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
   get loggedIn() {
     return this.#loggedIn.value;
   }
