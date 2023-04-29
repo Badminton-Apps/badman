@@ -745,7 +745,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       map(([event, systemId]) => {
         if (
           !event ||
-          !event.startYear ||
+          !event.season ||
           !event.usedRankingUnit ||
           !event.usedRankingAmount
         ) {
@@ -753,7 +753,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
         }
 
         const usedRankingDate = moment();
-        usedRankingDate.set('year', event.startYear);
+        usedRankingDate.set('year', event.season);
         usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);
 
         const startRanking = usedRankingDate.clone().set('date', 0);
@@ -789,7 +789,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
                   eventType
                   eventCompetition {
                     id
-                    startYear
+                    season
                     usedRankingUnit
                     usedRankingAmount
                   }

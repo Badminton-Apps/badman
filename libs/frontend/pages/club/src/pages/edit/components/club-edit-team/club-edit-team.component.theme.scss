@@ -12,7 +12,7 @@
     $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
 
     border-color: $border-color;
-    
+
     .info {
       border-bottom-color: $border-color;
 
@@ -38,6 +38,10 @@
       .down {
         @include mat.typography-level($typography-config, 'caption');
       }
+    }
+
+    .content .no-event {
+      @include mat.typography-level($typography-config, 'caption');
     }
   }
 }

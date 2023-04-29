@@ -474,7 +474,9 @@
     "select-club": "Pick a club",
     "select-encounter": "Pick an encounter",
     "select-end-time": "End time",
+    "select-event-competition": "Select League",
     "select-start-time": "Start time",
+    "select-subevent-competition": "Select series",
     "select-team": "Pick a team",
     "select-team-groups": {
       "F": "Women",
@@ -622,6 +624,11 @@
     }
   },
   "team": {
+    "change-event": {
+      "change": "Choose series",
+      "pick": "Choose series",
+      "select-event-hint": "Please choose a series first before you can add players"
+    },
     "change-number": {
       "description": "Changing of the team number, also update higher/lower teams",
       "number": "Team number",

@@ -9,8 +9,10 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { PlayerSearchComponent } from '@badman/frontend-components';
 import {
   Club,
@@ -18,6 +20,8 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/frontend-models';
+import { TranslateModule } from '@ngx-translate/core';
+import { PickEventDialogComponent } from '../../../../dialogs';
 
 @Component({
   selector: 'badman-club-edit-team',
@@ -29,11 +33,14 @@ import {
     // Core modules
     CommonModule,
     ReactiveFormsModule,
+    TranslateModule,
 
     // Other modules
     MatListModule,
     MatIconModule,
     MatButtonModule,
+    MatTooltipModule,
+    MatDialogModule,
 
     // My Modules
     PlayerSearchComponent,
@@ -42,6 +49,10 @@ import {
 export class ClubEditTeamComponent implements OnInit {
   @Output() whenPlayerAdded = new EventEmitter<Partial<Player>>();
   @Output() whenPlayerRemoved = new EventEmitter<Partial<Player>>();
+  @Output() whenSubEventChanged = new EventEmitter<{
+    event: string;
+    subEvent: string;
+  }>();
 
   @Input()
   club!: Club;
@@ -59,6 +70,8 @@ export class ClubEditTeamComponent implements OnInit {
   teamIndex?: number;
 
   where!: { [key: string]: unknown };
+
+  constructor(private readonly dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.entry = this.team.entry?.subEventCompetition;
@@ -85,7 +98,20 @@ export class ClubEditTeamComponent implements OnInit {
     };
   }
 
-  changeSubEvent(){
-    //
+  changeSubEvent() {
+    this.dialog
+      .open(PickEventDialogComponent, {
+        data: {
+          season: this.team.season,
+          eventId: this.entry?.eventCompetition?.id,
+          subEventId: this.entry?.id,
+        },
+      })
+      .afterClosed()
+      .subscribe((event) => {
+        if (event) {
+          this.whenSubEventChanged.emit(event);
+        }
+      });
   }
 }

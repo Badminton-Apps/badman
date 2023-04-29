@@ -12,7 +12,6 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -105,8 +104,9 @@ export class EditPageComponent implements OnInit, OnDestroy {
   updateClub$ = new BehaviorSubject(null);
   updateLocation$ = new BehaviorSubject(null);
   updateRoles$ = new BehaviorSubject(null);
+  updateTeams$ = new BehaviorSubject(null);
 
-  competitionYear = new FormControl();
+  season = new FormControl();
   newTeamForm?: FormGroup;
 
   seasons = [getCurrentSeason()];
@@ -169,7 +169,10 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.teamsForYear$ = this.competitionYear.valueChanges.pipe(
+      this.teamsForYear$ = combineLatest([
+        this.season.valueChanges,
+        this.updateTeams$,
+      ]).pipe(
         takeUntil(this.destroy$),
         switchMap((season) => {
           return this.apollo.query<{ club: Club }>({
@@ -184,6 +187,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
                     clubId
                     type
                     teamNumber
+                    season
                     entry {
                       id
                       subEventCompetition {
@@ -531,7 +535,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       })
     );
     this._deleteTeamFromCache(team.id);
-    this.updateClub$.next(null);
+    this.updateTeams$.next(null);
   }
 
   async onDeleteBasePlayer(player: Partial<Player>, team: Team) {
@@ -571,45 +575,54 @@ export class EditPageComponent implements OnInit, OnDestroy {
       })
     );
     this._deleteTeamFromCache(team.id);
-    this.updateClub$.next(null);
+    this.updateTeams$.next(null);
+  }
+
+  async onSubEventAssignedToTeam(
+    event: {
+      event: string;
+      subEvent: string;
+    },
+    team: Team
+  ) {
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation Mutation($teamId: String!, $subEventId: String!) {
+            createEnrollment(teamId: $teamId, subEventId: $subEventId)
+          }
+        `,
+        variables: {
+          teamId: team.id,
+          subEventId: event.subEvent,
+        },
+      })
+      .subscribe(() => {
+        this._deleteTeamFromCache(team.id);
+        this.updateTeams$.next(null);
+      });
   }
 
   addTeam() {
-    if (this.teamTemplate) {
-      const typeControl = new FormControl(undefined, [Validators.required]);
-      const teamNumberControl = new FormControl(
-        {
-          value: undefined,
-          disabled: true,
-        },
-        [Validators.required]
-      );
+    import('@badman/frontend-team').then((m) => {
+      this.dialog
+        .open(m.AddDialogComponent, {
+          data: {
+            team: {
+              clubId: this.club.id,
+              season: this.season.value,
+            },
+            teamNumbers: this.teamNumbers,
+          },
 
-      this.newTeamForm = new FormGroup({
-        type: typeControl,
-        teamNumber: teamNumberControl,
-      });
-
-      typeControl.valueChanges.subscribe((value) => {
-        // enable the team number control if the type is set
-        if (value) {
-          teamNumberControl.enable();
-          this.selectNumbers = this.teamNumbers[value];
-        }
-      });
-
-      const ref = this.dialog.open(this.teamTemplate);
-      ref.afterClosed().subscribe((result) => {
-        if (result) {
-          //
-        }
-      });
-    } else {
-      this.snackBar.open('No template', undefined, {
-        duration: 1000,
-        panelClass: 'error',
-      });
-    }
+          width: '100%',
+          maxWidth: '600px',
+        })
+        .afterClosed()
+        .subscribe(() => {
+          this.updateTeams$.next(null);
+        });
+    });
   }
 
   private _deleteRoleFromCache(role?: string) {
