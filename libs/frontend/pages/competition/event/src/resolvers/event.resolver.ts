@@ -20,7 +20,7 @@ export class EventResolver {
               id
               name
               slug
-              startYear
+              season
               openDate
               closeDate
               visualCode

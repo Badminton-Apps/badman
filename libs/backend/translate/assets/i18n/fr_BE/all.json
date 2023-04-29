@@ -474,7 +474,9 @@
     "select-club": "Choisir un club",
     "select-encounter": "Choisir une réunion",
     "select-end-time": "Heure de fin",
+    "select-event-competition": "Sélectionnez la ligue",
     "select-start-time": "Heure de début",
+    "select-subevent-competition": "Sélectionnez la série",
     "select-team": "Choisir une équipe",
     "select-team-groups": {
       "F": "Femmes",
@@ -622,6 +624,11 @@
     }
   },
   "team": {
+    "change-event": {
+      "change": "Choisissez la série",
+      "pick": "Choisissez la série",
+      "select-event-hint": "Veuillez choisir une série avant de pouvoir ajouter des joueurs"
+    },
     "change-number": {
       "description": "Changement du numéro de l'équipe, mise à jour des équipes supérieures/inférieures",
       "number": "Numéro d'escouade",

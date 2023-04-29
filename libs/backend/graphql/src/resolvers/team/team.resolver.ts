@@ -653,6 +653,17 @@ export class TeamsResolver {
         );
       }
 
+      // create meta if not exists
+      if (!entry.meta) {
+        entry.meta = {
+          competition: {
+            teamIndex: -1,
+            players: [],
+          },
+        };
+        
+      }
+
       entry.meta?.competition.players.push({
         id: player.id,
         single: -1,

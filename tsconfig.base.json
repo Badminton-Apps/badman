@@ -70,7 +70,6 @@
         "libs/frontend/pages/notifications/src/index.ts"
       ],
       "@badman/frontend-pdf": ["libs/frontend/modules/pdf/src/index.ts"],
-      "@badman/frontend-twizzit": ["libs/frontend/modules/twizzit/src/index.ts"],
       "@badman/frontend-player": ["libs/frontend/pages/player/src/index.ts"],
       "@badman/frontend-ranking": ["libs/frontend/pages/ranking/src/index.ts"],
       "@badman/frontend-role": ["libs/frontend/pages/role/src/index.ts"],
@@ -87,6 +86,9 @@
       ],
       "@badman/frontend-translation": [
         "libs/frontend/modules/translation/src/index.ts"
+      ],
+      "@badman/frontend-twizzit": [
+        "libs/frontend/modules/twizzit/src/index.ts"
       ],
       "@badman/frontend-utils": ["libs/frontend/modules/utils/src/index.ts"],
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],

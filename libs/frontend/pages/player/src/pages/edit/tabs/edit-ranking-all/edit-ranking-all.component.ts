@@ -67,7 +67,7 @@ export class EditRankingAllComponent implements OnInit {
                         id
                         eventCompetition {
                           id
-                          startYear
+                          season
                           usedRankingAmount
                           usedRankingUnit
                         }
