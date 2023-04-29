@@ -211,6 +211,7 @@
       "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
       "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
       "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
+      "comments": "Opmerkingen",
       "errors": {
         "already": "Speler al als titualris aanwezig.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
@@ -426,7 +427,11 @@
   },
   "loading": "Aan het laden",
   "locations": {
-    "title": "Locatie(s)"
+    "add-day": "Voeg speeldag toe",
+    "add-exception": "Voeg uitzondering toe",
+    "days": "Speeldagen",
+    "title": "Locatie(s)",
+    "uitzonderingen": "Uitzonderingen"
   },
   "management": {
     "calculate": "Bereken",

@@ -211,6 +211,7 @@
       "comment-liga": "Comments League competition (for each team)",
       "comment-nat": "Comments National competition (for each team)",
       "comment-prov": "Comments Provincial competition (for each team)",
+      "comments": "Comments",
       "errors": {
         "already": "Player already present as titular.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
@@ -426,7 +427,11 @@
   },
   "loading": "Loading",
   "locations": {
-    "title": "Location(s)"
+    "add-day": "Add game day",
+    "add-exception": "Add Exception",
+    "days": "Game days",
+    "title": "Location(s)",
+    "uitzonderingen": "Exceptions"
   },
   "management": {
     "calculate": "Calculate",
