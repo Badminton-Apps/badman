@@ -215,6 +215,7 @@ export type I18nTranslations = {
                 "comment-liga": string;
                 "comment-nat": string;
                 "comment-prov": string;
+                "comments": string;
                 "errors": {
                     "already": string;
                     "club-base-other-team": string;
@@ -430,7 +431,11 @@ export type I18nTranslations = {
         };
         "loading": string;
         "locations": {
+            "add-day": string;
+            "add-exception": string;
+            "days": string;
             "title": string;
+            "uitzonderingen": string;
         };
         "management": {
             "calculate": string;

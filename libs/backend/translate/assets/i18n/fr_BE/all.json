@@ -211,6 +211,7 @@
       "comment-liga": "",
       "comment-nat": "",
       "comment-prov": "",
+      "comments": "Remarques",
       "errors": {
         "already": "",
         "club-base-other-team": "",
@@ -426,7 +427,11 @@
   },
   "loading": "Chargement",
   "locations": {
-    "title": "Lieu(x)"
+    "add-day": "Ajouter un jour de match",
+    "add-exception": "Ajouter une exception",
+    "days": "Jours de match",
+    "title": "Lieu(x)",
+    "uitzonderingen": "Des exceptions"
   },
   "management": {
     "calculate": "calculer",
