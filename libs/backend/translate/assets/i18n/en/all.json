@@ -211,6 +211,7 @@
       "comment-liga": "Comments League competition (for each team)",
       "comment-nat": "Comments National competition (for each team)",
       "comment-prov": "Comments Provincial competition (for each team)",
+      "comments": "Comments",
       "errors": {
         "already": "Player already present as titular.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
@@ -426,7 +427,11 @@
   },
   "loading": "Loading",
   "locations": {
-    "title": "Location(s)"
+    "add-day": "Add game day",
+    "add-exception": "Add Exception",
+    "days": "Game days",
+    "title": "Location(s)",
+    "uitzonderingen": "Exceptions"
   },
   "management": {
     "calculate": "Calculate",
@@ -474,7 +479,9 @@
     "select-club": "Pick a club",
     "select-encounter": "Pick an encounter",
     "select-end-time": "End time",
+    "select-event-competition": "Select League",
     "select-start-time": "Start time",
+    "select-subevent-competition": "Select series",
     "select-team": "Pick a team",
     "select-team-groups": {
       "F": "Women",
@@ -622,6 +629,11 @@
     }
   },
   "team": {
+    "change-event": {
+      "change": "Choose series",
+      "pick": "Choose series",
+      "select-event-hint": "Please choose a series first before you can add players"
+    },
     "change-number": {
       "description": "Changing of the team number, also update higher/lower teams",
       "number": "Team number",

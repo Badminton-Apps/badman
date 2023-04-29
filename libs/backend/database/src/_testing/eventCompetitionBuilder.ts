@@ -26,7 +26,7 @@ export class EventCompetitionBuilder {
   }
 
   WithYear(year: number): EventCompetitionBuilder {
-    this.event.startYear = year;
+    this.event.season = year;
 
     return this;
   }

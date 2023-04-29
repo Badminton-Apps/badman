@@ -206,7 +206,7 @@ export class EventEntry extends Model {
       include: [
         {
           model: EventCompetition,
-          attributes: ['startYear', 'usedRankingUnit', 'usedRankingAmount'],
+          attributes: ['season', 'usedRankingUnit', 'usedRankingAmount'],
         },
       ],
     });
@@ -235,7 +235,7 @@ export class EventEntry extends Model {
     }
 
     const usedRankingDate = moment();
-    usedRankingDate.set('year', dbSubEvent.eventCompetition.startYear);
+    usedRankingDate.set('year', dbSubEvent.eventCompetition.season);
     usedRankingDate.set(
       dbSubEvent.eventCompetition.usedRankingUnit,
       dbSubEvent.eventCompetition.usedRankingAmount

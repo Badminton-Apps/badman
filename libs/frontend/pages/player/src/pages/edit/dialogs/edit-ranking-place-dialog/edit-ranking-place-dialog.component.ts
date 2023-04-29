@@ -126,11 +126,11 @@ export class EditRankingPlaceDialogComponent implements OnInit {
     event.preventDefault();
     const date = moment();
 
-    // Get event from group whith highest eventCompetition startyear
+    // Get event from group whith highest eventCompetition season
     const compEvent = this.data.system?.rankingGroups?.[0].subEventCompetitions
       ?.map((group) => group.eventCompetition)
       .reduce((prev, current) => {
-        if ((prev?.startYear ?? 0) > (current?.startYear ?? 0)) {
+        if ((prev?.season ?? 0) > (current?.season ?? 0)) {
           return prev;
         } else {
           return current;
@@ -138,14 +138,14 @@ export class EditRankingPlaceDialogComponent implements OnInit {
       });
 
     if (
-      !compEvent?.startYear ||
+      !compEvent?.season ||
       !compEvent?.usedRankingUnit ||
       !compEvent?.usedRankingAmount
     ) {
       throw new Error('No event data');
     }
 
-    date.set('year', compEvent.startYear);
+    date.set('year', compEvent.season);
     date.set(compEvent.usedRankingUnit, compEvent.usedRankingAmount);
     date.set('day', 1);
 
