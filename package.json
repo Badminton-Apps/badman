@@ -29,7 +29,8 @@
     "format:write": "nx format:write",
     "format:check": "nx format:write",
     "update": "nx migrate latest",
-    "create-release": "node ./scripts/standard-version.js"
+    "create-release": "node ./scripts/standard-version.js",
+    "generate-barrels": "barrelsby --config=barrelsby.config.json"
   },
   "private": true,
   "dependencies": {
@@ -197,6 +198,7 @@
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
+    "barrelsby": "^2.5.1",
     "conventional-changelog": "^3.1.25",
     "cypress": ">= 3 < 13",
     "eslint": "^8.30.0",

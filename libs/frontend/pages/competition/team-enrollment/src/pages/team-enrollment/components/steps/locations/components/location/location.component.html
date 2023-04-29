@@ -1,0 +1,167 @@
+<div class="general" [formGroup]="this.group">
+  <div>
+    <span class="name">{{ group.value.name }}</span>
+  </div>
+
+  <div class="change">
+    <!-- remove location -->
+    <button mat-icon-button class="remove-button" aria-label="Remove location">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="days">
+  <div class="expandable-item" (click)="expanded.days = !expanded.days">
+    <div>
+      {{ 'all.locations.days' | translate }}
+    </div>
+    <mat-icon *ngIf="!expanded.days">expand_more</mat-icon>
+    <mat-icon *ngIf="expanded.days">expand_less</mat-icon>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div [hidden]="!expanded.days">
+    <ng-container [formGroup]="group">
+      <ng-container formArrayName="availibilities">
+        <div
+          *ngFor="let day of this.availibilities.controls; index as i"
+          [formGroupName]="i"
+          class="availibility"
+        >
+          <div class="day">
+            <mat-form-field>
+              <mat-label>{{ 'all.input.day' | translate }}</mat-label>
+              <mat-select formControlName="day">
+                <mat-option value="monday">{{
+                  'all.days.monday' | translate
+                }}</mat-option>
+                <mat-option value="tuesday">{{
+                  'all.days.tuesday' | translate
+                }}</mat-option>
+                <mat-option value="wednesday">{{
+                  'all.days.wednesday' | translate
+                }}</mat-option>
+                <mat-option value="thursday">{{
+                  'all.days.thursday' | translate
+                }}</mat-option>
+                <mat-option value="friday">{{
+                  'all.days.friday' | translate
+                }}</mat-option>
+                <mat-option value="saturday">{{
+                  'all.days.saturday' | translate
+                }}</mat-option>
+                <mat-option value="sunday">{{
+                  'all.days.sunday' | translate
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="startTime">
+            <mat-form-field>
+              <mat-label>Start hour</mat-label>
+              <input matInput type="time" formControlName="startTime" />
+            </mat-form-field>
+          </div>
+          <div class="endTime">
+            <mat-form-field>
+              <mat-label>End hour</mat-label>
+              <input matInput type="time" formControlName="endTime" />
+            </mat-form-field>
+          </div>
+
+          <div class="courts">
+            <mat-form-field>
+              <mat-label>{{ 'all.input.courts' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="courts"
+                alt="courts"
+              />
+            </mat-form-field>
+          </div>
+          <div class="delete">
+            <button mat-icon-button (click)="removeAvailibility(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <button mat-stroked-button color="primary" (click)="addAvailibility()">
+    {{ 'all.locations.add-day' | translate }}
+  </button>
+</div>
+
+<div class="exceptions">
+  <div
+    class="expandable-item"
+    (click)="expanded.exceptions = !expanded.exceptions"
+  >
+    <div>
+      {{ 'all.locations.uitzonderingen' | translate }}
+    </div>
+    <mat-icon *ngIf="!expanded.exceptions">expand_more</mat-icon>
+    <mat-icon *ngIf="expanded.exceptions">expand_less</mat-icon>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div [hidden]="!expanded.exceptions">
+    <ng-container [formGroup]="group">
+      <ng-container formArrayName="exceptions">
+        <div
+          *ngFor="let day of this.exceptions.controls; index as i"
+          [formGroupName]="i"
+          class="exception"
+        >
+          <div class="day">
+            <mat-form-field appearance="outline" fxFlex="250px">
+              <mat-label>{{ 'all.input.date-range' | translate }}</mat-label>
+              <mat-date-range-input [rangePicker]="picker">
+                <input
+                  matStartDate
+                  formControlName="start"
+                  placeholder="Start date"
+                />
+                <input
+                  matEndDate
+                  formControlName="end"
+                  placeholder="End date"
+                />
+              </mat-date-range-input>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+          <div class="courts">
+            <mat-form-field>
+              <mat-label>{{ 'all.input.courts' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="courts"
+                alt="courts"
+              />
+            </mat-form-field>
+          </div>
+          <div class="delete">
+            <button mat-icon-button (click)="removeException(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <button mat-stroked-button (click)="addException()">
+    {{ 'all.locations.add-exception' | translate }}
+  </button>
+</div>
