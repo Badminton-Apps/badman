@@ -117,10 +117,10 @@ export class FaqPageComponent implements OnInit {
     } else {
       // Create question
       const result = await lastValueFrom(
-        this.apollo.mutate<{ addFaq: Question }>({
+        this.apollo.mutate<{ createFaq: Question }>({
           mutation: gql`
-            mutation addFaq($data: FaqNewInput!) {
-              addFaq(data: $data) {
+            mutation createFaq($data: FaqNewInput!) {
+              createFaq(data: $data) {
                 id
                 question
                 answer
@@ -135,7 +135,7 @@ export class FaqPageComponent implements OnInit {
           },
         })
       );
-      question.id = result.data?.addFaq.id;
+      question.id = result.data?.createFaq.id;
     }
 
     const index = this.questions.findIndex((q) => q.id === question.id);

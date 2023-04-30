@@ -45,6 +45,7 @@
     "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
   },
   "button": {
+    "add": "Ajouter",
     "add-comment": "Envoyer un commentaire",
     "all": "Tout",
     "cancel": "Annuler",
@@ -71,6 +72,12 @@
   },
   "club": {
     "current": "Club actuel",
+    "delete": {
+      "team": {
+        "description": "Voulez-vous vraiment supprimer cette équipe ?",
+        "title": "Supprimer l'équipe"
+      }
+    },
     "end": "Fin",
     "menu": {
       "add-player": "Ajouter un joueur",
@@ -78,6 +85,7 @@
       "edit": "Modifier",
       "twizzit": "Présentation de Twizzit"
     },
+    "new-team": "Nouvelle Équipe",
     "number": "numéro de club",
     "start": "Date de début",
     "titles": {
@@ -203,6 +211,7 @@
       "comment-liga": "",
       "comment-nat": "",
       "comment-prov": "",
+      "comments": "Remarques",
       "errors": {
         "already": "",
         "club-base-other-team": "",
@@ -418,7 +427,11 @@
   },
   "loading": "Chargement",
   "locations": {
-    "title": "Lieu(x)"
+    "add-day": "Ajouter un jour de match",
+    "add-exception": "Ajouter une exception",
+    "days": "Jours de match",
+    "title": "Lieu(x)",
+    "uitzonderingen": "Des exceptions"
   },
   "management": {
     "calculate": "calculer",
@@ -466,7 +479,9 @@
     "select-club": "Choisir un club",
     "select-encounter": "Choisir une réunion",
     "select-end-time": "Heure de fin",
+    "select-event-competition": "Sélectionnez la ligue",
     "select-start-time": "Heure de début",
+    "select-subevent-competition": "Sélectionnez la série",
     "select-team": "Choisir une équipe",
     "select-team-groups": {
       "F": "Femmes",
@@ -478,14 +493,13 @@
     "start-time": "Start time"
   },
   "player": {
-    "menu": {
-      "delete": "Enlever",
-      "edit": "Modifier"
-    }
-  },
-  "players": {
     "backup": "Joueur de réserve",
     "base": "Joueur de base",
+    "menu": {
+      "add": "Nouveau joueur",
+      "delete": "Enlever",
+      "edit": "Modifier"
+    },
     "no-memberid": "Numéro de membre inconnu",
     "regular": "Joueur régulier",
     "search": {
@@ -615,6 +629,11 @@
     }
   },
   "team": {
+    "change-event": {
+      "change": "Choisissez la série",
+      "pick": "Choisissez la série",
+      "select-event-hint": "Veuillez choisir une série avant de pouvoir ajouter des joueurs"
+    },
     "change-number": {
       "description": "Changement du numéro de l'équipe, mise à jour des équipes supérieures/inférieures",
       "number": "Numéro d'escouade",
@@ -650,7 +669,8 @@
         "male": "H",
         "mix": "G",
         "national": ""
-      }
+      },
+      "title": "Série"
     },
     "usedForTeam": {
       "description": "Les noms d'équipe sont générés automatiquement, sélectionnez le préfixe que vous souhaitez utiliser",

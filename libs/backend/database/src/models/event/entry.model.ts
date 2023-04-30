@@ -96,7 +96,7 @@ export class EventEntry extends Model {
     foreignKey: 'subEventId',
     constraints: false,
   })
-  tournamentSubEvent: SubEventTournament;
+  subEventTournament: SubEventTournament;
 
   /**
    * Draw get's deciede upon draw
@@ -106,14 +106,14 @@ export class EventEntry extends Model {
     foreignKey: 'drawId',
     constraints: false,
   })
-  tournamentDraw?: DrawTournament;
+  drawTournament?: DrawTournament;
 
   @Field(() => SubEventCompetition, { nullable: true })
   @BelongsTo(() => SubEventCompetition, {
     foreignKey: 'subEventId',
     constraints: false,
   })
-  competitionSubEvent: SubEventCompetition;
+  subEventCompetition: SubEventCompetition;
 
   /**
    * Draw get's deciede upon draw
@@ -122,7 +122,7 @@ export class EventEntry extends Model {
     foreignKey: 'drawId',
     constraints: false,
   })
-  competitionDraw?: DrawCompetition;
+  drawCompetition?: DrawCompetition;
 
   @Field({ nullable: true })
   @Column
@@ -165,26 +165,26 @@ export class EventEntry extends Model {
   }
 
   // Belongs to TournamentSubEvent
-  getTournamentSubEvent!: BelongsToGetAssociationMixin<SubEventTournament>;
-  setTournamentSubEvent!: BelongsToSetAssociationMixin<
+  getSubEventTournament!: BelongsToGetAssociationMixin<SubEventTournament>;
+  setSubEventTournament!: BelongsToSetAssociationMixin<
     SubEventTournament,
     string
   >;
 
   // Belongs to TournamentDraw
-  getTournamentDraw!: BelongsToGetAssociationMixin<DrawTournament>;
-  setTournamentDraw!: BelongsToSetAssociationMixin<DrawTournament, string>;
+  getDrawTournament!: BelongsToGetAssociationMixin<DrawTournament>;
+  setDrawTournament!: BelongsToSetAssociationMixin<DrawTournament, string>;
 
   // Belongs to TournamentSubEvent
-  getCompetitionSubEvent!: BelongsToGetAssociationMixin<SubEventCompetition>;
-  setCompetitionSubEvent!: BelongsToSetAssociationMixin<
+  getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;
+  setSubEventCompetition!: BelongsToSetAssociationMixin<
     SubEventCompetition,
     string
   >;
 
-  // Belongs to CompetitionDraw
-  getCompetitionDraw!: BelongsToGetAssociationMixin<DrawCompetition>;
-  setCompetitionDraw!: BelongsToSetAssociationMixin<DrawCompetition, string>;
+  // Belongs to drawCompetition
+  getDrawCompetition!: BelongsToGetAssociationMixin<DrawCompetition>;
+  setDrawCompetition!: BelongsToSetAssociationMixin<DrawCompetition, string>;
 
   // Has one Standing
   getStanding!: HasOneGetAssociationMixin<Standing>;
@@ -201,12 +201,12 @@ export class EventEntry extends Model {
       return;
     }
 
-    const dbSubEvent = await instance.getCompetitionSubEvent({
+    const dbSubEvent = await instance.getSubEventCompetition({
       attributes: [],
       include: [
         {
           model: EventCompetition,
-          attributes: ['startYear', 'usedRankingUnit', 'usedRankingAmount'],
+          attributes: ['season', 'usedRankingUnit', 'usedRankingAmount'],
         },
       ],
     });
@@ -235,7 +235,7 @@ export class EventEntry extends Model {
     }
 
     const usedRankingDate = moment();
-    usedRankingDate.set('year', dbSubEvent.eventCompetition.startYear);
+    usedRankingDate.set('year', dbSubEvent.eventCompetition.season);
     usedRankingDate.set(
       dbSubEvent.eventCompetition.usedRankingUnit,
       dbSubEvent.eventCompetition.usedRankingAmount
@@ -371,10 +371,10 @@ export class EventEntryUpdateInput extends PartialType(
   OmitType(EventEntry, [
     'createdAt',
     'updatedAt',
-    'competitionDraw',
-    'competitionSubEvent',
-    'tournamentDraw',
-    'tournamentSubEvent',
+    'drawCompetition',
+    'subEventCompetition',
+    'drawTournament',
+    'subEventTournament',
     'standing',
     'team',
     'meta',

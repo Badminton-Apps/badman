@@ -107,8 +107,8 @@ export class AddPageComponent implements OnInit {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation AddRole($data: RoleInput!) {
-            addRole(data: $data) {
+          mutation CreateRole($data: RoleNewInput!) {
+            createRole(data: $data) {
               id
             }
           }

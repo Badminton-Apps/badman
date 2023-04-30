@@ -40,12 +40,6 @@ export class EventEntryResolver {
     return EventEntry.findAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => SubEventCompetition)
-  async competitionSubEvent(
-    @Parent() eventEntry: EventEntry
-  ): Promise<SubEventCompetition> {
-    return eventEntry.getCompetitionSubEvent();
-  }
   @ResolveField(() => Team)
   async team(@Parent() eventEntry: EventEntry): Promise<Team> {
     return eventEntry.getTeam();
@@ -56,24 +50,30 @@ export class EventEntryResolver {
     return eventEntry.getPlayers();
   }
 
+  @ResolveField(() => SubEventCompetition)
+  async subEventCompetition(
+    @Parent() eventEntry: EventEntry
+  ): Promise<SubEventCompetition> {
+    return eventEntry.getSubEventCompetition();
+  }
   @ResolveField(() => DrawCompetition)
-  async competitionDraw(
+  async drawCompetition(
     @Parent() eventEntry: EventEntry
   ): Promise<DrawCompetition> {
-    return eventEntry.getCompetitionDraw();
+    return eventEntry.getDrawCompetition();
   }
 
   @ResolveField(() => [DrawTournament])
-  async tournamentDraw(
+  async drawTournament(
     @Parent() eventEntry: EventEntry
   ): Promise<DrawTournament> {
-    return eventEntry.getTournamentDraw();
+    return eventEntry.getDrawTournament();
   }
   @ResolveField(() => [DrawTournament])
-  async tournamentSubEvent(
+  async subEventTournament(
     @Parent() eventEntry: EventEntry
   ): Promise<SubEventTournament> {
-    return eventEntry.getTournamentSubEvent();
+    return eventEntry.getSubEventTournament();
   }
 
   @ResolveField(() => Standing, { nullable: true })
@@ -98,7 +98,9 @@ export class EventEntryResolver {
 @Resolver(() => EntryCompetitionPlayersType)
 export class EntryCompetitionPlayersResolver {
   @ResolveField(() => Player)
-  async player(@Parent() eventEntryPlayer: EntryCompetitionPlayers): Promise<Player> {
+  async player(
+    @Parent() eventEntryPlayer: EntryCompetitionPlayers
+  ): Promise<Player> {
     return await Player.findByPk(eventEntryPlayer.id);
   }
 }

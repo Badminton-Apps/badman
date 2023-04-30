@@ -32,7 +32,15 @@ import { UserShortcutsComponent } from '../components/user-shortcuts/user-shortc
 import { TranslateModule } from '@ngx-translate/core';
 import { LogoComponent } from '../components/logo';
 import { Apollo, gql } from 'apollo-angular';
-
+import {
+  Event,
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+} from '@angular/router';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 @Component({
   selector: 'badman-shell',
   imports: [
@@ -57,12 +65,14 @@ import { Apollo, gql } from 'apollo-angular';
     MatListModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatProgressBarModule,
   ],
   standalone: true,
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
+  loading = false;
   development = isDevMode();
   expanded = {
     competition: true,
@@ -91,6 +101,7 @@ export class ShellComponent {
       version: string;
     },
     private apollo: Apollo,
+    private router: Router,
     updates: SwUpdate,
     snackBar: MatSnackBar
   ) {
@@ -149,6 +160,25 @@ export class ShellComponent {
               (events?.data?.eventCompetitions?.count ?? 0) != 0
           )
         );
+
+      this.router.events.subscribe((event: Event) => {
+        switch (true) {
+          case event instanceof NavigationStart: {
+            this.loading = true;
+            break;
+          }
+
+          case event instanceof NavigationEnd:
+          case event instanceof NavigationCancel:
+          case event instanceof NavigationError: {
+            this.loading = false;
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+      });
     }
   }
 }

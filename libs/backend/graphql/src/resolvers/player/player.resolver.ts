@@ -216,7 +216,7 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Player)
-  async addPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
+  async createPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
     if (!user.hasAnyPermission(['add:player'])) {
       throw new UnauthorizedException(
         `You do not have permission to create a player`

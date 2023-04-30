@@ -116,14 +116,14 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         transaction: this.transaction,
       });
 
-      let team = foundTeams.find((r) => r.season === event.startYear);
+      let team = foundTeams.find((r) => r.season === event.season);
 
       if (!team) {
         const clubTeams = await club.getTeams({
           where: {
             type: teamType,
             teamNumber: +teamNumber,
-            season: event.startYear,
+            season: event.season,
           },
           transaction: this.transaction,
         });
@@ -140,7 +140,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
           team = new Team({
             type: teamType,
             teamNumber: +teamNumber,
-            season: event.startYear,
+            season: event.season,
             clubId: club?.id,
             link: link,
           });
@@ -160,13 +160,13 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         entry = await new EventEntry({
           teamId: team.id,
           subEventId: subEvent.id,
-          date: new Date(event.startYear, 0, 1),
+          date: new Date(event.season, 0, 1),
         }).save({ transaction: this.transaction });
       }
 
       this.logger.debug(`Processing entry ${item} - ${team.name}`);
 
-      await entry.setCompetitionDraw(draw, {
+      await entry.setDrawCompetition(draw, {
         transaction: this.transaction,
       });
       await entry.setTeam(team, {
@@ -184,7 +184,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     // remove entries where the team is of the wrong season
     for (const entry of entries) {
-      if (entry.team.season !== event.startYear) {
+      if (entry.team.season !== event.season) {
         this.logger.log(
           `Team existed multiple times ${entry.team.name} (${entry.team.season})`
         );

@@ -1,1 +1,10 @@
-<p>locations works!</p>
+<ng-container [formGroup]="group" *ngIf="control">
+  <ng-container formArrayName="locations">
+    <ng-container
+      *ngFor="let location of control.controls; let i = index"
+      [formGroupName]="i"
+    >
+      <badman-location [group]="location"></badman-location>
+    </ng-container>
+  </ng-container>
+</ng-container>

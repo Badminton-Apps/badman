@@ -1,4 +1,4 @@
 // start:ng42.barrel
-export * from './new-player.component';
+export * from './location';
 // end:ng42.barrel
 
